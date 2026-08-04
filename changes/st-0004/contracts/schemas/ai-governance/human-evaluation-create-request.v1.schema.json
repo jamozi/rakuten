@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/human-evaluation-create-request/v1",
+  "title": "Human Evaluation Create Request",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "rubric_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "blind_assignment_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "scores": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      },
+      "maxProperties": 100
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NEEDS_ADJUDICATION",
+        "INVALID"
+      ]
+    },
+    "notes_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "is_adjudication": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "rubric_version",
+    "blind_assignment_key",
+    "scores",
+    "decision",
+    "notes_artifact_id",
+    "is_adjudication"
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

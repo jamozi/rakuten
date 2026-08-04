@@ -1,0 +1,746 @@
+openapi: 3.1.1
+info:
+  title: RAOS Internal API
+  version: '0.3'
+  description: Scheduler、Worker、Projection Builder等のService Principal専用Private API。一般User Tokenを受け付けない。
+  summary: RAOS-API-001 internal HTTP contract
+  license:
+    name: Private specification - RAOS project
+  x-raos-document-id: RAOS-OAS-INTERNAL-001
+  x-raos-status: CANONICAL_REVISION_CANDIDATE
+  x-raos-baseline-date: '2026-07-30'
+  x-raos-upstream:
+  - RAOS-REQ-001@0.1
+  - RAOS-ARCH-001@0.1
+  - RAOS-DATA-001@0.1
+  x-raos-revision-id: RAOS-AI-GOVERNANCE-REVISION-001
+  x-raos-story-id: ST-0003
+  x-raos-decision-id: INT-DEC-004
+  x-raos-base-version: '0.1'
+  x-raos-wire-change: NONE
+  x-raos-job-state-contract: ../job-state.v1.yaml
+  x-raos-predecessor-version: '0.2'
+  x-raos-predecessor-manifest-sha256: ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+  x-raos-ai-governance-revision: RAOS-AI-GOVERNANCE-REVISION-001
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+servers:
+- url: https://{internalApiHost}
+  description: Private network internal API
+  variables:
+    internalApiHost:
+      default: api.internal.example.invalid
+tags:
+- name: Internal
+  description: Internal domain operations.
+paths:
+  /api/v1/internal/scheduled-jobs:
+    post:
+      operationId: INT-001
+      tags:
+      - Internal
+      summary: SchedulerからJobを登録
+      description: SchedulerからJobを登録
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Job accepted for asynchronous processing.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+            Location:
+              description: 作成ResourceまたはJob status URL。
+              schema:
+                type: string
+                format: uri-reference
+            Retry-After:
+              description: Job statusを再照会するまでの推奨秒数。
+              schema:
+                type: integer
+                minimum: 1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobAccepted'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: INT-001
+      x-raos-kind: async_command
+      x-raos-requirements:
+      - FR-020
+      x-raos-implementation-slice: SLICE-004
+      x-raos-idempotency-required: true
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: scheduled_job_create
+      x-raos-error-codes: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduledJobRequest'
+      security:
+      - serviceBearer: []
+  /api/v1/internal/projections/rebuild:
+    post:
+      operationId: INT-002
+      tags:
+      - Internal
+      summary: Projection再構築Jobを登録
+      description: Projection再構築Jobを登録
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Job accepted for asynchronous processing.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+            Location:
+              description: 作成ResourceまたはJob status URL。
+              schema:
+                type: string
+                format: uri-reference
+            Retry-After:
+              description: Job statusを再照会するまでの推奨秒数。
+              schema:
+                type: integer
+                minimum: 1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobAccepted'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: INT-002
+      x-raos-kind: async_command
+      x-raos-requirements:
+      - FR-010
+      - FR-013
+      - FR-019
+      x-raos-implementation-slice: SLICE-004
+      x-raos-idempotency-required: true
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: projection_rebuild_request
+      x-raos-error-codes: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectionRebuildRequest'
+      security:
+      - serviceBearer: []
+  /api/v1/internal/dependencies/health:
+    get:
+      operationId: INT-003
+      tags:
+      - Internal
+      summary: 依存サービスHealthを取得
+      description: 依存サービスHealthを取得
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      responses:
+        '200':
+          description: Successful response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DependencyHealth'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: INT-003
+      x-raos-kind: query
+      x-raos-requirements: []
+      x-raos-implementation-slice: SLICE-023
+      x-raos-idempotency-required: false
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: null
+      x-raos-error-codes: []
+      security:
+      - serviceBearer: []
+      x-raos-safe: true
+  /api/v1/internal/providers/{provider}/probe:
+    post:
+      operationId: INT-004
+      tags:
+      - Internal
+      summary: Provider Contract Probeを要求
+      description: Provider Contract Probeを要求
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      - name: provider
+        in: path
+        required: true
+        description: provider identifier.
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 255
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Job accepted for asynchronous processing.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+            Location:
+              description: 作成ResourceまたはJob status URL。
+              schema:
+                type: string
+                format: uri-reference
+            Retry-After:
+              description: Job statusを再照会するまでの推奨秒数。
+              schema:
+                type: integer
+                minimum: 1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobAccepted'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: INT-004
+      x-raos-kind: async_command
+      x-raos-requirements: []
+      x-raos-implementation-slice: SLICE-023
+      x-raos-idempotency-required: true
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: provider_probe_request
+      x-raos-error-codes: []
+      security:
+      - serviceBearer: []
+components:
+  schemas:
+    DependencyHealth:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum:
+          - healthy
+          - degraded
+          - unhealthy
+        dependencies:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      required:
+      - status
+      - dependencies
+    JobAccepted:
+      type: object
+      additionalProperties: false
+      properties:
+        job_id:
+          type: string
+          format: uuid
+        display_id:
+          type: string
+        status:
+          type: string
+          enum:
+          - REQUESTED
+          - QUEUED
+        status_url:
+          type: string
+          format: uri-reference
+        correlation_id:
+          type: string
+          format: uuid
+        idempotency_replayed:
+          type: boolean
+          default: false
+      required:
+      - job_id
+      - display_id
+      - status
+      - status_url
+      - correlation_id
+    ProblemDetails:
+      title: RAOS Problem Details
+      description: RFC 9457準拠のエラー表現。
+      type: object
+      additionalProperties: true
+      required:
+      - type
+      - title
+      - status
+      - code
+      - request_id
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+          format: uri-reference
+        code:
+          type: string
+          pattern: ^RAOS-[A-Z]+-[0-9]{3}$
+        request_id:
+          type: string
+          format: uuid
+        correlation_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        retryable:
+          type: boolean
+          default: false
+        retry_after_seconds:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        violations:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - location
+            - message
+            properties:
+              location:
+                type: string
+              rule:
+                type:
+                - string
+                - 'null'
+              message:
+                type: string
+              rejected_value: {}
+        links:
+          type: object
+          additionalProperties:
+            type: string
+            format: uri-reference
+    ProjectionRebuildRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        projection:
+          type: string
+          enum:
+          - PUBLIC_READMODEL
+          - DAILY_METRICS
+          - OFFER_CURRENT
+          - RUNTIME_CONTROL
+        scope_type:
+          type: string
+          enum:
+          - ALL
+          - SITE
+          - ARTICLE
+          - OFFER
+        scope_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        reason:
+          type: string
+          minLength: 1
+      required:
+      - projection
+      - scope_type
+    ScheduledJobRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        schedule_code:
+          type: string
+        scheduled_for:
+          type: string
+          format: date-time
+        job_type:
+          type: string
+        site_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        payload:
+          type: object
+          additionalProperties: true
+      required:
+      - schedule_code
+      - scheduled_for
+      - job_type
+      - payload
+  securitySchemes:
+    serviceBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Workload identity由来の短命Service JWT。mTLS/Private networkを追加防御とする。
+  headers:
+    XRequestID:
+      description: RAOSが採番または受理したRequest UUID。
+      schema:
+        type: string
+        format: uuid
+    Traceparent:
+      description: W3C Trace Context traceparent。
+      schema:
+        type: string
+        pattern: ^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$
+    ETag:
+      description: Resource lock_versionまたはProjection hash由来のstrong ETag。
+      schema:
+        type: string
+    RetryAfter:
+      description: 安全に再試行するまでの秒数。
+      schema:
+        type: integer
+        minimum: 1
+  parameters:
+    RequestID:
+      name: X-Request-ID
+      in: header
+      required: false
+      description: Client生成UUID。欠落時はServerが採番する。
+      schema:
+        type: string
+        format: uuid
+    Traceparent:
+      name: traceparent
+      in: header
+      required: false
+      description: W3C Trace Context。
+      schema:
+        type: string
+        pattern: ^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: 同一業務Commandに対する安定Key。payload hashと組で保存する。
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 200
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      description: 直前GETで受領したstrong ETag。
+      schema:
+        type: string
+        minLength: 3
+  responses:
+    '400':
+      description: Bad Request
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '401':
+      description: Unauthorized
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: Forbidden
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: Not Found
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '409':
+      description: Conflict
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '410':
+      description: Gone
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '413':
+      description: Payload Too Large
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '415':
+      description: Unsupported Media Type
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '422':
+      description: Unprocessable Content
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '428':
+      description: Precondition Required
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '429':
+      description: Too Many Requests
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '500':
+      description: Internal Server Error
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '502':
+      description: Bad Gateway
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '503':
+      description: Service Unavailable
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+security:
+- serviceBearer: []
+x-raos-contract-conventions:
+  timestamps: RFC 3339/UTC; persistence is timestamptz.
+  identifiers: UUIDv7 internal IDs; stable display_id for human references.
+  errors: RFC 9457 application/problem+json with stable extensions.code.
+  pagination: opaque cursor; limit 1..200; deterministic tie-breaker by id.
+  unknown_fields: request objects reject unknown fields unless explicitly open.
+  idempotency: all business Commands marked x-raos-idempotency-required require Idempotency-Key.
+  concurrency: mutable resource updates marked x-raos-concurrency-required require If-Match.
+x-raos-schema-component-count: 5
+x-raos-ai-governance:
+  admin_contract_ref: openapi-admin.v0.3.yaml
+  canonical_adoption_ref: ai/canonical-adoption.v0.3.yaml
+  new_internal_http_operations: []
+  public_exposure: NONE
+  database_execution_security:
+    evaluation_run_trigger_guards:
+    - function: ai.guard_evaluation_run_mutation()
+      trigger: trg_ai_eval_run_mutation
+      security_mode: SECURITY_DEFINER
+      fixed_search_path:
+      - pg_catalog
+      - ai
+      - pg_temp
+    - function: ai.guard_evaluation_run_start_integrity()
+      trigger: trg_ai_eval_run_start_integrity
+      security_mode: SECURITY_DEFINER
+      fixed_search_path:
+      - pg_catalog
+      - ai
+      - policy
+      - pg_temp
+    - function: ai.guard_evaluation_run_completion_evidence()
+      trigger: trg_ai_eval_run_completion_evidence
+      security_mode: SECURITY_DEFINER
+      fixed_search_path:
+      - pg_catalog
+      - ai
+      - pg_temp
+      invokes: ai.assert_evaluation_run_evidence(uuid, boolean)
+    security_definer_owner:
+      functions:
+      - ai.guard_evaluation_run_mutation()
+      - ai.guard_evaluation_run_start_integrity()
+      - ai.guard_evaluation_run_completion_evidence()
+      must_match_relation_owner: ai.evaluation_run
+      live_verified_by: 202607300010_ai_governance_contract_prepare.sql
+    worker_direct_execute:
+      role: raos_worker_rw
+      policy: REVOKED
+      functions:
+      - ai.guard_evaluation_run_mutation()
+      - ai.guard_evaluation_run_start_integrity()
+      - ai.guard_evaluation_run_completion_evidence()
+      - ai.assert_evaluation_run_evidence(uuid, boolean)
+      - ai.artifact_matches_immutable_hash(uuid, text)
+      allowed_path: TRIGGER_OR_AUTHORIZED_WRAPPER_ONLY
+    public_execute:
+      policy: REVOKED
+      functions:
+      - ai.guard_evaluation_run_mutation()
+      - ai.guard_evaluation_run_start_integrity()
+      - ai.guard_evaluation_run_completion_evidence()
+      - ai.assert_evaluation_run_evidence(uuid, boolean)
+      - ai.artifact_matches_immutable_hash(uuid, text)

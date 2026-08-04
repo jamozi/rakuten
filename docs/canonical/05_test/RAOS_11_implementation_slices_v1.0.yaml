@@ -1,0 +1,88 @@
+document:
+  id: RAOS-TEST-SLICES-001
+  version: '1.0'
+slices:
+- id: TEST-SLICE-001
+  name: CI static and contract harness
+  depends_on: []
+  deliverables:
+  - TST-001..004
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TEST-SLICE-002
+  name: Unit/property harness
+  depends_on:
+  - TEST-SLICE-001
+  deliverables:
+  - TST-005..007
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TEST-SLICE-003
+  name: PostgreSQL/migration harness
+  depends_on:
+  - TEST-SLICE-001
+  deliverables:
+  - TST-008..011
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TEST-SLICE-004
+  name: API/async/storage harness
+  depends_on:
+  - TEST-SLICE-002
+  - TEST-SLICE-003
+  deliverables:
+  - TST-012..014
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TEST-SLICE-005
+  name: Provider recorded tests
+  depends_on:
+  - TEST-SLICE-004
+  deliverables:
+  - TST-015
+  - TST-017
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TEST-SLICE-006
+  name: AI/content release tests
+  depends_on:
+  - TEST-SLICE-005
+  deliverables:
+  - TST-018..021
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TEST-SLICE-007
+  name: Browser/a11y/visual
+  depends_on:
+  - TEST-SLICE-006
+  deliverables:
+  - TST-022..025
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TEST-SLICE-008
+  name: Security/privacy
+  depends_on:
+  - TEST-SLICE-004
+  deliverables:
+  - TST-026
+  - TST-031
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TEST-SLICE-009
+  name: Performance/reliability/recovery
+  depends_on:
+  - TEST-SLICE-007
+  - TEST-SLICE-008
+  deliverables:
+  - TST-027..029
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TEST-SLICE-010
+  name: Analytics and gate evidence
+  depends_on:
+  - TEST-SLICE-009
+  deliverables:
+  - TST-030
+  - TST-032
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED

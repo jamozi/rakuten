@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/imports/affiliate-click-input.schema.json",
+  "title": "Affiliate Click Input",
+  "description": "Public beacon input.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "occurred_at",
+    "publication_id",
+    "article_id",
+    "product_id",
+    "offer_id",
+    "placement_id",
+    "page_path",
+    "client_event_version",
+    "consent_state"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "publication_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "publication_snapshot_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "article_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "product_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "offer_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "placement_id": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "page_path": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "anonymous_session_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 128
+    },
+    "client_event_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "consent_state": {
+      "type": "string",
+      "enum": [
+        "GRANTED",
+        "DENIED",
+        "NOT_REQUIRED",
+        "UNKNOWN"
+      ]
+    },
+    "user_agent_class": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 80
+    }
+  }
+}

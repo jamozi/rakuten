@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-publishing-article-rolled-back-v1.schema.json",
+  "title": "jp.raos.publishing.article_rolled_back.v1",
+  "description": "Publicationが旧Snapshotへ切替された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.publishing.article_rolled_back.v1"
+        },
+        "producer": {
+          "const": "publishing"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "publication_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "from_snapshot_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "to_snapshot_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "rollback_record_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "executed_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "publication_id",
+            "from_snapshot_id",
+            "to_snapshot_id",
+            "rollback_record_id",
+            "executed_at"
+          ]
+        }
+      }
+    }
+  ]
+}

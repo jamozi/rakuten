@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/editorial-methodology-version.v1.schema.json",
+  "title": "Editorial Methodology Version",
+  "description": "Recommendation methodology bound to an article-type version.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "methodology_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "semantic_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "maxLength": 64
+    },
+    "article_type_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "definition": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "definition_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "excludes_finance_inputs": {
+      "const": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "ACTIVE",
+        "DEPRECATED",
+        "RETIRED"
+      ]
+    },
+    "approved_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "methodology_code",
+    "semantic_version",
+    "article_type_version_id",
+    "definition",
+    "definition_sha256",
+    "excludes_finance_inputs",
+    "status",
+    "approved_by_principal_id",
+    "approved_at",
+    "created_at"
+  ],
+  "x-raos-invariants": {
+    "finance_inputs_forbidden": true,
+    "single_active_per_methodology_and_article_type": true,
+    "append_only": true
+  }
+}

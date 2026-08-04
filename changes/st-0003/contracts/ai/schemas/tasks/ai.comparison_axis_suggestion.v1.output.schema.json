@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/comparison_axis_suggestion/v1",
+  "title": "Comparison Axis Suggestion Output",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "axes": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "axis_key": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{1,79}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "reader_decision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 700
+          },
+          "data_type": {
+            "type": "string",
+            "enum": [
+              "NUMBER",
+              "BOOLEAN",
+              "ENUM",
+              "TEXT",
+              "DATE",
+              "MONEY"
+            ]
+          },
+          "fact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "requires_hands_on_test": {
+            "type": "boolean"
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "axis_key",
+          "label",
+          "reader_decision",
+          "data_type",
+          "fact_ids",
+          "requires_hands_on_test",
+          "priority"
+        ]
+      }
+    },
+    "excluded_axes": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 700
+          }
+        },
+        "required": [
+          "label",
+          "reason"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "axes",
+    "excluded_axes"
+  ]
+}

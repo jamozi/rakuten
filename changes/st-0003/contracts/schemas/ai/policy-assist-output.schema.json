@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/policy-assist-output.schema.json",
+  "title": "Policy Assist Output",
+  "description": "Non-authoritative candidate findings for deterministic policy engine.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "candidate_findings",
+    "overall_notes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "candidate_findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rule_code": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "INFO",
+              "WARNING",
+              "ERROR",
+              "CRITICAL"
+            ]
+          },
+          "is_blocking_candidate": {
+            "type": "boolean"
+          },
+          "entity_ref": {
+            "$ref": "../common/resource-ref.schema.json"
+          },
+          "message": {
+            "type": "string"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/resource-ref.schema.json"
+            }
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "rule_code",
+          "severity",
+          "is_blocking_candidate",
+          "entity_ref",
+          "message",
+          "evidence_refs",
+          "confidence"
+        ]
+      }
+    },
+    "overall_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

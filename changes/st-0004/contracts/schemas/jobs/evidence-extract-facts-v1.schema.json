@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/evidence-extract-facts-v1.schema.json",
+  "title": "evidence.extract_facts.v1",
+  "description": "検証済みSnapshotから型付きFact候補を抽出する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "evidence.extract_facts.v1"
+        },
+        "queue": {
+          "const": "quality"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source_snapshot_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "extractor_version": {
+              "type": "string"
+            },
+            "subject_hints": {
+              "type": "array",
+              "items": {
+                "$ref": "../common/resource-ref.schema.json"
+              }
+            }
+          },
+          "required": [
+            "source_snapshot_id",
+            "extractor_version"
+          ]
+        }
+      }
+    }
+  ]
+}

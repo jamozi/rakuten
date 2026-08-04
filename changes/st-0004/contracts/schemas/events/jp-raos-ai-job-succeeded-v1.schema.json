@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ai-job-succeeded-v1.schema.json",
+  "title": "jp.raos.ai.job_succeeded.v1",
+  "description": "AI JobがSchema検証を通過して成功した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ai.job_succeeded.v1"
+        },
+        "producer": {
+          "const": "ai"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ai_job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "ops_job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "task_code": {
+              "type": "string"
+            },
+            "output_artifact": {
+              "$ref": "../common/artifact-ref.schema.json"
+            },
+            "usage_cost_jpy": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "validation_passed": {
+              "const": true
+            }
+          },
+          "required": [
+            "ai_job_id",
+            "ops_job_id",
+            "task_code",
+            "output_artifact",
+            "usage_cost_jpy",
+            "validation_passed"
+          ]
+        }
+      }
+    }
+  ]
+}

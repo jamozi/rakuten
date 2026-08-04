@@ -1,0 +1,26 @@
+﻿requirement_id,requirement,test_suites,acceptance_evidence,design_status,implementation_status,execution_status
+FR-001,manage_category_keyword_article_plan_with_stable_ids,"['TST-008', 'TST-012']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-002,ingest_and_archive_rakuten_api_responses,"['TST-014', 'TST-015']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-003,normalize_and_group_same_product_candidates,"['TST-005', 'TST-007', 'TST-020']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-004,retain_source_timestamp_and_confidence,"['TST-008', 'TST-020']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-005,separate_editorial_and_business_scores,"['TST-011', 'TST-020']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-006,block_generation_without_approved_source_packet,"['TST-018', 'TST-020']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-007,link_generated_claims_to_evidence,"['TST-020', 'TST-021']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-008,validate_prohibited_phrases_missing_sources_and_stale_prices,"['TST-019', 'TST-020']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-009,require_human_approval_by_default,"['TST-012', 'TST-021', 'TST-022']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-010,support_cms_draft_publish_update_stop_and_rollback,"['TST-021', 'TST-022']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-011,validate_affiliate_link_format_reachability_and_destination_clarity,"['TST-015', 'TST-020', 'TST-022']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-012,detect_product_disappearance_stockout_and_price_change,"['TST-015', 'TST-028']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-013,attribute_search_behavior_clicks_and_commission_to_articles,['TST-030'],defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-014,store_generated_and_confirmed_commission_separately,"['TST-008', 'TST-030']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-015,calculate_epc_rpm_cost_and_contribution_profit,['TST-030'],defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-016,prioritize_update_merge_delete_and_create_actions,"['TST-005', 'TST-030']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-017,link_policy_versions_to_affected_articles,"['TST-008', 'TST-020']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-018,record_model_prompt_version_token_and_cost_for_ai_jobs,"['TST-017', 'TST-018']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-019,provide_emergency_publication_and_affiliate_link_kill_switch,"['TST-022', 'TST-028']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+FR-020,retain_admin_and_automation_audit_log,"['TST-011', 'TST-026']",defined in story and suite; no PASS until runtime artifact exists,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+GATE-0,compliance_and_foundation,['TST-032'],immutable gate evidence pack with source test artifacts,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+GATE-1,editorial_and_technical_pilot,['TST-032'],immutable gate evidence pack with source test artifacts,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+GATE-2,search_and_user_value_validation,['TST-032'],immutable gate evidence pack with source test artifacts,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+GATE-3,revenue_and_unit_economics,['TST-032'],immutable gate evidence pack with source test artifacts,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED
+GATE-4,scalable_repeatability,['TST-032'],immutable gate evidence pack with source test artifacts,APPROVED_FOR_IMPLEMENTATION,NOT_STARTED,NOT_EXECUTED

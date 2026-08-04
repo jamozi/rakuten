@@ -1,0 +1,1 @@
+Review PR {{PR}} for story scope, contract compatibility, migrations, negative tests, security/privacy/accessibility, and status honesty. Verify that implementation/validation/deployment are not conflated. Return blockers, required changes, and optional improvements separately.

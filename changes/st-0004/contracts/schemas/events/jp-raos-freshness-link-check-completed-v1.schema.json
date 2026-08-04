@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-freshness-link-check-completed-v1.schema.json",
+  "title": "jp.raos.freshness.link_check_completed.v1",
+  "description": "Affiliate Link Check Batchが完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.freshness.link_check_completed.v1"
+        },
+        "producer": {
+          "const": "freshness"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "refresh_run_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "checked_count": {
+              "type": "integer"
+            },
+            "valid_count": {
+              "type": "integer"
+            },
+            "invalid_count": {
+              "type": "integer"
+            },
+            "risky_offer_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          "required": [
+            "checked_count",
+            "valid_count",
+            "invalid_count",
+            "risky_offer_ids"
+          ]
+        }
+      }
+    }
+  ]
+}

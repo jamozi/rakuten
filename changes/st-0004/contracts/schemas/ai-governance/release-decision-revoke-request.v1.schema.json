@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/release-decision-revoke-request/v1",
+  "title": "Release Decision Revoke Request",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "reason_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    }
+  },
+  "required": [
+    "reason_code"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "x-raos-previous-release-rollback-target-invariants": {
+    "bound_resource": "ReleaseDecisionV1",
+    "applies_when": {
+      "rollback_strategy": "PREVIOUS_RELEASE"
+    },
+    "target_reference_field": "rollback_release_decision_id",
+    "current_champion_selection": {
+      "task_scope": "SAME_TASK_DEFINITION",
+      "release_status": "APPROVED_ACTIVE",
+      "component_status_filter": "NONE",
+      "selection": "LATEST_APPROVED_ACTIVE",
+      "ordering": [
+        {
+          "field": "ACTIVE_RELEASE_APPROVAL.signed_at",
+          "direction": "DESC"
+        },
+        {
+          "field": "ReleaseDecisionV1.id",
+          "direction": "DESC"
+        }
+      ]
+    },
+    "target_reference_exact_match": {
+      "left": "rollback_release_decision_id",
+      "operator": "==",
+      "right": "CURRENT_CHAMPION.release_decision_id"
+    },
+    "target_release_requirements": {
+      "same_task_definition": true,
+      "status": "APPROVED_ACTIVE",
+      "component_status_requirements": {
+        "task_definition_id": "ACTIVE",
+        "prompt_version_id": "ACTIVE",
+        "model_route_version_id": "ACTIVE",
+        "output_schema_version_id": "ACTIVE",
+        "resolved_model_id": "ACTIVE",
+        "policy_bundle_version_id": "ACTIVE"
+      }
+    },
+    "live_dependency_guard": {
+      "dependent_statuses": [
+        "READY_FOR_REVIEW",
+        "APPROVED_CANARY",
+        "APPROVED_ACTIVE"
+      ],
+      "target_release_revoke_forbidden": true,
+      "protected_component_fields": [
+        "task_definition_id",
+        "prompt_version_id",
+        "model_route_version_id",
+        "output_schema_version_id",
+        "resolved_model_id",
+        "policy_bundle_version_id"
+      ],
+      "protected_component_active_exit_forbidden": true,
+      "resolution_order": [
+        "REVOKE_DEPENDENT_FIRST",
+        "SELECT_DISABLE_ROUTE_WHILE_DEPENDENT_IS_DRAFT"
+      ]
+    }
+  }
+}

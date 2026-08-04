@@ -1,0 +1,60 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+  status: TEMPLATE
+dataset:
+  dataset_id: null
+  task_code: null
+  version: null
+  status: DRAFT
+  owner: null
+  created_at: null
+  locked_at: null
+  source_policy:
+    allowed_sources:
+    - synthetic
+    - sanitized production failure
+    - licensed editorial example
+    - human-authored adversarial case
+    forbidden_sources:
+    - Rakuten review body
+    - unlicensed third-party content
+    - secrets
+    - unnecessary personal data
+  splits:
+    DEV:
+      case_ids: []
+      label_visibility: VISIBLE_TO_DEVELOPERS
+    CALIBRATION:
+      case_ids: []
+      label_visibility: VISIBLE_TO_GRADER_TEAM
+    HOLDOUT:
+      case_ids: []
+      label_visibility: BLINDED
+    ADVERSARIAL:
+      case_ids: []
+      label_visibility: BLINDED
+    REGRESSION:
+      case_ids: []
+      label_visibility: BLINDED
+  slice_targets:
+  - normal
+  - missing evidence
+  - conflicting evidence
+  - stale data
+  - prompt injection
+  - review contamination
+  - affiliate bias
+  - product identity collision
+  - numeric/unit trap
+  - provider refusal/incomplete
+  labeling:
+    rubric_version: RAOS_05_human_review_rubric_v0.1
+    double_label_rate: 1.0
+    adjudicator_required: true
+  integrity:
+    content_sha256: null
+    case_count: 0
+    holdout_compromised: false
+    change_log: []

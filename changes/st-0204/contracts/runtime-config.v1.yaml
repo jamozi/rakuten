@@ -1,0 +1,173 @@
+document:
+  id: RAOS-RUNTIME-CONFIG-001
+  version: 1.0.0
+  story_id: ST-0204
+  status: LOCAL_AND_CI_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  dependencies:
+    - ST-0102
+    - ST-0103
+  objective: ENVIRONMENT_TYPED_CONFIG_AND_SECRET_REFERENCES
+  deliverables:
+    - LANGUAGE_NEUTRAL_CONFIG_SCHEMA
+    - REDACTED_DIAGNOSTICS
+    - STRICT_PYTHON_LOADER
+  required_suites:
+    - TST-005
+    - TST-031
+  open_decisions: []
+toolchain:
+  python: 3.14.6
+  pydantic: 2.13.4
+  pydantic_core: 2.46.4
+  pyyaml: 6.0.3
+  uv: 0.12.1
+schema:
+  uri: repo://changes/st-0204/generated/runtime-config.v1.schema.json
+  generated_from: repo://python/raos/config/runtime.py
+  schema_version: 1
+  strict_types: true
+  unknown_fields: REJECT
+  immutable_runtime_model: true
+  pattern_end_semantics: ABSOLUTE_END_ECMA_262_AND_PYTHON
+environment_source:
+  namespace: RAOS_
+  allowed_keys:
+    - RAOS_ENVIRONMENT
+    - RAOS_SERVICE_NAME
+    - RAOS_LOG_LEVEL
+    - RAOS_SECRET_REFERENCES
+  required_keys:
+    - RAOS_ENVIRONMENT
+    - RAOS_SERVICE_NAME
+  optional_defaults:
+    RAOS_LOG_LEVEL: INFO
+    RAOS_SECRET_REFERENCES: '{}'
+  canonical_environments:
+    - ENV-DEV
+    - ENV-CI
+    - ENV-INTEGRATION
+    - ENV-STAGING
+    - ENV-RECOVERY
+    - ENV-PRODUCTION
+  environment_files: FORBIDDEN
+  inherited_user_configuration: FORBIDDEN
+  implicit_import_time_load: FORBIDDEN
+  os_environment_access: EXPLICIT_ENTRYPOINT_ONLY
+  unknown_namespaced_keys: REJECT_WITHOUT_ECHO
+fields:
+  service_name:
+    grammar: LOWER_KEBAB_CASE
+    minimum_length: 1
+    maximum_length: 63
+  log_level:
+    values:
+      - DEBUG
+      - INFO
+      - WARNING
+      - ERROR
+      - CRITICAL
+secret_references:
+  input_key: RAOS_SECRET_REFERENCES
+  encoding: STRICT_JSON_OBJECT_OF_STRINGS
+  duplicate_keys: REJECT_WITHOUT_ECHO
+  maximum_input_bytes: 16384
+  maximum_reference_count: 64
+  alias_grammar: LOWER_SNAKE_CASE
+  maximum_alias_length: 64
+  scheme: secret
+  maximum_reference_length: 512
+  query_fragment_userinfo: FORBIDDEN
+  controls_and_whitespace: FORBIDDEN
+  raw_secret_values: FORBIDDEN
+  provider_type_exposure: FORBIDDEN
+  required_aliases: CALLER_OWNED
+  missing_required_alias: FAIL_CLOSED
+  value_resolution: NOT_IMPLEMENTED
+  provider_adapter: NOT_IMPLEMENTED
+diagnostics:
+  format: JSON_SAFE_MAPPING
+  exact_keys:
+    - schema_version
+    - environment
+    - service_name
+    - log_level
+    - secret_aliases
+    - secret_reference_count
+  secret_aliases: SORTED
+  secret_reference_values: NEVER_EMITTED
+  arbitrary_source_keys_or_values: NEVER_EMITTED
+  deterministic: true
+error_hygiene:
+  domain_error: ConfigurationError
+  raw_input_in_message: FORBIDDEN
+  raw_input_in_repr: FORBIDDEN
+  exception_chaining_of_parser_or_validation_error: FORBIDDEN
+  stdout_stderr_logging: FORBIDDEN
+  model_json_maximum_input_bytes: 32768
+  model_json_duplicate_members: REJECT_WITHOUT_ECHO
+  model_json_mutable_bytearray: IMMUTABLE_SNAPSHOT
+  supported_pydantic_entrypoints:
+    - RUNTIME_CONFIG_CONSTRUCTOR
+    - MODEL_VALIDATE
+    - MODEL_VALIDATE_JSON
+  low_level_type_adapter: UNSUPPORTED_BYPASS
+  base_model_unvalidated_escape_hatches: UNSUPPORTED_TRUSTED_CODE_BYPASS
+  security_boundary_subclassing: FORBIDDEN
+  existing_model_instances: REVALIDATE_AND_NORMALIZE
+  nested_secret_reference_instances: EXACT_TYPE_ONLY
+security:
+  control_mappings:
+    - id: SEC-APP-001
+      relationship: STRICT_SCHEMA_AND_NEGATIVE_VALIDATION
+    - id: SEC-APP-010
+      relationship: REDACTED_DIAGNOSTICS_AND_ERRORS
+    - id: SEC-DATA-003
+      relationship: REFERENCE_ONLY_NO_SECRET_VALUE_IN_REPO_OR_LOG
+    - id: SEC-DATA-007
+      relationship: DIAGNOSTIC_DATA_MINIMIZATION
+    - id: SEC-SDLC-006
+      relationship: MAINTAINED_WORKTREE_SECRET_SCAN
+  classification: RESTRICTED_REFERENCE_IDENTIFIER
+  production_credentials: NOT_USED
+verification:
+  required_suites:
+    - TST-005
+    - TST-031
+  local_command: >-
+    uv run --locked --no-sync pytest -p no:cacheprovider -q tests/st0204
+  required_behaviors:
+    - ALL_CANONICAL_ENVIRONMENTS
+    - STRICT_UNKNOWN_KEY_REJECTION
+    - REQUIRED_KEY_FAILURE
+    - REQUIRED_SECRET_ALIAS_FAILURE
+    - DUPLICATE_JSON_KEY_REJECTION
+    - RESOURCE_BOUND_REJECTION
+    - SECRET_REFERENCE_GRAMMAR
+    - SCHEMA_ABSOLUTE_END_PARITY
+    - MODEL_JSON_DUPLICATE_MEMBER_REJECTION
+    - IMMUTABLE_TYPED_MODEL
+    - DETERMINISTIC_SCHEMA
+    - DIAGNOSTIC_ALLOWLIST
+    - NO_REFERENCE_LEAK_IN_REPR_ERROR_SERIALIZATION_OR_LOG
+  formal_environments:
+    - CI
+    - staging
+  local_result_can_promote_formal_suite: false
+predecessor:
+  manifest_uri: repo://changes/st-0203/manifest.yaml
+  story_id: ST-0203
+  sha256: 16a1ddb65d179f4a6a850ff90c1732a6c0936af5bb281ec2c5eca5ed17707e17
+boundary:
+  environment: LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE
+  production_secret_resolution: NOT_IMPLEMENTED
+  secret_manager_adapter: NOT_IMPLEMENTED
+  workload_identity: NOT_IMPLEMENTED
+  rotation_hooks: NOT_IMPLEMENTED
+  browser_or_client_config: NOT_IMPLEMENTED
+  dotenv_loading: FORBIDDEN
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+  security_owner_review: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

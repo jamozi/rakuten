@@ -1,0 +1,43 @@
+template_id: TPL-AT-002
+article_type: use_case_recommendation
+version: 1.0.0
+status: ACTIVE
+required_sequence:
+- disclosure_slot
+- lead
+- decision_summary
+- intended_reader
+- methodology
+- selection_criteria
+- recommendation_group
+- product_card
+- tradeoff
+- caution
+- source_summary
+optional_blocks:
+- comparison_table
+- pros_cons
+- faq
+- media
+- internal_links
+- update_notice
+minimum_decision_axes: 3
+product_count:
+  minimum: 2
+  recommended: 3-8
+  maximum: 12
+unique_value_tests:
+- 利用状況の明示
+- ハード制約
+- 適合理由
+- 向かない条件
+- 代替候補
+prohibited_patterns:
+- 根拠のないおすすめ順
+- 誰にでも最適という表現
+- 料率を反映した順位
+- 利用場面の抽象化不足
+notes:
+- disclosure_slotはRendererが先頭へ強制挿入する
+- source_summaryは末尾の共通情報領域へ配置
+- Heading/Paragraphは必要な範囲だけ追加する

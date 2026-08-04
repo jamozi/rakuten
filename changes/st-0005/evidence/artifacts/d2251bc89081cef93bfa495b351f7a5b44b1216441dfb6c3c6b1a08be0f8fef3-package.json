@@ -1,0 +1,14 @@
+{
+  "name": "@raos/web-contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/generated/index.ts",
+    "./admin": "./src/generated/clients/admin/index.ts",
+    "./asyncapi": "./src/generated/asyncapi.gen.ts",
+    "./internal": "./src/generated/clients/internal/index.ts",
+    "./public": "./src/generated/clients/public/index.ts",
+    "./schemas": "./src/generated/schema-models/index.ts"
+  }
+}

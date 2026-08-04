@@ -1,0 +1,231 @@
+document:
+  id: RAOS-IMPLEMENTATION-STATUS-001
+  version: '1.0'
+  baseline_date: '2026-07-30'
+  status: ACTIVE_SOURCE_OF_TRUTH
+project:
+  design_status: DESIGN_PACKAGE_COMPLETE
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  staging_readiness: NOT_READY
+  production_readiness: NOT_READY
+  verified_product_implementation_percent: 0
+  note: Generated design artifacts and static validation do not count as product implementation.
+counts:
+  design_documents: 14
+  epics: 20
+  stories: 129
+  stories_not_started: 120
+  stories_deferred_post_mvp: 9
+  runtime_test_suites: 32
+  runtime_test_suites_not_executed: 32
+  open_decisions: 15
+  blocking_open_decisions: 14
+subsystems:
+- code: REQ
+  document_id: RAOS-RD-001
+  name: 要件・目的・成功条件
+  artifact: upstream/RAOS_01_requirements_package_v0.1.zip
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: ARCH
+  document_id: RAOS-ARCH-001
+  name: システムアーキテクチャ
+  artifact: upstream/RAOS_02_architecture_package_v0.1.zip
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: DATA
+  document_id: RAOS-DATA-001
+  name: Data/DB/Migration
+  artifact: upstream/RAOS_03_data_model_package_v0.1.zip
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: API
+  document_id: RAOS-API-001
+  name: HTTP/Event/Job Contract
+  artifact: upstream/RAOS_04_api_contract_package_v0.1.zip
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: AI
+  document_id: RAOS-AI-001
+  name: AI Task/Prompt/Route/Evaluation
+  artifact: upstream/RAOS_05_ai_design_package_v0.1.zip
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: CONTENT
+  document_id: RAOS-CONTENT-001
+  name: Content/SEO/Editorial/Evidence
+  artifact: upstream/RAOS_06_content_design_package_v0.1.zip
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: INTEGRATION
+  document_id: RAOS-INTEGRATION-001
+  name: Canonical integration/status
+  artifact: 01_integration/RAOS_07_integration_design_v1.0.md
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: UI
+  document_id: RAOS-UI-001
+  name: Admin/Public UI/UX
+  artifact: 02_ui/RAOS_08_ui_ux_design_v1.0.md
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: ANALYTICS
+  document_id: RAOS-ANALYTICS-001
+  name: Event/KPI/Attribution
+  artifact: 03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: SECURITY
+  document_id: RAOS-SEC-001
+  name: Security/Privacy/Supply chain
+  artifact: 04_security/RAOS_10_security_privacy_design_v1.0.md
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: TEST
+  document_id: RAOS-TEST-001
+  name: Test/Acceptance/Release evidence
+  artifact: 05_test/RAOS_11_test_acceptance_design_v1.0.md
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: OPS
+  document_id: RAOS-OPS-001
+  name: Operations/Reliability/Recovery
+  artifact: 06_ops/RAOS_12_operations_reliability_design_v1.0.md
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: BACKLOG
+  document_id: RAOS-BACKLOG-001
+  name: Epic/Story/Dependencies
+  artifact: 07_backlog/RAOS_13_implementation_backlog_design_v1.0.md
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+- code: CODEX
+  document_id: RAOS-CODEX-001
+  name: Codex implementation governance
+  artifact: 08_codex/RAOS_14_codex_implementation_handbook_v1.0.md
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+environments:
+- id: DEV
+  status: NOT_CONFIGURED
+  runtime_validation: NOT_EXECUTED
+- id: CI
+  status: NOT_CONFIGURED
+  runtime_validation: NOT_EXECUTED
+- id: INTEGRATION
+  status: NOT_CONFIGURED
+  runtime_validation: NOT_EXECUTED
+- id: STAGING
+  status: NOT_CONFIGURED
+  runtime_validation: NOT_EXECUTED
+- id: RECOVERY
+  status: NOT_CONFIGURED
+  runtime_validation: NOT_EXECUTED
+- id: PRODUCTION
+  status: NOT_CONFIGURED
+  runtime_validation: NOT_EXECUTED
+external_integrations:
+- id: EXT-001
+  name: Rakuten Web Service
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  configuration_status: NOT_CONFIGURED
+  blocking_decisions:
+  - OD-015
+- id: EXT-002
+  name: Rakuten affiliate result report
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  configuration_status: NOT_CONFIGURED
+  blocking_decisions:
+  - OD-003
+  - OD-015
+- id: EXT-003
+  name: OpenAI Responses API
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  configuration_status: NOT_CONFIGURED
+  blocking_decisions:
+  - OD-009
+  - OD-015
+- id: EXT-004
+  name: Google Search Console API
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  configuration_status: NOT_CONFIGURED
+  blocking_decisions:
+  - OD-015
+- id: EXT-005
+  name: Google Analytics Data API / GA4
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  configuration_status: NOT_CONFIGURED
+  blocking_decisions:
+  - OD-012
+  - OD-015
+- id: EXT-006
+  name: AWS production environment
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  configuration_status: NOT_CONFIGURED
+  blocking_decisions:
+  - OD-009
+  - OD-013
+  - OD-015
+- id: EXT-007
+  name: OIDC/MFA provider
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  configuration_status: NOT_CONFIGURED
+  blocking_decisions:
+  - OD-010
+- id: EXT-008
+  name: GitHub repository/rulesets/OIDC
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  configuration_status: NOT_CONFIGURED
+  blocking_decisions: []
+- id: EXT-009
+  name: Notification channel
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  configuration_status: NOT_CONFIGURED
+  blocking_decisions:
+  - OD-011
+story_status_source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+test_status_source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+open_decision_source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+update_rules:
+- PR evidence required for implementation status changes
+- runtime artifact required for verification PASS
+- human approval required for production deployment
+- do not delete unresolved records

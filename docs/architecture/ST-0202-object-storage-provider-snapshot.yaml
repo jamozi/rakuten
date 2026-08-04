@@ -1,0 +1,186 @@
+document:
+  id: RAOS-ST0202-OBJECT-STORAGE-PROVIDER-SNAPSHOT-001
+  schema_version: 1
+  story_id: ST-0202
+  checked_at: '2026-08-02T13:06:40Z'
+  purpose: >-
+    Official-source identity, security semantics, and fail-closed runtime
+    boundary for the local S3-compatible object-storage candidate
+
+official_sources:
+  - id: DOCKER-HUB-SEAWEEDFS
+    title: SeaweedFS image repository
+    url: https://hub.docker.com/r/chrislusf/seaweedfs
+    reviewed_facts:
+      - The reviewed 4.29 tag resolves to a multi-platform OCI image index.
+      - The selected linux/amd64 manifest and image configuration identities are recorded separately from the index digest.
+      - The image declares /entrypoint.sh as its entrypoint and /data as a volume.
+  - id: SEAWEEDFS-RELEASE-4-29
+    title: SeaweedFS 4.29 release
+    url: https://github.com/seaweedfs/seaweedfs/releases/tag/4.29
+    reviewed_facts:
+      - Release 4.29 includes fixes for atomic versioned PUT and version-aware COPY/delete-marker behavior.
+      - Release 4.29 includes fixes for object-lock writes and version-specific deletes.
+      - Release notes are candidate-selection evidence, not proof that the local runtime exercises those paths correctly.
+  - id: SEAWEEDFS-ENTRYPOINT-REVISION-1355C7A
+    title: SeaweedFS container entrypoint at the pinned image source revision
+    url: https://github.com/seaweedfs/seaweedfs/blob/1355c7a102194d6c461baf090eff50367b575afb/docker/entrypoint.sh
+    reviewed_facts:
+      - When started as root, the official entrypoint changes to the seaweed identity with su-exec before running the requested command.
+      - The reviewed staging command can therefore prepare the root-mounted secret first and still run SeaweedFS as the image's non-root identity.
+  - id: SEAWEEDFS-DOCKERFILE-REVISION-1355C7A
+    title: SeaweedFS Go-build container definition at the pinned image source revision
+    url: https://github.com/seaweedfs/seaweedfs/blob/1355c7a102194d6c461baf090eff50367b575afb/docker/Dockerfile.go_build
+    reviewed_facts:
+      - The final image creates the seaweed group and user with GID and UID 1000.
+      - The final image installs curl and su-exec, supporting the bounded readiness probe and official entrypoint privilege drop.
+  - id: SEAWEEDFS-MINI-4-29
+    title: SeaweedFS mini command at tag 4.29
+    url: https://github.com/seaweedfs/seaweedfs/blob/4.29/weed/command/mini.go
+    reviewed_facts:
+      - mini accepts -dir, -s3.config, -s3.port, -s3.allowDeleteBucketNotEmpty, -webdav, -admin.ui, -s3.port.iceberg, and -master.telemetry.
+      - The S3 port defaults to 8333.
+      - Master telemetry is enabled by default and therefore must be disabled explicitly for this local candidate.
+  - id: SEAWEEDFS-STATIC-S3-USERS-4-29
+    title: SeaweedFS static S3 identity configuration example at tag 4.29
+    url: https://github.com/seaweedfs/seaweedfs/blob/4.29/docker/compose/s3_static_users_example.json
+    reviewed_facts:
+      - Static S3 identities are supplied through a JSON configuration file.
+      - Access and secret keys therefore remain file-backed Compose secret material rather than Compose environment values or command arguments.
+  - id: SEAWEEDFS-S3-SERVER-4-29
+    title: SeaweedFS S3 server at tag 4.29
+    url: https://github.com/seaweedfs/seaweedfs/blob/4.29/weed/s3api/s3api_server.go
+    reviewed_facts:
+      - /status and /healthz are service-readiness endpoints.
+      - Readiness does not establish authenticated S3 semantics, versioning, object-lock capability, metadata integrity, or cleanup behavior.
+  - id: DOCKER-COMPOSE-FILE-SECRET-SEMANTICS
+    title: Docker Compose service secrets reference
+    url: https://docs.docker.com/reference/compose-file/services/#secrets
+    reviewed_facts:
+      - An absolute secret target path is supported.
+      - uid, gid, and mode remapping is not implemented for a file source and is therefore not relied on by this candidate.
+
+registry_resolution:
+  registry: registry-1.docker.io
+  repository: chrislusf/seaweedfs
+  requested_tag: '4.29'
+  image_reference: docker.io/chrislusf/seaweedfs:4.29@sha256:d47c7ee99fcb951351d7194915f4e3a5ea604a8e8871183d713907dec4fb9bf5
+  index_digest: sha256:d47c7ee99fcb951351d7194915f4e3a5ea604a8e8871183d713907dec4fb9bf5
+  platform:
+    os: linux
+    architecture: amd64
+    manifest_digest: sha256:f16591b02e7a1d79dca57801405eec2c784711436edf65c0aa6394ef52800a3e
+    config_digest: sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd
+  image_config:
+    entrypoint: [/entrypoint.sh]
+    command: [mini, -dir=/data]
+    declared_volume: /data
+  provenance_labels:
+    org.opencontainers.image.source: https://github.com/seaweedfs/seaweedfs
+    org.opencontainers.image.revision: 1355c7a102194d6c461baf090eff50367b575afb
+    org.opencontainers.image.version: '4.29'
+    org.opencontainers.image.licenses: Apache-2.0
+    org.opencontainers.image.created: '2026-05-26T06:16:12.505Z'
+
+local_candidate:
+  source_contract: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
+  generator: scripts/build_local_compose.py
+  generation_command: uv run --locked --no-sync python scripts/build_local_compose.py
+  drift_check_command: uv run --locked --no-sync python scripts/build_local_compose.py --check
+  generated_artifact:
+    path: docker-compose.yml
+    classification: CUMULATIVE_LOCAL_AND_CI_SERVICE_CANDIDATE
+  production_object_storage_capability: FORBIDDEN
+
+security_semantics:
+  authentication_source: SINGLE_STATIC_JSON_COMPOSE_SECRET
+  host_authentication_source_mode: '0600'
+  bootstrap_secret_mount: /run/secrets/object_storage_s3_config
+  requested_secret_mode: '0400'
+  file_source_uid_gid_mode_remap: NOT_RELIED_ON
+  staged_authentication_path: /run/raos/object-storage-s3-config.json
+  staged_authentication_storage: NON_PERSISTENT_TMPFS
+  staged_authentication_tmpfs_options: rw,noexec,nosuid,nodev,size=64k,mode=0700,uid=0,gid=0
+  staged_authentication_owner: '1000:1000'
+  staged_authentication_mode: '0400'
+  staged_authentication_directory_owner: '1000:1000'
+  staged_authentication_directory_mode: '0700'
+  source_secret_directory: /run/secrets
+  source_secret_directory_mode_after_copy: '0700'
+  runtime_uid: 1000
+  raw_credential_environment: FORBIDDEN
+  raw_credential_arguments: FORBIDDEN
+  anonymous_access: FORBIDDEN
+  host_binding: 127.0.0.1_ONLY
+  service_network: INTERNAL_BRIDGE
+  persistent_mount: NAMED_VOLUME_ONLY
+  selected_platform: linux/amd64
+  expected_image_config_digest: sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd
+  master_telemetry: DISABLED
+  webdav_endpoint: DISABLED
+  admin_ui: DISABLED
+  iceberg_endpoint: DISABLED
+  delete_nonempty_bucket: DISABLED
+  privileged_mode: FORBIDDEN
+  host_network: FORBIDDEN
+  docker_socket_mount: FORBIDDEN
+  production_use: FORBIDDEN
+
+bucket_contract:
+  bucket: raos-raw
+  visibility: PRIVATE
+  object_lock_capability_at_creation: REQUIRED
+  versioning: REQUIRED
+  required_metadata:
+    - sha256
+    - content-type
+    - source
+    - acquired-at
+    - retention-class
+  hash_mismatch: REJECT
+  retention_hook: REQUIRED_POLICY_PERIOD_UNSET
+  lifecycle_delete: FORBIDDEN
+  default_retention: FORBIDDEN
+  retention_period: UNSET_HUMAN_DECISION_REQUIRED
+  automatic_deletion: DISABLED
+  governing_open_decision: OD-014
+
+runtime_acceptance:
+  readiness_probe:
+    paths: [/status, /healthz]
+    classification: PROCESS_READINESS_ONLY
+  authenticated_fixture:
+    required: true
+    assertions:
+      - Create the private raos-raw bucket with object-lock capability enabled at creation.
+      - Enable and read back bucket versioning.
+      - Put two versions of one fixture and GET each immutable version by version ID.
+      - Round-trip sha256, content-type, source, acquired-at, and retention-class metadata.
+      - Reject a fixture whose body does not match its declared SHA-256.
+      - Reject any pre-existing bucket lifecycle configuration and require the standard no-configuration response.
+      - Exercise the retention hook while leaving the retention period unset.
+  object_lock_regression_scope:
+    required: true
+    reason: >-
+      The selected release contains relevant versioning and object-lock fixes;
+      release notes alone cannot replace a real regression fixture.
+  formal_suite: TST-014
+
+verification_boundary:
+  official_source_review: RECORDED
+  registry_metadata_review: RECORDED
+  local_deterministic_generation: LOCAL_ONLY
+  docker_compose_config: NOT_EXECUTED
+  docker_image_pull: NOT_EXECUTED
+  container_readiness_probe: NOT_EXECUTED
+  authenticated_s3_fixture: NOT_EXECUTED
+  object_lock_and_version_delete_regression: NOT_EXECUTED
+  container_vulnerability_scan: NOT_EXECUTED
+  formal_tst_014: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
+  note: >-
+    Registry and official-source metadata identify a reviewed immutable
+    candidate. They are not evidence that the image was pulled, started,
+    authenticated, version-tested, object-lock-tested, hash-checked, cleaned
+    up, or vulnerability-scanned on this host. Formal TST-014 and the effective
+    ST-0202 NOT_STARTED / NOT_EXECUTED status remain unchanged.

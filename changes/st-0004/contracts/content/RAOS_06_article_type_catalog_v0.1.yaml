@@ -1,0 +1,300 @@
+document:
+  id: RAOS-CONTENT-AT-001
+  title: 記事タイプカタログ
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+catalog_version: 1.0.0
+scope:
+  mvp_article_types: 5
+  mvp_article_count: 30-45
+  intent_clusters: 3
+  category_count: 1
+global_rules:
+  one_primary_decision_per_article: true
+  one_primary_intent_cluster_per_article: true
+  word_count_target: NOT_DEFINED; 完全性・明瞭性・意思決定価値で判定する
+  all_articles_require_human_approval: true
+  all_articles_require_approved_source_packet: true
+  all_articles_require_versioned_methodology: true
+  all_affiliate_articles_require_disclosure: true
+  auto_publish: false
+article_types:
+- id: AT-001
+  code: selection_guide
+  name_ja: 選び方ガイド
+  mvp_enabled: true
+  primary_decision: カテゴリ内で自分に合う商品を選ぶための評価軸と判断手順を理解する
+  allowed_intents:
+  - how_to_choose
+  - buying_guide
+  - criteria_explanation
+  product_count:
+    minimum: 3
+    recommended: 5-12
+    maximum: 15
+  required_blocks:
+  - lead
+  - decision_summary
+  - intended_reader
+  - methodology
+  - selection_criteria
+  - comparison_table
+  - recommendation_group
+  - caution
+  - source_summary
+  optional_blocks:
+  - paragraph
+  - bullet_list
+  - product_card
+  - pros_cons
+  - tradeoff
+  - faq
+  - media
+  - internal_links
+  - update_notice
+  required_unique_value:
+  - カテゴリ固有の判断軸
+  - 軸ごとのトレードオフ
+  - 条件別に異なる結論
+  - 対象外条件または避けるべき選択
+  minimum_decision_axes: 4
+  ranking_policy: contextual_only
+  disallowed_patterns:
+  - API項目の羅列
+  - 商品名だけを差し替えた量産
+  - 全員向けの単一総合1位
+  - 検索語の言い換えだけの別ページ
+  template: templates/selection_guide.template.yaml
+  requirements:
+  - FR-001
+  - FR-004
+  - FR-005
+  - FR-006
+  - FR-007
+  - FR-008
+  - FR-009
+  - FR-010
+  - FR-017
+- id: AT-002
+  code: use_case_recommendation
+  name_ja: 用途別おすすめ
+  mvp_enabled: true
+  primary_decision: 明確な利用状況・制約に対して、候補ごとの適合理由と妥協点を比較する
+  allowed_intents:
+  - best_for_use_case
+  - constraint_based_recommendation
+  - persona_fit
+  product_count:
+    minimum: 2
+    recommended: 3-8
+    maximum: 12
+  required_blocks:
+  - lead
+  - decision_summary
+  - intended_reader
+  - methodology
+  - selection_criteria
+  - recommendation_group
+  - product_card
+  - tradeoff
+  - caution
+  - source_summary
+  optional_blocks:
+  - comparison_table
+  - pros_cons
+  - faq
+  - media
+  - internal_links
+  - update_notice
+  required_unique_value:
+  - 利用状況の明示
+  - ハード制約
+  - 適合理由
+  - 向かない条件
+  - 代替候補
+  minimum_decision_axes: 3
+  ranking_policy: use_case_specific
+  disallowed_patterns:
+  - 根拠のないおすすめ順
+  - 誰にでも最適という表現
+  - 料率を反映した順位
+  - 利用場面の抽象化不足
+  template: templates/use_case_recommendation.template.yaml
+  requirements:
+  - FR-001
+  - FR-004
+  - FR-005
+  - FR-006
+  - FR-007
+  - FR-008
+  - FR-009
+  - FR-010
+  - FR-017
+- id: AT-003
+  code: product_comparison
+  name_ja: 商品比較（A対B等）
+  mvp_enabled: true
+  primary_decision: 少数候補の差異を同じ評価軸・同じ時点で比較し、自分の優先条件に合う方を選ぶ
+  allowed_intents:
+  - a_vs_b
+  - product_comparison
+  - which_is_better_for
+  product_count:
+    minimum: 2
+    recommended: 2-4
+    maximum: 6
+  required_blocks:
+  - lead
+  - decision_summary
+  - intended_reader
+  - methodology
+  - difference_matrix
+  - comparison_table
+  - tradeoff
+  - recommendation_group
+  - caution
+  - source_summary
+  optional_blocks:
+  - product_card
+  - pros_cons
+  - faq
+  - media
+  - internal_links
+  - update_notice
+  required_unique_value:
+  - 同一軸での比較
+  - 差がない項目の明示
+  - 条件別勝者
+  - 決定要因
+  - 比較不能項目の明示
+  minimum_decision_axes: 4
+  ranking_policy: conditional_winner_only
+  disallowed_patterns:
+  - 全条件を無視した総合勝者
+  - 取得時点が異なる値の無注記比較
+  - Variantの取り違え
+  - 比較母集団の不明確化
+  template: templates/product_comparison.template.yaml
+  requirements:
+  - FR-002
+  - FR-003
+  - FR-004
+  - FR-005
+  - FR-006
+  - FR-007
+  - FR-008
+  - FR-009
+  - FR-012
+- id: AT-004
+  code: model_generation_capacity_difference
+  name_ja: 型番・世代・容量差分
+  mvp_enabled: true
+  primary_decision: 同一系列の型番・世代・容量・セット差を正しく同定し、追加費用に見合う差を判断する
+  allowed_intents:
+  - model_difference
+  - generation_difference
+  - capacity_difference
+  - variant_difference
+  product_count:
+    minimum: 2
+    recommended: 2-6
+    maximum: 8
+  required_blocks:
+  - lead
+  - decision_summary
+  - intended_reader
+  - methodology
+  - difference_matrix
+  - selection_criteria
+  - tradeoff
+  - recommendation_group
+  - caution
+  - source_summary
+  optional_blocks:
+  - comparison_table
+  - product_card
+  - pros_cons
+  - faq
+  - media
+  - internal_links
+  - update_notice
+  required_unique_value:
+  - 型番・Variant同定
+  - 変わった点・変わらない点
+  - 差額判断
+  - 旧型を選べる条件
+  - 互換性または付属品差
+  minimum_decision_axes: 3
+  ranking_policy: upgrade_value_by_condition
+  disallowed_patterns:
+  - 別商品系列の混入
+  - 仕様差の推測
+  - 発売年だけによる新型推奨
+  - 価格差の鮮度無視
+  template: templates/model_generation_capacity_difference.template.yaml
+  requirements:
+  - FR-002
+  - FR-003
+  - FR-004
+  - FR-006
+  - FR-007
+  - FR-008
+  - FR-012
+- id: AT-005
+  code: condition_filtering
+  name_ja: 条件別絞り込み
+  mvp_enabled: true
+  primary_decision: 複数の明示条件を満たす候補だけを絞り、除外理由と残った候補の差を理解する
+  allowed_intents:
+  - filter_by_condition
+  - products_under_constraints
+  - shortlist
+  product_count:
+    minimum: 3
+    recommended: 3-15
+    maximum: 20
+  required_blocks:
+  - lead
+  - decision_summary
+  - intended_reader
+  - methodology
+  - selection_criteria
+  - comparison_table
+  - recommendation_group
+  - caution
+  - source_summary
+  optional_blocks:
+  - product_card
+  - tradeoff
+  - faq
+  - media
+  - internal_links
+  - update_notice
+  required_unique_value:
+  - 条件の定義
+  - 除外ロジック
+  - 不足データの扱い
+  - 残存候補の比較
+  - 条件を緩める場合の影響
+  minimum_decision_axes: 3
+  ranking_policy: eligible_set_then_contextual_order
+  disallowed_patterns:
+  - URLパラメータごとの自動量産
+  - 条件一致だけで本文価値がないページ
+  - 不明値を条件合格扱い
+  - 在庫だけの一覧
+  template: templates/condition_filtering.template.yaml
+  requirements:
+  - FR-001
+  - FR-002
+  - FR-004
+  - FR-006
+  - FR-007
+  - FR-008
+  - FR-012
+  - FR-016

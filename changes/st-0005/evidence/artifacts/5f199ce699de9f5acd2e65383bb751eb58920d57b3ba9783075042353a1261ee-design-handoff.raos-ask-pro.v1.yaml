@@ -1,0 +1,86 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - AGENTS.md RAOS-only implicit Pro escalation policy
+    - .codex/config.toml self-contained Pro transport configuration
+    - Makefile pro-setup, pro-doctor, pro-ask, and pro-resume targets
+    - scripts/chatgpt_pro_* orchestration and fake transport support
+    - tests/st0101 fixture, policy, command, and forward-test evidence
+    - changes/st-0101 operational artifacts and revision documentation
+    - /home/minami/.codex/skills/raos-ask-pro user Skill and agents metadata
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+  decision: >-
+    Add the RAOS-only implicitly invocable user Skill raos-ask-pro and a
+    self-contained setup, doctor, ask, resume, and status orchestration flow.
+    After local exploration, invoke Pro for cross-boundary impact, unresolved
+    credible alternatives, security/data-migration/irreversible/external-cost
+    choices, non-converging evidence-backed diagnosis, high-impact review or
+    quality judgment, or a blocking new design or policy decision. Do not
+    invoke it for locally discoverable facts, canonically resolved choices, or
+    routine existing-pattern edits. Follow-ups have no fixed count cap, but
+    every follow-up names an unresolved gap and convergence stops on a repeated
+    gap, materially duplicate response, no open gap, or no material delta.
+    Failure stops new design, safety, and irreversible decisions; ordinary
+    difficult work may continue only within canonical and local evidence while
+    labeling Pro unavailable and recording the fallback.
+  rationale: >-
+    Difficult RAOS work benefits from Pro review, but unconditional escalation
+    wastes time and can blur canonical authority. A repository-bound skill,
+    importance-aware fallback, convergence guards, and a persistent dedicated
+    profile remove repeated setup and environment friction while preserving
+    exact-origin, credential, evidence, and human-approval boundaries.
+  rejected_alternatives:
+    - Invoke Pro for every RAOS request without local exploration
+    - Use a fixed numerical cap for follow-up questions
+    - Require a Codex restart and per-run environment variable for every prompt
+    - Continue through Pro failure for new design, safety, or irreversible decisions
+    - Treat PRO_ADVICE_V1 or browser output as an approved design handoff
+  constraints:
+    - The Skill must refuse outside the physical /home/minami/rakuten repository
+    - Use only a dedicated ChatGPT-only profile and exact https://chatgpt.com origin
+    - Select and visibly verify Pro and maximum available effort before submission
+    - Never put raw prompts, credentials, cookies, tokens, or session data in arguments or logs
+    - Preserve prepare and fixture command compatibility
+    - Keep Playwright development-only and use fake inputs for implementation verification
+    - Stop safely on login, CAPTCHA, rate limit, origin drift, selector ambiguity, or unknown UI
+    - Keep private prompt, response, state, and hash-chain artifacts owner-only
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - Initial interactive login and dedicated-profile approval remain user actions
+    - Browser automation is preauthorized only for the approved ChatGPT design-request workflow
+    - Account, credential, subscription, publication, release, finance, and production actions remain prohibited
+    - PRO_ADVICE_V1 may inform reversible work only after reconciliation with canonical and local evidence
+    - DESIGN_HANDOFF_V1 output remains unapproved until human and canonical reconciliation
+    - New design, safety, and irreversible work stops when Pro is unavailable
+  acceptance_criteria:
+    - The generated raos-ask-pro Skill is RAOS-only and allows implicit invocation
+    - Implicit trigger and non-trigger cases match the approved escalation semantics
+    - Useful follow-ups have no count cap and stop on every approved convergence condition
+    - Importance-based fallback stops gated decisions and records ordinary-work fallback
+    - setup, doctor, ask, resume, and status run without restart or per-run environment setup
+    - make exposes pro-setup, pro-doctor, pro-ask, and pro-resume
+    - Exact-origin, Pro/maximum-effort, safe-stop, wait/reconnect, and private hash-chain controls remain enforced
+    - prepare and fixture compatibility tests remain green
+    - Fake transport and fresh-agent forward tests prove behavior without live ChatGPT actions
+    - Advice and handoff outputs retain their distinct approval semantics
+  required_test_evidence:
+    - Skill quick_validate and generated openai.yaml validation
+    - Fresh-agent implicit trigger, non-trigger, fallback, and convergence forward tests
+    - Fake setup, doctor, ask, resume, status, wait, and reconnect tests
+    - Exact-origin, Pro/maximum-effort, authentication, CAPTCHA, rate-limit, and unknown-UI stop tests
+    - Raw prompt, credential, session-data, arguments, and log leakage tests
+    - Private mode and append-only hash-chain tests
+    - Make target and read-only configuration tests
+    - Existing prepare and fixture regression tests
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-03
+    statement: >-
+      Approve the RAOS-only implicit raos-ask-pro Skill, broad difficult-work
+      escalation, uncapped useful follow-ups with convergence guards,
+      importance-based fallback, and self-contained no-restart orchestration.

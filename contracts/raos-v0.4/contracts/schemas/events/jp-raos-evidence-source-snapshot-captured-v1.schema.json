@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-evidence-source-snapshot-captured-v1.schema.json",
+  "title": "jp.raos.evidence.source_snapshot_captured.v1",
+  "description": "不変Source Snapshotが取得・検証された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.evidence.source_snapshot_captured.v1"
+        },
+        "producer": {
+          "const": "evidence"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source_snapshot_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "artifact": {
+              "$ref": "../common/artifact-ref.schema.json"
+            },
+            "validation_status": {
+              "type": "string"
+            },
+            "acquired_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "expires_at": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "source_snapshot_id",
+            "source_id",
+            "artifact",
+            "validation_status",
+            "acquired_at"
+          ]
+        }
+      }
+    }
+  ]
+}

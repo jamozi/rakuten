@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/publication-manifest-create-request.v1.schema.json",
+  "title": "Publication Content Manifest Create Request",
+  "description": "Hash resolution is server-owned; finance, secrets and raw evidence are forbidden.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "article_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "content_schema_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "article_type_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "article_template_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "methodology_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "policy_bundle_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "seo_metadata_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "structured_data_manifest_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "review_decision_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "renderer_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "maxLength": 64
+    }
+  },
+  "required": [
+    "article_version_id",
+    "content_schema_version_id",
+    "article_type_version_id",
+    "article_template_version_id",
+    "methodology_version_id",
+    "policy_bundle_version_id",
+    "seo_metadata_version_id",
+    "structured_data_manifest_id",
+    "review_decision_id",
+    "renderer_version"
+  ],
+  "x-raos-invariants": {
+    "human_approval_required": true,
+    "blocking_findings_must_be_zero": true,
+    "finance_secret_internal_uri_forbidden": true
+  }
+}

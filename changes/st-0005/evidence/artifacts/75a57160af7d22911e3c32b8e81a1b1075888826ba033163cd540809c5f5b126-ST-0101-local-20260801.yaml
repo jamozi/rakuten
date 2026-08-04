@@ -1,0 +1,78 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0101-20260801
+  schema_version: 1
+  recorded_at: '2026-08-01T15:26:02Z'
+story_id: ST-0101
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://workspace-layout.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/20390aba67e8977bf67a5279762555f2a23fbea5b3c9fb714e2e6b58138d0be5-workspace-layout.json
+  sha256: 20390aba67e8977bf67a5279762555f2a23fbea5b3c9fb714e2e6b58138d0be5
+- original_uri: repo://scripts/bootstrap_workspace.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/7888580935038a2f7a18d43c469ad4c8d6a4beec6acfc72995fff2710972a1c5-bootstrap_workspace.py
+  sha256: 7888580935038a2f7a18d43c469ad4c8d6a4beec6acfc72995fff2710972a1c5
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3aea38a612c5205555a7ac2eef4d4d4a91f65ef458592498550a54fc10843f05-Makefile
+  sha256: 3aea38a612c5205555a7ac2eef4d4d4a91f65ef458592498550a54fc10843f05
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/ff0e1424375791f0f49001b00d5811444bdca3dcad73f00ca26ca40f0f25844f-README.md
+  sha256: ff0e1424375791f0f49001b00d5811444bdca3dcad73f00ca26ca40f0f25844f
+- original_uri: repo://AGENTS.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/68d57519c8b88eea73cd988ca981af2dc6be9f9adf68f878acf35df168d6a0c5-AGENTS.md
+  sha256: 68d57519c8b88eea73cd988ca981af2dc6be9f9adf68f878acf35df168d6a0c5
+- original_uri: repo://.gitignore
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d7d7f30b8fc5b0e429fca9ffbd517cc3b279f408cf5efdbff12dc4cb8fe1510d-.gitignore
+  sha256: d7d7f30b8fc5b0e429fca9ffbd517cc3b279f408cf5efdbff12dc4cb8fe1510d
+- original_uri: repo://tests/st0101/test_workspace_bootstrap.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/af16bd735242206b9312dc142ec9515327eed15168dc3c68d1876bd7918dc6eb-test_workspace_bootstrap.py
+  sha256: af16bd735242206b9312dc142ec9515327eed15168dc3c68d1876bd7918dc6eb
+- original_uri: repo://tests/st0101/test_workspace_race.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/ef354d29cee874ca17a66bb5ac2f9baf5b22110e4d211becc2138cd48c29d73e-test_workspace_race.py
+  sha256: ef354d29cee874ca17a66bb5ac2f9baf5b22110e4d211becc2138cd48c29d73e
+- original_uri: repo://docs/execplans/ST-0101.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/096bf5bd989bce12d2351b2ef1f0496a442607cfbc6b6f38ce62ba6150fe22a3-ST-0101.md
+  sha256: 096bf5bd989bce12d2351b2ef1f0496a442607cfbc6b6f38ce62ba6150fe22a3
+- original_uri: repo://docs/worklogs/ST-0101.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/b57e05699f2b4b951f4ce97c0849e097c1e401230a4fe38cd67c7020d55183c1-ST-0101.md
+  sha256: b57e05699f2b4b951f4ce97c0849e097c1e401230a4fe38cd67c7020d55183c1
+suite_results:
+- suite_id: TST-001
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: python3 -m pytest -q tests/st0101
+  result: 59 passed in 2.63s
+- command: make bootstrap; make check-workspace
+  result: PASS; 42 directories and changed=[] in both modes
+- command: ruff check and ruff format --check for scripts/bootstrap_workspace.py and tests/st0101
+  result: PASS; 3 files already formatted
+- command: /home/minami/.nvm/versions/node/v24.13.0/bin/pyright scripts/bootstrap_workspace.py tests/st0101
+  result: 0 errors, 0 warnings, 0 informations
+- command: python3 -m py_compile for the ST-0101 script and tests
+  result: PASS
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin python3 -m pytest -q tests/st0002
+  result: 139 passed in 30.49s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin python3 -m pytest -q tests/st0003
+  result: 101 passed in 76.15s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin python3 -m pytest -q tests/st0004
+  result: 64 passed in 80.19s
+- command: PostgreSQL environment for isolated ST-0002/ST-0003/ST-0004 suites
+  result: Local 18.3; formal target 18.4 NOT_EXECUTED
+- command: python3 -m pytest -q tests/test_import_raos_design.py
+  result: 18 passed in 0.14s
+- command: python3 scripts/import_raos_design.py verify
+  result: PASS; 105 files, read order, 6 archives, 104 checksums, 103 manifest entries
+- command: python3 scripts/build_st0002_revision.py --check; build_st0003_revision.py --check; build_st0004_revision.py --check
+  result: PASS for ST-0002, ST-0003, and ST-0004
+- command: python3 -m pytest -q tests/st0005
+  result: 141 passed in 24.11s
+- command: python3 scripts/build_st0005_status.py; build_st0005_status.py --check; build_st0005_status.py --validate-request changes/st-0005/requests/0006-st-0101.yaml
+  result: PASS for build, deterministic byte check, and the ST-0101 proposal request
+- command: sha256sum -c /tmp/st0101_protected_before.sha256
+  result: PASS for all 111 protected canonical/upstream/ZIP files
+- command: independent ST-0101 security review
+  result: PASS with no blocker under the documented same-UID execution boundary
+- command: independent ST-0101 artifact and acceptance review
+  result: CONDITIONAL PASS; no BLOCKER or HIGH; formal actual-clone/CI TST-001 evidence unavailable
+boundary: Local structural, static, and regression evidence only; the actual repository tracked-file set, hosted clone, GitHub PR, formal CI TST-001, human review, staging, and production were not executed.

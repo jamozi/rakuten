@@ -1,0 +1,3835 @@
+asyncapi: 3.0.0
+info:
+  title: RAOS Event and Job Contracts
+  version: '0.2'
+  description: Domain EventとWorker Jobを分離した、at-least-once delivery前提の非同期契約。
+  x-raos-document-id: RAOS-ASYNCAPI-001
+  x-raos-status: CANONICAL_REVISION_CANDIDATE
+  x-raos-baseline-date: '2026-07-30'
+  x-raos-revision-id: RAOS-JOB-STATE-REVISION-001
+  x-raos-story-id: ST-0002
+  x-raos-decision-id: INT-DEC-003
+  x-raos-base-version: '0.1'
+  x-raos-wire-change: NONE
+defaultContentType: application/json
+servers:
+  logicalBus:
+    host: '{queueEndpoint}'
+    protocol: sqs
+    description: AWS SQSを基準とする論理Message Bus。具体的URL/ARNはIaCで注入する。
+    variables:
+      queueEndpoint:
+        default: sqs.region.amazonaws.com/account
+    tags:
+    - name: environment
+      description: logical contract
+    x-raos-delivery: at-least-once
+channels:
+  ai_events:
+    address: ai.events
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: ai.events domain event channel.
+    messages:
+      jp_raos_editorial_draft_generated_v1:
+        $ref: '#/components/messages/jp_raos_editorial_draft_generated_v1'
+      jp_raos_ai_job_requested_v1:
+        $ref: '#/components/messages/jp_raos_ai_job_requested_v1'
+      jp_raos_ai_job_succeeded_v1:
+        $ref: '#/components/messages/jp_raos_ai_job_succeeded_v1'
+      jp_raos_ai_job_failed_v1:
+        $ref: '#/components/messages/jp_raos_ai_job_failed_v1'
+      jp_raos_ai_evaluation_completed_v1:
+        $ref: '#/components/messages/jp_raos_ai_evaluation_completed_v1'
+    x-raos-physical-queue: ai.events
+  analytics_events:
+    address: analytics.events
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: analytics.events domain event channel.
+    messages:
+      jp_raos_ops_audit_export_completed_v1:
+        $ref: '#/components/messages/jp_raos_ops_audit_export_completed_v1'
+      jp_raos_ops_retention_sweep_completed_v1:
+        $ref: '#/components/messages/jp_raos_ops_retention_sweep_completed_v1'
+      jp_raos_portfolio_action_candidates_generated_v1:
+        $ref: '#/components/messages/jp_raos_portfolio_action_candidates_generated_v1'
+      jp_raos_analytics_import_completed_v1:
+        $ref: '#/components/messages/jp_raos_analytics_import_completed_v1'
+      jp_raos_analytics_daily_metrics_updated_v1:
+        $ref: '#/components/messages/jp_raos_analytics_daily_metrics_updated_v1'
+      jp_raos_finance_revenue_import_dry_run_ready_v1:
+        $ref: '#/components/messages/jp_raos_finance_revenue_import_dry_run_ready_v1'
+      jp_raos_finance_revenue_import_committed_v1:
+        $ref: '#/components/messages/jp_raos_finance_revenue_import_committed_v1'
+      jp_raos_finance_commission_status_changed_v1:
+        $ref: '#/components/messages/jp_raos_finance_commission_status_changed_v1'
+      jp_raos_finance_unit_economics_calculated_v1:
+        $ref: '#/components/messages/jp_raos_finance_unit_economics_calculated_v1'
+    x-raos-physical-queue: analytics.events
+  freshness_events:
+    address: freshness.events
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: freshness.events domain event channel.
+    messages:
+      jp_raos_catalog_offer_observed_v1:
+        $ref: '#/components/messages/jp_raos_catalog_offer_observed_v1'
+      jp_raos_catalog_offer_unavailable_v1:
+        $ref: '#/components/messages/jp_raos_catalog_offer_unavailable_v1'
+      jp_raos_catalog_affiliate_link_invalid_v1:
+        $ref: '#/components/messages/jp_raos_catalog_affiliate_link_invalid_v1'
+      jp_raos_freshness_staleness_assessed_v1:
+        $ref: '#/components/messages/jp_raos_freshness_staleness_assessed_v1'
+      jp_raos_freshness_refresh_completed_v1:
+        $ref: '#/components/messages/jp_raos_freshness_refresh_completed_v1'
+      jp_raos_freshness_link_check_completed_v1:
+        $ref: '#/components/messages/jp_raos_freshness_link_check_completed_v1'
+      jp_raos_freshness_impact_detected_v1:
+        $ref: '#/components/messages/jp_raos_freshness_impact_detected_v1'
+    x-raos-physical-queue: freshness.events
+  ingestion_events:
+    address: ingestion.events
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: ingestion.events domain event channel.
+    messages:
+      jp_raos_catalog_ingestion_completed_v1:
+        $ref: '#/components/messages/jp_raos_catalog_ingestion_completed_v1'
+      jp_raos_catalog_genre_sync_completed_v1:
+        $ref: '#/components/messages/jp_raos_catalog_genre_sync_completed_v1'
+      jp_raos_catalog_candidates_normalized_v1:
+        $ref: '#/components/messages/jp_raos_catalog_candidates_normalized_v1'
+      jp_raos_catalog_grouping_proposals_created_v1:
+        $ref: '#/components/messages/jp_raos_catalog_grouping_proposals_created_v1'
+      jp_raos_catalog_grouping_decision_recorded_v1:
+        $ref: '#/components/messages/jp_raos_catalog_grouping_decision_recorded_v1'
+      jp_raos_evidence_source_snapshot_captured_v1:
+        $ref: '#/components/messages/jp_raos_evidence_source_snapshot_captured_v1'
+    x-raos-physical-queue: ingestion.events
+  notification_events:
+    address: notification.events
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: notification.events domain event channel.
+    messages:
+      jp_raos_ops_incident_declared_v1:
+        $ref: '#/components/messages/jp_raos_ops_incident_declared_v1'
+      jp_raos_ops_incident_closed_v1:
+        $ref: '#/components/messages/jp_raos_ops_incident_closed_v1'
+      jp_raos_ops_notification_dispatched_v1:
+        $ref: '#/components/messages/jp_raos_ops_notification_dispatched_v1'
+      jp_raos_publishing_review_assigned_v1:
+        $ref: '#/components/messages/jp_raos_publishing_review_assigned_v1'
+    x-raos-physical-queue: notification.events
+  ops_events:
+    address: ops.events
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: ops.events domain event channel.
+    messages:
+      jp_raos_ops_job_requested_v1:
+        $ref: '#/components/messages/jp_raos_ops_job_requested_v1'
+      jp_raos_ops_job_succeeded_v1:
+        $ref: '#/components/messages/jp_raos_ops_job_succeeded_v1'
+      jp_raos_ops_job_failed_terminal_v1:
+        $ref: '#/components/messages/jp_raos_ops_job_failed_terminal_v1'
+      jp_raos_ops_job_quarantined_v1:
+        $ref: '#/components/messages/jp_raos_ops_job_quarantined_v1'
+      jp_raos_ops_child_jobs_created_v1:
+        $ref: '#/components/messages/jp_raos_ops_child_jobs_created_v1'
+      jp_raos_portfolio_action_candidate_decided_v1:
+        $ref: '#/components/messages/jp_raos_portfolio_action_candidate_decided_v1'
+      jp_raos_editorial_article_created_v1:
+        $ref: '#/components/messages/jp_raos_editorial_article_created_v1'
+    x-raos-physical-queue: ops.events
+  publication_events:
+    address: publication.events
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: publication.events domain event channel.
+    messages:
+      jp_raos_ops_kill_switch_changed_v1:
+        $ref: '#/components/messages/jp_raos_ops_kill_switch_changed_v1'
+      jp_raos_ops_readmodel_rebuilt_v1:
+        $ref: '#/components/messages/jp_raos_ops_readmodel_rebuilt_v1'
+      jp_raos_editorial_article_version_submitted_v1:
+        $ref: '#/components/messages/jp_raos_editorial_article_version_submitted_v1'
+      jp_raos_publishing_review_decision_recorded_v1:
+        $ref: '#/components/messages/jp_raos_publishing_review_decision_recorded_v1'
+      jp_raos_publishing_approval_granted_v1:
+        $ref: '#/components/messages/jp_raos_publishing_approval_granted_v1'
+      jp_raos_publishing_approval_revoked_v1:
+        $ref: '#/components/messages/jp_raos_publishing_approval_revoked_v1'
+      jp_raos_publishing_snapshot_built_v1:
+        $ref: '#/components/messages/jp_raos_publishing_snapshot_built_v1'
+      jp_raos_publishing_article_published_v1:
+        $ref: '#/components/messages/jp_raos_publishing_article_published_v1'
+      jp_raos_publishing_article_unpublished_v1:
+        $ref: '#/components/messages/jp_raos_publishing_article_unpublished_v1'
+      jp_raos_publishing_article_rolled_back_v1:
+        $ref: '#/components/messages/jp_raos_publishing_article_rolled_back_v1'
+      jp_raos_publishing_public_projection_rebuilt_v1:
+        $ref: '#/components/messages/jp_raos_publishing_public_projection_rebuilt_v1'
+    x-raos-physical-queue: publication.events
+  quality_events:
+    address: quality.events
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: quality.events domain event channel.
+    messages:
+      jp_raos_portfolio_opportunity_assessed_v1:
+        $ref: '#/components/messages/jp_raos_portfolio_opportunity_assessed_v1'
+      jp_raos_evidence_facts_extracted_v1:
+        $ref: '#/components/messages/jp_raos_evidence_facts_extracted_v1'
+      jp_raos_evidence_source_packet_ready_v1:
+        $ref: '#/components/messages/jp_raos_evidence_source_packet_ready_v1'
+      jp_raos_evidence_source_packet_approved_v1:
+        $ref: '#/components/messages/jp_raos_evidence_source_packet_approved_v1'
+      jp_raos_evidence_claims_extracted_v1:
+        $ref: '#/components/messages/jp_raos_evidence_claims_extracted_v1'
+      jp_raos_evidence_claim_unsupported_v1:
+        $ref: '#/components/messages/jp_raos_evidence_claim_unsupported_v1'
+      jp_raos_editorial_article_plan_approved_v1:
+        $ref: '#/components/messages/jp_raos_editorial_article_plan_approved_v1'
+      jp_raos_ai_policy_assist_completed_v1:
+        $ref: '#/components/messages/jp_raos_ai_policy_assist_completed_v1'
+      jp_raos_policy_quality_check_completed_v1:
+        $ref: '#/components/messages/jp_raos_policy_quality_check_completed_v1'
+      jp_raos_policy_blocking_finding_raised_v1:
+        $ref: '#/components/messages/jp_raos_policy_blocking_finding_raised_v1'
+      jp_raos_policy_finding_resolved_v1:
+        $ref: '#/components/messages/jp_raos_policy_finding_resolved_v1'
+      jp_raos_policy_policy_bundle_activated_v1:
+        $ref: '#/components/messages/jp_raos_policy_policy_bundle_activated_v1'
+      jp_raos_policy_gate_decision_recorded_v1:
+        $ref: '#/components/messages/jp_raos_policy_gate_decision_recorded_v1'
+      jp_raos_policy_policy_recheck_completed_v1:
+        $ref: '#/components/messages/jp_raos_policy_policy_recheck_completed_v1'
+    x-raos-physical-queue: quality.events
+  jobs_ai:
+    address: jobs.ai
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: ai worker job queue.
+    messages:
+      ai_classify_search_intent_v1:
+        $ref: '#/components/messages/ai_classify_search_intent_v1'
+      ai_assess_opportunity_v1:
+        $ref: '#/components/messages/ai_assess_opportunity_v1'
+      ai_generate_article_draft_v1:
+        $ref: '#/components/messages/ai_generate_article_draft_v1'
+      ai_extract_claims_v1:
+        $ref: '#/components/messages/ai_extract_claims_v1'
+      ai_policy_assist_v1:
+        $ref: '#/components/messages/ai_policy_assist_v1'
+      ai_evaluate_output_v1:
+        $ref: '#/components/messages/ai_evaluate_output_v1'
+      ai_generic_task_v1:
+        $ref: '#/components/messages/ai_generic_task_v1'
+    x-raos-physical-queue: jobs.ai
+    x-raos-dlq: dlq.ai
+  dlq_ai:
+    address: dlq.ai
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: aiの終端失敗・Quarantine Message。自動Replay禁止。
+    messages:
+      ai_classify_search_intent_v1:
+        $ref: '#/components/messages/ai_classify_search_intent_v1'
+      ai_assess_opportunity_v1:
+        $ref: '#/components/messages/ai_assess_opportunity_v1'
+      ai_generate_article_draft_v1:
+        $ref: '#/components/messages/ai_generate_article_draft_v1'
+      ai_extract_claims_v1:
+        $ref: '#/components/messages/ai_extract_claims_v1'
+      ai_policy_assist_v1:
+        $ref: '#/components/messages/ai_policy_assist_v1'
+      ai_evaluate_output_v1:
+        $ref: '#/components/messages/ai_evaluate_output_v1'
+      ai_generic_task_v1:
+        $ref: '#/components/messages/ai_generic_task_v1'
+    x-raos-replay-requires-approval: true
+  jobs_analytics:
+    address: jobs.analytics
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: analytics worker job queue.
+    messages:
+      portfolio_generate_action_candidates_v1:
+        $ref: '#/components/messages/portfolio_generate_action_candidates_v1'
+      analytics_import_search_console_v1:
+        $ref: '#/components/messages/analytics_import_search_console_v1'
+      analytics_import_ga4_v1:
+        $ref: '#/components/messages/analytics_import_ga4_v1'
+      analytics_import_keyword_rank_csv_v1:
+        $ref: '#/components/messages/analytics_import_keyword_rank_csv_v1'
+      analytics_import_provider_data_v1:
+        $ref: '#/components/messages/analytics_import_provider_data_v1'
+      analytics_rollup_daily_metrics_v1:
+        $ref: '#/components/messages/analytics_rollup_daily_metrics_v1'
+      finance_parse_revenue_csv_v1:
+        $ref: '#/components/messages/finance_parse_revenue_csv_v1'
+      finance_commit_revenue_import_v1:
+        $ref: '#/components/messages/finance_commit_revenue_import_v1'
+      finance_calculate_unit_economics_v1:
+        $ref: '#/components/messages/finance_calculate_unit_economics_v1'
+      ops_export_audit_v1:
+        $ref: '#/components/messages/ops_export_audit_v1'
+      ops_retention_sweep_v1:
+        $ref: '#/components/messages/ops_retention_sweep_v1'
+    x-raos-physical-queue: jobs.analytics
+    x-raos-dlq: dlq.analytics
+  dlq_analytics:
+    address: dlq.analytics
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: analyticsの終端失敗・Quarantine Message。自動Replay禁止。
+    messages:
+      portfolio_generate_action_candidates_v1:
+        $ref: '#/components/messages/portfolio_generate_action_candidates_v1'
+      analytics_import_search_console_v1:
+        $ref: '#/components/messages/analytics_import_search_console_v1'
+      analytics_import_ga4_v1:
+        $ref: '#/components/messages/analytics_import_ga4_v1'
+      analytics_import_keyword_rank_csv_v1:
+        $ref: '#/components/messages/analytics_import_keyword_rank_csv_v1'
+      analytics_import_provider_data_v1:
+        $ref: '#/components/messages/analytics_import_provider_data_v1'
+      analytics_rollup_daily_metrics_v1:
+        $ref: '#/components/messages/analytics_rollup_daily_metrics_v1'
+      finance_parse_revenue_csv_v1:
+        $ref: '#/components/messages/finance_parse_revenue_csv_v1'
+      finance_commit_revenue_import_v1:
+        $ref: '#/components/messages/finance_commit_revenue_import_v1'
+      finance_calculate_unit_economics_v1:
+        $ref: '#/components/messages/finance_calculate_unit_economics_v1'
+      ops_export_audit_v1:
+        $ref: '#/components/messages/ops_export_audit_v1'
+      ops_retention_sweep_v1:
+        $ref: '#/components/messages/ops_retention_sweep_v1'
+    x-raos-replay-requires-approval: true
+  jobs_freshness:
+    address: jobs.freshness
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: freshness worker job queue.
+    messages:
+      catalog_refresh_offer_v1:
+        $ref: '#/components/messages/catalog_refresh_offer_v1'
+      freshness_run_refresh_batch_v1:
+        $ref: '#/components/messages/freshness_run_refresh_batch_v1'
+      freshness_check_affiliate_link_v1:
+        $ref: '#/components/messages/freshness_check_affiliate_link_v1'
+      freshness_assess_change_impact_v1:
+        $ref: '#/components/messages/freshness_assess_change_impact_v1'
+    x-raos-physical-queue: jobs.freshness
+    x-raos-dlq: dlq.freshness
+  dlq_freshness:
+    address: dlq.freshness
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: freshnessの終端失敗・Quarantine Message。自動Replay禁止。
+    messages:
+      catalog_refresh_offer_v1:
+        $ref: '#/components/messages/catalog_refresh_offer_v1'
+      freshness_run_refresh_batch_v1:
+        $ref: '#/components/messages/freshness_run_refresh_batch_v1'
+      freshness_check_affiliate_link_v1:
+        $ref: '#/components/messages/freshness_check_affiliate_link_v1'
+      freshness_assess_change_impact_v1:
+        $ref: '#/components/messages/freshness_assess_change_impact_v1'
+    x-raos-replay-requires-approval: true
+  jobs_ingestion:
+    address: jobs.ingestion
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: ingestion worker job queue.
+    messages:
+      catalog_rakuten_item_search_v1:
+        $ref: '#/components/messages/catalog_rakuten_item_search_v1'
+      catalog_rakuten_genre_sync_v1:
+        $ref: '#/components/messages/catalog_rakuten_genre_sync_v1'
+      catalog_normalize_ingestion_v1:
+        $ref: '#/components/messages/catalog_normalize_ingestion_v1'
+      catalog_group_product_candidates_v1:
+        $ref: '#/components/messages/catalog_group_product_candidates_v1'
+      evidence_capture_source_snapshot_v1:
+        $ref: '#/components/messages/evidence_capture_source_snapshot_v1'
+    x-raos-physical-queue: jobs.ingestion
+    x-raos-dlq: dlq.ingestion
+  dlq_ingestion:
+    address: dlq.ingestion
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: ingestionの終端失敗・Quarantine Message。自動Replay禁止。
+    messages:
+      catalog_rakuten_item_search_v1:
+        $ref: '#/components/messages/catalog_rakuten_item_search_v1'
+      catalog_rakuten_genre_sync_v1:
+        $ref: '#/components/messages/catalog_rakuten_genre_sync_v1'
+      catalog_normalize_ingestion_v1:
+        $ref: '#/components/messages/catalog_normalize_ingestion_v1'
+      catalog_group_product_candidates_v1:
+        $ref: '#/components/messages/catalog_group_product_candidates_v1'
+      evidence_capture_source_snapshot_v1:
+        $ref: '#/components/messages/evidence_capture_source_snapshot_v1'
+    x-raos-replay-requires-approval: true
+  jobs_notification:
+    address: jobs.notification
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: notification worker job queue.
+    messages:
+      ops_send_notification_v1:
+        $ref: '#/components/messages/ops_send_notification_v1'
+    x-raos-physical-queue: jobs.notification
+    x-raos-dlq: dlq.notification
+  dlq_notification:
+    address: dlq.notification
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: notificationの終端失敗・Quarantine Message。自動Replay禁止。
+    messages:
+      ops_send_notification_v1:
+        $ref: '#/components/messages/ops_send_notification_v1'
+    x-raos-replay-requires-approval: true
+  jobs_publication:
+    address: jobs.publication
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: publication worker job queue.
+    messages:
+      publishing_build_snapshot_v1:
+        $ref: '#/components/messages/publishing_build_snapshot_v1'
+      publishing_publish_snapshot_v1:
+        $ref: '#/components/messages/publishing_publish_snapshot_v1'
+      publishing_unpublish_v1:
+        $ref: '#/components/messages/publishing_unpublish_v1'
+      publishing_rollback_v1:
+        $ref: '#/components/messages/publishing_rollback_v1'
+      publishing_rebuild_public_projection_v1:
+        $ref: '#/components/messages/publishing_rebuild_public_projection_v1'
+      ops_rebuild_readmodel_v1:
+        $ref: '#/components/messages/ops_rebuild_readmodel_v1'
+    x-raos-physical-queue: jobs.publication
+    x-raos-dlq: dlq.publication
+  dlq_publication:
+    address: dlq.publication
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: publicationの終端失敗・Quarantine Message。自動Replay禁止。
+    messages:
+      publishing_build_snapshot_v1:
+        $ref: '#/components/messages/publishing_build_snapshot_v1'
+      publishing_publish_snapshot_v1:
+        $ref: '#/components/messages/publishing_publish_snapshot_v1'
+      publishing_unpublish_v1:
+        $ref: '#/components/messages/publishing_unpublish_v1'
+      publishing_rollback_v1:
+        $ref: '#/components/messages/publishing_rollback_v1'
+      publishing_rebuild_public_projection_v1:
+        $ref: '#/components/messages/publishing_rebuild_public_projection_v1'
+      ops_rebuild_readmodel_v1:
+        $ref: '#/components/messages/ops_rebuild_readmodel_v1'
+    x-raos-replay-requires-approval: true
+  jobs_quality:
+    address: jobs.quality
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: quality worker job queue.
+    messages:
+      portfolio_assess_opportunity_v1:
+        $ref: '#/components/messages/portfolio_assess_opportunity_v1'
+      evidence_extract_facts_v1:
+        $ref: '#/components/messages/evidence_extract_facts_v1'
+      evidence_build_source_packet_v1:
+        $ref: '#/components/messages/evidence_build_source_packet_v1'
+      quality_evaluate_article_v1:
+        $ref: '#/components/messages/quality_evaluate_article_v1'
+      quality_recheck_policy_bundle_v1:
+        $ref: '#/components/messages/quality_recheck_policy_bundle_v1'
+    x-raos-physical-queue: jobs.quality
+    x-raos-dlq: dlq.quality
+  dlq_quality:
+    address: dlq.quality
+    servers:
+    - $ref: '#/servers/logicalBus'
+    description: qualityの終端失敗・Quarantine Message。自動Replay禁止。
+    messages:
+      portfolio_assess_opportunity_v1:
+        $ref: '#/components/messages/portfolio_assess_opportunity_v1'
+      evidence_extract_facts_v1:
+        $ref: '#/components/messages/evidence_extract_facts_v1'
+      evidence_build_source_packet_v1:
+        $ref: '#/components/messages/evidence_build_source_packet_v1'
+      quality_evaluate_article_v1:
+        $ref: '#/components/messages/quality_evaluate_article_v1'
+      quality_recheck_policy_bundle_v1:
+        $ref: '#/components/messages/quality_recheck_policy_bundle_v1'
+    x-raos-replay-requires-approval: true
+operations:
+  send_ai_events:
+    action: send
+    channel:
+      $ref: '#/channels/ai_events'
+    summary: ai.eventsへDomain Eventを発行する。
+    messages:
+    - $ref: '#/channels/ai_events/messages/jp_raos_editorial_draft_generated_v1'
+    - $ref: '#/channels/ai_events/messages/jp_raos_ai_job_requested_v1'
+    - $ref: '#/channels/ai_events/messages/jp_raos_ai_job_succeeded_v1'
+    - $ref: '#/channels/ai_events/messages/jp_raos_ai_job_failed_v1'
+    - $ref: '#/channels/ai_events/messages/jp_raos_ai_evaluation_completed_v1'
+  receive_ai_events:
+    action: receive
+    channel:
+      $ref: '#/channels/ai_events'
+    summary: ai.eventsのDomain Eventを冪等に消費する。
+    messages:
+    - $ref: '#/channels/ai_events/messages/jp_raos_editorial_draft_generated_v1'
+    - $ref: '#/channels/ai_events/messages/jp_raos_ai_job_requested_v1'
+    - $ref: '#/channels/ai_events/messages/jp_raos_ai_job_succeeded_v1'
+    - $ref: '#/channels/ai_events/messages/jp_raos_ai_job_failed_v1'
+    - $ref: '#/channels/ai_events/messages/jp_raos_ai_evaluation_completed_v1'
+  send_analytics_events:
+    action: send
+    channel:
+      $ref: '#/channels/analytics_events'
+    summary: analytics.eventsへDomain Eventを発行する。
+    messages:
+    - $ref: '#/channels/analytics_events/messages/jp_raos_ops_audit_export_completed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_ops_retention_sweep_completed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_portfolio_action_candidates_generated_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_analytics_import_completed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_analytics_daily_metrics_updated_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_finance_revenue_import_dry_run_ready_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_finance_revenue_import_committed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_finance_commission_status_changed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_finance_unit_economics_calculated_v1'
+  receive_analytics_events:
+    action: receive
+    channel:
+      $ref: '#/channels/analytics_events'
+    summary: analytics.eventsのDomain Eventを冪等に消費する。
+    messages:
+    - $ref: '#/channels/analytics_events/messages/jp_raos_ops_audit_export_completed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_ops_retention_sweep_completed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_portfolio_action_candidates_generated_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_analytics_import_completed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_analytics_daily_metrics_updated_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_finance_revenue_import_dry_run_ready_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_finance_revenue_import_committed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_finance_commission_status_changed_v1'
+    - $ref: '#/channels/analytics_events/messages/jp_raos_finance_unit_economics_calculated_v1'
+  send_freshness_events:
+    action: send
+    channel:
+      $ref: '#/channels/freshness_events'
+    summary: freshness.eventsへDomain Eventを発行する。
+    messages:
+    - $ref: '#/channels/freshness_events/messages/jp_raos_catalog_offer_observed_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_catalog_offer_unavailable_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_catalog_affiliate_link_invalid_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_freshness_staleness_assessed_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_freshness_refresh_completed_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_freshness_link_check_completed_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_freshness_impact_detected_v1'
+  receive_freshness_events:
+    action: receive
+    channel:
+      $ref: '#/channels/freshness_events'
+    summary: freshness.eventsのDomain Eventを冪等に消費する。
+    messages:
+    - $ref: '#/channels/freshness_events/messages/jp_raos_catalog_offer_observed_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_catalog_offer_unavailable_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_catalog_affiliate_link_invalid_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_freshness_staleness_assessed_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_freshness_refresh_completed_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_freshness_link_check_completed_v1'
+    - $ref: '#/channels/freshness_events/messages/jp_raos_freshness_impact_detected_v1'
+  send_ingestion_events:
+    action: send
+    channel:
+      $ref: '#/channels/ingestion_events'
+    summary: ingestion.eventsへDomain Eventを発行する。
+    messages:
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_ingestion_completed_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_genre_sync_completed_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_candidates_normalized_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_grouping_proposals_created_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_grouping_decision_recorded_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_evidence_source_snapshot_captured_v1'
+  receive_ingestion_events:
+    action: receive
+    channel:
+      $ref: '#/channels/ingestion_events'
+    summary: ingestion.eventsのDomain Eventを冪等に消費する。
+    messages:
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_ingestion_completed_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_genre_sync_completed_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_candidates_normalized_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_grouping_proposals_created_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_catalog_grouping_decision_recorded_v1'
+    - $ref: '#/channels/ingestion_events/messages/jp_raos_evidence_source_snapshot_captured_v1'
+  send_notification_events:
+    action: send
+    channel:
+      $ref: '#/channels/notification_events'
+    summary: notification.eventsへDomain Eventを発行する。
+    messages:
+    - $ref: '#/channels/notification_events/messages/jp_raos_ops_incident_declared_v1'
+    - $ref: '#/channels/notification_events/messages/jp_raos_ops_incident_closed_v1'
+    - $ref: '#/channels/notification_events/messages/jp_raos_ops_notification_dispatched_v1'
+    - $ref: '#/channels/notification_events/messages/jp_raos_publishing_review_assigned_v1'
+  receive_notification_events:
+    action: receive
+    channel:
+      $ref: '#/channels/notification_events'
+    summary: notification.eventsのDomain Eventを冪等に消費する。
+    messages:
+    - $ref: '#/channels/notification_events/messages/jp_raos_ops_incident_declared_v1'
+    - $ref: '#/channels/notification_events/messages/jp_raos_ops_incident_closed_v1'
+    - $ref: '#/channels/notification_events/messages/jp_raos_ops_notification_dispatched_v1'
+    - $ref: '#/channels/notification_events/messages/jp_raos_publishing_review_assigned_v1'
+  send_ops_events:
+    action: send
+    channel:
+      $ref: '#/channels/ops_events'
+    summary: ops.eventsへDomain Eventを発行する。
+    messages:
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_job_requested_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_job_succeeded_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_job_failed_terminal_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_job_quarantined_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_child_jobs_created_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_portfolio_action_candidate_decided_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_editorial_article_created_v1'
+  receive_ops_events:
+    action: receive
+    channel:
+      $ref: '#/channels/ops_events'
+    summary: ops.eventsのDomain Eventを冪等に消費する。
+    messages:
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_job_requested_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_job_succeeded_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_job_failed_terminal_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_job_quarantined_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_ops_child_jobs_created_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_portfolio_action_candidate_decided_v1'
+    - $ref: '#/channels/ops_events/messages/jp_raos_editorial_article_created_v1'
+  send_publication_events:
+    action: send
+    channel:
+      $ref: '#/channels/publication_events'
+    summary: publication.eventsへDomain Eventを発行する。
+    messages:
+    - $ref: '#/channels/publication_events/messages/jp_raos_ops_kill_switch_changed_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_ops_readmodel_rebuilt_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_editorial_article_version_submitted_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_review_decision_recorded_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_approval_granted_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_approval_revoked_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_snapshot_built_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_article_published_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_article_unpublished_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_article_rolled_back_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_public_projection_rebuilt_v1'
+  receive_publication_events:
+    action: receive
+    channel:
+      $ref: '#/channels/publication_events'
+    summary: publication.eventsのDomain Eventを冪等に消費する。
+    messages:
+    - $ref: '#/channels/publication_events/messages/jp_raos_ops_kill_switch_changed_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_ops_readmodel_rebuilt_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_editorial_article_version_submitted_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_review_decision_recorded_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_approval_granted_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_approval_revoked_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_snapshot_built_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_article_published_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_article_unpublished_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_article_rolled_back_v1'
+    - $ref: '#/channels/publication_events/messages/jp_raos_publishing_public_projection_rebuilt_v1'
+  send_quality_events:
+    action: send
+    channel:
+      $ref: '#/channels/quality_events'
+    summary: quality.eventsへDomain Eventを発行する。
+    messages:
+    - $ref: '#/channels/quality_events/messages/jp_raos_portfolio_opportunity_assessed_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_facts_extracted_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_source_packet_ready_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_source_packet_approved_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_claims_extracted_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_claim_unsupported_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_editorial_article_plan_approved_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_ai_policy_assist_completed_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_quality_check_completed_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_blocking_finding_raised_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_finding_resolved_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_policy_bundle_activated_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_gate_decision_recorded_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_policy_recheck_completed_v1'
+  receive_quality_events:
+    action: receive
+    channel:
+      $ref: '#/channels/quality_events'
+    summary: quality.eventsのDomain Eventを冪等に消費する。
+    messages:
+    - $ref: '#/channels/quality_events/messages/jp_raos_portfolio_opportunity_assessed_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_facts_extracted_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_source_packet_ready_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_source_packet_approved_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_claims_extracted_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_evidence_claim_unsupported_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_editorial_article_plan_approved_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_ai_policy_assist_completed_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_quality_check_completed_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_blocking_finding_raised_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_finding_resolved_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_policy_bundle_activated_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_gate_decision_recorded_v1'
+    - $ref: '#/channels/quality_events/messages/jp_raos_policy_policy_recheck_completed_v1'
+  send_jobs_ai:
+    action: send
+    channel:
+      $ref: '#/channels/jobs_ai'
+    summary: ai Jobを投入する。
+    messages:
+    - $ref: '#/channels/jobs_ai/messages/ai_classify_search_intent_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_assess_opportunity_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_generate_article_draft_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_extract_claims_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_policy_assist_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_evaluate_output_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_generic_task_v1'
+  receive_jobs_ai:
+    action: receive
+    channel:
+      $ref: '#/channels/jobs_ai'
+    summary: ai JobをLease取得して実行する。
+    messages:
+    - $ref: '#/channels/jobs_ai/messages/ai_classify_search_intent_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_assess_opportunity_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_generate_article_draft_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_extract_claims_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_policy_assist_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_evaluate_output_v1'
+    - $ref: '#/channels/jobs_ai/messages/ai_generic_task_v1'
+  receive_dlq_ai:
+    action: receive
+    channel:
+      $ref: '#/channels/dlq_ai'
+    summary: ai DLQをTriageする。
+    messages:
+    - $ref: '#/channels/dlq_ai/messages/ai_classify_search_intent_v1'
+    - $ref: '#/channels/dlq_ai/messages/ai_assess_opportunity_v1'
+    - $ref: '#/channels/dlq_ai/messages/ai_generate_article_draft_v1'
+    - $ref: '#/channels/dlq_ai/messages/ai_extract_claims_v1'
+    - $ref: '#/channels/dlq_ai/messages/ai_policy_assist_v1'
+    - $ref: '#/channels/dlq_ai/messages/ai_evaluate_output_v1'
+    - $ref: '#/channels/dlq_ai/messages/ai_generic_task_v1'
+  send_jobs_analytics:
+    action: send
+    channel:
+      $ref: '#/channels/jobs_analytics'
+    summary: analytics Jobを投入する。
+    messages:
+    - $ref: '#/channels/jobs_analytics/messages/portfolio_generate_action_candidates_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_import_search_console_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_import_ga4_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_import_keyword_rank_csv_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_import_provider_data_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_rollup_daily_metrics_v1'
+    - $ref: '#/channels/jobs_analytics/messages/finance_parse_revenue_csv_v1'
+    - $ref: '#/channels/jobs_analytics/messages/finance_commit_revenue_import_v1'
+    - $ref: '#/channels/jobs_analytics/messages/finance_calculate_unit_economics_v1'
+    - $ref: '#/channels/jobs_analytics/messages/ops_export_audit_v1'
+    - $ref: '#/channels/jobs_analytics/messages/ops_retention_sweep_v1'
+  receive_jobs_analytics:
+    action: receive
+    channel:
+      $ref: '#/channels/jobs_analytics'
+    summary: analytics JobをLease取得して実行する。
+    messages:
+    - $ref: '#/channels/jobs_analytics/messages/portfolio_generate_action_candidates_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_import_search_console_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_import_ga4_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_import_keyword_rank_csv_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_import_provider_data_v1'
+    - $ref: '#/channels/jobs_analytics/messages/analytics_rollup_daily_metrics_v1'
+    - $ref: '#/channels/jobs_analytics/messages/finance_parse_revenue_csv_v1'
+    - $ref: '#/channels/jobs_analytics/messages/finance_commit_revenue_import_v1'
+    - $ref: '#/channels/jobs_analytics/messages/finance_calculate_unit_economics_v1'
+    - $ref: '#/channels/jobs_analytics/messages/ops_export_audit_v1'
+    - $ref: '#/channels/jobs_analytics/messages/ops_retention_sweep_v1'
+  receive_dlq_analytics:
+    action: receive
+    channel:
+      $ref: '#/channels/dlq_analytics'
+    summary: analytics DLQをTriageする。
+    messages:
+    - $ref: '#/channels/dlq_analytics/messages/portfolio_generate_action_candidates_v1'
+    - $ref: '#/channels/dlq_analytics/messages/analytics_import_search_console_v1'
+    - $ref: '#/channels/dlq_analytics/messages/analytics_import_ga4_v1'
+    - $ref: '#/channels/dlq_analytics/messages/analytics_import_keyword_rank_csv_v1'
+    - $ref: '#/channels/dlq_analytics/messages/analytics_import_provider_data_v1'
+    - $ref: '#/channels/dlq_analytics/messages/analytics_rollup_daily_metrics_v1'
+    - $ref: '#/channels/dlq_analytics/messages/finance_parse_revenue_csv_v1'
+    - $ref: '#/channels/dlq_analytics/messages/finance_commit_revenue_import_v1'
+    - $ref: '#/channels/dlq_analytics/messages/finance_calculate_unit_economics_v1'
+    - $ref: '#/channels/dlq_analytics/messages/ops_export_audit_v1'
+    - $ref: '#/channels/dlq_analytics/messages/ops_retention_sweep_v1'
+  send_jobs_freshness:
+    action: send
+    channel:
+      $ref: '#/channels/jobs_freshness'
+    summary: freshness Jobを投入する。
+    messages:
+    - $ref: '#/channels/jobs_freshness/messages/catalog_refresh_offer_v1'
+    - $ref: '#/channels/jobs_freshness/messages/freshness_run_refresh_batch_v1'
+    - $ref: '#/channels/jobs_freshness/messages/freshness_check_affiliate_link_v1'
+    - $ref: '#/channels/jobs_freshness/messages/freshness_assess_change_impact_v1'
+  receive_jobs_freshness:
+    action: receive
+    channel:
+      $ref: '#/channels/jobs_freshness'
+    summary: freshness JobをLease取得して実行する。
+    messages:
+    - $ref: '#/channels/jobs_freshness/messages/catalog_refresh_offer_v1'
+    - $ref: '#/channels/jobs_freshness/messages/freshness_run_refresh_batch_v1'
+    - $ref: '#/channels/jobs_freshness/messages/freshness_check_affiliate_link_v1'
+    - $ref: '#/channels/jobs_freshness/messages/freshness_assess_change_impact_v1'
+  receive_dlq_freshness:
+    action: receive
+    channel:
+      $ref: '#/channels/dlq_freshness'
+    summary: freshness DLQをTriageする。
+    messages:
+    - $ref: '#/channels/dlq_freshness/messages/catalog_refresh_offer_v1'
+    - $ref: '#/channels/dlq_freshness/messages/freshness_run_refresh_batch_v1'
+    - $ref: '#/channels/dlq_freshness/messages/freshness_check_affiliate_link_v1'
+    - $ref: '#/channels/dlq_freshness/messages/freshness_assess_change_impact_v1'
+  send_jobs_ingestion:
+    action: send
+    channel:
+      $ref: '#/channels/jobs_ingestion'
+    summary: ingestion Jobを投入する。
+    messages:
+    - $ref: '#/channels/jobs_ingestion/messages/catalog_rakuten_item_search_v1'
+    - $ref: '#/channels/jobs_ingestion/messages/catalog_rakuten_genre_sync_v1'
+    - $ref: '#/channels/jobs_ingestion/messages/catalog_normalize_ingestion_v1'
+    - $ref: '#/channels/jobs_ingestion/messages/catalog_group_product_candidates_v1'
+    - $ref: '#/channels/jobs_ingestion/messages/evidence_capture_source_snapshot_v1'
+  receive_jobs_ingestion:
+    action: receive
+    channel:
+      $ref: '#/channels/jobs_ingestion'
+    summary: ingestion JobをLease取得して実行する。
+    messages:
+    - $ref: '#/channels/jobs_ingestion/messages/catalog_rakuten_item_search_v1'
+    - $ref: '#/channels/jobs_ingestion/messages/catalog_rakuten_genre_sync_v1'
+    - $ref: '#/channels/jobs_ingestion/messages/catalog_normalize_ingestion_v1'
+    - $ref: '#/channels/jobs_ingestion/messages/catalog_group_product_candidates_v1'
+    - $ref: '#/channels/jobs_ingestion/messages/evidence_capture_source_snapshot_v1'
+  receive_dlq_ingestion:
+    action: receive
+    channel:
+      $ref: '#/channels/dlq_ingestion'
+    summary: ingestion DLQをTriageする。
+    messages:
+    - $ref: '#/channels/dlq_ingestion/messages/catalog_rakuten_item_search_v1'
+    - $ref: '#/channels/dlq_ingestion/messages/catalog_rakuten_genre_sync_v1'
+    - $ref: '#/channels/dlq_ingestion/messages/catalog_normalize_ingestion_v1'
+    - $ref: '#/channels/dlq_ingestion/messages/catalog_group_product_candidates_v1'
+    - $ref: '#/channels/dlq_ingestion/messages/evidence_capture_source_snapshot_v1'
+  send_jobs_notification:
+    action: send
+    channel:
+      $ref: '#/channels/jobs_notification'
+    summary: notification Jobを投入する。
+    messages:
+    - $ref: '#/channels/jobs_notification/messages/ops_send_notification_v1'
+  receive_jobs_notification:
+    action: receive
+    channel:
+      $ref: '#/channels/jobs_notification'
+    summary: notification JobをLease取得して実行する。
+    messages:
+    - $ref: '#/channels/jobs_notification/messages/ops_send_notification_v1'
+  receive_dlq_notification:
+    action: receive
+    channel:
+      $ref: '#/channels/dlq_notification'
+    summary: notification DLQをTriageする。
+    messages:
+    - $ref: '#/channels/dlq_notification/messages/ops_send_notification_v1'
+  send_jobs_publication:
+    action: send
+    channel:
+      $ref: '#/channels/jobs_publication'
+    summary: publication Jobを投入する。
+    messages:
+    - $ref: '#/channels/jobs_publication/messages/publishing_build_snapshot_v1'
+    - $ref: '#/channels/jobs_publication/messages/publishing_publish_snapshot_v1'
+    - $ref: '#/channels/jobs_publication/messages/publishing_unpublish_v1'
+    - $ref: '#/channels/jobs_publication/messages/publishing_rollback_v1'
+    - $ref: '#/channels/jobs_publication/messages/publishing_rebuild_public_projection_v1'
+    - $ref: '#/channels/jobs_publication/messages/ops_rebuild_readmodel_v1'
+  receive_jobs_publication:
+    action: receive
+    channel:
+      $ref: '#/channels/jobs_publication'
+    summary: publication JobをLease取得して実行する。
+    messages:
+    - $ref: '#/channels/jobs_publication/messages/publishing_build_snapshot_v1'
+    - $ref: '#/channels/jobs_publication/messages/publishing_publish_snapshot_v1'
+    - $ref: '#/channels/jobs_publication/messages/publishing_unpublish_v1'
+    - $ref: '#/channels/jobs_publication/messages/publishing_rollback_v1'
+    - $ref: '#/channels/jobs_publication/messages/publishing_rebuild_public_projection_v1'
+    - $ref: '#/channels/jobs_publication/messages/ops_rebuild_readmodel_v1'
+  receive_dlq_publication:
+    action: receive
+    channel:
+      $ref: '#/channels/dlq_publication'
+    summary: publication DLQをTriageする。
+    messages:
+    - $ref: '#/channels/dlq_publication/messages/publishing_build_snapshot_v1'
+    - $ref: '#/channels/dlq_publication/messages/publishing_publish_snapshot_v1'
+    - $ref: '#/channels/dlq_publication/messages/publishing_unpublish_v1'
+    - $ref: '#/channels/dlq_publication/messages/publishing_rollback_v1'
+    - $ref: '#/channels/dlq_publication/messages/publishing_rebuild_public_projection_v1'
+    - $ref: '#/channels/dlq_publication/messages/ops_rebuild_readmodel_v1'
+  send_jobs_quality:
+    action: send
+    channel:
+      $ref: '#/channels/jobs_quality'
+    summary: quality Jobを投入する。
+    messages:
+    - $ref: '#/channels/jobs_quality/messages/portfolio_assess_opportunity_v1'
+    - $ref: '#/channels/jobs_quality/messages/evidence_extract_facts_v1'
+    - $ref: '#/channels/jobs_quality/messages/evidence_build_source_packet_v1'
+    - $ref: '#/channels/jobs_quality/messages/quality_evaluate_article_v1'
+    - $ref: '#/channels/jobs_quality/messages/quality_recheck_policy_bundle_v1'
+  receive_jobs_quality:
+    action: receive
+    channel:
+      $ref: '#/channels/jobs_quality'
+    summary: quality JobをLease取得して実行する。
+    messages:
+    - $ref: '#/channels/jobs_quality/messages/portfolio_assess_opportunity_v1'
+    - $ref: '#/channels/jobs_quality/messages/evidence_extract_facts_v1'
+    - $ref: '#/channels/jobs_quality/messages/evidence_build_source_packet_v1'
+    - $ref: '#/channels/jobs_quality/messages/quality_evaluate_article_v1'
+    - $ref: '#/channels/jobs_quality/messages/quality_recheck_policy_bundle_v1'
+  receive_dlq_quality:
+    action: receive
+    channel:
+      $ref: '#/channels/dlq_quality'
+    summary: quality DLQをTriageする。
+    messages:
+    - $ref: '#/channels/dlq_quality/messages/portfolio_assess_opportunity_v1'
+    - $ref: '#/channels/dlq_quality/messages/evidence_extract_facts_v1'
+    - $ref: '#/channels/dlq_quality/messages/evidence_build_source_packet_v1'
+    - $ref: '#/channels/dlq_quality/messages/quality_evaluate_article_v1'
+    - $ref: '#/channels/dlq_quality/messages/quality_recheck_policy_bundle_v1'
+components:
+  messages:
+    jp_raos_ops_job_requested_v1:
+      name: jp_raos_ops_job_requested_v1
+      title: jp.raos.ops.job_requested.v1
+      summary: Jobが正本へ登録された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-job-requested-v1.schema.json
+      x-raos-event-type: jp.raos.ops.job_requested.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-020
+      x-raos-consumers:
+      - outbox_dispatcher
+      - ops_metrics
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_job_succeeded_v1:
+      name: jp_raos_ops_job_succeeded_v1
+      title: jp.raos.ops.job_succeeded.v1
+      summary: Jobが成功した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-job-succeeded-v1.schema.json
+      x-raos-event-type: jp.raos.ops.job_succeeded.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-018
+      - FR-020
+      x-raos-consumers:
+      - workflow_router
+      - cost_allocator
+      - notification_policy
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_job_failed_terminal_v1:
+      name: jp_raos_ops_job_failed_terminal_v1
+      title: jp.raos.ops.job_failed_terminal.v1
+      summary: Jobが自動再試行不能な終端失敗になった。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-job-failed-terminal-v1.schema.json
+      x-raos-event-type: jp.raos.ops.job_failed_terminal.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-020
+      x-raos-consumers:
+      - alerting
+      - incident_assist
+      - workflow_router
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_job_quarantined_v1:
+      name: jp_raos_ops_job_quarantined_v1
+      title: jp.raos.ops.job_quarantined.v1
+      summary: Jobまたは入力が隔離された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-job-quarantined-v1.schema.json
+      x-raos-event-type: jp.raos.ops.job_quarantined.v1
+      x-raos-classification: CONFIDENTIAL
+      x-raos-requirements:
+      - FR-020
+      x-raos-consumers:
+      - alerting
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_kill_switch_changed_v1:
+      name: jp_raos_ops_kill_switch_changed_v1
+      title: jp.raos.ops.kill_switch_changed.v1
+      summary: Kill Switch generationが変更された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-kill-switch-changed-v1.schema.json
+      x-raos-event-type: jp.raos.ops.kill_switch_changed.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-019
+      - FR-020
+      x-raos-consumers:
+      - public_projection
+      - publication_guard
+      - worker_guard
+      - alerting
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_incident_declared_v1:
+      name: jp_raos_ops_incident_declared_v1
+      title: jp.raos.ops.incident_declared.v1
+      summary: Incidentが宣言された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-incident-declared-v1.schema.json
+      x-raos-event-type: jp.raos.ops.incident_declared.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-020
+      x-raos-consumers:
+      - notification_policy
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_incident_closed_v1:
+      name: jp_raos_ops_incident_closed_v1
+      title: jp.raos.ops.incident_closed.v1
+      summary: Incidentが閉鎖された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-incident-closed-v1.schema.json
+      x-raos-event-type: jp.raos.ops.incident_closed.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-020
+      x-raos-consumers:
+      - notification_policy
+      - postmortem_tracker
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_audit_export_completed_v1:
+      name: jp_raos_ops_audit_export_completed_v1
+      title: jp.raos.ops.audit_export_completed.v1
+      summary: Audit Export Artifactが作成された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-audit-export-completed-v1.schema.json
+      x-raos-event-type: jp.raos.ops.audit_export_completed.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-020
+      x-raos-consumers:
+      - audit_archive
+      - notification_policy
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_child_jobs_created_v1:
+      name: jp_raos_ops_child_jobs_created_v1
+      title: jp.raos.ops.child_jobs_created.v1
+      summary: Dispatcher Jobが子Job群を作成した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-child-jobs-created-v1.schema.json
+      x-raos-event-type: jp.raos.ops.child_jobs_created.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-020
+      x-raos-consumers:
+      - workflow_router
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_readmodel_rebuilt_v1:
+      name: jp_raos_ops_readmodel_rebuilt_v1
+      title: jp.raos.ops.readmodel_rebuilt.v1
+      summary: Read Model再構築が完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-readmodel-rebuilt-v1.schema.json
+      x-raos-event-type: jp.raos.ops.readmodel_rebuilt.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-010
+      - FR-013
+      - FR-019
+      x-raos-consumers:
+      - cache_invalidator
+      - ops_metrics
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_notification_dispatched_v1:
+      name: jp_raos_ops_notification_dispatched_v1
+      title: jp.raos.ops.notification_dispatched.v1
+      summary: 通知Adapterへの送信結果が記録された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-notification-dispatched-v1.schema.json
+      x-raos-event-type: jp.raos.ops.notification_dispatched.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-020
+      x-raos-consumers:
+      - ops_metrics
+      x-raos-ordering: aggregate_version
+    jp_raos_ops_retention_sweep_completed_v1:
+      name: jp_raos_ops_retention_sweep_completed_v1
+      title: jp.raos.ops.retention_sweep_completed.v1
+      summary: Retention sweepが完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ops-retention-sweep-completed-v1.schema.json
+      x-raos-event-type: jp.raos.ops.retention_sweep_completed.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-020
+      x-raos-consumers:
+      - audit_archive
+      - notification_policy
+      x-raos-ordering: aggregate_version
+    jp_raos_portfolio_opportunity_assessed_v1:
+      name: jp_raos_portfolio_opportunity_assessed_v1
+      title: jp.raos.portfolio.opportunity_assessed.v1
+      summary: 機会評価が記録された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-portfolio-opportunity-assessed-v1.schema.json
+      x-raos-event-type: jp.raos.portfolio.opportunity_assessed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-005
+      - FR-016
+      x-raos-consumers:
+      - action_candidate_generator
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_portfolio_action_candidates_generated_v1:
+      name: jp_raos_portfolio_action_candidates_generated_v1
+      title: jp.raos.portfolio.action_candidates_generated.v1
+      summary: Action Candidate群が生成された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-portfolio-action-candidates-generated-v1.schema.json
+      x-raos-event-type: jp.raos.portfolio.action_candidates_generated.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-016
+      x-raos-consumers:
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_portfolio_action_candidate_decided_v1:
+      name: jp_raos_portfolio_action_candidate_decided_v1
+      title: jp.raos.portfolio.action_candidate_decided.v1
+      summary: Action Candidateへの人間判断が記録された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-portfolio-action-candidate-decided-v1.schema.json
+      x-raos-event-type: jp.raos.portfolio.action_candidate_decided.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-016
+      - FR-020
+      x-raos-consumers:
+      - workflow_router
+      - audit_projection
+      x-raos-ordering: aggregate_version
+    jp_raos_catalog_ingestion_completed_v1:
+      name: jp_raos_catalog_ingestion_completed_v1
+      title: jp.raos.catalog.ingestion_completed.v1
+      summary: Provider取込原本が保存された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-catalog-ingestion-completed-v1.schema.json
+      x-raos-event-type: jp.raos.catalog.ingestion_completed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-002
+      - FR-004
+      x-raos-consumers:
+      - catalog_normalizer
+      - contract_monitor
+      x-raos-ordering: aggregate_version
+    jp_raos_catalog_genre_sync_completed_v1:
+      name: jp_raos_catalog_genre_sync_completed_v1
+      title: jp.raos.catalog.genre_sync_completed.v1
+      summary: Genre同期が完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-catalog-genre-sync-completed-v1.schema.json
+      x-raos-event-type: jp.raos.catalog.genre_sync_completed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-002
+      x-raos-consumers:
+      - portfolio_mapping_assist
+      x-raos-ordering: aggregate_version
+    jp_raos_catalog_candidates_normalized_v1:
+      name: jp_raos_catalog_candidates_normalized_v1
+      title: jp.raos.catalog.candidates_normalized.v1
+      summary: Product CandidateとObservationが正規化された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-catalog-candidates-normalized-v1.schema.json
+      x-raos-event-type: jp.raos.catalog.candidates_normalized.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-003
+      - FR-004
+      x-raos-consumers:
+      - product_grouping
+      - freshness_projection
+      x-raos-ordering: aggregate_version
+    jp_raos_catalog_grouping_proposals_created_v1:
+      name: jp_raos_catalog_grouping_proposals_created_v1
+      title: jp.raos.catalog.grouping_proposals_created.v1
+      summary: Grouping提案が作成された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-catalog-grouping-proposals-created-v1.schema.json
+      x-raos-event-type: jp.raos.catalog.grouping_proposals_created.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-003
+      x-raos-consumers:
+      - admin_review_queue
+      x-raos-ordering: aggregate_version
+    jp_raos_catalog_grouping_decision_recorded_v1:
+      name: jp_raos_catalog_grouping_decision_recorded_v1
+      title: jp.raos.catalog.grouping_decision_recorded.v1
+      summary: 不変Grouping Decisionが記録された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-catalog-grouping-decision-recorded-v1.schema.json
+      x-raos-event-type: jp.raos.catalog.grouping_decision_recorded.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-003
+      x-raos-consumers:
+      - catalog_projection
+      - impact_assessor
+      x-raos-ordering: aggregate_version
+    jp_raos_catalog_offer_observed_v1:
+      name: jp_raos_catalog_offer_observed_v1
+      title: jp.raos.catalog.offer_observed.v1
+      summary: Offerの新Observationが保存された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-catalog-offer-observed-v1.schema.json
+      x-raos-event-type: jp.raos.catalog.offer_observed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-004
+      - FR-011
+      - FR-012
+      x-raos-consumers:
+      - freshness_assessor
+      - impact_assessor
+      - offer_projection
+      x-raos-ordering: aggregate_version
+    jp_raos_catalog_offer_unavailable_v1:
+      name: jp_raos_catalog_offer_unavailable_v1
+      title: jp.raos.catalog.offer_unavailable.v1
+      summary: Offerが利用不能と判断された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-catalog-offer-unavailable-v1.schema.json
+      x-raos-event-type: jp.raos.catalog.offer_unavailable.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-012
+      x-raos-consumers:
+      - impact_assessor
+      - public_projection
+      - alerting
+      x-raos-ordering: aggregate_version
+    jp_raos_catalog_affiliate_link_invalid_v1:
+      name: jp_raos_catalog_affiliate_link_invalid_v1
+      title: jp.raos.catalog.affiliate_link_invalid.v1
+      summary: Affiliate Linkが安全条件を満たさない。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-catalog-affiliate-link-invalid-v1.schema.json
+      x-raos-event-type: jp.raos.catalog.affiliate_link_invalid.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-011
+      - FR-019
+      x-raos-consumers:
+      - public_projection
+      - alerting
+      - impact_assessor
+      x-raos-ordering: aggregate_version
+    jp_raos_evidence_source_snapshot_captured_v1:
+      name: jp_raos_evidence_source_snapshot_captured_v1
+      title: jp.raos.evidence.source_snapshot_captured.v1
+      summary: 不変Source Snapshotが取得・検証された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-evidence-source-snapshot-captured-v1.schema.json
+      x-raos-event-type: jp.raos.evidence.source_snapshot_captured.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-004
+      x-raos-consumers:
+      - fact_extractor
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_evidence_facts_extracted_v1:
+      name: jp_raos_evidence_facts_extracted_v1
+      title: jp.raos.evidence.facts_extracted.v1
+      summary: Fact候補が抽出された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-evidence-facts-extracted-v1.schema.json
+      x-raos-event-type: jp.raos.evidence.facts_extracted.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-004
+      - FR-007
+      x-raos-consumers:
+      - source_packet_builder
+      x-raos-ordering: aggregate_version
+    jp_raos_evidence_source_packet_ready_v1:
+      name: jp_raos_evidence_source_packet_ready_v1
+      title: jp.raos.evidence.source_packet_ready.v1
+      summary: Source Packet Versionがreview可能になった。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-evidence-source-packet-ready-v1.schema.json
+      x-raos-event-type: jp.raos.evidence.source_packet_ready.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-006
+      - FR-007
+      x-raos-consumers:
+      - review_queue
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_evidence_source_packet_approved_v1:
+      name: jp_raos_evidence_source_packet_approved_v1
+      title: jp.raos.evidence.source_packet_approved.v1
+      summary: Source Packet Versionが人間承認された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-evidence-source-packet-approved-v1.schema.json
+      x-raos-event-type: jp.raos.evidence.source_packet_approved.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-006
+      x-raos-consumers:
+      - draft_workflow
+      - quality_workflow
+      x-raos-ordering: aggregate_version
+    jp_raos_evidence_claims_extracted_v1:
+      name: jp_raos_evidence_claims_extracted_v1
+      title: jp.raos.evidence.claims_extracted.v1
+      summary: Article Claim群が抽出された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-evidence-claims-extracted-v1.schema.json
+      x-raos-event-type: jp.raos.evidence.claims_extracted.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-007
+      - FR-008
+      x-raos-consumers:
+      - quality_engine
+      x-raos-ordering: aggregate_version
+    jp_raos_evidence_claim_unsupported_v1:
+      name: jp_raos_evidence_claim_unsupported_v1
+      title: jp.raos.evidence.claim_unsupported.v1
+      summary: 主要Claimの根拠不足が検出された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-evidence-claim-unsupported-v1.schema.json
+      x-raos-event-type: jp.raos.evidence.claim_unsupported.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-007
+      - FR-008
+      x-raos-consumers:
+      - quality_engine
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_editorial_article_plan_approved_v1:
+      name: jp_raos_editorial_article_plan_approved_v1
+      title: jp.raos.editorial.article_plan_approved.v1
+      summary: Article Planが承認された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-editorial-article-plan-approved-v1.schema.json
+      x-raos-event-type: jp.raos.editorial.article_plan_approved.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-001
+      x-raos-consumers:
+      - source_packet_workflow
+      x-raos-ordering: aggregate_version
+    jp_raos_editorial_article_created_v1:
+      name: jp_raos_editorial_article_created_v1
+      title: jp.raos.editorial.article_created.v1
+      summary: Articleが作成された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-editorial-article-created-v1.schema.json
+      x-raos-event-type: jp.raos.editorial.article_created.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-001
+      x-raos-consumers:
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_editorial_draft_generated_v1:
+      name: jp_raos_editorial_draft_generated_v1
+      title: jp.raos.editorial.draft_generated.v1
+      summary: AI Draft Article Versionが保存された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-editorial-draft-generated-v1.schema.json
+      x-raos-event-type: jp.raos.editorial.draft_generated.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-006
+      - FR-007
+      - FR-018
+      x-raos-consumers:
+      - claim_extractor
+      - quality_workflow
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_editorial_article_version_submitted_v1:
+      name: jp_raos_editorial_article_version_submitted_v1
+      title: jp.raos.editorial.article_version_submitted.v1
+      summary: Article VersionがHuman Reviewへ提出された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-editorial-article-version-submitted-v1.schema.json
+      x-raos-event-type: jp.raos.editorial.article_version_submitted.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-009
+      x-raos-consumers:
+      - review_assignment_workflow
+      x-raos-ordering: aggregate_version
+    jp_raos_ai_job_requested_v1:
+      name: jp_raos_ai_job_requested_v1
+      title: jp.raos.ai.job_requested.v1
+      summary: AI Jobが登録された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ai-job-requested-v1.schema.json
+      x-raos-event-type: jp.raos.ai.job_requested.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-018
+      x-raos-consumers:
+      - ai_metrics
+      x-raos-ordering: aggregate_version
+    jp_raos_ai_job_succeeded_v1:
+      name: jp_raos_ai_job_succeeded_v1
+      title: jp.raos.ai.job_succeeded.v1
+      summary: AI JobがSchema検証を通過して成功した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ai-job-succeeded-v1.schema.json
+      x-raos-event-type: jp.raos.ai.job_succeeded.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-018
+      x-raos-consumers:
+      - workflow_router
+      - cost_allocator
+      - ai_metrics
+      x-raos-ordering: aggregate_version
+    jp_raos_ai_job_failed_v1:
+      name: jp_raos_ai_job_failed_v1
+      title: jp.raos.ai.job_failed.v1
+      summary: AI Jobが失敗した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ai-job-failed-v1.schema.json
+      x-raos-event-type: jp.raos.ai.job_failed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-018
+      x-raos-consumers:
+      - workflow_router
+      - alerting
+      - ai_metrics
+      x-raos-ordering: aggregate_version
+    jp_raos_ai_policy_assist_completed_v1:
+      name: jp_raos_ai_policy_assist_completed_v1
+      title: jp.raos.ai.policy_assist_completed.v1
+      summary: AI Policy assistが完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ai-policy-assist-completed-v1.schema.json
+      x-raos-event-type: jp.raos.ai.policy_assist_completed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-008
+      - FR-018
+      x-raos-consumers:
+      - quality_engine
+      x-raos-ordering: aggregate_version
+    jp_raos_ai_evaluation_completed_v1:
+      name: jp_raos_ai_evaluation_completed_v1
+      title: jp.raos.ai.evaluation_completed.v1
+      summary: AI Evaluation Suiteが完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-ai-evaluation-completed-v1.schema.json
+      x-raos-event-type: jp.raos.ai.evaluation_completed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-018
+      x-raos-consumers:
+      - release_gate
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_policy_quality_check_completed_v1:
+      name: jp_raos_policy_quality_check_completed_v1
+      title: jp.raos.policy.quality_check_completed.v1
+      summary: Quality Check結果が確定した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-policy-quality-check-completed-v1.schema.json
+      x-raos-event-type: jp.raos.policy.quality_check_completed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-008
+      - FR-009
+      x-raos-consumers:
+      - review_workflow
+      - publication_guard
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_policy_blocking_finding_raised_v1:
+      name: jp_raos_policy_blocking_finding_raised_v1
+      title: jp.raos.policy.blocking_finding_raised.v1
+      summary: Blocking Findingが発生した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-policy-blocking-finding-raised-v1.schema.json
+      x-raos-event-type: jp.raos.policy.blocking_finding_raised.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-008
+      x-raos-consumers:
+      - publication_guard
+      - alerting
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_policy_finding_resolved_v1:
+      name: jp_raos_policy_finding_resolved_v1
+      title: jp.raos.policy.finding_resolved.v1
+      summary: Findingが解決または判断された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-policy-finding-resolved-v1.schema.json
+      x-raos-event-type: jp.raos.policy.finding_resolved.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-008
+      x-raos-consumers:
+      - quality_recheck_assist
+      x-raos-ordering: aggregate_version
+    jp_raos_policy_policy_bundle_activated_v1:
+      name: jp_raos_policy_policy_bundle_activated_v1
+      title: jp.raos.policy.policy_bundle_activated.v1
+      summary: Policy Bundle Versionが有効化された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-policy-policy-bundle-activated-v1.schema.json
+      x-raos-event-type: jp.raos.policy.policy_bundle_activated.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-017
+      - FR-020
+      x-raos-consumers:
+      - policy_recheck_scheduler
+      - publication_guard
+      x-raos-ordering: aggregate_version
+    jp_raos_policy_gate_decision_recorded_v1:
+      name: jp_raos_policy_gate_decision_recorded_v1
+      title: jp.raos.policy.gate_decision_recorded.v1
+      summary: Gate Decisionが記録された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-policy-gate-decision-recorded-v1.schema.json
+      x-raos-event-type: jp.raos.policy.gate_decision_recorded.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-017
+      - FR-020
+      x-raos-consumers:
+      - release_gate
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_policy_policy_recheck_completed_v1:
+      name: jp_raos_policy_policy_recheck_completed_v1
+      title: jp.raos.policy.policy_recheck_completed.v1
+      summary: Policy Bundle影響再検査が完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-policy-policy-recheck-completed-v1.schema.json
+      x-raos-event-type: jp.raos.policy.policy_recheck_completed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-017
+      x-raos-consumers:
+      - admin_dashboard
+      - alerting
+      x-raos-ordering: aggregate_version
+    jp_raos_publishing_review_assigned_v1:
+      name: jp_raos_publishing_review_assigned_v1
+      title: jp.raos.publishing.review_assigned.v1
+      summary: Human Reviewが割り当てられた。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-publishing-review-assigned-v1.schema.json
+      x-raos-event-type: jp.raos.publishing.review_assigned.v1
+      x-raos-classification: CONFIDENTIAL
+      x-raos-requirements:
+      - FR-009
+      x-raos-consumers:
+      - notification_policy
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_publishing_review_decision_recorded_v1:
+      name: jp_raos_publishing_review_decision_recorded_v1
+      title: jp.raos.publishing.review_decision_recorded.v1
+      summary: Human Review Decisionが不変記録された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-publishing-review-decision-recorded-v1.schema.json
+      x-raos-event-type: jp.raos.publishing.review_decision_recorded.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-009
+      - FR-020
+      x-raos-consumers:
+      - approval_workflow
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_publishing_approval_granted_v1:
+      name: jp_raos_publishing_approval_granted_v1
+      title: jp.raos.publishing.approval_granted.v1
+      summary: 有効Approvalが記録された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-publishing-approval-granted-v1.schema.json
+      x-raos-event-type: jp.raos.publishing.approval_granted.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-009
+      - FR-020
+      x-raos-consumers:
+      - publication_workflow
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_publishing_approval_revoked_v1:
+      name: jp_raos_publishing_approval_revoked_v1
+      title: jp.raos.publishing.approval_revoked.v1
+      summary: Approvalが取消された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-publishing-approval-revoked-v1.schema.json
+      x-raos-event-type: jp.raos.publishing.approval_revoked.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-009
+      - FR-020
+      x-raos-consumers:
+      - publication_guard
+      - impact_assessor
+      - alerting
+      x-raos-ordering: aggregate_version
+    jp_raos_publishing_snapshot_built_v1:
+      name: jp_raos_publishing_snapshot_built_v1
+      title: jp.raos.publishing.snapshot_built.v1
+      summary: Publication Snapshotが不変保存された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-publishing-snapshot-built-v1.schema.json
+      x-raos-event-type: jp.raos.publishing.snapshot_built.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-010
+      x-raos-consumers:
+      - publication_workflow
+      - admin_dashboard
+      x-raos-ordering: aggregate_version
+    jp_raos_publishing_article_published_v1:
+      name: jp_raos_publishing_article_published_v1
+      title: jp.raos.publishing.article_published.v1
+      summary: Snapshotが公開Projectionへ反映された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-publishing-article-published-v1.schema.json
+      x-raos-event-type: jp.raos.publishing.article_published.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-010
+      - FR-019
+      x-raos-consumers:
+      - cache_invalidator
+      - sitemap_builder
+      - analytics_route_map
+      - freshness_scheduler
+      x-raos-ordering: aggregate_version
+    jp_raos_publishing_article_unpublished_v1:
+      name: jp_raos_publishing_article_unpublished_v1
+      title: jp.raos.publishing.article_unpublished.v1
+      summary: Publicationが非公開化された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-publishing-article-unpublished-v1.schema.json
+      x-raos-event-type: jp.raos.publishing.article_unpublished.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-010
+      - FR-019
+      x-raos-consumers:
+      - cache_invalidator
+      - sitemap_builder
+      - analytics_route_map
+      x-raos-ordering: aggregate_version
+    jp_raos_publishing_article_rolled_back_v1:
+      name: jp_raos_publishing_article_rolled_back_v1
+      title: jp.raos.publishing.article_rolled_back.v1
+      summary: Publicationが旧Snapshotへ切替された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-publishing-article-rolled-back-v1.schema.json
+      x-raos-event-type: jp.raos.publishing.article_rolled_back.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-010
+      - FR-019
+      - FR-020
+      x-raos-consumers:
+      - cache_invalidator
+      - alerting
+      - audit_projection
+      x-raos-ordering: aggregate_version
+    jp_raos_publishing_public_projection_rebuilt_v1:
+      name: jp_raos_publishing_public_projection_rebuilt_v1
+      title: jp.raos.publishing.public_projection_rebuilt.v1
+      summary: Public Projection再構築が完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-publishing-public-projection-rebuilt-v1.schema.json
+      x-raos-event-type: jp.raos.publishing.public_projection_rebuilt.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-010
+      x-raos-consumers:
+      - cache_invalidator
+      - ops_metrics
+      x-raos-ordering: aggregate_version
+    jp_raos_freshness_staleness_assessed_v1:
+      name: jp_raos_freshness_staleness_assessed_v1
+      title: jp.raos.freshness.staleness_assessed.v1
+      summary: Freshness状態が判定された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-freshness-staleness-assessed-v1.schema.json
+      x-raos-event-type: jp.raos.freshness.staleness_assessed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-012
+      x-raos-consumers:
+      - public_projection
+      - refresh_scheduler
+      - impact_assessor
+      x-raos-ordering: aggregate_version
+    jp_raos_freshness_refresh_completed_v1:
+      name: jp_raos_freshness_refresh_completed_v1
+      title: jp.raos.freshness.refresh_completed.v1
+      summary: Refresh Batchが完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-freshness-refresh-completed-v1.schema.json
+      x-raos-event-type: jp.raos.freshness.refresh_completed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-011
+      - FR-012
+      x-raos-consumers:
+      - admin_dashboard
+      - alerting
+      - daily_metrics
+      x-raos-ordering: aggregate_version
+    jp_raos_freshness_link_check_completed_v1:
+      name: jp_raos_freshness_link_check_completed_v1
+      title: jp.raos.freshness.link_check_completed.v1
+      summary: Affiliate Link Check Batchが完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-freshness-link-check-completed-v1.schema.json
+      x-raos-event-type: jp.raos.freshness.link_check_completed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-011
+      x-raos-consumers:
+      - public_projection
+      - impact_assessor
+      - alerting
+      x-raos-ordering: aggregate_version
+    jp_raos_freshness_impact_detected_v1:
+      name: jp_raos_freshness_impact_detected_v1
+      title: jp.raos.freshness.impact_detected.v1
+      summary: 公開・Claimへの影響が検出された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-freshness-impact-detected-v1.schema.json
+      x-raos-event-type: jp.raos.freshness.impact_detected.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-012
+      - FR-016
+      x-raos-consumers:
+      - action_candidate_generator
+      - publication_guard
+      - alerting
+      x-raos-ordering: aggregate_version
+    jp_raos_analytics_import_completed_v1:
+      name: jp_raos_analytics_import_completed_v1
+      title: jp.raos.analytics.import_completed.v1
+      summary: Analytics source取込が完了した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-analytics-import-completed-v1.schema.json
+      x-raos-event-type: jp.raos.analytics.import_completed.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-013
+      x-raos-consumers:
+      - daily_metric_rollup
+      - data_quality_monitor
+      x-raos-ordering: aggregate_version
+    jp_raos_analytics_daily_metrics_updated_v1:
+      name: jp_raos_analytics_daily_metrics_updated_v1
+      title: jp.raos.analytics.daily_metrics_updated.v1
+      summary: Article日次指標が更新された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-analytics-daily-metrics-updated-v1.schema.json
+      x-raos-event-type: jp.raos.analytics.daily_metrics_updated.v1
+      x-raos-classification: INTERNAL
+      x-raos-requirements:
+      - FR-013
+      - FR-015
+      - FR-016
+      x-raos-consumers:
+      - unit_economics_calculator
+      - action_candidate_generator
+      - dashboard_projection
+      x-raos-ordering: aggregate_version
+    jp_raos_finance_revenue_import_dry_run_ready_v1:
+      name: jp_raos_finance_revenue_import_dry_run_ready_v1
+      title: jp.raos.finance.revenue_import_dry_run_ready.v1
+      summary: Revenue Import Previewが人間確認可能になった。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-finance-revenue-import-dry-run-ready-v1.schema.json
+      x-raos-event-type: jp.raos.finance.revenue_import_dry_run_ready.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-014
+      x-raos-consumers:
+      - admin_dashboard
+      - notification_policy
+      x-raos-ordering: aggregate_version
+    jp_raos_finance_revenue_import_committed_v1:
+      name: jp_raos_finance_revenue_import_committed_v1
+      title: jp.raos.finance.revenue_import_committed.v1
+      summary: Revenue Provider Fact取込が確定した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-finance-revenue-import-committed-v1.schema.json
+      x-raos-event-type: jp.raos.finance.revenue_import_committed.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-014
+      - FR-020
+      x-raos-consumers:
+      - unit_economics_calculator
+      - audit_projection
+      x-raos-ordering: aggregate_version
+    jp_raos_finance_commission_status_changed_v1:
+      name: jp_raos_finance_commission_status_changed_v1
+      title: jp.raos.finance.commission_status_changed.v1
+      summary: Provider Commission statusが新Eventで変化した。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-finance-commission-status-changed-v1.schema.json
+      x-raos-event-type: jp.raos.finance.commission_status_changed.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-014
+      - FR-015
+      x-raos-consumers:
+      - unit_economics_calculator
+      - dashboard_projection
+      x-raos-ordering: aggregate_version
+    jp_raos_finance_unit_economics_calculated_v1:
+      name: jp_raos_finance_unit_economics_calculated_v1
+      title: jp.raos.finance.unit_economics_calculated.v1
+      summary: 確定Unit Economics Snapshotが算出された。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-attempt:
+            type: integer
+            minimum: 1
+          x-raos-replay:
+            type: boolean
+      payload:
+        $ref: schemas/events/jp-raos-finance-unit-economics-calculated-v1.schema.json
+      x-raos-event-type: jp.raos.finance.unit_economics_calculated.v1
+      x-raos-classification: RESTRICTED
+      x-raos-requirements:
+      - FR-015
+      - FR-016
+      x-raos-consumers:
+      - dashboard_projection
+      - action_candidate_generator
+      x-raos-ordering: aggregate_version
+    portfolio_assess_opportunity_v1:
+      name: portfolio_assess_opportunity_v1
+      title: portfolio.assess_opportunity.v1
+      summary: 編集可能性・事業性・Compliance Riskを分離評価する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/portfolio-assess-opportunity-v1.schema.json
+      x-raos-job-type: portfolio.assess_opportunity.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 300
+      x-raos-requirements:
+      - FR-005
+      - FR-016
+    portfolio_generate_action_candidates_v1:
+      name: portfolio_generate_action_candidates_v1
+      title: portfolio.generate_action_candidates.v1
+      summary: 更新・統合・削除・新規作成候補を生成する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/portfolio-generate-action-candidates-v1.schema.json
+      x-raos-job-type: portfolio.generate_action_candidates.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 900
+      x-raos-requirements:
+      - FR-016
+    catalog_rakuten_item_search_v1:
+      name: catalog_rakuten_item_search_v1
+      title: catalog.rakuten_item_search.v1
+      summary: 楽天市場商品検索APIを呼び原本を不変保存する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/catalog-rakuten-item-search-v1.schema.json
+      x-raos-job-type: catalog.rakuten_item_search.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 5
+      x-raos-timeout-seconds: 120
+      x-raos-requirements:
+      - FR-002
+      - FR-004
+    catalog_rakuten_genre_sync_v1:
+      name: catalog_rakuten_genre_sync_v1
+      title: catalog.rakuten_genre_sync.v1
+      summary: 楽天Genre taxonomyを同期する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/catalog-rakuten-genre-sync-v1.schema.json
+      x-raos-job-type: catalog.rakuten_genre_sync.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 5
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-002
+    catalog_normalize_ingestion_v1:
+      name: catalog_normalize_ingestion_v1
+      title: catalog.normalize_ingestion.v1
+      summary: Raw provider responseをProduct Candidate/Observationへ正規化する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/catalog-normalize-ingestion-v1.schema.json
+      x-raos-job-type: catalog.normalize_ingestion.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 900
+      x-raos-requirements:
+      - FR-002
+      - FR-003
+      - FR-004
+    catalog_group_product_candidates_v1:
+      name: catalog_group_product_candidates_v1
+      title: catalog.group_product_candidates.v1
+      summary: 候補をCanonical Productへ提案Groupingする。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/catalog-group-product-candidates-v1.schema.json
+      x-raos-job-type: catalog.group_product_candidates.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 900
+      x-raos-requirements:
+      - FR-003
+    catalog_refresh_offer_v1:
+      name: catalog_refresh_offer_v1
+      title: catalog.refresh_offer.v1
+      summary: Offerの価格・在庫・集計レビュー値・Affiliate Linkを再取得する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/catalog-refresh-offer-v1.schema.json
+      x-raos-job-type: catalog.refresh_offer.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 5
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-011
+      - FR-012
+    evidence_capture_source_snapshot_v1:
+      name: evidence_capture_source_snapshot_v1
+      title: evidence.capture_source_snapshot.v1
+      summary: Allowlistされた一次Sourceを安全に取得しSnapshot化する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/evidence-capture-source-snapshot-v1.schema.json
+      x-raos-job-type: evidence.capture_source_snapshot.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 180
+      x-raos-requirements:
+      - FR-004
+    evidence_extract_facts_v1:
+      name: evidence_extract_facts_v1
+      title: evidence.extract_facts.v1
+      summary: 検証済みSnapshotから型付きFact候補を抽出する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/evidence-extract-facts-v1.schema.json
+      x-raos-job-type: evidence.extract_facts.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-004
+      - FR-007
+    evidence_build_source_packet_v1:
+      name: evidence_build_source_packet_v1
+      title: evidence.build_source_packet.v1
+      summary: 記事計画向けのVersioned Source Packetを構築する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/evidence-build-source-packet-v1.schema.json
+      x-raos-job-type: evidence.build_source_packet.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-006
+      - FR-007
+    ai_classify_search_intent_v1:
+      name: ai_classify_search_intent_v1
+      title: ai.classify_search_intent.v1
+      summary: Keyword群を検索意図へ構造化分類する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ai-classify-search-intent-v1.schema.json
+      x-raos-job-type: ai.classify_search_intent.v1
+      x-raos-consumer: worker-ai
+      x-raos-max-attempts: 2
+      x-raos-timeout-seconds: 300
+      x-raos-requirements:
+      - FR-006
+      - FR-018
+    ai_assess_opportunity_v1:
+      name: ai_assess_opportunity_v1
+      title: ai.assess_opportunity.v1
+      summary: 一次情報に基づく定性的機会評価補助を生成する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ai-assess-opportunity-v1.schema.json
+      x-raos-job-type: ai.assess_opportunity.v1
+      x-raos-consumer: worker-ai
+      x-raos-max-attempts: 2
+      x-raos-timeout-seconds: 300
+      x-raos-requirements:
+      - FR-005
+      - FR-006
+      - FR-018
+    ai_generate_article_draft_v1:
+      name: ai_generate_article_draft_v1
+      title: ai.generate_article_draft.v1
+      summary: 承認済みSource PacketからArticle AST Draftを生成する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ai-generate-article-draft-v1.schema.json
+      x-raos-job-type: ai.generate_article_draft.v1
+      x-raos-consumer: worker-ai
+      x-raos-max-attempts: 2
+      x-raos-timeout-seconds: 900
+      x-raos-requirements:
+      - FR-006
+      - FR-007
+      - FR-018
+    ai_extract_claims_v1:
+      name: ai_extract_claims_v1
+      title: ai.extract_claims.v1
+      summary: Article ASTからClaimを抽出しEvidence参照候補を返す。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ai-extract-claims-v1.schema.json
+      x-raos-job-type: ai.extract_claims.v1
+      x-raos-consumer: worker-ai
+      x-raos-max-attempts: 2
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-007
+      - FR-018
+    ai_policy_assist_v1:
+      name: ai_policy_assist_v1
+      title: ai.policy_assist.v1
+      summary: Policy Ruleの補助判定を構造化出力する。最終判定権限は持たない。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ai-policy-assist-v1.schema.json
+      x-raos-job-type: ai.policy_assist.v1
+      x-raos-consumer: worker-ai
+      x-raos-max-attempts: 2
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-008
+      - FR-018
+    ai_evaluate_output_v1:
+      name: ai_evaluate_output_v1
+      title: ai.evaluate_output.v1
+      summary: 固定Evaluation DatasetでPrompt/Model Routeを評価する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ai-evaluate-output-v1.schema.json
+      x-raos-job-type: ai.evaluate_output.v1
+      x-raos-consumer: worker-ai
+      x-raos-max-attempts: 2
+      x-raos-timeout-seconds: 7200
+      x-raos-requirements:
+      - FR-018
+    ai_generic_task_v1:
+      name: ai_generic_task_v1
+      title: ai.generic_task.v1
+      summary: 登録済みTask Definitionを明示実行する汎用入口。allowlist taskのみ。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ai-generic-task-v1.schema.json
+      x-raos-job-type: ai.generic_task.v1
+      x-raos-consumer: worker-ai
+      x-raos-max-attempts: 2
+      x-raos-timeout-seconds: 1800
+      x-raos-requirements:
+      - FR-006
+      - FR-018
+    quality_evaluate_article_v1:
+      name: quality_evaluate_article_v1
+      title: quality.evaluate_article.v1
+      summary: Deterministic rule、Claim Evidence、AI assistを統合して品質判定する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/quality-evaluate-article-v1.schema.json
+      x-raos-job-type: quality.evaluate_article.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 1200
+      x-raos-requirements:
+      - FR-007
+      - FR-008
+    quality_recheck_policy_bundle_v1:
+      name: quality_recheck_policy_bundle_v1
+      title: quality.recheck_policy_bundle.v1
+      summary: 新Policy Bundleの影響記事を再検査する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/quality-recheck-policy-bundle-v1.schema.json
+      x-raos-job-type: quality.recheck_policy_bundle.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 14400
+      x-raos-requirements:
+      - FR-017
+    publishing_build_snapshot_v1:
+      name: publishing_build_snapshot_v1
+      title: publishing.build_snapshot.v1
+      summary: 最終承認済みArticle Versionから不変Publication Snapshotを生成する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/publishing-build-snapshot-v1.schema.json
+      x-raos-job-type: publishing.build_snapshot.v1
+      x-raos-consumer: worker-publish
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-009
+      - FR-010
+    publishing_publish_snapshot_v1:
+      name: publishing_publish_snapshot_v1
+      title: publishing.publish_snapshot.v1
+      summary: SnapshotをPublic Read Modelへ原子的に反映する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/publishing-publish-snapshot-v1.schema.json
+      x-raos-job-type: publishing.publish_snapshot.v1
+      x-raos-consumer: worker-publish
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-010
+      - FR-019
+    publishing_unpublish_v1:
+      name: publishing_unpublish_v1
+      title: publishing.unpublish.v1
+      summary: 公開ProjectionからArticleを安全に非公開化する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/publishing-unpublish-v1.schema.json
+      x-raos-job-type: publishing.unpublish.v1
+      x-raos-consumer: worker-publish
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-010
+      - FR-019
+    publishing_rollback_v1:
+      name: publishing_rollback_v1
+      title: publishing.rollback.v1
+      summary: 検証済み旧SnapshotへRollbackする。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/publishing-rollback-v1.schema.json
+      x-raos-job-type: publishing.rollback.v1
+      x-raos-consumer: worker-publish
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 600
+      x-raos-requirements:
+      - FR-010
+      - FR-019
+    publishing_rebuild_public_projection_v1:
+      name: publishing_rebuild_public_projection_v1
+      title: publishing.rebuild_public_projection.v1
+      summary: 不変SnapshotからPublic Read Modelを再構築する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/publishing-rebuild-public-projection-v1.schema.json
+      x-raos-job-type: publishing.rebuild_public_projection.v1
+      x-raos-consumer: worker-publish
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 7200
+      x-raos-requirements:
+      - FR-010
+      - FR-019
+    freshness_run_refresh_batch_v1:
+      name: freshness_run_refresh_batch_v1
+      title: freshness.run_refresh_batch.v1
+      summary: Freshness Policyに従い対象をbatch更新する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/freshness-run-refresh-batch-v1.schema.json
+      x-raos-job-type: freshness.run_refresh_batch.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 14400
+      x-raos-requirements:
+      - FR-011
+      - FR-012
+    freshness_check_affiliate_link_v1:
+      name: freshness_check_affiliate_link_v1
+      title: freshness.check_affiliate_link.v1
+      summary: Affiliate URLを改変せずdestination/reachabilityを検査する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/freshness-check-affiliate-link-v1.schema.json
+      x-raos-job-type: freshness.check_affiliate_link.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 1800
+      x-raos-requirements:
+      - FR-011
+    freshness_assess_change_impact_v1:
+      name: freshness_assess_change_impact_v1
+      title: freshness.assess_change_impact.v1
+      summary: 商品・価格・Policy変更のClaim/公開影響を計算する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/freshness-assess-change-impact-v1.schema.json
+      x-raos-job-type: freshness.assess_change_impact.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 1800
+      x-raos-requirements:
+      - FR-012
+      - FR-016
+      - FR-017
+    analytics_import_search_console_v1:
+      name: analytics_import_search_console_v1
+      title: analytics.import_search_console.v1
+      summary: Search Console Search Analyticsを日次取込する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/analytics-import-search-console-v1.schema.json
+      x-raos-job-type: analytics.import_search_console.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 5
+      x-raos-timeout-seconds: 3600
+      x-raos-requirements:
+      - FR-013
+    analytics_import_ga4_v1:
+      name: analytics_import_ga4_v1
+      title: analytics.import_ga4.v1
+      summary: GA4 Data APIの非個人集計値を取込する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/analytics-import-ga4-v1.schema.json
+      x-raos-job-type: analytics.import_ga4.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 5
+      x-raos-timeout-seconds: 3600
+      x-raos-requirements:
+      - FR-013
+    analytics_import_keyword_rank_csv_v1:
+      name: analytics_import_keyword_rank_csv_v1
+      title: analytics.import_keyword_rank_csv.v1
+      summary: 許諾済み順位CSVをCanonical Observationへ取込する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/analytics-import-keyword-rank-csv-v1.schema.json
+      x-raos-job-type: analytics.import_keyword_rank_csv.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 3600
+      x-raos-requirements:
+      - FR-013
+    analytics_import_provider_data_v1:
+      name: analytics_import_provider_data_v1
+      title: analytics.import_provider_data.v1
+      summary: source_typeに応じて許可済みAnalytics Adapter Jobへdispatchする。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/analytics-import-provider-data-v1.schema.json
+      x-raos-job-type: analytics.import_provider_data.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 60
+      x-raos-requirements:
+      - FR-013
+    analytics_rollup_daily_metrics_v1:
+      name: analytics_rollup_daily_metrics_v1
+      title: analytics.rollup_daily_metrics.v1
+      summary: GSC、GA4、first-party clickをArticle日次指標へ集計する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/analytics-rollup-daily-metrics-v1.schema.json
+      x-raos-job-type: analytics.rollup_daily_metrics.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 3600
+      x-raos-requirements:
+      - FR-013
+      - FR-015
+    finance_parse_revenue_csv_v1:
+      name: finance_parse_revenue_csv_v1
+      title: finance.parse_revenue_csv.v1
+      summary: Revenue原本をscan・parseしDry Run Previewを作る。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/finance-parse-revenue-csv-v1.schema.json
+      x-raos-job-type: finance.parse_revenue_csv.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 3600
+      x-raos-requirements:
+      - FR-014
+    finance_commit_revenue_import_v1:
+      name: finance_commit_revenue_import_v1
+      title: finance.commit_revenue_import.v1
+      summary: 確認値を再照合しProvider Factを不変取込する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/finance-commit-revenue-import-v1.schema.json
+      x-raos-job-type: finance.commit_revenue_import.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 3600
+      x-raos-requirements:
+      - FR-014
+      - FR-020
+    finance_calculate_unit_economics_v1:
+      name: finance_calculate_unit_economics_v1
+      title: finance.calculate_unit_economics.v1
+      summary: 確定成果・費用・trafficからEPC/RPM/貢献利益を算出する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/finance-calculate-unit-economics-v1.schema.json
+      x-raos-job-type: finance.calculate_unit_economics.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 3600
+      x-raos-requirements:
+      - FR-015
+    ops_export_audit_v1:
+      name: ops_export_audit_v1
+      title: ops.export_audit.v1
+      summary: Audit Eventをhash付きArtifactへexportする。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ops-export-audit-v1.schema.json
+      x-raos-job-type: ops.export_audit.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 7200
+      x-raos-requirements:
+      - FR-020
+    ops_send_notification_v1:
+      name: ops_send_notification_v1
+      title: ops.send_notification.v1
+      summary: 通知Adapterへ非正本通知を送る。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ops-send-notification-v1.schema.json
+      x-raos-job-type: ops.send_notification.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 5
+      x-raos-timeout-seconds: 120
+      x-raos-requirements:
+      - FR-020
+    ops_rebuild_readmodel_v1:
+      name: ops_rebuild_readmodel_v1
+      title: ops.rebuild_readmodel.v1
+      summary: 指定Projectionを正本から再構築する。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ops-rebuild-readmodel-v1.schema.json
+      x-raos-job-type: ops.rebuild_readmodel.v1
+      x-raos-consumer: worker-publish
+      x-raos-max-attempts: 3
+      x-raos-timeout-seconds: 14400
+      x-raos-requirements:
+      - FR-010
+      - FR-013
+      - FR-019
+    ops_retention_sweep_v1:
+      name: ops_retention_sweep_v1
+      title: ops.retention_sweep.v1
+      summary: 承認済みRetention Policyに従う削除候補をdry-run/executeする。
+      contentType: application/json
+      headers:
+        type: object
+        additionalProperties: false
+        properties:
+          traceparent:
+            type:
+            - string
+            - 'null'
+          x-raos-receive-count:
+            type: integer
+            minimum: 1
+          x-raos-sent-at:
+            type: string
+            format: date-time
+      payload:
+        $ref: schemas/jobs/ops-retention-sweep-v1.schema.json
+      x-raos-job-type: ops.retention_sweep.v1
+      x-raos-consumer: worker-general
+      x-raos-max-attempts: 2
+      x-raos-timeout-seconds: 14400
+      x-raos-requirements:
+      - FR-020
+  schemas: {}
+  securitySchemes: {}
+x-raos-conventions:
+  domain_event: 事実。過去形。OutboxとAggregate Versionを持つ。再配送しても意味が変わらない。
+  job_message: 実行要求。Idempotency Key、Attempt Budget、Deadlineを持つ。
+  dead_letter: 自動再投入しない。分類、根本原因、Replay承認を記録する。
+  compatibility: 同一major内は後方互換のoptional field追加のみ。破壊変更は新message type/version。
+x-raos-job-state-contract: ../job-state.v1.yaml

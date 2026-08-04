@@ -1,0 +1,153 @@
+document:
+  id: RAOS-REF-001
+  version: '1.0'
+  retrieved_on: '2026-07-30'
+  note: 実装・Release時に最新版を再確認する。URL掲載は参照先の将来不変性を保証しない。
+references:
+- id: REF-W3C-WCAG22
+  title: Web Content Accessibility Guidelines (WCAG) 2.2
+  url: https://www.w3.org/TR/WCAG22/
+  owner: W3C
+  used_by:
+  - RAOS-UI-001
+  - RAOS-TEST-001
+- id: REF-W3C-ARIA-APG
+  title: ARIA Authoring Practices Guide
+  url: https://www.w3.org/WAI/ARIA/apg/
+  owner: W3C
+  used_by:
+  - RAOS-UI-001
+  - RAOS-TEST-001
+- id: REF-OWASP-ASVS
+  title: OWASP Application Security Verification Standard
+  url: https://owasp.org/www-project-application-security-verification-standard/
+  owner: OWASP
+  used_by:
+  - RAOS-SEC-001
+  - RAOS-TEST-001
+- id: REF-OWASP-LLMSVS
+  title: OWASP LLM Security Verification Standard
+  url: https://owasp.org/www-project-llm-security-verification-standard/
+  owner: OWASP
+  used_by:
+  - RAOS-SEC-001
+  - RAOS-AI-001
+- id: REF-OWASP-WSTG
+  title: OWASP Web Security Testing Guide
+  url: https://owasp.org/www-project-web-security-testing-guide/
+  owner: OWASP
+  used_by:
+  - RAOS-SEC-001
+  - RAOS-TEST-001
+- id: REF-PPC-GUIDELINES
+  title: 個人情報保護法ガイドライン
+  url: https://www.ppc.go.jp/personalinfo/legal/guidelines_tsusoku/
+  owner: 個人情報保護委員会
+  used_by:
+  - RAOS-SEC-001
+  - RAOS-ANALYTICS-001
+- id: REF-AWS-WA-SEC
+  title: AWS Well-Architected Security Pillar
+  url: https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html
+  owner: AWS
+  used_by:
+  - RAOS-SEC-001
+  - RAOS-OPS-001
+- id: REF-AWS-WA-REL
+  title: AWS Well-Architected Reliability Pillar
+  url: https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html
+  owner: AWS
+  used_by:
+  - RAOS-OPS-001
+  - RAOS-TEST-001
+- id: REF-AWS-WA-OE
+  title: AWS Well-Architected Operational Excellence Pillar
+  url: https://docs.aws.amazon.com/wellarchitected/latest/operational-excellence-pillar/welcome.html
+  owner: AWS
+  used_by:
+  - RAOS-OPS-001
+- id: REF-AWS-RDS-PITR
+  title: Restoring a DB instance to a specified time
+  url: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIT.html
+  owner: AWS
+  used_by:
+  - RAOS-OPS-001
+  - RAOS-TEST-001
+- id: REF-AWS-S3-VERSIONING
+  title: Using versioning in S3 buckets
+  url: https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html
+  owner: AWS
+  used_by:
+  - RAOS-OPS-001
+  - RAOS-SEC-001
+- id: REF-AWS-SQS-DLQ
+  title: Using dead-letter queues in Amazon SQS
+  url: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html
+  owner: AWS
+  used_by:
+  - RAOS-OPS-001
+  - RAOS-TEST-001
+- id: REF-OTEL
+  title: OpenTelemetry Documentation
+  url: https://opentelemetry.io/docs/
+  owner: OpenTelemetry
+  used_by:
+  - RAOS-OPS-001
+- id: REF-GITHUB-OIDC
+  title: Configuring OpenID Connect in Amazon Web Services
+  url: https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws
+  owner: GitHub
+  used_by:
+  - RAOS-SEC-001
+  - RAOS-CODEX-001
+- id: REF-GITHUB-RULESETS
+  title: About rulesets
+  url: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets
+  owner: GitHub
+  used_by:
+  - RAOS-SEC-001
+  - RAOS-CODEX-001
+- id: REF-PLAYWRIGHT
+  title: Playwright Documentation
+  url: https://playwright.dev/docs/intro
+  owner: Microsoft
+  used_by:
+  - RAOS-TEST-001
+  - RAOS-UI-001
+- id: REF-WEB-VITALS
+  title: Web Vitals
+  url: https://web.dev/articles/vitals
+  owner: Google
+  used_by:
+  - RAOS-UI-001
+  - RAOS-OPS-001
+- id: REF-GA4-EVENTS
+  title: GA4 recommended events
+  url: https://developers.google.com/analytics/devguides/collection/ga4/reference/events
+  owner: Google
+  used_by:
+  - RAOS-ANALYTICS-001
+- id: REF-GA-DATA-API
+  title: Google Analytics Data API
+  url: https://developers.google.com/analytics/devguides/reporting/data/v1
+  owner: Google
+  used_by:
+  - RAOS-ANALYTICS-001
+- id: REF-GSC-API
+  title: Search Console API
+  url: https://developers.google.com/webmaster-tools
+  owner: Google
+  used_by:
+  - RAOS-ANALYTICS-001
+- id: REF-OPENAI-AGENTS
+  title: AGENTS.md guidance
+  url: https://developers.openai.com/codex/guides/agents-md
+  owner: OpenAI
+  used_by:
+  - RAOS-CODEX-001
+- id: REF-OPENAI-CODEX-BEST
+  title: Codex best practices
+  url: https://developers.openai.com/codex/learn/best-practices
+  owner: OpenAI
+  used_by:
+  - RAOS-CODEX-001

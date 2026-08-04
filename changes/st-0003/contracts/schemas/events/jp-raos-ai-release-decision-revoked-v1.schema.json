@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ai-release-decision-revoked-v1.schema.json",
+  "title": "jp.raos.ai.release_decision_revoked.v1",
+  "description": "Internal/confidential metadata event; raw prompts, inputs, outputs, source packets, review bodies, secrets, and PII are forbidden.",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ai.release_decision_revoked.v1"
+        },
+        "producer": {
+          "const": "ai"
+        },
+        "classification": {
+          "const": "CONFIDENTIAL"
+        },
+        "event_version": {
+          "const": 1
+        },
+        "dataschema": {
+          "const": "https://schemas.raos.local/events/jp-raos-ai-release-decision-revoked-v1.schema.json"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "release_decision_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "task_definition_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "reason_code": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "rollback_strategy": {
+              "type": "string",
+              "enum": [
+                "PREVIOUS_RELEASE",
+                "DISABLE_ROUTE"
+              ]
+            },
+            "rollback_release_decision_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "rollback_runbook_artifact_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "rollback_runbook_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 64,
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "canary_completed_txid": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "revoked_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "aggregate_version": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "release_decision_id",
+            "task_definition_id",
+            "reason_code",
+            "rollback_strategy",
+            "rollback_release_decision_id",
+            "rollback_runbook_artifact_id",
+            "rollback_runbook_sha256",
+            "canary_completed_txid",
+            "revoked_at",
+            "aggregate_version"
+          ],
+          "x-raos-rollback-binding": "PREVIOUS_RELEASE uses rollback_release_decision_id; DISABLE_ROUTE uses rollback_runbook_artifact_id and rollback_runbook_sha256.",
+          "x-raos-server-owned-fields": [
+            "canary_completed_txid"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "producer",
+        "classification",
+        "event_version",
+        "dataschema",
+        "data"
+      ]
+    }
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

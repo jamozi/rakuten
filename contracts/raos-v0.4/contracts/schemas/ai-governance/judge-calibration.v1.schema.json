@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/judge-calibration/v1",
+  "title": "Judge Calibration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "display_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "evaluated_task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "judge_route_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "judge_prompt_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "resolved_judge_model_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "dataset_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "rubric_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "rubric_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "grader_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "weighted_kappa": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": -1,
+      "maximum": 1
+    },
+    "zero_tolerance_false_pass_rate": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "zero_tolerance_false_fail_rate": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "case_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "PASSED",
+        "FAILED",
+        "EXPIRED",
+        "RETIRED"
+      ]
+    },
+    "report_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lock_version": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "id",
+    "display_id",
+    "evaluated_task_definition_id",
+    "judge_route_version_id",
+    "judge_prompt_version_id",
+    "resolved_judge_model_id",
+    "dataset_version_id",
+    "rubric_artifact_id",
+    "rubric_sha256",
+    "grader_version",
+    "weighted_kappa",
+    "zero_tolerance_false_pass_rate",
+    "zero_tolerance_false_fail_rate",
+    "case_count",
+    "status",
+    "report_artifact_id",
+    "approved_by_principal_id",
+    "approved_at",
+    "expires_at",
+    "created_at",
+    "updated_at",
+    "lock_version"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PASSED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "weighted_kappa": {
+            "type": "number",
+            "minimum": 0.7,
+            "maximum": 1
+          },
+          "zero_tolerance_false_pass_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.01
+          },
+          "zero_tolerance_false_fail_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.05
+          },
+          "case_count": {
+            "type": "integer",
+            "minimum": 200
+          },
+          "report_artifact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "approved_by_principal_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "approved_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "weighted_kappa",
+          "zero_tolerance_false_pass_rate",
+          "zero_tolerance_false_fail_rate",
+          "case_count",
+          "report_artifact_id",
+          "approved_by_principal_id",
+          "approved_at",
+          "expires_at"
+        ]
+      }
+    }
+  ],
+  "x-raos-judge-calibration-scope-invariants": {
+    "applies_to_grader": "grader.model_judge.v1",
+    "calibration_resource": "JudgeCalibrationV1",
+    "required_calibration_status": "PASSED",
+    "calibration_must_be_unexpired": true,
+    "calibration_exact_bindings": [
+      "evaluated_task_definition_id",
+      "judge_route_version_id",
+      "judge_prompt_version_id",
+      "resolved_judge_model_id",
+      "dataset_version_id",
+      "rubric_artifact_id",
+      "rubric_sha256",
+      "grader_version"
+    ],
+    "evaluation_run_exact_matches": {
+      "JudgeCalibrationV1.evaluated_task_definition_id": "EvaluationSuiteV1.task_definition_id",
+      "JudgeCalibrationV1.dataset_version_id": "EvaluationRunV1.dataset_version_id"
+    },
+    "evaluation_metric_exact_matches": {
+      "JudgeCalibrationV1.id": "EvaluationResult.judge_calibration_id",
+      "JudgeCalibrationV1.judge_route_version_id": "EvaluationResult.judge_route_version_id",
+      "JudgeCalibrationV1.judge_prompt_version_id": "EvaluationResult.judge_prompt_version_id",
+      "JudgeCalibrationV1.rubric_artifact_id": "EvaluationResult.judge_rubric_artifact_id",
+      "JudgeCalibrationV1.resolved_judge_model_id": "EvaluationResult.judge_resolved_model_id",
+      "JudgeCalibrationV1.grader_version": "EvaluationResult.judge_grader_version"
+    },
+    "dataset_scope": {
+      "snapshot_match": "EXACT",
+      "domain_category_coverage": "SAME_DATASET_SNAPSHOT_INCLUDING_DOMAIN_AND_CATEGORY_SLICES"
+    }
+  }
+}

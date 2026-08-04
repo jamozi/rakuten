@@ -1,0 +1,102 @@
+document:
+  id: RAOS-UI-SLICES-001
+  version: '1.0'
+slices:
+- id: UI-SLICE-001
+  name: Design tokens and primitives
+  depends_on: []
+  deliverables:
+  - Token、Typography、Spacing、Focus、Status component
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-002
+  name: Admin shell and authentication
+  depends_on:
+  - UI-SLICE-001
+  deliverables:
+  - AppShell、OIDC callback、MFA、RBAC route guard
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-003
+  name: Public shell
+  depends_on:
+  - UI-SLICE-001
+  deliverables:
+  - Header/Footer/Breadcrumb/Policy pages
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-004
+  name: Portfolio and catalog workbench
+  depends_on:
+  - UI-SLICE-002
+  deliverables:
+  - Category、Keyword、Candidate、Identity
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-005
+  name: Evidence workspace
+  depends_on:
+  - UI-SLICE-004
+  deliverables:
+  - Source Packet、Fact、Conflict、Raw viewer
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-006
+  name: Editorial AST workspace
+  depends_on:
+  - UI-SLICE-005
+  deliverables:
+  - Article、AST、AI diff、Claim matrix
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-007
+  name: Review and approval
+  depends_on:
+  - UI-SLICE-006
+  deliverables:
+  - Checklist、Finding、Final approval
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-008
+  name: Publication and rollback
+  depends_on:
+  - UI-SLICE-007
+  deliverables:
+  - Preview、Publish、Rollback
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-009
+  name: Public article renderer
+  depends_on:
+  - UI-SLICE-003
+  - UI-SLICE-008
+  deliverables:
+  - Article、Comparison、CTA、Disclosure
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-010
+  name: Freshness and operations UI
+  depends_on:
+  - UI-SLICE-002
+  deliverables:
+  - Freshness、Job、DLQ、Incident、Kill switch
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-011
+  name: Analytics and finance UI
+  depends_on:
+  - UI-SLICE-002
+  deliverables:
+  - Dashboards、CSV dry run、reconciliation
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-SLICE-012
+  name: Accessibility and browser acceptance
+  depends_on:
+  - UI-SLICE-009
+  - UI-SLICE-010
+  - UI-SLICE-011
+  deliverables:
+  - Automated a11y、Keyboard、Screen reader、Responsive
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED

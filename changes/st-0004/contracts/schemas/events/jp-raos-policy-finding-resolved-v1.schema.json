@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-policy-finding-resolved-v1.schema.json",
+  "title": "jp.raos.policy.finding_resolved.v1",
+  "description": "Findingが解決または判断された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.policy.finding_resolved.v1"
+        },
+        "producer": {
+          "const": "policy"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "finding_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "status": {
+              "type": "string"
+            },
+            "resolved_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "finding_id",
+            "status",
+            "resolved_at"
+          ]
+        }
+      }
+    }
+  ]
+}

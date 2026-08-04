@@ -1,0 +1,33 @@
+document:
+  id: STATUS-ST0203-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-02T15:48:22Z'
+reason: >-
+  Record the local ST-0203 provider-neutral queue port, deterministic
+  manual-clock fake, failure-order injection, CI integration, and
+  content-addressed implementation evidence without claiming an external
+  broker/provider adapter, worker runtime, consumer idempotency store, hosted
+  CI run, formal CI-only TST-013, canonical apply, release, deployment,
+  staging, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0203
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-013
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0203-local-20260802.yaml
+        sha256: 4645a289bda7364a9e4dedd71570b9a8910ff6f98a6480577c88643c691cd9a6
+        observed_at: '2026-08-02T15:46:57Z'

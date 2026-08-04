@@ -1,0 +1,57 @@
+document:
+  id: RAOS-CONTENT-LINK-001
+  title: 内部リンクポリシー
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+policy_version: 1.0.0
+principles:
+- 利用者の次の意思決定を助けるLinkだけを置く
+- 公開済みCurrent Routeだけを参照する
+- URL文字列ではなくRoute IDを保持する
+- Anchorは遷移先を説明し、検索語の不自然な反復を避ける
+- Link候補生成はAI可、確定はRuleと人間Review
+- 孤立記事を検出する
+journey_edges:
+- from: selection_guide
+  to:
+  - product_comparison
+  - model_generation_capacity_difference
+  - condition_filtering
+  purpose: 具体候補・差分・制約へ進む
+- from: use_case_recommendation
+  to:
+  - selection_guide
+  - product_comparison
+  - condition_filtering
+  purpose: 選定理由・少数比較・条件調整
+- from: product_comparison
+  to:
+  - selection_guide
+  - model_generation_capacity_difference
+  - use_case_recommendation
+  purpose: カテゴリ軸・系列差・用途条件を補う
+- from: model_generation_capacity_difference
+  to:
+  - selection_guide
+  - product_comparison
+  purpose: カテゴリ判断・他系列との比較
+- from: condition_filtering
+  to:
+  - selection_guide
+  - product_comparison
+  - use_case_recommendation
+  purpose: 条件の理解・絞った候補の比較
+minimums:
+  contextual_links: 0 if no genuinely useful target; no quota-driven links
+  orphan_check: all indexable articles must have at least one discoverable path from category or another indexable page
+prohibited:
+- 未公開・paused・noindex Route
+- Redirect chainを意図的に指すLink
+- Affiliate LinkをInternal Linkとして扱う
+- 同一Anchorの機械的過剰反復
+- 関連性のない収益ページ誘導

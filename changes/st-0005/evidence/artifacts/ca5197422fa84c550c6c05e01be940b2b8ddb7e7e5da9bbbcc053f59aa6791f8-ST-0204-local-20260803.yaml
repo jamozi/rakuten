@@ -1,0 +1,115 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0204-20260803
+  schema_version: 1
+  recorded_at: '2026-08-02T17:51:11Z'
+story_id: ST-0204
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://.python-version
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab-.python-version
+    sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+  - original_uri: repo://pyproject.toml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/49f22688be24044ea08a5d86ffaff4fb226016d886441f6c39867123eb875664-pyproject.toml
+    sha256: 49f22688be24044ea08a5d86ffaff4fb226016d886441f6c39867123eb875664
+  - original_uri: repo://uv.lock
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/dde90fd7332134f79ff12d8b30830f19833530a6ac919e3b7cb2f904af49b256-uv.lock
+    sha256: dde90fd7332134f79ff12d8b30830f19833530a6ac919e3b7cb2f904af49b256
+  - original_uri: repo://uv.toml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37-uv.toml
+    sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+  - original_uri: repo://changes/st-0204/contracts/runtime-config.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c731b4bff5e40a6437fce778738250c6c9b7df293b5b29c71a0571bfe5050da2-runtime-config.v1.yaml
+    sha256: c731b4bff5e40a6437fce778738250c6c9b7df293b5b29c71a0571bfe5050da2
+  - original_uri: repo://changes/st-0204/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/4940a6403abd59850ed870e48678ba258b59d393af31613780caeb7b5a1d2213-README.md
+    sha256: 4940a6403abd59850ed870e48678ba258b59d393af31613780caeb7b5a1d2213
+  - original_uri: repo://docs/execplans/ST-0204.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/db666ac42c1b58d14d8c6b1b204004b82eca500435e1b01031ec113894a61d1d-ST-0204.md
+    sha256: db666ac42c1b58d14d8c6b1b204004b82eca500435e1b01031ec113894a61d1d
+  - original_uri: repo://docs/worklogs/ST-0204.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1999438dd17e4b5619e95c1c7f0972a822c574c180b5907174ba46cdcbd98712-ST-0204.md
+    sha256: 1999438dd17e4b5619e95c1c7f0972a822c574c180b5907174ba46cdcbd98712
+  - original_uri: repo://scripts/build_st0204_config_loader.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/cddf6d6560951f157f11eff5e9f0e23b8d8ab991c158896c07328d68a1af16d8-build_st0204_config_loader.py
+    sha256: cddf6d6560951f157f11eff5e9f0e23b8d8ab991c158896c07328d68a1af16d8
+  - original_uri: repo://scripts/build_st0201_postgres_service.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c-build_st0201_postgres_service.py
+    sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+  - original_uri: repo://python/raos/config/__init__.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e893d5e333ec1b4d84d74cb59a6cc4ac62672b493d5905c379ee4ebe9936c314-__init__.py
+    sha256: e893d5e333ec1b4d84d74cb59a6cc4ac62672b493d5905c379ee4ebe9936c314
+  - original_uri: repo://python/raos/config/runtime.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3-runtime.py
+    sha256: 2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3
+  - original_uri: repo://tests/st0204/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/815b438f7281388a0412b0644065ce2499a0db07e71474cb82c346cc1c7ac516-conftest.py
+    sha256: 815b438f7281388a0412b0644065ce2499a0db07e71474cb82c346cc1c7ac516
+  - original_uri: repo://tests/st0204/test_loader.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/0c83946c43ff022540eade9fadf4da2277f0db6f5f2be6e30dc720ffddc387ad-test_loader.py
+    sha256: 0c83946c43ff022540eade9fadf4da2277f0db6f5f2be6e30dc720ffddc387ad
+  - original_uri: repo://tests/st0204/test_negative_cases.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e773de7d9fdeb178cfdb87f8ea285a87365ee4b36cfaf9d302c9440f9497b138-test_negative_cases.py
+    sha256: e773de7d9fdeb178cfdb87f8ea285a87365ee4b36cfaf9d302c9440f9497b138
+  - original_uri: repo://tests/st0204/test_privacy.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6be2153a471974f353afd99f21a8facded33a1511f7ac24cd633bf62ac53d03c-test_privacy.py
+    sha256: 6be2153a471974f353afd99f21a8facded33a1511f7ac24cd633bf62ac53d03c
+  - original_uri: repo://tests/st0204/test_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9b08c0020aa6a83b9834348a093323a06cb4fde4b72587393640f356dfc9c367-test_contract.py
+    sha256: 9b08c0020aa6a83b9834348a093323a06cb4fde4b72587393640f356dfc9c367
+  - original_uri: repo://tests/st0204/test_generation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8d0986edb94818b94d6c5f1335a387a9f6698422638e30bf0906a7bca5039c2c-test_generation.py
+    sha256: 8d0986edb94818b94d6c5f1335a387a9f6698422638e30bf0906a7bca5039c2c
+  - original_uri: repo://tests/st0106/test_workflow_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/0ee3ec31313f763ea61f11b761dd5eace7e36065e4b946ba73ae435f6301e1db-test_workflow_contract.py
+    sha256: 0ee3ec31313f763ea61f11b761dd5eace7e36065e4b946ba73ae435f6301e1db
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3524f57f3261ae54d7ae62a2fc57d5c02f72f0ad9a91b895a57bf2aec2fa7f30-Makefile
+    sha256: 3524f57f3261ae54d7ae62a2fc57d5c02f72f0ad9a91b895a57bf2aec2fa7f30
+  - original_uri: repo://README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/dad90acbe484827f662ae31c36eb59fba2da7ec340289cfcec04c7a203aa06f0-README.md
+    sha256: dad90acbe484827f662ae31c36eb59fba2da7ec340289cfcec04c7a203aa06f0
+  - original_uri: repo://changes/st-0203/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c69fd5a7539d107e961559a90dbdad0101ebc8beacf318cd510aad14ed8fb97b-manifest.yaml
+    sha256: c69fd5a7539d107e961559a90dbdad0101ebc8beacf318cd510aad14ed8fb97b
+  - original_uri: repo://changes/st-0204/generated/runtime-config.v1.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/5633b01e4f660a048e57ca4501a6a7e66f4aeca8412ff36f8644e68d4e04006e-runtime-config.v1.schema.json
+    sha256: 5633b01e4f660a048e57ca4501a6a7e66f4aeca8412ff36f8644e68d4e04006e
+  - original_uri: repo://changes/st-0204/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a46ae19002a1c2c927f7448781a9a5e79a4836ea9e4636b374e7eb5661b2c0c8-manifest.yaml
+    sha256: a46ae19002a1c2c927f7448781a9a5e79a4836ea9e4636b374e7eb5661b2c0c8
+suite_results:
+  - suite_id: TST-005
+    environment: LOCAL
+    result: LOCAL_PASS
+  - suite_id: TST-031
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: uv run --locked --offline --no-cache --no-sync python scripts/build_st0204_config_loader.py --check
+    result: 'PASS; exact canonical and ST-0203 predecessor hashes, 22/22 source closure, deterministic schema and manifest rendering, pinned toolchain, and no-write check passed'
+  - command: network-denied uv run --locked --offline --no-cache --no-sync pytest -p no:cacheprovider -q tests/st0204
+    result: 'PASS; 178 loader, strict-type, JSON-bound, duplicate-member, schema-parity, generation, privacy, hostile-subclass, serialization, and negative tests passed'
+  - command: scripts/ci_job.sh --uv /absolute/path/to/uv --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js static
+    result: 'PASS under the asserted denied-network/PID/seccomp boundary; all generators, repository policy, Ruff, formatting, mypy, ESLint, TypeScript, and Pyright 0/0/0 passed'
+  - command: scripts/ci_job.sh --uv /absolute/path/to/uv --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js contracts
+    result: 'PASS; ST-0104 117 passed, ST-0105 53 passed, 306-artifact repository verification, deterministic generation, and strict TypeScript compilation passed'
+  - command: scripts/ci_job.sh --uv /absolute/path/to/uv --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js unit
+    result: 'PASS under the asserted denied-network/PID/seccomp boundary; 1,552 Python tests passed with 12 explicit environment skips across isolated Story processes, plus 4 exact Vitest tests passed; ST-0103 completed 97 tests in 696.18 seconds'
+  - command: scripts/run_network_denied.sh --home /home/minami -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree
+    result: 'PASS after final maintained-source and ST-0204 manifest generation; no maintained-worktree secret finding was emitted'
+  - command: sha256sum --quiet -c /tmp/st0202-protected-before.sha256
+    result: 'PASS for all 1,652 protected files; baseline-list SHA-256 4d8764b28aefe90fb8d97a4918764d51d28bebe368d3ef55afbb2a20dc6c73ff'
+  - command: independent ST-0204 source, security-boundary, schema-runtime parity, and remediation audit
+    result: 'PASS after remediation; Critical/High/Medium/Low = 0/0/0/0; 37,618 adversarial service, alias, and reference comparisons had zero mismatch; duplicate JSON, bytearray snapshot, subclass, normalization, pickle, and redaction probes passed'
+boundary: >-
+  Local strict typed configuration and Secret-reference loader, generated JSON
+  Schema, redacted-diagnostic and privacy tests, denied-network regression,
+  maintained-source secret scan, protected-file check, independent
+  source/security audit, and content-addressed capture evidence only. No Secret
+  value retrieval, Secret-manager/provider adapter, workload identity, rotation
+  hook, browser/client configuration, dotenv loading, hosted CI, staging privacy
+  validation, Security Owner review, formal TST-005 or TST-031, canonical APPLY,
+  release, deployment, staging, or production execution is asserted. Effective
+  canonical ST-0204 remains NOT_STARTED / NOT_EXECUTED. Final capture-closure,
+  status-bundle, and post-envelope secret checks follow this immutable snapshot.

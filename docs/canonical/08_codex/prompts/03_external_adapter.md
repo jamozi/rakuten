@@ -1,0 +1,1 @@
+Implement adapter story {{STORY_ID}} behind the existing port. Confirm current official provider documentation, record version/date, add sanitized success and failure fixtures, normalization, retry/circuit/budget behavior, and a disabled bounded live smoke test. Never log credentials or prohibited content.

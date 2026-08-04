@@ -1,0 +1,1 @@
+Synchronize documentation for story {{STORY_ID}} after implementation. Update API/schema/migration/runbook/ADR/status references without rewriting immutable upstream history. Preserve unresolved items and add evidence URIs. Regenerate manifests/checksums deterministically.

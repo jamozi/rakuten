@@ -1,0 +1,4035 @@
+document:
+  id: RAOS-API-001
+  version: '0.1'
+  status: BASELINE_CANDIDATE
+  date: '2026-07-30'
+  upstream:
+  - RAOS-REQ-001@0.1
+  - RAOS-ARCH-001@0.1
+  - RAOS-DATA-001@0.1
+standards:
+  openapi: 3.1.1
+  json_schema: 2020-12
+  problem_details: RFC 9457
+  trace_context: W3C Trace Context
+  oauth_security: RFC 9700
+conventions:
+  base_path: /api/v1
+  time: RFC3339 UTC
+  ids: UUIDv7 internal and stable display_id where present
+  pagination: opaque cursor, default 50, max 200
+  idempotency_header: Idempotency-Key
+  concurrency_headers:
+  - ETag
+  - If-Match
+  request_id_header: X-Request-ID
+  trace_headers:
+  - traceparent
+  - tracestate
+  success_envelope: resource directly; list uses items/page; asynchronous command uses JobAccepted
+  error_media_type: application/problem+json
+adrs:
+- id: API-ADR-001
+  status: accepted
+  decision: OpenAPI 3.1.1をHTTP契約正本とし、3.2固有機能をMVPで使用しない
+  rationale: FastAPIと主要Codegenの互換性を優先しながらJSON Schema 2020-12を利用する。
+- id: API-ADR-002
+  status: accepted
+  decision: Public、Admin、InternalのOpenAPI文書を分離する
+  rationale: Trust Boundary、認証、Rate Limit、公開範囲の誤混在を防ぐ。
+- id: API-ADR-003
+  status: accepted
+  decision: URI major versioningとして/api/v1を使用する
+  rationale: 破壊的変更は/v2、新規任意Fieldはv1内で追加可能とする。
+- id: API-ADR-004
+  status: accepted
+  decision: RFC 9457 Problem Detailsを唯一のHTTPエラー形式とする
+  rationale: 独自エラーEnvelope乱立を防ぎ、機械処理可能なcodeとviolationsを拡張する。
+- id: API-ADR-005
+  status: accepted
+  decision: 重要な状態変更CommandにIdempotency-Keyを必須化する
+  rationale: 二重Publish、二重承認、二重成果取込、二重Job作成を防止する。
+- id: API-ADR-006
+  status: accepted
+  decision: 編集可能Aggregateの更新にIf-Matchを必須化する
+  rationale: last-write-winsを禁止し、lock_version由来ETagで競合を検出する。
+- id: API-ADR-007
+  status: accepted
+  decision: 長時間処理は202 Accepted＋JobResourceを返す
+  rationale: 外部API、AI、品質、公開、ImportをHTTP request lifecycleから分離する。
+- id: API-ADR-008
+  status: accepted
+  decision: EventとJobを別メッセージ種別として定義する
+  rationale: Eventは過去事実、Jobは実行要求であり、再送・失敗・責任が異なる。
+- id: API-ADR-009
+  status: accepted
+  decision: Domain Event EnvelopeはCloudEvents互換フィールドを持つ
+  rationale: event ID、source、type、subject、time、data schemaを標準化する。
+- id: API-ADR-010
+  status: accepted
+  decision: AsyncAPI 3.0互換構文で論理Channelを記述する
+  rationale: 現行3.1仕様に適合しつつ、利用ツールの3.0互換性を確保する。
+- id: API-ADR-011
+  status: accepted
+  decision: Event/Job/AI OutputはJSON Schema 2020-12を単独ファイルで管理する
+  rationale: Provider SDKやPydantic内部Schemaを外部契約正本にしない。
+- id: API-ADR-012
+  status: accepted
+  decision: Cursor paginationを標準としoffset paginationを禁止する
+  rationale: 更新中の一覧でも重複・欠落を抑え、大規模化に耐える。
+- id: API-ADR-013
+  status: accepted
+  decision: Affiliate click endpointは204を即時返し、楽天Navigationを待たせない
+  rationale: 計測失敗が購入導線を阻害しない。
+- id: API-ADR-014
+  status: accepted
+  decision: 楽天Affiliate URLはrequest payloadに受け取らない
+  rationale: Catalog projectionに保存済みの公式URLを参照し、改変経路を作らない。
+- id: API-ADR-015
+  status: accepted
+  decision: 公開APIはreadmodelのみを返し内部ID・原本・AI情報を露出しない
+  rationale: One-way public boundaryを契約で固定する。
+- id: API-ADR-016
+  status: accepted
+  decision: 管理APIはOIDC Bearer Token＋RBAC scopeを使用する
+  rationale: Cookie認証に依存せず、操作単位の最小権限を表現する。
+- id: API-ADR-017
+  status: accepted
+  decision: Internal APIはPrivate Network＋Service Identity限定とする
+  rationale: Scheduler等のControl Plane以外はQueueを一次経路とする。
+- id: API-ADR-018
+  status: accepted
+  decision: Event/Job payloadに秘密、原本文、Affiliate URL全文を含めない
+  rationale: 漏えい面積、Queue制限、ログ汚染を減らす。
+- id: API-ADR-019
+  status: accepted
+  decision: 大きな入力・出力はObjectArtifact参照とSHA-256で渡す
+  rationale: SQS等のMessage size制約と不変原本を両立する。
+- id: API-ADR-020
+  status: accepted
+  decision: API responseに推定値とProvider Factのprovenanceを明示する
+  rationale: 成果・帰属・計測を誤認させない。
+- id: API-ADR-021
+  status: accepted
+  decision: 推薦編集APIから料率・利益Fieldを除外する
+  rationale: 編集順位とAffiliate economicsを構造的に分離する。
+- id: API-ADR-022
+  status: accepted
+  decision: CSV Uploadはpresigned upload session→scan→dry run→confirmとする
+  rationale: 巨大multipart、Formula Injection、重複原本、無確認Importを防ぐ。
+- id: API-ADR-023
+  status: accepted
+  decision: Schema registryは互換性モードBACKWARD_TRANSITIVEを基本とする
+  rationale: 既存Consumerが新しいProducer Eventを処理できることを保証する。
+- id: API-ADR-024
+  status: accepted
+  decision: DeprecationとSunset headerを廃止プロセスに使用する
+  rationale: 暗黙的なEndpoint撤去を禁止する。
+- id: API-ADR-025
+  status: accepted
+  decision: traceparent、X-Request-ID、correlation_idをHTTPからJob/Eventへ伝播する
+  rationale: 1操作の監査・障害調査・費用配賦を連結する。
+- id: API-ADR-026
+  status: accepted
+  decision: GET以外の監査対象操作はAudit Eventを同一Transactionで記録する
+  rationale: 通知やログだけを監査正本としない。
+- id: API-ADR-027
+  status: accepted
+  decision: 公開・Affiliate Kill SwitchはCommand APIとruntime projectionの双方で強制する
+  rationale: 古いWeb cacheや古いJobが停止状態を上書きしない。
+- id: API-ADR-028
+  status: accepted
+  decision: OpenAPIからTypeScript clientを生成し手書きHTTP clientを禁止する
+  rationale: UIとAPIの契約driftをCIで検知する。
+- id: API-ADR-029
+  status: accepted
+  decision: Job statusを上位アーキテクチャの10状態へDB整合させる
+  rationale: retryable/terminal/expiredをAPIと運用で区別できるようにする。
+- id: API-ADR-030
+  status: accepted
+  decision: 実装PRはOperation ID・Event type・Job type・Requirement IDをテスト名へ保持する
+  rationale: Codex実装のトレーサビリティを自動検査する。
+operations:
+- id: PUB-001
+  surface: public
+  method: GET
+  path: /api/v1/public/articles/{slug}
+  tag: Public
+  summary: 公開記事を取得
+  resource: null
+  request_schema: null
+  response_schema: PublicArticleDocument
+  kind: query
+  auth: none
+  scopes: []
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-010
+  - FR-019
+  implementation_slice: SLICE-016
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUB-002
+  surface: public
+  method: GET
+  path: /api/v1/public/routes/resolve
+  tag: Public
+  summary: 公開Routeを解決
+  resource: null
+  request_schema: null
+  response_schema: PublicRoute
+  kind: query
+  auth: none
+  scopes: []
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-010
+  implementation_slice: SLICE-016
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - path
+- id: PUB-003
+  surface: public
+  method: GET
+  path: /api/v1/public/runtime-control
+  tag: Public
+  summary: 公開制御Projectionを取得
+  resource: null
+  request_schema: null
+  response_schema: RuntimeControl
+  kind: query
+  auth: none
+  scopes: []
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-019
+  implementation_slice: SLICE-022
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUB-004
+  surface: public
+  method: POST
+  path: /api/v1/events/click
+  tag: Public
+  summary: Affiliate click beaconを記録
+  resource: null
+  request_schema: AffiliateClickInput
+  response_schema: null
+  kind: event_ingest
+  auth: none
+  scopes: []
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 204
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-017
+  audit_action: null
+  error_codes:
+  - RAOS-RATE-001
+  - RAOS-REQ-001
+  notes:
+  - Navigation must not wait for this response.
+  - Affiliate URL must not be included in payload.
+  filters: []
+- id: SYS-001
+  surface: public
+  method: GET
+  path: /api/v1/health/live
+  tag: System
+  summary: Livenessを取得
+  resource: null
+  request_schema: null
+  response_schema: HealthStatus
+  kind: query
+  auth: none
+  scopes: []
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: []
+  implementation_slice: SLICE-001
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: SYS-002
+  surface: public
+  method: GET
+  path: /api/v1/health/ready
+  tag: System
+  summary: Readinessを取得
+  resource: null
+  request_schema: null
+  response_schema: ReadinessStatus
+  kind: query
+  auth: none
+  scopes: []
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: []
+  implementation_slice: SLICE-002
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: IAM-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/me
+  tag: IAM
+  summary: 現在Principalと権限を取得
+  resource: null
+  request_schema: null
+  response_schema: CurrentPrincipal
+  kind: query
+  auth: admin
+  scopes:
+  - iam:me:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-005
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: IAM-002
+  surface: admin
+  method: GET
+  path: /api/v1/admin/roles
+  tag: IAM
+  summary: Role一覧を取得
+  resource: null
+  request_schema: null
+  response_schema: RoleList
+  kind: query
+  auth: admin
+  scopes:
+  - iam:role:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: []
+  implementation_slice: SLICE-005
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: IAM-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/permissions
+  tag: IAM
+  summary: Permission一覧を取得
+  resource: null
+  request_schema: null
+  response_schema: PermissionList
+  kind: query
+  auth: admin
+  scopes:
+  - iam:permission:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: []
+  implementation_slice: SLICE-005
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: IAM-004
+  surface: admin
+  method: POST
+  path: /api/v1/admin/session-revocations
+  tag: IAM
+  summary: Sessionを失効
+  resource: null
+  request_schema: SessionRevocationRequest
+  response_schema: GenericResource
+  kind: command
+  auth: admin
+  scopes:
+  - iam:session:revoke
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-005
+  audit_action: session_revoke
+  error_codes: []
+  notes: []
+  filters: []
+- id: SITE-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/sites
+  tag: Portfolio
+  summary: Site一覧を取得
+  resource: Site
+  request_schema: null
+  response_schema: SiteList
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:site:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: &id001
+  - FR-001
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - cursor
+  - limit
+  - status
+  - site_id
+- id: SITE-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/sites
+  tag: Portfolio
+  summary: Siteを作成
+  resource: Site
+  request_schema: SiteCreateRequest
+  response_schema: Site
+  kind: command
+  auth: admin
+  scopes:
+  - portfolio:site:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements: *id001
+  implementation_slice: SLICE-006
+  audit_action: site_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: SITE-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/sites/{id}
+  tag: Portfolio
+  summary: Siteを取得
+  resource: Site
+  request_schema: null
+  response_schema: Site
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:site:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: *id001
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: SITE-004
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/sites/{id}
+  tag: Portfolio
+  summary: Siteを更新
+  resource: Site
+  request_schema: SiteUpdateRequest
+  response_schema: Site
+  kind: command
+  auth: admin
+  scopes:
+  - portfolio:site:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements: *id001
+  implementation_slice: SLICE-006
+  audit_action: site_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: CATG-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/categories
+  tag: Portfolio
+  summary: Category一覧を取得
+  resource: Category
+  request_schema: null
+  response_schema: CategoryList
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:category:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: &id002
+  - FR-001
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - cursor
+  - limit
+  - status
+  - site_id
+- id: CATG-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/categories
+  tag: Portfolio
+  summary: Categoryを作成
+  resource: Category
+  request_schema: CategoryCreateRequest
+  response_schema: Category
+  kind: command
+  auth: admin
+  scopes:
+  - portfolio:category:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements: *id002
+  implementation_slice: SLICE-006
+  audit_action: category_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: CATG-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/categories/{id}
+  tag: Portfolio
+  summary: Categoryを取得
+  resource: Category
+  request_schema: null
+  response_schema: Category
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:category:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: *id002
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: CATG-004
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/categories/{id}
+  tag: Portfolio
+  summary: Categoryを更新
+  resource: Category
+  request_schema: CategoryUpdateRequest
+  response_schema: Category
+  kind: command
+  auth: admin
+  scopes:
+  - portfolio:category:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements: *id002
+  implementation_slice: SLICE-006
+  audit_action: category_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: INTENT-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/intent-clusters
+  tag: Portfolio
+  summary: IntentCluster一覧を取得
+  resource: IntentCluster
+  request_schema: null
+  response_schema: IntentClusterList
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:intent:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: &id003
+  - FR-001
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - cursor
+  - limit
+  - status
+  - site_id
+- id: INTENT-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/intent-clusters
+  tag: Portfolio
+  summary: IntentClusterを作成
+  resource: IntentCluster
+  request_schema: IntentClusterCreateRequest
+  response_schema: IntentCluster
+  kind: command
+  auth: admin
+  scopes:
+  - portfolio:intent:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements: *id003
+  implementation_slice: SLICE-006
+  audit_action: intentcluster_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: INTENT-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/intent-clusters/{id}
+  tag: Portfolio
+  summary: IntentClusterを取得
+  resource: IntentCluster
+  request_schema: null
+  response_schema: IntentCluster
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:intent:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: *id003
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: INTENT-004
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/intent-clusters/{id}
+  tag: Portfolio
+  summary: IntentClusterを更新
+  resource: IntentCluster
+  request_schema: IntentClusterUpdateRequest
+  response_schema: IntentCluster
+  kind: command
+  auth: admin
+  scopes:
+  - portfolio:intent:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements: *id003
+  implementation_slice: SLICE-006
+  audit_action: intentcluster_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: KEY-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/keywords
+  tag: Portfolio
+  summary: Keyword一覧を取得
+  resource: Keyword
+  request_schema: null
+  response_schema: KeywordList
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:keyword:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: &id004
+  - FR-001
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - cursor
+  - limit
+  - status
+  - site_id
+- id: KEY-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/keywords
+  tag: Portfolio
+  summary: Keywordを作成
+  resource: Keyword
+  request_schema: KeywordCreateRequest
+  response_schema: Keyword
+  kind: command
+  auth: admin
+  scopes:
+  - portfolio:keyword:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements: *id004
+  implementation_slice: SLICE-006
+  audit_action: keyword_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: KEY-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/keywords/{id}
+  tag: Portfolio
+  summary: Keywordを取得
+  resource: Keyword
+  request_schema: null
+  response_schema: Keyword
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:keyword:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: *id004
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: KEY-004
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/keywords/{id}
+  tag: Portfolio
+  summary: Keywordを更新
+  resource: Keyword
+  request_schema: KeywordUpdateRequest
+  response_schema: Keyword
+  kind: command
+  auth: admin
+  scopes:
+  - portfolio:keyword:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements: *id004
+  implementation_slice: SLICE-006
+  audit_action: keyword_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: PORT-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/opportunity-assessments
+  tag: Portfolio
+  summary: 機会評価一覧を取得
+  resource: OpportunityAssessment
+  request_schema: null
+  response_schema: OpportunityAssessmentList
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:assessment:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-005
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - category_id
+  - keyword_id
+  - decision
+  - cursor
+  - limit
+- id: PORT-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/opportunity-assessments
+  tag: Portfolio
+  summary: 機会評価Jobを要求
+  resource: null
+  request_schema: OpportunityAssessmentRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - portfolio:assessment:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: portfolio.assess_opportunity.v1
+  success_status: 202
+  requirements:
+  - FR-005
+  - FR-016
+  implementation_slice: SLICE-006
+  audit_action: opportunity_assessment_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: PORT-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/action-candidates
+  tag: Portfolio
+  summary: Action Candidate一覧を取得
+  resource: ActionCandidate
+  request_schema: null
+  response_schema: ActionCandidateList
+  kind: query
+  auth: admin
+  scopes:
+  - portfolio:action:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-016
+  implementation_slice: SLICE-021
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - action_type
+  - status
+  - category_id
+  - cursor
+  - limit
+- id: PORT-004
+  surface: admin
+  method: POST
+  path: /api/v1/admin/action-candidates/{id}/decision
+  tag: Portfolio
+  summary: Action Candidateを判断
+  resource: ActionCandidate
+  request_schema: ActionDecisionRequest
+  response_schema: ActionCandidate
+  kind: command
+  auth: admin
+  scopes:
+  - portfolio:action:decide
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-016
+  implementation_slice: SLICE-021
+  audit_action: action_candidate_decide
+  error_codes: []
+  notes: []
+  filters: []
+- id: CAT-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/catalog/ingestions
+  tag: Catalog
+  summary: 取込要求一覧を取得
+  resource: IngestionRequest
+  request_schema: null
+  response_schema: IngestionRequestList
+  kind: query
+  auth: admin
+  scopes:
+  - catalog:ingestion:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-002
+  implementation_slice: SLICE-008
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - status
+  - operation
+  - cursor
+  - limit
+- id: CAT-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/catalog/ingestions
+  tag: Catalog
+  summary: 楽天取込Jobを要求
+  resource: null
+  request_schema: RakutenIngestionRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - catalog:ingestion:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: catalog.rakuten_item_search.v1
+  success_status: 202
+  requirements:
+  - FR-002
+  - FR-004
+  implementation_slice: SLICE-008
+  audit_action: catalog_ingestion_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: CAT-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/catalog/ingestions/{id}
+  tag: Catalog
+  summary: 取込要求を取得
+  resource: IngestionRequest
+  request_schema: null
+  response_schema: IngestionRequest
+  kind: query
+  auth: admin
+  scopes:
+  - catalog:ingestion:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-002
+  implementation_slice: SLICE-008
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: CAT-004
+  surface: admin
+  method: GET
+  path: /api/v1/admin/catalog/product-candidates
+  tag: Catalog
+  summary: 商品候補一覧を取得
+  resource: ProductCandidate
+  request_schema: null
+  response_schema: ProductCandidateList
+  kind: query
+  auth: admin
+  scopes:
+  - catalog:candidate:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-003
+  implementation_slice: SLICE-009
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - listing_status
+  - shop_id
+  - unresolved_only
+  - cursor
+  - limit
+- id: CAT-005
+  surface: admin
+  method: GET
+  path: /api/v1/admin/catalog/product-candidates/{id}
+  tag: Catalog
+  summary: 商品候補を取得
+  resource: ProductCandidate
+  request_schema: null
+  response_schema: ProductCandidate
+  kind: query
+  auth: admin
+  scopes:
+  - catalog:candidate:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-003
+  implementation_slice: SLICE-009
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: CAT-006
+  surface: admin
+  method: POST
+  path: /api/v1/admin/catalog/grouping-decisions
+  tag: Catalog
+  summary: 商品Grouping判断を記録
+  resource: null
+  request_schema: GroupingDecisionRequest
+  response_schema: GroupingDecision
+  kind: command
+  auth: admin
+  scopes:
+  - catalog:grouping:decide
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-003
+  implementation_slice: SLICE-009
+  audit_action: grouping_decision_record
+  error_codes: []
+  notes: []
+  filters: []
+- id: CAT-007
+  surface: admin
+  method: GET
+  path: /api/v1/admin/catalog/products
+  tag: Catalog
+  summary: Canonical Product一覧を取得
+  resource: CanonicalProduct
+  request_schema: null
+  response_schema: CanonicalProductList
+  kind: query
+  auth: admin
+  scopes:
+  - catalog:product:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-003
+  implementation_slice: SLICE-009
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - category_id
+  - lifecycle_status
+  - brand_name
+  - cursor
+  - limit
+- id: CAT-008
+  surface: admin
+  method: POST
+  path: /api/v1/admin/catalog/products
+  tag: Catalog
+  summary: Canonical Productを手動作成
+  resource: CanonicalProduct
+  request_schema: CanonicalProductCreateRequest
+  response_schema: CanonicalProduct
+  kind: command
+  auth: admin
+  scopes:
+  - catalog:product:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-003
+  implementation_slice: SLICE-009
+  audit_action: canonical_product_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: CAT-009
+  surface: admin
+  method: GET
+  path: /api/v1/admin/catalog/products/{id}
+  tag: Catalog
+  summary: Canonical Productを取得
+  resource: CanonicalProduct
+  request_schema: null
+  response_schema: CanonicalProduct
+  kind: query
+  auth: admin
+  scopes:
+  - catalog:product:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-003
+  implementation_slice: SLICE-009
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: CAT-010
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/catalog/products/{id}
+  tag: Catalog
+  summary: Canonical Productを更新
+  resource: CanonicalProduct
+  request_schema: CanonicalProductUpdateRequest
+  response_schema: CanonicalProduct
+  kind: command
+  auth: admin
+  scopes:
+  - catalog:product:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-003
+  - FR-004
+  implementation_slice: SLICE-009
+  audit_action: canonical_product_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: CAT-011
+  surface: admin
+  method: GET
+  path: /api/v1/admin/catalog/offers
+  tag: Catalog
+  summary: Offer一覧を取得
+  resource: Offer
+  request_schema: null
+  response_schema: OfferList
+  kind: query
+  auth: admin
+  scopes:
+  - catalog:offer:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-004
+  - FR-011
+  - FR-012
+  implementation_slice: SLICE-009
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - product_id
+  - shop_id
+  - status
+  - freshness_status
+  - cursor
+  - limit
+- id: CAT-012
+  surface: admin
+  method: GET
+  path: /api/v1/admin/catalog/offers/{id}
+  tag: Catalog
+  summary: Offerと安全なCurrent Projectionを取得
+  resource: Offer
+  request_schema: null
+  response_schema: OfferDetail
+  kind: query
+  auth: admin
+  scopes:
+  - catalog:offer:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-004
+  - FR-011
+  - FR-012
+  implementation_slice: SLICE-009
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: CAT-013
+  surface: admin
+  method: POST
+  path: /api/v1/admin/catalog/offers/refresh
+  tag: Catalog
+  summary: Offer情報更新Jobを要求
+  resource: null
+  request_schema: OfferRefreshRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - catalog:offer:refresh
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: catalog.refresh_offer.v1
+  success_status: 202
+  requirements:
+  - FR-011
+  - FR-012
+  implementation_slice: SLICE-018
+  audit_action: offer_refresh_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/evidence/sources
+  tag: Evidence
+  summary: Source一覧を取得
+  resource: Source
+  request_schema: null
+  response_schema: SourceList
+  kind: query
+  auth: admin
+  scopes:
+  - evidence:source:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-004
+  implementation_slice: SLICE-010
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - source_type
+  - status
+  - cursor
+  - limit
+- id: EVD-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/evidence/sources
+  tag: Evidence
+  summary: Sourceを登録
+  resource: Source
+  request_schema: SourceCreateRequest
+  response_schema: Source
+  kind: command
+  auth: admin
+  scopes:
+  - evidence:source:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-004
+  implementation_slice: SLICE-010
+  audit_action: source_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/evidence/sources/{id}
+  tag: Evidence
+  summary: Sourceを取得
+  resource: Source
+  request_schema: null
+  response_schema: Source
+  kind: query
+  auth: admin
+  scopes:
+  - evidence:source:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-004
+  implementation_slice: SLICE-010
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-004
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/evidence/sources/{id}
+  tag: Evidence
+  summary: Sourceを更新
+  resource: Source
+  request_schema: SourceUpdateRequest
+  response_schema: Source
+  kind: command
+  auth: admin
+  scopes:
+  - evidence:source:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-004
+  implementation_slice: SLICE-010
+  audit_action: source_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-005
+  surface: admin
+  method: POST
+  path: /api/v1/admin/evidence/source-snapshots/capture
+  tag: Evidence
+  summary: Source Snapshot取得Jobを要求
+  resource: null
+  request_schema: CaptureSourceSnapshotRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - evidence:snapshot:capture
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: evidence.capture_source_snapshot.v1
+  success_status: 202
+  requirements:
+  - FR-004
+  implementation_slice: SLICE-010
+  audit_action: source_snapshot_capture_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-006
+  surface: admin
+  method: GET
+  path: /api/v1/admin/evidence/source-snapshots
+  tag: Evidence
+  summary: Source Snapshot一覧を取得
+  resource: SourceSnapshot
+  request_schema: null
+  response_schema: SourceSnapshotList
+  kind: query
+  auth: admin
+  scopes:
+  - evidence:snapshot:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-004
+  implementation_slice: SLICE-010
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - source_id
+  - validation_status
+  - cursor
+  - limit
+- id: EVD-007
+  surface: admin
+  method: GET
+  path: /api/v1/admin/evidence/facts
+  tag: Evidence
+  summary: Fact一覧を取得
+  resource: Fact
+  request_schema: null
+  response_schema: FactList
+  kind: query
+  auth: admin
+  scopes:
+  - evidence:fact:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-004
+  - FR-007
+  implementation_slice: SLICE-010
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - subject_type
+  - subject_id
+  - predicate
+  - valid_at
+  - cursor
+  - limit
+- id: EVD-008
+  surface: admin
+  method: POST
+  path: /api/v1/admin/evidence/facts
+  tag: Evidence
+  summary: 手動検証Factを記録
+  resource: null
+  request_schema: FactCreateRequest
+  response_schema: Fact
+  kind: command
+  auth: admin
+  scopes:
+  - evidence:fact:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-004
+  - FR-007
+  implementation_slice: SLICE-010
+  audit_action: fact_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-009
+  surface: admin
+  method: GET
+  path: /api/v1/admin/evidence/source-packets
+  tag: Evidence
+  summary: Source Packet一覧を取得
+  resource: SourcePacket
+  request_schema: null
+  response_schema: SourcePacketList
+  kind: query
+  auth: admin
+  scopes:
+  - evidence:packet:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-006
+  implementation_slice: SLICE-010
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - article_plan_id
+  - status
+  - cursor
+  - limit
+- id: EVD-010
+  surface: admin
+  method: POST
+  path: /api/v1/admin/evidence/source-packets/build
+  tag: Evidence
+  summary: Source Packet構築Jobを要求
+  resource: null
+  request_schema: SourcePacketBuildRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - evidence:packet:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: evidence.build_source_packet.v1
+  success_status: 202
+  requirements:
+  - FR-006
+  - FR-007
+  implementation_slice: SLICE-010
+  audit_action: source_packet_build_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-011
+  surface: admin
+  method: GET
+  path: /api/v1/admin/evidence/source-packets/{id}
+  tag: Evidence
+  summary: Source Packetを取得
+  resource: SourcePacket
+  request_schema: null
+  response_schema: SourcePacketDetail
+  kind: query
+  auth: admin
+  scopes:
+  - evidence:packet:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-006
+  - FR-007
+  implementation_slice: SLICE-010
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-012
+  surface: admin
+  method: GET
+  path: /api/v1/admin/evidence/source-packet-versions/{id}
+  tag: Evidence
+  summary: Source Packet Versionを取得
+  resource: SourcePacketVersion
+  request_schema: null
+  response_schema: SourcePacketVersion
+  kind: query
+  auth: admin
+  scopes:
+  - evidence:packet:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-006
+  - FR-007
+  implementation_slice: SLICE-010
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-013
+  surface: admin
+  method: POST
+  path: /api/v1/admin/evidence/source-packet-versions/{id}/decision
+  tag: Evidence
+  summary: Source Packet Versionを承認または拒否
+  resource: null
+  request_schema: SourcePacketDecisionRequest
+  response_schema: SourcePacketVersion
+  kind: command
+  auth: admin
+  scopes:
+  - evidence:packet:approve
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-006
+  implementation_slice: SLICE-010
+  audit_action: source_packet_decision
+  error_codes: []
+  notes: []
+  filters: []
+- id: EVD-014
+  surface: admin
+  method: GET
+  path: /api/v1/admin/evidence/claims
+  tag: Evidence
+  summary: Claimと根拠状態を取得
+  resource: Claim
+  request_schema: null
+  response_schema: ClaimList
+  kind: query
+  auth: admin
+  scopes:
+  - evidence:claim:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-007
+  - FR-008
+  implementation_slice: SLICE-013
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - article_version_id
+  - support_status
+  - criticality
+  - cursor
+  - limit
+- id: ED-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/article-plans
+  tag: Editorial
+  summary: Article Plan一覧を取得
+  resource: ArticlePlan
+  request_schema: null
+  response_schema: ArticlePlanList
+  kind: query
+  auth: admin
+  scopes:
+  - editorial:plan:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-001
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - site_id
+  - category_id
+  - status
+  - cursor
+  - limit
+- id: ED-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/article-plans
+  tag: Editorial
+  summary: Article Planを作成
+  resource: ArticlePlan
+  request_schema: ArticlePlanCreateRequest
+  response_schema: ArticlePlan
+  kind: command
+  auth: admin
+  scopes:
+  - editorial:plan:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-001
+  - FR-005
+  implementation_slice: SLICE-006
+  audit_action: article_plan_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/article-plans/{id}
+  tag: Editorial
+  summary: Article Planを取得
+  resource: ArticlePlan
+  request_schema: null
+  response_schema: ArticlePlan
+  kind: query
+  auth: admin
+  scopes:
+  - editorial:plan:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-001
+  implementation_slice: SLICE-006
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-004
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/article-plans/{id}
+  tag: Editorial
+  summary: Article Planを更新
+  resource: ArticlePlan
+  request_schema: ArticlePlanUpdateRequest
+  response_schema: ArticlePlan
+  kind: command
+  auth: admin
+  scopes:
+  - editorial:plan:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-001
+  - FR-005
+  implementation_slice: SLICE-006
+  audit_action: article_plan_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-005
+  surface: admin
+  method: POST
+  path: /api/v1/admin/article-plans/{id}/articles
+  tag: Editorial
+  summary: PlanからArticleを作成
+  resource: null
+  request_schema: ArticleCreateFromPlanRequest
+  response_schema: Article
+  kind: command
+  auth: admin
+  scopes:
+  - editorial:article:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-001
+  implementation_slice: SLICE-012
+  audit_action: article_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-006
+  surface: admin
+  method: GET
+  path: /api/v1/admin/articles
+  tag: Editorial
+  summary: Article一覧を取得
+  resource: Article
+  request_schema: null
+  response_schema: ArticleList
+  kind: query
+  auth: admin
+  scopes:
+  - editorial:article:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-001
+  implementation_slice: SLICE-012
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - site_id
+  - category_id
+  - status
+  - article_type
+  - cursor
+  - limit
+- id: ED-007
+  surface: admin
+  method: GET
+  path: /api/v1/admin/articles/{id}
+  tag: Editorial
+  summary: Articleを取得
+  resource: Article
+  request_schema: null
+  response_schema: ArticleDetail
+  kind: query
+  auth: admin
+  scopes:
+  - editorial:article:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-001
+  - FR-007
+  implementation_slice: SLICE-012
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-008
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/articles/{id}
+  tag: Editorial
+  summary: Article状態を更新
+  resource: Article
+  request_schema: ArticleUpdateRequest
+  response_schema: Article
+  kind: command
+  auth: admin
+  scopes:
+  - editorial:article:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-001
+  implementation_slice: SLICE-012
+  audit_action: article_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-009
+  surface: admin
+  method: POST
+  path: /api/v1/admin/articles/{id}/versions
+  tag: Editorial
+  summary: Article Versionを作成
+  resource: ArticleVersion
+  request_schema: ArticleVersionCreateRequest
+  response_schema: ArticleVersion
+  kind: command
+  auth: admin
+  scopes:
+  - editorial:version:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-007
+  implementation_slice: SLICE-012
+  audit_action: article_version_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-010
+  surface: admin
+  method: GET
+  path: /api/v1/admin/article-versions/{id}
+  tag: Editorial
+  summary: Article VersionとASTを取得
+  resource: ArticleVersion
+  request_schema: null
+  response_schema: ArticleVersionDetail
+  kind: query
+  auth: admin
+  scopes:
+  - editorial:version:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-007
+  - FR-008
+  implementation_slice: SLICE-012
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-011
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/article-versions/{id}
+  tag: Editorial
+  summary: Article VersionとASTを更新
+  resource: ArticleVersion
+  request_schema: ArticleVersionPatchRequest
+  response_schema: ArticleVersionDetail
+  kind: command
+  auth: admin
+  scopes:
+  - editorial:version:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-007
+  - FR-008
+  implementation_slice: SLICE-012
+  audit_action: article_version_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-012
+  surface: admin
+  method: POST
+  path: /api/v1/admin/article-plans/{id}/generate-draft
+  tag: Editorial
+  summary: AI Draft生成Jobを要求
+  resource: null
+  request_schema: GenerateDraftRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - editorial:draft:generate
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: ai.generate_article_draft.v1
+  success_status: 202
+  requirements:
+  - FR-006
+  - FR-007
+  - FR-018
+  implementation_slice: SLICE-012
+  audit_action: draft_generation_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-013
+  surface: admin
+  method: GET
+  path: /api/v1/admin/article-versions/{id}/comments
+  tag: Editorial
+  summary: Review Comment一覧を取得
+  resource: ReviewComment
+  request_schema: null
+  response_schema: ReviewCommentList
+  kind: query
+  auth: admin
+  scopes:
+  - editorial:comment:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-009
+  implementation_slice: SLICE-014
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-014
+  surface: admin
+  method: POST
+  path: /api/v1/admin/article-versions/{id}/comments
+  tag: Editorial
+  summary: Review Commentを追加
+  resource: null
+  request_schema: ReviewCommentCreateRequest
+  response_schema: ReviewComment
+  kind: command
+  auth: admin
+  scopes:
+  - editorial:comment:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-009
+  implementation_slice: SLICE-014
+  audit_action: review_comment_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: ED-015
+  surface: admin
+  method: POST
+  path: /api/v1/admin/articles/{id}/links
+  tag: Editorial
+  summary: 内部リンク候補を登録
+  resource: null
+  request_schema: ArticleLinkCreateRequest
+  response_schema: GenericResource
+  kind: command
+  auth: admin
+  scopes:
+  - editorial:link:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-016
+  implementation_slice: SLICE-021
+  audit_action: article_link_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: AI-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ai/jobs
+  tag: AI
+  summary: AI Job一覧を取得
+  resource: AIJob
+  request_schema: null
+  response_schema: AIJobList
+  kind: query
+  auth: admin
+  scopes:
+  - ai:job:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-018
+  implementation_slice: SLICE-011
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - status
+  - task_code
+  - article_id
+  - cursor
+  - limit
+- id: AI-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/ai/jobs
+  tag: AI
+  summary: AI Jobを明示要求
+  resource: null
+  request_schema: AIJobRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - ai:job:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: ai.generic_task.v1
+  success_status: 202
+  requirements:
+  - FR-006
+  - FR-018
+  implementation_slice: SLICE-011
+  audit_action: ai_job_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: AI-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ai/jobs/{id}
+  tag: AI
+  summary: AI Job詳細を取得
+  resource: AIJob
+  request_schema: null
+  response_schema: AIJobDetail
+  kind: query
+  auth: admin
+  scopes:
+  - ai:job:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-018
+  implementation_slice: SLICE-011
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: AI-004
+  surface: admin
+  method: POST
+  path: /api/v1/admin/ai/jobs/{id}/cancel
+  tag: AI
+  summary: AI Jobを取消要求
+  resource: null
+  request_schema: JobCancelRequest
+  response_schema: Job
+  kind: command
+  auth: admin
+  scopes:
+  - ai:job:cancel
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-018
+  implementation_slice: SLICE-011
+  audit_action: ai_job_cancel
+  error_codes: []
+  notes: []
+  filters: []
+- id: AI-005
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ai/prompt-versions
+  tag: AI
+  summary: Prompt Version一覧を取得
+  resource: PromptVersion
+  request_schema: null
+  response_schema: PromptVersionList
+  kind: query
+  auth: admin
+  scopes:
+  - ai:config:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-018
+  implementation_slice: SLICE-011
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: AI-006
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ai/model-routes
+  tag: AI
+  summary: Model Route一覧を取得
+  resource: ModelRouteVersion
+  request_schema: null
+  response_schema: ModelRouteVersionList
+  kind: query
+  auth: admin
+  scopes:
+  - ai:config:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-018
+  implementation_slice: SLICE-011
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: AI-007
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ai/evaluation-results
+  tag: AI
+  summary: AI評価結果一覧を取得
+  resource: EvaluationResult
+  request_schema: null
+  response_schema: EvaluationResultList
+  kind: query
+  auth: admin
+  scopes:
+  - ai:evaluation:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-018
+  implementation_slice: SLICE-011
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: AI-008
+  surface: admin
+  method: POST
+  path: /api/v1/admin/ai/evaluations
+  tag: AI
+  summary: AI Evaluation Suite実行Jobを要求
+  resource: null
+  request_schema: AIEvaluationRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - ai:evaluation:run
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: ai.evaluate_output.v1
+  success_status: 202
+  requirements:
+  - FR-018
+  implementation_slice: SLICE-011
+  audit_action: ai_evaluation_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: QLT-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/quality/runs
+  tag: Quality
+  summary: Quality Check Run一覧を取得
+  resource: QualityCheckRun
+  request_schema: null
+  response_schema: QualityCheckRunList
+  kind: query
+  auth: admin
+  scopes:
+  - quality:run:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-008
+  implementation_slice: SLICE-013
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - article_version_id
+  - status
+  - cursor
+  - limit
+- id: QLT-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/quality/runs
+  tag: Quality
+  summary: Quality Check Jobを要求
+  resource: null
+  request_schema: QualityCheckRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - quality:run:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: quality.evaluate_article.v1
+  success_status: 202
+  requirements:
+  - FR-008
+  implementation_slice: SLICE-013
+  audit_action: quality_check_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: QLT-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/quality/runs/{id}
+  tag: Quality
+  summary: Quality Check Run詳細を取得
+  resource: QualityCheckRun
+  request_schema: null
+  response_schema: QualityCheckRunDetail
+  kind: query
+  auth: admin
+  scopes:
+  - quality:run:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-008
+  implementation_slice: SLICE-013
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: QLT-004
+  surface: admin
+  method: GET
+  path: /api/v1/admin/quality/findings
+  tag: Quality
+  summary: Finding一覧を取得
+  resource: Finding
+  request_schema: null
+  response_schema: FindingList
+  kind: query
+  auth: admin
+  scopes:
+  - quality:finding:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-008
+  implementation_slice: SLICE-013
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - severity
+  - is_blocking
+  - status
+  - article_version_id
+  - cursor
+  - limit
+- id: QLT-005
+  surface: admin
+  method: GET
+  path: /api/v1/admin/quality/findings/{id}
+  tag: Quality
+  summary: Findingを取得
+  resource: Finding
+  request_schema: null
+  response_schema: Finding
+  kind: query
+  auth: admin
+  scopes:
+  - quality:finding:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-008
+  implementation_slice: SLICE-013
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: QLT-006
+  surface: admin
+  method: POST
+  path: /api/v1/admin/quality/findings/{id}/resolution
+  tag: Quality
+  summary: Finding解決を記録
+  resource: null
+  request_schema: FindingResolutionRequest
+  response_schema: Finding
+  kind: command
+  auth: admin
+  scopes:
+  - quality:finding:resolve
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-008
+  implementation_slice: SLICE-013
+  audit_action: finding_resolve
+  error_codes: []
+  notes: []
+  filters: []
+- id: QLT-007
+  surface: admin
+  method: POST
+  path: /api/v1/admin/quality/waivers
+  tag: Quality
+  summary: 期限付きWaiverを申請
+  resource: null
+  request_schema: WaiverRequest
+  response_schema: Waiver
+  kind: command
+  auth: admin
+  scopes:
+  - quality:waiver:request
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-008
+  - FR-017
+  implementation_slice: SLICE-013
+  audit_action: waiver_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: POL-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/policy/bundles
+  tag: Policy
+  summary: Policy Bundle一覧を取得
+  resource: PolicyBundle
+  request_schema: null
+  response_schema: PolicyBundleList
+  kind: query
+  auth: admin
+  scopes:
+  - policy:bundle:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-017
+  implementation_slice: SLICE-013
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: POL-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/policy/bundles
+  tag: Policy
+  summary: Policy Bundle Versionを登録
+  resource: null
+  request_schema: PolicyBundleCreateRequest
+  response_schema: PolicyBundle
+  kind: command
+  auth: admin
+  scopes:
+  - policy:bundle:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-017
+  - FR-020
+  implementation_slice: SLICE-013
+  audit_action: policy_bundle_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: POL-003
+  surface: admin
+  method: POST
+  path: /api/v1/admin/policy/bundles/{id}/activate
+  tag: Policy
+  summary: Policy Bundleを有効化
+  resource: null
+  request_schema: PolicyBundleActivateRequest
+  response_schema: PolicyBundle
+  kind: command
+  auth: admin
+  scopes:
+  - policy:bundle:activate
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-017
+  - FR-020
+  implementation_slice: SLICE-013
+  audit_action: policy_bundle_activate
+  error_codes: []
+  notes: []
+  filters: []
+- id: POL-004
+  surface: admin
+  method: GET
+  path: /api/v1/admin/policy/gate-decisions
+  tag: Policy
+  summary: Gate Decision一覧を取得
+  resource: GateDecision
+  request_schema: null
+  response_schema: GateDecisionList
+  kind: query
+  auth: admin
+  scopes:
+  - policy:gate:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-017
+  implementation_slice: SLICE-025
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: POL-005
+  surface: admin
+  method: POST
+  path: /api/v1/admin/policy/gate-decisions
+  tag: Policy
+  summary: Gate Decisionを記録
+  resource: null
+  request_schema: GateDecisionRequest
+  response_schema: GateDecision
+  kind: command
+  auth: admin
+  scopes:
+  - policy:gate:decide
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-017
+  - FR-020
+  implementation_slice: SLICE-025
+  audit_action: gate_decision_record
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/review-assignments
+  tag: Publishing
+  summary: Review Assignment一覧を取得
+  resource: ReviewAssignment
+  request_schema: null
+  response_schema: ReviewAssignmentList
+  kind: query
+  auth: admin
+  scopes:
+  - publishing:review:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-009
+  implementation_slice: SLICE-014
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - article_version_id
+  - assigned_to
+  - status
+  - cursor
+  - limit
+- id: PUBADM-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/review-assignments
+  tag: Publishing
+  summary: Review Assignmentを作成
+  resource: ReviewAssignment
+  request_schema: ReviewAssignmentCreateRequest
+  response_schema: ReviewAssignment
+  kind: command
+  auth: admin
+  scopes:
+  - publishing:review:assign
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-009
+  implementation_slice: SLICE-014
+  audit_action: review_assignment_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-003
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/review-assignments/{id}
+  tag: Publishing
+  summary: Review Assignmentを更新
+  resource: ReviewAssignment
+  request_schema: ReviewAssignmentUpdateRequest
+  response_schema: ReviewAssignment
+  kind: command
+  auth: admin
+  scopes:
+  - publishing:review:assign
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-009
+  implementation_slice: SLICE-014
+  audit_action: review_assignment_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-004
+  surface: admin
+  method: POST
+  path: /api/v1/admin/review-decisions
+  tag: Publishing
+  summary: Review Decisionを記録
+  resource: null
+  request_schema: ReviewDecisionRequest
+  response_schema: ReviewDecision
+  kind: command
+  auth: admin
+  scopes:
+  - publishing:review:decide
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-009
+  - FR-020
+  implementation_slice: SLICE-014
+  audit_action: review_decision_record
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-005
+  surface: admin
+  method: POST
+  path: /api/v1/admin/approvals
+  tag: Publishing
+  summary: Approvalを記録
+  resource: null
+  request_schema: ApprovalRequest
+  response_schema: Approval
+  kind: command
+  auth: admin
+  scopes:
+  - publishing:approval:decide
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-009
+  - FR-020
+  implementation_slice: SLICE-014
+  audit_action: approval_record
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-006
+  surface: admin
+  method: POST
+  path: /api/v1/admin/approvals/{id}/revoke
+  tag: Publishing
+  summary: Approvalを取消
+  resource: null
+  request_schema: RevokeApprovalRequest
+  response_schema: Approval
+  kind: command
+  auth: admin
+  scopes:
+  - publishing:approval:revoke
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-009
+  - FR-020
+  implementation_slice: SLICE-014
+  audit_action: approval_revoke
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-007
+  surface: admin
+  method: POST
+  path: /api/v1/admin/publication-candidates
+  tag: Publishing
+  summary: Publication Candidateを作成
+  resource: null
+  request_schema: PublicationCandidateRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - publishing:candidate:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: publishing.build_snapshot.v1
+  success_status: 202
+  requirements:
+  - FR-009
+  - FR-010
+  implementation_slice: SLICE-015
+  audit_action: publication_candidate_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-008
+  surface: admin
+  method: GET
+  path: /api/v1/admin/publication-candidates/{id}
+  tag: Publishing
+  summary: Publication Candidateを取得
+  resource: PublicationCandidate
+  request_schema: null
+  response_schema: PublicationCandidate
+  kind: query
+  auth: admin
+  scopes:
+  - publishing:candidate:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-010
+  implementation_slice: SLICE-015
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-009
+  surface: admin
+  method: POST
+  path: /api/v1/admin/publication-candidates/{id}/publish
+  tag: Publishing
+  summary: 承認済みSnapshotを公開
+  resource: null
+  request_schema: PublishRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - publishing:publish
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: publishing.publish_snapshot.v1
+  success_status: 202
+  requirements:
+  - FR-010
+  - FR-019
+  implementation_slice: SLICE-015
+  audit_action: publication_publish
+  error_codes:
+  - RAOS-PUB-001
+  - RAOS-PUB-002
+  - RAOS-POL-001
+  - RAOS-KILL-001
+  notes: []
+  filters: []
+- id: PUBADM-010
+  surface: admin
+  method: GET
+  path: /api/v1/admin/publications
+  tag: Publishing
+  summary: Publication一覧を取得
+  resource: Publication
+  request_schema: null
+  response_schema: PublicationList
+  kind: query
+  auth: admin
+  scopes:
+  - publishing:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-010
+  implementation_slice: SLICE-015
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - site_id
+  - state
+  - article_id
+  - cursor
+  - limit
+- id: PUBADM-011
+  surface: admin
+  method: GET
+  path: /api/v1/admin/publications/{id}
+  tag: Publishing
+  summary: Publicationを取得
+  resource: Publication
+  request_schema: null
+  response_schema: Publication
+  kind: query
+  auth: admin
+  scopes:
+  - publishing:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-010
+  implementation_slice: SLICE-015
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-012
+  surface: admin
+  method: POST
+  path: /api/v1/admin/publications/{id}/rollback
+  tag: Publishing
+  summary: Publicationを旧SnapshotへRollback
+  resource: null
+  request_schema: RollbackRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - publishing:rollback
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: publishing.rollback.v1
+  success_status: 202
+  requirements:
+  - FR-010
+  - FR-019
+  implementation_slice: SLICE-015
+  audit_action: publication_rollback
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-013
+  surface: admin
+  method: POST
+  path: /api/v1/admin/publications/{id}/unpublish
+  tag: Publishing
+  summary: Publicationを非公開化
+  resource: null
+  request_schema: UnpublishRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - publishing:unpublish
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: publishing.unpublish.v1
+  success_status: 202
+  requirements:
+  - FR-010
+  - FR-019
+  implementation_slice: SLICE-015
+  audit_action: publication_unpublish
+  error_codes: []
+  notes: []
+  filters: []
+- id: PUBADM-014
+  surface: admin
+  method: GET
+  path: /api/v1/admin/publication-snapshots/{id}
+  tag: Publishing
+  summary: Publication Snapshot metadataを取得
+  resource: PublicationSnapshotSummary
+  request_schema: null
+  response_schema: PublicationSnapshotSummary
+  kind: query
+  auth: admin
+  scopes:
+  - publishing:snapshot:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-010
+  implementation_slice: SLICE-015
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: FRSH-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/freshness/policies
+  tag: Freshness
+  summary: Freshness Policy一覧を取得
+  resource: FreshnessPolicy
+  request_schema: null
+  response_schema: FreshnessPolicyList
+  kind: query
+  auth: admin
+  scopes:
+  - freshness:policy:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-012
+  implementation_slice: SLICE-018
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: FRSH-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/freshness/policies
+  tag: Freshness
+  summary: Freshness Policy Versionを作成
+  resource: null
+  request_schema: FreshnessPolicyRequest
+  response_schema: FreshnessPolicy
+  kind: command
+  auth: admin
+  scopes:
+  - freshness:policy:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-012
+  implementation_slice: SLICE-018
+  audit_action: freshness_policy_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: FRSH-003
+  surface: admin
+  method: POST
+  path: /api/v1/admin/freshness/refresh-runs
+  tag: Freshness
+  summary: Refresh Runを要求
+  resource: null
+  request_schema: RefreshRunRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - freshness:refresh:run
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: freshness.run_refresh_batch.v1
+  success_status: 202
+  requirements:
+  - FR-011
+  - FR-012
+  implementation_slice: SLICE-018
+  audit_action: refresh_run_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: FRSH-004
+  surface: admin
+  method: GET
+  path: /api/v1/admin/freshness/refresh-runs/{id}
+  tag: Freshness
+  summary: Refresh Runを取得
+  resource: RefreshRun
+  request_schema: null
+  response_schema: RefreshRun
+  kind: query
+  auth: admin
+  scopes:
+  - freshness:refresh:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-012
+  implementation_slice: SLICE-018
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: FRSH-005
+  surface: admin
+  method: GET
+  path: /api/v1/admin/freshness/staleness-assessments
+  tag: Freshness
+  summary: Staleness Assessment一覧を取得
+  resource: StalenessAssessment
+  request_schema: null
+  response_schema: StalenessAssessmentList
+  kind: query
+  auth: admin
+  scopes:
+  - freshness:assessment:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-012
+  implementation_slice: SLICE-018
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - target_type
+  - target_id
+  - freshness_status
+  - cursor
+  - limit
+- id: FRSH-006
+  surface: admin
+  method: POST
+  path: /api/v1/admin/freshness/link-checks
+  tag: Freshness
+  summary: Affiliate Link Checkを要求
+  resource: null
+  request_schema: LinkCheckRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - freshness:link:check
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: freshness.check_affiliate_link.v1
+  success_status: 202
+  requirements:
+  - FR-011
+  implementation_slice: SLICE-018
+  audit_action: link_check_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: FRSH-007
+  surface: admin
+  method: GET
+  path: /api/v1/admin/freshness/link-checks
+  tag: Freshness
+  summary: Link Check一覧を取得
+  resource: LinkCheck
+  request_schema: null
+  response_schema: LinkCheckList
+  kind: query
+  auth: admin
+  scopes:
+  - freshness:link:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-011
+  implementation_slice: SLICE-018
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - offer_id
+  - result
+  - risk_code
+  - cursor
+  - limit
+- id: FRSH-008
+  surface: admin
+  method: POST
+  path: /api/v1/admin/freshness/impact-assessments
+  tag: Freshness
+  summary: Change Impact Assessmentを要求
+  resource: null
+  request_schema: ImpactAssessmentRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - freshness:impact:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: freshness.assess_change_impact.v1
+  success_status: 202
+  requirements:
+  - FR-012
+  - FR-016
+  implementation_slice: SLICE-018
+  audit_action: impact_assessment_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: FRSH-009
+  surface: admin
+  method: GET
+  path: /api/v1/admin/freshness/impact-assessments
+  tag: Freshness
+  summary: Impact Assessment一覧を取得
+  resource: ImpactAssessment
+  request_schema: null
+  response_schema: ImpactAssessmentList
+  kind: query
+  auth: admin
+  scopes:
+  - freshness:impact:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-012
+  - FR-016
+  implementation_slice: SLICE-018
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - impact_level
+  - required_action
+  - article_id
+  - cursor
+  - limit
+- id: AN-001
+  surface: admin
+  method: POST
+  path: /api/v1/admin/analytics/imports
+  tag: Analytics
+  summary: Analytics Import Jobを要求
+  resource: null
+  request_schema: AnalyticsImportRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - analytics:import:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: analytics.import_provider_data.v1
+  success_status: 202
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-019
+  audit_action: analytics_import_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: AN-002
+  surface: admin
+  method: GET
+  path: /api/v1/admin/analytics/imports
+  tag: Analytics
+  summary: Analytics Import Run一覧を取得
+  resource: AnalyticsImportRun
+  request_schema: null
+  response_schema: AnalyticsImportRunList
+  kind: query
+  auth: admin
+  scopes:
+  - analytics:import:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-019
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - source_type
+  - status
+  - date_from
+  - date_to
+  - cursor
+  - limit
+- id: AN-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/analytics/imports/{id}
+  tag: Analytics
+  summary: Analytics Import Runを取得
+  resource: AnalyticsImportRun
+  request_schema: null
+  response_schema: AnalyticsImportRun
+  kind: query
+  auth: admin
+  scopes:
+  - analytics:import:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-019
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: AN-004
+  surface: admin
+  method: GET
+  path: /api/v1/admin/analytics/articles/{article_id}/daily-metrics
+  tag: Analytics
+  summary: Article日次指標を取得
+  resource: DailyArticleMetric
+  request_schema: null
+  response_schema: DailyArticleMetricList
+  kind: query
+  auth: admin
+  scopes:
+  - analytics:metric:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-013
+  - FR-015
+  implementation_slice: SLICE-021
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - date_from
+  - date_to
+- id: AN-005
+  surface: admin
+  method: GET
+  path: /api/v1/admin/analytics/click-summary
+  tag: Analytics
+  summary: Affiliate Click集計を取得
+  resource: null
+  request_schema: null
+  response_schema: ClickSummary
+  kind: query
+  auth: admin
+  scopes:
+  - analytics:click:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-021
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - site_id
+  - article_id
+  - date_from
+  - date_to
+  - group_by
+- id: AN-006
+  surface: admin
+  method: GET
+  path: /api/v1/admin/analytics/data-quality-findings
+  tag: Analytics
+  summary: Analytics DQ Finding一覧を取得
+  resource: null
+  request_schema: null
+  response_schema: AnalyticsDQFindingList
+  kind: query
+  auth: admin
+  scopes:
+  - analytics:dq:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-021
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: FIN-001
+  surface: admin
+  method: POST
+  path: /api/v1/admin/uploads
+  tag: Finance
+  summary: Upload Sessionを発行
+  resource: null
+  request_schema: UploadSessionRequest
+  response_schema: UploadSession
+  kind: command
+  auth: admin
+  scopes:
+  - artifact:upload
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-014
+  implementation_slice: SLICE-020
+  audit_action: upload_session_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: FIN-002
+  surface: admin
+  method: POST
+  path: /api/v1/admin/finance/revenue-imports
+  tag: Finance
+  summary: Revenue Importを登録
+  resource: null
+  request_schema: RevenueImportRequest
+  response_schema: RevenueImport
+  kind: command
+  auth: admin
+  scopes:
+  - finance:revenue:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-014
+  implementation_slice: SLICE-020
+  audit_action: revenue_import_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: FIN-003
+  surface: admin
+  method: GET
+  path: /api/v1/admin/finance/revenue-imports
+  tag: Finance
+  summary: Revenue Import一覧を取得
+  resource: RevenueImport
+  request_schema: null
+  response_schema: RevenueImportList
+  kind: query
+  auth: admin
+  scopes:
+  - finance:revenue:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-014
+  implementation_slice: SLICE-020
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - status
+  - period_from
+  - period_to
+  - cursor
+  - limit
+- id: FIN-004
+  surface: admin
+  method: GET
+  path: /api/v1/admin/finance/revenue-imports/{id}
+  tag: Finance
+  summary: Revenue Importを取得
+  resource: RevenueImport
+  request_schema: null
+  response_schema: RevenueImportDetail
+  kind: query
+  auth: admin
+  scopes:
+  - finance:revenue:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-014
+  implementation_slice: SLICE-020
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: FIN-005
+  surface: admin
+  method: POST
+  path: /api/v1/admin/finance/revenue-imports/{id}/dry-run
+  tag: Finance
+  summary: Revenue Import Dry Runを要求
+  resource: null
+  request_schema: null
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - finance:revenue:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: finance.parse_revenue_csv.v1
+  success_status: 202
+  requirements:
+  - FR-014
+  implementation_slice: SLICE-020
+  audit_action: revenue_import_dry_run
+  error_codes: []
+  notes: []
+  filters: []
+- id: FIN-006
+  surface: admin
+  method: POST
+  path: /api/v1/admin/finance/revenue-imports/{id}/confirm
+  tag: Finance
+  summary: 検証済みRevenue Importを確定
+  resource: null
+  request_schema: RevenueImportConfirmRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - finance:revenue:confirm
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: finance.commit_revenue_import.v1
+  success_status: 202
+  requirements:
+  - FR-014
+  - FR-020
+  implementation_slice: SLICE-020
+  audit_action: revenue_import_confirm
+  error_codes: []
+  notes: []
+  filters: []
+- id: FIN-007
+  surface: admin
+  method: GET
+  path: /api/v1/admin/finance/commissions
+  tag: Finance
+  summary: Commission一覧を取得
+  resource: Commission
+  request_schema: null
+  response_schema: CommissionList
+  kind: query
+  auth: admin
+  scopes:
+  - finance:commission:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-014
+  implementation_slice: SLICE-020
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - status
+  - business_month
+  - provider_code
+  - cursor
+  - limit
+- id: FIN-008
+  surface: admin
+  method: GET
+  path: /api/v1/admin/finance/unit-economics
+  tag: Finance
+  summary: 確定Unit Economicsを取得
+  resource: UnitEconomicsSnapshot
+  request_schema: null
+  response_schema: UnitEconomicsSnapshotList
+  kind: query
+  auth: admin
+  scopes:
+  - finance:economics:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-015
+  implementation_slice: SLICE-021
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - scope_type
+  - scope_id
+  - period_from
+  - period_to
+- id: FIN-009
+  surface: admin
+  method: POST
+  path: /api/v1/admin/finance/external-costs
+  tag: Finance
+  summary: 外部変動費を記録
+  resource: ExternalCost
+  request_schema: ExternalCostCreateRequest
+  response_schema: ExternalCost
+  kind: command
+  auth: admin
+  scopes:
+  - finance:cost:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-015
+  - FR-018
+  implementation_slice: SLICE-020
+  audit_action: external_cost_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: FIN-010
+  surface: admin
+  method: GET
+  path: /api/v1/admin/finance/external-costs
+  tag: Finance
+  summary: 外部費用一覧を取得
+  resource: ExternalCost
+  request_schema: null
+  response_schema: ExternalCostList
+  kind: query
+  auth: admin
+  scopes:
+  - finance:cost:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-015
+  - FR-018
+  implementation_slice: SLICE-020
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: FIN-011
+  surface: admin
+  method: POST
+  path: /api/v1/admin/finance/human-work-logs
+  tag: Finance
+  summary: 人作業時間を記録
+  resource: HumanWorkLog
+  request_schema: HumanWorkLogCreateRequest
+  response_schema: HumanWorkLog
+  kind: command
+  auth: admin
+  scopes:
+  - finance:labor:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-015
+  implementation_slice: SLICE-020
+  audit_action: human_work_log_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: FIN-012
+  surface: admin
+  method: GET
+  path: /api/v1/admin/finance/human-work-logs
+  tag: Finance
+  summary: 人作業時間一覧を取得
+  resource: HumanWorkLog
+  request_schema: null
+  response_schema: HumanWorkLogList
+  kind: query
+  auth: admin
+  scopes:
+  - finance:labor:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-015
+  implementation_slice: SLICE-020
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-001
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ops/jobs
+  tag: Operations
+  summary: Job一覧を取得
+  resource: Job
+  request_schema: null
+  response_schema: JobList
+  kind: query
+  auth: admin
+  scopes:
+  - ops:job:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-018
+  - FR-020
+  implementation_slice: SLICE-004
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - status
+  - job_type
+  - queue_name
+  - correlation_id
+  - cursor
+  - limit
+- id: OPS-002
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ops/jobs/{id}
+  tag: Operations
+  summary: JobとAttemptを取得
+  resource: Job
+  request_schema: null
+  response_schema: JobDetail
+  kind: query
+  auth: admin
+  scopes:
+  - ops:job:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-018
+  - FR-020
+  implementation_slice: SLICE-004
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-003
+  surface: admin
+  method: POST
+  path: /api/v1/admin/ops/jobs/{id}/retry
+  tag: Operations
+  summary: Jobを手動再実行
+  resource: null
+  request_schema: JobRetryRequest
+  response_schema: JobAccepted
+  kind: command
+  auth: admin
+  scopes:
+  - ops:job:retry
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 202
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-004
+  audit_action: manual_job_retry
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-004
+  surface: admin
+  method: POST
+  path: /api/v1/admin/ops/jobs/{id}/cancel
+  tag: Operations
+  summary: Jobを取消要求
+  resource: null
+  request_schema: JobCancelRequest
+  response_schema: Job
+  kind: command
+  auth: admin
+  scopes:
+  - ops:job:cancel
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-004
+  audit_action: job_cancel
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-005
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ops/kill-switches
+  tag: Operations
+  summary: Kill Switch状態を取得
+  resource: KillSwitch
+  request_schema: null
+  response_schema: KillSwitchList
+  kind: query
+  auth: admin
+  scopes:
+  - ops:kill_switch:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-019
+  implementation_slice: SLICE-022
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-006
+  surface: admin
+  method: POST
+  path: /api/v1/admin/ops/kill-switch-changes
+  tag: Operations
+  summary: Kill Switchを変更
+  resource: null
+  request_schema: KillSwitchChangeRequest
+  response_schema: KillSwitch
+  kind: command
+  auth: admin
+  scopes:
+  - ops:kill_switch:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-019
+  - FR-020
+  implementation_slice: SLICE-022
+  audit_action: kill_switch_change
+  error_codes:
+  - RAOS-KILL-002
+  - RAOS-CONC-001
+  notes: []
+  filters: []
+- id: OPS-007
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ops/incidents
+  tag: Operations
+  summary: Incident一覧を取得
+  resource: Incident
+  request_schema: null
+  response_schema: IncidentList
+  kind: query
+  auth: admin
+  scopes:
+  - ops:incident:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-022
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-008
+  surface: admin
+  method: POST
+  path: /api/v1/admin/ops/incidents
+  tag: Operations
+  summary: Incidentを宣言
+  resource: Incident
+  request_schema: IncidentCreateRequest
+  response_schema: Incident
+  kind: command
+  auth: admin
+  scopes:
+  - ops:incident:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-019
+  - FR-020
+  implementation_slice: SLICE-022
+  audit_action: incident_declare
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-009
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ops/incidents/{id}
+  tag: Operations
+  summary: Incidentを取得
+  resource: Incident
+  request_schema: null
+  response_schema: IncidentDetail
+  kind: query
+  auth: admin
+  scopes:
+  - ops:incident:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-022
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-010
+  surface: admin
+  method: PATCH
+  path: /api/v1/admin/ops/incidents/{id}
+  tag: Operations
+  summary: Incident状態を更新
+  resource: Incident
+  request_schema: IncidentUpdateRequest
+  response_schema: Incident
+  kind: command
+  auth: admin
+  scopes:
+  - ops:incident:write
+  idempotency_required: true
+  optimistic_concurrency_required: true
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-022
+  audit_action: incident_update
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-011
+  surface: admin
+  method: POST
+  path: /api/v1/admin/ops/incidents/{id}/events
+  tag: Operations
+  summary: Incident Timeline Eventを追加
+  resource: null
+  request_schema: IncidentEventRequest
+  response_schema: GenericResource
+  kind: command
+  auth: admin
+  scopes:
+  - ops:incident:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 201
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-022
+  audit_action: incident_event_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-012
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ops/audit-events
+  tag: Operations
+  summary: Audit Eventを検索
+  resource: AuditEvent
+  request_schema: null
+  response_schema: AuditEventList
+  kind: query
+  auth: admin
+  scopes:
+  - ops:audit:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-023
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters:
+  - actor_id
+  - action
+  - target_type
+  - target_id
+  - date_from
+  - date_to
+  - cursor
+  - limit
+- id: OPS-013
+  surface: admin
+  method: POST
+  path: /api/v1/admin/ops/audit-exports
+  tag: Operations
+  summary: Audit Export Jobを要求
+  resource: null
+  request_schema: AuditExportRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: admin
+  scopes:
+  - ops:audit:export
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: ops.export_audit.v1
+  success_status: 202
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-023
+  audit_action: audit_export_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: OPS-014
+  surface: admin
+  method: GET
+  path: /api/v1/admin/ops/alerts
+  tag: Operations
+  summary: Alert一覧を取得
+  resource: Alert
+  request_schema: null
+  response_schema: AlertList
+  kind: query
+  auth: admin
+  scopes:
+  - ops:alert:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: []
+  implementation_slice: SLICE-023
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: INT-001
+  surface: internal
+  method: POST
+  path: /api/v1/internal/scheduled-jobs
+  tag: Internal
+  summary: SchedulerからJobを登録
+  resource: null
+  request_schema: ScheduledJobRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: service
+  scopes:
+  - internal:schedule:write
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 202
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-004
+  audit_action: scheduled_job_create
+  error_codes: []
+  notes: []
+  filters: []
+- id: INT-002
+  surface: internal
+  method: POST
+  path: /api/v1/internal/projections/rebuild
+  tag: Internal
+  summary: Projection再構築Jobを登録
+  resource: null
+  request_schema: ProjectionRebuildRequest
+  response_schema: JobAccepted
+  kind: async_command
+  auth: service
+  scopes:
+  - internal:projection:rebuild
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 202
+  requirements:
+  - FR-010
+  - FR-013
+  - FR-019
+  implementation_slice: SLICE-004
+  audit_action: projection_rebuild_request
+  error_codes: []
+  notes: []
+  filters: []
+- id: INT-003
+  surface: internal
+  method: GET
+  path: /api/v1/internal/dependencies/health
+  tag: Internal
+  summary: 依存サービスHealthを取得
+  resource: null
+  request_schema: null
+  response_schema: DependencyHealth
+  kind: query
+  auth: service
+  scopes:
+  - internal:health:read
+  idempotency_required: false
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 200
+  requirements: []
+  implementation_slice: SLICE-023
+  audit_action: null
+  error_codes: []
+  notes: []
+  filters: []
+- id: INT-004
+  surface: internal
+  method: POST
+  path: /api/v1/internal/providers/{provider}/probe
+  tag: Internal
+  summary: Provider Contract Probeを要求
+  resource: null
+  request_schema: null
+  response_schema: JobAccepted
+  kind: async_command
+  auth: service
+  scopes:
+  - internal:provider:probe
+  idempotency_required: true
+  optimistic_concurrency_required: false
+  async_job_type: null
+  success_status: 202
+  requirements: []
+  implementation_slice: SLICE-023
+  audit_action: provider_probe_request
+  error_codes: []
+  notes: []
+  filters: []
+official_references:
+- id: REF-OAS-311
+  title: OpenAPI Specification v3.1.1
+  url: https://spec.openapis.org/oas/v3.1.1.html
+  use: HTTP API記述。実装は3.2固有機能を使用せず、FastAPI/OpenAPI 3.1互換範囲に固定する。
+- id: REF-OAS-SCHEMA
+  title: OpenAPI 3.1 JSON Schema revision 2025-11-23
+  url: https://spec.openapis.org/oas/3.1/schema/2025-11-23
+  use: OpenAPI文書のCI検証基準。
+- id: REF-ASYNCAPI-310
+  title: AsyncAPI Specification 3.1.0
+  url: https://www.asyncapi.com/docs/reference/specification/latest
+  use: 非同期チャネル、Operation、Message契約の記述。MVP文書は3.0.0互換構文のみ利用する。
+- id: REF-JSONSCHEMA-2020-12
+  title: JSON Schema Draft 2020-12
+  url: https://json-schema.org/draft/2020-12
+  use: HTTP、Event、Job、AI Structured Output、Import行の共通Schema。
+- id: REF-RFC9457
+  title: RFC 9457 Problem Details for HTTP APIs
+  url: https://www.rfc-editor.org/rfc/rfc9457.html
+  use: エラーレスポンス application/problem+json。
+- id: REF-RFC9110
+  title: RFC 9110 HTTP Semantics
+  url: https://www.rfc-editor.org/rfc/rfc9110.html
+  use: HTTP method、status、ETag、If-Match、Retry-After。
+- id: REF-RFC9700
+  title: RFC 9700 Best Current Practice for OAuth 2.0 Security
+  url: https://www.rfc-editor.org/rfc/rfc9700.html
+  use: 管理画面OIDC/OAuth 2.0、Authorization Code＋PKCEの安全基準。
+- id: REF-RFC9745
+  title: RFC 9745 Deprecation HTTP Response Header
+  url: https://www.rfc-editor.org/rfc/rfc9745.html
+  use: API廃止予告。
+- id: REF-RFC8594
+  title: RFC 8594 Sunset HTTP Header
+  url: https://www.rfc-editor.org/rfc/rfc8594.html
+  use: API停止日通知。
+- id: REF-W3C-TRACE
+  title: W3C Trace Context
+  url: https://www.w3.org/TR/trace-context/
+  use: traceparent/tracestate伝播。
+- id: REF-CLOUDEVENTS
+  title: CloudEvents 1.0
+  url: https://cloudevents.io/
+  use: Domain Event Envelopeの互換フィールド。
+- id: REF-FASTAPI-OAS31
+  title: FastAPI OpenAPI 3.1 client generation guidance
+  url: https://fastapi.tiangolo.com/advanced/generate-clients/
+  use: FastAPI生成OpenAPIとTypeScript SDKの基準。
+- id: REF-PYDANTIC-JSONSCHEMA
+  title: Pydantic v2 JSON Schema 2020-12
+  url: https://docs.pydantic.dev/latest/concepts/json_schema/
+  use: PythonモデルとJSON Schemaの生成・差分検査。
+- id: REF-RAKUTEN-ITEM-20260701
+  title: Rakuten Ichiba Item Search API 2026-07-01
+  url: https://webservice.rakuten.co.jp/documentation/ichiba-item-search
+  use: 楽天商品取込Adapterの現行基準。
+- id: REF-GSC-SEARCHANALYTICS
+  title: Google Search Console Search Analytics query
+  url: https://developers.google.com/webmaster-tools/v1/searchanalytics/query
+  use: 検索実績取込Adapter。
+- id: REF-GA4-DATA
+  title: Google Analytics Data API v1
+  url: https://developers.google.com/analytics/devguides/reporting/data/v1
+  use: 集計行動指標取込Adapter。

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/human-evaluation/v1",
+  "title": "Human Evaluation",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "evaluation_case_result_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "reviewer_principal_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "rubric_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "blind_assignment_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "scores": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      },
+      "maxProperties": 100
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NEEDS_ADJUDICATION",
+        "INVALID"
+      ]
+    },
+    "notes_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "is_adjudication": {
+      "type": "boolean"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "evaluation_case_result_id",
+    "reviewer_principal_id",
+    "rubric_version",
+    "blind_assignment_key",
+    "scores",
+    "decision",
+    "notes_artifact_id",
+    "is_adjudication",
+    "created_at"
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

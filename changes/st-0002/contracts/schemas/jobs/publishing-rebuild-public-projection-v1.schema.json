@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/publishing-rebuild-public-projection-v1.schema.json",
+  "title": "publishing.rebuild_public_projection.v1",
+  "description": "不変SnapshotからPublic Read Modelを再構築する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "publishing.rebuild_public_projection.v1"
+        },
+        "queue": {
+          "const": "publication"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "scope_type": {
+              "type": "string",
+              "enum": [
+                "SITE",
+                "ARTICLE"
+              ]
+            },
+            "scope_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "expected_snapshot_hash": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "site_id",
+            "scope_type",
+            "scope_id"
+          ]
+        }
+      }
+    }
+  ]
+}

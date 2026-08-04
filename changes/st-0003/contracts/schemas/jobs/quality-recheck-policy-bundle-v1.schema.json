@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/quality-recheck-policy-bundle-v1.schema.json",
+  "title": "quality.recheck_policy_bundle.v1",
+  "description": "新Policy Bundleの影響記事を再検査する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "quality.recheck_policy_bundle.v1"
+        },
+        "queue": {
+          "const": "quality"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "policy_bundle_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "scope_type": {
+              "type": "string",
+              "enum": [
+                "SITE",
+                "CATEGORY",
+                "ARTICLE"
+              ]
+            },
+            "scope_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "max_articles": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            }
+          },
+          "required": [
+            "policy_bundle_id",
+            "site_id",
+            "scope_type",
+            "scope_id"
+          ]
+        }
+      }
+    }
+  ]
+}

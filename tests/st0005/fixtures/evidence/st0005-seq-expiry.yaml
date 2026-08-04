@@ -1,0 +1,19 @@
+document:
+  id: TEST-STATUS-EVIDENCE-ST0005-SEQ-EXPIRY
+  schema_version: 1
+  recorded_at: '2026-08-03T08:00:00Z'
+story_id: ST-0005
+evidence_class: EXPIRY
+formal_suite_status: NOT_EXECUTED
+invalidates_evidence_sha256:
+- 2fd97e4f6fd0e52537a5023691b4b874263d8f31d0dc84f0a488e2e4f4d578ee
+source_artifacts:
+- original_uri: repo://docs/canonical/01_integration/RAOS_07_status_taxonomy_v1.0.yaml
+  artifact_uri: repo://tests/st0005/fixtures/artifacts/e3261a8a6102c1b93e6cc9006c52f01389ec31510e24ca37bc400437aebbf68b-status-taxonomy.yaml
+  sha256: e3261a8a6102c1b93e6cc9006c52f01389ec31510e24ca37bc400437aebbf68b
+suite_results:
+- suite_id: TST-001
+  environment: CI
+  result: EXPIRED
+local_results: []
+boundary: Expiry evidence bound to the exact active snapshot.

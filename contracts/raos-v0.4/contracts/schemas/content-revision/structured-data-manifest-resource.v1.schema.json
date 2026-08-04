@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/structured-data-manifest-resource.v1.schema.json",
+  "title": "Structured Data Manifest Resource",
+  "description": "Deterministic JSON-LD render/validation manifest.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "article_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "seo_metadata_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "generator_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "visible_content_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "jsonld_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "jsonld_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "enabled_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255
+      },
+      "uniqueItems": true
+    },
+    "disabled_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255
+      },
+      "uniqueItems": true
+    },
+    "validation_status": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "validated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "article_version_id",
+    "seo_metadata_version_id",
+    "generator_version",
+    "visible_content_sha256",
+    "jsonld_artifact_id",
+    "jsonld_sha256",
+    "enabled_types",
+    "disabled_types",
+    "validation_status",
+    "validated_at",
+    "created_at"
+  ],
+  "x-raos-invariants": {
+    "seo_and_article_binding_must_match": true,
+    "enabled_disabled_disjoint": true,
+    "faq_page_disabled": true
+  }
+}

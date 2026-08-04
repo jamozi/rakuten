@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-policy-policy-bundle-activated-v1.schema.json",
+  "title": "jp.raos.policy.policy_bundle_activated.v1",
+  "description": "Policy Bundle Versionが有効化された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.policy.policy_bundle_activated.v1"
+        },
+        "producer": {
+          "const": "policy"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "policy_bundle_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "bundle_code": {
+              "type": "string"
+            },
+            "version_no": {
+              "type": "integer"
+            },
+            "bundle_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "effective_from": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "policy_bundle_id",
+            "bundle_code",
+            "version_no",
+            "bundle_sha256",
+            "effective_from"
+          ]
+        }
+      }
+    }
+  ]
+}

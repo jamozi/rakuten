@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/ai-evaluate-output-v1.schema.json",
+  "title": "ai.evaluate_output.v1",
+  "description": "固定Evaluation DatasetでPrompt/Model Routeを評価する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "ai.evaluate_output.v1"
+        },
+        "queue": {
+          "const": "ai"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "suite_code": {
+              "type": "string"
+            },
+            "suite_version": {
+              "type": "string"
+            },
+            "task_code": {
+              "type": "string"
+            },
+            "prompt_version_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "minItems": 1
+            },
+            "model_route_version_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "suite_code",
+            "suite_version",
+            "task_code",
+            "prompt_version_ids",
+            "model_route_version_ids"
+          ]
+        }
+      }
+    }
+  ]
+}

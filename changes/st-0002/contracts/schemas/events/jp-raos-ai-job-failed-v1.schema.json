@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ai-job-failed-v1.schema.json",
+  "title": "jp.raos.ai.job_failed.v1",
+  "description": "AI Jobが失敗した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ai.job_failed.v1"
+        },
+        "producer": {
+          "const": "ai"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ai_job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "ops_job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "task_code": {
+              "type": "string"
+            },
+            "error_class": {
+              "type": "string"
+            },
+            "retryable": {
+              "type": "boolean"
+            },
+            "attempt_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "ai_job_id",
+            "ops_job_id",
+            "task_code",
+            "error_class",
+            "retryable",
+            "attempt_count"
+          ]
+        }
+      }
+    }
+  ]
+}

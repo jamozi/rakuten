@@ -1,0 +1,80 @@
+document:
+  id: RAOS-INTEGRATION-DECISIONS-001
+  version: '1.0'
+  status: APPROVED_FOR_IMPLEMENTATION
+decisions:
+- id: INT-DEC-001
+  title: 正本優先順位
+  status: RESOLVED
+  decision: 法令・Platform規約、RAOS-INTEGRATION-001、要求、領域設計、生成契約、実装の順で解釈する
+  implementation_effect: Codexは矛盾時に推測せずIssueを作る
+- id: INT-DEC-002
+  title: 既存v0.1成果物の扱い
+  status: RESOLVED
+  decision: 既存6工程は監査可能な履歴として保持し、本統合Overlayで差分を確定する
+  implementation_effect: 元ファイルを上書きしない
+- id: INT-DEC-003
+  title: Job状態整合Patch
+  status: RESOLVED
+  decision: RAOS_04_001_contract_alignment_patch_v0.1.sqlの状態モデルを採用する
+  implementation_effect: 正式Migrationへ移植しPostgreSQL Integration Testを必須化
+- id: INT-DEC-004
+  title: AI Governance追加
+  status: RESOLVED
+  decision: RAOS_05のAI Task、Prompt、Dataset、Evaluation、Release Decisionを第一級Resourceとして採用する
+  implementation_effect: DB/API/Async契約のversioned revisionが必要
+- id: INT-DEC-005
+  title: Content Aggregate追加
+  status: RESOLVED
+  decision: RAOS_06のContent AST、Article Type、Recommendation Methodology、SEO Metadata、Disclosure、Media、Publication Manifestを採用する
+  implementation_effect: DB/API/AI契約のversioned revisionが必要
+- id: INT-DEC-006
+  title: コンテンツ正本
+  status: RESOLVED
+  decision: RAOSの構造化Content Repositoryを正本としCMSは公開Adapterに限定する
+  implementation_effect: WordPress等のCMSをMVP必須依存にしない
+- id: INT-DEC-007
+  title: Reference Cloud
+  status: RESOLVED
+  decision: AWS東京リージョンをReference ArchitectureとするがCoreをAWS固有Domain Modelへ密結合させない
+  implementation_effect: TerraformとAdapter境界を用意。実AWS Accountは未設定
+- id: INT-DEC-008
+  title: 初期LLM Provider
+  status: RESOLVED
+  decision: OpenAI Responses APIを初期Adapter候補とし、DomainからProvider固有型を隔離する
+  implementation_effect: 実装時点の公式Model ID、Data Control、価格を再確認する
+- id: INT-DEC-009
+  title: 自動更新境界
+  status: RESOLVED
+  decision: 取得済みFactの決定的更新と安全な非表示は自動化可。Claim、Recommendation順位、公開本文変更は人間承認を要する
+  implementation_effect: auto-publishはMVPで無効
+- id: INT-DEC-010
+  title: 成果帰属の区分
+  status: RESOLVED
+  decision: Provider Fact、Direct、Estimated、Unattributedを分離し推定を公式成果として表示しない
+  implementation_effect: DashboardとDBにattribution_basis/confidenceを必須化
+- id: INT-DEC-011
+  title: Accessibility目標
+  status: RESOLVED
+  decision: 公開・管理UIはWCAG 2.2 AAを設計目標とする
+  implementation_effect: 自動・手動監査合格までは適合を公称しない
+- id: INT-DEC-012
+  title: Security目標
+  status: RESOLVED
+  decision: Admin/APIはOWASP ASVS 5.0 Level 2相当をVerification Baselineとする
+  implementation_effect: Control単位のEvidenceがない限り検証済みとしない
+- id: INT-DEC-013
+  title: Codexの権限
+  status: RESOLVED
+  decision: Codexは実装者であり、法務、公開、Production Secret、Kill Switch解除、最終承認の権限を持たない
+  implementation_effect: PRとHuman Approvalを必須化
+- id: INT-DEC-014
+  title: Revenue取込
+  status: PROVISIONAL
+  decision: MVPは検証可能なCSV Dry Run/Commitを基準とする
+  implementation_effect: 実楽天Reportサンプル入手後にParser契約を確定
+- id: INT-DEC-015
+  title: Production Readiness
+  status: RESOLVED
+  decision: 全設計完了後もRuntime Test、Security Review、Backup Restore、GATE-0合格までProduction Readyとしない
+  implementation_effect: Master StatusはNOT_READYから開始

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/update_priority_explanation/v1",
+  "title": "Update Priority Explanation Output",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "items": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "input_rank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "input_score": {
+            "type": "number"
+          },
+          "explanation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1500
+          },
+          "fact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "item_id",
+          "input_rank",
+          "input_score",
+          "explanation",
+          "fact_ids"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "items"
+  ]
+}

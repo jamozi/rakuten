@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ai-job-requested-v1.schema.json",
+  "title": "jp.raos.ai.job_requested.v1",
+  "description": "AI Jobが登録された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ai.job_requested.v1"
+        },
+        "producer": {
+          "const": "ai"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ai_job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "ops_job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "task_code": {
+              "type": "string"
+            },
+            "source_packet_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "max_cost_jpy": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "ai_job_id",
+            "ops_job_id",
+            "task_code",
+            "source_packet_version_id",
+            "max_cost_jpy"
+          ]
+        }
+      }
+    }
+  ]
+}

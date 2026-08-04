@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-freshness-staleness-assessed-v1.schema.json",
+  "title": "jp.raos.freshness.staleness_assessed.v1",
+  "description": "Freshness状態が判定された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.freshness.staleness_assessed.v1"
+        },
+        "producer": {
+          "const": "freshness"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "target_type": {
+              "type": "string"
+            },
+            "target_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "freshness_status": {
+              "type": "string"
+            },
+            "age_seconds": {
+              "type": "integer"
+            },
+            "recommended_action": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "target_type",
+            "target_id",
+            "freshness_status",
+            "age_seconds",
+            "recommended_action"
+          ]
+        }
+      }
+    }
+  ]
+}

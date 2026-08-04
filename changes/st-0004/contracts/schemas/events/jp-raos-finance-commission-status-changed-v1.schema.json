@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-finance-commission-status-changed-v1.schema.json",
+  "title": "jp.raos.finance.commission_status_changed.v1",
+  "description": "Provider Commission statusが新Eventで変化した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.finance.commission_status_changed.v1"
+        },
+        "producer": {
+          "const": "finance"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "commission_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "previous_status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "new_status": {
+              "type": "string"
+            },
+            "event_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "confirmed_commission_jpy": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "commission_id",
+            "new_status",
+            "event_at",
+            "confirmed_commission_jpy"
+          ]
+        }
+      }
+    }
+  ]
+}

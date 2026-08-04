@@ -1,0 +1,210 @@
+document:
+  id: RAOS-CONTENT-SCHEMA-001
+  title: Content Schema Registry
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+registry_version: 1.0.0
+schemas:
+- schema_id: https://schemas.raos.local/content/v1/blocks/bullet_list.schema.json
+  title: Bullet list block
+  path: schemas/blocks/bullet_list.schema.json
+  sha256: 1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/callout.schema.json
+  title: Callout block
+  path: schemas/blocks/callout.schema.json
+  sha256: 86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/caution.schema.json
+  title: Caution block
+  path: schemas/blocks/caution.schema.json
+  sha256: b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/comparison_table.schema.json
+  title: Comparison table block
+  path: schemas/blocks/comparison_table.schema.json
+  sha256: 6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/decision_summary.schema.json
+  title: Decision summary block
+  path: schemas/blocks/decision_summary.schema.json
+  sha256: a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/difference_matrix.schema.json
+  title: Difference matrix block
+  path: schemas/blocks/difference_matrix.schema.json
+  sha256: cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/disclosure_slot.schema.json
+  title: Disclosure slot block
+  path: schemas/blocks/disclosure_slot.schema.json
+  sha256: 76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/evidence_note.schema.json
+  title: Evidence note block
+  path: schemas/blocks/evidence_note.schema.json
+  sha256: 37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/faq.schema.json
+  title: FAQ block
+  path: schemas/blocks/faq.schema.json
+  sha256: f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/heading.schema.json
+  title: Heading block
+  path: schemas/blocks/heading.schema.json
+  sha256: f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/intended_reader.schema.json
+  title: Intended reader block
+  path: schemas/blocks/intended_reader.schema.json
+  sha256: 64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/internal_links.schema.json
+  title: Internal links block
+  path: schemas/blocks/internal_links.schema.json
+  sha256: 46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/lead.schema.json
+  title: Lead block
+  path: schemas/blocks/lead.schema.json
+  sha256: fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/media.schema.json
+  title: Media block
+  path: schemas/blocks/media.schema.json
+  sha256: ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/methodology.schema.json
+  title: Methodology block
+  path: schemas/blocks/methodology.schema.json
+  sha256: 366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/numbered_list.schema.json
+  title: Numbered list block
+  path: schemas/blocks/numbered_list.schema.json
+  sha256: 39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/paragraph.schema.json
+  title: Paragraph block
+  path: schemas/blocks/paragraph.schema.json
+  sha256: 5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/product_card.schema.json
+  title: Product card block
+  path: schemas/blocks/product_card.schema.json
+  sha256: 559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/pros_cons.schema.json
+  title: Pros and cons block
+  path: schemas/blocks/pros_cons.schema.json
+  sha256: 3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/recommendation_group.schema.json
+  title: Recommendation group block
+  path: schemas/blocks/recommendation_group.schema.json
+  sha256: 06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/selection_criteria.schema.json
+  title: Selection criteria block
+  path: schemas/blocks/selection_criteria.schema.json
+  sha256: ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/source_summary.schema.json
+  title: Source summary block
+  path: schemas/blocks/source_summary.schema.json
+  sha256: e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/tradeoff.schema.json
+  title: Tradeoff block
+  path: schemas/blocks/tradeoff.schema.json
+  sha256: a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/blocks/update_notice.schema.json
+  title: Update notice block
+  path: schemas/blocks/update_notice.schema.json
+  sha256: 4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/claim.schema.json
+  title: Article Claim
+  path: schemas/claim.schema.json
+  sha256: db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/common/rich-text.schema.json
+  title: RAOS Rich Text
+  path: schemas/common/rich_text.schema.json
+  sha256: 20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/content-ast.schema.json
+  title: RAOS Content AST v1
+  path: schemas/content-ast.schema.json
+  sha256: a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/editorial-review-decision.schema.json
+  title: Editorial Review Decision
+  path: schemas/editorial-review-decision.schema.json
+  sha256: 2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/media-asset.schema.json
+  title: Media Asset Manifest
+  path: schemas/media-asset.schema.json
+  sha256: c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/publication-content-manifest.schema.json
+  title: Publication Content Manifest
+  path: schemas/publication-content-manifest.schema.json
+  sha256: 97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/recommendation-methodology.schema.json
+  title: Recommendation Methodology Version
+  path: schemas/recommendation-methodology.schema.json
+  sha256: 93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/seo-metadata.schema.json
+  title: SEO Metadata Version
+  path: schemas/seo-metadata.schema.json
+  sha256: 347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad
+  draft: 2020-12
+  status: ACTIVE
+- schema_id: https://schemas.raos.local/content/v1/structured-data-manifest.schema.json
+  title: Structured Data Manifest
+  path: schemas/structured-data-manifest.schema.json
+  sha256: 6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e
+  draft: 2020-12
+  status: ACTIVE

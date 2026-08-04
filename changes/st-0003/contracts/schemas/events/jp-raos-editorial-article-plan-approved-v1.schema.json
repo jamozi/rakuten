@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-editorial-article-plan-approved-v1.schema.json",
+  "title": "jp.raos.editorial.article_plan_approved.v1",
+  "description": "Article Planが承認された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.editorial.article_plan_approved.v1"
+        },
+        "producer": {
+          "const": "editorial"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "article_plan_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "category_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "approved_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "article_plan_id",
+            "site_id",
+            "category_id",
+            "approved_at"
+          ]
+        }
+      }
+    }
+  ]
+}

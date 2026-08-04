@@ -1,0 +1,122 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0201-20260802
+  schema_version: 1
+  recorded_at: '2026-08-02T12:20:48Z'
+story_id: ST-0201
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0201/contracts/local-postgres.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fd35c88ad871836351b7f5bf32e8204f3c7e6e67fd60cad0265b809d27caea13-local-postgres.v1.yaml
+    sha256: fd35c88ad871836351b7f5bf32e8204f3c7e6e67fd60cad0265b809d27caea13
+  - original_uri: repo://changes/st-0201/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8e0549640f3cdb00d29ee9a67b0f2fadbf4b4a362db1d9266a6570ffec76bcbc-README.md
+    sha256: 8e0549640f3cdb00d29ee9a67b0f2fadbf4b4a362db1d9266a6570ffec76bcbc
+  - original_uri: repo://docs/architecture/ST-0201-postgres-image-snapshot.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ee64f731f41b88f185d4f58d9affd5eb35834353b074e215bb7ddc1788622dfd-ST-0201-postgres-image-snapshot.yaml
+    sha256: ee64f731f41b88f185d4f58d9affd5eb35834353b074e215bb7ddc1788622dfd
+  - original_uri: repo://docs/execplans/ST-0201.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6e8097d6140d0f63c8d3870eb7af9ca50d6e7db36ce47f167ea1d1037dbe97a5-ST-0201.md
+    sha256: 6e8097d6140d0f63c8d3870eb7af9ca50d6e7db36ce47f167ea1d1037dbe97a5
+  - original_uri: repo://docs/worklogs/ST-0201.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/09370bbaf197afe20e699c8dca7786daadac675851bdc59b49a417d78a2ea057-ST-0201.md
+    sha256: 09370bbaf197afe20e699c8dca7786daadac675851bdc59b49a417d78a2ea057
+  - original_uri: repo://scripts/build_st0201_postgres_service.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/00146f1f8c26e96098bc050c418e43ac2bbdc0d38a5fc3efeac256ed91a22ffb-build_st0201_postgres_service.py
+    sha256: 00146f1f8c26e96098bc050c418e43ac2bbdc0d38a5fc3efeac256ed91a22ffb
+  - original_uri: repo://scripts/postgres_service.sh
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fc2689a0827bb8f0a54b93462f6ff4b9fa403d9d99435947d4c0e796bc6ae052-postgres_service.sh
+    sha256: fc2689a0827bb8f0a54b93462f6ff4b9fa403d9d99435947d4c0e796bc6ae052
+  - original_uri: repo://tests/st0201/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/bbf43f1c353ac9c5fb70d9b3dfb5b91c7da09586884295d270ae5560c9082dca-conftest.py
+    sha256: bbf43f1c353ac9c5fb70d9b3dfb5b91c7da09586884295d270ae5560c9082dca
+  - original_uri: repo://tests/st0201/test_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f8d4372e0ef578ee6a646184f2db5afdd0634fb932fd9f892b2ff51e829c278b-test_contract.py
+    sha256: f8d4372e0ef578ee6a646184f2db5afdd0634fb932fd9f892b2ff51e829c278b
+  - original_uri: repo://tests/st0201/test_generation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/23124dacb3612d4eb5f4974b2789af7c2542b135239c111be3359599e900ff45-test_generation.py
+    sha256: 23124dacb3612d4eb5f4974b2789af7c2542b135239c111be3359599e900ff45
+  - original_uri: repo://tests/st0201/test_negative_cases.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/97e9dcc58bfa75cb61d5849b5d0e2ea141ceb4e29ef1fccdb96ddcaa301e855f-test_negative_cases.py
+    sha256: 97e9dcc58bfa75cb61d5849b5d0e2ea141ceb4e29ef1fccdb96ddcaa301e855f
+  - original_uri: repo://tests/st0201/test_wrapper.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f58edd1ae3266a709fa80d51117a9e0bce378bbf80060b65c97217ab2ae07187-test_wrapper.py
+    sha256: f58edd1ae3266a709fa80d51117a9e0bce378bbf80060b65c97217ab2ae07187
+  - original_uri: repo://.github/workflows/ci.yml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3408137fc2449eb224c55a214b315dfaa19b5a9b4370c5dd8f2b532828f46d14-ci.yml
+    sha256: 3408137fc2449eb224c55a214b315dfaa19b5a9b4370c5dd8f2b532828f46d14
+  - original_uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/91d1bb091b7a44bca56e4a3b9fdaaa09c312dcf125a829113c460f398dc60bc8-pr-governance.v1.yaml
+    sha256: 91d1bb091b7a44bca56e4a3b9fdaaa09c312dcf125a829113c460f398dc60bc8
+  - original_uri: repo://changes/st-0107/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1eb9409d35febf94c67720a68d2fbfb78d49e1d17b968f1da1aa002e5e48cc4f-manifest.yaml
+    sha256: 1eb9409d35febf94c67720a68d2fbfb78d49e1d17b968f1da1aa002e5e48cc4f
+  - original_uri: repo://tests/st0106/test_workflow_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fe2519367264a61ca8f0cddc780a92d0c5a3c1734c7a6f31d305cf5ab2bd252b-test_workflow_contract.py
+    sha256: fe2519367264a61ca8f0cddc780a92d0c5a3c1734c7a6f31d305cf5ab2bd252b
+  - original_uri: repo://workspace-layout.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f9b8f54cb81d796f6dc064e721cbcd496b72a67cb84e68a31fff7af564e051d3-workspace-layout.json
+    sha256: f9b8f54cb81d796f6dc064e721cbcd496b72a67cb84e68a31fff7af564e051d3
+  - original_uri: repo://infra/docker/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/079fad5cc7b965c507a79b9ec57421e017bf613702b876385a7df133dbd6bcd9-README.md
+    sha256: 079fad5cc7b965c507a79b9ec57421e017bf613702b876385a7df133dbd6bcd9
+  - original_uri: repo://AGENTS.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/d7b961160e8bdfd700eaa5ea62e09a771924f84ea8c41d5c4737e37a5812ef32-AGENTS.md
+    sha256: d7b961160e8bdfd700eaa5ea62e09a771924f84ea8c41d5c4737e37a5812ef32
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/06ee9c195668e1e2111c0385fd1db7d1a06f7a133728ebc7d00f56805ea625fd-Makefile
+    sha256: 06ee9c195668e1e2111c0385fd1db7d1a06f7a133728ebc7d00f56805ea625fd
+  - original_uri: repo://README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/239bbfad44f532185927b396a0f582abfce4d351e2364555af2d53bd8db9a39f-README.md
+    sha256: 239bbfad44f532185927b396a0f582abfce4d351e2364555af2d53bd8db9a39f
+  - original_uri: repo://docker-compose.yml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2fac28cdd185b3070e0cc5616953948a92e05b50ebebae70bfc3323765b287b7-docker-compose.yml
+    sha256: 2fac28cdd185b3070e0cc5616953948a92e05b50ebebae70bfc3323765b287b7
+  - original_uri: repo://changes/st-0201/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3-manifest.yaml
+    sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+  - original_uri: repo://.github/CODEOWNERS
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/bbf79a2be4fb5244c60b586b7b7e0a901906b65fd768c6eb306d72c840f74691-CODEOWNERS
+    sha256: bbf79a2be4fb5244c60b586b7b7e0a901906b65fd768c6eb306d72c840f74691
+  - original_uri: repo://.github/PULL_REQUEST_TEMPLATE.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a-PULL_REQUEST_TEMPLATE.md
+    sha256: 2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a
+  - original_uri: repo://changes/st-0107/ruleset-policy.v1.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b112a9442bd90bd0e4eec6926945268802ea0ae5e098622f29fda22d9c55995f-ruleset-policy.v1.json
+    sha256: b112a9442bd90bd0e4eec6926945268802ea0ae5e098622f29fda22d9c55995f
+suite_results:
+  - suite_id: TST-008
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: uv run --locked --no-sync python scripts/build_st0201_postgres_service.py --check
+    result: 'PASS; strict source, canonical, image, platform, wrapper binding, generated Compose, manifest, provenance, and deterministic no-write checks passed'
+  - command: uv run --locked --no-sync pytest -p no:cacheprovider -q tests/st0201
+    result: 'PASS; 124 focused contract, generation, failure-injection, exact-0600, cleanup, image/platform/version, Compose-drift, and negative tests passed with 1 explicit Docker-unavailable skip'
+  - command: checksum-verified Docker Compose 2.24.4 config parse
+    result: 'PASS; exactly one postgres service and set-but-empty port normalized to loopback host_ip with no published field'
+  - command: official Docker Registry image metadata resolution
+    result: 'PASS; exact 18.4-bookworm index, linux/amd64 manifest, config digest, PG_VERSION, and PGDATA identities independently rechecked'
+  - command: scripts/ci_job.sh --uv /absolute/path/to/uv --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js static
+    result: 'PASS under the asserted denied-network/PID/seccomp boundary; all generators, repository policy, Ruff, formatting, mypy, ESLint, TypeScript, and Pyright 0/0/0 passed'
+  - command: scripts/ci_job.sh --uv /absolute/path/to/uv --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js contracts
+    result: 'PASS; ST-0104 117 passed, ST-0105 53 passed, 306-artifact repository verification, deterministic generation, and strict TypeScript compilation passed'
+  - command: RAOS_PG_BIN=/absolute/path/to/postgresql-18.3/bin uv run --locked --offline pytest tests/st0002/test_postgresql_migration.py tests/st0003/test_postgresql_migration.py tests/st0004/test_postgresql_migration.py
+    result: 'PASS in isolated processes; 13, 31, and 5 predecessor migration tests passed against local PostgreSQL 18.3'
+  - command: scripts/run_network_denied.sh --home /temporary/home -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree
+    result: 'PASS; denied-network maintained-worktree scan produced no findings after credential-like fixture names were removed'
+  - command: sha256sum -c /tmp/st0107-protected-before.sha256
+    result: 'PASS for all 1,652 protected files; baseline-list SHA-256 4d8764b28aefe90fb8d97a4918764d51d28bebe368d3ef55afbb2a20dc6c73ff; all 111 protected imported files remain byte-identical'
+  - command: independent ST-0201 source and runtime-contract audit
+    result: 'PASS_WITH_LOW before capture; Critical/High/Medium = 0/0/0, the sole stale-worklog Low was remediated before this envelope, and final capture/bundle audit follows this envelope'
+boundary: >-
+  Local generated-source, Compose-parser, registry-metadata, fake-Docker,
+  denied-network static and contract, predecessor-regression, maintained-source
+  secret, protected-file, and content-addressed capture evidence only. A real
+  Docker daemon image pull/start/health/version/cleanup, hosted GitHub Actions
+  Database job, container vulnerability scan, formal CI-only TST-008 including
+  DDL/extension/seed/constraint/trigger/role coverage, activated ST-0107
+  governance, canonical APPLY, release, deployment, staging, and production
+  were not executed. The post-envelope full unit, complete-Git secret scan,
+  capture replay, status-bundle validation, and independent final audit follow
+  this immutable snapshot.

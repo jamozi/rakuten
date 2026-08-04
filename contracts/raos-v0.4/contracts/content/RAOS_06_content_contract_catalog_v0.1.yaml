@@ -1,0 +1,83 @@
+document:
+  id: RAOS-CONTENT-CATALOG-001
+  title: Content契約マスターカタログ
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+package_id: RAOS-CONTENT-001
+package_version: '0.1'
+contracts:
+- id: article_types
+  path: RAOS_06_article_type_catalog_v0.1.yaml
+  version: 1.0.0
+  count: 5
+- id: content_blocks
+  path: RAOS_06_content_block_catalog_v0.1.yaml
+  version: 1.0.0
+  count: 24
+- id: schemas
+  path: RAOS_06_schema_registry_v0.1.yaml
+  version: 1.0.0
+  count: 33
+- id: claim_evidence
+  path: RAOS_06_claim_evidence_policy_v0.1.yaml
+  version: 1.0.0
+  count: 9
+- id: recommendation
+  path: RAOS_06_recommendation_methodology_v0.1.yaml
+  version: 1.0.0
+  count: 1
+- id: editorial_policy
+  path: RAOS_06_editorial_policy_catalog_v0.1.yaml
+  version: 1.0.0
+  count: 40
+- id: seo
+  path: RAOS_06_seo_metadata_structured_data_policy_v0.1.yaml
+  version: 1.0.0
+  count: 1
+- id: freshness
+  path: RAOS_06_freshness_update_policy_v0.1.yaml
+  version: 1.0.0
+  count: 12
+- id: internal_links
+  path: RAOS_06_internal_link_policy_v0.1.yaml
+  version: 1.0.0
+  count: 1
+- id: media
+  path: RAOS_06_media_asset_policy_v0.1.yaml
+  version: 1.0.0
+  count: 7
+- id: quality_gates
+  path: RAOS_06_quality_gate_catalog_v0.1.yaml
+  version: 1.0.0
+  count: 12
+- id: review_checklist
+  path: RAOS_06_review_checklist_v0.1.yaml
+  version: 1.0.0
+  count: 75
+- id: implementation
+  path: RAOS_06_implementation_slices_v0.1.yaml
+  version: '0.1'
+  count: 16
+- id: external_rules
+  path: RAOS_06_external_rule_snapshot_v0.1.yaml
+  version: '0.1'
+  count: 13
+global_invariants:
+- all published articles are human approved
+- approved source packet required
+- major claim evidence coverage 100 percent
+- no rakuten review body
+- no fabricated experience
+- no finance input to recommendation
+- no raw html
+- no manual affiliate url
+- disclosure renderer-owned
+- structured data deterministic
+- stale dynamic facts safely degraded
+- publication snapshot binds versions and hashes
+- auto publish disabled

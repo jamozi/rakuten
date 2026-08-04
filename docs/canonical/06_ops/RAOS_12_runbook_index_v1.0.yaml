@@ -1,0 +1,223 @@
+document:
+  id: RAOS-OPS-RUNBOOKS-001
+  version: '1.0'
+runbooks:
+- id: RB-001
+  title: Unauthorized publication
+  severity: SEV1
+  minimum_steps:
+  - publication kill switch
+  - preserve snapshot/audit
+  - rollback
+  - scope investigation
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-002
+  title: Affiliate link incident
+  severity: SEV1
+  minimum_steps:
+  - affiliate kill switch
+  - validate destination
+  - purge cache
+  - re-enable bounded
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-003
+  title: Credential compromise
+  severity: SEV1
+  minimum_steps:
+  - revoke
+  - rotate
+  - audit access
+  - restore service
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-004
+  title: Public data exposure
+  severity: SEV1
+  minimum_steps:
+  - block route
+  - purge
+  - preserve evidence
+  - notification decision
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-005
+  title: Database outage
+  severity: SEV2
+  minimum_steps:
+  - freeze writes
+  - serve last snapshot
+  - failover/restore
+  - validate
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-006
+  title: Queue backlog/retry storm
+  severity: SEV2
+  minimum_steps:
+  - pause producer
+  - circuit breaker
+  - scale worker
+  - replay safely
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-007
+  title: DLQ/quarantine triage
+  severity: SEV4
+  minimum_steps:
+  - classify
+  - inspect redacted artifact
+  - fix
+  - idempotent replay
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-008
+  title: Rakuten API outage/schema drift
+  severity: SEV2/3
+  minimum_steps:
+  - circuit break
+  - mark stale
+  - safe degrade
+  - contract update
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-009
+  title: OpenAI outage/model regression
+  severity: SEV2/3
+  minimum_steps:
+  - disable route
+  - use approved fallback only
+  - quarantine
+  - eval before resume
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-010
+  title: GSC/GA4 import failure
+  severity: SEV3
+  minimum_steps:
+  - mark stale
+  - retry
+  - provider status
+  - backfill
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-011
+  title: Revenue import mismatch
+  severity: SEV2
+  minimum_steps:
+  - block commit
+  - compare file/provider
+  - fix mapping
+  - new dry run
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-012
+  title: Cost anomaly
+  severity: SEV3
+  minimum_steps:
+  - stop optional AI/jobs
+  - check abuse
+  - budget owner approval
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-013
+  title: Backup restore
+  severity: SEV2
+  minimum_steps:
+  - isolate environment
+  - restore DB/object/config
+  - integrity checks
+  - RTO/RPO record
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-014
+  title: Release rollback
+  severity: SEV2/3
+  minimum_steps:
+  - stop rollout
+  - restore artifact/snapshot
+  - migration strategy
+  - smoke
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-015
+  title: Kill switch activation/deactivation
+  severity: SEV1/2
+  minimum_steps:
+  - step-up
+  - scope/reason
+  - generation update
+  - synthetic verify
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-016
+  title: Stale product/content
+  severity: SEV3
+  minimum_steps:
+  - identify affected claims
+  - hide values/CTA
+  - refresh
+  - reapprove
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-017
+  title: Security vulnerability
+  severity: varies
+  minimum_steps:
+  - triage severity
+  - mitigate
+  - patch/test
+  - exception if approved
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-018
+  title: External policy change
+  severity: varies
+  minimum_steps:
+  - capture official change
+  - impact query
+  - kill/hold affected flow
+  - approve patch
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-019
+  title: Domain/DNS/certificate issue
+  severity: SEV1/2
+  minimum_steps:
+  - registrar/DNS verify
+  - restore records
+  - certificate rotate
+  - monitor
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED
+- id: RB-020
+  title: Disaster recovery declaration
+  severity: SEV1
+  minimum_steps:
+  - incident commander
+  - recovery site/restore
+  - business communication
+  - return plan
+  document_status: DESIGNED_INDEX_ONLY
+  implementation_status: NOT_STARTED
+  drill_status: NOT_EXECUTED

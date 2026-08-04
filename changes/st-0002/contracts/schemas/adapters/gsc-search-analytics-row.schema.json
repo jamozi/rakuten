@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/adapters/gsc-search-analytics-row.schema.json",
+  "title": "Search Console Canonical Row",
+  "description": "Search Analytics response row with explicit dimension order and source watermark.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "site_id",
+    "date_from",
+    "date_to",
+    "dimensions",
+    "keys",
+    "clicks",
+    "impressions",
+    "ctr",
+    "position",
+    "imported_at",
+    "source_request_sha256"
+  ],
+  "properties": {
+    "site_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "date_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "date_to": {
+      "type": "string",
+      "format": "date"
+    },
+    "dimensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "keys": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "clicks": {
+      "type": "number",
+      "minimum": 0
+    },
+    "impressions": {
+      "type": "number",
+      "minimum": 0
+    },
+    "ctr": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "position": {
+      "type": "number",
+      "minimum": 0
+    },
+    "data_state": {
+      "type": "string",
+      "enum": [
+        "final",
+        "all"
+      ]
+    },
+    "imported_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "is_top_rows_limited": {
+      "type": "boolean",
+      "description": "Search Console does not guarantee all rows; preserve this caveat."
+    }
+  }
+}

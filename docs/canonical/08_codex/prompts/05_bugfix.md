@@ -1,0 +1,1 @@
+Fix the reported defect within its owning story/module. First reproduce it with a failing regression test. Identify violated invariant and impact on published snapshots, finance, evidence, or security. Make the smallest compatible fix, run affected suites, and update status only if new evidence supports it.

@@ -1,0 +1,151 @@
+document:
+  id: RAOS-CONTENT-AI-ALIGNMENT-001
+  version: '0.4'
+  status: CANONICAL_REVISION_CANDIDATE
+  provenance:
+    story_id: ST-0004
+    decision_id: INT-DEC-005
+    supporting_decision_ids:
+    - INT-DEC-006
+    revision_id: RAOS-CONTENT-REVISION-001
+    predecessor: RAOS-AI-GOVERNANCE-REVISION-001@0.3
+    predecessor_manifest_sha256: 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+proposal:
+  id: RAOS-CONTENT-AI-PROPOSAL-001
+  path: docs/upstream/patches/RAOS_06_003_ai_alignment_patch_v0.1.yaml
+  sha256: 89fe29c6182dc38b40d96379a65715fada43b74e93b5715eb3320b6a50285c1e
+  execution: FORBIDDEN
+affected_tasks:
+- task_id: AIT-002
+  code: comparison_architect
+  required_additional_inputs:
+  - article_type_version
+  - methodology_version
+  - candidate_universe_manifest
+  - claim_evidence_policy_version
+  prohibited_outputs:
+  - rank_from_affiliate_rate
+  - freeform_html
+  - manual_affiliate_url
+  successor_contract_version: '0.4'
+  input_binding: HASH_BOUND_VERSION_OR_MANIFEST
+  existing_prompt_hash_preserved: true
+- task_id: AIT-003
+  code: outline_planner
+  required_additional_inputs:
+  - article_template_version
+  - allowed_block_types
+  - required_block_sequence
+  prohibited_outputs:
+  - unknown_block
+  - raw_html
+  - structured_data
+  successor_contract_version: '0.4'
+  input_binding: HASH_BOUND_VERSION_OR_MANIFEST
+  existing_prompt_hash_preserved: true
+- task_id: AIT-004
+  code: evidence_bounded_writer
+  required_additional_inputs:
+  - content_ast_schema_version
+  - article_template_version
+  - methodology_version
+  - editorial_policy_bundle
+  - seo_policy_version
+  prohibited_outputs:
+  - affiliate_url
+  - disclosure_text_override
+  - json_ld
+  - product_dynamic_fact_without_fact_id
+  - experience_without_record
+  successor_contract_version: '0.4'
+  input_binding: HASH_BOUND_VERSION_OR_MANIFEST
+  existing_prompt_hash_preserved: true
+- task_id: AIT-005
+  code: claim_auditor
+  required_additional_inputs:
+  - claim_type_catalog
+  - source_tier_policy
+  - temporal_scope_rules
+  required_outputs:
+  - claim_type
+  - criticality
+  - subject_refs
+  - evidence_requirements
+  - temporal_scope
+  successor_contract_version: '0.4'
+  input_binding: HASH_BOUND_VERSION_OR_MANIFEST
+  existing_prompt_hash_preserved: true
+- task_id: AIT-006
+  code: remediation_editor
+  required_additional_inputs:
+  - immutable_renderer_owned_fields
+  - finding_policy_id
+  prohibited_outputs:
+  - remove_disclosure
+  - change_methodology
+  - change_rank_without_review
+  successor_contract_version: '0.4'
+  input_binding: HASH_BOUND_VERSION_OR_MANIFEST
+  existing_prompt_hash_preserved: true
+- task_id: AIT-008
+  code: internal_link_planner
+  required_additional_inputs:
+  - published_route_projection
+  - journey_edges
+  - noindex_paused_denylist
+  prohibited_outputs:
+  - raw_url
+  - affiliate_url
+  - unpublished_route
+  successor_contract_version: '0.4'
+  input_binding: HASH_BOUND_VERSION_OR_MANIFEST
+  existing_prompt_hash_preserved: true
+- task_id: AIT-009
+  code: intent_analyst
+  required_additional_inputs:
+  - article_type_catalog
+  - query_variant_consolidation_policy
+  required_outputs:
+  - primary_decision
+  - primary_intent_cluster
+  - merge_candidate_refs
+  successor_contract_version: '0.4'
+  input_binding: HASH_BOUND_VERSION_OR_MANIFEST
+  existing_prompt_hash_preserved: true
+- task_id: AIT-010
+  code: policy_assistant
+  required_additional_inputs:
+  - content_policy_bundle
+  - zero_tolerance_blockers
+  authority: finding_candidate_only; never clear or approve
+  successor_contract_version: '0.4'
+  input_binding: HASH_BOUND_VERSION_OR_MANIFEST
+  existing_prompt_hash_preserved: true
+global_prompt_constraints:
+- Content ASTの許可Blockだけを出力する
+- Renderer所有のDisclosure/Product Card/Comparison Table/JSON-LD/CTA URLを自由生成しない
+- RecommendationはMethodologyとEvidence内だけで説明し、Finance入力を使用しない
+- 可視FAQを生成してもFAQPage JSON-LDを要求しない
+evaluation_dimensions:
+- AST schema adherence
+- required block coverage
+- claim evidence coverage
+- product identity
+- recommendation bias
+- renderer ownership
+- structured data prohibition
+- experience record enforcement
+authority:
+  ai_approval: FORBIDDEN
+  ai_publication: FORBIDDEN
+  policy_assistant: FINDING_CANDIDATE_ONLY
+  renderer_owned_fields: FORBIDDEN_OUTPUT
+  finance_recommendation_input: FORBIDDEN
+canonical_input_names:
+  content_ast_schema_version: content_schema_version_id
+  article_type_version: article_type_version_id
+  article_template_version: article_template_version_id
+  methodology_version: methodology_version_id
+  editorial_policy_bundle: policy_bundle_version_id
+  immutable_renderer_owned_fields: renderer_owned_field_set
+frozen_raos_05_artifacts_modified: false

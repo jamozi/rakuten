@@ -1,0 +1,33 @@
+document:
+  id: STATUS-ST0006-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-01T16:32:26Z'
+reason: Record the local ST-0006 open-decision gate validator implementation without claiming formal CI, staging, Gate, or release execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+- story_id: ST-0006
+  expected:
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  target:
+    implementation_status: IMPLEMENTED_NOT_VALIDATED
+    verification_status: NOT_EXECUTED
+  evidence:
+  - suite_id: TST-005
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0006-local-20260801.yaml
+    sha256: 73f4abfd6eed32dabc5e1b71d3827d05fc1ed91d264407088a814becc7c97481
+    observed_at: '2026-08-01T16:29:59Z'
+  - suite_id: TST-032
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0006-local-20260801.yaml
+    sha256: 73f4abfd6eed32dabc5e1b71d3827d05fc1ed91d264407088a814becc7c97481
+    observed_at: '2026-08-01T16:29:59Z'

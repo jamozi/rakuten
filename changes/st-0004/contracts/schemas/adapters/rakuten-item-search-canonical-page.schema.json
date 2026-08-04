@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/adapters/rakuten-item-search-canonical-page.schema.json",
+  "title": "Rakuten Item Search Canonical Page",
+  "description": "Provider responseをDomain取込前に正規化した一Page。原本Artifact参照を必須とする。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "provider",
+    "api_version",
+    "request_sha256",
+    "raw_artifact",
+    "observed_at",
+    "count",
+    "page",
+    "hits",
+    "page_count",
+    "items"
+  ],
+  "properties": {
+    "provider": {
+      "const": "RAKUTEN_ICHIBA"
+    },
+    "api_version": {
+      "const": "2026-07-01"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "raw_artifact": {
+      "$ref": "../common/artifact-ref.schema.json"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "page": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "hits": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 30
+    },
+    "page_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "items": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "item_code",
+          "item_name",
+          "item_price_jpy",
+          "item_url",
+          "shop_code",
+          "availability",
+          "observed_at"
+        ],
+        "properties": {
+          "item_code": {
+            "type": "string"
+          },
+          "item_name": {
+            "type": "string"
+          },
+          "catchcopy": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "item_caption": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "item_price_jpy": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "item_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "affiliate_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          },
+          "shop_code": {
+            "type": "string"
+          },
+          "shop_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "genre_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "review_count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "review_average": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 5
+          },
+          "affiliate_rate": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "Stored for provider fact/finance only; must not determine editorial recommendation rank."
+          },
+          "availability": {
+            "type": "boolean"
+          },
+          "postage_included": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "uniqueItems": true
+          },
+          "provider_updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provider_rate_limit": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    }
+  }
+}

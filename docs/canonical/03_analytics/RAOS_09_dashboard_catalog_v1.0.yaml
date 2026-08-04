@@ -1,0 +1,73 @@
+document:
+  id: RAOS-ANALYTICS-DASH-001
+  version: '1.0'
+dashboards:
+- id: DASH-001
+  name: Executive Gate Dashboard
+  audience:
+  - PRODUCT_OWNER
+  tiles:
+  - KPI-002
+  - KPI-030
+  - KPI-011
+  - KPI-020
+  - KPI-021
+  drilldowns:
+  - Gate evidence
+  - Open decisions
+  - Incidents
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: DASH-002
+  name: Editorial Performance
+  audience:
+  - MANAGING_EDITOR
+  - EDITOR
+  tiles:
+  - KPI-012
+  - KPI-014
+  - KPI-006
+  - KPI-018
+  - KPI-020
+  drilldowns:
+  - article
+  - intent cluster
+  - article type
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: DASH-003
+  name: Finance and Attribution
+  audience:
+  - PRODUCT_OWNER
+  - ANALYST
+  tiles:
+  - KPI-001
+  - KPI-002
+  - KPI-003
+  - KPI-004
+  - KPI-010
+  - KPI-011
+  drilldowns:
+  - provider fact
+  - basis
+  - article
+  - category
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: DASH-004
+  name: Operations and Data Quality
+  audience:
+  - OPERATOR
+  - ANALYST
+  tiles:
+  - KPI-021
+  - KPI-027
+  - KPI-028
+  - KPI-029
+  drilldowns:
+  - job type
+  - provider
+  - incident
+  - date
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED

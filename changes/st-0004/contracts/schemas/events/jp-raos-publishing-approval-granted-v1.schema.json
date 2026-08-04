@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-publishing-approval-granted-v1.schema.json",
+  "title": "jp.raos.publishing.approval_granted.v1",
+  "description": "有効Approvalが記録された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.publishing.approval_granted.v1"
+        },
+        "producer": {
+          "const": "publishing"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "approval_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "approval_type": {
+              "type": "string"
+            },
+            "quality_check_run_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "policy_bundle_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "valid_until": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "approval_id",
+            "article_version_id",
+            "approval_type",
+            "quality_check_run_id",
+            "policy_bundle_id"
+          ]
+        }
+      }
+    }
+  ]
+}

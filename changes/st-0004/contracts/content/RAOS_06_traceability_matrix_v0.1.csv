@@ -1,0 +1,113 @@
+﻿requirement_id,design_id,artifact,enforcement,test_area,implementation_slice
+FR-001,AT-001,RAOS_06_article_type_catalog_v0.1.yaml,schema/policy/renderer/human gate,at,CONT-SLICE-003
+FR-001,AT-002,RAOS_06_article_type_catalog_v0.1.yaml,schema/policy/renderer/human gate,at,CONT-SLICE-003
+FR-001,AT-003,RAOS_06_article_type_catalog_v0.1.yaml,schema/policy/renderer/human gate,at,CONT-SLICE-003
+FR-001,AT-004,RAOS_06_article_type_catalog_v0.1.yaml,schema/policy/renderer/human gate,at,CONT-SLICE-003
+FR-001,AT-005,RAOS_06_article_type_catalog_v0.1.yaml,schema/policy/renderer/human gate,at,CONT-SLICE-003
+FR-002,CLM-TYPE-001,RAOS_06_claim_evidence_policy_v0.1.yaml,schema/policy/renderer/human gate,clm,CONT-SLICE-004
+FR-002,POL-CONT-016,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,pol,CONT-SLICE-013
+FR-003,POL-CONT-016,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,pol,CONT-SLICE-013
+FR-003,CLM-TYPE-003,RAOS_06_claim_evidence_policy_v0.1.yaml,schema/policy/renderer/human gate,clm,CONT-SLICE-004
+FR-004,RAOS-CONTENT-EVIDENCE-001,RAOS_06_claim_evidence_policy_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-004
+FR-004,RAOS-CONTENT-FRESH-001,RAOS_06_freshness_update_policy_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-011
+FR-005,RAOS-CONTENT-RECO-001,RAOS_06_recommendation_methodology_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-006
+FR-005,POL-CONT-005,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,pol,CONT-SLICE-013
+FR-006,QG-CONT-002,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+FR-006,POL-CONT-001,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,pol,CONT-SLICE-013
+FR-007,QG-CONT-004,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+FR-007,CLM-TYPE-001,RAOS_06_claim_evidence_policy_v0.1.yaml,schema/policy/renderer/human gate,clm,CONT-SLICE-004
+FR-007,CLM-TYPE-003,RAOS_06_claim_evidence_policy_v0.1.yaml,schema/policy/renderer/human gate,clm,CONT-SLICE-004
+FR-007,CLM-TYPE-004,RAOS_06_claim_evidence_policy_v0.1.yaml,schema/policy/renderer/human gate,clm,CONT-SLICE-004
+FR-008,RAOS-CONTENT-POLICY-001,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-013
+FR-008,RAOS-CONTENT-QG-001,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-013
+FR-009,QG-CONT-010,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+FR-009,RAOS-CONTENT-REVIEW-001,RAOS_06_review_checklist_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-013
+FR-010,QG-CONT-011,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+FR-010,QG-CONT-012,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+FR-011,POL-CONT-009,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,pol,CONT-SLICE-013
+FR-011,POL-CONT-010,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,pol,CONT-SLICE-013
+FR-011,POL-CONT-011,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,pol,CONT-SLICE-013
+FR-012,RAOS-CONTENT-FRESH-001,RAOS_06_freshness_update_policy_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-011
+FR-012,POL-CONT-040,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,pol,CONT-SLICE-013
+FR-016,RAOS-CONTENT-LINK-001,RAOS_06_internal_link_policy_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-012
+FR-016,RAOS-CONTENT-FRESH-001,RAOS_06_freshness_update_policy_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-011
+FR-017,RAOS-CONTENT-POLICY-001,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-013
+FR-017,QG-CONT-011,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+FR-018,RAOS-CONTENT-AI-PROPOSAL-001,RAOS_06_003_ai_alignment_patch_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-015
+FR-019,POL-CONT-035,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema/policy/renderer/human gate,pol,CONT-SLICE-013
+FR-019,QG-CONT-011,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+FR-020,RAOS-CONTENT-REVIEW-001,RAOS_06_review_checklist_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-013
+FR-020,QG-CONT-011,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+NFR-REL-003,QG-CONT-012,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+NFR-REL-003,RAOS-CONTENT-FRESH-001,RAOS_06_freshness_update_policy_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-011
+NFR-PERF-001,RAOS-CONTENT-MEDIA-001,RAOS_06_media_asset_policy_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-010
+NFR-AUD-001,RAOS-CONTENT-REVIEW-001,RAOS_06_review_checklist_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-013
+NFR-AUD-001,RAOS-CONTENT-EVIDENCE-001,RAOS_06_claim_evidence_policy_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-004
+NFR-DATA-001,RAOS-CONTENT-EVIDENCE-001,RAOS_06_claim_evidence_policy_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-004
+NFR-DATA-001,QG-CONT-004,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+NFR-PORT-001,RAOS-CONTENT-BLOCK-001,RAOS_06_content_block_catalog_v0.1.yaml,schema/policy/renderer/human gate,raos,CONT-SLICE-002
+NFR-PORT-001,QG-CONT-011,RAOS_06_quality_gate_catalog_v0.1.yaml,schema/policy/renderer/human gate,qg,CONT-SLICE-013
+FR-007,BLK-001,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-002,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-003,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-004,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-005,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-006,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-007,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-008,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-009,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-010,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-011,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-012,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-013,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-014,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-015,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-016,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-017,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-018,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-019,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-020,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-021,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-022,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-023,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-007,BLK-024,RAOS_06_content_block_catalog_v0.1.yaml,JSON Schema + typed renderer,content_block,CONT-SLICE-002
+FR-008,POL-CONT-001,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-002,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-003,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-004,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-005,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-006,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-007,RAOS_06_editorial_policy_catalog_v0.1.yaml,schema,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-008,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-009,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-010,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-011,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-012,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-013,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-014,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-015,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-016,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-017,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-018,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-019,RAOS_06_editorial_policy_catalog_v0.1.yaml,human,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-020,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-021,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-022,RAOS_06_editorial_policy_catalog_v0.1.yaml,human,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-023,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-024,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-025,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-026,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-027,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-028,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-029,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-030,RAOS_06_editorial_policy_catalog_v0.1.yaml,human,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-031,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-032,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-033,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-034,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-035,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-036,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-037,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-038,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-039,RAOS_06_editorial_policy_catalog_v0.1.yaml,hybrid,editorial_policy,CONT-SLICE-013
+FR-008,POL-CONT-040,RAOS_06_editorial_policy_catalog_v0.1.yaml,deterministic,editorial_policy,CONT-SLICE-013

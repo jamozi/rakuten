@@ -1,0 +1,4201 @@
+{
+  "boundary": {
+    "canonical_apply": "NOT_EXECUTED",
+    "effective_canonical_status": "UNCHANGED",
+    "environment": "LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE",
+    "formal_tst_008": "NOT_EXECUTED",
+    "formal_tst_011": "NOT_EXECUTED",
+    "formal_tst_013": "NOT_EXECUTED",
+    "hosted_ci_postgresql_18_4": "NOT_EXECUTED",
+    "human_review": "NOT_EXECUTED",
+    "independent_migration_owner_review": "NOT_EXECUTED",
+    "production_execution": "FORBIDDEN",
+    "staging_execution": "NOT_EXECUTED"
+  },
+  "contract": {
+    "path": "changes/st-0303/contracts/iam-ops-schema.v1.yaml",
+    "sha256": "af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b"
+  },
+  "creation_order": [
+    "ops.object_artifact",
+    "ops.job",
+    "ops.job_attempt",
+    "ops.outbox_event",
+    "ops.inbox_receipt",
+    "ops.idempotency_record",
+    "ops.audit_event",
+    "iam.principal",
+    "ops.runtime_setting_version",
+    "iam.user_account",
+    "iam.service_principal",
+    "iam.role",
+    "iam.permission",
+    "iam.role_permission",
+    "iam.principal_role_assignment",
+    "iam.session_revocation",
+    "iam.break_glass_record"
+  ],
+  "deferred_foreign_key_policy": {
+    "exact_names": [
+      "fk_ops_job_site_id",
+      "fk_iam_break_glass_record_incident_id"
+    ],
+    "items": [
+      {
+        "columns": [
+          "site_id"
+        ],
+        "deferred_until_story": "ST-0304",
+        "name": "fk_ops_job_site_id",
+        "on_delete": "RESTRICT",
+        "reason": "TARGET_TABLE_NOT_YET_OWNED",
+        "referenced_columns": [
+          "id"
+        ],
+        "references": "portfolio.site",
+        "table": "ops.job"
+      },
+      {
+        "columns": [
+          "incident_id"
+        ],
+        "deferred_until_condition": "TARGET_TABLE_OWNED_BY_APPROVED_LATER_STORY",
+        "name": "fk_iam_break_glass_record_incident_id",
+        "on_delete": "RESTRICT",
+        "owner_story": "UNASSIGNED",
+        "reason": "TARGET_TABLE_NOT_YET_OWNED",
+        "referenced_columns": [
+          "id"
+        ],
+        "references": "ops.incident",
+        "table": "iam.break_glass_record"
+      }
+    ],
+    "requirements": [
+      "COLUMN_REMAINS_INSTALLED",
+      "INDEX_REMAINS_INSTALLED",
+      "NO_PLACEHOLDER_TARGET",
+      "NO_INFERRED_REFERENTIAL_RULE"
+    ]
+  },
+  "document": {
+    "formal_verification": "NOT_EXECUTED",
+    "id": "RAOS-IAM-OPS-CATALOG-001",
+    "story_id": "ST-0303",
+    "version": "1.0.0"
+  },
+  "downgrade": {
+    "drop_tables_with": "RESTRICT",
+    "nonempty_failure_code": "ST0303_DOWNGRADE_NONEMPTY",
+    "owned_table_count": 17,
+    "partial_drop_forbidden": true,
+    "predecessor_revision": "202608030002",
+    "preflight_before_any_drop": true,
+    "require_all_owned_tables_empty": true,
+    "scope": "EXACT_ST_0303_OWNED_OBJECTS",
+    "transaction_required": true
+  },
+  "functions": [
+    {
+      "behavior": {
+        "lock_version": "OLD.lock_version + 1",
+        "predicate": "NEW IS DISTINCT FROM OLD",
+        "return": "NEW",
+        "updated_at": "pg_catalog.statement_timestamp()"
+      },
+      "comment": "Mutable rows receive a statement timestamp and monotonic lock version only when row values change.",
+      "fully_qualified_name": "ops.touch_mutable_row",
+      "language": "plpgsql",
+      "public_execute": "REVOKED",
+      "returns": "trigger",
+      "security": "INVOKER",
+      "set_search_path": "pg_catalog",
+      "signature": "ops.touch_mutable_row()",
+      "volatility": "VOLATILE"
+    },
+    {
+      "behavior": {
+        "maintenance_delete_return": "OLD",
+        "maintenance_guc": "raos.allow_immutable_maintenance",
+        "maintenance_role": "raos_migrator",
+        "maintenance_role_check": "pg_catalog.pg_has_role(current_user, 'raos_migrator', 'MEMBER')",
+        "maintenance_update_return": "NEW",
+        "maintenance_value": "on",
+        "rejected_operations": [
+          "UPDATE",
+          "DELETE"
+        ],
+        "rejection_sqlstate": "55000"
+      },
+      "comment": "Reject normal UPDATE and DELETE on hard-immutable tables; permit only an explicit migrator maintenance session.",
+      "fully_qualified_name": "ops.reject_immutable_mutation",
+      "language": "plpgsql",
+      "public_execute": "REVOKED",
+      "returns": "trigger",
+      "security": "INVOKER",
+      "set_search_path": "pg_catalog",
+      "signature": "ops.reject_immutable_mutation()",
+      "volatility": "VOLATILE"
+    }
+  ],
+  "inventory": {
+    "check_constraints": 66,
+    "columns": 219,
+    "deferred_foreign_keys": 2,
+    "functions": 2,
+    "immediate_foreign_keys": 20,
+    "named_unique_constraints": 13,
+    "primary_keys": 17,
+    "standalone_indexes": 48,
+    "tables": 17,
+    "triggers": 4
+  },
+  "known_canonical_limitations": [
+    {
+      "id": "RUNTIME_SETTING_GLOBAL_NULL_UNIQUENESS",
+      "limitation": "A nullable scope_id permits more than one GLOBAL row for the same setting_key and version_no.",
+      "object": "uq_ops_setting_version",
+      "preserved_definition": [
+        "setting_key",
+        "scope_type",
+        "scope_id",
+        "version_no"
+      ],
+      "strengthening": "FORBIDDEN_WITHOUT_APPROVED_DESIGN_HANDOFF"
+    },
+    {
+      "id": "BREAK_GLASS_TWO_PERSON_RUNTIME_ENFORCEMENT",
+      "inferred_constraint": "FORBIDDEN",
+      "object": "iam.break_glass_record",
+      "preserved_definition": "The canonical physical catalog has principal_id and approved_by_principal_id but no inequality check.",
+      "runtime_enforcement": "OUTSIDE_ST_0303_DATABASE_SLICE",
+      "two_person_runtime_verification": "NOT_EXECUTED"
+    }
+  ],
+  "ownership": {
+    "constraints": "INHERENT_TABLE_OBJECT",
+    "expected_owner": "CURRENT_MIGRATION_ROLE",
+    "functions": [
+      "ops.touch_mutable_row",
+      "ops.reject_immutable_mutation"
+    ],
+    "indexes": "INHERIT_TABLE_OWNER_AND_VALIDATE_EXACT_COUNT",
+    "owner_drift": "REJECT",
+    "tables": [
+      "ops.object_artifact",
+      "ops.job",
+      "ops.job_attempt",
+      "ops.outbox_event",
+      "ops.inbox_receipt",
+      "ops.idempotency_record",
+      "ops.audit_event",
+      "ops.runtime_setting_version",
+      "iam.principal",
+      "iam.user_account",
+      "iam.service_principal",
+      "iam.role",
+      "iam.permission",
+      "iam.role_permission",
+      "iam.principal_role_assignment",
+      "iam.session_revocation",
+      "iam.break_glass_record"
+    ],
+    "triggers": "INHERENT_TABLE_OBJECT"
+  },
+  "revision": {
+    "down_revision": "202608030002",
+    "path": "migrations/versions/202608030003_iam_ops_tables.py",
+    "revision": "202608030003",
+    "runner_version": "1.2.0",
+    "server_version_num": 180004,
+    "sha256": "a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e",
+    "story_id": "ST-0303",
+    "transaction": "ALEMBIC_PER_REVISION"
+  },
+  "security": {
+    "append_only_labels_without_st0303_mutation_trigger": [
+      "ops.inbox_receipt",
+      "iam.session_revocation",
+      "iam.break_glass_record"
+    ],
+    "control_ids": [
+      "SEC-IAM-004",
+      "SEC-IAM-008",
+      "SEC-IAM-009",
+      "SEC-IAM-011",
+      "SEC-DATA-003",
+      "SEC-DATA-005",
+      "SEC-DATA-007",
+      "SEC-SDLC-010"
+    ],
+    "create_database_roles": false,
+    "create_default_privileges": false,
+    "create_workload_grants": false,
+    "hard_immutable_tables": [
+      "ops.object_artifact",
+      "ops.audit_event"
+    ],
+    "public_function_execute": "REVOKED",
+    "public_schema_privileges": "NONE",
+    "public_table_privileges": "NONE",
+    "runtime_setting_secret_class_forbidden": true,
+    "search_path": {
+      "hostile_resolution_test_required": true,
+      "libpq_option": "-c search_path=pg_catalog",
+      "only": "pg_catalog",
+      "session_prepare": "SET search_path = pg_catalog",
+      "verification": "SHOW search_path MUST EQUAL pg_catalog"
+    },
+    "secret_column_names_forbidden": true
+  },
+  "tables": [
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "artifact_kind IN ('raw_provider_response', 'raw_primary_source', 'source_snapshot', 'source_packet', 'ai_input', 'ai_output', 'publication_snapshot', 'revenue_original', 'revenue_rejects', 'audit_export', 'quality_report', 'diff', 'import_report', 'other')",
+          "name": "ck_ops_object_artifact_kind"
+        },
+        {
+          "expression": "byte_size >= 0",
+          "name": "ck_ops_object_artifact_size"
+        },
+        {
+          "expression": "sha256 ~ '^[0-9a-f]{64}$'",
+          "name": "ck_ops_object_artifact_sha"
+        },
+        {
+          "expression": "encryption_state IN ('SSE_KMS', 'SSE_S3', 'LOCAL_DEV')",
+          "name": "ck_ops_object_artifact_enc"
+        },
+        {
+          "expression": "pg_catalog.jsonb_typeof(metadata) = 'object'",
+          "name": "ck_ops_object_artifact_meta"
+        }
+      ],
+      "classification": "CONFIDENTIAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "OBJ-接頭辞を持つアプリケーション生成の不変表示ID。",
+          "name": "display_id",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "raw_provider_response、source_snapshot、source_packet、ai_input、ai_output、publication_snapshot、revenue_original、audit_export等。",
+          "name": "artifact_kind",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'s3'",
+          "description": "storage provider",
+          "name": "storage_provider",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "bucket name",
+          "name": "bucket_name",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "object key",
+          "name": "object_key",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "Object VersioningのVersion ID。ローカル環境ではNULL可。",
+          "name": "object_version",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "content type",
+          "name": "content_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "byte size",
+          "name": "byte_size",
+          "nullable": false,
+          "pii": false,
+          "type": "bigint"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "sha256",
+          "name": "sha256",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "encryption state",
+          "name": "encryption_state",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "retention class",
+          "name": "retention_class",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "true",
+          "description": "is immutable",
+          "name": "is_immutable",
+          "nullable": false,
+          "pii": false,
+          "type": "boolean"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "source system",
+          "name": "source_system",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "acquired at",
+          "name": "acquired_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "CONFIDENTIAL",
+          "default": null,
+          "description": "作成操作を行ったIAM Principal。",
+          "name": "created_by_principal_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'{}'::jsonb",
+          "description": "Objectタグ、parser、provider request ID等。秘密・原本文は含めない。",
+          "name": "metadata",
+          "nullable": false,
+          "pii": false,
+          "type": "jsonb"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<10k",
+        "gate_4": "<10m"
+      },
+      "foreign_keys": [],
+      "fully_qualified_name": "ops.object_artifact",
+      "implementation_slice": "SLICE-007",
+      "indexes": [
+        {
+          "columns": [
+            "bucket_name",
+            "object_key",
+            "object_version"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "uq_ops_object_artifact_location",
+          "nulls_not_distinct": true,
+          "unique": true,
+          "where": null
+        },
+        {
+          "columns": [
+            "sha256"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_object_artifact_sha",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "artifact_kind",
+            "created_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_object_artifact_kind_created",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "object_artifact",
+      "notes": [
+        "DBには原本本文を保存せず、URI・Version・hash・metadataのみを保存する。"
+      ],
+      "owner_module": "ops",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_ops_object_artifact",
+      "purpose": "S3互換Object Storage上の原本・入力・出力・公開Snapshotを登録する不変レジストリ。",
+      "requirements": [
+        "FR-002",
+        "FR-004",
+        "FR-018",
+        "FR-020",
+        "NFR-DATA-001",
+        "NFR-BACKUP-001"
+      ],
+      "retention_class": "BY_ARTIFACT_KIND",
+      "unique_constraints": [
+        {
+          "columns": [
+            "display_id"
+          ],
+          "name": "uq_ops_object_artifact_display_id"
+        }
+      ],
+      "write_pattern": "APPEND_ONLY"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "status IN ('REQUESTED', 'QUEUED', 'RUNNING', 'SUCCEEDED', 'FAILED_RETRYABLE', 'RETRY_SCHEDULED', 'FAILED_TERMINAL', 'QUARANTINED', 'CANCELLED', 'EXPIRED')",
+          "name": "ck_ops_job_status"
+        },
+        {
+          "expression": "priority BETWEEN 0 AND 100",
+          "name": "ck_ops_job_priority"
+        },
+        {
+          "expression": "max_attempts BETWEEN 1 AND 50 AND attempt_count BETWEEN 0 AND max_attempts",
+          "name": "ck_ops_job_attempts"
+        },
+        {
+          "expression": "budget_jpy IS NULL OR budget_jpy >= 0",
+          "name": "ck_ops_job_budget"
+        },
+        {
+          "expression": "pg_catalog.jsonb_typeof(payload) = 'object'",
+          "name": "ck_ops_job_payload"
+        },
+        {
+          "expression": "(lease_owner IS NULL) = (lease_expires_at IS NULL)",
+          "name": "ck_ops_job_lease_pair"
+        },
+        {
+          "expression": "status NOT IN ('SUCCEEDED', 'FAILED_TERMINAL', 'QUARANTINED', 'CANCELLED', 'EXPIRED') OR completed_at IS NOT NULL",
+          "name": "ck_ops_job_completion"
+        },
+        {
+          "expression": "lock_version >= 0",
+          "name": "ck_ops_job_version"
+        },
+        {
+          "expression": "job_version >= 1",
+          "name": "ck_ops_job_version_positive"
+        },
+        {
+          "expression": "deadline_at IS NULL OR deadline_at > created_at",
+          "name": "ck_ops_job_deadline_order"
+        },
+        {
+          "expression": "cancel_requested_at IS NULL OR status <> 'SUCCEEDED'",
+          "name": "ck_ops_job_cancel_request"
+        }
+      ],
+      "classification": "CONFIDENTIAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "JOB-接頭辞を持つアプリケーション生成の不変表示ID。",
+          "name": "display_id",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "job type",
+          "name": "job_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "queue name",
+          "name": "queue_name",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'REQUESTED'",
+          "description": "業務状態を示す安定Enum文字列。",
+          "name": "status",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "50",
+          "description": "priority",
+          "name": "priority",
+          "nullable": false,
+          "pii": false,
+          "type": "smallint"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "idempotency key",
+          "name": "idempotency_key",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。",
+          "name": "site_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "aggregate type",
+          "name": "aggregate_type",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "aggregate id",
+          "name": "aggregate_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'{}'::jsonb",
+          "description": "小さなCommand payload。大容量入力はpayload_artifact_idへ分離する。",
+          "name": "payload",
+          "nullable": false,
+          "pii": false,
+          "type": "jsonb"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "payload artifact id",
+          "name": "payload_artifact_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "scheduled at",
+          "name": "scheduled_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "available at",
+          "name": "available_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "started at",
+          "name": "started_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "completed at",
+          "name": "completed_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "5",
+          "description": "max attempts",
+          "name": "max_attempts",
+          "nullable": false,
+          "pii": false,
+          "type": "smallint"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "0",
+          "description": "attempt count",
+          "name": "attempt_count",
+          "nullable": false,
+          "pii": false,
+          "type": "smallint"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "lease owner",
+          "name": "lease_owner",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "lease expires at",
+          "name": "lease_expires_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "要求・Job・Eventを横断して追跡するCorrelation ID。",
+          "name": "correlation_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "この事実を直接発生させたCommand/Event/Job ID。",
+          "name": "causation_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "parent job id",
+          "name": "parent_job_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "budget jpy",
+          "name": "budget_jpy",
+          "nullable": true,
+          "pii": false,
+          "type": "bigint"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "created by actor type",
+          "name": "created_by_actor_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "created by actor id",
+          "name": "created_by_actor_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "last error class",
+          "name": "last_error_class",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "last error code",
+          "name": "last_error_code",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "CONFIDENTIAL",
+          "default": null,
+          "description": "last error message",
+          "name": "last_error_message",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "最終更新時刻。UTCのtimestamptz。",
+          "name": "updated_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "0",
+          "description": "楽観的排他制御用の単調増加Version。",
+          "name": "lock_version",
+          "nullable": false,
+          "pii": false,
+          "type": "bigint"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "1",
+          "description": "Version of the Job message/payload contract; distinct from lock_version.",
+          "name": "job_version",
+          "nullable": false,
+          "pii": false,
+          "type": "smallint"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "Deadline after which an eligible active Job may expire.",
+          "name": "deadline_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "Timestamp of a cooperative cancellation request.",
+          "name": "cancel_requested_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [
+        {
+          "column_and_index_installed": true,
+          "columns": [
+            "site_id"
+          ],
+          "deferrable": false,
+          "deferred_until_story": "ST-0304",
+          "initially_deferred": false,
+          "name": "fk_ops_job_site_id",
+          "on_delete": "RESTRICT",
+          "reason": "TARGET_TABLE_NOT_YET_OWNED",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "portfolio.site"
+        }
+      ],
+      "expected_scale": {
+        "gate_1": "<50k",
+        "gate_4": "<50m"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "payload_artifact_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_ops_job_payload_artifact_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "ops.object_artifact"
+        },
+        {
+          "columns": [
+            "parent_job_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_ops_job_parent_job_id",
+          "on_delete": "SET NULL",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "ops.job"
+        }
+      ],
+      "fully_qualified_name": "ops.job",
+      "implementation_slice": "SLICE-004",
+      "indexes": [
+        {
+          "columns": [
+            "job_type",
+            "idempotency_key"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "uq_ops_job_idempotency",
+          "nulls_not_distinct": false,
+          "unique": true,
+          "where": "idempotency_key IS NOT NULL"
+        },
+        {
+          "columns": [
+            "queue_name",
+            "priority",
+            "available_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_ready",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": "status IN ('REQUESTED','QUEUED','RETRY_SCHEDULED')"
+        },
+        {
+          "columns": [
+            "lease_expires_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_lease",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": "status = 'RUNNING'"
+        },
+        {
+          "columns": [
+            "aggregate_type",
+            "aggregate_id"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_aggregate",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "correlation_id"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_correlation",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "payload_artifact_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_payload_artifact_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "parent_job_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_parent_job_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "site_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_site_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "deadline_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_deadline_active",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": "deadline_at IS NOT NULL AND status IN ('REQUESTED','QUEUED','RUNNING','FAILED_RETRYABLE','RETRY_SCHEDULED')"
+        }
+      ],
+      "name": "job",
+      "notes": [],
+      "owner_module": "ops",
+      "partitioning": "CANDIDATE_BY_CREATED_AT_AFTER_10M",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_ops_job",
+      "purpose": "非同期作業の業務上の正本。Scheduler、API、Eventから作成され、Attemptとは分離する。",
+      "requirements": [
+        "NFR-REL-001",
+        "NFR-REL-002",
+        "FR-018",
+        "FR-020"
+      ],
+      "retention_class": "OPS_JOB_2Y",
+      "unique_constraints": [
+        {
+          "columns": [
+            "display_id"
+          ],
+          "name": "uq_ops_job_display_id"
+        }
+      ],
+      "write_pattern": "MUTABLE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "status IN ('RUNNING', 'SUCCEEDED', 'FAILED', 'CANCELLED', 'TIMED_OUT')",
+          "name": "ck_ops_job_attempt_status"
+        },
+        {
+          "expression": "attempt_no >= 1",
+          "name": "ck_ops_job_attempt_no"
+        },
+        {
+          "expression": "pg_catalog.jsonb_typeof(metrics) = 'object'",
+          "name": "ck_ops_job_attempt_metrics"
+        },
+        {
+          "expression": "status = 'RUNNING' OR completed_at IS NOT NULL",
+          "name": "ck_ops_job_attempt_end"
+        }
+      ],
+      "classification": "CONFIDENTIAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "非同期Job。",
+          "name": "job_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "attempt no",
+          "name": "attempt_no",
+          "nullable": false,
+          "pii": false,
+          "type": "smallint"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "業務状態を示す安定Enum文字列。",
+          "name": "status",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "worker id",
+          "name": "worker_id",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "handler version",
+          "name": "handler_version",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "started at",
+          "name": "started_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "completed at",
+          "name": "completed_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "provider request id",
+          "name": "provider_request_id",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "input artifact id",
+          "name": "input_artifact_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "output artifact id",
+          "name": "output_artifact_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "error class",
+          "name": "error_class",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "error code",
+          "name": "error_code",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "CONFIDENTIAL",
+          "default": null,
+          "description": "error message",
+          "name": "error_message",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "retry after at",
+          "name": "retry_after_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'{}'::jsonb",
+          "description": "Duration、row count、provider quota等の低カーディナリティ指標。",
+          "name": "metrics",
+          "nullable": false,
+          "pii": false,
+          "type": "jsonb"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<100k",
+        "gate_4": "<100m"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "job_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_ops_job_attempt_job_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "ops.job"
+        },
+        {
+          "columns": [
+            "input_artifact_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_ops_job_attempt_input_artifact_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "ops.object_artifact"
+        },
+        {
+          "columns": [
+            "output_artifact_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_ops_job_attempt_output_artifact_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "ops.object_artifact"
+        }
+      ],
+      "fully_qualified_name": "ops.job_attempt",
+      "implementation_slice": "SLICE-004",
+      "indexes": [
+        {
+          "columns": [
+            "started_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_attempt_started",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "status",
+            "started_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_attempt_status",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "input_artifact_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_attempt_input_artifact_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "output_artifact_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_job_attempt_output_artifact_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "job_attempt",
+      "notes": [],
+      "owner_module": "ops",
+      "partitioning": "CANDIDATE_BY_STARTED_AT_AFTER_20M",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_ops_job_attempt",
+      "purpose": "Jobの各実行Attemptを追記保存し、Retry、Provider call、入出力Artifact、失敗原因を再現可能にする。",
+      "requirements": [
+        "NFR-REL-001",
+        "NFR-OBS-001",
+        "FR-018"
+      ],
+      "retention_class": "OPS_JOB_2Y",
+      "unique_constraints": [
+        {
+          "columns": [
+            "job_id",
+            "attempt_no"
+          ],
+          "name": "uq_ops_job_attempt_no"
+        }
+      ],
+      "write_pattern": "LIFECYCLE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "event_version >= 1 AND aggregate_version >= 0",
+          "name": "ck_ops_outbox_event_version"
+        },
+        {
+          "expression": "pg_catalog.jsonb_typeof(payload) = 'object'",
+          "name": "ck_ops_outbox_payload"
+        },
+        {
+          "expression": "payload_schema_hash ~ '^[0-9a-f]{64}$'",
+          "name": "ck_ops_outbox_hash"
+        },
+        {
+          "expression": "status IN ('PENDING', 'DISPATCHING', 'PUBLISHED', 'FAILED', 'DEAD')",
+          "name": "ck_ops_outbox_status"
+        },
+        {
+          "expression": "publish_attempts >= 0",
+          "name": "ck_ops_outbox_attempts"
+        },
+        {
+          "expression": "status <> 'PUBLISHED' OR published_at IS NOT NULL",
+          "name": "ck_ops_outbox_published"
+        }
+      ],
+      "classification": "CONFIDENTIAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "event type",
+          "name": "event_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "1",
+          "description": "event version",
+          "name": "event_version",
+          "nullable": false,
+          "pii": false,
+          "type": "integer"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "producer",
+          "name": "producer",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "aggregate type",
+          "name": "aggregate_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "aggregate id",
+          "name": "aggregate_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "aggregate version",
+          "name": "aggregate_version",
+          "nullable": false,
+          "pii": false,
+          "type": "bigint"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "要求・Job・Eventを横断して追跡するCorrelation ID。",
+          "name": "correlation_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "この事実を直接発生させたCommand/Event/Job ID。",
+          "name": "causation_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "actor type",
+          "name": "actor_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "actor id",
+          "name": "actor_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'{}'::jsonb",
+          "description": "Version付きEvent payload。秘密・大容量原本を含めない。",
+          "name": "payload",
+          "nullable": false,
+          "pii": false,
+          "type": "jsonb"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "payload schema hash",
+          "name": "payload_schema_hash",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'PENDING'",
+          "description": "業務状態を示す安定Enum文字列。",
+          "name": "status",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "available at",
+          "name": "available_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "published at",
+          "name": "published_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "0",
+          "description": "publish attempts",
+          "name": "publish_attempts",
+          "nullable": false,
+          "pii": false,
+          "type": "smallint"
+        },
+        {
+          "classification": "CONFIDENTIAL",
+          "default": null,
+          "description": "last error",
+          "name": "last_error",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<100k",
+        "gate_4": "<100m"
+      },
+      "foreign_keys": [],
+      "fully_qualified_name": "ops.outbox_event",
+      "implementation_slice": "SLICE-004",
+      "indexes": [
+        {
+          "columns": [
+            "status",
+            "available_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_outbox_ready",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": "status IN ('PENDING','FAILED')"
+        },
+        {
+          "columns": [
+            "aggregate_type",
+            "aggregate_id",
+            "aggregate_version"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_outbox_aggregate",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "correlation_id"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_outbox_correlation",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "created_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "brin",
+          "name": "ix_ops_outbox_created_brin",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "outbox_event",
+      "notes": [],
+      "owner_module": "ops",
+      "partitioning": "CANDIDATE_MONTHLY_AFTER_20M",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_ops_outbox_event",
+      "purpose": "業務TransactionとEvent発行を原子的に接続するTransactional Outbox。",
+      "requirements": [
+        "NFR-REL-001",
+        "FR-020"
+      ],
+      "retention_class": "OUTBOX_180D",
+      "unique_constraints": [],
+      "write_pattern": "MUTABLE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "status IN ('PROCESSING', 'PROCESSED', 'FAILED', 'IGNORED')",
+          "name": "ck_ops_inbox_status"
+        },
+        {
+          "expression": "result_hash IS NULL OR result_hash ~ '^[0-9a-f]{64}$'",
+          "name": "ck_ops_inbox_hash"
+        },
+        {
+          "expression": "status = 'PROCESSING' OR processed_at IS NOT NULL",
+          "name": "ck_ops_inbox_processed"
+        }
+      ],
+      "classification": "INTERNAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "consumer name",
+          "name": "consumer_name",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "handler version",
+          "name": "handler_version",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "event id",
+          "name": "event_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "業務状態を示す安定Enum文字列。",
+          "name": "status",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "received at",
+          "name": "received_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "processed at",
+          "name": "processed_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "result hash",
+          "name": "result_hash",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "error code",
+          "name": "error_code",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<100k",
+        "gate_4": "<100m"
+      },
+      "foreign_keys": [],
+      "fully_qualified_name": "ops.inbox_receipt",
+      "implementation_slice": "SLICE-004",
+      "indexes": [
+        {
+          "columns": [
+            "event_id"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_inbox_event",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "received_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_inbox_received",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "inbox_receipt",
+      "notes": [],
+      "owner_module": "ops",
+      "partitioning": "CANDIDATE_MONTHLY_AFTER_20M",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_ops_inbox_receipt",
+      "purpose": "Consumer単位でEvent処理済みを記録し、at-least-once配送の重複を無害化する。",
+      "requirements": [
+        "NFR-REL-001"
+      ],
+      "retention_class": "INBOX_400D",
+      "unique_constraints": [
+        {
+          "columns": [
+            "consumer_name",
+            "handler_version",
+            "event_id"
+          ],
+          "name": "uq_ops_inbox_receipt"
+        }
+      ],
+      "write_pattern": "APPEND_ONLY"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "request_hash ~ '^[0-9a-f]{64}$'",
+          "name": "ck_ops_idem_request_hash"
+        },
+        {
+          "expression": "status IN ('IN_PROGRESS', 'COMPLETED', 'FAILED')",
+          "name": "ck_ops_idem_status"
+        },
+        {
+          "expression": "status = 'IN_PROGRESS' OR response_status IS NOT NULL",
+          "name": "ck_ops_idem_response"
+        },
+        {
+          "expression": "expires_at > created_at",
+          "name": "ck_ops_idem_expiry"
+        },
+        {
+          "expression": "response_body IS NULL OR pg_catalog.jsonb_typeof(response_body) = 'object'",
+          "name": "ck_ops_idem_response_body"
+        }
+      ],
+      "classification": "CONFIDENTIAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "CONFIDENTIAL",
+          "default": null,
+          "description": "actor fingerprint",
+          "name": "actor_fingerprint",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "route key",
+          "name": "route_key",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "idempotency key",
+          "name": "idempotency_key",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "request hash",
+          "name": "request_hash",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'IN_PROGRESS'",
+          "description": "業務状態を示す安定Enum文字列。",
+          "name": "status",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "response status",
+          "name": "response_status",
+          "nullable": true,
+          "pii": false,
+          "type": "integer"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "小さな再送応答。大きい応答はArtifactへ保存。",
+          "name": "response_body",
+          "nullable": true,
+          "pii": false,
+          "type": "jsonb"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "response artifact id",
+          "name": "response_artifact_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "resource type",
+          "name": "resource_type",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "resource id",
+          "name": "resource_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "expires at",
+          "name": "expires_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "completed at",
+          "name": "completed_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<50k",
+        "gate_4": "<10m"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "response_artifact_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_ops_idempotency_record_response_artifact_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "ops.object_artifact"
+        }
+      ],
+      "fully_qualified_name": "ops.idempotency_record",
+      "implementation_slice": "SLICE-004",
+      "indexes": [
+        {
+          "columns": [
+            "expires_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_idempotency_expiry",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "response_artifact_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_idempotency_record_response_artifact_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "idempotency_record",
+      "notes": [],
+      "owner_module": "ops",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_ops_idempotency_record",
+      "purpose": "HTTP Command等の二重送信を検出し、同じKey＋同じpayloadへ同じ結果を返す。",
+      "requirements": [
+        "NFR-REL-001"
+      ],
+      "retention_class": "IDEMPOTENCY_UNTIL_EXPIRY",
+      "unique_constraints": [
+        {
+          "columns": [
+            "actor_fingerprint",
+            "route_key",
+            "idempotency_key"
+          ],
+          "name": "uq_ops_idempotency"
+        }
+      ],
+      "write_pattern": "MUTABLE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "actor_type IN ('USER', 'SERVICE', 'SCHEDULE', 'SYSTEM', 'ANONYMOUS')",
+          "name": "ck_ops_audit_actor"
+        },
+        {
+          "expression": "outcome IN ('SUCCESS', 'DENIED', 'FAILED', 'NOOP')",
+          "name": "ck_ops_audit_outcome"
+        },
+        {
+          "expression": "severity IN ('INFO', 'NOTICE', 'WARNING', 'CRITICAL')",
+          "name": "ck_ops_audit_severity"
+        },
+        {
+          "expression": "before_hash IS NULL OR before_hash ~ '^[0-9a-f]{64}$'",
+          "name": "ck_ops_audit_before_hash"
+        },
+        {
+          "expression": "after_hash IS NULL OR after_hash ~ '^[0-9a-f]{64}$'",
+          "name": "ck_ops_audit_after_hash"
+        },
+        {
+          "expression": "pg_catalog.jsonb_typeof(details) = 'object'",
+          "name": "ck_ops_audit_details"
+        }
+      ],
+      "classification": "RESTRICTED",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "occurred at",
+          "name": "occurred_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "actor type",
+          "name": "actor_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "CONFIDENTIAL",
+          "default": null,
+          "description": "actor id",
+          "name": "actor_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "action",
+          "name": "action",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "target type",
+          "name": "target_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "target id",
+          "name": "target_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "outcome",
+          "name": "outcome",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'INFO'",
+          "description": "severity",
+          "name": "severity",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "要求・Job・Eventを横断して追跡するCorrelation ID。",
+          "name": "correlation_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "request id",
+          "name": "request_id",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "before hash",
+          "name": "before_hash",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "after hash",
+          "name": "after_hash",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "CONFIDENTIAL",
+          "default": "'{}'::jsonb",
+          "description": "差分要約、理由、Policy/Prompt版。秘密、原文、raw IPは含めない。",
+          "name": "details",
+          "nullable": false,
+          "pii": false,
+          "type": "jsonb"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<500k",
+        "gate_4": "<500m"
+      },
+      "foreign_keys": [],
+      "fully_qualified_name": "ops.audit_event",
+      "implementation_slice": "SLICE-004",
+      "indexes": [
+        {
+          "columns": [
+            "occurred_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_audit_occurred",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "actor_type",
+            "actor_id",
+            "occurred_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_audit_actor",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "target_type",
+            "target_id",
+            "occurred_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_audit_target",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "correlation_id"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_audit_corr",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "occurred_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "brin",
+          "name": "ix_ops_audit_occurred_brin",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "audit_event",
+      "notes": [
+        "raw IPアドレス、完全なUser-Agent、Secretを保存しない。"
+      ],
+      "owner_module": "ops",
+      "partitioning": "MONTHLY_AT_GATE3_OR_20M_ROWS",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_ops_audit_event",
+      "purpose": "管理操作・自動化操作・権限変更・公開・Kill Switch等を追記記録する監査正本。",
+      "requirements": [
+        "FR-020",
+        "NFR-AUD-001"
+      ],
+      "retention_class": "AUDIT_7Y_PROVISIONAL",
+      "unique_constraints": [],
+      "write_pattern": "APPEND_ONLY"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "scope_type IN ('GLOBAL', 'SITE', 'CATEGORY', 'ARTICLE', 'PROVIDER', 'TASK')",
+          "name": "ck_ops_setting_scope"
+        },
+        {
+          "expression": "(scope_type = 'GLOBAL' AND scope_id IS NULL) OR (scope_type <> 'GLOBAL' AND scope_id IS NOT NULL)",
+          "name": "ck_ops_setting_scope_id"
+        },
+        {
+          "expression": "version_no >= 1",
+          "name": "ck_ops_setting_version"
+        },
+        {
+          "expression": "setting_class IN ('FEATURE_FLAG', 'THRESHOLD', 'PROVIDER', 'FRESHNESS', 'BUDGET', 'UI', 'OTHER')",
+          "name": "ck_ops_setting_class"
+        },
+        {
+          "expression": "setting_class <> 'SECRET'",
+          "name": "ck_ops_setting_no_secret"
+        },
+        {
+          "expression": "pg_catalog.jsonb_typeof(value) = 'object'",
+          "name": "ck_ops_setting_value"
+        },
+        {
+          "expression": "value_sha256 ~ '^[0-9a-f]{64}$'",
+          "name": "ck_ops_setting_hash"
+        },
+        {
+          "expression": "status IN ('DRAFT', 'ACTIVE', 'RETIRED', 'REJECTED')",
+          "name": "ck_ops_setting_status"
+        },
+        {
+          "expression": "effective_to IS NULL OR effective_from IS NULL OR effective_to > effective_from",
+          "name": "ck_ops_setting_window"
+        }
+      ],
+      "classification": "CONFIDENTIAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "setting key",
+          "name": "setting_key",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "scope type",
+          "name": "scope_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "scope id",
+          "name": "scope_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "Aggregate内で1から増加する不変Version番号。",
+          "name": "version_no",
+          "nullable": false,
+          "pii": false,
+          "type": "integer"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "setting class",
+          "name": "setting_class",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "CONFIDENTIAL",
+          "default": "'{}'::jsonb",
+          "description": "value",
+          "name": "value",
+          "nullable": false,
+          "pii": false,
+          "type": "jsonb"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "value sha256",
+          "name": "value_sha256",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "業務状態を示す安定Enum文字列。",
+          "name": "status",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "設定・関係が有効になる時刻。",
+          "name": "effective_from",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "設定・関係の有効終了時刻。NULLは終了未定。",
+          "name": "effective_to",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "作成操作を行ったIAM Principal。",
+          "name": "created_by_principal_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "approved by principal id",
+          "name": "approved_by_principal_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "approval reason",
+          "name": "approval_reason",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<10k",
+        "gate_4": "<1m"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "created_by_principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_ops_runtime_setting_version_created_by_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        },
+        {
+          "columns": [
+            "approved_by_principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_ops_runtime_setting_version_approved_by_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        }
+      ],
+      "fully_qualified_name": "ops.runtime_setting_version",
+      "implementation_slice": "SLICE-004",
+      "indexes": [
+        {
+          "columns": [
+            "setting_key",
+            "scope_type",
+            "scope_id"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "uq_ops_setting_active",
+          "nulls_not_distinct": true,
+          "unique": true,
+          "where": "status = 'ACTIVE'"
+        },
+        {
+          "columns": [
+            "setting_key",
+            "status",
+            "effective_from"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_setting_lookup",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "created_by_principal_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_runtime_setting_version_created_by_principal_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "approved_by_principal_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_ops_runtime_setting_version_approved_by_principal_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "runtime_setting_version",
+      "notes": [
+        "Secret値はSecrets Managerへ置き、本テーブルでのsetting_class=SECRETを禁止する。"
+      ],
+      "owner_module": "ops",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_ops_runtime_setting_version",
+      "purpose": "Feature Flag、閾値、Provider version、SLA等の非秘密設定をVersion管理する。",
+      "requirements": [
+        "NFR-MAINT-001",
+        "FR-019",
+        "FR-020"
+      ],
+      "retention_class": "CONFIG_7Y",
+      "unique_constraints": [
+        {
+          "columns": [
+            "setting_key",
+            "scope_type",
+            "scope_id",
+            "version_no"
+          ],
+          "name": "uq_ops_setting_version"
+        }
+      ],
+      "write_pattern": "LIFECYCLE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "principal_type IN ('USER', 'SERVICE')",
+          "name": "ck_iam_principal_type"
+        },
+        {
+          "expression": "status IN ('ACTIVE', 'SUSPENDED', 'DEACTIVATED')",
+          "name": "ck_iam_principal_status"
+        },
+        {
+          "expression": "status <> 'DEACTIVATED' OR deactivated_at IS NOT NULL",
+          "name": "ck_iam_principal_deactivation"
+        },
+        {
+          "expression": "lock_version >= 0",
+          "name": "ck_iam_principal_version"
+        }
+      ],
+      "classification": "RESTRICTED",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "PRN-接頭辞を持つアプリケーション生成の不変表示ID。",
+          "name": "display_id",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "principal type",
+          "name": "principal_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'ACTIVE'",
+          "description": "業務状態を示す安定Enum文字列。",
+          "name": "status",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "display name",
+          "name": "display_name",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "deactivated at",
+          "name": "deactivated_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "deactivation reason",
+          "name": "deactivation_reason",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "最終更新時刻。UTCのtimestamptz。",
+          "name": "updated_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "0",
+          "description": "楽観的排他制御用の単調増加Version。",
+          "name": "lock_version",
+          "nullable": false,
+          "pii": false,
+          "type": "bigint"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<100",
+        "gate_4": "<10k"
+      },
+      "foreign_keys": [],
+      "fully_qualified_name": "iam.principal",
+      "implementation_slice": "SLICE-005",
+      "indexes": [
+        {
+          "columns": [
+            "status",
+            "principal_type"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_principal_status",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "principal",
+      "notes": [],
+      "owner_module": "iam",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_iam_principal",
+      "purpose": "管理ユーザーとService Principalを共通IDで表すIAM Root。PasswordやSecretは保持しない。",
+      "requirements": [
+        "NFR-SEC-002",
+        "FR-020"
+      ],
+      "retention_class": "IAM_LIFECYCLE",
+      "unique_constraints": [
+        {
+          "columns": [
+            "display_id"
+          ],
+          "name": "uq_iam_principal_display"
+        }
+      ],
+      "write_pattern": "MUTABLE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "oidc_issuer ~ '^https://'",
+          "name": "ck_iam_user_https_issuer"
+        }
+      ],
+      "classification": "RESTRICTED",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "principal id",
+          "name": "principal_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "oidc issuer",
+          "name": "oidc_issuer",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "oidc subject",
+          "name": "oidc_subject",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "email",
+          "name": "email",
+          "nullable": true,
+          "pii": true,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "false",
+          "description": "email verified",
+          "name": "email_verified",
+          "nullable": false,
+          "pii": false,
+          "type": "boolean"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "true",
+          "description": "mfa required",
+          "name": "mfa_required",
+          "nullable": false,
+          "pii": false,
+          "type": "boolean"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "last login at",
+          "name": "last_login_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "last mfa at",
+          "name": "last_mfa_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<100",
+        "gate_4": "<10k"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_user_account_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        }
+      ],
+      "fully_qualified_name": "iam.user_account",
+      "implementation_slice": "SLICE-005",
+      "indexes": [
+        {
+          "columns": [],
+          "description": "",
+          "expression": "pg_catalog.lower(email)",
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_user_email_lower",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": "email IS NOT NULL"
+        }
+      ],
+      "name": "user_account",
+      "notes": [
+        "EmailはRecipient解決・表示の補助であり認証正本はIssuer+Subject。"
+      ],
+      "owner_module": "iam",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "principal_id"
+      ],
+      "primary_key_name": "pk_iam_user_account",
+      "purpose": "OIDC UserのIssuer/Subject、表示用Email、MFA claim等をPrincipalへ紐付ける。",
+      "requirements": [
+        "NFR-SEC-002"
+      ],
+      "retention_class": "IAM_LIFECYCLE",
+      "unique_constraints": [
+        {
+          "columns": [
+            "oidc_issuer",
+            "oidc_subject"
+          ],
+          "name": "uq_iam_user_oidc"
+        }
+      ],
+      "write_pattern": "MUTABLE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "allowed_environment IN ('LOCAL', 'CI', 'STAGING', 'PRODUCTION')",
+          "name": "ck_iam_service_env"
+        }
+      ],
+      "classification": "RESTRICTED",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "principal id",
+          "name": "principal_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "service code",
+          "name": "service_code",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "workload identity",
+          "name": "workload_identity",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "allowed environment",
+          "name": "allowed_environment",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "credential rotated at",
+          "name": "credential_rotated_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "last used at",
+          "name": "last_used_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<100",
+        "gate_4": "<10k"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_service_principal_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        }
+      ],
+      "fully_qualified_name": "iam.service_principal",
+      "implementation_slice": "SLICE-005",
+      "indexes": [],
+      "name": "service_principal",
+      "notes": [],
+      "owner_module": "iam",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "principal_id"
+      ],
+      "primary_key_name": "pk_iam_service_principal",
+      "purpose": "Worker、Dispatcher、CI等のWorkload IdentityをPrincipalへ紐付ける。Credential本体はSecrets Manager/OIDCに置く。",
+      "requirements": [
+        "NFR-SEC-001",
+        "NFR-SEC-002"
+      ],
+      "retention_class": "IAM_LIFECYCLE",
+      "unique_constraints": [
+        {
+          "columns": [
+            "service_code"
+          ],
+          "name": "uq_iam_service_code"
+        },
+        {
+          "columns": [
+            "workload_identity",
+            "allowed_environment"
+          ],
+          "name": "uq_iam_service_workload"
+        }
+      ],
+      "write_pattern": "MUTABLE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "status IN ('ACTIVE', 'RETIRED')",
+          "name": "ck_iam_role_status"
+        }
+      ],
+      "classification": "INTERNAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "role code",
+          "name": "role_code",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "name",
+          "name": "name",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "description",
+          "name": "description",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "true",
+          "description": "is system role",
+          "name": "is_system_role",
+          "nullable": false,
+          "pii": false,
+          "type": "boolean"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'ACTIVE'",
+          "description": "業務状態を示す安定Enum文字列。",
+          "name": "status",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<100",
+        "gate_4": "<1k"
+      },
+      "foreign_keys": [],
+      "fully_qualified_name": "iam.role",
+      "implementation_slice": "SLICE-005",
+      "indexes": [],
+      "name": "role",
+      "notes": [],
+      "owner_module": "iam",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_iam_role",
+      "purpose": "RAOSアプリケーション内Roleの定義。DB Roleとは分離する。",
+      "requirements": [
+        "NFR-SEC-002"
+      ],
+      "retention_class": "CONFIG_7Y",
+      "unique_constraints": [
+        {
+          "columns": [
+            "role_code"
+          ],
+          "name": "uq_iam_role_code"
+        }
+      ],
+      "write_pattern": "REFERENCE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "risk_level IN ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')",
+          "name": "ck_iam_permission_risk"
+        },
+        {
+          "expression": "status IN ('ACTIVE', 'RETIRED')",
+          "name": "ck_iam_permission_status"
+        }
+      ],
+      "classification": "INTERNAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "permission code",
+          "name": "permission_code",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "description",
+          "name": "description",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "risk level",
+          "name": "risk_level",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "'ACTIVE'",
+          "description": "業務状態を示す安定Enum文字列。",
+          "name": "status",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<500",
+        "gate_4": "<5k"
+      },
+      "foreign_keys": [],
+      "fully_qualified_name": "iam.permission",
+      "implementation_slice": "SLICE-005",
+      "indexes": [],
+      "name": "permission",
+      "notes": [],
+      "owner_module": "iam",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_iam_permission",
+      "purpose": "API/Command単位の安定Permission code。",
+      "requirements": [
+        "NFR-SEC-002"
+      ],
+      "retention_class": "CONFIG_7Y",
+      "unique_constraints": [
+        {
+          "columns": [
+            "permission_code"
+          ],
+          "name": "uq_iam_permission_code"
+        }
+      ],
+      "write_pattern": "REFERENCE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [],
+      "classification": "INTERNAL",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "role id",
+          "name": "role_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "permission id",
+          "name": "permission_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<5k",
+        "gate_4": "<50k"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "role_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_role_permission_role_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.role"
+        },
+        {
+          "columns": [
+            "permission_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_role_permission_permission_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.permission"
+        }
+      ],
+      "fully_qualified_name": "iam.role_permission",
+      "implementation_slice": "SLICE-005",
+      "indexes": [
+        {
+          "columns": [
+            "permission_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_role_permission_permission_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "role_permission",
+      "notes": [],
+      "owner_module": "iam",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "role_id",
+        "permission_id"
+      ],
+      "primary_key_name": "pk_iam_role_permission",
+      "purpose": "RoleとPermissionの多対多対応。",
+      "requirements": [
+        "NFR-SEC-002"
+      ],
+      "retention_class": "CONFIG_7Y",
+      "unique_constraints": [],
+      "write_pattern": "REFERENCE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "scope_type IN ('GLOBAL', 'SITE', 'CATEGORY', 'ARTICLE')",
+          "name": "ck_iam_assignment_scope"
+        },
+        {
+          "expression": "(scope_type = 'GLOBAL' AND scope_id IS NULL) OR (scope_type <> 'GLOBAL' AND scope_id IS NOT NULL)",
+          "name": "ck_iam_assignment_scope_id"
+        },
+        {
+          "expression": "valid_to IS NULL OR valid_to > valid_from",
+          "name": "ck_iam_assignment_window"
+        },
+        {
+          "expression": "(revoked_at IS NULL) = (revoked_by_principal_id IS NULL)",
+          "name": "ck_iam_assignment_revoke_pair"
+        }
+      ],
+      "classification": "RESTRICTED",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "principal id",
+          "name": "principal_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "role id",
+          "name": "role_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "scope type",
+          "name": "scope_type",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "scope id",
+          "name": "scope_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "valid from",
+          "name": "valid_from",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "valid to",
+          "name": "valid_to",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "assigned by principal id",
+          "name": "assigned_by_principal_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "assignment reason",
+          "name": "assignment_reason",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "revoked at",
+          "name": "revoked_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "revoked by principal id",
+          "name": "revoked_by_principal_id",
+          "nullable": true,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "revocation reason",
+          "name": "revocation_reason",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<1k",
+        "gate_4": "<100k"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_principal_role_assignment_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        },
+        {
+          "columns": [
+            "role_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_principal_role_assignment_role_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.role"
+        },
+        {
+          "columns": [
+            "assigned_by_principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_principal_role_assignment_assigned_by_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        },
+        {
+          "columns": [
+            "revoked_by_principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_principal_role_assignment_revoked_by_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        }
+      ],
+      "fully_qualified_name": "iam.principal_role_assignment",
+      "implementation_slice": "SLICE-005",
+      "indexes": [
+        {
+          "columns": [
+            "principal_id",
+            "role_id",
+            "scope_type",
+            "scope_id"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "uq_iam_assignment_active",
+          "nulls_not_distinct": true,
+          "unique": true,
+          "where": "revoked_at IS NULL"
+        },
+        {
+          "columns": [
+            "principal_id",
+            "scope_type",
+            "scope_id",
+            "valid_from"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_assignment_lookup",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "role_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_principal_role_assignment_role_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "assigned_by_principal_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_principal_role_assignment_assigned_by_principal_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "revoked_by_principal_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_principal_role_assignment_revoked_by_principal_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "principal_role_assignment",
+      "notes": [],
+      "owner_module": "iam",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_iam_principal_role_assignment",
+      "purpose": "Principalへglobal/site/category/article scopeのRoleを期限付き付与する。",
+      "requirements": [
+        "NFR-SEC-002",
+        "FR-020"
+      ],
+      "retention_class": "AUDIT_7Y_PROVISIONAL",
+      "unique_constraints": [],
+      "write_pattern": "LIFECYCLE"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "oidc_issuer ~ '^https://'",
+          "name": "ck_iam_session_issuer"
+        },
+        {
+          "expression": "expires_at IS NULL OR expires_at > revoke_before",
+          "name": "ck_iam_session_expiry"
+        }
+      ],
+      "classification": "RESTRICTED",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "principal id",
+          "name": "principal_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "oidc issuer",
+          "name": "oidc_issuer",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "oidc subject",
+          "name": "oidc_subject",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "revoke before",
+          "name": "revoke_before",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "reason",
+          "name": "reason",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "作成操作を行ったIAM Principal。",
+          "name": "created_by_principal_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "expires at",
+          "name": "expires_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [],
+      "expected_scale": {
+        "gate_1": "<1k",
+        "gate_4": "<100k"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_session_revocation_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        },
+        {
+          "columns": [
+            "created_by_principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_session_revocation_created_by_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        }
+      ],
+      "fully_qualified_name": "iam.session_revocation",
+      "implementation_slice": "SLICE-005",
+      "indexes": [
+        {
+          "columns": [
+            "oidc_issuer",
+            "oidc_subject",
+            "revoke_before"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_session_revocation_lookup",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "principal_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_session_revocation_principal_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "created_by_principal_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_session_revocation_created_by_principal_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "session_revocation",
+      "notes": [],
+      "owner_module": "iam",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_iam_session_revocation",
+      "purpose": "PrincipalまたはOIDC Subjectのrevoke-beforeを保持し、既存Sessionを無効化する。",
+      "requirements": [
+        "NFR-SEC-002"
+      ],
+      "retention_class": "IAM_SESSION_2Y",
+      "unique_constraints": [],
+      "write_pattern": "APPEND_ONLY"
+    },
+    {
+      "architecture_refs": [],
+      "check_constraints": [
+        {
+          "expression": "expires_at > started_at AND (ended_at IS NULL OR ended_at >= started_at)",
+          "name": "ck_iam_break_glass_window"
+        },
+        {
+          "expression": "pg_catalog.jsonb_typeof(permissions) = 'object'",
+          "name": "ck_iam_break_glass_permissions"
+        }
+      ],
+      "classification": "RESTRICTED",
+      "columns": [
+        {
+          "classification": "INTERNAL",
+          "default": "pg_catalog.uuidv7()",
+          "description": "内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。",
+          "name": "id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "BGA-接頭辞を持つアプリケーション生成の不変表示ID。",
+          "name": "display_id",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "principal id",
+          "name": "principal_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "incident id",
+          "name": "incident_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "reason",
+          "name": "reason",
+          "nullable": false,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "approved by principal id",
+          "name": "approved_by_principal_id",
+          "nullable": false,
+          "pii": false,
+          "type": "uuid"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": "'{}'::jsonb",
+          "description": "緊急時に一時付与したPermission code集合。",
+          "name": "permissions",
+          "nullable": false,
+          "pii": false,
+          "type": "jsonb"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "started at",
+          "name": "started_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "expires at",
+          "name": "expires_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": null,
+          "description": "ended at",
+          "name": "ended_at",
+          "nullable": true,
+          "pii": false,
+          "type": "timestamptz"
+        },
+        {
+          "classification": "RESTRICTED",
+          "default": null,
+          "description": "end reason",
+          "name": "end_reason",
+          "nullable": true,
+          "pii": false,
+          "type": "text"
+        },
+        {
+          "classification": "INTERNAL",
+          "default": "CURRENT_TIMESTAMP",
+          "description": "レコード作成時刻。UTCのtimestamptz。",
+          "name": "created_at",
+          "nullable": false,
+          "pii": false,
+          "type": "timestamptz"
+        }
+      ],
+      "deferred_foreign_keys": [
+        {
+          "column_and_index_installed": true,
+          "columns": [
+            "incident_id"
+          ],
+          "deferrable": false,
+          "deferred_until_condition": "TARGET_TABLE_OWNED_BY_APPROVED_LATER_STORY",
+          "initially_deferred": false,
+          "name": "fk_iam_break_glass_record_incident_id",
+          "on_delete": "RESTRICT",
+          "owner_story": "UNASSIGNED",
+          "reason": "TARGET_TABLE_NOT_YET_OWNED",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "ops.incident"
+        }
+      ],
+      "expected_scale": {
+        "gate_1": "<100",
+        "gate_4": "<10k"
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_break_glass_record_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        },
+        {
+          "columns": [
+            "approved_by_principal_id"
+          ],
+          "deferrable": false,
+          "initially_deferred": false,
+          "name": "fk_iam_break_glass_record_approved_by_principal_id",
+          "on_delete": "RESTRICT",
+          "referenced_columns": [
+            "id"
+          ],
+          "references": "iam.principal"
+        }
+      ],
+      "fully_qualified_name": "iam.break_glass_record",
+      "implementation_slice": "SLICE-005",
+      "indexes": [
+        {
+          "columns": [
+            "expires_at"
+          ],
+          "description": "",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_break_glass_active",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": "ended_at IS NULL"
+        },
+        {
+          "columns": [
+            "principal_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_break_glass_record_principal_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "incident_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_break_glass_record_incident_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        },
+        {
+          "columns": [
+            "approved_by_principal_id"
+          ],
+          "description": "Foreign key lookup and parent delete/update check.",
+          "expression": null,
+          "include": [],
+          "method": "btree",
+          "name": "ix_iam_break_glass_record_approved_by_principal_id",
+          "nulls_not_distinct": false,
+          "unique": false,
+          "where": null
+        }
+      ],
+      "name": "break_glass_record",
+      "notes": [],
+      "owner_module": "iam",
+      "partitioning": "NONE_MVP",
+      "primary_key": [
+        "id"
+      ],
+      "primary_key_name": "pk_iam_break_glass_record",
+      "purpose": "緊急権限の理由、Incident、承認、権限集合、有効期間、終了を記録する。",
+      "requirements": [
+        "NFR-SEC-002",
+        "FR-020"
+      ],
+      "retention_class": "AUDIT_7Y_PROVISIONAL",
+      "unique_constraints": [
+        {
+          "columns": [
+            "display_id"
+          ],
+          "name": "uq_iam_break_glass_display"
+        }
+      ],
+      "write_pattern": "APPEND_ONLY"
+    }
+  ],
+  "triggers": [
+    {
+      "comment": "Maintain ops.job updated_at and lock_version for changed rows.",
+      "events": [
+        "UPDATE"
+      ],
+      "function": "ops.touch_mutable_row()",
+      "level": "ROW",
+      "name": "trg_ops_job_touch",
+      "table": "ops.job",
+      "timing": "BEFORE"
+    },
+    {
+      "comment": "Maintain iam.principal updated_at and lock_version for changed rows.",
+      "events": [
+        "UPDATE"
+      ],
+      "function": "ops.touch_mutable_row()",
+      "level": "ROW",
+      "name": "trg_iam_principal_touch",
+      "table": "iam.principal",
+      "timing": "BEFORE"
+    },
+    {
+      "comment": "Reject normal mutation of the object artifact registry.",
+      "events": [
+        "UPDATE",
+        "DELETE"
+      ],
+      "function": "ops.reject_immutable_mutation()",
+      "level": "ROW",
+      "name": "trg_ops_object_artifact_immutable",
+      "table": "ops.object_artifact",
+      "timing": "BEFORE"
+    },
+    {
+      "comment": "Reject normal mutation of the audit event ledger.",
+      "events": [
+        "UPDATE",
+        "DELETE"
+      ],
+      "function": "ops.reject_immutable_mutation()",
+      "level": "ROW",
+      "name": "trg_ops_audit_event_immutable",
+      "table": "ops.audit_event",
+      "timing": "BEFORE"
+    }
+  ],
+  "validation": {
+    "assertions": [
+      "EXACT_POSTGRESQL_18_4_UTC_PG_CATALOG_SEARCH_PATH",
+      "EXACT_SCHEMA_OWNER_AND_ACL",
+      "NO_GLOBAL_OR_STORY_SCHEMA_DEFAULT_ACL",
+      "EXACT_17_TABLE_219_COLUMN_CATALOG",
+      "EXACT_17_PK_13_UQ_66_CHECK_20_IMMEDIATE_FK",
+      "EXACT_48_STANDALONE_AND_78_TOTAL_INDEXES",
+      "EXACT_CURRENT_MIGRATION_ROLE_OWNERSHIP",
+      "EXACT_TWO_SECURITY_INVOKER_FUNCTIONS",
+      "EXACT_FOUR_TRIGGERS",
+      "EXACT_TWO_DEFERRED_FKS_ABSENT_WITH_COLUMNS_AND_INDEXES_PRESENT",
+      "EXACT_ST0002_FINAL_JOB_IDENTITY",
+      "PRESERVE_DOCUMENTED_CANONICAL_LIMITATIONS",
+      "EXACT_HEAD_AND_FIVE_EVENT_SUCCESS_HISTORY"
+    ],
+    "path": "changes/st-0303/generated/iam-ops-validation.v1.sql",
+    "sha256": "33be33b53b9a14c7e9ad686f8dd08834a2bc8211e6fab82577f78811219fde32",
+    "success_row": {
+      "column_count": 219,
+      "deferred_foreign_key_count": 2,
+      "immediate_foreign_key_count": 20,
+      "status": "PASS",
+      "table_count": 17
+    }
+  }
+}

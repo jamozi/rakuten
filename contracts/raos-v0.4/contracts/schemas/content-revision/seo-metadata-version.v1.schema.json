@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/seo-metadata-version.v1.schema.json",
+  "title": "SEO Metadata Version",
+  "description": "Append-only SEO metadata version; renderer owns JSON-LD output.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "article_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "semantic_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "maxLength": 64
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "metadata_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "VALIDATED",
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "validated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "approved_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "article_version_id",
+    "semantic_version",
+    "metadata",
+    "metadata_sha256",
+    "status",
+    "validated_at",
+    "approved_by_principal_id",
+    "approved_at",
+    "created_at"
+  ],
+  "x-raos-invariants": {
+    "approved_requires_human_approval": true,
+    "append_only": true
+  }
+}

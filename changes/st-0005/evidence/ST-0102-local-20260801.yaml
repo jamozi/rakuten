@@ -1,0 +1,108 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0102-20260801
+  schema_version: 1
+  recorded_at: '2026-08-01T18:04:16Z'
+story_id: ST-0102
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://.python-version
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab-.python-version
+  sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+- original_uri: repo://pyproject.toml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4047f942e41865afac8477b7ab5f58407430961d3361ceb4313adaf1798f8042-pyproject.toml
+  sha256: 4047f942e41865afac8477b7ab5f58407430961d3361ceb4313adaf1798f8042
+- original_uri: repo://uv.toml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37-uv.toml
+  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+- original_uri: repo://uv.lock
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/72474fd1f3b6def7d66e08c382d3319c34fc76a7607b9d158b4db2a03b52bd46-uv.lock
+  sha256: 72474fd1f3b6def7d66e08c382d3319c34fc76a7607b9d158b4db2a03b52bd46
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e084ffff625be977e8766e222da83068827cae89b384f75003454d715dc1edbb-Makefile
+  sha256: e084ffff625be977e8766e222da83068827cae89b384f75003454d715dc1edbb
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8c33d6f8fefcc597f6edfda573929c69677e9d0f2100cd0153f25980ebfc05e7-README.md
+  sha256: 8c33d6f8fefcc597f6edfda573929c69677e9d0f2100cd0153f25980ebfc05e7
+- original_uri: repo://AGENTS.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/82acb8650986b321202e49d4ec5bb00ab2316d6be76ea5606e1f129f3fa9a90e-AGENTS.md
+  sha256: 82acb8650986b321202e49d4ec5bb00ab2316d6be76ea5606e1f129f3fa9a90e
+- original_uri: repo://.gitignore
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/357be7a75973adae64229e66d9aedcf566b939a904b8743c35389e2707704d4e-.gitignore
+  sha256: 357be7a75973adae64229e66d9aedcf566b939a904b8743c35389e2707704d4e
+- original_uri: repo://scripts/python_toolchain.sh
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0448b7767a3f444fcaa6e96847746de5a00c930b04f00723ed97bd2d74a87d5b-python_toolchain.sh
+  sha256: 0448b7767a3f444fcaa6e96847746de5a00c930b04f00723ed97bd2d74a87d5b
+- original_uri: repo://python/raos/__init__.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596-__init__.py
+  sha256: 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+- original_uri: repo://tests/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728-conftest.py
+  sha256: 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+- original_uri: repo://tests/st0005/test_overlay_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c5c406e624fe2cf0eaf73c0e9a03ede1e4ca9d0d1346f7a23cce8580e4fa8ab7-test_overlay_contract.py
+  sha256: c5c406e624fe2cf0eaf73c0e9a03ede1e4ca9d0d1346f7a23cce8580e4fa8ab7
+- original_uri: repo://tests/st0102/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/97a94d29a9e7c3339f21958bfc878c8fcde9534e1f2492c2d784d5c04563ebaf-conftest.py
+  sha256: 97a94d29a9e7c3339f21958bfc878c8fcde9534e1f2492c2d784d5c04563ebaf
+- original_uri: repo://tests/st0102/test_commands_and_docs.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/b46e0a1d06ff4a5149d0aef8232aa6cb3253d11cad211c5cb53f48ee006adb04-test_commands_and_docs.py
+  sha256: b46e0a1d06ff4a5149d0aef8232aa6cb3253d11cad211c5cb53f48ee006adb04
+- original_uri: repo://tests/st0102/test_lock_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9618c9ad8bab5263a1f99b924a718181f7f824b1953e116c2d98e0d1c4d1cb22-test_lock_contract.py
+  sha256: 9618c9ad8bab5263a1f99b924a718181f7f824b1953e116c2d98e0d1c4d1cb22
+- original_uri: repo://tests/st0102/test_toolchain_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e04bb962abb6d4f4a0c2cb7fbe6c536c5d5f8b2030a7623c0920b20392ac82f7-test_toolchain_contract.py
+  sha256: e04bb962abb6d4f4a0c2cb7fbe6c536c5d5f8b2030a7623c0920b20392ac82f7
+- original_uri: repo://tests/st0102/test_uv_cli.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/08d9ab2b842c14499e70de7cbb3253fffed3ff118e7ebfcdf4e2199262dcf3ae-test_uv_cli.py
+  sha256: 08d9ab2b842c14499e70de7cbb3253fffed3ff118e7ebfcdf4e2199262dcf3ae
+- original_uri: repo://docs/execplans/ST-0102.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/1d00137988b8808cd6f30c7b7944bfc976f07dc70c7db7fc42cd21fffb3f6b76-ST-0102.md
+  sha256: 1d00137988b8808cd6f30c7b7944bfc976f07dc70c7db7fc42cd21fffb3f6b76
+- original_uri: repo://docs/worklogs/ST-0102.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0ca4d1fea2cfa6eb82921ef72fd8ff927b9b1162641ce70de61fb07919adc173-ST-0102.md
+  sha256: 0ca4d1fea2cfa6eb82921ef72fd8ff927b9b1162641ce70de61fb07919adc173
+suite_results:
+- suite_id: TST-001
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-005
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: scripts/python_toolchain.sh --uv /absolute/path/to/uv check
+  result: Exact CPython 3.14.6, uv 0.12.1, Ruff 0.16.1, mypy 2.3.0, and pytest 9.1.1; lint, 24-file format check, strict type check, and ST-0102 47 passed in 3.98s
+- command: scripts/python_toolchain.sh --uv /absolute/path/to/uv sync-offline
+  result: PASS; offline lock check and fresh fixed environment with 19 exact distributions
+- command: online and fresh-offline installed-distribution inventory comparison
+  result: Identical CPython 3.14.6 inventories with SHA-256 9613f0d23e0b9dd91df9adb64513e6b0e506bf318715d49ff475b61d679bfaae
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin pytest -q tests/st0002
+  result: 139 passed in 23.17s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin pytest -q tests/st0003
+  result: 101 passed in 53.90s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin pytest -q tests/st0004
+  result: 64 passed in 51.02s
+- command: PostgreSQL environment for isolated ST-0002/ST-0003/ST-0004 suites
+  result: Local 18.3; formal PostgreSQL 18.4 target NOT_EXECUTED
+- command: pytest -q tests/st0101
+  result: 59 passed in 3.14s
+- command: pytest -q tests/st0005
+  result: 141 passed in 13.93s
+- command: pytest -q tests/st0006
+  result: 50 passed in 1.10s
+- command: pytest -q tests/test_import_raos_design.py
+  result: 18 passed in 0.27s
+- command: isolated regression total including ST-0102
+  result: 619 passed across eight separate processes
+- command: python scripts/import_raos_design.py verify
+  result: PASS; 105 files, read order, 6 archives, 104 checksums, 103 manifest entries
+- command: deterministic builder checks for ST-0002 through ST-0006
+  result: PASS; ST-0006 remains correctly BLOCKED with release_authorized=false
+- command: make check-workspace
+  result: PASS; 42 directories and changed=[]
+- command: sha256sum -c /tmp/st0101_protected_before.sha256
+  result: PASS for all 111 protected canonical/upstream/ZIP files; baseline-list SHA-256 6a0886f2760a8aef3476eb3886a68180346c1b8042654911478070dc42ee4404
+- command: independent ST-0102 implementation, security, and compatibility audit
+  result: PASS; no remaining Critical, High, Medium, or Low finding
+boundary: Local deterministic-install, static, adversarial, offline-reproduction, and regression evidence only; formal CI TST-001/TST-005, native Windows, PostgreSQL 18.4, GitHub PR, human approval, Gate acceptance, release, deployment, staging, and production were not executed.

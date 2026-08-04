@@ -1,0 +1,24 @@
+{
+  "include": ["python/raos"],
+  "exclude": [
+    "**/__pycache__",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    ".venv-offline-check",
+    "python/raos/generated",
+    "changes",
+    "docs",
+    "zip"
+  ],
+  "extraPaths": ["python"],
+  "pythonVersion": "3.14",
+  "pythonPlatform": "Linux",
+  "typeCheckingMode": "strict",
+  "useLibraryCodeForTypes": false,
+  "analyzeUnannotatedFunctions": true,
+  "enableTypeIgnoreComments": false,
+  "reportMissingTypeStubs": "error",
+  "reportUnnecessaryTypeIgnoreComment": "error"
+}

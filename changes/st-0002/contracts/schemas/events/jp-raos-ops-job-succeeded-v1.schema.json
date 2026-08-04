@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-job-succeeded-v1.schema.json",
+  "title": "jp.raos.ops.job_succeeded.v1",
+  "description": "Jobが成功した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.job_succeeded.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "job_type": {
+              "type": "string"
+            },
+            "attempt_no": {
+              "type": "integer"
+            },
+            "output_artifact": {
+              "anyOf": [
+                {
+                  "$ref": "../common/artifact-ref.schema.json"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "job_id",
+            "job_type",
+            "attempt_no",
+            "completed_at"
+          ]
+        }
+      }
+    }
+  ]
+}

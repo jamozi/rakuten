@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/ops-send-notification-v1.schema.json",
+  "title": "ops.send_notification.v1",
+  "description": "通知Adapterへ非正本通知を送る。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "ops.send_notification.v1"
+        },
+        "queue": {
+          "const": "notification"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "notification_type": {
+              "type": "string"
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "P0",
+                "P1",
+                "P2",
+                "P3"
+              ]
+            },
+            "recipient_group": {
+              "type": "string"
+            },
+            "template_code": {
+              "type": "string"
+            },
+            "context": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "notification_type",
+            "priority",
+            "recipient_group",
+            "template_code",
+            "context"
+          ]
+        }
+      }
+    }
+  ]
+}

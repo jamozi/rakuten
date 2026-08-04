@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/prompt-version-create-request/v1",
+  "title": "Prompt Version Create Request",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "prompt_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "version_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "locale": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$"
+    },
+    "git_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "git_commit_sha": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{40,64}$"
+    },
+    "template_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "compiler_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "input_contract_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "task_definition_id",
+    "prompt_code",
+    "version_no",
+    "locale",
+    "git_path",
+    "git_commit_sha",
+    "template_sha256",
+    "compiler_version",
+    "input_contract_sha256"
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

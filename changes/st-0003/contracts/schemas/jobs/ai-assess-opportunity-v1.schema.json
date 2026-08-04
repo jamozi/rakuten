@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/ai-assess-opportunity-v1.schema.json",
+  "title": "ai.assess_opportunity.v1",
+  "description": "一次情報に基づく定性的機会評価補助を生成する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "ai.assess_opportunity.v1"
+        },
+        "queue": {
+          "const": "ai"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source_packet_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "category_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "keyword_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "prompt_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "model_route_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "output_schema_version_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "source_packet_version_id",
+            "category_id",
+            "prompt_version_id",
+            "model_route_version_id",
+            "output_schema_version_id"
+          ]
+        }
+      }
+    }
+  ]
+}

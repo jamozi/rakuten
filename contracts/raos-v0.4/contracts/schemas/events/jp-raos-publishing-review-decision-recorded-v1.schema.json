@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-publishing-review-decision-recorded-v1.schema.json",
+  "title": "jp.raos.publishing.review_decision_recorded.v1",
+  "description": "Human Review Decisionが不変記録された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.publishing.review_decision_recorded.v1"
+        },
+        "producer": {
+          "const": "publishing"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "review_decision_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "review_assignment_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "decision": {
+              "type": "string"
+            },
+            "decided_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "review_decision_id",
+            "review_assignment_id",
+            "article_version_id",
+            "decision",
+            "decided_at"
+          ]
+        }
+      }
+    }
+  ]
+}

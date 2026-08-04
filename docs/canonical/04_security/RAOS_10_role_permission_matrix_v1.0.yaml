@@ -1,0 +1,207 @@
+document:
+  id: RAOS-SEC-RBAC-001
+  version: '1.0'
+rules:
+- deny by default
+- site/tenant scope mandatory
+- server-side authorization only
+- UI hiding is not authorization
+permissions:
+- action: view_public
+  data_class: PUBLIC
+  allowed_roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  - ANALYST
+  - OPERATOR
+  - SECURITY_AUDITOR
+  - READ_ONLY_AUDITOR
+  mfa_required: false
+  step_up_required: false
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: edit_article_draft
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  mfa_required: false
+  step_up_required: false
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: review_article
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - MANAGING_EDITOR
+  - REVIEWER
+  mfa_required: false
+  step_up_required: false
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: final_approve
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - MANAGING_EDITOR
+  mfa_required: true
+  step_up_required: false
+  separation_of_duties: true
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: publish
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - MANAGING_EDITOR
+  - OPERATOR
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: true
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: rollback
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - MANAGING_EDITOR
+  - OPERATOR
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: activate_publication_kill_switch
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - PRODUCT_OWNER
+  - OPERATOR
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: deactivate_publication_kill_switch
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - PRODUCT_OWNER
+  - OPERATOR
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: true
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: activate_affiliate_kill_switch
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - PRODUCT_OWNER
+  - OPERATOR
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: deactivate_affiliate_kill_switch
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - PRODUCT_OWNER
+  - OPERATOR
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: true
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: manage_product_identity
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  mfa_required: true
+  step_up_required: false
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: view_finance
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - PRODUCT_OWNER
+  - ANALYST
+  mfa_required: false
+  step_up_required: false
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: commit_revenue_import
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - PRODUCT_OWNER
+  - ANALYST
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: view_raw_artifact
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - EDITOR
+  - REVIEWER
+  - OPERATOR
+  - SECURITY_AUDITOR
+  mfa_required: true
+  step_up_required: false
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: manage_ai_release
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: manage_policy
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - SECURITY_AUDITOR
+  mfa_required: true
+  step_up_required: false
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: view_audit
+  data_class: CONFIDENTIAL
+  allowed_roles:
+  - SECURITY_AUDITOR
+  - READ_ONLY_AUDITOR
+  mfa_required: false
+  step_up_required: false
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: manage_secrets
+  data_class: RESTRICTED
+  allowed_roles:
+  - OPERATOR
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- action: break_glass
+  data_class: RESTRICTED
+  allowed_roles:
+  - PRODUCT_OWNER
+  - SECURITY_AUDITOR
+  mfa_required: true
+  step_up_required: true
+  separation_of_duties: false
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED

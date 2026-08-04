@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/common/job-message.schema.json",
+  "title": "RAOS Job Message",
+  "description": "at-least-once配送を前提とする実行要求。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "job_id",
+    "job_type",
+    "job_version",
+    "queue",
+    "idempotency_key",
+    "requested_at",
+    "available_at",
+    "priority",
+    "resource_ref",
+    "budget",
+    "correlation_id",
+    "requested_by",
+    "payload"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "job_type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]+(\\.[a-z0-9_]+)+\\.v[1-9][0-9]*$"
+    },
+    "job_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "queue": {
+      "type": "string",
+      "enum": [
+        "ingestion",
+        "ai",
+        "quality",
+        "publication",
+        "freshness",
+        "analytics",
+        "notification"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 200
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "available_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "deadline_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "site_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "resource_ref": {
+      "$ref": "resource-ref.schema.json"
+    },
+    "input_artifact": {
+      "anyOf": [
+        {
+          "$ref": "artifact-ref.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_attempts"
+      ],
+      "properties": {
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "max_cost_jpy": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "max_runtime_seconds": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      }
+    },
+    "correlation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "parent_job_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "traceparent": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "requested_by": {
+      "$ref": "actor-ref.schema.json"
+    },
+    "payload_schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

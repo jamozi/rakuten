@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/judge-calibration-create-request/v1",
+  "title": "Judge Calibration Create Request",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "evaluated_task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "judge_route_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "judge_prompt_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "resolved_judge_model_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "dataset_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "rubric_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "rubric_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "grader_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    }
+  },
+  "required": [
+    "evaluated_task_definition_id",
+    "judge_route_version_id",
+    "judge_prompt_version_id",
+    "resolved_judge_model_id",
+    "dataset_version_id",
+    "rubric_artifact_id",
+    "rubric_sha256",
+    "grader_version"
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

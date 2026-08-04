@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-job-requested-v1.schema.json",
+  "title": "jp.raos.ops.job_requested.v1",
+  "description": "Jobが正本へ登録された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.job_requested.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "job_type": {
+              "type": "string"
+            },
+            "queue": {
+              "type": "string"
+            },
+            "available_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "job_id",
+            "job_type",
+            "queue",
+            "available_at"
+          ]
+        }
+      }
+    }
+  ]
+}

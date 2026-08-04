@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/first-hand-experience-record.v1.schema.json",
+  "title": "First-Hand Experience Record",
+  "description": "Human-authored, evidence-backed first-hand experience record.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "display_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "product_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "product_variant_identity": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "tester_principal_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "procedure_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "limitations": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "review_status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "REVIEWED",
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "reviewed_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "reviewed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "display_id",
+    "product_id",
+    "product_variant_identity",
+    "tester_principal_id",
+    "procedure_version",
+    "started_at",
+    "ended_at",
+    "environment",
+    "limitations",
+    "review_status",
+    "reviewed_by_principal_id",
+    "reviewed_at",
+    "created_at"
+  ],
+  "x-raos-invariants": {
+    "ai_authorship_forbidden": true,
+    "approved_requires_distinct_human_reviewer": true
+  }
+}

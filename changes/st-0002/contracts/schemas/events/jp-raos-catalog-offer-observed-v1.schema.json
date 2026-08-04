@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-catalog-offer-observed-v1.schema.json",
+  "title": "jp.raos.catalog.offer_observed.v1",
+  "description": "Offerの新Observationが保存された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.catalog.offer_observed.v1"
+        },
+        "producer": {
+          "const": "catalog"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "offer_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "observation_types": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "observed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "freshness_status": {
+              "type": "string"
+            },
+            "changed_fields": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "offer_id",
+            "observation_types",
+            "observed_at",
+            "freshness_status",
+            "changed_fields"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+document:
+  id: RAOS-OPS-ALERTS-001
+  version: '1.0'
+alerts:
+- id: ALT-001
+  severity: SEV1
+  name: Publication safety
+  condition: unauthorized publish or snapshot hash mismatch
+  detection: immediate
+  initial_action: activate publication kill switch
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-002
+  severity: SEV1
+  name: Affiliate integrity
+  condition: destination mismatch/invalid affiliate link widespread
+  detection: immediate
+  initial_action: activate affiliate kill switch
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-003
+  severity: SEV1
+  name: Credential compromise
+  condition: provider/cloud/admin credential suspected
+  detection: immediate
+  initial_action: revoke credential and isolate
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-004
+  severity: SEV1
+  name: Public data leak
+  condition: confidential/internal fields exposed publicly
+  detection: immediate
+  initial_action: block route/CDN purge/incident
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-005
+  severity: SEV2
+  name: DB unavailable
+  condition: core DB connectivity/health failure
+  detection: 5 min
+  initial_action: fail public to last snapshot; investigate
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-006
+  severity: SEV2
+  name: Queue backlog
+  condition: oldest critical job above threshold
+  detection: 10 min
+  initial_action: scale/stop producers/inspect DLQ
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-007
+  severity: SEV2
+  name: Retry storm
+  condition: provider/job retry rate spike
+  detection: 10 min
+  initial_action: circuit breaker
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-008
+  severity: SEV2
+  name: AI zero tolerance
+  condition: fabrication/review/injection/secret finding
+  detection: immediate
+  initial_action: disable route and quarantine
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-009
+  severity: SEV2
+  name: Revenue mismatch
+  condition: dry run/commit/provider totals mismatch
+  detection: per batch
+  initial_action: block commit
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-010
+  severity: SEV2
+  name: Backup failure
+  condition: scheduled backup or copy failure
+  detection: 30 min
+  initial_action: protect changes and investigate
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-011
+  severity: SEV2
+  name: Security auth anomaly
+  condition: MFA bypass/privilege anomaly
+  detection: immediate
+  initial_action: disable account
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-012
+  severity: SEV3
+  name: High stale exposure
+  condition: stale critical fact sessions above threshold
+  detection: daily
+  initial_action: degrade/refresh
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-013
+  severity: SEV3
+  name: Affiliate link degradation
+  condition: link health below SLO
+  detection: 15 min
+  initial_action: scope kill switch
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-014
+  severity: SEV3
+  name: Analytics import late
+  condition: GSC/GA4 import age above threshold
+  detection: daily
+  initial_action: retry and mark dashboard stale
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-015
+  severity: SEV3
+  name: Cost anomaly
+  condition: AWS/AI/provider spend velocity above budget
+  detection: hourly
+  initial_action: throttle/disable optional jobs
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-016
+  severity: SEV3
+  name: Public error budget burn
+  condition: fast/slow burn
+  detection: 5/30 min
+  initial_action: rollback recent release
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-017
+  severity: SEV3
+  name: Core Web Vitals regression
+  condition: field/lab threshold regression
+  detection: daily/release
+  initial_action: investigate asset/script
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-018
+  severity: SEV4
+  name: DLQ item
+  condition: new terminal/quarantined job
+  detection: hourly
+  initial_action: triage by job type
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-019
+  severity: SEV4
+  name: Policy/reference due
+  condition: external rules snapshot review overdue
+  detection: weekly
+  initial_action: assign reviewer
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED
+- id: ALT-020
+  severity: SEV4
+  name: Access review due
+  condition: admin/service access review overdue
+  detection: monthly
+  initial_action: complete review
+  implementation_status: NOT_STARTED
+  test_status: NOT_EXECUTED

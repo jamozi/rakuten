@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-readmodel-rebuilt-v1.schema.json",
+  "title": "jp.raos.ops.readmodel_rebuilt.v1",
+  "description": "Read Model再構築が完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.readmodel_rebuilt.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "projection": {
+              "type": "string"
+            },
+            "scope_type": {
+              "type": "string"
+            },
+            "scope_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "row_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "projection",
+            "scope_type",
+            "generation",
+            "row_count"
+          ]
+        }
+      }
+    }
+  ]
+}

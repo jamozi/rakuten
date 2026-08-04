@@ -1,0 +1,1 @@
+Implement the approved database story {{STORY_ID}}. Do not apply proposal SQL directly. Produce a versioned Expand–Migrate–Contract migration, zero-to-latest and previous-to-latest PostgreSQL 18 integration tests, role/constraint/index checks, and forward recovery notes. Do not touch production.

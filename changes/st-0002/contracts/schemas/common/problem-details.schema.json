@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/common/problem-details.schema.json",
+  "title": "RAOS Problem Details",
+  "description": "RFC 9457準拠のエラー表現。",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "type",
+    "title",
+    "status",
+    "code",
+    "request_id"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "type": "integer",
+      "minimum": 400,
+      "maximum": 599
+    },
+    "detail": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "instance": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri-reference"
+    },
+    "code": {
+      "type": "string",
+      "pattern": "^RAOS-[A-Z]+-[0-9]{3}$"
+    },
+    "request_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "correlation_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "retryable": {
+      "type": "boolean",
+      "default": false
+    },
+    "retry_after_seconds": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "location",
+          "message"
+        ],
+        "properties": {
+          "location": {
+            "type": "string"
+          },
+          "rule": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "rejected_value": {}
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "format": "uri-reference"
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/finance-commit-revenue-import-v1.schema.json",
+  "title": "finance.commit_revenue_import.v1",
+  "description": "確認値を再照合しProvider Factを不変取込する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "finance.commit_revenue_import.v1"
+        },
+        "queue": {
+          "const": "analytics"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revenue_import_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "expected_source_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "expected_accepted_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "expected_commission_amount_jpy": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "revenue_import_id",
+            "expected_source_sha256",
+            "expected_accepted_count",
+            "expected_commission_amount_jpy"
+          ]
+        }
+      }
+    }
+  ]
+}

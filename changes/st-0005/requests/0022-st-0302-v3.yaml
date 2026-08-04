@@ -1,0 +1,32 @@
+document:
+  id: STATUS-ST0302-LOCAL-PROPOSAL-003
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-02T22:52:23Z'
+reason: >-
+  Refresh the append-only local ST-0302 proposal after the second full unit
+  gate exposed and remediation closed two stale ST-0106 workflow-contract
+  expectations for the new Story process and cumulative generator owner. The
+  delta chains to V2 and captures every changed source plus the regenerated
+  43-source manifest without claiming any formal or external gate.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0302
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-008
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0302-local-20260803-v3.yaml
+        sha256: 66974fa564e15395472c662f57673a80c9b2b4fa69287108bb700c92f03966c2
+        observed_at: '2026-08-02T22:51:55Z'

@@ -1,0 +1,45 @@
+document:
+  id: STATUS-ST0002-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-01T09:00:00Z'
+reason: Record completed local ST-0002 implementation evidence without claiming formal Suite execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+- story_id: ST-0002
+  expected:
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  target:
+    implementation_status: IMPLEMENTED_NOT_VALIDATED
+    verification_status: NOT_EXECUTED
+  evidence:
+  - suite_id: TST-002
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0002-local-20260801.yaml
+    sha256: b915e1096c8c6c286d0de27c5bdda6e05ba2801dec9f99452201b8d7c4766921
+    observed_at: '2026-08-01T08:00:00Z'
+  - suite_id: TST-008
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0002-local-20260801.yaml
+    sha256: b915e1096c8c6c286d0de27c5bdda6e05ba2801dec9f99452201b8d7c4766921
+    observed_at: '2026-08-01T08:00:00Z'
+  - suite_id: TST-010
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0002-local-20260801.yaml
+    sha256: b915e1096c8c6c286d0de27c5bdda6e05ba2801dec9f99452201b8d7c4766921
+    observed_at: '2026-08-01T08:00:00Z'
+  - suite_id: TST-013
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0002-local-20260801.yaml
+    sha256: b915e1096c8c6c286d0de27c5bdda6e05ba2801dec9f99452201b8d7c4766921
+    observed_at: '2026-08-01T08:00:00Z'

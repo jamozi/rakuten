@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-portfolio-action-candidate-decided-v1.schema.json",
+  "title": "jp.raos.portfolio.action_candidate_decided.v1",
+  "description": "Action Candidateへの人間判断が記録された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.portfolio.action_candidate_decided.v1"
+        },
+        "producer": {
+          "const": "portfolio"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action_candidate_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "decision": {
+              "type": "string"
+            },
+            "decided_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "action_candidate_id",
+            "decision",
+            "decided_at"
+          ]
+        }
+      }
+    }
+  ]
+}

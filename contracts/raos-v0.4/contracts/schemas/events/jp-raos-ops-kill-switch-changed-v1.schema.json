@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-kill-switch-changed-v1.schema.json",
+  "title": "jp.raos.ops.kill_switch_changed.v1",
+  "description": "Kill Switch generationが変更された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.kill_switch_changed.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kill_switch_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "scope_type": {
+              "type": "string"
+            },
+            "scope_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "switch_type": {
+              "type": "string"
+            },
+            "previous_engaged": {
+              "type": "boolean"
+            },
+            "new_engaged": {
+              "type": "boolean"
+            },
+            "previous_generation": {
+              "type": "integer"
+            },
+            "new_generation": {
+              "type": "integer"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "incident_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "kill_switch_id",
+            "scope_type",
+            "switch_type",
+            "previous_engaged",
+            "new_engaged",
+            "previous_generation",
+            "new_generation",
+            "reason"
+          ]
+        }
+      }
+    }
+  ]
+}

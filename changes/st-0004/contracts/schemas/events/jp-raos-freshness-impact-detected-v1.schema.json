@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-freshness-impact-detected-v1.schema.json",
+  "title": "jp.raos.freshness.impact_detected.v1",
+  "description": "公開・Claimへの影響が検出された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.freshness.impact_detected.v1"
+        },
+        "producer": {
+          "const": "freshness"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "impact_assessment_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "changed_entity_type": {
+              "type": "string"
+            },
+            "changed_entity_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "publication_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "impact_level": {
+              "type": "string"
+            },
+            "required_action": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "impact_assessment_id",
+            "changed_entity_type",
+            "changed_entity_id",
+            "impact_level",
+            "required_action"
+          ]
+        }
+      }
+    }
+  ]
+}

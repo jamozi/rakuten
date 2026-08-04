@@ -1,0 +1,9 @@
+PYTHON ?= python3
+
+.PHONY: bootstrap check-workspace
+
+bootstrap:
+	PYTHONDONTWRITEBYTECODE=1 $(PYTHON) scripts/bootstrap_workspace.py
+
+check-workspace:
+	PYTHONDONTWRITEBYTECODE=1 $(PYTHON) scripts/bootstrap_workspace.py --check

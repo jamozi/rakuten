@@ -1,0 +1,292 @@
+document:
+  id: RAOS-CONTENT-EVIDENCE-001
+  title: Claim–Evidenceポリシー
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+policy_version: 1.0.0
+source_tiers:
+- id: SRC-TIER-A
+  name: 一次・権威ソース
+  allowed_for:
+  - official_spec
+  - legal_policy
+  - standard
+  - manufacturer_status
+  - official_api_fact
+  examples:
+  - 官公庁
+  - 規格団体
+  - メーカー公式仕様
+  - 楽天公式API
+  limitations:
+  - 取得時点と対象Variantを必須化
+- id: SRC-TIER-B
+  name: 販売・Offerソース
+  allowed_for:
+  - price
+  - availability
+  - shipping
+  - shop_specific_bundle
+  - seller_status
+  examples:
+  - 楽天市場商品ページ
+  - ショップ公式情報
+  - 楽天公式API
+  limitations:
+  - 商品一般仕様や性能優位の根拠には単独利用しない
+- id: SRC-TIER-C
+  name: 許諾済み独立評価
+  allowed_for:
+  - independent_measurement
+  - comparative_observation
+  - market_context
+  examples:
+  - 利用許諾済み試験データ
+  - 公開条件を確認した独立研究
+  limitations:
+  - 転載条件・方法・サンプル・日付を記録
+- id: SRC-TIER-D
+  name: RAOS独自一次体験
+  allowed_for:
+  - first_hand_experience
+  - measurement
+  - photo_evidence
+  - usage_observation
+  examples:
+  - 実機テスト
+  - 独自撮影
+  - 独自計測
+  limitations:
+  - 担当者、手順、試料、環境、原本Assetを記録
+- id: SRC-DISCOVERY
+  name: 発見専用
+  allowed_for:
+  - topic_discovery
+  - question_discovery
+  - comparison_axis_candidate
+  examples:
+  - 競合記事
+  - 検索候補
+  - SNSトレンド
+  limitations:
+  - 記事Claimの根拠として引用・要約・言い換え利用しない
+- id: SRC-EXCLUDED
+  name: 利用禁止
+  allowed_for: []
+  examples:
+  - 楽天レビュー本文
+  - 検索結果スニペットだけ
+  - AI出力だけ
+  - 出所不明まとめ
+  - 無断転載
+  limitations:
+  - Source Packetへの採用禁止
+claim_types:
+- id: CLM-TYPE-001
+  code: direct_fact
+  name_ja: 直接事実
+  examples:
+  - 重量は1.2kg
+  - 容量は500mL
+  minimum_evidence:
+  - 同一Product/Variantを示す有効Fact 1件
+  preferred_tiers:
+  - SRC-TIER-A
+  - SRC-TIER-B
+  blocking_conditions:
+  - 対象Variant不明
+  - 単位不明
+  - Source期限切れ
+- id: CLM-TYPE-002
+  code: derived_fact
+  name_ja: 派生事実
+  examples:
+  - 1g当たり価格
+  - 差額率
+  minimum_evidence:
+  - 全入力Fact
+  - 式ID
+  - 丸め規則
+  - 計算時点
+  preferred_tiers:
+  - SRC-TIER-A
+  - SRC-TIER-B
+  blocking_conditions:
+  - 入力欠損
+  - 式未登録
+  - 異通貨・異単位の無変換比較
+- id: CLM-TYPE-003
+  code: comparative
+  name_ja: 比較主張
+  examples:
+  - AはBより軽い
+  - 3候補中最小
+  minimum_evidence:
+  - 比較対象全件の同一軸Fact
+  - 同等な取得時点または差の注記
+  - 比較母集団
+  preferred_tiers:
+  - SRC-TIER-A
+  - SRC-TIER-C
+  - SRC-TIER-D
+  blocking_conditions:
+  - 母集団不明
+  - 比較時点の非対称
+  - 不明値を劣位扱い
+- id: CLM-TYPE-004
+  code: recommendation
+  name_ja: 推薦判断
+  examples:
+  - 狭い部屋向け
+  - 予算優先ならA
+  minimum_evidence:
+  - Methodology Version
+  - 対象条件
+  - 適合Fact
+  - 不向き条件
+  - 代替候補または代替なし理由
+  preferred_tiers:
+  - SRC-TIER-A
+  - SRC-TIER-C
+  - SRC-TIER-D
+  blocking_conditions:
+  - 料率・EPC・利益の混入
+  - 万能推奨
+  - 根拠なし順位
+- id: CLM-TYPE-005
+  code: experience
+  name_ja: 使用・検証体験
+  examples:
+  - 実際に測定した
+  - 使用時に確認した
+  minimum_evidence:
+  - First-hand Experience Record
+  - 手順
+  - 日時
+  - 担当者
+  - 原本Asset
+  preferred_tiers:
+  - SRC-TIER-D
+  blocking_conditions:
+  - 実施記録なし
+  - 他者体験の自称
+  - AIによる体験生成
+- id: CLM-TYPE-006
+  code: price_availability
+  name_ja: 価格・在庫・販売状態
+  examples:
+  - 12,800円
+  - 在庫あり
+  minimum_evidence:
+  - Offer Fact
+  - 取得日時
+  - ショップ・商品コード
+  - 鮮度判定
+  preferred_tiers:
+  - SRC-TIER-B
+  blocking_conditions:
+  - 鮮度期限超過
+  - 税込・送料条件不明
+  - 別Offer混同
+- id: CLM-TYPE-007
+  code: superlative
+  name_ja: 最上級・唯一性
+  examples:
+  - 最軽量
+  - 最安
+  - 唯一
+  minimum_evidence:
+  - 対象母集団の完全定義
+  - 全候補の同一軸Fact
+  - 時点・範囲・除外条件
+  preferred_tiers:
+  - SRC-TIER-A
+  - SRC-TIER-B
+  - SRC-TIER-C
+  - SRC-TIER-D
+  blocking_conditions:
+  - 市場全体を暗示する狭い比較
+  - 母集団欠損
+  - 時点なし
+- id: CLM-TYPE-008
+  code: safety_legal_regulatory
+  name_ja: 安全・法令・規制
+  examples:
+  - 法令上必要
+  - 安全性が高い
+  minimum_evidence:
+  - 官公庁・法令・規格等の一次ソース
+  - Compliance Review
+  preferred_tiers:
+  - SRC-TIER-A
+  blocking_conditions:
+  - MVP低リスク範囲外
+  - 医療・法務・金融助言
+  - 非公式ソースのみ
+- id: CLM-TYPE-009
+  code: predictive
+  name_ja: 予測・将来主張
+  examples:
+  - 値上がりする
+  - 長く売れ続ける
+  minimum_evidence:
+  - 承認済み予測Methodology
+  - 不確実性と期間
+  preferred_tiers:
+  - SRC-TIER-A
+  - SRC-TIER-C
+  blocking_conditions:
+  - MVPでは既定禁止
+  - 断定表現
+  - 根拠なし将来予測
+coverage_rules:
+  major_claim_definition: criticality >= 4 または購買判断・順位・価格・安全・法令に影響するClaim
+  major_claim_evidence_coverage_required: 1.0
+  all_verifiable_claim_evidence_coverage_required: 0.95
+  unverifiable_marketing_claims: 削除または検証可能な限定表現へ変更
+  citation_link_must_resolve_to_source_record: true
+  ai_output_is_never_evidence: true
+  competitor_content_is_discovery_only: true
+  search_snippet_is_never_evidence: true
+  rakuten_review_body_is_prohibited: true
+  review_count_and_average_rating: 補助的な集計Factとしてのみ使用し、利用者感情・品質・長所短所を推定しない
+conflict_policy:
+  source_conflict: 一致するまで断定しない。対象、版、時点の差を調査し、未解決なら不明として表示またはClaimを除外
+  official_source_priority: 同一対象・同一時点・同一定義なら権威性の高い一次ソースを優先。ただしOffer固有価格は販売Sourceを優先
+  silent_resolution_forbidden: true
+first_hand_experience_policy:
+  default: NOT_AVAILABLE_IN_MVP unless explicitly recorded and approved
+  required_fields:
+  - experience_record_id
+  - tester_actor_id
+  - tested_product_variant_id
+  - procedure_version
+  - started_at
+  - ended_at
+  - environment
+  - raw_asset_ids
+  - limitations
+  - review_decision_id
+  language_without_record:
+  - 使ってみた
+  - 試した
+  - 愛用
+  - 実感した
+  - 検証した
+  - 編集部が使用
+  action: BLOCK_PUBLICATION
+requirements:
+- FR-004
+- FR-006
+- FR-007
+- FR-008
+- FR-009
+- FR-017
+- FR-020
+- NFR-DATA-001
+- NFR-AUD-001

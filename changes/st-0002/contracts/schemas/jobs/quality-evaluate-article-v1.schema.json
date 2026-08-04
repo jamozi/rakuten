@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/quality-evaluate-article-v1.schema.json",
+  "title": "quality.evaluate_article.v1",
+  "description": "Deterministic rule、Claim Evidence、AI assistを統合して品質判定する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "quality.evaluate_article.v1"
+        },
+        "queue": {
+          "const": "quality"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_packet_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "policy_bundle_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "check_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "force_recheck": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "article_version_id",
+            "source_packet_version_id",
+            "policy_bundle_id"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+document:
+  id: STATUS-ST0303-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-03T14:25:03Z'
+reason: >-
+  Record the first append-only local ST-0303 proposal after the frozen IAM/OPS
+  closure, exact PostgreSQL 18.4 composite, final denied-network static and
+  serial unit gates, and independent audit passed. This remains local candidate
+  evidence only and leaves formal suites and effective canonical status
+  unchanged.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0303
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-008
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0303-local-20260803.yaml
+        sha256: c00d0d0f4522c51ee0f710fb148075f199b0ef8c251a4323fbec3c336f6971dc
+        observed_at: '2026-08-03T14:25:02Z'
+      - suite_id: TST-011
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0303-local-20260803.yaml
+        sha256: c00d0d0f4522c51ee0f710fb148075f199b0ef8c251a4323fbec3c336f6971dc
+        observed_at: '2026-08-03T14:25:02Z'
+      - suite_id: TST-013
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0303-local-20260803.yaml
+        sha256: c00d0d0f4522c51ee0f710fb148075f199b0ef8c251a4323fbec3c336f6971dc
+        observed_at: '2026-08-03T14:25:02Z'

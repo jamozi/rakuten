@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "workspace": "raos",
+  "marker_file": "README.md",
+  "managed_roots": [
+    "apps",
+    "contracts",
+    "docs",
+    "infra",
+    "migrations",
+    "packages",
+    "policies",
+    "prompts",
+    "python",
+    "schemas",
+    "tests"
+  ],
+  "required_files": [
+    ".gitattributes",
+    ".gitignore",
+    "AGENTS.md",
+    "Makefile",
+    "README.md",
+    "scripts/bootstrap_workspace.py",
+    "workspace-layout.json"
+  ],
+  "directories": [
+    {
+      "path": "apps/api",
+      "purpose": "HTTP application boundary; handlers and framework setup are deferred to owning API Stories."
+    },
+    {
+      "path": "apps/web",
+      "purpose": "Public and administrative web application boundary; the Node toolchain is deferred to ST-0103."
+    },
+    {
+      "path": "apps/worker",
+      "purpose": "Worker process boundary; queues and executable workers are deferred to their owning Stories."
+    },
+    {
+      "path": "contracts",
+      "purpose": "Versioned contract repository boundary; contract payloads and loaders are deferred to ST-0104."
+    },
+    {
+      "path": "docs/adr",
+      "purpose": "Architecture Decision Records added by the Stories that make or revise decisions."
+    },
+    {
+      "path": "docs/architecture",
+      "purpose": "Implementation-facing architecture documentation derived without modifying canonical inputs."
+    },
+    {
+      "path": "docs/runbooks",
+      "purpose": "Operational runbooks added with the services and controls they operate."
+    },
+    {
+      "path": "infra/docker",
+      "purpose": "Container build assets; runnable local services are deferred to ST-0201 and later Stories."
+    },
+    {
+      "path": "infra/terraform",
+      "purpose": "Infrastructure-as-code boundary; cloud implementation and apply remain deferred and approval-gated."
+    },
+    {
+      "path": "migrations",
+      "purpose": "Versioned database migration boundary; the migration framework is deferred to ST-0301."
+    },
+    {
+      "path": "packages/policy-schemas",
+      "purpose": "Reusable policy schema package boundary; schema implementation is deferred to owning contract Stories."
+    },
+    {
+      "path": "packages/web-contracts",
+      "purpose": "ST-0105-owned web contract package generated from contracts/raos-v0.4/contract-repository.v0.4.json by scripts/build_st0105_generated_contracts.py; src/generated must not be edited by hand."
+    },
+    {
+      "path": "packages/web-ui",
+      "purpose": "Shared web UI package boundary; framework and TypeScript setup are deferred to ST-0103."
+    },
+    {
+      "path": "policies",
+      "purpose": "Versioned policy definitions; no policy is activated by workspace bootstrap."
+    },
+    {
+      "path": "prompts",
+      "purpose": "Versioned prompt definitions; no provider or prompt runtime is installed by workspace bootstrap."
+    },
+    {
+      "path": "python/raos/adapters",
+      "purpose": "Outward implementations of inward ports; provider and framework dependencies stay here."
+    },
+    {
+      "path": "python/raos/api",
+      "purpose": "Python API delivery boundary; FastAPI and executable handlers are deferred."
+    },
+    {
+      "path": "python/raos/application",
+      "purpose": "Application use cases that depend inward on domain and ports."
+    },
+    {
+      "path": "python/raos/domain/ai",
+      "purpose": "AI governance domain boundary, isolated from provider SDK types."
+    },
+    {
+      "path": "python/raos/domain/analytics",
+      "purpose": "Analytics domain boundary, isolated from public rendering and editorial ranking."
+    },
+    {
+      "path": "python/raos/domain/catalog",
+      "purpose": "Catalog and product-identity domain boundary."
+    },
+    {
+      "path": "python/raos/domain/editorial",
+      "purpose": "Editorial workflow domain boundary, isolated from finance ranking inputs."
+    },
+    {
+      "path": "python/raos/domain/evidence",
+      "purpose": "Evidence and provenance domain boundary."
+    },
+    {
+      "path": "python/raos/domain/finance",
+      "purpose": "Finance and attribution domain boundary, isolated from recommendation inputs."
+    },
+    {
+      "path": "python/raos/domain/freshness",
+      "purpose": "Freshness policy and observation domain boundary."
+    },
+    {
+      "path": "python/raos/domain/iam",
+      "purpose": "Identity and authorization domain boundary."
+    },
+    {
+      "path": "python/raos/domain/ops",
+      "purpose": "Operations, audit, and safety-control domain boundary."
+    },
+    {
+      "path": "python/raos/domain/policy",
+      "purpose": "Versioned policy lifecycle domain boundary."
+    },
+    {
+      "path": "python/raos/domain/portfolio",
+      "purpose": "Portfolio planning domain boundary."
+    },
+    {
+      "path": "python/raos/domain/publishing",
+      "purpose": "Publication snapshot domain boundary, isolated from finance writes."
+    },
+    {
+      "path": "python/raos/ports",
+      "purpose": "Inward port definitions implemented by outward adapters."
+    },
+    {
+      "path": "python/raos/shared",
+      "purpose": "Small framework-independent shared primitives; the Python package is deferred to ST-0102."
+    },
+    {
+      "path": "python/raos/workers",
+      "purpose": "Python worker delivery boundary; queue implementations and jobs are deferred."
+    },
+    {
+      "path": "schemas/ai",
+      "purpose": "AI schema boundary; concrete versioned schemas are deferred to ST-0104."
+    },
+    {
+      "path": "schemas/content",
+      "purpose": "Content schema boundary; concrete versioned schemas are deferred to ST-0104."
+    },
+    {
+      "path": "schemas/events",
+      "purpose": "Event schema boundary; AsyncAPI and event contracts are deferred to ST-0104."
+    },
+    {
+      "path": "schemas/openapi",
+      "purpose": "OpenAPI schema boundary; API contracts and reference resolution are deferred to ST-0104."
+    },
+    {
+      "path": "tests/contract",
+      "purpose": "Contract and reference-resolution tests added with installed contracts."
+    },
+    {
+      "path": "tests/e2e",
+      "purpose": "End-to-end tests added when executable vertical slices exist."
+    },
+    {
+      "path": "tests/evals",
+      "purpose": "AI and content evaluation tests and sanitized datasets."
+    },
+    {
+      "path": "tests/fixtures",
+      "purpose": "Synthetic and sanitized deterministic fixtures; production copies are forbidden."
+    },
+    {
+      "path": "tests/security",
+      "purpose": "Security, privacy, authorization, and malicious-input regression tests."
+    }
+  ]
+}

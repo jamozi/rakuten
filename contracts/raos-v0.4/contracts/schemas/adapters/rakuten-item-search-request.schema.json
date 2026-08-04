@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/adapters/rakuten-item-search-request.schema.json",
+  "title": "Rakuten Item Search Request",
+  "description": "RAOSから楽天市場商品検索API 2026-07-01 Adapterへ渡す許可済みQuery。Credentialは含めない。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "api_version",
+    "format_version",
+    "hits",
+    "page",
+    "sort",
+    "elements"
+  ],
+  "properties": {
+    "api_version": {
+      "const": "2026-07-01"
+    },
+    "format_version": {
+      "const": 2
+    },
+    "keyword": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "shop_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "item_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[^:]+:.+$"
+    },
+    "genre_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "hits": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 30,
+      "default": 30
+    },
+    "page": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 1
+    },
+    "sort": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "+reviewCount",
+        "-reviewCount",
+        "+reviewAverage",
+        "-reviewAverage",
+        "+itemPrice",
+        "-itemPrice",
+        "+updateTimestamp",
+        "-updateTimestamp"
+      ],
+      "default": "standard",
+      "description": "Affiliate rate sort is intentionally prohibited for editorial opportunity/product selection."
+    },
+    "min_price_jpy": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "maximum": 999999998
+    },
+    "max_price_jpy": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "maximum": 999999998
+    },
+    "or_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "availability": {
+      "type": "boolean",
+      "default": true
+    },
+    "postage_included_only": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_review_only": {
+      "type": "boolean",
+      "default": false
+    },
+    "appoint_delivery_date_only": {
+      "type": "boolean",
+      "default": false
+    },
+    "attribute_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "genre_information_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "elements": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "count",
+          "page",
+          "first",
+          "last",
+          "hits",
+          "pageCount",
+          "itemName",
+          "catchcopy",
+          "itemCode",
+          "itemPrice",
+          "itemCaption",
+          "itemUrl",
+          "affiliateUrl",
+          "shopCode",
+          "shopName",
+          "genreId",
+          "reviewCount",
+          "reviewAverage",
+          "affiliateRate",
+          "availability",
+          "postageFlag",
+          "mediumImageUrls",
+          "smallImageUrls",
+          "updateTimestamp",
+          "tagIds"
+        ]
+      }
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "keyword"
+      ]
+    },
+    {
+      "required": [
+        "shop_code"
+      ]
+    },
+    {
+      "required": [
+        "item_code"
+      ]
+    },
+    {
+      "required": [
+        "genre_id"
+      ]
+    }
+  ],
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "min_price_jpy",
+          "max_price_jpy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "max_price_jpy": {
+            "type": "integer",
+            "minimum": 2
+          }
+        }
+      }
+    }
+  ]
+}

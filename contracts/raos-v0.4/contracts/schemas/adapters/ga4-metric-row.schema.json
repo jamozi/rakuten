@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/adapters/ga4-metric-row.schema.json",
+  "title": "GA4 Canonical Metric Row",
+  "description": "GA4 runReport row normalized with reporting identity and source watermark.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "site_id",
+    "property_id",
+    "date_from",
+    "date_to",
+    "dimension_values",
+    "metric_values",
+    "reporting_identity",
+    "imported_at",
+    "source_request_sha256"
+  ],
+  "properties": {
+    "site_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "property_id": {
+      "type": "string"
+    },
+    "date_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "date_to": {
+      "type": "string",
+      "format": "date"
+    },
+    "dimension_values": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "metric_values": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$"
+      }
+    },
+    "reporting_identity": {
+      "type": "string",
+      "enum": [
+        "BLENDED",
+        "OBSERVED",
+        "DEVICE_BASED",
+        "PROPERTY_CONFIGURED",
+        "UNKNOWN"
+      ]
+    },
+    "date_range_index": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "imported_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "thresholding_applied": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "quota_metadata": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    }
+  }
+}

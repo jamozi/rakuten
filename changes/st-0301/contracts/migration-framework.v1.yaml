@@ -1,0 +1,195 @@
+document:
+  id: RAOS-MIGRATION-FRAMEWORK-001
+  version: 1.0.0
+  story_id: ST-0301
+  status: LOCAL_AND_CI_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  dependencies: [ST-0201, ST-0002, ST-0003, ST-0004]
+  objective: VERSION_TRANSACTION_LOCK_AND_HISTORY
+  deliverables: [ALEMBIC_MIGRATION_RUNNER, APPEND_ONLY_HISTORY_TABLE]
+  acceptance: [EMPTY_DATABASE_TO_EXACT_FRAMEWORK_HEAD]
+  required_suites: [TST-008, TST-009]
+  open_decisions: []
+toolchain:
+  python: 3.14.6
+  uv: 0.12.1
+  alembic: 1.18.5
+  sqlalchemy: 2.0.51
+  psycopg: 3.3.4
+  pyyaml: 6.0.3
+database:
+  product: PostgreSQL
+  exact_server_version_num: 180004
+  allowed_environments: [ENV-DEV, ENV-CI, ENV-INTEGRATION]
+  production_execution: FORBIDDEN
+  target:
+    source: EXPLICIT_FIELDS_ONLY
+    fields: [host, port, database, user, password_file]
+    host_scope: [ABSOLUTE_UNIX_SOCKET_DIRECTORY, LOOPBACK_LITERAL]
+    port_range: [1024, 65535]
+    database_and_user_grammar: LOWER_SNAKE_CASE
+    password_file: OWNER_ONLY_MODE_0600_REGULAR_NONSYMLINK
+    password_file_bytes: [1, 1024]
+    ssl_mode: DISABLE_LOCAL_AND_CI_ONLY
+    connect_timeout_seconds: 5
+    ambient_pg_environment: REJECT
+    command_line_dsn: FORBIDDEN
+    url_userinfo: FORBIDDEN
+    raw_password_argument: FORBIDDEN
+revision_chain:
+  base: null
+  anchor: '202608030001'
+  head: '202608030001'
+  linear_single_head: true
+  version_table: public.raos_migration_version
+  revisions:
+    - revision: '202608030001'
+      down_revision: null
+      story_id: ST-0301
+      name: INSTALL_APPEND_ONLY_HISTORY_ANCHOR
+      path: migrations/versions/202608030001_framework_install_history.py
+      source_sha256: edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+      runner_version: 1.0.0
+      server_version_num: 180004
+      transaction: ALEMBIC_PER_REVISION
+      downgrade: FORBIDDEN_HISTORY_ANCHOR_RETAINED
+locking:
+  scope: SESSION
+  function: pg_try_advisory_lock
+  unlock_function: pg_advisory_unlock
+  derivation:
+    seed_utf8: jp.raos.migration.framework.v1
+    hash: SHA-256
+    bytes: FIRST_8
+    byte_order: BIG_ENDIAN
+    signed: true
+  signed_bigint_key: -4304770990298879982
+  contention: FAIL_CLOSED_NO_WAIT
+  same_physical_connection_as_alembic: true
+  transparent_retry_or_connection_replacement: FORBIDDEN
+timeouts:
+  lock_timeout_ms: 5000
+  statement_timeout_ms: 300000
+  idle_in_transaction_session_timeout_ms: 60000
+transactions:
+  alembic_transaction_per_migration: true
+  version_ddl_and_success_history_atomic: true
+  nontransactional_ddl: SEPARATE_FUTURE_REVISION_WITH_AUTOCOMMIT_BLOCK
+  concatenate_checkpoints: FORBIDDEN
+  external_network_or_provider_calls: FORBIDDEN
+history:
+  table: public.raos_migration_history
+  revision_runtime_metadata: IMMUTABLE_CATALOG_BOUND_PER_REVISION
+  append_only_trigger: true
+  update: FORBIDDEN
+  delete: FORBIDDEN
+  truncate: FORBIDDEN
+  public_privileges: NONE
+  fields:
+    - event_id
+    - attempt_id
+    - revision_id
+    - story_id
+    - direction
+    - status
+    - source_sha256
+    - runner_version
+    - server_version_num
+    - error_code
+    - occurred_at
+    - transaction_id
+  event_statuses: [STARTED, SUCCEEDED, FAILED]
+  directions: [UPGRADE, DOWNGRADE]
+  raw_error_connection_sql_or_credential_data: FORBIDDEN
+  transaction_rules:
+    started: SEPARATE_COMMIT_WHEN_HISTORY_EXISTS
+    succeeded: ON_VERSION_APPLY_IN_REVISION_TRANSACTION
+    failed: APPEND_AFTER_REVISION_ROLLBACK_IF_LOCKED_SESSION_PRESERVED
+    interrupted: NEXT_LOCK_HOLDER_APPENDS_FAILED_INTERRUPTED_BEFORE_TERMINAL
+    root_bootstrap_exception: SUCCEEDED_ONLY_BECAUSE_HISTORY_TABLE_DID_NOT_EXIST
+checkpoint_catalog:
+  default_head_membership: false
+  execution: DISABLED_UNTIL_OWNING_MIGRATION_WAVE_TRANSLATION
+  preconnect_integrity_verification: REQUIRED
+  verification_order: EXACT_ASCENDING_REVISION
+  forward_plan:
+    - '202607300001'
+    - '202607300002'
+    - '202607300003'
+    - '202607300004'
+    - '202607300005'
+    - '202607300007'
+    - '202607300008'
+    - '202607300009'
+    - '202607300010'
+    - '202607300011'
+    - '202607300013'
+    - '202607300014'
+    - '202607300015'
+    - '202607300016'
+    - '202607300017'
+  guarded_reverse_plan: ['202607300018', '202607300012', '202607300006']
+  entries:
+    - {revision: '202607300001', story_id: ST-0002, phase: EXPAND, direction: UPGRADE, repeatable: false, path: changes/st-0002/database/202607300001_job_state_expand.sql, sha256: 6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31}
+    - {revision: '202607300002', story_id: ST-0002, phase: EXPAND_VALIDATE, direction: UPGRADE, repeatable: false, path: changes/st-0002/database/202607300002_job_state_expand_validate.sql, sha256: 50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95}
+    - {revision: '202607300003', story_id: ST-0002, phase: MIGRATE_BATCH, direction: UPGRADE, repeatable: true, path: changes/st-0002/database/202607300003_job_state_migrate_batch.sql, sha256: 4b6508b8c5a082695b1c4c48365c5932b51e3a6ca9a93c83ec599cd6aa7b1eb8}
+    - {revision: '202607300004', story_id: ST-0002, phase: CONTRACT_PREPARE, direction: UPGRADE, repeatable: false, path: changes/st-0002/database/202607300004_job_state_contract_prepare.sql, sha256: 6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779}
+    - {revision: '202607300005', story_id: ST-0002, phase: CONTRACT, direction: UPGRADE, repeatable: false, path: changes/st-0002/database/202607300005_job_state_contract.sql, sha256: 9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897}
+    - {revision: '202607300006', story_id: ST-0002, phase: GUARDED_DOWNGRADE, direction: DOWNGRADE, repeatable: false, path: changes/st-0002/database/202607300006_job_state_guarded_downgrade.sql, sha256: 3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab}
+    - {revision: '202607300007', story_id: ST-0003, phase: EXPAND, direction: UPGRADE, repeatable: false, path: changes/st-0003/database/202607300007_ai_governance_expand.sql, sha256: a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064}
+    - {revision: '202607300008', story_id: ST-0003, phase: EXPAND_VALIDATE, direction: UPGRADE, repeatable: false, path: changes/st-0003/database/202607300008_ai_governance_expand_validate.sql, sha256: 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978}
+    - {revision: '202607300009', story_id: ST-0003, phase: MIGRATE_BATCH, direction: UPGRADE, repeatable: true, path: changes/st-0003/database/202607300009_ai_governance_migrate_batch.sql, sha256: 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a}
+    - {revision: '202607300010', story_id: ST-0003, phase: CONTRACT_PREPARE, direction: UPGRADE, repeatable: false, path: changes/st-0003/database/202607300010_ai_governance_contract_prepare.sql, sha256: 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25}
+    - {revision: '202607300011', story_id: ST-0003, phase: CONTRACT, direction: UPGRADE, repeatable: false, path: changes/st-0003/database/202607300011_ai_governance_contract.sql, sha256: 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da}
+    - {revision: '202607300012', story_id: ST-0003, phase: GUARDED_DOWNGRADE, direction: DOWNGRADE, repeatable: false, path: changes/st-0003/database/202607300012_ai_governance_guarded_downgrade.sql, sha256: dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba}
+    - {revision: '202607300013', story_id: ST-0004, phase: EXPAND, direction: UPGRADE, repeatable: false, path: changes/st-0004/database/202607300013_content_expand.sql, sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e}
+    - {revision: '202607300014', story_id: ST-0004, phase: EXPAND_VALIDATE, direction: UPGRADE, repeatable: false, path: changes/st-0004/database/202607300014_content_expand_validate.sql, sha256: 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704}
+    - {revision: '202607300015', story_id: ST-0004, phase: MIGRATE_BATCH, direction: UPGRADE, repeatable: true, path: changes/st-0004/database/202607300015_content_migrate_batch.sql, sha256: 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c}
+    - {revision: '202607300016', story_id: ST-0004, phase: CONTRACT_PREPARE, direction: UPGRADE, repeatable: false, path: changes/st-0004/database/202607300016_content_contract_prepare.sql, sha256: b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968}
+    - {revision: '202607300017', story_id: ST-0004, phase: CONTRACT, direction: UPGRADE, repeatable: false, path: changes/st-0004/database/202607300017_content_contract.sql, sha256: c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845}
+    - {revision: '202607300018', story_id: ST-0004, phase: GUARDED_DOWNGRADE, direction: DOWNGRADE, repeatable: false, path: changes/st-0004/database/202607300018_content_guarded_downgrade.sql, sha256: 005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381}
+cli:
+  commands: [verify, status, upgrade]
+  output: DETERMINISTIC_JSON_ALLOWLIST
+  arbitrary_revision_sql_stamp_autogenerate_or_downgrade: FORBIDDEN
+error_hygiene:
+  raw_driver_exception: FORBIDDEN
+  exception_chaining: FORBIDDEN
+  connection_identity: FORBIDDEN
+  sql_body: FORBIDDEN
+  static_error_codes: true
+security:
+  control_mappings:
+    - {id: SEC-APP-001, relationship: STRICT_TARGET_GRAPH_AND_CATALOG_VALIDATION}
+    - {id: SEC-APP-010, relationship: SANITIZED_DIAGNOSTICS_AND_ERRORS}
+    - {id: SEC-DATA-003, relationship: NO_CONNECTION_SECRET_IN_REPO_OR_OUTPUT}
+    - {id: SEC-SDLC-006, relationship: MAINTAINED_WORKTREE_SECRET_SCAN}
+    - {id: SEC-SDLC-010, relationship: INDEPENDENT_MIGRATION_REVIEW_REQUIRED}
+verification:
+  required_suites: [TST-008, TST-009]
+  local_command: uv run --locked --no-sync pytest -p no:cacheprovider -q tests/st0301
+  local_result_can_promote_formal_suite: false
+  required_behaviors:
+    - EXACT_CANONICAL_STORY_AND_SUITES
+    - EXACT_REVISION_GRAPH_SOURCE_AND_CHECKPOINT_HASHES
+    - OFFLINE_INTEGRITY_BEFORE_CONNECT
+    - EMPTY_DATABASE_TO_HEAD
+    - ONE_TRANSACTION_PER_ALEMBIC_REVISION
+    - SAME_SESSION_ADVISORY_LOCK
+    - LOCK_CONTENTION_FAIL_CLOSED
+    - APPEND_ONLY_HISTORY_AND_ATOMIC_SUCCESS
+    - REPEATED_UPGRADE_NOOP
+    - UNMANAGED_DATABASE_REJECTION
+    - STATIC_SANITIZED_ERRORS
+    - FORWARD_RECOVERY_AFTER_TRANSACTION_FAILURE
+boundary:
+  environment: LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE
+  foundation_schema_wave: DEFERRED_TO_ST_0302
+  checkpoint_execution: DISABLED
+  staging_or_recovery_execution: NOT_IMPLEMENTED
+  production_execution: FORBIDDEN
+  formal_tst_008: NOT_EXECUTED
+  formal_tst_009: NOT_EXECUTED
+  independent_migration_owner_review: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

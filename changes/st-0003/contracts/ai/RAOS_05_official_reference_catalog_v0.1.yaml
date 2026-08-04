@@ -1,0 +1,91 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+references:
+- id: REF-OAI-RESPONSES
+  publisher: OpenAI
+  title: Migrate to the Responses API
+  url: https://developers.openai.com/api/docs/guides/migrate-to-responses
+  retrieved_at: '2026-07-30'
+  design_use:
+  - Responses API baseline
+  - store=false
+- id: REF-OAI-STRUCTURED
+  publisher: OpenAI
+  title: Structured model outputs
+  url: https://developers.openai.com/api/docs/guides/structured-outputs
+  retrieved_at: '2026-07-30'
+  design_use:
+  - strict JSON Schema
+  - refusal/incomplete handling
+- id: REF-OAI-PROMPT
+  publisher: OpenAI
+  title: Prompt engineering
+  url: https://developers.openai.com/api/docs/guides/prompt-engineering
+  retrieved_at: '2026-07-30'
+  design_use:
+  - developer instruction precedence
+  - code-managed prompts
+- id: REF-OAI-MODELS
+  publisher: OpenAI
+  title: Models
+  url: https://developers.openai.com/api/docs/models
+  retrieved_at: '2026-07-30'
+  design_use:
+  - initial GPT-5.6 candidates
+  - pricing/context metadata
+- id: REF-OAI-MODEL-SELECTION
+  publisher: OpenAI
+  title: Model selection
+  url: https://developers.openai.com/api/docs/guides/model-selection
+  retrieved_at: '2026-07-30'
+  design_use:
+  - accuracy first then cost/latency
+- id: REF-OAI-EVAL-BEST
+  publisher: OpenAI
+  title: Evaluation best practices
+  url: https://developers.openai.com/api/docs/guides/evaluation-best-practices
+  retrieved_at: '2026-07-30'
+  design_use:
+  - eval-driven development
+  - human calibration
+- id: REF-OAI-GRADERS
+  publisher: OpenAI
+  title: Graders
+  url: https://developers.openai.com/api/docs/guides/graders
+  retrieved_at: '2026-07-30'
+  design_use:
+  - deterministic graders
+  - model judge calibration
+- id: REF-OAI-SAFETY
+  publisher: OpenAI
+  title: Safety best practices
+  url: https://developers.openai.com/api/docs/guides/safety-best-practices
+  retrieved_at: '2026-07-30'
+  design_use:
+  - HITL
+  - red teaming
+- id: REF-OAI-DATA
+  publisher: OpenAI
+  title: Data controls in the OpenAI platform
+  url: https://developers.openai.com/api/docs/guides/your-data
+  retrieved_at: '2026-07-30'
+  design_use:
+  - store=false
+  - retention/ZDR review
+- id: REF-OAI-CACHE
+  publisher: OpenAI
+  title: Prompt caching
+  url: https://developers.openai.com/api/docs/guides/prompt-caching
+  retrieved_at: '2026-07-30'
+  design_use:
+  - static prefix first
+  - cache telemetry
+- id: REF-OAI-BATCH
+  publisher: OpenAI
+  title: Batch API
+  url: https://developers.openai.com/api/docs/guides/batch
+  retrieved_at: '2026-07-30'
+  design_use:
+  - offline/non-urgent workloads

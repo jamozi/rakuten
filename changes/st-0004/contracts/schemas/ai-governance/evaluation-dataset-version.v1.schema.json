@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/evaluation-dataset-version/v1",
+  "title": "Evaluation Dataset Version",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "display_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "dataset_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "version_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "split_policy": {
+      "type": "object",
+      "additionalProperties": true,
+      "maxProperties": 100
+    },
+    "dataset_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "dataset_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "case_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "CURATING",
+        "LOCKED",
+        "ACTIVE",
+        "COMPROMISED",
+        "RETIRED"
+      ]
+    },
+    "locked_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "locked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "compromised_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lock_version": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "id",
+    "display_id",
+    "dataset_code",
+    "version_no",
+    "purpose",
+    "split_policy",
+    "dataset_artifact_id",
+    "dataset_sha256",
+    "case_count",
+    "status",
+    "locked_by_principal_id",
+    "locked_at",
+    "compromised_at",
+    "created_at",
+    "updated_at",
+    "lock_version"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "x-raos-required-split-coverage-invariants": {
+    "required_splits_source": "EvaluationSuiteV1.suite_config.required_splits",
+    "required_splits": [
+      "DEV",
+      "CALIBRATION",
+      "HOLDOUT",
+      "ADVERSARIAL",
+      "REGRESSION"
+    ],
+    "bound_dataset": "EvaluationRunV1.dataset_version_id",
+    "case_split_field": "EvaluationCaseV1.split",
+    "minimum_case_count_per_required_split": 1,
+    "enforced_at": [
+      "DATASET_LOCK_OR_ACTIVATION",
+      "EVALUATION_RUN_CREATION",
+      "EVALUATION_RUN_COMPLETION"
+    ],
+    "missing_required_split_case": "BLOCKING"
+  }
+}

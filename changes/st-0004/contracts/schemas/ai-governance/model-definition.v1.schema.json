@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/model-definition/v1",
+  "title": "Model Definition",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "provider_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "provider_model_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "input_price_per_million": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "cached_input_price_per_million": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "output_price_per_million": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "pricing_currency": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Z]{3}$"
+    },
+    "pricing_observed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "EVALUATION",
+        "PAUSED",
+        "RETIRED",
+        "BLOCKED"
+      ]
+    },
+    "context_window_tokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "max_output_tokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "knowledge_cutoff": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "metadata_observed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "provider_metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "maxProperties": 100
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "provider_code",
+    "provider_model_id",
+    "display_name",
+    "capabilities",
+    "input_price_per_million",
+    "cached_input_price_per_million",
+    "output_price_per_million",
+    "pricing_currency",
+    "pricing_observed_at",
+    "status",
+    "context_window_tokens",
+    "max_output_tokens",
+    "knowledge_cutoff",
+    "metadata_observed_at",
+    "provider_metadata",
+    "created_at"
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

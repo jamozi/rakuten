@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/common/money.schema.json",
+  "title": "Money",
+  "description": "金額。日本円は小数を持たないintegerで扱う。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "amount",
+    "currency"
+  ],
+  "properties": {
+    "amount": {
+      "type": "integer"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "default": "JPY"
+    }
+  }
+}

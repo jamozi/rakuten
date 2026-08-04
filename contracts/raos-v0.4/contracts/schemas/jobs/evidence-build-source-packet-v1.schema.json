@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/evidence-build-source-packet-v1.schema.json",
+  "title": "evidence.build_source_packet.v1",
+  "description": "記事計画向けのVersioned Source Packetを構築する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "evidence.build_source_packet.v1"
+        },
+        "queue": {
+          "const": "quality"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "article_plan_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "packet_type": {
+              "type": "string",
+              "enum": [
+                "INITIAL",
+                "REFRESH",
+                "CORRECTION"
+              ]
+            },
+            "fact_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "uniqueItems": true
+            },
+            "product_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "uniqueItems": true
+            },
+            "builder_version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "article_plan_id",
+            "packet_type",
+            "builder_version"
+          ]
+        }
+      }
+    }
+  ]
+}

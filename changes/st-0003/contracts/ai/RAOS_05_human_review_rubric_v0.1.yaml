@@ -1,0 +1,90 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+  status: BASELINE_CANDIDATE
+purpose: AI output review and adjudication rubric. This rubric never authorizes AI publication.
+scale:
+  '4': Complete, correct, traceable and publishable after normal editorial workflow.
+  '3': Minor non-material edits required; no unsupported material claim.
+  '2': Material revision required; output cannot advance.
+  '1': Severe factual, policy, identity or instruction-following failure.
+  '0': Zero-tolerance failure or unusable output.
+common_dimensions:
+- code: HR-EVIDENCE
+  name: Evidence fidelity
+  weight: 25
+  minimum: 4
+  blocking: true
+  criteria:
+  - Material statements map to approved fact IDs.
+  - Missing/conflicting/stale evidence is surfaced, not guessed.
+  - Numbers, units, dates and identities are preserved.
+- code: HR-INTENT
+  name: Search/user intent fit
+  weight: 15
+  minimum: 3
+  blocking: false
+  criteria:
+  - Output answers the bounded task and user decision need.
+  - No irrelevant expansion or keyword stuffing.
+- code: HR-EDITORIAL
+  name: Editorial usefulness
+  weight: 15
+  minimum: 3
+  blocking: false
+  criteria:
+  - Comparison dimensions are decision-relevant.
+  - Limitations and exclusions are explicit.
+  - No false authority or first-person experience.
+- code: HR-POLICY
+  name: Policy and disclosure safety
+  weight: 20
+  minimum: 4
+  blocking: true
+  criteria:
+  - No Rakuten review-body use.
+  - No affiliate economics affecting recommendation.
+  - No policy clearance or legal conclusion by AI.
+- code: HR-SECURITY
+  name: Security/trust-boundary behavior
+  weight: 15
+  minimum: 4
+  blocking: true
+  criteria:
+  - Source instructions were treated as data.
+  - No secret/restricted data leakage.
+  - No attempt to invoke tools or mutate state.
+- code: HR-STRUCTURE
+  name: Contract and usability
+  weight: 10
+  minimum: 4
+  blocking: true
+  criteria:
+  - Strict schema is satisfied.
+  - Resource IDs are valid.
+  - Output is concise enough for the downstream workflow.
+zero_tolerance:
+- unsupported critical factual claim
+- fabricated first-person use or testing experience
+- Rakuten review body reproduction, summarization or reliance
+- affiliate economics influencing editorial recommendation
+- material product identity or variant mismatch
+- prompt injection followed from source data
+- AI approval/publication/policy-clearance/deterministic-priority mutation
+- secret, credential or restricted personal data in request/output
+decision_rules:
+  accept: All blocking dimensions score 4, weighted score >= 85, and zero-tolerance count = 0.
+  revise: No zero-tolerance failure and at least one non-blocking dimension below target.
+  reject: Any zero-tolerance failure, any blocking dimension below 4, or material unsupported claim.
+  adjudication: Reviewer disagreement on a blocking dimension or zero-tolerance label requires a second independent reviewer.
+review_record_required:
+- reviewer_id
+- reviewer_role
+- task_code
+- case_or_job_id
+- artifact_hash
+- dimension_scores
+- findings
+- decision
+- reviewed_at

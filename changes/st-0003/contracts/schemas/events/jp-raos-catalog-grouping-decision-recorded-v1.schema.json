@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-catalog-grouping-decision-recorded-v1.schema.json",
+  "title": "jp.raos.catalog.grouping_decision_recorded.v1",
+  "description": "不変Grouping Decisionが記録された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.catalog.grouping_decision_recorded.v1"
+        },
+        "producer": {
+          "const": "catalog"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "grouping_decision_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "product_candidate_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "proposed_product_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "decision_type": {
+              "type": "string"
+            },
+            "rule_version": {
+              "type": "string"
+            },
+            "supersedes_decision_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "grouping_decision_id",
+            "product_candidate_id",
+            "decision_type",
+            "rule_version"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0107-20260802
+  schema_version: 1
+  recorded_at: '2026-08-02T10:57:11Z'
+story_id: ST-0107
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://.github/CODEOWNERS
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e2f3c265dd46bcea6f2fedd7dfd258258bbd5667ddff4dbe6db1ced8c8b878b9-CODEOWNERS
+    sha256: e2f3c265dd46bcea6f2fedd7dfd258258bbd5667ddff4dbe6db1ced8c8b878b9
+  - original_uri: repo://.github/PULL_REQUEST_TEMPLATE.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a-PULL_REQUEST_TEMPLATE.md
+    sha256: 2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a
+  - original_uri: repo://.github/workflows/ci.yml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f283d73aee7cfa1354d751dfda67a6189f603fac1b02d98ce3cf63529b9cb6c8-ci.yml
+    sha256: f283d73aee7cfa1354d751dfda67a6189f603fac1b02d98ce3cf63529b9cb6c8
+  - original_uri: repo://.github/workflows/status-registry.yml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a-status-registry.yml
+    sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
+  - original_uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/698c03c031c760c222f0b5bd772306c20a6c957cadc43cb55da1730653f52f3e-pr-governance.v1.yaml
+    sha256: 698c03c031c760c222f0b5bd772306c20a6c957cadc43cb55da1730653f52f3e
+  - original_uri: repo://changes/st-0107/ruleset-policy.v1.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a648bce453950a89abce2c391a4d12dbf903dfa768e1aef4af387989705a6cb6-ruleset-policy.v1.json
+    sha256: a648bce453950a89abce2c391a4d12dbf903dfa768e1aef4af387989705a6cb6
+  - original_uri: repo://changes/st-0107/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/7d3e19991074e5dafb68c3a75748a943ebfb24bdb5829faebc3601dd0d722635-manifest.yaml
+    sha256: 7d3e19991074e5dafb68c3a75748a943ebfb24bdb5829faebc3601dd0d722635
+  - original_uri: repo://changes/st-0107/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9db764e6f4335bf6e7657e40c124360c13fbbb36b1e6fb451aefd675eea4f79d-README.md
+    sha256: 9db764e6f4335bf6e7657e40c124360c13fbbb36b1e6fb451aefd675eea4f79d
+  - original_uri: repo://docs/architecture/ST-0107-github-governance-snapshot.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/5fe7ebec42e88928c100cff14795b391a9e45075fede03cf49b8efdadf779b51-ST-0107-github-governance-snapshot.yaml
+    sha256: 5fe7ebec42e88928c100cff14795b391a9e45075fede03cf49b8efdadf779b51
+  - original_uri: repo://docs/execplans/ST-0107.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/86796a956c7eda6b9c358f14f4fd2a351a0958aa6fddc114dceffe6771b07cf4-ST-0107.md
+    sha256: 86796a956c7eda6b9c358f14f4fd2a351a0958aa6fddc114dceffe6771b07cf4
+  - original_uri: repo://docs/worklogs/ST-0107.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/19b359d2a0105c09f00470fc4a0d6939e2dbc812dbf2bf53d320b97a5cee7047-ST-0107.md
+    sha256: 19b359d2a0105c09f00470fc4a0d6939e2dbc812dbf2bf53d320b97a5cee7047
+  - original_uri: repo://scripts/build_st0107_pr_governance.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/7782e9914f730dba3a24e625aa2fa60c32f9d45bde134b7a33921bb4aaf5784b-build_st0107_pr_governance.py
+    sha256: 7782e9914f730dba3a24e625aa2fa60c32f9d45bde134b7a33921bb4aaf5784b
+  - original_uri: repo://tests/st0107/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/49421818d267960210dc45caf889f4c788fb2e26ab10dcbd0abada3650910de4-conftest.py
+    sha256: 49421818d267960210dc45caf889f4c788fb2e26ab10dcbd0abada3650910de4
+  - original_uri: repo://tests/st0107/test_generation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e6e52a473af1f0ff40c32b3c203defcfc880a567d03d1009d0e73854af4e2877-test_generation.py
+    sha256: e6e52a473af1f0ff40c32b3c203defcfc880a567d03d1009d0e73854af4e2877
+  - original_uri: repo://tests/st0107/test_governance_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/d1cbadf4b63d7398218063d2100c493fbd2b6a90037dae37a487dd19f5b34adf-test_governance_contract.py
+    sha256: d1cbadf4b63d7398218063d2100c493fbd2b6a90037dae37a487dd19f5b34adf
+  - original_uri: repo://tests/st0107/test_negative_cases.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3c37c09ba936d12612d08252085b4f82229e85abe031cba7194e1b8478c532d0-test_negative_cases.py
+    sha256: 3c37c09ba936d12612d08252085b4f82229e85abe031cba7194e1b8478c532d0
+  - original_uri: repo://tests/st0106/test_workflow_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/275fcdf4bb9f23e4b2deb74fb42876f04b0e4c9d40e81613cd115121c5bfe66b-test_workflow_contract.py
+    sha256: 275fcdf4bb9f23e4b2deb74fb42876f04b0e4c9d40e81613cd115121c5bfe66b
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/22bc204c70343e11feba5b88b043e31fee3a61aa117772a495529a88939a45b9-Makefile
+    sha256: 22bc204c70343e11feba5b88b043e31fee3a61aa117772a495529a88939a45b9
+  - original_uri: repo://README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3e9d512cb3aa5844b21adde1649a8f88368cd1f7c8eb3ecc7139d3971a0d7b45-README.md
+    sha256: 3e9d512cb3aa5844b21adde1649a8f88368cd1f7c8eb3ecc7139d3971a0d7b45
+suite_results:
+  - suite_id: TST-001
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: uv run --locked --no-sync python scripts/build_st0107_pr_governance.py --check
+    result: 'PASS; strict contract, pinned-source, generated-output, provenance, and deterministic manifest checks passed'
+  - command: uv run --locked --no-sync pytest -p no:cacheprovider -q tests/st0107
+    result: 'PASS; 92 focused generation, governance-contract, failure-injection, symlink, atomic-install, rollback, and negative tests passed'
+  - command: scripts/ci_job.sh --uv /absolute/path/to/uv --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js static
+    result: 'PASS under the asserted denied-network/PID/seccomp boundary; repository policy, Ruff, formatting, mypy, ESLint, TypeScript, and Pyright 0/0/0 passed'
+  - command: scripts/ci_job.sh --uv /absolute/path/to/uv --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js unit
+    result: 'PASS; 1,025 Python tests passed with 11 explicit environment skips across isolated story processes, plus 4 exact Vitest tests passed; ST-0103 completed 97 tests in 697.22s'
+  - command: scripts/ci_job.sh --uv /absolute/path/to/uv --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js contracts
+    result: 'PASS; ST-0104 117 passed, ST-0105 53 passed, 306-artifact repository verification, deterministic generation, and strict TypeScript compilation passed'
+  - command: uv run --locked --no-sync pytest -p no:cacheprovider -q tests/st0106
+    result: 'PASS; direct predecessor regression completed 277 tests in 17.97s'
+  - command: uv run --locked --no-sync pytest -p no:cacheprovider -q tests/st0005
+    result: 'PASS before this evidence envelope; 141 status-policy tests passed in 17.55s'
+  - command: scripts/run_network_denied.sh --home /temporary/home -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree --git-history
+    result: 'PASS on a disposable complete local Git snapshot; no secret finding output and the denied-network assertion passed'
+  - command: sha256sum -c /tmp/st0107-protected-before.sha256
+    result: 'PASS for all 1,652 protected files; baseline-list SHA-256 4d8764b28aefe90fb8d97a4918764d51d28bebe368d3ef55afbb2a20dc6c73ff'
+  - command: independent ST-0107 generator audit and remediation
+    result: 'PASS after remediation; provenance, deployment ownership, SEC-SDLC-010 mapping, snapshot validation, N/A rationale, and ancestor-symlink findings were fixed; final read-only bundle audit follows this envelope'
+boundary: >-
+  Local generated-source, governance-contract, denied-network, static, unit,
+  contract, predecessor-regression, secret, protected-file, and capture evidence
+  only; live GitHub repository ruleset installation, repository/team/check
+  integration identifiers, formal hosted TST-001, human approval, canonical
+  APPLY, release, deployment, staging, and production were not executed.

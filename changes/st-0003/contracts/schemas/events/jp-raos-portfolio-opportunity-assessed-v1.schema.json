@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-portfolio-opportunity-assessed-v1.schema.json",
+  "title": "jp.raos.portfolio.opportunity_assessed.v1",
+  "description": "機会評価が記録された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.portfolio.opportunity_assessed.v1"
+        },
+        "producer": {
+          "const": "portfolio"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "assessment_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "category_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "intent_cluster_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "keyword_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "editorial_score": {
+              "type": "number"
+            },
+            "business_score": {
+              "type": "number"
+            },
+            "compliance_risk_score": {
+              "type": "number"
+            },
+            "overall_priority_score": {
+              "type": "number"
+            },
+            "decision": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "assessment_id",
+            "category_id",
+            "editorial_score",
+            "business_score",
+            "compliance_risk_score",
+            "overall_priority_score",
+            "decision"
+          ]
+        }
+      }
+    }
+  ]
+}

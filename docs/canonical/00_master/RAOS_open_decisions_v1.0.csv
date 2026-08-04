@@ -1,0 +1,16 @@
+﻿id,topic,status,required_by,owner,decision_needed,default_behavior,blocking
+OD-001,initial_category,HUMAN_DECISION_REQUIRED,MVP vertical slice,Product Owner,低リスクで比較軸が構造化可能な最初のカテゴリを1つ選定,カテゴリ固有実装を停止し合成Fixtureのみ使用,True
+OD-002,site_name_and_domain,HUMAN_DECISION_REQUIRED,Staging public UI,Product Owner,ブランド名、ドメイン、運営者表記を決定,example.invalidと仮ブランドを使用し外部公開禁止,True
+OD-003,rakuten_report_sample,EXTERNAL_EVIDENCE_REQUIRED,Finance adapter,Business Owner,実際に利用可能な成果Reportの匿名化サンプル、列、状態、粒度を確認,Synthetic fixtureのみ。実成果帰属を未検証表示,True
+OD-004,keyword_and_rank_provider,HUMAN_DECISION_REQUIRED,GATE-2 automation,Product Owner,規約適合した順位/Keyword Providerまたは手動Importを選定,Search Consoleと手動CSVのみ,False
+OD-005,human_reviewer_and_hourly_cost,HUMAN_DECISION_REQUIRED,GATE-1 and contribution profit,Business Owner,Reviewer、代替Reviewer、標準人件費を決定,公開不可、利益計算の人件費はUNKNOWN,True
+OD-006,category_product_identity_rules,EXTERNAL_EVIDENCE_REQUIRED,Catalog grouping,Domain Editor,型番、容量、色、セット、JAN等の統合/分離ルールをカテゴリごとに定義,自動統合せずHuman Reviewへ送る,True
+OD-007,category_freshness_sla,HUMAN_DECISION_REQUIRED,Publication and refresh,Managing Editor,価格、在庫、仕様、画像、リンクの最大許容Ageを定義,保守的な暫定値を適用しStale時は非表示,True
+OD-008,legal_review_boundary,HUMAN_DECISION_REQUIRED,GATE-0,Business Owner / Legal,法務確認対象、相談経路、記録方法を確定,法的判断をAI/開発者が代替せず公開をブロック,True
+OD-009,budget_and_acceptable_loss,HUMAN_DECISION_REQUIRED,Cloud/LLM release,Business Owner,AWS、LLM、外部Providerの月次上限と自動停止閾値を設定,低い開発用上限、Production無効,True
+OD-010,oidc_provider,HUMAN_DECISION_REQUIRED,Admin authentication,Security Owner,Cognitoまたは承認済みOIDC Providerを選定,Local fake authはdevelopmentのみ。外部公開不可,True
+OD-011,notification_channels,HUMAN_DECISION_REQUIRED,Incident operations,Operations Owner,Critical/High通知先とEscalation連絡先を設定,Local logのみ。Production不可,True
+OD-012,privacy_and_consent_mode,HUMAN_DECISION_REQUIRED,Public analytics,Privacy Owner,同意Banner、Cookie/計測方針、Privacy文言を決定,非必須Trackingを無効化しFirst-party最小Eventのみ,True
+OD-013,production_region_and_data_residency,HUMAN_DECISION_REQUIRED,Terraform production,Security/Business Owner,AWS Region、Backup Region、越境移転の扱いを承認,Referenceはap-northeast-1、Production apply禁止,True
+OD-014,retention_periods,HUMAN_DECISION_REQUIRED,Deletion jobs,Privacy/Finance/Legal,Analytics個票、Security Log、AI Artifact、成果データの保持期間を承認,自動削除Jobは無効、最小収集,True
+OD-015,production_provider_credentials,EXTERNAL_EVIDENCE_REQUIRED,Live adapter test,Operations Owner,楽天、OpenAI、Google、AWSの専用Account/権限/Secretを設定,Recorded fixtureのみ,True

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/evaluation-dataset-create-request/v1",
+  "title": "Evaluation Dataset Create Request",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "dataset_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "version_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "dataset_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "dataset_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "case_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "split_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dev_share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "calibration_share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "holdout_share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "adversarial_share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "regression_share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "holdout_blinded": {
+          "type": "boolean",
+          "const": true
+        },
+        "labels_hidden_from_prompt_authors": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "dev_share",
+        "calibration_share",
+        "holdout_share",
+        "adversarial_share",
+        "regression_share",
+        "holdout_blinded",
+        "labels_hidden_from_prompt_authors"
+      ]
+    }
+  },
+  "required": [
+    "dataset_code",
+    "version_no",
+    "purpose",
+    "split_policy",
+    "dataset_artifact_id",
+    "dataset_sha256",
+    "case_count"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "x-raos-required-split-coverage-invariants": {
+    "required_splits_source": "EvaluationSuiteV1.suite_config.required_splits",
+    "required_splits": [
+      "DEV",
+      "CALIBRATION",
+      "HOLDOUT",
+      "ADVERSARIAL",
+      "REGRESSION"
+    ],
+    "bound_dataset": "EvaluationRunV1.dataset_version_id",
+    "case_split_field": "EvaluationCaseV1.split",
+    "minimum_case_count_per_required_split": 1,
+    "enforced_at": [
+      "DATASET_LOCK_OR_ACTIVATION",
+      "EVALUATION_RUN_CREATION",
+      "EVALUATION_RUN_COMPLETION"
+    ],
+    "missing_required_split_case": "BLOCKING"
+  }
+}

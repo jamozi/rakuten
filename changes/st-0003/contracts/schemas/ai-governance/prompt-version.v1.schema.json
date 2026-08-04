@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/prompt-version/v1",
+  "title": "Prompt Version",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "display_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "prompt_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "version_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "locale": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$"
+    },
+    "git_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "git_commit_sha": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{40,64}$"
+    },
+    "template_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "author_principal_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "compiler_version": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "input_contract_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policy_test_status": {
+      "type": "string",
+      "enum": [
+        "NOT_EXECUTED",
+        "PASSED",
+        "FAILED"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "IN_REVIEW",
+        "EVALUATING",
+        "CERTIFIED",
+        "ACTIVE",
+        "SUSPENDED",
+        "RETIRED"
+      ]
+    },
+    "effective_from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "effective_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "approved_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lock_version": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "id",
+    "display_id",
+    "task_definition_id",
+    "prompt_code",
+    "version_no",
+    "locale",
+    "git_path",
+    "git_commit_sha",
+    "template_sha256",
+    "author_principal_id",
+    "compiler_version",
+    "input_contract_sha256",
+    "policy_test_status",
+    "status",
+    "effective_from",
+    "effective_to",
+    "approved_by_principal_id",
+    "approved_at",
+    "created_at",
+    "updated_at",
+    "lock_version"
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/article-type-version.v1.schema.json",
+  "title": "Article Type Version",
+  "description": "Versioned article-type contract; active versions are human approved.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "article_type_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "semantic_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "maxLength": 64
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "contract_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "ACTIVE",
+        "DEPRECATED",
+        "RETIRED"
+      ]
+    },
+    "approved_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "article_type_code",
+    "semantic_version",
+    "contract",
+    "contract_sha256",
+    "status",
+    "approved_by_principal_id",
+    "approved_at",
+    "created_at"
+  ],
+  "x-raos-invariants": {
+    "single_active_per_article_type_code": true,
+    "append_only": true
+  }
+}

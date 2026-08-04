@@ -1,0 +1,175 @@
+document:
+  id: RAOS-UI-WORKFLOWS-001
+  version: '1.0'
+workflows:
+- id: UI-WF-001
+  name: OpportunityからArticle Plan
+  actors:
+  - EDITOR
+  - MANAGING_EDITOR
+  steps:
+  - Opportunity候補表示
+  - Source確認
+  - Intent Cluster選択
+  - 記事型選択
+  - Candidate Universe固定
+  - Plan作成
+  critical_guards:
+  - Finance情報を表示しない
+  - 同一Intent重複警告
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-WF-002
+  name: 商品同一性解決
+  actors:
+  - EDITOR
+  - REVIEWER
+  steps:
+  - 候補選択
+  - 型番/Variant比較
+  - 原本確認
+  - 統合/分離Decision
+  - 理由入力
+  - 監査保存
+  critical_guards:
+  - 曖昧時は統合禁止
+  - Rollback可能な追記Decision
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-WF-003
+  name: Source Packet承認
+  actors:
+  - EDITOR
+  - REVIEWER
+  steps:
+  - Fact確認
+  - Conflict解決
+  - Freshness確認
+  - Coverage確認
+  - 承認
+  critical_guards:
+  - Rakuten review body禁止
+  - 未解決Critical conflictでBlock
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-WF-004
+  name: AI Draft生成と差分確認
+  actors:
+  - EDITOR
+  steps:
+  - Input Manifest Preview
+  - Cost/Route確認
+  - Job開始
+  - Structured Output検証
+  - Diff表示
+  - 採用/棄却
+  critical_guards:
+  - AIは自動保存しない
+  - Raw sourceを命令として扱わない
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-WF-005
+  name: Editorial Review
+  actors:
+  - REVIEWER
+  steps:
+  - Claim matrix
+  - Comparison
+  - Recommendation
+  - Disclosure
+  - SEO
+  - Checklist
+  - Decision
+  critical_guards:
+  - Blocking軸4/4
+  - Score85以上
+  - Zero tolerance 0
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-WF-006
+  name: 公開
+  actors:
+  - MANAGING_EDITOR
+  - OPERATOR
+  steps:
+  - Approval確認
+  - Snapshot Preview
+  - Step-up
+  - Idempotent publish
+  - Public smoke test
+  critical_guards:
+  - Kill switch
+  - Freshness
+  - Snapshot hash
+  - 同一Command二重実行防止
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-WF-007
+  name: Rollback
+  actors:
+  - MANAGING_EDITOR
+  - OPERATOR
+  steps:
+  - 影響確認
+  - 旧Snapshot選択
+  - 理由入力
+  - Step-up
+  - Rollback
+  - 検証
+  critical_guards:
+  - 監査記録必須
+  - Affiliate link状態を再評価
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-WF-008
+  name: 成果CSV取込
+  actors:
+  - ANALYST
+  - OPERATOR
+  steps:
+  - Upload
+  - Security scan
+  - Schema detect
+  - Dry run
+  - Reconciliation
+  - Human confirm
+  - Commit
+  critical_guards:
+  - Formula injection無効化
+  - 重複取込防止
+  - 推定帰属を公式化しない
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-WF-009
+  name: Kill Switch
+  actors:
+  - PRODUCT_OWNER
+  - OPERATOR
+  steps:
+  - Scope選択
+  - 影響Preview
+  - Step-up
+  - 理由入力
+  - Activate
+  - 監視
+  critical_guards:
+  - 解除は別Action
+  - 古いGenerationで上書き禁止
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: UI-WF-010
+  name: Freshness更新
+  actors:
+  - EDITOR
+  - REVIEWER
+  steps:
+  - Stale影響表示
+  - 再取得
+  - 差分
+  - 再評価範囲
+  - 承認または安全な縮退
+  critical_guards:
+  - 順位変更は再承認
+  - 取得失敗時に旧値を最新表示しない
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED

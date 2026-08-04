@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-editorial-article-created-v1.schema.json",
+  "title": "jp.raos.editorial.article_created.v1",
+  "description": "Articleが作成された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.editorial.article_created.v1"
+        },
+        "producer": {
+          "const": "editorial"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "article_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_plan_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "article_id",
+            "article_plan_id",
+            "site_id",
+            "article_type"
+          ]
+        }
+      }
+    }
+  ]
+}

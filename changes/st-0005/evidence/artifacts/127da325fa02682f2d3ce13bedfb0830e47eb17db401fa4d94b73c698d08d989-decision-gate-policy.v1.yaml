@@ -1,0 +1,35 @@
+document:
+  id: RAOS-DECISION-GATE-POLICY-001
+  version: 1.0.0
+  story_id: ST-0006
+  generated_by: scripts/build_st0006_decision_gates.py
+source_contract:
+  document_id: RAOS-OPEN-DECISIONS-001
+  canonical_yaml: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  parity_csv: docs/canonical/00_master/RAOS_open_decisions_v1.0.csv
+  resolved_status: RESOLVED
+  unresolved_statuses:
+  - PROVISIONAL
+  - HUMAN_DECISION_REQUIRED
+  - EXTERNAL_EVIDENCE_REQUIRED
+  unknown_status: REJECT
+mapping:
+  targets:
+  - GATE-0
+  - GATE-1
+  - GATE-2
+  - GATE-3
+  - GATE-4
+  - PRODUCTION_RELEASE
+  active_blocker: blocking=true AND status!=RESOLVED
+  target_policy: ALL_ACTIVE_BLOCKERS_TO_ALL_TARGETS
+  required_by_interpretation: OPAQUE_CONTEXT_ONLY
+  default_behavior_interpretation: SAFE_FALLBACK_NOT_RESOLUTION
+  clear_means_gate_pass: false
+boundaries:
+  decision_resolution_record: NOT_DEFINED_BY_ST-0006
+  full_gate_pack_story: ST-1607
+  live_status_apply: NOT_ACTIVATED
+  deployment: NOT_ACTIVATED
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED

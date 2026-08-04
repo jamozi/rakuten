@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/policy_assist/v1",
+  "title": "RAOS AI task output: policy_assist v1",
+  "type": "object",
+  "properties": {
+    "overall_risk": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 300,
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_code": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_\\-]{2,100}$"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "INFO",
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ]
+          },
+          "is_blocking_recommendation": {
+            "type": "boolean"
+          },
+          "entity_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "claim_key": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "evidence_paths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "uniqueItems": true,
+            "maxItems": 100
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "requires_human_decision": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "rule_code",
+          "severity",
+          "is_blocking_recommendation",
+          "entity_ref",
+          "claim_key",
+          "message",
+          "evidence_paths",
+          "confidence",
+          "requires_human_decision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "unresolved_rules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z0-9_\\-]{2,100}$"
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 800
+      },
+      "maxItems": 100
+    }
+  },
+  "required": [
+    "overall_risk",
+    "findings",
+    "unresolved_rules",
+    "limitations"
+  ],
+  "additionalProperties": false
+}

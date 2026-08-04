@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/evaluation/judge_output/v1",
+  "title": "RAOS calibrated model judge output v1",
+  "type": "object",
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^AICASE-[A-Z0-9_-]{3,120}$"
+    },
+    "rubric_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "criterion_results": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "properties": {
+          "criterion_code": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]{2,100}$"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "evidence_paths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "uniqueItems": true,
+            "maxItems": 50
+          },
+          "brief_rationale": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          }
+        },
+        "required": [
+          "criterion_code",
+          "score",
+          "passed",
+          "evidence_paths",
+          "brief_rationale"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "zero_tolerance_findings": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "properties": {
+          "failure_code": {
+            "type": "string",
+            "pattern": "^AI-[A-Z]{3}-[0-9]{3}$"
+          },
+          "output_path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "brief_rationale": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          }
+        },
+        "required": [
+          "failure_code",
+          "output_path",
+          "brief_rationale"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "overall_pass": {
+      "type": "boolean"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "needs_human_adjudication": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "case_id",
+    "rubric_version",
+    "criterion_results",
+    "zero_tolerance_findings",
+    "overall_pass",
+    "confidence",
+    "needs_human_adjudication"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,770 @@
+document:
+  id: RAOS-CONTENT-REVIEW-001
+  title: 人間レビューChecklist
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+checklist_version: 1.0.0
+review_modes:
+  standard_team: AuthorとFinal Approverを別Actorとする。Critical/Compliance FindingはCompliance Approverを要求
+  solo_mvp_exception: 同一自然人が複数Roleを持てるが、生成・編集と承認を別の明示操作・再認証・全Checklist・理由記録で分離し、自動承認は禁止
+decision_rules:
+  approve: 全Blocker PASS、主要Checklist PASS、Score条件、未解決Major Findingなし
+  request_changes: 修正可能なFindingがある
+  reject: Article Plan、Evidence、商品同定またはPolicyが根本的に不成立
+  pause: 外部鮮度・リンク・Policy確認待ち
+items:
+- id: REV-001
+  section: PLAN
+  check: Primary IntentとDecisionが1つに定義されている
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-002
+  section: PLAN
+  check: Article TypeがIntentに適合する
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-003
+  section: PLAN
+  check: 同義Keywordページの重複がない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-004
+  section: PLAN
+  check: 対象読者と対象外が明確
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-005
+  section: PLAN
+  check: Candidate Universeと除外理由が明確
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-006
+  section: PLAN
+  check: 高リスクカテゴリ・Claimを含まない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-007
+  section: IDENTITY
+  check: 各商品がCanonical Product/Variant/Offerへ正しく紐付く
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-008
+  section: IDENTITY
+  check: 型番・容量・色・セット・世代の取り違えがない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-009
+  section: IDENTITY
+  check: 比較対象が同等な商品単位である
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-010
+  section: IDENTITY
+  check: 不明な商品統合を人間が解決した
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-011
+  section: EVIDENCE
+  check: 承認済みSource Packetを使用している
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-012
+  section: EVIDENCE
+  check: 主要Claim 100%にEvidenceがある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-013
+  section: EVIDENCE
+  check: 全検証可能Claim Coverageが95%以上
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-014
+  section: EVIDENCE
+  check: Sourceの対象・時点・定義がClaimと一致する
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-015
+  section: EVIDENCE
+  check: 競合Sourceを無言で解消していない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-016
+  section: EVIDENCE
+  check: AI出力・検索Snippet・楽天Review本文をEvidenceにしていない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-017
+  section: EVIDENCE
+  check: 価格・在庫・送料・Rankに取得時刻がある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-018
+  section: EVIDENCE
+  check: Derived Factに式と入力Factがある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-019
+  section: COPY
+  check: 導入が対象読者と決定内容を示す
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-020
+  section: COPY
+  check: 結論が条件付きで説明されている
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-021
+  section: COPY
+  check: 商品説明の言い換えだけでない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-022
+  section: COPY
+  check: 不明を推測で埋めていない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-023
+  section: COPY
+  check: 体験表現にFirst-hand Recordがある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-024
+  section: COPY
+  check: 最上級に母集団・範囲・時点がある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-025
+  section: COPY
+  check: 長所と短所・不向き条件を両方示す
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-026
+  section: COPY
+  check: 読み手が次の行動を判断できる
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-027
+  section: RECOMMENDATION
+  check: Methodology Versionが固定されている
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-028
+  section: RECOMMENDATION
+  check: Hard Constraintを先に適用している
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-029
+  section: RECOMMENDATION
+  check: 重みと正規化が記事条件に妥当
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-030
+  section: RECOMMENDATION
+  check: Evidence Coverageが順位閾値を満たす
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-031
+  section: RECOMMENDATION
+  check: 同点を無理に順位付けしていない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-032
+  section: RECOMMENDATION
+  check: Affiliate Rate/EPC/RPM/利益が入力・画面にない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-033
+  section: RECOMMENDATION
+  check: Overrideには理由とEvidenceがある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-034
+  section: RECOMMENDATION
+  check: 候補外の商品を暗黙に市場全体と扱っていない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-035
+  section: COMPLIANCE
+  check: 記事上部に広告・Affiliate表示がある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-036
+  section: COMPLIANCE
+  check: 便益提供がある場合に追加関係表示がある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-037
+  section: COMPLIANCE
+  check: CTAが楽天市場遷移を明示する
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-038
+  section: COMPLIANCE
+  check: Affiliate Linkが正規Resourceから生成される
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-039
+  section: COMPLIANCE
+  check: rel=sponsoredが付与される
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-040
+  section: COMPLIANCE
+  check: 楽天API Creditが表示される
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-041
+  section: COMPLIANCE
+  check: 楽天Review本文を利用していない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-042
+  section: COMPLIANCE
+  check: 画像利用条件と非改変を確認した
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-043
+  section: COMPLIANCE
+  check: 誇大・優良誤認の疑いがない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-044
+  section: SEO
+  check: Title/H1/主題が一致する
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-045
+  section: SEO
+  check: TitleとMeta Descriptionが固有
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-046
+  section: SEO
+  check: CanonicalとIndex Stateが正しい
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-047
+  section: SEO
+  check: Draft/Previewはnoindex,nofollow
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-048
+  section: SEO
+  check: Sitemap対象条件を満たす
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-049
+  section: SEO
+  check: Article/Breadcrumb JSON-LDが可視内容と一致
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-050
+  section: SEO
+  check: 複数商品記事にProduct Markupがない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-051
+  section: SEO
+  check: FAQPage/Review/AggregateRatingを誤生成していない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-052
+  section: SEO
+  check: 内部Linkが文脈的で公開Routeを指す
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-053
+  section: ACCESSIBILITY_MEDIA
+  check: 画像にAsset Provenanceがある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-054
+  section: ACCESSIBILITY_MEDIA
+  check: Informative Imageに適切なaltがある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-055
+  section: ACCESSIBILITY_MEDIA
+  check: 複雑図表にデータ表または詳細説明がある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-056
+  section: ACCESSIBILITY_MEDIA
+  check: Decorative Imageのaltが空
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-057
+  section: ACCESSIBILITY_MEDIA
+  check: 見出し階層が連続
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-058
+  section: ACCESSIBILITY_MEDIA
+  check: 比較表に行・列Headerがある
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-059
+  section: ACCESSIBILITY_MEDIA
+  check: 色だけで意味を伝えていない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-060
+  section: ACCESSIBILITY_MEDIA
+  check: Keyboard操作とFocusが維持される
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-061
+  section: FRESHNESS
+  check: Critical FactがFresh
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-062
+  section: FRESHNESS
+  check: Near ExpiryをQueue化した
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-063
+  section: FRESHNESS
+  check: Stale FactがSafe Degradationされる
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-064
+  section: FRESHNESS
+  check: Link Healthが有効
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-065
+  section: FRESHNESS
+  check: Offer Unavailable時に自動順位変更していない
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-066
+  section: FRESHNESS
+  check: 最終確認日時が表示される
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-067
+  section: FRESHNESS
+  check: Policy/Methodologyの影響評価が済んでいる
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-068
+  section: PUBLICATION
+  check: Blocking Findingが0
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-069
+  section: PUBLICATION
+  check: 品質Score 85以上で各Floorを満たす
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-070
+  section: PUBLICATION
+  check: 人間承認が明示操作として記録された
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-071
+  section: PUBLICATION
+  check: Publication/Affiliate Kill SwitchがOFF
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-072
+  section: PUBLICATION
+  check: Snapshotに全Version/Hashが固定された
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-073
+  section: PUBLICATION
+  check: Previewと公開の差分を確認した
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-074
+  section: PUBLICATION
+  check: Rollback対象が存在する
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+- id: REV-075
+  section: PUBLICATION
+  check: 公開後検査とAlertが設定された
+  response:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON
+  evidence_or_comment_required_on:
+  - FAIL
+  - NOT_APPLICABLE_WITH_REASON

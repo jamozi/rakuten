@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/opportunity-assessment-output.schema.json",
+  "title": "Opportunity Assessment Assist Output",
+  "description": "Qualitative assist; numerical business score remains deterministic/configured.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "search_intent",
+    "decision_criteria",
+    "content_gaps",
+    "risks",
+    "source_fact_ids"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "search_intent": {
+      "type": "string"
+    },
+    "decision_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "content_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_fact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "uniqueItems": true
+    }
+  }
+}

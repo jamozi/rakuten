@@ -1,0 +1,58 @@
+{
+  "name": "raos",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Rakuten Affiliate Operations System Node workspace",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "24.18.1",
+    "npm": "11.16.0"
+  },
+  "packageManager": "npm@11.16.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.18.1",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "npm",
+      "version": "11.16.0",
+      "onFail": "error"
+    }
+  },
+  "workspaces": [
+    "apps/web",
+    "packages/web-contracts",
+    "packages/web-ui"
+  ],
+  "scripts": {
+    "format:check": "prettier --check --ignore-unknown package.json apps/web packages/web-contracts/package.json packages/web-contracts/tsconfig.json packages/web-ui tsconfig.base.json tsconfig.json eslint.config.mjs prettier.config.mjs vitest.config.ts pyrightconfig.json scripts/node_inventory.mjs tests/st0103",
+    "lint": "eslint --max-warnings=0 --no-warn-ignored eslint.config.mjs prettier.config.mjs vitest.config.ts scripts/node_inventory.mjs tests/st0103",
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "pyright": "pyright --project pyrightconfig.json",
+    "test:unit": "vitest run --config vitest.config.ts --configLoader native",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run pyright && npm run test:unit"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.99.0",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.2.12",
+    "prettier": "3.9.6",
+    "pyright": "1.1.411",
+    "typescript": "6.0.3",
+    "vite": "8.2.0",
+    "vitest": "4.1.10"
+  },
+  "overrides": {
+    "next@16.2.12": {
+      "postcss": "8.5.25",
+      "sharp": "0.35.3"
+    },
+    "vite": "8.2.0"
+  }
+}

@@ -1,0 +1,44 @@
+template_id: TPL-AT-004
+article_type: model_generation_capacity_difference
+version: 1.0.0
+status: ACTIVE
+required_sequence:
+- disclosure_slot
+- lead
+- decision_summary
+- intended_reader
+- methodology
+- difference_matrix
+- selection_criteria
+- tradeoff
+- recommendation_group
+- caution
+- source_summary
+optional_blocks:
+- comparison_table
+- product_card
+- pros_cons
+- faq
+- media
+- internal_links
+- update_notice
+minimum_decision_axes: 3
+product_count:
+  minimum: 2
+  recommended: 2-6
+  maximum: 8
+unique_value_tests:
+- 型番・Variant同定
+- 変わった点・変わらない点
+- 差額判断
+- 旧型を選べる条件
+- 互換性または付属品差
+prohibited_patterns:
+- 別商品系列の混入
+- 仕様差の推測
+- 発売年だけによる新型推奨
+- 価格差の鮮度無視
+notes:
+- disclosure_slotはRendererが先頭へ強制挿入する
+- source_summaryは末尾の共通情報領域へ配置
+- Heading/Paragraphは必要な範囲だけ追加する

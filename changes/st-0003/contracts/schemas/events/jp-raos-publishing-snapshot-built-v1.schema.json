@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-publishing-snapshot-built-v1.schema.json",
+  "title": "jp.raos.publishing.snapshot_built.v1",
+  "description": "Publication Snapshotが不変保存された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.publishing.snapshot_built.v1"
+        },
+        "producer": {
+          "const": "publishing"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "publication_candidate_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "publication_snapshot_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "canonical_path": {
+              "type": "string"
+            },
+            "snapshot_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "publication_candidate_id",
+            "publication_snapshot_id",
+            "article_id",
+            "article_version_id",
+            "canonical_path",
+            "snapshot_sha256"
+          ]
+        }
+      }
+    }
+  ]
+}

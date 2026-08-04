@@ -1,0 +1,923 @@
+document:
+  id: RAOS-UI-SCREENS-001
+  version: '1.0'
+screens:
+- id: PUB-001
+  name: ホーム
+  route: /
+  area: public
+  roles: []
+  purpose: カテゴリと主要ガイドへの入口
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUB-002
+  name: カテゴリハブ
+  route: /categories/{slug}
+  area: public
+  roles: []
+  purpose: カテゴリの選び方・記事Journeyを提示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUB-003
+  name: 記事詳細
+  route: /articles/{slug}
+  area: public
+  roles: []
+  purpose: 承認済みPublication Snapshotを表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUB-004
+  name: 編集方針
+  route: /editorial-policy
+  area: public
+  roles: []
+  purpose: 比較・推薦・根拠・AI利用方針を説明
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUB-005
+  name: 広告・Affiliate開示
+  route: /affiliate-disclosure
+  area: public
+  roles: []
+  purpose: 広告関係と送客先を説明
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUB-006
+  name: Privacy Policy
+  route: /privacy
+  area: public
+  roles: []
+  purpose: 取得データ、目的、保持、問い合わせを説明
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUB-007
+  name: 運営者・問い合わせ
+  route: /about
+  area: public
+  roles: []
+  purpose: 運営主体と連絡経路を表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUB-008
+  name: Not Found
+  route: /404
+  area: public
+  roles: []
+  purpose: 存在しないURLを安全に案内
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUB-009
+  name: 障害・Maintenance
+  route: /status
+  area: public
+  roles: []
+  purpose: 縮退または障害状態を表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUB-010
+  name: 取り下げ記事
+  route: /articles/{slug}/withdrawn
+  area: public
+  roles: []
+  purpose: 旧URLを維持し取り下げ理由と代替導線を表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AUTH-001
+  name: Sign in
+  route: /admin/sign-in
+  area: auth
+  roles: &id001
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  - ANALYST
+  - OPERATOR
+  - SECURITY_AUDITOR
+  - READ_ONLY_AUDITOR
+  purpose: OIDC認証を開始
+  mvp: true
+  critical_action: false
+  api_dependencies:
+  - IAM login
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AUTH-002
+  name: MFA challenge
+  route: /admin/mfa
+  area: auth
+  roles: *id001
+  purpose: MFA/step-up認証
+  mvp: true
+  critical_action: true
+  api_dependencies:
+  - IAM MFA
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AUTH-003
+  name: Session expired
+  route: /admin/session-expired
+  area: auth
+  roles: *id001
+  purpose: 安全に再認証へ誘導
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: ADM-001
+  name: 運営Dashboard
+  route: /admin
+  area: admin
+  roles: *id001
+  purpose: Gate、品質、鮮度、Job、収益の要約
+  mvp: true
+  critical_action: false
+  api_dependencies:
+  - dashboard read models
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PORT-001
+  name: カテゴリ一覧
+  route: /admin/portfolio/categories
+  area: portfolio
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - EDITOR
+  - ANALYST
+  purpose: カテゴリとMVP Scope管理
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PORT-002
+  name: カテゴリ詳細
+  route: /admin/portfolio/categories/{id}
+  area: portfolio
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - EDITOR
+  - ANALYST
+  purpose: カテゴリ設定、Freshness、Identity Rule参照
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PORT-003
+  name: Keyword一覧
+  route: /admin/portfolio/keywords
+  area: portfolio
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - EDITOR
+  - ANALYST
+  purpose: Keyword、意図、Source、優先度を管理
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PORT-004
+  name: Intent Cluster
+  route: /admin/portfolio/intents
+  area: portfolio
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - EDITOR
+  - ANALYST
+  purpose: 同一意思決定のKeywordをCluster化
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PORT-005
+  name: Opportunity Queue
+  route: /admin/portfolio/opportunities
+  area: portfolio
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - EDITOR
+  - ANALYST
+  purpose: AI/Ruleによる候補を人間が評価
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PORT-006
+  name: Article Plan
+  route: /admin/portfolio/article-plans/{id}
+  area: portfolio
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - EDITOR
+  purpose: 記事目的、候補Universe、記事型を確定
+  mvp: true
+  critical_action: false
+  api_dependencies:
+  - ArticlePlan
+  - IntentCluster
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: CAT-001
+  name: 楽天取込Run
+  route: /admin/catalog/ingestion-runs
+  area: catalog
+  roles:
+  - EDITOR
+  - OPERATOR
+  - ANALYST
+  purpose: 取得状況、Rate Limit、Raw Artifactを確認
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: CAT-002
+  name: 商品候補一覧
+  route: /admin/catalog/candidates
+  area: catalog
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 未統合候補を検索・絞込
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: CAT-003
+  name: 商品同一性Workbench
+  route: /admin/catalog/identity-workbench
+  area: catalog
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 型番・Variant・Bundleを根拠付きで統合/分離
+  mvp: true
+  critical_action: true
+  api_dependencies:
+  - ProductCandidate
+  - GroupingDecision
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: CAT-004
+  name: Canonical Product
+  route: /admin/catalog/products/{id}
+  area: catalog
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  - ANALYST
+  purpose: 商品属性、Variant、Evidence、履歴を表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: CAT-005
+  name: Offer詳細
+  route: /admin/catalog/offers/{id}
+  area: catalog
+  roles:
+  - EDITOR
+  - REVIEWER
+  - ANALYST
+  purpose: ショップ別Offer、価格、在庫、送料、鮮度を表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: CAT-006
+  name: Raw Artifact Viewer
+  route: /admin/artifacts/{id}
+  area: catalog
+  roles:
+  - EDITOR
+  - REVIEWER
+  - OPERATOR
+  - SECURITY_AUDITOR
+  purpose: 原本Hash、取得情報、許可された表示を確認
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVD-001
+  name: Source Packet一覧
+  route: /admin/evidence/source-packets
+  area: evidence
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 生成に使う承認済み情報束を管理
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVD-002
+  name: Source Packet詳細
+  route: /admin/evidence/source-packets/{id}
+  area: evidence
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: Fact、Conflict、Freshness、Coverageを確認
+  mvp: true
+  critical_action: true
+  api_dependencies:
+  - SourcePacket
+  - Fact
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVD-003
+  name: Fact Explorer
+  route: /admin/evidence/facts
+  area: evidence
+  roles:
+  - EDITOR
+  - REVIEWER
+  - ANALYST
+  purpose: FactをSource/対象/日時で検索
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVD-004
+  name: Evidence Conflict Queue
+  route: /admin/evidence/conflicts
+  area: evidence
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 矛盾Factを解決またはUnknown化
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-001
+  name: 記事一覧
+  route: /admin/articles
+  area: editorial
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  - ANALYST
+  purpose: 記事状態、品質、鮮度、収益を一覧
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-002
+  name: Article Workspace
+  route: /admin/articles/{id}
+  area: editorial
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 企画から公開までの統合Workspace
+  mvp: true
+  critical_action: false
+  api_dependencies:
+  - Article
+  - ArticleVersion
+  - Findings
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-003
+  name: Content AST Editor
+  route: /admin/articles/{id}/versions/{versionId}/content
+  area: editorial
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  purpose: 型付きBlockを編集し未知Fieldを拒否
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-004
+  name: AI Job Console
+  route: /admin/articles/{id}/ai-jobs
+  area: editorial
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 入力Manifest、Route、Cost、出力、Failureを表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-005
+  name: AI Diff Review
+  route: /admin/articles/{id}/ai-diff
+  area: editorial
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: AI提案と人間編集差分を比較
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-006
+  name: Claim–Evidence Matrix
+  route: /admin/articles/{id}/claims
+  area: editorial
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: ClaimごとのEvidence、時刻、Conflictを確認
+  mvp: true
+  critical_action: true
+  api_dependencies:
+  - Claim
+  - ClaimEvidenceLink
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-007
+  name: Comparison Preview
+  route: /admin/articles/{id}/comparison
+  area: editorial
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 比較軸・単位・Unknown・Variantを検査
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-008
+  name: Recommendation Methodology
+  route: /admin/articles/{id}/methodology
+  area: editorial
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 重み、Hard Constraint、Tie、説明を確認
+  mvp: true
+  critical_action: true
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-009
+  name: SEO Preview
+  route: /admin/articles/{id}/seo
+  area: editorial
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: Title、Canonical、Robots、JSON-LD Preview
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EDT-010
+  name: Media Assets
+  route: /admin/media
+  area: editorial
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 出所、利用条件、alt、寸法を管理
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: REV-001
+  name: Review Queue
+  route: /admin/reviews
+  area: review
+  roles:
+  - MANAGING_EDITOR
+  - REVIEWER
+  purpose: レビュー対象をRisk/期限で優先表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: REV-002
+  name: Editorial Review
+  route: /admin/reviews/{versionId}
+  area: review
+  roles:
+  - REVIEWER
+  - MANAGING_EDITOR
+  purpose: 75項目ChecklistとFindingを記録
+  mvp: true
+  critical_action: true
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: REV-003
+  name: Final Approval
+  route: /admin/approvals/{versionId}
+  area: review
+  roles:
+  - MANAGING_EDITOR
+  purpose: 全Gateと差分を確認し承認/差戻し
+  mvp: true
+  critical_action: true
+  api_dependencies:
+  - FinalApproval
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUBA-001
+  name: Publication Queue
+  route: /admin/publications
+  area: publishing
+  roles:
+  - MANAGING_EDITOR
+  - OPERATOR
+  purpose: 公開候補とBlockerを表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUBA-002
+  name: Snapshot Preview
+  route: /admin/publications/{id}/preview
+  area: publishing
+  roles:
+  - MANAGING_EDITOR
+  - REVIEWER
+  - OPERATOR
+  purpose: 実際の公開Snapshotを隔離Preview
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUBA-003
+  name: Publish Command
+  route: /admin/publications/{id}/publish
+  area: publishing
+  roles:
+  - MANAGING_EDITOR
+  - OPERATOR
+  purpose: step-up後に冪等公開Commandを送る
+  mvp: true
+  critical_action: true
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: PUBA-004
+  name: Rollback
+  route: /admin/publications/{id}/rollback
+  area: publishing
+  roles:
+  - MANAGING_EDITOR
+  - OPERATOR
+  purpose: 旧Snapshotへ戻し理由を監査記録
+  mvp: true
+  critical_action: true
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: FRESH-001
+  name: Freshness Queue
+  route: /admin/freshness
+  area: freshness
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - OPERATOR
+  purpose: Stale/Expired Factと影響記事を管理
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: FRESH-002
+  name: Link Health
+  route: /admin/freshness/link-health
+  area: freshness
+  roles:
+  - EDITOR
+  - OPERATOR
+  purpose: Affiliate LinkとDestination異常を確認
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: FRESH-003
+  name: Refresh Proposal
+  route: /admin/freshness/proposals/{id}
+  area: freshness
+  roles:
+  - MANAGING_EDITOR
+  - EDITOR
+  - REVIEWER
+  purpose: 更新差分と再承認範囲を確認
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: ANA-001
+  name: Content Performance
+  route: /admin/analytics/content
+  area: analytics
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - ANALYST
+  purpose: 検索、行動、クリック、品質を記事別に表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: ANA-002
+  name: Search Performance
+  route: /admin/analytics/search
+  area: analytics
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - ANALYST
+  purpose: Search Console指標とIntentを表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: ANA-003
+  name: Affiliate Clicks
+  route: /admin/analytics/clicks
+  area: analytics
+  roles:
+  - PRODUCT_OWNER
+  - ANALYST
+  purpose: CTA別クリックと計測品質を表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: FIN-001
+  name: 成果Import
+  route: /admin/finance/imports
+  area: finance
+  roles:
+  - PRODUCT_OWNER
+  - ANALYST
+  - OPERATOR
+  purpose: CSV Upload、検査、Dry Run、Commit
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: FIN-002
+  name: Reconciliation
+  route: /admin/finance/reconciliation/{id}
+  area: finance
+  roles:
+  - PRODUCT_OWNER
+  - ANALYST
+  purpose: Provider合計とCanonical取込を照合
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: FIN-003
+  name: Unit Economics
+  route: /admin/finance/unit-economics
+  area: finance
+  roles:
+  - PRODUCT_OWNER
+  - ANALYST
+  purpose: 確定EPC/RPM/貢献利益と帰属Basisを表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: OPS-001
+  name: Job Monitor
+  route: /admin/ops/jobs
+  area: operations
+  roles:
+  - OPERATOR
+  - SECURITY_AUDITOR
+  purpose: Job、Attempt、Lease、Retryを監視
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: OPS-002
+  name: DLQ / Quarantine
+  route: /admin/ops/dlq
+  area: operations
+  roles:
+  - OPERATOR
+  - SECURITY_AUDITOR
+  purpose: 隔離Payloadを安全に調査・再実行
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: OPS-003
+  name: Incident
+  route: /admin/ops/incidents/{id}
+  area: operations
+  roles:
+  - PRODUCT_OWNER
+  - OPERATOR
+  - SECURITY_AUDITOR
+  purpose: Incident、Timeline、Action、Evidenceを管理
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: OPS-004
+  name: Kill Switches
+  route: /admin/ops/kill-switches
+  area: operations
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - OPERATOR
+  purpose: Publication/Affiliate停止をstep-upで操作
+  mvp: true
+  critical_action: true
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: OPS-005
+  name: Audit Log
+  route: /admin/ops/audit
+  area: operations
+  roles:
+  - SECURITY_AUDITOR
+  - READ_ONLY_AUDITOR
+  purpose: 不変Audit Eventを検索
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: GOV-001
+  name: AI Governance
+  route: /admin/governance/ai
+  area: governance
+  roles:
+  - PRODUCT_OWNER
+  - MANAGING_EDITOR
+  - SECURITY_AUDITOR
+  purpose: Task/Prompt/Route/Evaluation/Releaseを表示
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: SET-001
+  name: Site Settings
+  route: /admin/settings/site
+  area: settings
+  roles:
+  - PRODUCT_OWNER
+  - OPERATOR
+  purpose: Brand、Domain、Disclosure、Provider設定の参照/変更
+  mvp: true
+  critical_action: false
+  api_dependencies: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/ai-task-contract/v1",
+  "title": "AI Task Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "task": {
+      "$ref": "ai-task-definition.v1.schema.json"
+    },
+    "active_prompt_versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "locale": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 16,
+            "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$"
+          },
+          "prompt_version_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "locale",
+          "prompt_version_id"
+        ]
+      },
+      "maxItems": 100
+    },
+    "active_output_schema_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "active_model_route_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "active_release_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    }
+  },
+  "required": [
+    "task",
+    "active_prompt_versions",
+    "active_output_schema_version_id",
+    "active_model_route_version_id",
+    "active_release_decision_id"
+  ],
+  "x-raos-classification": "INTERNAL"
+}

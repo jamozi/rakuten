@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-job-quarantined-v1.schema.json",
+  "title": "jp.raos.ops.job_quarantined.v1",
+  "description": "Jobまたは入力が隔離された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.job_quarantined.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "reason_code": {
+              "type": "string"
+            },
+            "artifact_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "operator_action_required": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "job_id",
+            "reason_code",
+            "operator_action_required"
+          ]
+        }
+      }
+    }
+  ]
+}

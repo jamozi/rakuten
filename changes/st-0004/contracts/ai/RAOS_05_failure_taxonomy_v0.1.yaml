@@ -1,0 +1,180 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+failures:
+- code: AI-INP-001
+  domain: INPUT
+  name: MISSING_APPROVED_SOURCE_PACKET
+  disposition: TERMINAL
+  required_action: Do not call provider.
+- code: AI-INP-002
+  domain: INPUT
+  name: SOURCE_PACKET_HASH_MISMATCH
+  disposition: QUARANTINE
+  required_action: Open data-integrity incident.
+- code: AI-INP-003
+  domain: INPUT
+  name: FORBIDDEN_FIELD_PRESENT
+  disposition: TERMINAL
+  required_action: Reject and log field names only.
+- code: AI-INP-004
+  domain: INPUT
+  name: INPUT_TOO_LARGE
+  disposition: RETRYABLE_AFTER_REPACK
+  required_action: Deterministically repack without silent required-fact truncation.
+- code: AI-INP-005
+  domain: INPUT
+  name: STALE_OR_CONFLICTING_EVIDENCE
+  disposition: HUMAN_REQUIRED
+  required_action: Block or return unresolved.
+- code: AI-PRV-001
+  domain: PROVIDER
+  name: RATE_LIMIT
+  disposition: RETRYABLE
+  required_action: Backoff with jitter within deadline/budget.
+- code: AI-PRV-002
+  domain: PROVIDER
+  name: TRANSIENT_ERROR
+  disposition: RETRYABLE
+  required_action: Retry same route; certified fallback only when allowed.
+- code: AI-PRV-003
+  domain: PROVIDER
+  name: TIMEOUT
+  disposition: RETRYABLE
+  required_action: Retry immutable input without automatic budget increase.
+- code: AI-PRV-004
+  domain: PROVIDER
+  name: MODEL_UNAVAILABLE
+  disposition: ROUTE_FALLBACK
+  required_action: Use declared certified fallback or fail.
+- code: AI-PRV-005
+  domain: PROVIDER
+  name: REFUSAL
+  disposition: TERMINAL_OR_EXPECTED
+  required_action: Persist refusal; do not circumvent.
+- code: AI-PRV-006
+  domain: PROVIDER
+  name: CONTENT_FILTER
+  disposition: HUMAN_REQUIRED
+  required_action: Persist and review; do not weaken safeguards.
+- code: AI-PRV-007
+  domain: PROVIDER
+  name: INCOMPLETE_MAX_OUTPUT
+  disposition: ONE_REPAIR_ALLOWED
+  required_action: One bounded retry then fail.
+- code: AI-OUT-001
+  domain: OUTPUT
+  name: INVALID_JSON
+  disposition: ONE_REPAIR_ALLOWED
+  required_action: One strict schema-repair attempt.
+- code: AI-OUT-002
+  domain: OUTPUT
+  name: SCHEMA_VIOLATION
+  disposition: ONE_REPAIR_ALLOWED
+  required_action: Record paths; retry once then fail/fallback if permitted.
+- code: AI-OUT-003
+  domain: OUTPUT
+  name: UNKNOWN_RESOURCE_ID
+  disposition: TERMINAL
+  required_action: Reject; never auto-create entity.
+- code: AI-OUT-004
+  domain: OUTPUT
+  name: OUTPUT_TOO_LARGE
+  disposition: TERMINAL
+  required_action: Require evaluated task/prompt change.
+- code: AI-FCT-001
+  domain: FACTUAL
+  name: UNSUPPORTED_CRITICAL_CLAIM
+  disposition: ZERO_TOLERANCE
+  required_action: Block and open finding.
+- code: AI-FCT-002
+  domain: FACTUAL
+  name: NUMERIC_MISMATCH
+  disposition: BLOCKING
+  required_action: Block with source/output paths.
+- code: AI-FCT-003
+  domain: FACTUAL
+  name: PRODUCT_IDENTITY_MISMATCH
+  disposition: ZERO_TOLERANCE
+  required_action: Quarantine output and inspect siblings.
+- code: AI-FCT-004
+  domain: FACTUAL
+  name: FABRICATED_EXPERIENCE
+  disposition: ZERO_TOLERANCE
+  required_action: Block and add sanitized regression case.
+- code: AI-POL-001
+  domain: POLICY
+  name: RAKUTEN_REVIEW_BODY_LEAKAGE
+  disposition: ZERO_TOLERANCE
+  required_action: Quarantine and investigate contamination.
+- code: AI-POL-002
+  domain: POLICY
+  name: AFFILIATE_BIAS
+  disposition: ZERO_TOLERANCE
+  required_action: Block and inspect feature pipeline.
+- code: AI-POL-003
+  domain: POLICY
+  name: PROMPT_INJECTION_FOLLOWED
+  disposition: ZERO_TOLERANCE
+  required_action: Pause route and open security incident.
+- code: AI-POL-004
+  domain: POLICY
+  name: SECRET_OR_RESTRICTED_DATA
+  disposition: ZERO_TOLERANCE
+  required_action: Contain and rotate credentials if needed.
+- code: AI-POL-005
+  domain: POLICY
+  name: UNAUTHORIZED_STATE_CHANGE
+  disposition: ZERO_TOLERANCE
+  required_action: Reject and investigate authorization boundary.
+- code: AI-EVL-001
+  domain: EVALUATION
+  name: MISSING_RELEASE_SUITE
+  disposition: TERMINAL
+  required_action: Route cannot become active.
+- code: AI-EVL-002
+  domain: EVALUATION
+  name: ZERO_TOLERANCE_CASE_FAILED
+  disposition: RELEASE_BLOCKED
+  required_action: No averaging or waiver.
+- code: AI-EVL-003
+  domain: EVALUATION
+  name: JUDGE_NOT_CALIBRATED
+  disposition: RELEASE_BLOCKED
+  required_action: Use human adjudication.
+- code: AI-EVL-004
+  domain: EVALUATION
+  name: HOLDOUT_CONTAMINATION
+  disposition: QUARANTINE
+  required_action: Retire dataset version.
+- code: AI-EVL-005
+  domain: EVALUATION
+  name: REGRESSION_BEYOND_MARGIN
+  disposition: RELEASE_BLOCKED
+  required_action: Keep champion and investigate slices.
+- code: AI-OPS-001
+  domain: OPERATIONS
+  name: BUDGET_EXCEEDED
+  disposition: TERMINAL
+  required_action: No provider call.
+- code: AI-OPS-002
+  domain: OPERATIONS
+  name: CIRCUIT_OPEN
+  disposition: RETRYABLE_LATER
+  required_action: Queue until deadline or fail safely.
+- code: AI-OPS-003
+  domain: OPERATIONS
+  name: COST_ANOMALY
+  disposition: PAUSE_ROUTE
+  required_action: Pause canary/new jobs.
+- code: AI-OPS-004
+  domain: OPERATIONS
+  name: QUALITY_DRIFT
+  disposition: ROLLBACK
+  required_action: Rollback to last certified release.
+- code: AI-OPS-005
+  domain: OPERATIONS
+  name: TELEMETRY_INCOMPLETE
+  disposition: SAFE_DEGRADE
+  required_action: Do not promote; pause critical tasks if needed.

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/opportunity_assessment/v1",
+  "title": "Opportunity Assessment Assist Output",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "search_intent": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "decision_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 500
+      },
+      "maxItems": 100
+    },
+    "content_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 1000
+      },
+      "maxItems": 100
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 1000
+      },
+      "maxItems": 100
+    },
+    "source_fact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "uniqueItems": true,
+      "maxItems": 500
+    }
+  },
+  "required": [
+    "schema_version",
+    "search_intent",
+    "decision_criteria",
+    "content_gaps",
+    "risks",
+    "source_fact_ids"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-catalog-genre-sync-completed-v1.schema.json",
+  "title": "jp.raos.catalog.genre_sync_completed.v1",
+  "description": "Genre同期が完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.catalog.genre_sync_completed.v1"
+        },
+        "producer": {
+          "const": "catalog"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "provider_endpoint_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "root_genre_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "created_count": {
+              "type": "integer"
+            },
+            "updated_count": {
+              "type": "integer"
+            },
+            "api_version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "provider_endpoint_id",
+            "created_count",
+            "updated_count",
+            "api_version"
+          ]
+        }
+      }
+    }
+  ]
+}

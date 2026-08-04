@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-publishing-public-projection-rebuilt-v1.schema.json",
+  "title": "jp.raos.publishing.public_projection_rebuilt.v1",
+  "description": "Public Projection再構築が完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.publishing.public_projection_rebuilt.v1"
+        },
+        "producer": {
+          "const": "publishing"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "scope_type": {
+              "type": "string"
+            },
+            "scope_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "projection_generation": {
+              "type": "integer"
+            },
+            "row_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "site_id",
+            "scope_type",
+            "scope_id",
+            "projection_generation",
+            "row_count"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+/docs/canonical/** -text
+/docs/upstream/** -text
+/docs/manifest.json -text
+/zip/*.zip -text

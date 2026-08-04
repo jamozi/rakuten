@@ -1,0 +1,262 @@
+override RAOS_REPOSITORY_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+override RAOS_MAKE_SHORT_FLAGS := $(firstword $(MAKEFLAGS))
+ifneq ($(filter -%,$(RAOS_MAKE_SHORT_FLAGS)),)
+override RAOS_MAKE_SHORT_FLAGS :=
+endif
+override RAOS_UNSAFE_MAKE_MODES := $(strip $(foreach flag,e i n t,$(if $(findstring $(flag),$(RAOS_MAKE_SHORT_FLAGS)),$(flag))))
+
+ifeq ($(origin MAKEFLAGS),command line)
+$(error Direct MAKEFLAGS assignments are not allowed for repository gates)
+endif
+ifneq ($(strip $(MAKEFILES)),)
+$(error Preloaded MAKEFILES are not allowed for repository gates)
+endif
+ifneq ($(RAOS_UNSAFE_MAKE_MODES),)
+$(error Refusing non-verifying GNU Make mode(s): $(RAOS_UNSAFE_MAKE_MODES))
+endif
+
+PYTHON := python3
+UV := uv
+override PYTHON_VERSION := 3.14.6
+override UV_VERSION := 0.12.1
+override UV_CONFIG := $(RAOS_REPOSITORY_ROOT)/uv.toml
+override PYTHON_OFFLINE_ENVIRONMENT := $(RAOS_REPOSITORY_ROOT)/.venv-offline-check
+override UV_CLEAN_ENV := env -u UV_CONFIG_FILE -u UV_NO_CONFIG -u UV_ISOLATED \
+	-u UV_NO_PROJECT -u UV_WORKING_DIR \
+	-u UV_WORKING_DIRECTORY \
+	-u UV_PROJECT -u UV_WORKSPACE -u UV_PROJECT_ENVIRONMENT \
+	-u UV_REQUIRED_VERSION -u UV_ENV_FILE -u UV_NO_ENV_FILE \
+	-u UV_INDEX -u UV_DEFAULT_INDEX -u UV_INDEX_URL \
+	-u UV_EXTRA_INDEX -u UV_EXTRA_INDEX_URL -u UV_FIND_LINKS \
+	-u UV_INDEX_STRATEGY -u UV_KEYRING_PROVIDER -u UV_INSECURE_HOST \
+	-u UV_NO_SOURCES -u UV_PRERELEASE -u UV_PRERELEASE_PACKAGE \
+	-u UV_RESOLUTION -u UV_FORK_STRATEGY -u UV_EXCLUDE_NEWER \
+	-u UV_EXCLUDE_NEWER_PACKAGE -u UV_FROZEN -u UV_LOCKED \
+	-u UV_OVERRIDE -u UV_CONSTRAINT -u UV_BUILD_CONSTRAINT \
+	-u UV_UPGRADE -u UV_UPGRADE_PACKAGE -u UV_UPGRADE_GROUP \
+	-u UV_NO_BUILD -u UV_NO_BUILD_PACKAGE -u UV_NO_BUILD_ISOLATION \
+	-u UV_NO_BUILD_ISOLATION_PACKAGE -u UV_NO_BINARY -u UV_NO_BINARY_PACKAGE \
+	-u UV_NO_VERIFY_HASHES -u UV_PYTHON -u UV_PYTHON_DOWNLOADS \
+	-u UV_PYTHON_PREFERENCE -u UV_MANAGED_PYTHON -u UV_NO_MANAGED_PYTHON \
+	-u UV_SYSTEM_PYTHON -u UV_PYTHON_SEARCH_PATH -u UV_PYTHON_CPYTHON_BUILD \
+	-u UV_PYTHON_INSTALL_DIR -u UV_PYTHON_INSTALL_MIRROR \
+	-u UV_PYPY_INSTALL_MIRROR \
+	-u UV_ASTRAL_MIRROR_URL -u UV_PYTHON_DOWNLOADS_JSON_URL \
+	-u UV_OFFLINE -u UV_NO_CACHE -u UV_PREVIEW \
+	-u UV_MALWARE_CHECK -u UV_MALWARE_CHECK_URL \
+	-u UV_GROUP -u UV_NO_GROUP \
+	-u UV_ONLY_GROUP -u UV_ALL_GROUPS -u UV_DEV -u UV_ONLY_DEV \
+	-u UV_NO_DEV -u UV_DEFAULT_GROUPS -u UV_NO_DEFAULT_GROUPS \
+	-u UV_INEXACT -u UV_ACTIVE -u UV_LINK_MODE -u UV_COMPILE_BYTECODE \
+	-u PYTHONPATH -u PYTHONHOME -u PYTHONSTARTUP -u PYTHONINSPECT \
+	-u PYTHONOPTIMIZE -u PYTHONWARNINGS -u PYTEST_ADDOPTS \
+	-u PYTEST_PLUGINS -u MYPYPATH
+override UV_RUN := $(UV_CLEAN_ENV) "$(UV)" --config-file "$(UV_CONFIG)"
+override UV_OFFLINE_RUN := $(UV_CLEAN_ENV) \
+	UV_PROJECT_ENVIRONMENT="$(PYTHON_OFFLINE_ENVIRONMENT)" "$(UV)" \
+	--config-file "$(UV_CONFIG)"
+
+NODE ?= $(shell command -v node)
+NPM_CLI ?= $(shell command -v npm)
+override NODE_VERSION := 24.18.1
+override NPM_VERSION := 11.16.0
+override NEXT_VERSION := 16.2.12
+override REACT_VERSION := 19.2.8
+override TYPESCRIPT_VERSION := 6.0.3
+override ESLINT_VERSION := 9.39.5
+override ESLINT_CONFIG_NEXT_VERSION := 16.2.12
+override VITEST_VERSION := 4.1.10
+override VITE_VERSION := 8.2.0
+override POSTCSS_VERSION := 8.5.25
+override SHARP_VERSION := 0.35.3
+override PRETTIER_VERSION := 3.9.6
+override PYRIGHT_VERSION := 1.1.411
+override TYPES_NODE_VERSION := 24.13.3
+override TYPES_REACT_VERSION := 19.2.18
+override TYPES_REACT_DOM_VERSION := 19.2.4
+override NPM_CONFIG := $(RAOS_REPOSITORY_ROOT)/.npmrc
+override NPM_CACHE := $(RAOS_REPOSITORY_ROOT)/.npm-cache
+override NODE_MODULES := $(RAOS_REPOSITORY_ROOT)/node_modules
+override NODE_INVENTORY := $(RAOS_REPOSITORY_ROOT)/scripts/node_inventory.mjs
+override NODE_CLEAN_ENV := env -i \
+	PATH="/usr/bin:/bin" HOME="$(RAOS_REPOSITORY_ROOT)" \
+	LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+	COREPACK_ENABLE_NETWORK=0 COREPACK_ENABLE_PROJECT_SPEC=0 \
+	COREPACK_HOME="$(NPM_CACHE)/corepack" NEXT_TELEMETRY_DISABLED=1 \
+	NPM_CONFIG_USERCONFIG="$(NPM_CONFIG)" NPM_CONFIG_GLOBALCONFIG=/dev/null \
+	NPM_CONFIG_CACHE="$(NPM_CACHE)" NPM_CONFIG_REGISTRY=https://registry.npmjs.org/ \
+	NPM_CONFIG_IGNORE_SCRIPTS=true NPM_CONFIG_AUDIT=false \
+	NPM_CONFIG_FUND=false NPM_CONFIG_UPDATE_NOTIFIER=false
+override NODE_RUN := $(NODE_CLEAN_ENV) "$(NODE)"
+override NPM_RUN := $(NODE_RUN) "$(NPM_CLI)" \
+	--userconfig "$(NPM_CONFIG)" --globalconfig /dev/null \
+	--cache "$(NPM_CACHE)" --registry https://registry.npmjs.org/ \
+	--ignore-scripts --no-audit --no-fund
+
+.PHONY: bootstrap check-workspace python-install python-lock python-lock-check \
+	python-lock-check-offline python-sync python-sync-offline \
+	python-tool-versions python-lint python-format-check \
+	python-typecheck python-test python-check node-storage-check node-lock \
+	node-lock-check node-sync node-sync-offline node-tool-versions \
+	node-dependency-tree-check node-format-check node-lint node-typecheck \
+	node-pyright node-test node-check
+
+bootstrap:
+	PYTHONDONTWRITEBYTECODE=1 "$(PYTHON)" scripts/bootstrap_workspace.py
+
+check-workspace:
+	PYTHONDONTWRITEBYTECODE=1 "$(PYTHON)" scripts/bootstrap_workspace.py --check
+
+python-install:
+	$(UV_RUN) python install $(PYTHON_VERSION)
+
+python-lock:
+	$(UV_RUN) lock
+
+python-lock-check:
+	$(UV_RUN) lock --check
+
+python-lock-check-offline:
+	$(UV_RUN) lock --check --offline
+
+python-sync: python-lock-check
+	$(UV_RUN) sync --locked --group dev --managed-python --no-python-downloads
+
+python-sync-offline: python-lock-check-offline
+	test ! -L "$(PYTHON_OFFLINE_ENVIRONMENT)"
+	$(UV_RUN) venv --clear --offline --managed-python --no-python-downloads \
+		"$(PYTHON_OFFLINE_ENVIRONMENT)"
+	$(UV_OFFLINE_RUN) sync --locked --offline --group dev --managed-python \
+		--no-python-downloads
+
+python-tool-versions: | python-sync
+	$(UV_RUN) --version | grep -E '^uv $(UV_VERSION)( |$$)'
+	$(UV_RUN) run --locked --no-sync --no-env-file python -VV
+	$(UV_RUN) run --locked --no-sync --no-env-file ruff --version
+	$(UV_RUN) run --locked --no-sync --no-env-file mypy --version
+	$(UV_RUN) run --locked --no-sync --no-env-file pytest --version
+
+python-lint: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file ruff check scripts tests python
+
+python-format-check: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file ruff format --check python tests/st0102
+
+python-typecheck: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file mypy
+
+python-test: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file pytest -q tests/st0102
+
+python-check: python-tool-versions python-lint python-format-check \
+	python-typecheck python-test
+
+node-storage-check:
+	$(NODE_RUN) "$(NODE_INVENTORY)" guard \
+		"$(RAOS_REPOSITORY_ROOT)/apps" \
+		"$(RAOS_REPOSITORY_ROOT)/apps/web" \
+		"$(RAOS_REPOSITORY_ROOT)/packages" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-ui" \
+		"$(NPM_CACHE)" "$(NODE_MODULES)" \
+		"$(RAOS_REPOSITORY_ROOT)/apps/web/node_modules" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-ui/node_modules"
+	$(NODE_RUN) "$(NODE_INVENTORY)" guard-files \
+		"$(NPM_CONFIG)" "$(RAOS_REPOSITORY_ROOT)/package.json" \
+		"$(RAOS_REPOSITORY_ROOT)/apps/web/package.json" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-ui/package.json"
+	$(NODE_RUN) "$(NODE_INVENTORY)" guard-optional-files \
+		"$(RAOS_REPOSITORY_ROOT)/package-lock.json"
+
+node-lock: node-storage-check
+	$(NPM_RUN) install --package-lock-only
+
+node-lock-check: node-storage-check
+	test -f "$(RAOS_REPOSITORY_ROOT)/package-lock.json"
+	@set -eu; \
+		before=$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/package-lock.json"); \
+		$(NPM_RUN) ci --dry-run >/dev/null; \
+		after=$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/package-lock.json"); \
+		test "$$before" = "$$after"
+
+node-sync: node-lock-check
+	$(NPM_RUN) ci
+	$(NODE_RUN) "$(NODE_INVENTORY)" guard \
+		"$(NPM_CACHE)" "$(NODE_MODULES)" \
+		"$(RAOS_REPOSITORY_ROOT)/apps/web/node_modules" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-ui/node_modules"
+
+node-sync-offline: node-storage-check
+	test -f "$(RAOS_REPOSITORY_ROOT)/package-lock.json"
+	test -d "$(NPM_CACHE)"
+	test -d "$(NODE_MODULES)"
+	@set -eu; \
+		before=$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/package-lock.json"); \
+		$(NPM_RUN) ci --dry-run --offline >/dev/null; \
+		after=$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/package-lock.json"); \
+		test "$$before" = "$$after"
+	@set -eu; \
+		temporary=$$(mktemp -d "$(RAOS_REPOSITORY_ROOT)/.node-offline-check.XXXXXX"); \
+		trap 'rm -rf -- "$$temporary"' EXIT HUP INT TERM; \
+		mkdir -p -- "$$temporary/apps/web" "$$temporary/packages/web-ui"; \
+		cp -- "$(RAOS_REPOSITORY_ROOT)/package.json" \
+			"$(RAOS_REPOSITORY_ROOT)/package-lock.json" \
+			"$(RAOS_REPOSITORY_ROOT)/.npmrc" "$$temporary/"; \
+		cp -- "$(RAOS_REPOSITORY_ROOT)/apps/web/package.json" \
+			"$$temporary/apps/web/package.json"; \
+		cp -- "$(RAOS_REPOSITORY_ROOT)/packages/web-ui/package.json" \
+			"$$temporary/packages/web-ui/package.json"; \
+		$(NPM_RUN) --prefix "$$temporary" ci --offline; \
+		$(NODE_RUN) "$(NODE_INVENTORY)" guard \
+			"$$temporary/node_modules"; \
+		$(NODE_RUN) "$(NODE_INVENTORY)" inventory \
+			"$(NODE_MODULES)" >"$$temporary/installed.inventory"; \
+		$(NODE_RUN) "$(NODE_INVENTORY)" inventory \
+			"$$temporary/node_modules" >"$$temporary/offline.inventory"; \
+		cmp -- "$$temporary/installed.inventory" "$$temporary/offline.inventory"
+
+node-tool-versions: | node-sync
+	$(NODE_RUN) --version | grep -Fx 'v$(NODE_VERSION)'
+	$(NPM_RUN) --version | grep -Fx '$(NPM_VERSION)'
+	$(NODE_RUN) "$(NODE_INVENTORY)" verify-versions "$(NODE_MODULES)" \
+		'next=$(NEXT_VERSION)' 'react=$(REACT_VERSION)' \
+		'react-dom=$(REACT_VERSION)' 'typescript=$(TYPESCRIPT_VERSION)' \
+		'eslint=$(ESLINT_VERSION)' \
+		'eslint-config-next=$(ESLINT_CONFIG_NEXT_VERSION)' \
+		'vitest=$(VITEST_VERSION)' 'vite=$(VITE_VERSION)' \
+		'postcss=$(POSTCSS_VERSION)' 'sharp=$(SHARP_VERSION)' \
+		'prettier=$(PRETTIER_VERSION)' 'pyright=$(PYRIGHT_VERSION)' \
+		'@types/node=$(TYPES_NODE_VERSION)' \
+		'@types/react=$(TYPES_REACT_VERSION)' \
+		'@types/react-dom=$(TYPES_REACT_DOM_VERSION)' \
+		'@raos/web=0.0.0' '@raos/web-ui=0.0.0'
+
+node-dependency-tree-check: | node-sync
+	$(NPM_RUN) ls --all >/dev/null
+
+node-format-check: | node-sync
+	$(NODE_RUN) "$(NODE_MODULES)/prettier/bin/prettier.cjs" \
+		--check --ignore-unknown package.json apps/web packages/web-ui \
+		tsconfig.base.json tsconfig.json eslint.config.mjs prettier.config.mjs \
+		vitest.config.ts pyrightconfig.json scripts/node_inventory.mjs \
+		tests/st0103
+
+node-lint: | node-sync
+	$(NODE_RUN) "$(NODE_MODULES)/eslint/bin/eslint.js" --max-warnings=0 \
+		--no-warn-ignored eslint.config.mjs prettier.config.mjs \
+		vitest.config.ts scripts/node_inventory.mjs tests/st0103
+
+node-typecheck: | node-sync
+	$(NODE_RUN) "$(NODE_MODULES)/typescript/bin/tsc" \
+		--noEmit --project "$(RAOS_REPOSITORY_ROOT)/tsconfig.json"
+
+node-pyright: | node-sync
+	$(NODE_RUN) "$(NODE_MODULES)/pyright/index.js" \
+		--project "$(RAOS_REPOSITORY_ROOT)/pyrightconfig.json"
+
+node-test: | node-sync
+	$(NODE_RUN) "$(NODE_MODULES)/vitest/vitest.mjs" run \
+		--config "$(RAOS_REPOSITORY_ROOT)/vitest.config.ts" \
+		--configLoader native
+
+node-check: node-tool-versions node-dependency-tree-check node-format-check \
+	node-lint node-typecheck node-pyright node-test

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-job-failed-terminal-v1.schema.json",
+  "title": "jp.raos.ops.job_failed_terminal.v1",
+  "description": "Jobが自動再試行不能な終端失敗になった。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.job_failed_terminal.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "job_type": {
+              "type": "string"
+            },
+            "error_class": {
+              "type": "string"
+            },
+            "error_code": {
+              "type": "string"
+            },
+            "impact": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "job_id",
+            "job_type",
+            "error_class",
+            "error_code"
+          ]
+        }
+      }
+    }
+  ]
+}

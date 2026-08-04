@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ai-policy-assist-completed-v1.schema.json",
+  "title": "jp.raos.ai.policy_assist_completed.v1",
+  "description": "AI Policy assistが完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ai.policy_assist_completed.v1"
+        },
+        "producer": {
+          "const": "ai"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "quality_check_run_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "ai_job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "output_artifact": {
+              "$ref": "../common/artifact-ref.schema.json"
+            },
+            "finding_candidate_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "quality_check_run_id",
+            "ai_job_id",
+            "output_artifact",
+            "finding_candidate_count"
+          ]
+        }
+      }
+    }
+  ]
+}

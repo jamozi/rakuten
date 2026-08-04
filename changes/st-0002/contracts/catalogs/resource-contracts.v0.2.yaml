@@ -1,0 +1,6207 @@
+document:
+  id: RAOS-API-RESOURCE-001
+  version: '0.2'
+  status: CANONICAL_REVISION_CANDIDATE
+  date: '2026-07-30'
+  provenance:
+    story_id: ST-0002
+    decision_id: INT-DEC-003
+    revision_id: RAOS-JOB-STATE-REVISION-001
+    base_version: '0.1'
+principles:
+- API resources are purpose-built views, not serialized database rows.
+- Public views derive exclusively from readmodel schema.
+- Affiliate economics never appear in editorial recommendation contracts.
+- Restricted fields require dedicated scope and are never included by expansion.
+resources:
+- name: Site
+  source_tables:
+  - portfolio.site
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: SITE-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_code
+    schema:
+      type: string
+      description: site code
+    read_only: false
+  - name: name
+    schema:
+      type: string
+      description: name
+    read_only: false
+  - name: primary_domain
+    schema:
+      type: string
+      description: primary domain
+    read_only: false
+  - name: brand_name
+    schema:
+      type: string
+      description: brand name
+    read_only: false
+  - name: locale
+    schema:
+      type: string
+      description: locale
+    read_only: false
+  - name: timezone
+    schema:
+      type: string
+      description: timezone
+    read_only: false
+  - name: currency
+    schema:
+      type: string
+      description: currency
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: public_settings
+    schema:
+      type: object
+      additionalProperties: true
+      description: 公開表示に安全なSite設定。秘密や内部KPIを含めない。
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - site_code
+  - name
+  - primary_domain
+  - brand_name
+  - locale
+  - timezone
+  - currency
+  - public_settings
+  update_fields:
+  - name
+  - primary_domain
+  - brand_name
+  - locale
+  - timezone
+  - currency
+  - status
+  - public_settings
+  notes: []
+- name: Category
+  source_tables:
+  - portfolio.category
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: CAT-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: parent_category_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: parent category id
+      - type: 'null'
+    read_only: false
+  - name: category_code
+    schema:
+      type: string
+      description: category code
+    read_only: false
+  - name: name
+    schema:
+      type: string
+      description: name
+    read_only: false
+  - name: description
+    schema:
+      anyOf:
+      - type: string
+        description: description
+      - type: 'null'
+    read_only: false
+  - name: risk_class
+    schema:
+      type: string
+      description: risk class
+    read_only: false
+  - name: stage
+    schema:
+      type: string
+      description: stage
+    read_only: false
+  - name: article_limit
+    schema:
+      anyOf:
+      - type: integer
+        description: article limit
+      - type: 'null'
+    read_only: false
+  - name: entry_criteria
+    schema:
+      type: object
+      additionalProperties: true
+      description: 当該Categoryへ参入するための定量・定性基準。
+    read_only: false
+  - name: approved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: approved at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - site_id
+  - parent_category_id
+  - category_code
+  - name
+  - description
+  - risk_class
+  - article_limit
+  - entry_criteria
+  update_fields:
+  - parent_category_id
+  - name
+  - description
+  - risk_class
+  - stage
+  - article_limit
+  - entry_criteria
+  notes: []
+- name: IntentCluster
+  source_tables:
+  - portfolio.intent_cluster
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: INT-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: category_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象カテゴリ。
+    read_only: false
+  - name: cluster_code
+    schema:
+      type: string
+      description: cluster code
+    read_only: false
+  - name: name
+    schema:
+      type: string
+      description: name
+    read_only: false
+  - name: description
+    schema:
+      type: string
+      description: description
+    read_only: false
+  - name: intent_type
+    schema:
+      type: string
+      description: intent type
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: decision_requirements
+    schema:
+      type: object
+      additionalProperties: true
+      description: ユーザーが当該意図で判断するために必要な比較軸・疑問・不安。
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - category_id
+  - cluster_code
+  - name
+  - description
+  - intent_type
+  - decision_requirements
+  update_fields:
+  - name
+  - description
+  - intent_type
+  - status
+  - decision_requirements
+  notes: []
+- name: Keyword
+  source_tables:
+  - portfolio.keyword
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: KW-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: display_text
+    schema:
+      type: string
+      description: display text
+    read_only: false
+  - name: normalized_text
+    schema:
+      type: string
+      description: normalized text
+    read_only: false
+  - name: locale
+    schema:
+      type: string
+      description: locale
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: sensitive_query
+    schema:
+      type: boolean
+      description: sensitive query
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - site_id
+  - display_text
+  - locale
+  - sensitive_query
+  update_fields:
+  - display_text
+  - locale
+  - status
+  - sensitive_query
+  notes: []
+- name: OpportunityAssessment
+  source_tables:
+  - portfolio.opportunity_assessment
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: OPA-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: category_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象カテゴリ。
+    read_only: false
+  - name: intent_cluster_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: intent cluster id
+      - type: 'null'
+    read_only: false
+  - name: keyword_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: keyword id
+      - type: 'null'
+    read_only: false
+  - name: assessment_type
+    schema:
+      type: string
+      description: assessment type
+    read_only: false
+  - name: formula_version
+    schema:
+      type: string
+      description: formula version
+    read_only: false
+  - name: editorial_feasibility_score
+    schema:
+      type: number
+      description: editorial feasibility score
+    read_only: false
+  - name: business_opportunity_score
+    schema:
+      type: number
+      description: business opportunity score
+    read_only: false
+  - name: compliance_risk_score
+    schema:
+      type: number
+      description: compliance risk score
+    read_only: false
+  - name: overall_priority_score
+    schema:
+      type: number
+      description: overall priority score
+    read_only: false
+  - name: decision
+    schema:
+      type: string
+      description: decision
+    read_only: false
+  - name: editorial_components
+    schema:
+      type: object
+      additionalProperties: true
+      description: Editorialに必要な一次情報、独自価値、比較可能性等。
+    read_only: false
+  - name: business_components
+    schema:
+      type: object
+      additionalProperties: true
+      description: 需要、競争、商品数、想定EPC等。推薦順位には渡さない。
+    read_only: false
+  - name: compliance_components
+    schema:
+      type: object
+      additionalProperties: true
+      description: Category、表示、著作権、規約、YMYL等のRisk。
+    read_only: false
+  - name: assessed_at
+    schema:
+      type: string
+      format: date-time
+      description: assessed at
+    read_only: false
+  - name: expires_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: expires at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: ActionCandidate
+  source_tables:
+  - portfolio.action_candidate
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: ACT-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: category_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 対象カテゴリ。
+      - type: 'null'
+    read_only: false
+  - name: action_type
+    schema:
+      type: string
+      description: action type
+    read_only: false
+  - name: target_entity_type
+    schema:
+      type: string
+      description: target entity type
+    read_only: false
+  - name: target_entity_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: target entity id
+      - type: 'null'
+    read_only: false
+  - name: secondary_entity_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: secondary entity id
+      - type: 'null'
+    read_only: false
+  - name: source_signal
+    schema:
+      type: string
+      description: source signal
+    read_only: false
+  - name: expected_incremental_profit_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: expected incremental profit jpy
+      - type: 'null'
+    read_only: false
+  - name: urgency_score
+    schema:
+      type: number
+      description: urgency score
+    read_only: false
+  - name: confidence
+    schema:
+      type: number
+      description: confidence
+    read_only: false
+  - name: priority_score
+    schema:
+      type: number
+      description: priority score
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: rationale
+    schema:
+      type: object
+      additionalProperties: true
+      description: rationale
+    read_only: false
+  - name: generated_at
+    schema:
+      type: string
+      format: date-time
+      description: generated at
+    read_only: false
+  - name: expires_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: expires at
+      - type: 'null'
+    read_only: false
+  - name: decided_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: decided at
+      - type: 'null'
+    read_only: false
+  - name: decision_note
+    schema:
+      anyOf:
+      - type: string
+        description: decision note
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields:
+  - status
+  - decision_note
+  notes: []
+- name: IngestionRequest
+  source_tables:
+  - catalog.ingestion_request
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: ING-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: provider_endpoint_id
+    schema:
+      type: string
+      format: uuid
+      description: provider endpoint id
+    read_only: false
+  - name: job_id
+    schema:
+      type: string
+      format: uuid
+      description: 非同期Job。
+    read_only: false
+  - name: request_fingerprint
+    schema:
+      type: string
+      description: request fingerprint
+    read_only: false
+  - name: request_parameters
+    schema:
+      type: object
+      additionalProperties: true
+      description: Secretを除外したCanonical request parameters。
+    read_only: false
+  - name: requested_at
+    schema:
+      type: string
+      format: date-time
+      description: requested at
+    read_only: false
+  - name: responded_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: responded at
+      - type: 'null'
+    read_only: false
+  - name: http_status
+    schema:
+      anyOf:
+      - type: integer
+        description: http status
+      - type: 'null'
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: raw_response_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: raw response artifact id
+      - type: 'null'
+    read_only: false
+  - name: item_count
+    schema:
+      anyOf:
+      - type: integer
+        description: item count
+      - type: 'null'
+    read_only: false
+  - name: rate_limit_observation
+    schema:
+      type: object
+      additionalProperties: true
+      description: Remaining、reset時刻等。
+    read_only: false
+  - name: error_class
+    schema:
+      anyOf:
+      - type: string
+        description: error class
+      - type: 'null'
+    read_only: false
+  - name: error_code
+    schema:
+      anyOf:
+      - type: string
+        description: error code
+      - type: 'null'
+    read_only: false
+  - name: error_message
+    schema:
+      anyOf:
+      - type: string
+        description: error message
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: ProductCandidate
+  source_tables:
+  - catalog.product_candidate
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: PCD-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: provider_endpoint_id
+    schema:
+      type: string
+      format: uuid
+      description: provider endpoint id
+    read_only: false
+  - name: external_item_code
+    schema:
+      type: string
+      description: external item code
+    read_only: false
+  - name: shop_id
+    schema:
+      type: string
+      format: uuid
+      description: shop id
+    read_only: false
+  - name: rakuten_genre_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: rakuten genre id
+      - type: 'null'
+    read_only: false
+  - name: item_name
+    schema:
+      type: string
+      description: item name
+    read_only: false
+  - name: normalized_item_name
+    schema:
+      type: string
+      description: normalized item name
+    read_only: false
+  - name: model_number_candidate
+    schema:
+      anyOf:
+      - type: string
+        description: model number candidate
+      - type: 'null'
+    read_only: false
+  - name: jan_code_candidate
+    schema:
+      anyOf:
+      - type: string
+        description: jan code candidate
+      - type: 'null'
+    read_only: false
+  - name: image_set
+    schema:
+      type: object
+      additionalProperties: true
+      description: APIが返した許可画像URL、order、size。Overlay/Crop後画像は登録しない。
+    read_only: false
+  - name: listing_status
+    schema:
+      type: string
+      description: listing status
+    read_only: false
+  - name: first_observed_at
+    schema:
+      type: string
+      format: date-time
+      description: first observed at
+    read_only: false
+  - name: last_observed_at
+    schema:
+      type: string
+      format: date-time
+      description: last observed at
+    read_only: false
+  - name: source_snapshot_id
+    schema:
+      type: string
+      format: uuid
+      description: source snapshot id
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields:
+  - normalized_item_name
+  - model_number_candidate
+  - jan_code_candidate
+  - listing_status
+  notes: []
+- name: CanonicalProduct
+  source_tables:
+  - catalog.canonical_product
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: PRD-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: category_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象カテゴリ。
+    read_only: false
+  - name: canonical_name
+    schema:
+      type: string
+      description: canonical name
+    read_only: false
+  - name: brand_name
+    schema:
+      anyOf:
+      - type: string
+        description: brand name
+      - type: 'null'
+    read_only: false
+  - name: manufacturer_name
+    schema:
+      anyOf:
+      - type: string
+        description: manufacturer name
+      - type: 'null'
+    read_only: false
+  - name: model_number
+    schema:
+      anyOf:
+      - type: string
+        description: model number
+      - type: 'null'
+    read_only: false
+  - name: jan_code
+    schema:
+      anyOf:
+      - type: string
+        description: jan code
+      - type: 'null'
+    read_only: false
+  - name: product_type
+    schema:
+      type: string
+      description: product type
+    read_only: false
+  - name: lifecycle_status
+    schema:
+      type: string
+      description: lifecycle status
+    read_only: false
+  - name: identity_confidence
+    schema:
+      type: number
+      description: identity confidence
+    read_only: false
+  - name: identity_attributes
+    schema:
+      type: object
+      additionalProperties: true
+      description: 同定に使用した正規化Attribute。
+    read_only: false
+  - name: merged_into_product_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: merged into product id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - category_id
+  - canonical_name
+  - brand_name
+  - manufacturer_name
+  - model_number
+  - jan_code
+  - product_type
+  - identity_confidence
+  - identity_attributes
+  update_fields:
+  - canonical_name
+  - brand_name
+  - manufacturer_name
+  - model_number
+  - jan_code
+  - product_type
+  - lifecycle_status
+  - identity_confidence
+  - identity_attributes
+  - merged_into_product_id
+  notes: []
+- name: GroupingDecision
+  source_tables:
+  - catalog.grouping_decision
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: product_candidate_id
+    schema:
+      type: string
+      format: uuid
+      description: product candidate id
+    read_only: false
+  - name: proposed_product_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: proposed product id
+      - type: 'null'
+    read_only: false
+  - name: decision_type
+    schema:
+      type: string
+      description: decision type
+    read_only: false
+  - name: decision_score
+    schema:
+      anyOf:
+      - type: number
+        description: decision score
+      - type: 'null'
+    read_only: false
+  - name: rule_version
+    schema:
+      type: string
+      description: rule version
+    read_only: false
+  - name: reasons
+    schema:
+      type: object
+      additionalProperties: true
+      description: 一致・不一致Attribute、閾値、Manual note。
+    read_only: false
+  - name: decided_by_actor_type
+    schema:
+      type: string
+      description: decided by actor type
+    read_only: false
+  - name: decided_by_actor_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: decided by actor id
+      - type: 'null'
+    read_only: false
+  - name: decided_at
+    schema:
+      type: string
+      format: date-time
+      description: decided at
+    read_only: false
+  - name: supersedes_decision_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: supersedes decision id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Offer
+  source_tables:
+  - catalog.offer
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: OFF-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: provider_endpoint_id
+    schema:
+      type: string
+      format: uuid
+      description: provider endpoint id
+    read_only: false
+  - name: external_offer_id
+    schema:
+      type: string
+      description: external offer id
+    read_only: false
+  - name: product_candidate_id
+    schema:
+      type: string
+      format: uuid
+      description: product candidate id
+    read_only: false
+  - name: product_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 正規化されたCanonical Product。
+      - type: 'null'
+    read_only: false
+  - name: shop_id
+    schema:
+      type: string
+      format: uuid
+      description: shop id
+    read_only: false
+  - name: item_url
+    schema:
+      type: string
+      description: item url
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: first_observed_at
+    schema:
+      type: string
+      format: date-time
+      description: first observed at
+    read_only: false
+  - name: last_observed_at
+    schema:
+      type: string
+      format: date-time
+      description: last observed at
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields:
+  - product_id
+  - status
+  notes: []
+- name: OfferCurrent
+  source_tables:
+  - catalog.offer_current_projection
+  classification: CONFIDENTIAL
+  etag: false
+  fields:
+  - name: offer_id
+    schema:
+      type: string
+      format: uuid
+      description: ショップ単位の販売Offer。
+    read_only: false
+  - name: product_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 正規化されたCanonical Product。
+      - type: 'null'
+    read_only: false
+  - name: current_price_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: current price jpy
+      - type: 'null'
+    read_only: false
+  - name: current_shipping_fee_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: current shipping fee jpy
+      - type: 'null'
+    read_only: false
+  - name: current_availability
+    schema:
+      type: string
+      description: current availability
+    read_only: false
+  - name: review_count
+    schema:
+      anyOf:
+      - type: integer
+        description: review count
+      - type: 'null'
+    read_only: false
+  - name: review_average
+    schema:
+      anyOf:
+      - type: number
+        description: review average
+      - type: 'null'
+    read_only: false
+  - name: destination_host
+    schema:
+      anyOf:
+      - type: string
+        description: destination host
+      - type: 'null'
+    read_only: false
+  - name: price_observed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: price observed at
+      - type: 'null'
+    read_only: false
+  - name: availability_observed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: availability observed at
+      - type: 'null'
+    read_only: false
+  - name: link_observed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: link observed at
+      - type: 'null'
+    read_only: false
+  - name: freshness_status
+    schema:
+      type: string
+      description: freshness status
+    read_only: false
+  - name: projection_version
+    schema:
+      type: integer
+      description: projection version
+    read_only: false
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes:
+  - affiliate_url is intentionally excluded from general admin response; dedicated restricted action may inspect link metadata.
+- name: Source
+  source_tables:
+  - evidence.source
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: SRC-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: source_type
+    schema:
+      type: string
+      description: source type
+    read_only: false
+  - name: provider_endpoint_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: provider endpoint id
+      - type: 'null'
+    read_only: false
+  - name: name
+    schema:
+      type: string
+      description: name
+    read_only: false
+  - name: base_url
+    schema:
+      anyOf:
+      - type: string
+        description: base url
+      - type: 'null'
+    read_only: false
+  - name: authority_level
+    schema:
+      type: string
+      description: authority level
+    read_only: false
+  - name: permitted_use
+    schema:
+      type: string
+      description: permitted use
+    read_only: false
+  - name: terms_checked_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: terms checked at
+      - type: 'null'
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: metadata
+    schema:
+      type: object
+      additionalProperties: true
+      description: Contact、acquisition method、robots/terms note等。
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - source_type
+  - provider_endpoint_id
+  - name
+  - base_url
+  - authority_level
+  - permitted_use
+  - metadata
+  update_fields:
+  - name
+  - base_url
+  - authority_level
+  - permitted_use
+  - terms_checked_at
+  - status
+  - metadata
+  notes: []
+- name: SourceSnapshot
+  source_tables:
+  - evidence.source_snapshot
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: SSN-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: source_id
+    schema:
+      type: string
+      format: uuid
+      description: source id
+    read_only: false
+  - name: artifact_id
+    schema:
+      type: string
+      format: uuid
+      description: S3互換Object Storage上の不変Artifactレジストリ。
+    read_only: false
+  - name: external_reference
+    schema:
+      anyOf:
+      - type: string
+        description: external reference
+      - type: 'null'
+    read_only: false
+  - name: acquired_at
+    schema:
+      type: string
+      format: date-time
+      description: acquired at
+    read_only: false
+  - name: effective_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: effective at
+      - type: 'null'
+    read_only: false
+  - name: expires_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: expires at
+      - type: 'null'
+    read_only: false
+  - name: content_sha256
+    schema:
+      type: string
+      description: content sha256
+    read_only: false
+  - name: parser_version
+    schema:
+      type: string
+      description: parser version
+    read_only: false
+  - name: validation_status
+    schema:
+      type: string
+      description: validation status
+    read_only: false
+  - name: validation_message
+    schema:
+      anyOf:
+      - type: string
+        description: validation message
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Fact
+  source_tables:
+  - evidence.fact
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: FCT-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: source_snapshot_id
+    schema:
+      type: string
+      format: uuid
+      description: source snapshot id
+    read_only: false
+  - name: subject_type
+    schema:
+      type: string
+      description: subject type
+    read_only: false
+  - name: subject_id
+    schema:
+      type: string
+      format: uuid
+      description: subject id
+    read_only: false
+  - name: predicate
+    schema:
+      type: string
+      description: predicate
+    read_only: false
+  - name: value_text
+    schema:
+      anyOf:
+      - type: string
+        description: value text
+      - type: 'null'
+    read_only: false
+  - name: value_numeric
+    schema:
+      anyOf:
+      - type: number
+        description: value numeric
+      - type: 'null'
+    read_only: false
+  - name: value_boolean
+    schema:
+      anyOf:
+      - type: boolean
+        description: value boolean
+      - type: 'null'
+    read_only: false
+  - name: value_date
+    schema:
+      anyOf:
+      - type: string
+        format: date
+        description: value date
+      - type: 'null'
+    read_only: false
+  - name: value_timestamp
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: value timestamp
+      - type: 'null'
+    read_only: false
+  - name: value_json
+    schema:
+      anyOf:
+      - type: object
+        additionalProperties: true
+        description: value json
+      - type: 'null'
+    read_only: false
+  - name: unit_code
+    schema:
+      anyOf:
+      - type: string
+        description: unit code
+      - type: 'null'
+    read_only: false
+  - name: locale
+    schema:
+      anyOf:
+      - type: string
+        description: locale
+      - type: 'null'
+    read_only: false
+  - name: fact_kind
+    schema:
+      type: string
+      description: fact kind
+    read_only: false
+  - name: confidence
+    schema:
+      type: number
+      description: confidence
+    read_only: false
+  - name: valid_from
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: valid from
+      - type: 'null'
+    read_only: false
+  - name: valid_to
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: valid to
+      - type: 'null'
+    read_only: false
+  - name: locator
+    schema:
+      type: object
+      additionalProperties: true
+      description: JSON Pointer、page、section、table cell等の出典内位置。
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: SourcePacket
+  source_tables:
+  - evidence.source_packet
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: SP-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: article_plan_id
+    schema:
+      type: string
+      format: uuid
+      description: article plan id
+    read_only: false
+  - name: packet_type
+    schema:
+      type: string
+      description: packet type
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: current_version_no
+    schema:
+      type: integer
+      description: current version no
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - article_plan_id
+  - packet_type
+  update_fields:
+  - status
+  notes: []
+- name: SourcePacketVersion
+  source_tables:
+  - evidence.source_packet_version
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: SPV-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: source_packet_id
+    schema:
+      type: string
+      format: uuid
+      description: source packet id
+    read_only: false
+  - name: version_no
+    schema:
+      type: integer
+      description: Aggregate内で1から増加する不変Version番号。
+    read_only: false
+  - name: artifact_id
+    schema:
+      type: string
+      format: uuid
+      description: S3互換Object Storage上の不変Artifactレジストリ。
+    read_only: false
+  - name: content_sha256
+    schema:
+      type: string
+      description: content sha256
+    read_only: false
+  - name: schema_version
+    schema:
+      type: integer
+      description: schema version
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: built_by_job_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: built by job id
+      - type: 'null'
+    read_only: false
+  - name: reviewed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: reviewed at
+      - type: 'null'
+    read_only: false
+  - name: review_note
+    schema:
+      anyOf:
+      - type: string
+        description: review note
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Claim
+  source_tables:
+  - evidence.claim
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: CLM-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: article_version_id
+    schema:
+      type: string
+      format: uuid
+      description: 記事の特定Version。
+    read_only: false
+  - name: block_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: block id
+      - type: 'null'
+    read_only: false
+  - name: claim_key
+    schema:
+      type: string
+      description: claim key
+    read_only: false
+  - name: claim_type
+    schema:
+      type: string
+      description: claim type
+    read_only: false
+  - name: claim_text
+    schema:
+      type: string
+      description: claim text
+    read_only: false
+  - name: criticality
+    schema:
+      type: string
+      description: criticality
+    read_only: false
+  - name: support_status
+    schema:
+      type: string
+      description: support status
+    read_only: false
+  - name: generated_by_ai_attempt_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: generated by ai attempt id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: ArticlePlan
+  source_tables:
+  - editorial.article_plan
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: PLAN-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: category_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象カテゴリ。
+    read_only: false
+  - name: intent_cluster_id
+    schema:
+      type: string
+      format: uuid
+      description: intent cluster id
+    read_only: false
+  - name: primary_keyword_id
+    schema:
+      type: string
+      format: uuid
+      description: primary keyword id
+    read_only: false
+  - name: article_type
+    schema:
+      type: string
+      description: article type
+    read_only: false
+  - name: working_title
+    schema:
+      type: string
+      description: working title
+    read_only: false
+  - name: objective
+    schema:
+      type: string
+      description: objective
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: priority
+    schema:
+      type: integer
+      description: priority
+    read_only: false
+  - name: opportunity_assessment_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: opportunity assessment id
+      - type: 'null'
+    read_only: false
+  - name: approved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: approved at
+      - type: 'null'
+    read_only: false
+  - name: brief
+    schema:
+      type: object
+      additionalProperties: true
+      description: Target user、decision questions、required sections、unique value hypothesis。
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - site_id
+  - category_id
+  - intent_cluster_id
+  - primary_keyword_id
+  - article_type
+  - working_title
+  - objective
+  - priority
+  - opportunity_assessment_id
+  - brief
+  update_fields:
+  - category_id
+  - intent_cluster_id
+  - primary_keyword_id
+  - article_type
+  - working_title
+  - objective
+  - status
+  - priority
+  - opportunity_assessment_id
+  - brief
+  notes: []
+- name: Article
+  source_tables:
+  - editorial.article
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: ART-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: article_plan_id
+    schema:
+      type: string
+      format: uuid
+      description: article plan id
+    read_only: false
+  - name: article_type
+    schema:
+      type: string
+      description: article type
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: current_version_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: current version id
+      - type: 'null'
+    read_only: false
+  - name: published_version_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: published version id
+      - type: 'null'
+    read_only: false
+  - name: archived_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: archived at
+      - type: 'null'
+    read_only: false
+  - name: archive_reason
+    schema:
+      anyOf:
+      - type: string
+        description: archive reason
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields:
+  - status
+  - archive_reason
+  notes: []
+- name: ArticleVersion
+  source_tables:
+  - editorial.article_version
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: ARV-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: article_id
+    schema:
+      type: string
+      format: uuid
+      description: 論理記事ID。
+    read_only: false
+  - name: version_no
+    schema:
+      type: integer
+      description: Aggregate内で1から増加する不変Version番号。
+    read_only: false
+  - name: content_schema_version
+    schema:
+      type: integer
+      description: content schema version
+    read_only: false
+  - name: title
+    schema:
+      type: string
+      description: title
+    read_only: false
+  - name: meta_title
+    schema:
+      anyOf:
+      - type: string
+        description: meta title
+      - type: 'null'
+    read_only: false
+  - name: meta_description
+    schema:
+      anyOf:
+      - type: string
+        description: meta description
+      - type: 'null'
+    read_only: false
+  - name: excerpt
+    schema:
+      anyOf:
+      - type: string
+        description: excerpt
+      - type: 'null'
+    read_only: false
+  - name: body_sha256
+    schema:
+      type: string
+      description: body sha256
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: source_packet_version_id
+    schema:
+      type: string
+      format: uuid
+      description: source packet version id
+    read_only: false
+  - name: based_on_version_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: based on version id
+      - type: 'null'
+    read_only: false
+  - name: ai_job_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: ai job id
+      - type: 'null'
+    read_only: false
+  - name: submitted_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: submitted at
+      - type: 'null'
+    read_only: false
+  - name: reviewed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: reviewed at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - article_id
+  - content_schema_version
+  - title
+  - meta_title
+  - meta_description
+  - excerpt
+  - source_packet_version_id
+  - based_on_version_id
+  update_fields:
+  - title
+  - meta_title
+  - meta_description
+  - excerpt
+  - status
+  - source_packet_version_id
+  notes: []
+- name: ReviewComment
+  source_tables:
+  - editorial.review_comment
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: article_version_id
+    schema:
+      type: string
+      format: uuid
+      description: 記事の特定Version。
+    read_only: false
+  - name: article_block_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: article block id
+      - type: 'null'
+    read_only: false
+  - name: claim_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: claim id
+      - type: 'null'
+    read_only: false
+  - name: thread_id
+    schema:
+      type: string
+      format: uuid
+      description: thread id
+    read_only: false
+  - name: parent_comment_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: parent comment id
+      - type: 'null'
+    read_only: false
+  - name: author_principal_id
+    schema:
+      type: string
+      format: uuid
+      description: author principal id
+    read_only: false
+  - name: comment_text
+    schema:
+      type: string
+      description: comment text
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: resolved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: resolved at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: AIJob
+  source_tables:
+  - ai.ai_job
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: AIJ-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: ops_job_id
+    schema:
+      type: string
+      format: uuid
+      description: ops job id
+    read_only: false
+  - name: task_definition_id
+    schema:
+      type: string
+      format: uuid
+      description: task definition id
+    read_only: false
+  - name: article_plan_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: article plan id
+      - type: 'null'
+    read_only: false
+  - name: article_version_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 記事の特定Version。
+      - type: 'null'
+    read_only: false
+  - name: source_packet_version_id
+    schema:
+      type: string
+      format: uuid
+      description: source packet version id
+    read_only: false
+  - name: prompt_version_id
+    schema:
+      type: string
+      format: uuid
+      description: prompt version id
+    read_only: false
+  - name: output_schema_version_id
+    schema:
+      type: string
+      format: uuid
+      description: output schema version id
+    read_only: false
+  - name: model_route_version_id
+    schema:
+      type: string
+      format: uuid
+      description: model route version id
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: max_cost_jpy
+    schema:
+      type: integer
+      description: max cost jpy
+    read_only: false
+  - name: completed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: completed at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: PromptVersion
+  source_tables:
+  - ai.prompt_version
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: PRM-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: task_definition_id
+    schema:
+      type: string
+      format: uuid
+      description: task definition id
+    read_only: false
+  - name: prompt_code
+    schema:
+      type: string
+      description: prompt code
+    read_only: false
+  - name: version_no
+    schema:
+      type: integer
+      description: Aggregate内で1から増加する不変Version番号。
+    read_only: false
+  - name: git_path
+    schema:
+      type: string
+      description: git path
+    read_only: false
+  - name: git_commit_sha
+    schema:
+      type: string
+      description: git commit sha
+    read_only: false
+  - name: template_sha256
+    schema:
+      type: string
+      description: template sha256
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: effective_from
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: 設定・関係が有効になる時刻。
+      - type: 'null'
+    read_only: false
+  - name: effective_to
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: 設定・関係の有効終了時刻。NULLは終了未定。
+      - type: 'null'
+    read_only: false
+  - name: approved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: approved at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: ModelRouteVersion
+  source_tables:
+  - ai.model_route_version
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: route_code
+    schema:
+      type: string
+      description: route code
+    read_only: false
+  - name: version_no
+    schema:
+      type: integer
+      description: Aggregate内で1から増加する不変Version番号。
+    read_only: false
+  - name: task_definition_id
+    schema:
+      type: string
+      format: uuid
+      description: task definition id
+    read_only: false
+  - name: primary_model_id
+    schema:
+      type: string
+      format: uuid
+      description: primary model id
+    read_only: false
+  - name: fallback_model_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: fallback model id
+      - type: 'null'
+    read_only: false
+  - name: route_config
+    schema:
+      type: object
+      additionalProperties: true
+      description: Timeout、retry、temperature、max tokens等。
+    read_only: false
+  - name: monthly_budget_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: monthly budget jpy
+      - type: 'null'
+    read_only: false
+  - name: per_job_budget_jpy
+    schema:
+      type: integer
+      description: per job budget jpy
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: effective_from
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: 設定・関係が有効になる時刻。
+      - type: 'null'
+    read_only: false
+  - name: effective_to
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: 設定・関係の有効終了時刻。NULLは終了未定。
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: EvaluationResult
+  source_tables:
+  - ai.evaluation_result
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: suite_code
+    schema:
+      type: string
+      description: suite code
+    read_only: false
+  - name: suite_version
+    schema:
+      type: integer
+      description: suite version
+    read_only: false
+  - name: run_id
+    schema:
+      type: string
+      format: uuid
+      description: run id
+    read_only: false
+  - name: task_definition_id
+    schema:
+      type: string
+      format: uuid
+      description: task definition id
+    read_only: false
+  - name: model_route_version_id
+    schema:
+      type: string
+      format: uuid
+      description: model route version id
+    read_only: false
+  - name: prompt_version_id
+    schema:
+      type: string
+      format: uuid
+      description: prompt version id
+    read_only: false
+  - name: case_key
+    schema:
+      type: string
+      description: case key
+    read_only: false
+  - name: metric_code
+    schema:
+      type: string
+      description: metric code
+    read_only: false
+  - name: metric_value
+    schema:
+      type: number
+      description: metric value
+    read_only: false
+  - name: passed
+    schema:
+      type: boolean
+      description: passed
+    read_only: false
+  - name: details
+    schema:
+      type: object
+      additionalProperties: true
+      description: details
+    read_only: false
+  - name: result_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: result artifact id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: QualityCheckRun
+  source_tables:
+  - policy.quality_check_run
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: QCR-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: article_version_id
+    schema:
+      type: string
+      format: uuid
+      description: 記事の特定Version。
+    read_only: false
+  - name: source_packet_version_id
+    schema:
+      type: string
+      format: uuid
+      description: source packet version id
+    read_only: false
+  - name: policy_bundle_id
+    schema:
+      type: string
+      format: uuid
+      description: policy bundle id
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: started_at
+    schema:
+      type: string
+      format: date-time
+      description: started at
+    read_only: false
+  - name: completed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: completed at
+      - type: 'null'
+    read_only: false
+  - name: total_score
+    schema:
+      anyOf:
+      - type: number
+        description: total score
+      - type: 'null'
+    read_only: false
+  - name: blocking_finding_count
+    schema:
+      type: integer
+      description: blocking finding count
+    read_only: false
+  - name: report_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: report artifact id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Finding
+  source_tables:
+  - policy.finding
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: quality_check_run_id
+    schema:
+      type: string
+      format: uuid
+      description: quality check run id
+    read_only: false
+  - name: rule_version_id
+    schema:
+      type: string
+      format: uuid
+      description: rule version id
+    read_only: false
+  - name: finding_code
+    schema:
+      type: string
+      description: finding code
+    read_only: false
+  - name: severity
+    schema:
+      type: string
+      description: severity
+    read_only: false
+  - name: is_blocking
+    schema:
+      type: boolean
+      description: is blocking
+    read_only: false
+  - name: entity_type
+    schema:
+      type: string
+      description: entity type
+    read_only: false
+  - name: entity_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: entity id
+      - type: 'null'
+    read_only: false
+  - name: article_block_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: article block id
+      - type: 'null'
+    read_only: false
+  - name: claim_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: claim id
+      - type: 'null'
+    read_only: false
+  - name: message
+    schema:
+      type: string
+      description: message
+    read_only: false
+  - name: evidence
+    schema:
+      type: object
+      additionalProperties: true
+      description: 検出値、expected、locator、comparison等。
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: resolved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: resolved at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Waiver
+  source_tables:
+  - policy.waiver
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: WVR-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: finding_id
+    schema:
+      type: string
+      format: uuid
+      description: finding id
+    read_only: false
+  - name: scope_type
+    schema:
+      type: string
+      description: scope type
+    read_only: false
+  - name: scope_id
+    schema:
+      type: string
+      format: uuid
+      description: scope id
+    read_only: false
+  - name: justification
+    schema:
+      type: string
+      description: justification
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: requested_at
+    schema:
+      type: string
+      format: date-time
+      description: requested at
+    read_only: false
+  - name: decided_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: decided at
+      - type: 'null'
+    read_only: false
+  - name: decision_reason
+    schema:
+      anyOf:
+      - type: string
+        description: decision reason
+      - type: 'null'
+    read_only: false
+  - name: expires_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: expires at
+      - type: 'null'
+    read_only: false
+  - name: revoked_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: revoked at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: GateDecision
+  source_tables:
+  - policy.gate_decision
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: GTD-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: gate_code
+    schema:
+      type: string
+      description: gate code
+    read_only: false
+  - name: scope_type
+    schema:
+      type: string
+      description: scope type
+    read_only: false
+  - name: scope_id
+    schema:
+      type: string
+      format: uuid
+      description: scope id
+    read_only: false
+  - name: policy_bundle_id
+    schema:
+      type: string
+      format: uuid
+      description: policy bundle id
+    read_only: false
+  - name: result
+    schema:
+      type: string
+      description: result
+    read_only: false
+  - name: conditions
+    schema:
+      type: object
+      additionalProperties: true
+      description: Conditional passの未達・期限・scale limit。
+    read_only: false
+  - name: evidence_artifact_id
+    schema:
+      type: string
+      format: uuid
+      description: evidence artifact id
+    read_only: false
+  - name: decided_at
+    schema:
+      type: string
+      format: date-time
+      description: decided at
+    read_only: false
+  - name: expires_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: expires at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: PolicyBundle
+  source_tables:
+  - policy.policy_bundle
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: POL-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: bundle_code
+    schema:
+      type: string
+      description: bundle code
+    read_only: false
+  - name: version_no
+    schema:
+      type: integer
+      description: Aggregate内で1から増加する不変Version番号。
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: git_commit_sha
+    schema:
+      type: string
+      description: git commit sha
+    read_only: false
+  - name: bundle_sha256
+    schema:
+      type: string
+      description: bundle sha256
+    read_only: false
+  - name: effective_from
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: 設定・関係が有効になる時刻。
+      - type: 'null'
+    read_only: false
+  - name: effective_to
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: 設定・関係の有効終了時刻。NULLは終了未定。
+      - type: 'null'
+    read_only: false
+  - name: approved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: approved at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: ReviewAssignment
+  source_tables:
+  - publishing.review_assignment
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: RVA-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: article_version_id
+    schema:
+      type: string
+      format: uuid
+      description: 記事の特定Version。
+    read_only: false
+  - name: review_type
+    schema:
+      type: string
+      description: review type
+    read_only: false
+  - name: assigned_to_principal_id
+    schema:
+      type: string
+      format: uuid
+      description: assigned to principal id
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: priority
+    schema:
+      type: integer
+      description: priority
+    read_only: false
+  - name: due_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: due at
+      - type: 'null'
+    read_only: false
+  - name: started_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: started at
+      - type: 'null'
+    read_only: false
+  - name: completed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: completed at
+      - type: 'null'
+    read_only: false
+  - name: cancelled_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: cancelled at
+      - type: 'null'
+    read_only: false
+  - name: instructions
+    schema:
+      anyOf:
+      - type: string
+        description: instructions
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - article_version_id
+  - review_type
+  - assigned_to_principal_id
+  - priority
+  - due_at
+  - instructions
+  update_fields:
+  - status
+  - priority
+  - due_at
+  - instructions
+  notes: []
+- name: ReviewDecision
+  source_tables:
+  - publishing.review_decision
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: RVD-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: review_assignment_id
+    schema:
+      type: string
+      format: uuid
+      description: review assignment id
+    read_only: false
+  - name: article_version_id
+    schema:
+      type: string
+      format: uuid
+      description: 記事の特定Version。
+    read_only: false
+  - name: decision
+    schema:
+      type: string
+      description: decision
+    read_only: false
+  - name: summary
+    schema:
+      type: string
+      description: summary
+    read_only: false
+  - name: checklist_results
+    schema:
+      type: object
+      additionalProperties: true
+      description: Review checklist項目・結果・Evidence locator。
+    read_only: false
+  - name: decision_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: decision artifact id
+      - type: 'null'
+    read_only: false
+  - name: decided_at
+    schema:
+      type: string
+      format: date-time
+      description: decided at
+    read_only: false
+  - name: supersedes_decision_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: supersedes decision id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Approval
+  source_tables:
+  - publishing.approval
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: APR-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: article_version_id
+    schema:
+      type: string
+      format: uuid
+      description: 記事の特定Version。
+    read_only: false
+  - name: approval_type
+    schema:
+      type: string
+      description: approval type
+    read_only: false
+  - name: decision
+    schema:
+      type: string
+      description: decision
+    read_only: false
+  - name: quality_check_run_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: quality check run id
+      - type: 'null'
+    read_only: false
+  - name: policy_bundle_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: policy bundle id
+      - type: 'null'
+    read_only: false
+  - name: decision_reason
+    schema:
+      type: string
+      description: decision reason
+    read_only: false
+  - name: approved_at
+    schema:
+      type: string
+      format: date-time
+      description: approved at
+    read_only: false
+  - name: valid_until
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: valid until
+      - type: 'null'
+    read_only: false
+  - name: revoked_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: revoked at
+      - type: 'null'
+    read_only: false
+  - name: revocation_reason
+    schema:
+      anyOf:
+      - type: string
+        description: revocation reason
+      - type: 'null'
+    read_only: false
+  - name: supersedes_approval_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: supersedes approval id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: PublicationCandidate
+  source_tables:
+  - publishing.publication_candidate
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: PBC-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: article_version_id
+    schema:
+      type: string
+      format: uuid
+      description: 記事の特定Version。
+    read_only: false
+  - name: final_approval_id
+    schema:
+      type: string
+      format: uuid
+      description: final approval id
+    read_only: false
+  - name: quality_check_run_id
+    schema:
+      type: string
+      format: uuid
+      description: quality check run id
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: snapshot_build_job_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: snapshot build job id
+      - type: 'null'
+    read_only: false
+  - name: publication_snapshot_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: publication snapshot id
+      - type: 'null'
+    read_only: false
+  - name: blocked_reason_code
+    schema:
+      anyOf:
+      - type: string
+        description: blocked reason code
+      - type: 'null'
+    read_only: false
+  - name: blocked_detail
+    schema:
+      anyOf:
+      - type: string
+        description: blocked detail
+      - type: 'null'
+    read_only: false
+  - name: requested_at
+    schema:
+      type: string
+      format: date-time
+      description: requested at
+    read_only: false
+  - name: completed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: completed at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: PublicationSnapshotSummary
+  source_tables:
+  - publishing.publication_snapshot
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: PBS-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: article_id
+    schema:
+      type: string
+      format: uuid
+      description: 論理記事ID。
+    read_only: false
+  - name: article_version_id
+    schema:
+      type: string
+      format: uuid
+      description: 記事の特定Version。
+    read_only: false
+  - name: publication_candidate_id
+    schema:
+      type: string
+      format: uuid
+      description: publication candidate id
+    read_only: false
+  - name: artifact_id
+    schema:
+      type: string
+      format: uuid
+      description: S3互換Object Storage上の不変Artifactレジストリ。
+    read_only: false
+  - name: schema_version
+    schema:
+      type: integer
+      description: schema version
+    read_only: false
+  - name: content_sha256
+    schema:
+      type: string
+      description: content sha256
+    read_only: false
+  - name: source_packet_version_id
+    schema:
+      type: string
+      format: uuid
+      description: source packet version id
+    read_only: false
+  - name: policy_bundle_id
+    schema:
+      type: string
+      format: uuid
+      description: policy bundle id
+    read_only: false
+  - name: quality_check_run_id
+    schema:
+      type: string
+      format: uuid
+      description: quality check run id
+    read_only: false
+  - name: final_approval_id
+    schema:
+      type: string
+      format: uuid
+      description: final approval id
+    read_only: false
+  - name: canonical_path
+    schema:
+      type: string
+      description: canonical path
+    read_only: false
+  - name: title
+    schema:
+      type: string
+      description: title
+    read_only: false
+  - name: built_by_job_id
+    schema:
+      type: string
+      format: uuid
+      description: built by job id
+    read_only: false
+  - name: built_at
+    schema:
+      type: string
+      format: date-time
+      description: built at
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Publication
+  source_tables:
+  - publishing.publication
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: PUB-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: article_id
+    schema:
+      type: string
+      format: uuid
+      description: 論理記事ID。
+    read_only: false
+  - name: channel
+    schema:
+      type: string
+      description: channel
+    read_only: false
+  - name: state
+    schema:
+      type: string
+      description: state
+    read_only: false
+  - name: current_snapshot_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: current snapshot id
+      - type: 'null'
+    read_only: false
+  - name: current_route_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: current route id
+      - type: 'null'
+    read_only: false
+  - name: first_published_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: first published at
+      - type: 'null'
+    read_only: false
+  - name: last_published_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: last published at
+      - type: 'null'
+    read_only: false
+  - name: unpublished_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: unpublished at
+      - type: 'null'
+    read_only: false
+  - name: etag
+    schema:
+      anyOf:
+      - type: string
+        description: etag
+      - type: 'null'
+    read_only: false
+  - name: projection_generation
+    schema:
+      type: integer
+      description: projection generation
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: RollbackRecord
+  source_tables:
+  - publishing.rollback_record
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: RBK-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: publication_id
+    schema:
+      type: string
+      format: uuid
+      description: publication id
+    read_only: false
+  - name: from_snapshot_id
+    schema:
+      type: string
+      format: uuid
+      description: from snapshot id
+    read_only: false
+  - name: to_snapshot_id
+    schema:
+      type: string
+      format: uuid
+      description: to snapshot id
+    read_only: false
+  - name: incident_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: incident id
+      - type: 'null'
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: reason
+    schema:
+      type: string
+      description: reason
+    read_only: false
+  - name: verification_result
+    schema:
+      anyOf:
+      - type: string
+        description: verification result
+      - type: 'null'
+    read_only: false
+  - name: requested_at
+    schema:
+      type: string
+      format: date-time
+      description: requested at
+    read_only: false
+  - name: executed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: executed at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: FreshnessPolicy
+  source_tables:
+  - freshness.freshness_policy
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: FPL-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: category_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 対象カテゴリ。
+      - type: 'null'
+    read_only: false
+  - name: article_type
+    schema:
+      anyOf:
+      - type: string
+        description: article type
+      - type: 'null'
+    read_only: false
+  - name: fact_type
+    schema:
+      type: string
+      description: fact type
+    read_only: false
+  - name: version_no
+    schema:
+      type: integer
+      description: Aggregate内で1から増加する不変Version番号。
+    read_only: false
+  - name: warning_after
+    schema:
+      type: string
+      description: warning after
+    read_only: false
+  - name: critical_after
+    schema:
+      type: string
+      description: critical after
+    read_only: false
+  - name: refresh_interval
+    schema:
+      type: string
+      description: refresh interval
+    read_only: false
+  - name: on_critical_action
+    schema:
+      type: string
+      description: on critical action
+    read_only: false
+  - name: effective_from
+    schema:
+      type: string
+      format: date-time
+      description: 設定・関係が有効になる時刻。
+    read_only: false
+  - name: effective_to
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: 設定・関係の有効終了時刻。NULLは終了未定。
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: RefreshRun
+  source_tables:
+  - freshness.refresh_run
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: RFR-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: ops_job_id
+    schema:
+      type: string
+      format: uuid
+      description: ops job id
+    read_only: false
+  - name: run_type
+    schema:
+      type: string
+      description: run type
+    read_only: false
+  - name: scope_type
+    schema:
+      type: string
+      description: scope type
+    read_only: false
+  - name: scope_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: scope id
+      - type: 'null'
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: started_at
+    schema:
+      type: string
+      format: date-time
+      description: started at
+    read_only: false
+  - name: completed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: completed at
+      - type: 'null'
+    read_only: false
+  - name: target_count
+    schema:
+      type: integer
+      description: target count
+    read_only: false
+  - name: success_count
+    schema:
+      type: integer
+      description: success count
+    read_only: false
+  - name: failure_count
+    schema:
+      type: integer
+      description: failure count
+    read_only: false
+  - name: continuation
+    schema:
+      type: object
+      additionalProperties: true
+      description: Provider cursor・page・resume token。
+    read_only: false
+  - name: report_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: report artifact id
+      - type: 'null'
+    read_only: false
+  - name: error_summary
+    schema:
+      anyOf:
+      - type: string
+        description: error summary
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: StalenessAssessment
+  source_tables:
+  - freshness.staleness_assessment
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: target_type
+    schema:
+      type: string
+      description: target type
+    read_only: false
+  - name: target_id
+    schema:
+      type: string
+      format: uuid
+      description: target id
+    read_only: false
+  - name: freshness_policy_id
+    schema:
+      type: string
+      format: uuid
+      description: freshness policy id
+    read_only: false
+  - name: observation_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: observation id
+      - type: 'null'
+    read_only: false
+  - name: observation_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: observation at
+      - type: 'null'
+    read_only: false
+  - name: assessed_at
+    schema:
+      type: string
+      format: date-time
+      description: assessed at
+    read_only: false
+  - name: age_seconds
+    schema:
+      anyOf:
+      - type: integer
+        description: age seconds
+      - type: 'null'
+    read_only: false
+  - name: freshness_status
+    schema:
+      type: string
+      description: freshness status
+    read_only: false
+  - name: recommended_action
+    schema:
+      type: string
+      description: recommended action
+    read_only: false
+  - name: reason_code
+    schema:
+      type: string
+      description: reason code
+    read_only: false
+  - name: refresh_run_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: refresh run id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: LinkCheck
+  source_tables:
+  - freshness.link_check
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: offer_id
+    schema:
+      type: string
+      format: uuid
+      description: ショップ単位の販売Offer。
+    read_only: false
+  - name: affiliate_link_observation_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: affiliate link observation id
+      - type: 'null'
+    read_only: false
+  - name: refresh_run_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: refresh run id
+      - type: 'null'
+    read_only: false
+  - name: checked_at
+    schema:
+      type: string
+      format: date-time
+      description: checked at
+    read_only: false
+  - name: check_method
+    schema:
+      type: string
+      description: check method
+    read_only: false
+  - name: result
+    schema:
+      type: string
+      description: result
+    read_only: false
+  - name: http_status
+    schema:
+      anyOf:
+      - type: integer
+        description: http status
+      - type: 'null'
+    read_only: false
+  - name: destination_host
+    schema:
+      anyOf:
+      - type: string
+        description: destination host
+      - type: 'null'
+    read_only: false
+  - name: destination_url_sha256
+    schema:
+      anyOf:
+      - type: string
+        description: destination url sha256
+      - type: 'null'
+    read_only: false
+  - name: latency_ms
+    schema:
+      anyOf:
+      - type: integer
+        description: latency ms
+      - type: 'null'
+    read_only: false
+  - name: risk_code
+    schema:
+      anyOf:
+      - type: string
+        description: risk code
+      - type: 'null'
+    read_only: false
+  - name: response_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: response artifact id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: ImpactAssessment
+  source_tables:
+  - freshness.impact_assessment
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: change_type
+    schema:
+      type: string
+      description: change type
+    read_only: false
+  - name: changed_entity_type
+    schema:
+      type: string
+      description: changed entity type
+    read_only: false
+  - name: changed_entity_id
+    schema:
+      type: string
+      format: uuid
+      description: changed entity id
+    read_only: false
+  - name: article_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 論理記事ID。
+      - type: 'null'
+    read_only: false
+  - name: article_version_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 記事の特定Version。
+      - type: 'null'
+    read_only: false
+  - name: claim_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: claim id
+      - type: 'null'
+    read_only: false
+  - name: publication_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: publication id
+      - type: 'null'
+    read_only: false
+  - name: impact_level
+    schema:
+      type: string
+      description: impact level
+    read_only: false
+  - name: required_action
+    schema:
+      type: string
+      description: required action
+    read_only: false
+  - name: reason
+    schema:
+      type: string
+      description: reason
+    read_only: false
+  - name: detected_at
+    schema:
+      type: string
+      format: date-time
+      description: detected at
+    read_only: false
+  - name: resolved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: resolved at
+      - type: 'null'
+    read_only: false
+  - name: resolved_by_job_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: resolved by job id
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: AnalyticsImportRun
+  source_tables:
+  - analytics.import_run
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: AIR-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: source_type
+    schema:
+      type: string
+      description: source type
+    read_only: false
+  - name: ops_job_id
+    schema:
+      type: string
+      format: uuid
+      description: ops job id
+    read_only: false
+  - name: source_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: source artifact id
+      - type: 'null'
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: date_from
+    schema:
+      type: string
+      format: date
+      description: date from
+    read_only: false
+  - name: date_to
+    schema:
+      type: string
+      format: date
+      description: date to
+    read_only: false
+  - name: dimensions
+    schema:
+      type: object
+      additionalProperties: true
+      description: 要求したdimension・filter・property等。
+    read_only: false
+  - name: watermark
+    schema:
+      anyOf:
+      - type: string
+        description: watermark
+      - type: 'null'
+    read_only: false
+  - name: row_count
+    schema:
+      type: integer
+      description: row count
+    read_only: false
+  - name: inserted_count
+    schema:
+      type: integer
+      description: inserted count
+    read_only: false
+  - name: rejected_count
+    schema:
+      type: integer
+      description: rejected count
+    read_only: false
+  - name: started_at
+    schema:
+      type: string
+      format: date-time
+      description: started at
+    read_only: false
+  - name: completed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: completed at
+      - type: 'null'
+    read_only: false
+  - name: error_summary
+    schema:
+      anyOf:
+      - type: string
+        description: error summary
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: DailyArticleMetric
+  source_tables:
+  - analytics.daily_article_metric
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: article_id
+    schema:
+      type: string
+      format: uuid
+      description: 論理記事ID。
+    read_only: false
+  - name: metric_date
+    schema:
+      type: string
+      format: date
+      description: metric date
+    read_only: false
+  - name: publication_snapshot_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: publication snapshot id
+      - type: 'null'
+    read_only: false
+  - name: page_views
+    schema:
+      type: integer
+      description: page views
+    read_only: false
+  - name: sessions
+    schema:
+      type: integer
+      description: sessions
+    read_only: false
+  - name: engaged_sessions
+    schema:
+      type: integer
+      description: engaged sessions
+    read_only: false
+  - name: affiliate_clicks
+    schema:
+      type: integer
+      description: affiliate clicks
+    read_only: false
+  - name: gsc_clicks
+    schema:
+      type: integer
+      description: gsc clicks
+    read_only: false
+  - name: gsc_impressions
+    schema:
+      type: integer
+      description: gsc impressions
+    read_only: false
+  - name: average_position
+    schema:
+      anyOf:
+      - type: number
+        description: average position
+      - type: 'null'
+    read_only: false
+  - name: affiliate_click_rate
+    schema:
+      anyOf:
+      - type: number
+        description: affiliate click rate
+      - type: 'null'
+    read_only: false
+  - name: source_watermark
+    schema:
+      type: string
+      description: source watermark
+    read_only: false
+  - name: projection_version
+    schema:
+      type: integer
+      description: projection version
+    read_only: false
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: RevenueImport
+  source_tables:
+  - finance.revenue_import
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: RVI-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: provider_code
+    schema:
+      type: string
+      description: provider code
+    read_only: false
+  - name: source_artifact_id
+    schema:
+      type: string
+      format: uuid
+      description: source artifact id
+    read_only: false
+  - name: source_sha256
+    schema:
+      type: string
+      description: source sha256
+    read_only: false
+  - name: parser_version_id
+    schema:
+      type: string
+      format: uuid
+      description: parser version id
+    read_only: false
+  - name: ops_job_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: ops job id
+      - type: 'null'
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: is_dry_run
+    schema:
+      type: boolean
+      description: is dry run
+    read_only: false
+  - name: period_from
+    schema:
+      type: string
+      format: date
+      description: period from
+    read_only: false
+  - name: period_to
+    schema:
+      type: string
+      format: date
+      description: period to
+    read_only: false
+  - name: row_count
+    schema:
+      type: integer
+      description: row count
+    read_only: false
+  - name: accepted_count
+    schema:
+      type: integer
+      description: accepted count
+    read_only: false
+  - name: rejected_count
+    schema:
+      type: integer
+      description: rejected count
+    read_only: false
+  - name: gross_order_amount_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: gross order amount jpy
+      - type: 'null'
+    read_only: false
+  - name: commission_amount_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: commission amount jpy
+      - type: 'null'
+    read_only: false
+  - name: confirmed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: confirmed at
+      - type: 'null'
+    read_only: false
+  - name: reconciliation_status
+    schema:
+      type: string
+      description: reconciliation status
+    read_only: false
+  - name: report_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: report artifact id
+      - type: 'null'
+    read_only: false
+  - name: error_summary
+    schema:
+      anyOf:
+      - type: string
+        description: error summary
+      - type: 'null'
+    read_only: false
+  - name: uploaded_at
+    schema:
+      type: string
+      format: date-time
+      description: uploaded at
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Commission
+  source_tables:
+  - finance.commission
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: COM-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: provider_code
+    schema:
+      type: string
+      description: provider code
+    read_only: false
+  - name: provider_event_id
+    schema:
+      type: string
+      description: provider event id
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: ordered_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: ordered at
+      - type: 'null'
+    read_only: false
+  - name: confirmed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: confirmed at
+      - type: 'null'
+    read_only: false
+  - name: cancelled_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: cancelled at
+      - type: 'null'
+    read_only: false
+  - name: business_month
+    schema:
+      type: string
+      format: date
+      description: business month
+    read_only: false
+  - name: gross_order_amount_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: gross order amount jpy
+      - type: 'null'
+    read_only: false
+  - name: confirmed_order_amount_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: confirmed order amount jpy
+      - type: 'null'
+    read_only: false
+  - name: generated_commission_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: generated commission jpy
+      - type: 'null'
+    read_only: false
+  - name: confirmed_commission_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: confirmed commission jpy
+      - type: 'null'
+    read_only: false
+  - name: currency
+    schema:
+      type: string
+      description: currency
+    read_only: false
+  - name: provider_category_code
+    schema:
+      anyOf:
+      - type: string
+        description: provider category code
+      - type: 'null'
+    read_only: false
+  - name: provider_shop_code
+    schema:
+      anyOf:
+      - type: string
+        description: provider shop code
+      - type: 'null'
+    read_only: false
+  - name: provider_item_code
+    schema:
+      anyOf:
+      - type: string
+        description: provider item code
+      - type: 'null'
+    read_only: false
+  - name: last_event_at
+    schema:
+      type: string
+      format: date-time
+      description: last event at
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: UnitEconomicsSnapshot
+  source_tables:
+  - finance.unit_economics_snapshot
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: UES-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: scope_type
+    schema:
+      type: string
+      description: scope type
+    read_only: false
+  - name: scope_id
+    schema:
+      type: string
+      format: uuid
+      description: scope id
+    read_only: false
+  - name: period_month
+    schema:
+      type: string
+      format: date
+      description: period month
+    read_only: false
+  - name: calculation_version
+    schema:
+      type: string
+      description: calculation version
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: confirmed_commission_jpy
+    schema:
+      type: integer
+      description: confirmed commission jpy
+    read_only: false
+  - name: generated_commission_jpy
+    schema:
+      type: integer
+      description: generated commission jpy
+    read_only: false
+  - name: external_cost_jpy
+    schema:
+      type: integer
+      description: external cost jpy
+    read_only: false
+  - name: human_cost_jpy
+    schema:
+      type: integer
+      description: human cost jpy
+    read_only: false
+  - name: contribution_profit_jpy
+    schema:
+      type: integer
+      description: contribution profit jpy
+    read_only: false
+  - name: eligible_sessions
+    schema:
+      type: integer
+      description: eligible sessions
+    read_only: false
+  - name: affiliate_clicks
+    schema:
+      type: integer
+      description: affiliate clicks
+    read_only: false
+  - name: confirmed_orders
+    schema:
+      type: integer
+      description: confirmed orders
+    read_only: false
+  - name: confirmed_epc_jpy
+    schema:
+      anyOf:
+      - type: number
+        description: confirmed epc jpy
+      - type: 'null'
+    read_only: false
+  - name: confirmed_rpm_jpy
+    schema:
+      anyOf:
+      - type: number
+        description: confirmed rpm jpy
+      - type: 'null'
+    read_only: false
+  - name: confirmation_rate
+    schema:
+      anyOf:
+      - type: number
+        description: confirmation rate
+      - type: 'null'
+    read_only: false
+  - name: cost_recovery_months
+    schema:
+      anyOf:
+      - type: number
+        description: cost recovery months
+      - type: 'null'
+    read_only: false
+  - name: source_watermark
+    schema:
+      type: string
+      description: source watermark
+    read_only: false
+  - name: report_artifact_id
+    schema:
+      type: string
+      format: uuid
+      description: report artifact id
+    read_only: false
+  - name: calculated_at
+    schema:
+      type: string
+      format: date-time
+      description: calculated at
+    read_only: false
+  - name: approved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: approved at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: ExternalCost
+  source_tables:
+  - finance.external_cost
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: CST-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: cost_type
+    schema:
+      type: string
+      description: cost type
+    read_only: false
+  - name: vendor_code
+    schema:
+      type: string
+      description: vendor code
+    read_only: false
+  - name: service_code
+    schema:
+      anyOf:
+      - type: string
+        description: service code
+      - type: 'null'
+    read_only: false
+  - name: occurred_on
+    schema:
+      type: string
+      format: date
+      description: occurred on
+    read_only: false
+  - name: amount_original
+    schema:
+      type: number
+      description: amount original
+    read_only: false
+  - name: currency_original
+    schema:
+      type: string
+      description: currency original
+    read_only: false
+  - name: fx_rate_to_jpy
+    schema:
+      type: number
+      description: fx rate to jpy
+    read_only: false
+  - name: amount_jpy
+    schema:
+      type: integer
+      description: amount jpy
+    read_only: false
+  - name: article_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 論理記事ID。
+      - type: 'null'
+    read_only: false
+  - name: category_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 対象カテゴリ。
+      - type: 'null'
+    read_only: false
+  - name: ai_job_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: ai job id
+      - type: 'null'
+    read_only: false
+  - name: source_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: source artifact id
+      - type: 'null'
+    read_only: false
+  - name: source_record_key
+    schema:
+      type: string
+      description: source record key
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields:
+  - site_id
+  - cost_type
+  - vendor_code
+  - service_code
+  - occurred_on
+  - amount_original
+  - currency_original
+  - fx_rate_to_jpy
+  - amount_jpy
+  - article_id
+  - category_id
+  - ai_job_id
+  - source_artifact_id
+  - source_record_key
+  update_fields: []
+  notes: []
+- name: HumanWorkLog
+  source_tables:
+  - finance.human_work_log
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: HWL-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: site_id
+    schema:
+      type: string
+      format: uuid
+      description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    read_only: false
+  - name: principal_id
+    schema:
+      type: string
+      format: uuid
+      description: principal id
+    read_only: false
+  - name: work_date
+    schema:
+      type: string
+      format: date
+      description: work date
+    read_only: false
+  - name: work_type
+    schema:
+      type: string
+      description: work type
+    read_only: false
+  - name: minutes
+    schema:
+      type: integer
+      description: minutes
+    read_only: false
+  - name: hourly_cost_jpy
+    schema:
+      type: integer
+      description: hourly cost jpy
+    read_only: false
+  - name: computed_cost_jpy
+    schema:
+      type: integer
+      description: computed cost jpy
+    read_only: false
+  - name: article_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 論理記事ID。
+      - type: 'null'
+    read_only: false
+  - name: category_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 対象カテゴリ。
+      - type: 'null'
+    read_only: false
+  - name: article_version_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 記事の特定Version。
+      - type: 'null'
+    read_only: false
+  - name: note
+    schema:
+      anyOf:
+      - type: string
+        description: note
+      - type: 'null'
+    read_only: false
+  - name: approved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: approved at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields:
+  - site_id
+  - principal_id
+  - work_date
+  - work_type
+  - minutes
+  - hourly_cost_jpy
+  - article_id
+  - category_id
+  - article_version_id
+  - note
+  update_fields: []
+  notes: []
+- name: Job
+  source_tables:
+  - ops.job
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: JOB-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: job_type
+    schema:
+      type: string
+      description: job type
+    read_only: false
+  - name: queue_name
+    schema:
+      type: string
+      description: queue name
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+      enum:
+      - REQUESTED
+      - QUEUED
+      - RUNNING
+      - SUCCEEDED
+      - FAILED_RETRYABLE
+      - RETRY_SCHEDULED
+      - FAILED_TERMINAL
+      - QUARANTINED
+      - CANCELLED
+      - EXPIRED
+      x-raos-state-contract: ../../job-state.v1.yaml
+    read_only: false
+  - name: priority
+    schema:
+      type: integer
+      description: priority
+    read_only: false
+  - name: idempotency_key
+    schema:
+      anyOf:
+      - type: string
+        description: idempotency key
+      - type: 'null'
+    read_only: false
+  - name: site_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+      - type: 'null'
+    read_only: false
+  - name: aggregate_type
+    schema:
+      anyOf:
+      - type: string
+        description: aggregate type
+      - type: 'null'
+    read_only: false
+  - name: aggregate_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: aggregate id
+      - type: 'null'
+    read_only: false
+  - name: payload_artifact_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: payload artifact id
+      - type: 'null'
+    read_only: false
+  - name: scheduled_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: scheduled at
+      - type: 'null'
+    read_only: false
+  - name: available_at
+    schema:
+      type: string
+      format: date-time
+      description: available at
+    read_only: false
+  - name: started_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: started at
+      - type: 'null'
+    read_only: false
+  - name: completed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: completed at
+      - type: 'null'
+    read_only: false
+  - name: max_attempts
+    schema:
+      type: integer
+      description: max attempts
+    read_only: false
+  - name: attempt_count
+    schema:
+      type: integer
+      description: attempt count
+    read_only: false
+  - name: lease_owner
+    schema:
+      anyOf:
+      - type: string
+        description: lease owner
+      - type: 'null'
+    read_only: false
+  - name: lease_expires_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: lease expires at
+      - type: 'null'
+    read_only: false
+  - name: correlation_id
+    schema:
+      type: string
+      format: uuid
+      description: 要求・Job・Eventを横断して追跡するCorrelation ID。
+    read_only: false
+  - name: causation_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: この事実を直接発生させたCommand/Event/Job ID。
+      - type: 'null'
+    read_only: false
+  - name: parent_job_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: parent job id
+      - type: 'null'
+    read_only: false
+  - name: budget_jpy
+    schema:
+      anyOf:
+      - type: integer
+        description: budget jpy
+      - type: 'null'
+    read_only: false
+  - name: last_error_class
+    schema:
+      anyOf:
+      - type: string
+        description: last error class
+      - type: 'null'
+    read_only: false
+  - name: last_error_code
+    schema:
+      anyOf:
+      - type: string
+        description: last error code
+      - type: 'null'
+    read_only: false
+  - name: last_error_message
+    schema:
+      anyOf:
+      - type: string
+        description: last error message
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  - name: job_version
+    schema:
+      type: integer
+      minimum: 1
+      description: Job message/payload contract version; distinct from lock_version.
+    read_only: true
+  - name: deadline_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: Deadline after which an eligible active Job may expire.
+      - type: 'null'
+      readOnly: true
+    read_only: true
+  - name: cancel_requested_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: Timestamp of a cooperative cancellation request.
+      - type: 'null'
+      readOnly: true
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes:
+  - ST-0002 canonical Job-state revision; see INT-DEC-003.
+- name: KillSwitch
+  source_tables:
+  - ops.kill_switch
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: scope_type
+    schema:
+      type: string
+      description: scope type
+    read_only: false
+  - name: scope_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: scope id
+      - type: 'null'
+    read_only: false
+  - name: switch_type
+    schema:
+      type: string
+      description: switch type
+    read_only: false
+  - name: is_engaged
+    schema:
+      type: boolean
+      description: is engaged
+    read_only: false
+  - name: generation
+    schema:
+      type: integer
+      description: generation
+    read_only: false
+  - name: reason
+    schema:
+      anyOf:
+      - type: string
+        description: reason
+      - type: 'null'
+    read_only: false
+  - name: incident_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: incident id
+      - type: 'null'
+    read_only: false
+  - name: changed_at
+    schema:
+      type: string
+      format: date-time
+      description: changed at
+    read_only: false
+  - name: expires_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: expires at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Incident
+  source_tables:
+  - ops.incident
+  classification: INTERNAL
+  etag: true
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: display_id
+    schema:
+      type: string
+      description: INC-接頭辞を持つアプリケーション生成の不変表示ID。
+    read_only: true
+  - name: severity
+    schema:
+      type: string
+      description: severity
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: title
+    schema:
+      type: string
+      description: title
+    read_only: false
+  - name: summary
+    schema:
+      type: string
+      description: summary
+    read_only: false
+  - name: declared_at
+    schema:
+      type: string
+      format: date-time
+      description: declared at
+    read_only: false
+  - name: contained_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: contained at
+      - type: 'null'
+    read_only: false
+  - name: recovered_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: recovered at
+      - type: 'null'
+    read_only: false
+  - name: closed_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: closed at
+      - type: 'null'
+    read_only: false
+  - name: root_cause
+    schema:
+      anyOf:
+      - type: string
+        description: root cause
+      - type: 'null'
+    read_only: false
+  - name: impact
+    schema:
+      type: object
+      additionalProperties: true
+      description: 影響ページ、期間、件数、金額、ユーザー影響の構造化要約。
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields:
+  - severity
+  - title
+  - summary
+  update_fields:
+  - severity
+  - status
+  - title
+  - summary
+  - root_cause
+  - impact
+  notes: []
+- name: AuditEvent
+  source_tables:
+  - ops.audit_event
+  classification: RESTRICTED
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: occurred_at
+    schema:
+      type: string
+      format: date-time
+      description: occurred at
+    read_only: false
+  - name: actor_type
+    schema:
+      type: string
+      description: actor type
+    read_only: false
+  - name: actor_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: actor id
+      - type: 'null'
+    read_only: false
+  - name: action
+    schema:
+      type: string
+      description: action
+    read_only: false
+  - name: target_type
+    schema:
+      type: string
+      description: target type
+    read_only: false
+  - name: target_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: target id
+      - type: 'null'
+    read_only: false
+  - name: outcome
+    schema:
+      type: string
+      description: outcome
+    read_only: false
+  - name: severity
+    schema:
+      type: string
+      description: severity
+    read_only: false
+  - name: correlation_id
+    schema:
+      type: string
+      format: uuid
+      description: 要求・Job・Eventを横断して追跡するCorrelation ID。
+    read_only: false
+  - name: request_id
+    schema:
+      anyOf:
+      - type: string
+        description: request id
+      - type: 'null'
+    read_only: false
+  - name: before_hash
+    schema:
+      anyOf:
+      - type: string
+        description: before hash
+      - type: 'null'
+    read_only: false
+  - name: after_hash
+    schema:
+      anyOf:
+      - type: string
+        description: after hash
+      - type: 'null'
+    read_only: false
+  - name: details
+    schema:
+      type: object
+      additionalProperties: true
+      description: 差分要約、理由、Policy/Prompt版。秘密、原文、raw IPは含めない。
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+- name: Alert
+  source_tables:
+  - ops.alert
+  classification: INTERNAL
+  etag: false
+  fields:
+  - name: id
+    schema:
+      type: string
+      format: uuid
+      description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    read_only: true
+  - name: alert_key
+    schema:
+      type: string
+      description: alert key
+    read_only: false
+  - name: severity
+    schema:
+      type: string
+      description: severity
+    read_only: false
+  - name: status
+    schema:
+      type: string
+      description: 業務状態を示す安定Enum文字列。
+    read_only: false
+  - name: source
+    schema:
+      type: string
+      description: source
+    read_only: false
+  - name: title
+    schema:
+      type: string
+      description: title
+    read_only: false
+  - name: description
+    schema:
+      type: string
+      description: description
+    read_only: false
+  - name: first_seen_at
+    schema:
+      type: string
+      format: date-time
+      description: first seen at
+    read_only: false
+  - name: last_seen_at
+    schema:
+      type: string
+      format: date-time
+      description: last seen at
+    read_only: false
+  - name: occurrence_count
+    schema:
+      type: integer
+      description: occurrence count
+    read_only: false
+  - name: incident_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: incident id
+      - type: 'null'
+    read_only: false
+  - name: metadata
+    schema:
+      type: object
+      additionalProperties: true
+      description: 検索対象を限定した補助メタデータ。原本や秘密を格納しない。
+    read_only: false
+  - name: acknowledged_by_principal_id
+    schema:
+      anyOf:
+      - type: string
+        format: uuid
+        description: acknowledged by principal id
+      - type: 'null'
+    read_only: false
+  - name: acknowledged_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: acknowledged at
+      - type: 'null'
+    read_only: false
+  - name: resolved_at
+    schema:
+      anyOf:
+      - type: string
+        format: date-time
+        description: resolved at
+      - type: 'null'
+    read_only: false
+  - name: created_at
+    schema:
+      type: string
+      format: date-time
+      description: レコード作成時刻。UTCのtimestamptz。
+    read_only: true
+  - name: updated_at
+    schema:
+      type: string
+      format: date-time
+      description: 最終更新時刻。UTCのtimestamptz。
+    read_only: true
+  - name: lock_version
+    schema:
+      type: integer
+      description: 楽観的排他制御用の単調増加Version。
+    read_only: true
+  create_fields: []
+  update_fields: []
+  notes: []
+public_resources:
+  PublicOffer:
+    type: object
+    additionalProperties: false
+    required:
+    - offer_id
+    - shop_name
+    - destination_host
+    - freshness_status
+    - is_cta_enabled
+    - position
+    properties:
+      offer_id:
+        type: string
+        format: uuid
+      shop_name:
+        type: string
+      price_jpy:
+        type:
+        - integer
+        - 'null'
+        minimum: 0
+      shipping_fee_jpy:
+        type:
+        - integer
+        - 'null'
+        minimum: 0
+      availability:
+        type:
+        - string
+        - 'null'
+      affiliate_url:
+        type:
+        - string
+        - 'null'
+        format: uri
+      destination_host:
+        type: string
+      price_observed_at:
+        type:
+        - string
+        - 'null'
+        format: date-time
+      availability_observed_at:
+        type:
+        - string
+        - 'null'
+        format: date-time
+      link_observed_at:
+        type:
+        - string
+        - 'null'
+        format: date-time
+      freshness_status:
+        type: string
+      is_cta_enabled:
+        type: boolean
+      cta_disabled_reason:
+        type:
+        - string
+        - 'null'
+      position:
+        type: integer
+        minimum: 0
+      rel:
+        const: sponsored nofollow
+  PublicProductCard:
+    type: object
+    additionalProperties: false
+    required:
+    - product_id
+    - card_key
+    - display_name
+    - position
+    - product_freshness_status
+    - offers
+    properties:
+      product_id:
+        type: string
+        format: uuid
+      card_key:
+        type: string
+      display_name:
+        type: string
+      short_description:
+        type:
+        - string
+        - 'null'
+      image_url:
+        type:
+        - string
+        - 'null'
+        format: uri
+      image_alt:
+        type:
+        - string
+        - 'null'
+      badges:
+        type: array
+        items:
+          type: string
+      comparison_attributes:
+        type: object
+        additionalProperties: true
+      position:
+        type: integer
+        minimum: 0
+      product_freshness_status:
+        type: string
+      offers:
+        type: array
+        items:
+          $ref: '#/public_resources/PublicOffer'
+  PublicArticleBlock:
+    type: object
+    additionalProperties: false
+    required:
+    - block_key
+    - block_type
+    - position
+    - render_payload
+    properties:
+      block_key:
+        type: string
+      block_type:
+        type: string
+        enum:
+        - heading
+        - paragraph
+        - summary
+        - selection_criteria
+        - comparison_table
+        - product_card
+        - pros_cons
+        - suitable_unsuitable
+        - warning
+        - faq_content
+        - source_note
+        - call_to_action
+      position:
+        type: integer
+        minimum: 0
+      heading_level:
+        type:
+        - integer
+        - 'null'
+        minimum: 2
+        maximum: 4
+      heading_text:
+        type:
+        - string
+        - 'null'
+      rendered_html:
+        type:
+        - string
+        - 'null'
+        description: Server-side sanitizerを通過したHTML。script/iframe/event handlerは禁止。
+      render_payload:
+        type: object
+        additionalProperties: true
+  PublicArticleDocument:
+    type: object
+    additionalProperties: false
+    required:
+    - article_id
+    - publication_id
+    - publication_snapshot_id
+    - canonical_path
+    - title
+    - disclosure_text
+    - article_type
+    - language_tag
+    - freshness_status
+    - published_at
+    - is_indexable
+    - blocks
+    - product_cards
+    properties:
+      article_id:
+        type: string
+        format: uuid
+      publication_id:
+        type: string
+        format: uuid
+      publication_snapshot_id:
+        type: string
+        format: uuid
+      canonical_path:
+        type: string
+        pattern: ^/
+      title:
+        type: string
+      meta_title:
+        type:
+        - string
+        - 'null'
+      meta_description:
+        type:
+        - string
+        - 'null'
+      excerpt:
+        type:
+        - string
+        - 'null'
+      disclosure_text:
+        type: string
+      article_type:
+        type: string
+      language_tag:
+        type: string
+      structured_data:
+        type: object
+        additionalProperties: true
+      freshness_status:
+        type: string
+      published_at:
+        type: string
+        format: date-time
+      updated_public_at:
+        type:
+        - string
+        - 'null'
+        format: date-time
+      projection_generation:
+        type: integer
+        minimum: 0
+      is_indexable:
+        type: boolean
+      blocks:
+        type: array
+        items:
+          $ref: '#/public_resources/PublicArticleBlock'
+      product_cards:
+        type: array
+        items:
+          $ref: '#/public_resources/PublicProductCard'
+  PublicRoute:
+    type: object
+    additionalProperties: false
+    required:
+    - path
+    - route_type
+    - http_status
+    - is_indexable
+    - projection_generation
+    properties:
+      path:
+        type: string
+      route_type:
+        type: string
+      article_id:
+        type:
+        - string
+        - 'null'
+        format: uuid
+      redirect_path:
+        type:
+        - string
+        - 'null'
+      http_status:
+        type: integer
+      is_indexable:
+        type: boolean
+      projection_generation:
+        type: integer
+  RuntimeControl:
+    type: object
+    additionalProperties: false
+    required:
+    - publication_enabled
+    - affiliate_links_enabled
+    - generation
+    - projected_at
+    properties:
+      publication_enabled:
+        type: boolean
+      affiliate_links_enabled:
+        type: boolean
+      generation:
+        type: integer
+        minimum: 0
+      reason_code:
+        type:
+        - string
+        - 'null'
+      expires_at:
+        type:
+        - string
+        - 'null'
+        format: date-time
+      projected_at:
+        type: string
+        format: date-time
+  AffiliateClickInput:
+    type: object
+    additionalProperties: false
+    required:
+    - event_id
+    - occurred_at
+    - publication_id
+    - article_id
+    - product_id
+    - offer_id
+    - placement_id
+    - page_path
+    - client_event_version
+    - consent_state
+    properties:
+      event_id:
+        type: string
+        format: uuid
+      occurred_at:
+        type: string
+        format: date-time
+      publication_id:
+        type: string
+        format: uuid
+      publication_snapshot_id:
+        type:
+        - string
+        - 'null'
+        format: uuid
+      article_id:
+        type: string
+        format: uuid
+      product_id:
+        type: string
+        format: uuid
+      offer_id:
+        type: string
+        format: uuid
+      placement_id:
+        type: string
+        maxLength: 100
+      page_path:
+        type: string
+        maxLength: 2048
+      anonymous_session_id:
+        type:
+        - string
+        - 'null'
+        maxLength: 128
+      client_event_version:
+        type: integer
+        minimum: 1
+      consent_state:
+        type: string
+        enum:
+        - GRANTED
+        - DENIED
+        - NOT_REQUIRED
+        - UNKNOWN
+      user_agent_class:
+        type:
+        - string
+        - 'null'
+        maxLength: 80

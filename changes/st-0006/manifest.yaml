@@ -1,0 +1,96 @@
+document:
+  id: RAOS-OPEN-DECISION-GATE-001
+  version: 1.0.0
+  story_id: ST-0006
+  status: IMPLEMENTATION_CANDIDATE
+  generated_by: scripts/build_st0006_decision_gates.py
+provenance:
+  design_refs:
+  - RAOS-OPEN-DECISIONS-001
+  depends_on:
+  - ST-0005
+  pinned_inputs:
+  - path: docs/manifest.json
+    bytes: 30329
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    bytes: 4956
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - path: docs/canonical/00_master/RAOS_open_decisions_v1.0.csv
+    bytes: 3318
+    sha256: 23a2d5afbdf83e4afeceaa2cbd784cd0e5da4c34fd2eb0ce4fc1dda5671f3276
+  - path: docs/canonical/01_integration/RAOS_07_status_taxonomy_v1.0.yaml
+    bytes: 1842
+    sha256: e3261a8a6102c1b93e6cc9006c52f01389ec31510e24ca37bc400437aebbf68b
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    bytes: 11395
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    bytes: 71458
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+status_boundary:
+  overall_open_decision_check: BLOCKED
+  active_blockers: 14
+  blocked_targets: 6
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  gate_acceptance_decision: NOT_MADE
+  production_release_decision: NOT_MADE
+  live_status_apply: NOT_ACTIVATED
+  deployment: NOT_ACTIVATED
+manifest_self_integrity:
+  path: changes/st-0006/manifest.yaml
+  included_in_generated_artifacts: false
+  reason: SELF_HASH_RECURSION_AVOIDED
+  verification: DETERMINISTIC_REGENERATION_BYTE_COMPARE
+safety:
+  strict_yaml_duplicate_alias_anchor_unknown_field: REJECT
+  yaml_csv_parity: REQUIRED
+  unknown_decision_status: REJECT
+  required_by_gate_inference: FORBIDDEN
+  unresolved_blocking_target_policy: ALL_TARGETS
+  clear_does_not_imply_gate_pass: true
+  generated_install: SIBLING_STAGING_WITH_ROLLBACK
+  owned_tree_enforced: true
+source_artifacts:
+- path: scripts/build_st0006_decision_gates.py
+  bytes: 66037
+  sha256: 0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f
+- path: scripts/import_raos_design.py
+  bytes: 30495
+  sha256: 13c36b2104ebf1d51b07f4774939e2ee89180d9d479f905176eaaa71dadd4f37
+- path: changes/st-0006/README.md
+  bytes: 4579
+  sha256: 53ab2467d53812a1718358e445cd8862d2079b084729e50df739005ba22bb8ce
+- path: docs/execplans/ST-0006.md
+  bytes: 5212
+  sha256: 8a2afda18352a16c42fb3626da5c3c51973f03b8f71dcbc49f74bbae96422f2d
+- path: docs/worklogs/ST-0006.md
+  bytes: 4575
+  sha256: cca8d351539812d072ef57f468259dee617d10e07e276cf72176df60f46069a0
+- path: tests/st0006/conftest.py
+  bytes: 1694
+  sha256: f0b16438a99f7a055ea7386420af2e7d32146d7db4357f9939c40580304270d2
+- path: tests/st0006/test_decision_loader.py
+  bytes: 9774
+  sha256: 0b51046ac6b47ee607ac93e186824bffaf1f2aec19890622c86dcfeb25e396ba
+- path: tests/st0006/test_gate_report.py
+  bytes: 7905
+  sha256: 01b700550dc099a52f323e1b8231661c43d3b6151b7d5c9dd16158c9ae59e5d0
+- path: tests/st0006/test_revision_generation.py
+  bytes: 14093
+  sha256: 9cf59bd6c3f57890b0812f9afb774a98faa613adfadd9479e8cf05ad575970c4
+generated_artifact_count: 4
+generated_artifacts:
+- path: changes/st-0006/gate-blocker-report.v1.yaml
+  bytes: 9999
+  sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
+- path: changes/st-0006/contracts/decision-gate-policy.v1.yaml
+  bytes: 1064
+  sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
+- path: changes/st-0006/contracts/gate-blocker-report.schema.json
+  bytes: 48733
+  sha256: 81c37dcfc6fdabd9d9942e1ddadae040a24add3c1b760b80943eae0d3f10a133
+- path: changes/st-0006/contracts/open-decision-source.schema.json
+  bytes: 20291
+  sha256: 9daa416a900e8a055157bd0dd76ca5949398093e891b6950960362427de04c56

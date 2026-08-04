@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/common/article-ast.schema.json",
+  "title": "RAOS Article AST",
+  "description": "任意HTMLではなく許可Blockのみで構成する記事構造。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "locale",
+    "title",
+    "blocks"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "locale": {
+      "type": "string",
+      "default": "ja-JP"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "meta_title": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 70
+    },
+    "meta_description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 180
+    },
+    "excerpt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "blocks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "block_key",
+          "block_type",
+          "position",
+          "content"
+        ],
+        "properties": {
+          "block_key": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,79}$"
+          },
+          "block_type": {
+            "type": "string",
+            "enum": [
+              "heading",
+              "paragraph",
+              "summary",
+              "selection_criteria",
+              "comparison_table",
+              "product_card",
+              "pros_cons",
+              "suitable_unsuitable",
+              "warning",
+              "faq_content",
+              "source_note",
+              "call_to_action"
+            ]
+          },
+          "position": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "heading_level": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 2,
+            "maximum": 4
+          },
+          "content": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "product_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "claim_keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  }
+}

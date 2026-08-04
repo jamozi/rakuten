@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/freshness-check-affiliate-link-v1.schema.json",
+  "title": "freshness.check_affiliate_link.v1",
+  "description": "Affiliate URLを改変せずdestination/reachabilityを検査する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "freshness.check_affiliate_link.v1"
+        },
+        "queue": {
+          "const": "freshness"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "offer_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "minItems": 1,
+              "maxItems": 500,
+              "uniqueItems": true
+            },
+            "check_method": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "offer_ids",
+            "check_method",
+            "reason"
+          ]
+        }
+      }
+    }
+  ]
+}

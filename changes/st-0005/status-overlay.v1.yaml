@@ -1,0 +1,3490 @@
+document:
+  id: RAOS-STATUS-REGISTRY-OVERLAY-001
+  version: 1.0.0
+  story_id: ST-0005
+  status: IMPLEMENTATION_CANDIDATE
+  generated_by: scripts/build_st0005_status.py
+base:
+  canonical_version: '1.0'
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  pinned_inputs:
+  - path: docs/canonical/00_master/RAOS_implementation_status_registry_v1.0.yaml
+    sha256: 1411f55ce60f6316e83567110fb2847e0db49239cb63dcabf9e81612c3b72ab8
+  - path: docs/canonical/01_integration/RAOS_07_status_taxonomy_v1.0.yaml
+    sha256: e3261a8a6102c1b93e6cc9006c52f01389ec31510e24ca37bc400437aebbf68b
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - path: docs/manifest.json
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+policy:
+  canonical_source_rows_and_files_are_immutable: true
+  effective_status_fields_change_only_via_apply: true
+  one_story_change_per_request: true
+  proposal_never_changes_effective_status: true
+  proposal_governance_fields: FORBIDDEN
+  proposal_sources:
+  - NOT_STARTED
+  - IN_PROGRESS
+  proposal_targets:
+  - IN_PROGRESS
+  - IMPLEMENTED_NOT_VALIDATED
+  proposal_verification_status: NOT_EXECUTED
+  apply_requires_pr_evidence: true
+  apply_requires_distinct_human_approval: true
+  authoritative_live_apply: BLOCKED_PENDING_GOVERNANCE
+  currently_executable_live_apply_transitions: []
+  live_apply_activation_requires:
+  - ST-0006
+  - ST-0107
+  deployment_apply_activation_additionally_requires:
+  - ST-1505
+  - ST-1506
+  - ST-1607
+  deployment_transition_pairs_in_offline_grammar: true
+  implementation_transitions_involving_deployed_statuses: BLOCKED_PENDING_TYPED_GATES
+  validated_and_production_requester_human_only: true
+  scope_transition_requires_human_requester: true
+  scope_transition_requires_pr: true
+  scope_transition_requires_distinct_human_approver: true
+  scope_transition_requires_separate_scope_authority_artifact: true
+  scope_verification_status_coupling:
+    DEFERRED_POST_MVP: NOT_EXECUTED
+    OUT_OF_SCOPE: NOT_APPLICABLE
+    OUT_OF_SCOPE_EXIT: NOT_EXECUTED
+  formal_suite_pass_without_runtime_evidence: FORBIDDEN
+  verification_pass_requires_implementation_status:
+  - VALIDATED
+  - DEPLOYED_STAGING
+  - DEPLOYED_PRODUCTION
+  forward_validated_promotion_requires_verification: PASS
+  forward_deployment_promotion_requires_verification: PASS
+  verification_only_transition_does_not_change_implementation: true
+  snapshot_binding_story_class_suite_environment_result_time_formal: REQUIRED
+  snapshot_content_addressed_capture_path_and_sha: REQUIRED
+  content_addressed_capture_digest_uniqueness: ONE_FILE_PER_SHA256
+  status_evidence_atomic_identity_fields:
+  - story_id
+  - suite_id
+  - evidence_class
+  - source_capture_sha256
+  apply_status_evidence_atomic_identity_single_use: true
+  apply_evidence_identity_scopes:
+    status: STORY_SUITE_CLASS_CAPTURE
+    pull_request_uri: GLOBAL
+    pull_request_changeset: GLOBAL
+    approval_artifact: GLOBAL
+    production_governance_artifact: STORY_GOVERNANCE_ROLE_AND_ARTIFACT_SHA256
+    scope_decision_artifact: STORY_AND_ARTIFACT_SHA256
+  new_live_snapshot_original_path_and_sha: REQUIRED
+  offline_replay_uses_committed_capture: true
+  apply_status_evidence_must_postdate_active_observation: true
+  apply_status_evidence_must_postdate_latest_applied_approval: true
+  apply_evidence_valid_through_approval_decision: true
+  expires_at_strictly_after_observed_at: true
+  approval_decided_at_not_before_requested_at: true
+  apply_requested_at_not_before_prior_approval_decision: true
+  offline_replay_wall_clock_independent: true
+  live_future_request_observation_or_decision_timestamps: REJECT
+  evidence_expired_at_request_approval_or_live_reference: REJECT
+  explicit_null_temporal_or_governance_fields: REJECT
+  change_pr_scope_evidence_postdating_request: REJECT
+  approval_or_production_evidence_postdating_decision: REJECT
+  pull_request_uri_single_use: true
+  approval_artifact_single_use: true
+  production_governance_identity_scope: STORY_GOVERNANCE_ROLE_AND_ARTIFACT_SHA256
+  scope_decision_identity_scope: STORY_AND_ARTIFACT_SHA256
+  production_and_scope_artifact_cross_story_reuse: ALLOWED
+  scope_decision_separate_from_approval: true
+  expiry_invalidates_evidence: EXACT_ACTIVE_SET
+  expiry_requested_at_and_observed_at_must_be_at_or_after_active_valid_until: true
+  verification_evidence_coverage:
+    PASS: EXACT_REQUIRED_SUITE_SET
+    PARTIAL: NONEMPTY_REQUIRED_SUITE_SUBSET
+    FAIL: NONEMPTY_REQUIRED_SUITE_SUBSET
+    REGRESSION: NONEMPTY_REQUIRED_SUITE_SUBSET
+    EXPIRY: NONEMPTY_REQUIRED_SUITE_SUBSET
+    DEMOTION: NONEMPTY_REQUIRED_SUITE_SUBSET
+  verification_aggregate_result_contract:
+    PASS: ALL_REQUIRED_SUITES_PASS
+    PARTIAL: NO_FAIL_AND_INCOMPLETE_OR_AT_LEAST_ONE_PARTIAL
+    FAIL: AT_LEAST_ONE_FAIL
+  production_governance_artifacts:
+  - release_decision
+  - gate_report
+  - security_approval
+  - operations_approval
+  production_governance_artifacts_must_be_distinct: true
+  orphan_evidence_snapshot: REJECT
+  unknown_story_suite_status_field: REJECT
+  lost_update: REJECT
+  local_evidence_environment: LOCAL_NON_CANONICAL_NON_RUNTIME
+request_inventory:
+- request_id: STATUS-ST0001-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0001-st-0001.yaml
+  sha256: 577bbc41cd41dfcfe67d52a88858597ad65c28f576a3e57fb472aa4af16fc033
+  intent: PROPOSE
+- request_id: STATUS-ST0002-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0002-st-0002.yaml
+  sha256: cc8cec43ca836444a16dfc54d7de2e9f2cdec3f1ed7235d822e0284ea293cb67
+  intent: PROPOSE
+- request_id: STATUS-ST0003-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0003-st-0003.yaml
+  sha256: 84eb5935a9ba705b507b907609eeb8719db13856b0616da2921b50990866789e
+  intent: PROPOSE
+- request_id: STATUS-ST0004-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0004-st-0004.yaml
+  sha256: 2a74d146f17558a73cd4217b7fa8c00dd5e7a23d3fac55327e1b6618860192ed
+  intent: PROPOSE
+- request_id: STATUS-ST0005-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0005-st-0005.yaml
+  sha256: 45833c11eafabc344093c7c460eff74a05ec51cba62d51f7263f3c2aa52c7621
+  intent: PROPOSE
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0006-st-0101.yaml
+  sha256: 46b8e905b03f98b77c11e494a005e67c0c38ae046869231c737132b66158fce5
+  intent: PROPOSE
+- request_id: STATUS-ST0006-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0007-st-0006.yaml
+  sha256: f93880c46086f9f022616d9cf9033f4346988b48e414607ab929dc5e9aef9cb2
+  intent: PROPOSE
+- request_id: STATUS-ST0102-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0008-st-0102.yaml
+  sha256: 64fd609825d3a63845e5561b9251c7f02ea245202dff1d3a6fe6f8890df196c9
+  intent: PROPOSE
+- request_id: STATUS-ST0103-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0009-st-0103.yaml
+  sha256: d3889a41999a06ddd0ee2410e56127352098d0a6bd1747d05ba9cf4ec2c73213
+  intent: PROPOSE
+- request_id: STATUS-ST0104-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0010-st-0104.yaml
+  sha256: c718ee820906340f18a16ec97741a8f6315cc3e7ee8619450bae9e8780c04a10
+  intent: PROPOSE
+- request_id: STATUS-ST0105-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0011-st-0105.yaml
+  sha256: 6244e7bc15b9c68ecc5ddaee09a8ab59f9dc9091243a2cfecb91ff58424017af
+  intent: PROPOSE
+- request_id: STATUS-ST0106-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0012-st-0106.yaml
+  sha256: 75a2ef7eb0fe0bfdb7d427e68b9b3e354fdc0409cbb2043e21a42c50de008da4
+  intent: PROPOSE
+- request_id: STATUS-ST0107-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0013-st-0107.yaml
+  sha256: 74af8e5cbc68815d5a19dd8f7e5bf23a6ced68e210776fe8369cfdc12da35c49
+  intent: PROPOSE
+- request_id: STATUS-ST0201-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0014-st-0201.yaml
+  sha256: e520918eece6e78c0cb20cf530653ede70ca9cd83d4ffdcb27188fd686a44123
+  intent: PROPOSE
+- request_id: STATUS-ST0202-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0015-st-0202.yaml
+  sha256: 198d81567302d4518d95ce9677601c7a75d44fe5060a0915d7da5ba457d78a7c
+  intent: PROPOSE
+- request_id: STATUS-ST0203-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0016-st-0203.yaml
+  sha256: 591f8ac425278e9dd4de4ca2926f09fa4664479c40d7536c519f432233a117ad
+  intent: PROPOSE
+- request_id: STATUS-ST0204-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0017-st-0204.yaml
+  sha256: cafbd58828aaae884c99d08602120d8abbdf502672496bcda85ac70585287b03
+  intent: PROPOSE
+- request_id: STATUS-ST0301-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0018-st-0301.yaml
+  sha256: 6d6014b9265f9fc896baac71fc27afddb2d302627edb15256759f31ac40aa75f
+  intent: PROPOSE
+- request_id: STATUS-ST0301-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0019-st-0301-v2.yaml
+  sha256: 7e0103fce60ab61cdb133dbace91bda799f4e576a7f5197a50a7439e4a388153
+  intent: PROPOSE
+- request_id: STATUS-ST0302-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0020-st-0302.yaml
+  sha256: b6d45406c3d0916edf6d62c71e051833713a95021b3f203181756887931b906a
+  intent: PROPOSE
+- request_id: STATUS-ST0302-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0021-st-0302-v2.yaml
+  sha256: 5e3d8e74450bed3dd8fadd29ed675678fc6308e9f09c55077215c71bf8f87437
+  intent: PROPOSE
+- request_id: STATUS-ST0302-LOCAL-PROPOSAL-003
+  path: changes/st-0005/requests/0022-st-0302-v3.yaml
+  sha256: 5614c05ea248efdac5acfb76491d675983aaa05eac7352e462415b797152ee89
+  intent: PROPOSE
+- request_id: STATUS-ST0302-LOCAL-PROPOSAL-004
+  path: changes/st-0005/requests/0023-st-0302-v4.yaml
+  sha256: b6e5570d20576fee3ed71f32830dcb99894523c48f1fedccf5d656fdcc6737a9
+  intent: PROPOSE
+- request_id: STATUS-ST0202-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0024-st-0202-v2.yaml
+  sha256: 2ebfab74a9565849c8e733e8d9a88d6db405e6cdd4911cbe9bdcd78e1e2e394f
+  intent: PROPOSE
+- request_id: STATUS-ST0203-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0025-st-0203-v2.yaml
+  sha256: dc106895e47de5ba1b4003cb49fc8acb4de553a24a77439615da7609ef737ee1
+  intent: PROPOSE
+- request_id: STATUS-ST0204-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0026-st-0204-v2.yaml
+  sha256: becdc366edda622cd2864d14bc62e4b6066ee9920bfa9f035f90fe78dd7e475d
+  intent: PROPOSE
+- request_id: STATUS-ST0303-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0027-st-0303.yaml
+  sha256: 71a2d21da8c2685a6d00e3aeb7b7f7046e7247c546321d91e02c3d50da4ba744
+  intent: PROPOSE
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0028-st-0101-v2.yaml
+  sha256: 92210293a3d387512bb2543bee8cf2bbd24e22c8fbd3aa1b09d11942f471d963
+  intent: PROPOSE
+counts:
+  story_rows: 129
+  test_suite_rows: 32
+  environment_rows: 6
+  proposal_requests: 28
+  applied_requests: 0
+stories:
+- story_id: ST-0001
+  base_record_sha256: 72856e56b2ef64e6955a5db2a4e57f6d538b1011d4d21a34bf9751726bbee287
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-001
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0001-LOCAL-PROPOSAL-001
+- story_id: ST-0002
+  base_record_sha256: fe647c8fe92d190a28e273bc366042351259f8e31e1e8a493c576fc4a37285ae
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-002
+  - TST-008
+  - TST-010
+  - TST-013
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0002-LOCAL-PROPOSAL-001
+- story_id: ST-0003
+  base_record_sha256: 0a67c14a18eed80ff424ef904de0dc7eed842fb2b507949f869729a54357a857
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-002
+  - TST-003
+  - TST-008
+  - TST-012
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0003-LOCAL-PROPOSAL-001
+- story_id: ST-0004
+  base_record_sha256: 2b4c054e0d522a0a009b30f7061de6e360a5ad91e75a4c8b125f439ea8ca7c8a
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-002
+  - TST-003
+  - TST-008
+  - TST-020
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0004-LOCAL-PROPOSAL-001
+- story_id: ST-0005
+  base_record_sha256: ae742e42d859925fcfe6be7710a28799ef57f646e1970591871ca01ee7813f93
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-001
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0005-LOCAL-PROPOSAL-001
+- story_id: ST-0006
+  base_record_sha256: ada9e5888d0c7da7b1f8cc933c59ea7c2f39f9feae4afef905aa9d71ebdaf680
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-032
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0006-LOCAL-PROPOSAL-001
+- story_id: ST-0101
+  base_record_sha256: 33d7ca28cf280f5844a24095ffe5cc7e3b2a32f88511e0b2af5d100bff11e4ee
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-001
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0101-LOCAL-PROPOSAL-001
+  - STATUS-ST0101-LOCAL-PROPOSAL-002
+- story_id: ST-0102
+  base_record_sha256: 47e787b90474910e1d8a4cf26bef47bf5533e81d362022c37530aab693fe6db1
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-001
+  - TST-005
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0102-LOCAL-PROPOSAL-001
+- story_id: ST-0103
+  base_record_sha256: 38a9749db92f56db7724e1d21acbe3181e0844c3bb44194d464ef6348af786f9
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-001
+  - TST-006
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0103-LOCAL-PROPOSAL-001
+- story_id: ST-0104
+  base_record_sha256: 239dd54874556663dbfc226ed4e2987f26ad35efdf57fff18d99185c1dc24520
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-002
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0104-LOCAL-PROPOSAL-001
+- story_id: ST-0105
+  base_record_sha256: 73f9afcbe683fe3c45cec339451802e1d202307967c650e91bbf612448fd3721
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-004
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0105-LOCAL-PROPOSAL-001
+- story_id: ST-0106
+  base_record_sha256: 2ecdd2ead0d9d364a00a333c2d9e5335b93c5f9e149075095dcceba48195d104
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-001
+  - TST-002
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0106-LOCAL-PROPOSAL-001
+- story_id: ST-0107
+  base_record_sha256: dd06d75e143d9afdade20aae6aff5ebd2d70368f2210f1c8e8a65664765c95da
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-001
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0107-LOCAL-PROPOSAL-001
+- story_id: ST-0201
+  base_record_sha256: f289c5dc2e56994911cb5b49b4479a0bd21d851b305e4139603208bf662d78b0
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-008
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0201-LOCAL-PROPOSAL-001
+- story_id: ST-0202
+  base_record_sha256: ab17a2dfee0049cfecb31836912b286e6bc632859abbcaf355e784894e0c88e8
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-014
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0202-LOCAL-PROPOSAL-001
+  - STATUS-ST0202-LOCAL-PROPOSAL-002
+- story_id: ST-0203
+  base_record_sha256: fc907cbad7494c759fbc985c3fb194e40b884dd97dec79795c0e1c7306b04c47
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-013
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0203-LOCAL-PROPOSAL-001
+  - STATUS-ST0203-LOCAL-PROPOSAL-002
+- story_id: ST-0204
+  base_record_sha256: 84ef3af81602e048591c6ae207cbd01969bfe86ee720c24fa4f53c3aea24a15e
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-031
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0204-LOCAL-PROPOSAL-001
+  - STATUS-ST0204-LOCAL-PROPOSAL-002
+- story_id: ST-0205
+  base_record_sha256: 6b47e248255dacf57297a14e9d68665b13eb098e0bfddc739ea20541c284d77d
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-031
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0301
+  base_record_sha256: 66f06e1fd191bf7d198cd9ea33155501ab64e04f472e37074c4978828c1dde90
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-008
+  - TST-009
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0301-LOCAL-PROPOSAL-001
+  - STATUS-ST0301-LOCAL-PROPOSAL-002
+- story_id: ST-0302
+  base_record_sha256: e7aabea87687b30045985631c1b7e5610bef8e55ffa6acccfc174335f46bb836
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-008
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0302-LOCAL-PROPOSAL-001
+  - STATUS-ST0302-LOCAL-PROPOSAL-002
+  - STATUS-ST0302-LOCAL-PROPOSAL-003
+  - STATUS-ST0302-LOCAL-PROPOSAL-004
+- story_id: ST-0303
+  base_record_sha256: df42fabd7e5e56e1a5a3d271072bfe602eeb764a02f4c239b539906b136de0ff
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-008
+  - TST-011
+  - TST-013
+  open_decisions: []
+  proposal_request_ids:
+  - STATUS-ST0303-LOCAL-PROPOSAL-001
+- story_id: ST-0304
+  base_record_sha256: c0565ffe285a2a2752a1d0f86c590a2763a77d168a947776bc317d85ccf15679
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-008
+  - TST-010
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0305
+  base_record_sha256: 8b46b18543b3932dc4e0f610879b83695e14e651c09d4e6c21000636d7bdfde6
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-008
+  - TST-011
+  - TST-030
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0306
+  base_record_sha256: c6483ea355d587af0043d6ecbf21ff5e63e4c38871249f6197fc9d2040b92158
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-011
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0307
+  base_record_sha256: f734522e4d1418ed40bb1aeba6d7757b2fbc8442d14be0840ce7ce74cfd8b54a
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-010
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0308
+  base_record_sha256: 7b30ffd58010ee3e317517fa2fd5be8f68ca740bc71e6e9f8085ad3969038f99
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-008
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0401
+  base_record_sha256: 2632063e1f84717d8a9869287aad8928f5ca403705e433da6014449e6ea2aa44
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-022
+  - TST-026
+  open_decisions:
+  - OD-010
+  proposal_request_ids: []
+- story_id: ST-0402
+  base_record_sha256: 2e7691cff0fbd7ed07518455c2fd40846d93ad5114f5736f653160f558c0aa45
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-022
+  - TST-026
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0403
+  base_record_sha256: 625acd6dd4ddf1970abbf0bd0cc632c02f26aa7a24d6ba6d5974078d96df4743
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-011
+  - TST-012
+  - TST-026
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0404
+  base_record_sha256: 9bcc6f7542ec9a556e2f268067912397b3150cfe39c890816332a994984619d8
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-026
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0405
+  base_record_sha256: dea270ad25a4f9a397943ca13e3e36593310d30740dee53b38cadb97964016ea
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-011
+  - TST-012
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0406
+  base_record_sha256: 0a46850f9de27955e89d0b40cbfa9d17c16874fe440bd54c4e9c7cc74f175ee5
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-014
+  - TST-026
+  - TST-031
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0407
+  base_record_sha256: 1ab792fd3515b8afcf2da792bdf4661110e6cc5526d18b8c7f051239d6020207
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-026
+  - TST-031
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0501
+  base_record_sha256: 238d0bec2443fe22e14b6ef5a291730ee21bb28410c95ef7b3fe75208892a2f1
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-012
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0502
+  base_record_sha256: a4da17b81f3b08d2d2407c6b998d3abf4c185e3c02fac1fa0782c22b2582ad09
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-014
+  - TST-015
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0503
+  base_record_sha256: 5a99d5607de7750eb0c1226e214fa7f0e481f80c356e59b83e7d33a479184278
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-007
+  - TST-008
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0504
+  base_record_sha256: 7ec5ddff05d39356d16fd81be42956d2dfe844cb08d907f0fc49753f38cfc9dc
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-007
+  - TST-020
+  open_decisions:
+  - OD-006
+  proposal_request_ids: []
+- story_id: ST-0505
+  base_record_sha256: c73ec23740a4b4cbc899220e66ac0fba12f9815b9ae170988712aed2c85ea253
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-016
+  open_decisions:
+  - OD-015
+  proposal_request_ids: []
+- story_id: ST-0506
+  base_record_sha256: cc8adb3a3706c59b1d53c6577bb49d7ad5aa738af58e0624cf061ad7c0e7ec4c
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  - TST-023
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0601
+  base_record_sha256: 695b46b6255fa80f1c162478e8e8b313edadcd7b83ea08ae143195b8bce9e617
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-014
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0602
+  base_record_sha256: 1509ecfb67f21a45b38f2c7ee863238bc3b3430b03fd5f380d6d6da7556e5bae
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-007
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0603
+  base_record_sha256: e608f922be68fe81c99edc6dc5c36dcb2b928f86bb7fc90b91dbc65f374d650e
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-007
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0604
+  base_record_sha256: 90d95d84fbf743f3236cc3134b96fda70e80d1ce491ed931d0688956639c41bb
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0605
+  base_record_sha256: 0cfcf412a38f2c9896a0cffd1890f00bcf4134c1b58acf17baa8ded7bb65102c
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-020
+  - TST-021
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0606
+  base_record_sha256: ec82918b44718506ca96ecb0f5a1bb6d81177eae72f68ab56d1534f6195971bf
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  - TST-024
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0701
+  base_record_sha256: 28bd8268823fc5d5343a154f9b9bf7ffcf4df814fef3e372cd1c1ca97fea1af8
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-001
+  - TST-017
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0702
+  base_record_sha256: 54ec93c66b1412d81867bfa4b4d374f84603a85a9951b31ec14685ddd389401b
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-019
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0703
+  base_record_sha256: 606fbef1beeac2dc2f74991dcb1e5ff4094467999885b1d73c81af351391179d
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-017
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0704
+  base_record_sha256: 5aafd6c481d8826289ace2264c42c9215347f6bde83c421dfe2f8eb77f545f21
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-017
+  - TST-019
+  open_decisions:
+  - OD-009
+  proposal_request_ids: []
+- story_id: ST-0705
+  base_record_sha256: 8da876f264de3a92a5f31b41593a701d43e991d5e456952a304d2873cdd738b2
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-019
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0706
+  base_record_sha256: a9a09021bcdf115844d7627da38286d803328c4f30989b7e1fffc1f1c391c4ec
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-013
+  - TST-017
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0707
+  base_record_sha256: abdbbb7616f7de70284ec769d24e63ea79e2b38a768a5408128fb3d8b76ba610
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-018
+  - TST-019
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0708
+  base_record_sha256: efefddf642d43a4555f9f47897411cb8127fc5c1c7147142c47c7ac73bffaab2
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-018
+  open_decisions:
+  - OD-015
+  proposal_request_ids: []
+- story_id: ST-0709
+  base_record_sha256: 620baf5075552a81e06896993c05d49a70c6708aa89101cb6011534625c9a7cb
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0801
+  base_record_sha256: e73da1b262e8c07185c1912c4a0938cf25743faef4f771a7ba9a38030a3b5cff
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0802
+  base_record_sha256: 37cefb847606cba44720fbceb0af0e68d0eefb4fc2a107afbc756feab47e60ae
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0803
+  base_record_sha256: 8b953ac53fae8548b75a53c069e77e88a66ad97b6a6ce8ba5d33a9609484df2b
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-007
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0804
+  base_record_sha256: 0100ed6c2018dbaee4b008c2f871b95e034aef7e0c2ba10396e47fe335739e2c
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-007
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0805
+  base_record_sha256: 6da9d284c74cc8f93ce98e9f779451bbce7738bc19f9c44a7c183ac889917a78
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-019
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0806
+  base_record_sha256: 6ea953acfe8da9d5594b10cc78f46dd2e31865703d726d77d9b3b988796e5d36
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-018
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0807
+  base_record_sha256: 8703fe88a96950cd51924ad9821c15ba8634ca3148daedb65a17e5a6b6f50e91
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-020
+  - TST-022
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0808
+  base_record_sha256: b4777b7173115a7639321175cf2b30b9b97f6845b25964d123277ad49832b4e7
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-014
+  - TST-020
+  - TST-024
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0901
+  base_record_sha256: ffd5d7dc87522c600c9c6cd82324ddc87d9aaf00e21e55d932399d5ac8b2d148
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-011
+  - TST-012
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0902
+  base_record_sha256: 15a88f092344dabb982b939d5bddf1daa48658290f039ffda06d37947f515c3c
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-021
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0903
+  base_record_sha256: 3fd43e6f5b0201fd61bb91182e4451ab1051400a75c1603954f7a6be50aca9c0
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-014
+  - TST-021
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0904
+  base_record_sha256: d4c777972e7d687b1cd8f1865128dc31e12dcaef0d5856fc55ace63c9308931a
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-011
+  - TST-021
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0905
+  base_record_sha256: 8c0a8c4e41fab9121d6d36fa8d236cd70a202f25f1b58acc4df79b0e3fb78e7a
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-013
+  - TST-021
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-0906
+  base_record_sha256: 43f013aebafcedcfb098cf2f0db9896fee08d4ff058c8500985aee4124d1fe29
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  - TST-024
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1001
+  base_record_sha256: 8d7479941233a66dca2a95e390c8e2f5ef99612974cc32e9e71584cf8ff23eee
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  - TST-023
+  open_decisions:
+  - OD-002
+  - OD-012
+  proposal_request_ids: []
+- story_id: ST-1002
+  base_record_sha256: 155770f31afc85920b3862485d32403e5bd38f7950e750464b683da656cdf40d
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-021
+  - TST-022
+  - TST-023
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1003
+  base_record_sha256: 7fac4fa8c2636644916fa1ffefc829e5ff73bda8048149af2e96ebb5fe60b89f
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  - TST-024
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1004
+  base_record_sha256: 555901be4135e923dbd4b8ee45adbd6fd34dd74a6f0f90dcc7bc27f01198d692
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-020
+  - TST-022
+  - TST-026
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1005
+  base_record_sha256: aa405a09b23818478e50721c8c250160dd8fb9307358064db6cdefb6b4e780a2
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-020
+  - TST-022
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1006
+  base_record_sha256: 610e4a403c006b38a52971c31c2043103bbf7ff294bd3f1a0f836bad80081e11
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-027
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1007
+  base_record_sha256: f841d08e708a755adaff67d3ca8805e3131755e1b265ee281e7cc4821c62cb83
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-023
+  - TST-024
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1101
+  base_record_sha256: 349195df9fa1b45c7208e4d575ec5be9b280c456cd2b31cabdc0bb7dfbef6413
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-006
+  - TST-022
+  - TST-023
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1102
+  base_record_sha256: 6dda7f7b735284f4d8b23c30e7b2d864e40354ca49b5d6a608aad7d4cf2e623c
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  - TST-024
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1103
+  base_record_sha256: 4732abd678985154b901e1c16beea5329d03fea4ba34a9c4d32dd15edd4d53cb
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  - TST-024
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1104
+  base_record_sha256: 955d1522757ee71f541a7b588670010b1ef9d758062729dba54482f9a3171ec1
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  - TST-024
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1105
+  base_record_sha256: 29e54190365dfb491e68d82cff8e813f294e708d4f6a3d86e29c1d09b9229176
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-023
+  - TST-024
+  - TST-025
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1201
+  base_record_sha256: 2207b819e172f320e6960618d2c599e8ae07808affd3d5c796f86bcef9448f47
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-030
+  - TST-031
+  open_decisions:
+  - OD-012
+  proposal_request_ids: []
+- story_id: ST-1202
+  base_record_sha256: 7dc6c2628da315495e76008c1d72f0d50c54159200b0d5cb75dca7125c39f873
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-022
+  - TST-030
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1203
+  base_record_sha256: 3e933e8c02266ca87e7bafc5bef5830226e801f57f6e77ffe94d1763960d441b
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-030
+  open_decisions:
+  - OD-015
+  proposal_request_ids: []
+- story_id: ST-1204
+  base_record_sha256: ac9ce98429b907bbc287e921a4ffedae794af67493039f028ab2a556a956c8e9
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-030
+  open_decisions:
+  - OD-012
+  - OD-015
+  proposal_request_ids: []
+- story_id: ST-1205
+  base_record_sha256: b0805904543a5cb34a5ab92909b7b455eed3b1c8599694078e1b2e47d94b85db
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-030
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1206
+  base_record_sha256: d6ee6a17718cb823e4add76347a735e92839047ec7fb2e7e352d7717ece683bd
+  effective_implementation_status: DEFERRED_POST_MVP
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-030
+  open_decisions:
+  - OD-004
+  proposal_request_ids: []
+- story_id: ST-1301
+  base_record_sha256: 62779e861695e985838bc1b8f465fd4bf7381d3ea184ccd4939e6979c6e25bb2
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-026
+  - TST-030
+  open_decisions:
+  - OD-003
+  proposal_request_ids: []
+- story_id: ST-1302
+  base_record_sha256: 4c8864083d0633fbbfd07ee3f88dbe8bae8e3da4d020c1f5a9ab842e01fee2f0
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-008
+  - TST-030
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1303
+  base_record_sha256: dc655be896e68de7a4b8c53325b2e2dd95e23cb286b38026c4051ef42dd37026
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-007
+  - TST-030
+  open_decisions:
+  - OD-003
+  proposal_request_ids: []
+- story_id: ST-1304
+  base_record_sha256: 32c58ca4c6df0e81d8c8738a54e0e9676ce9b378812051dc214754981e82cdcb
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-030
+  open_decisions:
+  - OD-005
+  - OD-009
+  proposal_request_ids: []
+- story_id: ST-1305
+  base_record_sha256: 3def5842273653f2c07d104ff15ab94f17c87d3762cef01a8a1f2b21304a247b
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-030
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1401
+  base_record_sha256: d1fae07cade6e7bd91732406ec0b7f42242fd80d1b18479023a47446972f5b04
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-028
+  open_decisions:
+  - OD-007
+  proposal_request_ids: []
+- story_id: ST-1402
+  base_record_sha256: 27aae8c1e7c199eb40f94f92bb7a364e05da8e6266477fdeb2a23ee260d86bc9
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-020
+  - TST-021
+  - TST-028
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1403
+  base_record_sha256: 0ed634d02e8c0b31ad38af4171173457c53f0c800e9c8c1fda4fe54b72f02028
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-020
+  - TST-021
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1404
+  base_record_sha256: 37a5f501a17db54e865ebc19ec9bd16ec8fc6ed488d1af980b485e6b80138446
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-013
+  - TST-028
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1405
+  base_record_sha256: 7664dbea0396c635d37e182be5e52c5a5afb28e7cff47f8029bbab31990236b2
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-022
+  - TST-028
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1406
+  base_record_sha256: fc2d67db99247280e5d38e9d16065dfeb2d1a1fef892bcc0d9144026961f8dca
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-012
+  - TST-028
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1407
+  base_record_sha256: f6328c8189f789fa8d68842e0aa84f9b6e05816a92ead2714d9fb3d60f2d9229
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-005
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1501
+  base_record_sha256: e1e91eb9b2fdeff1c5d5d63943b641d3254c01b37a669c13ba5041c7e85c159a
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-026
+  open_decisions:
+  - OD-013
+  proposal_request_ids: []
+- story_id: ST-1502
+  base_record_sha256: 51736f6682e55b91d58600bcfb252eb47e7147131d963f46b2a77f5db642397c
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-026
+  - TST-029
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1503
+  base_record_sha256: 036e00aed83fcf1b028795d40e29701898ec125ab2b83dbc3fcdd8883833c868
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-026
+  - TST-027
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1504
+  base_record_sha256: 7e1f0d25542d583a6ff46230efa75b282df886624bb68f2988b4aa21d7a75d0a
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-026
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1505
+  base_record_sha256: 7b923b39d5595e9ab5456ecceaa18cee954401b77dc58438c6d43448b08b9afd
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-009
+  - TST-022
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1506
+  base_record_sha256: d77f26be65c796e167906e4419c105d4f72d79e184db59aa24077f0ebf6961da
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions:
+  - OD-009
+  - OD-011
+  - OD-013
+  - OD-015
+  proposal_request_ids: []
+- story_id: ST-1601
+  base_record_sha256: 372be155f3ba4a17679bb561b2437073353f54ff07284e3226163eba7fa01bfb
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-031
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1602
+  base_record_sha256: e94597d1236faef7f6cdde5b980a6f8f9959655800f3abe031a0330d3e6f6e3c
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-027
+  - TST-028
+  open_decisions:
+  - OD-011
+  proposal_request_ids: []
+- story_id: ST-1603
+  base_record_sha256: 7ccb0e02b27aa296397cb7409adc7cf0cdd1acaf4124919d4c2c722ae800ca96
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-026
+  - TST-031
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1604
+  base_record_sha256: 07346dffe9c038b8e6ec0dd920c87b25766021c1a69aaa87b18e2ed95d54a7d2
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-027
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1605
+  base_record_sha256: 1a5480de54b62f1bc576851b71eaccbf654b9f361282d56fc7d88e10a8002c35
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-028
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1606
+  base_record_sha256: 31782b9016642a88e6c89490ed16982f908ad7783302ff1b2bcff64254239cf4
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-029
+  open_decisions:
+  - OD-014
+  proposal_request_ids: []
+- story_id: ST-1607
+  base_record_sha256: d53894f3afa6c36f55e9229f799a9e67d73d7343da5298906cf178afe925108e
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1701
+  base_record_sha256: fccd0c06ce4d214ccd765c04d650e4cc04f8e80ad88fca6727aa1bbb3460719f
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions:
+  - OD-001
+  - OD-002
+  - OD-005
+  - OD-006
+  - OD-007
+  - OD-008
+  - OD-009
+  proposal_request_ids: []
+- story_id: ST-1702
+  base_record_sha256: 4f6d2d7426ba89c2228e5fdd76971d20f185632fb6b8780c04c96e82abd7dc57
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-020
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1703
+  base_record_sha256: e3bbb51362f5227268f85205e788c147878f3a4474256d96609a25147be5906b
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-021
+  - TST-022
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1704
+  base_record_sha256: 30529557666b52930bb70743ae84931ff557244aa6ee5321846ee30c047fef4b
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-018
+  - TST-020
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1705
+  base_record_sha256: 9a115574f0f656890cbfe40289937896939e469a77d25f34f34c692e60dc8c9b
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-026
+  - TST-029
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1801
+  base_record_sha256: a7e1f61349deaac871a80d12751aa254e48b44aa0c67d9003188779842b3376c
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-020
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1802
+  base_record_sha256: 474ef4e8088d24a150defcc536526f8f5f3e4e42104b7be750be44616a92e185
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1803
+  base_record_sha256: 5a10c50cd9c92f1528c751951389a52fca9c514f05da003f8d8be81da43bf7bb
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-030
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1804
+  base_record_sha256: 1794dffc187a4c10711cdd89c32c9daa60c2c7300f233ffcb6cc97b95de0a1b2
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-030
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1805
+  base_record_sha256: f423702d64ada3053c2d9804b289e94a9c24c0c3d09051e5bb685974f0db43b2
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1901
+  base_record_sha256: b1e29447399751f7ae1094c3c9436e047fb334fab88ee81f8abbd12a5388be2e
+  effective_implementation_status: DEFERRED_POST_MVP
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1902
+  base_record_sha256: 6c9a16ea5bef18379bbfd22b582f95cd973527719b64c3fa7350794bd81b5e96
+  effective_implementation_status: DEFERRED_POST_MVP
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1903
+  base_record_sha256: 4fe729deef76d6e4d7d16d2715f817affcf79f89da3a8d1cab9939a27f57fadd
+  effective_implementation_status: DEFERRED_POST_MVP
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1904
+  base_record_sha256: 91752dd798f5e2bb3e3b70b9978e626bffbc5698543505a98d074dd08ff3b03e
+  effective_implementation_status: DEFERRED_POST_MVP
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1905
+  base_record_sha256: 484da2e4204f4d2f667168a0a7a75230b95bfd3409d9ddaa390a693711887b57
+  effective_implementation_status: DEFERRED_POST_MVP
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1906
+  base_record_sha256: a1e13848e7d1cdb75bc8939c490edcb04d466d1929bbb84a1fcdfbd8fcfcb257
+  effective_implementation_status: DEFERRED_POST_MVP
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1907
+  base_record_sha256: 77d964e2055469b6095ece00a80b2c642183fbc30479b84a5eb198796b056d68
+  effective_implementation_status: DEFERRED_POST_MVP
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+- story_id: ST-1908
+  base_record_sha256: f75dc620f4b7587a2c8139421ef3f96aae27c0c4e1c2a1dc2b8863e92aa8c69f
+  effective_implementation_status: DEFERRED_POST_MVP
+  effective_verification_status: NOT_EXECUTED
+  required_suites:
+  - TST-032
+  open_decisions: []
+  proposal_request_ids: []
+test_suites:
+- suite_id: TST-001
+  base_record_sha256: e4afb06c0af3db4c136d1a105bfe9a068e06798efb25de98d1c7e86624991186
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-002
+  base_record_sha256: 1db36b6831bb6c79b51ea1d6cd7bb40c4f4304329802e132029efa70b712881a
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-003
+  base_record_sha256: 4472aec326198ff5f231a9aa5099af8ca0989c5da726a56f16f27bcd130bbf53
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-004
+  base_record_sha256: d239d413bacb1f07cd54638f850d9cc785d5b539836cf471621099727fe24a1b
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-005
+  base_record_sha256: 6ad5bfdb6ede6d5e94d433db8322d3f3925f4d38cfc0da782c4215b1c991de05
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-006
+  base_record_sha256: 9680cf23dd573d6947c87b13c59119c2d01a3ea31567cf7fdfcd2a5f676733c9
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-007
+  base_record_sha256: b00c4d1d107a3728ae8a8fb671a65c99b94cc48fb5d46953a129c67417f8fb93
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-008
+  base_record_sha256: 0fef6a23e24876bb67d09c50c708f08e53a35f518b78eac33fedf49c02a3a8f1
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-009
+  base_record_sha256: a450d257c937199b113659e4f70458cca0e90d4ca49aa7332036aa4be63a9fb0
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-010
+  base_record_sha256: 214ef4aaa4199e8012140abf8c0ffed7b2df8a4e6fb8679ecf77441f0433838f
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  - staging
+  canonical_environments:
+  - CI
+  - STAGING
+- suite_id: TST-011
+  base_record_sha256: 72503dd90dc034722fb9b2d7ee016072f86b0eba6d75c61e21f16e29b98b59e9
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-012
+  base_record_sha256: 025ca7b8d2dc4d9e711bd91da7cd29fb07f99bf50a52b156b630e752774ff29e
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-013
+  base_record_sha256: aa0c65753e1de8e88e2121efc97860c4fbcdbc333b98c01a329cb1f75db14257
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-014
+  base_record_sha256: a6e03f42bc4b09f9463a285d1bb64af4243c17b0fff06471e6124b4bd7170c7d
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-015
+  base_record_sha256: 9357da67f5615a4f921efdfc3f6e8557b09d3fface97d55d2d7fb15819670ff9
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-016
+  base_record_sha256: e6ffecc322485cc93113dba337ec0db4f936dbefba1fd79908687daf9032ae45
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - staging
+  canonical_environments:
+  - STAGING
+- suite_id: TST-017
+  base_record_sha256: 9d73c9aac9537923dc2d7847fbed7ae3c758e58c2fc9f676360f32c87dc1c9f2
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-018
+  base_record_sha256: 77b1b03f199e3d4dbbb6f85ceb6d299d51bd964b1829efe1f3a190c501dc592e
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - staging
+  canonical_environments:
+  - STAGING
+- suite_id: TST-019
+  base_record_sha256: 56f4caa4747f614830df7f5a794c2a4f1b71572c2ef744cbbfced370061cf1c2
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  - staging
+  canonical_environments:
+  - CI
+  - STAGING
+- suite_id: TST-020
+  base_record_sha256: 404ba66d88cd522263d1fd3971f55af392d270e2bd6ac3993a4d81d0f8bb0c5d
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-021
+  base_record_sha256: 8faeeaaf3a7498d91933faa7460df08a9610ef2a13fd3a621f48b4ac230b8bc7
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  - staging
+  canonical_environments:
+  - CI
+  - STAGING
+- suite_id: TST-022
+  base_record_sha256: 5dd9cca5fc2d44d6cac4c0ce3f413899b412cffaf665b80ac3b51b90a682da45
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  - staging
+  canonical_environments:
+  - CI
+  - STAGING
+- suite_id: TST-023
+  base_record_sha256: 1b4c1b47bb084719a1ea58fcc471b0a388d21dcbc43310dcd6b6009dc23936b8
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-024
+  base_record_sha256: 60edf81137c502e60dc23f129280f0618cba0058ee3679e892eab058239b94e1
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - staging
+  canonical_environments:
+  - STAGING
+- suite_id: TST-025
+  base_record_sha256: d5d30cb02f27717e023347db053bb441aead07afa1f491e4adee9ca3969cae99
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  canonical_environments:
+  - CI
+- suite_id: TST-026
+  base_record_sha256: 641e58304643f6abd1fad19632e435631dc3044de5b8169f0ed735b45851f796
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  - staging
+  canonical_environments:
+  - CI
+  - STAGING
+- suite_id: TST-027
+  base_record_sha256: 03d1cccd195656034531868d255c8a079818187223e4bd5129afd214682d8389
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - staging
+  canonical_environments:
+  - STAGING
+- suite_id: TST-028
+  base_record_sha256: 674e247a2c9d92eb29ecb45a74fbe15bbf3d994e66a14bf39fc15657ef10f8f3
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - staging
+  canonical_environments:
+  - STAGING
+- suite_id: TST-029
+  base_record_sha256: 3c2a357fac8604d2c675677860e4aea4922a0efb580be8987a8e77a99b616302
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - staging/recovery
+  canonical_environments:
+  - RECOVERY
+- suite_id: TST-030
+  base_record_sha256: 6988dd83e5032e0aba581c6a91dc350a0064b4d5a5aa49a8e876ece913e4d1fc
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  - staging
+  canonical_environments:
+  - CI
+  - STAGING
+- suite_id: TST-031
+  base_record_sha256: d530ee79603abbc0d5034f64c37c9ec900cac6367da19a70256f1fa7770eac20
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - CI
+  - staging
+  canonical_environments:
+  - CI
+  - STAGING
+- suite_id: TST-032
+  base_record_sha256: 6f827e35283a60debc64d19dda12c6084c805683174f856f5e10ca5fe8d79a77
+  effective_implementation_status: NOT_STARTED
+  effective_execution_status: NOT_EXECUTED
+  canonical_environment_labels:
+  - staging
+  canonical_environments:
+  - STAGING
+environments:
+- environment_id: DEV
+  base_record_sha256: 4f85d2ede2aee2cafbd8ad708ada1e91c40fe0396b830ad9c9f30353c8028b4a
+  effective_status: NOT_CONFIGURED
+  effective_runtime_validation: NOT_EXECUTED
+- environment_id: CI
+  base_record_sha256: 19bf226b5a2ae40111f9678dc8bca9d4ea8f7b49a8da302abac8c5275fd2e9ee
+  effective_status: NOT_CONFIGURED
+  effective_runtime_validation: NOT_EXECUTED
+- environment_id: INTEGRATION
+  base_record_sha256: 84318d8acd6cb94d63f078fd0e53925438ddbf933f9fab42fa46b42b9df4fcb6
+  effective_status: NOT_CONFIGURED
+  effective_runtime_validation: NOT_EXECUTED
+- environment_id: STAGING
+  base_record_sha256: 7e7423dd7a302a1dec72fd4edcbefe51987ccf3d9f8a85189e97e8dd1c4d1047
+  effective_status: NOT_CONFIGURED
+  effective_runtime_validation: NOT_EXECUTED
+- environment_id: RECOVERY
+  base_record_sha256: 96531074cfed934f0d640640ce260f502982c52a17a56309ecbce5b2266582c2
+  effective_status: NOT_CONFIGURED
+  effective_runtime_validation: NOT_EXECUTED
+- environment_id: PRODUCTION
+  base_record_sha256: 7f9efcb6cdddad82b5bc9248f2e622e81451d7657df49e6f5c7877c18cf1cfa5
+  effective_status: NOT_CONFIGURED
+  effective_runtime_validation: NOT_EXECUTED
+transition_control:
+  sequence: 0
+  history_head_sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  last_requested_at: null
+  last_decided_at: null
+  consumed_evidence_identities: []
+  story_invalidation_watermarks: {}
+  story_active_evidence_sha256: {}
+  story_active_evidence_observed_at: {}
+  story_active_evidence_valid_until: {}
+proposals:
+- request_id: STATUS-ST0001-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T13:38:46Z'
+  reason: Record completed local ST-0001 implementation evidence without claiming PR or CI execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0001
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0001-local-20260801.yaml
+      sha256: c49f4baf42595c177f674a4685227f0efb44b818344bff8e8dba23508d6f124b
+      observed_at: '2026-08-01T13:11:19Z'
+      snapshot_artifact_sha256:
+      - 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+      - 3e0e839c52626d0251b16ebbf8066f25d541d47ff97ca53875b20605239b36b7
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0002-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T09:00:00Z'
+  reason: Record completed local ST-0002 implementation evidence without claiming formal Suite execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0002
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-002
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0002-local-20260801.yaml
+      sha256: b915e1096c8c6c286d0de27c5bdda6e05ba2801dec9f99452201b8d7c4766921
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 9bdc2cb3a99d54b1f8b2c711b56294c888a783384581ff386b2a3456c82c6a1d
+      - ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+      invalidates_evidence_sha256: []
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0002-local-20260801.yaml
+      sha256: b915e1096c8c6c286d0de27c5bdda6e05ba2801dec9f99452201b8d7c4766921
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 9bdc2cb3a99d54b1f8b2c711b56294c888a783384581ff386b2a3456c82c6a1d
+      - ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+      invalidates_evidence_sha256: []
+    - suite_id: TST-010
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0002-local-20260801.yaml
+      sha256: b915e1096c8c6c286d0de27c5bdda6e05ba2801dec9f99452201b8d7c4766921
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 9bdc2cb3a99d54b1f8b2c711b56294c888a783384581ff386b2a3456c82c6a1d
+      - ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+      invalidates_evidence_sha256: []
+    - suite_id: TST-013
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0002-local-20260801.yaml
+      sha256: b915e1096c8c6c286d0de27c5bdda6e05ba2801dec9f99452201b8d7c4766921
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 9bdc2cb3a99d54b1f8b2c711b56294c888a783384581ff386b2a3456c82c6a1d
+      - ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0003-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T09:00:00Z'
+  reason: Record completed local ST-0003 implementation evidence without claiming formal Suite execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0003
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-002
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0003-local-20260801.yaml
+      sha256: af9e2fa3a3c2e92a658cc741eaf1bcd65464a87ced7928da0fb26a46690dcaed
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+      - a19c377c2b7c0626b72617dcc74937bc8b1c245e3870f8f568af25dd15703104
+      invalidates_evidence_sha256: []
+    - suite_id: TST-003
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0003-local-20260801.yaml
+      sha256: af9e2fa3a3c2e92a658cc741eaf1bcd65464a87ced7928da0fb26a46690dcaed
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+      - a19c377c2b7c0626b72617dcc74937bc8b1c245e3870f8f568af25dd15703104
+      invalidates_evidence_sha256: []
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0003-local-20260801.yaml
+      sha256: af9e2fa3a3c2e92a658cc741eaf1bcd65464a87ced7928da0fb26a46690dcaed
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+      - a19c377c2b7c0626b72617dcc74937bc8b1c245e3870f8f568af25dd15703104
+      invalidates_evidence_sha256: []
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0003-local-20260801.yaml
+      sha256: af9e2fa3a3c2e92a658cc741eaf1bcd65464a87ced7928da0fb26a46690dcaed
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+      - a19c377c2b7c0626b72617dcc74937bc8b1c245e3870f8f568af25dd15703104
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0004-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T09:00:00Z'
+  reason: Record completed local ST-0004 implementation evidence without claiming formal Suite execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0004
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-002
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0004-local-20260801.yaml
+      sha256: 860dfae21091492cf6626c993ad034c156cd6fe65fe84b76c11c79f0dafc9bf1
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+      - e1f3611c844365a22928b02329cefbccf75e067f1472407b63f3e402c532be21
+      invalidates_evidence_sha256: []
+    - suite_id: TST-003
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0004-local-20260801.yaml
+      sha256: 860dfae21091492cf6626c993ad034c156cd6fe65fe84b76c11c79f0dafc9bf1
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+      - e1f3611c844365a22928b02329cefbccf75e067f1472407b63f3e402c532be21
+      invalidates_evidence_sha256: []
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0004-local-20260801.yaml
+      sha256: 860dfae21091492cf6626c993ad034c156cd6fe65fe84b76c11c79f0dafc9bf1
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+      - e1f3611c844365a22928b02329cefbccf75e067f1472407b63f3e402c532be21
+      invalidates_evidence_sha256: []
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0004-local-20260801.yaml
+      sha256: 860dfae21091492cf6626c993ad034c156cd6fe65fe84b76c11c79f0dafc9bf1
+      observed_at: '2026-08-01T08:00:00Z'
+      snapshot_artifact_sha256:
+      - 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+      - e1f3611c844365a22928b02329cefbccf75e067f1472407b63f3e402c532be21
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0005-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T13:49:30Z'
+  reason: Record the local ST-0005 validator implementation without claiming GitHub CI execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0005
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0005-local-20260801.yaml
+      sha256: cde214531a51dc16b6a9a72d84c5971fc41f2aa17568c834a083d0745902e596
+      observed_at: '2026-08-01T13:49:13Z'
+      snapshot_artifact_sha256:
+      - 07ca1592e4b6f202d54a9a547906a2a07cac7dfa29058a23d3c723ac23ba71d3
+      - 09a8fa75385ffcbbefefaa4287d2ebfa87c9423d74de6a070ed29dfad13a2329
+      - 13c36b2104ebf1d51b07f4774939e2ee89180d9d479f905176eaaa71dadd4f37
+      - 1a20f87f9fdd174ccd6fccada520e54e2634cf31c38c31b5401f6818ef43d8e5
+      - 2c6123dceddf12eed1eb107556d01b18dd76bb7832152682c1bcdf860d9c9cb8
+      - 2ece50f24abd906541623f448776d001bd6e03a4ee7a8d1a5a5477c4cd996529
+      - 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
+      - 4ad983a0a8c415d67cf25351f1cb037f959750622bb4a4e79e3c824dc8ff7ab6
+      - 70d68daedeeb12f30251713ef88dd5653dcf790766cd8261344d4c9ba841c348
+      - 82dac563b2c327e81cfa538d1212877da467ddbe8cf4d85862a39573a3a56849
+      - b3f15e47077f848c359b96637cb490696ec1769f53705cafb6feb5700a98c66e
+      - c02ea864f9c6c2fd36ac2438e5c613594aff0d72ebef771db3b873aa67446805
+      - d7cb4d77223cd7c889c403518684afb3a647cecb91e2be4072bda9c204dade7e
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T15:26:47Z'
+  reason: Record the local ST-0101 monorepo-layout implementation without claiming hosted-clone or formal
+    CI execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0101-local-20260801.yaml
+      sha256: 75a57160af7d22911e3c32b8e81a1b1075888826ba033163cd540809c5f5b126
+      observed_at: '2026-08-01T15:26:02Z'
+      snapshot_artifact_sha256:
+      - 096bf5bd989bce12d2351b2ef1f0496a442607cfbc6b6f38ce62ba6150fe22a3
+      - 20390aba67e8977bf67a5279762555f2a23fbea5b3c9fb714e2e6b58138d0be5
+      - 3aea38a612c5205555a7ac2eef4d4d4a91f65ef458592498550a54fc10843f05
+      - 68d57519c8b88eea73cd988ca981af2dc6be9f9adf68f878acf35df168d6a0c5
+      - 7888580935038a2f7a18d43c469ad4c8d6a4beec6acfc72995fff2710972a1c5
+      - af16bd735242206b9312dc142ec9515327eed15168dc3c68d1876bd7918dc6eb
+      - b57e05699f2b4b951f4ce97c0849e097c1e401230a4fe38cd67c7020d55183c1
+      - d7d7f30b8fc5b0e429fca9ffbd517cc3b279f408cf5efdbff12dc4cb8fe1510d
+      - ef354d29cee874ca17a66bb5ac2f9baf5b22110e4d211becc2138cd48c29d73e
+      - ff0e1424375791f0f49001b00d5811444bdca3dcad73f00ca26ca40f0f25844f
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0006-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T16:32:26Z'
+  reason: Record the local ST-0006 open-decision gate validator implementation without claiming formal
+    CI, staging, Gate, or release execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0006
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0006-local-20260801.yaml
+      sha256: 73f4abfd6eed32dabc5e1b71d3827d05fc1ed91d264407088a814becc7c97481
+      observed_at: '2026-08-01T16:29:59Z'
+      snapshot_artifact_sha256:
+      - 01b700550dc099a52f323e1b8231661c43d3b6151b7d5c9dd16158c9ae59e5d0
+      - 0b51046ac6b47ee607ac93e186824bffaf1f2aec19890622c86dcfeb25e396ba
+      - 0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f
+      - 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
+      - 53ab2467d53812a1718358e445cd8862d2079b084729e50df739005ba22bb8ce
+      - 81c37dcfc6fdabd9d9942e1ddadae040a24add3c1b760b80943eae0d3f10a133
+      - 8a2afda18352a16c42fb3626da5c3c51973f03b8f71dcbc49f74bbae96422f2d
+      - 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
+      - 9cf59bd6c3f57890b0812f9afb774a98faa613adfadd9479e8cf05ad575970c4
+      - 9daa416a900e8a055157bd0dd76ca5949398093e891b6950960362427de04c56
+      - bbff3aee2fb89a4ecf45bfb92550d06b3936cceb7f3bce247f45daf5b9ca82be
+      - cca8d351539812d072ef57f468259dee617d10e07e276cf72176df60f46069a0
+      - f0b16438a99f7a055ea7386420af2e7d32146d7db4357f9939c40580304270d2
+      invalidates_evidence_sha256: []
+    - suite_id: TST-032
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0006-local-20260801.yaml
+      sha256: 73f4abfd6eed32dabc5e1b71d3827d05fc1ed91d264407088a814becc7c97481
+      observed_at: '2026-08-01T16:29:59Z'
+      snapshot_artifact_sha256:
+      - 01b700550dc099a52f323e1b8231661c43d3b6151b7d5c9dd16158c9ae59e5d0
+      - 0b51046ac6b47ee607ac93e186824bffaf1f2aec19890622c86dcfeb25e396ba
+      - 0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f
+      - 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
+      - 53ab2467d53812a1718358e445cd8862d2079b084729e50df739005ba22bb8ce
+      - 81c37dcfc6fdabd9d9942e1ddadae040a24add3c1b760b80943eae0d3f10a133
+      - 8a2afda18352a16c42fb3626da5c3c51973f03b8f71dcbc49f74bbae96422f2d
+      - 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
+      - 9cf59bd6c3f57890b0812f9afb774a98faa613adfadd9479e8cf05ad575970c4
+      - 9daa416a900e8a055157bd0dd76ca5949398093e891b6950960362427de04c56
+      - bbff3aee2fb89a4ecf45bfb92550d06b3936cceb7f3bce247f45daf5b9ca82be
+      - cca8d351539812d072ef57f468259dee617d10e07e276cf72176df60f46069a0
+      - f0b16438a99f7a055ea7386420af2e7d32146d7db4357f9939c40580304270d2
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0102-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T18:05:30Z'
+  reason: Record the local ST-0102 pinned Python toolchain implementation without claiming formal CI,
+    native Windows, PostgreSQL 18.4, Gate, or release execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0102
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0102-local-20260801.yaml
+      sha256: 9fa76e66c26387f9b2c17cb4cc9cf8073bc25d2e9ddf3d045d14768504e8570c
+      observed_at: '2026-08-01T18:04:16Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 0448b7767a3f444fcaa6e96847746de5a00c930b04f00723ed97bd2d74a87d5b
+      - 08d9ab2b842c14499e70de7cbb3253fffed3ff118e7ebfcdf4e2199262dcf3ae
+      - 0ca4d1fea2cfa6eb82921ef72fd8ff927b9b1162641ce70de61fb07919adc173
+      - 1d00137988b8808cd6f30c7b7944bfc976f07dc70c7db7fc42cd21fffb3f6b76
+      - 357be7a75973adae64229e66d9aedcf566b939a904b8743c35389e2707704d4e
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 4047f942e41865afac8477b7ab5f58407430961d3361ceb4313adaf1798f8042
+      - 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+      - 72474fd1f3b6def7d66e08c382d3319c34fc76a7607b9d158b4db2a03b52bd46
+      - 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+      - 82acb8650986b321202e49d4ec5bb00ab2316d6be76ea5606e1f129f3fa9a90e
+      - 8c33d6f8fefcc597f6edfda573929c69677e9d0f2100cd0153f25980ebfc05e7
+      - 9618c9ad8bab5263a1f99b924a718181f7f824b1953e116c2d98e0d1c4d1cb22
+      - 97a94d29a9e7c3339f21958bfc878c8fcde9534e1f2492c2d784d5c04563ebaf
+      - b46e0a1d06ff4a5149d0aef8232aa6cb3253d11cad211c5cb53f48ee006adb04
+      - c5c406e624fe2cf0eaf73c0e9a03ede1e4ca9d0d1346f7a23cce8580e4fa8ab7
+      - e04bb962abb6d4f4a0c2cb7fbe6c536c5d5f8b2030a7623c0920b20392ac82f7
+      - e084ffff625be977e8766e222da83068827cae89b384f75003454d715dc1edbb
+      invalidates_evidence_sha256: []
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0102-local-20260801.yaml
+      sha256: 9fa76e66c26387f9b2c17cb4cc9cf8073bc25d2e9ddf3d045d14768504e8570c
+      observed_at: '2026-08-01T18:04:16Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 0448b7767a3f444fcaa6e96847746de5a00c930b04f00723ed97bd2d74a87d5b
+      - 08d9ab2b842c14499e70de7cbb3253fffed3ff118e7ebfcdf4e2199262dcf3ae
+      - 0ca4d1fea2cfa6eb82921ef72fd8ff927b9b1162641ce70de61fb07919adc173
+      - 1d00137988b8808cd6f30c7b7944bfc976f07dc70c7db7fc42cd21fffb3f6b76
+      - 357be7a75973adae64229e66d9aedcf566b939a904b8743c35389e2707704d4e
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 4047f942e41865afac8477b7ab5f58407430961d3361ceb4313adaf1798f8042
+      - 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+      - 72474fd1f3b6def7d66e08c382d3319c34fc76a7607b9d158b4db2a03b52bd46
+      - 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+      - 82acb8650986b321202e49d4ec5bb00ab2316d6be76ea5606e1f129f3fa9a90e
+      - 8c33d6f8fefcc597f6edfda573929c69677e9d0f2100cd0153f25980ebfc05e7
+      - 9618c9ad8bab5263a1f99b924a718181f7f824b1953e116c2d98e0d1c4d1cb22
+      - 97a94d29a9e7c3339f21958bfc878c8fcde9534e1f2492c2d784d5c04563ebaf
+      - b46e0a1d06ff4a5149d0aef8232aa6cb3253d11cad211c5cb53f48ee006adb04
+      - c5c406e624fe2cf0eaf73c0e9a03ede1e4ca9d0d1346f7a23cce8580e4fa8ab7
+      - e04bb962abb6d4f4a0c2cb7fbe6c536c5d5f8b2030a7623c0920b20392ac82f7
+      - e084ffff625be977e8766e222da83068827cae89b384f75003454d715dc1edbb
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0103-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T19:38:14Z'
+  reason: Record the local ST-0103 pinned Node toolchain implementation without claiming formal CI, native
+    Windows, PostgreSQL 18.4, Gate, or release execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0103
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0103-local-20260801.yaml
+      sha256: 107bfff2c8e1c96852c91e15c21137e967dbd61091ce0318f50172fd57682631
+      observed_at: '2026-08-01T19:36:40Z'
+      snapshot_artifact_sha256:
+      - 002b1eaf4f67c4abeaa6b5256192f1578895bd0f0f6d873d89802671e1b19d47
+      - 13b894498cbb2871cb007dea6a075361b994742daa803f15fe0f7e239462957b
+      - 187aa997d11344cf386d8e451c8e180aceeb5b87693f82b0db4cfb1ba4892939
+      - 1adebeb2e86c42777eb7f00ca3799dc4befe79a5874c35b310735d72a13bdaed
+      - 1d2f71d46998dcc86c67a2273df297684097959d520bd4351dc00d2819344c72
+      - 2501e5f9213f580b8c6a0f48b432f7142c16cbc892d5935c14ef496c4fba8afe
+      - 2a91225fa1bc429a4e27b39e5a05f4e8828d95e55644bf039abb61f588e4db44
+      - 3426315bb61467310fcc1fbf5710b3c15cbe3d6608004022d1ec5ac6c177c8e4
+      - 372d5ee3f5bd37104218d57c361d87ab35952434112476cc90dc1c24769c4498
+      - 40682ddf054c979724d03b83c315c91b489e6b24dff0018408c05ea0c68b32fd
+      - 6217c88002f988620fd27441cc9d8502d3772335a7373458fc04433827dfa0f5
+      - 67f9377fe9f2b1b96df3486afd48aa7b493f33703b3d0e812cc4716650d19efc
+      - 73771b301eb6d0b0c20a8bb83ed7d8a428e4d4fe3a099ab7e38aa07f2e54a3ae
+      - 7a1541b79457773e0370ff6fc4a10c5a89929ef3941f0ed6c3d0d73df0d7b138
+      - 7e56b9a858f835c9d3304d743cff5bfd96443c4670e01daac57d8fa77e1d2e53
+      - 8cd7b7d9b63d10971044c73238790c54bb159a9cb52747ed4f855c46e9778b93
+      - 90429ebc4cf97d1895e9d2723298be52c2640df5b771db9f5c98aafa32161f9f
+      - 923803074a4ca5cc71289ce8c3f2582b2fd5134a3c8b7a129853ba141af48dff
+      - a286f919a8295d40a07dcbea31cdc3cbd0f58a02886e8c085407f30177681a93
+      - a32e9a832992994f11cea10f70bd17f00ce6b88a9b30b35216c88bbf34130b7c
+      - b5452da2dce16fe725a2acc8ef8db8f492a6cd443b2a78a3e718099f1f672745
+      - b7f9550a16941cd20128e753d2001d67e97b2db7cf5676ab7ff03a89e442e1ed
+      - cedbe26c7cb2a491bcc0bfc8103e5902403a011e5f8456a09ded544da182874a
+      - dee4f70d0758dd7dec0a20d527d22ce4766236126a0f40ee3e69be8da2d3c78b
+      - f31b237c9295038657dabbfb8f2c87f91a7eae96a14a0f4fe5dbf9c8e5852117
+      - f85cb3c94118d49387e1e2aedb8f27ee16e73b1c1da3d74c22cd3bbd23507a32
+      invalidates_evidence_sha256: []
+    - suite_id: TST-006
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0103-local-20260801.yaml
+      sha256: 107bfff2c8e1c96852c91e15c21137e967dbd61091ce0318f50172fd57682631
+      observed_at: '2026-08-01T19:36:40Z'
+      snapshot_artifact_sha256:
+      - 002b1eaf4f67c4abeaa6b5256192f1578895bd0f0f6d873d89802671e1b19d47
+      - 13b894498cbb2871cb007dea6a075361b994742daa803f15fe0f7e239462957b
+      - 187aa997d11344cf386d8e451c8e180aceeb5b87693f82b0db4cfb1ba4892939
+      - 1adebeb2e86c42777eb7f00ca3799dc4befe79a5874c35b310735d72a13bdaed
+      - 1d2f71d46998dcc86c67a2273df297684097959d520bd4351dc00d2819344c72
+      - 2501e5f9213f580b8c6a0f48b432f7142c16cbc892d5935c14ef496c4fba8afe
+      - 2a91225fa1bc429a4e27b39e5a05f4e8828d95e55644bf039abb61f588e4db44
+      - 3426315bb61467310fcc1fbf5710b3c15cbe3d6608004022d1ec5ac6c177c8e4
+      - 372d5ee3f5bd37104218d57c361d87ab35952434112476cc90dc1c24769c4498
+      - 40682ddf054c979724d03b83c315c91b489e6b24dff0018408c05ea0c68b32fd
+      - 6217c88002f988620fd27441cc9d8502d3772335a7373458fc04433827dfa0f5
+      - 67f9377fe9f2b1b96df3486afd48aa7b493f33703b3d0e812cc4716650d19efc
+      - 73771b301eb6d0b0c20a8bb83ed7d8a428e4d4fe3a099ab7e38aa07f2e54a3ae
+      - 7a1541b79457773e0370ff6fc4a10c5a89929ef3941f0ed6c3d0d73df0d7b138
+      - 7e56b9a858f835c9d3304d743cff5bfd96443c4670e01daac57d8fa77e1d2e53
+      - 8cd7b7d9b63d10971044c73238790c54bb159a9cb52747ed4f855c46e9778b93
+      - 90429ebc4cf97d1895e9d2723298be52c2640df5b771db9f5c98aafa32161f9f
+      - 923803074a4ca5cc71289ce8c3f2582b2fd5134a3c8b7a129853ba141af48dff
+      - a286f919a8295d40a07dcbea31cdc3cbd0f58a02886e8c085407f30177681a93
+      - a32e9a832992994f11cea10f70bd17f00ce6b88a9b30b35216c88bbf34130b7c
+      - b5452da2dce16fe725a2acc8ef8db8f492a6cd443b2a78a3e718099f1f672745
+      - b7f9550a16941cd20128e753d2001d67e97b2db7cf5676ab7ff03a89e442e1ed
+      - cedbe26c7cb2a491bcc0bfc8103e5902403a011e5f8456a09ded544da182874a
+      - dee4f70d0758dd7dec0a20d527d22ce4766236126a0f40ee3e69be8da2d3c78b
+      - f31b237c9295038657dabbfb8f2c87f91a7eae96a14a0f4fe5dbf9c8e5852117
+      - f85cb3c94118d49387e1e2aedb8f27ee16e73b1c1da3d74c22cd3bbd23507a32
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0104-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-01T22:50:18Z'
+  reason: Record the local ST-0104 contract repository implementation without claiming formal TST-002
+    CI, PostgreSQL 18.4, hosted clean-clone, human approval, canonical apply, release, deployment, staging,
+    or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0104
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-002
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0104-local-20260802.yaml
+      sha256: ef22a9e21744de5070ad8982d967a7592bd87f0234975542103201d57a4e6126
+      observed_at: '2026-08-01T22:48:55Z'
+      snapshot_artifact_sha256:
+      - 02ee99518386af800123de67206ceb2b17a5e2a62ee36af6c5251c31617eb51a
+      - 1b8ccc6e34234b17536f2dd0eb3597142a32bd108438cd42471a5fca4c1a07ef
+      - 1e51183578c04e8e2d298811383a6113a07c1926c7cf4eb1bbf2212c85e3465a
+      - 2e268a72f2d35471c04f78f2cad0f967dc9687a668481858c7706b1ae1bc6522
+      - 36f71964c7306a452a84c1059873a52d09d5107f27b90044c11856a77dc64a6a
+      - 3deff820d0bdf3bd4eb8581834f3641b21a726fad5350d01c7c47f2cabdd23e7
+      - 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+      - 4948367c65e1ce06690e2cadc6e86fce1a6a6db55ef874ce4b78c0f472ce5f13
+      - 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+      - 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+      - 5fb9fb09e7f2d4104349c33b8390fc0db76e68a73f2702758c45a2222af4e748
+      - 6f38215e669a80ebd108fdcc7dce6ccbe60466440d886a756022ed5924302e6e
+      - 70fe355070bb9dd0617c2b1342e7346456a987f4eef01a334f525d09e237a16e
+      - 720253f63523cf18e83d550ffaec62918751b5dd186b8cdca562e3ba5e5fb92b
+      - a68acde58dc14acad895869d2e0fb795f317051bd5da2475ea2b9bee4804716b
+      - b5a35d387363bac569b64722d0954d5f3aa6581c1dfdc6ef9b9abf3386d8b55c
+      - ba28508ec42145b251da439b777398cd713e1618b9b998844b789b68e71fd40b
+      - c50c9b131023e673a08b7499faa22b026e684f56eef4ea7ce41df8b9fb5739d6
+      - cc21ea3f9f419bf5ecb95143d87e867c202103c8881a86365b69c21e6a41bdc1
+      - cfa8fe5768a1f812ad2f46bb85031402215e7a170a0d8f98a1496fde95cf98b5
+      - d4571a420e6ffb7fcc7066c95a6db1202f299a3c51daa103d0706bf30f95e626
+      - dd2698ae4ca80aa6c8f81d7fdc48ca1ed734d69513e83040e3b18873f3375592
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0105-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T05:34:18Z'
+  reason: Record the local ST-0105 deterministic Python and TypeScript contract generation implementation
+    without claiming formal TST-004 CI, hosted clean clone, human approval, canonical apply, release,
+    deployment, staging, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0105
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-004
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0105-local-20260802.yaml
+      sha256: 492c3439c0a891da2bf259aa800c9347c1dc84e6f564ace89c2464f8918522d2
+      observed_at: '2026-08-02T05:32:20Z'
+      snapshot_artifact_sha256:
+      - 062a51c0d5b0103cb3d75544ffe1be03d9ab4f5a87b5ee8738d1f8c702684ded
+      - 0b7d61befe5d7c20ca09d384ad73b3770a88a027e125e03f97a483990d529304
+      - 0c58c452e97a18556e94b4d679bce4a3a461f9d60de3be00aaadc4041ff702e3
+      - 15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de
+      - 20f056bd5b8459827139e30b9f88583fd7ff063a0173cdb6fadd4baab3680005
+      - 2671af34b8a3063cdf739491f0f519f72fad84712be07bd2c1b7791b420b2dc9
+      - 35bbe2059363745b373546627cf68282233cfe50dbde5cecefdcf360ddd140c0
+      - 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+      - 4553675f5a592c46e9c10f1507b21aa847705f0e4765ecaaa776b89ac3145ad2
+      - 491b9cbd2a9435c0ee442482514c4eaf4b1d4305c5e6d834abe4a7009fc4348b
+      - 49f22688be24044ea08a5d86ffaff4fb226016d886441f6c39867123eb875664
+      - 4a87010f9971fe80193fd1e0a13e6ad8bd38b37b1e4e36d9e319ab41a1a21ae0
+      - 4b0fe8dc6d88e787a37f5844d49f2e0e66ccc3d11f355f683b509a17f337ed1d
+      - 4e0e7dd8d2e66fb43614a91474039c048b098a2783bf3724459b1994c722ea05
+      - 50331e9a0d42d09fb479e181fd869a2b8e712cf34785e78d63f767060a920038
+      - 506ac1bb650ed20668a77a2958d5edc1bdd6482c3ad18a5f559e1d9fbeb8c05f
+      - 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+      - 595cdeb0963323b11a99afb2d419cba68339fad140b7fae3c18a9db9ee21493b
+      - 5d4c18eba6f4f03b73e6134a81bb426c34611e486a5acc690e7f5d116affb114
+      - 5df78661629d4ac57a0e16dd8cef8cf29ae453dc34dd66f274ac9bc1ee500d81
+      - 5fb45883baa517a55bd4f3ee1a1f9cd8a772cae656194c8fd248d71c1041de0d
+      - 67691ec3cbea53023055c5bbfb42b101e4e757e6344f5b92d83996ff60b1ac5a
+      - 766de70bda43fd5afe8bd8e8ec656289e7d79c5ba19ca3c3a09d1990642a33c2
+      - 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7
+      - 852746e773c2cd0ffe7c07f7533d2607aadd1c98f53273a0f0e2bac7f8e848b3
+      - 8dc7ac98a5b3a252444643c73b664fed4198e3061f9d54654c7f4e7539846c21
+      - 8e7e069afdfa96853940091d9aa7198ae9129ecd048c6b584e8f60f436781ba7
+      - 9391d92209c949a9672411e342f2d6570a110a83c6a82a5a2a8597bde90740e3
+      - c6d4c5459653e6bcaaf288de0e8396cc97b440706110619162f2bdb428b4916a
+      - c739ad95a22343a11caa96c259b82665b696546cb969e4dbac4b16f44f151261
+      - cde5569443cfda30acb59ee771567852ebff6f892264c5960df6688b3f0bb410
+      - d2251bc89081cef93bfa495b351f7a5b44b1216441dfb6c3c6b1a08be0f8fef3
+      - d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
+      - dde90fd7332134f79ff12d8b30830f19833530a6ac919e3b7cb2f904af49b256
+      - de0bc0893398efeb6268d444a16f1236adfbc222b6681f30d828e8adb6482530
+      - df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
+      - e31b90638c90a1c55317de31d6be8a780cb471445bd13549b93e6690436599f7
+      - f49eff9c197cf85a1536f85e7c41085be3a028804c26aab98bc36acab2ef40f5
+      - f9b7926a9d46f41f27038ed45add6d7cb3820a045a0fbac97f985b4b1207df5e
+      - fa00fcdee2e79bc91b24e7e00f8678176405fd93d756478e3dd3f3b13eb44ce4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0106-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T09:43:44Z'
+  reason: Record the local ST-0106 base pull-request CI implementation without claiming hosted GitHub
+    Actions, formal TST-001/TST-002, PostgreSQL 18.4, human approval, canonical apply, branch protection,
+    release, deployment, staging, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0106
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0106-local-20260802.yaml
+      sha256: daac6fb79843b0f624c275c98b33fd4a99a27acf7ab4f5b78693791f6cfd6d49
+      observed_at: '2026-08-02T09:41:51Z'
+      snapshot_artifact_sha256:
+      - 00d10142e631e222c01c3d0f6667d07a4c010e067bdd36e71196515b819c25cf
+      - 15afb87f63cc5c3d8a7dd919f043f63bf15d95d92d61a69555372519689d9e31
+      - 1e1c1681814865ba05238862b7eb7999a39b87a7844acb66d36e8b50d817d152
+      - 31a33c464cfc33b8a06c514eb43c1806693245f55a5f2da4ad86e3b15c87b45e
+      - 441e5fb781e6e9f7f0f4ac0306f3fe29e817265c205a6ca1eed1d9289d04dc7d
+      - 4fd2601278a0aeac3ae2584aaca2cd2ed412dd6d49b598978997efbb5db4a044
+      - 580267bcd708b7651656a2f7edd838d1b5832b4f25fc5753947aca3aeda61faf
+      - 5f04433a56241810a5cd7d9198519e8d6447714e74bae9c26df53c98344153cd
+      - 610631d8f8ff5cd0400d9615237252767d1a48528425289e7d0966b2769093f0
+      - 710ac4674eaad7bda8cf9440530d2fdfce11bf691fc95c07161ca0e9fc154fb2
+      - 80d256b766b1a82b6f3a1a1d7a13aa28d8ca65537e24118408954c8b8b656ea2
+      - 8302242b2106a38f27c7e781eb84e458be1db3f8a5344a5f77bc247cd2f9654a
+      - 8f779eb2803ed5e6fe2884da16f25372e201b01e3a2cf725ccf9beed3652532a
+      - 9c784f739b490bac141738f954f2d622f94408fcf24e6c42a21abe96a3ef7f04
+      - aba4ba1aa932fde937d7e2bf62d954930ef2e4b279fa0a156307ac643a13cd86
+      - b408360777f76ec93b582ca7e2ee5c9bf72b06fcbe9c76ebce2be71de4be319e
+      - b91848efa9a35fa703e3cad08f04336c14c05a0a3fd182e7c97e75a554e372a4
+      - c822f5176fe5c0f3737e39b2de94f6eba044b20365fc3207d59ec769421282f4
+      - cb2a77ffb08c6ab24e570327614d99672370ca691a6c551baeef696ccbf86403
+      - d35f9fc4766345a4520fa3ebc1e1f50671e3b42eb317fb0b4b2019a138655e58
+      - dba5e94ad4a3e25198679e53eaffd27cfb46a4cbd2829348b8d4be644e40332c
+      - f207276f58db731e8304756e853171d99dc689257bfc87fdd08534d7be0130dc
+      - f283d73aee7cfa1354d751dfda67a6189f603fac1b02d98ce3cf63529b9cb6c8
+      - f2b57ad30638de2cc33e30798460e98c1fcd78a56c39bfb821054b98d2415d3b
+      - fca4d51e96e0a1ff406bdaaf9de06629d4778f5d524f937a6b88faa4a9a9cb44
+      invalidates_evidence_sha256: []
+    - suite_id: TST-002
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0106-local-20260802.yaml
+      sha256: daac6fb79843b0f624c275c98b33fd4a99a27acf7ab4f5b78693791f6cfd6d49
+      observed_at: '2026-08-02T09:41:51Z'
+      snapshot_artifact_sha256:
+      - 00d10142e631e222c01c3d0f6667d07a4c010e067bdd36e71196515b819c25cf
+      - 15afb87f63cc5c3d8a7dd919f043f63bf15d95d92d61a69555372519689d9e31
+      - 1e1c1681814865ba05238862b7eb7999a39b87a7844acb66d36e8b50d817d152
+      - 31a33c464cfc33b8a06c514eb43c1806693245f55a5f2da4ad86e3b15c87b45e
+      - 441e5fb781e6e9f7f0f4ac0306f3fe29e817265c205a6ca1eed1d9289d04dc7d
+      - 4fd2601278a0aeac3ae2584aaca2cd2ed412dd6d49b598978997efbb5db4a044
+      - 580267bcd708b7651656a2f7edd838d1b5832b4f25fc5753947aca3aeda61faf
+      - 5f04433a56241810a5cd7d9198519e8d6447714e74bae9c26df53c98344153cd
+      - 610631d8f8ff5cd0400d9615237252767d1a48528425289e7d0966b2769093f0
+      - 710ac4674eaad7bda8cf9440530d2fdfce11bf691fc95c07161ca0e9fc154fb2
+      - 80d256b766b1a82b6f3a1a1d7a13aa28d8ca65537e24118408954c8b8b656ea2
+      - 8302242b2106a38f27c7e781eb84e458be1db3f8a5344a5f77bc247cd2f9654a
+      - 8f779eb2803ed5e6fe2884da16f25372e201b01e3a2cf725ccf9beed3652532a
+      - 9c784f739b490bac141738f954f2d622f94408fcf24e6c42a21abe96a3ef7f04
+      - aba4ba1aa932fde937d7e2bf62d954930ef2e4b279fa0a156307ac643a13cd86
+      - b408360777f76ec93b582ca7e2ee5c9bf72b06fcbe9c76ebce2be71de4be319e
+      - b91848efa9a35fa703e3cad08f04336c14c05a0a3fd182e7c97e75a554e372a4
+      - c822f5176fe5c0f3737e39b2de94f6eba044b20365fc3207d59ec769421282f4
+      - cb2a77ffb08c6ab24e570327614d99672370ca691a6c551baeef696ccbf86403
+      - d35f9fc4766345a4520fa3ebc1e1f50671e3b42eb317fb0b4b2019a138655e58
+      - dba5e94ad4a3e25198679e53eaffd27cfb46a4cbd2829348b8d4be644e40332c
+      - f207276f58db731e8304756e853171d99dc689257bfc87fdd08534d7be0130dc
+      - f283d73aee7cfa1354d751dfda67a6189f603fac1b02d98ce3cf63529b9cb6c8
+      - f2b57ad30638de2cc33e30798460e98c1fcd78a56c39bfb821054b98d2415d3b
+      - fca4d51e96e0a1ff406bdaaf9de06629d4778f5d524f937a6b88faa4a9a9cb44
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0107-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T10:58:51Z'
+  reason: Record the local ST-0107 CODEOWNERS, pull-request template, and desired repository-ruleset implementation
+    without claiming live GitHub ruleset installation, repository/team/check integration identifiers,
+    formal hosted TST-001, human approval, canonical apply, release, deployment, staging, or production
+    execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0107
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0107-local-20260802.yaml
+      sha256: 38fd34902c7fefb111dfe98f4eaa460a1ab04c5442195d5c840f7f0e13429417
+      observed_at: '2026-08-02T10:57:11Z'
+      snapshot_artifact_sha256:
+      - 19b359d2a0105c09f00470fc4a0d6939e2dbc812dbf2bf53d320b97a5cee7047
+      - 22bc204c70343e11feba5b88b043e31fee3a61aa117772a495529a88939a45b9
+      - 275fcdf4bb9f23e4b2deb74fb42876f04b0e4c9d40e81613cd115121c5bfe66b
+      - 2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a
+      - 3c37c09ba936d12612d08252085b4f82229e85abe031cba7194e1b8478c532d0
+      - 3e9d512cb3aa5844b21adde1649a8f88368cd1f7c8eb3ecc7139d3971a0d7b45
+      - 49421818d267960210dc45caf889f4c788fb2e26ab10dcbd0abada3650910de4
+      - 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
+      - 5fe7ebec42e88928c100cff14795b391a9e45075fede03cf49b8efdadf779b51
+      - 698c03c031c760c222f0b5bd772306c20a6c957cadc43cb55da1730653f52f3e
+      - 7782e9914f730dba3a24e625aa2fa60c32f9d45bde134b7a33921bb4aaf5784b
+      - 7d3e19991074e5dafb68c3a75748a943ebfb24bdb5829faebc3601dd0d722635
+      - 86796a956c7eda6b9c358f14f4fd2a351a0958aa6fddc114dceffe6771b07cf4
+      - 9db764e6f4335bf6e7657e40c124360c13fbbb36b1e6fb451aefd675eea4f79d
+      - a648bce453950a89abce2c391a4d12dbf903dfa768e1aef4af387989705a6cb6
+      - d1cbadf4b63d7398218063d2100c493fbd2b6a90037dae37a487dd19f5b34adf
+      - e2f3c265dd46bcea6f2fedd7dfd258258bbd5667ddff4dbe6db1ced8c8b878b9
+      - e6e52a473af1f0ff40c32b3c203defcfc880a567d03d1009d0e73854af4e2877
+      - f283d73aee7cfa1354d751dfda67a6189f603fac1b02d98ce3cf63529b9cb6c8
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0201-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T12:22:15Z'
+  reason: Record the local ST-0201 PostgreSQL 18.4 Compose service, strict generator, runtime wrapper,
+    CI integration, and content-addressed implementation evidence without claiming a real Docker daemon
+    run, hosted Database job, container vulnerability scan, formal CI-only TST-008, canonical apply, release,
+    deployment, staging, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0201
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0201-local-20260802.yaml
+      sha256: 3d1584a75395d712561f4578f276cb993ad4560af164b59010f48a623b3f838a
+      observed_at: '2026-08-02T12:20:48Z'
+      snapshot_artifact_sha256:
+      - 00146f1f8c26e96098bc050c418e43ac2bbdc0d38a5fc3efeac256ed91a22ffb
+      - 06ee9c195668e1e2111c0385fd1db7d1a06f7a133728ebc7d00f56805ea625fd
+      - 079fad5cc7b965c507a79b9ec57421e017bf613702b876385a7df133dbd6bcd9
+      - 09370bbaf197afe20e699c8dca7786daadac675851bdc59b49a417d78a2ea057
+      - 1eb9409d35febf94c67720a68d2fbfb78d49e1d17b968f1da1aa002e5e48cc4f
+      - 23124dacb3612d4eb5f4974b2789af7c2542b135239c111be3359599e900ff45
+      - 239bbfad44f532185927b396a0f582abfce4d351e2364555af2d53bd8db9a39f
+      - 2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a
+      - 2fac28cdd185b3070e0cc5616953948a92e05b50ebebae70bfc3323765b287b7
+      - 3408137fc2449eb224c55a214b315dfaa19b5a9b4370c5dd8f2b532828f46d14
+      - 6e8097d6140d0f63c8d3870eb7af9ca50d6e7db36ce47f167ea1d1037dbe97a5
+      - 8e0549640f3cdb00d29ee9a67b0f2fadbf4b4a362db1d9266a6570ffec76bcbc
+      - 91d1bb091b7a44bca56e4a3b9fdaaa09c312dcf125a829113c460f398dc60bc8
+      - 97e9dcc58bfa75cb61d5849b5d0e2ea141ceb4e29ef1fccdb96ddcaa301e855f
+      - b112a9442bd90bd0e4eec6926945268802ea0ae5e098622f29fda22d9c55995f
+      - bbf43f1c353ac9c5fb70d9b3dfb5b91c7da09586884295d270ae5560c9082dca
+      - bbf79a2be4fb5244c60b586b7b7e0a901906b65fd768c6eb306d72c840f74691
+      - d7b961160e8bdfd700eaa5ea62e09a771924f84ea8c41d5c4737e37a5812ef32
+      - ee64f731f41b88f185d4f58d9affd5eb35834353b074e215bb7ddc1788622dfd
+      - f58edd1ae3266a709fa80d51117a9e0bce378bbf80060b65c97217ab2ae07187
+      - f8d4372e0ef578ee6a646184f2db5afdd0634fb932fd9f892b2ff51e829c278b
+      - f9b8f54cb81d796f6dc064e721cbcd496b72a67cb84e68a31fff7af564e051d3
+      - fc2689a0827bb8f0a54b93462f6ff4b9fa403d9d99435947d4c0e796bc6ae052
+      - fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+      - fd35c88ad871836351b7f5bf32e8204f3c7e6e67fd60cad0265b809d27caea13
+      - fe2519367264a61ca8f0cddc780a92d0c5a3c1734c7a6f31d305cf5ab2bd252b
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0202-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T14:33:23Z'
+  reason: Record the local ST-0202 cumulative S3-compatible object-storage service, complete fail-closed
+    contract generator, secret-staging wrapper, authenticated acceptance fixture, CI integration, and
+    content-addressed implementation evidence without claiming a real Docker daemon run, hosted Storage
+    job, container vulnerability scan, formal CI-only TST-014, canonical apply, release, deployment, staging,
+    or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0202
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-014
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0202-local-20260802.yaml
+      sha256: fe13e08c4d1eab4b08923fc82b72a94cef01c6ac0733ecc7d9894fb027bbfd9b
+      observed_at: '2026-08-02T14:31:35Z'
+      snapshot_artifact_sha256:
+      - 04636e3a2b0968ee337db788a7ac772f290006a2cc98fc4921617f80013764e6
+      - 0ff924b0dea696db0117035c0077a77053d8724c76796866263163bb18b9e1fb
+      - 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
+      - 19da203002f9135e38024b41edee5b328a8120bf08fa09b9991ef201dc4c8f1b
+      - 229a3dc54bb5b2894365851c2e71d1059c2a63307465ee48e25b1991407036f1
+      - 2a509dcd7da3356d53c9691df104c0989b94f583f7eaf0c283ff729cfee8ec37
+      - 2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a
+      - 324a062bb99e482626fde5dfe9bbcca214f65eb6b8f07281f8b345698dab40f0
+      - 389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c
+      - 3b038330636e02a45b8b55c246cd57d7b83fe7ee1267df621f82fc9d3ad67157
+      - 447e61a172fc32136ec2c7c202e353352891426e70eddb517f09994fbf97d4a7
+      - 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
+      - 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
+      - 77c8af5c7930f5c0acdca26f29bcd6ba4f515bcb1097afbea72b8f7c4d56b476
+      - 79398040a01d02a46e985ba37e9895c815097dbe2e3790172a58607c3d1384d8
+      - 79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9
+      - 7d9e3a5d83fd20b10009c51f2589645e78a57eb6522ee9e060e9f6332d034a85
+      - 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+      - 8352263511b7c2c7ee0a561d8fea710cafce17e61d3cee588b2ce482f2efb644
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 987e905696ecb99397a5babac314ac651cf8f33ad0c4acb528f01a335c631fa3
+      - 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
+      - 9b865af6da33c61a889523eb42e28c3551205358111c9c59c8355b58e3adc5c3
+      - 9c7e18f731e42053f26d0c104f953e6c8367aa6977b4c2e362384cd359910f91
+      - a603285b616afbcdd593de4ee9a70d0b476658b61a90e27a5b2d08df078cfd7a
+      - aeefb82b6c1f27bd6174ae90761e00e6844d92ab1a6e07aca6485a9dbefc4a05
+      - bbf43f1c353ac9c5fb70d9b3dfb5b91c7da09586884295d270ae5560c9082dca
+      - ccb70bfd09744801aa3a7329b86cf3af20ae9aa007c34e86961aa6f87bb4c62d
+      - ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
+      - d9a93f73b435932a8e1fb6291e1aa6bef5680daf9801424fce47b2d82a2cf6ce
+      - dd2b5a1cd608df31ba46dbdb38011d5a96faa145a86c2c33b8f1281e4290febf
+      - e32afefa7070ac148d8d5a953624e61e455b142af0c8c81a76fa1df70edf5d09
+      - e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
+      - f8d4372e0ef578ee6a646184f2db5afdd0634fb932fd9f892b2ff51e829c278b
+      - fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0203-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T15:48:22Z'
+  reason: Record the local ST-0203 provider-neutral queue port, deterministic manual-clock fake, failure-order
+    injection, CI integration, and content-addressed implementation evidence without claiming an external
+    broker/provider adapter, worker runtime, consumer idempotency store, hosted CI run, formal CI-only
+    TST-013, canonical apply, release, deployment, staging, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0203
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-013
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0203-local-20260802.yaml
+      sha256: 4645a289bda7364a9e4dedd71570b9a8910ff6f98a6480577c88643c691cd9a6
+      observed_at: '2026-08-02T15:46:57Z'
+      snapshot_artifact_sha256:
+      - 06ecfe897cc8f3baa7c972a136e34b498aa40142824b5b0c0bd52e9c69729b62
+      - 08bf89529e307c91f11c5366c3fef4e74456b88c09d9de586b7d95bdc142ef90
+      - 0d810f68e77e66a259dca28164825e93d05300edf6915f4c956f9bf3a31ab857
+      - 24a3333d5398d34894959fd0b235581d09808ac9aa6d028d84624bdb21880314
+      - 340fd6d36b800d88f18c509baaf331dbca6a3d2fc1c58aa3c6dd858230166da0
+      - 52d36ebfeb8f31f930e8f21b3c1484befd34d777771cacdfb59909468abaf594
+      - 6d77921637abae7e3c6bdfe5eec1cc6da53b6a89ac6e4660687124373f3ebcfa
+      - 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+      - 760821a1758864d08a3f8e0893a9c0f6e2af5c4e3ee36196db780e89349035cb
+      - 7c27cfdff95985019099e2817743d3a3cb9c06637aedd866f99957061a39acd9
+      - 80ed17875fb46283dd72ceca1abd43c638dfbcc31fbaa282e3b0d5f0d12ddd1d
+      - 838d311e2b6c17a07e497a0032ab3201669ad95718423ab4e3d3a7687792d39c
+      - 96317135221e4dc3ca32d3c127fd86ef7297f42dd9889fa7bd116f3904b0866c
+      - 97485a2c878ec0ae153df6c615f9ea77f438506d45b41366278c9c5ad519c778
+      - 97bf4cc18221a21949dd62273008067ea9a631c188a9ba5dcbf15a83679020df
+      - 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
+      - ace69317cb222815583df5bebaafefc8362f7ded506ab235793f73bdf5438289
+      - c2cec442fc23fd23112f8a4217b4b9173ababe6a82d1f1778db8eb53fe6bf0ee
+      - ccce5906137009c090fc038bd409d71c81fb2453385e385adbefc536bd791d3f
+      - cdb8e8094d4fa74843c26ea453354df7083bc41a6f165220ddd0e263e37db8d5
+      - dfcc0c3fe3a463b25ee85b6429083e5a68457d0365fc658555e6af6478f726b0
+      - e580585882a418176bf0afde1c2f0c5a9f5579bc2cb9135e097a7516260172d7
+      - f7b670a53cc3df5af40c23c2881af963216ac6903d00f9f2ff11aba98be1251e
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0204-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T17:52:34Z'
+  reason: Record the local ST-0204 strict typed configuration and logical Secret-reference loader, deterministic
+    schema generation, redacted diagnostics, privacy and negative tests, CI-wrapper integration, and content-addressed
+    implementation evidence without claiming Secret retrieval, a provider adapter, workload identity,
+    rotation, hosted CI, staging privacy validation, Security Owner review, formal TST-005 or TST-031,
+    canonical apply, release, deployment, staging, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0204
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0204-local-20260803.yaml
+      sha256: ca5197422fa84c550c6c05e01be940b2b8ddb7e7e5da9bbbcc053f59aa6791f8
+      observed_at: '2026-08-02T17:51:11Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 0c83946c43ff022540eade9fadf4da2277f0db6f5f2be6e30dc720ffddc387ad
+      - 0ee3ec31313f763ea61f11b761dd5eace7e36065e4b946ba73ae435f6301e1db
+      - 1999438dd17e4b5619e95c1c7f0972a822c574c180b5907174ba46cdcbd98712
+      - 2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3
+      - 3524f57f3261ae54d7ae62a2fc57d5c02f72f0ad9a91b895a57bf2aec2fa7f30
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 4940a6403abd59850ed870e48678ba258b59d393af31613780caeb7b5a1d2213
+      - 49f22688be24044ea08a5d86ffaff4fb226016d886441f6c39867123eb875664
+      - 5633b01e4f660a048e57ca4501a6a7e66f4aeca8412ff36f8644e68d4e04006e
+      - 6be2153a471974f353afd99f21a8facded33a1511f7ac24cd633bf62ac53d03c
+      - 815b438f7281388a0412b0644065ce2499a0db07e71474cb82c346cc1c7ac516
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8d0986edb94818b94d6c5f1335a387a9f6698422638e30bf0906a7bca5039c2c
+      - 9b08c0020aa6a83b9834348a093323a06cb4fde4b72587393640f356dfc9c367
+      - a46ae19002a1c2c927f7448781a9a5e79a4836ea9e4636b374e7eb5661b2c0c8
+      - c69fd5a7539d107e961559a90dbdad0101ebc8beacf318cd510aad14ed8fb97b
+      - c731b4bff5e40a6437fce778738250c6c9b7df293b5b29c71a0571bfe5050da2
+      - cddf6d6560951f157f11eff5e9f0e23b8d8ab991c158896c07328d68a1af16d8
+      - dad90acbe484827f662ae31c36eb59fba2da7ec340289cfcec04c7a203aa06f0
+      - db666ac42c1b58d14d8c6b1b204004b82eca500435e1b01031ec113894a61d1d
+      - dde90fd7332134f79ff12d8b30830f19833530a6ac919e3b7cb2f904af49b256
+      - e773de7d9fdeb178cfdb87f8ea285a87365ee4b36cfaf9d302c9440f9497b138
+      - e893d5e333ec1b4d84d74cb59a6cc4ac62672b493d5905c379ee4ebe9936c314
+      invalidates_evidence_sha256: []
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0204-local-20260803.yaml
+      sha256: ca5197422fa84c550c6c05e01be940b2b8ddb7e7e5da9bbbcc053f59aa6791f8
+      observed_at: '2026-08-02T17:51:11Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 0c83946c43ff022540eade9fadf4da2277f0db6f5f2be6e30dc720ffddc387ad
+      - 0ee3ec31313f763ea61f11b761dd5eace7e36065e4b946ba73ae435f6301e1db
+      - 1999438dd17e4b5619e95c1c7f0972a822c574c180b5907174ba46cdcbd98712
+      - 2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3
+      - 3524f57f3261ae54d7ae62a2fc57d5c02f72f0ad9a91b895a57bf2aec2fa7f30
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 4940a6403abd59850ed870e48678ba258b59d393af31613780caeb7b5a1d2213
+      - 49f22688be24044ea08a5d86ffaff4fb226016d886441f6c39867123eb875664
+      - 5633b01e4f660a048e57ca4501a6a7e66f4aeca8412ff36f8644e68d4e04006e
+      - 6be2153a471974f353afd99f21a8facded33a1511f7ac24cd633bf62ac53d03c
+      - 815b438f7281388a0412b0644065ce2499a0db07e71474cb82c346cc1c7ac516
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8d0986edb94818b94d6c5f1335a387a9f6698422638e30bf0906a7bca5039c2c
+      - 9b08c0020aa6a83b9834348a093323a06cb4fde4b72587393640f356dfc9c367
+      - a46ae19002a1c2c927f7448781a9a5e79a4836ea9e4636b374e7eb5661b2c0c8
+      - c69fd5a7539d107e961559a90dbdad0101ebc8beacf318cd510aad14ed8fb97b
+      - c731b4bff5e40a6437fce778738250c6c9b7df293b5b29c71a0571bfe5050da2
+      - cddf6d6560951f157f11eff5e9f0e23b8d8ab991c158896c07328d68a1af16d8
+      - dad90acbe484827f662ae31c36eb59fba2da7ec340289cfcec04c7a203aa06f0
+      - db666ac42c1b58d14d8c6b1b204004b82eca500435e1b01031ec113894a61d1d
+      - dde90fd7332134f79ff12d8b30830f19833530a6ac919e3b7cb2f904af49b256
+      - e773de7d9fdeb178cfdb87f8ea285a87365ee4b36cfaf9d302c9440f9497b138
+      - e893d5e333ec1b4d84d74cb59a6cc4ac62672b493d5905c379ee4ebe9936c314
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0301-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T20:27:34Z'
+  reason: Record the local ST-0301 migration framework, immutable per-revision metadata, deterministic
+    graph and catalog generation, exact PostgreSQL 18.4 adversarial runtime tests, session-bound advisory-lock
+    enforcement, transaction and interrupted-run recovery, metadata-tamper detection, content-addressed
+    implementation evidence, and independent audit without claiming execution of deferred domain-schema
+    migrations, a Git repository, a pull request, hosted CI, migration-owner human review, staging recovery,
+    release approval, canonical apply, external database, production execution, or formal TST-008 or TST-009.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0301
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0301-local-20260803.yaml
+      sha256: 6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9
+      observed_at: '2026-08-02T20:23:27Z'
+      snapshot_artifact_sha256:
+      - 005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 07de505a2dc75c8c06046dd1a588ff414c11ee21e1be07cbedf8e206c92d1e09
+      - 0c58c452e97a18556e94b4d679bce4a3a461f9d60de3be00aaadc4041ff702e3
+      - 0e10b2b097de4b66b0434ed286ff9f1852a3af7305309d77e968e5ddc4971202
+      - 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+      - 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704
+      - 1e89d6b5db0cd9131fc94762ff9cfc20d8d5f7be767efad6b47dc9bcb58f07b1
+      - 21f64dd70676e58af93bbe54e9ae62eab1f21124fb7b488a2059f80fb15155ae
+      - 250c0e6bedd2170490eca1614499c68b7bb1671ebec8c8d4854372ece33c41aa
+      - 25aaa88d65aef69ce4d9aa55201c1c913d4b0be86738c60602b65d4f724919ca
+      - 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
+      - 28da8a9ed2263395afd039f16b35f65db4e21953064e8a0a6295c9bad1c25c56
+      - 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
+      - 3675f9518f1711435a192b219f1e3f44897d8becf105d313ea56d0fdfbe5a408
+      - 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+      - 38b0667f2b6ea85697f1a640f8d98469f91fbef2c088d104c78878998d6bba8f
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 3b09e2b7a06ed008e030466bfccdcdff04730c08973a0a00e4b3c059e1d3db0d
+      - 3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab
+      - 4b6508b8c5a082695b1c4c48365c5932b51e3a6ca9a93c83ec599cd6aa7b1eb8
+      - 50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95
+      - 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+      - 6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31
+      - 623cd9c2838107518a5af549337f552b6d954e898010736d45677b63d7327e78
+      - 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+      - 6cccc4dc9d4f12edd963fe9ac35b69c5553c654152ca205db6ce251b39290701
+      - 6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779
+      - 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+      - 768f04b316e6ac624108f65277ff2c7aa6850cb26e96177e598d5a7dd316ee97
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
+      - 8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d
+      - 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+      - 8dfd42c82fec602cbfa4be27e844b48341ef131f8fb7361d0c5420e3a69462dc
+      - 8e11f1113eee49c3440149a4afaa57c3012866a3ae74c60094defca1131c1d53
+      - 944905ea4a62bb1daaff30cadb616c58d9703ba7886b14860e152ff02f5c6d64
+      - 9b4ae71359428eb218600b3d9bebf59fbcbdfd5823842cc109d9b50c1ed3d95c
+      - 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
+      - 9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897
+      - 9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e
+      - a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064
+      - adeca86c017c8fd48ccbfcb1790d238250faac37d20ace0a4b16548d86bca76a
+      - af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325
+      - b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968
+      - ba5f6fd7ceb98dee227828e0536f2531fe0aa7f68a8a8c409727788bc9c18077
+      - bcbe953a9c6067eb625fa93a10191eebe6cfc4f3ca06dc34200cf5e667ebb72b
+      - c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+      - cb4cbf3221c3a51ca74748a77ee6ed7186adb5a482e527a80d0b330b62e13514
+      - cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+      - dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba
+      - dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+      - e0a348db84effda5a7ab121f8923494fc34bb6cda9e2e0125e2d2853a8346f86
+      - e47cdfe44e6000259b4b0d3ef2c5cb62d0e60176b156ae458dc7771eeceaa22d
+      - e9a0ced84ce421beda2606504336830ebcd56fb8b7caf2212fe7352c78482455
+      - ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+      - edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+      - f486b325a31e29493a3a36fd3106510bee5c1ec2aed2e91ee9896431177d89bc
+      - fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+      - fde4abb595e558350894b9a6d663257984381ac60bdbe2bb217ba856e03892c8
+      invalidates_evidence_sha256: []
+    - suite_id: TST-009
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0301-local-20260803.yaml
+      sha256: 6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9
+      observed_at: '2026-08-02T20:23:27Z'
+      snapshot_artifact_sha256:
+      - 005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 07de505a2dc75c8c06046dd1a588ff414c11ee21e1be07cbedf8e206c92d1e09
+      - 0c58c452e97a18556e94b4d679bce4a3a461f9d60de3be00aaadc4041ff702e3
+      - 0e10b2b097de4b66b0434ed286ff9f1852a3af7305309d77e968e5ddc4971202
+      - 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+      - 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704
+      - 1e89d6b5db0cd9131fc94762ff9cfc20d8d5f7be767efad6b47dc9bcb58f07b1
+      - 21f64dd70676e58af93bbe54e9ae62eab1f21124fb7b488a2059f80fb15155ae
+      - 250c0e6bedd2170490eca1614499c68b7bb1671ebec8c8d4854372ece33c41aa
+      - 25aaa88d65aef69ce4d9aa55201c1c913d4b0be86738c60602b65d4f724919ca
+      - 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
+      - 28da8a9ed2263395afd039f16b35f65db4e21953064e8a0a6295c9bad1c25c56
+      - 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
+      - 3675f9518f1711435a192b219f1e3f44897d8becf105d313ea56d0fdfbe5a408
+      - 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+      - 38b0667f2b6ea85697f1a640f8d98469f91fbef2c088d104c78878998d6bba8f
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 3b09e2b7a06ed008e030466bfccdcdff04730c08973a0a00e4b3c059e1d3db0d
+      - 3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab
+      - 4b6508b8c5a082695b1c4c48365c5932b51e3a6ca9a93c83ec599cd6aa7b1eb8
+      - 50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95
+      - 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+      - 6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31
+      - 623cd9c2838107518a5af549337f552b6d954e898010736d45677b63d7327e78
+      - 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+      - 6cccc4dc9d4f12edd963fe9ac35b69c5553c654152ca205db6ce251b39290701
+      - 6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779
+      - 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+      - 768f04b316e6ac624108f65277ff2c7aa6850cb26e96177e598d5a7dd316ee97
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
+      - 8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d
+      - 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+      - 8dfd42c82fec602cbfa4be27e844b48341ef131f8fb7361d0c5420e3a69462dc
+      - 8e11f1113eee49c3440149a4afaa57c3012866a3ae74c60094defca1131c1d53
+      - 944905ea4a62bb1daaff30cadb616c58d9703ba7886b14860e152ff02f5c6d64
+      - 9b4ae71359428eb218600b3d9bebf59fbcbdfd5823842cc109d9b50c1ed3d95c
+      - 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
+      - 9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897
+      - 9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e
+      - a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064
+      - adeca86c017c8fd48ccbfcb1790d238250faac37d20ace0a4b16548d86bca76a
+      - af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325
+      - b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968
+      - ba5f6fd7ceb98dee227828e0536f2531fe0aa7f68a8a8c409727788bc9c18077
+      - bcbe953a9c6067eb625fa93a10191eebe6cfc4f3ca06dc34200cf5e667ebb72b
+      - c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+      - cb4cbf3221c3a51ca74748a77ee6ed7186adb5a482e527a80d0b330b62e13514
+      - cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+      - dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba
+      - dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+      - e0a348db84effda5a7ab121f8923494fc34bb6cda9e2e0125e2d2853a8346f86
+      - e47cdfe44e6000259b4b0d3ef2c5cb62d0e60176b156ae458dc7771eeceaa22d
+      - e9a0ced84ce421beda2606504336830ebcd56fb8b7caf2212fe7352c78482455
+      - ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+      - edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+      - f486b325a31e29493a3a36fd3106510bee5c1ec2aed2e91ee9896431177d89bc
+      - fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+      - fde4abb595e558350894b9a6d663257984381ac60bdbe2bb217ba856e03892c8
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0301-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T20:36:50Z'
+  reason: Refresh the append-only local ST-0301 proposal after full-project Pyright exposed and remediation
+    closed ten static control-flow findings. The delta evidence chains to the prior 60-artifact snapshot,
+    captures every changed source and the regenerated 58-source manifest, and records 108 exact PostgreSQL
+    18.4 tests without claiming deferred domain-schema execution, a Git repository, a pull request, hosted
+    CI, migration-owner human review, staging recovery, release approval, canonical apply, external database,
+    production execution, or formal TST-008 or TST-009.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0301
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0301-local-20260803-v2.yaml
+      sha256: 5c364a7941c67902c0ee63e85c974d0ae5e16c4c7c177e8c39cd3ee838ef5e5a
+      observed_at: '2026-08-02T20:35:48Z'
+      snapshot_artifact_sha256:
+      - 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+      - 6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9
+      - 6fb4dcf85cd1222fa5e0133a296bd06be6b0fdd3a5a74bf718cf2fb13ca6efc6
+      - c709102af9bfcd64f68a444bccb6ddac6d95d067b1af472e8b41269fd3c8f2da
+      - e2598cf97c4f46dd240eaaf9edeaaba9d4bfb6982367857f2d29003dcd2cd4f0
+      invalidates_evidence_sha256: []
+    - suite_id: TST-009
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0301-local-20260803-v2.yaml
+      sha256: 5c364a7941c67902c0ee63e85c974d0ae5e16c4c7c177e8c39cd3ee838ef5e5a
+      observed_at: '2026-08-02T20:35:48Z'
+      snapshot_artifact_sha256:
+      - 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+      - 6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9
+      - 6fb4dcf85cd1222fa5e0133a296bd06be6b0fdd3a5a74bf718cf2fb13ca6efc6
+      - c709102af9bfcd64f68a444bccb6ddac6d95d067b1af472e8b41269fd3c8f2da
+      - e2598cf97c4f46dd240eaaf9edeaaba9d4bfb6982367857f2d29003dcd2cd4f0
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0302-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T22:29:41Z'
+  reason: Record the source-frozen local ST-0302 foundation-schema implementation, exact PostgreSQL 18.4
+    execution, complete content-addressed manifest closure, and clean independent audit without claiming
+    a valid Git repository, pull request, hosted CI, migration-owner human review, staging/release, canonical
+    APPLY, production execution, or formal TST-008.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0302
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0302-local-20260803.yaml
+      sha256: 1919d6dd0dd6090f954f26198aae4a6315f8c53f9c95c2e9919dc55fddfe8ebb
+      observed_at: '2026-08-02T22:29:37Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+      - 208e6fc0740347a35e40c9a2501aa726e10f6ef44bea36c3078e4cd6211f343f
+      - 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+      - 30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 400387c698f4ef41a89069889eeb27a5cd51fcdc71644f7254860bb443ab0d7a
+      - 447374e72d241bc74b3dc78c857a2e5ef15107de82771e0d9572872790b05a59
+      - 48ac2332ef36256ef819e1ace06efced91416312fe12a5610580bad6c6d24cde
+      - 496a45049c5d4aea4af505525097b8d280c7d5e24f71f8c8a67744d7feabbd19
+      - 4eb0f90e4459e729312aafa3ef6f3b5e4bc2d688c9fe9c3f614d4dcf30eb2430
+      - 518acde22dd389944e2903da45d5abb2949a3fa84bbc28dcaee9555c7e50fd89
+      - 5318b08b799178c1657245ae4320a5795d1a710210639ab93e8a390535fd0e47
+      - 54224c04bbda9718e64b27d9c32b5b15166659184be40cc4477585060f95d504
+      - 59827b4d2f7b02a4dd6db61d6fed7a400bf3bd199bf4dd1e337b53d10cdbf0d3
+      - 5b611787d081428f78ada3ad35182cc413d257b25fc3d1a957ee396a486839e9
+      - 62a60465fd304cf4abc42c86cb22950a5665aceef3e65898a694c2e8112d1e32
+      - 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+      - 6fa0c1f03e18e817371ebec5085c299aa9e4817259b5cb281cc3d4d88f2ba745
+      - 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+      - 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
+      - 8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d
+      - 8e11ca502dcc6bb8db66bc0c0c73491db458c4e790f19e850bb5a90200acb120
+      - 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+      - 9cebeb6546c9479fc1e52b583dfdad3aced6ee82b1a37ce4b9ac1313b6b27c0b
+      - 9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e
+      - a26b47d98c8efeb9c7fd4e7545ab4043a7afb88f44de7959249efd7e7a7f1574
+      - a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+      - af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325
+      - b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d
+      - b666a5eb3f2e6137a96a2f78eb7ac556efe1aa306bc9be2c1c34be0e15246ea8
+      - bed9e3b19017bb79a4ca518d9c9e8ec98b841d69f9d4f816a648576df78c96b4
+      - c79b884aaf04efe471d2ed210f01c2d1d266bc9ee78a4206be2518128f108c45
+      - d3eb238196ddf2b0092f7b7e7d4ede363067392c7601779344e9ddb3be0714b9
+      - d8a4d9552f5a375cc67b720e0c4d62da9818bed9009ce62209fa3e8f39f72d54
+      - dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+      - df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
+      - e8759ddf8a6320bc6b4b483758bee156555f22ab1d78c8984aac1650c90ecfaa
+      - edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+      - f3bedc3fb40b06595db6026d8ef50a30ef405ed4c0cb1ec94ca44f0b7bf6a0b0
+      - f8f58a604c4dc66d7ce5f47099f15dda2b364bc75fa44224a46bf797d46707e0
+      - f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4
+      - fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0302-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T22:35:50Z'
+  reason: Refresh the append-only local ST-0302 proposal after the first full unit gate exposed and remediation
+    closed one stale ST-0102 exact Make-recipe expectation. The delta chains to the prior 45-artifact
+    snapshot and captures every changed source plus the regenerated 42-source manifest without claiming
+    formal TST-008, hosted CI, migration-owner approval, canonical APPLY, staging/release, or production
+    execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0302
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0302-local-20260803-v2.yaml
+      sha256: 605b3f3ce617d8edf8d5a94601fe93bb5ebdb148efd4b922b7c2517c3b68840b
+      observed_at: '2026-08-02T22:34:51Z'
+      snapshot_artifact_sha256:
+      - 0b0d1adfc4d16ba90e7b16bde47f98a3650589d9f779aceb330d89db5366de98
+      - 1919d6dd0dd6090f954f26198aae4a6315f8c53f9c95c2e9919dc55fddfe8ebb
+      - 354eeacb4558cea9eafcccc6a76168feb7a496272c5459c8ec4132aaddcd0220
+      - 4a3cf90495811c3a63eb22d061ab20e7e019c66fa074c137a24fc343d913b3da
+      - ecbbbb4885e13090537592214cfea61c6db6001e33a753fc818c75fe83cafbb9
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0302-LOCAL-PROPOSAL-003
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-02T22:52:23Z'
+  reason: Refresh the append-only local ST-0302 proposal after the second full unit gate exposed and remediation
+    closed two stale ST-0106 workflow-contract expectations for the new Story process and cumulative generator
+    owner. The delta chains to V2 and captures every changed source plus the regenerated 43-source manifest
+    without claiming any formal or external gate.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0302
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0302-local-20260803-v3.yaml
+      sha256: 66974fa564e15395472c662f57673a80c9b2b4fa69287108bb700c92f03966c2
+      observed_at: '2026-08-02T22:51:55Z'
+      snapshot_artifact_sha256:
+      - 05be3e3aed52282d4cdabd8fc90730f2b5f9a3f18acdd82df2c6675baf1ce3c0
+      - 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+      - 605b3f3ce617d8edf8d5a94601fe93bb5ebdb148efd4b922b7c2517c3b68840b
+      - b8690947aab599cd75de6daefe9d456e32f0675b9c67f6ab1e050fdeb524acae
+      - db502ef97e7a7f11adcee25618890dcac0fe6c2084f631faec2fbca607a83b06
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0302-LOCAL-PROPOSAL-004
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-03T10:15:10Z'
+  reason: Refresh the append-only local ST-0302 proposal after independent review exposed and remediation
+    closed the role-global PostgreSQL default-ACL gap and the exact UTC session-enforcement gap. The delta
+    chains to V3, captures every changed direct source and regenerated artifact, and records the subsequent
+    zero-finding independent re-audit without claiming any formal or external gate.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0302
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0302-local-20260803-v4.yaml
+      sha256: 24654d418f5cf8bd0c6d128dc402138de8ff50ccda9e61e836a25cd506986385
+      observed_at: '2026-08-03T10:15:05Z'
+      snapshot_artifact_sha256:
+      - 1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c
+      - 3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4
+      - 54e0f8f593cd729c4dea0f8656825c9291d1421ef4d2607a48cc29fb55187668
+      - 66974fa564e15395472c662f57673a80c9b2b4fa69287108bb700c92f03966c2
+      - 9f32cad90b6f5e81211f096900a1b929b55912ecf5aea04ba3d544192e0e0273
+      - b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388
+      - bc1194c0b1be859dec6be637659878cfc03d9dcda113c9a0ea7d041ca83247d9
+      - c6dc541e8ac84e9d4ccfdd41927b8b702152f46cbe4dbc260e449a87d597fe15
+      - c9f69959668a5a424586f94f133e9ab4f6c3e4a784dbccfa493b855b7c57f13f
+      - d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+      - eb2d3c5fe8266e9e627cc7b6555dce0dffa9e24b776b4390094c67b9990bb927
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0202-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-03T10:32:35Z'
+  reason: Refresh the append-only local ST-0202 proposal after the current repository AGENTS contract
+    and accumulated predecessor inputs changed its generated manifest without changing the cumulative
+    Compose payload. The delta captures the current exact source closure and regeneration checks without
+    claiming a real Docker, hosted, formal, or deployment gate.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0202
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-014
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0202-local-20260803-v2.yaml
+      sha256: a1c83e03c52b36ebe6e77a6a1fa0dc143b17f3483c38b1316559772e74a44da2
+      observed_at: '2026-08-03T10:32:30Z'
+      snapshot_artifact_sha256:
+      - 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+      - 1302a3276c76ff0d9267ab20d24f6fa5cd44c82aa38d8dcf68b9acf3832b8243
+      - 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+      - 3dd7e7fddb2365daa75ae90d2b6a9a496440f512d83f0acbc4ee4a5a5f518962
+      - 6ee7eb6d044220e99907a0ab7b6f62691f8d8558eb439a9430c53b743b0e866a
+      - a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+      - fe13e08c4d1eab4b08923fc82b72a94cef01c6ac0733ecc7d9894fb027bbfd9b
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0203-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-03T10:32:45Z'
+  reason: Refresh the append-only local ST-0203 proposal after the regenerated ST-0202 manifest changed
+    its exact predecessor pin. The delta captures both pin owners and the current source closure while
+    preserving provider-neutral queue semantics and all formal execution boundaries.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0203
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-013
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0203-local-20260803-v2.yaml
+      sha256: 413262cf31c3b2856270b31a2d7e92b0ac72e280db739b23e1d28e460fba1bfd
+      observed_at: '2026-08-03T10:32:40Z'
+      snapshot_artifact_sha256:
+      - 0469e9446d8c1e3d29324b630946c7c93aa99fc3b5986320355b12e03cbad990
+      - 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+      - 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+      - 3dd7e7fddb2365daa75ae90d2b6a9a496440f512d83f0acbc4ee4a5a5f518962
+      - 4645a289bda7364a9e4dedd71570b9a8910ff6f98a6480577c88643c691cd9a6
+      - 5ed8fbae37861b8965e6735a6e501f35e38fd391b50869f57eddf9bc790e0161
+      - a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+      - cfab5bb185f48e463eeb308f5fa3b92ae589073e36f4e7a800060cefe05ba689
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0204-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-03T10:32:55Z'
+  reason: Refresh the append-only local ST-0204 proposal after the regenerated ST-0203 manifest changed
+    its exact predecessor pin. The delta captures both pin owners and the current tool/source closure
+    while the runtime loader and generated Schema remain semantically and byte stable.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0204
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0204-local-20260803-v2.yaml
+      sha256: f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e
+      observed_at: '2026-08-03T10:32:50Z'
+      snapshot_artifact_sha256:
+      - 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+      - 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+      - 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+      - a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+      - bc81176b13c7e717e791c2d14b3afeef7aaf3b5a8f25b9351b021a5233864840
+      - c64ae27933ed91bae371f04e57ddebfff3243b345ae6bfd222f9489e69b5bdc4
+      - ca5197422fa84c550c6c05e01be940b2b8ddb7e7e5da9bbbcc053f59aa6791f8
+      - cfab5bb185f48e463eeb308f5fa3b92ae589073e36f4e7a800060cefe05ba689
+      - d1c45b886a5e3e30e6a596c569dea08d21a06b8c26ace326d933fea035fb35e3
+      - dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+      invalidates_evidence_sha256: []
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0204-local-20260803-v2.yaml
+      sha256: f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e
+      observed_at: '2026-08-03T10:32:50Z'
+      snapshot_artifact_sha256:
+      - 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+      - 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+      - 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+      - a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+      - bc81176b13c7e717e791c2d14b3afeef7aaf3b5a8f25b9351b021a5233864840
+      - c64ae27933ed91bae371f04e57ddebfff3243b345ae6bfd222f9489e69b5bdc4
+      - ca5197422fa84c550c6c05e01be940b2b8ddb7e7e5da9bbbcc053f59aa6791f8
+      - cfab5bb185f48e463eeb308f5fa3b92ae589073e36f4e7a800060cefe05ba689
+      - d1c45b886a5e3e30e6a596c569dea08d21a06b8c26ace326d933fea035fb35e3
+      - dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0303-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-03T14:25:03Z'
+  reason: Record the first append-only local ST-0303 proposal after the frozen IAM/OPS closure, exact
+    PostgreSQL 18.4 composite, final denied-network static and serial unit gates, and independent audit
+    passed. This remains local candidate evidence only and leaves formal suites and effective canonical
+    status unchanged.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0303
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0303-local-20260803.yaml
+      sha256: c00d0d0f4522c51ee0f710fb148075f199b0ef8c251a4323fbec3c336f6971dc
+      observed_at: '2026-08-03T14:25:02Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a
+      - 1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c
+      - 185bfb91b11c430d22830781acc7e87edaf9d7430972838598d0ef14974d90c5
+      - 208e6fc0740347a35e40c9a2501aa726e10f6ef44bea36c3078e4cd6211f343f
+      - 23f11dc30623cb4ad49e134acd9b74d1677e01e094e7585d7d4bc8395543dd1e
+      - 2723fced17fe2392ac4753f609dfb8060126188eaa5ef42489ddbd0712693933
+      - 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+      - 2a466e5928386ee820e79984de78ce8be9c2aca7e79a4d738810d6d8a59570e2
+      - 2b4a3fd6e7ec3a1ae9b096a6ed76de04a687f599e49fb145c0b74ecfd75fca96
+      - 30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e
+      - 3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4
+      - 33be33b53b9a14c7e9ad686f8dd08834a2bc8211e6fab82577f78811219fde32
+      - 373684bf7b2e6fbcbc984a5283888d58e1ee3d5ff34f5b5d6d494a002c601b13
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 54224c04bbda9718e64b27d9c32b5b15166659184be40cc4477585060f95d504
+      - 5f1980cb60bde37015571d83aa5fe005182e9e6ff475db3680eb074e279e5db8
+      - 61ea4d7c5ec5c34b751788ac0ee42b6634dc0973d53e79cbfbe802aef7d70473
+      - 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+      - 6c1ab60959182777a25cfd47ebbc5a51d56e61d93d966e23e8d4c65cfa564b0d
+      - 6e86e41c49b6634c69ad07bfe77ed32dded77da9c84777429029e3a92b79a72d
+      - 6fa0c1f03e18e817371ebec5085c299aa9e4817259b5cb281cc3d4d88f2ba745
+      - 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+      - 70f7d947fdba09bb0d8d2260a3c99fa9bff70b4e0699e74a3a4b0b04871fa1ee
+      - 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
+      - 8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d
+      - 8a777791c08b3af87d6c62030209d733d01164fe343e7c3c5e5cdad9c69487b7
+      - 8e45769540fa1b639bd714abb07e9fa778d02cac948e3c7d987a2e31e86a875b
+      - 90f81083c3b6a72e17eb375c770fe7828b9d8cdea49130b951ff3aa91a4d4263
+      - 927d114bc06e1629f2a73305f3a6eaafa3870c3f00b6d17619f86122023afcf4
+      - 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+      - 9808be75cf2d3ea0d9571d8884237854eb9b72b0341bee92cf0363282b63b829
+      - 9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e
+      - a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
+      - ad07bcc088457eef788d191bd963dc2e4d162abef152fe71e27c459934af0a1b
+      - af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325
+      - af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b
+      - b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388
+      - b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d
+      - b83460a8789d420791746bfe3cf4e0a2fffb81761c00998d0f7e57713867bd11
+      - b8866fb9c9c2d593f8699fcf7d444c373732710cede6e413ed49992706f46e97
+      - bed9e3b19017bb79a4ca518d9c9e8ec98b841d69f9d4f816a648576df78c96b4
+      - c71eb659a8eeaa7cecd2ae095f682e689ed6e7e09ee578844d65bee86211ec3e
+      - c9a8988b8da01ad80503a81d1b3e7d7899575f89ddfe89dc0411e48d02980f78
+      - d50b82df7ae355fbd66a5ca555d7e8d3c871fe141bf074c8e331810f1b358105
+      - d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+      - dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+      - df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
+      - dff7ece2cd22124fea28273a928f5b482213625900292ff1047f0c2ecddddfbe
+      - e314c9cdc3971ede2adca936631e7e4269b461d2606affc37430f9ddaa83c012
+      - ec12574e1d3acdb18d1b8599b468c883ad62eb70ce9446a509571f462cfca315
+      - edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+      - f3bedc3fb40b06595db6026d8ef50a30ef405ed4c0cb1ec94ca44f0b7bf6a0b0
+      - f8fa263493501f8e0c3915ab90155d8d83ba839604673ebd0df030d8811cbdf4
+      - f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4
+      - fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec
+      invalidates_evidence_sha256: []
+    - suite_id: TST-011
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0303-local-20260803.yaml
+      sha256: c00d0d0f4522c51ee0f710fb148075f199b0ef8c251a4323fbec3c336f6971dc
+      observed_at: '2026-08-03T14:25:02Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a
+      - 1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c
+      - 185bfb91b11c430d22830781acc7e87edaf9d7430972838598d0ef14974d90c5
+      - 208e6fc0740347a35e40c9a2501aa726e10f6ef44bea36c3078e4cd6211f343f
+      - 23f11dc30623cb4ad49e134acd9b74d1677e01e094e7585d7d4bc8395543dd1e
+      - 2723fced17fe2392ac4753f609dfb8060126188eaa5ef42489ddbd0712693933
+      - 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+      - 2a466e5928386ee820e79984de78ce8be9c2aca7e79a4d738810d6d8a59570e2
+      - 2b4a3fd6e7ec3a1ae9b096a6ed76de04a687f599e49fb145c0b74ecfd75fca96
+      - 30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e
+      - 3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4
+      - 33be33b53b9a14c7e9ad686f8dd08834a2bc8211e6fab82577f78811219fde32
+      - 373684bf7b2e6fbcbc984a5283888d58e1ee3d5ff34f5b5d6d494a002c601b13
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 54224c04bbda9718e64b27d9c32b5b15166659184be40cc4477585060f95d504
+      - 5f1980cb60bde37015571d83aa5fe005182e9e6ff475db3680eb074e279e5db8
+      - 61ea4d7c5ec5c34b751788ac0ee42b6634dc0973d53e79cbfbe802aef7d70473
+      - 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+      - 6c1ab60959182777a25cfd47ebbc5a51d56e61d93d966e23e8d4c65cfa564b0d
+      - 6e86e41c49b6634c69ad07bfe77ed32dded77da9c84777429029e3a92b79a72d
+      - 6fa0c1f03e18e817371ebec5085c299aa9e4817259b5cb281cc3d4d88f2ba745
+      - 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+      - 70f7d947fdba09bb0d8d2260a3c99fa9bff70b4e0699e74a3a4b0b04871fa1ee
+      - 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
+      - 8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d
+      - 8a777791c08b3af87d6c62030209d733d01164fe343e7c3c5e5cdad9c69487b7
+      - 8e45769540fa1b639bd714abb07e9fa778d02cac948e3c7d987a2e31e86a875b
+      - 90f81083c3b6a72e17eb375c770fe7828b9d8cdea49130b951ff3aa91a4d4263
+      - 927d114bc06e1629f2a73305f3a6eaafa3870c3f00b6d17619f86122023afcf4
+      - 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+      - 9808be75cf2d3ea0d9571d8884237854eb9b72b0341bee92cf0363282b63b829
+      - 9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e
+      - a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
+      - ad07bcc088457eef788d191bd963dc2e4d162abef152fe71e27c459934af0a1b
+      - af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325
+      - af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b
+      - b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388
+      - b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d
+      - b83460a8789d420791746bfe3cf4e0a2fffb81761c00998d0f7e57713867bd11
+      - b8866fb9c9c2d593f8699fcf7d444c373732710cede6e413ed49992706f46e97
+      - bed9e3b19017bb79a4ca518d9c9e8ec98b841d69f9d4f816a648576df78c96b4
+      - c71eb659a8eeaa7cecd2ae095f682e689ed6e7e09ee578844d65bee86211ec3e
+      - c9a8988b8da01ad80503a81d1b3e7d7899575f89ddfe89dc0411e48d02980f78
+      - d50b82df7ae355fbd66a5ca555d7e8d3c871fe141bf074c8e331810f1b358105
+      - d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+      - dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+      - df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
+      - dff7ece2cd22124fea28273a928f5b482213625900292ff1047f0c2ecddddfbe
+      - e314c9cdc3971ede2adca936631e7e4269b461d2606affc37430f9ddaa83c012
+      - ec12574e1d3acdb18d1b8599b468c883ad62eb70ce9446a509571f462cfca315
+      - edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+      - f3bedc3fb40b06595db6026d8ef50a30ef405ed4c0cb1ec94ca44f0b7bf6a0b0
+      - f8fa263493501f8e0c3915ab90155d8d83ba839604673ebd0df030d8811cbdf4
+      - f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4
+      - fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec
+      invalidates_evidence_sha256: []
+    - suite_id: TST-013
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0303-local-20260803.yaml
+      sha256: c00d0d0f4522c51ee0f710fb148075f199b0ef8c251a4323fbec3c336f6971dc
+      observed_at: '2026-08-03T14:25:02Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a
+      - 1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c
+      - 185bfb91b11c430d22830781acc7e87edaf9d7430972838598d0ef14974d90c5
+      - 208e6fc0740347a35e40c9a2501aa726e10f6ef44bea36c3078e4cd6211f343f
+      - 23f11dc30623cb4ad49e134acd9b74d1677e01e094e7585d7d4bc8395543dd1e
+      - 2723fced17fe2392ac4753f609dfb8060126188eaa5ef42489ddbd0712693933
+      - 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+      - 2a466e5928386ee820e79984de78ce8be9c2aca7e79a4d738810d6d8a59570e2
+      - 2b4a3fd6e7ec3a1ae9b096a6ed76de04a687f599e49fb145c0b74ecfd75fca96
+      - 30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e
+      - 3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4
+      - 33be33b53b9a14c7e9ad686f8dd08834a2bc8211e6fab82577f78811219fde32
+      - 373684bf7b2e6fbcbc984a5283888d58e1ee3d5ff34f5b5d6d494a002c601b13
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 54224c04bbda9718e64b27d9c32b5b15166659184be40cc4477585060f95d504
+      - 5f1980cb60bde37015571d83aa5fe005182e9e6ff475db3680eb074e279e5db8
+      - 61ea4d7c5ec5c34b751788ac0ee42b6634dc0973d53e79cbfbe802aef7d70473
+      - 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+      - 6c1ab60959182777a25cfd47ebbc5a51d56e61d93d966e23e8d4c65cfa564b0d
+      - 6e86e41c49b6634c69ad07bfe77ed32dded77da9c84777429029e3a92b79a72d
+      - 6fa0c1f03e18e817371ebec5085c299aa9e4817259b5cb281cc3d4d88f2ba745
+      - 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+      - 70f7d947fdba09bb0d8d2260a3c99fa9bff70b4e0699e74a3a4b0b04871fa1ee
+      - 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
+      - 8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d
+      - 8a777791c08b3af87d6c62030209d733d01164fe343e7c3c5e5cdad9c69487b7
+      - 8e45769540fa1b639bd714abb07e9fa778d02cac948e3c7d987a2e31e86a875b
+      - 90f81083c3b6a72e17eb375c770fe7828b9d8cdea49130b951ff3aa91a4d4263
+      - 927d114bc06e1629f2a73305f3a6eaafa3870c3f00b6d17619f86122023afcf4
+      - 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+      - 9808be75cf2d3ea0d9571d8884237854eb9b72b0341bee92cf0363282b63b829
+      - 9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e
+      - a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
+      - ad07bcc088457eef788d191bd963dc2e4d162abef152fe71e27c459934af0a1b
+      - af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325
+      - af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b
+      - b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388
+      - b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d
+      - b83460a8789d420791746bfe3cf4e0a2fffb81761c00998d0f7e57713867bd11
+      - b8866fb9c9c2d593f8699fcf7d444c373732710cede6e413ed49992706f46e97
+      - bed9e3b19017bb79a4ca518d9c9e8ec98b841d69f9d4f816a648576df78c96b4
+      - c71eb659a8eeaa7cecd2ae095f682e689ed6e7e09ee578844d65bee86211ec3e
+      - c9a8988b8da01ad80503a81d1b3e7d7899575f89ddfe89dc0411e48d02980f78
+      - d50b82df7ae355fbd66a5ca555d7e8d3c871fe141bf074c8e331810f1b358105
+      - d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+      - dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+      - df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
+      - dff7ece2cd22124fea28273a928f5b482213625900292ff1047f0c2ecddddfbe
+      - e314c9cdc3971ede2adca936631e7e4269b461d2606affc37430f9ddaa83c012
+      - ec12574e1d3acdb18d1b8599b468c883ad62eb70ce9446a509571f462cfca315
+      - edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+      - f3bedc3fb40b06595db6026d8ef50a30ef405ed4c0cb1ec94ca44f0b7bf6a0b0
+      - f8fa263493501f8e0c3915ab90155d8d83ba839604673ebd0df030d8811cbdf4
+      - f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4
+      - fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-03T15:07:50Z'
+  reason: Refresh the append-only local ST-0101 proposal after the approved repository-local ChatGPT Pro
+    operational revision, narrow fallback fix, and final Low-severity remediation were frozen and passed
+    fixture, fake-transport, static, and Story-local regression checks. This remains local candidate evidence
+    only and does not claim a live browser submission, hosted CI, formal TST-001, canonical APPLY, release,
+    or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0101-local-20260803-v2.yaml
+      sha256: ecd4d671467d92b83a6097c3ac9dadf55c0ece36d815a5aca64856183a89cc1b
+      observed_at: '2026-08-03T15:07:46Z'
+      snapshot_artifact_sha256:
+      - 25c1b43d0b13826cdf3b38b3ab0aebdf340b0accc17268ec0b90a9a957b6a300
+      - 45ac4caca35740637129c8cdded9857f880aa7a2e8c5c0a6299949fa1d8d02f2
+      - 4c073e7fde788346a4329b4dfdbd19763db86a2abbd4b21c9b74d0484cb34617
+      - 5f199ce699de9f5acd2e65383bb751eb58920d57b3ba9783075042353a1261ee
+      - 742ee4c7d8efda914f75c7851e407558952b77d832f481ee2779af6f72d77446
+      - 75a57160af7d22911e3c32b8e81a1b1075888826ba033163cd540809c5f5b126
+      - 8a777791c08b3af87d6c62030209d733d01164fe343e7c3c5e5cdad9c69487b7
+      - a8478d92a32c484133a9473880f44e0d7ebca095488ea16f4921477332d03508
+      - acaefe2d566d84e504803b7df4d745d2eab5dd64fc8d548d4934dca1929cae07
+      - af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10
+      - bd961f169eb669de2db5fe80efe1cf5bdba13f5fe6e6c4313b5e44435b3f99a9
+      - c872866eb4c6fdb939931a62e0daac8ed3782f89919bad6199b0b13415a62149
+      - f3dee42101e32ebad697225cdd532ef77969abc62fadc18f1e6d26d6de908cd6
+      - fae2908a01a9b38c2407a9d894d7743d37cbd16a3709c254e049fceab3329f0c
+      - fe3fcefb697dabf1b33fdababa782aaf289ce7826981b258e407a7a7909455ba
+      - ff0afaf837c18131a5edc05670f8eb16910cd8a7473524f63e12d593e17b9644
+      invalidates_evidence_sha256: []
+applied_transitions: []

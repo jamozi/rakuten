@@ -1,0 +1,83 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0101-20260803-V2
+  schema_version: 1
+  recorded_at: '2026-08-03T15:07:46Z'
+story_id: ST-0101
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0101-local-20260801.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/75a57160af7d22911e3c32b8e81a1b1075888826ba033163cd540809c5f5b126-ST-0101-local-20260801.yaml
+    sha256: 75a57160af7d22911e3c32b8e81a1b1075888826ba033163cd540809c5f5b126
+  - original_uri: repo://AGENTS.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10-AGENTS.md
+    sha256: af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10
+  - original_uri: repo://.codex/config.toml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/bd961f169eb669de2db5fe80efe1cf5bdba13f5fe6e6c4313b5e44435b3f99a9-config.toml
+    sha256: bd961f169eb669de2db5fe80efe1cf5bdba13f5fe6e6c4313b5e44435b3f99a9
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8a777791c08b3af87d6c62030209d733d01164fe343e7c3c5e5cdad9c69487b7-Makefile
+    sha256: 8a777791c08b3af87d6c62030209d733d01164fe343e7c3c5e5cdad9c69487b7
+  - original_uri: repo://changes/st-0101/design-handoff.pro-browser.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fe3fcefb697dabf1b33fdababa782aaf289ce7826981b258e407a7a7909455ba-design-handoff.pro-browser.v1.yaml
+    sha256: fe3fcefb697dabf1b33fdababa782aaf289ce7826981b258e407a7a7909455ba
+  - original_uri: repo://changes/st-0101/design-handoff.raos-ask-pro.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/5f199ce699de9f5acd2e65383bb751eb58920d57b3ba9783075042353a1261ee-design-handoff.raos-ask-pro.v1.yaml
+    sha256: 5f199ce699de9f5acd2e65383bb751eb58920d57b3ba9783075042353a1261ee
+  - original_uri: repo://changes/st-0101/chatgpt-pro-known-ui.v1.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fae2908a01a9b38c2407a9d894d7743d37cbd16a3709c254e049fceab3329f0c-chatgpt-pro-known-ui.v1.json
+    sha256: fae2908a01a9b38c2407a9d894d7743d37cbd16a3709c254e049fceab3329f0c
+  - original_uri: repo://changes/st-0101/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f3dee42101e32ebad697225cdd532ef77969abc62fadc18f1e6d26d6de908cd6-README.md
+    sha256: f3dee42101e32ebad697225cdd532ef77969abc62fadc18f1e6d26d6de908cd6
+  - original_uri: repo://scripts/chatgpt_pro_workflow.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/4c073e7fde788346a4329b4dfdbd19763db86a2abbd4b21c9b74d0484cb34617-chatgpt_pro_workflow.py
+    sha256: 4c073e7fde788346a4329b4dfdbd19763db86a2abbd4b21c9b74d0484cb34617
+  - original_uri: repo://scripts/chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c872866eb4c6fdb939931a62e0daac8ed3782f89919bad6199b0b13415a62149-chatgpt_pro_orchestrator.py
+    sha256: c872866eb4c6fdb939931a62e0daac8ed3782f89919bad6199b0b13415a62149
+  - original_uri: repo://scripts/chatgpt_pro_python.sh
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/acaefe2d566d84e504803b7df4d745d2eab5dd64fc8d548d4934dca1929cae07-chatgpt_pro_python.sh
+    sha256: acaefe2d566d84e504803b7df4d745d2eab5dd64fc8d548d4934dca1929cae07
+  - original_uri: repo://scripts/chatgpt_pro_mcp.sh
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ff0afaf837c18131a5edc05670f8eb16910cd8a7473524f63e12d593e17b9644-chatgpt_pro_mcp.sh
+    sha256: ff0afaf837c18131a5edc05670f8eb16910cd8a7473524f63e12d593e17b9644
+  - original_uri: repo://tests/st0101/test_chatgpt_pro_workflow.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/742ee4c7d8efda914f75c7851e407558952b77d832f481ee2779af6f72d77446-test_chatgpt_pro_workflow.py
+    sha256: 742ee4c7d8efda914f75c7851e407558952b77d832f481ee2779af6f72d77446
+  - original_uri: repo://tests/st0101/test_chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/45ac4caca35740637129c8cdded9857f880aa7a2e8c5c0a6299949fa1d8d02f2-test_chatgpt_pro_orchestrator.py
+    sha256: 45ac4caca35740637129c8cdded9857f880aa7a2e8c5c0a6299949fa1d8d02f2
+  - original_uri: repo://docs/execplans/ST-0101.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a8478d92a32c484133a9473880f44e0d7ebca095488ea16f4921477332d03508-ST-0101.md
+    sha256: a8478d92a32c484133a9473880f44e0d7ebca095488ea16f4921477332d03508
+  - original_uri: repo://docs/worklogs/ST-0101.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/25c1b43d0b13826cdf3b38b3ab0aebdf340b0accc17268ec0b90a9a957b6a300-ST-0101.md
+    sha256: 25c1b43d0b13826cdf3b38b3ab0aebdf340b0accc17268ec0b90a9a957b6a300
+suite_results:
+  - suite_id: TST-001
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: .venv/bin/pytest -p no:cacheprovider -q tests/st0101/test_chatgpt_pro_orchestrator.py
+    result: 35 passed
+  - command: .venv/bin/pytest -p no:cacheprovider -q tests/st0101
+    result: 130 passed
+  - command: Ruff check and format --check for the changed ST-0101 Python implementation and test
+    result: PASS
+  - command: Python byte compilation for the changed ST-0101 Python implementation and test
+    result: PASS
+  - command: configured-project Pyright invocation
+    result: 0 errors, 0 warnings, 0 informations
+boundary: >-
+  Append-only repository delta over the 2026-08-01 ST-0101 local snapshot.
+  Together the snapshots bind the approved repository-local ChatGPT Pro
+  operational revision and the fallback remediation. Browser and MCP behavior
+  was verified only through fixtures and fake transport. The configured-project
+  Pyright invocation returned zero diagnostics, but these changed files are
+  outside that project's include set; direct strict-file Pyright PASS is not
+  claimed. The external /home/minami/.codex/skills/raos-ask-pro tree is outside
+  the repo:// capture boundary. No live browser navigation, login, prompt
+  submission, captured ChatGPT response, hosted CI, formal TST-001, canonical
+  APPLY, staging, release, or production execution is asserted. Effective
+  canonical ST-0101 remains NOT_STARTED / NOT_EXECUTED.

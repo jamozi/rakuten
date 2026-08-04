@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/analytics-import-ga4-v1.schema.json",
+  "title": "analytics.import_ga4.v1",
+  "description": "GA4 Data APIの非個人集計値を取込する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "analytics.import_ga4.v1"
+        },
+        "queue": {
+          "const": "analytics"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "date_from": {
+              "type": "string",
+              "format": "date"
+            },
+            "date_to": {
+              "type": "string",
+              "format": "date"
+            },
+            "dimensions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "metrics": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "force_reimport": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "site_id",
+            "date_from",
+            "date_to",
+            "dimensions",
+            "metrics"
+          ]
+        }
+      }
+    }
+  ]
+}

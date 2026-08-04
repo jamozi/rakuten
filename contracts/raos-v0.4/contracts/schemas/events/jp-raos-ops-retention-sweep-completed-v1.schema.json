@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-retention-sweep-completed-v1.schema.json",
+  "title": "jp.raos.ops.retention_sweep_completed.v1",
+  "description": "Retention sweepが完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.retention_sweep_completed.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "retention_policy_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "mode": {
+              "type": "string"
+            },
+            "candidate_count": {
+              "type": "integer"
+            },
+            "deleted_count": {
+              "type": "integer"
+            },
+            "report_artifact": {
+              "$ref": "../common/artifact-ref.schema.json"
+            }
+          },
+          "required": [
+            "retention_policy_id",
+            "mode",
+            "candidate_count",
+            "deleted_count",
+            "report_artifact"
+          ]
+        }
+      }
+    }
+  ]
+}

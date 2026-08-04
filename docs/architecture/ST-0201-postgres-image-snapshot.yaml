@@ -1,0 +1,102 @@
+document:
+  id: RAOS-ST0201-POSTGRES-IMAGE-SNAPSHOT-001
+  schema_version: 1
+  story_id: ST-0201
+  checked_at: '2026-08-02T11:19:33Z'
+  purpose: >-
+    Official-image identity and fail-closed runtime boundary for the local
+    PostgreSQL 18.4 service candidate
+
+official_sources:
+  - id: DOCKER-OFFICIAL-POSTGRES
+    title: Docker Official Image - postgres
+    url: https://hub.docker.com/_/postgres
+    reviewed_facts:
+      - The official image supports POSTGRES_USER and POSTGRES_DB for initial database creation.
+      - The official image supports POSTGRES_PASSWORD_FILE for a Docker secret mounted in the container.
+      - PostgreSQL 18 and later use a version-specific PGDATA directory below /var/lib/postgresql, so the persistent volume is mounted at /var/lib/postgresql.
+  - id: DOCKER-OFFICIAL-IMAGES-POSTGRES-LIBRARY
+    title: Official Images library definition for postgres
+    url: https://github.com/docker-library/official-images/blob/master/library/postgres
+    reviewed_facts:
+      - The postgres 18.4-bookworm tag resolves to a multi-platform OCI image index.
+      - Platform-specific manifest and image configuration identities must be retained separately from the index digest.
+  - id: DOCKER-COMPOSE-SECRETS
+    title: Use secrets in Compose
+    url: https://docs.docker.com/compose/how-tos/use-secrets/
+    reviewed_facts:
+      - Compose secrets are mounted as files under /run/secrets by default.
+      - A _FILE environment variable avoids placing the secret value in the Compose environment block.
+  - id: DOCKER-COMPOSE-PORTS
+    title: Compose services ports reference
+    url: https://docs.docker.com/reference/compose-file/services/#ports
+    reviewed_facts:
+      - Binding the published port to 127.0.0.1 prevents wildcard host publication.
+      - A quoted short-syntax mapping preserves the host IP and variable interpolation as one scalar.
+
+registry_resolution:
+  registry: registry-1.docker.io
+  repository: library/postgres
+  requested_tag: 18.4-bookworm
+  image_reference: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+  index_digest: sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+  platform:
+    os: linux
+    architecture: amd64
+    manifest_digest: sha256:16fa100a3a6e92c0556632870455e7f8c6f3df5cefddd67d6b95292732bd7ff0
+    config_digest: sha256:0a314d409a9633cff4f89dc18482262625c0ee78cb1aa2ff8e47bc6da0251e1b
+  config_environment:
+    PG_VERSION: 18.4-1.pgdg12+1
+    PGDATA: /var/lib/postgresql/18/docker
+
+local_candidate:
+  source_contract: repo://changes/st-0201/contracts/local-postgres.v1.yaml
+  generator: scripts/build_st0201_postgres_service.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0201_postgres_service.py
+  drift_check_command: uv run --locked --no-sync python scripts/build_st0201_postgres_service.py --check
+  runtime_wrapper: scripts/postgres_service.sh
+  generated_artifacts:
+    - path: docker-compose.yml
+      classification: LOCAL_AND_CI_SERVICE_CANDIDATE
+    - path: changes/st-0201/manifest.yaml
+      classification: GENERATED_HASH_INVENTORY
+  remote_database_capability: FORBIDDEN
+
+security_semantics:
+  password_source: COMPOSE_FILE_SECRET_ONLY
+  password_mount: /run/secrets/postgres_password
+  host_binding: 127.0.0.1_ONLY
+  service_network: INTERNAL_BRIDGE
+  persistent_mount: NAMED_VOLUME_ONLY
+  selected_platform: linux/amd64
+  expected_image_config_digest: sha256:0a314d409a9633cff4f89dc18482262625c0ee78cb1aa2ff8e47bc6da0251e1b
+  privileged_mode: FORBIDDEN
+  host_network: FORBIDDEN
+  docker_socket_mount: FORBIDDEN
+  production_use: FORBIDDEN
+
+runtime_acceptance:
+  health_probe: pg_isready
+  version_query: SHOW server_version_num;
+  expected_server_version_num: 180004
+  expected_platform: linux/amd64
+  expected_image_config_digest: sha256:0a314d409a9633cff4f89dc18482262625c0ee78cb1aa2ff8e47bc6da0251e1b
+  image_pull_required_for_disposable_test: true
+  formal_suite: TST-008
+
+verification_boundary:
+  registry_metadata_review: RECORDED
+  local_deterministic_generation: LOCAL_ONLY
+  docker_compose_config: NOT_EXECUTED
+  docker_image_pull: NOT_EXECUTED
+  container_health_probe: NOT_EXECUTED
+  server_version_assertion: NOT_EXECUTED
+  container_vulnerability_scan: NOT_EXECUTED
+  formal_tst_008: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
+  note: >-
+    Registry metadata identifies the selected immutable image but is not
+    evidence that the image was pulled, started, healthy, version-asserted, or
+    vulnerability-scanned on this host. Docker and Compose are unavailable in
+    the current implementation environment, so runtime and formal TST-008
+    evidence remain NOT_EXECUTED.

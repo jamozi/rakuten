@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/search_intent_classification/v1",
+  "title": "RAOS AI task output: search_intent_classification v1",
+  "type": "object",
+  "properties": {
+    "classified_keywords": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "properties": {
+          "keyword_id": {
+            "$ref": "#/$defs/ResourceId"
+          },
+          "keyword_text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "primary_intent": {
+            "type": "string",
+            "enum": [
+              "INFORMATIONAL",
+              "COMMERCIAL_INVESTIGATION",
+              "TRANSACTIONAL",
+              "NAVIGATIONAL",
+              "LOCAL",
+              "OTHER"
+            ]
+          },
+          "secondary_intents": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "INFORMATIONAL",
+                "COMMERCIAL_INVESTIGATION",
+                "TRANSACTIONAL",
+                "NAVIGATIONAL",
+                "LOCAL",
+                "OTHER"
+              ]
+            },
+            "uniqueItems": true,
+            "maxItems": 5
+          },
+          "funnel_stage": {
+            "type": "string",
+            "enum": [
+              "AWARENESS",
+              "CONSIDERATION",
+              "DECISION",
+              "POST_PURCHASE",
+              "UNKNOWN"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "brief_rationale": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "fact_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/ResourceId"
+            },
+            "uniqueItems": true,
+            "maxItems": 50
+          }
+        },
+        "required": [
+          "keyword_id",
+          "keyword_text",
+          "primary_intent",
+          "secondary_intents",
+          "funnel_stage",
+          "confidence",
+          "brief_rationale",
+          "fact_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "cluster_suggestions": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "properties": {
+          "cluster_key": {
+            "type": "string",
+            "pattern": "^[a-z0-9_\\-]{1,100}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "keyword_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/ResourceId"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "dominant_intent": {
+            "type": "string",
+            "enum": [
+              "INFORMATIONAL",
+              "COMMERCIAL_INVESTIGATION",
+              "TRANSACTIONAL",
+              "NAVIGATIONAL",
+              "LOCAL",
+              "OTHER"
+            ]
+          },
+          "canonical_question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "exclusions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "maxItems": 20
+          }
+        },
+        "required": [
+          "cluster_key",
+          "label",
+          "keyword_ids",
+          "dominant_intent",
+          "canonical_question",
+          "exclusions"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "unresolved": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "properties": {
+          "keyword_id": {
+            "$ref": "#/$defs/ResourceId"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "required_information": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "maxItems": 20
+          }
+        },
+        "required": [
+          "keyword_id",
+          "reason",
+          "required_information"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "classified_keywords",
+    "cluster_suggestions",
+    "unresolved"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "ResourceId": {
+      "type": "string",
+      "description": "RAOS display ID or stable resource reference.",
+      "pattern": "^[A-Z]{2,16}-[0-9A-HJKMNP-TV-Z]{26}$"
+    }
+  }
+}

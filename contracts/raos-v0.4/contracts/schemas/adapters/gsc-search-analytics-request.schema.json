@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/adapters/gsc-search-analytics-request.schema.json",
+  "title": "Search Console Search Analytics Request",
+  "description": "Search Analytics queryの許可済みRequest。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "site_url",
+    "start_date",
+    "end_date",
+    "dimensions",
+    "search_type",
+    "row_limit",
+    "start_row"
+  ],
+  "properties": {
+    "site_url": {
+      "type": "string",
+      "minLength": 1
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "dimensions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "date",
+          "hour",
+          "country",
+          "device",
+          "page",
+          "query",
+          "searchAppearance"
+        ]
+      }
+    },
+    "search_type": {
+      "type": "string",
+      "enum": [
+        "web",
+        "image",
+        "video",
+        "news",
+        "discover",
+        "googleNews"
+      ],
+      "default": "web"
+    },
+    "aggregation_type": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "auto",
+        "byPage",
+        "byProperty",
+        null
+      ]
+    },
+    "data_state": {
+      "type": "string",
+      "enum": [
+        "final",
+        "all"
+      ],
+      "default": "final"
+    },
+    "row_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 25000,
+      "default": 25000
+    },
+    "start_row": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "dimension_filter_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group_type",
+          "filters"
+        ],
+        "properties": {
+          "group_type": {
+            "const": "and"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "dimension",
+                "operator",
+                "expression"
+              ],
+              "properties": {
+                "dimension": {
+                  "type": "string"
+                },
+                "operator": {
+                  "type": "string",
+                  "enum": [
+                    "equals",
+                    "notEquals",
+                    "contains",
+                    "notContains",
+                    "includingRegex",
+                    "excludingRegex"
+                  ]
+                },
+                "expression": {
+                  "type": "string",
+                  "maxLength": 1000
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

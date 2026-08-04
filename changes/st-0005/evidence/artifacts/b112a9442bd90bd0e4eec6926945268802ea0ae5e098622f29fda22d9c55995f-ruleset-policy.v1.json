@@ -1,0 +1,131 @@
+{
+  "document": {
+    "id": "RAOS-GITHUB-RULESET-POLICY-001",
+    "version": "1.0.0",
+    "story_id": "ST-0107",
+    "source_contract": "repo://changes/st-0107/contracts/pr-governance.v1.yaml",
+    "generated_by": "repo://scripts/build_st0107_pr_governance.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st0107_pr_governance.py",
+    "artifact_kind": "DESIRED_STATE_NOT_API_PAYLOAD",
+    "github_api_version": "2026-03-10",
+    "live_status": "NOT_EXECUTED",
+    "formal_tst_001": "NOT_EXECUTED"
+  },
+  "ruleset": {
+    "name": "RAOS protected default branch",
+    "target": "branch",
+    "include": [
+      "~DEFAULT_BRANCH"
+    ],
+    "exclude": [],
+    "desired_enforcement": "active",
+    "local_application_status": "NOT_EXECUTED",
+    "bypass_actors": [],
+    "prohibit_deletion": true,
+    "prohibit_force_push": true,
+    "require_linear_history": true,
+    "pull_request": {
+      "allowed_merge_methods": [
+        "squash"
+      ],
+      "dismiss_stale_reviews_on_push": true,
+      "require_code_owner_review": true,
+      "require_last_push_approval": true,
+      "required_approving_review_count": 1,
+      "required_review_thread_resolution": true
+    },
+    "required_status_checks": [
+      {
+        "context": "Static",
+        "expected_source": "github-actions",
+        "integration_id_binding": "REQUIRED_AT_ACTIVATION"
+      },
+      {
+        "context": "Unit",
+        "expected_source": "github-actions",
+        "integration_id_binding": "REQUIRED_AT_ACTIVATION"
+      },
+      {
+        "context": "Contracts",
+        "expected_source": "github-actions",
+        "integration_id_binding": "REQUIRED_AT_ACTIVATION"
+      },
+      {
+        "context": "Database",
+        "expected_source": "github-actions",
+        "integration_id_binding": "REQUIRED_AT_ACTIVATION"
+      },
+      {
+        "context": "Secrets",
+        "expected_source": "github-actions",
+        "integration_id_binding": "REQUIRED_AT_ACTIVATION"
+      },
+      {
+        "context": "Validate status overlay",
+        "expected_source": "github-actions",
+        "integration_id_binding": "REQUIRED_AT_ACTIVATION"
+      }
+    ],
+    "strict_required_status_checks_policy": true,
+    "do_not_enforce_on_create": false,
+    "required_owner_categories": {
+      "contract": {
+        "patterns": [
+          "/contracts/",
+          "/changes/*/contracts/"
+        ],
+        "roles": [
+          "architecture",
+          "engineering"
+        ]
+      },
+      "migration": {
+        "patterns": [
+          "/migrations/",
+          "/changes/*/database/"
+        ],
+        "roles": [
+          "data",
+          "security"
+        ]
+      },
+      "security": {
+        "patterns": [
+          "/docs/canonical/04_security/",
+          "/tests/security/",
+          "/scripts/scan_secrets.py",
+          "/scripts/run_network_denied.sh",
+          "/scripts/assert_network_denied.py",
+          "/.github/"
+        ],
+        "roles": [
+          "security"
+        ]
+      },
+      "deployment": {
+        "patterns": [
+          "/infra/",
+          "/docker-compose.yml",
+          "/scripts/postgres_service.sh"
+        ],
+        "roles": [
+          "operations",
+          "security"
+        ]
+      }
+    }
+  },
+  "activation": {
+    "generator_remote_mutation": "FORBIDDEN",
+    "live_status": "NOT_EXECUTED",
+    "formal_tst_001": "NOT_EXECUTED",
+    "prerequisites": [
+      "real repository and default branch identified",
+      "every team binding resolves to a visible GitHub team with write permission",
+      "every required check has run in the repository and is bound to the expected GitHub Actions app",
+      "ruleset API request is assembled from the reviewed policy and live numeric bindings, and authenticated read-back matches the desired active policy with no bypass actor",
+      "contract, migration, security, deployment, direct-push, stale-review, last-push, missing-check, deletion, and force-push PR probes pass",
+      "a distinct human reviewer approves the governance change"
+    ]
+  }
+}

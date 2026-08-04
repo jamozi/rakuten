@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/catalog-refresh-offer-v1.schema.json",
+  "title": "catalog.refresh_offer.v1",
+  "description": "Offerの価格・在庫・集計レビュー値・Affiliate Linkを再取得する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "catalog.refresh_offer.v1"
+        },
+        "queue": {
+          "const": "freshness"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "offer_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "minItems": 1,
+              "maxItems": 500,
+              "uniqueItems": true
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "PRICE",
+                  "AVAILABILITY",
+                  "REVIEW_AGGREGATE",
+                  "AFFILIATE_LINK"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "offer_ids",
+            "fields",
+            "reason"
+          ]
+        }
+      }
+    }
+  ]
+}

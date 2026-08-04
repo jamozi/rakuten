@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/article-disclosure-context.v1.schema.json",
+  "title": "Article Disclosure Context",
+  "description": "Renderer-owned, policy-versioned disclosure inputs.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "article_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "affiliate_relationship": {
+      "type": "boolean"
+    },
+    "material_benefit_relationship": {
+      "type": "boolean"
+    },
+    "benefit_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255
+      },
+      "uniqueItems": true
+    },
+    "disclosure_policy_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "maxLength": 64
+    },
+    "additional_disclosure_text": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 4000
+    },
+    "reviewed_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "reviewed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "article_version_id",
+    "affiliate_relationship",
+    "material_benefit_relationship",
+    "benefit_types",
+    "disclosure_policy_version",
+    "additional_disclosure_text",
+    "reviewed_by_principal_id",
+    "reviewed_at",
+    "created_at"
+  ],
+  "x-raos-invariants": {
+    "ai_override_forbidden": true,
+    "renderer_owned": true
+  }
+}

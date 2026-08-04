@@ -1,0 +1,301 @@
+document:
+  id: RAOS-AI-CANONICAL-ADOPTION-001
+  version: '0.3'
+  story_id: ST-0003
+  decision_id: INT-DEC-004
+  status: CANONICAL_REVISION_CANDIDATE
+predecessor:
+  id: RAOS-JOB-STATE-REVISION-001
+  version: '0.2'
+  manifest_sha256: ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+  job_state_sha256: 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
+source_package:
+  path: docs/upstream/RAOS_05_ai_design_package_v0.1.zip
+  sha256: 9b32509c9dd6d9001aaad1b6d7663c40bc671f0ce0056d6d3539e8b318c60bfd
+  sha256sums_declared_file_count: 97
+  sha256sums_validation: COMPLETE_PASS_REQUIRED_BEFORE_BUILD
+frozen_artifacts:
+  catalogs_and_templates:
+  - path: RAOS_05_ai_task_catalog_v0.1.yaml
+    bytes: 22884
+    sha256: 8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04
+  - path: RAOS_05_eval_dataset_manifest_template_v0.1.yaml
+    bytes: 1340
+    sha256: 3215018516a010a93b14d0e90f2b944532892c626ea9db7ea54cb578796b2c51
+  - path: RAOS_05_evaluation_catalog_v0.1.yaml
+    bytes: 22895
+    sha256: a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3
+  - path: RAOS_05_failure_taxonomy_v0.1.yaml
+    bytes: 5335
+    sha256: 55db49d67678a1d8052fd4da9035ebfe2516913659c528bccd9f1a0313b38504
+  - path: RAOS_05_human_review_rubric_v0.1.yaml
+    bytes: 3057
+    sha256: a346b6c046cdcc384aeb5993fcd09ca61da62cb9b19e3b229572e8251b5010d9
+  - path: RAOS_05_model_routing_catalog_v0.1.yaml
+    bytes: 7402
+    sha256: dc76ed6d2586eec9bf18b8ac2e95eb76971179fe87fa1ee07b1ba8702f8faa96
+  - path: RAOS_05_observability_catalog_v0.1.yaml
+    bytes: 2677
+    sha256: 368fa0b45b2f21bbe28469bb1625a1dc19c05fd0b342cb4414f20a6c460d4e19
+  - path: RAOS_05_official_reference_catalog_v0.1.yaml
+    bytes: 2580
+    sha256: 17cc8125ebf832d61540400ce1894d4f7f1d4306ce01a48f31318290e7aeef1c
+  - path: RAOS_05_prompt_registry_v0.1.yaml
+    bytes: 8714
+    sha256: 745b0d6039a9f533dc92146bb3234f33e88518e184de88e67a59ca5b5c023d27
+  - path: RAOS_05_quality_gate_catalog_v0.1.yaml
+    bytes: 5594
+    sha256: a4664f082662ced52c3316ffa95ba0a7e0362d87401871e7fc7f5fbb6a77ecdc
+  - path: RAOS_05_release_decision_template_v0.1.yaml
+    bytes: 1235
+    sha256: 87be8f2b473a047a03c6b607834273bc499a584404f1bc94afd4188dfc8d1a44
+  - path: RAOS_05_runtime_config_template_v0.1.yaml
+    bytes: 1228
+    sha256: a79304387288578b9728cb4da55cac31051f63e9aaff308f874ba785b9fce70c
+  - path: RAOS_05_schema_registry_v0.1.yaml
+    bytes: 4108
+    sha256: 4a34d6d18192184333e374c8a44e849915b817f7a8019d9e6d0101077bdbe751
+  - path: RAOS_05_state_transition_catalog_v0.1.yaml
+    bytes: 1916
+    sha256: f6acb4dd43339cf326c238a39a05ed3b7489904c239e21eea1882e7ba7351e6e
+  prompts:
+  - path: prompts/PROMPT-AI-ARTICLE-DRAFT_v1.md
+    bytes: 2811
+    sha256: b868eb4e131da15cfc7c7be20dc538dd70a5fe58b42f04f8e69414d0ffee294c
+  - path: prompts/PROMPT-AI-ARTICLE-OUTLINE_v1.md
+    bytes: 2641
+    sha256: 400c089e2cce0ff1956d476f7352bfe9d80f7ac9cd4ff41e72f52312571d9bd7
+  - path: prompts/PROMPT-AI-CLAIM-EXTRACTION_v1.md
+    bytes: 2642
+    sha256: 858bf873433c6ab43c94f02070797f3c9819fe71c176f3c60afb9951a2cad165
+  - path: prompts/PROMPT-AI-COMPARISON-AXIS_v1.md
+    bytes: 2707
+    sha256: 2ee556ba6c828797b634f14f9365eaecca0ba4c85857451e7c1e27347c20b1e0
+  - path: prompts/PROMPT-AI-INTERNAL-LINK_v1.md
+    bytes: 2702
+    sha256: 62b76734d1670c92388f267606c981c885927298bd841a5fdce6e9577fefcc7f
+  - path: prompts/PROMPT-AI-OPPORTUNITY-ASSESSMENT_v1.md
+    bytes: 2798
+    sha256: 0d6f0eb38a025162124aaed10bca3ae4edc42ae52aeee3684c8c9f465dffa4a2
+  - path: prompts/PROMPT-AI-POLICY-ASSIST_v1.md
+    bytes: 2724
+    sha256: aedd521cbf676d9f28d0136ccc6d9fe5e6a1ade8e285f7545d146e4590fcafdd
+  - path: prompts/PROMPT-AI-QUALITY-REMEDIATION_v1.md
+    bytes: 2659
+    sha256: 7b4f0b62273ce4b83893b68d4f7b4d5d1c0f1f5eb4ebec8975cd79ca8b98138e
+  - path: prompts/PROMPT-AI-REFRESH-DIFF_v1.md
+    bytes: 2647
+    sha256: 164ddb69ba3b06ad8dc612163d1e01acf6ac6dffdacfb01205fe6d45efa96273
+  - path: prompts/PROMPT-AI-SEARCH-INTENT_v1.md
+    bytes: 2674
+    sha256: 4b6a09622bf95e440a9cf5d2627263c897eece1f6107c31fc3729d36968ced81
+  - path: prompts/PROMPT-AI-SOURCE-PACKET-GAP_v1.md
+    bytes: 2641
+    sha256: 5d6629ee37ccdbf685143e454cf9e07f715155d059e949aed2ba5bc8a186c2e0
+  - path: prompts/PROMPT-AI-UPDATE-PRIORITY_v1.md
+    bytes: 2713
+    sha256: 0e651ccd33524fcb8d90ea891b0b52285bacc15c58c6a474de83da38dc4a21bc
+  schemas:
+  - path: schemas/eval/evaluation_case.v1.schema.json
+    bytes: 2407
+    sha256: 363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a
+  - path: schemas/eval/judge_output.v1.schema.json
+    bytes: 2538
+    sha256: 8d832fe5c58a7cfeb8bafa8dab18c64aa45bdb56c3282bd3d7d6e14cad6e87d4
+  - path: schemas/tasks/ai.article_draft.v1.output.schema.json
+    bytes: 5894
+    sha256: 3f7fe932eee1d967455a2613000bda988edd1b1848bca52933cc56d9ed985eae
+  - path: schemas/tasks/ai.article_outline.v1.output.schema.json
+    bytes: 2225
+    sha256: d57afe6f1b4ab33cbb8553cee4a9270ff3800ae3372f76fa0ae6b47eeba84848
+  - path: schemas/tasks/ai.claim_extraction.v1.output.schema.json
+    bytes: 1879
+    sha256: 54a4f58a3ba4136dbac0a17b992dcda969ef7d2a19d42ae8d3c4c253cc4302b5
+  - path: schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json
+    bytes: 2303
+    sha256: 9702e97765468c7aa1fec27fbfec974dc8c8037ab154c647dfc0764ff693bb16
+  - path: schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json
+    bytes: 1339
+    sha256: 1271052c0aa4105ac0b0c1824b057651339ba78f32eee4d7d4f4461067cf536b
+  - path: schemas/tasks/ai.opportunity_assessment.v1.output.schema.json
+    bytes: 1188
+    sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
+  - path: schemas/tasks/ai.policy_assist.v1.output.schema.json
+    bytes: 2653
+    sha256: 242428ea37446f57c6cc819770ae065004a411229fe04b3e60a8f780ae290e2f
+  - path: schemas/tasks/ai.quality_remediation.v1.output.schema.json
+    bytes: 1756
+    sha256: 10098facd422a7b8bd9784b1091ff31b7b4a0b99e4add3d0e2b902e810f93581
+  - path: schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json
+    bytes: 3137
+    sha256: 68b4c97de6d7811f20c88d6918d946de58e1489d0ac5a19f390f8301d929f0e2
+  - path: schemas/tasks/ai.search_intent_classification.v1.output.schema.json
+    bytes: 4840
+    sha256: c7753ca61a03868d7d91a0760b35224087fa09d2c99252621553d6c21edcc69d
+  - path: schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json
+    bytes: 2666
+    sha256: 1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c
+  - path: schemas/tasks/ai.update_priority_explanation.v1.output.schema.json
+    bytes: 1322
+    sha256: 0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef
+grader_output_metric_bindings:
+  source_catalog_ref: ai/RAOS_05_evaluation_catalog_v0.1.yaml#/graders
+  metric_registry_ref: ai/RAOS_05_evaluation_catalog_v0.1.yaml#/metrics
+  database_function: ai.canonical_grader_output_metrics(text)
+  ordering: UPSTREAM_OUTPUT_METRICS_THEN_METRIC_KIND_EXTENSIONS
+  bindings:
+    grader.json_schema.v1:
+      upstream_output_metrics:
+      - schema_valid_rate
+      metric_kind_extensions: []
+      canonical_output_metrics:
+      - schema_valid_rate
+    grader.response_completion.v1:
+      upstream_output_metrics:
+      - complete_response_rate
+      metric_kind_extensions: []
+      canonical_output_metrics:
+      - complete_response_rate
+    grader.resource_reference.v1:
+      upstream_output_metrics:
+      - evidence_reference_precision
+      metric_kind_extensions:
+      - metric_code: critical_claim_support_rate
+        metric_kind: DETERMINISTIC_HUMAN
+        extension_family: RESOURCE_SUPPORT
+      canonical_output_metrics:
+      - evidence_reference_precision
+      - critical_claim_support_rate
+    grader.numeric_exactness.v1:
+      upstream_output_metrics:
+      - numeric_exactness
+      metric_kind_extensions:
+      - metric_code: priority_order_preservation
+        metric_kind: DETERMINISTIC
+        extension_family: PRIORITY
+      canonical_output_metrics:
+      - numeric_exactness
+      - priority_order_preservation
+    grader.product_identity.v1:
+      upstream_output_metrics:
+      - product_identity_accuracy
+      metric_kind_extensions: []
+      canonical_output_metrics:
+      - product_identity_accuracy
+    grader.forbidden_content.v1:
+      upstream_output_metrics:
+      - fabricated_experience_rate
+      - rakuten_review_body_leakage_rate
+      - affiliate_bias_violation_rate
+      - prompt_injection_follow_rate
+      metric_kind_extensions: []
+      canonical_output_metrics:
+      - fabricated_experience_rate
+      - rakuten_review_body_leakage_rate
+      - affiliate_bias_violation_rate
+      - prompt_injection_follow_rate
+    grader.task_gold.v1:
+      upstream_output_metrics:
+      - critical_claim_recall
+      - claim_precision
+      - intent_accuracy
+      - cluster_purity
+      - policy_blocker_recall
+      - blocking_gap_recall
+      - affected_claim_recall
+      metric_kind_extensions:
+      - metric_code: uncertainty_calibration_error
+        metric_kind: STATISTICAL
+        extension_family: CALIBRATION
+      - metric_code: finding_resolution_rate
+        metric_kind: DETERMINISTIC_HUMAN
+        extension_family: REMEDIATION
+      - metric_code: new_unsupported_claim_rate
+        metric_kind: DETERMINISTIC_HUMAN
+        extension_family: REMEDIATION
+      - metric_code: priority_order_preservation
+        metric_kind: DETERMINISTIC
+        extension_family: PRIORITY
+      canonical_output_metrics:
+      - critical_claim_recall
+      - claim_precision
+      - intent_accuracy
+      - cluster_purity
+      - policy_blocker_recall
+      - blocking_gap_recall
+      - affected_claim_recall
+      - uncertainty_calibration_error
+      - finding_resolution_rate
+      - new_unsupported_claim_rate
+      - priority_order_preservation
+    grader.human_rubric.v1:
+      upstream_output_metrics:
+      - human_acceptance_rate
+      - axis_relevance
+      - intent_coverage
+      - link_relevance
+      - editorial_business_separation
+      metric_kind_extensions:
+      - metric_code: critical_claim_support_rate
+        metric_kind: DETERMINISTIC_HUMAN
+        extension_family: HYBRID_HUMAN
+      - metric_code: unsupported_critical_fact_rate
+        metric_kind: HUMAN_JUDGE
+        extension_family: HYBRID_HUMAN
+      - metric_code: false_clearance_rate
+        metric_kind: HUMAN
+        extension_family: HUMAN
+      - metric_code: finding_resolution_rate
+        metric_kind: DETERMINISTIC_HUMAN
+        extension_family: HYBRID_HUMAN
+      - metric_code: new_unsupported_claim_rate
+        metric_kind: DETERMINISTIC_HUMAN
+        extension_family: HYBRID_HUMAN
+      - metric_code: human_edit_distance
+        metric_kind: DETERMINISTIC
+        extension_family: HUMAN
+      canonical_output_metrics:
+      - human_acceptance_rate
+      - axis_relevance
+      - intent_coverage
+      - link_relevance
+      - editorial_business_separation
+      - critical_claim_support_rate
+      - unsupported_critical_fact_rate
+      - false_clearance_rate
+      - finding_resolution_rate
+      - new_unsupported_claim_rate
+      - human_edit_distance
+    grader.model_judge.v1:
+      upstream_output_metrics:
+      - intent_coverage
+      - unsupported_critical_fact_rate
+      metric_kind_extensions: []
+      canonical_output_metrics:
+      - intent_coverage
+      - unsupported_critical_fact_rate
+    grader.cost_latency.v1:
+      upstream_output_metrics:
+      - latency_p95_ms
+      - cost_jpy_p95
+      metric_kind_extensions: []
+      canonical_output_metrics:
+      - latency_p95_ms
+      - cost_jpy_p95
+copy_policy:
+  byte_identical: true
+  package_relative_topology_preserved: true
+  catalog_internal_version_rewritten: false
+excluded_from_production_contract:
+- eval_cases/bootstrap_cases_v0.1.jsonl
+- fixtures/expected/**
+- fixtures/source_packets/**
+proposal_policy:
+  execution: FORBIDDEN
+  retention: HASH_PINNED_PROVENANCE_ONLY
+  data_proposal_sha256: a05b1cdb7ecc1a9e1eee7307c85eafc64702ac0fc0b1456dea3721a5be09d3fe
+  api_proposal_sha256: 3af33d69df7bbd31a415e8674cdde9b60e9edfc2721b2e7aa6b53278704ec2f0
+public_isolation:
+  path: ../openapi-public.v0.1.yaml
+  sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797
+  ai_surface_allowed: false

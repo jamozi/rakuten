@@ -1,0 +1,1633 @@
+{
+  "document": {
+    "id": "RAOS-CONTRACT-REPOSITORY-001",
+    "version": "0.4",
+    "story_id": "ST-0104",
+    "status": "IMPLEMENTED_NOT_VALIDATED",
+    "generated_by": "scripts/build_st0104_contract_repository.py"
+  },
+  "provenance": {
+    "source_manifest": {
+      "path": "changes/st-0004/manifest.yaml",
+      "sha256": "5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458",
+      "document_id": "RAOS-CONTENT-REVISION-001",
+      "version": "0.4",
+      "story_id": "ST-0004",
+      "generated_by": "scripts/build_st0004_revision.py"
+    },
+    "source_bundle_root": "changes/st-0004",
+    "installed_bundle_root": "contracts/raos-v0.4",
+    "copy_mode": "BYTE_IDENTICAL"
+  },
+  "inventory": {
+    "boundary": "EXACT",
+    "path_base": "contracts/raos-v0.4",
+    "source_path_base": "changes/st-0004",
+    "root_readme": {
+      "path": "contracts/README.md",
+      "handling": "PRESERVED_BYTE_IDENTICAL_SIDECAR",
+      "included_in_artifact_count": false
+    },
+    "manifest": {
+      "path": "contracts/raos-v0.4/contract-repository.v0.4.json",
+      "included_in_artifact_count": false,
+      "self_hash": "EXCLUDED_TO_AVOID_RECURSIVE_SELF_HASH"
+    },
+    "path_traversal_casefold_symlink_special_file_checks": true
+  },
+  "schema_resolution": {
+    "dialect": "https://json-schema.org/draft/2020-12/schema",
+    "network_retrieval": "FORBIDDEN",
+    "alias_policy": "EXPLICIT_REVIEWED_ONLY",
+    "alias_count": 6,
+    "retrieval_uri_aliases": [
+      {
+        "retrieval_uri": "https://schemas.raos.local/ai-governance/ai-task-contract/ai-task-definition.v1.schema.json",
+        "path": "contracts/schemas/ai-governance/ai-task-definition.v1.schema.json",
+        "canonical_id": "https://schemas.raos.local/ai-governance/ai-task-definition/v1",
+        "declared_by": {
+          "path": "contracts/schemas/ai-governance/ai-task-contract.v1.schema.json",
+          "reference": "ai-task-definition.v1.schema.json"
+        }
+      },
+      {
+        "retrieval_uri": "https://schemas.raos.local/ai-governance/evaluation-run-detail/evaluation-run.v1.schema.json",
+        "path": "contracts/schemas/ai-governance/evaluation-run.v1.schema.json",
+        "canonical_id": "https://schemas.raos.local/ai-governance/evaluation-run/v1",
+        "declared_by": {
+          "path": "contracts/schemas/ai-governance/evaluation-run-detail.v1.schema.json",
+          "reference": "evaluation-run.v1.schema.json"
+        }
+      },
+      {
+        "retrieval_uri": "https://schemas.raos.local/ai-governance/release-decision-approval-result/release-approval.v1.schema.json",
+        "path": "contracts/schemas/ai-governance/release-approval.v1.schema.json",
+        "canonical_id": "https://schemas.raos.local/ai-governance/release-approval/v1",
+        "declared_by": {
+          "path": "contracts/schemas/ai-governance/release-decision-approval-result.v1.schema.json",
+          "reference": "release-approval.v1.schema.json"
+        }
+      },
+      {
+        "retrieval_uri": "https://schemas.raos.local/ai-governance/release-decision-approval-result/release-decision.v1.schema.json",
+        "path": "contracts/schemas/ai-governance/release-decision.v1.schema.json",
+        "canonical_id": "https://schemas.raos.local/ai-governance/release-decision/v1",
+        "declared_by": {
+          "path": "contracts/schemas/ai-governance/release-decision-approval-result.v1.schema.json",
+          "reference": "release-decision.v1.schema.json"
+        }
+      },
+      {
+        "retrieval_uri": "https://schemas.raos.local/content/schemas/content-ast.schema.json",
+        "path": "contracts/content/schemas/content-ast.schema.json",
+        "canonical_id": "https://schemas.raos.local/content/v1/content-ast.schema.json",
+        "declared_by": {
+          "path": "contracts/schemas/content-revision/content-validation-request.v1.schema.json",
+          "reference": "../../content/schemas/content-ast.schema.json"
+        }
+      },
+      {
+        "retrieval_uri": "https://schemas.raos.local/content/schemas/seo-metadata.schema.json",
+        "path": "contracts/content/schemas/seo-metadata.schema.json",
+        "canonical_id": "https://schemas.raos.local/content/v1/seo-metadata.schema.json",
+        "declared_by": {
+          "path": "contracts/schemas/content-revision/seo-metadata-update-request.v1.schema.json",
+          "reference": "../../content/schemas/seo-metadata.schema.json"
+        }
+      }
+    ]
+  },
+  "artifact_count": 306,
+  "artifacts": [
+    {
+      "path": "contracts/ai/RAOS_05_ai_task_catalog_v0.1.yaml",
+      "bytes": 22884,
+      "sha256": "8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_eval_dataset_manifest_template_v0.1.yaml",
+      "bytes": 1340,
+      "sha256": "3215018516a010a93b14d0e90f2b944532892c626ea9db7ea54cb578796b2c51"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_evaluation_catalog_v0.1.yaml",
+      "bytes": 22895,
+      "sha256": "a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_failure_taxonomy_v0.1.yaml",
+      "bytes": 5335,
+      "sha256": "55db49d67678a1d8052fd4da9035ebfe2516913659c528bccd9f1a0313b38504"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_human_review_rubric_v0.1.yaml",
+      "bytes": 3057,
+      "sha256": "a346b6c046cdcc384aeb5993fcd09ca61da62cb9b19e3b229572e8251b5010d9"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_model_routing_catalog_v0.1.yaml",
+      "bytes": 7402,
+      "sha256": "dc76ed6d2586eec9bf18b8ac2e95eb76971179fe87fa1ee07b1ba8702f8faa96"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_observability_catalog_v0.1.yaml",
+      "bytes": 2677,
+      "sha256": "368fa0b45b2f21bbe28469bb1625a1dc19c05fd0b342cb4414f20a6c460d4e19"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_official_reference_catalog_v0.1.yaml",
+      "bytes": 2580,
+      "sha256": "17cc8125ebf832d61540400ce1894d4f7f1d4306ce01a48f31318290e7aeef1c"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_prompt_registry_v0.1.yaml",
+      "bytes": 8714,
+      "sha256": "745b0d6039a9f533dc92146bb3234f33e88518e184de88e67a59ca5b5c023d27"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_quality_gate_catalog_v0.1.yaml",
+      "bytes": 5594,
+      "sha256": "a4664f082662ced52c3316ffa95ba0a7e0362d87401871e7fc7f5fbb6a77ecdc"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_release_decision_template_v0.1.yaml",
+      "bytes": 1235,
+      "sha256": "87be8f2b473a047a03c6b607834273bc499a584404f1bc94afd4188dfc8d1a44"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_runtime_config_template_v0.1.yaml",
+      "bytes": 1228,
+      "sha256": "a79304387288578b9728cb4da55cac31051f63e9aaff308f874ba785b9fce70c"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_schema_registry_v0.1.yaml",
+      "bytes": 4108,
+      "sha256": "4a34d6d18192184333e374c8a44e849915b817f7a8019d9e6d0101077bdbe751"
+    },
+    {
+      "path": "contracts/ai/RAOS_05_state_transition_catalog_v0.1.yaml",
+      "bytes": 1916,
+      "sha256": "f6acb4dd43339cf326c238a39a05ed3b7489904c239e21eea1882e7ba7351e6e"
+    },
+    {
+      "path": "contracts/ai/canonical-adoption.v0.3.yaml",
+      "bytes": 12245,
+      "sha256": "c51f03e5b2724ac062a2ee6f7424e5b1d7b3d804f934e31f89fc9c4dcb0494ca"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-ARTICLE-DRAFT_v1.md",
+      "bytes": 2811,
+      "sha256": "b868eb4e131da15cfc7c7be20dc538dd70a5fe58b42f04f8e69414d0ffee294c"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-ARTICLE-OUTLINE_v1.md",
+      "bytes": 2641,
+      "sha256": "400c089e2cce0ff1956d476f7352bfe9d80f7ac9cd4ff41e72f52312571d9bd7"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-CLAIM-EXTRACTION_v1.md",
+      "bytes": 2642,
+      "sha256": "858bf873433c6ab43c94f02070797f3c9819fe71c176f3c60afb9951a2cad165"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-COMPARISON-AXIS_v1.md",
+      "bytes": 2707,
+      "sha256": "2ee556ba6c828797b634f14f9365eaecca0ba4c85857451e7c1e27347c20b1e0"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-INTERNAL-LINK_v1.md",
+      "bytes": 2702,
+      "sha256": "62b76734d1670c92388f267606c981c885927298bd841a5fdce6e9577fefcc7f"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-OPPORTUNITY-ASSESSMENT_v1.md",
+      "bytes": 2798,
+      "sha256": "0d6f0eb38a025162124aaed10bca3ae4edc42ae52aeee3684c8c9f465dffa4a2"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-POLICY-ASSIST_v1.md",
+      "bytes": 2724,
+      "sha256": "aedd521cbf676d9f28d0136ccc6d9fe5e6a1ade8e285f7545d146e4590fcafdd"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-QUALITY-REMEDIATION_v1.md",
+      "bytes": 2659,
+      "sha256": "7b4f0b62273ce4b83893b68d4f7b4d5d1c0f1f5eb4ebec8975cd79ca8b98138e"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-REFRESH-DIFF_v1.md",
+      "bytes": 2647,
+      "sha256": "164ddb69ba3b06ad8dc612163d1e01acf6ac6dffdacfb01205fe6d45efa96273"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-SEARCH-INTENT_v1.md",
+      "bytes": 2674,
+      "sha256": "4b6a09622bf95e440a9cf5d2627263c897eece1f6107c31fc3729d36968ced81"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-SOURCE-PACKET-GAP_v1.md",
+      "bytes": 2641,
+      "sha256": "5d6629ee37ccdbf685143e454cf9e07f715155d059e949aed2ba5bc8a186c2e0"
+    },
+    {
+      "path": "contracts/ai/prompts/PROMPT-AI-UPDATE-PRIORITY_v1.md",
+      "bytes": 2713,
+      "sha256": "0e651ccd33524fcb8d90ea891b0b52285bacc15c58c6a474de83da38dc4a21bc"
+    },
+    {
+      "path": "contracts/ai/schemas/eval/evaluation_case.v1.schema.json",
+      "bytes": 2407,
+      "sha256": "363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a"
+    },
+    {
+      "path": "contracts/ai/schemas/eval/judge_output.v1.schema.json",
+      "bytes": 2538,
+      "sha256": "8d832fe5c58a7cfeb8bafa8dab18c64aa45bdb56c3282bd3d7d6e14cad6e87d4"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.article_draft.v1.output.schema.json",
+      "bytes": 5894,
+      "sha256": "3f7fe932eee1d967455a2613000bda988edd1b1848bca52933cc56d9ed985eae"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.article_outline.v1.output.schema.json",
+      "bytes": 2225,
+      "sha256": "d57afe6f1b4ab33cbb8553cee4a9270ff3800ae3372f76fa0ae6b47eeba84848"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.claim_extraction.v1.output.schema.json",
+      "bytes": 1879,
+      "sha256": "54a4f58a3ba4136dbac0a17b992dcda969ef7d2a19d42ae8d3c4c253cc4302b5"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json",
+      "bytes": 2303,
+      "sha256": "9702e97765468c7aa1fec27fbfec974dc8c8037ab154c647dfc0764ff693bb16"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json",
+      "bytes": 1339,
+      "sha256": "1271052c0aa4105ac0b0c1824b057651339ba78f32eee4d7d4f4461067cf536b"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json",
+      "bytes": 1188,
+      "sha256": "504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.policy_assist.v1.output.schema.json",
+      "bytes": 2653,
+      "sha256": "242428ea37446f57c6cc819770ae065004a411229fe04b3e60a8f780ae290e2f"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.quality_remediation.v1.output.schema.json",
+      "bytes": 1756,
+      "sha256": "10098facd422a7b8bd9784b1091ff31b7b4a0b99e4add3d0e2b902e810f93581"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json",
+      "bytes": 3137,
+      "sha256": "68b4c97de6d7811f20c88d6918d946de58e1489d0ac5a19f390f8301d929f0e2"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.search_intent_classification.v1.output.schema.json",
+      "bytes": 4840,
+      "sha256": "c7753ca61a03868d7d91a0760b35224087fa09d2c99252621553d6c21edcc69d"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json",
+      "bytes": 2666,
+      "sha256": "1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c"
+    },
+    {
+      "path": "contracts/ai/schemas/tasks/ai.update_priority_explanation.v1.output.schema.json",
+      "bytes": 1322,
+      "sha256": "0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef"
+    },
+    {
+      "path": "contracts/asyncapi.v0.4.yaml",
+      "bytes": 144021,
+      "sha256": "3373668d6028be7d90bb35c4ab893c4572201fd71c213d12a165ac1f190ee6dd"
+    },
+    {
+      "path": "contracts/catalogs/job-catalog.v0.4.yaml",
+      "bytes": 30635,
+      "sha256": "70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1"
+    },
+    {
+      "path": "contracts/catalogs/resource-contracts.v0.4.yaml",
+      "bytes": 307884,
+      "sha256": "aa53bf68b125821a46c093e653464e7f80e5710e31f6f860251aa8ebc30480c0"
+    },
+    {
+      "path": "contracts/catalogs/schema-registry.v0.4.yaml",
+      "bytes": 69606,
+      "sha256": "295bb84f61ab6f8f4d4fa5b5b2b3e702738c8aa8e051969ddd37b57e8213163e"
+    },
+    {
+      "path": "contracts/catalogs/state-transition-catalog.v0.4.yaml",
+      "bytes": 13876,
+      "sha256": "203eb10d9b6fc6ba4fb0e9f0491f713c313a6a5627dcaf60b7ce53665ecec8a5"
+    },
+    {
+      "path": "contracts/content/RAOS_06_article_type_catalog_v0.1.yaml",
+      "bytes": 7135,
+      "sha256": "6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11"
+    },
+    {
+      "path": "contracts/content/RAOS_06_claim_evidence_policy_v0.1.yaml",
+      "bytes": 7172,
+      "sha256": "fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba"
+    },
+    {
+      "path": "contracts/content/RAOS_06_content_block_catalog_v0.1.yaml",
+      "bytes": 9420,
+      "sha256": "af9e86c5938a718f41aaea0c9247405508adfbcb1b0924e55f4ce06d5a0a420e"
+    },
+    {
+      "path": "contracts/content/RAOS_06_content_contract_catalog_v0.1.yaml",
+      "bytes": 2147,
+      "sha256": "4875ed0f8f685dcca432316633503439d97c33784bb7304164940a4b0849db64"
+    },
+    {
+      "path": "contracts/content/RAOS_06_content_test_matrix_v0.1.csv",
+      "bytes": 142924,
+      "sha256": "9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564"
+    },
+    {
+      "path": "contracts/content/RAOS_06_editorial_policy_catalog_v0.1.yaml",
+      "bytes": 8571,
+      "sha256": "d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a"
+    },
+    {
+      "path": "contracts/content/RAOS_06_external_rule_snapshot_v0.1.yaml",
+      "bytes": 4677,
+      "sha256": "14a4131215f8c2f70a2f5b73aef0ccb1162f1a8ac6d410079c6a3b6b68955042"
+    },
+    {
+      "path": "contracts/content/RAOS_06_freshness_update_policy_v0.1.yaml",
+      "bytes": 5428,
+      "sha256": "a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2"
+    },
+    {
+      "path": "contracts/content/RAOS_06_implementation_slices_v0.1.yaml",
+      "bytes": 5524,
+      "sha256": "808c3178536246080ab3a4394246ff76670ae65ffd14a2e2b47b87a03b1597d7"
+    },
+    {
+      "path": "contracts/content/RAOS_06_internal_link_policy_v0.1.yaml",
+      "bytes": 1909,
+      "sha256": "f727f7ed2b8712c01f7e1053a377abd6c84ff22e6b29c684ca935d8f229f4127"
+    },
+    {
+      "path": "contracts/content/RAOS_06_media_asset_policy_v0.1.yaml",
+      "bytes": 2250,
+      "sha256": "25bf7521b707bb56342c19daf48e079b84957591fa8e85cc3183ad6f4a9f0561"
+    },
+    {
+      "path": "contracts/content/RAOS_06_official_references_v0.1.yaml",
+      "bytes": 3960,
+      "sha256": "d7a3986affce9d2fc1110d6b3fffb196c668dae7db00288d466b9e62ba57e030"
+    },
+    {
+      "path": "contracts/content/RAOS_06_quality_gate_catalog_v0.1.yaml",
+      "bytes": 4150,
+      "sha256": "90ab554aa55dda335ba69bbb306772306494e2e4ba899c3d22af4a9d9a030efb"
+    },
+    {
+      "path": "contracts/content/RAOS_06_recommendation_methodology_v0.1.yaml",
+      "bytes": 3669,
+      "sha256": "fb71ad7900c7f688f305e10256b49563281893408e54d8668aac02efa7e57862"
+    },
+    {
+      "path": "contracts/content/RAOS_06_review_checklist_v0.1.yaml",
+      "bytes": 17726,
+      "sha256": "8373dbd354c751c699d02bc8c49b18074ae2e10a2ed0573ebd77d99103d3ea63"
+    },
+    {
+      "path": "contracts/content/RAOS_06_schema_registry_v0.1.yaml",
+      "bytes": 9141,
+      "sha256": "adc3f52092bd78d7d318d31da97c6ca048cf69f333ffbb225e70867f738b0aa2"
+    },
+    {
+      "path": "contracts/content/RAOS_06_seo_metadata_structured_data_policy_v0.1.yaml",
+      "bytes": 3772,
+      "sha256": "2fa67e012c67f8a6a90b39cfd64f27da9fb76534e57ebbff60ccd78ba51bb98a"
+    },
+    {
+      "path": "contracts/content/RAOS_06_traceability_matrix_v0.1.csv",
+      "bytes": 12784,
+      "sha256": "575fcb2e6c9d5c9262eaab9e4c137f293aed31bcb8238b94fade395b159bc4cd"
+    },
+    {
+      "path": "contracts/content/ai-content-alignment.v0.4.yaml",
+      "bytes": 4769,
+      "sha256": "7b141fdb7e401ee886efe59f65e9bdff6be4af566deca73d29ebc50a1f200477"
+    },
+    {
+      "path": "contracts/content/canonical-adoption.v0.4.yaml",
+      "bytes": 3056,
+      "sha256": "699663b78430d0133e05ffa70509102c4f68cec94e32e8f4dada085e2c90d3bd"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-001-raw-html.json",
+      "bytes": 4766,
+      "sha256": "fd9dd5db60bf6d613add9d5ffbfb010b5962b0fa713003230b0e1cc4559cc397"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-002-manual-affiliate-url.json",
+      "bytes": 4769,
+      "sha256": "ca7007bc94e832bb1178adcc1cabcf219a268930c331635c183ba8db6ee1d957"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-003-auto-publish.json",
+      "bytes": 4718,
+      "sha256": "b99fac5908f2b3278ac319a42cf5cee9eedf1c92ac6a6db16f7ff22688aa49ee"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-004-wrong-locale.json",
+      "bytes": 4719,
+      "sha256": "e3c6aecd855e4912e5a24738538db23cd63c0979a96bbe7ddf2e078c306f302f"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-005-unknown-block.json",
+      "bytes": 4826,
+      "sha256": "2e26d2656aa62be2095efb325942bcb6b1c04d14c3f358ffd9ab5887626cf7a3"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-006-faq-schema-enabled.json",
+      "bytes": 5045,
+      "sha256": "48017f422cb30ef744eb52cd7b92ed3564619d9bedbc6502f6632637e266e9a1"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-007-disclosure-removable.json",
+      "bytes": 4718,
+      "sha256": "681e2c8526cf9b2a9cd3dbef1cc26450e9f2e841c5669659e499643351738a3c"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-008-comparison-hide-unknown.json",
+      "bytes": 4720,
+      "sha256": "65672cf387803215aec399bf6bb2b7661f1b3d4eabec8a27928ec78f98beb149"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-009-extra-finance-field.json",
+      "bytes": 4733,
+      "sha256": "0579bc0d639d7ee3ea5f81b6270df7ab3c93b380109d66a6e259bff48f2f6bd0"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-010-invalid-heading-level.json",
+      "bytes": 4946,
+      "sha256": "2f697e0a5aab56a5caa612ec7ba431e9a3c491372b646635af7d5d6f0d3b2e37"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-101-disclosure-not-first.json",
+      "bytes": 4719,
+      "sha256": "a5a5e02b579c88c7a959474ffb10aa8e546405e9a22dddb26b01c2d168da1529"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-102-missing-source-summary.json",
+      "bytes": 4391,
+      "sha256": "a7759e354bc5552b7f39ac3b319db0c9b3d15e0017c359b6e534281a27aa26b2"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-103-missing-methodology-block.json",
+      "bytes": 4009,
+      "sha256": "1ff69444290e0bc291929209964d45fa4a0afe0523e623af388bf4b0282c4b69"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-104-duplicate-block-id.json",
+      "bytes": 4719,
+      "sha256": "2361401bdc82ede6da9b51208c11649e111d158751b36d09ee87e445b0e2b8b5"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/INV-105-missing-required-article-block.json",
+      "bytes": 4280,
+      "sha256": "0aef38d018043e58343ac1d6d2fbc1ae428abadffc1f5b5346b72ef508f2ae3f"
+    },
+    {
+      "path": "contracts/content/fixtures/invalid/expected_results.yaml",
+      "bytes": 2120,
+      "sha256": "e258a86603d656b9d896dea182ba0aea5e4a43983385a99b85d8c3ec0e3609e3"
+    },
+    {
+      "path": "contracts/content/fixtures/valid/condition_filtering.json",
+      "bytes": 4726,
+      "sha256": "6396e0197f8ea0a2ffb030460fb80bfb6b9e5ad791334706a1e4424681a6c081"
+    },
+    {
+      "path": "contracts/content/fixtures/valid/model_generation_capacity_difference.json",
+      "bytes": 5237,
+      "sha256": "37b6633f2d330ed420bbc3cdb5a7308e98f9ad74d61a320739b7745f972c5783"
+    },
+    {
+      "path": "contracts/content/fixtures/valid/product_comparison.json",
+      "bytes": 5243,
+      "sha256": "f128896be05e8560ad0608b02adbe1150e305f18fd7a44005abb0f70687d3cef"
+    },
+    {
+      "path": "contracts/content/fixtures/valid/selection_guide.json",
+      "bytes": 4719,
+      "sha256": "8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489"
+    },
+    {
+      "path": "contracts/content/fixtures/valid/use_case_recommendation.json",
+      "bytes": 5144,
+      "sha256": "2e13fdbb98f8ab5eaf402db107999fd55ed0d2f931cd2bc0929d57c45fff0d9c"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/bullet_list.schema.json",
+      "bytes": 4586,
+      "sha256": "1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/callout.schema.json",
+      "bytes": 4477,
+      "sha256": "86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/caution.schema.json",
+      "bytes": 4360,
+      "sha256": "b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/comparison_table.schema.json",
+      "bytes": 5284,
+      "sha256": "6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/decision_summary.schema.json",
+      "bytes": 4947,
+      "sha256": "a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/difference_matrix.schema.json",
+      "bytes": 5196,
+      "sha256": "cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/disclosure_slot.schema.json",
+      "bytes": 4279,
+      "sha256": "76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/evidence_note.schema.json",
+      "bytes": 4617,
+      "sha256": "37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/faq.schema.json",
+      "bytes": 4833,
+      "sha256": "f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/heading.schema.json",
+      "bytes": 4433,
+      "sha256": "f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/intended_reader.schema.json",
+      "bytes": 4627,
+      "sha256": "64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/internal_links.schema.json",
+      "bytes": 4647,
+      "sha256": "46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/lead.schema.json",
+      "bytes": 4207,
+      "sha256": "fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/media.schema.json",
+      "bytes": 4867,
+      "sha256": "ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/methodology.schema.json",
+      "bytes": 4898,
+      "sha256": "366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/numbered_list.schema.json",
+      "bytes": 4592,
+      "sha256": "39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/paragraph.schema.json",
+      "bytes": 4222,
+      "sha256": "5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/product_card.schema.json",
+      "bytes": 4924,
+      "sha256": "559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/pros_cons.schema.json",
+      "bytes": 5440,
+      "sha256": "3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/recommendation_group.schema.json",
+      "bytes": 4940,
+      "sha256": "06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/selection_criteria.schema.json",
+      "bytes": 4993,
+      "sha256": "ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/source_summary.schema.json",
+      "bytes": 4791,
+      "sha256": "e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/tradeoff.schema.json",
+      "bytes": 4571,
+      "sha256": "a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c"
+    },
+    {
+      "path": "contracts/content/schemas/blocks/update_notice.schema.json",
+      "bytes": 4676,
+      "sha256": "4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24"
+    },
+    {
+      "path": "contracts/content/schemas/claim.schema.json",
+      "bytes": 2659,
+      "sha256": "db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3"
+    },
+    {
+      "path": "contracts/content/schemas/common/rich_text.schema.json",
+      "bytes": 6212,
+      "sha256": "20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312"
+    },
+    {
+      "path": "contracts/content/schemas/content-ast.schema.json",
+      "bytes": 46209,
+      "sha256": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac"
+    },
+    {
+      "path": "contracts/content/schemas/editorial-review-decision.schema.json",
+      "bytes": 2142,
+      "sha256": "2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d"
+    },
+    {
+      "path": "contracts/content/schemas/media-asset.schema.json",
+      "bytes": 2383,
+      "sha256": "c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622"
+    },
+    {
+      "path": "contracts/content/schemas/publication-content-manifest.schema.json",
+      "bytes": 2587,
+      "sha256": "97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881"
+    },
+    {
+      "path": "contracts/content/schemas/recommendation-methodology.schema.json",
+      "bytes": 3624,
+      "sha256": "93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a"
+    },
+    {
+      "path": "contracts/content/schemas/seo-metadata.schema.json",
+      "bytes": 2269,
+      "sha256": "347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad"
+    },
+    {
+      "path": "contracts/content/schemas/structured-data-manifest.schema.json",
+      "bytes": 1813,
+      "sha256": "6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e"
+    },
+    {
+      "path": "contracts/content/templates/condition_filtering.template.yaml",
+      "bytes": 948,
+      "sha256": "6ef0fd9d5e517f65074f81f0fe1aaafe275788754b8d3ce9fcab0270faddc9ab"
+    },
+    {
+      "path": "contracts/content/templates/model_generation_capacity_difference.template.yaml",
+      "bytes": 969,
+      "sha256": "35d7e5fe00d212c341552fce915c40aaea368599533d30f49f0163950b1ad850"
+    },
+    {
+      "path": "contracts/content/templates/product_comparison.template.yaml",
+      "bytes": 939,
+      "sha256": "19afdfd376df8de3f4eeae21de826ae0d1b6577b93426fdeaa714abbe2ef6cff"
+    },
+    {
+      "path": "contracts/content/templates/selection_guide.template.yaml",
+      "bytes": 992,
+      "sha256": "9254ab52e7936f234416e6ae7a284bf24a6fd006b71accb79d8514063e496d9a"
+    },
+    {
+      "path": "contracts/content/templates/use_case_recommendation.template.yaml",
+      "bytes": 909,
+      "sha256": "3c7c98cea300978f9f96b5eb4ebfb0f531dbe52ce7a4b637f1245bdb4235bd26"
+    },
+    {
+      "path": "contracts/openapi-admin.v0.4.yaml",
+      "bytes": 975950,
+      "sha256": "6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70"
+    },
+    {
+      "path": "contracts/openapi-internal.v0.4.yaml",
+      "bytes": 36150,
+      "sha256": "616ea270aec830a987679853869c0d22e1114a95bcf0279d6e635a5f359a6f21"
+    },
+    {
+      "path": "contracts/openapi-public.v0.1.yaml",
+      "bytes": 27679,
+      "sha256": "8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797"
+    },
+    {
+      "path": "contracts/schemas/adapters/ga4-metric-row.schema.json",
+      "bytes": 1848,
+      "sha256": "282009712425519b9242aaed81536ef807eb5f4f9f76e5726e75f6684721830b"
+    },
+    {
+      "path": "contracts/schemas/adapters/ga4-run-report-request.schema.json",
+      "bytes": 2072,
+      "sha256": "2b328df1d95ddea0bb4a4b02b5686f04c9967b5e4ff26988ad8c50ceee20c546"
+    },
+    {
+      "path": "contracts/schemas/adapters/gsc-search-analytics-request.schema.json",
+      "bytes": 2966,
+      "sha256": "10dd3bfa4caa9be5cfe58f557db4647d4e178fa83e6d68bdded8e74d8443e89f"
+    },
+    {
+      "path": "contracts/schemas/adapters/gsc-search-analytics-row.schema.json",
+      "bytes": 1743,
+      "sha256": "827afbaa8ca50c631a00f893ee6932f5b2fc571d84e0566529b9e5958cc3b920"
+    },
+    {
+      "path": "contracts/schemas/adapters/llm-structured-task-request.schema.json",
+      "bytes": 1766,
+      "sha256": "163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31"
+    },
+    {
+      "path": "contracts/schemas/adapters/llm-structured-task-result.schema.json",
+      "bytes": 2294,
+      "sha256": "ac59d14f41dbcabaaf98a5bea4b603313f3bb752fc6d8b4ca8b33973b3fdfd17"
+    },
+    {
+      "path": "contracts/schemas/adapters/rakuten-item-search-canonical-page.schema.json",
+      "bytes": 4217,
+      "sha256": "13c844c3f67b040c1a250bfbc01bde12667c215ce52307ad52e77d594ffa5fc2"
+    },
+    {
+      "path": "contracts/schemas/adapters/rakuten-item-search-request.schema.json",
+      "bytes": 3887,
+      "sha256": "afc9e1c506496c774d9a491d27d5be8b32792bf75b7945e3f6037ff1d84d5e68"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/ai-job.v1.schema.json",
+      "bytes": 3071,
+      "sha256": "a6244d622248a3991010ca65f1d4fbe657df4b224e3210a479ab0448b314e938"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/ai-task-contract.v1.schema.json",
+      "bytes": 1405,
+      "sha256": "c4477b9b0d0d85bda83911046d512c937569943dea4b4ff09dc70e6a07ae82be"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/ai-task-definition.v1.schema.json",
+      "bytes": 1571,
+      "sha256": "b65866b60f087f7b8abab054020bae016d62691a42691a6eb325ef4b265ccc13"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/evaluation-case-result.v1.schema.json",
+      "bytes": 12585,
+      "sha256": "7577e56f2f070515ebcc99fd2df066fd5e8799b6db9061db732ac3ec5f1ebfe1"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/evaluation-case.v1.schema.json",
+      "bytes": 3393,
+      "sha256": "efc1360fc1c34b43724cd336a5992d450cb8056903cd92f2f9d9a4d6241ef8de"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/evaluation-dataset-create-request.v1.schema.json",
+      "bytes": 2750,
+      "sha256": "a9a49258ddaa338600641d59bc6b2630710755fae92df2170a22850bdd345630"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/evaluation-dataset-version.v1.schema.json",
+      "bytes": 2818,
+      "sha256": "ab40cb9630fd57095c1dcbe12cb67b7fc39cab187ddf2b50287821975c290cb4"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/evaluation-run-create-request.v1.schema.json",
+      "bytes": 3682,
+      "sha256": "713f34282e80be7b52e7c46124b32a968e0310a9b51ac69a880b44556e0b8569"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/evaluation-run-detail.v1.schema.json",
+      "bytes": 18423,
+      "sha256": "89e3c9e5fa92c8af8d9edc45cda748d3396dcfa1ea5366390758639458815639"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/evaluation-run.v1.schema.json",
+      "bytes": 37463,
+      "sha256": "8f0b091219f538f6769e37332e183c5d01f58ac1f586fb1953acd76acf71184b"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/evaluation-suite.v1.schema.json",
+      "bytes": 111925,
+      "sha256": "a3c0c5d41f150c93b49d80ab76464d0d988d9f55bbf3574eb77139eb02296211"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/human-evaluation-create-request.v1.schema.json",
+      "bytes": 1134,
+      "sha256": "bc0b04265924d390e1999d5d352b97a1b1a14eb389b3b1b686dd3e9944dc8328"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/human-evaluation.v1.schema.json",
+      "bytes": 1513,
+      "sha256": "2d3ef8b32eaabec7bb9e4f91fbd347c3805866c9b6120fdb91924b789d83b947"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/judge-calibration-create-request.v1.schema.json",
+      "bytes": 1311,
+      "sha256": "2ae3d1711f269ded555cec983adce2a0aa601d908bfc2c192b954594c574837a"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/judge-calibration.v1.schema.json",
+      "bytes": 6068,
+      "sha256": "014393354a47070c69a83b204b73703bea2b4267468e3584387b65b11b077a7e"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/model-definition.v1.schema.json",
+      "bytes": 2604,
+      "sha256": "3707ae408f05042b55d0b3dace8a2df45f80104eaf1c4edd2e03d476b973f825"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/model-route-version-create-request.v1.schema.json",
+      "bytes": 4076,
+      "sha256": "a214679f1e64df3c0da10990e78462fdd2d5f4530b42d3a806cfdc24d7ffbd51"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/model-route-version.v1.schema.json",
+      "bytes": 2278,
+      "sha256": "9a0bf5ff6d01af14640e8cd5cb1aa5b012b49996b978228d230eee15c1ce885c"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/prompt-version-create-request.v1.schema.json",
+      "bytes": 1522,
+      "sha256": "a2b486721d3bceaa102d5cde824f15885a92b58c05d980defb07b3b6e692204b"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/prompt-version.v1.schema.json",
+      "bytes": 3098,
+      "sha256": "fb5691c59ae9d2812eb6575c3f0f096b49b4222f51915e9ed8c3dca30c7ed095"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/release-active-approval-request.v1.schema.json",
+      "bytes": 5764,
+      "sha256": "f7d17730f0378d652a8c706a7fdd4b12fb062e176f45f2f43e30036b392f447e"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/release-approval.v1.schema.json",
+      "bytes": 2442,
+      "sha256": "f50af225dd6c334eab04f723704a6550d12bf96d20ca0b52fa6dabd6b4d6c862"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/release-canary-approval-request.v1.schema.json",
+      "bytes": 3656,
+      "sha256": "3c30b73bc588fc51d2410294dce918326c710fd309649c4ee25b5f1b4c0b7748"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/release-decision-approval-result.v1.schema.json",
+      "bytes": 692,
+      "sha256": "1db73faffa718b86eb5325d3e5246315f91f39556a1e1863a6f6ec21992dd949"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/release-decision-create-request.v1.schema.json",
+      "bytes": 4467,
+      "sha256": "79f69559460289320b19d19f35358bff60c5f641016640086c560b164f5beae6"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/release-decision-revoke-request.v1.schema.json",
+      "bytes": 2352,
+      "sha256": "5dfb9e8e4f39a9225b87f24452916dc7126c5ec264b78fa1daeee9cbca33a3a7"
+    },
+    {
+      "path": "contracts/schemas/ai-governance/release-decision.v1.schema.json",
+      "bytes": 26184,
+      "sha256": "d4714580a954c68e4c5b2c01cd942478dde77f9b2e257f712b6ce53ccb30d6f3"
+    },
+    {
+      "path": "contracts/schemas/ai/article-draft-output.schema.json",
+      "bytes": 2853,
+      "sha256": "36a44dccd0cdc0861d9ac7500cd7a58f0ab6d20c34f89b6cf3241dda8d56ca35"
+    },
+    {
+      "path": "contracts/schemas/ai/claim-extraction-output.schema.json",
+      "bytes": 1712,
+      "sha256": "0b82454a43c2c5aed37f2fe72f74d1e124dfb1f7fe1ee2fb9c996827d1c2bd75"
+    },
+    {
+      "path": "contracts/schemas/ai/opportunity-assessment-output.schema.json",
+      "bytes": 1084,
+      "sha256": "49cec3aeae45d33f12b8c2932e4d9d8cf70ba21c15dfe57358751bb22545940b"
+    },
+    {
+      "path": "contracts/schemas/ai/policy-assist-output.schema.json",
+      "bytes": 1765,
+      "sha256": "69313aeb322c887221e4dce45d8053a81698fa293e3e18128d787415fa4e6e10"
+    },
+    {
+      "path": "contracts/schemas/common/actor-ref.schema.json",
+      "bytes": 706,
+      "sha256": "4e04f75718e5caf6bf2354b21172144b63a54dd2859b01d765a46fdc219892ec"
+    },
+    {
+      "path": "contracts/schemas/common/article-ast.schema.json",
+      "bytes": 2591,
+      "sha256": "9035141b2de7529086e935579e3fa89fa8f3d09460ea38b87c5da48aeed596fc"
+    },
+    {
+      "path": "contracts/schemas/common/artifact-ref.schema.json",
+      "bytes": 834,
+      "sha256": "9d47faf85d4986e6340a0d71dbf5e340b3475270c20a7d03056cd51d679ef930"
+    },
+    {
+      "path": "contracts/schemas/common/event-envelope.schema.json",
+      "bytes": 3270,
+      "sha256": "2063cc8838152e6c3b2ab6b7118b442c30aa665577a3956d2e1918b7d3ba1151"
+    },
+    {
+      "path": "contracts/schemas/common/job-message.schema.json",
+      "bytes": 2987,
+      "sha256": "cdb8e8094d4fa74843c26ea453354df7083bc41a6f165220ddd0e263e37db8d5"
+    },
+    {
+      "path": "contracts/schemas/common/money.schema.json",
+      "bytes": 505,
+      "sha256": "d6d3c92472e6a054a7b5750936cf29bdbe0c24bc298dd39811ddbe1f24e5321c"
+    },
+    {
+      "path": "contracts/schemas/common/problem-details.schema.json",
+      "bytes": 1932,
+      "sha256": "97c81845363be5bb25dac606403374c38d5d5aa80843a241739ca65058c023f6"
+    },
+    {
+      "path": "contracts/schemas/common/publication-snapshot.schema.json",
+      "bytes": 2093,
+      "sha256": "2b1aa3d1035cd997d3262786fdfd80aa5c25df62e2c758ac481179c5d6803c38"
+    },
+    {
+      "path": "contracts/schemas/common/resource-ref.schema.json",
+      "bytes": 742,
+      "sha256": "e0c7c7ce37e49a1ad00807fa681b1849dcc68a2c179114356c79c62579dd354c"
+    },
+    {
+      "path": "contracts/schemas/content-revision/article-disclosure-context.v1.schema.json",
+      "bytes": 1709,
+      "sha256": "8aa0502015100548ca0ce6e88a361d8e0579a388ddf6fd26b19b546c08f68fc7"
+    },
+    {
+      "path": "contracts/schemas/content-revision/article-methodology-binding.v1.schema.json",
+      "bytes": 1161,
+      "sha256": "fc75a72e0004d9669f02afcc04bc6b8b2ae775c9d7ce163b149d62dc130c01be"
+    },
+    {
+      "path": "contracts/schemas/content-revision/article-template-version.v1.schema.json",
+      "bytes": 1614,
+      "sha256": "cfde646855dd855b3e79b5b76e2737836d01fe3690969d800ce2d70c64469608"
+    },
+    {
+      "path": "contracts/schemas/content-revision/article-type-version.v1.schema.json",
+      "bytes": 1616,
+      "sha256": "bcc26926767d1b5f1ed901bb3048efeb7eae2b31aa1e76104add2c03c6af1c89"
+    },
+    {
+      "path": "contracts/schemas/content-revision/content-review-request.v1.schema.json",
+      "bytes": 1293,
+      "sha256": "093a17937294f11624b47cae8f396cf9cd3fab3c06bd4dac40a7d67ac36dab9a"
+    },
+    {
+      "path": "contracts/schemas/content-revision/content-schema-version.v1.schema.json",
+      "bytes": 1885,
+      "sha256": "4b74d0c0166fb8fb784cdf4fabddfe45b1b09d299c5398cc87337dae8a9e26f5"
+    },
+    {
+      "path": "contracts/schemas/content-revision/content-validation-request.v1.schema.json",
+      "bytes": 1058,
+      "sha256": "9d5a6d3f926d27a7f059d808243ce0d2004c7cd3fdfb6e7b90ece131e8ecccc4"
+    },
+    {
+      "path": "contracts/schemas/content-revision/content-validation-result.v1.schema.json",
+      "bytes": 874,
+      "sha256": "89e2e37534de6b657aa48078fb86728adb74921da210905c37698641d81afd36"
+    },
+    {
+      "path": "contracts/schemas/content-revision/editorial-methodology-version.v1.schema.json",
+      "bytes": 1890,
+      "sha256": "b54bdbcda0e8fa498c104ebcebdb17781d125cf117b46c793a06880f4f42e10f"
+    },
+    {
+      "path": "contracts/schemas/content-revision/first-hand-experience-asset.v1.schema.json",
+      "bytes": 988,
+      "sha256": "bba3f9bf88a6d85325cc8577c9b7a47fc7e847d2f3709a8830af769a053e8dd1"
+    },
+    {
+      "path": "contracts/schemas/content-revision/first-hand-experience-create-request.v1.schema.json",
+      "bytes": 1253,
+      "sha256": "7a1dba4e89390d47f68c22274a459e2a02f01759c1cb6e0cffd81ea3ccec195f"
+    },
+    {
+      "path": "contracts/schemas/content-revision/first-hand-experience-record.v1.schema.json",
+      "bytes": 2129,
+      "sha256": "34dcb19731e44c3aa8a6991503cb78933461866f6393635d118eae9143f2f4ce"
+    },
+    {
+      "path": "contracts/schemas/content-revision/media-asset-create-request.v1.schema.json",
+      "bytes": 1630,
+      "sha256": "04f526c3ff7831bdceb22c78e84b397ea578925a7bd7b40b634ed25e52342ead"
+    },
+    {
+      "path": "contracts/schemas/content-revision/media-asset-resource.v1.schema.json",
+      "bytes": 2518,
+      "sha256": "3ffaf230d1f74f424ca963b76b3c303addae562eb04e75d9c0eb37d61de52111"
+    },
+    {
+      "path": "contracts/schemas/content-revision/media-asset-update-request.v1.schema.json",
+      "bytes": 862,
+      "sha256": "bcd8245b29dc6b80a2484afe5f6216124b699e3739cc8eb690a9ad62fb284182"
+    },
+    {
+      "path": "contracts/schemas/content-revision/methodology-validation-request.v1.schema.json",
+      "bytes": 505,
+      "sha256": "75bef3431519691e3e4cb7694ef876d2510425fc5a34cd36f792b8cb671ce788"
+    },
+    {
+      "path": "contracts/schemas/content-revision/publication-manifest-create-request.v1.schema.json",
+      "bytes": 1826,
+      "sha256": "9bb5a44919c393bae699e43001bbd30771aa6755071f3d16820898e948755d81"
+    },
+    {
+      "path": "contracts/schemas/content-revision/seo-metadata-update-request.v1.schema.json",
+      "bytes": 855,
+      "sha256": "6ad564325a575ac992b01262c8c539a09fcc73288799984eeaf079d9b2e2fb05"
+    },
+    {
+      "path": "contracts/schemas/content-revision/seo-metadata-version.v1.schema.json",
+      "bytes": 1725,
+      "sha256": "30dc1980ce000470c2939077501fdedb65e317224da3bd2f1636f426f82fa675"
+    },
+    {
+      "path": "contracts/schemas/content-revision/structured-data-command-request.v1.schema.json",
+      "bytes": 869,
+      "sha256": "4f48515f52a3b52bbe1a72c129458d6835724c4a87b7b5ddea735c847e39fee2"
+    },
+    {
+      "path": "contracts/schemas/content-revision/structured-data-manifest-resource.v1.schema.json",
+      "bytes": 2043,
+      "sha256": "9d79cc315c095a18db302fc5bfcc90dc511ad43987988ae4d1d0184c6f558f5d"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ai-evaluation-completed-v1.schema.json",
+      "bytes": 1287,
+      "sha256": "82794c20e4989950f3189520dc296d105d7be4614cf2caf4b2361044bd14fc34"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ai-evaluation-completed-v2.schema.json",
+      "bytes": 38593,
+      "sha256": "49d495fd47a2638cd6c008fa04823617af784b7991dad65d27f2c724c0725f39"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ai-job-failed-v1.schema.json",
+      "bytes": 1351,
+      "sha256": "5cb07491fe735a9e1724b7539f50763928a32befb96627d642c1ad30e39fa2c7"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ai-job-requested-v1.schema.json",
+      "bytes": 1320,
+      "sha256": "9937ac30df245d120ccf06aaaf406a8b29cdc9773307e9c9c61d9fc025abd42c"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ai-job-succeeded-v1.schema.json",
+      "bytes": 1465,
+      "sha256": "670dbd4036129bb41284eafa6fb8809b260593f9aab4bc270384509d41d2057a"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ai-policy-assist-completed-v1.schema.json",
+      "bytes": 1279,
+      "sha256": "689bd2b267e83d0b9b46acc884526ea87a051bf7bde57221d14893ea13d27033"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ai-release-decision-approved-v1.schema.json",
+      "bytes": 8379,
+      "sha256": "947685c9cf295997629fe0acd27df88e0f78a581ca146dea445948d9f3632fa4"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ai-release-decision-revoked-v1.schema.json",
+      "bytes": 3475,
+      "sha256": "c1a671dd2849a92c4078f726aa82f720be6349e67f123df1dd35d5455f77b7a3"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-analytics-daily-metrics-updated-v1.schema.json",
+      "bytes": 1361,
+      "sha256": "a8d28096dc570710ac02349569fea95ea82657b87a854d7799c1735c39ac1dd1"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-analytics-import-completed-v1.schema.json",
+      "bytes": 1716,
+      "sha256": "50f6012ab7da5f2f04a0b4f9b3216f1ac9ea7a51b3c26f972ea24ecdcebea93d"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-catalog-affiliate-link-invalid-v1.schema.json",
+      "bytes": 1380,
+      "sha256": "0787d7d44ef70f0a002be9c8ed4768ee19f6f833e5dd81e3399436593f72940a"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-catalog-candidates-normalized-v1.schema.json",
+      "bytes": 1386,
+      "sha256": "e4b9842e56a64993e340d3ed49a0f4ba63f78a9ac7f08358362476aacdff4094"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-catalog-genre-sync-completed-v1.schema.json",
+      "bytes": 1341,
+      "sha256": "9dfafdc6e5aaba4fa4b8475f9795cffcc7102d5e4c6fdd61f9525fcb4d364824"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-catalog-grouping-decision-recorded-v1.schema.json",
+      "bytes": 1634,
+      "sha256": "5c0959ef9977fec370393ea18db0ad16b2c9ac49862685fb069a2c832f1220dc"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-catalog-grouping-proposals-created-v1.schema.json",
+      "bytes": 1323,
+      "sha256": "0e3a00a8e70f75e2918ef6845590fafbda325c6478ccf09f6b79ac9307765a44"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-catalog-ingestion-completed-v1.schema.json",
+      "bytes": 1532,
+      "sha256": "2893bb01a72bf4fe12e3f1858d4ab8e4e0edc5a73fe2f6a23f35a305b611a70f"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-catalog-offer-observed-v1.schema.json",
+      "bytes": 1483,
+      "sha256": "c3e38d1c0cf17c475ca5d70a922b4ddcdfcdc8b2e381750a2b32c21fe1622f04"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-catalog-offer-unavailable-v1.schema.json",
+      "bytes": 1245,
+      "sha256": "d8a2df0bfcdb0056a3056d95350a77697a6f8659daea5e264ca9ad13487175b7"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-editorial-article-created-v1.schema.json",
+      "bytes": 1234,
+      "sha256": "b257eed50005023f07ad252b6676e41f8b1deb41090014a405285947a8e1fbde"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-editorial-article-plan-approved-v1.schema.json",
+      "bytes": 1294,
+      "sha256": "831be3d8bc7713a9fada02b9d06792dbdf4b1def00f360aebe7d8a0307260d2b"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-editorial-article-version-submitted-v1.schema.json",
+      "bytes": 1356,
+      "sha256": "c1cd3bcc629575880f98091c721416c98cf24062858f3750ed426058b324808d"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-editorial-draft-generated-v1.schema.json",
+      "bytes": 1604,
+      "sha256": "6128ccaac3fabca2bfc4cfa4c1047c424124e353f5115495431b087b9e9a7012"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-evidence-claim-unsupported-v1.schema.json",
+      "bytes": 1231,
+      "sha256": "fc1778a38899a4186ceaf5c3123ba6fca103500a1d907f0e66d2aa1d99cf7856"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-evidence-claims-extracted-v1.schema.json",
+      "bytes": 1253,
+      "sha256": "85af8ae5a3893f55cb963c089e2041564ba994d17a039de10b2a969077865eb1"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-evidence-facts-extracted-v1.schema.json",
+      "bytes": 1332,
+      "sha256": "886527759e0b3c0e34e072d1b82af97046c5fd0e714e8cbbf794fb0efc184248"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-evidence-source-packet-approved-v1.schema.json",
+      "bytes": 1352,
+      "sha256": "7496fa23531679418f38f449211ead0d1da13e67289bb8b141b5a56221a1472c"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-evidence-source-packet-ready-v1.schema.json",
+      "bytes": 1566,
+      "sha256": "b9ed8c9f2fe0f473f0424b6077ce57f12ab016b7c77f8fa0a4a4a66b3366a347"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-evidence-source-snapshot-captured-v1.schema.json",
+      "bytes": 1600,
+      "sha256": "f00bb94cea83ca3aede34fb6fe4531121ad356896414f3dddaa435dc8b104e93"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-finance-commission-status-changed-v1.schema.json",
+      "bytes": 1416,
+      "sha256": "7fc5e7c5949b5e4588ad7970bfc54d42fd27f898e035a56116b3726a0602865b"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-finance-revenue-import-committed-v1.schema.json",
+      "bytes": 1437,
+      "sha256": "b5c6ad9f2ca522b87e7c630a941817a84a2c8e2ce2604bb9767e976079d71f21"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-finance-revenue-import-dry-run-ready-v1.schema.json",
+      "bytes": 1687,
+      "sha256": "63dc40608de513db8712e92933df8114737f0b94e09b1f9dcdb203d2101f3378"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-finance-unit-economics-calculated-v1.schema.json",
+      "bytes": 1916,
+      "sha256": "977e5a1a525b1d4509eed7edd39c303a2931c9150f3ee18234de0d3b834949f9"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-freshness-impact-detected-v1.schema.json",
+      "bytes": 1711,
+      "sha256": "0e53d42103ec0a85a45bc02ae88c316743da133705233c4e7d712b0f8763e611"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-freshness-link-check-completed-v1.schema.json",
+      "bytes": 1464,
+      "sha256": "45cf65f31954a23354d28d041d718cf46043894bf4de4826d978410254d2be80"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-freshness-refresh-completed-v1.schema.json",
+      "bytes": 1548,
+      "sha256": "c24f8b4d785862f58b3e0b78d26b1528ebc8077a99560da0460a4656cde4ab8c"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-freshness-staleness-assessed-v1.schema.json",
+      "bytes": 1310,
+      "sha256": "36ec3d9f99f9858a9ab304b0d7b9991af0c9a7dcd1e9dfe0fc608255c54d79c7"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-audit-export-completed-v1.schema.json",
+      "bytes": 1273,
+      "sha256": "e31c52972322cc152522655c715ab1a1d8fe45c54d3ad7ab6d6500121ac3f208"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-child-jobs-created-v1.schema.json",
+      "bytes": 1214,
+      "sha256": "9925a620d56c388419e1abc5e06fada459196347b366e97f7610c2c0860fac76"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-incident-closed-v1.schema.json",
+      "bytes": 1095,
+      "sha256": "5a14b0fd58971d6ae14d0bb94a21d2c12562bc0bacd32c9e7381a8aa95266f5a"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-incident-declared-v1.schema.json",
+      "bytes": 1172,
+      "sha256": "77285374a27a5b01b4540d8886a4b51bc20bc88613e0bcb77fcf27576b5c4ead"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-job-failed-terminal-v1.schema.json",
+      "bytes": 1283,
+      "sha256": "304d6ec92b11ec661a9791bc8e14ba988e03199391f8a6b5ad8fb2ae4b55dad6"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-job-quarantined-v1.schema.json",
+      "bytes": 1237,
+      "sha256": "768628c32093ee871f510da510829263ca8af4a494618a70b5e8c1967a481fee"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-job-requested-v1.schema.json",
+      "bytes": 1156,
+      "sha256": "c10f9773b621000705684bec152bdc8f037c46b688f390216effa2872ab8e671"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-job-succeeded-v1.schema.json",
+      "bytes": 1413,
+      "sha256": "601a7b9fdc942d177bef55a285a7452198c154c2171852b939540d262c9c59b7"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-kill-switch-changed-v1.schema.json",
+      "bytes": 1938,
+      "sha256": "65fd3fb31e2b9dcfadd5a36bbd3d156af95e919d67f8b5c6e5183d32cc055562"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-notification-dispatched-v1.schema.json",
+      "bytes": 1319,
+      "sha256": "cb2c7c09b5aac23e0881eb613ae2865f63b945138e303476a045809440728960"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-readmodel-rebuilt-v1.schema.json",
+      "bytes": 1339,
+      "sha256": "1e9f4d60fb103dad440d74582fadbb638731f10021ef65a646d0d994fb001369"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-ops-retention-sweep-completed-v1.schema.json",
+      "bytes": 1335,
+      "sha256": "25a8ca7b2e637386a744de17b6e60c343a0c45e761dfa4b4df2b881132fc44b9"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-policy-blocking-finding-raised-v1.schema.json",
+      "bytes": 1380,
+      "sha256": "33299a0d61be390d51b3f2532f0894a3efcdc758fe5beb269e2a399204c9535c"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-policy-finding-resolved-v1.schema.json",
+      "bytes": 1099,
+      "sha256": "be0aec64f1108b739b7fd286d01850fe133fbf1ad8e314f7eceac28e7ab8153a"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-policy-gate-decision-recorded-v1.schema.json",
+      "bytes": 1444,
+      "sha256": "a1ccffc36334ec1f4d5c076de07ce288316bc3b37cb97c90b838264d7ca782a4"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-policy-policy-bundle-activated-v1.schema.json",
+      "bytes": 1400,
+      "sha256": "cb6c7233454a08ab0eea46e12fd4ff353205763393853f16d812bfe0cadbd461"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-policy-policy-recheck-completed-v1.schema.json",
+      "bytes": 1489,
+      "sha256": "4688f840d1a2bf0e08b871413e373d1ffc03de8b6a79cb64e02db95957f70211"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-policy-quality-check-completed-v1.schema.json",
+      "bytes": 1545,
+      "sha256": "5bca3667721c41494045d2e9516a27a4293bf45943d38aefe8ac3761adf9c167"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-portfolio-action-candidate-decided-v1.schema.json",
+      "bytes": 1167,
+      "sha256": "3ae2f73207c27bd019d9fd55e0d24c794e4a0d711265af902c4d38ec63bf2528"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-portfolio-action-candidates-generated-v1.schema.json",
+      "bytes": 1359,
+      "sha256": "6b7f518687c94c4b9a10f6f4fab6c45325cce99538706e9e5f110f96539ceb93"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-portfolio-opportunity-assessed-v1.schema.json",
+      "bytes": 1917,
+      "sha256": "be5e804c88ad64bd1ee928dae8e3d7bfc11f08ecc8f815b12aa80bafcfc333e7"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-publishing-approval-granted-v1.schema.json",
+      "bytes": 1598,
+      "sha256": "ef597efed4ffe2d50440bec59dea9d1fa08ae0fa2f76ad20d3ce30e227b8e097"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-publishing-approval-revoked-v1.schema.json",
+      "bytes": 1249,
+      "sha256": "3ea30eefd85cdf9f48fa84a4caf3b26956d1943c621a2035cf4584477680f1c1"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-publishing-article-published-v1.schema.json",
+      "bytes": 1562,
+      "sha256": "70fbe58d58399d44bd386ed39673682f7fa3eb3acfdbc8c5e2f46fcf7be12f19"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-publishing-article-rolled-back-v1.schema.json",
+      "bytes": 1475,
+      "sha256": "a405b5826a80f2e95029d7a5b824caf9e5795e8050edfc97e2e76906742cf660"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-publishing-article-unpublished-v1.schema.json",
+      "bytes": 1417,
+      "sha256": "91fc5b6322bd98301440b493c639955541aba9a45b24420888ca855e90eac9b6"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-publishing-public-projection-rebuilt-v1.schema.json",
+      "bytes": 1356,
+      "sha256": "b204281bd26c57542219067a6ebd10aeeb68c1ba2dd6925cc6467ac3c420e3f8"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-publishing-review-assigned-v1.schema.json",
+      "bytes": 1472,
+      "sha256": "4588379d2350de8eb532211972204cc72e3894b0f515041caf436bf748bf5d70"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-publishing-review-decision-recorded-v1.schema.json",
+      "bytes": 1462,
+      "sha256": "ed53a3126f79ac50b29769b0ae742e869a4c98a514906f16aa9181b7a6964b47"
+    },
+    {
+      "path": "contracts/schemas/events/jp-raos-publishing-snapshot-built-v1.schema.json",
+      "bytes": 1609,
+      "sha256": "6651393069ae07c1b45a9b6e2cece31157f7a821a53f68c88538fb8a4726727f"
+    },
+    {
+      "path": "contracts/schemas/imports/affiliate-click-input.schema.json",
+      "bytes": 1702,
+      "sha256": "fc99e614645a6dcb588c8ce9a3a417cfd90a79427f4c4b8da9181c0ba63df664"
+    },
+    {
+      "path": "contracts/schemas/imports/keyword-rank-row.schema.json",
+      "bytes": 1353,
+      "sha256": "d1c311cf0afabf6c83c5acb0154ca8f89d023165683a08adff28f09e607bec4c"
+    },
+    {
+      "path": "contracts/schemas/imports/revenue-canonical-row.schema.json",
+      "bytes": 2426,
+      "sha256": "02bc3d854a7420a74a8b302342a9ad0e23cfe4529565716a185c333b43ebbff8"
+    },
+    {
+      "path": "contracts/schemas/jobs/ai-assess-opportunity-v1.schema.json",
+      "bytes": 1647,
+      "sha256": "88ad36fc819056242b399156f5f6c6cb7ead8438b7eeaef15f8630552632a280"
+    },
+    {
+      "path": "contracts/schemas/jobs/ai-classify-search-intent-v1.schema.json",
+      "bytes": 1614,
+      "sha256": "fe67d8c02e49d8677d5f1b6b5dd79437334c5ca0872c39350306a5773c6fb858"
+    },
+    {
+      "path": "contracts/schemas/jobs/ai-evaluate-output-v1.schema.json",
+      "bytes": 1532,
+      "sha256": "6bfa77b2e297c1465ef6aa3fa4fa086b2175b83642bf8f8543d802072edf956d"
+    },
+    {
+      "path": "contracts/schemas/jobs/ai-extract-claims-v1.schema.json",
+      "bytes": 1482,
+      "sha256": "59ddd6e87bb386fbfe7eeb105ece945b7183a7a83cd1c4b76b950d9597aff01a"
+    },
+    {
+      "path": "contracts/schemas/jobs/ai-generate-article-draft-v1.schema.json",
+      "bytes": 1848,
+      "sha256": "c09f86aa43a744c6dd2c4536a535ff09b5e9ce1d8c92b55d240c07342ceb65dd"
+    },
+    {
+      "path": "contracts/schemas/jobs/ai-generic-task-v1.schema.json",
+      "bytes": 1806,
+      "sha256": "7302decd2630dc818e52b84f0429a784ef18d6961656c32c6a4d3cd633d7f6dd"
+    },
+    {
+      "path": "contracts/schemas/jobs/ai-policy-assist-v1.schema.json",
+      "bytes": 1646,
+      "sha256": "4eebbc2a86970433aefea792cb99d67b00707484428357244288d8baeebc3238"
+    },
+    {
+      "path": "contracts/schemas/jobs/analytics-import-ga4-v1.schema.json",
+      "bytes": 1516,
+      "sha256": "9f09de8a01ca10f4348535bb2e7ab12622d6e9ea53c399311fba6d92207c4a3e"
+    },
+    {
+      "path": "contracts/schemas/jobs/analytics-import-keyword-rank-csv-v1.schema.json",
+      "bytes": 1402,
+      "sha256": "1b4328b6eba2bb1a3e9e34e91049f0cec2bc4080310690f50971656df2bb5cc1"
+    },
+    {
+      "path": "contracts/schemas/jobs/analytics-import-provider-data-v1.schema.json",
+      "bytes": 1612,
+      "sha256": "7610a9b4927ffddd191409b597497eac39f49712c34115a3f27fb254694c16ab"
+    },
+    {
+      "path": "contracts/schemas/jobs/analytics-import-search-console-v1.schema.json",
+      "bytes": 1547,
+      "sha256": "aa2c88caffeee692ee38d5ca6c8b7460f770ab3751abb0c35a9d197014d73f0c"
+    },
+    {
+      "path": "contracts/schemas/jobs/analytics-rollup-daily-metrics-v1.schema.json",
+      "bytes": 1261,
+      "sha256": "aaec54e955f4fdeb92e45d842a8686a0432edaca617a65cc4d9b345f099fb2bd"
+    },
+    {
+      "path": "contracts/schemas/jobs/catalog-group-product-candidates-v1.schema.json",
+      "bytes": 1462,
+      "sha256": "7a5f276d63430f59ab67f723125ed7800843f0742bf5f8fe040ddbd792b7da1e"
+    },
+    {
+      "path": "contracts/schemas/jobs/catalog-normalize-ingestion-v1.schema.json",
+      "bytes": 1320,
+      "sha256": "39fec92bf7c8fe808a4abe19c2741eaf8bff6496dffd3932308de65979aba6cb"
+    },
+    {
+      "path": "contracts/schemas/jobs/catalog-rakuten-genre-sync-v1.schema.json",
+      "bytes": 1233,
+      "sha256": "dcb4c76d97f609450dde47fe676beb1b8e59831880e61c95a59d4a3a1bcc7d97"
+    },
+    {
+      "path": "contracts/schemas/jobs/catalog-rakuten-item-search-v1.schema.json",
+      "bytes": 1887,
+      "sha256": "6314e3529ba468252f54f347045d409a0beb0a881b282237602303cdf9383a31"
+    },
+    {
+      "path": "contracts/schemas/jobs/catalog-refresh-offer-v1.schema.json",
+      "bytes": 1552,
+      "sha256": "fd5c8a1eceb12f1ef6853cf70c70a45b239e20f9e5c5aa877a987f1b5ec9945e"
+    },
+    {
+      "path": "contracts/schemas/jobs/evidence-build-source-packet-v1.schema.json",
+      "bytes": 1657,
+      "sha256": "d36adcd67f0a35357b9db5edab88c3e44896883731a1bb3b4a3952edbe71fc66"
+    },
+    {
+      "path": "contracts/schemas/jobs/evidence-capture-source-snapshot-v1.schema.json",
+      "bytes": 1479,
+      "sha256": "23da117b772a7d0d82da82f3daba5c0142d76f3ba2ebf87133f857618c5b51ae"
+    },
+    {
+      "path": "contracts/schemas/jobs/evidence-extract-facts-v1.schema.json",
+      "bytes": 1170,
+      "sha256": "81011cb345b21d4df9acbb14cedbddac0ad87467e9c66fb67e5efc4cdb26da1b"
+    },
+    {
+      "path": "contracts/schemas/jobs/finance-calculate-unit-economics-v1.schema.json",
+      "bytes": 1720,
+      "sha256": "a0e7ef5211b6e0dd3daeba65509df5967c86eaa1274917e0a01d258f04e5a443"
+    },
+    {
+      "path": "contracts/schemas/jobs/finance-commit-revenue-import-v1.schema.json",
+      "bytes": 1387,
+      "sha256": "9e0b860aacd151888e67e76a64ad94e8c3dd33072de42f570b8b233e1a9dce0d"
+    },
+    {
+      "path": "contracts/schemas/jobs/finance-parse-revenue-csv-v1.schema.json",
+      "bytes": 1328,
+      "sha256": "1c537c4e76d8ff0a728e82ae69808ed8db6b11b45cff2d7e285ee1faaf0179c2"
+    },
+    {
+      "path": "contracts/schemas/jobs/freshness-assess-change-impact-v1.schema.json",
+      "bytes": 1279,
+      "sha256": "cf21692ad4b67a376fac0a4ddccde054f23fd631064bed110466a38c3283530c"
+    },
+    {
+      "path": "contracts/schemas/jobs/freshness-check-affiliate-link-v1.schema.json",
+      "bytes": 1259,
+      "sha256": "e722864673c10b2c05e89f958a670a5fc3cfe5e5200a301a36e5657091a2abd3"
+    },
+    {
+      "path": "contracts/schemas/jobs/freshness-run-refresh-batch-v1.schema.json",
+      "bytes": 1511,
+      "sha256": "303ba7d0fea572b2b3e4bf5585efe89c68e77d54ffda9a255e2e33cb0b12aee1"
+    },
+    {
+      "path": "contracts/schemas/jobs/ops-export-audit-v1.schema.json",
+      "bytes": 1261,
+      "sha256": "cc6a1cecb2dbf9ce6ac121f12339e5ebad53f00b8af36d89012c4076f077ab0c"
+    },
+    {
+      "path": "contracts/schemas/jobs/ops-rebuild-readmodel-v1.schema.json",
+      "bytes": 1486,
+      "sha256": "b59e06560a629f69db4b9f1498c31f2fe8b7dd53768a6f7f3d33ff8353000ae7"
+    },
+    {
+      "path": "contracts/schemas/jobs/ops-retention-sweep-v1.schema.json",
+      "bytes": 1321,
+      "sha256": "19e17a20e9c49314dbc178566bc850b0e7b0c60590fe16581553cf2ac74b8abc"
+    },
+    {
+      "path": "contracts/schemas/jobs/ops-send-notification-v1.schema.json",
+      "bytes": 1403,
+      "sha256": "c3fa2e6b18b1145cd31105863fd274592a8f2a965c3ee8d48a0296cc0b5f4e83"
+    },
+    {
+      "path": "contracts/schemas/jobs/portfolio-assess-opportunity-v1.schema.json",
+      "bytes": 1469,
+      "sha256": "0398f21d9cd73f77b0892c8559315083e82128e1b628ea5d45b6e7fc6797fa7e"
+    },
+    {
+      "path": "contracts/schemas/jobs/portfolio-generate-action-candidates-v1.schema.json",
+      "bytes": 1336,
+      "sha256": "4f8d3b16d59c6136c1722d00a0ce5475208514224996dfc99a92238d1dca0ccd"
+    },
+    {
+      "path": "contracts/schemas/jobs/publishing-build-snapshot-v1.schema.json",
+      "bytes": 1504,
+      "sha256": "e2b8680b25276a3b23002a567d65f333d7df4d13fdecb8d4e2b2f1d8919bbacd"
+    },
+    {
+      "path": "contracts/schemas/jobs/publishing-publish-snapshot-v1.schema.json",
+      "bytes": 1318,
+      "sha256": "81f885e435bcaf4af75ab3149a2007668b7585155cfbe730242e78efefc5a6e7"
+    },
+    {
+      "path": "contracts/schemas/jobs/publishing-rebuild-public-projection-v1.schema.json",
+      "bytes": 1402,
+      "sha256": "a03cadf868e424fc471536b478189e152b28671167c5dde1871d925cceda5a03"
+    },
+    {
+      "path": "contracts/schemas/jobs/publishing-rollback-v1.schema.json",
+      "bytes": 1471,
+      "sha256": "8dd422009feea40da8821e57403ac493dd86f24ccf333beb29b637b60d7276d9"
+    },
+    {
+      "path": "contracts/schemas/jobs/publishing-unpublish-v1.schema.json",
+      "bytes": 1123,
+      "sha256": "037516debc7d44f860de113f68973c85141ded552d9b45de88fdc6a6ac84a862"
+    },
+    {
+      "path": "contracts/schemas/jobs/quality-evaluate-article-v1.schema.json",
+      "bytes": 1469,
+      "sha256": "8c32023f9c33b67ca4dba3867dc397cb041979dbb7e69f847624d1c79208de91"
+    },
+    {
+      "path": "contracts/schemas/jobs/quality-recheck-policy-bundle-v1.schema.json",
+      "bytes": 1493,
+      "sha256": "c5bc4b05351433c42103a2222271e3ba63df926f6667c86e3645750de65a1c53"
+    },
+    {
+      "path": "job-state.v1.yaml",
+      "bytes": 3419,
+      "sha256": "9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a"
+    }
+  ]
+}

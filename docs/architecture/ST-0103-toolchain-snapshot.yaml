@@ -1,0 +1,138 @@
+document:
+  id: RAOS-ST0103-TOOLCHAIN-SNAPSHOT-001
+  schema_version: 1
+  checked_at: '2026-08-01T19:32:46Z'
+  purpose: Official-source version selection for the ST-0103 Node toolchain
+
+selection_policy:
+  runtime: Use the current security-patched Node LTS release, not the Current line.
+  package_manager: Use the npm release bundled with the selected Node artifact.
+  framework: Use the latest stable Next.js patch; exclude preview and canary tags.
+  typescript: Use the latest stable compiler accepted by the selected lint stack.
+  direct_dependencies: Pin every direct dependency exactly and preserve registry integrity in package-lock.json.
+  security_overrides: Pin patched transitive releases exactly when the latest stable framework still declares advisory-affected versions.
+
+components:
+- name: node
+  version: 24.18.1
+  source_url: https://nodejs.org/en/blog/release/v24.18.1
+  source_kind: OFFICIAL_RELEASE
+  selected_because: Krypton LTS security release dated 2026-07-29
+  linux_x64_tar_xz_sha256: d6c664df3f3f61458e8c277585571328522d705166723a7c7823a9253a4d15a0
+  implementation_effect: Exact runtime required by the evidence wrapper, package engines, and devEngines.
+- name: npm
+  version: 11.16.0
+  source_url: https://registry.npmjs.org/npm/11.16.0
+  source_kind: OFFICIAL_REGISTRY_METADATA
+  integrity: sha512-A74XL8OxmcegZDMWPkWb5bEQppg8HdYwW3rBD2sPoS4UQHVajfaxBkqyzLeJ3wR0kZ+5xoTjItxXaF7eIXUsyw==
+  selected_because: Bundled package manager in the official Node 24.18.1 binary distribution
+  implementation_effect: Invoked through its absolute npm-cli.js path under the validated Node binary; Corepack is not used.
+- name: next
+  version: 16.2.12
+  source_url: https://registry.npmjs.org/next/16.2.12
+  release_url: https://nextjs.org/blog/next-16-2
+  source_kind: OFFICIAL_REGISTRY_AND_RELEASE
+  integrity: sha512-iD59eYQWmbFcEbX7v/acG5DRym9iw1DdaPoD0WTA920naWsE25wShzJW4+UvAs8MK9EC2kBfIH6vtto1H1PHGw==
+  selected_because: Stable 16.2 patch published 2026-07-25; 16.3 remained preview
+  implementation_effect: Pinned in the inert apps/web workspace without routes or components.
+- name: postcss
+  version: 8.5.25
+  source_url: https://registry.npmjs.org/postcss/8.5.25
+  advisory_urls:
+  - https://github.com/advisories/GHSA-qx2v-qp2m-jg93
+  - https://github.com/advisories/GHSA-6g55-p6wh-862q
+  - https://github.com/advisories/GHSA-r28c-9q8g-f849
+  source_kind: OFFICIAL_REGISTRY_AND_SECURITY_ADVISORY
+  integrity: sha512-DTPx3RWSSnWyzLxQnlH0rJP+EW5ekl16ZU4/psbIhA0e53kJfdgaN5vKM+xP7yJtXVu+nfdVFmlgFDEKAe4Pyw==
+  selected_because: Next.js 16.2.12 pins advisory-affected PostCSS 8.4.31; 8.5.25 is newer than every listed patched-version floor and is used as an exact transitive override.
+  implementation_effect: Removes the vulnerable nested Next.js PostCSS copy while preserving the stable Next.js pin.
+- name: sharp
+  version: 0.35.3
+  source_url: https://registry.npmjs.org/sharp/0.35.3
+  advisory_urls:
+  - https://github.com/advisories/GHSA-f88m-g3jw-g9cj
+  source_kind: OFFICIAL_REGISTRY_AND_SECURITY_ADVISORY
+  integrity: sha512-ej0zVHuZGHCiABXcNxeYhpRnPNPAcvbG8RMdBAhDAxLKkCRVSpK3Iyu7qbqw3JMzoj0REeM6f3tJLtVwl0023Q==
+  selected_because: Next.js 16.2.12 allows advisory-affected Sharp 0.34.5; the advisory recommends current Sharp 0.35.3 and Next.js 16.3 prereleases already use the 0.35 line.
+  implementation_effect: Exact transitive override for the optional Next.js image implementation.
+- name: react
+  version: 19.2.8
+  source_url: https://registry.npmjs.org/react/19.2.8
+  source_kind: OFFICIAL_REGISTRY_METADATA
+  integrity: sha512-PWaYA1L/q9u2u7xYQi+Y3L3Yfnie7XyLeaJICV1MGD6LprsBxcAqGjYyr0eY3p+QdsA+x/Irkt4Qif8D63+Sbw==
+  implementation_effect: Exact Next.js peer dependency.
+- name: react-dom
+  version: 19.2.8
+  source_url: https://registry.npmjs.org/react-dom/19.2.8
+  source_kind: OFFICIAL_REGISTRY_METADATA
+  integrity: sha512-rVprimfGBG3DR+Tq0IQG2DT5PxKth1WIGDmj5yPmlzr4YBe7uyE+Du4oVqTDXZSHGGGXRtTJEGSSePyQCMBglQ==
+  implementation_effect: Exact Next.js peer dependency paired with React 19.2.8.
+- name: typescript
+  version: 6.0.3
+  source_url: https://registry.npmjs.org/typescript/6.0.3
+  release_url: https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/
+  source_kind: OFFICIAL_REGISTRY_AND_RELEASE
+  integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==
+  selected_because: Current eslint-config-next TypeScript parser supports TypeScript versions below 6.1
+  implementation_effect: Strict no-emit compiler gate; TypeScript 7 adoption is deferred until the lint/compiler API stack supports it.
+- name: eslint
+  version: 9.39.5
+  source_url: https://registry.npmjs.org/eslint/9.39.5
+  source_kind: OFFICIAL_REGISTRY_METADATA
+  integrity: sha512-DgZS62aPLXKlnxILS/AYCoRvHaZeXceIzlXPkkGGzJWSow1aEk0lbTlxUSlyjC8jcaKxAdOnTDz+o1JFSBsyjw==
+  selected_because: Latest compatible ESLint 9 patch; eslint-config-next 16.2.12 accepts ESLint 9 or later, while its eslint-plugin-import 2.32.0 dependency does not accept ESLint 10.
+  implementation_effect: Flat-config static lint gate with strict peer-dependency resolution preserved.
+- name: eslint-config-next
+  version: 16.2.12
+  source_url: https://registry.npmjs.org/eslint-config-next/16.2.12
+  documentation_url: https://nextjs.org/docs/app/api-reference/config/eslint
+  source_kind: OFFICIAL_REGISTRY_AND_DOCUMENTATION
+  integrity: sha512-iaaf4vvKo5h2LBdGt0JuRv7t0Ysqr9FMCiFxbptDg8LqOE//mIKR80DdpOnSVM7qjLH3jT8P0aFiwXxBEGZRXw==
+  implementation_effect: Next.js 16 flat ESLint configuration for JavaScript and TypeScript.
+- name: vitest
+  version: 4.1.10
+  source_url: https://registry.npmjs.org/vitest/4.1.10
+  release_url: https://vitest.dev/blog/vitest-4-1.html
+  source_kind: OFFICIAL_REGISTRY_AND_RELEASE
+  integrity: sha512-R9jUTe5S4Qb0HCd4TNqpC7oGcrMssMRGXLW80ubjWsW9VH5GF8y1Y0SFLY9AbqSk6nt0PnOx4H4WNJYZ13GUPw==
+  implementation_effect: Isolated local TST-006 equivalent.
+- name: vite
+  version: 8.2.0
+  source_url: https://registry.npmjs.org/vite/8.2.0
+  source_kind: OFFICIAL_REGISTRY_METADATA
+  integrity: sha512-pn+CFpM0lwDeKwmOq1ZaBK/9sjorZcgqxki6MbY/jPEVd9vichIlmlD4HmQ5wdP5EgqQCFRaACBxMC7uEGc6lQ==
+  implementation_effect: Exact Vitest peer dependency.
+- name: prettier
+  version: 3.9.6
+  source_url: https://registry.npmjs.org/prettier/3.9.6
+  release_url: https://prettier.io/blog/2026/06/27/3.9.0
+  source_kind: OFFICIAL_REGISTRY_AND_RELEASE
+  integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==
+  implementation_effect: Check-only formatting gate for ST-0103-owned JavaScript, TypeScript, and JSON.
+- name: pyright
+  version: 1.1.411
+  source_url: https://registry.npmjs.org/pyright/1.1.411
+  project_url: https://github.com/microsoft/pyright
+  source_kind: OFFICIAL_REGISTRY_AND_PROJECT
+  integrity: sha512-03S/vmS5lF1S/tVbKc2WNXCMq8JWCwta/qIYjj1jvqbQhoy+N3NgBzHTSmUlbYD6DJwqQ5XHf108QujoqeURvw==
+  implementation_effect: Node-hosted Python type gate deferred from ST-0102 by repository policy.
+- name: '@types/node'
+  version: 24.13.3
+  source_url: https://registry.npmjs.org/@types%2fnode/24.13.3
+  source_kind: OFFICIAL_REGISTRY_METADATA
+  integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==
+  implementation_effect: Explicit Node globals for TypeScript 6.
+- name: '@types/react'
+  version: 19.2.18
+  source_url: https://registry.npmjs.org/@types%2freact/19.2.18
+  source_kind: OFFICIAL_REGISTRY_METADATA
+  integrity: sha512-AnzbBERsrLKtk2XSfTbYRLjQPdy116Sty4q+T+Bp3IC4l6jNBvreVPAHmpq9qhXQM7CXZPjLVmGMw9sy+hxQ3w==
+  implementation_effect: Exact React TypeScript peer for the apps/web boundary.
+- name: '@types/react-dom'
+  version: 19.2.4
+  source_url: https://registry.npmjs.org/@types%2freact-dom/19.2.4
+  source_kind: OFFICIAL_REGISTRY_METADATA
+  integrity: sha512-Bsc+QHgp+P/F02XDzNCY9jnZNCUuLki36KT7VKrTXXLdHf+vHMNZnW1rVu5DNW/rCK+fya3DATySbLM4yhtKUw==
+  implementation_effect: Exact React DOM TypeScript peer for the apps/web boundary.
+
+verification_boundary: Metadata and release records were checked for version selection only. Runtime compatibility, deterministic installation, offline replay, and project checks require separate local evidence; formal CI remains NOT_EXECUTED.

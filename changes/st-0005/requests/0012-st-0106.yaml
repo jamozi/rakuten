@@ -1,0 +1,37 @@
+document:
+  id: STATUS-ST0106-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-02T09:43:44Z'
+reason: >-
+  Record the local ST-0106 base pull-request CI implementation without
+  claiming hosted GitHub Actions, formal TST-001/TST-002, PostgreSQL 18.4,
+  human approval, canonical apply, branch protection, release, deployment,
+  staging, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+- story_id: ST-0106
+  expected:
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  target:
+    implementation_status: IMPLEMENTED_NOT_VALIDATED
+    verification_status: NOT_EXECUTED
+  evidence:
+  - suite_id: TST-001
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0106-local-20260802.yaml
+    sha256: daac6fb79843b0f624c275c98b33fd4a99a27acf7ab4f5b78693791f6cfd6d49
+    observed_at: '2026-08-02T09:41:51Z'
+  - suite_id: TST-002
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0106-local-20260802.yaml
+    sha256: daac6fb79843b0f624c275c98b33fd4a99a27acf7ab4f5b78693791f6cfd6d49
+    observed_at: '2026-08-02T09:41:51Z'

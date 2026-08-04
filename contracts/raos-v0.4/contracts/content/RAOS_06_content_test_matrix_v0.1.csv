@@ -1,0 +1,1015 @@
+﻿test_id,area,artifact_or_rule,scenario,expected_result,priority,test_type,requirement_ids,implementation_slice
+CT-0001,article_type,AT-001,selection_guide: Required Blocksと商品数を満たす,PASS,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0002,article_type,AT-001,selection_guide: Required Blockを1つずつ欠落,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0003,article_type,AT-001,selection_guide: 商品数が下限未満,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0004,article_type,AT-001,selection_guide: 商品数が上限超過,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0005,article_type,AT-001,selection_guide: Article TypeとIntentが不一致,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0006,article_type,AT-001,selection_guide: 同義Keywordの別記事候補,MERGE_REVIEW,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0007,article_type,AT-001,selection_guide: API項目の羅列のみ,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0008,article_type,AT-001,selection_guide: 承認なし公開,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0009,article_type,AT-001,selection_guide: Source Packetなし,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0010,article_type,AT-001,selection_guide: Methodology Versionなし,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0011,article_type,AT-001,selection_guide: 料率を順位入力に含む,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0012,article_type,AT-001,selection_guide: Solo例外の明示再認証・Checklist,PASS,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0013,article_type,AT-001,selection_guide: AI Job完了と同時に承認,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0014,article_type,AT-001,selection_guide: 未知Version,FAIL_CLOSED,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0015,article_type,AT-001,selection_guide: 登録HashとTemplateが不一致,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0016,article_type,AT-001,selection_guide: 同Intentの実質更新,PASS,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0017,article_type,AT-001,selection_guide: 重複記事を統合候補化,PASS_REVIEW,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0018,article_type,AT-001,selection_guide: 自動削除,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0019,article_type,AT-001,selection_guide: 推薦根拠のCritical Fact失効,PAUSE,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0020,article_type,AT-001,selection_guide: 価格だけ失効し価格非表示,PASS_DEGRADED,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0021,article_type,AT-002,use_case_recommendation: Required Blocksと商品数を満たす,PASS,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0022,article_type,AT-002,use_case_recommendation: Required Blockを1つずつ欠落,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0023,article_type,AT-002,use_case_recommendation: 商品数が下限未満,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0024,article_type,AT-002,use_case_recommendation: 商品数が上限超過,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0025,article_type,AT-002,use_case_recommendation: Article TypeとIntentが不一致,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0026,article_type,AT-002,use_case_recommendation: 同義Keywordの別記事候補,MERGE_REVIEW,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0027,article_type,AT-002,use_case_recommendation: API項目の羅列のみ,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0028,article_type,AT-002,use_case_recommendation: 承認なし公開,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0029,article_type,AT-002,use_case_recommendation: Source Packetなし,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0030,article_type,AT-002,use_case_recommendation: Methodology Versionなし,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0031,article_type,AT-002,use_case_recommendation: 料率を順位入力に含む,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0032,article_type,AT-002,use_case_recommendation: Solo例外の明示再認証・Checklist,PASS,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0033,article_type,AT-002,use_case_recommendation: AI Job完了と同時に承認,FAIL_BLOCKER,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0034,article_type,AT-002,use_case_recommendation: 未知Version,FAIL_CLOSED,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0035,article_type,AT-002,use_case_recommendation: 登録HashとTemplateが不一致,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0036,article_type,AT-002,use_case_recommendation: 同Intentの実質更新,PASS,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0037,article_type,AT-002,use_case_recommendation: 重複記事を統合候補化,PASS_REVIEW,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0038,article_type,AT-002,use_case_recommendation: 自動削除,FAIL,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0039,article_type,AT-002,use_case_recommendation: 推薦根拠のCritical Fact失効,PAUSE,P1,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0040,article_type,AT-002,use_case_recommendation: 価格だけ失効し価格非表示,PASS_DEGRADED,P0,contract,"FR-001,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-010,FR-017",CONT-SLICE-003
+CT-0041,article_type,AT-003,product_comparison: Required Blocksと商品数を満たす,PASS,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0042,article_type,AT-003,product_comparison: Required Blockを1つずつ欠落,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0043,article_type,AT-003,product_comparison: 商品数が下限未満,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0044,article_type,AT-003,product_comparison: 商品数が上限超過,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0045,article_type,AT-003,product_comparison: Article TypeとIntentが不一致,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0046,article_type,AT-003,product_comparison: 同義Keywordの別記事候補,MERGE_REVIEW,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0047,article_type,AT-003,product_comparison: API項目の羅列のみ,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0048,article_type,AT-003,product_comparison: 承認なし公開,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0049,article_type,AT-003,product_comparison: Source Packetなし,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0050,article_type,AT-003,product_comparison: Methodology Versionなし,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0051,article_type,AT-003,product_comparison: 料率を順位入力に含む,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0052,article_type,AT-003,product_comparison: Solo例外の明示再認証・Checklist,PASS,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0053,article_type,AT-003,product_comparison: AI Job完了と同時に承認,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0054,article_type,AT-003,product_comparison: 未知Version,FAIL_CLOSED,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0055,article_type,AT-003,product_comparison: 登録HashとTemplateが不一致,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0056,article_type,AT-003,product_comparison: 同Intentの実質更新,PASS,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0057,article_type,AT-003,product_comparison: 重複記事を統合候補化,PASS_REVIEW,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0058,article_type,AT-003,product_comparison: 自動削除,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0059,article_type,AT-003,product_comparison: 推薦根拠のCritical Fact失効,PAUSE,P1,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0060,article_type,AT-003,product_comparison: 価格だけ失効し価格非表示,PASS_DEGRADED,P0,contract,"FR-002,FR-003,FR-004,FR-005,FR-006,FR-007,FR-008,FR-009,FR-012",CONT-SLICE-003
+CT-0061,article_type,AT-004,model_generation_capacity_difference: Required Blocksと商品数を満たす,PASS,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0062,article_type,AT-004,model_generation_capacity_difference: Required Blockを1つずつ欠落,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0063,article_type,AT-004,model_generation_capacity_difference: 商品数が下限未満,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0064,article_type,AT-004,model_generation_capacity_difference: 商品数が上限超過,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0065,article_type,AT-004,model_generation_capacity_difference: Article TypeとIntentが不一致,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0066,article_type,AT-004,model_generation_capacity_difference: 同義Keywordの別記事候補,MERGE_REVIEW,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0067,article_type,AT-004,model_generation_capacity_difference: API項目の羅列のみ,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0068,article_type,AT-004,model_generation_capacity_difference: 承認なし公開,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0069,article_type,AT-004,model_generation_capacity_difference: Source Packetなし,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0070,article_type,AT-004,model_generation_capacity_difference: Methodology Versionなし,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0071,article_type,AT-004,model_generation_capacity_difference: 料率を順位入力に含む,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0072,article_type,AT-004,model_generation_capacity_difference: Solo例外の明示再認証・Checklist,PASS,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0073,article_type,AT-004,model_generation_capacity_difference: AI Job完了と同時に承認,FAIL_BLOCKER,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0074,article_type,AT-004,model_generation_capacity_difference: 未知Version,FAIL_CLOSED,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0075,article_type,AT-004,model_generation_capacity_difference: 登録HashとTemplateが不一致,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0076,article_type,AT-004,model_generation_capacity_difference: 同Intentの実質更新,PASS,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0077,article_type,AT-004,model_generation_capacity_difference: 重複記事を統合候補化,PASS_REVIEW,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0078,article_type,AT-004,model_generation_capacity_difference: 自動削除,FAIL,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0079,article_type,AT-004,model_generation_capacity_difference: 推薦根拠のCritical Fact失効,PAUSE,P1,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0080,article_type,AT-004,model_generation_capacity_difference: 価格だけ失効し価格非表示,PASS_DEGRADED,P0,contract,"FR-002,FR-003,FR-004,FR-006,FR-007,FR-008,FR-012",CONT-SLICE-003
+CT-0081,article_type,AT-005,condition_filtering: Required Blocksと商品数を満たす,PASS,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0082,article_type,AT-005,condition_filtering: Required Blockを1つずつ欠落,FAIL_BLOCKER,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0083,article_type,AT-005,condition_filtering: 商品数が下限未満,FAIL,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0084,article_type,AT-005,condition_filtering: 商品数が上限超過,FAIL,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0085,article_type,AT-005,condition_filtering: Article TypeとIntentが不一致,FAIL,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0086,article_type,AT-005,condition_filtering: 同義Keywordの別記事候補,MERGE_REVIEW,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0087,article_type,AT-005,condition_filtering: API項目の羅列のみ,FAIL,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0088,article_type,AT-005,condition_filtering: 承認なし公開,FAIL_BLOCKER,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0089,article_type,AT-005,condition_filtering: Source Packetなし,FAIL_BLOCKER,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0090,article_type,AT-005,condition_filtering: Methodology Versionなし,FAIL_BLOCKER,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0091,article_type,AT-005,condition_filtering: 料率を順位入力に含む,FAIL_BLOCKER,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0092,article_type,AT-005,condition_filtering: Solo例外の明示再認証・Checklist,PASS,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0093,article_type,AT-005,condition_filtering: AI Job完了と同時に承認,FAIL_BLOCKER,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0094,article_type,AT-005,condition_filtering: 未知Version,FAIL_CLOSED,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0095,article_type,AT-005,condition_filtering: 登録HashとTemplateが不一致,FAIL,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0096,article_type,AT-005,condition_filtering: 同Intentの実質更新,PASS,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0097,article_type,AT-005,condition_filtering: 重複記事を統合候補化,PASS_REVIEW,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0098,article_type,AT-005,condition_filtering: 自動削除,FAIL,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0099,article_type,AT-005,condition_filtering: 推薦根拠のCritical Fact失効,PAUSE,P1,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0100,article_type,AT-005,condition_filtering: 価格だけ失効し価格非表示,PASS_DEGRADED,P0,contract,"FR-001,FR-002,FR-004,FR-006,FR-007,FR-008,FR-012,FR-016",CONT-SLICE-003
+CT-0101,content_block,BLK-001,lead: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0102,content_block,BLK-001,lead: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0103,content_block,BLK-001,lead: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0104,content_block,BLK-001,lead: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0105,content_block,BLK-001,lead: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0106,content_block,BLK-001,lead: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0107,content_block,BLK-001,lead: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0108,content_block,BLK-001,lead: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0109,content_block,BLK-001,lead: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0110,content_block,BLK-001,lead: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0111,content_block,BLK-001,lead: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0112,content_block,BLK-001,lead: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0113,content_block,BLK-002,decision_summary: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0114,content_block,BLK-002,decision_summary: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0115,content_block,BLK-002,decision_summary: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0116,content_block,BLK-002,decision_summary: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0117,content_block,BLK-002,decision_summary: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0118,content_block,BLK-002,decision_summary: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0119,content_block,BLK-002,decision_summary: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0120,content_block,BLK-002,decision_summary: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0121,content_block,BLK-002,decision_summary: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0122,content_block,BLK-002,decision_summary: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0123,content_block,BLK-002,decision_summary: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0124,content_block,BLK-002,decision_summary: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0125,content_block,BLK-003,intended_reader: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0126,content_block,BLK-003,intended_reader: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0127,content_block,BLK-003,intended_reader: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0128,content_block,BLK-003,intended_reader: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0129,content_block,BLK-003,intended_reader: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0130,content_block,BLK-003,intended_reader: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0131,content_block,BLK-003,intended_reader: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0132,content_block,BLK-003,intended_reader: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0133,content_block,BLK-003,intended_reader: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0134,content_block,BLK-003,intended_reader: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0135,content_block,BLK-003,intended_reader: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0136,content_block,BLK-003,intended_reader: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0137,content_block,BLK-004,methodology: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0138,content_block,BLK-004,methodology: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0139,content_block,BLK-004,methodology: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0140,content_block,BLK-004,methodology: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0141,content_block,BLK-004,methodology: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0142,content_block,BLK-004,methodology: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0143,content_block,BLK-004,methodology: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0144,content_block,BLK-004,methodology: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0145,content_block,BLK-004,methodology: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0146,content_block,BLK-004,methodology: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0147,content_block,BLK-004,methodology: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0148,content_block,BLK-004,methodology: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0149,content_block,BLK-005,selection_criteria: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0150,content_block,BLK-005,selection_criteria: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0151,content_block,BLK-005,selection_criteria: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0152,content_block,BLK-005,selection_criteria: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0153,content_block,BLK-005,selection_criteria: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0154,content_block,BLK-005,selection_criteria: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0155,content_block,BLK-005,selection_criteria: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0156,content_block,BLK-005,selection_criteria: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0157,content_block,BLK-005,selection_criteria: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0158,content_block,BLK-005,selection_criteria: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0159,content_block,BLK-005,selection_criteria: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0160,content_block,BLK-005,selection_criteria: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0161,content_block,BLK-006,heading: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0162,content_block,BLK-006,heading: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0163,content_block,BLK-006,heading: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0164,content_block,BLK-006,heading: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0165,content_block,BLK-006,heading: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0166,content_block,BLK-006,heading: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0167,content_block,BLK-006,heading: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0168,content_block,BLK-006,heading: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0169,content_block,BLK-006,heading: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0170,content_block,BLK-006,heading: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0171,content_block,BLK-006,heading: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0172,content_block,BLK-006,heading: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0173,content_block,BLK-007,paragraph: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0174,content_block,BLK-007,paragraph: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0175,content_block,BLK-007,paragraph: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0176,content_block,BLK-007,paragraph: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0177,content_block,BLK-007,paragraph: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0178,content_block,BLK-007,paragraph: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0179,content_block,BLK-007,paragraph: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0180,content_block,BLK-007,paragraph: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0181,content_block,BLK-007,paragraph: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0182,content_block,BLK-007,paragraph: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0183,content_block,BLK-007,paragraph: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0184,content_block,BLK-007,paragraph: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0185,content_block,BLK-008,bullet_list: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0186,content_block,BLK-008,bullet_list: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0187,content_block,BLK-008,bullet_list: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0188,content_block,BLK-008,bullet_list: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0189,content_block,BLK-008,bullet_list: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0190,content_block,BLK-008,bullet_list: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0191,content_block,BLK-008,bullet_list: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0192,content_block,BLK-008,bullet_list: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0193,content_block,BLK-008,bullet_list: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0194,content_block,BLK-008,bullet_list: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0195,content_block,BLK-008,bullet_list: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0196,content_block,BLK-008,bullet_list: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0197,content_block,BLK-009,numbered_list: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0198,content_block,BLK-009,numbered_list: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0199,content_block,BLK-009,numbered_list: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0200,content_block,BLK-009,numbered_list: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0201,content_block,BLK-009,numbered_list: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0202,content_block,BLK-009,numbered_list: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0203,content_block,BLK-009,numbered_list: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0204,content_block,BLK-009,numbered_list: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0205,content_block,BLK-009,numbered_list: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0206,content_block,BLK-009,numbered_list: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0207,content_block,BLK-009,numbered_list: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0208,content_block,BLK-009,numbered_list: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0209,content_block,BLK-010,comparison_table: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0210,content_block,BLK-010,comparison_table: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0211,content_block,BLK-010,comparison_table: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0212,content_block,BLK-010,comparison_table: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0213,content_block,BLK-010,comparison_table: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0214,content_block,BLK-010,comparison_table: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0215,content_block,BLK-010,comparison_table: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0216,content_block,BLK-010,comparison_table: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0217,content_block,BLK-010,comparison_table: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0218,content_block,BLK-010,comparison_table: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0219,content_block,BLK-010,comparison_table: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0220,content_block,BLK-010,comparison_table: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0221,content_block,BLK-011,product_card: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0222,content_block,BLK-011,product_card: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0223,content_block,BLK-011,product_card: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0224,content_block,BLK-011,product_card: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0225,content_block,BLK-011,product_card: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0226,content_block,BLK-011,product_card: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0227,content_block,BLK-011,product_card: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0228,content_block,BLK-011,product_card: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0229,content_block,BLK-011,product_card: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0230,content_block,BLK-011,product_card: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0231,content_block,BLK-011,product_card: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0232,content_block,BLK-011,product_card: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0233,content_block,BLK-012,recommendation_group: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0234,content_block,BLK-012,recommendation_group: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0235,content_block,BLK-012,recommendation_group: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0236,content_block,BLK-012,recommendation_group: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0237,content_block,BLK-012,recommendation_group: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0238,content_block,BLK-012,recommendation_group: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0239,content_block,BLK-012,recommendation_group: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0240,content_block,BLK-012,recommendation_group: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0241,content_block,BLK-012,recommendation_group: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0242,content_block,BLK-012,recommendation_group: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0243,content_block,BLK-012,recommendation_group: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0244,content_block,BLK-012,recommendation_group: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0245,content_block,BLK-013,difference_matrix: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0246,content_block,BLK-013,difference_matrix: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0247,content_block,BLK-013,difference_matrix: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0248,content_block,BLK-013,difference_matrix: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0249,content_block,BLK-013,difference_matrix: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0250,content_block,BLK-013,difference_matrix: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0251,content_block,BLK-013,difference_matrix: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0252,content_block,BLK-013,difference_matrix: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0253,content_block,BLK-013,difference_matrix: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0254,content_block,BLK-013,difference_matrix: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0255,content_block,BLK-013,difference_matrix: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0256,content_block,BLK-013,difference_matrix: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0257,content_block,BLK-014,pros_cons: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0258,content_block,BLK-014,pros_cons: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0259,content_block,BLK-014,pros_cons: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0260,content_block,BLK-014,pros_cons: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0261,content_block,BLK-014,pros_cons: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0262,content_block,BLK-014,pros_cons: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0263,content_block,BLK-014,pros_cons: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0264,content_block,BLK-014,pros_cons: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0265,content_block,BLK-014,pros_cons: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0266,content_block,BLK-014,pros_cons: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0267,content_block,BLK-014,pros_cons: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0268,content_block,BLK-014,pros_cons: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0269,content_block,BLK-015,tradeoff: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0270,content_block,BLK-015,tradeoff: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0271,content_block,BLK-015,tradeoff: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0272,content_block,BLK-015,tradeoff: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0273,content_block,BLK-015,tradeoff: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0274,content_block,BLK-015,tradeoff: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0275,content_block,BLK-015,tradeoff: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0276,content_block,BLK-015,tradeoff: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0277,content_block,BLK-015,tradeoff: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0278,content_block,BLK-015,tradeoff: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0279,content_block,BLK-015,tradeoff: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0280,content_block,BLK-015,tradeoff: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0281,content_block,BLK-016,caution: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0282,content_block,BLK-016,caution: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0283,content_block,BLK-016,caution: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0284,content_block,BLK-016,caution: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0285,content_block,BLK-016,caution: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0286,content_block,BLK-016,caution: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0287,content_block,BLK-016,caution: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0288,content_block,BLK-016,caution: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0289,content_block,BLK-016,caution: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0290,content_block,BLK-016,caution: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0291,content_block,BLK-016,caution: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0292,content_block,BLK-016,caution: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0293,content_block,BLK-017,evidence_note: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0294,content_block,BLK-017,evidence_note: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0295,content_block,BLK-017,evidence_note: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0296,content_block,BLK-017,evidence_note: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0297,content_block,BLK-017,evidence_note: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0298,content_block,BLK-017,evidence_note: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0299,content_block,BLK-017,evidence_note: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0300,content_block,BLK-017,evidence_note: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0301,content_block,BLK-017,evidence_note: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0302,content_block,BLK-017,evidence_note: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0303,content_block,BLK-017,evidence_note: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0304,content_block,BLK-017,evidence_note: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0305,content_block,BLK-018,source_summary: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0306,content_block,BLK-018,source_summary: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0307,content_block,BLK-018,source_summary: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0308,content_block,BLK-018,source_summary: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0309,content_block,BLK-018,source_summary: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0310,content_block,BLK-018,source_summary: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0311,content_block,BLK-018,source_summary: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0312,content_block,BLK-018,source_summary: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0313,content_block,BLK-018,source_summary: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0314,content_block,BLK-018,source_summary: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0315,content_block,BLK-018,source_summary: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0316,content_block,BLK-018,source_summary: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0317,content_block,BLK-019,faq: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0318,content_block,BLK-019,faq: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0319,content_block,BLK-019,faq: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0320,content_block,BLK-019,faq: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0321,content_block,BLK-019,faq: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0322,content_block,BLK-019,faq: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0323,content_block,BLK-019,faq: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0324,content_block,BLK-019,faq: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0325,content_block,BLK-019,faq: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0326,content_block,BLK-019,faq: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0327,content_block,BLK-019,faq: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0328,content_block,BLK-019,faq: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0329,content_block,BLK-020,media: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0330,content_block,BLK-020,media: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0331,content_block,BLK-020,media: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0332,content_block,BLK-020,media: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0333,content_block,BLK-020,media: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0334,content_block,BLK-020,media: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0335,content_block,BLK-020,media: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0336,content_block,BLK-020,media: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0337,content_block,BLK-020,media: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0338,content_block,BLK-020,media: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0339,content_block,BLK-020,media: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0340,content_block,BLK-020,media: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0341,content_block,BLK-021,internal_links: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0342,content_block,BLK-021,internal_links: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0343,content_block,BLK-021,internal_links: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0344,content_block,BLK-021,internal_links: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0345,content_block,BLK-021,internal_links: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0346,content_block,BLK-021,internal_links: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0347,content_block,BLK-021,internal_links: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0348,content_block,BLK-021,internal_links: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0349,content_block,BLK-021,internal_links: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0350,content_block,BLK-021,internal_links: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0351,content_block,BLK-021,internal_links: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0352,content_block,BLK-021,internal_links: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0353,content_block,BLK-022,update_notice: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0354,content_block,BLK-022,update_notice: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0355,content_block,BLK-022,update_notice: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0356,content_block,BLK-022,update_notice: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0357,content_block,BLK-022,update_notice: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0358,content_block,BLK-022,update_notice: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0359,content_block,BLK-022,update_notice: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0360,content_block,BLK-022,update_notice: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0361,content_block,BLK-022,update_notice: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0362,content_block,BLK-022,update_notice: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0363,content_block,BLK-022,update_notice: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0364,content_block,BLK-022,update_notice: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0365,content_block,BLK-023,callout: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0366,content_block,BLK-023,callout: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0367,content_block,BLK-023,callout: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0368,content_block,BLK-023,callout: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0369,content_block,BLK-023,callout: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0370,content_block,BLK-023,callout: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0371,content_block,BLK-023,callout: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0372,content_block,BLK-023,callout: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0373,content_block,BLK-023,callout: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0374,content_block,BLK-023,callout: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0375,content_block,BLK-023,callout: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0376,content_block,BLK-023,callout: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0377,content_block,BLK-024,disclosure_slot: 最小有効Payload,PASS,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0378,content_block,BLK-024,disclosure_slot: 未知Property追加,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0379,content_block,BLK-024,disclosure_slot: 必須Property欠落,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0380,content_block,BLK-024,disclosure_slot: type不一致,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0381,content_block,BLK-024,disclosure_slot: 記事内Block ID重複,FAIL_POLICY,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0382,content_block,BLK-024,disclosure_slot: Public Snapshotにadmin_only,FAIL_PUBLICATION,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0383,content_block,BLK-024,disclosure_slot: 存在しないClaim参照,FAIL,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0384,content_block,BLK-024,disclosure_slot: Finance関連Field混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0385,content_block,BLK-024,disclosure_slot: Raw URL混入,FAIL_SCHEMA,P0,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0386,content_block,BLK-024,disclosure_slot: Script風文字列をTextとして安全Escaping,PASS_ESCAPED,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0387,content_block,BLK-024,disclosure_slot: 上限超過,FAIL_SCHEMA,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0388,content_block,BLK-024,disclosure_slot: JSON→Domain→JSON,PASS,P1,schema,"FR-007,FR-008,FR-009",CONT-SLICE-002
+CT-0389,claim_evidence,CLM-TYPE-001,direct_fact: 必要Evidenceを満たす,PASS,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0390,claim_evidence,CLM-TYPE-001,direct_fact: Evidence 0件,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0391,claim_evidence,CLM-TYPE-001,direct_fact: 別Product/VariantのFact,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0392,claim_evidence,CLM-TYPE-001,direct_fact: Critical Fact期限切れ,FAIL_OR_DEGRADE,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0393,claim_evidence,CLM-TYPE-001,direct_fact: Source競合未解決,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0394,claim_evidence,CLM-TYPE-001,direct_fact: AI出力だけをEvidence,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0395,claim_evidence,CLM-TYPE-001,direct_fact: 検索SnippetをEvidence,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0396,claim_evidence,CLM-TYPE-001,direct_fact: 楽天Review本文,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0397,claim_evidence,CLM-TYPE-001,direct_fact: 時点が必要なClaimに時点なし,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0398,claim_evidence,CLM-TYPE-001,direct_fact: Claim種別に不適切なSource Tier,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0399,claim_evidence,CLM-TYPE-001,direct_fact: 主要Claim Coverage 100%,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0400,claim_evidence,CLM-TYPE-001,direct_fact: 全Claim Coverage 95%未満,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0401,claim_evidence,CLM-TYPE-001,direct_fact: Citation Source Ref解決,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0402,claim_evidence,CLM-TYPE-001,direct_fact: Derived Factの式欠落,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0403,claim_evidence,CLM-TYPE-001,direct_fact: 体験記録なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0404,claim_evidence,CLM-TYPE-001,direct_fact: 最上級の母集団なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0405,claim_evidence,CLM-TYPE-001,direct_fact: 不明値を明示,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0406,claim_evidence,CLM-TYPE-001,direct_fact: 不明値を平均補完,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0407,claim_evidence,CLM-TYPE-002,derived_fact: 必要Evidenceを満たす,PASS,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0408,claim_evidence,CLM-TYPE-002,derived_fact: Evidence 0件,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0409,claim_evidence,CLM-TYPE-002,derived_fact: 別Product/VariantのFact,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0410,claim_evidence,CLM-TYPE-002,derived_fact: Critical Fact期限切れ,FAIL_OR_DEGRADE,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0411,claim_evidence,CLM-TYPE-002,derived_fact: Source競合未解決,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0412,claim_evidence,CLM-TYPE-002,derived_fact: AI出力だけをEvidence,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0413,claim_evidence,CLM-TYPE-002,derived_fact: 検索SnippetをEvidence,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0414,claim_evidence,CLM-TYPE-002,derived_fact: 楽天Review本文,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0415,claim_evidence,CLM-TYPE-002,derived_fact: 時点が必要なClaimに時点なし,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0416,claim_evidence,CLM-TYPE-002,derived_fact: Claim種別に不適切なSource Tier,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0417,claim_evidence,CLM-TYPE-002,derived_fact: 主要Claim Coverage 100%,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0418,claim_evidence,CLM-TYPE-002,derived_fact: 全Claim Coverage 95%未満,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0419,claim_evidence,CLM-TYPE-002,derived_fact: Citation Source Ref解決,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0420,claim_evidence,CLM-TYPE-002,derived_fact: Derived Factの式欠落,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0421,claim_evidence,CLM-TYPE-002,derived_fact: 体験記録なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0422,claim_evidence,CLM-TYPE-002,derived_fact: 最上級の母集団なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0423,claim_evidence,CLM-TYPE-002,derived_fact: 不明値を明示,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0424,claim_evidence,CLM-TYPE-002,derived_fact: 不明値を平均補完,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0425,claim_evidence,CLM-TYPE-003,comparative: 必要Evidenceを満たす,PASS,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0426,claim_evidence,CLM-TYPE-003,comparative: Evidence 0件,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0427,claim_evidence,CLM-TYPE-003,comparative: 別Product/VariantのFact,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0428,claim_evidence,CLM-TYPE-003,comparative: Critical Fact期限切れ,FAIL_OR_DEGRADE,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0429,claim_evidence,CLM-TYPE-003,comparative: Source競合未解決,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0430,claim_evidence,CLM-TYPE-003,comparative: AI出力だけをEvidence,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0431,claim_evidence,CLM-TYPE-003,comparative: 検索SnippetをEvidence,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0432,claim_evidence,CLM-TYPE-003,comparative: 楽天Review本文,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0433,claim_evidence,CLM-TYPE-003,comparative: 時点が必要なClaimに時点なし,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0434,claim_evidence,CLM-TYPE-003,comparative: Claim種別に不適切なSource Tier,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0435,claim_evidence,CLM-TYPE-003,comparative: 主要Claim Coverage 100%,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0436,claim_evidence,CLM-TYPE-003,comparative: 全Claim Coverage 95%未満,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0437,claim_evidence,CLM-TYPE-003,comparative: Citation Source Ref解決,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0438,claim_evidence,CLM-TYPE-003,comparative: Derived Factの式欠落,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0439,claim_evidence,CLM-TYPE-003,comparative: 体験記録なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0440,claim_evidence,CLM-TYPE-003,comparative: 最上級の母集団なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0441,claim_evidence,CLM-TYPE-003,comparative: 不明値を明示,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0442,claim_evidence,CLM-TYPE-003,comparative: 不明値を平均補完,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0443,claim_evidence,CLM-TYPE-004,recommendation: 必要Evidenceを満たす,PASS,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0444,claim_evidence,CLM-TYPE-004,recommendation: Evidence 0件,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0445,claim_evidence,CLM-TYPE-004,recommendation: 別Product/VariantのFact,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0446,claim_evidence,CLM-TYPE-004,recommendation: Critical Fact期限切れ,FAIL_OR_DEGRADE,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0447,claim_evidence,CLM-TYPE-004,recommendation: Source競合未解決,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0448,claim_evidence,CLM-TYPE-004,recommendation: AI出力だけをEvidence,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0449,claim_evidence,CLM-TYPE-004,recommendation: 検索SnippetをEvidence,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0450,claim_evidence,CLM-TYPE-004,recommendation: 楽天Review本文,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0451,claim_evidence,CLM-TYPE-004,recommendation: 時点が必要なClaimに時点なし,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0452,claim_evidence,CLM-TYPE-004,recommendation: Claim種別に不適切なSource Tier,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0453,claim_evidence,CLM-TYPE-004,recommendation: 主要Claim Coverage 100%,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0454,claim_evidence,CLM-TYPE-004,recommendation: 全Claim Coverage 95%未満,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0455,claim_evidence,CLM-TYPE-004,recommendation: Citation Source Ref解決,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0456,claim_evidence,CLM-TYPE-004,recommendation: Derived Factの式欠落,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0457,claim_evidence,CLM-TYPE-004,recommendation: 体験記録なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0458,claim_evidence,CLM-TYPE-004,recommendation: 最上級の母集団なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0459,claim_evidence,CLM-TYPE-004,recommendation: 不明値を明示,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0460,claim_evidence,CLM-TYPE-004,recommendation: 不明値を平均補完,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0461,claim_evidence,CLM-TYPE-005,experience: 必要Evidenceを満たす,PASS,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0462,claim_evidence,CLM-TYPE-005,experience: Evidence 0件,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0463,claim_evidence,CLM-TYPE-005,experience: 別Product/VariantのFact,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0464,claim_evidence,CLM-TYPE-005,experience: Critical Fact期限切れ,FAIL_OR_DEGRADE,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0465,claim_evidence,CLM-TYPE-005,experience: Source競合未解決,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0466,claim_evidence,CLM-TYPE-005,experience: AI出力だけをEvidence,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0467,claim_evidence,CLM-TYPE-005,experience: 検索SnippetをEvidence,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0468,claim_evidence,CLM-TYPE-005,experience: 楽天Review本文,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0469,claim_evidence,CLM-TYPE-005,experience: 時点が必要なClaimに時点なし,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0470,claim_evidence,CLM-TYPE-005,experience: Claim種別に不適切なSource Tier,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0471,claim_evidence,CLM-TYPE-005,experience: 主要Claim Coverage 100%,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0472,claim_evidence,CLM-TYPE-005,experience: 全Claim Coverage 95%未満,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0473,claim_evidence,CLM-TYPE-005,experience: Citation Source Ref解決,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0474,claim_evidence,CLM-TYPE-005,experience: Derived Factの式欠落,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0475,claim_evidence,CLM-TYPE-005,experience: 体験記録なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0476,claim_evidence,CLM-TYPE-005,experience: 最上級の母集団なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0477,claim_evidence,CLM-TYPE-005,experience: 不明値を明示,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0478,claim_evidence,CLM-TYPE-005,experience: 不明値を平均補完,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0479,claim_evidence,CLM-TYPE-006,price_availability: 必要Evidenceを満たす,PASS,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0480,claim_evidence,CLM-TYPE-006,price_availability: Evidence 0件,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0481,claim_evidence,CLM-TYPE-006,price_availability: 別Product/VariantのFact,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0482,claim_evidence,CLM-TYPE-006,price_availability: Critical Fact期限切れ,FAIL_OR_DEGRADE,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0483,claim_evidence,CLM-TYPE-006,price_availability: Source競合未解決,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0484,claim_evidence,CLM-TYPE-006,price_availability: AI出力だけをEvidence,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0485,claim_evidence,CLM-TYPE-006,price_availability: 検索SnippetをEvidence,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0486,claim_evidence,CLM-TYPE-006,price_availability: 楽天Review本文,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0487,claim_evidence,CLM-TYPE-006,price_availability: 時点が必要なClaimに時点なし,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0488,claim_evidence,CLM-TYPE-006,price_availability: Claim種別に不適切なSource Tier,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0489,claim_evidence,CLM-TYPE-006,price_availability: 主要Claim Coverage 100%,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0490,claim_evidence,CLM-TYPE-006,price_availability: 全Claim Coverage 95%未満,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0491,claim_evidence,CLM-TYPE-006,price_availability: Citation Source Ref解決,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0492,claim_evidence,CLM-TYPE-006,price_availability: Derived Factの式欠落,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0493,claim_evidence,CLM-TYPE-006,price_availability: 体験記録なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0494,claim_evidence,CLM-TYPE-006,price_availability: 最上級の母集団なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0495,claim_evidence,CLM-TYPE-006,price_availability: 不明値を明示,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0496,claim_evidence,CLM-TYPE-006,price_availability: 不明値を平均補完,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0497,claim_evidence,CLM-TYPE-007,superlative: 必要Evidenceを満たす,PASS,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0498,claim_evidence,CLM-TYPE-007,superlative: Evidence 0件,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0499,claim_evidence,CLM-TYPE-007,superlative: 別Product/VariantのFact,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0500,claim_evidence,CLM-TYPE-007,superlative: Critical Fact期限切れ,FAIL_OR_DEGRADE,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0501,claim_evidence,CLM-TYPE-007,superlative: Source競合未解決,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0502,claim_evidence,CLM-TYPE-007,superlative: AI出力だけをEvidence,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0503,claim_evidence,CLM-TYPE-007,superlative: 検索SnippetをEvidence,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0504,claim_evidence,CLM-TYPE-007,superlative: 楽天Review本文,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0505,claim_evidence,CLM-TYPE-007,superlative: 時点が必要なClaimに時点なし,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0506,claim_evidence,CLM-TYPE-007,superlative: Claim種別に不適切なSource Tier,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0507,claim_evidence,CLM-TYPE-007,superlative: 主要Claim Coverage 100%,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0508,claim_evidence,CLM-TYPE-007,superlative: 全Claim Coverage 95%未満,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0509,claim_evidence,CLM-TYPE-007,superlative: Citation Source Ref解決,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0510,claim_evidence,CLM-TYPE-007,superlative: Derived Factの式欠落,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0511,claim_evidence,CLM-TYPE-007,superlative: 体験記録なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0512,claim_evidence,CLM-TYPE-007,superlative: 最上級の母集団なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0513,claim_evidence,CLM-TYPE-007,superlative: 不明値を明示,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0514,claim_evidence,CLM-TYPE-007,superlative: 不明値を平均補完,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0515,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 必要Evidenceを満たす,PASS,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0516,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: Evidence 0件,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0517,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 別Product/VariantのFact,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0518,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: Critical Fact期限切れ,FAIL_OR_DEGRADE,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0519,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: Source競合未解決,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0520,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: AI出力だけをEvidence,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0521,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 検索SnippetをEvidence,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0522,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 楽天Review本文,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0523,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 時点が必要なClaimに時点なし,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0524,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: Claim種別に不適切なSource Tier,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0525,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 主要Claim Coverage 100%,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0526,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 全Claim Coverage 95%未満,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0527,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: Citation Source Ref解決,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0528,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: Derived Factの式欠落,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0529,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 体験記録なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0530,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 最上級の母集団なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0531,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 不明値を明示,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0532,claim_evidence,CLM-TYPE-008,safety_legal_regulatory: 不明値を平均補完,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0533,claim_evidence,CLM-TYPE-009,predictive: 必要Evidenceを満たす,PASS,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0534,claim_evidence,CLM-TYPE-009,predictive: Evidence 0件,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0535,claim_evidence,CLM-TYPE-009,predictive: 別Product/VariantのFact,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0536,claim_evidence,CLM-TYPE-009,predictive: Critical Fact期限切れ,FAIL_OR_DEGRADE,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0537,claim_evidence,CLM-TYPE-009,predictive: Source競合未解決,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0538,claim_evidence,CLM-TYPE-009,predictive: AI出力だけをEvidence,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0539,claim_evidence,CLM-TYPE-009,predictive: 検索SnippetをEvidence,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0540,claim_evidence,CLM-TYPE-009,predictive: 楽天Review本文,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0541,claim_evidence,CLM-TYPE-009,predictive: 時点が必要なClaimに時点なし,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0542,claim_evidence,CLM-TYPE-009,predictive: Claim種別に不適切なSource Tier,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0543,claim_evidence,CLM-TYPE-009,predictive: 主要Claim Coverage 100%,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0544,claim_evidence,CLM-TYPE-009,predictive: 全Claim Coverage 95%未満,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0545,claim_evidence,CLM-TYPE-009,predictive: Citation Source Ref解決,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0546,claim_evidence,CLM-TYPE-009,predictive: Derived Factの式欠落,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0547,claim_evidence,CLM-TYPE-009,predictive: 体験記録なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0548,claim_evidence,CLM-TYPE-009,predictive: 最上級の母集団なし,FAIL_BLOCKER,P0,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0549,claim_evidence,CLM-TYPE-009,predictive: 不明値を明示,PASS,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0550,claim_evidence,CLM-TYPE-009,predictive: 不明値を平均補完,FAIL,P1,policy,"FR-004,FR-006,FR-007,FR-008",CONT-SLICE-004
+CT-0551,editorial_policy,POL-CONT-001,approved_source_packet_required: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0552,editorial_policy,POL-CONT-001,approved_source_packet_required: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0553,editorial_policy,POL-CONT-001,approved_source_packet_required: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0554,editorial_policy,POL-CONT-001,approved_source_packet_required: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0555,editorial_policy,POL-CONT-001,approved_source_packet_required: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0556,editorial_policy,POL-CONT-001,approved_source_packet_required: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0557,editorial_policy,POL-CONT-002,major_claim_evidence: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0558,editorial_policy,POL-CONT-002,major_claim_evidence: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0559,editorial_policy,POL-CONT-002,major_claim_evidence: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0560,editorial_policy,POL-CONT-002,major_claim_evidence: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0561,editorial_policy,POL-CONT-002,major_claim_evidence: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0562,editorial_policy,POL-CONT-002,major_claim_evidence: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0563,editorial_policy,POL-CONT-003,fabricated_experience: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0564,editorial_policy,POL-CONT-003,fabricated_experience: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0565,editorial_policy,POL-CONT-003,fabricated_experience: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0566,editorial_policy,POL-CONT-003,fabricated_experience: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0567,editorial_policy,POL-CONT-003,fabricated_experience: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0568,editorial_policy,POL-CONT-003,fabricated_experience: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0569,editorial_policy,POL-CONT-004,rakuten_review_body: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0570,editorial_policy,POL-CONT-004,rakuten_review_body: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0571,editorial_policy,POL-CONT-004,rakuten_review_body: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0572,editorial_policy,POL-CONT-004,rakuten_review_body: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0573,editorial_policy,POL-CONT-004,rakuten_review_body: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0574,editorial_policy,POL-CONT-004,rakuten_review_body: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0575,editorial_policy,POL-CONT-005,affiliate_bias: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0576,editorial_policy,POL-CONT-005,affiliate_bias: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0577,editorial_policy,POL-CONT-005,affiliate_bias: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0578,editorial_policy,POL-CONT-005,affiliate_bias: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0579,editorial_policy,POL-CONT-005,affiliate_bias: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0580,editorial_policy,POL-CONT-005,affiliate_bias: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0581,editorial_policy,POL-CONT-006,raw_html: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0582,editorial_policy,POL-CONT-006,raw_html: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0583,editorial_policy,POL-CONT-006,raw_html: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0584,editorial_policy,POL-CONT-006,raw_html: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0585,editorial_policy,POL-CONT-006,raw_html: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0586,editorial_policy,POL-CONT-006,raw_html: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0587,editorial_policy,POL-CONT-007,manual_affiliate_url: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0588,editorial_policy,POL-CONT-007,manual_affiliate_url: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0589,editorial_policy,POL-CONT-007,manual_affiliate_url: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0590,editorial_policy,POL-CONT-007,manual_affiliate_url: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0591,editorial_policy,POL-CONT-007,manual_affiliate_url: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0592,editorial_policy,POL-CONT-007,manual_affiliate_url: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0593,editorial_policy,POL-CONT-008,disclosure_top: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0594,editorial_policy,POL-CONT-008,disclosure_top: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0595,editorial_policy,POL-CONT-008,disclosure_top: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0596,editorial_policy,POL-CONT-008,disclosure_top: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0597,editorial_policy,POL-CONT-008,disclosure_top: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0598,editorial_policy,POL-CONT-008,disclosure_top: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0599,editorial_policy,POL-CONT-009,cta_destination: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0600,editorial_policy,POL-CONT-009,cta_destination: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0601,editorial_policy,POL-CONT-009,cta_destination: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0602,editorial_policy,POL-CONT-009,cta_destination: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0603,editorial_policy,POL-CONT-009,cta_destination: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0604,editorial_policy,POL-CONT-009,cta_destination: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0605,editorial_policy,POL-CONT-010,paid_link_rel: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0606,editorial_policy,POL-CONT-010,paid_link_rel: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0607,editorial_policy,POL-CONT-010,paid_link_rel: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0608,editorial_policy,POL-CONT-010,paid_link_rel: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0609,editorial_policy,POL-CONT-010,paid_link_rel: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0610,editorial_policy,POL-CONT-010,paid_link_rel: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0611,editorial_policy,POL-CONT-011,direct_affiliate_link: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0612,editorial_policy,POL-CONT-011,direct_affiliate_link: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0613,editorial_policy,POL-CONT-011,direct_affiliate_link: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0614,editorial_policy,POL-CONT-011,direct_affiliate_link: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0615,editorial_policy,POL-CONT-011,direct_affiliate_link: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0616,editorial_policy,POL-CONT-011,direct_affiliate_link: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0617,editorial_policy,POL-CONT-012,rakuten_api_credit: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0618,editorial_policy,POL-CONT-012,rakuten_api_credit: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0619,editorial_policy,POL-CONT-012,rakuten_api_credit: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0620,editorial_policy,POL-CONT-012,rakuten_api_credit: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0621,editorial_policy,POL-CONT-012,rakuten_api_credit: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0622,editorial_policy,POL-CONT-012,rakuten_api_credit: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0623,editorial_policy,POL-CONT-013,rakuten_image_integrity: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0624,editorial_policy,POL-CONT-013,rakuten_image_integrity: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0625,editorial_policy,POL-CONT-013,rakuten_image_integrity: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0626,editorial_policy,POL-CONT-013,rakuten_image_integrity: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0627,editorial_policy,POL-CONT-013,rakuten_image_integrity: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0628,editorial_policy,POL-CONT-013,rakuten_image_integrity: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0629,editorial_policy,POL-CONT-014,unsupported_superlative: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0630,editorial_policy,POL-CONT-014,unsupported_superlative: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0631,editorial_policy,POL-CONT-014,unsupported_superlative: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0632,editorial_policy,POL-CONT-014,unsupported_superlative: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0633,editorial_policy,POL-CONT-014,unsupported_superlative: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0634,editorial_policy,POL-CONT-014,unsupported_superlative: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0635,editorial_policy,POL-CONT-015,stale_critical_fact: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0636,editorial_policy,POL-CONT-015,stale_critical_fact: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0637,editorial_policy,POL-CONT-015,stale_critical_fact: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0638,editorial_policy,POL-CONT-015,stale_critical_fact: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0639,editorial_policy,POL-CONT-015,stale_critical_fact: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0640,editorial_policy,POL-CONT-015,stale_critical_fact: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0641,editorial_policy,POL-CONT-016,product_identity: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0642,editorial_policy,POL-CONT-016,product_identity: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0643,editorial_policy,POL-CONT-016,product_identity: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0644,editorial_policy,POL-CONT-016,product_identity: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0645,editorial_policy,POL-CONT-016,product_identity: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0646,editorial_policy,POL-CONT-016,product_identity: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0647,editorial_policy,POL-CONT-017,high_risk_claim: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0648,editorial_policy,POL-CONT-017,high_risk_claim: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0649,editorial_policy,POL-CONT-017,high_risk_claim: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0650,editorial_policy,POL-CONT-017,high_risk_claim: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0651,editorial_policy,POL-CONT-017,high_risk_claim: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0652,editorial_policy,POL-CONT-017,high_risk_claim: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0653,editorial_policy,POL-CONT-018,human_approval: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0654,editorial_policy,POL-CONT-018,human_approval: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0655,editorial_policy,POL-CONT-018,human_approval: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0656,editorial_policy,POL-CONT-018,human_approval: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0657,editorial_policy,POL-CONT-018,human_approval: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0658,editorial_policy,POL-CONT-018,human_approval: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0659,editorial_policy,POL-CONT-019,one_primary_intent: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0660,editorial_policy,POL-CONT-019,one_primary_intent: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0661,editorial_policy,POL-CONT-019,one_primary_intent: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0662,editorial_policy,POL-CONT-019,one_primary_intent: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0663,editorial_policy,POL-CONT-019,one_primary_intent: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0664,editorial_policy,POL-CONT-019,one_primary_intent: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0665,editorial_policy,POL-CONT-020,scaled_thin_pages: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0666,editorial_policy,POL-CONT-020,scaled_thin_pages: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0667,editorial_policy,POL-CONT-020,scaled_thin_pages: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0668,editorial_policy,POL-CONT-020,scaled_thin_pages: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0669,editorial_policy,POL-CONT-020,scaled_thin_pages: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0670,editorial_policy,POL-CONT-020,scaled_thin_pages: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0671,editorial_policy,POL-CONT-021,competitor_copy: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0672,editorial_policy,POL-CONT-021,competitor_copy: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0673,editorial_policy,POL-CONT-021,competitor_copy: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0674,editorial_policy,POL-CONT-021,competitor_copy: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0675,editorial_policy,POL-CONT-021,competitor_copy: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0676,editorial_policy,POL-CONT-021,competitor_copy: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0677,editorial_policy,POL-CONT-022,balanced_tradeoffs: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0678,editorial_policy,POL-CONT-022,balanced_tradeoffs: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0679,editorial_policy,POL-CONT-022,balanced_tradeoffs: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0680,editorial_policy,POL-CONT-022,balanced_tradeoffs: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0681,editorial_policy,POL-CONT-022,balanced_tradeoffs: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0682,editorial_policy,POL-CONT-022,balanced_tradeoffs: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0683,editorial_policy,POL-CONT-023,uncertainty_disclosure: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0684,editorial_policy,POL-CONT-023,uncertainty_disclosure: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0685,editorial_policy,POL-CONT-023,uncertainty_disclosure: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0686,editorial_policy,POL-CONT-023,uncertainty_disclosure: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0687,editorial_policy,POL-CONT-023,uncertainty_disclosure: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0688,editorial_policy,POL-CONT-023,uncertainty_disclosure: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0689,editorial_policy,POL-CONT-024,unique_metadata: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0690,editorial_policy,POL-CONT-024,unique_metadata: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0691,editorial_policy,POL-CONT-024,unique_metadata: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0692,editorial_policy,POL-CONT-024,unique_metadata: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0693,editorial_policy,POL-CONT-024,unique_metadata: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0694,editorial_policy,POL-CONT-024,unique_metadata: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0695,editorial_policy,POL-CONT-025,index_state: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0696,editorial_policy,POL-CONT-025,index_state: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0697,editorial_policy,POL-CONT-025,index_state: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0698,editorial_policy,POL-CONT-025,index_state: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0699,editorial_policy,POL-CONT-025,index_state: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0700,editorial_policy,POL-CONT-025,index_state: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0701,editorial_policy,POL-CONT-026,visible_match: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0702,editorial_policy,POL-CONT-026,visible_match: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0703,editorial_policy,POL-CONT-026,visible_match: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0704,editorial_policy,POL-CONT-026,visible_match: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0705,editorial_policy,POL-CONT-026,visible_match: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0706,editorial_policy,POL-CONT-026,visible_match: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0707,editorial_policy,POL-CONT-027,multi_product_product_markup: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0708,editorial_policy,POL-CONT-027,multi_product_product_markup: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0709,editorial_policy,POL-CONT-027,multi_product_product_markup: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0710,editorial_policy,POL-CONT-027,multi_product_product_markup: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0711,editorial_policy,POL-CONT-027,multi_product_product_markup: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0712,editorial_policy,POL-CONT-027,multi_product_product_markup: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0713,editorial_policy,POL-CONT-028,faqpage_disabled: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0714,editorial_policy,POL-CONT-028,faqpage_disabled: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0715,editorial_policy,POL-CONT-028,faqpage_disabled: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0716,editorial_policy,POL-CONT-028,faqpage_disabled: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0717,editorial_policy,POL-CONT-028,faqpage_disabled: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0718,editorial_policy,POL-CONT-028,faqpage_disabled: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0719,editorial_policy,POL-CONT-029,rakuten_rating_markup: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0720,editorial_policy,POL-CONT-029,rakuten_rating_markup: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0721,editorial_policy,POL-CONT-029,rakuten_rating_markup: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0722,editorial_policy,POL-CONT-029,rakuten_rating_markup: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0723,editorial_policy,POL-CONT-029,rakuten_rating_markup: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0724,editorial_policy,POL-CONT-029,rakuten_rating_markup: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0725,editorial_policy,POL-CONT-030,query_variant_consolidation: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0726,editorial_policy,POL-CONT-030,query_variant_consolidation: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0727,editorial_policy,POL-CONT-030,query_variant_consolidation: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0728,editorial_policy,POL-CONT-030,query_variant_consolidation: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0729,editorial_policy,POL-CONT-030,query_variant_consolidation: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0730,editorial_policy,POL-CONT-030,query_variant_consolidation: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0731,editorial_policy,POL-CONT-031,internal_link_quality: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0732,editorial_policy,POL-CONT-031,internal_link_quality: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0733,editorial_policy,POL-CONT-031,internal_link_quality: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0734,editorial_policy,POL-CONT-031,internal_link_quality: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0735,editorial_policy,POL-CONT-031,internal_link_quality: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0736,editorial_policy,POL-CONT-031,internal_link_quality: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0737,editorial_policy,POL-CONT-032,non_text_alternative: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0738,editorial_policy,POL-CONT-032,non_text_alternative: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0739,editorial_policy,POL-CONT-032,non_text_alternative: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0740,editorial_policy,POL-CONT-032,non_text_alternative: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0741,editorial_policy,POL-CONT-032,non_text_alternative: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0742,editorial_policy,POL-CONT-032,non_text_alternative: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0743,editorial_policy,POL-CONT-033,semantic_structure: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0744,editorial_policy,POL-CONT-033,semantic_structure: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0745,editorial_policy,POL-CONT-033,semantic_structure: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0746,editorial_policy,POL-CONT-033,semantic_structure: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0747,editorial_policy,POL-CONT-033,semantic_structure: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0748,editorial_policy,POL-CONT-033,semantic_structure: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0749,editorial_policy,POL-CONT-034,substantive_lastmod: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0750,editorial_policy,POL-CONT-034,substantive_lastmod: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0751,editorial_policy,POL-CONT-034,substantive_lastmod: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0752,editorial_policy,POL-CONT-034,substantive_lastmod: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0753,editorial_policy,POL-CONT-034,substantive_lastmod: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0754,editorial_policy,POL-CONT-034,substantive_lastmod: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0755,editorial_policy,POL-CONT-035,kill_switch: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0756,editorial_policy,POL-CONT-035,kill_switch: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0757,editorial_policy,POL-CONT-035,kill_switch: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0758,editorial_policy,POL-CONT-035,kill_switch: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0759,editorial_policy,POL-CONT-035,kill_switch: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0760,editorial_policy,POL-CONT-035,kill_switch: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0761,editorial_policy,POL-CONT-036,snapshot_integrity: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0762,editorial_policy,POL-CONT-036,snapshot_integrity: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0763,editorial_policy,POL-CONT-036,snapshot_integrity: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0764,editorial_policy,POL-CONT-036,snapshot_integrity: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0765,editorial_policy,POL-CONT-036,snapshot_integrity: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0766,editorial_policy,POL-CONT-036,snapshot_integrity: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0767,editorial_policy,POL-CONT-037,review_aggregate_inference: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0768,editorial_policy,POL-CONT-037,review_aggregate_inference: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0769,editorial_policy,POL-CONT-037,review_aggregate_inference: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0770,editorial_policy,POL-CONT-037,review_aggregate_inference: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0771,editorial_policy,POL-CONT-037,review_aggregate_inference: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0772,editorial_policy,POL-CONT-037,review_aggregate_inference: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0773,editorial_policy,POL-CONT-038,price_language: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0774,editorial_policy,POL-CONT-038,price_language: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0775,editorial_policy,POL-CONT-038,price_language: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0776,editorial_policy,POL-CONT-038,price_language: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0777,editorial_policy,POL-CONT-038,price_language: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0778,editorial_policy,POL-CONT-038,price_language: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0779,editorial_policy,POL-CONT-039,ai_product_depiction: 準拠Fixture,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0780,editorial_policy,POL-CONT-039,ai_product_depiction: 単一違反Fixture,FAIL_BLOCKER,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0781,editorial_policy,POL-CONT-039,ai_product_depiction: FindingにPolicy ID・Version・対象を記録,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0782,editorial_policy,POL-CONT-039,ai_product_depiction: Waiver可否を検査,WAIVER_DENIED,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0783,editorial_policy,POL-CONT-039,ai_product_depiction: Publication直前に再評価,PASS_OR_BLOCK,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0784,editorial_policy,POL-CONT-039,ai_product_depiction: 旧不具合Fixtureを再実行,PASS,P0,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0785,editorial_policy,POL-CONT-040,safe_degradation: 準拠Fixture,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0786,editorial_policy,POL-CONT-040,safe_degradation: 単一違反Fixture,FAIL_MAJOR,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0787,editorial_policy,POL-CONT-040,safe_degradation: FindingにPolicy ID・Version・対象を記録,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0788,editorial_policy,POL-CONT-040,safe_degradation: Waiver可否を検査,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0789,editorial_policy,POL-CONT-040,safe_degradation: Publication直前に再評価,PASS_OR_BLOCK,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0790,editorial_policy,POL-CONT-040,safe_degradation: 旧不具合Fixtureを再実行,PASS,P1,policy,"FR-008,FR-009,FR-017,FR-020",CONT-SLICE-013
+CT-0791,freshness,FRESH-001,offer_price: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0792,freshness,FRESH-001,offer_price: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0793,freshness,FRESH-001,offer_price: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0794,freshness,FRESH-001,offer_price: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0795,freshness,FRESH-001,offer_price: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0796,freshness,FRESH-001,offer_price: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0797,freshness,FRESH-001,offer_price: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0798,freshness,FRESH-001,offer_price: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0799,freshness,FRESH-002,availability: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0800,freshness,FRESH-002,availability: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0801,freshness,FRESH-002,availability: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0802,freshness,FRESH-002,availability: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0803,freshness,FRESH-002,availability: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0804,freshness,FRESH-002,availability: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0805,freshness,FRESH-002,availability: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0806,freshness,FRESH-002,availability: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0807,freshness,FRESH-003,affiliate_link_health: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0808,freshness,FRESH-003,affiliate_link_health: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0809,freshness,FRESH-003,affiliate_link_health: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0810,freshness,FRESH-003,affiliate_link_health: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0811,freshness,FRESH-003,affiliate_link_health: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0812,freshness,FRESH-003,affiliate_link_health: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0813,freshness,FRESH-003,affiliate_link_health: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0814,freshness,FRESH-003,affiliate_link_health: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0815,freshness,FRESH-004,shipping_condition: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0816,freshness,FRESH-004,shipping_condition: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0817,freshness,FRESH-004,shipping_condition: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0818,freshness,FRESH-004,shipping_condition: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0819,freshness,FRESH-004,shipping_condition: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0820,freshness,FRESH-004,shipping_condition: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0821,freshness,FRESH-004,shipping_condition: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0822,freshness,FRESH-004,shipping_condition: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0823,freshness,FRESH-005,points_coupon_campaign: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0824,freshness,FRESH-005,points_coupon_campaign: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0825,freshness,FRESH-005,points_coupon_campaign: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0826,freshness,FRESH-005,points_coupon_campaign: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0827,freshness,FRESH-005,points_coupon_campaign: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0828,freshness,FRESH-005,points_coupon_campaign: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0829,freshness,FRESH-005,points_coupon_campaign: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0830,freshness,FRESH-005,points_coupon_campaign: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0831,freshness,FRESH-006,official_ranking: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0832,freshness,FRESH-006,official_ranking: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0833,freshness,FRESH-006,official_ranking: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0834,freshness,FRESH-006,official_ranking: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0835,freshness,FRESH-006,official_ranking: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0836,freshness,FRESH-006,official_ranking: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0837,freshness,FRESH-006,official_ranking: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0838,freshness,FRESH-006,official_ranking: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0839,freshness,FRESH-007,product_specification: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0840,freshness,FRESH-007,product_specification: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0841,freshness,FRESH-007,product_specification: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0842,freshness,FRESH-007,product_specification: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0843,freshness,FRESH-007,product_specification: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0844,freshness,FRESH-007,product_specification: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0845,freshness,FRESH-007,product_specification: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0846,freshness,FRESH-007,product_specification: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0847,freshness,FRESH-008,manufacturer_lifecycle_status: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0848,freshness,FRESH-008,manufacturer_lifecycle_status: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0849,freshness,FRESH-008,manufacturer_lifecycle_status: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0850,freshness,FRESH-008,manufacturer_lifecycle_status: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0851,freshness,FRESH-008,manufacturer_lifecycle_status: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0852,freshness,FRESH-008,manufacturer_lifecycle_status: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0853,freshness,FRESH-008,manufacturer_lifecycle_status: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0854,freshness,FRESH-008,manufacturer_lifecycle_status: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0855,freshness,FRESH-009,editorial_methodology: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0856,freshness,FRESH-009,editorial_methodology: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0857,freshness,FRESH-009,editorial_methodology: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0858,freshness,FRESH-009,editorial_methodology: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0859,freshness,FRESH-009,editorial_methodology: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0860,freshness,FRESH-009,editorial_methodology: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0861,freshness,FRESH-009,editorial_methodology: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0862,freshness,FRESH-009,editorial_methodology: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0863,freshness,FRESH-010,policy_disclosure: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0864,freshness,FRESH-010,policy_disclosure: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0865,freshness,FRESH-010,policy_disclosure: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0866,freshness,FRESH-010,policy_disclosure: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0867,freshness,FRESH-010,policy_disclosure: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0868,freshness,FRESH-010,policy_disclosure: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0869,freshness,FRESH-010,policy_disclosure: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0870,freshness,FRESH-010,policy_disclosure: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0871,freshness,FRESH-011,first_hand_experience: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0872,freshness,FRESH-011,first_hand_experience: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0873,freshness,FRESH-011,first_hand_experience: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0874,freshness,FRESH-011,first_hand_experience: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0875,freshness,FRESH-011,first_hand_experience: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0876,freshness,FRESH-011,first_hand_experience: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0877,freshness,FRESH-011,first_hand_experience: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0878,freshness,FRESH-011,first_hand_experience: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0879,freshness,FRESH-012,internal_link_target: warning前,DISPLAY,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0880,freshness,FRESH-012,internal_link_target: warning後block前,DISPLAY_WITH_WARNING_QUEUE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0881,freshness,FRESH-012,internal_link_target: blocking後,SAFE_DEGRADE,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0882,freshness,FRESH-012,internal_link_target: 取得失敗,KEEP_LAST_WITH_STALE_STATE_NOT_LATEST,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0883,freshness,FRESH-012,internal_link_target: JST/UTC境界,CORRECT,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0884,freshness,FRESH-012,internal_link_target: 再取得成功,RESTORE_FIELD_AFTER_VALIDATION,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0885,freshness,FRESH-012,internal_link_target: 失効で推薦自動並替え,FORBIDDEN,P0,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0886,freshness,FRESH-012,internal_link_target: 推薦根拠へ影響,CREATE_REVIEW_CANDIDATE,P1,policy,"FR-004,FR-011,FR-012,FR-019",CONT-SLICE-011
+CT-0887,recommendation,RAOS-CONTENT-RECO-001,全Hard Constraint合格,ELIGIBLE,P0,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0888,recommendation,RAOS-CONTENT-RECO-001,1つ不合格,INELIGIBLE,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0889,recommendation,RAOS-CONTENT-RECO-001,Critical値不明,INELIGIBLE_OR_UNRANKED,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0890,recommendation,RAOS-CONTENT-RECO-001,Coverage 0.90,PRIMARY_ALLOWED,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0891,recommendation,RAOS-CONTENT-RECO-001,Coverage 0.79,NO_RANK,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0892,recommendation,RAOS-CONTENT-RECO-001,Score差2.0,CO_RECOMMEND,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0893,recommendation,RAOS-CONTENT-RECO-001,Score差2.01,ORDER_ALLOWED_WITH_EXPLANATION,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0894,recommendation,RAOS-CONTENT-RECO-001,Affiliate Rate入力,FAIL_BLOCKER,P0,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0895,recommendation,RAOS-CONTENT-RECO-001,EPC入力,FAIL_BLOCKER,P0,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0896,recommendation,RAOS-CONTENT-RECO-001,Revenue入力,FAIL_BLOCKER,P0,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0897,recommendation,RAOS-CONTENT-RECO-001,Weight合計の扱い,NORMALIZE_DETERMINISTICALLY,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0898,recommendation,RAOS-CONTENT-RECO-001,非Critical値欠損,PENALTY_AND_DISCLOSE,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0899,recommendation,RAOS-CONTENT-RECO-001,Source競合,UNRANKED_OR_PENALTY,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0900,recommendation,RAOS-CONTENT-RECO-001,Near Expiry,PENALTY_OR_REVIEW,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0901,recommendation,RAOS-CONTENT-RECO-001,人間Override＋理由＋Evidence,PASS_REVIEW,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0902,recommendation,RAOS-CONTENT-RECO-001,Finance理由のOverride,FAIL_BLOCKER,P0,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0903,recommendation,RAOS-CONTENT-RECO-001,理由なしOverride,FAIL,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0904,recommendation,RAOS-CONTENT-RECO-001,同入力の再計算,IDENTICAL,P0,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0905,recommendation,RAOS-CONTENT-RECO-001,内部4桁・公開整数,PASS,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0906,recommendation,RAOS-CONTENT-RECO-001,別記事へ同Score転用,FORBIDDEN,P1,unit,"FR-005,FR-007,FR-008,FR-009",CONT-SLICE-006
+CT-0907,seo,page_identity,valid_article_jsonld: Article/Breadcrumbを可視内容から生成,PASS,P0,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0908,seo,page_identity,product_on_list: 複数商品記事にProduct,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0909,seo,page_identity,faqpage: FAQPage生成,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0910,seo,page_identity,rakuten_rating: 楽天平均評価からAggregateRating,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0911,seo,page_identity,canonical_cycle: Canonical循環,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0912,seo,page_identity,noindex_sitemap: noindexをSitemap掲載,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0913,seo,page_identity,preview_index: Previewをindex,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0914,seo,page_identity,title_duplicate: 重複Title,FAIL_REVIEW,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0915,seo,page_identity,lastmod_price_only: 価格変動だけでlastmod更新,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0916,seo,page_identity,rel_sponsored: Affiliate Linkのrel,PASS,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0917,seo,page_identity,redirect_affiliate: 自社Redirect経由,FAIL_BLOCKER,P0,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0918,seo,page_identity,visible_mismatch: JSON-LDと本文不一致,FAIL_BLOCKER,P0,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0919,seo,structured_data,valid_article_jsonld: Article/Breadcrumbを可視内容から生成,PASS,P0,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0920,seo,structured_data,product_on_list: 複数商品記事にProduct,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0921,seo,structured_data,faqpage: FAQPage生成,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0922,seo,structured_data,rakuten_rating: 楽天平均評価からAggregateRating,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0923,seo,structured_data,canonical_cycle: Canonical循環,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0924,seo,structured_data,noindex_sitemap: noindexをSitemap掲載,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0925,seo,structured_data,preview_index: Previewをindex,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0926,seo,structured_data,title_duplicate: 重複Title,FAIL_REVIEW,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0927,seo,structured_data,lastmod_price_only: 価格変動だけでlastmod更新,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0928,seo,structured_data,rel_sponsored: Affiliate Linkのrel,PASS,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0929,seo,structured_data,redirect_affiliate: 自社Redirect経由,FAIL_BLOCKER,P0,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0930,seo,structured_data,visible_mismatch: JSON-LDと本文不一致,FAIL_BLOCKER,P0,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0931,seo,outbound_links,valid_article_jsonld: Article/Breadcrumbを可視内容から生成,PASS,P0,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0932,seo,outbound_links,product_on_list: 複数商品記事にProduct,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0933,seo,outbound_links,faqpage: FAQPage生成,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0934,seo,outbound_links,rakuten_rating: 楽天平均評価からAggregateRating,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0935,seo,outbound_links,canonical_cycle: Canonical循環,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0936,seo,outbound_links,noindex_sitemap: noindexをSitemap掲載,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0937,seo,outbound_links,preview_index: Previewをindex,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0938,seo,outbound_links,title_duplicate: 重複Title,FAIL_REVIEW,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0939,seo,outbound_links,lastmod_price_only: 価格変動だけでlastmod更新,FAIL,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0940,seo,outbound_links,rel_sponsored: Affiliate Linkのrel,PASS,P1,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0941,seo,outbound_links,redirect_affiliate: 自社Redirect経由,FAIL_BLOCKER,P0,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0942,seo,outbound_links,visible_mismatch: JSON-LDと本文不一致,FAIL_BLOCKER,P0,contract,"FR-008,FR-010,FR-011",CONT-SLICE-008
+CT-0943,media,asset_provenance,rakuten_original: 楽天画像を無改変表示,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0944,media,asset_provenance,rakuten_crop: 楽天画像を切抜き,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0945,media,asset_provenance,overlay: 文字Badge重畳,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0946,media,asset_provenance,aspect_ratio: 縦横比破壊,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0947,media,asset_provenance,informative_alt: 情報画像alt,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0948,media,asset_provenance,decorative_alt: 装飾画像alt空,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0949,media,asset_provenance,chart_long_desc: 複雑図表の詳細説明,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0950,media,asset_provenance,chart_no_source: 元Factなし,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0951,media,asset_provenance,ai_product_image: AI生成商品外観,FAIL_BLOCKER,P0,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0952,media,asset_provenance,unverified_external: 自由外部URL,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0953,media,asset_provenance,lcp_lazy: LCP画像を不適切lazy,FAIL_PERF,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0954,media,asset_provenance,layout_shift: 寸法なし,FAIL_PERF,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0955,media,accessibility,rakuten_original: 楽天画像を無改変表示,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0956,media,accessibility,rakuten_crop: 楽天画像を切抜き,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0957,media,accessibility,overlay: 文字Badge重畳,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0958,media,accessibility,aspect_ratio: 縦横比破壊,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0959,media,accessibility,informative_alt: 情報画像alt,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0960,media,accessibility,decorative_alt: 装飾画像alt空,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0961,media,accessibility,chart_long_desc: 複雑図表の詳細説明,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0962,media,accessibility,chart_no_source: 元Factなし,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0963,media,accessibility,ai_product_image: AI生成商品外観,FAIL_BLOCKER,P0,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0964,media,accessibility,unverified_external: 自由外部URL,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0965,media,accessibility,lcp_lazy: LCP画像を不適切lazy,FAIL_PERF,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0966,media,accessibility,layout_shift: 寸法なし,FAIL_PERF,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0967,media,image_integrity,rakuten_original: 楽天画像を無改変表示,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0968,media,image_integrity,rakuten_crop: 楽天画像を切抜き,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0969,media,image_integrity,overlay: 文字Badge重畳,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0970,media,image_integrity,aspect_ratio: 縦横比破壊,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0971,media,image_integrity,informative_alt: 情報画像alt,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0972,media,image_integrity,decorative_alt: 装飾画像alt空,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0973,media,image_integrity,chart_long_desc: 複雑図表の詳細説明,PASS,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0974,media,image_integrity,chart_no_source: 元Factなし,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0975,media,image_integrity,ai_product_image: AI生成商品外観,FAIL_BLOCKER,P0,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0976,media,image_integrity,unverified_external: 自由外部URL,FAIL,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0977,media,image_integrity,lcp_lazy: LCP画像を不適切lazy,FAIL_PERF,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0978,media,image_integrity,layout_shift: 寸法なし,FAIL_PERF,P1,contract,"FR-008,NFR-PERF-001",CONT-SLICE-010
+CT-0979,review,checklist,score_85: 85点・Floor合格,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0980,review,checklist,score_84: 84点,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0981,review,checklist,axis_floor: 総合90だがEvidence Floor未満,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0982,review,checklist,blocker_with_100: Score100だがBlocker,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0983,review,checklist,standard_self_approve: Team modeでAuthor自己承認,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0984,review,checklist,solo_explicit: Solo例外の別操作・再認証,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0985,review,checklist,solo_auto: Solo自動承認,FAIL_BLOCKER,P0,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0986,review,checklist,finding_open: Major Finding未解決,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0987,review,checklist,evidence_access: ReviewerがSource原本へ到達,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0988,review,checklist,audit: Actor/時刻/理由/MFA,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0989,review,checklist,rollback_ref: 直前正常Snapshot,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0990,review,checklist,post_publish_failure: 公開後Critical失敗,ROLLBACK_OR_PAUSE,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0991,review,score,score_85: 85点・Floor合格,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0992,review,score,score_84: 84点,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0993,review,score,axis_floor: 総合90だがEvidence Floor未満,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0994,review,score,blocker_with_100: Score100だがBlocker,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0995,review,score,standard_self_approve: Team modeでAuthor自己承認,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0996,review,score,solo_explicit: Solo例外の別操作・再認証,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0997,review,score,solo_auto: Solo自動承認,FAIL_BLOCKER,P0,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0998,review,score,finding_open: Major Finding未解決,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-0999,review,score,evidence_access: ReviewerがSource原本へ到達,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1000,review,score,audit: Actor/時刻/理由/MFA,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1001,review,score,rollback_ref: 直前正常Snapshot,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1002,review,score,post_publish_failure: 公開後Critical失敗,ROLLBACK_OR_PAUSE,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1003,review,approval,score_85: 85点・Floor合格,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1004,review,approval,score_84: 84点,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1005,review,approval,axis_floor: 総合90だがEvidence Floor未満,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1006,review,approval,blocker_with_100: Score100だがBlocker,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1007,review,approval,standard_self_approve: Team modeでAuthor自己承認,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1008,review,approval,solo_explicit: Solo例外の別操作・再認証,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1009,review,approval,solo_auto: Solo自動承認,FAIL_BLOCKER,P0,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1010,review,approval,finding_open: Major Finding未解決,FAIL,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1011,review,approval,evidence_access: ReviewerがSource原本へ到達,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1012,review,approval,audit: Actor/時刻/理由/MFA,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1013,review,approval,rollback_ref: 直前正常Snapshot,PASS,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013
+CT-1014,review,approval,post_publish_failure: 公開後Critical失敗,ROLLBACK_OR_PAUSE,P1,contract,"FR-009,FR-010,FR-020",CONT-SLICE-013

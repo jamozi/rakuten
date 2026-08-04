@@ -1,0 +1,1 @@
+Implement UI story {{STORY_ID}} using the screen/component/workflow catalogs. Preserve server-side authorization, ETag/idempotency, keyboard/focus/screen-reader behavior, safe critical actions, and public/internal isolation. Add Playwright and accessibility tests. Do not invent final brand assets.

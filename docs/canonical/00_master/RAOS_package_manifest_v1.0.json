@@ -1,0 +1,545 @@
+{
+  "package": {
+    "name": "RAOS Complete Design Package",
+    "version": "1.0",
+    "baseline_date": "2026-07-30",
+    "design_status": "COMPLETE",
+    "implementation_status": "NOT_STARTED",
+    "runtime_verification": "NOT_EXECUTED",
+    "production_readiness": "NOT_READY"
+  },
+  "counts": {
+    "canonical_design_documents": 14,
+    "screens": 63,
+    "components": 46,
+    "events": 20,
+    "kpis": 30,
+    "security_controls": 83,
+    "threats": 30,
+    "test_suites": 32,
+    "slos": 14,
+    "alerts": 20,
+    "runbooks": 20,
+    "epics": 20,
+    "stories": 129,
+    "open_decisions": 15,
+    "unimplemented_register_rows": 191
+  },
+  "files": [
+    {
+      "path": "00_master/RAOS_Codex_handoff_v1.0.md",
+      "bytes": 1225,
+      "sha256": "ad6450d1a43c6d20af463206baa3588a49aae2ff1aa11f50610f952367d00fa9"
+    },
+    {
+      "path": "00_master/RAOS_MASTER_README_v1.0.md",
+      "bytes": 2275,
+      "sha256": "a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40"
+    },
+    {
+      "path": "00_master/RAOS_design_completion_status_v1.0.md",
+      "bytes": 3394,
+      "sha256": "18c09d4a984bcc7e6ad3b955241564c9268a06ecc6edc518dd3f8d421f65730c"
+    },
+    {
+      "path": "00_master/RAOS_design_index_v1.0.csv",
+      "bytes": 2256,
+      "sha256": "6ad1198b25e929ea5d3b68c86ba85b0d106de9af47f724e0147bea35e1f8df65"
+    },
+    {
+      "path": "00_master/RAOS_implementation_status_registry_v1.0.yaml",
+      "bytes": 7481,
+      "sha256": "1411f55ce60f6316e83567110fb2847e0db49239cb63dcabf9e81612c3b72ab8"
+    },
+    {
+      "path": "00_master/RAOS_master_traceability_v1.0.csv",
+      "bytes": 5076,
+      "sha256": "7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4"
+    },
+    {
+      "path": "00_master/RAOS_open_decisions_v1.0.csv",
+      "bytes": 3318,
+      "sha256": "23a2d5afbdf83e4afeceaa2cbd784cd0e5da4c34fd2eb0ce4fc1dda5671f3276"
+    },
+    {
+      "path": "00_master/RAOS_package_validation_report_v1.0.md",
+      "bytes": 3339,
+      "sha256": "277f6b7f2bc30ddf9a16976c3ca004315f62c01b59b02da78c04039799c5c760"
+    },
+    {
+      "path": "00_master/RAOS_unimplemented_register_v1.0.csv",
+      "bytes": 43358,
+      "sha256": "0ac190bd9869089f4699d3aa2289f89eef91060b21174ae3c6a00acaed2ad4c3"
+    },
+    {
+      "path": "00_master/RAOS_unimplemented_register_v1.0.yaml",
+      "bytes": 77551,
+      "sha256": "9f63b6ff670bc9d90bfdff76aa86da923e620063d2f4624b4495fdc6d68f0614"
+    },
+    {
+      "path": "01_integration/RAOS_07_canonical_artifact_map_v1.0.yaml",
+      "bytes": 3194,
+      "sha256": "fce98d65009dabeedaf7bf80698b7af14f3d76ac8e62d3f9d6ddea1ac3dc173a"
+    },
+    {
+      "path": "01_integration/RAOS_07_canonical_contract_overlay_v1.0.yaml",
+      "bytes": 3383,
+      "sha256": "f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e"
+    },
+    {
+      "path": "01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "bytes": 3955,
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "path": "01_integration/RAOS_07_integration_design_v1.0.md",
+      "bytes": 7943,
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "path": "01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "bytes": 4956,
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "path": "01_integration/RAOS_07_status_taxonomy_v1.0.yaml",
+      "bytes": 1842,
+      "sha256": "e3261a8a6102c1b93e6cc9006c52f01389ec31510e24ca37bc400437aebbf68b"
+    },
+    {
+      "path": "02_ui/RAOS_08_accessibility_checklist_v1.0.csv",
+      "bytes": 4051,
+      "sha256": "690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e"
+    },
+    {
+      "path": "02_ui/RAOS_08_component_catalog_v1.0.yaml",
+      "bytes": 12504,
+      "sha256": "986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2"
+    },
+    {
+      "path": "02_ui/RAOS_08_implementation_slices_v1.0.yaml",
+      "bytes": 2748,
+      "sha256": "2540548f6e7c84ef3878fd77311e8bf455b85de73cfcb83aa5f1fe684087eb9d"
+    },
+    {
+      "path": "02_ui/RAOS_08_screen_catalog_v1.0.yaml",
+      "bytes": 23487,
+      "sha256": "dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050"
+    },
+    {
+      "path": "02_ui/RAOS_08_ui_ux_design_v1.0.md",
+      "bytes": 8046,
+      "sha256": "0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e"
+    },
+    {
+      "path": "02_ui/RAOS_08_workflow_catalog_v1.0.yaml",
+      "bytes": 3613,
+      "sha256": "59983683ec920cf450d0d887ee43f0b9871e500c2025562f9bec5c6bbc6fe87e"
+    },
+    {
+      "path": "03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+      "bytes": 7299,
+      "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460"
+    },
+    {
+      "path": "03_analytics/RAOS_09_attribution_policy_v1.0.yaml",
+      "bytes": 1563,
+      "sha256": "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c"
+    },
+    {
+      "path": "03_analytics/RAOS_09_dashboard_catalog_v1.0.yaml",
+      "bytes": 1240,
+      "sha256": "ad3a246ffe53d8f8cf9a8e96172d480bde61ca2039994e52244a424d6b4115f7"
+    },
+    {
+      "path": "03_analytics/RAOS_09_event_catalog_v1.0.yaml",
+      "bytes": 9760,
+      "sha256": "b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa"
+    },
+    {
+      "path": "03_analytics/RAOS_09_implementation_slices_v1.0.yaml",
+      "bytes": 2440,
+      "sha256": "2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d"
+    },
+    {
+      "path": "03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
+      "bytes": 9040,
+      "sha256": "f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2"
+    },
+    {
+      "path": "04_security/RAOS_10_data_classification_v1.0.yaml",
+      "bytes": 1063,
+      "sha256": "59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0"
+    },
+    {
+      "path": "04_security/RAOS_10_implementation_slices_v1.0.yaml",
+      "bytes": 2515,
+      "sha256": "3db3aeeb3cfd0cbb4ab91e3490956cae17d60e43950e48fdf50c1609019e1b22"
+    },
+    {
+      "path": "04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+      "bytes": 5175,
+      "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+    },
+    {
+      "path": "04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "bytes": 24993,
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "path": "04_security/RAOS_10_security_privacy_design_v1.0.md",
+      "bytes": 7929,
+      "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+    },
+    {
+      "path": "04_security/RAOS_10_threat_register_v1.0.yaml",
+      "bytes": 10487,
+      "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+    },
+    {
+      "path": "05_test/RAOS_11_acceptance_traceability_v1.0.csv",
+      "bytes": 4919,
+      "sha256": "253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341"
+    },
+    {
+      "path": "05_test/RAOS_11_implementation_slices_v1.0.yaml",
+      "bytes": 2010,
+      "sha256": "a540dd47a7ea1877c4c8461c8957b7fef0094c88cc328acdf301c9dc0b552597"
+    },
+    {
+      "path": "05_test/RAOS_11_release_evidence_template_v1.0.yaml",
+      "bytes": 4366,
+      "sha256": "3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a"
+    },
+    {
+      "path": "05_test/RAOS_11_test_acceptance_design_v1.0.md",
+      "bytes": 6609,
+      "sha256": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
+    },
+    {
+      "path": "05_test/RAOS_11_test_environment_matrix_v1.0.yaml",
+      "bytes": 1106,
+      "sha256": "3dc59c8c951a39d2079eb82e6a3e5adde3ce1910296abf8e1a3a539107a96b68"
+    },
+    {
+      "path": "05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "bytes": 11395,
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "path": "06_ops/RAOS_12_alert_catalog_v1.0.yaml",
+      "bytes": 4798,
+      "sha256": "f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0"
+    },
+    {
+      "path": "06_ops/RAOS_12_backup_restore_matrix_v1.0.yaml",
+      "bytes": 1406,
+      "sha256": "60ab681822e1aa7c63584bb1b1f4cb6202f4f0dcbea572462dd3a3e7fa8c15f6"
+    },
+    {
+      "path": "06_ops/RAOS_12_implementation_slices_v1.0.yaml",
+      "bytes": 2437,
+      "sha256": "c338bef9bc45f6eef0dd46bb522a189ee59c06ecc8a44cd9f8988eadb5f47ee9"
+    },
+    {
+      "path": "06_ops/RAOS_12_operations_reliability_design_v1.0.md",
+      "bytes": 7217,
+      "sha256": "894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8"
+    },
+    {
+      "path": "06_ops/RAOS_12_runbook_index_v1.0.yaml",
+      "bytes": 5326,
+      "sha256": "2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100"
+    },
+    {
+      "path": "06_ops/RAOS_12_slo_catalog_v1.0.yaml",
+      "bytes": 4189,
+      "sha256": "320a880073e3c9d87c361fa8620e1202898ffa719e2b8e94872d185415abcdf2"
+    },
+    {
+      "path": "07_backlog/RAOS_13_critical_path_v1.0.md",
+      "bytes": 3606,
+      "sha256": "715f6428b24636e40c452da1e69b61cc0471ddb9493a1ef2d16b2d0678c27090"
+    },
+    {
+      "path": "07_backlog/RAOS_13_epic_catalog_v1.0.yaml",
+      "bytes": 4145,
+      "sha256": "c9ad8261794eed22d96b1ed8e9aa9615f72e7d4f0f2561d7526d5492e483ff9f"
+    },
+    {
+      "path": "07_backlog/RAOS_13_implementation_backlog_design_v1.0.md",
+      "bytes": 4758,
+      "sha256": "0814ef66ae76bda7721c86ffc43095f125ecbee02ea9f270a926da7ae41a15b6"
+    },
+    {
+      "path": "07_backlog/RAOS_13_story_backlog_v1.0.csv",
+      "bytes": 32199,
+      "sha256": "e8d14ae3e7b9b74c4b5b85f62e6afac46366b29b23152e60268ceec34a09099b"
+    },
+    {
+      "path": "07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "bytes": 71458,
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "path": "08_codex/AGENTS.md",
+      "bytes": 4972,
+      "sha256": "214c1158da975465e187720d0f7ebca2691dfb2bc02a9506b7ca5adb0c812520"
+    },
+    {
+      "path": "08_codex/PLANS.md",
+      "bytes": 1602,
+      "sha256": "e8ff1bd1ac181380e9bff2bcbd27aeddcadf0858692bc666b08cb8f9c4d7f84a"
+    },
+    {
+      "path": "08_codex/RAOS_14_CODEX_MASTER_KICKOFF_v1.0.md",
+      "bytes": 1356,
+      "sha256": "fa8a62d6ba9e69edd8d9833a95c48eef260fcb221cb3db84cdc1d7e4debee558"
+    },
+    {
+      "path": "08_codex/RAOS_14_codex_implementation_handbook_v1.0.md",
+      "bytes": 5044,
+      "sha256": "501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2"
+    },
+    {
+      "path": "08_codex/github/CODEOWNERS.example",
+      "bytes": 488,
+      "sha256": "0bfe2c292879ad4bdcb9691f732cfa80972bd3c13ac2fb70e0ff29a12471c2d6"
+    },
+    {
+      "path": "08_codex/github/PULL_REQUEST_TEMPLATE.md",
+      "bytes": 767,
+      "sha256": "5650dfa26f882e73c7840f12fcf73353f01ac3a741f13135cf73c3f8b95a7c07"
+    },
+    {
+      "path": "08_codex/prompts/01_implement_story.md",
+      "bytes": 362,
+      "sha256": "4ae2a978af63d8a63836e5dee640b625f40abb06ede267f3cd0928f748a78253"
+    },
+    {
+      "path": "08_codex/prompts/02_database_migration.md",
+      "bytes": 301,
+      "sha256": "753a5301ad3aac43dd1954e6e9f7ecc777aaf5c21979a6037f33ae5da72ee160"
+    },
+    {
+      "path": "08_codex/prompts/03_external_adapter.md",
+      "bytes": 308,
+      "sha256": "97fa2eb8c8fc056c5b734966f61a1ad7ec681a5bca662fa2951fc9731f059799"
+    },
+    {
+      "path": "08_codex/prompts/04_ui_story.md",
+      "bytes": 299,
+      "sha256": "f65f7a8e3955bf1800af08ac2dc6772a3374c4934875e55091fbda29d508a048"
+    },
+    {
+      "path": "08_codex/prompts/05_bugfix.md",
+      "bytes": 309,
+      "sha256": "a5917961810c7e1245c8412aa4bfc9c2e7cbdc1bdd3030b2e818cdad44c4345b"
+    },
+    {
+      "path": "08_codex/prompts/06_ci_failure.md",
+      "bytes": 272,
+      "sha256": "6b985f2dbe2809dce26592ef8eec1064b24d88b30ff38f16be2aaae81b3829fb"
+    },
+    {
+      "path": "08_codex/prompts/07_security_review.md",
+      "bytes": 302,
+      "sha256": "e6eae9a80319f5756a9f682ed8a62a5228d6961e89fa19b9636670247a2c7d4a"
+    },
+    {
+      "path": "08_codex/prompts/08_pr_review.md",
+      "bytes": 279,
+      "sha256": "c90301f0c585eb191df916b267a684830737cb905dc4b72d8ce58eee2aec3484"
+    },
+    {
+      "path": "08_codex/prompts/09_release_evidence.md",
+      "bytes": 299,
+      "sha256": "837454818a329f13c6937889c91d231c6d82e1e9279dd0fe5a186a3e8c376e22"
+    },
+    {
+      "path": "08_codex/prompts/10_documentation_sync.md",
+      "bytes": 274,
+      "sha256": "98f788428363264439552bdb155b42b925dbb6fb9b950ec89d51af8534fa1317"
+    },
+    {
+      "path": "09_references/RAOS_official_reference_snapshot_v1.0.yaml",
+      "bytes": 4478,
+      "sha256": "9ee17b3473db7573e608dae71022f86ccfc33134f1a0e0005dd5dafbd04e4f3a"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 4972,
+      "sha256": "214c1158da975465e187720d0f7ebca2691dfb2bc02a9506b7ca5adb0c812520"
+    },
+    {
+      "path": "CODEX_KICKOFF.md",
+      "bytes": 1356,
+      "sha256": "fa8a62d6ba9e69edd8d9833a95c48eef260fcb221cb3db84cdc1d7e4debee558"
+    },
+    {
+      "path": "PLANS.md",
+      "bytes": 1602,
+      "sha256": "e8ff1bd1ac181380e9bff2bcbd27aeddcadf0858692bc666b08cb8f9c4d7f84a"
+    },
+    {
+      "path": "START_HERE.md",
+      "bytes": 2248,
+      "sha256": "f77cdf8f835e64b426abb028ba9a333b679c9279d8eb72a4ec08c02c744dc865"
+    },
+    {
+      "path": "upstream/RAOS_01_requirements_package_v0.1.zip",
+      "bytes": 26981,
+      "sha256": "c3e3adc8f67960d2dc52326762891d4d64709a6078add96f9be02e0c78e8d310"
+    },
+    {
+      "path": "upstream/RAOS_02_architecture_package_v0.1.zip",
+      "bytes": 102842,
+      "sha256": "ee7a5932129ac284492774008efccb7b704540dde5b76c987adc42632d0f21d7"
+    },
+    {
+      "path": "upstream/RAOS_03_data_model_package_v0.1.zip",
+      "bytes": 434952,
+      "sha256": "82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357"
+    },
+    {
+      "path": "upstream/RAOS_04_api_contract_package_v0.1.zip",
+      "bytes": 671740,
+      "sha256": "fb55cc00adabd20591c3da06d2399b3692b3393d3f27d28943e870e8b253ca1f"
+    },
+    {
+      "path": "upstream/RAOS_05_ai_design_package_v0.1.zip",
+      "bytes": 582712,
+      "sha256": "9b32509c9dd6d9001aaad1b6d7663c40bc671f0ce0056d6d3539e8b318c60bfd"
+    },
+    {
+      "path": "upstream/RAOS_06_content_design_package_v0.1.zip",
+      "bytes": 553183,
+      "sha256": "4cc7e0802b2dfd7d01762aa73190caa746b6f2490c2411804c564f7ce02803ec"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml",
+      "bytes": 12475,
+      "sha256": "bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md",
+      "bytes": 60576,
+      "sha256": "5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml",
+      "bytes": 24012,
+      "sha256": "2cdc9afb4b9a1fc7cb44b78dc5198bc443a219ca895713b75220f8625aea6305"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_02_system_architecture_v0.1.md",
+      "bytes": 150878,
+      "sha256": "00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml",
+      "bytes": 704317,
+      "sha256": "187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md",
+      "bytes": 448029,
+      "sha256": "dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_03_migration_playbook_v0.1.md",
+      "bytes": 9380,
+      "sha256": "d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_04_api_catalog_v0.1.yaml",
+      "bytes": 94440,
+      "sha256": "14539ba51cec1253cb9b41000baf3cfcb7ccf4ae9903ddca2fb65d0eab5c66bf"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md",
+      "bytes": 353134,
+      "sha256": "1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_04_event_catalog_v0.1.yaml",
+      "bytes": 30064,
+      "sha256": "da82ab10f7da58400514fbc18fd15a82fb77448558c070f5ca80b4e71c3112af"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_04_job_catalog_v0.1.yaml",
+      "bytes": 29023,
+      "sha256": "b522842a87dfc8f28e9f0e880b70952e573dbe3bcf5652801edeb762e3255fed"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md",
+      "bytes": 123231,
+      "sha256": "475e4b6b4490110fd9f94a07aaf4cf979bea99d59b7ef8b95ba0fdbe61219476"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_05_ai_task_catalog_v0.1.yaml",
+      "bytes": 22884,
+      "sha256": "8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_05_evaluation_catalog_v0.1.yaml",
+      "bytes": 22895,
+      "sha256": "a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_05_model_routing_catalog_v0.1.yaml",
+      "bytes": 7402,
+      "sha256": "dc76ed6d2586eec9bf18b8ac2e95eb76971179fe87fa1ee07b1ba8702f8faa96"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_06_article_type_catalog_v0.1.yaml",
+      "bytes": 7135,
+      "sha256": "6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md",
+      "bytes": 78224,
+      "sha256": "a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_06_editorial_policy_catalog_v0.1.yaml",
+      "bytes": 8571,
+      "sha256": "d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a"
+    },
+    {
+      "path": "upstream/key_documents/RAOS_06_review_checklist_v0.1.yaml",
+      "bytes": 17726,
+      "sha256": "8373dbd354c751c699d02bc8c49b18074ae2e10a2ed0573ebd77d99103d3ea63"
+    },
+    {
+      "path": "upstream/patches/RAOS_04_001_contract_alignment_patch_v0.1.sql",
+      "bytes": 2085,
+      "sha256": "53372f0bf34169988e842bed7d51b29c9688107459e412c3ecae1a357cdeff72"
+    },
+    {
+      "path": "upstream/patches/RAOS_05_001_ai_data_alignment_patch_v0.1.sql",
+      "bytes": 13094,
+      "sha256": "a05b1cdb7ecc1a9e1eee7307c85eafc64702ac0fc0b1456dea3721a5be09d3fe"
+    },
+    {
+      "path": "upstream/patches/RAOS_05_002_api_alignment_patch_v0.1.yaml",
+      "bytes": 4105,
+      "sha256": "3af33d69df7bbd31a415e8674cdde9b60e9edfc2721b2e7aa6b53278704ec2f0"
+    },
+    {
+      "path": "upstream/patches/RAOS_06_001_data_alignment_patch_v0.1.sql",
+      "bytes": 9194,
+      "sha256": "69ac7925c206862bea5244d6831a65eaa0b3b5bc6cf9defde8a3e6a3a654ed3e"
+    },
+    {
+      "path": "upstream/patches/RAOS_06_002_api_alignment_patch_v0.1.yaml",
+      "bytes": 2770,
+      "sha256": "4390ea3a638eb70217ea023dbe0d76d3167a436d0fd1cfc9ea40ba2659bfa573"
+    },
+    {
+      "path": "upstream/patches/RAOS_06_003_ai_alignment_patch_v0.1.yaml",
+      "bytes": 2911,
+      "sha256": "89fe29c6182dc38b40d96379a65715fada43b74e93b5715eb3320b6a50285c1e"
+    }
+  ]
+}

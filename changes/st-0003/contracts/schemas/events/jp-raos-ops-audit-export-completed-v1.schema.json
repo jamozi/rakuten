@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-audit-export-completed-v1.schema.json",
+  "title": "jp.raos.ops.audit_export_completed.v1",
+  "description": "Audit Export Artifactが作成された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.audit_export_completed.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "audit_export_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "artifact": {
+              "$ref": "../common/artifact-ref.schema.json"
+            },
+            "date_from": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "date_to": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "audit_export_id",
+            "artifact",
+            "date_from",
+            "date_to"
+          ]
+        }
+      }
+    }
+  ]
+}

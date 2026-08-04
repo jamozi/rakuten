@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/quality_remediation/v1",
+  "title": "Quality Remediation Output",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "remediations": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "finding_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "target_block_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "REPLACE",
+              "DELETE",
+              "QUALIFY",
+              "ADD_LIMITATION"
+            ]
+          },
+          "replacement_text": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 5000
+          },
+          "fact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "remaining_limitations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 1000
+            }
+          }
+        },
+        "required": [
+          "finding_id",
+          "target_block_key",
+          "operation",
+          "replacement_text",
+          "fact_ids",
+          "remaining_limitations"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "remediations"
+  ]
+}

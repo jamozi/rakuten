@@ -1,0 +1,42 @@
+document:
+  id: STATUS-ST0301-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-02T20:27:34Z'
+reason: >-
+  Record the local ST-0301 migration framework, immutable per-revision
+  metadata, deterministic graph and catalog generation, exact PostgreSQL 18.4
+  adversarial runtime tests, session-bound advisory-lock enforcement,
+  transaction and interrupted-run recovery, metadata-tamper detection,
+  content-addressed implementation evidence, and independent audit without
+  claiming execution of deferred domain-schema migrations, a Git repository,
+  a pull request, hosted CI, migration-owner human review, staging recovery,
+  release approval, canonical apply, external database, production execution,
+  or formal TST-008 or TST-009.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0301
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-008
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0301-local-20260803.yaml
+        sha256: 6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9
+        observed_at: '2026-08-02T20:23:27Z'
+      - suite_id: TST-009
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0301-local-20260803.yaml
+        sha256: 6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9
+        observed_at: '2026-08-02T20:23:27Z'

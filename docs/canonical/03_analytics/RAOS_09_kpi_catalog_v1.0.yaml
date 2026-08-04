@@ -1,0 +1,274 @@
+document:
+  id: RAOS-ANALYTICS-KPI-001
+  version: '1.0'
+kpis:
+- id: KPI-001
+  name: monthly_confirmed_commission_jpy
+  formula: sum(confirmed provider commission)
+  domain: finance
+  interpretation: Provider confirmed only
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-002
+  name: monthly_confirmed_contribution_profit_jpy
+  formula: confirmed commission - variable external cost - editorial/update labor cost
+  domain: finance
+  interpretation: North star
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-003
+  name: confirmed_epc_jpy
+  formula: confirmed attributed commission / eligible affiliate clicks
+  domain: finance+analytics
+  interpretation: basis別に表示
+  cadence: weekly/monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-004
+  name: confirmed_rpm_jpy
+  formula: confirmed attributed commission / qualified sessions * 1000
+  domain: finance+analytics
+  interpretation: basis別に表示
+  cadence: weekly/monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-005
+  name: qualified_decision_sessions
+  formula: count distinct eligible sessions meeting engagement rule
+  domain: analytics
+  interpretation: Bot/consent rules versioned
+  cadence: daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-006
+  name: affiliate_click_through_rate
+  formula: eligible affiliate clicks / article sessions
+  domain: analytics
+  interpretation: 記事/placement別
+  cadence: daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-007
+  name: cta_impression_to_click_rate
+  formula: affiliate clicks / CTA impressions
+  domain: analytics
+  interpretation: beacon lossを注記
+  cadence: daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-008
+  name: provider_confirmation_rate
+  formula: confirmed commission amount / generated commission amount
+  domain: finance
+  interpretation: cohort basis
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-009
+  name: provider_cancellation_rate
+  formula: cancelled amount / generated amount
+  domain: finance
+  interpretation: cohort basis
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-010
+  name: direct_attribution_share
+  formula: direct confirmed amount / total confirmed amount
+  domain: finance
+  interpretation: estimatedを含めない
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-011
+  name: unattributed_share
+  formula: unattributed confirmed amount / total confirmed amount
+  domain: finance
+  interpretation: 高い場合も無理に配賦しない
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-012
+  name: organic_clicks
+  formula: Search Console clicks
+  domain: search
+  interpretation: Provider fact
+  cadence: daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-013
+  name: organic_impressions
+  formula: Search Console impressions
+  domain: search
+  interpretation: Provider fact
+  cadence: daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-014
+  name: organic_ctr
+  formula: Search Console clicks / impressions
+  domain: search
+  interpretation: Provider fact
+  cadence: daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-015
+  name: average_search_position
+  formula: Search Console weighted average position
+  domain: search
+  interpretation: 集計粒度を表示
+  cadence: daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-016
+  name: indexed_article_rate
+  formula: indexed eligible articles / published eligible articles
+  domain: search
+  interpretation: URL inspection availabilityに依存
+  cadence: weekly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-017
+  name: top20_article_rate
+  formula: articles with target query position <=20 / eligible articles
+  domain: search
+  interpretation: query mapping versioned
+  cadence: weekly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-018
+  name: claim_evidence_coverage
+  formula: evidenced verifiable claims / verifiable claims
+  domain: quality
+  interpretation: 主要Claimは100%
+  cadence: per release
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-019
+  name: critical_finding_rate
+  formula: versions with critical finding / evaluated versions
+  domain: quality
+  interpretation: 0をRelease目標
+  cadence: weekly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-020
+  name: stale_exposure_rate
+  formula: sessions on snapshots with stale critical fact / article sessions
+  domain: freshness
+  interpretation: 0を目標
+  cadence: daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-021
+  name: affiliate_link_health_rate
+  formula: healthy eligible CTA / eligible CTA
+  domain: freshness
+  interpretation: Kill switch対象を分離
+  cadence: hourly/daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-022
+  name: article_update_cost_ratio
+  formula: article update cost / confirmed article commission
+  domain: finance
+  interpretation: 記事別採算
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-023
+  name: content_payback_months
+  formula: initial content cost / trailing monthly confirmed contribution
+  domain: finance
+  interpretation: 収益0時はundefined
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-024
+  name: revenue_concentration_top10
+  formula: top10 article confirmed commission / total
+  domain: finance
+  interpretation: 依存リスク
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-025
+  name: ai_cost_per_approved_article
+  formula: AI actual cost / approved article versions
+  domain: ai+finance
+  interpretation: Human costと分離
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-026
+  name: human_edit_ratio
+  formula: human-changed tokens or AST nodes / AI proposed nodes
+  domain: ai/editorial
+  interpretation: 品質学習用
+  cadence: per release
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-027
+  name: job_success_rate
+  formula: succeeded terminal jobs / terminal jobs
+  domain: operations
+  interpretation: job type別
+  cadence: hourly/daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-028
+  name: publication_rollback_rate
+  formula: rolled back publications / publications
+  domain: operations
+  interpretation: reason別
+  cadence: monthly
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-029
+  name: core_web_vitals_pass_rate
+  formula: eligible page views meeting all CWV good thresholds
+  domain: ux
+  interpretation: mobile/desktop別
+  cadence: daily
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: KPI-030
+  name: gate_readiness
+  formula: passed mandatory checks / mandatory checks
+  domain: governance
+  interpretation: Gateごと
+  cadence: on demand
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED

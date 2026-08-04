@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/ops-retention-sweep-v1.schema.json",
+  "title": "ops.retention_sweep.v1",
+  "description": "承認済みRetention Policyに従う削除候補をdry-run/executeする。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "ops.retention_sweep.v1"
+        },
+        "queue": {
+          "const": "analytics"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "retention_policy_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "DRY_RUN",
+                "EXECUTE"
+              ]
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "legal_hold_check_required": {
+              "const": true
+            }
+          },
+          "required": [
+            "retention_policy_id",
+            "mode",
+            "as_of",
+            "legal_hold_check_required"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+document:
+  id: RAOS-FOUNDATION-SCHEMA-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0302
+  source_contract: repo://changes/st-0302/contracts/foundation-schema.v1.yaml
+  generated_by: repo://scripts/build_st0302_foundation.py
+  generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0302_foundation.py
+provenance:
+  canonical_and_upstream_inputs:
+  - uri: repo://docs/manifest.json
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+    sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+  - uri: repo://docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+    sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+  - uri: repo://docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml
+    sha256: 2cdc9afb4b9a1fc7cb44b78dc5198bc443a219ca895713b75220f8625aea6305
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/canonical/08_codex/prompts/02_database_migration.md
+    sha256: 753a5301ad3aac43dd1954e6e9f7ecc777aaf5c21979a6037f33ae5da72ee160
+  - uri: repo://docs/canonical/08_codex/PLANS.md
+    sha256: e8ff1bd1ac181380e9bff2bcbd27aeddcadf0858692bc666b08cb8f9c4d7f84a
+  predecessor_manifest:
+    story_id: ST-0301
+    uri: repo://changes/st-0301/manifest.yaml
+    sha256: 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+source_artifact_count: 41
+source_artifacts:
+- uri: repo://.python-version
+  bytes: 7
+  sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+- uri: repo://pyproject.toml
+  bytes: 1095
+  sha256: 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+- uri: repo://uv.lock
+  bytes: 111431
+  sha256: dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+- uri: repo://uv.toml
+  bytes: 349
+  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+- uri: repo://changes/st-0302/contracts/foundation-schema.v1.yaml
+  bytes: 4457
+  sha256: fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec
+- uri: repo://changes/st-0302/README.md
+  bytes: 1844
+  sha256: 8e11ca502dcc6bb8db66bc0c0c73491db458c4e790f19e850bb5a90200acb120
+- uri: repo://docs/execplans/ST-0302.md
+  bytes: 9905
+  sha256: 496a45049c5d4aea4af505525097b8d280c7d5e24f71f8c8a67744d7feabbd19
+- uri: repo://docs/worklogs/ST-0302.md
+  bytes: 3172
+  sha256: 5318b08b799178c1657245ae4320a5795d1a710210639ab93e8a390535fd0e47
+- uri: repo://scripts/build_st0302_foundation.py
+  bytes: 36438
+  sha256: a26b47d98c8efeb9c7fd4e7545ab4043a7afb88f44de7959249efd7e7a7f1574
+- uri: repo://scripts/build_st0201_postgres_service.py
+  bytes: 36958
+  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+- uri: repo://scripts/build_st0301_migration_framework.py
+  bytes: 23133
+  sha256: bed9e3b19017bb79a4ca518d9c9e8ec98b841d69f9d4f816a648576df78c96b4
+- uri: repo://changes/st-0301/contracts/migration-framework.v1.yaml
+  bytes: 10671
+  sha256: 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
+- uri: repo://changes/st-0301/README.md
+  bytes: 3716
+  sha256: 9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e
+- uri: repo://migrations/FRAMEWORK.md
+  bytes: 1945
+  sha256: f8f58a604c4dc66d7ce5f47099f15dda2b364bc75fa44224a46bf797d46707e0
+- uri: repo://migrations/env.py
+  bytes: 4091
+  sha256: 208e6fc0740347a35e40c9a2501aa726e10f6ef44bea36c3078e4cd6211f343f
+- uri: repo://migrations/script.py.mako
+  bytes: 1021
+  sha256: 8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d
+- uri: repo://migrations/versions/202608030001_framework_install_history.py
+  bytes: 4777
+  sha256: edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+- uri: repo://python/raos/__init__.py
+  bytes: 77
+  sha256: 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+- uri: repo://python/raos/migrations/__init__.py
+  bytes: 851
+  sha256: 6fa0c1f03e18e817371ebec5085c299aa9e4817259b5cb281cc3d4d88f2ba745
+- uri: repo://python/raos/migrations/__main__.py
+  bytes: 95
+  sha256: af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325
+- uri: repo://python/raos/migrations/catalog.py
+  bytes: 18329
+  sha256: 4eb0f90e4459e729312aafa3ef6f3b5e4bc2d688c9fe9c3f614d4dcf30eb2430
+- uri: repo://python/raos/migrations/cli.py
+  bytes: 3695
+  sha256: f3bedc3fb40b06595db6026d8ef50a30ef405ed4c0cb1ec94ca44f0b7bf6a0b0
+- uri: repo://python/raos/migrations/runner.py
+  bytes: 73483
+  sha256: c79b884aaf04efe471d2ed210f01c2d1d266bc9ee78a4206be2518128f108c45
+- uri: repo://tests/conftest.py
+  bytes: 212
+  sha256: 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+- uri: repo://tests/st0301/conftest.py
+  bytes: 1424
+  sha256: b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d
+- uri: repo://tests/st0301/test_catalog.py
+  bytes: 8478
+  sha256: d3eb238196ddf2b0092f7b7e7d4ede363067392c7601779344e9ddb3be0714b9
+- uri: repo://tests/st0301/test_cli.py
+  bytes: 2723
+  sha256: 5b611787d081428f78ada3ad35182cc413d257b25fc3d1a957ee396a486839e9
+- uri: repo://tests/st0301/test_contract.py
+  bytes: 10253
+  sha256: 518acde22dd389944e2903da45d5abb2949a3fa84bbc28dcaee9555c7e50fd89
+- uri: repo://tests/st0301/test_generation.py
+  bytes: 7192
+  sha256: 447374e72d241bc74b3dc78c857a2e5ef15107de82771e0d9572872790b05a59
+- uri: repo://tests/st0301/test_postgresql.py
+  bytes: 33333
+  sha256: b666a5eb3f2e6137a96a2f78eb7ac556efe1aa306bc9be2c1c34be0e15246ea8
+- uri: repo://tests/st0301/test_runner.py
+  bytes: 28850
+  sha256: 54224c04bbda9718e64b27d9c32b5b15166659184be40cc4477585060f95d504
+- uri: repo://tests/postgresql18.py
+  bytes: 8034
+  sha256: 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+- uri: repo://tests/st0302/conftest.py
+  bytes: 740
+  sha256: 30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e
+- uri: repo://tests/st0302/test_contract.py
+  bytes: 5577
+  sha256: 9cebeb6546c9479fc1e52b583dfdad3aced6ee82b1a37ce4b9ac1313b6b27c0b
+- uri: repo://tests/st0302/test_generation.py
+  bytes: 8391
+  sha256: 59827b4d2f7b02a4dd6db61d6fed7a400bf3bd199bf4dd1e337b53d10cdbf0d3
+- uri: repo://tests/st0302/test_postgresql.py
+  bytes: 18299
+  sha256: d8a4d9552f5a375cc67b720e0c4d62da9818bed9009ce62209fa3e8f39f72d54
+- uri: repo://tests/st0302/test_revision.py
+  bytes: 4847
+  sha256: e8759ddf8a6320bc6b4b483758bee156555f22ab1d78c8984aac1650c90ecfaa
+- uri: repo://pyrightconfig.json
+  bytes: 553
+  sha256: df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
+- uri: repo://Makefile
+  bytes: 21998
+  sha256: 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+- uri: repo://README.md
+  bytes: 43208
+  sha256: a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+- uri: repo://changes/st-0301/manifest.yaml
+  bytes: 12220
+  sha256: 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+generated_artifact_count: 3
+generated_artifacts:
+- uri: repo://migrations/versions/202608030002_foundation_schemas.py
+  bytes: 1303
+  sha256: f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4
+- uri: repo://changes/st-0302/generated/foundation-baseline-validation.v1.sql
+  bytes: 9287
+  sha256: 400387c698f4ef41a89069889eeb27a5cd51fcdc71644f7254860bb443ab0d7a
+- uri: repo://changes/st-0302/generated/foundation-catalog.v1.json
+  bytes: 3303
+  sha256: 62a60465fd304cf4abc42c86cb22950a5665aceef3e65898a694c2e8112d1e32
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  environment: LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE
+  formal_tst_008: NOT_EXECUTED
+  independent_migration_owner_review: NOT_EXECUTED
+  hosted_ci_postgresql_18_4: NOT_EXECUTED
+  production_execution: FORBIDDEN
+  effective_canonical_status: UNCHANGED

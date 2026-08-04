@@ -1,0 +1,1 @@
+Assemble a release evidence draft for release {{RELEASE_ID}} from actual CI/staging artifacts. Do not set approvals or PASS for missing suites. List open decisions, security findings, rollback/restore evidence, artifact hashes, and exact not-executed items. Human approvers make the final decision.

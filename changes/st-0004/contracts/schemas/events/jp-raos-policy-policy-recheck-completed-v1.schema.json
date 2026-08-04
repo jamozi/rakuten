@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-policy-policy-recheck-completed-v1.schema.json",
+  "title": "jp.raos.policy.policy_recheck_completed.v1",
+  "description": "Policy Bundle影響再検査が完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.policy.policy_recheck_completed.v1"
+        },
+        "producer": {
+          "const": "policy"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "policy_bundle_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "scope_type": {
+              "type": "string"
+            },
+            "scope_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_count": {
+              "type": "integer"
+            },
+            "blocking_count": {
+              "type": "integer"
+            },
+            "report_artifact": {
+              "$ref": "../common/artifact-ref.schema.json"
+            }
+          },
+          "required": [
+            "policy_bundle_id",
+            "scope_type",
+            "scope_id",
+            "article_count",
+            "blocking_count",
+            "report_artifact"
+          ]
+        }
+      }
+    }
+  ]
+}

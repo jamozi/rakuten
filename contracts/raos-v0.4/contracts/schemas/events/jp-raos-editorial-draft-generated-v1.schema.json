@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-editorial-draft-generated-v1.schema.json",
+  "title": "jp.raos.editorial.draft_generated.v1",
+  "description": "AI Draft Article Versionが保存された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.editorial.draft_generated.v1"
+        },
+        "producer": {
+          "const": "editorial"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "article_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_plan_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_packet_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "body_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "ai_job_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "article_id",
+            "article_version_id",
+            "article_plan_id",
+            "source_packet_version_id",
+            "body_sha256",
+            "ai_job_id"
+          ]
+        }
+      }
+    }
+  ]
+}

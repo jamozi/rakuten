@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/methodology-validation-request.v1.schema.json",
+  "title": "Methodology Validation Request",
+  "description": "Validate the stored methodology artifact without changing it.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "definition_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "definition_sha256"
+  ]
+}

@@ -1,0 +1,42 @@
+template_id: TPL-AT-005
+article_type: condition_filtering
+version: 1.0.0
+status: ACTIVE
+required_sequence:
+- disclosure_slot
+- lead
+- decision_summary
+- intended_reader
+- methodology
+- selection_criteria
+- comparison_table
+- recommendation_group
+- caution
+- source_summary
+optional_blocks:
+- product_card
+- tradeoff
+- faq
+- media
+- internal_links
+- update_notice
+minimum_decision_axes: 3
+product_count:
+  minimum: 3
+  recommended: 3-15
+  maximum: 20
+unique_value_tests:
+- 条件の定義
+- 除外ロジック
+- 不足データの扱い
+- 残存候補の比較
+- 条件を緩める場合の影響
+prohibited_patterns:
+- URLパラメータごとの自動量産
+- 条件一致だけで本文価値がないページ
+- 不明値を条件合格扱い
+- 在庫だけの一覧
+notes:
+- disclosure_slotはRendererが先頭へ強制挿入する
+- source_summaryは末尾の共通情報領域へ配置
+- Heading/Paragraphは必要な範囲だけ追加する

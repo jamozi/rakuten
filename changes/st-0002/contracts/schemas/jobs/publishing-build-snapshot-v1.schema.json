@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/publishing-build-snapshot-v1.schema.json",
+  "title": "publishing.build_snapshot.v1",
+  "description": "最終承認済みArticle Versionから不変Publication Snapshotを生成する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "publishing.build_snapshot.v1"
+        },
+        "queue": {
+          "const": "publication"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "publication_candidate_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "final_approval_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "quality_check_run_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "canonical_path": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "publication_candidate_id",
+            "article_version_id",
+            "final_approval_id",
+            "quality_check_run_id"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+document:
+  id: RAOS-CONTENT-API-PROPOSAL-001
+  title: RAOS-API-001 Content整合提案
+  version: '0.1'
+  status: PROPOSAL_ONLY
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+status: PROPOSAL_ONLY
+do_not_apply_directly: true
+proposed_resources:
+- resource: ArticleTypeVersion
+  schema: schemas/article-type-version
+  operations:
+  - GET /admin/content/article-types
+  - GET /admin/content/article-types/{code}/versions
+- resource: ContentSchemaVersion
+  schema: schemas/content-schema-version
+  operations:
+  - GET /admin/content/schemas
+  - POST /internal/content/validate
+- resource: ArticleTemplateVersion
+  schema: schemas/article-template-version
+  operations:
+  - GET /admin/content/templates
+  - GET /admin/content/templates/{id}
+- resource: EditorialMethodologyVersion
+  schema: schemas/recommendation-methodology.schema.json
+  operations:
+  - GET /admin/content/methodologies
+  - POST /admin/content/methodologies/{id}/validate
+- resource: SeoMetadataVersion
+  schema: schemas/seo-metadata.schema.json
+  operations:
+  - GET/PUT /admin/articles/{article_id}/versions/{version_id}/seo
+- resource: StructuredDataManifest
+  schema: schemas/structured-data-manifest.schema.json
+  operations:
+  - POST /internal/articles/{version_id}/structured-data/render
+  - POST /internal/articles/{version_id}/structured-data/validate
+- resource: MediaAsset
+  schema: schemas/media-asset.schema.json
+  operations:
+  - POST /admin/media-assets
+  - GET/PATCH /admin/media-assets/{id}
+- resource: FirstHandExperienceRecord
+  schema: schemas/first-hand-experience-record
+  operations:
+  - POST /admin/evidence/experience-records
+  - GET /admin/evidence/experience-records/{id}
+- resource: EditorialReviewDecision
+  schema: schemas/editorial-review-decision.schema.json
+  operations:
+  - POST /admin/articles/{version_id}/content-review
+- resource: PublicationContentManifest
+  schema: schemas/publication-content-manifest.schema.json
+  operations:
+  - POST /internal/articles/{version_id}/publication-content-manifest
+proposed_commands:
+- ValidateContentAst
+- ValidateArticleTemplate
+- EvaluateClaimEvidenceCoverage
+- CalculateEditorialSuitability
+- RenderDisclosure
+- RenderStructuredData
+- EvaluateFreshnessDegradation
+- ValidateMediaAsset
+- GenerateInternalLinkCandidates
+- CreateContentLifecycleCandidate
+compatibility_rules:
+- OpenAPI 3.1.1とJSON Schema 2020-12を維持
+- 既存Operationを削除・意味変更しない
+- 新しい必須Fieldは新Versionまたは段階導入
+- Public APIへ内部Evidence/Financeを漏らさない
+required_tests:
+- contract lint
+- breaking change
+- authz
+- idempotency
+- If-Match
+- public isolation
+- schema fixture
+- publication blocker

@@ -1,0 +1,33 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0002-20260801
+  schema_version: 1
+  recorded_at: '2026-08-01T08:00:00Z'
+story_id: ST-0002
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://docs/worklogs/ST-0002.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9bdc2cb3a99d54b1f8b2c711b56294c888a783384581ff386b2a3456c82c6a1d-ST-0002.md
+  sha256: 9bdc2cb3a99d54b1f8b2c711b56294c888a783384581ff386b2a3456c82c6a1d
+- original_uri: repo://changes/st-0002/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e-manifest.yaml
+  sha256: ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+suite_results:
+- suite_id: TST-002
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-008
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-010
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-013
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: python3 scripts/build_st0002_revision.py --check
+  result: PASS
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin pytest -q tests/st0002
+  result: 139 passed in isolated final predecessor regression
+boundary: Local contract/PostgreSQL 18.3 evidence only; formal required Suites were not executed.

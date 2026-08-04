@@ -1,0 +1,130 @@
+document:
+  id: RAOS-CONTENT-RECO-001
+  title: 推薦・比較Methodology
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+methodology_version: 1.0.0
+non_negotiable_principles:
+- 推薦は記事固有の読者条件に対するEditorial Suitabilityであり、サイト横断の普遍的総合点ではない
+- Affiliate Rate、EPC、RPM、成果報酬、貢献利益、スポンサー便益を入力へ含めない
+- ハード制約を満たさない候補は、スコア計算前に非適格とする
+- 不明値を最良値・平均値・条件合格として補完しない
+- 順位だけでなく適合理由、不向き条件、主要トレードオフを表示する
+- Methodology、重み、正規化、Candidate UniverseをVersion化し、記事公開版へ固定する
+forbidden_input_fields:
+- affiliate_rate
+- commission
+- epc
+- rpm
+- revenue
+- confirmed_commission
+- contribution_profit
+- sponsor_benefit
+pipeline:
+- step: 1
+  code: define_decision_context
+  output:
+  - target_reader
+  - use_case
+  - budget_context
+  - hard_constraints
+  - soft_preferences
+- step: 2
+  code: freeze_candidate_universe
+  output:
+  - candidate_ids
+  - inclusion_reason
+  - exclusion_reason
+  - unresolved_identity
+- step: 3
+  code: validate_identity_and_evidence
+  output:
+  - eligible_candidates
+  - missing_critical_facts
+  - conflicts
+- step: 4
+  code: apply_hard_constraints
+  output:
+  - eligible
+  - ineligible_with_reason
+- step: 5
+  code: normalize_dimensions
+  output:
+  - dimension_scores
+  - normalization_version
+- step: 6
+  code: calculate_coverage
+  output:
+  - weighted_evidence_coverage
+- step: 7
+  code: calculate_editorial_suitability
+  output:
+  - base_score
+  - uncertainty_penalty
+  - final_score
+- step: 8
+  code: apply_tie_and_label_rules
+  output:
+  - recommendation_group
+  - strict_order_allowed
+- step: 9
+  code: human_review
+  output:
+  - approved_rationale
+  - overrides_with_reason
+formula:
+  weighted_evidence_coverage: sum(weight_i for valid and current dimensions) / sum(weight_i for all required dimensions)
+  base_score: 100 * sum(weight_i * normalized_score_i) / sum(weight_i for scored dimensions)
+  uncertainty_penalty: min(20, 20*(1-coverage) + conflict_penalty + staleness_penalty)
+  editorial_suitability_score: clamp(base_score - uncertainty_penalty, 0, 100)
+  rounding: internal 4 decimals; public integer only when methodology and uncertainty are explained
+eligibility:
+  minimum_weighted_evidence_coverage_for_rank: 0.8
+  minimum_weighted_evidence_coverage_for_primary_recommendation: 0.9
+  critical_dimension_missing: INELIGIBLE_OR_UNRANKED
+  identity_conflict: INELIGIBLE
+  stale_critical_fact: INELIGIBLE_UNTIL_REFRESH
+tie_policy:
+  absolute_score_difference_at_or_below: 2.0
+  action: co_recommend_or_order_by_explicit_non_score_rule; do not manufacture a winner
+human_override:
+  allowed: true
+  required_fields:
+  - actor_id
+  - reason_code
+  - free_text_reason
+  - before_rank
+  - after_rank
+  - evidence_refs
+  - review_decision_id
+  prohibited_reasons:
+  - affiliate_rate
+  - commission
+  - epc
+  - rpm
+  - revenue
+  - sponsorship_without_editorial_basis
+  must_trigger_secondary_review_when:
+  - primary_recommendation_changed
+  - hard_constraint_exception
+  - score_difference_over_10_overridden
+public_explanation_required:
+- candidate_universe_scope
+- selection_criteria
+- key_tradeoffs
+- data_last_checked_at
+- uncertainty_or_missing_data
+- affiliate_relationship_disclosure
+requirements:
+- FR-004
+- FR-005
+- FR-007
+- FR-008
+- FR-009
+- FR-017
+- FR-020

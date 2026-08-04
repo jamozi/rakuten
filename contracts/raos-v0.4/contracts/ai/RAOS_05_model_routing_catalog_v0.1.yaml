@@ -1,0 +1,289 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+  status: BASELINE_CANDIDATE
+selection_principle: accuracy_first_then_cost_latency
+hard_eligibility_gates:
+- task and route are enabled
+- provider/model supports Responses API and strict output
+- input classification is allowed
+- context/output fit with safety margin
+- prompt/schema/policy/route are approved
+- required eval suite passed with zero critical failures
+- provider circuit is closed
+- job/article/daily/monthly/provider budgets permit execution
+utility_after_hard_gates:
+  quality: 0.55
+  reliability: 0.15
+  latency: 0.1
+  cost: 0.1
+  capacity: 0.05
+  data_governance: 0.05
+  critical_task_override:
+    quality: 0.7
+    reliability: 0.15
+    data_governance: 0.1
+    latency: 0.03
+    cost: 0.02
+routing_invariants:
+- Finance signals never affect editorial routes or recommendations.
+- A cheaper model is eligible only after meeting the same certified task quality floor.
+- Configuration aliases are permitted only when resolved model ID and response metadata are stored.
+- Fallback is for availability/capacity, not truth, policy or evidence repair.
+- Every route change is evaluated and staged as a production behavior change.
+models:
+- model_key: openai.gpt-5.6-sol
+  provider: OPENAI
+  provider_model_id: gpt-5.6-sol
+  model_family: GPT-5.6
+  role: FRONTIER_REASONING
+  status: OBSERVED_CANDIDATE
+  observed_at: '2026-07-30'
+  input_usd_per_mtok: 5.0
+  output_usd_per_mtok: 30.0
+  cached_input_usd_per_mtok: null
+  context_window_tokens: 1050000
+  max_output_tokens: 128000
+  knowledge_cutoff: '2026-02-16'
+  capabilities:
+  - responses_api
+  - structured_outputs
+  - reasoning_effort
+  - multilingual
+  - vision
+  source_ref: REF-OAI-MODELS
+- model_key: openai.gpt-5.6-terra
+  provider: OPENAI
+  provider_model_id: gpt-5.6-terra
+  model_family: GPT-5.6
+  role: BALANCED_QUALITY_COST
+  status: OBSERVED_CANDIDATE
+  observed_at: '2026-07-30'
+  input_usd_per_mtok: 2.5
+  output_usd_per_mtok: 15.0
+  cached_input_usd_per_mtok: null
+  context_window_tokens: 1050000
+  max_output_tokens: 128000
+  knowledge_cutoff: '2026-02-16'
+  capabilities:
+  - responses_api
+  - structured_outputs
+  - reasoning_effort
+  - multilingual
+  - vision
+  source_ref: REF-OAI-MODELS
+- model_key: openai.gpt-5.6-luna
+  provider: OPENAI
+  provider_model_id: gpt-5.6-luna
+  model_family: GPT-5.6
+  role: HIGH_VOLUME_ECONOMY
+  status: OBSERVED_CANDIDATE
+  observed_at: '2026-07-30'
+  input_usd_per_mtok: 1.0
+  output_usd_per_mtok: 6.0
+  cached_input_usd_per_mtok: null
+  context_window_tokens: 1050000
+  max_output_tokens: 128000
+  knowledge_cutoff: '2026-02-16'
+  capabilities:
+  - responses_api
+  - structured_outputs
+  - reasoning_effort
+  - multilingual
+  - vision
+  source_ref: REF-OAI-MODELS
+routes:
+- route_code: route.classification_economy.v1
+  purpose: 分類・説明・候補生成。
+  primary_model_key: openai.gpt-5.6-luna
+  fallback_model_key: openai.gpt-5.6-terra
+  reasoning_effort: low
+  temperature: 0.0
+  strict_structured_output: true
+  store: false
+  max_fallbacks: 1
+  fallback_on:
+  - PROVIDER_TRANSIENT
+  - RATE_LIMIT
+  - MODEL_UNAVAILABLE
+  - SCHEMA_OUTPUT_AFTER_ONE_REPAIR
+  never_fallback_on:
+  - POLICY
+  - CONTRACT
+  - INVALID_EVIDENCE
+  - BUDGET
+  - REFUSAL
+  - CONTENT_FILTER
+  minimum_eval_status: CERTIFIED
+  canary_max_percent: 10
+  batch_eligible: true
+  prompt_cache_eligible: true
+  enabled: true
+- route_code: route.extraction_balanced.v1
+  purpose: Claim抽出等の高再現率タスク。
+  primary_model_key: openai.gpt-5.6-terra
+  fallback_model_key: openai.gpt-5.6-sol
+  reasoning_effort: medium
+  temperature: 0.0
+  strict_structured_output: true
+  store: false
+  max_fallbacks: 1
+  fallback_on:
+  - PROVIDER_TRANSIENT
+  - RATE_LIMIT
+  - MODEL_UNAVAILABLE
+  - SCHEMA_OUTPUT_AFTER_ONE_REPAIR
+  never_fallback_on:
+  - POLICY
+  - CONTRACT
+  - INVALID_EVIDENCE
+  - BUDGET
+  - REFUSAL
+  - CONTENT_FILTER
+  minimum_eval_status: CERTIFIED
+  canary_max_percent: 5
+  batch_eligible: true
+  prompt_cache_eligible: true
+  enabled: true
+- route_code: route.editorial_balanced.v1
+  purpose: 構成・記事Draft・Remediation。
+  primary_model_key: openai.gpt-5.6-terra
+  fallback_model_key: openai.gpt-5.6-sol
+  reasoning_effort: medium
+  temperature: 0.2
+  strict_structured_output: true
+  store: false
+  max_fallbacks: 1
+  fallback_on:
+  - PROVIDER_TRANSIENT
+  - RATE_LIMIT
+  - MODEL_UNAVAILABLE
+  - SCHEMA_OUTPUT_AFTER_ONE_REPAIR
+  never_fallback_on:
+  - POLICY
+  - CONTRACT
+  - INVALID_EVIDENCE
+  - BUDGET
+  - REFUSAL
+  - CONTENT_FILTER
+  minimum_eval_status: CERTIFIED
+  canary_max_percent: 5
+  batch_eligible: false
+  prompt_cache_eligible: true
+  enabled: true
+- route_code: route.reasoning_high.v1
+  purpose: 市場機会・Evidence不足等の複雑な補助判断。
+  primary_model_key: openai.gpt-5.6-sol
+  fallback_model_key: null
+  reasoning_effort: high
+  temperature: 0.0
+  strict_structured_output: true
+  store: false
+  max_fallbacks: 0
+  fallback_on: []
+  never_fallback_on:
+  - POLICY
+  - CONTRACT
+  - INVALID_EVIDENCE
+  - BUDGET
+  - REFUSAL
+  - CONTENT_FILTER
+  minimum_eval_status: CERTIFIED
+  canary_max_percent: 2
+  batch_eligible: true
+  prompt_cache_eligible: true
+  enabled: true
+- route_code: route.policy_high.v1
+  purpose: Policy意味判定補助。
+  primary_model_key: openai.gpt-5.6-sol
+  fallback_model_key: null
+  reasoning_effort: high
+  temperature: 0.0
+  strict_structured_output: true
+  store: false
+  max_fallbacks: 0
+  fallback_on: []
+  never_fallback_on:
+  - POLICY
+  - CONTRACT
+  - INVALID_EVIDENCE
+  - BUDGET
+  - REFUSAL
+  - CONTENT_FILTER
+  minimum_eval_status: CERTIFIED_CRITICAL
+  canary_max_percent: 1
+  batch_eligible: false
+  prompt_cache_eligible: true
+  enabled: true
+- route_code: route.judge_high.v1
+  purpose: Offline LLM Judge。
+  primary_model_key: openai.gpt-5.6-sol
+  fallback_model_key: null
+  reasoning_effort: high
+  temperature: 0.0
+  strict_structured_output: true
+  store: false
+  max_fallbacks: 0
+  fallback_on: []
+  never_fallback_on:
+  - POLICY
+  - CONTRACT
+  - INVALID_EVIDENCE
+  - BUDGET
+  - REFUSAL
+  - CONTENT_FILTER
+  minimum_eval_status: JUDGE_CALIBRATED
+  canary_max_percent: 0
+  batch_eligible: true
+  prompt_cache_eligible: true
+  enabled: true
+- route_code: route.embedding_default.v1
+  purpose: 将来の候補絞り込み。MVP無効。
+  primary_model_key: null
+  fallback_model_key: null
+  reasoning_effort: null
+  temperature: null
+  strict_structured_output: false
+  store: false
+  max_fallbacks: 0
+  fallback_on: []
+  never_fallback_on:
+  - ANY
+  minimum_eval_status: DISABLED
+  canary_max_percent: 0
+  batch_eligible: false
+  prompt_cache_eligible: false
+  enabled: false
+prompt_cache_policy:
+  enabled_by_default: false
+  enable_after:
+  - cost telemetry
+  - no correctness dependency
+  - retention review
+  layout: static instructions first; dynamic source packet last
+  cache_key_components:
+  - prompt_code
+  - prompt_version
+  - schema_sha256
+  - policy_sha256
+  - locale
+  - route_code
+  record_usage_fields:
+  - cached_input_tokens
+  - cache_write_tokens
+  - cache_key_hash
+batch_policy:
+  enabled_by_default: false
+  allowed_use_cases:
+  - offline evaluation
+  - shadow challenger
+  - non-urgent explanations
+  prohibited_use_cases:
+  - publication-critical generation
+  - interactive review
+  - retention-restricted data
+  requirements:
+  - data/retention approval
+  - deadline >=24h
+  - idempotent result import

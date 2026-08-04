@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/article-draft-output.schema.json",
+  "title": "Article Draft Structured Output",
+  "description": "AI article draft; no authority to approve or publish.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "article",
+    "claims",
+    "product_recommendations",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "article": {
+      "$ref": "../common/article-ast.schema.json"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "claim_key": {
+            "type": "string"
+          },
+          "block_key": {
+            "type": "string"
+          },
+          "claim_type": {
+            "type": "string"
+          },
+          "claim_text": {
+            "type": "string"
+          },
+          "criticality": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ]
+          },
+          "fact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "uncertainty": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "claim_key",
+          "block_key",
+          "claim_type",
+          "claim_text",
+          "criticality",
+          "fact_ids"
+        ]
+      }
+    },
+    "product_recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "rationale_fact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "suitable_for": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "unsuitable_for": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "product_id",
+          "rank",
+          "rationale_fact_ids",
+          "suitable_for",
+          "unsuitable_for"
+        ]
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

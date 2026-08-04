@@ -1,0 +1,635 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/evaluation-run-detail/v1",
+  "title": "Evaluation Run Detail",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "run": {
+      "$ref": "evaluation-run.v1.schema.json"
+    },
+    "case_result_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quarantined": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "zero_tolerance_failure_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "total",
+        "passed",
+        "failed",
+        "quarantined",
+        "invalid",
+        "zero_tolerance_failure_count"
+      ]
+    },
+    "slice_metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "slice_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "split": {
+            "type": "string",
+            "enum": [
+              "DEV",
+              "CALIBRATION",
+              "HOLDOUT",
+              "ADVERSARIAL",
+              "REGRESSION"
+            ]
+          },
+          "scope_kind": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "CATEGORY"
+            ]
+          },
+          "scope_key": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "metric_code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "metric_value": {
+            "type": "number"
+          },
+          "threshold_operator": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              ">=",
+              ">",
+              "<=",
+              "<",
+              "==",
+              "!=",
+              null
+            ]
+          },
+          "threshold_value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "passed": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "proportion_numerator_count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "proportion_denominator_count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "evaluation_result_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "slice_key",
+          "split",
+          "scope_kind",
+          "scope_key",
+          "metric_code",
+          "metric_value",
+          "threshold_operator",
+          "threshold_value",
+          "passed",
+          "proportion_numerator_count",
+          "proportion_denominator_count",
+          "evaluation_result_ids"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "scope_kind": {
+                  "const": "ALL"
+                }
+              },
+              "required": [
+                "scope_kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "scope_key": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "scope_key": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "metric_code": {
+                  "enum": [
+                    "schema_valid_rate",
+                    "complete_response_rate",
+                    "evidence_reference_precision",
+                    "critical_claim_support_rate",
+                    "unsupported_critical_fact_rate",
+                    "numeric_exactness",
+                    "product_identity_accuracy",
+                    "fabricated_experience_rate",
+                    "rakuten_review_body_leakage_rate",
+                    "affiliate_bias_violation_rate",
+                    "prompt_injection_follow_rate",
+                    "policy_blocker_recall",
+                    "false_clearance_rate",
+                    "critical_claim_recall",
+                    "claim_precision",
+                    "intent_accuracy",
+                    "cluster_purity",
+                    "editorial_business_separation",
+                    "finding_resolution_rate",
+                    "new_unsupported_claim_rate",
+                    "priority_order_preservation",
+                    "blocking_gap_recall",
+                    "affected_claim_recall",
+                    "human_acceptance_rate"
+                  ]
+                }
+              },
+              "required": [
+                "metric_code"
+              ]
+            },
+            "then": {
+              "properties": {
+                "proportion_numerator_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "proportion_denominator_count": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "x-raos-field-comparison": "proportion_numerator_count <= proportion_denominator_count"
+            },
+            "else": {
+              "properties": {
+                "proportion_numerator_count": {
+                  "type": "null"
+                },
+                "proportion_denominator_count": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ],
+        "x-raos-scope-identity": {
+          "fields": [
+            "split",
+            "scope_kind",
+            "scope_key"
+          ],
+          "category_name_cannot_collide_with_split": true
+        },
+        "x-raos-ratio-scope-aggregation": "SUM_NUMERATOR_DIVIDED_BY_SUM_DENOMINATOR",
+        "x-raos-cost-latency-threshold-semantics": {
+          "current_frozen_canonical_suites": {
+            "threshold_defined": false,
+            "threshold_operator": "MUST_BE_NULL",
+            "threshold_value": "MUST_BE_NULL",
+            "passed": "MUST_BE_NULL",
+            "purpose": "REPORT_COMPLETENESS_ONLY"
+          },
+          "when_present_in_required_metrics": {
+            "threshold_defined": true,
+            "required_non_null": [
+              "threshold_operator",
+              "threshold_value",
+              "passed"
+            ],
+            "exact_match_source": "EvaluationSuiteV1.suite_config.required_metrics",
+            "blocking_threshold_gate": true
+          }
+        }
+      },
+      "maxItems": 1000
+    },
+    "artifact_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "run_manifest_artifact_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "report_artifact_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "result_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "maxItems": 10000,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "run_manifest_artifact_id",
+        "report_artifact_id",
+        "result_artifact_ids"
+      ]
+    }
+  },
+  "required": [
+    "run",
+    "case_result_summary",
+    "slice_metrics",
+    "artifact_refs"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "description": "Metadata-only run projection. Raw inputs, outputs, holdout content, prompt bodies, and human review notes are forbidden.",
+  "x-raos-baseline-evaluation-run-invariants": {
+    "field": "baseline_evaluation_run_id",
+    "nullable": true,
+    "create_request": "OPTIONAL",
+    "read_detail_event": "PRESENT_NULLABLE",
+    "immutability": "IMMUTABLE_AFTER_INSERT",
+    "referenced_run": {
+      "must_be_distinct_from_candidate": true,
+      "required_status": "COMPLETED",
+      "exact_match_fields": [
+        "suite_id",
+        "dataset_version_id"
+      ]
+    },
+    "release_binding": {
+      "current_champion": {
+        "task_scope": "SAME_TASK_DEFINITION",
+        "release_status": "APPROVED_ACTIVE",
+        "component_status_filter": "NONE",
+        "selection": "LATEST_APPROVED_ACTIVE",
+        "ordering": [
+          {
+            "field": "ACTIVE_RELEASE_APPROVAL.signed_at",
+            "direction": "DESC"
+          },
+          {
+            "field": "ReleaseDecisionV1.id",
+            "direction": "DESC"
+          }
+        ]
+      },
+      "when_current_champion_exists": {
+        "required_non_null": true,
+        "baseline_kind": "CURRENT_CHAMPION_COMPONENT_RERUN_ON_CANDIDATE_SUITE_DATASET",
+        "required_status": "COMPLETED",
+        "must_be_distinct_from_candidate": true,
+        "candidate_exact_match_fields": [
+          "suite_id",
+          "dataset_version_id"
+        ],
+        "current_champion_exact_component_bindings": [
+          "prompt_version_id",
+          "model_route_version_id",
+          "output_schema_version_id",
+          "resolved_model_id",
+          "policy_bundle_version_id",
+          "code_git_sha"
+        ]
+      },
+      "when_no_current_champion_exists": {
+        "condition": "NO_CURRENT_APPROVED_ACTIVE_CHAMPION",
+        "must_be_null": true
+      }
+    }
+  },
+  "x-raos-statistical-evidence-artifact-invariants": {
+    "applies_to": [
+      "EvaluationRunV1.run_manifest_artifact_id",
+      "EvaluationRunDetailV1.artifact_refs.report_artifact_id"
+    ],
+    "required_when": [
+      "RUN_COMPLETED",
+      "RELEASE_EVALUATION"
+    ],
+    "blocking_aggregate_scopes": {
+      "required_splits": [
+        "HOLDOUT",
+        "ADVERSARIAL",
+        "REGRESSION"
+      ],
+      "blocking_scopes_per_split": {
+        "overall": "REQUIRED",
+        "category": {
+          "source": "EvaluationCaseV1.category",
+          "scope": "EACH_DISTINCT_CATEGORY_PRESENT_IN_SPLIT",
+          "required": true
+        }
+      },
+      "missing_scope_result": "RUN_COMPLETION_AND_RELEASE_BLOCKING",
+      "scope_local_aggregation": {
+        "ratio_metrics": {
+          "expression": "SUM_NUMERATOR_DIVIDED_BY_SUM_DENOMINATOR",
+          "forbid_unweighted_average_of_case_ratios": true
+        },
+        "p95_metrics": {
+          "metric_codes": [
+            "latency_p95_ms",
+            "cost_jpy_p95"
+          ],
+          "expression": "PERCENTILE_CONT_0_95_WITHIN_SCOPE",
+          "forbid_reuse_of_global_p95": true
+        },
+        "other_metrics": "AVERAGE_WITHIN_SCOPE"
+      },
+      "threshold_gate": {
+        "applies_to_every_blocking_scope": true,
+        "comparison": "DATABASE_EXACT_POINT_ESTIMATE"
+      },
+      "reporting_only_dimensions": [
+        "article_type",
+        "evidence_quality",
+        "language_complexity",
+        "route",
+        "model",
+        "tags",
+        "other_non_category_slices"
+      ],
+      "reporting_only_dimensions_may_satisfy_blocking_scope": false
+    },
+    "cost_latency_reporting_completeness": {
+      "required_grader": "grader.cost_latency.v1",
+      "required_metric_codes": [
+        "latency_p95_ms",
+        "cost_jpy_p95"
+      ],
+      "case_scope": "ALL_EVALUATION_CASES_IN_BOUND_DATASET",
+      "required_splits": [
+        "DEV",
+        "CALIBRATION",
+        "HOLDOUT",
+        "ADVERSARIAL",
+        "REGRESSION"
+      ],
+      "required_result_per_case_and_metric": "EXACTLY_ONE",
+      "missing_result": "RUN_COMPLETION_AND_REPORT_BLOCKING",
+      "canonical_suite_threshold_semantics": {
+        "current_frozen_canonical_suites": {
+          "threshold_defined": false,
+          "threshold_operator": "MUST_BE_NULL",
+          "threshold_value": "MUST_BE_NULL",
+          "passed": "MUST_BE_NULL",
+          "purpose": "REPORT_COMPLETENESS_ONLY"
+        },
+        "when_present_in_required_metrics": {
+          "threshold_defined": true,
+          "required_non_null": [
+            "threshold_operator",
+            "threshold_value",
+            "passed"
+          ],
+          "exact_match_source": "EvaluationSuiteV1.suite_config.required_metrics",
+          "blocking_threshold_gate": true
+        }
+      },
+      "passed_truth_table": {
+        "current_frozen_canonical_report_only_p95": "MUST_BE_NULL",
+        "required_p95": "MUST_BE_NON_NULL_DATABASE_EXACT",
+        "legacy_or_non_report_only_metric": "MUST_BE_NON_NULL_DATABASE_EXACT"
+      },
+      "aggregate_reporting": {
+        "method": "PERCENTILE_CONT_0_95_WITHIN_EACH_REPORT_SCOPE",
+        "current_frozen_canonical_suites_blocking_threshold": false,
+        "when_present_in_required_metrics_blocking_threshold": true
+      }
+    },
+    "ratio_metrics": {
+      "required_fields": [
+        "metric_code",
+        "slice_key",
+        "proportion_numerator_count",
+        "proportion_denominator_count",
+        "point_estimate",
+        "one_sided_95_percent_wilson_lower_bound"
+      ],
+      "point_estimate": "SUM_NUMERATOR_DIVIDED_BY_SUM_DENOMINATOR",
+      "uncertainty": {
+        "method": "WILSON_SCORE",
+        "sidedness": "ONE_SIDED_LOWER_BOUND",
+        "confidence_level": 0.95
+      },
+      "threshold_gate_value": "POINT_ESTIMATE",
+      "wilson_bound_is_threshold_gate": false
+    },
+    "pairwise_regression": {
+      "required_fields": [
+        "metric_code",
+        "slice_key",
+        "wins",
+        "ties",
+        "losses",
+        "task_slice_win_rate",
+        "two_sided_confidence_interval"
+      ],
+      "pairing_source": "release_regression_invariants.pairing",
+      "confidence_interval": {
+        "sidedness": "TWO_SIDED",
+        "confidence_level": 0.95,
+        "required_bounds": [
+          "lower",
+          "upper"
+        ]
+      }
+    },
+    "reporting_only_dimensions": [
+      "article_type",
+      "evidence_quality",
+      "language_complexity",
+      "route",
+      "model",
+      "tags",
+      "other_non_category_slices"
+    ],
+    "reporting_only_dimensions_are_release_gates": false
+  },
+  "x-raos-blocking-aggregate-scope-invariants": {
+    "required_splits": [
+      "HOLDOUT",
+      "ADVERSARIAL",
+      "REGRESSION"
+    ],
+    "blocking_scopes_per_split": {
+      "overall": "REQUIRED",
+      "category": {
+        "source": "EvaluationCaseV1.category",
+        "scope": "EACH_DISTINCT_CATEGORY_PRESENT_IN_SPLIT",
+        "required": true
+      }
+    },
+    "missing_scope_result": "RUN_COMPLETION_AND_RELEASE_BLOCKING",
+    "scope_local_aggregation": {
+      "ratio_metrics": {
+        "expression": "SUM_NUMERATOR_DIVIDED_BY_SUM_DENOMINATOR",
+        "forbid_unweighted_average_of_case_ratios": true
+      },
+      "p95_metrics": {
+        "metric_codes": [
+          "latency_p95_ms",
+          "cost_jpy_p95"
+        ],
+        "expression": "PERCENTILE_CONT_0_95_WITHIN_SCOPE",
+        "forbid_reuse_of_global_p95": true
+      },
+      "other_metrics": "AVERAGE_WITHIN_SCOPE"
+    },
+    "threshold_gate": {
+      "applies_to_every_blocking_scope": true,
+      "comparison": "DATABASE_EXACT_POINT_ESTIMATE"
+    },
+    "reporting_only_dimensions": [
+      "article_type",
+      "evidence_quality",
+      "language_complexity",
+      "route",
+      "model",
+      "tags",
+      "other_non_category_slices"
+    ],
+    "reporting_only_dimensions_may_satisfy_blocking_scope": false
+  },
+  "x-raos-required-split-coverage-invariants": {
+    "required_splits_source": "EvaluationSuiteV1.suite_config.required_splits",
+    "required_splits": [
+      "DEV",
+      "CALIBRATION",
+      "HOLDOUT",
+      "ADVERSARIAL",
+      "REGRESSION"
+    ],
+    "bound_dataset": "EvaluationRunV1.dataset_version_id",
+    "case_split_field": "EvaluationCaseV1.split",
+    "minimum_case_count_per_required_split": 1,
+    "enforced_at": [
+      "DATASET_LOCK_OR_ACTIVATION",
+      "EVALUATION_RUN_CREATION",
+      "EVALUATION_RUN_COMPLETION"
+    ],
+    "missing_required_split_case": "BLOCKING"
+  },
+  "x-raos-cost-latency-reporting-completeness-invariants": {
+    "required_grader": "grader.cost_latency.v1",
+    "required_metric_codes": [
+      "latency_p95_ms",
+      "cost_jpy_p95"
+    ],
+    "case_scope": "ALL_EVALUATION_CASES_IN_BOUND_DATASET",
+    "required_splits": [
+      "DEV",
+      "CALIBRATION",
+      "HOLDOUT",
+      "ADVERSARIAL",
+      "REGRESSION"
+    ],
+    "required_result_per_case_and_metric": "EXACTLY_ONE",
+    "missing_result": "RUN_COMPLETION_AND_REPORT_BLOCKING",
+    "canonical_suite_threshold_semantics": {
+      "current_frozen_canonical_suites": {
+        "threshold_defined": false,
+        "threshold_operator": "MUST_BE_NULL",
+        "threshold_value": "MUST_BE_NULL",
+        "passed": "MUST_BE_NULL",
+        "purpose": "REPORT_COMPLETENESS_ONLY"
+      },
+      "when_present_in_required_metrics": {
+        "threshold_defined": true,
+        "required_non_null": [
+          "threshold_operator",
+          "threshold_value",
+          "passed"
+        ],
+        "exact_match_source": "EvaluationSuiteV1.suite_config.required_metrics",
+        "blocking_threshold_gate": true
+      }
+    },
+    "passed_truth_table": {
+      "current_frozen_canonical_report_only_p95": "MUST_BE_NULL",
+      "required_p95": "MUST_BE_NON_NULL_DATABASE_EXACT",
+      "legacy_or_non_report_only_metric": "MUST_BE_NON_NULL_DATABASE_EXACT"
+    },
+    "aggregate_reporting": {
+      "method": "PERCENTILE_CONT_0_95_WITHIN_EACH_REPORT_SCOPE",
+      "current_frozen_canonical_suites_blocking_threshold": false,
+      "when_present_in_required_metrics_blocking_threshold": true
+    }
+  }
+}

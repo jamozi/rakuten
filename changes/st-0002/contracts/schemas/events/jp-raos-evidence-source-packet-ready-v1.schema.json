@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-evidence-source-packet-ready-v1.schema.json",
+  "title": "jp.raos.evidence.source_packet_ready.v1",
+  "description": "Source Packet Versionがreview可能になった。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.evidence.source_packet_ready.v1"
+        },
+        "producer": {
+          "const": "evidence"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source_packet_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_packet_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_plan_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "content_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "fact_count": {
+              "type": "integer"
+            },
+            "product_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "source_packet_id",
+            "source_packet_version_id",
+            "article_plan_id",
+            "content_sha256",
+            "fact_count",
+            "product_count"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ai-evaluation-completed-v1.schema.json",
+  "title": "jp.raos.ai.evaluation_completed.v1",
+  "description": "AI Evaluation Suiteが完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ai.evaluation_completed.v1"
+        },
+        "producer": {
+          "const": "ai"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "run_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "suite_code": {
+              "type": "string"
+            },
+            "suite_version": {
+              "type": "string"
+            },
+            "passed": {
+              "type": "boolean"
+            },
+            "report_artifact": {
+              "$ref": "../common/artifact-ref.schema.json"
+            }
+          },
+          "required": [
+            "run_id",
+            "suite_code",
+            "suite_version",
+            "passed",
+            "report_artifact"
+          ]
+        }
+      }
+    }
+  ]
+}

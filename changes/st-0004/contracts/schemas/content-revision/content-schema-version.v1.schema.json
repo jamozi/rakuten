@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/content-schema-version.v1.schema.json",
+  "title": "Content Schema Version",
+  "description": "Hash-bound, append-only Content AST schema version.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "schema_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "semantic_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "maxLength": 64
+    },
+    "artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "schema_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "ACTIVE",
+        "DEPRECATED",
+        "RETIRED"
+      ]
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "effective_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "approved_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "schema_code",
+    "semantic_version",
+    "artifact_id",
+    "schema_sha256",
+    "status",
+    "effective_from",
+    "effective_to",
+    "approved_by_principal_id",
+    "approved_at",
+    "created_at"
+  ],
+  "x-raos-invariants": {
+    "active_requires_human_approval": true,
+    "single_active_per_schema_code": true,
+    "non_active_preserves_approval_history": true
+  }
+}

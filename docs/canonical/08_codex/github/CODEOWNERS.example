@@ -1,0 +1,11 @@
+# Replace placeholders with real GitHub teams before enforcement.
+* @raos/engineering
+/contracts/ @raos/architecture @raos/engineering
+/migrations/ @raos/data @raos/security
+/infra/ @raos/operations @raos/security
+/apps/admin/ @raos/editorial @raos/security
+/apps/public/ @raos/editorial @raos/accessibility
+/packages/ai/ @raos/ai @raos/security @raos/editorial
+/packages/finance/ @raos/finance @raos/security
+/docs/canonical/ @raos/architecture
+/.github/ @raos/security @raos/operations

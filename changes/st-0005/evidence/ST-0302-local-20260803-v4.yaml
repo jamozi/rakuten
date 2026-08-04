@@ -1,0 +1,61 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0302-20260803-V4
+  schema_version: 1
+  recorded_at: '2026-08-03T10:15:05Z'
+story_id: ST-0302
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0302-local-20260803-v3.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/66974fa564e15395472c662f57673a80c9b2b4fa69287108bb700c92f03966c2-ST-0302-local-20260803-v3.yaml
+    sha256: 66974fa564e15395472c662f57673a80c9b2b4fa69287108bb700c92f03966c2
+  - original_uri: repo://python/raos/migrations/runner.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c6dc541e8ac84e9d4ccfdd41927b8b702152f46cbe4dbc260e449a87d597fe15-runner.py
+    sha256: c6dc541e8ac84e9d4ccfdd41927b8b702152f46cbe4dbc260e449a87d597fe15
+  - original_uri: repo://scripts/build_st0302_foundation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/54e0f8f593cd729c4dea0f8656825c9291d1421ef4d2607a48cc29fb55187668-build_st0302_foundation.py
+    sha256: 54e0f8f593cd729c4dea0f8656825c9291d1421ef4d2607a48cc29fb55187668
+  - original_uri: repo://tests/st0302/test_generation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c9f69959668a5a424586f94f133e9ab4f6c3e4a784dbccfa493b855b7c57f13f-test_generation.py
+    sha256: c9f69959668a5a424586f94f133e9ab4f6c3e4a784dbccfa493b855b7c57f13f
+  - original_uri: repo://tests/st0302/test_postgresql.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/bc1194c0b1be859dec6be637659878cfc03d9dcda113c9a0ea7d041ca83247d9-test_postgresql.py
+    sha256: bc1194c0b1be859dec6be637659878cfc03d9dcda113c9a0ea7d041ca83247d9
+  - original_uri: repo://changes/st-0302/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4-README.md
+    sha256: 3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4
+  - original_uri: repo://docs/execplans/ST-0302.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c-ST-0302.md
+    sha256: 1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c
+  - original_uri: repo://docs/worklogs/ST-0302.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388-ST-0302.md
+    sha256: b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388
+  - original_uri: repo://changes/st-0302/generated/foundation-baseline-validation.v1.sql
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9f32cad90b6f5e81211f096900a1b929b55912ecf5aea04ba3d544192e0e0273-foundation-baseline-validation.v1.sql
+    sha256: 9f32cad90b6f5e81211f096900a1b929b55912ecf5aea04ba3d544192e0e0273
+  - original_uri: repo://changes/st-0302/generated/foundation-catalog.v1.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/eb2d3c5fe8266e9e627cc7b6555dce0dffa9e24b776b4390094c67b9990bb927-foundation-catalog.v1.json
+    sha256: eb2d3c5fe8266e9e627cc7b6555dce0dffa9e24b776b4390094c67b9990bb927
+  - original_uri: repo://changes/st-0302/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0-manifest.yaml
+    sha256: d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+suite_results:
+  - suite_id: TST-008
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: exact PostgreSQL 18.4 ST-0301 and ST-0302 gates after default-ACL and UTC remediation
+    result: 'PASS; ST-0301 111 passed and ST-0302 46 passed, including all six default-ACL object classes and UTC normalization/rejection coverage'
+  - command: deterministic generation, Ruff, mypy, Pyright, secret scan, and independent read-only ST-0302 re-audit
+    result: 'PASS; generated artifacts are drift-free and the final independent audit found Blocker/High/Medium/Low 0/0/0/0'
+boundary: >-
+  Append-only delta over ST-0302 evidence V3 recorded at
+  2026-08-02T22:51:55Z. V1 through V4 together reconstruct the current
+  47-file closure: 43 sources, three generated artifacts, and the manifest.
+  This snapshot captures the role-global default-ACL and exact UTC contract
+  remediation plus the subsequent independent zero-finding re-audit. The
+  post-remediation full repository suite remains outside this snapshot. No
+  valid Git repository, pull request, hosted CI, migration-owner human review,
+  staging/release, production execution, canonical APPLY, or formal TST-008
+  execution is asserted. Effective canonical ST-0302 remains NOT_STARTED /
+  NOT_EXECUTED.

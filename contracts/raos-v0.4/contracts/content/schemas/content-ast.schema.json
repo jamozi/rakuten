@@ -1,0 +1,1873 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content/v1/content-ast.schema.json",
+  "title": "RAOS Content AST v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "article_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "article_version_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "article_type": {
+      "type": "string",
+      "enum": [
+        "selection_guide",
+        "use_case_recommendation",
+        "product_comparison",
+        "model_generation_capacity_difference",
+        "condition_filtering"
+      ]
+    },
+    "locale": {
+      "const": "ja-JP"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "methodology_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "seo_metadata_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "source_packet_version_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "blocks": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 250,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/block_lead"
+          },
+          {
+            "$ref": "#/$defs/block_decision_summary"
+          },
+          {
+            "$ref": "#/$defs/block_intended_reader"
+          },
+          {
+            "$ref": "#/$defs/block_methodology"
+          },
+          {
+            "$ref": "#/$defs/block_selection_criteria"
+          },
+          {
+            "$ref": "#/$defs/block_heading"
+          },
+          {
+            "$ref": "#/$defs/block_paragraph"
+          },
+          {
+            "$ref": "#/$defs/block_bullet_list"
+          },
+          {
+            "$ref": "#/$defs/block_numbered_list"
+          },
+          {
+            "$ref": "#/$defs/block_comparison_table"
+          },
+          {
+            "$ref": "#/$defs/block_product_card"
+          },
+          {
+            "$ref": "#/$defs/block_recommendation_group"
+          },
+          {
+            "$ref": "#/$defs/block_difference_matrix"
+          },
+          {
+            "$ref": "#/$defs/block_pros_cons"
+          },
+          {
+            "$ref": "#/$defs/block_tradeoff"
+          },
+          {
+            "$ref": "#/$defs/block_caution"
+          },
+          {
+            "$ref": "#/$defs/block_evidence_note"
+          },
+          {
+            "$ref": "#/$defs/block_source_summary"
+          },
+          {
+            "$ref": "#/$defs/block_faq"
+          },
+          {
+            "$ref": "#/$defs/block_media"
+          },
+          {
+            "$ref": "#/$defs/block_internal_links"
+          },
+          {
+            "$ref": "#/$defs/block_update_notice"
+          },
+          {
+            "$ref": "#/$defs/block_callout"
+          },
+          {
+            "$ref": "#/$defs/block_disclosure_slot"
+          }
+        ]
+      }
+    },
+    "publication_flags": {
+      "type": "object",
+      "properties": {
+        "affiliate_content": {
+          "type": "boolean",
+          "const": true
+        },
+        "human_approval_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "allow_auto_publish": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "required": [
+        "affiliate_content",
+        "human_approval_required",
+        "allow_auto_publish"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "article_id",
+    "article_version_id",
+    "article_type",
+    "locale",
+    "title",
+    "methodology_ref",
+    "seo_metadata_ref",
+    "source_packet_version_ref",
+    "blocks",
+    "publication_flags"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "rich_text_node": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            }
+          },
+          "required": [
+            "type",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "strong"
+            },
+            "children": {
+              "$ref": "#/$defs/rich_text"
+            }
+          },
+          "required": [
+            "type",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "emphasis"
+            },
+            "children": {
+              "$ref": "#/$defs/rich_text"
+            }
+          },
+          "required": [
+            "type",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "inline_code"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            }
+          },
+          "required": [
+            "type",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "internal_link"
+            },
+            "route_ref": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 200,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+            },
+            "children": {
+              "$ref": "#/$defs/rich_text"
+            }
+          },
+          "required": [
+            "type",
+            "route_ref",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "approved_external_citation"
+            },
+            "source_ref": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 200,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+            },
+            "children": {
+              "$ref": "#/$defs/rich_text"
+            }
+          },
+          "required": [
+            "type",
+            "source_ref",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "line_break"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "rich_text": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rich_text_node"
+      },
+      "minItems": 1,
+      "maxItems": 400
+    },
+    "block_lead": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "lead"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "content": {
+          "$ref": "#/$defs/rich_text"
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "block_decision_summary": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "decision_summary"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "properties": {
+              "condition": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "recommendation_ref": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+              },
+              "summary": {
+                "$ref": "#/$defs/rich_text"
+              },
+              "claim_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 200,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 100,
+                "default": []
+              }
+            },
+            "required": [
+              "condition",
+              "summary",
+              "claim_ids"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "block_intended_reader": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "intended_reader"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "fits": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/rich_text"
+          }
+        },
+        "not_fits": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/rich_text"
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/rich_text"
+          }
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "fits",
+        "not_fits",
+        "assumptions"
+      ],
+      "additionalProperties": false
+    },
+    "block_methodology": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "methodology"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "methodology_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "candidate_universe_summary": {
+          "$ref": "#/$defs/rich_text"
+        },
+        "inclusion_rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rich_text"
+          },
+          "minItems": 1,
+          "maxItems": 30
+        },
+        "exclusion_rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rich_text"
+          },
+          "maxItems": 30
+        },
+        "data_checked_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "methodology_ref",
+        "candidate_universe_summary",
+        "inclusion_rules",
+        "exclusion_rules",
+        "data_checked_at"
+      ],
+      "additionalProperties": false
+    },
+    "block_selection_criteria": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "selection_criteria"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "properties": {
+              "comparison_axis_ref": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "explanation": {
+                "$ref": "#/$defs/rich_text"
+              },
+              "claim_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 200,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 100,
+                "default": []
+              }
+            },
+            "required": [
+              "comparison_axis_ref",
+              "label",
+              "explanation",
+              "claim_ids"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "criteria"
+      ],
+      "additionalProperties": false
+    },
+    "block_heading": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "heading"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "level": {
+          "type": "integer",
+          "enum": [
+            2,
+            3
+          ]
+        },
+        "content": {
+          "$ref": "#/$defs/rich_text"
+        },
+        "anchor_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,99}$"
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "level",
+        "content",
+        "anchor_id"
+      ],
+      "additionalProperties": false
+    },
+    "block_paragraph": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "paragraph"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "content": {
+          "$ref": "#/$defs/rich_text"
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "block_bullet_list": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "bullet_list"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 30,
+          "items": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/rich_text"
+              },
+              "claim_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 200,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 100,
+                "default": []
+              }
+            },
+            "required": [
+              "content",
+              "claim_ids"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "block_numbered_list": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "numbered_list"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 30,
+          "items": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/rich_text"
+              },
+              "claim_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 200,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 100,
+                "default": []
+              }
+            },
+            "required": [
+              "content",
+              "claim_ids"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "block_comparison_table": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "comparison_table"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "comparison_table_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "comparison_axis_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "minItems": 1,
+          "maxItems": 30,
+          "uniqueItems": true
+        },
+        "product_selection_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "minItems": 2,
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "display_mode": {
+          "type": "string",
+          "enum": [
+            "desktop_table_mobile_cards",
+            "cards_only",
+            "matrix"
+          ]
+        },
+        "show_unknown_values": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "comparison_table_ref",
+        "comparison_axis_refs",
+        "product_selection_refs",
+        "display_mode",
+        "show_unknown_values"
+      ],
+      "additionalProperties": false
+    },
+    "block_product_card": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "product_card"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "recommendation_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "product_selection_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "display_policy_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "show_price_when_fresh": {
+          "type": "boolean"
+        },
+        "show_availability_when_fresh": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "recommendation_ref",
+        "product_selection_ref",
+        "display_policy_ref",
+        "show_price_when_fresh",
+        "show_availability_when_fresh"
+      ],
+      "additionalProperties": false
+    },
+    "block_recommendation_group": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "recommendation_group"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "group_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 150
+        },
+        "condition": {
+          "$ref": "#/$defs/rich_text"
+        },
+        "recommendation_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true
+        },
+        "rationale_claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "strict_order": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "group_id",
+        "label",
+        "condition",
+        "recommendation_refs",
+        "rationale_claim_ids",
+        "strict_order"
+      ],
+      "additionalProperties": false
+    },
+    "block_difference_matrix": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "difference_matrix"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "matrix_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "comparison_axis_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "minItems": 1,
+          "maxItems": 30,
+          "uniqueItems": true
+        },
+        "product_selection_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "minItems": 2,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "show_equal_values": {
+          "type": "boolean",
+          "const": true
+        },
+        "show_unknown_values": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "matrix_ref",
+        "comparison_axis_refs",
+        "product_selection_refs",
+        "show_equal_values",
+        "show_unknown_values"
+      ],
+      "additionalProperties": false
+    },
+    "block_pros_cons": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "pros_cons"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "subject_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "pros": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/rich_text"
+              },
+              "claim_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 200,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 100,
+                "default": []
+              }
+            },
+            "required": [
+              "content",
+              "claim_ids"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "cons": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/rich_text"
+              },
+              "claim_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 200,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 100,
+                "default": []
+              }
+            },
+            "required": [
+              "content",
+              "claim_ids"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "subject_ref",
+        "pros",
+        "cons"
+      ],
+      "additionalProperties": false
+    },
+    "block_tradeoff": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "tradeoff"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "subject_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "benefit": {
+          "$ref": "#/$defs/rich_text"
+        },
+        "cost_or_limitation": {
+          "$ref": "#/$defs/rich_text"
+        },
+        "applies_when": {
+          "$ref": "#/$defs/rich_text"
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "subject_ref",
+        "benefit",
+        "cost_or_limitation",
+        "applies_when"
+      ],
+      "additionalProperties": false
+    },
+    "block_caution": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "caution"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "info",
+            "important",
+            "warning"
+          ]
+        },
+        "content": {
+          "$ref": "#/$defs/rich_text"
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "severity",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "block_evidence_note": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "evidence_note"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "display_mode": {
+          "type": "string",
+          "enum": [
+            "inline",
+            "footnote",
+            "drawer"
+          ]
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "evidence_refs",
+        "display_mode"
+      ],
+      "additionalProperties": false
+    },
+    "block_source_summary": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "source_summary"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "source_packet_version_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "last_checked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "editorial_policy_route_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "show_source_categories": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "source_packet_version_ref",
+        "last_checked_at",
+        "editorial_policy_route_ref",
+        "show_source_categories"
+      ],
+      "additionalProperties": false
+    },
+    "block_faq": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "faq"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              "answer": {
+                "$ref": "#/$defs/rich_text"
+              },
+              "claim_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 200,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 100,
+                "default": []
+              }
+            },
+            "required": [
+              "question",
+              "answer",
+              "claim_ids"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "emit_faqpage_structured_data": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "items",
+        "emit_faqpage_structured_data"
+      ],
+      "additionalProperties": false
+    },
+    "block_media": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "media"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "media_asset_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "caption": {
+          "$ref": "#/$defs/rich_text"
+        },
+        "long_description_ref": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 200,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "presentation": {
+          "type": "string",
+          "enum": [
+            "full_width",
+            "inline",
+            "figure",
+            "data_chart"
+          ]
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "media_asset_ref",
+        "caption",
+        "long_description_ref",
+        "presentation"
+      ],
+      "additionalProperties": false
+    },
+    "block_internal_links": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "internal_links"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "links": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "properties": {
+              "route_ref": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+              },
+              "anchor_text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "journey_purpose": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              }
+            },
+            "required": [
+              "route_ref",
+              "anchor_text",
+              "journey_purpose"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "links"
+      ],
+      "additionalProperties": false
+    },
+    "block_update_notice": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "update_notice"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "substantive_updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "change_summary": {
+          "$ref": "#/$defs/rich_text"
+        },
+        "previous_publication_ref": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 200,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "substantive_updated_at",
+        "change_summary",
+        "previous_publication_ref"
+      ],
+      "additionalProperties": false
+    },
+    "block_callout": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "callout"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100,
+          "default": []
+        },
+        "variant": {
+          "type": "string",
+          "enum": [
+            "info",
+            "tip",
+            "important",
+            "warning"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "content": {
+          "$ref": "#/$defs/rich_text"
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "claim_ids",
+        "variant",
+        "title",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "block_disclosure_slot": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "type": {
+          "const": "disclosure_slot"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "admin_only"
+          ],
+          "default": "public"
+        },
+        "disclosure_policy_version_ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        "placement": {
+          "type": "string",
+          "const": "article_top"
+        },
+        "editor_removable": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "required": [
+        "block_id",
+        "type",
+        "disclosure_policy_version_ref",
+        "placement",
+        "editor_removable"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-finance-unit-economics-calculated-v1.schema.json",
+  "title": "jp.raos.finance.unit_economics_calculated.v1",
+  "description": "確定Unit Economics Snapshotが算出された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.finance.unit_economics_calculated.v1"
+        },
+        "producer": {
+          "const": "finance"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "unit_economics_snapshot_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "scope_type": {
+              "type": "string"
+            },
+            "scope_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "period_month": {
+              "type": "string"
+            },
+            "confirmed_commission_jpy": {
+              "type": "integer"
+            },
+            "contribution_profit_jpy": {
+              "type": "integer"
+            },
+            "confirmed_epc_jpy": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "confirmed_rpm_jpy": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "source_watermark": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "unit_economics_snapshot_id",
+            "scope_type",
+            "scope_id",
+            "period_month",
+            "confirmed_commission_jpy",
+            "contribution_profit_jpy",
+            "source_watermark"
+          ]
+        }
+      }
+    }
+  ]
+}

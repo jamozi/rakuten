@@ -1,0 +1,48 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0301-20260803-V2
+  schema_version: 1
+  recorded_at: '2026-08-02T20:35:48Z'
+story_id: ST-0301
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0301-local-20260803.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9-ST-0301-local-20260803.yaml
+    sha256: 6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9
+  - original_uri: repo://python/raos/migrations/runner.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c709102af9bfcd64f68a444bccb6ddac6d95d067b1af472e8b41269fd3c8f2da-runner.py
+    sha256: c709102af9bfcd64f68a444bccb6ddac6d95d067b1af472e8b41269fd3c8f2da
+  - original_uri: repo://tests/st0301/test_runner.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e2598cf97c4f46dd240eaaf9edeaaba9d4bfb6982367857f2d29003dcd2cd4f0-test_runner.py
+    sha256: e2598cf97c4f46dd240eaaf9edeaaba9d4bfb6982367857f2d29003dcd2cd4f0
+  - original_uri: repo://docs/worklogs/ST-0301.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6fb4dcf85cd1222fa5e0133a296bd06be6b0fdd3a5a74bf718cf2fb13ca6efc6-ST-0301.md
+    sha256: 6fb4dcf85cd1222fa5e0133a296bd06be6b0fdd3a5a74bf718cf2fb13ca6efc6
+  - original_uri: repo://changes/st-0301/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff-manifest.yaml
+    sha256: 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+suite_results:
+  - suite_id: TST-008
+    environment: LOCAL
+    result: LOCAL_PASS
+  - suite_id: TST-009
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: exact Node 24.18.1 bundled Pyright full configured project check
+    result: 'PASS; 0 errors, 0 warnings, and 0 informations after fail-closed control-flow remediation'
+  - command: pinned uv 0.12.1 pytest tests/st0301 with exact PostgreSQL 18.4 runtime
+    result: 'PASS; 108 tests including the runtime wrong-type password-file boundary regression'
+  - command: pinned uv 0.12.1 ST-0301 deterministic install and no-write generation checks
+    result: 'PASS; the regenerated manifest binds the complete 58-source closure and unchanged migration catalog'
+boundary: >-
+  Append-only delta over the content-addressed 60-artifact ST-0301 snapshot
+  recorded at 2026-08-02T20:23:27Z. This snapshot captures that prior evidence
+  document plus every changed source and the regenerated manifest after the
+  Pyright remediation; the catalog bytes remained unchanged and are retained
+  by the prior snapshot. Local type and exact PostgreSQL 18.4 checks only. No
+  deferred domain-schema migration, Git repository, pull request, hosted CI,
+  migration-owner human review, staging recovery rehearsal, release approval,
+  external database, production execution, canonical APPLY, or formal
+  TST-008/TST-009 execution is asserted. Effective canonical ST-0301 remains
+  NOT_STARTED / NOT_EXECUTED.

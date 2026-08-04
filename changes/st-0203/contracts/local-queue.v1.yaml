@@ -1,0 +1,120 @@
+document:
+  id: RAOS-LOCAL-QUEUE-001
+  version: 1.0.0
+  story_id: ST-0203
+  status: LOCAL_AND_CI_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  dependency: ST-0102
+  objective: REPRODUCE_AT_LEAST_ONCE_DELIVERY
+  deliverables:
+    - PROVIDER_NEUTRAL_QUEUE_PORT
+    - DETERMINISTIC_QUEUE_FAKE
+    - DUPLICATE_AND_OUT_OF_ORDER_FIXTURES
+  required_suite: TST-013
+  open_decisions: []
+canonical_contracts:
+  job_message:
+    uri: repo://contracts/raos-v0.4/contracts/schemas/common/job-message.schema.json
+    sha256: cdb8e8094d4fa74843c26ea453354df7083bc41a6f165220ddd0e263e37db8d5
+  job_catalog:
+    uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+    sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+  job_state:
+    uri: repo://contracts/raos-v0.4/job-state.v1.yaml
+    sha256: 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
+message:
+  provider_type_exposure: FORBIDDEN
+  payload: GENERIC_CALLER_OWNED
+  identity_fields:
+    - message_id
+    - idempotency_key
+  scheduling_fields:
+    - queue_name
+    - available_at
+    - max_attempts
+  timestamps: TIMEZONE_AWARE_REQUIRED
+  max_attempts:
+    minimum: 1
+    maximum: 50
+port:
+  uri: repo://python/raos/ports/queue.py
+  operations:
+    - send
+    - receive
+    - acknowledge
+    - retry
+    - extend_lease
+  receipt_handle:
+    scoped_to_delivery_occurrence: true
+    stale_or_unknown: REJECT
+  consumer_idempotency: REQUIRED_BUT_OUTSIDE_QUEUE_PORT
+fake:
+  uri: repo://python/raos/adapters/queue_fake.py
+  clock: EXPLICIT_MANUAL_AWARE_DATETIME
+  background_threads: FORBIDDEN
+  sleeps: FORBIDDEN
+  network: FORBIDDEN
+  provider_sdk: FORBIDDEN
+  time_arithmetic_overflow: REJECT_WITHOUT_STATE_MUTATION
+  default_order: FIFO_BY_ENQUEUE_SEQUENCE_WHEN_AVAILABLE
+  duplicate_injection:
+    operation: inject_duplicate
+    preserves_message_id: true
+    preserves_idempotency_key: true
+    distinct_receipt_per_occurrence: true
+  out_of_order_injection:
+    operation: inject_out_of_order
+    exact_pending_multiset_required: true
+  lease:
+    positive_duration_required: true
+    expiry: REDELIVER_WITH_NEW_RECEIPT
+    renew_from_current_clock: true
+  retry:
+    non_negative_delay_required: true
+    delivery_attempt_increments_on_receive: true
+    prior_receipt_becomes_stale: true
+  dlq:
+    inspectable: true
+    on_retry_at_max_attempts: true
+    on_lease_expiry_at_max_attempts: true
+    payload_logging: FORBIDDEN
+security:
+  controls:
+    - id: SEC-APP-011
+      relationship: FUTURE_CONSUMER_IDEMPOTENCY_OBLIGATION
+    - id: SEC-INFRA-008
+      relationship: DEFERRED_TO_PROVIDER_ADAPTER_AND_IAM_STORY
+  secret_in_message: PROHIBITED_BY_CANONICAL_JOB_CATALOG
+  production_credentials: NOT_USED
+verification:
+  required_suite: TST-013
+  local_command: >-
+    uv run --locked --no-sync pytest -p no:cacheprovider -q tests/st0203
+  required_behaviors:
+    - FIFO_DEFAULT
+    - DELAYED_VISIBILITY
+    - DUPLICATE_INJECTION
+    - OUT_OF_ORDER_INJECTION
+    - LEASE_EXPIRY_REDELIVERY
+    - LEASE_EXTENSION
+    - RETRY_DELAY
+    - DLQ_AT_MAX_ATTEMPTS
+    - STALE_AND_UNKNOWN_RECEIPT_REJECTION
+    - DURATION_OVERFLOW_STATE_PRESERVATION
+  formal_environment: CI
+  local_result_can_promote_formal_suite: false
+predecessor:
+  manifest_uri: repo://changes/st-0202/manifest.yaml
+  story_id: ST-0202
+  sha256: 5b16516ad642f053f54f21b6afd4b0661b8658efc14522ae521bd86d78215649
+boundary:
+  environment: LOCAL_AND_CI_FAKE_ONLY
+  production_use: FORBIDDEN
+  external_broker: NOT_IMPLEMENTED
+  provider_adapter: NOT_IMPLEMENTED
+  worker_runtime: NOT_IMPLEMENTED
+  durable_persistence: NOT_IMPLEMENTED
+  consumer_idempotency_store: NOT_IMPLEMENTED
+  formal_tst_013: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

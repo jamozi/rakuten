@@ -1,0 +1,145 @@
+document:
+  id: RAOS-OPS-SLO-001
+  version: '1.0'
+  note: Targets are provisional until baseline/load/recovery measurements.
+slos:
+- id: SLO-001
+  name: Public availability
+  scope: public web
+  sli: successful eligible requests / eligible requests
+  target: 99.5%
+  window: rolling 30d
+  notes: planned maintenance and abusive traffic exclusion versioned
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-002
+  name: Admin availability
+  scope: admin
+  sli: successful eligible admin requests / eligible requests
+  target: 99.0%
+  window: rolling 30d
+  notes: MVP business-hours operation
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-003
+  name: Public API latency
+  scope: public api
+  sli: p95 server duration
+  target: <=500 ms
+  window: rolling 7d
+  notes: cache hit/miss split
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-004
+  name: Admin API latency
+  scope: admin api
+  sli: p95 non-job command/query duration
+  target: <=1000 ms
+  window: rolling 7d
+  notes: long jobs return 202
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-005
+  name: Publication completion
+  scope: publishing
+  sli: publish jobs completed or safely failed within threshold
+  target: 99% within 5 min
+  window: rolling 30d
+  notes: provider-independent
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-006
+  name: Affiliate click continuity
+  scope: public CTA
+  sli: eligible clicks reaching direct Rakuten navigation when beacon fails
+  target: 99.9%
+  window: rolling 30d
+  notes: synthetic plus client telemetry
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-007
+  name: Job terminal success
+  scope: workers
+  sli: succeeded / terminal jobs by type
+  target: '>=99% excluding validated business rejection'
+  window: rolling 7d
+  notes: retry storm separately monitored
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-008
+  name: Queue age
+  scope: async
+  sli: oldest ready message age
+  target: <10 min P95
+  window: rolling 24h
+  notes: critical queues lower threshold
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-009
+  name: Freshness scan completion
+  scope: freshness
+  sli: scheduled scans completed by deadline
+  target: '>=99%'
+  window: rolling 30d
+  notes: category SLA provisional
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-010
+  name: Analytics import freshness
+  scope: analytics
+  sli: latest successful GSC/GA4 import age
+  target: <=72 h
+  window: daily
+  notes: provider availability considered
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-011
+  name: Revenue reconciliation
+  scope: finance
+  sli: committed import batches reconciled
+  target: 100%
+  window: per batch
+  notes: no partial commit
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-012
+  name: Core Web Vitals
+  scope: public UX
+  sli: 75th percentile by device
+  target: LCP<=2.5s, INP<=200ms, CLS<=0.1
+  window: rolling 28d
+  notes: field target, not achieved until RUM
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-013
+  name: DB recovery point
+  scope: recovery
+  sli: maximum committed data loss in drill
+  target: <=15 min
+  window: per drill
+  notes: design target
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED
+- id: SLO-014
+  name: DB recovery time
+  scope: recovery
+  sli: incident declaration to validated core service
+  target: <=4 h
+  window: per drill
+  notes: MVP design target
+  status: PROVISIONAL_TARGET
+  implementation_status: NOT_STARTED
+  measurement_status: NOT_EXECUTED

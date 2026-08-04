@@ -1,0 +1,40 @@
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+.secrets/
+
+# Python local state
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+.venv-offline-check/
+venv/
+
+# Node and generated build state (toolchain is introduced by ST-0103)
+node_modules/
+.npm-cache/
+.node-offline-check.*/
+.next/
+dist/
+build/
+coverage/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/settings.local.json
+
+# Temporary files
+*.log
+*.tmp
+*.swp
+*~

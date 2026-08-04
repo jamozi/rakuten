@@ -1,0 +1,98 @@
+document:
+  id: RAOS-CONTENT-REF-001
+  title: RAOS-CONTENT-001 official reference snapshot
+  version: '0.1'
+  verified_on: '2026-07-30'
+  status: CURRENT_SNAPSHOT_REVALIDATE_BEFORE_PRODUCTION
+  legal_notice: 本資料は設計上の基準整理であり、法律相談ではない。公開前に最新規約と必要な専門家確認を行う。
+sources:
+- id: REF-RAKUTEN-001
+  authority: Rakuten Affiliate
+  title: 楽天アフィリエイトガイドライン
+  url: https://affiliate.rakuten.co.jp/guideline/rule/
+  applied_to:
+  - affiliate destination clarity
+  - review-body prohibition
+  - image and link handling
+  - prohibited representations
+- id: REF-RAKUTEN-002
+  authority: Rakuten Affiliate
+  title: ステルスマーケティング規制の対応について
+  url: https://affiliate.rakuten.co.jp/guideline/stealth_marketing_regulation/
+  applied_to:
+  - PR disclosure
+  - benefit-specific disclosure
+  - monitoring and evidence retention
+- id: REF-CAA-001
+  authority: Consumer Affairs Agency, Government of Japan
+  title: 令和5年10月1日からステルスマーケティングは景品表示法違反となります
+  url: https://www.caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing
+  applied_to:
+  - clear advertising identification
+  - relationship disclosure
+- id: REF-CAA-002
+  authority: Consumer Affairs Agency, Government of Japan
+  title: ステルスマーケティングに関するQ&A
+  url: https://www.caa.go.jp/policies/policy/representation/fair_labeling/faq/stealth_marketing/
+  applied_to:
+  - free-product and benefit relationship handling
+  - case-by-case disclosure review
+- id: REF-GOOGLE-001
+  authority: Google Search Central
+  title: Creating helpful, reliable, people-first content
+  url: https://developers.google.com/search/docs/fundamentals/creating-helpful-content
+  applied_to:
+  - unique decision value
+  - people-first review
+  - content quality
+- id: REF-GOOGLE-002
+  authority: Google Search Central
+  title: Spam policies for Google web search
+  url: https://developers.google.com/search/docs/essentials/spam-policies
+  applied_to:
+  - scaled content abuse
+  - thin affiliation
+  - doorway and copied content controls
+- id: REF-GOOGLE-003
+  authority: Google Search Central
+  title: Write high quality reviews
+  url: https://developers.google.com/search/docs/specialty/ecommerce/write-high-quality-reviews
+  applied_to:
+  - evidence-led review standards
+  - original research requirement
+- id: REF-GOOGLE-004
+  authority: Google Search Central
+  title: Qualify your outbound links to Google
+  url: https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links
+  applied_to:
+  - rel=sponsored handling
+- id: REF-GOOGLE-005
+  authority: Google Search Central
+  title: Article structured data
+  url: https://developers.google.com/search/docs/appearance/structured-data/article
+  applied_to:
+  - Article or BlogPosting JSON-LD
+- id: REF-GOOGLE-006
+  authority: Google Search Central
+  title: Product structured data
+  url: https://developers.google.com/search/docs/appearance/structured-data/product
+  applied_to:
+  - product markup scope and merchant-listing exclusion
+- id: REF-GOOGLE-007
+  authority: Google Search Central
+  title: Search documentation updates
+  url: https://developers.google.com/search/updates
+  applied_to:
+  - FAQ rich-result removal and structured-data lifecycle monitoring
+- id: REF-W3C-001
+  authority: W3C WAI
+  title: 'WCAG 2.2 Understanding Success Criterion 1.1.1: Non-text Content'
+  url: https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html
+  applied_to:
+  - alt text and non-text alternatives
+revalidation_triggers:
+- Rakuten guideline or API policy revision
+- Consumer Affairs Agency guidance revision
+- Google Search structured-data or spam-policy revision
+- new article category with legal or safety implications
+- before every production release affecting disclosure, CTA, review, media, or structured data

@@ -1,0 +1,128 @@
+document:
+  id: RAOS-ST0106-GITHUB-ACTIONS-SNAPSHOT-001
+  schema_version: 1
+  checked_at: '2026-08-02T00:00:00Z'
+  purpose: Official-source security and version selection for ST-0106 base CI
+
+security_guidance:
+  source_url: https://docs.github.com/en/actions/reference/security/secure-use
+  workflow_syntax_url: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+  decisions:
+  - Use the unprivileged pull_request event; never execute pull-request code in pull_request_target.
+  - Set workflow GITHUB_TOKEN permissions explicitly to contents read.
+  - Pin every external action to a full-length commit SHA.
+  - Disable persisted checkout credentials and setup caches.
+  - Bound every job with timeout-minutes and cancel superseded pull-request runs.
+  - Limit network-enabled execution to GitHub setup/checkout and source-constrained locked dependency hydration.
+  - Run only fixed direct uv and npm commands during hydration; prohibit repository Make targets, wrappers, source builds, and lifecycle scripts.
+  - Validate dependency pins, origins, and integrity inside a killed network/PID namespace before hydration.
+  - Require positive npm semver descriptors, captured dependency closure, effective-range satisfaction, and explicit optional-peer metadata.
+  - After exact Node setup, run the bundled npm resolver offline against a disposable metadata-only copy and empty cache before allowing npm registry access.
+  - Run repository checks and the secret scanner only after entering the fail-closed network-denied boundary.
+
+runner:
+  label: ubuntu-24.04
+  source_url: https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
+
+actions:
+- repository: actions/checkout
+  release: v6.0.2
+  commit_sha: de0fac2e4500dabe0009e67214ff5f5447ce83dd
+  source_url: https://github.com/actions/checkout
+  release_url: https://github.com/actions/checkout/releases/tag/v6.0.2
+  selected_inputs:
+    persist-credentials: false
+    fetch-depth: 1
+- repository: actions/setup-node
+  release: v6.5.0
+  commit_sha: 249970729cb0ef3589644e2896645e5dc5ba9c38
+  source_url: https://github.com/actions/setup-node
+  release_url: https://github.com/actions/setup-node/releases/tag/v6.5.0
+  selected_inputs:
+    node-version: 24.18.1
+    package-manager-cache: false
+- repository: astral-sh/setup-uv
+  release: v9.0.0
+  commit_sha: c771a70e6277c0a99b617c7a806ffedaca235ff9
+  source_url: https://github.com/astral-sh/setup-uv
+  release_url: https://github.com/astral-sh/setup-uv/releases/tag/v9.0.0
+  selected_inputs:
+    version: 0.12.1
+    enable-cache: false
+
+network_boundaries:
+  source_constrained_hydration_phase:
+    external_network: ENABLED
+    scope:
+    - GitHub runner setup and repository checkout
+    - Exact uv, Node, npm, and managed Python setup
+    - Direct locked Python hydration with no config, sources, or builds
+    - Direct locked Node hydration with lifecycle scripts disabled
+    repository_make_or_wrapper_execution: DENIED
+    python_registry: https://pypi.org/simple
+    node_registry: https://registry.npmjs.org/
+  dependency_preflight_phase:
+    external_network: DENIED
+    validator: scripts/validate_ci_hydration.py
+    mechanism: >-
+      Non-root user mapping plus fresh network and killed PID namespaces;
+      inherited descriptors are closed and network-capable socket syscalls are
+      denied before the validator starts
+    permitted_origins:
+    - https://pypi.org/simple
+    - https://files.pythonhosted.org/
+    - https://registry.npmjs.org/
+    npm_lock_contract:
+      dependency_descriptors: POSITIVE_ASCII_SEMVER_ONLY
+      root_and_workspace_closure: REQUIRED
+      nearest_transitive_closure: REQUIRED
+      captured_version_range_satisfaction: REQUIRED
+      missing_peer_policy: EXPLICIT_OPTIONAL_TRUE_ONLY
+      security_overrides: EXACT_CLOSED_ST0103_CONTRACT
+  exact_npm_resolution_preflight:
+    external_network: DENIED
+    placement: AFTER_EXACT_NODE_SETUP_BEFORE_NETWORK_ENABLED_NPM_CI
+    command: npm ci --dry-run --offline
+    inputs: Disposable copy of root/workspace manifests and package-lock.json
+    cache: FRESH_EMPTY_DIRECTORY
+    user_and_global_config: FRESH_EMPTY_FILES
+    lifecycle_scripts: DENIED
+    required_postconditions:
+    - Copied package-lock SHA-256 is unchanged
+    - No node_modules path is materialized
+  repository_check_phase:
+    external_network: DENIED
+    wrapper: scripts/run_network_denied.sh
+    mechanism: >-
+      Non-root current-user mapping in Linux user/network/PID namespaces;
+      root callers and socket standard descriptors are rejected, descriptors
+      above 2 are closed, descendants are killed with the PID namespace, and
+      an inherited no-new-privileges seccomp filter denies network socket,
+      connection, listener, accept, and io_uring bypass syscalls while allowing
+      local socketpair signalling
+    assertion: scripts/assert_network_denied.py
+    assertion_policy: FAIL_CLOSED
+    covered_commands:
+    - static
+    - unit
+    - contracts
+    - secret scanner
+  exact_local_secret_command: >-
+    scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I
+    scripts/scan_secrets.py --worktree --git-history
+  diagnostic_only_secret_command: >-
+    python3 -I scripts/scan_secrets.py --worktree
+
+verification_boundary: >-
+  Tags and full commit SHAs were resolved from the official repositories.
+  The post-isolation static wrapper passed locally, but no final aggregate
+  counts are asserted. This snapshot supports workflow implementation only;
+  hosted formal execution remains NOT_EXECUTED, and no branch protection,
+  deployment, or release evidence has been executed.
+
+workflow_control_boundary: >-
+  These controls describe the reviewed workflow source. An in-repository
+  pull-request workflow cannot enforce its own immutability; branch/review
+  governance is ST-0107 scope. This workflow therefore exposes no secrets,
+  write token, OIDC, deployment environment, or persistent setup cache even if
+  a proposed workflow edit is under review.

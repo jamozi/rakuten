@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-publishing-article-unpublished-v1.schema.json",
+  "title": "jp.raos.publishing.article_unpublished.v1",
+  "description": "Publicationが非公開化された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.publishing.article_unpublished.v1"
+        },
+        "producer": {
+          "const": "publishing"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "publication_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "previous_snapshot_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "unpublished_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "publication_id",
+            "article_id",
+            "previous_snapshot_id",
+            "unpublished_at",
+            "reason"
+          ]
+        }
+      }
+    }
+  ]
+}

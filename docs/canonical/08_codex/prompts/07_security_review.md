@@ -1,0 +1,1 @@
+Review PR {{PR}} against RAOS-SEC-001 and AGENTS.md. Focus on authz, public data isolation, secrets/logs, SSRF/XSS/CSRF/upload, AI untrusted input, supply chain, and rollback. Cite control IDs, provide concrete findings with severity and evidence, and do not approve unresolved critical/high findings.

@@ -1,0 +1,114 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+state_machines:
+- id: AISM-001
+  name: AI Job
+  initial: REQUESTED
+  states:
+  - REQUESTED
+  - VALIDATING_INPUT
+  - QUEUED
+  - RUNNING
+  - VALIDATING_OUTPUT
+  - AWAITING_HUMAN
+  - SUCCEEDED
+  - FAILED_RETRYABLE
+  - RETRY_SCHEDULED
+  - FAILED_TERMINAL
+  - QUARANTINED
+  - CANCELLED
+  - EXPIRED
+  terminal:
+  - SUCCEEDED
+  - FAILED_TERMINAL
+  - QUARANTINED
+  - CANCELLED
+  - EXPIRED
+  invariants:
+  - SUCCEEDED requires all blocking gates
+  - QUARANTINED requires incident resolution
+- id: AISM-002
+  name: Prompt Version
+  initial: DRAFT
+  states:
+  - DRAFT
+  - IN_REVIEW
+  - EVALUATING
+  - CERTIFIED
+  - ACTIVE
+  - SUSPENDED
+  - RETIRED
+  terminal:
+  - RETIRED
+  invariants:
+  - One ACTIVE version per task/locale
+  - ACTIVE requires release decision
+- id: AISM-003
+  name: Model Route Version
+  initial: DRAFT
+  states:
+  - DRAFT
+  - EVALUATING
+  - CERTIFIED
+  - CANARY
+  - ACTIVE
+  - PAUSED
+  - ROLLED_BACK
+  - RETIRED
+  terminal:
+  - ROLLED_BACK
+  - RETIRED
+  invariants:
+  - Canary cap enforced
+  - critical failure pauses route
+- id: AISM-004
+  name: Evaluation Dataset
+  initial: DRAFT
+  states:
+  - DRAFT
+  - CURATING
+  - LOCKED
+  - ACTIVE
+  - COMPROMISED
+  - RETIRED
+  terminal:
+  - RETIRED
+  invariants:
+  - LOCKED immutable
+  - holdout hidden from prompt authors
+- id: AISM-005
+  name: Evaluation Run
+  initial: PLANNED
+  states:
+  - PLANNED
+  - RUNNING
+  - GRADING
+  - HUMAN_REVIEW
+  - COMPLETED
+  - FAILED
+  - INVALIDATED
+  terminal:
+  - COMPLETED
+  - FAILED
+  - INVALIDATED
+  invariants:
+  - All cases disposed before completion
+  - artifacts immutable
+- id: AISM-006
+  name: Release Decision
+  initial: DRAFT
+  states:
+  - DRAFT
+  - READY_FOR_REVIEW
+  - APPROVED_CANARY
+  - APPROVED_ACTIVE
+  - REJECTED
+  - REVOKED
+  terminal:
+  - REJECTED
+  - REVOKED
+  invariants:
+  - Hashes bind all versions
+  - critical task requires two approvers

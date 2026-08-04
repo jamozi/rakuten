@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/common/resource-ref.schema.json",
+  "title": "ResourceRef",
+  "description": "RAOS内の型付きResource参照。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "resource_type",
+    "resource_id"
+  ],
+  "properties": {
+    "resource_type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{1,63}$"
+    },
+    "resource_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "display_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 80
+    },
+    "expected_version": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    }
+  }
+}

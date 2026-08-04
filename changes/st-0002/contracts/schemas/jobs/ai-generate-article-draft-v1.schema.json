@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/ai-generate-article-draft-v1.schema.json",
+  "title": "ai.generate_article_draft.v1",
+  "description": "承認済みSource PacketからArticle AST Draftを生成する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "ai.generate_article_draft.v1"
+        },
+        "queue": {
+          "const": "ai"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "article_plan_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_packet_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "based_on_article_version_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "prompt_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "model_route_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "output_schema_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "instructions": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 5000
+            }
+          },
+          "required": [
+            "article_plan_id",
+            "source_packet_version_id",
+            "prompt_version_id",
+            "model_route_version_id",
+            "output_schema_version_id"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,2495 @@
+document:
+  id: RAOS-UNIMPLEMENTED-001
+  version: '1.0'
+  status: ACTIVE
+summary:
+  rows: 191
+  stories: 129
+  tests: 32
+  open_decisions: 15
+  integrations: 9
+  environments: 6
+items:
+- id: ST-0001
+  category: IMPLEMENTATION_STORY
+  area: EPIC-00
+  item: Import canonical design package
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: TST-001
+  owner: Architecture
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0002
+  category: IMPLEMENTATION_STORY
+  area: EPIC-00
+  item: Apply job-state canonical revision
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0001
+  evidence_required: TST-002;TST-008;TST-010;TST-013
+  owner: Architecture
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0003
+  category: IMPLEMENTATION_STORY
+  area: EPIC-00
+  item: Apply AI governance canonical revision
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0001
+  evidence_required: TST-002;TST-003;TST-008;TST-012
+  owner: Architecture
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0004
+  category: IMPLEMENTATION_STORY
+  area: EPIC-00
+  item: Apply content canonical revision
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0001
+  evidence_required: TST-002;TST-003;TST-008;TST-020
+  owner: Architecture
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0005
+  category: IMPLEMENTATION_STORY
+  area: EPIC-00
+  item: Install status registry workflow
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0001
+  evidence_required: TST-001
+  owner: Architecture
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0006
+  category: IMPLEMENTATION_STORY
+  area: EPIC-00
+  item: Open-decision gate validator
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0005
+  evidence_required: TST-005;TST-032
+  owner: Architecture
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0101
+  category: IMPLEMENTATION_STORY
+  area: EPIC-01
+  item: Create monorepo layout
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0001
+  evidence_required: TST-001
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0102
+  category: IMPLEMENTATION_STORY
+  area: EPIC-01
+  item: Pin Python toolchain
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0101
+  evidence_required: TST-001;TST-005
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0103
+  category: IMPLEMENTATION_STORY
+  area: EPIC-01
+  item: Pin Node toolchain
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0101
+  evidence_required: TST-001;TST-006
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0104
+  category: IMPLEMENTATION_STORY
+  area: EPIC-01
+  item: Install contract repository
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0101;ST-0002;ST-0003;ST-0004
+  evidence_required: TST-002
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0105
+  category: IMPLEMENTATION_STORY
+  area: EPIC-01
+  item: Generate Python and TypeScript types
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0104;ST-0102;ST-0103
+  evidence_required: TST-004
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0106
+  category: IMPLEMENTATION_STORY
+  area: EPIC-01
+  item: Create base CI
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0102;ST-0103;ST-0104
+  evidence_required: TST-001;TST-002
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0107
+  category: IMPLEMENTATION_STORY
+  area: EPIC-01
+  item: Install PR governance
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0106
+  evidence_required: TST-001
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0201
+  category: IMPLEMENTATION_STORY
+  area: EPIC-02
+  item: Local PostgreSQL 18 service
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0102
+  evidence_required: TST-008
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0202
+  category: IMPLEMENTATION_STORY
+  area: EPIC-02
+  item: Local S3-compatible object service
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0102
+  evidence_required: TST-014
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0203
+  category: IMPLEMENTATION_STORY
+  area: EPIC-02
+  item: Local queue abstraction
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0102
+  evidence_required: TST-013
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0204
+  category: IMPLEMENTATION_STORY
+  area: EPIC-02
+  item: Configuration and secret loader
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0102;ST-0103
+  evidence_required: TST-005;TST-031
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0205
+  category: IMPLEMENTATION_STORY
+  area: EPIC-02
+  item: Synthetic data factory
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0201;ST-0202
+  evidence_required: TST-005;TST-031
+  owner: Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0301
+  category: IMPLEMENTATION_STORY
+  area: EPIC-03
+  item: Migration framework
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0201;ST-0002;ST-0003;ST-0004
+  evidence_required: TST-008;TST-009
+  owner: Data Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0302
+  category: IMPLEMENTATION_STORY
+  area: EPIC-03
+  item: Foundation schemas and extensions
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0301
+  evidence_required: TST-008
+  owner: Data Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0303
+  category: IMPLEMENTATION_STORY
+  area: EPIC-03
+  item: IAM/OPS schemas
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0302
+  evidence_required: TST-008;TST-011;TST-013
+  owner: Data Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0304
+  category: IMPLEMENTATION_STORY
+  area: EPIC-03
+  item: Domain schemas
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0303
+  evidence_required: TST-008;TST-010
+  owner: Data Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0305
+  category: IMPLEMENTATION_STORY
+  area: EPIC-03
+  item: Publication/analytics/finance schemas
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0304
+  evidence_required: TST-008;TST-011;TST-030
+  owner: Data Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0306
+  category: IMPLEMENTATION_STORY
+  area: EPIC-03
+  item: Database roles and grants
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0303;ST-0305
+  evidence_required: TST-011
+  owner: Data Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0307
+  category: IMPLEMENTATION_STORY
+  area: EPIC-03
+  item: Migration upgrade fixtures
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0305
+  evidence_required: TST-010
+  owner: Data Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0308
+  category: IMPLEMENTATION_STORY
+  area: EPIC-03
+  item: Persistence ports and repositories
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0304;ST-0105
+  evidence_required: TST-005;TST-008
+  owner: Data Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0401
+  category: IMPLEMENTATION_STORY
+  area: EPIC-04
+  item: OIDC adapter and admin login
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0103;ST-0204
+  evidence_required: TST-012;TST-022;TST-026
+  owner: Security/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-010
+- id: ST-0402
+  category: IMPLEMENTATION_STORY
+  area: EPIC-04
+  item: MFA and step-up
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0401
+  evidence_required: TST-012;TST-022;TST-026
+  owner: Security/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0403
+  category: IMPLEMENTATION_STORY
+  area: EPIC-04
+  item: Authorization policy engine
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0306;ST-0401
+  evidence_required: TST-011;TST-012;TST-026
+  owner: Security/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0404
+  category: IMPLEMENTATION_STORY
+  area: EPIC-04
+  item: HTTP security baseline
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0401
+  evidence_required: TST-012;TST-026
+  owner: Security/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0405
+  category: IMPLEMENTATION_STORY
+  area: EPIC-04
+  item: Audit event service
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0303;ST-0403
+  evidence_required: TST-011;TST-012
+  owner: Security/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0406
+  category: IMPLEMENTATION_STORY
+  area: EPIC-04
+  item: Secure object/file intake
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0202;ST-0403
+  evidence_required: TST-014;TST-026;TST-031
+  owner: Security/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0407
+  category: IMPLEMENTATION_STORY
+  area: EPIC-04
+  item: Secret and workload identity integration
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0204
+  evidence_required: TST-026;TST-031
+  owner: Security/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0501
+  category: IMPLEMENTATION_STORY
+  area: EPIC-05
+  item: Portfolio CRUD and workflow
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0308;ST-0403
+  evidence_required: TST-005;TST-012
+  owner: Catalog/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0502
+  category: IMPLEMENTATION_STORY
+  area: EPIC-05
+  item: Rakuten adapter recorded
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0202;ST-0308
+  evidence_required: TST-014;TST-015
+  owner: Catalog/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0503
+  category: IMPLEMENTATION_STORY
+  area: EPIC-05
+  item: Catalog normalization
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0502
+  evidence_required: TST-005;TST-007;TST-008
+  owner: Catalog/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0504
+  category: IMPLEMENTATION_STORY
+  area: EPIC-05
+  item: Product identity decision engine
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0503
+  evidence_required: TST-007;TST-020
+  owner: Catalog/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-006
+- id: ST-0505
+  category: IMPLEMENTATION_STORY
+  area: EPIC-05
+  item: Rakuten live bounded smoke
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0502
+  evidence_required: TST-016
+  owner: Catalog/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-015
+- id: ST-0506
+  category: IMPLEMENTATION_STORY
+  area: EPIC-05
+  item: Portfolio/catalog admin UI
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0501;ST-0504;ST-1101
+  evidence_required: TST-022;TST-023
+  owner: Catalog/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0601
+  category: IMPLEMENTATION_STORY
+  area: EPIC-06
+  item: Raw artifact registry
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0202;ST-0308
+  evidence_required: TST-014
+  owner: Editorial/Data
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0602
+  category: IMPLEMENTATION_STORY
+  area: EPIC-06
+  item: Fact extraction and validation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0601;ST-0503
+  evidence_required: TST-005;TST-007
+  owner: Editorial/Data
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0603
+  category: IMPLEMENTATION_STORY
+  area: EPIC-06
+  item: Conflict detection
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0602
+  evidence_required: TST-007;TST-020
+  owner: Editorial/Data
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0604
+  category: IMPLEMENTATION_STORY
+  area: EPIC-06
+  item: Source packet lifecycle
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0602;ST-0603;ST-0403
+  evidence_required: TST-012;TST-020
+  owner: Editorial/Data
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0605
+  category: IMPLEMENTATION_STORY
+  area: EPIC-06
+  item: Claim/evidence service
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0604
+  evidence_required: TST-020;TST-021
+  owner: Editorial/Data
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0606
+  category: IMPLEMENTATION_STORY
+  area: EPIC-06
+  item: Evidence admin workspace
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0604;ST-0605;ST-1101
+  evidence_required: TST-022;TST-024
+  owner: Editorial/Data
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0701
+  category: IMPLEMENTATION_STORY
+  area: EPIC-07
+  item: AI contract registry loader
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0104;ST-0003
+  evidence_required: TST-001;TST-017
+  owner: AI/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0702
+  category: IMPLEMENTATION_STORY
+  area: EPIC-07
+  item: Context pack builder
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0604;ST-0701
+  evidence_required: TST-005;TST-019
+  owner: AI/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0703
+  category: IMPLEMENTATION_STORY
+  area: EPIC-07
+  item: OpenAI Responses adapter recorded
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0701;ST-0204
+  evidence_required: TST-017
+  owner: AI/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0704
+  category: IMPLEMENTATION_STORY
+  area: EPIC-07
+  item: Model router and budget
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0703
+  evidence_required: TST-005;TST-017;TST-019
+  owner: AI/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-009
+- id: ST-0705
+  category: IMPLEMENTATION_STORY
+  area: EPIC-07
+  item: AI output validators
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0702;ST-0703;ST-0605
+  evidence_required: TST-019;TST-020
+  owner: AI/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0706
+  category: IMPLEMENTATION_STORY
+  area: EPIC-07
+  item: AI job orchestration
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0303;ST-0704;ST-0705
+  evidence_required: TST-013;TST-017
+  owner: AI/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0707
+  category: IMPLEMENTATION_STORY
+  area: EPIC-07
+  item: Evaluation harness
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0705
+  evidence_required: TST-018;TST-019
+  owner: AI/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0708
+  category: IMPLEMENTATION_STORY
+  area: EPIC-07
+  item: Live bounded AI evaluation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0707;ST-0703
+  evidence_required: TST-018
+  owner: AI/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-015
+- id: ST-0709
+  category: IMPLEMENTATION_STORY
+  area: EPIC-07
+  item: AI governance admin UI
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0706;ST-0707;ST-1101
+  evidence_required: TST-022
+  owner: AI/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0801
+  category: IMPLEMENTATION_STORY
+  area: EPIC-08
+  item: Content AST types and validator
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0004;ST-0105
+  evidence_required: TST-020
+  owner: Editorial/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0802
+  category: IMPLEMENTATION_STORY
+  area: EPIC-08
+  item: Article plan/version lifecycle
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0501;ST-0801;ST-0308
+  evidence_required: TST-012;TST-020
+  owner: Editorial/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0803
+  category: IMPLEMENTATION_STORY
+  area: EPIC-08
+  item: Comparison validator
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0504;ST-0605;ST-0802
+  evidence_required: TST-007;TST-020
+  owner: Editorial/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0804
+  category: IMPLEMENTATION_STORY
+  area: EPIC-08
+  item: Recommendation engine
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0803
+  evidence_required: TST-007;TST-020
+  owner: Editorial/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0805
+  category: IMPLEMENTATION_STORY
+  area: EPIC-08
+  item: Editorial policy engine
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0605;ST-0802;ST-0804
+  evidence_required: TST-019;TST-020
+  owner: Editorial/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0806
+  category: IMPLEMENTATION_STORY
+  area: EPIC-08
+  item: AI draft integration
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0706;ST-0802;ST-0605
+  evidence_required: TST-018;TST-020
+  owner: Editorial/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0807
+  category: IMPLEMENTATION_STORY
+  area: EPIC-08
+  item: SEO and structured data renderer
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0802;ST-0805
+  evidence_required: TST-020;TST-022
+  owner: Editorial/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0808
+  category: IMPLEMENTATION_STORY
+  area: EPIC-08
+  item: Media asset pipeline
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0406;ST-0802
+  evidence_required: TST-014;TST-020;TST-024
+  owner: Editorial/Engineering
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0901
+  category: IMPLEMENTATION_STORY
+  area: EPIC-09
+  item: Review workflow
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0805;ST-0403
+  evidence_required: TST-011;TST-012;TST-020
+  owner: Editorial/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0902
+  category: IMPLEMENTATION_STORY
+  area: EPIC-09
+  item: Final approval
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0901;ST-0605;ST-0805
+  evidence_required: TST-012;TST-021
+  owner: Editorial/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0903
+  category: IMPLEMENTATION_STORY
+  area: EPIC-09
+  item: Publication manifest/snapshot
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0902;ST-0807;ST-0808
+  evidence_required: TST-014;TST-021
+  owner: Editorial/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0904
+  category: IMPLEMENTATION_STORY
+  area: EPIC-09
+  item: Public projection
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0903;ST-0306
+  evidence_required: TST-011;TST-021
+  owner: Editorial/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0905
+  category: IMPLEMENTATION_STORY
+  area: EPIC-09
+  item: Publish/unpublish/rollback commands
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0903;ST-0904;ST-0402
+  evidence_required: TST-012;TST-013;TST-021
+  owner: Editorial/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-0906
+  category: IMPLEMENTATION_STORY
+  area: EPIC-09
+  item: Publication review UI
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0901;ST-0905;ST-1101
+  evidence_required: TST-022;TST-024
+  owner: Editorial/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1001
+  category: IMPLEMENTATION_STORY
+  area: EPIC-10
+  item: Public app shell and policy pages
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0103;ST-0807
+  evidence_required: TST-022;TST-023
+  owner: Web/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-002;OD-012
+- id: ST-1002
+  category: IMPLEMENTATION_STORY
+  area: EPIC-10
+  item: Public article renderer
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0904;ST-1001
+  evidence_required: TST-021;TST-022;TST-023
+  owner: Web/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1003
+  category: IMPLEMENTATION_STORY
+  area: EPIC-10
+  item: Comparison and product components
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1002;ST-0803
+  evidence_required: TST-022;TST-024
+  owner: Web/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1004
+  category: IMPLEMENTATION_STORY
+  area: EPIC-10
+  item: Disclosure and affiliate CTA
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1002;ST-0503
+  evidence_required: TST-020;TST-022;TST-026
+  owner: Web/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1005
+  category: IMPLEMENTATION_STORY
+  area: EPIC-10
+  item: SEO routes/sitemap/robots
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1002;ST-0807
+  evidence_required: TST-020;TST-022
+  owner: Web/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1006
+  category: IMPLEMENTATION_STORY
+  area: EPIC-10
+  item: Public performance and RUM hooks
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1002
+  evidence_required: TST-027
+  owner: Web/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1007
+  category: IMPLEMENTATION_STORY
+  area: EPIC-10
+  item: Public accessibility acceptance
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1003;ST-1004;ST-1005
+  evidence_required: TST-023;TST-024
+  owner: Web/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1101
+  category: IMPLEMENTATION_STORY
+  area: EPIC-11
+  item: Admin shell/design system
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0103;ST-0401
+  evidence_required: TST-006;TST-022;TST-023
+  owner: Web/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1102
+  category: IMPLEMENTATION_STORY
+  area: EPIC-11
+  item: Article workspace UI
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0806;ST-1101
+  evidence_required: TST-022;TST-024
+  owner: Web/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1103
+  category: IMPLEMENTATION_STORY
+  area: EPIC-11
+  item: Freshness and operations UI
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1401;ST-1404;ST-1101
+  evidence_required: TST-022;TST-024
+  owner: Web/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1104
+  category: IMPLEMENTATION_STORY
+  area: EPIC-11
+  item: Analytics/finance UI
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1205;ST-1304;ST-1101
+  evidence_required: TST-022;TST-024
+  owner: Web/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1105
+  category: IMPLEMENTATION_STORY
+  area: EPIC-11
+  item: Admin visual/accessibility regression
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0506;ST-0606;ST-0709;ST-0906;ST-1102;ST-1103;ST-1104
+  evidence_required: TST-023;TST-024;TST-025
+  owner: Web/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1201
+  category: IMPLEMENTATION_STORY
+  area: EPIC-12
+  item: Canonical event collector
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0305;ST-0404
+  evidence_required: TST-012;TST-030;TST-031
+  owner: Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-012
+- id: ST-1202
+  category: IMPLEMENTATION_STORY
+  area: EPIC-12
+  item: Public event instrumentation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1002;ST-1004;ST-1201
+  evidence_required: TST-022;TST-030
+  owner: Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1203
+  category: IMPLEMENTATION_STORY
+  area: EPIC-12
+  item: Search Console adapter
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0305;ST-0204
+  evidence_required: TST-030
+  owner: Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-015
+- id: ST-1204
+  category: IMPLEMENTATION_STORY
+  area: EPIC-12
+  item: GA4 Data API adapter
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0305;ST-0204
+  evidence_required: TST-030
+  owner: Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-012;OD-015
+- id: ST-1205
+  category: IMPLEMENTATION_STORY
+  area: EPIC-12
+  item: KPI read models
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1201;ST-1203;ST-1204
+  evidence_required: TST-030
+  owner: Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1206
+  category: IMPLEMENTATION_STORY
+  area: EPIC-12
+  item: Rank/keyword import extension
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ST-1205
+  evidence_required: TST-030
+  owner: Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-004
+- id: ST-1301
+  category: IMPLEMENTATION_STORY
+  area: EPIC-13
+  item: Revenue file intake
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0406;ST-0305
+  evidence_required: TST-026;TST-030
+  owner: Finance/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-003
+- id: ST-1302
+  category: IMPLEMENTATION_STORY
+  area: EPIC-13
+  item: Provider fact commit
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1301
+  evidence_required: TST-008;TST-030
+  owner: Finance/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1303
+  category: IMPLEMENTATION_STORY
+  area: EPIC-13
+  item: Attribution engine
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1202;ST-1302
+  evidence_required: TST-007;TST-030
+  owner: Finance/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-003
+- id: ST-1304
+  category: IMPLEMENTATION_STORY
+  area: EPIC-13
+  item: Cost and unit economics
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0706;ST-1205;ST-1303
+  evidence_required: TST-030
+  owner: Finance/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-005;OD-009
+- id: ST-1305
+  category: IMPLEMENTATION_STORY
+  area: EPIC-13
+  item: Finance reconciliation report
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1304
+  evidence_required: TST-030
+  owner: Finance/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1401
+  category: IMPLEMENTATION_STORY
+  area: EPIC-14
+  item: Freshness scheduler and state
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0503;ST-0605
+  evidence_required: TST-005;TST-028
+  owner: Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-007
+- id: ST-1402
+  category: IMPLEMENTATION_STORY
+  area: EPIC-14
+  item: Safe degradation renderer
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1002;ST-1401
+  evidence_required: TST-020;TST-021;TST-028
+  owner: Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1403
+  category: IMPLEMENTATION_STORY
+  area: EPIC-14
+  item: Refresh proposal workflow
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1401;ST-0805
+  evidence_required: TST-020;TST-021
+  owner: Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1404
+  category: IMPLEMENTATION_STORY
+  area: EPIC-14
+  item: Job/Outbox/Inbox runtime
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0303;ST-0203
+  evidence_required: TST-013;TST-028
+  owner: Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1405
+  category: IMPLEMENTATION_STORY
+  area: EPIC-14
+  item: Kill switch runtime
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0402;ST-0905;ST-1404
+  evidence_required: TST-012;TST-022;TST-028
+  owner: Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1406
+  category: IMPLEMENTATION_STORY
+  area: EPIC-14
+  item: Incident service
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0405;ST-1405
+  evidence_required: TST-012;TST-028
+  owner: Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1407
+  category: IMPLEMENTATION_STORY
+  area: EPIC-14
+  item: External policy change registry
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0405;ST-0805
+  evidence_required: TST-005;TST-020
+  owner: Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1501
+  category: IMPLEMENTATION_STORY
+  area: EPIC-15
+  item: Terraform foundation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0106
+  evidence_required: TST-026
+  owner: Platform/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-013
+- id: ST-1502
+  category: IMPLEMENTATION_STORY
+  area: EPIC-15
+  item: Data services infrastructure
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1501
+  evidence_required: TST-026;TST-029
+  owner: Platform/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1503
+  category: IMPLEMENTATION_STORY
+  area: EPIC-15
+  item: Compute/CDN/WAF infrastructure
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1501
+  evidence_required: TST-026;TST-027
+  owner: Platform/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1504
+  category: IMPLEMENTATION_STORY
+  area: EPIC-15
+  item: GitHub OIDC deployment
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0107;ST-1501
+  evidence_required: TST-026
+  owner: Platform/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1505
+  category: IMPLEMENTATION_STORY
+  area: EPIC-15
+  item: Staging deployment pipeline
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1502;ST-1503;ST-1504
+  evidence_required: TST-009;TST-022
+  owner: Platform/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1506
+  category: IMPLEMENTATION_STORY
+  area: EPIC-15
+  item: Production deployment definition
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1505
+  evidence_required: TST-032
+  owner: Platform/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-009;OD-011;OD-013;OD-015
+- id: ST-1601
+  category: IMPLEMENTATION_STORY
+  area: EPIC-16
+  item: Observability foundation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1404;ST-1505
+  evidence_required: TST-031
+  owner: QA/Security/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1602
+  category: IMPLEMENTATION_STORY
+  area: EPIC-16
+  item: SLI/SLO and alert implementation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1601
+  evidence_required: TST-027;TST-028
+  owner: QA/Security/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-011
+- id: ST-1603
+  category: IMPLEMENTATION_STORY
+  area: EPIC-16
+  item: Security verification pack
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0407;ST-1505
+  evidence_required: TST-026;TST-031
+  owner: QA/Security/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1604
+  category: IMPLEMENTATION_STORY
+  area: EPIC-16
+  item: Performance/load test
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1505;ST-1601
+  evidence_required: TST-027
+  owner: QA/Security/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1605
+  category: IMPLEMENTATION_STORY
+  area: EPIC-16
+  item: Failure injection and runbook drill
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1602;ST-1405
+  evidence_required: TST-028
+  owner: QA/Security/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1606
+  category: IMPLEMENTATION_STORY
+  area: EPIC-16
+  item: Backup restore drill
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1502;ST-1505
+  evidence_required: TST-029
+  owner: QA/Security/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-014
+- id: ST-1607
+  category: IMPLEMENTATION_STORY
+  area: EPIC-16
+  item: Gate evidence generator
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0005;ST-1603;ST-1605;ST-1606
+  evidence_required: TST-032
+  owner: QA/Security/Operations
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1701
+  category: IMPLEMENTATION_STORY
+  area: EPIC-17
+  item: Resolve MVP business inputs
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-0006
+  evidence_required: TST-032
+  owner: Product/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: OD-001;OD-002;OD-005;OD-006;OD-007;OD-008;OD-009
+- id: ST-1702
+  category: IMPLEMENTATION_STORY
+  area: EPIC-17
+  item: Create category fixtures and rules
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1701;ST-0504;ST-1401
+  evidence_required: TST-020
+  owner: Product/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1703
+  category: IMPLEMENTATION_STORY
+  area: EPIC-17
+  item: End-to-end first article
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1702;ST-0906;ST-1007;ST-1302;ST-1505
+  evidence_required: TST-021;TST-022;TST-032
+  owner: Product/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1704
+  category: IMPLEMENTATION_STORY
+  area: EPIC-17
+  item: 5-10 article editorial pilot
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1703
+  evidence_required: TST-018;TST-020;TST-032
+  owner: Product/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1705
+  category: IMPLEMENTATION_STORY
+  area: EPIC-17
+  item: Pilot security/recovery sign-off
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1607;ST-1704
+  evidence_required: TST-026;TST-029;TST-032
+  owner: Product/Editorial
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1801
+  category: IMPLEMENTATION_STORY
+  area: EPIC-18
+  item: Expand to 30-45 articles
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1705
+  evidence_required: TST-020;TST-032
+  owner: Product/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1802
+  category: IMPLEMENTATION_STORY
+  area: EPIC-18
+  item: GATE-1 decision
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1801
+  evidence_required: TST-032
+  owner: Product/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1803
+  category: IMPLEMENTATION_STORY
+  area: EPIC-18
+  item: GATE-2 observation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1802;ST-1205
+  evidence_required: TST-030;TST-032
+  owner: Product/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1804
+  category: IMPLEMENTATION_STORY
+  area: EPIC-18
+  item: GATE-3 economics
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1803;ST-1305
+  evidence_required: TST-030;TST-032
+  owner: Product/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1805
+  category: IMPLEMENTATION_STORY
+  area: EPIC-18
+  item: Scale/hold/pivot decision
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ST-1804
+  evidence_required: TST-032
+  owner: Product/Analytics
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1901
+  category: IMPLEMENTATION_STORY
+  area: EPIC-19
+  item: Model judge calibrated automation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ST-0707
+  evidence_required: TST-032
+  owner: Post-MVP
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1902
+  category: IMPLEMENTATION_STORY
+  area: EPIC-19
+  item: Champion/challenger routing
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ST-0708
+  evidence_required: TST-032
+  owner: Post-MVP
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1903
+  category: IMPLEMENTATION_STORY
+  area: EPIC-19
+  item: Approved partial auto-publication
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ST-1805
+  evidence_required: TST-032
+  owner: Post-MVP
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1904
+  category: IMPLEMENTATION_STORY
+  area: EPIC-19
+  item: Multiple categories
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ST-1805
+  evidence_required: TST-032
+  owner: Post-MVP
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1905
+  category: IMPLEMENTATION_STORY
+  area: EPIC-19
+  item: Advanced rank provider adapter
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ST-1206
+  evidence_required: TST-032
+  owner: Post-MVP
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1906
+  category: IMPLEMENTATION_STORY
+  area: EPIC-19
+  item: Advanced causal attribution
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ST-1303
+  evidence_required: TST-032
+  owner: Post-MVP
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1907
+  category: IMPLEMENTATION_STORY
+  area: EPIC-19
+  item: Automated content portfolio optimizer
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ST-1805
+  evidence_required: TST-032
+  owner: Post-MVP
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: ST-1908
+  category: IMPLEMENTATION_STORY
+  area: EPIC-19
+  item: Fine-tuning evaluation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ST-0707
+  evidence_required: TST-032
+  owner: Post-MVP
+  source: 07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  notes: ''
+- id: TST-001
+  category: RUNTIME_TEST
+  area: static
+  item: Repository static checks
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: format/lint/type/schema/file policy
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-002
+  category: RUNTIME_TEST
+  area: contract
+  item: Contract lint and reference resolution
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: OpenAPI/AsyncAPI/JSON Schemaの構文・参照
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-003
+  category: RUNTIME_TEST
+  area: contract
+  item: Breaking change detection
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 公開済みContract互換性
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-004
+  category: RUNTIME_TEST
+  area: contract
+  item: Generated artifact drift
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 生成型/client/docの再現性
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-005
+  category: RUNTIME_TEST
+  area: unit
+  item: Python unit
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Domain value/object/policyの局所Test
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-006
+  category: RUNTIME_TEST
+  area: unit
+  item: TypeScript unit
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: UI logic/renderer/functionの局所Test
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-007
+  category: RUNTIME_TEST
+  area: unit
+  item: Property-based domain tests
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 冪等性、状態遷移、金額、正規化の不変条件
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-008
+  category: RUNTIME_TEST
+  area: database
+  item: PostgreSQL baseline integration
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: DDL/extension/seed/constraint/trigger/role
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-009
+  category: RUNTIME_TEST
+  area: database
+  item: Migration zero-to-latest
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 空DBから最新版へ到達
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-010
+  category: RUNTIME_TEST
+  area: database
+  item: Migration upgrade/rollback
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 前Versionからupgrade、失敗時復旧
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI;staging
+- id: TST-011
+  category: RUNTIME_TEST
+  area: database
+  item: DB authorization and immutability
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Role/Grant/Public isolation/immutable guards
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-012
+  category: RUNTIME_TEST
+  area: api
+  item: HTTP API integration
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 認証、authz、idempotency、ETag、Problem Details
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-013
+  category: RUNTIME_TEST
+  area: async
+  item: Async delivery and idempotency
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 重複、順不同、retry、DLQ、lease
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-014
+  category: RUNTIME_TEST
+  area: storage
+  item: Object artifact integrity
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Hash、version、tamper、retention hooks
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-015
+  category: RUNTIME_TEST
+  area: adapter
+  item: Rakuten adapter recorded contract
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Recorded fixtureのrequest/normalization/error
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-016
+  category: RUNTIME_TEST
+  area: adapter
+  item: Rakuten adapter live smoke
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 公式Sandbox/低影響Liveでauth/rate/schema
+  owner: Operations
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: staging
+- id: TST-017
+  category: RUNTIME_TEST
+  area: adapter
+  item: OpenAI adapter recorded contract
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: request、structured output、refusal、usage、error
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-018
+  category: RUNTIME_TEST
+  area: ai
+  item: OpenAI live bounded evaluation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 承認DatasetでRoute/Modelを評価
+  owner: AI/Editorial
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: staging
+- id: TST-019
+  category: RUNTIME_TEST
+  area: ai
+  item: AI red-team regression
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Prompt injection、虚偽、review、bias、secret
+  owner: AI/Security
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI;staging
+- id: TST-020
+  category: RUNTIME_TEST
+  area: content
+  item: Content AST and policy
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 5記事型、Block、Claim、Recommendation、Disclosure
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-021
+  category: RUNTIME_TEST
+  area: content
+  item: Publication snapshot E2E
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 承認からsnapshot/readmodel/rollback
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI;staging
+- id: TST-022
+  category: RUNTIME_TEST
+  area: ui
+  item: Browser functional E2E
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: 主要WorkflowとPublic view
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI;staging
+- id: TST-023
+  category: RUNTIME_TEST
+  area: ui
+  item: Accessibility automated
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: axe等による機械検査
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-024
+  category: RUNTIME_TEST
+  area: ui
+  item: Accessibility manual
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Keyboard、Zoom、Screen reader、cognitive checks
+  owner: QA/Accessibility
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: staging
+- id: TST-025
+  category: RUNTIME_TEST
+  area: ui
+  item: Visual regression
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ''
+  evidence_required: 主要Template/Component差分
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI
+- id: TST-026
+  category: RUNTIME_TEST
+  area: security
+  item: Security verification
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: ASVS control、SAST/SCA/DAST、manual abuse
+  owner: Security
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI;staging
+- id: TST-027
+  category: RUNTIME_TEST
+  area: performance
+  item: Performance and load
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Public/Admin/API/workerのSLO capacity
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: staging
+- id: TST-028
+  category: RUNTIME_TEST
+  area: reliability
+  item: Reliability failure injection
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: provider/queue/db/timeouts/retry/kill switch
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: staging
+- id: TST-029
+  category: RUNTIME_TEST
+  area: recovery
+  item: Backup restore drill
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: RDS/Object/Configのrestoreと整合
+  owner: Operations
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: staging/recovery
+- id: TST-030
+  category: RUNTIME_TEST
+  area: analytics
+  item: Analytics reconciliation
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Event/GA4/GSC/Revenue/Attribution/KPIの再現
+  owner: Engineering
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI;staging
+- id: TST-031
+  category: RUNTIME_TEST
+  area: privacy
+  item: Privacy and retention
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: PII scan、consent、deletion、access
+  owner: Privacy/Security
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: CI;staging
+- id: TST-032
+  category: RUNTIME_TEST
+  area: acceptance
+  item: GATE acceptance pack
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: GATE-0..4のEvidenceをSnapshot化
+  owner: Product Owner
+  source: 05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  notes: staging
+- id: OD-001
+  category: OPEN_DECISION
+  area: initial_category
+  item: 低リスクで比較軸が構造化可能な最初のカテゴリを1つ選定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: MVP vertical slice
+  owner: Product Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: カテゴリ固有実装を停止し合成Fixtureのみ使用
+- id: OD-002
+  category: OPEN_DECISION
+  area: site_name_and_domain
+  item: ブランド名、ドメイン、運営者表記を決定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Staging public UI
+  owner: Product Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: example.invalidと仮ブランドを使用し外部公開禁止
+- id: OD-003
+  category: OPEN_DECISION
+  area: rakuten_report_sample
+  item: 実際に利用可能な成果Reportの匿名化サンプル、列、状態、粒度を確認
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Finance adapter
+  owner: Business Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: Synthetic fixtureのみ。実成果帰属を未検証表示
+- id: OD-004
+  category: OPEN_DECISION
+  area: keyword_and_rank_provider
+  item: 規約適合した順位/Keyword Providerまたは手動Importを選定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ''
+  evidence_required: GATE-2 automation
+  owner: Product Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: Search Consoleと手動CSVのみ
+- id: OD-005
+  category: OPEN_DECISION
+  area: human_reviewer_and_hourly_cost
+  item: Reviewer、代替Reviewer、標準人件費を決定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: GATE-1 and contribution profit
+  owner: Business Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: 公開不可、利益計算の人件費はUNKNOWN
+- id: OD-006
+  category: OPEN_DECISION
+  area: category_product_identity_rules
+  item: 型番、容量、色、セット、JAN等の統合/分離ルールをカテゴリごとに定義
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Catalog grouping
+  owner: Domain Editor
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: 自動統合せずHuman Reviewへ送る
+- id: OD-007
+  category: OPEN_DECISION
+  area: category_freshness_sla
+  item: 価格、在庫、仕様、画像、リンクの最大許容Ageを定義
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Publication and refresh
+  owner: Managing Editor
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: 保守的な暫定値を適用しStale時は非表示
+- id: OD-008
+  category: OPEN_DECISION
+  area: legal_review_boundary
+  item: 法務確認対象、相談経路、記録方法を確定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: GATE-0
+  owner: Business Owner / Legal
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: 法的判断をAI/開発者が代替せず公開をブロック
+- id: OD-009
+  category: OPEN_DECISION
+  area: budget_and_acceptable_loss
+  item: AWS、LLM、外部Providerの月次上限と自動停止閾値を設定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Cloud/LLM release
+  owner: Business Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: 低い開発用上限、Production無効
+- id: OD-010
+  category: OPEN_DECISION
+  area: oidc_provider
+  item: Cognitoまたは承認済みOIDC Providerを選定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Admin authentication
+  owner: Security Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: Local fake authはdevelopmentのみ。外部公開不可
+- id: OD-011
+  category: OPEN_DECISION
+  area: notification_channels
+  item: Critical/High通知先とEscalation連絡先を設定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Incident operations
+  owner: Operations Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: Local logのみ。Production不可
+- id: OD-012
+  category: OPEN_DECISION
+  area: privacy_and_consent_mode
+  item: 同意Banner、Cookie/計測方針、Privacy文言を決定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Public analytics
+  owner: Privacy Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: 非必須Trackingを無効化しFirst-party最小Eventのみ
+- id: OD-013
+  category: OPEN_DECISION
+  area: production_region_and_data_residency
+  item: AWS Region、Backup Region、越境移転の扱いを承認
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Terraform production
+  owner: Security/Business Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: Referenceはap-northeast-1、Production apply禁止
+- id: OD-014
+  category: OPEN_DECISION
+  area: retention_periods
+  item: Analytics個票、Security Log、AI Artifact、成果データの保持期間を承認
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Deletion jobs
+  owner: Privacy/Finance/Legal
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: 自動削除Jobは無効、最小収集
+- id: OD-015
+  category: OPEN_DECISION
+  area: production_provider_credentials
+  item: 楽天、OpenAI、Google、AWSの専用Account/権限/Secretを設定
+  design_status: DESIGNED_DECISION_POINT
+  implementation_status: BLOCKED_PENDING_INPUT
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: Live adapter test
+  owner: Operations Owner
+  source: 01_integration/RAOS_07_open_decisions_v1.0.yaml
+  notes: Recorded fixtureのみ
+- id: EXT-001
+  category: EXTERNAL_INTEGRATION
+  area: provider/cloud
+  item: Rakuten Web Service
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: OD-015
+  evidence_required: recorded contract and bounded live validation
+  owner: Operations/Engineering
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: NOT_CONFIGURED
+- id: EXT-002
+  category: EXTERNAL_INTEGRATION
+  area: provider/cloud
+  item: Rakuten affiliate result report
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: OD-003;OD-015
+  evidence_required: recorded contract and bounded live validation
+  owner: Operations/Engineering
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: NOT_CONFIGURED
+- id: EXT-003
+  category: EXTERNAL_INTEGRATION
+  area: provider/cloud
+  item: OpenAI Responses API
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: OD-009;OD-015
+  evidence_required: recorded contract and bounded live validation
+  owner: Operations/Engineering
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: NOT_CONFIGURED
+- id: EXT-004
+  category: EXTERNAL_INTEGRATION
+  area: provider/cloud
+  item: Google Search Console API
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: OD-015
+  evidence_required: recorded contract and bounded live validation
+  owner: Operations/Engineering
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: NOT_CONFIGURED
+- id: EXT-005
+  category: EXTERNAL_INTEGRATION
+  area: provider/cloud
+  item: Google Analytics Data API / GA4
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: OD-012;OD-015
+  evidence_required: recorded contract and bounded live validation
+  owner: Operations/Engineering
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: NOT_CONFIGURED
+- id: EXT-006
+  category: EXTERNAL_INTEGRATION
+  area: provider/cloud
+  item: AWS production environment
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: OD-009;OD-013;OD-015
+  evidence_required: recorded contract and bounded live validation
+  owner: Operations/Engineering
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: NOT_CONFIGURED
+- id: EXT-007
+  category: EXTERNAL_INTEGRATION
+  area: provider/cloud
+  item: OIDC/MFA provider
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: OD-010
+  evidence_required: recorded contract and bounded live validation
+  owner: Operations/Engineering
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: NOT_CONFIGURED
+- id: EXT-008
+  category: EXTERNAL_INTEGRATION
+  area: provider/cloud
+  item: GitHub repository/rulesets/OIDC
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: recorded contract and bounded live validation
+  owner: Operations/Engineering
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: NOT_CONFIGURED
+- id: EXT-009
+  category: EXTERNAL_INTEGRATION
+  area: provider/cloud
+  item: Notification channel
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: OD-011
+  evidence_required: recorded contract and bounded live validation
+  owner: Operations/Engineering
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: NOT_CONFIGURED
+- id: ENV-DEV
+  category: ENVIRONMENT
+  area: runtime
+  item: DEV
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_CONFIGURED
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ''
+  evidence_required: environment provisioning and smoke evidence
+  owner: Platform/Operations
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: ''
+- id: ENV-CI
+  category: ENVIRONMENT
+  area: runtime
+  item: CI
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_CONFIGURED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: environment provisioning and smoke evidence
+  owner: Platform/Operations
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: ''
+- id: ENV-INTEGRATION
+  category: ENVIRONMENT
+  area: runtime
+  item: INTEGRATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_CONFIGURED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: environment provisioning and smoke evidence
+  owner: Platform/Operations
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: ''
+- id: ENV-STAGING
+  category: ENVIRONMENT
+  area: runtime
+  item: STAGING
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_CONFIGURED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: environment provisioning and smoke evidence
+  owner: Platform/Operations
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: ''
+- id: ENV-RECOVERY
+  category: ENVIRONMENT
+  area: runtime
+  item: RECOVERY
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_CONFIGURED
+  verification_status: NOT_EXECUTED
+  blocking: 'false'
+  dependencies: ''
+  evidence_required: environment provisioning and smoke evidence
+  owner: Platform/Operations
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: ''
+- id: ENV-PRODUCTION
+  category: ENVIRONMENT
+  area: runtime
+  item: PRODUCTION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_CONFIGURED
+  verification_status: NOT_EXECUTED
+  blocking: 'true'
+  dependencies: ''
+  evidence_required: environment provisioning and smoke evidence
+  owner: Platform/Operations
+  source: 00_master/RAOS_implementation_status_registry_v1.0.yaml
+  notes: ''

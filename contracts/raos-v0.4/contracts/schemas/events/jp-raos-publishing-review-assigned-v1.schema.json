@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-publishing-review-assigned-v1.schema.json",
+  "title": "jp.raos.publishing.review_assigned.v1",
+  "description": "Human Reviewが割り当てられた。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.publishing.review_assigned.v1"
+        },
+        "producer": {
+          "const": "publishing"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "review_assignment_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "review_type": {
+              "type": "string"
+            },
+            "assigned_to_principal_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "due_at": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "review_assignment_id",
+            "article_version_id",
+            "review_type",
+            "assigned_to_principal_id"
+          ]
+        }
+      }
+    }
+  ]
+}

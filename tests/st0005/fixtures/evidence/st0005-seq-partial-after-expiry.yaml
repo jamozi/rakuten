@@ -1,0 +1,17 @@
+document:
+  id: TEST-STATUS-EVIDENCE-ST0005-SEQ-PARTIAL-AFTER-EXPIRY
+  schema_version: 1
+  recorded_at: '2026-08-03T10:00:00Z'
+story_id: ST-0005
+evidence_class: RUNTIME_SUITE_RESULT
+formal_suite_status: PARTIAL
+source_artifacts:
+- original_uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  artifact_uri: repo://tests/st0005/fixtures/artifacts/7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b-test-catalog.yaml
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+suite_results:
+- suite_id: TST-001
+  environment: CI
+  result: PARTIAL
+local_results: []
+boundary: Fresh partial result after the expiry transition watermark.

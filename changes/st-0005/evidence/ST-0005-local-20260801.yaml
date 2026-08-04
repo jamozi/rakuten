@@ -1,0 +1,87 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0005-20260801
+  schema_version: 1
+  recorded_at: '2026-08-01T13:49:13Z'
+story_id: ST-0005
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://scripts/build_st0005_status.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/70d68daedeeb12f30251713ef88dd5653dcf790766cd8261344d4c9ba841c348-build_st0005_status.py
+  sha256: 70d68daedeeb12f30251713ef88dd5653dcf790766cd8261344d4c9ba841c348
+- original_uri: repo://scripts/import_raos_design.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/13c36b2104ebf1d51b07f4774939e2ee89180d9d479f905176eaaa71dadd4f37-import_raos_design.py
+  sha256: 13c36b2104ebf1d51b07f4774939e2ee89180d9d479f905176eaaa71dadd4f37
+- original_uri: repo://tests/st0005/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/2ece50f24abd906541623f448776d001bd6e03a4ee7a8d1a5a5477c4cd996529-conftest.py
+  sha256: 2ece50f24abd906541623f448776d001bd6e03a4ee7a8d1a5a5477c4cd996529
+- original_uri: repo://tests/st0005/test_transition_validation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/09a8fa75385ffcbbefefaa4287d2ebfa87c9423d74de6a070ed29dfad13a2329-test_transition_validation.py
+  sha256: 09a8fa75385ffcbbefefaa4287d2ebfa87c9423d74de6a070ed29dfad13a2329
+- original_uri: repo://tests/st0005/test_overlay_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c02ea864f9c6c2fd36ac2438e5c613594aff0d72ebef771db3b873aa67446805-test_overlay_contract.py
+  sha256: c02ea864f9c6c2fd36ac2438e5c613594aff0d72ebef771db3b873aa67446805
+- original_uri: repo://tests/st0005/test_revision_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/07ca1592e4b6f202d54a9a547906a2a07cac7dfa29058a23d3c723ac23ba71d3-test_revision_generation.py
+  sha256: 07ca1592e4b6f202d54a9a547906a2a07cac7dfa29058a23d3c723ac23ba71d3
+- original_uri: repo://tests/test_import_raos_design.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/b3f15e47077f848c359b96637cb490696ec1769f53705cafb6feb5700a98c66e-test_import_raos_design.py
+  sha256: b3f15e47077f848c359b96637cb490696ec1769f53705cafb6feb5700a98c66e
+- original_uri: repo://.github/workflows/status-registry.yml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a-status-registry.yml
+  sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
+- original_uri: repo://.gitattributes
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/1a20f87f9fdd174ccd6fccada520e54e2634cf31c38c31b5401f6818ef43d8e5-.gitattributes
+  sha256: 1a20f87f9fdd174ccd6fccada520e54e2634cf31c38c31b5401f6818ef43d8e5
+- original_uri: repo://docs/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4ad983a0a8c415d67cf25351f1cb037f959750622bb4a4e79e3c824dc8ff7ab6-README.md
+  sha256: 4ad983a0a8c415d67cf25351f1cb037f959750622bb4a4e79e3c824dc8ff7ab6
+- original_uri: repo://docs/execplans/ST-0005.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d7cb4d77223cd7c889c403518684afb3a647cecb91e2be4072bda9c204dade7e-ST-0005.md
+  sha256: d7cb4d77223cd7c889c403518684afb3a647cecb91e2be4072bda9c204dade7e
+- original_uri: repo://docs/worklogs/ST-0005.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/82dac563b2c327e81cfa538d1212877da467ddbe8cf4d85862a39573a3a56849-ST-0005.md
+  sha256: 82dac563b2c327e81cfa538d1212877da467ddbe8cf4d85862a39573a3a56849
+- original_uri: repo://changes/st-0005/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/2c6123dceddf12eed1eb107556d01b18dd76bb7832152682c1bcdf860d9c9cb8-README.md
+  sha256: 2c6123dceddf12eed1eb107556d01b18dd76bb7832152682c1bcdf860d9c9cb8
+suite_results:
+- suite_id: TST-001
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin python3 -m pytest -q tests/st0002
+  result: 139 passed in 30.91s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin python3 -m pytest -q tests/st0003
+  result: 101 passed in 76.93s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin python3 -m pytest -q tests/st0004
+  result: 64 passed in 81.05s
+- command: PostgreSQL environment for isolated ST-0002/ST-0003/ST-0004 suites
+  result: Local 18.3 server_version_num=180003; formal target 18.4 NOT_EXECUTED
+- command: python3 -m pytest -q tests/st0005
+  result: 141 passed in 23.52s
+- command: python3 -m pytest -q tests/test_import_raos_design.py
+  result: 18 passed in 0.22s
+- command: python3 scripts/import_raos_design.py verify
+  result: PASS; 105 files, read order, 6 archives, 104 checksums, 103 manifest entries
+- command: python3 scripts/build_st0002_revision.py --check; build_st0003_revision.py --check; build_st0004_revision.py --check
+  result: PASS for ST-0002, ST-0003, and ST-0004
+- command: python3 scripts/build_st0005_status.py; python3 scripts/build_st0005_status.py --check
+  result: PASS build and deterministic byte check
+- command: python3 scripts/build_st0005_status.py --validate-request for each of 5 requests
+  result: PASS for all 5 proposal requests
+- command: ruff check scripts/build_st0005_status.py scripts/import_raos_design.py tests/st0005 tests/test_import_raos_design.py
+  result: All checks passed!
+- command: ruff format --check scripts/build_st0005_status.py scripts/import_raos_design.py tests/st0005 tests/test_import_raos_design.py
+  result: 7 files already formatted
+- command: /home/minami/.nvm/versions/node/v24.13.0/bin/pyright scripts/build_st0005_status.py scripts/import_raos_design.py tests/st0005 tests/test_import_raos_design.py
+  result: 0 errors, 0 warnings, 0 informations
+- command: python3 -m py_compile scripts/build_st0005_status.py scripts/import_raos_design.py tests/st0005/*.py tests/test_import_raos_design.py
+  result: PASS
+- command: safe PyYAML parse of .github/workflows/status-registry.yml
+  result: PASS with jobs mapping
+- command: immutable evidence reference-closure and live-original-parity audit
+  result: PASS; 5 requests, 5 snapshots, 21 captures
+- command: sha256sum -c /tmp/st0005_protected_before.sha256
+  result: PASS for all 111 protected canonical/upstream/ZIP files
+boundary: Local static evidence only; GitHub PR execution and formal CI TST-001 were not executed.

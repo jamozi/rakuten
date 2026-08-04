@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/finance-calculate-unit-economics-v1.schema.json",
+  "title": "finance.calculate_unit_economics.v1",
+  "description": "確定成果・費用・trafficからEPC/RPM/貢献利益を算出する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "finance.calculate_unit_economics.v1"
+        },
+        "queue": {
+          "const": "analytics"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "scope_type": {
+              "type": "string",
+              "enum": [
+                "SITE",
+                "CATEGORY",
+                "ARTICLE"
+              ]
+            },
+            "scope_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "period_month": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}$"
+            },
+            "calculation_version": {
+              "type": "string"
+            },
+            "source_watermarks": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "site_id",
+            "scope_type",
+            "scope_id",
+            "period_month",
+            "calculation_version",
+            "source_watermarks"
+          ]
+        }
+      }
+    }
+  ]
+}

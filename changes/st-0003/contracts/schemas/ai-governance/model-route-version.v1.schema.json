@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/model-route-version/v1",
+  "title": "Model Route Version",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "route_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "version_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "primary_model_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "fallback_model_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "route_config": {
+      "type": "object",
+      "additionalProperties": true,
+      "maxProperties": 100
+    },
+    "monthly_budget_jpy": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "per_job_budget_jpy": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "EVALUATING",
+        "CERTIFIED",
+        "CANARY",
+        "ACTIVE",
+        "PAUSED",
+        "ROLLED_BACK",
+        "RETIRED"
+      ]
+    },
+    "effective_from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "effective_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "approved_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lock_version": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "id",
+    "route_code",
+    "version_no",
+    "task_definition_id",
+    "primary_model_id",
+    "fallback_model_id",
+    "route_config",
+    "monthly_budget_jpy",
+    "per_job_budget_jpy",
+    "status",
+    "effective_from",
+    "effective_to",
+    "approved_by_principal_id",
+    "created_at",
+    "updated_at",
+    "lock_version"
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

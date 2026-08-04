@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-evidence-claims-extracted-v1.schema.json",
+  "title": "jp.raos.evidence.claims_extracted.v1",
+  "description": "Article Claim群が抽出された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.evidence.claims_extracted.v1"
+        },
+        "producer": {
+          "const": "evidence"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "claim_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "unsupported_critical_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "article_version_id",
+            "claim_ids",
+            "unsupported_critical_count"
+          ]
+        }
+      }
+    }
+  ]
+}

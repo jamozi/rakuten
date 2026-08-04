@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-child-jobs-created-v1.schema.json",
+  "title": "jp.raos.ops.child_jobs_created.v1",
+  "description": "Dispatcher Jobが子Job群を作成した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.child_jobs_created.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "parent_job_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "child_job_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "minItems": 1
+            },
+            "routing_key": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "parent_job_id",
+            "child_job_ids",
+            "routing_key"
+          ]
+        }
+      }
+    }
+  ]
+}

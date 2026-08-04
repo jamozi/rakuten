@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.0.0",
+  "article_id": "ART-FIX-002",
+  "article_version_id": "ARTV-FIX-002",
+  "article_type": "use_case_recommendation",
+  "locale": "ja-JP",
+  "title": "用途別おすすめの合成検証記事",
+  "methodology_ref": "METH-FIX-001",
+  "seo_metadata_ref": "SEO-FIX-002",
+  "source_packet_version_ref": "SPV-FIX-001",
+  "blocks": [
+    {
+      "block_id": "BLK-FIX-001",
+      "type": "disclosure_slot",
+      "disclosure_policy_version_ref": "DISC-FIX-001",
+      "placement": "article_top",
+      "editor_removable": false
+    },
+    {
+      "block_id": "BLK-FIX-002",
+      "type": "lead",
+      "claim_ids": [
+        "CLM-FIX-002"
+      ],
+      "content": [
+        {
+          "type": "text",
+          "text": "この合成Fixtureは、対象条件に応じた商品選びを説明します。"
+        }
+      ]
+    },
+    {
+      "block_id": "BLK-FIX-003",
+      "type": "decision_summary",
+      "items": [
+        {
+          "condition": "条件Aを優先する場合",
+          "recommendation_ref": "REC-FIX-001",
+          "summary": [
+            {
+              "type": "text",
+              "text": "商品Aを第一候補として比較します。"
+            }
+          ],
+          "claim_ids": [
+            "CLM-FIX-003"
+          ]
+        }
+      ]
+    },
+    {
+      "block_id": "BLK-FIX-004",
+      "type": "intended_reader",
+      "claim_ids": [
+        "CLM-FIX-004"
+      ],
+      "fits": [
+        [
+          {
+            "type": "text",
+            "text": "条件Aを重視する人"
+          }
+        ]
+      ],
+      "not_fits": [
+        [
+          {
+            "type": "text",
+            "text": "条件Bを最優先する人"
+          }
+        ]
+      ],
+      "assumptions": [
+        [
+          {
+            "type": "text",
+            "text": "日本国内で購入する前提"
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "BLK-FIX-005",
+      "type": "methodology",
+      "claim_ids": [
+        "CLM-FIX-005"
+      ],
+      "methodology_ref": "METH-FIX-001",
+      "candidate_universe_summary": [
+        {
+          "type": "text",
+          "text": "公開条件を満たす3商品を比較対象としました。"
+        }
+      ],
+      "inclusion_rules": [
+        [
+          {
+            "type": "text",
+            "text": "公式仕様を確認できる"
+          }
+        ]
+      ],
+      "exclusion_rules": [
+        [
+          {
+            "type": "text",
+            "text": "商品同定が未解決"
+          }
+        ]
+      ],
+      "data_checked_at": "2026-07-30T00:00:00Z"
+    },
+    {
+      "block_id": "BLK-FIX-006",
+      "type": "selection_criteria",
+      "criteria": [
+        {
+          "comparison_axis_ref": "AXIS-FIX-001",
+          "label": "重量",
+          "explanation": [
+            {
+              "type": "text",
+              "text": "持ち運び条件に影響する軸です。"
+            }
+          ],
+          "claim_ids": [
+            "CLM-FIX-006"
+          ]
+        }
+      ]
+    },
+    {
+      "block_id": "BLK-FIX-007",
+      "type": "recommendation_group",
+      "group_id": "GROUP-FIX-001",
+      "label": "条件A向け",
+      "condition": [
+        {
+          "type": "text",
+          "text": "条件Aを優先する場合"
+        }
+      ],
+      "recommendation_refs": [
+        "REC-FIX-001"
+      ],
+      "rationale_claim_ids": [
+        "CLM-FIX-007"
+      ],
+      "strict_order": false
+    },
+    {
+      "block_id": "BLK-FIX-008",
+      "type": "product_card",
+      "claim_ids": [
+        "CLM-FIX-008"
+      ],
+      "recommendation_ref": "REC-FIX-001",
+      "product_selection_ref": "PSEL-FIX-001",
+      "display_policy_ref": "DISPLAY-FIX-001",
+      "show_price_when_fresh": true,
+      "show_availability_when_fresh": true
+    },
+    {
+      "block_id": "BLK-FIX-009",
+      "type": "tradeoff",
+      "claim_ids": [
+        "CLM-FIX-009"
+      ],
+      "subject_ref": "PSEL-FIX-001",
+      "benefit": [
+        {
+          "type": "text",
+          "text": "軽量です。"
+        }
+      ],
+      "cost_or_limitation": [
+        {
+          "type": "text",
+          "text": "容量は小さめです。"
+        }
+      ],
+      "applies_when": [
+        {
+          "type": "text",
+          "text": "持ち運びを優先する場合"
+        }
+      ]
+    },
+    {
+      "block_id": "BLK-FIX-010",
+      "type": "caution",
+      "claim_ids": [
+        "CLM-FIX-010"
+      ],
+      "severity": "important",
+      "content": [
+        {
+          "type": "text",
+          "text": "価格と在庫は楽天市場で最新情報を確認してください。"
+        }
+      ]
+    },
+    {
+      "block_id": "BLK-FIX-011",
+      "type": "source_summary",
+      "claim_ids": [
+        "CLM-FIX-011"
+      ],
+      "source_packet_version_ref": "SPV-FIX-001",
+      "last_checked_at": "2026-07-30T00:00:00Z",
+      "editorial_policy_route_ref": "ROUTE-EDITORIAL-POLICY",
+      "show_source_categories": true
+    }
+  ],
+  "publication_flags": {
+    "affiliate_content": true,
+    "human_approval_required": true,
+    "allow_auto_publish": false
+  }
+}

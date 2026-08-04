@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-catalog-grouping-proposals-created-v1.schema.json",
+  "title": "jp.raos.catalog.grouping_proposals_created.v1",
+  "description": "Grouping提案が作成された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.catalog.grouping_proposals_created.v1"
+        },
+        "producer": {
+          "const": "catalog"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "category_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "candidate_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "proposal_count": {
+              "type": "integer"
+            },
+            "rule_version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "category_id",
+            "candidate_ids",
+            "proposal_count",
+            "rule_version"
+          ]
+        }
+      }
+    }
+  ]
+}

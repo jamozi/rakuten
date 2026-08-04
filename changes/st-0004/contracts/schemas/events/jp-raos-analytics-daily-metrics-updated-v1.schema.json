@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-analytics-daily-metrics-updated-v1.schema.json",
+  "title": "jp.raos.analytics.daily_metrics_updated.v1",
+  "description": "Article日次指標が更新された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.analytics.daily_metrics_updated.v1"
+        },
+        "producer": {
+          "const": "analytics"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "date_from": {
+              "type": "string",
+              "format": "date"
+            },
+            "date_to": {
+              "type": "string",
+              "format": "date"
+            },
+            "article_count": {
+              "type": "integer"
+            },
+            "source_watermark": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "site_id",
+            "date_from",
+            "date_to",
+            "article_count",
+            "source_watermark"
+          ]
+        }
+      }
+    }
+  ]
+}

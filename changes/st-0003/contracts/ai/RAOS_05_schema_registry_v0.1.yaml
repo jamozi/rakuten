@@ -1,0 +1,78 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+  status: BASELINE_CANDIDATE
+json_schema_dialect: https://json-schema.org/draft/2020-12/schema
+provider_compatibility: OpenAI strict structured output supported subset must be validated in CI and adapter tests
+schemas:
+- schema_id: https://schemas.raos.local/evaluation/case/v1
+  title: RAOS AI evaluation case v1
+  path: schemas/eval/evaluation_case.v1.schema.json
+  sha256: 363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a
+  kind: evaluation
+- schema_id: https://schemas.raos.local/evaluation/judge_output/v1
+  title: RAOS calibrated model judge output v1
+  path: schemas/eval/judge_output.v1.schema.json
+  sha256: 8d832fe5c58a7cfeb8bafa8dab18c64aa45bdb56c3282bd3d7d6e14cad6e87d4
+  kind: evaluation
+- schema_id: https://schemas.raos.local/ai/article_draft/v1
+  title: Article Draft Structured Output
+  path: schemas/tasks/ai.article_draft.v1.output.schema.json
+  sha256: 3f7fe932eee1d967455a2613000bda988edd1b1848bca52933cc56d9ed985eae
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/article_outline/v1
+  title: Article Outline Output
+  path: schemas/tasks/ai.article_outline.v1.output.schema.json
+  sha256: d57afe6f1b4ab33cbb8553cee4a9270ff3800ae3372f76fa0ae6b47eeba84848
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/claim_extraction/v1
+  title: Claim Extraction Output
+  path: schemas/tasks/ai.claim_extraction.v1.output.schema.json
+  sha256: 54a4f58a3ba4136dbac0a17b992dcda969ef7d2a19d42ae8d3c4c253cc4302b5
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/comparison_axis_suggestion/v1
+  title: Comparison Axis Suggestion Output
+  path: schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json
+  sha256: 9702e97765468c7aa1fec27fbfec974dc8c8037ab154c647dfc0764ff693bb16
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/internal_link_suggestion/v1
+  title: Internal Link Suggestion Output
+  path: schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json
+  sha256: 1271052c0aa4105ac0b0c1824b057651339ba78f32eee4d7d4f4461067cf536b
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/opportunity_assessment/v1
+  title: Opportunity Assessment Assist Output
+  path: schemas/tasks/ai.opportunity_assessment.v1.output.schema.json
+  sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/policy_assist/v1
+  title: 'RAOS AI task output: policy_assist v1'
+  path: schemas/tasks/ai.policy_assist.v1.output.schema.json
+  sha256: 242428ea37446f57c6cc819770ae065004a411229fe04b3e60a8f780ae290e2f
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/quality_remediation/v1
+  title: Quality Remediation Output
+  path: schemas/tasks/ai.quality_remediation.v1.output.schema.json
+  sha256: 10098facd422a7b8bd9784b1091ff31b7b4a0b99e4add3d0e2b902e810f93581
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/refresh_diff_summary/v1
+  title: 'RAOS AI task output: refresh_diff_summary v1'
+  path: schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json
+  sha256: 68b4c97de6d7811f20c88d6918d946de58e1489d0ac5a19f390f8301d929f0e2
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/search_intent_classification/v1
+  title: 'RAOS AI task output: search_intent_classification v1'
+  path: schemas/tasks/ai.search_intent_classification.v1.output.schema.json
+  sha256: c7753ca61a03868d7d91a0760b35224087fa09d2c99252621553d6c21edcc69d
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/source_packet_gap_analysis/v1
+  title: 'RAOS AI task output: source_packet_gap_analysis v1'
+  path: schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json
+  sha256: 1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c
+  kind: task_output
+- schema_id: https://schemas.raos.local/ai/update_priority_explanation/v1
+  title: Update Priority Explanation Output
+  path: schemas/tasks/ai.update_priority_explanation.v1.output.schema.json
+  sha256: 0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef
+  kind: task_output

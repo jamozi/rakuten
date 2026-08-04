@@ -1,0 +1,1316 @@
+document:
+  id: RAOS-JOB-001
+  version: '0.1'
+  status: BASELINE_CANDIDATE
+  date: '2026-07-30'
+delivery:
+  assumption: at_least_once
+  consumer_requirement: idempotent
+  large_payload: object_artifact_ref
+  secrets_in_message: prohibited
+canonical_states:
+- REQUESTED
+- QUEUED
+- RUNNING
+- SUCCEEDED
+- FAILED_RETRYABLE
+- RETRY_SCHEDULED
+- FAILED_TERMINAL
+- QUARANTINED
+- CANCELLED
+- EXPIRED
+queues:
+- id: ingestion
+  dlq: true
+- id: ai
+  dlq: true
+- id: quality
+  dlq: true
+- id: publication
+  dlq: true
+  ordering: per_route_application_lock_or_fifo_if_needed
+- id: freshness
+  dlq: true
+- id: analytics
+  dlq: true
+- id: notification
+  dlq: true
+jobs:
+- job_type: portfolio.assess_opportunity.v1
+  version: 1
+  queue: quality
+  summary: 編集可能性・事業性・Compliance Riskを分離評価する。
+  producer:
+  - admin_api
+  - scheduler
+  consumer: worker-general
+  payload_schema: schemas/jobs/portfolio-assess-opportunity-v1.schema.json
+  idempotency_basis:
+  - category_id
+  - intent_cluster_id
+  - keyword_id
+  - formula_version
+  - source_watermark
+  lock_scope: category+keyword
+  max_attempts: 3
+  timeout_seconds: 300
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-005
+  - FR-016
+  implementation_slice: SLICE-006
+  emits:
+  - jp.raos.portfolio.opportunity_assessed.v1
+  enabled: true
+  notes: []
+- job_type: portfolio.generate_action_candidates.v1
+  version: 1
+  queue: analytics
+  summary: 更新・統合・削除・新規作成候補を生成する。
+  producer:
+  - scheduler
+  - analytics_event
+  consumer: worker-general
+  payload_schema: schemas/jobs/portfolio-generate-action-candidates-v1.schema.json
+  idempotency_basis:
+  - site_id
+  - scope_id
+  - as_of_date
+  - algorithm_version
+  lock_scope: site+algorithm_version
+  max_attempts: 3
+  timeout_seconds: 900
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-016
+  implementation_slice: SLICE-021
+  emits:
+  - jp.raos.portfolio.action_candidates_generated.v1
+  enabled: true
+  notes: []
+- job_type: catalog.rakuten_item_search.v1
+  version: 1
+  queue: ingestion
+  summary: 楽天市場商品検索APIを呼び原本を不変保存する。
+  producer:
+  - admin_api
+  - scheduler
+  consumer: worker-general
+  payload_schema: schemas/jobs/catalog-rakuten-item-search-v1.schema.json
+  idempotency_basis:
+  - provider_endpoint_id
+  - api_version
+  - canonical_query_hash
+  - purpose_context
+  lock_scope: provider+request_fingerprint
+  max_attempts: 5
+  timeout_seconds: 120
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-002
+  - FR-004
+  implementation_slice: SLICE-008
+  emits:
+  - jp.raos.catalog.ingestion_completed.v1
+  enabled: true
+  notes:
+  - No review body may be requested, scraped, or inferred.
+- job_type: catalog.rakuten_genre_sync.v1
+  version: 1
+  queue: ingestion
+  summary: 楽天Genre taxonomyを同期する。
+  producer:
+  - scheduler
+  - admin_api
+  consumer: worker-general
+  payload_schema: schemas/jobs/catalog-rakuten-genre-sync-v1.schema.json
+  idempotency_basis:
+  - provider_endpoint_id
+  - root_genre_id
+  - api_version
+  - sync_date
+  lock_scope: provider+root_genre
+  max_attempts: 5
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-002
+  implementation_slice: SLICE-008
+  emits:
+  - jp.raos.catalog.genre_sync_completed.v1
+  enabled: true
+  notes: []
+- job_type: catalog.normalize_ingestion.v1
+  version: 1
+  queue: ingestion
+  summary: Raw provider responseをProduct Candidate/Observationへ正規化する。
+  producer:
+  - catalog.ingestion_completed
+  consumer: worker-general
+  payload_schema: schemas/jobs/catalog-normalize-ingestion-v1.schema.json
+  idempotency_basis:
+  - ingestion_request_id
+  - normalizer_version
+  - expected_sha256
+  lock_scope: ingestion_request
+  max_attempts: 3
+  timeout_seconds: 900
+  retry_classes:
+  - TRANSIENT
+  - DATA_ROW
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-002
+  - FR-003
+  - FR-004
+  implementation_slice: SLICE-009
+  emits:
+  - jp.raos.catalog.candidates_normalized.v1
+  enabled: true
+  notes: []
+- job_type: catalog.group_product_candidates.v1
+  version: 1
+  queue: ingestion
+  summary: 候補をCanonical Productへ提案Groupingする。
+  producer:
+  - scheduler
+  - candidate_normalized
+  consumer: worker-general
+  payload_schema: schemas/jobs/catalog-group-product-candidates-v1.schema.json
+  idempotency_basis:
+  - sorted_candidate_ids
+  - rule_version
+  lock_scope: candidate_set
+  max_attempts: 3
+  timeout_seconds: 900
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-003
+  implementation_slice: SLICE-009
+  emits:
+  - jp.raos.catalog.grouping_proposals_created.v1
+  enabled: true
+  notes:
+  - Automatic acceptance is disabled for ambiguous identity.
+- job_type: catalog.refresh_offer.v1
+  version: 1
+  queue: freshness
+  summary: Offerの価格・在庫・集計レビュー値・Affiliate Linkを再取得する。
+  producer:
+  - admin_api
+  - scheduler
+  - staleness_event
+  consumer: worker-general
+  payload_schema: schemas/jobs/catalog-refresh-offer-v1.schema.json
+  idempotency_basis:
+  - sorted_offer_ids
+  - fields
+  - refresh_window
+  lock_scope: offer
+  max_attempts: 5
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-011
+  - FR-012
+  implementation_slice: SLICE-018
+  emits:
+  - jp.raos.catalog.offer_observed.v1
+  - jp.raos.freshness.staleness_assessed.v1
+  enabled: true
+  notes: []
+- job_type: evidence.capture_source_snapshot.v1
+  version: 1
+  queue: ingestion
+  summary: Allowlistされた一次Sourceを安全に取得しSnapshot化する。
+  producer:
+  - admin_api
+  consumer: worker-general
+  payload_schema: schemas/jobs/evidence-capture-source-snapshot-v1.schema.json
+  idempotency_basis:
+  - source_id
+  - normalized_external_reference
+  - capture_policy_version
+  - capture_window
+  lock_scope: source+external_reference
+  max_attempts: 3
+  timeout_seconds: 180
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-004
+  implementation_slice: SLICE-010
+  emits:
+  - jp.raos.evidence.source_snapshot_captured.v1
+  enabled: true
+  notes:
+  - SSRF guard and content sandbox are mandatory.
+- job_type: evidence.extract_facts.v1
+  version: 1
+  queue: quality
+  summary: 検証済みSnapshotから型付きFact候補を抽出する。
+  producer:
+  - source_snapshot_captured
+  - admin_api
+  consumer: worker-general
+  payload_schema: schemas/jobs/evidence-extract-facts-v1.schema.json
+  idempotency_basis:
+  - source_snapshot_id
+  - extractor_version
+  lock_scope: source_snapshot
+  max_attempts: 3
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-004
+  - FR-007
+  implementation_slice: SLICE-010
+  emits:
+  - jp.raos.evidence.facts_extracted.v1
+  enabled: true
+  notes: []
+- job_type: evidence.build_source_packet.v1
+  version: 1
+  queue: quality
+  summary: 記事計画向けのVersioned Source Packetを構築する。
+  producer:
+  - admin_api
+  - fact_event
+  consumer: worker-general
+  payload_schema: schemas/jobs/evidence-build-source-packet-v1.schema.json
+  idempotency_basis:
+  - article_plan_id
+  - packet_type
+  - sorted_fact_ids
+  - sorted_product_ids
+  - builder_version
+  lock_scope: source_packet
+  max_attempts: 3
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-006
+  - FR-007
+  implementation_slice: SLICE-010
+  emits:
+  - jp.raos.evidence.source_packet_ready.v1
+  enabled: true
+  notes: []
+- job_type: ai.classify_search_intent.v1
+  version: 1
+  queue: ai
+  summary: Keyword群を検索意図へ構造化分類する。
+  producer:
+  - admin_api
+  - portfolio_job
+  consumer: worker-ai
+  payload_schema: schemas/jobs/ai-classify-search-intent-v1.schema.json
+  idempotency_basis:
+  - source_packet_hash
+  - keyword_ids
+  - prompt_version
+  - model_route
+  - output_schema
+  lock_scope: keyword_batch
+  max_attempts: 2
+  timeout_seconds: 300
+  retry_classes:
+  - TRANSIENT
+  - SCHEMA_OUTPUT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-006
+  - FR-018
+  implementation_slice: SLICE-011
+  emits:
+  - jp.raos.ai.job_succeeded.v1
+  enabled: true
+  notes: []
+- job_type: ai.assess_opportunity.v1
+  version: 1
+  queue: ai
+  summary: 一次情報に基づく定性的機会評価補助を生成する。
+  producer:
+  - portfolio_job
+  consumer: worker-ai
+  payload_schema: schemas/jobs/ai-assess-opportunity-v1.schema.json
+  idempotency_basis:
+  - source_packet_hash
+  - category_id
+  - keyword_id
+  - prompt_version
+  - model_route
+  lock_scope: assessment_subject
+  max_attempts: 2
+  timeout_seconds: 300
+  retry_classes:
+  - TRANSIENT
+  - SCHEMA_OUTPUT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-005
+  - FR-006
+  - FR-018
+  implementation_slice: SLICE-011
+  emits:
+  - jp.raos.ai.job_succeeded.v1
+  enabled: true
+  notes: []
+- job_type: ai.generate_article_draft.v1
+  version: 1
+  queue: ai
+  summary: 承認済みSource PacketからArticle AST Draftを生成する。
+  producer:
+  - admin_api
+  consumer: worker-ai
+  payload_schema: schemas/jobs/ai-generate-article-draft-v1.schema.json
+  idempotency_basis:
+  - article_plan_id
+  - source_packet_hash
+  - based_on_version
+  - prompt_version
+  - model_route
+  - output_schema
+  - instruction_hash
+  lock_scope: article_plan_generation
+  max_attempts: 2
+  timeout_seconds: 900
+  retry_classes:
+  - TRANSIENT
+  - SCHEMA_OUTPUT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-006
+  - FR-007
+  - FR-018
+  implementation_slice: SLICE-012
+  emits:
+  - jp.raos.editorial.draft_generated.v1
+  - jp.raos.ai.job_succeeded.v1
+  enabled: true
+  notes:
+  - LLM has no direct DB, queue, source fetch, approval, or publish permission.
+- job_type: ai.extract_claims.v1
+  version: 1
+  queue: ai
+  summary: Article ASTからClaimを抽出しEvidence参照候補を返す。
+  producer:
+  - draft_generated
+  consumer: worker-ai
+  payload_schema: schemas/jobs/ai-extract-claims-v1.schema.json
+  idempotency_basis:
+  - article_body_sha256
+  - source_packet_hash
+  - prompt_version
+  - model_route
+  lock_scope: article_version_claims
+  max_attempts: 2
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  - SCHEMA_OUTPUT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-007
+  - FR-018
+  implementation_slice: SLICE-012
+  emits:
+  - jp.raos.evidence.claims_extracted.v1
+  enabled: true
+  notes: []
+- job_type: ai.policy_assist.v1
+  version: 1
+  queue: ai
+  summary: Policy Ruleの補助判定を構造化出力する。最終判定権限は持たない。
+  producer:
+  - quality_job
+  consumer: worker-ai
+  payload_schema: schemas/jobs/ai-policy-assist-v1.schema.json
+  idempotency_basis:
+  - article_body_sha256
+  - source_packet_hash
+  - policy_bundle_hash
+  - prompt_version
+  - model_route
+  lock_scope: quality_run
+  max_attempts: 2
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  - SCHEMA_OUTPUT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-008
+  - FR-018
+  implementation_slice: SLICE-013
+  emits:
+  - jp.raos.ai.policy_assist_completed.v1
+  enabled: true
+  notes: []
+- job_type: ai.evaluate_output.v1
+  version: 1
+  queue: ai
+  summary: 固定Evaluation DatasetでPrompt/Model Routeを評価する。
+  producer:
+  - admin_api
+  - ci
+  consumer: worker-ai
+  payload_schema: schemas/jobs/ai-evaluate-output-v1.schema.json
+  idempotency_basis:
+  - suite_code
+  - suite_version
+  - prompt_versions
+  - route_versions
+  lock_scope: evaluation_suite
+  max_attempts: 2
+  timeout_seconds: 7200
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-018
+  implementation_slice: SLICE-011
+  emits:
+  - jp.raos.ai.evaluation_completed.v1
+  enabled: true
+  notes: []
+- job_type: ai.generic_task.v1
+  version: 1
+  queue: ai
+  summary: 登録済みTask Definitionを明示実行する汎用入口。allowlist taskのみ。
+  producer:
+  - admin_api
+  consumer: worker-ai
+  payload_schema: schemas/jobs/ai-generic-task-v1.schema.json
+  idempotency_basis:
+  - task_code
+  - source_packet_hash
+  - target_refs
+  - prompt_route
+  - input_hash
+  lock_scope: task_defined
+  max_attempts: 2
+  timeout_seconds: 1800
+  retry_classes:
+  - TRANSIENT
+  - SCHEMA_OUTPUT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-006
+  - FR-018
+  implementation_slice: SLICE-011
+  emits:
+  - jp.raos.ai.job_succeeded.v1
+  enabled: true
+  notes: []
+- job_type: quality.evaluate_article.v1
+  version: 1
+  queue: quality
+  summary: Deterministic rule、Claim Evidence、AI assistを統合して品質判定する。
+  producer:
+  - admin_api
+  - draft_generated
+  consumer: worker-general
+  payload_schema: schemas/jobs/quality-evaluate-article-v1.schema.json
+  idempotency_basis:
+  - article_body_sha256
+  - source_packet_hash
+  - policy_bundle_hash
+  - check_scope
+  lock_scope: article_version+policy_bundle
+  max_attempts: 3
+  timeout_seconds: 1200
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-007
+  - FR-008
+  implementation_slice: SLICE-013
+  emits:
+  - jp.raos.policy.quality_check_completed.v1
+  enabled: true
+  notes: []
+- job_type: quality.recheck_policy_bundle.v1
+  version: 1
+  queue: quality
+  summary: 新Policy Bundleの影響記事を再検査する。
+  producer:
+  - policy_bundle_activated
+  consumer: worker-general
+  payload_schema: schemas/jobs/quality-recheck-policy-bundle-v1.schema.json
+  idempotency_basis:
+  - policy_bundle_hash
+  - scope_type
+  - scope_id
+  lock_scope: policy_bundle+scope
+  max_attempts: 3
+  timeout_seconds: 14400
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-017
+  implementation_slice: SLICE-013
+  emits:
+  - jp.raos.policy.policy_recheck_completed.v1
+  enabled: true
+  notes: []
+- job_type: publishing.build_snapshot.v1
+  version: 1
+  queue: publication
+  summary: 最終承認済みArticle Versionから不変Publication Snapshotを生成する。
+  producer:
+  - admin_api
+  consumer: worker-publish
+  payload_schema: schemas/jobs/publishing-build-snapshot-v1.schema.json
+  idempotency_basis:
+  - publication_candidate_id
+  - article_body_sha256
+  - approval_id
+  - quality_run_id
+  - safe_offer_projection_generation
+  lock_scope: publication_candidate
+  max_attempts: 3
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-009
+  - FR-010
+  implementation_slice: SLICE-015
+  emits:
+  - jp.raos.publishing.snapshot_built.v1
+  enabled: true
+  notes: []
+- job_type: publishing.publish_snapshot.v1
+  version: 1
+  queue: publication
+  summary: SnapshotをPublic Read Modelへ原子的に反映する。
+  producer:
+  - admin_api
+  - scheduler
+  consumer: worker-publish
+  payload_schema: schemas/jobs/publishing-publish-snapshot-v1.schema.json
+  idempotency_basis:
+  - publication_candidate_id
+  - publication_snapshot_id
+  - route
+  lock_scope: public_route
+  max_attempts: 3
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-010
+  - FR-019
+  implementation_slice: SLICE-015
+  emits:
+  - jp.raos.publishing.article_published.v1
+  enabled: true
+  notes: []
+- job_type: publishing.unpublish.v1
+  version: 1
+  queue: publication
+  summary: 公開ProjectionからArticleを安全に非公開化する。
+  producer:
+  - admin_api
+  - incident_flow
+  consumer: worker-publish
+  payload_schema: schemas/jobs/publishing-unpublish-v1.schema.json
+  idempotency_basis:
+  - publication_id
+  - current_snapshot_id
+  - reason_class
+  lock_scope: public_route
+  max_attempts: 3
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-010
+  - FR-019
+  implementation_slice: SLICE-015
+  emits:
+  - jp.raos.publishing.article_unpublished.v1
+  enabled: true
+  notes: []
+- job_type: publishing.rollback.v1
+  version: 1
+  queue: publication
+  summary: 検証済み旧SnapshotへRollbackする。
+  producer:
+  - admin_api
+  - incident_flow
+  consumer: worker-publish
+  payload_schema: schemas/jobs/publishing-rollback-v1.schema.json
+  idempotency_basis:
+  - publication_id
+  - from_snapshot_id
+  - to_snapshot_id
+  lock_scope: public_route
+  max_attempts: 3
+  timeout_seconds: 600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-010
+  - FR-019
+  implementation_slice: SLICE-015
+  emits:
+  - jp.raos.publishing.article_rolled_back.v1
+  enabled: true
+  notes: []
+- job_type: publishing.rebuild_public_projection.v1
+  version: 1
+  queue: publication
+  summary: 不変SnapshotからPublic Read Modelを再構築する。
+  producer:
+  - internal_api
+  - ops
+  consumer: worker-publish
+  payload_schema: schemas/jobs/publishing-rebuild-public-projection-v1.schema.json
+  idempotency_basis:
+  - site_id
+  - scope_type
+  - scope_id
+  - snapshot_generation
+  lock_scope: projection_scope
+  max_attempts: 3
+  timeout_seconds: 7200
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-010
+  - FR-019
+  implementation_slice: SLICE-016
+  emits:
+  - jp.raos.publishing.public_projection_rebuilt.v1
+  enabled: true
+  notes: []
+- job_type: freshness.run_refresh_batch.v1
+  version: 1
+  queue: freshness
+  summary: Freshness Policyに従い対象をbatch更新する。
+  producer:
+  - admin_api
+  - scheduler
+  consumer: worker-general
+  payload_schema: schemas/jobs/freshness-run-refresh-batch-v1.schema.json
+  idempotency_basis:
+  - site_id
+  - scope_type
+  - scope_id
+  - policy_version
+  - refresh_window
+  lock_scope: refresh_scope
+  max_attempts: 3
+  timeout_seconds: 14400
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-011
+  - FR-012
+  implementation_slice: SLICE-018
+  emits:
+  - jp.raos.freshness.refresh_completed.v1
+  enabled: true
+  notes: []
+- job_type: freshness.check_affiliate_link.v1
+  version: 1
+  queue: freshness
+  summary: Affiliate URLを改変せずdestination/reachabilityを検査する。
+  producer:
+  - admin_api
+  - scheduler
+  consumer: worker-general
+  payload_schema: schemas/jobs/freshness-check-affiliate-link-v1.schema.json
+  idempotency_basis:
+  - offer_ids
+  - link_observation_hashes
+  - check_method
+  - check_window
+  lock_scope: offer
+  max_attempts: 3
+  timeout_seconds: 1800
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-011
+  implementation_slice: SLICE-018
+  emits:
+  - jp.raos.freshness.link_check_completed.v1
+  enabled: true
+  notes: []
+- job_type: freshness.assess_change_impact.v1
+  version: 1
+  queue: freshness
+  summary: 商品・価格・Policy変更のClaim/公開影響を計算する。
+  producer:
+  - admin_api
+  - catalog_event
+  consumer: worker-general
+  payload_schema: schemas/jobs/freshness-assess-change-impact-v1.schema.json
+  idempotency_basis:
+  - change_type
+  - changed_entity_id
+  - change_version
+  lock_scope: changed_entity
+  max_attempts: 3
+  timeout_seconds: 1800
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-012
+  - FR-016
+  - FR-017
+  implementation_slice: SLICE-018
+  emits:
+  - jp.raos.freshness.impact_detected.v1
+  enabled: true
+  notes: []
+- job_type: analytics.import_search_console.v1
+  version: 1
+  queue: analytics
+  summary: Search Console Search Analyticsを日次取込する。
+  producer:
+  - scheduler
+  - admin_api
+  consumer: worker-general
+  payload_schema: schemas/jobs/analytics-import-search-console-v1.schema.json
+  idempotency_basis:
+  - site_id
+  - date_range
+  - dimensions
+  - data_state
+  - adapter_version
+  lock_scope: site+date_range+source
+  max_attempts: 5
+  timeout_seconds: 3600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-019
+  emits:
+  - jp.raos.analytics.import_completed.v1
+  enabled: true
+  notes: []
+- job_type: analytics.import_ga4.v1
+  version: 1
+  queue: analytics
+  summary: GA4 Data APIの非個人集計値を取込する。
+  producer:
+  - scheduler
+  - admin_api
+  consumer: worker-general
+  payload_schema: schemas/jobs/analytics-import-ga4-v1.schema.json
+  idempotency_basis:
+  - site_id
+  - date_range
+  - dimensions
+  - metrics
+  - adapter_version
+  lock_scope: site+date_range+source
+  max_attempts: 5
+  timeout_seconds: 3600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-019
+  emits:
+  - jp.raos.analytics.import_completed.v1
+  enabled: true
+  notes: []
+- job_type: analytics.import_keyword_rank_csv.v1
+  version: 1
+  queue: analytics
+  summary: 許諾済み順位CSVをCanonical Observationへ取込する。
+  producer:
+  - admin_api
+  consumer: worker-general
+  payload_schema: schemas/jobs/analytics-import-keyword-rank-csv-v1.schema.json
+  idempotency_basis:
+  - source_sha256
+  - parser_version
+  lock_scope: source_artifact
+  max_attempts: 3
+  timeout_seconds: 3600
+  retry_classes:
+  - TRANSIENT
+  - DATA_ROW
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-019
+  emits:
+  - jp.raos.analytics.import_completed.v1
+  enabled: true
+  notes: []
+- job_type: analytics.import_provider_data.v1
+  version: 1
+  queue: analytics
+  summary: source_typeに応じて許可済みAnalytics Adapter Jobへdispatchする。
+  producer:
+  - admin_api
+  consumer: worker-general
+  payload_schema: schemas/jobs/analytics-import-provider-data-v1.schema.json
+  idempotency_basis:
+  - site_id
+  - source_type
+  - date_range
+  - dimensions
+  lock_scope: site+source+date_range
+  max_attempts: 3
+  timeout_seconds: 60
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-013
+  implementation_slice: SLICE-019
+  emits:
+  - jp.raos.ops.child_jobs_created.v1
+  enabled: true
+  notes: []
+- job_type: analytics.rollup_daily_metrics.v1
+  version: 1
+  queue: analytics
+  summary: GSC、GA4、first-party clickをArticle日次指標へ集計する。
+  producer:
+  - scheduler
+  - import_event
+  consumer: worker-general
+  payload_schema: schemas/jobs/analytics-rollup-daily-metrics-v1.schema.json
+  idempotency_basis:
+  - site_id
+  - date_range
+  - source_watermarks
+  - calculation_version
+  lock_scope: site+metric_date
+  max_attempts: 3
+  timeout_seconds: 3600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-013
+  - FR-015
+  implementation_slice: SLICE-021
+  emits:
+  - jp.raos.analytics.daily_metrics_updated.v1
+  enabled: true
+  notes: []
+- job_type: finance.parse_revenue_csv.v1
+  version: 1
+  queue: analytics
+  summary: Revenue原本をscan・parseしDry Run Previewを作る。
+  producer:
+  - admin_api
+  consumer: worker-general
+  payload_schema: schemas/jobs/finance-parse-revenue-csv-v1.schema.json
+  idempotency_basis:
+  - source_sha256
+  - parser_version_id
+  - dry_run
+  lock_scope: source_sha256
+  max_attempts: 3
+  timeout_seconds: 3600
+  retry_classes:
+  - TRANSIENT
+  - DATA_ROW
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-014
+  implementation_slice: SLICE-020
+  emits:
+  - jp.raos.finance.revenue_import_dry_run_ready.v1
+  enabled: true
+  notes:
+  - No canonical commission mutation occurs in dry run.
+- job_type: finance.commit_revenue_import.v1
+  version: 1
+  queue: analytics
+  summary: 確認値を再照合しProvider Factを不変取込する。
+  producer:
+  - admin_api
+  consumer: worker-general
+  payload_schema: schemas/jobs/finance-commit-revenue-import-v1.schema.json
+  idempotency_basis:
+  - revenue_import_id
+  - source_sha256
+  - preview_hash
+  lock_scope: provider+period+source_sha
+  max_attempts: 3
+  timeout_seconds: 3600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-014
+  - FR-020
+  implementation_slice: SLICE-020
+  emits:
+  - jp.raos.finance.revenue_import_committed.v1
+  - jp.raos.finance.commission_status_changed.v1
+  enabled: true
+  notes: []
+- job_type: finance.calculate_unit_economics.v1
+  version: 1
+  queue: analytics
+  summary: 確定成果・費用・trafficからEPC/RPM/貢献利益を算出する。
+  producer:
+  - scheduler
+  - revenue_event
+  - metric_event
+  consumer: worker-general
+  payload_schema: schemas/jobs/finance-calculate-unit-economics-v1.schema.json
+  idempotency_basis:
+  - scope
+  - period_month
+  - calculation_version
+  - source_watermarks
+  lock_scope: scope+period_month
+  max_attempts: 3
+  timeout_seconds: 3600
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-015
+  implementation_slice: SLICE-021
+  emits:
+  - jp.raos.finance.unit_economics_calculated.v1
+  enabled: true
+  notes: []
+- job_type: ops.export_audit.v1
+  version: 1
+  queue: analytics
+  summary: Audit Eventをhash付きArtifactへexportする。
+  producer:
+  - admin_api
+  - scheduler
+  consumer: worker-general
+  payload_schema: schemas/jobs/ops-export-audit-v1.schema.json
+  idempotency_basis:
+  - date_range
+  - format
+  - canonical_filter_hash
+  lock_scope: audit_export_range
+  max_attempts: 3
+  timeout_seconds: 7200
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-023
+  emits:
+  - jp.raos.ops.audit_export_completed.v1
+  enabled: true
+  notes: []
+- job_type: ops.send_notification.v1
+  version: 1
+  queue: notification
+  summary: 通知Adapterへ非正本通知を送る。
+  producer:
+  - domain_event
+  - alert
+  consumer: worker-general
+  payload_schema: schemas/jobs/ops-send-notification-v1.schema.json
+  idempotency_basis:
+  - notification_type
+  - target_ref
+  - event_id
+  - recipient_group
+  lock_scope: notification_dedup
+  max_attempts: 5
+  timeout_seconds: 120
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-023
+  emits:
+  - jp.raos.ops.notification_dispatched.v1
+  enabled: true
+  notes: []
+- job_type: ops.rebuild_readmodel.v1
+  version: 1
+  queue: publication
+  summary: 指定Projectionを正本から再構築する。
+  producer:
+  - internal_api
+  - ops
+  consumer: worker-publish
+  payload_schema: schemas/jobs/ops-rebuild-readmodel-v1.schema.json
+  idempotency_basis:
+  - projection
+  - scope_type
+  - scope_id
+  - source_generation
+  lock_scope: projection_scope
+  max_attempts: 3
+  timeout_seconds: 14400
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-010
+  - FR-013
+  - FR-019
+  implementation_slice: SLICE-023
+  emits:
+  - jp.raos.ops.readmodel_rebuilt.v1
+  enabled: true
+  notes: []
+- job_type: ops.retention_sweep.v1
+  version: 1
+  queue: analytics
+  summary: 承認済みRetention Policyに従う削除候補をdry-run/executeする。
+  producer:
+  - scheduler
+  consumer: worker-general
+  payload_schema: schemas/jobs/ops-retention-sweep-v1.schema.json
+  idempotency_basis:
+  - retention_policy_id
+  - mode
+  - as_of_date
+  lock_scope: retention_policy
+  max_attempts: 2
+  timeout_seconds: 14400
+  retry_classes:
+  - TRANSIENT
+  non_retry_classes:
+  - AUTH
+  - CONTRACT
+  - POLICY
+  - PERMANENT
+  - BUDGET
+  requirements:
+  - FR-020
+  implementation_slice: SLICE-025
+  emits:
+  - jp.raos.ops.retention_sweep_completed.v1
+  enabled: false
+  notes:
+  - EXECUTE remains disabled until legal/tax/privacy approval.

@@ -1,0 +1,153 @@
+document:
+  id: RAOS-CONTENT-FRESH-001
+  title: 鮮度・更新・統合・撤退ポリシー
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+policy_version: 1.0.0
+threshold_status: PROVISIONAL; category and provider overrides require approval and measurement
+freshness_classes:
+- id: FRESH-001
+  code: offer_price
+  warning_after_hours: 24
+  blocking_after_hours: 72
+  safe_degradation: hide_value_and_show_provider_check_label
+  editorial_impact: if recommendation depends on price tier, create blocking review candidate
+- id: FRESH-002
+  code: availability
+  warning_after_hours: 12
+  blocking_after_hours: 48
+  safe_degradation: hide_availability_assertion
+  editorial_impact: if all primary offers unavailable, pause CTA and create review candidate
+- id: FRESH-003
+  code: affiliate_link_health
+  warning_after_hours: 24
+  blocking_after_hours: 72
+  safe_degradation: hide_cta
+  editorial_impact: article body remains unless product identity or policy also fails
+- id: FRESH-004
+  code: shipping_condition
+  warning_after_hours: 24
+  blocking_after_hours: 72
+  safe_degradation: hide_shipping_assertion
+  editorial_impact: do not infer free shipping
+- id: FRESH-005
+  code: points_coupon_campaign
+  warning_after_hours: 6
+  blocking_after_hours: 12
+  safe_degradation: hide_entire_field
+  editorial_impact: MVP default is not to editorially rely on promotions
+- id: FRESH-006
+  code: official_ranking
+  warning_after_hours: 24
+  blocking_after_hours: 72
+  safe_degradation: remove_rank_claim
+  editorial_impact: never convert provider rank into enduring popularity claim
+- id: FRESH-007
+  code: product_specification
+  warning_after_hours: 720
+  blocking_after_hours: 2160
+  safe_degradation: mark_for_review_or_hide_affected_field
+  editorial_impact: pause article if recommendation-critical specification is stale/conflicted
+- id: FRESH-008
+  code: manufacturer_lifecycle_status
+  warning_after_hours: 168
+  blocking_after_hours: 720
+  safe_degradation: show_last_checked_and_review
+  editorial_impact: pause CTA for discontinued/recall/safety concern as policy determines
+- id: FRESH-009
+  code: editorial_methodology
+  warning_after_hours: 720
+  blocking_after_hours: 2160
+  safe_degradation: revalidate_methodology
+  editorial_impact: new version requires impact analysis
+- id: FRESH-010
+  code: policy_disclosure
+  warning_after_hours: 0
+  blocking_after_hours: 0
+  safe_degradation: immediate_renderer_update
+  editorial_impact: blocking policy change overrides prior approval
+- id: FRESH-011
+  code: first_hand_experience
+  warning_after_hours: 4320
+  blocking_after_hours: 8760
+  safe_degradation: show_test_date_and_limitations
+  editorial_impact: do not imply current product revision without identity recheck
+- id: FRESH-012
+  code: internal_link_target
+  warning_after_hours: 168
+  blocking_after_hours: 720
+  safe_degradation: remove_or_replace_broken_link
+  editorial_impact: must not create redirect chain or orphan
+change_triggers:
+- code: price_changed
+  automatic: update_public_projection_only_if_fresh
+  review_when:
+  - price_tier_crossed
+  - relative_change_threshold_configured
+  - ranking_or_rationale_depends_on_price
+- code: availability_changed
+  automatic: update_public_projection
+  review_when:
+  - primary_recommendation_unavailable
+  - all_offers_unavailable
+  - successor_detected
+- code: spec_changed
+  automatic: none
+  review_when:
+  - any_recommendation_dimension_changed
+  - product_identity_changed
+- code: link_failed
+  automatic: hide_cta_after_retry_policy
+  review_when:
+  - identity_mismatch
+  - redirect_host_mismatch
+  - persistent_failure
+- code: source_corrected_or_removed
+  automatic: none
+  review_when:
+  - affected_claims_exist
+- code: policy_bundle_changed
+  automatic: impact_analysis_and_renderer_policy_fields
+  review_when:
+  - blocking_or_major_policy_affects_snapshot
+- code: methodology_changed
+  automatic: none
+  review_when:
+  - published_article_bound_to_old_version
+- code: user_complaint_or_correction
+  automatic: incident_or_review_candidate
+  review_when:
+  - factual
+  - identity
+  - compliance
+  - accessibility
+safe_degradation_priority:
+- remove_or_hide_invalid_dynamic_field
+- disable_unsafe_cta
+- show_last_checked_or_uncertainty
+- retain useful static article
+- pause_article_if_decision_basis_invalid
+- never_auto_reorder_recommendations
+merge_update_retire_rules:
+  update: 同じPrimary IntentとDecisionを維持し、Fact/Methodology/商品集合の更新で価値を回復できる
+  merge: 複数記事が同じIntent・Decision・Candidate Universeを競合し、独自差分が公開基準未満。人間承認後、正本へ301
+  retire_301: 後継の同等意思決定ページが存在し、利用者意図を実質的に満たす
+  retire_410: 有効な代替ページがなく、商品・根拠・需要の消滅により再公開価値がない
+  noindex_hold: 価値はあるがEvidence・鮮度・商品集合が公開基準を一時的に満たさない
+  automatic_delete: false
+lastmod_policy: 価格・在庫等のDynamic Projectionだけの変動では記事lastmodを変更しない。本文・推薦・比較方法・主要Factの実質変更時だけ変更
+requirements:
+- FR-004
+- FR-008
+- FR-010
+- FR-011
+- FR-012
+- FR-016
+- FR-017
+- FR-019
+- NFR-REL-003

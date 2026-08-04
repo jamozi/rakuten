@@ -1,0 +1,44 @@
+template_id: TPL-AT-001
+article_type: selection_guide
+version: 1.0.0
+status: ACTIVE
+required_sequence:
+- disclosure_slot
+- lead
+- decision_summary
+- intended_reader
+- methodology
+- selection_criteria
+- comparison_table
+- recommendation_group
+- caution
+- source_summary
+optional_blocks:
+- paragraph
+- bullet_list
+- product_card
+- pros_cons
+- tradeoff
+- faq
+- media
+- internal_links
+- update_notice
+minimum_decision_axes: 4
+product_count:
+  minimum: 3
+  recommended: 5-12
+  maximum: 15
+unique_value_tests:
+- カテゴリ固有の判断軸
+- 軸ごとのトレードオフ
+- 条件別に異なる結論
+- 対象外条件または避けるべき選択
+prohibited_patterns:
+- API項目の羅列
+- 商品名だけを差し替えた量産
+- 全員向けの単一総合1位
+- 検索語の言い換えだけの別ページ
+notes:
+- disclosure_slotはRendererが先頭へ強制挿入する
+- source_summaryは末尾の共通情報領域へ配置
+- Heading/Paragraphは必要な範囲だけ追加する

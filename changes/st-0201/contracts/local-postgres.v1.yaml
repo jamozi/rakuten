@@ -1,0 +1,108 @@
+document:
+  id: RAOS-LOCAL-POSTGRES-001
+  version: 1.0.0
+  story_id: ST-0201
+  status: LOCAL_AND_CI_CANDIDATE
+  formal_verification: NOT_EXECUTED
+sources:
+  - uri: repo://docs/manifest.json
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/canonical/08_codex/RAOS_14_codex_implementation_handbook_v1.0.md
+    sha256: 501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2
+image:
+  repository: docker.io/library/postgres
+  tag: 18.4-bookworm
+  reference: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+  index_digest: sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+  platform:
+    os: linux
+    architecture: amd64
+    manifest_digest: sha256:16fa100a3a6e92c0556632870455e7f8c6f3df5cefddd67d6b95292732bd7ff0
+    config_digest: sha256:0a314d409a9633cff4f89dc18482262625c0ee78cb1aa2ff8e47bc6da0251e1b
+  expected_environment:
+    PG_VERSION: 18.4-1.pgdg12+1
+    PGDATA: /var/lib/postgresql/18/docker
+  checked_at: '2026-08-02T11:19:33Z'
+compose:
+  service:
+    name: postgres
+    platform: linux/amd64
+    database: raos
+    user: raos
+    init: true
+    restart: 'no'
+    stop_grace_period: 30s
+  port:
+    host_ip: 127.0.0.1
+    variable: RAOS_POSTGRES_PORT
+    default: 5432
+    container: 5432
+    protocol: tcp
+  password_secret:
+    name: postgres_password
+    source_variable: RAOS_POSTGRES_PASSWORD_FILE
+    source_default: .secrets/postgres_password
+    environment_key: POSTGRES_PASSWORD_FILE
+    mount_path: /run/secrets/postgres_password
+  data:
+    volume: postgres_data
+    mount_path: /var/lib/postgresql
+    pgdata: /var/lib/postgresql/18/docker
+  network:
+    name: postgres_internal
+    driver: bridge
+    internal: true
+  healthcheck:
+    command: pg_isready --username "$$POSTGRES_USER" --dbname "$$POSTGRES_DB" --host 127.0.0.1 --port 5432
+    interval: 5s
+    timeout: 5s
+    retries: 12
+    start_period: 10s
+runtime:
+  wrapper: repo://scripts/postgres_service.sh
+  interface: scripts/postgres_service.sh --docker ABSOLUTE_PATH COMMAND
+  commands: [config, up, check, down, test]
+  docker_host: unix:///var/run/docker.sock
+  minimum_compose_version: 2.24.4
+  local_project: raos-st0201-local
+  disposable_project_prefix: raos-st0201-test-
+  disposable_password_mode: '0600'
+  disposable_pull_policy: always
+  expected_image_config_digest: sha256:0a314d409a9633cff4f89dc18482262625c0ee78cb1aa2ff8e47bc6da0251e1b
+  expected_platform: linux/amd64
+  expected_server_version_num: 180004
+  version_query: SHOW server_version_num;
+security_controls:
+  - id: SEC-DATA-003
+    implementation: Password value exists only in a non-symlink secret file and is never embedded in Compose, arguments, or logs.
+    verification: LOCAL_CONTRACT_AND_SECRET_SCAN
+  - id: SEC-INFRA-001
+    implementation: The host publish is loopback-only and the service uses an internal bridge network.
+    verification: LOCAL_CONFIG_TEST_RUNTIME_NOT_EXECUTED
+  - id: SEC-SDLC-003
+    implementation: The image tag, OCI index, linux/amd64 manifest, and configuration digests are pinned.
+    verification: LOCAL_CONTRACT_TEST
+  - id: SEC-SDLC-004
+    implementation: A container vulnerability scan is required before validation and remains NOT_EXECUTED.
+    verification: NOT_EXECUTED
+boundary:
+  environment: LOCAL_AND_CI_ONLY
+  production_use: FORBIDDEN
+  remote_database: FORBIDDEN
+  raw_password_environment: FORBIDDEN
+  docker_runtime: NOT_EXECUTED
+  container_vulnerability_scan: NOT_EXECUTED
+  formal_tst_008: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

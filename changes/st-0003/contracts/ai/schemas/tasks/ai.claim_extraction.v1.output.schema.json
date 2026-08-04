@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/claim_extraction/v1",
+  "title": "Claim Extraction Output",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "claims": {
+      "type": "array",
+      "maxItems": 3000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "claim_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "block_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "claim_type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "claim_text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "criticality": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ]
+          },
+          "candidate_fact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "support_status": {
+            "type": "string",
+            "enum": [
+              "SUPPORTED",
+              "PARTIAL",
+              "UNSUPPORTED",
+              "CONFLICTING"
+            ]
+          }
+        },
+        "required": [
+          "claim_key",
+          "block_key",
+          "claim_type",
+          "claim_text",
+          "criticality",
+          "candidate_fact_ids",
+          "support_status"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "claims"
+  ]
+}

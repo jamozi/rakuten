@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/content-validation-request.v1.schema.json",
+  "title": "Content Validation Request",
+  "description": "Hash-bound AST validation command input.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "content_schema_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "content_schema_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "article_type_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "article_template_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "content_ast": {
+      "$ref": "../../content/schemas/content-ast.schema.json"
+    }
+  },
+  "required": [
+    "content_schema_version_id",
+    "content_schema_sha256",
+    "article_type_version_id",
+    "article_template_version_id",
+    "content_ast"
+  ],
+  "x-raos-invariants": {
+    "unknown_schema_fails_closed": true,
+    "stored_ast_only": true
+  }
+}

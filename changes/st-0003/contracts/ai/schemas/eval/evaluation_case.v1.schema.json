@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/evaluation/case/v1",
+  "title": "RAOS AI evaluation case v1",
+  "type": "object",
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^AICASE-[A-Z0-9_-]{3,120}$"
+    },
+    "task_code": {
+      "type": "string",
+      "pattern": "^ai\\.[a-z0-9_]+\\.v[0-9]+$"
+    },
+    "dataset_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "split": {
+      "type": "string",
+      "enum": [
+        "BOOTSTRAP",
+        "DEV",
+        "CALIBRATION",
+        "HOLDOUT",
+        "REGRESSION",
+        "ADVERSARIAL",
+        "PRODUCTION_SAMPLE"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "input_fixture": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "expected_disposition": {
+      "type": "string",
+      "enum": [
+        "CALL_PROVIDER_AND_PASS",
+        "CALL_PROVIDER_AND_FLAG",
+        "BLOCK_BEFORE_PROVIDER",
+        "EXPECTED_REFUSAL",
+        "EXPECTED_TERMINAL_FAILURE"
+      ]
+    },
+    "expected_invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "uniqueItems": true
+    },
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "uniqueItems": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_-]{1,100}$"
+      },
+      "uniqueItems": true
+    },
+    "gold_artifact": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 500
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000
+    }
+  },
+  "required": [
+    "case_id",
+    "task_code",
+    "dataset_version",
+    "split",
+    "category",
+    "risk_level",
+    "input_fixture",
+    "expected_disposition",
+    "expected_invariants",
+    "metrics",
+    "tags",
+    "gold_artifact",
+    "notes"
+  ],
+  "additionalProperties": false
+}

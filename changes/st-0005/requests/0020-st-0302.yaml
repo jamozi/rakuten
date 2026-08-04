@@ -1,0 +1,32 @@
+document:
+  id: STATUS-ST0302-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-02T22:29:41Z'
+reason: >-
+  Record the source-frozen local ST-0302 foundation-schema implementation,
+  exact PostgreSQL 18.4 execution, complete content-addressed manifest closure,
+  and clean independent audit without claiming a valid Git repository, pull
+  request, hosted CI, migration-owner human review, staging/release, canonical
+  APPLY, production execution, or formal TST-008.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0302
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-008
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0302-local-20260803.yaml
+        sha256: 1919d6dd0dd6090f954f26198aae4a6315f8c53f9c95c2e9919dc55fddfe8ebb
+        observed_at: '2026-08-02T22:29:37Z'

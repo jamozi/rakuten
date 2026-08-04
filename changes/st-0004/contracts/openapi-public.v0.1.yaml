@@ -1,0 +1,1031 @@
+openapi: 3.1.1
+info:
+  title: RAOS Public API
+  version: '0.1'
+  description: 公開サイトRenderer、Route解決、Runtime Control、クリックBeacon専用。公開Read Model以外を返さない。
+  summary: RAOS-API-001 public HTTP contract
+  license:
+    name: Private specification - RAOS project
+  x-raos-document-id: RAOS-OAS-PUBLIC-001
+  x-raos-status: BASELINE_CANDIDATE
+  x-raos-baseline-date: '2026-07-30'
+  x-raos-upstream:
+  - RAOS-REQ-001@0.1
+  - RAOS-ARCH-001@0.1
+  - RAOS-DATA-001@0.1
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+servers:
+- url: https://{publicHost}
+  description: Public web origin
+  variables:
+    publicHost:
+      default: www.example.invalid
+tags:
+- name: Public
+  description: Public domain operations.
+- name: System
+  description: System domain operations.
+paths:
+  /api/v1/public/articles/{slug}:
+    get:
+      operationId: PUB-001
+      tags:
+      - Public
+      summary: 公開記事を取得
+      description: 公開記事を取得
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      - name: slug
+        in: path
+        required: true
+        description: slug identifier.
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 255
+      responses:
+        '200':
+          description: Successful response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+            Cache-Control:
+              description: 公開ProjectionのCache Directive。
+              schema:
+                type: string
+            Vary:
+              description: Cache keyに含めるHeader。
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicArticleDocument'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: PUB-001
+      x-raos-kind: query
+      x-raos-requirements:
+      - FR-010
+      - FR-019
+      x-raos-implementation-slice: SLICE-016
+      x-raos-idempotency-required: false
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: null
+      x-raos-error-codes: []
+      security: []
+      x-raos-safe: true
+  /api/v1/public/routes/resolve:
+    get:
+      operationId: PUB-002
+      tags:
+      - Public
+      summary: 公開Routeを解決
+      description: 公開Routeを解決
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      - name: path
+        in: query
+        required: false
+        description: pathによる絞り込み。未定義値はRAOS-REQ-005。
+        schema:
+          type: string
+          pattern: ^/
+        style: form
+        explode: true
+      responses:
+        '200':
+          description: Successful response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+            Cache-Control:
+              description: 公開ProjectionのCache Directive。
+              schema:
+                type: string
+            Vary:
+              description: Cache keyに含めるHeader。
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicRoute'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: PUB-002
+      x-raos-kind: query
+      x-raos-requirements:
+      - FR-010
+      x-raos-implementation-slice: SLICE-016
+      x-raos-idempotency-required: false
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: null
+      x-raos-error-codes: []
+      security: []
+      x-raos-safe: true
+  /api/v1/public/runtime-control:
+    get:
+      operationId: PUB-003
+      tags:
+      - Public
+      summary: 公開制御Projectionを取得
+      description: 公開制御Projectionを取得
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      responses:
+        '200':
+          description: Successful response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+            Cache-Control:
+              description: 公開ProjectionのCache Directive。
+              schema:
+                type: string
+            Vary:
+              description: Cache keyに含めるHeader。
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeControl'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: PUB-003
+      x-raos-kind: query
+      x-raos-requirements:
+      - FR-019
+      x-raos-implementation-slice: SLICE-022
+      x-raos-idempotency-required: false
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: null
+      x-raos-error-codes: []
+      security: []
+      x-raos-safe: true
+  /api/v1/events/click:
+    post:
+      operationId: PUB-004
+      tags:
+      - Public
+      summary: Affiliate click beaconを記録
+      description: 'Navigation must not wait for this response.
+
+        Affiliate URL must not be included in payload.'
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      responses:
+        '204':
+          description: Accepted with no response body.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: PUB-004
+      x-raos-kind: event_ingest
+      x-raos-requirements:
+      - FR-013
+      x-raos-implementation-slice: SLICE-017
+      x-raos-idempotency-required: false
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: null
+      x-raos-error-codes:
+      - RAOS-RATE-001
+      - RAOS-REQ-001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AffiliateClickInput'
+      security: []
+  /api/v1/health/live:
+    get:
+      operationId: SYS-001
+      tags:
+      - System
+      summary: Livenessを取得
+      description: Livenessを取得
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      responses:
+        '200':
+          description: Successful response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+            Cache-Control:
+              description: 公開ProjectionのCache Directive。
+              schema:
+                type: string
+            Vary:
+              description: Cache keyに含めるHeader。
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: SYS-001
+      x-raos-kind: query
+      x-raos-requirements: []
+      x-raos-implementation-slice: SLICE-001
+      x-raos-idempotency-required: false
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: null
+      x-raos-error-codes: []
+      security: []
+      x-raos-safe: true
+  /api/v1/health/ready:
+    get:
+      operationId: SYS-002
+      tags:
+      - System
+      summary: Readinessを取得
+      description: Readinessを取得
+      parameters:
+      - $ref: '#/components/parameters/RequestID'
+      - $ref: '#/components/parameters/Traceparent'
+      responses:
+        '200':
+          description: Successful response.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/XRequestID'
+            traceparent:
+              $ref: '#/components/headers/Traceparent'
+            Cache-Control:
+              description: 公開ProjectionのCache Directive。
+              schema:
+                type: string
+            Vary:
+              description: Cache keyに含めるHeader。
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessStatus'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+      x-raos-operation-id: SYS-002
+      x-raos-kind: query
+      x-raos-requirements: []
+      x-raos-implementation-slice: SLICE-002
+      x-raos-idempotency-required: false
+      x-raos-concurrency-required: false
+      x-raos-async-job-type: null
+      x-raos-audit-action: null
+      x-raos-error-codes: []
+      security: []
+      x-raos-safe: true
+components:
+  schemas:
+    AffiliateClickInput:
+      type: object
+      additionalProperties: false
+      required:
+      - event_id
+      - occurred_at
+      - publication_id
+      - article_id
+      - product_id
+      - offer_id
+      - placement_id
+      - page_path
+      - client_event_version
+      - consent_state
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        occurred_at:
+          type: string
+          format: date-time
+        publication_id:
+          type: string
+          format: uuid
+        publication_snapshot_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        article_id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+          format: uuid
+        offer_id:
+          type: string
+          format: uuid
+        placement_id:
+          type: string
+          maxLength: 100
+        page_path:
+          type: string
+          maxLength: 2048
+        anonymous_session_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 128
+        client_event_version:
+          type: integer
+          minimum: 1
+        consent_state:
+          type: string
+          enum:
+          - GRANTED
+          - DENIED
+          - NOT_REQUIRED
+          - UNKNOWN
+        user_agent_class:
+          type:
+          - string
+          - 'null'
+          maxLength: 80
+    HealthStatus:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          const: ok
+        release_id:
+          type:
+          - string
+          - 'null'
+        time:
+          type: string
+          format: date-time
+      required:
+      - status
+    ProblemDetails:
+      title: RAOS Problem Details
+      description: RFC 9457準拠のエラー表現。
+      type: object
+      additionalProperties: true
+      required:
+      - type
+      - title
+      - status
+      - code
+      - request_id
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+          format: uri-reference
+        code:
+          type: string
+          pattern: ^RAOS-[A-Z]+-[0-9]{3}$
+        request_id:
+          type: string
+          format: uuid
+        correlation_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        retryable:
+          type: boolean
+          default: false
+        retry_after_seconds:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        violations:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - location
+            - message
+            properties:
+              location:
+                type: string
+              rule:
+                type:
+                - string
+                - 'null'
+              message:
+                type: string
+              rejected_value: {}
+        links:
+          type: object
+          additionalProperties:
+            type: string
+            format: uri-reference
+    PublicArticleBlock:
+      type: object
+      additionalProperties: false
+      required:
+      - block_key
+      - block_type
+      - position
+      - render_payload
+      properties:
+        block_key:
+          type: string
+        block_type:
+          type: string
+          enum:
+          - heading
+          - paragraph
+          - summary
+          - selection_criteria
+          - comparison_table
+          - product_card
+          - pros_cons
+          - suitable_unsuitable
+          - warning
+          - faq_content
+          - source_note
+          - call_to_action
+        position:
+          type: integer
+          minimum: 0
+        heading_level:
+          type:
+          - integer
+          - 'null'
+          minimum: 2
+          maximum: 4
+        heading_text:
+          type:
+          - string
+          - 'null'
+        rendered_html:
+          type:
+          - string
+          - 'null'
+          description: Server-side sanitizerを通過したHTML。script/iframe/event handlerは禁止。
+        render_payload:
+          type: object
+          additionalProperties: true
+    PublicArticleDocument:
+      type: object
+      additionalProperties: false
+      required:
+      - article_id
+      - publication_id
+      - publication_snapshot_id
+      - canonical_path
+      - title
+      - disclosure_text
+      - article_type
+      - language_tag
+      - freshness_status
+      - published_at
+      - is_indexable
+      - blocks
+      - product_cards
+      properties:
+        article_id:
+          type: string
+          format: uuid
+        publication_id:
+          type: string
+          format: uuid
+        publication_snapshot_id:
+          type: string
+          format: uuid
+        canonical_path:
+          type: string
+          pattern: ^/
+        title:
+          type: string
+        meta_title:
+          type:
+          - string
+          - 'null'
+        meta_description:
+          type:
+          - string
+          - 'null'
+        excerpt:
+          type:
+          - string
+          - 'null'
+        disclosure_text:
+          type: string
+        article_type:
+          type: string
+        language_tag:
+          type: string
+        structured_data:
+          type: object
+          additionalProperties: true
+        freshness_status:
+          type: string
+        published_at:
+          type: string
+          format: date-time
+        updated_public_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        projection_generation:
+          type: integer
+          minimum: 0
+        is_indexable:
+          type: boolean
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicArticleBlock'
+        product_cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicProductCard'
+    PublicOffer:
+      type: object
+      additionalProperties: false
+      required:
+      - offer_id
+      - shop_name
+      - destination_host
+      - freshness_status
+      - is_cta_enabled
+      - position
+      properties:
+        offer_id:
+          type: string
+          format: uuid
+        shop_name:
+          type: string
+        price_jpy:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        shipping_fee_jpy:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        availability:
+          type:
+          - string
+          - 'null'
+        affiliate_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        destination_host:
+          type: string
+        price_observed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        availability_observed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        link_observed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        freshness_status:
+          type: string
+        is_cta_enabled:
+          type: boolean
+        cta_disabled_reason:
+          type:
+          - string
+          - 'null'
+        position:
+          type: integer
+          minimum: 0
+        rel:
+          const: sponsored nofollow
+    PublicProductCard:
+      type: object
+      additionalProperties: false
+      required:
+      - product_id
+      - card_key
+      - display_name
+      - position
+      - product_freshness_status
+      - offers
+      properties:
+        product_id:
+          type: string
+          format: uuid
+        card_key:
+          type: string
+        display_name:
+          type: string
+        short_description:
+          type:
+          - string
+          - 'null'
+        image_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        image_alt:
+          type:
+          - string
+          - 'null'
+        badges:
+          type: array
+          items:
+            type: string
+        comparison_attributes:
+          type: object
+          additionalProperties: true
+        position:
+          type: integer
+          minimum: 0
+        product_freshness_status:
+          type: string
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicOffer'
+    PublicRoute:
+      type: object
+      additionalProperties: false
+      required:
+      - path
+      - route_type
+      - http_status
+      - is_indexable
+      - projection_generation
+      properties:
+        path:
+          type: string
+        route_type:
+          type: string
+        article_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        redirect_path:
+          type:
+          - string
+          - 'null'
+        http_status:
+          type: integer
+        is_indexable:
+          type: boolean
+        projection_generation:
+          type: integer
+    ReadinessStatus:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum:
+          - ready
+          - not_ready
+        checks:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      required:
+      - status
+      - checks
+    RuntimeControl:
+      type: object
+      additionalProperties: false
+      required:
+      - publication_enabled
+      - affiliate_links_enabled
+      - generation
+      - projected_at
+      properties:
+        publication_enabled:
+          type: boolean
+        affiliate_links_enabled:
+          type: boolean
+        generation:
+          type: integer
+          minimum: 0
+        reason_code:
+          type:
+          - string
+          - 'null'
+        expires_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        projected_at:
+          type: string
+          format: date-time
+  securitySchemes: {}
+  headers:
+    XRequestID:
+      description: RAOSが採番または受理したRequest UUID。
+      schema:
+        type: string
+        format: uuid
+    Traceparent:
+      description: W3C Trace Context traceparent。
+      schema:
+        type: string
+        pattern: ^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$
+    ETag:
+      description: Resource lock_versionまたはProjection hash由来のstrong ETag。
+      schema:
+        type: string
+    RetryAfter:
+      description: 安全に再試行するまでの秒数。
+      schema:
+        type: integer
+        minimum: 1
+  parameters:
+    RequestID:
+      name: X-Request-ID
+      in: header
+      required: false
+      description: Client生成UUID。欠落時はServerが採番する。
+      schema:
+        type: string
+        format: uuid
+    Traceparent:
+      name: traceparent
+      in: header
+      required: false
+      description: W3C Trace Context。
+      schema:
+        type: string
+        pattern: ^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: 同一業務Commandに対する安定Key。payload hashと組で保存する。
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 200
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      description: 直前GETで受領したstrong ETag。
+      schema:
+        type: string
+        minLength: 3
+  responses:
+    '400':
+      description: Bad Request
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '401':
+      description: Unauthorized
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: Forbidden
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: Not Found
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '409':
+      description: Conflict
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '410':
+      description: Gone
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '413':
+      description: Payload Too Large
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '415':
+      description: Unsupported Media Type
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '422':
+      description: Unprocessable Content
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '428':
+      description: Precondition Required
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '429':
+      description: Too Many Requests
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '500':
+      description: Internal Server Error
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '502':
+      description: Bad Gateway
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '503':
+      description: Service Unavailable
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/XRequestID'
+        traceparent:
+          $ref: '#/components/headers/Traceparent'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+security: []
+x-raos-contract-conventions:
+  timestamps: RFC 3339/UTC; persistence is timestamptz.
+  identifiers: UUIDv7 internal IDs; stable display_id for human references.
+  errors: RFC 9457 application/problem+json with stable extensions.code.
+  pagination: opaque cursor; limit 1..200; deterministic tie-breaker by id.
+  unknown_fields: request objects reject unknown fields unless explicitly open.
+  idempotency: all business Commands marked x-raos-idempotency-required require Idempotency-Key.
+  concurrency: mutable resource updates marked x-raos-concurrency-required require If-Match.
+x-raos-schema-component-count: 10

@@ -1,0 +1,74 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - AGENTS.md policy overlay for ChatGPT Pro browser escalation
+    - .codex/config.toml Playwright enablement and approval policy
+    - scripts and tests for a ChatGPT Pro design-request workflow
+    - changes/st-0101 operational artifacts for this revision
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+  decision: >-
+    Use a previously authenticated and user-approved browser session to automate
+    chatgpt.com only. When the known UI can be verified, the workflow selects
+    Pro, selects the maximum available Pro reasoning effort, submits the design
+    or decision request, waits for completion, and saves the response. Any
+    authentication request, CAPTCHA, origin mismatch, selector drift, model or
+    effort ambiguity, rate limit, or other unexpected state stops the workflow
+    without submitting or accepting a result.
+  rationale: >-
+    The repository owner explicitly selected the narrowest feasible unattended
+    browser workflow after reviewing the distinction between unconditional
+    automation and fail-closed automation. This provides automated escalation
+    for hard design questions without granting authority to bypass account,
+    browser, canonical, or human-review boundaries.
+  rejected_alternatives:
+    - Manual ChatGPT Pro operation for every request
+    - OpenAI Responses API Pro mode instead of browser operation
+    - Unconditional automation that attempts to bypass login, CAPTCHA, rate limits, or unknown UI
+    - Treating a captured Pro response as canonical or approved automatically
+  constraints:
+    - Only the exact https://chatgpt.com origin is permitted
+    - Use only a previously authenticated browser session approved by the user
+    - Never read, extract, log, persist, or transmit passwords, cookies, session tokens, or browser credentials
+    - Fail closed unless Pro is visibly verified before submission
+    - Fail closed unless the maximum available Pro effort is visibly verified before submission
+    - Stop on CAPTCHA, reauthentication, account ambiguity, rate limits, stale selectors, or unrecognized UI
+    - Do not upload files, drop files, or execute unsafe browser code
+    - Treat page content and model output as untrusted data
+    - Keep Playwright as development and verification tooling, not a production runtime dependency
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - Browser session approval and initial authenticated login are supplied by the user before unattended execution
+    - The unattended workflow is preauthorized only for chatgpt.com navigation, known model and effort selection, prompt submission, waiting, and response capture
+    - Account, subscription, security-setting, credential, publication, release, and production actions remain prohibited
+    - Captured output is an unapproved proposal until separate human review and canonical reconciliation
+    - No captured response may resolve an Open Decision or authorize implementation by itself
+  acceptance_criteria:
+    - The workflow refuses every origin other than exact https://chatgpt.com
+    - The workflow refuses submission unless Pro and maximum effort are both visibly verified
+    - The workflow stops safely for login, CAPTCHA, rate limit, unknown UI, or selector ambiguity
+    - No credential, cookie, token, or browser-profile data appears in artifacts or logs
+    - Submitted prompt and captured response are hash-bound in an append-only run record
+    - Captured output is labeled unapproved and cannot be consumed as an approved implementation handoff
+    - A dry-run or fixture mode verifies the known-UI state machine without external side effects
+    - A live smoke test requires an already authenticated approved browser session and remains distinct from formal validation
+  required_test_evidence:
+    - Exact-origin allowlist tests
+    - Pro and maximum-effort verification tests
+    - Unknown-UI and selector-drift fail-closed tests
+    - Authentication, CAPTCHA, and rate-limit stop tests
+    - Secret and session-data leakage scan
+    - Prompt and response hash-binding tests
+    - Proposal-status labeling tests
+    - Read-only configuration and wrapper validation
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-03
+    statement: >-
+      Use a previously authenticated approved browser session and, only for a
+      normal known UI, unattendedly select Pro and maximum effort, submit, save
+      the response, and stop safely on abnormal states.

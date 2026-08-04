@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/refresh_diff_summary/v1",
+  "title": "RAOS AI task output: refresh_diff_summary v1",
+  "type": "object",
+  "properties": {
+    "changes": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "properties": {
+          "diff_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "subject_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "change_type": {
+            "type": "string",
+            "enum": [
+              "ADDED",
+              "REMOVED",
+              "CHANGED",
+              "BECAME_STALE",
+              "RESOLVED_CONFLICT"
+            ]
+          },
+          "materiality": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ]
+          },
+          "affected_claim_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "uniqueItems": true,
+            "maxItems": 200
+          },
+          "brief_explanation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "diff_id",
+          "subject_ref",
+          "change_type",
+          "materiality",
+          "affected_claim_refs",
+          "brief_explanation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "article_impact": {
+      "type": "string",
+      "enum": [
+        "NO_ACTION",
+        "INSPECT",
+        "EDIT",
+        "UNPUBLISH",
+        "DISABLE_AFFILIATE_LINK"
+      ]
+    },
+    "recommended_actions": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "NO_ACTION",
+              "VERIFY",
+              "EDIT_CLAIM",
+              "REFRESH_TABLE",
+              "UNPUBLISH",
+              "DISABLE_LINK"
+            ]
+          },
+          "target_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "action",
+          "target_ref",
+          "priority",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 800
+      },
+      "maxItems": 100
+    }
+  },
+  "required": [
+    "changes",
+    "article_impact",
+    "recommended_actions",
+    "limitations"
+  ],
+  "additionalProperties": false
+}

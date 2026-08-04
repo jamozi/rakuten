@@ -1,0 +1,163 @@
+document:
+  id: RAOS-LOCAL-OBJECT-STORAGE-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0202
+  source_contract: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
+  generated_by: repo://scripts/build_local_compose.py
+  generation_command: uv run --locked --no-sync python scripts/build_local_compose.py
+provenance:
+  contract_uri: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
+  architecture_snapshot:
+    uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
+    sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
+  canonical_inputs:
+  - uri: repo://docs/manifest.json
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+    sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/canonical/08_codex/RAOS_14_codex_implementation_handbook_v1.0.md
+    sha256: 501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2
+  image:
+    reference: docker.io/chrislusf/seaweedfs:4.29@sha256:d47c7ee99fcb951351d7194915f4e3a5ea604a8e8871183d713907dec4fb9bf5
+    index_digest: sha256:d47c7ee99fcb951351d7194915f4e3a5ea604a8e8871183d713907dec4fb9bf5
+    linux_amd64_manifest_digest: sha256:f16591b02e7a1d79dca57801405eec2c784711436edf65c0aa6394ef52800a3e
+    config_digest: sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd
+  predecessor_manifest:
+    uri: repo://changes/st-0201/manifest.yaml
+    sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+    story_id: ST-0201
+stack:
+  stories:
+  - ST-0201
+  - ST-0202
+source_artifact_count: 30
+source_artifacts:
+- uri: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
+  bytes: 7152
+  sha256: 389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c
+- uri: repo://changes/st-0202/README.md
+  bytes: 5874
+  sha256: 9b865af6da33c61a889523eb42e28c3551205358111c9c59c8355b58e3adc5c3
+- uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
+  bytes: 9112
+  sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
+- uri: repo://docs/execplans/ST-0202.md
+  bytes: 5367
+  sha256: 19da203002f9135e38024b41edee5b328a8120bf08fa09b9991ef201dc4c8f1b
+- uri: repo://docs/worklogs/ST-0202.md
+  bytes: 4843
+  sha256: 77c8af5c7930f5c0acdca26f29bcd6ba4f515bcb1097afbea72b8f7c4d56b476
+- uri: repo://changes/st-0201/manifest.yaml
+  bytes: 5607
+  sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+- uri: repo://scripts/build_local_compose.py
+  bytes: 33026
+  sha256: 79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9
+- uri: repo://scripts/build_st0201_postgres_service.py
+  bytes: 36958
+  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+- uri: repo://scripts/postgres_service.sh
+  bytes: 12609
+  sha256: 0ff924b0dea696db0117035c0077a77053d8724c76796866263163bb18b9e1fb
+- uri: repo://scripts/object_storage_service.sh
+  bytes: 15876
+  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
+- uri: repo://scripts/object_storage_fixture.py
+  bytes: 30201
+  sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
+- uri: repo://tests/st0201/conftest.py
+  bytes: 1528
+  sha256: bbf43f1c353ac9c5fb70d9b3dfb5b91c7da09586884295d270ae5560c9082dca
+- uri: repo://tests/st0201/test_contract.py
+  bytes: 8196
+  sha256: f8d4372e0ef578ee6a646184f2db5afdd0634fb932fd9f892b2ff51e829c278b
+- uri: repo://tests/st0201/test_generation.py
+  bytes: 12221
+  sha256: 8352263511b7c2c7ee0a561d8fea710cafce17e61d3cee588b2ce482f2efb644
+- uri: repo://tests/st0201/test_negative_cases.py
+  bytes: 10845
+  sha256: e32afefa7070ac148d8d5a953624e61e455b142af0c8c81a76fa1df70edf5d09
+- uri: repo://tests/st0201/test_wrapper.py
+  bytes: 17361
+  sha256: 79398040a01d02a46e985ba37e9895c815097dbe2e3790172a58607c3d1384d8
+- uri: repo://tests/st0202/conftest.py
+  bytes: 13356
+  sha256: 2a509dcd7da3356d53c9691df104c0989b94f583f7eaf0c283ff729cfee8ec37
+- uri: repo://tests/st0202/test_contract.py
+  bytes: 13622
+  sha256: 987e905696ecb99397a5babac314ac651cf8f33ad0c4acb528f01a335c631fa3
+- uri: repo://tests/st0202/test_fixture.py
+  bytes: 14906
+  sha256: 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
+- uri: repo://tests/st0202/test_negative_cases.py
+  bytes: 12407
+  sha256: d9a93f73b435932a8e1fb6291e1aa6bef5680daf9801424fce47b2d82a2cf6ce
+- uri: repo://tests/st0202/test_wrapper.py
+  bytes: 14300
+  sha256: 04636e3a2b0968ee337db788a7ac772f290006a2cc98fc4921617f80013764e6
+- uri: repo://.github/workflows/ci.yml
+  bytes: 19528
+  sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+- uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+  bytes: 7204
+  sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
+- uri: repo://changes/st-0107/manifest.yaml
+  bytes: 4848
+  sha256: de58b0bef9d6e2ea6d3f7e53c9c41534d4dc18b85be8aba31778d2cf0aed33e2
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 19350
+  sha256: 70f7d947fdba09bb0d8d2260a3c99fa9bff70b4e0699e74a3a4b0b04871fa1ee
+- uri: repo://workspace-layout.json
+  bytes: 6679
+  sha256: 7d9e3a5d83fd20b10009c51f2589645e78a57eb6522ee9e060e9f6332d034a85
+- uri: repo://infra/docker/README.md
+  bytes: 460
+  sha256: 324a062bb99e482626fde5dfe9bbcca214f65eb6b8f07281f8b345698dab40f0
+- uri: repo://AGENTS.md
+  bytes: 17524
+  sha256: af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10
+- uri: repo://Makefile
+  bytes: 23492
+  sha256: 8a777791c08b3af87d6c62030209d733d01164fe343e7c3c5e5cdad9c69487b7
+- uri: repo://README.md
+  bytes: 43930
+  sha256: 6c1ab60959182777a25cfd47ebbc5a51d56e61d93d966e23e8d4c65cfa564b0d
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://docker-compose.yml
+  bytes: 3106
+  sha256: dd2b5a1cd608df31ba46dbdb38011d5a96faa145a86c2c33b8f1281e4290febf
+manifest_self_integrity:
+  included_in_generated_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  environment: LOCAL_AND_CI_ONLY
+  production_use: FORBIDDEN
+  remote_object_storage: FORBIDDEN
+  raw_credential_environment: FORBIDDEN
+  anonymous_access: FORBIDDEN
+  default_retention: FORBIDDEN
+  retention_period: UNSET_HUMAN_DECISION_REQUIRED
+  lifecycle_delete: FORBIDDEN
+  automatic_deletion: DISABLED
+  od_014: HUMAN_DECISION_REQUIRED
+  docker_runtime: NOT_EXECUTED
+  authenticated_s3_fixture: NOT_EXECUTED
+  object_lock_and_version_delete_regression: NOT_EXECUTED
+  container_vulnerability_scan: NOT_EXECUTED
+  formal_tst_014: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

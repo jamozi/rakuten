@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/portfolio-generate-action-candidates-v1.schema.json",
+  "title": "portfolio.generate_action_candidates.v1",
+  "description": "更新・統合・削除・新規作成候補を生成する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "portfolio.generate_action_candidates.v1"
+        },
+        "queue": {
+          "const": "analytics"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "scope": {
+              "type": "string",
+              "enum": [
+                "SITE",
+                "CATEGORY"
+              ]
+            },
+            "scope_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "site_id",
+            "as_of",
+            "scope",
+            "scope_id"
+          ]
+        }
+      }
+    }
+  ]
+}

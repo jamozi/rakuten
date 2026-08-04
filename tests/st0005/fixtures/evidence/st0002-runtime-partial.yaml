@@ -1,0 +1,26 @@
+document:
+  id: TEST-STATUS-EVIDENCE-ST0002-RUNTIME-PARTIAL
+  schema_version: 1
+  recorded_at: '2026-08-01T08:00:00Z'
+story_id: ST-0002
+evidence_class: RUNTIME_SUITE_RESULT
+formal_suite_status: PARTIAL
+source_artifacts:
+- original_uri: repo://docs/manifest.json
+  artifact_uri: repo://tests/st0005/fixtures/artifacts/297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e-manifest.json
+  sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+suite_results:
+- suite_id: TST-002
+  environment: CI
+  result: PARTIAL
+- suite_id: TST-008
+  environment: CI
+  result: PARTIAL
+- suite_id: TST-010
+  environment: CI
+  result: PARTIAL
+- suite_id: TST-013
+  environment: CI
+  result: PARTIAL
+local_results: []
+boundary: Test-only immutable snapshot fixture.

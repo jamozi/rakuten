@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/content-review-request.v1.schema.json",
+  "title": "Content Review Decision Request",
+  "description": "Human-only, step-up authenticated final content review decision.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": [
+        "APPROVE",
+        "REJECT"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "checklist_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "maxLength": 64
+    },
+    "checklist_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "review_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "review_artifact_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "decision",
+    "reason",
+    "checklist_version",
+    "checklist_sha256",
+    "review_artifact_id",
+    "review_artifact_sha256"
+  ],
+  "x-raos-invariants": {
+    "human_only": true,
+    "ai_and_service_principals_forbidden": true,
+    "author_final_approver_separation": true
+  }
+}

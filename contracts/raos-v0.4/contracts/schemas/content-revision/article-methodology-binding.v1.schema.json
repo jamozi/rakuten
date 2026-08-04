@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/article-methodology-binding.v1.schema.json",
+  "title": "Article Methodology Binding",
+  "description": "Immutable methodology and candidate-universe binding.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "article_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "methodology_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "candidate_universe_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "candidate_universe_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "bound_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "bound_by_principal_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
+  "required": [
+    "article_version_id",
+    "methodology_version_id",
+    "candidate_universe_artifact_id",
+    "candidate_universe_sha256",
+    "bound_at",
+    "bound_by_principal_id"
+  ],
+  "x-raos-invariants": {
+    "article_type_must_match": true,
+    "append_only": true
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/portfolio-assess-opportunity-v1.schema.json",
+  "title": "portfolio.assess_opportunity.v1",
+  "description": "編集可能性・事業性・Compliance Riskを分離評価する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "portfolio.assess_opportunity.v1"
+        },
+        "queue": {
+          "const": "quality"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "category_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "intent_cluster_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "keyword_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "assessment_type": {
+              "type": "string"
+            },
+            "formula_version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "category_id",
+            "assessment_type"
+          ]
+        }
+      }
+    }
+  ]
+}

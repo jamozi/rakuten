@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-policy-gate-decision-recorded-v1.schema.json",
+  "title": "jp.raos.policy.gate_decision_recorded.v1",
+  "description": "Gate Decisionが記録された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.policy.gate_decision_recorded.v1"
+        },
+        "producer": {
+          "const": "policy"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "gate_decision_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "gate_code": {
+              "type": "string"
+            },
+            "scope_type": {
+              "type": "string"
+            },
+            "scope_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "result": {
+              "type": "string"
+            },
+            "decided_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "gate_decision_id",
+            "gate_code",
+            "scope_type",
+            "scope_id",
+            "result",
+            "decided_at"
+          ]
+        }
+      }
+    }
+  ]
+}

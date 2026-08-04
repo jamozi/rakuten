@@ -1,0 +1,40 @@
+document:
+  id: RAOS-OPS-RECOVERY-001
+  version: '1.0'
+  note: Targets are design objectives and require measured drills.
+assets:
+- asset: PostgreSQL transactional data
+  mechanism: RDS automated backup/PITR plus pre-release snapshot
+  target_rpo: <=15 min
+  target_rto: <=4 h
+  retention: PROVISIONAL_PENDING_APPROVAL
+  restore_test: quarterly and before GATE-1/major migration
+  status: NOT_CONFIGURED
+- asset: Object artifacts/publication snapshots
+  mechanism: S3 versioning, encryption, lifecycle; Object Lock only if approved
+  target_rpo: <=1 h
+  target_rto: <=4 h
+  retention: per artifact class, provisional
+  restore_test: quarterly sample/full manifest
+  status: NOT_CONFIGURED
+- asset: Infrastructure as Code
+  mechanism: Git repository and release artifact
+  target_rpo: last merged commit
+  target_rto: <=4 h
+  retention: repository policy
+  restore_test: environment recreation drill
+  status: NOT_CONFIGURED
+- asset: Secrets
+  mechanism: Secrets Manager version/rotation; not copied into ordinary backup
+  target_rpo: provider dependent
+  target_rto: <=2 h for critical
+  retention: provider policy
+  restore_test: rotation/reissue drill
+  status: NOT_CONFIGURED
+- asset: Analytics derived facts
+  mechanism: reimport from provider/raw artifact plus DB backup
+  target_rpo: <=24 h
+  target_rto: <=24 h
+  retention: provisional
+  restore_test: rebuild sample period
+  status: NOT_CONFIGURED

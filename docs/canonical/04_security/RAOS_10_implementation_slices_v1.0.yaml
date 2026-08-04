@@ -1,0 +1,116 @@
+document:
+  id: RAOS-SEC-SLICES-001
+  version: '1.0'
+slices:
+- id: SEC-SLICE-001
+  name: Security baseline and CI
+  depends_on: []
+  deliverables:
+  - ASVS mapping
+  - secret/SAST/SCA/IaC scans
+  - branch rules
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SLICE-002
+  name: OIDC, MFA and session
+  depends_on:
+  - SEC-SLICE-001
+  deliverables:
+  - OIDC
+  - MFA
+  - secure session
+  - logout/revocation
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SLICE-003
+  name: Authorization and separation of duties
+  depends_on:
+  - SEC-SLICE-002
+  deliverables:
+  - scope policy
+  - server checks
+  - negative tests
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SLICE-004
+  name: Application security controls
+  depends_on:
+  - SEC-SLICE-001
+  deliverables:
+  - CSP
+  - CSRF
+  - SSRF
+  - headers
+  - error hygiene
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SLICE-005
+  name: Secure file and CSV intake
+  depends_on:
+  - SEC-SLICE-004
+  deliverables:
+  - quarantine
+  - scan
+  - limits
+  - formula protection
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SLICE-006
+  name: Data, secrets and audit
+  depends_on:
+  - SEC-SLICE-003
+  deliverables:
+  - KMS/encryption
+  - Secrets Manager
+  - immutable audit
+  - retention hooks
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SLICE-007
+  name: AWS network and IAM
+  depends_on:
+  - SEC-SLICE-006
+  deliverables:
+  - private data plane
+  - egress
+  - roles
+  - CloudTrail
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SLICE-008
+  name: AI security controls
+  depends_on:
+  - SEC-SLICE-004
+  - SEC-SLICE-006
+  deliverables:
+  - input classification
+  - prompt injection
+  - DLP
+  - route stop
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SLICE-009
+  name: Supply chain and deployment
+  depends_on:
+  - SEC-SLICE-001
+  - SEC-SLICE-007
+  deliverables:
+  - SBOM
+  - provenance
+  - OIDC deploy
+  - environment approval
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SLICE-010
+  name: Security verification and incident drill
+  depends_on:
+  - SEC-SLICE-005
+  - SEC-SLICE-008
+  - SEC-SLICE-009
+  deliverables:
+  - ASVS evidence
+  - penetration test
+  - tabletop
+  - remediation
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED

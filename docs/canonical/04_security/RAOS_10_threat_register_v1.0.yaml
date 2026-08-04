@@ -1,0 +1,274 @@
+document:
+  id: RAOS-SEC-THREATS-001
+  version: '1.0'
+threats:
+- id: THR-001
+  threat: Credential theft
+  scenario: Admin/Provider credentialが盗まれる
+  impact: Account takeover/データ漏えい
+  controls: MFA、OIDC、step-up、rotation、alert
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-002
+  threat: Broken access control
+  scenario: Role/Site境界を迂回
+  impact: 未承認公開・Finance漏えい
+  controls: deny default、server authz、negative tests
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-003
+  threat: CSRF on critical command
+  scenario: 利用者のSessionで公開/停止を実行
+  impact: 不正操作
+  controls: SameSite、CSRF、Origin、step-up
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-004
+  threat: Stored XSS via content
+  scenario: 記事/商品/CSVからscript混入
+  impact: 訪問者/管理者侵害
+  controls: Typed AST、encoding、CSP、no raw HTML
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-005
+  threat: SSRF through adapter
+  scenario: URL入力でmetadata/internalへ接続
+  impact: Credential漏えい
+  controls: allowlist、IP deny、timeout、no user arbitrary URL
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-006
+  threat: Malicious CSV
+  scenario: Formula/zip bomb/malformed file
+  impact: Operator侵害/DoS
+  controls: quarantine、size、magic、formula neutralize
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-007
+  threat: Dependency compromise
+  scenario: Package/Action汚染
+  impact: Build/Production侵害
+  controls: pin、SCA、SBOM、provenance
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-008
+  threat: CI credential abuse
+  scenario: PRからCloud credential取得
+  impact: Infrastructure侵害
+  controls: OIDC trust condition、environment approval
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-009
+  threat: Prompt injection
+  scenario: Source文中の命令をAIが実行
+  impact: 虚偽/漏えい
+  controls: untrusted delimiter、tools none、output/fact validation
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-010
+  threat: Indirect data exfiltration
+  scenario: AI出力やErrorへSecret混入
+  impact: Credential/PII漏えい
+  controls: input classification、DLP、redaction、no raw logs
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-011
+  threat: Product identity poisoning
+  scenario: 異なるVariantを同一化
+  impact: 誤推薦
+  controls: category rules、human review、decision history
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-012
+  threat: Affiliate URL manipulation
+  scenario: 不正URL/中継/ID改変
+  impact: 規約違反/収益損失
+  controls: official URL、allowlist、hash、link health
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-013
+  threat: Revenue import forgery
+  scenario: File/合計を改ざん
+  impact: 財務誤認
+  controls: hash、dry run、two-step commit、reconciliation
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-014
+  threat: Estimated attribution presented as fact
+  scenario: 推定を直接成果として表示
+  impact: 意思決定誤り
+  controls: basis badge、separate table、contract tests
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-015
+  threat: Audit tampering
+  scenario: 操作証跡を変更/削除
+  impact: 調査不能
+  controls: immutable table、restricted role、export
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-016
+  threat: Kill switch bypass
+  scenario: Cache/旧generationでリンク継続
+  impact: 規約/安全リスク
+  controls: generation monotonic、fail safe、synthetic check
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-017
+  threat: Queue replay
+  scenario: 同一Jobを重複実行
+  impact: 二重公開/二重成果
+  controls: idempotency、inbox、unique constraints
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-018
+  threat: Snapshot tampering
+  scenario: 公開内容が承認後に変化
+  impact: 誤表示
+  controls: content hash、immutable snapshot、projection verification
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-019
+  threat: Public/internal data confusion
+  scenario: Public APIにEvidence/Finance露出
+  impact: 機密漏えい
+  controls: separate OpenAPI/role/readmodel、schema scan
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-020
+  threat: Sensitive logs
+  scenario: Prompt/Source/IP/SecretがLogへ出る
+  impact: 漏えい
+  controls: structured redacted logs、log tests
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-021
+  threat: Backup exposure
+  scenario: Snapshot/backupへ広いAccess
+  impact: 大量漏えい
+  controls: encryption、separate role、restore isolation
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-022
+  threat: Provider outage abuse
+  scenario: Retry storm/Cost blowout
+  impact: DoS/費用
+  controls: circuit breaker、budget、backoff、DLQ
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-023
+  threat: WAF/rate bypass
+  scenario: Botがcollector/APIを乱用
+  impact: Cost/データ汚染
+  controls: server rate、bot classification、budget alert
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-024
+  threat: Insider misuse
+  scenario: 正当Roleが不正操作
+  impact: 公開/財務被害
+  controls: separation、step-up、audit、review
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-025
+  threat: Privacy overcollection
+  scenario: 不要な識別子を分析保存
+  impact: 法務/信頼リスク
+  controls: data minimization、consent、retention、DPIA-like review
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-026
+  threat: Domain/DNS takeover
+  scenario: 公開先が乗っ取られる
+  impact: 大規模誘導
+  controls: registrar MFA、DNS change control、certificate monitoring
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-027
+  threat: Stale dependency/API assumption
+  scenario: 外部仕様変更を見逃す
+  impact: 障害/規約違反
+  controls: contract monitor、official source review、kill switch
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-028
+  threat: Session fixation/replay
+  scenario: Session tokenの再利用
+  impact: account takeover
+  controls: rotation、short lifetime、revocation
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-029
+  threat: Open redirect/phishing
+  scenario: RAOS URLで任意先へ誘導
+  impact: 利用者被害
+  controls: fixed allowlist、direct destination label
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: THR-030
+  threat: Denial of wallet
+  scenario: AI/API大量呼出し
+  impact: 費用損失
+  controls: per-task budget、quota、approval、alert/stop
+  residual_risk: TO_BE_ASSESSED_AFTER_IMPLEMENTATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED

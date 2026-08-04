@@ -1,0 +1,42 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0302-20260803-V2
+  schema_version: 1
+  recorded_at: '2026-08-02T22:34:51Z'
+story_id: ST-0302
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0302-local-20260803.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1919d6dd0dd6090f954f26198aae4a6315f8c53f9c95c2e9919dc55fddfe8ebb-ST-0302-local-20260803.yaml
+    sha256: 1919d6dd0dd6090f954f26198aae4a6315f8c53f9c95c2e9919dc55fddfe8ebb
+  - original_uri: repo://scripts/build_st0302_foundation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/354eeacb4558cea9eafcccc6a76168feb7a496272c5459c8ec4132aaddcd0220-build_st0302_foundation.py
+    sha256: 354eeacb4558cea9eafcccc6a76168feb7a496272c5459c8ec4132aaddcd0220
+  - original_uri: repo://tests/st0102/test_commands_and_docs.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/0b0d1adfc4d16ba90e7b16bde47f98a3650589d9f779aceb330d89db5366de98-test_commands_and_docs.py
+    sha256: 0b0d1adfc4d16ba90e7b16bde47f98a3650589d9f779aceb330d89db5366de98
+  - original_uri: repo://docs/worklogs/ST-0302.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/4a3cf90495811c3a63eb22d061ab20e7e019c66fa074c137a24fc343d913b3da-ST-0302.md
+    sha256: 4a3cf90495811c3a63eb22d061ab20e7e019c66fa074c137a24fc343d913b3da
+  - original_uri: repo://changes/st-0302/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ecbbbb4885e13090537592214cfea61c6db6001e33a753fc818c75fe83cafbb9-manifest.yaml
+    sha256: ecbbbb4885e13090537592214cfea61c6db6001e33a753fc818c75fe83cafbb9
+suite_results:
+  - suite_id: TST-008
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: first post-bundle full unit gate and focused ST-0102 remediation checks
+    result: 'PASS after remediation; the gate exposed one stale exact Make recipe expectation, and both the direct expectation and inherited-environment nested regression now pass'
+  - command: ST-0302 deterministic generation after direct-source closure expansion
+    result: 'PASS; generator check binds 42 sources, 3 generated artifacts, and the current manifest while preserving the prior 45-artifact snapshot through this append-only delta'
+boundary: >-
+  Append-only delta over the content-addressed 45-artifact ST-0302 snapshot
+  recorded at 2026-08-02T22:29:37Z. This delta captures the prior evidence,
+  every post-snapshot changed or newly bound source, and the regenerated
+  manifest. The first full unit attempt stopped on the now-remediated stale
+  ST-0102 Make-recipe expectation; a final full-suite rerun remains outside
+  this snapshot. No valid Git repository, pull request, hosted CI,
+  migration-owner human review, staging/release, production execution,
+  canonical APPLY, or formal TST-008 execution is asserted. Effective
+  canonical ST-0302 remains NOT_STARTED / NOT_EXECUTED.

@@ -1,0 +1,304 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+  status: BASELINE_CANDIDATE
+management_model: git_code_managed
+compiler_contract:
+  frontmatter_required: true
+  unknown_variables: REJECT
+  undefined_values: REJECT
+  escaping: canonical_json_for_dynamic_objects
+  static_prefix:
+  - developer instructions
+  - task procedure
+  - output contract
+  dynamic_suffix:
+  - task context
+  - source packet
+  - policy bundle
+  - request metadata
+  rendered_prompt_artifact: hash and encrypted object only; not application log
+templates:
+- prompt_code: PROMPT-AI-OPPORTUNITY-ASSESSMENT
+  version: 1
+  task_code: ai.opportunity_assessment.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-OPPORTUNITY-ASSESSMENT_v1.md
+  sha256: 0d6f0eb38a025162124aaed10bca3ae4edc42ae52aeee3684c8c9f465dffa4a2
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-COMPARISON-AXIS
+  version: 1
+  task_code: ai.comparison_axis_suggestion.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-COMPARISON-AXIS_v1.md
+  sha256: 2ee556ba6c828797b634f14f9365eaecca0ba4c85857451e7c1e27347c20b1e0
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-ARTICLE-OUTLINE
+  version: 1
+  task_code: ai.article_outline.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-ARTICLE-OUTLINE_v1.md
+  sha256: 400c089e2cce0ff1956d476f7352bfe9d80f7ac9cd4ff41e72f52312571d9bd7
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-ARTICLE-DRAFT
+  version: 1
+  task_code: ai.article_draft.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-ARTICLE-DRAFT_v1.md
+  sha256: b868eb4e131da15cfc7c7be20dc538dd70a5fe58b42f04f8e69414d0ffee294c
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-CLAIM-EXTRACTION
+  version: 1
+  task_code: ai.claim_extraction.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-CLAIM-EXTRACTION_v1.md
+  sha256: 858bf873433c6ab43c94f02070797f3c9819fe71c176f3c60afb9951a2cad165
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-QUALITY-REMEDIATION
+  version: 1
+  task_code: ai.quality_remediation.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-QUALITY-REMEDIATION_v1.md
+  sha256: 7b4f0b62273ce4b83893b68d4f7b4d5d1c0f1f5eb4ebec8975cd79ca8b98138e
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-UPDATE-PRIORITY
+  version: 1
+  task_code: ai.update_priority_explanation.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-UPDATE-PRIORITY_v1.md
+  sha256: 0e651ccd33524fcb8d90ea891b0b52285bacc15c58c6a474de83da38dc4a21bc
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-INTERNAL-LINK
+  version: 1
+  task_code: ai.internal_link_suggestion.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-INTERNAL-LINK_v1.md
+  sha256: 62b76734d1670c92388f267606c981c885927298bd841a5fdce6e9577fefcc7f
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-SEARCH-INTENT
+  version: 1
+  task_code: ai.search_intent_classification.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-SEARCH-INTENT_v1.md
+  sha256: 4b6a09622bf95e440a9cf5d2627263c897eece1f6107c31fc3729d36968ced81
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-POLICY-ASSIST
+  version: 1
+  task_code: ai.policy_assist.v1
+  status: CANDIDATE
+  git_path: prompts/PROMPT-AI-POLICY-ASSIST_v1.md
+  sha256: aedd521cbf676d9f28d0136ccc6d9fe5e6a1ade8e285f7545d146e4590fcafdd
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-SOURCE-PACKET-GAP
+  version: 1
+  task_code: ai.source_packet_gap_analysis.v1
+  status: DISABLED
+  git_path: prompts/PROMPT-AI-SOURCE-PACKET-GAP_v1.md
+  sha256: 5d6629ee37ccdbf685143e454cf9e07f715155d059e949aed2ba5bc8a186c2e0
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+- prompt_code: PROMPT-AI-REFRESH-DIFF
+  version: 1
+  task_code: ai.refresh_diff_summary.v1
+  status: DISABLED
+  git_path: prompts/PROMPT-AI-REFRESH-DIFF_v1.md
+  sha256: 164ddb69ba3b06ad8dc612163d1e01acf6ac6dffdacfb01205fe6d45efa96273
+  input_variables:
+  - task_context_json
+  - source_packet_json
+  - policy_bundle_json
+  - output_schema_json
+  - request_metadata_json
+  required_runtime_checks:
+  - typed_arguments
+  - manifest_signature
+  - schema_hash_match
+  - policy_bundle_active
+  - no_forbidden_input_fields
+  change_requires:
+  - prompt_unit_tests
+  - task_eval_suite
+  - human_review_for_high_or_critical
+  - staged_route_release
+review_rules:
+- prompt and schema changes are separate reviewable diffs
+- critical prompts require editorial/policy owner plus AI platform owner
+- examples must use synthetic or licensed data and cannot contain Rakuten review body
+- prompt changes require relevant task suites and injection regressions
+- prompt authors cannot approve their own production release decision alone

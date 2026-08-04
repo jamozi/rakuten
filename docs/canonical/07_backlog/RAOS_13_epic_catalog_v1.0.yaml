@@ -1,0 +1,124 @@
+document:
+  id: RAOS-BACKLOG-EPICS-001
+  version: '1.0'
+epics:
+- id: EPIC-00
+  name: Canonical integration and governance
+  objective: 既存設計・Patch・状態をRepository正本へ統合
+  wave: FOUNDATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-01
+  name: Repository bootstrap
+  objective: Monorepo、toolchain、contract、CIの土台
+  wave: FOUNDATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-02
+  name: Local runtime foundation
+  objective: PostgreSQL、object、queue、configの開発環境
+  wave: FOUNDATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-03
+  name: Database and persistence
+  objective: Migration、Role、Outbox、Audit、Domain persistence
+  wave: FOUNDATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-04
+  name: Identity and security foundation
+  objective: OIDC、MFA、authz、security control
+  wave: FOUNDATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-05
+  name: Portfolio and catalog
+  objective: カテゴリ、Keyword、楽天取込、商品同一性
+  wave: VERTICAL
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-06
+  name: Evidence and provenance
+  objective: Raw、Fact、Source Packet、Claim evidence
+  wave: VERTICAL
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-07
+  name: AI runtime and governance
+  objective: Prompt、Route、Provider、Eval、release
+  wave: VERTICAL
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-08
+  name: Content and editorial domain
+  objective: Article Plan、AST、比較、推薦、Policy
+  wave: VERTICAL
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-09
+  name: Review and publication
+  objective: Review、Approval、Snapshot、Publish、Rollback
+  wave: VERTICAL
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-10
+  name: Public web
+  objective: 記事Renderer、SEO、CTA、accessibility
+  wave: VERTICAL
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-11
+  name: Admin web
+  objective: 各Domainの運営UI
+  wave: VERTICAL
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-12
+  name: Analytics measurement
+  objective: Event、GSC、GA4、KPI
+  wave: MEASUREMENT
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-13
+  name: Finance and attribution
+  objective: 成果取込、照合、帰属、Unit economics
+  wave: MEASUREMENT
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-14
+  name: Freshness and operations
+  objective: 更新、Link、Job、Incident、Kill switch
+  wave: OPERATIONS
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-15
+  name: Cloud and delivery
+  objective: Terraform、AWS、CI/CD、Staging
+  wave: OPERATIONS
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-16
+  name: Verification and resilience
+  objective: Security、performance、restore、gate evidence
+  wave: VERIFICATION
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-17
+  name: MVP editorial pilot
+  objective: 1カテゴリ、5-10記事の縦断検証
+  wave: PILOT
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-18
+  name: GATE-1 scale and business validation
+  objective: 30-45記事、検索/収益検証、拡張判断
+  wave: PILOT
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+- id: EPIC-19
+  name: Post-MVP automation
+  objective: 高度自動化・複数カテゴリ・Model judge等
+  wave: POST_MVP
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP

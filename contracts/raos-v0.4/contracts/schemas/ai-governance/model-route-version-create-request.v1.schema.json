@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/model-route-version-create-request/v1",
+  "title": "Model Route Version Create Request",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "route_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "version_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "primary_model_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "fallback_model_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "monthly_budget_jpy": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "per_job_budget_jpy": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "route_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reasoning_effort": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            null
+          ]
+        },
+        "temperature": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 2
+        },
+        "max_output_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        },
+        "max_fallbacks": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "fallback_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ]
+          },
+          "uniqueItems": true,
+          "maxItems": 4
+        },
+        "never_fallback_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "ANY",
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ]
+          },
+          "uniqueItems": true,
+          "maxItems": 7
+        },
+        "minimum_eval_status": {
+          "type": "string",
+          "enum": [
+            "CERTIFIED",
+            "CERTIFIED_CRITICAL",
+            "JUDGE_CALIBRATED",
+            "DISABLED"
+          ]
+        },
+        "canary_max_percent": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "batch_eligible": {
+          "type": "boolean"
+        },
+        "prompt_cache_eligible": {
+          "type": "boolean"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "store": {
+          "type": "boolean",
+          "const": false
+        },
+        "strict_structured_output": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "reasoning_effort",
+        "temperature",
+        "max_fallbacks",
+        "fallback_on",
+        "never_fallback_on",
+        "minimum_eval_status",
+        "canary_max_percent",
+        "batch_eligible",
+        "prompt_cache_eligible",
+        "enabled",
+        "store",
+        "strict_structured_output"
+      ],
+      "description": "Canonical route configuration vocabulary copied from RAOS_05_model_routing_catalog_v0.1.yaml. The frozen field name is canary_max_percent; aliases are forbidden.",
+      "x-raos-canonical-source": "ai/RAOS_05_model_routing_catalog_v0.1.yaml"
+    }
+  },
+  "required": [
+    "route_code",
+    "version_no",
+    "task_definition_id",
+    "primary_model_id",
+    "fallback_model_id",
+    "route_config",
+    "monthly_budget_jpy",
+    "per_job_budget_jpy"
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

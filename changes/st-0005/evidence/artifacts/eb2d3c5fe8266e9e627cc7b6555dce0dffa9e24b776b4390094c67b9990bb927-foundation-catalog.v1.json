@@ -1,0 +1,107 @@
+{
+  "boundary": {
+    "effective_canonical_status": "UNCHANGED",
+    "environment": "LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE",
+    "formal_tst_008": "NOT_EXECUTED",
+    "hosted_ci_postgresql_18_4": "NOT_EXECUTED",
+    "independent_migration_owner_review": "NOT_EXECUTED",
+    "production_execution": "FORBIDDEN"
+  },
+  "contract": {
+    "path": "changes/st-0302/contracts/foundation-schema.v1.yaml",
+    "sha256": "fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec"
+  },
+  "document": {
+    "formal_verification": "NOT_EXECUTED",
+    "id": "RAOS-FOUNDATION-CATALOG-001",
+    "story_id": "ST-0302",
+    "version": "1.0.0"
+  },
+  "extensions": {
+    "created": [],
+    "explicitly_not_required": [
+      "pgcrypto",
+      "uuid-ossp"
+    ],
+    "id_generation_dependencies": [],
+    "runtime_dependencies": []
+  },
+  "revision": {
+    "down_revision": "202608030001",
+    "downgrade": "DROP_EMPTY_SCHEMAS_RESTRICT_TO_ST_0301_ANCHOR",
+    "path": "migrations/versions/202608030002_foundation_schemas.py",
+    "revision": "202608030002",
+    "runner_version": "1.1.0",
+    "server_version_num": 180004,
+    "sha256": "f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4",
+    "story_id": "ST-0302",
+    "transaction": "ALEMBIC_PER_REVISION",
+    "upgrade": "CREATE_EMPTY_OPS_AND_IAM_SCHEMAS"
+  },
+  "schemas": [
+    {
+      "comment": "ジョブ、原本レジストリ、監査、障害、Kill Switch、実行時設定",
+      "name": "ops",
+      "non_owner_privileges": "NONE",
+      "owner": "CURRENT_MIGRATION_ROLE",
+      "owner_privileges": [
+        "CREATE",
+        "USAGE"
+      ],
+      "public_privileges": "NONE"
+    },
+    {
+      "comment": "OIDC主体、アプリケーションRole、権限、緊急アクセス",
+      "name": "iam",
+      "non_owner_privileges": "NONE",
+      "owner": "CURRENT_MIGRATION_ROLE",
+      "owner_privileges": [
+        "CREATE",
+        "USAGE"
+      ],
+      "public_privileges": "NONE"
+    }
+  ],
+  "types": {
+    "baseline_builtins": [
+      "bigint",
+      "boolean",
+      "character",
+      "date",
+      "integer",
+      "interval",
+      "jsonb",
+      "numeric",
+      "smallint",
+      "text",
+      "timestamp with time zone",
+      "uuid"
+    ],
+    "custom_types_created": [],
+    "native_enums_created": [],
+    "strategy": "POSTGRESQL_BUILTINS_WITH_TABLE_CHECK_CONSTRAINTS"
+  },
+  "uuidv7": {
+    "business_time_source": "FORBIDDEN",
+    "expected_return_type": "uuid",
+    "expected_version": 7,
+    "generation_function": "pg_catalog.uuidv7()",
+    "shifted_generation_function": "pg_catalog.uuidv7(interval)",
+    "timestamp_function": "pg_catalog.uuid_extract_timestamp(uuid)",
+    "version_function": "pg_catalog.uuid_extract_version(uuid)"
+  },
+  "validation": {
+    "assertions": [
+      "EXACT_POSTGRESQL_18_4",
+      "EXACT_OPS_AND_IAM_SCHEMA_METADATA",
+      "EXACT_OWNER_ONLY_SCHEMA_PRIVILEGES",
+      "NO_FOUNDATION_RELATIONS_ROUTINES_OR_CUSTOM_TYPES",
+      "NO_NON_PLPGSQL_EXTENSIONS",
+      "BUILTIN_TYPE_SET_RESOLVES_IN_PG_CATALOG",
+      "UUIDV7_RETURNS_UUID_VERSION_7_WITH_TIMESTAMP",
+      "EXACT_HEAD_AND_SUCCEEDED_HISTORY"
+    ],
+    "path": "changes/st-0302/generated/foundation-baseline-validation.v1.sql",
+    "sha256": "9f32cad90b6f5e81211f096900a1b929b55912ecf5aea04ba3d544192e0e0273"
+  }
+}

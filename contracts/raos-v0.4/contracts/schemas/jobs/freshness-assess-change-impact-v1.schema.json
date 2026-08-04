@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/freshness-assess-change-impact-v1.schema.json",
+  "title": "freshness.assess_change_impact.v1",
+  "description": "商品・価格・Policy変更のClaim/公開影響を計算する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "freshness.assess_change_impact.v1"
+        },
+        "queue": {
+          "const": "freshness"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "change_type": {
+              "type": "string"
+            },
+            "changed_entity_type": {
+              "type": "string"
+            },
+            "changed_entity_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "change_summary": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "change_type",
+            "changed_entity_type",
+            "changed_entity_id",
+            "change_summary"
+          ]
+        }
+      }
+    }
+  ]
+}

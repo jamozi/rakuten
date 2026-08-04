@@ -1,0 +1,79 @@
+document:
+  id: RAOS-CONTENT-CANONICAL-ADOPTION-001
+  version: '0.4'
+  status: CANONICAL_REVISION_CANDIDATE
+  provenance:
+    story_id: ST-0004
+    decision_id: INT-DEC-005
+    supporting_decision_ids:
+    - INT-DEC-006
+    revision_id: RAOS-CONTENT-REVISION-001
+    predecessor: RAOS-AI-GOVERNANCE-REVISION-001@0.3
+    predecessor_manifest_sha256: 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+adopted_package:
+  id: RAOS-CONTENT-001
+  version: '0.1'
+  archive_path: docs/upstream/RAOS_06_content_design_package_v0.1.zip
+  archive_sha256: 4cc7e0802b2dfd7d01762aa73190caa746b6f2490c2411804c564f7ce02803ec
+  proposal_execution: FORBIDDEN
+inventory:
+  article_type_count: 5
+  block_type_count: 24
+  schema_count: 33
+  valid_fixture_count: 5
+  invalid_fixture_count: 15
+  valid_fixtures:
+  - condition_filtering.json
+  - model_generation_capacity_difference.json
+  - product_comparison.json
+  - selection_guide.json
+  - use_case_recommendation.json
+  invalid_fixtures:
+  - fixtures/invalid/INV-001-raw-html.json
+  - fixtures/invalid/INV-002-manual-affiliate-url.json
+  - fixtures/invalid/INV-003-auto-publish.json
+  - fixtures/invalid/INV-004-wrong-locale.json
+  - fixtures/invalid/INV-005-unknown-block.json
+  - fixtures/invalid/INV-006-faq-schema-enabled.json
+  - fixtures/invalid/INV-007-disclosure-removable.json
+  - fixtures/invalid/INV-008-comparison-hide-unknown.json
+  - fixtures/invalid/INV-009-extra-finance-field.json
+  - fixtures/invalid/INV-010-invalid-heading-level.json
+  - fixtures/invalid/INV-101-disclosure-not-first.json
+  - fixtures/invalid/INV-102-missing-source-summary.json
+  - fixtures/invalid/INV-103-missing-methodology-block.json
+  - fixtures/invalid/INV-104-duplicate-block-id.json
+  - fixtures/invalid/INV-105-missing-required-article-block.json
+canonical_field_names:
+  content_schema_version: content_schema_version_id
+  article_type_version: article_type_version_id
+  article_template_version: article_template_version_id
+  methodology_version: methodology_version_id
+  editorial_policy_bundle: policy_bundle_version_id
+  renderer_owned_fields: renderer_owned_field_set
+ast_boundary:
+  stored_ast_schema: content/schemas/content-ast.schema.json
+  stored_ast_requires_disclosure_slot_first: true
+  disclosure_slot_is_renderer_owned_placeholder: true
+  renderer_owned_payload_mutation_by_ai: FORBIDDEN
+  raw_html: FORBIDDEN
+  manual_affiliate_url: FORBIDDEN
+  finance_fields: FORBIDDEN
+  review_body: FORBIDDEN
+  unknown_schema_or_hash: FAIL_CLOSED
+publication_authority:
+  content_repository: CANONICAL
+  cms: PUBLICATION_ADAPTER_ONLY
+  auto_publish: FORBIDDEN
+  human_final_approval_required: true
+  blocking_finding_count_required: 0
+  quality_score_minimum: 85
+  all_axis_floors_required: true
+compatibility:
+  classification: ADDITIVE_PRE_RELEASE_CANONICAL_REVISION
+  json_schema_dialect: 2020-12
+  openapi_version: 3.1.1
+  existing_operations_removed_or_semantically_changed: false
+  new_required_fields_on_existing_schemas: false
+  public_evidence_or_finance_exposure: false
+  content_event_delta: NONE

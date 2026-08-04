@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/publishing-unpublish-v1.schema.json",
+  "title": "publishing.unpublish.v1",
+  "description": "公開ProjectionからArticleを安全に非公開化する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "publishing.unpublish.v1"
+        },
+        "queue": {
+          "const": "publication"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "publication_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "incident_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "publication_id",
+            "reason"
+          ]
+        }
+      }
+    }
+  ]
+}

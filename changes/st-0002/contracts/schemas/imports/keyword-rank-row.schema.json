@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/imports/keyword-rank-row.schema.json",
+  "title": "Keyword Rank Canonical Row",
+  "description": "Permitted provider/CSV rank observation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "keyword_id",
+    "locale",
+    "device",
+    "observation_date",
+    "metric_type",
+    "value",
+    "provider_code",
+    "confidence"
+  ],
+  "properties": {
+    "keyword_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "locale": {
+      "type": "string"
+    },
+    "device": {
+      "type": "string",
+      "enum": [
+        "DESKTOP",
+        "MOBILE",
+        "TABLET",
+        "UNKNOWN"
+      ]
+    },
+    "observation_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "POSITION",
+        "SEARCH_VOLUME",
+        "DIFFICULTY"
+      ]
+    },
+    "value": {
+      "type": "number"
+    },
+    "unit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provider_code": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "raw_row_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

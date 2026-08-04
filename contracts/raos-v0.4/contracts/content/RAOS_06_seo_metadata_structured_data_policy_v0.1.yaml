@@ -1,0 +1,64 @@
+document:
+  id: RAOS-CONTENT-SEO-001
+  title: SEO・Metadata・Structured Dataポリシー
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+policy_version: 1.0.0
+page_identity:
+  one_primary_intent: true
+  query_variants: 同じ意思決定なら単一記事へ統合し、見出し・FAQ・本文で吸収する
+  slug: 安定・可読・短い。公開後変更はRedirect計画必須
+  title: 固有・記述的・簡潔。Keyword列挙、誇張、定型文の過剰反復を避ける
+  h1: 原則1つ。Titleと同じ主題を表す
+  meta_description: ページ固有の意思決定価値と対象条件を人間可読に要約。検索語羅列禁止
+  canonical: 公開Canonicalは原則Self-referencing。重複・統合時は単一正本へ向ける
+  preview: noindex,nofollow; 認証; public cache禁止; affiliate CTA無効
+  sitemap: 200、indexable、canonical、published、not pausedだけを含める
+  lastmod: 本文、推薦、比較Fact、Methodology等の実質変更時だけ更新
+structured_data:
+  generation: LLM禁止。Publication Snapshotから決定的Rendererで生成
+  allowed_for_all_indexable_articles:
+  - Article_or_BlogPosting
+  - BreadcrumbList
+  - Organization_or_WebSite_from_site_config
+  product_markup: MVPの複数商品ガイド・比較・絞り込み記事では生成しない。将来、単一商品または同一商品のVariantに焦点を当て、可視内容と条件が一致する専用型を法務・SEOレビュー後に解放
+  faqpage_markup: DISABLED; 可視FAQブロックは許可するがFAQPage JSON-LDを生成しない
+  review_markup: RAOSの実体験・評価手順がない限り生成しない。楽天平均評価・件数をReview/AggregateRatingへ変換しない
+  offer_markup: RAOSは販売者ではなく複数Offerが変動するためMVPで生成しない
+  visibility_match_required: true
+  rich_result_not_success_condition: true
+outbound_links:
+  affiliate: direct provider URL; rel=sponsored; destination label explicit; no cloaking/redirect
+  approved_citation: Source Registryから解決。必要に応じてrel属性をPolicyで決定
+  untrusted_user_generated: MVPには存在しない。将来はrel=ugc等を検討
+ai_search_features:
+  special_schema_required: false
+  llms_txt_required: false
+  strategy: 検索語Variantページ量産ではなく、独自の意思決定価値、明瞭なSource、技術的に通常の検索可視性を優先
+quality_checks:
+- Title/H1/本文主題一致
+- Meta Description重複なし
+- Canonical/Redirect cycleなし
+- noindexとSitemapの不整合なし
+- Structured Data JSON parse
+- Structured Data可視内容一致
+- 未知Schema Version Fail Closed
+- 内部Link orphan検査
+- Crawlable anchor検査
+external_basis_snapshot_date: '2026-07-30'
+external_references:
+- https://developers.google.com/search/docs/fundamentals/creating-helpful-content
+- https://developers.google.com/search/docs/essentials/spam-policies
+- https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links
+- https://developers.google.com/search/docs/fundamentals/using-gen-ai-content
+- https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
+- https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data
+- https://developers.google.com/search/docs/appearance/structured-data/article
+- https://developers.google.com/search/docs/appearance/structured-data/product-snippet
+- https://developers.google.com/search/docs/appearance/structured-data/breadcrumb
+- https://developers.google.com/search/updates#removing-faq-rich-result

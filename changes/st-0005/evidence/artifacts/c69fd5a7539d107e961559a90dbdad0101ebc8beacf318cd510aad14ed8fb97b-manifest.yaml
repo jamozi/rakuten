@@ -1,0 +1,126 @@
+document:
+  id: RAOS-LOCAL-QUEUE-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0203
+  source_contract: repo://changes/st-0203/contracts/local-queue.v1.yaml
+  generated_by: repo://scripts/build_st0203_queue_fake.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0203_queue_fake.py
+provenance:
+  contract_uri: repo://changes/st-0203/contracts/local-queue.v1.yaml
+  canonical_inputs:
+  - uri: repo://docs/manifest.json
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/08_codex/RAOS_14_codex_implementation_handbook_v1.0.md
+    sha256: 501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2
+  canonical_contracts:
+    job_message:
+      uri: repo://contracts/raos-v0.4/contracts/schemas/common/job-message.schema.json
+      sha256: cdb8e8094d4fa74843c26ea453354df7083bc41a6f165220ddd0e263e37db8d5
+    job_catalog:
+      uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+      sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+    job_state:
+      uri: repo://contracts/raos-v0.4/job-state.v1.yaml
+      sha256: 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
+  predecessor_manifest:
+    uri: repo://changes/st-0202/manifest.yaml
+    sha256: d3831fc4d16255bc1ce145c22ab78c1c4c25f325d50c94209adb9aa4fb35fec0
+    story_id: ST-0202
+evidence_chain:
+  stories:
+  - ST-0201
+  - ST-0202
+  - ST-0203
+source_artifact_count: 22
+source_artifacts:
+- uri: repo://changes/st-0203/contracts/local-queue.v1.yaml
+  bytes: 3727
+  sha256: f272fbdeac6a5a8eefb63f0b37143b43e1268871195eb231c3da111eef02eedc
+- uri: repo://changes/st-0203/README.md
+  bytes: 1934
+  sha256: ccce5906137009c090fc038bd409d71c81fb2453385e385adbefc536bd791d3f
+- uri: repo://docs/execplans/ST-0203.md
+  bytes: 2820
+  sha256: 06ecfe897cc8f3baa7c972a136e34b498aa40142824b5b0c0bd52e9c69729b62
+- uri: repo://docs/worklogs/ST-0203.md
+  bytes: 4265
+  sha256: 80ed17875fb46283dd72ceca1abd43c638dfbcc31fbaa282e3b0d5f0d12ddd1d
+- uri: repo://scripts/build_st0203_queue_fake.py
+  bytes: 16428
+  sha256: 58e5700d4c3f7a632f164acebc8cb7b71f0470827ebbdd19f42d378307224426
+- uri: repo://python/raos/ports/__init__.py
+  bytes: 441
+  sha256: 96317135221e4dc3ca32d3c127fd86ef7297f42dd9889fa7bd116f3904b0866c
+- uri: repo://python/raos/ports/queue.py
+  bytes: 5388
+  sha256: 97bf4cc18221a21949dd62273008067ea9a631c188a9ba5dcbf15a83679020df
+- uri: repo://python/raos/adapters/__init__.py
+  bytes: 150
+  sha256: ace69317cb222815583df5bebaafefc8362f7ded506ab235793f73bdf5438289
+- uri: repo://python/raos/adapters/queue_fake.py
+  bytes: 12046
+  sha256: 0d810f68e77e66a259dca28164825e93d05300edf6915f4c956f9bf3a31ab857
+- uri: repo://tests/st0203/conftest.py
+  bytes: 1387
+  sha256: 6d77921637abae7e3c6bdfe5eec1cc6da53b6a89ac6e4660687124373f3ebcfa
+- uri: repo://tests/st0203/test_port_contract.py
+  bytes: 3173
+  sha256: 340fd6d36b800d88f18c509baaf331dbca6a3d2fc1c58aa3c6dd858230166da0
+- uri: repo://tests/st0203/test_queue_fake.py
+  bytes: 10364
+  sha256: 08bf89529e307c91f11c5366c3fef4e74456b88c09d9de586b7d95bdc142ef90
+- uri: repo://tests/st0203/test_contract.py
+  bytes: 3157
+  sha256: 760821a1758864d08a3f8e0893a9c0f6e2af5c4e3ee36196db780e89349035cb
+- uri: repo://tests/st0203/test_generation.py
+  bytes: 3711
+  sha256: e580585882a418176bf0afde1c2f0c5a9f5579bc2cb9135e097a7516260172d7
+- uri: repo://tests/st0203/test_negative_cases.py
+  bytes: 2171
+  sha256: c2cec442fc23fd23112f8a4217b4b9173ababe6a82d1f1778db8eb53fe6bf0ee
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 17921
+  sha256: 0ee3ec31313f763ea61f11b761dd5eace7e36065e4b946ba73ae435f6301e1db
+- uri: repo://Makefile
+  bytes: 21176
+  sha256: 3524f57f3261ae54d7ae62a2fc57d5c02f72f0ad9a91b895a57bf2aec2fa7f30
+- uri: repo://README.md
+  bytes: 41160
+  sha256: dad90acbe484827f662ae31c36eb59fba2da7ec340289cfcec04c7a203aa06f0
+- uri: repo://changes/st-0202/manifest.yaml
+  bytes: 7725
+  sha256: d3831fc4d16255bc1ce145c22ab78c1c4c25f325d50c94209adb9aa4fb35fec0
+- uri: repo://contracts/raos-v0.4/contracts/schemas/common/job-message.schema.json
+  bytes: 2987
+  sha256: cdb8e8094d4fa74843c26ea453354df7083bc41a6f165220ddd0e263e37db8d5
+- uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+  bytes: 30635
+  sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+- uri: repo://contracts/raos-v0.4/job-state.v1.yaml
+  bytes: 3419
+  sha256: 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
+generated_artifact_count: 0
+generated_artifacts: []
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  environment: LOCAL_AND_CI_FAKE_ONLY
+  production_use: FORBIDDEN
+  external_broker: NOT_IMPLEMENTED
+  provider_adapter: NOT_IMPLEMENTED
+  worker_runtime: NOT_IMPLEMENTED
+  durable_persistence: NOT_IMPLEMENTED
+  consumer_idempotency_store: NOT_IMPLEMENTED
+  formal_tst_013: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

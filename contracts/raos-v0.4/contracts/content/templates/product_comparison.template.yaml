@@ -1,0 +1,43 @@
+template_id: TPL-AT-003
+article_type: product_comparison
+version: 1.0.0
+status: ACTIVE
+required_sequence:
+- disclosure_slot
+- lead
+- decision_summary
+- intended_reader
+- methodology
+- difference_matrix
+- comparison_table
+- tradeoff
+- recommendation_group
+- caution
+- source_summary
+optional_blocks:
+- product_card
+- pros_cons
+- faq
+- media
+- internal_links
+- update_notice
+minimum_decision_axes: 4
+product_count:
+  minimum: 2
+  recommended: 2-4
+  maximum: 6
+unique_value_tests:
+- 同一軸での比較
+- 差がない項目の明示
+- 条件別勝者
+- 決定要因
+- 比較不能項目の明示
+prohibited_patterns:
+- 全条件を無視した総合勝者
+- 取得時点が異なる値の無注記比較
+- Variantの取り違え
+- 比較母集団の不明確化
+notes:
+- disclosure_slotはRendererが先頭へ強制挿入する
+- source_summaryは末尾の共通情報領域へ配置
+- Heading/Paragraphは必要な範囲だけ追加する

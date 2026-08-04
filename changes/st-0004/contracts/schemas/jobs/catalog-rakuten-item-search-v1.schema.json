@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/catalog-rakuten-item-search-v1.schema.json",
+  "title": "catalog.rakuten_item_search.v1",
+  "description": "楽天市場商品検索APIを呼び原本を不変保存する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "catalog.rakuten_item_search.v1"
+        },
+        "queue": {
+          "const": "ingestion"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "provider_endpoint_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "operation": {
+              "type": "string",
+              "enum": [
+                "ITEM_SEARCH",
+                "RANKING"
+              ]
+            },
+            "api_version": {
+              "type": "string"
+            },
+            "query": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "category_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "article_plan_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "site_id",
+            "provider_endpoint_id",
+            "operation",
+            "api_version",
+            "query",
+            "purpose"
+          ]
+        }
+      }
+    }
+  ]
+}

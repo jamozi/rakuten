@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ai-release-decision-approved-v1.schema.json",
+  "title": "jp.raos.ai.release_decision_approved.v1",
+  "description": "Internal/confidential metadata event; raw prompts, inputs, outputs, source packets, review bodies, secrets, and PII are forbidden.",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ai.release_decision_approved.v1"
+        },
+        "producer": {
+          "const": "ai"
+        },
+        "classification": {
+          "const": "CONFIDENTIAL"
+        },
+        "event_version": {
+          "const": 1
+        },
+        "dataschema": {
+          "const": "https://schemas.raos.local/events/jp-raos-ai-release-decision-approved-v1.schema.json"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "release_decision_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "release_approval_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "task_definition_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "prompt_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "model_route_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "resolved_model_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "policy_bundle_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "dataset_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "output_schema_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "evaluation_run_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "judge_calibration_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "code_git_sha": {
+              "type": "string",
+              "minLength": 40,
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{40,64}$"
+            },
+            "phase": {
+              "type": "string",
+              "enum": [
+                "CANARY",
+                "ACTIVE"
+              ]
+            },
+            "decision_manifest_sha256": {
+              "type": "string",
+              "minLength": 64,
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "rollback_strategy": {
+              "type": "string",
+              "enum": [
+                "PREVIOUS_RELEASE",
+                "DISABLE_ROUTE"
+              ]
+            },
+            "rollback_release_decision_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "rollback_runbook_artifact_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "rollback_runbook_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 64,
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "canary_evidence_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 64,
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "canary_monitoring_sha256": {
+              "type": "string",
+              "minLength": 64,
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "canary_started_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "canary_started_txid": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "canary_completed_at": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "canary_completed_txid": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "approved_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "aggregate_version": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "release_decision_id",
+            "release_approval_id",
+            "task_definition_id",
+            "prompt_version_id",
+            "model_route_version_id",
+            "resolved_model_id",
+            "policy_bundle_version_id",
+            "dataset_version_id",
+            "output_schema_version_id",
+            "evaluation_run_id",
+            "judge_calibration_id",
+            "code_git_sha",
+            "phase",
+            "decision_manifest_sha256",
+            "rollback_strategy",
+            "rollback_release_decision_id",
+            "rollback_runbook_artifact_id",
+            "rollback_runbook_sha256",
+            "canary_evidence_sha256",
+            "canary_monitoring_sha256",
+            "canary_started_at",
+            "canary_started_txid",
+            "canary_completed_at",
+            "canary_completed_txid",
+            "approved_at",
+            "aggregate_version"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "phase": {
+                    "const": "ACTIVE"
+                  }
+                },
+                "required": [
+                  "phase"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "canary_evidence_sha256": {
+                    "type": "string",
+                    "minLength": 64,
+                    "maxLength": 64,
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "canary_completed_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "canary_completed_txid": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "canary_evidence_sha256",
+                  "canary_completed_at",
+                  "canary_completed_txid"
+                ]
+              }
+            }
+          ],
+          "x-raos-rollback-binding": "PREVIOUS_RELEASE uses rollback_release_decision_id; DISABLE_ROUTE uses rollback_runbook_artifact_id and rollback_runbook_sha256.",
+          "x-raos-transaction-invariants": [
+            "canary_completed_txid_is_server_owned",
+            "canary_completed_txid_must_differ_from_canary_started_txid",
+            "canary_checkpoint_is_persisted_before_ACTIVE_approval_transaction",
+            "canary_completed_txid_must_precede_ACTIVE_approval_transaction"
+          ],
+          "x-raos-canary-safety-invariants": {
+            "critical_task_canary": {
+              "risk_source": "AITaskDefinition.risk_level",
+              "when_risk_level": "CRITICAL",
+              "maximum_canary_percent": 1,
+              "comparison": "LESS_THAN_OR_EQUAL"
+            },
+            "same_task_concurrent_canary": {
+              "scope_field": "ReleaseDecisionV1.task_definition_id",
+              "canary_status": "APPROVED_CANARY",
+              "maximum_concurrent_decisions": 1,
+              "second_canary": "REJECT",
+              "serialization": "SAME_TASK_RELEASE_ADVISORY_LOCK"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "producer",
+        "classification",
+        "event_version",
+        "dataschema",
+        "data"
+      ]
+    }
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

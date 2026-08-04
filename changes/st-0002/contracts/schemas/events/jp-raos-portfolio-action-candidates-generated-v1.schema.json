@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-portfolio-action-candidates-generated-v1.schema.json",
+  "title": "jp.raos.portfolio.action_candidates_generated.v1",
+  "description": "Action Candidate群が生成された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.portfolio.action_candidates_generated.v1"
+        },
+        "producer": {
+          "const": "portfolio"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "candidate_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "algorithm_version": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "site_id",
+            "candidate_ids",
+            "algorithm_version",
+            "as_of"
+          ]
+        }
+      }
+    }
+  ]
+}

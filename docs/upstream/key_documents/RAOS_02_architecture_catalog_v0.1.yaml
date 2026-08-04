@@ -1,0 +1,1187 @@
+document:
+  id: RAOS-ARCH-001
+  version: '0.1'
+  status: draft
+  baseline_date: '2026-07-30'
+  locale: ja-JP
+  timezone: Asia/Tokyo
+  upstream:
+  - RAOS-RD-001@0.1
+  target_gates:
+  - GATE-0
+  - GATE-1
+  - GATE-2-observation-ready
+architecture:
+  style: modular_monolith_with_async_workers
+  source_of_truth: raos_postgresql_and_immutable_object_artifacts
+  publication_model: immutable_publication_snapshot
+  public_read_boundary: public_projection_only
+  consistency:
+    commands: strong_transactional_with_postgresql
+    cross_process: eventual_via_outbox_and_queue
+    queue_delivery: at_least_once
+    consumer_requirement: idempotent
+  cloud_reference:
+    provider: AWS
+    region: ap-northeast-1
+    portable_core_required: true
+resolved_decisions:
+- id: ADR-001
+  decision: modular_monolith_plus_workers
+  status: accepted
+- id: ADR-002
+  decision: native_structured_content_repository
+  status: accepted
+- id: ADR-003
+  decision: nextjs_public_and_admin_routes
+  status: accepted
+- id: ADR-004
+  decision: fastapi_python_core_and_workers
+  status: accepted
+- id: ADR-005
+  decision: single_postgresql_transactional_source
+  status: accepted
+- id: ADR-006
+  decision: pgvector_only_no_dedicated_vector_db_mvp
+  status: accepted
+- id: ADR-007
+  decision: s3_compatible_immutable_artifacts
+  status: accepted
+- id: ADR-008
+  decision: transactional_outbox_and_managed_queue
+  status: accepted
+- id: ADR-009
+  decision: at_least_once_and_idempotent_consumers
+  status: accepted
+- id: ADR-010
+  decision: aws_tokyo_reference
+  status: accepted
+- id: ADR-011
+  decision: ecs_fargate_reference_compute
+  status: accepted
+- id: ADR-012
+  decision: oidc_and_mfa_for_admin
+  status: accepted
+- id: ADR-013
+  decision: openai_initial_llm_with_provider_adapter
+  status: accepted
+- id: ADR-014
+  decision: structured_output_standard
+  status: accepted
+- id: ADR-015
+  decision: llm_no_direct_db_queue_or_publish_access
+  status: accepted
+- id: ADR-016
+  decision: direct_affiliate_link_plus_beacon
+  status: accepted
+- id: ADR-017
+  decision: publication_snapshot_as_publish_unit
+  status: accepted
+- id: ADR-018
+  decision: public_site_reads_public_projection_only
+  status: accepted
+- id: ADR-019
+  decision: non_editable_disclosure_and_api_credit
+  status: accepted
+- id: ADR-020
+  decision: revenue_csv_import_baseline
+  status: accepted
+- id: ADR-021
+  decision: keyword_rank_adapter_and_csv_no_serp_scrape
+  status: accepted
+- id: ADR-022
+  decision: policy_bundle_git_and_db_versioning
+  status: accepted
+- id: ADR-023
+  decision: idempotency_key_and_optimistic_lock
+  status: accepted
+- id: ADR-024
+  decision: expand_migrate_contract_deployments
+  status: accepted
+- id: ADR-025
+  decision: no_production_data_copy_to_nonproduction
+  status: accepted
+- id: ADR-026
+  decision: queue_depth_and_job_class_worker_scaling
+  status: accepted
+- id: ADR-027
+  decision: separate_publication_and_affiliate_kill_switches
+  status: accepted
+- id: ADR-028
+  decision: wordpress_future_publication_adapter_only
+  status: accepted
+- id: ADR-029
+  decision: no_dependency_on_specific_search_feature
+  status: accepted
+- id: ADR-030
+  decision: cost_allocation_to_job_article_category
+  status: accepted
+containers:
+- id: web
+  technology: Next.js_TypeScript
+  responsibilities:
+  - public_ssr_or_static_rendering
+  - admin_ui
+  - oidc_flow
+  - public_click_beacon
+  - seo_metadata_sitemap_robots
+  - real_user_monitoring
+  prohibited:
+  - rakuten_secrets
+  - llm_calls
+  - article_approval_logic
+  - raw_source_access
+  - affiliate_url_generation_or_modification
+  scale_signal: http_load
+- id: api
+  technology: FastAPI_Python
+  responsibilities:
+  - admin_public_internal_rest_api
+  - authentication_authorization
+  - command_state_transitions
+  - transactions_outbox_audit
+  - queries_and_job_submission
+  - kill_switch_evaluation
+  - idempotency_and_optimistic_concurrency
+  scale_signal: http_load
+- id: worker
+  technology: Python
+  responsibilities:
+  - rakuten_ingestion
+  - source_capture
+  - normalization
+  - source_packet_build
+  - ai_jobs
+  - quality_checks
+  - freshness_and_link_checks
+  - publication_snapshot
+  - analytics_and_revenue_import
+  - projection_updates
+  worker_classes:
+  - general
+  - ai
+  - publication
+  scale_signal: queue_depth_oldest_age_and_budget
+- id: scheduler
+  technology: managed_scheduler
+  responsibilities:
+  - emit_scheduled_jobs_only
+  prohibited:
+  - business_processing
+  - provider_secrets
+domain_modules:
+- id: iam
+  owns:
+  - user
+  - role
+  - permission
+  - service_principal
+  - break_glass_record
+  requirements:
+  - NFR-SEC-002
+  - FR-020
+- id: portfolio
+  owns:
+  - category
+  - intent_cluster
+  - keyword
+  - opportunity
+  - business_score
+  - editorial_feasibility_score
+  - compliance_risk_score
+  - cannibalization_candidate
+  requirements:
+  - FR-001
+  - FR-005
+  - FR-016
+- id: catalog
+  owns:
+  - rakuten_genre
+  - product_candidate
+  - canonical_product
+  - offer
+  - shop
+  - product_attribute
+  - price_observation
+  - availability_observation
+  - affiliate_link_observation
+  - grouping_decision
+  requirements:
+  - FR-002
+  - FR-003
+  - FR-004
+  - FR-012
+- id: evidence
+  owns:
+  - source
+  - source_snapshot
+  - fact
+  - derived_fact
+  - claim
+  - evidence_link
+  - source_packet
+  requirements:
+  - FR-004
+  - FR-006
+  - FR-007
+- id: editorial
+  owns:
+  - article_plan
+  - article
+  - article_version
+  - structured_block
+  - comparison_axis
+  - recommendation_set
+  - recommendation_rationale
+  - human_edit
+  - review_comment
+  requirements:
+  - FR-001
+  - FR-005
+  - FR-009
+- id: ai
+  owns:
+  - ai_task_definition
+  - prompt_version
+  - model_route
+  - ai_job
+  - ai_attempt
+  - schema_version
+  - token_usage
+  - cost_observation
+  - evaluation_result
+  requirements:
+  - FR-006
+  - FR-007
+  - FR-008
+  - FR-018
+- id: policy
+  owns:
+  - policy_bundle
+  - rule
+  - quality_check
+  - finding
+  - quality_score
+  - waiver
+  - gate_decision
+  requirements:
+  - FR-008
+  - FR-017
+  - FR-019
+- id: publishing
+  owns:
+  - review_assignment
+  - approval
+  - publication_candidate
+  - publication_snapshot
+  - publication
+  - public_route
+  - redirect
+  - canonical
+  - rollback_record
+  requirements:
+  - FR-009
+  - FR-010
+  - FR-011
+  - FR-019
+- id: freshness
+  owns:
+  - freshness_policy
+  - refresh_schedule
+  - staleness_assessment
+  - link_check
+  - product_impact
+  - article_impact
+  requirements:
+  - FR-011
+  - FR-012
+- id: analytics
+  owns:
+  - anonymous_event
+  - affiliate_click_event
+  - gsc_observation
+  - ga4_observation
+  - attribution_key
+  - attribution_estimate
+  - data_quality_finding
+  requirements:
+  - FR-013
+- id: finance
+  owns:
+  - revenue_import
+  - commission_event
+  - commission_status
+  - external_cost
+  - human_cost
+  - allocation_rule
+  - article_unit_economics
+  - category_unit_economics
+  requirements:
+  - FR-014
+  - FR-015
+  - FR-016
+  - FR-018
+- id: ops
+  owns:
+  - job
+  - job_attempt
+  - outbox_event
+  - inbox_receipt
+  - idempotency_record
+  - audit_event
+  - alert
+  - incident
+  - kill_switch
+  - feature_flag
+  - configuration_version
+  requirements:
+  - FR-019
+  - FR-020
+data_stores:
+- id: postgresql
+  role: transactional_system_of_record
+  logical_schemas:
+  - iam
+  - portfolio
+  - catalog
+  - evidence
+  - editorial
+  - ai
+  - policy
+  - publishing
+  - freshness
+  - analytics
+  - finance
+  - ops
+  - readmodel
+  extensions:
+  - pgvector_optional
+  controls:
+  - utc_storage
+  - decimal_finance
+  - optimistic_version
+  - row_level_ownership_by_module
+  - pitr
+- id: object_storage
+  role: immutable_and_large_artifacts
+  prefixes:
+  - raw/rakuten
+  - raw/google
+  - raw/revenue
+  - source-packets
+  - ai-inputs
+  - ai-outputs
+  - publication
+  - exports/audit
+  controls:
+  - sha256
+  - versioning
+  - encryption
+  - retention_class
+  - public_access_block
+- id: public_read_model
+  role: safe_public_projection
+  contains:
+  - public_article_metadata
+  - renderable_blocks
+  - approved_product_refs
+  - safe_offer_projection
+  - disclosure
+  - canonical_index_state
+  - freshness_status
+  - kill_switch_generation
+  must_not_contain:
+  - prompts
+  - revenue
+  - affiliate_rate_comparisons
+  - source_packet_full_text
+  - internal_scores
+  - secrets
+  - incident_details
+queues:
+- id: ingestion
+  dlq: true
+- id: ai
+  dlq: true
+- id: quality
+  dlq: true
+- id: publication
+  dlq: true
+  ordering: per_route_application_lock_or_fifo_if_needed
+- id: freshness
+  dlq: true
+- id: analytics
+  dlq: true
+- id: notification
+  dlq: true
+job_model:
+  states:
+  - REQUESTED
+  - QUEUED
+  - RUNNING
+  - SUCCEEDED
+  - FAILED_RETRYABLE
+  - RETRY_SCHEDULED
+  - FAILED_TERMINAL
+  - QUARANTINED
+  - CANCELLED
+  - EXPIRED
+  required_fields:
+  - job_id
+  - job_type
+  - job_version
+  - idempotency_key
+  - resource_ref
+  - input_ref
+  - max_attempts
+  - max_cost
+  - deadline
+  - correlation_id
+  delivery_assumption: at_least_once
+  consumer_controls:
+  - inbox_receipt
+  - unique_constraints
+  - expected_resource_version
+  - lease_and_heartbeat
+external_adapters:
+- id: rakuten_web_service
+  baseline_version: '2026-07-01'
+  operations:
+  - item_search
+  - genre_search
+  - ranking
+  - attribute_if_needed
+  controls:
+  - secret_manager
+  - raw_snapshot
+  - contract_test
+  - retry_backoff_jitter
+  - rate_limit
+  - circuit_breaker
+  - affiliate_url_immutable
+  - no_review_body
+- id: rakuten_revenue
+  mvp_mode: human_approved_csv_import
+  controls:
+  - quarantine
+  - hash_deduplication
+  - parser_version
+  - dry_run
+  - reconciliation
+  - immutable_original
+- id: google_search_console
+  capabilities:
+  - search_analytics
+  - sitemaps
+  - url_inspection
+  controls:
+  - quota_budget
+  - raw_import
+  - route_mapping
+  - limited_url_inspection
+- id: google_analytics
+  capabilities:
+  - aggregated_behavior_reports
+  controls:
+  - data_quality_comparison
+  - no_user_level_export_mvp
+  - privacy_config
+- id: llm
+  initial_provider: OpenAI
+  contract: structured_output_json_schema
+  controls:
+  - source_packet_only
+  - no_tool_calls_mvp
+  - no_direct_db_or_publish
+  - prompt_and_model_version
+  - cost_budget
+  - raw_input_output
+  - validation_and_human_gate
+- id: keyword_rank
+  modes:
+  - permitted_provider_adapter
+  - csv_import
+  prohibited:
+  - direct_google_serp_scraping
+- id: primary_source_fetcher
+  mode: domain_allowlist_or_manual
+  controls:
+  - https_only
+  - private_ip_block
+  - redirect_revalidation
+  - mime_size_timeout
+  - sandbox
+  - prompt_injection_treated_as_data
+- id: publication
+  mvp: local_raos_renderer
+  future:
+  - wordpress_adapter
+content:
+  source_of_truth: versioned_structured_ast
+  allowed_blocks:
+  - heading
+  - paragraph
+  - summary
+  - selection_criteria
+  - comparison_table
+  - product_card
+  - pros_cons
+  - suitable_unsuitable
+  - warning
+  - faq_content
+  - source_note
+  - call_to_action
+  prohibited:
+  - arbitrary_script
+  - iframe
+  - inline_event_handler
+  - unvalidated_html
+  - manual_affiliate_url
+  - arbitrary_external_image
+  publication_snapshot_required_fields:
+  - publication_id
+  - publication_version
+  - article_id
+  - article_version_id
+  - content_schema_version
+  - renderable_content
+  - product_selection_refs
+  - safe_offer_projection_version
+  - disclosure_version
+  - policy_bundle_version
+  - quality_result_id
+  - approval_ids
+  - seo_metadata
+  - input_hashes
+  - snapshot_sha256
+  safe_degradation:
+    stale_price: hide_price_show_latest_on_rakuten_message
+    stale_availability: hide_availability_claim
+    link_unverified: hide_cta
+    offer_unavailable: queue_alternative_no_auto_reorder
+    global_links_off: hide_all_affiliate_cta
+affiliate_click_tracking:
+  link_mode: direct_official_affiliate_url
+  event_mode: send_beacon_or_keepalive_fetch
+  navigation_must_not_wait: true
+  prohibited:
+  - redirect_endpoint
+  - arbitrary_tracking_parameter
+  - destination_obfuscation
+  - affiliate_url_modification
+ai:
+  orchestration: explicit_workflow_steps_not_autonomous_agents
+  source_packet_approved_required: true
+  structured_output_required: true
+  tool_calls_enabled: false
+  direct_publish_permission: false
+  direct_database_permission: false
+  task_routes:
+    classification: low_cost_structured
+    draft: high_quality_structured
+    policy_assist: high_precision_structured
+    embedding: embedding_default
+  validation_pipeline:
+  - raw_save
+  - schema_parse
+  - refusal_detection
+  - reference_integrity
+  - claim_type
+  - numeric_consistency
+  - product_identity
+  - prohibited_phrase
+  - review_body_leakage
+  - copy_risk
+  - policy_rules
+  - cost_usage_recording
+  budgets:
+  - per_job
+  - per_article
+  - per_category_daily_monthly
+  - provider_hard_cap
+security:
+  authentication: oidc_authorization_code_pkce
+  mfa_roles:
+  - owner
+  - compliance_approver
+  - operator
+  - credential_admin
+  authorization: rbac_with_resource_scope
+  network:
+  - cdn_waf_public_entry
+  - private_api_worker_db
+  - db_not_public
+  - object_public_access_block
+  - controlled_egress
+  secrets:
+  - secret_manager
+  - runtime_minimal_injection
+  - redaction
+  - rotation
+  - ci_secret_scan
+  input_controls:
+  - structured_ast
+  - url_allowlist
+  - private_ip_block
+  - file_quarantine
+  - csv_formula_injection_defense
+  - prompt_injection_guard
+  audit_actions:
+  - login
+  - role_change
+  - approval
+  - publish
+  - rollback
+  - policy_change
+  - waiver
+  - kill_switch
+  - revenue_import
+  - adjustment
+  - manual_job_retry
+  - config_change
+  - secret_rotation
+  - data_export
+kill_switches:
+- GLOBAL_PUBLICATION_FREEZE
+- GLOBAL_AFFILIATE_LINKS_OFF
+- SITE_OFFLINE
+- CATEGORY_PAUSED
+- ARTICLE_PAUSED
+- PROVIDER_DISABLED
+- AI_DISABLED
+- AUTO_REFRESH_DISABLED
+deployment:
+  environments:
+    local:
+      data: synthetic
+      external: mock_or_sandbox
+    ci:
+      data: ephemeral
+      external: fixture
+    dev:
+      data: synthetic
+      external: limited
+    staging:
+      data: sanitized_fixtures
+      external: sandbox_or_limited_read
+    production:
+      data: production
+      external: production
+  aws_mapping:
+    dns: Route53
+    cdn_waf_tls: CloudFront_WAF_ACM
+    load_balancer: ALB
+    compute: ECS_Fargate
+    registry: ECR
+    database: RDS_PostgreSQL
+    object_store: S3
+    queue: SQS_with_DLQ
+    scheduler: EventBridge
+    identity: Cognito_or_OIDC
+    secrets: Secrets_Manager
+    observability: CloudWatch_and_OpenTelemetry
+    ci_cd: GitHub_Actions_OIDC
+  migration: expand_migrate_contract
+  infrastructure_as_code: Terraform
+  production_data_in_nonprod: false
+slos:
+  public_availability_monthly_percent: 99.5
+  admin_api_availability_monthly_percent: 99.0
+  public_api_cached_p95_ms: 300
+  admin_query_p95_ms: 1000
+  command_accept_p95_ms: 500
+  click_beacon_p95_ms: 300
+  publish_reflection_minutes: 5
+  affiliate_kill_switch_minutes: 5
+  core_web_vitals:
+    LCP_p75_seconds: 2.5
+    INP_p75_ms: 200
+    CLS_p75: 0.1
+  rto_hours:
+    public: 4
+    admin: 8
+  rpo_minutes:
+    postgres_target: 15
+    audit_export_max: 1440
+testing:
+  layers:
+  - static
+  - unit
+  - property
+  - integration
+  - contract
+  - component
+  - e2e
+  - security
+  - performance
+  - resilience
+  - restore
+  - ai_eval
+  critical_e2e:
+  - happy_path
+  - missing_evidence
+  - stale_price
+  - wrong_link
+  - kill_switch
+  - rollback
+  - duplicate_job
+  - provider_failure
+  - revenue_import
+  - policy_change
+  gate_packs:
+  - GATE-0
+  - GATE-1
+repository:
+  type: monorepo
+  applications:
+  - apps/web
+  - apps/api
+  - apps/worker
+  python_root: python/raos
+  definition_roots:
+  - prompts
+  - policies
+  - schemas
+  - docs/adr
+  - docs/runbooks
+  infrastructure:
+  - infra/terraform
+  - infra/docker
+  codex_file: AGENTS.md
+  dependency_rule: domain_inward_no_framework_or_provider_sdk
+scale_path:
+  gate_0_1:
+    articles_max: 45
+    services: single_db_three_containers
+  gate_2:
+    articles_max: 150
+    changes:
+    - queue_autoscaling
+    - stronger_alerts
+    - multi_az_review
+  gate_3:
+    articles_max: 500
+    changes:
+    - worker_physical_split
+    - aggregate_optimization
+    - warehouse_review
+  gate_4:
+    articles_min: 1500
+    changes:
+    - tenant_boundary
+    - warehouse
+    - service_split_candidates
+  kubernetes: not_before_clear_platform_need_and_dedicated_operations
+traceability:
+  functional:
+    FR-001:
+    - portfolio
+    - editorial
+    - stable_ids
+    FR-002:
+    - catalog
+    - rakuten_adapter
+    - object_storage
+    FR-003:
+    - catalog
+    - grouping_rule_version
+    - human_merge_queue
+    FR-004:
+    - catalog
+    - evidence
+    - observation_metadata
+    FR-005:
+    - portfolio
+    - editorial
+    - finance
+    - score_separation_test
+    FR-006:
+    - evidence
+    - ai
+    - approved_source_packet_guard
+    FR-007:
+    - evidence
+    - editorial
+    - claim_evidence_integrity
+    FR-008:
+    - policy
+    - quality_engine
+    - blocking_rules
+    FR-009:
+    - editorial
+    - publishing
+    - iam
+    - state_machine
+    FR-010:
+    - publishing
+    - publication_snapshot
+    - rollback
+    FR-011:
+    - catalog
+    - freshness
+    - direct_link_validation
+    FR-012:
+    - catalog
+    - freshness
+    - impact_query
+    FR-013:
+    - analytics
+    - click_beacon
+    - gsc_ga4_adapters
+    FR-014:
+    - finance
+    - commission_status
+    FR-015:
+    - finance
+    - decimal_and_allocation
+    FR-016:
+    - portfolio
+    - freshness
+    - finance
+    - priority_projection
+    FR-017:
+    - policy
+    - policy_bundle_affected_article_query
+    FR-018:
+    - ai
+    - finance
+    - ops
+    - usage_cost
+    FR-019:
+    - ops
+    - publishing
+    - public_web
+    - kill_switch
+    FR-020:
+    - ops
+    - iam
+    - append_only_audit
+  nonfunctional:
+    NFR-SEC-001:
+    - secret_manager
+    - redaction
+    - secret_scan
+    NFR-SEC-002:
+    - oidc
+    - rbac
+    - service_principals
+    NFR-REL-001:
+    - idempotency
+    - outbox_inbox
+    - job_lease
+    NFR-REL-002:
+    - retry
+    - circuit_breaker
+    - safe_degradation
+    NFR-REL-003:
+    - publication_snapshot
+    - deployment_rollback
+    NFR-PERF-001:
+    - cdn
+    - ssr_static
+    - cache
+    - rum
+    NFR-OBS-001:
+    - opentelemetry
+    - structured_logs
+    - metrics_alerts
+    NFR-AUD-001:
+    - append_only_audit
+    - hash_export
+    NFR-DATA-001:
+    - raw_fact_packet_claim_snapshot_lineage
+    NFR-COST-001:
+    - job_cost
+    - article_category_allocation
+    NFR-PORT-001:
+    - native_repository
+    - publication_port
+    NFR-MAINT-001:
+    - versioned_config_policy_prompt
+    NFR-TEST-001:
+    - test_pyramid
+    - policy_as_code
+    - gate_packs
+    NFR-ACC-001:
+    - semantic_renderer
+    - keyboard
+    - accessibility_tests
+    NFR-BACKUP-001:
+    - rds_pitr
+    - s3_versioning
+    - restore_test
+implementation_slices:
+- id: SLICE-001
+  name: repository_bootstrap
+  depends_on: []
+  acceptance:
+  - ci_passes
+  - agents_md
+  - no_secrets
+- id: SLICE-002
+  name: local_infrastructure
+  depends_on:
+  - SLICE-001
+  acceptance:
+  - one_command_start
+  - synthetic_seed
+  - production_credential_guard
+- id: SLICE-003
+  name: shared_kernel_ids
+  depends_on:
+  - SLICE-001
+  acceptance:
+  - property_tests
+  - domain_framework_independence
+- id: SLICE-004
+  name: postgres_outbox_inbox_jobs
+  depends_on:
+  - SLICE-002
+  - SLICE-003
+  acceptance:
+  - duplicate_delivery_safe
+  - migration_ci
+- id: SLICE-005
+  name: iam_admin_shell
+  depends_on:
+  - SLICE-004
+  acceptance:
+  - authorization_e2e
+  - session_revoke
+  - admin_noindex
+- id: SLICE-006
+  name: portfolio
+  depends_on:
+  - SLICE-004
+  - SLICE-005
+  acceptance:
+  - score_separation
+  - stable_ids
+  - csv_dry_run
+- id: SLICE-007
+  name: object_storage_raw_registry
+  depends_on:
+  - SLICE-004
+  acceptance:
+  - sha256
+  - immutable_path
+  - secret_redaction
+- id: SLICE-008
+  name: rakuten_adapter
+  depends_on:
+  - SLICE-007
+  acceptance:
+  - contract_tests
+  - retry_rate_limit
+  - affiliate_url_untouched
+- id: SLICE-009
+  name: catalog_normalization
+  depends_on:
+  - SLICE-008
+  acceptance:
+  - observation_history
+  - stale_handling
+  - grouping_confidence
+- id: SLICE-010
+  name: evidence_source_packet
+  depends_on:
+  - SLICE-009
+  acceptance:
+  - packet_immutable
+  - missing_evidence_blocks
+  - lineage_query
+- id: SLICE-011
+  name: llm_prompt_registry
+  depends_on:
+  - SLICE-007
+  - SLICE-010
+  acceptance:
+  - structured_output
+  - budget
+  - no_tools
+  - raw_saved
+- id: SLICE-012
+  name: draft_workflow
+  depends_on:
+  - SLICE-011
+  acceptance:
+  - approved_packet_required
+  - evidence_integrity
+  - product_identity
+- id: SLICE-013
+  name: quality_policy_engine
+  depends_on:
+  - SLICE-010
+  - SLICE-012
+  acceptance:
+  - blocking_rules
+  - policy_version
+  - shadow_mode
+- id: SLICE-014
+  name: review_approval_ui
+  depends_on:
+  - SLICE-005
+  - SLICE-012
+  - SLICE-013
+  acceptance:
+  - diff_claim_drawer
+  - no_arbitrary_html
+  - approval_audit
+- id: SLICE-015
+  name: publication_snapshot
+  depends_on:
+  - SLICE-014
+  acceptance:
+  - unapproved_publish_impossible
+  - idempotent_publish
+  - rollback
+- id: SLICE-016
+  name: public_renderer
+  depends_on:
+  - SLICE-015
+  acceptance:
+  - no_internal_leak
+  - disclosure_credit
+  - safe_degradation
+- id: SLICE-017
+  name: affiliate_click_analytics
+  depends_on:
+  - SLICE-016
+  acceptance:
+  - no_redirect
+  - beacon_nonblocking
+  - consent_state
+- id: SLICE-018
+  name: freshness_link_health
+  depends_on:
+  - SLICE-009
+  - SLICE-015
+  - SLICE-016
+  acceptance:
+  - stale_price_hidden
+  - cta_off
+  - no_auto_reorder
+- id: SLICE-019
+  name: gsc_ga4_import
+  depends_on:
+  - SLICE-004
+  - SLICE-016
+  acceptance:
+  - quota_errors
+  - duplicate_import
+  - data_quality
+- id: SLICE-020
+  name: revenue_finance
+  depends_on:
+  - SLICE-004
+  - SLICE-007
+  acceptance:
+  - csv_dry_run
+  - reconciliation
+  - confirmed_vs_estimate
+- id: SLICE-021
+  name: dashboard_priority
+  depends_on:
+  - SLICE-018
+  - SLICE-019
+  - SLICE-020
+  acceptance:
+  - gate_status
+  - labelled_estimates
+  - score_separation
+- id: SLICE-022
+  name: kill_switch_incident
+  depends_on:
+  - SLICE-015
+  - SLICE-016
+  acceptance:
+  - mfa_reason
+  - cta_off_target
+  - audit
+- id: SLICE-023
+  name: observability_runbooks
+  depends_on:
+  - SLICE-004
+  - SLICE-022
+  acceptance:
+  - correlation
+  - no_secrets
+  - alerts_runbooks
+- id: SLICE-024
+  name: aws_iac_ci_cd
+  depends_on:
+  - SLICE-023
+  acceptance:
+  - staging_deploy
+  - private_db
+  - oidc_deploy
+  - rollback
+- id: SLICE-025
+  name: backup_restore_gate_packs
+  depends_on:
+  - SLICE-024
+  acceptance:
+  - restore_drill
+  - rto_rpo_measured
+  - gate_reports
+open_decisions:
+- id: OPEN-001
+  name: initial_category
+  resolved_by: before_or_during_SLICE-006
+- id: OPEN-002
+  name: site_name_and_domain
+  resolved_by: before_public_staging
+- id: OPEN-003
+  name: aws_account_and_budget
+  resolved_by: before_SLICE-024
+- id: OPEN-004
+  name: keyword_rank_provider
+  resolved_by: before_GATE-2
+- id: OPEN-005
+  name: actual_rakuten_revenue_csv_samples
+  resolved_by: before_SLICE-020
+- id: OPEN-006
+  name: human_reviewer_and_hourly_cost
+  resolved_by: before_GATE-1_measurement
+- id: OPEN-007
+  name: product_identity_rules
+  resolved_by: RAOS-DATA-001
+- id: OPEN-008
+  name: category_freshness_sla
+  resolved_by: before_public_pilot
+- id: OPEN-009
+  name: auto_refresh_field_allowlist
+  resolved_by: before_SLICE-018
+- id: OPEN-010
+  name: analytics_event_taxonomy
+  resolved_by: RAOS-ANALYTICS-001
+- id: OPEN-011
+  name: commission_attribution_method
+  resolved_by: RAOS-ANALYTICS-001
+- id: OPEN-012
+  name: legal_review_boundary
+  resolved_by: before_GATE-0
+- id: OPEN-013
+  name: monthly_fixed_and_ai_budget
+  resolved_by: before_SLICE-011_and_024
+- id: OPEN-014
+  name: retention_days
+  resolved_by: RAOS-OPS-001
+- id: OPEN-015
+  name: multi_az_trigger
+  resolved_by: before_GATE-2
+- id: OPEN-016
+  name: oidc_provider
+  resolved_by: before_SLICE-005
+- id: OPEN-017
+  name: notification_channels
+  resolved_by: before_SLICE-023
+- id: OPEN-018
+  name: primary_source_domain_allowlist
+  resolved_by: before_automated_source_capture
+- id: OPEN-019
+  name: structured_data_scope
+  resolved_by: before_public_pilot
+- id: OPEN-020
+  name: original_diagram_media_pipeline
+  resolved_by: RAOS-CONTENT-001

@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/imports/revenue-canonical-row.schema.json",
+  "title": "Revenue Canonical Row",
+  "description": "Parser version maps provider CSV into this canonical staging contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source_row_no",
+    "provider_code",
+    "provider_event_key",
+    "event_type",
+    "event_at",
+    "currency",
+    "generated_commission_jpy",
+    "source_row_sha256"
+  ],
+  "properties": {
+    "source_row_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "provider_code": {
+      "const": "RAKUTEN_AFFILIATE"
+    },
+    "provider_event_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_order_id_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "GENERATED",
+        "CONFIRMED",
+        "CANCELLED",
+        "ADJUSTED"
+      ]
+    },
+    "event_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ordered_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "business_month": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]{4}-[0-9]{2}$"
+    },
+    "gross_order_amount_jpy": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "confirmed_order_amount_jpy": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "generated_commission_jpy": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "confirmed_commission_jpy": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "currency": {
+      "const": "JPY"
+    },
+    "provider_category_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provider_shop_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provider_item_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_row_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "parser_warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unmapped_columns": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

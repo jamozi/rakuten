@@ -1,0 +1,143 @@
+document:
+  id: RAOS-JOB-STATE-REVISION-001
+  version: '1.0'
+  revision_artifact_version: '0.2'
+  story_id: ST-0002
+  requirement_ids:
+  - FR-020
+  decision_ids:
+  - INT-DEC-003
+  status: IMPLEMENTATION_CANDIDATE
+  base_contract: RAOS-API-001@0.1
+  base_data_model: RAOS-DATA-001@0.1
+  source_state_machine: RAOS-STATE-001@0.1#SM-JOB
+state_model:
+  initial: REQUESTED
+  states:
+  - REQUESTED
+  - QUEUED
+  - RUNNING
+  - SUCCEEDED
+  - FAILED_RETRYABLE
+  - RETRY_SCHEDULED
+  - FAILED_TERMINAL
+  - QUARANTINED
+  - CANCELLED
+  - EXPIRED
+  completed_at_required:
+  - SUCCEEDED
+  - FAILED_TERMINAL
+  - QUARANTINED
+  - CANCELLED
+  - EXPIRED
+  absorbing:
+  - SUCCEEDED
+  - FAILED_TERMINAL
+  - CANCELLED
+  - EXPIRED
+  deadline_index_states:
+  - REQUESTED
+  - QUEUED
+  - RUNNING
+  - FAILED_RETRYABLE
+  - RETRY_SCHEDULED
+  cancellable:
+  - REQUESTED
+  - QUEUED
+  - RUNNING
+legacy_mapping:
+  PENDING: REQUESTED
+  READY: QUEUED
+  FAILED: FAILED_TERMINAL
+  RUNNING: RUNNING
+  SUCCEEDED: SUCCEEDED
+  QUARANTINED: QUARANTINED
+  CANCELLED: CANCELLED
+transitions:
+- from: REQUESTED
+  to: QUEUED
+  reason: dispatcher accepted outbox
+- from: REQUESTED
+  to: CANCELLED
+  reason: user cancellation before queue
+- from: REQUESTED
+  to: EXPIRED
+  reason: deadline exceeded
+- from: QUEUED
+  to: RUNNING
+  reason: worker acquired lease
+  guards:
+  - lease_required
+- from: QUEUED
+  to: CANCELLED
+  reason: cancel request
+- from: QUEUED
+  to: EXPIRED
+  reason: deadline exceeded
+- from: RUNNING
+  to: SUCCEEDED
+  reason: handler committed output and inbox receipt
+  guards:
+  - completed_at_required
+  - inbox_receipt_required
+- from: RUNNING
+  to: FAILED_RETRYABLE
+  reason: retryable attempt failure
+  guards:
+  - prior_attempt_immutable
+- from: RUNNING
+  to: FAILED_TERMINAL
+  reason: non-retryable or max attempts
+  guards:
+  - completed_at_required
+- from: RUNNING
+  to: QUARANTINED
+  reason: contract/policy/data isolation
+  guards:
+  - completed_at_required
+- from: RUNNING
+  to: CANCELLED
+  reason: cooperative cancellation
+  guards:
+  - completed_at_required
+- from: RUNNING
+  to: EXPIRED
+  reason: deadline exceeded
+  guards:
+  - completed_at_required
+- from: FAILED_RETRYABLE
+  to: RETRY_SCHEDULED
+  reason: retry policy calculated
+  guards:
+  - prior_attempt_immutable
+- from: RETRY_SCHEDULED
+  to: QUEUED
+  reason: available_at reached
+- from: FAILED_RETRYABLE
+  to: FAILED_TERMINAL
+  reason: retry budget exhausted
+  guards:
+  - completed_at_required
+- from: QUARANTINED
+  to: QUEUED
+  reason: operator released with corrected handler/input
+  guards:
+  - operator_release_required
+global_guards:
+- id: no_self_transition
+  rule: Duplicate delivery is handled by inbox/idempotency records, not a state self-transition.
+- id: running_lease
+  rule: Entering RUNNING requires a valid worker lease and heartbeat ownership.
+- id: completion_timestamp
+  rule: Every state in completed_at_required requires completed_at.
+- id: append_only_attempt
+  rule: Retry appends a new job_attempt and never mutates a prior attempt.
+- id: optimistic_concurrency
+  rule: Mutable Job commands compare lock_version and reject stale writers.
+deferred_runtime_semantics:
+- id: QUARANTINE_RELEASE_TIMESTAMPS
+  owner_story: ST-1404
+  note: Define whether release clears or supersedes the prior completed_at value.
+- id: RETRY_STATE_EXPIRY
+  owner_story: ST-1404
+  note: The approved state machine has no expiry edge from retry states; do not invent one here.

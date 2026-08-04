@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-catalog-candidates-normalized-v1.schema.json",
+  "title": "jp.raos.catalog.candidates_normalized.v1",
+  "description": "Product CandidateとObservationが正規化された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.catalog.candidates_normalized.v1"
+        },
+        "producer": {
+          "const": "catalog"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ingestion_request_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "candidate_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "normalizer_version": {
+              "type": "string"
+            },
+            "rejected_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "ingestion_request_id",
+            "candidate_ids",
+            "normalizer_version",
+            "rejected_count"
+          ]
+        }
+      }
+    }
+  ]
+}

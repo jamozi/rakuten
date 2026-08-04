@@ -1,0 +1,62 @@
+{
+  "document": {
+    "id": "RAOS-ST0101-CHATGPT-PRO-KNOWN-UI-001",
+    "version": "1.0.0",
+    "story_id": "ST-0101",
+    "status": "IMPLEMENTATION_CANDIDATE",
+    "source_handoff": "changes/st-0101/design-handoff.pro-browser.v1.yaml",
+    "checked_on": "2026-08-03"
+  },
+  "origin": "https://chatgpt.com",
+  "entry_url": "https://chatgpt.com/",
+  "prompt_secret_name": "RAOS_CHATGPT_PROMPT",
+  "stop_states": [
+    "account_ambiguity",
+    "captcha",
+    "login",
+    "rate_limit",
+    "reauthentication",
+    "selector_drift",
+    "unknown_ui"
+  ],
+  "profiles": {
+    "pro-extended-combined-v1": {
+      "effort_mode": "combined",
+      "states": [
+        "landing",
+        "model_menu",
+        "ready",
+        "submitted",
+        "complete"
+      ],
+      "model_option_labels": [
+        "Pro Standard",
+        "Pro Extended"
+      ],
+      "target_model": "Pro Extended",
+      "target_effort": "Pro Extended",
+      "effort_option_labels": []
+    },
+    "pro-extended-split-v1": {
+      "effort_mode": "split",
+      "states": [
+        "landing",
+        "model_menu",
+        "model_selected",
+        "effort_menu",
+        "ready",
+        "submitted",
+        "complete"
+      ],
+      "model_option_labels": [
+        "Pro"
+      ],
+      "target_model": "Pro",
+      "target_effort": "Extended",
+      "effort_option_labels": [
+        "Standard",
+        "Extended"
+      ]
+    }
+  }
+}

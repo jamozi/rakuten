@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-evidence-claim-unsupported-v1.schema.json",
+  "title": "jp.raos.evidence.claim_unsupported.v1",
+  "description": "主要Claimの根拠不足が検出された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.evidence.claim_unsupported.v1"
+        },
+        "producer": {
+          "const": "evidence"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "claim_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "criticality": {
+              "type": "string"
+            },
+            "reason_code": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "claim_id",
+            "article_version_id",
+            "criticality",
+            "reason_code"
+          ]
+        }
+      }
+    }
+  ]
+}

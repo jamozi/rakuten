@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-notification-dispatched-v1.schema.json",
+  "title": "jp.raos.ops.notification_dispatched.v1",
+  "description": "通知Adapterへの送信結果が記録された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.notification_dispatched.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "notification_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "priority": {
+              "type": "string"
+            },
+            "channel": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "provider_message_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "notification_id",
+            "priority",
+            "channel",
+            "status"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+document:
+  id: RAOS-LOCAL-POSTGRES-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0201
+  source_contract: repo://changes/st-0201/contracts/local-postgres.v1.yaml
+  generated_by: repo://scripts/build_st0201_postgres_service.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0201_postgres_service.py
+provenance:
+  contract_uri: repo://changes/st-0201/contracts/local-postgres.v1.yaml
+  architecture_snapshot:
+    uri: repo://docs/architecture/ST-0201-postgres-image-snapshot.yaml
+    sha256: ee64f731f41b88f185d4f58d9affd5eb35834353b074e215bb7ddc1788622dfd
+  canonical_inputs:
+  - uri: repo://docs/manifest.json
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/canonical/08_codex/RAOS_14_codex_implementation_handbook_v1.0.md
+    sha256: 501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2
+  image:
+    reference: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    index_digest: sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    linux_amd64_manifest_digest: sha256:16fa100a3a6e92c0556632870455e7f8c6f3df5cefddd67d6b95292732bd7ff0
+    config_digest: sha256:0a314d409a9633cff4f89dc18482262625c0ee78cb1aa2ff8e47bc6da0251e1b
+source_artifact_count: 21
+source_artifacts:
+- uri: repo://changes/st-0201/contracts/local-postgres.v1.yaml
+  bytes: 4527
+  sha256: fd35c88ad871836351b7f5bf32e8204f3c7e6e67fd60cad0265b809d27caea13
+- uri: repo://changes/st-0201/README.md
+  bytes: 5017
+  sha256: 8e0549640f3cdb00d29ee9a67b0f2fadbf4b4a362db1d9266a6570ffec76bcbc
+- uri: repo://docs/architecture/ST-0201-postgres-image-snapshot.yaml
+  bytes: 4689
+  sha256: ee64f731f41b88f185d4f58d9affd5eb35834353b074e215bb7ddc1788622dfd
+- uri: repo://docs/execplans/ST-0201.md
+  bytes: 3644
+  sha256: 6e8097d6140d0f63c8d3870eb7af9ca50d6e7db36ce47f167ea1d1037dbe97a5
+- uri: repo://docs/worklogs/ST-0201.md
+  bytes: 5320
+  sha256: 09370bbaf197afe20e699c8dca7786daadac675851bdc59b49a417d78a2ea057
+- uri: repo://scripts/build_st0201_postgres_service.py
+  bytes: 37003
+  sha256: 00146f1f8c26e96098bc050c418e43ac2bbdc0d38a5fc3efeac256ed91a22ffb
+- uri: repo://scripts/postgres_service.sh
+  bytes: 12028
+  sha256: fc2689a0827bb8f0a54b93462f6ff4b9fa403d9d99435947d4c0e796bc6ae052
+- uri: repo://tests/st0201/conftest.py
+  bytes: 1528
+  sha256: bbf43f1c353ac9c5fb70d9b3dfb5b91c7da09586884295d270ae5560c9082dca
+- uri: repo://tests/st0201/test_contract.py
+  bytes: 8196
+  sha256: f8d4372e0ef578ee6a646184f2db5afdd0634fb932fd9f892b2ff51e829c278b
+- uri: repo://tests/st0201/test_generation.py
+  bytes: 12165
+  sha256: 23124dacb3612d4eb5f4974b2789af7c2542b135239c111be3359599e900ff45
+- uri: repo://tests/st0201/test_negative_cases.py
+  bytes: 8752
+  sha256: 97e9dcc58bfa75cb61d5849b5d0e2ea141ceb4e29ef1fccdb96ddcaa301e855f
+- uri: repo://tests/st0201/test_wrapper.py
+  bytes: 17303
+  sha256: f58edd1ae3266a709fa80d51117a9e0bce378bbf80060b65c97217ab2ae07187
+- uri: repo://.github/workflows/ci.yml
+  bytes: 19073
+  sha256: 3408137fc2449eb224c55a214b315dfaa19b5a9b4370c5dd8f2b532828f46d14
+- uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+  bytes: 6677
+  sha256: 91d1bb091b7a44bca56e4a3b9fdaaa09c312dcf125a829113c460f398dc60bc8
+- uri: repo://changes/st-0107/manifest.yaml
+  bytes: 4436
+  sha256: 1eb9409d35febf94c67720a68d2fbfb78d49e1d17b968f1da1aa002e5e48cc4f
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 13194
+  sha256: fe2519367264a61ca8f0cddc780a92d0c5a3c1734c7a6f31d305cf5ab2bd252b
+- uri: repo://workspace-layout.json
+  bytes: 6615
+  sha256: f9b8f54cb81d796f6dc064e721cbcd496b72a67cb84e68a31fff7af564e051d3
+- uri: repo://infra/docker/README.md
+  bytes: 396
+  sha256: 079fad5cc7b965c507a79b9ec57421e017bf613702b876385a7df133dbd6bcd9
+- uri: repo://AGENTS.md
+  bytes: 12820
+  sha256: d7b961160e8bdfd700eaa5ea62e09a771924f84ea8c41d5c4737e37a5812ef32
+- uri: repo://Makefile
+  bytes: 19455
+  sha256: 06ee9c195668e1e2111c0385fd1db7d1a06f7a133728ebc7d00f56805ea625fd
+- uri: repo://README.md
+  bytes: 32025
+  sha256: 239bbfad44f532185927b396a0f582abfce4d351e2364555af2d53bd8db9a39f
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://docker-compose.yml
+  bytes: 1400
+  sha256: 2fac28cdd185b3070e0cc5616953948a92e05b50ebebae70bfc3323765b287b7
+manifest_self_integrity:
+  included_in_generated_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  environment: LOCAL_AND_CI_ONLY
+  production_use: FORBIDDEN
+  remote_database: FORBIDDEN
+  docker_runtime: NOT_EXECUTED
+  container_vulnerability_scan: NOT_EXECUTED
+  formal_tst_008: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

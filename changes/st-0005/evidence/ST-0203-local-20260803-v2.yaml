@@ -1,0 +1,49 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0203-20260803-V2
+  schema_version: 1
+  recorded_at: '2026-08-03T10:32:40Z'
+story_id: ST-0203
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0203-local-20260802.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/4645a289bda7364a9e4dedd71570b9a8910ff6f98a6480577c88643c691cd9a6-ST-0203-local-20260802.yaml
+    sha256: 4645a289bda7364a9e4dedd71570b9a8910ff6f98a6480577c88643c691cd9a6
+  - original_uri: repo://changes/st-0203/contracts/local-queue.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/5ed8fbae37861b8965e6735a6e501f35e38fd391b50869f57eddf9bc790e0161-local-queue.v1.yaml
+    sha256: 5ed8fbae37861b8965e6735a6e501f35e38fd391b50869f57eddf9bc790e0161
+  - original_uri: repo://scripts/build_st0203_queue_fake.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/0469e9446d8c1e3d29324b630946c7c93aa99fc3b5986320355b12e03cbad990-build_st0203_queue_fake.py
+    sha256: 0469e9446d8c1e3d29324b630946c7c93aa99fc3b5986320355b12e03cbad990
+  - original_uri: repo://tests/st0106/test_workflow_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80-test_workflow_contract.py
+    sha256: 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b-Makefile
+    sha256: 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+  - original_uri: repo://README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc-README.md
+    sha256: a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+  - original_uri: repo://changes/st-0202/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3dd7e7fddb2365daa75ae90d2b6a9a496440f512d83f0acbc4ee4a5a5f518962-manifest.yaml
+    sha256: 3dd7e7fddb2365daa75ae90d2b6a9a496440f512d83f0acbc4ee4a5a5f518962
+  - original_uri: repo://changes/st-0203/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/cfab5bb185f48e463eeb308f5fa3b92ae589073e36f4e7a800060cefe05ba689-manifest.yaml
+    sha256: cfab5bb185f48e463eeb308f5fa3b92ae589073e36f4e7a800060cefe05ba689
+suite_results:
+  - suite_id: TST-013
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: deterministic ST-0203 predecessor-pin regeneration and no-write check
+    result: 'PASS; the current ST-0202 manifest is bound by both the queue contract and sole-writer generator, with exact 22-source closure reconstruction'
+  - command: isolated ST-0203 regression and exact repository static gate
+    result: 'PASS; ST-0203 55 passed and the denied-network static gate passed after the cascade source freeze'
+boundary: >-
+  Append-only delta over the 2026-08-02 ST-0203 local snapshot. Together the
+  snapshots bind the current 22-source manifest closure and its refreshed
+  ST-0202 predecessor pin. The queue port and fake runtime payloads are
+  unchanged. No external broker/provider, durable worker runtime, hosted CI,
+  formal TST-013, human approval, canonical APPLY, staging/release, or
+  production execution is asserted. Effective canonical ST-0203 remains
+  NOT_STARTED / NOT_EXECUTED.

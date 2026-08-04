@@ -1,0 +1,80 @@
+{
+  "$defs": {
+    "LogLevel": {
+      "description": "Supported Python-compatible service log levels.",
+      "enum": [
+        "DEBUG",
+        "INFO",
+        "WARNING",
+        "ERROR",
+        "CRITICAL"
+      ],
+      "title": "LogLevel",
+      "type": "string"
+    },
+    "RuntimeEnvironment": {
+      "description": "The exact runtime environments recognized by RAOS configuration.",
+      "enum": [
+        "ENV-DEV",
+        "ENV-CI",
+        "ENV-INTEGRATION",
+        "ENV-STAGING",
+        "ENV-RECOVERY",
+        "ENV-PRODUCTION"
+      ],
+      "title": "RuntimeEnvironment",
+      "type": "string"
+    }
+  },
+  "$id": "urn:raos:runtime-config:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Validated immutable service configuration with opaque secret references.",
+  "properties": {
+    "environment": {
+      "$ref": "#/$defs/RuntimeEnvironment"
+    },
+    "log_level": {
+      "$ref": "#/$defs/LogLevel",
+      "default": "INFO"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "secret_references": {
+      "additionalProperties": {
+        "format": "secret-reference",
+        "maxLength": 512,
+        "minLength": 10,
+        "pattern": "^secret://[A-Za-z0-9][A-Za-z0-9._-]*(?:/[.]*[A-Za-z0-9_-][A-Za-z0-9._-]*)*$(?![\\s\\S])",
+        "type": "string",
+        "writeOnly": true
+      },
+      "maxProperties": 64,
+      "propertyNames": {
+        "maxLength": 64,
+        "minLength": 1,
+        "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$(?![\\s\\S])"
+      },
+      "title": "Secret References",
+      "type": "object"
+    },
+    "service_name": {
+      "maxLength": 63,
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])",
+      "title": "Service Name",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "environment",
+    "service_name",
+    "secret_references"
+  ],
+  "title": "RuntimeConfig",
+  "type": "object"
+}

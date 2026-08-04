@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/article-template-version.v1.schema.json",
+  "title": "Article Template Version",
+  "description": "Hash-bound template version for exactly one article-type version.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "article_type_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "semantic_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "maxLength": 64
+    },
+    "template": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "template_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "ACTIVE",
+        "DEPRECATED",
+        "RETIRED"
+      ]
+    },
+    "approved_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "article_type_version_id",
+    "semantic_version",
+    "template",
+    "template_sha256",
+    "status",
+    "approved_by_principal_id",
+    "approved_at",
+    "created_at"
+  ],
+  "x-raos-invariants": {
+    "single_active_per_article_type_version": true,
+    "append_only": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/seo-metadata-update-request.v1.schema.json",
+  "title": "SEO Metadata Successor Request",
+  "description": "Create a successor SEO metadata version; never mutate approved bytes.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "semantic_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "maxLength": 64
+    },
+    "metadata": {
+      "$ref": "../../content/schemas/seo-metadata.schema.json"
+    },
+    "metadata_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "semantic_version",
+    "metadata",
+    "metadata_sha256"
+  ],
+  "x-raos-invariants": {
+    "creates_successor_version": true
+  }
+}

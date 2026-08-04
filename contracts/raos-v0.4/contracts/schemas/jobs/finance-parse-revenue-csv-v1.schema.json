@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/finance-parse-revenue-csv-v1.schema.json",
+  "title": "finance.parse_revenue_csv.v1",
+  "description": "Revenue原本をscan・parseしDry Run Previewを作る。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "finance.parse_revenue_csv.v1"
+        },
+        "queue": {
+          "const": "analytics"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revenue_import_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_artifact_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "parser_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "expected_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "revenue_import_id",
+            "source_artifact_id",
+            "parser_version_id",
+            "expected_sha256"
+          ]
+        }
+      }
+    }
+  ]
+}

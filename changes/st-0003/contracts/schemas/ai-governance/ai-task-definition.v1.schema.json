@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/ai-task-definition/v1",
+  "title": "AI Task Definition",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "task_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "output_schema_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "default_max_tokens": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "default_max_cost_jpy": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "human_review_required": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "PAUSED",
+        "RETIRED"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "task_code",
+    "name",
+    "description",
+    "risk_level",
+    "output_schema_code",
+    "default_max_tokens",
+    "default_max_cost_jpy",
+    "human_review_required",
+    "status",
+    "created_at"
+  ],
+  "x-raos-classification": "INTERNAL"
+}

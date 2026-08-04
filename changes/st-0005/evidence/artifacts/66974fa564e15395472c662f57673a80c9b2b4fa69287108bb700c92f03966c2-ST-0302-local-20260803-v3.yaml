@@ -1,0 +1,42 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0302-20260803-V3
+  schema_version: 1
+  recorded_at: '2026-08-02T22:51:55Z'
+story_id: ST-0302
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0302-local-20260803-v2.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/605b3f3ce617d8edf8d5a94601fe93bb5ebdb148efd4b922b7c2517c3b68840b-ST-0302-local-20260803-v2.yaml
+    sha256: 605b3f3ce617d8edf8d5a94601fe93bb5ebdb148efd4b922b7c2517c3b68840b
+  - original_uri: repo://scripts/build_st0302_foundation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/db502ef97e7a7f11adcee25618890dcac0fe6c2084f631faec2fbca607a83b06-build_st0302_foundation.py
+    sha256: db502ef97e7a7f11adcee25618890dcac0fe6c2084f631faec2fbca607a83b06
+  - original_uri: repo://tests/st0106/test_workflow_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80-test_workflow_contract.py
+    sha256: 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+  - original_uri: repo://docs/worklogs/ST-0302.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b8690947aab599cd75de6daefe9d456e32f0675b9c67f6ab1e050fdeb524acae-ST-0302.md
+    sha256: b8690947aab599cd75de6daefe9d456e32f0675b9c67f6ab1e050fdeb524acae
+  - original_uri: repo://changes/st-0302/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/05be3e3aed52282d4cdabd8fc90730f2b5f9a3f18acdd82df2c6675baf1ce3c0-manifest.yaml
+    sha256: 05be3e3aed52282d4cdabd8fc90730f2b5f9a3f18acdd82df2c6675baf1ce3c0
+suite_results:
+  - suite_id: TST-008
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: second post-bundle full unit gate and focused ST-0106 remediation checks
+    result: 'PASS after remediation; the gate exposed two stale workflow-contract expectations for the new ST-0302 process and cumulative generator owner, and both focused regressions now pass'
+  - command: ST-0302 deterministic generation after second direct-source closure expansion
+    result: 'PASS; generator check binds 43 sources, 3 generated artifacts, and the current manifest while preserving v1 and v2 through this append-only delta'
+boundary: >-
+  Append-only delta over ST-0302 evidence V2 recorded at
+  2026-08-02T22:34:51Z. V1, V2, and V3 together reconstruct the current
+  47-file closure: 43 sources, three generated artifacts, and the manifest.
+  The second full unit attempt passed the 11-minute ST-0103 suite and then
+  stopped on two now-remediated stale ST-0106 workflow expectations; a final
+  full-suite rerun remains outside this snapshot. No valid Git repository,
+  pull request, hosted CI, migration-owner human review, staging/release,
+  production execution, canonical APPLY, or formal TST-008 execution is
+  asserted. Effective canonical ST-0302 remains NOT_STARTED / NOT_EXECUTED.

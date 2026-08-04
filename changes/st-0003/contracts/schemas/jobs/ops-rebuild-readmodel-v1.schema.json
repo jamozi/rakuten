@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/ops-rebuild-readmodel-v1.schema.json",
+  "title": "ops.rebuild_readmodel.v1",
+  "description": "指定Projectionを正本から再構築する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "ops.rebuild_readmodel.v1"
+        },
+        "queue": {
+          "const": "publication"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "projection": {
+              "type": "string",
+              "enum": [
+                "PUBLIC_READMODEL",
+                "DAILY_METRICS",
+                "OFFER_CURRENT",
+                "RUNTIME_CONTROL"
+              ]
+            },
+            "scope_type": {
+              "type": "string",
+              "enum": [
+                "ALL",
+                "SITE",
+                "ARTICLE",
+                "OFFER"
+              ]
+            },
+            "scope_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "projection",
+            "scope_type",
+            "reason"
+          ]
+        }
+      }
+    }
+  ]
+}

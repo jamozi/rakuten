@@ -1,0 +1,140 @@
+document:
+  id: RAOS-CONTENT-QG-001
+  title: 記事品質・公開Gateカタログ
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+quality_model_version: 1.0.0
+publish_threshold: 85
+score_axes:
+- id: QAX-001
+  code: intent_fit
+  name_ja: 検索意図への適合
+  weight: 15
+  blocking_floor: 10
+- id: QAX-002
+  code: decision_value
+  name_ja: 購買意思決定価値
+  weight: 20
+  blocking_floor: 14
+- id: QAX-003
+  code: original_value
+  name_ja: 独自価値
+  weight: 15
+  blocking_floor: 9
+- id: QAX-004
+  code: evidence_accuracy
+  name_ja: 事実正確性・根拠
+  weight: 20
+  blocking_floor: 16
+- id: QAX-005
+  code: fairness_explainability
+  name_ja: 公平性・説明可能性
+  weight: 10
+  blocking_floor: 7
+- id: QAX-006
+  code: freshness
+  name_ja: 鮮度
+  weight: 10
+  blocking_floor: 7
+- id: QAX-007
+  code: readability_ux
+  name_ja: 読みやすさ・UX
+  weight: 5
+  blocking_floor: 3
+- id: QAX-008
+  code: compliance_disclosure
+  name_ja: 広告・規約表示
+  weight: 5
+  blocking_floor: 5
+zero_tolerance_blockers:
+- 重大な事実誤り
+- 主要Claimの根拠欠落
+- 架空の使用・検証体験
+- 楽天レビュー本文の不正利用
+- 料率・収益による推薦Bias
+- 不正・不明瞭なAffiliate Link
+- 広告表示欠落
+- 商品/Variant/Offer同定ミス
+- 期限切れ価格・在庫の最新断定
+- Prompt Injection追随
+- Structured Dataと可視本文の重大不一致
+- Affiliate/Public Kill Switch無視
+- Secret/Restricted Dataの公開
+gates:
+- id: QG-CONT-001
+  stage: article_plan
+  name: Article Plan Freeze
+  pass_condition: Primary Intent、Decision、Article Type、Candidate Universe、対象外が明確
+  failure_action: BLOCK
+- id: QG-CONT-002
+  stage: source_packet
+  name: Evidence Readiness
+  pass_condition: 承認済みSource Packet、商品同定、主要Fact、鮮度、欠損が条件を満たす
+  failure_action: BLOCK
+- id: QG-CONT-003
+  stage: content_schema
+  name: Content AST Contract
+  pass_condition: Schema、Block順序、許可Node、未知Field、URL禁止が合格
+  failure_action: BLOCK
+- id: QG-CONT-004
+  stage: claim_evidence
+  name: Claim–Evidence
+  pass_condition: 主要Claim 100%、全検証可能Claim 95%以上、競合・期限切れなし
+  failure_action: BLOCK
+- id: QG-CONT-005
+  stage: recommendation
+  name: Recommendation Integrity
+  pass_condition: Methodology、Hard Constraint、Coverage、Bias、Tradeoff、Overrideを検査
+  failure_action: BLOCK
+- id: QG-CONT-006
+  stage: editorial_quality
+  name: Editorial Quality
+  pass_condition: 100点中85点以上かつ各軸Floor以上
+  failure_action: BLOCK
+- id: QG-CONT-007
+  stage: compliance
+  name: Compliance
+  pass_condition: 広告表示、楽天規約、体験、レビュー、画像、CTA、Policy Findingを検査
+  failure_action: BLOCK
+- id: QG-CONT-008
+  stage: seo_accessibility
+  name: SEO & Accessibility
+  pass_condition: Metadata、Canonical、Structured Data、Link、Heading、Alt、表を検査
+  failure_action: BLOCK
+- id: QG-CONT-009
+  stage: freshness_link
+  name: Freshness & Link
+  pass_condition: Critical Fact、Offer、Affiliate Link、確認時刻、Safe Degradationを検査
+  failure_action: BLOCK
+- id: QG-CONT-010
+  stage: human_review
+  name: Human Approval
+  pass_condition: ReviewerがEvidenceへアクセスし、Finding解消と明示承認を実施
+  failure_action: BLOCK
+- id: QG-CONT-011
+  stage: publication_snapshot
+  name: Publication Snapshot
+  pass_condition: Version、Hash、Policy、Methodology、SEO、Disclosure、Kill Switchを再確認
+  failure_action: BLOCK
+- id: QG-CONT-012
+  stage: post_publication
+  name: Post-publication Verification
+  pass_condition: 公開HTML、CTA、JSON-LD、Canonical、robots、RUM、Cacheを実URLで検査
+  failure_action: ROLLBACK_OR_PAUSE
+automatic_publish_release: OUT_OF_SCOPE; upstream GATE条件と別途承認が必要
+requirements:
+- FR-006
+- FR-007
+- FR-008
+- FR-009
+- FR-010
+- FR-011
+- FR-012
+- FR-017
+- FR-019
+- FR-020

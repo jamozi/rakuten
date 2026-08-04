@@ -1,0 +1,71 @@
+document:
+  id: RAOS-CONTENT-MEDIA-001
+  title: 画像・図表・Media Assetポリシー
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+policy_version: 1.0.0
+asset_classes:
+- code: rakuten_api_product_image
+  allowed: true
+  rules:
+  - 公式許可URL/Asset参照
+  - 画像自体を改変しない
+  - 文字・Badgeを画像へ重畳しない
+  - 切抜き禁止
+  - 縦横比維持
+  - 'object-fit: contain'
+  - 利用条件・取得時刻を保存
+- code: manufacturer_official_image
+  allowed: license_verified
+  rules:
+  - 利用条件とSourceを保存
+  - 改変可否をAsset単位で記録
+- code: raos_original_photo
+  allowed: true
+  rules:
+  - 撮影者・日時・対象Variant・原本Hash
+  - 編集履歴
+  - 代替テキスト
+- code: raos_data_chart
+  allowed: true
+  rules:
+  - 決定論的生成
+  - 元Fact/式/時点
+  - データ表または長文説明
+  - 色だけで区別しない
+- code: ai_generated_decorative
+  allowed: exception_only
+  rules:
+  - 実在商品の外観・性能Evidenceとして使わない
+  - 装飾目的を明示
+  - 誤認可能な場合は使用禁止
+- code: ai_generated_product_depiction
+  allowed: false
+  rules:
+  - 実在商品の代替画像・比較Evidence・商品カードに使用禁止
+- code: unverified_external_image
+  allowed: false
+  rules:
+  - 自由URL埋込禁止
+accessibility:
+  informative_image: 同等目的を伝える簡潔なalt。複雑図表はlong descriptionまたは同等データ表も必要
+  decorative_image: alt=""かつ支援技術から適切に除外
+  linked_image: Link目的を伝えるalt
+  product_image: 商品名の単純重複ではなく、識別に必要な型番・色等だけを含める
+  no_keyword_stuffing: true
+performance:
+- 幅・高さ予約
+- responsive srcset
+- lazy loadはLCP画像を除く
+- 適切な圧縮
+- 標準img srcを維持
+- CLS防止
+external_references:
+- https://developers.google.com/search/docs/appearance/google-images
+- https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html
+- https://www.w3.org/WAI/tutorials/images/decision-tree/

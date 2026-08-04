@@ -1,0 +1,135 @@
+document:
+  id: RAOS-FOUNDATION-SCHEMA-001
+  version: 1.0.0
+  story_id: ST-0302
+  status: LOCAL_AND_CI_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  epic_id: EPIC-03
+  title: Foundation schemas and extensions
+  objective: MIG-001_FOUNDATION_SUBSET
+  dependencies: [ST-0301]
+  deliverables: [SCHEMAS, BUILTIN_TYPE_POLICY, UUIDV7_VALIDATION]
+  acceptance: [BASELINE_VALIDATION_SQL_PASS]
+  required_suites: [TST-008]
+  priority: P0
+  mvp: true
+  size: M
+  one_pr_preferred: true
+  open_decisions: []
+scope_precedence:
+  canonical_split:
+    ST-0302: SCHEMAS_EXTENSIONS_TYPES_UUIDV7
+    ST-0303: IAM_JOB_OUTBOX_INBOX_AUDIT_TABLES_CONSTRAINTS_INDEXES
+  upstream_wave: MIG-001
+  architecture_slices: [SLICE-003, SLICE-004, SLICE-005, SLICE-007]
+  table_creation: DEFERRED_TO_ST_0303
+database:
+  product: PostgreSQL
+  exact_server_version_num: 180004
+  minimum_uuidv7_server_version_num: 180000
+  timezone: UTC
+  transactional_ddl: true
+schemas:
+  - name: ops
+    comment: ジョブ、原本レジストリ、監査、障害、Kill Switch、実行時設定
+    owner: CURRENT_MIGRATION_ROLE
+    owner_privileges: [CREATE, USAGE]
+    public_privileges: NONE
+    non_owner_privileges: NONE
+  - name: iam
+    comment: OIDC主体、アプリケーションRole、権限、緊急アクセス
+    owner: CURRENT_MIGRATION_ROLE
+    owner_privileges: [CREATE, USAGE]
+    public_privileges: NONE
+    non_owner_privileges: NONE
+extensions:
+  created: []
+  runtime_dependencies: []
+  id_generation_dependencies: []
+  explicitly_not_required: [pgcrypto, uuid-ossp]
+types:
+  strategy: POSTGRESQL_BUILTINS_WITH_TABLE_CHECK_CONSTRAINTS
+  custom_types_created: []
+  native_enums_created: []
+  baseline_builtins:
+    - bigint
+    - boolean
+    - character
+    - date
+    - integer
+    - interval
+    - jsonb
+    - numeric
+    - smallint
+    - text
+    - timestamp with time zone
+    - uuid
+uuidv7:
+  generation_function: pg_catalog.uuidv7()
+  shifted_generation_function: pg_catalog.uuidv7(interval)
+  version_function: pg_catalog.uuid_extract_version(uuid)
+  timestamp_function: pg_catalog.uuid_extract_timestamp(uuid)
+  expected_return_type: uuid
+  expected_version: 7
+  business_time_source: FORBIDDEN
+revision:
+  revision: '202608030002'
+  down_revision: '202608030001'
+  story_id: ST-0302
+  path: migrations/versions/202608030002_foundation_schemas.py
+  runner_version: 1.1.0
+  server_version_num: 180004
+  transaction: ALEMBIC_PER_REVISION
+  upgrade: CREATE_EMPTY_OPS_AND_IAM_SCHEMAS
+  downgrade: DROP_EMPTY_SCHEMAS_RESTRICT_TO_ST_0301_ANCHOR
+validation:
+  sql_path: changes/st-0302/generated/foundation-baseline-validation.v1.sql
+  assertions:
+    - EXACT_POSTGRESQL_18_4
+    - EXACT_OPS_AND_IAM_SCHEMA_METADATA
+    - EXACT_OWNER_ONLY_SCHEMA_PRIVILEGES
+    - NO_FOUNDATION_RELATIONS_ROUTINES_OR_CUSTOM_TYPES
+    - NO_NON_PLPGSQL_EXTENSIONS
+    - BUILTIN_TYPE_SET_RESOLVES_IN_PG_CATALOG
+    - UUIDV7_RETURNS_UUID_VERSION_7_WITH_TIMESTAMP
+    - EXACT_HEAD_AND_SUCCEEDED_HISTORY
+  result: EXCEPTION_ON_FAILURE_AND_ONE_ALLOWLISTED_SUMMARY_ROW
+downgrade:
+  operational_command: ONE_STEP_ONLY
+  below_history_anchor: FORBIDDEN
+  cascade: FORBIDDEN
+  nonempty_schema: FAIL_AND_ROLL_BACK
+  version_ddl_and_success_history_atomic: true
+security:
+  public_usage: FORBIDDEN
+  public_create: FORBIDDEN
+  non_owner_schema_privileges: FORBIDDEN
+  foundation_default_privileges: FORBIDDEN_UNTIL_ST_0306
+  dynamic_sql: FORBIDDEN
+  extension_install: FORBIDDEN
+  provider_or_network_access: FORBIDDEN
+  production_execution: FORBIDDEN
+verification:
+  local_command: >-
+    RAOS_CI_OFFLINE=1 RAOS_NETWORK_DENIED=1
+    RAOS_PG_BIN=/home/minami/.cache/raos-toolchains/postgresql/18.4/root/usr/lib/postgresql/18/bin
+    RAOS_PG_LIB=/home/minami/.cache/raos-toolchains/postgresql/18.4/root/usr/lib/x86_64-linux-gnu
+    make migration-test
+    UV=/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv
+  required_behaviors:
+    - EMPTY_DATABASE_TO_FOUNDATION_HEAD
+    - PREVIOUS_REVISION_TO_FOUNDATION_HEAD
+    - FOUNDATION_DOWNGRADE_AND_REUPGRADE
+    - BASELINE_VALIDATION_SQL
+    - SCHEMA_METADATA_TAMPER_DETECTION
+    - REVISION_SOURCE_AND_GRAPH_INTEGRITY
+    - REPEATED_UPGRADE_NOOP
+    - FAILED_DOWNGRADE_FORWARD_RECOVERY
+boundary:
+  environment: LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE
+  formal_tst_008: NOT_EXECUTED
+  independent_migration_owner_review: NOT_EXECUTED
+  hosted_ci_postgresql_18_4: NOT_EXECUTED
+  production_execution: FORBIDDEN
+  effective_canonical_status: UNCHANGED

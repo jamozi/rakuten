@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/ai-policy-assist-v1.schema.json",
+  "title": "ai.policy_assist.v1",
+  "description": "Policy Ruleの補助判定を構造化出力する。最終判定権限は持たない。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "ai.policy_assist.v1"
+        },
+        "queue": {
+          "const": "ai"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_packet_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "policy_bundle_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "prompt_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "model_route_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "output_schema_version_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "article_version_id",
+            "source_packet_version_id",
+            "policy_bundle_id",
+            "prompt_version_id",
+            "model_route_version_id",
+            "output_schema_version_id"
+          ]
+        }
+      }
+    }
+  ]
+}

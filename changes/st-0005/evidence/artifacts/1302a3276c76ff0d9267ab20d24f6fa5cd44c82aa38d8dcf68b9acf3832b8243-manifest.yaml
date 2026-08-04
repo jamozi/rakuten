@@ -1,0 +1,100 @@
+document:
+  id: RAOS-PR-GOVERNANCE-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0107
+  source_contract: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+  generated_by: repo://scripts/build_st0107_pr_governance.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0107_pr_governance.py
+provenance:
+  contract_uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+  canonical_inputs:
+  - uri: repo://docs/manifest.json
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/08_codex/RAOS_14_codex_implementation_handbook_v1.0.md
+    sha256: 501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2
+  - uri: repo://docs/canonical/08_codex/github/CODEOWNERS.example
+    sha256: 0bfe2c292879ad4bdcb9691f732cfa80972bd3c13ac2fb70e0ff29a12471c2d6
+  - uri: repo://docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md
+    sha256: 5650dfa26f882e73c7840f12fcf73353f01ac3a741f13135cf73c3f8b95a7c07
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://.github/workflows/ci.yml
+    sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+  - uri: repo://.github/workflows/status-registry.yml
+    sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
+source_artifact_count: 16
+source_artifacts:
+- uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+  bytes: 7204
+  sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
+- uri: repo://changes/st-0107/README.md
+  bytes: 8101
+  sha256: 43cde305a084c686183f6d27930069ad6bfba809b027d5e093edeef55c607447
+- uri: repo://docs/architecture/ST-0107-github-governance-snapshot.yaml
+  bytes: 8541
+  sha256: 2aae849de862a8391610e1991619af3559568c770fff13d2f3670d94030a714e
+- uri: repo://docs/execplans/ST-0107.md
+  bytes: 14400
+  sha256: dc1b4179365b8db690ab5ee4ee7276953213a774561c963afd8be93d43afd2e3
+- uri: repo://docs/worklogs/ST-0107.md
+  bytes: 11507
+  sha256: a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524
+- uri: repo://scripts/build_st0107_pr_governance.py
+  bytes: 45264
+  sha256: ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec
+- uri: repo://scripts/build_local_compose.py
+  bytes: 33026
+  sha256: 79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9
+- uri: repo://scripts/object_storage_service.sh
+  bytes: 15876
+  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
+- uri: repo://scripts/object_storage_fixture.py
+  bytes: 30201
+  sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
+- uri: repo://tests/st0107/conftest.py
+  bytes: 1533
+  sha256: 49421818d267960210dc45caf889f4c788fb2e26ab10dcbd0abada3650910de4
+- uri: repo://tests/st0107/test_generation.py
+  bytes: 11234
+  sha256: e897cdded18640d9c4ae44f851d0ff1b1b3be07680d9d3e57272e59f7594aa99
+- uri: repo://tests/st0107/test_governance_contract.py
+  bytes: 11625
+  sha256: f1b5dd23fba4e02928ae95e1b238f12a2b51bc5462ddbf534f70f4d8ff4ae62b
+- uri: repo://tests/st0107/test_negative_cases.py
+  bytes: 14261
+  sha256: 29c7b0a930d16746a2314a36b02412361b4ea8bfb8f668b0a04ad6388c131d71
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 19155
+  sha256: 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+- uri: repo://Makefile
+  bytes: 21998
+  sha256: 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+- uri: repo://README.md
+  bytes: 43208
+  sha256: a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+generated_artifact_count: 3
+generated_artifacts:
+- uri: repo://.github/CODEOWNERS
+  bytes: 1856
+  sha256: 9c7e18f731e42053f26d0c104f953e6c8367aa6977b4c2e362384cd359910f91
+- uri: repo://.github/PULL_REQUEST_TEMPLATE.md
+  bytes: 1783
+  sha256: 2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a
+- uri: repo://changes/st-0107/ruleset-policy.v1.json
+  bytes: 4347
+  sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
+manifest_self_integrity:
+  included_in_generated_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  owner_bindings: UNVERIFIED_PLACEHOLDERS
+  ruleset_policy: DESIRED_STATE_NOT_API_PAYLOAD
+  remote_mutation: FORBIDDEN
+  live_ruleset: NOT_EXECUTED
+  formal_tst_001: NOT_EXECUTED

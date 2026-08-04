@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/common/publication-snapshot.schema.json",
+  "title": "Publication Snapshot Contract",
+  "description": "公開時点を完全再現する不変Snapshot。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "publication_id",
+    "publication_version",
+    "article_id",
+    "article_version_id",
+    "content_schema_version",
+    "renderable_content",
+    "product_selection_refs",
+    "safe_offer_projection_version",
+    "disclosure_version",
+    "policy_bundle_version",
+    "quality_result_id",
+    "approval_ids",
+    "seo_metadata",
+    "input_hashes",
+    "snapshot_sha256"
+  ],
+  "properties": {
+    "publication_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "publication_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "article_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "article_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "content_schema_version": {
+      "type": "string"
+    },
+    "renderable_content": {
+      "$ref": "article-ast.schema.json"
+    },
+    "product_selection_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "safe_offer_projection_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "disclosure_version": {
+      "type": "string"
+    },
+    "policy_bundle_version": {
+      "type": "string"
+    },
+    "quality_result_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "approval_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "minItems": 1
+    },
+    "seo_metadata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "input_hashes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "snapshot_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

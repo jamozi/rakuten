@@ -1,0 +1,37 @@
+document:
+  id: STATUS-ST0204-LOCAL-PROPOSAL-002
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-03T10:32:55Z'
+reason: >-
+  Refresh the append-only local ST-0204 proposal after the regenerated
+  ST-0203 manifest changed its exact predecessor pin. The delta captures both
+  pin owners and the current tool/source closure while the runtime loader and
+  generated Schema remain semantically and byte stable.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0204
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-005
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0204-local-20260803-v2.yaml
+        sha256: f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e
+        observed_at: '2026-08-03T10:32:50Z'
+      - suite_id: TST-031
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0204-local-20260803-v2.yaml
+        sha256: f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e
+        observed_at: '2026-08-03T10:32:50Z'

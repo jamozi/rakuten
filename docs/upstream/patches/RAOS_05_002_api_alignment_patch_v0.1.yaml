@@ -1,0 +1,110 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+  status: PROPOSAL_ONLY
+observed_upstream:
+  ai_job_contracts:
+  - ai.classify_search_intent.v1
+  - ai.assess_opportunity.v1
+  - ai.generate_article_draft.v1
+  - ai.extract_claims.v1
+  - ai.policy_assist.v1
+  - ai.evaluate_output.v1
+  - ai.generic_task.v1
+  ai_job_contract_count: 7
+  ai_specific_output_schemas_in_package:
+  - opportunity-assessment-output
+  - article-draft-output
+  - claim-extraction-output
+  - policy-assist-output
+  standalone_ai_task_registry_in_package: false
+  existing_admin_operations:
+  - AI-005 list prompt versions
+  - AI-006 list model routes
+  - AI-007 list evaluation results
+  - AI-008 start evaluation
+alignment_findings:
+- id: AI-ALIGN-001
+  severity: HIGH
+  finding: ai.classify_search_intent.v1 is an enabled Job contract but requires a formal task, prompt and output-schema registry entry.
+  resolution: AIT-009 and search-intent schema/prompt are introduced.
+- id: AI-ALIGN-002
+  severity: CRITICAL
+  finding: ai.policy_assist.v1 is an enabled Job contract and needs an explicit non-authoritative, human-gated task definition.
+  resolution: AIT-010 is defined with route.policy_high.v1 and no blocker-clearance authority.
+- id: AI-ALIGN-003
+  severity: MEDIUM
+  finding: The available API package includes only four AI-specific output schema files.
+  resolution: RAOS-AI-001 provides twelve self-contained task schemas; adoption requires an OpenAPI/AsyncAPI compatibility PR.
+- id: AI-ALIGN-004
+  severity: HIGH
+  finding: Evaluation results exist, but dataset versions, human labels, judge calibration and hash-bound release decisions are not first-class
+    API resources.
+  resolution: Add proposed governance resources and operations below.
+proposed_admin_operations:
+- operation_id: AI-101
+  method: GET
+  path: /api/v1/admin/ai/tasks
+  purpose: List task registry and lifecycle.
+- operation_id: AI-102
+  method: GET
+  path: /api/v1/admin/ai/tasks/{taskCode}
+  purpose: Read task contract and active versions.
+- operation_id: AI-103
+  method: POST
+  path: /api/v1/admin/ai/prompt-versions
+  purpose: Register Git-managed prompt version metadata.
+- operation_id: AI-104
+  method: POST
+  path: /api/v1/admin/ai/model-route-versions
+  purpose: Create a draft route version.
+- operation_id: AI-105
+  method: POST
+  path: /api/v1/admin/ai/evaluation-datasets
+  purpose: Register dataset version.
+- operation_id: AI-106
+  method: POST
+  path: /api/v1/admin/ai/evaluation-datasets/{id}:lock
+  purpose: Lock an immutable dataset version.
+- operation_id: AI-107
+  method: GET
+  path: /api/v1/admin/ai/evaluation-suites
+  purpose: List task suites and thresholds.
+- operation_id: AI-108
+  method: POST
+  path: /api/v1/admin/ai/evaluation-runs
+  purpose: Start a hash-bound evaluation run.
+- operation_id: AI-109
+  method: GET
+  path: /api/v1/admin/ai/evaluation-runs/{id}
+  purpose: Read run, slice metrics and artifacts.
+- operation_id: AI-110
+  method: POST
+  path: /api/v1/admin/ai/evaluation-case-results/{id}/human-evaluations
+  purpose: Record blind human label.
+- operation_id: AI-111
+  method: POST
+  path: /api/v1/admin/ai/judge-calibrations
+  purpose: Run/record judge calibration.
+- operation_id: AI-112
+  method: POST
+  path: /api/v1/admin/ai/release-decisions
+  purpose: Create proposed release decision.
+- operation_id: AI-113
+  method: POST
+  path: /api/v1/admin/ai/release-decisions/{id}:approve-canary
+  purpose: Approve bounded canary.
+- operation_id: AI-114
+  method: POST
+  path: /api/v1/admin/ai/release-decisions/{id}:approve-active
+  purpose: Activate after canary evidence.
+- operation_id: AI-115
+  method: POST
+  path: /api/v1/admin/ai/release-decisions/{id}:revoke
+  purpose: Revoke and route rollback.
+compatibility_rules:
+- Do not replace existing schema IDs in place; add new versioned schemas and migrate consumers.
+- Job payload schemas remain authoritative until an explicit RAOS-API-001 revision is approved.
+- New operations use existing Problem Details, idempotency and If-Match conventions.
+- SQL and API proposals are not applied directly from this artifact package.

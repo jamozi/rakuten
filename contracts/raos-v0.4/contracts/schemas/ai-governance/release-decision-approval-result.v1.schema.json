@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/release-decision-approval-result/v1",
+  "title": "Release Decision Approval Result",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "release_decision": {
+      "$ref": "release-decision.v1.schema.json"
+    },
+    "release_approval": {
+      "$ref": "release-approval.v1.schema.json"
+    }
+  },
+  "required": [
+    "release_decision",
+    "release_approval"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "description": "Atomic transition result containing the updated aggregate and the append-only approval row created for that exact manifest."
+}

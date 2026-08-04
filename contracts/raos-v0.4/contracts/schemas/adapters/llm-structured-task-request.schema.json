@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/adapters/llm-structured-task-request.schema.json",
+  "title": "LLM Structured Task Request",
+  "description": "Provider-neutral structured output request. Secrets and raw database connections are prohibited.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_code",
+    "model_route_version",
+    "prompt_version",
+    "input_artifact",
+    "output_schema",
+    "request_sha256",
+    "max_cost_jpy"
+  ],
+  "properties": {
+    "task_code": {
+      "type": "string"
+    },
+    "model_route_version": {
+      "type": "string"
+    },
+    "prompt_version": {
+      "type": "string"
+    },
+    "source_packet_version_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "input_artifact": {
+      "$ref": "../common/artifact-ref.schema.json"
+    },
+    "output_schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "max_cost_jpy": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_output_tokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "temperature": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 2
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "correlation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "job_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "environment": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

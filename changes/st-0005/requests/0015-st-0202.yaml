@@ -1,0 +1,33 @@
+document:
+  id: STATUS-ST0202-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-02T14:33:23Z'
+reason: >-
+  Record the local ST-0202 cumulative S3-compatible object-storage service,
+  complete fail-closed contract generator, secret-staging wrapper,
+  authenticated acceptance fixture, CI integration, and content-addressed
+  implementation evidence without claiming a real Docker daemon run, hosted
+  Storage job, container vulnerability scan, formal CI-only TST-014,
+  canonical apply, release, deployment, staging, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0202
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-014
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0202-local-20260802.yaml
+        sha256: fe13e08c4d1eab4b08923fc82b72a94cef01c6ac0733ecc7d9894fb027bbfd9b
+        observed_at: '2026-08-02T14:31:35Z'

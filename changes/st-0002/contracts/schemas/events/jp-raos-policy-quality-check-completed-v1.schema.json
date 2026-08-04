@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-policy-quality-check-completed-v1.schema.json",
+  "title": "jp.raos.policy.quality_check_completed.v1",
+  "description": "Quality Check結果が確定した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.policy.quality_check_completed.v1"
+        },
+        "producer": {
+          "const": "policy"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "quality_check_run_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "status": {
+              "type": "string"
+            },
+            "total_score": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "blocking_finding_count": {
+              "type": "integer"
+            },
+            "policy_bundle_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "quality_check_run_id",
+            "article_version_id",
+            "status",
+            "blocking_finding_count",
+            "policy_bundle_id"
+          ]
+        }
+      }
+    }
+  ]
+}

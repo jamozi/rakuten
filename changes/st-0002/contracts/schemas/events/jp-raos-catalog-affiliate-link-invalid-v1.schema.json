@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-catalog-affiliate-link-invalid-v1.schema.json",
+  "title": "jp.raos.catalog.affiliate_link_invalid.v1",
+  "description": "Affiliate Linkが安全条件を満たさない。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.catalog.affiliate_link_invalid.v1"
+        },
+        "producer": {
+          "const": "catalog"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "offer_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "link_observation_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "risk_code": {
+              "type": "string"
+            },
+            "destination_host": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "cta_disabled": {
+              "const": true
+            }
+          },
+          "required": [
+            "offer_id",
+            "link_observation_id",
+            "risk_code",
+            "cta_disabled"
+          ]
+        }
+      }
+    }
+  ]
+}

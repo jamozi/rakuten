@@ -1,0 +1,48 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+  status: TEMPLATE
+environment: development
+provider:
+  name: openai
+  api: responses
+  store: false
+  tools: []
+  request_timeout_seconds: 120
+  max_provider_attempts: 2
+  credential_reference: secret-manager://REPLACE_ME
+  data_controls_review_id: null
+routing:
+  active_release_ids: {}
+  allow_uncertified_routes: false
+  fallback_enabled: true
+  shadow_enabled: false
+budgets:
+  daily_jpy_hard_cap: null
+  per_task_jpy_hard_caps:
+    ai.opportunity_assessment.v1: 180
+    ai.comparison_axis_suggestion.v1: 100
+    ai.article_outline.v1: 110
+    ai.article_draft.v1: 240
+    ai.claim_extraction.v1: 150
+    ai.quality_remediation.v1: 170
+    ai.update_priority_explanation.v1: 40
+    ai.internal_link_suggestion.v1: 45
+    ai.search_intent_classification.v1: 70
+    ai.policy_assist.v1: 260
+    ai.source_packet_gap_analysis.v1: 180
+    ai.refresh_diff_summary.v1: 140
+  currency_source: null
+  fx_rate_as_of: null
+features:
+  prompt_caching: false
+  batch_api: false
+  model_judge: false
+  source_packet_gap_analysis: false
+  refresh_diff_summary: false
+logging:
+  raw_prompt: false
+  raw_source_packet: false
+  raw_output: false
+  hashes_and_ids_only: true

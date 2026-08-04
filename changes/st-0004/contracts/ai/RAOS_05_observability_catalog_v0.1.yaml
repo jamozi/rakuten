@@ -1,0 +1,136 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+trace_name: raos.ai.attempt
+required_span_attributes:
+- ai.task_code
+- ai.job_id
+- ai.attempt_id
+- ai.route_code
+- ai.route_version
+- ai.prompt_code
+- ai.prompt_version
+- ai.schema_code
+- ai.schema_sha256
+- ai.policy_bundle_version
+- ai.source_packet_version
+- ai.provider
+- ai.model_requested
+- ai.model_resolved
+- ai.response_id
+- ai.finish_reason
+- ai.refusal_code
+- ai.input_tokens
+- ai.cached_input_tokens
+- ai.output_tokens
+- ai.cost_jpy
+- ai.latency_ms
+- ai.validation_status
+- ai.release_id
+- correlation_id
+prohibited_log_fields:
+- raw_prompt
+- raw_source_packet
+- raw_output
+- credentials
+- full_personal_data
+- rakuten_review_body
+metrics:
+- name: raos_ai_attempts_total
+  type: counter
+  labels:
+  - task
+  - route
+  - model
+  - status
+  - failure_code
+- name: raos_ai_attempt_latency_ms
+  type: histogram
+  labels:
+  - task
+  - route
+  - model
+- name: raos_ai_tokens_total
+  type: counter
+  labels:
+  - task
+  - route
+  - model
+  - token_kind
+- name: raos_ai_cost_jpy_total
+  type: counter
+  labels:
+  - task
+  - route
+  - model
+  - environment
+- name: raos_ai_validation_failures_total
+  type: counter
+  labels:
+  - task
+  - gate
+  - failure_code
+- name: raos_ai_zero_tolerance_failures_total
+  type: counter
+  labels:
+  - task
+  - failure_code
+  - route_version
+- name: raos_ai_human_acceptance_ratio
+  type: gauge
+  labels:
+  - task
+  - route_version
+  - window
+- name: raos_ai_human_edit_distance
+  type: histogram
+  labels:
+  - task
+  - route_version
+- name: raos_ai_release_metric
+  type: gauge
+  labels:
+  - task
+  - release_id
+  - metric_code
+  - slice
+slos:
+- id: AI-SLO-001
+  name: Critical schema validity
+  target: 100%
+  window: 7d
+  action: pause on any failure
+- id: AI-SLO-002
+  name: Zero-tolerance failures
+  target: '0'
+  window: since release
+  action: immediate pause/incident
+- id: AI-SLO-003
+  name: Provider completion
+  target: '>=99.0%'
+  window: 24h
+  action: open circuit/degrade queue
+- id: AI-SLO-004
+  name: Cost variance
+  target: <=10% over forecast
+  window: 7d
+  action: pause challenger
+- id: AI-SLO-005
+  name: Human acceptance
+  target: task floor
+  window: last 50 reviewed
+  action: rollback on material decline
+alerts:
+- severity: P0
+  condition: critical failure or secret leak
+  action: pause route, preserve artifacts, notify incident commander
+- severity: P1
+  condition: critical schema/identity failure
+  action: pause route and dependent publishing
+- severity: P2
+  condition: provider error >5%/15m or cost anomaly >25%
+  action: open circuit/stop canary
+- severity: P3
+  condition: acceptance drift or latency breach
+  action: investigation ticket

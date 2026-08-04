@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/ai-job/v1",
+  "title": "AI Job",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "display_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "ops_job_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "article_plan_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "article_version_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "source_packet_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "prompt_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "output_schema_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "model_route_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "policy_bundle_version_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "release_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "REQUESTED",
+        "VALIDATING_INPUT",
+        "QUEUED",
+        "RUNNING",
+        "VALIDATING_OUTPUT",
+        "AWAITING_HUMAN",
+        "SUCCEEDED",
+        "FAILED_RETRYABLE",
+        "RETRY_SCHEDULED",
+        "FAILED_TERMINAL",
+        "QUARANTINED",
+        "CANCELLED",
+        "EXPIRED"
+      ]
+    },
+    "request_config": {
+      "type": "object",
+      "additionalProperties": true,
+      "maxProperties": 100
+    },
+    "input_manifest_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "max_cost_jpy": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "budget_reserved_jpy": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "completed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lock_version": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "id",
+    "display_id",
+    "ops_job_id",
+    "task_definition_id",
+    "article_plan_id",
+    "article_version_id",
+    "source_packet_version_id",
+    "prompt_version_id",
+    "output_schema_version_id",
+    "model_route_version_id",
+    "policy_bundle_version_id",
+    "release_decision_id",
+    "status",
+    "request_config",
+    "input_manifest_sha256",
+    "max_cost_jpy",
+    "budget_reserved_jpy",
+    "completed_at",
+    "created_at",
+    "updated_at",
+    "lock_version"
+  ],
+  "x-raos-classification": "CONFIDENTIAL"
+}

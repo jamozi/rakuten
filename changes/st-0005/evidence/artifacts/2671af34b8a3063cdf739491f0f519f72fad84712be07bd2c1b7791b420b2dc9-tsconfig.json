@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "exactOptionalPropertyTypes": false,
+    "types": []
+  },
+  "include": ["src/generated/**/*.ts"],
+  "exclude": ["node_modules", "dist", "build", "coverage"]
+}

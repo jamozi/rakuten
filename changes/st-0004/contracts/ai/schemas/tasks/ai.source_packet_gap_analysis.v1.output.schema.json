@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/source_packet_gap_analysis/v1",
+  "title": "RAOS AI task output: source_packet_gap_analysis v1",
+  "type": "object",
+  "properties": {
+    "generation_readiness": {
+      "type": "string",
+      "enum": [
+        "READY",
+        "READY_WITH_LIMITATIONS",
+        "BLOCKED"
+      ]
+    },
+    "blocking_gaps": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "properties": {
+          "gap_code": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_\\-]{2,100}$"
+          },
+          "planned_claim_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "missing_fact_types": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "uniqueItems": true
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "allowed_acquisition_paths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "maxItems": 20
+          }
+        },
+        "required": [
+          "gap_code",
+          "planned_claim_ref",
+          "missing_fact_types",
+          "reason",
+          "allowed_acquisition_paths"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "enrichment_opportunities": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "reader_value": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 700
+          },
+          "required_fact_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "maxItems": 20
+          }
+        },
+        "required": [
+          "topic",
+          "reader_value",
+          "required_fact_types"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 800
+      },
+      "maxItems": 100
+    }
+  },
+  "required": [
+    "generation_readiness",
+    "blocking_gaps",
+    "enrichment_opportunities",
+    "limitations"
+  ],
+  "additionalProperties": false
+}

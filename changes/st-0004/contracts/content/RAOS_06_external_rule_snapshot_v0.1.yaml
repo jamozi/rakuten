@@ -1,0 +1,118 @@
+document:
+  id: RAOS-CONTENT-EXTERNAL-001
+  title: 外部ルールスナップショット
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+observed_at: '2026-07-30'
+review_policy:
+  frequency: monthly and event-driven
+  authoritative_sources_only: true
+  change_action: create policy diff, affected publication set, risk classification, approval and re-evaluation
+rules:
+- id: EXT-GOOGLE-001
+  domain: Google Search
+  topic: people_first_content
+  observed_rule: 独自情報、十分な説明、明確な出典、読者価値を優先し、検索流入目的の量産を避ける
+  url: https://developers.google.com/search/docs/fundamentals/creating-helpful-content
+  content_policy_ids:
+  - POL-CONT-019
+  - POL-CONT-020
+  - POL-CONT-021
+- id: EXT-GOOGLE-002
+  domain: Google Search
+  topic: scaled_content_abuse
+  observed_rule: 検索順位操作を主目的とした大量の低価値ページは生成手段を問わずSpam対象になり得る
+  url: https://developers.google.com/search/docs/essentials/spam-policies
+  content_policy_ids:
+  - POL-CONT-020
+  - POL-CONT-030
+- id: EXT-GOOGLE-003
+  domain: Google Search
+  topic: affiliate_links
+  observed_rule: 広告・有償関係Linkにはrel=sponsoredを使用する
+  url: https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links
+  content_policy_ids:
+  - POL-CONT-010
+- id: EXT-GOOGLE-004
+  domain: Google Search
+  topic: generative_ai
+  observed_rule: AI利用自体ではなく公開物の正確性・品質・関連性と付加価値が重要
+  url: https://developers.google.com/search/docs/fundamentals/using-gen-ai-content
+  content_policy_ids:
+  - POL-CONT-001
+  - POL-CONT-002
+  - POL-CONT-020
+- id: EXT-GOOGLE-005
+  domain: Google Search
+  topic: ai_search_optimization
+  observed_rule: 特別なAI用SchemaやQuery Variation量産ではなく通常の基礎SEOと独自価値を優先
+  url: https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
+  content_policy_ids:
+  - POL-CONT-020
+  - POL-CONT-030
+- id: EXT-GOOGLE-006
+  domain: Google Search
+  topic: product_structured_data
+  observed_rule: Product Rich Resultは単一商品または同一商品のVariantに焦点を当てたページ向け。商品一覧型へは出さない
+  url: https://developers.google.com/search/docs/appearance/structured-data/product-snippet
+  content_policy_ids:
+  - POL-CONT-027
+  - POL-CONT-029
+- id: EXT-GOOGLE-007
+  domain: Google Search
+  topic: faq_rich_result_removed
+  observed_rule: FAQ Rich Resultは2026年にDocumentationから削除。可視FAQは可、FAQPage JSON-LDは無効化
+  url: https://developers.google.com/search/updates#removing-faq-rich-result
+  content_policy_ids:
+  - POL-CONT-028
+- id: EXT-GOOGLE-008
+  domain: Google Search
+  topic: image_seo
+  observed_rule: 標準img、適切な品質・速度、文脈に合う説明的altを使用しKeyword stuffingを避ける
+  url: https://developers.google.com/search/docs/appearance/google-images
+  content_policy_ids:
+  - POL-CONT-032
+  - POL-CONT-033
+- id: EXT-W3C-001
+  domain: W3C WAI
+  topic: non_text_content
+  observed_rule: 非Text Contentには同等目的を持つText Alternativeを提供する
+  url: https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html
+  content_policy_ids:
+  - POL-CONT-032
+- id: EXT-RAKUTEN-001
+  domain: Rakuten Affiliate
+  topic: affiliate_guideline
+  observed_rule: 登録媒体、HTTPS、禁止行為、Link・画像等のGuidelineに従う
+  url: https://affiliate.rakuten.co.jp/guideline/rule/
+  content_policy_ids:
+  - POL-CONT-004
+  - POL-CONT-007
+  - POL-CONT-011
+  - POL-CONT-013
+- id: EXT-RAKUTEN-002
+  domain: Rakuten Affiliate
+  topic: stealth_marketing
+  observed_rule: 対象施策で広告・PR関係を明瞭に表示し、証跡保存とMonitoringへ対応する
+  url: https://affiliate.rakuten.co.jp/guideline/stealth_marketing_regulation/
+  content_policy_ids:
+  - POL-CONT-008
+- id: EXT-RAKUTEN-003
+  domain: Rakuten Web Service
+  topic: api_credit
+  observed_rule: 公式API利用時に指定されたCredit表示を行う
+  url: https://webservice.rakuten.co.jp/guide/credit
+  content_policy_ids:
+  - POL-CONT-012
+- id: EXT-CAA-001
+  domain: Consumer Affairs Agency Japan
+  topic: stealth_marketing_regulation
+  observed_rule: 広告であることを一般消費者が判別しにくい表示は景品表示法上の規制対象
+  url: https://www.caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing
+  content_policy_ids:
+  - POL-CONT-008

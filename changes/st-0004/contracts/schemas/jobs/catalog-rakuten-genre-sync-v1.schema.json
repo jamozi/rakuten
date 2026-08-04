@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/catalog-rakuten-genre-sync-v1.schema.json",
+  "title": "catalog.rakuten_genre_sync.v1",
+  "description": "楽天Genre taxonomyを同期する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "catalog.rakuten_genre_sync.v1"
+        },
+        "queue": {
+          "const": "ingestion"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "provider_endpoint_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "root_genre_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "api_version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "site_id",
+            "provider_endpoint_id",
+            "api_version"
+          ]
+        }
+      }
+    }
+  ]
+}

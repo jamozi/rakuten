@@ -1,0 +1,90 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0006-20260801
+  schema_version: 1
+  recorded_at: '2026-08-01T16:29:59Z'
+story_id: ST-0006
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://scripts/build_st0006_decision_gates.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f-build_st0006_decision_gates.py
+  sha256: 0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f
+- original_uri: repo://changes/st-0006/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/53ab2467d53812a1718358e445cd8862d2079b084729e50df739005ba22bb8ce-README.md
+  sha256: 53ab2467d53812a1718358e445cd8862d2079b084729e50df739005ba22bb8ce
+- original_uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989-decision-gate-policy.v1.yaml
+  sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
+- original_uri: repo://changes/st-0006/contracts/gate-blocker-report.schema.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/81c37dcfc6fdabd9d9942e1ddadae040a24add3c1b760b80943eae0d3f10a133-gate-blocker-report.schema.json
+  sha256: 81c37dcfc6fdabd9d9942e1ddadae040a24add3c1b760b80943eae0d3f10a133
+- original_uri: repo://changes/st-0006/contracts/open-decision-source.schema.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9daa416a900e8a055157bd0dd76ca5949398093e891b6950960362427de04c56-open-decision-source.schema.json
+  sha256: 9daa416a900e8a055157bd0dd76ca5949398093e891b6950960362427de04c56
+- original_uri: repo://changes/st-0006/gate-blocker-report.v1.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15-gate-blocker-report.v1.yaml
+  sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
+- original_uri: repo://changes/st-0006/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/bbff3aee2fb89a4ecf45bfb92550d06b3936cceb7f3bce247f45daf5b9ca82be-manifest.yaml
+  sha256: bbff3aee2fb89a4ecf45bfb92550d06b3936cceb7f3bce247f45daf5b9ca82be
+- original_uri: repo://tests/st0006/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f0b16438a99f7a055ea7386420af2e7d32146d7db4357f9939c40580304270d2-conftest.py
+  sha256: f0b16438a99f7a055ea7386420af2e7d32146d7db4357f9939c40580304270d2
+- original_uri: repo://tests/st0006/test_decision_loader.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0b51046ac6b47ee607ac93e186824bffaf1f2aec19890622c86dcfeb25e396ba-test_decision_loader.py
+  sha256: 0b51046ac6b47ee607ac93e186824bffaf1f2aec19890622c86dcfeb25e396ba
+- original_uri: repo://tests/st0006/test_gate_report.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/01b700550dc099a52f323e1b8231661c43d3b6151b7d5c9dd16158c9ae59e5d0-test_gate_report.py
+  sha256: 01b700550dc099a52f323e1b8231661c43d3b6151b7d5c9dd16158c9ae59e5d0
+- original_uri: repo://tests/st0006/test_revision_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9cf59bd6c3f57890b0812f9afb774a98faa613adfadd9479e8cf05ad575970c4-test_revision_generation.py
+  sha256: 9cf59bd6c3f57890b0812f9afb774a98faa613adfadd9479e8cf05ad575970c4
+- original_uri: repo://docs/execplans/ST-0006.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8a2afda18352a16c42fb3626da5c3c51973f03b8f71dcbc49f74bbae96422f2d-ST-0006.md
+  sha256: 8a2afda18352a16c42fb3626da5c3c51973f03b8f71dcbc49f74bbae96422f2d
+- original_uri: repo://docs/worklogs/ST-0006.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/cca8d351539812d072ef57f468259dee617d10e07e276cf72176df60f46069a0-ST-0006.md
+  sha256: cca8d351539812d072ef57f468259dee617d10e07e276cf72176df60f46069a0
+suite_results:
+- suite_id: TST-005
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-032
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: python3 scripts/build_st0006_decision_gates.py --validate-decisions; build; --check
+  result: PASS as command operations; one JSON record with 15 decisions, 14 blockers, 6 blocked targets, BLOCKED, and release_authorized=false
+- command: python3 -m pytest -q tests/st0006
+  result: 50 passed in 1.91s
+- command: ruff format --check and ruff check for the ST-0006 generator and tests
+  result: PASS; 5 files already formatted and no lint findings
+- command: /home/minami/.nvm/versions/node/v24.13.0/bin/pyright scripts/build_st0006_decision_gates.py tests/st0006
+  result: 0 errors, 0 warnings, 0 informations
+- command: python3 -m py_compile for the ST-0006 generator and tests
+  result: PASS
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin python3 -m pytest -q tests/st0002
+  result: 139 passed in 30.53s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin python3 -m pytest -q tests/st0003
+  result: 101 passed in 76.17s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin python3 -m pytest -q tests/st0004
+  result: 64 passed in 80.02s
+- command: PostgreSQL environment for isolated ST-0002/ST-0003/ST-0004 suites
+  result: Local 18.3; formal PostgreSQL 18.4 target NOT_EXECUTED
+- command: python3 -m pytest -q tests/st0101
+  result: 59 passed in 2.57s
+- command: python3 -m pytest -q tests/st0005
+  result: 141 passed in 24.28s
+- command: python3 -m pytest -q tests/test_import_raos_design.py
+  result: 18 passed in 0.15s
+- command: python3 scripts/import_raos_design.py verify
+  result: PASS; 105 files, read order, 6 archives, 104 checksums, 103 manifest entries
+- command: deterministic builders/checks for ST-0002, ST-0003, ST-0004, ST-0005, and ST-0006
+  result: PASS
+- command: make bootstrap; make check-workspace
+  result: PASS; 42 directories and changed=[] in both modes
+- command: sha256sum -c /tmp/st0101_protected_before.sha256
+  result: PASS for all 111 protected canonical/upstream/ZIP files
+- command: independent ST-0006 security and robustness review
+  result: PASS; no remaining Critical, High, Medium, or Low finding under the documented same-UID boundary
+boundary: Local structural, parser, rollback, static, and regression evidence only; formal CI TST-005, staging TST-032, GitHub PR, human decision, Gate acceptance, release approval, deployment, and production were not executed.

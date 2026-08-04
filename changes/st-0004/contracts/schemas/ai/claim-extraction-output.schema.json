@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai/claim-extraction-output.schema.json",
+  "title": "Claim Extraction Output",
+  "description": "Article text to typed claims and evidence references.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "claims"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "claim_key": {
+            "type": "string"
+          },
+          "block_key": {
+            "type": "string"
+          },
+          "claim_type": {
+            "type": "string"
+          },
+          "claim_text": {
+            "type": "string"
+          },
+          "criticality": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ]
+          },
+          "candidate_fact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "support_status": {
+            "type": "string",
+            "enum": [
+              "SUPPORTED",
+              "PARTIAL",
+              "UNSUPPORTED",
+              "CONFLICTING"
+            ]
+          }
+        },
+        "required": [
+          "claim_key",
+          "block_key",
+          "claim_type",
+          "claim_text",
+          "criticality",
+          "candidate_fact_ids",
+          "support_status"
+        ]
+      }
+    }
+  }
+}

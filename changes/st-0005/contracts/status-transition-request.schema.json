@@ -1,0 +1,536 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:raos:status-transition-request:v1",
+  "title": "RAOS status transition request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document",
+    "requested_by",
+    "requested_at",
+    "reason",
+    "expected",
+    "changes"
+  ],
+  "properties": {
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "schema_version",
+        "intent"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^STATUS-[A-Z0-9][A-Z0-9_-]{7,95}$"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "intent": {
+          "enum": [
+            "PROPOSE",
+            "APPLY"
+          ]
+        }
+      }
+    },
+    "requested_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "actor_type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128
+        },
+        "actor_type": {
+          "enum": [
+            "HUMAN",
+            "AUTOMATION",
+            "SERVICE"
+          ]
+        }
+      }
+    },
+    "requested_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 4096
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_base_sha256",
+        "effective_status_sha256"
+      ],
+      "properties": {
+        "canonical_base_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "effective_status_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "changes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "story_id",
+          "expected",
+          "target",
+          "evidence"
+        ],
+        "properties": {
+          "story_id": {
+            "type": "string",
+            "pattern": "^ST-[0-9]{4}$"
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "implementation_status",
+              "verification_status"
+            ],
+            "properties": {
+              "implementation_status": {
+                "enum": [
+                  "NOT_STARTED",
+                  "IN_PROGRESS",
+                  "IMPLEMENTED_NOT_VALIDATED",
+                  "VALIDATED",
+                  "DEPLOYED_STAGING",
+                  "DEPLOYED_PRODUCTION",
+                  "DEFERRED_POST_MVP",
+                  "OUT_OF_SCOPE"
+                ]
+              },
+              "verification_status": {
+                "enum": [
+                  "NOT_EXECUTED",
+                  "PARTIAL",
+                  "PASS",
+                  "FAIL",
+                  "NOT_APPLICABLE"
+                ]
+              }
+            }
+          },
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "implementation_status",
+              "verification_status"
+            ],
+            "properties": {
+              "implementation_status": {
+                "enum": [
+                  "NOT_STARTED",
+                  "IN_PROGRESS",
+                  "IMPLEMENTED_NOT_VALIDATED",
+                  "VALIDATED",
+                  "DEPLOYED_STAGING",
+                  "DEPLOYED_PRODUCTION",
+                  "DEFERRED_POST_MVP",
+                  "OUT_OF_SCOPE"
+                ]
+              },
+              "verification_status": {
+                "enum": [
+                  "NOT_EXECUTED",
+                  "PARTIAL",
+                  "PASS",
+                  "FAIL",
+                  "NOT_APPLICABLE"
+                ]
+              }
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "suite_id",
+                "environment",
+                "evidence_class",
+                "uri",
+                "sha256",
+                "observed_at"
+              ],
+              "properties": {
+                "suite_id": {
+                  "type": "string",
+                  "pattern": "^TST-[0-9]{3}$"
+                },
+                "environment": {
+                  "enum": [
+                    "LOCAL",
+                    "DEV",
+                    "CI",
+                    "INTEGRATION",
+                    "STAGING",
+                    "RECOVERY",
+                    "PRODUCTION"
+                  ]
+                },
+                "evidence_class": {
+                  "enum": [
+                    "CHANGE_PLAN",
+                    "LOCAL_IMPLEMENTATION",
+                    "PR_CHANGESET",
+                    "RUNTIME_SUITE_RESULT",
+                    "STAGING_DEPLOYMENT",
+                    "PRODUCTION_RELEASE",
+                    "REGRESSION",
+                    "EXPIRY",
+                    "ROLLBACK_DECISION",
+                    "SCOPE_DECISION"
+                  ]
+                },
+                "uri": {
+                  "type": "string",
+                  "pattern": "^repo://"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "observed_at": {
+                  "type": "string",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                },
+                "expires_at": {
+                  "type": "string",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "pr_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "uri",
+        "implementation_commit_sha",
+        "sha256",
+        "observed_at"
+      ],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "implementation_commit_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40,64}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "observed_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "expires_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approver",
+        "decision",
+        "reason",
+        "decided_at",
+        "evidence"
+      ],
+      "properties": {
+        "approver": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "actor_type"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 128
+            },
+            "actor_type": {
+              "enum": [
+                "HUMAN",
+                "AUTOMATION",
+                "SERVICE"
+              ]
+            }
+          }
+        },
+        "decision": {
+          "const": "APPROVED"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 2048
+        },
+        "decided_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "uri",
+            "sha256",
+            "observed_at"
+          ],
+          "properties": {
+            "uri": {
+              "type": "string",
+              "pattern": "^repo://"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "observed_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            },
+            "expires_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            }
+          }
+        }
+      }
+    },
+    "production_approval_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_decision",
+        "gate_report",
+        "security_approval",
+        "operations_approval"
+      ],
+      "properties": {
+        "release_decision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "uri",
+            "sha256",
+            "observed_at"
+          ],
+          "properties": {
+            "uri": {
+              "type": "string",
+              "pattern": "^repo://"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "observed_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            },
+            "expires_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            }
+          }
+        },
+        "gate_report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "uri",
+            "sha256",
+            "observed_at"
+          ],
+          "properties": {
+            "uri": {
+              "type": "string",
+              "pattern": "^repo://"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "observed_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            },
+            "expires_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            }
+          }
+        },
+        "security_approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "uri",
+            "sha256",
+            "observed_at"
+          ],
+          "properties": {
+            "uri": {
+              "type": "string",
+              "pattern": "^repo://"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "observed_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            },
+            "expires_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            }
+          }
+        },
+        "operations_approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "uri",
+            "sha256",
+            "observed_at"
+          ],
+          "properties": {
+            "uri": {
+              "type": "string",
+              "pattern": "^repo://"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "observed_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            },
+            "expires_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            }
+          }
+        }
+      }
+    },
+    "scope_decision_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "uri",
+        "sha256",
+        "observed_at"
+      ],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "pattern": "^repo://"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "observed_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "expires_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "document": {
+            "properties": {
+              "intent": {
+                "const": "PROPOSE"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "pr_evidence"
+              ]
+            },
+            {
+              "required": [
+                "approval"
+              ]
+            },
+            {
+              "required": [
+                "production_approval_evidence"
+              ]
+            },
+            {
+              "required": [
+                "scope_decision_evidence"
+              ]
+            }
+          ]
+        }
+      },
+      "else": {
+        "required": [
+          "pr_evidence",
+          "approval"
+        ]
+      }
+    }
+  ]
+}

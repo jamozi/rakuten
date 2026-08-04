@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/common/actor-ref.schema.json",
+  "title": "ActorRef",
+  "description": "操作主体。秘密や個人属性を含めない。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "actor_type"
+  ],
+  "properties": {
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "USER",
+        "SERVICE",
+        "SCHEDULE",
+        "SYSTEM"
+      ]
+    },
+    "actor_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "service_name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 100
+    }
+  }
+}

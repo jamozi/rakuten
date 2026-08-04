@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-policy-blocking-finding-raised-v1.schema.json",
+  "title": "jp.raos.policy.blocking_finding_raised.v1",
+  "description": "Blocking Findingが発生した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.policy.blocking_finding_raised.v1"
+        },
+        "producer": {
+          "const": "policy"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "finding_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "quality_check_run_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "finding_code": {
+              "type": "string"
+            },
+            "severity": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "finding_id",
+            "quality_check_run_id",
+            "article_version_id",
+            "finding_code",
+            "severity"
+          ]
+        }
+      }
+    }
+  ]
+}

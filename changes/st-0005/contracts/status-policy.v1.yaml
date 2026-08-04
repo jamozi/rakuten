@@ -1,0 +1,283 @@
+document:
+  id: RAOS-STATUS-TRANSITION-POLICY-001
+  version: 1.0.0
+  status: IMPLEMENTATION_CANDIDATE
+canonical_taxonomy: RAOS-STATUS-TAXONOMY-001@1.0
+implementation:
+  canonical_source_rows_and_files_are_immutable: true
+  effective_status_fields_change_only_via_apply: true
+  one_story_change_per_request: true
+  structurally_adjacent_forward_pairs:
+  - from: DEPLOYED_STAGING
+    to: DEPLOYED_PRODUCTION
+  - from: IMPLEMENTED_NOT_VALIDATED
+    to: VALIDATED
+  - from: IN_PROGRESS
+    to: IMPLEMENTED_NOT_VALIDATED
+  - from: NOT_STARTED
+    to: IN_PROGRESS
+  - from: VALIDATED
+    to: DEPLOYED_STAGING
+  structurally_adjacent_demotion_pairs:
+  - from: DEPLOYED_PRODUCTION
+    to: DEPLOYED_STAGING
+  - from: DEPLOYED_STAGING
+    to: VALIDATED
+  - from: IMPLEMENTED_NOT_VALIDATED
+    to: IN_PROGRESS
+  - from: IN_PROGRESS
+    to: NOT_STARTED
+  - from: VALIDATED
+    to: IMPLEMENTED_NOT_VALIDATED
+  proposal_targets:
+  - IN_PROGRESS
+  - IMPLEMENTED_NOT_VALIDATED
+  proposal_sources:
+  - NOT_STARTED
+  - IN_PROGRESS
+  proposal_verification_status: NOT_EXECUTED
+  scope_transitions:
+  - from: DEFERRED_POST_MVP
+    to: IN_PROGRESS
+    kind: POST_MVP_ACTIVATION
+  - from: DEFERRED_POST_MVP
+    to: OUT_OF_SCOPE
+    kind: SCOPE_CHANGE
+  - from: IN_PROGRESS
+    to: DEFERRED_POST_MVP
+    kind: DEFERRAL
+  - from: IN_PROGRESS
+    to: OUT_OF_SCOPE
+    kind: SCOPE_CHANGE
+  - from: NOT_STARTED
+    to: DEFERRED_POST_MVP
+    kind: DEFERRAL
+  - from: NOT_STARTED
+    to: OUT_OF_SCOPE
+    kind: SCOPE_CHANGE
+  - from: OUT_OF_SCOPE
+    to: DEFERRED_POST_MVP
+    kind: SCOPE_CHANGE
+  - from: OUT_OF_SCOPE
+    to: IN_PROGRESS
+    kind: SCOPE_CHANGE
+  - from: OUT_OF_SCOPE
+    to: NOT_STARTED
+    kind: SCOPE_CHANGE
+  deployment_transition_pairs_in_offline_grammar: true
+  implementation_transitions_involving_deployed_statuses: BLOCKED_PENDING_TYPED_GATES
+  forward_validated_promotion_requires_verification: PASS
+  forward_deployment_promotion_requires_verification: PASS
+  verification_only_transition_does_not_change_implementation: true
+  verification_pass_requires_implementation_status:
+  - VALIDATED
+  - DEPLOYED_STAGING
+  - DEPLOYED_PRODUCTION
+  scope_verification_status_coupling:
+    DEFERRED_POST_MVP: NOT_EXECUTED
+    OUT_OF_SCOPE: NOT_APPLICABLE
+    OUT_OF_SCOPE_EXIT: NOT_EXECUTED
+  verification_only_transition_matrix:
+  - from: FAIL
+    to: NOT_EXECUTED
+    kind: EXPIRY
+  - from: FAIL
+    to: PARTIAL
+    kind: VERIFICATION_RESULT
+  - from: FAIL
+    to: PASS
+    kind: VERIFICATION_RESULT
+  - from: NOT_EXECUTED
+    to: FAIL
+    kind: VERIFICATION_RESULT
+  - from: NOT_EXECUTED
+    to: PARTIAL
+    kind: VERIFICATION_RESULT
+  - from: PARTIAL
+    to: FAIL
+    kind: VERIFICATION_RESULT
+  - from: PARTIAL
+    to: NOT_EXECUTED
+    kind: EXPIRY
+  - from: PARTIAL
+    to: PASS
+    kind: VERIFICATION_RESULT
+  - from: PASS
+    to: FAIL
+    kind: REGRESSION
+  - from: PASS
+    to: NOT_EXECUTED
+    kind: EXPIRY
+  - from: PASS
+    to: PARTIAL
+    kind: REGRESSION
+demotion:
+  human_approval_required: true
+  preserved_verification_requires_rollback_decision: true
+  pass_to_partial_or_fail_requires_regression: true
+  ordinary_verification_reset_to_not_executed_requires_expiry: true
+  scope_exit_reset_to_not_executed_requires_scope_decision: true
+  effective_history_is_append_only: true
+authority:
+  all_apply_requests_require_pr: true
+  all_apply_requests_require_distinct_human_approver: true
+  authoritative_live_apply: BLOCKED_PENDING_GOVERNANCE
+  currently_executable_live_apply_transitions: []
+  live_apply_activation_requires:
+  - ST-0006
+  - ST-0107
+  deployment_apply_activation_additionally_requires:
+  - ST-1505
+  - ST-1506
+  - ST-1607
+  human_requester_required_for:
+  - DEPLOYED_PRODUCTION
+  - VALIDATED
+  scope_transition_requires_human_requester: true
+  scope_transition_requires_pr: true
+  scope_transition_requires_distinct_human_approver: true
+  scope_transition_requires_separate_scope_authority_artifact: true
+  automation_cannot_approve: true
+  requester_cannot_self_approve: true
+  production_governance_artifacts:
+  - release_decision
+  - gate_report
+  - security_approval
+  - operations_approval
+  production_governance_artifacts_must_be_distinct: true
+proposal:
+  changes_effective_status: false
+  governance_fields: FORBIDDEN
+  implementation_sources:
+  - NOT_STARTED
+  - IN_PROGRESS
+  implementation_targets:
+  - IN_PROGRESS
+  - IMPLEMENTED_NOT_VALIDATED
+  verification_status: NOT_EXECUTED
+verification:
+  verification_only_transitions_preserve_implementation_status: true
+  evidence_coverage:
+    PASS: EXACT_REQUIRED_SUITE_SET
+    PARTIAL: NONEMPTY_REQUIRED_SUITE_SUBSET
+    FAIL: NONEMPTY_REQUIRED_SUITE_SUBSET
+    REGRESSION: NONEMPTY_REQUIRED_SUITE_SUBSET
+    EXPIRY: NONEMPTY_REQUIRED_SUITE_SUBSET
+    DEMOTION: NONEMPTY_REQUIRED_SUITE_SUBSET
+  aggregate_result_contract:
+    PASS: ALL_REQUIRED_SUITES_PASS
+    PARTIAL: NO_FAIL_AND_INCOMPLETE_OR_AT_LEAST_ONE_PARTIAL
+    FAIL: AT_LEAST_ONE_FAIL
+history:
+  request_and_evidence_sources: APPEND_ONLY
+  existing_source_modify_delete_rename: FORBIDDEN_BY_BASE_OWNED_PR_WORKFLOW
+  append_only_modify_delete_rename_enforcement: BASE_OWNED_PR_WORKFLOW
+  correction_method: NEW_EVIDENCE_AND_NEW_REQUEST
+  suite_evidence_uri_prefix: repo://changes/st-0005/evidence/
+  snapshot_binding_fields:
+  - story_id
+  - evidence_class
+  - suite_id
+  - environment
+  - result
+  - recorded_at
+  - formal_suite_status
+  snapshot_content_addressed_capture_path_and_sha: REQUIRED
+  content_addressed_capture_digest_uniqueness: ONE_FILE_PER_SHA256
+  status_evidence_atomic_identity_fields:
+  - story_id
+  - suite_id
+  - evidence_class
+  - source_capture_sha256
+  apply_status_evidence_atomic_identity_single_use: true
+  apply_evidence_identity_scopes:
+    status: STORY_SUITE_CLASS_CAPTURE
+    pull_request_uri: GLOBAL
+    pull_request_changeset: GLOBAL
+    approval_artifact: GLOBAL
+    production_governance_artifact: STORY_GOVERNANCE_ROLE_AND_ARTIFACT_SHA256
+    scope_decision_artifact: STORY_AND_ARTIFACT_SHA256
+  new_live_snapshot_original_path_and_sha: REQUIRED
+  offline_replay_uses_committed_capture: true
+  apply_status_evidence_must_postdate_active_observation: true
+  apply_status_evidence_must_postdate_latest_applied_approval: true
+  apply_evidence_valid_through_approval_decision: true
+  expires_at_strictly_after_observed_at: true
+  approval_decided_at_not_before_requested_at: true
+  apply_requested_at_not_before_prior_approval_decision: true
+  pull_request_uri_single_use: true
+  approval_artifact_single_use: true
+  production_governance_identity_scope: STORY_GOVERNANCE_ROLE_AND_ARTIFACT_SHA256
+  scope_decision_identity_scope: STORY_AND_ARTIFACT_SHA256
+  production_and_scope_artifact_cross_story_reuse: ALLOWED
+  scope_decision_separate_from_approval: true
+  expiry_invalidates_evidence: EXACT_ACTIVE_SET
+  expiry_requested_at_and_observed_at_must_be_at_or_after_active_valid_until: true
+  unreferenced_snapshot: REJECT
+  requested_observed_expires_decided_timestamps: STRICT_UTC_RFC3339
+  explicit_null_temporal_or_governance_fields: REJECT
+  change_pr_scope_evidence_postdating_request: REJECT
+  approval_or_production_evidence_postdating_decision: REJECT
+  evidence_expired_at_request_approval_or_live_reference: REJECT
+  offline_replay_wall_clock_independent: true
+  live_future_request_observation_or_decision_timestamps: REJECT
+evidence_classes:
+  CHANGE_PLAN:
+    environment_contract: LOCAL
+    allowed_results:
+    - PLANNED
+    formal_suite_status_contract: NOT_EXECUTED
+  LOCAL_IMPLEMENTATION:
+    environment_contract: LOCAL
+    allowed_results:
+    - LOCAL_PASS
+    formal_suite_status_contract: NOT_EXECUTED
+  PR_CHANGESET:
+    environment_contract: CI
+    allowed_results:
+    - PR_REVIEWED
+    formal_suite_status_contract: NOT_EXECUTED
+  RUNTIME_SUITE_RESULT:
+    environment_contract: EACH_SUITE_CANONICAL_ENVIRONMENT
+    allowed_results_by_target_verification:
+      PASS:
+      - PASS
+      PARTIAL:
+      - PASS
+      - PARTIAL
+      FAIL:
+      - FAIL
+    formal_suite_status_contract: EQUALS_TARGET_VERIFICATION
+  STAGING_DEPLOYMENT:
+    environment_contract: STAGING
+    allowed_results:
+    - DEPLOYED
+    formal_suite_status_contract: PASS
+  PRODUCTION_RELEASE:
+    environment_contract: PRODUCTION
+    allowed_results:
+    - RELEASED
+    formal_suite_status_contract: PASS
+  REGRESSION:
+    environment_contract: EACH_SUITE_CANONICAL_ENVIRONMENT
+    allowed_results_by_target_verification:
+      PARTIAL:
+      - PARTIAL
+      FAIL:
+      - FAIL
+    formal_suite_status_contract: EQUALS_TARGET_VERIFICATION
+  EXPIRY:
+    environment_contract: EACH_SUITE_CANONICAL_ENVIRONMENT
+    allowed_results:
+    - EXPIRED
+    formal_suite_status_contract: NOT_EXECUTED
+  ROLLBACK_DECISION:
+    environment_contract: EACH_SUITE_CANONICAL_ENVIRONMENT
+    allowed_results:
+    - ROLLBACK_APPROVED
+    formal_suite_status_contract: NOT_EXECUTED
+  SCOPE_DECISION:
+    environment_contract: LOCAL
+    allowed_results:
+    - SCOPE_APPROVED
+    formal_suite_status_contract: NOT_EXECUTED

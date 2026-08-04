@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/release-approval/v1",
+  "title": "Release Approval",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "display_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "release_decision_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "CANARY",
+        "ACTIVE"
+      ]
+    },
+    "decision_manifest_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "primary_approver_principal_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "primary_approver_role": {
+      "type": "string",
+      "const": "APPROVER"
+    },
+    "second_approver_principal_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "second_approver_role": {
+      "type": "string",
+      "const": "OWNER"
+    },
+    "approval_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "approval_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "display_id",
+    "release_decision_id",
+    "phase",
+    "decision_manifest_sha256",
+    "primary_approver_principal_id",
+    "primary_approver_role",
+    "second_approver_principal_id",
+    "second_approver_role",
+    "approval_artifact_id",
+    "approval_sha256",
+    "signed_at",
+    "created_at"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "description": "Append-only, phase-specific human approval evidence. Principal identifiers and signed approval artifacts are CONFIDENTIAL and must never be projected to public or lifecycle event payloads.",
+  "x-raos-append-only": true,
+  "x-raos-human-only": true,
+  "x-raos-constraints": [
+    "primary_and_second_principals_must_be_distinct",
+    "prompt_author_cannot_be_primary_or_second_approver",
+    "ai_and_worker_principals_are_forbidden",
+    "manifest_and_approval_artifact_hashes_are_immutable",
+    "active_phase_manifest_artifact_and_hash_must_differ_from_canary_phase"
+  ]
+}

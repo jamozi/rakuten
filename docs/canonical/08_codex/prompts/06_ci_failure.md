@@ -1,0 +1,1 @@
+Diagnose the failing CI check. Do not delete/skip the test, loosen a threshold, or add blind retries merely to make it green. Reproduce locally, classify product defect vs flaky environment vs outdated contract, fix the root cause, and report any test still not executed.

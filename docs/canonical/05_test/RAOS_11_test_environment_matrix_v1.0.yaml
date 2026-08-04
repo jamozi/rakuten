@@ -1,0 +1,40 @@
+document:
+  id: RAOS-TEST-ENV-001
+  version: '1.0'
+environments:
+- id: ENV-DEV
+  purpose: 個人/Local開発
+  data: synthetic only
+  external: mock/recorded
+  production_data: false
+  status: NOT_CONFIGURED
+- id: ENV-CI
+  purpose: PRごとの再現可能Test
+  data: versioned synthetic/recorded fixtures
+  external: network deny by default
+  production_data: false
+  status: NOT_CONFIGURED
+- id: ENV-INTEGRATION
+  purpose: PostgreSQL/queue/objectの統合
+  data: synthetic
+  external: local emulators
+  production_data: false
+  status: NOT_CONFIGURED
+- id: ENV-STAGING
+  purpose: Production-like E2E/Live bounded provider
+  data: synthetic or approved anonymized
+  external: dedicated test credentials
+  production_data: false
+  status: NOT_CONFIGURED
+- id: ENV-RECOVERY
+  purpose: Backup restore/forensic drill
+  data: encrypted copied or synthetic per approval
+  external: isolated
+  production_data: only when explicitly approved
+  status: NOT_CONFIGURED
+- id: ENV-PRODUCTION
+  purpose: 実運用
+  data: production
+  external: production credentials
+  production_data: true
+  status: NOT_CONFIGURED

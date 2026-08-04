@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/freshness-run-refresh-batch-v1.schema.json",
+  "title": "freshness.run_refresh_batch.v1",
+  "description": "Freshness Policyに従い対象をbatch更新する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "freshness.run_refresh_batch.v1"
+        },
+        "queue": {
+          "const": "freshness"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "run_type": {
+              "type": "string"
+            },
+            "scope_type": {
+              "type": "string"
+            },
+            "scope_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "field_allowlist": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "max_targets": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            }
+          },
+          "required": [
+            "site_id",
+            "run_type",
+            "scope_type",
+            "scope_id"
+          ]
+        }
+      }
+    }
+  ]
+}

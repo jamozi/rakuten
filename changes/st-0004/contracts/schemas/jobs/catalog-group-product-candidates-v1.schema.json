@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/catalog-group-product-candidates-v1.schema.json",
+  "title": "catalog.group_product_candidates.v1",
+  "description": "候補をCanonical Productへ提案Groupingする。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "catalog.group_product_candidates.v1"
+        },
+        "queue": {
+          "const": "ingestion"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "category_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "candidate_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "minItems": 1,
+              "maxItems": 1000
+            },
+            "rule_version": {
+              "type": "string"
+            },
+            "auto_accept_threshold": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "category_id",
+            "candidate_ids",
+            "rule_version"
+          ]
+        }
+      }
+    }
+  ]
+}

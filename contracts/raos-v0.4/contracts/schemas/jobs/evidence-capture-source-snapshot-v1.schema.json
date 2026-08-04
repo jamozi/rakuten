@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/evidence-capture-source-snapshot-v1.schema.json",
+  "title": "evidence.capture_source_snapshot.v1",
+  "description": "Allowlistされた一次Sourceを安全に取得しSnapshot化する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "evidence.capture_source_snapshot.v1"
+        },
+        "queue": {
+          "const": "ingestion"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "external_reference": {
+              "type": "string"
+            },
+            "effective_at": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "expires_at": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "capture_policy_version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source_id",
+            "external_reference",
+            "capture_policy_version"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,252 @@
+{
+  "boundary": {
+    "checkpoint_execution": "DISABLED",
+    "effective_canonical_status": "UNCHANGED",
+    "environment": "LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE",
+    "formal_tst_008": "NOT_EXECUTED",
+    "formal_tst_009": "NOT_EXECUTED",
+    "foundation_schema_wave": "DEFERRED_TO_ST_0302",
+    "independent_migration_owner_review": "NOT_EXECUTED",
+    "production_execution": "FORBIDDEN",
+    "staging_or_recovery_execution": "NOT_IMPLEMENTED"
+  },
+  "catalog_sha256": "fd18e0b5d6a99fd9e5be28e8d2499df64f494deec90319a4a4d4bb9310e1cb46",
+  "deferred_checkpoints": {
+    "entries": [
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0002/database/202607300001_job_state_expand.sql",
+        "phase": "EXPAND",
+        "repeatable": false,
+        "revision": "202607300001",
+        "sha256": "6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31",
+        "story_id": "ST-0002"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0002/database/202607300002_job_state_expand_validate.sql",
+        "phase": "EXPAND_VALIDATE",
+        "repeatable": false,
+        "revision": "202607300002",
+        "sha256": "50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95",
+        "story_id": "ST-0002"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0002/database/202607300003_job_state_migrate_batch.sql",
+        "phase": "MIGRATE_BATCH",
+        "repeatable": true,
+        "revision": "202607300003",
+        "sha256": "4b6508b8c5a082695b1c4c48365c5932b51e3a6ca9a93c83ec599cd6aa7b1eb8",
+        "story_id": "ST-0002"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0002/database/202607300004_job_state_contract_prepare.sql",
+        "phase": "CONTRACT_PREPARE",
+        "repeatable": false,
+        "revision": "202607300004",
+        "sha256": "6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779",
+        "story_id": "ST-0002"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0002/database/202607300005_job_state_contract.sql",
+        "phase": "CONTRACT",
+        "repeatable": false,
+        "revision": "202607300005",
+        "sha256": "9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897",
+        "story_id": "ST-0002"
+      },
+      {
+        "direction": "DOWNGRADE",
+        "path": "changes/st-0002/database/202607300006_job_state_guarded_downgrade.sql",
+        "phase": "GUARDED_DOWNGRADE",
+        "repeatable": false,
+        "revision": "202607300006",
+        "sha256": "3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab",
+        "story_id": "ST-0002"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0003/database/202607300007_ai_governance_expand.sql",
+        "phase": "EXPAND",
+        "repeatable": false,
+        "revision": "202607300007",
+        "sha256": "a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064",
+        "story_id": "ST-0003"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0003/database/202607300008_ai_governance_expand_validate.sql",
+        "phase": "EXPAND_VALIDATE",
+        "repeatable": false,
+        "revision": "202607300008",
+        "sha256": "9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978",
+        "story_id": "ST-0003"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0003/database/202607300009_ai_governance_migrate_batch.sql",
+        "phase": "MIGRATE_BATCH",
+        "repeatable": true,
+        "revision": "202607300009",
+        "sha256": "30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a",
+        "story_id": "ST-0003"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0003/database/202607300010_ai_governance_contract_prepare.sql",
+        "phase": "CONTRACT_PREPARE",
+        "repeatable": false,
+        "revision": "202607300010",
+        "sha256": "380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25",
+        "story_id": "ST-0003"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0003/database/202607300011_ai_governance_contract.sql",
+        "phase": "CONTRACT",
+        "repeatable": false,
+        "revision": "202607300011",
+        "sha256": "8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da",
+        "story_id": "ST-0003"
+      },
+      {
+        "direction": "DOWNGRADE",
+        "path": "changes/st-0003/database/202607300012_ai_governance_guarded_downgrade.sql",
+        "phase": "GUARDED_DOWNGRADE",
+        "repeatable": false,
+        "revision": "202607300012",
+        "sha256": "dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba",
+        "story_id": "ST-0003"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0004/database/202607300013_content_expand.sql",
+        "phase": "EXPAND",
+        "repeatable": false,
+        "revision": "202607300013",
+        "sha256": "cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e",
+        "story_id": "ST-0004"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0004/database/202607300014_content_expand_validate.sql",
+        "phase": "EXPAND_VALIDATE",
+        "repeatable": false,
+        "revision": "202607300014",
+        "sha256": "16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704",
+        "story_id": "ST-0004"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0004/database/202607300015_content_migrate_batch.sql",
+        "phase": "MIGRATE_BATCH",
+        "repeatable": true,
+        "revision": "202607300015",
+        "sha256": "271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c",
+        "story_id": "ST-0004"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0004/database/202607300016_content_contract_prepare.sql",
+        "phase": "CONTRACT_PREPARE",
+        "repeatable": false,
+        "revision": "202607300016",
+        "sha256": "b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968",
+        "story_id": "ST-0004"
+      },
+      {
+        "direction": "UPGRADE",
+        "path": "changes/st-0004/database/202607300017_content_contract.sql",
+        "phase": "CONTRACT",
+        "repeatable": false,
+        "revision": "202607300017",
+        "sha256": "c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845",
+        "story_id": "ST-0004"
+      },
+      {
+        "direction": "DOWNGRADE",
+        "path": "changes/st-0004/database/202607300018_content_guarded_downgrade.sql",
+        "phase": "GUARDED_DOWNGRADE",
+        "repeatable": false,
+        "revision": "202607300018",
+        "sha256": "005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381",
+        "story_id": "ST-0004"
+      }
+    ],
+    "execution": "DISABLED",
+    "forward_plan": [
+      "202607300001",
+      "202607300002",
+      "202607300003",
+      "202607300004",
+      "202607300005",
+      "202607300007",
+      "202607300008",
+      "202607300009",
+      "202607300010",
+      "202607300011",
+      "202607300013",
+      "202607300014",
+      "202607300015",
+      "202607300016",
+      "202607300017"
+    ],
+    "guarded_reverse_plan": [
+      "202607300018",
+      "202607300012",
+      "202607300006"
+    ],
+    "verification_order": [
+      "202607300001",
+      "202607300002",
+      "202607300003",
+      "202607300004",
+      "202607300005",
+      "202607300006",
+      "202607300007",
+      "202607300008",
+      "202607300009",
+      "202607300010",
+      "202607300011",
+      "202607300012",
+      "202607300013",
+      "202607300014",
+      "202607300015",
+      "202607300016",
+      "202607300017",
+      "202607300018"
+    ]
+  },
+  "document": {
+    "formal_verification": "NOT_EXECUTED",
+    "id": "RAOS-MIGRATION-CATALOG-001",
+    "story_id": "ST-0301",
+    "version": "1.0.0"
+  },
+  "revision_graph": {
+    "anchor": "202608030001",
+    "base": null,
+    "head": "202608030001",
+    "linear_single_head": true,
+    "revisions": [
+      {
+        "down_revision": null,
+        "path": "migrations/versions/202608030001_framework_install_history.py",
+        "revision": "202608030001",
+        "runner_version": "1.0.0",
+        "server_version_num": 180004,
+        "sha256": "edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3",
+        "story_id": "ST-0301"
+      }
+    ]
+  },
+  "runtime_sources": [
+    {
+      "path": "migrations/env.py",
+      "sha256": "6cccc4dc9d4f12edd963fe9ac35b69c5553c654152ca205db6ce251b39290701"
+    }
+  ]
+}

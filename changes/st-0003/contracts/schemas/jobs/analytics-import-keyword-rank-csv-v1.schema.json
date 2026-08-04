@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/analytics-import-keyword-rank-csv-v1.schema.json",
+  "title": "analytics.import_keyword_rank_csv.v1",
+  "description": "許諾済み順位CSVをCanonical Observationへ取込する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "analytics.import_keyword_rank_csv.v1"
+        },
+        "queue": {
+          "const": "analytics"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_artifact_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "parser_version": {
+              "type": "string"
+            },
+            "date_from": {
+              "type": "string",
+              "format": "date"
+            },
+            "date_to": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "required": [
+            "site_id",
+            "source_artifact_id",
+            "parser_version",
+            "date_from",
+            "date_to"
+          ]
+        }
+      }
+    }
+  ]
+}

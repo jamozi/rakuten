@@ -1,0 +1,1 @@
+Implement only story {{STORY_ID}} from the canonical backlog. Read AGENTS.md and the story's dependencies/design refs. Provide the six-point preflight before edits. Use an ExecPlan when required. Add tests mapped to suite IDs. Do not mark runtime validation complete without artifacts. End with implemented, validated, not executed, blocked, and status changes.

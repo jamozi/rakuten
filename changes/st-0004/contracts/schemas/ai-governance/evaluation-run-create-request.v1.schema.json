@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/evaluation-run-create-request/v1",
+  "title": "Evaluation Run Create Request",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "suite_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "dataset_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "baseline_evaluation_run_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "prompt_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "model_route_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "resolved_model_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "output_schema_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "policy_bundle_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "code_git_sha": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{40,64}$"
+    }
+  },
+  "required": [
+    "suite_id",
+    "dataset_version_id",
+    "prompt_version_id",
+    "model_route_version_id",
+    "resolved_model_id",
+    "output_schema_version_id",
+    "policy_bundle_version_id",
+    "code_git_sha"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "x-raos-baseline-evaluation-run-invariants": {
+    "field": "baseline_evaluation_run_id",
+    "nullable": true,
+    "create_request": "OPTIONAL",
+    "read_detail_event": "PRESENT_NULLABLE",
+    "immutability": "IMMUTABLE_AFTER_INSERT",
+    "referenced_run": {
+      "must_be_distinct_from_candidate": true,
+      "required_status": "COMPLETED",
+      "exact_match_fields": [
+        "suite_id",
+        "dataset_version_id"
+      ]
+    },
+    "release_binding": {
+      "current_champion": {
+        "task_scope": "SAME_TASK_DEFINITION",
+        "release_status": "APPROVED_ACTIVE",
+        "component_status_filter": "NONE",
+        "selection": "LATEST_APPROVED_ACTIVE",
+        "ordering": [
+          {
+            "field": "ACTIVE_RELEASE_APPROVAL.signed_at",
+            "direction": "DESC"
+          },
+          {
+            "field": "ReleaseDecisionV1.id",
+            "direction": "DESC"
+          }
+        ]
+      },
+      "when_current_champion_exists": {
+        "required_non_null": true,
+        "baseline_kind": "CURRENT_CHAMPION_COMPONENT_RERUN_ON_CANDIDATE_SUITE_DATASET",
+        "required_status": "COMPLETED",
+        "must_be_distinct_from_candidate": true,
+        "candidate_exact_match_fields": [
+          "suite_id",
+          "dataset_version_id"
+        ],
+        "current_champion_exact_component_bindings": [
+          "prompt_version_id",
+          "model_route_version_id",
+          "output_schema_version_id",
+          "resolved_model_id",
+          "policy_bundle_version_id",
+          "code_git_sha"
+        ]
+      },
+      "when_no_current_champion_exists": {
+        "condition": "NO_CURRENT_APPROVED_ACTIVE_CHAMPION",
+        "must_be_null": true
+      }
+    }
+  },
+  "x-raos-required-split-coverage-invariants": {
+    "required_splits_source": "EvaluationSuiteV1.suite_config.required_splits",
+    "required_splits": [
+      "DEV",
+      "CALIBRATION",
+      "HOLDOUT",
+      "ADVERSARIAL",
+      "REGRESSION"
+    ],
+    "bound_dataset": "EvaluationRunV1.dataset_version_id",
+    "case_split_field": "EvaluationCaseV1.split",
+    "minimum_case_count_per_required_split": 1,
+    "enforced_at": [
+      "DATASET_LOCK_OR_ACTIVATION",
+      "EVALUATION_RUN_CREATION",
+      "EVALUATION_RUN_COMPLETION"
+    ],
+    "missing_required_split_case": "BLOCKING"
+  }
+}

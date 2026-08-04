@@ -1,0 +1,1012 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/release-decision/v1",
+  "title": "Release Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "display_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "prompt_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "model_route_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "resolved_model_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "policy_bundle_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "dataset_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "output_schema_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "evaluation_run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "judge_calibration_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "code_git_sha": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{40,64}$"
+    },
+    "release_scope": {
+      "type": "string",
+      "enum": [
+        "SHADOW",
+        "CANARY",
+        "ACTIVE"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "READY_FOR_REVIEW",
+        "APPROVED_CANARY",
+        "APPROVED_ACTIVE",
+        "REJECTED",
+        "REVOKED"
+      ]
+    },
+    "maximum_canary_percent": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "decision_manifest_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "rollback_release_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "rollback_strategy": {
+      "type": "string",
+      "enum": [
+        "PREVIOUS_RELEASE",
+        "DISABLE_ROUTE"
+      ]
+    },
+    "rollback_runbook_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "rollback_runbook_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canary_monitoring_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "canary_monitoring_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canary_evidence_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "canary_evidence_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canary_started_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "canary_completed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "canary_started_txid": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "canary_completed_txid": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "canary_approval_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "active_approval_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "second_approver_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "approved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revoked_by_principal_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "revoked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "revocation_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lock_version": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "id",
+    "display_id",
+    "task_definition_id",
+    "prompt_version_id",
+    "model_route_version_id",
+    "resolved_model_id",
+    "policy_bundle_version_id",
+    "dataset_version_id",
+    "output_schema_version_id",
+    "evaluation_run_id",
+    "judge_calibration_id",
+    "code_git_sha",
+    "release_scope",
+    "status",
+    "maximum_canary_percent",
+    "decision_manifest_sha256",
+    "rollback_release_decision_id",
+    "rollback_strategy",
+    "rollback_runbook_artifact_id",
+    "rollback_runbook_sha256",
+    "canary_monitoring_artifact_id",
+    "canary_monitoring_sha256",
+    "canary_evidence_artifact_id",
+    "canary_evidence_sha256",
+    "canary_started_at",
+    "canary_completed_at",
+    "canary_started_txid",
+    "canary_completed_txid",
+    "canary_approval_id",
+    "active_approval_id",
+    "approved_by_principal_id",
+    "second_approver_principal_id",
+    "approved_at",
+    "revoked_by_principal_id",
+    "revoked_at",
+    "revocation_reason",
+    "created_at",
+    "updated_at",
+    "lock_version"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "description": "Hash-bound human release decision. Approval and revocation are human-authorized actions; AI output cannot perform them.",
+  "x-raos-baseline-evaluation-run-invariants": {
+    "field": "baseline_evaluation_run_id",
+    "nullable": true,
+    "create_request": "OPTIONAL",
+    "read_detail_event": "PRESENT_NULLABLE",
+    "immutability": "IMMUTABLE_AFTER_INSERT",
+    "referenced_run": {
+      "must_be_distinct_from_candidate": true,
+      "required_status": "COMPLETED",
+      "exact_match_fields": [
+        "suite_id",
+        "dataset_version_id"
+      ]
+    },
+    "release_binding": {
+      "current_champion": {
+        "task_scope": "SAME_TASK_DEFINITION",
+        "release_status": "APPROVED_ACTIVE",
+        "component_status_filter": "NONE",
+        "selection": "LATEST_APPROVED_ACTIVE",
+        "ordering": [
+          {
+            "field": "ACTIVE_RELEASE_APPROVAL.signed_at",
+            "direction": "DESC"
+          },
+          {
+            "field": "ReleaseDecisionV1.id",
+            "direction": "DESC"
+          }
+        ]
+      },
+      "when_current_champion_exists": {
+        "required_non_null": true,
+        "baseline_kind": "CURRENT_CHAMPION_COMPONENT_RERUN_ON_CANDIDATE_SUITE_DATASET",
+        "required_status": "COMPLETED",
+        "must_be_distinct_from_candidate": true,
+        "candidate_exact_match_fields": [
+          "suite_id",
+          "dataset_version_id"
+        ],
+        "current_champion_exact_component_bindings": [
+          "prompt_version_id",
+          "model_route_version_id",
+          "output_schema_version_id",
+          "resolved_model_id",
+          "policy_bundle_version_id",
+          "code_git_sha"
+        ]
+      },
+      "when_no_current_champion_exists": {
+        "condition": "NO_CURRENT_APPROVED_ACTIVE_CHAMPION",
+        "must_be_null": true
+      }
+    }
+  },
+  "x-raos-release-regression-invariants": {
+    "candidate_baseline_field": "EvaluationRunV1.baseline_evaluation_run_id",
+    "baseline_source": "PERSISTED_DATABASE_ROWS",
+    "pairing": {
+      "case_scope": "REGRESSION",
+      "required_exact_bindings": [
+        "evaluation_case_id",
+        "metric_code",
+        "grader_code",
+        "threshold_operator",
+        "threshold_value",
+        "judge_calibration_id",
+        "judge_route_version_id",
+        "judge_prompt_version_id",
+        "judge_rubric_artifact_id",
+        "judge_resolved_model_id",
+        "judge_grader_version"
+      ],
+      "missing_or_incomparable_pair": "RELEASE_BLOCKING"
+    },
+    "comparison_scopes": {
+      "split": "REGRESSION",
+      "overall": "REQUIRED",
+      "category": {
+        "source": "EvaluationCaseV1.category",
+        "scope": "EACH_DISTINCT_CATEGORY_PRESENT_IN_REGRESSION",
+        "required": true
+      },
+      "scope_local_aggregation": {
+        "ratio_metrics": {
+          "expression": "SUM_NUMERATOR_DIVIDED_BY_SUM_DENOMINATOR",
+          "forbid_unweighted_average_of_case_ratios": true
+        },
+        "p95_metrics": {
+          "metric_codes": [
+            "latency_p95_ms",
+            "cost_jpy_p95"
+          ],
+          "expression": "PERCENTILE_CONT_0_95_WITHIN_SCOPE",
+          "forbid_reuse_of_global_p95": true
+        },
+        "other_metrics": "AVERAGE_WITHIN_SCOPE"
+      },
+      "missing_category_comparison": "RELEASE_BLOCKING"
+    },
+    "metric_semantics": {
+      "unit_source": "ai.canonical_metric_unit(metric_code)",
+      "direction_source": "ai.canonical_metric_direction(metric_code)",
+      "margin_source": "ai.canonical_regression_margin(metric_code)",
+      "ratio_aggregation": "SUM_NUMERATOR_DIVIDED_BY_SUM_DENOMINATOR",
+      "higher_is_better": "candidate >= baseline - margin",
+      "lower_is_better": "candidate <= baseline + margin",
+      "unknown_unit_direction_or_margin": "RELEASE_BLOCKING"
+    }
+  },
+  "x-raos-statistical-evidence-artifact-invariants": {
+    "applies_to": [
+      "EvaluationRunV1.run_manifest_artifact_id",
+      "EvaluationRunDetailV1.artifact_refs.report_artifact_id"
+    ],
+    "required_when": [
+      "RUN_COMPLETED",
+      "RELEASE_EVALUATION"
+    ],
+    "blocking_aggregate_scopes": {
+      "required_splits": [
+        "HOLDOUT",
+        "ADVERSARIAL",
+        "REGRESSION"
+      ],
+      "blocking_scopes_per_split": {
+        "overall": "REQUIRED",
+        "category": {
+          "source": "EvaluationCaseV1.category",
+          "scope": "EACH_DISTINCT_CATEGORY_PRESENT_IN_SPLIT",
+          "required": true
+        }
+      },
+      "missing_scope_result": "RUN_COMPLETION_AND_RELEASE_BLOCKING",
+      "scope_local_aggregation": {
+        "ratio_metrics": {
+          "expression": "SUM_NUMERATOR_DIVIDED_BY_SUM_DENOMINATOR",
+          "forbid_unweighted_average_of_case_ratios": true
+        },
+        "p95_metrics": {
+          "metric_codes": [
+            "latency_p95_ms",
+            "cost_jpy_p95"
+          ],
+          "expression": "PERCENTILE_CONT_0_95_WITHIN_SCOPE",
+          "forbid_reuse_of_global_p95": true
+        },
+        "other_metrics": "AVERAGE_WITHIN_SCOPE"
+      },
+      "threshold_gate": {
+        "applies_to_every_blocking_scope": true,
+        "comparison": "DATABASE_EXACT_POINT_ESTIMATE"
+      },
+      "reporting_only_dimensions": [
+        "article_type",
+        "evidence_quality",
+        "language_complexity",
+        "route",
+        "model",
+        "tags",
+        "other_non_category_slices"
+      ],
+      "reporting_only_dimensions_may_satisfy_blocking_scope": false
+    },
+    "cost_latency_reporting_completeness": {
+      "required_grader": "grader.cost_latency.v1",
+      "required_metric_codes": [
+        "latency_p95_ms",
+        "cost_jpy_p95"
+      ],
+      "case_scope": "ALL_EVALUATION_CASES_IN_BOUND_DATASET",
+      "required_splits": [
+        "DEV",
+        "CALIBRATION",
+        "HOLDOUT",
+        "ADVERSARIAL",
+        "REGRESSION"
+      ],
+      "required_result_per_case_and_metric": "EXACTLY_ONE",
+      "missing_result": "RUN_COMPLETION_AND_REPORT_BLOCKING",
+      "canonical_suite_threshold_semantics": {
+        "current_frozen_canonical_suites": {
+          "threshold_defined": false,
+          "threshold_operator": "MUST_BE_NULL",
+          "threshold_value": "MUST_BE_NULL",
+          "passed": "MUST_BE_NULL",
+          "purpose": "REPORT_COMPLETENESS_ONLY"
+        },
+        "when_present_in_required_metrics": {
+          "threshold_defined": true,
+          "required_non_null": [
+            "threshold_operator",
+            "threshold_value",
+            "passed"
+          ],
+          "exact_match_source": "EvaluationSuiteV1.suite_config.required_metrics",
+          "blocking_threshold_gate": true
+        }
+      },
+      "passed_truth_table": {
+        "current_frozen_canonical_report_only_p95": "MUST_BE_NULL",
+        "required_p95": "MUST_BE_NON_NULL_DATABASE_EXACT",
+        "legacy_or_non_report_only_metric": "MUST_BE_NON_NULL_DATABASE_EXACT"
+      },
+      "aggregate_reporting": {
+        "method": "PERCENTILE_CONT_0_95_WITHIN_EACH_REPORT_SCOPE",
+        "current_frozen_canonical_suites_blocking_threshold": false,
+        "when_present_in_required_metrics_blocking_threshold": true
+      }
+    },
+    "ratio_metrics": {
+      "required_fields": [
+        "metric_code",
+        "slice_key",
+        "proportion_numerator_count",
+        "proportion_denominator_count",
+        "point_estimate",
+        "one_sided_95_percent_wilson_lower_bound"
+      ],
+      "point_estimate": "SUM_NUMERATOR_DIVIDED_BY_SUM_DENOMINATOR",
+      "uncertainty": {
+        "method": "WILSON_SCORE",
+        "sidedness": "ONE_SIDED_LOWER_BOUND",
+        "confidence_level": 0.95
+      },
+      "threshold_gate_value": "POINT_ESTIMATE",
+      "wilson_bound_is_threshold_gate": false
+    },
+    "pairwise_regression": {
+      "required_fields": [
+        "metric_code",
+        "slice_key",
+        "wins",
+        "ties",
+        "losses",
+        "task_slice_win_rate",
+        "two_sided_confidence_interval"
+      ],
+      "pairing_source": "release_regression_invariants.pairing",
+      "confidence_interval": {
+        "sidedness": "TWO_SIDED",
+        "confidence_level": 0.95,
+        "required_bounds": [
+          "lower",
+          "upper"
+        ]
+      }
+    },
+    "reporting_only_dimensions": [
+      "article_type",
+      "evidence_quality",
+      "language_complexity",
+      "route",
+      "model",
+      "tags",
+      "other_non_category_slices"
+    ],
+    "reporting_only_dimensions_are_release_gates": false
+  },
+  "x-raos-blocking-aggregate-scope-invariants": {
+    "required_splits": [
+      "HOLDOUT",
+      "ADVERSARIAL",
+      "REGRESSION"
+    ],
+    "blocking_scopes_per_split": {
+      "overall": "REQUIRED",
+      "category": {
+        "source": "EvaluationCaseV1.category",
+        "scope": "EACH_DISTINCT_CATEGORY_PRESENT_IN_SPLIT",
+        "required": true
+      }
+    },
+    "missing_scope_result": "RUN_COMPLETION_AND_RELEASE_BLOCKING",
+    "scope_local_aggregation": {
+      "ratio_metrics": {
+        "expression": "SUM_NUMERATOR_DIVIDED_BY_SUM_DENOMINATOR",
+        "forbid_unweighted_average_of_case_ratios": true
+      },
+      "p95_metrics": {
+        "metric_codes": [
+          "latency_p95_ms",
+          "cost_jpy_p95"
+        ],
+        "expression": "PERCENTILE_CONT_0_95_WITHIN_SCOPE",
+        "forbid_reuse_of_global_p95": true
+      },
+      "other_metrics": "AVERAGE_WITHIN_SCOPE"
+    },
+    "threshold_gate": {
+      "applies_to_every_blocking_scope": true,
+      "comparison": "DATABASE_EXACT_POINT_ESTIMATE"
+    },
+    "reporting_only_dimensions": [
+      "article_type",
+      "evidence_quality",
+      "language_complexity",
+      "route",
+      "model",
+      "tags",
+      "other_non_category_slices"
+    ],
+    "reporting_only_dimensions_may_satisfy_blocking_scope": false
+  },
+  "x-raos-canary-safety-invariants": {
+    "critical_task_canary": {
+      "risk_source": "AITaskDefinition.risk_level",
+      "when_risk_level": "CRITICAL",
+      "maximum_canary_percent": 1,
+      "comparison": "LESS_THAN_OR_EQUAL"
+    },
+    "same_task_concurrent_canary": {
+      "scope_field": "ReleaseDecisionV1.task_definition_id",
+      "canary_status": "APPROVED_CANARY",
+      "maximum_concurrent_decisions": 1,
+      "second_canary": "REJECT",
+      "serialization": "SAME_TASK_RELEASE_ADVISORY_LOCK"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "rollback_strategy": {
+            "const": "PREVIOUS_RELEASE"
+          }
+        },
+        "required": [
+          "rollback_strategy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "rollback_release_decision_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rollback_runbook_artifact_id": {
+            "type": "null"
+          },
+          "rollback_runbook_sha256": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "rollback_release_decision_id",
+          "rollback_runbook_artifact_id",
+          "rollback_runbook_sha256"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rollback_strategy": {
+            "const": "DISABLE_ROUTE"
+          }
+        },
+        "required": [
+          "rollback_strategy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "rollback_release_decision_id": {
+            "type": "null"
+          },
+          "rollback_runbook_artifact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rollback_runbook_sha256": {
+            "type": "string",
+            "minLength": 64,
+            "maxLength": 64,
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "rollback_release_decision_id",
+          "rollback_runbook_artifact_id",
+          "rollback_runbook_sha256"
+        ]
+      }
+    },
+    {
+      "oneOf": [
+        {
+          "properties": {
+            "canary_monitoring_artifact_id": {
+              "type": "null"
+            },
+            "canary_monitoring_sha256": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "canary_monitoring_artifact_id",
+            "canary_monitoring_sha256"
+          ]
+        },
+        {
+          "properties": {
+            "canary_monitoring_artifact_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "canary_monitoring_sha256": {
+              "type": "string",
+              "minLength": 64,
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "canary_monitoring_artifact_id",
+            "canary_monitoring_sha256"
+          ]
+        }
+      ]
+    },
+    {
+      "oneOf": [
+        {
+          "properties": {
+            "canary_evidence_artifact_id": {
+              "type": "null"
+            },
+            "canary_evidence_sha256": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "canary_evidence_artifact_id",
+            "canary_evidence_sha256"
+          ]
+        },
+        {
+          "properties": {
+            "canary_evidence_artifact_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "canary_evidence_sha256": {
+              "type": "string",
+              "minLength": 64,
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "canary_evidence_artifact_id",
+            "canary_evidence_sha256"
+          ]
+        }
+      ]
+    },
+    {
+      "if": {
+        "properties": {
+          "canary_evidence_artifact_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "canary_evidence_artifact_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "canary_completed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "canary_completed_txid": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "canary_completed_at",
+          "canary_completed_txid"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "READY_FOR_REVIEW"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "canary_approval_id": {
+            "type": "null"
+          },
+          "active_approval_id": {
+            "type": "null"
+          },
+          "approved_by_principal_id": {
+            "type": "null"
+          },
+          "second_approver_principal_id": {
+            "type": "null"
+          },
+          "approved_at": {
+            "type": "null"
+          },
+          "canary_evidence_artifact_id": {
+            "type": "null"
+          },
+          "canary_evidence_sha256": {
+            "type": "null"
+          },
+          "canary_completed_at": {
+            "type": "null"
+          },
+          "canary_completed_txid": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "canary_approval_id",
+          "active_approval_id",
+          "approved_by_principal_id",
+          "second_approver_principal_id",
+          "approved_at",
+          "canary_evidence_artifact_id",
+          "canary_evidence_sha256",
+          "canary_completed_at",
+          "canary_completed_txid"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "APPROVED_CANARY",
+              "APPROVED_ACTIVE"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "canary_monitoring_artifact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "canary_monitoring_sha256": {
+            "type": "string",
+            "minLength": 64,
+            "maxLength": 64,
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "canary_started_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "canary_started_txid": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "canary_approval_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "canary_monitoring_artifact_id",
+          "canary_monitoring_sha256",
+          "canary_started_at",
+          "canary_started_txid",
+          "canary_approval_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "APPROVED_ACTIVE"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "canary_evidence_artifact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "canary_evidence_sha256": {
+            "type": "string",
+            "minLength": 64,
+            "maxLength": 64,
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "canary_started_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "canary_completed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "canary_completed_txid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "canary_approval_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "active_approval_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "canary_evidence_artifact_id",
+          "canary_evidence_sha256",
+          "canary_started_at",
+          "canary_completed_at",
+          "canary_completed_txid",
+          "canary_approval_id",
+          "active_approval_id"
+        ]
+      }
+    }
+  ],
+  "x-raos-server-owned-fields": [
+    "canary_started_at",
+    "canary_started_txid",
+    "canary_completed_at",
+    "canary_completed_txid",
+    "canary_approval_id",
+    "active_approval_id"
+  ],
+  "x-raos-transaction-invariants": [
+    "canary_completed_txid_must_differ_from_canary_started_txid",
+    "canary_checkpoint_must_be_persisted_before_active_approval_transaction",
+    "canary_completed_txid_must_precede_active_approval_transaction"
+  ],
+  "x-raos-previous-release-rollback-target-invariants": {
+    "bound_resource": "ReleaseDecisionV1",
+    "applies_when": {
+      "rollback_strategy": "PREVIOUS_RELEASE"
+    },
+    "target_reference_field": "rollback_release_decision_id",
+    "current_champion_selection": {
+      "task_scope": "SAME_TASK_DEFINITION",
+      "release_status": "APPROVED_ACTIVE",
+      "component_status_filter": "NONE",
+      "selection": "LATEST_APPROVED_ACTIVE",
+      "ordering": [
+        {
+          "field": "ACTIVE_RELEASE_APPROVAL.signed_at",
+          "direction": "DESC"
+        },
+        {
+          "field": "ReleaseDecisionV1.id",
+          "direction": "DESC"
+        }
+      ]
+    },
+    "target_reference_exact_match": {
+      "left": "rollback_release_decision_id",
+      "operator": "==",
+      "right": "CURRENT_CHAMPION.release_decision_id"
+    },
+    "target_release_requirements": {
+      "same_task_definition": true,
+      "status": "APPROVED_ACTIVE",
+      "component_status_requirements": {
+        "task_definition_id": "ACTIVE",
+        "prompt_version_id": "ACTIVE",
+        "model_route_version_id": "ACTIVE",
+        "output_schema_version_id": "ACTIVE",
+        "resolved_model_id": "ACTIVE",
+        "policy_bundle_version_id": "ACTIVE"
+      }
+    },
+    "live_dependency_guard": {
+      "dependent_statuses": [
+        "READY_FOR_REVIEW",
+        "APPROVED_CANARY",
+        "APPROVED_ACTIVE"
+      ],
+      "target_release_revoke_forbidden": true,
+      "protected_component_fields": [
+        "task_definition_id",
+        "prompt_version_id",
+        "model_route_version_id",
+        "output_schema_version_id",
+        "resolved_model_id",
+        "policy_bundle_version_id"
+      ],
+      "protected_component_active_exit_forbidden": true,
+      "resolution_order": [
+        "REVOKE_DEPENDENT_FIRST",
+        "SELECT_DISABLE_ROUTE_WHILE_DEPENDENT_IS_DRAFT"
+      ]
+    }
+  }
+}

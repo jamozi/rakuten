@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-editorial-article-version-submitted-v1.schema.json",
+  "title": "jp.raos.editorial.article_version_submitted.v1",
+  "description": "Article VersionがHuman Reviewへ提出された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.editorial.article_version_submitted.v1"
+        },
+        "producer": {
+          "const": "editorial"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "article_version_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "article_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "submitted_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "quality_check_run_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "article_version_id",
+            "article_id",
+            "submitted_at",
+            "quality_check_run_id"
+          ]
+        }
+      }
+    }
+  ]
+}

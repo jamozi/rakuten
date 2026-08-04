@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/first-hand-experience-asset.v1.schema.json",
+  "title": "First-Hand Experience Asset",
+  "description": "Immutable artifact evidence attached to an experience record.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "experience_record_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "PHOTO",
+        "VIDEO",
+        "MEASUREMENT",
+        "LOG",
+        "PROCEDURE",
+        "OTHER"
+      ]
+    },
+    "artifact_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "experience_record_id",
+    "artifact_id",
+    "role",
+    "artifact_sha256",
+    "created_at"
+  ]
+}

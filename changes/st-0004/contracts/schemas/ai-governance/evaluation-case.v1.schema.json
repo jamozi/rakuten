@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/evaluation-case/v1",
+  "title": "Evaluation Case",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "dataset_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "case_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "split": {
+      "type": "string",
+      "enum": [
+        "BOOTSTRAP",
+        "DEV",
+        "CALIBRATION",
+        "HOLDOUT",
+        "REGRESSION",
+        "ADVERSARIAL",
+        "PRODUCTION_SAMPLE"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "input_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "gold_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "expected_disposition": {
+      "type": "string",
+      "enum": [
+        "CALL_PROVIDER_AND_PASS",
+        "CALL_PROVIDER_AND_FLAG",
+        "BLOCK_BEFORE_PROVIDER",
+        "EXPECTED_REFUSAL",
+        "EXPECTED_TERMINAL_FAILURE"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "maxItems": 100,
+      "uniqueItems": true
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "maxProperties": 100
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "dataset_version_id",
+    "case_key",
+    "task_definition_id",
+    "split",
+    "category",
+    "risk_level",
+    "input_artifact_id",
+    "gold_artifact_id",
+    "expected_disposition",
+    "tags",
+    "metadata",
+    "created_at"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "x-raos-evidence-uniqueness-invariants": {
+    "evaluation_case_input_evidence": {
+      "resource": "EvaluationCaseV1",
+      "field": "input_artifact_id",
+      "scope_fields": [
+        "dataset_version_id"
+      ],
+      "uniqueness": "UNIQUE_WITHIN_SCOPE",
+      "null_policy": "NON_NULL"
+    },
+    "evaluation_case_result_evidence": {
+      "resource": "EvaluationCaseResultV1",
+      "scope": "ALL_EVALUATION_CASE_RESULTS",
+      "independently_unique_when_non_null": [
+        "ai_attempt_id",
+        "output_artifact_id"
+      ]
+    },
+    "prohibits": [
+      "EVIDENCE_REUSE",
+      "PADDED_MINIMUM_CASE_COUNTS"
+    ]
+  },
+  "x-raos-required-split-coverage-invariants": {
+    "required_splits_source": "EvaluationSuiteV1.suite_config.required_splits",
+    "required_splits": [
+      "DEV",
+      "CALIBRATION",
+      "HOLDOUT",
+      "ADVERSARIAL",
+      "REGRESSION"
+    ],
+    "bound_dataset": "EvaluationRunV1.dataset_version_id",
+    "case_split_field": "EvaluationCaseV1.split",
+    "minimum_case_count_per_required_split": 1,
+    "enforced_at": [
+      "DATASET_LOCK_OR_ACTIVATION",
+      "EVALUATION_RUN_CREATION",
+      "EVALUATION_RUN_COMPLETION"
+    ],
+    "missing_required_split_case": "BLOCKING"
+  }
+}

@@ -1,0 +1,134 @@
+document:
+  id: RAOS-RUNTIME-CONFIG-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0204
+  source_contract: repo://changes/st-0204/contracts/runtime-config.v1.yaml
+  generated_by: repo://scripts/build_st0204_config_loader.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0204_config_loader.py
+provenance:
+  contract_uri: repo://changes/st-0204/contracts/runtime-config.v1.yaml
+  toolchain:
+    python: 3.14.6
+    pydantic: 2.13.4
+    pydantic_core: 2.46.4
+    pyyaml: 6.0.3
+    uv: 0.12.1
+  canonical_inputs:
+  - uri: repo://docs/manifest.json
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_environment_matrix_v1.0.yaml
+    sha256: 3dc59c8c951a39d2079eb82e6a3e5adde3ce1910296abf8e1a3a539107a96b68
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/08_codex/RAOS_14_codex_implementation_handbook_v1.0.md
+    sha256: 501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2
+  predecessor_manifest:
+    uri: repo://changes/st-0203/manifest.yaml
+    sha256: 2686f6f4f9c32e508353ad020fd546e7fc3a6f75a9a186af22d23125440b009c
+    story_id: ST-0203
+evidence_chain:
+  stories:
+  - ST-0201
+  - ST-0202
+  - ST-0203
+  - ST-0204
+source_artifact_count: 22
+source_artifacts:
+- uri: repo://.python-version
+  bytes: 7
+  sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+- uri: repo://pyproject.toml
+  bytes: 1095
+  sha256: 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+- uri: repo://uv.lock
+  bytes: 111431
+  sha256: dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+- uri: repo://uv.toml
+  bytes: 349
+  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+- uri: repo://changes/st-0204/contracts/runtime-config.v1.yaml
+  bytes: 5113
+  sha256: c16c3f56bbfb29f2bf242bc88963548a96c415f9319c931b74a329804d27fc02
+- uri: repo://changes/st-0204/README.md
+  bytes: 3248
+  sha256: 4940a6403abd59850ed870e48678ba258b59d393af31613780caeb7b5a1d2213
+- uri: repo://docs/execplans/ST-0204.md
+  bytes: 4396
+  sha256: db666ac42c1b58d14d8c6b1b204004b82eca500435e1b01031ec113894a61d1d
+- uri: repo://docs/worklogs/ST-0204.md
+  bytes: 5340
+  sha256: 1999438dd17e4b5619e95c1c7f0972a822c574c180b5907174ba46cdcbd98712
+- uri: repo://scripts/build_st0204_config_loader.py
+  bytes: 21540
+  sha256: b4bb422f14de3a89a15d35e23dbf2eceed3581e478ba83fc8d840920deff32f5
+- uri: repo://scripts/build_st0201_postgres_service.py
+  bytes: 36958
+  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+- uri: repo://python/raos/config/__init__.py
+  bytes: 524
+  sha256: e893d5e333ec1b4d84d74cb59a6cc4ac62672b493d5905c379ee4ebe9936c314
+- uri: repo://python/raos/config/runtime.py
+  bytes: 35671
+  sha256: 2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3
+- uri: repo://tests/st0204/conftest.py
+  bytes: 2696
+  sha256: 815b438f7281388a0412b0644065ce2499a0db07e71474cb82c346cc1c7ac516
+- uri: repo://tests/st0204/test_loader.py
+  bytes: 8689
+  sha256: 0c83946c43ff022540eade9fadf4da2277f0db6f5f2be6e30dc720ffddc387ad
+- uri: repo://tests/st0204/test_negative_cases.py
+  bytes: 10016
+  sha256: e773de7d9fdeb178cfdb87f8ea285a87365ee4b36cfaf9d302c9440f9497b138
+- uri: repo://tests/st0204/test_privacy.py
+  bytes: 20004
+  sha256: 6be2153a471974f353afd99f21a8facded33a1511f7ac24cd633bf62ac53d03c
+- uri: repo://tests/st0204/test_contract.py
+  bytes: 8913
+  sha256: 9b08c0020aa6a83b9834348a093323a06cb4fde4b72587393640f356dfc9c367
+- uri: repo://tests/st0204/test_generation.py
+  bytes: 9196
+  sha256: 8d0986edb94818b94d6c5f1335a387a9f6698422638e30bf0906a7bca5039c2c
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 18954
+  sha256: e47cdfe44e6000259b4b0d3ef2c5cb62d0e60176b156ae458dc7771eeceaa22d
+- uri: repo://Makefile
+  bytes: 21790
+  sha256: 768f04b316e6ac624108f65277ff2c7aa6850cb26e96177e598d5a7dd316ee97
+- uri: repo://README.md
+  bytes: 42480
+  sha256: 38b0667f2b6ea85697f1a640f8d98469f91fbef2c088d104c78878998d6bba8f
+- uri: repo://changes/st-0203/manifest.yaml
+  bytes: 5785
+  sha256: 2686f6f4f9c32e508353ad020fd546e7fc3a6f75a9a186af22d23125440b009c
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0204/generated/runtime-config.v1.schema.json
+  bytes: 2035
+  sha256: 5633b01e4f660a048e57ca4501a6a7e66f4aeca8412ff36f8644e68d4e04006e
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  environment: LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE
+  production_secret_resolution: NOT_IMPLEMENTED
+  secret_manager_adapter: NOT_IMPLEMENTED
+  workload_identity: NOT_IMPLEMENTED
+  rotation_hooks: NOT_IMPLEMENTED
+  browser_or_client_config: NOT_IMPLEMENTED
+  dotenv_loading: FORBIDDEN
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+  security_owner_review: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

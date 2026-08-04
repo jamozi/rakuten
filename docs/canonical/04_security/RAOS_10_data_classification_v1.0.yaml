@@ -1,0 +1,40 @@
+document:
+  id: RAOS-SEC-DATA-001
+  version: '1.0'
+classes:
+- code: PUBLIC
+  description: 意図的に一般公開する情報
+  examples:
+  - 公開記事
+  - 公開Policy
+  - 公開商品比較
+  storage: Public read model/CDN可
+  logging: 可。ただしURL query等のSecret禁止
+- code: INTERNAL
+  description: 運営内部だが漏えい影響が限定的
+  examples:
+  - 記事Plan
+  - 非機密設定
+  - Job metadata
+  storage: 認証済みAdmin/API
+  logging: ID/状態は可、本文は原則不可
+- code: CONFIDENTIAL
+  description: 事業・契約・監査上保護が必要
+  examples:
+  - 未公開記事
+  - 成果・費用
+  - AI Prompt/Output
+  - Provider raw responses
+  storage: 暗号化、最小権限、Public禁止
+  logging: Hash/IDのみ
+- code: RESTRICTED
+  description: 漏えい時の影響が重大
+  examples:
+  - API key
+  - OIDC secret
+  - AWS credential
+  - Break-glass token
+  - 個人識別性の高いSecurity log
+  storage: Secrets Manager/HSM相当、直接DB禁止
+  logging: 禁止
+default: CONFIDENTIAL when uncertain

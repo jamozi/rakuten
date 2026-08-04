@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-freshness-refresh-completed-v1.schema.json",
+  "title": "jp.raos.freshness.refresh_completed.v1",
+  "description": "Refresh Batchが完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.freshness.refresh_completed.v1"
+        },
+        "producer": {
+          "const": "freshness"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "refresh_run_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "status": {
+              "type": "string"
+            },
+            "target_count": {
+              "type": "integer"
+            },
+            "success_count": {
+              "type": "integer"
+            },
+            "failure_count": {
+              "type": "integer"
+            },
+            "report_artifact": {
+              "anyOf": [
+                {
+                  "$ref": "../common/artifact-ref.schema.json"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "refresh_run_id",
+            "status",
+            "target_count",
+            "success_count",
+            "failure_count"
+          ]
+        }
+      }
+    }
+  ]
+}

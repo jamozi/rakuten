@@ -1,0 +1,454 @@
+document:
+  id: RAOS-TEST-SUITES-001
+  version: '1.0'
+suites:
+- id: TST-001
+  name: Repository static checks
+  layer: static
+  purpose: format/lint/type/schema/file policy
+  candidate_tools:
+  - ruff
+  - mypy/pyright
+  - eslint
+  - tsc
+  - custom validators
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-002
+  name: Contract lint and reference resolution
+  layer: contract
+  purpose: OpenAPI/AsyncAPI/JSON Schemaの構文・参照
+  candidate_tools:
+  - spectral
+  - asyncapi parser
+  - jsonschema
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-003
+  name: Breaking change detection
+  layer: contract
+  purpose: 公開済みContract互換性
+  candidate_tools:
+  - oasdiff相当
+  - custom schema diff
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-004
+  name: Generated artifact drift
+  layer: contract
+  purpose: 生成型/client/docの再現性
+  candidate_tools:
+  - codegen
+  - git diff --exit-code
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-005
+  name: Python unit
+  layer: unit
+  purpose: Domain value/object/policyの局所Test
+  candidate_tools:
+  - pytest
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-006
+  name: TypeScript unit
+  layer: unit
+  purpose: UI logic/renderer/functionの局所Test
+  candidate_tools:
+  - vitest
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-007
+  name: Property-based domain tests
+  layer: unit
+  purpose: 冪等性、状態遷移、金額、正規化の不変条件
+  candidate_tools:
+  - hypothesis
+  - fast-check
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-008
+  name: PostgreSQL baseline integration
+  layer: database
+  purpose: DDL/extension/seed/constraint/trigger/role
+  candidate_tools:
+  - PostgreSQL 18 container
+  - pytest
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-009
+  name: Migration zero-to-latest
+  layer: database
+  purpose: 空DBから最新版へ到達
+  candidate_tools:
+  - migration runner
+  - PostgreSQL 18
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-010
+  name: Migration upgrade/rollback
+  layer: database
+  purpose: 前Versionからupgrade、失敗時復旧
+  candidate_tools:
+  - PostgreSQL 18
+  - backup fixture
+  release_blocking: true
+  environments:
+  - CI
+  - staging
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-011
+  name: DB authorization and immutability
+  layer: database
+  purpose: Role/Grant/Public isolation/immutable guards
+  candidate_tools:
+  - psql
+  - pytest
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-012
+  name: HTTP API integration
+  layer: api
+  purpose: 認証、authz、idempotency、ETag、Problem Details
+  candidate_tools:
+  - pytest
+  - httpx
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-013
+  name: Async delivery and idempotency
+  layer: async
+  purpose: 重複、順不同、retry、DLQ、lease
+  candidate_tools:
+  - queue fake
+  - LocalStack/recorded
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-014
+  name: Object artifact integrity
+  layer: storage
+  purpose: Hash、version、tamper、retention hooks
+  candidate_tools:
+  - S3 compatible local
+  - pytest
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-015
+  name: Rakuten adapter recorded contract
+  layer: adapter
+  purpose: Recorded fixtureのrequest/normalization/error
+  candidate_tools:
+  - pytest
+  - VCR fixture
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-016
+  name: Rakuten adapter live smoke
+  layer: adapter
+  purpose: 公式Sandbox/低影響Liveでauth/rate/schema
+  candidate_tools:
+  - live credential
+  release_blocking: true
+  environments:
+  - staging
+  owner: Operations
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-017
+  name: OpenAI adapter recorded contract
+  layer: adapter
+  purpose: request、structured output、refusal、usage、error
+  candidate_tools:
+  - recorded fixtures
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-018
+  name: OpenAI live bounded evaluation
+  layer: ai
+  purpose: 承認DatasetでRoute/Modelを評価
+  candidate_tools:
+  - Responses API
+  - eval harness
+  release_blocking: true
+  environments:
+  - staging
+  owner: AI/Editorial
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-019
+  name: AI red-team regression
+  layer: ai
+  purpose: Prompt injection、虚偽、review、bias、secret
+  candidate_tools:
+  - eval harness
+  release_blocking: true
+  environments:
+  - CI
+  - staging
+  owner: AI/Security
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-020
+  name: Content AST and policy
+  layer: content
+  purpose: 5記事型、Block、Claim、Recommendation、Disclosure
+  candidate_tools:
+  - pytest
+  - schema fixtures
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-021
+  name: Publication snapshot E2E
+  layer: content
+  purpose: 承認からsnapshot/readmodel/rollback
+  candidate_tools:
+  - pytest
+  - browser
+  release_blocking: true
+  environments:
+  - CI
+  - staging
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-022
+  name: Browser functional E2E
+  layer: ui
+  purpose: 主要WorkflowとPublic view
+  candidate_tools:
+  - Playwright
+  release_blocking: true
+  environments:
+  - CI
+  - staging
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-023
+  name: Accessibility automated
+  layer: ui
+  purpose: axe等による機械検査
+  candidate_tools:
+  - axe-core
+  - Playwright
+  release_blocking: true
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-024
+  name: Accessibility manual
+  layer: ui
+  purpose: Keyboard、Zoom、Screen reader、cognitive checks
+  candidate_tools:
+  - NVDA/VoiceOver
+  - manual checklist
+  release_blocking: true
+  environments:
+  - staging
+  owner: QA/Accessibility
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-025
+  name: Visual regression
+  layer: ui
+  purpose: 主要Template/Component差分
+  candidate_tools:
+  - Playwright screenshots
+  release_blocking: false
+  environments:
+  - CI
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-026
+  name: Security verification
+  layer: security
+  purpose: ASVS control、SAST/SCA/DAST、manual abuse
+  candidate_tools:
+  - security tools
+  - manual
+  release_blocking: true
+  environments:
+  - CI
+  - staging
+  owner: Security
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-027
+  name: Performance and load
+  layer: performance
+  purpose: Public/Admin/API/workerのSLO capacity
+  candidate_tools:
+  - k6相当
+  - browser RUM lab
+  release_blocking: true
+  environments:
+  - staging
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-028
+  name: Reliability failure injection
+  layer: reliability
+  purpose: provider/queue/db/timeouts/retry/kill switch
+  candidate_tools:
+  - fault proxy
+  - scripts
+  release_blocking: true
+  environments:
+  - staging
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-029
+  name: Backup restore drill
+  layer: recovery
+  purpose: RDS/Object/Configのrestoreと整合
+  candidate_tools:
+  - isolated restore environment
+  release_blocking: true
+  environments:
+  - staging/recovery
+  owner: Operations
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-030
+  name: Analytics reconciliation
+  layer: analytics
+  purpose: Event/GA4/GSC/Revenue/Attribution/KPIの再現
+  candidate_tools:
+  - fixtures
+  - SQL assertions
+  release_blocking: true
+  environments:
+  - CI
+  - staging
+  owner: Engineering
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-031
+  name: Privacy and retention
+  layer: privacy
+  purpose: PII scan、consent、deletion、access
+  candidate_tools:
+  - schema scan
+  - manual
+  release_blocking: true
+  environments:
+  - CI
+  - staging
+  owner: Privacy/Security
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED
+- id: TST-032
+  name: GATE acceptance pack
+  layer: acceptance
+  purpose: GATE-0..4のEvidenceをSnapshot化
+  candidate_tools:
+  - custom report generator
+  release_blocking: true
+  environments:
+  - staging
+  owner: Product Owner
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  execution_status: NOT_EXECUTED

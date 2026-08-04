@@ -1,0 +1,1573 @@
+{
+  "schema_count": 224,
+  "schemas": [
+    {
+      "bytes": 2407,
+      "path": "contracts/ai/schemas/eval/evaluation_case.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/evaluation/case/v1",
+      "sha256": "363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a",
+      "type_name": "Schema001ContractsAiSchemasEvalEvaluationCaseV1SchemaJson"
+    },
+    {
+      "bytes": 2538,
+      "path": "contracts/ai/schemas/eval/judge_output.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/evaluation/judge_output/v1",
+      "sha256": "8d832fe5c58a7cfeb8bafa8dab18c64aa45bdb56c3282bd3d7d6e14cad6e87d4",
+      "type_name": "Schema002ContractsAiSchemasEvalJudgeOutputV1SchemaJson"
+    },
+    {
+      "bytes": 5894,
+      "path": "contracts/ai/schemas/tasks/ai.article_draft.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/article_draft/v1",
+      "sha256": "3f7fe932eee1d967455a2613000bda988edd1b1848bca52933cc56d9ed985eae",
+      "type_name": "Schema003ContractsAiSchemasTasksAiArticleDraftV1OutputSchemaJson"
+    },
+    {
+      "bytes": 2225,
+      "path": "contracts/ai/schemas/tasks/ai.article_outline.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/article_outline/v1",
+      "sha256": "d57afe6f1b4ab33cbb8553cee4a9270ff3800ae3372f76fa0ae6b47eeba84848",
+      "type_name": "Schema004ContractsAiSchemasTasksAiArticleOutlineV1OutputSchemaJson"
+    },
+    {
+      "bytes": 1879,
+      "path": "contracts/ai/schemas/tasks/ai.claim_extraction.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/claim_extraction/v1",
+      "sha256": "54a4f58a3ba4136dbac0a17b992dcda969ef7d2a19d42ae8d3c4c253cc4302b5",
+      "type_name": "Schema005ContractsAiSchemasTasksAiClaimExtractionV1OutputSchemaJson"
+    },
+    {
+      "bytes": 2303,
+      "path": "contracts/ai/schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/comparison_axis_suggestion/v1",
+      "sha256": "9702e97765468c7aa1fec27fbfec974dc8c8037ab154c647dfc0764ff693bb16",
+      "type_name": "Schema006ContractsAiSchemasTasksAiComparisonAxisSuggestionV1OutputSchemaJson"
+    },
+    {
+      "bytes": 1339,
+      "path": "contracts/ai/schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/internal_link_suggestion/v1",
+      "sha256": "1271052c0aa4105ac0b0c1824b057651339ba78f32eee4d7d4f4461067cf536b",
+      "type_name": "Schema007ContractsAiSchemasTasksAiInternalLinkSuggestionV1OutputSchemaJson"
+    },
+    {
+      "bytes": 1188,
+      "path": "contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/opportunity_assessment/v1",
+      "sha256": "504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123",
+      "type_name": "Schema008ContractsAiSchemasTasksAiOpportunityAssessmentV1OutputSchemaJson"
+    },
+    {
+      "bytes": 2653,
+      "path": "contracts/ai/schemas/tasks/ai.policy_assist.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/policy_assist/v1",
+      "sha256": "242428ea37446f57c6cc819770ae065004a411229fe04b3e60a8f780ae290e2f",
+      "type_name": "Schema009ContractsAiSchemasTasksAiPolicyAssistV1OutputSchemaJson"
+    },
+    {
+      "bytes": 1756,
+      "path": "contracts/ai/schemas/tasks/ai.quality_remediation.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/quality_remediation/v1",
+      "sha256": "10098facd422a7b8bd9784b1091ff31b7b4a0b99e4add3d0e2b902e810f93581",
+      "type_name": "Schema010ContractsAiSchemasTasksAiQualityRemediationV1OutputSchemaJson"
+    },
+    {
+      "bytes": 3137,
+      "path": "contracts/ai/schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/refresh_diff_summary/v1",
+      "sha256": "68b4c97de6d7811f20c88d6918d946de58e1489d0ac5a19f390f8301d929f0e2",
+      "type_name": "Schema011ContractsAiSchemasTasksAiRefreshDiffSummaryV1OutputSchemaJson"
+    },
+    {
+      "bytes": 4840,
+      "path": "contracts/ai/schemas/tasks/ai.search_intent_classification.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/search_intent_classification/v1",
+      "sha256": "c7753ca61a03868d7d91a0760b35224087fa09d2c99252621553d6c21edcc69d",
+      "type_name": "Schema012ContractsAiSchemasTasksAiSearchIntentClassificationV1OutputSchemaJson"
+    },
+    {
+      "bytes": 2666,
+      "path": "contracts/ai/schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/source_packet_gap_analysis/v1",
+      "sha256": "1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c",
+      "type_name": "Schema013ContractsAiSchemasTasksAiSourcePacketGapAnalysisV1OutputSchemaJson"
+    },
+    {
+      "bytes": 1322,
+      "path": "contracts/ai/schemas/tasks/ai.update_priority_explanation.v1.output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/update_priority_explanation/v1",
+      "sha256": "0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef",
+      "type_name": "Schema014ContractsAiSchemasTasksAiUpdatePriorityExplanationV1OutputSchemaJson"
+    },
+    {
+      "bytes": 4586,
+      "path": "contracts/content/schemas/blocks/bullet_list.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/bullet_list.schema.json",
+      "sha256": "1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7",
+      "type_name": "Schema015ContractsContentSchemasBlocksBulletListSchemaJson"
+    },
+    {
+      "bytes": 4477,
+      "path": "contracts/content/schemas/blocks/callout.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/callout.schema.json",
+      "sha256": "86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a",
+      "type_name": "Schema016ContractsContentSchemasBlocksCalloutSchemaJson"
+    },
+    {
+      "bytes": 4360,
+      "path": "contracts/content/schemas/blocks/caution.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/caution.schema.json",
+      "sha256": "b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510",
+      "type_name": "Schema017ContractsContentSchemasBlocksCautionSchemaJson"
+    },
+    {
+      "bytes": 5284,
+      "path": "contracts/content/schemas/blocks/comparison_table.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/comparison_table.schema.json",
+      "sha256": "6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89",
+      "type_name": "Schema018ContractsContentSchemasBlocksComparisonTableSchemaJson"
+    },
+    {
+      "bytes": 4947,
+      "path": "contracts/content/schemas/blocks/decision_summary.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/decision_summary.schema.json",
+      "sha256": "a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1",
+      "type_name": "Schema019ContractsContentSchemasBlocksDecisionSummarySchemaJson"
+    },
+    {
+      "bytes": 5196,
+      "path": "contracts/content/schemas/blocks/difference_matrix.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/difference_matrix.schema.json",
+      "sha256": "cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667",
+      "type_name": "Schema020ContractsContentSchemasBlocksDifferenceMatrixSchemaJson"
+    },
+    {
+      "bytes": 4279,
+      "path": "contracts/content/schemas/blocks/disclosure_slot.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/disclosure_slot.schema.json",
+      "sha256": "76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918",
+      "type_name": "Schema021ContractsContentSchemasBlocksDisclosureSlotSchemaJson"
+    },
+    {
+      "bytes": 4617,
+      "path": "contracts/content/schemas/blocks/evidence_note.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/evidence_note.schema.json",
+      "sha256": "37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6",
+      "type_name": "Schema022ContractsContentSchemasBlocksEvidenceNoteSchemaJson"
+    },
+    {
+      "bytes": 4833,
+      "path": "contracts/content/schemas/blocks/faq.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/faq.schema.json",
+      "sha256": "f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71",
+      "type_name": "Schema023ContractsContentSchemasBlocksFaqSchemaJson"
+    },
+    {
+      "bytes": 4433,
+      "path": "contracts/content/schemas/blocks/heading.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/heading.schema.json",
+      "sha256": "f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229",
+      "type_name": "Schema024ContractsContentSchemasBlocksHeadingSchemaJson"
+    },
+    {
+      "bytes": 4627,
+      "path": "contracts/content/schemas/blocks/intended_reader.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/intended_reader.schema.json",
+      "sha256": "64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc",
+      "type_name": "Schema025ContractsContentSchemasBlocksIntendedReaderSchemaJson"
+    },
+    {
+      "bytes": 4647,
+      "path": "contracts/content/schemas/blocks/internal_links.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/internal_links.schema.json",
+      "sha256": "46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc",
+      "type_name": "Schema026ContractsContentSchemasBlocksInternalLinksSchemaJson"
+    },
+    {
+      "bytes": 4207,
+      "path": "contracts/content/schemas/blocks/lead.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/lead.schema.json",
+      "sha256": "fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4",
+      "type_name": "Schema027ContractsContentSchemasBlocksLeadSchemaJson"
+    },
+    {
+      "bytes": 4867,
+      "path": "contracts/content/schemas/blocks/media.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/media.schema.json",
+      "sha256": "ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c",
+      "type_name": "Schema028ContractsContentSchemasBlocksMediaSchemaJson"
+    },
+    {
+      "bytes": 4898,
+      "path": "contracts/content/schemas/blocks/methodology.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/methodology.schema.json",
+      "sha256": "366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec",
+      "type_name": "Schema029ContractsContentSchemasBlocksMethodologySchemaJson"
+    },
+    {
+      "bytes": 4592,
+      "path": "contracts/content/schemas/blocks/numbered_list.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/numbered_list.schema.json",
+      "sha256": "39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f",
+      "type_name": "Schema030ContractsContentSchemasBlocksNumberedListSchemaJson"
+    },
+    {
+      "bytes": 4222,
+      "path": "contracts/content/schemas/blocks/paragraph.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/paragraph.schema.json",
+      "sha256": "5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1",
+      "type_name": "Schema031ContractsContentSchemasBlocksParagraphSchemaJson"
+    },
+    {
+      "bytes": 4924,
+      "path": "contracts/content/schemas/blocks/product_card.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/product_card.schema.json",
+      "sha256": "559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a",
+      "type_name": "Schema032ContractsContentSchemasBlocksProductCardSchemaJson"
+    },
+    {
+      "bytes": 5440,
+      "path": "contracts/content/schemas/blocks/pros_cons.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/pros_cons.schema.json",
+      "sha256": "3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b",
+      "type_name": "Schema033ContractsContentSchemasBlocksProsConsSchemaJson"
+    },
+    {
+      "bytes": 4940,
+      "path": "contracts/content/schemas/blocks/recommendation_group.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/recommendation_group.schema.json",
+      "sha256": "06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932",
+      "type_name": "Schema034ContractsContentSchemasBlocksRecommendationGroupSchemaJson"
+    },
+    {
+      "bytes": 4993,
+      "path": "contracts/content/schemas/blocks/selection_criteria.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/selection_criteria.schema.json",
+      "sha256": "ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc",
+      "type_name": "Schema035ContractsContentSchemasBlocksSelectionCriteriaSchemaJson"
+    },
+    {
+      "bytes": 4791,
+      "path": "contracts/content/schemas/blocks/source_summary.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/source_summary.schema.json",
+      "sha256": "e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28",
+      "type_name": "Schema036ContractsContentSchemasBlocksSourceSummarySchemaJson"
+    },
+    {
+      "bytes": 4571,
+      "path": "contracts/content/schemas/blocks/tradeoff.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/tradeoff.schema.json",
+      "sha256": "a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c",
+      "type_name": "Schema037ContractsContentSchemasBlocksTradeoffSchemaJson"
+    },
+    {
+      "bytes": 4676,
+      "path": "contracts/content/schemas/blocks/update_notice.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/blocks/update_notice.schema.json",
+      "sha256": "4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24",
+      "type_name": "Schema038ContractsContentSchemasBlocksUpdateNoticeSchemaJson"
+    },
+    {
+      "bytes": 2659,
+      "path": "contracts/content/schemas/claim.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/claim.schema.json",
+      "sha256": "db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3",
+      "type_name": "Schema039ContractsContentSchemasClaimSchemaJson"
+    },
+    {
+      "bytes": 6212,
+      "path": "contracts/content/schemas/common/rich_text.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/common/rich-text.schema.json",
+      "sha256": "20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312",
+      "type_name": "Schema040ContractsContentSchemasCommonRichTextSchemaJson"
+    },
+    {
+      "bytes": 46209,
+      "path": "contracts/content/schemas/content-ast.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/content-ast.schema.json",
+      "sha256": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac",
+      "type_name": "Schema041ContractsContentSchemasContentAstSchemaJson"
+    },
+    {
+      "bytes": 2142,
+      "path": "contracts/content/schemas/editorial-review-decision.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/editorial-review-decision.schema.json",
+      "sha256": "2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d",
+      "type_name": "Schema042ContractsContentSchemasEditorialReviewDecisionSchemaJson"
+    },
+    {
+      "bytes": 2383,
+      "path": "contracts/content/schemas/media-asset.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/media-asset.schema.json",
+      "sha256": "c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622",
+      "type_name": "Schema043ContractsContentSchemasMediaAssetSchemaJson"
+    },
+    {
+      "bytes": 2587,
+      "path": "contracts/content/schemas/publication-content-manifest.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/publication-content-manifest.schema.json",
+      "sha256": "97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881",
+      "type_name": "Schema044ContractsContentSchemasPublicationContentManifestSchemaJson"
+    },
+    {
+      "bytes": 3624,
+      "path": "contracts/content/schemas/recommendation-methodology.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/recommendation-methodology.schema.json",
+      "sha256": "93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a",
+      "type_name": "Schema045ContractsContentSchemasRecommendationMethodologySchemaJson"
+    },
+    {
+      "bytes": 2269,
+      "path": "contracts/content/schemas/seo-metadata.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/seo-metadata.schema.json",
+      "sha256": "347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad",
+      "type_name": "Schema046ContractsContentSchemasSeoMetadataSchemaJson"
+    },
+    {
+      "bytes": 1813,
+      "path": "contracts/content/schemas/structured-data-manifest.schema.json",
+      "schema_id": "https://schemas.raos.local/content/v1/structured-data-manifest.schema.json",
+      "sha256": "6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e",
+      "type_name": "Schema047ContractsContentSchemasStructuredDataManifestSchemaJson"
+    },
+    {
+      "bytes": 1848,
+      "path": "contracts/schemas/adapters/ga4-metric-row.schema.json",
+      "schema_id": "https://schemas.raos.local/adapters/ga4-metric-row.schema.json",
+      "sha256": "282009712425519b9242aaed81536ef807eb5f4f9f76e5726e75f6684721830b",
+      "type_name": "Schema048ContractsSchemasAdaptersGa4MetricRowSchemaJson"
+    },
+    {
+      "bytes": 2072,
+      "path": "contracts/schemas/adapters/ga4-run-report-request.schema.json",
+      "schema_id": "https://schemas.raos.local/adapters/ga4-run-report-request.schema.json",
+      "sha256": "2b328df1d95ddea0bb4a4b02b5686f04c9967b5e4ff26988ad8c50ceee20c546",
+      "type_name": "Schema049ContractsSchemasAdaptersGa4RunReportRequestSchemaJson"
+    },
+    {
+      "bytes": 2966,
+      "path": "contracts/schemas/adapters/gsc-search-analytics-request.schema.json",
+      "schema_id": "https://schemas.raos.local/adapters/gsc-search-analytics-request.schema.json",
+      "sha256": "10dd3bfa4caa9be5cfe58f557db4647d4e178fa83e6d68bdded8e74d8443e89f",
+      "type_name": "Schema050ContractsSchemasAdaptersGscSearchAnalyticsRequestSchemaJson"
+    },
+    {
+      "bytes": 1743,
+      "path": "contracts/schemas/adapters/gsc-search-analytics-row.schema.json",
+      "schema_id": "https://schemas.raos.local/adapters/gsc-search-analytics-row.schema.json",
+      "sha256": "827afbaa8ca50c631a00f893ee6932f5b2fc571d84e0566529b9e5958cc3b920",
+      "type_name": "Schema051ContractsSchemasAdaptersGscSearchAnalyticsRowSchemaJson"
+    },
+    {
+      "bytes": 1766,
+      "path": "contracts/schemas/adapters/llm-structured-task-request.schema.json",
+      "schema_id": "https://schemas.raos.local/adapters/llm-structured-task-request.schema.json",
+      "sha256": "163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31",
+      "type_name": "Schema052ContractsSchemasAdaptersLlmStructuredTaskRequestSchemaJson"
+    },
+    {
+      "bytes": 2294,
+      "path": "contracts/schemas/adapters/llm-structured-task-result.schema.json",
+      "schema_id": "https://schemas.raos.local/adapters/llm-structured-task-result.schema.json",
+      "sha256": "ac59d14f41dbcabaaf98a5bea4b603313f3bb752fc6d8b4ca8b33973b3fdfd17",
+      "type_name": "Schema053ContractsSchemasAdaptersLlmStructuredTaskResultSchemaJson"
+    },
+    {
+      "bytes": 4217,
+      "path": "contracts/schemas/adapters/rakuten-item-search-canonical-page.schema.json",
+      "schema_id": "https://schemas.raos.local/adapters/rakuten-item-search-canonical-page.schema.json",
+      "sha256": "13c844c3f67b040c1a250bfbc01bde12667c215ce52307ad52e77d594ffa5fc2",
+      "type_name": "Schema054ContractsSchemasAdaptersRakutenItemSearchCanonicalPageSchemaJson"
+    },
+    {
+      "bytes": 3887,
+      "path": "contracts/schemas/adapters/rakuten-item-search-request.schema.json",
+      "schema_id": "https://schemas.raos.local/adapters/rakuten-item-search-request.schema.json",
+      "sha256": "afc9e1c506496c774d9a491d27d5be8b32792bf75b7945e3f6037ff1d84d5e68",
+      "type_name": "Schema055ContractsSchemasAdaptersRakutenItemSearchRequestSchemaJson"
+    },
+    {
+      "bytes": 3071,
+      "path": "contracts/schemas/ai-governance/ai-job.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/ai-job/v1",
+      "sha256": "a6244d622248a3991010ca65f1d4fbe657df4b224e3210a479ab0448b314e938",
+      "type_name": "Schema056ContractsSchemasAiGovernanceAiJobV1SchemaJson"
+    },
+    {
+      "bytes": 1405,
+      "path": "contracts/schemas/ai-governance/ai-task-contract.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/ai-task-contract/v1",
+      "sha256": "c4477b9b0d0d85bda83911046d512c937569943dea4b4ff09dc70e6a07ae82be",
+      "type_name": "Schema057ContractsSchemasAiGovernanceAiTaskContractV1SchemaJson"
+    },
+    {
+      "bytes": 1571,
+      "path": "contracts/schemas/ai-governance/ai-task-definition.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/ai-task-definition/v1",
+      "sha256": "b65866b60f087f7b8abab054020bae016d62691a42691a6eb325ef4b265ccc13",
+      "type_name": "Schema058ContractsSchemasAiGovernanceAiTaskDefinitionV1SchemaJson"
+    },
+    {
+      "bytes": 12585,
+      "path": "contracts/schemas/ai-governance/evaluation-case-result.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/evaluation-case-result/v1",
+      "sha256": "7577e56f2f070515ebcc99fd2df066fd5e8799b6db9061db732ac3ec5f1ebfe1",
+      "type_name": "Schema059ContractsSchemasAiGovernanceEvaluationCaseResultV1SchemaJson"
+    },
+    {
+      "bytes": 3393,
+      "path": "contracts/schemas/ai-governance/evaluation-case.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/evaluation-case/v1",
+      "sha256": "efc1360fc1c34b43724cd336a5992d450cb8056903cd92f2f9d9a4d6241ef8de",
+      "type_name": "Schema060ContractsSchemasAiGovernanceEvaluationCaseV1SchemaJson"
+    },
+    {
+      "bytes": 2750,
+      "path": "contracts/schemas/ai-governance/evaluation-dataset-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/evaluation-dataset-create-request/v1",
+      "sha256": "a9a49258ddaa338600641d59bc6b2630710755fae92df2170a22850bdd345630",
+      "type_name": "Schema061ContractsSchemasAiGovernanceEvaluationDatasetCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 2818,
+      "path": "contracts/schemas/ai-governance/evaluation-dataset-version.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/evaluation-dataset-version/v1",
+      "sha256": "ab40cb9630fd57095c1dcbe12cb67b7fc39cab187ddf2b50287821975c290cb4",
+      "type_name": "Schema062ContractsSchemasAiGovernanceEvaluationDatasetVersionV1SchemaJson"
+    },
+    {
+      "bytes": 3682,
+      "path": "contracts/schemas/ai-governance/evaluation-run-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/evaluation-run-create-request/v1",
+      "sha256": "713f34282e80be7b52e7c46124b32a968e0310a9b51ac69a880b44556e0b8569",
+      "type_name": "Schema063ContractsSchemasAiGovernanceEvaluationRunCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 18423,
+      "path": "contracts/schemas/ai-governance/evaluation-run-detail.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/evaluation-run-detail/v1",
+      "sha256": "89e3c9e5fa92c8af8d9edc45cda748d3396dcfa1ea5366390758639458815639",
+      "type_name": "Schema064ContractsSchemasAiGovernanceEvaluationRunDetailV1SchemaJson"
+    },
+    {
+      "bytes": 37463,
+      "path": "contracts/schemas/ai-governance/evaluation-run.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/evaluation-run/v1",
+      "sha256": "8f0b091219f538f6769e37332e183c5d01f58ac1f586fb1953acd76acf71184b",
+      "type_name": "Schema065ContractsSchemasAiGovernanceEvaluationRunV1SchemaJson"
+    },
+    {
+      "bytes": 111925,
+      "path": "contracts/schemas/ai-governance/evaluation-suite.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/evaluation-suite/v1",
+      "sha256": "a3c0c5d41f150c93b49d80ab76464d0d988d9f55bbf3574eb77139eb02296211",
+      "type_name": "Schema066ContractsSchemasAiGovernanceEvaluationSuiteV1SchemaJson"
+    },
+    {
+      "bytes": 1134,
+      "path": "contracts/schemas/ai-governance/human-evaluation-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/human-evaluation-create-request/v1",
+      "sha256": "bc0b04265924d390e1999d5d352b97a1b1a14eb389b3b1b686dd3e9944dc8328",
+      "type_name": "Schema067ContractsSchemasAiGovernanceHumanEvaluationCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 1513,
+      "path": "contracts/schemas/ai-governance/human-evaluation.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/human-evaluation/v1",
+      "sha256": "2d3ef8b32eaabec7bb9e4f91fbd347c3805866c9b6120fdb91924b789d83b947",
+      "type_name": "Schema068ContractsSchemasAiGovernanceHumanEvaluationV1SchemaJson"
+    },
+    {
+      "bytes": 1311,
+      "path": "contracts/schemas/ai-governance/judge-calibration-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/judge-calibration-create-request/v1",
+      "sha256": "2ae3d1711f269ded555cec983adce2a0aa601d908bfc2c192b954594c574837a",
+      "type_name": "Schema069ContractsSchemasAiGovernanceJudgeCalibrationCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 6068,
+      "path": "contracts/schemas/ai-governance/judge-calibration.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/judge-calibration/v1",
+      "sha256": "014393354a47070c69a83b204b73703bea2b4267468e3584387b65b11b077a7e",
+      "type_name": "Schema070ContractsSchemasAiGovernanceJudgeCalibrationV1SchemaJson"
+    },
+    {
+      "bytes": 2604,
+      "path": "contracts/schemas/ai-governance/model-definition.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/model-definition/v1",
+      "sha256": "3707ae408f05042b55d0b3dace8a2df45f80104eaf1c4edd2e03d476b973f825",
+      "type_name": "Schema071ContractsSchemasAiGovernanceModelDefinitionV1SchemaJson"
+    },
+    {
+      "bytes": 4076,
+      "path": "contracts/schemas/ai-governance/model-route-version-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/model-route-version-create-request/v1",
+      "sha256": "a214679f1e64df3c0da10990e78462fdd2d5f4530b42d3a806cfdc24d7ffbd51",
+      "type_name": "Schema072ContractsSchemasAiGovernanceModelRouteVersionCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 2278,
+      "path": "contracts/schemas/ai-governance/model-route-version.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/model-route-version/v1",
+      "sha256": "9a0bf5ff6d01af14640e8cd5cb1aa5b012b49996b978228d230eee15c1ce885c",
+      "type_name": "Schema073ContractsSchemasAiGovernanceModelRouteVersionV1SchemaJson"
+    },
+    {
+      "bytes": 1522,
+      "path": "contracts/schemas/ai-governance/prompt-version-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/prompt-version-create-request/v1",
+      "sha256": "a2b486721d3bceaa102d5cde824f15885a92b58c05d980defb07b3b6e692204b",
+      "type_name": "Schema074ContractsSchemasAiGovernancePromptVersionCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 3098,
+      "path": "contracts/schemas/ai-governance/prompt-version.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/prompt-version/v1",
+      "sha256": "fb5691c59ae9d2812eb6575c3f0f096b49b4222f51915e9ed8c3dca30c7ed095",
+      "type_name": "Schema075ContractsSchemasAiGovernancePromptVersionV1SchemaJson"
+    },
+    {
+      "bytes": 5764,
+      "path": "contracts/schemas/ai-governance/release-active-approval-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/release-active-approval-request/v1",
+      "sha256": "f7d17730f0378d652a8c706a7fdd4b12fb062e176f45f2f43e30036b392f447e",
+      "type_name": "Schema076ContractsSchemasAiGovernanceReleaseActiveApprovalRequestV1SchemaJson"
+    },
+    {
+      "bytes": 2442,
+      "path": "contracts/schemas/ai-governance/release-approval.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/release-approval/v1",
+      "sha256": "f50af225dd6c334eab04f723704a6550d12bf96d20ca0b52fa6dabd6b4d6c862",
+      "type_name": "Schema077ContractsSchemasAiGovernanceReleaseApprovalV1SchemaJson"
+    },
+    {
+      "bytes": 3656,
+      "path": "contracts/schemas/ai-governance/release-canary-approval-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/release-canary-approval-request/v1",
+      "sha256": "3c30b73bc588fc51d2410294dce918326c710fd309649c4ee25b5f1b4c0b7748",
+      "type_name": "Schema078ContractsSchemasAiGovernanceReleaseCanaryApprovalRequestV1SchemaJson"
+    },
+    {
+      "bytes": 692,
+      "path": "contracts/schemas/ai-governance/release-decision-approval-result.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/release-decision-approval-result/v1",
+      "sha256": "1db73faffa718b86eb5325d3e5246315f91f39556a1e1863a6f6ec21992dd949",
+      "type_name": "Schema079ContractsSchemasAiGovernanceReleaseDecisionApprovalResultV1SchemaJson"
+    },
+    {
+      "bytes": 4467,
+      "path": "contracts/schemas/ai-governance/release-decision-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/release-decision-create-request/v1",
+      "sha256": "79f69559460289320b19d19f35358bff60c5f641016640086c560b164f5beae6",
+      "type_name": "Schema080ContractsSchemasAiGovernanceReleaseDecisionCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 2352,
+      "path": "contracts/schemas/ai-governance/release-decision-revoke-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/release-decision-revoke-request/v1",
+      "sha256": "5dfb9e8e4f39a9225b87f24452916dc7126c5ec264b78fa1daeee9cbca33a3a7",
+      "type_name": "Schema081ContractsSchemasAiGovernanceReleaseDecisionRevokeRequestV1SchemaJson"
+    },
+    {
+      "bytes": 26184,
+      "path": "contracts/schemas/ai-governance/release-decision.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/ai-governance/release-decision/v1",
+      "sha256": "d4714580a954c68e4c5b2c01cd942478dde77f9b2e257f712b6ce53ccb30d6f3",
+      "type_name": "Schema082ContractsSchemasAiGovernanceReleaseDecisionV1SchemaJson"
+    },
+    {
+      "bytes": 2853,
+      "path": "contracts/schemas/ai/article-draft-output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/article-draft-output.schema.json",
+      "sha256": "36a44dccd0cdc0861d9ac7500cd7a58f0ab6d20c34f89b6cf3241dda8d56ca35",
+      "type_name": "Schema083ContractsSchemasAiArticleDraftOutputSchemaJson"
+    },
+    {
+      "bytes": 1712,
+      "path": "contracts/schemas/ai/claim-extraction-output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/claim-extraction-output.schema.json",
+      "sha256": "0b82454a43c2c5aed37f2fe72f74d1e124dfb1f7fe1ee2fb9c996827d1c2bd75",
+      "type_name": "Schema084ContractsSchemasAiClaimExtractionOutputSchemaJson"
+    },
+    {
+      "bytes": 1084,
+      "path": "contracts/schemas/ai/opportunity-assessment-output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/opportunity-assessment-output.schema.json",
+      "sha256": "49cec3aeae45d33f12b8c2932e4d9d8cf70ba21c15dfe57358751bb22545940b",
+      "type_name": "Schema085ContractsSchemasAiOpportunityAssessmentOutputSchemaJson"
+    },
+    {
+      "bytes": 1765,
+      "path": "contracts/schemas/ai/policy-assist-output.schema.json",
+      "schema_id": "https://schemas.raos.local/ai/policy-assist-output.schema.json",
+      "sha256": "69313aeb322c887221e4dce45d8053a81698fa293e3e18128d787415fa4e6e10",
+      "type_name": "Schema086ContractsSchemasAiPolicyAssistOutputSchemaJson"
+    },
+    {
+      "bytes": 706,
+      "path": "contracts/schemas/common/actor-ref.schema.json",
+      "schema_id": "https://schemas.raos.local/common/actor-ref.schema.json",
+      "sha256": "4e04f75718e5caf6bf2354b21172144b63a54dd2859b01d765a46fdc219892ec",
+      "type_name": "Schema087ContractsSchemasCommonActorRefSchemaJson"
+    },
+    {
+      "bytes": 2591,
+      "path": "contracts/schemas/common/article-ast.schema.json",
+      "schema_id": "https://schemas.raos.local/common/article-ast.schema.json",
+      "sha256": "9035141b2de7529086e935579e3fa89fa8f3d09460ea38b87c5da48aeed596fc",
+      "type_name": "Schema088ContractsSchemasCommonArticleAstSchemaJson"
+    },
+    {
+      "bytes": 834,
+      "path": "contracts/schemas/common/artifact-ref.schema.json",
+      "schema_id": "https://schemas.raos.local/common/artifact-ref.schema.json",
+      "sha256": "9d47faf85d4986e6340a0d71dbf5e340b3475270c20a7d03056cd51d679ef930",
+      "type_name": "Schema089ContractsSchemasCommonArtifactRefSchemaJson"
+    },
+    {
+      "bytes": 3270,
+      "path": "contracts/schemas/common/event-envelope.schema.json",
+      "schema_id": "https://schemas.raos.local/common/event-envelope.schema.json",
+      "sha256": "2063cc8838152e6c3b2ab6b7118b442c30aa665577a3956d2e1918b7d3ba1151",
+      "type_name": "Schema090ContractsSchemasCommonEventEnvelopeSchemaJson"
+    },
+    {
+      "bytes": 2987,
+      "path": "contracts/schemas/common/job-message.schema.json",
+      "schema_id": "https://schemas.raos.local/common/job-message.schema.json",
+      "sha256": "cdb8e8094d4fa74843c26ea453354df7083bc41a6f165220ddd0e263e37db8d5",
+      "type_name": "Schema091ContractsSchemasCommonJobMessageSchemaJson"
+    },
+    {
+      "bytes": 505,
+      "path": "contracts/schemas/common/money.schema.json",
+      "schema_id": "https://schemas.raos.local/common/money.schema.json",
+      "sha256": "d6d3c92472e6a054a7b5750936cf29bdbe0c24bc298dd39811ddbe1f24e5321c",
+      "type_name": "Schema092ContractsSchemasCommonMoneySchemaJson"
+    },
+    {
+      "bytes": 1932,
+      "path": "contracts/schemas/common/problem-details.schema.json",
+      "schema_id": "https://schemas.raos.local/common/problem-details.schema.json",
+      "sha256": "97c81845363be5bb25dac606403374c38d5d5aa80843a241739ca65058c023f6",
+      "type_name": "Schema093ContractsSchemasCommonProblemDetailsSchemaJson"
+    },
+    {
+      "bytes": 2093,
+      "path": "contracts/schemas/common/publication-snapshot.schema.json",
+      "schema_id": "https://schemas.raos.local/common/publication-snapshot.schema.json",
+      "sha256": "2b1aa3d1035cd997d3262786fdfd80aa5c25df62e2c758ac481179c5d6803c38",
+      "type_name": "Schema094ContractsSchemasCommonPublicationSnapshotSchemaJson"
+    },
+    {
+      "bytes": 742,
+      "path": "contracts/schemas/common/resource-ref.schema.json",
+      "schema_id": "https://schemas.raos.local/common/resource-ref.schema.json",
+      "sha256": "e0c7c7ce37e49a1ad00807fa681b1849dcc68a2c179114356c79c62579dd354c",
+      "type_name": "Schema095ContractsSchemasCommonResourceRefSchemaJson"
+    },
+    {
+      "bytes": 1709,
+      "path": "contracts/schemas/content-revision/article-disclosure-context.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/article-disclosure-context.v1.schema.json",
+      "sha256": "8aa0502015100548ca0ce6e88a361d8e0579a388ddf6fd26b19b546c08f68fc7",
+      "type_name": "Schema096ContractsSchemasContentRevisionArticleDisclosureContextV1SchemaJson"
+    },
+    {
+      "bytes": 1161,
+      "path": "contracts/schemas/content-revision/article-methodology-binding.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/article-methodology-binding.v1.schema.json",
+      "sha256": "fc75a72e0004d9669f02afcc04bc6b8b2ae775c9d7ce163b149d62dc130c01be",
+      "type_name": "Schema097ContractsSchemasContentRevisionArticleMethodologyBindingV1SchemaJson"
+    },
+    {
+      "bytes": 1614,
+      "path": "contracts/schemas/content-revision/article-template-version.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/article-template-version.v1.schema.json",
+      "sha256": "cfde646855dd855b3e79b5b76e2737836d01fe3690969d800ce2d70c64469608",
+      "type_name": "Schema098ContractsSchemasContentRevisionArticleTemplateVersionV1SchemaJson"
+    },
+    {
+      "bytes": 1616,
+      "path": "contracts/schemas/content-revision/article-type-version.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/article-type-version.v1.schema.json",
+      "sha256": "bcc26926767d1b5f1ed901bb3048efeb7eae2b31aa1e76104add2c03c6af1c89",
+      "type_name": "Schema099ContractsSchemasContentRevisionArticleTypeVersionV1SchemaJson"
+    },
+    {
+      "bytes": 1293,
+      "path": "contracts/schemas/content-revision/content-review-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/content-review-request.v1.schema.json",
+      "sha256": "093a17937294f11624b47cae8f396cf9cd3fab3c06bd4dac40a7d67ac36dab9a",
+      "type_name": "Schema100ContractsSchemasContentRevisionContentReviewRequestV1SchemaJson"
+    },
+    {
+      "bytes": 1885,
+      "path": "contracts/schemas/content-revision/content-schema-version.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/content-schema-version.v1.schema.json",
+      "sha256": "4b74d0c0166fb8fb784cdf4fabddfe45b1b09d299c5398cc87337dae8a9e26f5",
+      "type_name": "Schema101ContractsSchemasContentRevisionContentSchemaVersionV1SchemaJson"
+    },
+    {
+      "bytes": 1058,
+      "path": "contracts/schemas/content-revision/content-validation-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/content-validation-request.v1.schema.json",
+      "sha256": "9d5a6d3f926d27a7f059d808243ce0d2004c7cd3fdfb6e7b90ece131e8ecccc4",
+      "type_name": "Schema102ContractsSchemasContentRevisionContentValidationRequestV1SchemaJson"
+    },
+    {
+      "bytes": 874,
+      "path": "contracts/schemas/content-revision/content-validation-result.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/content-validation-result.v1.schema.json",
+      "sha256": "89e2e37534de6b657aa48078fb86728adb74921da210905c37698641d81afd36",
+      "type_name": "Schema103ContractsSchemasContentRevisionContentValidationResultV1SchemaJson"
+    },
+    {
+      "bytes": 1890,
+      "path": "contracts/schemas/content-revision/editorial-methodology-version.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/editorial-methodology-version.v1.schema.json",
+      "sha256": "b54bdbcda0e8fa498c104ebcebdb17781d125cf117b46c793a06880f4f42e10f",
+      "type_name": "Schema104ContractsSchemasContentRevisionEditorialMethodologyVersionV1SchemaJson"
+    },
+    {
+      "bytes": 988,
+      "path": "contracts/schemas/content-revision/first-hand-experience-asset.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/first-hand-experience-asset.v1.schema.json",
+      "sha256": "bba3f9bf88a6d85325cc8577c9b7a47fc7e847d2f3709a8830af769a053e8dd1",
+      "type_name": "Schema105ContractsSchemasContentRevisionFirstHandExperienceAssetV1SchemaJson"
+    },
+    {
+      "bytes": 1253,
+      "path": "contracts/schemas/content-revision/first-hand-experience-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/first-hand-experience-create-request.v1.schema.json",
+      "sha256": "7a1dba4e89390d47f68c22274a459e2a02f01759c1cb6e0cffd81ea3ccec195f",
+      "type_name": "Schema106ContractsSchemasContentRevisionFirstHandExperienceCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 2129,
+      "path": "contracts/schemas/content-revision/first-hand-experience-record.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/first-hand-experience-record.v1.schema.json",
+      "sha256": "34dcb19731e44c3aa8a6991503cb78933461866f6393635d118eae9143f2f4ce",
+      "type_name": "Schema107ContractsSchemasContentRevisionFirstHandExperienceRecordV1SchemaJson"
+    },
+    {
+      "bytes": 1630,
+      "path": "contracts/schemas/content-revision/media-asset-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/media-asset-create-request.v1.schema.json",
+      "sha256": "04f526c3ff7831bdceb22c78e84b397ea578925a7bd7b40b634ed25e52342ead",
+      "type_name": "Schema108ContractsSchemasContentRevisionMediaAssetCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 2518,
+      "path": "contracts/schemas/content-revision/media-asset-resource.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/media-asset-resource.v1.schema.json",
+      "sha256": "3ffaf230d1f74f424ca963b76b3c303addae562eb04e75d9c0eb37d61de52111",
+      "type_name": "Schema109ContractsSchemasContentRevisionMediaAssetResourceV1SchemaJson"
+    },
+    {
+      "bytes": 862,
+      "path": "contracts/schemas/content-revision/media-asset-update-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/media-asset-update-request.v1.schema.json",
+      "sha256": "bcd8245b29dc6b80a2484afe5f6216124b699e3739cc8eb690a9ad62fb284182",
+      "type_name": "Schema110ContractsSchemasContentRevisionMediaAssetUpdateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 505,
+      "path": "contracts/schemas/content-revision/methodology-validation-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/methodology-validation-request.v1.schema.json",
+      "sha256": "75bef3431519691e3e4cb7694ef876d2510425fc5a34cd36f792b8cb671ce788",
+      "type_name": "Schema111ContractsSchemasContentRevisionMethodologyValidationRequestV1SchemaJson"
+    },
+    {
+      "bytes": 1826,
+      "path": "contracts/schemas/content-revision/publication-manifest-create-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/publication-manifest-create-request.v1.schema.json",
+      "sha256": "9bb5a44919c393bae699e43001bbd30771aa6755071f3d16820898e948755d81",
+      "type_name": "Schema112ContractsSchemasContentRevisionPublicationManifestCreateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 855,
+      "path": "contracts/schemas/content-revision/seo-metadata-update-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/seo-metadata-update-request.v1.schema.json",
+      "sha256": "6ad564325a575ac992b01262c8c539a09fcc73288799984eeaf079d9b2e2fb05",
+      "type_name": "Schema113ContractsSchemasContentRevisionSeoMetadataUpdateRequestV1SchemaJson"
+    },
+    {
+      "bytes": 1725,
+      "path": "contracts/schemas/content-revision/seo-metadata-version.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/seo-metadata-version.v1.schema.json",
+      "sha256": "30dc1980ce000470c2939077501fdedb65e317224da3bd2f1636f426f82fa675",
+      "type_name": "Schema114ContractsSchemasContentRevisionSeoMetadataVersionV1SchemaJson"
+    },
+    {
+      "bytes": 869,
+      "path": "contracts/schemas/content-revision/structured-data-command-request.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/structured-data-command-request.v1.schema.json",
+      "sha256": "4f48515f52a3b52bbe1a72c129458d6835724c4a87b7b5ddea735c847e39fee2",
+      "type_name": "Schema115ContractsSchemasContentRevisionStructuredDataCommandRequestV1SchemaJson"
+    },
+    {
+      "bytes": 2043,
+      "path": "contracts/schemas/content-revision/structured-data-manifest-resource.v1.schema.json",
+      "schema_id": "https://schemas.raos.local/content-revision/structured-data-manifest-resource.v1.schema.json",
+      "sha256": "9d79cc315c095a18db302fc5bfcc90dc511ad43987988ae4d1d0184c6f558f5d",
+      "type_name": "Schema116ContractsSchemasContentRevisionStructuredDataManifestResourceV1SchemaJson"
+    },
+    {
+      "bytes": 1287,
+      "path": "contracts/schemas/events/jp-raos-ai-evaluation-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ai-evaluation-completed-v1.schema.json",
+      "sha256": "82794c20e4989950f3189520dc296d105d7be4614cf2caf4b2361044bd14fc34",
+      "type_name": "Schema117ContractsSchemasEventsJpRaosAiEvaluationCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 38593,
+      "path": "contracts/schemas/events/jp-raos-ai-evaluation-completed-v2.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ai-evaluation-completed-v2.schema.json",
+      "sha256": "49d495fd47a2638cd6c008fa04823617af784b7991dad65d27f2c724c0725f39",
+      "type_name": "Schema118ContractsSchemasEventsJpRaosAiEvaluationCompletedV2SchemaJson"
+    },
+    {
+      "bytes": 1351,
+      "path": "contracts/schemas/events/jp-raos-ai-job-failed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ai-job-failed-v1.schema.json",
+      "sha256": "5cb07491fe735a9e1724b7539f50763928a32befb96627d642c1ad30e39fa2c7",
+      "type_name": "Schema119ContractsSchemasEventsJpRaosAiJobFailedV1SchemaJson"
+    },
+    {
+      "bytes": 1320,
+      "path": "contracts/schemas/events/jp-raos-ai-job-requested-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ai-job-requested-v1.schema.json",
+      "sha256": "9937ac30df245d120ccf06aaaf406a8b29cdc9773307e9c9c61d9fc025abd42c",
+      "type_name": "Schema120ContractsSchemasEventsJpRaosAiJobRequestedV1SchemaJson"
+    },
+    {
+      "bytes": 1465,
+      "path": "contracts/schemas/events/jp-raos-ai-job-succeeded-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ai-job-succeeded-v1.schema.json",
+      "sha256": "670dbd4036129bb41284eafa6fb8809b260593f9aab4bc270384509d41d2057a",
+      "type_name": "Schema121ContractsSchemasEventsJpRaosAiJobSucceededV1SchemaJson"
+    },
+    {
+      "bytes": 1279,
+      "path": "contracts/schemas/events/jp-raos-ai-policy-assist-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ai-policy-assist-completed-v1.schema.json",
+      "sha256": "689bd2b267e83d0b9b46acc884526ea87a051bf7bde57221d14893ea13d27033",
+      "type_name": "Schema122ContractsSchemasEventsJpRaosAiPolicyAssistCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 8379,
+      "path": "contracts/schemas/events/jp-raos-ai-release-decision-approved-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ai-release-decision-approved-v1.schema.json",
+      "sha256": "947685c9cf295997629fe0acd27df88e0f78a581ca146dea445948d9f3632fa4",
+      "type_name": "Schema123ContractsSchemasEventsJpRaosAiReleaseDecisionApprovedV1SchemaJson"
+    },
+    {
+      "bytes": 3475,
+      "path": "contracts/schemas/events/jp-raos-ai-release-decision-revoked-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ai-release-decision-revoked-v1.schema.json",
+      "sha256": "c1a671dd2849a92c4078f726aa82f720be6349e67f123df1dd35d5455f77b7a3",
+      "type_name": "Schema124ContractsSchemasEventsJpRaosAiReleaseDecisionRevokedV1SchemaJson"
+    },
+    {
+      "bytes": 1361,
+      "path": "contracts/schemas/events/jp-raos-analytics-daily-metrics-updated-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-analytics-daily-metrics-updated-v1.schema.json",
+      "sha256": "a8d28096dc570710ac02349569fea95ea82657b87a854d7799c1735c39ac1dd1",
+      "type_name": "Schema125ContractsSchemasEventsJpRaosAnalyticsDailyMetricsUpdatedV1SchemaJson"
+    },
+    {
+      "bytes": 1716,
+      "path": "contracts/schemas/events/jp-raos-analytics-import-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-analytics-import-completed-v1.schema.json",
+      "sha256": "50f6012ab7da5f2f04a0b4f9b3216f1ac9ea7a51b3c26f972ea24ecdcebea93d",
+      "type_name": "Schema126ContractsSchemasEventsJpRaosAnalyticsImportCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 1380,
+      "path": "contracts/schemas/events/jp-raos-catalog-affiliate-link-invalid-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-catalog-affiliate-link-invalid-v1.schema.json",
+      "sha256": "0787d7d44ef70f0a002be9c8ed4768ee19f6f833e5dd81e3399436593f72940a",
+      "type_name": "Schema127ContractsSchemasEventsJpRaosCatalogAffiliateLinkInvalidV1SchemaJson"
+    },
+    {
+      "bytes": 1386,
+      "path": "contracts/schemas/events/jp-raos-catalog-candidates-normalized-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-catalog-candidates-normalized-v1.schema.json",
+      "sha256": "e4b9842e56a64993e340d3ed49a0f4ba63f78a9ac7f08358362476aacdff4094",
+      "type_name": "Schema128ContractsSchemasEventsJpRaosCatalogCandidatesNormalizedV1SchemaJson"
+    },
+    {
+      "bytes": 1341,
+      "path": "contracts/schemas/events/jp-raos-catalog-genre-sync-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-catalog-genre-sync-completed-v1.schema.json",
+      "sha256": "9dfafdc6e5aaba4fa4b8475f9795cffcc7102d5e4c6fdd61f9525fcb4d364824",
+      "type_name": "Schema129ContractsSchemasEventsJpRaosCatalogGenreSyncCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 1634,
+      "path": "contracts/schemas/events/jp-raos-catalog-grouping-decision-recorded-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-catalog-grouping-decision-recorded-v1.schema.json",
+      "sha256": "5c0959ef9977fec370393ea18db0ad16b2c9ac49862685fb069a2c832f1220dc",
+      "type_name": "Schema130ContractsSchemasEventsJpRaosCatalogGroupingDecisionRecordedV1SchemaJson"
+    },
+    {
+      "bytes": 1323,
+      "path": "contracts/schemas/events/jp-raos-catalog-grouping-proposals-created-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-catalog-grouping-proposals-created-v1.schema.json",
+      "sha256": "0e3a00a8e70f75e2918ef6845590fafbda325c6478ccf09f6b79ac9307765a44",
+      "type_name": "Schema131ContractsSchemasEventsJpRaosCatalogGroupingProposalsCreatedV1SchemaJson"
+    },
+    {
+      "bytes": 1532,
+      "path": "contracts/schemas/events/jp-raos-catalog-ingestion-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-catalog-ingestion-completed-v1.schema.json",
+      "sha256": "2893bb01a72bf4fe12e3f1858d4ab8e4e0edc5a73fe2f6a23f35a305b611a70f",
+      "type_name": "Schema132ContractsSchemasEventsJpRaosCatalogIngestionCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 1483,
+      "path": "contracts/schemas/events/jp-raos-catalog-offer-observed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-catalog-offer-observed-v1.schema.json",
+      "sha256": "c3e38d1c0cf17c475ca5d70a922b4ddcdfcdc8b2e381750a2b32c21fe1622f04",
+      "type_name": "Schema133ContractsSchemasEventsJpRaosCatalogOfferObservedV1SchemaJson"
+    },
+    {
+      "bytes": 1245,
+      "path": "contracts/schemas/events/jp-raos-catalog-offer-unavailable-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-catalog-offer-unavailable-v1.schema.json",
+      "sha256": "d8a2df0bfcdb0056a3056d95350a77697a6f8659daea5e264ca9ad13487175b7",
+      "type_name": "Schema134ContractsSchemasEventsJpRaosCatalogOfferUnavailableV1SchemaJson"
+    },
+    {
+      "bytes": 1234,
+      "path": "contracts/schemas/events/jp-raos-editorial-article-created-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-editorial-article-created-v1.schema.json",
+      "sha256": "b257eed50005023f07ad252b6676e41f8b1deb41090014a405285947a8e1fbde",
+      "type_name": "Schema135ContractsSchemasEventsJpRaosEditorialArticleCreatedV1SchemaJson"
+    },
+    {
+      "bytes": 1294,
+      "path": "contracts/schemas/events/jp-raos-editorial-article-plan-approved-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-editorial-article-plan-approved-v1.schema.json",
+      "sha256": "831be3d8bc7713a9fada02b9d06792dbdf4b1def00f360aebe7d8a0307260d2b",
+      "type_name": "Schema136ContractsSchemasEventsJpRaosEditorialArticlePlanApprovedV1SchemaJson"
+    },
+    {
+      "bytes": 1356,
+      "path": "contracts/schemas/events/jp-raos-editorial-article-version-submitted-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-editorial-article-version-submitted-v1.schema.json",
+      "sha256": "c1cd3bcc629575880f98091c721416c98cf24062858f3750ed426058b324808d",
+      "type_name": "Schema137ContractsSchemasEventsJpRaosEditorialArticleVersionSubmittedV1SchemaJson"
+    },
+    {
+      "bytes": 1604,
+      "path": "contracts/schemas/events/jp-raos-editorial-draft-generated-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-editorial-draft-generated-v1.schema.json",
+      "sha256": "6128ccaac3fabca2bfc4cfa4c1047c424124e353f5115495431b087b9e9a7012",
+      "type_name": "Schema138ContractsSchemasEventsJpRaosEditorialDraftGeneratedV1SchemaJson"
+    },
+    {
+      "bytes": 1231,
+      "path": "contracts/schemas/events/jp-raos-evidence-claim-unsupported-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-evidence-claim-unsupported-v1.schema.json",
+      "sha256": "fc1778a38899a4186ceaf5c3123ba6fca103500a1d907f0e66d2aa1d99cf7856",
+      "type_name": "Schema139ContractsSchemasEventsJpRaosEvidenceClaimUnsupportedV1SchemaJson"
+    },
+    {
+      "bytes": 1253,
+      "path": "contracts/schemas/events/jp-raos-evidence-claims-extracted-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-evidence-claims-extracted-v1.schema.json",
+      "sha256": "85af8ae5a3893f55cb963c089e2041564ba994d17a039de10b2a969077865eb1",
+      "type_name": "Schema140ContractsSchemasEventsJpRaosEvidenceClaimsExtractedV1SchemaJson"
+    },
+    {
+      "bytes": 1332,
+      "path": "contracts/schemas/events/jp-raos-evidence-facts-extracted-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-evidence-facts-extracted-v1.schema.json",
+      "sha256": "886527759e0b3c0e34e072d1b82af97046c5fd0e714e8cbbf794fb0efc184248",
+      "type_name": "Schema141ContractsSchemasEventsJpRaosEvidenceFactsExtractedV1SchemaJson"
+    },
+    {
+      "bytes": 1352,
+      "path": "contracts/schemas/events/jp-raos-evidence-source-packet-approved-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-evidence-source-packet-approved-v1.schema.json",
+      "sha256": "7496fa23531679418f38f449211ead0d1da13e67289bb8b141b5a56221a1472c",
+      "type_name": "Schema142ContractsSchemasEventsJpRaosEvidenceSourcePacketApprovedV1SchemaJson"
+    },
+    {
+      "bytes": 1566,
+      "path": "contracts/schemas/events/jp-raos-evidence-source-packet-ready-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-evidence-source-packet-ready-v1.schema.json",
+      "sha256": "b9ed8c9f2fe0f473f0424b6077ce57f12ab016b7c77f8fa0a4a4a66b3366a347",
+      "type_name": "Schema143ContractsSchemasEventsJpRaosEvidenceSourcePacketReadyV1SchemaJson"
+    },
+    {
+      "bytes": 1600,
+      "path": "contracts/schemas/events/jp-raos-evidence-source-snapshot-captured-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-evidence-source-snapshot-captured-v1.schema.json",
+      "sha256": "f00bb94cea83ca3aede34fb6fe4531121ad356896414f3dddaa435dc8b104e93",
+      "type_name": "Schema144ContractsSchemasEventsJpRaosEvidenceSourceSnapshotCapturedV1SchemaJson"
+    },
+    {
+      "bytes": 1416,
+      "path": "contracts/schemas/events/jp-raos-finance-commission-status-changed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-finance-commission-status-changed-v1.schema.json",
+      "sha256": "7fc5e7c5949b5e4588ad7970bfc54d42fd27f898e035a56116b3726a0602865b",
+      "type_name": "Schema145ContractsSchemasEventsJpRaosFinanceCommissionStatusChangedV1SchemaJson"
+    },
+    {
+      "bytes": 1437,
+      "path": "contracts/schemas/events/jp-raos-finance-revenue-import-committed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-finance-revenue-import-committed-v1.schema.json",
+      "sha256": "b5c6ad9f2ca522b87e7c630a941817a84a2c8e2ce2604bb9767e976079d71f21",
+      "type_name": "Schema146ContractsSchemasEventsJpRaosFinanceRevenueImportCommittedV1SchemaJson"
+    },
+    {
+      "bytes": 1687,
+      "path": "contracts/schemas/events/jp-raos-finance-revenue-import-dry-run-ready-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-finance-revenue-import-dry-run-ready-v1.schema.json",
+      "sha256": "63dc40608de513db8712e92933df8114737f0b94e09b1f9dcdb203d2101f3378",
+      "type_name": "Schema147ContractsSchemasEventsJpRaosFinanceRevenueImportDryRunReadyV1SchemaJson"
+    },
+    {
+      "bytes": 1916,
+      "path": "contracts/schemas/events/jp-raos-finance-unit-economics-calculated-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-finance-unit-economics-calculated-v1.schema.json",
+      "sha256": "977e5a1a525b1d4509eed7edd39c303a2931c9150f3ee18234de0d3b834949f9",
+      "type_name": "Schema148ContractsSchemasEventsJpRaosFinanceUnitEconomicsCalculatedV1SchemaJson"
+    },
+    {
+      "bytes": 1711,
+      "path": "contracts/schemas/events/jp-raos-freshness-impact-detected-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-freshness-impact-detected-v1.schema.json",
+      "sha256": "0e53d42103ec0a85a45bc02ae88c316743da133705233c4e7d712b0f8763e611",
+      "type_name": "Schema149ContractsSchemasEventsJpRaosFreshnessImpactDetectedV1SchemaJson"
+    },
+    {
+      "bytes": 1464,
+      "path": "contracts/schemas/events/jp-raos-freshness-link-check-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-freshness-link-check-completed-v1.schema.json",
+      "sha256": "45cf65f31954a23354d28d041d718cf46043894bf4de4826d978410254d2be80",
+      "type_name": "Schema150ContractsSchemasEventsJpRaosFreshnessLinkCheckCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 1548,
+      "path": "contracts/schemas/events/jp-raos-freshness-refresh-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-freshness-refresh-completed-v1.schema.json",
+      "sha256": "c24f8b4d785862f58b3e0b78d26b1528ebc8077a99560da0460a4656cde4ab8c",
+      "type_name": "Schema151ContractsSchemasEventsJpRaosFreshnessRefreshCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 1310,
+      "path": "contracts/schemas/events/jp-raos-freshness-staleness-assessed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-freshness-staleness-assessed-v1.schema.json",
+      "sha256": "36ec3d9f99f9858a9ab304b0d7b9991af0c9a7dcd1e9dfe0fc608255c54d79c7",
+      "type_name": "Schema152ContractsSchemasEventsJpRaosFreshnessStalenessAssessedV1SchemaJson"
+    },
+    {
+      "bytes": 1273,
+      "path": "contracts/schemas/events/jp-raos-ops-audit-export-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-audit-export-completed-v1.schema.json",
+      "sha256": "e31c52972322cc152522655c715ab1a1d8fe45c54d3ad7ab6d6500121ac3f208",
+      "type_name": "Schema153ContractsSchemasEventsJpRaosOpsAuditExportCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 1214,
+      "path": "contracts/schemas/events/jp-raos-ops-child-jobs-created-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-child-jobs-created-v1.schema.json",
+      "sha256": "9925a620d56c388419e1abc5e06fada459196347b366e97f7610c2c0860fac76",
+      "type_name": "Schema154ContractsSchemasEventsJpRaosOpsChildJobsCreatedV1SchemaJson"
+    },
+    {
+      "bytes": 1095,
+      "path": "contracts/schemas/events/jp-raos-ops-incident-closed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-incident-closed-v1.schema.json",
+      "sha256": "5a14b0fd58971d6ae14d0bb94a21d2c12562bc0bacd32c9e7381a8aa95266f5a",
+      "type_name": "Schema155ContractsSchemasEventsJpRaosOpsIncidentClosedV1SchemaJson"
+    },
+    {
+      "bytes": 1172,
+      "path": "contracts/schemas/events/jp-raos-ops-incident-declared-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-incident-declared-v1.schema.json",
+      "sha256": "77285374a27a5b01b4540d8886a4b51bc20bc88613e0bcb77fcf27576b5c4ead",
+      "type_name": "Schema156ContractsSchemasEventsJpRaosOpsIncidentDeclaredV1SchemaJson"
+    },
+    {
+      "bytes": 1283,
+      "path": "contracts/schemas/events/jp-raos-ops-job-failed-terminal-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-job-failed-terminal-v1.schema.json",
+      "sha256": "304d6ec92b11ec661a9791bc8e14ba988e03199391f8a6b5ad8fb2ae4b55dad6",
+      "type_name": "Schema157ContractsSchemasEventsJpRaosOpsJobFailedTerminalV1SchemaJson"
+    },
+    {
+      "bytes": 1237,
+      "path": "contracts/schemas/events/jp-raos-ops-job-quarantined-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-job-quarantined-v1.schema.json",
+      "sha256": "768628c32093ee871f510da510829263ca8af4a494618a70b5e8c1967a481fee",
+      "type_name": "Schema158ContractsSchemasEventsJpRaosOpsJobQuarantinedV1SchemaJson"
+    },
+    {
+      "bytes": 1156,
+      "path": "contracts/schemas/events/jp-raos-ops-job-requested-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-job-requested-v1.schema.json",
+      "sha256": "c10f9773b621000705684bec152bdc8f037c46b688f390216effa2872ab8e671",
+      "type_name": "Schema159ContractsSchemasEventsJpRaosOpsJobRequestedV1SchemaJson"
+    },
+    {
+      "bytes": 1413,
+      "path": "contracts/schemas/events/jp-raos-ops-job-succeeded-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-job-succeeded-v1.schema.json",
+      "sha256": "601a7b9fdc942d177bef55a285a7452198c154c2171852b939540d262c9c59b7",
+      "type_name": "Schema160ContractsSchemasEventsJpRaosOpsJobSucceededV1SchemaJson"
+    },
+    {
+      "bytes": 1938,
+      "path": "contracts/schemas/events/jp-raos-ops-kill-switch-changed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-kill-switch-changed-v1.schema.json",
+      "sha256": "65fd3fb31e2b9dcfadd5a36bbd3d156af95e919d67f8b5c6e5183d32cc055562",
+      "type_name": "Schema161ContractsSchemasEventsJpRaosOpsKillSwitchChangedV1SchemaJson"
+    },
+    {
+      "bytes": 1319,
+      "path": "contracts/schemas/events/jp-raos-ops-notification-dispatched-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-notification-dispatched-v1.schema.json",
+      "sha256": "cb2c7c09b5aac23e0881eb613ae2865f63b945138e303476a045809440728960",
+      "type_name": "Schema162ContractsSchemasEventsJpRaosOpsNotificationDispatchedV1SchemaJson"
+    },
+    {
+      "bytes": 1339,
+      "path": "contracts/schemas/events/jp-raos-ops-readmodel-rebuilt-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-readmodel-rebuilt-v1.schema.json",
+      "sha256": "1e9f4d60fb103dad440d74582fadbb638731f10021ef65a646d0d994fb001369",
+      "type_name": "Schema163ContractsSchemasEventsJpRaosOpsReadmodelRebuiltV1SchemaJson"
+    },
+    {
+      "bytes": 1335,
+      "path": "contracts/schemas/events/jp-raos-ops-retention-sweep-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-ops-retention-sweep-completed-v1.schema.json",
+      "sha256": "25a8ca7b2e637386a744de17b6e60c343a0c45e761dfa4b4df2b881132fc44b9",
+      "type_name": "Schema164ContractsSchemasEventsJpRaosOpsRetentionSweepCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 1380,
+      "path": "contracts/schemas/events/jp-raos-policy-blocking-finding-raised-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-policy-blocking-finding-raised-v1.schema.json",
+      "sha256": "33299a0d61be390d51b3f2532f0894a3efcdc758fe5beb269e2a399204c9535c",
+      "type_name": "Schema165ContractsSchemasEventsJpRaosPolicyBlockingFindingRaisedV1SchemaJson"
+    },
+    {
+      "bytes": 1099,
+      "path": "contracts/schemas/events/jp-raos-policy-finding-resolved-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-policy-finding-resolved-v1.schema.json",
+      "sha256": "be0aec64f1108b739b7fd286d01850fe133fbf1ad8e314f7eceac28e7ab8153a",
+      "type_name": "Schema166ContractsSchemasEventsJpRaosPolicyFindingResolvedV1SchemaJson"
+    },
+    {
+      "bytes": 1444,
+      "path": "contracts/schemas/events/jp-raos-policy-gate-decision-recorded-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-policy-gate-decision-recorded-v1.schema.json",
+      "sha256": "a1ccffc36334ec1f4d5c076de07ce288316bc3b37cb97c90b838264d7ca782a4",
+      "type_name": "Schema167ContractsSchemasEventsJpRaosPolicyGateDecisionRecordedV1SchemaJson"
+    },
+    {
+      "bytes": 1400,
+      "path": "contracts/schemas/events/jp-raos-policy-policy-bundle-activated-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-policy-policy-bundle-activated-v1.schema.json",
+      "sha256": "cb6c7233454a08ab0eea46e12fd4ff353205763393853f16d812bfe0cadbd461",
+      "type_name": "Schema168ContractsSchemasEventsJpRaosPolicyPolicyBundleActivatedV1SchemaJson"
+    },
+    {
+      "bytes": 1489,
+      "path": "contracts/schemas/events/jp-raos-policy-policy-recheck-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-policy-policy-recheck-completed-v1.schema.json",
+      "sha256": "4688f840d1a2bf0e08b871413e373d1ffc03de8b6a79cb64e02db95957f70211",
+      "type_name": "Schema169ContractsSchemasEventsJpRaosPolicyPolicyRecheckCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 1545,
+      "path": "contracts/schemas/events/jp-raos-policy-quality-check-completed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-policy-quality-check-completed-v1.schema.json",
+      "sha256": "5bca3667721c41494045d2e9516a27a4293bf45943d38aefe8ac3761adf9c167",
+      "type_name": "Schema170ContractsSchemasEventsJpRaosPolicyQualityCheckCompletedV1SchemaJson"
+    },
+    {
+      "bytes": 1167,
+      "path": "contracts/schemas/events/jp-raos-portfolio-action-candidate-decided-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-portfolio-action-candidate-decided-v1.schema.json",
+      "sha256": "3ae2f73207c27bd019d9fd55e0d24c794e4a0d711265af902c4d38ec63bf2528",
+      "type_name": "Schema171ContractsSchemasEventsJpRaosPortfolioActionCandidateDecidedV1SchemaJson"
+    },
+    {
+      "bytes": 1359,
+      "path": "contracts/schemas/events/jp-raos-portfolio-action-candidates-generated-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-portfolio-action-candidates-generated-v1.schema.json",
+      "sha256": "6b7f518687c94c4b9a10f6f4fab6c45325cce99538706e9e5f110f96539ceb93",
+      "type_name": "Schema172ContractsSchemasEventsJpRaosPortfolioActionCandidatesGeneratedV1SchemaJson"
+    },
+    {
+      "bytes": 1917,
+      "path": "contracts/schemas/events/jp-raos-portfolio-opportunity-assessed-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-portfolio-opportunity-assessed-v1.schema.json",
+      "sha256": "be5e804c88ad64bd1ee928dae8e3d7bfc11f08ecc8f815b12aa80bafcfc333e7",
+      "type_name": "Schema173ContractsSchemasEventsJpRaosPortfolioOpportunityAssessedV1SchemaJson"
+    },
+    {
+      "bytes": 1598,
+      "path": "contracts/schemas/events/jp-raos-publishing-approval-granted-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-publishing-approval-granted-v1.schema.json",
+      "sha256": "ef597efed4ffe2d50440bec59dea9d1fa08ae0fa2f76ad20d3ce30e227b8e097",
+      "type_name": "Schema174ContractsSchemasEventsJpRaosPublishingApprovalGrantedV1SchemaJson"
+    },
+    {
+      "bytes": 1249,
+      "path": "contracts/schemas/events/jp-raos-publishing-approval-revoked-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-publishing-approval-revoked-v1.schema.json",
+      "sha256": "3ea30eefd85cdf9f48fa84a4caf3b26956d1943c621a2035cf4584477680f1c1",
+      "type_name": "Schema175ContractsSchemasEventsJpRaosPublishingApprovalRevokedV1SchemaJson"
+    },
+    {
+      "bytes": 1562,
+      "path": "contracts/schemas/events/jp-raos-publishing-article-published-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-publishing-article-published-v1.schema.json",
+      "sha256": "70fbe58d58399d44bd386ed39673682f7fa3eb3acfdbc8c5e2f46fcf7be12f19",
+      "type_name": "Schema176ContractsSchemasEventsJpRaosPublishingArticlePublishedV1SchemaJson"
+    },
+    {
+      "bytes": 1475,
+      "path": "contracts/schemas/events/jp-raos-publishing-article-rolled-back-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-publishing-article-rolled-back-v1.schema.json",
+      "sha256": "a405b5826a80f2e95029d7a5b824caf9e5795e8050edfc97e2e76906742cf660",
+      "type_name": "Schema177ContractsSchemasEventsJpRaosPublishingArticleRolledBackV1SchemaJson"
+    },
+    {
+      "bytes": 1417,
+      "path": "contracts/schemas/events/jp-raos-publishing-article-unpublished-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-publishing-article-unpublished-v1.schema.json",
+      "sha256": "91fc5b6322bd98301440b493c639955541aba9a45b24420888ca855e90eac9b6",
+      "type_name": "Schema178ContractsSchemasEventsJpRaosPublishingArticleUnpublishedV1SchemaJson"
+    },
+    {
+      "bytes": 1356,
+      "path": "contracts/schemas/events/jp-raos-publishing-public-projection-rebuilt-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-publishing-public-projection-rebuilt-v1.schema.json",
+      "sha256": "b204281bd26c57542219067a6ebd10aeeb68c1ba2dd6925cc6467ac3c420e3f8",
+      "type_name": "Schema179ContractsSchemasEventsJpRaosPublishingPublicProjectionRebuiltV1SchemaJson"
+    },
+    {
+      "bytes": 1472,
+      "path": "contracts/schemas/events/jp-raos-publishing-review-assigned-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-publishing-review-assigned-v1.schema.json",
+      "sha256": "4588379d2350de8eb532211972204cc72e3894b0f515041caf436bf748bf5d70",
+      "type_name": "Schema180ContractsSchemasEventsJpRaosPublishingReviewAssignedV1SchemaJson"
+    },
+    {
+      "bytes": 1462,
+      "path": "contracts/schemas/events/jp-raos-publishing-review-decision-recorded-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-publishing-review-decision-recorded-v1.schema.json",
+      "sha256": "ed53a3126f79ac50b29769b0ae742e869a4c98a514906f16aa9181b7a6964b47",
+      "type_name": "Schema181ContractsSchemasEventsJpRaosPublishingReviewDecisionRecordedV1SchemaJson"
+    },
+    {
+      "bytes": 1609,
+      "path": "contracts/schemas/events/jp-raos-publishing-snapshot-built-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/events/jp-raos-publishing-snapshot-built-v1.schema.json",
+      "sha256": "6651393069ae07c1b45a9b6e2cece31157f7a821a53f68c88538fb8a4726727f",
+      "type_name": "Schema182ContractsSchemasEventsJpRaosPublishingSnapshotBuiltV1SchemaJson"
+    },
+    {
+      "bytes": 1702,
+      "path": "contracts/schemas/imports/affiliate-click-input.schema.json",
+      "schema_id": "https://schemas.raos.local/imports/affiliate-click-input.schema.json",
+      "sha256": "fc99e614645a6dcb588c8ce9a3a417cfd90a79427f4c4b8da9181c0ba63df664",
+      "type_name": "Schema183ContractsSchemasImportsAffiliateClickInputSchemaJson"
+    },
+    {
+      "bytes": 1353,
+      "path": "contracts/schemas/imports/keyword-rank-row.schema.json",
+      "schema_id": "https://schemas.raos.local/imports/keyword-rank-row.schema.json",
+      "sha256": "d1c311cf0afabf6c83c5acb0154ca8f89d023165683a08adff28f09e607bec4c",
+      "type_name": "Schema184ContractsSchemasImportsKeywordRankRowSchemaJson"
+    },
+    {
+      "bytes": 2426,
+      "path": "contracts/schemas/imports/revenue-canonical-row.schema.json",
+      "schema_id": "https://schemas.raos.local/imports/revenue-canonical-row.schema.json",
+      "sha256": "02bc3d854a7420a74a8b302342a9ad0e23cfe4529565716a185c333b43ebbff8",
+      "type_name": "Schema185ContractsSchemasImportsRevenueCanonicalRowSchemaJson"
+    },
+    {
+      "bytes": 1647,
+      "path": "contracts/schemas/jobs/ai-assess-opportunity-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ai-assess-opportunity-v1.schema.json",
+      "sha256": "88ad36fc819056242b399156f5f6c6cb7ead8438b7eeaef15f8630552632a280",
+      "type_name": "Schema186ContractsSchemasJobsAiAssessOpportunityV1SchemaJson"
+    },
+    {
+      "bytes": 1614,
+      "path": "contracts/schemas/jobs/ai-classify-search-intent-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ai-classify-search-intent-v1.schema.json",
+      "sha256": "fe67d8c02e49d8677d5f1b6b5dd79437334c5ca0872c39350306a5773c6fb858",
+      "type_name": "Schema187ContractsSchemasJobsAiClassifySearchIntentV1SchemaJson"
+    },
+    {
+      "bytes": 1532,
+      "path": "contracts/schemas/jobs/ai-evaluate-output-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ai-evaluate-output-v1.schema.json",
+      "sha256": "6bfa77b2e297c1465ef6aa3fa4fa086b2175b83642bf8f8543d802072edf956d",
+      "type_name": "Schema188ContractsSchemasJobsAiEvaluateOutputV1SchemaJson"
+    },
+    {
+      "bytes": 1482,
+      "path": "contracts/schemas/jobs/ai-extract-claims-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ai-extract-claims-v1.schema.json",
+      "sha256": "59ddd6e87bb386fbfe7eeb105ece945b7183a7a83cd1c4b76b950d9597aff01a",
+      "type_name": "Schema189ContractsSchemasJobsAiExtractClaimsV1SchemaJson"
+    },
+    {
+      "bytes": 1848,
+      "path": "contracts/schemas/jobs/ai-generate-article-draft-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ai-generate-article-draft-v1.schema.json",
+      "sha256": "c09f86aa43a744c6dd2c4536a535ff09b5e9ce1d8c92b55d240c07342ceb65dd",
+      "type_name": "Schema190ContractsSchemasJobsAiGenerateArticleDraftV1SchemaJson"
+    },
+    {
+      "bytes": 1806,
+      "path": "contracts/schemas/jobs/ai-generic-task-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ai-generic-task-v1.schema.json",
+      "sha256": "7302decd2630dc818e52b84f0429a784ef18d6961656c32c6a4d3cd633d7f6dd",
+      "type_name": "Schema191ContractsSchemasJobsAiGenericTaskV1SchemaJson"
+    },
+    {
+      "bytes": 1646,
+      "path": "contracts/schemas/jobs/ai-policy-assist-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ai-policy-assist-v1.schema.json",
+      "sha256": "4eebbc2a86970433aefea792cb99d67b00707484428357244288d8baeebc3238",
+      "type_name": "Schema192ContractsSchemasJobsAiPolicyAssistV1SchemaJson"
+    },
+    {
+      "bytes": 1516,
+      "path": "contracts/schemas/jobs/analytics-import-ga4-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/analytics-import-ga4-v1.schema.json",
+      "sha256": "9f09de8a01ca10f4348535bb2e7ab12622d6e9ea53c399311fba6d92207c4a3e",
+      "type_name": "Schema193ContractsSchemasJobsAnalyticsImportGa4V1SchemaJson"
+    },
+    {
+      "bytes": 1402,
+      "path": "contracts/schemas/jobs/analytics-import-keyword-rank-csv-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/analytics-import-keyword-rank-csv-v1.schema.json",
+      "sha256": "1b4328b6eba2bb1a3e9e34e91049f0cec2bc4080310690f50971656df2bb5cc1",
+      "type_name": "Schema194ContractsSchemasJobsAnalyticsImportKeywordRankCsvV1SchemaJson"
+    },
+    {
+      "bytes": 1612,
+      "path": "contracts/schemas/jobs/analytics-import-provider-data-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/analytics-import-provider-data-v1.schema.json",
+      "sha256": "7610a9b4927ffddd191409b597497eac39f49712c34115a3f27fb254694c16ab",
+      "type_name": "Schema195ContractsSchemasJobsAnalyticsImportProviderDataV1SchemaJson"
+    },
+    {
+      "bytes": 1547,
+      "path": "contracts/schemas/jobs/analytics-import-search-console-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/analytics-import-search-console-v1.schema.json",
+      "sha256": "aa2c88caffeee692ee38d5ca6c8b7460f770ab3751abb0c35a9d197014d73f0c",
+      "type_name": "Schema196ContractsSchemasJobsAnalyticsImportSearchConsoleV1SchemaJson"
+    },
+    {
+      "bytes": 1261,
+      "path": "contracts/schemas/jobs/analytics-rollup-daily-metrics-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/analytics-rollup-daily-metrics-v1.schema.json",
+      "sha256": "aaec54e955f4fdeb92e45d842a8686a0432edaca617a65cc4d9b345f099fb2bd",
+      "type_name": "Schema197ContractsSchemasJobsAnalyticsRollupDailyMetricsV1SchemaJson"
+    },
+    {
+      "bytes": 1462,
+      "path": "contracts/schemas/jobs/catalog-group-product-candidates-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/catalog-group-product-candidates-v1.schema.json",
+      "sha256": "7a5f276d63430f59ab67f723125ed7800843f0742bf5f8fe040ddbd792b7da1e",
+      "type_name": "Schema198ContractsSchemasJobsCatalogGroupProductCandidatesV1SchemaJson"
+    },
+    {
+      "bytes": 1320,
+      "path": "contracts/schemas/jobs/catalog-normalize-ingestion-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/catalog-normalize-ingestion-v1.schema.json",
+      "sha256": "39fec92bf7c8fe808a4abe19c2741eaf8bff6496dffd3932308de65979aba6cb",
+      "type_name": "Schema199ContractsSchemasJobsCatalogNormalizeIngestionV1SchemaJson"
+    },
+    {
+      "bytes": 1233,
+      "path": "contracts/schemas/jobs/catalog-rakuten-genre-sync-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/catalog-rakuten-genre-sync-v1.schema.json",
+      "sha256": "dcb4c76d97f609450dde47fe676beb1b8e59831880e61c95a59d4a3a1bcc7d97",
+      "type_name": "Schema200ContractsSchemasJobsCatalogRakutenGenreSyncV1SchemaJson"
+    },
+    {
+      "bytes": 1887,
+      "path": "contracts/schemas/jobs/catalog-rakuten-item-search-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/catalog-rakuten-item-search-v1.schema.json",
+      "sha256": "6314e3529ba468252f54f347045d409a0beb0a881b282237602303cdf9383a31",
+      "type_name": "Schema201ContractsSchemasJobsCatalogRakutenItemSearchV1SchemaJson"
+    },
+    {
+      "bytes": 1552,
+      "path": "contracts/schemas/jobs/catalog-refresh-offer-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/catalog-refresh-offer-v1.schema.json",
+      "sha256": "fd5c8a1eceb12f1ef6853cf70c70a45b239e20f9e5c5aa877a987f1b5ec9945e",
+      "type_name": "Schema202ContractsSchemasJobsCatalogRefreshOfferV1SchemaJson"
+    },
+    {
+      "bytes": 1657,
+      "path": "contracts/schemas/jobs/evidence-build-source-packet-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/evidence-build-source-packet-v1.schema.json",
+      "sha256": "d36adcd67f0a35357b9db5edab88c3e44896883731a1bb3b4a3952edbe71fc66",
+      "type_name": "Schema203ContractsSchemasJobsEvidenceBuildSourcePacketV1SchemaJson"
+    },
+    {
+      "bytes": 1479,
+      "path": "contracts/schemas/jobs/evidence-capture-source-snapshot-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/evidence-capture-source-snapshot-v1.schema.json",
+      "sha256": "23da117b772a7d0d82da82f3daba5c0142d76f3ba2ebf87133f857618c5b51ae",
+      "type_name": "Schema204ContractsSchemasJobsEvidenceCaptureSourceSnapshotV1SchemaJson"
+    },
+    {
+      "bytes": 1170,
+      "path": "contracts/schemas/jobs/evidence-extract-facts-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/evidence-extract-facts-v1.schema.json",
+      "sha256": "81011cb345b21d4df9acbb14cedbddac0ad87467e9c66fb67e5efc4cdb26da1b",
+      "type_name": "Schema205ContractsSchemasJobsEvidenceExtractFactsV1SchemaJson"
+    },
+    {
+      "bytes": 1720,
+      "path": "contracts/schemas/jobs/finance-calculate-unit-economics-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/finance-calculate-unit-economics-v1.schema.json",
+      "sha256": "a0e7ef5211b6e0dd3daeba65509df5967c86eaa1274917e0a01d258f04e5a443",
+      "type_name": "Schema206ContractsSchemasJobsFinanceCalculateUnitEconomicsV1SchemaJson"
+    },
+    {
+      "bytes": 1387,
+      "path": "contracts/schemas/jobs/finance-commit-revenue-import-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/finance-commit-revenue-import-v1.schema.json",
+      "sha256": "9e0b860aacd151888e67e76a64ad94e8c3dd33072de42f570b8b233e1a9dce0d",
+      "type_name": "Schema207ContractsSchemasJobsFinanceCommitRevenueImportV1SchemaJson"
+    },
+    {
+      "bytes": 1328,
+      "path": "contracts/schemas/jobs/finance-parse-revenue-csv-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/finance-parse-revenue-csv-v1.schema.json",
+      "sha256": "1c537c4e76d8ff0a728e82ae69808ed8db6b11b45cff2d7e285ee1faaf0179c2",
+      "type_name": "Schema208ContractsSchemasJobsFinanceParseRevenueCsvV1SchemaJson"
+    },
+    {
+      "bytes": 1279,
+      "path": "contracts/schemas/jobs/freshness-assess-change-impact-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/freshness-assess-change-impact-v1.schema.json",
+      "sha256": "cf21692ad4b67a376fac0a4ddccde054f23fd631064bed110466a38c3283530c",
+      "type_name": "Schema209ContractsSchemasJobsFreshnessAssessChangeImpactV1SchemaJson"
+    },
+    {
+      "bytes": 1259,
+      "path": "contracts/schemas/jobs/freshness-check-affiliate-link-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/freshness-check-affiliate-link-v1.schema.json",
+      "sha256": "e722864673c10b2c05e89f958a670a5fc3cfe5e5200a301a36e5657091a2abd3",
+      "type_name": "Schema210ContractsSchemasJobsFreshnessCheckAffiliateLinkV1SchemaJson"
+    },
+    {
+      "bytes": 1511,
+      "path": "contracts/schemas/jobs/freshness-run-refresh-batch-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/freshness-run-refresh-batch-v1.schema.json",
+      "sha256": "303ba7d0fea572b2b3e4bf5585efe89c68e77d54ffda9a255e2e33cb0b12aee1",
+      "type_name": "Schema211ContractsSchemasJobsFreshnessRunRefreshBatchV1SchemaJson"
+    },
+    {
+      "bytes": 1261,
+      "path": "contracts/schemas/jobs/ops-export-audit-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ops-export-audit-v1.schema.json",
+      "sha256": "cc6a1cecb2dbf9ce6ac121f12339e5ebad53f00b8af36d89012c4076f077ab0c",
+      "type_name": "Schema212ContractsSchemasJobsOpsExportAuditV1SchemaJson"
+    },
+    {
+      "bytes": 1486,
+      "path": "contracts/schemas/jobs/ops-rebuild-readmodel-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ops-rebuild-readmodel-v1.schema.json",
+      "sha256": "b59e06560a629f69db4b9f1498c31f2fe8b7dd53768a6f7f3d33ff8353000ae7",
+      "type_name": "Schema213ContractsSchemasJobsOpsRebuildReadmodelV1SchemaJson"
+    },
+    {
+      "bytes": 1321,
+      "path": "contracts/schemas/jobs/ops-retention-sweep-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ops-retention-sweep-v1.schema.json",
+      "sha256": "19e17a20e9c49314dbc178566bc850b0e7b0c60590fe16581553cf2ac74b8abc",
+      "type_name": "Schema214ContractsSchemasJobsOpsRetentionSweepV1SchemaJson"
+    },
+    {
+      "bytes": 1403,
+      "path": "contracts/schemas/jobs/ops-send-notification-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/ops-send-notification-v1.schema.json",
+      "sha256": "c3fa2e6b18b1145cd31105863fd274592a8f2a965c3ee8d48a0296cc0b5f4e83",
+      "type_name": "Schema215ContractsSchemasJobsOpsSendNotificationV1SchemaJson"
+    },
+    {
+      "bytes": 1469,
+      "path": "contracts/schemas/jobs/portfolio-assess-opportunity-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/portfolio-assess-opportunity-v1.schema.json",
+      "sha256": "0398f21d9cd73f77b0892c8559315083e82128e1b628ea5d45b6e7fc6797fa7e",
+      "type_name": "Schema216ContractsSchemasJobsPortfolioAssessOpportunityV1SchemaJson"
+    },
+    {
+      "bytes": 1336,
+      "path": "contracts/schemas/jobs/portfolio-generate-action-candidates-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/portfolio-generate-action-candidates-v1.schema.json",
+      "sha256": "4f8d3b16d59c6136c1722d00a0ce5475208514224996dfc99a92238d1dca0ccd",
+      "type_name": "Schema217ContractsSchemasJobsPortfolioGenerateActionCandidatesV1SchemaJson"
+    },
+    {
+      "bytes": 1504,
+      "path": "contracts/schemas/jobs/publishing-build-snapshot-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/publishing-build-snapshot-v1.schema.json",
+      "sha256": "e2b8680b25276a3b23002a567d65f333d7df4d13fdecb8d4e2b2f1d8919bbacd",
+      "type_name": "Schema218ContractsSchemasJobsPublishingBuildSnapshotV1SchemaJson"
+    },
+    {
+      "bytes": 1318,
+      "path": "contracts/schemas/jobs/publishing-publish-snapshot-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/publishing-publish-snapshot-v1.schema.json",
+      "sha256": "81f885e435bcaf4af75ab3149a2007668b7585155cfbe730242e78efefc5a6e7",
+      "type_name": "Schema219ContractsSchemasJobsPublishingPublishSnapshotV1SchemaJson"
+    },
+    {
+      "bytes": 1402,
+      "path": "contracts/schemas/jobs/publishing-rebuild-public-projection-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/publishing-rebuild-public-projection-v1.schema.json",
+      "sha256": "a03cadf868e424fc471536b478189e152b28671167c5dde1871d925cceda5a03",
+      "type_name": "Schema220ContractsSchemasJobsPublishingRebuildPublicProjectionV1SchemaJson"
+    },
+    {
+      "bytes": 1471,
+      "path": "contracts/schemas/jobs/publishing-rollback-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/publishing-rollback-v1.schema.json",
+      "sha256": "8dd422009feea40da8821e57403ac493dd86f24ccf333beb29b637b60d7276d9",
+      "type_name": "Schema221ContractsSchemasJobsPublishingRollbackV1SchemaJson"
+    },
+    {
+      "bytes": 1123,
+      "path": "contracts/schemas/jobs/publishing-unpublish-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/publishing-unpublish-v1.schema.json",
+      "sha256": "037516debc7d44f860de113f68973c85141ded552d9b45de88fdc6a6ac84a862",
+      "type_name": "Schema222ContractsSchemasJobsPublishingUnpublishV1SchemaJson"
+    },
+    {
+      "bytes": 1469,
+      "path": "contracts/schemas/jobs/quality-evaluate-article-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/quality-evaluate-article-v1.schema.json",
+      "sha256": "8c32023f9c33b67ca4dba3867dc397cb041979dbb7e69f847624d1c79208de91",
+      "type_name": "Schema223ContractsSchemasJobsQualityEvaluateArticleV1SchemaJson"
+    },
+    {
+      "bytes": 1493,
+      "path": "contracts/schemas/jobs/quality-recheck-policy-bundle-v1.schema.json",
+      "schema_id": "https://schemas.raos.local/jobs/quality-recheck-policy-bundle-v1.schema.json",
+      "sha256": "c5bc4b05351433c42103a2222271e3ba63df926f6667c86e3645750de65a1c53",
+      "type_name": "Schema224ContractsSchemasJobsQualityRecheckPolicyBundleV1SchemaJson"
+    }
+  ]
+}

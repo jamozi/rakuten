@@ -1,0 +1,17 @@
+document:
+  id: TEST-STATUS-EVIDENCE-ST0005-SEQ-PARTIAL-STALE-DISTINCT
+  schema_version: 1
+  recorded_at: '2026-08-01T08:00:00Z'
+story_id: ST-0005
+evidence_class: RUNTIME_SUITE_RESULT
+formal_suite_status: PARTIAL
+source_artifacts:
+- original_uri: repo://docs/canonical/01_integration/RAOS_07_status_taxonomy_v1.0.yaml
+  artifact_uri: repo://tests/st0005/fixtures/artifacts/e3261a8a6102c1b93e6cc9006c52f01389ec31510e24ca37bc400437aebbf68b-status-taxonomy.yaml
+  sha256: e3261a8a6102c1b93e6cc9006c52f01389ec31510e24ca37bc400437aebbf68b
+suite_results:
+- suite_id: TST-001
+  environment: CI
+  result: PARTIAL
+local_results: []
+boundary: Stale but previously unconsumed partial result for watermark rejection.

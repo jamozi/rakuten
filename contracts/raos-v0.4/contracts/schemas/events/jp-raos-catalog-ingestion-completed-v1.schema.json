@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-catalog-ingestion-completed-v1.schema.json",
+  "title": "jp.raos.catalog.ingestion_completed.v1",
+  "description": "Provider取込原本が保存された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.catalog.ingestion_completed.v1"
+        },
+        "producer": {
+          "const": "catalog"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ingestion_request_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "provider_endpoint_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "raw_artifact": {
+              "$ref": "../common/artifact-ref.schema.json"
+            },
+            "item_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "api_version": {
+              "type": "string"
+            },
+            "request_fingerprint": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ingestion_request_id",
+            "provider_endpoint_id",
+            "raw_artifact",
+            "item_count",
+            "api_version",
+            "request_fingerprint"
+          ]
+        }
+      }
+    }
+  ]
+}

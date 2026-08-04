@@ -1,0 +1,409 @@
+project:
+  id: RAOS
+  name: Rakuten Affiliate Operating System
+  document_id: RAOS-RD-001
+  version: "0.1"
+  status: draft
+  baseline_date: "2026-07-30"
+  locale: ja-JP
+  timezone: Asia/Tokyo
+  currency: JPY
+
+requirement_keywords:
+  MUST: release_blocking
+  SHOULD: exception_requires_approval
+  MAY: optional
+  WONT: excluded_in_current_phase
+
+precedence:
+  - law_and_platform_terms
+  - user_safety_and_non_deception
+  - factual_accuracy_and_provenance
+  - decision_support_value
+  - business_economics
+  - automation_rate
+  - page_volume
+
+business_targets:
+  primary_monthly_confirmed_contribution_profit_jpy: 300000
+  stretch_monthly_confirmed_contribution_profit_jpy: 1000000
+  consecutive_months_required: 3
+  note: planning targets, not revenue guarantees
+
+north_star_metrics:
+  business:
+    id: KPI-NS-BIZ-001
+    name: monthly_confirmed_contribution_profit
+    formula: confirmed_commission - variable_external_cost - content_editorial_update_cost
+  product:
+    id: KPI-NS-PROD-001
+    name: qualified_decision_sessions
+    definition:
+      - non_bot_session
+      - lands_on_purchase_intent_content
+      - engages_with_decision_component_or_clicks_rakuten_link
+
+hard_constraints:
+  - id: COMP-RAK-001
+    level: MUST
+    rule: affiliate_media_must_be_registered_operator_owned_and_https
+  - id: COMP-RAK-002
+    level: MUST
+    rule: use_only_official_or_api_returned_affiliate_links_without_unauthorized_modification
+  - id: COMP-RAK-003
+    level: MUST
+    rule: destination_as_rakuten_must_be_clear_before_click
+  - id: COMP-RAK-004
+    level: MUST
+    rule: prohibit_self_purchase_collusion_and_artificial_conversion
+  - id: COMP-RAK-006
+    level: MUST
+    rule: do_not_collect_copy_transform_or_summarize_rakuten_review_bodies_in_mvp
+  - id: COMP-RAK-007
+    level: MUST
+    rule: use_permitted_product_images_without_overlay_or_cropping
+  - id: COMP-RWS-003
+    level: MUST
+    rule: display_unmodified_rakuten_api_credit
+  - id: COMP-GOOG-001
+    level: MUST
+    rule: prohibit_scaled_low_value_content_for_ranking_manipulation
+  - id: COMP-AD-001
+    level: MUST
+    rule: disclose_ad_and_affiliate_relationship_near_article_top
+  - id: PRINCIPLE-03
+    level: MUST
+    rule: prohibit_fabricated_first_hand_experience
+  - id: PRINCIPLE-04
+    level: MUST
+    rule: separate_editorial_ranking_from_affiliate_rate
+  - id: PRINCIPLE-05
+    level: MUST
+    rule: human_approval_required_until_explicit_auto_publish_release
+
+scope:
+  mvp:
+    market:
+      country: JP
+      language: ja
+      primary_channel: organic_search
+      monetization_provider: rakuten_affiliate
+    deployment:
+      domains: 1
+      brands: 1
+      initial_categories: 1
+    initial_content:
+      min_articles: 30
+      max_articles: 45
+      intent_clusters: 3
+      article_types:
+        - selection_guide
+        - use_case_recommendation
+        - product_comparison
+        - model_generation_capacity_difference
+        - condition_filtering
+    included_capabilities:
+      - category_keyword_opportunity_management
+      - rakuten_api_ingestion
+      - product_shop_normalization
+      - source_packet_generation
+      - claim_level_provenance
+      - ai_draft_generation
+      - automated_quality_checks
+      - human_review_and_approval
+      - cms_draft_publish_update_stop_rollback
+      - freshness_monitoring
+      - analytics_and_rakuten_report_import
+      - confirmed_commission_unit_economics
+      - audit_logs_and_emergency_stop
+    excluded_capabilities:
+      - rakuten_review_body_collection
+      - direct_google_serp_scraping
+      - unreviewed_auto_publication
+      - user_accounts
+      - user_generated_content
+      - native_mobile_apps
+      - high_risk_your_money_your_life_categories
+      - affiliate_rate_based_editorial_ranking
+      - mass_generated_thin_product_pages
+
+objectives:
+  - id: OBJ-BIZ-001
+    level: MUST
+    statement: build_repeatable_confirmed_commission_generation
+    acceptance: confirmed_commission_attributable_to_article_category_and_channel
+  - id: OBJ-BIZ-002
+    level: MUST
+    statement: achieve_positive_confirmed_contribution_profit
+    acceptance: positive_for_three_consecutive_months
+  - id: OBJ-USER-001
+    level: MUST
+    statement: help_users_understand_selection_conditions
+    acceptance: every_purchase_article_contains_selection_criteria_fit_and_non_fit
+  - id: OBJ-USER-002
+    level: MUST
+    statement: make_recommendations_explainable
+    acceptance: every_recommendation_links_to_attributes_and_rules
+  - id: OBJ-USER-004
+    level: MUST
+    statement: make_affiliate_relationship_clear
+    acceptance: disclosure_and_rakuten_destination_label_present
+  - id: OBJ-OPS-002
+    level: MUST
+    statement: detect_price_stock_and_discontinuation_changes
+    acceptance: scheduled_job_detects_stale_or_missing_products
+  - id: OBJ-LEARN-001
+    level: MUST
+    statement: connect_keyword_article_session_click_and_confirmed_commission
+    acceptance: end_to_end_metric_join_available
+
+functional_requirements:
+  - id: FR-001
+    level: MUST
+    statement: manage_category_keyword_article_plan_with_stable_ids
+  - id: FR-002
+    level: MUST
+    statement: ingest_and_archive_rakuten_api_responses
+  - id: FR-003
+    level: MUST
+    statement: normalize_and_group_same_product_candidates
+  - id: FR-004
+    level: MUST
+    statement: retain_source_timestamp_and_confidence
+  - id: FR-005
+    level: MUST
+    statement: separate_editorial_and_business_scores
+  - id: FR-006
+    level: MUST
+    statement: block_generation_without_approved_source_packet
+  - id: FR-007
+    level: MUST
+    statement: link_generated_claims_to_evidence
+  - id: FR-008
+    level: MUST
+    statement: validate_prohibited_phrases_missing_sources_and_stale_prices
+  - id: FR-009
+    level: MUST
+    statement: require_human_approval_by_default
+  - id: FR-010
+    level: MUST
+    statement: support_cms_draft_publish_update_stop_and_rollback
+  - id: FR-011
+    level: MUST
+    statement: validate_affiliate_link_format_reachability_and_destination_clarity
+  - id: FR-012
+    level: MUST
+    statement: detect_product_disappearance_stockout_and_price_change
+  - id: FR-013
+    level: MUST
+    statement: attribute_search_behavior_clicks_and_commission_to_articles
+  - id: FR-014
+    level: MUST
+    statement: store_generated_and_confirmed_commission_separately
+  - id: FR-015
+    level: MUST
+    statement: calculate_epc_rpm_cost_and_contribution_profit
+  - id: FR-016
+    level: MUST
+    statement: prioritize_update_merge_delete_and_create_actions
+  - id: FR-017
+    level: SHOULD
+    statement: link_policy_versions_to_affected_articles
+  - id: FR-018
+    level: MUST
+    statement: record_model_prompt_version_token_and_cost_for_ai_jobs
+  - id: FR-019
+    level: MUST
+    statement: provide_emergency_publication_and_affiliate_link_kill_switch
+  - id: FR-020
+    level: MUST
+    statement: retain_admin_and_automation_audit_log
+
+quality_gate:
+  total_score: 100
+  pass_score: 85
+  sections:
+    search_intent_fit: 15
+    decision_support_value: 20
+    unique_value: 15
+    factual_accuracy_and_evidence: 20
+    fairness_and_explainability: 10
+    freshness: 10
+    readability_and_ux: 5
+    disclosure_and_policy: 5
+  mandatory_subscores:
+    factual_accuracy_and_evidence_min: 18
+    disclosure_and_policy_min: 5
+  zero_tolerance:
+    - must_violation
+    - critical_factual_defect
+    - fabricated_experience
+    - prohibited_review_usage
+    - invalid_affiliate_link
+  human_approval_required: true
+
+success_gates:
+  gate_0:
+    name: compliance_and_foundation
+    scale_limit: 0_public_pages_until_pass
+    all_must_pass:
+      - registered_https_media
+      - api_credit
+      - affiliate_disclosure
+      - official_link_generation
+      - no_review_body_usage
+      - permitted_image_handling
+      - provenance_storage
+      - human_approval
+      - emergency_stop
+      - secret_scan
+      - policy_privacy_editorial_pages
+      - zero_critical_test_failures
+  gate_1:
+    name: editorial_and_technical_pilot
+    scale:
+      categories: 1
+      clusters: 3
+      articles_min: 30
+      articles_max: 45
+    thresholds:
+      quality_score_min: 85
+      critical_factual_defects: 0
+      main_claim_provenance_percent: 100
+      all_claim_provenance_percent_min: 95
+      fabricated_experience_count: 0
+      broken_links_at_publish: 0
+      first_pass_human_approval_percent_min: 80
+      freshness_timestamp_coverage_percent: 100
+  gate_2:
+    name: search_and_user_value_validation
+    observation:
+      min_days: 90
+      target_qualified_organic_sessions: 5000
+    thresholds:
+      valid_index_percent_min: 70
+      impression_coverage_percent_min: 60
+      top_20_article_percent_min: 20
+      affiliate_outbound_ctr_percent_min: 5
+      critical_user_complaints: 0
+      stale_exposure_percent_max: 2
+      broken_affiliate_link_percent_max: 0.5
+    scale_limit_after_pass: 150
+  gate_3:
+    name: revenue_and_unit_economics
+    observation:
+      qualified_sessions_min: 10000
+      confirmed_cycles_min: 2
+    thresholds:
+      confirmed_rpm_jpy_min: 500
+      contribution_profit_i_positive_months: 2
+      contribution_profit_ii_recent_3m_non_negative: true
+      target_payback_months_max: 12
+      top_10_page_revenue_concentration_percent_max: 70
+      update_cost_as_revenue_percent_max: 30
+      critical_compliance_incidents: 0
+    scale_limit_after_pass: 500
+    max_single_scale_multiplier: 2
+  gate_4:
+    name: scalable_repeatability
+    thresholds:
+      positive_monthly_confirmed_contribution_profit_months: 3
+      target_monthly_profit_jpy: 300000
+      profitable_categories_min: 2
+      quality_pass_percent_min: 90
+      critical_defects: 0
+      auto_update_rollback_percent_max: 1
+      stale_exposure_percent_max: 1
+      top_10_page_revenue_concentration_target_percent: 50
+      manual_minutes_new_article_target_max: 15
+      manual_minutes_minor_update_target_max: 5
+
+auto_publish_release:
+  default_enabled: false
+  approval_scope: category_and_article_type
+  prerequisites:
+    sample_size_max: 100
+    critical_defects: 0
+    first_pass_approval_percent_min: 90
+    main_claim_provenance_percent_min: 99
+    post_publish_correction_percent_max: 1
+    product_owner_approval: true
+    compliance_owner_approval: true
+    rollback_and_kill_switch_verified: true
+  ongoing_random_audit_required: true
+
+stop_conditions:
+  immediate:
+    - rakuten_suspension_or_major_warning
+    - unauthorized_affiliate_link_modification
+    - prohibited_review_body_usage
+    - material_disclosure_failure
+    - mass_fabricated_information
+    - secret_leak
+    - credible_copyright_or_legal_claim
+    - google_manual_action_or_strong_spam_signal
+    - large_scale_wrong_product_redirect
+    - admin_account_compromise
+  category_pause:
+    - no_search_visibility_at_150_articles_after_sufficient_observation
+    - confirmed_rpm_below_200_after_10000_qualified_sessions
+    - update_cost_over_50_percent_of_confirmed_commission
+    - category_inherently_causes_unavoidable_material_errors
+    - cannot_create_unique_decision_value
+    - organic_traffic_without_sustained_rakuten_clicks
+    - supply_instability_prevents_freshness
+
+provisional_decisions:
+  - id: DEC-001
+    value: ja_JP_JST_JPY
+  - id: DEC-002
+    value: single_domain_single_brand_single_category_mvp
+  - id: DEC-004
+    value: rakuten_only_monetization_mvp
+  - id: DEC-005
+    value: 30_to_45_initial_articles
+  - id: DEC-006
+    value: auto_publish_off
+  - id: DEC-007
+    value: no_review_body_collection
+  - id: DEC-008
+    value: exclude_high_risk_categories
+  - id: DEC-010
+    value: confirmed_commission_is_financial_source_of_truth
+  - id: DEC-011
+    value: affiliate_rate_does_not_affect_editorial_order
+  - id: DEC-012
+    value: 300k_primary_1m_stretch_monthly_profit
+  - id: DEC-013
+    value: stage_gated_scaling
+
+open_decisions:
+  - initial_category
+  - site_name_and_domain
+  - cms
+  - hosting
+  - compliant_keyword_and_rank_data_provider
+  - rakuten_report_ingestion_method
+  - llm_provider_and_model_routing
+  - human_reviewer_and_hourly_cost
+  - product_identity_resolution_rules
+  - category_specific_freshness_sla
+  - auto_update_scope
+  - analytics_event_taxonomy
+  - commission_attribution_accuracy
+  - legal_review_boundary
+  - budget_and_acceptable_loss_period
+
+next_documents:
+  - RAOS-ARCH-001
+  - RAOS-DATA-001
+  - RAOS-API-001
+  - RAOS-AI-001
+  - RAOS-CONTENT-001
+  - RAOS-UI-001
+  - RAOS-ANALYTICS-001
+  - RAOS-SEC-001
+  - RAOS-TEST-001
+  - RAOS-OPS-001
+  - RAOS-BACKLOG-001
+  - RAOS-CODEX-001

@@ -1,0 +1,3220 @@
+document:
+  id: RAOS-IAM-OPS-SCHEMA-001
+  version: 1.0.0
+  story_id: ST-0303
+  status: LOCAL_AND_CI_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  epic_id: EPIC-03
+  title: IAM/OPS schemas
+  objective: IAM、Job、Outbox、Inbox、Auditを実装
+  dependencies:
+  - ST-0302
+  requirement_ids:
+  - FR-019
+  - FR-020
+  deliverables:
+  - TABLES
+  - CONSTRAINTS
+  - INDEXES
+  acceptance:
+  - STATE_CONSTRAINTS
+  - IMMUTABLE_CONSTRAINTS
+  - IDEMPOTENCY_CONSTRAINTS
+  required_suites:
+  - TST-008
+  - TST-011
+  - TST-013
+  priority: P0
+  mvp: true
+  size: L
+  one_pr_preferred: false
+  open_decisions: []
+source_precedence:
+  selected_wave: MIG-001
+  selected_slices:
+  - SLICE-004
+  - SLICE-005
+  - SLICE-007
+  pinned_inputs:
+  - path: docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+    sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+    role: EXACT_PHYSICAL_TABLE_SOURCE
+  - path: docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+    role: MIGRATION_WAVE_AND_DESIGN_NOTES
+  - path: changes/st-0002/job-state.v1.yaml
+    sha256: 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
+    role: FINAL_JOB_STATE_MODEL
+  - path: changes/st-0002/database/202607300001_job_state_expand.sql
+    sha256: 6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31
+    role: FINAL_JOB_ADDED_COLUMNS_AND_COMMENTS
+  - path: changes/st-0002/database/202607300002_job_state_expand_validate.sql
+    sha256: 50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95
+    role: FINAL_JOB_READY_AND_DEADLINE_INDEX_DEFINITIONS
+  - path: changes/st-0002/database/202607300004_job_state_contract_prepare.sql
+    sha256: 6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779
+    role: FINAL_JOB_CONSTRAINTS
+  - path: changes/st-0002/database/202607300005_job_state_contract.sql
+    sha256: 9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897
+    role: FINAL_JOB_DEFAULTS_AND_INDEXES
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    role: APPROVED_STORY
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    role: SECURITY_CONTROLS
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    role: REQUIRED_TEST_SUITES
+  predecessor_manifest:
+    story_id: ST-0302
+    path: changes/st-0302/manifest.yaml
+    sha256: d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+  translation_rules:
+  - COPY_SELECTED_TABLE_METADATA_EXACTLY_EXCEPT_ALLOWLISTED_PG_CATALOG_QUALIFICATION
+  - APPLY_ST_0002_FINAL_JOB_CONTRACT_TO_FRESH_TABLE
+  - DEFER_ONLY_FKS_WITH_UNAVAILABLE_TARGETS
+  - DO_NOT_CONCATENATE_PROPOSAL_PHASE_SQL
+  allowed_security_normalizations:
+    policy: ALLOWLIST_ONLY
+    reject_unlisted_source_drift: true
+    items:
+    - field_kind: COLUMN_DEFAULT
+      source: uuidv7()
+      normalized: pg_catalog.uuidv7()
+      exact_occurrences: 15
+    - field_kind: CHECK_EXPRESSION
+      source: jsonb_typeof(
+      normalized: pg_catalog.jsonb_typeof(
+      exact_occurrences: 8
+    - field_kind: INDEX_EXPRESSION
+      source: lower(email)
+      normalized: pg_catalog.lower(email)
+      exact_occurrences: 1
+database:
+  product: PostgreSQL
+  exact_server_version_num: 180004
+  timezone: UTC
+  transactional_ddl: true
+  schemas:
+  - ops
+  - iam
+  extension_dependencies: []
+  custom_types: []
+expected_inventory:
+  tables: 17
+  columns: 219
+  primary_keys: 17
+  named_unique_constraints: 13
+  check_constraints: 66
+  standalone_indexes: 48
+  immediate_foreign_keys: 20
+  deferred_foreign_keys: 2
+  functions: 2
+  triggers: 4
+job_contract:
+  decision_id: INT-DEC-003
+  initial_state: REQUESTED
+  states:
+  - REQUESTED
+  - QUEUED
+  - RUNNING
+  - SUCCEEDED
+  - FAILED_RETRYABLE
+  - RETRY_SCHEDULED
+  - FAILED_TERMINAL
+  - QUARANTINED
+  - CANCELLED
+  - EXPIRED
+  status_default: REQUESTED
+  added_columns:
+  - job_version
+  - deadline_at
+  - cancel_requested_at
+  final_check_constraints:
+  - ck_ops_job_status
+  - ck_ops_job_completion
+  - ck_ops_job_version_positive
+  - ck_ops_job_deadline_order
+  - ck_ops_job_cancel_request
+  final_ready_index: ix_ops_job_ready
+  final_deadline_index: ix_ops_job_deadline_active
+  total_check_constraints: 11
+  total_standalone_indexes: 9
+  runtime_owner_story: ST-1404
+tables:
+- name: object_artifact
+  fully_qualified_name: ops.object_artifact
+  purpose: S3互換Object Storage上の原本・入力・出力・公開Snapshotを登録する不変レジストリ。
+  owner_module: ops
+  write_pattern: APPEND_ONLY
+  classification: CONFIDENTIAL
+  retention_class: BY_ARTIFACT_KIND
+  primary_key:
+  - id
+  primary_key_name: pk_ops_object_artifact
+  expected_scale:
+    gate_1: <10k
+    gate_4: <10m
+  partitioning: NONE_MVP
+  requirements:
+  - FR-002
+  - FR-004
+  - FR-018
+  - FR-020
+  - NFR-DATA-001
+  - NFR-BACKUP-001
+  architecture_refs: []
+  implementation_slice: SLICE-007
+  notes:
+  - DBには原本本文を保存せず、URI・Version・hash・metadataのみを保存する。
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: display_id
+    type: text
+    nullable: false
+    default: null
+    description: OBJ-接頭辞を持つアプリケーション生成の不変表示ID。
+    classification: INTERNAL
+    pii: false
+  - name: artifact_kind
+    type: text
+    nullable: false
+    default: null
+    description: raw_provider_response、source_snapshot、source_packet、ai_input、ai_output、publication_snapshot、revenue_original、audit_export等。
+    classification: INTERNAL
+    pii: false
+  - name: storage_provider
+    type: text
+    nullable: false
+    default: '''s3'''
+    description: storage provider
+    classification: INTERNAL
+    pii: false
+  - name: bucket_name
+    type: text
+    nullable: false
+    default: null
+    description: bucket name
+    classification: INTERNAL
+    pii: false
+  - name: object_key
+    type: text
+    nullable: false
+    default: null
+    description: object key
+    classification: INTERNAL
+    pii: false
+  - name: object_version
+    type: text
+    nullable: true
+    default: null
+    description: Object VersioningのVersion ID。ローカル環境ではNULL可。
+    classification: INTERNAL
+    pii: false
+  - name: content_type
+    type: text
+    nullable: false
+    default: null
+    description: content type
+    classification: INTERNAL
+    pii: false
+  - name: byte_size
+    type: bigint
+    nullable: false
+    default: null
+    description: byte size
+    classification: INTERNAL
+    pii: false
+  - name: sha256
+    type: text
+    nullable: false
+    default: null
+    description: sha256
+    classification: INTERNAL
+    pii: false
+  - name: encryption_state
+    type: text
+    nullable: false
+    default: null
+    description: encryption state
+    classification: INTERNAL
+    pii: false
+  - name: retention_class
+    type: text
+    nullable: false
+    default: null
+    description: retention class
+    classification: INTERNAL
+    pii: false
+  - name: is_immutable
+    type: boolean
+    nullable: false
+    default: 'true'
+    description: is immutable
+    classification: INTERNAL
+    pii: false
+  - name: source_system
+    type: text
+    nullable: false
+    default: null
+    description: source system
+    classification: INTERNAL
+    pii: false
+  - name: acquired_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: acquired at
+    classification: INTERNAL
+    pii: false
+  - name: created_by_principal_id
+    type: uuid
+    nullable: true
+    default: null
+    description: 作成操作を行ったIAM Principal。
+    classification: CONFIDENTIAL
+    pii: false
+  - name: metadata
+    type: jsonb
+    nullable: false
+    default: '''{}''::jsonb'
+    description: Objectタグ、parser、provider request ID等。秘密・原本文は含めない。
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_ops_object_artifact_display_id
+    columns:
+    - display_id
+  check_constraints:
+  - name: ck_ops_object_artifact_kind
+    expression: artifact_kind IN ('raw_provider_response', 'raw_primary_source', 'source_snapshot', 'source_packet', 'ai_input', 'ai_output', 'publication_snapshot', 'revenue_original', 'revenue_rejects', 'audit_export', 'quality_report', 'diff', 'import_report', 'other')
+  - name: ck_ops_object_artifact_size
+    expression: byte_size >= 0
+  - name: ck_ops_object_artifact_sha
+    expression: sha256 ~ '^[0-9a-f]{64}$'
+  - name: ck_ops_object_artifact_enc
+    expression: encryption_state IN ('SSE_KMS', 'SSE_S3', 'LOCAL_DEV')
+  - name: ck_ops_object_artifact_meta
+    expression: pg_catalog.jsonb_typeof(metadata) = 'object'
+  foreign_keys: []
+  deferred_foreign_keys: []
+  indexes:
+  - name: uq_ops_object_artifact_location
+    columns:
+    - bucket_name
+    - object_key
+    - object_version
+    expression: null
+    unique: true
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: true
+    description: ''
+  - name: ix_ops_object_artifact_sha
+    columns:
+    - sha256
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_object_artifact_kind_created
+    columns:
+    - artifact_kind
+    - created_at
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+- name: job
+  fully_qualified_name: ops.job
+  purpose: 非同期作業の業務上の正本。Scheduler、API、Eventから作成され、Attemptとは分離する。
+  owner_module: ops
+  write_pattern: MUTABLE
+  classification: CONFIDENTIAL
+  retention_class: OPS_JOB_2Y
+  primary_key:
+  - id
+  primary_key_name: pk_ops_job
+  expected_scale:
+    gate_1: <50k
+    gate_4: <50m
+  partitioning: CANDIDATE_BY_CREATED_AT_AFTER_10M
+  requirements:
+  - NFR-REL-001
+  - NFR-REL-002
+  - FR-018
+  - FR-020
+  architecture_refs: []
+  implementation_slice: SLICE-004
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: display_id
+    type: text
+    nullable: false
+    default: null
+    description: JOB-接頭辞を持つアプリケーション生成の不変表示ID。
+    classification: INTERNAL
+    pii: false
+  - name: job_type
+    type: text
+    nullable: false
+    default: null
+    description: job type
+    classification: INTERNAL
+    pii: false
+  - name: queue_name
+    type: text
+    nullable: false
+    default: null
+    description: queue name
+    classification: INTERNAL
+    pii: false
+  - name: status
+    type: text
+    nullable: false
+    default: '''REQUESTED'''
+    description: 業務状態を示す安定Enum文字列。
+    classification: INTERNAL
+    pii: false
+  - name: priority
+    type: smallint
+    nullable: false
+    default: '50'
+    description: priority
+    classification: INTERNAL
+    pii: false
+  - name: idempotency_key
+    type: text
+    nullable: true
+    default: null
+    description: idempotency key
+    classification: INTERNAL
+    pii: false
+  - name: site_id
+    type: uuid
+    nullable: true
+    default: null
+    description: 対象サイト。MVPは1サイトだが将来の複数サイトを識別可能にする。
+    classification: INTERNAL
+    pii: false
+  - name: aggregate_type
+    type: text
+    nullable: true
+    default: null
+    description: aggregate type
+    classification: INTERNAL
+    pii: false
+  - name: aggregate_id
+    type: uuid
+    nullable: true
+    default: null
+    description: aggregate id
+    classification: INTERNAL
+    pii: false
+  - name: payload
+    type: jsonb
+    nullable: false
+    default: '''{}''::jsonb'
+    description: 小さなCommand payload。大容量入力はpayload_artifact_idへ分離する。
+    classification: INTERNAL
+    pii: false
+  - name: payload_artifact_id
+    type: uuid
+    nullable: true
+    default: null
+    description: payload artifact id
+    classification: INTERNAL
+    pii: false
+  - name: scheduled_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: scheduled at
+    classification: INTERNAL
+    pii: false
+  - name: available_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: available at
+    classification: INTERNAL
+    pii: false
+  - name: started_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: started at
+    classification: INTERNAL
+    pii: false
+  - name: completed_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: completed at
+    classification: INTERNAL
+    pii: false
+  - name: max_attempts
+    type: smallint
+    nullable: false
+    default: '5'
+    description: max attempts
+    classification: INTERNAL
+    pii: false
+  - name: attempt_count
+    type: smallint
+    nullable: false
+    default: '0'
+    description: attempt count
+    classification: INTERNAL
+    pii: false
+  - name: lease_owner
+    type: text
+    nullable: true
+    default: null
+    description: lease owner
+    classification: INTERNAL
+    pii: false
+  - name: lease_expires_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: lease expires at
+    classification: INTERNAL
+    pii: false
+  - name: correlation_id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 要求・Job・Eventを横断して追跡するCorrelation ID。
+    classification: INTERNAL
+    pii: false
+  - name: causation_id
+    type: uuid
+    nullable: true
+    default: null
+    description: この事実を直接発生させたCommand/Event/Job ID。
+    classification: INTERNAL
+    pii: false
+  - name: parent_job_id
+    type: uuid
+    nullable: true
+    default: null
+    description: parent job id
+    classification: INTERNAL
+    pii: false
+  - name: budget_jpy
+    type: bigint
+    nullable: true
+    default: null
+    description: budget jpy
+    classification: INTERNAL
+    pii: false
+  - name: created_by_actor_type
+    type: text
+    nullable: false
+    default: null
+    description: created by actor type
+    classification: INTERNAL
+    pii: false
+  - name: created_by_actor_id
+    type: uuid
+    nullable: true
+    default: null
+    description: created by actor id
+    classification: INTERNAL
+    pii: false
+  - name: last_error_class
+    type: text
+    nullable: true
+    default: null
+    description: last error class
+    classification: INTERNAL
+    pii: false
+  - name: last_error_code
+    type: text
+    nullable: true
+    default: null
+    description: last error code
+    classification: INTERNAL
+    pii: false
+  - name: last_error_message
+    type: text
+    nullable: true
+    default: null
+    description: last error message
+    classification: CONFIDENTIAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  - name: updated_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: 最終更新時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  - name: lock_version
+    type: bigint
+    nullable: false
+    default: '0'
+    description: 楽観的排他制御用の単調増加Version。
+    classification: INTERNAL
+    pii: false
+  - name: job_version
+    type: smallint
+    nullable: false
+    default: '1'
+    description: Version of the Job message/payload contract; distinct from lock_version.
+    classification: INTERNAL
+    pii: false
+  - name: deadline_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: Deadline after which an eligible active Job may expire.
+    classification: INTERNAL
+    pii: false
+  - name: cancel_requested_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: Timestamp of a cooperative cancellation request.
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_ops_job_display_id
+    columns:
+    - display_id
+  check_constraints:
+  - name: ck_ops_job_status
+    expression: status IN ('REQUESTED', 'QUEUED', 'RUNNING', 'SUCCEEDED', 'FAILED_RETRYABLE', 'RETRY_SCHEDULED', 'FAILED_TERMINAL', 'QUARANTINED', 'CANCELLED', 'EXPIRED')
+  - name: ck_ops_job_priority
+    expression: priority BETWEEN 0 AND 100
+  - name: ck_ops_job_attempts
+    expression: max_attempts BETWEEN 1 AND 50 AND attempt_count BETWEEN 0 AND max_attempts
+  - name: ck_ops_job_budget
+    expression: budget_jpy IS NULL OR budget_jpy >= 0
+  - name: ck_ops_job_payload
+    expression: pg_catalog.jsonb_typeof(payload) = 'object'
+  - name: ck_ops_job_lease_pair
+    expression: (lease_owner IS NULL) = (lease_expires_at IS NULL)
+  - name: ck_ops_job_completion
+    expression: status NOT IN ('SUCCEEDED', 'FAILED_TERMINAL', 'QUARANTINED', 'CANCELLED', 'EXPIRED') OR completed_at IS NOT NULL
+  - name: ck_ops_job_version
+    expression: lock_version >= 0
+  - name: ck_ops_job_version_positive
+    expression: job_version >= 1
+  - name: ck_ops_job_deadline_order
+    expression: deadline_at IS NULL OR deadline_at > created_at
+  - name: ck_ops_job_cancel_request
+    expression: cancel_requested_at IS NULL OR status <> 'SUCCEEDED'
+  foreign_keys:
+  - name: fk_ops_job_payload_artifact_id
+    columns:
+    - payload_artifact_id
+    references: ops.object_artifact
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_ops_job_parent_job_id
+    columns:
+    - parent_job_id
+    references: ops.job
+    referenced_columns:
+    - id
+    on_delete: SET NULL
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys:
+  - name: fk_ops_job_site_id
+    columns:
+    - site_id
+    references: portfolio.site
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+    deferred_until_story: ST-0304
+    reason: TARGET_TABLE_NOT_YET_OWNED
+    column_and_index_installed: true
+  indexes:
+  - name: uq_ops_job_idempotency
+    columns:
+    - job_type
+    - idempotency_key
+    expression: null
+    unique: true
+    method: btree
+    where: idempotency_key IS NOT NULL
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_job_ready
+    columns:
+    - queue_name
+    - priority
+    - available_at
+    expression: null
+    unique: false
+    method: btree
+    where: status IN ('REQUESTED','QUEUED','RETRY_SCHEDULED')
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_job_lease
+    columns:
+    - lease_expires_at
+    expression: null
+    unique: false
+    method: btree
+    where: status = 'RUNNING'
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_job_aggregate
+    columns:
+    - aggregate_type
+    - aggregate_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_job_correlation
+    columns:
+    - correlation_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_job_payload_artifact_id
+    columns:
+    - payload_artifact_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_ops_job_parent_job_id
+    columns:
+    - parent_job_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_ops_job_site_id
+    columns:
+    - site_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_ops_job_deadline_active
+    columns:
+    - deadline_at
+    expression: null
+    unique: false
+    method: btree
+    where: deadline_at IS NOT NULL AND status IN ('REQUESTED','QUEUED','RUNNING','FAILED_RETRYABLE','RETRY_SCHEDULED')
+    include: []
+    nulls_not_distinct: false
+    description: ''
+- name: job_attempt
+  fully_qualified_name: ops.job_attempt
+  purpose: Jobの各実行Attemptを追記保存し、Retry、Provider call、入出力Artifact、失敗原因を再現可能にする。
+  owner_module: ops
+  write_pattern: LIFECYCLE
+  classification: CONFIDENTIAL
+  retention_class: OPS_JOB_2Y
+  primary_key:
+  - id
+  primary_key_name: pk_ops_job_attempt
+  expected_scale:
+    gate_1: <100k
+    gate_4: <100m
+  partitioning: CANDIDATE_BY_STARTED_AT_AFTER_20M
+  requirements:
+  - NFR-REL-001
+  - NFR-OBS-001
+  - FR-018
+  architecture_refs: []
+  implementation_slice: SLICE-004
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: job_id
+    type: uuid
+    nullable: false
+    default: null
+    description: 非同期Job。
+    classification: INTERNAL
+    pii: false
+  - name: attempt_no
+    type: smallint
+    nullable: false
+    default: null
+    description: attempt no
+    classification: INTERNAL
+    pii: false
+  - name: status
+    type: text
+    nullable: false
+    default: null
+    description: 業務状態を示す安定Enum文字列。
+    classification: INTERNAL
+    pii: false
+  - name: worker_id
+    type: text
+    nullable: false
+    default: null
+    description: worker id
+    classification: INTERNAL
+    pii: false
+  - name: handler_version
+    type: text
+    nullable: false
+    default: null
+    description: handler version
+    classification: INTERNAL
+    pii: false
+  - name: started_at
+    type: timestamptz
+    nullable: false
+    default: null
+    description: started at
+    classification: INTERNAL
+    pii: false
+  - name: completed_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: completed at
+    classification: INTERNAL
+    pii: false
+  - name: provider_request_id
+    type: text
+    nullable: true
+    default: null
+    description: provider request id
+    classification: INTERNAL
+    pii: false
+  - name: input_artifact_id
+    type: uuid
+    nullable: true
+    default: null
+    description: input artifact id
+    classification: INTERNAL
+    pii: false
+  - name: output_artifact_id
+    type: uuid
+    nullable: true
+    default: null
+    description: output artifact id
+    classification: INTERNAL
+    pii: false
+  - name: error_class
+    type: text
+    nullable: true
+    default: null
+    description: error class
+    classification: INTERNAL
+    pii: false
+  - name: error_code
+    type: text
+    nullable: true
+    default: null
+    description: error code
+    classification: INTERNAL
+    pii: false
+  - name: error_message
+    type: text
+    nullable: true
+    default: null
+    description: error message
+    classification: CONFIDENTIAL
+    pii: false
+  - name: retry_after_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: retry after at
+    classification: INTERNAL
+    pii: false
+  - name: metrics
+    type: jsonb
+    nullable: false
+    default: '''{}''::jsonb'
+    description: Duration、row count、provider quota等の低カーディナリティ指標。
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_ops_job_attempt_no
+    columns:
+    - job_id
+    - attempt_no
+  check_constraints:
+  - name: ck_ops_job_attempt_status
+    expression: status IN ('RUNNING', 'SUCCEEDED', 'FAILED', 'CANCELLED', 'TIMED_OUT')
+  - name: ck_ops_job_attempt_no
+    expression: attempt_no >= 1
+  - name: ck_ops_job_attempt_metrics
+    expression: pg_catalog.jsonb_typeof(metrics) = 'object'
+  - name: ck_ops_job_attempt_end
+    expression: status = 'RUNNING' OR completed_at IS NOT NULL
+  foreign_keys:
+  - name: fk_ops_job_attempt_job_id
+    columns:
+    - job_id
+    references: ops.job
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_ops_job_attempt_input_artifact_id
+    columns:
+    - input_artifact_id
+    references: ops.object_artifact
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_ops_job_attempt_output_artifact_id
+    columns:
+    - output_artifact_id
+    references: ops.object_artifact
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys: []
+  indexes:
+  - name: ix_ops_job_attempt_started
+    columns:
+    - started_at
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_job_attempt_status
+    columns:
+    - status
+    - started_at
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_job_attempt_input_artifact_id
+    columns:
+    - input_artifact_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_ops_job_attempt_output_artifact_id
+    columns:
+    - output_artifact_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+- name: outbox_event
+  fully_qualified_name: ops.outbox_event
+  purpose: 業務TransactionとEvent発行を原子的に接続するTransactional Outbox。
+  owner_module: ops
+  write_pattern: MUTABLE
+  classification: CONFIDENTIAL
+  retention_class: OUTBOX_180D
+  primary_key:
+  - id
+  primary_key_name: pk_ops_outbox_event
+  expected_scale:
+    gate_1: <100k
+    gate_4: <100m
+  partitioning: CANDIDATE_MONTHLY_AFTER_20M
+  requirements:
+  - NFR-REL-001
+  - FR-020
+  architecture_refs: []
+  implementation_slice: SLICE-004
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: event_type
+    type: text
+    nullable: false
+    default: null
+    description: event type
+    classification: INTERNAL
+    pii: false
+  - name: event_version
+    type: integer
+    nullable: false
+    default: '1'
+    description: event version
+    classification: INTERNAL
+    pii: false
+  - name: producer
+    type: text
+    nullable: false
+    default: null
+    description: producer
+    classification: INTERNAL
+    pii: false
+  - name: aggregate_type
+    type: text
+    nullable: false
+    default: null
+    description: aggregate type
+    classification: INTERNAL
+    pii: false
+  - name: aggregate_id
+    type: uuid
+    nullable: false
+    default: null
+    description: aggregate id
+    classification: INTERNAL
+    pii: false
+  - name: aggregate_version
+    type: bigint
+    nullable: false
+    default: null
+    description: aggregate version
+    classification: INTERNAL
+    pii: false
+  - name: correlation_id
+    type: uuid
+    nullable: false
+    default: null
+    description: 要求・Job・Eventを横断して追跡するCorrelation ID。
+    classification: INTERNAL
+    pii: false
+  - name: causation_id
+    type: uuid
+    nullable: true
+    default: null
+    description: この事実を直接発生させたCommand/Event/Job ID。
+    classification: INTERNAL
+    pii: false
+  - name: actor_type
+    type: text
+    nullable: false
+    default: null
+    description: actor type
+    classification: INTERNAL
+    pii: false
+  - name: actor_id
+    type: uuid
+    nullable: true
+    default: null
+    description: actor id
+    classification: INTERNAL
+    pii: false
+  - name: payload
+    type: jsonb
+    nullable: false
+    default: '''{}''::jsonb'
+    description: Version付きEvent payload。秘密・大容量原本を含めない。
+    classification: INTERNAL
+    pii: false
+  - name: payload_schema_hash
+    type: text
+    nullable: false
+    default: null
+    description: payload schema hash
+    classification: INTERNAL
+    pii: false
+  - name: status
+    type: text
+    nullable: false
+    default: '''PENDING'''
+    description: 業務状態を示す安定Enum文字列。
+    classification: INTERNAL
+    pii: false
+  - name: available_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: available at
+    classification: INTERNAL
+    pii: false
+  - name: published_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: published at
+    classification: INTERNAL
+    pii: false
+  - name: publish_attempts
+    type: smallint
+    nullable: false
+    default: '0'
+    description: publish attempts
+    classification: INTERNAL
+    pii: false
+  - name: last_error
+    type: text
+    nullable: true
+    default: null
+    description: last error
+    classification: CONFIDENTIAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints: []
+  check_constraints:
+  - name: ck_ops_outbox_event_version
+    expression: event_version >= 1 AND aggregate_version >= 0
+  - name: ck_ops_outbox_payload
+    expression: pg_catalog.jsonb_typeof(payload) = 'object'
+  - name: ck_ops_outbox_hash
+    expression: payload_schema_hash ~ '^[0-9a-f]{64}$'
+  - name: ck_ops_outbox_status
+    expression: status IN ('PENDING', 'DISPATCHING', 'PUBLISHED', 'FAILED', 'DEAD')
+  - name: ck_ops_outbox_attempts
+    expression: publish_attempts >= 0
+  - name: ck_ops_outbox_published
+    expression: status <> 'PUBLISHED' OR published_at IS NOT NULL
+  foreign_keys: []
+  deferred_foreign_keys: []
+  indexes:
+  - name: ix_ops_outbox_ready
+    columns:
+    - status
+    - available_at
+    expression: null
+    unique: false
+    method: btree
+    where: status IN ('PENDING','FAILED')
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_outbox_aggregate
+    columns:
+    - aggregate_type
+    - aggregate_id
+    - aggregate_version
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_outbox_correlation
+    columns:
+    - correlation_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_outbox_created_brin
+    columns:
+    - created_at
+    expression: null
+    unique: false
+    method: brin
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+- name: inbox_receipt
+  fully_qualified_name: ops.inbox_receipt
+  purpose: Consumer単位でEvent処理済みを記録し、at-least-once配送の重複を無害化する。
+  owner_module: ops
+  write_pattern: APPEND_ONLY
+  classification: INTERNAL
+  retention_class: INBOX_400D
+  primary_key:
+  - id
+  primary_key_name: pk_ops_inbox_receipt
+  expected_scale:
+    gate_1: <100k
+    gate_4: <100m
+  partitioning: CANDIDATE_MONTHLY_AFTER_20M
+  requirements:
+  - NFR-REL-001
+  architecture_refs: []
+  implementation_slice: SLICE-004
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: consumer_name
+    type: text
+    nullable: false
+    default: null
+    description: consumer name
+    classification: INTERNAL
+    pii: false
+  - name: handler_version
+    type: text
+    nullable: false
+    default: null
+    description: handler version
+    classification: INTERNAL
+    pii: false
+  - name: event_id
+    type: uuid
+    nullable: false
+    default: null
+    description: event id
+    classification: INTERNAL
+    pii: false
+  - name: status
+    type: text
+    nullable: false
+    default: null
+    description: 業務状態を示す安定Enum文字列。
+    classification: INTERNAL
+    pii: false
+  - name: received_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: received at
+    classification: INTERNAL
+    pii: false
+  - name: processed_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: processed at
+    classification: INTERNAL
+    pii: false
+  - name: result_hash
+    type: text
+    nullable: true
+    default: null
+    description: result hash
+    classification: INTERNAL
+    pii: false
+  - name: error_code
+    type: text
+    nullable: true
+    default: null
+    description: error code
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_ops_inbox_receipt
+    columns:
+    - consumer_name
+    - handler_version
+    - event_id
+  check_constraints:
+  - name: ck_ops_inbox_status
+    expression: status IN ('PROCESSING', 'PROCESSED', 'FAILED', 'IGNORED')
+  - name: ck_ops_inbox_hash
+    expression: result_hash IS NULL OR result_hash ~ '^[0-9a-f]{64}$'
+  - name: ck_ops_inbox_processed
+    expression: status = 'PROCESSING' OR processed_at IS NOT NULL
+  foreign_keys: []
+  deferred_foreign_keys: []
+  indexes:
+  - name: ix_ops_inbox_event
+    columns:
+    - event_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_inbox_received
+    columns:
+    - received_at
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+- name: idempotency_record
+  fully_qualified_name: ops.idempotency_record
+  purpose: HTTP Command等の二重送信を検出し、同じKey＋同じpayloadへ同じ結果を返す。
+  owner_module: ops
+  write_pattern: MUTABLE
+  classification: CONFIDENTIAL
+  retention_class: IDEMPOTENCY_UNTIL_EXPIRY
+  primary_key:
+  - id
+  primary_key_name: pk_ops_idempotency_record
+  expected_scale:
+    gate_1: <50k
+    gate_4: <10m
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-REL-001
+  architecture_refs: []
+  implementation_slice: SLICE-004
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: actor_fingerprint
+    type: text
+    nullable: false
+    default: null
+    description: actor fingerprint
+    classification: CONFIDENTIAL
+    pii: false
+  - name: route_key
+    type: text
+    nullable: false
+    default: null
+    description: route key
+    classification: INTERNAL
+    pii: false
+  - name: idempotency_key
+    type: text
+    nullable: false
+    default: null
+    description: idempotency key
+    classification: INTERNAL
+    pii: false
+  - name: request_hash
+    type: text
+    nullable: false
+    default: null
+    description: request hash
+    classification: INTERNAL
+    pii: false
+  - name: status
+    type: text
+    nullable: false
+    default: '''IN_PROGRESS'''
+    description: 業務状態を示す安定Enum文字列。
+    classification: INTERNAL
+    pii: false
+  - name: response_status
+    type: integer
+    nullable: true
+    default: null
+    description: response status
+    classification: INTERNAL
+    pii: false
+  - name: response_body
+    type: jsonb
+    nullable: true
+    default: null
+    description: 小さな再送応答。大きい応答はArtifactへ保存。
+    classification: INTERNAL
+    pii: false
+  - name: response_artifact_id
+    type: uuid
+    nullable: true
+    default: null
+    description: response artifact id
+    classification: INTERNAL
+    pii: false
+  - name: resource_type
+    type: text
+    nullable: true
+    default: null
+    description: resource type
+    classification: INTERNAL
+    pii: false
+  - name: resource_id
+    type: uuid
+    nullable: true
+    default: null
+    description: resource id
+    classification: INTERNAL
+    pii: false
+  - name: expires_at
+    type: timestamptz
+    nullable: false
+    default: null
+    description: expires at
+    classification: INTERNAL
+    pii: false
+  - name: completed_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: completed at
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_ops_idempotency
+    columns:
+    - actor_fingerprint
+    - route_key
+    - idempotency_key
+  check_constraints:
+  - name: ck_ops_idem_request_hash
+    expression: request_hash ~ '^[0-9a-f]{64}$'
+  - name: ck_ops_idem_status
+    expression: status IN ('IN_PROGRESS', 'COMPLETED', 'FAILED')
+  - name: ck_ops_idem_response
+    expression: status = 'IN_PROGRESS' OR response_status IS NOT NULL
+  - name: ck_ops_idem_expiry
+    expression: expires_at > created_at
+  - name: ck_ops_idem_response_body
+    expression: response_body IS NULL OR pg_catalog.jsonb_typeof(response_body) = 'object'
+  foreign_keys:
+  - name: fk_ops_idempotency_record_response_artifact_id
+    columns:
+    - response_artifact_id
+    references: ops.object_artifact
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys: []
+  indexes:
+  - name: ix_ops_idempotency_expiry
+    columns:
+    - expires_at
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_idempotency_record_response_artifact_id
+    columns:
+    - response_artifact_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+- name: audit_event
+  fully_qualified_name: ops.audit_event
+  purpose: 管理操作・自動化操作・権限変更・公開・Kill Switch等を追記記録する監査正本。
+  owner_module: ops
+  write_pattern: APPEND_ONLY
+  classification: RESTRICTED
+  retention_class: AUDIT_7Y_PROVISIONAL
+  primary_key:
+  - id
+  primary_key_name: pk_ops_audit_event
+  expected_scale:
+    gate_1: <500k
+    gate_4: <500m
+  partitioning: MONTHLY_AT_GATE3_OR_20M_ROWS
+  requirements:
+  - FR-020
+  - NFR-AUD-001
+  architecture_refs: []
+  implementation_slice: SLICE-004
+  notes:
+  - raw IPアドレス、完全なUser-Agent、Secretを保存しない。
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: occurred_at
+    type: timestamptz
+    nullable: false
+    default: null
+    description: occurred at
+    classification: INTERNAL
+    pii: false
+  - name: actor_type
+    type: text
+    nullable: false
+    default: null
+    description: actor type
+    classification: INTERNAL
+    pii: false
+  - name: actor_id
+    type: uuid
+    nullable: true
+    default: null
+    description: actor id
+    classification: CONFIDENTIAL
+    pii: false
+  - name: action
+    type: text
+    nullable: false
+    default: null
+    description: action
+    classification: INTERNAL
+    pii: false
+  - name: target_type
+    type: text
+    nullable: false
+    default: null
+    description: target type
+    classification: INTERNAL
+    pii: false
+  - name: target_id
+    type: uuid
+    nullable: true
+    default: null
+    description: target id
+    classification: INTERNAL
+    pii: false
+  - name: outcome
+    type: text
+    nullable: false
+    default: null
+    description: outcome
+    classification: INTERNAL
+    pii: false
+  - name: severity
+    type: text
+    nullable: false
+    default: '''INFO'''
+    description: severity
+    classification: INTERNAL
+    pii: false
+  - name: correlation_id
+    type: uuid
+    nullable: false
+    default: null
+    description: 要求・Job・Eventを横断して追跡するCorrelation ID。
+    classification: INTERNAL
+    pii: false
+  - name: request_id
+    type: text
+    nullable: true
+    default: null
+    description: request id
+    classification: INTERNAL
+    pii: false
+  - name: before_hash
+    type: text
+    nullable: true
+    default: null
+    description: before hash
+    classification: INTERNAL
+    pii: false
+  - name: after_hash
+    type: text
+    nullable: true
+    default: null
+    description: after hash
+    classification: INTERNAL
+    pii: false
+  - name: details
+    type: jsonb
+    nullable: false
+    default: '''{}''::jsonb'
+    description: 差分要約、理由、Policy/Prompt版。秘密、原文、raw IPは含めない。
+    classification: CONFIDENTIAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints: []
+  check_constraints:
+  - name: ck_ops_audit_actor
+    expression: actor_type IN ('USER', 'SERVICE', 'SCHEDULE', 'SYSTEM', 'ANONYMOUS')
+  - name: ck_ops_audit_outcome
+    expression: outcome IN ('SUCCESS', 'DENIED', 'FAILED', 'NOOP')
+  - name: ck_ops_audit_severity
+    expression: severity IN ('INFO', 'NOTICE', 'WARNING', 'CRITICAL')
+  - name: ck_ops_audit_before_hash
+    expression: before_hash IS NULL OR before_hash ~ '^[0-9a-f]{64}$'
+  - name: ck_ops_audit_after_hash
+    expression: after_hash IS NULL OR after_hash ~ '^[0-9a-f]{64}$'
+  - name: ck_ops_audit_details
+    expression: pg_catalog.jsonb_typeof(details) = 'object'
+  foreign_keys: []
+  deferred_foreign_keys: []
+  indexes:
+  - name: ix_ops_audit_occurred
+    columns:
+    - occurred_at
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_audit_actor
+    columns:
+    - actor_type
+    - actor_id
+    - occurred_at
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_audit_target
+    columns:
+    - target_type
+    - target_id
+    - occurred_at
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_audit_corr
+    columns:
+    - correlation_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_audit_occurred_brin
+    columns:
+    - occurred_at
+    expression: null
+    unique: false
+    method: brin
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+- name: runtime_setting_version
+  fully_qualified_name: ops.runtime_setting_version
+  purpose: Feature Flag、閾値、Provider version、SLA等の非秘密設定をVersion管理する。
+  owner_module: ops
+  write_pattern: LIFECYCLE
+  classification: CONFIDENTIAL
+  retention_class: CONFIG_7Y
+  primary_key:
+  - id
+  primary_key_name: pk_ops_runtime_setting_version
+  expected_scale:
+    gate_1: <10k
+    gate_4: <1m
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-MAINT-001
+  - FR-019
+  - FR-020
+  architecture_refs: []
+  implementation_slice: SLICE-004
+  notes:
+  - Secret値はSecrets Managerへ置き、本テーブルでのsetting_class=SECRETを禁止する。
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: setting_key
+    type: text
+    nullable: false
+    default: null
+    description: setting key
+    classification: INTERNAL
+    pii: false
+  - name: scope_type
+    type: text
+    nullable: false
+    default: null
+    description: scope type
+    classification: INTERNAL
+    pii: false
+  - name: scope_id
+    type: uuid
+    nullable: true
+    default: null
+    description: scope id
+    classification: INTERNAL
+    pii: false
+  - name: version_no
+    type: integer
+    nullable: false
+    default: null
+    description: Aggregate内で1から増加する不変Version番号。
+    classification: INTERNAL
+    pii: false
+  - name: setting_class
+    type: text
+    nullable: false
+    default: null
+    description: setting class
+    classification: INTERNAL
+    pii: false
+  - name: value
+    type: jsonb
+    nullable: false
+    default: '''{}''::jsonb'
+    description: value
+    classification: CONFIDENTIAL
+    pii: false
+  - name: value_sha256
+    type: text
+    nullable: false
+    default: null
+    description: value sha256
+    classification: INTERNAL
+    pii: false
+  - name: status
+    type: text
+    nullable: false
+    default: null
+    description: 業務状態を示す安定Enum文字列。
+    classification: INTERNAL
+    pii: false
+  - name: effective_from
+    type: timestamptz
+    nullable: true
+    default: null
+    description: 設定・関係が有効になる時刻。
+    classification: INTERNAL
+    pii: false
+  - name: effective_to
+    type: timestamptz
+    nullable: true
+    default: null
+    description: 設定・関係の有効終了時刻。NULLは終了未定。
+    classification: INTERNAL
+    pii: false
+  - name: created_by_principal_id
+    type: uuid
+    nullable: false
+    default: null
+    description: 作成操作を行ったIAM Principal。
+    classification: INTERNAL
+    pii: false
+  - name: approved_by_principal_id
+    type: uuid
+    nullable: true
+    default: null
+    description: approved by principal id
+    classification: INTERNAL
+    pii: false
+  - name: approval_reason
+    type: text
+    nullable: true
+    default: null
+    description: approval reason
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_ops_setting_version
+    columns:
+    - setting_key
+    - scope_type
+    - scope_id
+    - version_no
+  check_constraints:
+  - name: ck_ops_setting_scope
+    expression: scope_type IN ('GLOBAL', 'SITE', 'CATEGORY', 'ARTICLE', 'PROVIDER', 'TASK')
+  - name: ck_ops_setting_scope_id
+    expression: (scope_type = 'GLOBAL' AND scope_id IS NULL) OR (scope_type <> 'GLOBAL' AND scope_id IS NOT NULL)
+  - name: ck_ops_setting_version
+    expression: version_no >= 1
+  - name: ck_ops_setting_class
+    expression: setting_class IN ('FEATURE_FLAG', 'THRESHOLD', 'PROVIDER', 'FRESHNESS', 'BUDGET', 'UI', 'OTHER')
+  - name: ck_ops_setting_no_secret
+    expression: setting_class <> 'SECRET'
+  - name: ck_ops_setting_value
+    expression: pg_catalog.jsonb_typeof(value) = 'object'
+  - name: ck_ops_setting_hash
+    expression: value_sha256 ~ '^[0-9a-f]{64}$'
+  - name: ck_ops_setting_status
+    expression: status IN ('DRAFT', 'ACTIVE', 'RETIRED', 'REJECTED')
+  - name: ck_ops_setting_window
+    expression: effective_to IS NULL OR effective_from IS NULL OR effective_to > effective_from
+  foreign_keys:
+  - name: fk_ops_runtime_setting_version_created_by_principal_id
+    columns:
+    - created_by_principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_ops_runtime_setting_version_approved_by_principal_id
+    columns:
+    - approved_by_principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys: []
+  indexes:
+  - name: uq_ops_setting_active
+    columns:
+    - setting_key
+    - scope_type
+    - scope_id
+    expression: null
+    unique: true
+    method: btree
+    where: status = 'ACTIVE'
+    include: []
+    nulls_not_distinct: true
+    description: ''
+  - name: ix_ops_setting_lookup
+    columns:
+    - setting_key
+    - status
+    - effective_from
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_ops_runtime_setting_version_created_by_principal_id
+    columns:
+    - created_by_principal_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_ops_runtime_setting_version_approved_by_principal_id
+    columns:
+    - approved_by_principal_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+- name: principal
+  fully_qualified_name: iam.principal
+  purpose: 管理ユーザーとService Principalを共通IDで表すIAM Root。PasswordやSecretは保持しない。
+  owner_module: iam
+  write_pattern: MUTABLE
+  classification: RESTRICTED
+  retention_class: IAM_LIFECYCLE
+  primary_key:
+  - id
+  primary_key_name: pk_iam_principal
+  expected_scale:
+    gate_1: <100
+    gate_4: <10k
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-SEC-002
+  - FR-020
+  architecture_refs: []
+  implementation_slice: SLICE-005
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: display_id
+    type: text
+    nullable: false
+    default: null
+    description: PRN-接頭辞を持つアプリケーション生成の不変表示ID。
+    classification: INTERNAL
+    pii: false
+  - name: principal_type
+    type: text
+    nullable: false
+    default: null
+    description: principal type
+    classification: INTERNAL
+    pii: false
+  - name: status
+    type: text
+    nullable: false
+    default: '''ACTIVE'''
+    description: 業務状態を示す安定Enum文字列。
+    classification: INTERNAL
+    pii: false
+  - name: display_name
+    type: text
+    nullable: false
+    default: null
+    description: display name
+    classification: INTERNAL
+    pii: false
+  - name: deactivated_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: deactivated at
+    classification: INTERNAL
+    pii: false
+  - name: deactivation_reason
+    type: text
+    nullable: true
+    default: null
+    description: deactivation reason
+    classification: RESTRICTED
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  - name: updated_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: 最終更新時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  - name: lock_version
+    type: bigint
+    nullable: false
+    default: '0'
+    description: 楽観的排他制御用の単調増加Version。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_iam_principal_display
+    columns:
+    - display_id
+  check_constraints:
+  - name: ck_iam_principal_type
+    expression: principal_type IN ('USER', 'SERVICE')
+  - name: ck_iam_principal_status
+    expression: status IN ('ACTIVE', 'SUSPENDED', 'DEACTIVATED')
+  - name: ck_iam_principal_deactivation
+    expression: status <> 'DEACTIVATED' OR deactivated_at IS NOT NULL
+  - name: ck_iam_principal_version
+    expression: lock_version >= 0
+  foreign_keys: []
+  deferred_foreign_keys: []
+  indexes:
+  - name: ix_iam_principal_status
+    columns:
+    - status
+    - principal_type
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+- name: user_account
+  fully_qualified_name: iam.user_account
+  purpose: OIDC UserのIssuer/Subject、表示用Email、MFA claim等をPrincipalへ紐付ける。
+  owner_module: iam
+  write_pattern: MUTABLE
+  classification: RESTRICTED
+  retention_class: IAM_LIFECYCLE
+  primary_key:
+  - principal_id
+  primary_key_name: pk_iam_user_account
+  expected_scale:
+    gate_1: <100
+    gate_4: <10k
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-SEC-002
+  architecture_refs: []
+  implementation_slice: SLICE-005
+  notes:
+  - EmailはRecipient解決・表示の補助であり認証正本はIssuer+Subject。
+  columns:
+  - name: principal_id
+    type: uuid
+    nullable: false
+    default: null
+    description: principal id
+    classification: INTERNAL
+    pii: false
+  - name: oidc_issuer
+    type: text
+    nullable: false
+    default: null
+    description: oidc issuer
+    classification: RESTRICTED
+    pii: false
+  - name: oidc_subject
+    type: text
+    nullable: false
+    default: null
+    description: oidc subject
+    classification: RESTRICTED
+    pii: false
+  - name: email
+    type: text
+    nullable: true
+    default: null
+    description: email
+    classification: RESTRICTED
+    pii: true
+  - name: email_verified
+    type: boolean
+    nullable: false
+    default: 'false'
+    description: email verified
+    classification: INTERNAL
+    pii: false
+  - name: mfa_required
+    type: boolean
+    nullable: false
+    default: 'true'
+    description: mfa required
+    classification: INTERNAL
+    pii: false
+  - name: last_login_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: last login at
+    classification: INTERNAL
+    pii: false
+  - name: last_mfa_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: last mfa at
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_iam_user_oidc
+    columns:
+    - oidc_issuer
+    - oidc_subject
+  check_constraints:
+  - name: ck_iam_user_https_issuer
+    expression: oidc_issuer ~ '^https://'
+  foreign_keys:
+  - name: fk_iam_user_account_principal_id
+    columns:
+    - principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys: []
+  indexes:
+  - name: ix_iam_user_email_lower
+    columns: []
+    expression: pg_catalog.lower(email)
+    unique: false
+    method: btree
+    where: email IS NOT NULL
+    include: []
+    nulls_not_distinct: false
+    description: ''
+- name: service_principal
+  fully_qualified_name: iam.service_principal
+  purpose: Worker、Dispatcher、CI等のWorkload IdentityをPrincipalへ紐付ける。Credential本体はSecrets Manager/OIDCに置く。
+  owner_module: iam
+  write_pattern: MUTABLE
+  classification: RESTRICTED
+  retention_class: IAM_LIFECYCLE
+  primary_key:
+  - principal_id
+  primary_key_name: pk_iam_service_principal
+  expected_scale:
+    gate_1: <100
+    gate_4: <10k
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-SEC-001
+  - NFR-SEC-002
+  architecture_refs: []
+  implementation_slice: SLICE-005
+  notes: []
+  columns:
+  - name: principal_id
+    type: uuid
+    nullable: false
+    default: null
+    description: principal id
+    classification: INTERNAL
+    pii: false
+  - name: service_code
+    type: text
+    nullable: false
+    default: null
+    description: service code
+    classification: INTERNAL
+    pii: false
+  - name: workload_identity
+    type: text
+    nullable: false
+    default: null
+    description: workload identity
+    classification: RESTRICTED
+    pii: false
+  - name: allowed_environment
+    type: text
+    nullable: false
+    default: null
+    description: allowed environment
+    classification: INTERNAL
+    pii: false
+  - name: credential_rotated_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: credential rotated at
+    classification: INTERNAL
+    pii: false
+  - name: last_used_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: last used at
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_iam_service_code
+    columns:
+    - service_code
+  - name: uq_iam_service_workload
+    columns:
+    - workload_identity
+    - allowed_environment
+  check_constraints:
+  - name: ck_iam_service_env
+    expression: allowed_environment IN ('LOCAL', 'CI', 'STAGING', 'PRODUCTION')
+  foreign_keys:
+  - name: fk_iam_service_principal_principal_id
+    columns:
+    - principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys: []
+  indexes: []
+- name: role
+  fully_qualified_name: iam.role
+  purpose: RAOSアプリケーション内Roleの定義。DB Roleとは分離する。
+  owner_module: iam
+  write_pattern: REFERENCE
+  classification: INTERNAL
+  retention_class: CONFIG_7Y
+  primary_key:
+  - id
+  primary_key_name: pk_iam_role
+  expected_scale:
+    gate_1: <100
+    gate_4: <1k
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-SEC-002
+  architecture_refs: []
+  implementation_slice: SLICE-005
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: role_code
+    type: text
+    nullable: false
+    default: null
+    description: role code
+    classification: INTERNAL
+    pii: false
+  - name: name
+    type: text
+    nullable: false
+    default: null
+    description: name
+    classification: INTERNAL
+    pii: false
+  - name: description
+    type: text
+    nullable: false
+    default: null
+    description: description
+    classification: INTERNAL
+    pii: false
+  - name: is_system_role
+    type: boolean
+    nullable: false
+    default: 'true'
+    description: is system role
+    classification: INTERNAL
+    pii: false
+  - name: status
+    type: text
+    nullable: false
+    default: '''ACTIVE'''
+    description: 業務状態を示す安定Enum文字列。
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_iam_role_code
+    columns:
+    - role_code
+  check_constraints:
+  - name: ck_iam_role_status
+    expression: status IN ('ACTIVE', 'RETIRED')
+  foreign_keys: []
+  deferred_foreign_keys: []
+  indexes: []
+- name: permission
+  fully_qualified_name: iam.permission
+  purpose: API/Command単位の安定Permission code。
+  owner_module: iam
+  write_pattern: REFERENCE
+  classification: INTERNAL
+  retention_class: CONFIG_7Y
+  primary_key:
+  - id
+  primary_key_name: pk_iam_permission
+  expected_scale:
+    gate_1: <500
+    gate_4: <5k
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-SEC-002
+  architecture_refs: []
+  implementation_slice: SLICE-005
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: permission_code
+    type: text
+    nullable: false
+    default: null
+    description: permission code
+    classification: INTERNAL
+    pii: false
+  - name: description
+    type: text
+    nullable: false
+    default: null
+    description: description
+    classification: INTERNAL
+    pii: false
+  - name: risk_level
+    type: text
+    nullable: false
+    default: null
+    description: risk level
+    classification: INTERNAL
+    pii: false
+  - name: status
+    type: text
+    nullable: false
+    default: '''ACTIVE'''
+    description: 業務状態を示す安定Enum文字列。
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_iam_permission_code
+    columns:
+    - permission_code
+  check_constraints:
+  - name: ck_iam_permission_risk
+    expression: risk_level IN ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')
+  - name: ck_iam_permission_status
+    expression: status IN ('ACTIVE', 'RETIRED')
+  foreign_keys: []
+  deferred_foreign_keys: []
+  indexes: []
+- name: role_permission
+  fully_qualified_name: iam.role_permission
+  purpose: RoleとPermissionの多対多対応。
+  owner_module: iam
+  write_pattern: REFERENCE
+  classification: INTERNAL
+  retention_class: CONFIG_7Y
+  primary_key:
+  - role_id
+  - permission_id
+  primary_key_name: pk_iam_role_permission
+  expected_scale:
+    gate_1: <5k
+    gate_4: <50k
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-SEC-002
+  architecture_refs: []
+  implementation_slice: SLICE-005
+  notes: []
+  columns:
+  - name: role_id
+    type: uuid
+    nullable: false
+    default: null
+    description: role id
+    classification: INTERNAL
+    pii: false
+  - name: permission_id
+    type: uuid
+    nullable: false
+    default: null
+    description: permission id
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints: []
+  check_constraints: []
+  foreign_keys:
+  - name: fk_iam_role_permission_role_id
+    columns:
+    - role_id
+    references: iam.role
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_iam_role_permission_permission_id
+    columns:
+    - permission_id
+    references: iam.permission
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys: []
+  indexes:
+  - name: ix_iam_role_permission_permission_id
+    columns:
+    - permission_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+- name: principal_role_assignment
+  fully_qualified_name: iam.principal_role_assignment
+  purpose: Principalへglobal/site/category/article scopeのRoleを期限付き付与する。
+  owner_module: iam
+  write_pattern: LIFECYCLE
+  classification: RESTRICTED
+  retention_class: AUDIT_7Y_PROVISIONAL
+  primary_key:
+  - id
+  primary_key_name: pk_iam_principal_role_assignment
+  expected_scale:
+    gate_1: <1k
+    gate_4: <100k
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-SEC-002
+  - FR-020
+  architecture_refs: []
+  implementation_slice: SLICE-005
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: principal_id
+    type: uuid
+    nullable: false
+    default: null
+    description: principal id
+    classification: INTERNAL
+    pii: false
+  - name: role_id
+    type: uuid
+    nullable: false
+    default: null
+    description: role id
+    classification: INTERNAL
+    pii: false
+  - name: scope_type
+    type: text
+    nullable: false
+    default: null
+    description: scope type
+    classification: INTERNAL
+    pii: false
+  - name: scope_id
+    type: uuid
+    nullable: true
+    default: null
+    description: scope id
+    classification: INTERNAL
+    pii: false
+  - name: valid_from
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: valid from
+    classification: INTERNAL
+    pii: false
+  - name: valid_to
+    type: timestamptz
+    nullable: true
+    default: null
+    description: valid to
+    classification: INTERNAL
+    pii: false
+  - name: assigned_by_principal_id
+    type: uuid
+    nullable: false
+    default: null
+    description: assigned by principal id
+    classification: INTERNAL
+    pii: false
+  - name: assignment_reason
+    type: text
+    nullable: false
+    default: null
+    description: assignment reason
+    classification: RESTRICTED
+    pii: false
+  - name: revoked_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: revoked at
+    classification: INTERNAL
+    pii: false
+  - name: revoked_by_principal_id
+    type: uuid
+    nullable: true
+    default: null
+    description: revoked by principal id
+    classification: INTERNAL
+    pii: false
+  - name: revocation_reason
+    type: text
+    nullable: true
+    default: null
+    description: revocation reason
+    classification: RESTRICTED
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints: []
+  check_constraints:
+  - name: ck_iam_assignment_scope
+    expression: scope_type IN ('GLOBAL', 'SITE', 'CATEGORY', 'ARTICLE')
+  - name: ck_iam_assignment_scope_id
+    expression: (scope_type = 'GLOBAL' AND scope_id IS NULL) OR (scope_type <> 'GLOBAL' AND scope_id IS NOT NULL)
+  - name: ck_iam_assignment_window
+    expression: valid_to IS NULL OR valid_to > valid_from
+  - name: ck_iam_assignment_revoke_pair
+    expression: (revoked_at IS NULL) = (revoked_by_principal_id IS NULL)
+  foreign_keys:
+  - name: fk_iam_principal_role_assignment_principal_id
+    columns:
+    - principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_iam_principal_role_assignment_role_id
+    columns:
+    - role_id
+    references: iam.role
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_iam_principal_role_assignment_assigned_by_principal_id
+    columns:
+    - assigned_by_principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_iam_principal_role_assignment_revoked_by_principal_id
+    columns:
+    - revoked_by_principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys: []
+  indexes:
+  - name: uq_iam_assignment_active
+    columns:
+    - principal_id
+    - role_id
+    - scope_type
+    - scope_id
+    expression: null
+    unique: true
+    method: btree
+    where: revoked_at IS NULL
+    include: []
+    nulls_not_distinct: true
+    description: ''
+  - name: ix_iam_assignment_lookup
+    columns:
+    - principal_id
+    - scope_type
+    - scope_id
+    - valid_from
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_iam_principal_role_assignment_role_id
+    columns:
+    - role_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_iam_principal_role_assignment_assigned_by_principal_id
+    columns:
+    - assigned_by_principal_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_iam_principal_role_assignment_revoked_by_principal_id
+    columns:
+    - revoked_by_principal_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+- name: session_revocation
+  fully_qualified_name: iam.session_revocation
+  purpose: PrincipalまたはOIDC Subjectのrevoke-beforeを保持し、既存Sessionを無効化する。
+  owner_module: iam
+  write_pattern: APPEND_ONLY
+  classification: RESTRICTED
+  retention_class: IAM_SESSION_2Y
+  primary_key:
+  - id
+  primary_key_name: pk_iam_session_revocation
+  expected_scale:
+    gate_1: <1k
+    gate_4: <100k
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-SEC-002
+  architecture_refs: []
+  implementation_slice: SLICE-005
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: principal_id
+    type: uuid
+    nullable: false
+    default: null
+    description: principal id
+    classification: INTERNAL
+    pii: false
+  - name: oidc_issuer
+    type: text
+    nullable: false
+    default: null
+    description: oidc issuer
+    classification: RESTRICTED
+    pii: false
+  - name: oidc_subject
+    type: text
+    nullable: false
+    default: null
+    description: oidc subject
+    classification: RESTRICTED
+    pii: false
+  - name: revoke_before
+    type: timestamptz
+    nullable: false
+    default: null
+    description: revoke before
+    classification: INTERNAL
+    pii: false
+  - name: reason
+    type: text
+    nullable: false
+    default: null
+    description: reason
+    classification: RESTRICTED
+    pii: false
+  - name: created_by_principal_id
+    type: uuid
+    nullable: false
+    default: null
+    description: 作成操作を行ったIAM Principal。
+    classification: INTERNAL
+    pii: false
+  - name: expires_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: expires at
+    classification: INTERNAL
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints: []
+  check_constraints:
+  - name: ck_iam_session_issuer
+    expression: oidc_issuer ~ '^https://'
+  - name: ck_iam_session_expiry
+    expression: expires_at IS NULL OR expires_at > revoke_before
+  foreign_keys:
+  - name: fk_iam_session_revocation_principal_id
+    columns:
+    - principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_iam_session_revocation_created_by_principal_id
+    columns:
+    - created_by_principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys: []
+  indexes:
+  - name: ix_iam_session_revocation_lookup
+    columns:
+    - oidc_issuer
+    - oidc_subject
+    - revoke_before
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_iam_session_revocation_principal_id
+    columns:
+    - principal_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_iam_session_revocation_created_by_principal_id
+    columns:
+    - created_by_principal_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+- name: break_glass_record
+  fully_qualified_name: iam.break_glass_record
+  purpose: 緊急権限の理由、Incident、承認、権限集合、有効期間、終了を記録する。
+  owner_module: iam
+  write_pattern: APPEND_ONLY
+  classification: RESTRICTED
+  retention_class: AUDIT_7Y_PROVISIONAL
+  primary_key:
+  - id
+  primary_key_name: pk_iam_break_glass_record
+  expected_scale:
+    gate_1: <100
+    gate_4: <10k
+  partitioning: NONE_MVP
+  requirements:
+  - NFR-SEC-002
+  - FR-020
+  architecture_refs: []
+  implementation_slice: SLICE-005
+  notes: []
+  columns:
+  - name: id
+    type: uuid
+    nullable: false
+    default: pg_catalog.uuidv7()
+    description: 内部主キー。PostgreSQL 18のuuidv7()で生成する時系列順UUID。
+    classification: INTERNAL
+    pii: false
+  - name: display_id
+    type: text
+    nullable: false
+    default: null
+    description: BGA-接頭辞を持つアプリケーション生成の不変表示ID。
+    classification: INTERNAL
+    pii: false
+  - name: principal_id
+    type: uuid
+    nullable: false
+    default: null
+    description: principal id
+    classification: INTERNAL
+    pii: false
+  - name: incident_id
+    type: uuid
+    nullable: false
+    default: null
+    description: incident id
+    classification: INTERNAL
+    pii: false
+  - name: reason
+    type: text
+    nullable: false
+    default: null
+    description: reason
+    classification: RESTRICTED
+    pii: false
+  - name: approved_by_principal_id
+    type: uuid
+    nullable: false
+    default: null
+    description: approved by principal id
+    classification: INTERNAL
+    pii: false
+  - name: permissions
+    type: jsonb
+    nullable: false
+    default: '''{}''::jsonb'
+    description: 緊急時に一時付与したPermission code集合。
+    classification: RESTRICTED
+    pii: false
+  - name: started_at
+    type: timestamptz
+    nullable: false
+    default: null
+    description: started at
+    classification: INTERNAL
+    pii: false
+  - name: expires_at
+    type: timestamptz
+    nullable: false
+    default: null
+    description: expires at
+    classification: INTERNAL
+    pii: false
+  - name: ended_at
+    type: timestamptz
+    nullable: true
+    default: null
+    description: ended at
+    classification: INTERNAL
+    pii: false
+  - name: end_reason
+    type: text
+    nullable: true
+    default: null
+    description: end reason
+    classification: RESTRICTED
+    pii: false
+  - name: created_at
+    type: timestamptz
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    description: レコード作成時刻。UTCのtimestamptz。
+    classification: INTERNAL
+    pii: false
+  unique_constraints:
+  - name: uq_iam_break_glass_display
+    columns:
+    - display_id
+  check_constraints:
+  - name: ck_iam_break_glass_window
+    expression: expires_at > started_at AND (ended_at IS NULL OR ended_at >= started_at)
+  - name: ck_iam_break_glass_permissions
+    expression: pg_catalog.jsonb_typeof(permissions) = 'object'
+  foreign_keys:
+  - name: fk_iam_break_glass_record_principal_id
+    columns:
+    - principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  - name: fk_iam_break_glass_record_approved_by_principal_id
+    columns:
+    - approved_by_principal_id
+    references: iam.principal
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+  deferred_foreign_keys:
+  - name: fk_iam_break_glass_record_incident_id
+    columns:
+    - incident_id
+    references: ops.incident
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferrable: false
+    initially_deferred: false
+    deferred_until_condition: TARGET_TABLE_OWNED_BY_APPROVED_LATER_STORY
+    owner_story: UNASSIGNED
+    reason: TARGET_TABLE_NOT_YET_OWNED
+    column_and_index_installed: true
+  indexes:
+  - name: ix_iam_break_glass_active
+    columns:
+    - expires_at
+    expression: null
+    unique: false
+    method: btree
+    where: ended_at IS NULL
+    include: []
+    nulls_not_distinct: false
+    description: ''
+  - name: ix_iam_break_glass_record_principal_id
+    columns:
+    - principal_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_iam_break_glass_record_incident_id
+    columns:
+    - incident_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+  - name: ix_iam_break_glass_record_approved_by_principal_id
+    columns:
+    - approved_by_principal_id
+    expression: null
+    unique: false
+    method: btree
+    where: null
+    include: []
+    nulls_not_distinct: false
+    description: Foreign key lookup and parent delete/update check.
+deferred_foreign_key_policy:
+  exact_names:
+  - fk_ops_job_site_id
+  - fk_iam_break_glass_record_incident_id
+  requirements:
+  - COLUMN_REMAINS_INSTALLED
+  - INDEX_REMAINS_INSTALLED
+  - NO_PLACEHOLDER_TARGET
+  - NO_INFERRED_REFERENTIAL_RULE
+  items:
+  - name: fk_ops_job_site_id
+    table: ops.job
+    columns:
+    - site_id
+    references: portfolio.site
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferred_until_story: ST-0304
+    reason: TARGET_TABLE_NOT_YET_OWNED
+  - name: fk_iam_break_glass_record_incident_id
+    table: iam.break_glass_record
+    columns:
+    - incident_id
+    references: ops.incident
+    referenced_columns:
+    - id
+    on_delete: RESTRICT
+    deferred_until_condition: TARGET_TABLE_OWNED_BY_APPROVED_LATER_STORY
+    owner_story: UNASSIGNED
+    reason: TARGET_TABLE_NOT_YET_OWNED
+functions:
+- fully_qualified_name: ops.touch_mutable_row
+  signature: ops.touch_mutable_row()
+  returns: trigger
+  language: plpgsql
+  security: INVOKER
+  volatility: VOLATILE
+  set_search_path: pg_catalog
+  public_execute: REVOKED
+  comment: Mutable rows receive a statement timestamp and monotonic lock version only when row values change.
+  behavior:
+    predicate: NEW IS DISTINCT FROM OLD
+    updated_at: pg_catalog.statement_timestamp()
+    lock_version: OLD.lock_version + 1
+    return: NEW
+- fully_qualified_name: ops.reject_immutable_mutation
+  signature: ops.reject_immutable_mutation()
+  returns: trigger
+  language: plpgsql
+  security: INVOKER
+  volatility: VOLATILE
+  set_search_path: pg_catalog
+  public_execute: REVOKED
+  comment: Reject normal UPDATE and DELETE on hard-immutable tables; permit only an explicit migrator maintenance session.
+  behavior:
+    maintenance_guc: raos.allow_immutable_maintenance
+    maintenance_value: 'on'
+    maintenance_role: raos_migrator
+    maintenance_role_check: pg_catalog.pg_has_role(current_user, 'raos_migrator', 'MEMBER')
+    maintenance_update_return: NEW
+    maintenance_delete_return: OLD
+    rejected_operations:
+    - UPDATE
+    - DELETE
+    rejection_sqlstate: '55000'
+triggers:
+- name: trg_ops_job_touch
+  table: ops.job
+  timing: BEFORE
+  events:
+  - UPDATE
+  level: ROW
+  function: ops.touch_mutable_row()
+  comment: Maintain ops.job updated_at and lock_version for changed rows.
+- name: trg_iam_principal_touch
+  table: iam.principal
+  timing: BEFORE
+  events:
+  - UPDATE
+  level: ROW
+  function: ops.touch_mutable_row()
+  comment: Maintain iam.principal updated_at and lock_version for changed rows.
+- name: trg_ops_object_artifact_immutable
+  table: ops.object_artifact
+  timing: BEFORE
+  events:
+  - UPDATE
+  - DELETE
+  level: ROW
+  function: ops.reject_immutable_mutation()
+  comment: Reject normal mutation of the object artifact registry.
+- name: trg_ops_audit_event_immutable
+  table: ops.audit_event
+  timing: BEFORE
+  events:
+  - UPDATE
+  - DELETE
+  level: ROW
+  function: ops.reject_immutable_mutation()
+  comment: Reject normal mutation of the audit event ledger.
+security:
+  control_ids:
+  - SEC-IAM-004
+  - SEC-IAM-008
+  - SEC-IAM-009
+  - SEC-IAM-011
+  - SEC-DATA-003
+  - SEC-DATA-005
+  - SEC-DATA-007
+  - SEC-SDLC-010
+  hard_immutable_tables:
+  - ops.object_artifact
+  - ops.audit_event
+  append_only_labels_without_st0303_mutation_trigger:
+  - ops.inbox_receipt
+  - iam.session_revocation
+  - iam.break_glass_record
+  secret_column_names_forbidden: true
+  runtime_setting_secret_class_forbidden: true
+  public_schema_privileges: NONE
+  public_table_privileges: NONE
+  public_function_execute: REVOKED
+  create_database_roles: false
+  create_workload_grants: false
+  create_default_privileges: false
+  search_path:
+    only: pg_catalog
+    libpq_option: -c search_path=pg_catalog
+    session_prepare: SET search_path = pg_catalog
+    verification: SHOW search_path MUST EQUAL pg_catalog
+    hostile_resolution_test_required: true
+downgrade:
+  scope: EXACT_ST_0303_OWNED_OBJECTS
+  transaction_required: true
+  preflight_before_any_drop: true
+  require_all_owned_tables_empty: true
+  owned_table_count: 17
+  nonempty_failure_code: ST0303_DOWNGRADE_NONEMPTY
+  drop_tables_with: RESTRICT
+  partial_drop_forbidden: true
+  predecessor_revision: '202608030002'
+known_canonical_limitations:
+- id: RUNTIME_SETTING_GLOBAL_NULL_UNIQUENESS
+  object: uq_ops_setting_version
+  preserved_definition:
+  - setting_key
+  - scope_type
+  - scope_id
+  - version_no
+  limitation: A nullable scope_id permits more than one GLOBAL row for the same setting_key and version_no.
+  strengthening: FORBIDDEN_WITHOUT_APPROVED_DESIGN_HANDOFF
+- id: BREAK_GLASS_TWO_PERSON_RUNTIME_ENFORCEMENT
+  object: iam.break_glass_record
+  preserved_definition: The canonical physical catalog has principal_id and approved_by_principal_id but no inequality check.
+  inferred_constraint: FORBIDDEN
+  runtime_enforcement: OUTSIDE_ST_0303_DATABASE_SLICE
+  two_person_runtime_verification: NOT_EXECUTED
+verification:
+  exact_postgresql_server_version_num: 180004
+  required_local_candidate_suites:
+  - TST-008
+  - TST-011
+  - TST-013
+  exact_catalog_parity: REQUIRED
+  catalog_parity_basis: PINNED_SOURCES_AFTER_EXACT_ALLOWLISTED_SECURITY_NORMALIZATION
+  unlisted_source_drift: REJECT
+  zero_to_latest: REQUIRED
+  predecessor_to_latest: REQUIRED
+  downgrade_reupgrade: REQUIRED
+  public_and_default_acl_clean: REQUIRED
+  secret_scan: REQUIRED
+boundary:
+  environment: LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE
+  formal_tst_008: NOT_EXECUTED
+  formal_tst_011: NOT_EXECUTED
+  formal_tst_013: NOT_EXECUTED
+  independent_migration_owner_review: NOT_EXECUTED
+  hosted_ci_postgresql_18_4: NOT_EXECUTED
+  human_review: NOT_EXECUTED
+  staging_execution: NOT_EXECUTED
+  production_execution: FORBIDDEN
+  canonical_apply: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
+out_of_scope:
+- audit_export
+- alert
+- incident
+- incident_event
+- kill_switch
+- kill_switch_change
+- retention_policy
+- release
+- database_roles
+- workload_grants
+- default_privileges
+- runtime_job_dispatch
+- runtime_job_transition
+- lease_retry_dlq_behavior
+- seeds

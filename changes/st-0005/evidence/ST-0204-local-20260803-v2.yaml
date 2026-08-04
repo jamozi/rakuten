@@ -1,0 +1,58 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0204-20260803-V2
+  schema_version: 1
+  recorded_at: '2026-08-03T10:32:50Z'
+story_id: ST-0204
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0204-local-20260803.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ca5197422fa84c550c6c05e01be940b2b8ddb7e7e5da9bbbcc053f59aa6791f8-ST-0204-local-20260803.yaml
+    sha256: ca5197422fa84c550c6c05e01be940b2b8ddb7e7e5da9bbbcc053f59aa6791f8
+  - original_uri: repo://pyproject.toml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0-pyproject.toml
+    sha256: 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+  - original_uri: repo://uv.lock
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3-uv.lock
+    sha256: dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+  - original_uri: repo://changes/st-0204/contracts/runtime-config.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c64ae27933ed91bae371f04e57ddebfff3243b345ae6bfd222f9489e69b5bdc4-runtime-config.v1.yaml
+    sha256: c64ae27933ed91bae371f04e57ddebfff3243b345ae6bfd222f9489e69b5bdc4
+  - original_uri: repo://scripts/build_st0204_config_loader.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/d1c45b886a5e3e30e6a596c569dea08d21a06b8c26ace326d933fea035fb35e3-build_st0204_config_loader.py
+    sha256: d1c45b886a5e3e30e6a596c569dea08d21a06b8c26ace326d933fea035fb35e3
+  - original_uri: repo://tests/st0106/test_workflow_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80-test_workflow_contract.py
+    sha256: 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b-Makefile
+    sha256: 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+  - original_uri: repo://README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc-README.md
+    sha256: a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+  - original_uri: repo://changes/st-0203/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/cfab5bb185f48e463eeb308f5fa3b92ae589073e36f4e7a800060cefe05ba689-manifest.yaml
+    sha256: cfab5bb185f48e463eeb308f5fa3b92ae589073e36f4e7a800060cefe05ba689
+  - original_uri: repo://changes/st-0204/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/bc81176b13c7e717e791c2d14b3afeef7aaf3b5a8f25b9351b021a5233864840-manifest.yaml
+    sha256: bc81176b13c7e717e791c2d14b3afeef7aaf3b5a8f25b9351b021a5233864840
+suite_results:
+  - suite_id: TST-005
+    environment: LOCAL
+    result: LOCAL_PASS
+  - suite_id: TST-031
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: deterministic ST-0204 predecessor-pin regeneration and no-write check
+    result: 'PASS; the current ST-0203 manifest is bound by the configuration contract and sole-writer generator, while the generated JSON Schema remains byte-identical'
+  - command: isolated ST-0204 regression and exact repository static gate
+    result: 'PASS; ST-0204 178 passed and the denied-network static gate passed after the cascade source freeze'
+boundary: >-
+  Append-only delta over the earlier 2026-08-03 ST-0204 local snapshot.
+  Together the snapshots bind the current 22-source, one-generated-artifact
+  manifest closure and its refreshed ST-0203 predecessor pin. Runtime loader
+  and generated Schema semantics are unchanged. No Secret retrieval/provider,
+  hosted CI, formal TST-005 or TST-031, Security Owner approval, canonical
+  APPLY, staging/release, or production execution is asserted. Effective
+  canonical ST-0204 remains NOT_STARTED / NOT_EXECUTED.

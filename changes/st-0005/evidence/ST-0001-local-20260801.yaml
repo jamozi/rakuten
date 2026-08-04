@@ -1,0 +1,24 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0001-20260801
+  schema_version: 1
+  recorded_at: '2026-08-01T13:11:19Z'
+story_id: ST-0001
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://docs/worklogs/ST-0001.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3e0e839c52626d0251b16ebbf8066f25d541d47ff97ca53875b20605239b36b7-ST-0001.md
+  sha256: 3e0e839c52626d0251b16ebbf8066f25d541d47ff97ca53875b20605239b36b7
+- original_uri: repo://docs/manifest.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e-manifest.json
+  sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+suite_results:
+- suite_id: TST-001
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: python3 scripts/import_raos_design.py verify
+  result: PASS; 105 imported files, 6 source archives, 104 package checksums
+- command: python3 -m pytest -q tests/test_import_raos_design.py
+  result: 18 passed in 0.18s
+boundary: Local static evidence only; canonical CI TST-001 was not executed.

@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/ai-governance/release-decision-create-request/v1",
+  "title": "Release Decision Create Request",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "task_definition_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "prompt_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "model_route_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "resolved_model_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "policy_bundle_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "dataset_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "output_schema_version_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "evaluation_run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "judge_calibration_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "code_git_sha": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{40,64}$"
+    },
+    "release_scope": {
+      "type": "string",
+      "const": "CANARY"
+    },
+    "maximum_canary_percent": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "decision_manifest_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "rollback_release_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "rollback_strategy": {
+      "type": "string",
+      "enum": [
+        "PREVIOUS_RELEASE",
+        "DISABLE_ROUTE"
+      ]
+    },
+    "rollback_runbook_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "rollback_runbook_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canary_monitoring_artifact_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "canary_monitoring_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "task_definition_id",
+    "prompt_version_id",
+    "model_route_version_id",
+    "resolved_model_id",
+    "policy_bundle_version_id",
+    "dataset_version_id",
+    "output_schema_version_id",
+    "evaluation_run_id",
+    "judge_calibration_id",
+    "code_git_sha",
+    "release_scope",
+    "maximum_canary_percent",
+    "decision_manifest_sha256",
+    "rollback_release_decision_id",
+    "rollback_strategy",
+    "rollback_runbook_artifact_id",
+    "rollback_runbook_sha256",
+    "canary_monitoring_artifact_id",
+    "canary_monitoring_sha256"
+  ],
+  "x-raos-classification": "CONFIDENTIAL",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "rollback_strategy": {
+            "const": "PREVIOUS_RELEASE"
+          }
+        },
+        "required": [
+          "rollback_strategy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "rollback_release_decision_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rollback_runbook_artifact_id": {
+            "type": "null"
+          },
+          "rollback_runbook_sha256": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "rollback_release_decision_id",
+          "rollback_runbook_artifact_id",
+          "rollback_runbook_sha256"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "rollback_strategy": {
+            "const": "DISABLE_ROUTE"
+          }
+        },
+        "required": [
+          "rollback_strategy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "rollback_release_decision_id": {
+            "type": "null"
+          },
+          "rollback_runbook_artifact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rollback_runbook_sha256": {
+            "type": "string",
+            "minLength": 64,
+            "maxLength": 64,
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "rollback_release_decision_id",
+          "rollback_runbook_artifact_id",
+          "rollback_runbook_sha256"
+        ]
+      }
+    }
+  ]
+}

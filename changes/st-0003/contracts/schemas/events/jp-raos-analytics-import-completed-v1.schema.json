@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-analytics-import-completed-v1.schema.json",
+  "title": "jp.raos.analytics.import_completed.v1",
+  "description": "Analytics source取込が完了した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.analytics.import_completed.v1"
+        },
+        "producer": {
+          "const": "analytics"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "import_run_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_type": {
+              "type": "string"
+            },
+            "site_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "date_from": {
+              "type": "string",
+              "format": "date"
+            },
+            "date_to": {
+              "type": "string",
+              "format": "date"
+            },
+            "inserted_count": {
+              "type": "integer"
+            },
+            "rejected_count": {
+              "type": "integer"
+            },
+            "watermark": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "import_run_id",
+            "source_type",
+            "site_id",
+            "date_from",
+            "date_to",
+            "inserted_count",
+            "rejected_count"
+          ]
+        }
+      }
+    }
+  ]
+}

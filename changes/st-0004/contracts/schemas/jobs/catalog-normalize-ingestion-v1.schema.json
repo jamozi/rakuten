@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/catalog-normalize-ingestion-v1.schema.json",
+  "title": "catalog.normalize_ingestion.v1",
+  "description": "Raw provider responseをProduct Candidate/Observationへ正規化する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "catalog.normalize_ingestion.v1"
+        },
+        "queue": {
+          "const": "ingestion"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ingestion_request_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "raw_artifact_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "normalizer_version": {
+              "type": "string"
+            },
+            "expected_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "ingestion_request_id",
+            "raw_artifact_id",
+            "normalizer_version",
+            "expected_sha256"
+          ]
+        }
+      }
+    }
+  ]
+}

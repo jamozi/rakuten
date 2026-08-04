@@ -1,0 +1,274 @@
+document:
+  id: RAOS-CONTENT-POLICY-001
+  title: 編集・公開Policyカタログ
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+policy_bundle_code: content-editorial-policy.jp.v1
+effective_date: '2026-07-30'
+precedence:
+- law_and_regulation
+- rakuten_terms_and_guidelines
+- user_safety
+- evidence_integrity
+- editorial_value
+- seo
+- automation
+- volume
+policies:
+- id: POL-CONT-001
+  severity: BLOCKER
+  stage: all
+  code: approved_source_packet_required
+  rule: 承認済みSource Packetがない記事生成・公開を禁止する
+  enforcement: deterministic
+- id: POL-CONT-002
+  severity: BLOCKER
+  stage: draft
+  code: major_claim_evidence
+  rule: 主要ClaimのEvidence Coverageは100%
+  enforcement: deterministic
+- id: POL-CONT-003
+  severity: BLOCKER
+  stage: draft
+  code: fabricated_experience
+  rule: 実施記録のない使用・検証・愛用表現を禁止する
+  enforcement: hybrid
+- id: POL-CONT-004
+  severity: BLOCKER
+  stage: ingest
+  code: rakuten_review_body
+  rule: 楽天レビュー本文の取得・保存・要約・変形・依拠を禁止する
+  enforcement: deterministic
+- id: POL-CONT-005
+  severity: BLOCKER
+  stage: recommendation
+  code: affiliate_bias
+  rule: 料率・EPC・RPM・報酬・利益を推薦入力へ含めない
+  enforcement: deterministic
+- id: POL-CONT-006
+  severity: BLOCKER
+  stage: content_ast
+  code: raw_html
+  rule: 任意HTML、Script、iframe、Style、Event Handlerを禁止する
+  enforcement: schema
+- id: POL-CONT-007
+  severity: BLOCKER
+  stage: content_ast
+  code: manual_affiliate_url
+  rule: Affiliate URLの手入力を禁止し、Offer/Link Resourceから解決する
+  enforcement: schema
+- id: POL-CONT-008
+  severity: BLOCKER
+  stage: render
+  code: disclosure_top
+  rule: 広告・アフィリエイト関係を記事上部の初回表示範囲で明示する
+  enforcement: deterministic
+- id: POL-CONT-009
+  severity: BLOCKER
+  stage: render
+  code: cta_destination
+  rule: CTAは楽天市場への遷移であることを明示する
+  enforcement: deterministic
+- id: POL-CONT-010
+  severity: BLOCKER
+  stage: render
+  code: paid_link_rel
+  rule: Affiliate Linkへrel=sponsoredを付与する
+  enforcement: deterministic
+- id: POL-CONT-011
+  severity: BLOCKER
+  stage: render
+  code: direct_affiliate_link
+  rule: 自社RedirectでAffiliate URLを中継・改変しない
+  enforcement: deterministic
+- id: POL-CONT-012
+  severity: BLOCKER
+  stage: render
+  code: rakuten_api_credit
+  rule: 楽天API利用時の指定クレジットを共通Rendererへ表示する
+  enforcement: deterministic
+- id: POL-CONT-013
+  severity: BLOCKER
+  stage: media
+  code: rakuten_image_integrity
+  rule: 楽天提供画像の改変、文字重畳、切り抜き、縦横比破壊を禁止する
+  enforcement: hybrid
+- id: POL-CONT-014
+  severity: BLOCKER
+  stage: draft
+  code: unsupported_superlative
+  rule: 母集団・範囲・時点がない最上級・唯一性を禁止する
+  enforcement: hybrid
+- id: POL-CONT-015
+  severity: BLOCKER
+  stage: publication
+  code: stale_critical_fact
+  rule: 鮮度期限を超えた価格・在庫・リンク・主要仕様を最新として表示しない
+  enforcement: deterministic
+- id: POL-CONT-016
+  severity: BLOCKER
+  stage: draft
+  code: product_identity
+  rule: 商品、型番、容量、色、セット、ショップOfferの同定不一致を禁止する
+  enforcement: deterministic
+- id: POL-CONT-017
+  severity: BLOCKER
+  stage: scope
+  code: high_risk_claim
+  rule: MVPで医療・法務・金融・安全性の高リスク助言を扱わない
+  enforcement: hybrid
+- id: POL-CONT-018
+  severity: BLOCKER
+  stage: publication
+  code: human_approval
+  rule: 人間の明示承認なしに公開しない
+  enforcement: deterministic
+- id: POL-CONT-019
+  severity: MAJOR
+  stage: plan
+  code: one_primary_intent
+  rule: 一記事一主要意思決定・一主要Intent Clusterを維持する
+  enforcement: human
+- id: POL-CONT-020
+  severity: MAJOR
+  stage: plan
+  code: scaled_thin_pages
+  rule: 検索語、Tag、条件の組合せだけで低価値ページを量産しない
+  enforcement: hybrid
+- id: POL-CONT-021
+  severity: MAJOR
+  stage: draft
+  code: competitor_copy
+  rule: 競合記事は発見専用とし、根拠・転載・近似言い換えに使用しない
+  enforcement: hybrid
+- id: POL-CONT-022
+  severity: MAJOR
+  stage: draft
+  code: balanced_tradeoffs
+  rule: 推薦候補の不向き条件・制約・トレードオフを隠さない
+  enforcement: human
+- id: POL-CONT-023
+  severity: MAJOR
+  stage: draft
+  code: uncertainty_disclosure
+  rule: 不明・競合・欠損を推測で埋めず、表示またはClaim除外する
+  enforcement: hybrid
+- id: POL-CONT-024
+  severity: MAJOR
+  stage: seo
+  code: unique_metadata
+  rule: Title、H1、Meta Descriptionをページ固有かつ内容一致にする
+  enforcement: deterministic
+- id: POL-CONT-025
+  severity: BLOCKER
+  stage: seo
+  code: index_state
+  rule: Draft/Preview/noindexページをSitemapへ含めず、公開CanonicalのみIndexableにする
+  enforcement: deterministic
+- id: POL-CONT-026
+  severity: BLOCKER
+  stage: structured_data
+  code: visible_match
+  rule: JSON-LDと可視本文の不一致、存在しないRating/Review/Offer補完を禁止する
+  enforcement: deterministic
+- id: POL-CONT-027
+  severity: MAJOR
+  stage: structured_data
+  code: multi_product_product_markup
+  rule: 複数商品記事にProduct Product Snippet用Markupを出さない
+  enforcement: deterministic
+- id: POL-CONT-028
+  severity: MAJOR
+  stage: structured_data
+  code: faqpage_disabled
+  rule: 可視FAQは許可するがFAQPage JSON-LDを生成しない
+  enforcement: deterministic
+- id: POL-CONT-029
+  severity: MAJOR
+  stage: structured_data
+  code: rakuten_rating_markup
+  rule: 楽天の平均評価・件数からReview/AggregateRating JSON-LDを生成しない
+  enforcement: deterministic
+- id: POL-CONT-030
+  severity: MAJOR
+  stage: seo
+  code: query_variant_consolidation
+  rule: 意味が同じ検索語Variantは単一Canonical記事へ統合する
+  enforcement: human
+- id: POL-CONT-031
+  severity: MAJOR
+  stage: links
+  code: internal_link_quality
+  rule: 公開済み関連Routeだけへ説明的AnchorでLinkし、過剰Exact Matchを避ける
+  enforcement: deterministic
+- id: POL-CONT-032
+  severity: BLOCKER
+  stage: accessibility
+  code: non_text_alternative
+  rule: 情報画像・図表に同等目的の代替テキストまたは詳細説明を付与する
+  enforcement: hybrid
+- id: POL-CONT-033
+  severity: MAJOR
+  stage: accessibility
+  code: semantic_structure
+  rule: 見出し階層、表見出し、Keyboard操作、色以外の区別を維持する
+  enforcement: hybrid
+- id: POL-CONT-034
+  severity: MAJOR
+  stage: metadata
+  code: substantive_lastmod
+  rule: lastmod/Updated Atは実質的変更時のみ更新する
+  enforcement: deterministic
+- id: POL-CONT-035
+  severity: BLOCKER
+  stage: publication
+  code: kill_switch
+  rule: Publication/Affiliate Link Kill Switchが有効な場合は該当出力をFail Closedする
+  enforcement: deterministic
+- id: POL-CONT-036
+  severity: BLOCKER
+  stage: publication
+  code: snapshot_integrity
+  rule: 承認Version・Methodology・Policy・Evidence・SEO・Schema HashをPublication Snapshotへ固定する
+  enforcement: deterministic
+- id: POL-CONT-037
+  severity: MAJOR
+  stage: draft
+  code: review_aggregate_inference
+  rule: レビュー平均・件数だけから品質・満足・長所短所・代表意見を推定しない
+  enforcement: hybrid
+- id: POL-CONT-038
+  severity: MAJOR
+  stage: draft
+  code: price_language
+  rule: 価格は取得時点の事実として書き、常時価格・最安保証を暗示しない
+  enforcement: hybrid
+- id: POL-CONT-039
+  severity: BLOCKER
+  stage: media
+  code: ai_product_depiction
+  rule: 実在商品の外観・仕様をAI生成画像で代替しない
+  enforcement: hybrid
+- id: POL-CONT-040
+  severity: MAJOR
+  stage: publication
+  code: safe_degradation
+  rule: 変動Factが失効した場合は該当Field/CTAを縮退し、推薦順位を自動変更しない
+  enforcement: deterministic
+waiver_policy:
+  blocker_waiver_allowed: false
+  major_waiver_allowed: true
+  required:
+  - specific_policy_id
+  - scope
+  - reason
+  - evidence
+  - expiry_at
+  - compliance_approver
+  - audit_event
+  maximum_default_duration_days: 30

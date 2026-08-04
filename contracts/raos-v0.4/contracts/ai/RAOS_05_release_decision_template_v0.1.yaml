@@ -1,0 +1,50 @@
+document:
+  id: RAOS-AI-001
+  version: '0.1'
+  date: '2026-07-30'
+  status: TEMPLATE
+release_decision:
+  decision_id: null
+  task_code: null
+  environment: SHADOW
+  candidate:
+    prompt_code: null
+    prompt_version: null
+    prompt_sha256: null
+    output_schema_id: null
+    output_schema_sha256: null
+    route_code: null
+    route_version: null
+    resolved_provider_model_id: null
+    provider_model_snapshot: null
+    policy_bundle_id: null
+    policy_bundle_version: null
+    application_code_sha: null
+  evaluation:
+    suite_code: null
+    dataset_manifest_id: null
+    dataset_sha256: null
+    evaluation_run_id: null
+    grader_versions: []
+    metric_results: {}
+    slice_results: {}
+    zero_tolerance_failures: 0
+    judge_calibration_id: null
+    human_review_sample_size: null
+  risk_review:
+    data_classification_approved: false
+    security_review_approved: false
+    policy_review_approved: false
+    known_limitations: []
+    open_findings: []
+  rollout:
+    canary_percent: 0
+    canary_duration_hours: 0
+    auto_pause_conditions:
+    - any zero-tolerance online failure
+    - P0 incident
+    - cost hard-cap breach
+    rollback_target_release_id: null
+  decision: REJECTED
+  approvals: []
+  decided_at: null

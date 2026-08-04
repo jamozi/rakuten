@@ -1,0 +1,216 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0303-20260803
+  schema_version: 1
+  recorded_at: '2026-08-03T14:25:02Z'
+story_id: ST-0303
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://.python-version
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab-.python-version
+    sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+  - original_uri: repo://pyproject.toml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0-pyproject.toml
+    sha256: 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+  - original_uri: repo://uv.lock
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3-uv.lock
+    sha256: dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+  - original_uri: repo://uv.toml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37-uv.toml
+    sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+  - original_uri: repo://changes/st-0302/contracts/foundation-schema.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec-foundation-schema.v1.yaml
+    sha256: fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec
+  - original_uri: repo://changes/st-0302/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4-README.md
+    sha256: 3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4
+  - original_uri: repo://docs/execplans/ST-0302.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c-ST-0302.md
+    sha256: 1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c
+  - original_uri: repo://docs/worklogs/ST-0302.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388-ST-0302.md
+    sha256: b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388
+  - original_uri: repo://scripts/build_st0302_foundation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/5f1980cb60bde37015571d83aa5fe005182e9e6ff475db3680eb074e279e5db8-build_st0302_foundation.py
+    sha256: 5f1980cb60bde37015571d83aa5fe005182e9e6ff475db3680eb074e279e5db8
+  - original_uri: repo://scripts/build_st0201_postgres_service.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c-build_st0201_postgres_service.py
+    sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+  - original_uri: repo://scripts/build_st0301_migration_framework.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/bed9e3b19017bb79a4ca518d9c9e8ec98b841d69f9d4f816a648576df78c96b4-build_st0301_migration_framework.py
+    sha256: bed9e3b19017bb79a4ca518d9c9e8ec98b841d69f9d4f816a648576df78c96b4
+  - original_uri: repo://changes/st-0301/contracts/migration-framework.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f-migration-framework.v1.yaml
+    sha256: 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
+  - original_uri: repo://changes/st-0301/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e-README.md
+    sha256: 9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e
+  - original_uri: repo://migrations/FRAMEWORK.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/90f81083c3b6a72e17eb375c770fe7828b9d8cdea49130b951ff3aa91a4d4263-FRAMEWORK.md
+    sha256: 90f81083c3b6a72e17eb375c770fe7828b9d8cdea49130b951ff3aa91a4d4263
+  - original_uri: repo://migrations/env.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/208e6fc0740347a35e40c9a2501aa726e10f6ef44bea36c3078e4cd6211f343f-env.py
+    sha256: 208e6fc0740347a35e40c9a2501aa726e10f6ef44bea36c3078e4cd6211f343f
+  - original_uri: repo://migrations/script.py.mako
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d-script.py.mako
+    sha256: 8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d
+  - original_uri: repo://migrations/versions/202608030001_framework_install_history.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3-202608030001_framework_install_history.py
+    sha256: edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+  - original_uri: repo://python/raos/__init__.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596-__init__.py
+    sha256: 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+  - original_uri: repo://python/raos/migrations/__init__.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6fa0c1f03e18e817371ebec5085c299aa9e4817259b5cb281cc3d4d88f2ba745-__init__.py
+    sha256: 6fa0c1f03e18e817371ebec5085c299aa9e4817259b5cb281cc3d4d88f2ba745
+  - original_uri: repo://python/raos/migrations/__main__.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325-__main__.py
+    sha256: af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325
+  - original_uri: repo://python/raos/migrations/catalog.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ad07bcc088457eef788d191bd963dc2e4d162abef152fe71e27c459934af0a1b-catalog.py
+    sha256: ad07bcc088457eef788d191bd963dc2e4d162abef152fe71e27c459934af0a1b
+  - original_uri: repo://python/raos/migrations/cli.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f3bedc3fb40b06595db6026d8ef50a30ef405ed4c0cb1ec94ca44f0b7bf6a0b0-cli.py
+    sha256: f3bedc3fb40b06595db6026d8ef50a30ef405ed4c0cb1ec94ca44f0b7bf6a0b0
+  - original_uri: repo://python/raos/migrations/runner.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/dff7ece2cd22124fea28273a928f5b482213625900292ff1047f0c2ecddddfbe-runner.py
+    sha256: dff7ece2cd22124fea28273a928f5b482213625900292ff1047f0c2ecddddfbe
+  - original_uri: repo://tests/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728-conftest.py
+    sha256: 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+  - original_uri: repo://tests/st0102/test_commands_and_docs.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9808be75cf2d3ea0d9571d8884237854eb9b72b0341bee92cf0363282b63b829-test_commands_and_docs.py
+    sha256: 9808be75cf2d3ea0d9571d8884237854eb9b72b0341bee92cf0363282b63b829
+  - original_uri: repo://tests/st0106/test_workflow_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/70f7d947fdba09bb0d8d2260a3c99fa9bff70b4e0699e74a3a4b0b04871fa1ee-test_workflow_contract.py
+    sha256: 70f7d947fdba09bb0d8d2260a3c99fa9bff70b4e0699e74a3a4b0b04871fa1ee
+  - original_uri: repo://tests/st0301/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d-conftest.py
+    sha256: b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d
+  - original_uri: repo://tests/st0301/test_catalog.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ec12574e1d3acdb18d1b8599b468c883ad62eb70ce9446a509571f462cfca315-test_catalog.py
+    sha256: ec12574e1d3acdb18d1b8599b468c883ad62eb70ce9446a509571f462cfca315
+  - original_uri: repo://tests/st0301/test_cli.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b83460a8789d420791746bfe3cf4e0a2fffb81761c00998d0f7e57713867bd11-test_cli.py
+    sha256: b83460a8789d420791746bfe3cf4e0a2fffb81761c00998d0f7e57713867bd11
+  - original_uri: repo://tests/st0301/test_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6e86e41c49b6634c69ad07bfe77ed32dded77da9c84777429029e3a92b79a72d-test_contract.py
+    sha256: 6e86e41c49b6634c69ad07bfe77ed32dded77da9c84777429029e3a92b79a72d
+  - original_uri: repo://tests/st0301/test_generation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e314c9cdc3971ede2adca936631e7e4269b461d2606affc37430f9ddaa83c012-test_generation.py
+    sha256: e314c9cdc3971ede2adca936631e7e4269b461d2606affc37430f9ddaa83c012
+  - original_uri: repo://tests/st0301/test_postgresql.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/927d114bc06e1629f2a73305f3a6eaafa3870c3f00b6d17619f86122023afcf4-test_postgresql.py
+    sha256: 927d114bc06e1629f2a73305f3a6eaafa3870c3f00b6d17619f86122023afcf4
+  - original_uri: repo://tests/st0301/test_runner.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/54224c04bbda9718e64b27d9c32b5b15166659184be40cc4477585060f95d504-test_runner.py
+    sha256: 54224c04bbda9718e64b27d9c32b5b15166659184be40cc4477585060f95d504
+  - original_uri: repo://tests/postgresql18.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e-postgresql18.py
+    sha256: 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+  - original_uri: repo://tests/st0302/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e-conftest.py
+    sha256: 30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e
+  - original_uri: repo://tests/st0302/test_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2b4a3fd6e7ec3a1ae9b096a6ed76de04a687f599e49fb145c0b74ecfd75fca96-test_contract.py
+    sha256: 2b4a3fd6e7ec3a1ae9b096a6ed76de04a687f599e49fb145c0b74ecfd75fca96
+  - original_uri: repo://tests/st0302/test_generation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/23f11dc30623cb4ad49e134acd9b74d1677e01e094e7585d7d4bc8395543dd1e-test_generation.py
+    sha256: 23f11dc30623cb4ad49e134acd9b74d1677e01e094e7585d7d4bc8395543dd1e
+  - original_uri: repo://tests/st0302/test_postgresql.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c71eb659a8eeaa7cecd2ae095f682e689ed6e7e09ee578844d65bee86211ec3e-test_postgresql.py
+    sha256: c71eb659a8eeaa7cecd2ae095f682e689ed6e7e09ee578844d65bee86211ec3e
+  - original_uri: repo://tests/st0302/test_revision.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2a466e5928386ee820e79984de78ce8be9c2aca7e79a4d738810d6d8a59570e2-test_revision.py
+    sha256: 2a466e5928386ee820e79984de78ce8be9c2aca7e79a4d738810d6d8a59570e2
+  - original_uri: repo://pyrightconfig.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191-pyrightconfig.json
+    sha256: df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8a777791c08b3af87d6c62030209d733d01164fe343e7c3c5e5cdad9c69487b7-Makefile
+    sha256: 8a777791c08b3af87d6c62030209d733d01164fe343e7c3c5e5cdad9c69487b7
+  - original_uri: repo://README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6c1ab60959182777a25cfd47ebbc5a51d56e61d93d966e23e8d4c65cfa564b0d-README.md
+    sha256: 6c1ab60959182777a25cfd47ebbc5a51d56e61d93d966e23e8d4c65cfa564b0d
+  - original_uri: repo://changes/st-0301/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff-manifest.yaml
+    sha256: 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+  - original_uri: repo://changes/st-0303/contracts/iam-ops-schema.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b-iam-ops-schema.v1.yaml
+    sha256: af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b
+  - original_uri: repo://changes/st-0303/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b8866fb9c9c2d593f8699fcf7d444c373732710cede6e413ed49992706f46e97-README.md
+    sha256: b8866fb9c9c2d593f8699fcf7d444c373732710cede6e413ed49992706f46e97
+  - original_uri: repo://docs/execplans/ST-0303.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8e45769540fa1b639bd714abb07e9fa778d02cac948e3c7d987a2e31e86a875b-ST-0303.md
+    sha256: 8e45769540fa1b639bd714abb07e9fa778d02cac948e3c7d987a2e31e86a875b
+  - original_uri: repo://docs/worklogs/ST-0303.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/185bfb91b11c430d22830781acc7e87edaf9d7430972838598d0ef14974d90c5-ST-0303.md
+    sha256: 185bfb91b11c430d22830781acc7e87edaf9d7430972838598d0ef14974d90c5
+  - original_uri: repo://scripts/build_st0303_iam_ops.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f8fa263493501f8e0c3915ab90155d8d83ba839604673ebd0df030d8811cbdf4-build_st0303_iam_ops.py
+    sha256: f8fa263493501f8e0c3915ab90155d8d83ba839604673ebd0df030d8811cbdf4
+  - original_uri: repo://migrations/versions/202608030002_foundation_schemas.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4-202608030002_foundation_schemas.py
+    sha256: f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4
+  - original_uri: repo://tests/st0303/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/d50b82df7ae355fbd66a5ca555d7e8d3c871fe141bf074c8e331810f1b358105-conftest.py
+    sha256: d50b82df7ae355fbd66a5ca555d7e8d3c871fe141bf074c8e331810f1b358105
+  - original_uri: repo://tests/st0303/test_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c9a8988b8da01ad80503a81d1b3e7d7899575f89ddfe89dc0411e48d02980f78-test_contract.py
+    sha256: c9a8988b8da01ad80503a81d1b3e7d7899575f89ddfe89dc0411e48d02980f78
+  - original_uri: repo://tests/st0303/test_generation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/61ea4d7c5ec5c34b751788ac0ee42b6634dc0973d53e79cbfbe802aef7d70473-test_generation.py
+    sha256: 61ea4d7c5ec5c34b751788ac0ee42b6634dc0973d53e79cbfbe802aef7d70473
+  - original_uri: repo://tests/st0303/test_postgresql.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2723fced17fe2392ac4753f609dfb8060126188eaa5ef42489ddbd0712693933-test_postgresql.py
+    sha256: 2723fced17fe2392ac4753f609dfb8060126188eaa5ef42489ddbd0712693933
+  - original_uri: repo://changes/st-0302/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0-manifest.yaml
+    sha256: d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+  - original_uri: repo://migrations/versions/202608030003_iam_ops_tables.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e-202608030003_iam_ops_tables.py
+    sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
+  - original_uri: repo://changes/st-0303/generated/iam-ops-catalog.v1.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a-iam-ops-catalog.v1.json
+    sha256: 0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a
+  - original_uri: repo://changes/st-0303/generated/iam-ops-validation.v1.sql
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/33be33b53b9a14c7e9ad686f8dd08834a2bc8211e6fab82577f78811219fde32-iam-ops-validation.v1.sql
+    sha256: 33be33b53b9a14c7e9ad686f8dd08834a2bc8211e6fab82577f78811219fde32
+  - original_uri: repo://changes/st-0303/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/373684bf7b2e6fbcbc984a5283888d58e1ee3d5ff34f5b5d6d494a002c601b13-manifest.yaml
+    sha256: 373684bf7b2e6fbcbc984a5283888d58e1ee3d5ff34f5b5d6d494a002c601b13
+suite_results:
+  - suite_id: TST-008
+    environment: LOCAL
+    result: LOCAL_PASS
+  - suite_id: TST-011
+    environment: LOCAL
+    result: LOCAL_PASS
+  - suite_id: TST-013
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: deterministic ST-0303 generation and complete content-addressed closure attestation after source freeze
+    result: 'PASS; generator --check passed; 54 source artifacts, three generated artifacts, and the manifest formed a 58-artifact closure with zero hash mismatches'
+  - command: exact PostgreSQL 18.4 composite migration gate after source freeze
+    result: 'PASS; ST-0301 111 passed, ST-0302 47 passed, and ST-0303 75 passed, 233 passed total'
+  - command: final denied-network static gate after source freeze
+    result: 'PASS; ci-static exited 0'
+  - command: final serial denied-network unit gate after source freeze
+    result: 'PASS; pytest 1758 passed with 116 intentional or environment-dependent skips, and Vitest 4 passed; one nonfatal ST-0202 socketpair teardown BrokenPipe warning did not fail the gate'
+  - command: final independent read-only ST-0303 audit
+    result: 'PASS; Blocker/High/Medium/Low 0/0/0/0'
+boundary: >-
+  This first ST-0303 snapshot binds the complete frozen 58-artifact closure:
+  54 sources, three generated artifacts, and the manifest. Exact PostgreSQL
+  18.4, final denied-network static, and final serial denied-network unit
+  gates passed locally after source freeze. TST-013 evidence is limited to the
+  database-side outbox, inbox, and idempotency schema/constraint candidate;
+  runtime ordering, retry, dead-letter, lease, and worker behavior remain
+  outside this Story and formally unexecuted. One nonfatal ST-0202 socketpair
+  teardown BrokenPipe warning was observed during the passing unit gate. No
+  pull request, hosted CI, migration-owner or human review, staging/release,
+  production execution, canonical APPLY, or formal TST-008, TST-011, or
+  TST-013 execution is asserted. Effective canonical ST-0303 remains
+  NOT_STARTED / NOT_EXECUTED.

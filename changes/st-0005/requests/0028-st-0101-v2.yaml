@@ -1,0 +1,33 @@
+document:
+  id: STATUS-ST0101-LOCAL-PROPOSAL-002
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-03T15:07:50Z'
+reason: >-
+  Refresh the append-only local ST-0101 proposal after the approved
+  repository-local ChatGPT Pro operational revision, narrow fallback fix, and
+  final Low-severity remediation were frozen and passed fixture,
+  fake-transport, static, and Story-local regression checks. This remains local
+  candidate evidence only and does not claim a live browser submission, hosted
+  CI, formal TST-001, canonical APPLY, release, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-001
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0101-local-20260803-v2.yaml
+        sha256: ecd4d671467d92b83a6097c3ac9dadf55c0ece36d815a5aca64856183a89cc1b
+        observed_at: '2026-08-03T15:07:46Z'

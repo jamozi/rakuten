@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/jobs/publishing-publish-snapshot-v1.schema.json",
+  "title": "publishing.publish_snapshot.v1",
+  "description": "SnapshotをPublic Read Modelへ原子的に反映する。",
+  "allOf": [
+    {
+      "$ref": "../common/job-message.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "job_type": {
+          "const": "publishing.publish_snapshot.v1"
+        },
+        "queue": {
+          "const": "publication"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "publication_candidate_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "publication_snapshot_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "scheduled_for": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "verify_after_publish": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "publication_candidate_id",
+            "publication_snapshot_id"
+          ]
+        }
+      }
+    }
+  ]
+}

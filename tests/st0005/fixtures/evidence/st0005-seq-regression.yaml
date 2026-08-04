@@ -1,0 +1,17 @@
+document:
+  id: TEST-STATUS-EVIDENCE-ST0005-SEQ-REGRESSION
+  schema_version: 1
+  recorded_at: '2026-08-01T10:00:00Z'
+story_id: ST-0005
+evidence_class: REGRESSION
+formal_suite_status: FAIL
+source_artifacts:
+- original_uri: repo://docs/canonical/00_master/RAOS_implementation_status_registry_v1.0.yaml
+  artifact_uri: repo://tests/st0005/fixtures/artifacts/1411f55ce60f6316e83567110fb2847e0db49239cb63dcabf9e81612c3b72ab8-status-registry.yaml
+  sha256: 1411f55ce60f6316e83567110fb2847e0db49239cb63dcabf9e81612c3b72ab8
+suite_results:
+- suite_id: TST-001
+  environment: CI
+  result: FAIL
+local_results: []
+boundary: Sequential replay regression fixture.

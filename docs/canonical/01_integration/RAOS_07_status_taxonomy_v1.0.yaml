@@ -1,0 +1,37 @@
+document:
+  id: RAOS-STATUS-TAXONOMY-001
+  version: '1.0'
+  baseline_date: '2026-07-30'
+  status: APPROVED_FOR_IMPLEMENTATION
+design_status:
+  NOT_DESIGNED: 設計が存在しない
+  DRAFT: レビュー前または未確定事項を含む
+  APPROVED_FOR_IMPLEMENTATION: Codexが実装を開始できる設計。実装済みを意味しない
+  SUPERSEDED: 後続の正本に置換済み
+implementation_status:
+  NOT_STARTED: Repositoryへ実装されていない
+  IN_PROGRESS: 実装中だが完了条件未達
+  IMPLEMENTED_NOT_VALIDATED: コードは存在するが必須Runtime Test未完了
+  VALIDATED: 指定環境で必須Testに合格
+  DEPLOYED_STAGING: Stagingへ展開済み
+  DEPLOYED_PRODUCTION: Productionへ展開済み
+  DEFERRED_POST_MVP: 設計済みだがMVP後へ延期
+  OUT_OF_SCOPE: 現在の製品範囲外
+verification_status:
+  NOT_EXECUTED: Runtimeまたは外部接続検証を実施していない
+  PARTIAL: 一部環境・一部Caseのみ実行
+  PASS: 定義済みAcceptanceを満たした
+  FAIL: Acceptance未達
+  NOT_APPLICABLE: 対象外
+decision_status:
+  RESOLVED: 設計上決定済み
+  PROVISIONAL: 暫定値。実測または人間承認で更新可能
+  HUMAN_DECISION_REQUIRED: Product Owner等の意思決定が必要
+  EXTERNAL_EVIDENCE_REQUIRED: 実サンプル・契約・Provider設定の確認が必要
+reporting_rules:
+- 設計書の静的構文検証をRuntime Validationと表現しない
+- ファイル生成済みを機能実装済みと表現しない
+- Providerの公式仕様を読んだことを実接続済みと表現しない
+- 合成Fixture合格をProductionデータ検証済みと表現しない
+- PROPOSAL_ONLY Patchは正式Migration/OpenAPI改訂へ移植されるまで未実装とする
+- 不明な状態は楽観的にVALIDATEDへ昇格させずNOT_EXECUTEDとする

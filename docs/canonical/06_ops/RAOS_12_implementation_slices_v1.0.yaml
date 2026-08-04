@@ -1,0 +1,111 @@
+document:
+  id: RAOS-OPS-SLICES-001
+  version: '1.0'
+slices:
+- id: OPS-SLICE-001
+  name: Observability foundation
+  depends_on: []
+  deliverables:
+  - OpenTelemetry
+  - structured logs
+  - correlation IDs
+  - dashboards
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: OPS-SLICE-002
+  name: SLI/SLO and error budgets
+  depends_on:
+  - OPS-SLICE-001
+  deliverables:
+  - metrics
+  - burn alerts
+  - status views
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: OPS-SLICE-003
+  name: Alert routing and incident system
+  depends_on:
+  - OPS-SLICE-001
+  deliverables:
+  - severity
+  - notification
+  - incident records
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: OPS-SLICE-004
+  name: Provider/queue/job operations
+  depends_on:
+  - OPS-SLICE-002
+  - OPS-SLICE-003
+  deliverables:
+  - circuit breakers
+  - DLQ
+  - replay
+  - provider health
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: OPS-SLICE-005
+  name: Release and rollback
+  depends_on:
+  - OPS-SLICE-003
+  deliverables:
+  - artifact promotion
+  - canary
+  - rollback
+  - migration gates
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: OPS-SLICE-006
+  name: Backup/restore/DR
+  depends_on:
+  - OPS-SLICE-005
+  deliverables:
+  - RDS/S3/IaC
+  - restore drill
+  - RPO/RTO
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: OPS-SLICE-007
+  name: Cost and capacity
+  depends_on:
+  - OPS-SLICE-002
+  deliverables:
+  - budgets
+  - forecast
+  - scale limits
+  - denial of wallet
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: OPS-SLICE-008
+  name: Policy/provider change management
+  depends_on:
+  - OPS-SLICE-004
+  deliverables:
+  - official snapshot
+  - impact query
+  - change release
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: OPS-SLICE-009
+  name: Retention and housekeeping
+  depends_on:
+  - OPS-SLICE-006
+  deliverables:
+  - approved lifecycle
+  - deletion evidence
+  - vacuum/partition
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: OPS-SLICE-010
+  name: GATE operations readiness
+  depends_on:
+  - OPS-SLICE-006
+  - OPS-SLICE-007
+  - OPS-SLICE-008
+  - OPS-SLICE-009
+  deliverables:
+  - drills
+  - runbooks
+  - evidence pack
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED

@@ -1,0 +1,45 @@
+document:
+  id: RAOS-ATTRIBUTION-001
+  version: '1.0'
+  status: APPROVED_FOR_IMPLEMENTATION
+principles:
+- Provider Factは変更しない
+- 推定値はProvider事実と別Table/Badge
+- 帰属不能を失敗とせずUNATTRIBUTEDで保持
+- Method versionとInput hashを保存
+- Revenue totalを帰属処理で増減させない
+classes:
+- code: PROVIDER_FACT
+  definition: 楽天Reportに記録された発生・確定・取消事実
+  confidence: 1.0
+- code: DIRECT
+  definition: Providerが提供する検証可能な識別子で記事/CTAへ直接接続
+  confidence: provider dependent
+- code: ESTIMATED
+  definition: 許可された観測から統計的・規則的に配賦
+  confidence: 0..1 and mandatory
+- code: UNATTRIBUTED
+  definition: 合理的な配賦ができない
+  confidence: 0.0
+mvp_estimation:
+  status: PROVISIONAL_PENDING_REAL_REPORT_SAMPLE
+  eligible_inputs:
+  - confirmed provider fact
+  - eligible first-party affiliate clicks
+  - article snapshot active window
+  - provider timestamp if available
+  forbidden_inputs:
+  - raw IP matching
+  - fingerprinting
+  - invented user identity
+  - commission rate as editorial signal
+  method: 同一Site・Provider・時間Bucketでeligible click weightに比例配賦。必要情報がない場合はUNATTRIBUTED
+  display_rule: ESTIMATEDを常に明示しProvider/directと合算表示する場合も内訳を示す
+reconciliation:
+- file hash uniqueness
+- row count
+- generated/confirmed/cancelled amount totals
+- currency
+- period
+- duplicate provider row
+- dry run to commit hash equality

@@ -1,0 +1,112 @@
+override RAOS_REPOSITORY_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+override RAOS_MAKE_SHORT_FLAGS := $(firstword $(MAKEFLAGS))
+ifneq ($(filter -%,$(RAOS_MAKE_SHORT_FLAGS)),)
+override RAOS_MAKE_SHORT_FLAGS :=
+endif
+override RAOS_UNSAFE_MAKE_MODES := $(strip $(foreach flag,e i n t,$(if $(findstring $(flag),$(RAOS_MAKE_SHORT_FLAGS)),$(flag))))
+
+ifeq ($(origin MAKEFLAGS),command line)
+$(error Direct MAKEFLAGS assignments are not allowed for repository gates)
+endif
+ifneq ($(strip $(MAKEFILES)),)
+$(error Preloaded MAKEFILES are not allowed for repository gates)
+endif
+ifneq ($(RAOS_UNSAFE_MAKE_MODES),)
+$(error Refusing non-verifying GNU Make mode(s): $(RAOS_UNSAFE_MAKE_MODES))
+endif
+
+PYTHON := python3
+UV := uv
+override PYTHON_VERSION := 3.14.6
+override UV_VERSION := 0.12.1
+override UV_CONFIG := $(RAOS_REPOSITORY_ROOT)/uv.toml
+override PYTHON_OFFLINE_ENVIRONMENT := $(RAOS_REPOSITORY_ROOT)/.venv-offline-check
+override UV_CLEAN_ENV := env -u UV_CONFIG_FILE -u UV_NO_CONFIG -u UV_ISOLATED \
+	-u UV_NO_PROJECT -u UV_WORKING_DIR \
+	-u UV_WORKING_DIRECTORY \
+	-u UV_PROJECT -u UV_WORKSPACE -u UV_PROJECT_ENVIRONMENT \
+	-u UV_REQUIRED_VERSION -u UV_ENV_FILE -u UV_NO_ENV_FILE \
+	-u UV_INDEX -u UV_DEFAULT_INDEX -u UV_INDEX_URL \
+	-u UV_EXTRA_INDEX -u UV_EXTRA_INDEX_URL -u UV_FIND_LINKS \
+	-u UV_INDEX_STRATEGY -u UV_KEYRING_PROVIDER -u UV_INSECURE_HOST \
+	-u UV_NO_SOURCES -u UV_PRERELEASE -u UV_PRERELEASE_PACKAGE \
+	-u UV_RESOLUTION -u UV_FORK_STRATEGY -u UV_EXCLUDE_NEWER \
+	-u UV_EXCLUDE_NEWER_PACKAGE -u UV_FROZEN -u UV_LOCKED \
+	-u UV_OVERRIDE -u UV_CONSTRAINT -u UV_BUILD_CONSTRAINT \
+	-u UV_UPGRADE -u UV_UPGRADE_PACKAGE -u UV_UPGRADE_GROUP \
+	-u UV_NO_BUILD -u UV_NO_BUILD_PACKAGE -u UV_NO_BUILD_ISOLATION \
+	-u UV_NO_BUILD_ISOLATION_PACKAGE -u UV_NO_BINARY -u UV_NO_BINARY_PACKAGE \
+	-u UV_NO_VERIFY_HASHES -u UV_PYTHON -u UV_PYTHON_DOWNLOADS \
+	-u UV_PYTHON_PREFERENCE -u UV_MANAGED_PYTHON -u UV_NO_MANAGED_PYTHON \
+	-u UV_SYSTEM_PYTHON -u UV_PYTHON_SEARCH_PATH -u UV_PYTHON_CPYTHON_BUILD \
+	-u UV_PYTHON_INSTALL_DIR -u UV_PYTHON_INSTALL_MIRROR \
+	-u UV_PYPY_INSTALL_MIRROR \
+	-u UV_ASTRAL_MIRROR_URL -u UV_PYTHON_DOWNLOADS_JSON_URL \
+	-u UV_OFFLINE -u UV_NO_CACHE -u UV_PREVIEW \
+	-u UV_MALWARE_CHECK -u UV_MALWARE_CHECK_URL \
+	-u UV_GROUP -u UV_NO_GROUP \
+	-u UV_ONLY_GROUP -u UV_ALL_GROUPS -u UV_DEV -u UV_ONLY_DEV \
+	-u UV_NO_DEV -u UV_DEFAULT_GROUPS -u UV_NO_DEFAULT_GROUPS \
+	-u UV_INEXACT -u UV_ACTIVE -u UV_LINK_MODE -u UV_COMPILE_BYTECODE \
+	-u PYTHONPATH -u PYTHONHOME -u PYTHONSTARTUP -u PYTHONINSPECT \
+	-u PYTHONOPTIMIZE -u PYTHONWARNINGS -u PYTEST_ADDOPTS \
+	-u PYTEST_PLUGINS -u MYPYPATH
+override UV_RUN := $(UV_CLEAN_ENV) "$(UV)" --config-file "$(UV_CONFIG)"
+override UV_OFFLINE_RUN := $(UV_CLEAN_ENV) \
+	UV_PROJECT_ENVIRONMENT="$(PYTHON_OFFLINE_ENVIRONMENT)" "$(UV)" \
+	--config-file "$(UV_CONFIG)"
+
+.PHONY: bootstrap check-workspace python-install python-lock python-lock-check \
+	python-lock-check-offline python-sync python-sync-offline \
+	python-tool-versions python-lint python-format-check \
+	python-typecheck python-test python-check
+
+bootstrap:
+	PYTHONDONTWRITEBYTECODE=1 "$(PYTHON)" scripts/bootstrap_workspace.py
+
+check-workspace:
+	PYTHONDONTWRITEBYTECODE=1 "$(PYTHON)" scripts/bootstrap_workspace.py --check
+
+python-install:
+	$(UV_RUN) python install $(PYTHON_VERSION)
+
+python-lock:
+	$(UV_RUN) lock
+
+python-lock-check:
+	$(UV_RUN) lock --check
+
+python-lock-check-offline:
+	$(UV_RUN) lock --check --offline
+
+python-sync: python-lock-check
+	$(UV_RUN) sync --locked --group dev --managed-python --no-python-downloads
+
+python-sync-offline: python-lock-check-offline
+	test ! -L "$(PYTHON_OFFLINE_ENVIRONMENT)"
+	$(UV_RUN) venv --clear --offline --managed-python --no-python-downloads \
+		"$(PYTHON_OFFLINE_ENVIRONMENT)"
+	$(UV_OFFLINE_RUN) sync --locked --offline --group dev --managed-python \
+		--no-python-downloads
+
+python-tool-versions: | python-sync
+	$(UV_RUN) --version | grep -E '^uv $(UV_VERSION)( |$$)'
+	$(UV_RUN) run --locked --no-sync --no-env-file python -VV
+	$(UV_RUN) run --locked --no-sync --no-env-file ruff --version
+	$(UV_RUN) run --locked --no-sync --no-env-file mypy --version
+	$(UV_RUN) run --locked --no-sync --no-env-file pytest --version
+
+python-lint: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file ruff check scripts tests python
+
+python-format-check: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file ruff format --check python tests/st0102
+
+python-typecheck: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file mypy
+
+python-test: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file pytest -q tests/st0102
+
+python-check: python-tool-versions python-lint python-format-check \
+	python-typecheck python-test

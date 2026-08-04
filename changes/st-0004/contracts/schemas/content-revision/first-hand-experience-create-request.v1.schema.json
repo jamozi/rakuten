@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content-revision/first-hand-experience-create-request.v1.schema.json",
+  "title": "First-Hand Experience Create Request",
+  "description": "Authenticated human tester is server-derived, never body supplied.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "product_variant_identity": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "procedure_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "limitations": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    }
+  },
+  "required": [
+    "product_id",
+    "product_variant_identity",
+    "procedure_version",
+    "started_at",
+    "ended_at",
+    "environment",
+    "limitations"
+  ],
+  "x-raos-invariants": {
+    "tester_principal_source": "AUTHENTICATED_HUMAN"
+  }
+}

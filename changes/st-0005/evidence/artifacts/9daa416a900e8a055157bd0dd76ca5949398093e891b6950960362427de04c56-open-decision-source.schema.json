@@ -1,0 +1,809 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:raos:st-0006:open-decision-source:v1",
+  "title": "RAOS canonical open-decision source",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document",
+    "rules",
+    "items"
+  ],
+  "properties": {
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "const": "RAOS-OPEN-DECISIONS-001"
+        },
+        "version": {
+          "const": "1.0"
+        },
+        "status": {
+          "const": "ACTIVE"
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "const": "未決事項をCodexが推測で確定しない"
+        },
+        {
+          "const": "default_behaviorは安全側へ倒す"
+        },
+        {
+          "const": "blocking=trueはProduction/Gate通過を禁止する"
+        }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "items": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-001"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-002"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-003"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "EXTERNAL_EVIDENCE_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-004"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": false
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-005"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-006"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "EXTERNAL_EVIDENCE_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-007"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-008"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-009"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-010"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-011"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-012"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-013"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-014"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "HUMAN_DECISION_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "topic",
+            "status",
+            "required_by",
+            "owner",
+            "decision_needed",
+            "default_behavior",
+            "blocking"
+          ],
+          "properties": {
+            "id": {
+              "const": "OD-015"
+            },
+            "topic": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status": {
+              "const": "EXTERNAL_EVIDENCE_REQUIRED"
+            },
+            "required_by": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "decision_needed": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "default_behavior": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "blocking": {
+              "const": true
+            }
+          }
+        }
+      ],
+      "items": false,
+      "minItems": 15,
+      "maxItems": 15
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-finance-revenue-import-committed-v1.schema.json",
+  "title": "jp.raos.finance.revenue_import_committed.v1",
+  "description": "Revenue Provider Fact取込が確定した。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.finance.revenue_import_committed.v1"
+        },
+        "producer": {
+          "const": "finance"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revenue_import_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "source_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "commission_count": {
+              "type": "integer"
+            },
+            "confirmed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "reconciliation_status": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "revenue_import_id",
+            "source_sha256",
+            "commission_count",
+            "confirmed_at",
+            "reconciliation_status"
+          ]
+        }
+      }
+    }
+  ]
+}

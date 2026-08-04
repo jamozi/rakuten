@@ -1,0 +1,449 @@
+document:
+  id: RAOS-STATE-001
+  version: '0.2'
+  date: '2026-07-30'
+  status: CANONICAL_REVISION_CANDIDATE
+  provenance:
+    story_id: ST-0002
+    decision_id: INT-DEC-003
+    revision_id: RAOS-JOB-STATE-REVISION-001
+    base_version: '0.1'
+machines:
+- id: SM-JOB
+  aggregate: ops.job
+  api_resource: Job
+  initial: REQUESTED
+  states:
+  - REQUESTED
+  - QUEUED
+  - RUNNING
+  - SUCCEEDED
+  - FAILED_RETRYABLE
+  - RETRY_SCHEDULED
+  - FAILED_TERMINAL
+  - QUARANTINED
+  - CANCELLED
+  - EXPIRED
+  transitions:
+  - - REQUESTED
+    - QUEUED
+    - dispatcher accepted outbox
+  - - REQUESTED
+    - CANCELLED
+    - user cancellation before queue
+  - - REQUESTED
+    - EXPIRED
+    - deadline exceeded
+  - - QUEUED
+    - RUNNING
+    - worker acquired lease
+  - - QUEUED
+    - CANCELLED
+    - cancel request
+  - - QUEUED
+    - EXPIRED
+    - deadline exceeded
+  - - RUNNING
+    - SUCCEEDED
+    - handler committed output and inbox receipt
+  - - RUNNING
+    - FAILED_RETRYABLE
+    - retryable attempt failure
+  - - RUNNING
+    - FAILED_TERMINAL
+    - non-retryable or max attempts
+  - - RUNNING
+    - QUARANTINED
+    - contract/policy/data isolation
+  - - RUNNING
+    - CANCELLED
+    - cooperative cancellation
+  - - RUNNING
+    - EXPIRED
+    - deadline exceeded
+  - - FAILED_RETRYABLE
+    - RETRY_SCHEDULED
+    - retry policy calculated
+  - - RETRY_SCHEDULED
+    - QUEUED
+    - available_at reached
+  - - FAILED_RETRYABLE
+    - FAILED_TERMINAL
+    - retry budget exhausted
+  - - QUARANTINED
+    - QUEUED
+    - operator released with corrected handler/input
+  guards:
+  - Duplicate delivery is handled by inbox/idempotency records, not a state self-transition.
+  - Entering RUNNING requires a valid worker lease and heartbeat ownership.
+  - Every state in completed_at_required requires completed_at.
+  - Retry appends a new job_attempt and never mutates a prior attempt.
+  - Mutable Job commands compare lock_version and reject stale writers.
+  x-raos-completed-at-required:
+  - SUCCEEDED
+  - FAILED_TERMINAL
+  - QUARANTINED
+  - CANCELLED
+  - EXPIRED
+  x-raos-absorbing-states:
+  - SUCCEEDED
+  - FAILED_TERMINAL
+  - CANCELLED
+  - EXPIRED
+  x-raos-deadline-index-states:
+  - REQUESTED
+  - QUEUED
+  - RUNNING
+  - FAILED_RETRYABLE
+  - RETRY_SCHEDULED
+  x-raos-cancellable-states:
+  - REQUESTED
+  - QUEUED
+  - RUNNING
+  x-raos-legacy-mapping:
+    PENDING: REQUESTED
+    READY: QUEUED
+    FAILED: FAILED_TERMINAL
+    RUNNING: RUNNING
+    SUCCEEDED: SUCCEEDED
+    QUARANTINED: QUARANTINED
+    CANCELLED: CANCELLED
+  x-raos-transition-guards:
+  - from: QUEUED
+    to: RUNNING
+    guards:
+    - lease_required
+  - from: RUNNING
+    to: SUCCEEDED
+    guards:
+    - completed_at_required
+    - inbox_receipt_required
+  - from: RUNNING
+    to: FAILED_RETRYABLE
+    guards:
+    - prior_attempt_immutable
+  - from: RUNNING
+    to: FAILED_TERMINAL
+    guards:
+    - completed_at_required
+  - from: RUNNING
+    to: QUARANTINED
+    guards:
+    - completed_at_required
+  - from: RUNNING
+    to: CANCELLED
+    guards:
+    - completed_at_required
+  - from: RUNNING
+    to: EXPIRED
+    guards:
+    - completed_at_required
+  - from: FAILED_RETRYABLE
+    to: RETRY_SCHEDULED
+    guards:
+    - prior_attempt_immutable
+  - from: FAILED_RETRYABLE
+    to: FAILED_TERMINAL
+    guards:
+    - completed_at_required
+  - from: QUARANTINED
+    to: QUEUED
+    guards:
+    - operator_release_required
+- id: SM-ARTICLE-PLAN
+  aggregate: editorial.article_plan
+  initial: IDEA
+  states:
+  - IDEA
+  - PLANNED
+  - SOURCES_PENDING
+  - PACKET_READY
+  - GENERATING
+  - DRAFT
+  - IN_REVIEW
+  - APPROVED
+  - CANCELLED
+  - ARCHIVED
+  transitions:
+  - - IDEA
+    - PLANNED
+    - brief completed
+  - - PLANNED
+    - SOURCES_PENDING
+    - source work requested
+  - - SOURCES_PENDING
+    - PACKET_READY
+    - approved source packet
+  - - PACKET_READY
+    - GENERATING
+    - AI job accepted
+  - - GENERATING
+    - DRAFT
+    - draft saved
+  - - DRAFT
+    - IN_REVIEW
+    - quality pass and submit
+  - - IN_REVIEW
+    - APPROVED
+    - human final decision
+  - - '*'
+    - CANCELLED
+    - authorized cancellation before publication
+  - - APPROVED
+    - ARCHIVED
+    - superseded plan
+  guards:
+  - GENERATING requires approved Source Packet.
+  - APPROVED requires human approver.
+- id: SM-ARTICLE-VERSION
+  aggregate: editorial.article_version
+  initial: DRAFT
+  states:
+  - DRAFT
+  - AUTO_REVIEW
+  - HUMAN_REVIEW
+  - APPROVED
+  - REJECTED
+  - SUPERSEDED
+  transitions:
+  - - DRAFT
+    - AUTO_REVIEW
+    - quality job started
+  - - AUTO_REVIEW
+    - DRAFT
+    - findings require edit
+  - - AUTO_REVIEW
+    - HUMAN_REVIEW
+    - quality gate passed
+  - - HUMAN_REVIEW
+    - DRAFT
+    - changes requested creates/editable draft path
+  - - HUMAN_REVIEW
+    - APPROVED
+    - valid human approval
+  - - HUMAN_REVIEW
+    - REJECTED
+    - human rejection
+  - - APPROVED
+    - SUPERSEDED
+    - new approved version
+  guards:
+  - APPROVED is immutable.
+  - Edit after approval creates a new version.
+- id: SM-SOURCE-PACKET-VERSION
+  aggregate: evidence.source_packet_version
+  initial: BUILDING
+  states:
+  - BUILDING
+  - READY
+  - IN_REVIEW
+  - APPROVED
+  - REJECTED
+  - SUPERSEDED
+  - INVALID
+  transitions:
+  - - BUILDING
+    - READY
+    - artifact and hash complete
+  - - READY
+    - IN_REVIEW
+    - review assigned
+  - - IN_REVIEW
+    - APPROVED
+    - human approval
+  - - IN_REVIEW
+    - REJECTED
+    - human rejection
+  - - APPROVED
+    - SUPERSEDED
+    - new approved packet
+  - - '*'
+    - INVALID
+    - source invalidation/corruption
+  guards:
+  - APPROVED/REJECTED require human reviewer and timestamp.
+  - Used packet version is never overwritten.
+- id: SM-QUALITY-RUN
+  aggregate: policy.quality_check_run
+  initial: RUNNING
+  states:
+  - RUNNING
+  - PASSED
+  - FAILED
+  - ERROR
+  - CANCELLED
+  transitions:
+  - - RUNNING
+    - PASSED
+    - score and blocker gates pass
+  - - RUNNING
+    - FAILED
+    - quality/policy gate fails
+  - - RUNNING
+    - ERROR
+    - engine/contract error
+  - - RUNNING
+    - CANCELLED
+    - authorized cancellation
+  guards:
+  - PASSED requires total>=85, factual>=18, disclosure=5, zero tolerance clear.
+- id: SM-REVIEW-ASSIGNMENT
+  aggregate: publishing.review_assignment
+  initial: ASSIGNED
+  states:
+  - ASSIGNED
+  - IN_PROGRESS
+  - COMPLETED
+  - CANCELLED
+  transitions:
+  - - ASSIGNED
+    - IN_PROGRESS
+    - assignee starts
+  - - IN_PROGRESS
+    - COMPLETED
+    - decision recorded
+  - - ASSIGNED
+    - CANCELLED
+    - authorized reassignment
+  - - IN_PROGRESS
+    - CANCELLED
+    - authorized cancellation
+  guards:
+  - COMPLETED requires immutable review_decision.
+- id: SM-PUBLICATION-CANDIDATE
+  aggregate: publishing.publication_candidate
+  initial: REQUESTED
+  states:
+  - REQUESTED
+  - VALIDATING
+  - BLOCKED
+  - SNAPSHOT_READY
+  - PUBLISHED
+  - FAILED
+  - CANCELLED
+  transitions:
+  - - REQUESTED
+    - VALIDATING
+    - snapshot job begins
+  - - VALIDATING
+    - BLOCKED
+    - guard failure
+  - - VALIDATING
+    - SNAPSHOT_READY
+    - snapshot hash verified
+  - - SNAPSHOT_READY
+    - PUBLISHED
+    - projection atomically updated
+  - - REQUESTED
+    - CANCELLED
+    - authorized cancellation
+  - - VALIDATING
+    - FAILED
+    - terminal technical error
+  - - BLOCKED
+    - REQUESTED
+    - new idempotent request after remediation
+  guards:
+  - No transition bypasses human approval, policy, freshness, disclosure, link and kill-switch guards.
+- id: SM-PUBLICATION
+  aggregate: publishing.publication
+  initial: UNPUBLISHED
+  states:
+  - UNPUBLISHED
+  - PUBLISHED
+  - SUSPENDED
+  - ARCHIVED
+  transitions:
+  - - UNPUBLISHED
+    - PUBLISHED
+    - valid snapshot publish
+  - - PUBLISHED
+    - PUBLISHED
+    - new snapshot or rollback
+  - - PUBLISHED
+    - SUSPENDED
+    - article/site pause
+  - - SUSPENDED
+    - PUBLISHED
+    - authorized resume with valid controls
+  - - PUBLISHED
+    - UNPUBLISHED
+    - explicit unpublish
+  - - UNPUBLISHED
+    - ARCHIVED
+    - retired route
+  guards:
+  - PUBLISHED requires current_snapshot_id.
+  - Rollback is a new publication_event, never snapshot mutation.
+- id: SM-REVENUE-IMPORT
+  aggregate: finance.revenue_import
+  initial: UPLOADED
+  states:
+  - UPLOADED
+  - SCANNED
+  - PARSED
+  - DRY_RUN_READY
+  - CONFIRMED
+  - IMPORTED
+  - REJECTED
+  - FAILED
+  transitions:
+  - - UPLOADED
+    - SCANNED
+    - malware and hash checks pass
+  - - SCANNED
+    - PARSED
+    - parser completed
+  - - PARSED
+    - DRY_RUN_READY
+    - reconciliation preview complete
+  - - DRY_RUN_READY
+    - CONFIRMED
+    - human expected hash/count/amount match
+  - - CONFIRMED
+    - IMPORTED
+    - canonical provider facts committed
+  - - '*'
+    - REJECTED
+    - policy/data rejection
+  - - '*'
+    - FAILED
+    - terminal processing error
+  guards:
+  - No commission mutation before CONFIRMED.
+  - Duplicate source SHA is rejected.
+- id: SM-INCIDENT
+  aggregate: ops.incident
+  initial: DECLARED
+  states:
+  - DECLARED
+  - CONTAINING
+  - CONTAINED
+  - RECOVERING
+  - MONITORING
+  - CLOSED
+  - REOPENED
+  transitions:
+  - - DECLARED
+    - CONTAINING
+    - commander assigned
+  - - CONTAINING
+    - CONTAINED
+    - immediate risk stopped
+  - - CONTAINED
+    - RECOVERING
+    - recovery begins
+  - - RECOVERING
+    - MONITORING
+    - service restored
+  - - MONITORING
+    - CLOSED
+    - verification and root cause recorded
+  - - CLOSED
+    - REOPENED
+    - recurrence/new evidence
+  - - REOPENED
+    - CONTAINING
+    - response resumed
+  guards:
+  - Kill switch release may require incident state and elevated approval.

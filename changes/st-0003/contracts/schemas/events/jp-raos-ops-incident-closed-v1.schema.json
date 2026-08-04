@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/events/jp-raos-ops-incident-closed-v1.schema.json",
+  "title": "jp.raos.ops.incident_closed.v1",
+  "description": "Incidentが閉鎖された。",
+  "allOf": [
+    {
+      "$ref": "../common/event-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "jp.raos.ops.incident_closed.v1"
+        },
+        "producer": {
+          "const": "ops"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "incident_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "closed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "root_cause_recorded": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "incident_id",
+            "closed_at",
+            "root_cause_recorded"
+          ]
+        }
+      }
+    }
+  ]
+}
