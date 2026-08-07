@@ -1,5 +1,5 @@
 diff --git a/changes/st-0107/manifest.yaml b/changes/st-0107/manifest.yaml
-index 335cdef..a02343f 100644
+index 335cdef..5754e44 100644
 --- a/changes/st-0107/manifest.yaml
 +++ b/changes/st-0107/manifest.yaml
 @@ -52,8 +52,8 @@ source_artifacts:
@@ -8,13 +8,13 @@ index 335cdef..a02343f 100644
  - uri: repo://scripts/object_storage_service.sh
 -  bytes: 15876
 -  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
-+  bytes: 15847
-+  sha256: c5ebf49d98e5ac52bc1a553d46e99a3afa014d04844716d8b6f8c719a37bbfef
++  bytes: 16465
++  sha256: 8a3744d3962f7e77cbcc849ab45c31dd0afd30f9b1907bdc2d1f0412de612a32
  - uri: repo://scripts/object_storage_fixture.py
    bytes: 30201
    sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
 diff --git a/changes/st-0202/manifest.yaml b/changes/st-0202/manifest.yaml
-index 81bcb64..5091408 100644
+index 81bcb64..8bf1c2c 100644
 --- a/changes/st-0202/manifest.yaml
 +++ b/changes/st-0202/manifest.yaml
 @@ -74,8 +74,8 @@ source_artifacts:
@@ -23,8 +23,8 @@ index 81bcb64..5091408 100644
  - uri: repo://scripts/object_storage_service.sh
 -  bytes: 15876
 -  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
-+  bytes: 15847
-+  sha256: c5ebf49d98e5ac52bc1a553d46e99a3afa014d04844716d8b6f8c719a37bbfef
++  bytes: 16465
++  sha256: 8a3744d3962f7e77cbcc849ab45c31dd0afd30f9b1907bdc2d1f0412de612a32
  - uri: repo://scripts/object_storage_fixture.py
    bytes: 30201
    sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -42,8 +42,8 @@ index 81bcb64..5091408 100644
  - uri: repo://tests/st0202/test_wrapper.py
 -  bytes: 14300
 -  sha256: 04636e3a2b0968ee337db788a7ac772f290006a2cc98fc4921617f80013764e6
-+  bytes: 14598
-+  sha256: 1adefc1dc03533d03a4f2ed7e19f3f0509e16be86fbcc39139b7f49eb12ec36d
++  bytes: 14897
++  sha256: 3a7a26c97700b625d012c3c2b438247ea7678581d96521ed01af9f44a4cfeb99
  - uri: repo://.github/workflows/ci.yml
    bytes: 19528
    sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
@@ -52,51 +52,75 @@ index 81bcb64..5091408 100644
  - uri: repo://changes/st-0107/manifest.yaml
    bytes: 4848
 -  sha256: 12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c
-+  sha256: 821dc5743b55e71695ad3db5db471aec510f99dc0070e6151ef2d53ca48beee5
++  sha256: 3ee1ba38238826751d1d671edd14ab642bc78e127f683e516e96b666c903eb67
  - uri: repo://tests/st0106/test_workflow_contract.py
    bytes: 25978
    sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
 diff --git a/scripts/object_storage_service.sh b/scripts/object_storage_service.sh
-index 6cdf48b..db4e4c9 100755
+index 6cdf48b..7e8db3c 100755
 --- a/scripts/object_storage_service.sh
 +++ b/scripts/object_storage_service.sh
-@@ -266,8 +266,8 @@ assert_service() {
+@@ -266,8 +266,7 @@ assert_service() {
    local image_version
    local image_license
    local image_source
 -  local published
-   local port_inventory
-+  local port_pattern='^8333/tcp[[:space:]]+->[[:space:]]+127\.0\.0\.1:([0-9]+)$'
+-  local port_inventory
++  local port_bindings
    local process_uid
    local version_output
    local version_line
-@@ -313,18 +313,17 @@ assert_service() {
+@@ -313,16 +312,39 @@ assert_service() {
      return 1
    fi
  
 -  published=$(compose "$project" port object-storage 8333)
 -  if [[ ! $published =~ ^127\.0\.0\.1:([0-9]+)$ ]] || \
-+  port_inventory=$(run_docker port "$container_id")
-+  if [[ ! $port_inventory =~ $port_pattern ]] || \
-     ((10#${BASH_REMATCH[1]} < 1024 || 10#${BASH_REMATCH[1]} > 65535)); then
+-    ((10#${BASH_REMATCH[1]} < 1024 || 10#${BASH_REMATCH[1]} > 65535)); then
 -    error 'the S3 endpoint is not published on one bounded loopback port'
-+    if [[ $port_inventory == *$'\n'* ]]; then
-+      error 'the object-storage container publishes an unexpected host port'
-+    else
-+      error 'the S3 endpoint is not published on one bounded loopback port'
-+    fi
-     return 1
-   fi
-   published_port=$((10#${BASH_REMATCH[1]}))
+-    return 1
+-  fi
+-  published_port=$((10#${BASH_REMATCH[1]}))
 -  port_inventory=$(run_docker port "$container_id")
 -  if [[ $port_inventory != "8333/tcp -> 127.0.0.1:$published_port" ]]; then
 -    error 'the object-storage container publishes an unexpected host port'
--    return 1
--  fi
++  port_bindings=$(run_docker inspect --format '{{json .NetworkSettings.Ports}}' "$container_id")
++  if published_port=$(env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
++    /usr/bin/python3 -I -c '
++import json
++import sys
++
++try:
++    inventory = json.loads(sys.argv[1])
++except (json.JSONDecodeError, TypeError):
++    raise SystemExit(2)
++if not isinstance(inventory, dict) or set(inventory) != {"8333/tcp"}:
++    raise SystemExit(2)
++bindings = inventory["8333/tcp"]
++if not isinstance(bindings, list) or len(bindings) != 1:
++    raise SystemExit(2)
++binding = bindings[0]
++if not isinstance(binding, dict):
++    raise SystemExit(2)
++host_ip = binding.get("HostIp")
++host_port = binding.get("HostPort")
++if host_ip != "127.0.0.1" or not isinstance(host_port, str) or not host_port.isdecimal():
++    raise SystemExit(3)
++port = int(host_port, 10)
++if port < 1024 or port > 65535:
++    raise SystemExit(3)
++print(port)
++' "$port_bindings"); then
++    :
++  else
++    case $? in
++      2) error 'the object-storage container publishes an unexpected host port' ;;
++      *) error 'the S3 endpoint is not published on one bounded loopback port' ;;
++    esac
+     return 1
+   fi
  
-   process_uid=$(compose "$project" exec -T object-storage /bin/sh -c \
-     "sed -n 's/^Uid:[[:space:]]*\\([0-9][0-9]*\\).*/\\1/p' /proc/1/status")
-diff --git a/scripts/run_network_denied.sh b/scripts/run_network_denied.sh
+ diff --git a/scripts/run_network_denied.sh b/scripts/run_network_denied.sh
 index e4b53f3..582f6df 100755
 --- a/scripts/run_network_denied.sh
 +++ b/scripts/run_network_denied.sh
@@ -301,19 +325,43 @@ index 6e602af..ee87432 100644
          def _signed(self) -> bool:
              authorization = self.headers.get("Authorization", "")
 diff --git a/tests/st0202/test_wrapper.py b/tests/st0202/test_wrapper.py
-index 4b78373..d4742cf 100644
+index 4b78373..815f4ed 100644
 --- a/tests/st0202/test_wrapper.py
 +++ b/tests/st0202/test_wrapper.py
-@@ -101,6 +101,8 @@ if payload and payload[0] == "port":
-     port = os.environ.get("RAOS_OBJECT_STORAGE_PORT") or "49123"
-     if mode == "extra_port":
-         print(f"8333/tcp -> 127.0.0.1:{{port}}\\n9333/tcp -> 0.0.0.0:9333")
-+    elif mode == "public_port":
-+        print(f"8333/tcp -> 0.0.0.0:{{port}}")
-     else:
-         print(f"8333/tcp -> 127.0.0.1:{{port}}")
+@@ -77,7 +77,17 @@ if payload == ["compose", "version", "--short"]:
      raise SystemExit(0)
-@@ -182,7 +184,10 @@ def _rows(log: Path) -> list[dict[str, Any]]:
+ if payload and payload[0] == "inspect":
+     template = payload[payload.index("--format") + 1]
+-    if ".Config.Image" in template:
++    if ".NetworkSettings.Ports" in template:
++        port = os.environ.get("RAOS_OBJECT_STORAGE_PORT") or "49123"
++        inventory = {{
++            "8333/tcp": [{{"HostIp": "127.0.0.1", "HostPort": port}}],
++        }}
++        if mode == "public_port":
++            inventory["8333/tcp"][0]["HostIp"] = "0.0.0.0"
++        elif mode == "extra_port":
++            inventory["9333/tcp"] = [{{"HostIp": "0.0.0.0", "HostPort": "9333"}}]
++        print(json.dumps(inventory, separators=(",", ":"), sort_keys=True))
++    elif ".Config.Image" in template:
+         print("seaweedfs:latest" if mode == "wrong_image" else {EXPECTED_IMAGE!r})
+     elif ".Image" in template:
+         print("sha256:" + "f" * 64 if mode == "wrong_config" else {EXPECTED_CONFIG_DIGEST!r})
+@@ -97,13 +107,6 @@ if payload[:2] == ["image", "inspect"]:
+     elif "source" in template:
+         print("https://example.invalid" if mode == "wrong_labels" else "https://github.com/seaweedfs/seaweedfs")
+     raise SystemExit(0)
+-if payload and payload[0] == "port":
+-    port = os.environ.get("RAOS_OBJECT_STORAGE_PORT") or "49123"
+-    if mode == "extra_port":
+-        print(f"8333/tcp -> 127.0.0.1:{{port}}\\n9333/tcp -> 0.0.0.0:9333")
+-    else:
+-        print(f"8333/tcp -> 127.0.0.1:{{port}}")
+-    raise SystemExit(0)
+ if not payload or payload[0] != "compose":
+     print("unexpected Docker operation", file=sys.stderr)
+     raise SystemExit(92)
+@@ -182,7 +185,10 @@ def _rows(log: Path) -> list[dict[str, Any]]:
  
  
  def _compose_operation(row: dict[str, Any]) -> str | None:
@@ -325,12 +373,18 @@ index 4b78373..d4742cf 100644
          if item in {"config", "up", "ps", "exec", "port", "down"}:
              return str(item)
      return None
-@@ -301,6 +306,8 @@ def test_disposable_test_targets_only_object_service_and_removes_volume(
+@@ -301,6 +307,14 @@ def test_disposable_test_targets_only_object_service_and_removes_volume(
      assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
      assert json.loads(result.stdout)["runtime"] == "LOCAL_CANDIDATE_PASS"
      rows = _rows(docker_log)
 +    assert not any(_compose_operation(row) == "port" for row in rows)
-+    assert any(row["argv"][2:3] == ["port"] for row in rows)
++    port_inspections = [
++        row
++        for row in rows
++        if row["argv"][2:3] == ["inspect"]
++        and any(".NetworkSettings.Ports" in item for item in row["argv"])
++    ]
++    assert len(port_inspections) == 1
      up = next(row for row in rows if _compose_operation(row) == "up")
      assert up["argv"][-6:] == [
          "up",
