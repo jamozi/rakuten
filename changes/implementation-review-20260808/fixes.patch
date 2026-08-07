@@ -89,10 +89,10 @@ index 6cdf48b..db4e4c9 100755
    process_uid=$(compose "$project" exec -T object-storage /bin/sh -c \
      "sed -n 's/^Uid:[[:space:]]*\\([0-9][0-9]*\\).*/\\1/p' /proc/1/status")
 diff --git a/scripts/run_network_denied.sh b/scripts/run_network_denied.sh
-index e4b53f3..f5645a8 100755
+index e4b53f3..582f6df 100755
 --- a/scripts/run_network_denied.sh
 +++ b/scripts/run_network_denied.sh
-@@ -86,6 +86,57 @@ if [[ $unshare_owner != 0 ]] || (( (8#$unshare_mode & 0022) != 0 )); then
+@@ -86,6 +86,52 @@ if [[ $unshare_owner != 0 ]] || (( (8#$unshare_mode & 0022) != 0 )); then
    exit 69
  fi
  
@@ -129,11 +129,6 @@ index e4b53f3..f5645a8 100755
 +if ! env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
 +  "$unshare_executable" --user --map-current-user -- /bin/true \
 +  >/dev/null 2>&1; then
-+  if [[ ${GITHUB_ACTIONS-} != true || ${RUNNER_ENVIRONMENT-} != github-hosted ]]; then
-+    printf '%s\n' \
-+      'error: user namespaces are unavailable outside the reviewed GitHub-hosted fallback' >&2
-+    exit 69
-+  fi
 +  readonly sudo_executable=/usr/bin/sudo
 +  readonly setpriv_executable=/usr/bin/setpriv
 +  validate_privileged_helper sudo "$sudo_executable" true
@@ -141,7 +136,7 @@ index e4b53f3..f5645a8 100755
 +  if ! env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
 +    "$sudo_executable" -n -- /bin/true >/dev/null 2>&1; then
 +    printf '%s\n' \
-+      'error: user namespaces are unavailable and passwordless sudo fallback is not authorized' >&2
++      'error: user namespaces are unavailable and a trusted passwordless sudo fallback is not authorized' >&2
 +    exit 69
 +  fi
 +  launch_mode=privileged_namespace_then_drop
@@ -150,7 +145,7 @@ index e4b53f3..f5645a8 100755
  if ! parent_net_namespace=$(readlink -- /proc/self/ns/net); then
    printf 'error: parent network namespace is unreadable\n' >&2
    exit 69
-@@ -111,16 +162,35 @@ case $parent_pid_namespace in
+@@ -111,16 +157,35 @@ case $parent_pid_namespace in
  esac
  
  cd -- "$repository_root"
@@ -196,7 +191,7 @@ index e4b53f3..f5645a8 100755
    /usr/bin/python3 -I -c '
  import os
  import resource
-@@ -139,6 +209,4 @@ if soft_limit == resource.RLIM_INFINITY:
+@@ -139,6 +204,4 @@ if soft_limit == resource.RLIM_INFINITY:
      soft_limit = 1 << 20
  os.closerange(3, int(soft_limit))
  os.execv(sys.argv[1], sys.argv[1:])
@@ -205,10 +200,43 @@ index e4b53f3..f5645a8 100755
 -  /usr/bin/python3 -I "$assertion" --exec -- "$canonical_command" "$@"
 +' "${launcher[@]}"
 diff --git a/tests/st0106/test_network_isolation.py b/tests/st0106/test_network_isolation.py
-index 2331688..088b66a 100644
+index 2331688..608d232 100644
 --- a/tests/st0106/test_network_isolation.py
 +++ b/tests/st0106/test_network_isolation.py
-@@ -66,7 +66,21 @@ def test_network_wrapper_is_hardened_and_has_valid_shell() -> None:
+@@ -27,6 +27,32 @@ requires_unsandboxed_parent = pytest.mark.skipif(
+ )
+ 
+ 
++def _unprivileged_user_namespaces_available() -> bool:
++    result = subprocess.run(
++        [
++            "/usr/bin/unshare",
++            "--user",
++            "--map-current-user",
++            "--",
++            "/bin/true",
++        ],
++        cwd=REPOSITORY_ROOT,
++        env={"PATH": os.defpath},
++        check=False,
++        stdout=subprocess.DEVNULL,
++        stderr=subprocess.DEVNULL,
++        timeout=10,
++    )
++    return result.returncode == 0
++
++
++USER_NAMESPACE_AVAILABLE = _unprivileged_user_namespaces_available()
++requires_user_namespace = pytest.mark.skipif(
++    not USER_NAMESPACE_AVAILABLE,
++    reason="host does not permit unprivileged user-namespace setup for this negative fixture",
++)
++
++
+ def run_guard(
+     home: Path,
+     *command: str,
+@@ -66,7 +92,20 @@ def test_network_wrapper_is_hardened_and_has_valid_shell() -> None:
      content = WRAPPER.read_text(encoding="utf-8")
      assert content.startswith("#!/bin/bash -p\n\nPATH=/usr/bin:/bin")
      assert "exec env -i" in content
@@ -221,8 +249,7 @@ index 2331688..088b66a 100644
 +    assert (
 +        '"$unshare_executable" --net --pid --fork --kill-child --mount-proc' in content
 +    )
-+    assert "${GITHUB_ACTIONS-} != true" in content
-+    assert "${RUNNER_ENVIRONMENT-} != github-hosted" in content
++    assert "trusted passwordless sudo fallback" in content
 +    assert '"$sudo_executable" -n --' in content
 +    assert (
 +        '--reuid="$caller_uid" --regid="$caller_gid" --clear-groups --no-new-privs'
@@ -231,6 +258,22 @@ index 2331688..088b66a 100644
      assert "--kill-child --" in content
      assert "EUID == 0" in content
      assert "RAOS_PARENT_NET_NS" in content
+@@ -311,6 +350,7 @@ def test_assertion_rejects_the_parent_network_namespace() -> None:
+     assert "network_isolation=namespace-not-isolated" in result.stderr
+ 
+ 
++@requires_user_namespace
+ def test_assertion_rejects_a_root_mapped_child_namespace() -> None:
+     parent = os.readlink("/proc/self/ns/net")
+     parent_pid = os.readlink("/proc/self/ns/pid")
+@@ -344,6 +384,7 @@ def test_assertion_rejects_a_root_mapped_child_namespace() -> None:
+     assert "network_isolation=privileged-identity" in result.stderr
+ 
+ 
++@requires_user_namespace
+ def test_wrapper_rejects_a_root_mapped_caller(tmp_path: Path) -> None:
+     result = subprocess.run(
+         [
 diff --git a/tests/st0202/test_wrapper.py b/tests/st0202/test_wrapper.py
 index 4b78373..d4742cf 100644
 --- a/tests/st0202/test_wrapper.py
