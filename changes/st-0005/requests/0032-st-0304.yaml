@@ -1,0 +1,39 @@
+document:
+  id: STATUS-ST0304-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-04T15:35:01Z'
+reason: >-
+  Record the append-only local ST-0304 implementation candidate after
+  deterministic generation, exact cached PostgreSQL 18.4 cumulative migration
+  suites, final denied-network static/unit/contracts gates, worktree secret
+  scan, and independent implementation and metadata audits passed. This does
+  not claim formal Suite execution, hosted CI, human review, canonical APPLY,
+  formal VALIDATED, staging, release, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0304
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-008
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0304-local-20260805.yaml
+        sha256: a42fffeb981cb5d5d2e6be2aad27b5178c3acec554007ea4c830850635bd3148
+        observed_at: '2026-08-04T15:35:00Z'
+      - suite_id: TST-010
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0304-local-20260805.yaml
+        sha256: a42fffeb981cb5d5d2e6be2aad27b5178c3acec554007ea4c830850635bd3148
+        observed_at: '2026-08-04T15:35:00Z'

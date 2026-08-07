@@ -1,0 +1,100 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Current ChatGPT Pro citation-interleaved response-body extraction
+    - scripts/chatgpt_pro_orchestrator.py advanced-profile exact response subtree parser
+    - tests/st0101 deterministic text-fragment, citation, ambiguity, and no-resubmission coverage
+    - changes/st-0101/README.md and docs/worklogs/ST-0101.md guidance and evidence
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md current-response-body wording
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.current-pro-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-ui.v1.yaml
+  decision: >-
+    For the strict gpt-5.6-sol-pro-advanced-v1 response only, resolve the exact
+    heading ChatGPT said: and then require exactly one immediately following
+    generic response-body root at the same indentation depth with a distinct
+    ref. Limit extraction to that generic subtree, ending before the next
+    non-empty line at the same or shallower indentation. Within the subtree,
+    accept only ordered text or statictext payload lines whose payload is one
+    valid JSON string literal. Decode each string literal and concatenate the
+    decoded strings with no invented separator. Ignore link, URL, button, and
+    citation-preview nodes as response data. The concatenated result must be
+    non-empty, start exactly with {, end exactly with }, contain no sensitive
+    pattern, and pass the existing exact PRO_ADVICE_V1 validation before any
+    proposal persistence. Keep the predecessor nested parser unchanged for
+    legacy profiles. Resume remains inspect-only and never types, clicks Send,
+    or resubmits.
+  rationale: >-
+    A sanitized exact-origin structural probe of the already-submitted current
+    run found the exact response heading followed by one same-depth generic
+    body root. ChatGPT rendered the researched JSON as 15 ordered text nodes
+    interleaved with source links and citation-preview nodes. Each text payload
+    was a JSON string literal. Decoding and concatenating those 15 strings with
+    no separator produced an 8,389-character JSON object with no leading or
+    trailing data, the exact seven PRO_ADVICE_V1 keys, the required schema and
+    authority values, and no sensitive-pattern match. Adding a newline made
+    the JSON invalid; ignoring citations and using no invented separator
+    preserves the browser text-node sequence.
+  rejected_alternatives:
+    - Output, persist, or manually copy the raw accessibility snapshot
+    - Treat link labels, URLs, citation cards, buttons, or source previews as response text
+    - Concatenate the entire page, conversation, sidebar, or every text node after the heading
+    - Invent newlines, citation labels, URLs, or other separators between decoded text fragments
+    - Accept unquoted text payloads, malformed JSON strings, prose prefixes, prose suffixes, markdown fences, or partial braces
+    - Relax PRO_ADVICE_V1, authority, sensitive-data, exact-origin, or hash-chain validation
+    - Resubmit the original request because the response DOM is fragmented
+    - Change legacy-profile response extraction
+  constraints:
+    - Exact-origin and stop-state validation precede body resolution
+    - The exact advanced heading and response-body generic each occur once and have distinct valid refs
+    - The body root is the immediately following element line and has exactly the same indentation as the heading
+    - Extraction ends at the first non-empty line whose indentation is at or above the body-root boundary
+    - Only text and statictext payload lines strictly inside that subtree contribute response bytes
+    - Every contributing payload must decode as exactly one JSON string
+    - Decoded fragments are concatenated in snapshot order with the empty separator
+    - At least one contributing fragment is required
+    - The complete decoded response starts with { and ends with } and has no bytes outside that object
+    - Link, URL, generic, paragraph, button, and citation-preview nodes never contribute response bytes
+    - Duplicate refs anywhere in the parsed response snapshot remain an ambiguity
+    - A missing body, duplicate body candidate, wrong role, wrong indentation, malformed fragment, no text fragment, extra prefix/suffix, invalid advice, sensitive match, origin drift, stop state, or generating state never completes or persists
+    - Existing current submission, legacy response, WSLg, authentication, browser/profile, secret, and no-fallback controls remain unchanged
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved the bounded changes necessary to receive the answer from the already-authorized Pro submission
+    - Sanitized probes used only the dedicated Edge profile, exact conversation origin, navigate, wait, snapshot, and close
+    - Probes returned only indentation, roles, counts, lengths, hashes, known-key booleans, and JSON validity; no raw snapshot, prompt, response value, cookie, storage, credential, sidebar, or unrelated-tab data was output or persisted
+    - The existing run must be resumed without a second prompt input or send click
+    - Captured output remains a hash-bound unapproved proposal pending human and canonical reconciliation
+  acceptance_criteria:
+    - The observed 15 citation-interleaved JSON string fragments reconstruct one exact valid PRO_ADVICE_V1 response with an empty separator
+    - The response subtree is structurally bound to the exact current heading and immediate same-depth generic body root
+    - Source-link and citation-preview content cannot enter the reconstructed response
+    - Missing, duplicate, wrong-role, wrong-indent, out-of-subtree, malformed-string, empty, prefix, suffix, sensitive, invalid-advice, origin, stop, generating, and ref-collision cases do not persist a proposal
+    - Legacy nested-response fixtures remain unchanged and green
+    - Resume performs no browser_type, browser_click, or resubmission
+    - Full isolated ST-0101 regression and static security checks remain green
+    - Existing run 20260804T171209Z-6c0794beb7f2 resumes and captures the validated Pro answer without resubmission
+  required_test_evidence:
+    - Exact advanced fragmented-response fixture with 15 or representative multiple JSON-string text nodes interleaved with inert citation links and URL nodes
+    - Test proving empty-separator ordered reconstruction and exact PRO_ADVICE_V1 validation
+    - Body-root missing, duplicate/ambiguous, wrong-role, wrong-indent, and boundary-escape refusal tests
+    - Unquoted, malformed, non-string JSON, zero-fragment, prefix, suffix, invalid-advice, and sensitive-fragment refusal tests before persistence
+    - Citation link, URL, button, generic, and preview nodes ignored-as-data tests
+    - Exact origin, stop-state, generating, response-anchor, distinct-ref, legacy-response, and loading-wait regressions
+    - Resume trace proving navigate, snapshot, bounded wait if needed, and close only
+    - Ruff, Python compilation, shell syntax, Skill validation, scoped diff, and full isolated tests/st0101
+    - Live same-run response capture evidence, kept distinct from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation-and-active-goal
+    approved_on: 2026-08-05
+    statement: >-
+      Approve the bounded exact subtree reconstruction needed to receive the
+      already-authorized Pro answer, while preserving no-resubmission,
+      exact-origin, sensitive-data, schema, authority, hash-chain, and human
+      reconciliation controls.

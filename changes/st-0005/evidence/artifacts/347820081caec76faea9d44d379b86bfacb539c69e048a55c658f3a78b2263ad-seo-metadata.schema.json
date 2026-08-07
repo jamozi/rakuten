@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content/v1/seo-metadata.schema.json",
+  "title": "SEO Metadata Version",
+  "type": "object",
+  "properties": {
+    "seo_metadata_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "article_version_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,159}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "meta_description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "canonical_route_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "index_state": {
+      "type": "string",
+      "enum": [
+        "index",
+        "noindex"
+      ]
+    },
+    "robots": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "index",
+          "noindex",
+          "follow",
+          "nofollow",
+          "max-image-preview:large"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "breadcrumb_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 200,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+      },
+      "minItems": 1,
+      "maxItems": 10
+    },
+    "sitemap_inclusion": {
+      "type": "boolean"
+    },
+    "substantive_updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "structured_data_manifest_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    }
+  },
+  "required": [
+    "seo_metadata_id",
+    "article_version_id",
+    "slug",
+    "title",
+    "meta_description",
+    "canonical_route_ref",
+    "index_state",
+    "robots",
+    "breadcrumb_refs",
+    "sitemap_inclusion",
+    "substantive_updated_at",
+    "structured_data_manifest_ref"
+  ],
+  "additionalProperties": false
+}

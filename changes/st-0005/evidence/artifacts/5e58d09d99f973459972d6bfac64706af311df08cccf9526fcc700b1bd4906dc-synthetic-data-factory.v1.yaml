@@ -1,0 +1,161 @@
+document:
+  id: RAOS-SYNTHETIC-DATA-FACTORY-001
+  version: 1.0.0
+  story_id: ST-0205
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  epic_id: EPIC-02
+  title: Synthetic data factory
+  objective: SAFE_FIXTURE_GENERATION_FOR_ALL_DOMAINS
+  dependencies: [ST-0201, ST-0202]
+  design_refs: [RAOS-TEST-001]
+  deliverables: [DETERMINISTIC_FACTORY, VERSIONED_SEED_SCENARIOS]
+  acceptance: [NO_REVIEW_BODY, NO_PII]
+  required_suites: [TST-005, TST-031]
+  open_decisions: []
+factory:
+  version: synthetic-data-factory.v1
+  default_seed: raos-st-0205-v1
+  execution: PURE_OFFLINE
+  deterministic: true
+  network: FORBIDDEN
+  environment_read: FORBIDDEN
+  provider_sdk: FORBIDDEN
+  credentials: FORBIDDEN
+  database_write: FORBIDDEN
+  object_storage_write: FORBIDDEN
+  production_or_staging_data: FORBIDDEN
+  unknown_fields: REJECT
+  unknown_domain: REJECT
+  unknown_scenario: REJECT
+  maximum_seed_bytes: 128
+domains:
+  exact_count: 13
+  ordered:
+    - ops
+    - iam
+    - portfolio
+    - catalog
+    - evidence
+    - editorial
+    - ai
+    - policy
+    - publishing
+    - freshness
+    - analytics
+    - finance
+    - readmodel
+  payload_allowlists:
+    ops: [logical_event_id, delivery_no, status, occurred_at]
+    iam: [principal_id, principal_kind, active, locale]
+    portfolio: [site_id, locale, timezone, business_date]
+    catalog: [product_id, label, currency, amount_minor, observed_at]
+    evidence: [fact_id, source_ref, confidence_basis_points, observed_at]
+    editorial: [article_id, title, locale, version]
+    ai: [task_id, model_ref, token_count, cost_minor]
+    policy: [bundle_id, state, effective_at, rule_count]
+    publishing: [snapshot_id, state, content_sha256, published_at]
+    freshness: [assessment_id, logical_event_id, sequence_no, observed_at, timezone]
+    analytics: [event_id, event_kind, pseudonym_sha256, occurred_at]
+    finance: [commission_id, currency, amount_minor, attribution_basis]
+    readmodel: [route, publication_id, headline, locale]
+seed_scenarios:
+  bundle_version: seed-scenarios.v1
+  required_dimensions:
+    - TIME
+    - CURRENCY
+    - LOCALE
+    - UNICODE
+    - LARGE_VALUE
+    - DST
+    - JST
+    - DUPLICATE
+    - OUT_OF_ORDER
+  ordered_fixture_scenarios:
+    - [ops, baseline]
+    - [ops, duplicate-original]
+    - [ops, duplicate-replay]
+    - [iam, baseline]
+    - [portfolio, jst]
+    - [catalog, unicode-large-jpy]
+    - [evidence, baseline]
+    - [editorial, unicode-locale]
+    - [ai, baseline]
+    - [policy, baseline]
+    - [publishing, baseline]
+    - [freshness, dst-before]
+    - [freshness, dst-after]
+    - [freshness, out-of-order-later]
+    - [freshness, out-of-order-earlier]
+    - [analytics, baseline]
+    - [finance, currency-large]
+    - [readmodel, unicode-locale]
+privacy:
+  construction: EXACT_DOMAIN_PAYLOAD_ALLOWLISTS
+  classification_values: [PUBLIC, INTERNAL, CONFIDENTIAL, RESTRICTED]
+  missing_classification_default: CONFIDENTIAL
+  unknown_classification: REJECT
+  restricted_classification: FORBIDDEN_IN_REPOSITORY_AND_LOGS
+  review_body: FORBIDDEN
+  review_author_or_poster: FORBIDDEN
+  customer_or_person_data: FORBIDDEN
+  email: FORBIDDEN
+  raw_ip: FORBIDDEN
+  raw_user_agent: FORBIDDEN
+  credentials_or_secret_material: FORBIDDEN
+  raw_prompt_or_provider_body: FORBIDDEN
+  production_copy: FORBIDDEN
+provenance:
+  fixture_origin: RAOS_ST0205_DETERMINISTIC_FACTORY
+  fixture_license: UNLICENSED
+  fixture_license_authority:
+    path: package.json
+    json_pointer: /license
+    sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+  per_fixture_sha256: REQUIRED
+  catalog_sha256: REQUIRED
+  predecessor_manifests:
+    - story_id: ST-0201
+      path: changes/st-0201/manifest.yaml
+      sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+    - story_id: ST-0202
+      path: changes/st-0202/manifest.yaml
+      sha256: 16c446aaf162416edf4a3197b0b3489aa9ea68bce6e3406ec9376294ea924467
+security:
+  control_mappings:
+    - {id: SEC-APP-001, relationship: EXACT_UNKNOWN_DOMAIN_FIELD_AND_SCENARIO_REJECTION}
+    - {id: SEC-DATA-003, relationship: NO_SECRET_IN_FIXTURE_REPO_OR_LOG}
+    - {id: SEC-DATA-004, relationship: HASH_AND_VERSION_EVERY_FIXTURE}
+    - {id: SEC-DATA-007, relationship: MINIMAL_ALLOWLISTED_SYNTHETIC_FIELDS}
+    - {id: SEC-SDLC-006, relationship: SECRET_CANARY_NEGATIVE_TESTS}
+verification:
+  local_command: uv run --locked --no-sync pytest -p no:cacheprovider -q tests/st0205
+  generator_check: uv run --locked --no-sync python scripts/build_st0205_synthetic_data.py --check
+  negative_cases:
+    - PREDECESSOR_HASH_MISMATCH
+    - SECRET_PII_REVIEW_BODY_CANARIES
+    - UNKNOWN_FIELD
+    - UNKNOWN_CLASSIFICATION
+    - NONDETERMINISM
+    - PRODUCTION_COPY
+    - MISSING_ORIGIN_OR_LICENSE
+  local_result_can_promote_formal_suite: false
+boundary:
+  environment: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+  privacy_security_review: NOT_EXECUTED
+  database_or_object_storage_write: FORBIDDEN
+  provider_or_network_access: FORBIDDEN
+  production_or_staging_use: FORBIDDEN
+  retention_period_decision: NOT_MADE
+  status_apply: FORBIDDEN
+  effective_canonical_status: UNCHANGED
+out_of_scope:
+  - DATABASE_SCHEMA_OR_MIGRATION
+  - POSTGRESQL_OR_S3_SEED_WRITE
+  - LIVE_OR_RECORDED_PROVIDER_DATA
+  - PRODUCTION_OR_STAGING_DATA
+  - RETENTION_OR_AUTOMATIC_DELETION_POLICY
+  - STATUS_EVIDENCE_OR_CANONICAL_APPLY

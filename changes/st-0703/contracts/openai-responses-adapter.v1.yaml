@@ -1,0 +1,171 @@
+document:
+  id: RAOS-OPENAI-RESPONSES-ADAPTER-001
+  version: 1.0.0
+  story_id: ST-0703
+  status: IMPLEMENTATION_CANDIDATE_CONTRACT
+
+story:
+  objective: Structured output, refusal, usage, and recorded provider errors
+  dependencies:
+    - ST-0701
+    - ST-0204
+  requirement_ids:
+    - FR-018
+  test_suites:
+    - TST-017
+  open_decisions: []
+
+provenance:
+  canonical_inputs:
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+      sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  predecessors:
+    - story_id: ST-0701
+      uri: repo://changes/st-0701/manifest.yaml
+      sha256: e52e816d9982b65f43e5a126a38c22e4a8f6a70a1c5e7b88a8ad7595798ebc4c
+    - story_id: ST-0204
+      uri: repo://changes/st-0204/manifest.yaml
+      sha256: 3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4
+  provider_contracts:
+    - uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json
+      sha256: 163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31
+    - uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-result.schema.json
+      sha256: ac59d14f41dbcabaaf98a5bea4b603313f3bb752fc6d8b4ca8b33973b3fdfd17
+
+official_sdk:
+  distribution: openai
+  version: 2.52.0
+  exact_requirement: openai==2.52.0
+  api: responses.create
+  client_mode: synchronous_preconfigured_client_injection
+  release_metadata:
+    upload_time: "2026-07-31T15:13:01Z"
+    requires_python: ">=3.10"
+    wheel_sha256: f97e231d9a8fa69ab55897df1080f02d99913fb0a30e3ee56ea16a1eb6c2d434
+    sdist_sha256: 7c736d592f81471ce1f734838390983c4d8c8aecff23dcd36e600a58e5032d9c
+  selection_note:
+    authority: NON_AUTHORITATIVE_IMPLEMENTATION_PROVENANCE
+    repository_cutoff: "2026-08-01T16:50:16Z"
+    text: >-
+      At the repository provider-dependency cutoff, openai 2.52.0 was the latest
+      official release available within that cutoff. This note records dependency
+      selection provenance only; canonical Story/design authority and required human
+      approval remain unchanged.
+  references:
+    - https://developers.openai.com/api/docs/guides/migrate-to-responses
+    - https://developers.openai.com/api/docs/guides/structured-outputs
+    - https://developers.openai.com/api/docs/guides/your-data
+    - https://github.com/openai/openai-python/releases/tag/v2.52.0
+    - https://pypi.org/project/openai/2.52.0/
+  refreshed_on: 2026-08-06
+
+core_api:
+  domain_module: raos.domain.ai.provider
+  domain_types:
+    - Sha256Digest
+    - CanonicalJsonObject
+    - ArtifactRef
+    - MessageRole
+    - StructuredInputMessage
+    - StructuredOutputSchema
+    - RequestMetadata
+    - StructuredTaskRequest
+    - ProviderUsage
+    - SyntheticPricingQuote
+    - PricingResult
+    - ResolvedProviderMetadata
+    - IncompleteReason
+    - ProviderSuccess
+    - ProviderRefusal
+    - ProviderIncomplete
+    - ProviderResult
+  port_module: raos.ports.ai_provider
+  port_types:
+    - ProviderErrorCode
+    - ProviderError
+    - ProviderExchange
+    - ProviderExchangeRecorder
+    - RecordedCostCalculator
+    - StructuredModelProvider
+  adapter_module: raos.adapters.openai_responses
+  adapter_types:
+    - OpenAIResponseRoute
+    - OpenAIResponsesAdapter
+
+request_contract:
+  endpoint_family: RESPONSES_ONLY
+  required_fields:
+    store: false
+    tools: []
+    text.format.type: json_schema
+    text.format.strict: true
+    text.format.name: REQUIRED_BOUNDED
+    text.format.schema: EXACT_REQUEST_SCHEMA
+    max_output_tokens: POSITIVE_BOUNDED_INTEGER
+    reasoning.effort: CLOSED_ALLOWED_VALUE
+  sdk_options:
+    max_retries: 0
+    timeout: POSITIVE_BOUNDED_SECONDS
+  call_limit_per_execute: 1
+
+fixture_inventory:
+  root: changes/st-0703/fixtures/recorded
+  format: STRICT_UTF8_LF_JSON
+  synthetic_marker: SYNTHETIC_TEST_ONLY
+  files:
+    - path: success-structured.json
+      scenario: structured_success
+      expected: ProviderSuccess
+    - path: refusal-completed.json
+      scenario: completed_refusal
+      expected: ProviderRefusal
+    - path: incomplete-max-output-tokens.json
+      scenario: incomplete_max_output_tokens
+      expected: ProviderIncomplete.MAX_OUTPUT_TOKENS
+    - path: incomplete-content-filter.json
+      scenario: incomplete_content_filter
+      expected: ProviderIncomplete.CONTENT_FILTER
+    - path: error-rate-limit-429.json
+      scenario: rate_limit_429
+      expected: ProviderError.RATE_LIMIT
+  integrity:
+    regular_files_only: true
+    symlinks: REJECT
+    extra_or_missing_files: REJECT
+    duplicate_json_keys: REJECT
+    non_finite_numbers: REJECT
+    raw_byte_sha256_inventory: REQUIRED_IN_GENERATED_MANIFEST
+
+required_assertions:
+  - Exact outbound Responses JSON sets store false and tools empty.
+  - Refusal is classified before any JSON parse and is never retried.
+  - Incomplete is classified before partial output parse and is never retried here.
+  - Usage integers include cached input tokens and fail closed when malformed.
+  - Provider errors expose stable codes only and retain no raw exception or exchange.
+  - Provider SDK types never cross the inward port.
+  - Fixture tests make no network call and read no credential, Secret reference, or environment variable.
+
+boundary:
+  live_api: NOT_USED
+  credential_or_secret_resolution: NOT_USED
+  client_construction: NOT_IMPLEMENTED_ST0407_BOUNDARY
+  production_artifact_storage: NOT_IMPLEMENTED_ST0601_BOUNDARY
+  production_pricing_or_fx: NOT_IMPLEMENTED
+  routing_fallback_circuit_budget_retry: NOT_IMPLEMENTED_ST0704_BOUNDARY
+  database_queue_storage: NOT_USED
+  tools_network_chat_completions: FORBIDDEN
+  proposal_bundle_authority: PROPOSAL_INPUT_ONLY_NOT_IMPLEMENTATION_AUTHORITY
+  local_result: IMPLEMENTATION_CANDIDATE_ONLY
+  formal_tst_017: NOT_EXECUTED
+  live_tst_018: NOT_EXECUTED
+  production_readiness: NOT_READY

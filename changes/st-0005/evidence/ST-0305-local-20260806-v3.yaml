@@ -1,0 +1,60 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0305-20260806-V3
+  schema_version: 1
+  recorded_at: '2026-08-06T02:18:29Z'
+story_id: ST-0305
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0005/evidence/ST-0305-local-20260805-v2.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082-ST-0305-local-20260805-v2.yaml
+  sha256: 4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082
+- original_uri: repo://changes/st-0305/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92-manifest.yaml
+  sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+- original_uri: repo://scripts/build_st0305_publication_analytics_finance.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb-build_st0305_publication_analytics_finance.py
+  sha256: 6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb
+- original_uri: repo://tests/st0305/test_st0305_publication_analytics_finance.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104-test_st0305_publication_analytics_finance.py
+  sha256: 62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104
+- original_uri: repo://docs/worklogs/ST-0305.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/db7beb9cad7a31c0bb6309bda7a8b5b6f50f7161df7f36c55c1e78f119a7f4ab-ST-0305.md
+  sha256: db7beb9cad7a31c0bb6309bda7a8b5b6f50f7161df7f36c55c1e78f119a7f4ab
+- original_uri: repo://tests/st0301/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1-test_generation.py
+  sha256: fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+- original_uri: repo://tests/st0303/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b-test_generation.py
+  sha256: d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b
+- original_uri: repo://tests/st0304/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980-test_generation.py
+  sha256: c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980
+suite_results:
+- suite_id: TST-008
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-011
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-030
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: append-only content-addressed evidence refresh
+  result: PASS; all 8/8 captures matched their declared current originals byte-for-byte and by SHA-256,
+    including the prior V2 snapshot and the minimal changed ST-0305 compatibility closure
+- command: deterministic ST-0305 generation and terminal-chain compatibility
+  result: PASS; the direct ST-0305 check passed, the exact PostgreSQL 18.4 isolated ST-0305 suite passed
+    39/39 with zero skips, and all historical migration CLIs terminated at the ST-0306 head
+- command: cumulative exact PostgreSQL 18.4 migration regression
+  result: PASS; isolated ST-0301 through ST-0306 suites passed 361/361 with zero skips
+- command: ST-0305 manifest parity
+  result: PASS; ST-0305 matched 46/46 source and 3/3 generated artifacts exactly
+- command: independent local implementation audits
+  result: PASS; independent local audits reported zero severity findings; this is local audit evidence only,
+    not migration-owner, human-review, hosted-CI, or formal Suite evidence
+boundary: Append-only LOCAL_IMPLEMENTATION_CANDIDATE evidence only. Formal TST-008, TST-011, TST-030,
+  hosted CI, canonical APPLY, formal VALIDATED, migration-owner review, human review, staging, release,
+  and production remain NOT_EXECUTED or unclaimed. Exact local PostgreSQL results remain separate from
+  formal Suite execution. Effective canonical ST-0305 remains NOT_STARTED / NOT_EXECUTED.

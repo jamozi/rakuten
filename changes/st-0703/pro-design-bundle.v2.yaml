@@ -1,0 +1,156 @@
+schema: RAOS_PRO_DESIGN_BUNDLE_V2
+story_id: ST-0703
+status: PROPOSAL_INPUT_ONLY
+authority: NOT_A_DESIGN_HANDOFF
+implementation_authority: NOT_GRANTED
+human_approval: NOT_PROVIDED
+canonical_reconciliation: PENDING
+formal_test_execution: NOT_EXECUTED
+staging_readiness: NOT_READY
+production_readiness: NOT_READY
+assembled_on: 2026-08-06
+
+archive:
+  path: changes/st-0703/ST-0703-pro-design-input-v2.tar.gz
+  sha256: 316893f14acc6e09923614ecb809973aa129b9a268f2e95394bb6702bff79ea9
+  bytes: 133815
+  media_type: application/gzip
+  format: DETERMINISTIC_POSIX_TAR_GZIP
+  regular_file_members: 27
+  hashed_payload_members: 26
+  directories: 0
+  links: 0
+  devices: 0
+
+member_manifest:
+  path: changes/st-0703/pro-design-input.v2.members.sha256
+  sha256: 3febf6a97bb2a5eda382dbbf98000b60ee7c456696db48d38db72cbf09f99907
+  entries: 26
+
+request:
+  path: changes/st-0703/DESIGN-DECISION-REQUEST-v2.md
+  sha256: 2beb923e26fded6c375a605df6e9728f30fa3cbf3431eb7c137cd7ccec576743
+
+submission_message:
+  path: changes/st-0703/PRO-SUBMISSION-MESSAGE-v2.txt
+  sha256: ff52f7a040ff3cdc24526b725ed92d1c190e4eb69b8f35cd4bf01a066a4b1b56
+
+v2_delta:
+  v1_non_prompt_payload_paths_carried_forward: 18
+  v1_payload_bytes_unchanged: 16
+  refreshed_payload_paths:
+    - changes/st-0703/DESIGN-DECISION-REQUEST-v2.md
+    - changes/st-0703/PRO-SUBMISSION-MESSAGE-v2.txt
+    - pyproject.toml
+    - uv.lock
+  added_payload_paths:
+    - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - contracts/raos-v0.4/contracts/schemas/common/artifact-ref.schema.json
+    - changes/st-0701/manifest.yaml
+    - changes/st-0204/manifest.yaml
+    - changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+    - uv.toml
+
+candidate_snapshot:
+  authority: UNAPPROVED_IMPLEMENTATION_CANDIDATE_EVIDENCE
+  may_be_reverted_pending_approval: true
+  package_requirement:
+    path: pyproject.toml
+    sha256: d7a03c351a2ef20d6aaf45b4dff7775b3ce9dbb7e051323cfbf35d295344814e
+    requirement: openai==2.52.0
+  dependency_lock:
+    path: uv.lock
+    sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  resolver_policy:
+    path: uv.toml
+    sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+    uv_version: 0.12.1
+    exclude_newer: '2026-08-01T16:50:16Z'
+  adapter_contract:
+    path: changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+    sha256: 5a2d68cb47dcf4494b0f3f8621579d163e25ca1f250682591f45cf32af108dbc
+    status: IMPLEMENTATION_CANDIDATE_CONTRACT
+
+official_sdk_candidate:
+  distribution: openai
+  version: 2.52.0
+  release_date: 2026-07-31
+  metadata_verified_on: 2026-08-06
+  requires_python: '>=3.10'
+  wheel_sha256: f97e231d9a8fa69ab55897df1080f02d99913fb0a30e3ee56ea16a1eb6c2d434
+  sdist_sha256: 7c736d592f81471ce1f734838390983c4d8c8aecff23dcd36e600a58e5032d9c
+  selection_claim: >-
+    Latest official openai release available within the fixed repository
+    package cutoff; provenance only, not canonical or implementation authority.
+
+decisions_requested:
+  - ST0703-D1
+  - ST0703-D2
+  - ST0703-D3
+  - ST0703-D4
+
+deferred_external_decisions:
+  - id: OD-015
+    topic: production_provider_credentials
+    status: UNRESOLVED
+  - id: AI-OD-001
+    topic: production_openai_account_data_controls_and_zdr
+    status: UNRESOLVED
+  - id: AI-OD-008
+    topic: production_model_pricing_and_fx_source_of_truth
+    status: UNRESOLVED
+
+official_references_to_refresh:
+  verified_on: 2026-08-06
+  references:
+    - https://developers.openai.com/api/docs/guides/migrate-to-responses
+    - https://developers.openai.com/api/docs/guides/structured-outputs
+    - https://developers.openai.com/api/docs/guides/your-data
+    - https://github.com/openai/openai-python/releases/tag/v2.52.0
+    - https://pypi.org/project/openai/2.52.0/
+
+generation:
+  tool: GNU tar 1.34
+  command: >-
+    LC_ALL=C tar --sort=name --mtime=@0 --owner=0 --group=0
+    --numeric-owner --format=posix
+    --pax-option=delete=atime,delete=ctime --no-recursion -czf
+    changes/st-0703/ST-0703-pro-design-input-v2.tar.gz -T
+    SORTED_EXPLICIT_27_MEMBER_ALLOWLIST
+  explicit_allowlist_only: true
+  deterministic_rebuild_comparison: PASS
+
+validation:
+  exact_27_member_closure: PASS
+  unique_member_paths: PASS
+  safe_relative_member_paths: PASS
+  regular_files_only: PASS
+  embedded_manifest_matches_bundle: PASS
+  all_26_archived_payload_hashes: PASS
+  live_source_hashes_match_manifest_at_assembly: PASS
+  canonical_import_verification: PASS
+  high_confidence_secret_scan: PASS
+
+expected_output:
+  display_name: DESIGN_HANDOFF_V1_ST0703_v2.yaml
+  format: UTF8_LF_SINGLE_DOCUMENT_YAML
+  root: DESIGN_HANDOFF_V1
+  proposal_authority: PENDING_UNAPPROVED
+  human_approval: NOT_PROVIDED
+  canonical_reconciliation: PENDING
+  implementation_authority: NOT_GRANTED
+  formal_test_execution: NOT_EXECUTED
+  staging_readiness: NOT_READY
+  production_readiness: NOT_READY
+  open_decisions_semantics: EMPTY_ONLY_FOR_RECORDED_ST0703_SCOPE
+  deferred_external_decisions_required:
+    - OD-015
+    - AI-OD-001
+    - AI-OD-008
+
+approval_boundary:
+  pro_output_is_advice_only: true
+  exact_returned_bytes_require_human_approval: true
+  conflict_free_canonical_reconciliation_required: true
+  candidate_root_files_may_be_reverted: true
+  implementation_worker_authority_granted_by_this_bundle: false

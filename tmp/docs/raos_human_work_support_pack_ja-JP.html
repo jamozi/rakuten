@@ -1,0 +1,184 @@
+<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>RAOS 人手作業支援パック</title><style>
+      @page { size: A4; margin: 14mm 14mm 15mm 14mm; @bottom-right { content: counter(page); } }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: 'Noto Sans CJK JP', sans-serif; color: #1F2937; font-size: 9.5pt; line-height: 1.35; }
+      .page { break-after: page; min-height: 255mm; position: relative; }
+      .page:last-child { break-after: auto; }
+      h1 { color: #17324D; font-size: 20pt; margin: 0 0 7mm; border-bottom: 2px solid #0F766E; padding-bottom: 2mm; }
+      h2 { color: #2B6CB0; font-size: 14pt; margin: 0 0 4mm; }
+      h3 { color: #0F766E; font-size: 11pt; margin: 5mm 0 2mm; }
+      p { margin: 0 0 3mm; }
+      ul, ol { margin: 2mm 0 4mm 6mm; padding-left: 5mm; }
+      li { margin: 1mm 0; }
+      table { width: 100%; border-collapse: collapse; margin: 3mm 0 5mm; table-layout: fixed; }
+      th, td { border: 0.35mm solid #B7C0CA; padding: 2mm; vertical-align: top; word-wrap: break-word; }
+      thead th, table.summary tr:first-child th { background: #17324D; color: white; font-weight: 700; }
+      tr:nth-child(even) td { background: #F3F5F7; }
+      .meta th { width: 20%; background: #17324D; color: white; }
+      .meta td { width: 30%; background: #F3F5F7; }
+      .fields th { width: 25%; background: #EAF2FB; color: #17324D; text-align: left; }
+      .fields td { background: white !important; }
+      .blank { min-height: 12mm; }
+      .blank.tall { min-height: 20mm; }
+      .callout { padding: 4mm; background: #EAF2FB; border-left: 2mm solid #2B6CB0; margin: 4mm 0; }
+      .warning { background: #FFF6DB; border-left-color: #A16207; }
+      .safe { background: #E8F5F2; border-left-color: #0F766E; }
+      .cover { padding-top: 25mm; }
+      .brand { color: #0F766E; font-size: 17pt; font-weight: 700; letter-spacing: .5mm; }
+      .cover h1 { border: 0; font-size: 30pt; margin: 3mm 0; }
+      .subtitle { font-size: 13pt; color: #5B6673; margin-bottom: 12mm; }
+      .version { margin-top: 8mm; color: #5B6673; }
+      .secret { margin-top: 30mm; color: #B42318; font-weight: 700; }
+      .summary { font-size: 8pt; }
+      .summary th:nth-child(1) { width: 9%; } .summary th:nth-child(2) { width: 16%; }
+      .summary th:nth-child(3) { width: 24%; } .summary th:nth-child(4) { width: 24%; }
+      .summary th:nth-child(5) { width: 10%; } .summary th:nth-child(6) { width: 17%; }
+      .check { font-size: 16pt; text-align: center; }
+      .form .fields th { width: 25%; }
+      .small { font-size: 8pt; color: #5B6673; }
+    </style></head><body>
+    <section class="page cover">
+      <div class="brand">RAOS</div><h1>人手作業支援パック</h1>
+      <div class="subtitle">決める・提供する・承認する作業を、Codexと分担して前へ進める</div>
+      <div class="callout warning"><b>この資料の位置づけ</b><br>現行Canonicalに基づく記入用の非Canonical支援資料です。記入しただけではOpen Decisionは解決されません。人間の承認、Canonicalとの照合、所定のDecision RecordまたはEvidence登録が完了して初めて実装・本番判断へ使えます。</div>
+      <div class="version">Version 1.0　|　2026-08-04　|　ja-JP</div>
+      <div class="secret">重要: Secret、Password、Token、個人情報の原文は、この資料やチャットへ記載しないでください。</div>
+    </section>
+    <section class="page"><h1>1. 使い方</h1>
+      <ol><li>人が事業・法務・契約・公開に関する選択を行います。</li><li>Codexが候補比較、リスク整理、設定案、チェックリスト、テストを作ります。</li><li>人がDecision Recordまたは承認票を確認し、承認します。</li><li>Codexが承認済み範囲だけを実装し、Local/CI/Runtime/Production証跡を分離して報告します。</li></ol>
+      <div class="callout safe"><b>境界</b><br>Codexは、法的判断、規約同意、本人確認、契約締結、支払い承認、Secret値の保管、記事の最終公開、成果確定、Kill Switch解除を人間の代わりに行いません。</div>
+      <h2>最初の30分で回答する5項目</h2>
+      <table class="fields"><tr><th>1. 初期カテゴリ</th><td>決定済み: __________ / 候補3つ: ______________________________</td></tr><tr><th>2. ブランド・ドメイン</th><td>名称案: __________________ ドメイン候補: __________________</td></tr><tr><th>3. 予算・許容赤字</th><td>月額上限: ______円 許容赤字期間: ____か月 自動停止: ______円</td></tr><tr><th>4. Reviewer</th><td>主担当: ______ 代理: ______ 時間単価: ______円</td></tr><tr><th>5. 外部手続き</th><td>楽天: 未/済 Domain: 未/済 AWS: 未/済 Legal相談先: 未/済</td></tr></table>
+      <h3>チャット回答テンプレート</h3><div class="callout">初期カテゴリ候補: / ブランド名候補: / ドメイン候補: / 月額予算上限: / 許容赤字期間: / 主Reviewer: / 代理Reviewer: / 標準時間単価: / 楽天Affiliate登録状況: / 法務相談先の有無:</div>
+    </section>
+    
+    <section class="page"><h1>2. Open Decision全体表</h1><p>15件のうち14件がProductionまたはGate blockerです。OD-004だけは手動Importで先へ進められます。</p>
+      <table class="summary"><tr><th>ID</th><th>必要時点</th><th>判断・Evidence</th><th>Owner</th><th>Block</th><th>状態</th></tr><tr><td>OD-001</td><td>最初に必要</td><td>初期カテゴリ</td><td>Product Owner</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-002</td><td>最初に必要</td><td>サイト名・ドメイン</td><td>Product Owner</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-003</td><td>Finance実装前</td><td>楽天成果Reportサンプル</td><td>Business Owner</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-004</td><td>GATE-2前</td><td>順位・Keyword Provider</td><td>Product Owner</td><td>No</td><td>未決定</td></tr><tr><td>OD-005</td><td>最初に必要</td><td>Reviewerと人件費</td><td>Business Owner</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-006</td><td>カテゴリ実装前</td><td>商品同一性ルール</td><td>Domain Editor</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-007</td><td>カテゴリ実装前</td><td>鮮度SLA</td><td>Managing Editor</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-008</td><td>GATE-0前</td><td>法務レビュー境界</td><td>Business Owner / Legal</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-009</td><td>最初に必要</td><td>予算・許容赤字</td><td>Business Owner</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-010</td><td>Admin公開前</td><td>OIDC Provider</td><td>Security Owner</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-011</td><td>Production前</td><td>通知・Escalation</td><td>Operations Owner</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-012</td><td>Public analytics前</td><td>Privacy・同意</td><td>Privacy Owner</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-013</td><td>Terraform production前</td><td>Region・Data Residency</td><td>Security / Business Owner</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-014</td><td>Deletion jobs前</td><td>保持期間</td><td>Privacy / Finance / Legal</td><td>Yes</td><td>未決定</td></tr><tr><td>OD-015</td><td>Live adapter前</td><td>本番Provider資格情報</td><td>Operations Owner</td><td>Yes</td><td>未決定</td></tr></table>
+      <h2>進行順序</h2><ul><li>A. 今決める: OD-001、002、005、008、009</li><li>B. カテゴリ設計時: OD-006、007</li><li>C. Finance/Live Adapter時: OD-003、015</li><li>D. Staging/Production前: OD-010、011、012、013、014</li><li>E. GATE-2高度化時: OD-004。未決でもSearch Consoleと手動CSVで継続可能</li></ul>
+    </section>
+    
+    <section class="page decision">
+      <h2>OD-001　初期カテゴリ</h2>
+      <table class="meta"><tr><th>必要時点</th><td>最初に必要</td><th>Owner</th><td>Product Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>低リスクで比較軸を構造化できる最初の商品カテゴリを1つ選ぶ。</td></tr><tr><th>未決定時の安全動作</th><td>カテゴリ固有実装を止め、合成Fixtureだけを使う。</td></tr><tr><th>Codexが支援できること</th><td>候補の採点、規約・需要・更新負荷・収益性の比較、Decision Record案を作る。</td></tr><tr><th>完了条件</th><td>カテゴリ名、対象外範囲、採用理由、承認者、承認日が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-002　サイト名・ドメイン</h2>
+      <table class="meta"><tr><th>必要時点</th><td>最初に必要</td><th>Owner</th><td>Product Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>ブランド名、取得するドメイン、運営者表記を決め、ドメインを契約する。</td></tr><tr><th>未決定時の安全動作</th><td>仮ブランドとexample.invalidを使い、外部公開しない。</td></tr><tr><th>Codexが支援できること</th><td>名称案、重複・商標・ドメイン候補調査、運営者表記とページ構成案を作る。</td></tr><tr><th>完了条件</th><td>ブランド、ドメイン、所有者、登録媒体、運営者表記が承認されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-003　楽天成果Reportサンプル</h2>
+      <table class="meta"><tr><th>必要時点</th><td>Finance実装前</td><th>Owner</th><td>Business Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>楽天管理画面から実Reportを取得し、匿名化したサンプルと列・状態・粒度を確認する。</td></tr><tr><th>未決定時の安全動作</th><td>Synthetic fixtureのみを使い、実成果帰属は未検証と表示する。</td></tr><tr><th>Codexが支援できること</th><td>匿名化手順、Secret/PII検査、Parser、列対応表、Recorded Contract Testを作る。</td></tr><tr><th>完了条件</th><td>匿名化済みサンプルの参照先、Report期間、列定義、承認者が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-004　順位・Keyword Provider</h2>
+      <table class="meta"><tr><th>必要時点</th><td>GATE-2前</td><th>Owner</th><td>Product Owner</td></tr>
+      <tr><th>Production blocker</th><td>No</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>規約適合するProviderを契約するか、Search Consoleと手動CSVで運用するか決める。</td></tr><tr><th>未決定時の安全動作</th><td>Search Consoleと手動CSVだけを使う。</td></tr><tr><th>Codexが支援できること</th><td>候補比較、料金・規約・API・データ保持の評価、Adapter案を作る。</td></tr><tr><th>完了条件</th><td>利用方式、許可データ、契約主体、費用上限が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-005　Reviewerと人件費</h2>
+      <table class="meta"><tr><th>必要時点</th><td>最初に必要</td><th>Owner</th><td>Business Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>主Reviewer、代理Reviewer、役割分離、標準時間単価を決める。</td></tr><tr><th>未決定時の安全動作</th><td>公開を止め、人件費をUNKNOWNとして扱う。</td></tr><tr><th>Codexが支援できること</th><td>役割表、レビュー手順、工数記録票、利益計算への反映を用意する。</td></tr><tr><th>完了条件</th><td>2つの独立した承認主体、代理者、単価、稼働可能時間が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-006　商品同一性ルール</h2>
+      <table class="meta"><tr><th>必要時点</th><td>カテゴリ実装前</td><th>Owner</th><td>Domain Editor</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>型番、容量、色、セット、JAN等を統合するか分離するかカテゴリ別に定義する。</td></tr><tr><th>未決定時の安全動作</th><td>自動統合せず、Human Reviewへ送る。</td></tr><tr><th>Codexが支援できること</th><td>候補商品の差分表、曖昧ケース、Golden Product Fixture、Rule案を作る。</td></tr><tr><th>完了条件</th><td>統合・分離ルール、例外、代表商品、Domain Reviewer承認がある。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-007　鮮度SLA</h2>
+      <table class="meta"><tr><th>必要時点</th><td>カテゴリ実装前</td><th>Owner</th><td>Managing Editor</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>価格、在庫、仕様、画像、リンクの最大許容Ageを決める。</td></tr><tr><th>未決定時の安全動作</th><td>保守的な暫定値を使い、Stale時は非表示にする。</td></tr><tr><th>Codexが支援できること</th><td>更新頻度、変動リスク、API制限、作業量からSLA案を比較する。</td></tr><tr><th>完了条件</th><td>項目別日数、Stale時挙動、例外、承認者が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-008　法務レビュー境界</h2>
+      <table class="meta"><tr><th>必要時点</th><td>GATE-0前</td><th>Owner</th><td>Business Owner / Legal</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>法務確認が必要な表現・カテゴリ・例外、相談経路、記録方法を決める。</td></tr><tr><th>未決定時の安全動作</th><td>AIや開発者が法的判断を代替せず、公開を止める。</td></tr><tr><th>Codexが支援できること</th><td>論点一覧、広告・著作権・Privacyの確認票、相談記録テンプレートを作る。</td></tr><tr><th>完了条件</th><td>確認対象、相談先、SLA、例外承認者、記録保管先が承認されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-009　予算・許容赤字</h2>
+      <table class="meta"><tr><th>必要時点</th><td>最初に必要</td><th>Owner</th><td>Business Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>AWS、LLM、外部Providerの月次上限、許容赤字期間、自動停止閾値を決める。</td></tr><tr><th>未決定時の安全動作</th><td>低い開発上限だけを使い、Productionを無効にする。</td></tr><tr><th>Codexが支援できること</th><td>固定費・変動費・記事別費用のシナリオ、停止閾値、Alert案を作る。</td></tr><tr><th>完了条件</th><td>月次上限、日次上限、1 Job上限、赤字期間、停止・再開承認者が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-010　OIDC Provider</h2>
+      <table class="meta"><tr><th>必要時点</th><td>Admin公開前</td><th>Owner</th><td>Security Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>Cognitoまたは承認済みOIDC Providerを選び、契約・管理主体を決める。</td></tr><tr><th>未決定時の安全動作</th><td>Local fake authは開発専用とし、外部公開しない。</td></tr><tr><th>Codexが支援できること</th><td>比較表、IAM/RBAC/MFA設計、設定とテストを実装する。</td></tr><tr><th>完了条件</th><td>Provider、管理者、MFA、復旧方法、費用、環境分離が承認されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-011　通知・Escalation</h2>
+      <table class="meta"><tr><th>必要時点</th><td>Production前</td><th>Owner</th><td>Operations Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>Critical/Highの通知先、一次対応者、代理者、連絡手段を決める。</td></tr><tr><th>未決定時の安全動作</th><td>Local logだけを使い、Productionへ進めない。</td></tr><tr><th>Codexが支援できること</th><td>Alert routing、Runbook、当番表、Tabletopシナリオを作る。</td></tr><tr><th>完了条件</th><td>一次・代理・Incident Commander候補、連絡先参照、応答目標がある。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-012　Privacy・同意</h2>
+      <table class="meta"><tr><th>必要時点</th><td>Public analytics前</td><th>Owner</th><td>Privacy Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>Cookie、計測、同意Banner、Privacy文言、拒否時挙動を承認する。</td></tr><tr><th>未決定時の安全動作</th><td>非必須Trackingを無効にし、First-party最小Eventだけを使う。</td></tr><tr><th>Codexが支援できること</th><td>データフロー、収集最小化案、文言下書き、Consent実装を作る。</td></tr><tr><th>完了条件</th><td>収集項目、目的、同意方式、拒否時挙動、第三者提供、承認者が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-013　Region・Data Residency</h2>
+      <table class="meta"><tr><th>必要時点</th><td>Terraform production前</td><th>Owner</th><td>Security / Business Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>本番Region、Backup Region、越境移転の扱いを承認する。</td></tr><tr><th>未決定時の安全動作</th><td>ap-northeast-1をReferenceとし、Production applyを禁止する。</td></tr><tr><th>Codexが支援できること</th><td>構成・費用・RTO/RPO・データ移転の比較とIaC案を作る。</td></tr><tr><th>完了条件</th><td>Primary/Backup Region、対象データ、越境方針、承認者が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-014　保持期間</h2>
+      <table class="meta"><tr><th>必要時点</th><td>Deletion jobs前</td><th>Owner</th><td>Privacy / Finance / Legal</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>Analytics個票、Security Log、AI Artifact、成果データの保持期間を承認する。</td></tr><tr><th>未決定時の安全動作</th><td>自動削除を無効にし、収集を最小化する。</td></tr><tr><th>Codexが支援できること</th><td>データ棚卸し、保持期間表、Legal hold、削除・検証Jobを作る。</td></tr><tr><th>完了条件</th><td>データ種別別の期間、根拠、削除方法、例外、承認者が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page decision">
+      <h2>OD-015　本番Provider資格情報</h2>
+      <table class="meta"><tr><th>必要時点</th><td>Live adapter前</td><th>Owner</th><td>Operations Owner</td></tr>
+      <tr><th>Production blocker</th><td>Yes</td><th>現在の状態</th><td>未決定</td></tr></table>
+      <table class="fields"><tr><th>人が決める・提供する</th><td>楽天、OpenAI、Google、AWSの専用Account、権限、Secretを安全に設定する。</td></tr><tr><th>未決定時の安全動作</th><td>Recorded fixtureだけを使う。</td></tr><tr><th>Codexが支援できること</th><td>最小権限IAM、Secret参照、Rotation手順、Live smokeを実装する。</td></tr><tr><th>完了条件</th><td>Account owner、権限、Secret参照名、Rotation、失効手順が記録されている。</td></tr><tr><th>決定・提供内容</th><td><div class='blank tall'></div></td></tr><tr><th>理由・比較した選択肢</th><td><div class='blank tall'></div></td></tr><tr><th>制約・例外・有効期限</th><td><div class='blank'></div></td></tr><tr><th>承認者・承認日</th><td>承認者: ____________________　日付: ____ / ____ / ____</td></tr><tr><th>Evidence参照</th><td>ファイル/URL/チケット参照のみ。Secret値は記載しない: ____________________</td></tr></table>
+    </section>
+    <section class="page"><h1>4. 外部手続きチェックリスト</h1><p>契約・本人確認・支払い・媒体登録はAccount Owner本人が行います。Evidence参照には確認番号やファイル参照だけを記録し、Secret値を記載しません。</p>
+      <table class="summary"><tr><th>完了</th><th>対象</th><th>人が行うこと</th><th>Owner</th><th>状態</th><th>Evidence参照</th></tr><tr><td class='check'>☐</td><td>事業主体</td><td>個人/法人の運営主体、責任者、会計方針を確定</td><td>Business Owner</td><td>未着手</td><td></td></tr><tr><td class='check'>☐</td><td>楽天Affiliate</td><td>加入・規約同意・本人情報・入金先・媒体URL登録</td><td>Business Owner</td><td>未着手</td><td></td></tr><tr><td class='check'>☐</td><td>楽天Web Service</td><td>Application登録、利用条件確認、専用Credential発行</td><td>Operations Owner</td><td>未着手</td><td></td></tr><tr><td class='check'>☐</td><td>ドメイン</td><td>取得、更新責任者、DNS/HTTPS、登録媒体との一致確認</td><td>Product Owner</td><td>未着手</td><td></td></tr><tr><td class='check'>☐</td><td>AWS</td><td>本番専用Account、請求、Budget、MFA、管理者復旧</td><td>Security/Operations</td><td>未着手</td><td></td></tr><tr><td class='check'>☐</td><td>OpenAI</td><td>専用Project、請求上限、Service Account、データ条件確認</td><td>Operations Owner</td><td>未着手</td><td></td></tr><tr><td class='check'>☐</td><td>Google</td><td>Search Console/Analytics Property、権限、同意方針</td><td>Privacy/Operations</td><td>未着手</td><td></td></tr><tr><td class='check'>☐</td><td>法務・Privacy</td><td>相談先、表示文、Copyright、Cookie、保持期間の承認</td><td>Legal/Privacy</td><td>未着手</td><td></td></tr><tr><td class='check'>☐</td><td>税務・会計</td><td>申告主体、売上・経費・外注費・証憑の扱いを確認</td><td>Business Owner</td><td>未着手</td><td></td></tr></table>
+      <div class="callout warning"><b>Credentialの扱い</b><br>Codexへ渡すのはSecret値ではなく、RAOS_RAKUTEN_ACCESS_KEYなどの参照名、権限範囲、有効期限、Rotation状態です。漏えいが疑われる場合、ローカル削除とProvider側失効は別作業として両方確認します。</div>
+    </section>
+    <section class="page form"><h1>5. 記事レビュー・公開承認票</h1><p>CodexはDraft、Evidence照合、Finding、Preview差分を準備します。ReviewerとApproverが内容を確認し、公開可否を決めます。</p><table class="fields">
+      <tr><th>Article ID / Version</th><td></td></tr><tr><th>カテゴリ / Primary Decision</th><td></td></tr><tr><th>Reviewer / Approver</th><td>Reviewer: __________________　Approver: __________________</td></tr>
+      <tr><th>Evidence</th><td>☐ 主要Claim 100%　☐ 全検証可能Claim 95%以上　☐ Source原本を確認</td></tr><tr><th>商品同定</th><td>☐ 型番　☐ 容量　☐ 色　☐ セット　☐ JAN　☐ 曖昧候補なし/処理済み</td></tr>
+      <tr><th>品質</th><td>☐ 85点以上　☐ 各軸Floor合格　☐ 架空体験なし　☐ Tradeoff/対象外を明記</td></tr><tr><th>Policy</th><td>☐ Blocking Finding 0　☐ 広告表示　☐ 楽天遷移明示　☐ 画像/引用許可</td></tr>
+      <tr><th>鮮度・リンク</th><td>☐ 価格　☐ 在庫　☐ 仕様　☐ 画像　☐ Affiliate linkが許容Age内</td></tr><tr><th>Preview差分</th><td>☐ 承認対象Version/Hashと一致　☐ 公開Renderer差分確認</td></tr>
+      <tr><th>判断</th><td>☐ APPROVE　☐ REJECT　☐ PAUSE　理由: ______________________________</td></tr><tr><th>承認</th><td>Reviewer署名/ID: __________ 日付: ______　Approver署名/ID: __________ 日付: ______</td></tr></table>
+      <div class="callout safe"><b>役割分離</b><br>編集者本人だけで最終承認・公開を完結させません。Critical AI TaskのReleaseは二人承認を要求します。</div>
+    </section>
+    <section class="page form"><h1>6. 月次Finance Review票</h1><p>発生報酬ではなく、楽天の確定成果と実費を用いて月次貢献利益を承認します。</p><table class="fields">
+      <tr><th>対象月 / Report期間</th><td></td></tr><tr><th>Report Evidence</th><td>取得元・ファイルHash・取込ID:</td></tr><tr><th>照合</th><td>☐ 発生/確定を分離　☐ Cancel/否認/調整を確認　☐ 未帰属を分離　☐ 重複なし</td></tr>
+      <tr><th>確定成果報酬</th><td>________________ 円</td></tr><tr><th>人件費</th><td>________________ 円　根拠:</td></tr><tr><th>AI/API/Cloud費</th><td>________________ 円</td></tr><tr><th>その他直接費</th><td>________________ 円</td></tr><tr><th>確定貢献利益</th><td>________________ 円</td></tr>
+      <tr><th>未解決差異</th><td>金額: ______円　理由/調査Owner:</td></tr><tr><th>判断</th><td>☐ ACCEPT　☐ HOLD　☐ REIMPORT　☐ INVESTIGATE</td></tr><tr><th>承認</th><td>Finance Reviewer: __________________　日付: ____ / ____ / ____</td></tr></table>
+    </section>
+    <section class="page form"><h1>7. Release・Production承認票</h1><p>Local PASS、CI、Staging Runtime、Production readinessを混同せず、各OwnerがEvidenceを確認します。</p><table class="fields">
+      <tr><th>Release ID / Commit</th><td></td></tr><tr><th>対象環境 / Scope</th><td></td></tr><tr><th>Test Evidence</th><td>☐ Contract　☐ Unit　☐ Integration　☐ E2E　☐ Security　☐ Manual</td></tr>
+      <tr><th>Operations</th><td>☐ Rollback tested　☐ Backup restore current　☐ Alerts tested　☐ Runbooks current</td></tr><tr><th>Open Decisions</th><td>☐ Blocking Open Decision 0　未解決参照:</td></tr>
+      <tr><th>Engineering</th><td>☐ APPROVE　☐ REJECT　Approver/Date:</td></tr><tr><th>Security</th><td>☐ APPROVE　☐ REJECT　Approver/Date:</td></tr><tr><th>Operations</th><td>☐ APPROVE　☐ REJECT　Approver/Date:</td></tr><tr><th>Product Owner</th><td>☐ APPROVE　☐ REJECT　Approver/Date:</td></tr><tr><th>最終判断</th><td>☐ NOT_READY　☐ CANARY　☐ PRODUCTION　☐ ROLLBACK</td></tr></table>
+    </section>
+    <section class="page form"><h1>8. Incident・Kill Switch承認票</h1><p>誤公開、Credential侵害、Affiliate不正、重大品質事故ではTraffic維持より安全停止を優先します。</p><table class="fields">
+      <tr><th>Incident ID / Severity</th><td></td></tr><tr><th>検知日時 / 宣言者</th><td></td></tr><tr><th>影響</th><td>公開 / Affiliate / Data / Credential / Finance / その他:</td></tr><tr><th>初動</th><td>☐ 公開Kill　☐ Affiliate Kill　☐ Credential失効　☐ Rollback　☐ Provider連絡</td></tr>
+      <tr><th>Evidence</th><td>Timeline/Log/Artifact参照:</td></tr><tr><th>復旧条件</th><td><div class="blank"></div></td></tr><tr><th>再開前確認</th><td>☐ Root cause　☐ Corrective action　☐ Regression test　☐ Owner sign-off</td></tr><tr><th>解除承認</th><td>Product Owner/Operator: __________________　日付: ____ / ____ / ____</td></tr></table>
+    </section>
+    <section class="page"><h1>9. 継続運用カレンダー</h1><p>Codexが収集・集計・差分作成を自動化し、人間が意味判断と承認を行います。</p><table><tr><th>周期</th><th>人が確認すること</th><th>主担当</th><th>実施/次回</th></tr><tr><td>毎日</td><td>Critical Alert、Queue/DLQ、リンク、鮮度、Cost velocity</td><td>Operations Owner / 代理</td><td></td></tr><tr><td>毎週</td><td>Provider失敗、Stale queue、Security finding、Policy期限</td><td>Operations + Managing Editor</td><td></td></tr><tr><td>毎月</td><td>権限、確定成果、原価、Backup、Retention、SLO</td><td>Business + Security + Operations</td><td></td></tr><tr><td>四半期</td><td>Restore drill、Incident tabletop、Runbook、Threat review</td><td>全Owner</td><td></td></tr><tr><td>記事ごと</td><td>Fact、商品同定、推薦、Policy、Preview差分、最終公開</td><td>Editor + Reviewer + Approver</td><td></td></tr><tr><td>Releaseごと</td><td>Contract、Migration、Security、Evidence、Rollback、承認</td><td>Engineering + Security + Operations + PO</td><td></td></tr></table>
+      <h2>最小の人員構成</h2><ul><li>Product/Business Owner: 事業目標、カテゴリ、予算、契約、Gate判断</li><li>Managing Editor/Reviewer: 商品同定、Evidence、記事品質、推薦、最終編集</li><li>Operations/Security Ownerと代理: Account、Credential、Alert、Incident、Recovery</li><li>必要時のLegal/Privacy/Tax専門家: 規約、表示、Copyright、Privacy、税務</li></ul>
+      <div class="callout safe"><b>最低人数</b><br>公開フローでは役割分離のため、少なくとも2つの独立した人間主体を確保します。本番運用では一次対応者と代理者も決めます。</div>
+      <h2>Codexへの依頼テンプレート</h2><div class="callout">OD-___について支援してください。候補/前提は____です。比較軸は____、月額上限は____円、避けたいリスクは____です。Canonicalと公式情報を確認し、推奨案、代替案、未解決点、Decision Record案を作ってください。Secret値は扱わないでください。</div>
+    </section>
+    <section class="page"><h1>10. 参照元と注意事項</h1><p>この支援パックは次のRepository内Artifactを要約しています。Canonical/Upstreamは編集せず、差異がある場合はCanonicalの優先順位に従います。</p><ul><li>docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml</li><li>docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml</li><li>docs/canonical/05_test/RAOS_11_release_evidence_template_v1.0.yaml</li><li>docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md</li><li>docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.csv</li><li>docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md</li><li>docs/upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md</li><li>docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md</li></ul>
+      <div class="callout warning"><b>完了の定義</b><br>チェック欄が埋まったこと自体はProduction readinessではありません。承認済みDecision、正式Evidence、実Runtime結果、Security/Operations/Product OwnerのSign-offがそろって初めてGate判定できます。</div><p class="small">End of document</p>
+    </section>
+    </body></html>

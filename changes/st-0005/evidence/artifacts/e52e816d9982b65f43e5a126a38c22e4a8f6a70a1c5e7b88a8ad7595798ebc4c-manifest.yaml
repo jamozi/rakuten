@@ -1,0 +1,290 @@
+document:
+  id: RAOS-AI-CONTRACT-REGISTRY-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0701
+  status: IMPLEMENTATION_CANDIDATE
+  generated_by: scripts/build_st0701_ai_registry.py
+  generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0701_ai_registry.py
+provenance:
+  source_contract:
+    uri: repo://changes/st-0701/contracts/ai-contract-registry-loader.v1.yaml
+    sha256: 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
+  predecessors:
+  - story_id: ST-0003
+    uri: repo://changes/st-0003/manifest.yaml
+    bytes: 43970
+    sha256: 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+  - story_id: ST-0104
+    uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
+    bytes: 65443
+    sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+  canonical_inputs:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    bytes: 7943
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    bytes: 3955
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    bytes: 4956
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    bytes: 24993
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    bytes: 11395
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    bytes: 71458
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  compiler_inputs:
+  - uri: repo://contracts/raos-v0.4/contracts/ai/RAOS_05_ai_task_catalog_v0.1.yaml
+    repository_path: contracts/ai/RAOS_05_ai_task_catalog_v0.1.yaml
+    bytes: 22884
+    sha256: 8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04
+  - uri: repo://contracts/raos-v0.4/contracts/ai/RAOS_05_model_routing_catalog_v0.1.yaml
+    repository_path: contracts/ai/RAOS_05_model_routing_catalog_v0.1.yaml
+    bytes: 7402
+    sha256: dc76ed6d2586eec9bf18b8ac2e95eb76971179fe87fa1ee07b1ba8702f8faa96
+  - uri: repo://contracts/raos-v0.4/contracts/ai/RAOS_05_prompt_registry_v0.1.yaml
+    repository_path: contracts/ai/RAOS_05_prompt_registry_v0.1.yaml
+    bytes: 8714
+    sha256: 745b0d6039a9f533dc92146bb3234f33e88518e184de88e67a59ca5b5c023d27
+  - uri: repo://contracts/raos-v0.4/contracts/ai/RAOS_05_schema_registry_v0.1.yaml
+    repository_path: contracts/ai/RAOS_05_schema_registry_v0.1.yaml
+    bytes: 4108
+    sha256: 4a34d6d18192184333e374c8a44e849915b817f7a8019d9e6d0101077bdbe751
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-ARTICLE-DRAFT_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-ARTICLE-DRAFT_v1.md
+    bytes: 2811
+    sha256: b868eb4e131da15cfc7c7be20dc538dd70a5fe58b42f04f8e69414d0ffee294c
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-ARTICLE-OUTLINE_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-ARTICLE-OUTLINE_v1.md
+    bytes: 2641
+    sha256: 400c089e2cce0ff1956d476f7352bfe9d80f7ac9cd4ff41e72f52312571d9bd7
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-CLAIM-EXTRACTION_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-CLAIM-EXTRACTION_v1.md
+    bytes: 2642
+    sha256: 858bf873433c6ab43c94f02070797f3c9819fe71c176f3c60afb9951a2cad165
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-COMPARISON-AXIS_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-COMPARISON-AXIS_v1.md
+    bytes: 2707
+    sha256: 2ee556ba6c828797b634f14f9365eaecca0ba4c85857451e7c1e27347c20b1e0
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-INTERNAL-LINK_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-INTERNAL-LINK_v1.md
+    bytes: 2702
+    sha256: 62b76734d1670c92388f267606c981c885927298bd841a5fdce6e9577fefcc7f
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-OPPORTUNITY-ASSESSMENT_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-OPPORTUNITY-ASSESSMENT_v1.md
+    bytes: 2798
+    sha256: 0d6f0eb38a025162124aaed10bca3ae4edc42ae52aeee3684c8c9f465dffa4a2
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-POLICY-ASSIST_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-POLICY-ASSIST_v1.md
+    bytes: 2724
+    sha256: aedd521cbf676d9f28d0136ccc6d9fe5e6a1ade8e285f7545d146e4590fcafdd
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-QUALITY-REMEDIATION_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-QUALITY-REMEDIATION_v1.md
+    bytes: 2659
+    sha256: 7b4f0b62273ce4b83893b68d4f7b4d5d1c0f1f5eb4ebec8975cd79ca8b98138e
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-REFRESH-DIFF_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-REFRESH-DIFF_v1.md
+    bytes: 2647
+    sha256: 164ddb69ba3b06ad8dc612163d1e01acf6ac6dffdacfb01205fe6d45efa96273
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-SEARCH-INTENT_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-SEARCH-INTENT_v1.md
+    bytes: 2674
+    sha256: 4b6a09622bf95e440a9cf5d2627263c897eece1f6107c31fc3729d36968ced81
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-SOURCE-PACKET-GAP_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-SOURCE-PACKET-GAP_v1.md
+    bytes: 2641
+    sha256: 5d6629ee37ccdbf685143e454cf9e07f715155d059e949aed2ba5bc8a186c2e0
+  - uri: repo://contracts/raos-v0.4/contracts/ai/prompts/PROMPT-AI-UPDATE-PRIORITY_v1.md
+    repository_path: contracts/ai/prompts/PROMPT-AI-UPDATE-PRIORITY_v1.md
+    bytes: 2713
+    sha256: 0e651ccd33524fcb8d90ea891b0b52285bacc15c58c6a474de83da38dc4a21bc
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/eval/evaluation_case.v1.schema.json
+    repository_path: contracts/ai/schemas/eval/evaluation_case.v1.schema.json
+    bytes: 2407
+    sha256: 363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/eval/judge_output.v1.schema.json
+    repository_path: contracts/ai/schemas/eval/judge_output.v1.schema.json
+    bytes: 2538
+    sha256: 8d832fe5c58a7cfeb8bafa8dab18c64aa45bdb56c3282bd3d7d6e14cad6e87d4
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.article_draft.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.article_draft.v1.output.schema.json
+    bytes: 5894
+    sha256: 3f7fe932eee1d967455a2613000bda988edd1b1848bca52933cc56d9ed985eae
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.article_outline.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.article_outline.v1.output.schema.json
+    bytes: 2225
+    sha256: d57afe6f1b4ab33cbb8553cee4a9270ff3800ae3372f76fa0ae6b47eeba84848
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.claim_extraction.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.claim_extraction.v1.output.schema.json
+    bytes: 1879
+    sha256: 54a4f58a3ba4136dbac0a17b992dcda969ef7d2a19d42ae8d3c4c253cc4302b5
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json
+    bytes: 2303
+    sha256: 9702e97765468c7aa1fec27fbfec974dc8c8037ab154c647dfc0764ff693bb16
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json
+    bytes: 1339
+    sha256: 1271052c0aa4105ac0b0c1824b057651339ba78f32eee4d7d4f4461067cf536b
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json
+    bytes: 1188
+    sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.policy_assist.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.policy_assist.v1.output.schema.json
+    bytes: 2653
+    sha256: 242428ea37446f57c6cc819770ae065004a411229fe04b3e60a8f780ae290e2f
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.quality_remediation.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.quality_remediation.v1.output.schema.json
+    bytes: 1756
+    sha256: 10098facd422a7b8bd9784b1091ff31b7b4a0b99e4add3d0e2b902e810f93581
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json
+    bytes: 3137
+    sha256: 68b4c97de6d7811f20c88d6918d946de58e1489d0ac5a19f390f8301d929f0e2
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.search_intent_classification.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.search_intent_classification.v1.output.schema.json
+    bytes: 4840
+    sha256: c7753ca61a03868d7d91a0760b35224087fa09d2c99252621553d6c21edcc69d
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json
+    bytes: 2666
+    sha256: 1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c
+  - uri: repo://contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.update_priority_explanation.v1.output.schema.json
+    repository_path: contracts/ai/schemas/tasks/ai.update_priority_explanation.v1.output.schema.json
+    bytes: 1322
+    sha256: 0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef
+source_artifact_count: 24
+source_artifacts:
+- uri: repo://changes/st-0701/contracts/ai-contract-registry-loader.v1.yaml
+  bytes: 3358
+  sha256: 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
+- uri: repo://changes/st-0701/README.md
+  bytes: 4093
+  sha256: 58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6
+- uri: repo://docs/execplans/ST-0701.md
+  bytes: 3232
+  sha256: 47dc2be6ba47964cb1c42a179b79d0ea5b65ab5d8d9004db46b31d528fc7512d
+- uri: repo://docs/worklogs/ST-0701.md
+  bytes: 3532
+  sha256: 1db1b770547bb26a09b209a29f55b808a225b1ad1ea247001db2038bf69fa975
+- uri: repo://scripts/build_st0701_ai_registry.py
+  bytes: 39946
+  sha256: ede35a651d40438e63b7484e183a8f981fc5cba70548638ad69b790f28b01ad9
+- uri: repo://python/raos/adapters/__init__.py
+  bytes: 242
+  sha256: a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
+- uri: repo://python/raos/adapters/ai_contract_registry.py
+  bytes: 21678
+  sha256: fbebbe666b6adef1f8c6f2413de16158257bef1e2569822d83ed1f7874245f77
+- uri: repo://python/raos/domain/ai/__init__.py
+  bytes: 344
+  sha256: bb184e0416c06242f052c13490f2525a9c2247373dbe4e7ebb8f0020e797bee9
+- uri: repo://python/raos/domain/ai/contracts.py
+  bytes: 7247
+  sha256: d916a4a2ed9afd44fe0a4c01938a5b8aacbfc7323fd4d3cfcb0fa33d399a0e0e
+- uri: repo://python/raos/ports/__init__.py
+  bytes: 730
+  sha256: 316b2d195fb3366fefb991c84cdd2618530455fcc58f9d140fa699f66cf46d8a
+- uri: repo://python/raos/ports/task_registry.py
+  bytes: 917
+  sha256: c3053d28c056fcc412e3852816528da92f301e369f5af45f9a1212cc920468ce
+- uri: repo://python/raos/shared/contract_repository.py
+  bytes: 32111
+  sha256: 5fb9fb09e7f2d4104349c33b8390fc0db76e68a73f2702758c45a2222af4e748
+- uri: repo://tests/st0701/conftest.py
+  bytes: 247
+  sha256: a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
+- uri: repo://tests/st0701/test_compiled_task_registry.py
+  bytes: 20256
+  sha256: 136a5d6918d399932cd42db01b94b936b2a173317f171160a0d55c5defdfbee3
+- uri: repo://tests/st0701/test_generation.py
+  bytes: 7892
+  sha256: 3182eaa04238281f0d99233f311f749524b948264bdfcaf5181974655302ad82
+- uri: repo://tests/st0701/test_contract.py
+  bytes: 8995
+  sha256: d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55
+- uri: repo://tests/st0102/test_commands_and_docs.py
+  bytes: 11741
+  sha256: 26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 25978
+  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+- uri: repo://Makefile
+  bytes: 26913
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+- uri: repo://README.md
+  bytes: 55645
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- uri: repo://.python-version
+  bytes: 7
+  sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+- uri: repo://pyproject.toml
+  bytes: 1194
+  sha256: fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+- uri: repo://uv.lock
+  bytes: 111431
+  sha256: 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+- uri: repo://uv.toml
+  bytes: 349
+  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0701/generated/ai-task-registry.v1.json
+  bytes: 77286
+  sha256: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
+closure:
+  registry_count: 4
+  registry_entry_counts:
+    tasks: 12
+    prompts: 12
+    schemas: 14
+    routes: 7
+    models: 3
+  compiler_input_count: 30
+  compiled_task_count: 12
+  compiled_task_codes:
+  - ai.article_draft.v1
+  - ai.article_outline.v1
+  - ai.claim_extraction.v1
+  - ai.comparison_axis_suggestion.v1
+  - ai.internal_link_suggestion.v1
+  - ai.opportunity_assessment.v1
+  - ai.policy_assist.v1
+  - ai.quality_remediation.v1
+  - ai.refresh_diff_summary.v1
+  - ai.search_intent_classification.v1
+  - ai.source_packet_gap_analysis.v1
+  - ai.update_priority_explanation.v1
+  bound_prompt_count: 12
+  bound_task_output_schema_count: 12
+  bound_route_count: 5
+  unbound_schema_ids:
+  - https://schemas.raos.local/evaluation/case/v1
+  - https://schemas.raos.local/evaluation/judge_output/v1
+  unbound_route_codes:
+  - route.embedding_default.v1
+  - route.judge_high.v1
+  cross_reference_verification: COMPLETE_FAIL_CLOSED
+integrity:
+  source_repository_full_integrity: VERIFIED
+  compiled_registry_sha256: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
+  strict_json_duplicate_keys: REJECT
+  unknown_task_or_hash_mismatch: FAIL_CLOSED
+  network_retrieval: FORBIDDEN
+  manifest_self_hash: EXCLUDED_TO_AVOID_RECURSION
+  manifest_verification: DETERMINISTIC_BYTE_REGENERATION_VIA_CHECK
+boundary:
+  provider_routing_execution: NOT_IMPLEMENTED
+  provider_api: NOT_USED
+  network: NOT_USED
+  database: NOT_USED
+  task_activation_or_seed: NOT_IMPLEMENTED
+  evaluation_or_release: NOT_IMPLEMENTED
+  formal_tst_001: NOT_EXECUTED
+  formal_tst_017: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

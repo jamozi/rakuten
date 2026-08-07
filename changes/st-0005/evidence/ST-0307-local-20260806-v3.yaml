@@ -1,0 +1,54 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0307-20260806-V3
+  schema_version: 1
+  recorded_at: '2026-08-06T02:41:26Z'
+story_id: ST-0307
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0005/evidence/ST-0307-local-20260805-v2.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0a78982d68aed4a971e45c87457416ee4387038bce108239a659ff38f7fcdce6-ST-0307-local-20260805-v2.yaml
+  sha256: 0a78982d68aed4a971e45c87457416ee4387038bce108239a659ff38f7fcdce6
+- original_uri: repo://changes/st-0307/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/2f07d42cde9be80a5ae16bb060c88f6e0ce4f65b204d54d903e0de705d88a488-manifest.yaml
+  sha256: 2f07d42cde9be80a5ae16bb060c88f6e0ce4f65b204d54d903e0de705d88a488
+- original_uri: repo://changes/st-0305/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92-manifest.yaml
+  sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+- original_uri: repo://changes/st-0306/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8-manifest.yaml
+  sha256: 0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8
+- original_uri: repo://scripts/build_st0307_migration_fixtures.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e328a956ecb2c31d0a042dceaade0e968d3aa8ea4b434741e89a1baf4923025c-build_st0307_migration_fixtures.py
+  sha256: e328a956ecb2c31d0a042dceaade0e968d3aa8ea4b434741e89a1baf4923025c
+- original_uri: repo://docs/worklogs/ST-0307.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9-ST-0307.md
+  sha256: a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9
+suite_results:
+- suite_id: TST-010
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: exact PostgreSQL 18.4 ST-0307 isolated verification
+  result: PASS; 24/24 tests passed with zero skips
+- command: ST-0307 generator source and drift checks
+  result: PASS; source-check validated 18 checkpoints, six production revisions, four fixtures, and
+    logical catalog SHA-256 2b8632385969b95b92b03ef141cece50c109ef072023d934205532bcf3044e0c;
+    check completed with six generator-owned artifacts and no drift
+- command: ST-0307 manifest parity
+  result: PASS; 45/45 source artifacts and 5/5 nonself generated artifacts matched exact bytes and
+    SHA-256
+- command: ST-0307 generated fixture stability
+  result: PASS; the four fixture SQL files and fixture catalog remained byte-identical at
+    1859e9d6c81829695b2304d58fd3803b185831ce62ac74ef890ffa16363096da,
+    e2daf9950c43edda3240f3868ec0a11e997e4cbd280d3b03d8c00c8eabe27726,
+    9bafe16f96ac89e789b257a847f46e7ce0e79fad800113064697a3a741a04a25,
+    ac133f0d975241b22a8744bd7b78ec52904dc64414f344f7c3f1e83e9339cf3d, and
+    df1b7f16226ac2e0e3a52b173b8c592f23a5ad015e9838272018d315f1746465
+- command: independent ST-0307 local implementation audits
+  result: PASS; BLOCK 0, HIGH 0, MEDIUM 0, and LOW 0 as local audit evidence only
+boundary: Append-only LOCAL_IMPLEMENTATION_CANDIDATE evidence only. Formal TST-010, hosted CI,
+  migration-owner review, human review, canonical APPLY, formal VALIDATED, staging, release, and
+  production remain NOT_EXECUTED or unclaimed. The exact local PostgreSQL result and independent local
+  audits do not constitute formal Suite or review evidence. Effective canonical ST-0307 remains
+  NOT_STARTED / NOT_EXECUTED.

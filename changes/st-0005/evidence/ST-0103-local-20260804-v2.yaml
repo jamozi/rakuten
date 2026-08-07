@@ -1,0 +1,90 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0103-20260804-V2
+  schema_version: 1
+  recorded_at: '2026-08-04T08:45:08Z'
+story_id: ST-0103
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0103-local-20260801.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/107bfff2c8e1c96852c91e15c21137e967dbd61091ce0318f50172fd57682631-ST-0103-local-20260801.yaml
+    sha256: 107bfff2c8e1c96852c91e15c21137e967dbd61091ce0318f50172fd57682631
+  - original_uri: repo://changes/st-0005/evidence/ST-0105-local-20260802.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/492c3439c0a891da2bf259aa800c9347c1dc84e6f564ace89c2464f8918522d2-ST-0105-local-20260802.yaml
+    sha256: 492c3439c0a891da2bf259aa800c9347c1dc84e6f564ace89c2464f8918522d2
+  - original_uri: repo://AGENTS.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10-AGENTS.md
+    sha256: af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/0f3e0ec8043f1d6326c2c6fbf7ab76e7cf81fa56fd953d9ba92de2e788593f12-Makefile
+    sha256: 0f3e0ec8043f1d6326c2c6fbf7ab76e7cf81fa56fd953d9ba92de2e788593f12
+  - original_uri: repo://README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/68d78ea99542946ec22238651248d254826db51a15a726e39def1562641bef8e-README.md
+    sha256: 68d78ea99542946ec22238651248d254826db51a15a726e39def1562641bef8e
+  - original_uri: repo://scripts/node_inventory.mjs
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e7cf45a19da592b2d202de12de42fa64a30e2c8fd7e2426ef82db2034ed0572e-node_inventory.mjs
+    sha256: e7cf45a19da592b2d202de12de42fa64a30e2c8fd7e2426ef82db2034ed0572e
+  - original_uri: repo://tests/st0103/test_node_cli.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9182d29cdf58d46eca5831f1e09c04dd780e750cf20afd8a0aa3c254f7867cd5-test_node_cli.py
+    sha256: 9182d29cdf58d46eca5831f1e09c04dd780e750cf20afd8a0aa3c254f7867cd5
+  - original_uri: repo://tests/st0103/test_commands_and_docs.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ee509ac865ad45cd9d038a11e6cfa06c39127d9a9b273b1a9ca4995f483f9f15-test_commands_and_docs.py
+    sha256: ee509ac865ad45cd9d038a11e6cfa06c39127d9a9b273b1a9ca4995f483f9f15
+  - original_uri: repo://docs/execplans/ST-0103.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/308be530a333cedc90b4a6422eeba044cf07f22a01a56968fe6dfdbc50279bf9-ST-0103.md
+    sha256: 308be530a333cedc90b4a6422eeba044cf07f22a01a56968fe6dfdbc50279bf9
+  - original_uri: repo://docs/worklogs/ST-0103.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/42326d4b240d0784b7a08daeb8f2f38da1fab0ee2a900cc3569d316d5f3f78cd-ST-0103.md
+    sha256: 42326d4b240d0784b7a08daeb8f2f38da1fab0ee2a900cc3569d316d5f3f78cd
+suite_results:
+  - suite_id: TST-001
+    environment: LOCAL
+    result: LOCAL_PASS
+  - suite_id: TST-006
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: >-
+      .venv/bin/pytest -p no:cacheprovider -q
+      tests/st0103/test_node_cli.py -k
+      'canonical_package_location or committed_metadata'
+    result: 20 passed, 108 deselected in 0.67s
+  - command: >-
+      .venv/bin/pytest -p no:cacheprovider -q
+      tests/st0103/test_commands_and_docs.py
+    result: 11 passed in 0.01s
+  - command: .venv/bin/pytest -p no:cacheprovider -q tests/st0103
+    result: 157 passed in 65.26s
+  - command: >-
+      scripts/node_toolchain.sh --node /absolute/path/to/node
+      --npm-cli /absolute/path/to/npm-cli.js sync
+    result: PASS; serialized repair installed 431 packages after the invalid concurrent run was discarded
+  - command: >-
+      scripts/node_toolchain.sh --node /absolute/path/to/node
+      --npm-cli /absolute/path/to/npm-cli.js check
+    result: >-
+      PASS; exact Node 24.18.1 and npm 11.16.0; deterministic
+      manifest-to-lock preflight; locked install of 431 packages; exact versions
+      and npm ls; Prettier, ESLint, and both TypeScript projects; exact
+      prehydrated CPython 3.14.6 guard; Pyright 0 errors, 0 warnings, 0
+      information; and four Vitest tests in 93ms
+  - command: >-
+      focused Node syntax, Ruff lint/format, Prettier, ESLint, documentation
+      contract, and git diff checks
+    result: PASS
+  - command: independent final ST-0103 implementation and evidence-freeze audit
+    result: PASS; Critical, High, Medium, and Low findings 0/0/0/0
+boundary: >-
+  Append-only local delta over the frozen 2026-08-01 ST-0103 snapshot and the
+  cumulative 2026-08-02 ST-0105 snapshot. The overlapping run that reported 3
+  failed and 128 passed violated the single-mutator contract and is INVALID;
+  the first post-Phase-G run that reported 1 failed and 156 passed was
+  DIAGNOSTIC_ONLY and exposed the stale static assertion subsequently fixed in
+  Phase H. Neither result is adopted as PASS evidence. The adopted results bind
+  deterministic denied-network stale-lock failure, canonical package-location
+  closure, exact prehydrated-Python verification, serialized Story tests, the
+  exact Node wrapper gate, and a no-finding independent audit. This is local
+  implementation evidence only. Formal CI TST-001/TST-006, native Windows,
+  hosted clean-clone CI, GitHub review, human approval, staging, release, and
+  production were not executed. Effective canonical ST-0103 remains
+  NOT_STARTED / NOT_EXECUTED.

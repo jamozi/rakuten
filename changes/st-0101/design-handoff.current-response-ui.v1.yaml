@@ -1,0 +1,83 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Current ChatGPT Pro completed-response accessible anchor
+    - scripts/chatgpt_pro_orchestrator.py advanced-profile response completion and resume path
+    - tests/st0101 deterministic current-response selector and no-resubmission coverage
+    - changes/st-0101/README.md and docs/worklogs/ST-0101.md guidance and evidence
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md current-response wording
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.current-pro-ui.v1.yaml
+  decision: >-
+    For the strict gpt-5.6-sol-pro-advanced-v1 profile only, recognize a
+    completed response from one exact accessible heading whose label is
+    ChatGPT said:. Require the exact origin, no stop state, no generating
+    marker, one exact heading ref, and no competing exact legacy ChatGPT
+    response article before using that ref as assistant_response. Continue to
+    extract the nested response text in memory and require the existing exact
+    PRO_ADVICE_V1 validation before persisting the hash-bound unapproved
+    proposal. Retain the predecessor article-based response selector unchanged
+    for legacy profiles. A resumable run must only inspect the existing
+    conversation and must never type, click Send, or resubmit.
+  rationale: >-
+    A sanitized exact-origin live probe of the already-submitted run on
+    2026-08-05 found zero article elements and exactly one heading with the
+    exact label ChatGPT said:. The response parser had already identified and
+    parsed the completed response, but the legacy article-only evidence anchor
+    rejected the page as RESPONSE_SELECTOR_AMBIGUITY. An advanced-profile-only
+    exact heading anchor matches the observed accessible structure without
+    weakening legacy behavior or using response text as a selector.
+  rejected_alternatives:
+    - Resubmit the original request in a new conversation
+    - Accept any heading, article, text, or element containing ChatGPT or assistant
+    - Use substring, prefix, suffix, regex, fuzzy, translated, or case-insensitive response-label matching
+    - Treat response text, citations, conversation title, sidebar data, or visual position as the response anchor
+    - Persist or output a raw browser snapshot during diagnosis
+    - Change the legacy article selector for predecessor UI profiles
+  constraints:
+    - The advanced response label is exactly ChatGPT said: with matching case and punctuation
+    - The advanced response role is exactly heading
+    - The response ref is unique and all parsed refs in the snapshot remain distinct
+    - A missing, duplicate, wrong-role, wrong-case, wrong-punctuation, or competing legacy response anchor stops without any browser_type or send click
+    - Exact-origin and stop-state validation precede response-anchor resolution
+    - A generating marker prevents completion
+    - Existing PRO_ADVICE_V1 schema, sensitive-data rejection, hash chain, authority, and reconciliation controls remain unchanged
+    - Resume uses only navigate, snapshot, wait, and close and never resubmits
+    - Existing current advanced submission, WSLg, authentication, browser/profile, secret, and no-fallback controls remain unchanged
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved the bounded changes necessary to submit the staged Pro instruction and receive its answer
+    - The sanitized probe used only the dedicated Edge profile, exact conversation origin, navigate, wait, snapshot, and close
+    - The probe returned only structural counts and exact comparison booleans; no raw snapshot, prompt, response body, cookies, storage, credentials, sidebar, or unrelated-tab data was output or persisted
+    - No second submission is authorized or permitted for the current resumable run
+    - Captured output remains a hash-bound unapproved proposal pending human and canonical reconciliation
+  acceptance_criteria:
+    - The current advanced profile accepts exactly one heading ChatGPT said: as assistant_response
+    - Missing, duplicate, wrong-role, wrong-case, wrong-punctuation, ref-collision, competing-anchor, origin-drift, stop-state, and generating cases do not complete
+    - Legacy profiles retain their exact predecessor article response behavior
+    - The response body is not used to choose the anchor and still must validate as PRO_ADVICE_V1
+    - Resume performs no browser_type and no send click
+    - Existing full ST-0101 regression and static security checks remain green
+    - The existing run 20260804T171209Z-6c0794beb7f2 is resumed without resubmission and captures the Pro answer
+  required_test_evidence:
+    - Advanced live-capture completion fixture with exact heading ChatGPT said:
+    - Advanced pending-resume completion fixture with exact heading ChatGPT said:
+    - Missing, duplicate, wrong-role, wrong-case, wrong-punctuation, ref-collision, and competing-anchor refusal tests
+    - Origin, stop-state, generating, invalid-advice, and response-parser regression tests
+    - Tests proving no browser_type or send click during resume
+    - Existing legacy article completion fixtures and full isolated tests/st0101
+    - Ruff, Python compilation, shell syntax, Skill validation, and scoped diff checks
+    - Live same-run response capture evidence, kept distinct from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation-and-active-goal
+    approved_on: 2026-08-05
+    statement: >-
+      Approve the bounded selector adaptation needed to receive the answer from
+      the already-authorized Pro submission, while preserving exact-origin,
+      no-resubmission, secret, validation, and fail-closed controls.

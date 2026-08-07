@@ -1,0 +1,183 @@
+document:
+  id: RAOS-CONTENT-IMPL-001
+  title: Content実装スライス
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+slices:
+- id: CONT-SLICE-001
+  name: Content contract repository bootstrap
+  objective: 契約、Schema、Template、Fixtureを配置し、Lint/Hash/Drift CIを構築する
+  depends_on: []
+  deliverables:
+  - contracts/content/**
+  - schema validation
+  - catalog cross-reference
+  - deterministic generated artifact check
+  one_pr_preferred: true
+- id: CONT-SLICE-002
+  name: Content AST domain types and loader
+  objective: Content AST v1をPython/PydanticとTypeScript型へ生成し、安全なLoaderを実装する
+  depends_on:
+  - CONT-SLICE-001
+  deliverables:
+  - unknown field rejection
+  - schema version fail closed
+  - round-trip tests
+  one_pr_preferred: true
+- id: CONT-SLICE-003
+  name: Article type and template validator
+  objective: 5記事型のRequired Block、順序、商品数、Unique Value Gateを検証する
+  depends_on:
+  - CONT-SLICE-002
+  deliverables:
+  - template registry
+  - article type validator
+  - invalid fixture tests
+  one_pr_preferred: true
+- id: CONT-SLICE-004
+  name: Claim–Evidence validator
+  objective: Claim分類、Coverage、Source Tier、Conflict、Temporal Scopeを検査する
+  depends_on:
+  - CONT-SLICE-002
+  deliverables:
+  - coverage calculator
+  - claim fact compatibility
+  - blocker findings
+  one_pr_preferred: true
+- id: CONT-SLICE-005
+  name: Product identity and comparison validator
+  objective: Product/Variant/Offer同定と同一軸比較を検証する
+  depends_on:
+  - CONT-SLICE-004
+  deliverables:
+  - identity guard
+  - unit normalization integration
+  - comparison completeness
+  one_pr_preferred: true
+- id: CONT-SLICE-006
+  name: Recommendation methodology engine
+  objective: Hard Constraint、正規化、Coverage、Penalty、Tie、Overrideを決定論的に計算する
+  depends_on:
+  - CONT-SLICE-004
+  - CONT-SLICE-005
+  deliverables:
+  - editorial suitability engine
+  - finance input denylist
+  - explanation artifacts
+  one_pr_preferred: true
+- id: CONT-SLICE-007
+  name: Disclosure and affiliate CTA renderer
+  objective: Disclosure、楽天遷移ラベル、rel=sponsored、直接Link、API CreditをRendererで強制する
+  depends_on:
+  - CONT-SLICE-002
+  deliverables:
+  - immutable disclosure slot
+  - affiliate URL resolver
+  - link policy tests
+  one_pr_preferred: true
+- id: CONT-SLICE-008
+  name: SEO metadata and route policy
+  objective: Title/H1/Meta/Canonical/Index/Sitemap/RedirectをVersion管理し検証する
+  depends_on:
+  - CONT-SLICE-002
+  deliverables:
+  - metadata validator
+  - canonical graph check
+  - preview noindex
+  one_pr_preferred: true
+- id: CONT-SLICE-009
+  name: Deterministic structured data renderer
+  objective: Article/BlogPosting、Breadcrumb等を可視Snapshotから決定的に生成する
+  depends_on:
+  - CONT-SLICE-008
+  deliverables:
+  - JSON-LD renderer
+  - visible content hash
+  - Product/FAQ/Review deny tests
+  one_pr_preferred: true
+- id: CONT-SLICE-010
+  name: Media asset and accessibility pipeline
+  objective: Asset Provenance、利用条件、alt、図表説明、画像変形禁止を検査する
+  depends_on:
+  - CONT-SLICE-002
+  deliverables:
+  - asset manifest
+  - alt decision rules
+  - image transformation guard
+  one_pr_preferred: true
+- id: CONT-SLICE-011
+  name: Freshness and safe degradation
+  objective: Fact/Offer/Linkの鮮度状態とField/CTA/Article縮退を実装する
+  depends_on:
+  - CONT-SLICE-004
+  - CONT-SLICE-007
+  deliverables:
+  - freshness evaluator
+  - public projection degradation
+  - no auto reorder test
+  one_pr_preferred: true
+- id: CONT-SLICE-012
+  name: Internal link and content lifecycle
+  objective: Internal Link Journey、Orphan、Merge/301/410/noindex候補を管理する
+  depends_on:
+  - CONT-SLICE-008
+  deliverables:
+  - route-ref resolver
+  - orphan report
+  - human-approved lifecycle command
+  one_pr_preferred: true
+- id: CONT-SLICE-013
+  name: Editorial review and quality gates
+  objective: Checklist、Score、Finding、Solo Exception、Final Approval Gateを実装する
+  depends_on:
+  - CONT-SLICE-003
+  - CONT-SLICE-004
+  - CONT-SLICE-006
+  - CONT-SLICE-010
+  - CONT-SLICE-011
+  deliverables:
+  - review service
+  - quality score
+  - zero-tolerance blockers
+  - audit
+  one_pr_preferred: true
+- id: CONT-SLICE-014
+  name: Publication content manifest and renderer
+  objective: 承認済みVersionからSnapshot Manifestを作り、Public Read Modelへ投影する
+  depends_on:
+  - CONT-SLICE-007
+  - CONT-SLICE-008
+  - CONT-SLICE-009
+  - CONT-SLICE-013
+  deliverables:
+  - hash-bound manifest
+  - renderer integration
+  - rollback fixture
+  one_pr_preferred: true
+- id: CONT-SLICE-015
+  name: Upstream data/API/AI alignment
+  objective: 提案Patchを正式Migration/OpenAPI/AI Contractへ移植し、互換性Testを行う
+  depends_on:
+  - CONT-SLICE-001
+  deliverables:
+  - PostgreSQL 18 migration proposal review
+  - OpenAPI revision
+  - AI input/output alignment
+  one_pr_preferred: true
+- id: CONT-SLICE-016
+  name: End-to-end editorial pilot
+  objective: 5記事型の合成・Recorded Fixtureで企画から公開後検査まで通す
+  depends_on:
+  - CONT-SLICE-014
+  - CONT-SLICE-015
+  deliverables:
+  - five article type E2E
+  - failure injection
+  - rollback
+  - GATE-1 evidence pack
+  one_pr_preferred: true

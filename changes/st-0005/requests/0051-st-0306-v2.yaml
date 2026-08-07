@@ -1,0 +1,33 @@
+document:
+  id: STATUS-ST0306-LOCAL-PROPOSAL-002
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-06T02:31:03Z'
+reason: Record the append-only local ST-0306 implementation candidate after exact PostgreSQL 18.4
+  isolated verification passed 19/19 with zero skips, cumulative ST-0301 through ST-0306 verification
+  passed 361/361 with zero skips, every historical migration generator CLI checked through the active
+  no-write ST-0306 terminal, the ST-0306 manifest matched 38/38 source and 3/3 nonself generated
+  artifacts, behavior outputs remained byte-identical, and independent local audits reported zero
+  findings at every severity. This does not claim formal TST-011, hosted CI, human or migration-owner
+  review, canonical APPLY, formal VALIDATED, staging, release, publication, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+- story_id: ST-0306
+  expected:
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  target:
+    implementation_status: IMPLEMENTED_NOT_VALIDATED
+    verification_status: NOT_EXECUTED
+  evidence:
+  - suite_id: TST-011
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0306-local-20260806-v2.yaml
+    sha256: 88b9be3e00d8173cc8c361f1c87a78a5f8346026e36ff3c4add296f6343bf3d8
+    observed_at: '2026-08-06T02:30:04Z'

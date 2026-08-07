@@ -1,0 +1,70 @@
+document:
+  id: RAOS-ST0308-PRO-CORRECTION-SUBMISSION-003
+  version: 3.0.0
+  story_id: ST-0308
+  status: READY_FOR_MANUAL_PRO_SUBMISSION
+  authority: NOT_A_DESIGN_HANDOFF
+  implementation_authority: BLOCKED
+  purpose: Bind the exact non-secret inputs for a separately authorized Pro replacement proposal.
+
+attachments:
+  - display_name: DESIGN_HANDOFF_V1_v2.yaml
+    repository_path: null
+    sha256: 1019e7ef84066c78870332402fb87143fc8499d772cd4c4c7dca0db24e24157f
+    bytes: 1559979
+    role: FAILED_UNAPPROVED_REPLACEMENT_BASE
+  - display_name: ST-0308-pro-correction-input-v2.tar.gz
+    repository_path: changes/st-0308/pro-correction-input.v2.tar.gz
+    sha256: 209aba655caa6e29d14452ccf8ba7d74f79a9835549fe71fad9bfc7c22ef6baf
+    bytes: 813637
+    role: PINNED_CANONICAL_AND_PREDECESSOR_PACKET
+  - display_name: ST-0308-pro-correction-bundle-v2.yaml
+    repository_path: changes/st-0308/pro-correction-bundle.v2.yaml
+    sha256: 62be122dbd16f2fbff2e2e9737eca4b0f4504574d2c6d943258e0ee7e59a33b0
+    bytes: 3315
+    role: OUTER_V2_BUNDLE_MANIFEST
+  - display_name: ST-0308-pro-correction-input-v2.members.sha256
+    repository_path: changes/st-0308/pro-correction-input.v2.members.sha256
+    sha256: dcd754d9b5d6211c52c3fa5811b65207b0d80a7fc398b14c8c58c9c93048bc7b
+    bytes: 53933
+    role: EXACT_369_REGULAR_MEMBER_HASHES
+  - display_name: ST-0308-PRO-CORRECTION-REQUEST-v3.md
+    repository_path: changes/st-0308/PRO-CORRECTION-REQUEST-v3.md
+    sha256: 0906d9bf46920bfd1d018590490857a6665ab9fc8eecc92411e3fcdb9d206270
+    bytes: 24905
+    role: CONTROLLING_UNAPPROVED_CORRECTION_REQUEST
+  - display_name: ST-0308-CANONICAL-RECONCILIATION-v3.md
+    repository_path: changes/st-0308/CANONICAL-RECONCILIATION-v3.md
+    sha256: 91748530eafc018823b5a6a74cc2ca052569cb3c46f6e90dd1224d720d3fdc08
+    bytes: 11113
+    role: LOCAL_READ_ONLY_RECONCILIATION
+  - display_name: ST-0308-IMPLEMENTATION-READINESS-v3.md
+    repository_path: changes/st-0308/IMPLEMENTATION-READINESS-v3.md
+    sha256: 29e90628cc8ed4259b54486ab12abddb606ae414e3a2391c5055dbbf521577f7
+    bytes: 11305
+    role: PREPARATORY_ONLY_NOT_IMPLEMENTATION_AUTHORITY
+
+transport:
+  session: SEPARATELY_AUTHORIZED_CHATGPT_WEB_OR_DESKTOP
+  required_visible_model: Pro
+  controlling_prompt: ST-0308-PRO-CORRECTION-REQUEST-v3.md
+  submission_message: ST-0308-PRO-SUBMISSION-MESSAGE-v3.txt
+  this_manifest_display_name: ST-0308-pro-correction-submission-v3.yaml
+  this_manifest_sha256_source: SUBMISSION_MESSAGE_OUTER_BINDING
+  expected_output_display_name: DESIGN_HANDOFF_V1_v3.yaml
+  expected_output_format: UTF8_LF_SINGLE_DOCUMENT_YAML
+
+chat_input_boundary:
+  raw_pro_advice_repository_artifact: false
+  raw_informational_advisory_repository_artifact: false
+  normalized_requirements_source: changes/st-0308/PRO-CORRECTION-REQUEST-v3.md
+  preparatory_readiness_source: changes/st-0308/IMPLEMENTATION-READINESS-v3.md
+  chat_transcript_must_not_be_invented_as_repository_source: true
+
+approval_boundary:
+  pro_output_is_proposal: true
+  fresh_deterministic_validation_required: true
+  fresh_manual_canonical_reconciliation_required: true
+  exact_byte_repository_owner_approval_required: true
+  prior_approval_reusable: false
+  implementation_worker_authority: NOT_GRANTED

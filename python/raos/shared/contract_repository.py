@@ -247,6 +247,27 @@ def _sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
+def _stat_signature(metadata: os.stat_result) -> tuple[int, ...]:
+    return (
+        metadata.st_dev,
+        metadata.st_ino,
+        metadata.st_mode,
+        metadata.st_nlink,
+        metadata.st_size,
+        metadata.st_mtime_ns,
+        metadata.st_ctime_ns,
+    )
+
+
+def _required_filesystem_flag(name: str) -> int:
+    value = getattr(os, name, None)
+    if type(value) is not int or value == 0:
+        raise ContractRepositoryError(
+            "required repository filesystem safety is unavailable"
+        )
+    return value
+
+
 def _split_schema_uri(value: str, *, source: str) -> SplitResult:
     try:
         return urlsplit(value)
@@ -338,79 +359,296 @@ class ContractRepository:
     def _read_regular(
         self, relative: PurePosixPath, *, maximum_bytes: int = MAX_ARTIFACT_BYTES
     ) -> bytes:
-        self._assert_parent_directories(relative)
-        path = self._root.joinpath(*relative.parts)
+        normalized_relative = _checked_path(relative.as_posix(), source="artifact read")
+        directory_flag = _required_filesystem_flag("O_DIRECTORY")
+        nofollow_flag = _required_filesystem_flag("O_NOFOLLOW")
+        nonblock_flag = _required_filesystem_flag("O_NONBLOCK")
+        close_on_exec_flag = _required_filesystem_flag("O_CLOEXEC")
+        directory_flags = (
+            os.O_RDONLY | directory_flag | nofollow_flag | close_on_exec_flag
+        )
+        file_flags = os.O_RDONLY | nofollow_flag | nonblock_flag | close_on_exec_flag
+        descriptors: list[int] = []
+        root_captures: list[tuple[int, str, int, tuple[int, ...]]] = []
+        ancestor_captures: list[tuple[int, str, int, tuple[int, ...]]] = []
+        primary_error: BaseException | None = None
         try:
-            path_stat = path.lstat()
-        except OSError as exc:
-            raise ContractRepositoryError(
-                f"cannot stat artifact {relative}: {exc}"
-            ) from exc
-        if stat.S_ISLNK(path_stat.st_mode) or not stat.S_ISREG(path_stat.st_mode):
-            raise ContractRepositoryError(f"artifact is not a regular file: {relative}")
-        if path_stat.st_size > maximum_bytes:
-            raise ContractRepositoryError(f"artifact exceeds size limit: {relative}")
-
-        no_follow = getattr(os, "O_NOFOLLOW", None)
-        if no_follow is None:
-            raise ContractRepositoryError("O_NOFOLLOW is required for contract reads")
-        nonblocking = getattr(os, "O_NONBLOCK", None)
-        if nonblocking is None:
-            raise ContractRepositoryError("O_NONBLOCK is required for contract reads")
-        flags = os.O_RDONLY | no_follow | nonblocking
-        if hasattr(os, "O_CLOEXEC"):
-            flags |= os.O_CLOEXEC
-        try:
-            descriptor = os.open(path, flags)
-        except OSError as exc:
-            raise ContractRepositoryError(
-                f"cannot open artifact {relative}: {exc}"
-            ) from exc
-        try:
-            before = os.fstat(descriptor)
-            if not stat.S_ISREG(before.st_mode):
-                raise ContractRepositoryError(f"artifact is not regular: {relative}")
-            if (path_stat.st_dev, path_stat.st_ino) != (before.st_dev, before.st_ino):
-                raise ContractRepositoryError(
-                    f"artifact was replaced before open: {relative}"
-                )
-            if before.st_size > maximum_bytes:
-                raise ContractRepositoryError(
-                    f"artifact exceeds size limit: {relative}"
-                )
-            chunks: list[bytes] = []
-            bytes_read = 0
-            while True:
-                chunk = os.read(descriptor, 1024 * 1024)
-                if not chunk:
-                    break
-                bytes_read += len(chunk)
-                if bytes_read > maximum_bytes:
+            try:
+                absolute_root = Path(os.path.abspath(self._root))
+                filesystem_root = Path(absolute_root.anchor)
+                if absolute_root.anchor != os.sep or not filesystem_root.is_absolute():
                     raise ContractRepositoryError(
-                        f"artifact exceeds size limit during read: {relative}"
+                        "contract repository root must be an absolute path"
                     )
-                chunks.append(chunk)
-            after = os.fstat(descriptor)
-            if (
-                before.st_dev,
-                before.st_ino,
-                before.st_size,
-                before.st_mtime_ns,
-            ) != (
-                after.st_dev,
-                after.st_ino,
-                after.st_size,
-                after.st_mtime_ns,
-            ):
-                raise ContractRepositoryError(
-                    f"artifact changed during read: {relative}"
+
+                filesystem_root_path_before = filesystem_root.lstat()
+                filesystem_root_signature = _stat_signature(filesystem_root_path_before)
+                if stat.S_ISLNK(
+                    filesystem_root_path_before.st_mode
+                ) or not stat.S_ISDIR(filesystem_root_path_before.st_mode):
+                    raise ContractRepositoryError(
+                        "filesystem root is not a real directory"
+                    )
+                filesystem_root_descriptor = os.open(filesystem_root, directory_flags)
+                descriptors.append(filesystem_root_descriptor)
+                filesystem_root_opened_before = os.fstat(filesystem_root_descriptor)
+                if not stat.S_ISDIR(
+                    filesystem_root_opened_before.st_mode
+                ) or filesystem_root_signature != _stat_signature(
+                    filesystem_root_opened_before
+                ):
+                    raise ContractRepositoryError(
+                        "contract repository root changed before secure capture"
+                    )
+
+                parent_descriptor = filesystem_root_descriptor
+                for part in absolute_root.parts[1:]:
+                    path_before = os.stat(
+                        part,
+                        dir_fd=parent_descriptor,
+                        follow_symlinks=False,
+                    )
+                    if stat.S_ISLNK(path_before.st_mode) or not stat.S_ISDIR(
+                        path_before.st_mode
+                    ):
+                        raise ContractRepositoryError(
+                            "contract repository root and its ancestors must be "
+                            "real directories"
+                        )
+                    component_signature = _stat_signature(path_before)
+                    directory_descriptor = os.open(
+                        part,
+                        directory_flags,
+                        dir_fd=parent_descriptor,
+                    )
+                    descriptors.append(directory_descriptor)
+                    opened_before = os.fstat(directory_descriptor)
+                    if not stat.S_ISDIR(
+                        opened_before.st_mode
+                    ) or component_signature != _stat_signature(opened_before):
+                        raise ContractRepositoryError(
+                            "contract repository root changed before secure capture"
+                        )
+                    root_captures.append(
+                        (
+                            parent_descriptor,
+                            part,
+                            directory_descriptor,
+                            component_signature,
+                        )
+                    )
+                    parent_descriptor = directory_descriptor
+
+                for part in normalized_relative.parts[:-1]:
+                    path_before = os.stat(
+                        part,
+                        dir_fd=parent_descriptor,
+                        follow_symlinks=False,
+                    )
+                    if stat.S_ISLNK(path_before.st_mode) or not stat.S_ISDIR(
+                        path_before.st_mode
+                    ):
+                        raise ContractRepositoryError(
+                            f"unsafe artifact parent: {normalized_relative}"
+                        )
+                    ancestor_signature = _stat_signature(path_before)
+                    directory_descriptor = os.open(
+                        part,
+                        directory_flags,
+                        dir_fd=parent_descriptor,
+                    )
+                    descriptors.append(directory_descriptor)
+                    opened_before = os.fstat(directory_descriptor)
+                    if not stat.S_ISDIR(
+                        opened_before.st_mode
+                    ) or ancestor_signature != _stat_signature(opened_before):
+                        raise ContractRepositoryError(
+                            "artifact ancestor changed before secure capture: "
+                            f"{normalized_relative}"
+                        )
+                    ancestor_captures.append(
+                        (
+                            parent_descriptor,
+                            part,
+                            directory_descriptor,
+                            ancestor_signature,
+                        )
+                    )
+                    parent_descriptor = directory_descriptor
+
+                leaf = normalized_relative.name
+                path_before = os.stat(
+                    leaf,
+                    dir_fd=parent_descriptor,
+                    follow_symlinks=False,
                 )
-            content = b"".join(chunks)
-            if len(content) != after.st_size:
-                raise ContractRepositoryError(f"short artifact read: {relative}")
-            return content
+                if stat.S_ISLNK(path_before.st_mode) or not stat.S_ISREG(
+                    path_before.st_mode
+                ):
+                    raise ContractRepositoryError(
+                        f"artifact is not a regular file: {normalized_relative}"
+                    )
+                if path_before.st_nlink != 1:
+                    raise ContractRepositoryError(
+                        f"artifact must have one filesystem link: {normalized_relative}"
+                    )
+                if path_before.st_size < 0 or path_before.st_size > maximum_bytes:
+                    raise ContractRepositoryError(
+                        f"artifact exceeds size limit: {normalized_relative}"
+                    )
+                file_signature = _stat_signature(path_before)
+
+                file_descriptor = os.open(
+                    leaf,
+                    file_flags,
+                    dir_fd=parent_descriptor,
+                )
+                descriptors.append(file_descriptor)
+                opened_before = os.fstat(file_descriptor)
+                if not stat.S_ISREG(opened_before.st_mode):
+                    raise ContractRepositoryError(
+                        f"artifact is not regular: {normalized_relative}"
+                    )
+                if opened_before.st_nlink != 1:
+                    raise ContractRepositoryError(
+                        f"artifact must have one filesystem link: {normalized_relative}"
+                    )
+                if opened_before.st_size < 0 or opened_before.st_size > maximum_bytes:
+                    raise ContractRepositoryError(
+                        f"artifact exceeds size limit: {normalized_relative}"
+                    )
+                if file_signature != _stat_signature(opened_before):
+                    raise ContractRepositoryError(
+                        f"artifact was replaced before open: {normalized_relative}"
+                    )
+
+                remaining = opened_before.st_size
+                chunks: list[bytes] = []
+                while remaining:
+                    chunk = os.read(file_descriptor, min(1024 * 1024, remaining))
+                    if not chunk:
+                        raise ContractRepositoryError(
+                            f"short artifact read: {normalized_relative}"
+                        )
+                    if len(chunk) > remaining:
+                        raise ContractRepositoryError(
+                            f"artifact changed during read: {normalized_relative}"
+                        )
+                    chunks.append(chunk)
+                    remaining -= len(chunk)
+                if os.read(file_descriptor, 1):
+                    raise ContractRepositoryError(
+                        f"artifact changed during read: {normalized_relative}"
+                    )
+                content = b"".join(chunks)
+
+                opened_after = os.fstat(file_descriptor)
+                path_after = os.stat(
+                    leaf,
+                    dir_fd=parent_descriptor,
+                    follow_symlinks=False,
+                )
+                if (
+                    not stat.S_ISREG(opened_after.st_mode)
+                    or stat.S_ISLNK(path_after.st_mode)
+                    or not stat.S_ISREG(path_after.st_mode)
+                    or opened_after.st_nlink != 1
+                    or path_after.st_nlink != 1
+                    or file_signature != _stat_signature(opened_after)
+                    or file_signature != _stat_signature(path_after)
+                    or len(content) != opened_before.st_size
+                ):
+                    raise ContractRepositoryError(
+                        f"artifact changed during read: {normalized_relative}"
+                    )
+
+                for (
+                    ancestor_parent,
+                    ancestor_name,
+                    ancestor_descriptor,
+                    ancestor_signature,
+                ) in reversed(ancestor_captures):
+                    ancestor_opened_after = os.fstat(ancestor_descriptor)
+                    ancestor_path_after = os.stat(
+                        ancestor_name,
+                        dir_fd=ancestor_parent,
+                        follow_symlinks=False,
+                    )
+                    if (
+                        not stat.S_ISDIR(ancestor_opened_after.st_mode)
+                        or stat.S_ISLNK(ancestor_path_after.st_mode)
+                        or not stat.S_ISDIR(ancestor_path_after.st_mode)
+                        or ancestor_signature != _stat_signature(ancestor_opened_after)
+                        or ancestor_signature != _stat_signature(ancestor_path_after)
+                    ):
+                        raise ContractRepositoryError(
+                            "artifact ancestor changed during read: "
+                            f"{normalized_relative}"
+                        )
+
+                for (
+                    root_parent,
+                    root_name,
+                    root_component_descriptor,
+                    root_component_signature,
+                ) in reversed(root_captures):
+                    root_component_opened_after = os.fstat(root_component_descriptor)
+                    root_component_path_after = os.stat(
+                        root_name,
+                        dir_fd=root_parent,
+                        follow_symlinks=False,
+                    )
+                    if (
+                        not stat.S_ISDIR(root_component_opened_after.st_mode)
+                        or stat.S_ISLNK(root_component_path_after.st_mode)
+                        or not stat.S_ISDIR(root_component_path_after.st_mode)
+                        or root_component_signature
+                        != _stat_signature(root_component_opened_after)
+                        or root_component_signature
+                        != _stat_signature(root_component_path_after)
+                    ):
+                        raise ContractRepositoryError(
+                            "contract repository root changed during secure capture"
+                        )
+
+                filesystem_root_opened_after = os.fstat(filesystem_root_descriptor)
+                filesystem_root_path_after = filesystem_root.lstat()
+                if (
+                    not stat.S_ISDIR(filesystem_root_opened_after.st_mode)
+                    or stat.S_ISLNK(filesystem_root_path_after.st_mode)
+                    or not stat.S_ISDIR(filesystem_root_path_after.st_mode)
+                    or filesystem_root_signature
+                    != _stat_signature(filesystem_root_opened_after)
+                    or filesystem_root_signature
+                    != _stat_signature(filesystem_root_path_after)
+                ):
+                    raise ContractRepositoryError(
+                        "contract repository root changed during secure capture"
+                    )
+                return content
+            except OSError:
+                raise ContractRepositoryError(
+                    f"artifact could not be captured safely: {normalized_relative}"
+                ) from None
+        except BaseException as exc:
+            primary_error = exc
+            raise
         finally:
-            os.close(descriptor)
+            close_failed = False
+            for descriptor in reversed(descriptors):
+                try:
+                    os.close(descriptor)
+                except OSError:
+                    close_failed = True
+            if close_failed and primary_error is not None:
+                try:
+                    primary_error.add_note("descriptor cleanup also failed")
+                except BaseException:
+                    pass
+            elif close_failed:
+                raise ContractRepositoryError(
+                    f"artifact descriptor cleanup failed: {normalized_relative}"
+                ) from None
 
     def _load_manifest(self) -> tuple[ContractArtifact, ...]:
         manifest_content = self._read_regular(
@@ -520,48 +758,349 @@ class ContractRepository:
         files: set[str] = set()
         directories: set[str] = set()
         seen_casefold: set[str] = set()
-        pending: list[tuple[Path, PurePosixPath | None]] = [(self._root, None)]
-        while pending:
-            directory, relative_directory = pending.pop()
+        directory_flag = _required_filesystem_flag("O_DIRECTORY")
+        nofollow_flag = _required_filesystem_flag("O_NOFOLLOW")
+        nonblock_flag = _required_filesystem_flag("O_NONBLOCK")
+        close_on_exec_flag = _required_filesystem_flag("O_CLOEXEC")
+        directory_flags = (
+            os.O_RDONLY | directory_flag | nofollow_flag | close_on_exec_flag
+        )
+        file_flags = os.O_RDONLY | nofollow_flag | nonblock_flag | close_on_exec_flag
+        descriptors: list[int] = []
+        root_captures: list[tuple[int, str, int, tuple[int, ...]]] = []
+        directory_captures: list[
+            tuple[int, str, int, tuple[int, ...], PurePosixPath]
+        ] = []
+        file_captures: list[tuple[int, str, tuple[int, ...], PurePosixPath]] = []
+        listing_captures: list[tuple[int, tuple[str, ...], PurePosixPath | None]] = []
+        primary_error: BaseException | None = None
+        try:
             try:
-                entries = list(os.scandir(directory))
-            except OSError as exc:
+                absolute_root = Path(os.path.abspath(self._root))
+                filesystem_root = Path(absolute_root.anchor)
+                if absolute_root.anchor != os.sep or not filesystem_root.is_absolute():
+                    raise ContractRepositoryError(
+                        "contract repository root must be an absolute path"
+                    )
+
+                filesystem_root_path_before = filesystem_root.lstat()
+                filesystem_root_signature = _stat_signature(filesystem_root_path_before)
+                if stat.S_ISLNK(
+                    filesystem_root_path_before.st_mode
+                ) or not stat.S_ISDIR(filesystem_root_path_before.st_mode):
+                    raise ContractRepositoryError(
+                        "filesystem root is not a real directory"
+                    )
+                filesystem_root_descriptor = os.open(filesystem_root, directory_flags)
+                descriptors.append(filesystem_root_descriptor)
+                filesystem_root_opened_before = os.fstat(filesystem_root_descriptor)
+                if not stat.S_ISDIR(
+                    filesystem_root_opened_before.st_mode
+                ) or filesystem_root_signature != _stat_signature(
+                    filesystem_root_opened_before
+                ):
+                    raise ContractRepositoryError(
+                        "contract repository root changed before inventory capture"
+                    )
+
+                parent_descriptor = filesystem_root_descriptor
+                for part in absolute_root.parts[1:]:
+                    path_before = os.stat(
+                        part,
+                        dir_fd=parent_descriptor,
+                        follow_symlinks=False,
+                    )
+                    if stat.S_ISLNK(path_before.st_mode) or not stat.S_ISDIR(
+                        path_before.st_mode
+                    ):
+                        raise ContractRepositoryError(
+                            "contract repository root and its ancestors must be "
+                            "real directories"
+                        )
+                    component_signature = _stat_signature(path_before)
+                    directory_descriptor = os.open(
+                        part,
+                        directory_flags,
+                        dir_fd=parent_descriptor,
+                    )
+                    descriptors.append(directory_descriptor)
+                    opened_before = os.fstat(directory_descriptor)
+                    if not stat.S_ISDIR(
+                        opened_before.st_mode
+                    ) or component_signature != _stat_signature(opened_before):
+                        raise ContractRepositoryError(
+                            "contract repository root changed before inventory capture"
+                        )
+                    root_captures.append(
+                        (
+                            parent_descriptor,
+                            part,
+                            directory_descriptor,
+                            component_signature,
+                        )
+                    )
+                    parent_descriptor = directory_descriptor
+
+                pending: list[tuple[int, PurePosixPath | None]] = [
+                    (parent_descriptor, None)
+                ]
+                while pending:
+                    directory_descriptor, relative_directory = pending.pop()
+                    raw_names = os.listdir(directory_descriptor)
+                    if not all(type(name) is str for name in raw_names):
+                        raise ContractRepositoryError(
+                            "unsafe filesystem entry name in repository"
+                        )
+                    names = sorted(raw_names)
+                    listing_captures.append(
+                        (directory_descriptor, tuple(names), relative_directory)
+                    )
+                    for name in names:
+                        relative = (
+                            PurePosixPath(name)
+                            if relative_directory is None
+                            else relative_directory / name
+                        )
+                        normalized = _checked_path(
+                            relative.as_posix(), source="filesystem"
+                        )
+                        folded = normalized.as_posix().casefold()
+                        if folded in seen_casefold:
+                            raise ContractRepositoryError(
+                                f"duplicate/casefold filesystem path: {normalized}"
+                            )
+                        seen_casefold.add(folded)
+                        path_before = os.stat(
+                            name,
+                            dir_fd=directory_descriptor,
+                            follow_symlinks=False,
+                        )
+                        if stat.S_ISLNK(path_before.st_mode):
+                            raise ContractRepositoryError(
+                                f"symlink in repository: {normalized}"
+                            )
+                        entry_signature = _stat_signature(path_before)
+                        if stat.S_ISDIR(path_before.st_mode):
+                            entry_descriptor = os.open(
+                                name,
+                                directory_flags,
+                                dir_fd=directory_descriptor,
+                            )
+                            descriptors.append(entry_descriptor)
+                            opened_before = os.fstat(entry_descriptor)
+                            if not stat.S_ISDIR(
+                                opened_before.st_mode
+                            ) or entry_signature != _stat_signature(opened_before):
+                                raise ContractRepositoryError(
+                                    "directory changed before inventory capture: "
+                                    f"{normalized}"
+                                )
+                            directories.add(normalized.as_posix())
+                            directory_captures.append(
+                                (
+                                    directory_descriptor,
+                                    name,
+                                    entry_descriptor,
+                                    entry_signature,
+                                    normalized,
+                                )
+                            )
+                            pending.append((entry_descriptor, normalized))
+                        elif stat.S_ISREG(path_before.st_mode):
+                            entry_descriptor = os.open(
+                                name,
+                                file_flags,
+                                dir_fd=directory_descriptor,
+                            )
+                            descriptors.append(entry_descriptor)
+                            file_primary_error: BaseException | None = None
+                            try:
+                                try:
+                                    opened_before = os.fstat(entry_descriptor)
+                                    if not stat.S_ISREG(
+                                        opened_before.st_mode
+                                    ) or entry_signature != _stat_signature(
+                                        opened_before
+                                    ):
+                                        raise ContractRepositoryError(
+                                            "file changed before inventory capture: "
+                                            f"{normalized}"
+                                        )
+                                    opened_after = os.fstat(entry_descriptor)
+                                    if not stat.S_ISREG(
+                                        opened_after.st_mode
+                                    ) or entry_signature != _stat_signature(
+                                        opened_after
+                                    ):
+                                        raise ContractRepositoryError(
+                                            "file changed during inventory: "
+                                            f"{normalized}"
+                                        )
+                                    files.add(normalized.as_posix())
+                                    file_captures.append(
+                                        (
+                                            directory_descriptor,
+                                            name,
+                                            entry_signature,
+                                            normalized,
+                                        )
+                                    )
+                                except OSError:
+                                    raise ContractRepositoryError(
+                                        "repository inventory could not be captured "
+                                        "safely"
+                                    ) from None
+                            except BaseException as exc:
+                                file_primary_error = exc
+                                raise
+                            finally:
+                                descriptors.pop()
+                                try:
+                                    os.close(entry_descriptor)
+                                except OSError:
+                                    if file_primary_error is not None:
+                                        try:
+                                            file_primary_error.add_note(
+                                                "inventory file descriptor cleanup "
+                                                "also failed"
+                                            )
+                                        except BaseException:
+                                            pass
+                                    else:
+                                        raise ContractRepositoryError(
+                                            "repository inventory file descriptor "
+                                            "cleanup failed"
+                                        ) from None
+                        else:
+                            raise ContractRepositoryError(
+                                f"special file in repository: {normalized}"
+                            )
+
+                for (
+                    file_parent,
+                    file_name,
+                    file_signature,
+                    file_relative,
+                ) in reversed(file_captures):
+                    path_after = os.stat(
+                        file_name,
+                        dir_fd=file_parent,
+                        follow_symlinks=False,
+                    )
+                    if (
+                        stat.S_ISLNK(path_after.st_mode)
+                        or not stat.S_ISREG(path_after.st_mode)
+                        or file_signature != _stat_signature(path_after)
+                    ):
+                        raise ContractRepositoryError(
+                            f"file changed during inventory: {file_relative}"
+                        )
+
+                for (
+                    listed_descriptor,
+                    listed_names,
+                    listed_relative,
+                ) in reversed(listing_captures):
+                    raw_names_after = os.listdir(listed_descriptor)
+                    if not all(type(name) is str for name in raw_names_after):
+                        raise ContractRepositoryError(
+                            "unsafe filesystem entry name in repository"
+                        )
+                    names_after = tuple(sorted(raw_names_after))
+                    if listed_names != names_after:
+                        if listed_relative is None:
+                            raise ContractRepositoryError(
+                                "contract repository root changed during inventory"
+                            )
+                        raise ContractRepositoryError(
+                            f"directory changed during inventory: {listed_relative}"
+                        )
+
+                for (
+                    directory_parent,
+                    directory_name,
+                    captured_descriptor,
+                    directory_signature,
+                    directory_relative,
+                ) in reversed(directory_captures):
+                    opened_after = os.fstat(captured_descriptor)
+                    path_after = os.stat(
+                        directory_name,
+                        dir_fd=directory_parent,
+                        follow_symlinks=False,
+                    )
+                    if (
+                        not stat.S_ISDIR(opened_after.st_mode)
+                        or stat.S_ISLNK(path_after.st_mode)
+                        or not stat.S_ISDIR(path_after.st_mode)
+                        or directory_signature != _stat_signature(opened_after)
+                        or directory_signature != _stat_signature(path_after)
+                    ):
+                        raise ContractRepositoryError(
+                            f"directory changed during inventory: {directory_relative}"
+                        )
+
+                for (
+                    root_parent,
+                    root_name,
+                    root_component_descriptor,
+                    root_component_signature,
+                ) in reversed(root_captures):
+                    opened_after = os.fstat(root_component_descriptor)
+                    path_after = os.stat(
+                        root_name,
+                        dir_fd=root_parent,
+                        follow_symlinks=False,
+                    )
+                    if (
+                        not stat.S_ISDIR(opened_after.st_mode)
+                        or stat.S_ISLNK(path_after.st_mode)
+                        or not stat.S_ISDIR(path_after.st_mode)
+                        or root_component_signature != _stat_signature(opened_after)
+                        or root_component_signature != _stat_signature(path_after)
+                    ):
+                        raise ContractRepositoryError(
+                            "contract repository root changed during inventory"
+                        )
+
+                filesystem_root_opened_after = os.fstat(filesystem_root_descriptor)
+                filesystem_root_path_after = filesystem_root.lstat()
+                if (
+                    not stat.S_ISDIR(filesystem_root_opened_after.st_mode)
+                    or stat.S_ISLNK(filesystem_root_path_after.st_mode)
+                    or not stat.S_ISDIR(filesystem_root_path_after.st_mode)
+                    or filesystem_root_signature
+                    != _stat_signature(filesystem_root_opened_after)
+                    or filesystem_root_signature
+                    != _stat_signature(filesystem_root_path_after)
+                ):
+                    raise ContractRepositoryError(
+                        "contract repository root changed during inventory"
+                    )
+                return files, directories
+            except OSError:
                 raise ContractRepositoryError(
-                    f"cannot scan {directory}: {exc}"
-                ) from exc
-            for entry in entries:
-                relative = (
-                    PurePosixPath(entry.name)
-                    if relative_directory is None
-                    else relative_directory / entry.name
-                )
-                normalized = _checked_path(relative.as_posix(), source="filesystem")
-                folded = normalized.as_posix().casefold()
-                if folded in seen_casefold:
-                    raise ContractRepositoryError(
-                        f"duplicate/casefold filesystem path: {normalized}"
-                    )
-                seen_casefold.add(folded)
+                    "repository inventory could not be captured safely"
+                ) from None
+        except BaseException as exc:
+            primary_error = exc
+            raise
+        finally:
+            close_failed = False
+            for descriptor in reversed(descriptors):
                 try:
-                    mode = entry.stat(follow_symlinks=False).st_mode
-                except OSError as exc:
-                    raise ContractRepositoryError(
-                        f"cannot stat {normalized}: {exc}"
-                    ) from exc
-                if stat.S_ISLNK(mode):
-                    raise ContractRepositoryError(
-                        f"symlink in repository: {normalized}"
-                    )
-                if stat.S_ISDIR(mode):
-                    directories.add(normalized.as_posix())
-                    pending.append((Path(entry.path), normalized))
-                elif stat.S_ISREG(mode):
-                    files.add(normalized.as_posix())
-                else:
-                    raise ContractRepositoryError(
-                        f"special file in repository: {normalized}"
-                    )
-        return files, directories
+                    os.close(descriptor)
+                except OSError:
+                    close_failed = True
+            if close_failed and primary_error is not None:
+                try:
+                    primary_error.add_note("inventory descriptor cleanup also failed")
+                except BaseException:
+                    pass
+            elif close_failed:
+                raise ContractRepositoryError(
+                    "repository inventory descriptor cleanup failed"
+                ) from None
 
     def verify_integrity(self) -> None:
         """Recheck exact inventory, file types, byte lengths, and SHA-256 hashes."""

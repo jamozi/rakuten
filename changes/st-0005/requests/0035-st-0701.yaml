@@ -1,0 +1,40 @@
+document:
+  id: STATUS-ST0701-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-04T21:10:57Z'
+reason: >-
+  Record the append-only local ST-0701 implementation candidate after its
+  exact 26-artifact content-addressed closure, deterministic generator check,
+  isolated Story suite, strict mypy, Pyright, Ruff lint and format, official
+  denied-network static and unit gates, diff check, and independent audit
+  passed. This does not claim formal TST-001 or TST-017, hosted CI, runtime or
+  provider validation, task or route activation, human approval, canonical
+  APPLY, formal VALIDATED, staging, release, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0701
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-001
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0701-local-20260805.yaml
+        sha256: 237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53
+        observed_at: '2026-08-04T21:08:33Z'
+      - suite_id: TST-017
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0701-local-20260805.yaml
+        sha256: 237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53
+        observed_at: '2026-08-04T21:08:33Z'

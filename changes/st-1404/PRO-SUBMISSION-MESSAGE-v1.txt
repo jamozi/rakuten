@@ -1,0 +1,30 @@
+Use the attached `ST-1404-pro-design-input-v1.tar.gz` as the complete local
+evidence packet and read
+`changes/st-1404/DESIGN-DECISION-REQUEST-v1.md` first.
+
+Verify the archive, member manifest, request, preflight audit, and this message
+against `changes/st-1404/pro-design-bundle.v1.yaml`. Then verify every payload
+member against
+`changes/st-1404/pro-design-input.v1.members.sha256`. Reject any missing,
+extra, duplicate, linked, non-regular, absolute, or traversing member.
+
+Resolve only ST1404-D1 through ST1404-D14 for canonical Story ST-1404. Do not
+implement code, add dependencies, access a network/queue/provider/credential,
+change database schema/roles/grants/RLS, import ST-0308 or ST-0306 as an
+undeclared dependency, implement ST-0405/ST-0706/ST-1405/ST-1502, edit
+canonical bytes, or broaden the Story. Treat current source, contracts, tests,
+dependency files, and local audit as evidence to reconcile, not implementation
+authority.
+
+Return only one complete downloadable UTF-8/LF YAML file named
+`DESIGN_HANDOFF_V1_ST1404_v1.yaml`, rooted exactly at `DESIGN_HANDOFF_V1` and
+containing every mandatory field and matrix required by the request. Select one
+exact runtime/reuse approach and resolve the two installed deferred Job-state
+semantics; identify an explicit blocked schema gap wherever safe semantics are
+not expressible by current authorized bytes. Do not emit an advisory, summary,
+placeholder, unselected options, or code patch instead of the complete file.
+
+Keep the result pending and unapproved: human approval not provided, canonical
+reconciliation pending, implementation authority not granted, formal
+TST-013/TST-028 and CI/staging/Production validation not executed, live
+broker/provider not used, and security/human review pending.

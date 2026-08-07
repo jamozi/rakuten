@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content/v1/structured-data-manifest.schema.json",
+  "title": "Structured Data Manifest",
+  "type": "object",
+  "properties": {
+    "manifest_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "article_version_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "generator_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "enabled_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Article",
+          "BlogPosting",
+          "BreadcrumbList",
+          "Organization",
+          "WebSite"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "disabled_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Product",
+          "Offer",
+          "Review",
+          "AggregateRating",
+          "FAQPage"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "visible_content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "jsonld_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "validated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "validation_result": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    }
+  },
+  "required": [
+    "manifest_id",
+    "article_version_id",
+    "generator_version",
+    "enabled_types",
+    "disabled_types",
+    "visible_content_hash",
+    "jsonld_sha256",
+    "validated_at",
+    "validation_result"
+  ],
+  "additionalProperties": false
+}

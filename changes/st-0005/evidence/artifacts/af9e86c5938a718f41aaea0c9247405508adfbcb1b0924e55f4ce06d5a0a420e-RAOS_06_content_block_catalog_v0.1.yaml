@@ -1,0 +1,298 @@
+document:
+  id: RAOS-CONTENT-BLOCK-001
+  title: Content ASTブロックカタログ
+  version: '0.1'
+  status: APPROVED_FOR_IMPLEMENTATION_CONTRACT
+  effective_date: '2026-07-30'
+  generated_at: '2026-07-30T12:52:40Z'
+  owner: RAOS Product Owner / Managing Editor
+  language: ja-JP
+  market: JP
+schema_version: 1.0.0
+rich_text_nodes_allowed:
+- text
+- strong
+- emphasis
+- inline_code
+- internal_link
+- approved_external_citation
+- line_break
+globally_prohibited_nodes_or_fields:
+- raw_html
+- script
+- iframe
+- style
+- event_handler
+- data_uri
+- manual_affiliate_url
+- external_image_url
+- commission_rate
+- epc
+- rpm
+- revenue
+- contribution_profit
+blocks:
+- id: BLK-001
+  code: lead
+  name_ja: 導入
+  ownership: editorial
+  template_status: required_by_template
+  purpose: 検索意図・対象読者・記事で決められることを短く提示する
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 1
+  schema_path: schemas/blocks/lead.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-002
+  code: decision_summary
+  name_ja: 結論要約
+  ownership: editorial
+  template_status: required_by_template
+  purpose: 条件別の結論を先に示す。根拠のない万能結論は禁止
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 1
+  schema_path: schemas/blocks/decision_summary.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-003
+  code: intended_reader
+  name_ja: 対象読者・対象外
+  ownership: editorial
+  template_status: required_by_template
+  purpose: 向く人・向かない人・前提条件を明示する
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 1
+  schema_path: schemas/blocks/intended_reader.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-004
+  code: methodology
+  name_ja: 選定・比較方法
+  ownership: editorial
+  template_status: required_by_template
+  purpose: 候補母集団、除外条件、評価軸、重み、取得時点を説明する
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 1
+  schema_path: schemas/blocks/methodology.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-005
+  code: selection_criteria
+  name_ja: 選び方・評価軸
+  ownership: editorial
+  template_status: required_by_template
+  purpose: 各軸の意味、良否ではなくトレードオフを説明する
+  may_contain_claims: true
+  minimum_per_article: 1
+  maximum_per_article: 12
+  schema_path: schemas/blocks/selection_criteria.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-006
+  code: heading
+  name_ja: 見出し
+  ownership: editorial
+  template_status: optional
+  purpose: H2/H3相当。階層飛び越し禁止
+  may_contain_claims: false
+  minimum_per_article: 0
+  maximum_per_article: 40
+  schema_path: schemas/blocks/heading.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-007
+  code: paragraph
+  name_ja: 本文段落
+  ownership: editorial
+  template_status: optional
+  purpose: 根拠付き説明文。任意HTMLは禁止
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 120
+  schema_path: schemas/blocks/paragraph.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-008
+  code: bullet_list
+  name_ja: 箇条書き
+  ownership: editorial
+  template_status: optional
+  purpose: 並列項目。意味のない羅列は禁止
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 30
+  schema_path: schemas/blocks/bullet_list.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-009
+  code: numbered_list
+  name_ja: 番号付き手順
+  ownership: editorial
+  template_status: optional
+  purpose: 順序に意味がある手順・判断フロー
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 20
+  schema_path: schemas/blocks/numbered_list.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-010
+  code: comparison_table
+  name_ja: 比較表
+  ownership: renderer
+  template_status: required_by_template
+  purpose: Comparison AxisとFactから決定的に描画する
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 8
+  schema_path: schemas/blocks/comparison_table.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-011
+  code: product_card
+  name_ja: 商品カード
+  ownership: renderer
+  template_status: required_by_template
+  purpose: Product Selection IDから商品・Offer情報を描画する
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 20
+  schema_path: schemas/blocks/product_card.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-012
+  code: recommendation_group
+  name_ja: 条件別推奨
+  ownership: editorial
+  template_status: required_by_template
+  purpose: ユースケースごとの候補・適合理由・不向き条件を示す
+  may_contain_claims: true
+  minimum_per_article: 1
+  maximum_per_article: 12
+  schema_path: schemas/blocks/recommendation_group.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-013
+  code: difference_matrix
+  name_ja: 差分マトリクス
+  ownership: renderer
+  template_status: required_by_template
+  purpose: Variant間の変更点・不変点・不明点を同じ軸で示す
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 4
+  schema_path: schemas/blocks/difference_matrix.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-014
+  code: pros_cons
+  name_ja: 長所・短所
+  ownership: editorial
+  template_status: optional
+  purpose: 特定条件に対する利点と妥協点。楽天レビュー本文に依拠しない
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 20
+  schema_path: schemas/blocks/pros_cons.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-015
+  code: tradeoff
+  name_ja: トレードオフ
+  ownership: editorial
+  template_status: required_by_template
+  purpose: ある利点と引き換えになる欠点・条件を対にして示す
+  may_contain_claims: true
+  minimum_per_article: 1
+  maximum_per_article: 20
+  schema_path: schemas/blocks/tradeoff.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-016
+  code: caution
+  name_ja: 注意事項
+  ownership: editorial
+  template_status: required_by_template
+  purpose: 不確実性、非対象、購入前確認事項を示す
+  may_contain_claims: true
+  minimum_per_article: 1
+  maximum_per_article: 12
+  schema_path: schemas/blocks/caution.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-017
+  code: evidence_note
+  name_ja: 根拠注記
+  ownership: renderer
+  template_status: optional
+  purpose: 取得時点・Source・不確実性の公開可能部分を表示する
+  may_contain_claims: false
+  minimum_per_article: 0
+  maximum_per_article: 20
+  schema_path: schemas/blocks/evidence_note.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-018
+  code: source_summary
+  name_ja: 情報源・更新情報
+  ownership: renderer
+  template_status: required_by_template
+  purpose: 使用したSource種別、最終確認日、編集方針Linkを表示する
+  may_contain_claims: false
+  minimum_per_article: 1
+  maximum_per_article: 1
+  schema_path: schemas/blocks/source_summary.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-019
+  code: faq
+  name_ja: よくある質問
+  ownership: editorial
+  template_status: optional
+  purpose: 可視の補足Q&A。FAQPage JSON-LDは生成しない
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 12
+  schema_path: schemas/blocks/faq.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-020
+  code: media
+  name_ja: 画像・図表
+  ownership: renderer
+  template_status: optional
+  purpose: 許可済みAsset IDから描画。代替テキスト必須
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 20
+  schema_path: schemas/blocks/media.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-021
+  code: internal_links
+  name_ja: 関連記事
+  ownership: renderer
+  template_status: optional
+  purpose: 公開済みRouteへの文脈リンク。アンカーの過剰最適化禁止
+  may_contain_claims: false
+  minimum_per_article: 0
+  maximum_per_article: 3
+  schema_path: schemas/blocks/internal_links.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-022
+  code: update_notice
+  name_ja: 更新注記
+  ownership: renderer
+  template_status: optional
+  purpose: 実質的変更、確認日、旧版との差分を表示する
+  may_contain_claims: false
+  minimum_per_article: 0
+  maximum_per_article: 2
+  schema_path: schemas/blocks/update_notice.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-023
+  code: callout
+  name_ja: 補足コールアウト
+  ownership: editorial
+  template_status: optional
+  purpose: 重要な前提・例外・手順を強調する
+  may_contain_claims: true
+  minimum_per_article: 0
+  maximum_per_article: 12
+  schema_path: schemas/blocks/callout.schema.json
+  renderer_rule: typed_component_only
+- id: BLK-024
+  code: disclosure_slot
+  name_ja: 広告・提携表示枠
+  ownership: renderer
+  template_status: mandatory_global
+  purpose: Policy Bundleから記事上部へ強制挿入。Editor削除不可
+  may_contain_claims: false
+  minimum_per_article: 1
+  maximum_per_article: 1
+  schema_path: schemas/blocks/disclosure_slot.schema.json
+  renderer_rule: typed_component_only

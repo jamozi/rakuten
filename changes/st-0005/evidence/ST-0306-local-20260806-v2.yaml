@@ -1,0 +1,68 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0306-20260806-V2
+  schema_version: 1
+  recorded_at: '2026-08-06T02:30:04Z'
+story_id: ST-0306
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0005/evidence/ST-0306-local-20260805.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/119615d05fabd20aeb55c1dcb2bc33d4ec5144227dce408d8fb874a07691bf3c-ST-0306-local-20260805.yaml
+  sha256: 119615d05fabd20aeb55c1dcb2bc33d4ec5144227dce408d8fb874a07691bf3c
+- original_uri: repo://changes/st-0306/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8-manifest.yaml
+  sha256: 0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8
+- original_uri: repo://docs/worklogs/ST-0306.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/687fd00f51c27a1181c213d044412f4c676d96b34e35f0590f0edcd5b4221699-ST-0306.md
+  sha256: 687fd00f51c27a1181c213d044412f4c676d96b34e35f0590f0edcd5b4221699
+- original_uri: repo://scripts/build_st0306_database_roles.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/978955587e2d9dce34ccac77c203f4848a0fbde6af4fc67daff46cca32e9215b-build_st0306_database_roles.py
+  sha256: 978955587e2d9dce34ccac77c203f4848a0fbde6af4fc67daff46cca32e9215b
+- original_uri: repo://scripts/build_st0305_publication_analytics_finance.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb-build_st0305_publication_analytics_finance.py
+  sha256: 6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb
+- original_uri: repo://changes/st-0305/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92-manifest.yaml
+  sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+- original_uri: repo://tests/st0301/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1-test_generation.py
+  sha256: fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+- original_uri: repo://tests/st0303/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b-test_generation.py
+  sha256: d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b
+- original_uri: repo://tests/st0304/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980-test_generation.py
+  sha256: c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980
+- original_uri: repo://tests/st0305/test_st0305_publication_analytics_finance.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104-test_st0305_publication_analytics_finance.py
+  sha256: 62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104
+- original_uri: repo://tests/st0306/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/922a7a7343a3e6a080b0febfe583c386cfe38e3195865d928f0fa0ccc2050ba2-test_generation.py
+  sha256: 922a7a7343a3e6a080b0febfe583c386cfe38e3195865d928f0fa0ccc2050ba2
+suite_results:
+- suite_id: TST-011
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: exact PostgreSQL 18.4 ST-0306 isolated verification
+  result: PASS; 19/19 tests passed with zero skips
+- command: exact PostgreSQL 18.4 cumulative ST-0301 through ST-0306 verification
+  result: PASS; 361/361 tests passed with zero skips
+- command: cumulative terminal and no-write check verification
+  result: PASS; ST-0306 is the active nondelegating terminal, its check path performs no installation,
+    and every historical migration generator CLI checks through ST-0306
+- command: ST-0306 manifest parity
+  result: PASS; 38/38 source artifacts and 3/3 nonself generated artifacts matched exact bytes and
+    SHA-256
+- command: ST-0306 behavior-preserving output verification
+  result: PASS; the revision, role/grant catalog, and validation SQL remained byte-identical at
+    472690c8ca8080e3e3c0e294e40ea31b30c7d9314daa4cd5ee83a4841d439825,
+    b992f9de31fa41185222b6aa505d0ab72e714866aacc96085b95c4b22fd038ec, and
+    4ede5f64c41feaf6e7d5f8b086565728436a2a3a6d2edd943601f07d6b77e087
+- command: independent ST-0306 local implementation audits
+  result: PASS; BLOCK 0, HIGH 0, MEDIUM 0, and LOW 0 as local audit evidence only
+boundary: Append-only LOCAL_IMPLEMENTATION_CANDIDATE evidence only. Formal TST-011, hosted CI,
+  migration-owner review, human review, canonical APPLY, formal VALIDATED, staging, release, and
+  production remain NOT_EXECUTED or unclaimed. The exact local PostgreSQL results and independent
+  local audits do not constitute formal Suite or review evidence. Effective canonical ST-0306 remains
+  NOT_STARTED / NOT_EXECUTED.

@@ -1,0 +1,175 @@
+document:
+  id: RAOS-ST0107-GITHUB-GOVERNANCE-SNAPSHOT-001
+  schema_version: 1
+  story_id: ST-0107
+  checked_at: '2026-08-02T00:00:00Z'
+  rest_api_version: '2026-03-10'
+  rest_api_version_header: X-GitHub-Api-Version
+  purpose: >-
+    Official-source behavior and fail-closed activation boundary for the local
+    ST-0107 pull-request governance desired-state candidate
+
+official_sources:
+  - id: GITHUB-ABOUT-CODE-OWNERS
+    title: About code owners
+    url: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+    reviewed_facts:
+      - GitHub selects CODEOWNERS from the pull request base branch.
+      - The .github location takes precedence over root and docs locations.
+      - A listed user or team needs explicit repository write access.
+      - A listed team must be visible as well as have explicit write access.
+      - A missing, inaccessible, or syntactically invalid owner does not assign a code owner.
+      - One approval from any owner on a matching line satisfies the code-owner review requirement; multiple listed owners are not an all-owner quorum.
+      - The CODEOWNERS file or its containing .github directory should itself be owned.
+  - id: GITHUB-AVAILABLE-RULESET-RULES
+    title: Available rules for rulesets
+    url: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets
+    reviewed_facts:
+      - A branch ruleset can require pull requests and status checks.
+      - A branch ruleset can block deletions and force pushes and require linear history.
+      - Bypass actors alter effective enforcement and must be explicitly reviewed.
+      - Repository and organization rulesets may layer over the same target.
+  - id: GITHUB-REST-RULES
+    title: REST API endpoints for rules
+    url: https://docs.github.com/en/rest/repos/rules
+    api_version: '2026-03-10'
+    reviewed_facts:
+      - GET /repos/{owner}/{repo}/rulesets lists repository rulesets and can include parent rulesets.
+      - GET /repos/{owner}/{repo}/rulesets/{ruleset_id} returns ruleset details.
+      - GET /repos/{owner}/{repo}/rules/branches/{branch} returns active effective rules for a branch and excludes evaluate or disabled rulesets.
+      - A complete bypass_actors field is returned only when the authenticated caller has sufficient ruleset write visibility.
+      - Create, update, and delete are remote mutations requiring separately approved authorization and are not generator operations.
+  - id: GITHUB-TROUBLESHOOT-REQUIRED-STATUS
+    title: Troubleshooting required status checks
+    url: https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks
+    reviewed_facts:
+      - A candidate required check must have completed successfully in the selected repository during the preceding seven days.
+      - The required check must succeed for the latest applicable head or test-merge commit.
+      - A required workflow skipped by path or branch filtering can remain pending and block merge.
+      - A check context can be required from a specific GitHub App; the expected source must be verified.
+      - A check run and commit status with the same name can both be required to pass.
+
+local_candidate:
+  source_contract: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+  generator: scripts/build_st0107_pr_governance.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0107_pr_governance.py
+  drift_check_command: uv run --locked --no-sync python scripts/build_st0107_pr_governance.py --check
+  generated_artifacts:
+    - path: .github/CODEOWNERS
+      classification: LOCAL_GENERATED_CANDIDATE
+    - path: .github/PULL_REQUEST_TEMPLATE.md
+      classification: LOCAL_GENERATED_CANDIDATE
+    - path: changes/st-0107/ruleset-policy.v1.json
+      classification: DESIRED_STATE_NOT_API_PAYLOAD
+    - path: changes/st-0107/manifest.yaml
+      classification: GENERATED_HASH_INVENTORY
+  remote_mutation_capability: FORBIDDEN
+  database_check_boundary:
+    source_story: ST-0201
+    context: Database
+    wrapper: scripts/postgres_service.sh
+    network_scope: EXACT_DIGEST_PINNED_POSTGRES_IMAGE_PULL_ONLY
+    repository_dependency_hydration: FORBIDDEN
+    hosted_execution: NOT_EXECUTED
+  storage_check_boundary:
+    source_story: ST-0202
+    context: Storage
+    wrapper: scripts/object_storage_service.sh
+    network_scope: EXACT_DIGEST_PINNED_SEAWEEDFS_IMAGE_PULL_ONLY
+    repository_dependency_hydration: FORBIDDEN
+    hosted_execution: NOT_EXECUTED
+
+unverified_live_bindings:
+  status: UNVERIFIED_PLACEHOLDERS
+  organization_placeholder: raos
+  team_handles:
+    - '@raos/accessibility'
+    - '@raos/ai'
+    - '@raos/architecture'
+    - '@raos/data'
+    - '@raos/editorial'
+    - '@raos/engineering'
+    - '@raos/finance'
+    - '@raos/operations'
+    - '@raos/security'
+  repository_identity: UNVERIFIED
+  default_branch: UNVERIFIED
+  team_visibility: UNVERIFIED
+  team_write_permissions: UNVERIFIED
+  team_numeric_ids: UNVERIFIED
+  required_check_contexts: SOURCE_UNVERIFIED
+  required_check_integration_ids: UNVERIFIED
+  inherited_rulesets: UNVERIFIED
+  effective_bypass_actors: UNVERIFIED
+
+desired_ruleset_semantics:
+  target: SYMBOLIC_DEFAULT_BRANCH_ONLY
+  desired_enforcement_after_approval: active
+  current_enforcement_claim: NONE
+  bypass_actors: NONE_DESIRED
+  rules:
+    - prohibit_deletion
+    - prohibit_force_push
+    - require_linear_history
+    - require_pull_request
+    - dismiss_stale_reviews_on_push
+    - require_code_owner_review
+    - require_last_push_approval
+    - require_review_thread_resolution
+    - require_status_checks_with_expected_source_binding
+  owner_semantics_note: >-
+    Owners on the same CODEOWNERS line are eligible alternatives. The local
+    mapping does not claim that GitHub requires every listed team to approve.
+  required_status_candidates:
+    - context: Static
+      expected_source: github-actions
+      integration_id: REQUIRED_AT_ACTIVATION
+    - context: Unit
+      expected_source: github-actions
+      integration_id: REQUIRED_AT_ACTIVATION
+    - context: Contracts
+      expected_source: github-actions
+      integration_id: REQUIRED_AT_ACTIVATION
+    - context: Database
+      expected_source: github-actions
+      integration_id: REQUIRED_AT_ACTIVATION
+    - context: Storage
+      expected_source: github-actions
+      integration_id: REQUIRED_AT_ACTIVATION
+    - context: Secrets
+      expected_source: github-actions
+      integration_id: REQUIRED_AT_ACTIVATION
+    - context: Validate status overlay
+      expected_source: github-actions
+      integration_id: REQUIRED_AT_ACTIVATION
+
+activation_preflight:
+  enforcement: FORBIDDEN_UNTIL_ALL_ITEMS_HAVE_REVIEWED_EVIDENCE
+  items:
+    - id: repository-default-branch
+      requirement: Authenticate the exact repository identity and actual default branch.
+    - id: visible-write-teams
+      requirement: Resolve every semantic role to a real visible team with explicit repository write permission and reviewed numeric identity.
+    - id: required-check-sources
+      requirement: Observe every required context succeeding in the repository and bind it to the expected GitHub Actions App source ID.
+    - id: authenticated-effective-snapshot
+      requirement: Capture repository and parent rulesets plus active branch rules with sufficient access to expose the complete bypass state.
+    - id: live-probes
+      requirement: Prove owner coverage, review invalidation, last-push approval, thread resolution, missing-check blocking, direct-push denial, deletion denial, and force-push denial on real pull requests and refs.
+    - id: human-review
+      requirement: Obtain distinct human approval of the identities, final API payload diff, authenticated read-back, probe results, and rollback plan.
+
+verification_boundary:
+  local_generation: DOES_NOT_PROVE_GITHUB_ENFORCEMENT
+  remote_ruleset_apply: NOT_EXECUTED
+  authenticated_ruleset_snapshot: NOT_EXECUTED
+  live_pull_request_probes: NOT_EXECUTED
+  formal_tst_001: NOT_EXECUTED
+  human_activation_review: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
+  st0005_apply_gate: NOT_ACTIVATED
+  note: >-
+    The recorded GitHub pages are official documentation, not evidence about a
+    particular repository. The local ruleset JSON is deliberately incomplete
+    as an API payload and may not be POSTed or PUT without all live bindings,
+    read-back planning, probes, rollback evidence, and human approval.

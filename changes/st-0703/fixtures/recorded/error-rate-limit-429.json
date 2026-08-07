@@ -1,0 +1,75 @@
+{
+  "expected": {
+    "incomplete_reason": null,
+    "kind": "ProviderError",
+    "output": null,
+    "provider_error_code": "RATE_LIMIT",
+    "recorder_calls": 0,
+    "retryable": true,
+    "usage": null
+  },
+  "expected_request": {
+    "input": [
+      {
+        "content": "SYNTHETIC_TEST_ONLY developer instruction.",
+        "role": "developer"
+      },
+      {
+        "content": "SYNTHETIC_TEST_ONLY input record.",
+        "role": "user"
+      }
+    ],
+    "max_output_tokens": 128,
+    "model": "raos-synthetic-model-v1",
+    "reasoning": {
+      "effort": "medium"
+    },
+    "store": false,
+    "text": {
+      "format": {
+        "name": "raos_synthetic_output_v1",
+        "schema": {
+          "$id": "urn:raos:synthetic:st0703:output:v1",
+          "additionalProperties": false,
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "score": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "label",
+            "score"
+          ],
+          "type": "object"
+        },
+        "strict": true,
+        "type": "json_schema"
+      }
+    },
+    "tools": []
+  },
+  "fixture_version": "1.0.0",
+  "pricing": {
+    "expected_cost_jpy": null,
+    "mode": "NOT_CALCULATED",
+    "model_id": "raos-synthetic-model-v1",
+    "quote_id": "st0703-synthetic-quote-v1"
+  },
+  "scenario": "rate_limit_429",
+  "synthetic": "SYNTHETIC_TEST_ONLY",
+  "transport": {
+    "body": {
+      "error": {
+        "code": "rate_limit_exceeded",
+        "message": "SYNTHETIC_TEST_ONLY rate-limit diagnostic canary.",
+        "param": null,
+        "type": "rate_limit_error"
+      }
+    },
+    "kind": "http_response",
+    "status_code": 429
+  }
+}

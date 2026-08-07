@@ -1,0 +1,105 @@
+{
+  "deferred_absent_relations": [
+    "ops.audit_export",
+    "ops.incident",
+    "ops.incident_event",
+    "ops.kill_switch_change",
+    "ops.release"
+  ],
+  "document": {
+    "formal_verification": "NOT_EXECUTED",
+    "id": "RAOS-DATABASE-ROLES-GRANTS-CATALOG-001",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "story_id": "ST-0306",
+    "version": "1.0.0"
+  },
+  "downgrade": {
+    "cluster_roles_preserved": true,
+    "database_local_authority_removed": true
+  },
+  "public_boundary": {
+    "function_execute": [],
+    "schema_usage": [
+      "readmodel"
+    ],
+    "table_privileges": [
+      "SELECT"
+    ]
+  },
+  "revision": {
+    "down_revision": "202608030005",
+    "path": "repo://migrations/versions/202608030006_database_roles.py",
+    "revision": "202608030006",
+    "runner_version": "1.5.0",
+    "server_version_num": 180004,
+    "sha256": "472690c8ca8080e3e3c0e294e40ea31b30c7d9314daa4cd5ee83a4841d439825"
+  },
+  "rls": {
+    "policy_count": 22,
+    "tables": [
+      "editorial.article_disclosure_context",
+      "editorial.article_methodology_binding",
+      "editorial.article_template_version",
+      "editorial.article_type_version",
+      "editorial.content_schema_version",
+      "editorial.editorial_methodology_version",
+      "editorial.media_asset",
+      "editorial.seo_metadata_version",
+      "editorial.structured_data_manifest",
+      "evidence.first_hand_experience_asset",
+      "evidence.first_hand_experience_record"
+    ]
+  },
+  "role_attributes": {
+    "bypassrls": false,
+    "createdb": false,
+    "createrole": false,
+    "inherit": true,
+    "login": false,
+    "outbound_memberships": "FORBIDDEN",
+    "replication": false,
+    "superuser": false
+  },
+  "role_membership_boundary": {
+    "existing_role_path": "OUTBOUND_ONLY_PRESERVE_EXTERNAL_INBOUND",
+    "fresh_non_superuser_creation": {
+      "admin_option": true,
+      "exact_edge_count": 8,
+      "inherit_option": false,
+      "pg_auth_members_member": "CURRENT_MIGRATION_SESSION_ROLE",
+      "pg_auth_members_roleid": "EACH_ST0306_ROLE",
+      "set_option": false
+    },
+    "standalone_validation": "OUTBOUND_ONLY_PRESERVE_EXTERNAL_INBOUND",
+    "workload_role_outbound_memberships": "FORBIDDEN"
+  },
+  "roles": [
+    "raos_migrator",
+    "raos_api_rw",
+    "raos_worker_rw",
+    "raos_dispatcher_rw",
+    "raos_projection_rw",
+    "raos_public_ro",
+    "raos_reporting_ro",
+    "raos_auditor_ro"
+  ],
+  "schemas": [
+    "ops",
+    "iam",
+    "portfolio",
+    "catalog",
+    "evidence",
+    "editorial",
+    "ai",
+    "policy",
+    "publishing",
+    "freshness",
+    "analytics",
+    "finance",
+    "readmodel"
+  ],
+  "validation": {
+    "path": "repo://changes/st-0306/generated/database-roles-validation.v1.sql",
+    "sha256": "4ede5f64c41feaf6e7d5f8b086565728436a2a3a6d2edd943601f07d6b77e087"
+  }
+}

@@ -1,0 +1,235 @@
+document:
+  id: RAOS-DOMAIN-SCHEMA-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0304
+  source_contract: repo://changes/st-0304/contracts/domain-schema.v1.yaml
+  generated_by: repo://scripts/build_st0304_domain_schemas.py
+  generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0304_domain_schemas.py
+provenance:
+  canonical_and_upstream_inputs:
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+    sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - uri: repo://docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+    sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_contract_overlay_v1.0.yaml
+    sha256: f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  predecessor_manifest:
+    story_id: ST-0303
+    uri: repo://changes/st-0303/manifest.yaml
+    sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+  translation:
+    source: POSTGRESQL_18_4_FINAL_PHYSICAL_CATALOG
+    checkpoint_sql: PROVENANCE_ONLY_NOT_EXECUTED_OR_CONCATENATED
+    schema_objects: GENERATED_FROM_HASH_BOUND_FRAGMENTS
+revision:
+  revision: '202608030004'
+  down_revision: '202608030003'
+  runner_version: 1.3.0
+  server_version_num: 180004
+  single_transaction: true
+  maximum_revision_bytes: 262144
+source_artifact_count: 49
+source_artifacts:
+- uri: repo://changes/st-0304/contracts/domain-schema.v1.yaml
+  bytes: 11378
+  sha256: 8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122
+- uri: repo://changes/st-0304/contracts/physical/01-domain-physical.sql
+  bytes: 67717
+  sha256: b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8
+- uri: repo://changes/st-0304/contracts/physical/02-domain-physical.sql
+  bytes: 63003
+  sha256: b685751e4e2743ea6c7202e8ce726486ac152e46987bb832e6777e61b987aafc
+- uri: repo://changes/st-0304/contracts/physical/03-domain-physical.sql
+  bytes: 72315
+  sha256: f95ad5a2fd349177b01f97237d0d9a3fb598b2781828e9531a04c3c42b811b45
+- uri: repo://changes/st-0304/contracts/physical/04-domain-physical.sql
+  bytes: 72392
+  sha256: 4a3c029980e8c27957fac2291e7b0a8efb81eaf1faa74dee4e757b0836e7ba30
+- uri: repo://changes/st-0304/contracts/physical/05-domain-physical.sql
+  bytes: 72390
+  sha256: c78e946f9be015d461350f347f125a2cf8f01b267647a8685158af207cefc0ec
+- uri: repo://changes/st-0304/contracts/physical/06-domain-physical.sql
+  bytes: 72312
+  sha256: cc520254390d68fdc68d54c01ed6b95e031ea422814e5be924849ec61636904d
+- uri: repo://changes/st-0304/contracts/physical/07-domain-physical.sql
+  bytes: 72283
+  sha256: 739cc2ecae7e49702da5e36be6e37eaebaa7a535be4a623c79dee86926212870
+- uri: repo://changes/st-0304/contracts/physical/08-domain-physical.sql
+  bytes: 72327
+  sha256: eafb7b89c6fa08bd74a8c13d89aa19aea3a946e739720a8cff9e6faa3ca2bfc4
+- uri: repo://changes/st-0304/contracts/physical/09-domain-physical.sql
+  bytes: 72161
+  sha256: 6cebf09249f027662557038f8367bdc586030197911046be242543cd43502ae5
+- uri: repo://changes/st-0304/contracts/physical/10-domain-physical.sql
+  bytes: 72195
+  sha256: 3d806436b7ed91f25e0396e15b914dda7258b743589ec4dc6c3f4272c9fcb38d
+- uri: repo://changes/st-0304/contracts/physical/11-domain-physical.sql
+  bytes: 7630
+  sha256: 947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09
+- uri: repo://changes/st-0003/database/202607300007_ai_governance_expand.sql
+  bytes: 238841
+  sha256: a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064
+- uri: repo://changes/st-0003/database/202607300008_ai_governance_expand_validate.sql
+  bytes: 42761
+  sha256: 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
+- uri: repo://changes/st-0003/database/202607300009_ai_governance_migrate_batch.sql
+  bytes: 14563
+  sha256: 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
+- uri: repo://changes/st-0003/database/202607300010_ai_governance_contract_prepare.sql
+  bytes: 25954
+  sha256: 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+- uri: repo://changes/st-0003/database/202607300011_ai_governance_contract.sql
+  bytes: 24209
+  sha256: 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+- uri: repo://changes/st-0004/database/202607300013_content_expand.sql
+  bytes: 54252
+  sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+- uri: repo://changes/st-0004/database/202607300014_content_expand_validate.sql
+  bytes: 16519
+  sha256: 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704
+- uri: repo://changes/st-0004/database/202607300015_content_migrate_batch.sql
+  bytes: 5567
+  sha256: 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
+- uri: repo://changes/st-0004/database/202607300016_content_contract_prepare.sql
+  bytes: 29580
+  sha256: b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968
+- uri: repo://changes/st-0004/database/202607300017_content_contract.sql
+  bytes: 18584
+  sha256: c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+- uri: repo://docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+  bytes: 704317
+  sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+- uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+  bytes: 448029
+  sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+- uri: repo://docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+  bytes: 9380
+  sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+- uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  bytes: 7943
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+- uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+  bytes: 3955
+  sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+- uri: repo://docs/canonical/01_integration/RAOS_07_canonical_contract_overlay_v1.0.yaml
+  bytes: 3383
+  sha256: f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+- uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  bytes: 71458
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+- uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  bytes: 24993
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+- uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  bytes: 11395
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+- uri: repo://changes/st-0304/README.md
+  bytes: 1636
+  sha256: 31bec8c705dfd1bfaeddba6334457c47b717f17602bcbaf0e9e5135519a5d9d1
+- uri: repo://Makefile
+  bytes: 24878
+  sha256: e83424bae922b5ad842c8aee4f991256959437e6105b0617b9d05c92e6d92be0
+- uri: repo://README.md
+  bytes: 49156
+  sha256: 67440751659f8089e7594a549aaa5f031a5e94e29107197f3bc9d1bfaea30592
+- uri: repo://docs/execplans/ST-0304.md
+  bytes: 2125
+  sha256: 1c63270463dfa4afd6eb329d265ed18dd94dc9c9c6bace96796f4863be9772b8
+- uri: repo://docs/worklogs/ST-0304.md
+  bytes: 2198
+  sha256: b2192c72a1933146915657a293a9c4cecdf65c370ad8dc77ae319a4945cb3abd
+- uri: repo://scripts/build_st0304_domain_schemas.py
+  bytes: 79479
+  sha256: e375c0c402483a3e40e4b73f7172e295df2830859d3ef5df7e90036bc073a031
+- uri: repo://scripts/build_st0303_iam_ops.py
+  bytes: 139198
+  sha256: d01ebd6e277aa08a9aa290a75fc42877ebab65430acb0213403aad514ccc3c1a
+- uri: repo://changes/st-0303/manifest.yaml
+  bytes: 11532
+  sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+- uri: repo://migrations/versions/202608030003_iam_ops_tables.py
+  bytes: 62827
+  sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
+- uri: repo://python/raos/migrations/catalog.py
+  bytes: 19437
+  sha256: a19cd5f3a352ce7843bc69f76cccd4786dcc7eff26dfbd4b7ee85a13bde930d7
+- uri: repo://python/raos/migrations/runner.py
+  bytes: 174761
+  sha256: d823d3551d7da483169b443dd035528951b6b617f228d053e5d024fd2e39db83
+- uri: repo://scripts/build_st0201_postgres_service.py
+  bytes: 36958
+  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+- uri: repo://tests/postgresql18.py
+  bytes: 8034
+  sha256: 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 20952
+  sha256: fc5f851e4bf23e6b6a744e29b493de044a28375211dc973911d0eca162f46a2c
+- uri: repo://tests/st0304/conftest.py
+  bytes: 776
+  sha256: 59c99e4d9ee73110414684404ead48a0ebfe7a358eade9677ad23b9f0b3b65a3
+- uri: repo://tests/st0304/test_contract.py
+  bytes: 7609
+  sha256: 19785320e51da45e83a4107c3fbe61eebf035bfb4af030e788a913c666169e36
+- uri: repo://tests/st0304/test_generation.py
+  bytes: 19998
+  sha256: debf45d5d0735978392490618d1e3b565b70e6a195b3fa65f283aa5718ba243f
+- uri: repo://tests/st0304/test_postgresql.py
+  bytes: 29287
+  sha256: 88aeda35f644aad65b18578c79b478e7b57e2204a7fab50b02454cc3995550ac
+generated_artifact_count: 3
+generated_artifacts:
+- uri: repo://migrations/versions/202608030004_domain_schemas.py
+  bytes: 106632
+  sha256: 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
+- uri: repo://changes/st-0304/generated/domain-catalog.v1.json
+  bytes: 967320
+  sha256: 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208
+- uri: repo://changes/st-0304/generated/domain-validation.v1.sql
+  bytes: 18856
+  sha256: 7e1ce307a5751fc5d95e4c06652f0e6fb41b8bdc29c583ea9cd0a3d83d1fa3a5
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+security_boundary:
+  rls_enabled_and_forced_tables:
+  - editorial.article_disclosure_context
+  - editorial.article_methodology_binding
+  - editorial.article_template_version
+  - editorial.article_type_version
+  - editorial.content_schema_version
+  - editorial.editorial_methodology_version
+  - editorial.media_asset
+  - editorial.seo_metadata_version
+  - editorial.structured_data_manifest
+  - evidence.first_hand_experience_asset
+  - evidence.first_hand_experience_record
+  rls_policy_count: 0
+  deferred_rls_policy_count: 22
+  public_privileges: NONE
+  roles_or_default_privileges_created: false
+boundary:
+  environment: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_tst_008: NOT_EXECUTED
+  formal_tst_010: NOT_EXECUTED
+  independent_migration_owner_review: NOT_EXECUTED
+  hosted_ci_postgresql_18_4: NOT_EXECUTED
+  human_review: NOT_EXECUTED
+  staging_execution: NOT_EXECUTED
+  production_execution: FORBIDDEN
+  canonical_apply: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
+  source_inventory_status: FINAL_CURRENT_STORY_CLOSURE
+  future_source_change_requires_regeneration: true

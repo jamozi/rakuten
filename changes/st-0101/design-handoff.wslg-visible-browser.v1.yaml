@@ -1,0 +1,97 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Visible WSLg X11 launch for the pinned pro-doctor, pro-ask, and pro-resume MCP child
+    - scripts/chatgpt_pro_orchestrator.py fixed display validation and child environment
+    - scripts/chatgpt_pro_mcp.sh defense-in-depth display validation
+    - tests/st0101 deterministic display allowlist, refusal, and regression coverage
+    - changes/st-0101/README.md and docs/worklogs/ST-0101.md operational guidance and evidence
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md visible same-window guidance
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.raos-ask-pro.v1.yaml
+    - changes/st-0101/design-handoff.edge-browser.v1.yaml
+    - changes/st-0101/design-handoff.interactive-auth-wait.v1.yaml
+  decision: >-
+    Launch the pinned Playwright MCP browser as a visible WSLg X11 window by
+    adding only the fixed DISPLAY=:0 value to the already-minimal MCP child
+    environment. Before child creation, require the parent DISPLAY value to be
+    exactly :0 and require /tmp/.X11-unix/X0 to be a real Unix socket at the
+    fixed path; otherwise fail closed before browser launch. The MCP wrapper
+    independently requires DISPLAY=:0. Do not inherit an arbitrary display,
+    Wayland, XDG runtime, D-Bus, PulseAudio, desktop-session, or other ambient
+    environment value. Keep the pinned MCP default headed mode and explicitly
+    prohibit --headless. All existing browser, profile, origin, authentication,
+    Pro/effort, secret-name-only, timeout, and no-fallback controls remain
+    unchanged.
+  rationale: >-
+    The approved direct setup launch inherited the WSLg display environment and
+    produced a user-visible Edge window, while the MCP child environment was
+    intentionally reconstructed without DISPLAY and produced no visible
+    window. Passing one fixed, validated local X11 display selector repairs the
+    visibility gap without attaching to another browser, widening the tool
+    allowlist, importing browser session material, or inheriting the user's
+    broader desktop environment.
+  rejected_alternatives:
+    - Inherit the complete parent environment into the MCP child
+    - Accept an arbitrary DISPLAY value or user-provided display path
+    - Pass WAYLAND_DISPLAY, XDG_RUNTIME_DIR, DBUS_SESSION_BUS_ADDRESS, PULSE_SERVER, or other ambient desktop variables
+    - Add --headless or allow an invisible authentication workflow
+    - Attach to the already-running setup browser through CDP, remote debugging, or a browser extension
+    - Reuse a Windows, personal, default, or Microsoft-account-synchronized Edge profile
+    - Inspect, copy, export, or import cookies, storage state, credentials, or browser-profile contents
+    - Launch a second browser or switch browsers after CAPTCHA or another stop state
+  constraints:
+    - The only new MCP child environment key is DISPLAY with the exact value :0
+    - The fixed X11 endpoint is /tmp/.X11-unix/X0 and must exist as a Unix socket, not a symlink or regular file
+    - Missing, mismatched, or invalid display state must fail before subprocess creation
+    - The wrapper must independently refuse every DISPLAY value other than :0
+    - No headed/headless choice, arbitrary display input, Make variable, CLI option, or fallback display may be added
+    - The pinned MCP remains headed by its reviewed default and --headless remains prohibited
+    - pro-doctor remains read-only and non-waiting even though its short-lived browser may become visible
+    - pro-ask retains one MCP child, one transport, one selected browser, and one dedicated profile through manual authentication
+    - Only the exact https://chatgpt.com origin is permitted
+    - No prompt input occurs before known authenticated UI, Pro, and maximum available effort are visibly verified
+    - Existing personal profiles, cookies, storage, credentials, unrelated tabs, CDP, and extensions remain prohibited
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved the fixed WSLg display-boundary change
+    - The approval does not authorize arbitrary environment inheritance or an alternate browser-control transport
+    - Login, CAPTCHA, reauthentication, and account selection remain manual user actions in the visible dedicated window
+    - Microsoft Edge account login and browser synchronization are neither required nor authorized
+    - Browser automation remains limited to the approved exact-origin ChatGPT Pro state machine
+    - Visible Pro and maximum available effort verification remains mandatory before submission
+    - Account, subscription, publication, release, finance, and production actions remain prohibited
+    - Captured output remains a hash-bound unapproved proposal pending human and canonical reconciliation
+  acceptance_criteria:
+    - A live MCP launch on the approved WSLg host receives DISPLAY=:0 and opens its selected dedicated browser visibly
+    - The MCP child environment contains no additional inherited desktop-session variables
+    - Missing DISPLAY, a non-:0 DISPLAY, a missing socket, a symlink, or a non-socket endpoint refuses before subprocess creation
+    - The wrapper refuses missing, empty, or non-:0 DISPLAY values
+    - No --headless, CDP, extension, storage-state, or existing-browser attachment is introduced
+    - The visible pro-ask window remains open throughout the bounded manual-authentication interval
+    - After manual authentication, the same transport continues through existing Pro, maximum-effort, and secret-name-only submission checks
+    - Edge-first selection, dedicated profile isolation, exact-origin checks, timeout, resume binding, and no-cross-browser-fallback tests remain green
+    - Documentation tells the user not to log into or synchronize Edge itself and to keep the visible pro-ask window open
+  required_test_evidence:
+    - Captured-subprocess test proving the exact minimal child environment includes DISPLAY=:0
+    - Refusal tests for missing, mismatched, symlink, non-socket, and absent fixed X11 endpoint before Popen
+    - Wrapper tests for missing, empty, and non-:0 DISPLAY refusal
+    - Tests proving WAYLAND_DISPLAY, XDG_RUNTIME_DIR, D-Bus, PulseAudio, CDP, extension, storage-state, and --headless are absent
+    - Existing same-transport authentication-wait and no-early-input tests
+    - Existing Edge-first, profile separation, origin, Pro/effort, secret leakage, hash-chain, and resume tests
+    - Shell syntax, Ruff, Python compilation, Skill validation, scoped diff check, and isolated tests/st0101 results
+    - User-observed visible Edge smoke before any manual CAPTCHA action or prompt submission
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-05
+    statement: >-
+      Approve the proposed limited change: pass only fixed, validated WSLg
+      display settings to the sending process; do not access cookies, storage,
+      or credentials; do not use CDP, extensions, or existing-browser
+      attachment; implement, test, and retry with a visible Edge window.

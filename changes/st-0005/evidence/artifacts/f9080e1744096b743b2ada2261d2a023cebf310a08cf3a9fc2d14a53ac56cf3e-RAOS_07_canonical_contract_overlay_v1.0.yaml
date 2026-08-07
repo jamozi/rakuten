@@ -1,0 +1,102 @@
+document:
+  id: RAOS-CANONICAL-OVERLAY-001
+  version: '1.0'
+  baseline_date: '2026-07-30'
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+purpose: 後続設計で採用された差分を、旧Baselineを破壊せず実装時のCanonical Overlayとして固定する。
+base_contracts:
+- domain: DATA
+  package: RAOS_03_data_model_package_v0.1.zip
+  status: BASELINE
+- domain: API
+  package: RAOS_04_api_contract_package_v0.1.zip
+  status: BASELINE
+- domain: AI
+  package: RAOS_05_ai_design_package_v0.1.zip
+  status: BASELINE
+- domain: CONTENT
+  package: RAOS_06_content_design_package_v0.1.zip
+  status: BASELINE
+accepted_overlays:
+- order: 1
+  file: RAOS_04_001_contract_alignment_patch_v0.1.sql
+  domain: DATA
+  decision: ACCEPTED_AS_DESIGN_DELTA
+  execution: NOT_EXECUTABLE_AS_IS
+  required_implementation: 正式なVersioned Migrationへ移植しPostgreSQL 18 Integration Testを実行
+- order: 2
+  file: RAOS_05_001_ai_data_alignment_patch_v0.1.sql
+  domain: DATA
+  decision: ACCEPTED_AS_DESIGN_DELTA
+  execution: NOT_EXECUTABLE_AS_IS
+  required_implementation: AI Governance Resourceを正式Migrationへ移植
+- order: 3
+  file: RAOS_05_002_api_alignment_patch_v0.1.yaml
+  domain: API
+  decision: ACCEPTED_AS_DESIGN_DELTA
+  execution: NOT_EXECUTABLE_AS_IS
+  required_implementation: OpenAPI/AsyncAPIの新Versionへ統合し互換性Testを実行
+- order: 4
+  file: RAOS_06_001_data_alignment_patch_v0.1.sql
+  domain: DATA
+  decision: ACCEPTED_AS_DESIGN_DELTA
+  execution: NOT_EXECUTABLE_AS_IS
+  required_implementation: Content AST/Methodology/Metadata Resourceを正式Migrationへ移植
+- order: 5
+  file: RAOS_06_002_api_alignment_patch_v0.1.yaml
+  domain: API
+  decision: ACCEPTED_AS_DESIGN_DELTA
+  execution: NOT_EXECUTABLE_AS_IS
+  required_implementation: Content API契約を新Versionへ統合
+- order: 6
+  file: RAOS_06_003_ai_alignment_patch_v0.1.yaml
+  domain: AI
+  decision: ACCEPTED_AS_DESIGN_DELTA
+  execution: NOT_EXECUTABLE_AS_IS
+  required_implementation: Content Task/Prompt/Input ContractをAI Registryへ統合
+canonical_job_states:
+- REQUESTED
+- QUEUED
+- RUNNING
+- SUCCEEDED
+- FAILED_RETRYABLE
+- RETRY_SCHEDULED
+- FAILED_TERMINAL
+- QUARANTINED
+- CANCELLED
+- EXPIRED
+canonical_ai_governance_resources:
+- ai_task_definition
+- prompt_release
+- model_route_release
+- evaluation_dataset
+- evaluation_run
+- grader_calibration
+- ai_release_decision
+canonical_content_resources:
+- article_type_version
+- content_ast_version
+- claim_evidence_coverage
+- recommendation_methodology_version
+- seo_metadata_version
+- structured_data_manifest
+- disclosure_manifest
+- publication_content_manifest
+conflict_resolution_rules:
+- 同一項目でBaselineとOverlayが競合する場合は本Overlayの順序で後勝ちとする。
+- Proposal PatchをProductionへ直接適用しない。
+- Codexは正式MigrationまたはVersioned Contractとして実装し、生成ArtifactとTestを更新する。
+- 破壊的変更はExpand–Migrate–Contractとする。
+- 実装後も元Patchと採用Decisionを監査用に保持する。
+unexecuted_items:
+- 正式DB Migration生成・適用
+- OpenAPI/AsyncAPI再生成
+- Client/Server型再生成
+- PostgreSQL Runtime Test
+- Provider Live Contract Test
+- Backfill/rollback test
+- Staging deployment
+- Production deployment

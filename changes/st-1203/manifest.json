@@ -1,0 +1,178 @@
+{
+  "boundary": {
+    "credentials": "FORBIDDEN",
+    "database_writes": "FORBIDDEN",
+    "date_derivation_for_date_less_requests": "NOT_DEFINED",
+    "dimension_key_sha256": "NOT_DEFINED",
+    "durable_supersession": "NOT_DEFINED",
+    "environment_credentials": "FORBIDDEN",
+    "formal_tst_030": "NOT_EXECUTED",
+    "google_sdk": "FORBIDDEN",
+    "live_api": "NOT_USED",
+    "local_result": "IMPLEMENTATION_CANDIDATE_ONLY",
+    "network": "FORBIDDEN",
+    "numeric_conversion_policy": "NOT_DEFINED",
+    "persistent_writes": "FORBIDDEN",
+    "privacy_suppression_rules": "NOT_DEFINED",
+    "production_readiness": "NOT_READY",
+    "site_id_to_site_url_mapping": "NOT_DEFINED"
+  },
+  "document": {
+    "id": "RAOS-SEARCH-CONSOLE-RECORDED-MANIFEST-001",
+    "story_id": "ST-1203",
+    "version": "1.0.0"
+  },
+  "fixture_count": 3,
+  "fixtures": [
+    {
+      "bytes": 3503,
+      "path": "baseline.json",
+      "recording_id": "baseline",
+      "returned_row_count": 2,
+      "row_limit": 2,
+      "sha256": "de421fe75e633d47a02f0aa579f36f746d5ee191eb034dbd28a6c5dfd26dd3a9",
+      "source_request_sha256": "b062bbe5000e83471fe3f1557f04c01a1b311d312055a74083df19fa7d5bd0be",
+      "start_row": 0,
+      "top_rows_only": true
+    },
+    {
+      "bytes": 3507,
+      "path": "late-revised.json",
+      "recording_id": "late-revised",
+      "returned_row_count": 2,
+      "row_limit": 2,
+      "sha256": "f703edb673b3cc8b3686a9d983ab7940f7c3148a4eb7ac192da5761f0b0b96a0",
+      "source_request_sha256": "b062bbe5000e83471fe3f1557f04c01a1b311d312055a74083df19fa7d5bd0be",
+      "start_row": 0,
+      "top_rows_only": true
+    },
+    {
+      "bytes": 1398,
+      "path": "start-beyond-data.json",
+      "recording_id": "start-beyond-data",
+      "returned_row_count": 0,
+      "row_limit": 25000,
+      "sha256": "1b50f12e0a904db7202771adb39157071ec959c0f4d4d0e815e67a9e6f45557c",
+      "source_request_sha256": "603738ab94f0c2cdd7c474ba0418ebd36d66215d125e180acdaefed5e84a0788",
+      "start_row": 25000,
+      "top_rows_only": true
+    }
+  ],
+  "generation": {
+    "check_command": "uv run --locked --no-sync --no-env-file python scripts/build_st1203_search_console_recorded_adapter.py --check",
+    "generated_by": "repo://scripts/build_st1203_search_console_recorded_adapter.py",
+    "generation_command": "uv run --locked --no-sync --no-env-file python scripts/build_st1203_search_console_recorded_adapter.py",
+    "source_contract": "repo://changes/st-1203/contracts/search-console-recorded-fixtures.v1.yaml"
+  },
+  "manifest_self_integrity": {
+    "included_in_source_artifacts": false,
+    "verification": "deterministic byte-for-byte regeneration via --check"
+  },
+  "provenance": {
+    "canonical_inputs": [
+      {
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md"
+      },
+      {
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml"
+      },
+      {
+        "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460",
+        "uri": "repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md"
+      },
+      {
+        "sha256": "b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa",
+        "uri": "repo://docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml"
+      },
+      {
+        "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml"
+      },
+      {
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml"
+      },
+      {
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+      }
+    ],
+    "contract_schemas": [
+      {
+        "role": "acquisition_request",
+        "sha256": "10dd3bfa4caa9be5cfe58f557db4647d4e178fa83e6d68bdded8e74d8443e89f",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/adapters/gsc-search-analytics-request.schema.json"
+      },
+      {
+        "role": "canonical_row",
+        "sha256": "827afbaa8ca50c631a00f893ee6932f5b2fc571d84e0566529b9e5958cc3b920",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/adapters/gsc-search-analytics-row.schema.json"
+      },
+      {
+        "role": "import_job",
+        "sha256": "aa2c88caffeee692ee38d5ca6c8b7460f770ab3751abb0c35a9d197014d73f0c",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-search-console-v1.schema.json"
+      },
+      {
+        "role": "import_completed_event",
+        "sha256": "50f6012ab7da5f2f04a0b4f9b3216f1ac9ea7a51b3c26f972ea24ecdcebea93d",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-analytics-import-completed-v1.schema.json"
+      },
+      {
+        "role": "daily_metrics_event",
+        "sha256": "a8d28096dc570710ac02349569fea95ea82657b87a854d7799c1735c39ac1dd1",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-analytics-daily-metrics-updated-v1.schema.json"
+      }
+    ],
+    "installed_contract_repository": {
+      "sha256": "54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef",
+      "uri": "repo://contracts/raos-v0.4/contract-repository.v0.4.json"
+    },
+    "official_provider_reference": {
+      "checked_on": "2026-08-06",
+      "semantics": {
+        "beyond_result_offset": "SUCCESS_WITH_ZERO_ROWS",
+        "completeness": "TOP_ROWS_NOT_GUARANTEED_COMPLETE",
+        "deprecated_field_forbidden": "searchType",
+        "outward_search_type_field": "type",
+        "pagination_offset_field": "startRow",
+        "response_key_order": "REQUESTED_DIMENSION_ORDER",
+        "row_limit_maximum": 25000
+      },
+      "uri": "https://developers.google.com/webmaster-tools/v1/searchanalytics/query"
+    },
+    "predecessors": [
+      {
+        "sha256": "3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4",
+        "story_id": "ST-0204",
+        "uri": "repo://changes/st-0204/manifest.yaml"
+      },
+      {
+        "sha256": "df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2",
+        "story_id": "ST-0305",
+        "uri": "repo://changes/st-0305/manifest.yaml"
+      }
+    ]
+  },
+  "request_hash": {
+    "algorithm": "SHA-256",
+    "canonicalization": "UTF8_SORTED_KEYS_COMPACT_JSON",
+    "omitted_defaults": "FORBIDDEN_IN_RECORDED_FIXTURES",
+    "ordered_arrays": "PRESERVED",
+    "scope": "EXACT_INTERNAL_ACQUISITION_REQUEST_DOCUMENT"
+  },
+  "source_artifacts": [
+    {
+      "bytes": 8970,
+      "sha256": "eb72f0305aa02529517e3154246c2a5104f42a886ec5b31dc8636b22ac440619",
+      "uri": "repo://changes/st-1203/contracts/search-console-recorded-fixtures.v1.yaml"
+    },
+    {
+      "bytes": 49109,
+      "sha256": "c002653db89f6b9ac33dff3abace994d6c6dc2583a2d6f4a2940d0a0577687b3",
+      "uri": "repo://scripts/build_st1203_search_console_recorded_adapter.py"
+    }
+  ]
+}

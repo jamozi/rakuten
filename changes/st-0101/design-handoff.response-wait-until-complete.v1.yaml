@@ -1,0 +1,107 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Continuous same-window ChatGPT Pro response waiting after one approved submission
+    - scripts/chatgpt_pro_orchestrator.py live ask and resume response lifecycle
+    - tests/st0101 deterministic long-generation, stability, interruption, and no-resubmission coverage
+    - changes/st-0101/README.md and docs/worklogs/ST-0101.md operational contract and evidence
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md response-wait instructions
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.interactive-auth-wait.v1.yaml
+    - changes/st-0101/design-handoff.current-pro-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-body.v1.yaml
+    - changes/st-0101/design-handoff.current-response-actions-correction.v1.yaml
+  decision: >-
+    After one approved prompt submission, keep the same MCP transport and the
+    same selected dedicated browser window open while ChatGPT is generating.
+    Poll with the allowlisted browser_wait_for tool for exactly five seconds
+    followed by browser_snapshot, with no fixed response-time limit. Continue
+    until an exact valid PRO_ADVICE_V1 response is durably finalized, a known
+    fail-closed stop or unrecoverable transport failure is recorded, or the
+    operator explicitly interrupts the command. Apply the same continuous
+    wait after a no-resubmission resume navigation. Ordinary response latency
+    must not create WAITING or close the window.
+
+    When a response-like marker exists without a known generating marker, form
+    an in-memory SHA-256 digest from only the normalized bounded assistant
+    response subtree used by the strict parser. Exclude volatile accessibility
+    refs and all content outside that subtree. A candidate becomes stable only
+    after the same digest is observed on three consecutive snapshots at the
+    five-second polling interval, spanning at least ten seconds. Reset the
+    stability sequence whenever the digest changes. Parse only a stable
+    candidate. A stable valid candidate is finalized; a stable invalid or
+    ambiguous candidate fails closed with the existing sanitized response
+    refusal code. Never persist or log a raw snapshot, response subtree, raw
+    response, accessibility ref, URL beyond the already-approved exact-origin
+    conversation URL, or the stability digest.
+  rationale: >-
+    The live run submitted successfully but each ask or resume invocation
+    observed at most an immediate snapshot and two five-second waits, returned
+    WAITING, and unconditionally called browser_close. On resume, a
+    response-like heading could appear before its body subtree stabilized, so
+    the strict parser could terminalize RESPONSE_NOT_IDENTIFIABLE before the
+    complete response was observable. Continuous same-transport waiting and a
+    deterministic stability barrier preserve the strict parser while allowing
+    long Pro responses and transient DOM construction to complete.
+  rejected_alternatives:
+    - Keep the approximately ten-second response window and require repeated manual resume commands
+    - Close and reopen the browser during ordinary response generation
+    - Add a configurable or fixed response timeout
+    - Resubmit the prompt when a response is slow or a resume is needed
+    - Relax exact-origin, current-response, PRO_ADVICE_V1, sensitivity, role, label, punctuation, or action-group validation
+    - Persist raw snapshots, response text, response-subtree text, accessibility refs, or stability digests for diagnosis
+    - Treat the separate 900-second interactive authentication budget as a response-generation timeout
+  constraints:
+    - Response polling is fixed at five seconds and has no response-duration or retry-count input in CLI, Make, environment, or contract files
+    - The same StdioMcpTransport and selected dedicated browser window remain active throughout ordinary post-submission generation
+    - Ask submits exactly once; resume permits only navigate, snapshot, wait, and close and never types, clicks Send, or resubmits
+    - Missing assistant markers and known generating markers remain pending indefinitely
+    - Candidate stability requires three consecutive identical sanitized response-subtree digests and resets on any semantic change
+    - Existing strict advanced and legacy response parsers remain the only response validators and are not made permissive
+    - Browser close occurs only after durable valid finalization, durable fail-closed finalization, unrecoverable transport cleanup, or explicit operator interruption
+    - Explicit interruption persists a resumable WAITING state with resubmit_allowed false and the existing conversation binding before cleanup
+    - Transport loss after submission preserves the existing ambiguity or resumable WAITING contract and never triggers automatic resubmission
+    - Waiting progress may record only elapsed seconds, poll count, and sanitized phase at intervals no more frequent than sixty seconds
+    - Initial UI settle and interactive authentication behavior remain unchanged and separate from response waiting
+    - Raw prompt, raw response, raw snapshot, cookies, storage, credentials, sidebar content, and unrelated tabs remain forbidden
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly requested keeping the window open until the response is obtained and approved implementation of this plan
+    - The repository owner selected no fixed response-wait limit and stable-DOM rechecking at five-second intervals
+    - Exact https://chatgpt.com origin validation and all known stop-state checks run on every snapshot before response processing
+    - CAPTCHA, login, reauthentication, account ambiguity, rate limit, origin mismatch, unknown UI, and transport failure retain their existing fail-closed boundaries
+    - Captured output remains a hash-bound UNAPPROVED_PROPOSAL pending human and canonical reconciliation
+    - Live validation must use only the dedicated profile and allowlisted MCP tools and must stop rather than bypass any safety state
+  acceptance_criteria:
+    - A response taking longer than the predecessor ten-second window is captured in one ask or resume invocation without an ordinary WAITING result
+    - browser_close is not called while the response is absent, generating, or semantically changing
+    - A response-like partial DOM is not parsed until its sanitized response subtree is stable for three consecutive observations
+    - A stable valid response is finalized and durably recorded before the browser closes
+    - A stable invalid response is durably failed closed before the browser closes and is never persisted as advice
+    - Explicit operator interruption leaves a verified resumable run and resume performs no submission action
+    - Origin, stop, sensitivity, hash-chain, one-submission, no-resubmission, and unapproved-authority controls remain green
+    - A dedicated live smoke obtains and verifies one PRO_ADVICE_V1 response or reports an exact recognized safe stop without retrying through another browser
+  required_test_evidence:
+    - Ask and resume fixtures with more than twenty pending polls before a stable valid response
+    - Stable-candidate tests proving three identical observations and digest reset after semantic change
+    - Partial heading/body construction followed by successful exact PRO_ADVICE_V1 capture
+    - Stable invalid and ambiguous response refusal with no proposal persistence
+    - Generating and empty-loading sequences proving no response timeout and no early close
+    - Explicit interruption, transport failure, exact-origin stop, rate-limit, authentication, and account-ambiguity cleanup tests
+    - Exact tool traces proving one ask submission and resume navigate/snapshot/wait/close only
+    - Raw prompt, response, snapshot, ref, URL, and digest non-persistence regressions
+    - Full isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, and scoped diff checks
+    - Dedicated-profile live response capture evidence kept separate from formal TST-001, CI, staging, and production evidence
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation-and-approved-plan
+    approved_on: 2026-08-05
+    statement: >-
+      Approve continuous same-window waiting with no fixed response timeout and
+      stable-DOM rechecking, then implement and run a live response-capture test.

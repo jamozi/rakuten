@@ -1,0 +1,28 @@
+Use the attached `ST-1203-pro-design-input-v1.tar.gz` as the complete local
+evidence packet and read
+`changes/st-1203/DESIGN-DECISION-REQUEST-v1.md` first.
+
+Verify the archive, member manifest, request, and this submission message
+against `changes/st-1203/pro-design-bundle.v1.yaml`. Then verify every payload
+member against `changes/st-1203/pro-design-input.v1.members.sha256`. Reject any
+missing, extra, duplicate, linked, non-regular, absolute, or traversing member.
+
+Produce one exact `DESIGN_HANDOFF_V1` proposal for canonical Story ST-1203,
+covering ST1203-D1 through ST1203-D10. Reconcile the official Search Analytics
+semantics, installed adapter contracts, ST-0305 physical database constraints,
+ST-0204 configuration boundary, current recorded-fixture checkpoint, and
+publication precedents. Do not implement code, call Google, use credentials,
+close OD-015, change canonical bytes, write a database, or broaden the Story.
+
+Return only one complete downloadable UTF-8/LF YAML file named
+`DESIGN_HANDOFF_V1_ST1203_RECORDED_ADAPTER_v1.yaml`, rooted exactly at
+`DESIGN_HANDOFF_V1` and containing every mandatory field required by the
+request. If a required schema or runtime capability is owned by another Story,
+identify its exact prerequisite and safe stop boundary instead of inventing
+authority.
+
+Keep the result pending and unapproved: human approval not provided, canonical
+reconciliation pending, implementation authority not granted, formal TST-030,
+live validation, CI, staging, and production not executed or ready. OD-015 must
+remain an unchanged deferred external decision. Do not emit a prose advisory,
+summary, or code patch instead of the complete file.

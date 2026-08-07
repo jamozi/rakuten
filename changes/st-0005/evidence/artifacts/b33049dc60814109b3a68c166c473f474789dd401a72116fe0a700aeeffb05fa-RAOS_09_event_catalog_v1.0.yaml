@@ -1,0 +1,474 @@
+document:
+  id: RAOS-ANALYTICS-EVENTS-001
+  version: '1.0'
+event_envelope:
+  required:
+  - event_id
+  - event_name
+  - schema_version
+  - occurred_at
+  - received_at
+  - source
+  - site_id
+  - correlation_id
+  rules:
+  - at-least-onceを前提にevent_idで重複排除
+  - client時刻とserver受領時刻を分離
+  - PIIをEventへ含めない
+  - 未知Parameterは契約違反
+events:
+- id: EVT-001
+  event_name: article_view
+  source: public_web
+  purpose: 承認済み記事閲覧
+  ga4_mapping: page_view
+  mvp: true
+  parameters:
+  - event_id
+  - occurred_at
+  - anonymous_session_id
+  - article_id
+  - snapshot_id
+  - category_id
+  - referrer_class
+  - consent_state
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-002
+  event_name: qualified_decision_engagement
+  source: public_web
+  purpose: 比較/選び方への有意な関与
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - component_type
+  - engagement_kind
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-003
+  event_name: affiliate_cta_impression
+  source: public_web
+  purpose: CTAがViewportに表示
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - cta_id
+  - offer_id
+  - placement
+  - visibility_threshold
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-004
+  event_name: affiliate_click
+  source: public_web
+  purpose: 楽天CTAクリック
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - cta_id
+  - offer_id
+  - placement
+  - beacon_transport
+  - consent_state
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-005
+  event_name: product_card_view
+  source: public_web
+  purpose: 商品Card閲覧
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - product_id
+  - offer_id
+  - placement
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-006
+  event_name: comparison_interaction
+  source: public_web
+  purpose: 比較表の展開/Sort/Filter
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - interaction
+  - axis_code
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-007
+  event_name: internal_link_click
+  source: public_web
+  purpose: 関連記事Journey遷移
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - from_article_id
+  - to_article_id
+  - placement
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-008
+  event_name: disclosure_view
+  source: public_web
+  purpose: 開示表示の到達確認
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - disclosure_version
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-009
+  event_name: content_feedback
+  source: public_web
+  purpose: 記事の役立ちFeedback
+  ga4_mapping: null
+  mvp: false
+  parameters:
+  - article_id
+  - snapshot_id
+  - rating
+  - reason_code
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-010
+  event_name: degraded_content_view
+  source: public_web
+  purpose: Stale/Unavailable縮退表示
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - degradation_code
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-011
+  event_name: affiliate_link_error
+  source: public_web
+  purpose: CTA生成/Link health異常
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - cta_id
+  - error_code
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-012
+  event_name: web_vital
+  source: public_web
+  purpose: RUM性能
+  ga4_mapping: custom metric
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - metric_name
+  - metric_value
+  - rating
+  - navigation_type
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-013
+  event_name: search_console_fact_imported
+  source: worker
+  purpose: GSC Fact取込
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - import_batch_id
+  - site_id
+  - date
+  - dimension_set
+  - row_count
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-014
+  event_name: ga4_fact_imported
+  source: worker
+  purpose: GA4集計取込
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - import_batch_id
+  - property_id
+  - date_range
+  - metric_set
+  - row_count
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-015
+  event_name: revenue_file_uploaded
+  source: admin
+  purpose: 成果File受領
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - import_batch_id
+  - file_hash
+  - file_size
+  - uploader_id
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-016
+  event_name: revenue_import_dry_run_completed
+  source: worker
+  purpose: Dry Run完了
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - import_batch_id
+  - row_count
+  - error_count
+  - duplicate_count
+  - amount_totals
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-017
+  event_name: revenue_import_committed
+  source: admin
+  purpose: 成果Canonical取込
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - import_batch_id
+  - committer_id
+  - provider_row_count
+  - confirmed_total
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-018
+  event_name: attribution_run_completed
+  source: worker
+  purpose: 帰属計算完了
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - run_id
+  - method_version
+  - direct_count
+  - estimated_count
+  - unattributed_count
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-019
+  event_name: publication_state_changed
+  source: backend
+  purpose: 公開状態変更
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_id
+  - snapshot_id
+  - from_state
+  - to_state
+  - actor_type
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: EVT-020
+  event_name: quality_gate_evaluated
+  source: backend
+  purpose: 品質Gate評価
+  ga4_mapping: null
+  mvp: true
+  parameters:
+  - article_version_id
+  - policy_bundle_version
+  - score
+  - pass
+  - blocking_count
+  prohibited_parameters:
+  - email
+  - phone
+  - raw_ip
+  - full_user_agent
+  - raw_search_query
+  - article_body
+  - source_packet_text
+  - affiliate_url_query_secret
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED

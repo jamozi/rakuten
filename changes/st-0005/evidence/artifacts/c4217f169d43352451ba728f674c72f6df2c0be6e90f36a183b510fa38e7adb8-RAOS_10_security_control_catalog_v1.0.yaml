@@ -1,0 +1,835 @@
+document:
+  id: RAOS-SEC-CONTROLS-001
+  version: '1.0'
+  baseline: OWASP ASVS 5.0 Level 2 target plus RAOS-specific controls
+controls:
+- id: SEC-GOV-001
+  category: GOV
+  title: Security ownership
+  requirement: Security Ownerと代替者を明示する
+  verification: review ownership records
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-GOV-002
+  category: GOV
+  title: Risk register
+  requirement: Threat、control、residual risk、ownerをVersion管理
+  verification: risk register review
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-GOV-003
+  category: GOV
+  title: Security exception
+  requirement: 期限、代替control、承認者を必須化
+  verification: exception audit
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-GOV-004
+  category: GOV
+  title: External terms review
+  requirement: 楽天/Google/OpenAI/AWSの変更をRelease前に確認
+  verification: change evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-GOV-005
+  category: GOV
+  title: Production readiness
+  requirement: GATE-0前にSecurity evidence packを承認
+  verification: gate review
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-GOV-006
+  category: GOV
+  title: Data inventory
+  requirement: Data class、purpose、retention、processorを管理
+  verification: inventory diff
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-GOV-007
+  category: GOV
+  title: Incident authority
+  requirement: Kill switchとcredential revocation権限を明確化
+  verification: tabletop exercise
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-GOV-008
+  category: GOV
+  title: Vendor assessment
+  requirement: ProviderのData control/region/subprocessorを確認
+  verification: vendor record
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-001
+  category: IAM
+  title: OIDC only admin
+  requirement: Production AdminにLocal password loginを設けない
+  verification: auth integration test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-002
+  category: IAM
+  title: MFA mandatory
+  requirement: 全Admin accountにMFAを要求
+  verification: identity policy evidence
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-003
+  category: IAM
+  title: Step-up critical actions
+  requirement: 公開/rollback/kill switch/secret等で再認証
+  verification: E2E test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-004
+  category: IAM
+  title: Least privilege
+  requirement: Role/Scope/Siteで最小権限
+  verification: authorization matrix test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-005
+  category: IAM
+  title: Server authorization
+  requirement: 全CommandでBackendが権限を再判定
+  verification: negative API test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-006
+  category: IAM
+  title: Session controls
+  requirement: Secure HttpOnly SameSite cookie、rotation、idle/max lifetime
+  verification: browser security test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-007
+  category: IAM
+  title: CSRF protection
+  requirement: Cookie auth CommandへCSRF token/origin validation
+  verification: CSRF test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-008
+  category: IAM
+  title: Account lifecycle
+  requirement: Joiner/Mover/Leaver、即時失効
+  verification: access review
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-009
+  category: IAM
+  title: Service identity
+  requirement: Worker/CIは人間Credentialを共有しない
+  verification: IAM policy test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-010
+  category: IAM
+  title: GitHub OIDC
+  requirement: 長期AWS keyをActions secretに置かない
+  verification: workflow inspection
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-011
+  category: IAM
+  title: Break glass
+  requirement: 封印・期限・二者確認・全操作監査
+  verification: tabletop
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-IAM-012
+  category: IAM
+  title: Periodic access review
+  requirement: RoleとInactive accountを定期確認
+  verification: review evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-001
+  category: APP
+  title: Input validation
+  requirement: OpenAPI/JSON Schema/Domain ruleで未知Field拒否
+  verification: contract negative tests
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-002
+  category: APP
+  title: Output encoding
+  requirement: Context別encodingとSafe renderer
+  verification: XSS tests
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-003
+  category: APP
+  title: CSP
+  requirement: nonce/hashベースのCSPを適用
+  verification: header/browser test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-004
+  category: APP
+  title: No raw HTML
+  requirement: Content ASTでscript/iframe/event handler禁止
+  verification: schema tests
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-005
+  category: APP
+  title: SSRF defense
+  requirement: Outbound先allowlist、DNS/IP再検査、metadata遮断
+  verification: SSRF tests
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-006
+  category: APP
+  title: Open redirect defense
+  requirement: 任意return URL/affiliate redirectを禁止
+  verification: redirect tests
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-007
+  category: APP
+  title: File upload defense
+  requirement: size/type/magic/scan/quarantine
+  verification: malicious fixture
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-008
+  category: APP
+  title: CSV formula defense
+  requirement: =,+,-,@等をSpreadsheet解釈させない
+  verification: CSV security tests
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-009
+  category: APP
+  title: Rate limiting
+  requirement: Public/Admin/Internalを別Policyで制限
+  verification: load/security test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-010
+  category: APP
+  title: Problem details hygiene
+  requirement: Stack/SQL/secretをClientへ返さない
+  verification: error contract test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-011
+  category: APP
+  title: Idempotency binding
+  requirement: Keyをactor/operation/payload hashへ束縛
+  verification: replay test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-012
+  category: APP
+  title: ETag concurrency
+  requirement: Stale updateを412で拒否
+  verification: concurrency test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-013
+  category: APP
+  title: Affiliate URL integrity
+  requirement: 公式生成URLを改変せずallowlist検証
+  verification: link contract test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-014
+  category: APP
+  title: Security headers
+  requirement: HSTS、nosniff、frame-ancestors、referrer policy
+  verification: header scan
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-APP-015
+  category: APP
+  title: Cache isolation
+  requirement: Admin/Confidential responseをshared cacheしない
+  verification: cache test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-001
+  category: DATA
+  title: Encryption in transit
+  requirement: TLSをPublic/Internal/Providerで要求
+  verification: TLS scan
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-002
+  category: DATA
+  title: Encryption at rest
+  requirement: RDS/S3/backup/logを暗号化
+  verification: cloud config test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-003
+  category: DATA
+  title: Secret storage
+  requirement: SecretをDB/Repo/Logへ置かない
+  verification: secret scan
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-004
+  category: DATA
+  title: Object integrity
+  requirement: Raw/SnapshotへSHA-256とVersionを記録
+  verification: tamper test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-005
+  category: DATA
+  title: Immutable audit
+  requirement: Audit/approval/provider factを通常Roleで更新削除不可
+  verification: DB role test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-006
+  category: DATA
+  title: Public projection isolation
+  requirement: Public roleはreadmodelのみ
+  verification: DB grant test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-007
+  category: DATA
+  title: Data minimization
+  requirement: Event/Logへ不要な個人情報を収集しない
+  verification: schema/privacy review
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-008
+  category: DATA
+  title: Retention enforcement
+  requirement: 承認済み期間に基づき削除/匿名化
+  verification: retention job test
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-009
+  category: DATA
+  title: Backup protection
+  requirement: Backup access/rotation/deleteを分離
+  verification: restore and IAM test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-DATA-010
+  category: DATA
+  title: Deletion verification
+  requirement: 削除JobとObject lifecycleの結果を監査
+  verification: deletion evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-001
+  category: INFRA
+  title: Private data plane
+  requirement: RDS/worker/object admin endpointをPublicにしない
+  verification: network scan
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-002
+  category: INFRA
+  title: WAF/CDN boundary
+  requirement: Public ingressを管理Pointへ限定
+  verification: architecture/config test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-003
+  category: INFRA
+  title: Egress control
+  requirement: Workload別にProvider allowlist
+  verification: network test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-004
+  category: INFRA
+  title: AWS account separation
+  requirement: ProductionとDevelopmentを分離
+  verification: account inventory
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-005
+  category: INFRA
+  title: IaC only production
+  requirement: Manual driftを検知し原則IaCで変更
+  verification: drift test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-006
+  category: INFRA
+  title: S3 public access block
+  requirement: Artifact bucketのpublic accessを遮断
+  verification: config rule
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-007
+  category: INFRA
+  title: RDS protection
+  requirement: publiclyAccessible=false、backup、deletion protection
+  verification: config test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-008
+  category: INFRA
+  title: SQS policy
+  requirement: Producer/consumer queue権限を分離
+  verification: IAM test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-009
+  category: INFRA
+  title: CloudTrail/audit
+  requirement: Control plane操作を記録
+  verification: log evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-INFRA-010
+  category: INFRA
+  title: Budget/abuse guard
+  requirement: 急増時のAlertと停止手順
+  verification: alert drill
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-AI-001
+  category: AI
+  title: Untrusted source treatment
+  requirement: Source/商品説明を命令として扱わない
+  verification: red-team tests
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-AI-002
+  category: AI
+  title: No tools by default
+  requirement: AI Taskに自由Web/DB/queue/tool権限を与えない
+  verification: provider request inspection
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-AI-003
+  category: AI
+  title: Structured output
+  requirement: strict schema＋domain validation
+  verification: schema/fact tests
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-AI-004
+  category: AI
+  title: Evidence bounded generation
+  requirement: 承認Source Packet外のFact補完禁止
+  verification: eval suite
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-AI-005
+  category: AI
+  title: Prompt/version integrity
+  requirement: Prompt/schema/route/hashをReleaseへ束縛
+  verification: release evidence
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-AI-006
+  category: AI
+  title: Sensitive input filter
+  requirement: Restricted dataをProvider送信前に拒否
+  verification: DLP tests
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-AI-007
+  category: AI
+  title: Human gate
+  requirement: Critical Task出力は承認・公開できない
+  verification: authorization/E2E
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-AI-008
+  category: AI
+  title: AI incident rollback
+  requirement: zero-tolerance時にRoute停止とartifact保全
+  verification: tabletop
+  priority: P0
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-001
+  category: SDLC
+  title: Protected default branch
+  requirement: Rulesetとrequired review/checks
+  verification: GitHub config evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-002
+  category: SDLC
+  title: CODEOWNERS
+  requirement: Security、migration、contractsへowner review
+  verification: PR test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-003
+  category: SDLC
+  title: Dependency pinning
+  requirement: Lockfileとverified source
+  verification: dependency review
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-004
+  category: SDLC
+  title: SCA
+  requirement: Dependency/container vulnerability scan
+  verification: CI evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-005
+  category: SDLC
+  title: SAST
+  requirement: Python/TS/IaC/static security scan
+  verification: CI evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-006
+  category: SDLC
+  title: Secret scanning
+  requirement: History/PR/artifactをscan
+  verification: CI evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-007
+  category: SDLC
+  title: SBOM
+  requirement: Release artifactのSBOM生成
+  verification: release evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-008
+  category: SDLC
+  title: Signed provenance
+  requirement: Build provenance/attestationを生成
+  verification: release evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-009
+  category: SDLC
+  title: Reproducible generation
+  requirement: OpenAPI/Schema生成のdriftを検知
+  verification: CI evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-010
+  category: SDLC
+  title: Migration review
+  requirement: DDL/role/data migrationを独立review
+  verification: PR evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-011
+  category: SDLC
+  title: Security test gates
+  requirement: Critical/High未解決でRelease禁止
+  verification: CI/release evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-SDLC-012
+  category: SDLC
+  title: Environment protection
+  requirement: Production deployはHuman approval
+  verification: GitHub environment evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-OPS-001
+  category: OPS
+  title: Security monitoring
+  requirement: Auth failure、privilege、secret、WAF、kill switchを監視
+  verification: alert test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-OPS-002
+  category: OPS
+  title: Credential rotation
+  requirement: Provider/AWS/DB secretのrotation手順
+  verification: rotation drill
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-OPS-003
+  category: OPS
+  title: Incident severity
+  requirement: SEVとresponse ownerを定義
+  verification: tabletop
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-OPS-004
+  category: OPS
+  title: Forensic preservation
+  requirement: Artifact、log、timelineを保全
+  verification: incident drill
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-OPS-005
+  category: OPS
+  title: Vulnerability response
+  requirement: severity別SLAとexception
+  verification: ticket evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-OPS-006
+  category: OPS
+  title: Restore authorization
+  requirement: Restore環境を隔離しAccessを制御
+  verification: restore drill
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-OPS-007
+  category: OPS
+  title: Kill switch generation
+  requirement: 古い状態で解除上書き不可
+  verification: concurrency test
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: SEC-OPS-008
+  category: OPS
+  title: Post incident review
+  requirement: 原因、impact、control improvementを記録
+  verification: PIR evidence
+  priority: P1
+  gate: GATE-0
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED

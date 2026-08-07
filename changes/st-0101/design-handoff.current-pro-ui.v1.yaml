@@ -1,0 +1,117 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Current ChatGPT Pro advanced model and effort UI contract
+    - changes/st-0101/chatgpt-pro-known-ui.v1.json additive advanced profile
+    - scripts/chatgpt_pro_workflow.py strict advanced-profile validation
+    - scripts/chatgpt_pro_orchestrator.py exact advanced-menu verification and post-type send lookup
+    - tests/st0101 deterministic current-UI state-machine, non-submission, and regression coverage
+    - changes/st-0101/README.md and docs/worklogs/ST-0101.md guidance and evidence
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md current-UI verification wording
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.raos-ask-pro.v1.yaml
+    - changes/st-0101/design-handoff.edge-browser.v1.yaml
+    - changes/st-0101/design-handoff.interactive-auth-wait.v1.yaml
+    - changes/st-0101/design-handoff.wslg-visible-browser.v1.yaml
+    - changes/st-0101/design-handoff.initial-ui-settle.v1.yaml
+  decision: >-
+    Add one strict advanced UI profile for the sanitized, exact-origin live
+    controls observed on 2026-08-05. The landing has one button Pro and one
+    textbox Chat with ChatGPT. Opening Pro yields menu Pro and the exact
+    menuitems Show advanced options or, when already expanded, Show compact
+    options. The expanded view must expose menuitems Model GPT-5.6 Sol and
+    Effort Pro. Open the model submenu and require the exact ordered
+    menuitemradio choices GPT-5.6 Sol, GPT-5.5, GPT-5.3, and o3, with exactly
+    GPT-5.6 Sol marked checked. Open the effort submenu and require the exact
+    ordered menuitemradio choices Instant 5.5, Medium, High, Extra High, and
+    Pro, with exactly Pro marked checked and last. A checked target is verified
+    and never re-clicked. Close and reopen only the unique top-level Pro button
+    as needed to inspect the two submenus. After both checks, close the menu,
+    revalidate the exact origin, unique Pro button, and unique composer, then
+    type only the MCP secret name with submit false. Take one new snapshot,
+    revalidate the origin and stop states, require one button Send prompt, then
+    durably record submission intent and click that exact control. Retain the
+    two predecessor UI profiles for their exact known shapes, but select the
+    new advanced path only when its exact advanced controls are present.
+  rationale: >-
+    Sanitized in-memory probes returned no raw snapshot or conversation data
+    and established the current accessible control contract. The existing
+    split profile mistook the top-level Pro surface button for a selectable
+    model option, while the current UI exposes the actual model and effort in
+    nested advanced menus. The current Send control does not exist before
+    composer input and appears afterward as Send prompt. A separate exact
+    advanced profile preserves fail-closed legacy behavior while enabling the
+    live current UI without substring matching or unverified clicks.
+  rejected_alternatives:
+    - Treat the top-level Pro button as proof of the actual model and maximum effort
+    - Click the already-checked GPT-5.6 Sol or Pro menuitemradio control
+    - Infer model or effort from visual text without inspecting the exact option set and checked state
+    - Use partial, prefix, suffix, regex, fuzzy, translated, or arbitrary label matching
+    - Assume a Send button exists before composer input or submit with Enter
+    - Type before model and maximum-effort verification
+    - Click a send-like control without a post-type exact-origin snapshot and unique Send prompt button
+    - Persist or expose raw snapshots, conversation titles, sidebar data, cookies, storage, or profile contents
+    - Use CDP, remote debugging, an extension, an existing browser, or browser fallback
+  constraints:
+    - The advanced profile uses only the existing closed profile fields and adds effort_mode advanced
+    - The model option order is exactly GPT-5.6 Sol, GPT-5.5, GPT-5.3, o3
+    - The effort option order is exactly Instant 5.5, Medium, High, Extra High, Pro
+    - Target model GPT-5.6 Sol and target effort Pro must each have one menuitemradio ref marked checked
+    - Any missing, duplicate, reordered, unexpected, unchecked, or differently-role control stops before typing
+    - Exactly one of Show advanced options and Show compact options must identify the advanced-view state
+    - Checked target controls are verification evidence and must not be clicked
+    - Only the unique top-level button Pro may close or reopen the advanced menus
+    - Before typing, the final landing must have exact origin, no stop state, one button Pro, and one textbox or combobox with an approved exact composer label
+    - browser_type must continue to receive only RAOS_CHATGPT_PROMPT with submit false
+    - Send prompt is resolved only from a fresh post-type exact-origin snapshot and must be one button
+    - A missing or ambiguous post-type send control stops without a send click and with submission_attempted false
+    - SUBMISSION_INTENT_RECORDED remains immediately before the unique send click, never before model/effort verification
+    - Existing WSLg, initial settle, manual authentication, browser/profile, secret, origin, resume, and no-fallback controls remain unchanged
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved continuing until a Pro instruction is submitted and its answer is received
+    - The sanitized probes used only navigate, snapshot, approved menu clicks, one submit-false diagnostic input, and close on the exact origin
+    - The current-UI implementation may use only the existing allowlisted browser tools
+    - No raw prompt text may enter a tool argument; only the MCP secret name is typed
+    - Visible model and maximum-effort verification remains mandatory before input
+    - No send click is allowed until a fresh post-type snapshot validates unique Send prompt
+    - Account, subscription, publication, release, finance, and production actions remain prohibited
+    - Captured output remains a hash-bound unapproved proposal pending human and canonical reconciliation
+  acceptance_criteria:
+    - The current advanced controls uniquely select the advanced profile rather than a legacy profile
+    - The full exact model option order is verified and GPT-5.6 Sol is uniquely checked without re-clicking it
+    - The full exact effort option order is verified and last option Pro is uniquely checked without re-clicking it
+    - Missing, duplicate, reordered, extra, wrong-role, or unchecked model or effort states stop before composer input
+    - The final pre-type landing revalidates exact origin, Pro button, and unique composer
+    - No send lookup is required before typing for the advanced profile
+    - After submit-false typing, one fresh exact-origin snapshot yields one button Send prompt
+    - Missing, ambiguous, stop-state, or origin-drift post-type snapshots stop without a send click
+    - Submission intent is recorded only after the post-type Send prompt ref is known and immediately before clicking it
+    - Existing legacy combined and split fixtures and all ST-0101 security regressions remain green
+    - A live run visibly verifies GPT-5.6 Sol and effort Pro, submits the staged RAOS request, and captures a response or a resumable post-submit state
+  required_test_evidence:
+    - Exact current advanced happy-path scripted transport including call order and no checked-target clicks
+    - Model option missing, duplicate, reorder, extra, wrong-role, and unchecked refusal tests
+    - Effort option missing, duplicate, reorder, extra, wrong-role, target-not-last, and unchecked refusal tests
+    - Advanced-expansion missing, duplicate, and simultaneous expand/collapse refusal tests
+    - Final pre-type origin, stop, Pro-button, and composer refusal tests
+    - Post-type Send prompt success, missing, duplicate, wrong-role, stop-state, origin-drift, and disconnect tests
+    - Test proving raw prompt absence, submit false, no send click before fresh snapshot, and intent-event ordering
+    - Strict contract validation tests for effort_mode advanced and the exact ordered profile
+    - Existing legacy, initial-settle, auth-wait, WSLg, Edge-first, profile, hash-chain, resume, and leakage tests
+    - Ruff, Python compilation, shell syntax, Skill validation, scoped diff check, and isolated tests/st0101 results
+    - Live exact-origin submission and response/resume evidence, kept distinct from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation-and-active-goal
+    approved_on: 2026-08-05
+    statement: >-
+      Approve the bounded changes necessary to send the staged instruction to
+      ChatGPT Pro and receive its answer, while preserving exact-origin,
+      visible model and maximum-effort verification, secret-name-only input,
+      human authentication, and fail-closed submission controls.

@@ -1,0 +1,82 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Current ChatGPT Pro response action-group exclusion
+    - scripts/chatgpt_pro_orchestrator.py advanced response-body parser
+    - tests/st0101 action-group opacity, placement, drift, and no-resubmission coverage
+    - changes/st-0101/README.md and docs/worklogs/ST-0101.md evidence
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md response-action wording
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.current-response-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-body.v1.yaml
+  decision: >-
+    In the strict advanced response-body subtree only, recognize the exact
+    unreferenced container line group "Your message actions": as an opaque
+    action group. It may occur only after at least one accepted response text
+    fragment and must be nested below the response-body root. The group label,
+    its buttons, links, URLs, generic descendants, and any text or statictext
+    descendants never contribute response bytes. Any other group label, role
+    case, punctuation, whitespace form, scalar form, ref-bearing form, group
+    before the first response fragment, or response fragment after entry into
+    the group stops without persistence. Legacy response parsing remains
+    unchanged. Resume never types, clicks, or resubmits.
+  rationale: >-
+    A sanitized exact-origin structural comparison of the completed live run
+    showed that every response-body invariant and all 15 JSON-string fragments
+    reconstructed the valid 8,389-character PRO_ADVICE_V1 object. The sole
+    unrecognized role was one ref-free exact group "Your message actions": at
+    indentation 20 after all 15 response fragments, under two generic
+    ancestors. It is UI action chrome, not model output, and must be excluded
+    as an exact opaque subtree rather than widening accepted response roles.
+  rejected_alternatives:
+    - Accept arbitrary group roles, labels, attributes, refs, or positions
+    - Add action-group labels or descendant controls to the response text
+    - Ignore every unknown role without an exact contract
+    - Stop extraction at the group without checking for later response fragments
+    - Click, inspect, or activate any action-group control
+    - Resubmit the original request
+  constraints:
+    - The accepted physical line is exactly the existing indentation followed by - group "Your message actions":
+    - The action group has no ref, attributes, scalar value, or alternate label
+    - At least one valid response fragment precedes the action group
+    - The group occurs strictly inside the bounded response-body subtree
+    - The group and every descendant role or payload are opaque and contribute zero bytes
+    - No accepted response text or statictext fragment may occur after the action group begins
+    - Missing action group remains valid because the group is optional UI chrome
+    - Multiple exact action groups, wrong placement, near-match, or ref-bearing variants refuse
+    - Existing exact JSON reconstruction, PRO_ADVICE_V1, sensitivity, origin, stop, distinct-ref, hash-chain, and no-persistence-before-validation controls remain unchanged
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner approved bounded changes needed to receive the already-authorized Pro answer
+    - The sanitized probe returned only the role count, indentation, ancestor roles, placement after 15 fragments, exact-shape booleans, and the non-sensitive UI label
+    - No raw prompt, response value, snapshot, cookie, storage, credential, sidebar, or unrelated-tab data was output or persisted
+    - The existing run must be resumed without browser_type, browser_click, or resubmission
+    - Captured output remains a hash-bound unapproved proposal pending human and canonical reconciliation
+  acceptance_criteria:
+    - One optional exact post-fragment Your message actions group is ignored as data
+    - Valid-looking JSON in group labels or descendants never enters reconstructed response bytes
+    - Group before content, content after group, duplicate group, wrong label/case/punctuation/whitespace, attributes, scalar, or ref variants refuse before persistence
+    - The observed live structural fixture reconstructs and validates the exact PRO_ADVICE_V1 object
+    - Legacy response fixtures remain unchanged
+    - Resume trace remains navigate, snapshot, bounded wait if needed, and close only
+    - Full isolated ST-0101 and static security checks remain green
+  required_test_evidence:
+    - Exact optional action-group happy path following multiple response fragments
+    - Opaque descendant text/statictext, button, link, URL, and generic tests
+    - Pre-content, post-group-content, duplicate, wrong label, wrong case, wrong punctuation, whitespace, attribute, scalar, and ref refusal tests
+    - No-finalization, no-proposal-persistence, no-type, no-click, and no-resubmission assertions
+    - Existing response body, anchor, current UI, legacy, origin, stop, generating, sensitive, and advice regressions
+    - Ruff, Python compilation, shell syntax, Skill validation, scoped diff, and full isolated tests/st0101
+    - Live same-run response capture evidence, separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation-and-active-goal
+    approved_on: 2026-08-05
+    statement: >-
+      Approve the exact opaque action-group exclusion necessary to receive the
+      already-authorized Pro answer without weakening response or
+      no-resubmission controls.

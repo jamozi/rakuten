@@ -1,0 +1,271 @@
+schema: RAOS_PRO_DESIGN_BUNDLE_V1
+story_id: ST-1404
+scope: JOB_OUTBOX_INBOX_RUNTIME_DESIGN_ONLY
+status: PROPOSAL_INPUT_ONLY
+authority: NOT_A_DESIGN_HANDOFF
+implementation_authority: NOT_GRANTED
+human_approval: NOT_PROVIDED
+canonical_reconciliation: PENDING
+formal_test_execution: NOT_EXECUTED
+ci_validation: NOT_EXECUTED
+staging_failure_injection: NOT_EXECUTED
+live_queue_provider_validation: NOT_EXECUTED
+production_readiness: NOT_READY
+assembled_on: 2026-08-06
+
+archive:
+  path: changes/st-1404/ST-1404-pro-design-input-v1.tar.gz
+  sha256: bebc62ed38cb932b133d2188c963987ae02de635c3b2a21f40c02d918211467c
+  bytes: 433009
+  media_type: application/gzip
+  format: DETERMINISTIC_POSIX_TAR_GZIP
+  regular_file_members: 70
+  hashed_payload_members: 69
+  directories: 0
+  links: 0
+  devices: 0
+
+member_manifest:
+  path: changes/st-1404/pro-design-input.v1.members.sha256
+  sha256: 014597be20e428036137fa7550e259da8155e8d963f77284108b51973e2ee62b
+  entries: 69
+
+archive_allowlist:
+  path: changes/st-1404/pro-design-bundle.v1.files
+  sha256: 614b9f37c8103f5c1f2f35aeda0c36a46d497de031d6e1ebf6ffdb9f96175678
+  entries: 70
+
+request:
+  path: changes/st-1404/DESIGN-DECISION-REQUEST-v1.md
+  sha256: 7f983124295cbeed4eddb0309c92abbdcd036f9237df03851c2c3685b6d7460b
+
+submission_message:
+  path: changes/st-1404/PRO-SUBMISSION-MESSAGE-v1.txt
+  sha256: 2a7d712ee108a1edcd8abbf638258573d56fba750d07d44d838054ef8227115a
+
+design_preflight:
+  path: changes/st-1404/DESIGN-PREFLIGHT-AUDIT-v1.md
+  sha256: 9bcb459d4ee66419983aee6b23ed5abadc865184116c7f3f00b4bcba36ce8e0f
+  disposition: DESIGN_HANDOFF_REQUIRED
+
+canonical_story:
+  title: Job/Outbox/Inbox runtime
+  objective: DISPATCHER_WORKER_LEASE_RETRY_DLQ
+  exact_dependencies:
+    - ST-0303
+    - ST-0203
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+    - RUNTIME
+  acceptance:
+    - DUPLICATE_SAFE
+    - DEADLINE_CANCEL
+  required_suites:
+    - TST-013
+    - TST-028
+  story_open_decisions: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+
+job_state_checkpoint:
+  installed_contract:
+    path: contracts/raos-v0.4/job-state.v1.yaml
+    sha256: 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
+  predecessor_copy:
+    path: changes/st-0002/job-state.v1.yaml
+    sha256: 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
+  exact_allowed_transition_count: 16
+  isolated_state_machine_pytest: 107_PASSED
+  deferred_runtime_semantics:
+    - id: QUARANTINE_RELEASE_TIMESTAMPS
+      owner_story: ST-1404
+      status: UNRESOLVED_IN_IMPLEMENTATION_AUTHORITY
+    - id: RETRY_STATE_EXPIRY
+      owner_story: ST-1404
+      status: UNRESOLVED_IN_IMPLEMENTATION_AUTHORITY
+
+st_0203_checkpoint:
+  authority: LOCAL_CANDIDATE_EVIDENCE_ONLY
+  contract:
+    path: changes/st-0203/contracts/local-queue.v1.yaml
+    sha256: ff2eebf894d37ad50d35f7f11fd7a5767c5c456b55c33c7d20c5cea635bc9e92
+  manifest:
+    path: changes/st-0203/manifest.yaml
+    sha256: 3c149cad6591bac86f2db8cb3d60afae52efad5051f1996c1d3605315c8acdeb
+  inward_port:
+    path: python/raos/ports/queue.py
+    sha256: 97bf4cc18221a21949dd62273008067ea9a631c188a9ba5dcbf15a83679020df
+  deterministic_fake:
+    path: python/raos/adapters/queue_fake.py
+    sha256: 0d810f68e77e66a259dca28164825e93d05300edf6915f4c956f9bf3a31ab857
+  deterministic_generation_check: PASS
+  generation_check_reported_story_id: ST-0203
+  isolated_pytest: 55_PASSED
+  provider_adapter: NOT_IMPLEMENTED
+  worker_runtime: NOT_IMPLEMENTED
+  durable_persistence: NOT_IMPLEMENTED
+  consumer_idempotency_store: NOT_IMPLEMENTED
+  formal_tst_013: NOT_EXECUTED
+
+st_0303_checkpoint:
+  authority: LOCAL_CANDIDATE_EVIDENCE_ONLY
+  contract:
+    path: changes/st-0303/contracts/iam-ops-schema.v1.yaml
+    sha256: af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b
+  generated_catalog:
+    path: changes/st-0303/generated/iam-ops-catalog.v1.json
+    sha256: 0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a
+  manifest:
+    path: changes/st-0303/manifest.yaml
+    sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+  migration:
+    path: migrations/versions/202608030003_iam_ops_tables.py
+    sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
+  relevant_relations:
+    - ops.job
+    - ops.job_attempt
+    - ops.outbox_event
+    - ops.inbox_receipt
+  current_cumulative_generation_check: PASS
+  generation_check_reported_story_id: ST-0305
+  isolated_contract_generation_pytest: 26_PASSED
+  postgresql_18_4_reexecuted_for_packet: false
+  formal_tst_008: NOT_EXECUTED
+  formal_tst_011: NOT_EXECUTED
+  formal_tst_013: NOT_EXECUTED
+
+candidate_only_identity_evidence:
+  story_id: ST-0306
+  dependency_of_st_1404: false
+  authority_to_change_roles_or_grants: NOT_GRANTED
+  contract:
+    path: changes/st-0306/contracts/database-roles-grants.v1.yaml
+    sha256: 1155942168373361579bd157b19be0d7babc7c260eb3389df21688eb455a567b
+  validation_sql:
+    path: changes/st-0306/generated/database-roles-validation.v1.sql
+    sha256: 4ede5f64c41feaf6e7d5f8b086565728436a2a3a6d2edd943601f07d6b77e087
+
+physical_runtime_gaps:
+  ops_job:
+    lock_version: PRESENT_TRIGGER_INCREMENTED
+    lease_pair: PRESENT_NO_SEPARATE_FENCE_TOKEN
+    transition_graph_database_enforcement: ABSENT
+  ops_job_attempt:
+    row_version: ABSENT
+    lease_token: ABSENT
+    lifecycle_completion_semantics: DESIGN_REQUIRED
+  ops_outbox_event:
+    lease_owner: ABSENT
+    lease_expiry: ABSENT
+    fence_token: ABSENT
+    row_version: ABSENT
+    updated_at: ABSENT
+    unique_event_identity: ABSENT
+    orphaned_dispatching_recovery: DESIGN_OR_SCHEMA_GAP_REQUIRED
+  ops_inbox_receipt:
+    physical_classification: APPEND_ONLY
+    lifecycle_statuses: PRESENT
+    immutable_trigger: ABSENT
+    lease_owner: ABSENT
+    row_version: ABSENT
+    abandoned_processing_recovery: DESIGN_OR_SCHEMA_GAP_REQUIRED
+
+security_and_reliability_traceability:
+  controls:
+    - SEC-APP-010
+    - SEC-APP-011
+    - SEC-INFRA-008
+  threats:
+    - THR-017
+    - THR-022
+  operations_observability:
+    - QUEUE_AGE
+    - ATTEMPT
+    - DEADLINE
+    - RETRY
+    - DLQ
+    - COST
+  requirements_claimed_by_story: []
+
+decisions_requested:
+  - ST1404-D1
+  - ST1404-D2
+  - ST1404-D3
+  - ST1404-D4
+  - ST1404-D5
+  - ST1404-D6
+  - ST1404-D7
+  - ST1404-D8
+  - ST1404-D9
+  - ST1404-D10
+  - ST1404-D11
+  - ST1404-D12
+  - ST1404-D13
+  - ST1404-D14
+
+cross_story_boundaries:
+  st_0308_general_persistence_and_uow: EXCLUDED_NOT_A_DEPENDENCY
+  st_0306_database_roles_and_grants: CANDIDATE_EVIDENCE_ONLY
+  st_0405_audit_service: EXCLUDED_SEPARATE_OWNER
+  st_0706_ai_job_orchestration: EXCLUDED_SEPARATE_OWNER
+  st_1405_kill_switch_runtime: EXCLUDED_SEPARATE_OWNER
+  st_1502_queue_infrastructure_and_iam: EXCLUDED_SEPARATE_OWNER
+  production_queue_provider: NOT_CONFIGURED
+
+reuse_review_required:
+  existing_queue_port_and_fake: PREFERRED_BASELINE_CANDIDATE
+  existing_postgresql_contract: REQUIRED_PHYSICAL_BOUNDARY
+  compare:
+    - NO_NEW_FRAMEWORK
+    - CELERY
+    - RQ
+    - DRAMATIQ
+    - TEMPORAL
+  dependency_install_authority_granted: false
+
+generation:
+  tool: GNU tar 1.34
+  command: >-
+    LC_ALL=C tar --sort=name --mtime=@0 --owner=0 --group=0
+    --numeric-owner --format=posix --pax-option=delete=atime,delete=ctime
+    --no-recursion -czf
+    changes/st-1404/ST-1404-pro-design-input-v1.tar.gz -T
+    changes/st-1404/pro-design-bundle.v1.files
+  explicit_allowlist_only: true
+  deterministic_rebuild_comparison: PASS
+
+validation:
+  exact_70_member_closure: PASS
+  unique_member_paths: PASS
+  safe_relative_member_paths: PASS
+  regular_files_only: PASS
+  embedded_manifest_matches_bundle: PASS
+  all_69_archived_payload_hashes: PASS
+  live_source_hashes_match_manifest_at_assembly: PASS
+  canonical_import_verification: PASS
+  st_0005_status_drift_check: PASS
+  targeted_packet_secret_scan: PASS
+  repository_wide_secret_scan: NOT_CLAIMED
+
+expected_output:
+  display_name: DESIGN_HANDOFF_V1_ST1404_v1.yaml
+  format: UTF8_LF_SINGLE_DOCUMENT_YAML
+  root: DESIGN_HANDOFF_V1
+  proposal_authority: PENDING_UNAPPROVED
+  human_approval: NOT_PROVIDED
+  canonical_reconciliation: PENDING
+  implementation_authority: NOT_GRANTED
+  formal_test_execution: NOT_EXECUTED
+  ci_staging_production_validation: NOT_EXECUTED
+  live_queue_provider_validation: NOT_EXECUTED
+  security_and_human_review: PENDING
+  open_decisions_semantics: EMPTY_ONLY_IF_ST1404_D1_THROUGH_D14_ARE_COMPLETE
+  schema_gaps_semantics: EXPLICIT_AND_BLOCKING_WHERE_CURRENT_BYTES_ARE_INSUFFICIENT
+
+approval_boundary:
+  pro_output_is_advice_only: true
+  exact_returned_bytes_require_human_approval: true
+  conflict_free_canonical_reconciliation_required: true
+  implementation_worker_authority_granted_by_this_bundle: false

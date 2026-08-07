@@ -1,0 +1,85 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0101-20260804-V3
+  schema_version: 1
+  recorded_at: '2026-08-04T06:57:31Z'
+story_id: ST-0101
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0101-local-20260803-v2.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ecd4d671467d92b83a6097c3ac9dadf55c0ece36d815a5aca64856183a89cc1b-ST-0101-local-20260803-v2.yaml
+    sha256: ecd4d671467d92b83a6097c3ac9dadf55c0ece36d815a5aca64856183a89cc1b
+  - original_uri: repo://scripts/chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/846b55421c1a9e7af12176b53ccb280750e8137f9d2337eb72755e464acbdb7e-chatgpt_pro_orchestrator.py
+    sha256: 846b55421c1a9e7af12176b53ccb280750e8137f9d2337eb72755e464acbdb7e
+  - original_uri: repo://tests/st0101/test_chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ee73cf312f1756556fbf4c8962754e597ffb04ac6e904867bad6f8102ac36170-test_chatgpt_pro_orchestrator.py
+    sha256: ee73cf312f1756556fbf4c8962754e597ffb04ac6e904867bad6f8102ac36170
+  - original_uri: repo://changes/st-0101/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f5e7a329abf9c3a2ae28e07807a87ebfc08ad6e67ccd4fabfb71d55ad45e2796-README.md
+    sha256: f5e7a329abf9c3a2ae28e07807a87ebfc08ad6e67ccd4fabfb71d55ad45e2796
+  - original_uri: repo://docs/execplans/ST-0101.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a8478d92a32c484133a9473880f44e0d7ebca095488ea16f4921477332d03508-ST-0101.md
+    sha256: a8478d92a32c484133a9473880f44e0d7ebca095488ea16f4921477332d03508
+  - original_uri: repo://docs/worklogs/ST-0101.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/7e80abc5b4d22d0c8d3aa7ec8d4a19c25decb11fc7fedf252010811273e73008-ST-0101.md
+    sha256: 7e80abc5b4d22d0c8d3aa7ec8d4a19c25decb11fc7fedf252010811273e73008
+suite_results:
+  - suite_id: TST-001
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: >-
+      .venv/bin/pytest -p no:cacheprovider -q
+      tests/st0101/test_chatgpt_pro_orchestrator.py -k 'raw_snapshot or cloudflare'
+    result: 11 passed, 35 deselected in 0.13s
+  - command: >-
+      .venv/bin/pytest -p no:cacheprovider -q
+      tests/st0101/test_chatgpt_pro_orchestrator.py
+    result: 46 passed in 1.08s
+  - command: .venv/bin/pytest -p no:cacheprovider -q tests/st0101
+    result: 141 passed in final post-format run in 3.95s
+  - command: >-
+      .venv/bin/ruff check scripts/chatgpt_pro_orchestrator.py
+      tests/st0101/test_chatgpt_pro_orchestrator.py and matching Ruff format --check
+    result: PASS; lint clean and both changed Python files already formatted
+  - command: >-
+      .venv/bin/python -m py_compile scripts/chatgpt_pro_orchestrator.py
+      tests/st0101/test_chatgpt_pro_orchestrator.py
+    result: PASS
+  - command: /bin/bash -n scripts/chatgpt_pro_mcp.sh scripts/chatgpt_pro_python.sh
+    result: PASS
+  - command: >-
+      node_modules/.bin/pyright --pythonpath .venv/bin/python --project
+      pyrightconfig.json
+    result: >-
+      PASS; 0 errors, 0 warnings, 0 informations for the configured project
+      scope; no direct strict-file Pyright claim
+  - command: make check-workspace
+    result: >-
+      PASS; inner python3 bootstrap check reported 42 directories with no
+      changes
+  - command: python3 scripts/import_raos_design.py verify
+    result: >-
+      PASS; 105 imported files, six archives, 104 package checksums, and 103
+      manifest entries
+  - command: make pro-doctor
+    result: >-
+      PASS; exit 0 with sanitized status STOPPED, reason_code STOP_CAPTCHA,
+      authenticated false, and exact https://chatgpt.com/ URL; approved-origin
+      navigation and snapshot only
+  - command: independent post-fix audit
+    result: PASS; Blocker/High/Medium/Low 0/0/0/0
+  - command: git diff --check
+    result: PASS
+boundary: >-
+  Append-only repository delta over the 2026-08-03 ST-0101 V2 local snapshot.
+  The V2 capture and five current direct-artifact captures bind the approved
+  raw-snapshot parser and narrow compound Cloudflare challenge-classifier
+  repair. The challenge prevented READY and therefore prevented a Pro question;
+  the bounded live doctor used only exact-origin navigation and a snapshot. It
+  did not bypass Cloudflare, expand the origin allowlist, click, type, submit a
+  prompt, or capture a response. Fixture PASS and this read-only live doctor do
+  not constitute hosted CI, formal TST-001, human approval, canonical APPLY,
+  staging, release, or production evidence. Effective canonical ST-0101
+  remains NOT_STARTED / NOT_EXECUTED.

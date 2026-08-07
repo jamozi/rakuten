@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content/v1/publication-content-manifest.schema.json",
+  "title": "Publication Content Manifest",
+  "type": "object",
+  "properties": {
+    "publication_content_manifest_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "article_version_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "content_schema_version": {
+      "const": "1.0.0"
+    },
+    "content_ast_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source_packet_version_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "methodology_version_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "policy_bundle_version_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "seo_metadata_version_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "disclosure_policy_version_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "quality_result_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "approval_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 200,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "renderer_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "publication_content_manifest_id",
+    "article_version_id",
+    "content_schema_version",
+    "content_ast_sha256",
+    "source_packet_version_ref",
+    "methodology_version_ref",
+    "policy_bundle_version_ref",
+    "seo_metadata_version_ref",
+    "disclosure_policy_version_ref",
+    "quality_result_ref",
+    "approval_refs",
+    "renderer_version",
+    "created_at"
+  ],
+  "additionalProperties": false
+}

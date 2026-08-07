@@ -1,0 +1,87 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0107-20260805-V2
+  schema_version: 1
+  recorded_at: '2026-08-04T23:52:20Z'
+story_id: ST-0107
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0005/evidence/ST-0107-local-20260802.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/38fd34902c7fefb111dfe98f4eaa460a1ab04c5442195d5c840f7f0e13429417-ST-0107-local-20260802.yaml
+  sha256: 38fd34902c7fefb111dfe98f4eaa460a1ab04c5442195d5c840f7f0e13429417
+- original_uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1-pr-governance.v1.yaml
+  sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
+- original_uri: repo://changes/st-0107/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/43cde305a084c686183f6d27930069ad6bfba809b027d5e093edeef55c607447-README.md
+  sha256: 43cde305a084c686183f6d27930069ad6bfba809b027d5e093edeef55c607447
+- original_uri: repo://docs/architecture/ST-0107-github-governance-snapshot.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/2aae849de862a8391610e1991619af3559568c770fff13d2f3670d94030a714e-ST-0107-github-governance-snapshot.yaml
+  sha256: 2aae849de862a8391610e1991619af3559568c770fff13d2f3670d94030a714e
+- original_uri: repo://docs/execplans/ST-0107.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/dc1b4179365b8db690ab5ee4ee7276953213a774561c963afd8be93d43afd2e3-ST-0107.md
+  sha256: dc1b4179365b8db690ab5ee4ee7276953213a774561c963afd8be93d43afd2e3
+- original_uri: repo://docs/worklogs/ST-0107.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524-ST-0107.md
+  sha256: a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524
+- original_uri: repo://scripts/build_st0107_pr_governance.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec-build_st0107_pr_governance.py
+  sha256: ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec
+- original_uri: repo://scripts/build_local_compose.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9-build_local_compose.py
+  sha256: 79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9
+- original_uri: repo://scripts/object_storage_service.sh
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293-object_storage_service.sh
+  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
+- original_uri: repo://scripts/object_storage_fixture.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527-object_storage_fixture.py
+  sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
+- original_uri: repo://tests/st0107/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e897cdded18640d9c4ae44f851d0ff1b1b3be07680d9d3e57272e59f7594aa99-test_generation.py
+  sha256: e897cdded18640d9c4ae44f851d0ff1b1b3be07680d9d3e57272e59f7594aa99
+- original_uri: repo://tests/st0107/test_governance_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f1b5dd23fba4e02928ae95e1b238f12a2b51bc5462ddbf534f70f4d8ff4ae62b-test_governance_contract.py
+  sha256: f1b5dd23fba4e02928ae95e1b238f12a2b51bc5462ddbf534f70f4d8ff4ae62b
+- original_uri: repo://tests/st0107/test_negative_cases.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/29c7b0a930d16746a2314a36b02412361b4ea8bfb8f668b0a04ad6388c131d71-test_negative_cases.py
+  sha256: 29c7b0a930d16746a2314a36b02412361b4ea8bfb8f668b0a04ad6388c131d71
+- original_uri: repo://tests/st0106/test_workflow_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73-test_workflow_contract.py
+  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae-Makefile
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1-README.md
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- original_uri: repo://.github/CODEOWNERS
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9c7e18f731e42053f26d0c104f953e6c8367aa6977b4c2e362384cd359910f91-CODEOWNERS
+  sha256: 9c7e18f731e42053f26d0c104f953e6c8367aa6977b4c2e362384cd359910f91
+- original_uri: repo://changes/st-0107/ruleset-policy.v1.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5-ruleset-policy.v1.json
+  sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
+- original_uri: repo://changes/st-0107/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c-manifest.yaml
+  sha256: 12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c
+suite_results:
+- suite_id: TST-001
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: append-only content-addressed evidence refresh
+  result: PASS; 19/19 references matched exact source bytes and SHA-256, including the prior evidence
+    snapshot and only changed or newly introduced current manifest closure artifacts
+- command: deterministic ST-0107 generation and isolated Story verification
+  result: PASS; deterministic ST-0107 generation/check and the isolated Story suite passed 93/93
+- command: official denied-network static and full unit aggregate gates
+  result: PASS; both gates exited 0. Environment-dependent skips in the aggregate unit runner are documented
+    and are not counted as exact PostgreSQL, Docker, hosted, or formal Suite runtime evidence
+- command: ST-0105 full offline code-generation gate
+  result: PASS; contract repository verification covered 306 artifacts, tests/st0104 passed 117/117, exact
+    codegen drift covered 224 schemas, 302 Python files, 52 TypeScript files, 105 AsyncAPI messages, and
+    185 HTTP operations, tests/st0105 passed 53/53, and generated TypeScript compilation passed. Unrelated
+    untracked Python bytecode caches were temporarily quarantined and restored
+boundary: Append-only LOCAL_IMPLEMENTATION_CANDIDATE evidence only. Formal TST-001, hosted CI, canonical
+  APPLY, formal VALIDATED, staging, release, and production remain NOT_EXECUTED or unclaimed. Remote GitHub
+  ruleset application and authenticated hosted review remain outside this local snapshot. Effective canonical
+  ST-0107 remains NOT_STARTED / NOT_EXECUTED.

@@ -1,0 +1,101 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - One fixed initial-UI settle retry for live pro-doctor and pro-ask
+    - scripts/chatgpt_pro_orchestrator.py exact-origin initial snapshot state machine
+    - tests/st0101 deterministic wait-only, one-retry, and fail-closed coverage
+    - changes/st-0101/README.md and docs/worklogs/ST-0101.md guidance and evidence
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md initial-render wording
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.raos-ask-pro.v1.yaml
+    - changes/st-0101/design-handoff.edge-browser.v1.yaml
+    - changes/st-0101/design-handoff.interactive-auth-wait.v1.yaml
+    - changes/st-0101/design-handoff.wslg-visible-browser.v1.yaml
+  decision: >-
+    After live navigation, take the existing immediate snapshot and validate
+    its exact https://chatgpt.com origin and stop markers before any retry. If
+    the exact-origin snapshot has no login, CAPTCHA, reauthentication, account
+    selection, rate-limit, or other stop marker but the required initial known
+    UI is not yet uniquely identifiable, perform exactly one five-second
+    browser_wait_for followed by exactly one new snapshot in the same MCP
+    transport. Validate the second snapshot through all existing origin, stop,
+    unique-reference, Pro, and effort rules. If it remains unknown or
+    ambiguous, stop unsent. The settle retry is allowed only at the initial
+    post-navigation landing boundary for pro-doctor and pro-ask; it is not an
+    authentication wait, is not configurable, is not repeated, and is not
+    applied after any click, model selection, effort selection, typing, or
+    submission action.
+  rationale: >-
+    The visible dedicated Edge window showed a normal ChatGPT input screen with
+    the exact observed composer label Ask ChatGPT and model button Pro, while
+    the immediate automated snapshot still returned UNKNOWN_UI after the exact
+    label was allowlisted. The browser lifetime was approximately 2.4 seconds,
+    which is consistent with the initial accessible tree being sampled before
+    rendering settles. One fixed wait-only retry at the already-validated
+    origin allows the known UI to stabilize without weakening the final unique
+    selector checks or permitting input on an unknown page.
+  rejected_alternatives:
+    - Inspect or persist the raw unknown snapshot, sidebar, conversation titles, cookies, storage, or profile contents
+    - Accept the repository owner's visual observation as a substitute for automated known-UI verification
+    - Retry indefinitely or expose a configurable settle duration or retry count
+    - Click, type, select a model or effort, or submit while the UI is unknown
+    - Retry after model-picker, model-selection, effort-selection, or submission actions
+    - Ignore origin, stop-state, selector-uniqueness, Pro, or maximum-effort checks on the second snapshot
+    - Attach to an existing browser through CDP, remote debugging, or an extension
+  constraints:
+    - The first snapshot must be captured immediately after the approved navigation
+    - Exact-origin validation and stop-marker classification must occur before the settle wait
+    - Login, CAPTCHA, reauthentication, and account selection continue through only the separately approved pro-ask manual-authentication wait
+    - pro-doctor must report authentication and rate-limit stops immediately without the settle retry
+    - Rate limits, origin mismatch, and any known stop state must never enter the settle retry
+    - The settle retry is exactly one browser_wait_for call with time 5 and one browser_snapshot call
+    - The second snapshot must pass the unchanged exact-origin, stop, known-label, and unique-reference checks
+    - Persistent unknown UI or selector ambiguity after the second snapshot must stop unsent
+    - No click or browser_type call may occur during or before the initial settle retry
+    - The settle retry is limited to the initial landing boundary and does not replenish or consume the manual-authentication wait budget
+    - No CLI option, Make variable, environment variable, fallback, or alternate browser may configure the retry
+    - Existing fixed WSLg display, dedicated profile, same-transport, Pro/effort, secret-name-only, and resume controls remain unchanged
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved the fixed five-second, one-retry initial settle boundary
+    - The approval does not authorize raw snapshot inspection or a broader selector policy
+    - Browser automation before known-UI recognition remains limited to navigate, snapshot, and one bounded wait
+    - Visible Pro and maximum available effort verification remains mandatory before prompt input
+    - Login, CAPTCHA, reauthentication, and account selection remain manual user actions
+    - Account, subscription, publication, release, finance, and production actions remain prohibited
+    - Captured output remains a hash-bound unapproved proposal pending human and canonical reconciliation
+  acceptance_criteria:
+    - An initial exact-origin unknown doctor snapshot receives one five-second wait and one retry snapshot
+    - An initial exact-origin unknown or ambiguous pro-ask landing receives one five-second wait and one retry snapshot
+    - A known UI on the retry continues through the unchanged doctor or Pro pre-submission state machine
+    - Authentication and rate-limit stops are not delayed by the settle retry
+    - Origin mismatch on either snapshot stops immediately
+    - Persistent unknown or ambiguous UI stops after exactly one retry without input or submission
+    - No post-click state receives the initial settle retry
+    - No new runtime configuration, browser fallback, CDP, extension, storage access, or raw snapshot retention is introduced
+    - Existing same-process authentication, visible WSLg, Edge-first, profile, Pro/effort, secret, hash-chain, resume, and no-fallback tests remain green
+  required_test_evidence:
+    - Doctor scripted transport test for unknown then known UI with exact navigate/snapshot/wait/snapshot sequence
+    - Pro-ask initial landing test for unknown or ambiguous then known UI on the same transport
+    - Persistent unknown and persistent ambiguity tests proving exactly one wait and no input
+    - Immediate-stop tests for login, CAPTCHA, rate limit, and origin mismatch without settle wait
+    - Second-snapshot origin and stop-state refusal tests
+    - Test proving no click or type occurs before a successful retry snapshot
+    - Test proving no retry occurs after model or effort actions
+    - Static test proving the duration and retry count are fixed and absent from CLI, Make, and child environment
+    - Existing exact label, authentication wait, visible WSLg, Pro/effort, secret-name-only, resume, and leakage regressions
+    - Ruff, Python compilation, shell syntax, Skill validation, scoped diff check, and isolated tests/st0101 results
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-05
+    statement: >-
+      Approve one fixed five-second settle retry only after the first exact
+      chatgpt.com snapshot has no authentication or rate-limit stop; take one
+      second snapshot, perform no click, input, or submission during the wait,
+      and stop unsent if the UI is still unknown or ambiguous.

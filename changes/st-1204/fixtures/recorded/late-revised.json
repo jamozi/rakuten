@@ -1,0 +1,454 @@
+{
+  "fixture_version": "1.0.0",
+  "internal_request": {
+    "date_ranges": [
+      {
+        "end_date": "2026-07-02",
+        "name": null,
+        "start_date": "2026-07-01"
+      }
+    ],
+    "dimension_filter": null,
+    "dimensions": [
+      "date",
+      "pagePath",
+      "deviceCategory"
+    ],
+    "keep_empty_rows": false,
+    "limit": 2,
+    "metric_filter": null,
+    "metrics": [
+      "sessions",
+      "screenPageViews",
+      "engagedSessions"
+    ],
+    "offset": 0,
+    "order_bys": [],
+    "property_id": "1000001204",
+    "return_property_quota": true
+  },
+  "internal_request_sha256": "ee206e0ec5d7c98afa2e871a33db134e558a2d854a724832ba834394bb2a22eb",
+  "provider_capture": {
+    "reporting_identity": {
+      "api_version": "v1alpha",
+      "endpoint": "https://analyticsadmin.googleapis.com/v1alpha/properties/1000001204/reportingIdentitySettings",
+      "expected_response_sha256": "f08c8c440562901e6ddbc56ce73a28a43a14a4d4691e432cdfe0e0249baa9ce3",
+      "response": {
+        "name": "properties/1000001204/reportingIdentitySettings",
+        "reportingIdentity": "DEVICE_BASED"
+      },
+      "retrieved_at": "2026-08-06T00:00:01Z"
+    },
+    "run_report": {
+      "api_version": "v1beta",
+      "endpoint": "https://analyticsdata.googleapis.com/v1beta/properties/1000001204:runReport",
+      "expected_response_sha256": "90678fce8210799dc2aeecb091d41aa08d58de2c473c784535d47f1661241e09",
+      "response": {
+        "dimensionHeaders": [
+          {
+            "name": "date"
+          },
+          {
+            "name": "pagePath"
+          },
+          {
+            "name": "deviceCategory"
+          }
+        ],
+        "kind": "analyticsData#runReport",
+        "metadata": {
+          "currencyCode": "JPY",
+          "dataLossFromOtherRow": false,
+          "emptyReason": "",
+          "samplingMetadatas": [
+            {
+              "samplesReadCount": "90",
+              "samplingSpaceSize": "110"
+            }
+          ],
+          "schemaRestrictionResponse": {
+            "activeMetricRestrictions": []
+          },
+          "subjectToThresholding": false,
+          "timeZone": "Asia/Tokyo"
+        },
+        "metricHeaders": [
+          {
+            "name": "sessions",
+            "type": "TYPE_INTEGER"
+          },
+          {
+            "name": "screenPageViews",
+            "type": "TYPE_INTEGER"
+          },
+          {
+            "name": "engagedSessions",
+            "type": "TYPE_INTEGER"
+          }
+        ],
+        "propertyQuota": {
+          "concurrentRequests": {
+            "consumed": 1,
+            "remaining": 9
+          },
+          "potentiallyThresholdedRequestsPerHour": {
+            "consumed": 0,
+            "remaining": 120
+          },
+          "serverErrorsPerProjectPerHour": {
+            "consumed": 0,
+            "remaining": 10
+          },
+          "tokensPerDay": {
+            "consumed": 1,
+            "remaining": 199998
+          },
+          "tokensPerHour": {
+            "consumed": 1,
+            "remaining": 39998
+          },
+          "tokensPerProjectPerHour": {
+            "consumed": 1,
+            "remaining": 13998
+          }
+        },
+        "rowCount": 3,
+        "rows": [
+          {
+            "dimensionValues": [
+              {
+                "value": "20260701"
+              },
+              {
+                "value": "/synthetic/guide-alpha"
+              },
+              {
+                "value": "mobile"
+              }
+            ],
+            "metricValues": [
+              {
+                "value": "14"
+              },
+              {
+                "value": "23"
+              },
+              {
+                "value": "10"
+              }
+            ]
+          },
+          {
+            "dimensionValues": [
+              {
+                "value": "20260702"
+              },
+              {
+                "value": "/synthetic/guide-beta"
+              },
+              {
+                "value": "desktop"
+              }
+            ],
+            "metricValues": [
+              {
+                "value": "8"
+              },
+              {
+                "value": "13"
+              },
+              {
+                "value": "6"
+              }
+            ]
+          }
+        ]
+      },
+      "retrieved_at": "2026-08-06T00:00:00Z"
+    }
+  },
+  "recorded_result": {
+    "canonical_rows": [
+      {
+        "date_from": "2026-07-01",
+        "date_range_index": 0,
+        "date_to": "2026-07-02",
+        "dimension_values": {
+          "date": "20260701",
+          "deviceCategory": "mobile",
+          "pagePath": "/synthetic/guide-alpha"
+        },
+        "imported_at": "2026-08-06T00:00:02Z",
+        "metric_values": {
+          "engagedSessions": "10",
+          "screenPageViews": "23",
+          "sessions": "14"
+        },
+        "property_id": "1000001204",
+        "quota_metadata": {
+          "concurrentRequests": {
+            "consumed": 1,
+            "remaining": 9
+          },
+          "potentiallyThresholdedRequestsPerHour": {
+            "consumed": 0,
+            "remaining": 120
+          },
+          "serverErrorsPerProjectPerHour": {
+            "consumed": 0,
+            "remaining": 10
+          },
+          "tokensPerDay": {
+            "consumed": 1,
+            "remaining": 199998
+          },
+          "tokensPerHour": {
+            "consumed": 1,
+            "remaining": 39998
+          },
+          "tokensPerProjectPerHour": {
+            "consumed": 1,
+            "remaining": 13998
+          }
+        },
+        "reporting_identity": "DEVICE_BASED",
+        "site_id": "00000000-0000-4000-8000-000000001204",
+        "source_request_sha256": "ee206e0ec5d7c98afa2e871a33db134e558a2d854a724832ba834394bb2a22eb",
+        "thresholding_applied": false
+      },
+      {
+        "date_from": "2026-07-01",
+        "date_range_index": 0,
+        "date_to": "2026-07-02",
+        "dimension_values": {
+          "date": "20260702",
+          "deviceCategory": "desktop",
+          "pagePath": "/synthetic/guide-beta"
+        },
+        "imported_at": "2026-08-06T00:00:02Z",
+        "metric_values": {
+          "engagedSessions": "6",
+          "screenPageViews": "13",
+          "sessions": "8"
+        },
+        "property_id": "1000001204",
+        "quota_metadata": {
+          "concurrentRequests": {
+            "consumed": 1,
+            "remaining": 9
+          },
+          "potentiallyThresholdedRequestsPerHour": {
+            "consumed": 0,
+            "remaining": 120
+          },
+          "serverErrorsPerProjectPerHour": {
+            "consumed": 0,
+            "remaining": 10
+          },
+          "tokensPerDay": {
+            "consumed": 1,
+            "remaining": 199998
+          },
+          "tokensPerHour": {
+            "consumed": 1,
+            "remaining": 39998
+          },
+          "tokensPerProjectPerHour": {
+            "consumed": 1,
+            "remaining": 13998
+          }
+        },
+        "reporting_identity": "DEVICE_BASED",
+        "site_id": "00000000-0000-4000-8000-000000001204",
+        "source_request_sha256": "ee206e0ec5d7c98afa2e871a33db134e558a2d854a724832ba834394bb2a22eb",
+        "thresholding_applied": false
+      }
+    ],
+    "contract_semantics": {
+      "canonical_row_count": 2,
+      "configuration_snapshot": "IN_FIXTURE_ONLY",
+      "independently_inspectable_from_baseline": true,
+      "outcome": "SUCCESS",
+      "provider_row_count": 3,
+      "returned_row_count": 2,
+      "row_count_independent_of_pagination": true,
+      "supersession_claim": "NONE"
+    },
+    "outcome": "SUCCESS",
+    "pagination": {
+      "limit": 2,
+      "offset": 0,
+      "provider_row_count": 3,
+      "returned_row_count": 2,
+      "row_count_independent_of_pagination": true
+    },
+    "property_quota": {
+      "concurrentRequests": {
+        "consumed": 1,
+        "remaining": 9
+      },
+      "potentiallyThresholdedRequestsPerHour": {
+        "consumed": 0,
+        "remaining": 120
+      },
+      "serverErrorsPerProjectPerHour": {
+        "consumed": 0,
+        "remaining": 10
+      },
+      "tokensPerDay": {
+        "consumed": 1,
+        "remaining": 199998
+      },
+      "tokensPerHour": {
+        "consumed": 1,
+        "remaining": 39998
+      },
+      "tokensPerProjectPerHour": {
+        "consumed": 1,
+        "remaining": 13998
+      }
+    },
+    "raw_ordered_report": {
+      "dimension_headers": [
+        {
+          "name": "date"
+        },
+        {
+          "name": "pagePath"
+        },
+        {
+          "name": "deviceCategory"
+        }
+      ],
+      "metric_headers": [
+        {
+          "name": "sessions",
+          "type": "TYPE_INTEGER"
+        },
+        {
+          "name": "screenPageViews",
+          "type": "TYPE_INTEGER"
+        },
+        {
+          "name": "engagedSessions",
+          "type": "TYPE_INTEGER"
+        }
+      ],
+      "rows": [
+        {
+          "dimensionValues": [
+            {
+              "value": "20260701"
+            },
+            {
+              "value": "/synthetic/guide-alpha"
+            },
+            {
+              "value": "mobile"
+            }
+          ],
+          "metricValues": [
+            {
+              "value": "14"
+            },
+            {
+              "value": "23"
+            },
+            {
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "dimensionValues": [
+            {
+              "value": "20260702"
+            },
+            {
+              "value": "/synthetic/guide-beta"
+            },
+            {
+              "value": "desktop"
+            }
+          ],
+          "metricValues": [
+            {
+              "value": "8"
+            },
+            {
+              "value": "13"
+            },
+            {
+              "value": "6"
+            }
+          ]
+        }
+      ]
+    },
+    "recorded_at": "2026-08-06T00:00:02Z",
+    "report_metadata": {
+      "currencyCode": "JPY",
+      "dataLossFromOtherRow": false,
+      "emptyReason": "",
+      "samplingMetadatas": [
+        {
+          "samplesReadCount": "90",
+          "samplingSpaceSize": "110"
+        }
+      ],
+      "schemaRestrictionResponse": {
+        "activeMetricRestrictions": []
+      },
+      "subjectToThresholding": false,
+      "timeZone": "Asia/Tokyo"
+    },
+    "reporting_identity_snapshot": {
+      "name": "properties/1000001204/reportingIdentitySettings",
+      "reportingIdentity": "DEVICE_BASED"
+    },
+    "request_hashes": {
+      "internal_request_sha256": "ee206e0ec5d7c98afa2e871a33db134e558a2d854a724832ba834394bb2a22eb",
+      "reporting_identity_response_sha256": "f08c8c440562901e6ddbc56ce73a28a43a14a4d4691e432cdfe0e0249baa9ce3",
+      "run_report_response_sha256": "90678fce8210799dc2aeecb091d41aa08d58de2c473c784535d47f1661241e09",
+      "wire_request_sha256": "42a74836abe8d2be8cea6c4ffa47a3899e22cdec3f9ba31aa21be23622c7836a"
+    },
+    "supersession_claim": "NONE"
+  },
+  "recording_id": "late-revised",
+  "synthetic_marker": "SYNTHETIC_TEST_ONLY",
+  "wire_request": {
+    "dateRanges": [
+      {
+        "endDate": "2026-07-02",
+        "startDate": "2026-07-01"
+      }
+    ],
+    "dimensions": [
+      {
+        "name": "date"
+      },
+      {
+        "name": "pagePath"
+      },
+      {
+        "name": "deviceCategory"
+      }
+    ],
+    "keepEmptyRows": false,
+    "limit": "2",
+    "metrics": [
+      {
+        "name": "sessions"
+      },
+      {
+        "name": "screenPageViews"
+      },
+      {
+        "name": "engagedSessions"
+      }
+    ],
+    "offset": "0",
+    "returnPropertyQuota": true
+  },
+  "wire_request_sha256": "42a74836abe8d2be8cea6c4ffa47a3899e22cdec3f9ba31aa21be23622c7836a"
+}

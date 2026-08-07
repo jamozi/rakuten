@@ -1,0 +1,32 @@
+document:
+  id: STATUS-ST0801-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-04T11:16:41Z'
+reason: >-
+  Record the append-only local ST-0801 implementation candidate after its
+  deterministic 95-artifact source freeze, Story-local tests, denied-network
+  static and unit gates, cumulative contract/codegen gate, and independent
+  final audit passed. This does not claim formal TST-020, hosted clean-clone CI,
+  human approval, canonical APPLY, staging, release, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0801
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-020
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0801-local-20260804.yaml
+        sha256: bba39e07744988c03c4d60e7da8dc7c7117af797ef22eca81711f2d8c12b9bae
+        observed_at: '2026-08-04T11:16:13Z'

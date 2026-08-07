@@ -1,0 +1,35 @@
+document:
+  id: STATUS-ST0101-LOCAL-PROPOSAL-004
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-05T00:24:17Z'
+reason: >-
+  Refresh the append-only local ST-0101 implementation proposal after the
+  approved live-resume parser-refusal terminalization and its deterministic
+  inert-transport, Story-local, status-workflow, static, import, and workspace
+  checks passed. This is local candidate evidence only. A combined
+  implementation-plus-status-history PR is not valid under the ST-0005 trust-
+  surface/history separation, and this proposal does not claim browser or MCP
+  execution, private-run inspection, resubmission, hosted CI, formal TST-001,
+  human approval, canonical APPLY, staging, release, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-001
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0101-local-20260805-v4.yaml
+        sha256: 7cc84464c19a3dabd38a1612c1f061ac8cb393b3a8db7b66d58cef5e4d859c35
+        observed_at: '2026-08-05T00:24:16Z'

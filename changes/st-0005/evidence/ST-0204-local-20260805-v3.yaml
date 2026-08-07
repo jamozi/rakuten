@@ -1,0 +1,66 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0204-20260805-V3
+  schema_version: 1
+  recorded_at: '2026-08-04T23:52:20Z'
+story_id: ST-0204
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0005/evidence/ST-0204-local-20260803-v2.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e-ST-0204-local-20260803-v2.yaml
+  sha256: f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e
+- original_uri: repo://pyproject.toml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b-pyproject.toml
+  sha256: fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+- original_uri: repo://uv.lock
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0-uv.lock
+  sha256: 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+- original_uri: repo://changes/st-0204/contracts/runtime-config.v1.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e1042bb37ebb91f49f9da4f7ca1ee71d8420dda057b63858756c5b233d8f3073-runtime-config.v1.yaml
+  sha256: e1042bb37ebb91f49f9da4f7ca1ee71d8420dda057b63858756c5b233d8f3073
+- original_uri: repo://docs/worklogs/ST-0204.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/6426260acb608da19832965e8e2ddd7726745f3a8ef860fdf44bce22bba08d80-ST-0204.md
+  sha256: 6426260acb608da19832965e8e2ddd7726745f3a8ef860fdf44bce22bba08d80
+- original_uri: repo://scripts/build_st0204_config_loader.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/220756ac1c1fc4a9873c4625e4cb67ad5f0a295818f8c03d1972e87bb697d88f-build_st0204_config_loader.py
+  sha256: 220756ac1c1fc4a9873c4625e4cb67ad5f0a295818f8c03d1972e87bb697d88f
+- original_uri: repo://tests/st0106/test_workflow_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73-test_workflow_contract.py
+  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae-Makefile
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1-README.md
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- original_uri: repo://changes/st-0203/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3c149cad6591bac86f2db8cb3d60afae52efad5051f1996c1d3605315c8acdeb-manifest.yaml
+  sha256: 3c149cad6591bac86f2db8cb3d60afae52efad5051f1996c1d3605315c8acdeb
+- original_uri: repo://changes/st-0204/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4-manifest.yaml
+  sha256: 3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4
+suite_results:
+- suite_id: TST-005
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-031
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: append-only content-addressed evidence refresh
+  result: PASS; 11/11 references matched exact source bytes and SHA-256, including the prior evidence
+    snapshot and only changed or newly introduced current manifest closure artifacts
+- command: deterministic ST-0204 generation and isolated Story verification
+  result: PASS; deterministic ST-0204 generation/check and the isolated Story suite passed 178/178
+- command: official denied-network static and full unit aggregate gates
+  result: PASS; both gates exited 0. Environment-dependent skips in the aggregate unit runner are documented
+    and are not counted as exact PostgreSQL, Docker, hosted, or formal Suite runtime evidence
+- command: ST-0105 full offline code-generation gate
+  result: PASS; contract repository verification covered 306 artifacts, tests/st0104 passed 117/117, exact
+    codegen drift covered 224 schemas, 302 Python files, 52 TypeScript files, 105 AsyncAPI messages, and
+    185 HTTP operations, tests/st0105 passed 53/53, and generated TypeScript compilation passed. Unrelated
+    untracked Python bytecode caches were temporarily quarantined and restored
+boundary: Append-only LOCAL_IMPLEMENTATION_CANDIDATE evidence only. Formal TST-005, TST-031, hosted CI,
+  canonical APPLY, formal VALIDATED, staging, release, and production remain NOT_EXECUTED or unclaimed.
+  No production secret manager, workload identity, rotation, or formal security-owner review is claimed.
+  Effective canonical ST-0204 remains NOT_STARTED / NOT_EXECUTED.

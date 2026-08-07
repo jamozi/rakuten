@@ -1,0 +1,51 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0202-20260805-V3
+  schema_version: 1
+  recorded_at: '2026-08-04T23:52:20Z'
+story_id: ST-0202
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0005/evidence/ST-0202-local-20260803-v2.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/a1c83e03c52b36ebe6e77a6a1fa0dc143b17f3483c38b1316559772e74a44da2-ST-0202-local-20260803-v2.yaml
+  sha256: a1c83e03c52b36ebe6e77a6a1fa0dc143b17f3483c38b1316559772e74a44da2
+- original_uri: repo://changes/st-0107/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c-manifest.yaml
+  sha256: 12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c
+- original_uri: repo://tests/st0106/test_workflow_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73-test_workflow_contract.py
+  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+- original_uri: repo://AGENTS.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10-AGENTS.md
+  sha256: af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae-Makefile
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1-README.md
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- original_uri: repo://changes/st-0202/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/bf0552fc306d69c937c95a79f2a8c9dbb5686ed2e7fc90c1e11b8c6733f0e52d-manifest.yaml
+  sha256: bf0552fc306d69c937c95a79f2a8c9dbb5686ed2e7fc90c1e11b8c6733f0e52d
+suite_results:
+- suite_id: TST-014
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: append-only content-addressed evidence refresh
+  result: PASS; 7/7 references matched exact source bytes and SHA-256, including the prior evidence snapshot
+    and only changed or newly introduced current manifest closure artifacts
+- command: deterministic ST-0202 generation and isolated Story verification
+  result: PASS; deterministic ST-0202 generation/check and the isolated Story suite passed 156/156
+- command: official denied-network static and full unit aggregate gates
+  result: PASS; both gates exited 0. Environment-dependent skips in the aggregate unit runner are documented
+    and are not counted as exact PostgreSQL, Docker, hosted, or formal Suite runtime evidence
+- command: ST-0105 full offline code-generation gate
+  result: PASS; contract repository verification covered 306 artifacts, tests/st0104 passed 117/117, exact
+    codegen drift covered 224 schemas, 302 Python files, 52 TypeScript files, 105 AsyncAPI messages, and
+    185 HTTP operations, tests/st0105 passed 53/53, and generated TypeScript compilation passed. Unrelated
+    untracked Python bytecode caches were temporarily quarantined and restored
+boundary: Append-only LOCAL_IMPLEMENTATION_CANDIDATE evidence only. Formal TST-014, hosted CI, canonical
+  APPLY, formal VALIDATED, staging, release, and production remain NOT_EXECUTED or unclaimed. No remote
+  object storage, retention decision, hosted container execution, or production use is claimed. Effective
+  canonical ST-0202 remains NOT_STARTED / NOT_EXECUTED.

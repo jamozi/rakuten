@@ -1,0 +1,188 @@
+document:
+  id: RAOS-MIGRATION-UPGRADE-FIXTURES-001
+  version: 1.0.0
+  story_id: ST-0307
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  epic_id: EPIC-03
+  title: Migration upgrade fixtures
+  objective: 旧VersionとAlignment dataのupgradeを固定
+  dependencies: [ST-0305]
+  requirement_ids: []
+  deliverables: [VERSIONED_DB_FIXTURES]
+  acceptance: [UPGRADE_ROLLBACK_STRATEGY_PASS]
+  required_suites: [TST-010]
+  open_decisions: []
+database:
+  product: PostgreSQL
+  exact_server_version_num: 180004
+  fixture_data: SYNTHETIC_ONLY
+  fixture_executor: ISOLATED_TEST_SUPERUSER
+  network_access: FORBIDDEN
+production_graph:
+  anchor_revision: '202608030001'
+  predecessor_revision: '202608030004'
+  head_revision: '202608030005'
+  revision_count: 5
+  mutation: FORBIDDEN
+  new_revision: FORBIDDEN
+  checkpoint_activation: FORBIDDEN
+source_precedence:
+  canonical_and_upstream_inputs:
+  - {path: docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md, sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137}
+  - {path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md, sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a}
+  - {path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml, sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d}
+  - {path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml, sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8}
+  - {path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml, sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b}
+  upstream_baseline:
+    archive_path: docs/upstream/RAOS_03_data_model_package_v0.1.zip
+    archive_sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
+    members:
+    - {purpose: BASELINE_DDL, member_suffix: sql/RAOS_03_001_baseline_v0.1.sql, member_sha256: 5813f16989316c159dd3fbaa0d0807f91adde51dda51c3f18a26dfe3e5c8c38c}
+    - {purpose: CHECKPOINT_ACL_PREDECESSOR, member_suffix: sql/RAOS_03_002_roles_and_grants_v0.1.sql, member_sha256: 6b9218df65e39ed5b5d38ca593a62ee544e9870296f32a7d7a819008a9d9803e}
+    - {purpose: REFERENCE_SEED_PREDECESSOR, member_suffix: sql/RAOS_03_003_reference_seed_v0.1.sql, member_sha256: 943471a90d5fd4f90112c2685d6aade64c0de18da74bc2c14d16555bd38644f8}
+    - {purpose: BASELINE_POST_DEPLOY_VALIDATION, member_suffix: sql/RAOS_03_004_post_deploy_validation_v0.1.sql, member_sha256: cf00f6efa9ea8834ea99dcd4963acdd8b7824a66458a3df291924a654da1c4d2}
+  alignment_manifests:
+  - {story_id: ST-0002, path: changes/st-0002/manifest.yaml, sha256: ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e}
+  - {story_id: ST-0003, path: changes/st-0003/manifest.yaml, sha256: 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482}
+  - {story_id: ST-0004, path: changes/st-0004/manifest.yaml, sha256: 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458}
+  migration_manifests:
+  - {story_id: ST-0301, path: changes/st-0301/manifest.yaml, sha256: 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff}
+  - {story_id: ST-0302, path: changes/st-0302/manifest.yaml, sha256: d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0}
+  - {story_id: ST-0303, path: changes/st-0303/manifest.yaml, sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b}
+  - {story_id: ST-0304, path: changes/st-0304/manifest.yaml, sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51}
+  - {story_id: ST-0305, path: changes/st-0305/manifest.yaml, sha256: 5783b9c20d4b2c6a47ac0fa8703e78a0ac35dd1829840b5dd1a6bd6b48a8a16a}
+checkpoint_catalog:
+  authority: python/raos/migrations/catalog.py
+  authority_file_sha256: ec689023703b98cc0decd5703c3f27be994a925a571bff3eb284522dde7b526f
+  authority_catalog_sha256: 0b3a7c309054b0e33f668c5ed311f130a9fc621eb43d6fe23ea74aeeb27a366b
+  count: 18
+  execution: SEPARATE_ORDERED_DISPOSABLE_TEST_DATABASES_ONLY
+  copy_or_concatenate: FORBIDDEN
+  forward_plan: ['202607300001', '202607300002', '202607300003', '202607300004', '202607300005', '202607300007', '202607300008', '202607300009', '202607300010', '202607300011', '202607300013', '202607300014', '202607300015', '202607300016', '202607300017']
+  guarded_reverse_plan: ['202607300018', '202607300012', '202607300006']
+  entries:
+  - {revision: '202607300001', story_id: ST-0002, phase: EXPAND, direction: UPGRADE, repeatable: false, path: changes/st-0002/database/202607300001_job_state_expand.sql, sha256: 6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31}
+  - {revision: '202607300002', story_id: ST-0002, phase: EXPAND_VALIDATE, direction: UPGRADE, repeatable: false, path: changes/st-0002/database/202607300002_job_state_expand_validate.sql, sha256: 50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95}
+  - {revision: '202607300003', story_id: ST-0002, phase: MIGRATE_BATCH, direction: UPGRADE, repeatable: true, path: changes/st-0002/database/202607300003_job_state_migrate_batch.sql, sha256: 4b6508b8c5a082695b1c4c48365c5932b51e3a6ca9a93c83ec599cd6aa7b1eb8}
+  - {revision: '202607300004', story_id: ST-0002, phase: CONTRACT_PREPARE, direction: UPGRADE, repeatable: false, path: changes/st-0002/database/202607300004_job_state_contract_prepare.sql, sha256: 6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779}
+  - {revision: '202607300005', story_id: ST-0002, phase: CONTRACT, direction: UPGRADE, repeatable: false, path: changes/st-0002/database/202607300005_job_state_contract.sql, sha256: 9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897}
+  - {revision: '202607300006', story_id: ST-0002, phase: GUARDED_DOWNGRADE, direction: DOWNGRADE, repeatable: false, path: changes/st-0002/database/202607300006_job_state_guarded_downgrade.sql, sha256: 3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab}
+  - {revision: '202607300007', story_id: ST-0003, phase: EXPAND, direction: UPGRADE, repeatable: false, path: changes/st-0003/database/202607300007_ai_governance_expand.sql, sha256: a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064}
+  - {revision: '202607300008', story_id: ST-0003, phase: EXPAND_VALIDATE, direction: UPGRADE, repeatable: false, path: changes/st-0003/database/202607300008_ai_governance_expand_validate.sql, sha256: 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978}
+  - {revision: '202607300009', story_id: ST-0003, phase: MIGRATE_BATCH, direction: UPGRADE, repeatable: true, path: changes/st-0003/database/202607300009_ai_governance_migrate_batch.sql, sha256: 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a}
+  - {revision: '202607300010', story_id: ST-0003, phase: CONTRACT_PREPARE, direction: UPGRADE, repeatable: false, path: changes/st-0003/database/202607300010_ai_governance_contract_prepare.sql, sha256: 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25}
+  - {revision: '202607300011', story_id: ST-0003, phase: CONTRACT, direction: UPGRADE, repeatable: false, path: changes/st-0003/database/202607300011_ai_governance_contract.sql, sha256: 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da}
+  - {revision: '202607300012', story_id: ST-0003, phase: GUARDED_DOWNGRADE, direction: DOWNGRADE, repeatable: false, path: changes/st-0003/database/202607300012_ai_governance_guarded_downgrade.sql, sha256: dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba}
+  - {revision: '202607300013', story_id: ST-0004, phase: EXPAND, direction: UPGRADE, repeatable: false, path: changes/st-0004/database/202607300013_content_expand.sql, sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e}
+  - {revision: '202607300014', story_id: ST-0004, phase: EXPAND_VALIDATE, direction: UPGRADE, repeatable: false, path: changes/st-0004/database/202607300014_content_expand_validate.sql, sha256: 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704}
+  - {revision: '202607300015', story_id: ST-0004, phase: MIGRATE_BATCH, direction: UPGRADE, repeatable: true, path: changes/st-0004/database/202607300015_content_migrate_batch.sql, sha256: 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c}
+  - {revision: '202607300016', story_id: ST-0004, phase: CONTRACT_PREPARE, direction: UPGRADE, repeatable: false, path: changes/st-0004/database/202607300016_content_contract_prepare.sql, sha256: b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968}
+  - {revision: '202607300017', story_id: ST-0004, phase: CONTRACT, direction: UPGRADE, repeatable: false, path: changes/st-0004/database/202607300017_content_contract.sql, sha256: c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845}
+  - {revision: '202607300018', story_id: ST-0004, phase: GUARDED_DOWNGRADE, direction: DOWNGRADE, repeatable: false, path: changes/st-0004/database/202607300018_content_guarded_downgrade.sql, sha256: 005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381}
+fixtures:
+  - id: ST0307-V01-JOB-ALIGNMENT
+    version: v0.1
+    path: tests/fixtures/migrations/st0307/v0.1-job-alignment.v1.sql
+    apply_at:
+      source_kind: UPSTREAM_BASELINE_MEMBER
+      source_ref: docs/upstream/RAOS_03_data_model_package_v0.1.zip#sql/RAOS_03_001_baseline_v0.1.sql
+      production_revision: null
+      completed_forward_checkpoints: []
+    ordered_forward_checkpoints: ['202607300001', '202607300002', '202607300003', '202607300004', '202607300005']
+    guarded_reverse_checkpoint: '202607300006'
+    checkpoint_story: ST-0002
+    expected_rows: 7
+    expected_behavior: SEVEN_LEGACY_STATES_MAP_WITH_BOUNDED_ATOMIC_BATCHES
+  - id: ST0307-V02-AI-ALIGNMENT
+    version: v0.2
+    path: tests/fixtures/migrations/st0307/v0.2-ai-alignment.v1.sql
+    apply_at:
+      source_kind: FINALIZED_ALIGNMENT_CHECKPOINT_STATE
+      source_ref: changes/st-0002/manifest.yaml
+      production_revision: null
+      completed_forward_checkpoints: ['202607300001', '202607300002', '202607300003', '202607300004', '202607300005']
+    ordered_forward_checkpoints: ['202607300007', '202607300008', '202607300009', '202607300010', '202607300011']
+    guarded_reverse_checkpoint: '202607300012'
+    checkpoint_story: ST-0003
+    expected_rows: 5
+    expected_behavior: AMBIGUOUS_ROWS_REQUIRE_EXPLICIT_CLASSIFICATION
+  - id: ST0307-V03-CONTENT-ALIGNMENT
+    version: v0.3
+    path: tests/fixtures/migrations/st0307/v0.3-content-alignment.v1.sql
+    apply_at:
+      source_kind: FINALIZED_ALIGNMENT_CHECKPOINT_STATE
+      source_ref: changes/st-0003/manifest.yaml
+      production_revision: null
+      completed_forward_checkpoints: ['202607300001', '202607300002', '202607300003', '202607300004', '202607300005', '202607300007', '202607300008', '202607300009', '202607300010', '202607300011']
+    ordered_forward_checkpoints: ['202607300013', '202607300014', '202607300015', '202607300016', '202607300017']
+    guarded_reverse_checkpoint: '202607300018'
+    checkpoint_story: ST-0004
+    expected_rows: 1
+    expected_behavior: CONTENT_BINDINGS_ARE_NEVER_GUESSED
+  - id: ST0307-202608030004-PREDECESSOR
+    version: '202608030004'
+    path: tests/fixtures/migrations/st0307/202608030004-predecessor.v1.sql
+    apply_at:
+      source_kind: PRODUCTION_REVISION_GRAPH
+      source_ref: changes/st-0304/manifest.yaml
+      production_revision: '202608030004'
+      completed_production_revisions: ['202608030001', '202608030002', '202608030003', '202608030004']
+      completed_forward_checkpoints: []
+    ordered_upgrade_revisions: ['202608030005']
+    checkpoint_story: ST-0305
+    expected_rows: 1
+    expected_behavior: DATA_AND_HISTORY_SURVIVE_UPGRADE_TO_202608030005
+security:
+  control_ids: [SEC-DATA-003, SEC-DATA-004, SEC-DATA-007, SEC-SDLC-009, SEC-SDLC-010]
+  credentials_or_secrets: FORBIDDEN
+  production_or_personal_data: FORBIDDEN
+  review_bodies: FORBIDDEN
+  generated_fixture_payloads:
+    roles_grants_or_rls: FORBIDDEN
+  content_hashes: REQUIRED
+historical_test_harness:
+  baseline_members_loaded: [sql/RAOS_03_001_baseline_v0.1.sql, sql/RAOS_03_002_roles_and_grants_v0.1.sql, sql/RAOS_03_003_reference_seed_v0.1.sql, sql/RAOS_03_004_post_deploy_validation_v0.1.sql]
+  roles_and_grants_member_loaded: true
+  reference_seed_member_loaded: true
+  post_deploy_validation_member_loaded: true
+  bootstrap_source: PINNED_UPSTREAM_ONLY
+  environment: ISOLATED_EPHEMERAL_TEST_SETUP_ONLY
+  checkpoint_prerequisite_roles: [raos_api_rw, raos_auditor_ro, raos_projection_rw, raos_public_ro, raos_reporting_ro, raos_worker_rw]
+  prerequisite_role_mode: EPHEMERAL_HASH_BOUND_UPSTREAM_MEMBER
+  purpose: RESTORE_EXACT_PREDECESSOR_ACL_REQUIRED_BY_GUARDED_DOWNGRADE_SELF_CHECKS
+  acl_or_default_privilege_semantics: NOT_EVALUATED
+  tst_011: NOT_EXECUTED
+verification:
+  exact_postgresql_server_version_num: 180004
+  required_local_candidate_suites: [TST-010]
+  required_behaviors:
+  - SEVEN_LEGACY_JOB_STATE_MAPPINGS
+  - BOUNDED_BATCH_FAILURE_ROLLBACK_AND_RESUME
+  - AMBIGUOUS_AI_ROWS_REQUIRE_EXPLICIT_CLASSIFICATION
+  - CONTENT_BINDINGS_ARE_NOT_GUESSED
+  - GUARDED_LOSS_REFUSAL_IS_ATOMIC
+  - REPRESENTABLE_DOWNGRADE_REUPGRADE
+  - PREDECESSOR_TO_HEAD_DATA_AND_HISTORY_INTEGRITY
+  - HEAD_UPGRADE_NOOP
+  - NONEMPTY_HEAD_DOWNGRADE_REFUSAL
+  - EMPTY_HEAD_DOWNGRADE_REUPGRADE
+  - FIXTURE_AND_CHECKPOINT_TAMPER_REJECTION_BEFORE_MUTATION
+boundary:
+  environment: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_tst_010: NOT_EXECUTED
+  hosted_ci_postgresql_18_4: NOT_EXECUTED
+  staging_execution: NOT_EXECUTED
+  migration_owner_review: NOT_EXECUTED
+  human_review: NOT_EXECUTED
+  canonical_apply: NOT_EXECUTED
+  production_execution: FORBIDDEN
+  effective_canonical_status: UNCHANGED
+out_of_scope:
+- ST-0306_ROLES_GRANTS_DEFAULT_PRIVILEGES_RLS
+- PRODUCTION_ALEMBIC_REVISION_OR_GRAPH_CHANGE
+- CHECKPOINT_COPY_CONCATENATION_OR_RUNTIME_ACTIVATION
+- BINARY_OR_PRODUCTION_DUMPS
+- LIVE_DATA_SEEDS
+- STATUS_EVIDENCE_OR_CANONICAL_APPLY

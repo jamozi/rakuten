@@ -1,0 +1,75 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0101-20260805-V4
+  schema_version: 1
+  recorded_at: '2026-08-05T00:24:16Z'
+story_id: ST-0101
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0101-local-20260804-v3.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9731ec4db07d4bdd7eb1f4e1651c390dccfc72c5432b33d37f6a7a9de9b9b313-ST-0101-local-20260804-v3.yaml
+    sha256: 9731ec4db07d4bdd7eb1f4e1651c390dccfc72c5432b33d37f6a7a9de9b9b313
+  - original_uri: repo://scripts/chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e0786b9f764af8d8d41b445d1c399cc07f27a5e6dc9a22cc0ea7a27246505aee-chatgpt_pro_orchestrator.py
+    sha256: e0786b9f764af8d8d41b445d1c399cc07f27a5e6dc9a22cc0ea7a27246505aee
+  - original_uri: repo://tests/st0101/test_chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1a7b102fb3758b59c97f7e8208f5f21bb94ff500d86fa1b5dd38b9e821d64edb-test_chatgpt_pro_orchestrator.py
+    sha256: 1a7b102fb3758b59c97f7e8208f5f21bb94ff500d86fa1b5dd38b9e821d64edb
+  - original_uri: repo://changes/st-0101/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/4c2c7e847d731a03ea0a4495b81ca37f7e3a8e97ee2e9262021b0eb9ce7648db-README.md
+    sha256: 4c2c7e847d731a03ea0a4495b81ca37f7e3a8e97ee2e9262021b0eb9ce7648db
+  - original_uri: repo://docs/worklogs/ST-0101.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/5b1a5dcc7a84d4961c665baee7ccdbba4b68fc4ab3a08887e70c6fe7f3fadeba-ST-0101.md
+    sha256: 5b1a5dcc7a84d4961c665baee7ccdbba4b68fc4ab3a08887e70c6fe7f3fadeba
+suite_results:
+  - suite_id: TST-001
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: append-only content-addressed evidence refresh
+    result: >-
+      PASS; 5/5 references matched exact source bytes and SHA-256, including
+      the prior V3 evidence snapshot and exactly four current direct artifacts
+  - command: >-
+      .venv/bin/pytest -p no:cacheprovider -q
+      tests/st0101/test_chatgpt_pro_orchestrator.py -k
+      'live_resume_response_parser_refusal or
+      live_resume_nonallowlisted_refusal'
+    result: 5 passed, 60 deselected in 0.14s
+  - command: .venv/bin/pytest -p no:cacheprovider -q tests/st0101
+    result: 368 passed in 4.55s
+  - command: >-
+      .venv/bin/pytest -p no:cacheprovider -q
+      tests/st0106/test_workflow_contract.py
+    result: 21 passed in 0.03s
+  - command: >-
+      .venv/bin/ruff check scripts/chatgpt_pro_orchestrator.py
+      tests/st0101/test_chatgpt_pro_orchestrator.py and matching Ruff format
+      --check, followed by Python compilation
+    result: PASS; lint clean, both files already formatted, and both compiled
+  - command: >-
+      python3 scripts/import_raos_design.py verify and make check-workspace
+    result: >-
+      PASS; 105 imported files, six archives, 104 package checksums, 103
+      manifest entries, and 42 workspace directories with no changes
+  - command: >-
+      git diff --check -- scripts/chatgpt_pro_orchestrator.py
+      tests/st0101/test_chatgpt_pro_orchestrator.py changes/st-0101/README.md
+      docs/worklogs/ST-0101.md
+    result: PASS
+boundary: >-
+  Append-only repository delta over the 2026-08-04 ST-0101 V3 local snapshot.
+  The V3 capture and four current direct-artifact captures bind the final
+  approved live-resume parser-refusal terminalization. Deterministic inert
+  transports prove importance-aware terminal unavailable outcomes for the two
+  exact allowlisted response reason codes, pending-transcript retention, a
+  verified append-only event hash chain, no proposal or finalization, no type,
+  click, send, or resubmission, terminal idempotence, and hard refusal for a
+  non-allowlisted code. No browser, MCP child, private run state, pending live
+  transcript, prompt, response, credential, cookie, storage, profile, live
+  resume, resubmit, hosted CI, human approval, canonical APPLY, staging,
+  release, or production action was accessed or executed. A combined
+  implementation-plus-status-history PR is not valid under the ST-0005 trust-
+  surface/history separation and this record is local candidate evidence only.
+  Formal TST-001 remains NOT_EXECUTED and effective canonical ST-0101 remains
+  NOT_STARTED / NOT_EXECUTED.

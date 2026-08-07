@@ -234,11 +234,107 @@ request_inventory:
   path: changes/st-0005/requests/0028-st-0101-v2.yaml
   sha256: 92210293a3d387512bb2543bee8cf2bbd24e22c8fbd3aa1b09d11942f471d963
   intent: PROPOSE
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-003
+  path: changes/st-0005/requests/0029-st-0101-v3.yaml
+  sha256: 252d7f3e9f059976a95b70427f64dbc14a0101ad5730e3d15ae6cbf5c612949b
+  intent: PROPOSE
+- request_id: STATUS-ST0103-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0030-st-0103-v2.yaml
+  sha256: 56c996258789717bb28b4a5db3e7e0757913fa87bd286515ebf4dcd069abad43
+  intent: PROPOSE
+- request_id: STATUS-ST0801-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0031-st-0801.yaml
+  sha256: 05656e034a6032283a585090302f31748e7a8d4df62902b88059353c69d35f3d
+  intent: PROPOSE
+- request_id: STATUS-ST0304-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0032-st-0304.yaml
+  sha256: 5f251d145749e09b589df8e6b6d6af48668007f72e9a32cad142ac3d569c3042
+  intent: PROPOSE
+- request_id: STATUS-ST0305-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0033-st-0305.yaml
+  sha256: 134b51cd4929b43b881b3a82f0e8a6ab3cdd9931fafc889df57a290a70d07e4c
+  intent: PROPOSE
+- request_id: STATUS-ST0307-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0034-st-0307.yaml
+  sha256: db101c4aa2300b8f89ea2f81c6f73f44cc9f70f7d0042ae4a971d4567131cd38
+  intent: PROPOSE
+- request_id: STATUS-ST0701-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0035-st-0701.yaml
+  sha256: d07a0fc6cfcf3ecc9f47f7dbada426331f1e3b3b0736020b0f871e5db46e37b8
+  intent: PROPOSE
+- request_id: STATUS-ST0205-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0036-st-0205.yaml
+  sha256: 8d99ebbb7aa210fbbc775f4e43901210a438307c76b98244e7b7c19f5fa91a8d
+  intent: PROPOSE
+- request_id: STATUS-ST0107-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0037-st-0107-v2.yaml
+  sha256: 622475e4d86b6cbebb59b6d839f56a754cfb62994859c6c1208e91bce749cd41
+  intent: PROPOSE
+- request_id: STATUS-ST0202-LOCAL-PROPOSAL-003
+  path: changes/st-0005/requests/0038-st-0202-v3.yaml
+  sha256: c38b92c078b9358653a51c916f6c208407acb4ad263b247e3e5f46375698f12c
+  intent: PROPOSE
+- request_id: STATUS-ST0203-LOCAL-PROPOSAL-003
+  path: changes/st-0005/requests/0039-st-0203-v3.yaml
+  sha256: 5b0d527e4ead7a5f9a8aa332e554fc0502551288ce59b4f51b64dbdf81d2392b
+  intent: PROPOSE
+- request_id: STATUS-ST0204-LOCAL-PROPOSAL-003
+  path: changes/st-0005/requests/0040-st-0204-v3.yaml
+  sha256: 9c61a2da9e6c8d6186310a4bcb6a95afa0e364ace164ac901b7a9a5673ddd946
+  intent: PROPOSE
+- request_id: STATUS-ST0205-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0041-st-0205-v2.yaml
+  sha256: 2af2ddf5fae7f75a42121b668350116d975b69f6290ec9724c7bf94046757d70
+  intent: PROPOSE
+- request_id: STATUS-ST0305-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0042-st-0305-v2.yaml
+  sha256: 7a2bb7ba9b100043e11ef88dc08217ad9163aa0c75c59f5b6735ed7803b1a05c
+  intent: PROPOSE
+- request_id: STATUS-ST0306-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0043-st-0306.yaml
+  sha256: 8474b663df448a399baa7dc2363c1eccb021d0900dfb3e2b6863aa04f8831218
+  intent: PROPOSE
+- request_id: STATUS-ST0307-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0044-st-0307-v2.yaml
+  sha256: a7f44dbc4720ad95a365787dfaf403c39cf631be2a8d7fa61cf1d4a22a087314
+  intent: PROPOSE
+- request_id: STATUS-ST0701-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0045-st-0701-v2.yaml
+  sha256: 3101efb50f86b9680ca833c0d777f558dcb7a29e1eeeb073b820aaafa717fe82
+  intent: PROPOSE
+- request_id: STATUS-ST0801-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0046-st-0801-v2.yaml
+  sha256: 57129fa54db6984f0b22948b9594aa6ebf863824ace594471f00da11d15a533b
+  intent: PROPOSE
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-004
+  path: changes/st-0005/requests/0047-st-0101-v4.yaml
+  sha256: d6565134c5f6bb702351f289c4a0047135a12ca7528d2abd183f07d6fa0f9080
+  intent: PROPOSE
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-005
+  path: changes/st-0005/requests/0048-st-0101-v5.yaml
+  sha256: 0d2783f18842f610480f943af0ad65d31ebb8af9c7638d3377154c501bcb7f89
+  intent: PROPOSE
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-006
+  path: changes/st-0005/requests/0049-st-0101-v6.yaml
+  sha256: 2a6ca467e421208a3b96252182a4bae779e133ebf0657deac98d6943a0876650
+  intent: PROPOSE
+- request_id: STATUS-ST0305-LOCAL-PROPOSAL-003
+  path: changes/st-0005/requests/0050-st-0305-v3.yaml
+  sha256: 77b253193a1951263bb2a7b3b03e7888db318f2104e8d839724a99c27636ebfb
+  intent: PROPOSE
+- request_id: STATUS-ST0306-LOCAL-PROPOSAL-002
+  path: changes/st-0005/requests/0051-st-0306-v2.yaml
+  sha256: ded82a198ff8daf2684a5ef6f4d257e8636c06ef2f42f8411d2cd13a8248f54b
+  intent: PROPOSE
+- request_id: STATUS-ST0307-LOCAL-PROPOSAL-003
+  path: changes/st-0005/requests/0052-st-0307-v3.yaml
+  sha256: e384cc1bc318c7dc2e1414a73587871b56ea2439af01445512f6ca43ee977c66
+  intent: PROPOSE
 counts:
   story_rows: 129
   test_suite_rows: 32
   environment_rows: 6
-  proposal_requests: 28
+  proposal_requests: 52
   applied_requests: 0
 stories:
 - story_id: ST-0001
@@ -315,6 +411,10 @@ stories:
   proposal_request_ids:
   - STATUS-ST0101-LOCAL-PROPOSAL-001
   - STATUS-ST0101-LOCAL-PROPOSAL-002
+  - STATUS-ST0101-LOCAL-PROPOSAL-003
+  - STATUS-ST0101-LOCAL-PROPOSAL-004
+  - STATUS-ST0101-LOCAL-PROPOSAL-005
+  - STATUS-ST0101-LOCAL-PROPOSAL-006
 - story_id: ST-0102
   base_record_sha256: 47e787b90474910e1d8a4cf26bef47bf5533e81d362022c37530aab693fe6db1
   effective_implementation_status: NOT_STARTED
@@ -335,6 +435,7 @@ stories:
   open_decisions: []
   proposal_request_ids:
   - STATUS-ST0103-LOCAL-PROPOSAL-001
+  - STATUS-ST0103-LOCAL-PROPOSAL-002
 - story_id: ST-0104
   base_record_sha256: 239dd54874556663dbfc226ed4e2987f26ad35efdf57fff18d99185c1dc24520
   effective_implementation_status: NOT_STARTED
@@ -372,6 +473,7 @@ stories:
   open_decisions: []
   proposal_request_ids:
   - STATUS-ST0107-LOCAL-PROPOSAL-001
+  - STATUS-ST0107-LOCAL-PROPOSAL-002
 - story_id: ST-0201
   base_record_sha256: f289c5dc2e56994911cb5b49b4479a0bd21d851b305e4139603208bf662d78b0
   effective_implementation_status: NOT_STARTED
@@ -391,6 +493,7 @@ stories:
   proposal_request_ids:
   - STATUS-ST0202-LOCAL-PROPOSAL-001
   - STATUS-ST0202-LOCAL-PROPOSAL-002
+  - STATUS-ST0202-LOCAL-PROPOSAL-003
 - story_id: ST-0203
   base_record_sha256: fc907cbad7494c759fbc985c3fb194e40b884dd97dec79795c0e1c7306b04c47
   effective_implementation_status: NOT_STARTED
@@ -401,6 +504,7 @@ stories:
   proposal_request_ids:
   - STATUS-ST0203-LOCAL-PROPOSAL-001
   - STATUS-ST0203-LOCAL-PROPOSAL-002
+  - STATUS-ST0203-LOCAL-PROPOSAL-003
 - story_id: ST-0204
   base_record_sha256: 84ef3af81602e048591c6ae207cbd01969bfe86ee720c24fa4f53c3aea24a15e
   effective_implementation_status: NOT_STARTED
@@ -412,6 +516,7 @@ stories:
   proposal_request_ids:
   - STATUS-ST0204-LOCAL-PROPOSAL-001
   - STATUS-ST0204-LOCAL-PROPOSAL-002
+  - STATUS-ST0204-LOCAL-PROPOSAL-003
 - story_id: ST-0205
   base_record_sha256: 6b47e248255dacf57297a14e9d68665b13eb098e0bfddc739ea20541c284d77d
   effective_implementation_status: NOT_STARTED
@@ -420,7 +525,9 @@ stories:
   - TST-005
   - TST-031
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0205-LOCAL-PROPOSAL-001
+  - STATUS-ST0205-LOCAL-PROPOSAL-002
 - story_id: ST-0301
   base_record_sha256: 66f06e1fd191bf7d198cd9ea33155501ab64e04f472e37074c4978828c1dde90
   effective_implementation_status: NOT_STARTED
@@ -463,7 +570,8 @@ stories:
   - TST-008
   - TST-010
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0304-LOCAL-PROPOSAL-001
 - story_id: ST-0305
   base_record_sha256: 8b46b18543b3932dc4e0f610879b83695e14e651c09d4e6c21000636d7bdfde6
   effective_implementation_status: NOT_STARTED
@@ -473,7 +581,10 @@ stories:
   - TST-011
   - TST-030
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0305-LOCAL-PROPOSAL-001
+  - STATUS-ST0305-LOCAL-PROPOSAL-002
+  - STATUS-ST0305-LOCAL-PROPOSAL-003
 - story_id: ST-0306
   base_record_sha256: c6483ea355d587af0043d6ecbf21ff5e63e4c38871249f6197fc9d2040b92158
   effective_implementation_status: NOT_STARTED
@@ -481,7 +592,9 @@ stories:
   required_suites:
   - TST-011
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0306-LOCAL-PROPOSAL-001
+  - STATUS-ST0306-LOCAL-PROPOSAL-002
 - story_id: ST-0307
   base_record_sha256: f734522e4d1418ed40bb1aeba6d7757b2fbc8442d14be0840ce7ce74cfd8b54a
   effective_implementation_status: NOT_STARTED
@@ -489,7 +602,10 @@ stories:
   required_suites:
   - TST-010
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0307-LOCAL-PROPOSAL-001
+  - STATUS-ST0307-LOCAL-PROPOSAL-002
+  - STATUS-ST0307-LOCAL-PROPOSAL-003
 - story_id: ST-0308
   base_record_sha256: 7b30ffd58010ee3e317517fa2fd5be8f68ca740bc71e6e9f8085ad3969038f99
   effective_implementation_status: NOT_STARTED
@@ -684,7 +800,9 @@ stories:
   - TST-001
   - TST-017
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0701-LOCAL-PROPOSAL-001
+  - STATUS-ST0701-LOCAL-PROPOSAL-002
 - story_id: ST-0702
   base_record_sha256: 54ec93c66b1412d81867bfa4b4d374f84603a85a9951b31ec14685ddd389401b
   effective_implementation_status: NOT_STARTED
@@ -764,7 +882,9 @@ stories:
   required_suites:
   - TST-020
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0801-LOCAL-PROPOSAL-001
+  - STATUS-ST0801-LOCAL-PROPOSAL-002
 - story_id: ST-0802
   base_record_sha256: 37cefb847606cba44720fbceb0af0e68d0eefb4fc2a107afbc756feab47e60ae
   effective_implementation_status: NOT_STARTED
@@ -3486,5 +3606,1580 @@ proposals:
       - fae2908a01a9b38c2407a9d894d7743d37cbd16a3709c254e049fceab3329f0c
       - fe3fcefb697dabf1b33fdababa782aaf289ce7826981b258e407a7a7909455ba
       - ff0afaf837c18131a5edc05670f8eb16910cd8a7473524f63e12d593e17b9644
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-003
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T06:58:34Z'
+  reason: Refresh the append-only local ST-0101 proposal after the raw Playwright snapshot parser and
+    narrow compound Cloudflare challenge classification were corrected, focused and Story-local tests
+    passed, the read-only exact-origin live doctor stopped with STOP_CAPTCHA, and the independent post-fix
+    audit found no findings. This remains local candidate evidence only and does not claim hosted CI,
+    formal TST-001, human approval, canonical APPLY, staging, release, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0101-local-20260804-v3.yaml
+      sha256: 9731ec4db07d4bdd7eb1f4e1651c390dccfc72c5432b33d37f6a7a9de9b9b313
+      observed_at: '2026-08-04T06:57:31Z'
+      snapshot_artifact_sha256:
+      - 7e80abc5b4d22d0c8d3aa7ec8d4a19c25decb11fc7fedf252010811273e73008
+      - 846b55421c1a9e7af12176b53ccb280750e8137f9d2337eb72755e464acbdb7e
+      - a8478d92a32c484133a9473880f44e0d7ebca095488ea16f4921477332d03508
+      - ecd4d671467d92b83a6097c3ac9dadf55c0ece36d815a5aca64856183a89cc1b
+      - ee73cf312f1756556fbf4c8962754e597ffb04ac6e904867bad6f8102ac36170
+      - f5e7a329abf9c3a2ae28e07807a87ebfc08ad6e67ccd4fabfb71d55ad45e2796
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0103-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T08:46:07Z'
+  reason: Refresh the append-only local ST-0103 proposal after deterministic manifest-to-lock validation,
+    canonical package-location closure, and the exact prehydrated-Python runtime guard were implemented;
+    serialized Story and exact Node wrapper gates passed; and the independent final freeze audit found
+    no Critical, High, Medium, or Low findings. This remains local candidate evidence only and does not
+    claim hosted CI, formal TST-001/TST-006, human approval, canonical APPLY, staging, release, or production
+    execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0103
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0103-local-20260804-v2.yaml
+      sha256: 16651ca4a8c133ffd6108e6af26e0fed751d169b6dc15b7f081f00563e72045a
+      observed_at: '2026-08-04T08:45:08Z'
+      snapshot_artifact_sha256:
+      - 0f3e0ec8043f1d6326c2c6fbf7ab76e7cf81fa56fd953d9ba92de2e788593f12
+      - 107bfff2c8e1c96852c91e15c21137e967dbd61091ce0318f50172fd57682631
+      - 308be530a333cedc90b4a6422eeba044cf07f22a01a56968fe6dfdbc50279bf9
+      - 42326d4b240d0784b7a08daeb8f2f38da1fab0ee2a900cc3569d316d5f3f78cd
+      - 492c3439c0a891da2bf259aa800c9347c1dc84e6f564ace89c2464f8918522d2
+      - 68d78ea99542946ec22238651248d254826db51a15a726e39def1562641bef8e
+      - 9182d29cdf58d46eca5831f1e09c04dd780e750cf20afd8a0aa3c254f7867cd5
+      - af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10
+      - e7cf45a19da592b2d202de12de42fa64a30e2c8fd7e2426ef82db2034ed0572e
+      - ee509ac865ad45cd9d038a11e6cfa06c39127d9a9b273b1a9ca4995f483f9f15
+      invalidates_evidence_sha256: []
+    - suite_id: TST-006
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0103-local-20260804-v2.yaml
+      sha256: 16651ca4a8c133ffd6108e6af26e0fed751d169b6dc15b7f081f00563e72045a
+      observed_at: '2026-08-04T08:45:08Z'
+      snapshot_artifact_sha256:
+      - 0f3e0ec8043f1d6326c2c6fbf7ab76e7cf81fa56fd953d9ba92de2e788593f12
+      - 107bfff2c8e1c96852c91e15c21137e967dbd61091ce0318f50172fd57682631
+      - 308be530a333cedc90b4a6422eeba044cf07f22a01a56968fe6dfdbc50279bf9
+      - 42326d4b240d0784b7a08daeb8f2f38da1fab0ee2a900cc3569d316d5f3f78cd
+      - 492c3439c0a891da2bf259aa800c9347c1dc84e6f564ace89c2464f8918522d2
+      - 68d78ea99542946ec22238651248d254826db51a15a726e39def1562641bef8e
+      - 9182d29cdf58d46eca5831f1e09c04dd780e750cf20afd8a0aa3c254f7867cd5
+      - af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10
+      - e7cf45a19da592b2d202de12de42fa64a30e2c8fd7e2426ef82db2034ed0572e
+      - ee509ac865ad45cd9d038a11e6cfa06c39127d9a9b273b1a9ca4995f483f9f15
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0801-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T11:16:41Z'
+  reason: Record the append-only local ST-0801 implementation candidate after its deterministic 95-artifact
+    source freeze, Story-local tests, denied-network static and unit gates, cumulative contract/codegen
+    gate, and independent final audit passed. This does not claim formal TST-020, hosted clean-clone CI,
+    human approval, canonical APPLY, staging, release, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0801
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0801-local-20260804.yaml
+      sha256: bba39e07744988c03c4d60e7da8dc7c7117af797ef22eca81711f2d8c12b9bae
+      observed_at: '2026-08-04T11:16:13Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 0579bc0d639d7ee3ea5f81b6270df7ab3c93b380109d66a6e259bff48f2f6bd0
+      - 06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932
+      - 0aef38d018043e58343ac1d6d2fbc1ae428abadffc1f5b5346b72ef508f2ae3f
+      - 1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7
+      - 1ff69444290e0bc291929209964d45fa4a0afe0523e623af388bf4b0282c4b69
+      - 20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312
+      - 2361401bdc82ede6da9b51208c11649e111d158751b36d09ee87e445b0e2b8b5
+      - 2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d
+      - 2b7eaf20108494c857fe942a390a0d8557cbda2547e547bf8f5a039231d651cf
+      - 2e13fdbb98f8ab5eaf402db107999fd55ed0d2f931cd2bc0929d57c45fff0d9c
+      - 2e26d2656aa62be2095efb325942bcb6b1c04d14c3f358ffd9ab5887626cf7a3
+      - 2f697e0a5aab56a5caa612ec7ba431e9a3c491372b646635af7d5d6f0d3b2e37
+      - 306ac3fd2282b8fad214297dcb1e7f78201403d92fd105af5030d0ff062fcb7f
+      - 3361103bff6e17961b89f2f386e75bda5360e6da0f6a50193d091a2c75c38a96
+      - 347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad
+      - 366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec
+      - 37b6633f2d330ed420bbc3cdb5a7308e98f9ad74d61a320739b7745f972c5783
+      - 37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6
+      - 38cac947aa865120b04277d4206ecb65af3212ff54543fe59a1f4830a912f2c2
+      - 39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 3e2ff8be008e1335de78194c2d79ac90203e21f58baa76f3fbf289a9cb689783
+      - 3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b
+      - 402aef1eca7b8fc2165bac2938f71b57e1eca862f429e6dc7da85057d76accbd
+      - 408fa7c5d4803d7a066de1daab1572847c966fc6e491b2805dd318c0e49bd1c2
+      - 46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc
+      - 48017f422cb30ef744eb52cd7b92ed3564619d9bedbc6502f6632637e266e9a1
+      - 4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24
+      - 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+      - 559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a
+      - 56befd01653fd06bb47cade73066fb04964e18f5812f76a1ff94c82c85d620e2
+      - 5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1
+      - 6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11
+      - 6396e0197f8ea0a2ffb030460fb80bfb6b9e5ad791334706a1e4424681a6c081
+      - 64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc
+      - 65672cf387803215aec399bf6bb2b7661f1b3d4eabec8a27928ec78f98beb149
+      - 681e2c8526cf9b2a9cd3dbef1cc26450e9f2e841c5669659e499643351738a3c
+      - 6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e
+      - 6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89
+      - 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+      - 716a34d7aea5cf290fc9be715e6851c5d8120ad1677f0ad5bbc79a3a212192e6
+      - 7483b434740f95e9ad75d3e9717298781faf22f390c502af655b1ce7590e5a21
+      - 76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918
+      - 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+      - 7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68
+      - 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7
+      - 808c3178536246080ab3a4394246ff76670ae65ffd14a2e2b47b87a03b1597d7
+      - 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+      - 8302242b2106a38f27c7e781eb84e458be1db3f8a5344a5f77bc247cd2f9654a
+      - 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
+      - 8490e939208baf5d4f733bceee99ede44936da19921bfd3dfcfbbf5f68bbbe80
+      - 86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a
+      - 8699d7bc35b78955552a13637c952e923638f2e598885c5b3e032b0dbac7bffc
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a
+      - 97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881
+      - 9932791eacbc305441172acd1a4197deb70ff153c41f4a7e2a4f76b6082425ad
+      - 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+      - 9c3a8d576fc17ec66c271c8b33514c4ad75408f336cff681d5472cc3c779916f
+      - 9cdac8135b91ade54cb34d61b58bb98b9a758d0b9312cb171650b527e16a7159
+      - 9ee039a17b9f0d68ae05e798754e7a365ce7adc2492ae5d1e48eb3563ebc97f9
+      - 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+      - a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c
+      - a592d42f7fac1d6a93ae66f5593352c1842c8d5dfc316b75799d6caf4bf901e3
+      - a5a5e02b579c88c7a959474ffb10aa8e546405e9a22dddb26b01c2d168da1529
+      - a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1
+      - a7759e354bc5552b7f39ac3b319db0c9b3d15e0017c359b6e534281a27aa26b2
+      - a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
+      - adc3f52092bd78d7d318d31da97c6ca048cf69f333ffbb225e70867f738b0aa2
+      - af9e86c5938a718f41aaea0c9247405508adfbcb1b0924e55f4ce06d5a0a420e
+      - b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510
+      - b66bdb7ab7c4f883f5658d2acbef2804946f4f5124db66508b39fb90cc236467
+      - b99fac5908f2b3278ac319a42cf5cee9eedf1c92ac6a6db16f7ff22688aa49ee
+      - bb48c844380cd0b86cd0aaf68ca2bffac49a01f766a44e4325d3253ef39304de
+      - bccdefcfd53c052e5091ff2ee00dbb482d3fe86241d8a6f91cd02ba58b6e75c9
+      - c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622
+      - ca7007bc94e832bb1178adcc1cabcf219a268930c331635c183ba8db6ee1d957
+      - cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667
+      - d2251bc89081cef93bfa495b351f7a5b44b1216441dfb6c3c6b1a08be0f8fef3
+      - d5dbce2f88bb26dfaa4dc3454f0e5c44db61ac4f2cf62c402dd473714a46f137
+      - db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3
+      - e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28
+      - e258a86603d656b9d896dea182ba0aea5e4a43983385a99b85d8c3ec0e3609e3
+      - e385de6b5cb4e885f71fcabeeb13f8a4e976da5ac8c13161a27a20e7824f00eb
+      - e3c6aecd855e4912e5a24738538db23cd63c0979a96bbe7ddf2e078c306f302f
+      - f128896be05e8560ad0608b02adbe1150e305f18fd7a44005abb0f70687d3cef
+      - f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71
+      - f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229
+      - fa518e1a3ca68bfaacf9e45007e245da5b3705c88e9d7ca85583b3f50b19d49d
+      - fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4
+      - fd9dd5db60bf6d613add9d5ffbfb010b5962b0fa713003230b0e1cc4559cc397
+      - fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+      - ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c
+      - ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0304-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T15:35:01Z'
+  reason: Record the append-only local ST-0304 implementation candidate after deterministic generation,
+    exact cached PostgreSQL 18.4 cumulative migration suites, final denied-network static/unit/contracts
+    gates, worktree secret scan, and independent implementation and metadata audits passed. This does
+    not claim formal Suite execution, hosted CI, human review, canonical APPLY, formal VALIDATED, staging,
+    release, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0304
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0304-local-20260805.yaml
+      sha256: a42fffeb981cb5d5d2e6be2aad27b5178c3acec554007ea4c830850635bd3148
+      observed_at: '2026-08-04T15:35:00Z'
+      snapshot_artifact_sha256:
+      - 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704
+      - 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+      - 19785320e51da45e83a4107c3fbe61eebf035bfb4af030e788a913c666169e36
+      - 1c63270463dfa4afd6eb329d265ed18dd94dc9c9c6bace96796f4863be9772b8
+      - 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
+      - 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
+      - 31bec8c705dfd1bfaeddba6334457c47b717f17602bcbaf0e9e5135519a5d9d1
+      - 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+      - 3d806436b7ed91f25e0396e15b914dda7258b743589ec4dc6c3f4272c9fcb38d
+      - 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208
+      - 4a3c029980e8c27957fac2291e7b0a8efb81eaf1faa74dee4e757b0836e7ba30
+      - 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      - 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      - 59c99e4d9ee73110414684404ead48a0ebfe7a358eade9677ad23b9f0b3b65a3
+      - 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
+      - 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      - 67440751659f8089e7594a549aaa5f031a5e94e29107197f3bc9d1bfaea30592
+      - 6cebf09249f027662557038f8367bdc586030197911046be242543cd43502ae5
+      - 739cc2ecae7e49702da5e36be6e37eaebaa7a535be4a623c79dee86926212870
+      - 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      - 7e1ce307a5751fc5d95e4c06652f0e6fb41b8bdc29c583ea9cd0a3d83d1fa3a5
+      - 8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 88aeda35f644aad65b18578c79b478e7b57e2204a7fab50b02454cc3995550ac
+      - 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+      - 947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09
+      - 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+      - 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
+      - a19cd5f3a352ce7843bc69f76cccd4786dcc7eff26dfbd4b7ee85a13bde930d7
+      - a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064
+      - a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
+      - b2192c72a1933146915657a293a9c4cecdf65c370ad8dc77ae319a4945cb3abd
+      - b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8
+      - b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968
+      - b685751e4e2743ea6c7202e8ce726486ac152e46987bb832e6777e61b987aafc
+      - c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+      - c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      - c78e946f9be015d461350f347f125a2cf8f01b267647a8685158af207cefc0ec
+      - cc520254390d68fdc68d54c01ed6b95e031ea422814e5be924849ec61636904d
+      - cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+      - d01ebd6e277aa08a9aa290a75fc42877ebab65430acb0213403aad514ccc3c1a
+      - d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+      - d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+      - d823d3551d7da483169b443dd035528951b6b617f228d053e5d024fd2e39db83
+      - dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+      - debf45d5d0735978392490618d1e3b565b70e6a195b3fa65f283aa5718ba243f
+      - e375c0c402483a3e40e4b73f7172e295df2830859d3ef5df7e90036bc073a031
+      - e83424bae922b5ad842c8aee4f991256959437e6105b0617b9d05c92e6d92be0
+      - eafb7b89c6fa08bd74a8c13d89aa19aea3a946e739720a8cff9e6faa3ca2bfc4
+      - f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+      - f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+      - f95ad5a2fd349177b01f97237d0d9a3fb598b2781828e9531a04c3c42b811b45
+      - fc5f851e4bf23e6b6a744e29b493de044a28375211dc973911d0eca162f46a2c
+      invalidates_evidence_sha256: []
+    - suite_id: TST-010
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0304-local-20260805.yaml
+      sha256: a42fffeb981cb5d5d2e6be2aad27b5178c3acec554007ea4c830850635bd3148
+      observed_at: '2026-08-04T15:35:00Z'
+      snapshot_artifact_sha256:
+      - 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704
+      - 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+      - 19785320e51da45e83a4107c3fbe61eebf035bfb4af030e788a913c666169e36
+      - 1c63270463dfa4afd6eb329d265ed18dd94dc9c9c6bace96796f4863be9772b8
+      - 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
+      - 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
+      - 31bec8c705dfd1bfaeddba6334457c47b717f17602bcbaf0e9e5135519a5d9d1
+      - 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+      - 3d806436b7ed91f25e0396e15b914dda7258b743589ec4dc6c3f4272c9fcb38d
+      - 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208
+      - 4a3c029980e8c27957fac2291e7b0a8efb81eaf1faa74dee4e757b0836e7ba30
+      - 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      - 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      - 59c99e4d9ee73110414684404ead48a0ebfe7a358eade9677ad23b9f0b3b65a3
+      - 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
+      - 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      - 67440751659f8089e7594a549aaa5f031a5e94e29107197f3bc9d1bfaea30592
+      - 6cebf09249f027662557038f8367bdc586030197911046be242543cd43502ae5
+      - 739cc2ecae7e49702da5e36be6e37eaebaa7a535be4a623c79dee86926212870
+      - 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      - 7e1ce307a5751fc5d95e4c06652f0e6fb41b8bdc29c583ea9cd0a3d83d1fa3a5
+      - 8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 88aeda35f644aad65b18578c79b478e7b57e2204a7fab50b02454cc3995550ac
+      - 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+      - 947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09
+      - 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+      - 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
+      - a19cd5f3a352ce7843bc69f76cccd4786dcc7eff26dfbd4b7ee85a13bde930d7
+      - a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064
+      - a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
+      - b2192c72a1933146915657a293a9c4cecdf65c370ad8dc77ae319a4945cb3abd
+      - b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8
+      - b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968
+      - b685751e4e2743ea6c7202e8ce726486ac152e46987bb832e6777e61b987aafc
+      - c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+      - c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      - c78e946f9be015d461350f347f125a2cf8f01b267647a8685158af207cefc0ec
+      - cc520254390d68fdc68d54c01ed6b95e031ea422814e5be924849ec61636904d
+      - cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+      - d01ebd6e277aa08a9aa290a75fc42877ebab65430acb0213403aad514ccc3c1a
+      - d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+      - d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+      - d823d3551d7da483169b443dd035528951b6b617f228d053e5d024fd2e39db83
+      - dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+      - debf45d5d0735978392490618d1e3b565b70e6a195b3fa65f283aa5718ba243f
+      - e375c0c402483a3e40e4b73f7172e295df2830859d3ef5df7e90036bc073a031
+      - e83424bae922b5ad842c8aee4f991256959437e6105b0617b9d05c92e6d92be0
+      - eafb7b89c6fa08bd74a8c13d89aa19aea3a946e739720a8cff9e6faa3ca2bfc4
+      - f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+      - f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+      - f95ad5a2fd349177b01f97237d0d9a3fb598b2781828e9531a04c3c42b811b45
+      - fc5f851e4bf23e6b6a744e29b493de044a28375211dc973911d0eca162f46a2c
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0305-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T18:28:05Z'
+  reason: Record the append-only local ST-0305 implementation candidate after deterministic install/source/check
+    gates, exact PostgreSQL 18.4 final and cumulative isolated migration suites, official denied-network
+    full unit and static gates, ST-0105 code-generation check, worktree plus Git-history secret scan,
+    and an independent audit passed. This does not claim formal Suite execution, hosted CI, migration-owner
+    or human review, canonical APPLY, formal VALIDATED, staging, release, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0305
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0305-local-20260805.yaml
+      sha256: 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+      observed_at: '2026-08-04T18:28:04Z'
+      snapshot_artifact_sha256:
+      - 0551cb951931358355848ff210eac7dfbfe308e4be923ad80516077ece832570
+      - 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
+      - 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
+      - 16b85b772063a945c0f9b86d77da60658810bbfd4bc48e256af10dc804f37b1b
+      - 17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c
+      - 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+      - 198d6b0704cd6b3220a4d07c84e397d4a53159b06a2f7c586f6b671c98d368fb
+      - 1eef2841690bd67e3f5489d1f6c092c687c81cfd987ddd32eb45ad640b1df65d
+      - 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d
+      - 2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f
+      - 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+      - 3839312aac427b34024d16493a98e79ff2d45764bbd74863cacf89bc2bba9b1f
+      - 3d48f5a3490151a22328b533d595ba21694be689280e42adc388814499f4557c
+      - 4284eb6af68bedad5b1bd9f41348df8282ae4fd35920474fc9f90b955c8b6186
+      - 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      - 4c5a77f9f71cda3fc47d2ffa83a68860a9cfe5d3218c2ce0d43cccb0273c7d94
+      - 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      - 59280642fc73e64998be4e5dbbfdba766ee38493bc7b270df94f7a2113341045
+      - 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+      - 5b15472a83535e78e37710af730840711e2634db6e33fb4e43582de5222435e4
+      - 5d85c1b578d04d35409d227b6e5adf7c30daafc0691ac63914bf1c6ee43588d0
+      - 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
+      - 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      - 6cc8d7aff5d9e71b5e34c39259b81cbefd6fbbeb3d8ccc6a7128712230d10725
+      - 6e841fec773550b80ae7058e52fe979d9ef78a44e2e8452e6db7bdda1b1ad7ec
+      - 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+      - 76a810f4470542bc1e2e16ae096661e74a06a2b76474e07815e52fbc2937d94f
+      - 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9
+      - 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+      - 99c44323220e25f1d281a5fa6ccda4a9249268fa7cc7d819ad5badcc960e12ab
+      - b30fa005c17ba832a91097c061315ea8d0ba07c288d5a0961645c91aa073a99a
+      - b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa
+      - b3d6d35a7d51d9fdede7cf3c3b1938afa5d2aadba17705b10582d049233aab1f
+      - b7de80eac1ade79967a65321c1fe1c3a1ea3bcf7229362ae9c2a25f4e4f97f54
+      - c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      - c522baeb6aa242599f9f3f1ad2b119457ba259e751db306a78a8ef2b4274efb0
+      - d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+      - d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+      - d3ecd89ac35c386333ac2bf75907259aa28fc8718f65e8c303499193d57fe82e
+      - d5eef08c8cd922b5226b12ff7a3fe44b8648fc46d32318a8565810a102b1d4b2
+      - dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+      - e35df4992ccf81cb78147c4b6ce10d3dde72c43bf0fea9dac12830d742967fa9
+      - ec689023703b98cc0decd5703c3f27be994a925a571bff3eb284522dde7b526f
+      - f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+      - f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+      - fb3c620aa53482d39762d31633c3b72c64029615963b172dbc6dd078c09de44f
+      - fb4c5090fb4d3f8c62e438c4a372064baa0b83f9cef77136b4a20b9215da9b21
+      - fea58284ef71e41f8d24887f43136594dc4abd689c93970e683b3a627691634b
+      invalidates_evidence_sha256: []
+    - suite_id: TST-011
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0305-local-20260805.yaml
+      sha256: 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+      observed_at: '2026-08-04T18:28:04Z'
+      snapshot_artifact_sha256:
+      - 0551cb951931358355848ff210eac7dfbfe308e4be923ad80516077ece832570
+      - 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
+      - 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
+      - 16b85b772063a945c0f9b86d77da60658810bbfd4bc48e256af10dc804f37b1b
+      - 17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c
+      - 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+      - 198d6b0704cd6b3220a4d07c84e397d4a53159b06a2f7c586f6b671c98d368fb
+      - 1eef2841690bd67e3f5489d1f6c092c687c81cfd987ddd32eb45ad640b1df65d
+      - 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d
+      - 2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f
+      - 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+      - 3839312aac427b34024d16493a98e79ff2d45764bbd74863cacf89bc2bba9b1f
+      - 3d48f5a3490151a22328b533d595ba21694be689280e42adc388814499f4557c
+      - 4284eb6af68bedad5b1bd9f41348df8282ae4fd35920474fc9f90b955c8b6186
+      - 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      - 4c5a77f9f71cda3fc47d2ffa83a68860a9cfe5d3218c2ce0d43cccb0273c7d94
+      - 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      - 59280642fc73e64998be4e5dbbfdba766ee38493bc7b270df94f7a2113341045
+      - 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+      - 5b15472a83535e78e37710af730840711e2634db6e33fb4e43582de5222435e4
+      - 5d85c1b578d04d35409d227b6e5adf7c30daafc0691ac63914bf1c6ee43588d0
+      - 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
+      - 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      - 6cc8d7aff5d9e71b5e34c39259b81cbefd6fbbeb3d8ccc6a7128712230d10725
+      - 6e841fec773550b80ae7058e52fe979d9ef78a44e2e8452e6db7bdda1b1ad7ec
+      - 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+      - 76a810f4470542bc1e2e16ae096661e74a06a2b76474e07815e52fbc2937d94f
+      - 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9
+      - 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+      - 99c44323220e25f1d281a5fa6ccda4a9249268fa7cc7d819ad5badcc960e12ab
+      - b30fa005c17ba832a91097c061315ea8d0ba07c288d5a0961645c91aa073a99a
+      - b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa
+      - b3d6d35a7d51d9fdede7cf3c3b1938afa5d2aadba17705b10582d049233aab1f
+      - b7de80eac1ade79967a65321c1fe1c3a1ea3bcf7229362ae9c2a25f4e4f97f54
+      - c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      - c522baeb6aa242599f9f3f1ad2b119457ba259e751db306a78a8ef2b4274efb0
+      - d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+      - d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+      - d3ecd89ac35c386333ac2bf75907259aa28fc8718f65e8c303499193d57fe82e
+      - d5eef08c8cd922b5226b12ff7a3fe44b8648fc46d32318a8565810a102b1d4b2
+      - dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+      - e35df4992ccf81cb78147c4b6ce10d3dde72c43bf0fea9dac12830d742967fa9
+      - ec689023703b98cc0decd5703c3f27be994a925a571bff3eb284522dde7b526f
+      - f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+      - f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+      - fb3c620aa53482d39762d31633c3b72c64029615963b172dbc6dd078c09de44f
+      - fb4c5090fb4d3f8c62e438c4a372064baa0b83f9cef77136b4a20b9215da9b21
+      - fea58284ef71e41f8d24887f43136594dc4abd689c93970e683b3a627691634b
+      invalidates_evidence_sha256: []
+    - suite_id: TST-030
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0305-local-20260805.yaml
+      sha256: 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+      observed_at: '2026-08-04T18:28:04Z'
+      snapshot_artifact_sha256:
+      - 0551cb951931358355848ff210eac7dfbfe308e4be923ad80516077ece832570
+      - 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
+      - 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
+      - 16b85b772063a945c0f9b86d77da60658810bbfd4bc48e256af10dc804f37b1b
+      - 17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c
+      - 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+      - 198d6b0704cd6b3220a4d07c84e397d4a53159b06a2f7c586f6b671c98d368fb
+      - 1eef2841690bd67e3f5489d1f6c092c687c81cfd987ddd32eb45ad640b1df65d
+      - 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d
+      - 2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f
+      - 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+      - 3839312aac427b34024d16493a98e79ff2d45764bbd74863cacf89bc2bba9b1f
+      - 3d48f5a3490151a22328b533d595ba21694be689280e42adc388814499f4557c
+      - 4284eb6af68bedad5b1bd9f41348df8282ae4fd35920474fc9f90b955c8b6186
+      - 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      - 4c5a77f9f71cda3fc47d2ffa83a68860a9cfe5d3218c2ce0d43cccb0273c7d94
+      - 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      - 59280642fc73e64998be4e5dbbfdba766ee38493bc7b270df94f7a2113341045
+      - 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+      - 5b15472a83535e78e37710af730840711e2634db6e33fb4e43582de5222435e4
+      - 5d85c1b578d04d35409d227b6e5adf7c30daafc0691ac63914bf1c6ee43588d0
+      - 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
+      - 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      - 6cc8d7aff5d9e71b5e34c39259b81cbefd6fbbeb3d8ccc6a7128712230d10725
+      - 6e841fec773550b80ae7058e52fe979d9ef78a44e2e8452e6db7bdda1b1ad7ec
+      - 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+      - 76a810f4470542bc1e2e16ae096661e74a06a2b76474e07815e52fbc2937d94f
+      - 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9
+      - 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+      - 99c44323220e25f1d281a5fa6ccda4a9249268fa7cc7d819ad5badcc960e12ab
+      - b30fa005c17ba832a91097c061315ea8d0ba07c288d5a0961645c91aa073a99a
+      - b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa
+      - b3d6d35a7d51d9fdede7cf3c3b1938afa5d2aadba17705b10582d049233aab1f
+      - b7de80eac1ade79967a65321c1fe1c3a1ea3bcf7229362ae9c2a25f4e4f97f54
+      - c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      - c522baeb6aa242599f9f3f1ad2b119457ba259e751db306a78a8ef2b4274efb0
+      - d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+      - d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+      - d3ecd89ac35c386333ac2bf75907259aa28fc8718f65e8c303499193d57fe82e
+      - d5eef08c8cd922b5226b12ff7a3fe44b8648fc46d32318a8565810a102b1d4b2
+      - dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+      - e35df4992ccf81cb78147c4b6ce10d3dde72c43bf0fea9dac12830d742967fa9
+      - ec689023703b98cc0decd5703c3f27be994a925a571bff3eb284522dde7b526f
+      - f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+      - f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+      - fb3c620aa53482d39762d31633c3b72c64029615963b172dbc6dd078c09de44f
+      - fb4c5090fb4d3f8c62e438c4a372064baa0b83f9cef77136b4a20b9215da9b21
+      - fea58284ef71e41f8d24887f43136594dc4abd689c93970e683b3a627691634b
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0307-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T19:48:58Z'
+  reason: Record the append-only local ST-0307 implementation candidate after the exact 50-artifact closure,
+    deterministic source/generation checks, a fresh exact PostgreSQL 18.4 Story suite, direct ST-0106
+    regression coverage, final denied-network static and unit gates, and an independent audit passed.
+    This does not claim formal TST-010, hosted CI, migration-owner or human review, canonical APPLY, formal
+    VALIDATED, staging, release, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0307
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-010
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0307-local-20260805.yaml
+      sha256: 78f4a982941b03659c6617b5b151d02edbcf4d98d7117159c48f3920f91ea6bd
+      observed_at: '2026-08-04T19:46:30Z'
+      snapshot_artifact_sha256:
+      - 005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381
+      - 134716a00687b348bf8b9c2e58d290c8f0cd2c2b8cdea5ce5be620eea8dca58c
+      - 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+      - 148ae19e590f82a9aab0c05420c14af1657b68d71c4780868f0c5ade15fe02f4
+      - 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704
+      - 1859e9d6c81829695b2304d58fd3803b185831ce62ac74ef890ffa16363096da
+      - 1aff2c7e80be4c058a072dbc140a9451b9ef0ac7ff88ad2c31a81dc25e88e02b
+      - 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
+      - 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+      - 2b12d0396500ca31a268b389866dbb2bd081608b7f0e31f28232d5afab6b1505
+      - 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
+      - 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+      - 3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab
+      - 3d289aec5889f04f545d9f606f078c318df6e4c689ddd24f4a50e05461dceec3
+      - 3f2501b76887b11662e647979de1b29502d194e778fd5d4460e8f8ad6a3c18e9
+      - 4091d22999fb484d1ebc3f5316f4de17ac3b6050d36105aeffe7833a996a6a23
+      - 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      - 4b6508b8c5a082695b1c4c48365c5932b51e3a6ca9a93c83ec599cd6aa7b1eb8
+      - 50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95
+      - 525d0129275441455f3f4a57c2e7aa78ba0b2f01b69246e9d66a9f58a27999b9
+      - 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      - 5783b9c20d4b2c6a47ac0fa8703e78a0ac35dd1829840b5dd1a6bd6b48a8a16a
+      - 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+      - 6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31
+      - 6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779
+      - 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      - 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
+      - 8455fe2277d5b94b8208cb6e1c61190e996114fc2a6d383dab4359ca4758fffa
+      - 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+      - 8b06b39a1b384628a68a6144fc0622f20023e0d6c9a452bf72e8f4b541482b40
+      - 958d54f1df02e79df5b970f19f33f81a87d94f5637a7c57d595d51d6bf83cf59
+      - 9bafe16f96ac89e789b257a847f46e7ce0e79fad800113064697a3a741a04a25
+      - 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
+      - 9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897
+      - a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064
+      - b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968
+      - c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+      - c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      - cc7074b0d79d0cb50ee2fdf02dbd170ebe7b375a4e42a7bd24f01d4f9fcca700
+      - cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+      - d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+      - d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+      - d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+      - dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba
+      - e2daf9950c43edda3240f3868ec0a11e997e4cbd280d3b03d8c00c8eabe27726
+      - e3d990c053e0b781c0f84b68cb9533a6dadde9aad1365155f03a8f3834427fa2
+      - ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+      - ec689023703b98cc0decd5703c3f27be994a925a571bff3eb284522dde7b526f
+      - f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+      - fb3c620aa53482d39762d31633c3b72c64029615963b172dbc6dd078c09de44f
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0701-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T21:10:57Z'
+  reason: Record the append-only local ST-0701 implementation candidate after its exact 26-artifact content-addressed
+    closure, deterministic generator check, isolated Story suite, strict mypy, Pyright, Ruff lint and
+    format, official denied-network static and unit gates, diff check, and independent audit passed. This
+    does not claim formal TST-001 or TST-017, hosted CI, runtime or provider validation, task or route
+    activation, human approval, canonical APPLY, formal VALIDATED, staging, release, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0701
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0701-local-20260805.yaml
+      sha256: 237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53
+      observed_at: '2026-08-04T21:08:33Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 09b29adfc5a3796d921fce5b8796817ebf17962ab23070f7ee83d58bf2bed9bc
+      - 136a5d6918d399932cd42db01b94b936b2a173317f171160a0d55c5defdfbee3
+      - 1db1b770547bb26a09b209a29f55b808a225b1ad1ea247001db2038bf69fa975
+      - 26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167
+      - 28306bcd001865b7860ee3adf0708c221513709d1071b7df6c3f9ba7ff5415f0
+      - 316b2d195fb3366fefb991c84cdd2618530455fcc58f9d140fa699f66cf46d8a
+      - 3182eaa04238281f0d99233f311f749524b948264bdfcaf5181974655302ad82
+      - 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 47dc2be6ba47964cb1c42a179b79d0ea5b65ab5d8d9004db46b31d528fc7512d
+      - 58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6
+      - 5fb9fb09e7f2d4104349c33b8390fc0db76e68a73f2702758c45a2222af4e748
+      - 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
+      - 8bb584464f116737fb549bfb76c7571c876f634e1fa99c7a2628c5fb73a8770f
+      - 9f46c590b579aa1ff275af406bca3535a23db5bc85d9bceaf8e6c2db1fcec003
+      - 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+      - a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
+      - a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
+      - bb184e0416c06242f052c13490f2525a9c2247373dbe4e7ebb8f0020e797bee9
+      - c3053d28c056fcc412e3852816528da92f301e369f5af45f9a1212cc920468ce
+      - d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55
+      - d916a4a2ed9afd44fe0a4c01938a5b8aacbfc7323fd4d3cfcb0fa33d399a0e0e
+      - ede35a651d40438e63b7484e183a8f981fc5cba70548638ad69b790f28b01ad9
+      - fbebbe666b6adef1f8c6f2413de16158257bef1e2569822d83ed1f7874245f77
+      - fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+      invalidates_evidence_sha256: []
+    - suite_id: TST-017
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0701-local-20260805.yaml
+      sha256: 237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53
+      observed_at: '2026-08-04T21:08:33Z'
+      snapshot_artifact_sha256:
+      - 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+      - 09b29adfc5a3796d921fce5b8796817ebf17962ab23070f7ee83d58bf2bed9bc
+      - 136a5d6918d399932cd42db01b94b936b2a173317f171160a0d55c5defdfbee3
+      - 1db1b770547bb26a09b209a29f55b808a225b1ad1ea247001db2038bf69fa975
+      - 26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167
+      - 28306bcd001865b7860ee3adf0708c221513709d1071b7df6c3f9ba7ff5415f0
+      - 316b2d195fb3366fefb991c84cdd2618530455fcc58f9d140fa699f66cf46d8a
+      - 3182eaa04238281f0d99233f311f749524b948264bdfcaf5181974655302ad82
+      - 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
+      - 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+      - 47dc2be6ba47964cb1c42a179b79d0ea5b65ab5d8d9004db46b31d528fc7512d
+      - 58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6
+      - 5fb9fb09e7f2d4104349c33b8390fc0db76e68a73f2702758c45a2222af4e748
+      - 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
+      - 8bb584464f116737fb549bfb76c7571c876f634e1fa99c7a2628c5fb73a8770f
+      - 9f46c590b579aa1ff275af406bca3535a23db5bc85d9bceaf8e6c2db1fcec003
+      - 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+      - a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
+      - a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
+      - bb184e0416c06242f052c13490f2525a9c2247373dbe4e7ebb8f0020e797bee9
+      - c3053d28c056fcc412e3852816528da92f301e369f5af45f9a1212cc920468ce
+      - d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55
+      - d916a4a2ed9afd44fe0a4c01938a5b8aacbfc7323fd4d3cfcb0fa33d399a0e0e
+      - ede35a651d40438e63b7484e183a8f981fc5cba70548638ad69b790f28b01ad9
+      - fbebbe666b6adef1f8c6f2413de16158257bef1e2569822d83ed1f7874245f77
+      - fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0205-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T21:57:42Z'
+  reason: Record the append-only local ST-0205 implementation candidate after its exact 20-artifact content-addressed
+    closure, deterministic generator and read-only drift checks, isolated Story suite, manifest and fixture-catalog
+    integrity verification, strict application-source type checks, Ruff lint and format, official denied-network
+    static and unit gates, routing regressions, diff check, protected-path check, and independent audit
+    passed. This does not claim formal TST-005 or TST-031, hosted CI, formal privacy/security manual review,
+    runtime or provider validation, canonical APPLY, formal VALIDATED, staging, release, publication,
+    or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0205
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0205-local-20260805.yaml
+      sha256: e8b229d2957050455e1fe8bd8a0a758e491255d67e9a1c03bb932df56064c254
+      observed_at: '2026-08-04T21:55:46Z'
+      snapshot_artifact_sha256:
+      - 0cdd836c3720638c9ba2a33c3064ea914a959991e0c2ed8f5097516ef41fe2ec
+      - 2eea5551a7ef84036395d001112ede670f73e769f1bd5404ddca3c7e6b40dfef
+      - 30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6
+      - 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+      - 551428e3c72809128b290caafd2dceab6a27abe3aa904777c160d3519c5d016a
+      - 5bed7ac276b36da1ddc7aa89632e1c71dc886a709d9c3366f53d46518dd5652e
+      - 5e58d09d99f973459972d6bfac64706af311df08cccf9526fcc700b1bd4906dc
+      - 64f168c0683e11de07be131de738a3f6f406687ee3d962ab56e025ccb51c6841
+      - 84a6a5bcbca2b33ab789f74aa25ad95c87a4ddc865963b4821d457086d1a6055
+      - 904a1a6576d4fc7da5807ce58454a001afd11a4c1f4cc399870fa48bcbf49c35
+      - a41bede7e2e9d51fdfa350abd2b5b21d8401de1a7ab9aeb7b40654f75038459b
+      - b1a222efb0c72d588cd59998c97cd16af94eb38cfa6f090ce4aa59ca5c23a9db
+      - c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0
+      - c2b6ff402f616bd809af2a4f5ec42053a04ccfb67eaa852a436d23cfb9aaac9c
+      - cfaeb22a58dd29d76fb38f107648e2690f8e55ed758e0361e050362c5beea084
+      - d95a950da720f8962a4a9c1718fcb7ca4fcc86dec313ce3429a2a77ce3af0f72
+      - d95dd03ef0191eef2e9eec0dd146998e8b20efd29c1398dfc4f018abf0fc4995
+      - e90c8abf1ba862a36f12d1d1aaafeb9166308ba667368e84909aa0ad3468fafe
+      - f12f86a12608b76acac4306936d739be2c076a256eb1866355449b181ab6d292
+      - f69f78071874eb431fa353239a1e127ca54f73b20dc457607bba72308caf5e2b
+      invalidates_evidence_sha256: []
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0205-local-20260805.yaml
+      sha256: e8b229d2957050455e1fe8bd8a0a758e491255d67e9a1c03bb932df56064c254
+      observed_at: '2026-08-04T21:55:46Z'
+      snapshot_artifact_sha256:
+      - 0cdd836c3720638c9ba2a33c3064ea914a959991e0c2ed8f5097516ef41fe2ec
+      - 2eea5551a7ef84036395d001112ede670f73e769f1bd5404ddca3c7e6b40dfef
+      - 30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6
+      - 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+      - 551428e3c72809128b290caafd2dceab6a27abe3aa904777c160d3519c5d016a
+      - 5bed7ac276b36da1ddc7aa89632e1c71dc886a709d9c3366f53d46518dd5652e
+      - 5e58d09d99f973459972d6bfac64706af311df08cccf9526fcc700b1bd4906dc
+      - 64f168c0683e11de07be131de738a3f6f406687ee3d962ab56e025ccb51c6841
+      - 84a6a5bcbca2b33ab789f74aa25ad95c87a4ddc865963b4821d457086d1a6055
+      - 904a1a6576d4fc7da5807ce58454a001afd11a4c1f4cc399870fa48bcbf49c35
+      - a41bede7e2e9d51fdfa350abd2b5b21d8401de1a7ab9aeb7b40654f75038459b
+      - b1a222efb0c72d588cd59998c97cd16af94eb38cfa6f090ce4aa59ca5c23a9db
+      - c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0
+      - c2b6ff402f616bd809af2a4f5ec42053a04ccfb67eaa852a436d23cfb9aaac9c
+      - cfaeb22a58dd29d76fb38f107648e2690f8e55ed758e0361e050362c5beea084
+      - d95a950da720f8962a4a9c1718fcb7ca4fcc86dec313ce3429a2a77ce3af0f72
+      - d95dd03ef0191eef2e9eec0dd146998e8b20efd29c1398dfc4f018abf0fc4995
+      - e90c8abf1ba862a36f12d1d1aaafeb9166308ba667368e84909aa0ad3468fafe
+      - f12f86a12608b76acac4306936d739be2c076a256eb1866355449b181ab6d292
+      - f69f78071874eb431fa353239a1e127ca54f73b20dc457607bba72308caf5e2b
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0107-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:21Z'
+  reason: Record the append-only local ST-0107 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, deterministic governance generation and 93/93 isolated tests,
+    the official denied-network static and full unit aggregate gates, and the full offline ST-0105 code-generation
+    gate passed. Environment-dependent aggregate skips are not runtime evidence. This does not claim formal
+    TST-001, hosted CI, human or migration-owner review, canonical APPLY, formal VALIDATED, staging, release,
+    publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0107
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0107-local-20260805-v2.yaml
+      sha256: 5afc92ac8caa08a9d61b502cbb33e3ac485459c167f09250b34ae84b1f3a1a4a
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c
+      - 29c7b0a930d16746a2314a36b02412361b4ea8bfb8f668b0a04ad6388c131d71
+      - 2aae849de862a8391610e1991619af3559568c770fff13d2f3670d94030a714e
+      - 38fd34902c7fefb111dfe98f4eaa460a1ab04c5442195d5c840f7f0e13429417
+      - 43cde305a084c686183f6d27930069ad6bfba809b027d5e093edeef55c607447
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
+      - 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
+      - 79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9
+      - 9c7e18f731e42053f26d0c104f953e6c8367aa6977b4c2e362384cd359910f91
+      - a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524
+      - ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
+      - dc1b4179365b8db690ab5ee4ee7276953213a774561c963afd8be93d43afd2e3
+      - e897cdded18640d9c4ae44f851d0ff1b1b3be07680d9d3e57272e59f7594aa99
+      - e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
+      - f1b5dd23fba4e02928ae95e1b238f12a2b51bc5462ddbf534f70f4d8ff4ae62b
+      - ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0202-LOCAL-PROPOSAL-003
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:22Z'
+  reason: Record the append-only local ST-0202 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, deterministic local-storage generation and 156/156 isolated tests,
+    the official denied-network static and full unit aggregate gates, and the full offline ST-0105 code-generation
+    gate passed. Environment-dependent aggregate skips are not runtime evidence. This does not claim formal
+    TST-014, hosted CI, human or migration-owner review, canonical APPLY, formal VALIDATED, staging, release,
+    publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0202
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-014
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0202-local-20260805-v3.yaml
+      sha256: e50f7f4b637aeddb6ee35604d0f6a4d4598d6151132c1aa4527a61c9524bf19e
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - a1c83e03c52b36ebe6e77a6a1fa0dc143b17f3483c38b1316559772e74a44da2
+      - af29aec4561ea886f30c935cca9a3a78fa4896dce6531879a16d345e92705b10
+      - bf0552fc306d69c937c95a79f2a8c9dbb5686ed2e7fc90c1e11b8c6733f0e52d
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0203-LOCAL-PROPOSAL-003
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:23Z'
+  reason: Record the append-only local ST-0203 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, deterministic local-queue generation and 55/55 isolated tests,
+    the official denied-network static and full unit aggregate gates, and the full offline ST-0105 code-generation
+    gate passed. Environment-dependent aggregate skips are not runtime evidence. This does not claim formal
+    TST-013, hosted CI, human or migration-owner review, canonical APPLY, formal VALIDATED, staging, release,
+    publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0203
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-013
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0203-local-20260805-v3.yaml
+      sha256: c276e756600cdb4b6192e549f84a74c9de5181398c4edf477ed39409402ed333
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 168ee7164ed7a45b65f31f598a5217c7cfbd15aedd56c99337352190ab072a80
+      - 316b2d195fb3366fefb991c84cdd2618530455fcc58f9d140fa699f66cf46d8a
+      - 3c149cad6591bac86f2db8cb3d60afae52efad5051f1996c1d3605315c8acdeb
+      - 413262cf31c3b2856270b31a2d7e92b0ac72e280db739b23e1d28e460fba1bfd
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
+      - bf0552fc306d69c937c95a79f2a8c9dbb5686ed2e7fc90c1e11b8c6733f0e52d
+      - dd5ad08e8e38e5eb84071d603416793748ecf316cfd37ffd77cf8ebc59f503e1
+      - ff2eebf894d37ad50d35f7f11fd7a5767c5c456b55c33c7d20c5cea635bc9e92
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0204-LOCAL-PROPOSAL-003
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:24Z'
+  reason: Record the append-only local ST-0204 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, deterministic runtime-config generation and 178/178 isolated tests,
+    the official denied-network static and full unit aggregate gates, and the full offline ST-0105 code-generation
+    gate passed. Environment-dependent aggregate skips are not runtime evidence. This does not claim formal
+    TST-005, TST-031, hosted CI, human or migration-owner review, canonical APPLY, formal VALIDATED, staging,
+    release, publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0204
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0204-local-20260805-v3.yaml
+      sha256: 2955e0d4d5294443fbde5f98b73ccd5613515c05c556828db3519c920689a26f
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 220756ac1c1fc4a9873c4625e4cb67ad5f0a295818f8c03d1972e87bb697d88f
+      - 3c149cad6591bac86f2db8cb3d60afae52efad5051f1996c1d3605315c8acdeb
+      - 3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - 6426260acb608da19832965e8e2ddd7726745f3a8ef860fdf44bce22bba08d80
+      - 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+      - e1042bb37ebb91f49f9da4f7ca1ee71d8420dda057b63858756c5b233d8f3073
+      - f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e
+      - fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+      invalidates_evidence_sha256: []
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0204-local-20260805-v3.yaml
+      sha256: 2955e0d4d5294443fbde5f98b73ccd5613515c05c556828db3519c920689a26f
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 220756ac1c1fc4a9873c4625e4cb67ad5f0a295818f8c03d1972e87bb697d88f
+      - 3c149cad6591bac86f2db8cb3d60afae52efad5051f1996c1d3605315c8acdeb
+      - 3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - 6426260acb608da19832965e8e2ddd7726745f3a8ef860fdf44bce22bba08d80
+      - 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+      - e1042bb37ebb91f49f9da4f7ca1ee71d8420dda057b63858756c5b233d8f3073
+      - f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e
+      - fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0205-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:25Z'
+  reason: Record the append-only local ST-0205 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, deterministic synthetic-data generation and 86/86 isolated tests,
+    the official denied-network static and full unit aggregate gates, and the full offline ST-0105 code-generation
+    gate passed. Environment-dependent aggregate skips are not runtime evidence. This does not claim formal
+    TST-005, TST-031, hosted CI, human or migration-owner review, canonical APPLY, formal VALIDATED, staging,
+    release, publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0205
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0205-local-20260805-v2.yaml
+      sha256: 75c5daca139e6f79b2dd4c2fed2ee2fe8e336f0abaf9e03705838bf89623e1fb
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 04917e377f4b21528d92c75b8c8cb0421ce0c9f0fffa62958798e0a4b1a1357c
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 0ef5399483deff43e5de306e66ba053a136e53abd547bc6cb7d3bc78882bd6f4
+      - 167cd96c5465417aacccb255aef4a157ff0e15987551d55c091ee4e29cbf3919
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - e8b229d2957050455e1fe8bd8a0a758e491255d67e9a1c03bb932df56064c254
+      invalidates_evidence_sha256: []
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0205-local-20260805-v2.yaml
+      sha256: 75c5daca139e6f79b2dd4c2fed2ee2fe8e336f0abaf9e03705838bf89623e1fb
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 04917e377f4b21528d92c75b8c8cb0421ce0c9f0fffa62958798e0a4b1a1357c
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 0ef5399483deff43e5de306e66ba053a136e53abd547bc6cb7d3bc78882bd6f4
+      - 167cd96c5465417aacccb255aef4a157ff0e15987551d55c091ee4e29cbf3919
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - e8b229d2957050455e1fe8bd8a0a758e491255d67e9a1c03bb932df56064c254
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0305-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:26Z'
+  reason: Record the append-only local ST-0305 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, an exact PostgreSQL 18.4 result of 38/38 with zero skips, the
+    official denied-network static and full unit aggregate gates, and the full offline ST-0105 code-generation
+    gate passed. Environment-dependent aggregate skips are not runtime evidence. This does not claim formal
+    TST-008, TST-011, TST-030, hosted CI, human or migration-owner review, canonical APPLY, formal VALIDATED,
+    staging, release, publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0305
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0305-local-20260805-v2.yaml
+      sha256: 4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
+      - 275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b
+      - 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+      - 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - 62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde
+      - 7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac
+      - 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
+      - 8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05
+      - b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
+      - c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+      - c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75
+      - cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
+      - df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+      - fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
+      invalidates_evidence_sha256: []
+    - suite_id: TST-011
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0305-local-20260805-v2.yaml
+      sha256: 4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
+      - 275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b
+      - 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+      - 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - 62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde
+      - 7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac
+      - 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
+      - 8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05
+      - b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
+      - c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+      - c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75
+      - cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
+      - df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+      - fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
+      invalidates_evidence_sha256: []
+    - suite_id: TST-030
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0305-local-20260805-v2.yaml
+      sha256: 4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
+      - 275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b
+      - 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+      - 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - 62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde
+      - 7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac
+      - 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
+      - 8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05
+      - b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
+      - c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+      - c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75
+      - cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
+      - df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+      - fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0306-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:27Z'
+  reason: Record the append-only local ST-0306 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, an exact PostgreSQL 18.4 result of 18/18 with zero skips and an
+    independent audit PASS, the official denied-network static and full unit aggregate gates, and the
+    full offline ST-0105 code-generation gate passed. Environment-dependent aggregate skips are not runtime
+    evidence. This does not claim formal TST-011, hosted CI, human or migration-owner review, canonical
+    APPLY, formal VALIDATED, staging, release, publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0306
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-011
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0306-local-20260805.yaml
+      sha256: 119615d05fabd20aeb55c1dcb2bc33d4ec5144227dce408d8fb874a07691bf3c
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
+      - 0d27d3d54db03cf5b110bf889d32fc7dc9f97c0bd53d2fc94d2c91e1198cc97c
+      - 1155942168373361579bd157b19be0d7babc7c260eb3389df21688eb455a567b
+      - 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
+      - 17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c
+      - 26a88d5a333885a0aed20d176b7b362bcfa4ba7a19f2e6a86fda3a6935d11e2c
+      - 275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b
+      - 3d48f5a3490151a22328b533d595ba21694be689280e42adc388814499f4557c
+      - 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+      - 4284eb6af68bedad5b1bd9f41348df8282ae4fd35920474fc9f90b955c8b6186
+      - 472690c8ca8080e3e3c0e294e40ea31b30c7d9314daa4cd5ee83a4841d439825
+      - 48a7d7ab69506228d60da640d0466fed3be02cb84068f79fe7c20a9c61475ab2
+      - 4c5a77f9f71cda3fc47d2ffa83a68860a9cfe5d3218c2ce0d43cccb0273c7d94
+      - 4ede5f64c41feaf6e7d5f8b086565728436a2a3a6d2edd943601f07d6b77e087
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - 53bc1d39f25ad327dddad0321a49e9e694d25770c83136310691ca91eff60899
+      - 5b15472a83535e78e37710af730840711e2634db6e33fb4e43582de5222435e4
+      - 62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde
+      - 634f60af84bf5e5eca38c05015dc97fde2f7573eb9cfe3f944f1aaaf53777306
+      - 7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac
+      - 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
+      - 8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122
+      - 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
+      - 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+      - 8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05
+      - 8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9
+      - 9ccdb8cd6e007e4c698777849f842cd5510cc57ab12e10c37d242a7ffa329e08
+      - b3d6d35a7d51d9fdede7cf3c3b1938afa5d2aadba17705b10582d049233aab1f
+      - b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
+      - b992f9de31fa41185222b6aa505d0ab72e714866aacc96085b95c4b22fd038ec
+      - c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+      - c299e1caa5c835cc107daa2de61c7e2fc7141b8f1f5f19171cacf76b3cfba7f2
+      - c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75
+      - cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+      - cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
+      - d8214c475262aae4e68de9909fc7ee7825e20aeae00ea7220b130ad54e179f3d
+      - dd0cc0a6e99483d1975feae553736e142db54440fa5ff42d34d0d50d15c9b488
+      - df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+      - fb4c5090fb4d3f8c62e438c4a372064baa0b83f9cef77136b4a20b9215da9b21
+      - fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0307-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:28Z'
+  reason: Record the append-only local ST-0307 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, an exact PostgreSQL 18.4 result of 24/24 earlier in the final
+    integration cycle and a current 14/14 generation subset, the official denied-network static and full
+    unit aggregate gates, and the full offline ST-0105 code-generation gate passed. Environment-dependent
+    aggregate skips are not runtime evidence. This does not claim formal TST-010, hosted CI, human or
+    migration-owner review, canonical APPLY, formal VALIDATED, staging, release, publication, or production
+    execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0307
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-010
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0307-local-20260805-v2.yaml
+      sha256: 0a78982d68aed4a971e45c87457416ee4387038bce108239a659ff38f7fcdce6
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 0b32aa4a289a297f47ddf770244d696f437a0e98cf857556ef3d6a6cede41023
+      - 237d9c6369926402c8afe12de8f5a58c8bda76af36e735dbda0475ba336e0fb8
+      - 2f5c8bd36c8db015cb428d934ee1f1ad747c9c6ea4b68dcc889f1c23ff0253ba
+      - 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - 634f60af84bf5e5eca38c05015dc97fde2f7573eb9cfe3f944f1aaaf53777306
+      - 64ef6097bbb9da4c51c7dfb4f64504928d743228240341dc57efe8ef9179946f
+      - 78f4a982941b03659c6617b5b151d02edbcf4d98d7117159c48f3920f91ea6bd
+      - ac133f0d975241b22a8744bd7b78ec52904dc64414f344f7c3f1e83e9339cf3d
+      - b56eca8d10efd3811d05766b5403ed5f95541c73ebd20ffc60e383d9bcc33f92
+      - c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+      - df1b7f16226ac2e0e3a52b173b8c592f23a5ad015e9838272018d315f1746465
+      - df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+      - ea633b44247c8ea2fb0ecf983a436fd0b7c27d57a800951b33c5a472cca8c228
+      - ec65b188216ea5decbadc1ea7bf254c94a70fb5f7c7a89f06e3a69cc87b55c24
+      - f45ac13048b8d613a656c0eba20a32b5647d7924c137553bfdb1710ac87008cb
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0701-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:29Z'
+  reason: Record the append-only local ST-0701 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, deterministic AI-registry generation and 42/42 isolated tests,
+    the official denied-network static and full unit aggregate gates, and the full offline ST-0105 code-generation
+    gate passed. Environment-dependent aggregate skips are not runtime evidence. This does not claim formal
+    TST-001, TST-017, hosted CI, human or migration-owner review, canonical APPLY, formal VALIDATED, staging,
+    release, publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0701
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0701-local-20260805-v2.yaml
+      sha256: 0d587619d1b2ace731bc93c509392b5558694f097b2da2bfbe32b96549b3fbfe
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - e52e816d9982b65f43e5a126a38c22e4a8f6a70a1c5e7b88a8ad7595798ebc4c
+      invalidates_evidence_sha256: []
+    - suite_id: TST-017
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0701-local-20260805-v2.yaml
+      sha256: 0d587619d1b2ace731bc93c509392b5558694f097b2da2bfbe32b96549b3fbfe
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - e52e816d9982b65f43e5a126a38c22e4a8f6a70a1c5e7b88a8ad7595798ebc4c
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0801-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-04T23:52:30Z'
+  reason: Record the append-only local ST-0801 implementation candidate after the exact delta or initial
+    content-addressed manifest closure, deterministic content-AST generation and 283/283 isolated tests,
+    the official denied-network static and full unit aggregate gates, and the full offline ST-0105 code-generation
+    gate passed. Environment-dependent aggregate skips are not runtime evidence. This does not claim formal
+    TST-020, hosted CI, human or migration-owner review, canonical APPLY, formal VALIDATED, staging, release,
+    publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0801
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0801-local-20260805-v2.yaml
+      sha256: f97cffaaf64a8628912e9c12a1a3b94092f654f6a0762d4ee48ec4824d2a7372
+      observed_at: '2026-08-04T23:52:20Z'
+      snapshot_artifact_sha256:
+      - 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+      - 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+      - 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+      - 7776ecd1e082804a03b3cd9121a682994f08d9aed48e959eb0a365123a23a695
+      - bba39e07744988c03c4d60e7da8dc7c7117af797ef22eca81711f2d8c12b9bae
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-004
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-05T00:24:17Z'
+  reason: Refresh the append-only local ST-0101 implementation proposal after the approved live-resume
+    parser-refusal terminalization and its deterministic inert-transport, Story-local, status-workflow,
+    static, import, and workspace checks passed. This is local candidate evidence only. A combined implementation-plus-status-history
+    PR is not valid under the ST-0005 trust- surface/history separation, and this proposal does not claim
+    browser or MCP execution, private-run inspection, resubmission, hosted CI, formal TST-001, human approval,
+    canonical APPLY, staging, release, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0101-local-20260805-v4.yaml
+      sha256: 7cc84464c19a3dabd38a1612c1f061ac8cb393b3a8db7b66d58cef5e4d859c35
+      observed_at: '2026-08-05T00:24:16Z'
+      snapshot_artifact_sha256:
+      - 1a7b102fb3758b59c97f7e8208f5f21bb94ff500d86fa1b5dd38b9e821d64edb
+      - 4c2c7e847d731a03ea0a4495b81ca37f7e3a8e97ee2e9262021b0eb9ce7648db
+      - 5b1a5dcc7a84d4961c665baee7ccdbba4b68fc4ab3a08887e70c6fe7f3fadeba
+      - 9731ec4db07d4bdd7eb1f4e1651c390dccfc72c5432b33d37f6a7a9de9b9b313
+      - e0786b9f764af8d8d41b445d1c399cc07f27a5e6dc9a22cc0ea7a27246505aee
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-005
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-05T00:49:03Z'
+  reason: Refresh the append-only local ST-0101 proposal after two audited concurrency remediations closed
+    stale-state terminal overwrite and event/state publication-window races, the focused and complete
+    deterministic tests and static/import/workspace checks passed, and the final independent audit passed.
+    V5 supersedes V4 locally but remains candidate evidence only. A combined implementation-plus-status-history
+    PR is not valid under the ST-0005 trust-surface/history separation. This proposal does not claim live
+    browser or MCP execution, private-run inspection, resubmission, hosted CI, formal TST-001, human approval,
+    canonical APPLY, staging, release, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0101-local-20260805-v5.yaml
+      sha256: 571c433c2f17da43f2bc262e48a4d223f72f6cd41368f276b8ce4774d10975eb
+      observed_at: '2026-08-05T00:49:02Z'
+      snapshot_artifact_sha256:
+      - 2407fe0821317d5fed2c0638f8874155957c49efe3564b4a63e16c73abd6520e
+      - 251a0a7018715bb60d10733bf53a494ab98dc89a801be34d9cb82a8c9cd90fad
+      - 47f74c9d4cd0e86df21f1274364d698f61850e88c50958bdc4847bbeb7eb6d37
+      - 7cc84464c19a3dabd38a1612c1f061ac8cb393b3a8db7b66d58cef5e4d859c35
+      - 8676de5d93ce03a2415f3a88cce321c82025570f2f1f18338bc7aa17f4d78e1a
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0101-LOCAL-PROPOSAL-006
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-05T15:29:25Z'
+  reason: Refresh the append-only local ST-0101 proposal after the approved continuous response lifecycle
+    and exact advanced Answer now generating marker reached stable current source, test, documentation,
+    and handoff bytes, the complete isolated deterministic suite passed 413 tests, focused lifecycle and
+    non-persistence checks passed, and static/import/workspace checks passed. V6 supersedes V5 locally
+    but remains candidate evidence only. A combined implementation-plus-status-history PR is not valid
+    under the ST-0005 trust-surface/history separation. This proposal does not claim valid live Pro advice,
+    private-run inspection, resubmission, hosted CI, formal TST-001, human approval, canonical APPLY,
+    staging, release, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-001
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0101-local-20260805-v6.yaml
+      sha256: 0097ffbd09bf57f8936800b00a813c406e6cce68b4c0d6918ba3264498fe0854
+      observed_at: '2026-08-05T15:29:25Z'
+      snapshot_artifact_sha256:
+      - 323d21b6a6baaafb30d9d5a505defc57782294770136b30c6f4dd5e44ff054b0
+      - 4705d3acd921d54b49510cea003172d144dd99bdf21c292de4bc88bdfe7573dc
+      - 509688ae490597535501d516c30c9146858a0670ec96e29b12d1b1e2f5ae5df9
+      - 571c433c2f17da43f2bc262e48a4d223f72f6cd41368f276b8ce4774d10975eb
+      - 83bd88a89d6c4eaa8503625a1a33a814d942d120b6359c21d3ef4398fc5d992c
+      - c1e308b681b5f4f3be0f3acb7564fb227c13be8a49e2fee171858aaaa37258e2
+      - e2eda13b9f7e0cdbfa68f5280e665f2901110c1b292ce7297d03849a38e03ef9
+      - fe7e31d24ed51a64db74a652ae5992897ad0b8d8dbd4fe872c3927a0fd041183
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0305-LOCAL-PROPOSAL-003
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-06T02:19:21Z'
+  reason: Record the append-only local ST-0305 implementation candidate after the exact PostgreSQL 18.4
+    isolated ST-0305 suite passed 39/39 with zero skips, the cumulative ST-0301 through ST-0306 suites
+    passed 361/361 with zero skips, direct and historical CLI head checks passed, the ST-0305 manifest
+    reached exact 46/46 source and 3/3 generated parity, and independent local audits reported zero severity
+    findings. These are local results only and do not claim formal TST-008, TST-011, TST-030, hosted CI,
+    migration-owner or human review, canonical APPLY, formal VALIDATED, staging, release, or production.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0305
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0305-local-20260806-v3.yaml
+      sha256: 2b10afcd3ce6bd7220788027b465eea5c5be4fb739e7b1f6a17a64d83ecc7d61
+      observed_at: '2026-08-06T02:18:29Z'
+      snapshot_artifact_sha256:
+      - 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+      - 4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082
+      - 62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104
+      - 6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb
+      - c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980
+      - d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b
+      - db7beb9cad7a31c0bb6309bda7a8b5b6f50f7161df7f36c55c1e78f119a7f4ab
+      - fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+      invalidates_evidence_sha256: []
+    - suite_id: TST-011
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0305-local-20260806-v3.yaml
+      sha256: 2b10afcd3ce6bd7220788027b465eea5c5be4fb739e7b1f6a17a64d83ecc7d61
+      observed_at: '2026-08-06T02:18:29Z'
+      snapshot_artifact_sha256:
+      - 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+      - 4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082
+      - 62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104
+      - 6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb
+      - c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980
+      - d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b
+      - db7beb9cad7a31c0bb6309bda7a8b5b6f50f7161df7f36c55c1e78f119a7f4ab
+      - fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+      invalidates_evidence_sha256: []
+    - suite_id: TST-030
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0305-local-20260806-v3.yaml
+      sha256: 2b10afcd3ce6bd7220788027b465eea5c5be4fb739e7b1f6a17a64d83ecc7d61
+      observed_at: '2026-08-06T02:18:29Z'
+      snapshot_artifact_sha256:
+      - 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+      - 4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082
+      - 62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104
+      - 6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb
+      - c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980
+      - d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b
+      - db7beb9cad7a31c0bb6309bda7a8b5b6f50f7161df7f36c55c1e78f119a7f4ab
+      - fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0306-LOCAL-PROPOSAL-002
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-06T02:31:03Z'
+  reason: Record the append-only local ST-0306 implementation candidate after exact PostgreSQL 18.4 isolated
+    verification passed 19/19 with zero skips, cumulative ST-0301 through ST-0306 verification passed
+    361/361 with zero skips, every historical migration generator CLI checked through the active no-write
+    ST-0306 terminal, the ST-0306 manifest matched 38/38 source and 3/3 nonself generated artifacts, behavior
+    outputs remained byte-identical, and independent local audits reported zero findings at every severity.
+    This does not claim formal TST-011, hosted CI, human or migration-owner review, canonical APPLY, formal
+    VALIDATED, staging, release, publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0306
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-011
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0306-local-20260806-v2.yaml
+      sha256: 88b9be3e00d8173cc8c361f1c87a78a5f8346026e36ff3c4add296f6343bf3d8
+      observed_at: '2026-08-06T02:30:04Z'
+      snapshot_artifact_sha256:
+      - 0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8
+      - 119615d05fabd20aeb55c1dcb2bc33d4ec5144227dce408d8fb874a07691bf3c
+      - 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+      - 62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104
+      - 6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb
+      - 687fd00f51c27a1181c213d044412f4c676d96b34e35f0590f0edcd5b4221699
+      - 922a7a7343a3e6a080b0febfe583c386cfe38e3195865d928f0fa0ccc2050ba2
+      - 978955587e2d9dce34ccac77c203f4848a0fbde6af4fc67daff46cca32e9215b
+      - c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980
+      - d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b
+      - fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0307-LOCAL-PROPOSAL-003
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-06T02:42:21Z'
+  reason: Record the append-only local ST-0307 implementation candidate after exact PostgreSQL 18.4 verification
+    passed 24/24 with zero skips, the current six-revision generator source and drift checks passed, the
+    ST-0307 manifest matched 45/45 source and 5/5 nonself generated artifacts, all four fixture SQL files
+    and the fixture catalog remained byte-identical, and independent local audits reported zero findings
+    at every severity. This does not claim formal TST-010, hosted CI, human or migration-owner review,
+    canonical APPLY, formal VALIDATED, staging, release, publication, or production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0307
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-010
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0307-local-20260806-v3.yaml
+      sha256: 2e6a785734bac29a6a5f703d4244afdbcf5a5a201eff2eb1aba536f74ff4110a
+      observed_at: '2026-08-06T02:41:26Z'
+      snapshot_artifact_sha256:
+      - 0a78982d68aed4a971e45c87457416ee4387038bce108239a659ff38f7fcdce6
+      - 0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8
+      - 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+      - 2f07d42cde9be80a5ae16bb060c88f6e0ce4f65b204d54d903e0de705d88a488
+      - a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9
+      - e328a956ecb2c31d0a042dceaade0e968d3aa8ea4b434741e89a1baf4923025c
       invalidates_evidence_sha256: []
 applied_transitions: []

@@ -1,0 +1,358 @@
+document:
+  id: RAOS-PUBLICATION-ANALYTICS-FINANCE-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0305
+  source_contract: repo://changes/st-0305/contracts/publication-analytics-finance.v1.yaml
+  generated_by: repo://scripts/build_st0305_publication_analytics_finance.py
+  generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0305_publication_analytics_finance.py
+provenance:
+  canonical_and_upstream_inputs:
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+    sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - uri: repo://docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+    sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_contract_overlay_v1.0.yaml
+    sha256: f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml
+    sha256: b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml
+    sha256: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_implementation_slices_v1.0.yaml
+    sha256: 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  predecessor_manifest:
+    story_id: ST-0304
+    uri: repo://changes/st-0304/manifest.yaml
+    sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+  translation:
+    source: PINNED_MACHINE_CATALOG_SELECTED_SCHEMAS
+    physical_mode: ORDINARY_UNPARTITIONED_MVP_TABLES
+    guard_fragment: repo://changes/st-0305/contracts/physical/publishing-guards.sql
+    guard_sha256: d3ecd89ac35c386333ac2bf75907259aa28fc8718f65e8c303499193d57fe82e
+revision:
+  revision: '202608030005'
+  down_revision: '202608030004'
+  runner_version: 1.4.0
+  server_version_num: 180004
+  single_transaction: true
+  maximum_revision_bytes: 262144
+source_artifact_count: 46
+source_artifacts:
+- uri: repo://changes/st-0305/contracts/publication-analytics-finance.v1.yaml
+  bytes: 10006
+  sha256: 2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f
+- uri: repo://changes/st-0305/contracts/physical/publishing-guards.sql
+  bytes: 13929
+  sha256: d3ecd89ac35c386333ac2bf75907259aa28fc8718f65e8c303499193d57fe82e
+- uri: repo://docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+  bytes: 704317
+  sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+- uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+  bytes: 448029
+  sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+- uri: repo://docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+  bytes: 9380
+  sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+- uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  bytes: 7943
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+- uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+  bytes: 3955
+  sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+- uri: repo://docs/canonical/01_integration/RAOS_07_canonical_contract_overlay_v1.0.yaml
+  bytes: 3383
+  sha256: f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+- uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  bytes: 71458
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+- uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  bytes: 24993
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+- uri: repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+  bytes: 1063
+  sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+- uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+  bytes: 7299
+  sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+- uri: repo://docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml
+  bytes: 9760
+  sha256: b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa
+- uri: repo://docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml
+  bytes: 1563
+  sha256: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+- uri: repo://docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+  bytes: 9040
+  sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+- uri: repo://docs/canonical/03_analytics/RAOS_09_implementation_slices_v1.0.yaml
+  bytes: 2440
+  sha256: 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d
+- uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  bytes: 11395
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+- uri: repo://changes/st-0305/README.md
+  bytes: 1448
+  sha256: d5eef08c8cd922b5226b12ff7a3fe44b8648fc46d32318a8565810a102b1d4b2
+- uri: repo://README.md
+  bytes: 55645
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- uri: repo://Makefile
+  bytes: 26913
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+- uri: repo://docs/execplans/ST-0305.md
+  bytes: 2267
+  sha256: 3839312aac427b34024d16493a98e79ff2d45764bbd74863cacf89bc2bba9b1f
+- uri: repo://docs/worklogs/ST-0305.md
+  bytes: 5773
+  sha256: db7beb9cad7a31c0bb6309bda7a8b5b6f50f7161df7f36c55c1e78f119a7f4ab
+- uri: repo://scripts/build_st0305_publication_analytics_finance.py
+  bytes: 69283
+  sha256: 6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb
+- uri: repo://scripts/build_st0304_domain_schemas.py
+  bytes: 79921
+  sha256: 17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c
+- uri: repo://changes/st-0304/manifest.yaml
+  bytes: 11667
+  sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+- uri: repo://migrations/versions/202608030004_domain_schemas.py
+  bytes: 106632
+  sha256: 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
+- uri: repo://python/raos/migrations/catalog.py
+  bytes: 20363
+  sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+- uri: repo://python/raos/migrations/runner.py
+  bytes: 214267
+  sha256: 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+- uri: repo://scripts/build_st0201_postgres_service.py
+  bytes: 36958
+  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+- uri: repo://tests/postgresql18.py
+  bytes: 8049
+  sha256: 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 25978
+  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+- uri: repo://tests/st0301/test_catalog.py
+  bytes: 11918
+  sha256: 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
+- uri: repo://tests/st0301/test_cli.py
+  bytes: 2723
+  sha256: 62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde
+- uri: repo://tests/st0301/test_contract.py
+  bytes: 10581
+  sha256: fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
+- uri: repo://tests/st0301/test_generation.py
+  bytes: 7281
+  sha256: fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+- uri: repo://tests/st0301/test_postgresql.py
+  bytes: 34214
+  sha256: b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
+- uri: repo://tests/st0302/test_contract.py
+  bytes: 7049
+  sha256: cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
+- uri: repo://tests/st0302/test_revision.py
+  bytes: 5015
+  sha256: c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75
+- uri: repo://tests/st0302/test_postgresql.py
+  bytes: 25958
+  sha256: 8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9
+- uri: repo://tests/st0303/test_generation.py
+  bytes: 18051
+  sha256: d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b
+- uri: repo://tests/st0303/test_postgresql.py
+  bytes: 51303
+  sha256: 8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05
+- uri: repo://tests/st0304/test_generation.py
+  bytes: 20567
+  sha256: c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980
+- uri: repo://tests/st0304/test_postgresql.py
+  bytes: 32924
+  sha256: 7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac
+- uri: repo://tests/st0305/conftest.py
+  bytes: 393
+  sha256: 4284eb6af68bedad5b1bd9f41348df8282ae4fd35920474fc9f90b955c8b6186
+- uri: repo://tests/st0305/test_postgresql.py
+  bytes: 50377
+  sha256: 275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b
+- uri: repo://tests/st0305/test_st0305_publication_analytics_finance.py
+  bytes: 2360
+  sha256: 62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104
+generated_artifact_count: 3
+generated_artifacts:
+- uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
+  bytes: 41097
+  sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
+- uri: repo://changes/st-0305/generated/publication-analytics-finance-catalog.v1.json
+  bytes: 430647
+  sha256: 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
+- uri: repo://changes/st-0305/generated/publication-analytics-finance-validation.v1.sql
+  bytes: 86268
+  sha256: 16b85b772063a945c0f9b86d77da60658810bbfd4bc48e256af10dc804f37b1b
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+inventory:
+  schemas_created: 5
+  tables: 39
+  columns: 629
+  not_null_constraints: 447
+  primary_keys: 39
+  named_unique_constraints: 47
+  check_constraints: 172
+  catalog_foreign_keys: 152
+  installed_foreign_keys: 150
+  deferred_absent_target_foreign_keys: 2
+  standalone_indexes: 153
+  total_indexes: 239
+  functions: 3
+  triggers: 17
+  rls_policies: 0
+  by_schema:
+    publishing:
+      tables: 9
+      columns: 146
+      not_null: 103
+      primary_keys: 9
+      unique: 13
+      checks: 31
+      catalog_foreign_keys: 51
+      installed_foreign_keys: 49
+      standalone_indexes: 51
+      total_indexes: 73
+      functions: 3
+      triggers: 10
+    freshness:
+      tables: 6
+      columns: 92
+      not_null: 63
+      primary_keys: 6
+      unique: 5
+      checks: 28
+      catalog_foreign_keys: 21
+      installed_foreign_keys: 21
+      standalone_indexes: 22
+      total_indexes: 33
+      functions: 0
+      triggers: 1
+    analytics:
+      tables: 8
+      columns: 130
+      not_null: 94
+      primary_keys: 8
+      unique: 5
+      checks: 38
+      catalog_foreign_keys: 33
+      installed_foreign_keys: 33
+      standalone_indexes: 35
+      total_indexes: 48
+      functions: 0
+      triggers: 2
+    finance:
+      tables: 10
+      columns: 179
+      not_null: 127
+      primary_keys: 10
+      unique: 17
+      checks: 45
+      catalog_foreign_keys: 32
+      installed_foreign_keys: 32
+      standalone_indexes: 35
+      total_indexes: 62
+      functions: 0
+      triggers: 4
+    readmodel:
+      tables: 6
+      columns: 82
+      not_null: 60
+      primary_keys: 6
+      unique: 7
+      checks: 30
+      catalog_foreign_keys: 15
+      installed_foreign_keys: 15
+      standalone_indexes: 10
+      total_indexes: 23
+      functions: 0
+      triggers: 0
+catalog_fingerprints:
+  exact_server_version_num: 180004
+  algorithm: MD5_SORTED_UNIT_SEPARATOR_ROWS
+  selected_schemas:
+  - publishing
+  - freshness
+  - analytics
+  - finance
+  - readmodel
+  objects:
+    relations:
+      count: 39
+      digest: 8b7c92be0f2fd5402a424d95eea5233a
+    columns:
+      count: 629
+      digest: 5b45839a79986b7f09e97d9c18ab2ebb
+    constraints:
+      count: 855
+      digest: 486df24518366f36689d83135245b0fa
+    indexes:
+      count: 239
+      digest: caa0c0ba455c58af334ea02bd0afa319
+    functions:
+      count: 3
+      digest: 92c2ea81850bf9cb5357e173476705f7
+    triggers:
+      count: 17
+      digest: abbe0bced5705576cfce1a2dc2e0e615
+security_boundary:
+  public_privileges: NONE
+  public_function_execute: REVOKED
+  roles_or_default_privileges_created: false
+  rls_policies_created: false
+  hard_immutable_tables:
+  - publishing.review_decision
+  - publishing.publication_snapshot
+  - publishing.publication_event
+  - analytics.anonymous_event
+  - analytics.affiliate_click_event
+  - finance.commission_event
+  - finance.cost_allocation
+  publication_kill_switch_absence: FAIL_CLOSED
+foreign_key_boundary:
+  catalog_count: 152
+  installed_count: 150
+  deferred_absent_target_names:
+  - fk_publishing_publication_event_release_id
+  - fk_publishing_rollback_record_incident_id
+  cyclic_deferrable_initially_deferred_names:
+  - fk_publishing_public_route_publication_id
+  - fk_publishing_publication_candidate_publication_snapshot_id
+  - fk_publishing_publication_current_route_id
+  - fk_publishing_publication_snapshot_publication_candidate_id
+boundary:
+  environment: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_tst_008: NOT_EXECUTED
+  formal_tst_011: NOT_EXECUTED
+  formal_tst_030: NOT_EXECUTED
+  hosted_ci_postgresql_18_4: NOT_EXECUTED
+  migration_owner_review: NOT_EXECUTED
+  human_review: NOT_EXECUTED
+  staging_execution: NOT_EXECUTED
+  production_execution: FORBIDDEN
+  canonical_apply: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
+  source_inventory_status: FINAL_CURRENT_STORY_CLOSURE
+  future_source_change_requires_regeneration: true

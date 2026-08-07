@@ -1,0 +1,176 @@
+schema: RAOS_PRO_DESIGN_BUNDLE_V1
+story_id: ST-0407
+scope: SECRET_AND_WORKLOAD_IDENTITY_DESIGN_ONLY
+status: PROPOSAL_INPUT_ONLY
+authority: NOT_A_DESIGN_HANDOFF
+implementation_authority: NOT_GRANTED
+human_approval: NOT_PROVIDED
+canonical_reconciliation: PENDING
+formal_test_execution: NOT_EXECUTED
+live_secret_provider_validation: NOT_EXECUTED
+live_database_identity_validation: NOT_EXECUTED
+live_ci_oidc_validation: NOT_EXECUTED
+staging_readiness: NOT_READY
+production_readiness: NOT_READY
+assembled_on: 2026-08-06
+
+archive:
+  path: changes/st-0407/ST-0407-pro-design-input-v1.tar.gz
+  sha256: 9779229a55d6dcfebe37df484f0d53df2e849540242809d853f89be3ff9ed206
+  bytes: 186379
+  media_type: application/gzip
+  format: DETERMINISTIC_POSIX_TAR_GZIP
+  regular_file_members: 41
+  hashed_payload_members: 40
+  directories: 0
+  links: 0
+  devices: 0
+
+member_manifest:
+  path: changes/st-0407/pro-design-input.v1.members.sha256
+  sha256: 7f1dc69c5abc45ad8cef7d810ec2f1d40132661c7471b603ee33379f3d266bee
+  entries: 40
+
+archive_allowlist:
+  path: changes/st-0407/pro-design-bundle.v1.files
+  sha256: bba403f94b89f3a5c172064a4a952b91e140cd9b02cd79f6fb6702c864ae5a43
+  entries: 41
+
+request:
+  path: changes/st-0407/DESIGN-DECISION-REQUEST-v1.md
+  sha256: 3a0c1825b065b43bb611ed106544a4dbf00fb08d571fa643e06093b497fb0164
+
+submission_message:
+  path: changes/st-0407/PRO-SUBMISSION-MESSAGE-v1.txt
+  sha256: 7683e4e1c0f6658bbc31cd438b1a20bbef3ee8ceb5fa30bef91ad6a7215f0087
+
+design_preflight:
+  path: changes/st-0407/DESIGN-PREFLIGHT-AUDIT-v1.md
+  sha256: 29bbaa48741eb8f1c1873747112dca3bf90d2c394ffd08038f870700c7c21015
+  disposition: DESIGN_HANDOFF_REQUIRED
+  implementation_worker_ready_stories_at_selection: 0
+
+canonical_story:
+  objective: PROVIDER_DB_CI_SHORT_LIVED_SEPARATED_CREDENTIALS
+  exact_dependencies:
+    - ST-0204
+  design_refs:
+    - RAOS-SEC-001
+  deliverables:
+    - SECRET_PORT
+    - ROTATION_HOOKS
+  acceptance:
+    - NO_SECRET_IN_LOGS_OR_REPOSITORY
+  required_suites:
+    - TST-026
+    - TST-031
+  story_open_decisions: []
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  effective_implementation_status: NOT_STARTED
+  effective_verification_status: NOT_EXECUTED
+
+predecessor_checkpoint:
+  authority: LOCAL_CANDIDATE_EVIDENCE_ONLY
+  runtime_config_contract:
+    path: changes/st-0204/contracts/runtime-config.v1.yaml
+    sha256: e1042bb37ebb91f49f9da4f7ca1ee71d8420dda057b63858756c5b233d8f3073
+  runtime_config_source:
+    path: python/raos/config/runtime.py
+    sha256: 2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3
+  manifest:
+    path: changes/st-0204/manifest.yaml
+    sha256: 3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4
+  provider_secret_resolution: NOT_IMPLEMENTED
+  workload_identity: NOT_IMPLEMENTED
+  rotation_hooks: NOT_IMPLEMENTED
+  deterministic_generation_check: PASS
+  isolated_pytest: 178_PASSED
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+
+security_traceability:
+  controls:
+    - SEC-GOV-007
+    - SEC-IAM-009
+    - SEC-IAM-010
+    - SEC-APP-010
+    - SEC-DATA-003
+    - SEC-SDLC-006
+    - SEC-OPS-002
+  threats:
+    - THR-001
+    - THR-005
+    - THR-008
+    - THR-010
+    - THR-020
+  data_classification: RESTRICTED
+
+decisions_requested:
+  - ST0407-D1
+  - ST0407-D2
+  - ST0407-D3
+  - ST0407-D4
+  - ST0407-D5
+  - ST0407-D6
+  - ST0407-D7
+  - ST0407-D8
+  - ST0407-D9
+  - ST0407-D10
+
+deferred_external_decisions:
+  - id: OD-015
+    topic: production_provider_credentials
+    status: UNRESOLVED
+    safe_default: RECORDED_FIXTURE_ONLY
+
+cross_story_boundaries:
+  st_0308_database_repositories_and_uow: EXCLUDED_NOT_A_DEPENDENCY
+  st_1504_github_oidc_workflow_and_iam_trust: EXCLUDED_SEPARATE_OWNER
+  cloud_iac_and_secret_issuance: EXCLUDED_EXTERNAL_STATE
+  production_provider_credentials: BLOCKED_BY_OD_015
+
+generation:
+  tool: GNU tar 1.34
+  command: >-
+    LC_ALL=C tar --sort=name --mtime=@0 --owner=0 --group=0
+    --numeric-owner --format=posix --pax-option=delete=atime,delete=ctime
+    --no-recursion -czf
+    changes/st-0407/ST-0407-pro-design-input-v1.tar.gz -T
+    changes/st-0407/pro-design-bundle.v1.files
+  explicit_allowlist_only: true
+  deterministic_rebuild_comparison: PASS
+
+validation:
+  exact_41_member_closure: PASS
+  unique_member_paths: PASS
+  safe_relative_member_paths: PASS
+  regular_files_only: PASS
+  embedded_manifest_matches_bundle: PASS
+  all_40_archived_payload_hashes: PASS
+  live_source_hashes_match_manifest_at_assembly: PASS
+  canonical_import_verification: PASS
+  st_0005_status_drift_check: PASS
+  targeted_packet_secret_scan: PASS
+  repository_wide_secret_scan: NOT_CLAIMED
+
+expected_output:
+  display_name: DESIGN_HANDOFF_V1_ST0407_v1.yaml
+  format: UTF8_LF_SINGLE_DOCUMENT_YAML
+  root: DESIGN_HANDOFF_V1
+  proposal_authority: PENDING_UNAPPROVED
+  human_approval: NOT_PROVIDED
+  canonical_reconciliation: PENDING
+  implementation_authority: NOT_GRANTED
+  formal_test_execution: NOT_EXECUTED
+  live_provider_database_ci_validation: NOT_EXECUTED
+  staging_readiness: NOT_READY
+  production_readiness: NOT_READY
+  open_decisions_semantics: EMPTY_ONLY_IF_ST0407_D1_THROUGH_D10_ARE_COMPLETE
+  deferred_external_decisions_required:
+    - OD-015
+
+approval_boundary:
+  pro_output_is_advice_only: true
+  exact_returned_bytes_require_human_approval: true
+  conflict_free_canonical_reconciliation_required: true
+  implementation_worker_authority_granted_by_this_bundle: false

@@ -1,0 +1,32 @@
+document:
+  id: STATUS-ST0307-LOCAL-PROPOSAL-003
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-06T02:42:21Z'
+reason: Record the append-only local ST-0307 implementation candidate after exact PostgreSQL 18.4
+  verification passed 24/24 with zero skips, the current six-revision generator source and drift checks
+  passed, the ST-0307 manifest matched 45/45 source and 5/5 nonself generated artifacts, all four fixture
+  SQL files and the fixture catalog remained byte-identical, and independent local audits reported zero
+  findings at every severity. This does not claim formal TST-010, hosted CI, human or migration-owner
+  review, canonical APPLY, formal VALIDATED, staging, release, publication, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+- story_id: ST-0307
+  expected:
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  target:
+    implementation_status: IMPLEMENTED_NOT_VALIDATED
+    verification_status: NOT_EXECUTED
+  evidence:
+  - suite_id: TST-010
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0307-local-20260806-v3.yaml
+    sha256: 2e6a785734bac29a6a5f703d4244afdbcf5a5a201eff2eb1aba536f74ff4110a
+    observed_at: '2026-08-06T02:41:26Z'

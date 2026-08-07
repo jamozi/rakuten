@@ -1,0 +1,91 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0205-20260805
+  schema_version: 1
+  recorded_at: '2026-08-04T21:55:46Z'
+story_id: ST-0205
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0205/contracts/synthetic-data-factory.v1.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/5e58d09d99f973459972d6bfac64706af311df08cccf9526fcc700b1bd4906dc-synthetic-data-factory.v1.yaml
+  sha256: 5e58d09d99f973459972d6bfac64706af311df08cccf9526fcc700b1bd4906dc
+- original_uri: repo://changes/st-0205/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6-README.md
+  sha256: 30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6
+- original_uri: repo://docs/execplans/ST-0205.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/5bed7ac276b36da1ddc7aa89632e1c71dc886a709d9c3366f53d46518dd5652e-ST-0205.md
+  sha256: 5bed7ac276b36da1ddc7aa89632e1c71dc886a709d9c3366f53d46518dd5652e
+- original_uri: repo://docs/worklogs/ST-0205.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e90c8abf1ba862a36f12d1d1aaafeb9166308ba667368e84909aa0ad3468fafe-ST-0205.md
+  sha256: e90c8abf1ba862a36f12d1d1aaafeb9166308ba667368e84909aa0ad3468fafe
+- original_uri: repo://scripts/build_st0205_synthetic_data.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/a41bede7e2e9d51fdfa350abd2b5b21d8401de1a7ab9aeb7b40654f75038459b-build_st0205_synthetic_data.py
+  sha256: a41bede7e2e9d51fdfa350abd2b5b21d8401de1a7ab9aeb7b40654f75038459b
+- original_uri: repo://tests/st0205/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0-conftest.py
+  sha256: c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0
+- original_uri: repo://tests/st0205/test_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/2eea5551a7ef84036395d001112ede670f73e769f1bd5404ddca3c7e6b40dfef-test_contract.py
+  sha256: 2eea5551a7ef84036395d001112ede670f73e769f1bd5404ddca3c7e6b40dfef
+- original_uri: repo://tests/st0205/test_factory.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/64f168c0683e11de07be131de738a3f6f406687ee3d962ab56e025ccb51c6841-test_factory.py
+  sha256: 64f168c0683e11de07be131de738a3f6f406687ee3d962ab56e025ccb51c6841
+- original_uri: repo://tests/st0205/test_scenarios.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0cdd836c3720638c9ba2a33c3064ea914a959991e0c2ed8f5097516ef41fe2ec-test_scenarios.py
+  sha256: 0cdd836c3720638c9ba2a33c3064ea914a959991e0c2ed8f5097516ef41fe2ec
+- original_uri: repo://tests/st0205/test_privacy.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d95a950da720f8962a4a9c1718fcb7ca4fcc86dec313ce3429a2a77ce3af0f72-test_privacy.py
+  sha256: d95a950da720f8962a4a9c1718fcb7ca4fcc86dec313ce3429a2a77ce3af0f72
+- original_uri: repo://tests/st0205/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f69f78071874eb431fa353239a1e127ca54f73b20dc457607bba72308caf5e2b-test_generation.py
+  sha256: f69f78071874eb431fa353239a1e127ca54f73b20dc457607bba72308caf5e2b
+- original_uri: repo://tests/st0205/test_negative_cases.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/84a6a5bcbca2b33ab789f74aa25ad95c87a4ddc865963b4821d457086d1a6055-test_negative_cases.py
+  sha256: 84a6a5bcbca2b33ab789f74aa25ad95c87a4ddc865963b4821d457086d1a6055
+- original_uri: repo://tests/st0106/test_workflow_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/b1a222efb0c72d588cd59998c97cd16af94eb38cfa6f090ce4aa59ca5c23a9db-test_workflow_contract.py
+  sha256: b1a222efb0c72d588cd59998c97cd16af94eb38cfa6f090ce4aa59ca5c23a9db
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f12f86a12608b76acac4306936d739be2c076a256eb1866355449b181ab6d292-Makefile
+  sha256: f12f86a12608b76acac4306936d739be2c076a256eb1866355449b181ab6d292
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c2b6ff402f616bd809af2a4f5ec42053a04ccfb67eaa852a436d23cfb9aaac9c-README.md
+  sha256: c2b6ff402f616bd809af2a4f5ec42053a04ccfb67eaa852a436d23cfb9aaac9c
+- original_uri: repo://package.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828-package.json
+  sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+- original_uri: repo://scripts/scan_secrets.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/cfaeb22a58dd29d76fb38f107648e2690f8e55ed758e0361e050362c5beea084-scan_secrets.py
+  sha256: cfaeb22a58dd29d76fb38f107648e2690f8e55ed758e0361e050362c5beea084
+- original_uri: repo://changes/st-0205/generated/synthetic-fixtures.v1.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/551428e3c72809128b290caafd2dceab6a27abe3aa904777c160d3519c5d016a-synthetic-fixtures.v1.json
+  sha256: 551428e3c72809128b290caafd2dceab6a27abe3aa904777c160d3519c5d016a
+- original_uri: repo://changes/st-0205/generated/fixture-catalog.v1.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d95dd03ef0191eef2e9eec0dd146998e8b20efd29c1398dfc4f018abf0fc4995-fixture-catalog.v1.json
+  sha256: d95dd03ef0191eef2e9eec0dd146998e8b20efd29c1398dfc4f018abf0fc4995
+- original_uri: repo://changes/st-0205/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/904a1a6576d4fc7da5807ce58454a001afd11a4c1f4cc399870fa48bcbf49c35-manifest.yaml
+  sha256: 904a1a6576d4fc7da5807ce58454a001afd11a4c1f4cc399870fa48bcbf49c35
+suite_results:
+- suite_id: TST-005
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-031
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: content-addressed ST-0205 implementation closure freeze
+  result: PASS; all 17/17 manifest-declared source artifacts, both generated payloads, and the Story manifest matched exact bytes and SHA-256, for 20/20 immutable original/capture pairs total
+- command: deterministic ST-0205 generation and read-only drift gates with pinned uv 0.12.1
+  result: PASS; the direct generator and Make read-only check verified 13 domains, 18 fixtures, three generated artifacts, unchanged mtimes, bundle 551428e3c72809128b290caafd2dceab6a27abe3aa904777c160d3519c5d016a, catalog d95dd03ef0191eef2e9eec0dd146998e8b20efd29c1398dfc4f018abf0fc4995, source contract 5e58d09d99f973459972d6bfac64706af311df08cccf9526fcc700b1bd4906dc, generator a41bede7e2e9d51fdfa350abd2b5b21d8401de1a7ab9aeb7b40654f75038459b, and manifest 904a1a6576d4fc7da5807ce58454a001afd11a4c1f4cc399870fa48bcbf49c35
+- command: isolated ST-0205 Story suite
+  result: PASS; 86 passed, including deterministic factory, scenario, structural privacy and secret rejection, valid IPv4 and IPv6 literal rejection, catalog integrity, no-write, and no-network coverage
+- command: final official network-denied static and unit gates
+  result: PASS; static exit 0 and unit exit 0; ST-0205 passed 86, ST-0307 passed 14, ST-0701 passed 42, ST-0801 passed 283, and Vitest passed 4; only expected Docker, PostgreSQL, and network-namespace-dependent checks were skipped
+- command: manifest, catalog, lint, and strict application-source type verification
+  result: PASS; 17/17 manifest sources and 18/18 catalog fixture hashes matched; Ruff lint and format passed; aggregate strict mypy passed 20 application sources and Pyright reported 0 errors; configured type scope excludes generator scripts
+- command: ST-0102 and ST-0106 workflow routing regressions
+  result: PASS; ST-0102 passed 47 with one intentional ambient-tool discovery skip, and ST-0106 passed 297 with 10 expected network-namespace skips
+- command: independent ST-0205 implementation audit and repository safety checks
+  result: PASS; Critical 0, Warning 0, protected paths unchanged, and git diff --check passed
+boundary: Append-only local implementation-candidate evidence only. Formal TST-005 and TST-031, hosted CI, formal privacy/security manual review, runtime or provider validation, staging, production, canonical APPLY, release, and publication remain NOT_EXECUTED or unclaimed. Effective canonical ST-0205 remains NOT_STARTED / NOT_EXECUTED.

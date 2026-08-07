@@ -1,0 +1,107 @@
+document:
+  id: RAOS-ANALYTICS-SLICES-001
+  version: '1.0'
+slices:
+- id: AN-SLICE-001
+  name: Event contract and first-party collector
+  depends_on: []
+  deliverables:
+  - Event envelope
+  - schema validation
+  - dedupe
+  - consent gating
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AN-SLICE-002
+  name: Public event instrumentation
+  depends_on:
+  - AN-SLICE-001
+  deliverables:
+  - article view
+  - CTA impression/click
+  - comparison
+  - RUM
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AN-SLICE-003
+  name: GA4 export/import adapter
+  depends_on:
+  - AN-SLICE-001
+  deliverables:
+  - property config
+  - runReport
+  - canonical facts
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AN-SLICE-004
+  name: Search Console adapter
+  depends_on: []
+  deliverables:
+  - query/page/date import
+  - late data
+  - reconciliation
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AN-SLICE-005
+  name: Revenue file secure intake
+  depends_on: []
+  deliverables:
+  - upload
+  - scan
+  - schema detect
+  - dry run
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AN-SLICE-006
+  name: Revenue canonical commit
+  depends_on:
+  - AN-SLICE-005
+  deliverables:
+  - idempotent facts
+  - status changes
+  - reconciliation
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AN-SLICE-007
+  name: Attribution engine
+  depends_on:
+  - AN-SLICE-002
+  - AN-SLICE-006
+  deliverables:
+  - direct/estimated/unattributed
+  - method version
+  - confidence
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AN-SLICE-008
+  name: Cost allocation and unit economics
+  depends_on:
+  - AN-SLICE-007
+  deliverables:
+  - AI/API/labor cost
+  - EPC/RPM/profit
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AN-SLICE-009
+  name: Dashboards and gate reports
+  depends_on:
+  - AN-SLICE-003
+  - AN-SLICE-004
+  - AN-SLICE-008
+  deliverables:
+  - read models
+  - definitions
+  - data quality flags
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED
+- id: AN-SLICE-010
+  name: Analytics privacy and validation
+  depends_on:
+  - AN-SLICE-009
+  deliverables:
+  - PII scan
+  - consent test
+  - provider reconciliation
+  - late arrival
+  implementation_status: NOT_STARTED
+  runtime_verification: NOT_EXECUTED

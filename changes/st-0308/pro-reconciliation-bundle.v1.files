@@ -1,0 +1,16 @@
+changes/st-0105/README.md
+changes/st-0303/contracts/iam-ops-schema.v1.yaml
+changes/st-0303/generated/iam-ops-catalog.v1.json
+changes/st-0304/contracts/domain-schema.v1.yaml
+changes/st-0304/generated/domain-catalog.v1.json
+changes/st-0306/contracts/database-roles-grants.v1.yaml
+changes/st-0308/CANONICAL-RECONCILIATION.md
+changes/st-0308/DESIGN-DECISION-REQUEST.md
+changes/st-0308/PRO-RECONCILIATION-REQUEST.md
+changes/st-0308/pro-reconciliation-bundle.v1.files
+docs/canonical/01_integration/RAOS_07_canonical_contract_overlay_v1.0.yaml
+docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml

@@ -1,0 +1,113 @@
+{
+  "fixture_version": "1.0.0",
+  "internal_request": {
+    "date_ranges": [
+      {
+        "end_date": "2026-07-02",
+        "name": null,
+        "start_date": "2026-07-01"
+      }
+    ],
+    "dimension_filter": null,
+    "dimensions": [
+      "date",
+      "pagePath",
+      "deviceCategory"
+    ],
+    "keep_empty_rows": false,
+    "limit": 2,
+    "metric_filter": null,
+    "metrics": [
+      "sessions",
+      "screenPageViews",
+      "engagedSessions"
+    ],
+    "offset": 0,
+    "order_bys": [],
+    "property_id": "1000001204",
+    "return_property_quota": true
+  },
+  "internal_request_sha256": "ee206e0ec5d7c98afa2e871a33db134e558a2d854a724832ba834394bb2a22eb",
+  "provider_capture": {
+    "reporting_identity": "NOT_ATTEMPTED_AFTER_PROVIDER_ERROR",
+    "run_report": {
+      "api_version": "v1beta",
+      "endpoint": "https://analyticsdata.googleapis.com/v1beta/properties/1000001204:runReport",
+      "expected_response_sha256": "d32156c4a9f26d5d57bde7aab4dc604d3843cd3da503d16af340e93be1879495",
+      "http_status": 429,
+      "response": {
+        "error": {
+          "code": 429,
+          "message": "Synthetic quota limit reached.",
+          "status": "RESOURCE_EXHAUSTED"
+        }
+      },
+      "retrieved_at": "2026-08-05T00:01:00Z"
+    }
+  },
+  "recorded_result": {
+    "canonical_rows": [],
+    "contract_semantics": {
+      "canonical_row_count": 0,
+      "configuration_snapshot": "NOT_CAPTURED_FOR_FAILED_REQUEST",
+      "error_sanitized": true,
+      "outcome": "PROVIDER_ERROR",
+      "retry_scheduling_policy": "NOT_DEFINED",
+      "supersession_claim": "NONE"
+    },
+    "outcome": "PROVIDER_ERROR",
+    "provider_error": {
+      "error": {
+        "code": 429,
+        "message": "Synthetic quota limit reached.",
+        "status": "RESOURCE_EXHAUSTED"
+      }
+    },
+    "recorded_at": "2026-08-05T00:01:00Z",
+    "request_hashes": {
+      "internal_request_sha256": "ee206e0ec5d7c98afa2e871a33db134e558a2d854a724832ba834394bb2a22eb",
+      "reporting_identity_response_sha256": null,
+      "run_report_response_sha256": "d32156c4a9f26d5d57bde7aab4dc604d3843cd3da503d16af340e93be1879495",
+      "wire_request_sha256": "42a74836abe8d2be8cea6c4ffa47a3899e22cdec3f9ba31aa21be23622c7836a"
+    },
+    "retry_scheduling_policy": "NOT_DEFINED",
+    "supersession_claim": "NONE"
+  },
+  "recording_id": "provider-error-429",
+  "synthetic_marker": "SYNTHETIC_TEST_ONLY",
+  "wire_request": {
+    "dateRanges": [
+      {
+        "endDate": "2026-07-02",
+        "startDate": "2026-07-01"
+      }
+    ],
+    "dimensions": [
+      {
+        "name": "date"
+      },
+      {
+        "name": "pagePath"
+      },
+      {
+        "name": "deviceCategory"
+      }
+    ],
+    "keepEmptyRows": false,
+    "limit": "2",
+    "metrics": [
+      {
+        "name": "sessions"
+      },
+      {
+        "name": "screenPageViews"
+      },
+      {
+        "name": "engagedSessions"
+      }
+    ],
+    "offset": "0",
+    "returnPropertyQuota": true
+  },
+  "wire_request_sha256": "42a74836abe8d2be8cea6c4ffa47a3899e22cdec3f9ba31aa21be23622c7836a"
+}

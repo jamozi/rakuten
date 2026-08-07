@@ -1,0 +1,47 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0202-20260803-V2
+  schema_version: 1
+  recorded_at: '2026-08-03T10:32:30Z'
+story_id: ST-0202
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0202-local-20260802.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fe13e08c4d1eab4b08923fc82b72a94cef01c6ac0733ecc7d9894fb027bbfd9b-ST-0202-local-20260802.yaml
+    sha256: fe13e08c4d1eab4b08923fc82b72a94cef01c6ac0733ecc7d9894fb027bbfd9b
+  - original_uri: repo://changes/st-0107/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1302a3276c76ff0d9267ab20d24f6fa5cd44c82aa38d8dcf68b9acf3832b8243-manifest.yaml
+    sha256: 1302a3276c76ff0d9267ab20d24f6fa5cd44c82aa38d8dcf68b9acf3832b8243
+  - original_uri: repo://tests/st0106/test_workflow_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80-test_workflow_contract.py
+    sha256: 1e2cf89816e4b20f3bfc6608753470bbb45c9f081a758812f1661ab891987a80
+  - original_uri: repo://AGENTS.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6ee7eb6d044220e99907a0ab7b6f62691f8d8558eb439a9430c53b743b0e866a-AGENTS.md
+    sha256: 6ee7eb6d044220e99907a0ab7b6f62691f8d8558eb439a9430c53b743b0e866a
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b-Makefile
+    sha256: 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+  - original_uri: repo://README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc-README.md
+    sha256: a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
+  - original_uri: repo://changes/st-0202/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3dd7e7fddb2365daa75ae90d2b6a9a496440f512d83f0acbc4ee4a5a5f518962-manifest.yaml
+    sha256: 3dd7e7fddb2365daa75ae90d2b6a9a496440f512d83f0acbc4ee4a5a5f518962
+suite_results:
+  - suite_id: TST-014
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: deterministic ST-0202 cumulative Compose regeneration and no-write check
+    result: 'PASS; the current repository AGENTS contract and accumulated predecessor sources are hash-bound while docker-compose.yml remains byte-identical'
+  - command: isolated ST-0202 regression and exact repository static gate
+    result: 'PASS; ST-0202 156 passed and the denied-network static gate passed after the complete ST-0202 through ST-0204 regeneration cascade'
+boundary: >-
+  Append-only delta over the 2026-08-02 ST-0202 local snapshot. Together the
+  snapshots bind the current 30-source, one-generated-artifact manifest closure
+  and the previously captured governance inputs. The Compose payload is
+  unchanged; this delta refreshes accumulated source and repository-contract
+  hashes only. No real Docker daemon run, image pull, hosted Storage job,
+  formal TST-014, human approval, canonical APPLY, staging/release, or
+  production execution is asserted. Effective canonical ST-0202 remains
+  NOT_STARTED / NOT_EXECUTED.

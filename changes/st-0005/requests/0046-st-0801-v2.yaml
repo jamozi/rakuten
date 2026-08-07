@@ -1,0 +1,32 @@
+document:
+  id: STATUS-ST0801-LOCAL-PROPOSAL-002
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-04T23:52:30Z'
+reason: Record the append-only local ST-0801 implementation candidate after the exact delta or initial
+  content-addressed manifest closure, deterministic content-AST generation and 283/283 isolated tests,
+  the official denied-network static and full unit aggregate gates, and the full offline ST-0105 code-generation
+  gate passed. Environment-dependent aggregate skips are not runtime evidence. This does not claim formal
+  TST-020, hosted CI, human or migration-owner review, canonical APPLY, formal VALIDATED, staging, release,
+  publication, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+- story_id: ST-0801
+  expected:
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  target:
+    implementation_status: IMPLEMENTED_NOT_VALIDATED
+    verification_status: NOT_EXECUTED
+  evidence:
+  - suite_id: TST-020
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0801-local-20260805-v2.yaml
+    sha256: f97cffaaf64a8628912e9c12a1a3b94092f654f6a0762d4ee48ec4824d2a7372
+    observed_at: '2026-08-04T23:52:20Z'

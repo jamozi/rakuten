@@ -1,11 +1,11 @@
 {
   "document": {
     "id": "RAOS-ST0101-CHATGPT-PRO-KNOWN-UI-001",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "story_id": "ST-0101",
     "status": "IMPLEMENTATION_CANDIDATE",
-    "source_handoff": "changes/st-0101/design-handoff.pro-browser.v1.yaml",
-    "checked_on": "2026-08-03"
+    "source_handoff": "changes/st-0101/design-handoff.current-pro-ui.v1.yaml",
+    "checked_on": "2026-08-05"
   },
   "origin": "https://chatgpt.com",
   "entry_url": "https://chatgpt.com/",
@@ -56,6 +56,33 @@
       "effort_option_labels": [
         "Standard",
         "Extended"
+      ]
+    },
+    "gpt-5.6-sol-pro-advanced-v1": {
+      "effort_mode": "advanced",
+      "states": [
+        "landing",
+        "model_menu",
+        "effort_menu",
+        "ready",
+        "send_ready",
+        "submitted",
+        "complete"
+      ],
+      "model_option_labels": [
+        "GPT-5.6 Sol",
+        "GPT-5.5",
+        "GPT-5.3",
+        "o3"
+      ],
+      "target_model": "GPT-5.6 Sol",
+      "target_effort": "Pro",
+      "effort_option_labels": [
+        "Instant 5.5",
+        "Medium",
+        "High",
+        "Extra High",
+        "Pro"
       ]
     }
   }

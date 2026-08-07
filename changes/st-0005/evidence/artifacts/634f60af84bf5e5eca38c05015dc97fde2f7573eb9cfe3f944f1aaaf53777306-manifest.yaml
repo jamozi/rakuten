@@ -1,0 +1,185 @@
+document:
+  id: RAOS-DATABASE-ROLES-GRANTS-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0306
+  source_contract: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
+  generated_by: repo://scripts/build_st0306_database_roles.py
+  generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0306_database_roles.py
+provenance:
+  pinned_inputs:
+  - uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
+    sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
+  - uri: repo://changes/st-0004/database/202607300013_content_expand.sql
+    sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+  - uri: repo://changes/st-0304/contracts/domain-schema.v1.yaml
+    sha256: 8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - uri: repo://docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+    sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  upstream_member:
+    archive: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
+    member: RAOS_03_data_model_package_v0.1/sql/RAOS_03_002_roles_and_grants_v0.1.sql
+    sha256: 6b9218df65e39ed5b5d38ca593a62ee544e9870296f32a7d7a819008a9d9803e
+  predecessor_manifest:
+    story_id: ST-0305
+    uri: repo://changes/st-0305/manifest.yaml
+    sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+revision:
+  revision: '202608030006'
+  down_revision: '202608030005'
+  runner_version: 1.5.0
+  server_version_num: 180004
+  single_transaction: true
+source_artifact_count: 38
+source_artifacts:
+- uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
+  bytes: 4705
+  sha256: 1155942168373361579bd157b19be0d7babc7c260eb3389df21688eb455a567b
+- uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
+  bytes: 434952
+  sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
+- uri: repo://changes/st-0004/database/202607300013_content_expand.sql
+  bytes: 54252
+  sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+- uri: repo://changes/st-0304/contracts/domain-schema.v1.yaml
+  bytes: 11378
+  sha256: 8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122
+- uri: repo://changes/st-0306/README.md
+  bytes: 2385
+  sha256: dd0cc0a6e99483d1975feae553736e142db54440fa5ff42d34d0d50d15c9b488
+- uri: repo://README.md
+  bytes: 55645
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- uri: repo://Makefile
+  bytes: 26913
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+- uri: repo://docs/execplans/ST-0306.md
+  bytes: 2107
+  sha256: d8214c475262aae4e68de9909fc7ee7825e20aeae00ea7220b130ad54e179f3d
+- uri: repo://docs/worklogs/ST-0306.md
+  bytes: 2687
+  sha256: 26a88d5a333885a0aed20d176b7b362bcfa4ba7a19f2e6a86fda3a6935d11e2c
+- uri: repo://scripts/build_st0306_database_roles.py
+  bytes: 55822
+  sha256: 9ccdb8cd6e007e4c698777849f842cd5510cc57ab12e10c37d242a7ffa329e08
+- uri: repo://scripts/build_st0201_postgres_service.py
+  bytes: 36958
+  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+- uri: repo://scripts/build_st0304_domain_schemas.py
+  bytes: 79921
+  sha256: 17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c
+- uri: repo://scripts/build_st0305_publication_analytics_finance.py
+  bytes: 68879
+  sha256: 5b15472a83535e78e37710af730840711e2634db6e33fb4e43582de5222435e4
+- uri: repo://changes/st-0305/manifest.yaml
+  bytes: 14830
+  sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+- uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
+  bytes: 41097
+  sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
+- uri: repo://python/raos/migrations/catalog.py
+  bytes: 20363
+  sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+- uri: repo://python/raos/migrations/runner.py
+  bytes: 214267
+  sha256: 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+- uri: repo://tests/postgresql18.py
+  bytes: 8049
+  sha256: 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 25978
+  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+- uri: repo://tests/st0301/test_catalog.py
+  bytes: 11918
+  sha256: 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
+- uri: repo://tests/st0301/test_cli.py
+  bytes: 2723
+  sha256: 62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde
+- uri: repo://tests/st0301/test_contract.py
+  bytes: 10581
+  sha256: fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
+- uri: repo://tests/st0301/test_generation.py
+  bytes: 7296
+  sha256: fb4c5090fb4d3f8c62e438c4a372064baa0b83f9cef77136b4a20b9215da9b21
+- uri: repo://tests/st0301/test_postgresql.py
+  bytes: 34214
+  sha256: b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
+- uri: repo://tests/st0301/test_runner.py
+  bytes: 32098
+  sha256: 48a7d7ab69506228d60da640d0466fed3be02cb84068f79fe7c20a9c61475ab2
+- uri: repo://tests/st0302/test_contract.py
+  bytes: 7049
+  sha256: cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
+- uri: repo://tests/st0302/test_revision.py
+  bytes: 5015
+  sha256: c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75
+- uri: repo://tests/st0302/test_postgresql.py
+  bytes: 25958
+  sha256: 8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9
+- uri: repo://tests/st0303/test_generation.py
+  bytes: 18066
+  sha256: b3d6d35a7d51d9fdede7cf3c3b1938afa5d2aadba17705b10582d049233aab1f
+- uri: repo://tests/st0303/test_postgresql.py
+  bytes: 51303
+  sha256: 8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05
+- uri: repo://tests/st0304/test_generation.py
+  bytes: 20464
+  sha256: 4c5a77f9f71cda3fc47d2ffa83a68860a9cfe5d3218c2ce0d43cccb0273c7d94
+- uri: repo://tests/st0304/test_postgresql.py
+  bytes: 32924
+  sha256: 7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac
+- uri: repo://tests/st0305/conftest.py
+  bytes: 393
+  sha256: 4284eb6af68bedad5b1bd9f41348df8282ae4fd35920474fc9f90b955c8b6186
+- uri: repo://tests/st0305/test_postgresql.py
+  bytes: 50377
+  sha256: 275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b
+- uri: repo://tests/st0305/test_st0305_publication_analytics_finance.py
+  bytes: 1832
+  sha256: 3d48f5a3490151a22328b533d595ba21694be689280e42adc388814499f4557c
+- uri: repo://tests/st0306/conftest.py
+  bytes: 393
+  sha256: 53bc1d39f25ad327dddad0321a49e9e694d25770c83136310691ca91eff60899
+- uri: repo://tests/st0306/test_generation.py
+  bytes: 4649
+  sha256: c299e1caa5c835cc107daa2de61c7e2fc7141b8f1f5f19171cacf76b3cfba7f2
+- uri: repo://tests/st0306/test_postgresql.py
+  bytes: 16120
+  sha256: 0d27d3d54db03cf5b110bf889d32fc7dc9f97c0bd53d2fc94d2c91e1198cc97c
+generated_artifact_count: 3
+generated_artifacts:
+- uri: repo://migrations/versions/202608030006_database_roles.py
+  bytes: 10745
+  sha256: 472690c8ca8080e3e3c0e294e40ea31b30c7d9314daa4cd5ee83a4841d439825
+- uri: repo://changes/st-0306/generated/database-roles-grants.v1.json
+  bytes: 2813
+  sha256: b992f9de31fa41185222b6aa505d0ab72e714866aacc96085b95c4b22fd038ec
+- uri: repo://changes/st-0306/generated/database-roles-validation.v1.sql
+  bytes: 26924
+  sha256: 4ede5f64c41feaf6e7d5f8b086565728436a2a3a6d2edd943601f07d6b77e087
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+inventory:
+  roles: 8
+  schemas: 13
+  rls_policies: 22
+  default_table_acl_schemas: 13
+  default_function_acl_scope: MIGRATION_OWNER_GLOBAL
+  default_acl_records: 14
+security_boundary:
+  creates_login_roles: false
+  creates_credentials: false
+  public_readmodel_only: true
+  application_role_owns_database: false
+  cluster_roles_preserved_on_downgrade: true
+formal_verification: NOT_EXECUTED

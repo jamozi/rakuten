@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content/v1/media-asset.schema.json",
+  "title": "Media Asset Manifest",
+  "type": "object",
+  "properties": {
+    "media_asset_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "asset_class": {
+      "type": "string",
+      "enum": [
+        "rakuten_api_product_image",
+        "manufacturer_official_image",
+        "raos_original_photo",
+        "raos_data_chart",
+        "ai_generated_decorative"
+      ]
+    },
+    "source_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "raw_artifact_ref": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "license_status": {
+      "type": "string",
+      "enum": [
+        "provider_terms",
+        "licensed",
+        "owned",
+        "approved_exception"
+      ]
+    },
+    "modification_policy": {
+      "type": "string",
+      "enum": [
+        "no_modification",
+        "limited",
+        "owned_editable"
+      ]
+    },
+    "alt_text": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "decorative": {
+      "type": "boolean"
+    },
+    "long_description_ref": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "captured_or_observed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "media_asset_id",
+    "asset_class",
+    "source_ref",
+    "raw_artifact_ref",
+    "sha256",
+    "license_status",
+    "modification_policy",
+    "alt_text",
+    "decorative",
+    "long_description_ref",
+    "width",
+    "height",
+    "captured_or_observed_at"
+  ],
+  "additionalProperties": false
+}

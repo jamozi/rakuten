@@ -1,0 +1,201 @@
+{
+  "bundle": {
+    "bytes": 9322,
+    "fixture_count": 18,
+    "path": "changes/st-0205/generated/synthetic-fixtures.v1.json",
+    "sha256": "551428e3c72809128b290caafd2dceab6a27abe3aa904777c160d3519c5d016a"
+  },
+  "control_ids": [
+    "SEC-DATA-003",
+    "SEC-DATA-004",
+    "SEC-DATA-007",
+    "SEC-SDLC-006"
+  ],
+  "document": {
+    "id": "RAOS-SYNTHETIC-FIXTURE-CATALOG-001",
+    "story_id": "ST-0205",
+    "version": "1.0.0"
+  },
+  "fixtures": [
+    {
+      "bytes": 316,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-ops-baseline-487006010960",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "baseline",
+      "schema_domain": "ops",
+      "sha256": "288215a836e3d4f112a8d77636d0828ec67d5fed3274bc1e1e6c04c1f3057d6d"
+    },
+    {
+      "bytes": 336,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-ops-duplicate-original-39676b28e15b",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "duplicate-original",
+      "schema_domain": "ops",
+      "sha256": "bdbaf249a49ef435df4dd1391aad0d2b18b358e8a9ca113cc51caf0f9879abaa"
+    },
+    {
+      "bytes": 332,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-ops-duplicate-replay-01dc7fee04bb",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "duplicate-replay",
+      "schema_domain": "ops",
+      "sha256": "a1834741d1ea32061f3ce00e4229c9b8e2bcf6cad764e98189be1e571939e483"
+    },
+    {
+      "bytes": 313,
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-iam-baseline-990f3898c235",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "baseline",
+      "schema_domain": "iam",
+      "sha256": "834db9eb9bf16af4fb7781fefdf94e090aba07784fbc17d7865e9032085d5515"
+    },
+    {
+      "bytes": 313,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-portfolio-jst-72cdcbfac4b3",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "jst",
+      "schema_domain": "portfolio",
+      "sha256": "e564854cc99e595241444e299cff65998f4757dd7dcc8b2338f259185720ed6f"
+    },
+    {
+      "bytes": 395,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-catalog-unicode-large-jpy-50853893fbf2",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "unicode-large-jpy",
+      "schema_domain": "catalog",
+      "sha256": "98bca7ec7da1ed091703908835de778eed0a58929a43043dde00ac40b384f22e"
+    },
+    {
+      "bytes": 377,
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-evidence-baseline-e9abbc0fbb74",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "baseline",
+      "schema_domain": "evidence",
+      "sha256": "85579eb4610f91ca65beeb02fbf4c3c4a39fa5bb8b8f015873788a0172d385dc"
+    },
+    {
+      "bytes": 344,
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-editorial-unicode-locale-6ed83d5cfb2e",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "unicode-locale",
+      "schema_domain": "editorial",
+      "sha256": "32a282da2ee1157431da43f51082647e80fd09e42848c504cc8b488e0c9deab2"
+    },
+    {
+      "bytes": 317,
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-ai-baseline-12676086a729",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "baseline",
+      "schema_domain": "ai",
+      "sha256": "0b11f8c92a734ed5116bd734e9dbaa5f62c0ae9f3902a57460f0110f5d6ed37a"
+    },
+    {
+      "bytes": 325,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-policy-baseline-5cca8706143b",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "baseline",
+      "schema_domain": "policy",
+      "sha256": "b64f30135611e710fef333d9e3ce6210257d879f29bcd1df391494b295fe3111"
+    },
+    {
+      "bytes": 387,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-publishing-baseline-223724cc173a",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "baseline",
+      "schema_domain": "publishing",
+      "sha256": "ceb794979b6ea5b58610b4db73ea94dd4b196d7e46b26eacddd1be1fa6b1a87c"
+    },
+    {
+      "bytes": 401,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-freshness-dst-before-4f9249a8a585",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "dst-before",
+      "schema_domain": "freshness",
+      "sha256": "072024943d7f1d7a1f05f5e8d390fd3376e4a2a33545737f2fe9547bd7f39486"
+    },
+    {
+      "bytes": 399,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-freshness-dst-after-4cb657cbc331",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "dst-after",
+      "schema_domain": "freshness",
+      "sha256": "c1564132db7181d2c2964db4af41944406406bf91d18a86d87c149df3ac560bc"
+    },
+    {
+      "bytes": 404,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-freshness-out-of-order-later-0934173b8db5",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "out-of-order-later",
+      "schema_domain": "freshness",
+      "sha256": "b13105c8d12ddb86a17fb23f979da85effcc9d2f79bb53559db3d5c36baaf41a"
+    },
+    {
+      "bytes": 408,
+      "classification": "INTERNAL",
+      "fixture_id": "fx-freshness-out-of-order-earlier-e175c33873b2",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "out-of-order-earlier",
+      "schema_domain": "freshness",
+      "sha256": "3937b9450c972f138018fefe7aa0153663a4004360712096460b9107a747de0a"
+    },
+    {
+      "bytes": 416,
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-analytics-baseline-dddd0bb77bf1",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "baseline",
+      "schema_domain": "analytics",
+      "sha256": "8e29c3caea992284f47c96a08c32f1dbc311fa3785974cbe38b6a8f4f0962bc9"
+    },
+    {
+      "bytes": 361,
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-finance-currency-large-3a9dff46c6a9",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "currency-large",
+      "schema_domain": "finance",
+      "sha256": "d3316f97df794fceb5f31663fe6ba5608bb96e4ce3c0a961b0895b54a9bca3c1"
+    },
+    {
+      "bytes": 381,
+      "classification": "PUBLIC",
+      "fixture_id": "fx-readmodel-unicode-locale-3731a5000099",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "scenario": "unicode-locale",
+      "schema_domain": "readmodel",
+      "sha256": "1a9b55aa0b45c0a7e56d8e9906bb0ab7059ab4424847e8a90568310cf16f242a"
+    }
+  ]
+}

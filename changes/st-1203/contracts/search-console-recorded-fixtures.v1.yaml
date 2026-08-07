@@ -1,0 +1,247 @@
+document:
+  id: RAOS-SEARCH-CONSOLE-RECORDED-FIXTURES-001
+  version: 1.0.0
+  story_id: ST-1203
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+
+story:
+  objective: GSC_FACTS_VERSIONED_IMPORT_RECORDED_SLICE
+  dependencies:
+    - ST-0204
+    - ST-0305
+  requirement_ids:
+    - FR-013
+  test_suites:
+    - TST-030
+  open_decisions:
+    - id: OD-015
+      status: EXTERNAL_EVIDENCE_REQUIRED
+      safe_default: RECORDED_FIXTURE_ONLY
+
+provenance:
+  canonical_inputs:
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+      sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+    - uri: repo://docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml
+      sha256: b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  predecessors:
+    - story_id: ST-0204
+      uri: repo://changes/st-0204/manifest.yaml
+      sha256: 3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4
+    - story_id: ST-0305
+      uri: repo://changes/st-0305/manifest.yaml
+      sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+  installed_contract_repository:
+    uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
+    sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+  contract_schemas:
+    - role: acquisition_request
+      uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/gsc-search-analytics-request.schema.json
+      sha256: 10dd3bfa4caa9be5cfe58f557db4647d4e178fa83e6d68bdded8e74d8443e89f
+    - role: canonical_row
+      uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/gsc-search-analytics-row.schema.json
+      sha256: 827afbaa8ca50c631a00f893ee6932f5b2fc571d84e0566529b9e5958cc3b920
+    - role: import_job
+      uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-search-console-v1.schema.json
+      sha256: aa2c88caffeee692ee38d5ca6c8b7460f770ab3751abb0c35a9d197014d73f0c
+    - role: import_completed_event
+      uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-analytics-import-completed-v1.schema.json
+      sha256: 50f6012ab7da5f2f04a0b4f9b3216f1ac9ea7a51b3c26f972ea24ecdcebea93d
+    - role: daily_metrics_event
+      uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-analytics-daily-metrics-updated-v1.schema.json
+      sha256: a8d28096dc570710ac02349569fea95ea82657b87a854d7799c1735c39ac1dd1
+  official_provider_reference:
+    uri: https://developers.google.com/webmaster-tools/v1/searchanalytics/query
+    checked_on: '2026-08-06'
+    semantics:
+      outward_search_type_field: type
+      deprecated_field_forbidden: searchType
+      row_limit_maximum: 25000
+      pagination_offset_field: startRow
+      response_key_order: REQUESTED_DIMENSION_ORDER
+      beyond_result_offset: SUCCESS_WITH_ZERO_ROWS
+      completeness: TOP_ROWS_NOT_GUARANTEED_COMPLETE
+
+generation:
+  fixture_root: changes/st-1203/fixtures/recorded
+  manifest_path: changes/st-1203/manifest.json
+  generated_by: scripts/build_st1203_search_console_recorded_adapter.py
+  generation_command: >-
+    uv run --locked --no-sync --no-env-file python
+    scripts/build_st1203_search_console_recorded_adapter.py
+  check_command: >-
+    uv run --locked --no-sync --no-env-file python
+    scripts/build_st1203_search_console_recorded_adapter.py --check
+  format: STRICT_UTF8_LF_CANONICAL_JSON
+  exact_fixture_files:
+    - baseline.json
+    - late-revised.json
+    - start-beyond-data.json
+
+request_hash:
+  algorithm: SHA-256
+  canonicalization: UTF8_SORTED_KEYS_COMPACT_JSON
+  scope: EXACT_INTERNAL_ACQUISITION_REQUEST_DOCUMENT
+  ordered_arrays: PRESERVED
+  omitted_defaults: FORBIDDEN_IN_RECORDED_FIXTURES
+
+recordings:
+  - recording_id: baseline
+    fixture_file: baseline.json
+    synthetic_marker: SYNTHETIC_TEST_ONLY
+    site_id: 00000000-0000-4000-8000-000000001203
+    recorded_at: '2026-08-05T00:00:00Z'
+    expected_source_request_sha256: b062bbe5000e83471fe3f1557f04c01a1b311d312055a74083df19fa7d5bd0be
+    request:
+      site_url: sc-domain:example.invalid
+      start_date: '2026-07-01'
+      end_date: '2026-07-02'
+      dimensions:
+        - date
+        - query
+        - page
+        - country
+        - device
+      search_type: web
+      aggregation_type: auto
+      data_state: final
+      row_limit: 2
+      start_row: 0
+      dimension_filter_groups: []
+    provider_response:
+      responseAggregationType: byPage
+      rows:
+        - keys:
+            - '2026-07-01'
+            - synthetic luggage
+            - https://example.invalid/guides/synthetic-luggage
+            - jpn
+            - MOBILE
+          clicks: 12
+          impressions: 120
+          ctr: 0.1
+          position: 3.25
+        - keys:
+            - '2026-07-02'
+            - synthetic carry case
+            - https://example.invalid/guides/synthetic-carry-case
+            - jpn
+            - DESKTOP
+          clicks: 5
+          impressions: 50
+          ctr: 0.1
+          position: 4.5
+
+  - recording_id: late-revised
+    fixture_file: late-revised.json
+    synthetic_marker: SYNTHETIC_TEST_ONLY
+    site_id: 00000000-0000-4000-8000-000000001203
+    recorded_at: '2026-08-06T00:00:00Z'
+    expected_source_request_sha256: b062bbe5000e83471fe3f1557f04c01a1b311d312055a74083df19fa7d5bd0be
+    request:
+      site_url: sc-domain:example.invalid
+      start_date: '2026-07-01'
+      end_date: '2026-07-02'
+      dimensions:
+        - date
+        - query
+        - page
+        - country
+        - device
+      search_type: web
+      aggregation_type: auto
+      data_state: final
+      row_limit: 2
+      start_row: 0
+      dimension_filter_groups: []
+    provider_response:
+      responseAggregationType: byPage
+      rows:
+        - keys:
+            - '2026-07-01'
+            - synthetic luggage
+            - https://example.invalid/guides/synthetic-luggage
+            - jpn
+            - MOBILE
+          clicks: 14
+          impressions: 140
+          ctr: 0.1
+          position: 3.1
+        - keys:
+            - '2026-07-02'
+            - synthetic carry case
+            - https://example.invalid/guides/synthetic-carry-case
+            - jpn
+            - DESKTOP
+          clicks: 6
+          impressions: 60
+          ctr: 0.1
+          position: 4.25
+
+  - recording_id: start-beyond-data
+    fixture_file: start-beyond-data.json
+    synthetic_marker: SYNTHETIC_TEST_ONLY
+    site_id: 00000000-0000-4000-8000-000000001203
+    recorded_at: '2026-08-05T00:00:01Z'
+    expected_source_request_sha256: 603738ab94f0c2cdd7c474ba0418ebd36d66215d125e180acdaefed5e84a0788
+    request:
+      site_url: sc-domain:example.invalid
+      start_date: '2026-07-01'
+      end_date: '2026-07-02'
+      dimensions:
+        - date
+        - query
+        - page
+        - country
+        - device
+      search_type: web
+      aggregation_type: auto
+      data_state: final
+      row_limit: 25000
+      start_row: 25000
+      dimension_filter_groups: []
+    provider_response:
+      responseAggregationType: byPage
+      rows: []
+
+recorded_result_policy:
+  synthetic_site_url: sc-domain:example.invalid
+  synthetic_page_origin: https://example.invalid
+  synthetic_page_components: NO_USERINFO_PORT_QUERY_OR_FRAGMENT
+  synthetic_query_pattern: 'synthetic [a-z0-9]+(?:[ -][a-z0-9]+)*'
+  synthetic_query_max_length: 80
+  dimension_filter_groups: REQUIRED_EMPTY
+  dimensions: EXACT_REQUEST_ORDER
+  keys: EXACT_PROVIDER_ORDER
+  source_request_sha256: REQUIRED_ON_EVERY_ROW
+  top_rows_caveat: REQUIRED_TRUE_ON_EVERY_ROW_AND_RESULT
+  baseline_and_late_revised: SEPARATELY_INSPECTABLE_NO_SUPERSESSION_CLAIM
+  numeric_values: PRESERVE_JSON_NUMBER_NO_CONVERSION_POLICY
+
+boundary:
+  network: FORBIDDEN
+  credentials: FORBIDDEN
+  environment_credentials: FORBIDDEN
+  google_sdk: FORBIDDEN
+  live_api: NOT_USED
+  persistent_writes: FORBIDDEN
+  database_writes: FORBIDDEN
+  site_id_to_site_url_mapping: NOT_DEFINED
+  durable_supersession: NOT_DEFINED
+  dimension_key_sha256: NOT_DEFINED
+  date_derivation_for_date_less_requests: NOT_DEFINED
+  privacy_suppression_rules: NOT_DEFINED
+  numeric_conversion_policy: NOT_DEFINED
+  local_result: IMPLEMENTATION_CANDIDATE_ONLY
+  formal_tst_030: NOT_EXECUTED
+  production_readiness: NOT_READY

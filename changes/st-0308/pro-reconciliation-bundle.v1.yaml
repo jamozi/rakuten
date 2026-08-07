@@ -1,0 +1,38 @@
+document:
+  id: RAOS-ST0308-PRO-RECONCILIATION-BUNDLE-001
+  version: 1.0.0
+  story_id: ST-0308
+  status: LOCAL_RECONCILIATION_INPUT_ONLY
+  authority: NOT_A_DESIGN_HANDOFF
+source:
+  file_list: changes/st-0308/pro-reconciliation-bundle.v1.files
+  file_list_sha256: ca52e796e06a3384da434c9765d4f2004699bb03c09595aa3cbb86dbde6da007
+  file_count: 16
+  public_advisory:
+    url: https://chatgpt.com/share/6a729b32-7e0c-83ee-88a9-f36973413690
+    normalized_sha256: 464e6be81e27adfe45143b089219dfcde66f6887288e6a97c73686246d029af8
+output:
+  path: changes/st-0308/pro-reconciliation-input.v1.tar.gz
+  sha256: 80317e39960250bc8656ea6d42ddc135b1a1d6f9631d4b8dfeca76c9e72ac371
+  bytes: 197846
+  format: deterministic_posix_tar_gzip
+generation:
+  tool: GNU tar 1.34
+  command: >-
+    tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner
+    --format=posix --pax-option=delete=atime,delete=ctime -czf
+    changes/st-0308/pro-reconciliation-input.v1.tar.gz -T
+    changes/st-0308/pro-reconciliation-bundle.v1.files
+  deterministic_rebuild_comparison: PASS
+security_boundary:
+  explicit_allowlist_only: true
+  secrets_directory_included: false
+  browser_profile_included: false
+  credential_or_session_artifact_included: false
+  private_prompt_or_raw_private_response_included: false
+approval_boundary:
+  pro_output_from_this_input_is_a_proposal: true
+  separate_human_approval_required: true
+  canonical_reconciliation_required: true
+  open_decisions_must_be_empty_before_implementation: true
+  implementation_worker_authority: NOT_GRANTED_BY_THIS_BUNDLE

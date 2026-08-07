@@ -1,0 +1,59 @@
+{
+  "fixture_version": "1.0.0",
+  "outbound_request": {
+    "body": {
+      "aggregationType": "auto",
+      "dataState": "final",
+      "dimensionFilterGroups": [],
+      "dimensions": [
+        "date",
+        "query",
+        "page",
+        "country",
+        "device"
+      ],
+      "endDate": "2026-07-02",
+      "rowLimit": 25000,
+      "startDate": "2026-07-01",
+      "startRow": 25000,
+      "type": "web"
+    },
+    "site_url": "sc-domain:example.invalid"
+  },
+  "provider_response": {
+    "responseAggregationType": "byPage",
+    "rows": []
+  },
+  "recorded_result": {
+    "pagination": {
+      "returned_row_count": 0,
+      "row_limit": 25000,
+      "start_row": 25000
+    },
+    "recorded_at": "2026-08-05T00:00:01Z",
+    "rows": [],
+    "rows_not_guaranteed_complete": true,
+    "top_rows_only": true
+  },
+  "recording_id": "start-beyond-data",
+  "request": {
+    "aggregation_type": "auto",
+    "data_state": "final",
+    "dimension_filter_groups": [],
+    "dimensions": [
+      "date",
+      "query",
+      "page",
+      "country",
+      "device"
+    ],
+    "end_date": "2026-07-02",
+    "row_limit": 25000,
+    "search_type": "web",
+    "site_url": "sc-domain:example.invalid",
+    "start_date": "2026-07-01",
+    "start_row": 25000
+  },
+  "source_request_sha256": "603738ab94f0c2cdd7c474ba0418ebd36d66215d125e180acdaefed5e84a0788",
+  "synthetic_marker": "SYNTHETIC_TEST_ONLY"
+}

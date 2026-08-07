@@ -1,0 +1,24 @@
+Use the attached `ST-1204-pro-design-input-v1.tar.gz` as the complete local
+evidence packet and read
+`changes/st-1204/DESIGN-DECISION-REQUEST-v1.md` first.
+
+Verify the archive, member manifest, request, and this submission message
+against `changes/st-1204/pro-design-bundle.v1.yaml`. Then verify every payload
+member against
+`changes/st-1204/pro-design-input.v1.members.sha256`. Reject any missing,
+extra, duplicate, linked, non-regular, absolute, or traversing member.
+
+Resolve only ST1204-FIXTURE-D1 through ST1204-FIXTURE-D3 for the bounded local
+recorded-fixture publication checkpoint. Do not implement code, call Google,
+use credentials, close OD-012 or OD-015, change canonical bytes, or broaden
+ST-1204. Treat the current source contract, generator, tests, audit finding,
+and ST-0104/ST-0105 patterns as unapproved evidence to reconcile rather than
+implementation authority.
+
+Return only one complete downloadable UTF-8/LF YAML file named
+`DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml`, rooted exactly at
+`DESIGN_HANDOFF_V1` and containing every mandatory field required by the
+request. Keep it pending and unapproved: human approval not provided,
+canonical reconciliation pending, implementation authority not granted,
+formal TST-030 and live validation not executed, and staging/production not
+ready. Do not emit a summary instead of the complete file.

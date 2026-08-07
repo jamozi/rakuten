@@ -1,0 +1,123 @@
+document:
+  id: RAOS-AI-CONTRACT-REGISTRY-LOADER-001
+  version: 1.0.0
+  story_id: ST-0701
+  status: IMPLEMENTATION_CANDIDATE
+story:
+  objective: HASH_VERIFY_TASK_PROMPT_SCHEMA_ROUTE
+  dependencies:
+  - ST-0104
+  - ST-0003
+  requirement_ids:
+  - FR-018
+  acceptance_criteria:
+  - UNKNOWN_TASK_FAILS_CLOSED
+  - HASH_MISMATCH_FAILS_CLOSED
+  required_suites:
+  - TST-001
+  - TST-017
+  open_decisions: []
+source_repository:
+  manifest_uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
+  manifest_sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+  artifact_count: 306
+  verification: ContractRepository
+  network_retrieval: FORBIDDEN
+registries:
+- kind: TASK
+  path: contracts/ai/RAOS_05_ai_task_catalog_v0.1.yaml
+  sha256: 8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04
+  entries_field: tasks
+  key_field: task_code
+  entry_count: 12
+- kind: PROMPT
+  path: contracts/ai/RAOS_05_prompt_registry_v0.1.yaml
+  sha256: 745b0d6039a9f533dc92146bb3234f33e88518e184de88e67a59ca5b5c023d27
+  entries_field: templates
+  key_field: prompt_code
+  entry_count: 12
+- kind: SCHEMA
+  path: contracts/ai/RAOS_05_schema_registry_v0.1.yaml
+  sha256: 4a34d6d18192184333e374c8a44e849915b817f7a8019d9e6d0101077bdbe751
+  entries_field: schemas
+  key_field: schema_id
+  entry_count: 14
+- kind: ROUTE
+  path: contracts/ai/RAOS_05_model_routing_catalog_v0.1.yaml
+  sha256: dc76ed6d2586eec9bf18b8ac2e95eb76971179fe87fa1ee07b1ba8702f8faa96
+  entries_field: routes
+  key_field: route_code
+  entry_count: 7
+compiled_projection:
+  uri: repo://changes/st-0701/generated/ai-task-registry.v1.json
+  manifest_uri: repo://changes/st-0701/manifest.yaml
+  format: STRICT_JSON
+  top_level_keys:
+  - document
+  - task_count
+  - tasks
+  document:
+    id: RAOS-AI-TASK-REGISTRY-001
+    version: 1.0.0
+    story_id: ST-0701
+    status: IMPLEMENTATION_CANDIDATE
+  task_entry_keys:
+  - task
+  - task_sha256
+  - prompt
+  - output_schema
+  - route
+  - binding_sha256
+  ordering: TASK_CODE_ASCENDING
+  canonical_hash_encoding: UTF8_JSON_SORT_KEYS_COMPACT_NO_NAN
+  prompt_bytes: READ_FROM_VERIFIED_CONTRACT_REPOSITORY
+  schema_bytes: READ_FROM_VERIFIED_CONTRACT_REPOSITORY
+closure:
+  task_to_prompt:
+  - prompt_code
+  - task_code
+  - prompt_template
+  - sha256
+  task_to_schema:
+  - output_schema
+  - output_schema_sha256
+  - schema_id
+  - sha256
+  task_to_route:
+  - route_code
+  prompt_frontmatter:
+  - prompt_code
+  - version
+  - task_code
+  - status
+  - locale
+  - route_code
+  - output_schema
+  - human_review_required
+  - tools_allowed
+  - network_access
+  route_to_model:
+  - primary_model_key
+  - fallback_model_key
+  duplicate_keys: REJECT
+  duplicate_identifiers: REJECT
+  missing_references: REJECT
+  conflicting_bindings: REJECT
+integrity:
+  digest_algorithm: sha256
+  task_sha256_scope: CANONICAL_TASK_OBJECT
+  route_sha256_scope: CANONICAL_ROUTE_OBJECT
+  binding_sha256_scope: TASK_ENTRY_EXCLUDING_BINDING_SHA256
+  source_artifact_hashes: VERIFY_BEFORE_COMPILE
+  selected_artifact_hashes: REVERIFY_AT_RUNTIME
+  runtime_mutability: FROZEN
+boundary:
+  provider_routing_execution: NOT_IMPLEMENTED
+  provider_api: NOT_USED
+  network: NOT_USED
+  database: NOT_USED
+  task_activation_or_seed: NOT_IMPLEMENTED
+  evaluation_or_release: NOT_IMPLEMENTED
+  formal_tst_001: NOT_EXECUTED
+  formal_tst_017: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

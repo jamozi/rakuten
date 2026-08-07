@@ -17,7 +17,7 @@ provenance:
 status_boundary:
   canonical_files_modified: false
   effective_apply_requests: 0
-  proposal_only_requests: 28
+  proposal_only_requests: 52
   authoritative_live_apply: BLOCKED_PENDING_GOVERNANCE
   live_apply_activation_requires:
   - ST-0006
@@ -164,6 +164,78 @@ source_artifacts:
 - path: changes/st-0005/requests/0028-st-0101-v2.yaml
   bytes: 1388
   sha256: 92210293a3d387512bb2543bee8cf2bbd24e22c8fbd3aa1b09d11942f471d963
+- path: changes/st-0005/requests/0029-st-0101-v3.yaml
+  bytes: 1442
+  sha256: 252d7f3e9f059976a95b70427f64dbc14a0101ad5730e3d15ae6cbf5c612949b
+- path: changes/st-0005/requests/0030-st-0103-v2.yaml
+  bytes: 1771
+  sha256: 56c996258789717bb28b4a5db3e7e0757913fa87bd286515ebf4dcd069abad43
+- path: changes/st-0005/requests/0031-st-0801.yaml
+  bytes: 1327
+  sha256: 05656e034a6032283a585090302f31748e7a8d4df62902b88059353c69d35f3d
+- path: changes/st-0005/requests/0032-st-0304.yaml
+  bytes: 1680
+  sha256: 5f251d145749e09b589df8e6b6d6af48668007f72e9a32cad142ac3d569c3042
+- path: changes/st-0005/requests/0033-st-0305.yaml
+  bytes: 2049
+  sha256: 134b51cd4929b43b881b3a82f0e8a6ab3cdd9931fafc889df57a290a70d07e4c
+- path: changes/st-0005/requests/0034-st-0307.yaml
+  bytes: 1409
+  sha256: db101c4aa2300b8f89ea2f81c6f73f44cc9f70f7d0042ae4a971d4567131cd38
+- path: changes/st-0005/requests/0035-st-0701.yaml
+  bytes: 1765
+  sha256: d07a0fc6cfcf3ecc9f47f7dbada426331f1e3b3b0736020b0f871e5db46e37b8
+- path: changes/st-0005/requests/0036-st-0205.yaml
+  bytes: 1915
+  sha256: 8d99ebbb7aa210fbbc775f4e43901210a438307c76b98244e7b7c19f5fa91a8d
+- path: changes/st-0005/requests/0037-st-0107-v2.yaml
+  bytes: 1464
+  sha256: 622475e4d86b6cbebb59b6d839f56a754cfb62994859c6c1208e91bce749cd41
+- path: changes/st-0005/requests/0038-st-0202-v3.yaml
+  bytes: 1469
+  sha256: c38b92c078b9358653a51c916f6c208407acb4ad263b247e3e5f46375698f12c
+- path: changes/st-0005/requests/0039-st-0203-v3.yaml
+  bytes: 1465
+  sha256: 5b0d527e4ead7a5f9a8aa332e554fc0502551288ce59b4f51b64dbdf81d2392b
+- path: changes/st-0005/requests/0040-st-0204-v3.yaml
+  bytes: 1754
+  sha256: 9c61a2da9e6c8d6186310a4bcb6a95afa0e364ace164ac901b7a9a5673ddd946
+- path: changes/st-0005/requests/0041-st-0205-v2.yaml
+  bytes: 1752
+  sha256: 2af2ddf5fae7f75a42121b668350116d975b69f6290ec9724c7bf94046757d70
+- path: changes/st-0005/requests/0042-st-0305-v2.yaml
+  bytes: 2028
+  sha256: 7a2bb7ba9b100043e11ef88dc08217ad9163aa0c75c59f5b6735ed7803b1a05c
+- path: changes/st-0005/requests/0043-st-0306.yaml
+  bytes: 1487
+  sha256: 8474b663df448a399baa7dc2363c1eccb021d0900dfb3e2b6863aa04f8831218
+- path: changes/st-0005/requests/0044-st-0307-v2.yaml
+  bytes: 1521
+  sha256: a7f44dbc4720ad95a365787dfaf403c39cf631be2a8d7fa61cf1d4a22a087314
+- path: changes/st-0005/requests/0045-st-0701-v2.yaml
+  bytes: 1749
+  sha256: 3101efb50f86b9680ca833c0d777f558dcb7a29e1eeeb073b820aaafa717fe82
+- path: changes/st-0005/requests/0046-st-0801-v2.yaml
+  bytes: 1467
+  sha256: 57129fa54db6984f0b22948b9594aa6ebf863824ace594471f00da11d15a533b
+- path: changes/st-0005/requests/0047-st-0101-v4.yaml
+  bytes: 1553
+  sha256: d6565134c5f6bb702351f289c4a0047135a12ca7528d2abd183f07d6fa0f9080
+- path: changes/st-0005/requests/0048-st-0101-v5.yaml
+  bytes: 1640
+  sha256: 0d2783f18842f610480f943af0ad65d31ebb8af9c7638d3377154c501bcb7f89
+- path: changes/st-0005/requests/0049-st-0101-v6.yaml
+  bytes: 1705
+  sha256: 2a6ca467e421208a3b96252182a4bae779e133ebf0657deac98d6943a0876650
+- path: changes/st-0005/requests/0050-st-0305-v3.yaml
+  bytes: 2063
+  sha256: 77b253193a1951263bb2a7b3b03e7888db318f2104e8d839724a99c27636ebfb
+- path: changes/st-0005/requests/0051-st-0306-v2.yaml
+  bytes: 1594
+  sha256: ded82a198ff8daf2684a5ef6f4d257e8636c06ef2f42f8411d2cd13a8248f54b
+- path: changes/st-0005/requests/0052-st-0307-v3.yaml
+  bytes: 1509
+  sha256: e384cc1bc318c7dc2e1414a73587871b56ea2439af01445512f6ca43ee977c66
 - path: changes/st-0005/evidence/ST-0001-local-20260801.yaml
   bytes: 1125
   sha256: c49f4baf42595c177f674a4685227f0efb44b818344bff8e8dba23508d6f124b
@@ -188,12 +260,27 @@ source_artifacts:
 - path: changes/st-0005/evidence/ST-0101-local-20260803-v2.yaml
   bytes: 6193
   sha256: ecd4d671467d92b83a6097c3ac9dadf55c0ece36d815a5aca64856183a89cc1b
+- path: changes/st-0005/evidence/ST-0101-local-20260804-v3.yaml
+  bytes: 4661
+  sha256: 9731ec4db07d4bdd7eb1f4e1651c390dccfc72c5432b33d37f6a7a9de9b9b313
+- path: changes/st-0005/evidence/ST-0101-local-20260805-v4.yaml
+  bytes: 4316
+  sha256: 7cc84464c19a3dabd38a1612c1f061ac8cb393b3a8db7b66d58cef5e4d859c35
+- path: changes/st-0005/evidence/ST-0101-local-20260805-v5.yaml
+  bytes: 4404
+  sha256: 571c433c2f17da43f2bc262e48a4d223f72f6cd41368f276b8ce4774d10975eb
+- path: changes/st-0005/evidence/ST-0101-local-20260805-v6.yaml
+  bytes: 5978
+  sha256: 0097ffbd09bf57f8936800b00a813c406e6cce68b4c0d6918ba3264498fe0854
 - path: changes/st-0005/evidence/ST-0102-local-20260801.yaml
   bytes: 7750
   sha256: 9fa76e66c26387f9b2c17cb4cc9cf8073bc25d2e9ddf3d045d14768504e8570c
 - path: changes/st-0005/evidence/ST-0103-local-20260801.yaml
   bytes: 10323
   sha256: 107bfff2c8e1c96852c91e15c21137e967dbd61091ce0318f50172fd57682631
+- path: changes/st-0005/evidence/ST-0103-local-20260804-v2.yaml
+  bytes: 5517
+  sha256: 16651ca4a8c133ffd6108e6af26e0fed751d169b6dc15b7f081f00563e72045a
 - path: changes/st-0005/evidence/ST-0104-local-20260802.yaml
   bytes: 9320
   sha256: ef22a9e21744de5070ad8982d967a7592bd87f0234975542103201d57a4e6126
@@ -206,6 +293,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/ST-0107-local-20260802.yaml
   bytes: 8415
   sha256: 38fd34902c7fefb111dfe98f4eaa460a1ab04c5442195d5c840f7f0e13429417
+- path: changes/st-0005/evidence/ST-0107-local-20260805-v2.yaml
+  bytes: 7043
+  sha256: 5afc92ac8caa08a9d61b502cbb33e3ac485459c167f09250b34ae84b1f3a1a4a
 - path: changes/st-0005/evidence/ST-0201-local-20260802.yaml
   bytes: 10823
   sha256: 3d1584a75395d712561f4578f276cb993ad4560af164b59010f48a623b3f838a
@@ -215,18 +305,33 @@ source_artifacts:
 - path: changes/st-0005/evidence/ST-0202-local-20260803-v2.yaml
   bytes: 3229
   sha256: a1c83e03c52b36ebe6e77a6a1fa0dc143b17f3483c38b1316559772e74a44da2
+- path: changes/st-0005/evidence/ST-0202-local-20260805-v3.yaml
+  bytes: 3673
+  sha256: e50f7f4b637aeddb6ee35604d0f6a4d4598d6151132c1aa4527a61c9524bf19e
 - path: changes/st-0005/evidence/ST-0203-local-20260802.yaml
   bytes: 9618
   sha256: 4645a289bda7364a9e4dedd71570b9a8910ff6f98a6480577c88643c691cd9a6
 - path: changes/st-0005/evidence/ST-0203-local-20260803-v2.yaml
   bytes: 3446
   sha256: 413262cf31c3b2856270b31a2d7e92b0ac72e280db739b23e1d28e460fba1bfd
+- path: changes/st-0005/evidence/ST-0203-local-20260805-v3.yaml
+  bytes: 4788
+  sha256: c276e756600cdb4b6192e549f84a74c9de5181398c4edf477ed39409402ed333
 - path: changes/st-0005/evidence/ST-0204-local-20260803-v2.yaml
   bytes: 4075
   sha256: f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e
 - path: changes/st-0005/evidence/ST-0204-local-20260803.yaml
   bytes: 10075
   sha256: ca5197422fa84c550c6c05e01be940b2b8ddb7e7e5da9bbbcc053f59aa6791f8
+- path: changes/st-0005/evidence/ST-0204-local-20260805-v3.yaml
+  bytes: 4831
+  sha256: 2955e0d4d5294443fbde5f98b73ccd5613515c05c556828db3519c920689a26f
+- path: changes/st-0005/evidence/ST-0205-local-20260805-v2.yaml
+  bytes: 3838
+  sha256: 75c5daca139e6f79b2dd4c2fed2ee2fe8e336f0abaf9e03705838bf89623e1fb
+- path: changes/st-0005/evidence/ST-0205-local-20260805.yaml
+  bytes: 8219
+  sha256: e8b229d2957050455e1fe8bd8a0a758e491255d67e9a1c03bb932df56064c254
 - path: changes/st-0005/evidence/ST-0301-local-20260803-v2.yaml
   bytes: 3069
   sha256: 5c364a7941c67902c0ee63e85c974d0ae5e16c4c7c177e8c39cd3ee838ef5e5a
@@ -248,6 +353,45 @@ source_artifacts:
 - path: changes/st-0005/evidence/ST-0303-local-20260803.yaml
   bytes: 18203
   sha256: c00d0d0f4522c51ee0f710fb148075f199b0ef8c251a4323fbec3c336f6971dc
+- path: changes/st-0005/evidence/ST-0304-local-20260805.yaml
+  bytes: 17892
+  sha256: a42fffeb981cb5d5d2e6be2aad27b5178c3acec554007ea4c830850635bd3148
+- path: changes/st-0005/evidence/ST-0305-local-20260805-v2.yaml
+  bytes: 6670
+  sha256: 4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082
+- path: changes/st-0005/evidence/ST-0305-local-20260805.yaml
+  bytes: 16745
+  sha256: 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+- path: changes/st-0005/evidence/ST-0305-local-20260806-v3.yaml
+  bytes: 4156
+  sha256: 2b10afcd3ce6bd7220788027b465eea5c5be4fb739e7b1f6a17a64d83ecc7d61
+- path: changes/st-0005/evidence/ST-0306-local-20260805.yaml
+  bytes: 13949
+  sha256: 119615d05fabd20aeb55c1dcb2bc33d4ec5144227dce408d8fb874a07691bf3c
+- path: changes/st-0005/evidence/ST-0306-local-20260806-v2.yaml
+  bytes: 4989
+  sha256: 88b9be3e00d8173cc8c361f1c87a78a5f8346026e36ff3c4add296f6343bf3d8
+- path: changes/st-0005/evidence/ST-0307-local-20260805-v2.yaml
+  bytes: 6799
+  sha256: 0a78982d68aed4a971e45c87457416ee4387038bce108239a659ff38f7fcdce6
+- path: changes/st-0005/evidence/ST-0307-local-20260805.yaml
+  bytes: 16943
+  sha256: 78f4a982941b03659c6617b5b151d02edbcf4d98d7117159c48f3920f91ea6bd
+- path: changes/st-0005/evidence/ST-0307-local-20260806-v3.yaml
+  bytes: 3599
+  sha256: 2e6a785734bac29a6a5f703d4244afdbcf5a5a201eff2eb1aba536f74ff4110a
+- path: changes/st-0005/evidence/ST-0701-local-20260805-v2.yaml
+  bytes: 3230
+  sha256: 0d587619d1b2ace731bc93c509392b5558694f097b2da2bfbe32b96549b3fbfe
+- path: changes/st-0005/evidence/ST-0701-local-20260805.yaml
+  bytes: 9227
+  sha256: 237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53
+- path: changes/st-0005/evidence/ST-0801-local-20260804.yaml
+  bytes: 33312
+  sha256: bba39e07744988c03c4d60e7da8dc7c7117af797ef22eca81711f2d8c12b9bae
+- path: changes/st-0005/evidence/ST-0801-local-20260805-v2.yaml
+  bytes: 3167
+  sha256: f97cffaaf64a8628912e9c12a1a3b94092f654f6a0762d4ee48ec4824d2a7372
 - path: changes/st-0005/evidence/artifacts/00146f1f8c26e96098bc050c418e43ac2bbdc0d38a5fc3efeac256ed91a22ffb-build_st0201_postgres_service.py
   bytes: 37003
   sha256: 00146f1f8c26e96098bc050c418e43ac2bbdc0d38a5fc3efeac256ed91a22ffb
@@ -260,6 +404,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/00d10142e631e222c01c3d0f6667d07a4c010e067bdd36e71196515b819c25cf-test_determinism_and_safety.py
   bytes: 28072
   sha256: 00d10142e631e222c01c3d0f6667d07a4c010e067bdd36e71196515b819c25cf
+- path: changes/st-0005/evidence/artifacts/00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73-test_workflow_contract.py
+  bytes: 25978
+  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
 - path: changes/st-0005/evidence/artifacts/01b700550dc099a52f323e1b8231661c43d3b6151b7d5c9dd16158c9ae59e5d0-test_gate_report.py
   bytes: 7905
   sha256: 01b700550dc099a52f323e1b8231661c43d3b6151b7d5c9dd16158c9ae59e5d0
@@ -278,6 +425,18 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/0469e9446d8c1e3d29324b630946c7c93aa99fc3b5986320355b12e03cbad990-build_st0203_queue_fake.py
   bytes: 16428
   sha256: 0469e9446d8c1e3d29324b630946c7c93aa99fc3b5986320355b12e03cbad990
+- path: changes/st-0005/evidence/artifacts/04917e377f4b21528d92c75b8c8cb0421ce0c9f0fffa62958798e0a4b1a1357c-build_st0205_synthetic_data.py
+  bytes: 44632
+  sha256: 04917e377f4b21528d92c75b8c8cb0421ce0c9f0fffa62958798e0a4b1a1357c
+- path: changes/st-0005/evidence/artifacts/05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1-README.md
+  bytes: 55645
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- path: changes/st-0005/evidence/artifacts/0551cb951931358355848ff210eac7dfbfe308e4be923ad80516077ece832570-test_postgresql.py
+  bytes: 32554
+  sha256: 0551cb951931358355848ff210eac7dfbfe308e4be923ad80516077ece832570
+- path: changes/st-0005/evidence/artifacts/0579bc0d639d7ee3ea5f81b6270df7ab3c93b380109d66a6e259bff48f2f6bd0-INV-009-extra-finance-field.json
+  bytes: 4733
+  sha256: 0579bc0d639d7ee3ea5f81b6270df7ab3c93b380109d66a6e259bff48f2f6bd0
 - path: changes/st-0005/evidence/artifacts/05be3e3aed52282d4cdabd8fc90730f2b5f9a3f18acdd82df2c6675baf1ce3c0-manifest.yaml
   bytes: 8658
   sha256: 05be3e3aed52282d4cdabd8fc90730f2b5f9a3f18acdd82df2c6675baf1ce3c0
@@ -287,12 +446,18 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b-Makefile
   bytes: 21998
   sha256: 066885ca7cc58c99470a2ec70978f146f887d45425a5f8de133c2570742ece5b
+- path: changes/st-0005/evidence/artifacts/06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932-recommendation_group.schema.json
+  bytes: 4940
+  sha256: 06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932
 - path: changes/st-0005/evidence/artifacts/06ecfe897cc8f3baa7c972a136e34b498aa40142824b5b0c0bd52e9c69729b62-ST-0203.md
   bytes: 2820
   sha256: 06ecfe897cc8f3baa7c972a136e34b498aa40142824b5b0c0bd52e9c69729b62
 - path: changes/st-0005/evidence/artifacts/06ee9c195668e1e2111c0385fd1db7d1a06f7a133728ebc7d00f56805ea625fd-Makefile
   bytes: 19455
   sha256: 06ee9c195668e1e2111c0385fd1db7d1a06f7a133728ebc7d00f56805ea625fd
+- path: changes/st-0005/evidence/artifacts/0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61-publication-analytics-finance-catalog.v1.json
+  bytes: 430647
+  sha256: 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
 - path: changes/st-0005/evidence/artifacts/079fad5cc7b965c507a79b9ec57421e017bf613702b876385a7df133dbd6bcd9-README.md
   bytes: 396
   sha256: 079fad5cc7b965c507a79b9ec57421e017bf613702b876385a7df133dbd6bcd9
@@ -308,6 +473,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/08d9ab2b842c14499e70de7cbb3253fffed3ff118e7ebfcdf4e2199262dcf3ae-test_uv_cli.py
   bytes: 15084
   sha256: 08d9ab2b842c14499e70de7cbb3253fffed3ff118e7ebfcdf4e2199262dcf3ae
+- path: changes/st-0005/evidence/artifacts/08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b-202608030005_publication_analytics_finance.py
+  bytes: 41097
+  sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
 - path: changes/st-0005/evidence/artifacts/09370bbaf197afe20e699c8dca7786daadac675851bdc59b49a417d78a2ea057-ST-0201.md
   bytes: 5320
   sha256: 09370bbaf197afe20e699c8dca7786daadac675851bdc59b49a417d78a2ea057
@@ -317,9 +485,21 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/09a8fa75385ffcbbefefaa4287d2ebfa87c9423d74de6a070ed29dfad13a2329-test_transition_validation.py
   bytes: 86692
   sha256: 09a8fa75385ffcbbefefaa4287d2ebfa87c9423d74de6a070ed29dfad13a2329
+- path: changes/st-0005/evidence/artifacts/09b29adfc5a3796d921fce5b8796817ebf17962ab23070f7ee83d58bf2bed9bc-manifest.yaml
+  bytes: 15112
+  sha256: 09b29adfc5a3796d921fce5b8796817ebf17962ab23070f7ee83d58bf2bed9bc
+- path: changes/st-0005/evidence/artifacts/0a78982d68aed4a971e45c87457416ee4387038bce108239a659ff38f7fcdce6-ST-0307-local-20260805-v2.yaml
+  bytes: 6799
+  sha256: 0a78982d68aed4a971e45c87457416ee4387038bce108239a659ff38f7fcdce6
+- path: changes/st-0005/evidence/artifacts/0aef38d018043e58343ac1d6d2fbc1ae428abadffc1f5b5346b72ef508f2ae3f-INV-105-missing-required-article-block.json
+  bytes: 4280
+  sha256: 0aef38d018043e58343ac1d6d2fbc1ae428abadffc1f5b5346b72ef508f2ae3f
 - path: changes/st-0005/evidence/artifacts/0b0d1adfc4d16ba90e7b16bde47f98a3650589d9f779aceb330d89db5366de98-test_commands_and_docs.py
   bytes: 11048
   sha256: 0b0d1adfc4d16ba90e7b16bde47f98a3650589d9f779aceb330d89db5366de98
+- path: changes/st-0005/evidence/artifacts/0b32aa4a289a297f47ddf770244d696f437a0e98cf857556ef3d6a6cede41023-README.md
+  bytes: 2249
+  sha256: 0b32aa4a289a297f47ddf770244d696f437a0e98cf857556ef3d6a6cede41023
 - path: changes/st-0005/evidence/artifacts/0b51046ac6b47ee607ac93e186824bffaf1f2aec19890622c86dcfeb25e396ba-test_decision_loader.py
   bytes: 9774
   sha256: 0b51046ac6b47ee607ac93e186824bffaf1f2aec19890622c86dcfeb25e396ba
@@ -338,27 +518,60 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a-iam-ops-catalog.v1.json
   bytes: 121622
   sha256: 0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a
+- path: changes/st-0005/evidence/artifacts/0cdd836c3720638c9ba2a33c3064ea914a959991e0c2ed8f5097516ef41fe2ec-test_scenarios.py
+  bytes: 3907
+  sha256: 0cdd836c3720638c9ba2a33c3064ea914a959991e0c2ed8f5097516ef41fe2ec
+- path: changes/st-0005/evidence/artifacts/0d27d3d54db03cf5b110bf889d32fc7dc9f97c0bd53d2fc94d2c91e1198cc97c-test_postgresql.py
+  bytes: 16120
+  sha256: 0d27d3d54db03cf5b110bf889d32fc7dc9f97c0bd53d2fc94d2c91e1198cc97c
 - path: changes/st-0005/evidence/artifacts/0d810f68e77e66a259dca28164825e93d05300edf6915f4c956f9bf3a31ab857-queue_fake.py
   bytes: 12046
   sha256: 0d810f68e77e66a259dca28164825e93d05300edf6915f4c956f9bf3a31ab857
+- path: changes/st-0005/evidence/artifacts/0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8-manifest.yaml
+  bytes: 8660
+  sha256: 0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8
 - path: changes/st-0005/evidence/artifacts/0e10b2b097de4b66b0434ed286ff9f1852a3af7305309d77e968e5ddc4971202-test_commands_and_docs.py
   bytes: 10956
   sha256: 0e10b2b097de4b66b0434ed286ff9f1852a3af7305309d77e968e5ddc4971202
 - path: changes/st-0005/evidence/artifacts/0ee3ec31313f763ea61f11b761dd5eace7e36065e4b946ba73ae435f6301e1db-test_workflow_contract.py
   bytes: 17921
   sha256: 0ee3ec31313f763ea61f11b761dd5eace7e36065e4b946ba73ae435f6301e1db
+- path: changes/st-0005/evidence/artifacts/0ef5399483deff43e5de306e66ba053a136e53abd547bc6cb7d3bc78882bd6f4-synthetic-data-factory.v1.yaml
+  bytes: 5425
+  sha256: 0ef5399483deff43e5de306e66ba053a136e53abd547bc6cb7d3bc78882bd6f4
+- path: changes/st-0005/evidence/artifacts/0f3e0ec8043f1d6326c2c6fbf7ab76e7cf81fa56fd953d9ba92de2e788593f12-Makefile
+  bytes: 24005
+  sha256: 0f3e0ec8043f1d6326c2c6fbf7ab76e7cf81fa56fd953d9ba92de2e788593f12
 - path: changes/st-0005/evidence/artifacts/0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f-build_st0006_decision_gates.py
   bytes: 66037
   sha256: 0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f
 - path: changes/st-0005/evidence/artifacts/0ff924b0dea696db0117035c0077a77053d8724c76796866263163bb18b9e1fb-postgres_service.sh
   bytes: 12609
   sha256: 0ff924b0dea696db0117035c0077a77053d8724c76796866263163bb18b9e1fb
+- path: changes/st-0005/evidence/artifacts/107bfff2c8e1c96852c91e15c21137e967dbd61091ce0318f50172fd57682631-ST-0103-local-20260801.yaml
+  bytes: 10323
+  sha256: 107bfff2c8e1c96852c91e15c21137e967dbd61091ce0318f50172fd57682631
+- path: changes/st-0005/evidence/artifacts/1155942168373361579bd157b19be0d7babc7c260eb3389df21688eb455a567b-database-roles-grants.v1.yaml
+  bytes: 4705
+  sha256: 1155942168373361579bd157b19be0d7babc7c260eb3389df21688eb455a567b
+- path: changes/st-0005/evidence/artifacts/119615d05fabd20aeb55c1dcb2bc33d4ec5144227dce408d8fb874a07691bf3c-ST-0306-local-20260805.yaml
+  bytes: 13949
+  sha256: 119615d05fabd20aeb55c1dcb2bc33d4ec5144227dce408d8fb874a07691bf3c
 - path: changes/st-0005/evidence/artifacts/127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989-decision-gate-policy.v1.yaml
   bytes: 1064
   sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
+- path: changes/st-0005/evidence/artifacts/12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c-manifest.yaml
+  bytes: 4848
+  sha256: 12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c
 - path: changes/st-0005/evidence/artifacts/1302a3276c76ff0d9267ab20d24f6fa5cd44c82aa38d8dcf68b9acf3832b8243-manifest.yaml
   bytes: 4848
   sha256: 1302a3276c76ff0d9267ab20d24f6fa5cd44c82aa38d8dcf68b9acf3832b8243
+- path: changes/st-0005/evidence/artifacts/134716a00687b348bf8b9c2e58d290c8f0cd2c2b8cdea5ce5be620eea8dca58c-build_st0307_migration_fixtures.py
+  bytes: 34771
+  sha256: 134716a00687b348bf8b9c2e58d290c8f0cd2c2b8cdea5ce5be620eea8dca58c
+- path: changes/st-0005/evidence/artifacts/136a5d6918d399932cd42db01b94b936b2a173317f171160a0d55c5defdfbee3-test_compiled_task_registry.py
+  bytes: 20256
+  sha256: 136a5d6918d399932cd42db01b94b936b2a173317f171160a0d55c5defdfbee3
 - path: changes/st-0005/evidence/artifacts/13b894498cbb2871cb007dea6a075361b994742daa803f15fe0f7e239462957b-ST-0103.md
   bytes: 7898
   sha256: 13b894498cbb2871cb007dea6a075361b994742daa803f15fe0f7e239462957b
@@ -368,6 +581,12 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482-manifest.yaml
   bytes: 43970
   sha256: 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+- path: changes/st-0005/evidence/artifacts/148ae19e590f82a9aab0c05420c14af1657b68d71c4780868f0c5ade15fe02f4-202608030004-predecessor.v1.sql
+  bytes: 1348
+  sha256: 148ae19e590f82a9aab0c05420c14af1657b68d71c4780868f0c5ade15fe02f4
+- path: changes/st-0005/evidence/artifacts/14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32-postgresql18.py
+  bytes: 8049
+  sha256: 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
 - path: changes/st-0005/evidence/artifacts/14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc-test_fixture.py
   bytes: 14906
   sha256: 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
@@ -383,15 +602,39 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c-ST-0302.md
   bytes: 10280
   sha256: 1675d582d57ede78ca205c9b1a0dd634d7f1ea67735b47f177c5a230fd17195c
+- path: changes/st-0005/evidence/artifacts/167cd96c5465417aacccb255aef4a157ff0e15987551d55c091ee4e29cbf3919-manifest.yaml
+  bytes: 5353
+  sha256: 167cd96c5465417aacccb255aef4a157ff0e15987551d55c091ee4e29cbf3919
+- path: changes/st-0005/evidence/artifacts/168ee7164ed7a45b65f31f598a5217c7cfbd15aedd56c99337352190ab072a80-build_st0203_queue_fake.py
+  bytes: 16428
+  sha256: 168ee7164ed7a45b65f31f598a5217c7cfbd15aedd56c99337352190ab072a80
+- path: changes/st-0005/evidence/artifacts/16b85b772063a945c0f9b86d77da60658810bbfd4bc48e256af10dc804f37b1b-publication-analytics-finance-validation.v1.sql
+  bytes: 86268
+  sha256: 16b85b772063a945c0f9b86d77da60658810bbfd4bc48e256af10dc804f37b1b
+- path: changes/st-0005/evidence/artifacts/17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c-build_st0304_domain_schemas.py
+  bytes: 79921
+  sha256: 17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c
+- path: changes/st-0005/evidence/artifacts/1859e9d6c81829695b2304d58fd3803b185831ce62ac74ef890ffa16363096da-v0.1-job-alignment.v1.sql
+  bytes: 1801
+  sha256: 1859e9d6c81829695b2304d58fd3803b185831ce62ac74ef890ffa16363096da
 - path: changes/st-0005/evidence/artifacts/185bfb91b11c430d22830781acc7e87edaf9d7430972838598d0ef14974d90c5-ST-0303.md
   bytes: 5413
   sha256: 185bfb91b11c430d22830781acc7e87edaf9d7430972838598d0ef14974d90c5
 - path: changes/st-0005/evidence/artifacts/187aa997d11344cf386d8e451c8e180aceeb5b87693f82b0db4cfb1ba4892939-toolchain.test.ts
   bytes: 3363
   sha256: 187aa997d11344cf386d8e451c8e180aceeb5b87693f82b0db4cfb1ba4892939
+- path: changes/st-0005/evidence/artifacts/187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d-RAOS_03_data_catalog_v0.1.yaml
+  bytes: 704317
+  sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
 - path: changes/st-0005/evidence/artifacts/1919d6dd0dd6090f954f26198aae4a6315f8c53f9c95c2e9919dc55fddfe8ebb-ST-0302-local-20260803.yaml
   bytes: 14362
   sha256: 1919d6dd0dd6090f954f26198aae4a6315f8c53f9c95c2e9919dc55fddfe8ebb
+- path: changes/st-0005/evidence/artifacts/19785320e51da45e83a4107c3fbe61eebf035bfb4af030e788a913c666169e36-test_contract.py
+  bytes: 7609
+  sha256: 19785320e51da45e83a4107c3fbe61eebf035bfb4af030e788a913c666169e36
+- path: changes/st-0005/evidence/artifacts/198d6b0704cd6b3220a4d07c84e397d4a53159b06a2f7c586f6b671c98d368fb-test_catalog.py
+  bytes: 11918
+  sha256: 198d6b0704cd6b3220a4d07c84e397d4a53159b06a2f7c586f6b671c98d368fb
 - path: changes/st-0005/evidence/artifacts/1999438dd17e4b5619e95c1c7f0972a822c574c180b5907174ba46cdcbd98712-ST-0204.md
   bytes: 5340
   sha256: 1999438dd17e4b5619e95c1c7f0972a822c574c180b5907174ba46cdcbd98712
@@ -404,18 +647,30 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/1a20f87f9fdd174ccd6fccada520e54e2634cf31c38c31b5401f6818ef43d8e5-.gitattributes
   bytes: 92
   sha256: 1a20f87f9fdd174ccd6fccada520e54e2634cf31c38c31b5401f6818ef43d8e5
+- path: changes/st-0005/evidence/artifacts/1a7b102fb3758b59c97f7e8208f5f21bb94ff500d86fa1b5dd38b9e821d64edb-test_chatgpt_pro_orchestrator.py
+  bytes: 60531
+  sha256: 1a7b102fb3758b59c97f7e8208f5f21bb94ff500d86fa1b5dd38b9e821d64edb
 - path: changes/st-0005/evidence/artifacts/1adebeb2e86c42777eb7f00ca3799dc4befe79a5874c35b310735d72a13bdaed-node_inventory.mjs
   bytes: 8123
   sha256: 1adebeb2e86c42777eb7f00ca3799dc4befe79a5874c35b310735d72a13bdaed
+- path: changes/st-0005/evidence/artifacts/1aff2c7e80be4c058a072dbc140a9451b9ef0ac7ff88ad2c31a81dc25e88e02b-test_postgresql.py
+  bytes: 30252
+  sha256: 1aff2c7e80be4c058a072dbc140a9451b9ef0ac7ff88ad2c31a81dc25e88e02b
 - path: changes/st-0005/evidence/artifacts/1b8ccc6e34234b17536f2dd0eb3597142a32bd108438cd42471a5fca4c1a07ef-openapi-3.1-schema-2025-11-23.json
   bytes: 33452
   sha256: 1b8ccc6e34234b17536f2dd0eb3597142a32bd108438cd42471a5fca4c1a07ef
+- path: changes/st-0005/evidence/artifacts/1c63270463dfa4afd6eb329d265ed18dd94dc9c9c6bace96796f4863be9772b8-ST-0304.md
+  bytes: 2125
+  sha256: 1c63270463dfa4afd6eb329d265ed18dd94dc9c9c6bace96796f4863be9772b8
 - path: changes/st-0005/evidence/artifacts/1d00137988b8808cd6f30c7b7944bfc976f07dc70c7db7fc42cd21fffb3f6b76-ST-0102.md
   bytes: 6378
   sha256: 1d00137988b8808cd6f30c7b7944bfc976f07dc70c7db7fc42cd21fffb3f6b76
 - path: changes/st-0005/evidence/artifacts/1d2f71d46998dcc86c67a2273df297684097959d520bd4351dc00d2819344c72-tsconfig.json
   bytes: 222
   sha256: 1d2f71d46998dcc86c67a2273df297684097959d520bd4351dc00d2819344c72
+- path: changes/st-0005/evidence/artifacts/1db1b770547bb26a09b209a29f55b808a225b1ad1ea247001db2038bf69fa975-ST-0701.md
+  bytes: 3532
+  sha256: 1db1b770547bb26a09b209a29f55b808a225b1ad1ea247001db2038bf69fa975
 - path: changes/st-0005/evidence/artifacts/1e1c1681814865ba05238862b7eb7999a39b87a7844acb66d36e8b50d817d152-run_network_denied.sh
   bytes: 3821
   sha256: 1e1c1681814865ba05238862b7eb7999a39b87a7844acb66d36e8b50d817d152
@@ -425,12 +680,21 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/1e51183578c04e8e2d298811383a6113a07c1926c7cf4eb1bbf2212c85e3465a-README.md
   bytes: 1326
   sha256: 1e51183578c04e8e2d298811383a6113a07c1926c7cf4eb1bbf2212c85e3465a
+- path: changes/st-0005/evidence/artifacts/1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7-bullet_list.schema.json
+  bytes: 4586
+  sha256: 1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7
 - path: changes/st-0005/evidence/artifacts/1e89d6b5db0cd9131fc94762ff9cfc20d8d5f7be767efad6b47dc9bcb58f07b1-runner.py
   bytes: 58616
   sha256: 1e89d6b5db0cd9131fc94762ff9cfc20d8d5f7be767efad6b47dc9bcb58f07b1
 - path: changes/st-0005/evidence/artifacts/1eb9409d35febf94c67720a68d2fbfb78d49e1d17b968f1da1aa002e5e48cc4f-manifest.yaml
   bytes: 4436
   sha256: 1eb9409d35febf94c67720a68d2fbfb78d49e1d17b968f1da1aa002e5e48cc4f
+- path: changes/st-0005/evidence/artifacts/1eef2841690bd67e3f5489d1f6c092c687c81cfd987ddd32eb45ad640b1df65d-Makefile
+  bytes: 25064
+  sha256: 1eef2841690bd67e3f5489d1f6c092c687c81cfd987ddd32eb45ad640b1df65d
+- path: changes/st-0005/evidence/artifacts/1ff69444290e0bc291929209964d45fa4a0afe0523e623af388bf4b0282c4b69-INV-103-missing-methodology-block.json
+  bytes: 4009
+  sha256: 1ff69444290e0bc291929209964d45fa4a0afe0523e623af388bf4b0282c4b69
 - path: changes/st-0005/evidence/artifacts/20390aba67e8977bf67a5279762555f2a23fbea5b3c9fb714e2e6b58138d0be5-workspace-layout.json
   bytes: 6434
   sha256: 20390aba67e8977bf67a5279762555f2a23fbea5b3c9fb714e2e6b58138d0be5
@@ -440,9 +704,15 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/20f056bd5b8459827139e30b9f88583fd7ff063a0173cdb6fadd4baab3680005-ST-0105.md
   bytes: 11432
   sha256: 20f056bd5b8459827139e30b9f88583fd7ff063a0173cdb6fadd4baab3680005
+- path: changes/st-0005/evidence/artifacts/20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312-rich_text.schema.json
+  bytes: 6212
+  sha256: 20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312
 - path: changes/st-0005/evidence/artifacts/21f64dd70676e58af93bbe54e9ae62eab1f21124fb7b488a2059f80fb15155ae-ST-0301.md
   bytes: 4825
   sha256: 21f64dd70676e58af93bbe54e9ae62eab1f21124fb7b488a2059f80fb15155ae
+- path: changes/st-0005/evidence/artifacts/220756ac1c1fc4a9873c4625e4cb67ad5f0a295818f8c03d1972e87bb697d88f-build_st0204_config_loader.py
+  bytes: 21540
+  sha256: 220756ac1c1fc4a9873c4625e4cb67ad5f0a295818f8c03d1972e87bb697d88f
 - path: changes/st-0005/evidence/artifacts/229a3dc54bb5b2894365851c2e71d1059c2a63307465ee48e25b1991407036f1-Makefile
   bytes: 20113
   sha256: 229a3dc54bb5b2894365851c2e71d1059c2a63307465ee48e25b1991407036f1
@@ -452,12 +722,27 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/23124dacb3612d4eb5f4974b2789af7c2542b135239c111be3359599e900ff45-test_generation.py
   bytes: 12165
   sha256: 23124dacb3612d4eb5f4974b2789af7c2542b135239c111be3359599e900ff45
+- path: changes/st-0005/evidence/artifacts/2361401bdc82ede6da9b51208c11649e111d158751b36d09ee87e445b0e2b8b5-INV-104-duplicate-block-id.json
+  bytes: 4719
+  sha256: 2361401bdc82ede6da9b51208c11649e111d158751b36d09ee87e445b0e2b8b5
+- path: changes/st-0005/evidence/artifacts/237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53-ST-0701-local-20260805.yaml
+  bytes: 9227
+  sha256: 237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53
+- path: changes/st-0005/evidence/artifacts/237d9c6369926402c8afe12de8f5a58c8bda76af36e735dbda0475ba336e0fb8-ST-0307.md
+  bytes: 2270
+  sha256: 237d9c6369926402c8afe12de8f5a58c8bda76af36e735dbda0475ba336e0fb8
 - path: changes/st-0005/evidence/artifacts/239bbfad44f532185927b396a0f582abfce4d351e2364555af2d53bd8db9a39f-README.md
   bytes: 32025
   sha256: 239bbfad44f532185927b396a0f582abfce4d351e2364555af2d53bd8db9a39f
 - path: changes/st-0005/evidence/artifacts/23f11dc30623cb4ad49e134acd9b74d1677e01e094e7585d7d4bc8395543dd1e-test_generation.py
   bytes: 9691
   sha256: 23f11dc30623cb4ad49e134acd9b74d1677e01e094e7585d7d4bc8395543dd1e
+- path: changes/st-0005/evidence/artifacts/2407fe0821317d5fed2c0638f8874155957c49efe3564b4a63e16c73abd6520e-test_chatgpt_pro_orchestrator.py
+  bytes: 74766
+  sha256: 2407fe0821317d5fed2c0638f8874155957c49efe3564b4a63e16c73abd6520e
+- path: changes/st-0005/evidence/artifacts/2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d-RAOS_09_implementation_slices_v1.0.yaml
+  bytes: 2440
+  sha256: 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d
 - path: changes/st-0005/evidence/artifacts/24a3333d5398d34894959fd0b235581d09808ac9aa6d028d84624bdb21880314-local-queue.v1.yaml
   bytes: 3727
   sha256: 24a3333d5398d34894959fd0b235581d09808ac9aa6d028d84624bdb21880314
@@ -467,6 +752,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/250c0e6bedd2170490eca1614499c68b7bb1671ebec8c8d4854372ece33c41aa-test_contract.py
   bytes: 9983
   sha256: 250c0e6bedd2170490eca1614499c68b7bb1671ebec8c8d4854372ece33c41aa
+- path: changes/st-0005/evidence/artifacts/251a0a7018715bb60d10733bf53a494ab98dc89a801be34d9cb82a8c9cd90fad-README.md
+  bytes: 17897
+  sha256: 251a0a7018715bb60d10733bf53a494ab98dc89a801be34d9cb82a8c9cd90fad
 - path: changes/st-0005/evidence/artifacts/25aaa88d65aef69ce4d9aa55201c1c913d4b0be86738c60602b65d4f724919ca-test_generation.py
   bytes: 6924
   sha256: 25aaa88d65aef69ce4d9aa55201c1c913d4b0be86738c60602b65d4f724919ca
@@ -476,24 +764,48 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/2671af34b8a3063cdf739491f0f519f72fad84712be07bd2c1b7791b420b2dc9-tsconfig.json
   bytes: 229
   sha256: 2671af34b8a3063cdf739491f0f519f72fad84712be07bd2c1b7791b420b2dc9
+- path: changes/st-0005/evidence/artifacts/26a88d5a333885a0aed20d176b7b362bcfa4ba7a19f2e6a86fda3a6935d11e2c-ST-0306.md
+  bytes: 2687
+  sha256: 26a88d5a333885a0aed20d176b7b362bcfa4ba7a19f2e6a86fda3a6935d11e2c
+- path: changes/st-0005/evidence/artifacts/26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167-test_commands_and_docs.py
+  bytes: 11741
+  sha256: 26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167
 - path: changes/st-0005/evidence/artifacts/271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c-202607300015_content_migrate_batch.sql
   bytes: 5567
   sha256: 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
 - path: changes/st-0005/evidence/artifacts/2723fced17fe2392ac4753f609dfb8060126188eaa5ef42489ddbd0712693933-test_postgresql.py
   bytes: 47426
   sha256: 2723fced17fe2392ac4753f609dfb8060126188eaa5ef42489ddbd0712693933
+- path: changes/st-0005/evidence/artifacts/275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b-test_postgresql.py
+  bytes: 50377
+  sha256: 275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b
 - path: changes/st-0005/evidence/artifacts/275fcdf4bb9f23e4b2deb74fb42876f04b0e4c9d40e81613cd115121c5bfe66b-test_workflow_contract.py
   bytes: 11962
   sha256: 275fcdf4bb9f23e4b2deb74fb42876f04b0e4c9d40e81613cd115121c5bfe66b
+- path: changes/st-0005/evidence/artifacts/28306bcd001865b7860ee3adf0708c221513709d1071b7df6c3f9ba7ff5415f0-test_workflow_contract.py
+  bytes: 24657
+  sha256: 28306bcd001865b7860ee3adf0708c221513709d1071b7df6c3f9ba7ff5415f0
 - path: changes/st-0005/evidence/artifacts/287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff-manifest.yaml
   bytes: 12220
   sha256: 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
 - path: changes/st-0005/evidence/artifacts/28da8a9ed2263395afd039f16b35f65db4e21953064e8a0a6295c9bad1c25c56-test_runner.py
   bytes: 20814
   sha256: 28da8a9ed2263395afd039f16b35f65db4e21953064e8a0a6295c9bad1c25c56
+- path: changes/st-0005/evidence/artifacts/2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f-publication-analytics-finance.v1.yaml
+  bytes: 10006
+  sha256: 2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f
+- path: changes/st-0005/evidence/artifacts/29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c-RAOS_09_attribution_policy_v1.0.yaml
+  bytes: 1563
+  sha256: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
 - path: changes/st-0005/evidence/artifacts/297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e-manifest.json
   bytes: 30329
   sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+- path: changes/st-0005/evidence/artifacts/297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92-manifest.yaml
+  bytes: 14830
+  sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+- path: changes/st-0005/evidence/artifacts/29c7b0a930d16746a2314a36b02412361b4ea8bfb8f668b0a04ad6388c131d71-test_negative_cases.py
+  bytes: 14261
+  sha256: 29c7b0a930d16746a2314a36b02412361b4ea8bfb8f668b0a04ad6388c131d71
 - path: changes/st-0005/evidence/artifacts/2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3-runtime.py
   bytes: 35671
   sha256: 2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3
@@ -506,39 +818,96 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/2a91225fa1bc429a4e27b39e5a05f4e8828d95e55644bf039abb61f588e4db44-prettier.config.mjs
   bytes: 264
   sha256: 2a91225fa1bc429a4e27b39e5a05f4e8828d95e55644bf039abb61f588e4db44
+- path: changes/st-0005/evidence/artifacts/2aae849de862a8391610e1991619af3559568c770fff13d2f3670d94030a714e-ST-0107-github-governance-snapshot.yaml
+  bytes: 8541
+  sha256: 2aae849de862a8391610e1991619af3559568c770fff13d2f3670d94030a714e
+- path: changes/st-0005/evidence/artifacts/2b12d0396500ca31a268b389866dbb2bd081608b7f0e31f28232d5afab6b1505-conftest.py
+  bytes: 6628
+  sha256: 2b12d0396500ca31a268b389866dbb2bd081608b7f0e31f28232d5afab6b1505
+- path: changes/st-0005/evidence/artifacts/2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d-editorial-review-decision.schema.json
+  bytes: 2142
+  sha256: 2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d
 - path: changes/st-0005/evidence/artifacts/2b4a3fd6e7ec3a1ae9b096a6ed76de04a687f599e49fb145c0b74ecfd75fca96-test_contract.py
   bytes: 5905
   sha256: 2b4a3fd6e7ec3a1ae9b096a6ed76de04a687f599e49fb145c0b74ecfd75fca96
 - path: changes/st-0005/evidence/artifacts/2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a-PULL_REQUEST_TEMPLATE.md
   bytes: 1783
   sha256: 2b66eb421571090c059eaa3b45f68f7b81dc1fcc33456d9eaf93649901472a0a
+- path: changes/st-0005/evidence/artifacts/2b7eaf20108494c857fe942a390a0d8557cbda2547e547bf8f5a039231d651cf-content_ast.py
+  bytes: 434
+  sha256: 2b7eaf20108494c857fe942a390a0d8557cbda2547e547bf8f5a039231d651cf
 - path: changes/st-0005/evidence/artifacts/2c6123dceddf12eed1eb107556d01b18dd76bb7832152682c1bcdf860d9c9cb8-README.md
   bytes: 10288
   sha256: 2c6123dceddf12eed1eb107556d01b18dd76bb7832152682c1bcdf860d9c9cb8
+- path: changes/st-0005/evidence/artifacts/2e13fdbb98f8ab5eaf402db107999fd55ed0d2f931cd2bc0929d57c45fff0d9c-use_case_recommendation.json
+  bytes: 5144
+  sha256: 2e13fdbb98f8ab5eaf402db107999fd55ed0d2f931cd2bc0929d57c45fff0d9c
 - path: changes/st-0005/evidence/artifacts/2e268a72f2d35471c04f78f2cad0f967dc9687a668481858c7706b1ae1bc6522-__init__.py
   bytes: 282
   sha256: 2e268a72f2d35471c04f78f2cad0f967dc9687a668481858c7706b1ae1bc6522
+- path: changes/st-0005/evidence/artifacts/2e26d2656aa62be2095efb325942bcb6b1c04d14c3f358ffd9ab5887626cf7a3-INV-005-unknown-block.json
+  bytes: 4826
+  sha256: 2e26d2656aa62be2095efb325942bcb6b1c04d14c3f358ffd9ab5887626cf7a3
 - path: changes/st-0005/evidence/artifacts/2ece50f24abd906541623f448776d001bd6e03a4ee7a8d1a5a5477c4cd996529-conftest.py
   bytes: 8444
   sha256: 2ece50f24abd906541623f448776d001bd6e03a4ee7a8d1a5a5477c4cd996529
+- path: changes/st-0005/evidence/artifacts/2eea5551a7ef84036395d001112ede670f73e769f1bd5404ddca3c7e6b40dfef-test_contract.py
+  bytes: 4067
+  sha256: 2eea5551a7ef84036395d001112ede670f73e769f1bd5404ddca3c7e6b40dfef
+- path: changes/st-0005/evidence/artifacts/2f07d42cde9be80a5ae16bb060c88f6e0ce4f65b204d54d903e0de705d88a488-manifest.yaml
+  bytes: 15338
+  sha256: 2f07d42cde9be80a5ae16bb060c88f6e0ce4f65b204d54d903e0de705d88a488
+- path: changes/st-0005/evidence/artifacts/2f5c8bd36c8db015cb428d934ee1f1ad747c9c6ea4b68dcc889f1c23ff0253ba-migration-upgrade-fixtures.v1.yaml
+  bytes: 14170
+  sha256: 2f5c8bd36c8db015cb428d934ee1f1ad747c9c6ea4b68dcc889f1c23ff0253ba
+- path: changes/st-0005/evidence/artifacts/2f697e0a5aab56a5caa612ec7ba431e9a3c491372b646635af7d5d6f0d3b2e37-INV-010-invalid-heading-level.json
+  bytes: 4946
+  sha256: 2f697e0a5aab56a5caa612ec7ba431e9a3c491372b646635af7d5d6f0d3b2e37
 - path: changes/st-0005/evidence/artifacts/2fac28cdd185b3070e0cc5616953948a92e05b50ebebae70bfc3323765b287b7-docker-compose.yml
   bytes: 1400
   sha256: 2fac28cdd185b3070e0cc5616953948a92e05b50ebebae70bfc3323765b287b7
 - path: changes/st-0005/evidence/artifacts/30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e-conftest.py
   bytes: 740
   sha256: 30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e
+- path: changes/st-0005/evidence/artifacts/306ac3fd2282b8fad214297dcb1e7f78201403d92fd105af5030d0ff062fcb7f-test_contract_binding.py
+  bytes: 4706
+  sha256: 306ac3fd2282b8fad214297dcb1e7f78201403d92fd105af5030d0ff062fcb7f
+- path: changes/st-0005/evidence/artifacts/308be530a333cedc90b4a6422eeba044cf07f22a01a56968fe6dfdbc50279bf9-ST-0103.md
+  bytes: 14712
+  sha256: 308be530a333cedc90b4a6422eeba044cf07f22a01a56968fe6dfdbc50279bf9
+- path: changes/st-0005/evidence/artifacts/30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6-README.md
+  bytes: 2404
+  sha256: 30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6
 - path: changes/st-0005/evidence/artifacts/30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a-202607300009_ai_governance_migrate_batch.sql
   bytes: 14563
   sha256: 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
 - path: changes/st-0005/evidence/artifacts/3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4-README.md
   bytes: 1962
   sha256: 3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4
+- path: changes/st-0005/evidence/artifacts/316b2d195fb3366fefb991c84cdd2618530455fcc58f9d140fa699f66cf46d8a-__init__.py
+  bytes: 730
+  sha256: 316b2d195fb3366fefb991c84cdd2618530455fcc58f9d140fa699f66cf46d8a
+- path: changes/st-0005/evidence/artifacts/3182eaa04238281f0d99233f311f749524b948264bdfcaf5181974655302ad82-test_generation.py
+  bytes: 7892
+  sha256: 3182eaa04238281f0d99233f311f749524b948264bdfcaf5181974655302ad82
 - path: changes/st-0005/evidence/artifacts/31a33c464cfc33b8a06c514eb43c1806693245f55a5f2da4ad86e3b15c87b45e-scan_secrets.py
   bytes: 29233
   sha256: 31a33c464cfc33b8a06c514eb43c1806693245f55a5f2da4ad86e3b15c87b45e
+- path: changes/st-0005/evidence/artifacts/31bec8c705dfd1bfaeddba6334457c47b717f17602bcbaf0e9e5135519a5d9d1-README.md
+  bytes: 1636
+  sha256: 31bec8c705dfd1bfaeddba6334457c47b717f17602bcbaf0e9e5135519a5d9d1
+- path: changes/st-0005/evidence/artifacts/323d21b6a6baaafb30d9d5a505defc57782294770136b30c6f4dd5e44ff054b0-ST-0101.md
+  bytes: 96216
+  sha256: 323d21b6a6baaafb30d9d5a505defc57782294770136b30c6f4dd5e44ff054b0
 - path: changes/st-0005/evidence/artifacts/324a062bb99e482626fde5dfe9bbcca214f65eb6b8f07281f8b345698dab40f0-README.md
   bytes: 460
   sha256: 324a062bb99e482626fde5dfe9bbcca214f65eb6b8f07281f8b345698dab40f0
+- path: changes/st-0005/evidence/artifacts/3361103bff6e17961b89f2f386e75bda5360e6da0f6a50193d091a2c75c38a96-ST-0801.md
+  bytes: 6881
+  sha256: 3361103bff6e17961b89f2f386e75bda5360e6da0f6a50193d091a2c75c38a96
+- path: changes/st-0005/evidence/artifacts/33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07-ai-task-registry.v1.json
+  bytes: 77286
+  sha256: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
 - path: changes/st-0005/evidence/artifacts/33be33b53b9a14c7e9ad686f8dd08834a2bc8211e6fab82577f78811219fde32-iam-ops-validation.v1.sql
   bytes: 138643
   sha256: 33be33b53b9a14c7e9ad686f8dd08834a2bc8211e6fab82577f78811219fde32
@@ -551,6 +920,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/3426315bb61467310fcc1fbf5710b3c15cbe3d6608004022d1ec5ac6c177c8e4-pyrightconfig.json
   bytes: 524
   sha256: 3426315bb61467310fcc1fbf5710b3c15cbe3d6608004022d1ec5ac6c177c8e4
+- path: changes/st-0005/evidence/artifacts/347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad-seo-metadata.schema.json
+  bytes: 2269
+  sha256: 347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad
 - path: changes/st-0005/evidence/artifacts/3524f57f3261ae54d7ae62a2fc57d5c02f72f0ad9a91b895a57bf2aec2fa7f30-Makefile
   bytes: 21176
   sha256: 3524f57f3261ae54d7ae62a2fc57d5c02f72f0ad9a91b895a57bf2aec2fa7f30
@@ -563,6 +935,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/35bbe2059363745b373546627cf68282233cfe50dbde5cecefdcf360ddd140c0-codegen_toolchain.sh
   bytes: 4633
   sha256: 35bbe2059363745b373546627cf68282233cfe50dbde5cecefdcf360ddd140c0
+- path: changes/st-0005/evidence/artifacts/366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec-methodology.schema.json
+  bytes: 4898
+  sha256: 366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec
 - path: changes/st-0005/evidence/artifacts/3675f9518f1711435a192b219f1e3f44897d8becf105d313ea56d0fdfbe5a408-catalog.py
   bytes: 17915
   sha256: 3675f9518f1711435a192b219f1e3f44897d8becf105d313ea56d0fdfbe5a408
@@ -575,15 +950,33 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/373684bf7b2e6fbcbc984a5283888d58e1ee3d5ff34f5b5d6d494a002c601b13-manifest.yaml
   bytes: 11532
   sha256: 373684bf7b2e6fbcbc984a5283888d58e1ee3d5ff34f5b5d6d494a002c601b13
+- path: changes/st-0005/evidence/artifacts/37b6633f2d330ed420bbc3cdb5a7308e98f9ad74d61a320739b7745f972c5783-model_generation_capacity_difference.json
+  bytes: 5237
+  sha256: 37b6633f2d330ed420bbc3cdb5a7308e98f9ad74d61a320739b7745f972c5783
+- path: changes/st-0005/evidence/artifacts/37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6-evidence_note.schema.json
+  bytes: 4617
+  sha256: 37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6
 - path: changes/st-0005/evidence/artifacts/380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25-202607300010_ai_governance_contract_prepare.sql
   bytes: 25954
   sha256: 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+- path: changes/st-0005/evidence/artifacts/3839312aac427b34024d16493a98e79ff2d45764bbd74863cacf89bc2bba9b1f-ST-0305.md
+  bytes: 2267
+  sha256: 3839312aac427b34024d16493a98e79ff2d45764bbd74863cacf89bc2bba9b1f
 - path: changes/st-0005/evidence/artifacts/389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c-local-object-storage.v1.yaml
   bytes: 7152
   sha256: 389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c
 - path: changes/st-0005/evidence/artifacts/38b0667f2b6ea85697f1a640f8d98469f91fbef2c088d104c78878998d6bba8f-README.md
   bytes: 42480
   sha256: 38b0667f2b6ea85697f1a640f8d98469f91fbef2c088d104c78878998d6bba8f
+- path: changes/st-0005/evidence/artifacts/38cac947aa865120b04277d4206ecb65af3212ff54543fe59a1f4830a912f2c2-README.md
+  bytes: 2425
+  sha256: 38cac947aa865120b04277d4206ecb65af3212ff54543fe59a1f4830a912f2c2
+- path: changes/st-0005/evidence/artifacts/38fd34902c7fefb111dfe98f4eaa460a1ab04c5442195d5c840f7f0e13429417-ST-0107-local-20260802.yaml
+  bytes: 8415
+  sha256: 38fd34902c7fefb111dfe98f4eaa460a1ab04c5442195d5c840f7f0e13429417
+- path: changes/st-0005/evidence/artifacts/39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f-numbered_list.schema.json
+  bytes: 4592
+  sha256: 39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f
 - path: changes/st-0005/evidence/artifacts/3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab-.python-version
   bytes: 7
   sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
@@ -596,6 +989,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/3b09e2b7a06ed008e030466bfccdcdff04730c08973a0a00e4b3c059e1d3db0d-validate_ci_hydration.py
   bytes: 63267
   sha256: 3b09e2b7a06ed008e030466bfccdcdff04730c08973a0a00e4b3c059e1d3db0d
+- path: changes/st-0005/evidence/artifacts/3c149cad6591bac86f2db8cb3d60afae52efad5051f1996c1d3605315c8acdeb-manifest.yaml
+  bytes: 5785
+  sha256: 3c149cad6591bac86f2db8cb3d60afae52efad5051f1996c1d3605315c8acdeb
 - path: changes/st-0005/evidence/artifacts/3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab-202607300006_job_state_guarded_downgrade.sql
   bytes: 2522
   sha256: 3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab
@@ -605,6 +1001,18 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828-package.json
   bytes: 1850
   sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+- path: changes/st-0005/evidence/artifacts/3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4-manifest.yaml
+  bytes: 5976
+  sha256: 3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4
+- path: changes/st-0005/evidence/artifacts/3d289aec5889f04f545d9f606f078c318df6e4c689ddd24f4a50e05461dceec3-README.md
+  bytes: 51180
+  sha256: 3d289aec5889f04f545d9f606f078c318df6e4c689ddd24f4a50e05461dceec3
+- path: changes/st-0005/evidence/artifacts/3d48f5a3490151a22328b533d595ba21694be689280e42adc388814499f4557c-test_st0305_publication_analytics_finance.py
+  bytes: 1832
+  sha256: 3d48f5a3490151a22328b533d595ba21694be689280e42adc388814499f4557c
+- path: changes/st-0005/evidence/artifacts/3d806436b7ed91f25e0396e15b914dda7258b743589ec4dc6c3f4272c9fcb38d-10-domain-physical.sql
+  bytes: 72195
+  sha256: 3d806436b7ed91f25e0396e15b914dda7258b743589ec4dc6c3f4272c9fcb38d
 - path: changes/st-0005/evidence/artifacts/3dd7e7fddb2365daa75ae90d2b6a9a496440f512d83f0acbc4ee4a5a5f518962-manifest.yaml
   bytes: 7725
   sha256: 3dd7e7fddb2365daa75ae90d2b6a9a496440f512d83f0acbc4ee4a5a5f518962
@@ -614,21 +1022,57 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/3e0e839c52626d0251b16ebbf8066f25d541d47ff97ca53875b20605239b36b7-ST-0001.md
   bytes: 6375
   sha256: 3e0e839c52626d0251b16ebbf8066f25d541d47ff97ca53875b20605239b36b7
+- path: changes/st-0005/evidence/artifacts/3e2ff8be008e1335de78194c2d79ac90203e21f58baa76f3fbf289a9cb689783-ST-0801.md
+  bytes: 6369
+  sha256: 3e2ff8be008e1335de78194c2d79ac90203e21f58baa76f3fbf289a9cb689783
 - path: changes/st-0005/evidence/artifacts/3e9d512cb3aa5844b21adde1649a8f88368cd1f7c8eb3ecc7139d3971a0d7b45-README.md
   bytes: 29093
   sha256: 3e9d512cb3aa5844b21adde1649a8f88368cd1f7c8eb3ecc7139d3971a0d7b45
+- path: changes/st-0005/evidence/artifacts/3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b-pros_cons.schema.json
+  bytes: 5440
+  sha256: 3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b
+- path: changes/st-0005/evidence/artifacts/3f2501b76887b11662e647979de1b29502d194e778fd5d4460e8f8ad6a3c18e9-Makefile
+  bytes: 25698
+  sha256: 3f2501b76887b11662e647979de1b29502d194e778fd5d4460e8f8ad6a3c18e9
 - path: changes/st-0005/evidence/artifacts/400387c698f4ef41a89069889eeb27a5cd51fcdc71644f7254860bb443ab0d7a-foundation-baseline-validation.v1.sql
   bytes: 9287
   sha256: 400387c698f4ef41a89069889eeb27a5cd51fcdc71644f7254860bb443ab0d7a
+- path: changes/st-0005/evidence/artifacts/402aef1eca7b8fc2165bac2938f71b57e1eca862f429e6dc7da85057d76accbd-test_workflow_contract.py
+  bytes: 20743
+  sha256: 402aef1eca7b8fc2165bac2938f71b57e1eca862f429e6dc7da85057d76accbd
 - path: changes/st-0005/evidence/artifacts/4047f942e41865afac8477b7ab5f58407430961d3361ceb4313adaf1798f8042-pyproject.toml
   bytes: 923
   sha256: 4047f942e41865afac8477b7ab5f58407430961d3361ceb4313adaf1798f8042
 - path: changes/st-0005/evidence/artifacts/40682ddf054c979724d03b83c315c91b489e6b24dff0018408c05ea0c68b32fd-ST-0103.md
   bytes: 9957
   sha256: 40682ddf054c979724d03b83c315c91b489e6b24dff0018408c05ea0c68b32fd
+- path: changes/st-0005/evidence/artifacts/408fa7c5d4803d7a066de1daab1572847c966fc6e491b2805dd318c0e49bd1c2-test_generation.py
+  bytes: 9970
+  sha256: 408fa7c5d4803d7a066de1daab1572847c966fc6e491b2805dd318c0e49bd1c2
+- path: changes/st-0005/evidence/artifacts/4091d22999fb484d1ebc3f5316f4de17ac3b6050d36105aeffe7833a996a6a23-ST-0307.md
+  bytes: 3139
+  sha256: 4091d22999fb484d1ebc3f5316f4de17ac3b6050d36105aeffe7833a996a6a23
+- path: changes/st-0005/evidence/artifacts/4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb-runner.py
+  bytes: 214267
+  sha256: 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+- path: changes/st-0005/evidence/artifacts/413262cf31c3b2856270b31a2d7e92b0ac72e280db739b23e1d28e460fba1bfd-ST-0203-local-20260803-v2.yaml
+  bytes: 3446
+  sha256: 413262cf31c3b2856270b31a2d7e92b0ac72e280db739b23e1d28e460fba1bfd
+- path: changes/st-0005/evidence/artifacts/41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208-domain-catalog.v1.json
+  bytes: 967320
+  sha256: 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208
+- path: changes/st-0005/evidence/artifacts/42326d4b240d0784b7a08daeb8f2f38da1fab0ee2a900cc3569d316d5f3f78cd-ST-0103.md
+  bytes: 12664
+  sha256: 42326d4b240d0784b7a08daeb8f2f38da1fab0ee2a900cc3569d316d5f3f78cd
+- path: changes/st-0005/evidence/artifacts/4284eb6af68bedad5b1bd9f41348df8282ae4fd35920474fc9f90b955c8b6186-conftest.py
+  bytes: 393
+  sha256: 4284eb6af68bedad5b1bd9f41348df8282ae4fd35920474fc9f90b955c8b6186
 - path: changes/st-0005/evidence/artifacts/43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1-ASYNCAPI-LICENSE.txt
   bytes: 11356
   sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+- path: changes/st-0005/evidence/artifacts/43cde305a084c686183f6d27930069ad6bfba809b027d5e093edeef55c607447-README.md
+  bytes: 8101
+  sha256: 43cde305a084c686183f6d27930069ad6bfba809b027d5e093edeef55c607447
 - path: changes/st-0005/evidence/artifacts/441e5fb781e6e9f7f0f4ac0306f3fe29e817265c205a6ca1eed1d9289d04dc7d-test_commands_and_docs.py
   bytes: 10722
   sha256: 441e5fb781e6e9f7f0f4ac0306f3fe29e817265c205a6ca1eed1d9289d04dc7d
@@ -647,12 +1091,36 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/4645a289bda7364a9e4dedd71570b9a8910ff6f98a6480577c88643c691cd9a6-ST-0203-local-20260802.yaml
   bytes: 9618
   sha256: 4645a289bda7364a9e4dedd71570b9a8910ff6f98a6480577c88643c691cd9a6
+- path: changes/st-0005/evidence/artifacts/46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc-internal_links.schema.json
+  bytes: 4647
+  sha256: 46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc
+- path: changes/st-0005/evidence/artifacts/4705d3acd921d54b49510cea003172d144dd99bdf21c292de4bc88bdfe7573dc-test_chatgpt_pro_orchestrator.py
+  bytes: 75861
+  sha256: 4705d3acd921d54b49510cea003172d144dd99bdf21c292de4bc88bdfe7573dc
+- path: changes/st-0005/evidence/artifacts/472690c8ca8080e3e3c0e294e40ea31b30c7d9314daa4cd5ee83a4841d439825-202608030006_database_roles.py
+  bytes: 10745
+  sha256: 472690c8ca8080e3e3c0e294e40ea31b30c7d9314daa4cd5ee83a4841d439825
+- path: changes/st-0005/evidence/artifacts/47dc2be6ba47964cb1c42a179b79d0ea5b65ab5d8d9004db46b31d528fc7512d-ST-0701.md
+  bytes: 3232
+  sha256: 47dc2be6ba47964cb1c42a179b79d0ea5b65ab5d8d9004db46b31d528fc7512d
+- path: changes/st-0005/evidence/artifacts/47f74c9d4cd0e86df21f1274364d698f61850e88c50958bdc4847bbeb7eb6d37-chatgpt_pro_orchestrator.py
+  bytes: 113851
+  sha256: 47f74c9d4cd0e86df21f1274364d698f61850e88c50958bdc4847bbeb7eb6d37
+- path: changes/st-0005/evidence/artifacts/48017f422cb30ef744eb52cd7b92ed3564619d9bedbc6502f6632637e266e9a1-INV-006-faq-schema-enabled.json
+  bytes: 5045
+  sha256: 48017f422cb30ef744eb52cd7b92ed3564619d9bedbc6502f6632637e266e9a1
+- path: changes/st-0005/evidence/artifacts/48a7d7ab69506228d60da640d0466fed3be02cb84068f79fe7c20a9c61475ab2-test_runner.py
+  bytes: 32098
+  sha256: 48a7d7ab69506228d60da640d0466fed3be02cb84068f79fe7c20a9c61475ab2
 - path: changes/st-0005/evidence/artifacts/48ac2332ef36256ef819e1ace06efced91416312fe12a5610580bad6c6d24cde-manifest.yaml
   bytes: 8372
   sha256: 48ac2332ef36256ef819e1ace06efced91416312fe12a5610580bad6c6d24cde
 - path: changes/st-0005/evidence/artifacts/491b9cbd2a9435c0ee442482514c4eaf4b1d4305c5e6d834abe4a7009fc4348b-test_manifest_contract.py
   bytes: 7170
   sha256: 491b9cbd2a9435c0ee442482514c4eaf4b1d4305c5e6d834abe4a7009fc4348b
+- path: changes/st-0005/evidence/artifacts/492c3439c0a891da2bf259aa800c9347c1dc84e6f564ace89c2464f8918522d2-ST-0105-local-20260802.yaml
+  bytes: 13456
+  sha256: 492c3439c0a891da2bf259aa800c9347c1dc84e6f564ace89c2464f8918522d2
 - path: changes/st-0005/evidence/artifacts/4940a6403abd59850ed870e48678ba258b59d393af31613780caeb7b5a1d2213-README.md
   bytes: 3248
   sha256: 4940a6403abd59850ed870e48678ba258b59d393af31613780caeb7b5a1d2213
@@ -668,6 +1136,12 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/49f22688be24044ea08a5d86ffaff4fb226016d886441f6c39867123eb875664-pyproject.toml
   bytes: 1022
   sha256: 49f22688be24044ea08a5d86ffaff4fb226016d886441f6c39867123eb875664
+- path: changes/st-0005/evidence/artifacts/4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082-ST-0305-local-20260805-v2.yaml
+  bytes: 6670
+  sha256: 4a0a04a6b94bf00768a77e0339edcb6b59cbe12f7101ee0f7aa2b71876ed6082
+- path: changes/st-0005/evidence/artifacts/4a3c029980e8c27957fac2291e7b0a8efb81eaf1faa74dee4e757b0836e7ba30-04-domain-physical.sql
+  bytes: 72392
+  sha256: 4a3c029980e8c27957fac2291e7b0a8efb81eaf1faa74dee4e757b0836e7ba30
 - path: changes/st-0005/evidence/artifacts/4a3cf90495811c3a63eb22d061ab20e7e019c66fa074c137a24fc343d913b3da-ST-0302.md
   bytes: 3172
   sha256: 4a3cf90495811c3a63eb22d061ab20e7e019c66fa074c137a24fc343d913b3da
@@ -680,6 +1154,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/4ad983a0a8c415d67cf25351f1cb037f959750622bb4a4e79e3c824dc8ff7ab6-README.md
   bytes: 3259
   sha256: 4ad983a0a8c415d67cf25351f1cb037f959750622bb4a4e79e3c824dc8ff7ab6
+- path: changes/st-0005/evidence/artifacts/4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d-RAOS_13_story_backlog_v1.0.yaml
+  bytes: 71458
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
 - path: changes/st-0005/evidence/artifacts/4b0fe8dc6d88e787a37f5844d49f2e0e66ccc3d11f355f683b509a17f337ed1d-conftest.py
   bytes: 2579
   sha256: 4b0fe8dc6d88e787a37f5844d49f2e0e66ccc3d11f355f683b509a17f337ed1d
@@ -689,21 +1166,42 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/4c073e7fde788346a4329b4dfdbd19763db86a2abbd4b21c9b74d0484cb34617-chatgpt_pro_workflow.py
   bytes: 27150
   sha256: 4c073e7fde788346a4329b4dfdbd19763db86a2abbd4b21c9b74d0484cb34617
+- path: changes/st-0005/evidence/artifacts/4c2c7e847d731a03ea0a4495b81ca37f7e3a8e97ee2e9262021b0eb9ce7648db-README.md
+  bytes: 17171
+  sha256: 4c2c7e847d731a03ea0a4495b81ca37f7e3a8e97ee2e9262021b0eb9ce7648db
+- path: changes/st-0005/evidence/artifacts/4c5a77f9f71cda3fc47d2ffa83a68860a9cfe5d3218c2ce0d43cccb0273c7d94-test_generation.py
+  bytes: 20464
+  sha256: 4c5a77f9f71cda3fc47d2ffa83a68860a9cfe5d3218c2ce0d43cccb0273c7d94
+- path: changes/st-0005/evidence/artifacts/4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58-ST-0305-local-20260805.yaml
+  bytes: 16745
+  sha256: 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
 - path: changes/st-0005/evidence/artifacts/4e0e7dd8d2e66fb43614a91474039c048b098a2783bf3724459b1994c722ea05-Makefile
   bytes: 15160
   sha256: 4e0e7dd8d2e66fb43614a91474039c048b098a2783bf3724459b1994c722ea05
+- path: changes/st-0005/evidence/artifacts/4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24-update_notice.schema.json
+  bytes: 4676
+  sha256: 4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24
 - path: changes/st-0005/evidence/artifacts/4eb0f90e4459e729312aafa3ef6f3b5e4bc2d688c9fe9c3f614d4dcf30eb2430-catalog.py
   bytes: 18329
   sha256: 4eb0f90e4459e729312aafa3ef6f3b5e4bc2d688c9fe9c3f614d4dcf30eb2430
+- path: changes/st-0005/evidence/artifacts/4ede5f64c41feaf6e7d5f8b086565728436a2a3a6d2edd943601f07d6b77e087-database-roles-validation.v1.sql
+  bytes: 26924
+  sha256: 4ede5f64c41feaf6e7d5f8b086565728436a2a3a6d2edd943601f07d6b77e087
 - path: changes/st-0005/evidence/artifacts/4fd2601278a0aeac3ae2584aaca2cd2ed412dd6d49b598978997efbb5db4a044-test_ci_wrapper.py
   bytes: 9154
   sha256: 4fd2601278a0aeac3ae2584aaca2cd2ed412dd6d49b598978997efbb5db4a044
 - path: changes/st-0005/evidence/artifacts/50331e9a0d42d09fb479e181fd869a2b8e712cf34785e78d63f767060a920038-test_commands_and_docs.py
   bytes: 10110
   sha256: 50331e9a0d42d09fb479e181fd869a2b8e712cf34785e78d63f767060a920038
+- path: changes/st-0005/evidence/artifacts/50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae-Makefile
+  bytes: 26913
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
 - path: changes/st-0005/evidence/artifacts/506ac1bb650ed20668a77a2958d5edc1bdd6482c3ad18a5f559e1d9fbeb8c05f-test_determinism_and_safety.py
   bytes: 28086
   sha256: 506ac1bb650ed20668a77a2958d5edc1bdd6482c3ad18a5f559e1d9fbeb8c05f
+- path: changes/st-0005/evidence/artifacts/509688ae490597535501d516c30c9146858a0670ec96e29b12d1b1e2f5ae5df9-design-handoff.answer-now-generating.v1.yaml
+  bytes: 6603
+  sha256: 509688ae490597535501d516c30c9146858a0670ec96e29b12d1b1e2f5ae5df9
 - path: changes/st-0005/evidence/artifacts/50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527-object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -713,6 +1211,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/518acde22dd389944e2903da45d5abb2949a3fa84bbc28dcaee9555c7e50fd89-test_contract.py
   bytes: 10253
   sha256: 518acde22dd389944e2903da45d5abb2949a3fa84bbc28dcaee9555c7e50fd89
+- path: changes/st-0005/evidence/artifacts/525d0129275441455f3f4a57c2e7aa78ba0b2f01b69246e9d66a9f58a27999b9-test_generation.py
+  bytes: 12640
+  sha256: 525d0129275441455f3f4a57c2e7aa78ba0b2f01b69246e9d66a9f58a27999b9
 - path: changes/st-0005/evidence/artifacts/52d36ebfeb8f31f930e8f21b3c1484befd34d777771cacdfb59909468abaf594-manifest.yaml
   bytes: 5785
   sha256: 52d36ebfeb8f31f930e8f21b3c1484befd34d777771cacdfb59909468abaf594
@@ -722,6 +1223,12 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/53ab2467d53812a1718358e445cd8862d2079b084729e50df739005ba22bb8ce-README.md
   bytes: 4579
   sha256: 53ab2467d53812a1718358e445cd8862d2079b084729e50df739005ba22bb8ce
+- path: changes/st-0005/evidence/artifacts/53bc1d39f25ad327dddad0321a49e9e694d25770c83136310691ca91eff60899-conftest.py
+  bytes: 393
+  sha256: 53bc1d39f25ad327dddad0321a49e9e694d25770c83136310691ca91eff60899
+- path: changes/st-0005/evidence/artifacts/540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a-RAOS_07_integration_design_v1.0.md
+  bytes: 7943
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
 - path: changes/st-0005/evidence/artifacts/54224c04bbda9718e64b27d9c32b5b15166659184be40cc4477585060f95d504-test_runner.py
   bytes: 28850
   sha256: 54224c04bbda9718e64b27d9c32b5b15166659184be40cc4477585060f95d504
@@ -731,33 +1238,78 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef-contract-repository.v0.4.json
   bytes: 65443
   sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+- path: changes/st-0005/evidence/artifacts/551428e3c72809128b290caafd2dceab6a27abe3aa904777c160d3519c5d016a-synthetic-fixtures.v1.json
+  bytes: 9322
+  sha256: 551428e3c72809128b290caafd2dceab6a27abe3aa904777c160d3519c5d016a
+- path: changes/st-0005/evidence/artifacts/559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a-product_card.schema.json
+  bytes: 4924
+  sha256: 559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a
 - path: changes/st-0005/evidence/artifacts/5633b01e4f660a048e57ca4501a6a7e66f4aeca8412ff36f8644e68d4e04006e-runtime-config.v1.schema.json
   bytes: 2035
   sha256: 5633b01e4f660a048e57ca4501a6a7e66f4aeca8412ff36f8644e68d4e04006e
+- path: changes/st-0005/evidence/artifacts/56befd01653fd06bb47cade73066fb04964e18f5812f76a1ff94c82c85d620e2-README.md
+  bytes: 48390
+  sha256: 56befd01653fd06bb47cade73066fb04964e18f5812f76a1ff94c82c85d620e2
 - path: changes/st-0005/evidence/artifacts/56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293-object_storage_service.sh
   bytes: 15876
   sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
+- path: changes/st-0005/evidence/artifacts/571c433c2f17da43f2bc262e48a4d223f72f6cd41368f276b8ce4774d10975eb-ST-0101-local-20260805-v5.yaml
+  bytes: 4404
+  sha256: 571c433c2f17da43f2bc262e48a4d223f72f6cd41368f276b8ce4774d10975eb
+- path: changes/st-0005/evidence/artifacts/5783b9c20d4b2c6a47ac0fa8703e78a0ac35dd1829840b5dd1a6bd6b48a8a16a-manifest.yaml
+  bytes: 14830
+  sha256: 5783b9c20d4b2c6a47ac0fa8703e78a0ac35dd1829840b5dd1a6bd6b48a8a16a
 - path: changes/st-0005/evidence/artifacts/580267bcd708b7651656a2f7edd838d1b5832b4f25fc5753947aca3aeda61faf-test_workflow_contract.py
   bytes: 11938
   sha256: 580267bcd708b7651656a2f7edd838d1b5832b4f25fc5753947aca3aeda61faf
+- path: changes/st-0005/evidence/artifacts/58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6-README.md
+  bytes: 4093
+  sha256: 58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6
+- path: changes/st-0005/evidence/artifacts/59280642fc73e64998be4e5dbbfdba766ee38493bc7b270df94f7a2113341045-test_workflow_contract.py
+  bytes: 22318
+  sha256: 59280642fc73e64998be4e5dbbfdba766ee38493bc7b270df94f7a2113341045
 - path: changes/st-0005/evidence/artifacts/595cdeb0963323b11a99afb2d419cba68339fad140b7fae3c18a9db9ee21493b-test_commands_and_docs.py
   bytes: 10525
   sha256: 595cdeb0963323b11a99afb2d419cba68339fad140b7fae3c18a9db9ee21493b
 - path: changes/st-0005/evidence/artifacts/59827b4d2f7b02a4dd6db61d6fed7a400bf3bd199bf4dd1e337b53d10cdbf0d3-test_generation.py
   bytes: 8391
   sha256: 59827b4d2f7b02a4dd6db61d6fed7a400bf3bd199bf4dd1e337b53d10cdbf0d3
+- path: changes/st-0005/evidence/artifacts/59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0-RAOS_10_data_classification_v1.0.yaml
+  bytes: 1063
+  sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+- path: changes/st-0005/evidence/artifacts/59c99e4d9ee73110414684404ead48a0ebfe7a358eade9677ad23b9f0b3b65a3-conftest.py
+  bytes: 776
+  sha256: 59c99e4d9ee73110414684404ead48a0ebfe7a358eade9677ad23b9f0b3b65a3
+- path: changes/st-0005/evidence/artifacts/5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1-paragraph.schema.json
+  bytes: 4222
+  sha256: 5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1
+- path: changes/st-0005/evidence/artifacts/5b15472a83535e78e37710af730840711e2634db6e33fb4e43582de5222435e4-build_st0305_publication_analytics_finance.py
+  bytes: 68879
+  sha256: 5b15472a83535e78e37710af730840711e2634db6e33fb4e43582de5222435e4
+- path: changes/st-0005/evidence/artifacts/5b1a5dcc7a84d4961c665baee7ccdbba4b68fc4ab3a08887e70c6fe7f3fadeba-ST-0101.md
+  bytes: 72589
+  sha256: 5b1a5dcc7a84d4961c665baee7ccdbba4b68fc4ab3a08887e70c6fe7f3fadeba
 - path: changes/st-0005/evidence/artifacts/5b611787d081428f78ada3ad35182cc413d257b25fc3d1a957ee396a486839e9-test_cli.py
   bytes: 2723
   sha256: 5b611787d081428f78ada3ad35182cc413d257b25fc3d1a957ee396a486839e9
 - path: changes/st-0005/evidence/artifacts/5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458-manifest.yaml
   bytes: 82151
   sha256: 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+- path: changes/st-0005/evidence/artifacts/5bed7ac276b36da1ddc7aa89632e1c71dc886a709d9c3366f53d46518dd5652e-ST-0205.md
+  bytes: 2541
+  sha256: 5bed7ac276b36da1ddc7aa89632e1c71dc886a709d9c3366f53d46518dd5652e
 - path: changes/st-0005/evidence/artifacts/5d4c18eba6f4f03b73e6134a81bb426c34611e486a5acc690e7f5d116affb114-test_toolchain_contract.py
   bytes: 11014
   sha256: 5d4c18eba6f4f03b73e6134a81bb426c34611e486a5acc690e7f5d116affb114
+- path: changes/st-0005/evidence/artifacts/5d85c1b578d04d35409d227b6e5adf7c30daafc0691ac63914bf1c6ee43588d0-test_contract.py
+  bytes: 6688
+  sha256: 5d85c1b578d04d35409d227b6e5adf7c30daafc0691ac63914bf1c6ee43588d0
 - path: changes/st-0005/evidence/artifacts/5df78661629d4ac57a0e16dd8cef8cf29ae453dc34dd66f274ac9bc1ee500d81-node_inventory.mjs
   bytes: 8204
   sha256: 5df78661629d4ac57a0e16dd8cef8cf29ae453dc34dd66f274ac9bc1ee500d81
+- path: changes/st-0005/evidence/artifacts/5e58d09d99f973459972d6bfac64706af311df08cccf9526fcc700b1bd4906dc-synthetic-data-factory.v1.yaml
+  bytes: 5425
+  sha256: 5e58d09d99f973459972d6bfac64706af311df08cccf9526fcc700b1bd4906dc
 - path: changes/st-0005/evidence/artifacts/5ed8fbae37861b8965e6735a6e501f35e38fd391b50869f57eddf9bc790e0161-local-queue.v1.yaml
   bytes: 3727
   sha256: 5ed8fbae37861b8965e6735a6e501f35e38fd391b50869f57eddf9bc790e0161
@@ -785,6 +1337,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9-ST-0301-local-20260803.yaml
   bytes: 19616
   sha256: 6062499565fb381da72b9b1f9d91ec5f1cfaa0727700b8594b5dd0e066c407d9
+- path: changes/st-0005/evidence/artifacts/6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11-RAOS_06_article_type_catalog_v0.1.yaml
+  bytes: 7135
+  sha256: 6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11
 - path: changes/st-0005/evidence/artifacts/610631d8f8ff5cd0400d9615237252767d1a48528425289e7d0966b2769093f0-ST-0106.md
   bytes: 8242
   sha256: 610631d8f8ff5cd0400d9615237252767d1a48528425289e7d0966b2769093f0
@@ -803,48 +1358,114 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/62a60465fd304cf4abc42c86cb22950a5665aceef3e65898a694c2e8112d1e32-foundation-catalog.v1.json
   bytes: 3303
   sha256: 62a60465fd304cf4abc42c86cb22950a5665aceef3e65898a694c2e8112d1e32
+- path: changes/st-0005/evidence/artifacts/62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104-test_st0305_publication_analytics_finance.py
+  bytes: 2360
+  sha256: 62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104
+- path: changes/st-0005/evidence/artifacts/62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde-test_cli.py
+  bytes: 2723
+  sha256: 62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde
+- path: changes/st-0005/evidence/artifacts/632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407-202608030004_domain_schemas.py
+  bytes: 106632
+  sha256: 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
+- path: changes/st-0005/evidence/artifacts/6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626-RAOS_07_canonical_decisions_v1.0.yaml
+  bytes: 3955
+  sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+- path: changes/st-0005/evidence/artifacts/634f60af84bf5e5eca38c05015dc97fde2f7573eb9cfe3f944f1aaaf53777306-manifest.yaml
+  bytes: 8660
+  sha256: 634f60af84bf5e5eca38c05015dc97fde2f7573eb9cfe3f944f1aaaf53777306
+- path: changes/st-0005/evidence/artifacts/6396e0197f8ea0a2ffb030460fb80bfb6b9e5ad791334706a1e4424681a6c081-condition_filtering.json
+  bytes: 4726
+  sha256: 6396e0197f8ea0a2ffb030460fb80bfb6b9e5ad791334706a1e4424681a6c081
+- path: changes/st-0005/evidence/artifacts/6426260acb608da19832965e8e2ddd7726745f3a8ef860fdf44bce22bba08d80-ST-0204.md
+  bytes: 6118
+  sha256: 6426260acb608da19832965e8e2ddd7726745f3a8ef860fdf44bce22bba08d80
+- path: changes/st-0005/evidence/artifacts/64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc-intended_reader.schema.json
+  bytes: 4627
+  sha256: 64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc
+- path: changes/st-0005/evidence/artifacts/64ef6097bbb9da4c51c7dfb4f64504928d743228240341dc57efe8ef9179946f-test_postgresql.py
+  bytes: 31404
+  sha256: 64ef6097bbb9da4c51c7dfb4f64504928d743228240341dc57efe8ef9179946f
+- path: changes/st-0005/evidence/artifacts/64f168c0683e11de07be131de738a3f6f406687ee3d962ab56e025ccb51c6841-test_factory.py
+  bytes: 2509
+  sha256: 64f168c0683e11de07be131de738a3f6f406687ee3d962ab56e025ccb51c6841
 - path: changes/st-0005/evidence/artifacts/65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0-pyproject.toml
   bytes: 1095
   sha256: 65162413acbbb18aa26bf1aa296d51523a8b9eb942bda68954f9267aebe28be0
+- path: changes/st-0005/evidence/artifacts/65672cf387803215aec399bf6bb2b7661f1b3d4eabec8a27928ec78f98beb149-INV-008-comparison-hide-unknown.json
+  bytes: 4720
+  sha256: 65672cf387803215aec399bf6bb2b7661f1b3d4eabec8a27928ec78f98beb149
 - path: changes/st-0005/evidence/artifacts/66974fa564e15395472c662f57673a80c9b2b4fa69287108bb700c92f03966c2-ST-0302-local-20260803-v3.yaml
   bytes: 2946
   sha256: 66974fa564e15395472c662f57673a80c9b2b4fa69287108bb700c92f03966c2
+- path: changes/st-0005/evidence/artifacts/67440751659f8089e7594a549aaa5f031a5e94e29107197f3bc9d1bfaea30592-README.md
+  bytes: 49156
+  sha256: 67440751659f8089e7594a549aaa5f031a5e94e29107197f3bc9d1bfaea30592
 - path: changes/st-0005/evidence/artifacts/67691ec3cbea53023055c5bbfb42b101e4e757e6344f5b92d83996ff60b1ac5a-test_commands_and_docs.py
   bytes: 6255
   sha256: 67691ec3cbea53023055c5bbfb42b101e4e757e6344f5b92d83996ff60b1ac5a
+- path: changes/st-0005/evidence/artifacts/6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb-build_st0305_publication_analytics_finance.py
+  bytes: 69283
+  sha256: 6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb
 - path: changes/st-0005/evidence/artifacts/67f9377fe9f2b1b96df3486afd48aa7b493f33703b3d0e812cc4716650d19efc-conftest.py
   bytes: 8089
   sha256: 67f9377fe9f2b1b96df3486afd48aa7b493f33703b3d0e812cc4716650d19efc
+- path: changes/st-0005/evidence/artifacts/681e2c8526cf9b2a9cd3dbef1cc26450e9f2e841c5669659e499643351738a3c-INV-007-disclosure-removable.json
+  bytes: 4718
+  sha256: 681e2c8526cf9b2a9cd3dbef1cc26450e9f2e841c5669659e499643351738a3c
+- path: changes/st-0005/evidence/artifacts/687fd00f51c27a1181c213d044412f4c676d96b34e35f0590f0edcd5b4221699-ST-0306.md
+  bytes: 5506
+  sha256: 687fd00f51c27a1181c213d044412f4c676d96b34e35f0590f0edcd5b4221699
 - path: changes/st-0005/evidence/artifacts/68d57519c8b88eea73cd988ca981af2dc6be9f9adf68f878acf35df168d6a0c5-AGENTS.md
   bytes: 4363
   sha256: 68d57519c8b88eea73cd988ca981af2dc6be9f9adf68f878acf35df168d6a0c5
+- path: changes/st-0005/evidence/artifacts/68d78ea99542946ec22238651248d254826db51a15a726e39def1562641bef8e-README.md
+  bytes: 45866
+  sha256: 68d78ea99542946ec22238651248d254826db51a15a726e39def1562641bef8e
 - path: changes/st-0005/evidence/artifacts/698c03c031c760c222f0b5bd772306c20a6c957cadc43cb55da1730653f52f3e-pr-governance.v1.yaml
   bytes: 6178
   sha256: 698c03c031c760c222f0b5bd772306c20a6c957cadc43cb55da1730653f52f3e
+- path: changes/st-0005/evidence/artifacts/6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e-structured-data-manifest.schema.json
+  bytes: 1813
+  sha256: 6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e
 - path: changes/st-0005/evidence/artifacts/6be2153a471974f353afd99f21a8facded33a1511f7ac24cd633bf62ac53d03c-test_privacy.py
   bytes: 20004
   sha256: 6be2153a471974f353afd99f21a8facded33a1511f7ac24cd633bf62ac53d03c
 - path: changes/st-0005/evidence/artifacts/6c1ab60959182777a25cfd47ebbc5a51d56e61d93d966e23e8d4c65cfa564b0d-README.md
   bytes: 43930
   sha256: 6c1ab60959182777a25cfd47ebbc5a51d56e61d93d966e23e8d4c65cfa564b0d
+- path: changes/st-0005/evidence/artifacts/6cc8d7aff5d9e71b5e34c39259b81cbefd6fbbeb3d8ccc6a7128712230d10725-manifest.yaml
+  bytes: 14830
+  sha256: 6cc8d7aff5d9e71b5e34c39259b81cbefd6fbbeb3d8ccc6a7128712230d10725
 - path: changes/st-0005/evidence/artifacts/6cccc4dc9d4f12edd963fe9ac35b69c5553c654152ca205db6ce251b39290701-env.py
   bytes: 3690
   sha256: 6cccc4dc9d4f12edd963fe9ac35b69c5553c654152ca205db6ce251b39290701
+- path: changes/st-0005/evidence/artifacts/6cebf09249f027662557038f8367bdc586030197911046be242543cd43502ae5-09-domain-physical.sql
+  bytes: 72161
+  sha256: 6cebf09249f027662557038f8367bdc586030197911046be242543cd43502ae5
 - path: changes/st-0005/evidence/artifacts/6d77921637abae7e3c6bdfe5eec1cc6da53b6a89ac6e4660687124373f3ebcfa-conftest.py
   bytes: 1387
   sha256: 6d77921637abae7e3c6bdfe5eec1cc6da53b6a89ac6e4660687124373f3ebcfa
+- path: changes/st-0005/evidence/artifacts/6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89-comparison_table.schema.json
+  bytes: 5284
+  sha256: 6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89
 - path: changes/st-0005/evidence/artifacts/6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779-202607300004_job_state_contract_prepare.sql
   bytes: 4468
   sha256: 6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779
 - path: changes/st-0005/evidence/artifacts/6e8097d6140d0f63c8d3870eb7af9ca50d6e7db36ce47f167ea1d1037dbe97a5-ST-0201.md
   bytes: 3644
   sha256: 6e8097d6140d0f63c8d3870eb7af9ca50d6e7db36ce47f167ea1d1037dbe97a5
+- path: changes/st-0005/evidence/artifacts/6e841fec773550b80ae7058e52fe979d9ef78a44e2e8452e6db7bdda1b1ad7ec-test_postgresql.py
+  bytes: 38128
+  sha256: 6e841fec773550b80ae7058e52fe979d9ef78a44e2e8452e6db7bdda1b1ad7ec
 - path: changes/st-0005/evidence/artifacts/6e86e41c49b6634c69ad07bfe77ed32dded77da9c84777429029e3a92b79a72d-test_contract.py
   bytes: 10321
   sha256: 6e86e41c49b6634c69ad07bfe77ed32dded77da9c84777429029e3a92b79a72d
 - path: changes/st-0005/evidence/artifacts/6ee7eb6d044220e99907a0ab7b6f62691f8d8558eb439a9430c53b743b0e866a-AGENTS.md
   bytes: 16487
   sha256: 6ee7eb6d044220e99907a0ab7b6f62691f8d8558eb439a9430c53b743b0e866a
+- path: changes/st-0005/evidence/artifacts/6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460-RAOS_09_analytics_attribution_design_v1.0.md
+  bytes: 7299
+  sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
 - path: changes/st-0005/evidence/artifacts/6f38215e669a80ebd108fdcc7dce6ccbe60466440d886a756022ed5924302e6e-AGENTS.md
   bytes: 8858
   sha256: 6f38215e669a80ebd108fdcc7dce6ccbe60466440d886a756022ed5924302e6e
@@ -872,6 +1493,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/710ac4674eaad7bda8cf9440530d2fdfce11bf691fc95c07161ca0e9fc154fb2-test_hydration_validator.py
   bytes: 26043
   sha256: 710ac4674eaad7bda8cf9440530d2fdfce11bf691fc95c07161ca0e9fc154fb2
+- path: changes/st-0005/evidence/artifacts/716a34d7aea5cf290fc9be715e6851c5d8120ad1677f0ad5bbc79a3a212192e6-test_block_matrix.py
+  bytes: 7855
+  sha256: 716a34d7aea5cf290fc9be715e6851c5d8120ad1677f0ad5bbc79a3a212192e6
 - path: changes/st-0005/evidence/artifacts/720253f63523cf18e83d550ffaec62918751b5dd186b8cdca562e3ba5e5fb92b-conftest.py
   bytes: 1701
   sha256: 720253f63523cf18e83d550ffaec62918751b5dd186b8cdca562e3ba5e5fb92b
@@ -881,9 +1505,15 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/73771b301eb6d0b0c20a8bb83ed7d8a428e4d4fe3a099ab7e38aa07f2e54a3ae-.node-version
   bytes: 8
   sha256: 73771b301eb6d0b0c20a8bb83ed7d8a428e4d4fe3a099ab7e38aa07f2e54a3ae
+- path: changes/st-0005/evidence/artifacts/739cc2ecae7e49702da5e36be6e37eaebaa7a535be4a623c79dee86926212870-07-domain-physical.sql
+  bytes: 72283
+  sha256: 739cc2ecae7e49702da5e36be6e37eaebaa7a535be4a623c79dee86926212870
 - path: changes/st-0005/evidence/artifacts/742ee4c7d8efda914f75c7851e407558952b77d832f481ee2779af6f72d77446-test_chatgpt_pro_workflow.py
   bytes: 18658
   sha256: 742ee4c7d8efda914f75c7851e407558952b77d832f481ee2779af6f72d77446
+- path: changes/st-0005/evidence/artifacts/7483b434740f95e9ad75d3e9717298781faf22f390c502af655b1ce7590e5a21-build_st0801_content_ast.py
+  bytes: 44115
+  sha256: 7483b434740f95e9ad75d3e9717298781faf22f390c502af655b1ce7590e5a21
 - path: changes/st-0005/evidence/artifacts/75a57160af7d22911e3c32b8e81a1b1075888826ba033163cd540809c5f5b126-ST-0101-local-20260801.yaml
   bytes: 5328
   sha256: 75a57160af7d22911e3c32b8e81a1b1075888826ba033163cd540809c5f5b126
@@ -896,6 +1526,15 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/768f04b316e6ac624108f65277ff2c7aa6850cb26e96177e598d5a7dd316ee97-Makefile
   bytes: 21790
   sha256: 768f04b316e6ac624108f65277ff2c7aa6850cb26e96177e598d5a7dd316ee97
+- path: changes/st-0005/evidence/artifacts/76a810f4470542bc1e2e16ae096661e74a06a2b76474e07815e52fbc2937d94f-test_cli.py
+  bytes: 2723
+  sha256: 76a810f4470542bc1e2e16ae096661e74a06a2b76474e07815e52fbc2937d94f
+- path: changes/st-0005/evidence/artifacts/76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918-disclosure_slot.schema.json
+  bytes: 4279
+  sha256: 76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918
+- path: changes/st-0005/evidence/artifacts/7776ecd1e082804a03b3cd9121a682994f08d9aed48e959eb0a365123a23a695-manifest.yaml
+  bytes: 32586
+  sha256: 7776ecd1e082804a03b3cd9121a682994f08d9aed48e959eb0a365123a23a695
 - path: changes/st-0005/evidence/artifacts/7782e9914f730dba3a24e625aa2fa60c32f9d45bde134b7a33921bb4aaf5784b-build_st0107_pr_governance.py
   bytes: 44510
   sha256: 7782e9914f730dba3a24e625aa2fa60c32f9d45bde134b7a33921bb4aaf5784b
@@ -905,6 +1544,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/7888580935038a2f7a18d43c469ad4c8d6a4beec6acfc72995fff2710972a1c5-bootstrap_workspace.py
   bytes: 28087
   sha256: 7888580935038a2f7a18d43c469ad4c8d6a4beec6acfc72995fff2710972a1c5
+- path: changes/st-0005/evidence/artifacts/78f4a982941b03659c6617b5b151d02edbcf4d98d7117159c48f3920f91ea6bd-ST-0307-local-20260805.yaml
+  bytes: 16943
+  sha256: 78f4a982941b03659c6617b5b151d02edbcf4d98d7117159c48f3920f91ea6bd
 - path: changes/st-0005/evidence/artifacts/79398040a01d02a46e985ba37e9895c815097dbe2e3790172a58607c3d1384d8-test_wrapper.py
   bytes: 17361
   sha256: 79398040a01d02a46e985ba37e9895c815097dbe2e3790172a58607c3d1384d8
@@ -920,18 +1562,45 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728-conftest.py
   bytes: 212
   sha256: 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+- path: changes/st-0005/evidence/artifacts/7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68-content_ast.py
+  bytes: 14026
+  sha256: 7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68
+- path: changes/st-0005/evidence/artifacts/7cc84464c19a3dabd38a1612c1f061ac8cb393b3a8db7b66d58cef5e4d859c35-ST-0101-local-20260805-v4.yaml
+  bytes: 4316
+  sha256: 7cc84464c19a3dabd38a1612c1f061ac8cb393b3a8db7b66d58cef5e4d859c35
+- path: changes/st-0005/evidence/artifacts/7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b-RAOS_11_test_suite_catalog_v1.0.yaml
+  bytes: 11395
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
 - path: changes/st-0005/evidence/artifacts/7d3e19991074e5dafb68c3a75748a943ebfb24bdb5829faebc3601dd0d722635-manifest.yaml
   bytes: 4436
   sha256: 7d3e19991074e5dafb68c3a75748a943ebfb24bdb5829faebc3601dd0d722635
 - path: changes/st-0005/evidence/artifacts/7d9e3a5d83fd20b10009c51f2589645e78a57eb6522ee9e060e9f6332d034a85-workspace-layout.json
   bytes: 6679
   sha256: 7d9e3a5d83fd20b10009c51f2589645e78a57eb6522ee9e060e9f6332d034a85
+- path: changes/st-0005/evidence/artifacts/7e1ce307a5751fc5d95e4c06652f0e6fb41b8bdc29c583ea9cd0a3d83d1fa3a5-domain-validation.v1.sql
+  bytes: 18856
+  sha256: 7e1ce307a5751fc5d95e4c06652f0e6fb41b8bdc29c583ea9cd0a3d83d1fa3a5
+- path: changes/st-0005/evidence/artifacts/7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac-test_postgresql.py
+  bytes: 32924
+  sha256: 7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac
 - path: changes/st-0005/evidence/artifacts/7e56b9a858f835c9d3304d743cff5bfd96443c4670e01daac57d8fa77e1d2e53-package.json
   bytes: 255
   sha256: 7e56b9a858f835c9d3304d743cff5bfd96443c4670e01daac57d8fa77e1d2e53
+- path: changes/st-0005/evidence/artifacts/7e80abc5b4d22d0c8d3aa7ec8d4a19c25decb11fc7fedf252010811273e73008-ST-0101.md
+  bytes: 13018
+  sha256: 7e80abc5b4d22d0c8d3aa7ec8d4a19c25decb11fc7fedf252010811273e73008
 - path: changes/st-0005/evidence/artifacts/7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7-manifest.json
   bytes: 250888
   sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7
+- path: changes/st-0005/evidence/artifacts/7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce-test_catalog.py
+  bytes: 11918
+  sha256: 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
+- path: changes/st-0005/evidence/artifacts/8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122-domain-schema.v1.yaml
+  bytes: 11378
+  sha256: 8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122
+- path: changes/st-0005/evidence/artifacts/808c3178536246080ab3a4394246ff76670ae65ffd14a2e2b47b87a03b1597d7-RAOS_06_implementation_slices_v0.1.yaml
+  bytes: 5524
+  sha256: 808c3178536246080ab3a4394246ff76670ae65ffd14a2e2b47b87a03b1597d7
 - path: changes/st-0005/evidence/artifacts/80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45-ci.yml
   bytes: 19528
   sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
@@ -947,6 +1616,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/81c37dcfc6fdabd9d9942e1ddadae040a24add3c1b760b80943eae0d3f10a133-gate-blocker-report.schema.json
   bytes: 48733
   sha256: 81c37dcfc6fdabd9d9942e1ddadae040a24add3c1b760b80943eae0d3f10a133
+- path: changes/st-0005/evidence/artifacts/82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357-RAOS_03_data_model_package_v0.1.zip
+  bytes: 434952
+  sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
 - path: changes/st-0005/evidence/artifacts/82acb8650986b321202e49d4ec5bb00ab2316d6be76ea5606e1f129f3fa9a90e-AGENTS.md
   bytes: 5692
   sha256: 82acb8650986b321202e49d4ec5bb00ab2316d6be76ea5606e1f129f3fa9a90e
@@ -962,18 +1634,51 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/838d311e2b6c17a07e497a0032ab3201669ad95718423ab4e3d3a7687792d39c-build_st0203_queue_fake.py
   bytes: 16428
   sha256: 838d311e2b6c17a07e497a0032ab3201669ad95718423ab4e3d3a7687792d39c
+- path: changes/st-0005/evidence/artifacts/83bd88a89d6c4eaa8503625a1a33a814d942d120b6359c21d3ef4398fc5d992c-chatgpt_pro_orchestrator.py
+  bytes: 129224
+  sha256: 83bd88a89d6c4eaa8503625a1a33a814d942d120b6359c21d3ef4398fc5d992c
+- path: changes/st-0005/evidence/artifacts/8455fe2277d5b94b8208cb6e1c61190e996114fc2a6d383dab4359ca4758fffa-migration-upgrade-fixture-catalog.v1.json
+  bytes: 11418
+  sha256: 8455fe2277d5b94b8208cb6e1c61190e996114fc2a6d383dab4359ca4758fffa
+- path: changes/st-0005/evidence/artifacts/8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489-selection_guide.json
+  bytes: 4719
+  sha256: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
+- path: changes/st-0005/evidence/artifacts/846b55421c1a9e7af12176b53ccb280750e8137f9d2337eb72755e464acbdb7e-chatgpt_pro_orchestrator.py
+  bytes: 76324
+  sha256: 846b55421c1a9e7af12176b53ccb280750e8137f9d2337eb72755e464acbdb7e
+- path: changes/st-0005/evidence/artifacts/8490e939208baf5d4f733bceee99ede44936da19921bfd3dfcfbbf5f68bbbe80-__init__.py
+  bytes: 612
+  sha256: 8490e939208baf5d4f733bceee99ede44936da19921bfd3dfcfbbf5f68bbbe80
+- path: changes/st-0005/evidence/artifacts/84a6a5bcbca2b33ab789f74aa25ad95c87a4ddc865963b4821d457086d1a6055-test_negative_cases.py
+  bytes: 5291
+  sha256: 84a6a5bcbca2b33ab789f74aa25ad95c87a4ddc865963b4821d457086d1a6055
 - path: changes/st-0005/evidence/artifacts/852746e773c2cd0ffe7c07f7533d2607aadd1c98f53273a0f0e2bac7f8e848b3-install_crash_driver.py
   bytes: 1394
   sha256: 852746e773c2cd0ffe7c07f7533d2607aadd1c98f53273a0f0e2bac7f8e848b3
+- path: changes/st-0005/evidence/artifacts/86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a-callout.schema.json
+  bytes: 4477
+  sha256: 86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a
+- path: changes/st-0005/evidence/artifacts/8676de5d93ce03a2415f3a88cce321c82025570f2f1f18338bc7aa17f4d78e1a-ST-0101.md
+  bytes: 78630
+  sha256: 8676de5d93ce03a2415f3a88cce321c82025570f2f1f18338bc7aa17f4d78e1a
 - path: changes/st-0005/evidence/artifacts/86796a956c7eda6b9c358f14f4fd2a351a0958aa6fddc114dceffe6771b07cf4-ST-0107.md
   bytes: 14121
   sha256: 86796a956c7eda6b9c358f14f4fd2a351a0958aa6fddc114dceffe6771b07cf4
+- path: changes/st-0005/evidence/artifacts/8699d7bc35b78955552a13637c952e923638f2e598885c5b3e032b0dbac7bffc-test_toolchain_contract.py
+  bytes: 5575
+  sha256: 8699d7bc35b78955552a13637c952e923638f2e598885c5b3e032b0dbac7bffc
 - path: changes/st-0005/evidence/artifacts/8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c-build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
 - path: changes/st-0005/evidence/artifacts/8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f-migration-framework.v1.yaml
   bytes: 10671
   sha256: 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
+- path: changes/st-0005/evidence/artifacts/8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a-ai-contract-registry-loader.v1.yaml
+  bytes: 3358
+  sha256: 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
+- path: changes/st-0005/evidence/artifacts/88aeda35f644aad65b18578c79b478e7b57e2204a7fab50b02454cc3995550ac-test_postgresql.py
+  bytes: 29287
+  sha256: 88aeda35f644aad65b18578c79b478e7b57e2204a7fab50b02454cc3995550ac
 - path: changes/st-0005/evidence/artifacts/8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d-script.py.mako
   bytes: 1021
   sha256: 8a1e8c74afbb2e69f75668088a2b9ba068146e0dbd2d434b217fc1d32f949a1d
@@ -986,9 +1691,21 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da-202607300011_ai_governance_contract.sql
   bytes: 24209
   sha256: 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+- path: changes/st-0005/evidence/artifacts/8b06b39a1b384628a68a6144fc0622f20023e0d6c9a452bf72e8f4b541482b40-manifest.yaml
+  bytes: 15061
+  sha256: 8b06b39a1b384628a68a6144fc0622f20023e0d6c9a452bf72e8f4b541482b40
+- path: changes/st-0005/evidence/artifacts/8bb584464f116737fb549bfb76c7571c876f634e1fa99c7a2628c5fb73a8770f-Makefile
+  bytes: 26252
+  sha256: 8bb584464f116737fb549bfb76c7571c876f634e1fa99c7a2628c5fb73a8770f
+- path: changes/st-0005/evidence/artifacts/8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05-test_postgresql.py
+  bytes: 51303
+  sha256: 8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05
 - path: changes/st-0005/evidence/artifacts/8c33d6f8fefcc597f6edfda573929c69677e9d0f2100cd0153f25980ebfc05e7-README.md
   bytes: 7965
   sha256: 8c33d6f8fefcc597f6edfda573929c69677e9d0f2100cd0153f25980ebfc05e7
+- path: changes/st-0005/evidence/artifacts/8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9-test_postgresql.py
+  bytes: 25958
+  sha256: 8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9
 - path: changes/st-0005/evidence/artifacts/8cd7b7d9b63d10971044c73238790c54bb159a9cb52747ed4f855c46e9778b93-package.json
   bytes: 70
   sha256: 8cd7b7d9b63d10971044c73238790c54bb159a9cb52747ed4f855c46e9778b93
@@ -1022,12 +1739,21 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/90429ebc4cf97d1895e9d2723298be52c2640df5b771db9f5c98aafa32161f9f-test_commands_and_docs.py
   bytes: 10465
   sha256: 90429ebc4cf97d1895e9d2723298be52c2640df5b771db9f5c98aafa32161f9f
+- path: changes/st-0005/evidence/artifacts/904a1a6576d4fc7da5807ce58454a001afd11a4c1f4cc399870fa48bcbf49c35-manifest.yaml
+  bytes: 5353
+  sha256: 904a1a6576d4fc7da5807ce58454a001afd11a4c1f4cc399870fa48bcbf49c35
 - path: changes/st-0005/evidence/artifacts/90f81083c3b6a72e17eb375c770fe7828b9d8cdea49130b951ff3aa91a4d4263-FRAMEWORK.md
   bytes: 3273
   sha256: 90f81083c3b6a72e17eb375c770fe7828b9d8cdea49130b951ff3aa91a4d4263
+- path: changes/st-0005/evidence/artifacts/9182d29cdf58d46eca5831f1e09c04dd780e750cf20afd8a0aa3c254f7867cd5-test_node_cli.py
+  bytes: 46942
+  sha256: 9182d29cdf58d46eca5831f1e09c04dd780e750cf20afd8a0aa3c254f7867cd5
 - path: changes/st-0005/evidence/artifacts/91d1bb091b7a44bca56e4a3b9fdaaa09c312dcf125a829113c460f398dc60bc8-pr-governance.v1.yaml
   bytes: 6677
   sha256: 91d1bb091b7a44bca56e4a3b9fdaaa09c312dcf125a829113c460f398dc60bc8
+- path: changes/st-0005/evidence/artifacts/922a7a7343a3e6a080b0febfe583c386cfe38e3195865d928f0fa0ccc2050ba2-test_generation.py
+  bytes: 5109
+  sha256: 922a7a7343a3e6a080b0febfe583c386cfe38e3195865d928f0fa0ccc2050ba2
 - path: changes/st-0005/evidence/artifacts/923803074a4ca5cc71289ce8c3f2582b2fd5134a3c8b7a129853ba141af48dff-test_lock_contract.py
   bytes: 7978
   sha256: 923803074a4ca5cc71289ce8c3f2582b2fd5134a3c8b7a129853ba141af48dff
@@ -1040,24 +1766,42 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/9391d92209c949a9672411e342f2d6570a110a83c6a82a5a2a8597bde90740e3-REVIEW.md
   bytes: 7708
   sha256: 9391d92209c949a9672411e342f2d6570a110a83c6a82a5a2a8597bde90740e3
+- path: changes/st-0005/evidence/artifacts/93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a-recommendation-methodology.schema.json
+  bytes: 3624
+  sha256: 93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a
 - path: changes/st-0005/evidence/artifacts/944905ea4a62bb1daaff30cadb616c58d9703ba7886b14860e152ff02f5c6d64-test_toolchain_contract.py
   bytes: 5377
   sha256: 944905ea4a62bb1daaff30cadb616c58d9703ba7886b14860e152ff02f5c6d64
+- path: changes/st-0005/evidence/artifacts/947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09-11-domain-physical.sql
+  bytes: 7630
+  sha256: 947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09
 - path: changes/st-0005/evidence/artifacts/952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e-postgresql18.py
   bytes: 8034
   sha256: 952cc1591383abf6f376f6ba46c65bee9f4e3495aeb462244de5ac00cc32107e
+- path: changes/st-0005/evidence/artifacts/958d54f1df02e79df5b970f19f33f81a87d94f5637a7c57d595d51d6bf83cf59-migration-upgrade-fixtures.v1.yaml
+  bytes: 13946
+  sha256: 958d54f1df02e79df5b970f19f33f81a87d94f5637a7c57d595d51d6bf83cf59
 - path: changes/st-0005/evidence/artifacts/9618c9ad8bab5263a1f99b924a718181f7f824b1953e116c2d98e0d1c4d1cb22-test_lock_contract.py
   bytes: 3874
   sha256: 9618c9ad8bab5263a1f99b924a718181f7f824b1953e116c2d98e0d1c4d1cb22
 - path: changes/st-0005/evidence/artifacts/96317135221e4dc3ca32d3c127fd86ef7297f42dd9889fa7bd116f3904b0866c-__init__.py
   bytes: 441
   sha256: 96317135221e4dc3ca32d3c127fd86ef7297f42dd9889fa7bd116f3904b0866c
+- path: changes/st-0005/evidence/artifacts/9731ec4db07d4bdd7eb1f4e1651c390dccfc72c5432b33d37f6a7a9de9b9b313-ST-0101-local-20260804-v3.yaml
+  bytes: 4661
+  sha256: 9731ec4db07d4bdd7eb1f4e1651c390dccfc72c5432b33d37f6a7a9de9b9b313
 - path: changes/st-0005/evidence/artifacts/97485a2c878ec0ae153df6c615f9ea77f438506d45b41366278c9c5ad519c778-manifest.yaml
   bytes: 7725
   sha256: 97485a2c878ec0ae153df6c615f9ea77f438506d45b41366278c9c5ad519c778
+- path: changes/st-0005/evidence/artifacts/978955587e2d9dce34ccac77c203f4848a0fbde6af4fc67daff46cca32e9215b-build_st0306_database_roles.py
+  bytes: 55822
+  sha256: 978955587e2d9dce34ccac77c203f4848a0fbde6af4fc67daff46cca32e9215b
 - path: changes/st-0005/evidence/artifacts/97a94d29a9e7c3339f21958bfc878c8fcde9534e1f2492c2d784d5c04563ebaf-conftest.py
   bytes: 4330
   sha256: 97a94d29a9e7c3339f21958bfc878c8fcde9534e1f2492c2d784d5c04563ebaf
+- path: changes/st-0005/evidence/artifacts/97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881-publication-content-manifest.schema.json
+  bytes: 2587
+  sha256: 97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881
 - path: changes/st-0005/evidence/artifacts/97bf4cc18221a21949dd62273008067ea9a631c188a9ba5dcbf15a83679020df-queue.py
   bytes: 5388
   sha256: 97bf4cc18221a21949dd62273008067ea9a631c188a9ba5dcbf15a83679020df
@@ -1070,9 +1814,15 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/987e905696ecb99397a5babac314ac651cf8f33ad0c4acb528f01a335c631fa3-test_contract.py
   bytes: 13622
   sha256: 987e905696ecb99397a5babac314ac651cf8f33ad0c4acb528f01a335c631fa3
+- path: changes/st-0005/evidence/artifacts/9932791eacbc305441172acd1a4197deb70ff153c41f4a7e2a4f76b6082425ad-types.gen.ts
+  bytes: 164609
+  sha256: 9932791eacbc305441172acd1a4197deb70ff153c41f4a7e2a4f76b6082425ad
 - path: changes/st-0005/evidence/artifacts/9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291-ST-0202-object-storage-provider-snapshot.yaml
   bytes: 9112
   sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
+- path: changes/st-0005/evidence/artifacts/99c44323220e25f1d281a5fa6ccda4a9249268fa7cc7d819ad5badcc960e12ab-test_revision.py
+  bytes: 4989
+  sha256: 99c44323220e25f1d281a5fa6ccda4a9249268fa7cc7d819ad5badcc960e12ab
 - path: changes/st-0005/evidence/artifacts/9b08c0020aa6a83b9834348a093323a06cb4fde4b72587393640f356dfc9c367-test_contract.py
   bytes: 8913
   sha256: 9b08c0020aa6a83b9834348a093323a06cb4fde4b72587393640f356dfc9c367
@@ -1082,18 +1832,33 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/9b865af6da33c61a889523eb42e28c3551205358111c9c59c8355b58e3adc5c3-README.md
   bytes: 5874
   sha256: 9b865af6da33c61a889523eb42e28c3551205358111c9c59c8355b58e3adc5c3
+- path: changes/st-0005/evidence/artifacts/9bafe16f96ac89e789b257a847f46e7ce0e79fad800113064697a3a741a04a25-v0.3-content-alignment.v1.sql
+  bytes: 1406
+  sha256: 9bafe16f96ac89e789b257a847f46e7ce0e79fad800113064697a3a741a04a25
 - path: changes/st-0005/evidence/artifacts/9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978-202607300008_ai_governance_expand_validate.sql
   bytes: 42761
   sha256: 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
 - path: changes/st-0005/evidence/artifacts/9bdc2cb3a99d54b1f8b2c711b56294c888a783384581ff386b2a3456c82c6a1d-ST-0002.md
   bytes: 10993
   sha256: 9bdc2cb3a99d54b1f8b2c711b56294c888a783384581ff386b2a3456c82c6a1d
+- path: changes/st-0005/evidence/artifacts/9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564-RAOS_06_content_test_matrix_v0.1.csv
+  bytes: 142924
+  sha256: 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+- path: changes/st-0005/evidence/artifacts/9c3a8d576fc17ec66c271c8b33514c4ad75408f336cff681d5472cc3c779916f-__init__.py
+  bytes: 309
+  sha256: 9c3a8d576fc17ec66c271c8b33514c4ad75408f336cff681d5472cc3c779916f
 - path: changes/st-0005/evidence/artifacts/9c784f739b490bac141738f954f2d622f94408fcf24e6c42a21abe96a3ef7f04-assert_network_denied.py
   bytes: 7022
   sha256: 9c784f739b490bac141738f954f2d622f94408fcf24e6c42a21abe96a3ef7f04
 - path: changes/st-0005/evidence/artifacts/9c7e18f731e42053f26d0c104f953e6c8367aa6977b4c2e362384cd359910f91-CODEOWNERS
   bytes: 1856
   sha256: 9c7e18f731e42053f26d0c104f953e6c8367aa6977b4c2e362384cd359910f91
+- path: changes/st-0005/evidence/artifacts/9ccdb8cd6e007e4c698777849f842cd5510cc57ab12e10c37d242a7ffa329e08-build_st0306_database_roles.py
+  bytes: 55822
+  sha256: 9ccdb8cd6e007e4c698777849f842cd5510cc57ab12e10c37d242a7ffa329e08
+- path: changes/st-0005/evidence/artifacts/9cdac8135b91ade54cb34d61b58bb98b9a758d0b9312cb171650b527e16a7159-content-ast-loader.v1.yaml
+  bytes: 18563
+  sha256: 9cdac8135b91ade54cb34d61b58bb98b9a758d0b9312cb171650b527e16a7159
 - path: changes/st-0005/evidence/artifacts/9cebeb6546c9479fc1e52b583dfdad3aced6ee82b1a37ce4b9ac1313b6b27c0b-test_contract.py
   bytes: 5577
   sha256: 9cebeb6546c9479fc1e52b583dfdad3aced6ee82b1a37ce4b9ac1313b6b27c0b
@@ -1109,18 +1874,39 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897-202607300005_job_state_contract.sql
   bytes: 4827
   sha256: 9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897
+- path: changes/st-0005/evidence/artifacts/9ee039a17b9f0d68ae05e798754e7a365ce7adc2492ae5d1e48eb3563ebc97f9-manifest.yaml
+  bytes: 32586
+  sha256: 9ee039a17b9f0d68ae05e798754e7a365ce7adc2492ae5d1e48eb3563ebc97f9
 - path: changes/st-0005/evidence/artifacts/9f32cad90b6f5e81211f096900a1b929b55912ecf5aea04ba3d544192e0e0273-foundation-baseline-validation.v1.sql
   bytes: 9449
   sha256: 9f32cad90b6f5e81211f096900a1b929b55912ecf5aea04ba3d544192e0e0273
+- path: changes/st-0005/evidence/artifacts/9f46c590b579aa1ff275af406bca3535a23db5bc85d9bceaf8e6c2db1fcec003-README.md
+  bytes: 53510
+  sha256: 9f46c590b579aa1ff275af406bca3535a23db5bc85d9bceaf8e6c2db1fcec003
 - path: changes/st-0005/evidence/artifacts/9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a-job-state.v1.yaml
   bytes: 3419
   sha256: 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
+- path: changes/st-0005/evidence/artifacts/9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0-uv.lock
+  bytes: 111431
+  sha256: 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
 - path: changes/st-0005/evidence/artifacts/9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e-README.md
   bytes: 3716
   sha256: 9fe46be8c61a8842cf07548ad8939ba8a7bc5f2427695a164b550d9c6e8a1b8e
+- path: changes/st-0005/evidence/artifacts/a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c-tradeoff.schema.json
+  bytes: 4571
+  sha256: a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c
 - path: changes/st-0005/evidence/artifacts/a19c377c2b7c0626b72617dcc74937bc8b1c245e3870f8f568af25dd15703104-ST-0003.md
   bytes: 6851
   sha256: a19c377c2b7c0626b72617dcc74937bc8b1c245e3870f8f568af25dd15703104
+- path: changes/st-0005/evidence/artifacts/a19cd5f3a352ce7843bc69f76cccd4786dcc7eff26dfbd4b7ee85a13bde930d7-catalog.py
+  bytes: 19437
+  sha256: a19cd5f3a352ce7843bc69f76cccd4786dcc7eff26dfbd4b7ee85a13bde930d7
+- path: changes/st-0005/evidence/artifacts/a1c83e03c52b36ebe6e77a6a1fa0dc143b17f3483c38b1316559772e74a44da2-ST-0202-local-20260803-v2.yaml
+  bytes: 3229
+  sha256: a1c83e03c52b36ebe6e77a6a1fa0dc143b17f3483c38b1316559772e74a44da2
+- path: changes/st-0005/evidence/artifacts/a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b-conftest.py
+  bytes: 247
+  sha256: a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
 - path: changes/st-0005/evidence/artifacts/a26b47d98c8efeb9c7fd4e7545ab4043a7afb88f44de7959249efd7e7a7f1574-build_st0302_foundation.py
   bytes: 36438
   sha256: a26b47d98c8efeb9c7fd4e7545ab4043a7afb88f44de7959249efd7e7a7f1574
@@ -1130,18 +1916,42 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/a32e9a832992994f11cea10f70bd17f00ce6b88a9b30b35216c88bbf34130b7c-AGENTS.md
   bytes: 7151
   sha256: a32e9a832992994f11cea10f70bd17f00ce6b88a9b30b35216c88bbf34130b7c
+- path: changes/st-0005/evidence/artifacts/a41bede7e2e9d51fdfa350abd2b5b21d8401de1a7ab9aeb7b40654f75038459b-build_st0205_synthetic_data.py
+  bytes: 44632
+  sha256: a41bede7e2e9d51fdfa350abd2b5b21d8401de1a7ab9aeb7b40654f75038459b
 - path: changes/st-0005/evidence/artifacts/a46ae19002a1c2c927f7448781a9a5e79a4836ea9e4636b374e7eb5661b2c0c8-manifest.yaml
   bytes: 5975
   sha256: a46ae19002a1c2c927f7448781a9a5e79a4836ea9e4636b374e7eb5661b2c0c8
+- path: changes/st-0005/evidence/artifacts/a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524-ST-0107.md
+  bytes: 11507
+  sha256: a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524
+- path: changes/st-0005/evidence/artifacts/a592d42f7fac1d6a93ae66f5593352c1842c8d5dfc316b75799d6caf4bf901e3-__init__.py
+  bytes: 43711
+  sha256: a592d42f7fac1d6a93ae66f5593352c1842c8d5dfc316b75799d6caf4bf901e3
+- path: changes/st-0005/evidence/artifacts/a5a5e02b579c88c7a959474ffb10aa8e546405e9a22dddb26b01c2d168da1529-INV-101-disclosure-not-first.json
+  bytes: 4719
+  sha256: a5a5e02b579c88c7a959474ffb10aa8e546405e9a22dddb26b01c2d168da1529
 - path: changes/st-0005/evidence/artifacts/a603285b616afbcdd593de4ee9a70d0b476658b61a90e27a5b2d08df078cfd7a-AGENTS.md
   bytes: 14069
   sha256: a603285b616afbcdd593de4ee9a70d0b476658b61a90e27a5b2d08df078cfd7a
 - path: changes/st-0005/evidence/artifacts/a648bce453950a89abce2c391a4d12dbf903dfa768e1aef4af387989705a6cb6-ruleset-policy.v1.json
   bytes: 3828
   sha256: a648bce453950a89abce2c391a4d12dbf903dfa768e1aef4af387989705a6cb6
+- path: changes/st-0005/evidence/artifacts/a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f-__init__.py
+  bytes: 242
+  sha256: a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
 - path: changes/st-0005/evidence/artifacts/a68acde58dc14acad895869d2e0fb795f317051bd5da2475ea2b9bee4804716b-python_toolchain.sh
   bytes: 2413
   sha256: a68acde58dc14acad895869d2e0fb795f317051bd5da2475ea2b9bee4804716b
+- path: changes/st-0005/evidence/artifacts/a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1-decision_summary.schema.json
+  bytes: 4947
+  sha256: a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1
+- path: changes/st-0005/evidence/artifacts/a7759e354bc5552b7f39ac3b319db0c9b3d15e0017c359b6e534281a27aa26b2-INV-102-missing-source-summary.json
+  bytes: 4391
+  sha256: a7759e354bc5552b7f39ac3b319db0c9b3d15e0017c359b6e534281a27aa26b2
+- path: changes/st-0005/evidence/artifacts/a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9-ST-0307.md
+  bytes: 3863
+  sha256: a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9
 - path: changes/st-0005/evidence/artifacts/a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc-README.md
   bytes: 43208
   sha256: a7e9cff80d07df32e28f34b67fd19e88cda7c000f61c9ca23d10f44aace1ffbc
@@ -1154,9 +1964,15 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e-202608030003_iam_ops_tables.py
   bytes: 62827
   sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
+- path: changes/st-0005/evidence/artifacts/a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac-content-ast.schema.json
+  bytes: 46209
+  sha256: a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
 - path: changes/st-0005/evidence/artifacts/aba4ba1aa932fde937d7e2bf62d954930ef2e4b279fa0a156307ac643a13cd86-test_secret_scanner.py
   bytes: 15076
   sha256: aba4ba1aa932fde937d7e2bf62d954930ef2e4b279fa0a156307ac643a13cd86
+- path: changes/st-0005/evidence/artifacts/ac133f0d975241b22a8744bd7b78ec52904dc64414f344f7c3f1e83e9339cf3d-202608030005-predecessor.v1.sql
+  bytes: 1363
+  sha256: ac133f0d975241b22a8744bd7b78ec52904dc64414f344f7c3f1e83e9339cf3d
 - path: changes/st-0005/evidence/artifacts/acaefe2d566d84e504803b7df4d745d2eab5dd64fc8d548d4934dca1929cae07-chatgpt_pro_python.sh
   bytes: 2736
   sha256: acaefe2d566d84e504803b7df4d745d2eab5dd64fc8d548d4934dca1929cae07
@@ -1166,6 +1982,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/ad07bcc088457eef788d191bd963dc2e4d162abef152fe71e27c459934af0a1b-catalog.py
   bytes: 18734
   sha256: ad07bcc088457eef788d191bd963dc2e4d162abef152fe71e27c459934af0a1b
+- path: changes/st-0005/evidence/artifacts/adc3f52092bd78d7d318d31da97c6ca048cf69f333ffbb225e70867f738b0aa2-RAOS_06_schema_registry_v0.1.yaml
+  bytes: 9141
+  sha256: adc3f52092bd78d7d318d31da97c6ca048cf69f333ffbb225e70867f738b0aa2
 - path: changes/st-0005/evidence/artifacts/adeca86c017c8fd48ccbfcb1790d238250faac37d20ace0a4b16548d86bca76a-manifest.yaml
   bytes: 12220
   sha256: adeca86c017c8fd48ccbfcb1790d238250faac37d20ace0a4b16548d86bca76a
@@ -1184,15 +2003,42 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b-iam-ops-schema.v1.yaml
   bytes: 84141
   sha256: af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b
+- path: changes/st-0005/evidence/artifacts/af9e86c5938a718f41aaea0c9247405508adfbcb1b0924e55f4ce06d5a0a420e-RAOS_06_content_block_catalog_v0.1.yaml
+  bytes: 9420
+  sha256: af9e86c5938a718f41aaea0c9247405508adfbcb1b0924e55f4ce06d5a0a420e
 - path: changes/st-0005/evidence/artifacts/b112a9442bd90bd0e4eec6926945268802ea0ae5e098622f29fda22d9c55995f-ruleset-policy.v1.json
   bytes: 4055
   sha256: b112a9442bd90bd0e4eec6926945268802ea0ae5e098622f29fda22d9c55995f
 - path: changes/st-0005/evidence/artifacts/b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388-ST-0302.md
   bytes: 3627
   sha256: b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388
+- path: changes/st-0005/evidence/artifacts/b1a222efb0c72d588cd59998c97cd16af94eb38cfa6f090ce4aa59ca5c23a9db-test_workflow_contract.py
+  bytes: 25992
+  sha256: b1a222efb0c72d588cd59998c97cd16af94eb38cfa6f090ce4aa59ca5c23a9db
+- path: changes/st-0005/evidence/artifacts/b2192c72a1933146915657a293a9c4cecdf65c370ad8dc77ae319a4945cb3abd-ST-0304.md
+  bytes: 2198
+  sha256: b2192c72a1933146915657a293a9c4cecdf65c370ad8dc77ae319a4945cb3abd
 - path: changes/st-0005/evidence/artifacts/b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d-conftest.py
   bytes: 1424
   sha256: b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d
+- path: changes/st-0005/evidence/artifacts/b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8-01-domain-physical.sql
+  bytes: 67717
+  sha256: b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8
+- path: changes/st-0005/evidence/artifacts/b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510-caution.schema.json
+  bytes: 4360
+  sha256: b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510
+- path: changes/st-0005/evidence/artifacts/b30fa005c17ba832a91097c061315ea8d0ba07c288d5a0961645c91aa073a99a-ST-0305.md
+  bytes: 2917
+  sha256: b30fa005c17ba832a91097c061315ea8d0ba07c288d5a0961645c91aa073a99a
+- path: changes/st-0005/evidence/artifacts/b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa-RAOS_09_event_catalog_v1.0.yaml
+  bytes: 9760
+  sha256: b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa
+- path: changes/st-0005/evidence/artifacts/b3d6d35a7d51d9fdede7cf3c3b1938afa5d2aadba17705b10582d049233aab1f-test_generation.py
+  bytes: 18066
+  sha256: b3d6d35a7d51d9fdede7cf3c3b1938afa5d2aadba17705b10582d049233aab1f
+- path: changes/st-0005/evidence/artifacts/b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7-test_postgresql.py
+  bytes: 34214
+  sha256: b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
 - path: changes/st-0005/evidence/artifacts/b3f15e47077f848c359b96637cb490696ec1769f53705cafb6feb5700a98c66e-test_import_raos_design.py
   bytes: 8703
   sha256: b3f15e47077f848c359b96637cb490696ec1769f53705cafb6feb5700a98c66e
@@ -1205,6 +2051,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/b5452da2dce16fe725a2acc8ef8db8f492a6cd443b2a78a3e718099f1f672745-vitest.config.ts
   bytes: 386
   sha256: b5452da2dce16fe725a2acc8ef8db8f492a6cd443b2a78a3e718099f1f672745
+- path: changes/st-0005/evidence/artifacts/b56eca8d10efd3811d05766b5403ed5f95541c73ebd20ffc60e383d9bcc33f92-build_st0307_migration_fixtures.py
+  bytes: 34971
+  sha256: b56eca8d10efd3811d05766b5403ed5f95541c73ebd20ffc60e383d9bcc33f92
 - path: changes/st-0005/evidence/artifacts/b57e05699f2b4b951f4ce97c0849e097c1e401230a4fe38cd67c7020d55183c1-ST-0101.md
   bytes: 6550
   sha256: b57e05699f2b4b951f4ce97c0849e097c1e401230a4fe38cd67c7020d55183c1
@@ -1217,6 +2066,15 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/b666a5eb3f2e6137a96a2f78eb7ac556efe1aa306bc9be2c1c34be0e15246ea8-test_postgresql.py
   bytes: 33333
   sha256: b666a5eb3f2e6137a96a2f78eb7ac556efe1aa306bc9be2c1c34be0e15246ea8
+- path: changes/st-0005/evidence/artifacts/b66bdb7ab7c4f883f5658d2acbef2804946f4f5124db66508b39fb90cc236467-index.ts
+  bytes: 25176
+  sha256: b66bdb7ab7c4f883f5658d2acbef2804946f4f5124db66508b39fb90cc236467
+- path: changes/st-0005/evidence/artifacts/b685751e4e2743ea6c7202e8ce726486ac152e46987bb832e6777e61b987aafc-02-domain-physical.sql
+  bytes: 63003
+  sha256: b685751e4e2743ea6c7202e8ce726486ac152e46987bb832e6777e61b987aafc
+- path: changes/st-0005/evidence/artifacts/b7de80eac1ade79967a65321c1fe1c3a1ea3bcf7229362ae9c2a25f4e4f97f54-test_contract.py
+  bytes: 10499
+  sha256: b7de80eac1ade79967a65321c1fe1c3a1ea3bcf7229362ae9c2a25f4e4f97f54
 - path: changes/st-0005/evidence/artifacts/b7f9550a16941cd20128e753d2001d67e97b2db7cf5676ab7ff03a89e442e1ed-package.json
   bytes: 1710
   sha256: b7f9550a16941cd20128e753d2001d67e97b2db7cf5676ab7ff03a89e442e1ed
@@ -1232,12 +2090,27 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/b91848efa9a35fa703e3cad08f04336c14c05a0a3fd182e7c97e75a554e372a4-build_st0105_generated_contracts.py
   bytes: 80107
   sha256: b91848efa9a35fa703e3cad08f04336c14c05a0a3fd182e7c97e75a554e372a4
+- path: changes/st-0005/evidence/artifacts/b992f9de31fa41185222b6aa505d0ab72e714866aacc96085b95c4b22fd038ec-database-roles-grants.v1.json
+  bytes: 2813
+  sha256: b992f9de31fa41185222b6aa505d0ab72e714866aacc96085b95c4b22fd038ec
+- path: changes/st-0005/evidence/artifacts/b99fac5908f2b3278ac319a42cf5cee9eedf1c92ac6a6db16f7ff22688aa49ee-INV-003-auto-publish.json
+  bytes: 4718
+  sha256: b99fac5908f2b3278ac319a42cf5cee9eedf1c92ac6a6db16f7ff22688aa49ee
 - path: changes/st-0005/evidence/artifacts/ba28508ec42145b251da439b777398cd713e1618b9b998844b789b68e71fd40b-README.md
   bytes: 15869
   sha256: ba28508ec42145b251da439b777398cd713e1618b9b998844b789b68e71fd40b
 - path: changes/st-0005/evidence/artifacts/ba5f6fd7ceb98dee227828e0536f2531fe0aa7f68a8a8c409727788bc9c18077-test_cli.py
   bytes: 2723
   sha256: ba5f6fd7ceb98dee227828e0536f2531fe0aa7f68a8a8c409727788bc9c18077
+- path: changes/st-0005/evidence/artifacts/bb184e0416c06242f052c13490f2525a9c2247373dbe4e7ebb8f0020e797bee9-__init__.py
+  bytes: 344
+  sha256: bb184e0416c06242f052c13490f2525a9c2247373dbe4e7ebb8f0020e797bee9
+- path: changes/st-0005/evidence/artifacts/bb48c844380cd0b86cd0aaf68ca2bffac49a01f766a44e4325d3253ef39304de-test_negative_cases.py
+  bytes: 8458
+  sha256: bb48c844380cd0b86cd0aaf68ca2bffac49a01f766a44e4325d3253ef39304de
+- path: changes/st-0005/evidence/artifacts/bba39e07744988c03c4d60e7da8dc7c7117af797ef22eca81711f2d8c12b9bae-ST-0801-local-20260804.yaml
+  bytes: 33312
+  sha256: bba39e07744988c03c4d60e7da8dc7c7117af797ef22eca81711f2d8c12b9bae
 - path: changes/st-0005/evidence/artifacts/bbf43f1c353ac9c5fb70d9b3dfb5b91c7da09586884295d270ae5560c9082dca-conftest.py
   bytes: 1528
   sha256: bbf43f1c353ac9c5fb70d9b3dfb5b91c7da09586884295d270ae5560c9082dca
@@ -1256,24 +2129,60 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/bcbe953a9c6067eb625fa93a10191eebe6cfc4f3ca06dc34200cf5e667ebb72b-build_st0301_migration_framework.py
   bytes: 22692
   sha256: bcbe953a9c6067eb625fa93a10191eebe6cfc4f3ca06dc34200cf5e667ebb72b
+- path: changes/st-0005/evidence/artifacts/bccdefcfd53c052e5091ff2ee00dbb482d3fe86241d8a6f91cd02ba58b6e75c9-_internal.py
+  bytes: 221159
+  sha256: bccdefcfd53c052e5091ff2ee00dbb482d3fe86241d8a6f91cd02ba58b6e75c9
 - path: changes/st-0005/evidence/artifacts/bd961f169eb669de2db5fe80efe1cf5bdba13f5fe6e6c4313b5e44435b3f99a9-config.toml
   bytes: 4702
   sha256: bd961f169eb669de2db5fe80efe1cf5bdba13f5fe6e6c4313b5e44435b3f99a9
 - path: changes/st-0005/evidence/artifacts/bed9e3b19017bb79a4ca518d9c9e8ec98b841d69f9d4f816a648576df78c96b4-build_st0301_migration_framework.py
   bytes: 23133
   sha256: bed9e3b19017bb79a4ca518d9c9e8ec98b841d69f9d4f816a648576df78c96b4
+- path: changes/st-0005/evidence/artifacts/bf0552fc306d69c937c95a79f2a8c9dbb5686ed2e7fc90c1e11b8c6733f0e52d-manifest.yaml
+  bytes: 7725
+  sha256: bf0552fc306d69c937c95a79f2a8c9dbb5686ed2e7fc90c1e11b8c6733f0e52d
 - path: changes/st-0005/evidence/artifacts/c02ea864f9c6c2fd36ac2438e5c613594aff0d72ebef771db3b873aa67446805-test_overlay_contract.py
   bytes: 29355
   sha256: c02ea864f9c6c2fd36ac2438e5c613594aff0d72ebef771db3b873aa67446805
+- path: changes/st-0005/evidence/artifacts/c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622-media-asset.schema.json
+  bytes: 2383
+  sha256: c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622
+- path: changes/st-0005/evidence/artifacts/c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980-test_generation.py
+  bytes: 20567
+  sha256: c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980
+- path: changes/st-0005/evidence/artifacts/c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642-catalog.py
+  bytes: 20363
+  sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+- path: changes/st-0005/evidence/artifacts/c1e308b681b5f4f3be0f3acb7564fb227c13be8a49e2fee171858aaaa37258e2-design-handoff.response-wait-until-complete.v1.yaml
+  bytes: 8744
+  sha256: c1e308b681b5f4f3be0f3acb7564fb227c13be8a49e2fee171858aaaa37258e2
+- path: changes/st-0005/evidence/artifacts/c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0-conftest.py
+  bytes: 1101
+  sha256: c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0
+- path: changes/st-0005/evidence/artifacts/c299e1caa5c835cc107daa2de61c7e2fc7141b8f1f5f19171cacf76b3cfba7f2-test_generation.py
+  bytes: 4649
+  sha256: c299e1caa5c835cc107daa2de61c7e2fc7141b8f1f5f19171cacf76b3cfba7f2
+- path: changes/st-0005/evidence/artifacts/c2b6ff402f616bd809af2a4f5ec42053a04ccfb67eaa852a436d23cfb9aaac9c-README.md
+  bytes: 54886
+  sha256: c2b6ff402f616bd809af2a4f5ec42053a04ccfb67eaa852a436d23cfb9aaac9c
 - path: changes/st-0005/evidence/artifacts/c2cec442fc23fd23112f8a4217b4b9173ababe6a82d1f1778db8eb53fe6bf0ee-test_negative_cases.py
   bytes: 2171
   sha256: c2cec442fc23fd23112f8a4217b4b9173ababe6a82d1f1778db8eb53fe6bf0ee
+- path: changes/st-0005/evidence/artifacts/c3053d28c056fcc412e3852816528da92f301e369f5af45f9a1212cc920468ce-task_registry.py
+  bytes: 917
+  sha256: c3053d28c056fcc412e3852816528da92f301e369f5af45f9a1212cc920468ce
 - path: changes/st-0005/evidence/artifacts/c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845-202607300017_content_contract.sql
   bytes: 18584
   sha256: c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+- path: changes/st-0005/evidence/artifacts/c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8-RAOS_10_security_control_catalog_v1.0.yaml
+  bytes: 24993
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
 - path: changes/st-0005/evidence/artifacts/c50c9b131023e673a08b7499faa22b026e684f56eef4ea7ce41df8b9fb5739d6-ST-0104.md
   bytes: 5470
   sha256: c50c9b131023e673a08b7499faa22b026e684f56eef4ea7ce41df8b9fb5739d6
+- path: changes/st-0005/evidence/artifacts/c522baeb6aa242599f9f3f1ad2b119457ba259e751db306a78a8ef2b4274efb0-test_postgresql.py
+  bytes: 50730
+  sha256: c522baeb6aa242599f9f3f1ad2b119457ba259e751db306a78a8ef2b4274efb0
 - path: changes/st-0005/evidence/artifacts/c5c406e624fe2cf0eaf73c0e9a03ede1e4ca9d0d1346f7a23cce8580e4fa8ab7-test_overlay_contract.py
   bytes: 30137
   sha256: c5c406e624fe2cf0eaf73c0e9a03ede1e4ca9d0d1346f7a23cce8580e4fa8ab7
@@ -1292,6 +2201,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/c709102af9bfcd64f68a444bccb6ddac6d95d067b1af472e8b41269fd3c8f2da-runner.py
   bytes: 58899
   sha256: c709102af9bfcd64f68a444bccb6ddac6d95d067b1af472e8b41269fd3c8f2da
+- path: changes/st-0005/evidence/artifacts/c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75-test_revision.py
+  bytes: 5015
+  sha256: c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75
 - path: changes/st-0005/evidence/artifacts/c71eb659a8eeaa7cecd2ae095f682e689ed6e7e09ee578844d65bee86211ec3e-test_postgresql.py
   bytes: 25698
   sha256: c71eb659a8eeaa7cecd2ae095f682e689ed6e7e09ee578844d65bee86211ec3e
@@ -1301,6 +2213,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/c739ad95a22343a11caa96c259b82665b696546cb969e4dbac4b16f44f151261-AGENTS.md
   bytes: 11359
   sha256: c739ad95a22343a11caa96c259b82665b696546cb969e4dbac4b16f44f151261
+- path: changes/st-0005/evidence/artifacts/c78e946f9be015d461350f347f125a2cf8f01b267647a8685158af207cefc0ec-05-domain-physical.sql
+  bytes: 72390
+  sha256: c78e946f9be015d461350f347f125a2cf8f01b267647a8685158af207cefc0ec
 - path: changes/st-0005/evidence/artifacts/c79b884aaf04efe471d2ed210f01c2d1d266bc9ee78a4206be2518128f108c45-runner.py
   bytes: 73483
   sha256: c79b884aaf04efe471d2ed210f01c2d1d266bc9ee78a4206be2518128f108c45
@@ -1319,6 +2234,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/ca5197422fa84c550c6c05e01be940b2b8ddb7e7e5da9bbbcc053f59aa6791f8-ST-0204-local-20260803.yaml
   bytes: 10075
   sha256: ca5197422fa84c550c6c05e01be940b2b8ddb7e7e5da9bbbcc053f59aa6791f8
+- path: changes/st-0005/evidence/artifacts/ca7007bc94e832bb1178adcc1cabcf219a268930c331635c183ba8db6ee1d957-INV-002-manual-affiliate-url.json
+  bytes: 4769
+  sha256: ca7007bc94e832bb1178adcc1cabcf219a268930c331635c183ba8db6ee1d957
 - path: changes/st-0005/evidence/artifacts/cb2a77ffb08c6ab24e570327614d99672370ca691a6c551baeef696ccbf86403-test_codegen_cli.py
   bytes: 6948
   sha256: cb2a77ffb08c6ab24e570327614d99672370ca691a6c551baeef696ccbf86403
@@ -1328,6 +2246,15 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/cc21ea3f9f419bf5ecb95143d87e867c202103c8881a86365b69c21e6a41bdc1-test_installer.py
   bytes: 12958
   sha256: cc21ea3f9f419bf5ecb95143d87e867c202103c8881a86365b69c21e6a41bdc1
+- path: changes/st-0005/evidence/artifacts/cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667-difference_matrix.schema.json
+  bytes: 5196
+  sha256: cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667
+- path: changes/st-0005/evidence/artifacts/cc520254390d68fdc68d54c01ed6b95e031ea422814e5be924849ec61636904d-06-domain-physical.sql
+  bytes: 72312
+  sha256: cc520254390d68fdc68d54c01ed6b95e031ea422814e5be924849ec61636904d
+- path: changes/st-0005/evidence/artifacts/cc7074b0d79d0cb50ee2fdf02dbd170ebe7b375a4e42a7bd24f01d4f9fcca700-ST-0307.md
+  bytes: 2206
+  sha256: cc7074b0d79d0cb50ee2fdf02dbd170ebe7b375a4e42a7bd24f01d4f9fcca700
 - path: changes/st-0005/evidence/artifacts/cca8d351539812d072ef57f468259dee617d10e07e276cf72176df60f46069a0-ST-0006.md
   bytes: 4575
   sha256: cca8d351539812d072ef57f468259dee617d10e07e276cf72176df60f46069a0
@@ -1355,12 +2282,33 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/cedbe26c7cb2a491bcc0bfc8103e5902403a011e5f8456a09ded544da182874a-node_toolchain.sh
   bytes: 4344
   sha256: cedbe26c7cb2a491bcc0bfc8103e5902403a011e5f8456a09ded544da182874a
+- path: changes/st-0005/evidence/artifacts/cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077-test_contract.py
+  bytes: 7049
+  sha256: cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
 - path: changes/st-0005/evidence/artifacts/cfa8fe5768a1f812ad2f46bb85031402215e7a170a0d8f98a1496fde95cf98b5-Makefile
   bytes: 12105
   sha256: cfa8fe5768a1f812ad2f46bb85031402215e7a170a0d8f98a1496fde95cf98b5
 - path: changes/st-0005/evidence/artifacts/cfab5bb185f48e463eeb308f5fa3b92ae589073e36f4e7a800060cefe05ba689-manifest.yaml
   bytes: 5785
   sha256: cfab5bb185f48e463eeb308f5fa3b92ae589073e36f4e7a800060cefe05ba689
+- path: changes/st-0005/evidence/artifacts/cfaeb22a58dd29d76fb38f107648e2690f8e55ed758e0361e050362c5beea084-scan_secrets.py
+  bytes: 29532
+  sha256: cfaeb22a58dd29d76fb38f107648e2690f8e55ed758e0361e050362c5beea084
+- path: changes/st-0005/evidence/artifacts/d01ebd6e277aa08a9aa290a75fc42877ebab65430acb0213403aad514ccc3c1a-build_st0303_iam_ops.py
+  bytes: 139198
+  sha256: d01ebd6e277aa08a9aa290a75fc42877ebab65430acb0213403aad514ccc3c1a
+- path: changes/st-0005/evidence/artifacts/d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137-RAOS_03_migration_playbook_v0.1.md
+  bytes: 9380
+  sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+- path: changes/st-0005/evidence/artifacts/d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51-manifest.yaml
+  bytes: 11667
+  sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+- path: changes/st-0005/evidence/artifacts/d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b-test_generation.py
+  bytes: 18051
+  sha256: d0b18622183d9b5fe8bff7e2c38bbd1eed6bca1f23f81a4c93fcdbc6c0772f8b
+- path: changes/st-0005/evidence/artifacts/d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55-test_contract.py
+  bytes: 8995
+  sha256: d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55
 - path: changes/st-0005/evidence/artifacts/d1c45b886a5e3e30e6a596c569dea08d21a06b8c26ace326d933fea035fb35e3-build_st0204_config_loader.py
   bytes: 21540
   sha256: d1c45b886a5e3e30e6a596c569dea08d21a06b8c26ace326d933fea035fb35e3
@@ -1376,12 +2324,21 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/d3eb238196ddf2b0092f7b7e7d4ede363067392c7601779344e9ddb3be0714b9-test_catalog.py
   bytes: 8478
   sha256: d3eb238196ddf2b0092f7b7e7d4ede363067392c7601779344e9ddb3be0714b9
+- path: changes/st-0005/evidence/artifacts/d3ecd89ac35c386333ac2bf75907259aa28fc8718f65e8c303499193d57fe82e-publishing-guards.sql
+  bytes: 13929
+  sha256: d3ecd89ac35c386333ac2bf75907259aa28fc8718f65e8c303499193d57fe82e
 - path: changes/st-0005/evidence/artifacts/d4571a420e6ffb7fcc7066c95a6db1202f299a3c51daa103d0706bf30f95e626-asyncapi-3.0.0-schema.json
   bytes: 397860
   sha256: d4571a420e6ffb7fcc7066c95a6db1202f299a3c51daa103d0706bf30f95e626
 - path: changes/st-0005/evidence/artifacts/d50b82df7ae355fbd66a5ca555d7e8d3c871fe141bf074c8e331810f1b358105-conftest.py
   bytes: 1060
   sha256: d50b82df7ae355fbd66a5ca555d7e8d3c871fe141bf074c8e331810f1b358105
+- path: changes/st-0005/evidence/artifacts/d5dbce2f88bb26dfaa4dc3454f0e5c44db61ac4f2cf62c402dd473714a46f137-Makefile
+  bytes: 24541
+  sha256: d5dbce2f88bb26dfaa4dc3454f0e5c44db61ac4f2cf62c402dd473714a46f137
+- path: changes/st-0005/evidence/artifacts/d5eef08c8cd922b5226b12ff7a3fe44b8648fc46d32318a8565810a102b1d4b2-README.md
+  bytes: 1448
+  sha256: d5eef08c8cd922b5226b12ff7a3fe44b8648fc46d32318a8565810a102b1d4b2
 - path: changes/st-0005/evidence/artifacts/d7b961160e8bdfd700eaa5ea62e09a771924f84ea8c41d5c4737e37a5812ef32-AGENTS.md
   bytes: 12820
   sha256: d7b961160e8bdfd700eaa5ea62e09a771924f84ea8c41d5c4737e37a5812ef32
@@ -1391,12 +2348,27 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/d7d7f30b8fc5b0e429fca9ffbd517cc3b279f408cf5efdbff12dc4cb8fe1510d-.gitignore
   bytes: 461
   sha256: d7d7f30b8fc5b0e429fca9ffbd517cc3b279f408cf5efdbff12dc4cb8fe1510d
+- path: changes/st-0005/evidence/artifacts/d8214c475262aae4e68de9909fc7ee7825e20aeae00ea7220b130ad54e179f3d-ST-0306.md
+  bytes: 2107
+  sha256: d8214c475262aae4e68de9909fc7ee7825e20aeae00ea7220b130ad54e179f3d
+- path: changes/st-0005/evidence/artifacts/d823d3551d7da483169b443dd035528951b6b617f228d053e5d024fd2e39db83-runner.py
+  bytes: 174761
+  sha256: d823d3551d7da483169b443dd035528951b6b617f228d053e5d024fd2e39db83
 - path: changes/st-0005/evidence/artifacts/d8a4d9552f5a375cc67b720e0c4d62da9818bed9009ce62209fa3e8f39f72d54-test_postgresql.py
   bytes: 18299
   sha256: d8a4d9552f5a375cc67b720e0c4d62da9818bed9009ce62209fa3e8f39f72d54
 - path: changes/st-0005/evidence/artifacts/d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b-package-lock.json
   bytes: 271352
   sha256: d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
+- path: changes/st-0005/evidence/artifacts/d916a4a2ed9afd44fe0a4c01938a5b8aacbfc7323fd4d3cfcb0fa33d399a0e0e-contracts.py
+  bytes: 7247
+  sha256: d916a4a2ed9afd44fe0a4c01938a5b8aacbfc7323fd4d3cfcb0fa33d399a0e0e
+- path: changes/st-0005/evidence/artifacts/d95a950da720f8962a4a9c1718fcb7ca4fcc86dec313ce3429a2a77ce3af0f72-test_privacy.py
+  bytes: 5386
+  sha256: d95a950da720f8962a4a9c1718fcb7ca4fcc86dec313ce3429a2a77ce3af0f72
+- path: changes/st-0005/evidence/artifacts/d95dd03ef0191eef2e9eec0dd146998e8b20efd29c1398dfc4f018abf0fc4995-fixture-catalog.v1.json
+  bytes: 7013
+  sha256: d95dd03ef0191eef2e9eec0dd146998e8b20efd29c1398dfc4f018abf0fc4995
 - path: changes/st-0005/evidence/artifacts/d9a93f73b435932a8e1fb6291e1aa6bef5680daf9801424fce47b2d82a2cf6ce-test_negative_cases.py
   bytes: 12407
   sha256: d9a93f73b435932a8e1fb6291e1aa6bef5680daf9801424fce47b2d82a2cf6ce
@@ -1409,33 +2381,60 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba-202607300012_ai_governance_guarded_downgrade.sql
   bytes: 31109
   sha256: dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba
+- path: changes/st-0005/evidence/artifacts/db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3-claim.schema.json
+  bytes: 2659
+  sha256: db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3
 - path: changes/st-0005/evidence/artifacts/db502ef97e7a7f11adcee25618890dcac0fe6c2084f631faec2fbca607a83b06-build_st0302_foundation.py
   bytes: 36542
   sha256: db502ef97e7a7f11adcee25618890dcac0fe6c2084f631faec2fbca607a83b06
 - path: changes/st-0005/evidence/artifacts/db666ac42c1b58d14d8c6b1b204004b82eca500435e1b01031ec113894a61d1d-ST-0204.md
   bytes: 4396
   sha256: db666ac42c1b58d14d8c6b1b204004b82eca500435e1b01031ec113894a61d1d
+- path: changes/st-0005/evidence/artifacts/db7beb9cad7a31c0bb6309bda7a8b5b6f50f7161df7f36c55c1e78f119a7f4ab-ST-0305.md
+  bytes: 5773
+  sha256: db7beb9cad7a31c0bb6309bda7a8b5b6f50f7161df7f36c55c1e78f119a7f4ab
 - path: changes/st-0005/evidence/artifacts/dba5e94ad4a3e25198679e53eaffd27cfb46a4cbd2829348b8d4be644e40332c-test_commands_and_docs.py
   bytes: 6265
   sha256: dba5e94ad4a3e25198679e53eaffd27cfb46a4cbd2829348b8d4be644e40332c
+- path: changes/st-0005/evidence/artifacts/dc1b4179365b8db690ab5ee4ee7276953213a774561c963afd8be93d43afd2e3-ST-0107.md
+  bytes: 14400
+  sha256: dc1b4179365b8db690ab5ee4ee7276953213a774561c963afd8be93d43afd2e3
+- path: changes/st-0005/evidence/artifacts/dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c-RAOS_03_data_model_database_design_v0.1.md
+  bytes: 448029
+  sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
 - path: changes/st-0005/evidence/artifacts/dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3-uv.lock
   bytes: 111431
   sha256: dd0111767d7199a902e423d2be58385da526806dee766f7d8d5ba7efa14377c3
+- path: changes/st-0005/evidence/artifacts/dd0cc0a6e99483d1975feae553736e142db54440fa5ff42d34d0d50d15c9b488-README.md
+  bytes: 2385
+  sha256: dd0cc0a6e99483d1975feae553736e142db54440fa5ff42d34d0d50d15c9b488
 - path: changes/st-0005/evidence/artifacts/dd2698ae4ca80aa6c8f81d7fdc48ca1ed734d69513e83040e3b18873f3375592-verify_contract_repository.py
   bytes: 78919
   sha256: dd2698ae4ca80aa6c8f81d7fdc48ca1ed734d69513e83040e3b18873f3375592
 - path: changes/st-0005/evidence/artifacts/dd2b5a1cd608df31ba46dbdb38011d5a96faa145a86c2c33b8f1281e4290febf-docker-compose.yml
   bytes: 3106
   sha256: dd2b5a1cd608df31ba46dbdb38011d5a96faa145a86c2c33b8f1281e4290febf
+- path: changes/st-0005/evidence/artifacts/dd5ad08e8e38e5eb84071d603416793748ecf316cfd37ffd77cf8ebc59f503e1-ST-0203.md
+  bytes: 5012
+  sha256: dd5ad08e8e38e5eb84071d603416793748ecf316cfd37ffd77cf8ebc59f503e1
 - path: changes/st-0005/evidence/artifacts/dde90fd7332134f79ff12d8b30830f19833530a6ac919e3b7cb2f904af49b256-uv.lock
   bytes: 93412
   sha256: dde90fd7332134f79ff12d8b30830f19833530a6ac919e3b7cb2f904af49b256
 - path: changes/st-0005/evidence/artifacts/de0bc0893398efeb6268d444a16f1236adfbc222b6681f30d828e8adb6482530-workspace-layout.json
   bytes: 6541
   sha256: de0bc0893398efeb6268d444a16f1236adfbc222b6681f30d828e8adb6482530
+- path: changes/st-0005/evidence/artifacts/debf45d5d0735978392490618d1e3b565b70e6a195b3fa65f283aa5718ba243f-test_generation.py
+  bytes: 19998
+  sha256: debf45d5d0735978392490618d1e3b565b70e6a195b3fa65f283aa5718ba243f
 - path: changes/st-0005/evidence/artifacts/dee4f70d0758dd7dec0a20d527d22ce4766236126a0f40ee3e69be8da2d3c78b-eslint.config.mjs
   bytes: 835
   sha256: dee4f70d0758dd7dec0a20d527d22ce4766236126a0f40ee3e69be8da2d3c78b
+- path: changes/st-0005/evidence/artifacts/df1b7f16226ac2e0e3a52b173b8c592f23a5ad015e9838272018d315f1746465-migration-upgrade-fixture-catalog.v1.json
+  bytes: 11444
+  sha256: df1b7f16226ac2e0e3a52b173b8c592f23a5ad015e9838272018d315f1746465
+- path: changes/st-0005/evidence/artifacts/df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2-manifest.yaml
+  bytes: 14830
+  sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
 - path: changes/st-0005/evidence/artifacts/df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191-pyrightconfig.json
   bytes: 553
   sha256: df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
@@ -1448,18 +2447,36 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/e04bb962abb6d4f4a0c2cb7fbe6c536c5d5f8b2030a7623c0920b20392ac82f7-test_toolchain_contract.py
   bytes: 4572
   sha256: e04bb962abb6d4f4a0c2cb7fbe6c536c5d5f8b2030a7623c0920b20392ac82f7
+- path: changes/st-0005/evidence/artifacts/e0786b9f764af8d8d41b445d1c399cc07f27a5e6dc9a22cc0ea7a27246505aee-chatgpt_pro_orchestrator.py
+  bytes: 113133
+  sha256: e0786b9f764af8d8d41b445d1c399cc07f27a5e6dc9a22cc0ea7a27246505aee
 - path: changes/st-0005/evidence/artifacts/e084ffff625be977e8766e222da83068827cae89b384f75003454d715dc1edbb-Makefile
   bytes: 4724
   sha256: e084ffff625be977e8766e222da83068827cae89b384f75003454d715dc1edbb
 - path: changes/st-0005/evidence/artifacts/e0a348db84effda5a7ab121f8923494fc34bb6cda9e2e0125e2d2853a8346f86-cli.py
   bytes: 3566
   sha256: e0a348db84effda5a7ab121f8923494fc34bb6cda9e2e0125e2d2853a8346f86
+- path: changes/st-0005/evidence/artifacts/e1042bb37ebb91f49f9da4f7ca1ee71d8420dda057b63858756c5b233d8f3073-runtime-config.v1.yaml
+  bytes: 5113
+  sha256: e1042bb37ebb91f49f9da4f7ca1ee71d8420dda057b63858756c5b233d8f3073
+- path: changes/st-0005/evidence/artifacts/e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28-source_summary.schema.json
+  bytes: 4791
+  sha256: e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28
 - path: changes/st-0005/evidence/artifacts/e1f3611c844365a22928b02329cefbccf75e067f1472407b63f3e402c532be21-ST-0004.md
   bytes: 11293
   sha256: e1f3611c844365a22928b02329cefbccf75e067f1472407b63f3e402c532be21
+- path: changes/st-0005/evidence/artifacts/e258a86603d656b9d896dea182ba0aea5e4a43983385a99b85d8c3ec0e3609e3-expected_results.yaml
+  bytes: 2120
+  sha256: e258a86603d656b9d896dea182ba0aea5e4a43983385a99b85d8c3ec0e3609e3
 - path: changes/st-0005/evidence/artifacts/e2598cf97c4f46dd240eaaf9edeaaba9d4bfb6982367857f2d29003dcd2cd4f0-test_runner.py
   bytes: 20968
   sha256: e2598cf97c4f46dd240eaaf9edeaaba9d4bfb6982367857f2d29003dcd2cd4f0
+- path: changes/st-0005/evidence/artifacts/e2daf9950c43edda3240f3868ec0a11e997e4cbd280d3b03d8c00c8eabe27726-v0.2-ai-alignment.v1.sql
+  bytes: 2197
+  sha256: e2daf9950c43edda3240f3868ec0a11e997e4cbd280d3b03d8c00c8eabe27726
+- path: changes/st-0005/evidence/artifacts/e2eda13b9f7e0cdbfa68f5280e665f2901110c1b292ce7297d03849a38e03ef9-README.md
+  bytes: 22211
+  sha256: e2eda13b9f7e0cdbfa68f5280e665f2901110c1b292ce7297d03849a38e03ef9
 - path: changes/st-0005/evidence/artifacts/e2f3c265dd46bcea6f2fedd7dfd258258bbd5667ddff4dbe6db1ced8c8b878b9-CODEOWNERS
   bytes: 1545
   sha256: e2f3c265dd46bcea6f2fedd7dfd258258bbd5667ddff4dbe6db1ced8c8b878b9
@@ -1469,12 +2486,33 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/e31b90638c90a1c55317de31d6be8a780cb471445bd13549b93e6690436599f7-test_toolchain_contract.py
   bytes: 4757
   sha256: e31b90638c90a1c55317de31d6be8a780cb471445bd13549b93e6690436599f7
+- path: changes/st-0005/evidence/artifacts/e328a956ecb2c31d0a042dceaade0e968d3aa8ea4b434741e89a1baf4923025c-build_st0307_migration_fixtures.py
+  bytes: 34971
+  sha256: e328a956ecb2c31d0a042dceaade0e968d3aa8ea4b434741e89a1baf4923025c
 - path: changes/st-0005/evidence/artifacts/e32afefa7070ac148d8d5a953624e61e455b142af0c8c81a76fa1df70edf5d09-test_negative_cases.py
   bytes: 10845
   sha256: e32afefa7070ac148d8d5a953624e61e455b142af0c8c81a76fa1df70edf5d09
+- path: changes/st-0005/evidence/artifacts/e35df4992ccf81cb78147c4b6ce10d3dde72c43bf0fea9dac12830d742967fa9-README.md
+  bytes: 49863
+  sha256: e35df4992ccf81cb78147c4b6ce10d3dde72c43bf0fea9dac12830d742967fa9
+- path: changes/st-0005/evidence/artifacts/e375c0c402483a3e40e4b73f7172e295df2830859d3ef5df7e90036bc073a031-build_st0304_domain_schemas.py
+  bytes: 79479
+  sha256: e375c0c402483a3e40e4b73f7172e295df2830859d3ef5df7e90036bc073a031
+- path: changes/st-0005/evidence/artifacts/e385de6b5cb4e885f71fcabeeb13f8a4e976da5ac8c13161a27a20e7824f00eb-test_loader.py
+  bytes: 6967
+  sha256: e385de6b5cb4e885f71fcabeeb13f8a4e976da5ac8c13161a27a20e7824f00eb
+- path: changes/st-0005/evidence/artifacts/e3c6aecd855e4912e5a24738538db23cd63c0979a96bbe7ddf2e078c306f302f-INV-004-wrong-locale.json
+  bytes: 4719
+  sha256: e3c6aecd855e4912e5a24738538db23cd63c0979a96bbe7ddf2e078c306f302f
+- path: changes/st-0005/evidence/artifacts/e3d990c053e0b781c0f84b68cb9533a6dadde9aad1365155f03a8f3834427fa2-README.md
+  bytes: 2104
+  sha256: e3d990c053e0b781c0f84b68cb9533a6dadde9aad1365155f03a8f3834427fa2
 - path: changes/st-0005/evidence/artifacts/e47cdfe44e6000259b4b0d3ef2c5cb62d0e60176b156ae458dc7771eeceaa22d-test_workflow_contract.py
   bytes: 18954
   sha256: e47cdfe44e6000259b4b0d3ef2c5cb62d0e60176b156ae458dc7771eeceaa22d
+- path: changes/st-0005/evidence/artifacts/e52e816d9982b65f43e5a126a38c22e4a8f6a70a1c5e7b88a8ad7595798ebc4c-manifest.yaml
+  bytes: 15112
+  sha256: e52e816d9982b65f43e5a126a38c22e4a8f6a70a1c5e7b88a8ad7595798ebc4c
 - path: changes/st-0005/evidence/artifacts/e580585882a418176bf0afde1c2f0c5a9f5579bc2cb9135e097a7516260172d7-test_generation.py
   bytes: 3711
   sha256: e580585882a418176bf0afde1c2f0c5a9f5579bc2cb9135e097a7516260172d7
@@ -1484,42 +2522,93 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/e773de7d9fdeb178cfdb87f8ea285a87365ee4b36cfaf9d302c9440f9497b138-test_negative_cases.py
   bytes: 10016
   sha256: e773de7d9fdeb178cfdb87f8ea285a87365ee4b36cfaf9d302c9440f9497b138
+- path: changes/st-0005/evidence/artifacts/e7cf45a19da592b2d202de12de42fa64a30e2c8fd7e2426ef82db2034ed0572e-node_inventory.mjs
+  bytes: 22556
+  sha256: e7cf45a19da592b2d202de12de42fa64a30e2c8fd7e2426ef82db2034ed0572e
+- path: changes/st-0005/evidence/artifacts/e83424bae922b5ad842c8aee4f991256959437e6105b0617b9d05c92e6d92be0-Makefile
+  bytes: 24878
+  sha256: e83424bae922b5ad842c8aee4f991256959437e6105b0617b9d05c92e6d92be0
 - path: changes/st-0005/evidence/artifacts/e8759ddf8a6320bc6b4b483758bee156555f22ab1d78c8984aac1650c90ecfaa-test_revision.py
   bytes: 4847
   sha256: e8759ddf8a6320bc6b4b483758bee156555f22ab1d78c8984aac1650c90ecfaa
 - path: changes/st-0005/evidence/artifacts/e893d5e333ec1b4d84d74cb59a6cc4ac62672b493d5905c379ee4ebe9936c314-__init__.py
   bytes: 524
   sha256: e893d5e333ec1b4d84d74cb59a6cc4ac62672b493d5905c379ee4ebe9936c314
+- path: changes/st-0005/evidence/artifacts/e897cdded18640d9c4ae44f851d0ff1b1b3be07680d9d3e57272e59f7594aa99-test_generation.py
+  bytes: 11234
+  sha256: e897cdded18640d9c4ae44f851d0ff1b1b3be07680d9d3e57272e59f7594aa99
+- path: changes/st-0005/evidence/artifacts/e8b229d2957050455e1fe8bd8a0a758e491255d67e9a1c03bb932df56064c254-ST-0205-local-20260805.yaml
+  bytes: 8219
+  sha256: e8b229d2957050455e1fe8bd8a0a758e491255d67e9a1c03bb932df56064c254
+- path: changes/st-0005/evidence/artifacts/e90c8abf1ba862a36f12d1d1aaafeb9166308ba667368e84909aa0ad3468fafe-ST-0205.md
+  bytes: 3605
+  sha256: e90c8abf1ba862a36f12d1d1aaafeb9166308ba667368e84909aa0ad3468fafe
 - path: changes/st-0005/evidence/artifacts/e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5-ruleset-policy.v1.json
   bytes: 4347
   sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
 - path: changes/st-0005/evidence/artifacts/e9a0ced84ce421beda2606504336830ebcd56fb8b7caf2212fe7352c78482455-test_hydration_validator.py
   bytes: 27943
   sha256: e9a0ced84ce421beda2606504336830ebcd56fb8b7caf2212fe7352c78482455
+- path: changes/st-0005/evidence/artifacts/ea633b44247c8ea2fb0ecf983a436fd0b7c27d57a800951b33c5a472cca8c228-ST-0307.md
+  bytes: 3422
+  sha256: ea633b44247c8ea2fb0ecf983a436fd0b7c27d57a800951b33c5a472cca8c228
+- path: changes/st-0005/evidence/artifacts/eafb7b89c6fa08bd74a8c13d89aa19aea3a946e739720a8cff9e6faa3ca2bfc4-08-domain-physical.sql
+  bytes: 72327
+  sha256: eafb7b89c6fa08bd74a8c13d89aa19aea3a946e739720a8cff9e6faa3ca2bfc4
 - path: changes/st-0005/evidence/artifacts/eb2d3c5fe8266e9e627cc7b6555dce0dffa9e24b776b4390094c67b9990bb927-foundation-catalog.v1.json
   bytes: 3303
   sha256: eb2d3c5fe8266e9e627cc7b6555dce0dffa9e24b776b4390094c67b9990bb927
 - path: changes/st-0005/evidence/artifacts/ec12574e1d3acdb18d1b8599b468c883ad62eb70ce9446a509571f462cfca315-test_catalog.py
   bytes: 8478
   sha256: ec12574e1d3acdb18d1b8599b468c883ad62eb70ce9446a509571f462cfca315
+- path: changes/st-0005/evidence/artifacts/ec65b188216ea5decbadc1ea7bf254c94a70fb5f7c7a89f06e3a69cc87b55c24-manifest.yaml
+  bytes: 15338
+  sha256: ec65b188216ea5decbadc1ea7bf254c94a70fb5f7c7a89f06e3a69cc87b55c24
 - path: changes/st-0005/evidence/artifacts/ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e-manifest.yaml
   bytes: 27467
   sha256: ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+- path: changes/st-0005/evidence/artifacts/ec689023703b98cc0decd5703c3f27be994a925a571bff3eb284522dde7b526f-catalog.py
+  bytes: 19941
+  sha256: ec689023703b98cc0decd5703c3f27be994a925a571bff3eb284522dde7b526f
 - path: changes/st-0005/evidence/artifacts/ecbbbb4885e13090537592214cfea61c6db6001e33a753fc818c75fe83cafbb9-manifest.yaml
   bytes: 8515
   sha256: ecbbbb4885e13090537592214cfea61c6db6001e33a753fc818c75fe83cafbb9
+- path: changes/st-0005/evidence/artifacts/ecd4d671467d92b83a6097c3ac9dadf55c0ece36d815a5aca64856183a89cc1b-ST-0101-local-20260803-v2.yaml
+  bytes: 6193
+  sha256: ecd4d671467d92b83a6097c3ac9dadf55c0ece36d815a5aca64856183a89cc1b
 - path: changes/st-0005/evidence/artifacts/edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3-202608030001_framework_install_history.py
   bytes: 4777
   sha256: edc9accc402947ff9d1fa9b93d5028fb762b2cfc10deb54e555985acde09e2d3
+- path: changes/st-0005/evidence/artifacts/ede35a651d40438e63b7484e183a8f981fc5cba70548638ad69b790f28b01ad9-build_st0701_ai_registry.py
+  bytes: 39946
+  sha256: ede35a651d40438e63b7484e183a8f981fc5cba70548638ad69b790f28b01ad9
+- path: changes/st-0005/evidence/artifacts/ee509ac865ad45cd9d038a11e6cfa06c39127d9a9b273b1a9ca4995f483f9f15-test_commands_and_docs.py
+  bytes: 12648
+  sha256: ee509ac865ad45cd9d038a11e6cfa06c39127d9a9b273b1a9ca4995f483f9f15
 - path: changes/st-0005/evidence/artifacts/ee64f731f41b88f185d4f58d9affd5eb35834353b074e215bb7ddc1788622dfd-ST-0201-postgres-image-snapshot.yaml
   bytes: 4689
   sha256: ee64f731f41b88f185d4f58d9affd5eb35834353b074e215bb7ddc1788622dfd
+- path: changes/st-0005/evidence/artifacts/ee73cf312f1756556fbf4c8962754e597ffb04ac6e904867bad6f8102ac36170-test_chatgpt_pro_orchestrator.py
+  bytes: 45363
+  sha256: ee73cf312f1756556fbf4c8962754e597ffb04ac6e904867bad6f8102ac36170
 - path: changes/st-0005/evidence/artifacts/ef354d29cee874ca17a66bb5ac2f9baf5b22110e4d211becc2138cd48c29d73e-test_workspace_race.py
   bytes: 26342
   sha256: ef354d29cee874ca17a66bb5ac2f9baf5b22110e4d211becc2138cd48c29d73e
 - path: changes/st-0005/evidence/artifacts/f0b16438a99f7a055ea7386420af2e7d32146d7db4357f9939c40580304270d2-conftest.py
   bytes: 1694
   sha256: f0b16438a99f7a055ea7386420af2e7d32146d7db4357f9939c40580304270d2
+- path: changes/st-0005/evidence/artifacts/f128896be05e8560ad0608b02adbe1150e305f18fd7a44005abb0f70687d3cef-product_comparison.json
+  bytes: 5243
+  sha256: f128896be05e8560ad0608b02adbe1150e305f18fd7a44005abb0f70687d3cef
+- path: changes/st-0005/evidence/artifacts/f12f86a12608b76acac4306936d739be2c076a256eb1866355449b181ab6d292-Makefile
+  bytes: 26787
+  sha256: f12f86a12608b76acac4306936d739be2c076a256eb1866355449b181ab6d292
+- path: changes/st-0005/evidence/artifacts/f1b5dd23fba4e02928ae95e1b238f12a2b51bc5462ddbf534f70f4d8ff4ae62b-test_governance_contract.py
+  bytes: 11625
+  sha256: f1b5dd23fba4e02928ae95e1b238f12a2b51bc5462ddbf534f70f4d8ff4ae62b
+- path: changes/st-0005/evidence/artifacts/f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2-RAOS_09_kpi_catalog_v1.0.yaml
+  bytes: 9040
+  sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
 - path: changes/st-0005/evidence/artifacts/f207276f58db731e8304756e853171d99dc689257bfc87fdd08534d7be0130dc-test_commands_and_docs.py
   bytes: 10529
   sha256: f207276f58db731e8304756e853171d99dc689257bfc87fdd08534d7be0130dc
@@ -1529,6 +2618,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/f2b57ad30638de2cc33e30798460e98c1fcd78a56c39bfb821054b98d2415d3b-test_workspace_race.py
   bytes: 26662
   sha256: f2b57ad30638de2cc33e30798460e98c1fcd78a56c39bfb821054b98d2415d3b
+- path: changes/st-0005/evidence/artifacts/f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e-ST-0204-local-20260803-v2.yaml
+  bytes: 4075
+  sha256: f2f01a87e3bdcf125a71d2e3ce3906d0ff4458731394efb0567f916de8801c9e
 - path: changes/st-0005/evidence/artifacts/f31b237c9295038657dabbfb8f2c87f91a7eae96a14a0f4fe5dbf9c8e5852117-package-lock.json
   bytes: 252609
   sha256: f31b237c9295038657dabbfb8f2c87f91a7eae96a14a0f4fe5dbf9c8e5852117
@@ -1538,18 +2630,36 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/f3dee42101e32ebad697225cdd532ef77969abc62fadc18f1e6d26d6de908cd6-README.md
   bytes: 6416
   sha256: f3dee42101e32ebad697225cdd532ef77969abc62fadc18f1e6d26d6de908cd6
+- path: changes/st-0005/evidence/artifacts/f45ac13048b8d613a656c0eba20a32b5647d7924c137553bfdb1710ac87008cb-test_generation.py
+  bytes: 13071
+  sha256: f45ac13048b8d613a656c0eba20a32b5647d7924c137553bfdb1710ac87008cb
 - path: changes/st-0005/evidence/artifacts/f486b325a31e29493a3a36fd3106510bee5c1ec2aed2e91ee9896431177d89bc-conftest.py
   bytes: 1325
   sha256: f486b325a31e29493a3a36fd3106510bee5c1ec2aed2e91ee9896431177d89bc
 - path: changes/st-0005/evidence/artifacts/f49eff9c197cf85a1536f85e7c41085be3a028804c26aab98bc36acab2ef40f5-conftest.py
   bytes: 8396
   sha256: f49eff9c197cf85a1536f85e7c41085be3a028804c26aab98bc36acab2ef40f5
+- path: changes/st-0005/evidence/artifacts/f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71-faq.schema.json
+  bytes: 4833
+  sha256: f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71
 - path: changes/st-0005/evidence/artifacts/f58edd1ae3266a709fa80d51117a9e0bce378bbf80060b65c97217ab2ae07187-test_wrapper.py
   bytes: 17303
   sha256: f58edd1ae3266a709fa80d51117a9e0bce378bbf80060b65c97217ab2ae07187
+- path: changes/st-0005/evidence/artifacts/f5e7a329abf9c3a2ae28e07807a87ebfc08ad6e67ccd4fabfb71d55ad45e2796-README.md
+  bytes: 6760
+  sha256: f5e7a329abf9c3a2ae28e07807a87ebfc08ad6e67ccd4fabfb71d55ad45e2796
+- path: changes/st-0005/evidence/artifacts/f69f78071874eb431fa353239a1e127ca54f73b20dc457607bba72308caf5e2b-test_generation.py
+  bytes: 5065
+  sha256: f69f78071874eb431fa353239a1e127ca54f73b20dc457607bba72308caf5e2b
+- path: changes/st-0005/evidence/artifacts/f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b-manifest.yaml
+  bytes: 11532
+  sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
 - path: changes/st-0005/evidence/artifacts/f7b670a53cc3df5af40c23c2881af963216ac6903d00f9f2ff11aba98be1251e-test_workflow_contract.py
   bytes: 17028
   sha256: f7b670a53cc3df5af40c23c2881af963216ac6903d00f9f2ff11aba98be1251e
+- path: changes/st-0005/evidence/artifacts/f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229-heading.schema.json
+  bytes: 4433
+  sha256: f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229
 - path: changes/st-0005/evidence/artifacts/f85cb3c94118d49387e1e2aedb8f27ee16e73b1c1da3d74c22cd3bbd23507a32-Makefile
   bytes: 11209
   sha256: f85cb3c94118d49387e1e2aedb8f27ee16e73b1c1da3d74c22cd3bbd23507a32
@@ -1562,9 +2672,15 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/f8fa263493501f8e0c3915ab90155d8d83ba839604673ebd0df030d8811cbdf4-build_st0303_iam_ops.py
   bytes: 138808
   sha256: f8fa263493501f8e0c3915ab90155d8d83ba839604673ebd0df030d8811cbdf4
+- path: changes/st-0005/evidence/artifacts/f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e-RAOS_07_canonical_contract_overlay_v1.0.yaml
+  bytes: 3383
+  sha256: f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
 - path: changes/st-0005/evidence/artifacts/f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4-202608030002_foundation_schemas.py
   bytes: 1303
   sha256: f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4
+- path: changes/st-0005/evidence/artifacts/f95ad5a2fd349177b01f97237d0d9a3fb598b2781828e9531a04c3c42b811b45-03-domain-physical.sql
+  bytes: 72315
+  sha256: f95ad5a2fd349177b01f97237d0d9a3fb598b2781828e9531a04c3c42b811b45
 - path: changes/st-0005/evidence/artifacts/f9b7926a9d46f41f27038ed45add6d7cb3820a045a0fbac97f985b4b1207df5e-test_commands_and_docs.py
   bytes: 6980
   sha256: f9b7926a9d46f41f27038ed45add6d7cb3820a045a0fbac97f985b4b1207df5e
@@ -1574,12 +2690,36 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/fa00fcdee2e79bc91b24e7e00f8678176405fd93d756478e3dd3f3b13eb44ce4-test_node_cli.py
   bytes: 21514
   sha256: fa00fcdee2e79bc91b24e7e00f8678176405fd93d756478e3dd3f3b13eb44ce4
+- path: changes/st-0005/evidence/artifacts/fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1-test_generation.py
+  bytes: 7281
+  sha256: fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+- path: changes/st-0005/evidence/artifacts/fa518e1a3ca68bfaacf9e45007e245da5b3705c88e9d7ca85583b3f50b19d49d-conftest.py
+  bytes: 7434
+  sha256: fa518e1a3ca68bfaacf9e45007e245da5b3705c88e9d7ca85583b3f50b19d49d
 - path: changes/st-0005/evidence/artifacts/fae2908a01a9b38c2407a9d894d7743d37cbd16a3709c254e049fceab3329f0c-chatgpt-pro-known-ui.v1.json
   bytes: 1408
   sha256: fae2908a01a9b38c2407a9d894d7743d37cbd16a3709c254e049fceab3329f0c
+- path: changes/st-0005/evidence/artifacts/fb3c620aa53482d39762d31633c3b72c64029615963b172dbc6dd078c09de44f-runner.py
+  bytes: 188963
+  sha256: fb3c620aa53482d39762d31633c3b72c64029615963b172dbc6dd078c09de44f
+- path: changes/st-0005/evidence/artifacts/fb4c5090fb4d3f8c62e438c4a372064baa0b83f9cef77136b4a20b9215da9b21-test_generation.py
+  bytes: 7296
+  sha256: fb4c5090fb4d3f8c62e438c4a372064baa0b83f9cef77136b4a20b9215da9b21
+- path: changes/st-0005/evidence/artifacts/fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9-test_contract.py
+  bytes: 10581
+  sha256: fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
+- path: changes/st-0005/evidence/artifacts/fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4-lead.schema.json
+  bytes: 4207
+  sha256: fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4
+- path: changes/st-0005/evidence/artifacts/fbebbe666b6adef1f8c6f2413de16158257bef1e2569822d83ed1f7874245f77-ai_contract_registry.py
+  bytes: 21678
+  sha256: fbebbe666b6adef1f8c6f2413de16158257bef1e2569822d83ed1f7874245f77
 - path: changes/st-0005/evidence/artifacts/fc2689a0827bb8f0a54b93462f6ff4b9fa403d9d99435947d4c0e796bc6ae052-postgres_service.sh
   bytes: 12028
   sha256: fc2689a0827bb8f0a54b93462f6ff4b9fa403d9d99435947d4c0e796bc6ae052
+- path: changes/st-0005/evidence/artifacts/fc5f851e4bf23e6b6a744e29b493de044a28375211dc973911d0eca162f46a2c-test_workflow_contract.py
+  bytes: 20952
+  sha256: fc5f851e4bf23e6b6a744e29b493de044a28375211dc973911d0eca162f46a2c
 - path: changes/st-0005/evidence/artifacts/fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec-foundation-schema.v1.yaml
   bytes: 4457
   sha256: fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec
@@ -1592,9 +2732,15 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/fd35c88ad871836351b7f5bf32e8204f3c7e6e67fd60cad0265b809d27caea13-local-postgres.v1.yaml
   bytes: 4527
   sha256: fd35c88ad871836351b7f5bf32e8204f3c7e6e67fd60cad0265b809d27caea13
+- path: changes/st-0005/evidence/artifacts/fd9dd5db60bf6d613add9d5ffbfb010b5962b0fa713003230b0e1cc4559cc397-INV-001-raw-html.json
+  bytes: 4766
+  sha256: fd9dd5db60bf6d613add9d5ffbfb010b5962b0fa713003230b0e1cc4559cc397
 - path: changes/st-0005/evidence/artifacts/fde4abb595e558350894b9a6d663257984381ac60bdbe2bb217ba856e03892c8-test_catalog.py
   bytes: 8437
   sha256: fde4abb595e558350894b9a6d663257984381ac60bdbe2bb217ba856e03892c8
+- path: changes/st-0005/evidence/artifacts/fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b-pyproject.toml
+  bytes: 1194
+  sha256: fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
 - path: changes/st-0005/evidence/artifacts/fe13e08c4d1eab4b08923fc82b72a94cef01c6ac0733ecc7d9894fb027bbfd9b-ST-0202-local-20260802.yaml
   bytes: 13316
   sha256: fe13e08c4d1eab4b08923fc82b72a94cef01c6ac0733ecc7d9894fb027bbfd9b
@@ -1604,12 +2750,30 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/fe3fcefb697dabf1b33fdababa782aaf289ce7826981b258e407a7a7909455ba-design-handoff.pro-browser.v1.yaml
   bytes: 4669
   sha256: fe3fcefb697dabf1b33fdababa782aaf289ce7826981b258e407a7a7909455ba
+- path: changes/st-0005/evidence/artifacts/fe7e31d24ed51a64db74a652ae5992897ad0b8d8dbd4fe872c3927a0fd041183-test_chatgpt_pro_response_wait.py
+  bytes: 54294
+  sha256: fe7e31d24ed51a64db74a652ae5992897ad0b8d8dbd4fe872c3927a0fd041183
+- path: changes/st-0005/evidence/artifacts/fea58284ef71e41f8d24887f43136594dc4abd689c93970e683b3a627691634b-test_postgresql.py
+  bytes: 47023
+  sha256: fea58284ef71e41f8d24887f43136594dc4abd689c93970e683b3a627691634b
 - path: changes/st-0005/evidence/artifacts/ff0afaf837c18131a5edc05670f8eb16910cd8a7473524f63e12d593e17b9644-chatgpt_pro_mcp.sh
   bytes: 3358
   sha256: ff0afaf837c18131a5edc05670f8eb16910cd8a7473524f63e12d593e17b9644
 - path: changes/st-0005/evidence/artifacts/ff0e1424375791f0f49001b00d5811444bdca3dcad73f00ca26ca40f0f25844f-README.md
   bytes: 4518
   sha256: ff0e1424375791f0f49001b00d5811444bdca3dcad73f00ca26ca40f0f25844f
+- path: changes/st-0005/evidence/artifacts/ff2eebf894d37ad50d35f7f11fd7a5767c5c456b55c33c7d20c5cea635bc9e92-local-queue.v1.yaml
+  bytes: 3727
+  sha256: ff2eebf894d37ad50d35f7f11fd7a5767c5c456b55c33c7d20c5cea635bc9e92
+- path: changes/st-0005/evidence/artifacts/ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c-media.schema.json
+  bytes: 4867
+  sha256: ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c
+- path: changes/st-0005/evidence/artifacts/ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc-selection_criteria.schema.json
+  bytes: 4993
+  sha256: ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc
+- path: changes/st-0005/evidence/artifacts/ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec-build_st0107_pr_governance.py
+  bytes: 45264
+  sha256: ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec
 - path: tests/st0005/conftest.py
   bytes: 8444
   sha256: 2ece50f24abd906541623f448776d001bd6e03a4ee7a8d1a5a5477c4cd996529
@@ -1763,8 +2927,8 @@ source_artifacts:
 generated_artifact_count: 3
 generated_artifacts:
 - path: changes/st-0005/status-overlay.v1.yaml
-  bytes: 160157
-  sha256: fa0a000a6d0f388e163169fda58074c39f1fbfa1c91346f8deecabd7fd7d254b
+  bytes: 260756
+  sha256: 1508ff269b64ac47083c8bd989089d275823cf9fe45bf6eb408b2a13963b3811
 - path: changes/st-0005/contracts/status-policy.v1.yaml
   bytes: 8974
   sha256: 15969f4d5db3aee48059ece1fb572786f25bc0807eb34458b36f97f63f8ccfaf

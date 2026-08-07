@@ -1,0 +1,174 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0307-20260805
+  schema_version: 1
+  recorded_at: '2026-08-04T19:46:30Z'
+story_id: ST-0307
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/958d54f1df02e79df5b970f19f33f81a87d94f5637a7c57d595d51d6bf83cf59-migration-upgrade-fixtures.v1.yaml
+  sha256: 958d54f1df02e79df5b970f19f33f81a87d94f5637a7c57d595d51d6bf83cf59
+- original_uri: repo://changes/st-0307/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e3d990c053e0b781c0f84b68cb9533a6dadde9aad1365155f03a8f3834427fa2-README.md
+  sha256: e3d990c053e0b781c0f84b68cb9533a6dadde9aad1365155f03a8f3834427fa2
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3d289aec5889f04f545d9f606f078c318df6e4c689ddd24f4a50e05461dceec3-README.md
+  sha256: 3d289aec5889f04f545d9f606f078c318df6e4c689ddd24f4a50e05461dceec3
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3f2501b76887b11662e647979de1b29502d194e778fd5d4460e8f8ad6a3c18e9-Makefile
+  sha256: 3f2501b76887b11662e647979de1b29502d194e778fd5d4460e8f8ad6a3c18e9
+- original_uri: repo://docs/execplans/ST-0307.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/cc7074b0d79d0cb50ee2fdf02dbd170ebe7b375a4e42a7bd24f01d4f9fcca700-ST-0307.md
+  sha256: cc7074b0d79d0cb50ee2fdf02dbd170ebe7b375a4e42a7bd24f01d4f9fcca700
+- original_uri: repo://docs/worklogs/ST-0307.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4091d22999fb484d1ebc3f5316f4de17ac3b6050d36105aeffe7833a996a6a23-ST-0307.md
+  sha256: 4091d22999fb484d1ebc3f5316f4de17ac3b6050d36105aeffe7833a996a6a23
+- original_uri: repo://scripts/build_st0307_migration_fixtures.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/134716a00687b348bf8b9c2e58d290c8f0cd2c2b8cdea5ce5be620eea8dca58c-build_st0307_migration_fixtures.py
+  sha256: 134716a00687b348bf8b9c2e58d290c8f0cd2c2b8cdea5ce5be620eea8dca58c
+- original_uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357-RAOS_03_data_model_package_v0.1.zip
+  sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
+- original_uri: repo://docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137-RAOS_03_migration_playbook_v0.1.md
+  sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+- original_uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a-RAOS_07_integration_design_v1.0.md
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+- original_uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d-RAOS_13_story_backlog_v1.0.yaml
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+- original_uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8-RAOS_10_security_control_catalog_v1.0.yaml
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+- original_uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b-RAOS_11_test_suite_catalog_v1.0.yaml
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+- original_uri: repo://changes/st-0002/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e-manifest.yaml
+  sha256: ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+- original_uri: repo://changes/st-0003/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482-manifest.yaml
+  sha256: 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+- original_uri: repo://changes/st-0004/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458-manifest.yaml
+  sha256: 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+- original_uri: repo://changes/st-0301/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff-manifest.yaml
+  sha256: 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+- original_uri: repo://changes/st-0302/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0-manifest.yaml
+  sha256: d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+- original_uri: repo://changes/st-0303/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b-manifest.yaml
+  sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+- original_uri: repo://changes/st-0304/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51-manifest.yaml
+  sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+- original_uri: repo://changes/st-0305/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/5783b9c20d4b2c6a47ac0fa8703e78a0ac35dd1829840b5dd1a6bd6b48a8a16a-manifest.yaml
+  sha256: 5783b9c20d4b2c6a47ac0fa8703e78a0ac35dd1829840b5dd1a6bd6b48a8a16a
+- original_uri: repo://python/raos/migrations/catalog.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/ec689023703b98cc0decd5703c3f27be994a925a571bff3eb284522dde7b526f-catalog.py
+  sha256: ec689023703b98cc0decd5703c3f27be994a925a571bff3eb284522dde7b526f
+- original_uri: repo://python/raos/migrations/runner.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/fb3c620aa53482d39762d31633c3b72c64029615963b172dbc6dd078c09de44f-runner.py
+  sha256: fb3c620aa53482d39762d31633c3b72c64029615963b172dbc6dd078c09de44f
+- original_uri: repo://changes/st-0002/database/202607300001_job_state_expand.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31-202607300001_job_state_expand.sql
+  sha256: 6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31
+- original_uri: repo://changes/st-0002/database/202607300002_job_state_expand_validate.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95-202607300002_job_state_expand_validate.sql
+  sha256: 50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95
+- original_uri: repo://changes/st-0002/database/202607300003_job_state_migrate_batch.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4b6508b8c5a082695b1c4c48365c5932b51e3a6ca9a93c83ec599cd6aa7b1eb8-202607300003_job_state_migrate_batch.sql
+  sha256: 4b6508b8c5a082695b1c4c48365c5932b51e3a6ca9a93c83ec599cd6aa7b1eb8
+- original_uri: repo://changes/st-0002/database/202607300004_job_state_contract_prepare.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779-202607300004_job_state_contract_prepare.sql
+  sha256: 6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779
+- original_uri: repo://changes/st-0002/database/202607300005_job_state_contract.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897-202607300005_job_state_contract.sql
+  sha256: 9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897
+- original_uri: repo://changes/st-0002/database/202607300006_job_state_guarded_downgrade.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab-202607300006_job_state_guarded_downgrade.sql
+  sha256: 3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab
+- original_uri: repo://changes/st-0003/database/202607300007_ai_governance_expand.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064-202607300007_ai_governance_expand.sql
+  sha256: a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064
+- original_uri: repo://changes/st-0003/database/202607300008_ai_governance_expand_validate.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978-202607300008_ai_governance_expand_validate.sql
+  sha256: 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
+- original_uri: repo://changes/st-0003/database/202607300009_ai_governance_migrate_batch.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a-202607300009_ai_governance_migrate_batch.sql
+  sha256: 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
+- original_uri: repo://changes/st-0003/database/202607300010_ai_governance_contract_prepare.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25-202607300010_ai_governance_contract_prepare.sql
+  sha256: 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+- original_uri: repo://changes/st-0003/database/202607300011_ai_governance_contract.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da-202607300011_ai_governance_contract.sql
+  sha256: 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+- original_uri: repo://changes/st-0003/database/202607300012_ai_governance_guarded_downgrade.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba-202607300012_ai_governance_guarded_downgrade.sql
+  sha256: dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba
+- original_uri: repo://changes/st-0004/database/202607300013_content_expand.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e-202607300013_content_expand.sql
+  sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+- original_uri: repo://changes/st-0004/database/202607300014_content_expand_validate.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704-202607300014_content_expand_validate.sql
+  sha256: 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704
+- original_uri: repo://changes/st-0004/database/202607300015_content_migrate_batch.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c-202607300015_content_migrate_batch.sql
+  sha256: 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
+- original_uri: repo://changes/st-0004/database/202607300016_content_contract_prepare.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968-202607300016_content_contract_prepare.sql
+  sha256: b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968
+- original_uri: repo://changes/st-0004/database/202607300017_content_contract.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845-202607300017_content_contract.sql
+  sha256: c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+- original_uri: repo://changes/st-0004/database/202607300018_content_guarded_downgrade.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381-202607300018_content_guarded_downgrade.sql
+  sha256: 005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381
+- original_uri: repo://tests/st0307/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/2b12d0396500ca31a268b389866dbb2bd081608b7f0e31f28232d5afab6b1505-conftest.py
+  sha256: 2b12d0396500ca31a268b389866dbb2bd081608b7f0e31f28232d5afab6b1505
+- original_uri: repo://tests/st0307/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/525d0129275441455f3f4a57c2e7aa78ba0b2f01b69246e9d66a9f58a27999b9-test_generation.py
+  sha256: 525d0129275441455f3f4a57c2e7aa78ba0b2f01b69246e9d66a9f58a27999b9
+- original_uri: repo://tests/st0307/test_postgresql.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/1aff2c7e80be4c058a072dbc140a9451b9ef0ac7ff88ad2c31a81dc25e88e02b-test_postgresql.py
+  sha256: 1aff2c7e80be4c058a072dbc140a9451b9ef0ac7ff88ad2c31a81dc25e88e02b
+- original_uri: repo://tests/fixtures/migrations/st0307/v0.1-job-alignment.v1.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/1859e9d6c81829695b2304d58fd3803b185831ce62ac74ef890ffa16363096da-v0.1-job-alignment.v1.sql
+  sha256: 1859e9d6c81829695b2304d58fd3803b185831ce62ac74ef890ffa16363096da
+- original_uri: repo://tests/fixtures/migrations/st0307/v0.2-ai-alignment.v1.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e2daf9950c43edda3240f3868ec0a11e997e4cbd280d3b03d8c00c8eabe27726-v0.2-ai-alignment.v1.sql
+  sha256: e2daf9950c43edda3240f3868ec0a11e997e4cbd280d3b03d8c00c8eabe27726
+- original_uri: repo://tests/fixtures/migrations/st0307/v0.3-content-alignment.v1.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9bafe16f96ac89e789b257a847f46e7ce0e79fad800113064697a3a741a04a25-v0.3-content-alignment.v1.sql
+  sha256: 9bafe16f96ac89e789b257a847f46e7ce0e79fad800113064697a3a741a04a25
+- original_uri: repo://tests/fixtures/migrations/st0307/202608030004-predecessor.v1.sql
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/148ae19e590f82a9aab0c05420c14af1657b68d71c4780868f0c5ade15fe02f4-202608030004-predecessor.v1.sql
+  sha256: 148ae19e590f82a9aab0c05420c14af1657b68d71c4780868f0c5ade15fe02f4
+- original_uri: repo://changes/st-0307/generated/migration-upgrade-fixture-catalog.v1.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8455fe2277d5b94b8208cb6e1c61190e996114fc2a6d383dab4359ca4758fffa-migration-upgrade-fixture-catalog.v1.json
+  sha256: 8455fe2277d5b94b8208cb6e1c61190e996114fc2a6d383dab4359ca4758fffa
+- original_uri: repo://changes/st-0307/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8b06b39a1b384628a68a6144fc0622f20023e0d6c9a452bf72e8f4b541482b40-manifest.yaml
+  sha256: 8b06b39a1b384628a68a6144fc0622f20023e0d6c9a452bf72e8f4b541482b40
+suite_results:
+- suite_id: TST-010
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: deterministic ST-0307 source validation, generation, and read-only drift check with pinned uv 0.12.1
+  result: PASS; 18 alignment checkpoints, five production revisions, four fixtures, six generated artifacts, and the exact 50-artifact evidence closure were hash-verified; Story manifest 8b06b39a1b384628a68a6144fc0622f20023e0d6c9a452bf72e8f4b541482b40, source contract 958d54f1df02e79df5b970f19f33f81a87d94f5637a7c57d595d51d6bf83cf59, fixture catalog 8455fe2277d5b94b8208cb6e1c61190e996114fc2a6d383dab4359ca4758fffa, and ST-0305 predecessor manifest 5783b9c20d4b2c6a47ac0fa8703e78a0ac35dd1829840b5dd1a6bd6b48a8a16a
+- command: fresh isolated ST-0307 suite with exact PostgreSQL 18.4
+  result: PASS; 24/24 passed, zero skipped, including 14 static/source/generation checks and 10 PostgreSQL upgrade, rollback, failure-recovery, repeatability, and tamper-rejection checks
+- command: direct ST-0106 workflow routing regression suite
+  result: PASS; 305/305 passed
+- command: final official network-denied static and unit gates
+  result: PASS; static exit 0 and unit exit 0; runtime-free skips in the general unit gate are not counted as exact PostgreSQL evidence
+- command: independent ST-0307 implementation audit
+  result: PASS; no findings reported
+boundary: Append-only local implementation-candidate evidence only. Exact PostgreSQL 18.4 and local static/unit results do not constitute formal TST-010 or canonical VALIDATED evidence. Formal TST-010, hosted CI, staging, migration-owner and human review, canonical APPLY, release, and production remain NOT_EXECUTED or unclaimed. Effective canonical ST-0307 remains NOT_STARTED / NOT_EXECUTED.

@@ -1,0 +1,46 @@
+document:
+  id: STATUS-ST0305-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-04T18:28:05Z'
+reason: >-
+  Record the append-only local ST-0305 implementation candidate after
+  deterministic install/source/check gates, exact PostgreSQL 18.4 final and
+  cumulative isolated migration suites, official denied-network full unit and
+  static gates, ST-0105 code-generation check, worktree plus Git-history
+  secret scan, and an independent audit passed. This does not claim formal
+  Suite execution, hosted CI, migration-owner or human review, canonical
+  APPLY, formal VALIDATED, staging, release, or production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0305
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-008
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0305-local-20260805.yaml
+        sha256: 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+        observed_at: '2026-08-04T18:28:04Z'
+      - suite_id: TST-011
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0305-local-20260805.yaml
+        sha256: 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+        observed_at: '2026-08-04T18:28:04Z'
+      - suite_id: TST-030
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0305-local-20260805.yaml
+        sha256: 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+        observed_at: '2026-08-04T18:28:04Z'

@@ -1,0 +1,45 @@
+document:
+  id: STATUS-ST0305-LOCAL-PROPOSAL-003
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-06T02:19:21Z'
+reason: Record the append-only local ST-0305 implementation candidate after the exact PostgreSQL 18.4
+  isolated ST-0305 suite passed 39/39 with zero skips, the cumulative ST-0301 through ST-0306 suites
+  passed 361/361 with zero skips, direct and historical CLI head checks passed, the ST-0305 manifest
+  reached exact 46/46 source and 3/3 generated parity, and independent local audits reported zero
+  severity findings. These are local results only and do not claim formal TST-008, TST-011, TST-030,
+  hosted CI, migration-owner or human review, canonical APPLY, formal VALIDATED, staging, release, or
+  production.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+- story_id: ST-0305
+  expected:
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  target:
+    implementation_status: IMPLEMENTED_NOT_VALIDATED
+    verification_status: NOT_EXECUTED
+  evidence:
+  - suite_id: TST-008
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0305-local-20260806-v3.yaml
+    sha256: 2b10afcd3ce6bd7220788027b465eea5c5be4fb739e7b1f6a17a64d83ecc7d61
+    observed_at: '2026-08-06T02:18:29Z'
+  - suite_id: TST-011
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0305-local-20260806-v3.yaml
+    sha256: 2b10afcd3ce6bd7220788027b465eea5c5be4fb739e7b1f6a17a64d83ecc7d61
+    observed_at: '2026-08-06T02:18:29Z'
+  - suite_id: TST-030
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0305-local-20260806-v3.yaml
+    sha256: 2b10afcd3ce6bd7220788027b465eea5c5be4fb739e7b1f6a17a64d83ecc7d61
+    observed_at: '2026-08-06T02:18:29Z'

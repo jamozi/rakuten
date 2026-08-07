@@ -1,0 +1,89 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0305-20260805-V2
+  schema_version: 1
+  recorded_at: '2026-08-04T23:52:20Z'
+story_id: ST-0305
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0005/evidence/ST-0305-local-20260805.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58-ST-0305-local-20260805.yaml
+  sha256: 4d765e5ea55a083b62fa282347388281df3ea773d45ed1a7404d6adb2d924f58
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1-README.md
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae-Makefile
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+- original_uri: repo://python/raos/migrations/catalog.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642-catalog.py
+  sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+- original_uri: repo://python/raos/migrations/runner.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb-runner.py
+  sha256: 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+- original_uri: repo://tests/postgresql18.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32-postgresql18.py
+  sha256: 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
+- original_uri: repo://tests/st0106/test_workflow_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73-test_workflow_contract.py
+  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+- original_uri: repo://tests/st0301/test_catalog.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce-test_catalog.py
+  sha256: 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
+- original_uri: repo://tests/st0301/test_cli.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde-test_cli.py
+  sha256: 62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde
+- original_uri: repo://tests/st0301/test_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9-test_contract.py
+  sha256: fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
+- original_uri: repo://tests/st0301/test_postgresql.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7-test_postgresql.py
+  sha256: b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
+- original_uri: repo://tests/st0302/test_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077-test_contract.py
+  sha256: cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
+- original_uri: repo://tests/st0302/test_revision.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75-test_revision.py
+  sha256: c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75
+- original_uri: repo://tests/st0303/test_postgresql.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05-test_postgresql.py
+  sha256: 8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05
+- original_uri: repo://tests/st0304/test_postgresql.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac-test_postgresql.py
+  sha256: 7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac
+- original_uri: repo://tests/st0305/test_postgresql.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b-test_postgresql.py
+  sha256: 275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b
+- original_uri: repo://changes/st-0305/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2-manifest.yaml
+  sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+suite_results:
+- suite_id: TST-008
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-011
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-030
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: append-only content-addressed evidence refresh
+  result: PASS; 17/17 references matched exact source bytes and SHA-256, including the prior evidence
+    snapshot and only changed or newly introduced current manifest closure artifacts
+- command: deterministic ST-0305 generation and isolated Story verification
+  result: PASS; the exact PostgreSQL 18.4 ST-0305 suite passed 38/38 with 0 skips
+- command: official denied-network static and full unit aggregate gates
+  result: PASS; both gates exited 0. Environment-dependent skips in the aggregate unit runner are documented
+    and are not counted as exact PostgreSQL, Docker, hosted, or formal Suite runtime evidence
+- command: ST-0105 full offline code-generation gate
+  result: PASS; contract repository verification covered 306 artifacts, tests/st0104 passed 117/117, exact
+    codegen drift covered 224 schemas, 302 Python files, 52 TypeScript files, 105 AsyncAPI messages, and
+    185 HTTP operations, tests/st0105 passed 53/53, and generated TypeScript compilation passed. Unrelated
+    untracked Python bytecode caches were temporarily quarantined and restored
+- command: exact PostgreSQL 18.4 predecessor regression
+  result: PASS; final ST-0305 passed 38/38 with zero skips before this append-only evidence refresh
+boundary: Append-only LOCAL_IMPLEMENTATION_CANDIDATE evidence only. Formal TST-008, TST-011, TST-030,
+  hosted CI, canonical APPLY, formal VALIDATED, staging, release, and production remain NOT_EXECUTED or
+  unclaimed. The exact local PostgreSQL result is separate from formal TST execution; migration-owner
+  and human review remain unexecuted. Effective canonical ST-0305 remains NOT_STARTED / NOT_EXECUTED.

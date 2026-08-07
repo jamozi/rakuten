@@ -1,0 +1,96 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Edge-first browser selection for pro-setup, pro-doctor, pro-ask, and pro-resume
+    - Dedicated per-browser ChatGPT-only profiles beneath the owner-private .secrets root
+    - scripts/chatgpt_pro_orchestrator.py browser selection and persistence
+    - scripts/chatgpt_pro_mcp.sh fixed-browser launch boundary
+    - Makefile browser-selection input and ST-0101 documentation
+    - tests/st0101 deterministic browser-selection, isolation, and fail-closed coverage
+    - docs/worklogs/ST-0101.md implementation evidence entry
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md selected-browser login wording
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.raos-ask-pro.v1.yaml
+  decision: >-
+    Add a closed browser selection with auto, edge, and chrome values. The
+    default auto selection prefers the reviewed Linux Microsoft Edge executable
+    and falls back to the reviewed Linux Google Chrome executable only when
+    Edge is unavailable before launch. Explicit edge or chrome selection never
+    falls back. Edge and Chrome use separate owner-private, ChatGPT-only
+    profiles. Persist the selected browser in setup and run state so doctor,
+    ask, and resume use the same approved browser. Never reuse an existing
+    Windows or personal browser profile. A login request, CAPTCHA, account
+    ambiguity, rate limit, selector drift, origin mismatch, or unknown UI stops
+    the selected browser workflow and must not trigger cross-browser fallback.
+  rationale: >-
+    The repository owner approved Edge as the preferred login and Pro workflow
+    browser after the dedicated Chrome profile repeatedly stopped at a
+    Cloudflare CAPTCHA. Edge-first pre-launch selection meets that operational
+    preference while per-browser profile isolation and a no-fallback rule after
+    launch preserve the existing credential, exact-origin, and fail-closed
+    security boundaries.
+  rejected_alternatives:
+    - Replace Chrome support and remove the existing recovery path
+    - Reuse the user's existing Windows Edge profile, cookies, tabs, or account state
+    - Fall back from Edge to Chrome after CAPTCHA, login, rate limit, or unknown UI
+    - Accept an arbitrary browser name, executable path, channel, or profile path
+    - Install or update a system browser silently as part of a repository command
+  constraints:
+    - Default browser selection is auto with Edge ordered before Chrome
+    - Auto fallback is permitted only when Edge is unavailable before browser launch
+    - Explicit edge and chrome selections fail closed when their fixed executable is unavailable
+    - Only fixed reviewed Linux browser executable paths may be launched
+    - Edge and Chrome profiles must be distinct directories below the approved owner-mode-0700 .secrets root
+    - Existing personal, Windows, or default browser profiles must never be read, copied, attached, or modified
+    - Browser selection must be persisted and hash-bound with private orchestration state
+    - Only the exact https://chatgpt.com origin is permitted
+    - Existing Pro and maximum-effort visible verification remains mandatory
+    - Existing credential, secret-name prompt, allowlisted-tool, and output controls remain unchanged
+    - CAPTCHA and authentication stops must never be treated as reasons to switch browsers
+    - Linux Microsoft Edge installation, if absent, is a separate explicit system-maintenance action
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - Initial interactive login remains a user action in the selected dedicated profile
+    - The repository owner approved Edge-first selection and Chrome pre-launch fallback
+    - Existing Edge or Chrome user profiles and session material remain prohibited
+    - Browser automation remains preauthorized only for the approved ChatGPT Pro state machine
+    - Account, credential, subscription, publication, release, finance, and production actions remain prohibited
+    - Captured output remains an unapproved proposal pending human and canonical reconciliation
+    - A live browser submission is not required for local implementation evidence
+  acceptance_criteria:
+    - Bare make pro-setup selects Edge when the fixed Edge executable is available
+    - Bare make pro-setup selects Chrome only when Edge is unavailable before launch
+    - An explicit browser selection never falls back to the other browser
+    - Setup output and private setup state identify the selected browser and its dedicated profile
+    - Doctor, ask, and resume launch the browser persisted for that setup or run
+    - A resumable run cannot silently change browsers
+    - Edge and Chrome profile paths are distinct, owner-private, and repository-scoped
+    - The MCP wrapper accepts only the closed browser values and fixed executable/profile mappings
+    - CAPTCHA, login, rate-limit, origin, selector, and unknown-UI stops do not cause browser fallback
+    - Existing fake setup, doctor, ask, resume, status, convergence, and leakage tests remain green
+    - Documentation states Edge-first behavior, Chrome fallback scope, and the prohibition on existing profiles
+  required_test_evidence:
+    - Edge-first auto-selection test
+    - Chrome pre-launch fallback test
+    - Explicit missing-browser fail-closed tests
+    - Fixed executable and profile mapping tests
+    - Per-browser profile ownership and separation tests
+    - Setup-state and run-state browser persistence tests
+    - Resume browser immutability test
+    - No cross-browser fallback after every approved stop-state test
+    - MCP wrapper environment, argument, and arbitrary-value refusal tests
+    - Existing exact-origin, Pro/maximum-effort, secret leakage, and hash-chain regression tests
+    - Shell syntax, Ruff, Python compilation, and isolated tests/st0101 results
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-04
+    statement: >-
+      Approve the dedicated Edge implementation boundary and prefer Edge over
+      Chrome at launch, retaining Chrome only as the pre-launch unavailable
+      fallback and preserving all existing fail-closed controls.

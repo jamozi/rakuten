@@ -1,0 +1,156 @@
+schema: RAOS_PRO_DESIGN_BUNDLE_V1
+story_id: ST-1203
+scope: RECORDED_ADAPTER_JOB_PERSISTENCE_AND_FIXTURE_PUBLICATION_ONLY
+status: PROPOSAL_INPUT_ONLY
+authority: NOT_A_DESIGN_HANDOFF
+implementation_authority: NOT_GRANTED
+human_approval: NOT_PROVIDED
+canonical_reconciliation: PENDING
+formal_test_execution: NOT_EXECUTED
+live_provider_validation: NOT_EXECUTED
+ci_validation: NOT_EXECUTED
+staging_readiness: NOT_READY
+production_readiness: NOT_READY
+assembled_on: 2026-08-06
+
+archive:
+  path: changes/st-1203/ST-1203-pro-design-input-v1.tar.gz
+  sha256: 6fd4fca86c2fa666483f08f5bd4d02d43ab7525477d616bc604a6a3ea02bb683
+  bytes: 485383
+  media_type: application/gzip
+  format: DETERMINISTIC_POSIX_TAR_GZIP
+  regular_file_members: 66
+  hashed_payload_members: 65
+  directories: 0
+  links: 0
+  devices: 0
+
+member_manifest:
+  path: changes/st-1203/pro-design-input.v1.members.sha256
+  sha256: 65ef2933b713922094b33a0a00ce2203476b16f2ffc43a9c2325c8dbb281966c
+  entries: 65
+
+archive_allowlist:
+  path: changes/st-1203/pro-design-bundle.v1.files
+  sha256: a9d35dde367d911caa539123d70ac344a9110922343d7fe57facf63e1617e6c1
+  entries: 66
+
+request:
+  path: changes/st-1203/DESIGN-DECISION-REQUEST-v1.md
+  sha256: c2ed5061674572eb0bdc5a57c8433e81ad8b9332c4986237dd8d4ab7186a053a
+
+submission_message:
+  path: changes/st-1203/PRO-SUBMISSION-MESSAGE-v1.txt
+  sha256: cf636c98d6d919da84f2e59cf4c85df62025f48e7f875a37da8f56ca8643d5e5
+
+audits:
+  full_story:
+    path: changes/st-1203/FULL-STORY-DESIGN-AUDIT-v1.md
+    sha256: 1da1c37e30c718df37dae1e03bf0f4b419254742d51674be79a446400a8711ab
+    disposition: BLOCKED_PENDING_EXACT_DESIGN_HANDOFF
+  official_contract_database_conflict:
+    path: changes/st-1203/OFFICIAL-CONTRACT-DB-CONFLICT-AUDIT-v1.md
+    sha256: 3582ded54a5d94e824498037d300acc8eaa0c60ecc8b9cf0f6b82f08d27a5ef5
+    disposition: FAIL_BLOCKED_PENDING_APPROVED_DESIGN_AND_SCHEMA_RECONCILIATION
+    confirmed_blocking_conflicts: 3
+  bounded_mechanical_hardening:
+    disposition: PASS
+    scope: RECORDED_FIXTURE_VALIDATOR_ONLY
+    full_story_closed: false
+
+candidate_checkpoint:
+  authority: UNAPPROVED_LOCAL_CANDIDATE_EVIDENCE
+  source_contract:
+    path: changes/st-1203/contracts/search-console-recorded-fixtures.v1.yaml
+    sha256: eb72f0305aa02529517e3154246c2a5104f42a886ec5b31dc8636b22ac440619
+  generator:
+    path: scripts/build_st1203_search_console_recorded_adapter.py
+    sha256: c002653db89f6b9ac33dff3abace994d6c6dc2583a2d6f4a2940d0a0577687b3
+  generated_manifest:
+    path: changes/st-1203/manifest.json
+    sha256: 769dce0219e43e9ac53312bd0b762cf50b41f3b4a072099c5ccae1cd1e2b305f
+  generation_tests:
+    path: tests/st1203/test_generation.py
+    sha256: f0387b4c4ee19b23435a62a9df0a4a3062596120ca5a985eef29ea2b83b84c86
+  worklog:
+    path: docs/worklogs/ST-1203.md
+    sha256: d1d31dbd36203aa0965e37c47c9febe3a7bd0b8a999c4f9089f8176f0c402004
+  fixture_count: 3
+  local_isolated_pytest: 84_passed
+  exact_structure_mutations_rejected: 226
+  capability_regression_cases: 29
+  source_contract_and_fixture_bytes_unchanged: true
+  full_adapter_job_implemented: false
+  formal_tst_030: NOT_EXECUTED
+
+decisions_requested:
+  - ST1203-D1
+  - ST1203-D2
+  - ST1203-D3
+  - ST1203-D4
+  - ST1203-D5
+  - ST1203-D6
+  - ST1203-D7
+  - ST1203-D8
+  - ST1203-D9
+  - ST1203-D10
+
+deferred_external_decisions:
+  - id: OD-015
+    topic: production_provider_credentials
+    status: EXTERNAL_EVIDENCE_REQUIRED
+    safe_default: RECORDED_FIXTURE_ONLY
+
+external_reference_boundary:
+  official_google_reference:
+    url: https://developers.google.com/webmaster-tools/v1/searchanalytics/query
+    checked_on: 2026-08-06
+    local_hash_pinned_capture: false
+    authority_for_repository_mutation: false
+
+generation:
+  tool: GNU tar 1.34
+  command: >-
+    LC_ALL=C tar --sort=name --mtime=@0 --owner=0 --group=0
+    --numeric-owner --format=posix --pax-option=delete=atime,delete=ctime
+    --no-recursion -czf
+    changes/st-1203/ST-1203-pro-design-input-v1.tar.gz -T
+    changes/st-1203/pro-design-bundle.v1.files
+  explicit_allowlist_only: true
+  deterministic_rebuild_comparison: PASS
+
+validation:
+  exact_66_member_closure: PASS
+  unique_member_paths: PASS
+  safe_relative_member_paths: PASS
+  regular_files_only: PASS
+  embedded_manifest_matches_bundle: PASS
+  all_65_archived_payload_hashes: PASS
+  live_source_hashes_match_manifest_at_assembly: PASS
+  canonical_import_verification: PASS
+  st_0005_status_drift_check: PASS
+  packet_high_confidence_secret_scan: PASS
+  repository_wide_worktree_secret_scan: NON_PACKET_SEEDED_NEGATIVE_FIXTURE_FINDINGS_PRESENT
+
+expected_output:
+  display_name: DESIGN_HANDOFF_V1_ST1203_RECORDED_ADAPTER_v1.yaml
+  format: UTF8_LF_SINGLE_DOCUMENT_YAML
+  root: DESIGN_HANDOFF_V1
+  proposal_authority: PENDING_UNAPPROVED
+  human_approval: NOT_PROVIDED
+  canonical_reconciliation: PENDING
+  implementation_authority: NOT_GRANTED
+  formal_test_execution: NOT_EXECUTED
+  live_provider_validation: NOT_EXECUTED
+  ci_validation: NOT_EXECUTED
+  staging_readiness: NOT_READY
+  production_readiness: NOT_READY
+  bounded_open_decisions_semantics: EMPTY_ONLY_IF_D1_THROUGH_D10_ARE_COMPLETE
+  deferred_external_decisions_required:
+    - OD-015
+
+approval_boundary:
+  pro_output_is_advice_only: true
+  exact_returned_bytes_require_human_approval: true
+  conflict_free_canonical_reconciliation_required: true
+  implementation_worker_authority_granted_by_this_bundle: false

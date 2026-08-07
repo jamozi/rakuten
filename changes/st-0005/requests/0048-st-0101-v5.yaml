@@ -1,0 +1,37 @@
+document:
+  id: STATUS-ST0101-LOCAL-PROPOSAL-005
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-05T00:49:03Z'
+reason: >-
+  Refresh the append-only local ST-0101 proposal after two audited concurrency
+  remediations closed stale-state terminal overwrite and event/state
+  publication-window races, the focused and complete deterministic tests and
+  static/import/workspace checks passed, and the final independent audit
+  passed. V5 supersedes V4 locally but remains candidate evidence only. A
+  combined implementation-plus-status-history PR is not valid under the
+  ST-0005 trust-surface/history separation. This proposal does not claim live
+  browser or MCP execution, private-run inspection, resubmission, hosted CI,
+  formal TST-001, human approval, canonical APPLY, staging, release, or
+  production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-001
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0101-local-20260805-v5.yaml
+        sha256: 571c433c2f17da43f2bc262e48a4d223f72f6cd41368f276b8ce4774d10975eb
+        observed_at: '2026-08-05T00:49:02Z'

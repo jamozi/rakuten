@@ -1,0 +1,92 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0101-20260805-V6
+  schema_version: 1
+  recorded_at: '2026-08-05T15:29:25Z'
+story_id: ST-0101
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0101-local-20260805-v5.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/571c433c2f17da43f2bc262e48a4d223f72f6cd41368f276b8ce4774d10975eb-ST-0101-local-20260805-v5.yaml
+    sha256: 571c433c2f17da43f2bc262e48a4d223f72f6cd41368f276b8ce4774d10975eb
+  - original_uri: repo://changes/st-0101/design-handoff.response-wait-until-complete.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c1e308b681b5f4f3be0f3acb7564fb227c13be8a49e2fee171858aaaa37258e2-design-handoff.response-wait-until-complete.v1.yaml
+    sha256: c1e308b681b5f4f3be0f3acb7564fb227c13be8a49e2fee171858aaaa37258e2
+  - original_uri: repo://changes/st-0101/design-handoff.answer-now-generating.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/509688ae490597535501d516c30c9146858a0670ec96e29b12d1b1e2f5ae5df9-design-handoff.answer-now-generating.v1.yaml
+    sha256: 509688ae490597535501d516c30c9146858a0670ec96e29b12d1b1e2f5ae5df9
+  - original_uri: repo://scripts/chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/83bd88a89d6c4eaa8503625a1a33a814d942d120b6359c21d3ef4398fc5d992c-chatgpt_pro_orchestrator.py
+    sha256: 83bd88a89d6c4eaa8503625a1a33a814d942d120b6359c21d3ef4398fc5d992c
+  - original_uri: repo://tests/st0101/test_chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/4705d3acd921d54b49510cea003172d144dd99bdf21c292de4bc88bdfe7573dc-test_chatgpt_pro_orchestrator.py
+    sha256: 4705d3acd921d54b49510cea003172d144dd99bdf21c292de4bc88bdfe7573dc
+  - original_uri: repo://tests/st0101/test_chatgpt_pro_response_wait.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fe7e31d24ed51a64db74a652ae5992897ad0b8d8dbd4fe872c3927a0fd041183-test_chatgpt_pro_response_wait.py
+    sha256: fe7e31d24ed51a64db74a652ae5992897ad0b8d8dbd4fe872c3927a0fd041183
+  - original_uri: repo://changes/st-0101/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e2eda13b9f7e0cdbfa68f5280e665f2901110c1b292ce7297d03849a38e03ef9-README.md
+    sha256: e2eda13b9f7e0cdbfa68f5280e665f2901110c1b292ce7297d03849a38e03ef9
+  - original_uri: repo://docs/worklogs/ST-0101.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/323d21b6a6baaafb30d9d5a505defc57782294770136b30c6f4dd5e44ff054b0-ST-0101.md
+    sha256: 323d21b6a6baaafb30d9d5a505defc57782294770136b30c6f4dd5e44ff054b0
+suite_results:
+  - suite_id: TST-001
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: append-only content-addressed evidence refresh
+    result: >-
+      PASS; 8/8 references matched exact source bytes and SHA-256, including
+      the immediate V5 snapshot, both approved response-lifecycle handoffs,
+      and five current direct implementation, test, and documentation artifacts
+  - command: >-
+      pinned uv 0.12.1 run --locked --offline --no-cache --no-sync
+      --no-env-file --no-python-downloads pytest -p no:cacheprovider -q
+      tests/st0101, under env -i with pytest plugin autoload disabled
+    result: 413 passed in 5.42s
+  - command: >-
+      pinned isolated pytest tests/st0101/test_chatgpt_pro_response_wait.py
+      -k answer_now
+    result: 17 passed, 19 deselected in 0.08s
+  - command: >-
+      pinned isolated pytest secret, sensitive-response, raw-snapshot,
+      private-request, and non-persistence focus
+    result: 15 passed, 131 deselected in 0.07s
+  - command: >-
+      pinned Ruff lint for ST-0101 Python implementation/tests and affected
+      Pro-source/test Ruff format --check
+    result: PASS; lint clean and all 13 affected Pro source/test files formatted
+  - command: >-
+      in-memory Python compilation, bash -n for both Pro wrappers, and
+      raos-ask-pro Skill quick validation
+    result: PASS; Python compiled, shell syntax valid, and Skill is valid
+  - command: >-
+      pinned offline canonical import verification and workspace no-write check
+    result: >-
+      PASS; 105 imported files, six archives, 104 package checksums, 103
+      manifest entries, and 42 workspace directories with no changes
+  - command: broader Ruff format probe including clean baseline bootstrap source
+    result: >-
+      OUT_OF_SCOPE_FINDING; scripts/bootstrap_workspace.py would be
+      reformatted by current Ruff, but is clean versus HEAD, unchanged, and
+      excluded from this narrow Pro-slice closeout; its lint and compilation pass
+boundary: >-
+  Append-only repository delta over the 2026-08-05 ST-0101 V5 local snapshot.
+  V6 supersedes V5 locally because the approved continuous-response lifecycle
+  and exact advanced Answer now generating marker now have stable current
+  source/test bytes and a complete 413-test isolated local run. The exact
+  marker is observation-only, never clicked, resets candidate stability, and
+  remains advanced-profile-only; the deterministic suite retains exact-origin,
+  secret/redaction, sensitivity, one-submission, no-resubmission, hash-chain,
+  persistence-order, interruption, transport, and fail-closed regressions.
+  The integration-owner-supplied live attempt recorded in the frozen work log
+  stopped conservatively at STOP_RATE_LIMIT and produced no valid advice; this
+  closeout launched no hook, Claude worker, MCP child, browser, profile, or
+  port-37700 service and accessed no prompt, response, credential, cookie, or
+  storage content. A combined implementation-plus-status-history PR remains
+  invalid under the ST-0005 trust-surface/history separation. This is local
+  candidate evidence only: applied transitions remain zero, formal TST-001,
+  hosted CI, human review, canonical APPLY, staging, release, and production
+  remain NOT_EXECUTED, and effective canonical ST-0101 remains NOT_STARTED /
+  NOT_EXECUTED.

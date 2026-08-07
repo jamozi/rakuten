@@ -1,0 +1,154 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0105-20260802
+  schema_version: 1
+  recorded_at: '2026-08-02T05:32:20Z'
+story_id: ST-0105
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef-contract-repository.v0.4.json
+  sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+- original_uri: repo://pyproject.toml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/49f22688be24044ea08a5d86ffaff4fb226016d886441f6c39867123eb875664-pyproject.toml
+  sha256: 49f22688be24044ea08a5d86ffaff4fb226016d886441f6c39867123eb875664
+- original_uri: repo://uv.lock
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/dde90fd7332134f79ff12d8b30830f19833530a6ac919e3b7cb2f904af49b256-uv.lock
+  sha256: dde90fd7332134f79ff12d8b30830f19833530a6ac919e3b7cb2f904af49b256
+- original_uri: repo://package.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828-package.json
+  sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+- original_uri: repo://package-lock.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b-package-lock.json
+  sha256: d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
+- original_uri: repo://pyrightconfig.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191-pyrightconfig.json
+  sha256: df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
+- original_uri: repo://scripts/node_inventory.mjs
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/5df78661629d4ac57a0e16dd8cef8cf29ae453dc34dd66f274ac9bc1ee500d81-node_inventory.mjs
+  sha256: 5df78661629d4ac57a0e16dd8cef8cf29ae453dc34dd66f274ac9bc1ee500d81
+- original_uri: repo://packages/web-contracts/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8e7e069afdfa96853940091d9aa7198ae9129ecd048c6b584e8f60f436781ba7-README.md
+  sha256: 8e7e069afdfa96853940091d9aa7198ae9129ecd048c6b584e8f60f436781ba7
+- original_uri: repo://packages/web-contracts/package.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d2251bc89081cef93bfa495b351f7a5b44b1216441dfb6c3c6b1a08be0f8fef3-package.json
+  sha256: d2251bc89081cef93bfa495b351f7a5b44b1216441dfb6c3c6b1a08be0f8fef3
+- original_uri: repo://packages/web-contracts/tsconfig.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/2671af34b8a3063cdf739491f0f519f72fad84712be07bd2c1b7791b420b2dc9-tsconfig.json
+  sha256: 2671af34b8a3063cdf739491f0f519f72fad84712be07bd2c1b7791b420b2dc9
+- original_uri: repo://workspace-layout.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/de0bc0893398efeb6268d444a16f1236adfbc222b6681f30d828e8adb6482530-workspace-layout.json
+  sha256: de0bc0893398efeb6268d444a16f1236adfbc222b6681f30d828e8adb6482530
+- original_uri: repo://scripts/bootstrap_workspace.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c6d4c5459653e6bcaaf288de0e8396cc97b440706110619162f2bdb428b4916a-bootstrap_workspace.py
+  sha256: c6d4c5459653e6bcaaf288de0e8396cc97b440706110619162f2bdb428b4916a
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4e0e7dd8d2e66fb43614a91474039c048b098a2783bf3724459b1994c722ea05-Makefile
+  sha256: 4e0e7dd8d2e66fb43614a91474039c048b098a2783bf3724459b1994c722ea05
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4553675f5a592c46e9c10f1507b21aa847705f0e4765ecaaa776b89ac3145ad2-README.md
+  sha256: 4553675f5a592c46e9c10f1507b21aa847705f0e4765ecaaa776b89ac3145ad2
+- original_uri: repo://AGENTS.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c739ad95a22343a11caa96c259b82665b696546cb969e4dbac4b16f44f151261-AGENTS.md
+  sha256: c739ad95a22343a11caa96c259b82665b696546cb969e4dbac4b16f44f151261
+- original_uri: repo://scripts/build_st0105_generated_contracts.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/062a51c0d5b0103cb3d75544ffe1be03d9ab4f5a87b5ee8738d1f8c702684ded-build_st0105_generated_contracts.py
+  sha256: 062a51c0d5b0103cb3d75544ffe1be03d9ab4f5a87b5ee8738d1f8c702684ded
+- original_uri: repo://scripts/codegen_toolchain.sh
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/35bbe2059363745b373546627cf68282233cfe50dbde5cecefdcf360ddd140c0-codegen_toolchain.sh
+  sha256: 35bbe2059363745b373546627cf68282233cfe50dbde5cecefdcf360ddd140c0
+- original_uri: repo://changes/st-0105/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de-README.md
+  sha256: 15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de
+- original_uri: repo://changes/st-0105/REVIEW.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9391d92209c949a9672411e342f2d6570a110a83c6a82a5a2a8597bde90740e3-REVIEW.md
+  sha256: 9391d92209c949a9672411e342f2d6570a110a83c6a82a5a2a8597bde90740e3
+- original_uri: repo://changes/st-0105/manifest.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7-manifest.json
+  sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7
+- original_uri: repo://docs/execplans/ST-0105.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/20f056bd5b8459827139e30b9f88583fd7ff063a0173cdb6fadd4baab3680005-ST-0105.md
+  sha256: 20f056bd5b8459827139e30b9f88583fd7ff063a0173cdb6fadd4baab3680005
+- original_uri: repo://docs/worklogs/ST-0105.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8dc7ac98a5b3a252444643c73b664fed4198e3061f9d54654c7f4e7539846c21-ST-0105.md
+  sha256: 8dc7ac98a5b3a252444643c73b664fed4198e3061f9d54654c7f4e7539846c21
+- original_uri: repo://tests/st0101/test_workspace_bootstrap.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0b7d61befe5d7c20ca09d384ad73b3770a88a027e125e03f97a483990d529304-test_workspace_bootstrap.py
+  sha256: 0b7d61befe5d7c20ca09d384ad73b3770a88a027e125e03f97a483990d529304
+- original_uri: repo://tests/st0102/test_commands_and_docs.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/50331e9a0d42d09fb479e181fd869a2b8e712cf34785e78d63f767060a920038-test_commands_and_docs.py
+  sha256: 50331e9a0d42d09fb479e181fd869a2b8e712cf34785e78d63f767060a920038
+- original_uri: repo://tests/st0102/test_lock_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/0c58c452e97a18556e94b4d679bce4a3a461f9d60de3be00aaadc4041ff702e3-test_lock_contract.py
+  sha256: 0c58c452e97a18556e94b4d679bce4a3a461f9d60de3be00aaadc4041ff702e3
+- original_uri: repo://tests/st0102/test_toolchain_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/e31b90638c90a1c55317de31d6be8a780cb471445bd13549b93e6690436599f7-test_toolchain_contract.py
+  sha256: e31b90638c90a1c55317de31d6be8a780cb471445bd13549b93e6690436599f7
+- original_uri: repo://tests/st0103/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f49eff9c197cf85a1536f85e7c41085be3a028804c26aab98bc36acab2ef40f5-conftest.py
+  sha256: f49eff9c197cf85a1536f85e7c41085be3a028804c26aab98bc36acab2ef40f5
+- original_uri: repo://tests/st0103/test_commands_and_docs.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/595cdeb0963323b11a99afb2d419cba68339fad140b7fae3c18a9db9ee21493b-test_commands_and_docs.py
+  sha256: 595cdeb0963323b11a99afb2d419cba68339fad140b7fae3c18a9db9ee21493b
+- original_uri: repo://tests/st0103/test_lock_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/cde5569443cfda30acb59ee771567852ebff6f892264c5960df6688b3f0bb410-test_lock_contract.py
+  sha256: cde5569443cfda30acb59ee771567852ebff6f892264c5960df6688b3f0bb410
+- original_uri: repo://tests/st0103/test_node_cli.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/fa00fcdee2e79bc91b24e7e00f8678176405fd93d756478e3dd3f3b13eb44ce4-test_node_cli.py
+  sha256: fa00fcdee2e79bc91b24e7e00f8678176405fd93d756478e3dd3f3b13eb44ce4
+- original_uri: repo://tests/st0103/test_toolchain_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/5d4c18eba6f4f03b73e6134a81bb426c34611e486a5acc690e7f5d116affb114-test_toolchain_contract.py
+  sha256: 5d4c18eba6f4f03b73e6134a81bb426c34611e486a5acc690e7f5d116affb114
+- original_uri: repo://tests/st0103/toolchain.test.ts
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/5fb45883baa517a55bd4f3ee1a1f9cd8a772cae656194c8fd248d71c1041de0d-toolchain.test.ts
+  sha256: 5fb45883baa517a55bd4f3ee1a1f9cd8a772cae656194c8fd248d71c1041de0d
+- original_uri: repo://tests/st0104/test_commands_and_docs.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f9b7926a9d46f41f27038ed45add6d7cb3820a045a0fbac97f985b4b1207df5e-test_commands_and_docs.py
+  sha256: f9b7926a9d46f41f27038ed45add6d7cb3820a045a0fbac97f985b4b1207df5e
+- original_uri: repo://tests/st0105/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4b0fe8dc6d88e787a37f5844d49f2e0e66ccc3d11f355f683b509a17f337ed1d-conftest.py
+  sha256: 4b0fe8dc6d88e787a37f5844d49f2e0e66ccc3d11f355f683b509a17f337ed1d
+- original_uri: repo://tests/st0105/fixtures/install_crash_driver.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/852746e773c2cd0ffe7c07f7533d2607aadd1c98f53273a0f0e2bac7f8e848b3-install_crash_driver.py
+  sha256: 852746e773c2cd0ffe7c07f7533d2607aadd1c98f53273a0f0e2bac7f8e848b3
+- original_uri: repo://tests/st0105/test_codegen_cli.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/4a87010f9971fe80193fd1e0a13e6ad8bd38b37b1e4e36d9e319ab41a1a21ae0-test_codegen_cli.py
+  sha256: 4a87010f9971fe80193fd1e0a13e6ad8bd38b37b1e4e36d9e319ab41a1a21ae0
+- original_uri: repo://tests/st0105/test_commands_and_docs.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/67691ec3cbea53023055c5bbfb42b101e4e757e6344f5b92d83996ff60b1ac5a-test_commands_and_docs.py
+  sha256: 67691ec3cbea53023055c5bbfb42b101e4e757e6344f5b92d83996ff60b1ac5a
+- original_uri: repo://tests/st0105/test_determinism_and_safety.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/506ac1bb650ed20668a77a2958d5edc1bdd6482c3ad18a5f559e1d9fbeb8c05f-test_determinism_and_safety.py
+  sha256: 506ac1bb650ed20668a77a2958d5edc1bdd6482c3ad18a5f559e1d9fbeb8c05f
+- original_uri: repo://tests/st0105/test_generated_runtime.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/766de70bda43fd5afe8bd8e8ec656289e7d79c5ba19ca3c3a09d1990642a33c2-test_generated_runtime.py
+  sha256: 766de70bda43fd5afe8bd8e8ec656289e7d79c5ba19ca3c3a09d1990642a33c2
+- original_uri: repo://tests/st0105/test_manifest_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/491b9cbd2a9435c0ee442482514c4eaf4b1d4305c5e6d834abe4a7009fc4348b-test_manifest_contract.py
+  sha256: 491b9cbd2a9435c0ee442482514c4eaf4b1d4305c5e6d834abe4a7009fc4348b
+suite_results:
+- suite_id: TST-004
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: scripts/codegen_toolchain.sh --uv /absolute/path/to/uv --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js gate
+  result: 'PASS with uv 0.12.1, CPython 3.14.6, Node 24.18.1, npm 11.16.0, datamodel-code-generator 0.71.0, Pydantic 2.13.4, openapi-ts 0.99.0, and TypeScript 6.0.3; ST-0104 117 passed in 210.56s, ST-0105 53 passed in 41.51s, no-write regeneration and strict TypeScript compilation passed'
+- command: independent final ST-0105 deep review
+  result: 'PASS; Critical=0 Warning=0 Info=0, independent 53 passed in 40.18s, and a 38,635-entry inode/nlink/mtime/ctime/content snapshot was unchanged'
+- command: ST-0105 subprocess crash and recovery matrix
+  result: 'PASS; existing and fresh install interruptions, a second crash during rollback, journal publish, terminal cleanup tombstone interruption, official-wrapper recovery ordering, and read-only fail-closed behavior were covered'
+- command: strace -f -qq -e trace=network scripts/codegen_toolchain.sh ... check
+  result: 'PASS; exact offline/no-cache/no-sync wrapper check changed no repository state and opened no IPv4 or IPv6 socket'
+- command: isolated pytest regression outside ST-0005
+  result: '696 passed; ST-0002 126/13 skipped, ST-0003 70/31 skipped, ST-0004 59/5 skipped, ST-0006 50, ST-0101 59, ST-0102 47, ST-0103 97, imported-design verification 18, ST-0104 117, and ST-0105 53; 49 PostgreSQL tests were skipped because PostgreSQL 18 tools were unavailable in this shell'
+- command: python3 scripts/bootstrap_workspace.py --check
+  result: 'PASS; 42 directories, changed=[]'
+- command: sha256sum -c /tmp/st0101_protected_before.sha256
+  result: 'PASS for all 111 protected canonical/upstream/ZIP files; baseline-list SHA-256 6a0886f2760a8aef3476eb3886a68180346c1b8042654911478070dc42ee4404'
+- command: generated manifest reconciliation and exact static/syntax checks
+  result: 'PASS; 306 source artifacts, 224 schemas, 302 Python files, 52 TypeScript files, 185 HTTP operations, 105 AsyncAPI messages, 354 exact outputs, Ruff check, and bash -n'
+boundary: >-
+  Local deterministic generation, crash recovery, offline/no-write, type,
+  regression, and independent audit evidence only; formal TST-004 CI, hosted
+  clean clone, GitHub PR, human approval, canonical apply, release, deployment,
+  staging, and production were not executed.

@@ -1,0 +1,11 @@
+Use the attached `ST-0703-pro-design-input-v1.tar.gz` as the complete local
+evidence packet and read `changes/st-0703/DESIGN-DECISION-REQUEST.md` first.
+
+Resolve only ST0703-D1 through ST0703-D4. Preserve the exact canonical Story
+scope and dependencies. Verify current OpenAI SDK/API facts only against the
+official references named in the request.
+
+Return only one complete downloadable UTF-8/LF YAML file named
+`DESIGN_HANDOFF_V1_ST0703_v1.yaml`, rooted exactly at `DESIGN_HANDOFF_V1`.
+Keep it pending and unapproved: human approval not provided, implementation
+authority not granted, formal tests not executed, staging/production not ready.

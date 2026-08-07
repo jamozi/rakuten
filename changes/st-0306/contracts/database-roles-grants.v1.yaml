@@ -1,0 +1,144 @@
+document:
+  id: RAOS-DATABASE-ROLES-GRANTS-001
+  version: 1.0.0
+  story_id: ST-0306
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  epic_id: EPIC-03
+  title: Database roles and grants
+  objective: Apply the approved workload-role, least-privilege grant, and RLS-policy boundary.
+  dependencies: [ST-0303, ST-0305]
+  requirement_ids: [FR-020]
+  design_refs: [RAOS-SEC-001]
+  deliverables: [ROLE_MIGRATION, GRANT_TESTS]
+  acceptance:
+    - PUBLIC_ROLE_READMODEL_ONLY
+    - APPLICATION_ROLES_ARE_NOT_DATABASE_OWNERS
+  required_suites: [TST-011]
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+source_precedence:
+  upstream_role_sql:
+    archive: docs/upstream/RAOS_03_data_model_package_v0.1.zip
+    archive_sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
+    member: RAOS_03_data_model_package_v0.1/sql/RAOS_03_002_roles_and_grants_v0.1.sql
+    member_sha256: 6b9218df65e39ed5b5d38ca593a62ee544e9870296f32a7d7a819008a9d9803e
+  finalized_policy_checkpoint:
+    path: changes/st-0004/database/202607300013_content_expand.sql
+    sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+    translation: EXTRACT_EXACT_22_POLICIES_AND_ACL_REFINEMENT
+  predecessor_manifest:
+    story_id: ST-0305
+    path: changes/st-0305/manifest.yaml
+    sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+database:
+  product: PostgreSQL
+  exact_server_version_num: 180004
+  revision: '202608030006'
+  down_revision: '202608030005'
+  runner_version: 1.5.0
+  transaction_required: true
+roles:
+  - raos_migrator
+  - raos_api_rw
+  - raos_worker_rw
+  - raos_dispatcher_rw
+  - raos_projection_rw
+  - raos_public_ro
+  - raos_reporting_ro
+  - raos_auditor_ro
+role_attributes:
+  login: false
+  superuser: false
+  inherit: true
+  createdb: false
+  createrole: false
+  replication: false
+  bypassrls: false
+  outbound_memberships: forbidden
+role_membership_boundary:
+  fresh_non_superuser_creation:
+    pg_auth_members_roleid: EACH_ST0306_ROLE
+    pg_auth_members_member: CURRENT_MIGRATION_SESSION_ROLE
+    exact_edge_count: 8
+    admin_option: true
+    inherit_option: false
+    set_option: false
+  workload_role_outbound_memberships: forbidden
+  existing_role_path: OUTBOUND_ONLY_PRESERVE_EXTERNAL_INBOUND
+  standalone_validation: OUTBOUND_ONLY_PRESERVE_EXTERNAL_INBOUND
+schemas:
+  - ops
+  - iam
+  - portfolio
+  - catalog
+  - evidence
+  - editorial
+  - ai
+  - policy
+  - publishing
+  - freshness
+  - analytics
+  - finance
+  - readmodel
+public_boundary:
+  schema_usage: [readmodel]
+  table_privileges: [SELECT]
+  function_execute: []
+  all_other_domain_schema_privileges: NONE
+  all_other_domain_object_privileges: NONE
+  database_owner: false
+  database_connect_and_temporary: PREDECESSOR_POSTGRESQL_PUBLIC_BASELINE_UNCHANGED
+default_privileges:
+  table_grants: EXACT_UPSTREAM_ROLE_SQL
+  function_execute_from_public: REVOKED_FOR_MIGRATION_OWNER_GLOBAL_DEFAULT
+  protected_managed_schemas: ALL_13_CURRENT_MANAGED_SCHEMAS
+  owner: MIGRATION_OBJECT_OWNER
+rls:
+  enabled_and_forced_predecessor_tables:
+    - editorial.article_disclosure_context
+    - editorial.article_methodology_binding
+    - editorial.article_template_version
+    - editorial.article_type_version
+    - editorial.content_schema_version
+    - editorial.editorial_methodology_version
+    - editorial.media_asset
+    - editorial.seo_metadata_version
+    - editorial.structured_data_manifest
+    - evidence.first_hand_experience_asset
+    - evidence.first_hand_experience_record
+  exact_policy_count: 22
+  api_policy_command: ALL
+  read_policy_command: SELECT
+translation_boundary:
+  absent_upstream_relations:
+    - ops.audit_export
+    - ops.incident
+    - ops.incident_event
+    - ops.kill_switch_change
+    - ops.release
+  treatment: DEFER_GRANTS_UNTIL_OWNING_STORY_CREATES_RELATION
+  creates_login_roles: false
+  creates_credentials: false
+  creates_tables: false
+  creates_functions: false
+  changes_retention_or_deletion_policy: false
+  production_or_external_operation: false
+downgrade:
+  remove_database_local_policies_grants_and_default_table_acls: true
+  preserve_cluster_roles: true
+  preserve_default_function_public_execute_denial: true
+  reason: Roles may have external login memberships or grants in other databases.
+security_controls: [SEC-DATA-005, SEC-DATA-006]
+required_test_evidence:
+  - DETERMINISTIC_REGENERATION_AND_DRIFT_CHECK
+  - EXACT_POSTGRESQL_18_4_ROLE_ATTRIBUTES
+  - EXACT_FRESH_CREATOR_ADMIN_MEMBERSHIP_EDGES
+  - PUBLIC_READMODEL_ONLY_RUNTIME_PROOF
+  - APPLICATION_NOT_OWNER_RUNTIME_PROOF
+  - RLS_ROLE_POLICY_RUNTIME_PROOF
+  - IMMUTABLE_AUDIT_APPROVAL_PROVIDER_FACT_RUNTIME_PROOF
+  - ONE_REVISION_DOWNGRADE_AND_FORWARD_RECOVERY

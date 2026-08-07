@@ -1,0 +1,127 @@
+schema: RAOS_PRO_DESIGN_BUNDLE_V1
+story_id: ST-1204
+scope: RECORDED_FIXTURE_PUBLICATION_HARDENING_ONLY
+status: PROPOSAL_INPUT_ONLY
+authority: NOT_A_DESIGN_HANDOFF
+implementation_authority: NOT_GRANTED
+human_approval: NOT_PROVIDED
+canonical_reconciliation: PENDING
+formal_test_execution: NOT_EXECUTED
+live_provider_validation: NOT_EXECUTED
+staging_readiness: NOT_READY
+production_readiness: NOT_READY
+assembled_on: 2026-08-06
+
+archive:
+  path: changes/st-1204/ST-1204-pro-design-input-v1.tar.gz
+  sha256: 808df48b123b11a27ed151e5f307e1a54ca4c4f32f9f9992c30b927648c8d603
+  bytes: 112400
+  media_type: application/gzip
+  format: DETERMINISTIC_POSIX_TAR_GZIP
+  regular_file_members: 28
+  hashed_payload_members: 27
+  directories: 0
+  links: 0
+  devices: 0
+
+member_manifest:
+  path: changes/st-1204/pro-design-input.v1.members.sha256
+  sha256: 0afd744a5947d4cb817d202e6c7c6f4224ca32182cbb45ae9ff87f0f6236d338
+  entries: 27
+
+archive_allowlist:
+  path: changes/st-1204/pro-design-bundle.v1.files
+  sha256: 5fdc180c3999267b5a8a6e25dd1b7184a1dcb26c89d7314c42a12e11752d1054
+  entries: 28
+
+request:
+  path: changes/st-1204/DESIGN-DECISION-REQUEST-v1.md
+  sha256: 74208c4b3bff960f6c47c5f94cb04625d6bb93ea17b39106582b1d51cac3c716
+
+submission_message:
+  path: changes/st-1204/PRO-SUBMISSION-MESSAGE-v1.txt
+  sha256: a5256c1e1a2343d2e15ebbda434ae2c9a4d854023b2fa4f82962929d1ce810d3
+
+independent_audit:
+  path: changes/st-1204/ATOMIC-PUBLICATION-AUDIT-v1.md
+  sha256: ee2d2986a2d44ab07ea3e83fe5a320ace771d93d57300ee98716b9c65138b87b
+  disposition: FAIL
+  findings:
+    medium: 1
+    high: 0
+    critical: 0
+
+candidate_checkpoint:
+  authority: UNAPPROVED_LOCAL_CANDIDATE_EVIDENCE
+  source_contract:
+    path: changes/st-1204/contracts/ga4-recorded-fixtures.v1.yaml
+    sha256: 79d6a335cc0fbacda37b403d60d93c59d1004bf76caa299e94cee8f287166e43
+  generator:
+    path: scripts/build_st1204_ga4_recorded_adapter.py
+    sha256: 21d7f0ed30935158b60b905b71fc9ffcb43efe41692134be4dcadd9fa188fe96
+  generated_manifest:
+    path: changes/st-1204/manifest.json
+    sha256: 16d2439bcb097cb45680124a37951711d8b44a5c545b6607bb3345ac34769036
+  fixture_count: 3
+  local_isolated_pytest_before_audit: 63_passed
+  publication_security_audit: FAIL
+
+decisions_requested:
+  - ST1204-FIXTURE-D1
+  - ST1204-FIXTURE-D2
+  - ST1204-FIXTURE-D3
+
+deferred_external_decisions:
+  - id: OD-012
+    topic: privacy_and_consent_mode
+    status: UNRESOLVED
+    safe_default: OPTIONAL_TRACKING_DISABLED
+  - id: OD-015
+    topic: production_provider_credentials
+    status: UNRESOLVED
+    safe_default: RECORDED_FIXTURE_ONLY
+
+generation:
+  tool: GNU tar 1.34
+  command: >-
+    LC_ALL=C tar --sort=name --mtime=@0 --owner=0 --group=0
+    --numeric-owner --format=posix --pax-option=delete=atime,delete=ctime
+    --no-recursion -czf
+    changes/st-1204/ST-1204-pro-design-input-v1.tar.gz -T
+    changes/st-1204/pro-design-bundle.v1.files
+  explicit_allowlist_only: true
+  deterministic_rebuild_comparison: PASS
+
+validation:
+  exact_28_member_closure: PASS
+  unique_member_paths: PASS
+  safe_relative_member_paths: PASS
+  regular_files_only: PASS
+  embedded_manifest_matches_bundle: PASS
+  all_27_archived_payload_hashes: PASS
+  live_source_hashes_match_manifest_at_assembly: PASS
+  canonical_import_verification: PASS
+  high_confidence_secret_scan: PASS
+
+expected_output:
+  display_name: DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml
+  format: UTF8_LF_SINGLE_DOCUMENT_YAML
+  root: DESIGN_HANDOFF_V1
+  proposal_authority: PENDING_UNAPPROVED
+  human_approval: NOT_PROVIDED
+  canonical_reconciliation: PENDING
+  implementation_authority: NOT_GRANTED
+  formal_test_execution: NOT_EXECUTED
+  live_provider_validation: NOT_EXECUTED
+  staging_readiness: NOT_READY
+  production_readiness: NOT_READY
+  open_decisions_semantics: EMPTY_ONLY_FOR_BOUNDED_FIXTURE_PUBLICATION_SCOPE
+  deferred_external_decisions_required:
+    - OD-012
+    - OD-015
+
+approval_boundary:
+  pro_output_is_advice_only: true
+  exact_returned_bytes_require_human_approval: true
+  conflict_free_canonical_reconciliation_required: true
+  implementation_worker_authority_granted_by_this_bundle: false

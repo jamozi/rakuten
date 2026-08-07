@@ -1,0 +1,530 @@
+document:
+  id: RAOS-GA4-RECORDED-FIXTURES-001
+  version: 1.0.0
+  story_id: ST-1204
+  status: LOCAL_SOURCE_CONTRACT_CANDIDATE
+
+story:
+  objective: GA4_AGGREGATE_FACTS_VERSIONED_IMPORT_RECORDED_SLICE
+  dependencies:
+    - ST-0204
+    - ST-0305
+  requirement_ids:
+    - FR-013
+  test_suites:
+    - TST-030
+  open_decisions:
+    - id: OD-012
+      status: HUMAN_DECISION_REQUIRED
+      safe_default: OPTIONAL_TRACKING_DISABLED
+    - id: OD-015
+      status: EXTERNAL_EVIDENCE_REQUIRED
+      safe_default: RECORDED_FIXTURE_ONLY
+
+provenance:
+  canonical_inputs:
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+      sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+    - uri: repo://docs/canonical/03_analytics/RAOS_09_implementation_slices_v1.0.yaml
+      sha256: 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  predecessors:
+    - story_id: ST-0204
+      uri: repo://changes/st-0204/manifest.yaml
+      sha256: 3ceded622c16b7936bf328552ece01f041db6ba037ffe5d81f3f08ad6648efe4
+    - story_id: ST-0305
+      uri: repo://changes/st-0305/manifest.yaml
+      sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+  installed_contract_repository:
+    uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
+    sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+  contract_schemas:
+    - role: run_report_request
+      uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/ga4-run-report-request.schema.json
+      sha256: 2b328df1d95ddea0bb4a4b02b5686f04c9967b5e4ff26988ad8c50ceee20c546
+    - role: canonical_metric_row
+      uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/ga4-metric-row.schema.json
+      sha256: 282009712425519b9242aaed81536ef807eb5f4f9f76e5726e75f6684721830b
+    - role: import_job
+      uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-ga4-v1.schema.json
+      sha256: 9f09de8a01ca10f4348535bb2e7ab12622d6e9ea53c399311fba6d92207c4a3e
+    - role: import_completed_event
+      uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-analytics-import-completed-v1.schema.json
+      sha256: 50f6012ab7da5f2f04a0b4f9b3216f1ac9ea7a51b3c26f972ea24ecdcebea93d
+    - role: daily_metrics_event
+      uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-analytics-daily-metrics-updated-v1.schema.json
+      sha256: a8d28096dc570710ac02349569fea95ea82657b87a854d7799c1735c39ac1dd1
+  official_provider_references:
+    retrieved_on: '2026-08-06'
+    sources:
+      - subject: run_report_method
+        api_version: v1beta
+        uri: https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/properties/runReport
+      - subject: run_report_response
+        api_version: v1beta
+        uri: https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/RunReportResponse
+      - subject: response_metadata
+        api_version: v1beta
+        uri: https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/ResponseMetaData
+      - subject: property_quota
+        api_version: v1beta
+        uri: https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/PropertyQuota
+      - subject: row_wire_shape
+        api_version: v1beta
+        uri: https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/Row
+      - subject: reporting_identity_method
+        api_version: v1alpha
+        uri: https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1alpha/properties/getReportingIdentitySettings
+      - subject: reporting_identity_resource
+        api_version: v1alpha
+        uri: https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1alpha/ReportingIdentitySettings
+      - subject: error_responses
+        api_version: v1
+        uri: https://developers.google.com/analytics/devguides/reporting/data/v1/errors
+      - subject: quotas
+        api_version: v1
+        uri: https://developers.google.com/analytics/devguides/reporting/data/v1/quotas
+      - subject: dimensions_and_metrics
+        api_version: v1
+        uri: https://developers.google.com/analytics/devguides/reporting/data/v1/api-schema
+    semantics:
+      run_report_method: POST
+      run_report_endpoint: https://analyticsdata.googleapis.com/v1beta/properties/1000001204:runReport
+      reporting_identity_method: GET
+      reporting_identity_endpoint: https://analyticsadmin.googleapis.com/v1alpha/properties/1000001204/reportingIdentitySettings
+      request_limit_wire_type: INT64_STRING
+      request_offset_wire_type: INT64_STRING
+      response_headers_and_values: REQUEST_ORDERED
+      response_row_count: TOTAL_MATCHING_ROWS_INDEPENDENT_OF_PAGINATION
+      metric_values: PROVIDER_STRINGS
+      reporting_identity_values:
+        - BLENDED
+        - OBSERVED
+        - DEVICE_BASED
+      quota_error_http_status: 429
+      quota_error_canonical_status: RESOURCE_EXHAUSTED
+
+generation:
+  source_contract: changes/st-1204/contracts/ga4-recorded-fixtures.v1.yaml
+  fixture_root: changes/st-1204/fixtures/recorded
+  manifest_path: changes/st-1204/manifest.json
+  generated_by: scripts/build_st1204_ga4_recorded_adapter.py
+  generation_command: >-
+    uv run --locked --no-sync --no-env-file python
+    scripts/build_st1204_ga4_recorded_adapter.py
+  check_command: >-
+    uv run --locked --no-sync --no-env-file python
+    scripts/build_st1204_ga4_recorded_adapter.py --check
+  format: STRICT_UTF8_LF_CANONICAL_JSON
+  exact_fixture_files:
+    - baseline.json
+    - late-revised.json
+    - provider-error-429.json
+
+hashing:
+  algorithm: SHA-256
+  canonicalization: UTF8_SORTED_KEYS_COMPACT_JSON
+  internal_request_scope: EXACT_INTERNAL_RUN_REPORT_REQUEST_DOCUMENT
+  wire_request_scope: EXACT_RUN_REPORT_JSON_BODY
+  response_scope: EXACT_SANITIZED_PROVIDER_JSON_DOCUMENT
+  ordered_arrays: PRESERVED
+  omitted_defaults: FORBIDDEN_IN_RECORDED_FIXTURES
+
+request_policy:
+  synthetic_property_id: '1000001204'
+  synthetic_property_resource: properties/1000001204
+  site_id: 00000000-0000-4000-8000-000000001204
+  exact_date_range_count: 1
+  exact_dimensions:
+    - date
+    - pagePath
+    - deviceCategory
+  exact_metrics:
+    - sessions
+    - screenPageViews
+    - engagedSessions
+  dimension_filter: REQUIRED_NULL
+  metric_filter: REQUIRED_NULL
+  order_bys: REQUIRED_EMPTY
+  limit: 2
+  offset: 0
+  keep_empty_rows: false
+  return_property_quota: true
+  custom_fields: FORBIDDEN
+  comparisons: FORBIDDEN
+  cohorts: FORBIDDEN
+  metric_aggregations: FORBIDDEN
+  relative_dates: FORBIDDEN
+
+recordings:
+  - recording_id: baseline
+    fixture_file: baseline.json
+    synthetic_marker: SYNTHETIC_TEST_ONLY
+    recorded_at: '2026-08-05T00:00:02Z'
+    internal_request:
+      property_id: '1000001204'
+      date_ranges:
+        - start_date: '2026-07-01'
+          end_date: '2026-07-02'
+          name: null
+      dimensions:
+        - date
+        - pagePath
+        - deviceCategory
+      metrics:
+        - sessions
+        - screenPageViews
+        - engagedSessions
+      dimension_filter: null
+      metric_filter: null
+      order_bys: []
+      limit: 2
+      offset: 0
+      keep_empty_rows: false
+      return_property_quota: true
+    expected_internal_request_sha256: ee206e0ec5d7c98afa2e871a33db134e558a2d854a724832ba834394bb2a22eb
+    wire_request:
+      dateRanges:
+        - startDate: '2026-07-01'
+          endDate: '2026-07-02'
+      dimensions:
+        - name: date
+        - name: pagePath
+        - name: deviceCategory
+      metrics:
+        - name: sessions
+        - name: screenPageViews
+        - name: engagedSessions
+      limit: '2'
+      offset: '0'
+      keepEmptyRows: false
+      returnPropertyQuota: true
+    expected_wire_request_sha256: 42a74836abe8d2be8cea6c4ffa47a3899e22cdec3f9ba31aa21be23622c7836a
+    run_report_capture:
+      endpoint: https://analyticsdata.googleapis.com/v1beta/properties/1000001204:runReport
+      api_version: v1beta
+      retrieved_at: '2026-08-05T00:00:00Z'
+      response:
+        dimensionHeaders:
+          - name: date
+          - name: pagePath
+          - name: deviceCategory
+        metricHeaders:
+          - name: sessions
+            type: TYPE_INTEGER
+          - name: screenPageViews
+            type: TYPE_INTEGER
+          - name: engagedSessions
+            type: TYPE_INTEGER
+        rows:
+          - dimensionValues:
+              - value: '20260701'
+              - value: /synthetic/guide-alpha
+              - value: mobile
+            metricValues:
+              - value: '12'
+              - value: '20'
+              - value: '8'
+          - dimensionValues:
+              - value: '20260702'
+              - value: /synthetic/guide-beta
+              - value: desktop
+            metricValues:
+              - value: '7'
+              - value: '11'
+              - value: '5'
+        rowCount: 3
+        metadata:
+          dataLossFromOtherRow: false
+          samplingMetadatas:
+            - samplesReadCount: '80'
+              samplingSpaceSize: '100'
+          schemaRestrictionResponse:
+            activeMetricRestrictions: []
+          currencyCode: JPY
+          timeZone: Asia/Tokyo
+          emptyReason: ''
+          subjectToThresholding: false
+        propertyQuota:
+          tokensPerDay:
+            consumed: 1
+            remaining: 199999
+          tokensPerHour:
+            consumed: 1
+            remaining: 39999
+          concurrentRequests:
+            consumed: 1
+            remaining: 9
+          serverErrorsPerProjectPerHour:
+            consumed: 0
+            remaining: 10
+          potentiallyThresholdedRequestsPerHour:
+            consumed: 0
+            remaining: 120
+          tokensPerProjectPerHour:
+            consumed: 1
+            remaining: 13999
+        kind: analyticsData#runReport
+      expected_response_sha256: 17d641615b48a97ee681308c95b844019361ae61e20c66edb633e8c41a161584
+    reporting_identity_capture:
+      endpoint: https://analyticsadmin.googleapis.com/v1alpha/properties/1000001204/reportingIdentitySettings
+      api_version: v1alpha
+      retrieved_at: '2026-08-05T00:00:01Z'
+      response:
+        name: properties/1000001204/reportingIdentitySettings
+        reportingIdentity: DEVICE_BASED
+      expected_response_sha256: f08c8c440562901e6ddbc56ce73a28a43a14a4d4691e432cdfe0e0249baa9ce3
+    expected_semantics:
+      outcome: SUCCESS
+      returned_row_count: 2
+      provider_row_count: 3
+      row_count_independent_of_pagination: true
+      canonical_row_count: 2
+      configuration_snapshot: IN_FIXTURE_ONLY
+      supersession_claim: NONE
+
+  - recording_id: late-revised
+    fixture_file: late-revised.json
+    synthetic_marker: SYNTHETIC_TEST_ONLY
+    recorded_at: '2026-08-06T00:00:02Z'
+    internal_request:
+      property_id: '1000001204'
+      date_ranges:
+        - start_date: '2026-07-01'
+          end_date: '2026-07-02'
+          name: null
+      dimensions:
+        - date
+        - pagePath
+        - deviceCategory
+      metrics:
+        - sessions
+        - screenPageViews
+        - engagedSessions
+      dimension_filter: null
+      metric_filter: null
+      order_bys: []
+      limit: 2
+      offset: 0
+      keep_empty_rows: false
+      return_property_quota: true
+    expected_internal_request_sha256: ee206e0ec5d7c98afa2e871a33db134e558a2d854a724832ba834394bb2a22eb
+    wire_request:
+      dateRanges:
+        - startDate: '2026-07-01'
+          endDate: '2026-07-02'
+      dimensions:
+        - name: date
+        - name: pagePath
+        - name: deviceCategory
+      metrics:
+        - name: sessions
+        - name: screenPageViews
+        - name: engagedSessions
+      limit: '2'
+      offset: '0'
+      keepEmptyRows: false
+      returnPropertyQuota: true
+    expected_wire_request_sha256: 42a74836abe8d2be8cea6c4ffa47a3899e22cdec3f9ba31aa21be23622c7836a
+    run_report_capture:
+      endpoint: https://analyticsdata.googleapis.com/v1beta/properties/1000001204:runReport
+      api_version: v1beta
+      retrieved_at: '2026-08-06T00:00:00Z'
+      response:
+        dimensionHeaders:
+          - name: date
+          - name: pagePath
+          - name: deviceCategory
+        metricHeaders:
+          - name: sessions
+            type: TYPE_INTEGER
+          - name: screenPageViews
+            type: TYPE_INTEGER
+          - name: engagedSessions
+            type: TYPE_INTEGER
+        rows:
+          - dimensionValues:
+              - value: '20260701'
+              - value: /synthetic/guide-alpha
+              - value: mobile
+            metricValues:
+              - value: '14'
+              - value: '23'
+              - value: '10'
+          - dimensionValues:
+              - value: '20260702'
+              - value: /synthetic/guide-beta
+              - value: desktop
+            metricValues:
+              - value: '8'
+              - value: '13'
+              - value: '6'
+        rowCount: 3
+        metadata:
+          dataLossFromOtherRow: false
+          samplingMetadatas:
+            - samplesReadCount: '90'
+              samplingSpaceSize: '110'
+          schemaRestrictionResponse:
+            activeMetricRestrictions: []
+          currencyCode: JPY
+          timeZone: Asia/Tokyo
+          emptyReason: ''
+          subjectToThresholding: false
+        propertyQuota:
+          tokensPerDay:
+            consumed: 1
+            remaining: 199998
+          tokensPerHour:
+            consumed: 1
+            remaining: 39998
+          concurrentRequests:
+            consumed: 1
+            remaining: 9
+          serverErrorsPerProjectPerHour:
+            consumed: 0
+            remaining: 10
+          potentiallyThresholdedRequestsPerHour:
+            consumed: 0
+            remaining: 120
+          tokensPerProjectPerHour:
+            consumed: 1
+            remaining: 13998
+        kind: analyticsData#runReport
+      expected_response_sha256: 90678fce8210799dc2aeecb091d41aa08d58de2c473c784535d47f1661241e09
+    reporting_identity_capture:
+      endpoint: https://analyticsadmin.googleapis.com/v1alpha/properties/1000001204/reportingIdentitySettings
+      api_version: v1alpha
+      retrieved_at: '2026-08-06T00:00:01Z'
+      response:
+        name: properties/1000001204/reportingIdentitySettings
+        reportingIdentity: DEVICE_BASED
+      expected_response_sha256: f08c8c440562901e6ddbc56ce73a28a43a14a4d4691e432cdfe0e0249baa9ce3
+    expected_semantics:
+      outcome: SUCCESS
+      returned_row_count: 2
+      provider_row_count: 3
+      row_count_independent_of_pagination: true
+      canonical_row_count: 2
+      configuration_snapshot: IN_FIXTURE_ONLY
+      independently_inspectable_from_baseline: true
+      supersession_claim: NONE
+
+  - recording_id: provider-error-429
+    fixture_file: provider-error-429.json
+    synthetic_marker: SYNTHETIC_TEST_ONLY
+    recorded_at: '2026-08-05T00:01:00Z'
+    internal_request:
+      property_id: '1000001204'
+      date_ranges:
+        - start_date: '2026-07-01'
+          end_date: '2026-07-02'
+          name: null
+      dimensions:
+        - date
+        - pagePath
+        - deviceCategory
+      metrics:
+        - sessions
+        - screenPageViews
+        - engagedSessions
+      dimension_filter: null
+      metric_filter: null
+      order_bys: []
+      limit: 2
+      offset: 0
+      keep_empty_rows: false
+      return_property_quota: true
+    expected_internal_request_sha256: ee206e0ec5d7c98afa2e871a33db134e558a2d854a724832ba834394bb2a22eb
+    wire_request:
+      dateRanges:
+        - startDate: '2026-07-01'
+          endDate: '2026-07-02'
+      dimensions:
+        - name: date
+        - name: pagePath
+        - name: deviceCategory
+      metrics:
+        - name: sessions
+        - name: screenPageViews
+        - name: engagedSessions
+      limit: '2'
+      offset: '0'
+      keepEmptyRows: false
+      returnPropertyQuota: true
+    expected_wire_request_sha256: 42a74836abe8d2be8cea6c4ffa47a3899e22cdec3f9ba31aa21be23622c7836a
+    run_report_capture:
+      endpoint: https://analyticsdata.googleapis.com/v1beta/properties/1000001204:runReport
+      api_version: v1beta
+      retrieved_at: '2026-08-05T00:01:00Z'
+      http_status: 429
+      response:
+        error:
+          code: 429
+          message: Synthetic quota limit reached.
+          status: RESOURCE_EXHAUSTED
+      expected_response_sha256: d32156c4a9f26d5d57bde7aab4dc604d3843cd3da503d16af340e93be1879495
+    reporting_identity_capture: NOT_ATTEMPTED_AFTER_PROVIDER_ERROR
+    expected_semantics:
+      outcome: PROVIDER_ERROR
+      error_sanitized: true
+      canonical_row_count: 0
+      retry_scheduling_policy: NOT_DEFINED
+      configuration_snapshot: NOT_CAPTURED_FOR_FAILED_REQUEST
+      supersession_claim: NONE
+
+recorded_result_policy:
+  synthetic_property_only: true
+  synthetic_page_path_prefix: /synthetic/
+  internal_request_hash: REQUIRED
+  wire_request_hash: REQUIRED
+  provider_response_hash: REQUIRED
+  reporting_identity_response_hash: REQUIRED_FOR_SUCCESS
+  dimension_headers: EXACT_REQUEST_ORDER
+  metric_headers: EXACT_REQUEST_ORDER
+  dimension_values: EXACT_PROVIDER_ORDER
+  metric_values: PRESERVE_PROVIDER_STRINGS
+  provider_row_count: PRESERVE_WITHOUT_PAGINATION_REINTERPRETATION
+  subject_to_thresholding: PRESERVE_WITHOUT_REINTERPRETATION
+  data_loss_from_other_row: PRESERVE_WITHOUT_REINTERPRETATION
+  sampling_metadata: PRESERVE_WITHOUT_REINTERPRETATION
+  timezone: PRESERVE_WITHOUT_REINTERPRETATION
+  currency: PRESERVE_WITHOUT_REINTERPRETATION
+  empty_reason: PRESERVE_WITHOUT_REINTERPRETATION
+  property_quota: PRESERVE_WITHOUT_REINTERPRETATION
+  reporting_identity: PRESERVE_WITHOUT_REINTERPRETATION
+  baseline_and_late_revised: SEPARATELY_INSPECTABLE_NO_SUPERSESSION_CLAIM
+  provider_error_429: SANITIZED_NO_CANONICAL_ROWS
+
+boundary:
+  network: FORBIDDEN
+  credentials: FORBIDDEN
+  environment_credentials: FORBIDDEN
+  google_sdk: FORBIDDEN
+  live_api: NOT_USED
+  public_collection: FORBIDDEN
+  job_dispatch: FORBIDDEN
+  event_publication: FORBIDDEN
+  database_writes: FORBIDDEN
+  persistent_writes: FORBIDDEN
+  site_id_to_property_id_mapping: NOT_DEFINED
+  admin_config_snapshot_persistence: NOT_DEFINED
+  retry_scheduling_policy: NOT_DEFINED
+  numeric_conversion_policy: NOT_DEFINED
+  dimension_schema_version: NOT_DEFINED
+  metric_date_and_grain_hash: NOT_DEFINED
+  durable_supersession: NOT_DEFINED
+  persistence_mapping: NOT_DEFINED
+  consent_and_privacy_configuration: NOT_DEFINED
+  local_result: SOURCE_CONTRACT_CANDIDATE_ONLY
+  formal_tst_030: NOT_EXECUTED
+  production_readiness: NOT_READY

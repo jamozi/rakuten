@@ -1,0 +1,3310 @@
+document:
+  id: RAOS-BACKLOG-STORIES-001
+  version: '1.0'
+  note: No time estimate. size is scope complexity only.
+stories:
+- id: ST-0001
+  epic_id: EPIC-00
+  title: Import canonical design package
+  objective: 設計Artifactをread-only upstreamとcanonicalへ配置
+  depends_on: []
+  requirement_ids: []
+  design_refs:
+  - RAOS-INTEGRATION-001
+  deliverables:
+  - docs/upstream
+  - docs/canonical
+  - manifest
+  acceptance_criteria:
+  - Checksum一致
+  - 読み順がREADMEに記載
+  test_suites:
+  - TST-001
+  priority: P0
+  mvp: true
+  size: S
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0002
+  epic_id: EPIC-00
+  title: Apply job-state canonical revision
+  objective: Job状態差分を正式Migration/contract revisionへ移植
+  depends_on:
+  - ST-0001
+  requirement_ids:
+  - FR-020
+  design_refs:
+  - INT-DEC-003
+  deliverables:
+  - migration
+  - OpenAPI/AsyncAPI revision
+  - state tests
+  acceptance_criteria:
+  - 旧状態mapping
+  - 全遷移test
+  - 直接proposal適用なし
+  test_suites:
+  - TST-002
+  - TST-008
+  - TST-010
+  - TST-013
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0003
+  epic_id: EPIC-00
+  title: Apply AI governance canonical revision
+  objective: AI Task/Dataset/Release resourceを正式契約へ追加
+  depends_on:
+  - ST-0001
+  requirement_ids:
+  - FR-018
+  design_refs:
+  - INT-DEC-004
+  deliverables:
+  - DB/API/event revision
+  - generated types
+  acceptance_criteria:
+  - 互換性test
+  - public isolation
+  test_suites:
+  - TST-002
+  - TST-003
+  - TST-008
+  - TST-012
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0004
+  epic_id: EPIC-00
+  title: Apply content canonical revision
+  objective: Content AST/Methodology/SEO/Manifestを正式契約へ追加
+  depends_on:
+  - ST-0001
+  requirement_ids:
+  - FR-007
+  - FR-010
+  design_refs:
+  - INT-DEC-005
+  deliverables:
+  - DB/API/AI schema revision
+  acceptance_criteria:
+  - 5 article fixtures
+  - breaking change checks
+  test_suites:
+  - TST-002
+  - TST-003
+  - TST-008
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0005
+  epic_id: EPIC-00
+  title: Install status registry workflow
+  objective: Story/PRから実装・検証状態を更新できる仕組み
+  depends_on:
+  - ST-0001
+  requirement_ids:
+  - FR-020
+  design_refs:
+  - RAOS-STATUS-TAXONOMY-001
+  deliverables:
+  - status validator
+  - PR check
+  acceptance_criteria:
+  - 不正昇格をCI拒否
+  test_suites:
+  - TST-001
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0006
+  epic_id: EPIC-00
+  title: Open-decision gate validator
+  objective: Blocking決定をRelease/Gateへ反映
+  depends_on:
+  - ST-0005
+  requirement_ids: []
+  design_refs:
+  - RAOS-OPEN-DECISIONS-001
+  deliverables:
+  - decision loader
+  - gate blocker report
+  acceptance_criteria:
+  - 未解決blockingでrelease不可
+  test_suites:
+  - TST-005
+  - TST-032
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0101
+  epic_id: EPIC-01
+  title: Create monorepo layout
+  objective: apps/packages/contracts/infra/tests/docsを構築
+  depends_on:
+  - ST-0001
+  requirement_ids: []
+  design_refs:
+  - RAOS-ARCH-001
+  - RAOS-CODEX-001
+  deliverables:
+  - workspace config
+  - README
+  - AGENTS.md
+  acceptance_criteria:
+  - clean cloneでbootstrap可能
+  test_suites:
+  - TST-001
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0102
+  epic_id: EPIC-01
+  title: Pin Python toolchain
+  objective: Python、uv/lock、ruff、type、pytestを固定
+  depends_on:
+  - ST-0101
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - pyproject
+  - lockfile
+  - commands
+  acceptance_criteria:
+  - deterministic install
+  test_suites:
+  - TST-001
+  - TST-005
+  priority: P0
+  mvp: true
+  size: S
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0103
+  epic_id: EPIC-01
+  title: Pin Node toolchain
+  objective: Node、package manager、Next.js、TypeScriptを固定
+  depends_on:
+  - ST-0101
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - package config
+  - lockfile
+  acceptance_criteria:
+  - deterministic install
+  test_suites:
+  - TST-001
+  - TST-006
+  priority: P0
+  mvp: true
+  size: S
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0104
+  epic_id: EPIC-01
+  title: Install contract repository
+  objective: OpenAPI/AsyncAPI/Schema/AI/Content契約を配置
+  depends_on:
+  - ST-0101
+  - ST-0002
+  - ST-0003
+  - ST-0004
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - contracts tree
+  - loader
+  acceptance_criteria:
+  - 全ref/hash解決
+  test_suites:
+  - TST-002
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0105
+  epic_id: EPIC-01
+  title: Generate Python and TypeScript types
+  objective: 契約から型/Clientを決定的生成
+  depends_on:
+  - ST-0104
+  - ST-0102
+  - ST-0103
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - generated python
+  - generated ts
+  - generation scripts
+  acceptance_criteria:
+  - 二回生成差分なし
+  test_suites:
+  - TST-004
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0106
+  epic_id: EPIC-01
+  title: Create base CI
+  objective: lint/type/contracts/unit/secretをPRで実行
+  depends_on:
+  - ST-0102
+  - ST-0103
+  - ST-0104
+  requirement_ids: []
+  design_refs:
+  - RAOS-SEC-001
+  deliverables:
+  - GitHub workflows
+  acceptance_criteria:
+  - required jobs local reproduction
+  test_suites:
+  - TST-001
+  - TST-002
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0107
+  epic_id: EPIC-01
+  title: Install PR governance
+  objective: CODEOWNERS、PR template、ruleset definition
+  depends_on:
+  - ST-0106
+  requirement_ids: []
+  design_refs:
+  - RAOS-CODEX-001
+  - RAOS-SEC-001
+  deliverables:
+  - CODEOWNERS
+  - templates
+  - ruleset docs
+  acceptance_criteria:
+  - contract/migration/security owner required
+  test_suites:
+  - TST-001
+  priority: P0
+  mvp: true
+  size: S
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0201
+  epic_id: EPIC-02
+  title: Local PostgreSQL 18 service
+  objective: 再現可能なLocal/CI DBを構築
+  depends_on:
+  - ST-0102
+  requirement_ids: []
+  design_refs:
+  - RAOS-DATA-001
+  deliverables:
+  - compose/service
+  - health check
+  acceptance_criteria:
+  - version assertion
+  test_suites:
+  - TST-008
+  priority: P0
+  mvp: true
+  size: S
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0202
+  epic_id: EPIC-02
+  title: Local S3-compatible object service
+  objective: Raw/Snapshot用Local storage
+  depends_on:
+  - ST-0102
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - service
+  - bucket bootstrap
+  acceptance_criteria:
+  - put/get/version fixture
+  test_suites:
+  - TST-014
+  priority: P0
+  mvp: true
+  size: S
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0203
+  epic_id: EPIC-02
+  title: Local queue abstraction
+  objective: at-least-onceを再現するQueue fake
+  depends_on:
+  - ST-0102
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - queue port
+  - fake
+  - duplicate fixture
+  acceptance_criteria:
+  - duplicate/out-of-order injection
+  test_suites:
+  - TST-013
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0204
+  epic_id: EPIC-02
+  title: Configuration and secret loader
+  objective: 環境別typed configとSecret reference
+  depends_on:
+  - ST-0102
+  - ST-0103
+  requirement_ids: []
+  design_refs:
+  - RAOS-SEC-001
+  deliverables:
+  - config schema
+  - redacted diagnostics
+  acceptance_criteria:
+  - secret not logged
+  - missing required fails
+  test_suites:
+  - TST-005
+  - TST-031
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0205
+  epic_id: EPIC-02
+  title: Synthetic data factory
+  objective: 全Domainの安全なFixture生成
+  depends_on:
+  - ST-0201
+  - ST-0202
+  requirement_ids: []
+  design_refs:
+  - RAOS-TEST-001
+  deliverables:
+  - factories
+  - seed scenarios
+  acceptance_criteria:
+  - review body/PIIなし
+  test_suites:
+  - TST-005
+  - TST-031
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0301
+  epic_id: EPIC-03
+  title: Migration framework
+  objective: Version、transaction、lock、historyを実装
+  depends_on:
+  - ST-0201
+  - ST-0002
+  - ST-0003
+  - ST-0004
+  requirement_ids: []
+  design_refs:
+  - RAOS-DATA-001
+  deliverables:
+  - migration runner
+  - history table
+  acceptance_criteria:
+  - zero-to-latest
+  test_suites:
+  - TST-008
+  - TST-009
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0302
+  epic_id: EPIC-03
+  title: Foundation schemas and extensions
+  objective: MIG-001相当を実装
+  depends_on:
+  - ST-0301
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - schemas
+  - types
+  - uuidv7 validation
+  acceptance_criteria:
+  - baseline validation SQL pass
+  test_suites:
+  - TST-008
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0303
+  epic_id: EPIC-03
+  title: IAM/OPS schemas
+  objective: IAM、Job、Outbox、Inbox、Auditを実装
+  depends_on:
+  - ST-0302
+  requirement_ids:
+  - FR-019
+  - FR-020
+  design_refs: []
+  deliverables:
+  - tables
+  - constraints
+  - indexes
+  acceptance_criteria:
+  - state/immutable/idempotency constraints
+  test_suites:
+  - TST-008
+  - TST-011
+  - TST-013
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0304
+  epic_id: EPIC-03
+  title: Domain schemas
+  objective: Portfolio/Catalog/Evidence/Editorial/AI/Policyを段階実装
+  depends_on:
+  - ST-0303
+  requirement_ids:
+  - FR-001
+  - FR-002
+  - FR-003
+  - FR-004
+  - FR-007
+  - FR-018
+  design_refs: []
+  deliverables:
+  - domain migrations
+  acceptance_criteria:
+  - catalog/data tests
+  test_suites:
+  - TST-008
+  - TST-010
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0305
+  epic_id: EPIC-03
+  title: Publication/analytics/finance schemas
+  objective: Snapshot/Readmodel/Freshness/Analytics/Financeを実装
+  depends_on:
+  - ST-0304
+  requirement_ids:
+  - FR-010
+  - FR-013
+  - FR-014
+  - FR-015
+  design_refs: []
+  deliverables:
+  - migrations
+  acceptance_criteria:
+  - public isolation/finance states
+  test_suites:
+  - TST-008
+  - TST-011
+  - TST-030
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0306
+  epic_id: EPIC-03
+  title: Database roles and grants
+  objective: 各Workload Roleを適用
+  depends_on:
+  - ST-0303
+  - ST-0305
+  requirement_ids:
+  - FR-020
+  design_refs:
+  - RAOS-SEC-001
+  deliverables:
+  - role migrations
+  - grant tests
+  acceptance_criteria:
+  - public role readmodel only
+  - app not owner
+  test_suites:
+  - TST-011
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0307
+  epic_id: EPIC-03
+  title: Migration upgrade fixtures
+  objective: 旧VersionとAlignment dataのupgradeを固定
+  depends_on:
+  - ST-0305
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - versioned DB fixtures
+  acceptance_criteria:
+  - upgrade/rollback strategy pass
+  test_suites:
+  - TST-010
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0308
+  epic_id: EPIC-03
+  title: Persistence ports and repositories
+  objective: Domain portをDBへ実装
+  depends_on:
+  - ST-0304
+  - ST-0105
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - repositories
+  - transaction boundary
+  acceptance_criteria:
+  - cross-module write rules
+  test_suites:
+  - TST-005
+  - TST-008
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0401
+  epic_id: EPIC-04
+  title: OIDC adapter and admin login
+  objective: Production-ready OIDC境界を実装
+  depends_on:
+  - ST-0103
+  - ST-0204
+  requirement_ids: []
+  design_refs:
+  - RAOS-SEC-001
+  - RAOS-UI-001
+  deliverables:
+  - OIDC port
+  - callback
+  - session
+  acceptance_criteria:
+  - state/nonce/PKCE/session rotation
+  test_suites:
+  - TST-012
+  - TST-022
+  - TST-026
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-010
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0402
+  epic_id: EPIC-04
+  title: MFA and step-up
+  objective: Critical Commandの再認証
+  depends_on:
+  - ST-0401
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - MFA claim
+  - step-up middleware
+  acceptance_criteria:
+  - expired/no MFA拒否
+  test_suites:
+  - TST-012
+  - TST-022
+  - TST-026
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0403
+  epic_id: EPIC-04
+  title: Authorization policy engine
+  objective: Role/Scope/Site/State判定
+  depends_on:
+  - ST-0306
+  - ST-0401
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - policy engine
+  - decorators/dependencies
+  acceptance_criteria:
+  - deny default
+  - horizontal/vertical negative
+  test_suites:
+  - TST-011
+  - TST-012
+  - TST-026
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0404
+  epic_id: EPIC-04
+  title: HTTP security baseline
+  objective: CSRF、CSP、headers、error hygiene
+  depends_on:
+  - ST-0401
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - middleware
+  - headers
+  - problem redaction
+  acceptance_criteria:
+  - security tests pass
+  test_suites:
+  - TST-012
+  - TST-026
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0405
+  epic_id: EPIC-04
+  title: Audit event service
+  objective: Critical actionを不変記録
+  depends_on:
+  - ST-0303
+  - ST-0403
+  requirement_ids:
+  - FR-020
+  design_refs: []
+  deliverables:
+  - audit writer/query
+  acceptance_criteria:
+  - actor/reason/correlation/hash
+  test_suites:
+  - TST-011
+  - TST-012
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0406
+  epic_id: EPIC-04
+  title: Secure object/file intake
+  objective: Quarantine/scan/CSV protection
+  depends_on:
+  - ST-0202
+  - ST-0403
+  requirement_ids: []
+  design_refs:
+  - RAOS-SEC-001
+  deliverables:
+  - upload service
+  - scan interface
+  acceptance_criteria:
+  - malicious fixtures rejected
+  test_suites:
+  - TST-014
+  - TST-026
+  - TST-031
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0407
+  epic_id: EPIC-04
+  title: Secret and workload identity integration
+  objective: Provider/DB/CIの短期・分離Credential
+  depends_on:
+  - ST-0204
+  requirement_ids: []
+  design_refs:
+  - RAOS-SEC-001
+  deliverables:
+  - secret port
+  - rotation hooks
+  acceptance_criteria:
+  - no secret in logs/repo
+  test_suites:
+  - TST-026
+  - TST-031
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0501
+  epic_id: EPIC-05
+  title: Portfolio CRUD and workflow
+  objective: Category/Keyword/Intent/Planを実装
+  depends_on:
+  - ST-0308
+  - ST-0403
+  requirement_ids:
+  - FR-001
+  design_refs: []
+  deliverables:
+  - domain/API
+  acceptance_criteria:
+  - stable IDs/version/concurrency
+  test_suites:
+  - TST-005
+  - TST-012
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0502
+  epic_id: EPIC-05
+  title: Rakuten adapter recorded
+  objective: 商品検索AdapterとRaw保存
+  depends_on:
+  - ST-0202
+  - ST-0308
+  requirement_ids:
+  - FR-002
+  design_refs: []
+  deliverables:
+  - adapter
+  - canonical page
+  - fixtures
+  acceptance_criteria:
+  - retry/rate/pagination/raw hash
+  test_suites:
+  - TST-014
+  - TST-015
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0503
+  epic_id: EPIC-05
+  title: Catalog normalization
+  objective: Candidate/Offer/Observationを正規化
+  depends_on:
+  - ST-0502
+  requirement_ids:
+  - FR-003
+  - FR-004
+  design_refs: []
+  deliverables:
+  - normalizer
+  - repositories
+  acceptance_criteria:
+  - source/timestamp/confidence preserved
+  test_suites:
+  - TST-005
+  - TST-007
+  - TST-008
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0504
+  epic_id: EPIC-05
+  title: Product identity decision engine
+  objective: 自動候補とHuman統合/分離Decision
+  depends_on:
+  - ST-0503
+  requirement_ids:
+  - FR-003
+  design_refs: []
+  deliverables:
+  - rule engine
+  - decision history
+  acceptance_criteria:
+  - ambiguous defaults to review
+  - supersede not mutate
+  test_suites:
+  - TST-007
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-006
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0505
+  epic_id: EPIC-05
+  title: Rakuten live bounded smoke
+  objective: 実Credentialで低影響検証
+  depends_on:
+  - ST-0502
+  requirement_ids:
+  - FR-002
+  design_refs: []
+  deliverables:
+  - live smoke report
+  acceptance_criteria:
+  - auth/schema/rate observed
+  test_suites:
+  - TST-016
+  priority: P0
+  mvp: true
+  size: S
+  open_decisions:
+  - OD-015
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0506
+  epic_id: EPIC-05
+  title: Portfolio/catalog admin UI
+  objective: 管理画面を実装
+  depends_on:
+  - ST-0501
+  - ST-0504
+  - ST-1101
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - screens PORT/CAT
+  acceptance_criteria:
+  - keyboard/authz/concurrency
+  test_suites:
+  - TST-022
+  - TST-023
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0601
+  epic_id: EPIC-06
+  title: Raw artifact registry
+  objective: 原本Hash、provenance、object ref
+  depends_on:
+  - ST-0202
+  - ST-0308
+  requirement_ids:
+  - FR-002
+  - FR-004
+  design_refs: []
+  deliverables:
+  - artifact service
+  acceptance_criteria:
+  - immutable/tamper detection
+  test_suites:
+  - TST-014
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0602
+  epic_id: EPIC-06
+  title: Fact extraction and validation
+  objective: 原本から型付きFactを作成
+  depends_on:
+  - ST-0601
+  - ST-0503
+  requirement_ids:
+  - FR-004
+  design_refs: []
+  deliverables:
+  - fact service
+  - validators
+  acceptance_criteria:
+  - unit/time/source/confidence
+  test_suites:
+  - TST-005
+  - TST-007
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0603
+  epic_id: EPIC-06
+  title: Conflict detection
+  objective: 同一属性の矛盾を検出
+  depends_on:
+  - ST-0602
+  requirement_ids:
+  - FR-008
+  design_refs: []
+  deliverables:
+  - conflict rules
+  - queue
+  acceptance_criteria:
+  - conflict not silently resolved
+  test_suites:
+  - TST-007
+  - TST-020
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0604
+  epic_id: EPIC-06
+  title: Source packet lifecycle
+  objective: Draft/approve/version/lockを実装
+  depends_on:
+  - ST-0602
+  - ST-0603
+  - ST-0403
+  requirement_ids:
+  - FR-006
+  design_refs: []
+  deliverables:
+  - packet service/API
+  acceptance_criteria:
+  - unapproved cannot generate
+  test_suites:
+  - TST-012
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0605
+  epic_id: EPIC-06
+  title: Claim/evidence service
+  objective: ClaimとFactのLink/Coverage
+  depends_on:
+  - ST-0604
+  requirement_ids:
+  - FR-007
+  design_refs: []
+  deliverables:
+  - claim service
+  - coverage
+  acceptance_criteria:
+  - major 100% rule
+  test_suites:
+  - TST-020
+  - TST-021
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0606
+  epic_id: EPIC-06
+  title: Evidence admin workspace
+  objective: Source/Fact/Conflict/Matrix UI
+  depends_on:
+  - ST-0604
+  - ST-0605
+  - ST-1101
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - EVD screens
+  acceptance_criteria:
+  - source within two actions
+  - a11y
+  test_suites:
+  - TST-022
+  - TST-024
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0701
+  epic_id: EPIC-07
+  title: AI contract registry loader
+  objective: Task/Prompt/Schema/RouteをHash検証
+  depends_on:
+  - ST-0104
+  - ST-0003
+  requirement_ids:
+  - FR-018
+  design_refs: []
+  deliverables:
+  - registry loader
+  acceptance_criteria:
+  - unknown/hash mismatch fail
+  test_suites:
+  - TST-001
+  - TST-017
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0702
+  epic_id: EPIC-07
+  title: Context pack builder
+  objective: Allowlist FactからCanonical inputを作る
+  depends_on:
+  - ST-0604
+  - ST-0701
+  requirement_ids:
+  - FR-006
+  design_refs: []
+  deliverables:
+  - manifest builder
+  - token budget
+  acceptance_criteria:
+  - important fact truncation fails
+  test_suites:
+  - TST-005
+  - TST-019
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0703
+  epic_id: EPIC-07
+  title: OpenAI Responses adapter recorded
+  objective: Structured output/refusal/usageを実装
+  depends_on:
+  - ST-0701
+  - ST-0204
+  requirement_ids:
+  - FR-018
+  design_refs: []
+  deliverables:
+  - provider port/adapter
+  acceptance_criteria:
+  - store=false config
+  - tools none
+  - recorded error
+  test_suites:
+  - TST-017
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0704
+  epic_id: EPIC-07
+  title: Model router and budget
+  objective: Task適格性、budget、fallbackを実装
+  depends_on:
+  - ST-0703
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - router
+  - circuit breaker
+  - cost guard
+  acceptance_criteria:
+  - unsafe fallback prohibited
+  test_suites:
+  - TST-005
+  - TST-017
+  - TST-019
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-009
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0705
+  epic_id: EPIC-07
+  title: AI output validators
+  objective: Fact/identity/policy/secretを検査
+  depends_on:
+  - ST-0702
+  - ST-0703
+  - ST-0605
+  requirement_ids:
+  - FR-007
+  - FR-008
+  design_refs: []
+  deliverables:
+  - validator pipeline
+  acceptance_criteria:
+  - schema pass alone not accepted
+  test_suites:
+  - TST-019
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0706
+  epic_id: EPIC-07
+  title: AI job orchestration
+  objective: Job、artifact、retry、quarantine
+  depends_on:
+  - ST-0303
+  - ST-0704
+  - ST-0705
+  requirement_ids:
+  - FR-018
+  design_refs: []
+  deliverables:
+  - workers
+  - events
+  acceptance_criteria:
+  - idempotent/deadline/cost
+  test_suites:
+  - TST-013
+  - TST-017
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0707
+  epic_id: EPIC-07
+  title: Evaluation harness
+  objective: Dataset/metric/human label/release decision
+  depends_on:
+  - ST-0705
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - eval runner
+  - reports
+  acceptance_criteria:
+  - locked holdout
+  - zero tolerance
+  test_suites:
+  - TST-018
+  - TST-019
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0708
+  epic_id: EPIC-07
+  title: Live bounded AI evaluation
+  objective: 候補Modelを実Datasetで評価
+  depends_on:
+  - ST-0707
+  - ST-0703
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - release decision candidate
+  acceptance_criteria:
+  - risk-specific thresholds
+  test_suites:
+  - TST-018
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions:
+  - OD-015
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0709
+  epic_id: EPIC-07
+  title: AI governance admin UI
+  objective: Task/Prompt/Route/Eval/Costを表示
+  depends_on:
+  - ST-0706
+  - ST-0707
+  - ST-1101
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - GOV screen
+  acceptance_criteria:
+  - no direct activation without approval
+  test_suites:
+  - TST-022
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0801
+  epic_id: EPIC-08
+  title: Content AST types and validator
+  objective: 24 Blockを実装
+  depends_on:
+  - ST-0004
+  - ST-0105
+  requirement_ids:
+  - FR-007
+  - FR-008
+  design_refs: []
+  deliverables:
+  - types
+  - loader
+  - fixtures
+  acceptance_criteria:
+  - raw HTML/finance/review body rejected
+  test_suites:
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0802
+  epic_id: EPIC-08
+  title: Article plan/version lifecycle
+  objective: Article Type/Version/AST保存
+  depends_on:
+  - ST-0501
+  - ST-0801
+  - ST-0308
+  requirement_ids:
+  - FR-001
+  design_refs: []
+  deliverables:
+  - domain/API
+  acceptance_criteria:
+  - version/ETag/history
+  test_suites:
+  - TST-012
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0803
+  epic_id: EPIC-08
+  title: Comparison validator
+  objective: Product/axis/unit/variant/unknown検査
+  depends_on:
+  - ST-0504
+  - ST-0605
+  - ST-0802
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - comparison engine
+  acceptance_criteria:
+  - variant mismatch blocks
+  test_suites:
+  - TST-007
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0804
+  epic_id: EPIC-08
+  title: Recommendation engine
+  objective: Hard constraint/weight/tie/penaltyを決定的計算
+  depends_on:
+  - ST-0803
+  requirement_ids:
+  - FR-005
+  design_refs: []
+  deliverables:
+  - methodology engine
+  - explanation artifact
+  acceptance_criteria:
+  - finance fields impossible
+  - tie handled
+  test_suites:
+  - TST-007
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0805
+  epic_id: EPIC-08
+  title: Editorial policy engine
+  objective: 40 Policy/quality gate/findingを実装
+  depends_on:
+  - ST-0605
+  - ST-0802
+  - ST-0804
+  requirement_ids:
+  - FR-008
+  - FR-017
+  design_refs: []
+  deliverables:
+  - policy runner
+  - finding
+  acceptance_criteria:
+  - zero tolerance block
+  test_suites:
+  - TST-019
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0806
+  epic_id: EPIC-08
+  title: AI draft integration
+  objective: Evidence-bounded writer/claim auditorを記事へ接続
+  depends_on:
+  - ST-0706
+  - ST-0802
+  - ST-0605
+  requirement_ids:
+  - FR-006
+  - FR-007
+  design_refs: []
+  deliverables:
+  - draft flow
+  - diff artifact
+  acceptance_criteria:
+  - human editable, no approval
+  test_suites:
+  - TST-018
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0807
+  epic_id: EPIC-08
+  title: SEO and structured data renderer
+  objective: metadata/canonical/robots/JSON-LDを決定的生成
+  depends_on:
+  - ST-0802
+  - ST-0805
+  requirement_ids:
+  - FR-010
+  design_refs: []
+  deliverables:
+  - SEO renderer
+  - validators
+  acceptance_criteria:
+  - visible content一致
+  - no Product/FAQ prohibited markup
+  test_suites:
+  - TST-020
+  - TST-022
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0808
+  epic_id: EPIC-08
+  title: Media asset pipeline
+  objective: source/license/alt/dimensionsを検証
+  depends_on:
+  - ST-0406
+  - ST-0802
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - media service
+  - renderer input
+  acceptance_criteria:
+  - unknown rights hidden
+  test_suites:
+  - TST-014
+  - TST-020
+  - TST-024
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0901
+  epic_id: EPIC-09
+  title: Review workflow
+  objective: Checklist/Finding/decisionを実装
+  depends_on:
+  - ST-0805
+  - ST-0403
+  requirement_ids:
+  - FR-009
+  design_refs: []
+  deliverables:
+  - review API/domain
+  acceptance_criteria:
+  - reviewer identity/immutable decision
+  test_suites:
+  - TST-011
+  - TST-012
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0902
+  epic_id: EPIC-09
+  title: Final approval
+  objective: 全Gate/hashを束ねる承認
+  depends_on:
+  - ST-0901
+  - ST-0605
+  - ST-0805
+  requirement_ids:
+  - FR-009
+  design_refs: []
+  deliverables:
+  - approval command
+  acceptance_criteria:
+  - self approval separation
+  - blocking finding rejects
+  test_suites:
+  - TST-012
+  - TST-021
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0903
+  epic_id: EPIC-09
+  title: Publication manifest/snapshot
+  objective: 承認版から不変Snapshotを生成
+  depends_on:
+  - ST-0902
+  - ST-0807
+  - ST-0808
+  requirement_ids:
+  - FR-010
+  design_refs: []
+  deliverables:
+  - manifest
+  - snapshot
+  - hash
+  acceptance_criteria:
+  - deterministic/immutable
+  test_suites:
+  - TST-014
+  - TST-021
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0904
+  epic_id: EPIC-09
+  title: Public projection
+  objective: Snapshotをreadmodelへ投影
+  depends_on:
+  - ST-0903
+  - ST-0306
+  requirement_ids:
+  - FR-010
+  design_refs: []
+  deliverables:
+  - projector
+  acceptance_criteria:
+  - public role only required fields
+  test_suites:
+  - TST-011
+  - TST-021
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0905
+  epic_id: EPIC-09
+  title: Publish/unpublish/rollback commands
+  objective: 冪等CommandとEventを実装
+  depends_on:
+  - ST-0903
+  - ST-0904
+  - ST-0402
+  requirement_ids:
+  - FR-010
+  design_refs: []
+  deliverables:
+  - commands
+  - events
+  acceptance_criteria:
+  - double publish no duplication
+  - rollback smoke
+  test_suites:
+  - TST-012
+  - TST-013
+  - TST-021
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-0906
+  epic_id: EPIC-09
+  title: Publication review UI
+  objective: review/approval/preview/publish/rollback画面
+  depends_on:
+  - ST-0901
+  - ST-0905
+  - ST-1101
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - REV/PUBA screens
+  acceptance_criteria:
+  - step-up/a11y/diff
+  test_suites:
+  - TST-022
+  - TST-024
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1001
+  epic_id: EPIC-10
+  title: Public app shell and policy pages
+  objective: Header/Footer/Policy/Disclosureを実装
+  depends_on:
+  - ST-0103
+  - ST-0807
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - public routes
+  acceptance_criteria:
+  - SSR/metadata/a11y
+  test_suites:
+  - TST-022
+  - TST-023
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions:
+  - OD-002
+  - OD-012
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1002
+  epic_id: EPIC-10
+  title: Public article renderer
+  objective: Publication SnapshotからASTを描画
+  depends_on:
+  - ST-0904
+  - ST-1001
+  requirement_ids:
+  - FR-010
+  design_refs: []
+  deliverables:
+  - article route/components
+  acceptance_criteria:
+  - hash-bound
+  - no internal fields
+  test_suites:
+  - TST-021
+  - TST-022
+  - TST-023
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1003
+  epic_id: EPIC-10
+  title: Comparison and product components
+  objective: 比較表/Card/Unknown/Trade-offを描画
+  depends_on:
+  - ST-1002
+  - ST-0803
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - public components
+  acceptance_criteria:
+  - mobile/header semantics
+  test_suites:
+  - TST-022
+  - TST-024
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1004
+  epic_id: EPIC-10
+  title: Disclosure and affiliate CTA
+  objective: 固定開示と正規URL直接遷移
+  depends_on:
+  - ST-1002
+  - ST-0503
+  requirement_ids:
+  - FR-011
+  design_refs: []
+  deliverables:
+  - disclosure renderer
+  - CTA
+  acceptance_criteria:
+  - rel sponsored
+  - destination clear
+  - beacon independent
+  test_suites:
+  - TST-020
+  - TST-022
+  - TST-026
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1005
+  epic_id: EPIC-10
+  title: SEO routes/sitemap/robots
+  objective: canonical/noindex/sitemapを実装
+  depends_on:
+  - ST-1002
+  - ST-0807
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - sitemap
+  - robots
+  - route policy
+  acceptance_criteria:
+  - draft/facet noindex
+  - canonical unique
+  test_suites:
+  - TST-020
+  - TST-022
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1006
+  epic_id: EPIC-10
+  title: Public performance and RUM hooks
+  objective: CWV instrumentation/cache/image最適化
+  depends_on:
+  - ST-1002
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - RUM hooks
+  - budgets
+  acceptance_criteria:
+  - lab target and no CLS from CTA
+  test_suites:
+  - TST-027
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1007
+  epic_id: EPIC-10
+  title: Public accessibility acceptance
+  objective: manual/automated改善
+  depends_on:
+  - ST-1003
+  - ST-1004
+  - ST-1005
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - a11y evidence
+  acceptance_criteria:
+  - P0 checklist pass
+  test_suites:
+  - TST-023
+  - TST-024
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1101
+  epic_id: EPIC-11
+  title: Admin shell/design system
+  objective: Token/AppShell/Table/Form/Dialogを実装
+  depends_on:
+  - ST-0103
+  - ST-0401
+  requirement_ids: []
+  design_refs:
+  - RAOS-UI-001
+  deliverables:
+  - component library
+  - admin routes
+  acceptance_criteria:
+  - keyboard/focus/role guard
+  test_suites:
+  - TST-006
+  - TST-022
+  - TST-023
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1102
+  epic_id: EPIC-11
+  title: Article workspace UI
+  objective: AST/AI diff/Claim/Comparison/SEOを統合
+  depends_on:
+  - ST-0806
+  - ST-1101
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - EDT screens
+  acceptance_criteria:
+  - ETag conflict/unsaved guard
+  test_suites:
+  - TST-022
+  - TST-024
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1103
+  epic_id: EPIC-11
+  title: Freshness and operations UI
+  objective: queue/link/job/DLQ/incident画面
+  depends_on:
+  - ST-1401
+  - ST-1404
+  - ST-1101
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - FRESH/OPS screens
+  acceptance_criteria:
+  - status not color-only
+  - safe actions
+  test_suites:
+  - TST-022
+  - TST-024
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1104
+  epic_id: EPIC-11
+  title: Analytics/finance UI
+  objective: KPI/basis/import/reconciliation画面
+  depends_on:
+  - ST-1205
+  - ST-1304
+  - ST-1101
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - ANA/FIN screens
+  acceptance_criteria:
+  - basis/freshness/unknown visible
+  test_suites:
+  - TST-022
+  - TST-024
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1105
+  epic_id: EPIC-11
+  title: Admin visual/accessibility regression
+  objective: 全主要画面を検証
+  depends_on:
+  - ST-0506
+  - ST-0606
+  - ST-0709
+  - ST-0906
+  - ST-1102
+  - ST-1103
+  - ST-1104
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - baseline/evidence
+  acceptance_criteria:
+  - keyboard critical workflows
+  test_suites:
+  - TST-023
+  - TST-024
+  - TST-025
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1201
+  epic_id: EPIC-12
+  title: Canonical event collector
+  objective: event schema/validation/dedupe/consent
+  depends_on:
+  - ST-0305
+  - ST-0404
+  requirement_ids:
+  - FR-013
+  design_refs: []
+  deliverables:
+  - collector
+  - event store
+  acceptance_criteria:
+  - PII reject
+  - event id dedupe
+  test_suites:
+  - TST-012
+  - TST-030
+  - TST-031
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-012
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1202
+  epic_id: EPIC-12
+  title: Public event instrumentation
+  objective: view/engagement/CTA/RUMを送信
+  depends_on:
+  - ST-1002
+  - ST-1004
+  - ST-1201
+  requirement_ids:
+  - FR-013
+  design_refs: []
+  deliverables:
+  - client instrumentation
+  acceptance_criteria:
+  - navigation not blocked
+  test_suites:
+  - TST-022
+  - TST-030
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1203
+  epic_id: EPIC-12
+  title: Search Console adapter
+  objective: GSC factsをVersioned import
+  depends_on:
+  - ST-0305
+  - ST-0204
+  requirement_ids:
+  - FR-013
+  design_refs: []
+  deliverables:
+  - adapter/job
+  acceptance_criteria:
+  - dimension/request preserved
+  - late reimport
+  test_suites:
+  - TST-030
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-015
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1204
+  epic_id: EPIC-12
+  title: GA4 Data API adapter
+  objective: aggregate factsをimport
+  depends_on:
+  - ST-0305
+  - ST-0204
+  requirement_ids:
+  - FR-013
+  design_refs: []
+  deliverables:
+  - adapter/job
+  acceptance_criteria:
+  - property/config snapshot
+  test_suites:
+  - TST-030
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-012
+  - OD-015
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1205
+  epic_id: EPIC-12
+  title: KPI read models
+  objective: 30 KPIを定義Version付きで計算
+  depends_on:
+  - ST-1201
+  - ST-1203
+  - ST-1204
+  requirement_ids:
+  - FR-013
+  - FR-015
+  design_refs: []
+  deliverables:
+  - SQL/jobs/read models
+  acceptance_criteria:
+  - fixture formulas reproduce
+  test_suites:
+  - TST-030
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1206
+  epic_id: EPIC-12
+  title: Rank/keyword import extension
+  objective: 承認ProviderまたはCSVを追加
+  depends_on:
+  - ST-1205
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - optional adapter
+  acceptance_criteria:
+  - no SERP scrape
+  test_suites:
+  - TST-030
+  priority: P2
+  mvp: false
+  size: M
+  open_decisions:
+  - OD-004
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+- id: ST-1301
+  epic_id: EPIC-13
+  title: Revenue file intake
+  objective: secure upload/schema detect/dry run
+  depends_on:
+  - ST-0406
+  - ST-0305
+  requirement_ids:
+  - FR-014
+  design_refs: []
+  deliverables:
+  - import flow
+  acceptance_criteria:
+  - hash/duplicate/formula/amount summary
+  test_suites:
+  - TST-026
+  - TST-030
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-003
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1302
+  epic_id: EPIC-13
+  title: Provider fact commit
+  objective: dry runと同一Hashを冪等取込
+  depends_on:
+  - ST-1301
+  requirement_ids:
+  - FR-014
+  design_refs: []
+  deliverables:
+  - commit command
+  - facts
+  acceptance_criteria:
+  - generated/confirmed/cancelled separate
+  test_suites:
+  - TST-008
+  - TST-030
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1303
+  epic_id: EPIC-13
+  title: Attribution engine
+  objective: direct/estimated/unattributedを実装
+  depends_on:
+  - ST-1202
+  - ST-1302
+  requirement_ids:
+  - FR-013
+  design_refs: []
+  deliverables:
+  - method version
+  - run
+  acceptance_criteria:
+  - totals conserved
+  - confidence required
+  test_suites:
+  - TST-007
+  - TST-030
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-003
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1304
+  epic_id: EPIC-13
+  title: Cost and unit economics
+  objective: AI/API/labor cost、EPC/RPM/profit
+  depends_on:
+  - ST-0706
+  - ST-1205
+  - ST-1303
+  requirement_ids:
+  - FR-015
+  design_refs: []
+  deliverables:
+  - cost allocation
+  - read models
+  acceptance_criteria:
+  - unknown labor not zero
+  - basis visible
+  test_suites:
+  - TST-030
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-005
+  - OD-009
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1305
+  epic_id: EPIC-13
+  title: Finance reconciliation report
+  objective: Provider/Canonical/Attribution/Costを照合
+  depends_on:
+  - ST-1304
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - report/evidence
+  acceptance_criteria:
+  - batch totals and exceptions
+  test_suites:
+  - TST-030
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1401
+  epic_id: EPIC-14
+  title: Freshness scheduler and state
+  objective: Fact/Offer/Link/articleの期限を評価
+  depends_on:
+  - ST-0503
+  - ST-0605
+  requirement_ids:
+  - FR-012
+  design_refs: []
+  deliverables:
+  - scheduler
+  - state
+  acceptance_criteria:
+  - category SLA version
+  - stale not fresh
+  test_suites:
+  - TST-005
+  - TST-028
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-007
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1402
+  epic_id: EPIC-14
+  title: Safe degradation renderer
+  objective: stale price/stock/linkを非表示/停止
+  depends_on:
+  - ST-1002
+  - ST-1401
+  requirement_ids:
+  - FR-011
+  - FR-012
+  design_refs: []
+  deliverables:
+  - degradation policy
+  acceptance_criteria:
+  - no guessed value
+  - notice
+  test_suites:
+  - TST-020
+  - TST-021
+  - TST-028
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1403
+  epic_id: EPIC-14
+  title: Refresh proposal workflow
+  objective: 差分と再承認範囲を生成
+  depends_on:
+  - ST-1401
+  - ST-0805
+  requirement_ids:
+  - FR-016
+  design_refs: []
+  deliverables:
+  - proposal
+  - impact
+  acceptance_criteria:
+  - rank change requires approval
+  test_suites:
+  - TST-020
+  - TST-021
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1404
+  epic_id: EPIC-14
+  title: Job/Outbox/Inbox runtime
+  objective: dispatcher/worker/lease/retry/DLQ
+  depends_on:
+  - ST-0303
+  - ST-0203
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - runtime
+  acceptance_criteria:
+  - duplicate safe
+  - deadline/cancel
+  test_suites:
+  - TST-013
+  - TST-028
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1405
+  epic_id: EPIC-14
+  title: Kill switch runtime
+  objective: publication/affiliate scope/generation
+  depends_on:
+  - ST-0402
+  - ST-0905
+  - ST-1404
+  requirement_ids:
+  - FR-019
+  design_refs: []
+  deliverables:
+  - commands
+  - cache strategy
+  - synthetic
+  acceptance_criteria:
+  - old generation cannot disable
+  - fail safe
+  test_suites:
+  - TST-012
+  - TST-022
+  - TST-028
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1406
+  epic_id: EPIC-14
+  title: Incident service
+  objective: severity/timeline/action/evidence
+  depends_on:
+  - ST-0405
+  - ST-1405
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - incident domain/API
+  acceptance_criteria:
+  - audit and owner
+  test_suites:
+  - TST-012
+  - TST-028
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1407
+  epic_id: EPIC-14
+  title: External policy change registry
+  objective: 公式Source snapshotと影響記事を管理
+  depends_on:
+  - ST-0405
+  - ST-0805
+  requirement_ids:
+  - FR-017
+  design_refs: []
+  deliverables:
+  - policy snapshot
+  - impact query
+  acceptance_criteria:
+  - overdue alert
+  - version links
+  test_suites:
+  - TST-005
+  - TST-020
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1501
+  epic_id: EPIC-15
+  title: Terraform foundation
+  objective: AWS account/region/network/provider setup
+  depends_on:
+  - ST-0106
+  requirement_ids: []
+  design_refs:
+  - RAOS-ARCH-001
+  - RAOS-OPS-001
+  deliverables:
+  - Terraform modules/state plan
+  acceptance_criteria:
+  - no production apply without approval
+  test_suites:
+  - TST-026
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-013
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1502
+  epic_id: EPIC-15
+  title: Data services infrastructure
+  objective: RDS/S3/SQS/Secrets/KMSをIaC化
+  depends_on:
+  - ST-1501
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - modules/config
+  acceptance_criteria:
+  - private/encrypted/backups/policies
+  test_suites:
+  - TST-026
+  - TST-029
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1503
+  epic_id: EPIC-15
+  title: Compute/CDN/WAF infrastructure
+  objective: ECS/CloudFront/WAF/routeをIaC化
+  depends_on:
+  - ST-1501
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - modules
+  acceptance_criteria:
+  - public/admin boundary
+  - health
+  test_suites:
+  - TST-026
+  - TST-027
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1504
+  epic_id: EPIC-15
+  title: GitHub OIDC deployment
+  objective: short-lived deploy identityとenvironment approval
+  depends_on:
+  - ST-0107
+  - ST-1501
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - workflow/IAM trust
+  acceptance_criteria:
+  - fork PR no credential
+  - production approval
+  test_suites:
+  - TST-026
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1505
+  epic_id: EPIC-15
+  title: Staging deployment pipeline
+  objective: artifact promotion、migration、smoke、rollback
+  depends_on:
+  - ST-1502
+  - ST-1503
+  - ST-1504
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - staging pipeline
+  acceptance_criteria:
+  - repeatable deployment
+  test_suites:
+  - TST-009
+  - TST-022
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1506
+  epic_id: EPIC-15
+  title: Production deployment definition
+  objective: Production env保護とcanary
+  depends_on:
+  - ST-1505
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - production pipeline disabled by default
+  acceptance_criteria:
+  - GATE/security/ops approvals required
+  test_suites:
+  - TST-032
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions:
+  - OD-009
+  - OD-011
+  - OD-013
+  - OD-015
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1601
+  epic_id: EPIC-16
+  title: Observability foundation
+  objective: trace/metric/logとcorrelation
+  depends_on:
+  - ST-1404
+  - ST-1505
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - OpenTelemetry
+  - dashboards
+  acceptance_criteria:
+  - no sensitive attributes
+  test_suites:
+  - TST-031
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1602
+  epic_id: EPIC-16
+  title: SLI/SLO and alert implementation
+  objective: 14 SLO/20 alertを実装
+  depends_on:
+  - ST-1601
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - metrics/alerts
+  acceptance_criteria:
+  - alert routes to owner/runbook
+  test_suites:
+  - TST-027
+  - TST-028
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-011
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1603
+  epic_id: EPIC-16
+  title: Security verification pack
+  objective: 83 control evidenceとremediation
+  depends_on:
+  - ST-0407
+  - ST-1505
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - ASVS mapping
+  - scan/manual results
+  acceptance_criteria:
+  - critical/high zero or approved exception
+  test_suites:
+  - TST-026
+  - TST-031
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1604
+  epic_id: EPIC-16
+  title: Performance/load test
+  objective: public/admin/API/worker capacity
+  depends_on:
+  - ST-1505
+  - ST-1601
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - load report
+  - budgets
+  acceptance_criteria:
+  - SLO target or documented capacity
+  test_suites:
+  - TST-027
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1605
+  epic_id: EPIC-16
+  title: Failure injection and runbook drill
+  objective: provider/db/queue/kill/rollbackを演習
+  depends_on:
+  - ST-1602
+  - ST-1405
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - drill evidence
+  acceptance_criteria:
+  - safe degradation and owner response
+  test_suites:
+  - TST-028
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1606
+  epic_id: EPIC-16
+  title: Backup restore drill
+  objective: DB/Object/IaCを隔離復元
+  depends_on:
+  - ST-1502
+  - ST-1505
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - restore evidence
+  - RPO/RTO
+  acceptance_criteria:
+  - integrity/roles/readmodel validated
+  test_suites:
+  - TST-029
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions:
+  - OD-014
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1607
+  epic_id: EPIC-16
+  title: Gate evidence generator
+  objective: Suite/decision/artifactを不変Pack化
+  depends_on:
+  - ST-0005
+  - ST-1603
+  - ST-1605
+  - ST-1606
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - gate report
+  acceptance_criteria:
+  - missing evidence blocks
+  test_suites:
+  - TST-032
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1701
+  epic_id: EPIC-17
+  title: Resolve MVP business inputs
+  objective: カテゴリ/ブランド/reviewer/SLA/budgetを確定
+  depends_on:
+  - ST-0006
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - approved decisions
+  acceptance_criteria:
+  - OD-001/002/005/006/007/008/009 resolved
+  test_suites:
+  - TST-032
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions:
+  - OD-001
+  - OD-002
+  - OD-005
+  - OD-006
+  - OD-007
+  - OD-008
+  - OD-009
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1702
+  epic_id: EPIC-17
+  title: Create category fixtures and rules
+  objective: 初期カテゴリの属性/identity/freshnessを実装
+  depends_on:
+  - ST-1701
+  - ST-0504
+  - ST-1401
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - category config
+  - golden products
+  acceptance_criteria:
+  - domain reviewer approval
+  test_suites:
+  - TST-020
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1703
+  epic_id: EPIC-17
+  title: End-to-end first article
+  objective: 1記事を取込から公開まで通す
+  depends_on:
+  - ST-1702
+  - ST-0906
+  - ST-1007
+  - ST-1302
+  - ST-1505
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - staging article
+  - evidence pack
+  acceptance_criteria:
+  - all mandatory gates, no production claim
+  test_suites:
+  - TST-021
+  - TST-022
+  - TST-032
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1704
+  epic_id: EPIC-17
+  title: 5-10 article editorial pilot
+  objective: 限定記事で品質・作業量を校正
+  depends_on:
+  - ST-1703
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - pilot articles
+  - time/cost/quality observations
+  acceptance_criteria:
+  - critical defect zero
+  - review logs
+  test_suites:
+  - TST-018
+  - TST-020
+  - TST-032
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1705
+  epic_id: EPIC-17
+  title: Pilot security/recovery sign-off
+  objective: GATE-0/技術PilotのEvidence
+  depends_on:
+  - ST-1607
+  - ST-1704
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - decision record
+  acceptance_criteria:
+  - blocking decisions resolved
+  - runtime evidence
+  test_suites:
+  - TST-026
+  - TST-029
+  - TST-032
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1801
+  epic_id: EPIC-18
+  title: Expand to 30-45 articles
+  objective: 同一カテゴリで記事Portfolioを構築
+  depends_on:
+  - ST-1705
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - approved articles
+  acceptance_criteria:
+  - quality>=85
+  - major claim coverage 100%
+  test_suites:
+  - TST-020
+  - TST-032
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1802
+  epic_id: EPIC-18
+  title: GATE-1 decision
+  objective: Editorial/technical pilotを判定
+  depends_on:
+  - ST-1801
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - GATE-1 pack
+  acceptance_criteria:
+  - all mandatory criteria
+  test_suites:
+  - TST-032
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1803
+  epic_id: EPIC-18
+  title: GATE-2 observation
+  objective: 検索/行動/鮮度を観測
+  depends_on:
+  - ST-1802
+  - ST-1205
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - GATE-2 pack
+  acceptance_criteria:
+  - defined observation period/data quality
+  test_suites:
+  - TST-030
+  - TST-032
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1804
+  epic_id: EPIC-18
+  title: GATE-3 economics
+  objective: 確定成果/費用/利益を評価
+  depends_on:
+  - ST-1803
+  - ST-1305
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - GATE-3 pack
+  acceptance_criteria:
+  - confirmed basis and no false attribution
+  test_suites:
+  - TST-030
+  - TST-032
+  priority: P0
+  mvp: true
+  size: L
+  open_decisions: []
+  one_pr_preferred: false
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1805
+  epic_id: EPIC-18
+  title: Scale/hold/pivot decision
+  objective: 次カテゴリ・継続・撤退を判断
+  depends_on:
+  - ST-1804
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - portfolio decision
+  acceptance_criteria:
+  - quality/economics/risk evidence
+  test_suites:
+  - TST-032
+  priority: P0
+  mvp: true
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+- id: ST-1901
+  epic_id: EPIC-19
+  title: Model judge calibrated automation
+  objective: Human labelでJudgeを校正し限定利用
+  depends_on:
+  - ST-0707
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - post-MVP design revision and implementation
+  acceptance_criteria:
+  - separate release decision required
+  test_suites:
+  - TST-032
+  priority: P2
+  mvp: false
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+- id: ST-1902
+  epic_id: EPIC-19
+  title: Champion/challenger routing
+  objective: Shadow/CanaryでRouteを最適化
+  depends_on:
+  - ST-0708
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - post-MVP design revision and implementation
+  acceptance_criteria:
+  - separate release decision required
+  test_suites:
+  - TST-032
+  priority: P2
+  mvp: false
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+- id: ST-1903
+  epic_id: EPIC-19
+  title: Approved partial auto-publication
+  objective: 明示Release条件を満たす低Risk変更のみ自動化
+  depends_on:
+  - ST-1805
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - post-MVP design revision and implementation
+  acceptance_criteria:
+  - separate release decision required
+  test_suites:
+  - TST-032
+  priority: P2
+  mvp: false
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+- id: ST-1904
+  epic_id: EPIC-19
+  title: Multiple categories
+  objective: カテゴリ別Identity/Freshness/Templateを追加
+  depends_on:
+  - ST-1805
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - post-MVP design revision and implementation
+  acceptance_criteria:
+  - separate release decision required
+  test_suites:
+  - TST-032
+  priority: P2
+  mvp: false
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+- id: ST-1905
+  epic_id: EPIC-19
+  title: Advanced rank provider adapter
+  objective: 承認済みProvider連携
+  depends_on:
+  - ST-1206
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - post-MVP design revision and implementation
+  acceptance_criteria:
+  - separate release decision required
+  test_suites:
+  - TST-032
+  priority: P2
+  mvp: false
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+- id: ST-1906
+  epic_id: EPIC-19
+  title: Advanced causal attribution
+  objective: 十分な信号・Privacy review後に改善
+  depends_on:
+  - ST-1303
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - post-MVP design revision and implementation
+  acceptance_criteria:
+  - separate release decision required
+  test_suites:
+  - TST-032
+  priority: P2
+  mvp: false
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+- id: ST-1907
+  epic_id: EPIC-19
+  title: Automated content portfolio optimizer
+  objective: 強化/統合/撤退候補をHumanへ提案
+  depends_on:
+  - ST-1805
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - post-MVP design revision and implementation
+  acceptance_criteria:
+  - separate release decision required
+  test_suites:
+  - TST-032
+  priority: P2
+  mvp: false
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED
+- id: ST-1908
+  epic_id: EPIC-19
+  title: Fine-tuning evaluation
+  objective: Dataset権利と費用対効果を満たす場合のみ検討
+  depends_on:
+  - ST-0707
+  requirement_ids: []
+  design_refs: []
+  deliverables:
+  - post-MVP design revision and implementation
+  acceptance_criteria:
+  - separate release decision required
+  test_suites:
+  - TST-032
+  priority: P2
+  mvp: false
+  size: M
+  open_decisions: []
+  one_pr_preferred: true
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  implementation_status: DEFERRED_POST_MVP
+  verification_status: NOT_EXECUTED

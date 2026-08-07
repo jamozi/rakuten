@@ -1,0 +1,335 @@
+document:
+  id: RAOS-MIGRATION-UPGRADE-FIXTURE-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0307
+  source_contract: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
+  generated_by: repo://scripts/build_st0307_migration_fixtures.py
+  generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0307_migration_fixtures.py
+provenance:
+  upstream_baseline:
+    uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
+    archive_sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
+    members:
+    - purpose: BASELINE_DDL
+      member_suffix: sql/RAOS_03_001_baseline_v0.1.sql
+      member_sha256: 5813f16989316c159dd3fbaa0d0807f91adde51dda51c3f18a26dfe3e5c8c38c
+    - purpose: CHECKPOINT_ACL_PREDECESSOR
+      member_suffix: sql/RAOS_03_002_roles_and_grants_v0.1.sql
+      member_sha256: 6b9218df65e39ed5b5d38ca593a62ee544e9870296f32a7d7a819008a9d9803e
+    - purpose: REFERENCE_SEED_PREDECESSOR
+      member_suffix: sql/RAOS_03_003_reference_seed_v0.1.sql
+      member_sha256: 943471a90d5fd4f90112c2685d6aade64c0de18da74bc2c14d16555bd38644f8
+    - purpose: BASELINE_POST_DEPLOY_VALIDATION
+      member_suffix: sql/RAOS_03_004_post_deploy_validation_v0.1.sql
+      member_sha256: cf00f6efa9ea8834ea99dcd4963acdd8b7824a66458a3df291924a654da1c4d2
+  canonical_inputs:
+  - uri: repo://docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+    sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  alignment_manifests:
+  - uri: repo://changes/st-0002/manifest.yaml
+    sha256: ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+  - uri: repo://changes/st-0003/manifest.yaml
+    sha256: 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+  - uri: repo://changes/st-0004/manifest.yaml
+    sha256: 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+  migration_manifests:
+  - uri: repo://changes/st-0301/manifest.yaml
+    sha256: 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+  - uri: repo://changes/st-0302/manifest.yaml
+    sha256: d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+  - uri: repo://changes/st-0303/manifest.yaml
+    sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+  - uri: repo://changes/st-0304/manifest.yaml
+    sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+  - uri: repo://changes/st-0305/manifest.yaml
+    sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+  - uri: repo://changes/st-0306/manifest.yaml
+    sha256: 634f60af84bf5e5eca38c05015dc97fde2f7573eb9cfe3f944f1aaaf53777306
+production_graph:
+  anchor_revision: '202608030001'
+  predecessor_revision: '202608030005'
+  head_revision: '202608030006'
+  revision_count: 6
+  mutation: FORBIDDEN
+  new_revision: FORBIDDEN
+  checkpoint_activation: FORBIDDEN
+source_artifact_count: 45
+source_artifacts:
+- uri: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
+  bytes: 14170
+  sha256: 2f5c8bd36c8db015cb428d934ee1f1ad747c9c6ea4b68dcc889f1c23ff0253ba
+- uri: repo://changes/st-0307/README.md
+  bytes: 2249
+  sha256: 0b32aa4a289a297f47ddf770244d696f437a0e98cf857556ef3d6a6cede41023
+- uri: repo://README.md
+  bytes: 55645
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- uri: repo://Makefile
+  bytes: 26913
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+- uri: repo://docs/execplans/ST-0307.md
+  bytes: 2270
+  sha256: 237d9c6369926402c8afe12de8f5a58c8bda76af36e735dbda0475ba336e0fb8
+- uri: repo://docs/worklogs/ST-0307.md
+  bytes: 3422
+  sha256: ea633b44247c8ea2fb0ecf983a436fd0b7c27d57a800951b33c5a472cca8c228
+- uri: repo://scripts/build_st0307_migration_fixtures.py
+  bytes: 34971
+  sha256: b56eca8d10efd3811d05766b5403ed5f95541c73ebd20ffc60e383d9bcc33f92
+- uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
+  bytes: 434952
+  sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
+- uri: repo://docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+  bytes: 9380
+  sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+- uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  bytes: 7943
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+- uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  bytes: 71458
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+- uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  bytes: 24993
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+- uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  bytes: 11395
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+- uri: repo://changes/st-0002/manifest.yaml
+  bytes: 27467
+  sha256: ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e
+- uri: repo://changes/st-0003/manifest.yaml
+  bytes: 43970
+  sha256: 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482
+- uri: repo://changes/st-0004/manifest.yaml
+  bytes: 82151
+  sha256: 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
+- uri: repo://changes/st-0301/manifest.yaml
+  bytes: 12220
+  sha256: 287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff
+- uri: repo://changes/st-0302/manifest.yaml
+  bytes: 8659
+  sha256: d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0
+- uri: repo://changes/st-0303/manifest.yaml
+  bytes: 11532
+  sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+- uri: repo://changes/st-0304/manifest.yaml
+  bytes: 11667
+  sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+- uri: repo://changes/st-0305/manifest.yaml
+  bytes: 14830
+  sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+- uri: repo://changes/st-0306/manifest.yaml
+  bytes: 8660
+  sha256: 634f60af84bf5e5eca38c05015dc97fde2f7573eb9cfe3f944f1aaaf53777306
+- uri: repo://python/raos/migrations/catalog.py
+  bytes: 20363
+  sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+- uri: repo://python/raos/migrations/runner.py
+  bytes: 214267
+  sha256: 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+- uri: repo://changes/st-0002/database/202607300001_job_state_expand.sql
+  bytes: 3445
+  sha256: 6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31
+- uri: repo://changes/st-0002/database/202607300002_job_state_expand_validate.sql
+  bytes: 3858
+  sha256: 50fb0c65d8482817ffa7fbbb84e02965683fcb8dda2a6f9ecb0a3e7766d75c95
+- uri: repo://changes/st-0002/database/202607300003_job_state_migrate_batch.sql
+  bytes: 2584
+  sha256: 4b6508b8c5a082695b1c4c48365c5932b51e3a6ca9a93c83ec599cd6aa7b1eb8
+- uri: repo://changes/st-0002/database/202607300004_job_state_contract_prepare.sql
+  bytes: 4468
+  sha256: 6e0bca4e086547fb9035971fcef812a79edb155ef0af69a9e2b55de30b2ac779
+- uri: repo://changes/st-0002/database/202607300005_job_state_contract.sql
+  bytes: 4827
+  sha256: 9e54b1719d9fdd02a2790916d02875a909dbb027be33c3108285f5d788a91897
+- uri: repo://changes/st-0002/database/202607300006_job_state_guarded_downgrade.sql
+  bytes: 2522
+  sha256: 3c1602421352babb8241cca6cc7748cf7f519ee7dc8cec9834b284fd95161cab
+- uri: repo://changes/st-0003/database/202607300007_ai_governance_expand.sql
+  bytes: 238841
+  sha256: a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064
+- uri: repo://changes/st-0003/database/202607300008_ai_governance_expand_validate.sql
+  bytes: 42761
+  sha256: 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
+- uri: repo://changes/st-0003/database/202607300009_ai_governance_migrate_batch.sql
+  bytes: 14563
+  sha256: 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
+- uri: repo://changes/st-0003/database/202607300010_ai_governance_contract_prepare.sql
+  bytes: 25954
+  sha256: 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+- uri: repo://changes/st-0003/database/202607300011_ai_governance_contract.sql
+  bytes: 24209
+  sha256: 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+- uri: repo://changes/st-0003/database/202607300012_ai_governance_guarded_downgrade.sql
+  bytes: 31109
+  sha256: dae027887c7950ca03a9b0997cfadbe4b86f1e968cb00079fc178775f8b4b8ba
+- uri: repo://changes/st-0004/database/202607300013_content_expand.sql
+  bytes: 54252
+  sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+- uri: repo://changes/st-0004/database/202607300014_content_expand_validate.sql
+  bytes: 16519
+  sha256: 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704
+- uri: repo://changes/st-0004/database/202607300015_content_migrate_batch.sql
+  bytes: 5567
+  sha256: 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
+- uri: repo://changes/st-0004/database/202607300016_content_contract_prepare.sql
+  bytes: 29580
+  sha256: b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968
+- uri: repo://changes/st-0004/database/202607300017_content_contract.sql
+  bytes: 18584
+  sha256: c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+- uri: repo://changes/st-0004/database/202607300018_content_guarded_downgrade.sql
+  bytes: 14562
+  sha256: 005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381
+- uri: repo://tests/st0307/conftest.py
+  bytes: 6628
+  sha256: 2b12d0396500ca31a268b389866dbb2bd081608b7f0e31f28232d5afab6b1505
+- uri: repo://tests/st0307/test_generation.py
+  bytes: 13071
+  sha256: f45ac13048b8d613a656c0eba20a32b5647d7924c137553bfdb1710ac87008cb
+- uri: repo://tests/st0307/test_postgresql.py
+  bytes: 31404
+  sha256: 64ef6097bbb9da4c51c7dfb4f64504928d743228240341dc57efe8ef9179946f
+generated_artifact_count: 5
+generated_artifacts:
+- uri: repo://tests/fixtures/migrations/st0307/v0.1-job-alignment.v1.sql
+  bytes: 1801
+  sha256: 1859e9d6c81829695b2304d58fd3803b185831ce62ac74ef890ffa16363096da
+- uri: repo://tests/fixtures/migrations/st0307/v0.2-ai-alignment.v1.sql
+  bytes: 2197
+  sha256: e2daf9950c43edda3240f3868ec0a11e997e4cbd280d3b03d8c00c8eabe27726
+- uri: repo://tests/fixtures/migrations/st0307/v0.3-content-alignment.v1.sql
+  bytes: 1406
+  sha256: 9bafe16f96ac89e789b257a847f46e7ce0e79fad800113064697a3a741a04a25
+- uri: repo://tests/fixtures/migrations/st0307/202608030005-predecessor.v1.sql
+  bytes: 1363
+  sha256: ac133f0d975241b22a8744bd7b78ec52904dc64414f344f7c3f1e83e9339cf3d
+- uri: repo://changes/st-0307/generated/migration-upgrade-fixture-catalog.v1.json
+  bytes: 11444
+  sha256: df1b7f16226ac2e0e3a52b173b8c592f23a5ad015e9838272018d315f1746465
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+fixture_inventory:
+- id: ST0307-V01-JOB-ALIGNMENT
+  version: v0.1
+  path: tests/fixtures/migrations/st0307/v0.1-job-alignment.v1.sql
+  apply_at:
+    source_kind: UPSTREAM_BASELINE_MEMBER
+    source_ref: docs/upstream/RAOS_03_data_model_package_v0.1.zip#sql/RAOS_03_001_baseline_v0.1.sql
+    production_revision: null
+    completed_forward_checkpoints: []
+  checkpoint_story: ST-0002
+  expected_rows: 7
+  expected_behavior: SEVEN_LEGACY_STATES_MAP_WITH_BOUNDED_ATOMIC_BATCHES
+  bytes: 1801
+  sha256: 1859e9d6c81829695b2304d58fd3803b185831ce62ac74ef890ffa16363096da
+- id: ST0307-V02-AI-ALIGNMENT
+  version: v0.2
+  path: tests/fixtures/migrations/st0307/v0.2-ai-alignment.v1.sql
+  apply_at:
+    source_kind: FINALIZED_ALIGNMENT_CHECKPOINT_STATE
+    source_ref: changes/st-0002/manifest.yaml
+    production_revision: null
+    completed_forward_checkpoints:
+    - '202607300001'
+    - '202607300002'
+    - '202607300003'
+    - '202607300004'
+    - '202607300005'
+  checkpoint_story: ST-0003
+  expected_rows: 5
+  expected_behavior: AMBIGUOUS_ROWS_REQUIRE_EXPLICIT_CLASSIFICATION
+  bytes: 2197
+  sha256: e2daf9950c43edda3240f3868ec0a11e997e4cbd280d3b03d8c00c8eabe27726
+- id: ST0307-V03-CONTENT-ALIGNMENT
+  version: v0.3
+  path: tests/fixtures/migrations/st0307/v0.3-content-alignment.v1.sql
+  apply_at:
+    source_kind: FINALIZED_ALIGNMENT_CHECKPOINT_STATE
+    source_ref: changes/st-0003/manifest.yaml
+    production_revision: null
+    completed_forward_checkpoints:
+    - '202607300001'
+    - '202607300002'
+    - '202607300003'
+    - '202607300004'
+    - '202607300005'
+    - '202607300007'
+    - '202607300008'
+    - '202607300009'
+    - '202607300010'
+    - '202607300011'
+  checkpoint_story: ST-0004
+  expected_rows: 1
+  expected_behavior: CONTENT_BINDINGS_ARE_NEVER_GUESSED
+  bytes: 1406
+  sha256: 9bafe16f96ac89e789b257a847f46e7ce0e79fad800113064697a3a741a04a25
+- id: ST0307-202608030005-PREDECESSOR
+  version: '202608030005'
+  path: tests/fixtures/migrations/st0307/202608030005-predecessor.v1.sql
+  apply_at:
+    source_kind: PRODUCTION_REVISION_GRAPH
+    source_ref: changes/st-0305/manifest.yaml
+    production_revision: '202608030005'
+    completed_production_revisions:
+    - '202608030001'
+    - '202608030002'
+    - '202608030003'
+    - '202608030004'
+    - '202608030005'
+    completed_forward_checkpoints: []
+  checkpoint_story: ST-0306
+  expected_rows: 1
+  expected_behavior: DATA_AND_HISTORY_SURVIVE_UPGRADE_TO_202608030006
+  bytes: 1363
+  sha256: ac133f0d975241b22a8744bd7b78ec52904dc64414f344f7c3f1e83e9339cf3d
+checkpoint_inventory:
+  count: 18
+  copy_or_concatenate: FORBIDDEN
+  runtime_activation: FORBIDDEN
+security_boundary:
+  synthetic_only: true
+  credentials_or_secrets: FORBIDDEN
+  generated_fixture_roles_grants_or_rls: FORBIDDEN
+  production_execution: FORBIDDEN
+historical_test_harness:
+  baseline_members_loaded:
+  - sql/RAOS_03_001_baseline_v0.1.sql
+  - sql/RAOS_03_002_roles_and_grants_v0.1.sql
+  - sql/RAOS_03_003_reference_seed_v0.1.sql
+  - sql/RAOS_03_004_post_deploy_validation_v0.1.sql
+  roles_and_grants_member_loaded: true
+  reference_seed_member_loaded: true
+  post_deploy_validation_member_loaded: true
+  bootstrap_source: PINNED_UPSTREAM_ONLY
+  environment: ISOLATED_EPHEMERAL_TEST_SETUP_ONLY
+  checkpoint_prerequisite_roles:
+  - raos_api_rw
+  - raos_auditor_ro
+  - raos_projection_rw
+  - raos_public_ro
+  - raos_reporting_ro
+  - raos_worker_rw
+  prerequisite_role_mode: EPHEMERAL_HASH_BOUND_UPSTREAM_MEMBER
+  purpose: RESTORE_EXACT_PREDECESSOR_ACL_REQUIRED_BY_GUARDED_DOWNGRADE_SELF_CHECKS
+  acl_or_default_privilege_semantics: NOT_EVALUATED
+  tst_011: NOT_EXECUTED
+boundary:
+  environment: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_tst_010: NOT_EXECUTED
+  hosted_ci_postgresql_18_4: NOT_EXECUTED
+  staging_execution: NOT_EXECUTED
+  migration_owner_review: NOT_EXECUTED
+  human_review: NOT_EXECUTED
+  canonical_apply: NOT_EXECUTED
+  production_execution: FORBIDDEN
+  effective_canonical_status: UNCHANGED

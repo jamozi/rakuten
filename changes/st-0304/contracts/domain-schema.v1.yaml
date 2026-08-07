@@ -1,0 +1,261 @@
+document:
+  id: RAOS-DOMAIN-SCHEMA-001
+  version: 1.0.0
+  story_id: ST-0304
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  epic_id: EPIC-03
+  title: Domain schemas
+  objective: Portfolio/Catalog/Evidence/Editorial/AI/Policyを段階実装
+  dependencies:
+  - ST-0303
+  requirement_ids:
+  - FR-001
+  - FR-002
+  - FR-003
+  - FR-004
+  - FR-007
+  - FR-018
+  deliverables:
+  - DOMAIN_MIGRATIONS
+  acceptance:
+  - CATALOG_TESTS
+  - DATA_TESTS
+  required_suites:
+  - TST-008
+  - TST-010
+  priority: P0
+  mvp: true
+  size: L
+  one_pr_preferred: false
+  open_decisions: []
+source_precedence:
+  selected_waves:
+  - MIG-002
+  - MIG-003
+  - MIG-004
+  - MIG-005
+  - MIG-006_POLICY_ONLY
+  schemas:
+  - portfolio
+  - catalog
+  - evidence
+  - editorial
+  - ai
+  - policy
+  pinned_inputs:
+  - path: docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+    sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+    role: BASELINE_MACHINE_TABLE_INVENTORY
+  - path: docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+    role: DOMAIN_AND_IMMUTABILITY_DESIGN
+  - path: docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md
+    sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137
+    role: MIGRATION_WAVE_AND_ROLLBACK_PROTOCOL
+  - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    role: CANONICAL_PRECEDENCE
+  - path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+    role: INT_DEC_004_AND_INT_DEC_005
+  - path: docs/canonical/01_integration/RAOS_07_canonical_contract_overlay_v1.0.yaml
+    sha256: f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e
+    role: ACCEPTED_OVERLAY_ORDER
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    role: APPROVED_STORY
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    role: SECURITY_CONTROLS
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    role: REQUIRED_TEST_SUITES
+  finalized_overlay_checkpoints:
+    execution: PROVENANCE_ONLY_NOT_CONCATENATED
+    files:
+    - path: changes/st-0003/database/202607300007_ai_governance_expand.sql
+      sha256: a9d07f07ed15541ca19cf8b6324b680ac2addf9370c70b35f86afa9d2bd82064
+    - path: changes/st-0003/database/202607300008_ai_governance_expand_validate.sql
+      sha256: 9bd988e4fdd9e8c4fc9b631481092af3d92cbf649c7164c83eb7d6ab64efc978
+    - path: changes/st-0003/database/202607300009_ai_governance_migrate_batch.sql
+      sha256: 30cd41619c7b59c8d759bf854c86d0ac2b381b7d5c320051402919816602545a
+    - path: changes/st-0003/database/202607300010_ai_governance_contract_prepare.sql
+      sha256: 380ab7c96bdc73c1a562baef4918c4c4dfbc533e05014435363db9eeea682b25
+    - path: changes/st-0003/database/202607300011_ai_governance_contract.sql
+      sha256: 8aa37799806be8bbbafd952b03627d16ec6dce459a77a03503f562b61550d9da
+    - path: changes/st-0004/database/202607300013_content_expand.sql
+      sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
+    - path: changes/st-0004/database/202607300014_content_expand_validate.sql
+      sha256: 16333a0a0aa8cb1f30d488faaef2dc387043619aed2937ed0d9a0aebd4d32704
+    - path: changes/st-0004/database/202607300015_content_migrate_batch.sql
+      sha256: 271af87f846489ac855ba66b371dc659698604f35f1dd82e34b8eb0b52a8c00c
+    - path: changes/st-0004/database/202607300016_content_contract_prepare.sql
+      sha256: b61ffcba92a270a90c9a2492fa602b43b8e048ea75e74ef57016852079ddf968
+    - path: changes/st-0004/database/202607300017_content_contract.sql
+      sha256: c3598c730dfb0c2354f227e574db88d56399c2cfd78974827738d5cceaf0a845
+  predecessor_manifest:
+    story_id: ST-0303
+    path: changes/st-0303/manifest.yaml
+    sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b
+  translation_rules:
+  - PRESERVE_ALL_BASELINE_TABLE_METADATA
+  - APPLY_FINALIZED_ST_0003_AND_ST_0004_PHYSICAL_SEMANTICS
+  - NEVER_EXECUTE_OR_CONCATENATE_CHECKPOINT_SQL
+  - CREATE_AND_OWNER_THE_SIX_SELECTED_SCHEMAS
+  - NORMALIZE_CONTENT_PRODUCT_TARGET_TO_CATALOG_CANONICAL_PRODUCT
+  - RENDER_ALL_TABLES_BEFORE_CYCLIC_FOREIGN_KEYS
+  - CONNECT_EXACT_ST_0303_OPS_JOB_SITE_FOREIGN_KEY
+  - DEFER_ONLY_UNAVAILABLE_TARGETS
+  - NO_SEEDS_OR_LIVE_DATA
+  physical_translation_fragments:
+  - {path: changes/st-0304/contracts/physical/01-domain-physical.sql, sha256: b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8}
+  - {path: changes/st-0304/contracts/physical/02-domain-physical.sql, sha256: b685751e4e2743ea6c7202e8ce726486ac152e46987bb832e6777e61b987aafc}
+  - {path: changes/st-0304/contracts/physical/03-domain-physical.sql, sha256: f95ad5a2fd349177b01f97237d0d9a3fb598b2781828e9531a04c3c42b811b45}
+  - {path: changes/st-0304/contracts/physical/04-domain-physical.sql, sha256: 4a3c029980e8c27957fac2291e7b0a8efb81eaf1faa74dee4e757b0836e7ba30}
+  - {path: changes/st-0304/contracts/physical/05-domain-physical.sql, sha256: c78e946f9be015d461350f347f125a2cf8f01b267647a8685158af207cefc0ec}
+  - {path: changes/st-0304/contracts/physical/06-domain-physical.sql, sha256: cc520254390d68fdc68d54c01ed6b95e031ea422814e5be924849ec61636904d}
+  - {path: changes/st-0304/contracts/physical/07-domain-physical.sql, sha256: 739cc2ecae7e49702da5e36be6e37eaebaa7a535be4a623c79dee86926212870}
+  - {path: changes/st-0304/contracts/physical/08-domain-physical.sql, sha256: eafb7b89c6fa08bd74a8c13d89aa19aea3a946e739720a8cff9e6faa3ca2bfc4}
+  - {path: changes/st-0304/contracts/physical/09-domain-physical.sql, sha256: 6cebf09249f027662557038f8367bdc586030197911046be242543cd43502ae5}
+  - {path: changes/st-0304/contracts/physical/10-domain-physical.sql, sha256: 3d806436b7ed91f25e0396e15b914dda7258b743589ec4dc6c3f4272c9fcb38d}
+  - {path: changes/st-0304/contracts/physical/11-domain-physical.sql, sha256: 947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09}
+database:
+  product: PostgreSQL
+  exact_server_version_num: 180004
+  timezone: UTC
+  transactional_ddl: true
+  extension_dependencies: []
+  custom_types: []
+expected_inventory:
+  schemas_created: 6
+  tables: 86
+  views: 1
+  columns: 1141
+  not_null_constraints: 861
+  primary_keys: 86
+  named_unique_constraints: 93
+  check_constraints: 453
+  immediate_foreign_keys: 264
+  deferred_foreign_keys: 1
+  standalone_indexes: 274
+  total_indexes: 453
+  functions: 48
+  triggers: 81
+  rls_policies: 0
+  rls_enabled_tables: 11
+  rls_forced_tables: 11
+  ignored_st0306_policies: 22
+  by_schema:
+    portfolio: {tables: 8, columns: 114, not_null: 95, primary_keys: 8, unique: 11, checks: 42, foreign_keys: 15, standalone_indexes: 19, total_indexes: 38, functions: 0, triggers: 5}
+    catalog: {tables: 18, views: 1, columns: 235, not_null: 174, primary_keys: 18, unique: 11, checks: 79, foreign_keys: 47, standalone_indexes: 54, total_indexes: 83, functions: 0, triggers: 11, rls_enabled: 0, rls_forced: 0}
+    evidence: {tables: 12, views: 0, columns: 124, not_null: 95, primary_keys: 12, unique: 12, checks: 45, foreign_keys: 27, standalone_indexes: 27, total_indexes: 51, functions: 1, triggers: 11, rls_enabled: 2, rls_forced: 2}
+    editorial: {tables: 22, views: 0, columns: 248, not_null: 195, primary_keys: 22, unique: 26, checks: 100, foreign_keys: 64, standalone_indexes: 60, total_indexes: 108, functions: 9, triggers: 19, rls_enabled: 9, rls_forced: 9}
+    ai: {tables: 18, columns: 322, not_null: 224, primary_keys: 18, unique: 25, checks: 147, foreign_keys: 90, standalone_indexes: 90, total_indexes: 133, functions: 35, triggers: 31}
+    policy: {tables: 8, columns: 98, not_null: 78, primary_keys: 8, unique: 8, checks: 40, foreign_keys: 21, standalone_indexes: 24, total_indexes: 40, functions: 3, triggers: 4}
+expected_postgresql_18_4_catalog_digests:
+  algorithm: MD5_OVER_SORTED_UNIT_SEPARATOR_ROWS
+  relations: {count: 87, md5: 692fe9230d7c72823ceb716758d16b9d}
+  columns: {count: 1141, md5: ed47ed9dad9060fcf55573143653de09}
+  constraints: {count: 1757, md5: cf4c5ac88bf3476e433de1f35c48af6e}
+  indexes: {count: 453, md5: b5049f3b168dad1bb7dfe6296f0d60e6}
+  functions: {count: 48, md5: 5e994dea08bd1b7f9fe80cf0e23b0951}
+  triggers: {count: 81, md5: 7ec669ff04f1c99c5d144b3e234983bf}
+deferred_foreign_key_policy:
+  exact_names:
+  - fk_iam_break_glass_record_incident_id
+  connected_from_predecessor:
+  - name: fk_ops_job_site_id
+    table: ops.job
+    columns: [site_id]
+    references: portfolio.site
+    referenced_columns: [id]
+    on_delete: RESTRICT
+    preflight: FAIL_ON_ORPHAN_BEFORE_ADD
+  retained_deferred:
+  - name: fk_iam_break_glass_record_incident_id
+    table: iam.break_glass_record
+    references: ops.incident
+    owner_story: UNASSIGNED
+security:
+  control_ids:
+  - SEC-DATA-005
+  - SEC-DATA-006
+  - SEC-DATA-007
+  - SEC-AI-003
+  - SEC-AI-004
+  - SEC-AI-005
+  - SEC-SDLC-009
+  - SEC-SDLC-010
+  public_schema_privileges: NONE
+  public_table_privileges: NONE
+  public_function_execute: REVOKED
+  create_database_roles: false
+  create_workload_grants: false
+  create_default_privileges: false
+  create_rls_policies: false
+  rls_policy_owner_story: ST-0306
+  rls_fail_closed_without_policies: true
+  rls_enabled_and_forced_tables:
+  - editorial.article_disclosure_context
+  - editorial.article_methodology_binding
+  - editorial.article_template_version
+  - editorial.article_type_version
+  - editorial.content_schema_version
+  - editorial.editorial_methodology_version
+  - editorial.media_asset
+  - editorial.seo_metadata_version
+  - editorial.structured_data_manifest
+  - evidence.first_hand_experience_asset
+  - evidence.first_hand_experience_record
+  search_path:
+    only: pg_catalog
+    session_prepare: SET LOCAL search_path = pg_catalog
+    hostile_resolution_test_required: true
+downgrade:
+  scope: EXACT_ST_0304_OWNED_OBJECTS
+  transaction_required: true
+  preflight_before_any_drop: true
+  require_all_owned_tables_empty: true
+  drop_with: RESTRICT
+  partial_drop_forbidden: true
+  predecessor_revision: '202608030003'
+verification:
+  exact_postgresql_server_version_num: 180004
+  required_local_candidate_suites: [TST-008, TST-010]
+  exact_catalog_parity: REQUIRED
+  zero_to_latest: REQUIRED
+  predecessor_to_latest: REQUIRED
+  downgrade_reupgrade: REQUIRED
+  public_and_default_acl_clean: REQUIRED
+  secret_scan: REQUIRED
+boundary:
+  environment: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_tst_008: NOT_EXECUTED
+  formal_tst_010: NOT_EXECUTED
+  independent_migration_owner_review: NOT_EXECUTED
+  hosted_ci_postgresql_18_4: NOT_EXECUTED
+  human_review: NOT_EXECUTED
+  staging_execution: NOT_EXECUTED
+  production_execution: FORBIDDEN
+  canonical_apply: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
+out_of_scope:
+- publishing
+- readmodel
+- freshness
+- analytics
+- finance
+- database_roles
+- workload_grants
+- default_privileges
+- rls_policies
+- seeds
+- retention_policy
+- identity_merge
+- provider_activation
+- publication
+- repositories
+- services
+- apis

@@ -1,0 +1,76 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0101-20260805-V5
+  schema_version: 1
+  recorded_at: '2026-08-05T00:49:02Z'
+story_id: ST-0101
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0005/evidence/ST-0101-local-20260805-v4.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/7cc84464c19a3dabd38a1612c1f061ac8cb393b3a8db7b66d58cef5e4d859c35-ST-0101-local-20260805-v4.yaml
+    sha256: 7cc84464c19a3dabd38a1612c1f061ac8cb393b3a8db7b66d58cef5e4d859c35
+  - original_uri: repo://scripts/chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/47f74c9d4cd0e86df21f1274364d698f61850e88c50958bdc4847bbeb7eb6d37-chatgpt_pro_orchestrator.py
+    sha256: 47f74c9d4cd0e86df21f1274364d698f61850e88c50958bdc4847bbeb7eb6d37
+  - original_uri: repo://tests/st0101/test_chatgpt_pro_orchestrator.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2407fe0821317d5fed2c0638f8874155957c49efe3564b4a63e16c73abd6520e-test_chatgpt_pro_orchestrator.py
+    sha256: 2407fe0821317d5fed2c0638f8874155957c49efe3564b4a63e16c73abd6520e
+  - original_uri: repo://changes/st-0101/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/251a0a7018715bb60d10733bf53a494ab98dc89a801be34d9cb82a8c9cd90fad-README.md
+    sha256: 251a0a7018715bb60d10733bf53a494ab98dc89a801be34d9cb82a8c9cd90fad
+  - original_uri: repo://docs/worklogs/ST-0101.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8676de5d93ce03a2415f3a88cce321c82025570f2f1f18338bc7aa17f4d78e1a-ST-0101.md
+    sha256: 8676de5d93ce03a2415f3a88cce321c82025570f2f1f18338bc7aa17f4d78e1a
+suite_results:
+  - suite_id: TST-001
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: append-only content-addressed evidence refresh
+    result: >-
+      PASS; 5/5 references matched exact source bytes and SHA-256, including
+      the immediate V4 evidence snapshot and exactly four current direct
+      artifacts
+  - command: >-
+      .venv/bin/pytest -p no:cacheprovider -q
+      tests/st0101/test_chatgpt_pro_orchestrator.py -k
+      'event_state_publication_window or missing_run_directory or
+      symlink_run_directory or nonprivate_run_directory_mode or
+      hash_mismatch_is_refused_only_after_exclusive_lock'
+    result: 8 passed, 66 deselected in 0.19s
+  - command: .venv/bin/pytest -p no:cacheprovider -q tests/st0101
+    result: 377 passed in 4.77s
+  - command: >-
+      .venv/bin/pytest -p no:cacheprovider -q
+      tests/st0106/test_workflow_contract.py
+    result: 21 passed
+  - command: >-
+      .venv/bin/ruff check scripts/chatgpt_pro_orchestrator.py
+      tests/st0101/test_chatgpt_pro_orchestrator.py and matching Ruff format
+      --check, followed by Python compilation
+    result: PASS; lint clean, both files formatted, and both compiled
+  - command: >-
+      python3 scripts/import_raos_design.py verify and make check-workspace
+    result: >-
+      PASS; 105 imported files, six archives, 104 package checksums, 103
+      manifest entries, and 42 workspace directories with no changes
+  - command: independent final post-remediation audit
+    result: >-
+      PASS; the concurrent-resume terminal-monotonicity and publication-window
+      findings were closed after the second remediation
+boundary: >-
+  Append-only repository delta over the 2026-08-05 ST-0101 V4 local snapshot.
+  V5 supersedes V4 locally because the audited concurrency corrections reload
+  state only under the run lock and make resume/status wait through the event-
+  to-state publication window. The V4 capture and four current direct-artifact
+  captures bind the final audited source, deterministic publication-window,
+  filesystem, tamper, terminal-monotonicity, hash-chain, pending-transcript,
+  and no-resubmission coverage. All runtime transports were inert local test
+  doubles. No browser, MCP child, private run state, pending live transcript,
+  prompt, response, credential, cookie, storage, profile, live resume,
+  resubmit, hosted CI, human approval, canonical APPLY, staging, release, or
+  production action was accessed or executed. A combined implementation-plus-
+  status-history PR is not valid under the ST-0005 trust-surface/history
+  separation and this record is local candidate evidence only. Formal TST-001
+  remains NOT_EXECUTED and effective canonical ST-0101 remains NOT_STARTED /
+  NOT_EXECUTED.

@@ -1,0 +1,188 @@
+document:
+  id: RAOS-PUBLICATION-ANALYTICS-FINANCE-001
+  version: 1.0.0
+  story_id: ST-0305
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_verification: NOT_EXECUTED
+story:
+  epic_id: EPIC-03
+  title: Publication/analytics/finance schemas
+  objective: Snapshot/Readmodel/Freshness/Analytics/Financeを実装
+  dependencies: [ST-0304]
+  requirement_ids: [FR-010, FR-013, FR-014, FR-015]
+  deliverables: [MIGRATIONS]
+  acceptance: [PUBLIC_ISOLATION, FINANCE_STATES]
+  required_suites: [TST-008, TST-011, TST-030]
+  open_decisions: []
+source_precedence:
+  selected_waves: [MIG-006_PUBLISHING_ONLY, MIG-007, MIG-008]
+  schemas: [publishing, freshness, analytics, finance, readmodel]
+  pinned_inputs:
+  - {path: docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml, sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d, role: BASELINE_MACHINE_TABLE_INVENTORY}
+  - {path: docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md, sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c, role: DOMAIN_AND_IMMUTABILITY_DESIGN}
+  - {path: docs/upstream/key_documents/RAOS_03_migration_playbook_v0.1.md, sha256: d05d1d4ebe3f3904e58c104e0b1836bc897377dbf27f9019f57c3fc6440bd137, role: MIGRATION_WAVE_AND_ROLLBACK_PROTOCOL}
+  - {path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md, sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a, role: CANONICAL_PRECEDENCE}
+  - {path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml, sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626, role: CANONICAL_DECISIONS}
+  - {path: docs/canonical/01_integration/RAOS_07_canonical_contract_overlay_v1.0.yaml, sha256: f9080e1744096b743b2ada2261d2a023cebf310a08cf3a9fc2d14a53ac56cf3e, role: ACCEPTED_CONTRACT_OVERLAY}
+  - {path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml, sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d, role: APPROVED_STORY}
+  - {path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml, sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8, role: SECURITY_CONTROLS}
+  - {path: docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml, sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0, role: DATA_MINIMIZATION_AND_CLASSIFICATION}
+  - {path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md, sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460, role: ANALYTICS_ATTRIBUTION_DESIGN}
+  - {path: docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml, sha256: b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa, role: EVENT_AND_PRIVACY_CONTRACT}
+  - {path: docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml, sha256: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c, role: ATTRIBUTION_SEPARATION_POLICY}
+  - {path: docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml, sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2, role: FINANCE_FORMULAS_AND_KPI_CONTRACT}
+  - {path: docs/canonical/03_analytics/RAOS_09_implementation_slices_v1.0.yaml, sha256: 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d, role: ANALYTICS_IMPLEMENTATION_BOUNDARY}
+  - {path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml, sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b, role: REQUIRED_TEST_SUITES}
+  predecessor_manifest:
+    story_id: ST-0304
+    path: changes/st-0304/manifest.yaml
+    sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+  translation_rules:
+  - PRESERVE_ALL_SELECTED_BASELINE_TABLE_METADATA
+  - ORDINARY_UNPARTITIONED_MVP_TABLES
+  - RENDER_ALL_TABLES_BEFORE_FOREIGN_KEYS
+  - INSTALL_EXACTLY_FOUR_DEFERRABLE_INITIALLY_DEFERRED_CYCLIC_FOREIGN_KEYS
+  - DEFER_ONLY_TWO_NAMED_ABSENT_TARGET_FOREIGN_KEYS
+  - REUSE_ST_0303_TOUCH_AND_HARD_IMMUTABILITY_FUNCTIONS
+  - NO_ROLES_GRANTS_RLS_POLICIES_SEEDS_RETENTION_OR_LIVE_DATA
+  physical_translation_fragments:
+  - {path: changes/st-0305/contracts/physical/publishing-guards.sql, sha256: d3ecd89ac35c386333ac2bf75907259aa28fc8718f65e8c303499193d57fe82e, role: PUBLICATION_GUARDS_AND_SELECTED_TRIGGERS}
+database:
+  product: PostgreSQL
+  exact_server_version_num: 180004
+  timezone: UTC
+  transactional_ddl: true
+  extension_dependencies: []
+  custom_types: []
+expected_inventory:
+  schemas_created: 5
+  tables: 39
+  columns: 629
+  not_null_constraints: 447
+  primary_keys: 39
+  named_unique_constraints: 47
+  check_constraints: 172
+  catalog_foreign_keys: 152
+  installed_foreign_keys: 150
+  deferred_absent_target_foreign_keys: 2
+  standalone_indexes: 153
+  total_indexes: 239
+  functions: 3
+  triggers: 17
+  rls_policies: 0
+  by_schema:
+    publishing: {tables: 9, columns: 146, not_null: 103, primary_keys: 9, unique: 13, checks: 31, catalog_foreign_keys: 51, installed_foreign_keys: 49, standalone_indexes: 51, total_indexes: 73, functions: 3, triggers: 10}
+    freshness: {tables: 6, columns: 92, not_null: 63, primary_keys: 6, unique: 5, checks: 28, catalog_foreign_keys: 21, installed_foreign_keys: 21, standalone_indexes: 22, total_indexes: 33, functions: 0, triggers: 1}
+    analytics: {tables: 8, columns: 130, not_null: 94, primary_keys: 8, unique: 5, checks: 38, catalog_foreign_keys: 33, installed_foreign_keys: 33, standalone_indexes: 35, total_indexes: 48, functions: 0, triggers: 2}
+    finance: {tables: 10, columns: 179, not_null: 127, primary_keys: 10, unique: 17, checks: 45, catalog_foreign_keys: 32, installed_foreign_keys: 32, standalone_indexes: 35, total_indexes: 62, functions: 0, triggers: 4}
+    readmodel: {tables: 6, columns: 82, not_null: 60, primary_keys: 6, unique: 7, checks: 30, catalog_foreign_keys: 15, installed_foreign_keys: 15, standalone_indexes: 10, total_indexes: 23, functions: 0, triggers: 0}
+catalog_fingerprints:
+  exact_server_version_num: 180004
+  algorithm: MD5_SORTED_UNIT_SEPARATOR_ROWS
+  selected_schemas: [publishing, freshness, analytics, finance, readmodel]
+  objects:
+    relations: {count: 39, digest: 8b7c92be0f2fd5402a424d95eea5233a}
+    columns: {count: 629, digest: 5b45839a79986b7f09e97d9c18ab2ebb}
+    constraints: {count: 855, digest: 486df24518366f36689d83135245b0fa}
+    indexes: {count: 239, digest: caa0c0ba455c58af334ea02bd0afa319}
+    functions: {count: 3, digest: 92c2ea81850bf9cb5357e173476705f7}
+    triggers: {count: 17, digest: abbe0bced5705576cfce1a2dc2e0e615}
+deferred_foreign_key_policy:
+  exact_names:
+  - fk_publishing_publication_event_release_id
+  - fk_publishing_rollback_record_incident_id
+  retained_columns_and_indexes: true
+  placeholder_targets_forbidden: true
+  retained_deferred:
+  - {name: fk_publishing_publication_event_release_id, table: publishing.publication_event, references: ops.release, owner_story: UNASSIGNED}
+  - {name: fk_publishing_rollback_record_incident_id, table: publishing.rollback_record, references: ops.incident, owner_story: UNASSIGNED}
+  predecessor_deferred_preserved:
+  - fk_iam_break_glass_record_incident_id
+cyclic_foreign_keys:
+- fk_publishing_publication_candidate_publication_snapshot_id
+- fk_publishing_publication_snapshot_publication_candidate_id
+- fk_publishing_publication_current_route_id
+- fk_publishing_public_route_publication_id
+hard_immutable_tables:
+- publishing.review_decision
+- publishing.publication_snapshot
+- publishing.publication_event
+- analytics.anonymous_event
+- analytics.affiliate_click_event
+- finance.commission_event
+- finance.cost_allocation
+touch_tables:
+- publishing.review_assignment
+- publishing.publication_candidate
+- publishing.publication
+- publishing.public_route
+- freshness.refresh_schedule
+- finance.revenue_import
+- finance.commission
+publishing_guards:
+  functions:
+  - publishing.guard_final_approval
+  - publishing.guard_publication_candidate
+  - publishing.guard_publication_transition
+  final_approval:
+    active_human_user: REQUIRED
+    matching_passed_quality_run: REQUIRED
+    approved_source_packet: REQUIRED
+    unresolved_blocking_findings: ZERO
+    revoked_or_expired: REJECT
+  publication_kill_switch:
+    unavailable_relation: FAIL_CLOSED
+    bypass: FORBIDDEN
+security:
+  control_ids: [SEC-DATA-005, SEC-DATA-006, SEC-DATA-007]
+  public_schema_privileges: NONE
+  public_table_privileges: NONE
+  public_function_execute: REVOKED
+  create_database_roles: false
+  create_workload_grants: false
+  create_default_privileges: false
+  create_rls_policies: false
+  analytics_raw_pii_fields: FORBIDDEN
+  readmodel_finance_fields: FORBIDDEN
+  search_path:
+    only: pg_catalog
+    session_prepare: SET LOCAL search_path = pg_catalog
+    hostile_resolution_test_required: true
+downgrade:
+  scope: EXACT_ST_0305_OWNED_OBJECTS
+  transaction_required: true
+  preflight_before_any_drop: true
+  require_all_owned_tables_empty: true
+  owned_table_count: 39
+  nonempty_failure_code: ST0305_DOWNGRADE_NONEMPTY
+  drop_with: RESTRICT
+  partial_drop_forbidden: true
+  predecessor_revision: '202608030004'
+verification:
+  exact_postgresql_server_version_num: 180004
+  required_local_candidate_suites: [TST-008, TST-011, TST-030]
+  exact_catalog_parity: REQUIRED
+  zero_to_latest: REQUIRED
+  predecessor_to_latest: REQUIRED
+  downgrade_reupgrade: REQUIRED
+  public_and_default_acl_clean: REQUIRED
+  secret_scan: REQUIRED
+boundary:
+  environment: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_tst_008: NOT_EXECUTED
+  formal_tst_011: NOT_EXECUTED
+  formal_tst_030: NOT_EXECUTED
+  hosted_ci_postgresql_18_4: NOT_EXECUTED
+  migration_owner_review: NOT_EXECUTED
+  human_review: NOT_EXECUTED
+  staging_execution: NOT_EXECUTED
+  production_execution: FORBIDDEN
+  canonical_apply: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
+out_of_scope:
+- ST-0306_ROLES_GRANTS_DEFAULT_PRIVILEGES_RLS
+- ST-0307_UPGRADE_FIXTURE_OWNERSHIP
+- ST-0308_REPOSITORIES
+- RUNTIME_SERVICES_PROVIDERS_PUBLICATION_EVENTS_ATTRIBUTION_JOBS
+- SEEDS_LIVE_DATA_RETENTION_DELETION
+- CREDENTIALS_EXTERNAL_WRITES_PRODUCTION

@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content/v1/common/rich-text.schema.json",
+  "title": "RAOS Rich Text",
+  "type": "array",
+  "items": {
+    "oneOf": [
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "text"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20000
+          }
+        },
+        "required": [
+          "type",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "strong"
+          },
+          "children": {
+            "$ref": "#/$defs/rich_text"
+          }
+        },
+        "required": [
+          "type",
+          "children"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "emphasis"
+          },
+          "children": {
+            "$ref": "#/$defs/rich_text"
+          }
+        },
+        "required": [
+          "type",
+          "children"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "inline_code"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "type",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "internal_link"
+          },
+          "route_ref": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "children": {
+            "$ref": "#/$defs/rich_text"
+          }
+        },
+        "required": [
+          "type",
+          "route_ref",
+          "children"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "approved_external_citation"
+          },
+          "source_ref": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+          },
+          "children": {
+            "$ref": "#/$defs/rich_text"
+          }
+        },
+        "required": [
+          "type",
+          "source_ref",
+          "children"
+        ],
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "line_break"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false
+      }
+    ]
+  },
+  "minItems": 1,
+  "maxItems": 400,
+  "$defs": {
+    "rich_text_node": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            }
+          },
+          "required": [
+            "type",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "strong"
+            },
+            "children": {
+              "$ref": "#/$defs/rich_text"
+            }
+          },
+          "required": [
+            "type",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "emphasis"
+            },
+            "children": {
+              "$ref": "#/$defs/rich_text"
+            }
+          },
+          "required": [
+            "type",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "inline_code"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            }
+          },
+          "required": [
+            "type",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "internal_link"
+            },
+            "route_ref": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 200,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+            },
+            "children": {
+              "$ref": "#/$defs/rich_text"
+            }
+          },
+          "required": [
+            "type",
+            "route_ref",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "approved_external_citation"
+            },
+            "source_ref": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 200,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+            },
+            "children": {
+              "$ref": "#/$defs/rich_text"
+            }
+          },
+          "required": [
+            "type",
+            "source_ref",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "line_break"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "rich_text": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rich_text_node"
+      },
+      "minItems": 1,
+      "maxItems": 400
+    }
+  }
+}

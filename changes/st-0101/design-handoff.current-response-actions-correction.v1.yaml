@@ -1,0 +1,75 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Correction of the current advanced response action-group exact label
+    - scripts/chatgpt_pro_orchestrator.py exact advanced response action-group constant
+    - tests/st0101 response-scoped label and near-match regressions
+    - changes/st-0101/README.md and docs/worklogs/ST-0101.md evidence correction
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md exact label correction
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.current-response-body.v1.yaml
+    - changes/st-0101/design-handoff.current-response-actions.v1.yaml
+  decision: >-
+    Correct the exact optional opaque action-group label inside the strict
+    advanced response-body subtree from Your message actions to Response
+    actions. Accept only the physical line group "Response actions": at the
+    already-approved indentation, post-fragment placement, ref-free form, and
+    opacity boundary. Explicitly reject group "Your message actions": inside
+    the response subtree as a near-match belonging to a different page region.
+    All placement, descendant-opacity, post-group-content, validation,
+    no-persistence, and no-resubmission controls from the predecessor handoff
+    remain unchanged.
+  rationale: >-
+    The initial sanitized label probe selected the first group on the entire
+    page and therefore observed the user-message-region label Your message
+    actions. A response-scoped exact-origin probe bounded from the unique
+    ChatGPT said: heading through its immediate generic body root found exactly
+    one group in that subtree: Response actions at indentation 20, after all
+    15 response fragments. The parser refusal line and response-scoped
+    structural comparison independently confirmed that only the label differed
+    from the otherwise-valid approved action-group shape.
+  rejected_alternatives:
+    - Accept both Your message actions and Response actions in the response subtree
+    - Search the entire page for an action group without binding it to the exact response subtree
+    - Use substring, case-insensitive, fuzzy, translated, or position-only label matching
+    - Treat the user-message action group as response evidence
+    - Relax any response-body, advice, sensitive-data, or no-resubmission control
+  constraints:
+    - The only accepted response-subtree action-group label is exactly Response actions
+    - The accepted role is exactly lower-case group and punctuation is exactly the trailing colon
+    - Your message actions is explicitly refused inside the response subtree
+    - Page regions outside the exact response subtree are never used to infer the response action label
+    - The group remains optional, ref-free, post-fragment, single-occurrence, and opaque
+    - No response text/statictext is accepted after the group closes
+    - Legacy parsing and all predecessor exact-origin, stop, schema, sensitivity, hash-chain, authority, and no-resubmission gates remain unchanged
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner approved bounded changes required to receive the already-authorized Pro answer
+    - The correction probe was restricted to the exact response-body subtree and returned only role, indentation, label length, and the non-sensitive UI label
+    - No raw prompt, response value, snapshot, cookie, storage, credential, sidebar, or unrelated-tab data was output or persisted
+    - The existing run must resume without browser_type, browser_click, or resubmission
+    - Captured output remains a hash-bound unapproved proposal pending human and canonical reconciliation
+  acceptance_criteria:
+    - Exact post-fragment group "Response actions": is opaque and accepted
+    - Exact group "Your message actions": is refused inside the response subtree
+    - All predecessor action-group negative placement, drift, descendant, and post-group-content cases remain green with the corrected label
+    - The observed live response structure reconstructs and validates the exact PRO_ADVICE_V1 object
+    - Full isolated ST-0101 and static security checks remain green
+  required_test_evidence:
+    - Corrected exact Response actions positive and resume no-action fixtures
+    - Explicit Your message actions response-subtree refusal fixture
+    - Existing label case, punctuation, whitespace, scalar, ref, placement, duplicate, descendant-opacity, and post-group-content regressions
+    - Existing response-body, anchor, current UI, legacy, origin, stop, generating, sensitive, advice, and no-persistence regressions
+    - Ruff, Python compilation, shell syntax, Skill validation, scoped diff, and full isolated tests/st0101
+    - Live same-run response capture evidence, separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation-and-active-goal
+    approved_on: 2026-08-05
+    statement: >-
+      Approve the response-scoped exact-label correction needed to receive the
+      already-authorized Pro answer without widening the action-group contract.

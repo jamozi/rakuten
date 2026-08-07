@@ -1,0 +1,37 @@
+schema: RAOS_PRO_DESIGN_BUNDLE_V1
+story_id: ST-0703
+authority: PROPOSAL_INPUT_ONLY
+implementation_authority: NOT_GRANTED
+archive:
+  path: changes/st-0703/ST-0703-pro-design-input-v1.tar.gz
+  sha256: c4177f2777ece3752ccdfa24df397523eb129cdd309f92e7347ae32b689daefe
+  media_type: application/gzip
+  regular_file_members: 21
+member_manifest:
+  path: changes/st-0703/pro-design-input.v1.members.sha256
+  sha256: 685f478e0be72157f84dee3923a68c3782ee7ecc880aaca664b4272efc9076fe
+request:
+  path: changes/st-0703/DESIGN-DECISION-REQUEST.md
+  sha256: bdaf5c473051fc4b0ab2177acc2db8588eb20d1eae053c9c54d90d04d79926c0
+submission_message:
+  path: changes/st-0703/PRO-SUBMISSION-MESSAGE.txt
+  sha256: b3d24bf81a5c0a1767c5926be84e0e01858b9ac7436d1254f61c9f3b406f6372
+decisions_requested:
+  - ST0703-D1
+  - ST0703-D2
+  - ST0703-D3
+  - ST0703-D4
+official_references_to_refresh:
+  - https://developers.openai.com/api/docs/guides/migrate-to-responses
+  - https://developers.openai.com/api/docs/guides/structured-outputs
+  - https://developers.openai.com/api/docs/guides/your-data
+  - https://github.com/openai/openai-python
+  - https://pypi.org/project/openai/
+expected_output:
+  display_name: DESIGN_HANDOFF_V1_ST0703_v1.yaml
+  format: UTF8_LF_SINGLE_DOCUMENT_YAML
+  root: DESIGN_HANDOFF_V1
+  proposal_authority: PENDING_UNAPPROVED
+  human_approval: NOT_PROVIDED
+  implementation_authority: NOT_GRANTED
+  formal_test_execution: NOT_EXECUTED

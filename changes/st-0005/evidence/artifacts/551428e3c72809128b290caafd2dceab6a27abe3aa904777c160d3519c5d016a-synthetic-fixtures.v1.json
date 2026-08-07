@@ -1,0 +1,287 @@
+{
+  "boundary": {
+    "database_or_object_storage_write": "FORBIDDEN",
+    "production_or_staging_use": "FORBIDDEN",
+    "provider_or_network_access": "FORBIDDEN",
+    "synthetic_only": true
+  },
+  "document": {
+    "factory_version": "synthetic-data-factory.v1",
+    "id": "RAOS-SYNTHETIC-FIXTURE-BUNDLE-001",
+    "story_id": "ST-0205",
+    "version": "1.0.0"
+  },
+  "domain_count": 13,
+  "fixture_count": 18,
+  "fixtures": [
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-ops-baseline-487006010960",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "delivery_no": 1,
+        "logical_event_id": "event-b206329c08c1ec03",
+        "occurred_at": "2026-07-30T03:04:05+00:00",
+        "status": "READY"
+      },
+      "scenario": "baseline",
+      "schema_domain": "ops"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-ops-duplicate-original-39676b28e15b",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "delivery_no": 1,
+        "logical_event_id": "event-c89a04d48e0bba84",
+        "occurred_at": "2026-07-30T03:05:00+00:00",
+        "status": "READY"
+      },
+      "scenario": "duplicate-original",
+      "schema_domain": "ops"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-ops-duplicate-replay-01dc7fee04bb",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "delivery_no": 1,
+        "logical_event_id": "event-c89a04d48e0bba84",
+        "occurred_at": "2026-07-30T03:05:00+00:00",
+        "status": "READY"
+      },
+      "scenario": "duplicate-replay",
+      "schema_domain": "ops"
+    },
+    {
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-iam-baseline-990f3898c235",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "active": true,
+        "locale": "ja-JP",
+        "principal_id": "synthetic-principal-1f2fd216ef0d4e0f",
+        "principal_kind": "SERVICE"
+      },
+      "scenario": "baseline",
+      "schema_domain": "iam"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-portfolio-jst-72cdcbfac4b3",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "business_date": "2026-07-30",
+        "locale": "ja-JP",
+        "site_id": "synthetic-site-2e5b1cb0375b2b96",
+        "timezone": "Asia/Tokyo"
+      },
+      "scenario": "jst",
+      "schema_domain": "portfolio"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-catalog-unicode-large-jpy-50853893fbf2",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "amount_minor": 9007199254740991,
+        "currency": "JPY",
+        "label": "合成商品 Ω 🧪",
+        "observed_at": "2026-07-30T12:04:05+09:00",
+        "product_id": "synthetic-product-e9b850b2b9ff6c57"
+      },
+      "scenario": "unicode-large-jpy",
+      "schema_domain": "catalog"
+    },
+    {
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-evidence-baseline-e9abbc0fbb74",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "confidence_basis_points": 9500,
+        "fact_id": "synthetic-fact-41ff9ad26a85f263",
+        "observed_at": "2026-07-30T03:04:05+00:00",
+        "source_ref": "synthetic-source-293949ad5e220ce3"
+      },
+      "scenario": "baseline",
+      "schema_domain": "evidence"
+    },
+    {
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-editorial-unicode-locale-6ed83d5cfb2e",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "article_id": "synthetic-article-760178ada36e4a92",
+        "locale": "ja-JP",
+        "title": "合成比較ガイド Ω 🧪",
+        "version": 1
+      },
+      "scenario": "unicode-locale",
+      "schema_domain": "editorial"
+    },
+    {
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-ai-baseline-12676086a729",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "cost_minor": 999999,
+        "model_ref": "synthetic-model-v1",
+        "task_id": "synthetic-task-7d8d872fccdf0baa",
+        "token_count": 123456
+      },
+      "scenario": "baseline",
+      "schema_domain": "ai"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-policy-baseline-5cca8706143b",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "bundle_id": "synthetic-policy-dea4d3d049bbaee9",
+        "effective_at": "2026-07-30T00:00:00+09:00",
+        "rule_count": 7,
+        "state": "DRAFT"
+      },
+      "scenario": "baseline",
+      "schema_domain": "policy"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-publishing-baseline-223724cc173a",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "content_sha256": "2bcf2791be30c1f834faf02e838258326ce875bfcc1f7e13001acf141621dba2",
+        "published_at": null,
+        "snapshot_id": "synthetic-snapshot-378c81d601db7097",
+        "state": "CANDIDATE"
+      },
+      "scenario": "baseline",
+      "schema_domain": "publishing"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-freshness-dst-before-4f9249a8a585",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "assessment_id": "synthetic-assessment-cacf3e6b366d2d52",
+        "logical_event_id": "event-6132a5797b1fa843",
+        "observed_at": "2026-11-01T01:30:00-04:00",
+        "sequence_no": 1,
+        "timezone": "America/New_York"
+      },
+      "scenario": "dst-before",
+      "schema_domain": "freshness"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-freshness-dst-after-4cb657cbc331",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "assessment_id": "synthetic-assessment-c0e731c8e8be45b7",
+        "logical_event_id": "event-6132a5797b1fa843",
+        "observed_at": "2026-11-01T01:30:00-05:00",
+        "sequence_no": 2,
+        "timezone": "America/New_York"
+      },
+      "scenario": "dst-after",
+      "schema_domain": "freshness"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-freshness-out-of-order-later-0934173b8db5",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "assessment_id": "synthetic-assessment-3bfaa6878c880862",
+        "logical_event_id": "event-c1c2fa92d54368c0",
+        "observed_at": "2026-07-30T03:12:00+00:00",
+        "sequence_no": 2,
+        "timezone": "UTC"
+      },
+      "scenario": "out-of-order-later",
+      "schema_domain": "freshness"
+    },
+    {
+      "classification": "INTERNAL",
+      "fixture_id": "fx-freshness-out-of-order-earlier-e175c33873b2",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "assessment_id": "synthetic-assessment-cbc4ae06191b7771",
+        "logical_event_id": "event-c1c2fa92d54368c0",
+        "observed_at": "2026-07-30T03:11:00+00:00",
+        "sequence_no": 1,
+        "timezone": "UTC"
+      },
+      "scenario": "out-of-order-earlier",
+      "schema_domain": "freshness"
+    },
+    {
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-analytics-baseline-dddd0bb77bf1",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "event_id": "synthetic-analytics-79f35b1aadbe4de0",
+        "event_kind": "PAGE_VIEW",
+        "occurred_at": "2026-07-30T03:04:05+00:00",
+        "pseudonym_sha256": "b9cde2a473b7c361d84d6c3f6fede3c094c54ada5689a1e1917a7bf0f72b9bf9"
+      },
+      "scenario": "baseline",
+      "schema_domain": "analytics"
+    },
+    {
+      "classification": "CONFIDENTIAL",
+      "fixture_id": "fx-finance-currency-large-3a9dff46c6a9",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "amount_minor": 9007199254740991,
+        "attribution_basis": "UNATTRIBUTED",
+        "commission_id": "synthetic-commission-d4b8edd1b894cbfa",
+        "currency": "USD"
+      },
+      "scenario": "currency-large",
+      "schema_domain": "finance"
+    },
+    {
+      "classification": "PUBLIC",
+      "fixture_id": "fx-readmodel-unicode-locale-3731a5000099",
+      "license": "UNLICENSED",
+      "origin": "RAOS_ST0205_DETERMINISTIC_FACTORY",
+      "payload": {
+        "headline": "公開用の合成見出し Ω 🧪",
+        "locale": "ja-JP",
+        "publication_id": "synthetic-publication-b458bb17f54a942a",
+        "route": "/synthetic/0e3e7ee1e3658b8d"
+      },
+      "scenario": "unicode-locale",
+      "schema_domain": "readmodel"
+    }
+  ],
+  "scenario_dimensions": [
+    "TIME",
+    "CURRENCY",
+    "LOCALE",
+    "UNICODE",
+    "LARGE_VALUE",
+    "DST",
+    "JST",
+    "DUPLICATE",
+    "OUT_OF_ORDER"
+  ],
+  "seed_fingerprint_sha256": "60a0c2d5ffb60026dd0aa4b909c84aa5661c4c05fc288f2b1e62fbf2c9e626c5"
+}

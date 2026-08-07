@@ -1,0 +1,43 @@
+document:
+  id: STATUS-ST0205-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-04T21:57:42Z'
+reason: >-
+  Record the append-only local ST-0205 implementation candidate after its
+  exact 20-artifact content-addressed closure, deterministic generator and
+  read-only drift checks, isolated Story suite, manifest and fixture-catalog
+  integrity verification, strict application-source type checks, Ruff lint
+  and format, official denied-network static and unit gates, routing
+  regressions, diff check, protected-path check, and independent audit passed.
+  This does not claim formal TST-005 or TST-031, hosted CI, formal
+  privacy/security manual review, runtime or provider validation, canonical
+  APPLY, formal VALIDATED, staging, release, publication, or production
+  execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+  - story_id: ST-0205
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+      - suite_id: TST-005
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0205-local-20260805.yaml
+        sha256: e8b229d2957050455e1fe8bd8a0a758e491255d67e9a1c03bb932df56064c254
+        observed_at: '2026-08-04T21:55:46Z'
+      - suite_id: TST-031
+        environment: LOCAL
+        evidence_class: LOCAL_IMPLEMENTATION
+        uri: repo://changes/st-0005/evidence/ST-0205-local-20260805.yaml
+        sha256: e8b229d2957050455e1fe8bd8a0a758e491255d67e9a1c03bb932df56064c254
+        observed_at: '2026-08-04T21:55:46Z'

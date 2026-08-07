@@ -1,0 +1,105 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Same-process interactive authentication wait for make pro-ask
+    - scripts/chatgpt_pro_orchestrator.py bounded wait state machine
+    - Makefile interactive-authentication wait input
+    - tests/st0101 deterministic same-transport, no-early-input, timeout, and regression coverage
+    - docs/worklogs/ST-0101.md implementation and live-attempt evidence
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md same-window login guidance
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.raos-ask-pro.v1.yaml
+    - changes/st-0101/design-handoff.edge-browser.v1.yaml
+  decision: >-
+    Allow pro-ask to keep its single pinned MCP child and dedicated selected
+    browser process open for a bounded interactive-authentication interval of
+    at most 900 seconds. When the exact ChatGPT origin visibly presents login,
+    CAPTCHA, reauthentication, or account-selection state, the repository
+    owner may complete that state manually in the same browser window. During
+    this interval automation may only use the already-approved initial
+    navigation, snapshots, and bounded waits; it must not click, type, select a
+    model, select an effort level, or submit. Every observed snapshot must
+    remain on the exact https://chatgpt.com origin. Once a known authenticated
+    landing state is visible in that same transport, the existing state
+    machine may visibly verify Pro and the maximum available Pro effort before
+    typing only the MCP secret name and submitting. Timeout stops unsent.
+    Rate limit, origin mismatch, selector drift, unknown UI, and ambiguous
+    model or effort state continue to stop immediately. pro-doctor remains a
+    read-only, non-waiting diagnostic. No browser or profile fallback is
+    allowed after launch.
+  rationale: >-
+    The repository owner observed that closing a manually authenticated Edge
+    window before pro-ask creates a second launch boundary and can trigger a
+    fresh CAPTCHA. Keeping the user action and the approved submission state
+    machine in one private child process avoids that boundary while retaining
+    exact-origin checks, no-credential automation, visible Pro/effort
+    verification, bounded execution, and fail-closed behavior.
+  rejected_alternatives:
+    - Attach to a personal or already-running Edge process through remote debugging
+    - Use a browser extension, CDP endpoint, cookie export, storage-state export, or credential automation
+    - Copy or inspect cookies, local storage, credentials, tabs, or profile contents
+    - Keep an unbounded browser process or wait indefinitely for user action
+    - Automatically click login, CAPTCHA, reauthentication, or account-selection controls
+    - Start a second browser process after authentication or fall back to Chrome
+    - Treat CAPTCHA completion as evidence that Pro or maximum effort is selected
+  constraints:
+    - The interactive-authentication interval must be configurable from zero through 900 seconds only
+    - The default pro-ask interval is 900 seconds and zero preserves immediate fail-closed behavior
+    - One pro-ask invocation must use one selected browser, one dedicated profile, one MCP child, and one transport
+    - Only the dedicated repository-scoped, owner-private ChatGPT profile may be used
+    - Initial navigation, snapshots, and bounded waits are the only automated actions before authentication clears
+    - The exact https://chatgpt.com origin must be checked before and throughout the wait
+    - Login, CAPTCHA, reauthentication, and account selection are manual user actions
+    - Rate limit, origin mismatch, unknown UI, and selector ambiguity must not enter the wait loop
+    - No prompt content or MCP secret name may be typed before authenticated UI, Pro, and maximum available effort are visibly verified
+    - Timeout and every stop path must leave the request unsubmitted
+    - Resume must remain bound to the browser and run state originally recorded
+    - pro-doctor must remain read-only and must not wait for interactive authentication
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved the same-window bounded manual-authentication flow
+    - User credentials, CAPTCHA answers, account selection, and reauthentication remain exclusively manual
+    - The workflow must never inspect browser storage, cookies, passwords, unrelated tabs, or profile files
+    - Browser automation remains limited to the approved exact-origin ChatGPT Pro state machine
+    - Visible Pro and maximum available effort verification remains mandatory before submission
+    - Account, subscription, publication, release, finance, and production actions remain prohibited
+    - Captured browser output remains a hash-bound unapproved proposal pending human and canonical reconciliation
+    - A timeout or authentication failure does not authorize any bypass or alternate transport
+  acceptance_criteria:
+    - pro-ask can wait up to the configured bound for manual login, CAPTCHA, reauthentication, or account selection
+    - The same MCP transport and browser process are used before and after the manual action
+    - No click, type, model selection, effort selection, or submission occurs while authentication remains unresolved
+    - Each wait iteration validates the exact ChatGPT origin before interpreting UI state
+    - A known authenticated landing state continues through the existing Pro and maximum-effort checks
+    - A cleared state may submit only the MCP secret name, never raw request text
+    - Interactive-authentication timeout produces a pre-submission stop and no submission
+    - Rate limit, origin mismatch, selector drift, unknown UI, and ambiguous Pro or effort state stop immediately
+    - An out-of-range wait value is rejected before browser launch
+    - pro-doctor behavior remains read-only and non-waiting
+    - Edge-first selection, per-browser profile isolation, resume binding, and no-cross-browser-fallback behavior remain green
+    - Documentation instructs the user to finish authentication in the same window and not close it
+  required_test_evidence:
+    - Scripted transport test proving one transport spans blocked and authenticated snapshots
+    - Test proving no click, type, or submission call occurs before authentication clears
+    - Tests for each approved waitable authentication state
+    - Exact-origin validation test for a snapshot observed during the wait
+    - Immediate-stop tests for rate limit, unknown UI, and selector ambiguity
+    - Timeout and zero-wait tests proving no submission
+    - Wait-bound parsing tests for zero, 900, negative, and greater-than-900 inputs
+    - Existing Pro, maximum-effort, secret-name-only, hash-chain, resume, and leakage regression tests
+    - Shell syntax, Ruff, Python compilation, and isolated tests/st0101 results
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-04
+    statement: >-
+      Approve and implement the proposed same-Edge-process flow: keep the
+      dedicated window open, allow up to 15 minutes for manual login or CAPTCHA
+      completion without automated input, then continue the existing visible
+      Pro and maximum-effort verification and test submission in that same
+      process.

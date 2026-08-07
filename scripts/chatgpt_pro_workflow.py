@@ -73,6 +73,29 @@ EXPECTED_PROFILE_KEYS = frozenset(
         "effort_option_labels",
     }
 )
+ADVANCED_PROFILE_ID = "gpt-5.6-sol-pro-advanced-v1"
+EXPECTED_ADVANCED_PROFILE: dict[str, Any] = {
+    "effort_mode": "advanced",
+    "states": [
+        "landing",
+        "model_menu",
+        "effort_menu",
+        "ready",
+        "send_ready",
+        "submitted",
+        "complete",
+    ],
+    "model_option_labels": ["GPT-5.6 Sol", "GPT-5.5", "GPT-5.3", "o3"],
+    "target_model": "GPT-5.6 Sol",
+    "target_effort": "Pro",
+    "effort_option_labels": [
+        "Instant 5.5",
+        "Medium",
+        "High",
+        "Extra High",
+        "Pro",
+    ],
+}
 
 SENSITIVE_PATTERNS = (
     re.compile(r"(?<![A-Z0-9])(?:AKIA|ASIA)[A-Z0-9]{16}(?![A-Z0-9])"),
@@ -259,11 +282,14 @@ def _load_contract(path: Path) -> dict[str, Any]:
         raise WorkflowRefusal("CONTRACT_INVALID")
     if not isinstance(profiles, dict) or not profiles:
         raise WorkflowRefusal("CONTRACT_INVALID")
-    for profile in profiles.values():
+    advanced_profiles: list[tuple[str, dict[str, Any]]] = []
+    for profile_id, profile in profiles.items():
+        if not isinstance(profile_id, str):
+            raise WorkflowRefusal("CONTRACT_INVALID")
         if not isinstance(profile, dict) or set(profile) != EXPECTED_PROFILE_KEYS:
             raise WorkflowRefusal("CONTRACT_INVALID")
         if (
-            profile.get("effort_mode") not in {"combined", "split"}
+            profile.get("effort_mode") not in {"advanced", "combined", "split"}
             or not isinstance(profile.get("states"), list)
             or not profile["states"]
             or not all(isinstance(item, str) for item in profile["states"])
@@ -281,6 +307,10 @@ def _load_contract(path: Path) -> dict[str, Any]:
             or not profile["target_effort"]
         ):
             raise WorkflowRefusal("CONTRACT_INVALID")
+        if profile["effort_mode"] == "advanced":
+            advanced_profiles.append((profile_id, profile))
+    if advanced_profiles != [(ADVANCED_PROFILE_ID, EXPECTED_ADVANCED_PROFILE)]:
+        raise WorkflowRefusal("CONTRACT_INVALID")
     return value
 
 
@@ -491,6 +521,7 @@ def validate_transcript(
     if not isinstance(profile_id, str) or profile_id not in profiles:
         raise WorkflowRefusal("UNKNOWN_UI_PROFILE")
     profile = profiles[profile_id]
+    effort_mode = profile.get("effort_mode")
     observations = transcript.get("observations")
     states = profile.get("states")
     if not isinstance(observations, list) or not isinstance(states, list):
@@ -520,13 +551,18 @@ def validate_transcript(
             if option_labels != profile["model_option_labels"]:
                 raise WorkflowRefusal("MODEL_OPTIONS_AMBIGUOUS")
             target = _one_ref(observation, "target_model")
-            actions.append(
-                _action(
-                    "browser_click", {"element": "Pro model option", "target": target}
+            if effort_mode != "advanced":
+                actions.append(
+                    _action(
+                        "browser_click",
+                        {"element": "Pro model option", "target": target},
+                    )
                 )
-            )
         elif state == "model_selected":
-            if observation["model_label"] != profile["target_model"]:
+            if (
+                effort_mode != "split"
+                or observation["model_label"] != profile["target_model"]
+            ):
                 raise WorkflowRefusal("PRO_NOT_VERIFIED")
             target = _one_ref(observation, "effort_picker")
             actions.append(
@@ -538,11 +574,13 @@ def validate_transcript(
             if option_labels != profile["effort_option_labels"]:
                 raise WorkflowRefusal("EFFORT_OPTIONS_AMBIGUOUS")
             target = _one_ref(observation, "target_effort")
-            actions.append(
-                _action(
-                    "browser_click", {"element": "maximum Pro effort", "target": target}
+            if effort_mode != "advanced":
+                actions.append(
+                    _action(
+                        "browser_click",
+                        {"element": "maximum Pro effort", "target": target},
+                    )
                 )
-            )
         elif state == "ready":
             if (
                 observation["model_label"] != profile["target_model"]
@@ -550,34 +588,52 @@ def validate_transcript(
             ):
                 raise WorkflowRefusal("PRO_OR_MAX_EFFORT_NOT_VERIFIED")
             refs = observation.get("refs")
-            if not isinstance(refs, dict) or set(refs) != {"composer", "send"}:
+            expected_refs = (
+                {"composer"} if effort_mode == "advanced" else {"composer", "send"}
+            )
+            if not isinstance(refs, dict) or set(refs) != expected_refs:
                 raise WorkflowRefusal("SELECTOR_AMBIGUITY")
             composer = refs["composer"]
-            send = refs["send"]
             if (
                 not isinstance(composer, list)
-                or not isinstance(send, list)
                 or len(composer) != 1
-                or len(send) != 1
                 or not isinstance(composer[0], str)
-                or not isinstance(send[0], str)
                 or not REF_PATTERN.fullmatch(composer[0])
-                or not REF_PATTERN.fullmatch(send[0])
             ):
                 raise WorkflowRefusal("SELECTOR_AMBIGUITY")
-            actions.extend(
-                [
-                    _action(
-                        "browser_type",
-                        {
-                            "element": "ChatGPT composer",
-                            "target": composer[0],
-                            "text": contract["prompt_secret_name"],
-                            "submit": False,
-                        },
-                    ),
-                    _action("browser_click", {"element": "send", "target": send[0]}),
-                ]
+            actions.append(
+                _action(
+                    "browser_type",
+                    {
+                        "element": "ChatGPT composer",
+                        "target": composer[0],
+                        "text": contract["prompt_secret_name"],
+                        "submit": False,
+                    },
+                )
+            )
+            if effort_mode != "advanced":
+                send = refs["send"]
+                if (
+                    not isinstance(send, list)
+                    or len(send) != 1
+                    or not isinstance(send[0], str)
+                    or not REF_PATTERN.fullmatch(send[0])
+                ):
+                    raise WorkflowRefusal("SELECTOR_AMBIGUITY")
+                actions.append(
+                    _action("browser_click", {"element": "send", "target": send[0]})
+                )
+        elif state == "send_ready":
+            if (
+                effort_mode != "advanced"
+                or observation["model_label"] != profile["target_model"]
+                or observation["effort_label"] != profile["target_effort"]
+            ):
+                raise WorkflowRefusal("PRO_OR_MAX_EFFORT_NOT_VERIFIED")
+            send = _one_ref(observation, "send")
+            actions.append(
+                _action("browser_click", {"element": "send prompt", "target": send})
             )
         elif state == "submitted":
             if observation["generating"] is not True:

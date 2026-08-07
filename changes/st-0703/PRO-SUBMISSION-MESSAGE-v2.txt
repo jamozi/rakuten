@@ -1,0 +1,27 @@
+Use the attached `ST-0703-pro-design-input-v2.tar.gz` as the complete local
+evidence packet and read
+`changes/st-0703/DESIGN-DECISION-REQUEST-v2.md` first.
+
+Verify the archive, member manifest, request, and this submission message
+against `ST-0703-pro-design-bundle-v2.yaml`. Then verify all 26 payload members
+against `changes/st-0703/pro-design-input.v2.members.sha256`. Reject any
+missing, extra, duplicate, linked, non-regular, absolute, or traversing member.
+
+Resolve only ST0703-D1 through ST0703-D4 for the recorded-fixture scope.
+Reconcile the proposed `openai==2.52.0` dependency, current lock, candidate
+adapter contract, and fixed package cutoff as unapproved evidence. Their
+presence in the working tree is not design or implementation authority, and
+the active-root candidate may be reverted if the proposal is not approved.
+
+Preserve OD-015, AI-OD-001, and AI-OD-008 under
+`deferred_external_decisions`. `open_decisions: []` may describe only the
+bounded recorded ST-0703 proposal; it must not close those external decisions.
+Preserve the exact canonical Story scope and dependencies. Verify current SDK
+and API facts only against the official references named in the request.
+
+Return only one complete downloadable UTF-8/LF YAML file named
+`DESIGN_HANDOFF_V1_ST0703_v2.yaml`, rooted exactly at `DESIGN_HANDOFF_V1`.
+Keep it pending and unapproved: human approval not provided, canonical
+reconciliation pending, implementation authority not granted, formal tests not
+executed, and staging/production not ready. Do not emit a summary instead of
+the complete file.

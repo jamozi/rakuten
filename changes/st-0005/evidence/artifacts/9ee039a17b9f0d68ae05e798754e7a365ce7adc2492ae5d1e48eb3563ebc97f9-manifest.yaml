@@ -1,0 +1,577 @@
+document:
+  id: RAOS-CONTENT-AST-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0801
+  source_contract: repo://changes/st-0801/contracts/content-ast-loader.v1.yaml
+  generated_by: repo://scripts/build_st0801_content_ast.py
+  generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0801_content_ast.py
+provenance:
+  contract_sha256: 9cdac8135b91ade54cb34d61b58bb98b9a758d0b9312cb171650b527e16a7159
+  authority:
+    integration_design:
+      uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    canonical_decisions:
+      uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+      sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      applied_ids:
+      - INT-DEC-005
+      - INT-DEC-006
+    story_backlog:
+      uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    test_catalog:
+      uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    security_controls:
+      uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      applied_ids:
+      - SEC-APP-001
+      - SEC-APP-004
+    open_decisions:
+      uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+      story_items: []
+  predecessors:
+    contract_repository:
+      story_id: ST-0104
+      uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
+      sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+    generated_bindings:
+      story_id: ST-0105
+      uri: repo://changes/st-0105/manifest.json
+      sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7
+  toolchain:
+    python: 3.14.6
+    jsonschema: 4.26.0
+    pydantic: 2.13.4
+    pydantic_core: 2.46.4
+    pyyaml: 6.0.3
+    referencing: 0.37.0
+    uv: 0.12.1
+  content_contracts:
+    implementation_slices:
+      uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_implementation_slices_v0.1.yaml
+      sha256: 808c3178536246080ab3a4394246ff76670ae65ffd14a2e2b47b87a03b1597d7
+    block_catalog:
+      uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_content_block_catalog_v0.1.yaml
+      sha256: af9e86c5938a718f41aaea0c9247405508adfbcb1b0924e55f4ce06d5a0a420e
+      count: 24
+      codes:
+      - lead
+      - decision_summary
+      - intended_reader
+      - methodology
+      - selection_criteria
+      - heading
+      - paragraph
+      - bullet_list
+      - numbered_list
+      - comparison_table
+      - product_card
+      - recommendation_group
+      - difference_matrix
+      - pros_cons
+      - tradeoff
+      - caution
+      - evidence_note
+      - source_summary
+      - faq
+      - media
+      - internal_links
+      - update_notice
+      - callout
+      - disclosure_slot
+    article_type_catalog:
+      uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_article_type_catalog_v0.1.yaml
+      sha256: 6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11
+      count: 5
+      codes:
+      - selection_guide
+      - use_case_recommendation
+      - product_comparison
+      - model_generation_capacity_difference
+      - condition_filtering
+    schema_registry:
+      uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_schema_registry_v0.1.yaml
+      sha256: adc3f52092bd78d7d318d31da97c6ca048cf69f333ffbb225e70867f738b0aa2
+    test_matrix:
+      uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_content_test_matrix_v0.1.csv
+      sha256: 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+  content_ast:
+    uri: repo://contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json
+    schema_id: https://schemas.raos.local/content/v1/content-ast.schema.json
+    schema_version: 1.0.0
+    sha256: a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
+    draft: 2020-12
+    unknown_fields: REJECT_BY_FROZEN_SCHEMA
+    unsupported_schema_version: FAIL_CLOSED
+  schema_inventory:
+    count: 33
+    artifacts:
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/bullet_list.schema.json: 1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/callout.schema.json: 86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/caution.schema.json: b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/comparison_table.schema.json: 6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/decision_summary.schema.json: a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/difference_matrix.schema.json: cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/disclosure_slot.schema.json: 76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/evidence_note.schema.json: 37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/faq.schema.json: f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/heading.schema.json: f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/intended_reader.schema.json: 64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/internal_links.schema.json: 46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/lead.schema.json: fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/media.schema.json: ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/methodology.schema.json: 366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/numbered_list.schema.json: 39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/paragraph.schema.json: 5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/product_card.schema.json: 559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/pros_cons.schema.json: 3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/recommendation_group.schema.json: 06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/selection_criteria.schema.json: ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/source_summary.schema.json: e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/tradeoff.schema.json: a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c
+      repo://contracts/raos-v0.4/contracts/content/schemas/blocks/update_notice.schema.json: 4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24
+      repo://contracts/raos-v0.4/contracts/content/schemas/claim.schema.json: db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3
+      repo://contracts/raos-v0.4/contracts/content/schemas/common/rich_text.schema.json: 20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312
+      repo://contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json: a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
+      repo://contracts/raos-v0.4/contracts/content/schemas/editorial-review-decision.schema.json: 2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d
+      repo://contracts/raos-v0.4/contracts/content/schemas/media-asset.schema.json: c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622
+      repo://contracts/raos-v0.4/contracts/content/schemas/publication-content-manifest.schema.json: 97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881
+      repo://contracts/raos-v0.4/contracts/content/schemas/recommendation-methodology.schema.json: 93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a
+      repo://contracts/raos-v0.4/contracts/content/schemas/seo-metadata.schema.json: 347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad
+      repo://contracts/raos-v0.4/contracts/content/schemas/structured-data-manifest.schema.json: 6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e
+  fixture_inventory:
+    expected_results:
+      uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/expected_results.yaml
+      sha256: e258a86603d656b9d896dea182ba0aea5e4a43983385a99b85d8c3ec0e3609e3
+    valid_count: 5
+    valid:
+      selection_guide:
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json
+        sha256: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
+      use_case_recommendation:
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/use_case_recommendation.json
+        sha256: 2e13fdbb98f8ab5eaf402db107999fd55ed0d2f931cd2bc0929d57c45fff0d9c
+      product_comparison:
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/product_comparison.json
+        sha256: f128896be05e8560ad0608b02adbe1150e305f18fd7a44005abb0f70687d3cef
+      model_generation_capacity_difference:
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/model_generation_capacity_difference.json
+        sha256: 37b6633f2d330ed420bbc3cdb5a7308e98f9ad74d61a320739b7745f972c5783
+      condition_filtering:
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/condition_filtering.json
+        sha256: 6396e0197f8ea0a2ffb030460fb80bfb6b9e5ad791334706a1e4424681a6c081
+    invalid_count: 15
+    invalid:
+      INV-001-raw-html:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-001-raw-html.json
+        sha256: fd9dd5db60bf6d613add9d5ffbfb010b5962b0fa713003230b0e1cc4559cc397
+      INV-002-manual-affiliate-url:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-002-manual-affiliate-url.json
+        sha256: ca7007bc94e832bb1178adcc1cabcf219a268930c331635c183ba8db6ee1d957
+      INV-003-auto-publish:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-003-auto-publish.json
+        sha256: b99fac5908f2b3278ac319a42cf5cee9eedf1c92ac6a6db16f7ff22688aa49ee
+      INV-004-wrong-locale:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-004-wrong-locale.json
+        sha256: e3c6aecd855e4912e5a24738538db23cd63c0979a96bbe7ddf2e078c306f302f
+      INV-005-unknown-block:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-005-unknown-block.json
+        sha256: 2e26d2656aa62be2095efb325942bcb6b1c04d14c3f358ffd9ab5887626cf7a3
+      INV-006-faq-schema-enabled:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-006-faq-schema-enabled.json
+        sha256: 48017f422cb30ef744eb52cd7b92ed3564619d9bedbc6502f6632637e266e9a1
+      INV-007-disclosure-removable:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-007-disclosure-removable.json
+        sha256: 681e2c8526cf9b2a9cd3dbef1cc26450e9f2e841c5669659e499643351738a3c
+      INV-008-comparison-hide-unknown:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-008-comparison-hide-unknown.json
+        sha256: 65672cf387803215aec399bf6bb2b7661f1b3d4eabec8a27928ec78f98beb149
+      INV-009-extra-finance-field:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-009-extra-finance-field.json
+        sha256: 0579bc0d639d7ee3ea5f81b6270df7ab3c93b380109d66a6e259bff48f2f6bd0
+      INV-010-invalid-heading-level:
+        category: schema
+        expected: FAIL_SCHEMA
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-010-invalid-heading-level.json
+        sha256: 2f697e0a5aab56a5caa612ec7ba431e9a3c491372b646635af7d5d6f0d3b2e37
+      INV-101-disclosure-not-first:
+        category: policy
+        expected: POL-CONT-008
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-101-disclosure-not-first.json
+        sha256: a5a5e02b579c88c7a959474ffb10aa8e546405e9a22dddb26b01c2d168da1529
+      INV-102-missing-source-summary:
+        category: policy
+        expected: QG-CONT-003
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-102-missing-source-summary.json
+        sha256: a7759e354bc5552b7f39ac3b319db0c9b3d15e0017c359b6e534281a27aa26b2
+      INV-103-missing-methodology-block:
+        category: policy
+        expected: QG-CONT-003
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-103-missing-methodology-block.json
+        sha256: 1ff69444290e0bc291929209964d45fa4a0afe0523e623af388bf4b0282c4b69
+      INV-104-duplicate-block-id:
+        category: policy
+        expected: QG-CONT-003
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-104-duplicate-block-id.json
+        sha256: 2361401bdc82ede6da9b51208c11649e111d158751b36d09ee87e445b0e2b8b5
+      INV-105-missing-required-article-block:
+        category: policy
+        expected: QG-CONT-003
+        uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-105-missing-required-article-block.json
+        sha256: 0aef38d018043e58343ac1d6d2fbc1ae428abadffc1f5b5346b72ef508f2ae3f
+  generated_bindings:
+    python:
+      package_index:
+        uri: repo://python/raos/generated/contracts/__init__.py
+        sha256: a592d42f7fac1d6a93ae66f5593352c1842c8d5dfc316b75799d6caf4bf901e3
+      content_ast:
+        uri: repo://python/raos/generated/contracts/content_ast.py
+        sha256: 2b7eaf20108494c857fe942a390a0d8557cbda2547e547bf8f5a039231d651cf
+      internal:
+        uri: repo://python/raos/generated/contracts/_internal.py
+        sha256: bccdefcfd53c052e5091ff2ee00dbb482d3fe86241d8a6f91cd02ba58b6e75c9
+    typescript:
+      schema_index:
+        uri: repo://packages/web-contracts/src/generated/schema-models/index.ts
+        sha256: b66bdb7ab7c4f883f5658d2acbef2804946f4f5124db66508b39fb90cc236467
+      schema_types:
+        uri: repo://packages/web-contracts/src/generated/schema-models/types.gen.ts
+        sha256: 9932791eacbc305441172acd1a4197deb70ff153c41f4a7e2a4f76b6082425ad
+  binding_support:
+    typescript_package:
+      uri: repo://packages/web-contracts/package.json
+      sha256: d2251bc89081cef93bfa495b351f7a5b44b1216441dfb6c3c6b1a08be0f8fef3
+  predecessor_recursive_integrity:
+    story_id: ST-0105
+    manifest_uri: repo://changes/st-0105/manifest.json
+    declared_output_count: 354
+    verification: ALL_DECLARED_OUTPUT_BYTES_AND_SHA256_VERIFIED
+evidence_chain:
+  stories:
+  - ST-0004
+  - ST-0104
+  - ST-0105
+  - ST-0801
+source_artifact_count: 94
+source_artifacts:
+- uri: repo://changes/st-0801/contracts/content-ast-loader.v1.yaml
+  bytes: 18563
+  sha256: 9cdac8135b91ade54cb34d61b58bb98b9a758d0b9312cb171650b527e16a7159
+- uri: repo://changes/st-0801/README.md
+  bytes: 2425
+  sha256: 38cac947aa865120b04277d4206ecb65af3212ff54543fe59a1f4830a912f2c2
+- uri: repo://docs/execplans/ST-0801.md
+  bytes: 6881
+  sha256: 3361103bff6e17961b89f2f386e75bda5360e6da0f6a50193d091a2c75c38a96
+- uri: repo://docs/worklogs/ST-0801.md
+  bytes: 6369
+  sha256: 3e2ff8be008e1335de78194c2d79ac90203e21f58baa76f3fbf289a9cb689783
+- uri: repo://scripts/build_st0801_content_ast.py
+  bytes: 44115
+  sha256: 7483b434740f95e9ad75d3e9717298781faf22f390c502af655b1ce7590e5a21
+- uri: repo://scripts/build_st0201_postgres_service.py
+  bytes: 36958
+  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+- uri: repo://.python-version
+  bytes: 7
+  sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+- uri: repo://pyproject.toml
+  bytes: 1194
+  sha256: fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+- uri: repo://uv.lock
+  bytes: 111431
+  sha256: 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+- uri: repo://uv.toml
+  bytes: 349
+  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+- uri: repo://python/raos/__init__.py
+  bytes: 77
+  sha256: 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+- uri: repo://python/raos/generated/__init__.py
+  bytes: 309
+  sha256: 9c3a8d576fc17ec66c271c8b33514c4ad75408f336cff681d5472cc3c779916f
+- uri: repo://python/raos/domain/editorial/__init__.py
+  bytes: 612
+  sha256: 8490e939208baf5d4f733bceee99ede44936da19921bfd3dfcfbbf5f68bbbe80
+- uri: repo://python/raos/domain/editorial/content_ast.py
+  bytes: 14026
+  sha256: 7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68
+- uri: repo://tests/conftest.py
+  bytes: 212
+  sha256: 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+- uri: repo://tests/st0102/conftest.py
+  bytes: 4362
+  sha256: 8302242b2106a38f27c7e781eb84e458be1db3f8a5344a5f77bc247cd2f9654a
+- uri: repo://tests/st0801/conftest.py
+  bytes: 7434
+  sha256: fa518e1a3ca68bfaacf9e45007e245da5b3705c88e9d7ca85583b3f50b19d49d
+- uri: repo://tests/st0801/test_block_matrix.py
+  bytes: 7855
+  sha256: 716a34d7aea5cf290fc9be715e6851c5d8120ad1677f0ad5bbc79a3a212192e6
+- uri: repo://tests/st0801/test_contract_binding.py
+  bytes: 4706
+  sha256: 306ac3fd2282b8fad214297dcb1e7f78201403d92fd105af5030d0ff062fcb7f
+- uri: repo://tests/st0801/test_generation.py
+  bytes: 9970
+  sha256: 408fa7c5d4803d7a066de1daab1572847c966fc6e491b2805dd318c0e49bd1c2
+- uri: repo://tests/st0801/test_loader.py
+  bytes: 6967
+  sha256: e385de6b5cb4e885f71fcabeeb13f8a4e976da5ac8c13161a27a20e7824f00eb
+- uri: repo://tests/st0801/test_negative_cases.py
+  bytes: 8458
+  sha256: bb48c844380cd0b86cd0aaf68ca2bffac49a01f766a44e4325d3253ef39304de
+- uri: repo://tests/st0102/test_toolchain_contract.py
+  bytes: 5575
+  sha256: 8699d7bc35b78955552a13637c952e923638f2e598885c5b3e032b0dbac7bffc
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 20743
+  sha256: 402aef1eca7b8fc2165bac2938f71b57e1eca862f429e6dc7da85057d76accbd
+- uri: repo://.github/workflows/ci.yml
+  bytes: 19528
+  sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+- uri: repo://Makefile
+  bytes: 24541
+  sha256: d5dbce2f88bb26dfaa4dc3454f0e5c44db61ac4f2cf62c402dd473714a46f137
+- uri: repo://README.md
+  bytes: 48390
+  sha256: 56befd01653fd06bb47cade73066fb04964e18f5812f76a1ff94c82c85d620e2
+- uri: repo://changes/st-0105/manifest.json
+  bytes: 250888
+  sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7
+- uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
+  bytes: 65443
+  sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+- uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_implementation_slices_v0.1.yaml
+  bytes: 5524
+  sha256: 808c3178536246080ab3a4394246ff76670ae65ffd14a2e2b47b87a03b1597d7
+- uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_content_block_catalog_v0.1.yaml
+  bytes: 9420
+  sha256: af9e86c5938a718f41aaea0c9247405508adfbcb1b0924e55f4ce06d5a0a420e
+- uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_article_type_catalog_v0.1.yaml
+  bytes: 7135
+  sha256: 6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11
+- uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_schema_registry_v0.1.yaml
+  bytes: 9141
+  sha256: adc3f52092bd78d7d318d31da97c6ca048cf69f333ffbb225e70867f738b0aa2
+- uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_content_test_matrix_v0.1.csv
+  bytes: 142924
+  sha256: 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/expected_results.yaml
+  bytes: 2120
+  sha256: e258a86603d656b9d896dea182ba0aea5e4a43983385a99b85d8c3ec0e3609e3
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/bullet_list.schema.json
+  bytes: 4586
+  sha256: 1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/callout.schema.json
+  bytes: 4477
+  sha256: 86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/caution.schema.json
+  bytes: 4360
+  sha256: b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/comparison_table.schema.json
+  bytes: 5284
+  sha256: 6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/decision_summary.schema.json
+  bytes: 4947
+  sha256: a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/difference_matrix.schema.json
+  bytes: 5196
+  sha256: cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/disclosure_slot.schema.json
+  bytes: 4279
+  sha256: 76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/evidence_note.schema.json
+  bytes: 4617
+  sha256: 37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/faq.schema.json
+  bytes: 4833
+  sha256: f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/heading.schema.json
+  bytes: 4433
+  sha256: f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/intended_reader.schema.json
+  bytes: 4627
+  sha256: 64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/internal_links.schema.json
+  bytes: 4647
+  sha256: 46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/lead.schema.json
+  bytes: 4207
+  sha256: fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/media.schema.json
+  bytes: 4867
+  sha256: ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/methodology.schema.json
+  bytes: 4898
+  sha256: 366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/numbered_list.schema.json
+  bytes: 4592
+  sha256: 39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/paragraph.schema.json
+  bytes: 4222
+  sha256: 5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/product_card.schema.json
+  bytes: 4924
+  sha256: 559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/pros_cons.schema.json
+  bytes: 5440
+  sha256: 3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/recommendation_group.schema.json
+  bytes: 4940
+  sha256: 06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/selection_criteria.schema.json
+  bytes: 4993
+  sha256: ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/source_summary.schema.json
+  bytes: 4791
+  sha256: e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/tradeoff.schema.json
+  bytes: 4571
+  sha256: a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/update_notice.schema.json
+  bytes: 4676
+  sha256: 4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/claim.schema.json
+  bytes: 2659
+  sha256: db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/common/rich_text.schema.json
+  bytes: 6212
+  sha256: 20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json
+  bytes: 46209
+  sha256: a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/editorial-review-decision.schema.json
+  bytes: 2142
+  sha256: 2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/media-asset.schema.json
+  bytes: 2383
+  sha256: c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/publication-content-manifest.schema.json
+  bytes: 2587
+  sha256: 97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/recommendation-methodology.schema.json
+  bytes: 3624
+  sha256: 93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/seo-metadata.schema.json
+  bytes: 2269
+  sha256: 347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad
+- uri: repo://contracts/raos-v0.4/contracts/content/schemas/structured-data-manifest.schema.json
+  bytes: 1813
+  sha256: 6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json
+  bytes: 4719
+  sha256: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/use_case_recommendation.json
+  bytes: 5144
+  sha256: 2e13fdbb98f8ab5eaf402db107999fd55ed0d2f931cd2bc0929d57c45fff0d9c
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/product_comparison.json
+  bytes: 5243
+  sha256: f128896be05e8560ad0608b02adbe1150e305f18fd7a44005abb0f70687d3cef
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/model_generation_capacity_difference.json
+  bytes: 5237
+  sha256: 37b6633f2d330ed420bbc3cdb5a7308e98f9ad74d61a320739b7745f972c5783
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/condition_filtering.json
+  bytes: 4726
+  sha256: 6396e0197f8ea0a2ffb030460fb80bfb6b9e5ad791334706a1e4424681a6c081
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-001-raw-html.json
+  bytes: 4766
+  sha256: fd9dd5db60bf6d613add9d5ffbfb010b5962b0fa713003230b0e1cc4559cc397
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-002-manual-affiliate-url.json
+  bytes: 4769
+  sha256: ca7007bc94e832bb1178adcc1cabcf219a268930c331635c183ba8db6ee1d957
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-003-auto-publish.json
+  bytes: 4718
+  sha256: b99fac5908f2b3278ac319a42cf5cee9eedf1c92ac6a6db16f7ff22688aa49ee
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-004-wrong-locale.json
+  bytes: 4719
+  sha256: e3c6aecd855e4912e5a24738538db23cd63c0979a96bbe7ddf2e078c306f302f
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-005-unknown-block.json
+  bytes: 4826
+  sha256: 2e26d2656aa62be2095efb325942bcb6b1c04d14c3f358ffd9ab5887626cf7a3
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-006-faq-schema-enabled.json
+  bytes: 5045
+  sha256: 48017f422cb30ef744eb52cd7b92ed3564619d9bedbc6502f6632637e266e9a1
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-007-disclosure-removable.json
+  bytes: 4718
+  sha256: 681e2c8526cf9b2a9cd3dbef1cc26450e9f2e841c5669659e499643351738a3c
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-008-comparison-hide-unknown.json
+  bytes: 4720
+  sha256: 65672cf387803215aec399bf6bb2b7661f1b3d4eabec8a27928ec78f98beb149
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-009-extra-finance-field.json
+  bytes: 4733
+  sha256: 0579bc0d639d7ee3ea5f81b6270df7ab3c93b380109d66a6e259bff48f2f6bd0
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-010-invalid-heading-level.json
+  bytes: 4946
+  sha256: 2f697e0a5aab56a5caa612ec7ba431e9a3c491372b646635af7d5d6f0d3b2e37
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-101-disclosure-not-first.json
+  bytes: 4719
+  sha256: a5a5e02b579c88c7a959474ffb10aa8e546405e9a22dddb26b01c2d168da1529
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-102-missing-source-summary.json
+  bytes: 4391
+  sha256: a7759e354bc5552b7f39ac3b319db0c9b3d15e0017c359b6e534281a27aa26b2
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-103-missing-methodology-block.json
+  bytes: 4009
+  sha256: 1ff69444290e0bc291929209964d45fa4a0afe0523e623af388bf4b0282c4b69
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-104-duplicate-block-id.json
+  bytes: 4719
+  sha256: 2361401bdc82ede6da9b51208c11649e111d158751b36d09ee87e445b0e2b8b5
+- uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-105-missing-required-article-block.json
+  bytes: 4280
+  sha256: 0aef38d018043e58343ac1d6d2fbc1ae428abadffc1f5b5346b72ef508f2ae3f
+- uri: repo://python/raos/generated/contracts/__init__.py
+  bytes: 43711
+  sha256: a592d42f7fac1d6a93ae66f5593352c1842c8d5dfc316b75799d6caf4bf901e3
+- uri: repo://python/raos/generated/contracts/content_ast.py
+  bytes: 434
+  sha256: 2b7eaf20108494c857fe942a390a0d8557cbda2547e547bf8f5a039231d651cf
+- uri: repo://python/raos/generated/contracts/_internal.py
+  bytes: 221159
+  sha256: bccdefcfd53c052e5091ff2ee00dbb482d3fe86241d8a6f91cd02ba58b6e75c9
+- uri: repo://packages/web-contracts/src/generated/schema-models/index.ts
+  bytes: 25176
+  sha256: b66bdb7ab7c4f883f5658d2acbef2804946f4f5124db66508b39fb90cc236467
+- uri: repo://packages/web-contracts/src/generated/schema-models/types.gen.ts
+  bytes: 164609
+  sha256: 9932791eacbc305441172acd1a4197deb70ff153c41f4a7e2a4f76b6082425ad
+- uri: repo://packages/web-contracts/package.json
+  bytes: 444
+  sha256: d2251bc89081cef93bfa495b351f7a5b44b1216441dfb6c3c6b1a08be0f8fef3
+generated_artifact_count: 0
+generated_artifacts: []
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  renderer: NOT_IMPLEMENTED
+  article_template_semantics: NOT_IMPLEMENTED
+  claim_evidence_semantics: NOT_IMPLEMENTED
+  recommendation_semantics: NOT_IMPLEMENTED
+  review_semantics: NOT_IMPLEMENTED
+  disclosure_rendering: NOT_IMPLEMENTED
+  api: NOT_IMPLEMENTED
+  database: NOT_IMPLEMENTED
+  publication: NOT_IMPLEMENTED
+  formal_tst_020: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

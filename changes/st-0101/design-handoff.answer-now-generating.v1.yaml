@@ -1,0 +1,86 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Exact current advanced-profile Answer now generating marker
+    - scripts/chatgpt_pro_orchestrator.py advanced response-pending detection
+    - tests/st0101 exact marker, near-match, no-click, and long-wait regressions
+    - changes/st-0101/README.md and docs/worklogs/ST-0101.md sanitized live evidence
+    - /home/minami/.codex/skills/raos-ask-pro/SKILL.md advanced response-wait wording
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.current-pro-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-body.v1.yaml
+    - changes/st-0101/design-handoff.response-wait-until-complete.v1.yaml
+  decision: >-
+    For the strict current advanced profile only, treat one exact accessible
+    element button "Answer now" as a generating marker. While it is present,
+    the response remains pending regardless of the exact ChatGPT said: heading
+    or a temporarily empty response-body root. Continue the already-approved
+    same-transport five-second unbounded polling loop and never click this
+    button. Preserve every predecessor generating marker for its existing
+    profiles and behavior. Require exact case, whitespace, punctuation, role,
+    label, and advanced profile; do not use substring, token, regex, fuzzy,
+    translated, or length-based matching.
+  rationale: >-
+    The first post-implementation live ask remained in one window beyond the
+    predecessor ten-second limit but terminalized RESPONSE_NOT_IDENTIFIABLE
+    after the empty body appeared stable. A read-only exact-origin sanitized
+    probe of that bound conversation used only navigate, wait, snapshot, and
+    close and persisted no snapshot or response content. It proved one exact
+    ChatGPT said: heading, one unlabeled generic body root, zero paragraph/text
+    fragments, two buttons, and exactly one button whose label was Answer now.
+    The label is a Pro in-progress action, so parsing the empty body as a stable
+    completed response is premature. The response may continue server-side
+    even after the client window closes.
+  rejected_alternatives:
+    - Click Answer now to force an early or lower-quality answer
+    - Accept any button containing answer, now, stop, thinking, or research
+    - Treat every empty advanced response body as generating forever
+    - Print, persist, or inspect the raw snapshot, response text, unknown button label, sidebar, profile, cookies, or storage
+    - Relax the strict response-body parser or accept a zero-fragment response
+    - Resubmit the terminalized live run automatically
+    - Change legacy profile markers, whole-snapshot stop classification, model selection, or effort selection
+  constraints:
+    - The additive marker is exactly role button and label Answer now with no case, whitespace, punctuation, or attribute drift
+    - The additive marker is active only when profile_id is the strict current advanced profile
+    - Answer now is observation-only and never becomes a click target
+    - A text/statictext payload, paragraph, generic label, link, status, or any other role containing the same words is not this marker
+    - Wrong case, punctuation, spacing, suffix, prefix, localization, duplicate inference, or token-only matches do not qualify
+    - While the marker exists, stability observations reset and the strict parser is not called
+    - After the marker disappears, the existing three-observation semantic stability and exact PRO_ADVICE_V1 validation remain unchanged
+    - The response wait retains no timeout, no retry-count input, one submission, no resume submission, and durable-before-close ordering
+    - Raw prompt, response, snapshot, response subtree, ref, URL beyond the approved binding, and digest remain non-persistent
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner requested waiting in the open window until an answer is obtained and approved implementation plus live testing
+    - The sanitized probe output only exact-origin booleans, counts, roles, indentation, label lengths, token classes, and the final exact non-sensitive UI-label match
+    - The probe performed no type, click, Send, resubmission, cookie/storage/profile inspection, or raw snapshot output/persistence
+    - Existing exact-origin, CAPTCHA, login, account, rate-limit, reauthentication, sensitivity, hash-chain, authority, and no-resubmission gates remain unchanged
+    - Captured output remains a hash-bound UNAPPROVED_PROPOSAL pending human and canonical reconciliation
+  acceptance_criteria:
+    - Exact advanced button Answer now keeps the current response pending and never reaches the parser
+    - The browser remains open and the same transport continues five-second polling while the exact marker is present
+    - Wrong role, case, punctuation, spacing, prefix, suffix, and response-text occurrences do not become generating markers
+    - No tool trace clicks Answer now or performs a second submission
+    - When the marker disappears and a stable valid response arrives, exact PRO_ADVICE_V1 finalizes durably before close
+    - Full isolated ST-0101 and static security checks remain green
+    - A live exact-origin same-window test obtains a valid answer or stops only on an independently recognized safe condition
+  required_test_evidence:
+    - Advanced exact Answer now positive pending fixture
+    - Wrong-role, wrong-case, wrong-punctuation, whitespace, prefix, suffix, duplicate-token, text-payload, and legacy-profile negatives
+    - More-than-twenty-poll sequence retaining Answer now before a stable valid response
+    - Exact tool trace proving no Answer now click, one ask submission, and no resume submission
+    - Existing generating, stability, response-body, stop, origin, sensitivity, persistence-order, interrupt, and transport regressions
+    - Full isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, and scoped diff checks
+    - Live current-conversation or fresh-run response evidence kept separate from formal TST-001, CI, staging, and production
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation-and-active-implementation-goal
+    approved_on: 2026-08-05
+    statement: >-
+      Approve the exact advanced Answer now generating marker required to keep
+      the window open and wait for the already-requested Pro answer.

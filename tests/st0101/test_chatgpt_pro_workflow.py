@@ -522,7 +522,7 @@ def test_transport_wrapper_is_exact_origin_pinned_and_fail_closed() -> None:
     assert process.returncode == 64
     assert process.stdout == ""
     assert process.stderr == (
-        "chatgpt-pro-mcp: fail-closed launch refusal (missing-secret-file)\n"
+        "chatgpt-pro-mcp: fail-closed launch refusal (invalid-browser)\n"
     )
 
 

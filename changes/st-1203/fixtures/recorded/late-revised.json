@@ -1,0 +1,141 @@
+{
+  "fixture_version": "1.0.0",
+  "outbound_request": {
+    "body": {
+      "aggregationType": "auto",
+      "dataState": "final",
+      "dimensionFilterGroups": [],
+      "dimensions": [
+        "date",
+        "query",
+        "page",
+        "country",
+        "device"
+      ],
+      "endDate": "2026-07-02",
+      "rowLimit": 2,
+      "startDate": "2026-07-01",
+      "startRow": 0,
+      "type": "web"
+    },
+    "site_url": "sc-domain:example.invalid"
+  },
+  "provider_response": {
+    "responseAggregationType": "byPage",
+    "rows": [
+      {
+        "clicks": 14,
+        "ctr": 0.1,
+        "impressions": 140,
+        "keys": [
+          "2026-07-01",
+          "synthetic luggage",
+          "https://example.invalid/guides/synthetic-luggage",
+          "jpn",
+          "MOBILE"
+        ],
+        "position": 3.1
+      },
+      {
+        "clicks": 6,
+        "ctr": 0.1,
+        "impressions": 60,
+        "keys": [
+          "2026-07-02",
+          "synthetic carry case",
+          "https://example.invalid/guides/synthetic-carry-case",
+          "jpn",
+          "DESKTOP"
+        ],
+        "position": 4.25
+      }
+    ]
+  },
+  "recorded_result": {
+    "pagination": {
+      "returned_row_count": 2,
+      "row_limit": 2,
+      "start_row": 0
+    },
+    "recorded_at": "2026-08-06T00:00:00Z",
+    "rows": [
+      {
+        "clicks": 14,
+        "ctr": 0.1,
+        "data_state": "final",
+        "date_from": "2026-07-01",
+        "date_to": "2026-07-02",
+        "dimensions": [
+          "date",
+          "query",
+          "page",
+          "country",
+          "device"
+        ],
+        "imported_at": "2026-08-06T00:00:00Z",
+        "impressions": 140,
+        "is_top_rows_limited": true,
+        "keys": [
+          "2026-07-01",
+          "synthetic luggage",
+          "https://example.invalid/guides/synthetic-luggage",
+          "jpn",
+          "MOBILE"
+        ],
+        "position": 3.1,
+        "site_id": "00000000-0000-4000-8000-000000001203",
+        "source_request_sha256": "b062bbe5000e83471fe3f1557f04c01a1b311d312055a74083df19fa7d5bd0be"
+      },
+      {
+        "clicks": 6,
+        "ctr": 0.1,
+        "data_state": "final",
+        "date_from": "2026-07-01",
+        "date_to": "2026-07-02",
+        "dimensions": [
+          "date",
+          "query",
+          "page",
+          "country",
+          "device"
+        ],
+        "imported_at": "2026-08-06T00:00:00Z",
+        "impressions": 60,
+        "is_top_rows_limited": true,
+        "keys": [
+          "2026-07-02",
+          "synthetic carry case",
+          "https://example.invalid/guides/synthetic-carry-case",
+          "jpn",
+          "DESKTOP"
+        ],
+        "position": 4.25,
+        "site_id": "00000000-0000-4000-8000-000000001203",
+        "source_request_sha256": "b062bbe5000e83471fe3f1557f04c01a1b311d312055a74083df19fa7d5bd0be"
+      }
+    ],
+    "rows_not_guaranteed_complete": true,
+    "top_rows_only": true
+  },
+  "recording_id": "late-revised",
+  "request": {
+    "aggregation_type": "auto",
+    "data_state": "final",
+    "dimension_filter_groups": [],
+    "dimensions": [
+      "date",
+      "query",
+      "page",
+      "country",
+      "device"
+    ],
+    "end_date": "2026-07-02",
+    "row_limit": 2,
+    "search_type": "web",
+    "site_url": "sc-domain:example.invalid",
+    "start_date": "2026-07-01",
+    "start_row": 0
+  },
+  "source_request_sha256": "b062bbe5000e83471fe3f1557f04c01a1b311d312055a74083df19fa7d5bd0be",
+  "synthetic_marker": "SYNTHETIC_TEST_ONLY"
+}

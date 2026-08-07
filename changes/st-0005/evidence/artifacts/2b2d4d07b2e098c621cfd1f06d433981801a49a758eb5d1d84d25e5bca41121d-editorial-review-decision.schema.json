@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.raos.local/content/v1/editorial-review-decision.schema.json",
+  "title": "Editorial Review Decision",
+  "type": "object",
+  "properties": {
+    "review_decision_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "article_version_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "reviewer_actor_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+    },
+    "review_mode": {
+      "type": "string",
+      "enum": [
+        "standard_team",
+        "solo_mvp_exception"
+      ]
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "request_changes",
+        "reject",
+        "pause"
+      ]
+    },
+    "quality_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "blocking_findings": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "major_findings": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "checklist_version": {
+      "type": "string"
+    },
+    "completed_item_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 200,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{2,199}$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000
+    },
+    "reauthenticated": {
+      "type": "boolean"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "review_decision_id",
+    "article_version_id",
+    "reviewer_actor_id",
+    "review_mode",
+    "decision",
+    "quality_score",
+    "blocking_findings",
+    "major_findings",
+    "checklist_version",
+    "completed_item_refs",
+    "reason",
+    "reauthenticated",
+    "decided_at"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,622 @@
+override RAOS_REPOSITORY_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+override RAOS_MAKE_SHORT_FLAGS := $(firstword $(MAKEFLAGS))
+ifneq ($(filter -%,$(RAOS_MAKE_SHORT_FLAGS)),)
+override RAOS_MAKE_SHORT_FLAGS :=
+endif
+override RAOS_UNSAFE_MAKE_MODES := $(strip $(foreach flag,e i n t,$(if $(findstring $(flag),$(RAOS_MAKE_SHORT_FLAGS)),$(flag))))
+RAOS_CI_OFFLINE ?= 0
+
+ifeq ($(origin MAKEFLAGS),command line)
+$(error Direct MAKEFLAGS assignments are not allowed for repository gates)
+endif
+ifneq ($(strip $(MAKEFILES)),)
+$(error Preloaded MAKEFILES are not allowed for repository gates)
+endif
+ifneq ($(RAOS_UNSAFE_MAKE_MODES),)
+$(error Refusing non-verifying GNU Make mode(s): $(RAOS_UNSAFE_MAKE_MODES))
+endif
+ifneq ($(RAOS_CI_OFFLINE),0)
+ifneq ($(RAOS_CI_OFFLINE),1)
+$(error RAOS_CI_OFFLINE must be 0 or 1)
+endif
+endif
+
+PYTHON := python3
+UV := uv
+override PYTHON_VERSION := 3.14.6
+override UV_VERSION := 0.12.1
+override PYDANTIC_VERSION := 2.13.4
+override DATAMODEL_CODEGEN_VERSION := 0.71.0
+override UV_CONFIG := $(RAOS_REPOSITORY_ROOT)/uv.toml
+override PYTHON_OFFLINE_ENVIRONMENT := $(RAOS_REPOSITORY_ROOT)/.venv-offline-check
+override UV_CLEAN_ENV := env -u UV_CONFIG_FILE -u UV_NO_CONFIG -u UV_ISOLATED \
+	-u UV_NO_PROJECT -u UV_WORKING_DIR \
+	-u UV_WORKING_DIRECTORY \
+	-u UV_PROJECT -u UV_WORKSPACE -u UV_PROJECT_ENVIRONMENT \
+	-u UV_REQUIRED_VERSION -u UV_ENV_FILE -u UV_NO_ENV_FILE \
+	-u UV_INDEX -u UV_DEFAULT_INDEX -u UV_INDEX_URL \
+	-u UV_EXTRA_INDEX -u UV_EXTRA_INDEX_URL -u UV_FIND_LINKS \
+	-u UV_INDEX_STRATEGY -u UV_KEYRING_PROVIDER -u UV_INSECURE_HOST \
+	-u UV_NO_SOURCES -u UV_PRERELEASE -u UV_PRERELEASE_PACKAGE \
+	-u UV_RESOLUTION -u UV_FORK_STRATEGY -u UV_EXCLUDE_NEWER \
+	-u UV_EXCLUDE_NEWER_PACKAGE -u UV_FROZEN -u UV_LOCKED \
+	-u UV_OVERRIDE -u UV_CONSTRAINT -u UV_BUILD_CONSTRAINT \
+	-u UV_UPGRADE -u UV_UPGRADE_PACKAGE -u UV_UPGRADE_GROUP \
+	-u UV_NO_BUILD -u UV_NO_BUILD_PACKAGE -u UV_NO_BUILD_ISOLATION \
+	-u UV_NO_BUILD_ISOLATION_PACKAGE -u UV_NO_BINARY -u UV_NO_BINARY_PACKAGE \
+	-u UV_NO_VERIFY_HASHES -u UV_PYTHON -u UV_PYTHON_DOWNLOADS \
+	-u UV_PYTHON_PREFERENCE -u UV_MANAGED_PYTHON -u UV_NO_MANAGED_PYTHON \
+	-u UV_SYSTEM_PYTHON -u UV_PYTHON_SEARCH_PATH -u UV_PYTHON_CPYTHON_BUILD \
+	-u UV_PYTHON_INSTALL_DIR -u UV_PYTHON_INSTALL_MIRROR \
+	-u UV_PYPY_INSTALL_MIRROR \
+	-u UV_ASTRAL_MIRROR_URL -u UV_PYTHON_DOWNLOADS_JSON_URL \
+	-u UV_OFFLINE -u UV_NO_CACHE -u UV_PREVIEW \
+	-u UV_MALWARE_CHECK -u UV_MALWARE_CHECK_URL \
+	-u UV_GROUP -u UV_NO_GROUP \
+	-u UV_ONLY_GROUP -u UV_ALL_GROUPS -u UV_DEV -u UV_ONLY_DEV \
+	-u UV_NO_DEV -u UV_DEFAULT_GROUPS -u UV_NO_DEFAULT_GROUPS \
+	-u UV_INEXACT -u UV_ACTIVE -u UV_LINK_MODE -u UV_COMPILE_BYTECODE \
+	-u PYTHONPATH -u PYTHONHOME -u PYTHONSTARTUP -u PYTHONINSPECT \
+	-u PYTHONOPTIMIZE -u PYTHONWARNINGS -u PYTEST_ADDOPTS \
+	-u PYTEST_PLUGINS -u MYPYPATH
+override UV_RUN := $(UV_CLEAN_ENV) "$(UV)" --config-file "$(UV_CONFIG)"
+override UV_READONLY_RUN := $(UV_RUN) run --locked --offline --no-cache \
+	--no-sync --no-env-file --no-python-downloads
+override UV_OFFLINE_RUN := $(UV_CLEAN_ENV) \
+	UV_PROJECT_ENVIRONMENT="$(PYTHON_OFFLINE_ENVIRONMENT)" "$(UV)" \
+	--config-file "$(UV_CONFIG)"
+
+NODE ?= $(shell command -v node)
+NPM_CLI ?= $(shell command -v npm)
+DOCKER ?= $(shell command -v docker)
+override NODE_VERSION := 24.18.1
+override NPM_VERSION := 11.16.0
+override NEXT_VERSION := 16.2.12
+override REACT_VERSION := 19.2.8
+override TYPESCRIPT_VERSION := 6.0.3
+override ESLINT_VERSION := 9.39.5
+override ESLINT_CONFIG_NEXT_VERSION := 16.2.12
+override VITEST_VERSION := 4.1.10
+override VITE_VERSION := 8.2.0
+override POSTCSS_VERSION := 8.5.25
+override SHARP_VERSION := 0.35.3
+override PRETTIER_VERSION := 3.9.6
+override PYRIGHT_VERSION := 1.1.411
+override OPENAPI_TS_VERSION := 0.99.0
+override TYPES_NODE_VERSION := 24.13.3
+override TYPES_REACT_VERSION := 19.2.18
+override TYPES_REACT_DOM_VERSION := 19.2.4
+override NPM_CONFIG := $(RAOS_REPOSITORY_ROOT)/.npmrc
+override NPM_CACHE := $(RAOS_REPOSITORY_ROOT)/.npm-cache
+override NODE_MODULES := $(RAOS_REPOSITORY_ROOT)/node_modules
+override NODE_INVENTORY := $(RAOS_REPOSITORY_ROOT)/scripts/node_inventory.mjs
+override NODE_CLEAN_ENV := env -i \
+	PATH="/usr/bin:/bin" HOME="$(RAOS_REPOSITORY_ROOT)" \
+	LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+	COREPACK_ENABLE_NETWORK=0 COREPACK_ENABLE_PROJECT_SPEC=0 \
+	COREPACK_HOME="$(NPM_CACHE)/corepack" NEXT_TELEMETRY_DISABLED=1 \
+	NPM_CONFIG_USERCONFIG="$(NPM_CONFIG)" NPM_CONFIG_GLOBALCONFIG=/dev/null \
+	NPM_CONFIG_CACHE="$(NPM_CACHE)" NPM_CONFIG_REGISTRY=https://registry.npmjs.org/ \
+	NPM_CONFIG_IGNORE_SCRIPTS=true NPM_CONFIG_AUDIT=false \
+	NPM_CONFIG_FUND=false NPM_CONFIG_UPDATE_NOTIFIER=false
+override NODE_RUN := $(NODE_CLEAN_ENV) "$(NODE)"
+override NPM_RUN := $(NODE_RUN) "$(NPM_CLI)" \
+	--userconfig "$(NPM_CONFIG)" --globalconfig /dev/null \
+	--cache "$(NPM_CACHE)" --registry https://registry.npmjs.org/ \
+	--ignore-scripts --no-audit --no-fund
+
+.PHONY: bootstrap check-workspace python-install python-lock python-lock-check \
+	python-lock-check-offline python-sync python-sync-offline \
+	python-tool-versions python-lint python-format-check \
+	python-typecheck python-test python-check node-storage-check node-lock \
+	node-lock-check node-sync node-sync-offline node-tool-versions \
+	node-dependency-tree-check node-format-check node-lint node-typecheck \
+	node-pyright node-test node-check contract-install contract-check \
+	contract-verify contract-test contract-gate contract-codegen-install \
+	contract-codegen-hydrate contract-codegen-storage-check \
+	contract-codegen-environment-check \
+	contract-codegen-check contract-codegen-test contract-codegen-typecheck \
+	contract-codegen-gate content-ast-generate content-ast-check \
+	content-ast-test local-compose-generate local-compose-check \
+	queue-generate queue-check queue-test \
+	config-generate config-check config-test \
+	migration-generate migration-check migration-test \
+	migration-fixture-generate migration-fixture-check migration-fixture-test \
+	postgres-generate postgres-check postgres-config postgres-up postgres-health \
+	postgres-down postgres-test object-storage-config object-storage-up \
+	object-storage-health object-storage-down object-storage-test \
+	pro-setup pro-doctor pro-ask pro-resume \
+	ci-network-assert ci-hydrate ci-repository-policy ci-static ci-unit \
+	ci-contracts ci-database ci-storage
+
+bootstrap:
+	PYTHONDONTWRITEBYTECODE=1 "$(PYTHON)" scripts/bootstrap_workspace.py
+
+check-workspace:
+	PYTHONDONTWRITEBYTECODE=1 "$(PYTHON)" scripts/bootstrap_workspace.py --check
+
+PRO_REQUEST_FILE ?=
+PRO_PRIVATE_ROOT ?= $(RAOS_REPOSITORY_ROOT)/.secrets
+PRO_IMPORTANCE ?= ordinary
+PRO_RUN_ID ?=
+PRO_FAKE_SCENARIO ?=
+PRO_PARENT_RUN_ID ?=
+PRO_GAP_FILE ?=
+PRO_NO_OPEN_LOGIN ?= 0
+PRO_BROWSER ?= auto
+PRO_INTERACTIVE_AUTH_WAIT_SECONDS ?= 900
+override PRO_PYTHON_LAUNCHER := $(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_python.sh
+
+pro-setup:
+	"$(PRO_PYTHON_LAUNCHER)" setup \
+		--private-root "$(PRO_PRIVATE_ROOT)" \
+		--browser "$(PRO_BROWSER)" \
+		$(if $(filter 1,$(PRO_NO_OPEN_LOGIN)),--no-open-login,--open-login)
+
+pro-doctor:
+	"$(PRO_PYTHON_LAUNCHER)" doctor \
+		--private-root "$(PRO_PRIVATE_ROOT)" \
+		$(if $(strip $(PRO_FAKE_SCENARIO)),--fake-scenario "$(PRO_FAKE_SCENARIO)",)
+
+pro-ask:
+	"$(PRO_PYTHON_LAUNCHER)" ask \
+		--private-root "$(PRO_PRIVATE_ROOT)" \
+		$(if $(strip $(PRO_REQUEST_FILE)),--request-file "$(PRO_REQUEST_FILE)",) \
+		--importance "$(PRO_IMPORTANCE)" \
+		--interactive-auth-wait-seconds "$(PRO_INTERACTIVE_AUTH_WAIT_SECONDS)" \
+		$(if $(strip $(PRO_FAKE_SCENARIO)),--fake-scenario "$(PRO_FAKE_SCENARIO)",) \
+		$(if $(strip $(PRO_PARENT_RUN_ID)),--parent-run-id "$(PRO_PARENT_RUN_ID)",) \
+		$(if $(strip $(PRO_GAP_FILE)),--gap-file "$(PRO_GAP_FILE)",)
+
+pro-resume:
+	test -n "$(strip $(PRO_RUN_ID))"
+	"$(PRO_PYTHON_LAUNCHER)" resume \
+		--private-root "$(PRO_PRIVATE_ROOT)" \
+		--run-id "$(PRO_RUN_ID)" \
+		$(if $(strip $(PRO_FAKE_SCENARIO)),--fake-scenario "$(PRO_FAKE_SCENARIO)",)
+
+python-install:
+	$(UV_RUN) python install $(PYTHON_VERSION)
+
+python-lock:
+	$(UV_RUN) lock
+
+python-lock-check:
+	@if test "$(RAOS_CI_OFFLINE)" = 1; then \
+		$(UV_RUN) lock --check --offline; \
+	else \
+		$(UV_RUN) lock --check; \
+	fi
+
+python-lock-check-offline:
+	$(UV_RUN) lock --check --offline
+
+python-sync: python-lock-check
+	@if test "$(RAOS_CI_OFFLINE)" = 1; then \
+		test "$(RAOS_NETWORK_DENIED)" = 1; \
+		test -d "$(RAOS_REPOSITORY_ROOT)/.venv"; \
+		test ! -L "$(RAOS_REPOSITORY_ROOT)/.venv"; \
+		test -x "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python"; \
+	else \
+		$(UV_RUN) sync --locked --group dev --managed-python \
+			--no-python-downloads --no-build --no-sources; \
+	fi
+
+python-sync-offline: python-lock-check-offline
+	test ! -L "$(PYTHON_OFFLINE_ENVIRONMENT)"
+	$(UV_RUN) venv --clear --offline --managed-python --no-python-downloads \
+		"$(PYTHON_OFFLINE_ENVIRONMENT)"
+	$(UV_OFFLINE_RUN) sync --locked --offline --group dev --managed-python \
+		--no-python-downloads
+
+python-tool-versions: | python-sync
+	$(UV_RUN) --version | grep -E '^uv $(UV_VERSION)( |$$)'
+	$(UV_RUN) run --locked --no-sync --no-env-file python -VV
+	$(UV_RUN) run --locked --no-sync --no-env-file ruff --version
+	$(UV_RUN) run --locked --no-sync --no-env-file mypy --version
+	$(UV_RUN) run --locked --no-sync --no-env-file pytest --version
+
+python-lint: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file ruff check scripts tests python migrations
+
+python-format-check: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file ruff format --check --exclude python/raos/generated python tests/st0102 scripts/build_st0105_generated_contracts.py tests/st0105 scripts/assert_network_denied.py scripts/scan_secrets.py tests/st0106 migrations tests/postgresql18.py tests/st0301 tests/st0302 tests/st0303 scripts/build_st0301_migration_framework.py scripts/build_st0302_foundation.py scripts/build_st0303_iam_ops.py
+
+python-typecheck: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file mypy
+
+python-test: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file pytest -q tests/st0102
+
+python-check: python-tool-versions python-lint python-format-check \
+	python-typecheck python-test
+
+contract-install: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file python \
+		scripts/build_st0104_contract_repository.py
+
+contract-check:
+	$(UV_READONLY_RUN) python \
+		scripts/build_st0104_contract_repository.py --check
+
+contract-verify:
+	$(UV_READONLY_RUN) python \
+		scripts/verify_contract_repository.py
+
+contract-test:
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0104
+
+contract-gate:
+	$(UV_READONLY_RUN) python \
+		scripts/build_st0104_contract_repository.py --check
+	$(UV_READONLY_RUN) python \
+		scripts/verify_contract_repository.py
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0104
+
+contract-codegen-hydrate: python-sync node-sync
+
+contract-codegen-storage-check: node-storage-check
+	test -d "$(RAOS_REPOSITORY_ROOT)/.venv"
+	test ! -L "$(RAOS_REPOSITORY_ROOT)/.venv"
+	test -d "$(RAOS_REPOSITORY_ROOT)/.venv/bin"
+	test ! -L "$(RAOS_REPOSITORY_ROOT)/.venv/bin"
+	test -x "$(RAOS_REPOSITORY_ROOT)/.venv/bin/datamodel-codegen"
+	test ! -L "$(RAOS_REPOSITORY_ROOT)/.venv/bin/datamodel-codegen"
+
+contract-codegen-environment-check: contract-codegen-storage-check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0105_generated_contracts.py --verify-tools-only \
+		--datamodel-codegen "$(RAOS_REPOSITORY_ROOT)/.venv/bin/datamodel-codegen" \
+		--node "$(NODE)" \
+		--openapi-ts "$(NODE_MODULES)/@hey-api/openapi-ts/bin/run.js"
+
+contract-codegen-install: | contract-codegen-storage-check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0105_generated_contracts.py \
+		--datamodel-codegen "$(RAOS_REPOSITORY_ROOT)/.venv/bin/datamodel-codegen" \
+		--node "$(NODE)" \
+		--openapi-ts "$(NODE_MODULES)/@hey-api/openapi-ts/bin/run.js"
+
+contract-codegen-check: | contract-codegen-environment-check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0105_generated_contracts.py --check \
+		--datamodel-codegen "$(RAOS_REPOSITORY_ROOT)/.venv/bin/datamodel-codegen" \
+		--node "$(NODE)" \
+		--openapi-ts "$(NODE_MODULES)/@hey-api/openapi-ts/bin/run.js"
+
+contract-codegen-test: | contract-codegen-environment-check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) \
+		pytest -p no:cacheprovider -q tests/st0105
+
+contract-codegen-typecheck: | contract-codegen-environment-check
+	$(NODE_RUN) "$(NODE_MODULES)/typescript/bin/tsc" \
+		--noEmit --project \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-contracts/tsconfig.json"
+
+contract-codegen-gate: contract-gate contract-codegen-check \
+	contract-codegen-test contract-codegen-typecheck
+
+content-ast-generate: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file python \
+		scripts/build_st0801_content_ast.py
+
+content-ast-check: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0801_content_ast.py --check
+
+content-ast-test: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0801
+
+local-compose-generate: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file python \
+		scripts/build_local_compose.py
+
+local-compose-check: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_local_compose.py --check
+
+queue-generate: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file python \
+		scripts/build_st0203_queue_fake.py
+
+queue-check: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0203_queue_fake.py --check
+
+queue-test: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0203
+
+config-generate: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file python \
+		scripts/build_st0204_config_loader.py
+
+config-check: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0204_config_loader.py --check
+
+config-test: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0204
+
+migration-generate: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file python \
+		scripts/build_st0305_publication_analytics_finance.py
+
+migration-check: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0305_publication_analytics_finance.py --check
+
+migration-test: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0301
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0302
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0303
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0304
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0305
+
+migration-fixture-generate: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file python \
+		scripts/build_st0307_migration_fixtures.py
+
+migration-fixture-check: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0307_migration_fixtures.py --check
+
+migration-fixture-test: | python-sync
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0307
+
+postgres-generate: local-compose-generate
+
+postgres-check: local-compose-check
+
+postgres-config:
+	scripts/postgres_service.sh --docker "$(DOCKER)" config
+
+postgres-up:
+	scripts/postgres_service.sh --docker "$(DOCKER)" up
+
+postgres-health:
+	scripts/postgres_service.sh --docker "$(DOCKER)" check
+
+postgres-down:
+	scripts/postgres_service.sh --docker "$(DOCKER)" down
+
+postgres-test:
+	scripts/postgres_service.sh --docker "$(DOCKER)" test
+
+object-storage-config:
+	scripts/object_storage_service.sh --docker "$(DOCKER)" config
+
+object-storage-up:
+	scripts/object_storage_service.sh --docker "$(DOCKER)" up
+
+object-storage-health:
+	scripts/object_storage_service.sh --docker "$(DOCKER)" check
+
+object-storage-down:
+	scripts/object_storage_service.sh --docker "$(DOCKER)" down
+
+object-storage-test:
+	scripts/object_storage_service.sh --docker "$(DOCKER)" test
+
+node-storage-check:
+	$(NODE_RUN) "$(NODE_INVENTORY)" guard \
+		"$(RAOS_REPOSITORY_ROOT)/apps" \
+		"$(RAOS_REPOSITORY_ROOT)/apps/web" \
+		"$(RAOS_REPOSITORY_ROOT)/packages" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-contracts" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-ui" \
+		"$(NPM_CACHE)" "$(NODE_MODULES)" \
+		"$(RAOS_REPOSITORY_ROOT)/apps/web/node_modules" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-contracts/node_modules" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-ui/node_modules"
+	$(NODE_RUN) "$(NODE_INVENTORY)" guard-files \
+		"$(NPM_CONFIG)" "$(RAOS_REPOSITORY_ROOT)/package.json" \
+		"$(RAOS_REPOSITORY_ROOT)/apps/web/package.json" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-contracts/package.json" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-contracts/tsconfig.json" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-ui/package.json"
+	$(NODE_RUN) "$(NODE_INVENTORY)" guard-optional-files \
+		"$(RAOS_REPOSITORY_ROOT)/package-lock.json"
+
+node-lock: node-storage-check
+	$(NPM_RUN) install --package-lock-only
+
+node-lock-check: node-storage-check
+	test -f "$(RAOS_REPOSITORY_ROOT)/package-lock.json"
+	$(NODE_RUN) "$(NODE_INVENTORY)" verify-lock-manifests \
+		"$(RAOS_REPOSITORY_ROOT)/package-lock.json" \
+		"$(RAOS_REPOSITORY_ROOT)/package.json" \
+		"$(RAOS_REPOSITORY_ROOT)/apps/web/package.json" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-contracts/package.json" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-ui/package.json"
+	@set -eu; \
+		before=$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/package-lock.json"); \
+		if test "$(RAOS_CI_OFFLINE)" = 1; then offline=--offline; \
+		else offline=; fi; \
+		$(NPM_RUN) ci --dry-run $$offline >/dev/null; \
+		after=$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/package-lock.json"); \
+		test "$$before" = "$$after"
+
+node-sync: node-lock-check
+	@if test "$(RAOS_CI_OFFLINE)" = 1; then \
+		test "$(RAOS_NETWORK_DENIED)" = 1; \
+		test -d "$(NODE_MODULES)"; \
+		test ! -L "$(NODE_MODULES)"; \
+	else \
+		$(NPM_RUN) ci; \
+	fi
+	$(NODE_RUN) "$(NODE_INVENTORY)" guard \
+		"$(NPM_CACHE)" "$(NODE_MODULES)" \
+		"$(RAOS_REPOSITORY_ROOT)/apps/web/node_modules" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-contracts/node_modules" \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-ui/node_modules"
+
+node-sync-offline: node-storage-check
+	test -f "$(RAOS_REPOSITORY_ROOT)/package-lock.json"
+	test -d "$(NPM_CACHE)"
+	test -d "$(NODE_MODULES)"
+	@set -eu; \
+		before=$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/package-lock.json"); \
+		$(NPM_RUN) ci --dry-run --offline >/dev/null; \
+		after=$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/package-lock.json"); \
+		test "$$before" = "$$after"
+	@set -eu; \
+		temporary=$$(mktemp -d "$(RAOS_REPOSITORY_ROOT)/.node-offline-check.XXXXXX"); \
+		trap 'rm -rf -- "$$temporary"' EXIT HUP INT TERM; \
+		mkdir -p -- "$$temporary/apps/web" \
+			"$$temporary/packages/web-contracts" \
+			"$$temporary/packages/web-ui"; \
+		cp -- "$(RAOS_REPOSITORY_ROOT)/package.json" \
+			"$(RAOS_REPOSITORY_ROOT)/package-lock.json" \
+			"$(RAOS_REPOSITORY_ROOT)/.npmrc" "$$temporary/"; \
+		cp -- "$(RAOS_REPOSITORY_ROOT)/apps/web/package.json" \
+			"$$temporary/apps/web/package.json"; \
+		cp -- "$(RAOS_REPOSITORY_ROOT)/packages/web-contracts/package.json" \
+			"$$temporary/packages/web-contracts/package.json"; \
+		cp -- "$(RAOS_REPOSITORY_ROOT)/packages/web-ui/package.json" \
+			"$$temporary/packages/web-ui/package.json"; \
+		$(NPM_RUN) --prefix "$$temporary" ci --offline; \
+		$(NODE_RUN) "$(NODE_INVENTORY)" guard \
+			"$$temporary/node_modules"; \
+		$(NODE_RUN) "$(NODE_INVENTORY)" inventory \
+			"$(NODE_MODULES)" >"$$temporary/installed.inventory"; \
+		$(NODE_RUN) "$(NODE_INVENTORY)" inventory \
+			"$$temporary/node_modules" >"$$temporary/offline.inventory"; \
+		cmp -- "$$temporary/installed.inventory" "$$temporary/offline.inventory"
+
+node-tool-versions: | node-sync
+	$(NODE_RUN) --version | grep -Fx 'v$(NODE_VERSION)'
+	$(NPM_RUN) --version | grep -Fx '$(NPM_VERSION)'
+	$(NODE_RUN) "$(NODE_INVENTORY)" verify-versions "$(NODE_MODULES)" \
+		'next=$(NEXT_VERSION)' 'react=$(REACT_VERSION)' \
+		'react-dom=$(REACT_VERSION)' 'typescript=$(TYPESCRIPT_VERSION)' \
+		'eslint=$(ESLINT_VERSION)' \
+		'eslint-config-next=$(ESLINT_CONFIG_NEXT_VERSION)' \
+		'vitest=$(VITEST_VERSION)' 'vite=$(VITE_VERSION)' \
+		'postcss=$(POSTCSS_VERSION)' 'sharp=$(SHARP_VERSION)' \
+		'prettier=$(PRETTIER_VERSION)' 'pyright=$(PYRIGHT_VERSION)' \
+		'@hey-api/openapi-ts=$(OPENAPI_TS_VERSION)' \
+		'@types/node=$(TYPES_NODE_VERSION)' \
+		'@types/react=$(TYPES_REACT_VERSION)' \
+		'@types/react-dom=$(TYPES_REACT_DOM_VERSION)' \
+		'@raos/web=0.0.0' '@raos/web-contracts=0.0.0' \
+		'@raos/web-ui=0.0.0'
+
+node-dependency-tree-check: | node-sync
+	$(NPM_RUN) ls --all >/dev/null
+
+node-format-check: | node-sync
+	$(NODE_RUN) "$(NODE_MODULES)/prettier/bin/prettier.cjs" \
+		--check --ignore-unknown package.json apps/web \
+		packages/web-contracts/package.json packages/web-contracts/tsconfig.json \
+		packages/web-ui \
+		tsconfig.base.json tsconfig.json eslint.config.mjs prettier.config.mjs \
+		vitest.config.ts pyrightconfig.json scripts/node_inventory.mjs \
+		tests/st0103
+
+node-lint: | node-sync
+	$(NODE_RUN) "$(NODE_MODULES)/eslint/bin/eslint.js" --max-warnings=0 \
+		--no-warn-ignored eslint.config.mjs prettier.config.mjs \
+		vitest.config.ts scripts/node_inventory.mjs tests/st0103
+
+node-typecheck: | node-sync
+	$(NODE_RUN) "$(NODE_MODULES)/typescript/bin/tsc" \
+		--noEmit --project "$(RAOS_REPOSITORY_ROOT)/tsconfig.json"
+	$(NODE_RUN) "$(NODE_MODULES)/typescript/bin/tsc" \
+		--noEmit --project \
+		"$(RAOS_REPOSITORY_ROOT)/packages/web-contracts/tsconfig.json"
+
+node-pyright: | node-sync
+	$(NODE_RUN) "$(NODE_INVENTORY)" verify-python-runtime \
+		"$(RAOS_REPOSITORY_ROOT)/.venv" \
+		"$(RAOS_REPOSITORY_ROOT)/.venv/bin" \
+		"$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" \
+		"$(PYTHON_VERSION)"
+	$(NODE_RUN) "$(NODE_MODULES)/pyright/index.js" \
+		--pythonpath "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" \
+		--project "$(RAOS_REPOSITORY_ROOT)/pyrightconfig.json"
+
+node-test: | node-sync
+	$(NODE_RUN) "$(NODE_MODULES)/vitest/vitest.mjs" run \
+		--config "$(RAOS_REPOSITORY_ROOT)/vitest.config.ts" \
+		--configLoader native
+
+node-check: node-tool-versions node-dependency-tree-check node-format-check \
+	node-lint node-typecheck node-pyright node-test
+
+ci-network-assert:
+	test "$(RAOS_CI_OFFLINE)" = 1
+	test "$(RAOS_NETWORK_DENIED)" = 1
+	"$(PYTHON)" -I scripts/assert_network_denied.py
+
+ci-hydrate: python-sync node-sync
+
+ci-repository-policy: | python-sync local-compose-check queue-check config-check \
+	migration-check migration-fixture-check content-ast-check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/import_raos_design.py verify
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0002_revision.py --check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0003_revision.py --check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0004_revision.py --check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0005_status.py --check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0006_decision_gates.py --check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0107_pr_governance.py --check
+
+ci-static: ci-network-assert check-workspace ci-repository-policy python-tool-versions \
+	python-lint python-format-check python-typecheck node-tool-versions \
+	node-dependency-tree-check node-format-check node-lint node-typecheck \
+	node-pyright
+
+ci-unit: ci-network-assert | python-sync node-sync
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q \
+		tests/test_import_raos_design.py
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q \
+		tests/st0002 --ignore=tests/st0002/test_postgresql_migration.py
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q \
+		tests/st0003 --ignore=tests/st0003/test_postgresql_migration.py
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q \
+		tests/st0004 --ignore=tests/st0004/test_postgresql_migration.py
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0005
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0006
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0101
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0102
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0103
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0106
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0107
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0201
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0202
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0203
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0204
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0301
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0302
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0303
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0304
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0305
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q \
+		tests/st0307 --ignore=tests/st0307/test_postgresql.py
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0801
+	$(NODE_RUN) "$(NODE_MODULES)/vitest/vitest.mjs" run \
+		--config "$(RAOS_REPOSITORY_ROOT)/vitest.config.ts" \
+		--configLoader native
+
+ci-contracts: ci-network-assert contract-codegen-hydrate
+	+$(MAKE) --no-builtin-rules --no-builtin-variables \
+		--file "$(RAOS_REPOSITORY_ROOT)/Makefile" contract-codegen-gate
+
+ci-database: postgres-test
+
+ci-storage: object-storage-test

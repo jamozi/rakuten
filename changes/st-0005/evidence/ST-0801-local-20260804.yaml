@@ -1,0 +1,313 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0801-20260804
+  schema_version: 1
+  recorded_at: '2026-08-04T11:16:13Z'
+story_id: ST-0801
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+  - original_uri: repo://changes/st-0801/contracts/content-ast-loader.v1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9cdac8135b91ade54cb34d61b58bb98b9a758d0b9312cb171650b527e16a7159-content-ast-loader.v1.yaml
+    sha256: 9cdac8135b91ade54cb34d61b58bb98b9a758d0b9312cb171650b527e16a7159
+  - original_uri: repo://changes/st-0801/README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/38cac947aa865120b04277d4206ecb65af3212ff54543fe59a1f4830a912f2c2-README.md
+    sha256: 38cac947aa865120b04277d4206ecb65af3212ff54543fe59a1f4830a912f2c2
+  - original_uri: repo://docs/execplans/ST-0801.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3361103bff6e17961b89f2f386e75bda5360e6da0f6a50193d091a2c75c38a96-ST-0801.md
+    sha256: 3361103bff6e17961b89f2f386e75bda5360e6da0f6a50193d091a2c75c38a96
+  - original_uri: repo://docs/worklogs/ST-0801.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3e2ff8be008e1335de78194c2d79ac90203e21f58baa76f3fbf289a9cb689783-ST-0801.md
+    sha256: 3e2ff8be008e1335de78194c2d79ac90203e21f58baa76f3fbf289a9cb689783
+  - original_uri: repo://scripts/build_st0801_content_ast.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/7483b434740f95e9ad75d3e9717298781faf22f390c502af655b1ce7590e5a21-build_st0801_content_ast.py
+    sha256: 7483b434740f95e9ad75d3e9717298781faf22f390c502af655b1ce7590e5a21
+  - original_uri: repo://scripts/build_st0201_postgres_service.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c-build_st0201_postgres_service.py
+    sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+  - original_uri: repo://.python-version
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab-.python-version
+    sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+  - original_uri: repo://pyproject.toml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b-pyproject.toml
+    sha256: fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+  - original_uri: repo://uv.lock
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0-uv.lock
+    sha256: 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+  - original_uri: repo://uv.toml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37-uv.toml
+    sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+  - original_uri: repo://python/raos/__init__.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596-__init__.py
+    sha256: 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+  - original_uri: repo://python/raos/generated/__init__.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9c3a8d576fc17ec66c271c8b33514c4ad75408f336cff681d5472cc3c779916f-__init__.py
+    sha256: 9c3a8d576fc17ec66c271c8b33514c4ad75408f336cff681d5472cc3c779916f
+  - original_uri: repo://python/raos/domain/editorial/__init__.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8490e939208baf5d4f733bceee99ede44936da19921bfd3dfcfbbf5f68bbbe80-__init__.py
+    sha256: 8490e939208baf5d4f733bceee99ede44936da19921bfd3dfcfbbf5f68bbbe80
+  - original_uri: repo://python/raos/domain/editorial/content_ast.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68-content_ast.py
+    sha256: 7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68
+  - original_uri: repo://tests/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728-conftest.py
+    sha256: 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+  - original_uri: repo://tests/st0102/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8302242b2106a38f27c7e781eb84e458be1db3f8a5344a5f77bc247cd2f9654a-conftest.py
+    sha256: 8302242b2106a38f27c7e781eb84e458be1db3f8a5344a5f77bc247cd2f9654a
+  - original_uri: repo://tests/st0801/conftest.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fa518e1a3ca68bfaacf9e45007e245da5b3705c88e9d7ca85583b3f50b19d49d-conftest.py
+    sha256: fa518e1a3ca68bfaacf9e45007e245da5b3705c88e9d7ca85583b3f50b19d49d
+  - original_uri: repo://tests/st0801/test_block_matrix.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/716a34d7aea5cf290fc9be715e6851c5d8120ad1677f0ad5bbc79a3a212192e6-test_block_matrix.py
+    sha256: 716a34d7aea5cf290fc9be715e6851c5d8120ad1677f0ad5bbc79a3a212192e6
+  - original_uri: repo://tests/st0801/test_contract_binding.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/306ac3fd2282b8fad214297dcb1e7f78201403d92fd105af5030d0ff062fcb7f-test_contract_binding.py
+    sha256: 306ac3fd2282b8fad214297dcb1e7f78201403d92fd105af5030d0ff062fcb7f
+  - original_uri: repo://tests/st0801/test_generation.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/408fa7c5d4803d7a066de1daab1572847c966fc6e491b2805dd318c0e49bd1c2-test_generation.py
+    sha256: 408fa7c5d4803d7a066de1daab1572847c966fc6e491b2805dd318c0e49bd1c2
+  - original_uri: repo://tests/st0801/test_loader.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e385de6b5cb4e885f71fcabeeb13f8a4e976da5ac8c13161a27a20e7824f00eb-test_loader.py
+    sha256: e385de6b5cb4e885f71fcabeeb13f8a4e976da5ac8c13161a27a20e7824f00eb
+  - original_uri: repo://tests/st0801/test_negative_cases.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/bb48c844380cd0b86cd0aaf68ca2bffac49a01f766a44e4325d3253ef39304de-test_negative_cases.py
+    sha256: bb48c844380cd0b86cd0aaf68ca2bffac49a01f766a44e4325d3253ef39304de
+  - original_uri: repo://tests/st0102/test_toolchain_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8699d7bc35b78955552a13637c952e923638f2e598885c5b3e032b0dbac7bffc-test_toolchain_contract.py
+    sha256: 8699d7bc35b78955552a13637c952e923638f2e598885c5b3e032b0dbac7bffc
+  - original_uri: repo://tests/st0106/test_workflow_contract.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/402aef1eca7b8fc2165bac2938f71b57e1eca862f429e6dc7da85057d76accbd-test_workflow_contract.py
+    sha256: 402aef1eca7b8fc2165bac2938f71b57e1eca862f429e6dc7da85057d76accbd
+  - original_uri: repo://.github/workflows/ci.yml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45-ci.yml
+    sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+  - original_uri: repo://Makefile
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/d5dbce2f88bb26dfaa4dc3454f0e5c44db61ac4f2cf62c402dd473714a46f137-Makefile
+    sha256: d5dbce2f88bb26dfaa4dc3454f0e5c44db61ac4f2cf62c402dd473714a46f137
+  - original_uri: repo://README.md
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/56befd01653fd06bb47cade73066fb04964e18f5812f76a1ff94c82c85d620e2-README.md
+    sha256: 56befd01653fd06bb47cade73066fb04964e18f5812f76a1ff94c82c85d620e2
+  - original_uri: repo://changes/st-0105/manifest.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7-manifest.json
+    sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7
+  - original_uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef-contract-repository.v0.4.json
+    sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_implementation_slices_v0.1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/808c3178536246080ab3a4394246ff76670ae65ffd14a2e2b47b87a03b1597d7-RAOS_06_implementation_slices_v0.1.yaml
+    sha256: 808c3178536246080ab3a4394246ff76670ae65ffd14a2e2b47b87a03b1597d7
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_content_block_catalog_v0.1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/af9e86c5938a718f41aaea0c9247405508adfbcb1b0924e55f4ce06d5a0a420e-RAOS_06_content_block_catalog_v0.1.yaml
+    sha256: af9e86c5938a718f41aaea0c9247405508adfbcb1b0924e55f4ce06d5a0a420e
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_article_type_catalog_v0.1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11-RAOS_06_article_type_catalog_v0.1.yaml
+    sha256: 6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_schema_registry_v0.1.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/adc3f52092bd78d7d318d31da97c6ca048cf69f333ffbb225e70867f738b0aa2-RAOS_06_schema_registry_v0.1.yaml
+    sha256: adc3f52092bd78d7d318d31da97c6ca048cf69f333ffbb225e70867f738b0aa2
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_content_test_matrix_v0.1.csv
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564-RAOS_06_content_test_matrix_v0.1.csv
+    sha256: 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/expected_results.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e258a86603d656b9d896dea182ba0aea5e4a43983385a99b85d8c3ec0e3609e3-expected_results.yaml
+    sha256: e258a86603d656b9d896dea182ba0aea5e4a43983385a99b85d8c3ec0e3609e3
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/bullet_list.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7-bullet_list.schema.json
+    sha256: 1e89b53477d73f89901892b692b2831e260f182207224814d26f709cd4a61ab7
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/callout.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a-callout.schema.json
+    sha256: 86275459fa60289c753c47114990bef8181167af5ef54f6f924ac284e17e3f7a
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/caution.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510-caution.schema.json
+    sha256: b30c871c89a15f89e5cb9b437b5804e78b7240ba7de9bd45449993f80511c510
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/comparison_table.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89-comparison_table.schema.json
+    sha256: 6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/decision_summary.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1-decision_summary.schema.json
+    sha256: a6966e434a278f7499c2149fae1ce2b3e648232f6fe531393df02e9b151990b1
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/difference_matrix.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667-difference_matrix.schema.json
+    sha256: cc436f5c8c5cb2a873ad5236c34b229d826fd577ebb4980edabde56b5edf6667
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/disclosure_slot.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918-disclosure_slot.schema.json
+    sha256: 76d10f83a70d09c82d94e87ae12ba6796ff520134f3353e0ae9581b0043be918
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/evidence_note.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6-evidence_note.schema.json
+    sha256: 37fce659c23c4fa1f00f46731b5ef2d48054a9047e3f653f429d94ed4cacf8a6
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/faq.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71-faq.schema.json
+    sha256: f518925a83c84b6ed480ebe6bb37602afe87142424a58129b8e6f00d6d6c5c71
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/heading.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229-heading.schema.json
+    sha256: f80e4e830c5587f193bd8b8263ea3e8da68cbd958e1e76612357e3545083c229
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/intended_reader.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc-intended_reader.schema.json
+    sha256: 64a95abd52900a6c683a172fb233582d778afe0aac5cf8fcd62baa1a57ee94fc
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/internal_links.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc-internal_links.schema.json
+    sha256: 46696141e6cf47c03d9df550bd48b308e33c9178f4cc6b84573d76431bd669cc
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/lead.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4-lead.schema.json
+    sha256: fbd51fa6c27c43b77e1fa1b383b2410a2d3e088efffa7012e5221a176c71aff4
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/media.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c-media.schema.json
+    sha256: ff72fdbced9d576cdf153b6c72b82601e14ec306b2385e28ac9892cc5ada549c
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/methodology.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec-methodology.schema.json
+    sha256: 366d9d404537880944e753875631443942b8ebd333d58f79b2e2283d051ab4ec
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/numbered_list.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f-numbered_list.schema.json
+    sha256: 39f4c2e013f15b0409fbf355e81fe785c0ee0684eb1c89b0efb38df43c68f94f
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/paragraph.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1-paragraph.schema.json
+    sha256: 5b02fe14f490037814c5e01f9eb68e3d4a99551e44a2d51b9577750fa2b839e1
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/product_card.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a-product_card.schema.json
+    sha256: 559e69100a17e54d6568f4c27c510a0285e08113aae4aedf8adfca897842398a
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/pros_cons.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b-pros_cons.schema.json
+    sha256: 3ea43d9166573319f5c1f96ccea6ce55c0470c4a74af403731593a7602fbca6b
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/recommendation_group.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932-recommendation_group.schema.json
+    sha256: 06a6d7b99f6e407f3ef34bbe1a0760fde2718a2f0addaa2d44f9eb0a92094932
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/selection_criteria.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc-selection_criteria.schema.json
+    sha256: ffa7cba7b7de952c7389402f626ca2b79757165bb548c360408b0718627312cc
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/source_summary.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28-source_summary.schema.json
+    sha256: e16e4aa4509a3567cca1683d6f268aa9fe46bdc8e20a28fa60c9e400fc36be28
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/tradeoff.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c-tradeoff.schema.json
+    sha256: a0d26e53bd14042ad41f3c7dd1d68eae998616075220ec9489c50846726bb21c
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/update_notice.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24-update_notice.schema.json
+    sha256: 4e5c6e7b2cbd6ac2090eb6ae0347f340ab3faf38554f489b3bc505239ae7dc24
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/claim.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3-claim.schema.json
+    sha256: db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/common/rich_text.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312-rich_text.schema.json
+    sha256: 20f69aa26ef89ba9a6979eff39cda185095b6a5cfba2db1954746edc9fea6312
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac-content-ast.schema.json
+    sha256: a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/editorial-review-decision.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d-editorial-review-decision.schema.json
+    sha256: 2b2d4d07b2e098c621cfd1f06d433981801a49a758eb5d1d84d25e5bca41121d
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/media-asset.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622-media-asset.schema.json
+    sha256: c0417dd570f87dda819c6a2b0aa65ef54399fe344cfe49eca4cd45aa14183622
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/publication-content-manifest.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881-publication-content-manifest.schema.json
+    sha256: 97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/recommendation-methodology.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a-recommendation-methodology.schema.json
+    sha256: 93dce87cc0fa3601ad1af634a3a89b9781270c87425b73601e98f1caa5660a3a
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/seo-metadata.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad-seo-metadata.schema.json
+    sha256: 347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/schemas/structured-data-manifest.schema.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e-structured-data-manifest.schema.json
+    sha256: 6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489-selection_guide.json
+    sha256: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/use_case_recommendation.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2e13fdbb98f8ab5eaf402db107999fd55ed0d2f931cd2bc0929d57c45fff0d9c-use_case_recommendation.json
+    sha256: 2e13fdbb98f8ab5eaf402db107999fd55ed0d2f931cd2bc0929d57c45fff0d9c
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/product_comparison.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/f128896be05e8560ad0608b02adbe1150e305f18fd7a44005abb0f70687d3cef-product_comparison.json
+    sha256: f128896be05e8560ad0608b02adbe1150e305f18fd7a44005abb0f70687d3cef
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/model_generation_capacity_difference.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/37b6633f2d330ed420bbc3cdb5a7308e98f9ad74d61a320739b7745f972c5783-model_generation_capacity_difference.json
+    sha256: 37b6633f2d330ed420bbc3cdb5a7308e98f9ad74d61a320739b7745f972c5783
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/condition_filtering.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/6396e0197f8ea0a2ffb030460fb80bfb6b9e5ad791334706a1e4424681a6c081-condition_filtering.json
+    sha256: 6396e0197f8ea0a2ffb030460fb80bfb6b9e5ad791334706a1e4424681a6c081
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-001-raw-html.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/fd9dd5db60bf6d613add9d5ffbfb010b5962b0fa713003230b0e1cc4559cc397-INV-001-raw-html.json
+    sha256: fd9dd5db60bf6d613add9d5ffbfb010b5962b0fa713003230b0e1cc4559cc397
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-002-manual-affiliate-url.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/ca7007bc94e832bb1178adcc1cabcf219a268930c331635c183ba8db6ee1d957-INV-002-manual-affiliate-url.json
+    sha256: ca7007bc94e832bb1178adcc1cabcf219a268930c331635c183ba8db6ee1d957
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-003-auto-publish.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b99fac5908f2b3278ac319a42cf5cee9eedf1c92ac6a6db16f7ff22688aa49ee-INV-003-auto-publish.json
+    sha256: b99fac5908f2b3278ac319a42cf5cee9eedf1c92ac6a6db16f7ff22688aa49ee
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-004-wrong-locale.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/e3c6aecd855e4912e5a24738538db23cd63c0979a96bbe7ddf2e078c306f302f-INV-004-wrong-locale.json
+    sha256: e3c6aecd855e4912e5a24738538db23cd63c0979a96bbe7ddf2e078c306f302f
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-005-unknown-block.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2e26d2656aa62be2095efb325942bcb6b1c04d14c3f358ffd9ab5887626cf7a3-INV-005-unknown-block.json
+    sha256: 2e26d2656aa62be2095efb325942bcb6b1c04d14c3f358ffd9ab5887626cf7a3
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-006-faq-schema-enabled.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/48017f422cb30ef744eb52cd7b92ed3564619d9bedbc6502f6632637e266e9a1-INV-006-faq-schema-enabled.json
+    sha256: 48017f422cb30ef744eb52cd7b92ed3564619d9bedbc6502f6632637e266e9a1
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-007-disclosure-removable.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/681e2c8526cf9b2a9cd3dbef1cc26450e9f2e841c5669659e499643351738a3c-INV-007-disclosure-removable.json
+    sha256: 681e2c8526cf9b2a9cd3dbef1cc26450e9f2e841c5669659e499643351738a3c
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-008-comparison-hide-unknown.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/65672cf387803215aec399bf6bb2b7661f1b3d4eabec8a27928ec78f98beb149-INV-008-comparison-hide-unknown.json
+    sha256: 65672cf387803215aec399bf6bb2b7661f1b3d4eabec8a27928ec78f98beb149
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-009-extra-finance-field.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/0579bc0d639d7ee3ea5f81b6270df7ab3c93b380109d66a6e259bff48f2f6bd0-INV-009-extra-finance-field.json
+    sha256: 0579bc0d639d7ee3ea5f81b6270df7ab3c93b380109d66a6e259bff48f2f6bd0
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-010-invalid-heading-level.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2f697e0a5aab56a5caa612ec7ba431e9a3c491372b646635af7d5d6f0d3b2e37-INV-010-invalid-heading-level.json
+    sha256: 2f697e0a5aab56a5caa612ec7ba431e9a3c491372b646635af7d5d6f0d3b2e37
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-101-disclosure-not-first.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a5a5e02b579c88c7a959474ffb10aa8e546405e9a22dddb26b01c2d168da1529-INV-101-disclosure-not-first.json
+    sha256: a5a5e02b579c88c7a959474ffb10aa8e546405e9a22dddb26b01c2d168da1529
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-102-missing-source-summary.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a7759e354bc5552b7f39ac3b319db0c9b3d15e0017c359b6e534281a27aa26b2-INV-102-missing-source-summary.json
+    sha256: a7759e354bc5552b7f39ac3b319db0c9b3d15e0017c359b6e534281a27aa26b2
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-103-missing-methodology-block.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/1ff69444290e0bc291929209964d45fa4a0afe0523e623af388bf4b0282c4b69-INV-103-missing-methodology-block.json
+    sha256: 1ff69444290e0bc291929209964d45fa4a0afe0523e623af388bf4b0282c4b69
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-104-duplicate-block-id.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2361401bdc82ede6da9b51208c11649e111d158751b36d09ee87e445b0e2b8b5-INV-104-duplicate-block-id.json
+    sha256: 2361401bdc82ede6da9b51208c11649e111d158751b36d09ee87e445b0e2b8b5
+  - original_uri: repo://contracts/raos-v0.4/contracts/content/fixtures/invalid/INV-105-missing-required-article-block.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/0aef38d018043e58343ac1d6d2fbc1ae428abadffc1f5b5346b72ef508f2ae3f-INV-105-missing-required-article-block.json
+    sha256: 0aef38d018043e58343ac1d6d2fbc1ae428abadffc1f5b5346b72ef508f2ae3f
+  - original_uri: repo://python/raos/generated/contracts/__init__.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/a592d42f7fac1d6a93ae66f5593352c1842c8d5dfc316b75799d6caf4bf901e3-__init__.py
+    sha256: a592d42f7fac1d6a93ae66f5593352c1842c8d5dfc316b75799d6caf4bf901e3
+  - original_uri: repo://python/raos/generated/contracts/content_ast.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/2b7eaf20108494c857fe942a390a0d8557cbda2547e547bf8f5a039231d651cf-content_ast.py
+    sha256: 2b7eaf20108494c857fe942a390a0d8557cbda2547e547bf8f5a039231d651cf
+  - original_uri: repo://python/raos/generated/contracts/_internal.py
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/bccdefcfd53c052e5091ff2ee00dbb482d3fe86241d8a6f91cd02ba58b6e75c9-_internal.py
+    sha256: bccdefcfd53c052e5091ff2ee00dbb482d3fe86241d8a6f91cd02ba58b6e75c9
+  - original_uri: repo://packages/web-contracts/src/generated/schema-models/index.ts
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/b66bdb7ab7c4f883f5658d2acbef2804946f4f5124db66508b39fb90cc236467-index.ts
+    sha256: b66bdb7ab7c4f883f5658d2acbef2804946f4f5124db66508b39fb90cc236467
+  - original_uri: repo://packages/web-contracts/src/generated/schema-models/types.gen.ts
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9932791eacbc305441172acd1a4197deb70ff153c41f4a7e2a4f76b6082425ad-types.gen.ts
+    sha256: 9932791eacbc305441172acd1a4197deb70ff153c41f4a7e2a4f76b6082425ad
+  - original_uri: repo://packages/web-contracts/package.json
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/d2251bc89081cef93bfa495b351f7a5b44b1216441dfb6c3c6b1a08be0f8fef3-package.json
+    sha256: d2251bc89081cef93bfa495b351f7a5b44b1216441dfb6c3c6b1a08be0f8fef3
+  - original_uri: repo://changes/st-0801/manifest.yaml
+    artifact_uri: repo://changes/st-0005/evidence/artifacts/9ee039a17b9f0d68ae05e798754e7a365ce7adc2492ae5d1e48eb3563ebc97f9-manifest.yaml
+    sha256: 9ee039a17b9f0d68ae05e798754e7a365ce7adc2492ae5d1e48eb3563ebc97f9
+suite_results:
+  - suite_id: TST-020
+    environment: LOCAL
+    result: LOCAL_PASS
+local_results:
+  - command: content-addressed ST-0801 source closure freeze
+    result: PASS; all 95 original/capture pairs were independently byte- and SHA-256-matched in manifest order; all 95 digests were unique; 10 existing captures were verified and reused, and 85 new captures were added
+  - command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv --config-file uv.toml run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads python scripts/build_st0801_content_ast.py --check
+    result: PASS; deterministic no-write check bound 94 source artifacts and recursively verified bytes and SHA-256 for all 354 pinned ST-0105 outputs
+  - command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv --config-file uv.toml run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads pytest -p no:cacheprovider -q tests/st0801
+    result: PASS; isolated ST-0801 suite completed 283 passed
+  - command: independent final ST-0801 implementation and evidence-freeze audit
+    result: PASS; Critical/High/Medium/Low findings 0/0/0/0
+  - command: scripts/ci_job.sh --uv /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv --node /home/minami/.nvm/versions/node/v24.18.1/bin/node --npm-cli /home/minami/.nvm/versions/node/v24.18.1/lib/node_modules/npm/bin/npm-cli.js static
+    result: PASS; denied-network full static gate exited 0; Ruff lint and format, strict mypy, Node static checks, both TypeScript projects, and Pyright completed with 0 errors, 0 warnings, and 0 informations
+  - command: scripts/ci_job.sh --uv /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv --node /home/minami/.nvm/versions/node/v24.18.1/bin/node --npm-cli /home/minami/.nvm/versions/node/v24.18.1/lib/node_modules/npm/bin/npm-cli.js unit
+    result: PASS; denied-network full unit gate exited 0 across every isolated Story suite; ST-0801 completed 283 passed and Vitest completed 4 passed; PostgreSQL runtime-dependent cases remained explicitly skipped, and three nonfatal ST-0202 socketpair teardown BrokenPipe warnings were reported and did not fail the gate
+  - command: scripts/codegen_toolchain.sh --uv /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv --node /home/minami/.nvm/versions/node/v24.18.1/bin/node --npm-cli /home/minami/.nvm/versions/node/v24.18.1/lib/node_modules/npm/bin/npm-cli.js gate
+    result: PASS; exact cumulative codegen gate exited 0 with ST-0104 117 passed, ST-0105 53 passed, 306 contract-repository artifacts verified, all 354 generated outputs verified, and strict TypeScript compilation; the first attempt failed closed on 277 unit-created pycache files, after which only that generated pycache was removed and the bounded rerun passed
+boundary: This is an append-only local implementation candidate only. Formal TST-020, hosted clean-clone CI or GitHub execution, human review or approval, canonical APPLY, staging, release, and production were NOT_EXECUTED. Effective canonical ST-0801 remains NOT_STARTED / NOT_EXECUTED. Runtime selected-file parity occurs only at the post-import call boundary and is not pre-execution integrity. Renderer and article-template policy, Claim/Evidence and recommendation semantics, review and publication policy, API integration, and persistence remain outside ST-0801 scope.

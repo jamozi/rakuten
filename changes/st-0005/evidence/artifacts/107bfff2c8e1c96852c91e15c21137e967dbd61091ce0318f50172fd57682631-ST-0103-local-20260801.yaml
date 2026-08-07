@@ -1,0 +1,135 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0103-20260801
+  schema_version: 1
+  recorded_at: '2026-08-01T19:36:40Z'
+story_id: ST-0103
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://.node-version
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/73771b301eb6d0b0c20a8bb83ed7d8a428e4d4fe3a099ab7e38aa07f2e54a3ae-.node-version
+  sha256: 73771b301eb6d0b0c20a8bb83ed7d8a428e4d4fe3a099ab7e38aa07f2e54a3ae
+- original_uri: repo://package.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/b7f9550a16941cd20128e753d2001d67e97b2db7cf5676ab7ff03a89e442e1ed-package.json
+  sha256: b7f9550a16941cd20128e753d2001d67e97b2db7cf5676ab7ff03a89e442e1ed
+- original_uri: repo://package-lock.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f31b237c9295038657dabbfb8f2c87f91a7eae96a14a0f4fe5dbf9c8e5852117-package-lock.json
+  sha256: f31b237c9295038657dabbfb8f2c87f91a7eae96a14a0f4fe5dbf9c8e5852117
+- original_uri: repo://apps/web/package.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/7e56b9a858f835c9d3304d743cff5bfd96443c4670e01daac57d8fa77e1d2e53-package.json
+  sha256: 7e56b9a858f835c9d3304d743cff5bfd96443c4670e01daac57d8fa77e1d2e53
+- original_uri: repo://packages/web-ui/package.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8cd7b7d9b63d10971044c73238790c54bb159a9cb52747ed4f855c46e9778b93-package.json
+  sha256: 8cd7b7d9b63d10971044c73238790c54bb159a9cb52747ed4f855c46e9778b93
+- original_uri: repo://tsconfig.base.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/2501e5f9213f580b8c6a0f48b432f7142c16cbc892d5935c14ef496c4fba8afe-tsconfig.base.json
+  sha256: 2501e5f9213f580b8c6a0f48b432f7142c16cbc892d5935c14ef496c4fba8afe
+- original_uri: repo://tsconfig.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/1d2f71d46998dcc86c67a2273df297684097959d520bd4351dc00d2819344c72-tsconfig.json
+  sha256: 1d2f71d46998dcc86c67a2273df297684097959d520bd4351dc00d2819344c72
+- original_uri: repo://eslint.config.mjs
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/dee4f70d0758dd7dec0a20d527d22ce4766236126a0f40ee3e69be8da2d3c78b-eslint.config.mjs
+  sha256: dee4f70d0758dd7dec0a20d527d22ce4766236126a0f40ee3e69be8da2d3c78b
+- original_uri: repo://prettier.config.mjs
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/2a91225fa1bc429a4e27b39e5a05f4e8828d95e55644bf039abb61f588e4db44-prettier.config.mjs
+  sha256: 2a91225fa1bc429a4e27b39e5a05f4e8828d95e55644bf039abb61f588e4db44
+- original_uri: repo://pyrightconfig.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3426315bb61467310fcc1fbf5710b3c15cbe3d6608004022d1ec5ac6c177c8e4-pyrightconfig.json
+  sha256: 3426315bb61467310fcc1fbf5710b3c15cbe3d6608004022d1ec5ac6c177c8e4
+- original_uri: repo://vitest.config.ts
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/b5452da2dce16fe725a2acc8ef8db8f492a6cd443b2a78a3e718099f1f672745-vitest.config.ts
+  sha256: b5452da2dce16fe725a2acc8ef8db8f492a6cd443b2a78a3e718099f1f672745
+- original_uri: repo://scripts/node_toolchain.sh
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/cedbe26c7cb2a491bcc0bfc8103e5902403a011e5f8456a09ded544da182874a-node_toolchain.sh
+  sha256: cedbe26c7cb2a491bcc0bfc8103e5902403a011e5f8456a09ded544da182874a
+- original_uri: repo://scripts/node_inventory.mjs
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/1adebeb2e86c42777eb7f00ca3799dc4befe79a5874c35b310735d72a13bdaed-node_inventory.mjs
+  sha256: 1adebeb2e86c42777eb7f00ca3799dc4befe79a5874c35b310735d72a13bdaed
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/f85cb3c94118d49387e1e2aedb8f27ee16e73b1c1da3d74c22cd3bbd23507a32-Makefile
+  sha256: f85cb3c94118d49387e1e2aedb8f27ee16e73b1c1da3d74c22cd3bbd23507a32
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/002b1eaf4f67c4abeaa6b5256192f1578895bd0f0f6d873d89802671e1b19d47-README.md
+  sha256: 002b1eaf4f67c4abeaa6b5256192f1578895bd0f0f6d873d89802671e1b19d47
+- original_uri: repo://AGENTS.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/a32e9a832992994f11cea10f70bd17f00ce6b88a9b30b35216c88bbf34130b7c-AGENTS.md
+  sha256: a32e9a832992994f11cea10f70bd17f00ce6b88a9b30b35216c88bbf34130b7c
+- original_uri: repo://.gitignore
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/a286f919a8295d40a07dcbea31cdc3cbd0f58a02886e8c085407f30177681a93-.gitignore
+  sha256: a286f919a8295d40a07dcbea31cdc3cbd0f58a02886e8c085407f30177681a93
+- original_uri: repo://docs/architecture/ST-0103-toolchain-snapshot.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/372d5ee3f5bd37104218d57c361d87ab35952434112476cc90dc1c24769c4498-ST-0103-toolchain-snapshot.yaml
+  sha256: 372d5ee3f5bd37104218d57c361d87ab35952434112476cc90dc1c24769c4498
+- original_uri: repo://docs/execplans/ST-0103.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/40682ddf054c979724d03b83c315c91b489e6b24dff0018408c05ea0c68b32fd-ST-0103.md
+  sha256: 40682ddf054c979724d03b83c315c91b489e6b24dff0018408c05ea0c68b32fd
+- original_uri: repo://docs/worklogs/ST-0103.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/13b894498cbb2871cb007dea6a075361b994742daa803f15fe0f7e239462957b-ST-0103.md
+  sha256: 13b894498cbb2871cb007dea6a075361b994742daa803f15fe0f7e239462957b
+- original_uri: repo://tests/st0103/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/67f9377fe9f2b1b96df3486afd48aa7b493f33703b3d0e812cc4716650d19efc-conftest.py
+  sha256: 67f9377fe9f2b1b96df3486afd48aa7b493f33703b3d0e812cc4716650d19efc
+- original_uri: repo://tests/st0103/test_commands_and_docs.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/90429ebc4cf97d1895e9d2723298be52c2640df5b771db9f5c98aafa32161f9f-test_commands_and_docs.py
+  sha256: 90429ebc4cf97d1895e9d2723298be52c2640df5b771db9f5c98aafa32161f9f
+- original_uri: repo://tests/st0103/test_lock_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/923803074a4ca5cc71289ce8c3f2582b2fd5134a3c8b7a129853ba141af48dff-test_lock_contract.py
+  sha256: 923803074a4ca5cc71289ce8c3f2582b2fd5134a3c8b7a129853ba141af48dff
+- original_uri: repo://tests/st0103/test_node_cli.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/6217c88002f988620fd27441cc9d8502d3772335a7373458fc04433827dfa0f5-test_node_cli.py
+  sha256: 6217c88002f988620fd27441cc9d8502d3772335a7373458fc04433827dfa0f5
+- original_uri: repo://tests/st0103/test_toolchain_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/7a1541b79457773e0370ff6fc4a10c5a89929ef3941f0ed6c3d0d73df0d7b138-test_toolchain_contract.py
+  sha256: 7a1541b79457773e0370ff6fc4a10c5a89929ef3941f0ed6c3d0d73df0d7b138
+- original_uri: repo://tests/st0103/toolchain.test.ts
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/187aa997d11344cf386d8e451c8e180aceeb5b87693f82b0db4cfb1ba4892939-toolchain.test.ts
+  sha256: 187aa997d11344cf386d8e451c8e180aceeb5b87693f82b0db4cfb1ba4892939
+suite_results:
+- suite_id: TST-001
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-006
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: scripts/node_toolchain.sh --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js check
+  result: Exact Node 24.18.1 and npm 11.16.0; locked install of 391 package rows, exact version and complete npm ls gates, Prettier, ESLint, TypeScript, Pyright 0/0/0, and Vitest 4 passed in 91ms
+- command: scripts/node_toolchain.sh --node /absolute/path/to/node --npm-cli /absolute/path/to/npm-cli.js sync-offline
+  result: PASS; fresh network-disabled install of 391 package rows and byte-identical normalized online/offline installed-tree inventories
+- command: exact npm ls --all and npm audit --package-lock-only --audit-level=low
+  result: PASS; dependency tree valid and zero info, low, moderate, high, critical, or total vulnerabilities across 470 audited dependencies
+- command: exact Node Next.js, PostCSS, and Sharp import smokes
+  result: PASS; Next.js 16.2.12, PostCSS 8.5.25, Sharp 0.35.3, and bundled libvips 8.18.3 loaded
+- command: pytest -q tests/st0103
+  result: 86 passed in 63.39s
+- command: scripts/python_toolchain.sh --uv /absolute/path/to/uv check
+  result: Exact CPython 3.14.6, uv 0.12.1, Ruff 0.16.1, mypy 2.3.0, pytest 9.1.1, and ST-0102 47 passed in 3.92s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin pytest -q tests/st0002
+  result: 139 passed in 22.96s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin pytest -q tests/st0003
+  result: 101 passed in 57.40s
+- command: RAOS_PG_BIN=/home/minami/miniforge3/envs/mfa/bin pytest -q tests/st0004
+  result: 64 passed in 53.74s
+- command: PostgreSQL environment for isolated ST-0002/ST-0003/ST-0004 suites
+  result: Local 18.3; formal PostgreSQL 18.4 target NOT_EXECUTED
+- command: pytest -q tests/st0101
+  result: 59 passed in 3.45s
+- command: pytest -q tests/st0005
+  result: 141 passed in 14.84s
+- command: pytest -q tests/st0006
+  result: 50 passed in 1.16s
+- command: pytest -q tests/test_import_raos_design.py
+  result: 18 passed in 1.06s
+- command: isolated regression total including ST-0102 and ST-0103
+  result: 705 passed across nine separate pytest processes, plus four exact Vitest tests
+- command: python3 scripts/import_raos_design.py verify
+  result: PASS; 105 files, read order, 6 archives, 104 checksums, 103 manifest entries
+- command: deterministic builder checks for ST-0002 through ST-0006
+  result: PASS; ST-0006 remains correctly BLOCKED with release_authorized=false
+- command: make check-workspace
+  result: PASS; 42 directories and changed=[]
+- command: sha256sum -c /tmp/st0101_protected_before.sha256
+  result: PASS for all 111 protected canonical/upstream/ZIP files; baseline-list SHA-256 6a0886f2760a8aef3476eb3886a68180346c1b8042654911478070dc42ee4404
+- command: independent ST-0103 implementation, security, compatibility, and documentation audit
+  result: PASS; no remaining Critical, High, Medium, or Low finding
+boundary: Local deterministic-install, dependency-tree, static, adversarial, offline-reproduction, import-smoke, audit, and regression evidence only; formal CI TST-001/TST-006, native Windows, PostgreSQL 18.4, GitHub PR, human approval, Gate acceptance, release, deployment, staging, and production were not executed.

@@ -1,0 +1,111 @@
+document:
+  id: RAOS-SYNTHETIC-DATA-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0205
+  source_contract: repo://changes/st-0205/contracts/synthetic-data-factory.v1.yaml
+  generated_by: repo://scripts/build_st0205_synthetic_data.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0205_synthetic_data.py
+provenance:
+  canonical_inputs:
+  - uri: repo://docs/manifest.json
+    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+    sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+  - uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  predecessor_manifests:
+  - story_id: ST-0201
+    uri: repo://changes/st-0201/manifest.yaml
+    sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+  - story_id: ST-0202
+    uri: repo://changes/st-0202/manifest.yaml
+    sha256: bf0552fc306d69c937c95a79f2a8c9dbb5686ed2e7fc90c1e11b8c6733f0e52d
+source_artifact_count: 17
+source_artifacts:
+- uri: repo://changes/st-0205/contracts/synthetic-data-factory.v1.yaml
+  bytes: 5425
+  sha256: 0ef5399483deff43e5de306e66ba053a136e53abd547bc6cb7d3bc78882bd6f4
+- uri: repo://changes/st-0205/README.md
+  bytes: 2404
+  sha256: 30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6
+- uri: repo://docs/execplans/ST-0205.md
+  bytes: 2541
+  sha256: 5bed7ac276b36da1ddc7aa89632e1c71dc886a709d9c3366f53d46518dd5652e
+- uri: repo://docs/worklogs/ST-0205.md
+  bytes: 3605
+  sha256: e90c8abf1ba862a36f12d1d1aaafeb9166308ba667368e84909aa0ad3468fafe
+- uri: repo://scripts/build_st0205_synthetic_data.py
+  bytes: 44632
+  sha256: 04917e377f4b21528d92c75b8c8cb0421ce0c9f0fffa62958798e0a4b1a1357c
+- uri: repo://tests/st0205/conftest.py
+  bytes: 1101
+  sha256: c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0
+- uri: repo://tests/st0205/test_contract.py
+  bytes: 4067
+  sha256: 2eea5551a7ef84036395d001112ede670f73e769f1bd5404ddca3c7e6b40dfef
+- uri: repo://tests/st0205/test_factory.py
+  bytes: 2509
+  sha256: 64f168c0683e11de07be131de738a3f6f406687ee3d962ab56e025ccb51c6841
+- uri: repo://tests/st0205/test_scenarios.py
+  bytes: 3907
+  sha256: 0cdd836c3720638c9ba2a33c3064ea914a959991e0c2ed8f5097516ef41fe2ec
+- uri: repo://tests/st0205/test_privacy.py
+  bytes: 5386
+  sha256: d95a950da720f8962a4a9c1718fcb7ca4fcc86dec313ce3429a2a77ce3af0f72
+- uri: repo://tests/st0205/test_generation.py
+  bytes: 5065
+  sha256: f69f78071874eb431fa353239a1e127ca54f73b20dc457607bba72308caf5e2b
+- uri: repo://tests/st0205/test_negative_cases.py
+  bytes: 5291
+  sha256: 84a6a5bcbca2b33ab789f74aa25ad95c87a4ddc865963b4821d457086d1a6055
+- uri: repo://tests/st0106/test_workflow_contract.py
+  bytes: 25978
+  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+- uri: repo://Makefile
+  bytes: 26913
+  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+- uri: repo://README.md
+  bytes: 55645
+  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+- uri: repo://package.json
+  bytes: 1850
+  sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+- uri: repo://scripts/scan_secrets.py
+  bytes: 29532
+  sha256: cfaeb22a58dd29d76fb38f107648e2690f8e55ed758e0361e050362c5beea084
+generated_artifact_count: 2
+generated_artifacts:
+- uri: repo://changes/st-0205/generated/synthetic-fixtures.v1.json
+  bytes: 9322
+  sha256: 551428e3c72809128b290caafd2dceab6a27abe3aa904777c160d3519c5d016a
+- uri: repo://changes/st-0205/generated/fixture-catalog.v1.json
+  bytes: 7013
+  sha256: d95dd03ef0191eef2e9eec0dd146998e8b20efd29c1398dfc4f018abf0fc4995
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  environment: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+  privacy_security_review: NOT_EXECUTED
+  database_or_object_storage_write: FORBIDDEN
+  provider_or_network_access: FORBIDDEN
+  production_or_staging_use: FORBIDDEN
+  retention_period_decision: NOT_MADE
+  status_apply: FORBIDDEN
+  effective_canonical_status: UNCHANGED

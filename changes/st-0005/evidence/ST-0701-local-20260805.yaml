@@ -1,0 +1,109 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0701-20260805
+  schema_version: 1
+  recorded_at: '2026-08-04T21:08:33Z'
+story_id: ST-0701
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0701/contracts/ai-contract-registry-loader.v1.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a-ai-contract-registry-loader.v1.yaml
+  sha256: 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
+- original_uri: repo://changes/st-0701/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6-README.md
+  sha256: 58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6
+- original_uri: repo://docs/execplans/ST-0701.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/47dc2be6ba47964cb1c42a179b79d0ea5b65ab5d8d9004db46b31d528fc7512d-ST-0701.md
+  sha256: 47dc2be6ba47964cb1c42a179b79d0ea5b65ab5d8d9004db46b31d528fc7512d
+- original_uri: repo://docs/worklogs/ST-0701.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/1db1b770547bb26a09b209a29f55b808a225b1ad1ea247001db2038bf69fa975-ST-0701.md
+  sha256: 1db1b770547bb26a09b209a29f55b808a225b1ad1ea247001db2038bf69fa975
+- original_uri: repo://scripts/build_st0701_ai_registry.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/ede35a651d40438e63b7484e183a8f981fc5cba70548638ad69b790f28b01ad9-build_st0701_ai_registry.py
+  sha256: ede35a651d40438e63b7484e183a8f981fc5cba70548638ad69b790f28b01ad9
+- original_uri: repo://python/raos/adapters/__init__.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f-__init__.py
+  sha256: a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
+- original_uri: repo://python/raos/adapters/ai_contract_registry.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/fbebbe666b6adef1f8c6f2413de16158257bef1e2569822d83ed1f7874245f77-ai_contract_registry.py
+  sha256: fbebbe666b6adef1f8c6f2413de16158257bef1e2569822d83ed1f7874245f77
+- original_uri: repo://python/raos/domain/ai/__init__.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/bb184e0416c06242f052c13490f2525a9c2247373dbe4e7ebb8f0020e797bee9-__init__.py
+  sha256: bb184e0416c06242f052c13490f2525a9c2247373dbe4e7ebb8f0020e797bee9
+- original_uri: repo://python/raos/domain/ai/contracts.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d916a4a2ed9afd44fe0a4c01938a5b8aacbfc7323fd4d3cfcb0fa33d399a0e0e-contracts.py
+  sha256: d916a4a2ed9afd44fe0a4c01938a5b8aacbfc7323fd4d3cfcb0fa33d399a0e0e
+- original_uri: repo://python/raos/ports/__init__.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/316b2d195fb3366fefb991c84cdd2618530455fcc58f9d140fa699f66cf46d8a-__init__.py
+  sha256: 316b2d195fb3366fefb991c84cdd2618530455fcc58f9d140fa699f66cf46d8a
+- original_uri: repo://python/raos/ports/task_registry.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/c3053d28c056fcc412e3852816528da92f301e369f5af45f9a1212cc920468ce-task_registry.py
+  sha256: c3053d28c056fcc412e3852816528da92f301e369f5af45f9a1212cc920468ce
+- original_uri: repo://python/raos/shared/contract_repository.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/5fb9fb09e7f2d4104349c33b8390fc0db76e68a73f2702758c45a2222af4e748-contract_repository.py
+  sha256: 5fb9fb09e7f2d4104349c33b8390fc0db76e68a73f2702758c45a2222af4e748
+- original_uri: repo://tests/st0701/conftest.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b-conftest.py
+  sha256: a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
+- original_uri: repo://tests/st0701/test_compiled_task_registry.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/136a5d6918d399932cd42db01b94b936b2a173317f171160a0d55c5defdfbee3-test_compiled_task_registry.py
+  sha256: 136a5d6918d399932cd42db01b94b936b2a173317f171160a0d55c5defdfbee3
+- original_uri: repo://tests/st0701/test_generation.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3182eaa04238281f0d99233f311f749524b948264bdfcaf5181974655302ad82-test_generation.py
+  sha256: 3182eaa04238281f0d99233f311f749524b948264bdfcaf5181974655302ad82
+- original_uri: repo://tests/st0701/test_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55-test_contract.py
+  sha256: d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55
+- original_uri: repo://tests/st0102/test_commands_and_docs.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167-test_commands_and_docs.py
+  sha256: 26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167
+- original_uri: repo://tests/st0106/test_workflow_contract.py
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/28306bcd001865b7860ee3adf0708c221513709d1071b7df6c3f9ba7ff5415f0-test_workflow_contract.py
+  sha256: 28306bcd001865b7860ee3adf0708c221513709d1071b7df6c3f9ba7ff5415f0
+- original_uri: repo://Makefile
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/8bb584464f116737fb549bfb76c7571c876f634e1fa99c7a2628c5fb73a8770f-Makefile
+  sha256: 8bb584464f116737fb549bfb76c7571c876f634e1fa99c7a2628c5fb73a8770f
+- original_uri: repo://README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9f46c590b579aa1ff275af406bca3535a23db5bc85d9bceaf8e6c2db1fcec003-README.md
+  sha256: 9f46c590b579aa1ff275af406bca3535a23db5bc85d9bceaf8e6c2db1fcec003
+- original_uri: repo://.python-version
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab-.python-version
+  sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+- original_uri: repo://pyproject.toml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b-pyproject.toml
+  sha256: fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+- original_uri: repo://uv.lock
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0-uv.lock
+  sha256: 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+- original_uri: repo://uv.toml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37-uv.toml
+  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+- original_uri: repo://changes/st-0701/generated/ai-task-registry.v1.json
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07-ai-task-registry.v1.json
+  sha256: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
+- original_uri: repo://changes/st-0701/manifest.yaml
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/09b29adfc5a3796d921fce5b8796817ebf17962ab23070f7ee83d58bf2bed9bc-manifest.yaml
+  sha256: 09b29adfc5a3796d921fce5b8796817ebf17962ab23070f7ee83d58bf2bed9bc
+suite_results:
+- suite_id: TST-001
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-017
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: content-addressed ST-0701 implementation closure freeze
+  result: PASS; all 24/24 manifest-declared source artifacts matched exact bytes and SHA-256; the compiled registry and Story manifest were also verified, for 26/26 immutable original/capture pairs total
+- command: deterministic ST-0701 generator read-only drift check with pinned uv 0.12.1
+  result: PASS; generator --check exited 0; registry 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07, manifest 09b29adfc5a3796d921fce5b8796817ebf17962ab23070f7ee83d58bf2bed9bc, source contract 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a, and generator ede35a651d40438e63b7484e183a8f981fc5cba70548638ad69b790f28b01ad9
+- command: isolated ST-0701 Story suite
+  result: PASS; 42 passed, including deterministic/no-write, source closure, no-network, unknown-task, hash-mismatch, and immutable runtime adapter coverage
+- command: strict Python static verification for the final ST-0701 source freeze
+  result: PASS; strict mypy completed with no issues, Pyright completed with 0 errors, 0 warnings, and 0 informations, and Ruff lint plus format checks passed
+- command: official denied-network static and unit gates
+  result: PASS; static exit 0 and unit exit 0; expected Story-isolated runtime skips elsewhere remain unexecuted, the ST-0701 slice passed 42 tests, and Vitest passed 4 tests
+- command: independent ST-0701 implementation audit
+  result: PASS; Critical 0 and Warning 0
+- command: git diff --check
+  result: PASS; no whitespace errors
+boundary: Append-only local implementation-candidate evidence only. Formal TST-001 and TST-017, hosted CI, runtime or provider validation, task or route activation, staging, human review or approval, canonical APPLY, release, and production remain NOT_EXECUTED or unclaimed. Effective canonical ST-0701 remains NOT_STARTED / NOT_EXECUTED.

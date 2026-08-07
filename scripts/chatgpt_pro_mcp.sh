@@ -6,7 +6,11 @@ umask 077
 
 readonly REPOSITORY_ROOT=/home/minami/rakuten
 readonly PRIVATE_ROOT="${REPOSITORY_ROOT}/.secrets"
-readonly PROFILE_DIR="${PRIVATE_ROOT}/chatgpt-pro-profile"
+readonly WSLG_DISPLAY=:0
+readonly EDGE_EXECUTABLE=/opt/microsoft/msedge/msedge
+readonly CHROME_EXECUTABLE=/opt/google/chrome/chrome
+readonly EDGE_PROFILE_DIR="${PRIVATE_ROOT}/chatgpt-pro-edge-profile"
+readonly CHROME_PROFILE_DIR="${PRIVATE_ROOT}/chatgpt-pro-profile"
 readonly MCP_OUTPUT_DIR="${PRIVATE_ROOT}/chatgpt-pro-mcp-output"
 readonly SECRET_ROOT="${PRIVATE_ROOT}/chatgpt-pro"
 readonly MCP_PACKAGE=@playwright/mcp@0.0.78
@@ -32,6 +36,32 @@ check_owner_mode() {
   test "$(stat -c %a -- "$path")" = "$expected_mode" || fail mode
 }
 
+check_fixed_executable() {
+  local path=$1
+  test -f "$path" && test ! -L "$path" && test -x "$path" || \
+    fail browser-executable
+  test "$(readlink -f -- "$path")" = "$path" || fail browser-executable
+  test "$(stat -c %u -- "$path")" = 0 || fail browser-executable-owner
+  test "$(stat -c %a -- "$path")" = 755 || fail browser-executable-mode
+}
+
+browser=${RAOS_CHATGPT_BROWSER:-}
+case "$browser" in
+  edge)
+    readonly MCP_BROWSER=msedge
+    readonly BROWSER_EXECUTABLE=$EDGE_EXECUTABLE
+    readonly PROFILE_DIR=$EDGE_PROFILE_DIR
+    ;;
+  chrome)
+    readonly MCP_BROWSER=chrome
+    readonly BROWSER_EXECUTABLE=$CHROME_EXECUTABLE
+    readonly PROFILE_DIR=$CHROME_PROFILE_DIR
+    ;;
+  *) fail invalid-browser ;;
+esac
+
+test "${DISPLAY:-}" = "$WSLG_DISPLAY" || fail invalid-display
+
 secrets_file=${PLAYWRIGHT_MCP_SECRETS_FILE:-}
 test -n "$secrets_file" || fail missing-secret-file
 test "${secrets_file#/}" != "$secrets_file" || fail non-absolute-secret-file
@@ -49,6 +79,7 @@ test -d "$SECRET_ROOT" || fail missing-secret-root
 check_owner_mode "$SECRET_ROOT" 700
 test -f "$secrets_file" || fail missing-secret-file
 check_owner_mode "$secrets_file" 600
+check_fixed_executable "$BROWSER_EXECUTABLE"
 
 test -d "$PROFILE_DIR" || fail missing-dedicated-profile
 check_owner_mode "$PROFILE_DIR" 700
@@ -72,7 +103,8 @@ printf '%s  %s\n' "$MCP_PACKAGE_JSON_SHA256" "$MCP_PACKAGE_JSON" | \
   sha256sum --check --status || fail mcp-package-hash
 
 exec env -u DEBUG "$NODE_BIN" "$MCP_CLI" \
-  --browser chrome \
+  --browser "$MCP_BROWSER" \
+  --executable-path "$BROWSER_EXECUTABLE" \
   --user-data-dir "$PROFILE_DIR" \
   --allowed-origins https://chatgpt.com \
   --block-service-workers \
