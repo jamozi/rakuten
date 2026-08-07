@@ -30,26 +30,7 @@ jobs:
           sed -i 's/^ diff --git /diff --git /' changes/implementation-review-20260808/fixes.patch
           git apply --check changes/implementation-review-20260808/fixes.patch
           git apply changes/implementation-review-20260808/fixes.patch
-          python3 - <<'PY'
-          from pathlib import Path
-
-          path = Path("scripts/object_storage_service.sh")
-          text = path.read_text(encoding="utf-8")
-          old = '''if not isinstance(inventory, dict) or set(inventory) != {"8333/tcp"}:
-              raise SystemExit(2)
-          bindings = inventory["8333/tcp"]
-          '''
-          new = '''if not isinstance(inventory, dict) or "8333/tcp" not in inventory:
-              raise SystemExit(2)
-          for exposed_port, exposed_bindings in inventory.items():
-              if exposed_port != "8333/tcp" and exposed_bindings not in (None, []):
-                  raise SystemExit(2)
-          bindings = inventory["8333/tcp"]
-          '''
-          if old not in text:
-              raise SystemExit("expected object-storage parser fragment is absent")
-          path.write_text(text.replace(old, new), encoding="utf-8")
-          PY
+          python3 -c 'from pathlib import Path; p=Path("scripts/object_storage_service.sh"); s=p.read_text(encoding="utf-8"); old="if not isinstance(inventory, dict) or set(inventory) != {\"8333/tcp\"}:\n    raise SystemExit(2)\nbindings = inventory[\"8333/tcp\"]\n"; new="if not isinstance(inventory, dict) or \"8333/tcp\" not in inventory:\n    raise SystemExit(2)\nfor exposed_port, exposed_bindings in inventory.items():\n    if exposed_port != \"8333/tcp\" and exposed_bindings not in (None, []):\n        raise SystemExit(2)\nbindings = inventory[\"8333/tcp\"]\n"; assert old in s; p.write_text(s.replace(old, new), encoding="utf-8")'
           git diff --check
       - name: Install exact uv
         uses: astral-sh/setup-uv@c771a70e627c0a99b617c7a806ffedaca235ff9 # v9.0.0
