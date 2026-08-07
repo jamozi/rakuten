@@ -59,12 +59,18 @@ jobs:
           .venv/bin/python scripts/build_st0107_pr_governance.py --check
           .venv/bin/python scripts/build_local_compose.py --check
           .venv/bin/python -m ruff check \
-            tests/st0106/test_network_isolation.py tests/st0202/test_wrapper.py
+            tests/st0106/test_network_isolation.py \
+            tests/st0202/test_fixture.py \
+            tests/st0202/test_wrapper.py
           .venv/bin/python -m ruff format --check \
-            tests/st0106/test_network_isolation.py tests/st0202/test_wrapper.py
+            tests/st0106/test_network_isolation.py \
+            tests/st0202/test_fixture.py \
+            tests/st0202/test_wrapper.py
           .venv/bin/python -m pytest -p no:cacheprovider -q tests/st0106/test_network_isolation.py
           .venv/bin/python -m pytest -p no:cacheprovider -q tests/st0107
-          .venv/bin/python -m pytest -p no:cacheprovider -q tests/st0202
+          .venv/bin/python -m pytest \
+            -W error::pytest.PytestUnhandledThreadExceptionWarning \
+            -p no:cacheprovider -q tests/st0202
       - name: Verify real object-storage runtime
         run: |
           set -euo pipefail
