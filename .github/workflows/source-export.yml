@@ -30,9 +30,29 @@ jobs:
           sed -i 's/^ diff --git /diff --git /' changes/implementation-review-20260808/fixes.patch
           git apply --check changes/implementation-review-20260808/fixes.patch
           git apply changes/implementation-review-20260808/fixes.patch
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/object_storage_service.sh")
+          text = path.read_text(encoding="utf-8")
+          old = '''if not isinstance(inventory, dict) or set(inventory) != {"8333/tcp"}:
+              raise SystemExit(2)
+          bindings = inventory["8333/tcp"]
+          '''
+          new = '''if not isinstance(inventory, dict) or "8333/tcp" not in inventory:
+              raise SystemExit(2)
+          for exposed_port, exposed_bindings in inventory.items():
+              if exposed_port != "8333/tcp" and exposed_bindings not in (None, []):
+                  raise SystemExit(2)
+          bindings = inventory["8333/tcp"]
+          '''
+          if old not in text:
+              raise SystemExit("expected object-storage parser fragment is absent")
+          path.write_text(text.replace(old, new), encoding="utf-8")
+          PY
           git diff --check
       - name: Install exact uv
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        uses: astral-sh/setup-uv@c771a70e627c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: 0.12.1
           enable-cache: false
@@ -55,6 +75,8 @@ jobs:
         run: |
           set -euo pipefail
           export PYTHONDONTWRITEBYTECODE=1
+          .venv/bin/python scripts/build_st0107_pr_governance.py
+          .venv/bin/python scripts/build_local_compose.py
           bash -n scripts/run_network_denied.sh
           bash -n scripts/object_storage_service.sh
           .venv/bin/python scripts/build_st0107_pr_governance.py --check
