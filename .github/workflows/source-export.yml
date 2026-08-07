@@ -1,0 +1,46 @@
+name: Source export for implementation review
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  export:
+    name: Export tracked source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out pull-request tree
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+      - name: Create deterministic tracked-source archive
+        run: |
+          set -euo pipefail
+          export TZ=UTC
+          git archive \
+            --format=tar.gz \
+            --prefix=rakuten/ \
+            --output="$RUNNER_TEMP/raos-source.tar.gz" \
+            HEAD
+          sha256sum "$RUNNER_TEMP/raos-source.tar.gz" > "$RUNNER_TEMP/raos-source.tar.gz.sha256"
+      - name: Upload source archive
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: raos-source-${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/raos-source.tar.gz
+            ${{ runner.temp }}/raos-source.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
