@@ -44,3 +44,67 @@ jobs:
           if-no-files-found: error
           retention-days: 1
           compression-level: 0
+
+  python-toolchain:
+    name: Export exact Python toolchain
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out pull-request tree
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+      - name: Install exact uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: 0.12.1
+          enable-cache: false
+      - name: Hydrate exact Python and locked dependencies
+        env:
+          UV_PYTHON_INSTALL_DIR: ${{ runner.temp }}/raos-python
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            UV_PYTHON_INSTALL_DIR="$UV_PYTHON_INSTALL_DIR" \
+            "$uv_path" --no-config --color never python install \
+            --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            UV_PYTHON_INSTALL_DIR="$UV_PYTHON_INSTALL_DIR" \
+            "$uv_path" --no-config --color never sync --locked \
+            --no-default-groups --group dev --no-install-project --no-install-local \
+            --managed-python --no-python-downloads --python 3.14.6 \
+            --no-build --no-sources --default-index https://pypi.org/simple \
+            --index-strategy first-index --keyring-provider disabled --link-mode copy \
+            --resolution highest --prerelease disallow \
+            --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
+      - name: Package relocatable test environment
+        env:
+          UV_PYTHON_INSTALL_DIR: ${{ runner.temp }}/raos-python
+        run: |
+          set -euo pipefail
+          bundle="$RUNNER_TEMP/raos-python-toolchain"
+          mkdir -p "$bundle"
+          cp --dereference "$(command -v uv)" "$bundle/uv"
+          cp -a "$UV_PYTHON_INSTALL_DIR" "$bundle/python"
+          cp -a .venv "$bundle/venv"
+          find "$bundle" -type f -name '*.pyc' -delete
+          python_leaf="$(find "$bundle/python" -type f -path '*/bin/python3.14' -print -quit)"
+          test -n "$python_leaf"
+          printf '%s\n' "${python_leaf#"$bundle/"}" > "$bundle/python-relative-path.txt"
+          tar -C "$RUNNER_TEMP" -czf "$RUNNER_TEMP/raos-python-toolchain.tar.gz" \
+            raos-python-toolchain
+          sha256sum "$RUNNER_TEMP/raos-python-toolchain.tar.gz" \
+            > "$RUNNER_TEMP/raos-python-toolchain.tar.gz.sha256"
+      - name: Upload exact Python toolchain
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: raos-python-toolchain-${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/raos-python-toolchain.tar.gz
+            ${{ runner.temp }}/raos-python-toolchain.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
