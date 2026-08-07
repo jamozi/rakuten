@@ -27,6 +27,7 @@ jobs:
       - name: Apply proposed patch without changing the branch
         run: |
           set -euo pipefail
+          sed -i 's/^ diff --git /diff --git /' changes/implementation-review-20260808/fixes.patch
           git apply --check changes/implementation-review-20260808/fixes.patch
           git apply changes/implementation-review-20260808/fixes.patch
           git diff --check
