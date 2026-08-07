@@ -14,7 +14,7 @@ index 335cdef..a02343f 100644
    bytes: 30201
    sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
 diff --git a/changes/st-0202/manifest.yaml b/changes/st-0202/manifest.yaml
-index 81bcb64..7de96ee 100644
+index 81bcb64..5091408 100644
 --- a/changes/st-0202/manifest.yaml
 +++ b/changes/st-0202/manifest.yaml
 @@ -74,8 +74,8 @@ source_artifacts:
@@ -28,7 +28,15 @@ index 81bcb64..7de96ee 100644
  - uri: repo://scripts/object_storage_fixture.py
    bytes: 30201
    sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
-@@ -107,8 +107,8 @@ source_artifacts:
+@@ -101,14 +101,14 @@ source_artifacts:
+   bytes: 13622
+   sha256: 987e905696ecb99397a5babac314ac651cf8f33ad0c4acb528f01a335c631fa3
+ - uri: repo://tests/st0202/test_fixture.py
+-  bytes: 14906
+-  sha256: 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
++  bytes: 15163
++  sha256: c6fecc6d212c25a49a7091c9df2321f31decee58fcdfc77636b9cf288b000529
+ - uri: repo://tests/st0202/test_negative_cases.py
    bytes: 12407
    sha256: d9a93f73b435932a8e1fb6291e1aa6bef5680daf9801424fce47b2d82a2cf6ce
  - uri: repo://tests/st0202/test_wrapper.py
@@ -274,6 +282,24 @@ index 2331688..608d232 100644
  def test_wrapper_rejects_a_root_mapped_caller(tmp_path: Path) -> None:
      result = subprocess.run(
          [
+diff --git a/tests/st0202/test_fixture.py b/tests/st0202/test_fixture.py
+index 6e602af..ee87432 100644
+--- a/tests/st0202/test_fixture.py
++++ b/tests/st0202/test_fixture.py
+@@ -53,7 +53,12 @@ def _handler(state: _S3State) -> type[BaseHTTPRequestHandler]:
+                 self.send_header(name, value)
+             self.end_headers()
+             if self.command != "HEAD":
+-                self.wfile.write(body)
++                try:
++                    self.wfile.write(body)
++                except BrokenPipeError, ConnectionResetError:
++                    # Negative client cases intentionally stop reading after the
++                    # condition under test has been observed.
++                    return
+ 
+         def _signed(self) -> bool:
+             authorization = self.headers.get("Authorization", "")
 diff --git a/tests/st0202/test_wrapper.py b/tests/st0202/test_wrapper.py
 index 4b78373..d4742cf 100644
 --- a/tests/st0202/test_wrapper.py
