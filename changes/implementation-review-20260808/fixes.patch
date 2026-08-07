@@ -1,0 +1,267 @@
+diff --git a/changes/st-0107/manifest.yaml b/changes/st-0107/manifest.yaml
+index 335cdef..a02343f 100644
+--- a/changes/st-0107/manifest.yaml
++++ b/changes/st-0107/manifest.yaml
+@@ -52,8 +52,8 @@ source_artifacts:
+   bytes: 33026
+   sha256: 79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9
+ - uri: repo://scripts/object_storage_service.sh
+-  bytes: 15876
+-  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
++  bytes: 15847
++  sha256: c5ebf49d98e5ac52bc1a553d46e99a3afa014d04844716d8b6f8c719a37bbfef
+ - uri: repo://scripts/object_storage_fixture.py
+   bytes: 30201
+   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
+diff --git a/changes/st-0202/manifest.yaml b/changes/st-0202/manifest.yaml
+index 81bcb64..7de96ee 100644
+--- a/changes/st-0202/manifest.yaml
++++ b/changes/st-0202/manifest.yaml
+@@ -74,8 +74,8 @@ source_artifacts:
+   bytes: 12609
+   sha256: 0ff924b0dea696db0117035c0077a77053d8724c76796866263163bb18b9e1fb
+ - uri: repo://scripts/object_storage_service.sh
+-  bytes: 15876
+-  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
++  bytes: 15847
++  sha256: c5ebf49d98e5ac52bc1a553d46e99a3afa014d04844716d8b6f8c719a37bbfef
+ - uri: repo://scripts/object_storage_fixture.py
+   bytes: 30201
+   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
+@@ -107,8 +107,8 @@ source_artifacts:
+   bytes: 12407
+   sha256: d9a93f73b435932a8e1fb6291e1aa6bef5680daf9801424fce47b2d82a2cf6ce
+ - uri: repo://tests/st0202/test_wrapper.py
+-  bytes: 14300
+-  sha256: 04636e3a2b0968ee337db788a7ac772f290006a2cc98fc4921617f80013764e6
++  bytes: 14598
++  sha256: 1adefc1dc03533d03a4f2ed7e19f3f0509e16be86fbcc39139b7f49eb12ec36d
+ - uri: repo://.github/workflows/ci.yml
+   bytes: 19528
+   sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+@@ -117,7 +117,7 @@ source_artifacts:
+   sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
+ - uri: repo://changes/st-0107/manifest.yaml
+   bytes: 4848
+-  sha256: 12b10ea9ecbf3a3a17fcde86e083cec09a56ad4b6be15eb01a51eff17367df6c
++  sha256: 821dc5743b55e71695ad3db5db471aec510f99dc0070e6151ef2d53ca48beee5
+ - uri: repo://tests/st0106/test_workflow_contract.py
+   bytes: 25978
+   sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+diff --git a/scripts/object_storage_service.sh b/scripts/object_storage_service.sh
+index 6cdf48b..db4e4c9 100755
+--- a/scripts/object_storage_service.sh
++++ b/scripts/object_storage_service.sh
+@@ -266,8 +266,8 @@ assert_service() {
+   local image_version
+   local image_license
+   local image_source
+-  local published
+   local port_inventory
++  local port_pattern='^8333/tcp[[:space:]]+->[[:space:]]+127\.0\.0\.1:([0-9]+)$'
+   local process_uid
+   local version_output
+   local version_line
+@@ -313,18 +313,17 @@ assert_service() {
+     return 1
+   fi
+ 
+-  published=$(compose "$project" port object-storage 8333)
+-  if [[ ! $published =~ ^127\.0\.0\.1:([0-9]+)$ ]] || \
++  port_inventory=$(run_docker port "$container_id")
++  if [[ ! $port_inventory =~ $port_pattern ]] || \
+     ((10#${BASH_REMATCH[1]} < 1024 || 10#${BASH_REMATCH[1]} > 65535)); then
+-    error 'the S3 endpoint is not published on one bounded loopback port'
++    if [[ $port_inventory == *$'\n'* ]]; then
++      error 'the object-storage container publishes an unexpected host port'
++    else
++      error 'the S3 endpoint is not published on one bounded loopback port'
++    fi
+     return 1
+   fi
+   published_port=$((10#${BASH_REMATCH[1]}))
+-  port_inventory=$(run_docker port "$container_id")
+-  if [[ $port_inventory != "8333/tcp -> 127.0.0.1:$published_port" ]]; then
+-    error 'the object-storage container publishes an unexpected host port'
+-    return 1
+-  fi
+ 
+   process_uid=$(compose "$project" exec -T object-storage /bin/sh -c \
+     "sed -n 's/^Uid:[[:space:]]*\\([0-9][0-9]*\\).*/\\1/p' /proc/1/status")
+diff --git a/scripts/run_network_denied.sh b/scripts/run_network_denied.sh
+index e4b53f3..f5645a8 100755
+--- a/scripts/run_network_denied.sh
++++ b/scripts/run_network_denied.sh
+@@ -86,6 +86,57 @@ if [[ $unshare_owner != 0 ]] || (( (8#$unshare_mode & 0022) != 0 )); then
+   exit 69
+ fi
+ 
++validate_privileged_helper() {
++  local label=$1
++  local path=$2
++  local require_setuid=$3
++  local owner
++  local mode
++  if [[ ! -f $path || -L $path || ! -x $path ]]; then
++    printf 'error: trusted %s executable is unavailable\n' "$label" >&2
++    return 69
++  fi
++  owner=$(stat --format=%u -- "$path")
++  mode=$(stat --format=%a -- "$path")
++  if [[ $owner != 0 ]] || (( (8#$mode & 0022) != 0 )); then
++    printf 'error: %s executable ownership or mode is unsafe\n' "$label" >&2
++    return 69
++  fi
++  if [[ $require_setuid == true ]] && (( (8#$mode & 04000) == 0 )); then
++    printf 'error: %s executable is not set-user-ID root\n' "$label" >&2
++    return 69
++  fi
++}
++
++caller_uid=$EUID
++caller_gid=$(id -g)
++if [[ ! $caller_uid =~ ^[1-9][0-9]*$ || ! $caller_gid =~ ^[1-9][0-9]*$ ]]; then
++  printf 'error: caller identity is not a supported non-root numeric identity\n' >&2
++  exit 69
++fi
++
++launch_mode=user_namespace
++if ! env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
++  "$unshare_executable" --user --map-current-user -- /bin/true \
++  >/dev/null 2>&1; then
++  if [[ ${GITHUB_ACTIONS-} != true || ${RUNNER_ENVIRONMENT-} != github-hosted ]]; then
++    printf '%s\n' \
++      'error: user namespaces are unavailable outside the reviewed GitHub-hosted fallback' >&2
++    exit 69
++  fi
++  readonly sudo_executable=/usr/bin/sudo
++  readonly setpriv_executable=/usr/bin/setpriv
++  validate_privileged_helper sudo "$sudo_executable" true
++  validate_privileged_helper setpriv "$setpriv_executable" false
++  if ! env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
++    "$sudo_executable" -n -- /bin/true >/dev/null 2>&1; then
++    printf '%s\n' \
++      'error: user namespaces are unavailable and passwordless sudo fallback is not authorized' >&2
++    exit 69
++  fi
++  launch_mode=privileged_namespace_then_drop
++fi
++
+ if ! parent_net_namespace=$(readlink -- /proc/self/ns/net); then
+   printf 'error: parent network namespace is unreadable\n' >&2
+   exit 69
+@@ -111,16 +162,35 @@ case $parent_pid_namespace in
+ esac
+ 
+ cd -- "$repository_root"
+-exec env -i \
+-  PATH=/usr/bin:/bin \
+-  HOME="$canonical_home" \
+-  LANG=C.UTF-8 \
+-  LC_ALL=C.UTF-8 \
+-  TZ=UTC \
+-  PYTHONDONTWRITEBYTECODE=1 \
+-  RAOS_PARENT_NET_NS="$parent_net_namespace" \
+-  RAOS_PARENT_PID_NS="$parent_pid_namespace" \
+-  RAOS_NETWORK_DENIED=1 \
++common_environment=(
++  PATH=/usr/bin:/bin
++  HOME="$canonical_home"
++  LANG=C.UTF-8
++  LC_ALL=C.UTF-8
++  TZ=UTC
++  PYTHONDONTWRITEBYTECODE=1
++  RAOS_PARENT_NET_NS="$parent_net_namespace"
++  RAOS_PARENT_PID_NS="$parent_pid_namespace"
++  RAOS_NETWORK_DENIED=1
++)
++if [[ $launch_mode == user_namespace ]]; then
++  launcher=(
++    "$unshare_executable" --user --map-current-user --net --pid --fork
++    --kill-child --
++    /usr/bin/python3 -I "$assertion" --exec -- "$canonical_command" "$@"
++  )
++else
++  launcher=(
++    "$sudo_executable" -n --
++    /usr/bin/env -i "${common_environment[@]}"
++    "$unshare_executable" --net --pid --fork --kill-child --mount-proc
++    "$setpriv_executable"
++    --reuid="$caller_uid" --regid="$caller_gid" --clear-groups --no-new-privs
++    /usr/bin/python3 -I "$assertion" --exec -- "$canonical_command" "$@"
++  )
++fi
++
++exec env -i "${common_environment[@]}" \
+   /usr/bin/python3 -I -c '
+ import os
+ import resource
+@@ -139,6 +209,4 @@ if soft_limit == resource.RLIM_INFINITY:
+     soft_limit = 1 << 20
+ os.closerange(3, int(soft_limit))
+ os.execv(sys.argv[1], sys.argv[1:])
+-' "$unshare_executable" --user --map-current-user --net --pid --fork \
+-  --kill-child -- \
+-  /usr/bin/python3 -I "$assertion" --exec -- "$canonical_command" "$@"
++' "${launcher[@]}"
+diff --git a/tests/st0106/test_network_isolation.py b/tests/st0106/test_network_isolation.py
+index 2331688..088b66a 100644
+--- a/tests/st0106/test_network_isolation.py
++++ b/tests/st0106/test_network_isolation.py
+@@ -66,7 +66,21 @@ def test_network_wrapper_is_hardened_and_has_valid_shell() -> None:
+     content = WRAPPER.read_text(encoding="utf-8")
+     assert content.startswith("#!/bin/bash -p\n\nPATH=/usr/bin:/bin")
+     assert "exec env -i" in content
+-    assert "--user --map-current-user --net --pid --fork" in content
++    assert "launch_mode=user_namespace" in content
++    assert "launch_mode=privileged_namespace_then_drop" in content
++    assert (
++        '"$unshare_executable" --user --map-current-user --net --pid --fork' in content
++    )
++    assert (
++        '"$unshare_executable" --net --pid --fork --kill-child --mount-proc' in content
++    )
++    assert "${GITHUB_ACTIONS-} != true" in content
++    assert "${RUNNER_ENVIRONMENT-} != github-hosted" in content
++    assert '"$sudo_executable" -n --' in content
++    assert (
++        '--reuid="$caller_uid" --regid="$caller_gid" --clear-groups --no-new-privs'
++        in content
++    )
+     assert "--kill-child --" in content
+     assert "EUID == 0" in content
+     assert "RAOS_PARENT_NET_NS" in content
+diff --git a/tests/st0202/test_wrapper.py b/tests/st0202/test_wrapper.py
+index 4b78373..d4742cf 100644
+--- a/tests/st0202/test_wrapper.py
++++ b/tests/st0202/test_wrapper.py
+@@ -101,6 +101,8 @@ if payload and payload[0] == "port":
+     port = os.environ.get("RAOS_OBJECT_STORAGE_PORT") or "49123"
+     if mode == "extra_port":
+         print(f"8333/tcp -> 127.0.0.1:{{port}}\\n9333/tcp -> 0.0.0.0:9333")
++    elif mode == "public_port":
++        print(f"8333/tcp -> 0.0.0.0:{{port}}")
+     else:
+         print(f"8333/tcp -> 127.0.0.1:{{port}}")
+     raise SystemExit(0)
+@@ -182,7 +184,10 @@ def _rows(log: Path) -> list[dict[str, Any]]:
+ 
+ 
+ def _compose_operation(row: dict[str, Any]) -> str | None:
+-    for item in row["argv"]:
++    arguments = row["argv"]
++    if arguments[2:3] != ["compose"]:
++        return None
++    for item in arguments[3:]:
+         if item in {"config", "up", "ps", "exec", "port", "down"}:
+             return str(item)
+     return None
+@@ -301,6 +306,8 @@ def test_disposable_test_targets_only_object_service_and_removes_volume(
+     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+     assert json.loads(result.stdout)["runtime"] == "LOCAL_CANDIDATE_PASS"
+     rows = _rows(docker_log)
++    assert not any(_compose_operation(row) == "port" for row in rows)
++    assert any(row["argv"][2:3] == ["port"] for row in rows)
+     up = next(row for row in rows if _compose_operation(row) == "up")
+     assert up["argv"][-6:] == [
+         "up",
