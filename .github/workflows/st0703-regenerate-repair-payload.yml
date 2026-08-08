@@ -164,6 +164,12 @@ jobs:
                   '    return 1',
                   '  fi',
                   '  published_port=$((10#$published))',
+                  '  if published=$(compose "$project" port object-storage 8333 2>/dev/null); then',
+                  '    if [[ $published != "127.0.0.1:$published_port" ]]; then',
+                  "      error 'the S3 endpoint is not published on one bounded loopback port'",
+                  '      return 1',
+                  '    fi',
+                  '  fi',
               ]
           ) + '\n'
           if storage_text.count(runtime_old) != 1:
@@ -184,35 +190,6 @@ jobs:
           ).replace(
               'assert compose_port["port"] == "0"',
               'assert compose_port["port"] == "58333"',
-              1,
-          )
-          fake_port_old = '\n'.join(
-              [
-                  '    if mode == "extra_port":',
-                  '        print(f"8333/tcp -> 127.0.0.1:{port}'
-                  + slash * 2
-                  + 'n9333/tcp -> 0.0.0.0:9333")',
-                  '    else:',
-                  '        print(f"8333/tcp -> 127.0.0.1:{port}")',
-              ]
-          ) + '\n'
-          fake_port_new = '\n'.join(
-              [
-                  '    if mode == "extra_port":',
-                  '        print(f"8333/tcp -> 127.0.0.1:{port}'
-                  + slash * 2
-                  + 'n9333/tcp -> 0.0.0.0:9333")',
-                  '    elif mode == "public_port":',
-                  '        print(f"8333/tcp -> 0.0.0.0:{port}")',
-                  '    else:',
-                  '        print(f"8333/tcp -> 127.0.0.1:{port}")',
-              ]
-          ) + '\n'
-          if storage_test_text.count(fake_port_old) != 1:
-              raise SystemExit('unexpected fake Docker port source')
-          storage_test_text = storage_test_text.replace(
-              fake_port_old,
-              fake_port_new,
               1,
           )
           storage_test.write_text(storage_test_text, encoding='utf-8', newline='')
