@@ -129,36 +129,43 @@ jobs:
               raise SystemExit('unexpected object-storage dynamic port source')
           storage_text = storage_text.replace(storage_old, storage_new, 1)
 
-          runtime_old = r'''  published=$(compose "$project" port object-storage 8333)
-          if [[ ! $published =~ ^127\.0\.0\.1:([0-9]+)$ ]] || \
-            ((10#${BASH_REMATCH[1]} < 1024 || 10#${BASH_REMATCH[1]} > 65535)); then
-            error 'the S3 endpoint is not published on one bounded loopback port'
-            return 1
-          fi
-          published_port=$((10#${BASH_REMATCH[1]}))
-          port_inventory=$(run_docker port "$container_id")
-          if [[ $port_inventory != "8333/tcp -> 127.0.0.1:$published_port" ]]; then
-            error 'the object-storage container publishes an unexpected host port'
-            return 1
-          fi
-          '''
-          runtime_new = r'''  port_inventory=$(run_docker port "$container_id")
-          if [[ $port_inventory == *$'\n'* ]]; then
-            error 'the object-storage container publishes an unexpected host port'
-            return 1
-          fi
-          if [[ $port_inventory != "8333/tcp -> 127.0.0.1:"* ]]; then
-            error 'the S3 endpoint is not published on one bounded loopback port'
-            return 1
-          fi
-          published=${port_inventory#"8333/tcp -> 127.0.0.1:"}
-          if [[ ! $published =~ ^[0-9]+$ ]] || \
-            ((10#$published < 1024 || 10#$published > 65535)); then
-            error 'the S3 endpoint is not published on one bounded loopback port'
-            return 1
-          fi
-          published_port=$((10#$published))
-          '''
+          slash = chr(92)
+          runtime_old = '\n'.join(
+              [
+                  '  published=$(compose "$project" port object-storage 8333)',
+                  '  if [[ ! $published =~ ^127\\.0\\.0\\.1:([0-9]+)$ ]] || ' + slash,
+                  '    ((10#${BASH_REMATCH[1]} < 1024 || 10#${BASH_REMATCH[1]} > 65535)); then',
+                  "    error 'the S3 endpoint is not published on one bounded loopback port'",
+                  '    return 1',
+                  '  fi',
+                  '  published_port=$((10#${BASH_REMATCH[1]}))',
+                  '  port_inventory=$(run_docker port "$container_id")',
+                  '  if [[ $port_inventory != "8333/tcp -> 127.0.0.1:$published_port" ]]; then',
+                  "    error 'the object-storage container publishes an unexpected host port'",
+                  '    return 1',
+                  '  fi',
+              ]
+          ) + '\n'
+          runtime_new = '\n'.join(
+              [
+                  '  port_inventory=$(run_docker port "$container_id")',
+                  "  if [[ $port_inventory == *$'\\n'* ]]; then",
+                  "    error 'the object-storage container publishes an unexpected host port'",
+                  '    return 1',
+                  '  fi',
+                  '  if [[ $port_inventory != "8333/tcp -> 127.0.0.1:"* ]]; then',
+                  "    error 'the S3 endpoint is not published on one bounded loopback port'",
+                  '    return 1',
+                  '  fi',
+                  '  published=${port_inventory#"8333/tcp -> 127.0.0.1:"}',
+                  '  if [[ ! $published =~ ^[0-9]+$ ]] || ' + slash,
+                  '    ((10#$published < 1024 || 10#$published > 65535)); then',
+                  "    error 'the S3 endpoint is not published on one bounded loopback port'",
+                  '    return 1',
+                  '  fi',
+                  '  published_port=$((10#$published))',
+              ]
+          ) + '\n'
           if storage_text.count(runtime_old) != 1:
               raise SystemExit('unexpected object-storage runtime port inspection source')
           storage_text = storage_text.replace(runtime_old, runtime_new, 1)
@@ -179,18 +186,28 @@ jobs:
               'assert compose_port["port"] == "58333"',
               1,
           )
-          fake_port_old = r'''    if mode == "extra_port":
-                  print(f"8333/tcp -> 127.0.0.1:{port}\\n9333/tcp -> 0.0.0.0:9333")
-              else:
-                  print(f"8333/tcp -> 127.0.0.1:{port}")
-          '''
-          fake_port_new = r'''    if mode == "extra_port":
-                  print(f"8333/tcp -> 127.0.0.1:{port}\\n9333/tcp -> 0.0.0.0:9333")
-              elif mode == "public_port":
-                  print(f"8333/tcp -> 0.0.0.0:{port}")
-              else:
-                  print(f"8333/tcp -> 127.0.0.1:{port}")
-          '''
+          fake_port_old = '\n'.join(
+              [
+                  '    if mode == "extra_port":',
+                  '        print(f"8333/tcp -> 127.0.0.1:{port}'
+                  + slash * 2
+                  + 'n9333/tcp -> 0.0.0.0:9333")',
+                  '    else:',
+                  '        print(f"8333/tcp -> 127.0.0.1:{port}")',
+              ]
+          ) + '\n'
+          fake_port_new = '\n'.join(
+              [
+                  '    if mode == "extra_port":',
+                  '        print(f"8333/tcp -> 127.0.0.1:{port}'
+                  + slash * 2
+                  + 'n9333/tcp -> 0.0.0.0:9333")',
+                  '    elif mode == "public_port":',
+                  '        print(f"8333/tcp -> 0.0.0.0:{port}")',
+                  '    else:',
+                  '        print(f"8333/tcp -> 127.0.0.1:{port}")',
+              ]
+          ) + '\n'
           if storage_test_text.count(fake_port_old) != 1:
               raise SystemExit('unexpected fake Docker port source')
           storage_test_text = storage_test_text.replace(
