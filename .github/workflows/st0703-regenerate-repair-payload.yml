@@ -1,0 +1,66 @@
+name: ST-0703 repair payload regeneration probe
+
+on:
+  push:
+    branches:
+      - agent/st-0703-openai-responses-adapter
+
+permissions:
+  contents: read
+
+concurrency:
+  group: st0703-repair-payload-regeneration
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  regenerate:
+    name: Regenerate reviewed compatibility repair payload
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact branch head
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          show-progress: false
+      - name: Regenerate and print deterministic payload
+        run: |
+          set -euo pipefail
+          python3 .github/infra-compatibility-repair.py
+
+          expected="$RUNNER_TEMP/expected-files"
+          actual="$RUNNER_TEMP/actual-files"
+          cat > "$expected" <<'EOF'
+          scripts/object_storage_service.sh
+          scripts/run_network_denied.sh
+          tests/st0106/test_hydration_validator.py
+          tests/st0106/test_network_isolation.py
+          tests/st0202/test_wrapper.py
+          EOF
+          git diff --name-only | LC_ALL=C sort > "$actual"
+          diff --unified=0 "$expected" "$actual"
+          git diff --check
+
+          patch="$RUNNER_TEMP/infra-compatibility.patch"
+          compressed="$RUNNER_TEMP/infra-compatibility.patch.gz"
+          payload="$RUNNER_TEMP/infra-compatibility.patch.gz.b64"
+          git diff --binary --no-ext-diff --no-color > "$patch"
+          gzip --best --no-name --stdout "$patch" > "$compressed"
+          base64 --wrap=76 "$compressed" > "$payload"
+
+          base64 --decode "$payload" | gzip --decompress > "$RUNNER_TEMP/roundtrip.patch"
+          cmp "$patch" "$RUNNER_TEMP/roundtrip.patch"
+          git reset --hard HEAD
+          git apply --check "$patch"
+
+          printf 'PATCH_SHA256=%s\n' "$(sha256sum "$patch" | cut -d' ' -f1)"
+          printf 'PAYLOAD_GIT_BLOB=%s\n' "$(git hash-object "$payload")"
+          printf 'PAYLOAD_BEGIN\n'
+          cat "$payload"
+          printf 'PAYLOAD_END\n'
