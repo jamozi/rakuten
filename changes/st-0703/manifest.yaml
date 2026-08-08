@@ -82,8 +82,8 @@ source_artifacts:
   bytes: 242
   sha256: a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
 - uri: repo://python/raos/adapters/openai_responses.py
-  bytes: 22948
-  sha256: d84e890d5b82a57b9727b9a02d37f8c5ecf19ccd95e1ad796424073e936ce9b5
+  bytes: 22852
+  sha256: d7431d333562b8f30a8585e7b9216fbd1badc5879190029bf68f303a284f452f
 - uri: repo://python/raos/adapters/recorded_ai.py
   bytes: 4520
   sha256: cac4a9c5b5e310dcc64483308b2fe6fca8336fc3faff890e16066977a60dd392
