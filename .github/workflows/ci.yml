@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
           printf '%s  %s\n' \
-            'c7df33a0f7d69c1bfc77a02235c8405d335f20a93055e6ff6ed7010fd07fd19c' \
+            '86540f03f0461cd3951ada2371175212e9ffa30fe107deca889e741195521a2f' \
             '.github/st0703-compatibility-repair.py' | sha256sum --check --strict
           test -f python/raos/adapters/openai_responses.py
           test -f tests/st0703/test_adapter.py
