@@ -34,7 +34,18 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
-          python3 .github/infra-compatibility-repair.py
+          python3 - <<'PY'
+          from pathlib import Path
+
+          generator = Path('.github/infra-compatibility-repair.py')
+          source = generator.read_text(encoding='utf-8')
+          marker = "\n    '''"
+          count = source.count(marker)
+          if count != 22:
+              raise SystemExit(f'unexpected repair literal count: {count}')
+          source = source.replace(marker, "\n    r'''")
+          exec(compile(source, str(generator), 'exec'), {'__name__': '__main__'})
+          PY
 
           expected="$RUNNER_TEMP/expected-files"
           actual="$RUNNER_TEMP/actual-files"
