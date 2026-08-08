@@ -69,19 +69,38 @@ jobs:
 
           path = Path("python/raos/adapters/openai_responses.py")
           text = path.read_text(encoding="utf-8")
-          old = (
-              "from jsonschema.exceptions import (  # type: ignore[import-untyped]\n"
-              "    SchemaError,\n"
-              "    ValidationError,\n"
-              ")\n"
+          replacements = (
+              (
+                  (
+                      "from jsonschema.exceptions import (  "
+                      "# type: ignore[import-untyped]\n"
+                      "    SchemaError,\n"
+                      "    ValidationError,\n"
+                      ")\n"
+                  ),
+                  (
+                      "from jsonschema.exceptions import SchemaError  "
+                      "# type: ignore[import-untyped]\n"
+                  ),
+              ),
+              (
+                  "        artifact_ref = cast(ArtifactRef, artifact)\n",
+                  "        artifact_ref = artifact\n",
+              ),
+              (
+                  "        pricing_result = cast(PricingResult, pricing)\n",
+                  "        pricing_result = pricing\n",
+              ),
+              (
+                  "        return cast(int, value)\n",
+                  "        return value\n",
+              ),
           )
-          new = (
-              "from jsonschema.exceptions import SchemaError  "
-              "# type: ignore[import-untyped]\n"
-          )
-          if text.count(old) != 1:
-              raise SystemExit("unexpected jsonschema exception import state")
-          path.write_bytes(text.replace(old, new, 1).encode("utf-8"))
+          for old, new in replacements:
+              if text.count(old) != 1:
+                  raise SystemExit(f"unexpected hardening source state: {old!r}")
+              text = text.replace(old, new, 1)
+          path.write_bytes(text.encode("utf-8"))
           PY
       - name: Format, regenerate, and verify affected scope
         run: |
