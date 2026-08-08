@@ -1,0 +1,141 @@
+document:
+  id: RAOS-OPENAI-RESPONSES-ADAPTER-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0703
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  generated_by: repo://scripts/build_st0703_recorded_adapter.py
+  generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0703_recorded_adapter.py
+provenance:
+  contract_uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+  contract_sha256: d4df31c32542cff6615d560b0d8e4473926ad704e7814c0c8b3a4cb94cf536dc
+  handoff_uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v2.yaml
+  fixture_registry_uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
+  fixture_registry_sha256: 0ec0087a2c6d7c546c8bb174656e3468b5af627a50ea19a1e50994fc945dd3ed
+  predecessor_story_ids:
+  - ST-0204
+  - ST-0701
+evidence_chain:
+  stories:
+  - ST-0204
+  - ST-0701
+  - ST-0703
+source_artifact_count: 32
+source_artifacts:
+- uri: repo://changes/st-0204/manifest.yaml
+  bytes: 5976
+  sha256: ad28962d5d175622fc825b37922da741a2fcdb4b9beb0c3b67ff0a73a95feedd
+- uri: repo://changes/st-0701/manifest.yaml
+  bytes: 15114
+  sha256: 7fb331670f567f378a86eff563145290f5263037390bfd9e477cc0b9c2b90e82
+- uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v2.yaml
+  bytes: 6119
+  sha256: f768571d5f56a313437cc108485f21a7c3a8a9226016bee7830ab3709a90f08f
+- uri: repo://changes/st-0703/README.md
+  bytes: 2367
+  sha256: 33340a855fc0eeece46e0ddc38329cc47d85f3b013f1b303c2781154b7b52a63
+- uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+  bytes: 6627
+  sha256: d4df31c32542cff6615d560b0d8e4473926ad704e7814c0c8b3a4cb94cf536dc
+- uri: repo://changes/st-0703/fixtures/recorded/error-rate-limit-429.json
+  bytes: 1736
+  sha256: e0ce4372d287766cf4b5f3ec1f0afcaf17b49dc41939c379e64c4773dac2eb72
+- uri: repo://changes/st-0703/fixtures/recorded/incomplete-content-filter.json
+  bytes: 3287
+  sha256: f894f71eb54e751a58b31bd61e18ac846841f58c59e901ae4d1f1c137d783e58
+- uri: repo://changes/st-0703/fixtures/recorded/incomplete-max-output-tokens.json
+  bytes: 3286
+  sha256: fe7bf867a169f05e615ef3c06146ea1a773999518c27ad58bb2ac1b3886be6d7
+- uri: repo://changes/st-0703/fixtures/recorded/refusal-completed.json
+  bytes: 3189
+  sha256: f77119e429d422b4e85c50537df14136f5c92e89f30549b26f18051e9e60e350
+- uri: repo://changes/st-0703/fixtures/recorded/success-structured.json
+  bytes: 3282
+  sha256: a6a7506c8201a979cdba2cf1e41c9c9d7288d801cf6f2f72aa5e6684e6da168c
+- uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json
+  bytes: 1766
+  sha256: 163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31
+- uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-result.schema.json
+  bytes: 2294
+  sha256: ac59d14f41dbcabaaf98a5bea4b603313f3bb752fc6d8b4ca8b33973b3fdfd17
+- uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+  bytes: 3955
+  sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+- uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  bytes: 7943
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+- uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  bytes: 4956
+  sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+- uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  bytes: 24993
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+- uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  bytes: 11395
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+- uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  bytes: 71458
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+- uri: repo://pyproject.toml
+  bytes: 1214
+  sha256: d7a03c351a2ef20d6aaf45b4dff7775b3ce9dbb7e051323cfbf35d295344814e
+- uri: repo://python/raos/adapters/__init__.py
+  bytes: 242
+  sha256: a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
+- uri: repo://python/raos/adapters/openai_responses.py
+  bytes: 22138
+  sha256: d3f61cd11de7c4c4f0165a6e027f775b5f0b9f03cad202ccdfe8b636febdee5d
+- uri: repo://python/raos/adapters/recorded_ai.py
+  bytes: 4520
+  sha256: cac4a9c5b5e310dcc64483308b2fe6fca8336fc3faff890e16066977a60dd392
+- uri: repo://python/raos/domain/ai/provider.py
+  bytes: 28989
+  sha256: d7e41bb5abd07664a2f96fd108b0ce4483ad7ae36730ba1059d92037ad5e1d13
+- uri: repo://python/raos/ports/ai_provider.py
+  bytes: 6818
+  sha256: 404a58913d3058cd4a77411789f0c05da9d6611cf2125c6fbc0bb348794b4a28
+- uri: repo://scripts/build_st0703_recorded_adapter.py
+  bytes: 60245
+  sha256: c9dd2fb02be851daaa8e52f571dd6c74d953a2198721bb7ab0ca89295199297e
+- uri: repo://tests/st0703/conftest.py
+  bytes: 366
+  sha256: 0d381662b12f3a67ad8bd9d78a0351fbf525870b9503947558995e4b8a00c369
+- uri: repo://tests/st0703/test_adapter.py
+  bytes: 15035
+  sha256: 842f86154cc2572ba04a17392ed5a8b2b75ec590130e9bb51e61bef888aa6be6
+- uri: repo://tests/st0703/test_generation.py
+  bytes: 42752
+  sha256: 0e154b4a108409241195487e923ba9ebfc2c1bac5b82bd8b54a06922c4c14ab6
+- uri: repo://tests/st0703/test_implementation_manifest.py
+  bytes: 2343
+  sha256: 6a2f721e321227f2e97f30fad67605485d69a11431f1987b801f9aa51d6c389b
+- uri: repo://tests/st0703/test_recorded_support.py
+  bytes: 2380
+  sha256: 764b582ea8df6305b459d6564f9dc0eca2e151bdb6061d23d56b1962520d4d79
+- uri: repo://uv.lock
+  bytes: 128286
+  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+- uri: repo://uv.toml
+  bytes: 349
+  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
+  bytes: 3780
+  sha256: 0ec0087a2c6d7c546c8bb174656e3468b5af627a50ea19a1e50994fc945dd3ed
+manifest_self_integrity:
+  included_in_source_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check-installed
+boundary:
+  live_api: NOT_USED
+  credential_or_secret_resolution: NOT_USED
+  client_construction: NOT_IMPLEMENTED_ST0407_BOUNDARY
+  production_artifact_storage: NOT_IMPLEMENTED_ST0601_BOUNDARY
+  production_pricing_or_fx: NOT_IMPLEMENTED
+  routing_fallback_circuit_budget_retry: NOT_IMPLEMENTED_ST0704_BOUNDARY
+  database_queue_storage: NOT_USED
+  tools_network_chat_completions: FORBIDDEN
+  proposal_bundle_authority: PROPOSAL_INPUT_ONLY_NOT_IMPLEMENTATION_AUTHORITY
+  local_result: IMPLEMENTATION_CANDIDATE_ONLY
+  formal_tst_017: NOT_EXECUTED
+  live_tst_018: NOT_EXECUTED
+  production_readiness: NOT_READY

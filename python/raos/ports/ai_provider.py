@@ -83,6 +83,8 @@ class ProviderError(RuntimeError):
     """Sanitized stable provider failure with no raw exception retention."""
 
     __slots__ = ("_code", "_sealed")
+    _code: ProviderErrorCode
+    _sealed: bool
 
     def __init__(self, code: ProviderErrorCode) -> None:
         if type(code) is not ProviderErrorCode:

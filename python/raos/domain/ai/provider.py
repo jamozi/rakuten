@@ -154,7 +154,7 @@ def _freeze_json(value: object, *, field_name: str) -> JsonValue:
         if item is None or type(item) in {bool, int, str}:
             return cast(None | bool | int | str, item)
         if type(item) is float:
-            number = cast(float, item)
+            number = item
             if not math.isfinite(number):
                 raise ValueError(f"{field_name} cannot contain non-finite numbers")
             return number
