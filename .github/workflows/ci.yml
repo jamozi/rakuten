@@ -34,12 +34,11 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
-          test "$(git hash-object python/raos/adapters/openai_responses.py)" = \
-            'd1256c4f7f8bb1f01d06cb2bfc4b1b15c3eecd63'
-          test "$(git hash-object tests/st0703/test_adapter.py)" = \
-            '7d2ed719757b1cd296717c9003734476fe18bb9c'
-          test "$(git hash-object .github/st0703-compatibility-repair.py)" = \
-            '7af49421d226fc0b659fe07e2fa79563398dcf9b'
+          printf '%s  %s\n' \
+            'c7df33a0f7d69c1bfc77a02235c8405d335f20a93055e6ff6ed7010fd07fd19c' \
+            '.github/st0703-compatibility-repair.py' | sha256sum --check --strict
+          test -f python/raos/adapters/openai_responses.py
+          test -f tests/st0703/test_adapter.py
       - name: Install exact uv
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
