@@ -111,6 +111,47 @@ jobs:
               encoding='utf-8',
               newline='',
           )
+
+          storage_wrapper = Path('scripts/object_storage_service.sh')
+          storage_text = storage_wrapper.read_text(encoding='utf-8')
+          storage_old = (
+              '  # Docker allocates one collision-free loopback host port for this '
+              'disposable run.\n'
+              '  object_storage_port=0\n'
+          )
+          storage_new = (
+              '  # An omitted host port asks Compose for one collision-free loopback '
+              'port.\n'
+              "  object_storage_port=''\n"
+          )
+          if storage_text.count(storage_old) != 1:
+              raise SystemExit('unexpected object-storage dynamic port source')
+          storage_wrapper.write_text(
+              storage_text.replace(storage_old, storage_new, 1),
+              encoding='utf-8',
+              newline='',
+          )
+
+          storage_test = Path('tests/st0202/test_wrapper.py')
+          storage_test_text = storage_test.read_text(encoding='utf-8')
+          if storage_test_text.count('assert up["port"] == "0"') != 1:
+              raise SystemExit('unexpected object-storage up port assertion')
+          if storage_test_text.count('assert compose_port["port"] == "0"') != 1:
+              raise SystemExit('unexpected object-storage compose port assertion')
+          storage_test_text = storage_test_text.replace(
+              'assert up["port"] == "0"',
+              'assert up["port"] == ""',
+              1,
+          ).replace(
+              'assert compose_port["port"] == "0"',
+              'assert compose_port["port"] == ""',
+              1,
+          )
+          storage_test.write_text(
+              storage_test_text,
+              encoding='utf-8',
+              newline='',
+          )
           PY
 
           expected="$RUNNER_TEMP/expected-files"
