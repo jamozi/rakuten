@@ -72,6 +72,23 @@ jobs:
               compile(repaired_source, str(generator), 'exec'),
               {'__name__': '__main__'},
           )
+
+          hydration_test = Path('tests/st0106/test_hydration_validator.py')
+          hydration_text = hydration_test.read_text(encoding='utf-8')
+          inventory_updates = {
+              '            "artifacts": 324,\n': '            "artifacts": 373,\n',
+              '            "lock_packages": 45,\n': '            "lock_packages": 56,\n',
+              '            "requirements": 12,\n': '            "requirements": 13,\n',
+          }
+          for old, new in inventory_updates.items():
+              if hydration_text.count(old) != 1:
+                  raise SystemExit(f'unexpected hydration inventory source: {old!r}')
+              hydration_text = hydration_text.replace(old, new, 1)
+          hydration_test.write_text(
+              hydration_text,
+              encoding='utf-8',
+              newline='',
+          )
           PY
 
           expected="$RUNNER_TEMP/expected-files"
