@@ -81,20 +81,28 @@ jobs:
           from pathlib import Path
 
           test_file = Path('tests/st0202/test_wrapper.py')
-          text = test_file.read_text(encoding='utf-8')
-          obsolete = (
-              '    compose_port = next(\n'
-              '        row for row in rows if _compose_operation(row) == "port"\n'
-              '    )\n'
-              '    assert compose_port["port"] == "58333"\n'
-          )
-          if text.count(obsolete) != 1:
-              raise SystemExit('unexpected obsolete Compose port fixture expectation')
-          test_file.write_text(
-              text.replace(obsolete, '', 1),
-              encoding='utf-8',
-              newline='',
-          )
+          lines = test_file.read_text(encoding='utf-8').splitlines(keepends=True)
+          starts = [
+              index
+              for index, line in enumerate(lines)
+              if line.lstrip().startswith('compose_port = next(')
+          ]
+          if len(starts) != 1:
+              raise SystemExit('unexpected obsolete Compose port fixture start')
+          start = starts[0]
+          ends = [
+              index
+              for index in range(start, min(start + 6, len(lines)))
+              if lines[index].strip()
+              == 'assert compose_port["port"] == "58333"'
+          ]
+          if len(ends) != 1:
+              raise SystemExit('unexpected obsolete Compose port fixture end')
+          end = ends[0]
+          del lines[start : end + 1]
+          if any('compose_port' in line for line in lines):
+              raise SystemExit('unexpected residual Compose port fixture reference')
+          test_file.write_text(''.join(lines), encoding='utf-8', newline='')
           PY
           expected="$RUNNER_TEMP/expected-files"
           actual="$RUNNER_TEMP/actual-files"
