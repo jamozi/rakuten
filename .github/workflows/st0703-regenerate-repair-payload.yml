@@ -41,7 +41,7 @@ jobs:
           source = generator.read_text(encoding='utf-8')
           marker = "\n    '''"
           count = source.count(marker)
-          if count != 22:
+          if count != 28:
               raise SystemExit(f'unexpected repair literal count: {count}')
           source = source.replace(marker, "\n    r'''")
           exec(compile(source, str(generator), 'exec'), {'__name__': '__main__'})
