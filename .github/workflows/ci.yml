@@ -37,7 +37,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
           test "$(git hash-object .github/infra-compatibility.patch.gz.b64)" = \
-            'de7730038db899a54d19e4b3db4c10a9284a25fb'
+            '2de3789118d61d4ccf3df0f246f2f592e27eadeb'
           test "$(git hash-object scripts/run_network_denied.sh)" = \
             'e4b53f30d281314c28ef414a1e61b06b12034980'
           test "$(git hash-object tests/st0106/test_network_isolation.py)" = \
@@ -53,7 +53,7 @@ jobs:
           base64 --decode .github/infra-compatibility.patch.gz.b64 \
             | gzip --decompress > "$RUNNER_TEMP/infra-compatibility.patch"
           printf '%s  %s\n' \
-            '24161424c26ba1e2ca3b269ef1d533e89a696c5098fb8d73edcee167e46798a7' \
+            'c07005a31cd55e96610393f66c09d843c10044a862c6cdd399d5f10974119ebd' \
             "$RUNNER_TEMP/infra-compatibility.patch" | sha256sum --check --strict
           git apply --check "$RUNNER_TEMP/infra-compatibility.patch"
           git apply "$RUNNER_TEMP/infra-compatibility.patch"
@@ -127,7 +127,20 @@ jobs:
       - name: Verify exact object-storage runtime and final diff
         run: |
           set -euo pipefail
-          scripts/object_storage_service.sh --docker "$(command -v docker)" test
+          object_storage_port=$(
+            /usr/bin/python3 -I - <<'PY'
+          import socket
+
+          with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
+              listener.bind(("127.0.0.1", 0))
+              port = listener.getsockname()[1]
+          if not 1024 <= port <= 65535:
+              raise SystemExit("kernel selected an invalid loopback port")
+          print(port)
+          PY
+          )
+          RAOS_OBJECT_STORAGE_PORT="$object_storage_port" \
+            scripts/object_storage_service.sh --docker "$(command -v docker)" test
           expected="$RUNNER_TEMP/expected-files"
           actual="$RUNNER_TEMP/actual-files"
           cat > "$expected" <<'EOF'
