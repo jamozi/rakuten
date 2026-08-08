@@ -120,9 +120,14 @@ jobs:
               '  object_storage_port=0\n'
           )
           storage_new = (
-              '  # An omitted host port asks Compose for one collision-free loopback '
-              'port.\n'
-              "  object_storage_port=''\n"
+              '  # The caller selects one collision-free bounded loopback port for '
+              'this disposable run.\n'
+              '  if [[ -z ${RAOS_OBJECT_STORAGE_PORT:-} ]]; then\n'
+              "    error 'RAOS_OBJECT_STORAGE_PORT is required for the disposable "
+              "test command'\n"
+              '    exit 64\n'
+              '  fi\n'
+              '  validate_port "$RAOS_OBJECT_STORAGE_PORT"\n'
           )
           if storage_text.count(storage_old) != 1:
               raise SystemExit('unexpected object-storage dynamic port source')
@@ -140,11 +145,11 @@ jobs:
               raise SystemExit('unexpected object-storage compose port assertion')
           storage_test_text = storage_test_text.replace(
               'assert up["port"] == "0"',
-              'assert up["port"] == ""',
+              'assert up["port"] == "58333"',
               1,
           ).replace(
               'assert compose_port["port"] == "0"',
-              'assert compose_port["port"] == ""',
+              'assert compose_port["port"] == "58333"',
               1,
           )
           storage_test.write_text(
