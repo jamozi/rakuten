@@ -35,16 +35,43 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
           python3 - <<'PY'
+          from __future__ import annotations
+
+          import io
+          import re
+          import token
+          import tokenize
           from pathlib import Path
 
           generator = Path('.github/infra-compatibility-repair.py')
           source = generator.read_text(encoding='utf-8')
-          marker = "\n    '''"
-          count = source.count(marker)
-          if count != 28:
-              raise SystemExit(f'unexpected repair literal count: {count}')
-          source = source.replace(marker, "\n    r'''")
-          exec(compile(source, str(generator), 'exec'), {'__name__': '__main__'})
+          repaired_tokens: list[tokenize.TokenInfo] = []
+          repaired_literals = 0
+          for item in tokenize.generate_tokens(io.StringIO(source).readline):
+              if item.type == token.STRING and item.string.startswith("'''"):
+                  body = item.string[3:-3]
+                  body = body.replace(chr(92) + '\n', chr(92) * 2 + '\n')
+                  body = re.sub(
+                      r'(?<!\\)\\([rn])',
+                      lambda match: chr(92) + match.group(0),
+                      body,
+                  )
+                  item = tokenize.TokenInfo(
+                      item.type,
+                      "'''" + body + "'''",
+                      item.start,
+                      item.end,
+                      item.line,
+                  )
+                  repaired_literals += 1
+              repaired_tokens.append(item)
+          if repaired_literals != 28:
+              raise SystemExit(f'unexpected repair literal count: {repaired_literals}')
+          repaired_source = tokenize.untokenize(repaired_tokens)
+          exec(
+              compile(repaired_source, str(generator), 'exec'),
+              {'__name__': '__main__'},
+          )
           PY
 
           expected="$RUNNER_TEMP/expected-files"
