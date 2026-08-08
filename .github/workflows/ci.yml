@@ -34,8 +34,9 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
-          test "$(git hash-object .github/infra-compatibility-repair.py)" = \
-            '9ae01c9f67cf57ae2c37e1ec52d6e51f0c4a0aa1'
+          printf '%s  %s\n' \
+            'c75c9231af61a41efa59855badd1d7dbed6f0546c03623cebf2b07ffda44b474' \
+            '.github/infra-compatibility.patch.gz.b64' | sha256sum --check --strict
           test "$(git hash-object scripts/run_network_denied.sh)" = \
             'e4b53f30d281314c28ef414a1e61b06b12034980'
           test "$(git hash-object tests/st0106/test_network_isolation.py)" = \
@@ -51,9 +52,17 @@ jobs:
           RAOS_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           set -euo pipefail
-          /usr/bin/python3 -I .github/infra-compatibility-repair.py
+          base64 --decode .github/infra-compatibility.patch.gz.b64 \
+            | gzip --decompress > "$RUNNER_TEMP/infra-compatibility.patch"
+          printf '%s  %s\n' \
+            'ee61d1e382c64ae91ecbb5d45a09f8796024431c06f67bb9989800de5817ba73' \
+            "$RUNNER_TEMP/infra-compatibility.patch" | sha256sum --check --strict
+          git apply --check "$RUNNER_TEMP/infra-compatibility.patch"
+          git apply "$RUNNER_TEMP/infra-compatibility.patch"
           git show "$RAOS_BASE_SHA:.github/workflows/ci.yml" > .github/workflows/ci.yml
-          rm -f -- .github/infra-compatibility-repair.py
+          rm -f -- \
+            .github/infra-compatibility-repair.py \
+            .github/infra-compatibility.patch.gz.b64
           bash -n scripts/run_network_denied.sh
           bash -n scripts/object_storage_service.sh
       - name: Prove hosted network-denied fallback
