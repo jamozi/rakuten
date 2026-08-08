@@ -511,3 +511,236 @@ def test_http_408_is_classified_as_timeout() -> None:
     assert captured.value.code is ProviderErrorCode.TIMEOUT
     assert captured.value.retryable is True
     assert recorder.record_calls == 0
+
+
+@pytest.mark.parametrize(
+    "error",
+    (
+        _StatusError(429),
+        TimeoutError("SYNTHETIC_TEST_ONLY timeout diagnostic"),
+        RuntimeError("SYNTHETIC_TEST_ONLY unknown diagnostic"),
+    ),
+)
+def test_provider_errors_do_not_retain_exception_context(error: Exception) -> None:
+    adapter, _, recorder = _adapter(error)
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.__cause__ is None
+    assert captured.value.__context__ is None
+    assert recorder.record_calls == 0
+
+
+def test_malformed_output_does_not_retain_parser_context() -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    body = copy.deepcopy(cast(dict[str, object], transport["body"]))
+    message = cast(dict[str, object], cast(list[object], body["output"])[0])
+    content = cast(dict[str, object], cast(list[object], message["content"])[0])
+    content["text"] = "{not-json"
+    adapter, _, recorder = _adapter(body)
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.code is ProviderErrorCode.MALFORMED_RESPONSE
+    assert captured.value.__context__ is None
+    assert recorder.record_calls == 0
+
+
+def test_invalid_schema_does_not_retain_validator_context() -> None:
+    request = _request()
+    schema_bytes = b'{"type":7}'
+    invalid_request = StructuredTaskRequest(
+        task_code=request.task_code,
+        model_route_version=request.model_route_version,
+        prompt_version=request.prompt_version,
+        input_artifact=request.input_artifact,
+        output_schema=StructuredOutputSchema(
+            name="invalid_schema_for_context_test",
+            uri="urn:raos:synthetic:invalid-schema-context:v1",
+            sha256=Sha256Digest.of(schema_bytes),
+            document_bytes=schema_bytes,
+        ),
+        messages=request.messages,
+        max_cost_jpy=request.max_cost_jpy,
+        max_output_tokens=request.max_output_tokens,
+        metadata=request.metadata,
+    )
+    adapter, client, recorder = _adapter(
+        cast(dict[str, object], _fixture("success-structured.json")["transport"])[
+            "body"
+        ]
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(invalid_request)
+
+    assert captured.value.code is ProviderErrorCode.INVALID_SCHEMA
+    assert captured.value.__context__ is None
+    assert client.responses_resource.calls == []
+    assert recorder.record_calls == 0
+
+
+def test_recorder_failure_does_not_retain_exception_context() -> None:
+    class BrokenRecorder:
+        def record(self, exchange):
+            del exchange
+            raise RuntimeError("SYNTHETIC_TEST_ONLY raw recorder context")
+
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    client = _FakeClient(transport["body"])
+    ticks = iter((1_000_000_000, 1_012_000_000))
+    adapter = OpenAIResponsesAdapter(
+        client=client,
+        route=_route(),
+        recorder=BrokenRecorder(),
+        cost_calculator=SyntheticRecordedCostCalculator(),
+        clock=lambda: NOW,
+        monotonic_clock_ns=lambda: next(ticks),
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.code is ProviderErrorCode.RECORDER_FAILURE
+    assert captured.value.__context__ is None
+
+
+def test_pricing_failure_does_not_retain_exception_context() -> None:
+    class BrokenCalculator:
+        def calculate(self, usage, quote):
+            del usage, quote
+            raise RuntimeError("SYNTHETIC_TEST_ONLY raw pricing context")
+
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    client = _FakeClient(transport["body"])
+    recorder = InMemoryProviderExchangeRecorder()
+    ticks = iter((1_000_000_000, 1_012_000_000))
+    adapter = OpenAIResponsesAdapter(
+        client=client,
+        route=_route(),
+        recorder=recorder,
+        cost_calculator=BrokenCalculator(),
+        clock=lambda: NOW,
+        monotonic_clock_ns=lambda: next(ticks),
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.code is ProviderErrorCode.PRICING_MISSING
+    assert captured.value.__context__ is None
+    assert recorder.record_calls == 0
+
+
+def test_invalid_recorder_result_fails_closed() -> None:
+    class InvalidRecorder:
+        def record(self, exchange):
+            del exchange
+            return object()
+
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    client = _FakeClient(transport["body"])
+    ticks = iter((1_000_000_000, 1_012_000_000))
+    adapter = OpenAIResponsesAdapter(
+        client=client,
+        route=_route(),
+        recorder=InvalidRecorder(),
+        cost_calculator=SyntheticRecordedCostCalculator(),
+        clock=lambda: NOW,
+        monotonic_clock_ns=lambda: next(ticks),
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.code is ProviderErrorCode.RECORDER_FAILURE
+    assert captured.value.__context__ is None
+
+
+def test_invalid_pricing_result_fails_closed() -> None:
+    class InvalidCalculator:
+        def calculate(self, usage, quote):
+            del usage, quote
+            return object()
+
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    client = _FakeClient(transport["body"])
+    recorder = InMemoryProviderExchangeRecorder()
+    ticks = iter((1_000_000_000, 1_012_000_000))
+    adapter = OpenAIResponsesAdapter(
+        client=client,
+        route=_route(),
+        recorder=recorder,
+        cost_calculator=InvalidCalculator(),
+        clock=lambda: NOW,
+        monotonic_clock_ns=lambda: next(ticks),
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.code is ProviderErrorCode.PRICING_MISMATCH
+    assert captured.value.__context__ is None
+    assert recorder.record_calls == 0
+
+
+def test_response_conversion_accessor_failure_is_sanitized() -> None:
+    class ExplosiveResponse:
+        def __deepcopy__(self, memo):
+            del memo
+            return self
+
+        @property
+        def model_dump(self):
+            raise RuntimeError("SYNTHETIC_TEST_ONLY response accessor context")
+
+    adapter, _, recorder = _adapter(ExplosiveResponse())
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.code is ProviderErrorCode.MALFORMED_RESPONSE
+    assert captured.value.__context__ is None
+    assert recorder.record_calls == 0
+
+
+def test_request_id_accessor_failure_is_ignored() -> None:
+    class SDKResponse:
+        def __init__(self, body: dict[str, object]) -> None:
+            self._body = body
+
+        def __deepcopy__(self, memo):
+            del memo
+            return self
+
+        def model_dump(self, *, mode: str) -> dict[str, object]:
+            assert mode == "json"
+            return copy.deepcopy(self._body)
+
+        @property
+        def _request_id(self) -> str:
+            raise RuntimeError("SYNTHETIC_TEST_ONLY request-id accessor context")
+
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    response = SDKResponse(copy.deepcopy(cast(dict[str, object], transport["body"])))
+    adapter, _, recorder = _adapter(response)
+
+    result = adapter.execute(_request())
+
+    assert isinstance(result, ProviderSuccess)
+    assert result.metadata.provider_request_id is None
+    assert recorder.record_calls == 1

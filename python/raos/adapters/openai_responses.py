@@ -12,10 +12,7 @@ from time import monotonic_ns
 from typing import Protocol, cast
 
 from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
-from jsonschema.exceptions import (  # type: ignore[import-untyped]
-    SchemaError,
-    ValidationError,
-)
+from jsonschema.exceptions import SchemaError  # type: ignore[import-untyped]
 
 from raos.domain.ai.provider import (
     ArtifactRef,
@@ -140,16 +137,21 @@ class OpenAIResponsesAdapter:
             raise ProviderError(ProviderErrorCode.ROUTE_MISMATCH)
         payload = self._request_payload(request)
         started_ns = self._safe_monotonic_ns()
+        response: object = None
+        provider_failure: ProviderErrorCode | None = None
         try:
             configured_client = self._client.with_options(
                 max_retries=0,
                 timeout=self._route.timeout_seconds,
             )
             response = configured_client.responses.create(**payload)
-        except ProviderError:
-            raise
         except Exception as exc:
-            raise ProviderError(_classify_provider_error(exc)) from None
+            if type(exc) is ProviderError:
+                provider_failure = exc.code
+            else:
+                provider_failure = _classify_provider_error(exc)
+        if provider_failure is not None:
+            raise ProviderError(provider_failure)
         received_at = self._safe_clock()
         finished_ns = self._safe_monotonic_ns()
         response_document = _response_mapping(response)
@@ -162,13 +164,17 @@ class OpenAIResponsesAdapter:
         )
 
     def _request_payload(self, request: StructuredTaskRequest) -> dict[str, object]:
+        schema_document: object = None
+        schema_invalid = False
         try:
             schema_document = json.loads(
                 request.output_schema.document_bytes.decode("utf-8", errors="strict")
             )
             Draft202012Validator.check_schema(schema_document)
-        except UnicodeDecodeError, json.JSONDecodeError, SchemaError, TypeError:
-            raise ProviderError(ProviderErrorCode.INVALID_SCHEMA) from None
+        except Exception:
+            schema_invalid = True
+        if schema_invalid:
+            raise ProviderError(ProviderErrorCode.INVALID_SCHEMA)
         return {
             "model": self._route.model_id,
             "input": [
@@ -280,51 +286,71 @@ class OpenAIResponsesAdapter:
         )
 
     def _record(self, exchange: ProviderExchange) -> ArtifactRef:
+        artifact: object = None
+        recorder_failed = False
         try:
             artifact = self._recorder.record(exchange)
         except Exception:
-            raise ProviderError(ProviderErrorCode.RECORDER_FAILURE) from None
+            recorder_failed = True
+        if recorder_failed or type(artifact) is not ArtifactRef:
+            raise ProviderError(ProviderErrorCode.RECORDER_FAILURE)
+        artifact_ref = artifact
         if (
-            artifact.sha256 != exchange.sha256
-            or artifact.byte_size != len(exchange.canonical_bytes)
-            or artifact.content_type != "application/json"
+            artifact_ref.sha256 != exchange.sha256
+            or artifact_ref.byte_size != len(exchange.canonical_bytes)
+            or artifact_ref.content_type != "application/json"
         ):
             raise ProviderError(ProviderErrorCode.RECORDER_FAILURE)
-        return artifact
+        return artifact_ref
 
     def _calculate_pricing(self, usage: ProviderUsage) -> PricingResult:
+        pricing: object = None
+        calculator_failed = False
         try:
             pricing = self._cost_calculator.calculate(
                 usage,
                 self._route.pricing_quote,
             )
         except Exception:
-            raise ProviderError(ProviderErrorCode.PRICING_MISSING) from None
+            calculator_failed = True
+        if calculator_failed:
+            raise ProviderError(ProviderErrorCode.PRICING_MISSING)
+        if type(pricing) is not PricingResult:
+            raise ProviderError(ProviderErrorCode.PRICING_MISMATCH)
+        pricing_result = pricing
         if (
-            pricing.quote_id != self._route.pricing_quote.quote_id
-            or pricing.quote_sha256 != self._route.pricing_quote.quote_sha256
-            or pricing.native_currency != self._route.pricing_quote.native_currency
+            pricing_result.quote_id != self._route.pricing_quote.quote_id
+            or pricing_result.quote_sha256 != self._route.pricing_quote.quote_sha256
+            or pricing_result.native_currency
+            != self._route.pricing_quote.native_currency
         ):
             raise ProviderError(ProviderErrorCode.PRICING_MISMATCH)
-        return pricing
+        return pricing_result
 
     def _safe_clock(self) -> datetime:
+        normalized: datetime | None = None
         try:
             value = self._clock()
-            if type(value) is not datetime or value.tzinfo is None:
-                raise ValueError
-            if value.utcoffset() != timezone.utc.utcoffset(None):
-                raise ValueError
-            return value.replace(tzinfo=timezone.utc)
+            if (
+                type(value) is datetime
+                and value.tzinfo is not None
+                and value.utcoffset() == timezone.utc.utcoffset(None)
+            ):
+                normalized = value.replace(tzinfo=timezone.utc)
         except Exception:
-            raise ProviderError(ProviderErrorCode.UNKNOWN) from None
+            normalized = None
+        if normalized is None:
+            raise ProviderError(ProviderErrorCode.UNKNOWN)
+        return normalized
 
     def _safe_monotonic_ns(self) -> int:
+        value: object = None
+        clock_failed = False
         try:
             value = self._monotonic_ns()
         except Exception:
-            raise ProviderError(ProviderErrorCode.UNKNOWN) from None
-        if type(value) is not int or value < 0:
+            clock_failed = True
+        if clock_failed or type(value) is not int or value < 0:
             raise ProviderError(ProviderErrorCode.UNKNOWN)
         return value
 
@@ -334,39 +360,50 @@ def _utc_now() -> datetime:
 
 
 def _response_mapping(response: object) -> Mapping[str, object]:
-    value: object
-    if isinstance(response, Mapping):
-        value = response
-    else:
-        model_dump = getattr(response, "model_dump", None)
-        to_dict = getattr(response, "to_dict", None)
-        try:
+    value: object = None
+    conversion_failed = False
+    try:
+        if isinstance(response, Mapping):
+            value = response
+        else:
+            model_dump = getattr(response, "model_dump", None)
+            to_dict = getattr(response, "to_dict", None)
             if callable(model_dump):
                 value = model_dump(mode="json")
             elif callable(to_dict):
                 value = to_dict()
             else:
-                raise TypeError
-        except Exception:
-            raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE) from None
-    return _bounded_mapping(value)
+                conversion_failed = True
+    except Exception:
+        conversion_failed = True
+    if conversion_failed:
+        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+
+    bounded: Mapping[str, object] | None = None
+    try:
+        bounded = _bounded_mapping(value)
+    except Exception:
+        bounded = None
+    if bounded is None:
+        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+    return bounded
 
 
 def _bounded_mapping(value: object) -> Mapping[str, object]:
     visits = 0
     active: set[int] = set()
 
-    def validate(item: object, depth: int) -> None:
+    def snapshot(item: object, depth: int) -> object:
         nonlocal visits
         visits += 1
         if visits > _MAX_RESPONSE_GRAPH_VISITS or depth > _MAX_RESPONSE_GRAPH_DEPTH:
             raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
         if item is None or type(item) in {bool, int, str}:
-            return
+            return item
         if type(item) is float:
             if not math.isfinite(item):
                 raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-            return
+            return item
         if not isinstance(item, (Mapping, list, tuple)):
             raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
         identity = id(item)
@@ -375,20 +412,20 @@ def _bounded_mapping(value: object) -> Mapping[str, object]:
         active.add(identity)
         try:
             if isinstance(item, Mapping):
-                if not all(type(key) is str for key in item):
-                    raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-                for child in item.values():
-                    validate(child, depth + 1)
-            else:
-                for child in item:
-                    validate(child, depth + 1)
+                result: dict[str, object] = {}
+                for key, child in item.items():
+                    if type(key) is not str:
+                        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+                    result[key] = snapshot(child, depth + 1)
+                return result
+            return [snapshot(child, depth + 1) for child in item]
         finally:
             active.remove(identity)
 
-    validate(value, 0)
-    if not isinstance(value, Mapping):
+    frozen = snapshot(value, 0)
+    if type(frozen) is not dict:
         raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-    return cast(Mapping[str, object], value)
+    return cast(dict[str, object], frozen)
 
 
 def _required_mapping(value: object) -> Mapping[str, object]:
@@ -431,14 +468,18 @@ def _usage(value: object) -> ProviderUsage:
     cached_tokens = _exact_nonnegative_integer(details.get("cached_tokens"))
     if total_tokens != input_tokens + output_tokens:
         raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+    usage: ProviderUsage | None = None
     try:
-        return ProviderUsage(
+        usage = ProviderUsage(
             input_tokens=input_tokens,
             output_tokens=output_tokens,
             cached_input_tokens=cached_tokens,
         )
-    except ValueError:
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE) from None
+    except Exception:
+        usage = None
+    if usage is None:
+        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+    return usage
 
 
 def _unix_timestamp(value: object) -> datetime:
@@ -451,19 +492,27 @@ def _unix_timestamp(value: object) -> datetime:
         raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
     if not 0 <= timestamp <= _MAX_SIGNED_BIGINT:
         raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+    converted: datetime | None = None
     try:
-        return datetime.fromtimestamp(timestamp, tz=timezone.utc)
-    except OverflowError, OSError, ValueError:
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE) from None
+        converted = datetime.fromtimestamp(timestamp, tz=timezone.utc)
+    except Exception:
+        converted = None
+    if converted is None:
+        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+    return converted
 
 
 def _incomplete_reason(value: object) -> IncompleteReason:
     details = _required_mapping(value)
     reason = details.get("reason")
+    parsed: IncompleteReason | None = None
     try:
-        return IncompleteReason(reason)
-    except TypeError, ValueError:
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE) from None
+        parsed = IncompleteReason(reason)
+    except Exception:
+        parsed = None
+    if parsed is None:
+        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+    return parsed
 
 
 def _completed_content(value: object) -> tuple[str, str]:
@@ -505,19 +554,26 @@ def _structured_output(
     content: str,
     request: StructuredTaskRequest,
 ) -> CanonicalJsonObject:
+    output: CanonicalJsonObject | None = None
     try:
         output = CanonicalJsonObject.from_bytes(
             content.encode("utf-8", errors="strict")
         )
-    except UnicodeEncodeError, ValueError:
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE) from None
+    except Exception:
+        output = None
+    if output is None:
+        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+
+    validation_failure: ProviderErrorCode | None = None
     try:
         schema = json.loads(request.output_schema.document_bytes)
         Draft202012Validator(schema).validate(json.loads(output.canonical_bytes()))
     except SchemaError:
-        raise ProviderError(ProviderErrorCode.INVALID_SCHEMA) from None
-    except ValidationError, json.JSONDecodeError, TypeError, ValueError:
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE) from None
+        validation_failure = ProviderErrorCode.INVALID_SCHEMA
+    except Exception:
+        validation_failure = ProviderErrorCode.MALFORMED_RESPONSE
+    if validation_failure is not None:
+        raise ProviderError(validation_failure)
     return output
 
 
@@ -562,7 +618,10 @@ def _recorded_exchange(
 
 
 def _provider_request_id(response: object) -> str | None:
-    value = getattr(response, "_request_id", None)
+    try:
+        value = getattr(response, "_request_id", None)
+    except Exception:
+        return None
     if value is None:
         return None
     try:

@@ -82,8 +82,8 @@ source_artifacts:
   bytes: 242
   sha256: a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
 - uri: repo://python/raos/adapters/openai_responses.py
-  bytes: 22852
-  sha256: d7431d333562b8f30a8585e7b9216fbd1badc5879190029bf68f303a284f452f
+  bytes: 24610
+  sha256: 901f504f27a26e91b468bf362651eaf23d0c7a4aa8255069f1e1466ecec6c004
 - uri: repo://python/raos/adapters/recorded_ai.py
   bytes: 4520
   sha256: cac4a9c5b5e310dcc64483308b2fe6fca8336fc3faff890e16066977a60dd392
@@ -100,8 +100,8 @@ source_artifacts:
   bytes: 366
   sha256: 0d381662b12f3a67ad8bd9d78a0351fbf525870b9503947558995e4b8a00c369
 - uri: repo://tests/st0703/test_adapter.py
-  bytes: 18005
-  sha256: d6255475b70e13208b8cf988274d0f17b15cec992c53db4a98b225266c6cc902
+  bytes: 25733
+  sha256: 6d8164f631f16b68df60ed2cdf9579adb2850e94308f4da2e985008558ac13e9
 - uri: repo://tests/st0703/test_generation.py
   bytes: 42752
   sha256: 0e154b4a108409241195487e923ba9ebfc2c1bac5b82bd8b54a06922c4c14ab6
