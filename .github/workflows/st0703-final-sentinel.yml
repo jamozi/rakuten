@@ -1,0 +1,112 @@
+name: Final ST-0703 branch sentinel
+
+on:
+  push:
+    branches:
+      - agent/st-0703-openai-responses-adapter
+
+permissions:
+  contents: write
+
+concurrency:
+  group: st0703-final-sentinel
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  confirm:
+    name: Confirm final materialized and verified branch
+    if: github.ref == 'refs/heads/agent/st-0703-openai-responses-adapter'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Check out exact branch head
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Fail closed unless final gate already passed
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ github.sha }}'
+          grep -Fq 'Result: **PASS**' changes/st-0703/IMPLEMENTATION_VALIDATION.md
+          for path in \
+            .github/infra-compatibility-repair.py \
+            .github/infra-compatibility.patch.gz.b64 \
+            .github/st0703-ci-trigger \
+            .github/workflows/st0703-materialize-repair.yml \
+            .github/workflows/st0703-force-materialize.yml \
+            .github/workflows/st0703-finalize-v2.yml \
+            .github/workflows/st0703-finalize-v3.yml \
+            .github/workflows/st0703-final-gate.yml; do
+            test ! -e "$path"
+          done
+          git diff --exit-code origin/main -- .github/workflows/ci.yml
+          grep -Fq "trusted_root_executable 'Python interpreter' /usr/bin/python3" \
+            scripts/run_network_denied.sh
+          grep -Fq 'object_storage_port=0' scripts/object_storage_service.sh
+          git diff --check
+
+      - name: Install exact uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: 0.12.1
+          enable-cache: false
+
+      - name: Install Python 3.14.6 and locked dependencies
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            "$uv_path" --no-config --color never python install \
+            --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            "$uv_path" --no-config --color never sync --locked \
+            --no-default-groups --group dev --no-install-project --no-install-local \
+            --managed-python --no-python-downloads --python 3.14.6 \
+            --no-build --no-sources --default-index https://pypi.org/simple \
+            --index-strategy first-index --keyring-provider disabled --link-mode copy \
+            --resolution highest --prerelease disallow \
+            --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
+
+      - name: Recheck generated implementation and static contracts
+        run: |
+          set -euo pipefail
+          export PYTHONDONTWRITEBYTECODE=1
+          .venv/bin/python scripts/build_st0703_recorded_adapter.py --check
+          .venv/bin/python scripts/build_local_compose.py --check
+          .venv/bin/python -m ruff check \
+            python/raos scripts/build_st0703_recorded_adapter.py tests/st0703
+          .venv/bin/python -m ruff format --check \
+            --exclude python/raos/generated \
+            python/raos scripts/build_st0703_recorded_adapter.py tests/st0703
+          .venv/bin/python -m mypy
+          git diff --check
+
+      - name: Recheck ST-0703 and affected story suites
+        run: |
+          set -euo pipefail
+          export PYTHONDONTWRITEBYTECODE=1
+          .venv/bin/python -m pytest -p no:cacheprovider -q \
+            tests/st0204 tests/st0701 tests/st0703 tests/st0801
+
+      - name: Publish final sentinel confirmation
+        run: |
+          set -euo pipefail
+          {
+            printf '\nFinal sentinel: **PASS**\n\n'
+            printf 'Sentinel source commit: `%s`\n' "$GITHUB_SHA"
+          } >> changes/st-0703/IMPLEMENTATION_VALIDATION.md
+          rm -f .github/workflows/st0703-final-sentinel.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'Confirm final ST-0703 implementation state'
+          git push origin HEAD:agent/st-0703-openai-responses-adapter
