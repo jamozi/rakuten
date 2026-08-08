@@ -66,7 +66,7 @@ jobs:
           patch_sha=$(sha256sum "$RUNNER_TEMP/infra-compatibility.patch" | cut -d' ' -f1)
           printf 'decoded repair patch sha256=%s\n' "$patch_sha"
           if [[ $patch_sha != \
-            c5fdd82a387ad36fdc95cacccfbc58264278185702274f0a79ef9720067e1455 ]]; then
+            729fed10cba0d26b3e72c0f08750d9c0d25ec8860799ba5c97a8c2c385bc46af ]]; then
             printf 'error: decoded repair patch hash mismatch\n' >&2
             exit 1
           fi
