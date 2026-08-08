@@ -36,25 +36,40 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
-          test "$(git hash-object .github/infra-compatibility.patch.gz.b64)" = \
-            '6e7f9b53c137ceaa54e283be1d3867262b68f5f6'
-          test "$(git hash-object scripts/run_network_denied.sh)" = \
-            'e4b53f30d281314c28ef414a1e61b06b12034980'
-          test "$(git hash-object tests/st0106/test_network_isolation.py)" = \
-            '2331688c242669227e8258ba93588f86b4975d90'
-          test "$(git hash-object tests/st0106/test_hydration_validator.py)" = \
-            '83591eebc41a11d2e74ab6a0a41a1ad9f2e3e2f1'
-          test "$(git hash-object tests/st0201/test_wrapper.py)" = \
-            '3533056232f63c43daa8628389567b129aa2aa6b'
-          test "$(git hash-object scripts/object_storage_service.sh)" = \
-            '6cdf48becd8b26f85d912b2364635437576824a1'
-          test "$(git hash-object tests/st0202/test_wrapper.py)" = \
-            '4b78373fcb7aa0aac5b42e3bf2155295feaa2ab5'
+          assert_blob() {
+            local path=$1
+            local expected=$2
+            local actual
+            actual=$(git hash-object "$path")
+            if [[ $actual != "$expected" ]]; then
+              printf 'error: %s blob is %s, expected %s\n' \
+                "$path" "$actual" "$expected" >&2
+              exit 1
+            fi
+          }
+          assert_blob .github/infra-compatibility.patch.gz.b64 \
+            6e7f9b678eac136539a212d63481e9b0907b718e
+          assert_blob scripts/run_network_denied.sh \
+            e4b53f30d281314c28ef414a1e61b06b12034980
+          assert_blob tests/st0106/test_network_isolation.py \
+            2331688c242669227e8258ba93588f86b4975d90
+          assert_blob tests/st0106/test_hydration_validator.py \
+            83591eebc41a11d2e74ab6a0a41a1ad9f2e3e2f1
+          assert_blob tests/st0201/test_wrapper.py \
+            3533056232f63c43daa8628389567b129aa2aa6b
+          assert_blob scripts/object_storage_service.sh \
+            6cdf48becd8b26f85d912b2364635437576824a1
+          assert_blob tests/st0202/test_wrapper.py \
+            4b78373fcb7aa0aac5b42e3bf2155295feaa2ab5
           base64 --decode .github/infra-compatibility.patch.gz.b64 \
             | gzip --decompress > "$RUNNER_TEMP/infra-compatibility.patch"
-          printf '%s  %s\n' \
-            'c5fdd82a387ad36fdc95cacccfbc58264278185702274f0a79ef9720067e1455' \
-            "$RUNNER_TEMP/infra-compatibility.patch" | sha256sum --check --strict
+          patch_sha=$(sha256sum "$RUNNER_TEMP/infra-compatibility.patch" | cut -d' ' -f1)
+          printf 'decoded repair patch sha256=%s\n' "$patch_sha"
+          if [[ $patch_sha != \
+            c5fdd82a387ad36fdc95cacccfbc58264278185702274f0a79ef9720067e1455 ]]; then
+            printf 'error: decoded repair patch hash mismatch\n' >&2
+            exit 1
+          fi
           git apply --check "$RUNNER_TEMP/infra-compatibility.patch"
           git apply "$RUNNER_TEMP/infra-compatibility.patch"
           git show "$RAOS_BASE_SHA:.github/workflows/ci.yml" > .github/workflows/ci.yml
