@@ -37,7 +37,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
           test "$(git hash-object .github/infra-compatibility.patch.gz.b64)" = \
-            '704ad48ca513e9e36f26f8d5efad8b77d07ef9f8'
+            '3b94c8bf981e09ad93309338f135a0512dbfdf6c'
           test "$(git hash-object scripts/run_network_denied.sh)" = \
             'e4b53f30d281314c28ef414a1e61b06b12034980'
           test "$(git hash-object tests/st0106/test_network_isolation.py)" = \
@@ -53,7 +53,7 @@ jobs:
           base64 --decode .github/infra-compatibility.patch.gz.b64 \
             | gzip --decompress > "$RUNNER_TEMP/infra-compatibility.patch"
           printf '%s  %s\n' \
-            'ee61d1e382c64ae91ecbb5d45a09f8796024431c06f67bb9989800de5817ba73' \
+            '9609da67ba6395e52718bc1d401b323d4d928c5f6a852320a36ff890053fc108' \
             "$RUNNER_TEMP/infra-compatibility.patch" | sha256sum --check --strict
           git apply --check "$RUNNER_TEMP/infra-compatibility.patch"
           git apply "$RUNNER_TEMP/infra-compatibility.patch"
