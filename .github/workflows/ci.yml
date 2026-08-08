@@ -78,6 +78,7 @@ jobs:
           .venv/bin/python -m ruff format \
             python/raos/adapters/openai_responses.py tests/st0703/test_adapter.py
           .venv/bin/python scripts/build_st0703_recorded_adapter.py
+          .venv/bin/python scripts/build_st0801_content_ast.py
           .venv/bin/python scripts/build_st0204_config_loader.py --check
           .venv/bin/python scripts/build_st0701_ai_registry.py --check
           .venv/bin/python scripts/build_st0703_recorded_adapter.py --check-installed
