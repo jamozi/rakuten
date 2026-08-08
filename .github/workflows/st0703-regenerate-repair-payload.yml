@@ -148,28 +148,25 @@ jobs:
           ) + '\n'
           runtime_new = '\n'.join(
               [
-                  '  port_inventory=$(run_docker port "$container_id")',
-                  "  if [[ $port_inventory == *$'\\n'* ]]; then",
+                  '  port_inventory=$(run_docker inspect --format ' + slash,
+                  "    '{{range $port, $bindings := .NetworkSettings.Ports}}'" + slash,
+                  "'{{if $bindings}}{{$port}}={{len $bindings}}'" + slash,
+                  "'{{range $bindings}}@{{.HostIp}}:{{.HostPort}}{{end}};'" + slash,
+                  "'{{end}}{{end}}' \"$container_id\")",
+                  '  if [[ $port_inventory != "8333/tcp=1@127.0.0.1:"* ]]; then',
+                  "    error 'the S3 endpoint is not published on one bounded loopback port'",
+                  '    return 1',
+                  '  fi',
+                  '  published=${port_inventory#"8333/tcp=1@127.0.0.1:"}',
+                  '  if [[ ! $published =~ ^([0-9]+)\\;$ ]]; then',
                   "    error 'the object-storage container publishes an unexpected host port'",
                   '    return 1',
                   '  fi',
-                  '  if [[ $port_inventory != "8333/tcp -> 127.0.0.1:"* ]]; then',
+                  '  if ((10#${BASH_REMATCH[1]} < 1024 || 10#${BASH_REMATCH[1]} > 65535)); then',
                   "    error 'the S3 endpoint is not published on one bounded loopback port'",
                   '    return 1',
                   '  fi',
-                  '  published=${port_inventory#"8333/tcp -> 127.0.0.1:"}',
-                  '  if [[ ! $published =~ ^[0-9]+$ ]] || ' + slash,
-                  '    ((10#$published < 1024 || 10#$published > 65535)); then',
-                  "    error 'the S3 endpoint is not published on one bounded loopback port'",
-                  '    return 1',
-                  '  fi',
-                  '  published_port=$((10#$published))',
-                  '  if published=$(compose "$project" port object-storage 8333 2>/dev/null); then',
-                  '    if [[ $published != "127.0.0.1:$published_port" ]]; then',
-                  "      error 'the S3 endpoint is not published on one bounded loopback port'",
-                  '      return 1',
-                  '    fi',
-                  '  fi',
+                  '  published_port=$((10#${BASH_REMATCH[1]}))',
               ]
           ) + '\n'
           if storage_text.count(runtime_old) != 1:
@@ -190,6 +187,34 @@ jobs:
           ).replace(
               'assert compose_port["port"] == "0"',
               'assert compose_port["port"] == "58333"',
+              1,
+          )
+          inspect_anchor = (
+              'if payload and payload[0] == "inspect":\n'
+              '    template = payload[payload.index("--format") + 1]\n'
+              '    if ".Config.Image" in template:\n'
+          )
+          inspect_replacement = (
+              'if payload and payload[0] == "inspect":\n'
+              '    template = payload[payload.index("--format") + 1]\n'
+              '    if ".NetworkSettings.Ports" in template:\n'
+              '        port = os.environ.get("RAOS_OBJECT_STORAGE_PORT") or "49123"\n'
+              '        if mode == "extra_port":\n'
+              '            print(\n'
+              '                f"8333/tcp=1@127.0.0.1:{{port}};"\n'
+              '                "9333/tcp=1@0.0.0.0:9333;"\n'
+              '            )\n'
+              '        elif mode == "public_port":\n'
+              '            print(f"8333/tcp=1@0.0.0.0:{{port}};")\n'
+              '        else:\n'
+              '            print(f"8333/tcp=1@127.0.0.1:{{port}};")\n'
+              '    elif ".Config.Image" in template:\n'
+          )
+          if storage_test_text.count(inspect_anchor) != 1:
+              raise SystemExit('unexpected fake Docker inspect source')
+          storage_test_text = storage_test_text.replace(
+              inspect_anchor,
+              inspect_replacement,
               1,
           )
           storage_test.write_text(storage_test_text, encoding='utf-8', newline='')
