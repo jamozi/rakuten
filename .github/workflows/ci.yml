@@ -114,13 +114,13 @@ jobs:
           set -euo pipefail
           export PYTHONDONTWRITEBYTECODE=1
           scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/.venv/bin/python" -m pytest \
+            "$GITHUB_WORKSPACE/.venv/bin/pytest" \
             -p no:cacheprovider -q tests/st0106
           scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/.venv/bin/python" -m pytest \
+            "$GITHUB_WORKSPACE/.venv/bin/pytest" \
             -p no:cacheprovider -q tests/st0201
           scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/.venv/bin/python" -m pytest \
+            "$GITHUB_WORKSPACE/.venv/bin/pytest" \
             -p no:cacheprovider -q tests/st0202
           .venv/bin/python -m pytest -p no:cacheprovider -q tests/st0703
       - name: Verify exact object-storage runtime
