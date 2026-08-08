@@ -79,6 +79,7 @@ jobs:
           .venv/bin/python -m ruff check \
             python/raos scripts/build_st0703_recorded_adapter.py tests/st0703
           .venv/bin/python -m ruff format --check \
+            --exclude python/raos/generated \
             python/raos scripts/build_st0703_recorded_adapter.py tests/st0703
           .venv/bin/python -m mypy
           .venv/bin/python -m pytest -p no:cacheprovider -q tests/st0204
