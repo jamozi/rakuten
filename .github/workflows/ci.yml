@@ -64,6 +64,25 @@ jobs:
         run: |
           set -euo pipefail
           .venv/bin/python .github/st0703-exception-hardening.py
+          .venv/bin/python - <<'PY'
+          from pathlib import Path
+
+          path = Path("python/raos/adapters/openai_responses.py")
+          text = path.read_text(encoding="utf-8")
+          old = (
+              "from jsonschema.exceptions import (  # type: ignore[import-untyped]\n"
+              "    SchemaError,\n"
+              "    ValidationError,\n"
+              ")\n"
+          )
+          new = (
+              "from jsonschema.exceptions import SchemaError  "
+              "# type: ignore[import-untyped]\n"
+          )
+          if text.count(old) != 1:
+              raise SystemExit("unexpected jsonschema exception import state")
+          path.write_bytes(text.replace(old, new, 1).encode("utf-8"))
+          PY
       - name: Format, regenerate, and verify affected scope
         run: |
           set -euo pipefail
