@@ -40,6 +40,7 @@ jobs:
           /usr/bin/python3 -I - <<'PY'
           import os
           from pathlib import Path
+          import re
 
           workflow = Path('.github/workflows/st0703-regenerate-repair-payload.yml')
           text = workflow.read_text(encoding='utf-8')
@@ -51,11 +52,17 @@ jobs:
           if not lines or any(line and not line.startswith('          ') for line in lines):
               raise SystemExit('unexpected regeneration script indentation')
           script = '\n'.join(line[10:] for line in lines) + '\n'
-          expected = "test \"$(git rev-parse HEAD)\" = '${{ github.event.pull_request.head.sha }}'"
+          pattern = r'^test "\$\(git rev-parse HEAD\)" = .+$'
           replacement = 'test "$(git rev-parse HEAD)" = "$HEAD_SHA"'
-          if script.count(expected) != 1:
+          script, replacements = re.subn(
+              pattern,
+              replacement,
+              script,
+              count=1,
+              flags=re.MULTILINE,
+          )
+          if replacements != 1:
               raise SystemExit('unexpected regeneration head guard')
-          script = script.replace(expected, replacement, 1)
           destination = Path(os.environ['RUNNER_TEMP']) / 'st0703-regenerate.sh'
           destination.write_text(script, encoding='utf-8', newline='')
           destination.chmod(0o700)
