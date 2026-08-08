@@ -1,22 +1,34 @@
 from pathlib import Path
 
 
-def replace_once(path: Path, old: str, new: str) -> None:
+def replace_top_level_function(path: Path, name: str, replacement: str) -> None:
     text = path.read_text(encoding="utf-8")
-    if text.count(old) != 1:
-        raise SystemExit(f"expected exactly one reviewed block in {path}")
-    path.write_bytes(text.replace(old, new).encode("utf-8"))
+    marker = f"def {name}("
+    starts: list[int] = []
+    offset = 0
+    for line in text.splitlines(keepends=True):
+        if line.startswith(marker):
+            starts.append(offset)
+        offset += len(line)
+    if len(starts) != 1:
+        raise SystemExit(f"expected exactly one top-level {name} in {path}")
+    start = starts[0]
+    end = len(text)
+    offset = 0
+    for line in text.splitlines(keepends=True):
+        if offset > start and line.startswith(("def ", "class ", "@")):
+            end = offset
+            break
+        offset += len(line)
+    rendered = replacement.rstrip("\n") + "\n\n"
+    path.write_bytes((text[:start] + rendered + text[end:]).encode("utf-8"))
 
 
 adapter_path = Path("python/raos/adapters/openai_responses.py")
-old_timestamp = """def _unix_timestamp(value: object) -> datetime:
-    timestamp = _exact_nonnegative_integer(value)
-    try:
-        return datetime.fromtimestamp(timestamp, tz=timezone.utc)
-    except OverflowError, OSError, ValueError:
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE) from None
-"""
-new_timestamp = """def _unix_timestamp(value: object) -> datetime:
+replace_top_level_function(
+    adapter_path,
+    "_unix_timestamp",
+    """def _unix_timestamp(value: object) -> datetime:
     timestamp: int | float
     if type(value) is int:
         timestamp = value
@@ -30,34 +42,12 @@ new_timestamp = """def _unix_timestamp(value: object) -> datetime:
         return datetime.fromtimestamp(timestamp, tz=timezone.utc)
     except OverflowError, OSError, ValueError:
         raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE) from None
-"""
-replace_once(adapter_path, old_timestamp, new_timestamp)
-
-old_completed = """def _completed_content(value: object) -> tuple[str, str]:
-    output = _required_sequence(value)
-    if len(output) != 1:
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-    message = _required_mapping(output[0])
-    if message.get("type") != "message" or message.get("status") != "completed":
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-    content_items = _required_sequence(message.get("content"))
-    if len(content_items) != 1:
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-    content = _required_mapping(content_items[0])
-    kind = content.get("type")
-    if kind == "refusal":
-        refusal = content.get("refusal")
-        if type(refusal) is not str or not refusal:
-            raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-        return "refusal", ""
-    if kind == "output_text":
-        text = content.get("text")
-        if type(text) is not str or not text:
-            raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-        return "output_text", text
-    raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-"""
-new_completed = """def _completed_content(value: object) -> tuple[str, str]:
+""",
+)
+replace_top_level_function(
+    adapter_path,
+    "_completed_content",
+    """def _completed_content(value: object) -> tuple[str, str]:
     output = _required_sequence(value)
     message: Mapping[str, object] | None = None
     for item in output:
@@ -90,34 +80,12 @@ new_completed = """def _completed_content(value: object) -> tuple[str, str]:
             raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
         return "output_text", text
     raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-"""
-replace_once(adapter_path, old_completed, new_completed)
-
-old_classifier = """def _classify_provider_error(error: Exception) -> ProviderErrorCode:
-    name = type(error).__name__
-    status = getattr(error, "status_code", None)
-    if status == 429 or name == "RateLimitError":
-        return ProviderErrorCode.RATE_LIMIT
-    if name in {"APITimeoutError", "TimeoutError"}:
-        return ProviderErrorCode.TIMEOUT
-    if status == 401 or name == "AuthenticationError":
-        return ProviderErrorCode.AUTHENTICATION
-    if status == 403 or name == "PermissionDeniedError":
-        return ProviderErrorCode.PERMISSION
-    if status in {400, 404, 409, 422} or name in {
-        "BadRequestError",
-        "ConflictError",
-        "NotFoundError",
-        "UnprocessableEntityError",
-    }:
-        return ProviderErrorCode.INVALID_REQUEST
-    if status in {502, 503, 504} or name == "APIConnectionError":
-        return ProviderErrorCode.UNAVAILABLE
-    if type(status) is int and status >= 500 or name == "InternalServerError":
-        return ProviderErrorCode.SERVER_ERROR
-    return ProviderErrorCode.UNKNOWN
-"""
-new_classifier = """def _classify_provider_error(error: Exception) -> ProviderErrorCode:
+""",
+)
+replace_top_level_function(
+    adapter_path,
+    "_classify_provider_error",
+    """def _classify_provider_error(error: Exception) -> ProviderErrorCode:
     name = type(error).__name__
     try:
         candidate_status = getattr(error, "status_code", None)
@@ -148,8 +116,8 @@ new_classifier = """def _classify_provider_error(error: Exception) -> ProviderEr
     if (status is not None and status >= 500) or name == "InternalServerError":
         return ProviderErrorCode.SERVER_ERROR
     return ProviderErrorCode.UNKNOWN
-"""
-replace_once(adapter_path, old_classifier, new_classifier)
+""",
+)
 
 test_path = Path("tests/st0703/test_adapter.py")
 text = test_path.read_text(encoding="utf-8")
