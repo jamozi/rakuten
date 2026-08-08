@@ -89,6 +89,28 @@ jobs:
               encoding='utf-8',
               newline='',
           )
+
+          postgres_test = Path('tests/st0201/test_wrapper.py')
+          postgres_text = postgres_test.read_text(encoding='utf-8')
+          postgres_anchor = (
+              'def test_real_docker_runtime_or_explicit_environment_skip('
+              'tmp_path: Path) -> None:\n'
+          )
+          postgres_replacement = postgres_anchor + (
+              '    if os.environ.get("RAOS_NETWORK_DENIED") == "1":\n'
+              '        pytest.skip(\n'
+              '            "Docker runtime cannot execute inside the denied network "\n'
+              '            "boundary; ST-0201 runtime and formal TST-008 remain "\n'
+              '            "NOT_EXECUTED"\n'
+              '        )\n'
+          )
+          if postgres_text.count(postgres_anchor) != 1:
+              raise SystemExit('unexpected ST-0201 runtime test source')
+          postgres_test.write_text(
+              postgres_text.replace(postgres_anchor, postgres_replacement, 1),
+              encoding='utf-8',
+              newline='',
+          )
           PY
 
           expected="$RUNNER_TEMP/expected-files"
@@ -98,6 +120,7 @@ jobs:
           scripts/run_network_denied.sh
           tests/st0106/test_hydration_validator.py
           tests/st0106/test_network_isolation.py
+          tests/st0201/test_wrapper.py
           tests/st0202/test_wrapper.py
           EOF
           git diff --name-only | LC_ALL=C sort > "$actual"
