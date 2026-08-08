@@ -62,7 +62,15 @@ jobs:
       - name: Apply reviewed compatibility repair
         run: |
           set -euo pipefail
-          .venv/bin/python .github/st0703-compatibility-repair.py
+          repair_status=0
+          repair_output="$(
+            .venv/bin/python .github/st0703-compatibility-repair.py 2>&1
+          )" || repair_status=$?
+          if [ "$repair_status" -ne 0 ]; then
+            test "$repair_status" -eq 1
+            test "$repair_output" = 'compatibility regression tests already exist'
+          fi
+          printf '%s\n' "$repair_output"
       - name: Format, regenerate, and verify affected scope
         run: |
           set -euo pipefail
