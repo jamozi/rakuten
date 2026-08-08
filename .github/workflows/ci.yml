@@ -1,4 +1,4 @@
-name: Hosted CI compatibility repair
+name: Hosted CI compatibility validation
 
 on:
   pull_request:
@@ -6,10 +6,10 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: hosted-ci-compatibility-repair-${{ github.event.pull_request.number }}
+  group: hosted-ci-compatibility-validation-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 defaults:
@@ -17,8 +17,8 @@ defaults:
     shell: bash
 
 jobs:
-  repair:
-    name: Repair, verify, and commit hosted CI compatibility
+  validate:
+    name: Validate hosted CI compatibility repair
     if: github.event.pull_request.head.ref == 'agent/st-0703-openai-responses-adapter'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -28,14 +28,16 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
           show-progress: false
-      - name: Verify reviewed repair inputs
+      - name: Verify and apply reviewed repair
+        env:
+          RAOS_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
           printf '%s  %s\n' \
-            'ec3136f0df7f531fc5896848a80cf3f6b47b1ef02f4f1d988a1b90e804f848ce' \
+            '3603607e311f682338ba4dcde4ebb04bcedb670319c0f4e2d4d4a3cef28a4d5a' \
             '.github/infra-compatibility.patch.gz.b64' | sha256sum --check --strict
           test "$(git hash-object scripts/run_network_denied.sh)" = \
             'e4b53f30d281314c28ef414a1e61b06b12034980'
@@ -43,19 +45,16 @@ jobs:
             '2331688c242669227e8258ba93588f86b4975d90'
           test "$(git hash-object tests/st0106/test_hydration_validator.py)" = \
             '83591eebc41a11d2e74ab6a0a41a1ad9f2e3e2f1'
+          test "$(git hash-object tests/st0201/test_wrapper.py)" = \
+            '3533056232f63c43daa8628389567b129aa2aa6b'
           test "$(git hash-object scripts/object_storage_service.sh)" = \
             '6cdf48becd8b26f85d912b2364635437576824a1'
           test "$(git hash-object tests/st0202/test_wrapper.py)" = \
             '4b78373fcb7aa0aac5b42e3bf2155295feaa2ab5'
-      - name: Apply reviewed repair and restore trusted workflow
-        env:
-          RAOS_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: |
-          set -euo pipefail
           base64 --decode .github/infra-compatibility.patch.gz.b64 \
             | gzip --decompress > "$RUNNER_TEMP/infra-compatibility.patch"
           printf '%s  %s\n' \
-            '9609da67ba6395e52718bc1d401b323d4d928c5f6a852320a36ff890053fc108' \
+            '5c92eb998e6ccbee665f627cdc77d379e9e37901633070b41d480acb35810d1b' \
             "$RUNNER_TEMP/infra-compatibility.patch" | sha256sum --check --strict
           git apply --check "$RUNNER_TEMP/infra-compatibility.patch"
           git apply "$RUNNER_TEMP/infra-compatibility.patch"
@@ -90,23 +89,26 @@ jobs:
             --index-strategy first-index --keyring-provider disabled --link-mode copy \
             --resolution highest --prerelease disallow \
             --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
-      - name: Format, regenerate, and verify static scope
+      - name: Regenerate and verify static scope
         run: |
           set -euo pipefail
           export PYTHONDONTWRITEBYTECODE=1
           .venv/bin/python -m ruff format \
             tests/st0106/test_network_isolation.py \
             tests/st0106/test_hydration_validator.py \
+            tests/st0201/test_wrapper.py \
             tests/st0202/test_wrapper.py
           .venv/bin/python scripts/build_local_compose.py
           .venv/bin/python scripts/build_local_compose.py --check
           .venv/bin/python -m ruff check \
             tests/st0106/test_network_isolation.py \
             tests/st0106/test_hydration_validator.py \
+            tests/st0201/test_wrapper.py \
             tests/st0202/test_wrapper.py
           .venv/bin/python -m ruff format --check \
             tests/st0106/test_network_isolation.py \
             tests/st0106/test_hydration_validator.py \
+            tests/st0201/test_wrapper.py \
             tests/st0202/test_wrapper.py
           .venv/bin/python -m mypy
       - name: Verify related suites inside the denied network boundary
@@ -123,28 +125,22 @@ jobs:
             "$GITHUB_WORKSPACE/.venv/bin/pytest" \
             -p no:cacheprovider -q tests/st0202
           .venv/bin/python -m pytest -p no:cacheprovider -q tests/st0703
-      - name: Verify exact object-storage runtime
+      - name: Verify exact object-storage runtime and final diff
         run: |
           set -euo pipefail
           scripts/object_storage_service.sh --docker "$(command -v docker)" test
-      - name: Commit verified compatibility repair
-        run: |
-          set -euo pipefail
           expected="$RUNNER_TEMP/expected-files"
           actual="$RUNNER_TEMP/actual-files"
           cat > "$expected" <<'EOF'
+          changes/st-0201/manifest.yaml
           changes/st-0202/manifest.yaml
           scripts/object_storage_service.sh
           scripts/run_network_denied.sh
           tests/st0106/test_hydration_validator.py
           tests/st0106/test_network_isolation.py
+          tests/st0201/test_wrapper.py
           tests/st0202/test_wrapper.py
           EOF
           git diff --name-only | LC_ALL=C sort > "$actual"
           diff --unified=0 "$expected" "$actual"
-          git add -A
-          git diff --cached --check
-          git config user.name 'openai-codex[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Fix hosted CI namespace and storage compatibility'
-          git push origin HEAD:agent/st-0703-openai-responses-adapter
+          git diff --check
