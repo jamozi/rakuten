@@ -1,15 +1,15 @@
 name: ST-0703 repair payload regeneration probe
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/st-0703-openai-responses-adapter
+      - main
 
 permissions:
   contents: read
 
 concurrency:
-  group: st0703-repair-payload-regeneration
+  group: st0703-repair-payload-regeneration-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 defaults:
@@ -19,19 +19,21 @@ defaults:
 jobs:
   regenerate:
     name: Regenerate reviewed compatibility repair payload
+    if: github.event.pull_request.head.ref == 'agent/st-0703-openai-responses-adapter'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Check out exact branch head
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           persist-credentials: false
           show-progress: false
       - name: Regenerate and print deterministic payload
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
           python3 .github/infra-compatibility-repair.py
 
           expected="$RUNNER_TEMP/expected-files"
