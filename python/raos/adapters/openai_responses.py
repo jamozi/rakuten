@@ -442,7 +442,15 @@ def _usage(value: object) -> ProviderUsage:
 
 
 def _unix_timestamp(value: object) -> datetime:
-    timestamp = _exact_nonnegative_integer(value)
+    timestamp: int | float
+    if type(value) is int:
+        timestamp = value
+    elif type(value) is float and math.isfinite(value):
+        timestamp = value
+    else:
+        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+    if not 0 <= timestamp <= _MAX_SIGNED_BIGINT:
+        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
     try:
         return datetime.fromtimestamp(timestamp, tz=timezone.utc)
     except OverflowError, OSError, ValueError:
@@ -460,10 +468,20 @@ def _incomplete_reason(value: object) -> IncompleteReason:
 
 def _completed_content(value: object) -> tuple[str, str]:
     output = _required_sequence(value)
-    if len(output) != 1:
-        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-    message = _required_mapping(output[0])
-    if message.get("type") != "message" or message.get("status") != "completed":
+    message: Mapping[str, object] | None = None
+    for item in output:
+        candidate = _required_mapping(item)
+        kind = candidate.get("type")
+        if kind == "reasoning":
+            continue
+        if kind != "message" or message is not None:
+            raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+        message = candidate
+    if (
+        message is None
+        or message.get("role") != "assistant"
+        or message.get("status") != "completed"
+    ):
         raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
     content_items = _required_sequence(message.get("content"))
     if len(content_items) != 1:
@@ -564,10 +582,18 @@ def _latency_ms(started_ns: int, finished_ns: int) -> int:
 
 def _classify_provider_error(error: Exception) -> ProviderErrorCode:
     name = type(error).__name__
-    status = getattr(error, "status_code", None)
+    try:
+        candidate_status = getattr(error, "status_code", None)
+    except Exception:
+        return ProviderErrorCode.UNKNOWN
+    status: int | None
+    if type(candidate_status) is int:
+        status = candidate_status
+    else:
+        status = None
     if status == 429 or name == "RateLimitError":
         return ProviderErrorCode.RATE_LIMIT
-    if name in {"APITimeoutError", "TimeoutError"}:
+    if status == 408 or name in {"APITimeoutError", "TimeoutError"}:
         return ProviderErrorCode.TIMEOUT
     if status == 401 or name == "AuthenticationError":
         return ProviderErrorCode.AUTHENTICATION
@@ -582,7 +608,7 @@ def _classify_provider_error(error: Exception) -> ProviderErrorCode:
         return ProviderErrorCode.INVALID_REQUEST
     if status in {502, 503, 504} or name == "APIConnectionError":
         return ProviderErrorCode.UNAVAILABLE
-    if type(status) is int and status >= 500 or name == "InternalServerError":
+    if (status is not None and status >= 500) or name == "InternalServerError":
         return ProviderErrorCode.SERVER_ERROR
     return ProviderErrorCode.UNKNOWN
 
