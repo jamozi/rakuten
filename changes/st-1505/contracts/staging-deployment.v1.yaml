@@ -1,0 +1,293 @@
+document:
+  id: RAOS-STAGING-DEPLOYMENT-001
+  version: 1.0.0
+  story_id: ST-1505
+  status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
+  formal_verification: NOT_EXECUTED
+sources:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml
+    sha256: 2cdc9afb4b9a1fc7cb44b78dc5198bc443a219ca895713b75220f8625aea6305
+  - uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - uri: repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+  - uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
+    sha256: ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502
+  - uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
+    sha256: ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41
+  - uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
+    sha256: 54d60c741c7531b39f09fd90406bdd203985214086f092370b1ebb2ba79d13a3
+  - uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
+    sha256: 551d11aefa10526054190770467067dd71751f7249d3ddcdd534c0c359f509ed
+  - uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
+    sha256: 58352939268565ede5c6d48682013c3fac1134587d1665f4236f389f0c15527d
+  - uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
+    sha256: 6774c1e2553df4e1f3e7a85dc122b2462ddb575503a7c03b4ec8d9e18baecfbc
+predecessor_bindings:
+  data_services:
+    story_id: ST-1502
+    contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
+    contract_sha256: ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502
+    reference_plan_uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
+    reference_plan_sha256: ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41
+    required_contract_non_executable: true
+    required_reference_plan_executable: false
+    required_activation_status: DISABLED
+    required_live_provider_calls: FORBIDDEN
+    required_external_writes: FORBIDDEN
+    required_selected_values: UNSET
+    required_planned_actions:
+      create: 0
+      update: 0
+      delete: 0
+  compute_edge:
+    story_id: ST-1503
+    contract_uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
+    contract_sha256: 54d60c741c7531b39f09fd90406bdd203985214086f092370b1ebb2ba79d13a3
+    reference_plan_uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
+    reference_plan_sha256: 551d11aefa10526054190770467067dd71751f7249d3ddcdd534c0c359f509ed
+    required_contract_non_executable: true
+    required_reference_plan_executable: false
+    required_activation_status: DISABLED
+    required_live_provider_calls: FORBIDDEN
+    required_external_writes: FORBIDDEN
+    required_selected_values: UNSET
+    required_planned_actions:
+      create: 0
+      update: 0
+      delete: 0
+  deployment_identity:
+    story_id: ST-1504
+    contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
+    contract_sha256: 58352939268565ede5c6d48682013c3fac1134587d1665f4236f389f0c15527d
+    reference_plan_uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
+    reference_plan_sha256: 6774c1e2553df4e1f3e7a85dc122b2462ddb575503a7c03b4ec8d9e18baecfbc
+    required_contract_non_executable: true
+    required_reference_plan_executable: false
+    required_activation_status: DISABLED
+    required_live_provider_calls: FORBIDDEN
+    required_external_writes: FORBIDDEN
+    required_credential_issuance: FORBIDDEN
+    required_selected_values: UNSET
+    required_planned_actions:
+      create: 0
+      update: 0
+      delete: 0
+environment_boundary:
+  label: STAGING
+  classification: INERT_CANONICAL_LABEL_ONLY
+  configuration_status: NOT_CONFIGURED
+  runtime_status: NOT_EXECUTED
+  formal_verification_status: NOT_EXECUTED
+  allowed_data_classes:
+    - SYNTHETIC
+    - APPROVED_ANONYMIZED
+  production_data: FORBIDDEN
+  dedicated_credentials: REQUIRED_NOT_CONFIGURED
+  credential_material: ABSENT
+  external_access: FORBIDDEN
+  production_action: FORBIDDEN
+selected_bindings:
+  cloud_provider: null
+  cloud_account_id: null
+  cloud_region: null
+  state_backend: null
+  github_repository: null
+  github_environment: null
+  deployment_role: null
+  credential_source: null
+  provider_plugins: []
+  external_action_references: []
+  artifact_digest: null
+  artifact_sbom_reference: null
+  artifact_scan_reference: null
+  artifact_provenance_reference: null
+  release_id: null
+  commit_sha: null
+  contract_hash: null
+  migration_version: null
+  migration_task_reference: null
+  domain_names: []
+  public_url: null
+  admin_url: null
+  internal_url: null
+  liveness_url: null
+  readiness_url: null
+  health_matcher: null
+  browser_base_url: null
+  browser_project: null
+  rollback_artifact_digest: null
+  rollback_configuration_version: null
+  rollback_snapshot_id: null
+  rollback_migration_version: null
+artifact_admission_intent:
+  classification: IMMUTABLE_SUPPLY_CHAIN_REQUIREMENTS_ONLY
+  immutable_digest: REQUIRED_NOT_CONFIGURED
+  sbom: REQUIRED_NOT_CONFIGURED
+  vulnerability_scan: REQUIRED_NOT_CONFIGURED
+  signed_provenance: REQUIRED_NOT_CONFIGURED
+  promote_without_rebuild: REQUIRED_NOT_CONFIGURED
+  mutable_artifact: FORBIDDEN
+  rebuild_between_environments: FORBIDDEN
+  unsigned_artifact: FORBIDDEN
+  unscanned_artifact: FORBIDDEN
+migration_intent:
+  classification: DECLARATIVE_COMPATIBILITY_REQUIREMENTS_ONLY
+  strategy: EXPAND_MIGRATE_CONTRACT
+  expand: REQUIRED_NOT_CONFIGURED
+  migrate: REQUIRED_NOT_CONFIGURED
+  contract: DEFERRED_TO_LATER_RELEASE
+  migration_dry_run: REQUIRED_NOT_CONFIGURED
+  compatibility_gate: REQUIRED_NOT_CONFIGURED
+  lock_duration_measurement: REQUIRED_NOT_CONFIGURED
+  forward_fix: REQUIRED_NOT_CONFIGURED
+  destructive_contract_current_release: FORBIDDEN
+  contract_before_expand: FORBIDDEN
+  direct_ddl: FORBIDDEN
+  down_migration_primary_recovery: FORBIDDEN
+  external_api_during_migration: FORBIDDEN
+health_and_smoke_intent:
+  classification: DECLARATIVE_RUNTIME_GATES_ONLY
+  liveness_check: REQUIRED_NOT_CONFIGURED
+  readiness_check: REQUIRED_NOT_CONFIGURED
+  dependency_check: REQUIRED_NOT_CONFIGURED
+  migration_compatibility_check: REQUIRED_NOT_CONFIGURED
+  public_admin_internal_isolation_check: REQUIRED_NOT_CONFIGURED
+  smoke_check: REQUIRED_NOT_CONFIGURED
+  browser_e2e: REQUIRED_NOT_CONFIGURED
+  infer_readiness_from_generic_http_200: FORBIDDEN
+  external_provider_probe: FORBIDDEN
+rollback_intent:
+  classification: DECLARATIVE_ROLLBACK_REQUIREMENTS_ONLY
+  execution: FORBIDDEN
+  prior_immutable_artifact: REQUIRED_NOT_CONFIGURED
+  prior_configuration: REQUIRED_NOT_CONFIGURED
+  known_safe_snapshot: REQUIRED_NOT_CONFIGURED
+  migration_compatibility: REQUIRED_NOT_CONFIGURED
+  pitr_for_ordinary_application_error: FORBIDDEN
+  destructive_reversal: FORBIDDEN
+logical_phases:
+  - name: PREDECESSOR_GATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: ARTIFACT_ADMISSION
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: EXPAND_COMPATIBILITY_GATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: ROLLBACK_READINESS_GATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: ARTIFACT_PROMOTION
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: STAGING_DEPLOYMENT
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: MIGRATION_DRY_RUN_GATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: MIGRATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: STAGING_SMOKE_GATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: BROWSER_E2E_GATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+  - name: CONTRACT_DEFERRED
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    external_action: FORBIDDEN
+    action_count: 0
+execution_boundary:
+  activation_enabled: false
+  activation_status: DISABLED
+  runtime_status: NOT_EXECUTED
+  network_access: FORBIDDEN
+  credential_access: FORBIDDEN
+  live_provider_calls: FORBIDDEN
+  external_writes: FORBIDDEN
+  staging_action: FORBIDDEN
+  release_action: FORBIDDEN
+  production_action: FORBIDDEN
+  operations:
+    artifact_promote: FORBIDDEN
+    deploy: FORBIDDEN
+    migration_dry_run: FORBIDDEN
+    migrate: FORBIDDEN
+    smoke: FORBIDDEN
+    browser: FORBIDDEN
+    rollback: FORBIDDEN
+    production: FORBIDDEN
+  action_counts:
+    create: 0
+    update: 0
+    delete: 0
+    promote: 0
+    deploy: 0
+    migrate: 0
+    smoke: 0
+    browser: 0
+    rollback: 0
+    production: 0
+evidence_boundary:
+  deliverable_classification: SOURCE_DERIVED_NON_EXECUTABLE_STAGING_DEPLOYMENT_REFERENCE_PLAN
+  executable_pipeline: ABSENT
+  workflow: ABSENT
+  terraform_or_cloud_runtime: ABSENT
+  migration_runtime: ABSENT
+  browser_runtime: ABSENT
+  credentials: ABSENT
+  formal_tst_009: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  migration_database: NOT_EXECUTED
+  http_smoke: NOT_EXECUTED
+  playwright: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  rollback: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

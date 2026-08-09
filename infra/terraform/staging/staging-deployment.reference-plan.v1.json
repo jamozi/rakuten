@@ -1,0 +1,301 @@
+{
+  "action_counts": {
+    "browser": 0,
+    "create": 0,
+    "delete": 0,
+    "deploy": 0,
+    "migrate": 0,
+    "production": 0,
+    "promote": 0,
+    "rollback": 0,
+    "smoke": 0,
+    "update": 0
+  },
+  "activation": {
+    "credential_access": "FORBIDDEN",
+    "enabled": false,
+    "external_writes": "FORBIDDEN",
+    "live_provider_calls": "FORBIDDEN",
+    "network_access": "FORBIDDEN",
+    "operations": {
+      "artifact_promote": "FORBIDDEN",
+      "browser": "FORBIDDEN",
+      "deploy": "FORBIDDEN",
+      "migrate": "FORBIDDEN",
+      "migration_dry_run": "FORBIDDEN",
+      "production": "FORBIDDEN",
+      "rollback": "FORBIDDEN",
+      "smoke": "FORBIDDEN"
+    },
+    "production_action": "FORBIDDEN",
+    "release_action": "FORBIDDEN",
+    "runtime_status": "NOT_EXECUTED",
+    "staging_action": "FORBIDDEN",
+    "status": "DISABLED"
+  },
+  "artifact_admission": {
+    "classification": "IMMUTABLE_SUPPLY_CHAIN_REQUIREMENTS_ONLY",
+    "immutable_digest": "REQUIRED_NOT_CONFIGURED",
+    "mutable_artifact": "FORBIDDEN",
+    "promote_without_rebuild": "REQUIRED_NOT_CONFIGURED",
+    "rebuild_between_environments": "FORBIDDEN",
+    "sbom": "REQUIRED_NOT_CONFIGURED",
+    "signed_provenance": "REQUIRED_NOT_CONFIGURED",
+    "unscanned_artifact": "FORBIDDEN",
+    "unsigned_artifact": "FORBIDDEN",
+    "vulnerability_scan": "REQUIRED_NOT_CONFIGURED"
+  },
+  "document": {
+    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_STAGING_DEPLOYMENT_REFERENCE_PLAN",
+    "executable": false,
+    "generated_by": "repo://scripts/build_st1505_staging_deployment.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st1505_staging_deployment.py",
+    "id": "RAOS-STAGING-DEPLOYMENT-REFERENCE-PLAN-001",
+    "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "source_contract": "repo://changes/st-1505/contracts/staging-deployment.v1.yaml",
+    "story_id": "ST-1505",
+    "version": "1.0.0"
+  },
+  "environment": {
+    "allowed_data_classes": [
+      "SYNTHETIC",
+      "APPROVED_ANONYMIZED"
+    ],
+    "classification": "INERT_CANONICAL_LABEL_ONLY",
+    "configuration_status": "NOT_CONFIGURED",
+    "credential_material": "ABSENT",
+    "dedicated_credentials": "REQUIRED_NOT_CONFIGURED",
+    "external_access": "FORBIDDEN",
+    "formal_verification_status": "NOT_EXECUTED",
+    "label": "STAGING",
+    "production_action": "FORBIDDEN",
+    "production_data": "FORBIDDEN",
+    "runtime_status": "NOT_EXECUTED"
+  },
+  "health_and_smoke": {
+    "browser_e2e": "REQUIRED_NOT_CONFIGURED",
+    "classification": "DECLARATIVE_RUNTIME_GATES_ONLY",
+    "dependency_check": "REQUIRED_NOT_CONFIGURED",
+    "external_provider_probe": "FORBIDDEN",
+    "infer_readiness_from_generic_http_200": "FORBIDDEN",
+    "liveness_check": "REQUIRED_NOT_CONFIGURED",
+    "migration_compatibility_check": "REQUIRED_NOT_CONFIGURED",
+    "public_admin_internal_isolation_check": "REQUIRED_NOT_CONFIGURED",
+    "readiness_check": "REQUIRED_NOT_CONFIGURED",
+    "smoke_check": "REQUIRED_NOT_CONFIGURED"
+  },
+  "logical_phases": [
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "PREDECESSOR_GATE",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "ARTIFACT_ADMISSION",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "EXPAND_COMPATIBILITY_GATE",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "ROLLBACK_READINESS_GATE",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "ARTIFACT_PROMOTION",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "STAGING_DEPLOYMENT",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "MIGRATION_DRY_RUN_GATE",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "MIGRATE",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "STAGING_SMOKE_GATE",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "BROWSER_E2E_GATE",
+      "status": "DISABLED"
+    },
+    {
+      "action_count": 0,
+      "execution_status": "NOT_EXECUTED",
+      "external_action": "FORBIDDEN",
+      "name": "CONTRACT_DEFERRED",
+      "status": "DISABLED"
+    }
+  ],
+  "migration": {
+    "classification": "DECLARATIVE_COMPATIBILITY_REQUIREMENTS_ONLY",
+    "compatibility_gate": "REQUIRED_NOT_CONFIGURED",
+    "contract": "DEFERRED_TO_LATER_RELEASE",
+    "contract_before_expand": "FORBIDDEN",
+    "destructive_contract_current_release": "FORBIDDEN",
+    "direct_ddl": "FORBIDDEN",
+    "down_migration_primary_recovery": "FORBIDDEN",
+    "expand": "REQUIRED_NOT_CONFIGURED",
+    "external_api_during_migration": "FORBIDDEN",
+    "forward_fix": "REQUIRED_NOT_CONFIGURED",
+    "lock_duration_measurement": "REQUIRED_NOT_CONFIGURED",
+    "migrate": "REQUIRED_NOT_CONFIGURED",
+    "migration_dry_run": "REQUIRED_NOT_CONFIGURED",
+    "strategy": "EXPAND_MIGRATE_CONTRACT"
+  },
+  "predecessor_bindings": {
+    "compute_edge": {
+      "contract_sha256": "54d60c741c7531b39f09fd90406bdd203985214086f092370b1ebb2ba79d13a3",
+      "contract_uri": "repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
+      "reference_plan_sha256": "551d11aefa10526054190770467067dd71751f7249d3ddcdd534c0c359f509ed",
+      "reference_plan_uri": "repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json",
+      "required_activation_status": "DISABLED",
+      "required_contract_non_executable": true,
+      "required_external_writes": "FORBIDDEN",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_planned_actions": {
+        "create": 0,
+        "delete": 0,
+        "update": 0
+      },
+      "required_reference_plan_executable": false,
+      "required_selected_values": "UNSET",
+      "story_id": "ST-1503"
+    },
+    "data_services": {
+      "contract_sha256": "ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502",
+      "contract_uri": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
+      "reference_plan_sha256": "ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41",
+      "reference_plan_uri": "repo://infra/terraform/data-services/data-services.reference-plan.v1.json",
+      "required_activation_status": "DISABLED",
+      "required_contract_non_executable": true,
+      "required_external_writes": "FORBIDDEN",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_planned_actions": {
+        "create": 0,
+        "delete": 0,
+        "update": 0
+      },
+      "required_reference_plan_executable": false,
+      "required_selected_values": "UNSET",
+      "story_id": "ST-1502"
+    },
+    "deployment_identity": {
+      "contract_sha256": "58352939268565ede5c6d48682013c3fac1134587d1665f4236f389f0c15527d",
+      "contract_uri": "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
+      "reference_plan_sha256": "6774c1e2553df4e1f3e7a85dc122b2462ddb575503a7c03b4ec8d9e18baecfbc",
+      "reference_plan_uri": "repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json",
+      "required_activation_status": "DISABLED",
+      "required_contract_non_executable": true,
+      "required_credential_issuance": "FORBIDDEN",
+      "required_external_writes": "FORBIDDEN",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_planned_actions": {
+        "create": 0,
+        "delete": 0,
+        "update": 0
+      },
+      "required_reference_plan_executable": false,
+      "required_selected_values": "UNSET",
+      "story_id": "ST-1504"
+    }
+  },
+  "rollback": {
+    "classification": "DECLARATIVE_ROLLBACK_REQUIREMENTS_ONLY",
+    "destructive_reversal": "FORBIDDEN",
+    "execution": "FORBIDDEN",
+    "known_safe_snapshot": "REQUIRED_NOT_CONFIGURED",
+    "migration_compatibility": "REQUIRED_NOT_CONFIGURED",
+    "pitr_for_ordinary_application_error": "FORBIDDEN",
+    "prior_configuration": "REQUIRED_NOT_CONFIGURED",
+    "prior_immutable_artifact": "REQUIRED_NOT_CONFIGURED"
+  },
+  "selected_bindings": {
+    "admin_url": null,
+    "artifact_digest": null,
+    "artifact_provenance_reference": null,
+    "artifact_sbom_reference": null,
+    "artifact_scan_reference": null,
+    "browser_base_url": null,
+    "browser_project": null,
+    "cloud_account_id": null,
+    "cloud_provider": null,
+    "cloud_region": null,
+    "commit_sha": null,
+    "contract_hash": null,
+    "credential_source": null,
+    "deployment_role": null,
+    "domain_names": [],
+    "external_action_references": [],
+    "github_environment": null,
+    "github_repository": null,
+    "health_matcher": null,
+    "internal_url": null,
+    "liveness_url": null,
+    "migration_task_reference": null,
+    "migration_version": null,
+    "provider_plugins": [],
+    "public_url": null,
+    "readiness_url": null,
+    "release_id": null,
+    "rollback_artifact_digest": null,
+    "rollback_configuration_version": null,
+    "rollback_migration_version": null,
+    "rollback_snapshot_id": null,
+    "state_backend": null
+  },
+  "verification_boundary": {
+    "browser_runtime": "ABSENT",
+    "credentials": "ABSENT",
+    "effective_canonical_status": "UNCHANGED",
+    "executable_pipeline": "ABSENT",
+    "formal_tst_009": "NOT_EXECUTED",
+    "formal_tst_022": "NOT_EXECUTED",
+    "http_smoke": "NOT_EXECUTED",
+    "migration_database": "NOT_EXECUTED",
+    "migration_runtime": "ABSENT",
+    "playwright": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "rollback": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "terraform_or_cloud_runtime": "ABSENT",
+    "workflow": "ABSENT"
+  }
+}
