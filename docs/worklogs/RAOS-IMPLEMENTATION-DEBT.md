@@ -1256,3 +1256,58 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-041` remain unchanged and unclosed. This checkpoint claims only the
   maximum-safe non-attesting local ST-1603 reference implementation.
+
+### 2026-08-10 W1 / ST-1701 unresolved business-input checkpoint
+
+- Authority and scope: canonical `ST-1701` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0006, and requires resolution
+  of OD-001, OD-002, OD-005, OD-006, OD-007, OD-008, and OD-009 plus TST-032.
+  All seven decisions remain unresolved, including the external-evidence
+  requirement for OD-006. Effective implementation and verification status
+  remain `NOT_STARTED`/`NOT_EXECUTED`; this checkpoint does not satisfy the
+  Story acceptance criteria, clear any Gate, or authorize category-specific
+  work, publication, release, or Production.
+- Implemented a closed Story-owned contract, deterministic owner builder,
+  generated non-executable unresolved-input registry, generated manifest, and
+  hostile tests. The builder byte- and semantic-binds the ST-0006 policy and
+  report, preserves the global source counts of 15 decisions, 14 unresolved
+  blockers, and six blocked targets, and projects exactly the seven ST-1701
+  decisions without treating their documented safe defaults as resolutions.
+- Every selected business value and resolution payload remains null or
+  forbidden. Scoped counts are seven unresolved and seven active blockers;
+  GATE-0 through GATE-4 and Production release remain blocked; all decision,
+  approval, research, publication, release, and Production action counts are
+  exact integer zero. ST-1702 readiness remains false. The registry is
+  explicitly non-authoritative and cannot accept approvals or decision values.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and no-write `--check`, isolated `tests/st1701` (`65
+  passed`), Ruff lint/format, strict mypy, compile, exact nine-path review,
+  focused maintained secret scan (`0 findings / 9 files`), ST-0006 owner
+  `--check`, canonical import verification, workspace drift check, and
+  `git diff --check` returned `PASS`. The linked-worktree full scanner
+  limitation remains inherited `DEBT-W0-003`.
+- `DEBT-W1-045` status: `OPEN`, introduced-by `ST-1701`, closure owner:
+  decision-governance, ST-0006, downstream consumer, and final Wave owners.
+  Exact skipped command: `NOT_RUN — no approved authoritative decision-
+  resolution record or successor contract exists, and no downstream consumer
+  may bind unresolved values`; observed result: `NOT_EXECUTED`. Closure
+  requires separately approved, hash-bound decision artifacts, canonical
+  reconciliation, ST-0006 regeneration, and fail-closed consumer integration.
+- `DEBT-W1-046` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1701`, closure
+  owner: the named human owners for OD-001/002/005/007/008/009 and the external
+  evidence plus human owner for OD-006. Exact skipped command: `NOT_RUN — the
+  seven required decisions and OD-006 evidence have not been supplied or
+  approved`; observed result: `NOT_EXECUTED`. Safe defaults remain active
+  blockers and are never promoted into selected business values.
+- `DEBT-W1-047` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1701`, closure
+  owner: Product Owner, formal CI, Gate, publication, Staging, release, and
+  Production owners. Exact skipped command: `NOT_RUN — formal TST-032, Gate
+  review, category activation, external publication, Staging, release, and
+  Production are outside local authority`; observed result: `NOT_EXECUTED`.
+  No local generation or unit result is promoted to formal evidence or
+  operational readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-044` remain unchanged and unclosed. This checkpoint claims only
+  `LOCAL_CODE_COMPLETE_FOR_UNRESOLVED_BOUNDARY` for the non-authoritative
+  ST-1701 interface.
