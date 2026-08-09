@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from decimal import Decimal
+from decimal import Context, Decimal, ROUND_CEILING, ROUND_HALF_EVEN, localcontext
 from enum import Enum
 import hashlib
 import json
@@ -40,6 +40,7 @@ _MAX_DECIMAL_EXPONENT = 18
 _MAX_SIGNED_BIGINT = (1 << 63) - 1
 _MAX_STRUCTURED_MESSAGES = 128
 _MAX_OUTPUT_TOKENS = 1_000_000
+_MILLION = Decimal(1_000_000)
 
 
 def _require_text(value: object, *, field_name: str, maximum: int = 256) -> str:
@@ -96,7 +97,12 @@ def _require_exact_integer(
 
 
 def _canonical_decimal_snapshot(value: object, *, field_name: str) -> Decimal:
-    if type(value) is not Decimal or not value.is_finite() or value < 0:
+    if (
+        type(value) is not Decimal
+        or not value.is_finite()
+        or value < 0
+        or (value.is_zero() and value.is_signed())
+    ):
         raise ValueError(f"{field_name} must be a finite nonnegative Decimal")
     components = value.as_tuple()
     exponent = cast(int, components.exponent)
@@ -116,6 +122,25 @@ def _canonical_decimal_snapshot(value: object, *, field_name: str) -> Decimal:
     if exponent > _MAX_DECIMAL_EXPONENT:
         raise ValueError(f"{field_name} exceeds Decimal precision or exponent limits")
     return Decimal((0, tuple(canonical_digits), exponent))
+
+
+def _calculated_decimal_snapshot(value: object, *, field_name: str) -> Decimal:
+    if (
+        type(value) is not Decimal
+        or not value.is_finite()
+        or value < 0
+        or (value.is_zero() and value.is_signed())
+    ):
+        raise ValueError(f"{field_name} must be a finite nonnegative Decimal")
+    components = value.as_tuple()
+    exponent = cast(int, components.exponent)
+    digits = list(components.digits)
+    if not any(digits):
+        return Decimal(0)
+    while digits[-1] == 0:
+        digits.pop()
+        exponent += 1
+    return Decimal((0, tuple(digits), exponent))
 
 
 def _canonical_decimal_text(value: Decimal) -> str:
@@ -154,7 +179,7 @@ def _freeze_json(value: object, *, field_name: str) -> JsonValue:
         if item is None or type(item) in {bool, int, str}:
             return cast(None | bool | int | str, item)
         if type(item) is float:
-            number = cast(float, item)
+            number = item
             if not math.isfinite(number):
                 raise ValueError(f"{field_name} cannot contain non-finite numbers")
             return number
@@ -548,11 +573,14 @@ class SyntheticPricingQuote:
     output_per_million: Decimal
     jpy_per_native_unit: Decimal
     observed_at: datetime
+    expires_at: datetime
     quote_sha256: Sha256Digest = field(init=False)
 
     def __post_init__(self) -> None:
         _require_identifier(self.quote_id, field_name="quote_id")
         _require_identifier(self.provider, field_name="provider")
+        if self.provider != "openai":
+            raise ValueError("provider must be openai")
         _require_identifier(self.model_id, field_name="model_id")
         if (
             type(self.native_currency) is not str
@@ -572,26 +600,143 @@ class SyntheticPricingQuote:
         if self.jpy_per_native_unit <= 0:
             raise ValueError("jpy_per_native_unit must be positive")
         observed_at = _require_utc(self.observed_at, field_name="observed_at")
+        expires_at = _require_utc(self.expires_at, field_name="expires_at")
+        if expires_at <= observed_at:
+            raise ValueError("expires_at must be strictly after observed_at")
         object.__setattr__(self, "observed_at", observed_at)
-        material = CanonicalJsonObject(
-            {
-                "kind": "SYNTHETIC_RECORDED_FIXTURE",
-                "quote_id": self.quote_id,
-                "provider": self.provider,
-                "model_id": self.model_id,
-                "native_currency": self.native_currency,
-                "input_per_million": _canonical_decimal_text(self.input_per_million),
-                "cached_input_per_million": _canonical_decimal_text(
-                    self.cached_input_per_million
-                ),
-                "output_per_million": _canonical_decimal_text(self.output_per_million),
-                "jpy_per_native_unit": _canonical_decimal_text(
-                    self.jpy_per_native_unit
-                ),
-                "observed_at": self.observed_at.isoformat(),
-            }
-        ).canonical_bytes()
-        object.__setattr__(self, "quote_sha256", Sha256Digest.of(material))
+        object.__setattr__(self, "expires_at", expires_at)
+        object.__setattr__(
+            self,
+            "quote_sha256",
+            synthetic_quote_sha256(
+                quote_id=self.quote_id,
+                provider=self.provider,
+                model_id=self.model_id,
+                native_currency=self.native_currency,
+                input_per_million=self.input_per_million,
+                cached_input_per_million=self.cached_input_per_million,
+                output_per_million=self.output_per_million,
+                jpy_per_native_unit=self.jpy_per_native_unit,
+                observed_at=self.observed_at,
+                expires_at=self.expires_at,
+            ),
+        )
+
+
+def synthetic_quote_sha256(
+    *,
+    quote_id: str,
+    provider: str,
+    model_id: str,
+    native_currency: str,
+    input_per_million: Decimal,
+    cached_input_per_million: Decimal,
+    output_per_million: Decimal,
+    jpy_per_native_unit: Decimal,
+    observed_at: datetime,
+    expires_at: datetime,
+) -> Sha256Digest:
+    """Hash every approved field in one synthetic recorded pricing quote."""
+
+    _require_identifier(quote_id, field_name="quote_id")
+    _require_identifier(provider, field_name="provider")
+    if provider != "openai":
+        raise ValueError("provider must be openai")
+    _require_identifier(model_id, field_name="model_id")
+    if type(native_currency) is not str or _CURRENCY.fullmatch(native_currency) is None:
+        raise ValueError("native_currency must be an ISO-style currency code")
+    input_snapshot = _canonical_decimal_snapshot(
+        input_per_million, field_name="input_per_million"
+    )
+    cached_snapshot = _canonical_decimal_snapshot(
+        cached_input_per_million, field_name="cached_input_per_million"
+    )
+    output_snapshot = _canonical_decimal_snapshot(
+        output_per_million, field_name="output_per_million"
+    )
+    jpy_snapshot = _canonical_decimal_snapshot(
+        jpy_per_native_unit, field_name="jpy_per_native_unit"
+    )
+    if jpy_snapshot <= 0:
+        raise ValueError("jpy_per_native_unit must be positive")
+    observed_snapshot = _require_utc(observed_at, field_name="observed_at")
+    expires_snapshot = _require_utc(expires_at, field_name="expires_at")
+    if expires_snapshot <= observed_snapshot:
+        raise ValueError("expires_at must be strictly after observed_at")
+    material = CanonicalJsonObject(
+        {
+            "kind": "SYNTHETIC_TEST_ONLY",
+            "quote_id": quote_id,
+            "provider": provider,
+            "model_id": model_id,
+            "native_currency": native_currency,
+            "input_per_million": _canonical_decimal_text(input_snapshot),
+            "cached_input_per_million": _canonical_decimal_text(cached_snapshot),
+            "output_per_million": _canonical_decimal_text(output_snapshot),
+            "jpy_per_native_unit": _canonical_decimal_text(jpy_snapshot),
+            "observed_at": observed_snapshot.isoformat(),
+            "expires_at": expires_snapshot.isoformat(),
+        }
+    ).canonical_bytes()
+    return Sha256Digest.of(material)
+
+
+def synthetic_usage_sha256(usage: ProviderUsage) -> Sha256Digest:
+    """Bind the exact normalized usage tuple used by recorded pricing."""
+
+    if type(usage) is not ProviderUsage:
+        raise ValueError("usage must be an exact ProviderUsage")
+    material = CanonicalJsonObject(
+        {
+            "input_tokens": usage.input_tokens,
+            "cached_input_tokens": usage.cached_input_tokens,
+            "output_tokens": usage.output_tokens,
+        }
+    ).canonical_bytes()
+    return Sha256Digest.of(material)
+
+
+def synthetic_pricing_calculation_sha256(
+    *,
+    quote_sha256: Sha256Digest,
+    usage_sha256: Sha256Digest,
+    provider: str,
+    model_id: str,
+    evaluated_at: datetime,
+    provider_cost_native: Decimal,
+    native_currency: str,
+    estimated_cost_jpy: int,
+) -> Sha256Digest:
+    """Bind every approved input and output field of one synthetic calculation."""
+
+    if type(quote_sha256) is not Sha256Digest:
+        raise ValueError("quote_sha256 must be an exact Sha256Digest")
+    if type(usage_sha256) is not Sha256Digest:
+        raise ValueError("usage_sha256 must be an exact Sha256Digest")
+    _require_identifier(provider, field_name="provider")
+    if provider != "openai":
+        raise ValueError("provider must be openai")
+    _require_identifier(model_id, field_name="model_id")
+    evaluated_at = _require_utc(evaluated_at, field_name="evaluated_at")
+    provider_cost_native = _calculated_decimal_snapshot(
+        provider_cost_native, field_name="provider_cost_native"
+    )
+    if type(native_currency) is not str or _CURRENCY.fullmatch(native_currency) is None:
+        raise ValueError("native_currency must be an ISO-style currency code")
+    _require_exact_integer(estimated_cost_jpy, field_name="estimated_cost_jpy")
+    material = CanonicalJsonObject(
+        {
+            "quote_sha256": quote_sha256.value,
+            "usage_sha256": usage_sha256.value,
+            "provider": provider,
+            "model_id": model_id,
+            "evaluated_at": evaluated_at.isoformat(),
+            "provider_cost_native": _canonical_decimal_text(provider_cost_native),
+            "native_currency": native_currency,
+            "estimated_cost_jpy": estimated_cost_jpy,
+        }
+    ).canonical_bytes()
+    return Sha256Digest.of(material)
 
 
 @dataclass(frozen=True, slots=True)
@@ -601,10 +746,15 @@ class PricingResult:
     native_currency: str
     quote_id: str
     quote_sha256: Sha256Digest
+    provider: str
+    model_id: str
+    usage_sha256: Sha256Digest
+    evaluated_at: datetime
+    calculation_sha256: Sha256Digest
 
     def __post_init__(self) -> None:
         _require_exact_integer(self.estimated_cost_jpy, field_name="estimated_cost_jpy")
-        provider_cost_native = _canonical_decimal_snapshot(
+        provider_cost_native = _calculated_decimal_snapshot(
             self.provider_cost_native, field_name="provider_cost_native"
         )
         object.__setattr__(self, "provider_cost_native", provider_cost_native)
@@ -616,6 +766,103 @@ class PricingResult:
         _require_identifier(self.quote_id, field_name="quote_id")
         if type(self.quote_sha256) is not Sha256Digest:
             raise ValueError("quote_sha256 must be an exact Sha256Digest")
+        _require_identifier(self.provider, field_name="provider")
+        if self.provider != "openai":
+            raise ValueError("provider must be openai")
+        _require_identifier(self.model_id, field_name="model_id")
+        if type(self.usage_sha256) is not Sha256Digest:
+            raise ValueError("usage_sha256 must be an exact Sha256Digest")
+        evaluated_at = _require_utc(self.evaluated_at, field_name="evaluated_at")
+        object.__setattr__(self, "evaluated_at", evaluated_at)
+        if type(self.calculation_sha256) is not Sha256Digest:
+            raise ValueError("calculation_sha256 must be an exact Sha256Digest")
+        expected_calculation_sha256 = synthetic_pricing_calculation_sha256(
+            quote_sha256=self.quote_sha256,
+            usage_sha256=self.usage_sha256,
+            provider=self.provider,
+            model_id=self.model_id,
+            evaluated_at=self.evaluated_at,
+            provider_cost_native=self.provider_cost_native,
+            native_currency=self.native_currency,
+            estimated_cost_jpy=self.estimated_cost_jpy,
+        )
+        if self.calculation_sha256 != expected_calculation_sha256:
+            raise ValueError("calculation_sha256 does not match pricing fields")
+
+
+def calculate_synthetic_pricing_reference(
+    *,
+    usage: ProviderUsage,
+    provider: str,
+    model_id: str,
+    quote: SyntheticPricingQuote,
+    evaluated_at: datetime,
+) -> PricingResult:
+    """Pure approved reference calculation for recorded synthetic pricing."""
+
+    if type(usage) is not ProviderUsage:
+        raise ValueError("usage must be an exact ProviderUsage")
+    if type(provider) is not str or provider != "openai":
+        raise ValueError("provider must be openai")
+    _require_identifier(model_id, field_name="model_id")
+    if type(quote) is not SyntheticPricingQuote:
+        raise ValueError("quote must be an exact SyntheticPricingQuote")
+    expected_quote_sha256 = synthetic_quote_sha256(
+        quote_id=quote.quote_id,
+        provider=quote.provider,
+        model_id=quote.model_id,
+        native_currency=quote.native_currency,
+        input_per_million=quote.input_per_million,
+        cached_input_per_million=quote.cached_input_per_million,
+        output_per_million=quote.output_per_million,
+        jpy_per_native_unit=quote.jpy_per_native_unit,
+        observed_at=quote.observed_at,
+        expires_at=quote.expires_at,
+    )
+    if quote.quote_sha256 != expected_quote_sha256:
+        raise ValueError("quote_sha256 does not match quote fields")
+    evaluated_at = _require_utc(evaluated_at, field_name="evaluated_at")
+    if quote.provider != provider or quote.model_id != model_id:
+        raise ValueError("quote provider and model must match pricing inputs")
+    if not quote.observed_at <= evaluated_at < quote.expires_at:
+        raise ValueError("quote is outside its validity interval")
+
+    regular_input_tokens = usage.input_tokens - usage.cached_input_tokens
+    with localcontext(Context(prec=50, rounding=ROUND_HALF_EVEN)):
+        provider_cost_native = (
+            Decimal(regular_input_tokens) * quote.input_per_million
+            + Decimal(usage.cached_input_tokens) * quote.cached_input_per_million
+            + Decimal(usage.output_tokens) * quote.output_per_million
+        ) / _MILLION
+        estimated_cost_decimal = (
+            provider_cost_native * quote.jpy_per_native_unit
+        ).to_integral_value(rounding=ROUND_CEILING)
+    if estimated_cost_decimal < 0 or estimated_cost_decimal > _MAX_SIGNED_BIGINT:
+        raise ValueError("calculated JPY cost exceeds the supported range")
+    estimated_cost_jpy = int(estimated_cost_decimal)
+    usage_sha256 = synthetic_usage_sha256(usage)
+    calculation_sha256 = synthetic_pricing_calculation_sha256(
+        quote_sha256=quote.quote_sha256,
+        usage_sha256=usage_sha256,
+        provider=provider,
+        model_id=model_id,
+        evaluated_at=evaluated_at,
+        provider_cost_native=provider_cost_native,
+        native_currency=quote.native_currency,
+        estimated_cost_jpy=estimated_cost_jpy,
+    )
+    return PricingResult(
+        estimated_cost_jpy=estimated_cost_jpy,
+        provider_cost_native=provider_cost_native,
+        native_currency=quote.native_currency,
+        quote_id=quote.quote_id,
+        quote_sha256=quote.quote_sha256,
+        provider=provider,
+        model_id=model_id,
+        usage_sha256=usage_sha256,
+        evaluated_at=evaluated_at,
+        calculation_sha256=calculation_sha256,
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -649,6 +896,8 @@ class ResolvedProviderMetadata:
         received_at = _require_utc(self.received_at, field_name="received_at")
         object.__setattr__(self, "response_created_at", response_created_at)
         object.__setattr__(self, "received_at", received_at)
+        if received_at < response_created_at:
+            raise ValueError("received_at cannot precede response_created_at")
         _require_exact_integer(self.latency_ms, field_name="latency_ms")
 
 
@@ -772,6 +1021,7 @@ type ProviderResult = ProviderSuccess | ProviderRefusal | ProviderIncomplete
 __all__ = [
     "ArtifactRef",
     "CanonicalJsonObject",
+    "calculate_synthetic_pricing_reference",
     "IncompleteReason",
     "JsonValue",
     "MessageRole",
@@ -788,4 +1038,7 @@ __all__ = [
     "StructuredOutputSchema",
     "StructuredTaskRequest",
     "SyntheticPricingQuote",
+    "synthetic_pricing_calculation_sha256",
+    "synthetic_quote_sha256",
+    "synthetic_usage_sha256",
 ]

@@ -52,8 +52,8 @@ source_artifacts:
   bytes: 33026
   sha256: 79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9
 - uri: repo://scripts/object_storage_service.sh
-  bytes: 15876
-  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
+  bytes: 16621
+  sha256: 0235974182dcbdebd0277cb140e2d1cb78ed7a5a94fd45d418d0aebacfcdecd5
 - uri: repo://scripts/object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -76,8 +76,8 @@ source_artifacts:
   bytes: 26913
   sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
 - uri: repo://README.md
-  bytes: 55645
-  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+  bytes: 57403
+  sha256: ad27d496fd7704646720fdc166c62997e10e8affdd7a426891c54c0ae1efaa00
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://.github/CODEOWNERS

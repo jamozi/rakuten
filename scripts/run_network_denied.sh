@@ -86,6 +86,52 @@ if [[ $unshare_owner != 0 ]] || (( (8#$unshare_mode & 0022) != 0 )); then
   exit 69
 fi
 
+validate_privileged_helper() {
+  local label=$1
+  local path=$2
+  local require_setuid=$3
+  local owner
+  local mode
+  if [[ ! -f $path || -L $path || ! -x $path ]]; then
+    printf 'error: trusted %s executable is unavailable\n' "$label" >&2
+    return 69
+  fi
+  owner=$(stat --format=%u -- "$path")
+  mode=$(stat --format=%a -- "$path")
+  if [[ $owner != 0 ]] || (( (8#$mode & 0022) != 0 )); then
+    printf 'error: %s executable ownership or mode is unsafe\n' "$label" >&2
+    return 69
+  fi
+  if [[ $require_setuid == true ]] && (( (8#$mode & 04000) == 0 )); then
+    printf 'error: %s executable is not set-user-ID root\n' "$label" >&2
+    return 69
+  fi
+}
+
+caller_uid=$EUID
+caller_gid=$(id -g)
+if [[ ! $caller_uid =~ ^[1-9][0-9]*$ || ! $caller_gid =~ ^[1-9][0-9]*$ ]]; then
+  printf 'error: caller identity is not a supported non-root numeric identity\n' >&2
+  exit 69
+fi
+
+launch_mode=user_namespace
+if ! env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+  "$unshare_executable" --user --map-current-user -- /bin/true \
+  >/dev/null 2>&1; then
+  readonly sudo_executable=/usr/bin/sudo
+  readonly setpriv_executable=/usr/bin/setpriv
+  validate_privileged_helper sudo "$sudo_executable" true
+  validate_privileged_helper setpriv "$setpriv_executable" false
+  if ! env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+    "$sudo_executable" -n -- /bin/true >/dev/null 2>&1; then
+    printf '%s\n' \
+      'error: user namespaces are unavailable and a trusted passwordless sudo fallback is not authorized' >&2
+    exit 69
+  fi
+  launch_mode=privileged_namespace_then_drop
+fi
+
 if ! parent_net_namespace=$(readlink -- /proc/self/ns/net); then
   printf 'error: parent network namespace is unreadable\n' >&2
   exit 69
@@ -111,16 +157,35 @@ case $parent_pid_namespace in
 esac
 
 cd -- "$repository_root"
-exec env -i \
-  PATH=/usr/bin:/bin \
-  HOME="$canonical_home" \
-  LANG=C.UTF-8 \
-  LC_ALL=C.UTF-8 \
-  TZ=UTC \
-  PYTHONDONTWRITEBYTECODE=1 \
-  RAOS_PARENT_NET_NS="$parent_net_namespace" \
-  RAOS_PARENT_PID_NS="$parent_pid_namespace" \
-  RAOS_NETWORK_DENIED=1 \
+common_environment=(
+  PATH=/usr/bin:/bin
+  HOME="$canonical_home"
+  LANG=C.UTF-8
+  LC_ALL=C.UTF-8
+  TZ=UTC
+  PYTHONDONTWRITEBYTECODE=1
+  RAOS_PARENT_NET_NS="$parent_net_namespace"
+  RAOS_PARENT_PID_NS="$parent_pid_namespace"
+  RAOS_NETWORK_DENIED=1
+)
+if [[ $launch_mode == user_namespace ]]; then
+  launcher=(
+    "$unshare_executable" --user --map-current-user --net --pid --fork
+    --kill-child --
+    /usr/bin/python3 -I "$assertion" --exec -- "$canonical_command" "$@"
+  )
+else
+  launcher=(
+    "$sudo_executable" -n --
+    /usr/bin/env -i "${common_environment[@]}"
+    "$unshare_executable" --net --pid --fork --kill-child --mount-proc
+    "$setpriv_executable"
+    --reuid="$caller_uid" --regid="$caller_gid" --clear-groups --no-new-privs
+    /usr/bin/python3 -I "$assertion" --exec -- "$canonical_command" "$@"
+  )
+fi
+
+exec env -i "${common_environment[@]}" \
   /usr/bin/python3 -I -c '
 import os
 import resource
@@ -139,6 +204,4 @@ if soft_limit == resource.RLIM_INFINITY:
     soft_limit = 1 << 20
 os.closerange(3, int(soft_limit))
 os.execv(sys.argv[1], sys.argv[1:])
-' "$unshare_executable" --user --map-current-user --net --pid --fork \
-  --kill-child -- \
-  /usr/bin/python3 -I "$assertion" --exec -- "$canonical_command" "$@"
+' "${launcher[@]}"

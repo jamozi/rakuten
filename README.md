@@ -441,20 +441,34 @@ minimal environment. A direct local call immediately enters
 the version probes and job wrapper run after isolation.
 
 The guard requires a non-root caller, rejects sockets on standard descriptors,
-closes every inherited descriptor above 2, and creates fresh Linux user,
-network, and PID namespaces with the non-root current-user mapping. Only
-loopback remains, the PID namespace is killed with the command, and background
-descendants cannot survive the boundary. Before the requested command starts,
-`scripts/assert_network_denied.py` fails closed unless both namespaces differ
-from their parents, the entry process is PID 1, the identity is non-root, and
-IPv4/IPv6 external routes are unavailable. It then installs an inherited
-`no_new_privs` seccomp filter that denies network-capable socket creation,
-connect/bind/listen/accept, and io_uring bypasses, including pathname Unix
-socket access to host DNS or proxy services. Local `socketpair` remains
-available because uv/Node use it for in-process signalling and no inherited or
-connectable socket survives. The three Make targets repeat the assertion
-through `ci-network-assert`. Direct Make check targets remain developer
-conveniences; recorded evidence uses the guarded wrapper.
+and closes every inherited descriptor above 2. Its primary path first proves
+that `/usr/bin/unshare` can create an unprivileged current-user mapping, then
+creates fresh Linux user, network, and PID namespaces with that non-root
+mapping. Only when the host rejects that probe may the wrapper consider its
+privileged fallback. That fallback requires fixed `/usr/bin/sudo` and
+`/usr/bin/setpriv` executables that are regular, executable, non-symlink files,
+owned by root, and not group- or world-writable; `sudo` must also be set-user-ID
+root, and passwordless `sudo -n` must already be authorized. It uses root only
+to create fresh network and PID namespaces, then `setpriv` restores the
+original non-root numeric UID/GID, clears supplementary groups, and applies
+`no_new_privs` before the repository assertion or requested command can run.
+An unsupported identity, unsafe helper, failed non-interactive sudo check, or
+namespace/security check fails closed with exit 69; the checked command is
+never run as root.
+
+On either eligible path, only loopback remains, the PID namespace is killed
+with the command, and background descendants cannot survive the boundary.
+Before the requested command starts, `scripts/assert_network_denied.py` fails
+closed unless both namespaces differ from their parents, the entry process is
+PID 1, the identity is non-root, and IPv4/IPv6 external routes are unavailable.
+It then installs an inherited `no_new_privs` seccomp filter that denies
+network-capable socket creation, connect/bind/listen/accept, and io_uring
+bypasses, including pathname Unix socket access to host DNS or proxy services.
+Local `socketpair` remains available because uv/Node use it for in-process
+signalling and no inherited or connectable socket survives. The three Make
+targets repeat the assertion through `ci-network-assert`. Direct Make check
+targets remain developer conveniences; recorded evidence uses the guarded
+wrapper.
 
 The ST-0106 adversarial suite also verifies the guard from an unsandboxed
 parent: fresh namespace entry, inherited TCP and standard-descriptor sockets,
@@ -464,9 +478,14 @@ parent-side integration cases are reported as explicit delegated skips because
 Linux correctly prevents their nested socket setup. An always-collected test
 re-runs `scripts/assert_network_denied.py`, so setting
 `RAOS_NETWORK_DENIED=1` without the real namespace, `no_new_privs`, and seccomp
-state fails instead of bypassing the cases. A direct `pytest -q tests/st0106`
-run executes all ten parent-side cases; the guarded unit job independently
-proves its active outer boundary before accepting the delegation.
+state fails instead of bypassing the cases. The suite probes host support and
+skips only the two root-mapped user-namespace negative fixtures when that
+facility is unavailable; on a primary-path-capable host, a direct
+`pytest -q tests/st0106` run executes all ten parent-side cases. The guarded
+unit job independently proves its active outer boundary before accepting the
+delegation. Structural coverage of the privileged path is not hosted fallback
+runtime evidence; that path remains unexecuted unless it actually runs on a
+host satisfying every prerequisite above.
 
 The secret job uses the same network-denied guard. Its exact local equivalent
 must be run from a valid, non-shallow Git clone so both the maintained worktree
@@ -628,6 +647,15 @@ scripts/object_storage_service.sh --docker /absolute/path/to/docker up
 scripts/object_storage_service.sh --docker /absolute/path/to/docker check
 scripts/object_storage_service.sh --docker /absolute/path/to/docker down
 ```
+
+The Docker Inspect binding contract reads the container's
+`.NetworkSettings.Ports` JSON exactly once; it does not parse text from either
+`docker compose port` or `docker port`. It requires exactly one `8333/tcp`
+binding with `HostIp` equal to `127.0.0.1` and a decimal `HostPort` in
+`1024..65535`. Other exposed ports may appear only with `null` or empty
+bindings. Malformed JSON, missing S3 bindings, public or multiple bindings,
+malformed or out-of-range ports, and additional actual bindings all fail
+closed.
 
 `up` creates or verifies the lock-capable private bucket and enables
 versioning. `check` writes two versions of the maintained fixture, retrieves

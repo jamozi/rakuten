@@ -27,6 +27,32 @@ requires_unsandboxed_parent = pytest.mark.skipif(
 )
 
 
+def _unprivileged_user_namespaces_available() -> bool:
+    result = subprocess.run(
+        [
+            "/usr/bin/unshare",
+            "--user",
+            "--map-current-user",
+            "--",
+            "/bin/true",
+        ],
+        cwd=REPOSITORY_ROOT,
+        env={"PATH": os.defpath},
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        timeout=10,
+    )
+    return result.returncode == 0
+
+
+USER_NAMESPACE_AVAILABLE = _unprivileged_user_namespaces_available()
+requires_user_namespace = pytest.mark.skipif(
+    not USER_NAMESPACE_AVAILABLE,
+    reason="host does not permit unprivileged user-namespace setup for this negative fixture",
+)
+
+
 def run_guard(
     home: Path,
     *command: str,
@@ -66,7 +92,20 @@ def test_network_wrapper_is_hardened_and_has_valid_shell() -> None:
     content = WRAPPER.read_text(encoding="utf-8")
     assert content.startswith("#!/bin/bash -p\n\nPATH=/usr/bin:/bin")
     assert "exec env -i" in content
-    assert "--user --map-current-user --net --pid --fork" in content
+    assert "launch_mode=user_namespace" in content
+    assert "launch_mode=privileged_namespace_then_drop" in content
+    assert (
+        '"$unshare_executable" --user --map-current-user --net --pid --fork' in content
+    )
+    assert (
+        '"$unshare_executable" --net --pid --fork --kill-child --mount-proc' in content
+    )
+    assert "trusted passwordless sudo fallback" in content
+    assert '"$sudo_executable" -n --' in content
+    assert (
+        '--reuid="$caller_uid" --regid="$caller_gid" --clear-groups --no-new-privs'
+        in content
+    )
     assert "--kill-child --" in content
     assert "EUID == 0" in content
     assert "RAOS_PARENT_NET_NS" in content
@@ -311,6 +350,7 @@ def test_assertion_rejects_the_parent_network_namespace() -> None:
     assert "network_isolation=namespace-not-isolated" in result.stderr
 
 
+@requires_user_namespace
 def test_assertion_rejects_a_root_mapped_child_namespace() -> None:
     parent = os.readlink("/proc/self/ns/net")
     parent_pid = os.readlink("/proc/self/ns/pid")
@@ -344,6 +384,7 @@ def test_assertion_rejects_a_root_mapped_child_namespace() -> None:
     assert "network_isolation=privileged-identity" in result.stderr
 
 
+@requires_user_namespace
 def test_wrapper_rejects_a_root_mapped_caller(tmp_path: Path) -> None:
     result = subprocess.run(
         [

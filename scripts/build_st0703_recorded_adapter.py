@@ -12,6 +12,7 @@ from pathlib import Path, PurePosixPath
 import re
 import stat
 import sys
+import tempfile
 import tomllib
 import unicodedata
 from urllib.parse import urlsplit
@@ -32,8 +33,27 @@ FIXTURE_ROOT: Final = Path("changes/st-0703/fixtures/recorded")
 PYPROJECT_PATH: Final = Path("pyproject.toml")
 UV_LOCK_PATH: Final = Path("uv.lock")
 UV_CONFIG_PATH: Final = Path("uv.toml")
+GENERATED_REGISTRY_PATH: Final = Path(
+    "changes/st-0703/generated/recorded-fixture-registry.v1.json"
+)
+MANIFEST_PATH: Final = Path("changes/st-0703/manifest.yaml")
+IMPLEMENTATION_SOURCE_PATHS: Final = (
+    Path("changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v2.yaml"),
+    Path("changes/st-0703/README.md"),
+    Path("python/raos/adapters/__init__.py"),
+    Path("python/raos/adapters/openai_responses.py"),
+    Path("python/raos/adapters/recorded_ai.py"),
+    Path("python/raos/domain/ai/provider.py"),
+    Path("python/raos/ports/ai_provider.py"),
+    Path("scripts/build_st0703_recorded_adapter.py"),
+    Path("tests/st0703/conftest.py"),
+    Path("tests/st0703/test_adapter.py"),
+    Path("tests/st0703/test_generation.py"),
+    Path("tests/st0703/test_implementation_manifest.py"),
+    Path("tests/st0703/test_recorded_support.py"),
+)
 EXPECTED_CONTRACT_SHA256: Final = (
-    "5a2d68cb47dcf4494b0f3f8621579d163e25ca1f250682591f45cf32af108dbc"
+    "8b32a862ce58fe17da931012be7c5d1ab71c0630b5bc6bb20234391d8323b97c"
 )
 EXPECTED_PYPROJECT_SHA256: Final = (
     "d7a03c351a2ef20d6aaf45b4dff7775b3ce9dbb7e051323cfbf35d295344814e"
@@ -1435,29 +1455,196 @@ def render_fixture_registry(root: Path = REPOSITORY_ROOT) -> bytes:
     ).encode("utf-8")
 
 
+def _artifact_record(root: Path, relative: Path) -> dict[str, object]:
+    content = _read_regular(
+        root,
+        relative,
+        label=f"source artifact {relative.as_posix()}",
+        maximum_bytes=MAX_PROVENANCE_SOURCE_BYTES,
+    )
+    return {
+        "uri": f"repo://{relative.as_posix()}",
+        "bytes": len(content),
+        "sha256": _sha256(content),
+    }
+
+
+def render_manifest(
+    root: Path = REPOSITORY_ROOT,
+    *,
+    registry_content: bytes | None = None,
+) -> bytes:
+    """Render the implementation manifest from the verified source closure."""
+
+    registry_bytes = (
+        render_fixture_registry(root)
+        if registry_content is None
+        else bytes(registry_content)
+    )
+    registry = _strict_fixture_json(registry_bytes, label="generated fixture registry")
+    contract_content = _read_regular(
+        root,
+        CONTRACT_PATH,
+        label="ST-0703 contract",
+        maximum_bytes=MAX_CONTRACT_BYTES,
+    )
+    contract = _mapping(
+        _strict_yaml(contract_content, label="ST-0703 contract"),
+        label="ST-0703 contract",
+    )
+    registry_sources = _sequence(
+        registry.get("source_inputs"), label="registry source_inputs"
+    )
+    source_paths = {CONTRACT_PATH, PYPROJECT_PATH, UV_LOCK_PATH, UV_CONFIG_PATH}
+    source_paths.update(IMPLEMENTATION_SOURCE_PATHS)
+    source_paths.update(FIXTURE_ROOT / spec.path for spec in FIXTURE_SPECS)
+    for raw_record in registry_sources:
+        record = _mapping(raw_record, label="registry source input")
+        path = record.get("path")
+        if type(path) is not str:
+            raise RuntimeError("registry source path must be text")
+        source_paths.add(_normalized_relative(path, label="registry source path"))
+    sources = [_artifact_record(root, relative) for relative in sorted(source_paths)]
+    boundary = _mapping(contract.get("boundary"), label="contract boundary")
+    manifest = {
+        "document": {
+            "id": "RAOS-OPENAI-RESPONSES-ADAPTER-MANIFEST-001",
+            "version": "1.0.0",
+            "story_id": "ST-0703",
+            "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+            "generated_by": "repo://scripts/build_st0703_recorded_adapter.py",
+            "generation_command": (
+                "uv run --locked --no-sync --no-env-file python "
+                "scripts/build_st0703_recorded_adapter.py"
+            ),
+        },
+        "provenance": {
+            "contract_uri": f"repo://{CONTRACT_PATH.as_posix()}",
+            "contract_sha256": _sha256(contract_content),
+            "handoff_uri": ("repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v2.yaml"),
+            "fixture_registry_uri": (f"repo://{GENERATED_REGISTRY_PATH.as_posix()}"),
+            "fixture_registry_sha256": _sha256(registry_bytes),
+            "predecessor_story_ids": ["ST-0204", "ST-0701"],
+        },
+        "evidence_chain": {"stories": ["ST-0204", "ST-0701", "ST-0703"]},
+        "source_artifact_count": len(sources),
+        "source_artifacts": sources,
+        "generated_artifact_count": 1,
+        "generated_artifacts": [
+            {
+                "uri": f"repo://{GENERATED_REGISTRY_PATH.as_posix()}",
+                "bytes": len(registry_bytes),
+                "sha256": _sha256(registry_bytes),
+            }
+        ],
+        "manifest_self_integrity": {
+            "included_in_source_artifacts": False,
+            "verification": "deterministic byte-for-byte regeneration via --check-installed",
+        },
+        "boundary": dict(boundary),
+    }
+    return yaml.safe_dump(
+        manifest,
+        allow_unicode=True,
+        default_flow_style=False,
+        sort_keys=False,
+        width=1000,
+    ).encode("utf-8")
+
+
+def _atomic_write(root: Path, relative: Path, content: bytes) -> None:
+    destination = root / relative
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists() or destination.is_symlink():
+        metadata = destination.lstat()
+        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISREG(metadata.st_mode):
+            raise RuntimeError("generated destination must be a regular file")
+        if metadata.st_nlink != 1:
+            raise RuntimeError("generated destination must have one link")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination.name}.", suffix=".tmp", dir=destination.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, destination)
+        directory_descriptor = os.open(destination.parent, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(directory_descriptor)
+        finally:
+            os.close(directory_descriptor)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def generate(root: Path = REPOSITORY_ROOT) -> str:
+    """Generate the fixture registry and implementation manifest."""
+
+    registry = render_fixture_registry(root)
+    manifest = render_manifest(root, registry_content=registry)
+    _atomic_write(root, GENERATED_REGISTRY_PATH, registry)
+    _atomic_write(root, MANIFEST_PATH, manifest)
+    return _sha256(registry)
+
+
 def check(root: Path = REPOSITORY_ROOT) -> str:
     """Return the deterministic registry digest without writing any file."""
 
     return _sha256(render_fixture_registry(root))
 
 
+def check_installed(root: Path = REPOSITORY_ROOT) -> str:
+    """Verify committed generated artifacts without writing."""
+
+    registry = render_fixture_registry(root)
+    manifest = render_manifest(root, registry_content=registry)
+    for relative, expected in (
+        (GENERATED_REGISTRY_PATH, registry),
+        (MANIFEST_PATH, manifest),
+    ):
+        actual = _read_regular(
+            root,
+            relative,
+            label=f"generated artifact {relative.as_posix()}",
+            maximum_bytes=MAX_PROVENANCE_SOURCE_BYTES,
+        )
+        if actual != expected:
+            raise RuntimeError(f"generated artifact drift: {relative.as_posix()}")
+    return _sha256(registry)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
         "--check",
         action="store_true",
         help="validate the closed fixture inventory without writing",
     )
+    mode.add_argument(
+        "--check-installed",
+        action="store_true",
+        help="verify the committed registry and manifest without writing",
+    )
     arguments = parser.parse_args(argv)
-    if not arguments.check:
-        parser.error("this checkpoint exposes only the read-only --check operation")
     try:
-        registry_sha256 = check()
+        if arguments.check_installed:
+            registry_sha256 = check_installed()
+            operation = "installed artifacts are current"
+        elif arguments.check:
+            registry_sha256 = check()
+            operation = "recorded fixtures are current"
+        else:
+            registry_sha256 = generate()
+            operation = "recorded artifacts generated"
     except (OSError, RuntimeError, ValueError, yaml.YAMLError) as exc:
-        print(f"ST-0703 recorded fixture check failed: {exc}", file=sys.stderr)
+        print(f"ST-0703 recorded fixture operation failed: {exc}", file=sys.stderr)
         return 1
     print(
-        "ST-0703 recorded fixtures are current "
+        f"ST-0703 {operation} "
         f"(count={len(FIXTURE_SPECS)}, registry_sha256={registry_sha256})"
     )
     return 0

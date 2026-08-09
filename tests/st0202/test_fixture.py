@@ -53,7 +53,12 @@ def _handler(state: _S3State) -> type[BaseHTTPRequestHandler]:
                 self.send_header(name, value)
             self.end_headers()
             if self.command != "HEAD":
-                self.wfile.write(body)
+                try:
+                    self.wfile.write(body)
+                except BrokenPipeError, ConnectionResetError:
+                    # Negative client cases intentionally stop reading after the
+                    # condition under test has been observed.
+                    return
 
         def _signed(self) -> bool:
             authorization = self.headers.get("Authorization", "")

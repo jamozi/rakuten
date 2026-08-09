@@ -1,0 +1,33 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-0703
+  handoff_uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml
+  handoff_sha256: a510526678190b0512a5d28e016f1ab978469e10cc5063d6a2482f93b6ce43c8
+  decision_source_uri: repo://changes/st-0703/DESIGN-DECISION-REQUEST-v3.md
+  decision_source_sha256: ed65ac3237b60be87eed02bb296799e3da764052f4b4820dfaec4d3d9a367166
+  reconciliation_uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v3.md
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST0703_RECORDED_SCOPE_ONLY
+  approved_by: repository_owner:jamozi
+  approved_at: '2026-08-09T10:31:10Z'
+  approval_source: exact SHA-256 followed by explicit approval in the connected Codex conversation
+  approved_sha256_statement: a510526678190b0512a5d28e016f1ab978469e10cc5063d6a2482f93b6ce43c8
+  approved_decisions:
+    - ST0703-V3-D1
+    - ST0703-V3-D2
+    - ST0703-V3-D3
+    - ST0703-V3-D4
+    - ST0703-V3-D5
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-0703
+    mechanical_owner_regeneration:
+      - ST-0204 manifest
+      - ST-0701 manifest
+      - ST-0801 manifest
+    formal_tst_017: NOT_EXECUTED
+    live_provider_validation: NOT_EXECUTED
+    credential_or_secret_use: NOT_AUTHORIZED
+    staging: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED

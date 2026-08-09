@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
 from types import MappingProxyType
 from typing import Protocol, runtime_checkable
@@ -40,25 +41,6 @@ class ProviderErrorCode(str, Enum):
     INVALID_SCHEMA = "INVALID_SCHEMA"
 
 
-_ERROR_MESSAGES = MappingProxyType(
-    {
-        ProviderErrorCode.RATE_LIMIT: "provider rate limit",
-        ProviderErrorCode.TIMEOUT: "provider timeout",
-        ProviderErrorCode.AUTHENTICATION: "provider authentication failed",
-        ProviderErrorCode.PERMISSION: "provider permission denied",
-        ProviderErrorCode.INVALID_REQUEST: "provider request rejected",
-        ProviderErrorCode.SERVER_ERROR: "provider server error",
-        ProviderErrorCode.UNAVAILABLE: "provider unavailable",
-        ProviderErrorCode.MALFORMED_RESPONSE: "provider response rejected",
-        ProviderErrorCode.UNKNOWN: "provider operation failed",
-        ProviderErrorCode.RECORDER_FAILURE: "provider exchange recording failed",
-        ProviderErrorCode.PRICING_MISSING: "recorded pricing is unavailable",
-        ProviderErrorCode.PRICING_MISMATCH: "recorded pricing does not match",
-        ProviderErrorCode.ROUTE_MISMATCH: "provider route does not match",
-        ProviderErrorCode.INVALID_SCHEMA: "structured output schema is invalid",
-    }
-)
-
 _RETRYABLE_BY_CODE = MappingProxyType(
     {
         ProviderErrorCode.RATE_LIMIT: True,
@@ -82,22 +64,24 @@ _RETRYABLE_BY_CODE = MappingProxyType(
 class ProviderError(RuntimeError):
     """Sanitized stable provider failure with no raw exception retention."""
 
-    __slots__ = ("_code", "_sealed")
+    __slots__ = ("_sealed", "_stable_code")
+    _sealed: bool
+    _stable_code: ProviderErrorCode
 
-    def __init__(self, code: ProviderErrorCode) -> None:
-        if type(code) is not ProviderErrorCode:
-            raise TypeError("code must be an exact ProviderErrorCode")
-        super().__init__(_ERROR_MESSAGES[code])
-        object.__setattr__(self, "_code", code)
+    def __init__(self, stable_code: ProviderErrorCode) -> None:
+        if type(stable_code) is not ProviderErrorCode:
+            raise TypeError("stable_code must be an exact ProviderErrorCode")
+        super().__init__()
+        object.__setattr__(self, "_stable_code", stable_code)
         object.__setattr__(self, "_sealed", True)
 
     @property
-    def code(self) -> ProviderErrorCode:
-        return self._code
+    def stable_code(self) -> ProviderErrorCode:
+        return self._stable_code
 
     @property
     def retryable(self) -> bool:
-        return _RETRYABLE_BY_CODE[self._code]
+        return _RETRYABLE_BY_CODE[self._stable_code]
 
     def __setattr__(self, name: str, value: object) -> None:
         if getattr(self, "_sealed", False):
@@ -110,7 +94,10 @@ class ProviderError(RuntimeError):
         super().__delattr__(name)
 
     def __repr__(self) -> str:
-        return f"ProviderError(code={self.code!r}, retryable={self.retryable!r})"
+        return (
+            "ProviderError("
+            f"stable_code={self.stable_code!r}, retryable={self.retryable!r})"
+        )
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -169,8 +156,12 @@ class RecordedCostCalculator(Protocol):
 
     def calculate(
         self,
+        *,
         usage: ProviderUsage,
+        provider: str,
+        model_id: str,
         quote: SyntheticPricingQuote,
+        evaluated_at: datetime,
     ) -> PricingResult:
         """Return a quote-bound deterministic pricing result."""
 

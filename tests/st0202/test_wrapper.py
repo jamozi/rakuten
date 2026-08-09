@@ -77,7 +77,17 @@ if payload == ["compose", "version", "--short"]:
     raise SystemExit(0)
 if payload and payload[0] == "inspect":
     template = payload[payload.index("--format") + 1]
-    if ".Config.Image" in template:
+    if ".NetworkSettings.Ports" in template:
+        port = os.environ.get("RAOS_OBJECT_STORAGE_PORT") or "49123"
+        inventory = {{
+            "8333/tcp": [{{"HostIp": "127.0.0.1", "HostPort": port}}],
+        }}
+        if mode == "public_port":
+            inventory["8333/tcp"][0]["HostIp"] = "0.0.0.0"
+        elif mode == "extra_port":
+            inventory["9333/tcp"] = [{{"HostIp": "0.0.0.0", "HostPort": "9333"}}]
+        print(json.dumps(inventory, separators=(",", ":"), sort_keys=True))
+    elif ".Config.Image" in template:
         print("seaweedfs:latest" if mode == "wrong_image" else {EXPECTED_IMAGE!r})
     elif ".Image" in template:
         print("sha256:" + "f" * 64 if mode == "wrong_config" else {EXPECTED_CONFIG_DIGEST!r})
@@ -96,13 +106,6 @@ if payload[:2] == ["image", "inspect"]:
         print("unknown" if mode == "wrong_labels" else "Apache-2.0")
     elif "source" in template:
         print("https://example.invalid" if mode == "wrong_labels" else "https://github.com/seaweedfs/seaweedfs")
-    raise SystemExit(0)
-if payload and payload[0] == "port":
-    port = os.environ.get("RAOS_OBJECT_STORAGE_PORT") or "49123"
-    if mode == "extra_port":
-        print(f"8333/tcp -> 127.0.0.1:{{port}}\\n9333/tcp -> 0.0.0.0:9333")
-    else:
-        print(f"8333/tcp -> 127.0.0.1:{{port}}")
     raise SystemExit(0)
 if not payload or payload[0] != "compose":
     print("unexpected Docker operation", file=sys.stderr)
@@ -182,7 +185,10 @@ def _rows(log: Path) -> list[dict[str, Any]]:
 
 
 def _compose_operation(row: dict[str, Any]) -> str | None:
-    for item in row["argv"]:
+    arguments = row["argv"]
+    if arguments[2:3] != ["compose"]:
+        return None
+    for item in arguments[3:]:
         if item in {"config", "up", "ps", "exec", "port", "down"}:
             return str(item)
     return None
@@ -301,6 +307,14 @@ def test_disposable_test_targets_only_object_service_and_removes_volume(
     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
     assert json.loads(result.stdout)["runtime"] == "LOCAL_CANDIDATE_PASS"
     rows = _rows(docker_log)
+    assert not any(_compose_operation(row) == "port" for row in rows)
+    port_inspections = [
+        row
+        for row in rows
+        if row["argv"][2:3] == ["inspect"]
+        and any(".NetworkSettings.Ports" in item for item in row["argv"])
+    ]
+    assert len(port_inspections) == 1
     up = next(row for row in rows if _compose_operation(row) == "up")
     assert up["argv"][-6:] == [
         "up",
