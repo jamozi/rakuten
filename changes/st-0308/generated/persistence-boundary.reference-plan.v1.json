@@ -1,0 +1,489 @@
+{
+  "document": {
+    "id": "RAOS-ST0308-PERSISTENCE-BOUNDARY-REFERENCE-001",
+    "version": "1.0.0",
+    "story": "ST-0308",
+    "status": "MAXIMUM_SAFE_REFERENCE_ONLY_LOCAL_SLICE",
+    "classification": "SOURCE_BOUND_NON_AUTHORITATIVE_NON_EXECUTABLE_PERSISTENCE_BOUNDARY_REFERENCE_PLAN",
+    "authority": "NON_AUTHORITATIVE",
+    "executable": false,
+    "implementation_dependencies": [
+      {
+        "uri": "repo://scripts/build_st1506_production_deployment.py",
+        "bytes": 42566,
+        "sha256": "ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f",
+        "use": "DESCRIPTOR_SAFE_YAML_PATH_AND_ATOMIC_OUTPUT_ONLY"
+      }
+    ]
+  },
+  "source_bindings": [
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "bytes": 7943,
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "bytes": 3955,
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "bytes": 4956,
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+      "bytes": 7929,
+      "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "bytes": 24993,
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md",
+      "bytes": 6609,
+      "sha256": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
+    },
+    {
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "bytes": 11395,
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "bytes": 71458,
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "uri": "repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
+      "bytes": 10741,
+      "sha256": "9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b"
+    },
+    {
+      "uri": "repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md",
+      "bytes": 150878,
+      "sha256": "00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3"
+    },
+    {
+      "uri": "repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md",
+      "bytes": 448029,
+      "sha256": "dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c"
+    },
+    {
+      "uri": "repo://changes/st-0308/DESIGN-DECISION-REQUEST.md",
+      "bytes": 12490,
+      "sha256": "f3d8ec753ce8f60c830d4cf434820ba6b56fc3355e153c2c9421302e691c962b"
+    },
+    {
+      "uri": "repo://changes/st-0308/CANONICAL-RECONCILIATION-v3.md",
+      "bytes": 11113,
+      "sha256": "91748530eafc018823b5a6a74cc2ca052569cb3c46f6e90dd1224d720d3fdc08"
+    },
+    {
+      "uri": "repo://changes/st-0308/IMPLEMENTATION-READINESS-v3.md",
+      "bytes": 11305,
+      "sha256": "29e90628cc8ed4259b54486ab12abddb606ae414e3a2391c5055dbbf521577f7"
+    },
+    {
+      "uri": "repo://changes/st-0308/contracts/design-handoff-validation.v1.yaml",
+      "bytes": 18293,
+      "sha256": "05d0e4a78f302e4286bf3d861d7e31625993ecbc7f718f5f9a4024586c06879c"
+    },
+    {
+      "uri": "repo://scripts/validate_st0308_design_handoff.py",
+      "bytes": 104128,
+      "sha256": "e90cf0c39b8b965a521d11403c13e929d381c58ce077050bc36744efcc662dcc"
+    }
+  ],
+  "predecessor_bindings": {
+    "ST-0304": {
+      "classification": "OPAQUE_CONTEXT_ONLY",
+      "semantic_projection": "FORBIDDEN",
+      "rows": [
+        {
+          "uri": "repo://changes/st-0304/contracts/domain-schema.v1.yaml",
+          "bytes": 11378,
+          "sha256": "8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/01-domain-physical.sql",
+          "bytes": 67717,
+          "sha256": "b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/02-domain-physical.sql",
+          "bytes": 63003,
+          "sha256": "b685751e4e2743ea6c7202e8ce726486ac152e46987bb832e6777e61b987aafc"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/03-domain-physical.sql",
+          "bytes": 72315,
+          "sha256": "f95ad5a2fd349177b01f97237d0d9a3fb598b2781828e9531a04c3c42b811b45"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/04-domain-physical.sql",
+          "bytes": 72392,
+          "sha256": "4a3c029980e8c27957fac2291e7b0a8efb81eaf1faa74dee4e757b0836e7ba30"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/05-domain-physical.sql",
+          "bytes": 72390,
+          "sha256": "c78e946f9be015d461350f347f125a2cf8f01b267647a8685158af207cefc0ec"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/06-domain-physical.sql",
+          "bytes": 72312,
+          "sha256": "cc520254390d68fdc68d54c01ed6b95e031ea422814e5be924849ec61636904d"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/07-domain-physical.sql",
+          "bytes": 72283,
+          "sha256": "739cc2ecae7e49702da5e36be6e37eaebaa7a535be4a623c79dee86926212870"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/08-domain-physical.sql",
+          "bytes": 72327,
+          "sha256": "eafb7b89c6fa08bd74a8c13d89aa19aea3a946e739720a8cff9e6faa3ca2bfc4"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/09-domain-physical.sql",
+          "bytes": 72161,
+          "sha256": "6cebf09249f027662557038f8367bdc586030197911046be242543cd43502ae5"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/10-domain-physical.sql",
+          "bytes": 72195,
+          "sha256": "3d806436b7ed91f25e0396e15b914dda7258b743589ec4dc6c3f4272c9fcb38d"
+        },
+        {
+          "uri": "repo://changes/st-0304/contracts/physical/11-domain-physical.sql",
+          "bytes": 7630,
+          "sha256": "947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09"
+        },
+        {
+          "uri": "repo://changes/st-0304/generated/domain-catalog.v1.json",
+          "bytes": 967320,
+          "sha256": "41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208"
+        },
+        {
+          "uri": "repo://changes/st-0304/generated/domain-validation.v1.sql",
+          "bytes": 18856,
+          "sha256": "7e1ce307a5751fc5d95e4c06652f0e6fb41b8bdc29c583ea9cd0a3d83d1fa3a5"
+        },
+        {
+          "uri": "repo://changes/st-0304/manifest.yaml",
+          "bytes": 11667,
+          "sha256": "d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51"
+        },
+        {
+          "uri": "repo://migrations/versions/202608030004_domain_schemas.py",
+          "bytes": 106632,
+          "sha256": "632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407"
+        },
+        {
+          "uri": "repo://scripts/build_st0304_domain_schemas.py",
+          "bytes": 79921,
+          "sha256": "17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c"
+        },
+        {
+          "uri": "repo://tests/st0304/conftest.py",
+          "bytes": 776,
+          "sha256": "59c99e4d9ee73110414684404ead48a0ebfe7a358eade9677ad23b9f0b3b65a3"
+        },
+        {
+          "uri": "repo://tests/st0304/test_contract.py",
+          "bytes": 7609,
+          "sha256": "19785320e51da45e83a4107c3fbe61eebf035bfb4af030e788a913c666169e36"
+        },
+        {
+          "uri": "repo://tests/st0304/test_generation.py",
+          "bytes": 20567,
+          "sha256": "c10576b24da67e1cb8e30ea3a29cde20a17e6f7c488cbd75db314cb9cb325980"
+        },
+        {
+          "uri": "repo://tests/st0304/test_postgresql.py",
+          "bytes": 32924,
+          "sha256": "7e55e939432e78d13d55f60559fd6a8c0ed71405bf6bd3907b7af5632710d7ac"
+        }
+      ]
+    },
+    "ST-0105": {
+      "classification": "API_BINDINGS_ONLY_NOT_PERSISTENCE_DESIGN",
+      "semantic_projection": "MANIFEST_FACTS_ONLY",
+      "rows": [
+        {
+          "uri": "repo://contracts/raos-v0.4/contract-repository.v0.4.json",
+          "bytes": 65443,
+          "sha256": "54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef"
+        },
+        {
+          "uri": "repo://changes/st-0105/manifest.json",
+          "bytes": 250888,
+          "sha256": "7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7"
+        },
+        {
+          "uri": "repo://changes/st-0105/README.md",
+          "bytes": 4081,
+          "sha256": "15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de"
+        },
+        {
+          "uri": "repo://scripts/build_st0105_generated_contracts.py",
+          "bytes": 80107,
+          "sha256": "b91848efa9a35fa703e3cad08f04336c14c05a0a3fd182e7c97e75a554e372a4"
+        },
+        {
+          "uri": "repo://scripts/codegen_toolchain.sh",
+          "bytes": 4633,
+          "sha256": "35bbe2059363745b373546627cf68282233cfe50dbde5cecefdcf360ddd140c0"
+        },
+        {
+          "uri": "repo://tests/st0105/conftest.py",
+          "bytes": 2579,
+          "sha256": "4b0fe8dc6d88e787a37f5844d49f2e0e66ccc3d11f355f683b509a17f337ed1d"
+        },
+        {
+          "uri": "repo://tests/st0105/test_codegen_cli.py",
+          "bytes": 6948,
+          "sha256": "cb2a77ffb08c6ab24e570327614d99672370ca691a6c551baeef696ccbf86403"
+        },
+        {
+          "uri": "repo://tests/st0105/test_commands_and_docs.py",
+          "bytes": 6265,
+          "sha256": "dba5e94ad4a3e25198679e53eaffd27cfb46a4cbd2829348b8d4be644e40332c"
+        },
+        {
+          "uri": "repo://tests/st0105/test_determinism_and_safety.py",
+          "bytes": 28072,
+          "sha256": "00d10142e631e222c01c3d0f6667d07a4c010e067bdd36e71196515b819c25cf"
+        },
+        {
+          "uri": "repo://tests/st0105/test_generated_runtime.py",
+          "bytes": 4808,
+          "sha256": "766de70bda43fd5afe8bd8e8ec656289e7d79c5ba19ca3c3a09d1990642a33c2"
+        },
+        {
+          "uri": "repo://tests/st0105/test_manifest_contract.py",
+          "bytes": 7170,
+          "sha256": "491b9cbd2a9435c0ee442482514c4eaf4b1d4305c5e6d834abe4a7009fc4348b"
+        }
+      ],
+      "manifest_facts": {
+        "top_level_keys": [
+          "asyncapi_registry",
+          "document",
+          "http_clients",
+          "http_operations",
+          "intermediates",
+          "outputs",
+          "schema_bindings",
+          "source",
+          "tools"
+        ],
+        "source_artifacts": 306,
+        "schema_bindings": 224,
+        "openapi_documents": 3,
+        "asyncapi_documents": 1,
+        "clients": 3,
+        "http_operations": 185,
+        "asyncapi_channels": 22,
+        "asyncapi_operations": 37,
+        "asyncapi_messages": 105,
+        "outputs": 354,
+        "output_roots": [
+          "python/raos/generated",
+          "packages/web-contracts/src/generated"
+        ],
+        "current_tree_all_outputs_present": true,
+        "current_tree_all_output_hashes_match": true,
+        "predecessor_owner_check_claimed": false
+      }
+    }
+  },
+  "scope": {
+    "story_id": "ST-0308",
+    "title": "Persistence ports and repositories",
+    "dependencies": [
+      "ST-0304",
+      "ST-0105"
+    ],
+    "deliverables": [
+      "repositories",
+      "transaction boundary"
+    ],
+    "acceptance_criteria": [
+      "cross-module write rules"
+    ],
+    "required_suites": [
+      "TST-005",
+      "TST-008"
+    ],
+    "open_decisions": [],
+    "design_status": "APPROVED_FOR_IMPLEMENTATION",
+    "implementation_status": "NOT_STARTED",
+    "verification_status": "NOT_EXECUTED"
+  },
+  "local_design_gap_registry": {
+    "count": 6,
+    "selected_count": 0,
+    "unresolved_count": 6,
+    "canonical_open_decision_count": 0,
+    "canonical_open_decisions": [],
+    "gaps": [
+      {
+        "id": "ST0308-D1",
+        "source_kind": "LOCAL_NONCANONICAL_DESIGN_GAP",
+        "resolution_state": "UNRESOLVED",
+        "selected_value": null,
+        "resolution_payload": null,
+        "runtime_implementation": "BLOCKED"
+      },
+      {
+        "id": "ST0308-D2",
+        "source_kind": "LOCAL_NONCANONICAL_DESIGN_GAP",
+        "resolution_state": "UNRESOLVED",
+        "selected_value": null,
+        "resolution_payload": null,
+        "runtime_implementation": "BLOCKED"
+      },
+      {
+        "id": "ST0308-D3",
+        "source_kind": "LOCAL_NONCANONICAL_DESIGN_GAP",
+        "resolution_state": "UNRESOLVED",
+        "selected_value": null,
+        "resolution_payload": null,
+        "runtime_implementation": "BLOCKED"
+      },
+      {
+        "id": "ST0308-D4",
+        "source_kind": "LOCAL_NONCANONICAL_DESIGN_GAP",
+        "resolution_state": "UNRESOLVED",
+        "selected_value": null,
+        "resolution_payload": null,
+        "runtime_implementation": "BLOCKED"
+      },
+      {
+        "id": "ST0308-D5",
+        "source_kind": "LOCAL_NONCANONICAL_DESIGN_GAP",
+        "resolution_state": "UNRESOLVED",
+        "selected_value": null,
+        "resolution_payload": null,
+        "runtime_implementation": "BLOCKED"
+      },
+      {
+        "id": "ST0308-D6",
+        "source_kind": "LOCAL_NONCANONICAL_DESIGN_GAP",
+        "resolution_state": "UNRESOLVED",
+        "selected_value": null,
+        "resolution_payload": null,
+        "runtime_implementation": "BLOCKED"
+      }
+    ]
+  },
+  "selected_design": {
+    "repository_and_aggregate_inventory": null,
+    "inward_port_contracts": null,
+    "sqlalchemy_and_domain_mapping": null,
+    "unit_of_work_and_session_lifecycle": null,
+    "cross_module_writes_outbox_audit_and_idempotency": null,
+    "connection_factory_and_workload_identity": null,
+    "approved_handoff_uri": null,
+    "approved_handoff_sha256": null,
+    "conflict_free_canonical_reconciliation": null,
+    "repository_owner_approval": null
+  },
+  "implementation_inventory": {
+    "repository_ports": 0,
+    "repository_signatures": 0,
+    "repository_adapters": 0,
+    "unit_of_work_ports": 0,
+    "unit_of_work_implementations": 0,
+    "fake_repositories": 0,
+    "domain_models": 0,
+    "persistence_mappers": 0,
+    "runtime_factories": 0,
+    "migrations": 0,
+    "schema_changes": 0,
+    "role_changes": 0,
+    "grant_changes": 0,
+    "database_behaviors": 0,
+    "executable_artifacts": 0
+  },
+  "safe_defaults": {
+    "design_selections": "FORBIDDEN",
+    "unresolved_defaults_are_resolution": false,
+    "source_bindings_are_authority": false,
+    "repository_uow_fake_and_database_code": "FORBIDDEN",
+    "production": "DISABLED"
+  },
+  "activation": {
+    "enabled": false,
+    "status": "BLOCKED_PENDING_APPROVED_DESIGN_HANDOFF",
+    "authority": "NOT_GRANTED",
+    "approved_handoff_uri": null,
+    "approved_handoff_sha256": null,
+    "conflict_free_canonical_reconciliation": null,
+    "repository_owner_approval": null,
+    "runtime_eligible": false
+  },
+  "action_boundary": {
+    "counts": {
+      "repository_runtime": 0,
+      "unit_of_work_runtime": 0,
+      "fake_runtime": 0,
+      "database_connection": 0,
+      "database_read": 0,
+      "database_write": 0,
+      "transaction": 0,
+      "migration": 0,
+      "schema_change": 0,
+      "role_change": 0,
+      "grant_change": 0,
+      "external": 0,
+      "staging": 0,
+      "release": 0,
+      "production": 0
+    },
+    "database_access": "FORBIDDEN",
+    "credential_access": "FORBIDDEN",
+    "network_access": "FORBIDDEN",
+    "subprocess_execution": "FORBIDDEN",
+    "external_actions": "FORBIDDEN",
+    "staging_actions": "FORBIDDEN",
+    "release_actions": "FORBIDDEN",
+    "production_actions": "FORBIDDEN"
+  },
+  "evidence_boundary": {
+    "formal_tst_005": "NOT_EXECUTED",
+    "formal_tst_008": "NOT_EXECUTED",
+    "postgresql_runtime": "NOT_EXECUTED",
+    "security_verification": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "human_approval": "NOT_OBTAINED",
+    "canonical_reconciliation": "NOT_OBTAINED",
+    "effective_canonical_status": "UNCHANGED",
+    "acceptance_criteria_satisfied": false,
+    "local_evidence": "REFERENCE_CHECKS_ONLY"
+  },
+  "downstream_boundary": {
+    "st0308_runtime_readiness": false,
+    "st0308_acceptance_readiness": false,
+    "dependent_story_readiness": false,
+    "staging_readiness": false,
+    "release_readiness": false,
+    "production_readiness": false
+  },
+  "prohibited_interpretations": [
+    "LOCAL_DESIGN_GAPS_ARE_NOT_CANONICAL_OPEN_DECISIONS",
+    "NULL_SELECTIONS_DO_NOT_RESOLVE_D1_THROUGH_D6",
+    "REFERENCE_PLAN_IS_NOT_A_DESIGN_HANDOFF_OR_IMPLEMENTATION_AUTHORITY",
+    "PREDECESSOR_HASH_BINDING_DOES_NOT_SELECT_PERSISTENCE_DESIGN",
+    "ZERO_RUNTIME_ARTIFACTS_DO_NOT_SATISFY_ST0308_DELIVERABLES",
+    "LOCAL_CHECKS_ARE_NOT_FORMAL_TST005_OR_TST008",
+    "NO_REPOSITORY_UOW_FAKE_MIGRATION_ROLE_GRANT_OR_DATABASE_BEHAVIOR_MAY_BE_INFERRED"
+  ]
+}

@@ -1,0 +1,46 @@
+document:
+  id: RAOS-ST0308-ARTIFACT-MANIFEST-001
+  version: 1.0.0
+  story: ST-0308
+  source_contract_uri: repo://changes/st-0308/contracts/persistence-boundary-reference.v1.yaml
+  generated_by: scripts/build_st0308_persistence_boundary_reference.py
+  generation_command: uv run --locked --offline --no-cache --no-sync --no-env-file
+    python scripts/build_st0308_persistence_boundary_reference.py
+  source_artifact_count: 8
+  generated_artifact_count: 1
+  manifest_self_excluded: true
+source_artifacts:
+- uri: repo://changes/st-0308/contracts/persistence-boundary-reference.v1.yaml
+  bytes: 13782
+  sha256: 584b2ffd2aa58132de262a7cab039a0fa41f71acc6444ad990105253b37ac56c
+- uri: repo://changes/st-0308/PERSISTENCE-BOUNDARY-REFERENCE.md
+  bytes: 5072
+  sha256: ddf353014a95c9243f937639dc2d382d8520bad956b080063c04cb94eeabd525
+- uri: repo://docs/execplans/ST-0308.md
+  bytes: 4338
+  sha256: 94739795deaa990009081f90faf0e9a0cc69cc222dd03a36672065412abb3751
+- uri: repo://scripts/build_st0308_persistence_boundary_reference.py
+  bytes: 35779
+  sha256: a4328a5778ad3081c2e43c3779da1de7f1f7249387e202a3dd48e317ec7deb95
+- uri: repo://tests/st0308_reference/conftest.py
+  bytes: 3831
+  sha256: 0707bba9ef6b97397395e049c3984d79f733f410cb6e8d0e264a7253af3243a2
+- uri: repo://tests/st0308_reference/test_contract.py
+  bytes: 4720
+  sha256: 1ff59a710e7395d6b8e91ea51ba5d68ca0ca78e7607641cf81dbe99dc9f83be5
+- uri: repo://tests/st0308_reference/test_generation.py
+  bytes: 4318
+  sha256: cdcab34a6c14900c57f42a30286f63c59a82525790569f390027c79f14491d3d
+- uri: repo://tests/st0308_reference/test_negative_cases.py
+  bytes: 13492
+  sha256: 8d05e2a72ea52f5894eeff4d538e4e9addbb4eb8084d2c3a8963e5071d60bc10
+generated_artifacts:
+- uri: repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
+  bytes: 17409
+  sha256: 928190e7a0bff9a3b8800d7fd5c70cde14e9f5099d75f35a9ed45ea1b2437289
+boundary:
+  classification: SOURCE_BOUND_NON_AUTHORITATIVE_NON_EXECUTABLE_PERSISTENCE_BOUNDARY_REFERENCE_PLAN
+  implementation_authority: NOT_GRANTED
+  runtime_eligible: false
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_008: NOT_EXECUTED
