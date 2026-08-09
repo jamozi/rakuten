@@ -113,6 +113,8 @@ git show origin/main:.github/workflows/ci.yml > .github/workflows/ci.yml
 .venv/bin/python -m pytest -p no:cacheprovider -q \
   tests/st0106/test_workflow_contract.py
 cp -- "$RUNNER_TEMP/st0703-transport-ci.yml" .github/workflows/ci.yml
+.venv/bin/python scripts/build_local_compose.py
+.venv/bin/python scripts/build_local_compose.py --check
 
 scripts/run_network_denied.sh --home "$HOME" -- \
   "$GITHUB_WORKSPACE/.venv/bin/pytest" \
