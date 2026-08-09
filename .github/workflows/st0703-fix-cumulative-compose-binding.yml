@@ -44,10 +44,13 @@ jobs:
 
           finalizer = Path('.github/workflows/st0703-complete-materialization.yml')
           text = finalizer.read_text(encoding='utf-8')
-          old_condition = '''    if: >-
-                github.event.pull_request.head.ref == 'agent/st-0703-openai-responses-adapter' &&
-                github.actor != 'github-actions[bot]'
-          '''
+
+          old_condition = (
+              "    if: >-\n"
+              "      github.event.pull_request.head.ref == "
+              "'agent/st-0703-openai-responses-adapter' &&\n"
+              "      github.actor != 'github-actions[bot]'\n"
+          )
           new_condition = (
               "    if: github.event.pull_request.head.ref == "
               "'agent/st-0703-openai-responses-adapter'\n"
@@ -56,43 +59,38 @@ jobs:
               raise SystemExit('unexpected finalizer actor condition')
           text = text.replace(old_condition, new_condition, 1)
 
-          old_binding = '''          path = Path("scripts/object_storage_service.sh")
-                text = path.read_text(encoding="utf-8")
-                text, count = re.subn(
-                    r"readonly expected_compose_sha256='[0-9a-f]{64}'",
-                    f"readonly expected_compose_sha256='{sys.argv[1]}'",
-                    text,
-                    count=1,
-                )
-                if count != 1:
-                    raise SystemExit("unexpected Compose digest binding source")
-                path.write_text(text, encoding="utf-8", newline="")
-          '''
-          new_binding = '''          for relative in (
-                    "scripts/postgres_service.sh",
-                    "scripts/object_storage_service.sh",
-                ):
-                    path = Path(relative)
-                    text = path.read_text(encoding="utf-8")
-                    text, count = re.subn(
-                        r"readonly expected_compose_sha256='[0-9a-f]{64}'",
-                        f"readonly expected_compose_sha256='{sys.argv[1]}'",
-                        text,
-                        count=1,
-                    )
-                    if count != 1:
-                        raise SystemExit(
-                            f"unexpected Compose digest binding source: {relative}"
-                        )
-                    path.write_text(text, encoding="utf-8", newline="")
-          '''
-          if text.count(old_binding) != 1:
-              raise SystemExit('unexpected finalizer Compose binding block')
-          finalizer.write_text(
-              text.replace(old_binding, new_binding, 1),
-              encoding='utf-8',
-              newline='',
+          start_marker = '          path = Path("scripts/object_storage_service.sh")\n'
+          end_marker = (
+              '          path.write_text(text, encoding="utf-8", newline="")\n'
           )
+          if text.count(start_marker) != 1 or text.count(end_marker) != 1:
+              raise SystemExit('unexpected finalizer Compose binding markers')
+          start = text.index(start_marker)
+          end = text.index(end_marker, start) + len(end_marker)
+          replacement = (
+              '          for relative in (\n'
+              '              "scripts/postgres_service.sh",\n'
+              '              "scripts/object_storage_service.sh",\n'
+              '          ):\n'
+              '              path = Path(relative)\n'
+              '              text = path.read_text(encoding="utf-8")\n'
+              '              text, count = re.subn(\n'
+              '                  r"readonly expected_compose_sha256=\'['
+              '0-9a-f]{64}\'",\n'
+              '                  f"readonly expected_compose_sha256=\''
+              '{sys.argv[1]}\'",\n'
+              '                  text,\n'
+              '                  count=1,\n'
+              '              )\n'
+              '              if count != 1:\n'
+              '                  raise SystemExit(\n'
+              '                      f"unexpected Compose digest binding source: '
+              '{relative}"\n'
+              '                  )\n'
+              '              path.write_text(text, encoding="utf-8", newline="")\n'
+          )
+          text = text[:start] + replacement + text[end:]
+          finalizer.write_text(text, encoding='utf-8', newline='')
           PY
           rm -- .github/workflows/st0703-fix-cumulative-compose-binding.yml
           git diff --check
