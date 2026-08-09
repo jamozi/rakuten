@@ -46,6 +46,6 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git hash-object .github/st0703-finalize.sh)" = \
-            '164215c0266cf48725c352d6db1a203abb0bb6bd'
+            'fe311c4a1610b826b386d36fe42abc4716ef0bf3'
           bash -n .github/st0703-finalize.sh
           bash .github/st0703-finalize.sh
