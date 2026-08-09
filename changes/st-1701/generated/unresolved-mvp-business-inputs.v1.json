@@ -1,0 +1,339 @@
+{
+  "document": {
+    "id": "RAOS-UNRESOLVED-MVP-BUSINESS-INPUTS-REGISTRY-001",
+    "version": "1.0.0",
+    "story_id": "ST-1701",
+    "classification": "SOURCE_DERIVED_NON_AUTHORITATIVE_UNRESOLVED_REGISTRY",
+    "authority": "NON_AUTHORITATIVE",
+    "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "executable": false,
+    "canonical_acceptance_achieved": false,
+    "source_contract": "repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml",
+    "generated_by": "repo://scripts/build_st1701_business_inputs.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st1701_business_inputs.py"
+  },
+  "predecessor_binding": {
+    "story_id": "ST-0006",
+    "owner_check": "scripts.build_st0006_decision_gates.check_generated",
+    "generator": {
+      "uri": "repo://scripts/build_st0006_decision_gates.py",
+      "bytes": 66037,
+      "sha256": "0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f"
+    },
+    "policy": {
+      "uri": "repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml",
+      "bytes": 1064,
+      "sha256": "127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989"
+    },
+    "report": {
+      "uri": "repo://changes/st-0006/gate-blocker-report.v1.yaml",
+      "bytes": 9999,
+      "sha256": "92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15"
+    },
+    "required_semantics": {
+      "overall_open_decision_check": "BLOCKED",
+      "global_decision_count": 15,
+      "global_unresolved_blocker_count": 14,
+      "global_blocked_target_count": 6,
+      "target_mapping": "ALL_ACTIVE_BLOCKERS_TO_ALL_TARGETS",
+      "required_by_interpretation": "OPAQUE_CONTEXT_ONLY",
+      "safe_default_interpretation": "SAFE_FALLBACK_NOT_RESOLUTION",
+      "clear_does_not_imply_gate_pass": true
+    }
+  },
+  "registry": {
+    "decision_ids": [
+      "OD-001",
+      "OD-002",
+      "OD-005",
+      "OD-006",
+      "OD-007",
+      "OD-008",
+      "OD-009"
+    ],
+    "decision_count": 7,
+    "resolved_count": 0,
+    "unresolved_count": 7,
+    "active_blocker_count": 7,
+    "inventory_kind": "EXACT_ORDERED_ST0006_SUBSET",
+    "source_facts_interpretation": "OPAQUE_NO_DERIVATION",
+    "global_counts_preserved": true,
+    "global_decision_count": 15,
+    "global_unresolved_blocker_count": 14,
+    "global_blocked_target_count": 6,
+    "blocked_targets": [
+      "GATE-0",
+      "GATE-1",
+      "GATE-2",
+      "GATE-3",
+      "GATE-4",
+      "PRODUCTION_RELEASE"
+    ],
+    "decisions": [
+      {
+        "id": "OD-001",
+        "topic": "initial_category",
+        "source_status": "HUMAN_DECISION_REQUIRED",
+        "required_by": "MVP vertical slice",
+        "owner": "Product Owner",
+        "decision_needed": "低リスクで比較軸が構造化可能な最初のカテゴリを1つ選定",
+        "default_behavior": "カテゴリ固有実装を停止し合成Fixtureのみ使用",
+        "blocking": true,
+        "resolution_state": "UNRESOLVED",
+        "active_blocker": true,
+        "blocked_targets": [
+          "GATE-0",
+          "GATE-1",
+          "GATE-2",
+          "GATE-3",
+          "GATE-4",
+          "PRODUCTION_RELEASE"
+        ],
+        "safe_default_is_resolution": false,
+        "selected_value": null,
+        "resolution_payload": "FORBIDDEN_IN_V1"
+      },
+      {
+        "id": "OD-002",
+        "topic": "site_name_and_domain",
+        "source_status": "HUMAN_DECISION_REQUIRED",
+        "required_by": "Staging public UI",
+        "owner": "Product Owner",
+        "decision_needed": "ブランド名、ドメイン、運営者表記を決定",
+        "default_behavior": "example.invalidと仮ブランドを使用し外部公開禁止",
+        "blocking": true,
+        "resolution_state": "UNRESOLVED",
+        "active_blocker": true,
+        "blocked_targets": [
+          "GATE-0",
+          "GATE-1",
+          "GATE-2",
+          "GATE-3",
+          "GATE-4",
+          "PRODUCTION_RELEASE"
+        ],
+        "safe_default_is_resolution": false,
+        "selected_value": null,
+        "resolution_payload": "FORBIDDEN_IN_V1"
+      },
+      {
+        "id": "OD-005",
+        "topic": "human_reviewer_and_hourly_cost",
+        "source_status": "HUMAN_DECISION_REQUIRED",
+        "required_by": "GATE-1 and contribution profit",
+        "owner": "Business Owner",
+        "decision_needed": "Reviewer、代替Reviewer、標準人件費を決定",
+        "default_behavior": "公開不可、利益計算の人件費はUNKNOWN",
+        "blocking": true,
+        "resolution_state": "UNRESOLVED",
+        "active_blocker": true,
+        "blocked_targets": [
+          "GATE-0",
+          "GATE-1",
+          "GATE-2",
+          "GATE-3",
+          "GATE-4",
+          "PRODUCTION_RELEASE"
+        ],
+        "safe_default_is_resolution": false,
+        "selected_value": null,
+        "resolution_payload": "FORBIDDEN_IN_V1"
+      },
+      {
+        "id": "OD-006",
+        "topic": "category_product_identity_rules",
+        "source_status": "EXTERNAL_EVIDENCE_REQUIRED",
+        "required_by": "Catalog grouping",
+        "owner": "Domain Editor",
+        "decision_needed": "型番、容量、色、セット、JAN等の統合/分離ルールをカテゴリごとに定義",
+        "default_behavior": "自動統合せずHuman Reviewへ送る",
+        "blocking": true,
+        "resolution_state": "UNRESOLVED",
+        "active_blocker": true,
+        "blocked_targets": [
+          "GATE-0",
+          "GATE-1",
+          "GATE-2",
+          "GATE-3",
+          "GATE-4",
+          "PRODUCTION_RELEASE"
+        ],
+        "safe_default_is_resolution": false,
+        "selected_value": null,
+        "resolution_payload": "FORBIDDEN_IN_V1"
+      },
+      {
+        "id": "OD-007",
+        "topic": "category_freshness_sla",
+        "source_status": "HUMAN_DECISION_REQUIRED",
+        "required_by": "Publication and refresh",
+        "owner": "Managing Editor",
+        "decision_needed": "価格、在庫、仕様、画像、リンクの最大許容Ageを定義",
+        "default_behavior": "保守的な暫定値を適用しStale時は非表示",
+        "blocking": true,
+        "resolution_state": "UNRESOLVED",
+        "active_blocker": true,
+        "blocked_targets": [
+          "GATE-0",
+          "GATE-1",
+          "GATE-2",
+          "GATE-3",
+          "GATE-4",
+          "PRODUCTION_RELEASE"
+        ],
+        "safe_default_is_resolution": false,
+        "selected_value": null,
+        "resolution_payload": "FORBIDDEN_IN_V1"
+      },
+      {
+        "id": "OD-008",
+        "topic": "legal_review_boundary",
+        "source_status": "HUMAN_DECISION_REQUIRED",
+        "required_by": "GATE-0",
+        "owner": "Business Owner / Legal",
+        "decision_needed": "法務確認対象、相談経路、記録方法を確定",
+        "default_behavior": "法的判断をAI/開発者が代替せず公開をブロック",
+        "blocking": true,
+        "resolution_state": "UNRESOLVED",
+        "active_blocker": true,
+        "blocked_targets": [
+          "GATE-0",
+          "GATE-1",
+          "GATE-2",
+          "GATE-3",
+          "GATE-4",
+          "PRODUCTION_RELEASE"
+        ],
+        "safe_default_is_resolution": false,
+        "selected_value": null,
+        "resolution_payload": "FORBIDDEN_IN_V1"
+      },
+      {
+        "id": "OD-009",
+        "topic": "budget_and_acceptable_loss",
+        "source_status": "HUMAN_DECISION_REQUIRED",
+        "required_by": "Cloud/LLM release",
+        "owner": "Business Owner",
+        "decision_needed": "AWS、LLM、外部Providerの月次上限と自動停止閾値を設定",
+        "default_behavior": "低い開発用上限、Production無効",
+        "blocking": true,
+        "resolution_state": "UNRESOLVED",
+        "active_blocker": true,
+        "blocked_targets": [
+          "GATE-0",
+          "GATE-1",
+          "GATE-2",
+          "GATE-3",
+          "GATE-4",
+          "PRODUCTION_RELEASE"
+        ],
+        "safe_default_is_resolution": false,
+        "selected_value": null,
+        "resolution_payload": "FORBIDDEN_IN_V1"
+      }
+    ]
+  },
+  "business_inputs": {
+    "initial_category": null,
+    "brand_name": null,
+    "domain_name": null,
+    "operator_identity": null,
+    "primary_reviewer": null,
+    "alternate_reviewer": null,
+    "labor_hourly_cost": null,
+    "product_identity_rules": null,
+    "freshness_sla": null,
+    "legal_review_boundary": null,
+    "monthly_budget": null,
+    "budget_currency": null,
+    "automatic_stop_threshold": null,
+    "resolution_payload": null,
+    "approval_payload": null,
+    "evidence_payload": null,
+    "research_payload": null
+  },
+  "safe_defaults": {
+    "selected_values": "FORBIDDEN",
+    "safe_defaults_are_resolutions": false,
+    "synthetic_fixtures_only": true,
+    "category_specific_implementation": "BLOCKED",
+    "external_publication": "BLOCKED",
+    "labor_cost_basis": "UNKNOWN",
+    "human_review": "REQUIRED_UNCONFIGURED",
+    "automatic_product_identity_merge": "DISABLED",
+    "stale_content_visibility": "HIDDEN",
+    "legal_judgment_by_ai_or_developer": "FORBIDDEN",
+    "production": "DISABLED"
+  },
+  "activation": {
+    "enabled": false,
+    "status": "BLOCKED_UNRESOLVED_INPUTS"
+  },
+  "gates": [
+    {
+      "gate_id": "GATE-0",
+      "status": "BLOCKED",
+      "blocker_count": 7
+    },
+    {
+      "gate_id": "GATE-1",
+      "status": "BLOCKED",
+      "blocker_count": 7
+    },
+    {
+      "gate_id": "GATE-2",
+      "status": "BLOCKED",
+      "blocker_count": 7
+    },
+    {
+      "gate_id": "GATE-3",
+      "status": "BLOCKED",
+      "blocker_count": 7
+    },
+    {
+      "gate_id": "GATE-4",
+      "status": "BLOCKED",
+      "blocker_count": 7
+    }
+  ],
+  "action_boundary": {
+    "external_actions": "FORBIDDEN",
+    "external_publication": "FORBIDDEN",
+    "staging": "FORBIDDEN",
+    "release": "FORBIDDEN",
+    "production": "FORBIDDEN",
+    "action_counts": {
+      "decision": 0,
+      "approval": 0,
+      "research": 0,
+      "external": 0,
+      "publication": 0,
+      "staging": 0,
+      "release": 0,
+      "production": 0
+    }
+  },
+  "evidence_boundary": {
+    "formal_tst_032": "NOT_EXECUTED",
+    "human_approvals": "NOT_OBTAINED",
+    "external_evidence": "NOT_OBTAINED",
+    "canonical_status": "UNCHANGED",
+    "st_1701_acceptance_achieved": false,
+    "local_evidence": "IMPLEMENTATION_ONLY_NOT_FORMAL_VALIDATION"
+  },
+  "downstream_boundary": {
+    "st_1702_ready": false,
+    "readiness_status": "BLOCKED_BY_ST_1701_ACCEPTANCE",
+    "publication_ready": false,
+    "release_ready": false,
+    "production_ready": false
+  },
+  "prohibited_interpretations": [
+    "SAFE_DEFAULT_IS_NOT_A_DECISION",
+    "UNRESOLVED_REGISTRY_IS_NOT_APPROVAL",
+    "LOCAL_TESTS_ARE_NOT_FORMAL_TST_032",
+    "ZERO_ACTIONS_ARE_NOT_ST_1701_ACCEPTANCE",
+    "SCOPED_SEVEN_DO_NOT_CLEAR_OTHER_GLOBAL_BLOCKERS",
+    "NO_CATEGORY_PUBLICATION_RELEASE_OR_PRODUCTION_VALUE_MAY_BE_INFERRED"
+  ]
+}
