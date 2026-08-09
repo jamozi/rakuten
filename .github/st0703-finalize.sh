@@ -107,10 +107,17 @@ PY
   tests/st0106 tests/st0201 tests/st0202 tests/st0703
 .venv/bin/python -m mypy
 
+# The ST-0106 workflow contract must inspect the canonical pull-request CI,
+# while every generated-manifest test must see the branch's unchanged transport CI.
 git show origin/main:.github/workflows/ci.yml > .github/workflows/ci.yml
+.venv/bin/python -m pytest -p no:cacheprovider -q \
+  tests/st0106/test_workflow_contract.py
+cp -- "$RUNNER_TEMP/st0703-transport-ci.yml" .github/workflows/ci.yml
+
 scripts/run_network_denied.sh --home "$HOME" -- \
   "$GITHUB_WORKSPACE/.venv/bin/pytest" \
-  -p no:cacheprovider -q tests/st0106
+  -p no:cacheprovider -q tests/st0106 \
+  --ignore=tests/st0106/test_workflow_contract.py
 scripts/run_network_denied.sh --home "$HOME" -- \
   "$GITHUB_WORKSPACE/.venv/bin/pytest" \
   -p no:cacheprovider -q tests/st0201
@@ -138,7 +145,6 @@ status, staging, production, retention-policy approval, and vulnerability-scan
 approval remain unchanged or NOT_EXECUTED.
 EVIDENCE
 
-cp -- "$RUNNER_TEMP/st0703-transport-ci.yml" .github/workflows/ci.yml
 rm -f -- \
   .github/infra-compatibility-repair.py \
   .github/infra-compatibility.patch.gz.b64 \
