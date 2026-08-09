@@ -1,0 +1,215 @@
+document:
+  id: RAOS-GITHUB-OIDC-DEPLOYMENT-001
+  version: 1.0.0
+  story_id: ST-1504
+  status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
+  formal_verification: NOT_EXECUTED
+sources:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml
+    sha256: 2cdc9afb4b9a1fc7cb44b78dc5198bc443a219ca895713b75220f8625aea6305
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - uri: repo://docs/canonical/04_security/RAOS_10_implementation_slices_v1.0.yaml
+    sha256: 3db3aeeb3cfd0cbb4ab91e3490956cae17d60e43950e48fdf50c1609019e1b22
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+  - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+    sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
+  - uri: repo://changes/st-0107/ruleset-policy.v1.json
+    sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
+  - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+    sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+  - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+    sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+predecessor_bindings:
+  pr_governance:
+    story_id: ST-0107
+    contract_uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+    contract_sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
+    desired_state_uri: repo://changes/st-0107/ruleset-policy.v1.json
+    desired_state_sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
+    required_artifact_kind: DESIRED_STATE_NOT_API_PAYLOAD
+    required_target: branch
+    required_include:
+      - ~DEFAULT_BRANCH
+    required_desired_enforcement: active
+    required_local_application_status: NOT_EXECUTED
+    required_remote_mutation: FORBIDDEN
+    required_bypass_actors: []
+    required_protected_pr_controls:
+      prohibit_deletion: true
+      prohibit_force_push: true
+      require_linear_history: true
+      dismiss_stale_reviews_on_push: true
+      require_code_owner_review: true
+      require_last_push_approval: true
+      required_review_thread_resolution: true
+  terraform_foundation:
+    story_id: ST-1501
+    contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+    contract_sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+    reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+    reference_plan_sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+    required_activation_status: DISABLED
+    required_resource_payloads: FORBIDDEN
+    required_planned_actions:
+      create: 0
+      update: 0
+      delete: 0
+reference_intent:
+  classification: LOGICAL_IDENTITY_PATH_REFERENCE_ONLY
+  source: GITHUB_ACTIONS_OIDC
+  destination: AWS_SHORT_LIVED_WORKLOAD_SESSION
+  github_workload_identity: REQUIRED_NOT_CONFIGURED
+  aws_role_session: REQUIRED_NOT_CONFIGURED
+  executable_workflow: ABSENT
+  iam_trust_policy: ABSENT
+  provider_sdk_types: ABSENT
+  production_deployment: FORBIDDEN
+selected_bindings:
+  oidc_issuer_url: null
+  oidc_audience: null
+  oidc_subject: null
+  github_organization: null
+  github_repository: null
+  github_repository_numeric_id: null
+  default_branch_ref: null
+  deploy_ref: null
+  workflow_ref: null
+  workflow_sha: null
+  workflow_file_path: null
+  deploy_job_id: null
+  github_environment_name: null
+  github_environment_reviewer_ids: []
+  github_environment_allowed_refs: []
+  reusable_workflow_callers: []
+  aws_account_id: null
+  aws_role_arn: null
+  aws_role_name: null
+  session_duration_seconds: null
+  session_name: null
+  session_tags: []
+  oidc_thumbprints: []
+  trust_policy_payload: null
+  permission_policy_payload: null
+  environment_protection_payload: null
+  workflow_permissions_payload: null
+  workflow_trigger_events: []
+  external_action_references: []
+  terraform_cli_version: null
+  provider_plugins: []
+trust_constraints:
+  status: REQUIRED_NOT_CONFIGURED
+  required_claim_bindings:
+    - repository_identity
+    - trusted_ref
+    - workflow_identity
+    - environment
+    - audience
+    - subject
+  exact_repository_identity: REQUIRED_NOT_CONFIGURED
+  exact_trusted_ref: REQUIRED_NOT_CONFIGURED
+  exact_workflow_identity: REQUIRED_NOT_CONFIGURED
+  exact_environment: REQUIRED_NOT_CONFIGURED
+  exact_audience: REQUIRED_NOT_CONFIGURED
+  exact_subject: REQUIRED_NOT_CONFIGURED
+  wildcard_trust: FORBIDDEN
+  fork_pull_request: FORBIDDEN
+  untrusted_pull_request: FORBIDDEN
+  untrusted_ref: FORBIDDEN
+  untrusted_environment: FORBIDDEN
+  pull_request_target_credential_path: FORBIDDEN
+  unbounded_reusable_workflow_caller: FORBIDDEN
+  broad_organization_subject: FORBIDDEN
+  broad_repository_subject: FORBIDDEN
+  broad_ref_subject: FORBIDDEN
+credential_boundary:
+  classification: MATERIAL_FREE_REQUIREMENTS_ONLY
+  long_lived_cloud_key: FORBIDDEN
+  repository_secret_cloud_credential: FORBIDDEN
+  fork_pr_credential_issuance: FORBIDDEN
+  untrusted_ref_credential_issuance: FORBIDDEN
+  untrusted_environment_credential_issuance: FORBIDDEN
+  oidc_session: SHORT_LIVED_REQUIRED_NOT_CONFIGURED
+  least_privilege: REQUIRED_NOT_CONFIGURED
+  role_chaining: FORBIDDEN
+  privilege_escalation: FORBIDDEN
+  credential_material: ABSENT
+  credential_issuance_capability: ABSENT
+  secret_names: []
+  secret_values: []
+workflow_permission_intent:
+  classification: INTENT_ONLY_WORKFLOW_ABSENT
+  actual_workflow: ABSENT
+  id_token_write_scope: FUTURE_EXACT_APPROVED_DEPLOY_JOB_ONLY
+  contents_permission: READ_MINIMUM_REQUIRED_NOT_CONFIGURED
+  write_all: FORBIDDEN
+  admin_permissions: FORBIDDEN
+  secrets_access: FORBIDDEN
+  mutable_external_action_references: FORBIDDEN
+  unbounded_reusable_workflow_callers: FORBIDDEN
+  pull_request_target_credential_path: FORBIDDEN
+environment_protection_intent:
+  classification: PRODUCTION_PROTECTION_INTENT_ONLY
+  production_environment: REQUIRED_NOT_CONFIGURED
+  distinct_human_approval: REQUIRED_NOT_CONFIGURED
+  protected_environment: REQUIRED_NOT_CONFIGURED
+  exact_allowed_refs: REQUIRED_NOT_CONFIGURED
+  self_approval: FORBIDDEN
+  approval_bypass: FORBIDDEN
+  deployment_without_approval: FORBIDDEN
+execution_boundary:
+  activation_enabled: false
+  activation_status: DISABLED
+  native_plan_status: NOT_EXECUTED
+  live_provider_calls: FORBIDDEN
+  external_writes: FORBIDDEN
+  credential_issuance: FORBIDDEN
+  operations:
+    github_api_mutation: FORBIDDEN
+    github_ruleset_mutation: FORBIDDEN
+    github_workflow_mutation: FORBIDDEN
+    github_environment_mutation: FORBIDDEN
+    aws_api_call: FORBIDDEN
+    iam_policy_apply: FORBIDDEN
+    credential_issue: FORBIDDEN
+    deploy: FORBIDDEN
+    terraform_plan: FORBIDDEN
+    terraform_apply: FORBIDDEN
+  planned_actions:
+    create: 0
+    update: 0
+    delete: 0
+evidence_boundary:
+  deliverable_classification: SOURCE_DERIVED_NON_EXECUTABLE_GITHUB_OIDC_REFERENCE_PLAN
+  executable_workflow: ABSENT
+  iam_trust_policy: ABSENT
+  github_repository: UNSET
+  github_environment: UNSET
+  aws_account: UNSET
+  aws_role: UNSET
+  credentials: ABSENT
+  credential_issuance: NOT_EXECUTED
+  native_iac_validation: NOT_EXECUTED
+  workflow_inspection: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  hosted_github_aws: NOT_EXECUTED
+  live_oidc: NOT_EXECUTED
+  live_staging_release_production: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
