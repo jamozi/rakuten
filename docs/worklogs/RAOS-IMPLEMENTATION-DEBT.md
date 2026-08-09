@@ -1192,3 +1192,67 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-038` remain unchanged and unclosed. This checkpoint claims only the
   maximum-safe provider-neutral local ST-1601 implementation.
+
+### 2026-08-10 W1 / ST-1603 non-attesting security reference checkpoint
+
+- Authority and scope: canonical `ST-1603` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0407 and ST-1505, has no
+  Story-local Open Decision, and requires TST-026/TST-031 security evidence.
+  Effective status remains `NOT_STARTED`/`NOT_EXECUTED`; both predecessors are
+  local implementation candidates. This checkpoint does not claim a security
+  verification run, zero findings, GATE-0, Story Done, `VALIDATED`, ST-1607
+  eligibility, release eligibility, or Production readiness.
+- Implemented a closed Story-owned contract, deterministic owner builder,
+  generated non-executable reference plan, generated manifest, and isolated
+  hostile tests. The builder byte-binds all canonical authority inputs,
+  ST-0407's material-free fail-closed credential seam, ST-1505's disabled
+  zero-action staging reference, and the reused path/YAML/atomic owner-helper
+  implementation. It performs no scanner, Git, subprocess, environment,
+  credential, network, provider, staging, release, or Production action.
+- The generated plan projects all 83 canonical controls in exact source and
+  field order, with category counts GOV 8/IAM 12/APP 15/DATA 10/INFRA 10/AI
+  8/SDLC 12/OPS 8 and priority counts P0 32/P1 51. Projection coverage is
+  `83/83`, but verified coverage remains `0/83`; implementation stays
+  `NOT_STARTED`, verification stays `NOT_EXECUTED`, and TST-026/TST-031 are
+  represented only by their required IDs and unexecuted boundary.
+- ASVS mappings, findings, remediations, exceptions, evidence, and approvals
+  remain empty or null with explicit no-result semantics. Open Critical and
+  High counts remain `null`, not zero; decision remains `NOT_READY`; every
+  action count is exact integer zero. The generated evidence boundary
+  explicitly keeps formal TST-026/TST-031, scanners, manual review, Staging,
+  release, and Production unexecuted and ST-1607/release eligibility false.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and no-write `--check`, isolated `tests/st1603` (`52
+  passed`), Ruff lint/format, strict mypy, compile/import, exact nine-path
+  review, ordered-projection assertion, focused maintained secret scan (`0
+  findings / 9 files`), canonical import verification, workspace drift check,
+  and `git diff --check` returned `PASS`. ST-0407 (`42 passed`) and ST-1505
+  (`155 passed` plus owner `--check`) remained green. The linked-worktree full
+  scanner limitation remains inherited `DEBT-W0-003`.
+- `DEBT-W1-042` status: `OPEN`, introduced-by `ST-1603`, closure owner:
+  security tooling, control owners, remediation owners, and final Wave
+  integration owner. Exact skipped command: `NOT_RUN — no pinned aggregate
+  SAST/SCA/DAST/secret/manual-abuse/privacy toolchain, control-to-ASVS/threat
+  mapping, finding ingestion, remediation workflow, or reproducible evidence
+  collector exists`; observed result: `NOT_EXECUTED`. Closure must populate
+  evidence from actual bounded runs and must never infer PASS from the current
+  complete inventory projection or empty result collections.
+- `DEBT-W1-043` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1603`, closure
+  owner: Security, Privacy, control owners, and exception approvers. Exact
+  skipped command: `NOT_RUN — human review results, finding severities,
+  remediation decisions, exception artifacts, evidence approvals, and
+  reviewer identities are absent`; observed result: `NOT_EXECUTED`. Codex does
+  not invent, approve, waive, or lower Critical/High findings; open counts stay
+  unknown until authoritative evidence exists.
+- `DEBT-W1-044` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1603`, closure
+  owner: formal CI, Security/Privacy reviewers, Staging operators, ST-1607,
+  release, and Production owners. Exact skipped command: `NOT_RUN — formal
+  TST-026/TST-031, hosted scanner/manual review, Staging validation, GATE-0,
+  status transition, release, and Production are outside local authority`;
+  observed result: `NOT_EXECUTED`. No local generation or test result is
+  promoted to formal evidence, ST-1607 eligibility, release authorization, or
+  Production readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-041` remain unchanged and unclosed. This checkpoint claims only the
+  maximum-safe non-attesting local ST-1603 reference implementation.
