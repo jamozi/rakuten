@@ -1494,3 +1494,61 @@ original result.
   `DEBT-W1-053` remain unchanged and unclosed. This checkpoint claims only the
   maximum-safe local ST-0308 reference boundary; W1 local implementation slices
   are now complete without elevating canonical/formal status.
+
+### 2026-08-10 W2 / ST-0403 deny-default authorization checkpoint
+
+- Authority and scope: canonical `ST-0403` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0306 and ST-0401, has no
+  Story-local Open Decision, and requires TST-011/TST-012/TST-026. Effective
+  status remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint does not define
+  a canonical action-to-OAuth-scope/operation/resource/state mapping, service
+  role inventory, HTTP enforcement, database policy, or production allowlist.
+- Implemented immutable authorization values and targets, exact human-role and
+  principal/surface enums, a versioned empty-rules disabled policy, an explicit
+  ENV-DEV-only recorded-test policy mode, inward policy/entitlement/decision
+  ports, a session-first application guard, and deterministic recorded
+  adapters. Default and unknown behavior is deny; only one exact synthetic
+  rule match plus a successful decision record can produce an `ALLOW_UI_ONLY`-
+  independent application grant.
+- USER is restricted to ADMIN and every resource carries an exact site UUID;
+  SERVICE/INTERNAL authorization is not exposed. No wildcard, hierarchy,
+  ancestor expansion, cross-site inference, UI hiding, database workload role,
+  or unverified token claim becomes authorization. Inactive/revoked/expired or
+  unknown ST-0401 sessions stop before policy, entitlement, and decision-sink
+  calls. Malformed collaborators, ambiguity, ordinary dependency exceptions,
+  and decision-record failure deny without retry or sensitive-value echo.
+- Decision records contain only closed normalized identifiers/reasons and are
+  an inward record contract, not durable audit persistence. The adapter reads
+  no environment, file, network, database, framework, provider, log, or
+  credential source and contains only explicit `TEST_ONLY` fixtures.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st0403` (`37 passed`), ST-0401 regression (`28 passed`),
+  Ruff lint/format, strict mypy, compile/import, exact eight-path review,
+  focused maintained secret scan (`0 findings / 8 files`), canonical import,
+  workspace drift, and `git diff --check` returned `PASS`. The linked-worktree
+  full scanner limitation remains inherited `DEBT-W0-003`.
+- `DEBT-W2-001` status: `OPEN`, introduced-by `ST-0403`, closure owner:
+  Identity/Security, Admin/Internal API, entitlement/audit persistence, and
+  final Wave integration owners. Exact skipped command: `NOT_RUN — no approved
+  total action-to-scope-to-operation/resource/state mapping, service-role
+  inventory, durable entitlement source, HTTP/decorator enforcement, step-up/
+  separation-of-duty composition, or durable decision audit exists`; observed
+  result: `NOT_EXECUTED`. The shipped policy remains disabled/empty except for
+  explicit ENV-DEV synthetic fixtures.
+- `DEBT-W2-002` status: `OPEN`, observed-during `ST-0403`, introduced-by prior
+  moving sources, closure owner: ST-0306 and W2 provenance-freeze owners. Exact
+  failing command: `uv run --frozen --offline --no-cache --no-sync --no-env-
+  file python scripts/build_st0306_database_roles.py --check`; observed result:
+  `ST-0306 generation failed: generated artifact drift: changes/st-0306/
+  manifest.yaml`. No ST-0306 artifact was changed; the drift has no focused
+  ST-0403 runtime effect and must close through its owner generator.
+- `DEBT-W2-003` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0403`, closure
+  owner: Identity/Security reviewers, formal CI, runtime/Staging, release, and
+  Production owners. Exact skipped command: `NOT_RUN — real OIDC claims and
+  transport remain gated by the ST-0401/OD-010 boundary; formal TST-011/TST-012/
+  TST-026, HTTP/DB enforcement, hosted CI, live identity, Staging, release, and
+  Production are outside local authority`; observed result: `NOT_EXECUTED`.
+  No local allow fixture is promoted to canonical policy or formal evidence.
+- Inherited W0/W1 debt remains unchanged and unclosed. This checkpoint claims
+  only the maximum-safe deny-default local ST-0403 recorded seam.
