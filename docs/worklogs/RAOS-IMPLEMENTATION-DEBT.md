@@ -634,3 +634,77 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-011` remain unchanged and unclosed. This checkpoint claims only
   local implementation evidence for the scoped ST-0704 seam.
+
+### 2026-08-10 W1 / ST-1404 final local implementation checkpoint
+
+- Authority and scope: canonical `ST-1404` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on the locally present ST-0303 and
+  ST-0203 seams, and has no Story-local Open Decision. The older preflight's
+  `NOT_GRANTED` disposition applies to the unresolved durable database/broker/
+  process runtime. The owner-approved implementation-first ExecPlan and exact
+  delegation authorize only this reversible synchronous one-step recorded/
+  in-memory boundary.
+- Implemented immutable redacted Job/Attempt/Outbox/Inbox/transition/message/
+  claim/result/step values with exact canonical states, UUIDs, explicit UTC
+  timestamps, versions, leases, and content-free fingerprints; inward semantic
+  store/handler ports; and deterministic `dispatch_once`/`work_once` services
+  over the existing QueuePort.
+- Implemented a process-local locked adapter restricted to exact `ENV_DEV` and
+  `CI`. It preserves the complete logical message across ambiguous-send retry,
+  deduplicates exact Inbox identities, commits terminal/Inbox state before ack,
+  prevents handler replay after ack failure, fences lease/version/tampered
+  claims, keeps delivery/Job/Attempt/Outbox counters separate, and uses only
+  injected finite retry schedules.
+- Independent review found and closed three focused defects before the final
+  commit: ambiguous resend rebuilt part of the message from mutable Job state;
+  raw strings equal to str-backed enum members could pass membership checks;
+  and a tampered WorkClaim needed complete cross-record identity/counter/
+  invocation fencing. Regression tests cover all three closures.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Final isolated `tests/st1404` result: `42 passed`; focused unchanged ST-0203
+  behavior subset result: `43 passed`. Ruff lint and format returned `PASS`;
+  strict mypy including tests returned `PASS`; Python compilation, exact
+  nine-path ownership review, and `git diff --check` returned `PASS`.
+- Sensitive-data checks: the worker's maintained scanner-engine pass covered
+  all nine code/test paths with zero findings. The final aggregate pass also
+  covered the Story README and this ledger and returned
+  `FOCUSED_SECRET_SCAN findings=0 files=11`. The official worktree command
+  remains unable to traverse the linked worktree and returns the inherited
+  sanitized `unsafe-git-metadata` result; this Story does not weaken or close
+  `DEBT-W0-003`.
+- `DEBT-W1-016` status: `OPEN`, introduced-by `ST-1404`, closure owner:
+  approved ST-0308 persistence plus queue/runtime integration owners and final
+  integration audit. Exact skipped command: `NOT_RUN — no approved durable
+  PostgreSQL Job/Attempt/Outbox/Inbox Repository/UoW, real broker, atomic
+  handler-output transaction, multi-worker fence, or crash/commit-ambiguity
+  contract exists`; observed result: `NOT_EXECUTED`. Closure boundary: an exact
+  approved persistence/runtime contract and PostgreSQL 18.4 tests prove atomic
+  writes, fencing, idempotency, rollback, crash recovery, and external-I/O
+  separation. Safe impact: current guarantees are process-local only.
+- `DEBT-W1-017` status: `OPEN`, introduced-by `ST-1404`, closure owner:
+  durable runtime design owner plus final integration audit. Exact provisional
+  behavior: a recorded `FAILED` Inbox identity is reopened only when its Job is
+  explicitly due in `RETRY_SCHEDULED`; expired retry-state work is held without
+  an invented Job edge; quarantine release and orphaned `DISPATCHING`/
+  `PROCESSING` recovery APIs are absent. Closure boundary: an approved design
+  fixes those lifecycle, timestamp, lease, and takeover rules before a durable
+  adapter exposes them. Safe impact: no background recovery or external I/O.
+- `DEBT-W1-018` status: `OPEN`, introduced-by `ST-1404`, closure owner:
+  ST-0203 owner generator at W1 freeze. Exact full-suite result:
+  `53 passed, 2 failed`; failures are only
+  `test_installed_manifest_matches_renderer` and
+  `test_check_mode_does_not_write`, both reporting generated ST-0203 manifest
+  drift. Affected artifact: `changes/st-0203/manifest.yaml`. Closure boundary:
+  freeze W1 sources, regenerate through the owner, prove semantic projection,
+  and rerun its no-write check. The manifest was not hand-edited here.
+- `DEBT-W1-019` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1404`, closure
+  owner: formal CI, PostgreSQL/broker/staging operators, and release owners.
+  Exact skipped command: `NOT_RUN — formal TST-013 and staging TST-028 plus
+  hosted CI, durable runtime, staging, deployment, release, and Production are
+  outside local authority`; observed result: `NOT_EXECUTED`. No generated
+  status/evidence artifact was edited and no local result is promoted to formal
+  validation or Production readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-015` remain unchanged and unclosed. This checkpoint claims only
+  local implementation evidence for the scoped ST-1404 seam.
