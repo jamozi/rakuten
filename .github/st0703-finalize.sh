@@ -44,13 +44,69 @@ patch --batch --forward -p1 < "$netns_patch"
 /usr/bin/python3 -I - <<'PY'
 from pathlib import Path
 
-path = Path("tests/st0202/test_wrapper.py")
-text = path.read_text(encoding="utf-8")
-old = '        print(expected + "\\nrogue" if mode == "extra_network" else expected)\n'
-new = '        print(expected + "\\\\nrogue" if mode == "extra_network" else expected)\n'
-if text.count(old) != 1:
+wrapper_test = Path("tests/st0202/test_wrapper.py")
+wrapper_test_text = wrapper_test.read_text(encoding="utf-8")
+newline_old = (
+    '        print(expected + "\\nrogue" if mode == "extra_network" else expected)\n'
+)
+newline_new = (
+    '        print(expected + "\\\\nrogue" if mode == "extra_network" else expected)\n'
+)
+if wrapper_test_text.count(newline_old) != 1:
     raise SystemExit("unexpected fake Docker newline fixture source")
-path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="")
+wrapper_test_text = wrapper_test_text.replace(newline_old, newline_new, 1)
+
+project_old = '    assert all(row["project"] for row in rows)\n'
+project_new = (
+    '    assert all(\n'
+    '        row["project"]\n'
+    '        for row in rows\n'
+    '        if row["argv"] != ["--version"]\n'
+    '    )\n'
+)
+if wrapper_test_text.count(project_old) != 1:
+    raise SystemExit("unexpected Docker project assertion source")
+wrapper_test.write_text(
+    wrapper_test_text.replace(project_old, project_new, 1),
+    encoding="utf-8",
+    newline="",
+)
+
+wrapper = Path("scripts/object_storage_service.sh")
+wrapper_text = wrapper.read_text(encoding="utf-8")
+validation_call = "\nvalidate_docker_client\n"
+validation_bound = (
+    "\nactive_project='raos-st0202-validation'\n"
+    "validate_docker_client\n"
+)
+if wrapper_text.count(validation_call) != 1:
+    raise SystemExit("unexpected Docker client validation call")
+wrapper.write_text(
+    wrapper_text.replace(validation_call, validation_bound, 1),
+    encoding="utf-8",
+    newline="",
+)
+
+fixture = Path("tests/st0202/test_fixture.py")
+fixture_text = fixture.read_text(encoding="utf-8")
+fixture_old = (
+    '            if self.command != "HEAD":\n'
+    '                self.wfile.write(body)\n'
+)
+fixture_new = (
+    '            if self.command != "HEAD":\n'
+    '                try:\n'
+    '                    self.wfile.write(body)\n'
+    '                except (BrokenPipeError, ConnectionResetError):\n'
+    '                    return\n'
+)
+if fixture_text.count(fixture_old) != 1:
+    raise SystemExit("unexpected fixture response writer source")
+fixture.write_text(
+    fixture_text.replace(fixture_old, fixture_new, 1),
+    encoding="utf-8",
+    newline="",
+)
 PY
 git diff --check
 bash -n scripts/run_network_denied.sh
