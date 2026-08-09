@@ -1433,3 +1433,64 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-050` remain unchanged and unclosed. This checkpoint claims only the
   maximum-safe disabled local ST-1101 headless foundation.
+
+### 2026-08-10 W1 / ST-0308 persistence-boundary reference checkpoint
+
+- Authority and scope: canonical `ST-0308` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0304 and ST-0105, has canonical
+  `open_decisions: []`, and requires TST-005/TST-008. Existing local
+  reconciliation still records material conflicts across D1 through D6, so
+  no Repository, Unit of Work, mapping, transaction, concurrency, idempotency,
+  identity, or inventory design is approved. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`.
+- Implemented an add-only, source-bound, non-authoritative, non-executable
+  persistence-boundary reference contract, deterministic owner builder,
+  generated plan/manifest, isolated hostile tests, and Story-local reference
+  documentation/ExecPlan. Existing request, reconciliation, readiness,
+  validator, canonical, predecessor, runtime, schema, migration, role, and
+  grant artifacts were not modified.
+- The generated registry preserves exactly six ordered local noncanonical gaps
+  ST0308-D1 through ST0308-D6, selected count zero, unresolved count six, and
+  canonical Open Decision count zero. Every selected value, payload, handoff,
+  approval, and reconciliation field is null. Fifteen implementation artifact
+  kinds and fifteen runtime/action kinds are exact built-in integer zero;
+  runtime eligibility, acceptance, downstream readiness, Staging, release, and
+  Production readiness remain false.
+- Sixteen authority/source rows, 21 opaque ST-0304 rows, and 11 ST-0105 API-
+  binding rows are exact byte-bound context only. No ST-0304 table,
+  relationship, locking, state, or identity semantics are projected. ST-0105
+  manifest facts confirm 354 current outputs exist/hash-match, but do not
+  define persistence design. Byte binding and local tests are explicitly not
+  a DESIGN_HANDOFF, implementation authority, or formal evidence.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and no-write `--check`, isolated `tests/st0308_reference`
+  (`134 passed`), existing `tests/st0308` (`165 passed`), Ruff lint/format,
+  strict mypy, compile/import, exact ten-path review, focused maintained secret
+  scan (`0 findings / 10 files`), canonical import, workspace drift, and
+  `git diff --check` returned `PASS`. No PostgreSQL or external runtime ran.
+- `DEBT-W1-054` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0308`, closure
+  owner: repository/domain/security/data owners and the exact handoff approver.
+  Exact skipped command: `NOT_RUN — D1 through D6 remain unresolved and no
+  exact approved DESIGN_HANDOFF_V1, conflict-free canonical reconciliation, or
+  repository-owner approval exists`; observed result: `NOT_EXECUTED`.
+  Repository/UoW/fake/mapping/transaction/idempotency/runtime implementation
+  remains blocked until all three authority artifacts are hash-bound.
+- `DEBT-W1-055` status: `OPEN`, introduced-by `ST-0308`, closure owner:
+  ST-0304, ST-0105/toolchain, provenance, and final Wave integration owners.
+  Exact skipped command: `NOT_RUN — ST-0304's migration/catalog/validation
+  render is current but its manifest has nine moving-source hash drifts; the
+  exact ST-0105 Node 24.18.1/npm 11.16.0 owner gate is unavailable because the
+  installed npm is 12.0.2`; observed result: `NOT_EXECUTED`. The Story binds
+  installed bytes only and does not repair or claim predecessor reproducibility.
+- `DEBT-W1-056` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0308`, closure
+  owner: formal CI, PostgreSQL/runtime, Security, data/repository reviewers,
+  Staging, release, and Production owners. Exact skipped command: `NOT_RUN —
+  formal TST-005/TST-008, PostgreSQL 18.4 behavior, security review, human
+  design approval, Staging, release, and Production are outside this reference
+  slice`; observed result: `NOT_EXECUTED`. Reference checks do not satisfy the
+  Story deliverables or cross-module-write acceptance criterion.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-053` remain unchanged and unclosed. This checkpoint claims only the
+  maximum-safe local ST-0308 reference boundary; W1 local implementation slices
+  are now complete without elevating canonical/formal status.
