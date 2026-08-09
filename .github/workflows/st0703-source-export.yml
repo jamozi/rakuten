@@ -1,0 +1,46 @@
+name: ST-0703 source export
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  export:
+    name: Export exact pull-request source
+    if: github.event.pull_request.head.ref == 'agent/st-0703-openai-responses-adapter'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact pull-request head
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+      - name: Create deterministic archive
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
+          git archive --format=tar.gz --prefix=rakuten/ \
+            --output="$RUNNER_TEMP/rakuten-source.tar.gz" HEAD
+          sha256sum "$RUNNER_TEMP/rakuten-source.tar.gz" \
+            > "$RUNNER_TEMP/rakuten-source.tar.gz.sha256"
+      - name: Upload archive
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: st0703-source-${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/rakuten-source.tar.gz
+            ${{ runner.temp }}/rakuten-source.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
