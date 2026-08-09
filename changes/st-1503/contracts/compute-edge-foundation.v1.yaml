@@ -1,0 +1,333 @@
+document:
+  id: RAOS-COMPUTE-EDGE-FOUNDATION-001
+  version: 1.0.0
+  story_id: ST-1503
+  status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
+  formal_verification: NOT_EXECUTED
+sources:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml
+    sha256: 2cdc9afb4b9a1fc7cb44b78dc5198bc443a219ca895713b75220f8625aea6305
+  - uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+  - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+    sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+  - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+    sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+predecessor_binding:
+  story_id: ST-1501
+  extension_kind: COMPUTE_CDN_WAF
+  contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+  contract_sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+  reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+  reference_plan_sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+  required_activation_status: DISABLED
+  required_resource_payloads: FORBIDDEN
+  required_planned_actions:
+    create: 0
+    update: 0
+    delete: 0
+reference_architecture:
+  cloud: AWS
+  region: ap-northeast-1
+  classification: INHERITED_REFERENCE_METADATA_ONLY
+  portable_core_required: true
+  component_families:
+    compute: ECS_Fargate
+    registry: ECR
+    load_balancer: ALB
+    edge: CloudFront_WAF_ACM
+    dns: Route53
+selected_configuration:
+  cloud_provider: null
+  production_region: null
+  aws_account_id: null
+  terraform_cli_version: null
+  provider_plugins: []
+  state_backend: null
+  credential_source: null
+  network_cidrs: []
+  subnet_ids: []
+  security_group_ids: []
+  public_ip_assignment: null
+  domain_names: []
+  host_names: []
+  iam_role_references: []
+  physical_resource_definitions: []
+workload_intent:
+  classification: LOGICAL_WORKLOAD_ROLE_INTENT_ONLY
+  immutable_digest_selected_images: REQUIRED_NOT_CONFIGURED
+  signed_provenance: REQUIRED_NOT_CONFIGURED
+  sbom: REQUIRED_NOT_CONFIGURED
+  image_scanning: REQUIRED_NOT_CONFIGURED
+  least_privilege_workload_identities: REQUIRED_NOT_CONFIGURED
+  encrypted_logs: REQUIRED_NOT_CONFIGURED
+  graceful_shutdown: REQUIRED_NOT_CONFIGURED
+  secret_material: ABSENT
+  roles:
+    - role: public_web
+      component_family: ECS_Fargate
+      trust_boundary: PUBLIC
+      origin_exposure: EDGE_MEDIATED_REQUIRED_NOT_CONFIGURED
+      direct_public_access: FORBIDDEN
+      direct_internal_data_plane_access: FORBIDDEN
+      public_projection_only: REQUIRED
+      approved_identity_authorization: NOT_APPLICABLE
+      selected:
+        cluster_reference: null
+        service_reference: null
+        task_definition_reference: null
+        registry_repository: null
+        image_digest: null
+        container_port: null
+        cpu_units: null
+        memory_mib: null
+        desired_count: null
+        autoscaling_min: null
+        autoscaling_max: null
+        subnet_ids: []
+        security_group_ids: []
+        public_ip: null
+        execution_role_reference: null
+        task_role_reference: null
+        log_group_reference: null
+    - role: admin_web
+      component_family: ECS_Fargate
+      trust_boundary: ADMIN
+      origin_exposure: EDGE_MEDIATED_REQUIRED_NOT_CONFIGURED
+      direct_public_access: FORBIDDEN
+      direct_internal_data_plane_access: PRIVATE_CORE_API_ONLY_NOT_CONFIGURED
+      public_projection_only: NOT_APPLICABLE
+      approved_identity_authorization: REQUIRED_NOT_CONFIGURED
+      selected:
+        cluster_reference: null
+        service_reference: null
+        task_definition_reference: null
+        registry_repository: null
+        image_digest: null
+        container_port: null
+        cpu_units: null
+        memory_mib: null
+        desired_count: null
+        autoscaling_min: null
+        autoscaling_max: null
+        subnet_ids: []
+        security_group_ids: []
+        public_ip: null
+        execution_role_reference: null
+        task_role_reference: null
+        log_group_reference: null
+    - role: core_api
+      component_family: ECS_Fargate
+      trust_boundary: INTERNAL
+      origin_exposure: PRIVATE_ONLY_REQUIRED
+      direct_public_access: FORBIDDEN
+      direct_internal_data_plane_access: LEAST_PRIVILEGE_REQUIRED_NOT_CONFIGURED
+      public_projection_only: NOT_APPLICABLE
+      approved_identity_authorization: REQUIRED_NOT_CONFIGURED
+      selected:
+        cluster_reference: null
+        service_reference: null
+        task_definition_reference: null
+        registry_repository: null
+        image_digest: null
+        container_port: null
+        cpu_units: null
+        memory_mib: null
+        desired_count: null
+        autoscaling_min: null
+        autoscaling_max: null
+        subnet_ids: []
+        security_group_ids: []
+        public_ip: null
+        execution_role_reference: null
+        task_role_reference: null
+        log_group_reference: null
+    - role: worker_pool
+      component_family: ECS_Fargate
+      trust_boundary: INTERNAL
+      origin_exposure: PRIVATE_ONLY_REQUIRED
+      direct_public_access: FORBIDDEN
+      direct_internal_data_plane_access: LEAST_PRIVILEGE_REQUIRED_NOT_CONFIGURED
+      public_projection_only: NOT_APPLICABLE
+      approved_identity_authorization: SERVICE_IDENTITY_REQUIRED_NOT_CONFIGURED
+      selected:
+        cluster_reference: null
+        service_reference: null
+        task_definition_reference: null
+        registry_repository: null
+        image_digest: null
+        container_port: null
+        cpu_units: null
+        memory_mib: null
+        desired_count: null
+        autoscaling_min: null
+        autoscaling_max: null
+        subnet_ids: []
+        security_group_ids: []
+        public_ip: null
+        execution_role_reference: null
+        task_role_reference: null
+        log_group_reference: null
+surface_boundary_intent:
+  classification: DISTINCT_SURFACE_BOUNDARIES_REQUIRED_NOT_CONFIGURED
+  trust_boundary_separation: REQUIRED_NOT_CONFIGURED
+  cache_separation: REQUIRED_NOT_CONFIGURED
+  cookie_separation: REQUIRED_NOT_CONFIGURED
+  host_separation: REQUIRED_NOT_CONFIGURED
+  csp_separation: REQUIRED_NOT_CONFIGURED
+  authentication_separation: REQUIRED_NOT_CONFIGURED
+  surfaces:
+    - surface: public
+      trust_boundary: PUBLIC
+      public_projection_only: REQUIRED
+      direct_internal_data_plane_access: FORBIDDEN
+      approved_identity_authorization: NOT_APPLICABLE
+      selected:
+        domain: null
+        host: null
+        route_patterns: []
+        cache_behavior: null
+        cookie_scope: null
+        csp_policy_reference: null
+        authentication_policy_reference: null
+    - surface: admin
+      trust_boundary: ADMIN
+      public_projection_only: NOT_APPLICABLE
+      direct_internal_data_plane_access: PRIVATE_CORE_API_ONLY_NOT_CONFIGURED
+      approved_identity_authorization: REQUIRED_NOT_CONFIGURED
+      selected:
+        domain: null
+        host: null
+        route_patterns: []
+        cache_behavior: null
+        cookie_scope: null
+        csp_policy_reference: null
+        authentication_policy_reference: null
+    - surface: internal
+      trust_boundary: INTERNAL
+      public_projection_only: NOT_APPLICABLE
+      direct_internal_data_plane_access: LEAST_PRIVILEGE_REQUIRED_NOT_CONFIGURED
+      approved_identity_authorization: SERVICE_IDENTITY_REQUIRED_NOT_CONFIGURED
+      selected:
+        domain: null
+        host: null
+        route_patterns: []
+        cache_behavior: null
+        cookie_scope: null
+        csp_policy_reference: null
+        authentication_policy_reference: null
+edge_routing_intent:
+  classification: LOGICAL_EDGE_ROUTING_INTENT_ONLY
+  public_entry_component: CloudFront_WAF_ACM
+  origin_boundary_component: ALB
+  dns_component: Route53
+  edge_only_public_entry: REQUIRED_NOT_CONFIGURED
+  origin_private_only: REQUIRED
+  api_worker_data_origins_private_only: REQUIRED
+  direct_origin_public_access: FORBIDDEN
+  tls: REQUIRED_NOT_CONFIGURED
+  waf: REQUIRED_NOT_CONFIGURED
+  dns: REQUIRED_NOT_CONFIGURED
+  selected:
+    distribution_reference: null
+    origin_references: []
+    load_balancer_reference: null
+    target_group_references: []
+    listener_references: []
+    route_definitions: []
+    certificate_reference: null
+    dns_zone_reference: null
+    dns_record_references: []
+    domain_names: []
+    host_names: []
+    waf_acl_reference: null
+    waf_rule_definitions: []
+    rate_limit_thresholds: []
+    cache_behaviors: []
+health_intent:
+  classification: LOGICAL_HEALTH_INTENT_ONLY
+  roles:
+    - public_web
+    - admin_web
+    - core_api
+    - worker_pool
+  liveness:
+    purpose: PROCESS_ONLY
+    external_dependency_coupling: FORBIDDEN
+    bounded_failure_behavior: REQUIRED_NOT_CONFIGURED
+    selected:
+      endpoint_path: null
+      port: null
+      success_status_codes: []
+      load_balancer_matcher: null
+      response_schema: null
+      interval_seconds: null
+      timeout_seconds: null
+      healthy_threshold: null
+      unhealthy_threshold: null
+  readiness:
+    purpose: DEPENDENCY_AND_MIGRATION_READINESS
+    dependency_check: REQUIRED_NOT_CONFIGURED
+    migration_compatibility_check: REQUIRED_NOT_CONFIGURED
+    bounded_failure_behavior: REQUIRED_NOT_CONFIGURED
+    infer_from_http_200_body: FORBIDDEN
+    selected:
+      endpoint_path: null
+      port: null
+      success_status_codes: []
+      load_balancer_matcher: null
+      response_schema: null
+      dependency_set: []
+      interval_seconds: null
+      timeout_seconds: null
+      healthy_threshold: null
+      unhealthy_threshold: null
+execution_boundary:
+  activation_enabled: false
+  activation_status: DISABLED
+  native_plan_status: NOT_EXECUTED
+  live_provider_calls: FORBIDDEN
+  external_writes: FORBIDDEN
+  commands:
+    init: FORBIDDEN
+    plan: FORBIDDEN
+    apply: FORBIDDEN
+    destroy: FORBIDDEN
+    import: FORBIDDEN
+    refresh: FORBIDDEN
+  planned_actions:
+    create: 0
+    update: 0
+    delete: 0
+evidence_boundary:
+  deliverable_classification: SOURCE_DERIVED_NON_EXECUTABLE_COMPUTE_EDGE_REFERENCE_PLAN
+  executable_terraform: ABSENT
+  terraform_cli: UNPINNED_NOT_INVOKED
+  provider_plugins: UNPINNED_NOT_INVOKED
+  aws_account: UNSET
+  credentials: ABSENT
+  native_iac_validation: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_027: NOT_EXECUTED
+  performance_validation: NOT_EXECUTED
+  health_runtime_validation: NOT_EXECUTED
+  live_staging_release_production: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
