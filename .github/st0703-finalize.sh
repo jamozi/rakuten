@@ -41,6 +41,17 @@ test "$(sha256sum "$netns_patch" | cut -d' ' -f1)" = \
   "$expected_netns_patch_sha"
 patch --dry-run --batch --forward -p1 < "$netns_patch"
 patch --batch --forward -p1 < "$netns_patch"
+/usr/bin/python3 -I - <<'PY'
+from pathlib import Path
+
+path = Path("tests/st0202/test_wrapper.py")
+text = path.read_text(encoding="utf-8")
+old = '        print(expected + "\\nrogue" if mode == "extra_network" else expected)\n'
+new = '        print(expected + "\\\\nrogue" if mode == "extra_network" else expected)\n'
+if text.count(old) != 1:
+    raise SystemExit("unexpected fake Docker newline fixture source")
+path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="")
+PY
 git diff --check
 bash -n scripts/run_network_denied.sh
 bash -n scripts/object_storage_service.sh
