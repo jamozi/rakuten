@@ -41,22 +41,40 @@ except (json.JSONDecodeError, UnicodeDecodeError):
 if not isinstance(ports, dict):
     raise SystemExit(1)
 bindings = ports.get("8333/tcp")
-if not isinstance(bindings, list) or len(bindings) != 1:
+if not isinstance(bindings, list) or not bindings:
+    raise SystemExit(1)
+active_bindings = []
+for binding in bindings:
+    if not isinstance(binding, dict):
+        raise SystemExit(1)
+    if "HostIp" not in binding or "HostPort" not in binding:
+        raise SystemExit(1)
+    host_ip = binding["HostIp"]
+    host_port = binding["HostPort"]
+    if not isinstance(host_ip, str) or not isinstance(host_port, str):
+        raise SystemExit(1)
+    if host_port == "":
+        continue
+    active_bindings.append(binding)
+if len(active_bindings) != 1:
     raise SystemExit(1)
 for exposed_port, exposed_bindings in ports.items():
-    if exposed_port == "8333/tcp":
+    if exposed_port == "8333/tcp" or exposed_bindings in (None, []):
         continue
-    if exposed_bindings not in (None, []):
+    if not isinstance(exposed_bindings, list):
         raise SystemExit(2)
-binding = bindings[0]
-if not isinstance(binding, dict):
-    raise SystemExit(1)
-if set(binding) != {"HostIp", "HostPort"}:
-    raise SystemExit(1)
+    if any(
+        not isinstance(binding, dict)
+        or not isinstance(binding.get("HostPort"), str)
+        or binding.get("HostPort") != ""
+        for binding in exposed_bindings
+    ):
+        raise SystemExit(2)
+binding = active_bindings[0]
 if binding["HostIp"] != "127.0.0.1":
     raise SystemExit(1)
 host_port = binding["HostPort"]
-if not isinstance(host_port, str) or not host_port.isdecimal():
+if not host_port.isdecimal():
     raise SystemExit(1)
 port = int(host_port, 10)
 if not 1024 <= port <= 65535:
@@ -90,6 +108,7 @@ replace_range(
         ports = {{
             "8333/tcp": [
                 {{"HostIp": "127.0.0.1", "HostPort": port}},
+                {{"HostIp": "::", "HostPort": ""}},
             ],
             "9333/tcp": None,
         }}
