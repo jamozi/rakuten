@@ -47,23 +47,8 @@ jobs:
           set -euo pipefail
           test "$(git hash-object .github/st0703-finalize.sh)" = \
             '6538101ffc18f3ace5129af6ca21f9a801c2384e'
-          /usr/bin/python3 -I - <<'PY'
-          from pathlib import Path
-
-          path = Path('.github/st0703-finalize.sh')
-          text = path.read_text(encoding='utf-8')
-          old = (
-              '.venv/bin/python -m pytest -p no:cacheprovider -q \\\n'
-              '  tests/st0204 tests/st0701 tests/st0703 tests/st0801\n'
-          )
-          new = (
-              'for suite in st0204 st0701 st0703 st0801; do\n'
-              '  .venv/bin/python -m pytest -p no:cacheprovider -q "tests/$suite"\n'
-              'done\n'
-          )
-          if text.count(old) != 1:
-              raise SystemExit('unexpected combined Story suite command')
-          path.write_text(text.replace(old, new, 1), encoding='utf-8', newline='')
-          PY
+          test "$(git hash-object .github/st0703-finalizer-followup.py)" = \
+            '5f1bc7866a312c5362e4e6177cff2523c21b2a7b'
+          /usr/bin/python3 -I .github/st0703-finalizer-followup.py
           bash -n .github/st0703-finalize.sh
           bash .github/st0703-finalize.sh
