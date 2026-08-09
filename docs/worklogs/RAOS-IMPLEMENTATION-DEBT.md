@@ -1671,3 +1671,65 @@ original result.
   not establish formal security or deployment readiness.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe local secure-object-intake seam.
+
+### 2026-08-10 W2 / ST-0501 recorded portfolio workflow checkpoint
+
+- Authority and scope: canonical `ST-0501` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0308 and ST-0403, has no
+  Story-local Open Decision, and requires TST-005/TST-012. Effective status
+  remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint does not implement or
+  claim durable CRUD, repository/UoW behavior, an HTTP API, production
+  authorization, or database concurrency evidence.
+- Implemented strict immutable Category, IntentCluster, Keyword, and editorial
+  ArticlePlan values; the exact sixteen list/create/get/update operations; no
+  delete surface; opaque cursor/idempotency/strong-ETag boundaries; canonical
+  initial states and version/no-op/replay invariants; and the closed
+  ArticlePlan state graph. Approval, source-packet, AI-job, quality-pass,
+  keyword-normalization, display-ID suffix, ETag encoding, and actor-binding
+  choices are never fabricated.
+- The inward `PortfolioWorkflowExchange` is one scripted exchange operation,
+  not a repository or fake database. The application requires an exact
+  ST-0403 TEST_ONLY authorization target before its sole exchange call and
+  validates operation/payload, resource kind, identifiers, site/category,
+  version, and ETag before exposure. Malformed or exceptional collaborators
+  return only a sanitized local-unavailable boundary without retry, cause, or
+  retained exception context.
+- The exact ENV-DEV recorded adapter consumes immutable ordered synthetic
+  scripts and has no mutable business-resource map, general-purpose fake
+  repository, persistence, file/environment/network/provider, HTTP, audit,
+  finance, publication, staging, release, or Production surface. OD-001 and
+  OD-002 remain unresolved; only generic TEST_ONLY fixtures are present.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st0501` (`48 passed`), ST-0308 owner check and regression
+  (`165 passed`), ST-0403 regression (`37 passed`), Ruff lint/format, strict
+  mypy, compile/import, exact nine-path review, focused maintained secret scan,
+  canonical import, workspace drift, and `git diff --check` returned `PASS`.
+  The linked-worktree full scanner limitation remains inherited
+  `DEBT-W0-003`.
+- `DEBT-W2-010` status: `OPEN`, introduced-by `ST-0501`, closure owner:
+  ST-0308/persistence, Portfolio/Editorial runtime, API, idempotency, and final
+  Wave integration owners. Exact skipped command: `NOT_RUN — no approved
+  repository/UoW/transaction/mapping implementation, durable uniqueness/FK/
+  cursor behavior, persistent idempotency reservation, ETag wire encoding,
+  HTTP controller, or business-plus-audit transaction exists`; observed
+  result: `NOT_EXECUTED`. The scripted exchange is explicitly not persistence
+  evidence or full CRUD acceptance.
+- `DEBT-W2-011` status: `OPEN`, introduced-by `ST-0501`, closure owner:
+  Identity/Security, API/domain design, Editorial workflow, and integration
+  owners. Exact skipped command: `NOT_RUN — no approved production action-to-
+  OAuth-scope/resource/state mapping, trusted item-to-site/category resolver,
+  actor-bound idempotency, keyword normalization, display-ID suffix, Category
+  transition policy, or ArticlePlan evidence ports exist`; observed result:
+  `NOT_EXECUTED`. TEST_ONLY pre-resolved targets and scripts are runtime
+  ineligible and do not resolve OD-001/OD-002.
+- `DEBT-W2-012` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0501`, closure
+  owner: formal CI, Security/API/PostgreSQL reviewers, runtime/Staging,
+  release, and Production owners. Exact skipped command: `NOT_RUN — formal
+  TST-005/TST-012, HTTP authentication/Problem Details, PostgreSQL concurrency,
+  hosted CI, live runtime, Staging, release, and Production are outside local
+  authority`; observed result: `NOT_EXECUTED`. Local recorded checks are not
+  promoted to formal or operational readiness.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-persistent local ST-0501
+  portfolio-workflow seam.
