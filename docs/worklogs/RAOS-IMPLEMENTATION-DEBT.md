@@ -558,3 +558,79 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-008` remain unchanged and unclosed. This checkpoint claims only
   local implementation evidence for the scoped ST-0407 seam.
+
+### 2026-08-10 W1 / ST-0704 final local implementation checkpoint
+
+- Authority and scope: canonical `ST-0704` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on the locally completed ST-0703
+  recorded adapter, and has the unresolved blocking `OD-009`. Its safe default
+  permits only a low development cap with Production disabled. The
+  owner-approved implementation-first ExecPlan therefore authorizes this
+  reversible synthetic `ENV_DEV` interface/fake boundary, not a real budget,
+  provider route, price, FX rate, account, or external request.
+- Implemented immutable redacted route/certification/quote/reservation/
+  authorization/receipt values, inward eligibility and atomic-control ports,
+  deterministic route authorization, and locked process-local reserve/commit/
+  release/circuit controls. ST-0701 `CANDIDATE` metadata is insufficient by
+  itself: one separately injected time-bounded synthetic certification must
+  bind the exact task, route version, model, task-binding hash, and route hash.
+- The injected synthetic cap and direct-JPY quote are test-control values only.
+  Circuit state defaults open/deny, may be explicitly closed only by a test
+  fixture, and can move only to open. Fallback is always `DENY_ALL` with zero
+  attempts. There is no provider/model execution, retry, reset, half-open,
+  recovery, network, file, process-environment, database, credential, pricing/
+  FX lookup, deployment, release, or Production path.
+- Independent post-commit review found and closed two focused defects before
+  the final commit: forged authorization metadata could otherwise retain a live
+  reservation handle, and outward commit/release receipts lacked semantic
+  equality checks. Authorization now reconstructs and verifies the complete
+  reservation intent; both receipt types are normalized and compared to the
+  exact expected terminal result. Hostile tests cover both closures.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Final isolated `tests/st0704` result: `45 passed`. Ruff lint returned
+  `All checks passed!`; Ruff format returned `9 files already formatted`;
+  strict mypy including tests returned `Success: no issues found in 9 source
+  files`; direct import/compile, exact nine-path ownership review, and
+  `git diff --check` returned `PASS`.
+- Sensitive-data checks: the worker's maintained scanner-engine pass covered
+  all nine code/test paths with zero findings. The final aggregate pass also
+  covered the Story README and this ledger and returned
+  `FOCUSED_SECRET_SCAN findings=0 files=11`. The full repository command remains
+  unable to traverse the linked worktree and returns the inherited sanitized
+  `unsafe-git-metadata` result; this Story does not weaken or close
+  `DEBT-W0-003`.
+- `DEBT-W1-012` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0704`, closure
+  owner: Business Owner plus AI/Security/Finance owners. Exact skipped command:
+  `NOT_RUN — OD-009 has no approved real monthly cap, automatic-stop threshold,
+  provider/model route, production price, or FX source`; observed result:
+  `NOT_EXECUTED`. Closure boundary: those real values receive distinct human
+  approval and are hash-bound through an authorized design/integration Story.
+  Safe impact: exact-development synthetic fixtures only; Production is denied.
+- `DEBT-W1-013` status: `OPEN`, introduced-by `ST-0704`, closure owner: the
+  authorized AI runtime/persistence and operations Stories plus final
+  integration audit. Exact skipped command: `NOT_RUN — durable multi-process
+  budget ledger, reservation fence, persistent circuit, approved fallback,
+  provider execution, and operational reset/recovery are outside this local
+  fake`; observed result: `NOT_EXECUTED`. Closure boundary: approved concrete
+  contracts implement crash/concurrency/recovery behavior and remain fail
+  closed under replay, overspend, circuit, and unsafe-fallback negatives.
+- `DEBT-W1-014` status: `OPEN`, introduced-by `ST-0704`, closure owner:
+  ST-0701/ST-0703 owner generators at W1 freeze. Exact affected-suite results:
+  isolated ST-0701 `115 passed, 2 failed` and ST-0703
+  `361 passed, 2 failed`; every failure is generated manifest drift caused by
+  the new ST-0704 paths. Affected artifacts are
+  `changes/st-0701/manifest.yaml` and `changes/st-0703/manifest.yaml`. Closure
+  boundary: freeze W1 sources, regenerate owners in dependency order, prove
+  semantic projection, and rerun no-write checks. Generated files were not
+  hand-edited in this slice.
+- `DEBT-W1-015` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0704`, closure
+  owner: formal CI, AI/Security reviewers, provider/account operators, and
+  staging/release owners. Exact skipped command: `NOT_RUN — formal TST-005,
+  TST-017, and TST-019 plus hosted/live/staging/deployment/release/Production
+  commands are outside local authority`; observed result: `NOT_EXECUTED`. No
+  generated status/evidence artifact was edited and no local result is promoted
+  to formal validation or Production readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-011` remain unchanged and unclosed. This checkpoint claims only
+  local implementation evidence for the scoped ST-0704 seam.
