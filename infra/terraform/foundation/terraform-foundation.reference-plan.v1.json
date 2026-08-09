@@ -1,0 +1,97 @@
+{
+  "activation": {
+    "enabled": false,
+    "external_writes": "FORBIDDEN",
+    "live_provider_calls": "FORBIDDEN",
+    "native_commands": {
+      "apply": "FORBIDDEN",
+      "destroy": "FORBIDDEN",
+      "import": "FORBIDDEN",
+      "init": "FORBIDDEN",
+      "plan": "FORBIDDEN",
+      "refresh": "FORBIDDEN"
+    },
+    "native_plan_status": "NOT_EXECUTED",
+    "status": "DISABLED"
+  },
+  "document": {
+    "artifact_kind": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
+    "executable": false,
+    "generated_by": "repo://scripts/build_st1501_terraform_foundation.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st1501_terraform_foundation.py",
+    "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
+    "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "source_contract": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
+    "story_id": "ST-1501",
+    "version": "1.0.0"
+  },
+  "extension_contract": {
+    "current_resource_payloads": "FORBIDDEN",
+    "native_toolchain_pin_required_before_hcl": true,
+    "successor_contract_revision_required": true,
+    "successors": {
+      "ST-1502": "DATA_SERVICES",
+      "ST-1503": "COMPUTE_CDN_WAF"
+    }
+  },
+  "future_requirements": {
+    "account_separation": {
+      "development_account_id": null,
+      "production_account_id": null,
+      "requirement": "REQUIRED"
+    },
+    "production_change_control": {
+      "drift_detection": "REQUIRED_NOT_CONFIGURED",
+      "human_approval": "REQUIRED",
+      "iac_only": "REQUIRED",
+      "manual_change": "FORBIDDEN",
+      "od_013_status": "HUMAN_DECISION_REQUIRED",
+      "production_apply": "FORBIDDEN"
+    },
+    "remote_state": {
+      "audit_logging": "REQUIRED_NOT_CONFIGURED",
+      "backup_and_restore": "REQUIRED_NOT_CONFIGURED",
+      "encryption": "REQUIRED_NOT_CONFIGURED",
+      "locking": "REQUIRED_NOT_CONFIGURED",
+      "selected_backend": null
+    }
+  },
+  "planned_actions": {
+    "create": 0,
+    "delete": 0,
+    "update": 0
+  },
+  "reference_architecture": {
+    "classification": "REFERENCE_METADATA_ONLY",
+    "cloud": "AWS",
+    "portable_core_required": true,
+    "region": "ap-northeast-1"
+  },
+  "selected_configuration": {
+    "availability_zones": [],
+    "backup_region": null,
+    "cloud_provider": null,
+    "credential_source": null,
+    "development_account_id": null,
+    "kms_key_reference": null,
+    "monthly_budget_jpy": null,
+    "network_cidrs": [],
+    "production_account_id": null,
+    "production_region": null,
+    "provider_plugins": [],
+    "resource_definitions": [],
+    "state_backend": null,
+    "terraform_cli_version": null
+  },
+  "verification_boundary": {
+    "aws_account": "UNSET",
+    "credentials": "ABSENT",
+    "effective_canonical_status": "UNCHANGED",
+    "executable_terraform": "ABSENT",
+    "formal_tst_026": "NOT_EXECUTED",
+    "live_staging_release_production": "NOT_EXECUTED",
+    "provider_plugins": "UNPINNED_NOT_INVOKED",
+    "remote_state": "NOT_CONFIGURED",
+    "terraform_cli": "UNPINNED_NOT_INVOKED"
+  }
+}

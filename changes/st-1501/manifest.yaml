@@ -1,0 +1,82 @@
+document:
+  id: RAOS-TERRAFORM-FOUNDATION-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1501
+  source_contract: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+  generated_by: repo://scripts/build_st1501_terraform_foundation.py
+  generation_command: uv run --locked --no-sync python scripts/build_st1501_terraform_foundation.py
+provenance:
+  contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+  contract_sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+  authority_inputs:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml
+    sha256: 2cdc9afb4b9a1fc7cb44b78dc5198bc443a219ca895713b75220f8625aea6305
+  - uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+  bytes: 4106
+  sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+- uri: repo://changes/st-1501/README.md
+  bytes: 4407
+  sha256: efd6a2c00b07c3dd03ad607ed535bc976836eb2da1247fe58c47c35d246e06d6
+- uri: repo://scripts/build_st1501_terraform_foundation.py
+  bytes: 43936
+  sha256: 9587478f2abe7cdea85f0f60f2c227c8d3f3400686f8ef7d6e9acbe07524a41c
+- uri: repo://tests/st1501/conftest.py
+  bytes: 639
+  sha256: 0901bcd2fb399aff95835b44782bce3d163d61f465d8668723369da9a2f99e18
+- uri: repo://tests/st1501/test_contract.py
+  bytes: 7415
+  sha256: dd2c78b2ad29e77f52518e5d65cf0d42d29f631dcaebfcd3923e173dbb60217f
+- uri: repo://tests/st1501/test_generation.py
+  bytes: 7520
+  sha256: 1e41948b1fa81572ec9ee1cf48413096da111a492d7282e2a35ddf4ce8d948d8
+- uri: repo://tests/st1501/test_negative_cases.py
+  bytes: 7740
+  sha256: 8645bb10e1959b8517746f60e31a930b8adba338b235b0fd362bcb0f0715adc2
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+  bytes: 3041
+  sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+manifest_self_integrity:
+  included_in_generated_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  classification: SOURCE_DERIVED_REFERENCE_STATE_PLAN
+  activation: DISABLED
+  planned_actions:
+    create: 0
+    update: 0
+    delete: 0
+  selected_cloud_provider: null
+  selected_production_region: null
+  selected_production_account: null
+  selected_state_backend: null
+  credentials: ABSENT
+  resource_definitions: []
+  native_iac_validation: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

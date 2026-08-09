@@ -1,0 +1,103 @@
+document:
+  id: RAOS-TERRAFORM-FOUNDATION-001
+  version: 1.0.0
+  story_id: ST-1501
+  status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
+  formal_verification: NOT_EXECUTED
+sources:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml
+    sha256: 2cdc9afb4b9a1fc7cb44b78dc5198bc443a219ca895713b75220f8625aea6305
+  - uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+reference_architecture:
+  cloud: AWS
+  region: ap-northeast-1
+  classification: REFERENCE_METADATA_ONLY
+  portable_core_required: true
+selected_configuration:
+  cloud_provider: null
+  production_region: null
+  backup_region: null
+  development_account_id: null
+  production_account_id: null
+  terraform_cli_version: null
+  provider_plugins: []
+  state_backend: null
+  credential_source: null
+  network_cidrs: []
+  availability_zones: []
+  kms_key_reference: null
+  monthly_budget_jpy: null
+  resource_definitions: []
+execution_boundary:
+  activation_enabled: false
+  activation_status: DISABLED
+  native_plan_status: NOT_EXECUTED
+  live_provider_calls: FORBIDDEN
+  external_writes: FORBIDDEN
+  commands:
+    init: FORBIDDEN
+    plan: FORBIDDEN
+    apply: FORBIDDEN
+    destroy: FORBIDDEN
+    import: FORBIDDEN
+    refresh: FORBIDDEN
+  planned_actions:
+    create: 0
+    update: 0
+    delete: 0
+state_requirements:
+  encryption: REQUIRED_NOT_CONFIGURED
+  locking: REQUIRED_NOT_CONFIGURED
+  audit_logging: REQUIRED_NOT_CONFIGURED
+  backup_and_restore: REQUIRED_NOT_CONFIGURED
+  selected_backend: null
+account_requirements:
+  separate_development_and_production: REQUIRED
+  development_account_id: null
+  production_account_id: null
+production_change_requirements:
+  iac_only: REQUIRED
+  human_approval: REQUIRED
+  drift_detection: REQUIRED_NOT_CONFIGURED
+  manual_change: FORBIDDEN
+  od_013_status: HUMAN_DECISION_REQUIRED
+  production_apply: FORBIDDEN
+extension_contract:
+  current_resource_payloads: FORBIDDEN
+  successor_contract_revision_required: true
+  native_toolchain_pin_required_before_hcl: true
+  successors:
+    ST-1502: DATA_SERVICES
+    ST-1503: COMPUTE_CDN_WAF
+evidence_boundary:
+  deliverable_classification: SOURCE_DERIVED_REFERENCE_STATE_PLAN
+  executable_terraform: ABSENT
+  terraform_cli: UNPINNED_NOT_INVOKED
+  provider_plugins: UNPINNED_NOT_INVOKED
+  remote_state: NOT_CONFIGURED
+  aws_account: UNSET
+  credentials: ABSENT
+  formal_tst_026: NOT_EXECUTED
+  live_staging_release_production: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
