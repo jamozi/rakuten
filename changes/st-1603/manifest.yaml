@@ -1,0 +1,91 @@
+document:
+  id: RAOS-SECURITY-VERIFICATION-PACK-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1603
+  source_contract: repo://changes/st-1603/contracts/security-verification-pack.v1.yaml
+  generated_by: repo://scripts/build_st1603_security_verification_pack.py
+  generation_command: uv run --locked --no-sync python scripts/build_st1603_security_verification_pack.py
+provenance:
+  contract_sha256: 7baa94bfe2defcd8351bab9d702960422b0143e417b23c1fabb7b88fe7c59d68
+  authority_inputs:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+  predecessor_inputs:
+  - uri: repo://changes/st-0407/README.md
+    sha256: 549d4b1e70fc9c3797ed8914721cdf837476b9d497b54ad3f1a3ec61e7f79232
+  - uri: repo://python/raos/domain/iam/workload_credentials.py
+    sha256: 2419ac466d1b3e671d659c14a9d5c5ad4762a4b50d239d70fede092da886acd5
+  - uri: repo://python/raos/ports/workload_credentials.py
+    sha256: da5d8233d783b37ff6a550454037b97de4268f11d6707c5139b2d840ce519e88
+  - uri: repo://python/raos/application/iam/workload_credentials.py
+    sha256: 8cd0ef7ff2c6210ec3f8116cb5a8bc55025bb1990e963d83a16f34a067d4d004
+  - uri: repo://python/raos/adapters/development_workload_credentials.py
+    sha256: 42164321018c35f61d71c215d2a0c764d8e04c973dff56194db79e96926046e0
+  - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
+    sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
+  - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
+    sha256: 33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f
+  - uri: repo://changes/st-1505/manifest.yaml
+    sha256: b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2
+  implementation_inputs:
+  - uri: repo://scripts/build_st1506_production_deployment.py
+    sha256: ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-1603/contracts/security-verification-pack.v1.yaml
+  bytes: 6424
+  sha256: 7baa94bfe2defcd8351bab9d702960422b0143e417b23c1fabb7b88fe7c59d68
+- uri: repo://changes/st-1603/README.md
+  bytes: 3684
+  sha256: 5a072315db6e28aba0268ea2d9ce9d5c62cdefff098b861b94d819a929ea935b
+- uri: repo://scripts/build_st1603_security_verification_pack.py
+  bytes: 27109
+  sha256: 46960e65555b0fe464933f6a78a53d5e51121269c5d706c008931094737c6ea9
+- uri: repo://tests/st1603/conftest.py
+  bytes: 702
+  sha256: e2f249f30ea8a794107a4e5edde2f69ffc3b786c485601b09b2e7a8733ee0e23
+- uri: repo://tests/st1603/test_contract.py
+  bytes: 4375
+  sha256: 3e87881ae3908f93796ceaa6d701c2a6ad736fff3b4d3721b9f995bc9706f319
+- uri: repo://tests/st1603/test_generation.py
+  bytes: 6306
+  sha256: 5bbcc2ae5fffbd3eb152577c548a662e7c8c0bdf3ec58ff191a783e18e58679e
+- uri: repo://tests/st1603/test_negative_cases.py
+  bytes: 6274
+  sha256: 44e68c0bce8137596e2b9e83f7de9d3529464715493df9874d0e1730c909eca1
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json
+  bytes: 43884
+  sha256: 9f85f4d7399ca80ba13659ac8e73e60b12ed9efb012f8c8b09334256440d970d
+manifest_self_integrity:
+  included_in_generated_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  classification: SOURCE_DERIVED_NON_ATTESTING_SECURITY_VERIFICATION_REFERENCE_PLAN
+  projected_controls: 83
+  verified_controls: 0
+  open_critical: null
+  open_high: null
+  decision: NOT_READY
+  st_1607_eligible: false
+  release_eligible: false
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

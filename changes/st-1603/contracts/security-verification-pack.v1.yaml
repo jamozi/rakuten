@@ -1,0 +1,183 @@
+document:
+  id: RAOS-SECURITY-VERIFICATION-PACK-001
+  version: 1.0.0
+  story_id: ST-1603
+  status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
+  formal_verification: NOT_EXECUTED
+sources:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+predecessor_bindings:
+  workload_credential_seam:
+    story_id: ST-0407
+    readme_uri: repo://changes/st-0407/README.md
+    readme_sha256: 549d4b1e70fc9c3797ed8914721cdf837476b9d497b54ad3f1a3ec61e7f79232
+    source_artifacts:
+      - uri: repo://python/raos/domain/iam/workload_credentials.py
+        sha256: 2419ac466d1b3e671d659c14a9d5c5ad4762a4b50d239d70fede092da886acd5
+      - uri: repo://python/raos/ports/workload_credentials.py
+        sha256: da5d8233d783b37ff6a550454037b97de4268f11d6707c5139b2d840ce519e88
+      - uri: repo://python/raos/application/iam/workload_credentials.py
+        sha256: 8cd0ef7ff2c6210ec3f8116cb5a8bc55025bb1990e963d83a16f34a067d4d004
+      - uri: repo://python/raos/adapters/development_workload_credentials.py
+        sha256: 42164321018c35f61d71c215d2a0c764d8e04c973dff56194db79e96926046e0
+    material_free: true
+    failure_mode: FAIL_CLOSED
+    credential_material: ABSENT
+    provider_selection: null
+    live_provider_calls: FORBIDDEN
+    external_writes: FORBIDDEN
+    formal_tst_026: NOT_EXECUTED
+    formal_tst_031: NOT_EXECUTED
+  staging_deployment:
+    story_id: ST-1505
+    contract_uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
+    contract_sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
+    reference_plan_uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
+    reference_plan_sha256: 33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f
+    manifest_uri: repo://changes/st-1505/manifest.yaml
+    manifest_sha256: b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2
+    required_classification: SOURCE_DERIVED_NON_EXECUTABLE_STAGING_DEPLOYMENT_REFERENCE_PLAN
+    executable: false
+    activation: DISABLED
+    credential_material: ABSENT
+    live_provider_calls: FORBIDDEN
+    external_writes: FORBIDDEN
+    action_counts:
+      create: 0
+      update: 0
+      delete: 0
+      promote: 0
+      deploy: 0
+      migrate: 0
+      smoke: 0
+      browser: 0
+      rollback: 0
+      production: 0
+catalog_projection:
+  source_document_id: RAOS-SEC-CONTROLS-001
+  source_version: '1.0'
+  source_baseline: OWASP ASVS 5.0 Level 2 target plus RAOS-specific controls
+  projection_kind: EXACT_ORDERED_SOURCE_FIELDS
+  projected_fields:
+    - id
+    - category
+    - title
+    - requirement
+    - verification
+    - priority
+    - gate
+    - design_status
+    - implementation_status
+    - verification_status
+  expected_control_count: 83
+  expected_unique_verification_string_count: 75
+  category_counts:
+    GOV: 8
+    IAM: 12
+    APP: 15
+    DATA: 10
+    INFRA: 10
+    AI: 8
+    SDLC: 12
+    OPS: 8
+  priority_counts:
+    P0: 32
+    P1: 51
+  required_gate: GATE-0
+  required_design_status: APPROVED_FOR_IMPLEMENTATION
+  required_implementation_status: NOT_STARTED
+  required_verification_status: NOT_EXECUTED
+  projected_control_count: 83
+  verified_control_count: 0
+  interpretation: INVENTORY_PROJECTION_ONLY_NOT_VERIFICATION
+asvs_mapping:
+  status: NOT_EXECUTED
+  mappings: []
+  invented_mappings: FORBIDDEN
+verification_suites:
+  required_suite_ids:
+    - TST-026
+    - TST-031
+  required_execution_status: NOT_EXECUTED
+  evidence_references: []
+findings:
+  collection_status: NOT_EXECUTED
+  open_critical: null
+  open_high: null
+  items: []
+  empty_interpretation: NO_RESULTS_COLLECTED_NOT_ZERO_FINDINGS
+remediations:
+  collection_status: NOT_EXECUTED
+  items: []
+  empty_interpretation: NO_REMEDIATIONS_COLLECTED_NOT_COMPLETE
+exceptions:
+  collection_status: NOT_EXECUTED
+  items: []
+  empty_interpretation: NO_EXCEPTIONS_COLLECTED_NOT_APPROVED
+evidence:
+  collection_status: NOT_EXECUTED
+  control_evidence: []
+  scan_results: []
+  manual_results: []
+  artifacts: []
+  empty_interpretation: NO_EVIDENCE_COLLECTED_NOT_PASS
+approvals: null
+decision: NOT_READY
+execution_boundary:
+  executable: false
+  interface_only: true
+  activation: DISABLED
+  scanner_execution: FORBIDDEN
+  network_access: FORBIDDEN
+  subprocess_execution: FORBIDDEN
+  git_execution: FORBIDDEN
+  aws_access: FORBIDDEN
+  github_access: FORBIDDEN
+  environment_access: FORBIDDEN
+  credential_access: FORBIDDEN
+  staging_action: FORBIDDEN
+  release_action: FORBIDDEN
+  production_action: FORBIDDEN
+  action_counts:
+    scan: 0
+    network: 0
+    subprocess: 0
+    git: 0
+    aws: 0
+    github: 0
+    credential: 0
+    staging: 0
+    release: 0
+    production: 0
+evidence_boundary:
+  classification: SOURCE_DERIVED_NON_ATTESTING_SECURITY_VERIFICATION_REFERENCE_PLAN
+  projection_coverage: 83/83
+  verified_controls: 0/83
+  asvs_mapping: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+  scanner_results: NOT_EXECUTED
+  manual_results: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  st_1607_eligible: false
+  release_eligible: false
+  effective_canonical_status: UNCHANGED
