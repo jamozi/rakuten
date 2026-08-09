@@ -15,6 +15,18 @@ story:
     - TST-017
   open_decisions: []
 
+implementation_authority:
+  handoff: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml
+  approval: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v3.yaml
+  reconciliation: repo://changes/st-0703/CANONICAL-RECONCILIATION-v3.md
+  approved_decisions:
+    - ST0703-V3-D1
+    - ST0703-V3-D2
+    - ST0703-V3-D3
+    - ST0703-V3-D4
+    - ST0703-V3-D5
+  authority: ST0703_RECORDED_SCOPE_ONLY
+
 provenance:
   canonical_inputs:
     - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -29,13 +41,21 @@ provenance:
       sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
     - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
       sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - uri: repo://changes/st-0703/DESIGN-DECISION-REQUEST-v3.md
+      sha256: ed65ac3237b60be87eed02bb296799e3da764052f4b4820dfaec4d3d9a367166
+    - uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml
+      sha256: a510526678190b0512a5d28e016f1ab978469e10cc5063d6a2482f93b6ce43c8
+    - uri: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v3.yaml
+      sha256: df9b39bf9969618a34a58fc0dfab679467ab02a360f22c306d4d408a8ecd5eae
+    - uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v3.md
+      sha256: 86e40267756d95ecd9175aad5520ceb204459cffca1fb133fcf67f2981eb2595
   predecessors:
     - story_id: ST-0701
       uri: repo://changes/st-0701/manifest.yaml
-      sha256: 4fc7f1936462b89a249a595fd6eb89c2162cbf176eb8ada43f29245639bb06e7
+      sha256: 8eda024ba3e428a46b544390ccc88e8cd37547ede43bffcbab414b59dd49a3bc
     - story_id: ST-0204
       uri: repo://changes/st-0204/manifest.yaml
-      sha256: 712ac8ca53618ec05a05de6ada2ccaacf9e782377d8d9913c655999f4df9df05
+      sha256: 7fbe783850cf15642b837ab0efecf7827fbe06ca86316d387401e0376923c7fb
   provider_contracts:
     - uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json
       sha256: 163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31
@@ -118,6 +138,142 @@ request_contract:
     timeout: POSITIVE_BOUNDED_SECONDS
   call_limit_per_execute: 1
 
+provider_error_contract:
+  public_fields:
+    - stable_code
+    - retryable
+  raise_from_none: true
+  class_status_conflict: UNKNOWN
+  malformed_or_raising_status: UNKNOWN
+  rows:
+    RATE_LIMIT:
+      signals: [HTTP_429, RateLimitError]
+      retryable: true
+    TIMEOUT:
+      signals: [HTTP_408, APITimeoutError, TimeoutError]
+      retryable: true
+    AUTHENTICATION:
+      signals: [HTTP_401, AuthenticationError]
+      retryable: false
+    PERMISSION:
+      signals: [HTTP_403, PermissionDeniedError]
+      retryable: false
+    INVALID_REQUEST:
+      signals: [HTTP_400, HTTP_404, HTTP_409, HTTP_422, BadRequestError, ConflictError, NotFoundError, UnprocessableEntityError]
+      retryable: false
+    UNAVAILABLE:
+      signals: [HTTP_502, HTTP_503, HTTP_504, APIConnectionError]
+      retryable: true
+    SERVER_ERROR:
+      signals: [OTHER_HTTP_STATUS_AT_LEAST_500, InternalServerError]
+      retryable: true
+    UNKNOWN:
+      signals: [EVERY_UNLISTED_SIGNAL]
+      retryable: false
+  non_provider_codes:
+    malformed_response: MALFORMED_RESPONSE
+    route_mismatch: ROUTE_MISMATCH
+    invalid_schema: INVALID_SCHEMA
+    recorder_failure: RECORDER_FAILURE
+    pricing_missing: PRICING_MISSING
+    pricing_mismatch: PRICING_MISMATCH
+    clock_failure: UNKNOWN
+  forbidden_public_material:
+    - message
+    - args
+    - status object
+    - response
+    - request
+    - headers
+    - URL
+    - body
+    - credential
+    - prompt
+    - source
+    - output
+    - provider identifier
+
+recorded_exchange_contract:
+  root_fields: [provider, request, response]
+  provider: openai
+  request_fields: [request_sha256, task_code, model_route_version, prompt_version, input_artifact_sha256, output_schema_sha256]
+  response_fields: [response_id, requested_model_id, resolved_model_id, status, created_at, received_at, latency_ms, usage, outcome]
+  usage_fields: [input_tokens, cached_input_tokens, output_tokens]
+  outcomes:
+    success: {kind: success}
+    refusal: {kind: refusal, refusal: true}
+    incomplete_max_output_tokens: {kind: incomplete, reason: max_output_tokens}
+    incomplete_content_filter: {kind: incomplete, reason: content_filter}
+  canonical_json:
+    encoding: UTF-8
+    sorted_keys: true
+    compact_separators: true
+    ensure_ascii: false
+    allow_nan: false
+    maximum_bytes: 4194304
+    digest: SHA-256
+    parse_reserialize_exact_match: true
+  ordering_before_record: [response_normalization, route_matching, usage_validation, outcome_classification, structured_output_validation, complete_pricing_validation, independent_pricing_recomputation]
+  recorder_calls:
+    success_refusal_incomplete: 1
+    every_failed_path: 0
+  artifact_ref:
+    exact_type: true
+    matching_sha256: true
+    matching_byte_size: true
+    content_type: application/json
+  forbidden_content:
+    - successful output
+    - refusal text
+    - partial output
+    - reasoning
+    - prompt or message
+    - source material
+    - provider request ID
+    - header or URL
+    - credential
+    - exception or error body
+    - pricing value
+    - unlisted provider field
+
+synthetic_pricing_contract:
+  classification: SYNTHETIC_TEST_ONLY
+  validity_interval: observed_at <= evaluated_at < expires_at
+  evaluated_at: injected UTC clock captured at adapter entry
+  quote_hash_fields: [quote_id, provider, model_id, native_currency, input_per_million, cached_input_per_million, output_per_million, jpy_per_native_unit, observed_at, expires_at]
+  quote_hash_kind: SYNTHETIC_TEST_ONLY
+  calculator_inputs: [usage, provider, model_id, quote, evaluated_at]
+  result_fields: [estimated_cost_jpy, provider_cost_native, native_currency, quote_id, quote_sha256, provider, model_id, usage_sha256, evaluated_at, calculation_sha256]
+  decimal_context:
+    precision: 50
+    intermediate_rounding: ROUND_HALF_EVEN
+    final_jpy_rounding: ROUND_CEILING
+    ambient_context: FORBIDDEN
+  formula:
+    regular_input_tokens: input_tokens - cached_input_tokens
+    provider_cost_native: (regular_input_tokens * input_per_million + cached_input_tokens * cached_input_per_million + output_tokens * output_per_million) / 1000000
+    estimated_cost_jpy: ceil(provider_cost_native * jpy_per_native_unit)
+  exact_reference_recomputation: REQUIRED
+  compare_every_result_field: true
+
+provenance_regeneration_contract:
+  owner_generators_only: true
+  permitted_mechanical_outputs: [ST-0204 manifest, ST-0701 manifest, ST-0801 manifest]
+  semantic_payload_change: FORBIDDEN
+  protected_or_append_only_change: FORBIDDEN
+  post_generation_no_write_check: REQUIRED
+  st1203_st1204_partial_st0204_pins: REVERT_TO_PRE_ST0703
+  st1203_st1204_st0305_debt: SEPARATE_UNWAIVED_BLOCKER
+
+gate_contract:
+  hydration: EXPLICIT_SEPARATE_PREREQUISITE
+  generate: openai-recorded-generate
+  read_only_targets: [openai-recorded-check, openai-recorded-static, openai-recorded-test, openai-recorded-gate]
+  repository_policy: openai-recorded-check
+  unit_suite: tests/st0703
+  new_workflow_or_job: false
+  credential_secret_or_network: FORBIDDEN
+
 fixture_inventory:
   root: changes/st-0703/fixtures/recorded
   format: STRICT_UTF8_LF_JSON
@@ -154,6 +310,13 @@ required_assertions:
   - Provider errors expose stable codes only and retain no raw exception or exchange.
   - Provider SDK types never cross the inward port.
   - Fixture tests make no network call and read no credential, Secret reference, or environment variable.
+  - Class and HTTP-status conflicts, malformed status values, hostile attributes, and unlisted signals map to UNKNOWN without retry.
+  - Public provider failures retain no message, arguments, raw cause, context, provider object, or untrusted identifier.
+  - Recorded exchanges use the exact closed content-free schema and are canonical, bounded, hash-bound, and recorded exactly once only after every validation succeeds.
+  - Synthetic pricing uses an expiring quote, a fresh precision-50 Decimal context, cached-token separation, ceiling JPY rounding, complete binding digests, and independent reference recomputation.
+  - Missing or malformed pricing and every substituted result field fail before recording.
+  - ST-0204, ST-0701, and ST-0801 owner manifests retain their approved semantic projection after mechanical regeneration.
+  - Base CI runs the no-write generator checks and the isolated ST-0703 suite with no provider network or credential path.
 
 boundary:
   live_api: NOT_USED
@@ -164,6 +327,8 @@ boundary:
   routing_fallback_circuit_budget_retry: NOT_IMPLEMENTED_ST0704_BOUNDARY
   database_queue_storage: NOT_USED
   tools_network_chat_completions: FORBIDDEN
+  ambient_wall_clock: FORBIDDEN
+  production_quote_or_fx: NOT_USED
   proposal_bundle_authority: PROPOSAL_INPUT_ONLY_NOT_IMPLEMENTATION_AUTHORITY
   local_result: IMPLEMENTATION_CANDIDATE_ONLY
   formal_tst_017: NOT_EXECUTED

@@ -8,6 +8,7 @@ from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 import json
+import os
 from pathlib import Path
 import socket
 from collections.abc import Callable
@@ -60,6 +61,7 @@ from raos.domain.ai.provider import (
 from raos.ports.ai_provider import (
     ProviderError,
     ProviderErrorCode,
+    ProviderExchange,
     RecordedCostCalculator,
     StructuredModelProvider,
 )
@@ -243,7 +245,7 @@ def _named_error(name: str, status: object = _STATUS_ABSENT) -> Exception:
     error = error_type("SYNTHETIC_TEST_ONLY provider diagnostic")
     if status is not _STATUS_ABSENT:
         setattr(error, "status_code", status)
-    return error
+    return cast(Exception, error)
 
 
 def _sdk_subclass_error(
@@ -325,6 +327,38 @@ class _FixedCalculator:
             }
         )
         return self._result
+
+
+class _TrackingCalculator:
+    def __init__(self) -> None:
+        self.calls: list[dict[str, object]] = []
+        self._delegate = SyntheticRecordedCostCalculator()
+
+    def calculate(
+        self,
+        *,
+        usage: ProviderUsage,
+        provider: str,
+        model_id: str,
+        quote: SyntheticPricingQuote,
+        evaluated_at: datetime,
+    ) -> PricingResult:
+        self.calls.append(
+            {
+                "usage": usage,
+                "provider": provider,
+                "model_id": model_id,
+                "quote": quote,
+                "evaluated_at": evaluated_at,
+            }
+        )
+        return self._delegate.calculate(
+            usage=usage,
+            provider=provider,
+            model_id=model_id,
+            quote=quote,
+            evaluated_at=evaluated_at,
+        )
 
 
 @pytest.mark.parametrize("fixture_name", FIXTURE_NAMES)
@@ -448,6 +482,67 @@ def test_success_record_excludes_structured_output_content() -> None:
     assert json.loads(recorded)["response"]["outcome"] == {"kind": "success"}
 
 
+def test_recorded_exchange_excludes_all_unlisted_content_canaries() -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    body = copy.deepcopy(cast(dict[str, object], transport["body"]))
+    message = cast(dict[str, object], cast(list[object], body["output"])[0])
+    content = cast(dict[str, object], cast(list[object], message["content"])[0])
+    content["text"] = '{"label":"output-content-canary","score":7}'
+    body.update(
+        {
+            "headers": {"x-canary": "header-canary"},
+            "url": "https://url-canary.invalid",
+            "credential": "credential-canary",
+            "error": {"body": "error-body-canary"},
+            "unlisted": "provider-field-canary",
+        }
+    )
+    request = _request()
+    request = StructuredTaskRequest(
+        task_code=request.task_code,
+        model_route_version=request.model_route_version,
+        prompt_version=request.prompt_version,
+        input_artifact=ArtifactRef(
+            artifact_id=request.input_artifact.artifact_id,
+            sha256=request.input_artifact.sha256,
+            uri="file://source-material-canary/input.json",
+            content_type=request.input_artifact.content_type,
+            byte_size=request.input_artifact.byte_size,
+        ),
+        output_schema=request.output_schema,
+        messages=(
+            StructuredInputMessage(
+                MessageRole.DEVELOPER,
+                "developer-prompt-canary",
+            ),
+            StructuredInputMessage(MessageRole.USER, "user-source-canary"),
+        ),
+        max_cost_jpy=request.max_cost_jpy,
+        max_output_tokens=request.max_output_tokens,
+        metadata=request.metadata,
+    )
+    adapter, _, recorder = _adapter(body)
+
+    result = adapter.execute(request)
+    recorded = recorder.read(result.raw_artifact)
+
+    assert isinstance(result, ProviderSuccess)
+    for canary in (
+        b"output-content-canary",
+        b"header-canary",
+        b"url-canary",
+        b"credential-canary",
+        b"error-body-canary",
+        b"provider-field-canary",
+        b"source-material-canary",
+        b"developer-prompt-canary",
+        b"user-source-canary",
+    ):
+        assert canary not in recorded
+
+
 def _imported_modules(path: Path) -> set[str]:
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     modules: set[str] = set()
@@ -483,10 +578,51 @@ def test_inward_boundary_has_no_adapter_or_provider_sdk_dependency(
 def test_adapter_has_no_environment_or_network_import_path() -> None:
     adapter_path = REPOSITORY_ROOT / "python/raos/adapters/openai_responses.py"
     imported = _imported_modules(adapter_path)
-    forbidden_roots = {"httpx", "os", "requests", "socket", "urllib"}
+    forbidden_roots = {
+        "boto3",
+        "httpx",
+        "os",
+        "pathlib",
+        "playwright",
+        "psycopg",
+        "redis",
+        "requests",
+        "socket",
+        "sqlalchemy",
+        "urllib",
+    }
 
     assert forbidden_roots.isdisjoint(module.partition(".")[0] for module in imported)
     assert "openai" in imported
+
+    tree = ast.parse(adapter_path.read_text(encoding="utf-8"))
+    imported_openai_names = {
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module == "openai"
+        for alias in node.names
+    }
+    assert imported_openai_names == {
+        "APIConnectionError",
+        "APITimeoutError",
+        "AuthenticationError",
+        "BadRequestError",
+        "ConflictError",
+        "InternalServerError",
+        "NotFoundError",
+        "PermissionDeniedError",
+        "RateLimitError",
+        "UnprocessableEntityError",
+    }
+
+
+def test_adapter_has_no_ambient_clock_path() -> None:
+    source = (REPOSITORY_ROOT / "python/raos/adapters/openai_responses.py").read_text(
+        encoding="utf-8"
+    )
+
+    assert "datetime.now(" not in source
+    assert "from time import" not in source
 
 
 def test_recorded_execution_has_no_network_path(
@@ -559,21 +695,97 @@ def test_route_mismatch_fails_before_provider_call() -> None:
 
 
 @pytest.mark.parametrize(
+    ("field_name", "value"),
+    (
+        ("route_version", "route with spaces"),
+        ("model_id", "model with spaces"),
+        ("model_id", "../unsafe"),
+        ("route_version", ""),
+    ),
+)
+def test_route_rejects_unsafe_identifiers_before_adapter_construction(
+    field_name: str,
+    value: str,
+) -> None:
+    values: dict[str, object] = {
+        "route_version": "route.synthetic.recorded.v1",
+        "model_id": "raos-synthetic-model-v1",
+        "reasoning_effort": ReasoningEffort.MEDIUM,
+        "timeout_seconds": 12.5,
+        "pricing_quote": _quote(),
+    }
+    values[field_name] = value
+
+    with pytest.raises(ValueError, match="safe identifier"):
+        OpenAIResponseRoute(**values)  # type: ignore[arg-type]
+
+
+def test_adapter_requires_both_injected_clocks() -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    client = _FakeClient(transport["body"])
+    recorder = InMemoryProviderExchangeRecorder()
+    calculator = SyntheticRecordedCostCalculator()
+
+    with pytest.raises(TypeError):
+        OpenAIResponsesAdapter(  # type: ignore[call-arg]
+            client=client,
+            route=_route(),
+            recorder=recorder,
+            cost_calculator=calculator,
+        )
+
+
+def test_evaluated_at_is_the_entry_clock_value() -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    evaluated_at = NOW - timedelta(seconds=5)
+    received_at = NOW
+    times = iter((evaluated_at, received_at))
+    calculator = _TrackingCalculator()
+    adapter, _, _ = _custom_adapter(
+        transport["body"],
+        route=_route(),
+        cost_calculator=calculator,
+        clock=lambda: next(times),
+    )
+
+    result = adapter.execute(_request())
+
+    assert result.pricing.evaluated_at == evaluated_at
+    assert result.metadata.received_at == received_at
+    assert calculator.calls == [
+        {
+            "usage": result.usage,
+            "provider": "openai",
+            "model_id": "raos-synthetic-model-v1",
+            "quote": _route().pricing_quote,
+            "evaluated_at": evaluated_at,
+        }
+    ]
+
+
+@pytest.mark.parametrize(
     "mutation",
     (
         lambda body: body.update(status="queued"),
         lambda body: body.update(model="other-model"),
         lambda body: cast(dict[str, object], body["usage"]).update(total_tokens=99),
-        lambda body: cast(dict[str, object], body["usage"])[
-            "input_tokens_details"
-        ].update(cached_tokens=999),
+        lambda body: cast(
+            dict[str, object],
+            cast(dict[str, object], body["usage"])["input_tokens_details"],
+        ).update(cached_tokens=999),
         lambda body: body.update(output=[]),
         lambda body: cast(list[object], body["output"]).append(
             copy.deepcopy(cast(list[object], body["output"])[0])
         ),
     ),
 )
-def test_malformed_response_fails_closed(mutation) -> None:
+def test_malformed_response_fails_closed(
+    mutation: Callable[[dict[str, object]], object],
+) -> None:
     transport = cast(
         dict[str, object], _fixture("success-structured.json")["transport"]
     )
@@ -644,18 +856,23 @@ def test_adapter_does_not_read_environment(monkeypatch: pytest.MonkeyPatch) -> N
     transport = cast(
         dict[str, object], _fixture("success-structured.json")["transport"]
     )
-    monkeypatch.setenv("OPENAI_API_KEY", "must-not-be-read")
+
+    def forbidden(*_args: object, **_kwargs: object) -> object:
+        raise AssertionError("environment access is forbidden")
+
+    monkeypatch.setattr(os, "getenv", forbidden)
+    monkeypatch.setattr(os.environ, "get", forbidden)
     adapter, _, recorder = _adapter(transport["body"])
 
     result = adapter.execute(_request())
 
     assert isinstance(result, ProviderSuccess)
-    assert "must-not-be-read" not in recorder.read(result.raw_artifact).decode("utf-8")
+    assert recorder.record_calls == 1
 
 
 def test_recorder_contract_failure_is_sanitized() -> None:
     class BrokenRecorder:
-        def record(self, exchange):
+        def record(self, exchange: ProviderExchange) -> ArtifactRef:
             del exchange
             raise RuntimeError("SYNTHETIC_TEST_ONLY raw recorder diagnostic")
 
@@ -842,7 +1059,7 @@ def test_invalid_schema_does_not_retain_validator_context() -> None:
 
 def test_recorder_failure_does_not_retain_exception_context() -> None:
     class BrokenRecorder:
-        def record(self, exchange):
+        def record(self, exchange: ProviderExchange) -> ArtifactRef:
             del exchange
             raise RuntimeError("SYNTHETIC_TEST_ONLY raw recorder context")
 
@@ -869,8 +1086,16 @@ def test_recorder_failure_does_not_retain_exception_context() -> None:
 
 def test_pricing_failure_does_not_retain_exception_context() -> None:
     class BrokenCalculator:
-        def calculate(self, **kwargs):
-            del kwargs
+        def calculate(
+            self,
+            *,
+            usage: ProviderUsage,
+            provider: str,
+            model_id: str,
+            quote: SyntheticPricingQuote,
+            evaluated_at: datetime,
+        ) -> PricingResult:
+            del usage, provider, model_id, quote, evaluated_at
             raise RuntimeError("SYNTHETIC_TEST_ONLY raw pricing context")
 
     transport = cast(
@@ -898,9 +1123,9 @@ def test_pricing_failure_does_not_retain_exception_context() -> None:
 
 def test_invalid_recorder_result_fails_closed() -> None:
     class InvalidRecorder:
-        def record(self, exchange):
+        def record(self, exchange: ProviderExchange) -> ArtifactRef:
             del exchange
-            return object()
+            return cast(ArtifactRef, object())
 
     transport = cast(
         dict[str, object], _fixture("success-structured.json")["transport"]
@@ -923,11 +1148,131 @@ def test_invalid_recorder_result_fails_closed() -> None:
     assert captured.value.__context__ is None
 
 
+@pytest.mark.parametrize(
+    ("field_name", "value"),
+    (
+        ("sha256", Sha256Digest("0" * 64)),
+        ("byte_size", True),
+        ("content_type", "text/plain"),
+    ),
+)
+def test_forged_exact_artifact_ref_fails_closed(
+    field_name: str,
+    value: object,
+) -> None:
+    class ForgingRecorder:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def record(self, exchange: ProviderExchange) -> ArtifactRef:
+            self.calls += 1
+            reference = ArtifactRef(
+                artifact_id=UUID("44444444-4444-4444-8444-444444444444"),
+                sha256=exchange.sha256,
+                uri=f"file://recorded/{exchange.sha256.value}.json",
+                content_type="application/json",
+                byte_size=len(exchange.canonical_bytes),
+            )
+            object.__setattr__(reference, field_name, value)
+            return reference
+
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    client = _FakeClient(transport["body"])
+    recorder = ForgingRecorder()
+    ticks = iter((1_000_000_000, 1_012_000_000))
+    adapter = OpenAIResponsesAdapter(
+        client=client,
+        route=_route(),
+        recorder=recorder,
+        cost_calculator=SyntheticRecordedCostCalculator(),
+        clock=lambda: NOW,
+        monotonic_clock_ns=lambda: next(ticks),
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.stable_code is ProviderErrorCode.RECORDER_FAILURE
+    assert captured.value.__cause__ is None
+    assert captured.value.__context__ is None
+    assert recorder.calls == 1
+
+
+@pytest.mark.parametrize(
+    "outcome",
+    (
+        {"kind": "success", "unexpected": 1},
+        {"kind": "refusal", "refusal": 1},
+        {"kind": "incomplete", "reason": True},
+        {"kind": True},
+    ),
+)
+def test_recorded_exchange_rejects_schema_extension_and_wrong_value_types(
+    outcome: dict[str, object],
+) -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    adapter, _, _ = _adapter(transport["body"])
+    result = adapter.execute(_request())
+
+    with pytest.raises(ProviderError) as captured:
+        adapter_module._recorded_exchange(
+            request=_request(),
+            metadata=result.metadata,
+            usage=result.usage,
+            outcome=outcome,
+        )
+
+    assert captured.value.stable_code is ProviderErrorCode.RECORDER_FAILURE
+
+
+@pytest.mark.parametrize("failure_kind", ("construction", "size"))
+def test_canonical_record_failure_calls_no_recorder(
+    monkeypatch: pytest.MonkeyPatch,
+    failure_kind: str,
+) -> None:
+    class BrokenCanonicalJsonObject:
+        def __init__(self, value: object) -> None:
+            del value
+            if failure_kind == "construction":
+                raise ValueError("SYNTHETIC_TEST_ONLY canonical diagnostic")
+
+        def canonical_bytes(self) -> bytes:
+            return b'{"value":"' + b"x" * (4 * 1024 * 1024) + b'"}'
+
+    transport = cast(dict[str, object], _fixture("refusal-completed.json")["transport"])
+    adapter, _, recorder = _adapter(transport["body"])
+    monkeypatch.setattr(
+        adapter_module,
+        "CanonicalJsonObject",
+        BrokenCanonicalJsonObject,
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.stable_code is ProviderErrorCode.RECORDER_FAILURE
+    assert captured.value.__cause__ is None
+    assert captured.value.__context__ is None
+    assert recorder.record_calls == 0
+
+
 def test_invalid_pricing_result_fails_closed() -> None:
     class InvalidCalculator:
-        def calculate(self, **kwargs):
-            del kwargs
-            return object()
+        def calculate(
+            self,
+            *,
+            usage: ProviderUsage,
+            provider: str,
+            model_id: str,
+            quote: SyntheticPricingQuote,
+            evaluated_at: datetime,
+        ) -> PricingResult:
+            del usage, provider, model_id, quote, evaluated_at
+            return cast(PricingResult, object())
 
     transport = cast(
         dict[str, object], _fixture("success-structured.json")["transport"]
@@ -952,14 +1297,225 @@ def test_invalid_pricing_result_fails_closed() -> None:
     assert recorder.record_calls == 0
 
 
+@pytest.mark.parametrize("failure_kind", ("provider", "malformed_output"))
+def test_pricing_is_not_called_before_provider_outcome_validation(
+    failure_kind: str,
+) -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    outcome: object
+    if failure_kind == "provider":
+        outcome = _StatusError(429)
+    else:
+        body = copy.deepcopy(cast(dict[str, object], transport["body"]))
+        message = cast(dict[str, object], cast(list[object], body["output"])[0])
+        content = cast(dict[str, object], cast(list[object], message["content"])[0])
+        content["text"] = "{malformed"
+        outcome = body
+    calculator = _TrackingCalculator()
+    adapter, _, recorder = _custom_adapter(
+        outcome,
+        route=_route(),
+        cost_calculator=calculator,
+    )
+
+    with pytest.raises(ProviderError):
+        adapter.execute(_request())
+
+    assert calculator.calls == []
+    assert recorder.record_calls == 0
+
+
+def test_missing_quote_fails_before_calculator_and_recorder() -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    calculator = _TrackingCalculator()
+    adapter, _, recorder = _custom_adapter(
+        transport["body"],
+        route=replace(_route(), pricing_quote=None),
+        cost_calculator=calculator,
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.stable_code is ProviderErrorCode.PRICING_MISSING
+    assert calculator.calls == []
+    assert recorder.record_calls == 0
+
+
+@pytest.mark.parametrize(
+    ("observed_at", "expires_at", "expected_success"),
+    (
+        (NOW, NOW + timedelta(seconds=1), True),
+        (NOW - timedelta(days=1), NOW + timedelta(microseconds=1), True),
+        (NOW + timedelta(microseconds=1), NOW + timedelta(days=1), False),
+        (NOW - timedelta(days=1), NOW, False),
+    ),
+)
+def test_quote_validity_interval_boundaries(
+    observed_at: datetime,
+    expires_at: datetime,
+    expected_success: bool,
+) -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    quote = replace(
+        _quote(),
+        observed_at=observed_at,
+        expires_at=expires_at,
+    )
+    calculator = _TrackingCalculator()
+    adapter, _, recorder = _custom_adapter(
+        transport["body"],
+        route=replace(_route(), pricing_quote=quote),
+        cost_calculator=calculator,
+    )
+
+    if expected_success:
+        assert isinstance(adapter.execute(_request()), ProviderSuccess)
+        assert len(calculator.calls) == 1
+        assert recorder.record_calls == 1
+    else:
+        with pytest.raises(ProviderError) as captured:
+            adapter.execute(_request())
+        assert captured.value.stable_code is ProviderErrorCode.PRICING_MISMATCH
+        assert calculator.calls == []
+        assert recorder.record_calls == 0
+
+
+def test_tampered_quote_hash_fails_before_calculator_and_recorder() -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    quote = _quote()
+    object.__setattr__(quote, "input_per_million", Decimal("1"))
+    calculator = _TrackingCalculator()
+    adapter, _, recorder = _custom_adapter(
+        transport["body"],
+        route=replace(_route(), pricing_quote=quote),
+        cost_calculator=calculator,
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.stable_code is ProviderErrorCode.PRICING_MISMATCH
+    assert calculator.calls == []
+    assert recorder.record_calls == 0
+
+
+def test_quote_model_mismatch_fails_before_calculator_and_recorder() -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    quote = replace(_quote(), model_id="raos-other-model")
+    calculator = _TrackingCalculator()
+    adapter, _, recorder = _custom_adapter(
+        transport["body"],
+        route=replace(_route(), pricing_quote=quote),
+        cost_calculator=calculator,
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.stable_code is ProviderErrorCode.PRICING_MISMATCH
+    assert calculator.calls == []
+    assert recorder.record_calls == 0
+
+
+def test_every_pricing_result_binding_is_compared_to_reference() -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    usage = ProviderUsage(
+        input_tokens=32,
+        output_tokens=11,
+        cached_input_tokens=8,
+    )
+    reference = calculate_synthetic_pricing_reference(
+        usage=usage,
+        provider="openai",
+        model_id="raos-synthetic-model-v1",
+        quote=_quote(),
+        evaluated_at=NOW,
+    )
+    mismatches = (
+        _pricing_result_with(reference, estimated_cost_jpy=0),
+        _pricing_result_with(reference, provider_cost_native=Decimal("0")),
+        _pricing_result_with(reference, native_currency="USD"),
+        _pricing_result_with(reference, quote_id="different-quote"),
+        _pricing_result_with(reference, quote_sha256=Sha256Digest("0" * 64)),
+        _pricing_result_with(reference, model_id="raos-other-model"),
+        _pricing_result_with(reference, usage_sha256=Sha256Digest("1" * 64)),
+        _pricing_result_with(
+            reference,
+            evaluated_at=NOW + timedelta(microseconds=1),
+        ),
+    )
+
+    for mismatch in mismatches:
+        adapter, _, recorder = _custom_adapter(
+            transport["body"],
+            route=_route(),
+            cost_calculator=_FixedCalculator(mismatch),
+        )
+        with pytest.raises(ProviderError) as captured:
+            adapter.execute(_request())
+        assert captured.value.stable_code is ProviderErrorCode.PRICING_MISMATCH
+        assert recorder.record_calls == 0
+
+
+@pytest.mark.parametrize(
+    ("field_name", "value"),
+    (
+        ("estimated_cost_jpy", True),
+        ("provider", "other-provider"),
+        ("calculation_sha256", Sha256Digest("0" * 64)),
+    ),
+)
+def test_forged_exact_pricing_result_fails_closed(
+    field_name: str,
+    value: object,
+) -> None:
+    transport = cast(
+        dict[str, object], _fixture("success-structured.json")["transport"]
+    )
+    reference = calculate_synthetic_pricing_reference(
+        usage=ProviderUsage(32, 11, 8),
+        provider="openai",
+        model_id="raos-synthetic-model-v1",
+        quote=_quote(),
+        evaluated_at=NOW,
+    )
+    object.__setattr__(reference, field_name, value)
+    adapter, _, recorder = _custom_adapter(
+        transport["body"],
+        route=_route(),
+        cost_calculator=_FixedCalculator(reference),
+    )
+
+    with pytest.raises(ProviderError) as captured:
+        adapter.execute(_request())
+
+    assert captured.value.stable_code is ProviderErrorCode.PRICING_MISMATCH
+    assert captured.value.__cause__ is None
+    assert captured.value.__context__ is None
+    assert recorder.record_calls == 0
+
+
 def test_response_conversion_accessor_failure_is_sanitized() -> None:
     class ExplosiveResponse:
-        def __deepcopy__(self, memo):
+        def __deepcopy__(self, memo: dict[int, object]) -> ExplosiveResponse:
             del memo
             return self
 
         @property
-        def model_dump(self):
+        def model_dump(self) -> object:
             raise RuntimeError("SYNTHETIC_TEST_ONLY response accessor context")
 
     adapter, _, recorder = _adapter(ExplosiveResponse())
@@ -977,7 +1533,7 @@ def test_request_id_accessor_failure_is_ignored() -> None:
         def __init__(self, body: dict[str, object]) -> None:
             self._body = body
 
-        def __deepcopy__(self, memo):
+        def __deepcopy__(self, memo: dict[int, object]) -> SDKResponse:
             del memo
             return self
 

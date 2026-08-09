@@ -356,8 +356,7 @@ class OpenAIResponsesAdapter:
         except Exception:
             artifact_snapshot = None
         if artifact_snapshot is None or (
-            artifact_ref != artifact_snapshot
-            or artifact_snapshot.sha256.value != exchange.sha256.value
+            artifact_snapshot.sha256.value != exchange.sha256.value
             or artifact_snapshot.byte_size != len(exchange.canonical_bytes)
             or artifact_snapshot.content_type != "application/json"
         ):
@@ -407,28 +406,30 @@ class OpenAIResponsesAdapter:
             raise ProviderError(ProviderErrorCode.PRICING_MISMATCH)
         pricing_result = pricing
         pricing_snapshot: PricingResult | None = None
+        pricing_matches = False
         try:
-            pricing_snapshot = PricingResult(
-                estimated_cost_jpy=pricing_result.estimated_cost_jpy,
-                provider_cost_native=pricing_result.provider_cost_native,
-                native_currency=pricing_result.native_currency,
-                quote_id=pricing_result.quote_id,
-                quote_sha256=Sha256Digest(pricing_result.quote_sha256.value),
-                provider=pricing_result.provider,
-                model_id=pricing_result.model_id,
-                usage_sha256=Sha256Digest(pricing_result.usage_sha256.value),
-                evaluated_at=pricing_result.evaluated_at,
-                calculation_sha256=Sha256Digest(
-                    pricing_result.calculation_sha256.value
-                ),
-            )
+            if _pricing_results_match_exactly(pricing_result, reference):
+                pricing_snapshot = PricingResult(
+                    estimated_cost_jpy=pricing_result.estimated_cost_jpy,
+                    provider_cost_native=pricing_result.provider_cost_native,
+                    native_currency=pricing_result.native_currency,
+                    quote_id=pricing_result.quote_id,
+                    quote_sha256=Sha256Digest(pricing_result.quote_sha256.value),
+                    provider=pricing_result.provider,
+                    model_id=pricing_result.model_id,
+                    usage_sha256=Sha256Digest(pricing_result.usage_sha256.value),
+                    evaluated_at=pricing_result.evaluated_at,
+                    calculation_sha256=Sha256Digest(
+                        pricing_result.calculation_sha256.value
+                    ),
+                )
+                pricing_matches = _pricing_results_match_exactly(
+                    pricing_snapshot, reference
+                )
         except Exception:
             pricing_snapshot = None
-        if (
-            pricing_snapshot is None
-            or not _pricing_results_match_exactly(pricing_result, pricing_snapshot)
-            or not _pricing_results_match_exactly(pricing_snapshot, reference)
-        ):
+            pricing_matches = False
+        if pricing_snapshot is None or not pricing_matches:
             raise ProviderError(ProviderErrorCode.PRICING_MISMATCH)
         return pricing_snapshot
 

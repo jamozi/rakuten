@@ -343,17 +343,17 @@ source_artifacts:
   bytes: 8458
   sha256: bb48c844380cd0b86cd0aaf68ca2bffac49a01f766a44e4325d3253ef39304de
 - uri: repo://tests/st0102/test_toolchain_contract.py
-  bytes: 5575
-  sha256: 8699d7bc35b78955552a13637c952e923638f2e598885c5b3e032b0dbac7bffc
+  bytes: 5621
+  sha256: a4bcbf7d25931065d61b0cfa585577f996e30e52b2ecbe60b32fedda5a0d8482
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 25978
-  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+  bytes: 26006
+  sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
 - uri: repo://.github/workflows/ci.yml
   bytes: 19528
   sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
 - uri: repo://Makefile
-  bytes: 26913
-  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+  bytes: 28870
+  sha256: 03ec5410648a1925c97b5159e5285454c53505493ac19beb683609c30d4efeb4
 - uri: repo://README.md
   bytes: 57403
   sha256: ad27d496fd7704646720fdc166c62997e10e8affdd7a426891c54c0ae1efaa00

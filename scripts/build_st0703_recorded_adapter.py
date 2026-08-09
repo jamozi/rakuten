@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import math
@@ -37,8 +38,28 @@ GENERATED_REGISTRY_PATH: Final = Path(
     "changes/st-0703/generated/recorded-fixture-registry.v1.json"
 )
 MANIFEST_PATH: Final = Path("changes/st-0703/manifest.yaml")
+PREDECESSOR_MANIFEST_PROJECTION_SHA256: Final = {
+    Path("changes/st-0204/manifest.yaml"): (
+        "ab5f98cee069733201e145c5c238547019edb0c3f9bbec1c2337d9629151b60a"
+    ),
+    Path("changes/st-0701/manifest.yaml"): (
+        "a0d5aad3b2c95ba7a365d0fc0be5a7825834f7a9639260823e2729c27391ad0b"
+    ),
+    Path("changes/st-0801/manifest.yaml"): (
+        "7704359cb758e3bf35bbe88e91e41c7f484e8133f1ab7d4a139b2bafde7b2540"
+    ),
+}
 IMPLEMENTATION_SOURCE_PATHS: Final = (
+    Path(".github/workflows/ci.yml"),
+    Path("Makefile"),
+    Path("changes/st-0204/manifest.yaml"),
+    Path("changes/st-0701/manifest.yaml"),
+    Path("changes/st-0801/manifest.yaml"),
+    Path("changes/st-0703/CANONICAL-RECONCILIATION-v3.md"),
+    Path("changes/st-0703/DESIGN-HANDOFF-APPROVAL-v3.yaml"),
+    Path("changes/st-0703/DESIGN-DECISION-REQUEST-v3.md"),
     Path("changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v2.yaml"),
+    Path("changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml"),
     Path("changes/st-0703/README.md"),
     Path("python/raos/adapters/__init__.py"),
     Path("python/raos/adapters/openai_responses.py"),
@@ -46,6 +67,10 @@ IMPLEMENTATION_SOURCE_PATHS: Final = (
     Path("python/raos/domain/ai/provider.py"),
     Path("python/raos/ports/ai_provider.py"),
     Path("scripts/build_st0703_recorded_adapter.py"),
+    Path("scripts/ci_job.sh"),
+    Path("scripts/run_network_denied.sh"),
+    Path("tests/st0102/test_toolchain_contract.py"),
+    Path("tests/st0106/test_workflow_contract.py"),
     Path("tests/st0703/conftest.py"),
     Path("tests/st0703/test_adapter.py"),
     Path("tests/st0703/test_generation.py"),
@@ -53,7 +78,7 @@ IMPLEMENTATION_SOURCE_PATHS: Final = (
     Path("tests/st0703/test_recorded_support.py"),
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "8b32a862ce58fe17da931012be7c5d1ab71c0630b5bc6bb20234391d8323b97c"
+    "c7ebab7794551684fd928e9f6d003a615ab149c980d8e3c9932e688dac866fde"
 )
 EXPECTED_PYPROJECT_SHA256: Final = (
     "d7a03c351a2ef20d6aaf45b4dff7775b3ce9dbb7e051323cfbf35d295344814e"
@@ -115,7 +140,7 @@ EXPECTED_REQUEST: Final = {
     },
     "tools": [],
 }
-EXPECTED_RESULTS_BY_SCENARIO: Final = {
+EXPECTED_RESULTS_BY_SCENARIO: Final[dict[str, dict[str, object]]] = {
     "structured_success": {
         "incomplete_reason": None,
         "kind": "ProviderSuccess",
@@ -180,7 +205,7 @@ EXPECTED_RESULTS_BY_SCENARIO: Final = {
     },
 }
 PRICING_KEYS: Final = frozenset({"expected_cost_jpy", "mode", "model_id", "quote_id"})
-EXPECTED_PRICING_BY_SCENARIO: Final = {
+EXPECTED_PRICING_BY_SCENARIO: Final[dict[str, dict[str, object]]] = {
     "structured_success": {
         "expected_cost_jpy": 7,
         "mode": "SYNTHETIC_TEST_ONLY",
@@ -601,7 +626,7 @@ def _bounded_graph(value: object, *, label: str) -> None:
         if item is None or type(item) in {bool, int, str}:
             return
         if type(item) is float:
-            if not math.isfinite(cast(float, item)):
+            if not math.isfinite(item):
                 raise RuntimeError(f"{label} contains a non-finite number")
             return
         if not isinstance(item, (Mapping, list, tuple)):
@@ -696,11 +721,11 @@ def _validate_decoded_fixture_material(value: object, *, label: str) -> None:
     while pending:
         item = pending.pop()
         if type(item) is str:
-            _validate_fixture_text(cast(str, item), label=label)
+            _validate_fixture_text(item, label=label)
         elif isinstance(item, Mapping):
             for key, child in item.items():
                 if type(key) is str:
-                    _validate_fixture_text(cast(str, key), label=label)
+                    _validate_fixture_text(key, label=label)
                 pending.append(child)
         elif isinstance(item, (list, tuple)):
             pending.extend(item)
@@ -716,6 +741,79 @@ def _sequence(value: object, *, label: str) -> list[object]:
     if not isinstance(value, list):
         raise RuntimeError(f"{label} must be an array")
     return value
+
+
+def _validate_predecessor_manifest_semantics(root: Path) -> dict[str, str]:
+    """Verify that owner regeneration changed only source byte metadata."""
+
+    observed: dict[str, str] = {}
+    for (
+        relative,
+        expected_projection_sha256,
+    ) in PREDECESSOR_MANIFEST_PROJECTION_SHA256.items():
+        label = f"predecessor manifest {relative.as_posix()}"
+        content = _read_regular(
+            root,
+            relative,
+            label=label,
+            maximum_bytes=MAX_PROVENANCE_SOURCE_BYTES,
+        )
+        document = _mapping(_strict_yaml(content, label=label), label=label)
+        projection = copy.deepcopy(document)
+        source_artifacts = _sequence(
+            projection.get("source_artifacts"),
+            label=f"{label} source_artifacts",
+        )
+        if not source_artifacts:
+            raise RuntimeError(f"{label} source_artifacts must not be empty")
+
+        seen_uris: set[str] = set()
+        for offset, raw_artifact in enumerate(source_artifacts):
+            artifact_label = f"{label} source_artifacts[{offset}]"
+            artifact = _mapping(raw_artifact, label=artifact_label)
+            if set(artifact) != {"uri", "bytes", "sha256"}:
+                raise RuntimeError(f"{artifact_label} must contain exact keys")
+
+            uri = artifact.get("uri")
+            if type(uri) is not str or not uri.startswith("repo://"):
+                raise RuntimeError(
+                    f"{artifact_label} URI must be a normalized repository URI"
+                )
+            uri_text = uri
+            uri_path = _normalized_relative(
+                uri_text.removeprefix("repo://"),
+                label=f"{artifact_label} URI",
+            )
+            if uri_text != f"repo://{uri_path.as_posix()}":
+                raise RuntimeError(
+                    f"{artifact_label} URI must be a normalized repository URI"
+                )
+            if uri_text in seen_uris:
+                raise RuntimeError(f"{label} source artifact URI duplicated")
+
+            byte_count = artifact.get("bytes")
+            if type(byte_count) is not int or byte_count <= 0:
+                raise RuntimeError(
+                    f"{artifact_label} byte count must be a positive integer"
+                )
+            digest = artifact.get("sha256")
+            if type(digest) is not str or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+                raise RuntimeError(f"{artifact_label} digest must be lowercase SHA-256")
+
+            seen_uris.add(uri_text)
+            artifact["bytes"] = 0
+            artifact["sha256"] = "0" * 64
+
+        try:
+            canonical_projection = _canonical_json(projection).encode("utf-8")
+        except (TypeError, ValueError, RecursionError) as exc:
+            raise RuntimeError(f"{label} projection must be canonical JSON") from exc
+        projection_sha256 = _sha256(canonical_projection)
+        if projection_sha256 != expected_projection_sha256:
+            raise RuntimeError(f"{label} semantic projection drift")
+        observed[relative.as_posix()] = projection_sha256
+
+    return observed
 
 
 def _validate_contract_provenance(
@@ -744,13 +842,13 @@ def _validate_contract_provenance(
             expected_sha256 = entry.get("sha256")
             if (
                 type(uri) is not str
-                or not cast(str, uri).startswith("repo://")
+                or not uri.startswith("repo://")
                 or type(expected_sha256) is not str
-                or re.fullmatch(r"[0-9a-f]{64}", cast(str, expected_sha256)) is None
+                or re.fullmatch(r"[0-9a-f]{64}", expected_sha256) is None
             ):
                 raise RuntimeError("ST-0703 contract provenance entry drift")
             relative = _normalized_relative(
-                cast(str, uri).removeprefix("repo://"),
+                uri.removeprefix("repo://"),
                 label="contract provenance path",
             )
             path_string = relative.as_posix()
@@ -758,7 +856,7 @@ def _validate_contract_provenance(
                 raise RuntimeError("ST-0703 contract provenance path duplicated")
             if "story_id" in expected_keys:
                 story_id = entry.get("story_id")
-                if type(story_id) is not str or not cast(str, story_id):
+                if type(story_id) is not str or not story_id:
                     raise RuntimeError("ST-0703 contract provenance entry drift")
             content = _read_regular(
                 root,
@@ -768,7 +866,7 @@ def _validate_contract_provenance(
             )
             if _sha256(content) != expected_sha256:
                 raise RuntimeError("ST-0703 provenance source hash drift")
-            records.append({"path": path_string, "sha256": cast(str, expected_sha256)})
+            records.append({"path": path_string, "sha256": expected_sha256})
             seen_paths.add(path_string)
     return records
 
@@ -1032,7 +1130,7 @@ def _strict_embedded_json_object(value: object, *, label: str) -> dict[str, obje
         raise RuntimeError(f"{label} must contain strict JSON object text")
     try:
         parsed = json.loads(
-            cast(str, value),
+            value,
             parse_constant=_reject_json_constant,
             object_pairs_hook=_unique_json_object,
         )
@@ -1045,9 +1143,9 @@ def _strict_embedded_json_object(value: object, *, label: str) -> dict[str, obje
 
 
 def _usage_integer(value: object, *, label: str) -> int:
-    if type(value) is not int or cast(int, value) < 0:
+    if type(value) is not int or value < 0:
         raise RuntimeError(f"{label} response usage drift")
-    return cast(int, value)
+    return value
 
 
 def _validate_response_usage(
@@ -1326,7 +1424,7 @@ def _validate_pricing(
         if (
             pricing.get("mode") != "SYNTHETIC_TEST_ONLY"
             or type(cost) is not int
-            or cast(int, cost) < 0
+            or cost < 0
         ):
             raise RuntimeError(f"{label} synthetic pricing drift")
     elif spec.status_code == 429 and spec.scenario == "rate_limit_429":
@@ -1370,6 +1468,7 @@ def _validate_fixture_document(
 def render_fixture_registry(root: Path = REPOSITORY_ROOT) -> bytes:
     """Validate all inputs and render their deterministic in-memory registry."""
 
+    _validate_predecessor_manifest_semantics(root)
     contract_inventory, sdk, provenance_records = _contract_inventory(root)
     pyproject_sha256, lock_sha256, uv_config_sha256 = _validate_dependency_inputs(
         root, sdk
@@ -1521,7 +1620,7 @@ def render_manifest(
         "provenance": {
             "contract_uri": f"repo://{CONTRACT_PATH.as_posix()}",
             "contract_sha256": _sha256(contract_content),
-            "handoff_uri": ("repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v2.yaml"),
+            "handoff_uri": ("repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml"),
             "fixture_registry_uri": (f"repo://{GENERATED_REGISTRY_PATH.as_posix()}"),
             "fixture_registry_sha256": _sha256(registry_bytes),
             "predecessor_story_ids": ["ST-0204", "ST-0701"],
