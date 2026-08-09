@@ -1,0 +1,108 @@
+name: ST-0703 cumulative Compose binding correction
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: st0703-cumulative-compose-binding-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  correct:
+    name: Correct both cumulative Compose wrapper bindings
+    if: >-
+      github.event.pull_request.head.ref == 'agent/st-0703-openai-responses-adapter' &&
+      github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      HEAD_REF: ${{ github.event.pull_request.head.ref }}
+    steps:
+      - name: Check out exact pull-request head
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Correct the finalizer and remove this one-shot workflow
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
+          /usr/bin/python3 -I - <<'PY'
+          from pathlib import Path
+
+          finalizer = Path('.github/workflows/st0703-complete-materialization.yml')
+          text = finalizer.read_text(encoding='utf-8')
+          old_condition = '''    if: >-
+                github.event.pull_request.head.ref == 'agent/st-0703-openai-responses-adapter' &&
+                github.actor != 'github-actions[bot]'
+          '''
+          new_condition = (
+              "    if: github.event.pull_request.head.ref == "
+              "'agent/st-0703-openai-responses-adapter'\n"
+          )
+          if text.count(old_condition) != 1:
+              raise SystemExit('unexpected finalizer actor condition')
+          text = text.replace(old_condition, new_condition, 1)
+
+          old_binding = '''          path = Path("scripts/object_storage_service.sh")
+                text = path.read_text(encoding="utf-8")
+                text, count = re.subn(
+                    r"readonly expected_compose_sha256='[0-9a-f]{64}'",
+                    f"readonly expected_compose_sha256='{sys.argv[1]}'",
+                    text,
+                    count=1,
+                )
+                if count != 1:
+                    raise SystemExit("unexpected Compose digest binding source")
+                path.write_text(text, encoding="utf-8", newline="")
+          '''
+          new_binding = '''          for relative in (
+                    "scripts/postgres_service.sh",
+                    "scripts/object_storage_service.sh",
+                ):
+                    path = Path(relative)
+                    text = path.read_text(encoding="utf-8")
+                    text, count = re.subn(
+                        r"readonly expected_compose_sha256='[0-9a-f]{64}'",
+                        f"readonly expected_compose_sha256='{sys.argv[1]}'",
+                        text,
+                        count=1,
+                    )
+                    if count != 1:
+                        raise SystemExit(
+                            f"unexpected Compose digest binding source: {relative}"
+                        )
+                    path.write_text(text, encoding="utf-8", newline="")
+          '''
+          if text.count(old_binding) != 1:
+              raise SystemExit('unexpected finalizer Compose binding block')
+          finalizer.write_text(
+              text.replace(old_binding, new_binding, 1),
+              encoding='utf-8',
+              newline='',
+          )
+          PY
+          rm -- .github/workflows/st0703-fix-cumulative-compose-binding.yml
+          git diff --check
+
+      - name: Commit corrected finalizer
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'Correct cumulative Compose digest binding'
+          git push origin "HEAD:refs/heads/$HEAD_REF"
