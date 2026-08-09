@@ -26,6 +26,7 @@ jobs:
       HEAD_REF: agent/st-0703-openai-responses-adapter
       EXPECTED_PAYLOAD_BLOB: 6e7f9b678eac136539a212d63481e9b0907b718e
       EXPECTED_PATCH_SHA256: b5d46c704b2b88b4e275748d08502c5119e2847f5e2da79bba1528880480c5b7
+      EXPECTED_RUNTIME_FIX_BLOB: a34ed0d4fd631a63b109e14aa20f9b1885366651
     steps:
       - name: Check out exact branch head
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -48,6 +49,12 @@ jobs:
               "$actual_blob" "$EXPECTED_PAYLOAD_BLOB" >&2
             exit 1
           fi
+          runtime_fix_blob=$(git hash-object .github/st0703-runtime-port-fix.py)
+          if [[ $runtime_fix_blob != "$EXPECTED_RUNTIME_FIX_BLOB" ]]; then
+            printf 'error: runtime fix blob is %s, expected %s\n' \
+              "$runtime_fix_blob" "$EXPECTED_RUNTIME_FIX_BLOB" >&2
+            exit 1
+          fi
           base64 --decode "$payload" | gzip --decompress > "$patch"
           actual_patch_sha=$(sha256sum "$patch" | cut -d' ' -f1)
           if [[ $actual_patch_sha != "$EXPECTED_PATCH_SHA256" ]]; then
@@ -57,6 +64,7 @@ jobs:
           fi
           git apply --check "$patch"
           git apply "$patch"
+          /usr/bin/python3 -I .github/st0703-runtime-port-fix.py
           bash -n scripts/run_network_denied.sh
           bash -n scripts/object_storage_service.sh
 
@@ -146,6 +154,7 @@ jobs:
             .github/infra-compatibility-repair.py \
             .github/infra-compatibility.patch.gz.b64 \
             .github/st0703-ci-trigger \
+            .github/st0703-runtime-port-fix.py \
             .github/workflows/st0703-authoritative-finalizer.yml \
             .github/workflows/st0703-final-gate.yml \
             .github/workflows/st0703-final-sentinel.yml \
@@ -156,6 +165,7 @@ jobs:
           git diff --check
           test ! -e .github/infra-compatibility-repair.py
           test ! -e .github/infra-compatibility.patch.gz.b64
+          test ! -e .github/st0703-runtime-port-fix.py
 
       - name: Commit the final materialized tree
         run: |
