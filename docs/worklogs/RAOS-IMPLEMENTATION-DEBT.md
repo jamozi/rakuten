@@ -496,3 +496,65 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-006` remain unchanged and unclosed. This checkpoint claims only
   local implementation evidence for the scoped ST-0404 seam.
+
+### 2026-08-10 W1 / ST-0407 final local implementation checkpoint
+
+- Authority and scope: canonical `ST-0407` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends only on the locally present ST-0204
+  configuration seam, and has no Story-local Open Decision. The owner-approved
+  implementation-first ExecPlan authorizes this reversible metadata-only
+  interface/fake boundary while the older preflight continues to prohibit real
+  Secret material, provider, database, CI, and rotation-infrastructure choices.
+- Implemented strict redacted workload binding, purpose, alias, request, lease
+  metadata/state, rotation notice, sanitized failure values, material-free
+  inward acquisition and rotation-hook ports, and a configuration-bound
+  `WorkloadCredentialService`. The service validates only ST-0204 service,
+  environment, and alias membership, explicit UTC windows, an injected maximum
+  lifetime, exact request binding, freshness, replay, and non-overlapping newer
+  rotation metadata.
+- Implemented an exact-`ENV-DEV` deterministic single-use scripted adapter and
+  an always-disabled adapter. The development adapter rejects CI deployment
+  purpose and every non-development environment. Owned AST boundary tests prove
+  there is no raw Secret resolution, provider SDK, ambient credential chain,
+  network, file, process environment, database, migration, client/pool,
+  JWT/OIDC, GitHub workflow, background execution, or external-write surface.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  The final read-only command used `run --locked --offline --no-cache --no-sync
+  --no-env-file --no-python-downloads`; isolated `tests/st0407` result:
+  `42 passed`. Ruff lint and format returned `PASS`; strict mypy including the
+  owned tests returned `PASS`; direct compile/import, staged-path audit, and
+  `git diff --check` returned `PASS`.
+- Sensitive-data checks: the worker's maintained scanner-engine pass covered
+  the seven code/test paths and returned zero findings; the final aggregate
+  pass included the Story README and this ledger and returned
+  `FOCUSED_SECRET_SCAN findings=0 files=9`. The full repository command remains
+  unable to traverse the linked worktree and returns the inherited sanitized
+  `unsafe-git-metadata` result; this Story does not weaken or close
+  `DEBT-W0-003`.
+- `DEBT-W1-009` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0407`, closure
+  owner: Security Owner plus an approved provider/credential integration Story.
+  Exact skipped command: `NOT_RUN — no authorized Secret backend, provider
+  account, credential material, or live workload-identity command exists`;
+  observed result: `NOT_EXECUTED`. Closure boundary: `OD-015` and applicable
+  provider/account/data-control decisions are approved, then an outward adapter
+  obtains short-lived material without exposing it to Domain, logs, evidence,
+  or repository bytes. Safe impact: only material-free metadata exists.
+- `DEBT-W1-010` status: `OPEN`, introduced-by `ST-0407`, closure owner: the
+  authorized workload-identity, database, CI, and operations Stories plus final
+  integration audit. Exact skipped command: `NOT_RUN — cache/refresh/revocation,
+  durable rotation audit, database pool turnover, GitHub OIDC trust, and CI
+  credential delivery are outside this interface slice`; observed result:
+  `NOT_EXECUTED`. Closure boundary: those owners implement approved concrete
+  contracts with concurrency, expiry, revocation, confused-deputy, and leakage
+  negatives. Safe impact: no current caller receives material or live authority.
+- `DEBT-W1-011` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0407`, closure
+  owner: formal CI, Security Owner, provider/database operators, and
+  staging/release owners. Exact skipped command: `NOT_RUN — formal TST-026 and
+  TST-031 plus live provider/database/credential, staging, release, deployment,
+  and Production commands are outside local authority`; observed result:
+  `NOT_EXECUTED`. No generated status/evidence artifact was edited and no local
+  result is promoted to formal validation or Production readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-008` remain unchanged and unclosed. This checkpoint claims only
+  local implementation evidence for the scoped ST-0407 seam.
