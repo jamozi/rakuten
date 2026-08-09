@@ -83,9 +83,13 @@ def test_canonical_origins_are_exact_ascii_and_redacted() -> None:
         "https://例.invalid",
     )
     for value in malformed:
+
+        def construct_origin(value: str = value) -> object:
+            return CanonicalOrigin(value)
+
         _assert_failure(
             HttpSecurityFailureCode.MALFORMED_INPUT,
-            lambda value=value: CanonicalOrigin(value),
+            construct_origin,
         )
 
 
@@ -404,11 +408,15 @@ def test_csrf_proofs_are_canonical_redacted_immutable_and_not_picklable() -> Non
     with pytest.raises(TypeError):
         cast(Any, CSRF_PROOF) == CSRF_PROOF
     with pytest.raises(AttributeError):
-        CSRF_PROOF._value = "changed"  # type: ignore[misc]
+        CSRF_PROOF._value = "changed"
     for malformed in ("", raw + "=", raw[:-1], "+" + raw[1:], "/" + raw[1:]):
+
+        def construct_csrf_proof(malformed: str = malformed) -> object:
+            return CsrfProof(malformed)
+
         _assert_failure(
             HttpSecurityFailureCode.MALFORMED_INPUT,
-            lambda malformed=malformed: CsrfProof(malformed),
+            construct_csrf_proof,
         )
     _assert_failure(
         HttpSecurityFailureCode.MALFORMED_INPUT,
@@ -426,19 +434,19 @@ def test_wrong_types_subclasses_duplicates_and_malformed_values_fail_closed() ->
     class FrozenSetSubclass(frozenset[HttpMethod]):
         pass
 
-    class OriginSubclass(CanonicalOrigin):
+    class OriginSubclass(CanonicalOrigin):  # type: ignore[misc]
         pass
 
-    class PolicySubclass(HttpSecurityPolicy):
+    class PolicySubclass(HttpSecurityPolicy):  # type: ignore[misc]
         pass
 
-    class FailureSubclass(HttpSecurityFailure):
+    class FailureSubclass(HttpSecurityFailure):  # type: ignore[misc]
         pass
 
-    class ProofSubclass(CsrfProof):
+    class ProofSubclass(CsrfProof):  # type: ignore[misc]
         pass
 
-    class ProblemDetailsSubclass(ProblemDetails):
+    class ProblemDetailsSubclass(ProblemDetails):  # type: ignore[misc]
         pass
 
     origin_subclass = OriginSubclass("https://admin.example.invalid")

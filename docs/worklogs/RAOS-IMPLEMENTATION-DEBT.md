@@ -442,3 +442,57 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-002` remain unchanged and unclosed. This checkpoint claims only
   local implementation evidence for the scoped ST-0402 seam.
+
+### 2026-08-10 W1 / ST-0404 final local implementation checkpoint
+
+- Authority and scope: canonical `ST-0404` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on the locally present ST-0401 seam,
+  and has no Story-local Open Decision. The implementation is limited to a
+  framework-neutral, default-deny HTTP security seam; real origins, domains,
+  authentication transport, delivery framework, and operational production
+  values were not inferred.
+- Implemented strict immutable `CanonicalOrigin`, `CsrfProof`, request
+  metadata, policy, failure, and RFC 9457 `ProblemDetails` values plus an
+  application `HttpSecurityGuard`. The guard enforces exact origin/method/
+  header/content-type/content-length policy before handler invocation and
+  requires constant-time paired CSRF proof validation for unsafe
+  cookie-authenticated commands.
+- The owned source has no FastAPI, Starlette, HTTP client, SQLAlchemy, provider
+  SDK, network, file, process-environment, database, credential, or external
+  state dependency. Request objects contain no raw body, cookie value, bearer
+  token, Secret, or personal data. Conservative response headers include a
+  deny-by-default CSP without wildcard, `unsafe-inline`, or `unsafe-eval`.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  The first isolated pytest attempt failed during collection because pytest
+  `9.1` reserves parametrized argument name `request`; the local test parameter
+  was renamed. Final isolated `tests/st0404` result: `27 passed`.
+- Focused static results: Ruff lint `PASS`; Ruff format `7 files already
+  formatted`; strict mypy `Success: no issues found in 7 source files`,
+  including the isolated tests; `git diff --check` `PASS`. Focused invocations
+  of the repository scanner engine covered the seven code/test paths plus the
+  final Story README and ledger delta and returned an aggregate
+  `FOCUSED_SECRET_SCAN findings=0 files=9`.
+- The repository command `python3 -I scripts/scan_secrets.py --worktree`
+  remains unable to traverse this linked isolated worktree and returns the
+  inherited sanitized result
+  `ERROR code=unsafe-git-metadata source="."`. This Story did not weaken the
+  scanner and does not close `DEBT-W0-003`.
+- `DEBT-W1-007` status: `OPEN`, introduced-by `ST-0404`, closure owner:
+  authorized Admin HTTP/framework integration and final integration audit.
+  Exact skipped command: `NOT_RUN — no approved real origin/domain, delivery
+  framework, cookie/header names, authentication transport, production CSP
+  source, HSTS duration, request/rate/timeout limit, or durable CSRF replay
+  mechanism exists in this interface-only slice`; observed result:
+  `NOT_EXECUTED`. Safe impact: all such values are caller-supplied and
+  default-deny, and no route is activated.
+- `DEBT-W1-008` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0404`, closure
+  owner: formal CI, Security Owner, browser/staging/release owners. Exact
+  skipped command: `NOT_RUN — formal TST-012/TST-026, hosted browser/runtime,
+  staging, publication, release, deployment, and Production commands are
+  outside local authority`; observed result: `NOT_EXECUTED`. No generated
+  status/evidence artifact was hand-edited, and no local result is promoted to
+  formal validation or Production readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-006` remain unchanged and unclosed. This checkpoint claims only
+  local implementation evidence for the scoped ST-0404 seam.
