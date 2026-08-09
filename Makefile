@@ -351,8 +351,10 @@ openai-recorded-test:
 	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
 		-p no:cacheprovider -q tests/st0703
 
-openai-recorded-gate: config-check ai-registry-check openai-recorded-check \
+openai-recorded-gate: ai-registry-check openai-recorded-check \
 	openai-recorded-static openai-recorded-test
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0204_config_loader.py --check
 
 content-ast-generate: | python-sync
 	$(UV_RUN) run --locked --no-sync --no-env-file python \
@@ -390,7 +392,7 @@ config-generate: | python-sync
 	$(UV_RUN) run --locked --no-sync --no-env-file python \
 		scripts/build_st0204_config_loader.py
 
-config-check:
+config-check: | python-sync
 	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
 		scripts/build_st0204_config_loader.py --check
 

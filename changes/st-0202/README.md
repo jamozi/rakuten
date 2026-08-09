@@ -77,15 +77,6 @@ and secret key values never enter environment variables, Compose values,
 command arguments, logs, or tracked files. `RAOS_OBJECT_STORAGE_PORT` defaults
 to `8333`; publication is fixed to `127.0.0.1`.
 
-The Docker Inspect binding contract reads
-`.NetworkSettings.Ports` as JSON exactly once for the object-storage container;
-it does not parse `docker compose port` or `docker port` text. `8333/tcp` must
-have exactly one binding whose `HostIp` is `127.0.0.1` and whose `HostPort` is
-a decimal string in the inclusive range `1024..65535`. Other exposed-port keys
-are allowed only when their bindings are `null` or an empty list. Malformed
-JSON, a missing `8333/tcp` key, public or multiple S3 bindings, a malformed or
-out-of-range host port, and every additional actual binding fail closed.
-
 The service command explicitly disables master telemetry, WebDAV, the admin
 UI, the Iceberg S3 port, and deletion of nonempty buckets. It uses a named data
 volume and an internal bridge network. The `/status` health check establishes

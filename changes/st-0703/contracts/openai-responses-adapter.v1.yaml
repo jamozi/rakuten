@@ -16,16 +16,25 @@ story:
   open_decisions: []
 
 implementation_authority:
-  handoff: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml
-  approval: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v3.yaml
-  reconciliation: repo://changes/st-0703/CANONICAL-RECONCILIATION-v3.md
+  handoff: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v5.yaml
+  approval: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v5.yaml
+  reconciliation: repo://changes/st-0703/CANONICAL-RECONCILIATION-v5.md
+  decision_source: repo://changes/st-0703/DESIGN-DECISION-REQUEST-v5.md
+  prior_handoff: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v4.yaml
+  prior_approval: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v4.yaml
+  prior_reconciliation: repo://changes/st-0703/CANONICAL-RECONCILIATION-v4.md
+  semantic_delta_from_approved_v4:
+    d1_through_d4: NONE
+    d5: ST0703-V5-D5-CORRECTION
+  replaced_decision: ST0703-V3-D5
   approved_decisions:
     - ST0703-V3-D1
     - ST0703-V3-D2
     - ST0703-V3-D3
     - ST0703-V3-D4
-    - ST0703-V3-D5
+    - ST0703-V5-D5-CORRECTION
   authority: ST0703_RECORDED_SCOPE_ONLY
+  open_decisions: []
 
 provenance:
   canonical_inputs:
@@ -42,20 +51,34 @@ provenance:
     - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
       sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
     - uri: repo://changes/st-0703/DESIGN-DECISION-REQUEST-v3.md
-      sha256: ed65ac3237b60be87eed02bb296799e3da764052f4b4820dfaec4d3d9a367166
+      sha256: 85bb47958a36e994e97cb182589c7e8eb7e20c283476bfd5e823951eea76d76c
     - uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml
       sha256: a510526678190b0512a5d28e016f1ab978469e10cc5063d6a2482f93b6ce43c8
     - uri: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v3.yaml
       sha256: df9b39bf9969618a34a58fc0dfab679467ab02a360f22c306d4d408a8ecd5eae
     - uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v3.md
-      sha256: 86e40267756d95ecd9175aad5520ceb204459cffca1fb133fcf67f2981eb2595
+      sha256: 3c0629b4c308e316991d64ae49d4a9b002f77dd78afe684c17da7e47d3bca290
+    - uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v4.yaml
+      sha256: 7d384015c2975d7a718ff348cb4d1538a354f095cc0d9a2b0c76dbca5f6e4898
+    - uri: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v4.yaml
+      sha256: ed717125191c26dc609c61341320f020be7883add1f0967096b20d11e60eb202
+    - uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v4.md
+      sha256: 6c3285712156781c9a107dfb5417f87896246c75e3158fec485f1ea07be54887
+    - uri: repo://changes/st-0703/DESIGN-DECISION-REQUEST-v5.md
+      sha256: e2cec557d0c412effd5ae4a7fa7d1069ff46579caada980a9c8dd7479a6a51cd
+    - uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v5.yaml
+      sha256: ac8afef5f18b4602c099d27ad7f86f3880acb28be5e57badc47d45b27c3abe97
+    - uri: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v5.yaml
+      sha256: 3f3183275ed819349c2528bfd555d195d48b221f759bea42e29f8e941b048fb3
+    - uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v5.md
+      sha256: 65021265c8c5bd40bd8949eb876542e53400333bb615794d67418975873d6ac3
   predecessors:
     - story_id: ST-0701
       uri: repo://changes/st-0701/manifest.yaml
-      sha256: 8eda024ba3e428a46b544390ccc88e8cd37547ede43bffcbab414b59dd49a3bc
+      sha256: 14d651ffcd99ec1d90f46ecd1585837aafb26a050024790c9304bc70b8f69852
     - story_id: ST-0204
       uri: repo://changes/st-0204/manifest.yaml
-      sha256: 7fbe783850cf15642b837ab0efecf7827fbe06ca86316d387401e0376923c7fb
+      sha256: b7c82cc0852358a85707dc0ebb4f576292b88a6ea201b17e031ccbb5be4b1f1e
   provider_contracts:
     - uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json
       sha256: 163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31
@@ -269,6 +292,17 @@ gate_contract:
   hydration: EXPLICIT_SEPARATE_PREREQUISITE
   generate: openai-recorded-generate
   read_only_targets: [openai-recorded-check, openai-recorded-static, openai-recorded-test, openai-recorded-gate]
+  config_check_owner_target:
+    exact_header: 'config-check: | python-sync'
+    final_delta_from_base: NONE
+  openai_recorded_gate:
+    prerequisites: [ai-registry-check, openai-recorded-check, openai-recorded-static, openai-recorded-test]
+    config_check_prerequisite: FORBIDDEN
+    direct_predecessor_command: PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python scripts/build_st0204_config_loader.py --check
+    direct_predecessor_command_count: 1
+    recursive_make: FORBIDDEN
+    python_sync_uv_run_sync_install_hydrate: FORBIDDEN
+    network_cache_sync_environment_credential_external_service: FORBIDDEN
   repository_policy: openai-recorded-check
   unit_suite: tests/st0703
   new_workflow_or_job: false

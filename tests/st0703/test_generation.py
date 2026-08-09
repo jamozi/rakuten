@@ -26,10 +26,10 @@ CONTRACT_PATH = REPOSITORY_ROOT / generator.CONTRACT_PATH
 FIXTURE_ROOT = REPOSITORY_ROOT / generator.FIXTURE_ROOT
 GENERATOR_PATH = REPOSITORY_ROOT / "scripts/build_st0703_recorded_adapter.py"
 EXPECTED_CONTRACT_SHA256 = (
-    "c7ebab7794551684fd928e9f6d003a615ab149c980d8e3c9932e688dac866fde"
+    "08714a5ff21e1b7409d9f54079d34477b489ffe937d79e2f5182dc6eef18468e"
 )
 EXPECTED_REGISTRY_SHA256 = (
-    "0ec0087a2c6d7c546c8bb174656e3468b5af627a50ea19a1e50994fc945dd3ed"
+    "215a38ace7e17064185c1ae4c17f92f57d88a71912d992a506d5f6484bd7e9d6"
 )
 EXPECTED_WHEEL_SHA256 = (
     "f97e231d9a8fa69ab55897df1080f02d99913fb0a30e3ee56ea16a1eb6c2d434"
@@ -280,6 +280,49 @@ def test_registry_binds_all_dependency_source_inputs() -> None:
     ]
 
 
+def test_v5_authority_is_exact_approved_and_preserves_v4_d1_through_d4() -> None:
+    authority_sources = {
+        generator.V4_HANDOFF_PATH: generator.V4_HANDOFF_SHA256,
+        generator.V4_RECONCILIATION_PATH: generator.V4_RECONCILIATION_SHA256,
+        generator.V4_APPROVAL_PATH: generator.V4_APPROVAL_SHA256,
+        generator.V5_DECISION_REQUEST_PATH: generator.V5_DECISION_REQUEST_SHA256,
+        generator.V5_HANDOFF_PATH: generator.V5_HANDOFF_SHA256,
+        generator.V5_RECONCILIATION_PATH: generator.V5_RECONCILIATION_SHA256,
+        generator.V5_APPROVAL_PATH: generator.V5_APPROVAL_SHA256,
+    }
+    for relative, expected_digest in authority_sources.items():
+        assert _sha256((REPOSITORY_ROOT / relative).read_bytes()) == expected_digest
+
+    contract = yaml.load(CONTRACT_PATH.read_bytes(), Loader=generator.UniqueKeyLoader)
+    assert isinstance(contract, dict)
+    assert contract["implementation_authority"] == (
+        generator.EXPECTED_IMPLEMENTATION_AUTHORITY
+    )
+    generator._validate_v5_authority(REPOSITORY_ROOT, contract)
+
+    v4 = yaml.load(
+        (REPOSITORY_ROOT / generator.V4_HANDOFF_PATH).read_bytes(),
+        Loader=generator.UniqueKeyLoader,
+    )["DESIGN_HANDOFF_V1"]
+    v5 = yaml.load(
+        (REPOSITORY_ROOT / generator.V5_HANDOFF_PATH).read_bytes(),
+        Loader=generator.UniqueKeyLoader,
+    )["DESIGN_HANDOFF_V1"]
+    for key in generator.V5_INHERITED_DECISION_KEYS:
+        assert v5["decision"][key] == v4["decision"][key]
+    assert v5["decision"]["authority_revision"]["replaced_decision"] == ("ST0703-V3-D5")
+    assert v5["decision"]["gate_wiring"]["decision_id"] == ("ST0703-V5-D5-CORRECTION")
+
+    approval = yaml.load(
+        (REPOSITORY_ROOT / generator.V5_APPROVAL_PATH).read_bytes(),
+        Loader=generator.UniqueKeyLoader,
+    )["DESIGN_HANDOFF_APPROVAL_V1"]
+    assert approval["status"] == "APPROVED_FOR_IMPLEMENTATION"
+    assert approval["implementation_authority"] == "ST0703_RECORDED_SCOPE_ONLY"
+    assert approval["approved_decisions"] == list(generator.V5_APPROVED_DECISIONS)
+    assert approval["open_decisions"] == []
+
+
 def test_predecessor_manifest_semantic_projection_baselines_are_current() -> None:
     expected = {
         path.as_posix(): digest
@@ -492,22 +535,36 @@ def test_openai_recorded_make_targets_are_exact_and_read_only_after_hydration() 
     assert test.count("$(UV_READONLY_RUN)") == 1
     assert "pytest \\\n\t\t-p no:cacheprovider -q tests/st0703" in test
 
-    gate_header = _make_target_block(
-        makefile,
-        "openai-recorded-gate",
-    ).split("\n\n", 1)[0]
-    gate_tokens = gate_header.replace("\\\n", " ").split()[1:]
+    gate = _make_target_block(makefile, "openai-recorded-gate").rstrip()
+    gate_header = gate.splitlines()[0:2]
+    logical_gate_header = " ".join(
+        line.removesuffix("\\").strip() for line in gate_header
+    )
+    gate_tokens = logical_gate_header.split()[1:]
     assert gate_tokens == [
-        "config-check",
         "ai-registry-check",
         "openai-recorded-check",
         "openai-recorded-static",
         "openai-recorded-test",
     ]
+    assert gate == (
+        "openai-recorded-gate: ai-registry-check openai-recorded-check \\\n"
+        "\topenai-recorded-static openai-recorded-test\n"
+        "\tPYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \\\n"
+        "\t\tscripts/build_st0204_config_loader.py --check"
+    )
+    assert "config-check" not in logical_gate_header
+    assert gate.count("$(UV_READONLY_RUN)") == 1
+    assert gate.count("scripts/build_st0204_config_loader.py --check") == 1
+    assert "$(UV_RUN)" not in gate
+    assert "python-sync" not in gate
+    assert "$(MAKE)" not in gate
 
     config_check = _make_target_block(makefile, "config-check")
-    assert config_check.splitlines()[0] == "config-check:"
-    assert "python-sync" not in config_check
+    assert config_check.splitlines()[0] == "config-check: | python-sync"
+    assert config_check.count("python-sync") == 1
+    assert config_check.count("$(UV_READONLY_RUN)") == 1
+    assert config_check.count("scripts/build_st0204_config_loader.py --check") == 1
 
 
 def test_openai_recorded_static_target_has_the_exact_bounded_surface() -> None:

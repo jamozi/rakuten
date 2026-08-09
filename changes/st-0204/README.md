@@ -48,10 +48,6 @@ uv run --locked --no-sync python scripts/build_st0204_config_loader.py --check
 uv run --locked --no-sync pytest -p no:cacheprovider -q tests/st0204
 ```
 
-Hydration is an explicit prerequisite for the Make convenience commands: run
-`python-sync` separately when needed. `config-check` is a read-only drift check
-and does not synchronize or otherwise mutate the Python environment.
-
 This implementation reads no `.env` file, arbitrary configuration file,
 network endpoint, provider SDK, or Secret value. Provider resolution, workload
 identity, rotation hooks, and production credentials remain ST-0407 scope.

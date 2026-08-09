@@ -116,3 +116,33 @@ Append dated closure records here. A closure record must name the debt ID,
 commit, commands, results, regenerated owners, reviewer, and remaining formal
 boundary. Do not replace failure evidence with a summary that hides the
 original result.
+
+### 2026-08-10 W0 / ST-0703 implementation preflight
+
+- Story and objective: finish the approved `ST-0703` recorded-only OpenAI
+  Responses adapter under Wave W0 without live-provider, credential, routing,
+  pricing-source, publication, release, or production activation.
+- Authority and dependencies read: the root and canonical Codex instructions,
+  the owner-approved implementation-first ExecPlan, `ST-0204`, `ST-0701`, and
+  `ST-0703` backlog rows, `TST-017`, `SEC-AI-001` through `SEC-AI-008`, and the
+  exact V5 handoff, reconciliation, and approval chain.
+- Authority result: handoff SHA-256
+  `ac8afef5f18b4602c099d27ad7f86f3880acb28be5e57badc47d45b27c3abe97`,
+  reconciliation SHA-256
+  `65021265c8c5bd40bd8949eb876542e53400333bb615794d67418975873d6ac3`,
+  implementation authority `ST0703_RECORDED_SCOPE_ONLY`, and
+  `open_decisions: []` all match.
+- Ambiguities: none requiring a new design or policy decision. The approved
+  ExecPlan explicitly permits closing the ST-0102 direct-pin inventory source
+  mismatch and deferring unrelated transitive provenance fan-out.
+- Planned owned changes: ST-0703 source, contract, generator, generated output,
+  tests, Makefile and README sections; the exact ST-0102 pin inventory fix;
+  owner-generated metadata-only ST-0204/ST-0701/ST-0801 manifests; and seeded
+  base-byte cleanup of excluded Story semantic paths.
+- Planned checks: ordered owner regeneration and no-write checks; isolated
+  ST-0703/ST-0204/ST-0701/ST-0801 suites; exact ST-0102 wrapper; Ruff, format,
+  strict mypy, canonical import, workspace drift, sensitive-data/network
+  boundaries, `git diff --check`, and base/staged scope audits.
+- Out of scope: ST-0301+ fan-out closure, ST-1203/ST-1204 repair, the synthetic
+  security-fixture classification baseline, formal TST/hosted CI, live provider
+  or credential use, staging, publication, release, deployment, and production.

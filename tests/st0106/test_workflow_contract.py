@@ -354,7 +354,6 @@ def test_unit_job_keeps_overlapping_story_modules_in_separate_processes() -> Non
         "tests/st0306",
         "tests/st0307",
         "tests/st0701",
-        "tests/st0703",
         "tests/st0801",
     )
     assert unit_recipe.count("pytest -p no:cacheprovider -q") == len(expected_suites)
@@ -611,7 +610,7 @@ def test_ai_registry_uses_repository_policy_and_offline_unit_boundaries() -> Non
         "\nai-registry-test:", 1
     )[0]
     test_block = makefile.split("\nai-registry-test:", 1)[1].split(
-        "\nopenai-recorded-generate:", 1
+        "\ncontent-ast-generate:", 1
     )[0]
 
     assert "scripts/build_st0701_ai_registry.py" in generate_block

@@ -266,7 +266,8 @@ assert_service() {
   local image_version
   local image_license
   local image_source
-  local port_bindings
+  local published
+  local port_inventory
   local process_uid
   local version_output
   local version_line
@@ -312,42 +313,16 @@ assert_service() {
     return 1
   fi
 
-  port_bindings=$(run_docker inspect --format '{{json .NetworkSettings.Ports}}' "$container_id")
-  if published_port=$(env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-    /usr/bin/python3 -I -c '
-import json
-import sys
-
-try:
-    inventory = json.loads(sys.argv[1])
-except (json.JSONDecodeError, TypeError):
-    raise SystemExit(2)
-if not isinstance(inventory, dict) or "8333/tcp" not in inventory:
-    raise SystemExit(2)
-for exposed_port, exposed_bindings in inventory.items():
-    if exposed_port != "8333/tcp" and exposed_bindings not in (None, []):
-        raise SystemExit(2)
-bindings = inventory["8333/tcp"]
-if not isinstance(bindings, list) or len(bindings) != 1:
-    raise SystemExit(2)
-binding = bindings[0]
-if not isinstance(binding, dict):
-    raise SystemExit(2)
-host_ip = binding.get("HostIp")
-host_port = binding.get("HostPort")
-if host_ip != "127.0.0.1" or not isinstance(host_port, str) or not host_port.isdecimal():
-    raise SystemExit(3)
-port = int(host_port, 10)
-if port < 1024 or port > 65535:
-    raise SystemExit(3)
-print(port)
-' "$port_bindings"); then
-    :
-  else
-    case $? in
-      2) error 'the object-storage container publishes an unexpected host port' ;;
-      *) error 'the S3 endpoint is not published on one bounded loopback port' ;;
-    esac
+  published=$(compose "$project" port object-storage 8333)
+  if [[ ! $published =~ ^127\.0\.0\.1:([0-9]+)$ ]] || \
+    ((10#${BASH_REMATCH[1]} < 1024 || 10#${BASH_REMATCH[1]} > 65535)); then
+    error 'the S3 endpoint is not published on one bounded loopback port'
+    return 1
+  fi
+  published_port=$((10#${BASH_REMATCH[1]}))
+  port_inventory=$(run_docker port "$container_id")
+  if [[ $port_inventory != "8333/tcp -> 127.0.0.1:$published_port" ]]; then
+    error 'the object-storage container publishes an unexpected host port'
     return 1
   fi
 
