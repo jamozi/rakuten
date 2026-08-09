@@ -146,3 +146,79 @@ original result.
 - Out of scope: ST-0301+ fan-out closure, ST-1203/ST-1204 repair, the synthetic
   security-fixture classification baseline, formal TST/hosted CI, live provider
   or credential use, staging, publication, release, deployment, and production.
+
+### 2026-08-10 W0 / ST-0703 checkpoint evidence
+
+- Implementation commit: `aff94a21ac9f03886b19e32fef6e1c8b16de5b95`.
+- Local verifier: project `implementation_worker`; integration reviewer: root
+  Codex integration owner, pending.
+- Environment: WSL/Linux worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`,
+  and installed `openai==2.52.0`.
+- Hydration command:
+  `scripts/python_toolchain.sh --uv /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv sync`.
+  Result: `PASS`, 53 locked packages installed in the isolated `.venv`.
+- Owner regeneration commands, in dependency order:
+  `make --no-builtin-rules --no-builtin-variables --file Makefile config-generate UV=/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv`;
+  the corresponding `ai-registry-generate`, `content-ast-generate`, and
+  `openai-recorded-generate` commands with the same fixed Make/uv arguments.
+  Results: `PASS` for ST-0204, ST-0701, ST-0801, and ST-0703; the ST-0703
+  registry contains five fixtures with SHA-256
+  `215a38ace7e17064185c1ae4c17f92f57d88a71912d992a506d5f6484bd7e9d6`.
+- No-write owner checks: `config-check`, `ai-registry-check`,
+  `content-ast-check`, and `openai-recorded-check` with the same fixed
+  Make/uv arguments all returned `PASS`. The final
+  `openai-recorded-gate` returned `PASS`; an in-memory before/after snapshot of
+  2,998 tracked and nonignored repository files found no path, mode, size,
+  mtime, or SHA-256 change.
+- Focused suites: `openai-recorded-test` returned `363 passed`; `config-test`
+  returned `178 passed`; `ai-registry-test` returned `117 passed`; and
+  `content-ast-test` returned `283 passed`. These are isolated local candidate
+  results, not formal TST evidence.
+- Exact ST-0102 wrapper command:
+  `scripts/python_toolchain.sh --uv /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv check`.
+  Result: `PASS`, including Ruff, format, mypy, exact tool versions, and
+  `48 passed` in `tests/st0102`.
+- ST-0703 static command: `make --no-builtin-rules --no-builtin-variables
+  --file Makefile openai-recorded-static
+  UV=/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv`. Result: Ruff
+  lint `PASS`, Ruff format `11 files already formatted`, strict mypy
+  `Success: no issues found in 11 source files`.
+- Repository checks: `python3 scripts/import_raos_design.py verify` returned
+  `PASS` for 105 imported files and 104 package checksums;
+  `make --no-builtin-rules --no-builtin-variables --file Makefile
+  check-workspace` returned `PASS` with `changed: []`; `bash -n
+  scripts/object_storage_service.sh scripts/run_network_denied.sh` and
+  `git diff --check` returned `PASS`.
+- Semantic projection proof: owner-regenerated ST-0204, ST-0701, and ST-0801
+  manifest projections remain respectively
+  `ab5f98cee069733201e145c5c238547019edb0c3f9bbec1c2337d9629151b60a`,
+  `a0d5aad3b2c95ba7a365d0fc0be5a7825834f7a9639260823e2729c27391ad0b`,
+  and `7704359cb758e3bf35bbe88e91e41c7f484e8133f1ab7d4a139b2bafde7b2540`.
+  ST-0204 and ST-0701 semantic generated-output hashes remain
+  `5633b01e4f660a048e57ca4501a6a7e66f4aeca8412ff36f8644e68d4e04006e`
+  and `33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07`.
+- Base/scope proof: against comparison base
+  `48a807672caa845df8e0251782f00bce8040663b`, ST-0106, ST-0107, ST-0202,
+  and their delegated shell/test paths have no final delta; the only ST-0204,
+  ST-0701, and ST-0801 deltas are their permitted owner-generated manifests;
+  `changes/st-0204/README.md` and root `config-check: | python-sync` retain
+  exact base semantics. The first checkpoint staged-scope audit returned
+  `STAGED_SCOPE_PASS paths=22` with no unstaged path.
+- `DEBT-W0-001` status update: `IN_PROGRESS`. The direct ST-0102 source
+  mismatch is closed and the four W0 owner generations/checks are green.
+  ST-0301 and later provenance fan-out remains `OPEN` for its owning Wave/final
+  audit; this checkpoint does not claim that downstream closure.
+- `DEBT-W0-002` remains `OPEN`; no partial ST-1203/ST-1204 pin repair was made.
+- `DEBT-W0-003` remains `OPEN`. Exact attempted command
+  `python3 -I scripts/scan_secrets.py --worktree` returned exit 2 with sanitized
+  result `ERROR code=unsafe-git-metadata source="."` because the isolated Git
+  worktree uses a `.git` indirection file. The passing ST-0703 suite includes
+  the bounded no-environment, no-network, content-redaction, and raw-error
+  leakage negative paths, but neither substitutes for nor weakens the full
+  scanner policy; the inherited six synthetic-fixture findings remain
+  unclassified and unclosed.
+- `DEBT-W0-004` and `DEBT-W0-005` remain `EXTERNAL_BLOCKED`. Formal TST-017,
+  hosted CI, live provider/account/credential validation, production pricing
+  and FX, staging, publication, release, deployment, and production were not
+  executed or authorized.
