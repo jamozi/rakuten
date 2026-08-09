@@ -1,0 +1,94 @@
+document:
+  id: RAOS-BACKUP-RESTORE-DRILL-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1606
+  source_contract: repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml
+  generated_by: repo://scripts/build_st1606_backup_restore_drill.py
+  generation_command: uv run --locked --no-sync python scripts/build_st1606_backup_restore_drill.py
+provenance:
+  contract_sha256: 62b8c40dad658efe34d5874725490a932706362fec21450f8e8dbd4581e66eff
+  authority_inputs:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - uri: repo://docs/canonical/06_ops/RAOS_12_backup_restore_matrix_v1.0.yaml
+    sha256: 60ab681822e1aa7c63584bb1b1f4cb6202f4f0dcbea572462dd3a3e7fa8c15f6
+  - uri: repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml
+    sha256: 2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100
+  - uri: repo://docs/canonical/06_ops/RAOS_12_implementation_slices_v1.0.yaml
+    sha256: c338bef9bc45f6eef0dd46bb522a189ee59c06ecc8a44cd9f8988eadb5f47ee9
+  - uri: repo://docs/canonical/06_ops/RAOS_12_slo_catalog_v1.0.yaml
+    sha256: 320a880073e3c9d87c361fa8620e1202898ffa719e2b8e94872d185415abcdf2
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+  predecessor_inputs:
+  - uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
+    sha256: ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502
+  - uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
+    sha256: ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41
+  - uri: repo://changes/st-1502/manifest.yaml
+    sha256: 5fb972f61465653b7d791e87cd47576b55fcd07929c01f51329c1158909b401a
+  - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
+    sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
+  - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
+    sha256: 33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f
+  - uri: repo://changes/st-1505/manifest.yaml
+    sha256: b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2
+  implementation_inputs:
+  - uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml
+  bytes: 9233
+  sha256: 62b8c40dad658efe34d5874725490a932706362fec21450f8e8dbd4581e66eff
+- uri: repo://changes/st-1606/README.md
+  bytes: 3999
+  sha256: 60e8a9fee8cf20f53a48bbb66d8699f8a6457039f66d2082f24f1ee64a704042
+- uri: repo://scripts/build_st1606_backup_restore_drill.py
+  bytes: 32710
+  sha256: a45aa629e82c34b61b2889990abeec4e06115e1def45cd0fb39fe22029c258ff
+- uri: repo://tests/st1606/conftest.py
+  bytes: 819
+  sha256: 05edc4e6adda86dabed53fa83c96f577f0c2204a2216254977b190a93bdb435d
+- uri: repo://tests/st1606/test_contract.py
+  bytes: 3935
+  sha256: f42c6c27a299101bb08c80456ca316828a3691db1c7501951ed53f87bf0b0817
+- uri: repo://tests/st1606/test_generation.py
+  bytes: 4552
+  sha256: 32ba922ddfcf2485b026bc98f68ec36273f38aeec61ee74f191dbc724e6bb866
+- uri: repo://tests/st1606/test_negative_cases.py
+  bytes: 5889
+  sha256: 70b7df4f94de7523a57934a6b438ee03fd7e1990d64972c584bc03d2e1ceda14
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json
+  bytes: 11676
+  sha256: d51ace26de71b53d22bd60403e6715612b53fefa3330357772a9266055403350
+manifest_self_integrity:
+  included_in_generated_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  classification: PLAN_INVENTORY_PROJECTION_ONLY_NOT_RECOVERY_EVIDENCE
+  restore_drill: NOT_EXECUTED
+  formal_tst_029: NOT_EXECUTED
+  recoverability_claim: false
+  rpo_rto_measurement_claim: false
+  st_1607_eligible: false
+  release_eligible: false
+  effective_canonical_status: UNCHANGED

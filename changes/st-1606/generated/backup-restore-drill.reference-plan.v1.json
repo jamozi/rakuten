@@ -1,0 +1,331 @@
+{
+  "schema_version": "1.0.0",
+  "generator": {
+    "uri": "repo://scripts/build_st1606_backup_restore_drill.py",
+    "command": "uv run --locked --no-sync python scripts/build_st1606_backup_restore_drill.py",
+    "source_contract": "repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml"
+  },
+  "story": {
+    "id": "ST-1606",
+    "scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "effective_canonical_status": "UNCHANGED",
+    "acceptance_criteria_satisfied": false
+  },
+  "classification": "SOURCE_DERIVED_NON_AUTHORITATIVE_NON_EXECUTABLE_BACKUP_RESTORE_REFERENCE_PLAN",
+  "executable": false,
+  "source_bindings": [
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md",
+      "sha256": "894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8"
+    },
+    {
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_backup_restore_matrix_v1.0.yaml",
+      "sha256": "60ab681822e1aa7c63584bb1b1f4cb6202f4f0dcbea572462dd3a3e7fa8c15f6"
+    },
+    {
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml",
+      "sha256": "2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100"
+    },
+    {
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_implementation_slices_v1.0.yaml",
+      "sha256": "c338bef9bc45f6eef0dd46bb522a189ee59c06ecc8a44cd9f8988eadb5f47ee9"
+    },
+    {
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_slo_catalog_v1.0.yaml",
+      "sha256": "320a880073e3c9d87c361fa8620e1202898ffa719e2b8e94872d185415abcdf2"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+      "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
+      "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+    },
+    {
+      "uri": "repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
+      "sha256": "9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b"
+    }
+  ],
+  "predecessor_bindings": {
+    "data_services": {
+      "story_id": "ST-1502",
+      "contract_uri": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
+      "contract_sha256": "ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502",
+      "reference_plan_uri": "repo://infra/terraform/data-services/data-services.reference-plan.v1.json",
+      "reference_plan_sha256": "ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41",
+      "manifest_uri": "repo://changes/st-1502/manifest.yaml",
+      "manifest_sha256": "5fb972f61465653b7d791e87cd47576b55fcd07929c01f51329c1158909b401a",
+      "required_classification": "SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN",
+      "required_executable": false,
+      "required_activation_enabled": false,
+      "required_activation_status": "DISABLED",
+      "required_selected_values": "UNSET",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_external_writes": "FORBIDDEN",
+      "required_action_counts": {
+        "create": 0,
+        "update": 0,
+        "delete": 0
+      }
+    },
+    "staging_deployment": {
+      "story_id": "ST-1505",
+      "contract_uri": "repo://changes/st-1505/contracts/staging-deployment.v1.yaml",
+      "contract_sha256": "1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2",
+      "reference_plan_uri": "repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+      "reference_plan_sha256": "33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f",
+      "manifest_uri": "repo://changes/st-1505/manifest.yaml",
+      "manifest_sha256": "b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2",
+      "required_classification": "SOURCE_DERIVED_NON_EXECUTABLE_STAGING_DEPLOYMENT_REFERENCE_PLAN",
+      "required_executable": false,
+      "required_activation_enabled": false,
+      "required_activation_status": "DISABLED",
+      "required_selected_values": "UNSET",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_external_writes": "FORBIDDEN",
+      "required_action_counts": {
+        "create": 0,
+        "update": 0,
+        "delete": 0,
+        "promote": 0,
+        "deploy": 0,
+        "migrate": 0,
+        "smoke": 0,
+        "browser": 0,
+        "rollback": 0,
+        "production": 0
+      }
+    }
+  },
+  "open_decision_boundary": {
+    "id": "OD-014",
+    "topic": "retention_periods",
+    "status": "HUMAN_DECISION_REQUIRED",
+    "blocking": true,
+    "default_behavior": "AUTOMATIC_DELETION_DISABLED_MINIMUM_COLLECTION_ONLY",
+    "automatic_deletion": "DISABLED",
+    "minimum_collection_only": true,
+    "decision_value": null,
+    "approval_artifacts": []
+  },
+  "recovery_environment": {
+    "label": "ENV-RECOVERY",
+    "classification": "INERT_REFERENCE_LABEL_ONLY",
+    "configuration_status": "NOT_CONFIGURED",
+    "activation_status": "NOT_ACTIVATED",
+    "staging_target": false,
+    "production_target": false,
+    "production_data": "FORBIDDEN",
+    "credential_material": "ABSENT",
+    "external_access": "FORBIDDEN"
+  },
+  "logical_target_inventory": [
+    {
+      "target": "database",
+      "classification": "LOGICAL_TARGET_ONLY",
+      "predecessor_story": "ST-1502",
+      "source_backup_intent": "IMMUTABLE_READ_ONLY",
+      "physical_resource": null
+    },
+    {
+      "target": "object_storage",
+      "classification": "LOGICAL_TARGET_ONLY",
+      "predecessor_story": "ST-1502",
+      "source_backup_intent": "IMMUTABLE_READ_ONLY",
+      "physical_resource": null
+    },
+    {
+      "target": "iac_configuration",
+      "classification": "LOGICAL_TARGET_ONLY",
+      "predecessor_story": "ST-1505",
+      "source_backup_intent": "IMMUTABLE_READ_ONLY",
+      "physical_resource": null
+    }
+  ],
+  "source_backup_boundary": {
+    "immutable_intent": "REQUIRED",
+    "read_only_intent": "REQUIRED",
+    "source_mutation": "FORBIDDEN",
+    "overwrite": "FORBIDDEN",
+    "delete": "FORBIDDEN",
+    "lifecycle": "FORBIDDEN",
+    "retention_change": "FORBIDDEN",
+    "cleanup": "FORBIDDEN",
+    "expiry": "FORBIDDEN",
+    "verification_status": "NOT_EXECUTED"
+  },
+  "selected_bindings": {
+    "retention_duration": null,
+    "lifecycle_rules": [],
+    "cleanup_policy": null,
+    "deletion_policy": null,
+    "expiry": null,
+    "backup_schedule": null,
+    "account": null,
+    "region": null,
+    "endpoint": null,
+    "credential_reference": null,
+    "encryption_key_reference": null,
+    "bucket": null,
+    "database_identifier": null,
+    "iac_backend": null,
+    "restore_destination": null,
+    "provider": null,
+    "tool": null,
+    "tool_version": null,
+    "physical_resources": []
+  },
+  "reviewable_intents": [
+    {
+      "intent": "CONTENT_HASH_INTEGRITY",
+      "classification": "FUTURE_CHECK_REQUIREMENT_ONLY",
+      "status": "REQUIRED_NOT_EXECUTED",
+      "evidence_references": [],
+      "result": null
+    },
+    {
+      "intent": "ROW_OBJECT_COUNTS",
+      "classification": "FUTURE_CHECK_REQUIREMENT_ONLY",
+      "status": "REQUIRED_NOT_EXECUTED",
+      "evidence_references": [],
+      "result": null
+    },
+    {
+      "intent": "ROLE_ACCESS_BOUNDARY",
+      "classification": "FUTURE_CHECK_REQUIREMENT_ONLY",
+      "status": "REQUIRED_NOT_EXECUTED",
+      "evidence_references": [],
+      "result": null
+    },
+    {
+      "intent": "READ_MODEL_REBUILD_CONSISTENCY",
+      "classification": "FUTURE_CHECK_REQUIREMENT_ONLY",
+      "status": "REQUIRED_NOT_EXECUTED",
+      "evidence_references": [],
+      "result": null
+    },
+    {
+      "intent": "SOURCE_BACKUP_NON_MUTATION",
+      "classification": "FUTURE_CHECK_REQUIREMENT_ONLY",
+      "status": "REQUIRED_NOT_EXECUTED",
+      "evidence_references": [],
+      "result": null
+    }
+  ],
+  "rpo_rto_design_targets": [
+    {
+      "target": "database",
+      "source_asset": "PostgreSQL transactional data",
+      "target_rpo": "<=15 min",
+      "target_rto": "<=4 h",
+      "classification": "CANONICAL_DESIGN_TARGET_NOT_MEASUREMENT",
+      "measurement_status": "NOT_EXECUTED",
+      "measured_rpo": null,
+      "measured_rto": null
+    },
+    {
+      "target": "object_storage",
+      "source_asset": "Object artifacts/publication snapshots",
+      "target_rpo": "<=1 h",
+      "target_rto": "<=4 h",
+      "classification": "CANONICAL_DESIGN_TARGET_NOT_MEASUREMENT",
+      "measurement_status": "NOT_EXECUTED",
+      "measured_rpo": null,
+      "measured_rto": null
+    },
+    {
+      "target": "iac_configuration",
+      "source_asset": "Infrastructure as Code",
+      "target_rpo": "last merged commit",
+      "target_rto": "<=4 h",
+      "classification": "CANONICAL_DESIGN_TARGET_NOT_MEASUREMENT",
+      "measurement_status": "NOT_EXECUTED",
+      "measured_rpo": null,
+      "measured_rto": null
+    }
+  ],
+  "activation": {
+    "enabled": false,
+    "status": "DISABLED",
+    "operations": {
+      "execute": "FORBIDDEN",
+      "create": "FORBIDDEN",
+      "update": "FORBIDDEN",
+      "delete": "FORBIDDEN",
+      "restore": "FORBIDDEN",
+      "verify": "FORBIDDEN",
+      "cleanup": "FORBIDDEN",
+      "approval": "FORBIDDEN",
+      "external": "FORBIDDEN"
+    },
+    "network_access": "FORBIDDEN",
+    "credential_access": "FORBIDDEN",
+    "provider_calls": "FORBIDDEN",
+    "external_actions": "FORBIDDEN"
+  },
+  "action_counts": {
+    "execute": 0,
+    "create": 0,
+    "update": 0,
+    "delete": 0,
+    "restore": 0,
+    "verify": 0,
+    "cleanup": 0,
+    "approval": 0,
+    "external": 0
+  },
+  "evidence_boundary": {
+    "classification": "PLAN_INVENTORY_PROJECTION_ONLY_NOT_RECOVERY_EVIDENCE",
+    "performed_recovery_evidence": false,
+    "restore_drill": "NOT_EXECUTED",
+    "formal_tst_029": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "runtime": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "recovery_environment": "NOT_CONFIGURED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_AUTHORIZED",
+    "production": "NOT_AUTHORIZED",
+    "recoverability_claim": false,
+    "restore_success_claim": false,
+    "validated_claim": false,
+    "rpo_rto_measurement_claim": false,
+    "acceptance_criteria_satisfied": false,
+    "st_1607_eligible": false,
+    "release_eligible": false,
+    "effective_canonical_status": "UNCHANGED"
+  },
+  "prohibited_interpretations": [
+    "REFERENCE_PLAN_IS_NOT_RECOVERY_EVIDENCE",
+    "DESIGN_RPO_RTO_IS_NOT_MEASURED_RPO_RTO",
+    "REQUIRED_CHECK_IS_NOT_EXECUTED_CHECK",
+    "SAFE_DEFAULT_IS_NOT_OD_014_RESOLUTION",
+    "LOCAL_TESTS_ARE_NOT_FORMAL_TST_029",
+    "NO_ST_1607_OR_RELEASE_ELIGIBILITY_MAY_BE_INFERRED"
+  ]
+}
