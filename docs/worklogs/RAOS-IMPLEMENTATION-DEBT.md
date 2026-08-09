@@ -1612,3 +1612,62 @@ original result.
   repaired or regenerated. Inherited W0/W1 and prior W2 debt remains unchanged
   and unclosed. This checkpoint claims only the maximum-safe local recorded
   ST-0405 audit seam.
+
+### 2026-08-10 W2 / ST-0406 secure object intake checkpoint
+
+- Authority and scope: canonical `ST-0406` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0202 and ST-0403, has no
+  Story-local Open Decision, and requires TST-014/TST-026/TST-031. Effective
+  status remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint does not claim
+  a production upload route, durable object-storage adapter, native archive/
+  CSV/malware/PII parser, retention policy, or release-ready evidence.
+- Implemented strict immutable and redacted intake declarations, explicit
+  TEST_ONLY bounded policies, closed quarantine/inspection/malware/duplicate
+  records, inward chunk/quarantine/inspector/scanner/duplicate ports, and a
+  one-pass application service. An exact ST-0403 `AuthorizationGrant` for
+  `artifact:upload` and the same site is required before source or quarantine
+  I/O. Size and SHA-256 are verified while streaming, quarantine is sealed
+  before inspection, and success is only `CLEAN_QUARANTINED`, never promoted.
+- Unknown, unavailable, malformed, mismatched, over-capacity, or exceptional
+  collaborators fail closed without retry, rejected-value echo, cause, or
+  retained exception context. Magic/type/archive/CSV formula/privacy/malware
+  and duplicate evidence are fixed summaries only; no archive extraction or
+  caller-supplied arbitrary metadata is accepted. Exact duplicates still pass
+  through inspection and malware scanning.
+- The exact ENV-DEV/ENV-CI recorded adapter has explicit capacities, is
+  process-local, append-only, ordered, non-evicting, and exposes only immutable
+  metadata snapshots. It has no read/export/release/promote/delete/clear,
+  filesystem, network, provider, credential, background, retention, or
+  lifecycle surface. OD-014 remains unresolved and no automatic deletion or
+  retention value was selected.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st0406` (`53 passed`), ST-0403 regression (`37 passed`),
+  ST-0202 regression (`156 passed`), Ruff lint/format, strict mypy,
+  compile/import, exact eleven-path review, focused maintained secret scan,
+  canonical import, workspace drift, and `git diff --check` returned `PASS`.
+  The linked-worktree full scanner limitation remains inherited
+  `DEBT-W0-003`.
+- `DEBT-W2-007` status: `OPEN`, introduced-by `ST-0406`, closure owner:
+  ST-0202/storage, upload/parser/scanner, duplicate-index, HTTP, and final Wave
+  integration owners. Exact skipped command: `NOT_RUN — no durable private
+  quarantine adapter, real magic/archive/CSV/malware/PII implementation,
+  production limit/allowlist, duplicate index, HTTP streaming route, or
+  promotion workflow exists`; observed result: `NOT_EXECUTED`. The recorded
+  adapter and summary fixtures cannot be promoted to a production intake path.
+- `DEBT-W2-008` status: `OPEN`, observed-during `ST-0406`, introduced-by prior
+  moving sources, closure owner: ST-0202 and W2 provenance-freeze owners. Exact
+  failing command: `uv run --frozen --offline --no-cache --no-sync --no-env-
+  file python scripts/build_local_compose.py --check`; observed result:
+  `error: generated artifact drift: changes/st-0202/manifest.yaml`. No ST-0202
+  source or generated artifact was changed; its focused behavior suite remains
+  green and closure must use the owner generator after source freeze.
+- `DEBT-W2-009` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0406`, closure
+  owner: Security/Privacy/Storage reviewers, formal CI, runtime/Staging,
+  release, and Production owners. Exact skipped command: `NOT_RUN — formal
+  TST-014/TST-026/TST-031, real object storage and scanners, privacy review,
+  hosted CI, live/Staging, release, and Production are outside local
+  authority`; observed result: `NOT_EXECUTED`. Local quarantine fixtures do
+  not establish formal security or deployment readiness.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe local secure-object-intake seam.
