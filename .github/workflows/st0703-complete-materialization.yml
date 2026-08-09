@@ -26,7 +26,7 @@ jobs:
       HEAD_REF: agent/st-0703-openai-responses-adapter
       EXPECTED_PAYLOAD_BLOB: 6e7f9b678eac136539a212d63481e9b0907b718e
       EXPECTED_PATCH_SHA256: b5d46c704b2b88b4e275748d08502c5119e2847f5e2da79bba1528880480c5b7
-      EXPECTED_RUNTIME_FIX_BLOB: a2b72457fc0ad1dc9efff368e79c71c23806ff54
+      EXPECTED_RUNTIME_FIX_BLOB: 385d6e56495c3000d70db542ee6961748676acf7
     steps:
       - name: Check out exact branch head
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
