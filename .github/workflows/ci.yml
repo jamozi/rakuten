@@ -52,7 +52,7 @@ jobs:
           assert_blob .github/st0703-runtime-port-fix.py \
             385d6e56495c3000d70db542ee6961748676acf7
           assert_blob .github/st0703-port-diagnostic.py \
-            21ff22fc96ee07394e0331d6b6685f0c47795e7f
+            53db821c628a180f49b2c0cce7a86e6c576a1378
           assert_blob scripts/run_network_denied.sh \
             e4b53f30d281314c28ef414a1e61b06b12034980
           assert_blob tests/st0106/test_network_isolation.py \
