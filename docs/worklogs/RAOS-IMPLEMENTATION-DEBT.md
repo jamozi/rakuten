@@ -1552,3 +1552,63 @@ original result.
   No local allow fixture is promoted to canonical policy or formal evidence.
 - Inherited W0/W1 debt remains unchanged and unclosed. This checkpoint claims
   only the maximum-safe deny-default local ST-0403 recorded seam.
+
+### 2026-08-10 W2 / ST-0405 recorded audit checkpoint
+
+- Authority and scope: canonical `ST-0405` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0303 and ST-0403, has no
+  Story-local Open Decision, and requires TST-011/TST-012. Effective status
+  remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint does not claim a
+  durable database writer/query, immutable PostgreSQL ledger, business-plus-
+  audit transaction, retention policy, HTTP integration, or formal evidence.
+- Implemented strict immutable/redacted audit values with canonical actor,
+  outcome, severity, UUID/UTC, reason/request, before/after hash, and digest
+  fields; inward trusted-context and append-only appender ports; a one-attempt
+  fail-closed application service; exact receipt validation; and an immutable
+  commit token. Action, target, and correlation are bound from an exact
+  ST-0403 authorization grant and cannot be caller-overridden.
+- The application performs no business callback or mutation. Missing,
+  malformed, tampered, duplicate, capacity-limited, or failed context/append/
+  receipt handling raises only the stable
+  `REQUIRED_RECORD_NOT_COMMITTED` boundary without retry, cause, exception
+  text, or rejected-value echo. The token proves only a valid local append
+  receipt and is explicitly not a database commit or atomicity proof.
+- The exact ENV-DEV recorded adapter is bounded, process-local, append-only,
+  ordered, non-evicting, and has no update/delete/clear/export/query/retry/
+  background/retention surface. Raw prompt/source/provider bodies, secret/
+  token/header/cookie data, IP/PII, exception stacks, SQL, arbitrary details,
+  and affiliate URLs have no accepted record field.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st0405` (`78 passed`), ST-0403 regression (`37 passed`),
+  Ruff lint/format, strict mypy, compile/import, exact eight-path review,
+  focused maintained secret scan (`0 findings / 8 files`), canonical import,
+  workspace drift, and `git diff --check` returned `PASS`. The full scanner
+  remains inherited `DEBT-W0-003`.
+- `DEBT-W2-004` status: `OPEN`, introduced-by `ST-0405`, closure owner:
+  ST-0308/persistence, ST-0303, audit query/runtime, and final Wave integration
+  owners. Exact skipped command: `NOT_RUN — no durable AuditEvent repository,
+  query authorization, PostgreSQL append/immutability adapter, or shared
+  business-plus-audit transaction boundary exists`; observed result:
+  `NOT_EXECUTED`. Closure must atomically couple the business mutation and
+  audit append within an approved UoW and reject commit when audit persistence
+  fails.
+- `DEBT-W2-005` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0405`, closure
+  owner: Identity/Security, Privacy/Legal/Finance, Operations, and audit-data
+  owners. Exact skipped command: `NOT_RUN — real trusted actor/request context,
+  durable access policy, audit retention/export policy, storage capacity, and
+  reviewer access are not approved or configured`; observed result:
+  `NOT_EXECUTED`. OD-014 remains unresolved and no retention/deletion/export
+  value is inferred.
+- `DEBT-W2-006` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0405`, closure
+  owner: formal CI, PostgreSQL/Security reviewers, HTTP/runtime/Staging,
+  release, and Production owners. Exact skipped command: `NOT_RUN — formal
+  TST-011/TST-012, PostgreSQL immutability/role proof, HTTP integration, hosted
+  CI, live/Staging, release, and Production are outside local authority`;
+  observed result: `NOT_EXECUTED`. The local append token is not promoted to
+  formal or operational evidence.
+- The read-only ST-0303 owner check still stops transitively at the existing
+  ST-0306 manifest drift recorded in `DEBT-W2-002`; no predecessor artifact was
+  repaired or regenerated. Inherited W0/W1 and prior W2 debt remains unchanged
+  and unclosed. This checkpoint claims only the maximum-safe local recorded
+  ST-0405 audit seam.
