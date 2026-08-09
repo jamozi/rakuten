@@ -1003,3 +1003,66 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-029` remain unchanged and unclosed. This checkpoint claims only the
   maximum-safe interface-only local ST-1504 implementation.
+
+### 2026-08-10 W1 / ST-1505 interface-only local implementation checkpoint
+
+- Authority and scope: canonical `ST-1505` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-1502, ST-1503, and ST-1504, has
+  no Story-local Open Decision, and requires repeatable staging promotion,
+  migration, smoke, and rollback behavior. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`; all three predecessors remain local disabled
+  interface candidates. This checkpoint does not claim Story Done,
+  `VALIDATED`, a configured Staging environment, or deployment readiness.
+- Implemented a closed Story-owned staging-deployment contract, deterministic
+  owner builder, generated non-executable reference plan, generated manifest,
+  and isolated hostile tests. The builder byte- and semantic-binds the exact
+  ST-1502 data-services, ST-1503 compute/edge, and ST-1504 OIDC contract/plan
+  pairs. Rebinding a digest cannot admit an executable, activated, selected,
+  externally writable, or nonzero-action predecessor.
+- The generated reference records an inert `STAGING` label and exact ordered
+  logical phases from predecessor/artifact admission through Expand-Migrate-
+  Contract gates, smoke/browser gates, and deferred Contract work. Every phase
+  is disabled and unexecuted. All provider, account, region, backend,
+  repository, environment, role, credential, artifact, release, migration,
+  domain, URL, health, browser, and rollback selections remain null or empty.
+  Network/provider/external/Staging/release/Production actions are forbidden,
+  and all create/update/delete/promote/deploy/migrate/smoke/browser/rollback/
+  Production counters are exact integer zero.
+- The intent requires immutable digest identity, SBOM, vulnerability scan,
+  signed provenance, promote-without-rebuild, backward-compatible Expand,
+  migration dry-run and lock review, dependency/migration-aware readiness,
+  Public/Admin/Internal isolation, and prior immutable rollback inputs, while
+  keeping each unconfigured. Destructive Contract-first/direct-DDL behavior,
+  down-migration as primary recovery, generic HTTP-200 readiness, and routine
+  PITR are forbidden.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and post-commit `--check`, isolated `tests/st1505` (`155
+  passed`), Ruff lint/format, strict mypy, compile/import, focused maintained
+  secret scan, exact nine-path scope review, and `git diff --check` returned
+  `PASS`. ST-1502, ST-1503, and ST-1504 owner no-write checks also passed.
+- `DEBT-W1-033` status: `OPEN`, introduced-by `ST-1505`, closure owner: the
+  authorized artifact, migration, staging-pipeline, and final integration
+  owners. Exact skipped command: `NOT_RUN — no executable workflow, immutable
+  release artifact/SBOM/attestation, migration runner/database, configured
+  health contract, HTTP/browser smoke, or rollback executor exists`; observed
+  result: `NOT_EXECUTED`. Closure requires pinned tool/runtime provenance and
+  locally reproducible admission, Expand-Migrate-Contract, readiness,
+  isolation, smoke, and rollback checks without enabling external action.
+- `DEBT-W1-034` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1505`, closure
+  owner: Security/Platform/Operations and Staging environment owners. Exact
+  skipped command: `NOT_RUN — real Staging account/region/environment,
+  repository/deploy identity, dedicated credentials, artifact identities,
+  migration target, endpoints, browser scenarios, and rollback inputs are not
+  approved or configured`; observed result: `NOT_EXECUTED`. Production data
+  remains forbidden and no external access or action was attempted.
+- `DEBT-W1-035` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1505`, closure
+  owner: formal CI, database/migration reviewers, browser/Staging operators,
+  and release owners. Exact skipped command: `NOT_RUN — formal TST-009 and
+  TST-022, PostgreSQL migration runtime, HTTP/Playwright smoke, hosted CI,
+  Staging deployment, rollback drill, release, and Production are outside
+  local authority`; observed result: `NOT_EXECUTED`. No local result is
+  promoted to formal validation, deployment, or Production readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-032` remain unchanged and unclosed. This checkpoint claims only the
+  maximum-safe interface-only local ST-1505 implementation.
