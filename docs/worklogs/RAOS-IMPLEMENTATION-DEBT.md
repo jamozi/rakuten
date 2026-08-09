@@ -708,3 +708,79 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-015` remain unchanged and unclosed. This checkpoint claims only
   local implementation evidence for the scoped ST-1404 seam.
+
+### 2026-08-10 W1 / ST-1501 interface-only local implementation checkpoint
+
+- Authority and scope: canonical `ST-1501` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0106, and carries blocking
+  `OD-013`. The effective dependency and Story implementation/verification
+  statuses remain `NOT_STARTED`/`NOT_EXECUTED`; this checkpoint therefore does
+  not claim full Definition of Ready, Story Done, `VALIDATED`, or a deployable
+  Terraform foundation. The owner-approved implementation-first ExecPlan and
+  OD-013 safe default authorize only a reversible reference/interface slice.
+- Implemented a closed Story-owned foundation contract, deterministic owner
+  builder, generated reference state-plan document, generated manifest, and
+  isolated hostile tests. AWS and `ap-northeast-1` are reference metadata only;
+  the portable core boundary remains explicit. Every actual provider, region,
+  account, backend, credential source, CIDR, availability zone, KMS reference,
+  budget, and resource selection remains unset.
+- The generated plan is explicitly non-executable. Activation is disabled;
+  native init/plan/apply/destroy/import/refresh, live provider calls, and
+  external writes are forbidden; planned create/update/delete counts are
+  exactly zero. Future revisions must retain encrypted, locked, audited, and
+  recoverable state, Development/Production account separation, drift
+  detection, IaC-only Production change, and distinct human approval.
+- The repository contains no approved Terraform/OpenTofu binary provenance,
+  Terraform/AWS-provider version pin or lock/cache, AWS account, credential,
+  remote backend, or native offline validation path. No HCL, provider SDK,
+  dependency, network access, provider discovery, or external action was added.
+  The source-derived outputs were installed only by the Story owner builder.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Final isolated `tests/st1501` result: `67 passed`; owner builder `--check`,
+  direct import, Ruff lint/format, strict mypy, exact nine-path scope review,
+  and `git diff --check` returned `PASS`. Hostile coverage includes closed
+  schema and exact-type checks, duplicate/alias YAML, source/output drift,
+  bool-as-int, selected-value and operation attempts, symlink/ancestor escape,
+  fixed-path atomic output, no-write preservation, and sanitized diagnostics.
+- Sensitive-data checks: the maintained scanner engine covered all nine owned
+  code/contract/test/generated paths with zero findings. The official full
+  worktree scanner retains the inherited sanitized `unsafe-git-metadata`
+  result for the linked-worktree `.git` indirection and does not close
+  `DEBT-W0-003`.
+- `DEBT-W1-020` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1501`, closure
+  owner: Security/Business Owner plus authorized Platform/Operations owners.
+  Exact skipped command: `NOT_RUN — OD-013 leaves the Production region,
+  backup region, and cross-border/data-residency treatment unapproved, and no
+  AWS account, credential, backend, provider/tool version, network topology,
+  KMS reference, or budget is authorized`; observed result: `NOT_EXECUTED`.
+  Closure boundary: those external-cost/security values receive distinct human
+  approval and an authorized Story binds them without weakening Production
+  apply approval. Safe impact: only AWS Tokyo reference metadata exists.
+- `DEBT-W1-021` status: `OPEN`, introduced-by `ST-1501`, closure owner: the
+  approved infrastructure-toolchain owner, ST-1502/ST-1503 successors, and
+  final integration audit. Exact skipped command: `NOT_RUN — no pinned native
+  Terraform/OpenTofu executable, provider lock/cache, executable HCL module,
+  remote-state backend, AWS resource graph, or offline native validation path
+  exists`; observed result: `NOT_EXECUTED`. Closure boundary: a reviewed exact
+  tool/provider provenance contract is hydrated, successor-owned resources are
+  generated, and format/init-free validation, policy/security scans, drift,
+  state, and no-apply negatives are locally reproducible. Current output is a
+  source-derived reference plan, not a native Terraform plan.
+- `DEBT-W1-022` status: `OPEN`, observed-during `ST-1501`, closure owner:
+  ST-0106 and final Wave integration owners. Direct unchanged dependency suite
+  result: `304 passed, 3 failed`; failures are limited to stale moving-source
+  expectations for hydration inventory, CI Story-suite count, and the AI
+  registry Makefile block boundary. ST-1501 did not modify ST-0106. Closure
+  boundary: source freeze, owner-approved expectation regeneration/update, and
+  the isolated ST-0106 suite rerun green without weakening its controls.
+- `DEBT-W1-023` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1501`, closure
+  owner: formal CI, Security/Platform reviewers, AWS/account operators, and
+  staging/release owners. Exact skipped command: `NOT_RUN — formal TST-026,
+  native IaC/provider validation, hosted CI, AWS runtime, staging, deployment,
+  release, and Production are outside local authority`; observed result:
+  `NOT_EXECUTED`. No generated status/evidence artifact was edited and no local
+  result is promoted to formal validation or Production readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-019` remain unchanged and unclosed. This checkpoint claims only the
+  maximum-safe interface-only local ST-1501 implementation.
