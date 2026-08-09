@@ -858,3 +858,84 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-023` remain unchanged and unclosed. This checkpoint claims only the
   maximum-safe interface-only local ST-1502 implementation.
+
+### 2026-08-10 W1 / ST-1503 interface-only local implementation checkpoint
+
+- Authority and scope: canonical `ST-1503` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-1501, has no Story-local Open
+  Decision, and requires compute/CDN/WAF/route modules with public/admin
+  isolation and health behavior. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`; the predecessor remains a disabled local
+  interface candidate. This checkpoint does not claim native IaC, a runtime
+  health contract, Story Done, `VALIDATED`, or deployment readiness.
+- Implemented a closed Story-owned logical compute/edge contract,
+  deterministic owner builder, generated non-executable reference plan,
+  generated manifest, and isolated hostile tests. Exact ST-1501 bytes and
+  fail-closed activation/operation/zero-action semantics are predecessor-bound.
+  No predecessor, shared owner, or existing generated artifact was changed.
+- The plan names only canonical reference component families: ECS Fargate,
+  ECR, ALB, CloudFront/WAF/ACM, and Route53. It defines logical `public_web`,
+  `admin_web`, `core_api`, and `worker_pool` roles plus distinct Public, Admin,
+  and Internal surfaces. Public access is edge-mediated and Public Projection
+  only; direct public origin/data access is forbidden; Admin requires approved
+  identity/authorization; API, worker, and data origins remain private-only.
+- Immutable digest-selected images, signed provenance, SBOM, scanning,
+  least-privilege workload identity, encrypted logs, graceful shutdown, and
+  separate cache/cookie/host/CSP/auth boundaries are recorded as required but
+  not configured. Liveness is process-only; readiness requires dependency and
+  migration compatibility checks; deriving readiness from a generic HTTP 200
+  body is forbidden.
+- Every account, region, provider/tool, backend, credential, network, subnet,
+  security group, domain, host, certificate, DNS, origin, listener, route,
+  target group, WAF rule/rate, cache behavior, image, IAM role, port, task size,
+  autoscaling value, health endpoint/status/matcher/schema/interval/threshold,
+  and physical resource remains unset. Activation is disabled, all native
+  operations/provider calls/external writes are forbidden, and planned actions
+  are exactly zero.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Final isolated `tests/st1503` result: `399 passed`; owner generation and
+  `--check`, a standard-library JSON boundary assertion, ST-1501 predecessor
+  `--check` and `67 passed`, direct import/compile, Ruff lint/format, strict
+  mypy, exact nine-path scope review, and `git diff --check` returned `PASS`.
+  Optional `jq` inspection was `NOT_EXECUTED` because `jq` is absent; the same
+  invariant was checked by the green standard-library assertion and tests.
+- Hostile coverage rejects role/surface boundary swaps, public origin/private
+  API/worker exposure, health liveness/readiness confusion and HTTP-200
+  inference, component-label and physical-value injection, duplicate/reordered
+  fixed inventories, bool-as-int, YAML duplicate/alias, authority/predecessor
+  byte and semantic rebinding, symlink escape, output drift, ambient env/
+  network/process use, and write-capable check behavior. Diagnostics do not
+  echo rejected values.
+- Sensitive-data checks: the maintained scanner engine covered all nine owned
+  paths with zero findings. The inherited linked-worktree full-scanner
+  limitation remains `DEBT-W0-003` and is not closed.
+- `DEBT-W1-027` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1503`, closure
+  owner: Security/Business/Platform/Web owners. Exact skipped command:
+  `NOT_RUN — no approved AWS account/region, network, domain/host, DNS/cert,
+  WAF rules/rates, compute size/count/cost, workload identity, image digest, or
+  physical route/origin value exists`; observed result: `NOT_EXECUTED`.
+  Closure boundary: applicable OD-002/OD-009/OD-013 and security/operations
+  values receive human approval and are bound without weakening Public/Admin/
+  Internal isolation. Safe impact: current component names are inert reference
+  labels only.
+- `DEBT-W1-028` status: `OPEN`, introduced-by `ST-1503`, closure owner: the
+  approved infrastructure/runtime, ST-1505, and final integration owners.
+  Exact skipped command: `NOT_RUN — executable HCL/resources, native provider
+  validation, private network/IAM/edge configuration, exact liveness/readiness
+  endpoint and ALB matcher, container health, image provenance, and load/
+  failure behavior are absent`; observed result: `NOT_EXECUTED`. Closure
+  boundary: exact tool/provider provenance and runtime contracts are approved,
+  generated, locally validated, and tested under private-origin, unhealthy,
+  migration-drift, dependency-failure, and rollback scenarios before any apply.
+- `DEBT-W1-029` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1503`, closure
+  owner: formal CI, Security/Platform reviewers, AWS/performance operators, and
+  staging/release owners. Exact skipped command: `NOT_RUN — formal TST-026 and
+  TST-027, native IaC/provider validation, runtime health/load, hosted CI, AWS,
+  staging, deployment, release, and Production are outside local authority`;
+  observed result: `NOT_EXECUTED`. No generated status/evidence artifact was
+  edited and no local result is promoted to formal validation or Production
+  readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-026` remain unchanged and unclosed. This checkpoint claims only the
+  maximum-safe interface-only local ST-1503 implementation.
