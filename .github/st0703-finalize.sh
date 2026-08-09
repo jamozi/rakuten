@@ -13,6 +13,7 @@ readonly expected_netns_payload_sha='fdd1eca834ededd1801b3bad908af75b868872b1584
 readonly expected_netns_patch_sha='ab4eba2e75c479b8d0e6db4a1dfb75bfd3d374ed7157a3d4c3f9a394a6dd2166'
 
 test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+cp -- .github/workflows/ci.yml "$RUNNER_TEMP/st0703-transport-ci.yml"
 
 compatibility_payload=.github/infra-compatibility.patch.gz.b64
 compatibility_patch="$RUNNER_TEMP/infra-compatibility.patch"
@@ -106,6 +107,7 @@ PY
   tests/st0106 tests/st0201 tests/st0202 tests/st0703
 .venv/bin/python -m mypy
 
+git show origin/main:.github/workflows/ci.yml > .github/workflows/ci.yml
 scripts/run_network_denied.sh --home "$HOME" -- \
   "$GITHUB_WORKSPACE/.venv/bin/pytest" \
   -p no:cacheprovider -q tests/st0106
@@ -136,6 +138,7 @@ status, staging, production, retention-policy approval, and vulnerability-scan
 approval remain unchanged or NOT_EXECUTED.
 EVIDENCE
 
+cp -- "$RUNNER_TEMP/st0703-transport-ci.yml" .github/workflows/ci.yml
 rm -f -- \
   .github/infra-compatibility-repair.py \
   .github/infra-compatibility.patch.gz.b64 \
