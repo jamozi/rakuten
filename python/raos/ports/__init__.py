@@ -1,5 +1,6 @@
 """Provider-neutral application ports."""
 
+from raos.ports.oidc import AuthenticationRepository, EntropySource, OidcProvider
 from raos.ports.queue import (
     InvalidQueueMessage,
     QueueDelivery,
@@ -19,6 +20,8 @@ from raos.ports.task_registry import (
 )
 
 __all__ = [
+    "AuthenticationRepository",
+    "EntropySource",
     "InvalidQueueMessage",
     "QueueDelivery",
     "QueueError",
@@ -28,6 +31,7 @@ __all__ = [
     "StaleReceiptHandle",
     "UnknownReceiptHandle",
     "InvalidTaskCode",
+    "OidcProvider",
     "TaskRegistry",
     "TaskRegistryError",
     "TaskRegistryIntegrityError",

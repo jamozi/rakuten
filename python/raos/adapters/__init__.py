@@ -1,6 +1,11 @@
 """Outward adapters for RAOS application ports."""
 
 from raos.adapters.ai_contract_registry import CompiledTaskRegistry
+from raos.adapters.development_oidc import (
+    DevelopmentOidcAdapter,
+    InMemoryAuthenticationRepository,
+    SystemEntropySource,
+)
 from raos.adapters.openai_responses import (
     OpenAIResponseRoute,
     OpenAIResponsesAdapter,
@@ -15,10 +20,13 @@ from raos.adapters.recorded_ai import (
 __all__ = [
     "CompiledTaskRegistry",
     "DeadLetter",
+    "DevelopmentOidcAdapter",
+    "InMemoryAuthenticationRepository",
     "InMemoryProviderExchangeRecorder",
     "OpenAIResponseRoute",
     "OpenAIResponsesAdapter",
     "QueueFake",
     "ReasoningEffort",
     "SyntheticRecordedCostCalculator",
+    "SystemEntropySource",
 ]

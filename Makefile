@@ -400,6 +400,42 @@ config-test: | python-sync
 	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
 		-p no:cacheprovider -q tests/st0204
 
+oidc-check:
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) /usr/bin/env \
+		PYTHONPATH="$(RAOS_REPOSITORY_ROOT)/python" python -c \
+		"from raos.adapters.development_oidc import DevelopmentOidcAdapter; from raos.application.iam.authentication import AuthenticationService; from raos.ports.oidc import OidcProvider; assert DevelopmentOidcAdapter and AuthenticationService and OidcProvider"
+
+oidc-static:
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) ruff check --no-cache \
+		python/raos/adapters/__init__.py \
+		python/raos/adapters/development_oidc.py \
+		python/raos/application/iam \
+		python/raos/domain/iam/__init__.py \
+		python/raos/domain/iam/authentication.py \
+		python/raos/ports/__init__.py python/raos/ports/oidc.py tests/st0401
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) ruff format --check --no-cache \
+		python/raos/adapters/__init__.py \
+		python/raos/adapters/development_oidc.py \
+		python/raos/application/iam \
+		python/raos/domain/iam/__init__.py \
+		python/raos/domain/iam/authentication.py \
+		python/raos/ports/__init__.py python/raos/ports/oidc.py tests/st0401
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) /usr/bin/env \
+		MYPYPATH="$(RAOS_REPOSITORY_ROOT)/python:$(RAOS_REPOSITORY_ROOT)/tests/st0401" \
+		mypy --strict --explicit-package-bases --cache-dir=/dev/null \
+		python/raos/adapters/__init__.py \
+		python/raos/adapters/development_oidc.py \
+		python/raos/application/iam \
+		python/raos/domain/iam/__init__.py \
+		python/raos/domain/iam/authentication.py \
+		python/raos/ports/__init__.py python/raos/ports/oidc.py tests/st0401
+
+oidc-test:
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0401
+
+oidc-gate: oidc-check oidc-static oidc-test
+
 synthetic-data-generate: | python-sync
 	$(UV_RUN) run --locked --no-sync --no-env-file python \
 		scripts/build_st0205_synthetic_data.py

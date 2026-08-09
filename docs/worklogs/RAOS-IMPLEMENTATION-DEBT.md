@@ -222,3 +222,97 @@ original result.
   hosted CI, live provider/account/credential validation, production pricing
   and FX, staging, publication, release, deployment, and production were not
   executed or authorized.
+
+### 2026-08-10 W1 / ST-0401 implementation preflight
+
+- Story and objective: implement the maximum safe `ST-0401` OIDC and session
+  boundary permitted while `OD-010` remains unresolved: provider-neutral
+  domain/application types and ports, strict authorization callback lifecycle,
+  and one deterministic development-only fake adapter.
+- Authority read: root and canonical Codex instructions, the owner-approved
+  implementation-first ExecPlan, `ST-0401` plus dependency rows `ST-0103` and
+  `ST-0204`, `OD-010`, `RAOS-SEC-001`, `RAOS-UI-001`, `SEC-SLICE-002`,
+  `UI-SLICE-002`, `AUTH-001` through `AUTH-003`, `SEC-IAM-001` through
+  `SEC-IAM-012`, `SEC-APP-001`, `SEC-DATA-003`, `SEC-DATA-007`, `THR-001`,
+  `THR-020`, `THR-028`, `TST-012`, `TST-022`, `TST-026`, the Admin OpenAPI
+  OAuth2/IAM shapes, the ST-0303 IAM migration, and the live ST-0204/ST-0703
+  implementation patterns.
+- Authority result: `PASS`. The ExecPlan is
+  `OWNER_APPROVED_FOR_LOCAL_IMPLEMENTATION`; the Story design is
+  `APPROVED_FOR_IMPLEMENTATION`; `OD-010` keeps real-provider and Production
+  authentication blocked but explicitly permits local fake authentication in
+  development only. The direct read-only ST-0204 predecessor check returned
+  `PASS` with two generated artifacts unchanged.
+- Ambiguity and safe default: browser-to-API transport remains intentionally
+  unselected. No HTTP route, cookie, bearer-token delivery, browser client, or
+  public activation will be implemented. The neutral seam is dependency-ready;
+  transport and real issuer/client configuration will be recorded as
+  `DEBT-W1-001` rather than inferred.
+- Planned owned paths: `changes/st-0401/README.md`; IAM domain and application
+  modules; the provider-neutral OIDC port; a development-only fake and in-memory
+  adapters; isolated `tests/st0401`; narrow package exports, Make targets, and
+  root README documentation; and append-only entries in this ledger.
+- Planned checks: exact source import, isolated ST-0401 tests including replay,
+  mismatch, expiry, rotation, revocation, environment rejection, and redaction
+  negatives; Ruff lint/format; strict mypy for owned Python and tests; direct
+  ST-0204 predecessor no-write check; sensitive-data scan or exact classified
+  scanner result; `git diff --check`; and staged ownership/credential review.
+- Out of scope: real issuer/audience/client registration, credentials, Secret
+  resolution, provider SDK/network exchange, HTTP/web route activation,
+  cookie-versus-bearer selection, MFA/step-up, authorization policy, broad HTTP
+  security, secret manager, admin shell, persistence migration, formal TST,
+  hosted CI, staging, publication, deployment, release, and Production.
+
+### 2026-08-10 W1 / ST-0401 final local implementation checkpoint
+
+- Implemented a provider-neutral IAM domain, inward `OidcProvider`, entropy,
+  and authentication-repository ports, a transport-neutral application
+  service, and an exact-`ENV-DEV` deterministic no-network fake plus ephemeral
+  in-memory repository. The implementation has no password flow, provider SDK,
+  HTTP framework type, database write, external configuration, Secret read, or
+  live-provider call.
+- Focused behavior includes independent canonical 256-bit state, nonce, and
+  verifier values; S256-only PKCE; strict parsing and bounded expiry; atomic
+  one-time transaction/code consumption; mismatch, unknown, expired, and replay
+  denial; sanitized principal/failures; and bounded session create, refresh,
+  rotation, revocation, idle expiry, and absolute expiry semantics. Rotation
+  atomically invalidates the predecessor.
+- Exact focused gate command: `make --no-builtin-rules
+  --no-builtin-variables --file Makefile oidc-gate
+  UV=/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv`. Final result:
+  `PASS`, including the import check, Ruff lint, Ruff format (`11 files already
+  formatted`), strict mypy (`Success: no issues found in 11 source files`), and
+  isolated pytest (`28 passed`). An earlier first focused run returned
+  `23 passed`; the final suite adds static architecture, exact-environment,
+  no-I/O/password surface, serialization, and immutable-failure assertions.
+- Sensitive-data checks: the repository command `python3 -I
+  scripts/scan_secrets.py --worktree` returned exit 2 with the inherited
+  sanitized operational result `ERROR code=unsafe-git-metadata source="."` in
+  this isolated Git worktree. The same scanner's `read_maintained_file` and
+  `scan_payload` logic was then applied descriptor-relatively to all 14
+  ST-0401-owned changed files and returned
+  `FOCUSED_SECRET_SCAN findings=0 files=14`. This bounded result does not close
+  or weaken `DEBT-W0-003`.
+- `DEBT-W1-001` status: `OPEN`, introduced-by `ST-0401`, closure owner:
+  `WAVE_FREEZE` plus the applicable human decision. Browser-to-API transport
+  (cookie session versus bearer), HTTP activation, real provider selection and
+  configuration under `OD-010`, durable persistence, Secret resolution, and
+  external validation remain intentionally deferred. Safe impact: the inward
+  seam and development fake are usable locally while every HTTP/live path
+  remains absent and disabled.
+- `DEBT-W1-002` status: `OPEN`, introduced-by `ST-0401`, closure owner:
+  `WAVE_FREEZE` provenance regeneration. Exact failing command was the first
+  invocation of the focused gate above while `oidc-check` still composed the
+  ST-0204 owner check. Observed result:
+  `error: generated ST-0204 artifact drift: changes/st-0204/manifest.yaml`.
+  Affected owner artifact: `changes/st-0204/manifest.yaml`; root `Makefile` is
+  one of its provenance inputs. The ST-0204 check remains recorded separately,
+  while the final ST-0401 gate covers only owned import/static/test behavior.
+  No ST-0204 generated artifact was regenerated or hand-edited. Safe impact:
+  the stale hash inventory has no ST-0401 runtime effect and remains visible
+  for ordered Wave-freeze closure.
+- No generated status owner currently supports ST-0401 candidate evidence, so
+  no generated status or evidence proposal was created or hand-edited. Formal
+  TST-012/TST-022/TST-026, hosted CI, browser/runtime, live provider, staging,
+  publication, deployment, release, and Production evidence remain
+  `NOT_EXECUTED`; this checkpoint claims local implementation evidence only.
