@@ -51,6 +51,8 @@ jobs:
             6e7f9b678eac136539a212d63481e9b0907b718e
           assert_blob .github/st0703-runtime-port-fix.py \
             385d6e56495c3000d70db542ee6961748676acf7
+          assert_blob .github/st0703-port-diagnostic.py \
+            21ff22fc96ee07394e0331d6b6685f0c47795e7f
           assert_blob scripts/run_network_denied.sh \
             e4b53f30d281314c28ef414a1e61b06b12034980
           assert_blob tests/st0106/test_network_isolation.py \
@@ -75,11 +77,13 @@ jobs:
           git apply --check "$RUNNER_TEMP/infra-compatibility.patch"
           git apply "$RUNNER_TEMP/infra-compatibility.patch"
           /usr/bin/python3 -I .github/st0703-runtime-port-fix.py
+          /usr/bin/python3 -I .github/st0703-port-diagnostic.py
           git show "$RAOS_BASE_SHA:.github/workflows/ci.yml" > .github/workflows/ci.yml
           rm -f -- \
             .github/infra-compatibility-repair.py \
             .github/infra-compatibility.patch.gz.b64 \
-            .github/st0703-runtime-port-fix.py
+            .github/st0703-runtime-port-fix.py \
+            .github/st0703-port-diagnostic.py
           bash -n scripts/run_network_denied.sh
           bash -n scripts/object_storage_service.sh
       - name: Prove hosted network-denied fallback
