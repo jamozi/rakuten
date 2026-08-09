@@ -1370,3 +1370,66 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-047` remain unchanged and unclosed. This checkpoint claims only the
   maximum-safe disabled local ST-1606 recovery-reference implementation.
+
+### 2026-08-10 W1 / ST-1101 headless Admin UI foundation checkpoint
+
+- Authority and scope: canonical `ST-1101` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0103 and ST-0401, and requires
+  TST-006/TST-022/TST-023. Both predecessors remain local implementation
+  candidates with effective `NOT_STARTED`/`NOT_EXECUTED` status. This
+  checkpoint does not activate an Admin route, authentication transport,
+  renderer, browser behavior, server authorization, accessibility
+  conformance, Story Done, or `VALIDATED` status.
+- Implemented a dependency-free headless TypeScript foundation for strict JSON
+  serialization, provisional unbranded semantic tokens, advisory UI route
+  visibility, AppShell descriptors, DataTable models, form/error metadata, and
+  a Dialog focus-state reducer. Production sources compile with ES2024 only,
+  no DOM/Node/React/Next types, JSX, browser API, network, storage, cookie,
+  bearer, generated-client, or effect surface.
+- Only ADM-001 at exact `/admin` is registered, and it remains
+  `DISABLED_AUTH_TRANSPORT_UNRESOLVED`. All eight canonical human roles and a
+  mandatory site scope are exact inputs; every unknown route or malformed
+  role/scope fails closed. `ALLOW_UI_ONLY` means navigation/render eligibility
+  only and always requires server reauthorization; UI hiding never becomes
+  authorization. Critical Dialog intent remains
+  `BLOCKED_STEP_UP_UNAVAILABLE` and performs no effect.
+- Tokens use neutral system fonts and an explicitly provisional unbranded
+  palette while OD-002 remains unresolved. Table, form, AppShell, and Dialog
+  models are closed/serializable and test keyboard/focus intent, but they do
+  not claim semantic DOM, real focus containment, assistive-technology
+  behavior, authentication, or application integration.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, Node `24.18.1`, opportunistic exact
+  TypeScript `6.0.3` and Prettier `3.9.6` from the lock-identical main checkout.
+  Node-native TypeScript-strip tests (`31 passed`), strict production-source
+  `tsc --noEmit`, Prettier check, production index import, workspace drift,
+  ST-0103 lock-manifest verification, exact fourteen-path review, focused
+  maintained secret scan (`0 findings / 14 files`), and `git diff --check`
+  returned `PASS`. The linked-worktree scanner limitation remains inherited
+  `DEBT-W0-003`.
+- `DEBT-W1-051` status: `OPEN`, introduced-by `ST-1101`, closure owner:
+  ST-0103/toolchain, Admin renderer/application, package, and final Wave
+  integration owners. Exact skipped command: `NOT_RUN — the required Node
+  24.18.1 installation currently carries npm 12.0.2 instead of pinned npm
+  11.16.0; the goal tree has no node_modules/cache, package export, React/Next
+  renderer, active route, or root Vitest/typecheck routing`; observed result:
+  `NOT_EXECUTED`. Closure requires the approved exact Node/npm hydration and a
+  later owner-controlled renderer/package integration without weakening the
+  headless boundaries.
+- `DEBT-W1-052` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1101`, closure
+  owner: Identity/Security, Product/Brand, ST-0401/ST-0402/ST-0403, and route
+  owners. Exact skipped command: `NOT_RUN — cookie-versus-bearer transport,
+  real OIDC/session/role/site projection, server authorization mapping,
+  step-up effects, brand/domain/fonts/assets, and downstream Admin routes are
+  unresolved or unimplemented`; observed result: `NOT_EXECUTED`. `/admin`
+  stays disabled and no real identity or brand choice is inferred.
+- `DEBT-W1-053` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1101`, closure
+  owner: formal CI, browser/accessibility reviewers, Staging, release, and
+  Production owners. Exact skipped command: `NOT_RUN — canonical npm/Vitest
+  TST-006, Playwright/browser TST-022, axe/manual accessibility TST-023,
+  hosted CI, Staging, release, and Production are outside this local slice`;
+  observed result: `NOT_EXECUTED`. Headless reducer tests are not promoted to
+  browser, WCAG, formal, or operational evidence.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-050` remain unchanged and unclosed. This checkpoint claims only the
+  maximum-safe disabled local ST-1101 headless foundation.
