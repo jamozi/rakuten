@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: st0703-complete-source-materialization-${{ github.event.pull_request.number }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 defaults:
   run:
@@ -26,10 +26,7 @@ jobs:
     timeout-minutes: 60
     env:
       HEAD_REF: ${{ github.event.pull_request.head.ref }}
-      EXPECTED_COMPATIBILITY_PAYLOAD_BLOB: 6e7f9b678eac136539a212d63481e9b0907b718e
-      EXPECTED_COMPATIBILITY_PATCH_SHA256: b5d46c704b2b88b4e275748d08502c5119e2847f5e2da79bba1528880480c5b7
-      EXPECTED_NETNS_PAYLOAD_SHA256: fdd1eca834ededd1801b3bad908af75b868872b1584c038619f4b8d08742a7a0
-      EXPECTED_NETNS_PATCH_SHA256: ab4eba2e75c479b8d0e6db4a1dfb75bfd3d374ed7157a3d4c3f9a394a6dd2166
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
       - name: Check out exact pull-request head
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -39,181 +36,16 @@ jobs:
           persist-credentials: true
           show-progress: false
 
-      - name: Apply reviewed compatibility and internal-network patches
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
-
-          compatibility_payload=.github/infra-compatibility.patch.gz.b64
-          compatibility_patch="$RUNNER_TEMP/infra-compatibility.patch"
-          test "$(git hash-object "$compatibility_payload")" = \
-            "$EXPECTED_COMPATIBILITY_PAYLOAD_BLOB"
-          base64 --decode "$compatibility_payload" | gzip --decompress \
-            > "$compatibility_patch"
-          test "$(sha256sum "$compatibility_patch" | cut -d' ' -f1)" = \
-            "$EXPECTED_COMPATIBILITY_PATCH_SHA256"
-          git apply --check "$compatibility_patch"
-          git apply "$compatibility_patch"
-
-          netns_payload="$RUNNER_TEMP/st0202-internal-netns.patch.gz.b64"
-          netns_patch="$RUNNER_TEMP/st0202-internal-netns.patch"
-          cat \
-            .github/st0202-internal-netns.patch.gz.b64.part00 \
-            .github/st0202-internal-netns.patch.gz.b64.part01 \
-            .github/st0202-internal-netns.patch.gz.b64.part02 \
-            .github/st0202-internal-netns.patch.gz.b64.part03 \
-            > "$netns_payload"
-          test "$(sha256sum "$netns_payload" | cut -d' ' -f1)" = \
-            "$EXPECTED_NETNS_PAYLOAD_SHA256"
-          base64 --decode "$netns_payload" | gzip --decompress > "$netns_patch"
-          test "$(sha256sum "$netns_patch" | cut -d' ' -f1)" = \
-            "$EXPECTED_NETNS_PATCH_SHA256"
-          patch --dry-run --batch --forward -p1 < "$netns_patch"
-          patch --batch --forward -p1 < "$netns_patch"
-          git diff --check
-          bash -n scripts/run_network_denied.sh
-          bash -n scripts/object_storage_service.sh
-
       - name: Install exact uv
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: 0.12.1
           enable-cache: false
 
-      - name: Install exact Python and locked dependencies
+      - name: Run bounded finalization
         run: |
           set -euo pipefail
-          uv_path="$(command -v uv)"
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-            "$uv_path" --no-config --color never python install \
-            --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-            "$uv_path" --no-config --color never sync --locked \
-            --no-default-groups --group dev --no-install-project --no-install-local \
-            --managed-python --no-python-downloads --python 3.14.6 \
-            --no-build --no-sources --default-index https://pypi.org/simple \
-            --index-strategy first-index --keyring-provider disabled --link-mode copy \
-            --resolution highest --prerelease disallow \
-            --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
-
-      - name: Regenerate owned artifacts and bind Compose digest
-        run: |
-          set -euo pipefail
-          export PYTHONDONTWRITEBYTECODE=1
-          .venv/bin/python scripts/build_local_compose.py
-          compose_sha=$(sha256sum docker-compose.yml | cut -d' ' -f1)
-          .venv/bin/python - "$compose_sha" <<'PY'
-          from pathlib import Path
-          import re
-          import sys
-
-          path = Path("scripts/object_storage_service.sh")
-          text = path.read_text(encoding="utf-8")
-          text, count = re.subn(
-              r"readonly expected_compose_sha256='[0-9a-f]{64}'",
-              f"readonly expected_compose_sha256='{sys.argv[1]}'",
-              text,
-              count=1,
-          )
-          if count != 1:
-              raise SystemExit("unexpected Compose digest binding source")
-          path.write_text(text, encoding="utf-8", newline="")
-          PY
-          .venv/bin/python scripts/build_local_compose.py
-          .venv/bin/python scripts/build_local_compose.py --check
-          .venv/bin/python scripts/build_st0703_recorded_adapter.py
-          .venv/bin/python scripts/build_st0703_recorded_adapter.py --check
-
-      - name: Verify static scope and affected suites
-        run: |
-          set -euo pipefail
-          export PYTHONDONTWRITEBYTECODE=1
-          .venv/bin/python -m ruff format \
-            scripts/build_local_compose.py \
-            tests/st0106/test_network_isolation.py \
-            tests/st0106/test_hydration_validator.py \
-            tests/st0201/test_wrapper.py \
-            tests/st0202 \
-            tests/st0703
-          .venv/bin/python scripts/build_local_compose.py
-          .venv/bin/python scripts/build_local_compose.py --check
-          .venv/bin/python scripts/build_st0703_recorded_adapter.py --check
-          .venv/bin/python -m ruff check \
-            python/raos scripts/build_local_compose.py \
-            scripts/build_st0703_recorded_adapter.py \
-            tests/st0106 tests/st0201 tests/st0202 tests/st0703
-          .venv/bin/python -m ruff format --check \
-            --exclude python/raos/generated \
-            python/raos scripts/build_local_compose.py \
-            scripts/build_st0703_recorded_adapter.py \
-            tests/st0106 tests/st0201 tests/st0202 tests/st0703
-          .venv/bin/python -m mypy
-          scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/.venv/bin/pytest" \
-            -p no:cacheprovider -q tests/st0106
-          scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/.venv/bin/pytest" \
-            -p no:cacheprovider -q tests/st0201
-          scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/.venv/bin/pytest" \
-            -p no:cacheprovider -q tests/st0202
-          .venv/bin/python -m pytest -p no:cacheprovider -q \
-            tests/st0204 tests/st0701 tests/st0703 tests/st0801
-
-      - name: Verify internal-only object-storage runtime
-        run: |
-          set -euo pipefail
-          scripts/object_storage_service.sh --docker "$(command -v docker)" test
-
-      - name: Record implementation-candidate evidence and remove transports
-        run: |
-          set -euo pipefail
-          cat > changes/st-0202/IMPLEMENTATION_VALIDATION.md <<EOF
-          # ST-0202 implementation-candidate validation
-
-          GitHub Actions run: ${GITHUB_RUN_ID}
-          Source head: ${GITHUB_SHA}
-
-          The disposable SeaweedFS service remained on an internal-only bridge
-          with no host port. The authenticated fixture entered only the service
-          network namespace, dropped to the original non-root identity with all
-          capabilities removed, and completed the maintained S3 acceptance flow.
-
-          This is implementation-candidate evidence only. Formal TST-014,
-          canonical Story status, staging, production, retention-policy approval,
-          and vulnerability-scan approval remain unchanged or NOT_EXECUTED.
-          EOF
-          git show origin/main:.github/workflows/ci.yml > .github/workflows/ci.yml
-          rm -f -- \
-            .github/infra-compatibility-repair.py \
-            .github/infra-compatibility.patch.gz.b64 \
-            .github/st0703-ci-trigger \
-            .github/st0703-runtime-port-fix.py \
-            .github/st0703-port-diagnostic.py \
-            .github/st0202-internal-netns.patch.gz.b64.part00 \
-            .github/st0202-internal-netns.patch.gz.b64.part01 \
-            .github/st0202-internal-netns.patch.gz.b64.part02 \
-            .github/st0202-internal-netns.patch.gz.b64.part03 \
-            .github/workflows/st0703-authoritative-finalizer.yml \
-            .github/workflows/st0703-final-gate.yml \
-            .github/workflows/st0703-final-sentinel.yml \
-            .github/workflows/st0703-finalize-v2.yml \
-            .github/workflows/st0703-finalize-v3.yml \
-            .github/workflows/st0703-materialize-repair.yml \
-            .github/workflows/st0703-source-export.yml \
-            .github/workflows/st0703-complete-materialization.yml
-          git diff --check
-
-      - name: Commit final materialized implementation
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git diff --cached --check
-          if git diff --cached --quiet; then
-            printf 'error: materialization produced no commit\n' >&2
-            exit 1
-          fi
-          git commit -m 'Finalize ST-0703 and internal object-storage runtime'
-          git push origin "HEAD:refs/heads/$HEAD_REF"
+          test "$(git hash-object .github/st0703-finalize.sh)" = \
+            '7cb6ef4e9b744ff4be3f7fd8aedbc2a11adf86ea'
+          bash -n .github/st0703-finalize.sh
+          bash .github/st0703-finalize.sh
