@@ -50,7 +50,7 @@ jobs:
           assert_blob .github/infra-compatibility.patch.gz.b64 \
             6e7f9b678eac136539a212d63481e9b0907b718e
           assert_blob .github/st0703-runtime-port-fix.py \
-            a2b72457fc0ad1dc9efff368e79c71c23806ff54
+            385d6e56495c3000d70db542ee6961748676acf7
           assert_blob scripts/run_network_denied.sh \
             e4b53f30d281314c28ef414a1e61b06b12034980
           assert_blob tests/st0106/test_network_isolation.py \
