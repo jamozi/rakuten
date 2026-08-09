@@ -939,3 +939,67 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-026` remain unchanged and unclosed. This checkpoint claims only the
   maximum-safe interface-only local ST-1503 implementation.
+
+### 2026-08-10 W1 / ST-1504 interface-only local implementation checkpoint
+
+- Authority and scope: canonical `ST-1504` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0107 and ST-1501, has no
+  Story-local Open Decision, and requires short-lived deployment identity plus
+  protected-environment approval. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`; neither predecessor is promoted to formal
+  completion by this checkpoint. This is not Story Done, `VALIDATED`, hosted
+  OIDC validation, or deployment readiness.
+- Implemented a closed Story-owned GitHub OIDC deployment-intent contract,
+  deterministic owner builder, generated non-executable reference plan,
+  generated manifest, and isolated hostile tests. The builder byte- and
+  semantic-binds the installed ST-0107 governance contract/ruleset and ST-1501
+  foundation contract/reference plan. No predecessor, shared owner, workflow,
+  IAM policy, HCL, status artifact, or canonical source was modified.
+- The reference plan requires exact repository/ref/workflow/environment/
+  audience/subject trust conditions, short-lived least privilege, fork and
+  untrusted-PR denial, no `pull_request_target` credential path, protected
+  Production approval, no self-approval/bypass, and immutable action/provider
+  references. All actual repository, numeric repository ID, ref, workflow,
+  environment, reviewer, issuer, audience, subject, account, role, session,
+  thumbprint, trust payload, action, and provider bindings remain null or
+  empty. Activation is disabled, credential issuance/provider/network/external
+  writes are forbidden, and planned create/update/delete actions are exactly
+  zero.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and post-commit `--check`, isolated `tests/st1504` (`172
+  passed`), Ruff lint/format, strict mypy, compile/import, adversarial plan
+  inspection, exact nine-path scope review, and `git diff --check` returned
+  `PASS`. The maintained scanner engine covered all nine owned paths with zero
+  findings; inherited linked-worktree scanner limitation `DEBT-W0-003` remains.
+- Read-only predecessor evidence: ST-1501 owner `--check` and `67 passed`
+  remained green. ST-0107 returned `90 passed, 3 failed`; the failures were the
+  same pre-existing owner-manifest provenance drift reproduced before and after
+  ST-1504, with no predecessor edit or regeneration.
+- `DEBT-W1-030` status: `OPEN`, introduced-by `ST-1504`, closure owner: ST-0107,
+  the authorized deployment-identity/toolchain owner, and final Wave
+  integration owner. Exact skipped command: `NOT_RUN — no executable GitHub
+  workflow, IAM trust policy, native provider/tool provenance, offline trust
+  evaluator, or credential-issuance runtime exists`; observed result:
+  `NOT_EXECUTED`. Closure also includes topological owner regeneration of the
+  inherited ST-0107 manifest drift. Current output is a source-derived
+  non-executable trust-intent plan, not a remotely applied ruleset or IAM
+  policy.
+- `DEBT-W1-031` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1504`, closure
+  owner: repository, Security, Platform, and AWS account owners. Exact skipped
+  command: `NOT_RUN — real repository/ref/workflow/environment/reviewer,
+  issuer/audience/subject, AWS account/role/session/trust, and credential values
+  are not approved or configured`; observed result: `NOT_EXECUTED`. Closure
+  requires exact human-approved bindings and must preserve fork denial,
+  short-lived credentials, least privilege, protected environment, distinct
+  human approval, and no bypass.
+- `DEBT-W1-032` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1504`, closure
+  owner: formal CI, Security/Platform reviewers, GitHub/AWS operators, and
+  staging/release owners. Exact skipped command: `NOT_RUN — formal TST-026,
+  hosted GitHub Actions/OIDC, AWS role assumption, staging, deployment,
+  release, and Production are outside local authority`; observed result:
+  `NOT_EXECUTED`. No local result is promoted to formal validation, deployment,
+  or Production readiness.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-029` remain unchanged and unclosed. This checkpoint claims only the
+  maximum-safe interface-only local ST-1504 implementation.
