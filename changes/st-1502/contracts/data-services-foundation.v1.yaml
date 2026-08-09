@@ -1,0 +1,294 @@
+document:
+  id: RAOS-DATA-SERVICES-FOUNDATION-001
+  version: 1.0.0
+  story_id: ST-1502
+  status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
+  formal_verification: NOT_EXECUTED
+sources:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml
+    sha256: 2cdc9afb4b9a1fc7cb44b78dc5198bc443a219ca895713b75220f8625aea6305
+  - uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+  - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+    sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+  - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+    sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+predecessor_binding:
+  story_id: ST-1501
+  extension_kind: DATA_SERVICES
+  contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+  contract_sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+  reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+  reference_plan_sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+  required_activation_status: DISABLED
+  required_resource_payloads: FORBIDDEN
+  required_planned_actions:
+    create: 0
+    update: 0
+    delete: 0
+reference_architecture:
+  cloud: AWS
+  region: ap-northeast-1
+  classification: INHERITED_REFERENCE_METADATA_ONLY
+  portable_core_required: true
+selected_configuration:
+  cloud_provider: null
+  production_region: null
+  backup_region: null
+  aws_account_id: null
+  terraform_cli_version: null
+  provider_plugins: []
+  state_backend: null
+  credential_source: null
+  network_cidrs: []
+  availability_zones: []
+  subnet_ids: []
+  security_group_ids: []
+  physical_resource_definitions: []
+rds_intent:
+  service: PostgreSQL
+  classification: LOGICAL_SERVICE_INTENT_ONLY
+  private_only: REQUIRED
+  publicly_accessible: false
+  encryption_at_rest: REQUIRED_NOT_CONFIGURED
+  backup: REQUIRED_NOT_CONFIGURED
+  point_in_time_recovery: REQUIRED_NOT_CONFIGURED
+  deletion_protection: REQUIRED_NOT_CONFIGURED
+  final_snapshot: REQUIRED_NOT_CONFIGURED
+  restore_test: REQUIRED_NOT_EXECUTED
+  selected:
+    engine_version: null
+    instance_class: null
+    storage_gib: null
+    storage_class: null
+    subnet_ids: []
+    endpoint: null
+    database_name: null
+    username: null
+    password_secret_reference: null
+    port: null
+    multi_az: null
+    backup_retention_days: null
+    backup_region: null
+    kms_key_reference: null
+s3_intent:
+  classification: LOGICAL_BUCKET_ROLE_INTENT_ONLY
+  public_access_block: REQUIRED
+  encryption_at_rest: REQUIRED_NOT_CONFIGURED
+  versioning: REQUIRED_NOT_CONFIGURED
+  force_destroy: FORBIDDEN
+  lifecycle_deletion: FORBIDDEN
+  automatic_deletion: FORBIDDEN
+  selected_encryption_key_reference: null
+  retention_days: null
+  lifecycle_rules: []
+  roles:
+    - role: raw
+      physical_name: null
+      arn: null
+      immutability: REQUIRED_NOT_CONFIGURED
+      integrity_metadata: REQUIRED_NOT_CONFIGURED
+      deletion_role_separation: REQUIRED_NOT_CONFIGURED
+    - role: publication
+      physical_name: null
+      arn: null
+    - role: uploads_quarantine
+      physical_name: null
+      arn: null
+    - role: exports
+      physical_name: null
+      arn: null
+    - role: audit_logs
+      physical_name: null
+      arn: null
+sqs_intent:
+  classification: LOGICAL_QUEUE_CLASS_INTENT_ONLY
+  classes:
+    - class: ingestion
+      dlq: REQUIRED_NOT_CONFIGURED
+      producer_consumer_separation: REQUIRED_NOT_CONFIGURED
+      redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      selected:
+        physical_name: null
+        queue_url: null
+        queue_arn: null
+        dlq_name: null
+        dlq_url: null
+        dlq_arn: null
+        delay_seconds: null
+        visibility_timeout_seconds: null
+        retention_seconds: null
+        max_receive_count: null
+        fifo: null
+        policy_document: null
+    - class: ai
+      dlq: REQUIRED_NOT_CONFIGURED
+      producer_consumer_separation: REQUIRED_NOT_CONFIGURED
+      redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      selected:
+        physical_name: null
+        queue_url: null
+        queue_arn: null
+        dlq_name: null
+        dlq_url: null
+        dlq_arn: null
+        delay_seconds: null
+        visibility_timeout_seconds: null
+        retention_seconds: null
+        max_receive_count: null
+        fifo: null
+        policy_document: null
+    - class: quality
+      dlq: REQUIRED_NOT_CONFIGURED
+      producer_consumer_separation: REQUIRED_NOT_CONFIGURED
+      redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      selected:
+        physical_name: null
+        queue_url: null
+        queue_arn: null
+        dlq_name: null
+        dlq_url: null
+        dlq_arn: null
+        delay_seconds: null
+        visibility_timeout_seconds: null
+        retention_seconds: null
+        max_receive_count: null
+        fifo: null
+        policy_document: null
+    - class: publication
+      dlq: REQUIRED_NOT_CONFIGURED
+      producer_consumer_separation: REQUIRED_NOT_CONFIGURED
+      redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      selected:
+        physical_name: null
+        queue_url: null
+        queue_arn: null
+        dlq_name: null
+        dlq_url: null
+        dlq_arn: null
+        delay_seconds: null
+        visibility_timeout_seconds: null
+        retention_seconds: null
+        max_receive_count: null
+        fifo: null
+        policy_document: null
+    - class: freshness
+      dlq: REQUIRED_NOT_CONFIGURED
+      producer_consumer_separation: REQUIRED_NOT_CONFIGURED
+      redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      selected:
+        physical_name: null
+        queue_url: null
+        queue_arn: null
+        dlq_name: null
+        dlq_url: null
+        dlq_arn: null
+        delay_seconds: null
+        visibility_timeout_seconds: null
+        retention_seconds: null
+        max_receive_count: null
+        fifo: null
+        policy_document: null
+    - class: analytics
+      dlq: REQUIRED_NOT_CONFIGURED
+      producer_consumer_separation: REQUIRED_NOT_CONFIGURED
+      redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      selected:
+        physical_name: null
+        queue_url: null
+        queue_arn: null
+        dlq_name: null
+        dlq_url: null
+        dlq_arn: null
+        delay_seconds: null
+        visibility_timeout_seconds: null
+        retention_seconds: null
+        max_receive_count: null
+        fifo: null
+        policy_document: null
+    - class: notification
+      dlq: REQUIRED_NOT_CONFIGURED
+      producer_consumer_separation: REQUIRED_NOT_CONFIGURED
+      redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      selected:
+        physical_name: null
+        queue_url: null
+        queue_arn: null
+        dlq_name: null
+        dlq_url: null
+        dlq_arn: null
+        delay_seconds: null
+        visibility_timeout_seconds: null
+        retention_seconds: null
+        max_receive_count: null
+        fifo: null
+        policy_document: null
+secrets_manager_intent:
+  classification: METADATA_INTENT_ONLY
+  secret_values: ABSENT
+  secret_names: []
+  secret_arns: []
+  ambient_credential_resolution: FORBIDDEN
+  environment_credential_resolution: FORBIDDEN
+  rotation: REQUIRED_NOT_CONFIGURED
+  workload_least_privilege: REQUIRED_NOT_CONFIGURED
+kms_intent:
+  classification: LOGICAL_ENCRYPTION_INTENT_ONLY
+  encryption: REQUIRED
+  rotation: REQUIRED_NOT_CONFIGURED
+  audit_logging: REQUIRED_NOT_CONFIGURED
+  workload_least_privilege: REQUIRED_NOT_CONFIGURED
+  key_deletion: FORBIDDEN
+  key_ids: []
+  key_arns: []
+  aliases: []
+  policy_document: null
+  deletion_window_days: null
+execution_boundary:
+  activation_enabled: false
+  activation_status: DISABLED
+  native_plan_status: NOT_EXECUTED
+  live_provider_calls: FORBIDDEN
+  external_writes: FORBIDDEN
+  commands:
+    init: FORBIDDEN
+    plan: FORBIDDEN
+    apply: FORBIDDEN
+    destroy: FORBIDDEN
+    import: FORBIDDEN
+    refresh: FORBIDDEN
+  planned_actions:
+    create: 0
+    update: 0
+    delete: 0
+evidence_boundary:
+  deliverable_classification: SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN
+  executable_terraform: ABSENT
+  terraform_cli: UNPINNED_NOT_INVOKED
+  provider_plugins: UNPINNED_NOT_INVOKED
+  aws_account: UNSET
+  credentials: ABSENT
+  native_iac_validation: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_029: NOT_EXECUTED
+  restore_validation: NOT_EXECUTED
+  live_staging_release_production: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

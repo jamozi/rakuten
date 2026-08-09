@@ -1,0 +1,322 @@
+{
+  "activation": {
+    "enabled": false,
+    "external_writes": "FORBIDDEN",
+    "live_provider_calls": "FORBIDDEN",
+    "native_commands": {
+      "apply": "FORBIDDEN",
+      "destroy": "FORBIDDEN",
+      "import": "FORBIDDEN",
+      "init": "FORBIDDEN",
+      "plan": "FORBIDDEN",
+      "refresh": "FORBIDDEN"
+    },
+    "native_plan_status": "NOT_EXECUTED",
+    "status": "DISABLED"
+  },
+  "document": {
+    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN",
+    "executable": false,
+    "generated_by": "repo://scripts/build_st1502_data_services.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st1502_data_services.py",
+    "id": "RAOS-DATA-SERVICES-REFERENCE-PLAN-001",
+    "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "source_contract": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
+    "story_id": "ST-1502",
+    "version": "1.0.0"
+  },
+  "logical_data_services": {
+    "kms": {
+      "aliases": [],
+      "audit_logging": "REQUIRED_NOT_CONFIGURED",
+      "classification": "LOGICAL_ENCRYPTION_INTENT_ONLY",
+      "deletion_window_days": null,
+      "encryption": "REQUIRED",
+      "key_arns": [],
+      "key_deletion": "FORBIDDEN",
+      "key_ids": [],
+      "policy_document": null,
+      "rotation": "REQUIRED_NOT_CONFIGURED",
+      "workload_least_privilege": "REQUIRED_NOT_CONFIGURED"
+    },
+    "rds": {
+      "backup": "REQUIRED_NOT_CONFIGURED",
+      "classification": "LOGICAL_SERVICE_INTENT_ONLY",
+      "deletion_protection": "REQUIRED_NOT_CONFIGURED",
+      "encryption_at_rest": "REQUIRED_NOT_CONFIGURED",
+      "final_snapshot": "REQUIRED_NOT_CONFIGURED",
+      "point_in_time_recovery": "REQUIRED_NOT_CONFIGURED",
+      "private_only": "REQUIRED",
+      "publicly_accessible": false,
+      "restore_test": "REQUIRED_NOT_EXECUTED",
+      "selected": {
+        "backup_region": null,
+        "backup_retention_days": null,
+        "database_name": null,
+        "endpoint": null,
+        "engine_version": null,
+        "instance_class": null,
+        "kms_key_reference": null,
+        "multi_az": null,
+        "password_secret_reference": null,
+        "port": null,
+        "storage_class": null,
+        "storage_gib": null,
+        "subnet_ids": [],
+        "username": null
+      },
+      "service": "PostgreSQL"
+    },
+    "s3": {
+      "automatic_deletion": "FORBIDDEN",
+      "classification": "LOGICAL_BUCKET_ROLE_INTENT_ONLY",
+      "encryption_at_rest": "REQUIRED_NOT_CONFIGURED",
+      "force_destroy": "FORBIDDEN",
+      "lifecycle_deletion": "FORBIDDEN",
+      "lifecycle_rules": [],
+      "public_access_block": "REQUIRED",
+      "retention_days": null,
+      "roles": [
+        {
+          "arn": null,
+          "deletion_role_separation": "REQUIRED_NOT_CONFIGURED",
+          "immutability": "REQUIRED_NOT_CONFIGURED",
+          "integrity_metadata": "REQUIRED_NOT_CONFIGURED",
+          "physical_name": null,
+          "role": "raw"
+        },
+        {
+          "arn": null,
+          "physical_name": null,
+          "role": "publication"
+        },
+        {
+          "arn": null,
+          "physical_name": null,
+          "role": "uploads_quarantine"
+        },
+        {
+          "arn": null,
+          "physical_name": null,
+          "role": "exports"
+        },
+        {
+          "arn": null,
+          "physical_name": null,
+          "role": "audit_logs"
+        }
+      ],
+      "selected_encryption_key_reference": null,
+      "versioning": "REQUIRED_NOT_CONFIGURED"
+    },
+    "secrets_manager": {
+      "ambient_credential_resolution": "FORBIDDEN",
+      "classification": "METADATA_INTENT_ONLY",
+      "environment_credential_resolution": "FORBIDDEN",
+      "rotation": "REQUIRED_NOT_CONFIGURED",
+      "secret_arns": [],
+      "secret_names": [],
+      "secret_values": "ABSENT",
+      "workload_least_privilege": "REQUIRED_NOT_CONFIGURED"
+    },
+    "sqs": {
+      "classes": [
+        {
+          "class": "ingestion",
+          "dlq": "REQUIRED_NOT_CONFIGURED",
+          "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
+          "selected": {
+            "delay_seconds": null,
+            "dlq_arn": null,
+            "dlq_name": null,
+            "dlq_url": null,
+            "fifo": null,
+            "max_receive_count": null,
+            "physical_name": null,
+            "policy_document": null,
+            "queue_arn": null,
+            "queue_url": null,
+            "retention_seconds": null,
+            "visibility_timeout_seconds": null
+          }
+        },
+        {
+          "class": "ai",
+          "dlq": "REQUIRED_NOT_CONFIGURED",
+          "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
+          "selected": {
+            "delay_seconds": null,
+            "dlq_arn": null,
+            "dlq_name": null,
+            "dlq_url": null,
+            "fifo": null,
+            "max_receive_count": null,
+            "physical_name": null,
+            "policy_document": null,
+            "queue_arn": null,
+            "queue_url": null,
+            "retention_seconds": null,
+            "visibility_timeout_seconds": null
+          }
+        },
+        {
+          "class": "quality",
+          "dlq": "REQUIRED_NOT_CONFIGURED",
+          "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
+          "selected": {
+            "delay_seconds": null,
+            "dlq_arn": null,
+            "dlq_name": null,
+            "dlq_url": null,
+            "fifo": null,
+            "max_receive_count": null,
+            "physical_name": null,
+            "policy_document": null,
+            "queue_arn": null,
+            "queue_url": null,
+            "retention_seconds": null,
+            "visibility_timeout_seconds": null
+          }
+        },
+        {
+          "class": "publication",
+          "dlq": "REQUIRED_NOT_CONFIGURED",
+          "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
+          "selected": {
+            "delay_seconds": null,
+            "dlq_arn": null,
+            "dlq_name": null,
+            "dlq_url": null,
+            "fifo": null,
+            "max_receive_count": null,
+            "physical_name": null,
+            "policy_document": null,
+            "queue_arn": null,
+            "queue_url": null,
+            "retention_seconds": null,
+            "visibility_timeout_seconds": null
+          }
+        },
+        {
+          "class": "freshness",
+          "dlq": "REQUIRED_NOT_CONFIGURED",
+          "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
+          "selected": {
+            "delay_seconds": null,
+            "dlq_arn": null,
+            "dlq_name": null,
+            "dlq_url": null,
+            "fifo": null,
+            "max_receive_count": null,
+            "physical_name": null,
+            "policy_document": null,
+            "queue_arn": null,
+            "queue_url": null,
+            "retention_seconds": null,
+            "visibility_timeout_seconds": null
+          }
+        },
+        {
+          "class": "analytics",
+          "dlq": "REQUIRED_NOT_CONFIGURED",
+          "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
+          "selected": {
+            "delay_seconds": null,
+            "dlq_arn": null,
+            "dlq_name": null,
+            "dlq_url": null,
+            "fifo": null,
+            "max_receive_count": null,
+            "physical_name": null,
+            "policy_document": null,
+            "queue_arn": null,
+            "queue_url": null,
+            "retention_seconds": null,
+            "visibility_timeout_seconds": null
+          }
+        },
+        {
+          "class": "notification",
+          "dlq": "REQUIRED_NOT_CONFIGURED",
+          "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
+          "selected": {
+            "delay_seconds": null,
+            "dlq_arn": null,
+            "dlq_name": null,
+            "dlq_url": null,
+            "fifo": null,
+            "max_receive_count": null,
+            "physical_name": null,
+            "policy_document": null,
+            "queue_arn": null,
+            "queue_url": null,
+            "retention_seconds": null,
+            "visibility_timeout_seconds": null
+          }
+        }
+      ],
+      "classification": "LOGICAL_QUEUE_CLASS_INTENT_ONLY"
+    }
+  },
+  "planned_actions": {
+    "create": 0,
+    "delete": 0,
+    "update": 0
+  },
+  "predecessor_binding": {
+    "contract_sha256": "3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2",
+    "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
+    "extension_kind": "DATA_SERVICES",
+    "reference_plan_sha256": "877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f",
+    "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
+    "required_activation_status": "DISABLED",
+    "required_planned_actions": {
+      "create": 0,
+      "delete": 0,
+      "update": 0
+    },
+    "required_resource_payloads": "FORBIDDEN",
+    "story_id": "ST-1501"
+  },
+  "reference_architecture": {
+    "classification": "INHERITED_REFERENCE_METADATA_ONLY",
+    "cloud": "AWS",
+    "portable_core_required": true,
+    "region": "ap-northeast-1"
+  },
+  "selected_configuration": {
+    "availability_zones": [],
+    "aws_account_id": null,
+    "backup_region": null,
+    "cloud_provider": null,
+    "credential_source": null,
+    "network_cidrs": [],
+    "physical_resource_definitions": [],
+    "production_region": null,
+    "provider_plugins": [],
+    "security_group_ids": [],
+    "state_backend": null,
+    "subnet_ids": [],
+    "terraform_cli_version": null
+  },
+  "verification_boundary": {
+    "aws_account": "UNSET",
+    "credentials": "ABSENT",
+    "effective_canonical_status": "UNCHANGED",
+    "executable_terraform": "ABSENT",
+    "formal_tst_026": "NOT_EXECUTED",
+    "formal_tst_029": "NOT_EXECUTED",
+    "live_staging_release_production": "NOT_EXECUTED",
+    "native_iac_validation": "NOT_EXECUTED",
+    "provider_plugins": "UNPINNED_NOT_INVOKED",
+    "restore_validation": "NOT_EXECUTED",
+    "terraform_cli": "UNPINNED_NOT_INVOKED"
+  }
+}
