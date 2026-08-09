@@ -1311,3 +1311,62 @@ original result.
   `DEBT-W1-044` remain unchanged and unclosed. This checkpoint claims only
   `LOCAL_CODE_COMPLETE_FOR_UNRESOLVED_BOUNDARY` for the non-authoritative
   ST-1701 interface.
+
+### 2026-08-10 W1 / ST-1606 recovery-reference checkpoint
+
+- Authority and scope: canonical `ST-1606` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-1502 and ST-1505, requires
+  TST-029, and is blocked from retention/deletion choices by OD-014. Effective
+  implementation and verification status remain `NOT_STARTED`/`NOT_EXECUTED`.
+  This checkpoint does not perform a backup, restore, integrity check,
+  measurement, environment activation, or Story acceptance.
+- Implemented a closed Story-owned contract, deterministic owner builder,
+  generated non-authoritative/non-executable recovery reference plan,
+  generated manifest, and hostile tests. Exact current ST-1502 and ST-1505
+  contract/reference-plan/manifest bytes and disabled zero-action semantics are
+  bound and revalidated; the reused path/YAML/atomic helper is separately
+  hash-pinned as an implementation input.
+- `ENV-RECOVERY` is only an inert `NOT_CONFIGURED`/`NOT_ACTIVATED` label. The
+  exact logical inventory is database, object storage, and IaC configuration;
+  all physical, provider, credential, region, account, endpoint, key, bucket,
+  database, backend, destination, schedule, retention, lifecycle, cleanup,
+  deletion, expiry, and tool selections remain null or empty. Automatic
+  deletion remains disabled and no OD-014 value is inferred.
+- Content/hash integrity, row/object counts, role/access boundaries,
+  read-model consistency, source-backup non-mutation, and canonical design
+  RPO/RTO targets are future review requirements only. They have no result or
+  evidence. Every execute/create/update/delete/restore/verify/cleanup/approval
+  and external action count is exact integer zero; source overwrite, mutation,
+  lifecycle, retention change, and deletion remain forbidden.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and no-write `--check`, isolated `tests/st1606` (`113
+  passed`), Ruff lint/format, strict mypy, compile, exact nine-path review,
+  focused maintained secret scan (`0 findings / 9 files`), canonical import,
+  workspace drift, and `git diff --check` returned `PASS`. Read-only ST-1502
+  owner check plus `143 passed` and ST-1505 owner check plus `155 passed`
+  remained green. The full scanner returned the inherited linked-worktree
+  `unsafe-git-metadata` operational result recorded by `DEBT-W0-003`.
+- `DEBT-W1-048` status: `OPEN`, introduced-by `ST-1606`, closure owner:
+  backup/restore runtime, ST-1502/ST-1505 integration, and final Wave owners.
+  Exact skipped command: `NOT_RUN — no executable recovery environment,
+  provider tooling, backup reader, restore runner, integrity/count/role/read-
+  model verifier, or immutable evidence collector exists`; observed result:
+  `NOT_EXECUTED`. Closure requires an approved isolated runtime with bounded,
+  source-nonmutating tests and owner regeneration after predecessor freeze.
+- `DEBT-W1-049` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1606`, closure
+  owner: Privacy/Finance/Legal, Security, Operations, infrastructure, and data
+  owners. Exact skipped command: `NOT_RUN — OD-014, recovery account/region,
+  credentials, physical targets, provider/tool provenance, schedule, retention,
+  lifecycle, and deletion policy are unapproved`; observed result:
+  `NOT_EXECUTED`. No local default is promoted into any of those values.
+- `DEBT-W1-050` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1606`, closure
+  owner: formal CI, Operations/Security reviewers, ST-1607, recovery, Staging,
+  release, and Production owners. Exact skipped command: `NOT_RUN — formal
+  TST-029, hosted restore drill, measured RPO/RTO, human recovery review,
+  Staging, release, and Production are outside local authority`; observed
+  result: `NOT_EXECUTED`. ST-1607 and release eligibility remain false and no
+  local result is promoted to formal recovery evidence.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-047` remain unchanged and unclosed. This checkpoint claims only the
+  maximum-safe disabled local ST-1606 recovery-reference implementation.
