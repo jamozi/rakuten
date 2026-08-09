@@ -1131,3 +1131,64 @@ original result.
 - Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
   `DEBT-W1-035` remain unchanged and unclosed. This checkpoint claims only the
   maximum-safe interface-only local ST-1506 implementation.
+
+### 2026-08-10 W1 / ST-1601 provider-neutral local telemetry checkpoint
+
+- Authority and scope: canonical `ST-1601` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-1404 and ST-1505, has no
+  Story-local Open Decision, and requires trace/metric/log correlation without
+  sensitive-data leakage. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`; both predecessors remain local implementation
+  candidates. This checkpoint does not claim an OpenTelemetry runtime,
+  TST-031, Story Done, `VALIDATED`, or operational readiness.
+- Implemented fixed immutable/redacted telemetry context and exact TRACE,
+  METRIC, and LOG records; an inward exact-record sink; a one-attempt
+  best-effort recorder; a no-storage disabled sink; and an exact ENV-DEV/ENV-CI
+  bounded process-local recorded sink. Arbitrary attributes, labels, tags,
+  messages, payloads, exception text, prompt/source/provider content,
+  credentials, headers, URLs, PII, SQL, and finance rows have no input or
+  storage surface.
+- Correlation, causation, Job, Article, Snapshot, and provider-request values
+  are explicitly supplied and immutable. No ambient context or silent ID
+  generation exists, and correlation is never derived from Job/event identity.
+  Sink disabled/full/failure outcomes remain separate from business results;
+  ordinary sink exceptions are not inspected or retried, while BaseException
+  subclasses remain unsuppressed. The recorded sink has explicit capacity, no
+  eviction, no clear/delete/export/flush/retry/background/retention surface,
+  and drops the newest record when full.
+- `PROVISIONAL-W1-ST1601-001` records the reversible local field/enum grammar
+  and recorded capacity ceiling. It does not select a provider, backend,
+  retention policy, SLO, or business value. ST-1404 currently has no
+  correlation/causation fields; tests prove explicit carriage and business-
+  state isolation but do not claim end-to-end Job propagation.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st1601` (`94 passed`), focused sensitive-data/AST checks (`8
+  passed`), Ruff lint/format, strict mypy, compile/import, exact eleven-path
+  review, and `git diff --check` returned `PASS`. Read-only ST-1404 regression
+  (`42 passed`), ST-1505 regression (`155 passed`), and ST-1505 owner
+  `--check` also passed.
+- `DEBT-W1-039` status: `OPEN`, introduced-by `ST-1601`, closure owner:
+  ST-1404/runtime integration, telemetry backend, and final Wave owners. Exact
+  skipped command: `NOT_RUN — ST-1404 carries no correlation/causation fields
+  and no web/queue/worker/provider propagation, OpenTelemetry SDK/exporter,
+  collector, sampler, backend, runtime wiring, or executable dashboard exists`;
+  observed result: `NOT_EXECUTED`. Closure requires an approved explicit
+  propagation seam plus bounded backend/cardinality/failure tests without
+  making telemetry part of business correctness.
+- `DEBT-W1-040` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1601`, closure
+  owner: Privacy/Security/Operations and telemetry-provider owners. Exact
+  skipped command: `NOT_RUN — backend/account/endpoint/credential, sampling,
+  retention/deletion, Privacy review, and operational configuration are not
+  approved`; observed result: `NOT_EXECUTED`. OD-014 remains unresolved; no
+  retention period, automatic deletion, or external credential is selected.
+- `DEBT-W1-041` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1601`, closure
+  owner: formal CI, Privacy/Security reviewers, runtime/Staging operators, and
+  release owners. Exact skipped command: `NOT_RUN — formal TST-031, hosted CI,
+  manual privacy/security validation, live telemetry, Staging observation,
+  deployment, release, and Production are outside local authority`; observed
+  result: `NOT_EXECUTED`. Dashboards, SLOs, thresholds, alerts, and notification
+  routes remain ST-1602 work; no local result is promoted to formal evidence.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-038` remain unchanged and unclosed. This checkpoint claims only the
+  maximum-safe provider-neutral local ST-1601 implementation.
