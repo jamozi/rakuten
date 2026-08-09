@@ -28,7 +28,8 @@ replace_range(
     start_marker="  port_inventory=$(run_docker inspect --format ",
     end_marker="  published_port=$((10#${BASH_REMATCH[1]}))\n",
     replacement=r'''  port_inventory=$(run_docker inspect --format '{{json .NetworkSettings.Ports}}' "$container_id")
-  if ! published_port=$(
+  set +e
+  published_port=$(
     printf '%s' "$port_inventory" | /usr/bin/python3 -I -c '
 import json
 import sys
@@ -46,7 +47,7 @@ for exposed_port, exposed_bindings in ports.items():
     if exposed_port == "8333/tcp":
         continue
     if exposed_bindings not in (None, []):
-        raise SystemExit(1)
+        raise SystemExit(2)
 binding = bindings[0]
 if not isinstance(binding, dict):
     raise SystemExit(1)
@@ -62,10 +63,20 @@ if not 1024 <= port <= 65535:
     raise SystemExit(1)
 print(port)
 '
-  ); then
-    error 'the S3 endpoint is not published on one bounded loopback port'
-    return 1
-  fi
+  )
+  port_status=$?
+  set -e
+  case $port_status in
+    0) ;;
+    2)
+      error 'the object-storage container publishes an unexpected host port'
+      return 1
+      ;;
+    *)
+      error 'the S3 endpoint is not published on one bounded loopback port'
+      return 1
+      ;;
+  esac
 ''',
     label="object-storage runtime port inspection",
 )
