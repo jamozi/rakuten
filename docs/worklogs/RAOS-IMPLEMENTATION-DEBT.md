@@ -316,3 +316,129 @@ original result.
   TST-012/TST-022/TST-026, hosted CI, browser/runtime, live provider, staging,
   publication, deployment, release, and Production evidence remain
   `NOT_EXECUTED`; this checkpoint claims local implementation evidence only.
+
+### 2026-08-10 W1 / ST-0402 implementation preflight
+
+- Story and objective: implement the maximum safe `ST-0402` MFA/step-up seam:
+  an immutable factor-neutral claim bound to the exact active ST-0401 session
+  and principal, an inward verifier port, a transport-neutral application
+  guard, and an exact-`ENV-DEV` scripted synthetic adapter.
+- Authority read: root and canonical Codex instructions, canonical integration
+  precedence and decision registers, the owner-approved implementation-first
+  ExecPlan, the `ST-0402` row and `ST-0401` dependency, the live ST-0401
+  README/domain/port/application/adapter/tests and inherited debt, `OD-010`,
+  `RAOS-SEC-001`, `RAOS-UI-001`, `SEC-SLICE-002`, `UI-SLICE-002`,
+  `AUTH-001` through `AUTH-003`, `SEC-IAM-001` through `SEC-IAM-012`, the
+  critical-action role matrix, `THR-001`, `THR-003`, `THR-024`, `TST-012`,
+  `TST-022`, `TST-026`, and the current Admin OpenAPI optional
+  `mfa_satisfied` and step-up extension shapes.
+- Authority result: `PASS`. `ST-0402` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends only on the present ST-0401 seam, and
+  has no Story-local Open Decision. `OD-010` still blocks a real OIDC/MFA
+  provider and external activation but permits an exact-development synthetic
+  boundary. No new provider, factor, claim mapping, freshness, transport,
+  action-policy, or persistence decision is required for this narrow seam.
+- Owned paths: `changes/st-0402/README.md`,
+  `python/raos/domain/iam/step_up.py`, `python/raos/ports/step_up.py`,
+  `python/raos/application/iam/step_up.py`,
+  `python/raos/adapters/development_step_up.py`, `tests/st0402/conftest.py`,
+  `tests/st0402/test_step_up.py`, `tests/st0402/test_boundaries.py`, and
+  append-only ST-0402 records in this ledger. No migration, generated output,
+  shared package export, Make target, root README, or contract will change.
+- Planned checks: direct import/compile, isolated ST-0401 and ST-0402 pytest,
+  focused Ruff format/lint and strict mypy, active-session-before-assurance
+  negatives, exact-development/no-I/O/static architecture checks, redaction
+  and generic-serialization checks, a focused sensitive-data scan,
+  `git diff --check`, and exact owned-path/staged credential review.
+- Deferred debt identities reserved for the final checkpoint:
+  `DEBT-W1-003` real provider/claim mapping/freshness decision,
+  `DEBT-W1-004` HTTP/browser/middleware/Problem Details,
+  `DEBT-W1-005` durable persistence/audit/action mapping, and
+  `DEBT-W1-006` formal/live verification. Inherited debt remains unchanged.
+- Out of scope: challenge begin/complete, OTP/TOTP/WebAuthn or factor secrets,
+  provider `amr`/`acr`/`auth_time` interpretation, a production freshness TTL,
+  critical-action registry, cookie/bearer/HTTP/browser delivery, `/admin/mfa`,
+  database/migration/audit writes, real provider or Secret resolution, and any
+  hosted, live, staging, publication, release, deployment, or Production work.
+
+### 2026-08-10 W1 / ST-0402 final local implementation checkpoint
+
+- Implemented an immutable factor-neutral `StepUpGrant` with explicit UTC
+  `authenticated_at`/`expires_at`, exact ST-0401 session and stable
+  issuer/subject binding, a provider-neutral inward verifier port, and an
+  application `StepUpGuard`. The guard delegates to ST-0401 active-session
+  enforcement before assurance lookup and then rejects absent, negative,
+  malformed, future, expired, session-mismatched, principal-mismatched, and
+  unsupported assurance with immutable sanitized typed failures.
+- Implemented `DevelopmentScriptedStepUpVerifier`, which is construction- and
+  operation-guarded to the exact `RuntimeEnvironment.ENV_DEV` enum member and
+  returns only explicitly supplied synthetic already-verified grants. The
+  owned AST has no file, network, process-environment, credential, factor,
+  provider SDK, HTTP framework, database, challenge, or action-policy surface.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Direct import command used pinned uv with `run --locked --offline --no-cache
+  --no-sync --no-env-file --no-python-downloads` and explicit
+  `PYTHONPATH=<repository>/python`; result: `PASS` for the domain, port,
+  application guard, and development adapter.
+- First and final focused ST-0402 pytest command used the same read-only uv
+  flags and `pytest -p no:cacheprovider -q tests/st0402`; both results:
+  `27 passed`. The separately executed predecessor command with
+  `tests/st0401` returned `28 passed`. These are isolated local candidate
+  results, not formal TST evidence.
+- Focused static commands used the same read-only uv flags over exactly the
+  four owned source modules and `tests/st0402`: Ruff lint returned
+  `All checks passed!`; Ruff format returned `7 files already formatted`;
+  strict mypy with explicit package bases returned
+  `Success: no issues found in 7 source files`. `git diff --check` returned
+  `PASS`.
+- Sensitive-data checks: the repository command
+  `python3 -I scripts/scan_secrets.py --worktree` returned exit 2 with the
+  inherited isolated-worktree result
+  `ERROR code=unsafe-git-metadata source="."`. The scanner's maintained-file
+  reader and payload classifier were then applied descriptor-relatively to all
+  nine owned changed paths and returned
+  `FOCUSED_SECRET_SCAN findings=0 files=9`. This does not close or weaken
+  inherited `DEBT-W0-003`.
+- `DEBT-W1-003` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0402`, closure
+  owner: Security Owner plus the authorized real-provider Story. Exact skipped
+  command: `NOT_RUN — no authorized real MFA provider or claim-mapping command
+  exists`; observed result: `NOT_EXECUTED`. Affected future owner sources are
+  the real verifier adapter and approved provider-claim/freshness policy; no
+  current generated artifact or downstream pin was changed. Closure boundary:
+  after `OD-010`, provider `amr`/`acr`/`auth_time` mapping, and a production
+  freshness lifetime are approved, implemented, and negatively tested. Safe
+  impact: only exact-development explicit-lifetime synthetic grants exist.
+- `DEBT-W1-004` status: `OPEN`, introduced-by `ST-0402`, closure owner: the
+  first authorized Admin HTTP/UI integration Story and final integration
+  audit. Exact skipped command: `NOT_RUN — TST-012/TST-022 HTTP/browser step-up
+  command is not present in this interface-only slice`; observed result:
+  `NOT_EXECUTED`. Affected future sources/artifacts are cookie-or-bearer
+  delivery, middleware, RFC 9457 Problem Details, `/admin/mfa`, and browser
+  tests; no OpenAPI or generated client was edited. Closure boundary: an
+  approved transport implements and tests those surfaces without trusting the
+  optional OpenAPI `mfa_satisfied` boolean. Safe impact: no HTTP or browser
+  route can activate the local seam.
+- `DEBT-W1-005` status: `OPEN`, introduced-by `ST-0402`, closure owner: the
+  authorized persistence/audit/action-policy Stories and final integration
+  audit. Exact skipped command: `NOT_RUN — no ST-0402 migration, durable audit,
+  or critical-action registry is owned by this slice`; observed result:
+  `NOT_EXECUTED`. Affected future sources/artifacts are durable grant/audit
+  storage and the reviewed role/action mapping; no migration, database owner,
+  generator, or generated artifact changed. Closure boundary: durable
+  lifecycle/audit behavior and exact action mapping are implemented from
+  approved policy with negative authorization tests. Safe impact: this seam
+  grants no action authority and persists nothing.
+- `DEBT-W1-006` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0402`, closure
+  owner: formal CI, Security Owner, and staging/release owners. Exact skipped
+  command: `NOT_RUN — formal TST-012/TST-022/TST-026 and live/staging commands
+  are outside local implementation authority`; observed result:
+  `NOT_EXECUTED`. Affected evidence owners are the formal HTTP, browser, and
+  security suites; no status/evidence generator supports this candidate and no
+  generated status was edited. Closure boundary: those suites and applicable
+  human reviews actually run in their authorized environments. Hosted CI,
+  real provider/account/credential validation, staging, publication, release,
+  deployment, and Production remain unexecuted.
+- Inherited `DEBT-W0-001` through `DEBT-W0-005` and `DEBT-W1-001` through
+  `DEBT-W1-002` remain unchanged and unclosed. This checkpoint claims only
+  local implementation evidence for the scoped ST-0402 seam.
