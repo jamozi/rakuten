@@ -1,0 +1,96 @@
+document:
+  id: RAOS-ST0504-PRODUCT-IDENTITY-HUMAN-REVIEW-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0504
+  source_contract: repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml
+  generated_by: repo://scripts/build_st0504_product_identity_human_review_reference_plan.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0504_product_identity_human_review_reference_plan.py
+provenance:
+  contract_sha256: 246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8
+  authority_inputs:
+  - role: integration
+    uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - role: open_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - role: test_catalog
+    uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - role: story
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  predecessor_commit: b61d4dd83b87495dfd672bdf8960dc3b1ff29d79
+  predecessor_inputs:
+  - uri: repo://changes/st-0503/README.md
+    sha256: aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138
+  - uri: repo://python/raos/domain/catalog/catalog_normalization.py
+    sha256: 6fa0adbd3ade25c5e6880e5aaec70f2c010173873b3cd3d11987d317f81642d9
+  - uri: repo://python/raos/ports/catalog_normalization.py
+    sha256: c2bd6979baf05f778059df28bb3c34cdcd3862d871fc0ea238626790bfa218e1
+  - uri: repo://python/raos/application/catalog/catalog_normalization.py
+    sha256: 02ec218119133ac64df4228a588f415c99f64e898be9c9fa581222b5933abfe4
+  - uri: repo://python/raos/adapters/recorded_catalog_normalization.py
+    sha256: 2f25cce21d5368d31a5129df61c07c12ae018f879631f760ee27c97cf917fa9b
+  - uri: repo://tests/st0503/conftest.py
+    sha256: 8073bb2e43b470bd19bcdf50fcb9f3a1fbc42e6614586e814c4bfd4452491bf1
+  - uri: repo://tests/st0503/test_normalization.py
+    sha256: 1bd442a1160be528e677a7f026e449f65a9bb937b91e29f78daa1d231c2feb1f
+  - uri: repo://tests/st0503/test_failure_isolation.py
+    sha256: 3655c1757ce6eee01cab7deb198f8daad25a61cf045de07165f0eda7368d0056
+  - uri: repo://tests/st0503/test_boundaries.py
+    sha256: f1ebe757961349fe8deac3ed2e3c4217181a9bef423f0091803a0459a655356a
+  implementation_helper:
+    uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml
+  bytes: 5361
+  sha256: 246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8
+- uri: repo://changes/st-0504/README.md
+  bytes: 2896
+  sha256: f53d62f70eddc08820a2f7c4b854fd8f3e05a86b148d107307ca3baf32bab958
+- uri: repo://scripts/build_st0504_product_identity_human_review_reference_plan.py
+  bytes: 25694
+  sha256: 4e41ba75ea941fecba3c4152b8ee0742d106406f38063ae3270e5ec1bce87c86
+- uri: repo://tests/st0504/conftest.py
+  bytes: 972
+  sha256: e76a58c45929decedbbcc268bf0b56f8aadfe8c44332de3674523812ab5bc530
+- uri: repo://tests/st0504/test_contract.py
+  bytes: 6776
+  sha256: 53d0a82d3441c6dba1845658175d699d3919180bd76abad238ca7b037572aa75
+- uri: repo://tests/st0504/test_generation.py
+  bytes: 3806
+  sha256: 5e86d5f8c8662f290890c8eaf9ac78a62060c6013d420eb8974ec1a77d82f9a8
+- uri: repo://tests/st0504/test_negative_cases.py
+  bytes: 13803
+  sha256: 9e74abaa1be9d514edb6be64d07613b42d75db578cb5e8c31a3c430f26bc9764
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
+  bytes: 8598
+  sha256: 468e587b12856cd1c9732a34b1da985c0126b0de58026c0169f5c30e7357156e
+boundary:
+  classification: SOURCE_DERIVED_NON_EXECUTABLE_PRODUCT_IDENTITY_HUMAN_REVIEW_REFERENCE_PLAN
+  executable: false
+  interface_only: true
+  od_006: EXTERNAL_EVIDENCE_REQUIRED
+  safe_default: NO_AUTOMATIC_MERGE_HUMAN_REVIEW_REQUIRED
+  automatic_merge_enabled: false
+  automatic_split_enabled: false
+  human_review: NOT_EXECUTED
+  rule_engine: NOT_EXECUTED
+  queue: NOT_EXECUTED
+  event: NOT_EXECUTED
+  repository: ABSENT
+  database: NOT_EXECUTED
+  formal_tst_007: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+  production_eligible: false
+  effective_canonical_status: UNCHANGED

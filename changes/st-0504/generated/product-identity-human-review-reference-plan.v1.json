@@ -1,0 +1,262 @@
+{
+  "document": {
+    "id": "RAOS-ST0504-PRODUCT-IDENTITY-HUMAN-REVIEW-REFERENCE-PLAN-001",
+    "version": "1.0.0",
+    "story_id": "ST-0504",
+    "classification": "SOURCE_DERIVED_NON_EXECUTABLE_PRODUCT_IDENTITY_HUMAN_REVIEW_REFERENCE_PLAN",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "executable": false,
+    "interface_only": true,
+    "decision": "NOT_READY",
+    "story_acceptance": false,
+    "production_eligible": false,
+    "approval": null,
+    "effective_canonical_status": "UNCHANGED"
+  },
+  "authority": {
+    "precedence": "CANONICAL_INTEGRATION_THEN_STORY_THEN_OPEN_DECISION_AND_TEST_CATALOG",
+    "sources": [
+      {
+        "role": "integration",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+      },
+      {
+        "role": "open_decisions",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+      },
+      {
+        "role": "test_catalog",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+      },
+      {
+        "role": "story",
+        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+      }
+    ]
+  },
+  "provenance": {
+    "source_contract": "repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml",
+    "generated_by": "repo://scripts/build_st0504_product_identity_human_review_reference_plan.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st0504_product_identity_human_review_reference_plan.py",
+    "implementation_helper": {
+      "uri": "repo://scripts/build_st1505_staging_deployment.py",
+      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    }
+  },
+  "predecessor_binding": {
+    "story_id": "ST-0503",
+    "commit": "b61d4dd83b87495dfd672bdf8960dc3b1ff29d79",
+    "status": "NORMALIZED_PROVENANCE_PRESERVING_CANDIDATES_ONLY",
+    "connection_status": "INTERFACE_AVAILABLE_NOT_CONNECTED",
+    "artifacts": [
+      {
+        "uri": "repo://changes/st-0503/README.md",
+        "sha256": "aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138"
+      },
+      {
+        "uri": "repo://python/raos/domain/catalog/catalog_normalization.py",
+        "sha256": "6fa0adbd3ade25c5e6880e5aaec70f2c010173873b3cd3d11987d317f81642d9"
+      },
+      {
+        "uri": "repo://python/raos/ports/catalog_normalization.py",
+        "sha256": "c2bd6979baf05f778059df28bb3c34cdcd3862d871fc0ea238626790bfa218e1"
+      },
+      {
+        "uri": "repo://python/raos/application/catalog/catalog_normalization.py",
+        "sha256": "02ec218119133ac64df4228a588f415c99f64e898be9c9fa581222b5933abfe4"
+      },
+      {
+        "uri": "repo://python/raos/adapters/recorded_catalog_normalization.py",
+        "sha256": "2f25cce21d5368d31a5129df61c07c12ae018f879631f760ee27c97cf917fa9b"
+      },
+      {
+        "uri": "repo://tests/st0503/conftest.py",
+        "sha256": "8073bb2e43b470bd19bcdf50fcb9f3a1fbc42e6614586e814c4bfd4452491bf1"
+      },
+      {
+        "uri": "repo://tests/st0503/test_normalization.py",
+        "sha256": "1bd442a1160be528e677a7f026e449f65a9bb937b91e29f78daa1d231c2feb1f"
+      },
+      {
+        "uri": "repo://tests/st0503/test_failure_isolation.py",
+        "sha256": "3655c1757ce6eee01cab7deb198f8daad25a61cf045de07165f0eda7368d0056"
+      },
+      {
+        "uri": "repo://tests/st0503/test_boundaries.py",
+        "sha256": "f1ebe757961349fe8deac3ed2e3c4217181a9bef423f0091803a0459a655356a"
+      }
+    ],
+    "semantics": {
+      "mode": "RECORDED_TEST_ONLY",
+      "scope": "LOSSLESS_STRUCTURAL_ONLY",
+      "provenance_preserved": true,
+      "identity_status": "REVIEW_REQUIRED",
+      "confidence_status": "SOURCE_ABSENT",
+      "canonical_products": [],
+      "grouping_decisions": [],
+      "identity_decisions": [],
+      "memberships": [],
+      "merges": [],
+      "splits": [],
+      "repository": "ABSENT",
+      "persistence_executed": false,
+      "database": "NOT_EXECUTED",
+      "job": "NOT_EXECUTED",
+      "event": "NOT_EXECUTED",
+      "live_eligible": false,
+      "decision": "NOT_READY",
+      "approval": null
+    }
+  },
+  "open_decision": {
+    "id": "OD-006",
+    "status": "EXTERNAL_EVIDENCE_REQUIRED",
+    "blocking": true,
+    "safe_default": "NO_AUTOMATIC_MERGE_HUMAN_REVIEW_REQUIRED",
+    "resolved": false,
+    "category_rules": [],
+    "thresholds": [],
+    "scores": []
+  },
+  "test_suites": [
+    {
+      "id": "TST-007",
+      "name": "Property-based domain tests",
+      "layer": "unit",
+      "purpose": "冪等性、状態遷移、金額、正規化の不変条件",
+      "candidate_tools": [
+        "hypothesis",
+        "fast-check"
+      ],
+      "release_blocking": true,
+      "environments": [
+        "CI"
+      ],
+      "owner": "Engineering",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "execution_status": "NOT_EXECUTED",
+      "formal_execution": "NOT_EXECUTED",
+      "evidence": null
+    },
+    {
+      "id": "TST-020",
+      "name": "Content AST and policy",
+      "layer": "content",
+      "purpose": "5記事型、Block、Claim、Recommendation、Disclosure",
+      "candidate_tools": [
+        "pytest",
+        "schema fixtures"
+      ],
+      "release_blocking": true,
+      "environments": [
+        "CI"
+      ],
+      "owner": "Engineering",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "execution_status": "NOT_EXECUTED",
+      "formal_execution": "NOT_EXECUTED",
+      "evidence": null
+    }
+  ],
+  "candidate_projection": {
+    "source": "ST0503_CANDIDATE_DRAFT_INTERFACE_ONLY",
+    "provenance_required": true,
+    "candidate_records": [],
+    "candidate_count": null,
+    "source_snapshots": [],
+    "input_evidence": [],
+    "empty_interpretation": "NO_RUNTIME_INPUT_OR_EVIDENCE_NOT_ZERO_CANDIDATES"
+  },
+  "human_review": {
+    "required": true,
+    "status": "REQUIRED_NOT_EXECUTED",
+    "routing_status": "NOT_CONFIGURED",
+    "queue": null,
+    "route": null,
+    "reviewer": null,
+    "actor": null,
+    "role": null,
+    "assignment": null,
+    "sla": null,
+    "approval": null,
+    "review_records": [],
+    "delivery_records": []
+  },
+  "identity_boundary": {
+    "automatic_merge_enabled": false,
+    "automatic_split_enabled": false,
+    "category_rule": null,
+    "threshold": null,
+    "score": null,
+    "confidence": null,
+    "canonical_product_id": null,
+    "identity_decisions": [],
+    "membership_records": [],
+    "merge_records": [],
+    "split_records": [],
+    "supersession_records": [],
+    "decision_history": [],
+    "external_actions": [],
+    "safe_default": "NO_AUTOMATIC_MERGE_HUMAN_REVIEW_REQUIRED",
+    "empty_interpretation": "NO_IDENTITY_CONFIGURATION_DECISION_OR_HISTORY_NOT_ZERO_PRODUCTS"
+  },
+  "execution_boundary": {
+    "enabled": false,
+    "status": "DISABLED",
+    "rule_engine": "NOT_EXECUTED",
+    "human_review": "NOT_EXECUTED",
+    "queue": "NOT_EXECUTED",
+    "event": "NOT_EXECUTED",
+    "repository": "ABSENT",
+    "database": "NOT_EXECUTED",
+    "persistence": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "action_counts": {
+      "evaluate": 0,
+      "score": 0,
+      "merge": 0,
+      "split": 0,
+      "assign": 0,
+      "review": 0,
+      "approve": 0,
+      "enqueue": 0,
+      "emit": 0,
+      "create": 0,
+      "update": 0,
+      "delete": 0,
+      "persist": 0,
+      "external": 0
+    }
+  },
+  "verification_boundary": {
+    "projection_only": true,
+    "predecessor_connection": "NOT_EXECUTED",
+    "formal_tst_007": "NOT_EXECUTED",
+    "formal_tst_020": "NOT_EXECUTED",
+    "rule_engine": "NOT_EXECUTED",
+    "human_review": "NOT_EXECUTED",
+    "decision_history": "NOT_EXECUTED",
+    "repository": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "runtime": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "decision": "NOT_READY",
+    "approval": null,
+    "story_acceptance": false,
+    "production_eligible": false,
+    "effective_canonical_status": "UNCHANGED"
+  }
+}
