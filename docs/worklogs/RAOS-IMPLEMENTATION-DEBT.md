@@ -2761,3 +2761,57 @@ original result.
 - Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-executable ST-0702 packing
   boundary.
+
+### 2026-08-10 W2 / ST-0808 recorded media-validation checkpoint
+
+- Authority and scope: canonical `ST-0808` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0406/ST-0802, and requires
+  TST-014/TST-020/TST-024 with unknown rights hidden. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint implements a recorded-only,
+  nonpersistent media-validation seam; it does not read/store/transform bytes,
+  verify a live source/license, mutate an article, grant an exception, render
+  publicly, approve, or publish.
+- The seam binds exact committed ST-0406 clean-quarantined `MEDIA_ASSET`
+  results and ST-0802 recorded `DRAFT`/`NOT_VERIFIED` Version snapshots. Media
+  declared, sealed, and request hashes must match; article/version identity is
+  immutable and no quarantine reference is reinterpreted as a Raw Artifact ID.
+- Unknown/null rights deterministically produce `HIDDEN_UNKNOWN_RIGHTS` with no
+  renderer input. Forbidden or exception-only classes produce `HIDDEN_POLICY`.
+  An explicitly eligible recorded fixture can produce only an
+  `ADMIN_ONLY_REFERENCE` containing an Asset ID—never a URL, path, object key,
+  bytes, body, or public-render authority. `raw_artifact_ref`, approvals, and
+  publication markers remain null; public rendering stays false and decision
+  `NOT_READY`.
+- Strict immutable values validate source/license shape, alt/dimensions/digest,
+  recorded transformation observations, exact intake/version binding, and
+  failure isolation without echo/context. No keyword-stuffing heuristic,
+  license/legal interpretation, provider verification, transformation
+  permission, schema translation, or class-specific business rule is invented.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st0808` (`33 passed`), ST-0406 (`53 passed`) and ST-0802
+  (`59 passed`) regressions, Ruff lint/format, strict mypy for runtime/tests,
+  compile/import, exact nine-path review, focused secret scan, canonical import,
+  workspace drift, and `git diff --check` returned `PASS`. The linked-worktree
+  scanner remains inherited `DEBT-W0-003`.
+- `DEBT-W2-052` status: `OPEN`, introduced-by `ST-0808`, closure owner:
+  Editorial/Media/Security/Legal/Accessibility, ST-0406 storage, artifact/
+  repository/API/renderer, ST-0802 article runtime, and final Wave integration
+  owners. Exact skipped command: `NOT_RUN — no real source/license/legal
+  verification, Raw Artifact linkage, manufacturer/provider permission,
+  original-photo metadata/edit history, chart fact/formula/data table,
+  transformation/crop/overlay policy, responsive/LCP renderer input, durable
+  repository/storage, or article-version update exists`; observed result:
+  `NOT_EXECUTED`. The recorded admin-only reference cannot satisfy media service,
+  renderer-input, or public-display acceptance.
+- `DEBT-W2-053` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0808`, closure
+  owner: Legal/Product/Editorial/Security/Accessibility/QA, formal CI, manual
+  review, Staging, release, and Production owners. Exact skipped command:
+  `NOT_RUN — OD-008 legal routing, OD-014 retention, real rights evidence,
+  formal TST-014/TST-020, manual TST-024, hosted CI, Staging, release,
+  publication, and Production are outside local authority`; observed result:
+  `NOT_EXECUTED`. Local recorded checks are not promoted to legal approval,
+  accessibility conformance, public eligibility, formal evidence, or release
+  readiness.
+- Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe recorded ST-0808 media boundary.
