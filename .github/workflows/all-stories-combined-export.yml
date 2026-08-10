@@ -47,9 +47,11 @@ jobs:
             overlay-transport/.github/all-stories-overlay/rest-*
           )
           ((${#chunks[@]} > 0))
-          printf '%s\n' "${chunks[@]}" | LC_ALL=C sort -c
           archive="$RUNNER_TEMP/all-stories-overlay.tar.gz"
-          cat "${chunks[@]}" | tr -d '\r\n\t ' | base64 --decode >"$archive"
+          : >"$archive"
+          for chunk in "${chunks[@]}"; do
+            tr -d '\r\n\t ' <"$chunk" | base64 --decode >>"$archive"
+          done
           gzip --test "$archive"
           overlay_sha="$(sha256sum "$archive" | cut -d' ' -f1)"
           extract="$RUNNER_TEMP/all-stories-overlay"
