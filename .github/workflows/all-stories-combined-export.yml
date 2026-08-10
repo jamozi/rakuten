@@ -38,53 +38,73 @@ jobs:
           persist-credentials: false
           show-progress: false
 
-      - name: Reconstruct exact combined tree
+      - name: Diagnose and reconstruct exact combined tree
         run: |
           set -euo pipefail
-          shopt -s nullglob
-          parts=(overlay-transport/.github/all-stories-overlay/part-*)
-          rest=(overlay-transport/.github/all-stories-overlay/rest-*)
-          ((${#parts[@]} > 0))
-          archive="$RUNNER_TEMP/all-stories-overlay.tar.gz"
-          cat "${parts[@]}" | tr -d '\r\n\t ' | base64 --decode >"$archive"
-          if ((${#rest[@]} > 0)); then
-            cat "${rest[@]}" | tr -d '\r\n\t ' | base64 --decode >>"$archive"
-          fi
-          gzip --test "$archive"
-          overlay_sha="$(sha256sum "$archive" | cut -d' ' -f1)"
-          extract="$RUNNER_TEMP/all-stories-overlay"
-          mkdir -p "$extract"
-          tar --extract --gzip --file "$archive" --directory "$extract" \
-            --no-same-owner --no-same-permissions
-          source_root="$extract"
-          mapfile -t entries < <(find "$extract" -mindepth 1 -maxdepth 1 -printf '%p\n')
-          if ((${#entries[@]} == 1)) && [[ -d ${entries[0]} ]]; then
-            source_root=${entries[0]}
-          fi
-          rsync --archive --exclude=.git/ "$source_root"/ subject/
-          rm -rf subject/.github/all-stories-overlay
-          git -C subject diff --check
-          printf '%s\n' "$overlay_sha" >subject/.combined-overlay.sha256
-          printf '%s\n' "$(git -C subject rev-parse HEAD)" >subject/.foundation-commit.sha
+          python3 - <<'PY'
+          from __future__ import annotations
 
-      - name: Create deterministic source archive
-        run: |
-          set -euo pipefail
-          find subject -type d -name __pycache__ -prune -exec rm -rf {} +
-          find subject -type f -name '*.pyc' -delete
-          rm -rf subject/.git
-          output="$RUNNER_TEMP/rakuten-all-stories-combined.tar.gz"
-          tar --sort=name --mtime='UTC 2026-08-11' --owner=0 --group=0 --numeric-owner \
-            --format=posix --create --gzip --file "$output" --directory subject .
-          sha256sum "$output" >"$output.sha256"
+          import base64
+          from pathlib import Path
+          import re
+
+          root = Path("overlay-transport/.github/all-stories-overlay")
+          paths = sorted(root.glob("part-*")) + sorted(root.glob("rest-*"))
+          if not paths:
+              raise SystemExit("no overlay chunks")
+          documents: dict[str, str] = {}
+          alphabet = re.compile(r"[A-Za-z0-9+/=]*\Z")
+          for path in paths:
+              text = "".join(path.read_text(encoding="ascii").split())
+              documents[path.name] = text
+              print(
+                  "CHUNK",
+                  path.name,
+                  "length=", len(text),
+                  "mod4=", len(text) % 4,
+                  "padding=", text.count("="),
+                  "alphabet=", bool(alphabet.fullmatch(text)),
+                  "head=", text[:12],
+                  "tail=", text[-12:],
+              )
+
+          candidates = {
+              "all": "".join(documents[path.name] for path in paths),
+              "parts": "".join(
+                  documents[path.name] for path in paths if path.name.startswith("part-")
+              ),
+              "rest": "".join(
+                  documents[path.name] for path in paths if path.name.startswith("rest-")
+              ),
+          }
+          for name, text in candidates.items():
+              for validate in (True, False):
+                  try:
+                      data = base64.b64decode(text, validate=validate)
+                  except Exception as error:
+                      print("DECODE", name, "validate=", validate, "ERROR", repr(error))
+                  else:
+                      print(
+                          "DECODE", name, "validate=", validate,
+                          "bytes=", len(data), "head=", data[:12].hex(),
+                          "tail=", data[-12:].hex(),
+                      )
+          for name, text in documents.items():
+              try:
+                  data = base64.b64decode(text, validate=True)
+              except Exception as error:
+                  print("INDIVIDUAL", name, "ERROR", repr(error))
+              else:
+                  print(
+                      "INDIVIDUAL", name, "bytes=", len(data),
+                      "head=", data[:8].hex(), "tail=", data[-8:].hex(),
+                  )
+          raise SystemExit("diagnostic complete")
+          PY
 
       - name: Upload combined source
+        if: ${{ false }}
         uses: actions/upload-artifact@v4.6.2
         with:
           name: rakuten-all-stories-combined-source
-          path: |
-            ${{ runner.temp }}/rakuten-all-stories-combined.tar.gz
-            ${{ runner.temp }}/rakuten-all-stories-combined.tar.gz.sha256
-          if-no-files-found: error
-          retention-days: 1
-          compression-level: 0
+          path: ${{ runner.temp }}/rakuten-all-stories-combined.tar.gz
