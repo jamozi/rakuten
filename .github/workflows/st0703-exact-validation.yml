@@ -25,23 +25,39 @@ jobs:
       - name: Check out exact clean implementation commit
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: 4bcbf052fe0ee486caeee6505a50827589c414a5
+          ref: 8d3762edf6ea8698fb1f15722e9dc1eb44b628fd
           fetch-depth: 0
           persist-credentials: false
           show-progress: false
+
+      - name: Prove one-Story commit topology
+        env:
+          BASE_SHA: 48a807672caa845df8e0251782f00bce8040663b
+          CANDIDATE_SHA: 8d3762edf6ea8698fb1f15722e9dc1eb44b628fd
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_SHA"
+          test "$(git rev-list --count "$BASE_SHA"..HEAD)" = 1
+          test "$(git diff --name-only "$BASE_SHA"..HEAD | wc -l)" = 33
+          test -z "$(git status --porcelain=v1)"
+
       - name: Validate dependency metadata without network
         run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/validate_ci_hydration.py
+
       - name: Install exact uv
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: 0.12.1
           enable-cache: false
+
       - name: Install exact Node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: 24.18.1
           package-manager-cache: false
           check-latest: false
+
       - name: Install exact Python without repository code
         run: |
           set -euo pipefail
@@ -49,6 +65,7 @@ jobs:
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
             "$uv_path" --no-config --color never python install \
             --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
+
       - name: Hydrate source-constrained locked dependencies
         run: |
           set -euo pipefail
@@ -79,7 +96,8 @@ jobs:
             --install-links=true --legacy-peer-deps=false --strict-peer-deps=true \
             --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
             --provenance=false ci
-      - name: Run ST-0703 recorded gate without network
+
+      - name: Run approved ST-0703 gate without network
         run: |
           set -euo pipefail
           test -z "$(git status --porcelain=v1 --untracked-files=no)"
@@ -88,64 +106,17 @@ jobs:
             --file Makefile openai-recorded-gate RAOS_CI_OFFLINE=1 \
             UV="$(command -v uv)"
           test -z "$(git status --porcelain=v1 --untracked-files=no)"
-      - name: Classify repository-wide static baseline without masking new failures
-        id: static_baseline
+
+      - name: Run affected predecessor and dependent suites without network
         run: |
           set -euo pipefail
-          uv_path="$(command -v uv)"
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
-          clean_log="$RUNNER_TEMP/static-clean.log"
-          set +e
           scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/scripts/ci_job.sh" \
-            --uv "$uv_path" \
-            --node "$node_path" \
-            --npm-cli "$npm_cli" \
-            static 2>&1 | tee "$clean_log"
-          clean_status=${PIPESTATUS[0]}
-          set -e
-          if (( clean_status == 0 )); then
-            echo "Repository-wide static job passed."
-            exit 0
-          fi
-          marker='error: generated artifact drift: changes/st-0202/manifest.yaml'
-          grep -Fq -- "$marker" "$clean_log"
-          baseline="$RUNNER_TEMP/main-baseline"
-          git worktree add --detach "$baseline" 48a807672caa845df8e0251782f00bce8040663b
-          baseline_log="$RUNNER_TEMP/static-main-baseline.log"
-          set +e
-          "$GITHUB_WORKSPACE/scripts/run_network_denied.sh" --home "$HOME" -- \
-            "$uv_path" --config-file "$GITHUB_WORKSPACE/uv.toml" \
-            run --locked --offline --no-cache --no-sync --no-env-file \
-            --no-python-downloads python \
-            "$baseline/scripts/build_local_compose.py" --check \
-            2>&1 | tee "$baseline_log"
-          baseline_status=${PIPESTATUS[0]}
-          set -e
-          test "$baseline_status" -eq 0
-          ! grep -Fq -- "$marker" "$baseline_log"
-          echo "ST-0703 static checks passed; repository-wide static then stopped only on the canonically excluded ST-0202 owner-manifest closure."
-      - name: Reproduce repository-wide unit job without network
-        id: full_unit
-        if: always()
-        continue-on-error: true
-        run: |
-          set -euo pipefail
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
-          scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/scripts/ci_job.sh" \
-            --uv "$(command -v uv)" \
-            --node "$node_path" \
-            --npm-cli "$npm_cli" \
-            unit
-      - name: Reproduce repository-wide contracts job without network
-        id: full_contracts
-        if: always()
-        continue-on-error: true
+            "$(command -v uv)" --config-file uv.toml run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads pytest \
+            -p no:cacheprovider -q \
+            tests/st0102 tests/st0204 tests/st0701 tests/st0703 tests/st0801
+
+      - name: Run repository Contracts job without network
         run: |
           set -euo pipefail
           node_path="$(command -v node)"
@@ -157,30 +128,82 @@ jobs:
             --node "$node_path" \
             --npm-cli "$npm_cli" \
             contracts
-      - name: Scan worktree and Git history without network
-        id: secret_scan
-        if: always()
-        continue-on-error: true
-        run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree --git-history
-      - name: Prove tracked worktree remained unchanged
-        id: clean_tree
-        if: always()
-        continue-on-error: true
-        run: |
-          git diff --exit-code -- .
-          test -z "$(git status --porcelain=v1 --untracked-files=no)"
-      - name: Assert regression-free independent checks
-        if: always()
+
+      - name: Classify excluded ST-0202 owner-manifest closure
+        env:
+          BASE_SHA: 48a807672caa845df8e0251782f00bce8040663b
         run: |
           set -euo pipefail
-          printf 'static=%s unit=%s contracts=%s secrets=%s clean_tree=%s\n' \
-            '${{ steps.static_baseline.outcome }}' \
-            '${{ steps.full_unit.outcome }}' \
-            '${{ steps.full_contracts.outcome }}' \
-            '${{ steps.secret_scan.outcome }}' \
-            '${{ steps.clean_tree.outcome }}'
-          test '${{ steps.static_baseline.outcome }}' = success
-          test '${{ steps.full_unit.outcome }}' = success
-          test '${{ steps.full_contracts.outcome }}' = success
-          test '${{ steps.secret_scan.outcome }}' = success
-          test '${{ steps.clean_tree.outcome }}' = success
+          uv_path="$(command -v uv)"
+          node_path="$(command -v node)"
+          node_prefix="$(dirname "$(dirname "$node_path")")"
+          npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
+          candidate_log="$RUNNER_TEMP/static-candidate.log"
+          set +e
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            "$GITHUB_WORKSPACE/scripts/ci_job.sh" \
+            --uv "$uv_path" \
+            --node "$node_path" \
+            --npm-cli "$npm_cli" \
+            static 2>&1 | tee "$candidate_log"
+          candidate_status=${PIPESTATUS[0]}
+          set -e
+          test "$candidate_status" -ne 0
+          marker='error: generated artifact drift: changes/st-0202/manifest.yaml'
+          grep -Fq -- "$marker" "$candidate_log"
+
+          baseline="$RUNNER_TEMP/main-baseline"
+          git worktree add --detach "$baseline" "$BASE_SHA"
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            "$uv_path" --config-file "$GITHUB_WORKSPACE/uv.toml" \
+            run --locked --offline --no-cache --no-sync --no-env-file \
+            --no-python-downloads python \
+            "$baseline/scripts/build_local_compose.py" --check
+          echo "ST-0703 static scope passed; global Static stops only on excluded ST-0202 owner output."
+
+      - name: Prove no new worktree or history secret findings
+        env:
+          BASE_SHA: 48a807672caa845df8e0251782f00bce8040663b
+          CANDIDATE_SHA: 8d3762edf6ea8698fb1f15722e9dc1eb44b628fd
+        run: |
+          set -euo pipefail
+          validation_root="$(mktemp -d "$RUNNER_TEMP/st0703-secret-diff.XXXXXX")"
+          candidate_repo="$validation_root/candidate"
+          baseline_repo="$validation_root/baseline"
+
+          git branch --force st0703-validation-candidate "$CANDIDATE_SHA"
+          git branch --force st0703-validation-baseline "$BASE_SHA"
+          git init -q "$candidate_repo"
+          git -C "$candidate_repo" fetch --quiet --no-tags "$GITHUB_WORKSPACE" \
+            refs/heads/st0703-validation-candidate
+          git -C "$candidate_repo" checkout --quiet --detach FETCH_HEAD
+          git init -q "$baseline_repo"
+          git -C "$baseline_repo" fetch --quiet --no-tags "$GITHUB_WORKSPACE" \
+            refs/heads/st0703-validation-baseline
+          git -C "$baseline_repo" checkout --quiet --detach FETCH_HEAD
+          test "$(git -C "$candidate_repo" rev-parse --is-shallow-repository)" = false
+          test "$(git -C "$baseline_repo" rev-parse --is-shallow-repository)" = false
+
+          candidate_output="$validation_root/candidate.findings"
+          baseline_output="$validation_root/baseline.findings"
+          set +e
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            /usr/bin/python3 -I "$candidate_repo/scripts/scan_secrets.py" \
+            --worktree --git-history >"$candidate_output"
+          candidate_status=$?
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            /usr/bin/python3 -I "$baseline_repo/scripts/scan_secrets.py" \
+            --worktree --git-history >"$baseline_output"
+          baseline_status=$?
+          set -e
+          test "$candidate_status" -ne 2
+          test "$baseline_status" -ne 2
+          test "$candidate_status" = "$baseline_status"
+          diff --unified=3 "$baseline_output" "$candidate_output"
+          echo "Candidate secret findings are byte-for-byte identical to fixed main baseline."
+
+      - name: Prove tracked worktree remained unchanged
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- .
+          test -z "$(git status --porcelain=v1 --untracked-files=no)"
