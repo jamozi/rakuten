@@ -1793,3 +1793,56 @@ original result.
   to formal evidence.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe recorded one-page ST-0502 seam.
+
+### 2026-08-10 W2 / ST-0601 non-attesting artifact-registry checkpoint
+
+- Authority and scope: canonical `ST-0601` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0202 and ST-0308, has no
+  Story-local Open Decision, and requires TST-014. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint never creates an artifact
+  record/reference, reads or writes object storage, persists a registry row,
+  selects retention, or claims an immutability attestation.
+- Implemented strict immutable/redacted artifact provenance, SHA-256 and safe
+  `s3`/`raos-raw` location candidates, exact recorded observations, deterministic
+  provenance fingerprints, and an integrity planning service. A complete
+  recorded match still returns `NOT_READY/RECORDED_MATCH` with no artifact ID,
+  reference, retention, action, or executed storage/persistence field. Any
+  source/time/type/size/hash/key/version mismatch returns
+  `REJECTED/TAMPER_DETECTED`, never a warning or repaired result.
+- The only inward port observes one exact candidate; it has no read/write/head/
+  delete/list/register/save/repository/UoW/transaction/client/credential
+  surface. The ENV-DEV/CI recorded adapter hashes bounded synthetic bytes at
+  construction, returns no bytes or URI, retains no mutable registry/history,
+  and performs no filesystem/object/network/provider/database operation.
+- OD-014 remains unresolved. Matching plans retain blockers
+  `RETENTION_UNRESOLVED`, `OBJECT_STORAGE_NOT_EXECUTED`,
+  `IMMUTABILITY_NOT_ATTESTED`, and `PERSISTENCE_BOUNDARY_UNAVAILABLE`; a local
+  fingerprint is explicitly not signed provenance or formal evidence.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st0601` (`51 passed`), ST-0202 regression (`156 passed`),
+  ST-0308 owner check and reference regression (`134 passed`), Ruff lint/
+  format, strict mypy, compile/import, exact nine-path review, focused secret
+  scan, canonical import, workspace drift, and `git diff --check` returned
+  `PASS`. The linked-worktree full scanner limitation remains inherited
+  `DEBT-W0-003`.
+- `DEBT-W2-016` status: `OPEN`, introduced-by `ST-0601`, closure owner:
+  ST-0202/storage, ST-0308/persistence, artifact registry/provenance, retention,
+  and final Wave integration owners. Exact skipped command: `NOT_RUN — no
+  object-store writer/version-specific readback, metadata round-trip, object-
+  lock/immutability attestation, registry ID/ref allocation, append-only
+  repository/UoW transaction, encryption observation, approved retention
+  binding, streaming large-object hash, or audit linkage exists`; observed
+  result: `NOT_EXECUTED`. The recorded plan cannot satisfy artifact-service
+  acceptance until these boundaries are approved and implemented.
+- `DEBT-W2-017` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0601`, closure
+  owner: Storage/Security/Privacy reviewers, formal CI, runtime/Staging,
+  release, and Production owners. Exact skipped command: `NOT_RUN — formal
+  TST-014, authenticated object-storage runtime, lock/version/metadata proof,
+  hosted CI, Staging, release, and Production are outside local authority`;
+  observed result: `NOT_EXECUTED`. No local match is promoted to storage,
+  immutability, formal-validation, or deployment evidence.
+- The ST-0202 owner check still reports the same pre-existing manifest drift
+  recorded in `DEBT-W2-014`; ST-0601 did not edit or regenerate predecessor
+  files. Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-attesting local ST-0601 plan.
