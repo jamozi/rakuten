@@ -2535,3 +2535,60 @@ original result.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-executable ST-0604 lifecycle
   boundary.
+
+### 2026-08-10 W2 / ST-0605 claim/evidence coverage reference-plan checkpoint
+
+- Authority and scope: canonical `ST-0605` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0604, requires TST-020/TST-021,
+  and mandates 100% evidence coverage for major Claims. Effective status
+  remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint creates a source-
+  derived, non-executable claim/evidence coverage plan; it does not create a
+  Claim/Fact/link, calculate coverage, call an API/job, publish an event or
+  snapshot, or permit publication.
+- The contract binds the exact committed ST-0602/ST-0603/ST-0604 inventories
+  and semantics. Facts/conflicts/packets/approvals remain absent and
+  `NOT_READY`. The builder projects actual canonical content-matrix rows
+  `CT-0389` through `CT-0550` in order, exactly 162 rows with expected outcomes
+  PASS 36, FAIL 63, FAIL_BLOCKER 54, and FAIL_OR_DEGRADE 9. These are expected
+  fixture outcomes, not executed formal tests or generated mapping authority.
+- Six source tiers, nine policy Claim types, persisted Claim/link enums, and AI
+  extraction vocabularies remain separate namespaces. Policy-to-persistence,
+  AI-to-persistence, numeric-to-enum criticality, candidate-Fact acceptance,
+  `QUALIFIES` treatment, support-strength threshold, and `NOT_REQUIRED`
+  denominator mappings remain explicitly unavailable and are not inferred.
+- Major and all-verifiable required ratios remain exactly 1.0 and 0.95, but
+  all IDs, Claims, Facts, links, sources, citations, conflicts, findings, and
+  approvals remain null/empty. Domain counts, numerators, denominators, ratios,
+  and satisfaction booleans remain null; coverage is unevaluable and decision
+  `NOT_READY`. Empty or 0/0 is never interpreted as complete coverage.
+  Publication/snapshot/event actions remain forbidden with exact zero counts.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and no-write `--check`, isolated `tests/st0605`
+  (`61 passed`), ST-0602 (`160 passed`), ST-0603 (`164 passed`), and ST-0604
+  (`206 passed`) regressions, Ruff lint/format, strict mypy, compile/import,
+  exact nine-path review, focused secret scan, canonical import, workspace
+  drift, and `git diff --check` returned `PASS`. Generated JSON and manifest
+  were written only by the Story owner builder. The linked-worktree scanner
+  remains inherited `DEBT-W0-003`.
+- `DEBT-W2-046` status: `OPEN`, introduced-by `ST-0605`, closure owner:
+  Editorial/Data/Policy/Security, ST-0604 runtime, claim/fact/link repository,
+  API/job/event/publication, and final Wave integration owners. Exact skipped
+  command: `NOT_RUN — no canonical mapping among policy/persisted/AI Claim
+  vocabularies, major-criticality mapping, verifiable-Claim classifier,
+  accepted-evidence and QUALIFIES/strength rules, contradiction behavior,
+  approved Source Packet/article version/Claims/Facts/links/citations/
+  freshness, repository/UoW/database, write/link/coverage API, or event contract
+  implementation exists`; observed result: `NOT_EXECUTED`. The reference plan
+  cannot satisfy the Claim service or calculated-coverage acceptance boundary.
+- `DEBT-W2-047` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0605`, closure
+  owner: Editorial/Product/Policy/Security/QA, formal CI, runtime/PostgreSQL,
+  Staging, release, and Production owners. Exact skipped command: `NOT_RUN —
+  real Claim/evidence linking, coverage and publication-gate runtime evidence,
+  formal TST-020/TST-021, hosted CI, Staging, release, and Production are
+  outside local authority`; observed result: `NOT_EXECUTED`. Local projection
+  and hostile tests are not promoted to coverage PASS, formal evidence,
+  publication approval, or release readiness.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable ST-0605 coverage
+  boundary.
