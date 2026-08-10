@@ -1,0 +1,106 @@
+name: ST-0703 Clean Branch Builder
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    name: Build one-Story validation branch
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out complete repository history
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: agent/st0703-source-export-20260810
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+      - name: Reconstruct exact ST-0703-only tree
+        env:
+          BASE_SHA: 48a807672caa845df8e0251782f00bce8040663b
+          SOURCE_SHA: d7b2252c40006d36be6ae29228ca7c285c57d976
+          PRE_GATE_SHA: 2ab6a136748aa6af8fce3e108d52382996160315
+          CLEAN_BRANCH: agent/st0703-clean-validation-20260810
+        run: |
+          set -euo pipefail
+          git cat-file -e "$BASE_SHA^{commit}"
+          git cat-file -e "$SOURCE_SHA^{commit}"
+          git cat-file -e "$PRE_GATE_SHA^{commit}"
+          git checkout -B "$CLEAN_BRANCH" "$BASE_SHA"
+          git checkout "$SOURCE_SHA" -- \
+            README.md \
+            changes/st-0204/manifest.yaml \
+            changes/st-0701/manifest.yaml \
+            changes/st-0703 \
+            changes/st-0801/manifest.yaml \
+            pyproject.toml \
+            python/raos/adapters/__init__.py \
+            python/raos/adapters/openai_responses.py \
+            python/raos/adapters/recorded_ai.py \
+            python/raos/domain/ai/provider.py \
+            python/raos/ports/ai_provider.py \
+            scripts/build_st0703_recorded_adapter.py \
+            tests/st0703 \
+            uv.lock
+          git show "$PRE_GATE_SHA:Makefile" >Makefile
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("Makefile")
+          content = path.read_text(encoding="utf-8")
+          old_gate = (
+              "openai-recorded-gate: config-check ai-registry-check "
+              "openai-recorded-check \\\n"
+              "\topenai-recorded-static openai-recorded-test\n"
+          )
+          new_gate = (
+              "openai-recorded-gate: ai-registry-check openai-recorded-check \\\n"
+              "\topenai-recorded-static openai-recorded-test\n"
+              "\tPYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \\\n"
+              "\t\tscripts/build_st0204_config_loader.py --check\n"
+          )
+          old_config = (
+              "config-check:\n"
+              "\tPYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \\\n"
+          )
+          new_config = (
+              "config-check: | python-sync\n"
+              "\tPYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \\\n"
+          )
+          if content.count(old_gate) != 1 or content.count(old_config) != 1:
+              raise SystemExit("expected Makefile anchors are not exact")
+          path.write_text(
+              content.replace(old_gate, new_gate).replace(old_config, new_config),
+              encoding="utf-8",
+          )
+          PY
+          test "$(wc -c <Makefile)" = 28974
+          test "$(sha256sum Makefile | cut -d' ' -f1)" = \
+            91756dd88daf18d4751f845911944fee619034a328eaaa079d5d82d37185fc1d
+          test "$(sha256sum README.md | cut -d' ' -f1)" = \
+            ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
+          python3 scripts/build_st0703_recorded_adapter.py --check
+          python3 scripts/build_st0703_recorded_adapter.py --check-installed
+          git add --all
+          mapfile -t changed < <(git diff --cached --name-only)
+          test "${#changed[@]}" = 33
+          forbidden='^(\.codex/|AGENTS\.md$|changes/st-0101/|docs/execplans/|docs/worklogs/|scripts/chatgpt_pro|tests/st0101/)'
+          for path in "${changed[@]}"; do
+            [[ ! "$path" =~ $forbidden ]] || { echo "Forbidden cross-Story path: $path" >&2; exit 1; }
+          done
+          git diff --cached --check
+          git config user.name "RAOS ST-0703 Builder"
+          git config user.email "actions@users.noreply.github.com"
+          git commit -m "Complete ST-0703 recorded OpenAI Responses adapter"
+          git push --force origin "HEAD:refs/heads/$CLEAN_BRANCH"
