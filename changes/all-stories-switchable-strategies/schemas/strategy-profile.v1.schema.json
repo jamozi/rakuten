@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "repo://changes/all-stories-switchable-strategies/schemas/strategy-profile.v1.schema.json",
+  "title": "RAOS switchable strategy profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile_id",
+    "preferred_tier",
+    "fallback_policy"
+  ],
+  "properties": {
+    "profile_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/_-]{0,191}$"
+    },
+    "preferred_tier": {
+      "enum": [
+        "safe",
+        "standard",
+        "advanced"
+      ]
+    },
+    "fallback_policy": {
+      "enum": [
+        "fail_closed",
+        "fallback_chain",
+        "safe_only"
+      ]
+    },
+    "overrides": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^(ST-[0-9]{4}|OD-[0-9]{3})$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^(ST-[0-9]{4}|OD-[0-9]{3}):[A-Za-z0-9][A-Za-z0-9._/-]{0,160}$"
+      }
+    }
+  }
+}
