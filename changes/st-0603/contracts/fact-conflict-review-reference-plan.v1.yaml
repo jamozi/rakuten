@@ -1,0 +1,138 @@
+schema_version: 1
+story_id: ST-0603
+classification: SOURCE_DERIVED_NONEXECUTABLE_FACT_CONFLICT_REVIEW_REFERENCE_PLAN
+status: LOCAL_IMPLEMENTATION_CANDIDATE
+executable: false
+interface_only: true
+decision: NOT_READY
+production_eligible: false
+approval: null
+story_acceptance: false
+canonical_story_status:
+  implementation: NOT_STARTED
+  verification: NOT_EXECUTED
+authority:
+  canonical_story_path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  canonical_story_sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  objective: 同一属性の矛盾を検出
+  requirement_ids:
+  - FR-008
+  acceptance_criteria:
+  - conflict not silently resolved
+  test_suites:
+  - TST-007
+  - TST-020
+predecessor:
+  story_id: ST-0602
+  commit: f281d02c489d4d9f74ec351a57a4a476fa77eab3
+  relationship: EMPTY_FACT_INPUT_REFERENCE_ONLY
+  files:
+  - path: changes/st-0602/README.md
+    sha256: c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5
+  - path: changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
+    sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
+  - path: changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
+    sha256: 09dfe62f6afbd5c531a96c22330fa920356abf614f0230ec2a6ff19c6ba1b157
+  - path: changes/st-0602/manifest.yaml
+    sha256: 695cd282f3e4051e5e4012c5e38ca5ba68d9ede32c38edd7cbcd05a3ba89129e
+  - path: scripts/build_st0602_fact_extraction_validation_reference_plan.py
+    sha256: 6ff038c9c2e06a6bef6b8fb2520ad5d62b9107bf80a77adcb0dd1811d399bd17
+  - path: tests/st0602/conftest.py
+    sha256: 8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9
+  - path: tests/st0602/test_contract.py
+    sha256: 8d1fe6cfa6edac6910802a1be71370a2e371144e4b7ca7d4e3a3bc145f66e775
+  - path: tests/st0602/test_generation.py
+    sha256: 1b5d8314fe24cbe9f76556fb5699d22168f17736ccce982f129de8a2209db2b2
+  - path: tests/st0602/test_negative_cases.py
+    sha256: 46b65c0b3954da438425f734c7898dccdf39c9dd7445d4b4e15ac682b15c78c9
+  required_semantics:
+    classification: SOURCE_DERIVED_NON_EXECUTABLE_FACT_EXTRACTION_VALIDATION_REFERENCE_PLAN
+    executable: false
+    interface_only: true
+    decision: NOT_READY
+    fact_inputs_available: false
+    facts: []
+    fact_ids: []
+    derivations: []
+    extraction: NOT_EXECUTED
+    validation: NOT_EXECUTED
+    repository: NOT_EXECUTED
+    database: NOT_EXECUTED
+    job: NOT_EXECUTED
+    event: NOT_EXECUTED
+    story_acceptance: false
+canonical_context:
+  authority: DESCRIPTIVE_ONLY
+  creates_runtime_contract: false
+  conflict_policy: DESCRIPTIVE_ONLY_NOT_BOUND
+  evidence_requirement: EVD-004_DESCRIPTIVE_ONLY_NOT_BOUND
+  security_controls: DESCRIPTIVE_ONLY_NOT_BOUND
+input_defaults:
+  facts: []
+  fact_ids: []
+  fact_count: null
+selection_defaults:
+  conflict_rule: null
+  comparator: null
+  tolerance: null
+  source: null
+  value: null
+  severity: null
+  actor: null
+  queue_selection: null
+  resolution_policy: null
+projection_defaults:
+  comparisons: []
+  conflicts: []
+  findings: []
+  queue: []
+  resolutions: []
+  comparison_count: null
+  conflict_count: null
+  finding_count: null
+  queue_count: null
+  resolution_count: null
+review_and_resolution_defaults:
+  comparison_status: NOT_EXECUTED
+  queue_status: NOT_EXECUTED
+  resolution_status: NOT_EXECUTED
+  automatic_resolution_enabled: false
+  silent_resolution_allowed: false
+  blockers:
+  - FACT_INPUT_UNAVAILABLE
+  - COMPARATOR_NOT_DEFINED
+  - TOLERANCE_NOT_DEFINED
+  - SEVERITY_RULE_NOT_DEFINED
+  - REVIEW_QUEUE_NOT_CONFIGURED
+  - RESOLUTION_POLICY_NOT_DEFINED
+execution_boundary:
+  detector: NOT_EXECUTED
+  comparison: NOT_EXECUTED
+  review_queue: NOT_EXECUTED
+  resolution: NOT_EXECUTED
+  repository: NOT_EXECUTED
+  database: NOT_EXECUTED
+  event: NOT_EXECUTED
+  api: NOT_EXECUTED
+  ui: NOT_EXECUTED
+  external: NOT_EXECUTED
+  action_counts:
+    detect: 0
+    compare: 0
+    create_conflict: 0
+    create_finding: 0
+    enqueue_review: 0
+    assign_actor: 0
+    resolve: 0
+    emit_event: 0
+    repository_write: 0
+    database_write: 0
+    external: 0
+verification_boundary:
+  predecessor_connection: NOT_EXECUTED
+  TST-007: NOT_EXECUTED
+  TST-020: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
