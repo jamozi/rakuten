@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "repo://changes/all-stories-switchable-strategies/schemas/gate-context.v1.schema.json",
+  "title": "RAOS strategy gate context",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "environment",
+    "approvals",
+    "evidence",
+    "capabilities"
+  ],
+  "properties": {
+    "environment": {
+      "enum": [
+        "local",
+        "staging",
+        "production"
+      ]
+    },
+    "approvals": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 512,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/_-]{0,191}$"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 512,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/_-]{0,191}$"
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 512,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/_-]{0,191}$"
+      }
+    }
+  }
+}
