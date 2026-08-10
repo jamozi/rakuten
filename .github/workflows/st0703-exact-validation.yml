@@ -22,10 +22,10 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 75
     steps:
-      - name: Check out exact implementation branch
+      - name: Check out exact clean implementation branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: codex/st-0703-recorded-v4
+          ref: agent/st0703-clean-validation-20260810
           fetch-depth: 0
           persist-credentials: false
           show-progress: false
