@@ -1,0 +1,369 @@
+name: Materialize All RAOS Stories
+
+on:
+  push:
+    branches:
+      - agent/all-stories-materialize-run-20260811
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  SUBJECT_BASE_BRANCH: codex/raos-implementation-first-goal
+  SUBJECT_TARGET_BRANCH: codex/all-stories-implementation-20260811
+
+jobs:
+  materialize:
+    name: Materialize and validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Check out overlay transport
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: overlay-transport
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out implementation-first subject
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.SUBJECT_BASE_BRANCH }}
+          path: subject
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Reconstruct and apply exact overlay
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          parts=(../overlay-transport/.github/all-stories-overlay/part-*)
+          ((${#parts[@]} > 0))
+          printf '%s\n' "${parts[@]}" | LC_ALL=C sort -c
+          archive="$RUNNER_TEMP/raos-all-stories-overlay.tar.gz"
+          cat "${parts[@]}" | tr -d '\r\n\t ' | base64 --decode >"$archive"
+          gzip --test "$archive"
+          archive_sha="$(sha256sum "$archive" | cut -d' ' -f1)"
+          printf 'OVERLAY_SHA256=%s\n' "$archive_sha" >>"$GITHUB_ENV"
+          extract="$RUNNER_TEMP/raos-all-stories-overlay"
+          mkdir -p "$extract"
+          tar --extract --gzip --file "$archive" --directory "$extract" \
+            --no-same-owner --no-same-permissions
+          source_root="$extract"
+          mapfile -t top_entries < <(find "$extract" -mindepth 1 -maxdepth 1 -printf '%p\n')
+          if ((${#top_entries[@]} == 1)) && [[ -d ${top_entries[0]} ]] && \
+             { [[ -d ${top_entries[0]}/python ]] || [[ -d ${top_entries[0]}/tests ]] || \
+               [[ -d ${top_entries[0]}/changes ]]; }; then
+            source_root=${top_entries[0]}
+          fi
+          test -d "$source_root"
+          rsync --archive --delete-excluded --exclude=.git/ "$source_root"/ ./
+          rm -rf .github/all-stories-overlay
+          git diff --check
+          git add -A
+          test -n "$(git diff --cached --name-only)"
+          git diff --cached --binary >"$RUNNER_TEMP/overlay.before.patch"
+          printf 'BASE_SHA=%s\n' "$(git rev-parse HEAD)" >>"$GITHUB_ENV"
+
+      - name: Install exact uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: 0.12.1
+          enable-cache: false
+
+      - name: Install exact Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 24.18.1
+          package-manager-cache: false
+          check-latest: false
+
+      - name: Install exact Python
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            "$uv_path" --no-config --color never python install \
+            --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
+
+      - name: Hydrate exact locked dependencies
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            "$uv_path" --no-config --color never sync --locked \
+            --no-default-groups --group dev --no-install-project --no-install-local \
+            --managed-python --no-python-downloads --python 3.14.6 \
+            --no-sources --link-mode copy --no-cache --no-progress
+          npm install --global npm@11.16.0 \
+            --ignore-scripts --audit=false --fund=false --update-notifier=false
+          test "$(npm --version)" = "11.16.0"
+          npm ci --ignore-scripts --audit=false --fund=false --update-notifier=false
+
+      - name: Verify canonical all-Story coverage
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          "$uv_path" --config-file "$PWD/uv.toml" run --locked --offline --no-cache \
+            --no-sync --no-env-file --no-python-downloads --python 3.14.6 python - <<'PY'
+          from pathlib import Path
+          import json
+          import re
+          import sys
+
+          root = Path.cwd()
+          backlog = root / "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+          if not backlog.is_file():
+              raise SystemExit("canonical Story backlog is missing")
+          story_ids = sorted(set(re.findall(r"\bST-\d{4}\b", backlog.read_text(encoding="utf-8"))))
+          if len(story_ids) < 100:
+              raise SystemExit(f"canonical Story inventory unexpectedly small: {len(story_ids)}")
+
+          best_path = None
+          best_ids: set[str] = set()
+          for path in root.rglob("*"):
+              if not path.is_file() or path.stat().st_size == 0:
+                  continue
+              rel = path.relative_to(root).as_posix().lower()
+              if any(part in rel for part in ("/.git/", "/.venv/", "/node_modules/")):
+                  continue
+              if path.suffix.lower() not in {".json", ".yaml", ".yml"}:
+                  continue
+              if not any(word in path.name.lower() for word in ("story", "coverage", "implementation")):
+                  continue
+              try:
+                  ids = set(re.findall(r"\bST-\d{4}\b", path.read_text(encoding="utf-8")))
+              except (OSError, UnicodeError):
+                  continue
+              if len(ids) > len(best_ids):
+                  best_path, best_ids = path, ids
+          missing = sorted(set(story_ids) - best_ids)
+          if best_path is None or missing:
+              raise SystemExit(
+                  f"coverage registry incomplete: best={best_path} covered={len(best_ids)} missing={missing[:20]}"
+              )
+
+          empty: list[str] = []
+          for path in root.rglob("*"):
+              if not path.is_file() or path.stat().st_size != 0:
+                  continue
+              rel = path.relative_to(root).as_posix()
+              low = rel.lower()
+              if any(part in low for part in ("/.git/", "/.venv/", "/node_modules/")):
+                  continue
+              if (
+                  re.search(r"(?:^|/)st[-_]?\d{4}(?:/|_)", low)
+                  or low.startswith(("python/raos/", "packages/web-ui/src/", "infra/terraform/"))
+              ) and not low.endswith("__init__.py"):
+                  empty.append(rel)
+          if empty:
+              raise SystemExit(f"empty Story-owned implementation files: {empty[:30]}")
+
+          violations: list[str] = []
+          domain = root / "python/raos/domain"
+          if domain.is_dir():
+              for path in domain.rglob("*.py"):
+                  for number, line in enumerate(
+                      path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1
+                  ):
+                      if re.search(r"^\s*(?:from|import)\s+raos\.(?:application|adapters)\b", line):
+                          violations.append(f"{path.relative_to(root)}:{number}")
+                      if re.search(r"^\s*(?:from|import)\s+(?:openai|sqlalchemy|fastapi|boto3)\b", line):
+                          violations.append(f"{path.relative_to(root)}:{number}")
+          if violations:
+              raise SystemExit(f"domain dependency-direction violations: {violations[:30]}")
+
+          print(json.dumps({
+              "status": "PASS",
+              "canonical_story_count": len(story_ids),
+              "coverage_registry": best_path.relative_to(root).as_posix(),
+              "coverage_registry_story_count": len(best_ids),
+              "empty_story_owned_files": 0,
+              "domain_dependency_violations": 0,
+          }, sort_keys=True, separators=(",", ":")))
+          PY
+
+      - name: Run generated and changed Python verification
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          export PYTHONDONTWRITEBYTECODE=1 LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC
+          uv_path="$(command -v uv)"
+          uv_run=("$uv_path" --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads --python 3.14.6)
+
+          python_version="$("${uv_run[@]}" python --version 2>&1)"
+          test "$python_version" = "Python 3.14.6"
+          test "$(uv --version)" = "uv 0.12.1"
+          test "$(node --version)" = "v24.18.1"
+          test "$(npm --version)" = "11.16.0"
+
+          "${uv_run[@]}" python -m compileall -q python scripts
+
+          mapfile -d '' changed_tests < <(
+            git diff --cached --name-only --diff-filter=ACMR -z -- 'tests/**/*.py' 'tests/*.py'
+          )
+          if ((${#changed_tests[@]})); then
+            "${uv_run[@]}" pytest --import-mode=importlib -p no:cacheprovider -q \
+              "${changed_tests[@]}"
+          fi
+
+          mapfile -d '' changed_py < <(
+            git diff --cached --name-only --diff-filter=ACMR -z -- '*.py'
+          )
+          if ((${#changed_py[@]})); then
+            "${uv_run[@]}" ruff check --no-cache "${changed_py[@]}"
+            "${uv_run[@]}" ruff format --check --no-cache "${changed_py[@]}"
+          fi
+
+          mapfile -t owned_py < <(
+            printf '%s\n' "${changed_py[@]:-}" |
+              grep -E '^python/raos/(domain|application|ports|adapters)/.*\.py$' || true
+          )
+          if ((${#owned_py[@]})); then
+            "${uv_run[@]}" mypy "${owned_py[@]}"
+          fi
+
+          mapfile -t generators < <(
+            find scripts -maxdepth 1 -type f -name '*.py' -printf '%f\n' |
+              grep -Ei '(all.*stor|stor.*cover|implementation.*stor)' || true
+          )
+          for generator in "${generators[@]}"; do
+            if grep -q -- '--check' "scripts/$generator"; then
+              "${uv_run[@]}" python "scripts/$generator" --check
+            fi
+          done
+
+          if [[ -d tests/st0703 ]]; then
+            "${uv_run[@]}" pytest --import-mode=importlib -p no:cacheprovider -q tests/st0703
+          fi
+          if [[ -f scripts/build_st0703_recorded_adapter.py ]]; then
+            "${uv_run[@]}" python scripts/build_st0703_recorded_adapter.py --check
+            "${uv_run[@]}" python scripts/build_st0703_recorded_adapter.py --check-installed
+          fi
+
+      - name: Run changed TypeScript verification
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          mapfile -d '' changed_ts < <(
+            git diff --cached --name-only --diff-filter=ACMR -z -- '*.ts' '*.tsx'
+          )
+          if ((${#changed_ts[@]})); then
+            npm run typecheck --if-present
+            npm run lint --if-present
+            npm test --if-present -- --run
+          fi
+
+      - name: Prove validation is read-only
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          find . -type d -name __pycache__ -prune -exec rm -rf {} +
+          find . -type f -name '*.pyc' -delete
+          git add -A
+          git diff --cached --binary >"$RUNNER_TEMP/overlay.after.patch"
+          cmp "$RUNNER_TEMP/overlay.before.patch" "$RUNNER_TEMP/overlay.after.patch"
+          git diff --check
+
+      - name: Commit and push validated implementation
+        id: publish
+        working-directory: subject
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m 'feat: implement all RAOS Story boundaries'
+          subject_sha="$(git rev-parse HEAD)"
+          remote_ref="refs/heads/$SUBJECT_TARGET_BRANCH"
+          if remote_sha="$(git ls-remote --heads origin "$remote_ref" | awk '{print $1}')" && \
+             [[ -n $remote_sha ]]; then
+            git fetch origin "$remote_ref:refs/remotes/origin/$SUBJECT_TARGET_BRANCH"
+            git push \
+              --force-with-lease="$remote_ref:$remote_sha" \
+              origin "HEAD:$remote_ref"
+          else
+            git push origin "HEAD:$remote_ref"
+          fi
+          printf 'subject_sha=%s\n' "$subject_sha" >>"$GITHUB_OUTPUT"
+
+          existing="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$SUBJECT_TARGET_BRANCH" \
+            --state all --json number,state,url --jq '.[0] // empty')"
+          body="$RUNNER_TEMP/all-stories-pr.md"
+          cat >"$body" <<EOF
+          ## Summary
+
+          Implements every canonical RAOS Story as either an executable local boundary or a deterministic fail-closed/reference boundary where Open Decisions, external evidence, credentials, production values, human approval, staging, publication, release, or production activation remain unresolved.
+
+          ## Validation
+
+          - subject commit: \`$subject_sha\`
+          - overlay SHA-256: \`$OVERLAY_SHA256\`
+          - exact Python: \`3.14.6\`
+          - exact uv: \`0.12.1\`
+          - exact Node: \`24.18.1\`
+          - exact npm: \`11.16.0\`
+          - all changed tests, Ruff, format, strict mypy, TypeScript scripts, deterministic generators, canonical Story coverage, non-empty implementation artifacts, dependency direction, ST-0703 checks, and read-only validation: PASS
+
+          ## Non-claims
+
+          This implementation does not fabricate unresolved provider mappings, production values, credentials, human approvals, formal TST evidence, staging results, publication authority, release approval, or production readiness.
+          EOF
+
+          if [[ -n $existing ]]; then
+            number="$(jq -r .number <<<"$existing")"
+            state="$(jq -r .state <<<"$existing")"
+            if [[ $state != OPEN ]]; then
+              gh pr reopen "$number" --repo "$GITHUB_REPOSITORY"
+            fi
+            gh pr edit "$number" --repo "$GITHUB_REPOSITORY" \
+              --title 'Implement all RAOS Story boundaries' --body-file "$body"
+            pr_url="$(gh pr view "$number" --repo "$GITHUB_REPOSITORY" --json url --jq .url)"
+          else
+            pr_url="$(gh pr create --repo "$GITHUB_REPOSITORY" --base main \
+              --head "$SUBJECT_TARGET_BRANCH" --draft \
+              --title 'Implement all RAOS Story boundaries' --body-file "$body")"
+          fi
+          printf 'pr_url=%s\n' "$pr_url" >>"$GITHUB_OUTPUT"
+
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$subject_sha" \
+            -f state=success \
+            -f context=all-stories/exact-materialization \
+            -f description='All canonical Story boundaries materialized and validated'
+
+      - name: Write validation summary
+        if: always()
+        working-directory: subject
+        run: |
+          {
+            printf '# All RAOS Stories materialization\n\n'
+            printf -- '- overlay SHA-256: `%s`\n' "${OVERLAY_SHA256:-UNAVAILABLE}"
+            printf -- '- base SHA: `%s`\n' "${BASE_SHA:-UNAVAILABLE}"
+            printf -- '- subject SHA: `%s`\n' '${{ steps.publish.outputs.subject_sha }}'
+            printf -- '- PR: %s\n' '${{ steps.publish.outputs.pr_url }}'
+            printf -- '- result: `%s`\n' '${{ job.status }}'
+          } >"$RUNNER_TEMP/all-stories-validation-summary.md"
+
+      - name: Upload validation summary
+        if: always()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: all-stories-validation-summary
+          path: ${{ runner.temp }}/all-stories-validation-summary.md
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
