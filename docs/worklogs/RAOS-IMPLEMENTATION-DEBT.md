@@ -2102,3 +2102,56 @@ original result.
   `DEBT-W0-002`; no pin or generated output was partially repaired. Inherited
   W0/W1 and prior W2 debt remains unchanged and unclosed. This checkpoint
   claims only the maximum-safe local recorded ST-1204 runtime seam.
+
+### 2026-08-10 W2 / ST-1602 SLO-alert reference-plan checkpoint
+
+- Authority and scope: canonical `ST-1602` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-1601, is bounded by unresolved
+  OD-011, and requires TST-027/TST-028. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint projects canonical SLO, alert,
+  and runbook catalogs into a non-executable reference plan; it does not
+  configure a metric backend, evaluate an SLO, route or deliver an alert,
+  execute a runbook action, or claim operational readiness.
+- The owner generator projects exact ordered 14 SLO, 20 alert, and 20 runbook
+  rows with their fields/statuses/targets/windows/conditions/initial actions/
+  ordered steps. Projection coverage is 14/14, 20/20, and 20/20, while
+  implemented/measured/tested/drilled SLO/alert/runbook and owner/runbook-route
+  counts all remain zero. Numeric ID similarity is never used to infer an
+  alert-to-SLO, runbook, or owner relationship.
+- OD-011 safe routing remains `LOCAL_LOG_ONLY`: runtime `NOT_EXECUTED`,
+  notifications false, channel/contact null, all link/delivery/external arrays
+  empty, and route `NOT_CONFIGURED`. Empty execution collections mean no
+  evidence, not zero incidents or health. Initial-action text is inert and no
+  kill switch, revocation, purge, scaling, retry, rollback, or other operation
+  is invoked.
+- ST-1601 is byte- and semantics-bound as
+  `INTERFACE_AVAILABLE_NOT_CONNECTED`; metric/log names, units, dimensions,
+  formulas, triggers, window/error-budget state remain null. The document is
+  `executable=false`, approval null, decision `NOT_READY`, and Production
+  ineligible, with no PASS/VALIDATED/IMPLEMENTED assertion.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and no-write `--check`, isolated `tests/st1602`
+  (`56 passed`), ST-1601 regression (`94 passed`), Ruff lint/format, strict
+  mypy, compile/import, exact nine-path review, focused secret scan, canonical
+  import, workspace drift, and `git diff --check` returned `PASS`. Generated
+  JSON and manifest were written only by the Story owner builder. The linked-
+  worktree scanner remains inherited `DEBT-W0-003`.
+- `DEBT-W2-030` status: `OPEN`, introduced-by `ST-1602`, closure owner:
+  Observability/SRE, SLO/alert/runbook catalog, ST-1604/ST-1605, and final Wave
+  integration owners. Exact skipped command: `NOT_RUN — no approved SLI metric
+  selectors/units/labels/exclusions/data sources, evaluation algorithms,
+  window/aggregation/error-budget behavior, burn thresholds, alert-to-SLO/
+  runbook/owner mappings, executable runbooks, load evidence, or drill evidence
+  exists`; observed result: `NOT_EXECUTED`. Exact catalog projection is not
+  implemented monitoring or alert coverage.
+- `DEBT-W2-031` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1602`, closure
+  owner: Operations/Security/human response owners, notification/provider,
+  formal CI, Staging, release, and Production owners. Exact skipped command:
+  `NOT_RUN — OD-011 notification channel/escalation decisions, real telemetry
+  backend/exporter/dashboard, notification delivery, formal TST-027/TST-028,
+  Staging drills, release, and Production are outside local authority`;
+  observed result: `NOT_EXECUTED`. No reference row is promoted to a live alert,
+  formal result, or Production health claim.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-attesting local ST-1602 plan.
