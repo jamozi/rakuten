@@ -1,0 +1,105 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-0705
+  classification: SOURCE_DERIVED_NON_EXECUTABLE_AI_OUTPUT_VALIDATION_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  activation: false
+  runtime_eligible: false
+  authority: SOURCE_DERIVED_REFERENCE_ONLY
+  decision: NOT_READY
+  story_acceptance: false
+  production_eligible: false
+  approval: null
+  canonical_status: UNCHANGED
+
+authority:
+  dependencies:
+    - ST-0702
+    - ST-0703
+    - ST-0605
+  requirement_ids:
+    - FR-007
+    - FR-008
+  test_suites:
+    - TST-019
+    - TST-020
+  open_decisions: []
+  canonical_status_changes: false
+
+predecessor_boundary:
+  binding: EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS
+  story_ids:
+    - ST-0702
+    - ST-0703
+    - ST-0605
+  recorded_schema_success_is_content_validation: false
+  predecessor_runtime_activation: false
+
+evaluation_boundary:
+  candidate_validation: UNEVALUABLE
+  content_validation: UNEVALUABLE
+  decision: NOT_READY
+  story_acceptance_satisfied: false
+  schema_only_acceptance_forbidden: true
+  event_emission: false
+
+validation_state:
+  validators: []
+  candidates: []
+  context: null
+  facts: []
+  claims: []
+  mappings: []
+  findings: []
+  evidence: []
+  reports: []
+  observed_counts:
+    candidates: null
+    facts: null
+    claims: null
+    mappings: null
+    findings: null
+    evidence: null
+    reports: null
+
+execution_state:
+  validation: NOT_EXECUTED
+  runtime: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event: NOT_EXECUTED
+  formal: NOT_EXECUTED
+  live: NOT_EXECUTED
+  action_counts:
+    validation: 0
+    runtime: 0
+    provider: 0
+    job: 0
+    event: 0
+    formal: 0
+    live: 0
+  external_actions: []
+
+prohibited_inferences:
+  - algorithm
+  - threshold
+  - mapping
+  - model
+  - provider
+  - cost
+  - identity
+  - persistence
+  - approval
+
+acceptance_boundary:
+  local_generation_only: true
+  formal_tst_019: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  runtime_validation: NOT_EXECUTED
+  provider_validation: NOT_EXECUTED
+  staging_validation: NOT_EXECUTED
+  release_validation: NOT_EXECUTED
+  production_validation: NOT_EXECUTED
+  release_candidate_created: false
+  story_acceptance: false
