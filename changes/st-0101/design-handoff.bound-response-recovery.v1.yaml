@@ -1,0 +1,123 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Bounded semantic tolerance for the current advanced ChatGPT response body
+    - Automated response-only recovery of an exact bound once-submitted terminal run through pro-resume
+    - Hash-bound recovery provenance, authority, idempotence, and no-resubmission controls
+    - Focused response/parser/resume/status/manual-import tests plus affected Make, documentation, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.response-wait-until-complete.v1.yaml
+    - changes/st-0101/design-handoff.current-response-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-body.v1.yaml
+    - changes/st-0101/design-handoff.hybrid-summary-priority.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Keep the strict current advanced response anchor and outer body boundary:
+    one exact heading ChatGPT said:, one distinct same-indent unlabeled generic
+    body root, exact origin, structural-stop checks, no competing legacy
+    article, and one bounded body subtree. Within that already-owned subtree,
+    accept exact lower-case text/statictext JSON-string payloads when they are
+    beneath an approved semantic node or only the body root and generic
+    presentation containers. Group direct or generic-only payloads into one
+    deterministic body-root paragraph block. Continue to group payloads under
+    paragraph, list, listitem, quote, heading, and code semantics by their
+    nearest semantic ancestor.
+
+    Treat exact Response actions UI as opaque rather than response content.
+    One exact group Response actions may terminate the body at the first same-
+    or shallower-indent boundary after content or may occur inside the body;
+    ignore it and its descendants. Ignore the complete subtree of links,
+    buttons, citations, response controls, and unknown structural containers
+    instead of rejecting their labels, but never collect a payload through an
+    opaque ancestor. Reject malformed text/statictext payload syntax, duplicate
+    or pre-content Response actions groups, an empty result, boundary escape,
+    ambiguous refs, excessive size, or sensitive output. Do not accept an
+    arbitrary heading, body root, unquoted payload, or content outside the
+    exact bounded assistant body.
+
+    Extend `pro-resume` with a response-only recovery branch for an exact LIVE
+    run whose hash-bound state has submission_attempted true, one bound exact-
+    origin conversation URL, no proposal, and final event reason exactly
+    RESPONSE_NOT_IDENTIFIABLE or RESPONSE_SELECTOR_AMBIGUITY. Require exactly
+    one verified SUBMISSION_INTENT_RECORDED event for GPT-5.6 Sol and Pro at the
+    exact origin. Use the state-bound browser and only navigate to that bound
+    conversation, snapshot, the existing fixed unbounded wait/snapshot loop,
+    and close. Never type, click, resubmit, or create another submission event.
+    Parse the stable response with the strict advanced parser, apply the same
+    response validation and authority rules, create the existing unapproved
+    proposal format, and append one hash-bound BOUND_RESPONSE_RECOVERED event
+    with provenance AUTOMATED_BOUND_CONVERSATION_RECOVERY and resubmitted false.
+    A failed recovery retains the original terminal state and proposal absence;
+    it never makes the run resumable for submission.
+  rationale: >-
+    Live run 20260809T185354Z-46c4528b4413 crossed every approved
+    pre-submission boundary, recorded exactly one submission, bound an exact
+    conversation, and returned record_verified true, but ended with
+    RESPONSE_NOT_IDENTIFIABLE. The exact reason means the response anchor/body
+    outer selector passed far enough for body reconstruction to encounter an
+    unsupported internal presentation shape. Resubmitting would violate the
+    exactly-once and convergence rules, while requiring a human copy is an
+    unnecessary operational dependency when the bound conversation can be
+    revisited read-only. The owner explicitly approved every necessary change
+    to avoid refusal and obtain the answer. Bounded semantic tolerance plus a
+    navigate/snapshot/wait/close-only recovery preserves the existing trust and
+    authority boundary without another external submission.
+  rejected_alternatives:
+    - Submit the same request again in a new conversation
+    - Convert the terminal run to a submission-resumable state or permit Send during recovery
+    - Read or persist a raw response snapshot, arbitrary subtree, refs, labels, stability digest, sidebar, account, profile, cookie, or storage data
+    - Accept arbitrary response headings, competing assistant articles, labeled or differently indented body roots, unquoted payloads, or content outside the bounded body
+    - Treat buttons, links, citations, response actions, or unknown UI labels as response text
+    - Use another browser/profile/origin, CDP, screenshot, OCR, extension, DOM evaluation, API, or manual re-submission
+    - Broaden manual import to unbound or pre-submission runs
+  constraints:
+    - Recovery applies only to exact response-parser terminal reasons after one bound once-submitted LIVE run
+    - The exact bound URL, browser, prompt hash, final event, and submission intent are hash-chain verified before browser launch
+    - Recovery tools are limited to navigate, snapshot, wait, and close; type and click are forbidden
+    - The existing unbounded five-second polling, stability barrier, progress events, exact origin, and structural stop rules remain active
+    - Exact advanced heading, body-root role/label/indent/ref distinctness, bounded subtree, JSON-string payload, size, and sensitivity rules remain mandatory
+    - Generic-only direct text is accepted only inside the exact body and outside every opaque subtree
+    - Exact Response actions contributes no bytes and cannot occur before response content or more than once
+    - Unknown structural containers are opaque; they cannot contribute or veto otherwise valid response text outside their subtree
+    - Recovery creates no pending submission transcript, no submission intent, no Send event, and no resubmission evidence
+    - Existing manual import stays available for its approved human-copy cases and retains distinct provenance
+    - Captured output remains UNAPPROVED_PROPOSAL or UNAPPROVED_REVIEW and cannot approve a handoff or resolve an Open Decision
+    - The owner's approval does not authorize CAPTCHA bypass, credentials, account/profile/origin substitution, publication, release, or production action
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to avoid refusal and obtain a Pro answer in conversation on 2026-08-10
+    - Recovery must prove the original exact submission intent and exact bound conversation before MCP launch
+    - No recovery code path can call browser_type or browser_click
+    - No parser relaxation expands beyond the exact assistant body subtree or makes opaque UI content visible as response bytes
+    - The proposal is finalized and hash-bound before browser close and carries recovery provenance with resubmitted false
+    - A repeated recovery, existing proposal, non-LIVE run, unbound URL, wrong browser, wrong final reason, missing or duplicate intent, state/event mismatch, or tamper fails before browser launch
+    - Local fixtures, live recovery, formal TST-001, hosted CI, staging, production, publication, and release evidence remain separate
+  acceptance_criteria:
+    - Direct and generic-only exact text/statictext JSON payloads inside the exact body are reconstructed deterministically
+    - Existing semantic paragraph/list/quote/heading/code reconstruction remains byte-stable
+    - Same-or-shallower exact Response actions after content and one in-body exact action group are ignored with no contributed bytes
+    - Pre-content, duplicate, malformed, or arbitrary action groups and malformed/unquoted payloads fail closed
+    - Opaque and unknown structural subtrees cannot inject response bytes or cause valid sibling semantic text to be rejected
+    - `pro-resume` recovers the exact eligible terminal run with navigate/snapshot/wait/close only, `resubmitted: false`, exact recovery provenance, a verified proposal hash, and no new submission event
+    - Failed or interrupted recovery never types, clicks, resubmits, overwrites the original terminal evidence, or creates a proposal
+    - Existing WAITING/SUBMISSION_AMBIGUOUS resume and manual-import behavior remain green and distinct
+    - Read-only status verifies the recovered hash chain and reports the captured advice/review authority and next action
+    - One sanitized live recovery for run 20260809T185354Z-46c4528b4413 captures PRO_ADVICE_V1 or PRO_REVIEW_TEXT_V1 with record_verified true and resubmitted false
+  required_test_evidence:
+    - Advanced response-body direct/generic-only, semantic-block, opaque subtree, unknown-role, action-boundary, malformed payload, duplicate/ref/boundary/sensitivity matrices
+    - Exact eligible terminal recovery success, delayed response, parser failure, transport loss, interrupt, tamper, wrong-state/reason/intent/browser/url, repeat, and proposal-exists matrices
+    - Tool traces proving recovery uses only navigate/snapshot/wait/close and creates no type/click/submission event
+    - Existing resume/manual-import/current-response/full ST-0101 non-regressions
+    - Complete isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, canonical import verification, workspace drift detection, and git diff check
+    - Sanitized live recovery and read-only status evidence kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

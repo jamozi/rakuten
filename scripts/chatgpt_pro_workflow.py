@@ -488,6 +488,14 @@ def _one_ref(observation: Mapping[str, Any], name: str) -> str:
     return values[0]
 
 
+def _advanced_evidence_refs(observation: Mapping[str, Any], name: str) -> None:
+    """Accept new ref-free evidence and predecessor non-action transcripts."""
+
+    if observation.get("refs") == {}:
+        return
+    _one_ref(observation, name)
+
+
 def _validate_common_observation(
     observation: Mapping[str, Any], stop_states: set[str]
 ) -> None:
@@ -550,8 +558,10 @@ def validate_transcript(
         elif state == "model_menu":
             if option_labels != profile["model_option_labels"]:
                 raise WorkflowRefusal("MODEL_OPTIONS_AMBIGUOUS")
-            target = _one_ref(observation, "target_model")
-            if effort_mode != "advanced":
+            if effort_mode == "advanced":
+                _advanced_evidence_refs(observation, "target_model")
+            else:
+                target = _one_ref(observation, "target_model")
                 actions.append(
                     _action(
                         "browser_click",
@@ -573,8 +583,10 @@ def validate_transcript(
         elif state == "effort_menu":
             if option_labels != profile["effort_option_labels"]:
                 raise WorkflowRefusal("EFFORT_OPTIONS_AMBIGUOUS")
-            target = _one_ref(observation, "target_effort")
-            if effort_mode != "advanced":
+            if effort_mode == "advanced":
+                _advanced_evidence_refs(observation, "target_effort")
+            else:
+                target = _one_ref(observation, "target_effort")
                 actions.append(
                     _action(
                         "browser_click",

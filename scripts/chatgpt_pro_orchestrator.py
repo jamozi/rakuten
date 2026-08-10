@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 from contextlib import contextmanager, ExitStack
+import ctypes
 from datetime import datetime, timezone
 import fcntl
 import hashlib
@@ -22,6 +23,7 @@ import os
 from pathlib import Path
 import re
 import select
+import shutil
 import stat
 import subprocess
 import sys
@@ -39,6 +41,10 @@ STORY_ID = "ST-0101"
 ORCHESTRATION_SCHEMA_VERSION = 1
 FAKE_SCHEMA = "RAOS_FAKE_MCP_V1"
 ADVICE_SCHEMA = "PRO_ADVICE_V1"
+REVIEW_SCHEMA = "PRO_REVIEW_TEXT_V1"
+BOUND_RESPONSE_RECOVERY_PROVENANCE = "AUTOMATED_BOUND_CONVERSATION_RECOVERY"
+RUNTIME_SCHEMA = "RAOS_CHATGPT_PRO_MCP_RUNTIME_V1"
+STRUCTURAL_STOP_CLASSIFIER = "STRUCTURAL_REGIONS_V1"
 EXACT_REPOSITORY_ROOT = Path("/home/minami/rakuten")
 DEFAULT_PRIVATE_ROOT = EXACT_REPOSITORY_ROOT / ".secrets"
 DEFAULT_PROFILE_DIR = DEFAULT_PRIVATE_ROOT / "chatgpt-pro-profile"
@@ -47,9 +53,44 @@ DEFAULT_REQUEST_ROOT = DEFAULT_PRIVATE_ROOT / "chatgpt-pro-requests"
 DEFAULT_SECRET_ROOT = DEFAULT_PRIVATE_ROOT / "chatgpt-pro"
 DEFAULT_RUN_ROOT = DEFAULT_PRIVATE_ROOT / "chatgpt-pro-runs"
 DEFAULT_WRAPPER = EXACT_REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp.sh"
+DEFAULT_RUNTIME_SOURCE = EXACT_REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp_runtime"
+DEFAULT_NODE_BIN = Path("/home/minami/.nvm/versions/node/v24.18.1/bin/node")
+DEFAULT_NPM_CLI = Path(
+    "/home/minami/.nvm/versions/node/v24.18.1/lib/node_modules/npm/bin/npm-cli.js"
+)
 DEFAULT_EDGE = Path("/opt/microsoft/msedge/msedge")
 DEFAULT_CHROME = Path("/opt/google/chrome/chrome")
 LEGACY_CHROME_LAUNCHER = Path("/opt/google/chrome/google-chrome")
+MCP_PACKAGE_NAME = "@playwright/mcp"
+MCP_PACKAGE_VERSION = "0.0.78"
+NODE_VERSION = "24.18.1"
+NPM_VERSION = "11.16.0"
+RUNTIME_ROOT_NAME = "chatgpt-pro-mcp-runtime"
+RUNTIME_STAGE_NAME = ".chatgpt-pro-mcp-runtime.installing"
+RUNTIME_CACHE_NAME = "chatgpt-pro-mcp-npm-cache"
+RUNTIME_MANIFEST_NAME = "runtime-manifest.v1.json"
+RUNTIME_PACKAGE_JSON_NAME = "package.json"
+RUNTIME_PACKAGE_LOCK_NAME = "package-lock.json"
+RUNTIME_EXPECTED_INVENTORY_NAME = "expected-runtime-inventory.v1.json"
+RUNTIME_EXPECTED_INVENTORY_SCHEMA = "RAOS_CHATGPT_PRO_MCP_EXPECTED_INVENTORY_V1"
+RUNTIME_USER_NPMRC_NAME = ".npmrc-user"
+RUNTIME_GLOBAL_NPMRC_NAME = ".npmrc-global"
+RUNTIME_CLI_RELATIVE = Path("node_modules/@playwright/mcp/cli.js")
+RUNTIME_PACKAGE_RELATIVE = Path("node_modules/@playwright/mcp/package.json")
+RUNTIME_MANIFEST_KEYS = frozenset(
+    {
+        "schema",
+        "story_id",
+        "package",
+        "version",
+        "node_version",
+        "npm_version",
+        "package_lock_sha256",
+        "inventory",
+    }
+)
+RUNTIME_INVENTORY_KEYS = frozenset({"kind", "path", "mode", "sha256", "size"})
+RENAME_EXCHANGE = 2
 BROWSER_REQUESTS = frozenset({"auto", "edge", "chrome"})
 SELECTED_BROWSERS = frozenset({"edge", "chrome"})
 FIXED_WSLG_DISPLAY = ":0"
@@ -61,6 +102,40 @@ INITIAL_UI_SETTLE_SECONDS = 5
 RESPONSE_POLL_SECONDS = 5
 RESPONSE_STABILITY_OBSERVATIONS = 3
 RESPONSE_PROGRESS_INTERVAL_SECONDS = 60
+PRE_SUBMISSION_SETTLE_SECONDS = 5
+PRE_SUBMISSION_SETTLE_ADDITIONAL_OBSERVATIONS = 12
+PRE_SUBMISSION_PHASES = frozenset(
+    {
+        "landing",
+        "pro_menu",
+        "advanced_summary",
+        "closed_landing",
+        "typed_composer",
+        "send_control",
+    }
+)
+ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES = frozenset(
+    {
+        "ADVANCED_PRO_BUTTON_INVALID",
+        "ADVANCED_EXPAND_CONTROL_INVALID",
+        "ADVANCED_MENU_STATE_MIXED",
+        "ADVANCED_MODEL_EVIDENCE_MISSING",
+        "ADVANCED_MODEL_EVIDENCE_CONFLICT",
+        "ADVANCED_EFFORT_EVIDENCE_MISSING",
+        "ADVANCED_EFFORT_EVIDENCE_CONFLICT",
+        "ADVANCED_MENU_UNRECOGNIZED",
+    }
+)
+ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_PHASES = frozenset({"pro_menu", "advanced_summary"})
+PRE_SUBMISSION_SETTLE_RETRY_CODES = frozenset(
+    {
+        *ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES,
+        "EFFORT_OPTIONS_AMBIGUOUS",
+        "MODEL_OPTIONS_AMBIGUOUS",
+        "SELECTOR_AMBIGUITY",
+        "UNKNOWN_UI",
+    }
+)
 RESPONSE_WAIT_PHASES = frozenset(
     {"candidate_stabilizing", "response_absent", "response_generating"}
 )
@@ -90,8 +165,10 @@ ALLOWED_MCP_TOOLS = frozenset(
     }
 )
 IMPORTANCE_LEVELS = frozenset({"ordinary", "gated"})
+STOP_PHASES = frozenset({"authentication", "pre_submission", "response"})
 PRE_SUBMISSION_UI_UNAVAILABLE_CODES = frozenset(
     {
+        *ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES,
         "EFFORT_OPTIONS_AMBIGUOUS",
         "MODEL_OPTIONS_AMBIGUOUS",
         "ORIGIN_MISMATCH",
@@ -103,6 +180,91 @@ LIVE_RESUME_RESPONSE_UNAVAILABLE_CODES = frozenset(
     {
         "RESPONSE_NOT_IDENTIFIABLE",
         "RESPONSE_SELECTOR_AMBIGUITY",
+    }
+)
+BOUND_RESPONSE_RECOVERY_REASON_CODES = LIVE_RESUME_RESPONSE_UNAVAILABLE_CODES
+BOUND_RESPONSE_RECOVERY_DIAGNOSTIC_CODES = frozenset(
+    {
+        "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID",
+        "ADVANCED_RESPONSE_BODY_ROOT_ABSENT",
+        "ADVANCED_RESPONSE_BODY_ROOT_INVALID",
+        "ADVANCED_RESPONSE_BOUNDARY_CONFLICT",
+        "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+        "ADVANCED_RESPONSE_GENERATING_MARKER_DUPLICATION",
+        "ADVANCED_RESPONSE_HEADING_INVALID",
+        "ADVANCED_RESPONSE_MARKER_CONFLICT",
+        "ADVANCED_RESPONSE_STRUCTURAL_REF_COLLISION",
+    }
+)
+BOUND_RESPONSE_HEADING_DETAIL_CODES = frozenset(
+    {
+        "ADVANCED_RESPONSE_HEADING_ROLE_INVALID",
+        "ADVANCED_RESPONSE_HEADING_LABEL_CASE_INVALID",
+        "ADVANCED_RESPONSE_HEADING_LABEL_PUNCTUATION_INVALID",
+        "ADVANCED_RESPONSE_HEADING_LABEL_EDGE_WHITESPACE_INVALID",
+        "ADVANCED_RESPONSE_HEADING_LABEL_OTHER_INVALID",
+        "ADVANCED_RESPONSE_HEADING_REF_MISSING",
+        "ADVANCED_RESPONSE_HEADING_REF_INVALID",
+        "ADVANCED_RESPONSE_HEADING_EXTRA_ATTRIBUTES",
+        "ADVANCED_RESPONSE_HEADING_LINE_SHAPE_INVALID",
+    }
+)
+BOUND_RESPONSE_ACTION_DETAIL_CODES = frozenset(
+    {
+        "ADVANCED_RESPONSE_ACTION_ROLE_INVALID",
+        "ADVANCED_RESPONSE_ACTION_LABEL_INVALID",
+        "ADVANCED_RESPONSE_ACTION_REF_PRESENT",
+        "ADVANCED_RESPONSE_ACTION_EXTRA_ATTRIBUTES",
+        "ADVANCED_RESPONSE_ACTION_LINE_SHAPE_INVALID",
+        "ADVANCED_RESPONSE_ACTION_PRE_CONTENT",
+        "ADVANCED_RESPONSE_ACTION_DUPLICATE",
+        "ADVANCED_RESPONSE_ACTION_CONTENT_AFTER",
+        "ADVANCED_RESPONSE_ACTION_PLACEMENT_INVALID",
+    }
+)
+BOUND_RESPONSE_PRECONTENT_CONTEXT_CODES = frozenset(
+    {
+        "ADVANCED_RESPONSE_PRECONTENT_SAME_INDENT_BOUNDARY",
+        "ADVANCED_RESPONSE_PRECONTENT_SHALLOW_BOUNDARY",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_CONTENT",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_ONLY_OPAQUE",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_EMPTY",
+    }
+)
+BOUND_RESPONSE_PRECONTENT_CONTEXT_DETAIL_CODES = frozenset(
+    {
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_SHAPE_INVALID",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_VALUE_INVALID",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_CONTEXT_INVALID",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_UNSATISFIED_WITH_CONTENT",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_UNSATISFIED_EMPTY",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_MATERIAL_UNSUPPORTED",
+    }
+)
+BOUND_RESPONSE_PRECONTENT_CONTEXT_SHAPE_CODES = frozenset(
+    {
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_INVALID",
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_LINE_SHAPE_INVALID",
+    }
+)
+BOUND_RESPONSE_REF_FREE_FALLBACK_CODES = frozenset(
+    {
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_INVALID",
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_SCALAR_INVALID",
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_MATERIAL_UNSUPPORTED",
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_REF_COLLISION",
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_UNSATISFIED_WITH_CONTENT",
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_UNSATISFIED_EMPTY",
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_CONTENT_EMPTY",
+    }
+)
+BOUND_RESPONSE_REF_FREE_FALLBACK_ENTRY_CODES = frozenset(
+    {
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR",
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER",
     }
 )
 LIVE_RESPONSE_TERMINAL_CODES = frozenset(
@@ -121,15 +283,50 @@ LIVE_RESPONSE_TERMINAL_CODES = frozenset(
 TERMINAL_STATUSES = frozenset(
     {
         "ADVICE_CAPTURED",
+        "REVIEW_CAPTURED",
         "CONVERGED_DUPLICATE_RESPONSE",
         "CONVERGED_NO_MATERIAL_DELTA",
         "CONVERGED_NO_OPEN_GAP",
         "CONVERGED_REPEATED_GAP",
         "PRO_UNAVAILABLE_FALLBACK",
         "BLOCKED_PRO_REQUIRED",
+        "PRO_RUNTIME_MISSING",
+        "PRO_RUNTIME_DRIFTED",
     }
 )
 RESUMABLE_STATUSES = frozenset({"WAITING", "SUBMISSION_AMBIGUOUS"})
+MANUAL_IMPORT_TERMINAL_REASON_CODES = frozenset(
+    {
+        "ADVICE_INVALID",
+        "RESPONSE_NOT_IDENTIFIABLE",
+        "RESPONSE_SELECTOR_AMBIGUITY",
+        "STOP_RATE_LIMIT",
+    }
+)
+MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES = frozenset(
+    {
+        "MCP_BROWSER_INVALID",
+        "MCP_CALL_FAILED",
+        "MCP_DISCONNECTED",
+        "MCP_PROTOCOL_INVALID",
+        "MCP_RESULT_TOO_LARGE",
+        "MCP_START_FAILED",
+        "MCP_TIMEOUT",
+        "MCP_WRAPPER_INVALID",
+        "WSLG_DISPLAY_INVALID",
+        "WSLG_X11_SOCKET_INVALID",
+    }
+)
+RUNTIME_DRIFT_REASON_CODES = frozenset(
+    {
+        "PRO_RUNTIME_DRIFTED",
+        "PRO_RUNTIME_MODE",
+        "PRO_RUNTIME_SOURCE_INVALID",
+        "PRO_RUNTIME_SYMLINK",
+        "PRO_RUNTIME_TOOLCHAIN_INVALID",
+    }
+)
+RUNTIME_REASON_CODES = frozenset({"PRO_RUNTIME_MISSING", *RUNTIME_DRIFT_REASON_CODES})
 STATE_KEYS = frozenset(
     {
         "schema_version",
@@ -152,6 +349,7 @@ STATE_KEYS = frozenset(
         "updated_at",
     }
 )
+OPTIONAL_STATE_KEYS = frozenset({"phase", "reason_code"})
 RUN_ID_PATTERN = workflow.RUN_ID_PATTERN
 REF_PATTERN = workflow.REF_PATTERN
 URL_PATTERN = re.compile(r"(?m)^-?\s*Page URL:\s*(\S+)\s*$")
@@ -159,6 +357,9 @@ ELEMENT_PATTERN = re.compile(
     r'^\s*-\s*(?P<role>[a-zA-Z][a-zA-Z0-9_-]*)(?:\s+"(?P<label>[^"]*)")?'
     r"[^\n]*?\[ref=(?P<ref>e[1-9][0-9]*)\]",
     re.MULTILINE,
+)
+STRUCTURAL_ELEMENT_PATTERN = re.compile(
+    r'^\s*-\s*(?P<role>[a-zA-Z][a-zA-Z0-9_-]*)(?:\s+"(?P<label>[^"]*)")?'
 )
 CLOUDFLARE_CHALLENGE_MARKERS = (
     "http status: 403",
@@ -173,6 +374,16 @@ STOP_MARKERS = {
     "reauthentication": ("reauthenticate", "session expired"),
     "login": ("log in", "sign up", "continue with google", "email address"),
 }
+PAGE_STOP_ROLES = frozenset({"alert", "dialog", "status"})
+AUTH_CONTROL_ROLES = frozenset(
+    {"button", "combobox", "link", "menuitem", "radio", "textbox"}
+)
+UNTRUSTED_REGION_ROLES = frozenset(
+    {"citation-preview", "complementary", "navigation", "toolbar"}
+)
+USER_MESSAGE_LABELS = frozenset(
+    {"user message", "you said", "you said:", "your message actions"}
+)
 COMPOSER_LABELS = frozenset(
     {
         "ask anything",
@@ -203,16 +414,16 @@ MODEL_PICKER_LABELS = frozenset(
 EFFORT_PICKER_LABELS = frozenset({"effort", "reasoning effort", "pro"})
 ADVANCED_MENU_LABEL = "Pro"
 ADVANCED_EXPAND_LABEL = "Show advanced options"
-ADVANCED_COMPACT_LABEL = "Show compact options"
 ADVANCED_MODEL_ENTRY_LABEL = "Model GPT-5.6 Sol"
 ADVANCED_EFFORT_ENTRY_LABEL = "Effort Pro"
-ADVANCED_UI_MARKER_LABELS = frozenset(
-    {
-        ADVANCED_EXPAND_LABEL,
-        ADVANCED_COMPACT_LABEL,
-        ADVANCED_MODEL_ENTRY_LABEL,
-        ADVANCED_EFFORT_ENTRY_LABEL,
-    }
+DISABLED_CONTROL_PATTERN = re.compile(r"\[disabled(?:=[^\]]*)?\]", re.IGNORECASE)
+HORIZONTAL_WHITESPACE_PATTERN = re.compile(r"[ \t]+")
+SEMANTIC_SUMMARY_EVIDENCE_ROLES = frozenset(
+    {"button", "description", "heading", "link", "menuitem", "statictext", "text"}
+)
+SEMANTIC_SUMMARY_PAYLOAD_PATTERN = re.compile(
+    r"^\s*-\s*(?P<role>text|statictext)\s*:\s*"
+    r'(?P<payload>"(?:\\.|[^"\\])*")\s*$'
 )
 ADVANCED_COMPOSER_LABELS = frozenset(
     {
@@ -226,6 +437,39 @@ ADVANCED_COMPOSER_LABELS = frozenset(
 )
 SEND_PROMPT_LABEL = "Send prompt"
 ADVANCED_RESPONSE_LABEL = "ChatGPT said:"
+ADVANCED_RESPONSE_ATTRIBUTE_NAME_FRAGMENT = r"[a-zA-Z][a-zA-Z0-9_-]*"
+ADVANCED_RESPONSE_ATTRIBUTE_VALUE_FRAGMENT = r"[^\]\s]+"
+ADVANCED_RESPONSE_NON_REF_ATTRIBUTE_FRAGMENT = (
+    r"\[(?!(?i:ref)(?:=|\]))"
+    + ADVANCED_RESPONSE_ATTRIBUTE_NAME_FRAGMENT
+    + r"(?:="
+    + ADVANCED_RESPONSE_ATTRIBUTE_VALUE_FRAGMENT
+    + r")?\]"
+)
+ADVANCED_RESPONSE_ATTRIBUTE_PATTERN = re.compile(
+    r"\s+\[(?P<name>"
+    + ADVANCED_RESPONSE_ATTRIBUTE_NAME_FRAGMENT
+    + r")(?:="
+    + ADVANCED_RESPONSE_ATTRIBUTE_VALUE_FRAGMENT
+    + r")?\]"
+)
+ADVANCED_RESPONSE_BASE_HEADING_PATTERN = re.compile(
+    r'^(?P<indent> *)- heading "ChatGPT said:" '
+    r"\[ref=(?P<ref>e[1-9][0-9]*)\]$"
+)
+ADVANCED_RESPONSE_HEADING_PATTERN = re.compile(
+    r'^(?P<indent> *)- heading "ChatGPT said:"'
+    r"(?:\s+" + ADVANCED_RESPONSE_NON_REF_ATTRIBUTE_FRAGMENT + r")*"
+    r" (?P<ref_token>\[ref=(?P<ref>e[1-9][0-9]*)\])"
+    r"(?:\s+" + ADVANCED_RESPONSE_NON_REF_ATTRIBUTE_FRAGMENT + r")*$"
+)
+ADVANCED_RESPONSE_HEADING_PUNCTUATION_PATTERN = re.compile(r"[.:!?]+$")
+ADVANCED_RESPONSE_REF_ATTEMPT_PATTERN = re.compile(
+    r"\[\s*ref(?![a-zA-Z0-9_-])", re.IGNORECASE
+)
+ADVANCED_RESPONSE_UNBRACKETED_REF_PATTERN = re.compile(
+    r"(?<![\[a-zA-Z0-9_-])ref\s*=", re.IGNORECASE
+)
 ADVANCED_RESPONSE_ROLE_PATTERN = re.compile(
     r"^\s*-\s*(?P<role>[a-zA-Z][a-zA-Z0-9_-]*)(?=\s|:|$)"
 )
@@ -235,14 +479,62 @@ ADVANCED_RESPONSE_BODY_PATTERN = re.compile(
 ADVANCED_RESPONSE_PAYLOAD_PATTERN = re.compile(
     r"^\s*-\s*(?P<role>text|statictext)\s*:\s*(?P<payload>.*)$"
 )
+ADVANCED_RESPONSE_ACTION_LABEL = "Response actions"
 ADVANCED_RESPONSE_ACTION_GROUP_SUFFIX = '- group "Response actions":'
+ADVANCED_RESPONSE_ACTION_ATTRIBUTES_PATTERN = re.compile(
+    r'^ *- group "Response actions"'
+    r"(?:\s+" + ADVANCED_RESPONSE_NON_REF_ATTRIBUTE_FRAGMENT + r")+:$"
+)
+ADVANCED_RESPONSE_UNKNOWN_CONTAINER_PATTERN = re.compile(
+    r"^\s*-\s*(?P<role>[a-zA-Z][a-zA-Z0-9_-]*)"
+    r'(?:\s+"(?:\\["\\/bfnrt]|\\u[0-9a-fA-F]{4}|[^"\\\r\n])*")?'
+    r"(?:\s+\[(?:(?!ref(?:=|\]))[a-zA-Z][a-zA-Z0-9_-]*"
+    r"(?:=[^\]\s]+)?|ref=e[1-9][0-9]*)\])*:\s*$"
+)
+ADVANCED_RESPONSE_JSON_LABEL_PATTERN = re.compile(
+    r'"(?:\\["\\/bfnrt]|\\u[0-9a-fA-F]{4}|[^"\\\r\n])*"'
+)
+ADVANCED_RESPONSE_OPAQUE_NODE_PATTERN = re.compile(
+    r"^\s*-\s*(?P<role>button|citation-preview|link|url)"
+    r'(?:\s+"(?:\\["\\/bfnrt]|\\u[0-9a-fA-F]{4}|[^"\\\r\n])*")?'
+    r"(?:\s+\[(?:(?!ref(?:=|\]))[a-zA-Z][a-zA-Z0-9_-]*"
+    r"(?:=[^\]\s]+)?|ref=e[1-9][0-9]*)\])*:?\s*$"
+)
+ADVANCED_RESPONSE_URL_METADATA_PATTERN = re.compile(r"^\s*-\s*/url:\s*\S.*$")
+ADVANCED_RESPONSE_SEMANTIC_ROLES = frozenset(
+    {
+        "blockquote",
+        "code",
+        "codeblock",
+        "heading",
+        "list",
+        "listitem",
+        "paragraph",
+        "quote",
+    }
+)
 ADVANCED_RESPONSE_NODE_ROLES = frozenset(
-    {"button", "citation-preview", "generic", "link", "paragraph", "url"}
+    {
+        "blockquote",
+        "button",
+        "citation-preview",
+        "code",
+        "codeblock",
+        "generic",
+        "heading",
+        "link",
+        "list",
+        "listitem",
+        "paragraph",
+        "quote",
+        "url",
+    }
 )
 ADVANCED_RESPONSE_OPAQUE_ROLES = frozenset(
     {"button", "citation-preview", "link", "url"}
 )
 ACCESSIBILITY_REF_TOKEN_PATTERN = re.compile(r"\[ref=(e[1-9][0-9]*)\]")
+RAW_ACCESSIBILITY_REF_TOKEN_PATTERN = re.compile(r"\[ref=[^\]\r\n]*\]")
 ADVANCED_ANSWER_NOW_GENERATING_PATTERN = re.compile(
     r'^ *- button "Answer now" \[ref=e[1-9][0-9]*\]$'
 )
@@ -251,6 +543,10 @@ ASSISTANT_MARKERS = ("chatgpt said", "assistant")
 GENERATING_MARKER_ROLES = frozenset({"button", "status"})
 CHATGPT_RESPONSE_LIKE_LABELS = frozenset({"chatgpt said", "chatgpt said:"})
 ASSISTANT_RESPONSE_LIKE_LABELS = frozenset({"assistant response"})
+JSON_FENCE_PATTERN = re.compile(
+    r"\A[ \t\r\n]*```json[ \t]*\r?\n(?P<body>[\s\S]*?)\r?\n```[ \t]*[\r\n \t]*\Z"
+)
+JSON_FENCE_TOKEN_PATTERN = re.compile(r"```[ \t]*json\b", re.IGNORECASE)
 
 
 class OrchestrationRefusal(RuntimeError):
@@ -261,12 +557,368 @@ class OrchestrationRefusal(RuntimeError):
         self.code = code
 
 
+def _validated_bound_response_diagnostic_code(value: object) -> str:
+    if (
+        not isinstance(value, str)
+        or value not in BOUND_RESPONSE_RECOVERY_DIAGNOSTIC_CODES
+    ):
+        raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+    return value
+
+
+def _validated_bound_response_heading_detail_code(value: object) -> str:
+    if not isinstance(value, str) or value not in BOUND_RESPONSE_HEADING_DETAIL_CODES:
+        raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+    return value
+
+
+def _validated_bound_response_action_detail_code(value: object) -> str:
+    if not isinstance(value, str) or value not in BOUND_RESPONSE_ACTION_DETAIL_CODES:
+        raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+    return value
+
+
+def _validated_bound_response_precontent_context_code(value: object) -> str:
+    if (
+        not isinstance(value, str)
+        or value not in BOUND_RESPONSE_PRECONTENT_CONTEXT_CODES
+    ):
+        raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+    return value
+
+
+def _validated_bound_response_precontent_context_detail_code(
+    value: object,
+) -> str:
+    if (
+        not isinstance(value, str)
+        or value not in BOUND_RESPONSE_PRECONTENT_CONTEXT_DETAIL_CODES
+    ):
+        raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+    return value
+
+
+def _validated_bound_response_precontent_context_shape_code(value: object) -> str:
+    if (
+        not isinstance(value, str)
+        or value not in BOUND_RESPONSE_PRECONTENT_CONTEXT_SHAPE_CODES
+    ):
+        raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+    return value
+
+
+def _validated_bound_response_ref_free_fallback_code(value: object) -> str:
+    if (
+        not isinstance(value, str)
+        or value not in BOUND_RESPONSE_REF_FREE_FALLBACK_CODES
+    ):
+        raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+    return value
+
+
+def _validated_bound_response_ref_free_fallback_entry_code(value: object) -> str:
+    if (
+        not isinstance(value, str)
+        or value not in BOUND_RESPONSE_REF_FREE_FALLBACK_ENTRY_CODES
+    ):
+        raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+    return value
+
+
+def _validated_bound_response_detail_code(
+    reason_code: object,
+    diagnostic_code: object,
+    detail_code: object,
+) -> str:
+    if (
+        reason_code == "RESPONSE_SELECTOR_AMBIGUITY"
+        and diagnostic_code == "ADVANCED_RESPONSE_HEADING_INVALID"
+    ):
+        return _validated_bound_response_heading_detail_code(detail_code)
+    if (
+        reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+        and diagnostic_code == "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID"
+    ):
+        return _validated_bound_response_action_detail_code(detail_code)
+    raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+
+
+def _validated_bound_response_context_code(
+    reason_code: object,
+    diagnostic_code: object,
+    detail_code: object,
+    context_code: object,
+) -> str:
+    if (
+        reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+        and diagnostic_code == "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID"
+        and detail_code == "ADVANCED_RESPONSE_ACTION_PRE_CONTENT"
+    ):
+        return _validated_bound_response_precontent_context_code(context_code)
+    raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+
+
+def _validated_bound_response_context_detail_code(
+    reason_code: object,
+    diagnostic_code: object,
+    detail_code: object,
+    context_code: object,
+    context_detail_code: object,
+) -> str:
+    if (
+        reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+        and diagnostic_code == "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID"
+        and detail_code == "ADVANCED_RESPONSE_ACTION_PRE_CONTENT"
+        and context_code == "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID"
+    ):
+        return _validated_bound_response_precontent_context_detail_code(
+            context_detail_code
+        )
+    raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+
+
+def _validated_bound_response_context_shape_code(
+    reason_code: object,
+    diagnostic_code: object,
+    detail_code: object,
+    context_code: object,
+    context_detail_code: object,
+    context_shape_code: object,
+) -> str:
+    if (
+        reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+        and diagnostic_code == "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID"
+        and detail_code == "ADVANCED_RESPONSE_ACTION_PRE_CONTENT"
+        and context_code == "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID"
+        and context_detail_code
+        == "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID"
+    ):
+        return _validated_bound_response_precontent_context_shape_code(
+            context_shape_code
+        )
+    raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+
+
+def _validated_bound_response_fallback_code(
+    reason_code: object,
+    diagnostic_code: object,
+    detail_code: object,
+    context_code: object,
+    context_detail_code: object,
+    context_shape_code: object,
+    fallback_code: object,
+) -> str:
+    if (
+        reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+        and diagnostic_code == "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID"
+        and detail_code == "ADVANCED_RESPONSE_ACTION_PRE_CONTENT"
+        and context_code == "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID"
+        and context_detail_code
+        == "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID"
+        and context_shape_code
+        == "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING"
+    ):
+        return _validated_bound_response_ref_free_fallback_code(fallback_code)
+    raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+
+
+def _validated_bound_response_fallback_entry_code(
+    reason_code: object,
+    diagnostic_code: object,
+    detail_code: object,
+    context_code: object,
+    context_detail_code: object,
+    context_shape_code: object,
+    fallback_code: object,
+    fallback_entry_code: object,
+) -> str:
+    if (
+        reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+        and diagnostic_code == "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID"
+        and detail_code == "ADVANCED_RESPONSE_ACTION_PRE_CONTENT"
+        and context_code == "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID"
+        and context_detail_code
+        == "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID"
+        and context_shape_code
+        == "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING"
+        and fallback_code is None
+    ):
+        return _validated_bound_response_ref_free_fallback_entry_code(
+            fallback_entry_code
+        )
+    raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+
+
+class _AdvancedResponseParserRefusal(OrchestrationRefusal):
+    """An internal closed parser category that is not public by itself."""
+
+    def __init__(
+        self,
+        code: str,
+        diagnostic_code: str,
+        diagnostic_detail_code: str | None = None,
+        diagnostic_context_code: str | None = None,
+        diagnostic_context_detail_code: str | None = None,
+        diagnostic_context_shape_code: str | None = None,
+        diagnostic_fallback_code: str | None = None,
+        diagnostic_fallback_entry_code: str | None = None,
+    ) -> None:
+        if code not in BOUND_RESPONSE_RECOVERY_REASON_CODES:
+            raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+        super().__init__(code)
+        self.diagnostic_code = _validated_bound_response_diagnostic_code(
+            diagnostic_code
+        )
+        if diagnostic_detail_code is not None:
+            self.diagnostic_detail_code = _validated_bound_response_detail_code(
+                code,
+                self.diagnostic_code,
+                diagnostic_detail_code,
+            )
+        if diagnostic_context_code is not None:
+            self.diagnostic_context_code = _validated_bound_response_context_code(
+                code,
+                self.diagnostic_code,
+                getattr(self, "diagnostic_detail_code", None),
+                diagnostic_context_code,
+            )
+        if diagnostic_context_detail_code is not None:
+            self.diagnostic_context_detail_code = (
+                _validated_bound_response_context_detail_code(
+                    code,
+                    self.diagnostic_code,
+                    getattr(self, "diagnostic_detail_code", None),
+                    getattr(self, "diagnostic_context_code", None),
+                    diagnostic_context_detail_code,
+                )
+            )
+        if diagnostic_context_shape_code is not None:
+            self.diagnostic_context_shape_code = (
+                _validated_bound_response_context_shape_code(
+                    code,
+                    self.diagnostic_code,
+                    getattr(self, "diagnostic_detail_code", None),
+                    getattr(self, "diagnostic_context_code", None),
+                    getattr(self, "diagnostic_context_detail_code", None),
+                    diagnostic_context_shape_code,
+                )
+            )
+        if diagnostic_fallback_code is not None:
+            self.diagnostic_fallback_code = _validated_bound_response_fallback_code(
+                code,
+                self.diagnostic_code,
+                getattr(self, "diagnostic_detail_code", None),
+                getattr(self, "diagnostic_context_code", None),
+                getattr(self, "diagnostic_context_detail_code", None),
+                getattr(self, "diagnostic_context_shape_code", None),
+                diagnostic_fallback_code,
+            )
+        if diagnostic_fallback_entry_code is not None:
+            self.diagnostic_fallback_entry_code = (
+                _validated_bound_response_fallback_entry_code(
+                    code,
+                    self.diagnostic_code,
+                    getattr(self, "diagnostic_detail_code", None),
+                    getattr(self, "diagnostic_context_code", None),
+                    getattr(self, "diagnostic_context_detail_code", None),
+                    getattr(self, "diagnostic_context_shape_code", None),
+                    getattr(self, "diagnostic_fallback_code", None),
+                    diagnostic_fallback_entry_code,
+                )
+            )
+
+
+class _BoundResponseRecoveryRefusal(OrchestrationRefusal):
+    """An uncaught eligible terminal-recovery parser refusal for CLI output."""
+
+    def __init__(
+        self,
+        code: str,
+        diagnostic_code: str,
+        diagnostic_detail_code: str | None = None,
+        diagnostic_context_code: str | None = None,
+        diagnostic_context_detail_code: str | None = None,
+        diagnostic_context_shape_code: str | None = None,
+        diagnostic_fallback_code: str | None = None,
+        diagnostic_fallback_entry_code: str | None = None,
+    ) -> None:
+        if code not in BOUND_RESPONSE_RECOVERY_REASON_CODES:
+            raise OrchestrationRefusal("BOUND_RESPONSE_DIAGNOSTIC_INVALID")
+        super().__init__(code)
+        self.diagnostic_code = _validated_bound_response_diagnostic_code(
+            diagnostic_code
+        )
+        if diagnostic_detail_code is not None:
+            self.diagnostic_detail_code = _validated_bound_response_detail_code(
+                code,
+                self.diagnostic_code,
+                diagnostic_detail_code,
+            )
+        if diagnostic_context_code is not None:
+            self.diagnostic_context_code = _validated_bound_response_context_code(
+                code,
+                self.diagnostic_code,
+                getattr(self, "diagnostic_detail_code", None),
+                diagnostic_context_code,
+            )
+        if diagnostic_context_detail_code is not None:
+            self.diagnostic_context_detail_code = (
+                _validated_bound_response_context_detail_code(
+                    code,
+                    self.diagnostic_code,
+                    getattr(self, "diagnostic_detail_code", None),
+                    getattr(self, "diagnostic_context_code", None),
+                    diagnostic_context_detail_code,
+                )
+            )
+        if diagnostic_context_shape_code is not None:
+            self.diagnostic_context_shape_code = (
+                _validated_bound_response_context_shape_code(
+                    code,
+                    self.diagnostic_code,
+                    getattr(self, "diagnostic_detail_code", None),
+                    getattr(self, "diagnostic_context_code", None),
+                    getattr(self, "diagnostic_context_detail_code", None),
+                    diagnostic_context_shape_code,
+                )
+            )
+        if diagnostic_fallback_code is not None:
+            self.diagnostic_fallback_code = _validated_bound_response_fallback_code(
+                code,
+                self.diagnostic_code,
+                getattr(self, "diagnostic_detail_code", None),
+                getattr(self, "diagnostic_context_code", None),
+                getattr(self, "diagnostic_context_detail_code", None),
+                getattr(self, "diagnostic_context_shape_code", None),
+                diagnostic_fallback_code,
+            )
+        if diagnostic_fallback_entry_code is not None:
+            self.diagnostic_fallback_entry_code = (
+                _validated_bound_response_fallback_entry_code(
+                    code,
+                    self.diagnostic_code,
+                    getattr(self, "diagnostic_detail_code", None),
+                    getattr(self, "diagnostic_context_code", None),
+                    getattr(self, "diagnostic_context_detail_code", None),
+                    getattr(self, "diagnostic_context_shape_code", None),
+                    getattr(self, "diagnostic_fallback_code", None),
+                    diagnostic_fallback_entry_code,
+                )
+            )
+
+
 class TransportUnavailable(OrchestrationRefusal):
     """The Pro transport is unavailable without exposing its raw error."""
 
 
 class LiveUiUnavailable(OrchestrationRefusal):
     """The live UI became unavailable before prompt typing or submission."""
+
+    def __init__(self, code: str, phase: str | None = None) -> None:
+        super().__init__(code)
+        if phase is not None and phase not in PRE_SUBMISSION_PHASES:
+            raise OrchestrationRefusal("PRE_SUBMISSION_PHASE_INVALID")
+        self.phase = phase
 
 
 class LivePending(OrchestrationRefusal):
@@ -316,12 +968,14 @@ class LiveResponseUnavailable(OrchestrationRefusal):
 
 def _classify_pre_submission_ui_refusal(
     error: OrchestrationRefusal,
+    *,
+    phase: str | None = None,
 ) -> LiveUiUnavailable:
     """Convert only approved live UI-availability codes; rethrow invariants."""
 
     if error.code not in PRE_SUBMISSION_UI_UNAVAILABLE_CODES:
         raise error
-    return LiveUiUnavailable(error.code)
+    return LiveUiUnavailable(error.code, phase)
 
 
 def _validate_interactive_auth_wait_seconds(value: object) -> int:
@@ -399,6 +1053,666 @@ def _require_existing_private_root(path: Path) -> None:
         raise OrchestrationRefusal("PRIVATE_ROOT_MODE")
 
 
+def _runtime_paths(private_root: Path) -> dict[str, Path]:
+    return {
+        "runtime": private_root / RUNTIME_ROOT_NAME,
+        "stage": private_root / RUNTIME_STAGE_NAME,
+        "cache": private_root / RUNTIME_CACHE_NAME,
+        "responses": private_root / "chatgpt-pro-responses",
+    }
+
+
+def _require_owner_directory(path: Path, code: str) -> None:
+    workflow._ensure_no_symlink_ancestors(path)
+    try:
+        metadata = path.lstat()
+    except OSError as error:
+        raise OrchestrationRefusal(code) from error
+    if (
+        stat.S_ISLNK(metadata.st_mode)
+        or not stat.S_ISDIR(metadata.st_mode)
+        or metadata.st_uid != os.getuid()
+        or stat.S_IMODE(metadata.st_mode) != 0o700
+    ):
+        raise OrchestrationRefusal(code)
+
+
+def _require_regular_tool(path: Path, code: str) -> None:
+    if not path.is_absolute():
+        raise OrchestrationRefusal(code)
+    try:
+        workflow._ensure_no_symlink_ancestors(path)
+        metadata = path.lstat()
+        resolved = path.resolve(strict=True)
+    except (OSError, workflow.WorkflowRefusal) as error:
+        raise OrchestrationRefusal(code) from error
+    if (
+        stat.S_ISLNK(metadata.st_mode)
+        or not stat.S_ISREG(metadata.st_mode)
+        or resolved != path
+        or metadata.st_uid != os.getuid()
+        or stat.S_IMODE(metadata.st_mode) != 0o755
+        or not os.access(path, os.R_OK | os.X_OK)
+    ):
+        raise OrchestrationRefusal(code)
+
+
+def _tool_version(node: Path, argument: Path | None = None) -> str:
+    command = [str(node)]
+    if argument is not None:
+        command.append(str(argument))
+    command.append("--version")
+    try:
+        result = subprocess.run(
+            command,
+            cwd=EXACT_REPOSITORY_ROOT,
+            env={"LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "TZ": "UTC"},
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+            encoding="utf-8",
+            check=False,
+            timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_TOOLCHAIN_INVALID") from error
+    if result.returncode != 0 or len(result.stdout.encode("utf-8")) > 128:
+        raise OrchestrationRefusal("PRO_RUNTIME_TOOLCHAIN_INVALID")
+    return result.stdout.strip()
+
+
+def _require_runtime_toolchain(node: Path, npm_cli: Path | None = None) -> None:
+    _require_regular_tool(node, "PRO_RUNTIME_TOOLCHAIN_INVALID")
+    if _tool_version(node) != f"v{NODE_VERSION}":
+        raise OrchestrationRefusal("PRO_RUNTIME_TOOLCHAIN_INVALID")
+    if npm_cli is None:
+        return
+    _require_regular_tool(npm_cli, "PRO_RUNTIME_TOOLCHAIN_INVALID")
+    if _tool_version(node, npm_cli) != NPM_VERSION:
+        raise OrchestrationRefusal("PRO_RUNTIME_TOOLCHAIN_INVALID")
+
+
+def _sha256_file(path: Path, code: str) -> str:
+    return hashlib.sha256(
+        workflow._read_regular(path, 64 * 1024 * 1024, code)
+    ).hexdigest()
+
+
+def _runtime_source_contract(
+    source: Path,
+) -> tuple[bytes, bytes, str, list[dict[str, Any]]]:
+    if source != DEFAULT_RUNTIME_SOURCE or not source.is_absolute():
+        raise OrchestrationRefusal("PRO_RUNTIME_SOURCE_INVALID")
+    try:
+        workflow._ensure_no_symlink_ancestors(source)
+        source_metadata = source.lstat()
+    except (OSError, workflow.WorkflowRefusal) as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_SOURCE_INVALID") from error
+    if (
+        stat.S_ISLNK(source_metadata.st_mode)
+        or not stat.S_ISDIR(source_metadata.st_mode)
+        or source_metadata.st_uid != os.getuid()
+        or stat.S_IMODE(source_metadata.st_mode) & 0o022
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_SOURCE_INVALID")
+    package_path = source / RUNTIME_PACKAGE_JSON_NAME
+    lock_path = source / RUNTIME_PACKAGE_LOCK_NAME
+    expected_inventory_path = source / RUNTIME_EXPECTED_INVENTORY_NAME
+    for path in (package_path, lock_path, expected_inventory_path):
+        try:
+            metadata = path.lstat()
+        except OSError as error:
+            raise OrchestrationRefusal("PRO_RUNTIME_SOURCE_INVALID") from error
+        if (
+            stat.S_ISLNK(metadata.st_mode)
+            or not stat.S_ISREG(metadata.st_mode)
+            or metadata.st_uid != os.getuid()
+            or stat.S_IMODE(metadata.st_mode) & 0o022
+        ):
+            raise OrchestrationRefusal("PRO_RUNTIME_SOURCE_INVALID")
+    package_bytes = workflow._read_regular(
+        package_path, workflow.MAX_JSON_BYTES, "PRO_RUNTIME_SOURCE_INVALID"
+    )
+    lock_bytes = workflow._read_regular(
+        lock_path, 64 * 1024 * 1024, "PRO_RUNTIME_SOURCE_INVALID"
+    )
+    try:
+        package = json.loads(package_bytes)
+        lock = json.loads(lock_bytes)
+    except json.JSONDecodeError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_SOURCE_INVALID") from error
+    if (
+        not isinstance(package, dict)
+        or set(package) != {"private", "dependencies"}
+        or package.get("private") is not True
+        or package.get("dependencies") != {MCP_PACKAGE_NAME: MCP_PACKAGE_VERSION}
+        or not isinstance(lock, dict)
+        or lock.get("lockfileVersion") != 3
+        or lock.get("requires") is not True
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_SOURCE_INVALID")
+    packages = lock.get("packages")
+    root = packages.get("") if isinstance(packages, dict) else None
+    installed = (
+        packages.get(f"node_modules/{MCP_PACKAGE_NAME}")
+        if isinstance(packages, dict)
+        else None
+    )
+    if (
+        not isinstance(root, dict)
+        or root.get("dependencies") != {MCP_PACKAGE_NAME: MCP_PACKAGE_VERSION}
+        or not isinstance(installed, dict)
+        or installed.get("version") != MCP_PACKAGE_VERSION
+        or not isinstance(installed.get("integrity"), str)
+        or not installed["integrity"].startswith("sha512-")
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_SOURCE_INVALID")
+    lock_hash = hashlib.sha256(lock_bytes).hexdigest()
+    expected_inventory_value = _read_json(
+        expected_inventory_path, "PRO_RUNTIME_SOURCE_INVALID"
+    )
+    if (
+        set(expected_inventory_value) != RUNTIME_MANIFEST_KEYS
+        or expected_inventory_value.get("schema") != RUNTIME_EXPECTED_INVENTORY_SCHEMA
+        or expected_inventory_value.get("story_id") != STORY_ID
+        or expected_inventory_value.get("package") != MCP_PACKAGE_NAME
+        or expected_inventory_value.get("version") != MCP_PACKAGE_VERSION
+        or expected_inventory_value.get("node_version") != NODE_VERSION
+        or expected_inventory_value.get("npm_version") != NPM_VERSION
+        or expected_inventory_value.get("package_lock_sha256") != lock_hash
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_SOURCE_INVALID")
+    expected_inventory = _validate_runtime_inventory(
+        expected_inventory_value.get("inventory"),
+        code="PRO_RUNTIME_SOURCE_INVALID",
+    )
+    return package_bytes, lock_bytes, lock_hash, expected_inventory
+
+
+def _runtime_inventory(root: Path) -> list[dict[str, Any]]:
+    inventory: list[dict[str, Any]] = []
+
+    def visit(directory: Path, relative: Path) -> None:
+        try:
+            entries = sorted(os.scandir(directory), key=lambda item: item.name)
+        except OSError as error:
+            raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED") from error
+        for entry in entries:
+            child_relative = relative / entry.name
+            if child_relative.as_posix() == RUNTIME_MANIFEST_NAME:
+                continue
+            try:
+                metadata = entry.stat(follow_symlinks=False)
+            except OSError as error:
+                raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED") from error
+            mode = stat.S_IMODE(metadata.st_mode)
+            if stat.S_ISLNK(metadata.st_mode):
+                raise OrchestrationRefusal("PRO_RUNTIME_SYMLINK")
+            if metadata.st_uid != os.getuid() or mode & 0o077:
+                raise OrchestrationRefusal("PRO_RUNTIME_MODE")
+            if stat.S_ISDIR(metadata.st_mode):
+                if mode != 0o700:
+                    raise OrchestrationRefusal("PRO_RUNTIME_MODE")
+                inventory.append(
+                    {
+                        "kind": "directory",
+                        "path": child_relative.as_posix(),
+                        "mode": "0700",
+                        "sha256": None,
+                        "size": 0,
+                    }
+                )
+                visit(Path(entry.path), child_relative)
+                continue
+            if not stat.S_ISREG(metadata.st_mode) or mode not in {0o600, 0o700}:
+                raise OrchestrationRefusal("PRO_RUNTIME_MODE")
+            inventory.append(
+                {
+                    "kind": "file",
+                    "path": child_relative.as_posix(),
+                    "mode": f"{mode:04o}",
+                    "sha256": _sha256_file(Path(entry.path), "PRO_RUNTIME_DRIFTED"),
+                    "size": metadata.st_size,
+                }
+            )
+
+    visit(root, Path())
+    return sorted(inventory, key=lambda item: item["path"])
+
+
+def _runtime_manifest(root: Path, *, package_lock_sha256: str) -> dict[str, Any]:
+    return {
+        "schema": RUNTIME_SCHEMA,
+        "story_id": STORY_ID,
+        "package": MCP_PACKAGE_NAME,
+        "version": MCP_PACKAGE_VERSION,
+        "node_version": NODE_VERSION,
+        "npm_version": NPM_VERSION,
+        "package_lock_sha256": package_lock_sha256,
+        "inventory": _runtime_inventory(root),
+    }
+
+
+def _privatize_runtime_tree(root: Path) -> None:
+    """Normalize an npm-created tree without following any link."""
+
+    try:
+        root_metadata = root.lstat()
+    except OSError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE") from error
+    if stat.S_ISLNK(root_metadata.st_mode) or not stat.S_ISDIR(root_metadata.st_mode):
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+    os.chmod(root, 0o700, follow_symlinks=False)
+    for directory, directory_names, file_names in os.walk(
+        root, topdown=True, followlinks=False
+    ):
+        directory_path = Path(directory)
+        for name in directory_names:
+            path = directory_path / name
+            metadata = path.lstat()
+            if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+                raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+            os.chmod(path, 0o700, follow_symlinks=False)
+        for name in file_names:
+            path = directory_path / name
+            metadata = path.lstat()
+            if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISREG(metadata.st_mode):
+                raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+            os.chmod(path, 0o600, follow_symlinks=False)
+
+
+def _validate_runtime_inventory(
+    inventory: object, *, code: str
+) -> list[dict[str, Any]]:
+    if not isinstance(inventory, list):
+        raise OrchestrationRefusal(code)
+    previous = ""
+    for item in inventory:
+        if not isinstance(item, dict) or set(item) != RUNTIME_INVENTORY_KEYS:
+            raise OrchestrationRefusal(code)
+        path = item.get("path")
+        kind = item.get("kind")
+        mode = item.get("mode")
+        digest = item.get("sha256")
+        size = item.get("size")
+        if (
+            not isinstance(path, str)
+            or not path
+            or path <= previous
+            or Path(path).is_absolute()
+            or ".." in Path(path).parts
+            or kind not in {"directory", "file"}
+            or mode not in {"0600", "0700"}
+            or isinstance(size, bool)
+            or not isinstance(size, int)
+            or size < 0
+        ):
+            raise OrchestrationRefusal(code)
+        if kind == "directory":
+            if digest is not None or size != 0 or mode != "0700":
+                raise OrchestrationRefusal(code)
+        elif (
+            not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None
+        ):
+            raise OrchestrationRefusal(code)
+        previous = path
+    return [dict(item) for item in inventory]
+
+
+def _validate_runtime_manifest(value: object) -> dict[str, Any]:
+    if not isinstance(value, dict) or set(value) != RUNTIME_MANIFEST_KEYS:
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED")
+    if (
+        value.get("schema") != RUNTIME_SCHEMA
+        or value.get("story_id") != STORY_ID
+        or value.get("package") != MCP_PACKAGE_NAME
+        or value.get("version") != MCP_PACKAGE_VERSION
+        or value.get("node_version") != NODE_VERSION
+        or value.get("npm_version") != NPM_VERSION
+        or not isinstance(value.get("package_lock_sha256"), str)
+        or re.fullmatch(r"[0-9a-f]{64}", value["package_lock_sha256"]) is None
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED")
+    result = dict(value)
+    result["inventory"] = _validate_runtime_inventory(
+        value.get("inventory"), code="PRO_RUNTIME_DRIFTED"
+    )
+    return result
+
+
+def _verify_runtime_at(
+    root: Path,
+    *,
+    source: Path = DEFAULT_RUNTIME_SOURCE,
+    node: Path = DEFAULT_NODE_BIN,
+    verify_node: bool = True,
+) -> dict[str, Any]:
+    try:
+        metadata = root.lstat()
+    except FileNotFoundError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_MISSING") from error
+    except OSError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED") from error
+    if stat.S_ISLNK(metadata.st_mode):
+        raise OrchestrationRefusal("PRO_RUNTIME_SYMLINK")
+    if (
+        not stat.S_ISDIR(metadata.st_mode)
+        or metadata.st_uid != os.getuid()
+        or stat.S_IMODE(metadata.st_mode) != 0o700
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_MODE")
+    workflow._ensure_no_symlink_ancestors(root)
+    if verify_node:
+        _require_runtime_toolchain(node)
+    source_package, source_lock, source_lock_hash, expected_inventory = (
+        _runtime_source_contract(source)
+    )
+    manifest_path = root / RUNTIME_MANIFEST_NAME
+    try:
+        manifest_metadata = manifest_path.lstat()
+    except OSError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED") from error
+    if (
+        stat.S_ISLNK(manifest_metadata.st_mode)
+        or not stat.S_ISREG(manifest_metadata.st_mode)
+        or manifest_metadata.st_uid != os.getuid()
+        or stat.S_IMODE(manifest_metadata.st_mode) != 0o600
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_MODE")
+    manifest = _validate_runtime_manifest(
+        _read_json(manifest_path, "PRO_RUNTIME_DRIFTED")
+    )
+    if manifest["package_lock_sha256"] != source_lock_hash:
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED")
+    package_bytes = workflow._read_regular(
+        root / RUNTIME_PACKAGE_JSON_NAME,
+        workflow.MAX_JSON_BYTES,
+        "PRO_RUNTIME_DRIFTED",
+    )
+    lock_bytes = workflow._read_regular(
+        root / RUNTIME_PACKAGE_LOCK_NAME,
+        64 * 1024 * 1024,
+        "PRO_RUNTIME_DRIFTED",
+    )
+    if package_bytes != source_package or lock_bytes != source_lock:
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED")
+    if manifest["inventory"] != expected_inventory:
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED")
+    if _runtime_inventory(root) != expected_inventory:
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED")
+    package = _read_json(root / RUNTIME_PACKAGE_RELATIVE, "PRO_RUNTIME_DRIFTED")
+    if (
+        not isinstance(package, dict)
+        or package.get("name") != MCP_PACKAGE_NAME
+        or package.get("version") != MCP_PACKAGE_VERSION
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED")
+    cli = root / RUNTIME_CLI_RELATIVE
+    try:
+        cli_metadata = cli.lstat()
+    except OSError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED") from error
+    if stat.S_ISLNK(cli_metadata.st_mode) or not stat.S_ISREG(cli_metadata.st_mode):
+        raise OrchestrationRefusal("PRO_RUNTIME_DRIFTED")
+    return {
+        "status": "PRO_RUNTIME_READY",
+        "package": MCP_PACKAGE_NAME,
+        "version": MCP_PACKAGE_VERSION,
+        "runtime": str(root),
+        "package_lock_sha256": source_lock_hash,
+        "cli": str(cli),
+    }
+
+
+def _verify_private_runtime(
+    private_root: Path,
+    *,
+    source: Path = DEFAULT_RUNTIME_SOURCE,
+    node: Path = DEFAULT_NODE_BIN,
+) -> dict[str, Any]:
+    try:
+        _require_existing_private_root(private_root)
+        return _verify_runtime_at(
+            _runtime_paths(private_root)["runtime"], source=source, node=node
+        )
+    except workflow.WorkflowRefusal as error:
+        code = (
+            "PRO_RUNTIME_SYMLINK"
+            if error.code == "PATH_SYMLINK"
+            else error.code
+            if error.code in RUNTIME_REASON_CODES | {"PRO_RUNTIME_SOURCE_INVALID"}
+            else "PRO_RUNTIME_DRIFTED"
+        )
+        raise OrchestrationRefusal(code) from error
+
+
+def _remove_private_tree(path: Path, *, private_root: Path) -> None:
+    if path.parent != private_root or path.name not in {
+        RUNTIME_STAGE_NAME,
+        RUNTIME_CACHE_NAME,
+    }:
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_SCOPE")
+    try:
+        metadata = path.lstat()
+    except FileNotFoundError:
+        return
+    except OSError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE") from error
+    if (
+        stat.S_ISLNK(metadata.st_mode)
+        or not stat.S_ISDIR(metadata.st_mode)
+        or metadata.st_uid != os.getuid()
+        or stat.S_IMODE(metadata.st_mode) != 0o700
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+    shutil.rmtree(path)
+
+
+def _require_replaceable_runtime_root(path: Path) -> None:
+    workflow._ensure_no_symlink_ancestors(path.parent)
+    try:
+        metadata = path.lstat()
+    except FileNotFoundError:
+        return
+    except OSError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE") from error
+    if metadata.st_uid != os.getuid() or not (
+        stat.S_ISDIR(metadata.st_mode)
+        or stat.S_ISREG(metadata.st_mode)
+        or stat.S_ISLNK(metadata.st_mode)
+    ):
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+
+
+def _discard_replaced_runtime(path: Path, *, private_root: Path) -> None:
+    if path.parent != private_root or path.name != RUNTIME_STAGE_NAME:
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_SCOPE")
+    try:
+        metadata = path.lstat()
+    except FileNotFoundError:
+        return
+    except OSError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE") from error
+    if metadata.st_uid != os.getuid():
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+    if stat.S_ISLNK(metadata.st_mode) or stat.S_ISREG(metadata.st_mode):
+        path.unlink()
+        return
+    if not stat.S_ISDIR(metadata.st_mode):
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+    os.chmod(path, 0o700, follow_symlinks=False)
+    try:
+        for directory, directory_names, file_names in os.walk(
+            path, topdown=True, followlinks=False
+        ):
+            directory_path = Path(directory)
+            for name in directory_names:
+                child = directory_path / name
+                child_metadata = child.lstat()
+                if child_metadata.st_uid != os.getuid():
+                    raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+                if stat.S_ISLNK(child_metadata.st_mode):
+                    continue
+                if not stat.S_ISDIR(child_metadata.st_mode):
+                    raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+                os.chmod(child, 0o700, follow_symlinks=False)
+            for name in file_names:
+                child_metadata = (directory_path / name).lstat()
+                if child_metadata.st_uid != os.getuid() or not (
+                    stat.S_ISREG(child_metadata.st_mode)
+                    or stat.S_ISLNK(child_metadata.st_mode)
+                ):
+                    raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE")
+        shutil.rmtree(path)
+    except OSError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_UNSAFE") from error
+
+
+def _rename_exchange(left: Path, right: Path) -> None:
+    try:
+        renameat2 = ctypes.CDLL(None, use_errno=True).renameat2
+    except AttributeError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_ATOMIC_REPLACE_UNAVAILABLE") from error
+    renameat2.argtypes = (
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_uint,
+    )
+    renameat2.restype = ctypes.c_int
+    result = renameat2(
+        -100,
+        os.fsencode(left),
+        -100,
+        os.fsencode(right),
+        RENAME_EXCHANGE,
+    )
+    if result != 0:
+        raise OrchestrationRefusal("PRO_RUNTIME_ATOMIC_REPLACE_UNAVAILABLE")
+
+
+def _fsync_directory(path: Path) -> None:
+    descriptor = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _run_npm_runtime_install(
+    *, node: Path, npm_cli: Path, stage: Path, cache: Path
+) -> None:
+    user_config = stage / RUNTIME_USER_NPMRC_NAME
+    global_config = stage / RUNTIME_GLOBAL_NPMRC_NAME
+    environment = {
+        "HOME": str(stage.parent),
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "PATH": "/usr/bin:/bin",
+        "TZ": "UTC",
+        "COREPACK_ENABLE_NETWORK": "0",
+        "COREPACK_ENABLE_PROJECT_SPEC": "0",
+        "NPM_CONFIG_USERCONFIG": str(user_config),
+        "NPM_CONFIG_GLOBALCONFIG": str(global_config),
+        "NPM_CONFIG_CACHE": str(cache),
+        "NPM_CONFIG_REGISTRY": "https://registry.npmjs.org/",
+        "NPM_CONFIG_IGNORE_SCRIPTS": "true",
+        "NPM_CONFIG_AUDIT": "false",
+        "NPM_CONFIG_FUND": "false",
+        "NPM_CONFIG_UPDATE_NOTIFIER": "false",
+        "NPM_CONFIG_BIN_LINKS": "false",
+    }
+    command = [
+        str(node),
+        str(npm_cli),
+        "--userconfig",
+        str(user_config),
+        "--globalconfig",
+        str(global_config),
+        "--cache",
+        str(cache),
+        "--registry",
+        "https://registry.npmjs.org/",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--bin-links=false",
+        "--prefix",
+        str(stage),
+        "ci",
+    ]
+    try:
+        result = subprocess.run(
+            command,
+            cwd=stage,
+            env=environment,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+    except OSError as error:
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_FAILED") from error
+    if result.returncode != 0:
+        raise OrchestrationRefusal("PRO_RUNTIME_INSTALL_FAILED")
+
+
+def runtime_install(
+    *,
+    private_root: Path,
+    node: Path,
+    npm_cli: Path,
+    source: Path = DEFAULT_RUNTIME_SOURCE,
+) -> dict[str, Any]:
+    _validate_private_root(private_root)
+    _require_runtime_toolchain(node, npm_cli)
+    package_bytes, lock_bytes, lock_hash, _expected_inventory = (
+        _runtime_source_contract(source)
+    )
+    paths = _runtime_paths(private_root)
+    stage = paths["stage"]
+    runtime = paths["runtime"]
+    cache = paths["cache"]
+    _remove_private_tree(stage, private_root=private_root)
+    if cache.exists():
+        _require_owner_directory(cache, "PRO_RUNTIME_INSTALL_UNSAFE")
+    else:
+        workflow._ensure_private_directory(cache)
+    _require_replaceable_runtime_root(runtime)
+    workflow._ensure_private_directory(stage)
+    try:
+        workflow._write_exclusive(stage / RUNTIME_PACKAGE_JSON_NAME, package_bytes)
+        workflow._write_exclusive(stage / RUNTIME_PACKAGE_LOCK_NAME, lock_bytes)
+        workflow._write_exclusive(stage / RUNTIME_USER_NPMRC_NAME, b"")
+        workflow._write_exclusive(stage / RUNTIME_GLOBAL_NPMRC_NAME, b"")
+        _run_npm_runtime_install(node=node, npm_cli=npm_cli, stage=stage, cache=cache)
+        _privatize_runtime_tree(stage)
+        manifest = _runtime_manifest(stage, package_lock_sha256=lock_hash)
+        _atomic_private_json(stage / RUNTIME_MANIFEST_NAME, manifest)
+        _verify_runtime_at(stage, source=source, node=node, verify_node=False)
+        if runtime.exists() or runtime.is_symlink():
+            _rename_exchange(stage, runtime)
+            _fsync_directory(private_root)
+            _discard_replaced_runtime(stage, private_root=private_root)
+        else:
+            os.replace(stage, runtime)
+            _fsync_directory(private_root)
+        verified = _verify_runtime_at(runtime, source=source, node=node)
+    except BaseException:
+        try:
+            _remove_private_tree(stage, private_root=private_root)
+        except OrchestrationRefusal:
+            pass
+        raise
+    return {
+        **verified,
+        "status": "PRO_RUNTIME_INSTALLED",
+        "next_action": "pro-doctor",
+    }
+
+
 def _browser_executable(browser: str) -> Path:
     if browser == "edge":
         return DEFAULT_EDGE
@@ -432,7 +1746,7 @@ def _browser_probe(browser: str) -> str:
         or not stat.S_ISREG(metadata.st_mode)
         or resolved != path
         or metadata.st_uid != 0
-        or stat.S_IMODE(metadata.st_mode) & 0o022
+        or stat.S_IMODE(metadata.st_mode) != 0o755
     ):
         return "invalid"
     if not os.access(path, os.X_OK):
@@ -500,6 +1814,7 @@ def _ensure_layout(private_root: Path) -> dict[str, Path]:
         "edge_profile": _profile_path(private_root, "edge"),
         "chrome_profile": _profile_path(private_root, "chrome"),
         "requests": private_root / "chatgpt-pro-requests",
+        "responses": private_root / "chatgpt-pro-responses",
         "secrets": private_root / "chatgpt-pro",
         "runs": private_root / "chatgpt-pro-runs",
         "mcp_output": private_root / "chatgpt-pro-mcp-output",
@@ -603,6 +1918,42 @@ def _atomic_private_json(path: Path, value: Mapping[str, Any]) -> None:
                 pass
 
 
+def _atomic_private_create(path: Path, payload: bytes, *, code: str) -> None:
+    workflow._ensure_private_directory(path.parent)
+    descriptor = -1
+    temporary_path: Path | None = None
+    try:
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=".bound-response-proposal.", dir=path.parent
+        )
+        temporary_path = Path(temporary_name)
+        os.fchmod(descriptor, 0o600)
+        _write_all(descriptor, payload, code)
+        os.fsync(descriptor)
+        os.close(descriptor)
+        descriptor = -1
+        os.link(temporary_path, path, follow_symlinks=False)
+        temporary_path.unlink()
+        temporary_path = None
+        directory_descriptor = os.open(path.parent, os.O_RDONLY | os.O_CLOEXEC)
+        try:
+            os.fsync(directory_descriptor)
+        finally:
+            os.close(directory_descriptor)
+    except FileExistsError as error:
+        raise OrchestrationRefusal(code) from error
+    except OSError as error:
+        raise OrchestrationRefusal(code) from error
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        if temporary_path is not None:
+            try:
+                temporary_path.unlink()
+            except FileNotFoundError:
+                pass
+
+
 def _require_existing_private_directory(path: Path) -> None:
     workflow._ensure_no_symlink_ancestors(path)
     try:
@@ -677,12 +2028,417 @@ def _validate_hash_list(value: object, code: str) -> list[str]:
     return list(value)
 
 
+def _validate_closed_diagnostic_state(state: Mapping[str, Any]) -> None:
+    if "reason_code" not in state:
+        return
+    reason_code = state.get("reason_code")
+    expected_status = (
+        "BLOCKED_PRO_REQUIRED"
+        if state.get("importance") == "gated"
+        else "PRO_UNAVAILABLE_FALLBACK"
+    )
+    expected_action = (
+        "STOP"
+        if state.get("importance") == "gated"
+        else "CONTINUE_CANONICAL_LOCAL_ONLY"
+    )
+    if (
+        not isinstance(reason_code, str)
+        or reason_code not in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES
+        or state.get("phase") not in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_PHASES
+        or state.get("submission_attempted") is not False
+        or state.get("status") != expected_status
+        or state.get("next_action") != expected_action
+    ):
+        raise OrchestrationRefusal("STATE_INVALID")
+
+
+def _validate_closed_diagnostic_event(
+    state: Mapping[str, Any], final_event: Mapping[str, Any]
+) -> None:
+    payload = final_event.get("payload")
+    if not isinstance(payload, dict):
+        raise OrchestrationRefusal("RUN_RECORD_INVALID")
+    state_reason = state.get("reason_code")
+    event_reason = payload.get("reason_code")
+    diagnostic_event = isinstance(
+        event_reason, str
+    ) and event_reason.strip().casefold().startswith("advanced_")
+    if state_reason is None and not diagnostic_event:
+        return
+    if (
+        not isinstance(event_reason, str)
+        or event_reason not in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES
+        or final_event.get("event_type") != "PRO_UNAVAILABLE"
+        or set(payload)
+        != {
+            "fallback_scope",
+            "importance",
+            "phase",
+            "reason_code",
+            "state_sha256",
+            "status",
+            "submission_attempted",
+        }
+    ):
+        raise OrchestrationRefusal("STATE_INVALID")
+    if (
+        state_reason != event_reason
+        or payload.get("status") != state.get("status")
+        or payload.get("importance") != state.get("importance")
+        or payload.get("fallback_scope") != state.get("next_action")
+        or payload.get("submission_attempted") is not False
+        or payload.get("phase") != state.get("phase")
+    ):
+        raise OrchestrationRefusal("STATE_INVALID")
+
+
+def _record_events(run_dir: Path) -> list[dict[str, Any]]:
+    record_path = run_dir / "run-record.v1.jsonl"
+    text = workflow._read_text(
+        record_path, workflow.MAX_RECORD_BYTES, "RUN_RECORD_INVALID"
+    )
+    if not text.endswith("\n"):
+        raise OrchestrationRefusal("RUN_RECORD_INVALID")
+    lines = text.splitlines()
+    workflow._verify_events(lines, run_dir.name)
+    events: list[dict[str, Any]] = []
+    for line in lines:
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise OrchestrationRefusal("RUN_RECORD_INVALID") from error
+        if not isinstance(event, dict) or not isinstance(event.get("payload"), dict):
+            raise OrchestrationRefusal("RUN_RECORD_INVALID")
+        events.append(event)
+    return events
+
+
+def _expected_terminal_fallback(state: Mapping[str, Any]) -> tuple[str, str]:
+    return (
+        ("BLOCKED_PRO_REQUIRED", "STOP")
+        if state.get("importance") == "gated"
+        else ("PRO_UNAVAILABLE_FALLBACK", "CONTINUE_CANONICAL_LOCAL_ONLY")
+    )
+
+
+def _validate_advanced_submission_intent(
+    events: Sequence[Mapping[str, Any]],
+    state: Mapping[str, Any],
+    *,
+    refusal_code: str,
+) -> None:
+    prompt_hash = state.get("prompt_sha256")
+    intents = [
+        event
+        for event in events
+        if event.get("event_type") == "SUBMISSION_INTENT_RECORDED"
+    ]
+    if (
+        not isinstance(prompt_hash, str)
+        or re.fullmatch(r"[0-9a-f]{64}", prompt_hash) is None
+        or len(intents) != 1
+    ):
+        raise OrchestrationRefusal(refusal_code)
+    payload = intents[0].get("payload")
+    if (
+        not isinstance(payload, dict)
+        or set(payload)
+        != {
+            "effort_label",
+            "model_label",
+            "origin",
+            "prompt_sha256",
+            "status",
+        }
+        or payload.get("status") != "PRE_SEND"
+        or payload.get("origin") != workflow.EXACT_ORIGIN
+        or payload.get("model_label") != "GPT-5.6 Sol"
+        or payload.get("effort_label") != "Pro"
+        or payload.get("prompt_sha256") != prompt_hash
+    ):
+        raise OrchestrationRefusal(refusal_code)
+
+
+def _validate_original_run_binding(
+    events: Sequence[Mapping[str, Any]],
+    state: Mapping[str, Any],
+    *,
+    refusal_code: str,
+) -> None:
+    prepared_events = [
+        (index, event)
+        for index, event in enumerate(events)
+        if event.get("event_type") == "RUN_PREPARED"
+    ]
+    orchestration_events = [
+        (index, event)
+        for index, event in enumerate(events)
+        if event.get("event_type") == "ORCHESTRATION_PREPARED"
+    ]
+    intent_indexes = [
+        index
+        for index, event in enumerate(events)
+        if event.get("event_type") == "SUBMISSION_INTENT_RECORDED"
+    ]
+    if (
+        len(prepared_events) != 1
+        or len(orchestration_events) != 1
+        or len(intent_indexes) != 1
+    ):
+        raise OrchestrationRefusal(refusal_code)
+    prepared_index, prepared_event = prepared_events[0]
+    orchestration_index, orchestration_event = orchestration_events[0]
+    prepared_payload = prepared_event.get("payload")
+    orchestration_payload = orchestration_event.get("payload")
+    if (
+        not isinstance(prepared_payload, dict)
+        or set(prepared_payload)
+        != {
+            "contract_sha256",
+            "origin",
+            "prompt_secret_name",
+            "prompt_sha256",
+            "status",
+        }
+        or prepared_payload.get("status") != "PREPARED"
+        or prepared_payload.get("origin") != workflow.EXACT_ORIGIN
+        or prepared_payload.get("prompt_secret_name") != "RAOS_CHATGPT_PROMPT"
+        or prepared_payload.get("prompt_sha256") != state.get("prompt_sha256")
+        or not isinstance(prepared_payload.get("contract_sha256"), str)
+        or re.fullmatch(r"[0-9a-f]{64}", prepared_payload["contract_sha256"]) is None
+        or not isinstance(orchestration_payload, dict)
+        or set(orchestration_payload)
+        != {"browser", "importance", "mode", "state_sha256", "status"}
+        or orchestration_payload.get("status") != "PREPARED"
+        or orchestration_payload.get("mode") != "LIVE"
+        or orchestration_payload.get("browser") != state.get("browser")
+        or orchestration_payload.get("importance") != state.get("importance")
+        or not isinstance(orchestration_payload.get("state_sha256"), str)
+        or re.fullmatch(r"[0-9a-f]{64}", orchestration_payload["state_sha256"]) is None
+        or not (prepared_index < orchestration_index < intent_indexes[0])
+    ):
+        raise OrchestrationRefusal(refusal_code)
+
+
+def _validate_response_wait_progress_event(
+    event: Mapping[str, Any], *, refusal_code: str
+) -> None:
+    payload = event.get("payload")
+    if not isinstance(payload, dict) or set(payload) != {
+        "elapsed_seconds",
+        "phase",
+        "poll_count",
+        "state_sha256",
+    }:
+        raise OrchestrationRefusal(refusal_code)
+    elapsed_seconds = payload.get("elapsed_seconds")
+    poll_count = payload.get("poll_count")
+    state_hash = payload.get("state_sha256")
+    if (
+        not isinstance(elapsed_seconds, int)
+        or isinstance(elapsed_seconds, bool)
+        or elapsed_seconds <= 0
+        or elapsed_seconds % RESPONSE_PROGRESS_INTERVAL_SECONDS != 0
+        or not isinstance(poll_count, int)
+        or isinstance(poll_count, bool)
+        or poll_count * RESPONSE_POLL_SECONDS != elapsed_seconds
+        or payload.get("phase") not in RESPONSE_WAIT_PHASES
+        or not isinstance(state_hash, str)
+        or re.fullmatch(r"[0-9a-f]{64}", state_hash) is None
+    ):
+        raise OrchestrationRefusal(refusal_code)
+
+
+def _verified_bound_response_source(
+    *,
+    run_dir: Path,
+    state: Mapping[str, Any],
+    recovered: bool = False,
+    refusal_code: str = "RUN_NOT_RESUMABLE",
+) -> dict[str, Any]:
+    events = _record_events(run_dir)
+    if recovered:
+        if not events or events[-1].get("event_type") != "BOUND_RESPONSE_RECOVERED":
+            raise OrchestrationRefusal(refusal_code)
+        source_events = events[:-1]
+    else:
+        source_events = events
+    anchors = [
+        (index, event)
+        for index, event in enumerate(source_events)
+        if event.get("event_type") == "PRO_UNAVAILABLE"
+        and isinstance(event.get("payload"), dict)
+        and event["payload"].get("reason_code") in BOUND_RESPONSE_RECOVERY_REASON_CODES
+    ]
+    if len(anchors) != 1:
+        raise OrchestrationRefusal(refusal_code)
+    anchor_index, anchor = anchors[0]
+    for event in source_events[anchor_index + 1 :]:
+        if event.get("event_type") != "RESPONSE_WAIT_PROGRESS":
+            raise OrchestrationRefusal(refusal_code)
+        _validate_response_wait_progress_event(event, refusal_code=refusal_code)
+
+    expected_status, expected_action = _expected_terminal_fallback(state)
+    payload = anchor.get("payload")
+    allowed_payload_keys = {
+        "fallback_scope",
+        "importance",
+        "reason_code",
+        "state_sha256",
+        "status",
+        "submission_attempted",
+    }
+    if not isinstance(payload, dict):
+        raise OrchestrationRefusal(refusal_code)
+    if "resubmitted" in payload:
+        allowed_payload_keys.add("resubmitted")
+    anchor_hash = anchor.get("event_sha256")
+    anchor_state_hash = payload.get("state_sha256")
+    conversation_url = state.get("conversation_url")
+    if (
+        set(payload) != allowed_payload_keys
+        or payload.get("status") != expected_status
+        or payload.get("importance") != state.get("importance")
+        or payload.get("fallback_scope") != expected_action
+        or payload.get("submission_attempted") is not True
+        or payload.get("reason_code") not in BOUND_RESPONSE_RECOVERY_REASON_CODES
+        or ("resubmitted" in payload and payload.get("resubmitted") is not False)
+        or not isinstance(anchor_state_hash, str)
+        or re.fullmatch(r"[0-9a-f]{64}", anchor_state_hash) is None
+        or not isinstance(anchor_hash, str)
+        or re.fullmatch(r"[0-9a-f]{64}", anchor_hash) is None
+        or state.get("mode") != "LIVE"
+        or state.get("submission_attempted") is not True
+        or not isinstance(conversation_url, str)
+        or not _is_bound_conversation_url(conversation_url)
+    ):
+        raise OrchestrationRefusal(refusal_code)
+    if (
+        state.get("status") != expected_status
+        or state.get("next_action") != expected_action
+        or anchor_state_hash != hashlib.sha256(_canonical_json(state)).hexdigest()
+    ):
+        raise OrchestrationRefusal(refusal_code)
+    if any(
+        event["payload"].get("state_sha256") != anchor_state_hash
+        for event in source_events[anchor_index + 1 :]
+    ):
+        raise OrchestrationRefusal(refusal_code)
+    _validate_advanced_submission_intent(
+        source_events, state, refusal_code=refusal_code
+    )
+    _validate_original_run_binding(source_events, state, refusal_code=refusal_code)
+    return anchor
+
+
+def _read_private_proposal(path: Path, *, refusal_code: str) -> bytes:
+    flags = os.O_RDONLY | os.O_CLOEXEC
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as error:
+        raise OrchestrationRefusal(refusal_code) from error
+    try:
+        metadata = os.fstat(descriptor)
+        if (
+            not stat.S_ISREG(metadata.st_mode)
+            or metadata.st_uid != os.getuid()
+            or stat.S_IMODE(metadata.st_mode) != 0o600
+            or metadata.st_size <= 0
+            or metadata.st_size > workflow.MAX_TEXT_BYTES + 4096
+        ):
+            raise OrchestrationRefusal(refusal_code)
+        chunks: list[bytes] = []
+        remaining = metadata.st_size
+        while remaining:
+            chunk = os.read(descriptor, min(65536, remaining))
+            if not chunk:
+                raise OrchestrationRefusal(refusal_code)
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        if os.read(descriptor, 1):
+            raise OrchestrationRefusal(refusal_code)
+        return b"".join(chunks)
+    finally:
+        os.close(descriptor)
+
+
+def _private_proposal_sha256(path: Path, *, refusal_code: str) -> str:
+    return hashlib.sha256(
+        _read_private_proposal(path, refusal_code=refusal_code)
+    ).hexdigest()
+
+
+def _validate_bound_response_recovered_event(
+    run_dir: Path, state: Mapping[str, Any], final_event: Mapping[str, Any]
+) -> None:
+    if final_event.get("event_type") != "BOUND_RESPONSE_RECOVERED":
+        return
+    payload = final_event.get("payload")
+    if not isinstance(payload, dict) or set(payload) != {
+        "advice_type",
+        "authority",
+        "importance",
+        "mode",
+        "next_action",
+        "open_gap_hashes",
+        "proposal_file",
+        "proposal_sha256",
+        "provenance",
+        "response_fingerprint",
+        "response_sha256",
+        "resubmitted",
+        "source_terminal_event_sha256",
+        "state_sha256",
+        "status",
+        "submission_attempted",
+    }:
+        raise OrchestrationRefusal("STATE_INVALID")
+    source = _verified_bound_response_source(
+        run_dir=run_dir,
+        state=state,
+        recovered=True,
+        refusal_code="STATE_INVALID",
+    )
+    proposal = _read_private_proposal(
+        run_dir / "unapproved-proposal.md", refusal_code="STATE_INVALID"
+    )
+    prepared = {
+        "run_id": state["run_id"],
+        "prompt_sha256": state["prompt_sha256"],
+    }
+    advice, response_fingerprint, response_sha256 = _validated_bound_response_proposal(
+        prepared=prepared,
+        proposal=proposal,
+        refusal_code="STATE_INVALID",
+    )
+    expected_payload = _bound_response_recovered_payload(
+        state=state,
+        source_terminal=source,
+        proposal=proposal,
+        advice=advice,
+        response_fingerprint=response_fingerprint,
+        response_sha256=response_sha256,
+    )
+    expected_payload["state_sha256"] = hashlib.sha256(
+        _canonical_json(state)
+    ).hexdigest()
+    if payload != expected_payload:
+        raise OrchestrationRefusal("STATE_INVALID")
+
+
 def _load_state(run_root: Path, run_id: str) -> tuple[Path, dict[str, Any]]:
     if not RUN_ID_PATTERN.fullmatch(run_id):
         raise OrchestrationRefusal("RUN_ID_INVALID")
     run_dir = run_root / run_id
     state = _read_json(_state_path(run_dir), "STATE_INVALID")
-    if set(state) != STATE_KEYS:
+    state_keys = set(state)
+    if (
+        not STATE_KEYS <= state_keys
+        or not state_keys <= STATE_KEYS | OPTIONAL_STATE_KEYS
+    ):
         raise OrchestrationRefusal("STATE_INVALID")
     if (
         state.get("schema_version") != ORCHESTRATION_SCHEMA_VERSION
@@ -695,6 +2451,11 @@ def _load_state(run_root: Path, run_id: str) -> tuple[Path, dict[str, Any]]:
         or not isinstance(state.get("submission_attempted"), bool)
     ):
         raise OrchestrationRefusal("STATE_INVALID")
+    if "phase" in state:
+        phase = state.get("phase")
+        if not isinstance(phase, str) or phase not in PRE_SUBMISSION_PHASES:
+            raise OrchestrationRefusal("STATE_INVALID")
+    _validate_closed_diagnostic_state(state)
     _validate_hash_list(state.get("gap_hashes"), "STATE_INVALID")
     _validate_hash_list(state.get("response_fingerprints"), "STATE_INVALID")
     _validate_hash_list(state.get("open_gap_hashes"), "STATE_INVALID")
@@ -718,7 +2479,43 @@ def _load_state(run_root: Path, run_id: str) -> tuple[Path, dict[str, Any]]:
         or expected_state_hash != hashlib.sha256(_canonical_json(state)).hexdigest()
     ):
         raise OrchestrationRefusal("STATE_RECORD_MISMATCH")
+    _validate_closed_diagnostic_event(state, final_event)
+    _validate_bound_response_recovered_event(run_dir, state, final_event)
     return run_dir, state
+
+
+def _last_record_event(run_dir: Path) -> dict[str, Any]:
+    record_path = run_dir / "run-record.v1.jsonl"
+    text = workflow._read_text(
+        record_path, workflow.MAX_RECORD_BYTES, "RUN_RECORD_INVALID"
+    )
+    try:
+        event = json.loads(text.splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as error:
+        raise OrchestrationRefusal("RUN_RECORD_INVALID") from error
+    if not isinstance(event, dict) or not isinstance(event.get("payload"), dict):
+        raise OrchestrationRefusal("RUN_RECORD_INVALID")
+    return event
+
+
+def _record_events_by_type(run_dir: Path, event_type: str) -> list[dict[str, Any]]:
+    record_path = run_dir / "run-record.v1.jsonl"
+    text = workflow._read_text(
+        record_path, workflow.MAX_RECORD_BYTES, "RUN_RECORD_INVALID"
+    )
+    if not text.endswith("\n"):
+        raise OrchestrationRefusal("RUN_RECORD_INVALID")
+    matches: list[dict[str, Any]] = []
+    for line in text.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise OrchestrationRefusal("RUN_RECORD_INVALID") from error
+        if not isinstance(event, dict):
+            raise OrchestrationRefusal("RUN_RECORD_INVALID")
+        if event.get("event_type") == event_type:
+            matches.append(event)
+    return matches
 
 
 def _new_state(
@@ -807,6 +2604,38 @@ def _persist_response_wait_progress(
     )
 
 
+def _append_terminal_response_wait_progress(
+    *,
+    run_dir: Path,
+    state: Mapping[str, Any],
+    conversation_url: str,
+    elapsed_seconds: int,
+    poll_count: int,
+    phase: str,
+) -> None:
+    if state.get("conversation_url") != conversation_url:
+        raise OrchestrationRefusal("LIVE_RESUME_SCOPE")
+    state_hash = hashlib.sha256(_canonical_json(state)).hexdigest()
+    event = {
+        "event_type": "RESPONSE_WAIT_PROGRESS",
+        "payload": {
+            "elapsed_seconds": elapsed_seconds,
+            "poll_count": poll_count,
+            "phase": phase,
+            "state_sha256": state_hash,
+        },
+    }
+    _validate_response_wait_progress_event(
+        event, refusal_code="RESPONSE_WAIT_PROGRESS_INVALID"
+    )
+    workflow._append_event(
+        run_dir / "run-record.v1.jsonl",
+        state["run_id"],
+        "RESPONSE_WAIT_PROGRESS",
+        event["payload"],
+    )
+
+
 def _private_request(path: Path, request_root: Path, code: str) -> str:
     if path.is_symlink():
         raise OrchestrationRefusal("REQUEST_FILE_MODE")
@@ -826,6 +2655,36 @@ def _private_request(path: Path, request_root: Path, code: str) -> str:
     text = workflow._read_text(resolved, workflow.MAX_TEXT_BYTES, code)
     workflow._reject_sensitive_text(text, code)
     return text
+
+
+def _private_response(path: Path, response_root: Path) -> str:
+    _require_owner_directory(response_root, "RESPONSE_ROOT_INVALID")
+    if not path.is_absolute():
+        raise OrchestrationRefusal("RESPONSE_FILE_SCOPE")
+    try:
+        workflow._ensure_no_symlink_ancestors(path)
+        resolved = path.resolve(strict=True)
+        root = response_root.resolve(strict=True)
+        resolved.relative_to(root)
+        metadata = path.lstat()
+    except (FileNotFoundError, OSError, ValueError, workflow.WorkflowRefusal) as error:
+        raise OrchestrationRefusal("RESPONSE_FILE_SCOPE") from error
+    if (
+        resolved != path
+        or stat.S_ISLNK(metadata.st_mode)
+        or not stat.S_ISREG(metadata.st_mode)
+        or metadata.st_uid != os.getuid()
+        or stat.S_IMODE(metadata.st_mode) != 0o600
+    ):
+        raise OrchestrationRefusal("RESPONSE_FILE_MODE")
+    try:
+        response = workflow._read_text(
+            path, workflow.MAX_TEXT_BYTES, "RESPONSE_SENSITIVE_OR_INVALID"
+        )
+        workflow._reject_sensitive_text(response, "RESPONSE_SENSITIVE_OR_INVALID")
+    except workflow.WorkflowRefusal as error:
+        raise OrchestrationRefusal(error.code) from error
+    return response
 
 
 def _compiled_prompt(request: str, *, importance: str, gap: str | None) -> str:
@@ -864,13 +2723,24 @@ def _prepare_orchestration_run(
     if (parent_run_id is None) != (gap_file is None):
         raise OrchestrationRefusal("FOLLOW_UP_ARGUMENTS")
     if parent_run_id is not None and gap_file is not None:
-        _, parent = _load_state(layout["runs"], parent_run_id)
+        parent_run_dir = _existing_run_dir(layout["runs"], parent_run_id)
+        with _run_lock(parent_run_dir, exclusive=False):
+            authoritative_parent_dir, parent = _load_state(
+                layout["runs"], parent_run_id
+            )
+            if authoritative_parent_dir != parent_run_dir:
+                raise OrchestrationRefusal("RUN_RECORD_INVALID")
+            parent_final_event = _last_record_event(parent_run_dir)
+            inherited_gaps = _validate_hash_list(parent["gap_hashes"], "STATE_INVALID")
+            inherited_responses = _validate_hash_list(
+                parent["response_fingerprints"], "STATE_INVALID"
+            )
+            if parent_final_event.get("event_type") == "BOUND_RESPONSE_RECOVERED":
+                inherited_responses.append(
+                    parent_final_event["payload"]["response_fingerprint"]
+                )
         gap = _private_request(gap_file, layout["requests"], "GAP_INVALID")
         gap_hash = _sha256_text(" ".join(gap.split()).casefold())
-        inherited_gaps = _validate_hash_list(parent["gap_hashes"], "STATE_INVALID")
-        inherited_responses = _validate_hash_list(
-            parent["response_fingerprints"], "STATE_INVALID"
-        )
         if gap_hash in inherited_gaps:
             compiled = _compiled_prompt(request, importance=importance, gap=gap)
             prepared = _prepare_private_prompt(compiled, layout)
@@ -1043,12 +2913,13 @@ class StdioMcpTransport:
         if browser not in SELECTED_BROWSERS:
             raise TransportUnavailable("MCP_BROWSER_INVALID")
         _require_visible_wslg_display()
+        _verify_private_runtime(DEFAULT_PRIVATE_ROOT)
         environment = {
             "DISPLAY": FIXED_WSLG_DISPLAY,
             "HOME": str(Path.home()),
             "LANG": "C.UTF-8",
             "LC_ALL": "C.UTF-8",
-            "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+            "PATH": "/usr/bin:/bin",
             "PLAYWRIGHT_MCP_SECRETS_FILE": str(secrets_file),
             "RAOS_CHATGPT_BROWSER": browser,
             "TZ": "UTC",
@@ -1068,15 +2939,37 @@ class StdioMcpTransport:
         except OSError as error:
             raise TransportUnavailable("MCP_START_FAILED") from error
         self._request_id = 0
-        self._request(
-            "initialize",
-            {
-                "protocolVersion": "2025-11-25",
-                "capabilities": {},
-                "clientInfo": {"name": "raos-chatgpt-pro", "version": "1"},
-            },
-        )
-        self._send({"jsonrpc": "2.0", "method": "notifications/initialized"})
+        try:
+            self._request(
+                "initialize",
+                {
+                    "protocolVersion": "2025-11-25",
+                    "capabilities": {},
+                    "clientInfo": {"name": "raos-chatgpt-pro", "version": "1"},
+                },
+            )
+            self._send({"jsonrpc": "2.0", "method": "notifications/initialized"})
+        except BaseException:
+            self._terminate_process()
+            raise
+
+    def _terminate_process(self) -> None:
+        process = self._process
+        try:
+            if process.stdin is not None:
+                process.stdin.close()
+        except OSError:
+            pass
+        try:
+            if process.poll() is None:
+                process.terminate()
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+        except OSError:
+            pass
 
     def _send(self, value: Mapping[str, Any]) -> None:
         if self._process.stdin is None:
@@ -1151,15 +3044,7 @@ class StdioMcpTransport:
                 except OrchestrationRefusal:
                     pass
         finally:
-            if process.stdin is not None:
-                process.stdin.close()
-            if process.poll() is None:
-                process.terminate()
-                try:
-                    process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait(timeout=5)
+            self._terminate_process()
 
 
 def _extract_url(snapshot: str) -> str:
@@ -1222,6 +3107,41 @@ def _elements_preserving_labels(snapshot: str) -> list[tuple[str, str, str]]:
     return elements
 
 
+def _elements_excluding_lines(
+    snapshot: str,
+    excluded_indexes: set[int],
+    *,
+    preserve_labels: bool,
+) -> list[tuple[str, str, str]]:
+    elements: list[tuple[str, str, str]] = []
+    for line_index, line in enumerate(snapshot.splitlines()):
+        if line_index in excluded_indexes:
+            continue
+        heading = _advanced_response_heading_match(line)
+        if heading is not None:
+            elements.append(
+                (
+                    "heading",
+                    ADVANCED_RESPONSE_LABEL,
+                    heading.group("ref"),
+                )
+            )
+            continue
+        match = ELEMENT_PATTERN.match(line)
+        if match is None:
+            continue
+        raw_role = match.group("role")
+        raw_label = match.group("label") or ""
+        elements.append(
+            (
+                raw_role if preserve_labels else raw_role.strip().casefold(),
+                raw_label if preserve_labels else raw_label.strip(),
+                match.group("ref"),
+            )
+        )
+    return elements
+
+
 def _has_compound_cloudflare_challenge(snapshot: str) -> bool:
     lowered = snapshot.casefold()
     http_marker, host_marker, _brand_marker = CLOUDFLARE_CHALLENGE_MARKERS
@@ -1231,20 +3151,191 @@ def _has_compound_cloudflare_challenge(snapshot: str) -> bool:
     return CLOUDFLARE_BRAND_PATTERN.search(without_challenge_host) is not None
 
 
-def _stop_states(snapshot: str) -> frozenset[str]:
-    lowered = snapshot.casefold()
-    states = {
+def _snapshot_element_lines(
+    snapshot: str,
+) -> list[tuple[int, int, str, str]]:
+    records: list[tuple[int, int, str, str]] = []
+    for line_index, line in enumerate(snapshot.splitlines()):
+        match = STRUCTURAL_ELEMENT_PATTERN.match(line)
+        if match is None:
+            continue
+        records.append(
+            (
+                line_index,
+                len(line) - len(line.lstrip()),
+                match.group("role").strip().casefold(),
+                (match.group("label") or "").strip().casefold(),
+            )
+        )
+    return records
+
+
+def _line_subtree_indexes(
+    lines: Sequence[str], *, root_index: int, root_indent: int
+) -> set[int]:
+    indexes = {root_index}
+    for line_index in range(root_index + 1, len(lines)):
+        line = lines[line_index]
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        if indent <= root_indent:
+            break
+        indexes.add(line_index)
+    return indexes
+
+
+def _bounded_assistant_line_indexes(snapshot: str) -> set[int]:
+    """Return only structurally owned advanced or legacy response regions."""
+
+    lines = snapshot.splitlines()
+    records = _snapshot_element_lines(snapshot)
+    indexes: set[int] = set()
+    response_labels = CHATGPT_RESPONSE_LIKE_LABELS | ASSISTANT_RESPONSE_LIKE_LABELS
+    for position, (line_index, indent, role, label) in enumerate(records):
+        if label not in response_labels:
+            continue
+        if role == "article":
+            indexes.update(
+                _line_subtree_indexes(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                )
+            )
+            continue
+        if role != "heading" or label != ADVANCED_RESPONSE_LABEL.casefold():
+            continue
+        if position + 1 >= len(records):
+            continue
+        body_line, body_indent, body_role, body_label = records[position + 1]
+        body_match = ADVANCED_RESPONSE_BODY_PATTERN.fullmatch(lines[body_line])
+        if (
+            body_role != "generic"
+            or body_label
+            or body_indent != indent
+            or body_match is None
+            or any(lines[index].strip() for index in range(line_index + 1, body_line))
+        ):
+            continue
+        indexes.add(line_index)
+        indexes.update(
+            _line_subtree_indexes(
+                lines,
+                root_index=body_line,
+                root_indent=body_indent,
+            )
+        )
+    return indexes
+
+
+def _bounded_user_message_line_indexes(snapshot: str) -> set[int]:
+    """Return structurally owned user-message roots and sibling bodies."""
+
+    lines = snapshot.splitlines()
+    records = _snapshot_element_lines(snapshot)
+    indexes: set[int] = set()
+    for position, (line_index, indent, role, label) in enumerate(records):
+        if label not in USER_MESSAGE_LABELS:
+            continue
+        indexes.update(
+            _line_subtree_indexes(
+                lines,
+                root_index=line_index,
+                root_indent=indent,
+            )
+        )
+        if role != "heading" or position + 1 >= len(records):
+            continue
+        body_line, body_indent, body_role, body_label = records[position + 1]
+        if (
+            body_role != "generic"
+            or body_label
+            or body_indent != indent
+            or any(lines[index].strip() for index in range(line_index + 1, body_line))
+        ):
+            continue
+        indexes.update(
+            _line_subtree_indexes(
+                lines,
+                root_index=body_line,
+                root_indent=body_indent,
+            )
+        )
+    return indexes
+
+
+def _untrusted_content_line_indexes(snapshot: str) -> set[int]:
+    indexes = _bounded_assistant_line_indexes(snapshot)
+    indexes.update(_non_response_untrusted_line_indexes(snapshot))
+    return indexes
+
+
+def _non_response_untrusted_line_indexes(snapshot: str) -> set[int]:
+    lines = snapshot.splitlines()
+    indexes = _bounded_user_message_line_indexes(snapshot)
+    for line_index, indent, role, label in _snapshot_element_lines(snapshot):
+        if role in UNTRUSTED_REGION_ROLES or label in USER_MESSAGE_LABELS:
+            indexes.update(
+                _line_subtree_indexes(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                )
+            )
+    return indexes
+
+
+def _text_stop_states(text: str) -> set[str]:
+    lowered = text.casefold()
+    return {
         state
         for state, markers in STOP_MARKERS.items()
         if any(marker in lowered for marker in markers)
     }
-    if _has_compound_cloudflare_challenge(snapshot):
+
+
+def _auth_control_stop_states(role: str, label: str) -> set[str]:
+    if role not in AUTH_CONTROL_ROLES or not label:
+        return set()
+    matches: set[str] = set()
+    for state in ("account_ambiguity", "reauthentication", "login"):
+        if any(marker in label for marker in STOP_MARKERS[state]):
+            matches.add(state)
+    return matches
+
+
+def _stop_states(snapshot: str, *, phase: str = "pre_submission") -> frozenset[str]:
+    if phase not in STOP_PHASES:
+        raise OrchestrationRefusal("STOP_PHASE_INVALID")
+    lines = snapshot.splitlines()
+    untrusted = _untrusted_content_line_indexes(snapshot)
+    if phase == "response":
+        untrusted.update(_advanced_response_action_subtree_line_indexes(snapshot))
+    states: set[str] = set()
+    for line_index, indent, role, label in _snapshot_element_lines(snapshot):
+        if line_index in untrusted:
+            continue
+        states.update(_auth_control_stop_states(role, label))
+        if role not in PAGE_STOP_ROLES:
+            continue
+        subtree = _line_subtree_indexes(
+            lines,
+            root_index=line_index,
+            root_indent=indent,
+        )
+        trusted_text = "\n".join(lines[index] for index in sorted(subtree - untrusted))
+        states.update(_text_stop_states(trusted_text))
+    trusted_snapshot = "\n".join(
+        line for line_index, line in enumerate(lines) if line_index not in untrusted
+    )
+    if _has_compound_cloudflare_challenge(trusted_snapshot):
         states.add("captcha")
     return frozenset(states)
 
 
-def _stop_state(snapshot: str) -> str | None:
-    states = _stop_states(snapshot)
+def _stop_state(snapshot: str, *, phase: str = "pre_submission") -> str | None:
+    states = _stop_states(snapshot, phase=phase)
     for state in STOP_MARKERS:
         if state in states:
             return state
@@ -1265,7 +3356,7 @@ def _await_interactive_authentication(
         raise OrchestrationRefusal("INTERACTIVE_AUTH_WAIT_INVALID")
     while True:
         _extract_url(snapshot)
-        stop_states = _stop_states(snapshot)
+        stop_states = _stop_states(snapshot, phase="authentication")
         if not stop_states:
             return snapshot, remaining_seconds
         immediate_states = stop_states - WAITABLE_AUTH_STATES
@@ -1329,7 +3420,7 @@ def _settle_initial_ui_once(
 
 def _doctor_snapshot(snapshot: str) -> dict[str, Any]:
     url = _extract_url(snapshot)
-    stop_state = _stop_state(snapshot)
+    stop_state = _stop_state(snapshot, phase="authentication")
     if stop_state is not None:
         return {
             "status": "LOGIN_REQUIRED" if stop_state == "login" else "STOPPED",
@@ -1376,16 +3467,362 @@ def _base_observation(
     }
 
 
-def _checked_snapshot(snapshot: str) -> tuple[str, list[tuple[str, str, str]]]:
+def _checked_snapshot(
+    snapshot: str, *, phase: str = "pre_submission"
+) -> tuple[str, list[tuple[str, str, str]]]:
     url = _extract_url(snapshot)
-    stop_state = _stop_state(snapshot)
+    stop_state = _stop_state(snapshot, phase=phase)
     if stop_state is not None:
         raise workflow.WorkflowRefusal(f"STOP_{stop_state.upper()}")
     return url, _elements(snapshot)
 
 
+def _phase_unavailable(
+    error: BaseException,
+    *,
+    phase: str,
+) -> LiveUiUnavailable:
+    """Attach one closed pre-submission phase without exposing browser material."""
+
+    if phase not in PRE_SUBMISSION_PHASES:
+        raise OrchestrationRefusal("PRE_SUBMISSION_PHASE_INVALID")
+    if isinstance(error, LiveUiUnavailable):
+        return LiveUiUnavailable(error.code, error.phase or phase)
+    if isinstance(error, TransportUnavailable):
+        return LiveUiUnavailable(error.code, phase)
+    if isinstance(error, workflow.WorkflowRefusal):
+        if error.code.startswith("STOP_"):
+            return LiveUiUnavailable(error.code, phase)
+        raise error
+    if isinstance(error, OrchestrationRefusal):
+        if error.code == "ORIGIN_MISMATCH":
+            return LiveUiUnavailable(error.code, phase)
+        return _classify_pre_submission_ui_refusal(error, phase=phase)
+    raise error
+
+
+def _settle_pre_submission_transition(
+    transport: BrowserTransport,
+    *,
+    phase: str,
+    validate_expected: Callable[[str], Any],
+) -> tuple[str, Any]:
+    """Observe one completed transition without repeating its mutating action."""
+
+    if phase not in PRE_SUBMISSION_PHASES:
+        raise OrchestrationRefusal("PRE_SUBMISSION_PHASE_INVALID")
+    last_error: OrchestrationRefusal | workflow.WorkflowRefusal | None = None
+    for observation_index in range(PRE_SUBMISSION_SETTLE_ADDITIONAL_OBSERVATIONS + 1):
+        try:
+            snapshot = transport.call("browser_snapshot", {})
+        except TransportUnavailable as error:
+            raise _phase_unavailable(error, phase=phase) from error
+        try:
+            validated = validate_expected(snapshot)
+        except workflow.WorkflowRefusal as error:
+            if error.code.startswith("STOP_"):
+                raise _phase_unavailable(error, phase=phase) from error
+            raise
+        except OrchestrationRefusal as error:
+            if error.code == "ORIGIN_MISMATCH":
+                raise _phase_unavailable(error, phase=phase) from error
+            if error.code not in PRE_SUBMISSION_SETTLE_RETRY_CODES:
+                raise
+            last_error = error
+        else:
+            return snapshot, validated
+        if observation_index == PRE_SUBMISSION_SETTLE_ADDITIONAL_OBSERVATIONS:
+            if last_error is None:
+                raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+            raise _phase_unavailable(last_error, phase=phase) from last_error
+        try:
+            transport.call("browser_wait_for", {"time": PRE_SUBMISSION_SETTLE_SECONDS})
+        except TransportUnavailable as error:
+            raise _phase_unavailable(error, phase=phase) from error
+    raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+
+
+def _trusted_structural_lines(snapshot: str) -> list[tuple[str, str, str]]:
+    """Return raw trusted structural roles, labels, and source lines."""
+
+    ignored_lines = _untrusted_content_line_indexes(snapshot)
+    result: list[tuple[str, str, str]] = []
+    for line_index, line in enumerate(snapshot.splitlines()):
+        if line_index in ignored_lines:
+            continue
+        structural = STRUCTURAL_ELEMENT_PATTERN.match(line)
+        if structural is None or structural.group("label") is None:
+            continue
+        result.append(
+            (
+                structural.group("role"),
+                structural.group("label") or "",
+                line,
+            )
+        )
+    return result
+
+
+def _strict_control_ref(
+    snapshot: str,
+    *,
+    label: str,
+    role: str,
+) -> str:
+    """Resolve one exact, enabled, ref-bearing trusted control."""
+
+    candidates = [
+        (candidate_role, candidate_label, line)
+        for candidate_role, candidate_label, line in _trusted_structural_lines(snapshot)
+        if candidate_role == role and candidate_label == label
+    ]
+    if len(candidates) != 1:
+        raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+    candidate_role, candidate_label, line = candidates[0]
+    exact = ELEMENT_PATTERN.match(line)
+    if (
+        candidate_role != role
+        or candidate_label != label
+        or exact is None
+        or exact.group("role") != role
+        or exact.group("label") != label
+        or DISABLED_CONTROL_PATTERN.search(line) is not None
+        or REF_PATTERN.fullmatch(exact.group("ref")) is None
+        or line.count("[ref=") != 1
+        or ACCESSIBILITY_REF_TOKEN_PATTERN.findall(line) != [exact.group("ref")]
+        or RAW_ACCESSIBILITY_REF_TOKEN_PATTERN.findall(line)
+        != [f"[ref={exact.group('ref')}]"]
+    ):
+        raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+    return exact.group("ref")
+
+
+def _trusted_control_identity_present(
+    snapshot: str,
+    *,
+    label: str,
+    role: str,
+) -> bool:
+    return any(
+        candidate_role == role and candidate_label == label
+        for candidate_role, candidate_label, _line in _trusted_structural_lines(
+            snapshot
+        )
+    )
+
+
+def _strict_advanced_composer_ref(snapshot: str) -> str:
+    candidates = [
+        (candidate_role, candidate_label, line)
+        for candidate_role, candidate_label, line in _trusted_structural_lines(snapshot)
+        if candidate_role in {"textbox", "combobox"}
+        and candidate_label in ADVANCED_COMPOSER_LABELS
+    ]
+    if len(candidates) != 1:
+        raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+    candidate_role, candidate_label, line = candidates[0]
+    exact = ELEMENT_PATTERN.match(line)
+    if (
+        exact is None
+        or exact.group("role") != candidate_role
+        or exact.group("label") != candidate_label
+        or DISABLED_CONTROL_PATTERN.search(line) is not None
+        or REF_PATTERN.fullmatch(exact.group("ref")) is None
+        or line.count("[ref=") != 1
+        or ACCESSIBILITY_REF_TOKEN_PATTERN.findall(line) != [exact.group("ref")]
+        or RAW_ACCESSIBILITY_REF_TOKEN_PATTERN.findall(line)
+        != [f"[ref={exact.group('ref')}]"]
+    ):
+        raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+    return exact.group("ref")
+
+
+def _advanced_initial_surface_present(snapshot: str) -> bool:
+    """Route a Pro-like current landing through strict advanced validation."""
+
+    trusted = _trusted_structural_lines(snapshot)
+    has_pro_button = any(
+        candidate_role.casefold() == "button"
+        and candidate_label.strip().casefold() == ADVANCED_MENU_LABEL.casefold()
+        for candidate_role, candidate_label, _line in trusted
+    )
+    if has_pro_button:
+        return True
+    normalized_composer_labels = {
+        label.casefold() for label in ADVANCED_COMPOSER_LABELS
+    }
+    has_pro_combobox = any(
+        candidate_role.casefold() == "combobox"
+        and candidate_label.strip().casefold() == ADVANCED_MENU_LABEL.casefold()
+        for candidate_role, candidate_label, _line in trusted
+    )
+    has_approved_composer = any(
+        candidate_role.casefold() in {"textbox", "combobox"}
+        and candidate_label.strip().casefold() in normalized_composer_labels
+        for candidate_role, candidate_label, _line in trusted
+    )
+    return has_pro_combobox and has_approved_composer
+
+
+def _normalized_semantic_summary_label(label: str) -> str:
+    """Normalize internal horizontal whitespace without accepting edge padding."""
+
+    return HORIZONTAL_WHITESPACE_PATTERN.sub(" ", label)
+
+
+def _semantic_summary_candidates(
+    snapshot: str,
+) -> tuple[set[str], set[str]]:
+    """Collect trusted model/effort values without resolving action targets."""
+
+    model_values: set[str] = set()
+    effort_values: set[str] = set()
+    ignored_lines = _untrusted_content_line_indexes(snapshot)
+    for line_index, line in enumerate(snapshot.splitlines()):
+        if line_index in ignored_lines:
+            continue
+        structural = STRUCTURAL_ELEMENT_PATTERN.match(line)
+        if structural is None:
+            continue
+        role = structural.group("role")
+        if role not in SEMANTIC_SUMMARY_EVIDENCE_ROLES:
+            continue
+        label = structural.group("label")
+        if label is None:
+            payload = SEMANTIC_SUMMARY_PAYLOAD_PATTERN.fullmatch(line)
+            if payload is None or payload.group("role") != role:
+                continue
+            try:
+                decoded = json.loads(payload.group("payload"))
+            except json.JSONDecodeError:
+                continue
+            if not isinstance(decoded, str):
+                continue
+            label = decoded
+        normalized = _normalized_semantic_summary_label(label)
+        kind_probe = normalized.strip(" \t").casefold()
+        if kind_probe == "model" or kind_probe.startswith("model "):
+            model_values.add(normalized)
+        elif kind_probe == "effort" or kind_probe.startswith("effort "):
+            effort_values.add(normalized)
+    return model_values, effort_values
+
+
+def _advanced_snapshot_present(snapshot: str) -> bool:
+    if _trusted_control_identity_present(
+        snapshot,
+        label=ADVANCED_EXPAND_LABEL,
+        role="menuitem",
+    ):
+        return True
+    model_values, effort_values = _semantic_summary_candidates(snapshot)
+    return bool(model_values or effort_values)
+
+
+def _advanced_like_landing(snapshot: str) -> bool:
+    """Identify the strict advanced picker/composer without unrelated chrome."""
+
+    try:
+        button_ref = _strict_control_ref(
+            snapshot,
+            label=ADVANCED_MENU_LABEL,
+            role="button",
+        )
+        composer_ref = _strict_advanced_composer_ref(snapshot)
+    except OrchestrationRefusal:
+        return False
+    return composer_ref != button_ref
+
+
+def _advanced_menu_state(snapshot: str) -> dict[str, Any]:
+    """Validate a compact action or the trusted semantic summary pair."""
+
+    url, _elements_for_origin_and_stop = _checked_snapshot(snapshot)
+    try:
+        button_ref = _strict_control_ref(
+            snapshot,
+            label=ADVANCED_MENU_LABEL,
+            role="button",
+        )
+    except OrchestrationRefusal as error:
+        if error.code != "SELECTOR_AMBIGUITY":
+            raise
+        raise OrchestrationRefusal("ADVANCED_PRO_BUTTON_INVALID") from error
+    model_values, effort_values = _semantic_summary_candidates(snapshot)
+    if model_values or effort_values:
+        if not model_values:
+            raise OrchestrationRefusal("ADVANCED_MODEL_EVIDENCE_MISSING")
+        if model_values != {ADVANCED_MODEL_ENTRY_LABEL}:
+            raise OrchestrationRefusal("ADVANCED_MODEL_EVIDENCE_CONFLICT")
+        if not effort_values:
+            raise OrchestrationRefusal("ADVANCED_EFFORT_EVIDENCE_MISSING")
+        if effort_values != {ADVANCED_EFFORT_ENTRY_LABEL}:
+            raise OrchestrationRefusal("ADVANCED_EFFORT_EVIDENCE_CONFLICT")
+        if any(
+            button_ref in ACCESSIBILITY_REF_TOKEN_PATTERN.findall(line)
+            for candidate_role, candidate_label, line in _trusted_structural_lines(
+                snapshot
+            )
+            if candidate_role == "menuitem" and candidate_label == ADVANCED_EXPAND_LABEL
+        ):
+            raise OrchestrationRefusal("ADVANCED_PRO_BUTTON_INVALID")
+        return {
+            "view": "expanded",
+            "url": url,
+            "button_ref": button_ref,
+            "expand_ref": None,
+        }
+    has_exact_expand = _trusted_control_identity_present(
+        snapshot,
+        label=ADVANCED_EXPAND_LABEL,
+        role="menuitem",
+    )
+    if has_exact_expand:
+        try:
+            expand_ref = _strict_control_ref(
+                snapshot,
+                label=ADVANCED_EXPAND_LABEL,
+                role="menuitem",
+            )
+        except OrchestrationRefusal as error:
+            if error.code != "SELECTOR_AMBIGUITY":
+                raise
+            raise OrchestrationRefusal("ADVANCED_EXPAND_CONTROL_INVALID") from error
+        if button_ref == expand_ref:
+            raise OrchestrationRefusal("ADVANCED_EXPAND_CONTROL_INVALID")
+        return {
+            "view": "compact",
+            "url": url,
+            "button_ref": button_ref,
+            "expand_ref": expand_ref,
+        }
+    raise OrchestrationRefusal("ADVANCED_MENU_UNRECOGNIZED")
+
+
+def _expanded_advanced_summary(snapshot: str) -> dict[str, Any]:
+    state = _advanced_menu_state(snapshot)
+    if state["view"] != "expanded":
+        raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+    return state
+
+
 def _initial_model_picker(snapshot: str) -> tuple[str, str]:
-    url, elements = _checked_snapshot(snapshot)
+    url, _elements_for_origin_and_stop = _checked_snapshot(snapshot)
+    if _advanced_initial_surface_present(snapshot):
+        model_picker = _strict_control_ref(
+            snapshot,
+            label=ADVANCED_MENU_LABEL,
+            role="button",
+        )
+        composer = _strict_advanced_composer_ref(snapshot)
+        if composer == model_picker:
+            raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+        return url, model_picker
+    elements = _elements_excluding_lines(
+        snapshot,
+        _untrusted_content_line_indexes(snapshot),
+        preserve_labels=False,
+    )
     model_picker = _unique_ref(
         elements,
         labels=MODEL_PICKER_LABELS,
@@ -1401,26 +3838,6 @@ def _label_ref(
     roles: Sequence[str] = ("button", "menuitem", "option", "radio"),
 ) -> str:
     return _unique_ref(elements, labels=(label,), roles=roles)
-
-
-def _single_exact_role_ref(
-    elements: Sequence[tuple[str, str, str]],
-    *,
-    label: str,
-    role: str,
-) -> str:
-    matches = [
-        (candidate_role, ref)
-        for candidate_role, candidate_label, ref in elements
-        if candidate_label == label
-    ]
-    if (
-        len(matches) != 1
-        or matches[0][0] != role.casefold()
-        or not REF_PATTERN.fullmatch(matches[0][1])
-    ):
-        raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
-    return matches[0][1]
 
 
 def _unique_exact_ref(
@@ -1469,55 +3886,6 @@ def _advanced_profile(
     return matches[0]
 
 
-def _advanced_ui_present(elements: Sequence[tuple[str, str, str]]) -> bool:
-    return any(label in ADVANCED_UI_MARKER_LABELS for _role, label, _ref in elements)
-
-
-def _advanced_menu_view(
-    elements: Sequence[tuple[str, str, str]],
-) -> tuple[str, str, str | None, str | None]:
-    """Validate one exact open compact or expanded advanced menu."""
-
-    _require_distinct_refs(elements)
-    _unique_exact_ref(elements, labels=(ADVANCED_MENU_LABEL,), roles=("button",))
-    _unique_exact_ref(elements, labels=(ADVANCED_MENU_LABEL,), roles=("menu",))
-    expand_matches = [item for item in elements if item[1] == ADVANCED_EXPAND_LABEL]
-    compact_matches = [item for item in elements if item[1] == ADVANCED_COMPACT_LABEL]
-    if bool(expand_matches) == bool(compact_matches):
-        raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
-    if expand_matches:
-        expand_ref = _single_exact_role_ref(
-            elements,
-            label=ADVANCED_EXPAND_LABEL,
-            role="menuitem",
-        )
-        if any(
-            label in {ADVANCED_MODEL_ENTRY_LABEL, ADVANCED_EFFORT_ENTRY_LABEL}
-            or role == "menuitemradio"
-            for role, label, _ref in elements
-        ):
-            raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
-        return "compact", expand_ref, None, None
-    _single_exact_role_ref(
-        elements,
-        label=ADVANCED_COMPACT_LABEL,
-        role="menuitem",
-    )
-    model_ref = _single_exact_role_ref(
-        elements,
-        label=ADVANCED_MODEL_ENTRY_LABEL,
-        role="menuitem",
-    )
-    effort_ref = _single_exact_role_ref(
-        elements,
-        label=ADVANCED_EFFORT_ENTRY_LABEL,
-        role="menuitem",
-    )
-    if any(role == "menuitemradio" for role, _label, _ref in elements):
-        raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
-    return "expanded", "", model_ref, effort_ref
-
-
 def _ordered_checked_option_ref(
     snapshot: str,
     *,
@@ -1527,13 +3895,36 @@ def _ordered_checked_option_ref(
 ) -> tuple[str, str]:
     url, elements = _checked_snapshot(snapshot)
     _require_distinct_refs(elements, refusal_code=refusal_code)
-    options = [
-        (label, ref, checked_count)
-        for role, label, ref, checked_count in _element_records(snapshot)
-        if role == "menuitemradio"
-    ]
+    ignored_lines = _untrusted_content_line_indexes(snapshot)
+    options: list[tuple[str, str, int]] = []
+    for line_index, line in enumerate(snapshot.splitlines()):
+        if line_index in ignored_lines:
+            continue
+        structural = STRUCTURAL_ELEMENT_PATTERN.match(line)
+        match = ELEMENT_PATTERN.match(line)
+        if (
+            structural is not None
+            and structural.group("role").casefold() == "menuitemradio"
+            and (match is None or structural.group("role") != "menuitemradio")
+        ):
+            raise OrchestrationRefusal(refusal_code)
+        if match is None or match.group("role") != "menuitemradio":
+            continue
+        exact_checked_count = line.count("[checked]")
+        if line.casefold().count("[checked]") != exact_checked_count:
+            exact_checked_count = 2
+        options.append(
+            (
+                match.group("label") or "",
+                match.group("ref"),
+                exact_checked_count,
+            )
+        )
+    actual_labels = [label for label, _ref, _checked in options]
     if (
-        [label for label, _ref, _checked in options] != list(expected_labels)
+        len(actual_labels) != len(expected_labels)
+        or len(set(actual_labels)) != len(actual_labels)
+        or set(actual_labels) != set(expected_labels)
         or len({ref for _label, ref, _checked in options}) != len(options)
         or any(checked_count not in {0, 1} for _label, _ref, checked_count in options)
     ):
@@ -1545,20 +3936,18 @@ def _ordered_checked_option_ref(
 
 
 def _advanced_landing(snapshot: str) -> tuple[str, str, str]:
-    url, elements = _checked_snapshot(snapshot)
-    _require_distinct_refs(elements)
-    model_picker = _unique_exact_ref(
-        elements,
-        labels=(ADVANCED_MENU_LABEL,),
-        roles=("button",),
+    url, _elements_for_origin_and_stop = _checked_snapshot(snapshot)
+    model_picker = _strict_control_ref(
+        snapshot,
+        label=ADVANCED_MENU_LABEL,
+        role="button",
     )
-    composer = _unique_exact_ref(
-        elements,
-        labels=ADVANCED_COMPOSER_LABELS,
-        roles=("textbox", "combobox"),
-    )
-    if _advanced_ui_present(elements) or any(
-        role in {"menu", "menuitem", "menuitemradio"} for role, _label, _ref in elements
+    composer = _strict_advanced_composer_ref(snapshot)
+    if model_picker == composer:
+        raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+    if _advanced_snapshot_present(snapshot) or any(
+        role in {"menu", "menuitem", "menuitemradio"}
+        for role, _label, _line in _trusted_structural_lines(snapshot)
     ):
         raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
     return url, model_picker, composer
@@ -1623,33 +4012,35 @@ def _advanced_ready_observation(
 def _post_type_send_prompt(
     transport: BrowserTransport,
     profile: Mapping[str, Any],
+    *,
+    composer_ref: str,
 ) -> tuple[dict[str, Any], str]:
-    try:
-        snapshot = transport.call("browser_snapshot", {})
-    except TransportUnavailable as error:
-        raise LiveUiUnavailable(error.code) from error
-    try:
-        url, elements = _checked_snapshot(snapshot)
-        _require_distinct_refs(elements)
-        send = _unique_exact_ref(
-            elements,
-            labels=(SEND_PROMPT_LABEL,),
-            roles=("button",),
+    def send_control(snapshot: str) -> tuple[dict[str, Any], str]:
+        url, _elements_for_origin_and_stop = _checked_snapshot(snapshot)
+        send = _strict_control_ref(
+            snapshot,
+            label=SEND_PROMPT_LABEL,
+            role="button",
         )
-    except workflow.WorkflowRefusal as error:
-        raise LiveUiUnavailable(error.code) from error
-    except OrchestrationRefusal as error:
-        raise _classify_pre_submission_ui_refusal(error) from error
-    return (
-        _base_observation(
-            "send_ready",
-            url,
-            model_label=profile["target_model"],
-            effort_label=profile["target_effort"],
-            refs={"send": [send]},
-        ),
-        send,
+        if send == composer_ref:
+            raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+        return (
+            _base_observation(
+                "send_ready",
+                url,
+                model_label=profile["target_model"],
+                effort_label=profile["target_effort"],
+                refs={"send": [send]},
+            ),
+            send,
+        )
+
+    _snapshot, resolved = _settle_pre_submission_transition(
+        transport,
+        phase="send_control",
+        validate_expected=send_control,
     )
+    return resolved
 
 
 def _ready_observation(
@@ -1679,20 +4070,124 @@ def _ready_observation(
     )
 
 
+def _advanced_response_body_context(
+    snapshot: str,
+) -> tuple[list[str], int, int] | None:
+    """Return one plausible strict advanced body without classifying content."""
+
+    lines = snapshot.splitlines()
+    excluded = _non_response_untrusted_line_indexes(snapshot)
+    pairs: list[tuple[int, int, int]] = []
+    for heading_line, line in enumerate(lines):
+        if heading_line in excluded:
+            continue
+        heading = _advanced_response_heading_match(line)
+        if heading is None:
+            continue
+        heading_indent = len(heading.group("indent"))
+        for body_line in range(heading_line + 1, len(lines)):
+            candidate = lines[body_line]
+            if not candidate.strip():
+                continue
+            body = ADVANCED_RESPONSE_BODY_PATTERN.fullmatch(candidate)
+            if (
+                body is not None
+                and body.group("indent") == " " * heading_indent
+                and body.group("ref") != heading.group("ref")
+            ):
+                pairs.append((heading_indent, heading_line, body_line))
+            break
+    if not pairs:
+        return None
+    minimum_indent = min(indent for indent, _heading, _body in pairs)
+    outer_pairs = [pair for pair in pairs if pair[0] == minimum_indent]
+    if len(outer_pairs) != 1:
+        return None
+    body_indent, _heading_line, body_line = outer_pairs[0]
+    return lines, body_indent, body_line
+
+
+def _advanced_response_opaque_line_indexes(snapshot: str) -> set[int]:
+    """Return only chrome subtrees inside one plausible strict advanced body."""
+
+    context = _advanced_response_body_context(snapshot)
+    if context is None:
+        return set()
+    lines, body_indent, body_line = context
+    opaque = _advanced_response_action_subtree_line_indexes(snapshot)
+    transparent_roles = {
+        "generic",
+        "group",
+        "statictext",
+        "text",
+        *ADVANCED_RESPONSE_SEMANTIC_ROLES,
+    }
+    for line_index in range(body_line + 1, len(lines)):
+        line = lines[line_index]
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        if line_index in opaque:
+            continue
+        if indent <= body_indent:
+            if _exact_response_actions_line(line, indent):
+                opaque.update(
+                    _line_subtree_indexes(
+                        lines,
+                        root_index=line_index,
+                        root_indent=indent,
+                    )
+                )
+                continue
+            break
+        role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+        role = role_match.group("role") if role_match is not None else None
+        exact_action_group = role == "group" and _exact_response_actions_line(
+            line, indent
+        )
+        explicit_opaque = role in ADVANCED_RESPONSE_OPAQUE_ROLES and (
+            _advanced_response_opaque_node_match(line) is not None
+        )
+        url_metadata = (
+            ADVANCED_RESPONSE_URL_METADATA_PATTERN.fullmatch(line) is not None
+        )
+        unknown_container = (
+            role is not None
+            and role not in transparent_roles
+            and _advanced_response_unknown_container_match(line) is not None
+        )
+        if exact_action_group or explicit_opaque or url_metadata or unknown_container:
+            opaque.update(
+                _line_subtree_indexes(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                )
+            )
+    return opaque
+
+
 def _has_generating_marker(
     snapshot: str,
     *,
     profile_id: str | None = None,
 ) -> bool:
     answer_now_matches = 0
-    for line in snapshot.splitlines():
+    opaque_indexes = (
+        _advanced_response_opaque_line_indexes(snapshot)
+        if profile_id == workflow.ADVANCED_PROFILE_ID
+        else set()
+    )
+    for line_index, line in enumerate(snapshot.splitlines()):
+        if line_index in opaque_indexes:
+            continue
         if (
             profile_id == workflow.ADVANCED_PROFILE_ID
             and ADVANCED_ANSWER_NOW_GENERATING_PATTERN.fullmatch(line) is not None
         ):
             answer_now_matches += 1
             continue
-        element = ELEMENT_PATTERN.match(line)
+        element = STRUCTURAL_ELEMENT_PATTERN.match(line)
         if element is not None:
             role = element.group("role").strip().casefold()
             label = (element.group("label") or "").strip().casefold()
@@ -1701,19 +4196,34 @@ def _has_generating_marker(
         if line.strip().casefold() in {"thinking", "- thinking"}:
             return True
     if answer_now_matches > 1:
-        raise OrchestrationRefusal("RESPONSE_SELECTOR_AMBIGUITY")
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_GENERATING_MARKER_DUPLICATION",
+        )
     return answer_now_matches == 1
 
 
-def _has_assistant_marker(snapshot: str) -> bool:
-    return bool(_response_marker_line_indexes(snapshot.splitlines()))
+def _has_assistant_marker(snapshot: str, *, profile_id: str | None = None) -> bool:
+    excluded_indexes = _non_response_untrusted_line_indexes(snapshot)
+    if profile_id == workflow.ADVANCED_PROFILE_ID:
+        excluded_indexes.update(_advanced_response_opaque_line_indexes(snapshot))
+    return bool(
+        _response_marker_line_indexes(
+            snapshot.splitlines(),
+            excluded_indexes=excluded_indexes,
+        )
+    )
 
 
-def _response_marker_line_indexes(lines: Sequence[str]) -> list[int]:
+def _response_marker_line_indexes(
+    lines: Sequence[str], *, excluded_indexes: set[int] | frozenset[int] = frozenset()
+) -> list[int]:
     chatgpt_markers: list[int] = []
     assistant_markers: list[int] = []
     for index, line in enumerate(lines):
-        element = ELEMENT_PATTERN.match(line)
+        if index in excluded_indexes:
+            continue
+        element = STRUCTURAL_ELEMENT_PATTERN.match(line)
         if element is None:
             continue
         label = (element.group("label") or "").strip().casefold()
@@ -1732,7 +4242,13 @@ def _response_candidate_line_indexes(
     profile_id: str,
 ) -> list[int]:
     selected: set[int] = set()
-    for marker_index in _response_marker_line_indexes(lines):
+    snapshot = "\n".join(lines)
+    excluded_indexes = _non_response_untrusted_line_indexes(snapshot)
+    if profile_id == workflow.ADVANCED_PROFILE_ID:
+        excluded_indexes.update(_advanced_response_opaque_line_indexes(snapshot))
+    for marker_index in _response_marker_line_indexes(
+        lines, excluded_indexes=excluded_indexes
+    ):
         selected.add(marker_index)
         marker_line = lines[marker_index]
         marker_indent = len(marker_line) - len(marker_line.lstrip())
@@ -1750,47 +4266,154 @@ def _response_candidate_line_indexes(
             if not advanced_region_started:
                 if indent < marker_indent:
                     break
-                selected.add(line_index)
+                if line_index not in excluded_indexes:
+                    selected.add(line_index)
                 advanced_region_started = True
                 continue
             if indent <= marker_indent:
                 break
-            selected.add(line_index)
+            if line_index not in excluded_indexes:
+                selected.add(line_index)
     return sorted(selected)
 
 
-def _normalized_response_candidate(snapshot: str, *, profile_id: str) -> str:
+def _advanced_response_embedded_candidate_metadata(
+    snapshot: str,
+    *,
+    allow_bound_precontent_fallback: bool,
+) -> tuple[set[int], set[int]]:
+    """Return embedded inclusions and silent-wrapper exclusions for stability."""
+
+    if not allow_bound_precontent_fallback:
+        return set(), set()
+    try:
+        completed = _completed_response_with_metadata(
+            snapshot,
+            profile_id=workflow.ADVANCED_PROFILE_ID,
+            allow_bound_precontent_fallback=True,
+            enforce_response_safety=False,
+        )
+    except OrchestrationRefusal, workflow.WorkflowRefusal:
+        return set(), set()
+    if completed is None:
+        return set(), set()
+    return set(completed[3]), set(completed[4])
+
+
+def _advanced_response_embedded_candidate_line_indexes(
+    snapshot: str,
+    *,
+    allow_bound_precontent_fallback: bool,
+) -> set[int]:
+    """Return validated embedded response lines for in-memory stability only."""
+
+    embedded_indexes, _silent_wrapper_indexes = (
+        _advanced_response_embedded_candidate_metadata(
+            snapshot,
+            allow_bound_precontent_fallback=allow_bound_precontent_fallback,
+        )
+    )
+    return embedded_indexes
+
+
+def _normalized_response_candidate(
+    snapshot: str,
+    *,
+    profile_id: str,
+    allow_bound_precontent_fallback: bool = False,
+) -> str:
     lines = snapshot.splitlines()
-    indexes = _response_candidate_line_indexes(lines, profile_id=profile_id)
+    indexes = set(_response_candidate_line_indexes(lines, profile_id=profile_id))
+    embedded_indexes, silent_wrapper_indexes = (
+        _advanced_response_embedded_candidate_metadata(
+            snapshot,
+            allow_bound_precontent_fallback=allow_bound_precontent_fallback,
+        )
+        if profile_id == workflow.ADVANCED_PROFILE_ID
+        else (set(), set())
+    )
+    indexes.difference_update(silent_wrapper_indexes)
+    indexes.update(embedded_indexes)
     aliases: dict[str, str] = {}
 
-    def canonical_ref(match: re.Match[str]) -> str:
-        raw_ref = match.group(1)
-        alias = aliases.setdefault(raw_ref, f"r{len(aliases) + 1}")
-        return f"[ref={alias}]"
+    def canonicalize_structural_refs(line: str, line_index: int) -> str:
+        if profile_id == workflow.ADVANCED_PROFILE_ID:
+            heading = _advanced_response_heading_match(line)
+            if heading is not None:
+                raw_ref = heading.group("ref")
+                alias = aliases.setdefault(raw_ref, f"r{len(aliases) + 1}")
+                return (
+                    f'{heading.group("indent")}- heading "{ADVANCED_RESPONSE_LABEL}" '
+                    f"[ref={alias}]"
+                )
+        embedded_presentation = (
+            _advanced_response_embedded_presentation_match(line)
+            if line_index in embedded_indexes
+            else None
+        )
+        spans = (
+            [
+                (
+                    embedded_presentation[2][0],
+                    embedded_presentation[2][1],
+                    embedded_presentation[1],
+                )
+            ]
+            if embedded_presentation is not None
+            and embedded_presentation[1] is not None
+            and embedded_presentation[2] is not None
+            else _structural_accessibility_ref_spans(line)
+        )
+        if not spans:
+            return line
+        pieces: list[str] = []
+        previous_end = 0
+        for start, end, raw_ref in spans:
+            alias = aliases.setdefault(raw_ref, f"r{len(aliases) + 1}")
+            pieces.extend((line[previous_end:start], f"[ref={alias}]"))
+            previous_end = end
+        pieces.append(line[previous_end:])
+        return "".join(pieces)
 
     return "\n".join(
-        ACCESSIBILITY_REF_TOKEN_PATTERN.sub(canonical_ref, lines[index])
-        for index in indexes
+        canonicalize_structural_refs(lines[index], index) for index in sorted(indexes)
     )
 
 
-def _response_candidate_digest(snapshot: str, *, profile_id: str) -> str | None:
+def _response_candidate_digest(
+    snapshot: str,
+    *,
+    profile_id: str,
+    allow_bound_precontent_fallback: bool = False,
+) -> str | None:
     if _has_generating_marker(
         snapshot,
         profile_id=profile_id,
-    ) or not _has_assistant_marker(snapshot):
+    ) or not _has_assistant_marker(snapshot, profile_id=profile_id):
         return None
-    normalized = _normalized_response_candidate(snapshot, profile_id=profile_id)
+    normalized = _normalized_response_candidate(
+        snapshot,
+        profile_id=profile_id,
+        allow_bound_precontent_fallback=allow_bound_precontent_fallback,
+    )
     if not normalized:
+        if profile_id == workflow.ADVANCED_PROFILE_ID:
+            raise _AdvancedResponseParserRefusal(
+                "RESPONSE_NOT_IDENTIFIABLE",
+                "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+            )
         raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
-    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+    try:
+        normalized_bytes = normalized.encode("utf-8")
+    except UnicodeEncodeError as error:
+        raise OrchestrationRefusal("RESPONSE_SENSITIVE_OR_INVALID") from error
+    return hashlib.sha256(normalized_bytes).hexdigest()
 
 
 def _response_wait_phase(snapshot: str, *, profile_id: str) -> str:
     if _has_generating_marker(snapshot, profile_id=profile_id):
         return "response_generating"
-    if _has_assistant_marker(snapshot):
+    if _has_assistant_marker(snapshot, profile_id=profile_id):
         return "candidate_stabilizing"
     return "response_absent"
 
@@ -1798,13 +4421,23 @@ def _response_wait_phase(snapshot: str, *, profile_id: str) -> str:
 class _ResponseStability:
     """In-memory semantic stability barrier; no digest leaves this object."""
 
-    def __init__(self, profile_id: str) -> None:
+    def __init__(
+        self,
+        profile_id: str,
+        *,
+        allow_bound_precontent_fallback: bool = False,
+    ) -> None:
         self._profile_id = profile_id
+        self._allow_bound_precontent_fallback = allow_bound_precontent_fallback
         self._digest: str | None = None
         self._observations = 0
 
     def observe(self, snapshot: str) -> bool:
-        digest = _response_candidate_digest(snapshot, profile_id=self._profile_id)
+        digest = _response_candidate_digest(
+            snapshot,
+            profile_id=self._profile_id,
+            allow_bound_precontent_fallback=self._allow_bound_precontent_fallback,
+        )
         if digest is None:
             self._digest = None
             self._observations = 0
@@ -1824,11 +4457,17 @@ def _wait_for_stable_response_snapshot(
     profile_id: str,
     on_checked_url: Callable[[str], None] | None = None,
     on_progress: Callable[[int, int, str], None] | None = None,
+    allow_bound_precontent_fallback: bool = False,
 ) -> tuple[str, str]:
-    stability = _ResponseStability(profile_id)
+    stability = _ResponseStability(
+        profile_id,
+        allow_bound_precontent_fallback=allow_bound_precontent_fallback,
+    )
     poll_count = 0
     while True:
-        url, _elements_for_origin_and_stop = _checked_snapshot(snapshot)
+        url, _elements_for_origin_and_stop = _checked_snapshot(
+            snapshot, phase="response"
+        )
         if on_checked_url is not None:
             on_checked_url(url)
         if stability.observe(snapshot):
@@ -1902,6 +4541,18 @@ def _advanced_element_lines(
 ) -> list[tuple[int, int, str, str, str]]:
     records: list[tuple[int, int, str, str, str]] = []
     for line_index, line in enumerate(snapshot.splitlines()):
+        heading = _advanced_response_heading_match(line)
+        if heading is not None:
+            records.append(
+                (
+                    line_index,
+                    len(heading.group("indent")),
+                    "heading",
+                    ADVANCED_RESPONSE_LABEL,
+                    heading.group("ref"),
+                )
+            )
+            continue
         match = ELEMENT_PATTERN.match(line)
         if match is None:
             continue
@@ -1917,49 +4568,1144 @@ def _advanced_element_lines(
     return records
 
 
-def _advanced_response_text_context(
-    ancestors: Sequence[tuple[int, str]],
+def _advanced_response_opaque_node_match(line: str) -> re.Match[str] | None:
+    match = ADVANCED_RESPONSE_OPAQUE_NODE_PATTERN.fullmatch(line)
+    if match is None or len(_structural_accessibility_refs(line)) > 1:
+        return None
+    return match
+
+
+def _advanced_response_unknown_container_match(line: str) -> re.Match[str] | None:
+    match = ADVANCED_RESPONSE_UNKNOWN_CONTAINER_PATTERN.fullmatch(line)
+    if match is None or len(_structural_accessibility_refs(line)) > 1:
+        return None
+    return match
+
+
+def _advanced_response_heading_match(line: str) -> re.Match[str] | None:
+    """Return one exact heading whose attributes cannot hide ref attempts."""
+
+    match = ADVANCED_RESPONSE_HEADING_PATTERN.fullmatch(line)
+    if match is None:
+        return None
+    structural = STRUCTURAL_ELEMENT_PATTERN.match(line)
+    if structural is None or structural.group("label") != ADVANCED_RESPONSE_LABEL:
+        return None
+    cleaned_line = ADVANCED_RESPONSE_ATTRIBUTE_PATTERN.sub(
+        lambda attribute: (
+            attribute.group(0) if attribute.group("name").casefold() == "ref" else ""
+        ),
+        line,
+    )
+    base = ADVANCED_RESPONSE_BASE_HEADING_PATTERN.fullmatch(cleaned_line)
+    if base is None or base.group("ref") != match.group("ref"):
+        return None
+    tail = line[structural.end() :]
+    ref_attempts = list(ADVANCED_RESPONSE_REF_ATTEMPT_PATTERN.finditer(tail))
+    valid_refs = list(ACCESSIBILITY_REF_TOKEN_PATTERN.finditer(tail))
+    if (
+        len(ref_attempts) != 1
+        or len(valid_refs) != 1
+        or valid_refs[0].group(1) != match.group("ref")
+        or ADVANCED_RESPONSE_UNBRACKETED_REF_PATTERN.search(tail) is not None
+    ):
+        return None
+    return match
+
+
+def _advanced_response_heading_records(
+    snapshot: str,
+    *,
+    excluded_indexes: set[int] | frozenset[int] = frozenset(),
+) -> list[tuple[int, int, str]]:
+    records: list[tuple[int, int, str]] = []
+    for line_index, line in enumerate(snapshot.splitlines()):
+        if line_index in excluded_indexes:
+            continue
+        match = _advanced_response_heading_match(line)
+        if match is None:
+            continue
+        records.append((line_index, len(match.group("indent")), match.group("ref")))
+    return records
+
+
+def _advanced_response_marker_records(
+    snapshot: str,
+    *,
+    excluded_indexes: set[int] | frozenset[int] = frozenset(),
+) -> list[tuple[int, str, str, str]]:
+    records: list[tuple[int, str, str, str]] = []
+    response_labels = CHATGPT_RESPONSE_LIKE_LABELS | ASSISTANT_RESPONSE_LIKE_LABELS
+    for line_index, line in enumerate(snapshot.splitlines()):
+        if line_index in excluded_indexes:
+            continue
+        element = STRUCTURAL_ELEMENT_PATTERN.match(line)
+        if element is None:
+            continue
+        raw_label = element.group("label") or ""
+        if raw_label.strip().casefold() not in response_labels:
+            continue
+        records.append((line_index, line, element.group("role"), raw_label))
+    return records
+
+
+def _legacy_response_marker_line_indexes(
+    snapshot: str,
+    *,
+    excluded_indexes: set[int] | frozenset[int] = frozenset(),
+) -> set[int]:
+    indexes: set[int] = set()
+    for line_index, line in enumerate(snapshot.splitlines()):
+        if line_index in excluded_indexes:
+            continue
+        element = ELEMENT_PATTERN.match(line)
+        if element is None or element.group("role") != "article":
+            continue
+        label = element.group("label") or ""
+        if not any(marker in label.casefold() for marker in ASSISTANT_MARKERS):
+            continue
+        structural = STRUCTURAL_ELEMENT_PATTERN.match(line)
+        if structural is None or structural.group("label") is None:
+            continue
+        structural_tail = line[structural.end() :]
+        ref_attempts = list(
+            ADVANCED_RESPONSE_REF_ATTEMPT_PATTERN.finditer(structural_tail)
+        )
+        valid_refs = _structural_accessibility_refs(line)
+        if (
+            len(ref_attempts) == 1
+            and len(valid_refs) == 1
+            and valid_refs[0] == element.group("ref")
+        ):
+            indexes.add(line_index)
+    return indexes
+
+
+def _advanced_response_marker_competes(
+    snapshot: str,
+    marker_records: Sequence[tuple[int, str, str, str]],
+    *,
+    excluded_indexes: set[int] | frozenset[int] = frozenset(),
 ) -> bool:
-    return bool(
-        ancestors
-        and ancestors[-1][1] == "paragraph"
-        and not any(
-            role in ADVANCED_RESPONSE_OPAQUE_ROLES for _indent, role in ancestors
+    if not marker_records:
+        return False
+    marker_indexes = {record[0] for record in marker_records}
+    marker_indexes.update(
+        _legacy_response_marker_line_indexes(
+            snapshot,
+            excluded_indexes=excluded_indexes,
         )
     )
+    return len(marker_indexes) > 1
 
 
-def _advanced_response_action_group_context(
-    ancestors: Sequence[tuple[int, str]],
+def _heading_label_without_terminal_punctuation(label: str) -> str:
+    return ADVANCED_RESPONSE_HEADING_PUNCTUATION_PATTERN.sub("", label.casefold())
+
+
+def _advanced_response_heading_detail_for_line(line: str) -> str | None:
+    candidate = STRUCTURAL_ELEMENT_PATTERN.match(line)
+    if candidate is None or candidate.group("label") is None:
+        return "ADVANCED_RESPONSE_HEADING_LINE_SHAPE_INVALID"
+
+    raw_role = candidate.group("role")
+    raw_label = candidate.group("label")
+    if raw_role != "heading":
+        return "ADVANCED_RESPONSE_HEADING_ROLE_INVALID"
+    if raw_label != raw_label.strip(" \t"):
+        return "ADVANCED_RESPONSE_HEADING_LABEL_EDGE_WHITESPACE_INVALID"
+    if raw_label != ADVANCED_RESPONSE_LABEL:
+        if raw_label.casefold() == ADVANCED_RESPONSE_LABEL.casefold():
+            return "ADVANCED_RESPONSE_HEADING_LABEL_CASE_INVALID"
+        if _heading_label_without_terminal_punctuation(
+            raw_label
+        ) == _heading_label_without_terminal_punctuation(ADVANCED_RESPONSE_LABEL):
+            return "ADVANCED_RESPONSE_HEADING_LABEL_PUNCTUATION_INVALID"
+        return "ADVANCED_RESPONSE_HEADING_LABEL_OTHER_INVALID"
+
+    if _advanced_response_heading_match(line) is not None:
+        return None
+
+    tail = line[candidate.end() :]
+    ref_attempts = list(ADVANCED_RESPONSE_REF_ATTEMPT_PATTERN.finditer(tail))
+    valid_refs = list(ACCESSIBILITY_REF_TOKEN_PATTERN.finditer(tail))
+    if not ref_attempts:
+        if ADVANCED_RESPONSE_UNBRACKETED_REF_PATTERN.search(tail) is not None:
+            return "ADVANCED_RESPONSE_HEADING_LINE_SHAPE_INVALID"
+        return "ADVANCED_RESPONSE_HEADING_REF_MISSING"
+    if len(ref_attempts) != 1 or len(valid_refs) != 1:
+        return "ADVANCED_RESPONSE_HEADING_REF_INVALID"
+
+    return "ADVANCED_RESPONSE_HEADING_LINE_SHAPE_INVALID"
+
+
+def _advanced_response_heading_detail(
+    snapshot: str,
     *,
-    body_indent: int,
-    group_indent: int,
-) -> bool:
-    return (
-        list(ancestors)
-        == [
-            (body_indent, "generic"),
-            (body_indent + 2, "generic"),
-        ]
-        and group_indent == body_indent + 4
+    excluded_indexes: set[int] | frozenset[int] = frozenset(),
+) -> str | None:
+    marker_records = _advanced_response_marker_records(
+        snapshot,
+        excluded_indexes=excluded_indexes,
+    )
+    if len(marker_records) != 1:
+        return None
+    return _advanced_response_heading_detail_for_line(marker_records[0][1])
+
+
+def _with_advanced_response_heading_detail(
+    error: _AdvancedResponseParserRefusal,
+    snapshot: str,
+    *,
+    excluded_indexes: set[int] | frozenset[int] = frozenset(),
+) -> _AdvancedResponseParserRefusal:
+    if (
+        error.code != "RESPONSE_SELECTOR_AMBIGUITY"
+        or error.diagnostic_code != "ADVANCED_RESPONSE_HEADING_INVALID"
+        or hasattr(error, "diagnostic_detail_code")
+    ):
+        return error
+    detail = _advanced_response_heading_detail(
+        snapshot,
+        excluded_indexes=excluded_indexes,
+    )
+    if detail is None:
+        return error
+    return _AdvancedResponseParserRefusal(
+        error.code,
+        error.diagnostic_code,
+        detail,
     )
 
 
-def _advanced_assistant_response(snapshot: str, *, anchor_ref: str) -> str:
+def _advanced_response_label_masked_structural_view(line: str) -> str:
+    structural_view = line
+    role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+    if role_match is None:
+        return structural_view
+    label_start = role_match.end()
+    while label_start < len(line) and line[label_start].isspace():
+        label_start += 1
+    label_match = ADVANCED_RESPONSE_JSON_LABEL_PATTERN.match(line, label_start)
+    if label_match is not None:
+        structural_view = (
+            line[: label_match.start()]
+            + (" " * (label_match.end() - label_match.start()))
+            + line[label_match.end() :]
+        )
+    return structural_view
+
+
+def _advanced_response_fallback_trusted_refs(line: str) -> list[str]:
+    """Return fallback collision refs without trusting quoted or scalar data."""
+
+    role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+    if role_match is None:
+        return []
+    structural_view = _advanced_response_label_masked_structural_view(line)
+    payload_match = ADVANCED_RESPONSE_PAYLOAD_PATTERN.fullmatch(line)
+    if (
+        payload_match is not None
+        and role_match.group("role") in {"text", "statictext"}
+        and payload_match.group("role") == role_match.group("role")
+    ):
+        payload = payload_match.group("payload")
+        leading_whitespace = len(payload) - len(payload.lstrip(" \t\r\n"))
+        try:
+            decoded, payload_end = json.JSONDecoder().raw_decode(
+                payload[leading_whitespace:]
+            )
+        except json.JSONDecodeError:
+            pass
+        else:
+            if isinstance(decoded, str):
+                payload_start = payload_match.start("payload") + leading_whitespace
+                payload_end += payload_start
+                structural_view = (
+                    structural_view[:payload_start]
+                    + (" " * (payload_end - payload_start))
+                    + structural_view[payload_end:]
+                )
+    return [
+        match.group(1)
+        for match in ACCESSIBILITY_REF_TOKEN_PATTERN.finditer(structural_view)
+    ]
+
+
+def _advanced_response_fallback_ref_inert_line_indexes(snapshot: str) -> set[int]:
+    """Return complete chrome subtrees that cannot veto the fallback by ref."""
+
+    lines = snapshot.splitlines()
+    inert = _non_response_untrusted_line_indexes(snapshot)
+    inert.update(_advanced_response_action_subtree_line_indexes(snapshot))
+    transparent_roles = {
+        "generic",
+        "group",
+        "statictext",
+        "text",
+        *ADVANCED_RESPONSE_SEMANTIC_ROLES,
+    }
+    for line_index, line in enumerate(lines):
+        if line_index in inert or not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+        role = role_match.group("role") if role_match is not None else None
+        exact_action_group = role == "group" and _exact_response_actions_line(
+            line, indent
+        )
+        explicit_opaque = role in ADVANCED_RESPONSE_OPAQUE_ROLES and (
+            _advanced_response_opaque_node_match(line) is not None
+        )
+        url_metadata = (
+            ADVANCED_RESPONSE_URL_METADATA_PATTERN.fullmatch(line) is not None
+        )
+        unknown_container = (
+            role is not None
+            and role not in transparent_roles
+            and _advanced_response_unknown_container_match(line) is not None
+        )
+        if exact_action_group or explicit_opaque or url_metadata or unknown_container:
+            inert.update(
+                _line_subtree_indexes(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                )
+            )
+    return inert
+
+
+def _advanced_response_silent_outside_presentation_indexes(
+    lines: Sequence[str],
+    *,
+    body_line: int,
+    body_indent: int,
+    group_line: int,
+    group_indent: int,
+    owned_end: int,
+    group_enclosing_lines: set[int] | frozenset[int],
+) -> frozenset[int] | None:
+    """Return exact silent outside wrapper roots, or fail the closed predicate."""
+
+    if group_indent <= body_indent:
+        return None
+    bounded_end = min(max(owned_end, group_line + 1), len(lines))
+    selected_group_indexes = _line_subtree_indexes(
+        lines,
+        root_index=group_line,
+        root_indent=group_indent,
+    )
+    untrusted_indexes = _non_response_untrusted_line_indexes("\n".join(lines))
+    ignored_indexes = set(untrusted_indexes)
+    ignored_indexes.update(selected_group_indexes)
+    silent_wrapper_indexes: set[int] = set()
+    transparent_roles = {
+        "generic",
+        "statictext",
+        "text",
+        *ADVANCED_RESPONSE_SEMANTIC_ROLES,
+    }
+
+    for line_index in range(body_line + 1, bounded_end):
+        line = lines[line_index]
+        if not line.strip() or line_index in ignored_indexes:
+            continue
+        indent = len(line) - len(line.lstrip())
+        role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+        role = role_match.group("role") if role_match is not None else None
+
+        if line_index in group_enclosing_lines:
+            continue
+        if role is not None and role.casefold() == "group":
+            return None
+
+        explicit_opaque = role in ADVANCED_RESPONSE_OPAQUE_ROLES and (
+            _advanced_response_opaque_node_match(line) is not None
+        )
+        url_metadata = (
+            ADVANCED_RESPONSE_URL_METADATA_PATTERN.fullmatch(line) is not None
+        )
+        unknown_container = (
+            role is not None
+            and role not in transparent_roles
+            and role != "group"
+            and _advanced_response_unknown_container_match(line) is not None
+        )
+        if explicit_opaque or url_metadata or unknown_container:
+            ignored_indexes.update(
+                _line_subtree_indexes(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                )
+            )
+            continue
+
+        if role in {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}:
+            presentation = _advanced_response_embedded_presentation_match(line)
+            if (
+                presentation is None
+                or presentation[0] != role
+                or presentation[1] is None
+            ):
+                return None
+            silent_wrapper_indexes.add(line_index)
+            continue
+
+        return None
+
+    if not silent_wrapper_indexes:
+        return None
+    return frozenset(silent_wrapper_indexes)
+
+
+def _advanced_response_embedded_presentation_match(
+    line: str,
+) -> tuple[str, str | None, tuple[int, int] | None] | None:
+    """Return one complete ref-safe presentation wrapper inside action chrome."""
+
+    complete = ADVANCED_RESPONSE_UNKNOWN_CONTAINER_PATTERN.fullmatch(line)
+    if complete is None:
+        return None
+    role = complete.group("role")
+    if role not in {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}:
+        return None
+    role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+    if role_match is None or role_match.group("role") != role:
+        return None
+
+    structural_view = _advanced_response_label_masked_structural_view(line)
+    ref_attempts = list(ADVANCED_RESPONSE_REF_ATTEMPT_PATTERN.finditer(structural_view))
+    if ADVANCED_RESPONSE_UNBRACKETED_REF_PATTERN.search(structural_view) is not None:
+        return None
+    valid_ref_attributes: list[tuple[str, tuple[int, int]]] = []
+    for attribute in ADVANCED_RESPONSE_ATTRIBUTE_PATTERN.finditer(structural_view):
+        token = attribute.group(0).strip()
+        valid_ref = ACCESSIBILITY_REF_TOKEN_PATTERN.fullmatch(token)
+        if valid_ref is not None:
+            token_start = attribute.start() + len(attribute.group(0)) - len(token)
+            valid_ref_attributes.append(
+                (valid_ref.group(1), (token_start, attribute.end()))
+            )
+
+    if not ref_attempts:
+        if valid_ref_attributes:
+            return None
+        return role, None, None
+    if len(ref_attempts) != 1 or len(valid_ref_attributes) != 1:
+        return None
+    raw_ref, ref_span = valid_ref_attributes[0]
+    ref_attempt = ref_attempts[0]
+    if not (ref_span[0] <= ref_attempt.start() and ref_attempt.end() <= ref_span[1]):
+        return None
+    return role, raw_ref, ref_span
+
+
+def _structural_accessibility_ref_spans(line: str) -> list[tuple[int, int, str]]:
+    """Return ref attribute spans outside quoted labels and scalar payloads."""
+
+    heading = _advanced_response_heading_match(line)
+    if heading is not None:
+        start, end = heading.span("ref_token")
+        return [(start, end, heading.group("ref"))]
+    if ADVANCED_RESPONSE_ROLE_PATTERN.match(line) is None:
+        return []
+    visible: list[str] = []
+    quoted = False
+    escaped = False
+    for character in line:
+        if quoted:
+            visible.append(" ")
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == '"':
+                quoted = False
+            continue
+        if character == '"':
+            quoted = True
+            visible.append(" ")
+            continue
+        if character == ":":
+            break
+        visible.append(character)
+    return [
+        (match.start(), match.end(), match.group(1))
+        for match in ACCESSIBILITY_REF_TOKEN_PATTERN.finditer("".join(visible))
+    ]
+
+
+def _structural_accessibility_refs(line: str) -> list[str]:
+    return [ref for _start, _end, ref in _structural_accessibility_ref_spans(line)]
+
+
+def _advanced_response_text_context(
+    ancestors: Sequence[tuple[int, str, int]],
+) -> tuple[int, str] | None:
+    transparent_roles = {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}
+    if any(role not in transparent_roles for _indent, role, _line in ancestors):
+        return None
+    for _indent, role, line_index in ancestors:
+        if role in ADVANCED_RESPONSE_SEMANTIC_ROLES:
+            return line_index, role
+    if ancestors and all(role == "generic" for _indent, role, _line in ancestors):
+        return ancestors[0][2], "body-paragraph"
+    return None
+
+
+def _advanced_response_opaque_context(
+    ancestors: Sequence[tuple[int, str, int]],
+) -> bool:
+    transparent_roles = {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}
+    return any(role not in transparent_roles for _indent, role, _line in ancestors)
+
+
+def _exact_response_actions_line(line: str, indent: int) -> bool:
+    return line == " " * indent + ADVANCED_RESPONSE_ACTION_GROUP_SUFFIX
+
+
+def _advanced_response_action_subtree_line_indexes(
+    snapshot: str,
+) -> set[int]:
+    """Return independently visible exact action subtrees in one proven body."""
+
+    context = _advanced_response_body_context(snapshot)
+    if context is None:
+        return set()
+    lines, body_indent, body_line = context
+    indexes: set[int] = set()
+    for line_index in range(body_line + 1, len(lines)):
+        line = lines[line_index]
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        if line_index in indexes:
+            continue
+        if indent <= body_indent:
+            if _exact_response_actions_line(line, indent):
+                indexes.update(
+                    _line_subtree_indexes(
+                        lines,
+                        root_index=line_index,
+                        root_indent=indent,
+                    )
+                )
+                continue
+            break
+        if _exact_response_actions_line(line, indent):
+            indexes.update(
+                _line_subtree_indexes(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                )
+            )
+    return indexes
+
+
+def _advanced_response_boundary_subtree_has_content(
+    lines: Sequence[str],
+    *,
+    root_index: int,
+    root_indent: int,
+    excluded_indexes: set[int] | frozenset[int],
+) -> bool:
+    """Return whether unknown boundary chrome owns visible response material."""
+
+    ignored = set(excluded_indexes)
+    subtree = _line_subtree_indexes(
+        lines,
+        root_index=root_index,
+        root_indent=root_indent,
+    )
+    for line_index in sorted(subtree - {root_index}):
+        if line_index in ignored:
+            continue
+        line = lines[line_index]
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+        role = role_match.group("role") if role_match is not None else None
+        if role is not None and (
+            role.casefold() in {"text", "statictext"}
+            or role in {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}
+        ):
+            return True
+        exact_action_group = role == "group" and _exact_response_actions_line(
+            line, indent
+        )
+        explicit_opaque = role in ADVANCED_RESPONSE_OPAQUE_ROLES and (
+            _advanced_response_opaque_node_match(line) is not None
+        )
+        url_metadata = (
+            ADVANCED_RESPONSE_URL_METADATA_PATTERN.fullmatch(line) is not None
+        )
+        if exact_action_group or explicit_opaque or url_metadata:
+            ignored.update(
+                _line_subtree_indexes(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                )
+            )
+    return False
+
+
+def _advanced_response_container_shape_code(line: str) -> str | None:
+    """Classify one container line already selected as shape-invalid."""
+
+    structural_view = line
+    role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+    if role_match is not None:
+        label_start = role_match.end()
+        while label_start < len(line) and line[label_start].isspace():
+            label_start += 1
+        label_match = ADVANCED_RESPONSE_JSON_LABEL_PATTERN.match(line, label_start)
+        if label_match is not None:
+            structural_view = (
+                line[: label_match.start()]
+                + (" " * (label_match.end() - label_match.start()))
+                + line[label_match.end() :]
+            )
+
+    ref_attempts = list(ADVANCED_RESPONSE_REF_ATTEMPT_PATTERN.finditer(structural_view))
+    valid_refs = list(ACCESSIBILITY_REF_TOKEN_PATTERN.finditer(structural_view))
+    unbracketed_ref = ADVANCED_RESPONSE_UNBRACKETED_REF_PATTERN.search(structural_view)
+    if ref_attempts or unbracketed_ref is not None:
+        if len(ref_attempts) == 1 and len(valid_refs) == 1 and unbracketed_ref is None:
+            return None
+        return "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_INVALID"
+
+    complete = ADVANCED_RESPONSE_UNKNOWN_CONTAINER_PATTERN.fullmatch(line)
+    if complete is not None and complete.group("role") in {
+        "generic",
+        *ADVANCED_RESPONSE_SEMANTIC_ROLES,
+    }:
+        return "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING"
+    return "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_LINE_SHAPE_INVALID"
+
+
+def _advanced_response_precontent_diagnostics(
+    lines: Sequence[str],
+    *,
+    body_line: int,
+    body_indent: int,
+    group_line: int,
+    group_indent: int,
+    owned_end: int,
+) -> tuple[str, str | None, str | None]:
+    """Classify one selected PRE_CONTENT refusal without extracting response bytes."""
+
+    if group_indent == body_indent:
+        return "ADVANCED_RESPONSE_PRECONTENT_SAME_INDENT_BOUNDARY", None, None
+    if group_indent < body_indent:
+        return "ADVANCED_RESPONSE_PRECONTENT_SHALLOW_BOUNDARY", None, None
+
+    bounded_end = min(max(owned_end, group_line + 1), len(lines))
+    untrusted_indexes = _non_response_untrusted_line_indexes("\n".join(lines))
+    ignored_indexes: set[int] = set()
+    ancestors: list[tuple[int, str, int]] = [(body_indent, "generic", body_line)]
+    response_containers: list[int] = []
+    satisfied_containers: set[int] = set()
+    first_explicit_detail: str | None = None
+    first_explicit_shape: str | None = None
+    valid_non_whitespace_content = False
+    opaque_material = False
+    group_seen = False
+
+    def record_explicit_detail(
+        detail_code: str,
+        shape_code: str | None = None,
+    ) -> None:
+        nonlocal first_explicit_detail, first_explicit_shape
+        if first_explicit_detail is None:
+            first_explicit_detail = detail_code
+            first_explicit_shape = shape_code
+
+    transparent_roles = {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}
+    for line_index in range(body_line + 1, bounded_end):
+        line = lines[line_index]
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        while ancestors and ancestors[-1][0] >= indent:
+            ancestors.pop()
+
+        role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+        role = role_match.group("role") if role_match is not None else None
+        if line_index < group_line:
+            if role is not None:
+                ancestors.append((indent, role, line_index))
+            continue
+        if line_index == group_line:
+            ancestors.append((group_indent, "group", group_line))
+            group_seen = True
+            continue
+        if not group_seen:
+            continue
+        if line_index in ignored_indexes:
+            continue
+        if line_index in untrusted_indexes:
+            opaque_material = True
+            continue
+
+        url_metadata = (
+            ADVANCED_RESPONSE_URL_METADATA_PATTERN.fullmatch(line) is not None
+        )
+        exact_action_group = role == "group" and _exact_response_actions_line(
+            line, indent
+        )
+        explicit_opaque = role in ADVANCED_RESPONSE_OPAQUE_ROLES and (
+            _advanced_response_opaque_node_match(line) is not None
+        )
+        unknown_container = (
+            role is not None
+            and role not in {"group", *transparent_roles}
+            and role not in ADVANCED_RESPONSE_OPAQUE_ROLES
+            and _advanced_response_unknown_container_match(line) is not None
+        )
+        if url_metadata or exact_action_group or explicit_opaque or unknown_container:
+            opaque_material = True
+            ignored_indexes.update(
+                _line_subtree_indexes(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                )
+            )
+            continue
+
+        if role is not None and role.casefold() in {"text", "statictext"}:
+            payload_match = ADVANCED_RESPONSE_PAYLOAD_PATTERN.fullmatch(line)
+            if (
+                role not in {"text", "statictext"}
+                or payload_match is None
+                or payload_match.group("role") != role
+            ):
+                record_explicit_detail(
+                    "ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_SHAPE_INVALID"
+                )
+                continue
+            try:
+                fragment = json.loads(payload_match.group("payload"))
+            except json.JSONDecodeError:
+                record_explicit_detail(
+                    "ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_VALUE_INVALID"
+                )
+                continue
+            if not isinstance(fragment, str):
+                record_explicit_detail(
+                    "ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_VALUE_INVALID"
+                )
+                continue
+            presentation_ancestors = [
+                (ancestor_role, ancestor_line)
+                for _ancestor_indent, ancestor_role, ancestor_line in ancestors
+                if ancestor_line != group_line
+            ]
+            if not presentation_ancestors or any(
+                ancestor_role not in transparent_roles
+                for ancestor_role, _ancestor_line in presentation_ancestors
+            ):
+                record_explicit_detail(
+                    "ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_CONTEXT_INVALID"
+                )
+                continue
+            satisfied_containers.update(
+                ancestor_line
+                for _ancestor_role, ancestor_line in presentation_ancestors
+                if ancestor_line in response_containers
+            )
+            try:
+                fragment.encode("utf-8")
+            except UnicodeEncodeError:
+                record_explicit_detail(
+                    "ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_VALUE_INVALID"
+                )
+                continue
+            if fragment.strip():
+                valid_non_whitespace_content = True
+            continue
+
+        if role in transparent_roles:
+            element = ELEMENT_PATTERN.match(line)
+            if element is None or element.group("role") != role:
+                record_explicit_detail(
+                    "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID",
+                    _advanced_response_container_shape_code(line),
+                )
+                continue
+            response_containers.append(line_index)
+            ancestors.append((indent, role, line_index))
+            continue
+
+        record_explicit_detail(
+            "ADVANCED_RESPONSE_PRECONTENT_NESTED_MATERIAL_UNSUPPORTED"
+        )
+
+    if first_explicit_detail is not None:
+        return (
+            "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID",
+            first_explicit_detail,
+            first_explicit_shape,
+        )
+    unsatisfied_container = next(
+        (
+            line_index
+            for line_index in response_containers
+            if line_index not in satisfied_containers
+        ),
+        None,
+    )
+    if unsatisfied_container is not None:
+        return (
+            "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID",
+            (
+                "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_UNSATISFIED_WITH_CONTENT"
+                if valid_non_whitespace_content
+                else "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_UNSATISFIED_EMPTY"
+            ),
+            None,
+        )
+    if valid_non_whitespace_content:
+        return "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_CONTENT", None, None
+    if opaque_material:
+        return "ADVANCED_RESPONSE_PRECONTENT_NESTED_ONLY_OPAQUE", None, None
+    return "ADVANCED_RESPONSE_PRECONTENT_NESTED_EMPTY", None, None
+
+
+def _advanced_response_precontent_context(
+    lines: Sequence[str],
+    *,
+    body_line: int,
+    body_indent: int,
+    group_line: int,
+    group_indent: int,
+    owned_end: int,
+) -> str:
+    """Return the predecessor context classification for one PRE_CONTENT refusal."""
+
+    context_code, _context_detail_code, _context_shape_code = (
+        _advanced_response_precontent_diagnostics(
+            lines,
+            body_line=body_line,
+            body_indent=body_indent,
+            group_line=group_line,
+            group_indent=group_indent,
+            owned_end=owned_end,
+        )
+    )
+    return context_code
+
+
+def _advanced_response_embedded_precontent_response(
+    lines: Sequence[str],
+    *,
+    body_line: int,
+    body_indent: int,
+    group_line: int,
+    group_indent: int,
+    owned_end: int,
+    outside_refs: Sequence[str],
+) -> tuple[tuple[str, frozenset[int]] | None, str | None]:
+    """Strictly reconstruct one eligible response embedded in action chrome."""
+
+    if group_indent <= body_indent:
+        return None, None
+    bounded_end = min(max(owned_end, group_line + 1), len(lines))
+    group_end = bounded_end
+    for line_index in range(group_line + 1, bounded_end):
+        line = lines[line_index]
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        if indent <= group_indent:
+            group_end = line_index
+            break
+
+    untrusted_indexes = _non_response_untrusted_line_indexes("\n".join(lines))
+    ignored_indexes: set[int] = set()
+    ancestors: list[tuple[int, str, int]] = [(body_indent, "generic", body_line)]
+    response_containers: list[int] = []
+    satisfied_containers: set[int] = set()
+    embedded_refs: list[str] = []
+    candidate_indexes: set[int] = set()
+    blocks: list[list[str]] = []
+    block_keys: list[tuple[int, str]] = []
+
+    for line_index in range(body_line + 1, group_line):
+        line = lines[line_index]
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        while ancestors and ancestors[-1][0] >= indent:
+            ancestors.pop()
+        role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+        role = role_match.group("role") if role_match is not None else None
+        if role is not None:
+            ancestors.append((indent, role, line_index))
+    while ancestors and ancestors[-1][0] >= group_indent:
+        ancestors.pop()
+
+    for line_index in range(group_line + 1, group_end):
+        line = lines[line_index]
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        while ancestors and ancestors[-1][0] >= indent:
+            ancestors.pop()
+        if line_index in ignored_indexes:
+            continue
+        if line_index in untrusted_indexes:
+            continue
+
+        role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+        role = role_match.group("role") if role_match is not None else None
+        if (
+            role is not None
+            and role.casefold()
+            in {
+                "generic",
+                *(
+                    semantic_role.casefold()
+                    for semantic_role in ADVANCED_RESPONSE_SEMANTIC_ROLES
+                ),
+            }
+            and role not in {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}
+        ):
+            return (
+                None,
+                "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_INVALID",
+            )
+        url_metadata = (
+            ADVANCED_RESPONSE_URL_METADATA_PATTERN.fullmatch(line) is not None
+        )
+        exact_action_group = role == "group" and _exact_response_actions_line(
+            line, indent
+        )
+        explicit_opaque = role in ADVANCED_RESPONSE_OPAQUE_ROLES and (
+            _advanced_response_opaque_node_match(line) is not None
+        )
+        unknown_container = (
+            role is not None
+            and role
+            not in {
+                "group",
+                "statictext",
+                "text",
+                "generic",
+                *ADVANCED_RESPONSE_SEMANTIC_ROLES,
+                *ADVANCED_RESPONSE_OPAQUE_ROLES,
+            }
+            and _advanced_response_unknown_container_match(line) is not None
+        )
+        if url_metadata or exact_action_group or explicit_opaque or unknown_container:
+            ignored_indexes.update(
+                _line_subtree_indexes(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                )
+            )
+            continue
+
+        if role is not None and role.casefold() in {"text", "statictext"}:
+            if role not in {"text", "statictext"}:
+                return (
+                    None,
+                    "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_SCALAR_INVALID",
+                )
+            block_key = _advanced_response_text_context(ancestors)
+            if block_key is None:
+                return (
+                    None,
+                    "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_SCALAR_INVALID",
+                )
+            payload_match = ADVANCED_RESPONSE_PAYLOAD_PATTERN.fullmatch(line)
+            if payload_match is None or payload_match.group("role") != role:
+                return (
+                    None,
+                    "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_SCALAR_INVALID",
+                )
+            try:
+                fragment = json.loads(payload_match.group("payload"))
+            except json.JSONDecodeError:
+                return (
+                    None,
+                    "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_SCALAR_INVALID",
+                )
+            if not isinstance(fragment, str):
+                return (
+                    None,
+                    "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_SCALAR_INVALID",
+                )
+            try:
+                fragment.encode("utf-8")
+            except UnicodeEncodeError:
+                return (
+                    None,
+                    "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_SCALAR_INVALID",
+                )
+            satisfied_containers.update(
+                ancestor_line
+                for _ancestor_indent, _ancestor_role, ancestor_line in ancestors
+                if ancestor_line in response_containers
+            )
+            candidate_indexes.add(line_index)
+            if block_key[1] == "body-paragraph" and block_key in block_keys:
+                blocks[block_keys.index(block_key)].append(fragment)
+            elif not block_keys or block_keys[-1] != block_key:
+                block_keys.append(block_key)
+                blocks.append([fragment])
+            else:
+                blocks[-1].append(fragment)
+            continue
+
+        if role in {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}:
+            presentation = _advanced_response_embedded_presentation_match(line)
+            if presentation is None or presentation[0] != role:
+                return (
+                    None,
+                    "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_INVALID",
+                )
+            _presentation_role, raw_ref, _ref_span = presentation
+            if raw_ref is not None:
+                embedded_refs.append(raw_ref)
+            response_containers.append(line_index)
+            candidate_indexes.add(line_index)
+            ancestors.append((indent, role, line_index))
+            continue
+
+        return None, "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_MATERIAL_UNSUPPORTED"
+
+    if len(embedded_refs) != len(set(embedded_refs)):
+        return None, "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_REF_COLLISION"
+    outside_ref_set = set(outside_refs)
+    if any(raw_ref in outside_ref_set for raw_ref in embedded_refs):
+        return None, "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_REF_COLLISION"
+    valid_non_whitespace_content = any(
+        fragment.strip() for fragments in blocks for fragment in fragments
+    )
+    if any(
+        line_index not in satisfied_containers for line_index in response_containers
+    ):
+        return (
+            None,
+            (
+                "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_UNSATISFIED_WITH_CONTENT"
+                if valid_non_whitespace_content
+                else "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_UNSATISFIED_EMPTY"
+            ),
+        )
+    if not blocks or any(not fragments for fragments in blocks):
+        return None, "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_CONTENT_EMPTY"
+    response = "\n".join("".join(fragments) for fragments in blocks)
+    if not response.strip():
+        return None, "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_CONTENT_EMPTY"
+    return (response, frozenset(candidate_indexes)), None
+
+
+def _advanced_response_action_detail_for_line(line: str) -> str | None:
+    """Classify one already-selected Response-actions-like physical line."""
+
+    candidate = STRUCTURAL_ELEMENT_PATTERN.match(line)
+    if candidate is None:
+        return "ADVANCED_RESPONSE_ACTION_LINE_SHAPE_INVALID"
+    if candidate.group("role") != "group":
+        return "ADVANCED_RESPONSE_ACTION_ROLE_INVALID"
+    if candidate.group("label") != ADVANCED_RESPONSE_ACTION_LABEL:
+        return "ADVANCED_RESPONSE_ACTION_LABEL_INVALID"
+
+    tail = line[candidate.end() :]
+    if (
+        ADVANCED_RESPONSE_REF_ATTEMPT_PATTERN.search(tail) is not None
+        or ADVANCED_RESPONSE_UNBRACKETED_REF_PATTERN.search(tail) is not None
+    ):
+        return "ADVANCED_RESPONSE_ACTION_REF_PRESENT"
+
+    indent = len(line) - len(line.lstrip())
+    if _exact_response_actions_line(line, indent):
+        return None
+    if ADVANCED_RESPONSE_ACTION_ATTRIBUTES_PATTERN.fullmatch(line) is not None:
+        return "ADVANCED_RESPONSE_ACTION_EXTRA_ATTRIBUTES"
+    return "ADVANCED_RESPONSE_ACTION_LINE_SHAPE_INVALID"
+
+
+def _advanced_response_action_refusal(
+    detail_code: str | None,
+    context_code: str | None = None,
+    context_detail_code: str | None = None,
+    context_shape_code: str | None = None,
+    fallback_code: str | None = None,
+    fallback_entry_code: str | None = None,
+) -> _AdvancedResponseParserRefusal:
+    return _AdvancedResponseParserRefusal(
+        "RESPONSE_NOT_IDENTIFIABLE",
+        "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID",
+        detail_code,
+        context_code,
+        context_detail_code,
+        context_shape_code,
+        fallback_code,
+        fallback_entry_code,
+    )
+
+
+def _advanced_assistant_response_with_metadata(
+    snapshot: str,
+    *,
+    anchor_ref: str,
+    allow_bound_precontent_fallback: bool = False,
+    enforce_response_safety: bool = True,
+) -> tuple[str, frozenset[int], frozenset[int]]:
     if not REF_PATTERN.fullmatch(anchor_ref):
-        raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_NOT_IDENTIFIABLE",
+            "ADVANCED_RESPONSE_HEADING_INVALID",
+        )
     lines = snapshot.splitlines()
     records = _advanced_element_lines(snapshot)
+    untrusted_line_indexes = _non_response_untrusted_line_indexes(snapshot)
+    strict_heading_exclusions = set(untrusted_line_indexes)
+    strict_heading_exclusions.update(_advanced_response_opaque_line_indexes(snapshot))
+    strict_headings = _advanced_response_heading_records(
+        snapshot,
+        excluded_indexes=strict_heading_exclusions,
+    )
+    if len(strict_headings) != 1 or strict_headings[0][2] != anchor_ref:
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_HEADING_INVALID",
+        )
+    strict_heading_line = strict_headings[0][0]
     anchor_positions = [
         position
-        for position, (_line, _indent, role, label, ref) in enumerate(records)
-        if role == "heading" and label == ADVANCED_RESPONSE_LABEL and ref == anchor_ref
+        for position, (line_index, _indent, role, label, ref) in enumerate(records)
+        if line_index == strict_heading_line
+        and role == "heading"
+        and label == ADVANCED_RESPONSE_LABEL
+        and ref == anchor_ref
     ]
     if len(anchor_positions) != 1:
-        raise OrchestrationRefusal("RESPONSE_SELECTOR_AMBIGUITY")
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_HEADING_INVALID",
+        )
     anchor_position = anchor_positions[0]
+    heading_line = records[anchor_position][0]
     if anchor_position + 1 >= len(records):
-        raise OrchestrationRefusal("RESPONSE_SELECTOR_AMBIGUITY")
+        diagnostic_code = (
+            "ADVANCED_RESPONSE_BODY_ROOT_INVALID"
+            if any(line.strip() for line in lines[heading_line + 1 :])
+            else "ADVANCED_RESPONSE_BODY_ROOT_ABSENT"
+        )
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            diagnostic_code,
+        )
     heading_line, heading_indent, _heading_role, _heading_label, _heading_ref = records[
         anchor_position
     ]
@@ -1968,18 +5714,46 @@ def _advanced_assistant_response(snapshot: str, *, anchor_ref: str) -> str:
     ]
     body_match = ADVANCED_RESPONSE_BODY_PATTERN.fullmatch(lines[body_line])
     heading_prefix = lines[heading_line][:heading_indent]
+    if body_ref == anchor_ref:
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_STRUCTURAL_REF_COLLISION",
+        )
     if (
         body_role != "generic"
         or body_indent != heading_indent
-        or body_ref == anchor_ref
         or any(line.strip() for line in lines[heading_line + 1 : body_line])
         or body_match is None
         or body_match.group("ref") != body_ref
         or body_match.group("indent") != heading_prefix
     ):
-        raise OrchestrationRefusal("RESPONSE_SELECTOR_AMBIGUITY")
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_BODY_ROOT_INVALID",
+        )
+    action_subtree_line_indexes = _advanced_response_action_subtree_line_indexes(
+        snapshot
+    )
+    all_refs = [
+        ref
+        for line_index, line in enumerate(lines)
+        if line_index not in untrusted_line_indexes
+        and line_index not in action_subtree_line_indexes
+        for ref in _structural_accessibility_refs(line)
+    ]
+    if all_refs.count(anchor_ref) != 1 or all_refs.count(body_ref) != 1:
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_STRUCTURAL_REF_COLLISION",
+        )
 
     subtree_end = len(lines)
+    boundary_action_line: int | None = None
+    boundary_action_indent: int | None = None
+    boundary_action_detail_allowed = False
+    boundary_action_syntax_detail: str | None = None
+    boundary_action_invalid = False
+    boundary_refusal: tuple[str, str] | None = None
     for line_index in range(body_line + 1, len(lines)):
         line = lines[line_index]
         if not line.strip():
@@ -1996,21 +5770,70 @@ def _advanced_assistant_response(snapshot: str, *, anchor_ref: str) -> str:
             else None
         )
         if boundary_role is not None and boundary_role.casefold() == "group":
-            raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
+            action_detail = (
+                _advanced_response_action_detail_for_line(line)
+                if line_index not in untrusted_line_indexes
+                else None
+            )
+            boundary_action_line = line_index
+            boundary_action_indent = indent
+            boundary_action_detail_allowed = line_index not in untrusted_line_indexes
+            boundary_action_syntax_detail = action_detail
+            boundary_action_invalid = not _exact_response_actions_line(line, indent)
+            break
+        if boundary_role in {
+            "statictext",
+            "text",
+            *ADVANCED_RESPONSE_SEMANTIC_ROLES,
+        }:
+            boundary_refusal = (
+                "RESPONSE_NOT_IDENTIFIABLE",
+                "ADVANCED_RESPONSE_BOUNDARY_CONFLICT",
+            )
+            break
         if (
             boundary is not None
             and indent == body_indent
             and boundary.group("role") == "generic"
         ):
-            raise OrchestrationRefusal("RESPONSE_SELECTOR_AMBIGUITY")
+            boundary_refusal = (
+                "RESPONSE_SELECTOR_AMBIGUITY",
+                "ADVANCED_RESPONSE_BOUNDARY_CONFLICT",
+            )
+            break
+        unknown_container = (
+            line_index not in untrusted_line_indexes
+            and boundary_role is not None
+            and _advanced_response_unknown_container_match(line) is not None
+        )
+        if unknown_container and _advanced_response_boundary_subtree_has_content(
+            lines,
+            root_index=line_index,
+            root_indent=indent,
+            excluded_indexes=untrusted_line_indexes,
+        ):
+            boundary_refusal = (
+                "RESPONSE_NOT_IDENTIFIABLE",
+                "ADVANCED_RESPONSE_BOUNDARY_CONFLICT",
+            )
         break
 
-    fragments: list[str] = []
-    ancestors: list[tuple[int, str]] = [(body_indent, body_role)]
+    blocks: list[list[str]] = []
+    block_keys: list[tuple[int, str]] = []
+    ancestors: list[tuple[int, str, int]] = [(body_indent, body_role, body_line)]
     action_group_indent: int | None = None
+    action_group_line: int | None = None
     action_group_open = False
     action_group_seen = False
-    for line in lines[body_line + 1 : subtree_end]:
+    action_group_before_content = False
+    action_group_detail_allowed = False
+    content_contributed = False
+    embedded_candidate_indexes: frozenset[int] = frozenset()
+    silent_wrapper_indexes: frozenset[int] = frozenset()
+    action_group_enclosing_lines: frozenset[int] = frozenset()
+    for line_index, line in enumerate(
+        lines[body_line + 1 : subtree_end], start=body_line + 1
+    ):
         if not line.strip():
             continue
         indent = len(line) - len(line.lstrip())
@@ -2018,66 +5841,410 @@ def _advanced_assistant_response(snapshot: str, *, anchor_ref: str) -> str:
             ancestors.pop()
         if action_group_open:
             if action_group_indent is None:
-                raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
+                raise _AdvancedResponseParserRefusal(
+                    "RESPONSE_NOT_IDENTIFIABLE",
+                    "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID",
+                )
             if indent > action_group_indent:
                 continue
             action_group_open = False
         role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
         role = role_match.group("role") if role_match is not None else None
+        if _advanced_response_opaque_context(ancestors):
+            if role is not None:
+                ancestors.append((indent, role, line_index))
+            continue
+        if (
+            role is not None
+            and role.casefold() in {"text", "statictext"}
+            and role
+            not in {
+                "text",
+                "statictext",
+            }
+        ):
+            raise _AdvancedResponseParserRefusal(
+                "RESPONSE_NOT_IDENTIFIABLE",
+                "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+            )
         if role is not None and role.casefold() == "group":
-            exact_group_line = " " * indent + ADVANCED_RESPONSE_ACTION_GROUP_SUFFIX
-            if (
-                role != "group"
-                or line != exact_group_line
-                or action_group_seen
-                or not fragments
-                or not _advanced_response_action_group_context(
-                    ancestors,
-                    body_indent=body_indent,
-                    group_indent=indent,
+            detail_allowed = line_index not in untrusted_line_indexes
+            action_detail = (
+                _advanced_response_action_detail_for_line(line)
+                if detail_allowed
+                else None
+            )
+            if action_detail is not None:
+                raise _advanced_response_action_refusal(action_detail)
+            if not _exact_response_actions_line(line, indent):
+                raise _advanced_response_action_refusal(None)
+            if action_group_seen:
+                raise _advanced_response_action_refusal(
+                    "ADVANCED_RESPONSE_ACTION_DUPLICATE" if detail_allowed else None
                 )
-            ):
-                raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
             action_group_indent = indent
+            action_group_line = line_index
             action_group_open = True
             action_group_seen = True
+            action_group_before_content = not content_contributed
+            action_group_detail_allowed = detail_allowed
+            action_group_enclosing_lines = frozenset(
+                ancestor_line
+                for _ancestor_indent, ancestor_role, ancestor_line in ancestors
+                if ancestor_role in {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}
+            )
             continue
         if role in {"text", "statictext"}:
-            if not _advanced_response_text_context(ancestors):
+            block_key = _advanced_response_text_context(ancestors)
+            if block_key is None:
                 continue
-            if action_group_seen:
-                raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
+            if action_group_seen and not action_group_before_content:
+                raise _advanced_response_action_refusal(
+                    (
+                        "ADVANCED_RESPONSE_ACTION_CONTENT_AFTER"
+                        if action_group_detail_allowed
+                        else None
+                    )
+                )
             payload_match = ADVANCED_RESPONSE_PAYLOAD_PATTERN.fullmatch(line)
             if payload_match is None or payload_match.group("role") != role:
-                raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
+                raise _AdvancedResponseParserRefusal(
+                    "RESPONSE_NOT_IDENTIFIABLE",
+                    "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+                )
             try:
                 fragment = json.loads(payload_match.group("payload"))
             except json.JSONDecodeError as error:
-                raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE") from error
+                raise _AdvancedResponseParserRefusal(
+                    "RESPONSE_NOT_IDENTIFIABLE",
+                    "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+                ) from error
             if not isinstance(fragment, str):
-                raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
-            fragments.append(fragment)
+                raise _AdvancedResponseParserRefusal(
+                    "RESPONSE_NOT_IDENTIFIABLE",
+                    "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+                )
+            if fragment.strip():
+                content_contributed = True
+            if block_key[1] == "body-paragraph" and block_key in block_keys:
+                blocks[block_keys.index(block_key)].append(fragment)
+            elif not block_keys or block_keys[-1] != block_key:
+                block_keys.append(block_key)
+                blocks.append([])
+                blocks[-1].append(fragment)
+            else:
+                blocks[-1].append(fragment)
             continue
-        if role is not None and role not in ADVANCED_RESPONSE_NODE_ROLES:
-            raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
-        element = ELEMENT_PATTERN.match(line)
-        if role is not None:
+        if ADVANCED_RESPONSE_URL_METADATA_PATTERN.fullmatch(line) is not None:
+            ancestors.append((indent, "url", line_index))
+            continue
+        if role is None:
+            raise _AdvancedResponseParserRefusal(
+                "RESPONSE_NOT_IDENTIFIABLE",
+                "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+            )
+        if role in {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}:
+            element = ELEMENT_PATTERN.match(line)
             if element is None or element.group("role") != role:
-                raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
-            ancestors.append((indent, role))
+                raise _AdvancedResponseParserRefusal(
+                    "RESPONSE_NOT_IDENTIFIABLE",
+                    "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+                )
+        elif role in ADVANCED_RESPONSE_OPAQUE_ROLES:
+            opaque_node = _advanced_response_opaque_node_match(line)
+            if opaque_node is None or opaque_node.group("role") != role:
+                raise _AdvancedResponseParserRefusal(
+                    "RESPONSE_NOT_IDENTIFIABLE",
+                    "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+                )
+        elif _advanced_response_unknown_container_match(line) is None:
+            raise _AdvancedResponseParserRefusal(
+                "RESPONSE_NOT_IDENTIFIABLE",
+                "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+            )
+        ancestors.append((indent, role, line_index))
 
-    if not fragments:
-        raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
-    response = "".join(fragments)
-    if not response.startswith("{") or not response.endswith("}"):
-        raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
-    try:
-        parsed_response = json.loads(response)
-    except json.JSONDecodeError as error:
-        raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE") from error
-    if not isinstance(parsed_response, dict):
-        raise OrchestrationRefusal("RESPONSE_NOT_IDENTIFIABLE")
-    workflow._reject_sensitive_text(response, "RESPONSE_SENSITIVE_OR_INVALID")
+    if boundary_refusal is not None:
+        raise _AdvancedResponseParserRefusal(*boundary_refusal)
+
+    if boundary_action_line is not None:
+        if boundary_action_invalid:
+            raise _advanced_response_action_refusal(boundary_action_syntax_detail)
+        if action_group_seen:
+            raise _advanced_response_action_refusal(
+                (
+                    "ADVANCED_RESPONSE_ACTION_DUPLICATE"
+                    if boundary_action_detail_allowed
+                    else None
+                )
+            )
+        if not content_contributed:
+            context_code, context_detail_code, context_shape_code = (
+                _advanced_response_precontent_diagnostics(
+                    lines,
+                    body_line=body_line,
+                    body_indent=body_indent,
+                    group_line=boundary_action_line,
+                    group_indent=boundary_action_indent,
+                    owned_end=len(lines),
+                )
+                if boundary_action_detail_allowed and boundary_action_indent is not None
+                else (None, None, None)
+            )
+            raise _advanced_response_action_refusal(
+                (
+                    "ADVANCED_RESPONSE_ACTION_PRE_CONTENT"
+                    if boundary_action_detail_allowed
+                    else None
+                ),
+                context_code,
+                context_detail_code,
+                context_shape_code,
+            )
+        if boundary_action_indent is None:
+            raise _advanced_response_action_refusal(None)
+        action_group_seen = True
+        ignored_boundary_indexes = set(untrusted_line_indexes)
+        for line_index in range(boundary_action_line + 1, len(lines)):
+            if line_index in ignored_boundary_indexes:
+                line = lines[line_index]
+                if line.strip():
+                    indent = len(line) - len(line.lstrip())
+                    if indent <= boundary_action_indent:
+                        break
+                continue
+            line = lines[line_index]
+            if not line.strip():
+                continue
+            indent = len(line) - len(line.lstrip())
+            if indent > boundary_action_indent:
+                continue
+            role_match = ADVANCED_RESPONSE_ROLE_PATTERN.match(line)
+            role = role_match.group("role") if role_match is not None else None
+            if role is not None and role.casefold() == "group":
+                detail_allowed = line_index not in untrusted_line_indexes
+                action_detail = (
+                    _advanced_response_action_detail_for_line(line)
+                    if detail_allowed
+                    else None
+                )
+                if not _exact_response_actions_line(line, indent):
+                    raise _advanced_response_action_refusal(action_detail)
+                raise _advanced_response_action_refusal(
+                    "ADVANCED_RESPONSE_ACTION_DUPLICATE" if detail_allowed else None
+                )
+            if role is not None and (
+                role.casefold() in {"text", "statictext"}
+                or role in ADVANCED_RESPONSE_SEMANTIC_ROLES
+            ):
+                raise _advanced_response_action_refusal(
+                    (
+                        "ADVANCED_RESPONSE_ACTION_CONTENT_AFTER"
+                        if boundary_action_detail_allowed
+                        else None
+                    )
+                )
+            if role == "generic":
+                raise _AdvancedResponseParserRefusal(
+                    "RESPONSE_SELECTOR_AMBIGUITY",
+                    "ADVANCED_RESPONSE_BOUNDARY_CONFLICT",
+                )
+            explicit_opaque = role in ADVANCED_RESPONSE_OPAQUE_ROLES and (
+                _advanced_response_opaque_node_match(line) is not None
+            )
+            url_metadata = (
+                ADVANCED_RESPONSE_URL_METADATA_PATTERN.fullmatch(line) is not None
+            )
+            if explicit_opaque or url_metadata:
+                break
+            unknown_container = (
+                role is not None
+                and _advanced_response_unknown_container_match(line) is not None
+            )
+            if unknown_container:
+                if _advanced_response_boundary_subtree_has_content(
+                    lines,
+                    root_index=line_index,
+                    root_indent=indent,
+                    excluded_indexes=ignored_boundary_indexes,
+                ):
+                    raise _AdvancedResponseParserRefusal(
+                        "RESPONSE_NOT_IDENTIFIABLE",
+                        "ADVANCED_RESPONSE_BOUNDARY_CONFLICT",
+                    )
+                ignored_boundary_indexes.update(
+                    _line_subtree_indexes(
+                        lines,
+                        root_index=line_index,
+                        root_indent=indent,
+                    )
+                )
+                break
+            break
+
+    if action_group_seen and action_group_before_content and not content_contributed:
+        context_code, context_detail_code, context_shape_code = (
+            _advanced_response_precontent_diagnostics(
+                lines,
+                body_line=body_line,
+                body_indent=body_indent,
+                group_line=action_group_line,
+                group_indent=action_group_indent,
+                owned_end=subtree_end,
+            )
+            if action_group_detail_allowed
+            and action_group_line is not None
+            and action_group_indent is not None
+            else (None, None, None)
+        )
+        opaque_line_indexes = _advanced_response_opaque_line_indexes(snapshot)
+        fallback_ref_inert_indexes = _advanced_response_fallback_ref_inert_line_indexes(
+            snapshot
+        )
+        outside_group_wrapper = any(
+            line_index not in action_group_enclosing_lines
+            and line_index not in action_subtree_line_indexes
+            and line_index not in opaque_line_indexes
+            and line_index not in untrusted_line_indexes
+            and ((role_match := ADVANCED_RESPONSE_ROLE_PATTERN.match(line)) is not None)
+            and role_match.group("role")
+            in {"generic", *ADVANCED_RESPONSE_SEMANTIC_ROLES}
+            for line_index, line in enumerate(
+                lines[body_line + 1 : subtree_end],
+                start=body_line + 1,
+            )
+        )
+        embedded: tuple[str, frozenset[int]] | None = None
+        fallback_code: str | None = None
+        fallback_entry_code: str | None = None
+        fallback_eligible = (
+            allow_bound_precontent_fallback
+            and context_code == "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID"
+            and context_detail_code
+            == "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID"
+            and context_shape_code
+            == "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING"
+            and action_group_line is not None
+            and action_group_indent is not None
+        )
+        fallback_outside_refs = (
+            [
+                ref
+                for line_index, line in enumerate(lines)
+                if line_index not in fallback_ref_inert_indexes
+                for ref in _advanced_response_fallback_trusted_refs(line)
+            ]
+            if fallback_eligible
+            else []
+        )
+        if fallback_eligible and blocks:
+            fallback_entry_code = (
+                "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR"
+            )
+        elif fallback_eligible and outside_group_wrapper:
+            silent_wrapper_result = (
+                _advanced_response_silent_outside_presentation_indexes(
+                    lines,
+                    body_line=body_line,
+                    body_indent=body_indent,
+                    group_line=action_group_line,
+                    group_indent=action_group_indent,
+                    owned_end=subtree_end,
+                    group_enclosing_lines=action_group_enclosing_lines,
+                )
+            )
+            if silent_wrapper_result is None:
+                fallback_entry_code = "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER"
+            else:
+                silent_wrapper_refs = [
+                    presentation[1]
+                    for line_index in silent_wrapper_result
+                    if (
+                        presentation := _advanced_response_embedded_presentation_match(
+                            lines[line_index]
+                        )
+                    )
+                    is not None
+                    and presentation[1] is not None
+                ]
+                if any(
+                    fallback_outside_refs.count(raw_ref) != 1
+                    for raw_ref in silent_wrapper_refs
+                ):
+                    fallback_entry_code = "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER"
+                else:
+                    silent_wrapper_indexes = silent_wrapper_result
+                    embedded, fallback_code = (
+                        _advanced_response_embedded_precontent_response(
+                            lines,
+                            body_line=body_line,
+                            body_indent=body_indent,
+                            group_line=action_group_line,
+                            group_indent=action_group_indent,
+                            owned_end=subtree_end,
+                            outside_refs=fallback_outside_refs,
+                        )
+                    )
+        elif fallback_eligible:
+            embedded, fallback_code = _advanced_response_embedded_precontent_response(
+                lines,
+                body_line=body_line,
+                body_indent=body_indent,
+                group_line=action_group_line,
+                group_indent=action_group_indent,
+                owned_end=subtree_end,
+                outside_refs=fallback_outside_refs,
+            )
+        if embedded is None:
+            raise _advanced_response_action_refusal(
+                (
+                    "ADVANCED_RESPONSE_ACTION_PRE_CONTENT"
+                    if action_group_detail_allowed
+                    else None
+                ),
+                context_code,
+                context_detail_code,
+                context_shape_code,
+                fallback_code,
+                fallback_entry_code,
+            )
+        response, embedded_candidate_indexes = embedded
+    else:
+        if not blocks or any(not fragments for fragments in blocks):
+            raise _AdvancedResponseParserRefusal(
+                "RESPONSE_NOT_IDENTIFIABLE",
+                "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+            )
+        response = "\n".join("".join(fragments) for fragments in blocks)
+    if not response.strip():
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_NOT_IDENTIFIABLE",
+            "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+        )
+    if enforce_response_safety:
+        try:
+            response_bytes = response.encode("utf-8")
+        except UnicodeEncodeError as error:
+            raise OrchestrationRefusal("RESPONSE_SENSITIVE_OR_INVALID") from error
+        if len(response_bytes) > workflow.MAX_TEXT_BYTES:
+            raise OrchestrationRefusal("RESPONSE_SENSITIVE_OR_INVALID")
+        workflow._reject_sensitive_text(response, "RESPONSE_SENSITIVE_OR_INVALID")
+    return response, embedded_candidate_indexes, silent_wrapper_indexes
+
+
+def _advanced_assistant_response(
+    snapshot: str,
+    *,
+    anchor_ref: str,
+    allow_bound_precontent_fallback: bool = False,
+) -> str:
+    response, _embedded_candidate_indexes, _silent_wrapper_indexes = (
+        _advanced_assistant_response_with_metadata(
+            snapshot,
+            anchor_ref=anchor_ref,
+            allow_bound_precontent_fallback=allow_bound_precontent_fallback,
+        )
+    )
     return response
 
 
@@ -2096,6 +6263,8 @@ def _response_anchor_ref(
     elements: Sequence[tuple[str, str, str]],
     *,
     profile_id: str,
+    snapshot: str | None = None,
+    excluded_indexes: set[int] | frozenset[int] = frozenset(),
 ) -> str:
     legacy_refs = _legacy_assistant_refs(elements)
     if profile_id != workflow.ADVANCED_PROFILE_ID:
@@ -2103,37 +6272,180 @@ def _response_anchor_ref(
             raise OrchestrationRefusal("RESPONSE_SELECTOR_AMBIGUITY")
         return legacy_refs[0]
 
-    _require_distinct_refs(elements, refusal_code="RESPONSE_SELECTOR_AMBIGUITY")
-    matches = [
-        (role, ref) for role, label, ref in elements if label == ADVANCED_RESPONSE_LABEL
-    ]
-    if len(matches) != 1 or matches[0][0] != "heading" or len(legacy_refs) != 0:
-        raise OrchestrationRefusal("RESPONSE_SELECTOR_AMBIGUITY")
-    return matches[0][1]
+    if snapshot is None:
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_HEADING_INVALID",
+        )
+    if _legacy_response_marker_line_indexes(
+        snapshot,
+        excluded_indexes=excluded_indexes,
+    ):
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_MARKER_CONFLICT",
+        )
+    try:
+        _require_distinct_refs(elements, refusal_code="RESPONSE_SELECTOR_AMBIGUITY")
+    except OrchestrationRefusal as error:
+        raise _AdvancedResponseParserRefusal(
+            error.code,
+            "ADVANCED_RESPONSE_STRUCTURAL_REF_COLLISION",
+        ) from error
+    matches = _advanced_response_heading_records(
+        snapshot,
+        excluded_indexes=excluded_indexes,
+    )
+    if legacy_refs:
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_MARKER_CONFLICT",
+        )
+    if len(matches) != 1:
+        raise _AdvancedResponseParserRefusal(
+            "RESPONSE_SELECTOR_AMBIGUITY",
+            "ADVANCED_RESPONSE_HEADING_INVALID",
+        )
+    return matches[0][2]
+
+
+def _completed_response_with_metadata(
+    snapshot: str,
+    *,
+    profile_id: str,
+    allow_bound_precontent_fallback: bool = False,
+    enforce_response_safety: bool = True,
+) -> tuple[str, str, str, frozenset[int], frozenset[int]] | None:
+    url, _elements_for_origin_and_stop = _checked_snapshot(snapshot, phase="response")
+    excluded_indexes = _non_response_untrusted_line_indexes(snapshot)
+    if profile_id == workflow.ADVANCED_PROFILE_ID:
+        excluded_indexes.update(_advanced_response_opaque_line_indexes(snapshot))
+        response_marker_records = _advanced_response_marker_records(
+            snapshot,
+            excluded_indexes=excluded_indexes,
+        )
+        response_markers = [
+            (role.strip().casefold(), label.strip().casefold())
+            for _line_index, _line, role, label in response_marker_records
+        ]
+        if response_markers and response_markers != [
+            ("heading", ADVANCED_RESPONSE_LABEL.casefold())
+        ]:
+            if _advanced_response_marker_competes(
+                snapshot,
+                response_marker_records,
+                excluded_indexes=excluded_indexes,
+            ):
+                raise _AdvancedResponseParserRefusal(
+                    "RESPONSE_SELECTOR_AMBIGUITY",
+                    "ADVANCED_RESPONSE_MARKER_CONFLICT",
+                )
+            error = _AdvancedResponseParserRefusal(
+                "RESPONSE_SELECTOR_AMBIGUITY",
+                "ADVANCED_RESPONSE_HEADING_INVALID",
+            )
+            raise _with_advanced_response_heading_detail(
+                error,
+                snapshot,
+                excluded_indexes=excluded_indexes,
+            )
+    if _has_generating_marker(
+        snapshot,
+        profile_id=profile_id,
+    ) or not _has_assistant_marker(snapshot, profile_id=profile_id):
+        return None
+    if profile_id == workflow.ADVANCED_PROFILE_ID:
+        if _advanced_response_marker_competes(
+            snapshot,
+            response_marker_records,
+            excluded_indexes=excluded_indexes,
+        ):
+            raise _AdvancedResponseParserRefusal(
+                "RESPONSE_SELECTOR_AMBIGUITY",
+                "ADVANCED_RESPONSE_MARKER_CONFLICT",
+            )
+        heading_detail = _advanced_response_heading_detail(
+            snapshot,
+            excluded_indexes=excluded_indexes,
+        )
+        if heading_detail is not None:
+            raise _AdvancedResponseParserRefusal(
+                "RESPONSE_SELECTOR_AMBIGUITY",
+                "ADVANCED_RESPONSE_HEADING_INVALID",
+                heading_detail,
+            )
+    anchor_excluded_indexes = set(excluded_indexes)
+    if profile_id == workflow.ADVANCED_PROFILE_ID:
+        anchor_excluded_indexes.update(
+            line_index
+            for line_index, line in enumerate(snapshot.splitlines())
+            if ADVANCED_RESPONSE_PAYLOAD_PATTERN.fullmatch(line) is not None
+        )
+    anchor_elements = _elements_excluding_lines(
+        snapshot,
+        anchor_excluded_indexes,
+        preserve_labels=profile_id == workflow.ADVANCED_PROFILE_ID,
+    )
+    try:
+        assistant_ref = _response_anchor_ref(
+            anchor_elements,
+            profile_id=profile_id,
+            snapshot=snapshot,
+            excluded_indexes=excluded_indexes,
+        )
+        if profile_id == workflow.ADVANCED_PROFILE_ID:
+            response, embedded_candidate_indexes, silent_wrapper_indexes = (
+                _advanced_assistant_response_with_metadata(
+                    snapshot,
+                    anchor_ref=assistant_ref,
+                    allow_bound_precontent_fallback=allow_bound_precontent_fallback,
+                    enforce_response_safety=enforce_response_safety,
+                )
+            )
+        else:
+            response = _assistant_response(snapshot, anchor_ref=assistant_ref)
+            embedded_candidate_indexes = frozenset()
+            silent_wrapper_indexes = frozenset()
+    except _AdvancedResponseParserRefusal as error:
+        if profile_id != workflow.ADVANCED_PROFILE_ID:
+            raise
+        enriched = _with_advanced_response_heading_detail(
+            error,
+            snapshot,
+            excluded_indexes=excluded_indexes,
+        )
+        if enriched is error:
+            raise
+        raise enriched from error
+    return (
+        url,
+        assistant_ref,
+        response,
+        embedded_candidate_indexes,
+        silent_wrapper_indexes,
+    )
 
 
 def _completed_response(
     snapshot: str,
     *,
     profile_id: str,
+    allow_bound_precontent_fallback: bool = False,
 ) -> tuple[str, str, str] | None:
-    url, elements = _checked_snapshot(snapshot)
-    if _has_generating_marker(
+    completed = _completed_response_with_metadata(
         snapshot,
         profile_id=profile_id,
-    ) or not _has_assistant_marker(snapshot):
+        allow_bound_precontent_fallback=allow_bound_precontent_fallback,
+    )
+    if completed is None:
         return None
-    anchor_elements = (
-        _elements_preserving_labels(snapshot)
-        if profile_id == workflow.ADVANCED_PROFILE_ID
-        else elements
-    )
-    assistant_ref = _response_anchor_ref(anchor_elements, profile_id=profile_id)
-    response = (
-        _advanced_assistant_response(snapshot, anchor_ref=assistant_ref)
-        if profile_id == workflow.ADVANCED_PROFILE_ID
-        else _assistant_response(snapshot)
-    )
+    (
+        url,
+        assistant_ref,
+        response,
+        _embedded_candidate_indexes,
+        _silent_wrapper_indexes,
+    ) = completed
     return url, assistant_ref, response
 
 
@@ -2167,91 +6479,86 @@ def _inspect_live_pre_submission_ui(
 
     contract = workflow._load_contract(workflow.DEFAULT_CONTRACT)
     observations: list[dict[str, Any]] = []
-    transport.call("browser_navigate", {"url": contract["entry_url"]})
-    snapshot = _settle_initial_ui_once(
-        transport,
-        transport.call("browser_snapshot", {}),
-        validate_known_ui=_initial_model_picker,
-    )
-    snapshot = authenticated_snapshot(snapshot)
-    url, model_picker = _initial_model_picker(snapshot)
+    try:
+        transport.call("browser_navigate", {"url": contract["entry_url"]})
+        snapshot = _settle_initial_ui_once(
+            transport,
+            transport.call("browser_snapshot", {}),
+            validate_known_ui=_initial_model_picker,
+        )
+        snapshot = authenticated_snapshot(snapshot)
+        url, model_picker = _initial_model_picker(snapshot)
+    except (
+        OrchestrationRefusal,
+        TransportUnavailable,
+        workflow.WorkflowRefusal,
+    ) as error:
+        raise _phase_unavailable(error, phase="landing") from error
     observations.append(
         _base_observation("landing", url, refs={"model_picker": [model_picker]})
     )
-    transport.call("browser_click", {"element": "model picker", "target": model_picker})
-    snapshot = authenticated_snapshot(transport.call("browser_snapshot", {}))
-    url, elements = _checked_snapshot(snapshot)
-    if _advanced_ui_present(elements):
-        profile_id, profile = _advanced_profile(contract)
+    expect_advanced_menu = _advanced_like_landing(snapshot)
+    try:
+        transport.call(
+            "browser_click", {"element": "model picker", "target": model_picker}
+        )
+    except TransportUnavailable as error:
+        raise _phase_unavailable(error, phase="pro_menu") from error
 
-        def expanded_advanced_menu(
-            current_snapshot: str,
-        ) -> tuple[str, list[tuple[str, str, str]], str, str]:
-            current_url, current_elements = _checked_snapshot(current_snapshot)
-            view, expand_ref, model_ref, effort_ref = _advanced_menu_view(
-                current_elements
-            )
-            if view == "compact":
+    def opened_pro_menu(current_snapshot: str) -> dict[str, Any]:
+        if expect_advanced_menu:
+            return {
+                "kind": "advanced",
+                "menu_state": _advanced_menu_state(current_snapshot),
+            }
+        current_url, current_elements = _checked_snapshot(current_snapshot)
+        if _advanced_snapshot_present(current_snapshot):
+            raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
+        profile_id, profile, target_model_ref = _known_profile(
+            current_elements, contract
+        )
+        return {
+            "kind": "legacy",
+            "url": current_url,
+            "elements": current_elements,
+            "profile_id": profile_id,
+            "profile": profile,
+            "target_model_ref": target_model_ref,
+        }
+
+    snapshot, opened = _settle_pre_submission_transition(
+        transport,
+        phase="pro_menu",
+        validate_expected=opened_pro_menu,
+    )
+    if opened["kind"] == "advanced":
+        profile_id, profile = _advanced_profile(contract)
+        menu_state = opened["menu_state"]
+        if menu_state["view"] == "compact":
+            try:
                 transport.call(
                     "browser_click",
-                    {"element": "show advanced options", "target": expand_ref},
+                    {
+                        "element": "show advanced options",
+                        "target": menu_state["expand_ref"],
+                    },
                 )
-                current_snapshot = authenticated_snapshot(
-                    transport.call("browser_snapshot", {})
-                )
-                current_url, current_elements = _checked_snapshot(current_snapshot)
-                view, _expand_ref, model_ref, effort_ref = _advanced_menu_view(
-                    current_elements
-                )
-            if view != "expanded" or model_ref is None or effort_ref is None:
-                raise OrchestrationRefusal("SELECTOR_AMBIGUITY")
-            return current_url, current_elements, model_ref, effort_ref
-
-        _url, _elements_in_menu, model_entry_ref, _effort_entry_ref = (
-            expanded_advanced_menu(snapshot)
-        )
-        transport.call(
-            "browser_click",
-            {"element": "advanced model", "target": model_entry_ref},
-        )
-        snapshot = authenticated_snapshot(transport.call("browser_snapshot", {}))
-        url, target_model_ref = _ordered_checked_option_ref(
-            snapshot,
-            expected_labels=profile["model_option_labels"],
-            target_label=profile["target_model"],
-            refusal_code="MODEL_OPTIONS_AMBIGUOUS",
-        )
+            except TransportUnavailable as error:
+                raise _phase_unavailable(error, phase="advanced_summary") from error
+            snapshot, menu_state = _settle_pre_submission_transition(
+                transport,
+                phase="advanced_summary",
+                validate_expected=_expanded_advanced_summary,
+            )
+        if menu_state["view"] != "expanded":
+            raise LiveUiUnavailable("SELECTOR_AMBIGUITY", "advanced_summary")
+        url = menu_state["url"]
         observations.append(
             _base_observation(
                 "model_menu",
                 url,
                 option_labels=profile["model_option_labels"],
-                refs={"target_model": [target_model_ref]},
             )
-        )
-        top_pro_ref = _unique_ref(
-            _elements(snapshot), labels=("Pro",), roles=("button",)
-        )
-        transport.call("browser_click", {"element": "Pro menu", "target": top_pro_ref})
-        snapshot = authenticated_snapshot(transport.call("browser_snapshot", {}))
-        _closed_url, model_picker, _composer = _advanced_landing(snapshot)
-        transport.call(
-            "browser_click", {"element": "model picker", "target": model_picker}
-        )
-        snapshot = authenticated_snapshot(transport.call("browser_snapshot", {}))
-        _url, _elements_in_menu, _model_entry_ref, effort_entry_ref = (
-            expanded_advanced_menu(snapshot)
-        )
-        transport.call(
-            "browser_click",
-            {"element": "advanced effort", "target": effort_entry_ref},
-        )
-        snapshot = authenticated_snapshot(transport.call("browser_snapshot", {}))
-        url, target_effort_ref = _ordered_checked_option_ref(
-            snapshot,
-            expected_labels=profile["effort_option_labels"],
-            target_label=profile["target_effort"],
-            refusal_code="EFFORT_OPTIONS_AMBIGUOUS",
         )
         observations.append(
             _base_observation(
@@ -2259,19 +6566,28 @@ def _inspect_live_pre_submission_ui(
                 url,
                 model_label=profile["target_model"],
                 option_labels=profile["effort_option_labels"],
-                refs={"target_effort": [target_effort_ref]},
             )
         )
-        top_pro_ref = _unique_ref(
-            _elements(snapshot), labels=("Pro",), roles=("button",)
+        top_pro_ref = menu_state["button_ref"]
+        try:
+            transport.call(
+                "browser_click", {"element": "Pro menu", "target": top_pro_ref}
+            )
+        except TransportUnavailable as error:
+            raise _phase_unavailable(error, phase="advanced_summary") from error
+        _snapshot, ready = _settle_pre_submission_transition(
+            transport,
+            phase="closed_landing",
+            validate_expected=lambda value: _advanced_ready_observation(value, profile),
         )
-        transport.call("browser_click", {"element": "Pro menu", "target": top_pro_ref})
-        snapshot = authenticated_snapshot(transport.call("browser_snapshot", {}))
-        ready = _advanced_ready_observation(snapshot, profile)
         observations.append(ready)
         return contract, observations, profile_id, profile, ready
 
-    profile_id, profile, target_model_ref = _known_profile(elements, contract)
+    profile_id = opened["profile_id"]
+    profile = opened["profile"]
+    target_model_ref = opened["target_model_ref"]
+    url = opened["url"]
+    elements = opened["elements"]
     observations.append(
         _base_observation(
             "model_menu",
@@ -2347,23 +6663,38 @@ def _live_capture(
                 interactive_auth_wait_seconds=interactive_auth_wait_seconds,
             )
         )
+    except LiveUiUnavailable as error:
+        if error.phase is not None:
+            raise
+        raise _phase_unavailable(error, phase="pro_menu") from error
+    except TransportUnavailable as error:
+        raise _phase_unavailable(error, phase="pro_menu") from error
     except OrchestrationRefusal as error:
-        raise _classify_pre_submission_ui_refusal(error) from error
+        raise _classify_pre_submission_ui_refusal(error, phase="pro_menu") from error
+    except workflow.WorkflowRefusal as error:
+        raise _phase_unavailable(error, phase="pro_menu") from error
     composer = ready["refs"]["composer"][0]
     advanced = profile.get("effort_mode") == "advanced"
     send = None if advanced else ready["refs"]["send"][0]
     send_url = ready["url"]
-    transport.call(
-        "browser_type",
-        {
-            "element": "ChatGPT composer",
-            "target": composer,
-            "text": contract["prompt_secret_name"],
-            "submit": False,
-        },
-    )
+    try:
+        transport.call(
+            "browser_type",
+            {
+                "element": "ChatGPT composer",
+                "target": composer,
+                "text": contract["prompt_secret_name"],
+                "submit": False,
+            },
+        )
+    except TransportUnavailable as error:
+        raise _phase_unavailable(error, phase="typed_composer") from error
     if advanced:
-        send_ready, send = _post_type_send_prompt(transport, profile)
+        send_ready, send = _post_type_send_prompt(
+            transport,
+            profile,
+            composer_ref=composer,
+        )
         observations.append(send_ready)
         send_url = send_ready["url"]
     if not isinstance(send, str):
@@ -2602,6 +6933,57 @@ def _resume_live_capture(
                 pass
 
 
+def _recover_bound_response_capture(
+    *,
+    transport: BrowserTransport,
+    conversation_url: str,
+    on_wait_progress: Callable[[int, int, str], None] | None = None,
+) -> str:
+    if not _is_bound_conversation_url(conversation_url):
+        raise OrchestrationRefusal("LIVE_RESUME_SCOPE")
+
+    def retain_exact_binding(url: str) -> None:
+        if url != conversation_url:
+            raise OrchestrationRefusal("LIVE_RESUME_SCOPE")
+
+    try:
+        transport.call("browser_navigate", {"url": conversation_url})
+        snapshot = transport.call("browser_snapshot", {})
+        snapshot, stable_url = _wait_for_stable_response_snapshot(
+            transport,
+            snapshot,
+            profile_id=workflow.ADVANCED_PROFILE_ID,
+            on_checked_url=retain_exact_binding,
+            on_progress=on_wait_progress,
+            allow_bound_precontent_fallback=True,
+        )
+        retain_exact_binding(stable_url)
+        completed = _completed_response(
+            snapshot,
+            profile_id=workflow.ADVANCED_PROFILE_ID,
+            allow_bound_precontent_fallback=True,
+        )
+        if completed is None:
+            raise _AdvancedResponseParserRefusal(
+                "RESPONSE_NOT_IDENTIFIABLE",
+                "ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID",
+            )
+        completed_url, _assistant_ref, response = completed
+        retain_exact_binding(completed_url)
+        return response
+    except _AdvancedResponseParserRefusal as error:
+        raise _BoundResponseRecoveryRefusal(
+            error.code,
+            error.diagnostic_code,
+            getattr(error, "diagnostic_detail_code", None),
+            getattr(error, "diagnostic_context_code", None),
+            getattr(error, "diagnostic_context_detail_code", None),
+            getattr(error, "diagnostic_context_shape_code", None),
+            getattr(error, "diagnostic_fallback_code", None),
+            getattr(error, "diagnostic_fallback_entry_code", None),
+        ) from error
+
+
 def _fake_doctor(scenario: Mapping[str, Any]) -> dict[str, Any]:
     doctor = scenario.get("doctor")
     if not isinstance(doctor, dict):
@@ -2619,20 +7001,70 @@ def _fake_doctor(scenario: Mapping[str, Any]) -> dict[str, Any]:
     return dict(doctor)
 
 
+def _doctor_next_action(status: str) -> str:
+    if status == "READY":
+        return "pro-ask"
+    if status == "LOGIN_REQUIRED":
+        return "pro-setup"
+    if status == "STOPPED":
+        return "STOP"
+    raise OrchestrationRefusal("DOCTOR_STATUS_INVALID")
+
+
+def _runtime_doctor_outcome(error: OrchestrationRefusal) -> dict[str, Any]:
+    if error.code == "PRO_RUNTIME_MISSING":
+        status = "PRO_RUNTIME_MISSING"
+    elif error.code in RUNTIME_DRIFT_REASON_CODES:
+        status = "PRO_RUNTIME_DRIFTED"
+    else:
+        raise error
+    return {
+        "status": status,
+        "reason_code": error.code,
+        "next_action": "pro-runtime-install",
+    }
+
+
+def _contains_decodable_json_value(text: str) -> bool:
+    decoder = json.JSONDecoder()
+    for index, character in enumerate(text):
+        if character not in "[{":
+            continue
+        try:
+            _value, end = decoder.raw_decode(text[index:])
+        except json.JSONDecodeError:
+            continue
+        if end > 0:
+            return True
+    return False
+
+
 def _validate_advice(response: str) -> dict[str, Any]:
     workflow._reject_sensitive_text(response, "RESPONSE_SENSITIVE_OR_INVALID")
+    if len(response.encode("utf-8")) > workflow.MAX_TEXT_BYTES:
+        raise OrchestrationRefusal("RESPONSE_SENSITIVE_OR_INVALID")
+    fenced = JSON_FENCE_PATTERN.fullmatch(response)
+    structured_response = fenced.group("body") if fenced is not None else response
     try:
-        advice = json.loads(response)
+        advice = json.loads(structured_response)
     except json.JSONDecodeError as error:
-        if "DESIGN_HANDOFF_V1" in response:
-            return {
-                "advice_type": "DESIGN_HANDOFF_V1",
-                "material_delta": True,
-                "open_gaps": [],
-                "authority": "UNAPPROVED_REQUIRES_HUMAN_RECONCILIATION",
-            }
-        raise OrchestrationRefusal("ADVICE_INVALID") from error
-    if not isinstance(advice, dict) or set(advice) != {
+        stripped = response.strip()
+        if (
+            JSON_FENCE_TOKEN_PATTERN.search(response)
+            or _contains_decodable_json_value(response)
+            or stripped.startswith("{")
+        ):
+            raise OrchestrationRefusal("ADVICE_INVALID") from error
+        return {
+            "advice_type": REVIEW_SCHEMA,
+            "material_delta": True,
+            "open_gaps": [],
+            "authority": "UNAPPROVED_REVIEW",
+            "response_fingerprint": hashlib.sha256(
+                response.encode("utf-8")
+            ).hexdigest(),
+        }
+    expected_keys = {
         "schema",
         "summary",
         "material_delta",
@@ -2640,7 +7072,8 @@ def _validate_advice(response: str) -> dict[str, Any]:
         "evidence_refs",
         "recommendations",
         "authority",
-    }:
+    }
+    if not isinstance(advice, dict) or set(advice) != expected_keys:
         raise OrchestrationRefusal("ADVICE_INVALID")
     if (
         advice.get("schema") != ADVICE_SCHEMA
@@ -2661,12 +7094,21 @@ def _validate_advice(response: str) -> dict[str, Any]:
         "material_delta": advice["material_delta"],
         "open_gaps": list(advice["open_gaps"]),
         "authority": "UNAPPROVED_ADVICE",
+        "response_fingerprint": hashlib.sha256(_canonical_json(advice)).hexdigest(),
     }
 
 
-def _response_fingerprint(response: str) -> str:
-    normalized = " ".join(response.split()).casefold()
-    return _sha256_text(normalized)
+def _response_fingerprint(
+    response: str, advice: Mapping[str, Any] | None = None
+) -> str:
+    classified = _validate_advice(response) if advice is None else advice
+    fingerprint = classified.get("response_fingerprint")
+    if (
+        not isinstance(fingerprint, str)
+        or re.fullmatch(r"[0-9a-f]{64}", fingerprint) is None
+    ):
+        raise OrchestrationRefusal("ADVICE_INVALID")
+    return fingerprint
 
 
 def _execute_fixture_plan(
@@ -2694,8 +7136,8 @@ def _finalize_transcript(
 ) -> tuple[dict[str, str], dict[str, Any], str, str]:
     advice = _validate_advice(response)
     if (
-        transcript.get("profile_id") == workflow.ADVANCED_PROFILE_ID
-        and advice["advice_type"] != ADVICE_SCHEMA
+        transcript.get("profile_id") != workflow.ADVANCED_PROFILE_ID
+        and advice["advice_type"] == REVIEW_SCHEMA
     ):
         raise OrchestrationRefusal("ADVICE_INVALID")
     run_dir = Path(prepared["run_dir"])
@@ -2720,9 +7162,112 @@ def _finalize_transcript(
     return (
         evidence,
         advice,
-        _response_fingerprint(response),
+        _response_fingerprint(response, advice),
         transcript_hash,
     )
+
+
+def _bound_response_proposal(
+    *, prepared: Mapping[str, str], response: str
+) -> tuple[bytes, dict[str, Any], str, str]:
+    _validate_advice(response)
+    stored_response = response.rstrip()
+    advice = _validate_advice(stored_response)
+    response_bytes = stored_response.encode("utf-8")
+    response_sha256 = hashlib.sha256(response_bytes).hexdigest()
+    proposal = workflow._proposal_bytes(
+        run_id=prepared["run_id"],
+        prompt_hash=prepared["prompt_sha256"],
+        response=stored_response,
+        response_hash=response_sha256,
+    )
+    return (
+        proposal,
+        advice,
+        _response_fingerprint(stored_response, advice),
+        response_sha256,
+    )
+
+
+def _validated_bound_response_proposal(
+    *,
+    prepared: Mapping[str, str],
+    proposal: bytes,
+    refusal_code: str = "RUN_NOT_RESUMABLE",
+) -> tuple[dict[str, Any], str, str]:
+    try:
+        proposal_text = proposal.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as error:
+        raise OrchestrationRefusal(refusal_code) from error
+    marker = "\n## Captured response\n\n"
+    if marker not in proposal_text or not proposal_text.endswith("\n"):
+        raise OrchestrationRefusal(refusal_code)
+    header, response_with_newline = proposal_text.split(marker, 1)
+    response = response_with_newline[:-1]
+    response_hash_match = re.search(
+        r"(?m)^Response SHA-256: `(?P<sha>[0-9a-f]{64})`$", header
+    )
+    if response_hash_match is None:
+        raise OrchestrationRefusal(refusal_code)
+    response_sha256 = response_hash_match.group("sha")
+    if response_sha256 != hashlib.sha256(response.encode("utf-8")).hexdigest():
+        raise OrchestrationRefusal(refusal_code)
+    advice = _validate_advice(response)
+    response_fingerprint = _response_fingerprint(response, advice)
+    expected = workflow._proposal_bytes(
+        run_id=prepared["run_id"],
+        prompt_hash=prepared["prompt_sha256"],
+        response=response,
+        response_hash=response_sha256,
+    )
+    if proposal != expected:
+        raise OrchestrationRefusal(refusal_code)
+    return advice, response_fingerprint, response_sha256
+
+
+def _bound_response_recovered_payload(
+    *,
+    state: Mapping[str, Any],
+    source_terminal: Mapping[str, Any],
+    proposal: bytes,
+    advice: Mapping[str, Any],
+    response_fingerprint: str,
+    response_sha256: str,
+) -> dict[str, Any]:
+    response_fingerprints = state.get("response_fingerprints")
+    open_gap_hashes = state.get("open_gap_hashes")
+    if not isinstance(response_fingerprints, list) or not isinstance(
+        open_gap_hashes, list
+    ):
+        raise OrchestrationRefusal("STATE_INVALID")
+    effective_state = {
+        **dict(state),
+        "response_fingerprints": list(response_fingerprints),
+        "open_gap_hashes": list(open_gap_hashes),
+    }
+    _apply_capture_outcome(
+        state=effective_state,
+        advice=advice,
+        response_fingerprint=response_fingerprint,
+        transcript_hash=None,
+    )
+    return {
+        "status": effective_state["status"],
+        "mode": "LIVE",
+        "importance": effective_state["importance"],
+        "advice_type": effective_state["advice_type"],
+        "response_sha256": response_sha256,
+        "response_fingerprint": response_fingerprint,
+        "proposal_sha256": hashlib.sha256(proposal).hexdigest(),
+        "proposal_file": "unapproved-proposal.md",
+        "open_gap_hashes": effective_state["open_gap_hashes"],
+        "authority": advice["authority"],
+        "next_action": effective_state["next_action"],
+        "provenance": BOUND_RESPONSE_RECOVERY_PROVENANCE,
+        "submission_attempted": True,
+        "resubmitted": False,
+        "source_terminal_event_sha256": source_terminal["event_sha256"],
+    }
 
 
 def _capture_fixture(
@@ -2739,6 +7284,50 @@ def _capture_fixture(
     return _finalize_transcript(
         prepared=prepared, transcript=transcript, response=response
     )
+
+
+def _apply_capture_outcome(
+    *,
+    state: dict[str, Any],
+    advice: Mapping[str, Any],
+    response_fingerprint: str,
+    transcript_hash: str | None,
+) -> str:
+    advice_type = advice.get("advice_type")
+    if advice_type == REVIEW_SCHEMA:
+        state["status"] = "REVIEW_CAPTURED"
+        state["open_gap_hashes"] = []
+        state["next_action"] = (
+            "HUMAN_APPROVAL_REQUIRED"
+            if state["importance"] == "gated"
+            else "RECONCILE_CANONICAL_LOCAL"
+        )
+        event_type = "REVIEW_CAPTURED"
+    elif advice_type == ADVICE_SCHEMA:
+        if response_fingerprint in state["response_fingerprints"]:
+            state["status"] = "CONVERGED_DUPLICATE_RESPONSE"
+        elif advice.get("material_delta") is False:
+            state["status"] = "CONVERGED_NO_MATERIAL_DELTA"
+        elif not advice.get("open_gaps"):
+            state["status"] = "CONVERGED_NO_OPEN_GAP"
+        else:
+            state["status"] = "ADVICE_CAPTURED"
+        open_gaps = advice.get("open_gaps")
+        if not isinstance(open_gaps, list):
+            raise OrchestrationRefusal("ADVICE_INVALID")
+        state["open_gap_hashes"] = [
+            _sha256_text(" ".join(item.split()).casefold()) for item in open_gaps
+        ]
+        state["next_action"] = (
+            "FOLLOW_UP_NAMED_GAP" if state["status"] == "ADVICE_CAPTURED" else "STOP"
+        )
+        event_type = "ORCHESTRATION_COMPLETED"
+    else:
+        raise OrchestrationRefusal("ADVICE_INVALID")
+    state["response_fingerprints"].append(response_fingerprint)
+    state["transcript_sha256"] = transcript_hash
+    state["advice_type"] = advice_type
+    return event_type
 
 
 def _save_pending_transcript(run_dir: Path, transcript: Mapping[str, Any]) -> str:
@@ -2772,7 +7361,26 @@ def _record_unavailable(
     state: dict[str, Any],
     reason_code: str,
     resubmitted: bool | None = None,
+    phase: str | None = None,
 ) -> dict[str, Any]:
+    diagnostic = reason_code in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES
+    if reason_code.strip().casefold().startswith("advanced_") and not diagnostic:
+        raise OrchestrationRefusal("STATE_INVALID")
+    if phase is not None:
+        if (
+            phase not in PRE_SUBMISSION_PHASES
+            or state.get("submission_attempted") is not False
+        ):
+            raise OrchestrationRefusal("PRE_SUBMISSION_PHASE_INVALID")
+        state["phase"] = phase
+    if diagnostic:
+        if (
+            phase not in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_PHASES
+            or resubmitted is not None
+            or state.get("submission_attempted") is not False
+        ):
+            raise OrchestrationRefusal("STATE_INVALID")
+        state["reason_code"] = reason_code
     gated = state["importance"] == "gated"
     state["status"] = "BLOCKED_PRO_REQUIRED" if gated else "PRO_UNAVAILABLE_FALLBACK"
     state["next_action"] = "STOP" if gated else "CONTINUE_CANONICAL_LOCAL_ONLY"
@@ -2785,6 +7393,10 @@ def _record_unavailable(
     }
     if resubmitted is not None:
         event_payload["resubmitted"] = resubmitted
+    if phase is not None:
+        event_payload["phase"] = phase
+    if reason_code.startswith("STOP_"):
+        event_payload["stop_classifier"] = STRUCTURAL_STOP_CLASSIFIER
     _persist_state(
         Path(prepared["run_dir"]),
         Path(prepared["record_path"]),
@@ -2801,12 +7413,14 @@ def _unavailable_outcome(
     state: dict[str, Any],
     reason_code: str,
     resubmitted: bool | None = None,
+    phase: str | None = None,
 ) -> tuple[int, dict[str, Any]]:
     final_state = _record_unavailable(
         prepared=prepared,
         state=state,
         reason_code=reason_code,
         resubmitted=resubmitted,
+        phase=phase,
     )
     result: dict[str, Any] = {
         "status": final_state["status"],
@@ -2820,7 +7434,51 @@ def _unavailable_outcome(
     }
     if resubmitted is not None:
         result["resubmitted"] = resubmitted
+    if phase is not None:
+        result["phase"] = phase
     return (4 if final_state["importance"] == "gated" else 0), result
+
+
+def _runtime_run_outcome(
+    *,
+    prepared: Mapping[str, str],
+    state: dict[str, Any],
+    error: OrchestrationRefusal,
+    preserve_waiting: bool = False,
+) -> tuple[int, dict[str, Any]]:
+    outcome = _runtime_doctor_outcome(error)
+    if preserve_waiting:
+        status = "WAITING"
+    else:
+        status = outcome["status"]
+    state["status"] = status
+    state["next_action"] = "pro-runtime-install"
+    _persist_state(
+        Path(prepared["run_dir"]),
+        Path(prepared["record_path"]),
+        state,
+        event_type="PRO_RUNTIME_UNAVAILABLE",
+        event_payload={
+            "status": status,
+            "importance": state["importance"],
+            "reason_code": error.code,
+            "submission_attempted": state["submission_attempted"],
+            "resubmitted": False,
+            "next_action": state["next_action"],
+        },
+    )
+    return (4 if state["importance"] == "gated" else 0), {
+        "status": status,
+        "story_id": STORY_ID,
+        "mode": state["mode"],
+        "browser": state["browser"],
+        "run_id": state["run_id"],
+        "importance": state["importance"],
+        "reason_code": error.code,
+        "submission_attempted": state["submission_attempted"],
+        "resubmitted": False,
+        "next_action": state["next_action"],
+    }
 
 
 def _stage_stdin_request(private_root: Path) -> Path:
@@ -2921,6 +7579,15 @@ def doctor(
     *, private_root: Path, fake_scenario: Path | None, wrapper: Path
 ) -> dict[str, Any]:
     layout = _ensure_layout(private_root)
+    if fake_scenario is None and private_root == DEFAULT_PRIVATE_ROOT:
+        try:
+            _verify_private_runtime(private_root)
+        except OrchestrationRefusal as error:
+            return {
+                "story_id": STORY_ID,
+                "mode": "LIVE",
+                **_runtime_doctor_outcome(error),
+            }
     setup_path = _setup_state_path(private_root)
     if not setup_path.is_file():
         return {
@@ -2942,6 +7609,7 @@ def doctor(
             "browser": browser,
             "profile": str(profile),
             **result,
+            "next_action": _doctor_next_action(result["status"]),
         }
     if private_root != DEFAULT_PRIVATE_ROOT:
         raise OrchestrationRefusal("LIVE_PRIVATE_ROOT_INVALID")
@@ -2968,7 +7636,16 @@ def doctor(
             "browser": browser,
             "profile": str(profile),
             "reason_code": error.code,
-            "next_action": "pro-setup",
+            "next_action": "pro-doctor",
+        }
+    except OrchestrationRefusal as error:
+        runtime_outcome = _runtime_doctor_outcome(error)
+        return {
+            "story_id": STORY_ID,
+            "mode": "LIVE",
+            "browser": browser,
+            "profile": str(profile),
+            **runtime_outcome,
         }
     finally:
         if transport is not None:
@@ -2983,6 +7660,7 @@ def doctor(
         "browser": browser,
         "profile": str(profile),
         **result,
+        "next_action": _doctor_next_action(result["status"]),
     }
 
 
@@ -3060,11 +7738,14 @@ def ask(
                     _capture_fixture(prepared=prepared, scenario=scenario)
                 )
             else:
-                live_transport = StdioMcpTransport(
-                    DEFAULT_WRAPPER,
-                    Path(prepared["secrets_file"]),
-                    browser,
-                )
+                try:
+                    live_transport = StdioMcpTransport(
+                        DEFAULT_WRAPPER,
+                        Path(prepared["secrets_file"]),
+                        browser,
+                    )
+                except TransportUnavailable as error:
+                    raise _phase_unavailable(error, phase="landing") from error
                 live_cleanup.callback(live_transport.close)
                 evidence, advice, response_fingerprint, transcript_hash = _live_capture(
                     prepared=prepared,
@@ -3149,6 +7830,7 @@ def ask(
                 prepared=prepared,
                 state=state,
                 reason_code=error.code,
+                phase=error.phase,
             )
         except TransportUnavailable as error:
             if error.code in {"SUBMISSION_AMBIGUOUS", "MCP_DISCONNECTED_WAITING"}:
@@ -3190,6 +7872,14 @@ def ask(
                 state=state,
                 reason_code=error.code,
             )
+        except OrchestrationRefusal as error:
+            if error.code not in RUNTIME_REASON_CODES:
+                raise
+            return _runtime_run_outcome(
+                prepared=prepared,
+                state=state,
+                error=error,
+            )
         except workflow.WorkflowRefusal as error:
             if error.code == "CONTRACT_INVALID" or error.code.startswith("CONTRACT_"):
                 raise
@@ -3198,38 +7888,29 @@ def ask(
                 state=state,
                 reason_code=error.code,
             )
-        if response_fingerprint in state["response_fingerprints"]:
-            state["status"] = "CONVERGED_DUPLICATE_RESPONSE"
-        elif advice["material_delta"] is False:
-            state["status"] = "CONVERGED_NO_MATERIAL_DELTA"
-        elif not advice["open_gaps"]:
-            state["status"] = "CONVERGED_NO_OPEN_GAP"
-        else:
-            state["status"] = "ADVICE_CAPTURED"
-        state["response_fingerprints"].append(response_fingerprint)
         state["submission_attempted"] = True
-        state["transcript_sha256"] = transcript_hash
-        state["advice_type"] = advice["advice_type"]
-        state["open_gap_hashes"] = [
-            _sha256_text(" ".join(item.split()).casefold())
-            for item in advice["open_gaps"]
-        ]
-        state["next_action"] = (
-            "FOLLOW_UP_NAMED_GAP" if state["status"] == "ADVICE_CAPTURED" else "STOP"
+        completion_event = _apply_capture_outcome(
+            state=state,
+            advice=advice,
+            response_fingerprint=response_fingerprint,
+            transcript_hash=transcript_hash,
         )
         _persist_state(
             run_dir,
             record_path,
             state,
-            event_type="ORCHESTRATION_COMPLETED",
+            event_type=completion_event,
             event_payload={
                 "status": state["status"],
                 "mode": mode,
                 "importance": importance,
                 "advice_type": state["advice_type"],
                 "response_sha256": evidence["response_sha256"],
+                "response_fingerprint": response_fingerprint,
+                "proposal_sha256": evidence["proposal_sha256"],
                 "open_gap_hashes": state["open_gap_hashes"],
                 "authority": advice["authority"],
+                "next_action": state["next_action"],
             },
         )
     return 0, {
@@ -3259,13 +7940,151 @@ def resume(
         if authoritative_run_dir != run_dir:
             raise OrchestrationRefusal("RUN_RECORD_INVALID")
         if state["status"] in TERMINAL_STATUSES:
+            final_event = _last_record_event(run_dir)
+            if final_event.get("event_type") == "BOUND_RESPONSE_RECOVERED":
+                payload = final_event["payload"]
+                return 0, {
+                    "status": payload["status"],
+                    "story_id": STORY_ID,
+                    "mode": "LIVE",
+                    "browser": state["browser"],
+                    "run_id": run_id,
+                    "importance": state["importance"],
+                    "advice_type": payload["advice_type"],
+                    "authority": payload["authority"],
+                    "provenance": payload["provenance"],
+                    "resubmitted": False,
+                    "next_action": payload["next_action"],
+                    "record_verified": True,
+                }
+            final_payload = final_event.get("payload")
+            fallback_terminal = state["status"] in {
+                "PRO_UNAVAILABLE_FALLBACK",
+                "BLOCKED_PRO_REQUIRED",
+            }
+            if not fallback_terminal:
+                return 0, {
+                    "status": state["status"],
+                    "story_id": STORY_ID,
+                    "mode": state["mode"],
+                    "browser": state["browser"],
+                    "run_id": run_id,
+                    "next_action": state["next_action"],
+                }
+            recovery_candidate = final_event.get(
+                "event_type"
+            ) == "RESPONSE_WAIT_PROGRESS" or (
+                final_event.get("event_type") == "PRO_UNAVAILABLE"
+                and isinstance(final_payload, dict)
+                and final_payload.get("reason_code")
+                in BOUND_RESPONSE_RECOVERY_REASON_CODES
+            )
+            if not recovery_candidate:
+                raise OrchestrationRefusal("RUN_NOT_RESUMABLE")
+            if fake_scenario is not None or private_root != DEFAULT_PRIVATE_ROOT:
+                raise OrchestrationRefusal("RUN_NOT_RESUMABLE")
+            source_terminal = _verified_bound_response_source(
+                run_dir=run_dir,
+                state=state,
+            )
+            conversation_url = state.get("conversation_url")
+            if not isinstance(conversation_url, str):
+                raise OrchestrationRefusal("LIVE_RESUME_SCOPE")
+            prepared = {
+                "run_id": run_id,
+                "run_dir": str(run_dir),
+                "record_path": str(run_dir / "run-record.v1.jsonl"),
+                "prompt_sha256": state["prompt_sha256"],
+            }
+            proposal_path = run_dir / "unapproved-proposal.md"
+            try:
+                proposal_path.lstat()
+            except FileNotFoundError:
+                proposal = None
+            except OSError as error:
+                raise OrchestrationRefusal("RUN_NOT_RESUMABLE") from error
+            else:
+                proposal = _read_private_proposal(
+                    proposal_path, refusal_code="RUN_NOT_RESUMABLE"
+                )
+            if proposal is None:
+
+                def persist_recovery_wait_progress(
+                    elapsed_seconds: int,
+                    poll_count: int,
+                    phase: str,
+                ) -> None:
+                    _append_terminal_response_wait_progress(
+                        run_dir=run_dir,
+                        state=state,
+                        conversation_url=conversation_url,
+                        elapsed_seconds=elapsed_seconds,
+                        poll_count=poll_count,
+                        phase=phase,
+                    )
+
+                secret_file = (
+                    private_root / "chatgpt-pro" / f"{workflow._new_run_id()}.env"
+                )
+                workflow._write_exclusive(
+                    secret_file, b'RAOS_CHATGPT_PROMPT="resume-placeholder"\n'
+                )
+                live_cleanup.callback(_unlink_if_exists, secret_file)
+                live_transport = StdioMcpTransport(
+                    DEFAULT_WRAPPER, secret_file, state["browser"]
+                )
+                live_cleanup.callback(live_transport.close)
+                response = _recover_bound_response_capture(
+                    transport=live_transport,
+                    conversation_url=conversation_url,
+                    on_wait_progress=persist_recovery_wait_progress,
+                )
+                proposal, advice, response_fingerprint, response_sha256 = (
+                    _bound_response_proposal(prepared=prepared, response=response)
+                )
+                _atomic_private_create(
+                    proposal_path, proposal, code="BOUND_RESPONSE_PROPOSAL_WRITE_FAILED"
+                )
+            else:
+                advice, response_fingerprint, response_sha256 = (
+                    _validated_bound_response_proposal(
+                        prepared=prepared,
+                        proposal=proposal,
+                    )
+                )
+            recovered_payload = _bound_response_recovered_payload(
+                state=state,
+                source_terminal=source_terminal,
+                proposal=proposal,
+                advice=advice,
+                response_fingerprint=response_fingerprint,
+                response_sha256=response_sha256,
+            )
+            recovered_payload["state_sha256"] = hashlib.sha256(
+                _canonical_json(state)
+            ).hexdigest()
+            workflow._append_event(
+                run_dir / "run-record.v1.jsonl",
+                run_id,
+                "BOUND_RESPONSE_RECOVERED",
+                recovered_payload,
+            )
+            verified_run_dir, verified_state = _load_state(run_root, run_id)
+            if verified_run_dir != run_dir or verified_state != state:
+                raise OrchestrationRefusal("STATE_RECORD_MISMATCH")
             return 0, {
-                "status": state["status"],
+                "status": recovered_payload["status"],
                 "story_id": STORY_ID,
-                "mode": state["mode"],
+                "mode": "LIVE",
                 "browser": state["browser"],
                 "run_id": run_id,
-                "next_action": state["next_action"],
+                "importance": state["importance"],
+                "advice_type": recovered_payload["advice_type"],
+                "authority": recovered_payload["authority"],
+                "provenance": BOUND_RESPONSE_RECOVERY_PROVENANCE,
+                "resubmitted": False,
+                "next_action": recovered_payload["next_action"],
+                "record_verified": True,
             }
         if state["status"] not in RESUMABLE_STATUSES:
             raise OrchestrationRefusal("RUN_NOT_RESUMABLE")
@@ -3381,6 +8200,16 @@ def resume(
                     "next_action": "pro-resume",
                 }
             except (OrchestrationRefusal, workflow.WorkflowRefusal) as error:
+                if (
+                    isinstance(error, OrchestrationRefusal)
+                    and error.code in RUNTIME_REASON_CODES
+                ):
+                    return _runtime_run_outcome(
+                        prepared=prepared,
+                        state=state,
+                        error=error,
+                        preserve_waiting=True,
+                    )
                 if error.code not in LIVE_RESPONSE_TERMINAL_CODES:
                     raise
                 return _unavailable_outcome(
@@ -3410,33 +8239,30 @@ def resume(
                 )
             )
             resume_mode = "LOCAL_FIXTURE"
-        if response_hash in state["response_fingerprints"]:
-            state["status"] = "CONVERGED_DUPLICATE_RESPONSE"
-        elif advice["material_delta"] is False:
-            state["status"] = "CONVERGED_NO_MATERIAL_DELTA"
-        elif not advice["open_gaps"]:
-            state["status"] = "CONVERGED_NO_OPEN_GAP"
-        else:
-            state["status"] = "ADVICE_CAPTURED"
-        state["response_fingerprints"].append(response_hash)
-        state["transcript_sha256"] = finalized_transcript_hash
-        state["advice_type"] = advice["advice_type"]
-        state["open_gap_hashes"] = [
-            _sha256_text(" ".join(item.split()).casefold())
-            for item in advice["open_gaps"]
-        ]
-        state["next_action"] = (
-            "FOLLOW_UP_NAMED_GAP" if state["status"] == "ADVICE_CAPTURED" else "STOP"
+        completion_event = _apply_capture_outcome(
+            state=state,
+            advice=advice,
+            response_fingerprint=response_hash,
+            transcript_hash=finalized_transcript_hash,
         )
         _persist_state(
             run_dir,
             run_dir / "run-record.v1.jsonl",
             state,
-            event_type="MCP_RECONNECTED",
+            event_type=(
+                "REVIEW_CAPTURED"
+                if completion_event == "REVIEW_CAPTURED"
+                else "MCP_RECONNECTED"
+            ),
             event_payload={
                 "status": state["status"],
                 "mode": resume_mode,
                 "response_sha256": evidence["response_sha256"],
+                "response_fingerprint": response_hash,
+                "proposal_sha256": evidence["proposal_sha256"],
+                "advice_type": state["advice_type"],
+                "authority": advice["authority"],
+                "next_action": state["next_action"],
                 "resubmitted": False,
             },
         )
@@ -3450,8 +8276,218 @@ def resume(
         "mode": resume_mode,
         "browser": state["browser"],
         "run_id": run_id,
+        "importance": state["importance"],
+        "advice_type": state["advice_type"],
+        "authority": advice["authority"],
         "resubmitted": False,
         "next_action": state["next_action"],
+    }
+
+
+def _manual_proposal_bytes(
+    *, run_id: str, prompt_hash: str, response: str, response_hash: str
+) -> bytes:
+    header = (
+        "# UNAPPROVED PROPOSAL\n\n"
+        "Status: `UNAPPROVED_PROPOSAL`  \n"
+        "Provenance: `HUMAN_COPIED_DISPLAYED_RESPONSE`  \n"
+        f"Story: `{STORY_ID}`  \n"
+        f"Run ID: `{run_id}`  \n"
+        f"Prompt SHA-256: `{prompt_hash}`  \n"
+        f"Response SHA-256: `{response_hash}`\n\n"
+        "> This human-copied displayed output is lower-assurance, untrusted proposal\n"
+        "> material. It is not live automatic capture, an approved design handoff,\n"
+        "> formal TST evidence, or authority to implement without the required\n"
+        "> canonical reconciliation and human approval.\n\n"
+        "## Captured response\n\n"
+    )
+    return (header + response.rstrip() + "\n").encode("utf-8")
+
+
+def _path_exists_without_following(path: Path) -> bool:
+    try:
+        path.lstat()
+    except FileNotFoundError:
+        return False
+    except OSError as error:
+        raise OrchestrationRefusal("MANUAL_IMPORT_PROPOSAL_UNSAFE") from error
+    return True
+
+
+def _validate_manual_import_run(*, run_dir: Path, state: Mapping[str, Any]) -> bool:
+    final_event = _last_record_event(run_dir)
+    if final_event.get("event_type") == "MANUAL_RESPONSE_IMPORTED":
+        raise OrchestrationRefusal("MANUAL_RESPONSE_ALREADY_IMPORTED")
+    if state.get("mode") != "LIVE":
+        raise OrchestrationRefusal("MANUAL_IMPORT_LIVE_RUN_REQUIRED")
+    if state.get("status") == "SUBMISSION_AMBIGUOUS":
+        raise OrchestrationRefusal("MANUAL_IMPORT_SUBMISSION_AMBIGUOUS")
+    if state.get("submission_attempted") is not True:
+        raise OrchestrationRefusal("MANUAL_IMPORT_PRE_SUBMISSION")
+    prompt_hash = state.get("prompt_sha256")
+    submission_events = _record_events_by_type(run_dir, "SUBMISSION_INTENT_RECORDED")
+    if (
+        not isinstance(prompt_hash, str)
+        or re.fullmatch(r"[0-9a-f]{64}", prompt_hash) is None
+        or len(submission_events) != 1
+    ):
+        raise OrchestrationRefusal("MANUAL_IMPORT_SUBMISSION_EVIDENCE_INVALID")
+    submission_payload = submission_events[0].get("payload")
+    if (
+        not isinstance(submission_payload, dict)
+        or submission_payload.get("status") != "PRE_SEND"
+        or submission_payload.get("origin") != workflow.EXACT_ORIGIN
+        or submission_payload.get("model_label") != "GPT-5.6 Sol"
+        or submission_payload.get("effort_label") != "Pro"
+        or submission_payload.get("prompt_sha256") != prompt_hash
+    ):
+        raise OrchestrationRefusal("MANUAL_IMPORT_SUBMISSION_EVIDENCE_INVALID")
+    conversation_url = state.get("conversation_url")
+    if not isinstance(conversation_url, str) or not _is_bound_conversation_url(
+        conversation_url
+    ):
+        raise OrchestrationRefusal("MANUAL_IMPORT_UNBOUND")
+    if _path_exists_without_following(run_dir / "unapproved-proposal.md"):
+        raise OrchestrationRefusal("MANUAL_IMPORT_PROPOSAL_EXISTS")
+    if state.get("status") == "WAITING":
+        waiting_payload = final_event.get("payload")
+        waiting_type = final_event.get("event_type")
+        waiting_reason = (
+            waiting_payload.get("reason_code")
+            if isinstance(waiting_payload, dict)
+            else None
+        )
+        waiting_allowed = (
+            (
+                waiting_type == "WAIT_INTERRUPTED"
+                and waiting_reason == "OPERATOR_INTERRUPTED"
+            )
+            or (
+                waiting_type == "MCP_RECONNECT_REQUIRED"
+                and waiting_reason == "MCP_DISCONNECTED_WAITING"
+            )
+            or (
+                waiting_type == "WAIT_CONTINUES"
+                and waiting_reason in MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+            )
+            or (
+                waiting_type == "PRO_RUNTIME_UNAVAILABLE"
+                and waiting_reason in RUNTIME_REASON_CODES
+            )
+        )
+        if (
+            not isinstance(waiting_payload, dict)
+            or waiting_payload.get("status") != "WAITING"
+            or not waiting_allowed
+        ):
+            raise OrchestrationRefusal("MANUAL_IMPORT_REASON_NOT_ALLOWED")
+        transcript_hash = state.get("transcript_sha256")
+        if not isinstance(transcript_hash, str):
+            raise OrchestrationRefusal("PENDING_TRANSCRIPT_INVALID")
+        _load_pending_transcript(run_dir, transcript_hash)
+        return True
+    if state.get("status") not in {
+        "PRO_UNAVAILABLE_FALLBACK",
+        "BLOCKED_PRO_REQUIRED",
+    }:
+        raise OrchestrationRefusal("MANUAL_IMPORT_STATE_NOT_ALLOWED")
+    final_payload = final_event.get("payload")
+    if final_event.get("event_type") == "RESPONSE_WAIT_PROGRESS" or (
+        final_event.get("event_type") == "PRO_UNAVAILABLE"
+        and isinstance(final_payload, dict)
+        and final_payload.get("reason_code") in BOUND_RESPONSE_RECOVERY_REASON_CODES
+    ):
+        final_event = _verified_bound_response_source(
+            run_dir=run_dir,
+            state=state,
+            refusal_code="MANUAL_IMPORT_REASON_NOT_ALLOWED",
+        )
+    payload = final_event.get("payload")
+    if (
+        final_event.get("event_type") != "PRO_UNAVAILABLE"
+        or not isinstance(payload, dict)
+        or payload.get("reason_code") not in MANUAL_IMPORT_TERMINAL_REASON_CODES
+    ):
+        raise OrchestrationRefusal("MANUAL_IMPORT_REASON_NOT_ALLOWED")
+    if payload.get("reason_code") == "STOP_RATE_LIMIT" and (
+        "stop_classifier" in payload
+    ):
+        raise OrchestrationRefusal("MANUAL_IMPORT_REASON_NOT_ALLOWED")
+    return False
+
+
+def import_response(
+    *, private_root: Path, run_id: str, response_file: Path
+) -> tuple[int, dict[str, Any]]:
+    _require_existing_private_root(private_root)
+    paths = _runtime_paths(private_root)
+    response = _private_response(response_file, paths["responses"])
+    advice = _validate_advice(response)
+    response_sha256 = hashlib.sha256(response.encode("utf-8")).hexdigest()
+    response_fingerprint = _response_fingerprint(response, advice)
+    run_root = private_root / "chatgpt-pro-runs"
+    run_dir = _existing_run_dir(run_root, run_id)
+    with _run_lock(run_dir, exclusive=True, create_run_dir=False):
+        authoritative_run_dir, state = _load_state(run_root, run_id)
+        if authoritative_run_dir != run_dir:
+            raise OrchestrationRefusal("RUN_RECORD_INVALID")
+        remove_pending = _validate_manual_import_run(run_dir=run_dir, state=state)
+        proposal = _manual_proposal_bytes(
+            run_id=run_id,
+            prompt_hash=state["prompt_sha256"],
+            response=response,
+            response_hash=response_sha256,
+        )
+        proposal_path = run_dir / "unapproved-proposal.md"
+        workflow._write_exclusive(proposal_path, proposal)
+        proposal_sha256 = hashlib.sha256(proposal).hexdigest()
+        _apply_capture_outcome(
+            state=state,
+            advice=advice,
+            response_fingerprint=response_fingerprint,
+            transcript_hash=state.get("transcript_sha256"),
+        )
+        _persist_state(
+            run_dir,
+            run_dir / "run-record.v1.jsonl",
+            state,
+            event_type="MANUAL_RESPONSE_IMPORTED",
+            event_payload={
+                "status": state["status"],
+                "mode": "MANUAL_IMPORT",
+                "importance": state["importance"],
+                "advice_type": state["advice_type"],
+                "response_sha256": response_sha256,
+                "response_fingerprint": response_fingerprint,
+                "proposal_sha256": proposal_sha256,
+                "proposal_file": proposal_path.name,
+                "authority": advice["authority"],
+                "provenance": "HUMAN_COPIED_DISPLAYED_RESPONSE",
+                "submission_attempted": True,
+                "resubmitted": False,
+                "browser_calls": 0,
+                "next_action": state["next_action"],
+            },
+        )
+        if remove_pending:
+            _unlink_if_exists(run_dir / "pending-transcript.v1.json")
+        verified_run_dir, verified = _load_state(run_root, run_id)
+        if verified_run_dir != run_dir or verified != state:
+            raise OrchestrationRefusal("STATE_RECORD_MISMATCH")
+    return 0, {
+        "status": state["status"],
+        "story_id": STORY_ID,
+        "mode": "MANUAL_IMPORT",
+        "browser": state["browser"],
+        "run_id": run_id,
+        "importance": state["importance"],
+        "advice_type": state["advice_type"],
+        "authority": advice["authority"],
+        "provenance": "HUMAN_COPIED_DISPLAYED_RESPONSE",
+        "resubmitted": False,
+        "browser_calls": 0,
+        "next_action": state["next_action"],
+        "record_verified": True,
     }
 
 
@@ -3459,11 +8495,21 @@ def status(*, private_root: Path, run_id: str) -> dict[str, Any]:
     _require_existing_private_root(private_root)
     run_root = private_root / "chatgpt-pro-runs"
     run_dir = _existing_run_dir(run_root, run_id)
+    recovery_source: dict[str, Any] | None = None
     with _run_lock(run_dir, exclusive=False):
         authoritative_run_dir, verified = _load_state(run_root, run_id)
         if authoritative_run_dir != run_dir:
             raise OrchestrationRefusal("RUN_RECORD_INVALID")
-    return {
+        final_event = _last_record_event(run_dir)
+        if final_event.get("event_type") == "RESPONSE_WAIT_PROGRESS" and verified[
+            "status"
+        ] in {"PRO_UNAVAILABLE_FALLBACK", "BLOCKED_PRO_REQUIRED"}:
+            recovery_source = _verified_bound_response_source(
+                run_dir=run_dir,
+                state=verified,
+                refusal_code="STATE_INVALID",
+            )
+    result = {
         "status": verified["status"],
         "story_id": STORY_ID,
         "mode": verified["mode"],
@@ -3475,6 +8521,25 @@ def status(*, private_root: Path, run_id: str) -> dict[str, Any]:
         "next_action": verified["next_action"],
         "record_verified": True,
     }
+    if "phase" in verified:
+        result["phase"] = verified["phase"]
+    if "reason_code" in verified:
+        result["reason_code"] = verified["reason_code"]
+    if final_event.get("event_type") == "BOUND_RESPONSE_RECOVERED":
+        payload = final_event["payload"]
+        result.update(
+            {
+                "status": payload["status"],
+                "advice_type": payload["advice_type"],
+                "authority": payload["authority"],
+                "next_action": payload["next_action"],
+                "provenance": payload["provenance"],
+                "resubmitted": payload["resubmitted"],
+            }
+        )
+    elif recovery_source is not None:
+        result["reason_code"] = recovery_source["payload"]["reason_code"]
+    return result
 
 
 def _absolute_path(value: str) -> Path:
@@ -3500,6 +8565,15 @@ def _add_private_root(parser: argparse.ArgumentParser) -> None:
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    runtime_install_parser = subparsers.add_parser("runtime-install")
+    _add_private_root(runtime_install_parser)
+    runtime_install_parser.add_argument(
+        "--node", type=_absolute_path, default=DEFAULT_NODE_BIN
+    )
+    runtime_install_parser.add_argument(
+        "--npm-cli", type=_absolute_path, default=DEFAULT_NPM_CLI
+    )
 
     setup_parser = subparsers.add_parser("setup")
     _add_private_root(setup_parser)
@@ -3542,6 +8616,11 @@ def _parser() -> argparse.ArgumentParser:
     resume_parser.add_argument("--run-id", required=True)
     resume_parser.add_argument("--fake-scenario", type=_absolute_path)
 
+    import_parser = subparsers.add_parser("import-response")
+    _add_private_root(import_parser)
+    import_parser.add_argument("--run-id", required=True)
+    import_parser.add_argument("--response-file", required=True, type=_absolute_path)
+
     status_parser = subparsers.add_parser("status")
     _add_private_root(status_parser)
     status_parser.add_argument("--run-id", required=True)
@@ -3553,7 +8632,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         _physical_repository_guard()
         arguments = _parser().parse_args(argv)
-        if arguments.command == "setup":
+        if arguments.command == "runtime-install":
+            if arguments.private_root != DEFAULT_PRIVATE_ROOT:
+                raise OrchestrationRefusal("LIVE_PRIVATE_ROOT_INVALID")
+            result = runtime_install(
+                private_root=arguments.private_root,
+                node=arguments.node,
+                npm_cli=arguments.npm_cli,
+            )
+            exit_code = 0
+        elif arguments.command == "setup":
             result = setup(
                 private_root=arguments.private_root,
                 open_login=arguments.open_login,
@@ -3569,6 +8657,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             exit_code = 0
         elif arguments.command == "ask":
+            if (
+                arguments.fake_scenario is None
+                and arguments.private_root != DEFAULT_PRIVATE_ROOT
+            ):
+                raise OrchestrationRefusal("LIVE_PRIVATE_ROOT_INVALID")
             request_file = arguments.request_file
             if request_file is None:
                 request_file = _stage_stdin_request(arguments.private_root)
@@ -3582,10 +8675,23 @@ def main(argv: Sequence[str] | None = None) -> int:
                 interactive_auth_wait_seconds=arguments.interactive_auth_wait_seconds,
             )
         elif arguments.command == "resume":
+            if (
+                arguments.fake_scenario is None
+                and arguments.private_root != DEFAULT_PRIVATE_ROOT
+            ):
+                raise OrchestrationRefusal("LIVE_PRIVATE_ROOT_INVALID")
             exit_code, result = resume(
                 private_root=arguments.private_root,
                 run_id=arguments.run_id,
                 fake_scenario=arguments.fake_scenario,
+            )
+        elif arguments.command == "import-response":
+            if arguments.private_root != DEFAULT_PRIVATE_ROOT:
+                raise OrchestrationRefusal("LIVE_PRIVATE_ROOT_INVALID")
+            exit_code, result = import_response(
+                private_root=arguments.private_root,
+                run_id=arguments.run_id,
+                response_file=arguments.response_file,
             )
         else:
             result = status(
@@ -3593,14 +8699,138 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             exit_code = 0
     except (OrchestrationRefusal, workflow.WorkflowRefusal) as refusal:
-        _emit(
-            {
-                "status": "REFUSED",
-                "story_id": STORY_ID,
-                "reason_code": refusal.code,
-            },
-            error=True,
-        )
+        refusal_result = {
+            "status": "REFUSED",
+            "story_id": STORY_ID,
+            "reason_code": refusal.code,
+        }
+        if isinstance(refusal, _BoundResponseRecoveryRefusal):
+            diagnostic_code: str | None = None
+            try:
+                diagnostic_code = _validated_bound_response_diagnostic_code(
+                    getattr(refusal, "diagnostic_code", None)
+                )
+            except OrchestrationRefusal:
+                pass
+            else:
+                refusal_result["diagnostic_code"] = diagnostic_code
+            if diagnostic_code is not None:
+                try:
+                    diagnostic_detail_code = _validated_bound_response_detail_code(
+                        refusal.code,
+                        diagnostic_code,
+                        getattr(refusal, "diagnostic_detail_code", None),
+                    )
+                except OrchestrationRefusal:
+                    pass
+                else:
+                    refusal_result["diagnostic_detail_code"] = diagnostic_detail_code
+                    try:
+                        diagnostic_context_code = (
+                            _validated_bound_response_context_code(
+                                refusal.code,
+                                diagnostic_code,
+                                diagnostic_detail_code,
+                                getattr(refusal, "diagnostic_context_code", None),
+                            )
+                        )
+                    except OrchestrationRefusal:
+                        pass
+                    else:
+                        refusal_result["diagnostic_context_code"] = (
+                            diagnostic_context_code
+                        )
+                        try:
+                            diagnostic_context_detail_code = (
+                                _validated_bound_response_context_detail_code(
+                                    refusal.code,
+                                    diagnostic_code,
+                                    diagnostic_detail_code,
+                                    diagnostic_context_code,
+                                    getattr(
+                                        refusal,
+                                        "diagnostic_context_detail_code",
+                                        None,
+                                    ),
+                                )
+                            )
+                        except OrchestrationRefusal:
+                            pass
+                        else:
+                            refusal_result["diagnostic_context_detail_code"] = (
+                                diagnostic_context_detail_code
+                            )
+                            try:
+                                diagnostic_context_shape_code = (
+                                    _validated_bound_response_context_shape_code(
+                                        refusal.code,
+                                        diagnostic_code,
+                                        diagnostic_detail_code,
+                                        diagnostic_context_code,
+                                        diagnostic_context_detail_code,
+                                        getattr(
+                                            refusal,
+                                            "diagnostic_context_shape_code",
+                                            None,
+                                        ),
+                                    )
+                                )
+                            except OrchestrationRefusal:
+                                pass
+                            else:
+                                refusal_result["diagnostic_context_shape_code"] = (
+                                    diagnostic_context_shape_code
+                                )
+                                try:
+                                    diagnostic_fallback_code = (
+                                        _validated_bound_response_fallback_code(
+                                            refusal.code,
+                                            diagnostic_code,
+                                            diagnostic_detail_code,
+                                            diagnostic_context_code,
+                                            diagnostic_context_detail_code,
+                                            diagnostic_context_shape_code,
+                                            getattr(
+                                                refusal,
+                                                "diagnostic_fallback_code",
+                                                None,
+                                            ),
+                                        )
+                                    )
+                                except OrchestrationRefusal:
+                                    pass
+                                else:
+                                    refusal_result["diagnostic_fallback_code"] = (
+                                        diagnostic_fallback_code
+                                    )
+                                try:
+                                    diagnostic_fallback_entry_code = (
+                                        _validated_bound_response_fallback_entry_code(
+                                            refusal.code,
+                                            diagnostic_code,
+                                            diagnostic_detail_code,
+                                            diagnostic_context_code,
+                                            diagnostic_context_detail_code,
+                                            diagnostic_context_shape_code,
+                                            getattr(
+                                                refusal,
+                                                "diagnostic_fallback_code",
+                                                None,
+                                            ),
+                                            getattr(
+                                                refusal,
+                                                "diagnostic_fallback_entry_code",
+                                                None,
+                                            ),
+                                        )
+                                    )
+                                except OrchestrationRefusal:
+                                    pass
+                                else:
+                                    refusal_result["diagnostic_fallback_entry_code"] = (
+                                        diagnostic_fallback_entry_code
+                                    )
+        _emit(refusal_result, error=True)
         return 2
     _emit(result)
     return exit_code

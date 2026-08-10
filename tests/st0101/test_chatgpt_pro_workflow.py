@@ -486,7 +486,6 @@ def test_project_config_exposes_only_the_approved_playwright_tools() -> None:
 def test_transport_wrapper_is_exact_origin_pinned_and_fail_closed() -> None:
     wrapper = WRAPPER_PATH.read_text(encoding="utf-8")
     for required in (
-        "@playwright/mcp@0.0.78",
         "--allowed-origins https://chatgpt.com",
         "--block-service-workers",
         "--snapshot-mode none",
@@ -496,8 +495,9 @@ def test_transport_wrapper_is_exact_origin_pinned_and_fail_closed() -> None:
         "--user-data-dir",
         "env -u DEBUG",
         "/home/minami/.nvm/versions/node/v24.18.1/bin/node",
-        "/home/minami/.npm/_npx/9833c18b2d85bc59",
-        "sha256sum --check --status",
+        "chatgpt-pro-mcp-runtime",
+        "scripts/chatgpt_pro_mcp_runtime",
+        "verify_runtime.py",
     ):
         assert required in wrapper
     for prohibited in (
@@ -507,6 +507,7 @@ def test_transport_wrapper_is_exact_origin_pinned_and_fail_closed() -> None:
         "--ignore-https-errors",
         "--no-sandbox",
         "npx_path",
+        "/.npm/_npx",
         "--yes",
     ):
         assert prohibited not in wrapper
@@ -524,6 +525,13 @@ def test_transport_wrapper_is_exact_origin_pinned_and_fail_closed() -> None:
     assert process.stderr == (
         "chatgpt-pro-mcp: fail-closed launch refusal (invalid-browser)\n"
     )
+    runtime_source = REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp_runtime"
+    package = json.loads((runtime_source / "package.json").read_text(encoding="utf-8"))
+    lock = json.loads(
+        (runtime_source / "package-lock.json").read_text(encoding="utf-8")
+    )
+    assert package["dependencies"] == {"@playwright/mcp": "0.0.78"}
+    assert lock["packages"]["node_modules/@playwright/mcp"]["version"] == "0.0.78"
 
 
 def test_repository_policy_keeps_proposals_unapproved_and_live_separate() -> None:
@@ -532,7 +540,9 @@ def test_repository_policy_keeps_proposals_unapproved_and_live_separate() -> Non
     assert "exact `https://chatgpt.com` origin" in policy
     assert "maximum available Pro" in policy
     assert "types only the MCP secret name" in normalized_policy
-    assert "no Codex restart or per-run exported variable" in normalized_policy
+    assert (
+        "no codex restart or per-run exported variable" in normalized_policy.casefold()
+    )
     assert "`UNAPPROVED_PROPOSAL`" in policy
     assert "Neither resolves an Open Decision" in normalized_policy
     assert "Fixture/dry-run evidence, a live smoke, and formal" in normalized_policy

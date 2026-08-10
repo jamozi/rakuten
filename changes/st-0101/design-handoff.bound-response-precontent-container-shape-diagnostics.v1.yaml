@@ -1,0 +1,103 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Recovery-only closed shape diagnostics for the selected nested response-container defect
+    - Exact missing-ref, malformed-ref, and residual-line classification without accepting a new container
+    - Focused recovery/non-persistence tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-action-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-context-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-invalid-diagnostics.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Preserve every current parser acceptance/refusal rule. Only when an exact
+    eligible terminal recovery returns generic RESPONSE_NOT_IDENTIFIABLE,
+    parent ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID, detail
+    ADVANCED_RESPONSE_ACTION_PRE_CONTENT, context
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID, and context detail
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID may the CLI add
+    one optional non-persistent diagnostic_context_shape_code from this exact
+    set: ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING,
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_INVALID, or
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_LINE_SHAPE_INVALID.
+
+    Classify only the first physical generic/semantic container line already
+    selected by the predecessor as CONTAINER_SHAPE_INVALID; never re-run or
+    widen predecessor selection merely to attach this sixth field. Within that
+    selected population, treat ref-like text inside its JSON-quoted accessible
+    label as label material, never as a structural ref. A line whose exact
+    valid `[ref=eN]` appears only inside its label is currently selected by the
+    permissive predecessor as a valid-ref unsatisfied container and therefore
+    retains that existing fifth field with no sixth field. Likewise, a line
+    carrying any predecessor-recognized exact valid ref plus another malformed
+    or duplicate ref attempt retains its predecessor path and no sixth field.
+    Outside the label of an already-selected shape-invalid line, any bracketed
+    or unbracketed reserved
+    ref attempt that is not one exact lower-case `[ref=eN]` is REF_INVALID.
+    When no structural ref attempt exists and the entire line is otherwise one
+    complete existing-grammar ref-free container record—exact lower-case
+    generic/semantic role, optional JSON-quoted label, zero or more complete
+    non-ref accessibility attributes, terminal colon, and only surrounding
+    whitespace—classify REF_MISSING. Every other already-selected shape is
+    LINE_SHAPE_INVALID. A valid structural ref cannot reach this conjunction
+    and must not be reclassified.
+
+    The shape code changes no opacity, content, boundary, stability, stop, ref,
+    proposal, or recovery behavior. It is emitted only with the exact six-field
+    conjunction above. Missing, unknown, padded, suffixed, case-varied, or
+    wrong-conjunction values are omitted while all existing valid fields
+    remain. It is never persisted or projected elsewhere.
+  rationale: >-
+    Sanitized live recovery of run 20260809T185354Z-46c4528b4413 returned the
+    exact nested container-shape-invalid detail with no resubmission. That fixed
+    result narrows the remaining compatibility seam to the presentation
+    container's structural record, but does not distinguish an otherwise exact
+    ref-free container from a malformed ref attempt or residual syntax. One
+    further closed source-derived code supplies that distinction without raw UI
+    inspection or a guessed ref relaxation.
+  rejected_alternatives:
+    - Accept every ref-free, malformed-ref, or residual generic/semantic line
+    - Display, persist, log, screenshot, or inspect raw snapshot, subtree, label, ref, indentation, or payload
+    - Submit again, use another conversation/profile/origin, or call an API
+    - Add browser evaluation, OCR, CDP, storage access, or a dynamic error string
+    - Change parser acceptance in this diagnostic continuation
+  constraints:
+    - The three shape literals and classification precedence are exact source constants
+    - Shape is recovery-only, non-persistent, and requires the exact reason/parent/detail/context/context-detail conjunction
+    - Classification stays on the already selected physical container line and emits no browser-derived substring, count, label, ref, or payload
+    - Structural ref-like text inside a quoted label is never a ref token
+    - No accepted response bytes, action shape, body boundary, ref, stop, or stability rule changes
+    - Recovery remains unchanged-state, proposal-first/event-last, navigate/snapshot/wait/close-only, and no-resubmission
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - The shape value grants no authority and does not authorize a later ref-free tolerance by itself
+    - Action controls, labels, refs, and payloads remain unavailable and non-actionable
+    - Normal ask, WAITING, legacy, manual import, status, state, events, proposals, unrelated terminal resume, and committed recovery never expose or persist shape
+    - Local fixtures, sanitized diagnosis, live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Each exact shape literal has deterministic direct and terminal-recovery fixtures
+    - The live run returns the unchanged six existing fields plus one shape code with no resubmission
+    - Parser success/refusal and captured bytes are identical before and after this diagnostic addition
+    - Invalid/missing shape preserves all existing valid diagnostic fields
+    - Failed diagnosis leaves terminal state, events, proposal absence, and manual-copy fallback intact
+  required_test_evidence:
+    - Exact ref-free generic/semantic records with no label, JSON label, complete non-ref attributes, and whitespace/order variations
+    - Bracketed/unbracketed malformed ref attempts, wrong case/spacing/value, malformed label-contained ref-like text, residual syntax, and predecessor-preserved label-valid-ref and valid-plus-extra-ref controls with no sixth field
+    - Multiple container-shape defects use the first physical selected defect and never inspect beyond the owned boundary
+    - CLI six-field conjunction/allowlist, zero-action, unchanged-state/event/proposal, retry, and all non-exposure paths
+    - Existing current-response, bound-recovery, precontent diagnostics/actions, manual-import, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - One sanitized live shape refusal kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

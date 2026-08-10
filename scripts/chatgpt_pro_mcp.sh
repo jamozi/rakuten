@@ -3,6 +3,8 @@
 
 set -euo pipefail
 umask 077
+export PATH=/usr/bin:/bin
+readonly PATH
 
 readonly REPOSITORY_ROOT=/home/minami/rakuten
 readonly PRIVATE_ROOT="${REPOSITORY_ROOT}/.secrets"
@@ -13,15 +15,12 @@ readonly EDGE_PROFILE_DIR="${PRIVATE_ROOT}/chatgpt-pro-edge-profile"
 readonly CHROME_PROFILE_DIR="${PRIVATE_ROOT}/chatgpt-pro-profile"
 readonly MCP_OUTPUT_DIR="${PRIVATE_ROOT}/chatgpt-pro-mcp-output"
 readonly SECRET_ROOT="${PRIVATE_ROOT}/chatgpt-pro"
-readonly MCP_PACKAGE=@playwright/mcp@0.0.78
 readonly NODE_BIN=/home/minami/.nvm/versions/node/v24.18.1/bin/node
-readonly MCP_CACHE_ROOT=/home/minami/.npm/_npx/9833c18b2d85bc59
-readonly MCP_LOCK="${MCP_CACHE_ROOT}/package-lock.json"
-readonly MCP_CLI="${MCP_CACHE_ROOT}/node_modules/@playwright/mcp/cli.js"
-readonly MCP_PACKAGE_JSON="${MCP_CACHE_ROOT}/node_modules/@playwright/mcp/package.json"
-readonly MCP_LOCK_SHA256=59dcee8d3689b747c7d5be9fc5159fa51c77e9c94790ea27e2363ca5f28659f0
-readonly MCP_CLI_SHA256=70dab09ab9a5bc1943fb78e2655f00af7349f9931073833919f19c5d7d786ad6
-readonly MCP_PACKAGE_JSON_SHA256=d1d7d6d08a2c8b10ac95a04fc358f8ca55b8855fabb8d6fa8c7cf26dfd5378b7
+readonly PYTHON_BIN=/usr/bin/python3.10
+readonly MCP_RUNTIME_ROOT="${PRIVATE_ROOT}/chatgpt-pro-mcp-runtime"
+readonly MCP_RUNTIME_SOURCE="${REPOSITORY_ROOT}/scripts/chatgpt_pro_mcp_runtime"
+readonly MCP_RUNTIME_VERIFIER="${MCP_RUNTIME_SOURCE}/verify_runtime.py"
+readonly MCP_CLI="${MCP_RUNTIME_ROOT}/node_modules/@playwright/mcp/cli.js"
 
 fail() {
   printf '%s\n' "chatgpt-pro-mcp: fail-closed launch refusal ($1)" >&2
@@ -43,6 +42,24 @@ check_fixed_executable() {
   test "$(readlink -f -- "$path")" = "$path" || fail browser-executable
   test "$(stat -c %u -- "$path")" = 0 || fail browser-executable-owner
   test "$(stat -c %a -- "$path")" = 755 || fail browser-executable-mode
+}
+
+check_owner_executable() {
+  local path=$1
+  test -f "$path" && test ! -L "$path" && test -x "$path" || \
+    fail runtime-tool
+  test "$(readlink -f -- "$path")" = "$path" || fail runtime-tool
+  test "$(stat -c %u -- "$path")" = "$(id -u)" || fail runtime-tool-owner
+  test "$(stat -c %a -- "$path")" = 755 || fail runtime-tool-mode
+}
+
+check_system_executable() {
+  local path=$1
+  test -f "$path" && test ! -L "$path" && test -x "$path" || \
+    fail runtime-verifier
+  test "$(readlink -f -- "$path")" = "$path" || fail runtime-verifier
+  test "$(stat -c %u -- "$path")" = 0 || fail runtime-verifier-owner
+  test "$(stat -c %a -- "$path")" = 755 || fail runtime-verifier-mode
 }
 
 browser=${RAOS_CHATGPT_BROWSER:-}
@@ -90,19 +107,18 @@ fi
 test -d "$MCP_OUTPUT_DIR" || fail invalid-output-directory
 check_owner_mode "$MCP_OUTPUT_DIR" 700
 
-test -x "$NODE_BIN" || fail missing-node
-test "$("$NODE_BIN" --version)" = v24.18.1 || fail node-version
-test -f "$MCP_LOCK" && test ! -L "$MCP_LOCK" || fail mcp-lock
+check_owner_executable "$NODE_BIN"
+test "$(env -u NODE_OPTIONS -u NODE_PATH "$NODE_BIN" --version)" = v24.18.1 || \
+  fail node-version
+check_system_executable "$PYTHON_BIN"
+test -f "$MCP_RUNTIME_VERIFIER" && test ! -L "$MCP_RUNTIME_VERIFIER" || \
+  fail runtime-verifier
+check_owner_mode "$MCP_RUNTIME_VERIFIER" 644
+"$PYTHON_BIN" -I -B "$MCP_RUNTIME_VERIFIER" || fail mcp-runtime
 test -f "$MCP_CLI" && test ! -L "$MCP_CLI" || fail mcp-cli
-test -f "$MCP_PACKAGE_JSON" && test ! -L "$MCP_PACKAGE_JSON" || fail mcp-package
-printf '%s  %s\n' "$MCP_LOCK_SHA256" "$MCP_LOCK" | \
-  sha256sum --check --status || fail mcp-lock-hash
-printf '%s  %s\n' "$MCP_CLI_SHA256" "$MCP_CLI" | \
-  sha256sum --check --status || fail mcp-cli-hash
-printf '%s  %s\n' "$MCP_PACKAGE_JSON_SHA256" "$MCP_PACKAGE_JSON" | \
-  sha256sum --check --status || fail mcp-package-hash
+check_owner_mode "$MCP_CLI" 600
 
-exec env -u DEBUG "$NODE_BIN" "$MCP_CLI" \
+exec env -u DEBUG -u NODE_OPTIONS -u NODE_PATH "$NODE_BIN" "$MCP_CLI" \
   --browser "$MCP_BROWSER" \
   --executable-path "$BROWSER_EXECUTABLE" \
   --user-data-dir "$PROFILE_DIR" \

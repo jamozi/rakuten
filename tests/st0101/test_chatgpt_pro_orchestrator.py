@@ -302,6 +302,9 @@ def prepare_live_waiting_run(
         )
 
     monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
+    monkeypatch.setattr(
+        orchestrator, "_verify_private_runtime", lambda _root: {"status": "ready"}
+    )
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
     monkeypatch.setattr(orchestrator, "_live_capture", pending_capture)
 
@@ -323,6 +326,84 @@ def prepare_live_waiting_run(
     assert transports[0].closed is True
     assert not transports[0].secrets_file.exists()
     return result
+
+
+def prepare_live_diagnostic_run(
+    root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    reason_code: str,
+    phase: str,
+    importance: str,
+) -> tuple[int, dict[str, Any], ScriptedLiveTransport]:
+    """Create one inert pre-submission diagnostic run without live I/O."""
+
+    write_setup_state(root)
+    request = private_request(
+        root,
+        f"diagnostic-{reason_code.lower()}-{importance}.txt",
+        "RAW_PROMPT_SENTINEL_CLOSED_DIAGNOSTIC",
+    )
+    transports: list[ScriptedLiveTransport] = []
+
+    def scripted_transport(
+        _wrapper: Path, secrets_file: Path, browser: str
+    ) -> ScriptedLiveTransport:
+        assert browser == "edge"
+        transport = ScriptedLiveTransport([], secrets_file)
+        transports.append(transport)
+        return transport
+
+    def diagnostic_capture(**_arguments: Any) -> None:
+        raise orchestrator.LiveUiUnavailable(reason_code, phase)
+
+    monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
+    monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
+    monkeypatch.setattr(orchestrator, "_live_capture", diagnostic_capture)
+
+    exit_code, result = orchestrator.ask(
+        private_root=root,
+        request_file=request,
+        importance=importance,
+        fake_scenario=None,
+        parent_run_id=None,
+        gap_file=None,
+    )
+
+    assert len(transports) == 1
+    return exit_code, result, transports[0]
+
+
+def rewrite_hash_bound_terminal(
+    run_dir: Path,
+    *,
+    mutate_state: Any,
+    mutate_event: Any,
+) -> None:
+    """Rebuild one test record so semantic tampering still has valid hashes."""
+
+    state_path = run_dir / "orchestration-state.v1.json"
+    record_path = run_dir / "run-record.v1.jsonl"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    events = [
+        json.loads(line)
+        for line in record_path.read_text(encoding="utf-8").splitlines()
+    ]
+    mutate_state(state)
+    orchestrator._atomic_private_json(state_path, state)
+    final_event = events[-1]
+    final_event["payload"]["state_sha256"] = hashlib.sha256(
+        orchestrator._canonical_json(state)
+    ).hexdigest()
+    mutate_event(final_event)
+    record_path.unlink()
+    for event in events:
+        workflow._append_event(
+            record_path,
+            event["run_id"],
+            event["event_type"],
+            event["payload"],
+        )
 
 
 def test_raw_snapshot_elements_parse_complete_roles_labels_and_refs() -> None:
@@ -715,6 +796,9 @@ def test_live_doctor_reports_compound_cloudflare_challenge_as_captcha(
         return transport
 
     monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
+    monkeypatch.setattr(
+        orchestrator, "_verify_private_runtime", lambda _root: {"status": "ready"}
+    )
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
 
     exit_code = invoke_orchestrator_main(
@@ -736,6 +820,7 @@ def test_live_doctor_reports_compound_cloudflare_challenge_as_captcha(
         "authenticated": False,
         "browser": "edge",
         "mode": "LIVE",
+        "next_action": "STOP",
         "profile": str(root / "chatgpt-pro-edge-profile"),
         "reason_code": "STOP_CAPTCHA",
         "status": "STOPPED",
@@ -816,6 +901,13 @@ def test_successful_ask_emits_sanitized_result_and_hash_bound_private_artifacts(
     assert result["mode"] == "LOCAL_FIXTURE"
     assert result["advice_type"] == "PRO_ADVICE_V1"
     assert result["authority"] == "UNAPPROVED_ADVICE"
+    assert "diagnostic_code" not in result
+    assert "diagnostic_detail_code" not in result
+    assert "diagnostic_context_code" not in result
+    assert "diagnostic_context_detail_code" not in result
+    assert "diagnostic_context_shape_code" not in result
+    assert "diagnostic_fallback_code" not in result
+    assert "diagnostic_fallback_entry_code" not in result
 
     run_id = result["run_id"]
     run_dir = root / "chatgpt-pro-runs" / run_id
@@ -840,11 +932,55 @@ def test_successful_ask_emits_sanitized_result_and_hash_bound_private_artifacts(
     assert state["mode"] == "LOCAL_FIXTURE"
     assert state["submission_attempted"] is True
     assert state["advice_type"] == "PRO_ADVICE_V1"
+    assert "diagnostic_code" not in state
+    assert "diagnostic_code" not in record_text
+    assert "diagnostic_code" not in proposal
+    assert "diagnostic_detail_code" not in state
+    assert "diagnostic_detail_code" not in record_text
+    assert "diagnostic_detail_code" not in proposal
+    assert "diagnostic_context_code" not in state
+    assert "diagnostic_context_code" not in record_text
+    assert "diagnostic_context_code" not in proposal
+    assert "diagnostic_context_detail_code" not in state
+    assert "diagnostic_context_detail_code" not in record_text
+    assert "diagnostic_context_detail_code" not in proposal
+    assert "diagnostic_context_shape_code" not in state
+    assert "diagnostic_context_shape_code" not in record_text
+    assert "diagnostic_context_shape_code" not in proposal
+    assert "diagnostic_fallback_code" not in state
+    assert "diagnostic_fallback_code" not in record_text
+    assert "diagnostic_fallback_code" not in proposal
+    assert "diagnostic_fallback_entry_code" not in state
+    assert "diagnostic_fallback_entry_code" not in record_text
+    assert "diagnostic_fallback_entry_code" not in proposal
     assert REQUEST_TEXT not in record_text
     assert REQUEST_TEXT not in proposal
     assert "UNAPPROVED_PROPOSAL" in proposal
     assert "cannot authorize" in proposal
     assert "UNAPPROVED_ADVICE" in proposal
+
+    status_result = orchestrator.status(private_root=root, run_id=run_id)
+    assert "diagnostic_code" not in status_result
+    assert "diagnostic_detail_code" not in status_result
+    assert "diagnostic_context_code" not in status_result
+    assert "diagnostic_context_detail_code" not in status_result
+    assert "diagnostic_context_shape_code" not in status_result
+    assert "diagnostic_fallback_code" not in status_result
+    assert "diagnostic_fallback_entry_code" not in status_result
+    resume_code, terminal_result = orchestrator.resume(
+        private_root=root,
+        run_id=run_id,
+        fake_scenario=scenario,
+    )
+    assert resume_code == 0
+    assert terminal_result["status"] == "ADVICE_CAPTURED"
+    assert "diagnostic_code" not in terminal_result
+    assert "diagnostic_detail_code" not in terminal_result
+    assert "diagnostic_context_code" not in terminal_result
+    assert "diagnostic_context_detail_code" not in terminal_result
+    assert "diagnostic_context_shape_code" not in terminal_result
+    assert "diagnostic_fallback_code" not in terminal_result
+    assert "diagnostic_fallback_entry_code" not in terminal_result
 
 
 def test_cli_ask_without_request_file_reads_stdin_into_private_artifact(
@@ -939,6 +1075,7 @@ def test_transport_failure_obeys_importance_boundary(
 @pytest.mark.parametrize(
     "reason_code",
     [
+        *sorted(orchestrator.ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES),
         "EFFORT_OPTIONS_AMBIGUOUS",
         "SELECTOR_AMBIGUITY",
         "MODEL_OPTIONS_AMBIGUOUS",
@@ -950,6 +1087,7 @@ def test_pre_submission_ui_classifier_maps_every_eligible_code(
     reason_code: str,
 ) -> None:
     assert orchestrator.PRE_SUBMISSION_UI_UNAVAILABLE_CODES == {
+        *orchestrator.ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES,
         "EFFORT_OPTIONS_AMBIGUOUS",
         "SELECTOR_AMBIGUITY",
         "MODEL_OPTIONS_AMBIGUOUS",
@@ -958,10 +1096,479 @@ def test_pre_submission_ui_classifier_maps_every_eligible_code(
     }
     source = orchestrator.OrchestrationRefusal(reason_code)
 
-    classified = orchestrator._classify_pre_submission_ui_refusal(source)
+    classified = orchestrator._classify_pre_submission_ui_refusal(
+        source, phase="advanced_summary"
+    )
 
     assert type(classified) is orchestrator.LiveUiUnavailable
     assert classified.code == reason_code
+    assert classified.phase == "advanced_summary"
+
+
+def test_pre_submission_phase_vocabulary_and_settle_bounds_are_closed() -> None:
+    assert orchestrator.PRE_SUBMISSION_PHASES == {
+        "landing",
+        "pro_menu",
+        "advanced_summary",
+        "closed_landing",
+        "typed_composer",
+        "send_control",
+    }
+    assert orchestrator.PRE_SUBMISSION_SETTLE_SECONDS == 5
+    assert orchestrator.PRE_SUBMISSION_SETTLE_ADDITIONAL_OBSERVATIONS == 12
+
+
+@pytest.mark.parametrize(
+    ("reason_code", "phase"),
+    [
+        pytest.param("ADVANCED_PRO_BUTTON_INVALID", "pro_menu", id="pro-button"),
+        pytest.param(
+            "ADVANCED_EXPAND_CONTROL_INVALID", "pro_menu", id="expand-control"
+        ),
+        pytest.param("ADVANCED_MENU_STATE_MIXED", "pro_menu", id="mixed"),
+        pytest.param(
+            "ADVANCED_MODEL_EVIDENCE_MISSING",
+            "advanced_summary",
+            id="model-missing",
+        ),
+        pytest.param(
+            "ADVANCED_MODEL_EVIDENCE_CONFLICT",
+            "advanced_summary",
+            id="model-conflict",
+        ),
+        pytest.param(
+            "ADVANCED_EFFORT_EVIDENCE_MISSING",
+            "advanced_summary",
+            id="effort-missing",
+        ),
+        pytest.param(
+            "ADVANCED_EFFORT_EVIDENCE_CONFLICT",
+            "advanced_summary",
+            id="effort-conflict",
+        ),
+        pytest.param("ADVANCED_MENU_UNRECOGNIZED", "pro_menu", id="unrecognized"),
+    ],
+)
+@pytest.mark.parametrize(
+    ("importance", "expected_exit", "expected_status", "expected_action"),
+    [
+        pytest.param(
+            "ordinary",
+            0,
+            "PRO_UNAVAILABLE_FALLBACK",
+            "CONTINUE_CANONICAL_LOCAL_ONLY",
+            id="ordinary",
+        ),
+        pytest.param("gated", 4, "BLOCKED_PRO_REQUIRED", "STOP", id="gated"),
+    ],
+)
+def test_closed_diagnostic_is_hash_bound_in_state_event_result_and_status(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    reason_code: str,
+    phase: str,
+    importance: str,
+    expected_exit: int,
+    expected_status: str,
+    expected_action: str,
+) -> None:
+    root = private_root(tmp_path)
+    exit_code, result, transport = prepare_live_diagnostic_run(
+        root,
+        monkeypatch,
+        reason_code=reason_code,
+        phase=phase,
+        importance=importance,
+    )
+
+    assert exit_code == expected_exit
+    assert result == {
+        "status": expected_status,
+        "story_id": "ST-0101",
+        "mode": "LIVE",
+        "browser": "edge",
+        "run_id": result["run_id"],
+        "reason_code": reason_code,
+        "submission_attempted": False,
+        "next_action": expected_action,
+        "phase": phase,
+    }
+    assert transport.calls == []
+    assert transport.closed is True
+    assert not transport.secrets_file.exists()
+
+    run_dir = root / "chatgpt-pro-runs" / result["run_id"]
+    state_path = run_dir / "orchestration-state.v1.json"
+    record_path = run_dir / "run-record.v1.jsonl"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    record_text = record_path.read_text(encoding="utf-8")
+    events = [json.loads(line) for line in record_text.splitlines()]
+    final_event = events[-1]
+    assert state["reason_code"] == reason_code
+    assert state["phase"] == phase
+    assert state["submission_attempted"] is False
+    assert state["status"] == expected_status
+    assert state["next_action"] == expected_action
+    assert final_event["event_type"] == "PRO_UNAVAILABLE"
+    assert final_event["payload"] == {
+        "status": expected_status,
+        "importance": importance,
+        "reason_code": reason_code,
+        "fallback_scope": expected_action,
+        "submission_attempted": False,
+        "phase": phase,
+        "state_sha256": hashlib.sha256(orchestrator._canonical_json(state)).hexdigest(),
+    }
+    assert workflow._verify_events(record_text.splitlines(), result["run_id"])[
+        0
+    ] == len(events)
+
+    before = {
+        path.relative_to(run_dir): path.read_bytes()
+        for path in run_dir.iterdir()
+        if path.is_file()
+    }
+    verified = orchestrator.status(private_root=root, run_id=result["run_id"])
+    after = {
+        path.relative_to(run_dir): path.read_bytes()
+        for path in run_dir.iterdir()
+        if path.is_file()
+    }
+    assert verified == {
+        "status": expected_status,
+        "story_id": "ST-0101",
+        "mode": "LIVE",
+        "browser": "edge",
+        "run_id": result["run_id"],
+        "importance": importance,
+        "submission_attempted": False,
+        "advice_type": None,
+        "next_action": expected_action,
+        "record_verified": True,
+        "phase": phase,
+        "reason_code": reason_code,
+    }
+    assert before == after
+
+    diagnostic_surfaces = json.dumps(
+        {
+            "result": result,
+            "state": state,
+            "record": events,
+            "status": verified,
+        },
+        sort_keys=True,
+    )
+    for forbidden in (
+        "RAW_PROMPT_SENTINEL_CLOSED_DIAGNOSTIC",
+        "RAW_RESPONSE_SENTINEL_CLOSED_DIAGNOSTIC",
+        "SNAPSHOT_LABEL_SENTINEL_CLOSED_DIAGNOSTIC",
+        "ROLE_SENTINEL_CLOSED_DIAGNOSTIC",
+        "e987654",
+        "COUNT_SENTINEL_77",
+        "VALUE_SENTINEL_CLOSED_DIAGNOSTIC",
+        "SNAPSHOT_HASH_SENTINEL_CLOSED_DIAGNOSTIC",
+        "SIDEBAR_SENTINEL_CLOSED_DIAGNOSTIC",
+        "ACCOUNT_SENTINEL_CLOSED_DIAGNOSTIC",
+        "PROFILE_SENTINEL_CLOSED_DIAGNOSTIC",
+        "https://unrelated.invalid/closed-diagnostic",
+    ):
+        assert forbidden not in diagnostic_surfaces
+    assert not any(
+        event["event_type"] == "SUBMISSION_INTENT_RECORDED" for event in events
+    )
+    assert not (run_dir / "pending-transcript.v1.json").exists()
+    assert not (run_dir / "unapproved-proposal.md").exists()
+
+
+def test_closed_diagnostics_never_become_manual_import_reasons() -> None:
+    assert orchestrator.ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_RECOVERY_DIAGNOSTIC_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_RECOVERY_DIAGNOSTIC_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_HEADING_DETAIL_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_HEADING_DETAIL_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_ACTION_DETAIL_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_ACTION_DETAIL_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_PRECONTENT_CONTEXT_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_PRECONTENT_CONTEXT_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_PRECONTENT_CONTEXT_DETAIL_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_PRECONTENT_CONTEXT_DETAIL_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_PRECONTENT_CONTEXT_SHAPE_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_PRECONTENT_CONTEXT_SHAPE_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_REF_FREE_FALLBACK_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_REF_FREE_FALLBACK_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_REF_FREE_FALLBACK_ENTRY_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.BOUND_RESPONSE_REF_FREE_FALLBACK_ENTRY_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+
+
+@pytest.mark.parametrize(
+    "reason_code",
+    [
+        "advanced_model_evidence_missing",
+        " ADVANCED_MODEL_EVIDENCE_MISSING ",
+        "Advanced_Unknown_Boundary",
+    ],
+)
+def test_reserved_advanced_reason_variants_cannot_be_recorded(
+    reason_code: str,
+) -> None:
+    with pytest.raises(orchestrator.OrchestrationRefusal) as captured:
+        orchestrator._record_unavailable(
+            prepared={},
+            state={},
+            reason_code=reason_code,
+            phase="advanced_summary",
+        )
+
+    assert captured.value.code == "STATE_INVALID"
+
+
+def test_real_classifier_persists_no_raw_browser_material_or_submission_evidence(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = private_root(tmp_path)
+    write_setup_state(root)
+    request = private_request(
+        root,
+        "raw-browser-material-diagnostic.txt",
+        "RAW_PROMPT_SENTINEL_CLOSED_DIAGNOSTIC",
+    )
+    landing_snapshot = "\n".join(
+        (
+            "- Page URL: https://chatgpt.com/",
+            '- button "Pro" [ref=e1]',
+            '- textbox "Chat with ChatGPT" [ref=e2]',
+        )
+    )
+    raw_snapshot = "\n".join(
+        (
+            "- Page URL: https://chatgpt.com/",
+            '- button "Pro" [ref=e3]',
+            '- menu "Pro" [ref=e4]',
+            '- navigation "SIDEBAR_SENTINEL_CLOSED_DIAGNOSTIC" [ref=e80]:',
+            '  - text: "SNAPSHOT_LABEL_SENTINEL_CLOSED_DIAGNOSTIC"',
+            '  - statictext: "RAW_RESPONSE_SENTINEL_CLOSED_DIAGNOSTIC"',
+            '  - link "https://unrelated.invalid/closed-diagnostic" [ref=e987654]',
+            '- complementary "ACCOUNT_SENTINEL_CLOSED_DIAGNOSTIC" [ref=e81]:',
+            '  - description "PROFILE_SENTINEL_CLOSED_DIAGNOSTIC"',
+            '- toolbar "ROLE_SENTINEL_CLOSED_DIAGNOSTIC" [ref=e82]:',
+            '  - text "COUNT_SENTINEL_77"',
+            '  - text "VALUE_SENTINEL_CLOSED_DIAGNOSTIC"',
+            '  - text "SNAPSHOT_HASH_SENTINEL_CLOSED_DIAGNOSTIC"',
+        )
+    )
+    transports: list[ScriptedLiveTransport] = []
+
+    def scripted_transport(
+        _wrapper: Path, secrets_file: Path, browser: str
+    ) -> ScriptedLiveTransport:
+        assert browser == "edge"
+        transport = ScriptedLiveTransport(
+            [
+                landing_snapshot,
+                *[
+                    raw_snapshot
+                    for _ in range(
+                        orchestrator.PRE_SUBMISSION_SETTLE_ADDITIONAL_OBSERVATIONS + 1
+                    )
+                ],
+            ],
+            secrets_file,
+        )
+        transports.append(transport)
+        return transport
+
+    monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
+    monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
+
+    exit_code, result = orchestrator.ask(
+        private_root=root,
+        request_file=request,
+        importance="ordinary",
+        fake_scenario=None,
+        parent_run_id=None,
+        gap_file=None,
+        interactive_auth_wait_seconds=0,
+    )
+
+    assert exit_code == 0
+    assert result["reason_code"] == "ADVANCED_MENU_UNRECOGNIZED"
+    assert result["phase"] == "pro_menu"
+    assert result["submission_attempted"] is False
+    assert len(transports) == 1
+    transport = transports[0]
+    assert transport.closed is True
+    assert transport.snapshots == []
+    assert sum(tool == "browser_wait_for" for tool, _ in transport.calls) == 12
+    assert [
+        arguments["element"]
+        for tool, arguments in transport.calls
+        if tool == "browser_click"
+    ] == ["model picker"]
+    assert not any(tool == "browser_type" for tool, _ in transport.calls)
+    assert not any(
+        tool == "browser_click" and arguments.get("element") == "send prompt"
+        for tool, arguments in transport.calls
+    )
+
+    run_dir = root / "chatgpt-pro-runs" / result["run_id"]
+    state = json.loads(
+        (run_dir / "orchestration-state.v1.json").read_text(encoding="utf-8")
+    )
+    record_text = (run_dir / "run-record.v1.jsonl").read_text(encoding="utf-8")
+    verified = orchestrator.status(private_root=root, run_id=result["run_id"])
+    diagnostic_surfaces = json.dumps(
+        {"result": result, "state": state, "record": record_text, "status": verified},
+        sort_keys=True,
+    )
+    for forbidden in (
+        "RAW_PROMPT_SENTINEL_CLOSED_DIAGNOSTIC",
+        "RAW_RESPONSE_SENTINEL_CLOSED_DIAGNOSTIC",
+        "SNAPSHOT_LABEL_SENTINEL_CLOSED_DIAGNOSTIC",
+        "ROLE_SENTINEL_CLOSED_DIAGNOSTIC",
+        "e987654",
+        "COUNT_SENTINEL_77",
+        "VALUE_SENTINEL_CLOSED_DIAGNOSTIC",
+        "SNAPSHOT_HASH_SENTINEL_CLOSED_DIAGNOSTIC",
+        "SIDEBAR_SENTINEL_CLOSED_DIAGNOSTIC",
+        "ACCOUNT_SENTINEL_CLOSED_DIAGNOSTIC",
+        "PROFILE_SENTINEL_CLOSED_DIAGNOSTIC",
+        "https://unrelated.invalid/closed-diagnostic",
+    ):
+        assert forbidden not in diagnostic_surfaces
+    assert "SUBMISSION_INTENT_RECORDED" not in record_text
+    assert not (run_dir / "pending-transcript.v1.json").exists()
+    assert not (run_dir / "unapproved-proposal.md").exists()
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "dynamic-both",
+        "unknown-both",
+        "event-disagreement",
+        "state-reason-missing",
+        "wrong-case-event-state-reason-missing",
+        "event-reason-missing",
+        "event-dynamic-field",
+    ],
+)
+@pytest.mark.parametrize(
+    ("reason_code", "phase"),
+    [
+        pytest.param(
+            "ADVANCED_MODEL_EVIDENCE_MISSING",
+            "advanced_summary",
+            id="current-diagnostic",
+        ),
+        pytest.param(
+            "ADVANCED_MENU_STATE_MIXED",
+            "pro_menu",
+            id="predecessor-mixed-compatibility",
+        ),
+    ],
+)
+def test_status_rejects_semantically_invalid_hash_valid_diagnostic_records(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+    reason_code: str,
+    phase: str,
+) -> None:
+    root = private_root(tmp_path)
+    _exit_code, result, _transport = prepare_live_diagnostic_run(
+        root,
+        monkeypatch,
+        reason_code=reason_code,
+        phase=phase,
+        importance="ordinary",
+    )
+    run_dir = root / "chatgpt-pro-runs" / result["run_id"]
+
+    def mutate_state(state: dict[str, Any]) -> None:
+        if mutation == "dynamic-both":
+            state["reason_code"] = "ADVANCED_MODEL_EVIDENCE_MISSING_COUNT_2"
+        elif mutation == "unknown-both":
+            state["reason_code"] = "ADVANCED_UNKNOWN_BOUNDARY"
+        elif mutation in {
+            "state-reason-missing",
+            "wrong-case-event-state-reason-missing",
+        }:
+            state.pop("reason_code")
+
+    def mutate_event(event: dict[str, Any]) -> None:
+        if mutation == "dynamic-both":
+            event["payload"]["reason_code"] = "ADVANCED_MODEL_EVIDENCE_MISSING_COUNT_2"
+        elif mutation == "unknown-both":
+            event["payload"]["reason_code"] = "ADVANCED_UNKNOWN_BOUNDARY"
+        elif mutation == "event-disagreement":
+            event["payload"]["reason_code"] = "ADVANCED_EFFORT_EVIDENCE_MISSING"
+        elif mutation == "wrong-case-event-state-reason-missing":
+            event["payload"]["reason_code"] = "advanced_model_evidence_missing"
+        elif mutation == "event-reason-missing":
+            event["payload"].pop("reason_code")
+        elif mutation == "event-dynamic-field":
+            event["payload"]["raw_label"] = "Model secret sentinel"
+
+    rewrite_hash_bound_terminal(
+        run_dir,
+        mutate_state=mutate_state,
+        mutate_event=mutate_event,
+    )
+    before = {
+        path.relative_to(run_dir): path.read_bytes()
+        for path in run_dir.iterdir()
+        if path.is_file()
+    }
+
+    with pytest.raises(orchestrator.OrchestrationRefusal) as captured:
+        orchestrator.status(private_root=root, run_id=result["run_id"])
+
+    after = {
+        path.relative_to(run_dir): path.read_bytes()
+        for path in run_dir.iterdir()
+        if path.is_file()
+    }
+    assert captured.value.code == "STATE_INVALID"
+    assert before == after
 
 
 @pytest.mark.parametrize(
@@ -1027,6 +1634,7 @@ def test_live_no_model_picker_records_pre_submission_unavailability(
         transports.append(transport)
         return transport
 
+    monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
 
     exit_code = invoke_orchestrator_main(
@@ -1051,6 +1659,7 @@ def test_live_no_model_picker_records_pre_submission_unavailability(
     assert result["status"] == expected_status
     assert result["mode"] == "LIVE"
     assert result["reason_code"] == "SELECTOR_AMBIGUITY"
+    assert result["phase"] == "landing"
     assert result["submission_attempted"] is False
     assert "resubmitted" not in result
     assert result["next_action"] == expected_next_action
@@ -1081,6 +1690,7 @@ def test_live_no_model_picker_records_pre_submission_unavailability(
         (run_dir / "orchestration-state.v1.json").read_text(encoding="utf-8")
     )
     assert state["status"] == expected_status
+    assert state["phase"] == "landing"
     assert state["submission_attempted"] is False
     assert state["next_action"] == expected_next_action
     record_text = (run_dir / "run-record.v1.jsonl").read_text(encoding="utf-8")
@@ -1091,12 +1701,94 @@ def test_live_no_model_picker_records_pre_submission_unavailability(
     assert final_hash == final_event["event_sha256"]
     assert final_event["event_type"] == "PRO_UNAVAILABLE"
     assert final_event["payload"]["reason_code"] == "SELECTOR_AMBIGUITY"
+    assert final_event["payload"]["phase"] == "landing"
     assert final_event["payload"]["submission_attempted"] is False
+    assert set(final_event["payload"]) == {
+        "fallback_scope",
+        "importance",
+        "phase",
+        "reason_code",
+        "state_sha256",
+        "status",
+        "submission_attempted",
+    }
     assert "resubmitted" not in final_event["payload"]
     assert REQUEST_TEXT not in record_text
     verified = orchestrator.status(private_root=root, run_id=run_id)
     assert verified["record_verified"] is True
+    assert verified["phase"] == "landing"
     assert verified["submission_attempted"] is False
+    assert "reason_code" not in verified
+    assert "reason_code" not in state
+
+
+def test_live_transport_startup_failure_records_landing_phase(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = private_root(tmp_path)
+    write_setup_state(root)
+    request = private_request(root, "live-transport-startup-failure.txt")
+
+    def unavailable_transport(_wrapper: Path, secrets_file: Path, browser: str) -> None:
+        assert browser == "edge"
+        assert secrets_file.is_file()
+        raise orchestrator.TransportUnavailable("MCP_TIMEOUT")
+
+    monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
+    monkeypatch.setattr(orchestrator, "StdioMcpTransport", unavailable_transport)
+
+    exit_code, result = orchestrator.ask(
+        private_root=root,
+        request_file=request,
+        importance="ordinary",
+        fake_scenario=None,
+        parent_run_id=None,
+        gap_file=None,
+    )
+
+    assert exit_code == 0
+    assert result["reason_code"] == "MCP_TIMEOUT"
+    assert result["phase"] == "landing"
+    assert result["submission_attempted"] is False
+    run_id = result["run_id"]
+    run_dir = root / "chatgpt-pro-runs" / run_id
+    state = json.loads(
+        (run_dir / "orchestration-state.v1.json").read_text(encoding="utf-8")
+    )
+    assert state["phase"] == "landing"
+    assert state["submission_attempted"] is False
+    final_event = json.loads(
+        (run_dir / "run-record.v1.jsonl").read_text(encoding="utf-8").splitlines()[-1]
+    )
+    assert final_event["event_type"] == "PRO_UNAVAILABLE"
+    assert final_event["payload"]["reason_code"] == "MCP_TIMEOUT"
+    assert final_event["payload"]["phase"] == "landing"
+    assert final_event["payload"]["submission_attempted"] is False
+    assert orchestrator.status(private_root=root, run_id=run_id)["phase"] == "landing"
+    assert not list((root / "chatgpt-pro").glob("*.env"))
+
+
+@pytest.mark.parametrize("invalid_phase", [[], {}])
+def test_status_sanitizes_unhashable_phase_schema_values(
+    tmp_path: Path,
+    invalid_phase: object,
+) -> None:
+    root = private_root(tmp_path)
+    request = private_request(root, "invalid-phase-state.txt")
+    scenario = successful_scenario(tmp_path / "invalid-phase-state.json")
+    _, asked = ask_fixture(root, request, scenario)
+    state_path = (
+        root / "chatgpt-pro-runs" / asked["run_id"] / "orchestration-state.v1.json"
+    )
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    state["phase"] = invalid_phase
+    state_path.write_text(json.dumps(state), encoding="utf-8")
+
+    with pytest.raises(orchestrator.OrchestrationRefusal) as captured:
+        orchestrator.status(private_root=root, run_id=asked["run_id"])
+
+    assert captured.value.code == "STATE_INVALID"
 
 
 @pytest.mark.parametrize(
@@ -1141,6 +1833,7 @@ def test_live_security_invariants_remain_hard_refusals(
 
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
     monkeypatch.setattr(orchestrator, "_live_capture", refuse_live_capture)
+    monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
 
     exit_code = invoke_orchestrator_main(
         [
@@ -1213,6 +1906,7 @@ def test_live_contract_drift_remains_a_hard_refusal(
 
     monkeypatch.setattr(workflow, "_load_contract", load_contract)
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
+    monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
 
     exit_code = invoke_orchestrator_main(
         [
@@ -1285,6 +1979,20 @@ def test_resume_waits_without_resubmitting_after_ambiguous_or_lost_connection(
     assert resume_code == 0
     assert resumed["status"] == "ADVICE_CAPTURED"
     assert resumed["resubmitted"] is False
+    assert "diagnostic_code" not in initial
+    assert "diagnostic_code" not in resumed
+    assert "diagnostic_detail_code" not in initial
+    assert "diagnostic_detail_code" not in resumed
+    assert "diagnostic_context_code" not in initial
+    assert "diagnostic_context_code" not in resumed
+    assert "diagnostic_context_detail_code" not in initial
+    assert "diagnostic_context_detail_code" not in resumed
+    assert "diagnostic_context_shape_code" not in initial
+    assert "diagnostic_context_shape_code" not in resumed
+    assert "diagnostic_fallback_code" not in initial
+    assert "diagnostic_fallback_code" not in resumed
+    assert "diagnostic_fallback_entry_code" not in initial
+    assert "diagnostic_fallback_entry_code" not in resumed
     assert not (run_dir / "pending-transcript.v1.json").exists()
     events = [
         json.loads(line)
@@ -1299,6 +2007,83 @@ def test_resume_waits_without_resubmitting_after_ambiguous_or_lost_connection(
         event.get("payload", {}).get("arguments", {}).get("text")
         for event in events
         if isinstance(event.get("payload"), dict)
+    )
+    assert "diagnostic_code" not in json.dumps(events, sort_keys=True)
+    assert "diagnostic_detail_code" not in json.dumps(events, sort_keys=True)
+    assert "diagnostic_context_code" not in json.dumps(events, sort_keys=True)
+    assert "diagnostic_context_detail_code" not in json.dumps(events, sort_keys=True)
+    assert "diagnostic_context_shape_code" not in json.dumps(events, sort_keys=True)
+    assert "diagnostic_fallback_code" not in json.dumps(events, sort_keys=True)
+    assert "diagnostic_fallback_entry_code" not in json.dumps(events, sort_keys=True)
+    assert "diagnostic_code" not in (run_dir / "orchestration-state.v1.json").read_text(
+        encoding="utf-8"
+    )
+    assert "diagnostic_detail_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_detail_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_shape_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_fallback_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_fallback_entry_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_code" not in (run_dir / "unapproved-proposal.md").read_text(
+        encoding="utf-8"
+    )
+    assert "diagnostic_detail_code" not in (
+        run_dir / "unapproved-proposal.md"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_code" not in (
+        run_dir / "unapproved-proposal.md"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_detail_code" not in (
+        run_dir / "unapproved-proposal.md"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_shape_code" not in (
+        run_dir / "unapproved-proposal.md"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_fallback_code" not in (
+        run_dir / "unapproved-proposal.md"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_fallback_entry_code" not in (
+        run_dir / "unapproved-proposal.md"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_detail_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_context_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_context_detail_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_context_shape_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_fallback_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_fallback_entry_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
     )
 
 
@@ -1359,7 +2144,35 @@ def test_live_resume_response_parser_refusal_becomes_terminal_unavailability(
     def parser_refusal(
         _transcript: dict[str, Any], _snapshot: str
     ) -> tuple[dict[str, Any], str] | None:
-        raise orchestrator.OrchestrationRefusal(reason_code)
+        diagnostic_code = (
+            "ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID"
+            if reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+            else "ADVANCED_RESPONSE_HEADING_INVALID"
+        )
+        raise orchestrator._AdvancedResponseParserRefusal(
+            reason_code,
+            diagnostic_code,
+            (
+                "ADVANCED_RESPONSE_HEADING_LABEL_CASE_INVALID"
+                if reason_code == "RESPONSE_SELECTOR_AMBIGUITY"
+                else "ADVANCED_RESPONSE_ACTION_PRE_CONTENT"
+            ),
+            (
+                "ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID"
+                if reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+                else None
+            ),
+            (
+                "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID"
+                if reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+                else None
+            ),
+            (
+                "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING"
+                if reason_code == "RESPONSE_NOT_IDENTIFIABLE"
+                else None
+            ),
+        )
 
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
     monkeypatch.setattr(
@@ -1387,6 +2200,13 @@ def test_live_resume_response_parser_refusal_becomes_terminal_unavailability(
         "next_action": expected_next_action,
         "resubmitted": False,
     }
+    assert "diagnostic_code" not in result
+    assert "diagnostic_detail_code" not in result
+    assert "diagnostic_context_code" not in result
+    assert "diagnostic_context_detail_code" not in result
+    assert "diagnostic_context_shape_code" not in result
+    assert "diagnostic_fallback_code" not in result
+    assert "diagnostic_fallback_entry_code" not in result
     assert len(transports) == 1
     assert transports[0].closed is True
     assert [tool for tool, _arguments in transports[0].calls] == [
@@ -1401,6 +2221,13 @@ def test_live_resume_response_parser_refusal_becomes_terminal_unavailability(
     assert state["status"] == expected_status
     assert state["submission_attempted"] is True
     assert state["next_action"] == expected_next_action
+    assert "diagnostic_code" not in state
+    assert "diagnostic_detail_code" not in state
+    assert "diagnostic_context_code" not in state
+    assert "diagnostic_context_detail_code" not in state
+    assert "diagnostic_context_shape_code" not in state
+    assert "diagnostic_fallback_code" not in state
+    assert "diagnostic_fallback_entry_code" not in state
     assert pending_path.read_bytes() == pending_before
     assert not (run_dir / "unapproved-proposal.md").exists()
 
@@ -1414,6 +2241,19 @@ def test_live_resume_response_parser_refusal_becomes_terminal_unavailability(
     assert final_event["payload"]["reason_code"] == reason_code
     assert final_event["payload"]["submission_attempted"] is True
     assert final_event["payload"]["resubmitted"] is False
+    assert "diagnostic_code" not in record_path.read_text(encoding="utf-8")
+    assert "diagnostic_detail_code" not in record_path.read_text(encoding="utf-8")
+    assert "diagnostic_context_code" not in record_path.read_text(encoding="utf-8")
+    assert "diagnostic_context_detail_code" not in record_path.read_text(
+        encoding="utf-8"
+    )
+    assert "diagnostic_context_shape_code" not in record_path.read_text(
+        encoding="utf-8"
+    )
+    assert "diagnostic_fallback_code" not in record_path.read_text(encoding="utf-8")
+    assert "diagnostic_fallback_entry_code" not in record_path.read_text(
+        encoding="utf-8"
+    )
     assert not any(
         event["event_type"]
         in {
@@ -1438,23 +2278,163 @@ def test_live_resume_response_parser_refusal_becomes_terminal_unavailability(
     assert status_result["status"] == expected_status
     assert status_result["submission_attempted"] is True
     assert status_result["record_verified"] is True
+    assert "diagnostic_code" not in status_result
+    assert "diagnostic_detail_code" not in status_result
+    assert "diagnostic_context_code" not in status_result
+    assert "diagnostic_context_detail_code" not in status_result
+    assert "diagnostic_context_shape_code" not in status_result
+    assert "diagnostic_fallback_code" not in status_result
+    assert "diagnostic_fallback_entry_code" not in status_result
     assert before_status == after_status
 
-    second_exit, second_result = orchestrator.resume(
-        private_root=root,
-        run_id=run_id,
-        fake_scenario=None,
-    )
+    with pytest.raises(orchestrator.OrchestrationRefusal) as repeated:
+        orchestrator.resume(
+            private_root=root,
+            run_id=run_id,
+            fake_scenario=None,
+        )
     after_second_resume = {
         path.relative_to(run_dir): path.read_bytes()
         for path in run_dir.rglob("*")
         if path.is_file()
     }
-    assert second_exit == 0
-    assert second_result["status"] == expected_status
-    assert second_result["next_action"] == expected_next_action
+    assert repeated.value.code == "RUN_NOT_RESUMABLE"
     assert len(transports) == 1
     assert after_second_resume == after_status
+
+
+def test_legacy_waiting_ambiguity_cli_remains_generic_without_diagnostic(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    root = private_root(tmp_path)
+    initial = prepare_live_waiting_run(
+        root,
+        monkeypatch,
+        importance="ordinary",
+        name="legacy-response-ambiguity",
+    )
+    run_id = initial["run_id"]
+    run_dir = root / "chatgpt-pro-runs" / run_id
+    ambiguous = "\n".join(
+        (
+            "- Page URL: https://chatgpt.com/c/fake-live-resume-run",
+            '- article "Assistant response" [ref=e10]:',
+            '  - text "First" [ref=e11]',
+            '- article "Assistant response" [ref=e20]:',
+            '  - text "Second" [ref=e21]',
+        )
+    )
+    transports: list[ScriptedLiveTransport] = []
+
+    def scripted_transport(
+        _wrapper: Path,
+        secrets_file: Path,
+        browser: str,
+    ) -> ScriptedLiveTransport:
+        assert browser == "edge"
+        transport = ScriptedLiveTransport([ambiguous], secrets_file)
+        transports.append(transport)
+        return transport
+
+    monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
+    monkeypatch.setattr(
+        orchestrator,
+        "_wait_for_stable_response_snapshot",
+        accept_snapshot_as_stable,
+    )
+
+    exit_code = invoke_orchestrator_main(
+        ["resume", "--private-root", str(root), "--run-id", run_id]
+    )
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert captured.err == ""
+    result = json.loads(captured.out)
+    assert result["status"] == "PRO_UNAVAILABLE_FALLBACK"
+    assert result["reason_code"] == "RESPONSE_SELECTOR_AMBIGUITY"
+    assert "diagnostic_code" not in result
+    assert "diagnostic_detail_code" not in result
+    assert "diagnostic_context_code" not in result
+    assert "diagnostic_context_detail_code" not in result
+    assert "diagnostic_context_shape_code" not in result
+    assert "diagnostic_fallback_code" not in result
+    assert "diagnostic_fallback_entry_code" not in result
+    assert len(transports) == 1
+    assert transports[0].closed is True
+    assert "diagnostic_code" not in (run_dir / "orchestration-state.v1.json").read_text(
+        encoding="utf-8"
+    )
+    assert "diagnostic_detail_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_detail_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_shape_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_fallback_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_fallback_entry_code" not in (
+        run_dir / "orchestration-state.v1.json"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_code" not in (run_dir / "run-record.v1.jsonl").read_text(
+        encoding="utf-8"
+    )
+    assert "diagnostic_detail_code" not in (run_dir / "run-record.v1.jsonl").read_text(
+        encoding="utf-8"
+    )
+    assert "diagnostic_context_code" not in (run_dir / "run-record.v1.jsonl").read_text(
+        encoding="utf-8"
+    )
+    assert "diagnostic_context_detail_code" not in (
+        run_dir / "run-record.v1.jsonl"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_context_shape_code" not in (
+        run_dir / "run-record.v1.jsonl"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_fallback_code" not in (
+        run_dir / "run-record.v1.jsonl"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_fallback_entry_code" not in (
+        run_dir / "run-record.v1.jsonl"
+    ).read_text(encoding="utf-8")
+    assert "diagnostic_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_detail_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_context_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_context_detail_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_context_shape_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_fallback_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert "diagnostic_fallback_entry_code" not in orchestrator.status(
+        private_root=root,
+        run_id=run_id,
+    )
+    assert not (run_dir / "unapproved-proposal.md").exists()
 
 
 def test_concurrent_live_resumes_reload_locked_state_and_preserve_terminality(
@@ -1533,17 +2513,22 @@ def test_concurrent_live_resumes_reload_locked_state_and_preserve_terminality(
             )
             for _index in range(2)
         ]
-        results = [future.result(timeout=10) for future in futures]
+        results: list[tuple[int, dict[str, Any]]] = []
+        refusals: list[orchestrator.OrchestrationRefusal] = []
+        for future in futures:
+            try:
+                results.append(future.result(timeout=10))
+            except orchestrator.OrchestrationRefusal as refusal:
+                refusals.append(refusal)
 
-    assert sorted(exit_code for exit_code, _result in results) == [0, 4]
-    assert all(
-        result["status"] == "BLOCKED_PRO_REQUIRED" and result["next_action"] == "STOP"
-        for _exit_code, result in results
-    )
-    winner = next(result for exit_code, result in results if exit_code == 4)
-    loser = next(result for exit_code, result in results if exit_code == 0)
+    assert len(results) == 1
+    assert len(refusals) == 1
+    assert refusals[0].code == "RUN_NOT_RESUMABLE"
+    winner_exit, winner = results[0]
+    assert winner_exit == 4
+    assert winner["status"] == "BLOCKED_PRO_REQUIRED"
+    assert winner["next_action"] == "STOP"
     assert winner["resubmitted"] is False
-    assert "resubmitted" not in loser
 
     assert len(transports) == 1
     assert parser_calls == 1
@@ -1675,15 +2660,14 @@ def test_resume_and_status_wait_through_event_state_publication_window(
 
         release_publication.set()
         winner_exit, winner = winner_future.result(timeout=10)
-        loser_exit, loser = loser_future.result(timeout=10)
+        with pytest.raises(orchestrator.OrchestrationRefusal) as loser_refusal:
+            loser_future.result(timeout=10)
         verified = status_future.result(timeout=10)
 
     assert winner_exit == 4
-    assert loser_exit == 0
+    assert loser_refusal.value.code == "RUN_NOT_RESUMABLE"
     assert winner["status"] == "BLOCKED_PRO_REQUIRED"
-    assert loser["status"] == "BLOCKED_PRO_REQUIRED"
     assert winner["next_action"] == "STOP"
-    assert loser["next_action"] == "STOP"
     assert verified["status"] == "BLOCKED_PRO_REQUIRED"
     assert verified["next_action"] == "STOP"
     assert verified["record_verified"] is True
@@ -2157,19 +3141,31 @@ def test_sensitive_response_is_rejected_without_persisting_the_value(
 
 def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     makefile = MAKEFILE_PATH.read_text(encoding="utf-8")
-    for target in ("pro-setup:", "pro-doctor:", "pro-ask:", "pro-resume:"):
+    for target in (
+        "pro-runtime-install:",
+        "pro-setup:",
+        "pro-doctor:",
+        "pro-ask:",
+        "pro-resume:",
+        "pro-import-response:",
+    ):
         assert target in makefile
     assert "scripts/chatgpt_pro_python.sh" in makefile
     assert '"$(PRO_PYTHON_LAUNCHER)" setup' in makefile
     assert '"$(PRO_PYTHON_LAUNCHER)" doctor' in makefile
     assert '"$(PRO_PYTHON_LAUNCHER)" ask' in makefile
     assert '"$(PRO_PYTHON_LAUNCHER)" resume' in makefile
+    assert '"$(PRO_PYTHON_LAUNCHER)" runtime-install' in makefile
+    assert '"$(PRO_PYTHON_LAUNCHER)" import-response' in makefile
     pro_targets = makefile[
         makefile.index("PRO_REQUEST_FILE ?=") : makefile.index("python-install:")
     ]
     assert "UV_READONLY_RUN" not in pro_targets
     assert '--private-root "$(PRO_PRIVATE_ROOT)"' in pro_targets
     assert "PRO_REQUEST_FILE ?=\n" in makefile
+    assert "PRO_RESPONSE_FILE ?=\n" in makefile
+    assert "PRO_NODE ?=" in pro_targets
+    assert "PRO_NPM_CLI ?=" in pro_targets
     assert "PRO_BROWSER ?= auto" in pro_targets
     assert "PRO_INTERACTIVE_AUTH_WAIT_SECONDS ?= 900" in pro_targets
     assert (
@@ -2208,6 +3204,9 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     }.issubset(playwright["disabled_tools"])
 
     agents = AGENTS_PATH.read_text(encoding="utf-8")
+    story_readme = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(
+        encoding="utf-8"
+    )
     skill = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
     normalized_skill = " ".join(skill.split())
     skill_metadata = (SKILL_ROOT / "agents/openai.yaml").read_text(encoding="utf-8")
@@ -2225,14 +3224,16 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     assert "physical /home/minami/rakuten" in skill
     assert "make pro-doctor" in skill
     assert "make pro-setup" in skill
-    assert "make pro-setup PRO_NO_OPEN_LOGIN=1" in skill
-    assert "Do not open and close a separate" in skill
-    assert "Do not ask the user to run a command" in skill
+    assert "make pro-runtime-install" in skill
+    assert "make pro-import-response" in skill
+    assert "run a fresh `make pro-doctor` and require `READY`" in normalized_skill
+    assert "never proceed from a `STOPPED` outcome" in skill
+    assert "never ask the user to run the command" in skill
     assert "do not close" in skill
     assert "one MCP child, one transport" in skill
     assert "up to 900 seconds" in skill
     assert "snapshots, and" in skill
-    assert "CDP or remote debugging" in skill
+    assert "CDP or remote debugging" in normalized_skill
     assert "selected dedicated ChatGPT-only browser" in normalized_skill
     assert "prefers the approved fixed Linux Edge browser" in normalized_skill
     assert "only when Edge is unavailable before launch" in normalized_skill
@@ -2242,6 +3243,16 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     assert "make pro-resume" in skill
     assert "allow_implicit_invocation: true" in skill_metadata
     assert "Use $raos-ask-pro" in skill_metadata
+    for policy in (agents, story_readme, skill):
+        assert "diagnostic_fallback_entry_code" in policy
+        assert (
+            "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR"
+            in policy
+        )
+        assert (
+            "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER"
+            in policy
+        )
 
 
 def test_make_pro_launcher_ignores_wrong_ambient_uv_and_setup_uses_it(

@@ -1,0 +1,89 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Minimal strict advanced-body tolerance for one exact pre-content Response actions subtree
+    - Existing bound-response recovery without resubmission
+    - Focused parser/recovery tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-action-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-heading-attributes.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    In the already proven exact advanced assistant body only, accept one exact
+    raw `group "Response actions":` line strictly nested below the exact body
+    root before any non-whitespace response content. Treat that line and its
+    complete descendant subtree as opaque, contribute no response bytes, and
+    then continue parsing later sibling content inside the same bounded body.
+    Require at least one valid non-whitespace response fragment after the
+    pre-content group before successful completion.
+
+    The pre-content group and the existing accepted post-content group are two
+    positions for the same single allowed group, not two independently allowed
+    groups. Reject a second action group anywhere; content after a post-content
+    group; no content after a pre-content group; a same- or shallower-indent
+    pre-content boundary group; a malformed, attributed, ref-bearing, wrong-
+    role, wrong-label, wrong-case, wrong-punctuation, or residual group; or any
+    content outside the exact body. Preserve the existing post-content action
+    boundary and all closed diagnostics for invalid forms.
+
+    Apply the same opacity to assistant-marker, generating-marker, stability,
+    anchor, and content extraction views so descendants cannot inject bytes or
+    veto valid later siblings. Do not use the group or descendants as refs,
+    selectors, actions, stop evidence, persisted metadata, or authority.
+    Recovery stays navigate/snapshot/wait/close-only and exactly once
+    submitted.
+  rationale: >-
+    Sanitized recovery of live run 20260809T185354Z-46c4528b4413 now passes the
+    corrected exact heading and body and returns the exact fixed detail
+    ADVANCED_RESPONSE_ACTION_PRE_CONTENT. Syntax-first diagnostics prove the
+    observed group itself matches the predecessor exact action identity; the
+    remaining difference is ordering. Allowing one exact opaque nested group
+    before content accommodates that presentation order while still requiring
+    valid bounded response text and prohibiting duplicate or external groups.
+  rejected_alternatives:
+    - Ignore every pre-content group or every action-boundary failure
+    - Accept a same/shallow group and continue outside the exact body boundary
+    - Accept multiple, malformed, attributed, ref-bearing, approximate, or content-contributing action groups
+    - Treat action descendants as response bytes, anchors, generating controls, refs, actions, or authority
+    - Submit again, use another conversation/profile/origin, inspect raw UI, or call an API
+  constraints:
+    - The exact heading, body root, origin, structural stops, global refs, stability, sensitivity, and size gates remain mandatory
+    - Only one exact nested action group total is allowed, either before or after content
+    - Pre-content success requires later valid non-whitespace response content within the same body
+    - The group subtree contributes zero bytes and cannot affect anchors, stability, generating state, or stop classification
+    - Existing semantic reconstruction outside that subtree remains byte-stable
+    - Recovery remains unchanged-state, proposal-first/event-last, resubmitted false, and navigate/snapshot/wait/close-only
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - The live detail is exactly ADVANCED_RESPONSE_ACTION_PRE_CONTENT after all syntax-first checks; no other action defect is authorized
+    - A same/shallow pre-content group cannot expand the bounded assistant region
+    - No action group or descendant may create a browser click/type/Send, submission intent, or selector target
+    - Captured output remains unapproved advisory material and cannot approve a handoff or resolve an Open Decision
+    - Local fixtures, live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - One exact nested pre-content group followed by valid sibling response content succeeds and emits identical content bytes to the no-group form
+    - Group descendants including response-like/generating-like labels and payloads are fully opaque
+    - Pre-content without later content, duplicate pre/post groups, post-group content, same/shallow group, malformed/ref/attribute/near-label forms, and boundary escape refuse
+    - Existing exact post-content group, no-group responses, semantic blocks, headings with complete non-ref attributes, diagnostics, legacy, and manual import remain green
+    - Exact live recovery creates one hash-verified PRO_ADVICE_V1 or PRO_REVIEW_TEXT_V1 proposal with AUTOMATED_BOUND_CONVERSATION_RECOVERY and resubmitted false
+  required_test_evidence:
+    - Nested pre-content success with direct/generic/semantic content and exact byte comparison
+    - Opaque descendant response/generating/ref/payload injection matrices
+    - No-content, duplicate, pre-plus-post, content-after-post, same/shallow, malformed/ref-bearing/attributed, and boundary-escape refusals
+    - Stability normalization and zero-action terminal-recovery traces
+    - Existing current-response, bound-recovery, action-diagnostic, manual-import, resume, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - Sanitized live recovery and read-only verified status kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

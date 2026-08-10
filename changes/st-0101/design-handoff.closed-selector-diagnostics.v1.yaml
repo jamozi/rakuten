@@ -1,0 +1,91 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Closed sanitized pre-submission diagnostic reason codes for the current advanced Pro menu
+    - Exact preservation of those codes in hash-bound fallback events and read-only status
+    - Focused classifier, state, status, current-UI, documentation, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.semantic-summary-evidence.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Replace only the generic SELECTOR_AMBIGUITY outcome inside the already-
+    proven current advanced pre-submission path with one closed diagnostic code
+    identifying which approved boundary failed. The allowed codes are
+    ADVANCED_PRO_BUTTON_INVALID, ADVANCED_EXPAND_CONTROL_INVALID,
+    ADVANCED_MENU_STATE_MIXED, ADVANCED_MODEL_EVIDENCE_MISSING,
+    ADVANCED_MODEL_EVIDENCE_CONFLICT, ADVANCED_EFFORT_EVIDENCE_MISSING,
+    ADVANCED_EFFORT_EVIDENCE_CONFLICT, and ADVANCED_MENU_UNRECOGNIZED. Preserve
+    only one of those codes, the existing closed phase, and
+    submission_attempted false in the existing hash-bound fallback record and
+    status output.
+
+    When the initial exact advanced button and composer proved the advanced
+    path, classify every stop-free exact-origin post-click snapshot through the
+    advanced menu validator rather than trying a legacy selector first. Map
+    missing, malformed, disabled, duplicate, multiple-ref, or otherwise
+    unresolved clicked controls to the applicable closed control code. Map a
+    compact-plus-summary mixture to MENU_STATE_MIXED. Distinguish an empty
+    semantic set from a non-target or multi-value set for model and effort.
+    Use MENU_UNRECOGNIZED only when no approved compact or semantic marker is
+    present. Do not expose counts, roles, labels, refs, snapshot fragments,
+    hashes, menu text, or arbitrary values.
+  rationale: >-
+    Three fresh authenticated exact-origin live runs have stopped before input
+    in phase pro_menu. The first strict correction and the later semantic-
+    evidence correction were both fully locally verified but the live result
+    remained the same generic SELECTOR_AMBIGUITY. Continuing to relax guessed
+    boundaries would be less safe and less effective than identifying the one
+    failed approved boundary through a closed non-content-bearing code. The
+    owner explicitly approved every necessary change to avoid recoverable
+    refusals and obtain an answer. The diagnostic codes reveal less than the
+    already documented contract and permit the next fix to remain narrow.
+  rejected_alternatives:
+    - Persist, print, return, or manually inspect a raw or redacted accessibility snapshot
+    - Return arbitrary menu labels, roles, refs, counts, fragments, screenshots, hashes, account data, sidebar data, or profile data
+    - Guess another selector relaxation from the generic failure alone
+    - Retry any prior unsent run or resubmit a bound run
+    - Add a screenshot, OCR, DOM-evaluation, CDP, extension, alternate-origin, alternate-profile, or API diagnostic path
+    - Change any selector, model/effort evidence, structural stop, origin, authentication, sensitivity, or submission decision while adding diagnostics
+  constraints:
+    - Diagnostic codes are a closed allowlist and carry no dynamic suffix, count, label, role, ref, value, hash, or snapshot material
+    - The diagnostic is active only after an exact advanced landing has been proven and its approved picker clicked once
+    - Exact origin and structural stops run before diagnostic classification on every observation
+    - Transition settling remains one immediate plus at most twelve five-second wait/snapshot observations with no repeated action
+    - Every current selector and semantic evidence acceptance/rejection rule remains unchanged
+    - Existing generic SELECTOR_AMBIGUITY remains for legacy and all unclassified boundaries
+    - State/event hash-chain, output schema, request secrecy, runtime integrity, response capture, manual import, authority, and no-resubmission behavior remain unchanged except for the closed reason value
+    - No raw browser material is persisted, printed, returned, hashed into diagnostic output, or exposed to tests
+    - The owner's approval does not authorize CAPTCHA bypass, credential inspection, account/profile/origin substitution, publication, release, or production action
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to avoid refusal and obtain a Pro answer in conversation on 2026-08-10
+    - Closed diagnostics never authorize a click, type, intent, Send, retry, resume, or selector fallback
+    - Current model, maximum effort, clicked controls, exact origin, and structural stops remain fail closed
+    - A diagnostic live run remains unsent and is not response or proposal evidence
+    - Captured output after a later successful submission remains UNAPPROVED_PROPOSAL or UNAPPROVED_REVIEW pending reconciliation
+    - Local fixtures, diagnostic live smoke, answer capture, formal TST-001, hosted CI, staging, production, publication, and release evidence remain separate
+  acceptance_criteria:
+    - Each current advanced control, menu-state, model-evidence, and effort-evidence defect maps to exactly one documented closed code and correct phase
+    - Delayed valid transitions still succeed without emitting or persisting diagnostics
+    - Structural stops and origin mismatch retain their existing higher-priority codes
+    - Legacy selector failures retain generic SELECTOR_AMBIGUITY
+    - Status and hash-chain verification accept only the closed codes and reject unknown or dynamically suffixed variants
+    - Tests prove no prompt, response, snapshot, label, role, ref, count, value, hash, sidebar, account, profile, or unrelated URL enters diagnostic output or run artifacts
+    - One fresh sanitized live run returns record_verified true and either succeeds or identifies the exact remaining approved boundary through one closed diagnostic code
+  required_test_evidence:
+    - Complete current advanced diagnostic-code matrix with immediate, delayed, final-observation, stop, origin, transport, and exhaustion cases
+    - Legacy non-regression and no-action/no-type/no-intent/no-Send assertions
+    - State, event, status, malformed-code, sensitivity, and raw-browser-material non-persistence regressions
+    - Complete isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, canonical import verification, workspace drift detection, and git diff check
+    - Sanitized live doctor and read-only hash-bound status evidence kept separate from answer capture and formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

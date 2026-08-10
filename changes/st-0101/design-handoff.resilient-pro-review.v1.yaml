@@ -1,0 +1,170 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Owner-private deterministic ChatGPT Pro MCP runtime installation and verification
+    - Phase- and region-scoped ChatGPT stop-state classification
+    - Benign current advanced model and effort menu ordering tolerance
+    - Stable structured, fenced-JSON, Markdown, and plain-text Pro response capture
+    - Hash-bound manual import of an already-displayed response without resubmission
+    - scripts/chatgpt_pro_orchestrator.py and scripts/chatgpt_pro_mcp.sh
+    - Focused deterministic tests under tests/st0101
+    - Make targets, ST-0101 operational documentation, repository instructions, and the raos-ask-pro Skill
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.current-pro-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-body.v1.yaml
+    - changes/st-0101/design-handoff.current-response-actions-correction.v1.yaml
+    - changes/st-0101/design-handoff.response-wait-until-complete.v1.yaml
+    - changes/st-0101/design-handoff.answer-now-generating.v1.yaml
+  decision: >-
+    Keep the reviewed @playwright/mcp version at exactly 0.0.78, but stop
+    executing it from the shared mutable npx cache. Add an explicit online
+    pro-runtime-install maintenance command that uses the fixed Node 24.18.1
+    and npm 11.16.0 toolchain plus a committed exact package lock to build an
+    owner-private runtime under .secrets/chatgpt-pro-mcp-runtime without
+    lifecycle scripts. Doctor, ask, and resume remain offline with respect to
+    package installation and verify the private runtime before starting it.
+    Report missing or drifted runtime state distinctly rather than collapsing
+    it into MCP_DISCONNECTED or directing the user to browser setup.
+
+    Replace generic whole-snapshot stop-phrase matching with phase- and
+    region-scoped structural classification. Login, reauthentication, account
+    selection, page-level rate limiting, and CAPTCHA remain fail closed only
+    when represented by their approved authentication controls, page-level
+    alert/status/dialog structure, or the existing compound Cloudflare
+    challenge. Text inside the bounded assistant response, user-message
+    subtree, sidebar, citation, or other untrusted content is never by itself a
+    stop state. Preserve exact-origin validation before classification.
+
+    For the strict current advanced profile, continue to require one unique
+    exact GPT-5.6 Sol target and one unique exact Pro effort target with the
+    approved checked states. Permit ordering changes within the complete known
+    model and effort sets and ignore unrelated action chrome outside those
+    option sets. Missing, duplicate, unknown effort, or incorrectly checked
+    options remain unavailable before submission. Do not add another model,
+    browser, origin, or effort fallback.
+
+    Bind response extraction to the existing unique ChatGPT said: heading and
+    bounded response-body subtree. Reconstruct semantic content blocks while
+    excluding links, citations, buttons, response actions, and other opaque UI
+    descendants. Concatenate fragments within one semantic block without an
+    invented separator and join distinct paragraph, list, quote, heading, or
+    code blocks with deterministic newlines. Continue the existing stability,
+    sensitivity, size, origin, ref-ambiguity, persistence, and hash-chain
+    controls. Validate an exact PRO_ADVICE_V1 JSON object as before. Also
+    accept one json code fence with only surrounding whitespace when its
+    decoded body is an exact valid PRO_ADVICE_V1. Capture any other stable,
+    non-empty, non-sensitive Markdown or plain-text body as
+    PRO_REVIEW_TEXT_V1 with status REVIEW_CAPTURED. Retain the raw captured
+    response hash and proposal body; use canonical JSON only for the structured
+    response fingerprint. A text review may be reconciled automatically with
+    canonical and local evidence for ordinary reversible work, but gated work
+    always returns HUMAN_APPROVAL_REQUIRED and the text can never become an
+    approved design handoff by naming one.
+
+    Add pro-import-response for the exceptional case where one already-bound,
+    once-submitted live run has a displayed answer that the automatic parser
+    cannot capture. It accepts only an owner-mode-0600 regular response file
+    beneath .secrets/chatgpt-pro-responses, performs the same size and
+    sensitivity checks, appends a hash-bound MANUAL_RESPONSE_IMPORTED event,
+    and records provenance HUMAN_COPIED_DISPLAYED_RESPONSE. It may operate on
+    a bound WAITING run or a post-submission response-only terminal refusal,
+    including the predecessor conservative STOP_RATE_LIMIT residual, only when
+    no proposal exists. It never starts a browser, types, clicks, resumes, or
+    resubmits. It rejects pre-submission runs, unbound conversations,
+    SUBMISSION_AMBIGUOUS, authentication/CAPTCHA/account failures, repeated
+    import, or any existing proposal.
+  rationale: >-
+    The live doctor on 2026-08-09 returned MCP_DISCONNECTED before navigation.
+    Local read-only inspection found that the wrapper still required the
+    reviewed @playwright/mcp 0.0.78 hashes while its hard-coded shared npx cache
+    currently contained package metadata and a lock for 0.0.79. The shared
+    cache therefore makes the approved runtime nondeterministic and hides an
+    integrity refusal as a transport failure. Separately, the prior authorized
+    live run demonstrated that whole-snapshot matching can classify ordinary
+    rate limit text inside a candidate answer as STOP_RATE_LIMIT. Exact JSON
+    capture has worked in one prior live run, but the current response DOM and
+    generated answer formatting are not stable enough to require that sole
+    wire shape for advisory material. A private pinned runtime, structural stop
+    states, bounded text extraction, and provenance-marked manual import raise
+    answer acquisition without relaxing identity, origin, submission,
+    sensitive-data, approval, or authority boundaries.
+  rejected_alternatives:
+    - Update or fall forward to @playwright/mcp 0.0.79 or latest without a separate review
+    - Keep executing from any shared ~/.npm/_npx cache directory
+    - Automatically hydrate, repair, or access the network from doctor, ask, or resume
+    - Bypass CAPTCHA, login, reauthentication, account selection, or a structural page-level rate limit
+    - Treat every occurrence of a stop phrase anywhere on the page as trusted UI state
+    - Accept a different model, non-Pro effort, unknown higher effort, or ambiguous checked state
+    - Extract the entire page, sidebar, user message, citations, links, or action controls as response data
+    - Treat Markdown or plain text containing DESIGN_HANDOFF_V1 as approved design authority
+    - Import a response from an arbitrary path, ambiguous submission, unbound run, or already-finalized proposal
+    - Automatically resend after any submission ambiguity, parser refusal, transport loss, or manual import failure
+  constraints:
+    - Runtime installation is an explicit online maintenance operation; live doctor, ask, resume, status, and import do not install or update packages
+    - The private runtime and response-import roots are owner directories below the physical repository .secrets root and reject symlinks and unsafe ancestors
+    - The runtime uses exact Node 24.18.1, npm 11.16.0, @playwright/mcp 0.0.78, the reviewed fixed browser binaries, and the existing six-tool allowlist
+    - The committed package lock is generated by exact npm 11.16.0 and is never replaced by an ambient npx lock
+    - Exact https://chatgpt.com origin validation precedes every live page classification and response observation
+    - Stop-state evidence must be structurally owned by an approved page-level or authentication region; untrusted content regions cannot set a stop state by text alone
+    - The known model and effort option sets remain complete; only their ordering and unrelated surrounding chrome may vary
+    - GPT-5.6 Sol and Pro remain exact, unique, and correctly checked; no unknown effort option is accepted
+    - One response heading and one bounded response-body root remain required once a response-like marker exists
+    - Only content text beneath approved semantic response containers contributes bytes; opaque UI descendants contribute none
+    - Exact and fenced PRO_ADVICE_V1 retain existing schema, authority, convergence, and follow-up behavior
+    - PRO_REVIEW_TEXT_V1 is always unapproved advisory material and uses REVIEW_CAPTURED rather than a convergence claim
+    - Ordinary text reviews may inform only reversible work after canonical and local-evidence reconciliation
+    - Gated design, policy, safety, security, migration, irreversible, or external-cost work always requires separate explicit human approval
+    - Manual import retains lower-assurance human-copy provenance and is never reported as live automatic capture or formal TST evidence
+    - Existing prompt, response, snapshot, accessibility ref, URL, digest, credential, cookie, storage, and profile non-disclosure controls remain unchanged
+    - Existing WAITING and SUBMISSION_AMBIGUOUS lifecycle distinctions and no-resubmission rules remain unchanged
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved this complete bounded design in conversation on 2026-08-09
+    - The approval selected response-format relaxation, automatic ordinary reconciliation, and the private-file import fallback
+    - The owner-private runtime does not inspect or copy a personal, Windows, default, or unrelated browser profile
+    - Runtime installation never receives ChatGPT credentials, prompt text, response text, cookies, storage, or browser session data
+    - Manual import is an explicit human action against one identified run and cannot create submission evidence
+    - Every captured artifact remains UNAPPROVED_PROPOSAL pending canonical and human reconciliation as required by its importance class
+    - Live smoke remains separate from formal TST-001, hosted CI, staging, production, publication, and release evidence
+  acceptance_criteria:
+    - A shared npx cache containing 0.0.79 cannot affect the installed or executed private 0.0.78 runtime
+    - Doctor distinguishes missing, drifted, launch-failed, disconnected, authentication, stop, and ready outcomes with an actionable next step
+    - Ordinary rate limit text in a user message, assistant response, sidebar, or citation does not create STOP_RATE_LIMIT
+    - A structural page-level rate-limit alert still stops before capture or further browser action
+    - Known model and effort options may reorder while GPT-5.6 Sol and Pro remain exactly and uniquely verified
+    - Unknown effort, missing target, duplicate target, wrong checked state, origin drift, or send ambiguity remains fail closed
+    - Exact PRO_ADVICE_V1 and a sole json-fenced PRO_ADVICE_V1 use existing structured validation and convergence behavior
+    - Stable Markdown and plain text persist as hash-bound PRO_REVIEW_TEXT_V1 with REVIEW_CAPTURED and no authority escalation
+    - Ordinary text review returns RECONCILE_CANONICAL_LOCAL while gated text review returns HUMAN_APPROVAL_REQUIRED
+    - The manual-import command accepts one valid bound post-submission response file, records its lower-assurance provenance, and makes zero browser calls
+    - Manual import rejects ambiguous, unbound, pre-submission, authentication-stop, duplicate, existing-proposal, unsafe-path, unsafe-mode, sensitive, and oversized cases
+    - Existing exact-origin, authentication, CAPTCHA, account, sensitivity, stability, interruption, transport, no-resubmission, legacy-profile, and hash-chain regressions remain green
+    - One sanitized ordinary live smoke captures either PRO_ADVICE_V1 or PRO_REVIEW_TEXT_V1 with record_verified true and exactly one submission
+  required_test_evidence:
+    - Disposable private-runtime install success, missing, drift, tamper, symlink, mode, interrupted-stage, and shared-cache independence tests
+    - Doctor reason-code and next-action tests for runtime and transport failures
+    - Phase- and region-scoped stop-state positive and negative matrices, including rate limit text in every untrusted content region
+    - Reordered known model and effort positive fixtures and target/checked/unknown-effort negative fixtures
+    - Exact JSON, sole fenced JSON, multi-paragraph, list, quote, heading, code, citation-interleaved, Markdown, and plain-text response fixtures
+    - Empty, sensitive, oversized, multiple-fence, prose-wrapped-JSON, duplicate-anchor, boundary-escape, and opaque-descendant refusal fixtures
+    - Structured canonical fingerprint and raw response/proposal hash assertions
+    - REVIEW_CAPTURED ordinary and gated state, event, authority, and next-action assertions
+    - Manual-import path, mode, state, reason, provenance, hash-chain, idempotency, no-browser, and no-resubmission matrices
+    - Complete isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, canonical import verification, and workspace drift detection
+    - Sanitized live runtime-install, doctor READY, one-submission answer capture, and read-only status evidence kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-09
+    statement: >-
+      承認。限定緩和に加えて回答形式を緩和し、Markdown／プレーンテキストは
+      通常作業でCanonical・ローカル証拠と自動照合して利用する。自動取得失敗時は
+      同じrunに結び付けたmode 0600の私有ファイル取込みを追加する。exact origin、
+      専用プロファイル、Pro／最大Effort、機密、CAPTCHA非回避、二重送信防止、
+      gated判断の人間承認境界は維持する。

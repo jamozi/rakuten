@@ -1,0 +1,99 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Recovery-only closed diagnostics for exact ref-free fallback entry suppression
+    - Deterministic outside-whitespace-block versus outside-presentation-wrapper classification
+    - Focused recovery/non-persistence tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-ref-free-content.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-ref-free-fallback-diagnostics.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Preserve every current fallback entry and acceptance/refusal rule. Only when
+    exact eligible terminal recovery has the full six-field chain ending in
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING, explicitly
+    enables the approved fallback capability, but suppresses the pure extractor
+    before it is attempted may the CLI add one optional non-persistent
+    diagnostic_fallback_entry_code from this exact set:
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR or
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER.
+
+    The existing entry has exactly two suppressors after the six-field chain is
+    proven. If the ordinary pre-group/body scan has created one or more scalar
+    blocks while `content_contributed` remains false, report
+    OUTSIDE_WHITESPACE_SCALAR; every such decoded block is necessarily empty or
+    whitespace-only because any non-whitespace fragment would prevent the
+    PRE_CONTENT chain. This code has priority when both suppressors are present.
+    A whitespace scalar remains eligible for that code when it is a sibling of
+    the selected group beneath an enclosing generic/semantic wrapper: the
+    enclosing exclusion applies to the wrapper record for the outside-wrapper
+    predicate, not to ordinary scalar blocks outside the action subtree.
+    Otherwise, if a trusted generic/semantic presentation wrapper exists inside
+    the proven body but outside both the selected action subtree and its
+    enclosing presentation chain, report OUTSIDE_PRESENTATION_WRAPPER. Do not
+    expose the line, role, position, count, label, ref, attributes, or payload.
+
+    If neither suppressor exists, attempt the fallback exactly as before; a
+    failed extractor may emit only the separately approved
+    diagnostic_fallback_code, while success emits neither diagnostic. Opaque,
+    untrusted, action, and enclosing presentation regions cannot create the
+    wrapper entry code. Scalar descendants of an enclosing wrapper still report
+    OUTSIDE_WHITESPACE_SCALAR when they created ordinary pre-extractor blocks.
+    The value changes no response bytes, entry decision, stability,
+    opacity, ref, stop, marker, boundary, sensitivity, proposal, or recovery
+    behavior. Missing, unknown, padded, suffixed, case-varied, or
+    wrong-conjunction values are omitted while all existing valid fields remain.
+    It is never persisted or projected elsewhere.
+  rationale: >-
+    After fallback failure diagnostics and opaque-ref conformance passed all
+    gates, sanitized live recovery of run
+    20260809T185354Z-46c4528b4413 still returned the exact six-field chain with
+    neither successful capture nor a fallback-failure code. That proves the
+    extractor was suppressed by one of its two closed entry predicates. One
+    fixed entry code distinguishes them without inspecting raw UI or relaxing
+    whitespace/presentation handling speculatively.
+  rejected_alternatives:
+    - Remove both entry predicates or treat all outside material as irrelevant
+    - Display, persist, log, screenshot, or inspect raw snapshot, subtree, line, role, label, ref, or payload
+    - Submit again, use another conversation/profile/origin, call an API, or use manual browser extraction
+    - Add a dynamic exception message, browser evaluation, OCR, CDP, or storage access
+    - Change fallback acceptance in this diagnostic continuation
+  constraints:
+    - The two entry literals and scalar-before-wrapper precedence are exact source constants
+    - Entry diagnostic requires exact terminal-recovery six-field REF_MISSING chain, enabled capability, and no extractor attempt
+    - Classification uses only existing in-memory block presence and outside-wrapper predicate and emits no browser-derived data
+    - No accepted bytes, entry, stability, opacity, ref, stop, marker, action, state, event, proposal, or authority rule changes
+    - Recovery remains unchanged-state on failure, navigate/snapshot/wait/close-only, and no-resubmission
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - The entry diagnostic grants no authority and does not authorize a later tolerance by itself
+    - Normal ask, ordinary WAITING, legacy, manual import, status, state, events, proposals, unrelated terminal resume, committed recovery, fallback success, and attempted-fallback failure never expose or persist it
+    - Opaque/action/untrusted/enclosing material remains non-byte, non-ref, non-stop, non-marker, non-selector, and non-actionable
+    - Local fixtures, sanitized live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Each exact entry literal has deterministic direct and terminal-recovery fixtures
+    - The live run returns the unchanged six fields plus one entry code with no resubmission
+    - Valid fallback success and attempted fallback failure are unchanged and emit no entry diagnostic
+    - Invalid/missing entry code preserves all six existing valid diagnostic fields
+    - Failed diagnosis leaves terminal state, events, proposal absence, progress-tail retry, and manual-copy fallback intact
+  required_test_evidence:
+    - Empty and whitespace-only direct/semantic scalar block matrices and non-whitespace control that cannot reach the chain
+    - Outside generic/semantic wrapper matrices; selected-group enclosing wrapper-record exclusion with sibling whitespace-scalar inclusion; opaque, untrusted, and action-region exclusions
+    - Both-suppressor scalar priority, owned body boundary, exact capability/conjunction, and no-extractor-invocation probes
+    - CLI allowlist, zero-action, unchanged-state/event/proposal, retry, and all non-exposure paths
+    - Existing current-response, response-wait, bound-recovery, fallback diagnostics/success, manual-import, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - One sanitized live entry diagnostic kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

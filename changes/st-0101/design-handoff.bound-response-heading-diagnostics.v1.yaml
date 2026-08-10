@@ -1,0 +1,88 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - One recovery-only closed detail code for ADVANCED_RESPONSE_HEADING_INVALID
+    - Exact heading role, label, ref, attribute, and line-shape classification without raw UI exposure
+    - Focused recovery/CLI/non-persistence tests plus affected documentation, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-closed-diagnostics.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Preserve every current response-parser acceptance and refusal rule. When,
+    and only when, an exact eligible terminal response recovery emits generic
+    reason RESPONSE_SELECTOR_AMBIGUITY with diagnostic_code
+    ADVANCED_RESPONSE_HEADING_INVALID, optionally add one fixed
+    diagnostic_detail_code that classifies the single trusted heading
+    candidate as role invalid, label-case invalid, label-punctuation invalid,
+    label-edge-whitespace invalid, other label invalid, ref missing, ref
+    malformed-or-multiple, otherwise-valid extra accessibility attributes, or
+    residual line-shape invalid.
+
+    Select the detail deterministically with a documented closed precedence:
+    raw role, exact label family, structural ref cardinality/validity, extra
+    attribute shape, then residual syntax. A true competing or multiple marker
+    remains ADVANCED_RESPONSE_MARKER_CONFLICT and never receives a heading
+    detail. Never include the observed role, label, punctuation, whitespace,
+    attribute, ref, count, line, snapshot, or exception text.
+
+    The detail is non-persistent and recovery-only exactly like its parent
+    diagnostic. If the parent diagnostic is absent, differs, or the detail is
+    missing/invalid, preserve the existing generic reason and parent diagnostic
+    and omit diagnostic_detail_code. Do not change state, events, proposals,
+    status, response bytes, parser acceptance, manual import, normal ask,
+    ordinary WAITING resume, or legacy behavior.
+  rationale: >-
+    A sanitized no-resubmission recovery of live run
+    20260809T185354Z-46c4528b4413 returned
+    ADVANCED_RESPONSE_HEADING_INVALID while the source record remained
+    verified and unchanged. That category proves the existing answer is
+    present but does not distinguish the safe minimal correction among role,
+    label, ref, or accessibility-attribute drift. A second fixed detail avoids
+    raw snapshot inspection and prevents a broad guessed relaxation.
+  rejected_alternatives:
+    - Accept every near or malformed heading
+    - Submit again, use another conversation, or ask through an API
+    - Display or persist the raw heading line, role, label, ref, attributes, count, or snapshot
+    - Add a general debug or snapshot-dump mode
+    - Store the detail in state, events, status, proposals, or manual-import evidence
+    - Change body parsing, response bytes, stability, stop detection, or recovery tools
+  constraints:
+    - The detail enum and precedence are exact source literals with no user- or browser-derived substrings
+    - A detail appears only beside the exact generic reason and exact parent heading diagnostic during eligible terminal recovery
+    - Invalid, padded, suffixed, or case-varied details are omitted without changing either existing code
+    - No accepted response shape changes in this continuation
+    - Recovery remains navigate/snapshot/wait/close-only with no click, type, Send, intent, or resubmission
+    - The original terminal state, event chain, bound URL, submission proof, and proposal absence remain unchanged
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - Only one trusted candidate may receive a detail; competing identities stay marker conflict
+    - The detail cannot contain or encode raw UI material, cardinalities, refs, hashes, or response data
+    - The detail grants no authority and authorizes no parser relaxation by itself
+    - A later relaxation requires a separate explicit handoff limited to the observed detail
+    - Local fixtures, sanitized diagnosis, live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Each fixed heading detail has an adversarial fixture and deterministic precedence coverage
+    - The same live recovery returns the existing generic reason, parent heading diagnostic, and one fixed detail without resubmission
+    - Parser acceptance and all captured response bytes are unchanged
+    - Normal ask, WAITING, manual import, status, events, state, proposals, legacy parsing, and unrelated terminal resume never expose or persist the detail
+    - Failed diagnosis leaves the run eligible for the same response-only recovery and human-copy fallback
+  required_test_evidence:
+    - Exact role, case, punctuation, edge-whitespace, other-label, ref-missing, malformed/multiple-ref, extra-attribute, and residual-shape matrices
+    - Competing-marker priority and invalid/missing detail omission tests
+    - Recovery CLI, zero-action, unchanged-state/event/proposal, retry, and non-exposure path tests
+    - Existing current-response, closed-diagnostic, bound-recovery, manual-import, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - One sanitized live recovery detail kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

@@ -1,0 +1,121 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Recovery-only closed diagnostics for a failed exact ref-free embedded-content fallback
+    - Deterministic wrapper, scalar, unsupported, ref, satisfaction, and empty-content classification
+    - Exact conformance correction excluding complete approved opaque/untrusted/action subtrees from the fallback outside-ref collision set
+    - Focused recovery/non-persistence tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-container-shape-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-ref-free-content.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Preserve every current acceptance/refusal rule. Only when exact eligible
+    terminal recovery has the full six-field chain ending in
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING, enables the
+    approved ref-free embedded-content fallback, and that fallback still fails
+    validation may the CLI add one optional non-persistent
+    diagnostic_fallback_code from this exact set:
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_INVALID,
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_SCALAR_INVALID,
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_MATERIAL_UNSUPPORTED,
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_REF_COLLISION,
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_UNSATISFIED_WITH_CONTENT,
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_UNSATISFIED_EMPTY, or
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_CONTENT_EMPTY.
+
+    First correct one implementation drift against the already approved
+    ref-free-content handoff: when building the fallback's trusted outside-ref
+    collision set, exclude complete approved opaque button/link/citation/URL/
+    unknown-chrome subtrees, untrusted regions, and every action subtree. Those
+    regions are contractually ref-inert and cannot veto fallback acceptance or
+    create REF_COLLISION. Continue to include the proven heading/body refs and
+    every trusted non-action presentation/structural ref outside the selected
+    group; their duplicate or collision still refuses. This aligns current
+    source with the predecessor approved contract and is not diagnostic evidence.
+
+    Instrument the existing pure selected-group extractor without reading or
+    emitting raw UI material. Among explicit defects encountered during the
+    bounded physical scan, the first physical defect wins: a generic/semantic
+    presentation record that fails the complete ref-safe wrapper grammar is
+    WRAPPER_INVALID; a text/statictext-like line that the existing fallback
+    already selects as a scalar and that fails exact lower-case payload shape,
+    JSON-string decoding, UTF-8 encoding, or approved
+    presentation context is SCALAR_INVALID; any other nonblank non-opaque
+    response material is MATERIAL_UNSUPPORTED. After a clean scan, any duplicate
+    admitted ref or collision with trusted outside refs wins REF_COLLISION.
+    Next, the first admitted wrapper without a valid contributing descendant is
+    WRAPPER_UNSATISFIED_WITH_CONTENT when another valid non-whitespace fragment
+    exists in the selected group, otherwise WRAPPER_UNSATISFIED_EMPTY. If all
+    wrappers are satisfied but no reconstructed non-whitespace response remains,
+    report CONTENT_EMPTY.
+
+    Preserve the fallback's existing unknown-container opacity before scalar
+    classification. In particular, complete bare `Text:` and `StaticText:`
+    structural-container forms remain opaque chrome alongside an otherwise
+    valid fallback and emit no diagnostic. Do not reorder them into scalar
+    refusal merely to make SCALAR_INVALID reachable; malformed/residual
+    text-like forms that the fallback already refuses remain scalar-invalid.
+
+    Approved opaque controls, URL metadata, nested action chrome, and untrusted
+    subtrees remain ignored and cannot create, veto, or supply the diagnostic.
+    The value changes no response bytes, stability material, opacity, stop,
+    generating marker, ref, boundary, sensitivity, proposal, or recovery
+    behavior. It is emitted only with the exact six existing fields and only on
+    fallback failure. Missing, unknown, padded, suffixed, case-varied, or
+    wrong-conjunction values are omitted while all existing valid fields remain.
+    It is never persisted or projected elsewhere.
+  rationale: >-
+    After the exact ref-free fallback passed comprehensive local and independent
+    audit gates, sanitized live recovery of run
+    20260809T185354Z-46c4528b4413 still retained the exact six-field refusal.
+    Therefore the selected action subtree contains an additional strict
+    validation difference beyond the already proven ref-free wrapper. One
+    closed source-derived failure code identifies that remaining difference
+    without inspecting raw UI or broadening parser acceptance speculatively.
+  rejected_alternatives:
+    - Accept every fallback failure, ignore wrapper satisfaction, or drop ref collision checks
+    - Display, persist, log, screenshot, or inspect raw snapshot, subtree, label, ref, payload, or reconstructed bytes
+    - Submit again, use another conversation/profile/origin, call an API, or use manual browser extraction
+    - Add a dynamic exception message, browser evaluation, OCR, CDP, or storage access
+    - Change fallback acceptance in this diagnostic continuation
+  constraints:
+    - The seven fallback literals and precedence are exact source constants
+    - Diagnostic entry requires the exact six-field REF_MISSING chain and an attempted recovery-only fallback
+    - The classifier reuses only the already bounded selected-group validation and emits no browser-derived substring, count, label, ref, or payload
+    - Apart from the exact approved opaque-ref conformance correction, no accepted bytes, stability, opacity, ref, stop, marker, action, state, event, proposal, or authority rule changes
+    - Recovery remains unchanged-state on failure, navigate/snapshot/wait/close-only, and no-resubmission
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - The diagnostic grants no authority and does not authorize a later tolerance by itself
+    - Normal ask, ordinary WAITING, legacy, manual import, status, state, events, proposals, unrelated terminal resume, and committed recovery never expose or persist it
+    - Opaque/action/untrusted material remains non-byte, non-ref, non-stop, non-marker, non-selector, and non-actionable
+    - Local fixtures, sanitized live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Each exact fallback literal has deterministic direct and terminal-recovery fixtures
+    - The live run returns the unchanged six fields plus one fallback code with no resubmission
+    - Valid fallback success is unchanged and emits no diagnostic
+    - Invalid/missing fallback code preserves all six existing valid diagnostic fields
+    - Failed diagnosis leaves terminal state, events, proposal absence, progress-tail retry, and manual-copy fallback intact
+  required_test_evidence:
+    - Wrapper-invalid, reachable scalar-invalid, unsupported-material, trusted duplicate/outside-ref collision, unsatisfied-with-content, unsatisfied-empty, whitespace-content-empty, and bare wrong-case scalar-container opacity-preservation matrices
+    - Complete outside button/link/citation/URL/unknown-chrome, untrusted, and action subtree ref collisions are inert success controls; heading/body and trusted presentation collisions still refuse
+    - First-physical explicit precedence, ref-over-satisfaction priority, satisfaction/content split, opaque/untrusted exclusion, and owned-boundary probes
+    - Valid embedded success and stability remain byte-identical and never attach the diagnostic
+    - CLI seven-field conjunction/allowlist, zero-action, unchanged-state/event/proposal, retry, and all non-exposure paths
+    - Existing current-response, response-wait, bound-recovery, fallback success, manual-import, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - One sanitized live fallback diagnostic kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

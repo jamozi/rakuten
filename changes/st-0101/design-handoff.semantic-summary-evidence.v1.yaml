@@ -1,0 +1,96 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Semantic evidence resolution for the already-visible current ChatGPT Pro model and effort summaries
+    - Removal of redundant actionable-role, accessibility-ref, and named-menu-container requirements from non-clicked summary evidence
+    - Focused current-UI regressions, affected operational documentation, append-only worklog, repository instructions, and raos-ask-pro Skill wording
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.summary-verified-pro-answer.v1.yaml
+    - changes/st-0101/design-handoff.role-scoped-summary-correction.v1.yaml
+    - changes/st-0101/design-handoff.advanced-button-priority.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Keep every control that is actually clicked strict: the initial and closing
+    picker is one exact enabled ref-bearing raw button Pro, and a compact-view
+    expansion uses one exact enabled ref-bearing raw menuitem Show advanced
+    options. Treat the expanded model and effort summaries as non-clicked
+    semantic evidence rather than selectors. After excluding navigation,
+    sidebar, user, response, citation, and other untrusted regions, require the
+    exact case-sensitive values Model GPT-5.6 Sol and Effort Pro to be visibly
+    present in the same settled snapshot. Normalize only horizontal whitespace
+    within those two evidence labels. Their presentational role, absence of an
+    accessibility ref, duplicate descendants carrying the same semantic value,
+    and the role, label, ref, or absence of a surrounding menu container are
+    inert because none is clicked.
+
+    Reject a missing target summary, any trusted competing Model or Effort
+    summary value, a malformed or ambiguous clicked control, a ref collision
+    among clicked controls, origin drift, or any structural stop. The exact
+    target pair is the visible proof of GPT-5.6 Sol and maximum Pro effort. Do
+    not open or click child model or effort options. Preserve bounded
+    observation-only settling, exact close and composer validation, one
+    submit-false type, one durable intent, one Send, and no resubmission.
+  rationale: >-
+    Live run 20260809T155509Z-a97318030cd9 proved that the current expanded menu
+    exposed the exact target model and effort summaries before the obsolete
+    child-inventory check failed. After that redundant check was removed, live
+    runs 20260809T165106Z-cbe89bc3d764 and 20260809T172835Z-e76d8dcfe68b both
+    stopped unsent in phase pro_menu because the replacement required
+    action-selector identity from summary display nodes and from a named menu
+    container. Those properties are not needed to verify the selected values
+    and are unstable accessibility chrome. The owner explicitly approved all
+    work necessary to avoid these recoverable refusals and obtain an answer.
+    Keeping exact semantics and competing-value rejection preserves model and
+    effort certainty while removing requirements that cannot authorize any
+    action.
+  rejected_alternatives:
+    - Accept only the top-level Pro button without separately verifying GPT-5.6 Sol and Pro effort
+    - Click child model or effort options to reconstruct their inventories
+    - Require every summary display node or menu container to expose a unique actionable ref
+    - Persist or print raw snapshots, arbitrary labels, refs, account data, profile data, prompts, or responses for diagnosis
+    - Use screenshots, OCR, DOM scripts, another origin, another profile, another account, or the Responses API
+    - Retry either prior unsent run or repeat any click, type, intent, or Send during transition settling
+  constraints:
+    - Exact origin and structural stop classification run before every selector or evidence decision
+    - Initial and closing button Pro plus the approved composer remain exact, unique, enabled, ref-bearing, and mutually distinct
+    - Compact-view expansion remains one exact unique enabled ref-bearing menuitem Show advanced options click
+    - Evidence normalization is limited to horizontal whitespace; case, wording, model value, and effort value remain exact
+    - Same-value presentational duplicates are inert, but any trusted competing Model or Effort summary value refuses
+    - The model and effort summaries never supply a click target
+    - Child model and effort option menus remain unopened and unclicked
+    - The 1 plus 12 five-second transition bound uses only wait and snapshot after each approved mutation
+    - Existing runtime integrity, sensitivity, response capture, manual import, hash chain, authority, convergence, and formal-evidence boundaries remain unchanged
+    - The owner's broad approval does not authorize CAPTCHA bypass, credential inspection, account or profile substitution, publication, release, or production action
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to avoid refusal and obtain a Pro answer in conversation on 2026-08-10
+    - Exact target model and maximum effort remain visibly verified before typing
+    - No evidence-only role, ref, duplicate, or menu container can become an action target
+    - A competing trusted model or effort value remains an ambiguity and stops before typing
+    - Structural stops, exact clicked controls, one durable intent, one Send, and no resubmission remain mandatory
+    - Captured output remains UNAPPROVED_PROPOSAL or UNAPPROVED_REVIEW pending applicable reconciliation
+    - Local fixtures, live smoke, formal TST-001, hosted CI, staging, production, publication, and release evidence remain separate
+  acceptance_criteria:
+    - An expanded current menu with exact target semantic summaries succeeds whether those summaries are actionable, presentational, ref-bearing, ref-free, or duplicated by same-value descendants
+    - A named, unnamed, differently named, presentational, ref-free, or absent menu container does not by itself cause refusal
+    - Missing, wrong-case, padded beyond horizontal normalization, renamed, or competing Model or Effort values refuse before type
+    - Every clicked control retains the exact raw role, label, enabled state, valid unique ref, and no-ref-collision requirements
+    - Summary-only zero-child-click, transition settling, exact close/composer/send, response capture, manual import, structural stops, phase evidence, runtime integrity, and no-resubmission regressions remain green
+    - One sanitized ordinary live run captures PRO_ADVICE_V1 or PRO_REVIEW_TEXT_V1 with record_verified true and exactly one submission
+  required_test_evidence:
+    - Semantic summary role, ref, named-container, same-value duplicate, horizontal-whitespace, missing, near-value, case, and competing-value matrices
+    - Exact clicked-control and zero-child-click traces across compact and expanded paths
+    - Untrusted sidebar, user, response, citation, and nested-content spoof regressions
+    - Complete isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, canonical import verification, workspace drift detection, and git diff check
+    - Sanitized live doctor READY, exactly-one-submission answer capture, and read-only status evidence kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

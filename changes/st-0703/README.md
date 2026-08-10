@@ -2,9 +2,11 @@
 
 Status: `LOCAL_IMPLEMENTATION_CANDIDATE`
 
-Authority: `DESIGN_HANDOFF_V1_ST0703_v3.yaml`, exact approval
-`DESIGN-HANDOFF-APPROVAL-v3.yaml`, and canonical reconciliation
-`CANONICAL-RECONCILIATION-v3.md`
+Authority: `DESIGN_HANDOFF_V1_ST0703_v5.yaml`, exact approval
+`DESIGN-HANDOFF-APPROVAL-v5.yaml`, canonical reconciliation
+`CANONICAL-RECONCILIATION-v5.md`, and decision source
+`DESIGN-DECISION-REQUEST-v5.md`. V5 preserves approved D1 through D4 and
+replaces only D5 with `ST0703-V5-D5-CORRECTION`.
 
 This Story implements only the recorded, provider-neutral OpenAI Responses boundary approved for ST-0703. It does not resolve credentials, create a client, activate a route, retry a provider call, perform a live request, approve AI output, publish content, or claim formal TST/staging/production evidence.
 
@@ -61,6 +63,10 @@ PYTHONDONTWRITEBYTECODE=1 "$UV" --config-file "$PWD/uv.toml" run \
   python scripts/build_st0703_recorded_adapter.py --check-installed
 PYTHONDONTWRITEBYTECODE=1 "$UV" --config-file "$PWD/uv.toml" run \
   --locked --offline --no-cache --no-sync --no-env-file \
+  --no-python-downloads \
+  python scripts/build_st0204_config_loader.py --check
+PYTHONDONTWRITEBYTECODE=1 "$UV" --config-file "$PWD/uv.toml" run \
+  --locked --offline --no-cache --no-sync --no-env-file \
   --no-python-downloads ruff check --no-cache \
   python/raos/adapters/__init__.py \
   python/raos/adapters/openai_responses.py \
@@ -74,8 +80,13 @@ PYTHONDONTWRITEBYTECODE=1 "$UV" --config-file "$PWD/uv.toml" run \
 ```
 
 The bounded static Make target additionally runs Ruff format checking and
-strict mypy. `openai-recorded-gate` composes the read-only ST-0204 and ST-0701
-predecessor checks with the ST-0703 checks; it never hydrates implicitly.
+strict mypy. `config-check` retains its owner-defined `python-sync` prerequisite
+and is not an `openai-recorded-gate` prerequisite. The gate composes
+`ai-registry-check`, `openai-recorded-check`, `openai-recorded-static`, and
+`openai-recorded-test`, then invokes the ST-0204 owner generator's existing
+`--check` operation exactly once through `UV_READONLY_RUN`. It does not recurse
+into Make, hydrate, synchronize, install, access a credential, use the network,
+or write a cache.
 
 ## Evidence boundary
 

@@ -126,6 +126,9 @@ def install_doctor_transport(
         return transport
 
     monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
+    monkeypatch.setattr(
+        orchestrator, "_verify_private_runtime", lambda _root: {"status": "ready"}
+    )
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", factory)
     return transports
 
@@ -163,10 +166,17 @@ def test_doctor_settles_unknown_once_then_recognizes_known_ui(
 @pytest.mark.parametrize(
     ("initial_snapshot", "expected_code", "returns_result"),
     [
-        pytest.param(snapshot("- Log in"), "STOP_LOGIN", True, id="login"),
-        pytest.param(snapshot("- CAPTCHA"), "STOP_CAPTCHA", True, id="captcha"),
         pytest.param(
-            snapshot("- Too many requests"),
+            snapshot('- button "Log in" [ref=e90]'), "STOP_LOGIN", True, id="login"
+        ),
+        pytest.param(
+            snapshot('- alert "CAPTCHA" [ref=e90]'),
+            "STOP_CAPTCHA",
+            True,
+            id="captcha",
+        ),
+        pytest.param(
+            snapshot('- alert "Too many requests" [ref=e90]'),
             "STOP_RATE_LIMIT",
             True,
             id="rate-limit",
@@ -214,10 +224,17 @@ def test_doctor_initial_stops_never_enter_settle(
 @pytest.mark.parametrize(
     ("second_snapshot", "expected_code", "returns_result"),
     [
-        pytest.param(snapshot("- Log in"), "STOP_LOGIN", True, id="login"),
-        pytest.param(snapshot("- CAPTCHA"), "STOP_CAPTCHA", True, id="captcha"),
         pytest.param(
-            snapshot("- Too many requests"),
+            snapshot('- button "Log in" [ref=e90]'), "STOP_LOGIN", True, id="login"
+        ),
+        pytest.param(
+            snapshot('- alert "CAPTCHA" [ref=e90]'),
+            "STOP_CAPTCHA",
+            True,
+            id="captcha",
+        ),
+        pytest.param(
+            snapshot('- alert "Too many requests" [ref=e90]'),
             "STOP_RATE_LIMIT",
             True,
             id="rate-limit",
@@ -393,12 +410,17 @@ def test_pro_ask_persistent_initial_failure_stops_once_without_input(
     ("second_snapshot", "auth_wait_seconds", "expected_code"),
     [
         pytest.param(
-            snapshot("- Too many requests"),
+            snapshot('- alert "Too many requests" [ref=e90]'),
             900,
             "STOP_RATE_LIMIT",
             id="rate-limit",
         ),
-        pytest.param(snapshot("- CAPTCHA"), 0, "STOP_CAPTCHA", id="captcha"),
+        pytest.param(
+            snapshot('- alert "CAPTCHA" [ref=e90]'),
+            0,
+            "STOP_CAPTCHA",
+            id="captcha",
+        ),
         pytest.param(
             snapshot(url="https://chatgpt.com.evil.example/"),
             900,
@@ -436,18 +458,24 @@ def test_pro_ask_retry_snapshot_revalidates_origin_and_stops_without_input(
 
 
 @pytest.mark.parametrize(
-    ("snapshots", "expected_code"),
+    ("snapshots", "expected_code", "expected_waits"),
     [
         pytest.param(
             [
                 landing_snapshot(),
-                snapshot(
-                    '- menuitem "Pro Standard" [ref=e2]',
-                    '- menuitem "Pro Extended" [ref=e3]',
-                    '- menuitem "Pro" [ref=e4]',
-                ),
+                *[
+                    snapshot(
+                        '- menuitem "Pro Standard" [ref=e2]',
+                        '- menuitem "Pro Extended" [ref=e3]',
+                        '- menuitem "Pro" [ref=e4]',
+                    )
+                    for _ in range(
+                        orchestrator.PRE_SUBMISSION_SETTLE_ADDITIONAL_OBSERVATIONS + 1
+                    )
+                ],
             ],
             "MODEL_OPTIONS_AMBIGUOUS",
+            12,
             id="after-model-picker-click",
         ),
         pytest.param(
@@ -461,6 +489,7 @@ def test_pro_ask_retry_snapshot_revalidates_origin_and_stops_without_input(
                 ),
             ],
             "SELECTOR_AMBIGUITY",
+            0,
             id="after-model-click",
         ),
         pytest.param(
@@ -478,13 +507,15 @@ def test_pro_ask_retry_snapshot_revalidates_origin_and_stops_without_input(
                 ),
             ],
             "SELECTOR_AMBIGUITY",
+            0,
             id="after-effort-picker-click",
         ),
     ],
 )
-def test_post_click_failures_never_receive_initial_settle_retry(
+def test_only_approved_post_click_transition_receives_bounded_settle(
     snapshots: list[str],
     expected_code: str,
+    expected_waits: int,
 ) -> None:
     transport = ScriptedTransport(snapshots)
 
@@ -495,7 +526,9 @@ def test_post_click_failures_never_receive_initial_settle_retry(
         )
 
     assert captured.value.code == expected_code
-    assert not any(tool == "browser_wait_for" for tool, _ in transport.calls)
+    assert sum(tool == "browser_wait_for" for tool, _ in transport.calls) == (
+        expected_waits
+    )
     assert not any(tool == "browser_type" for tool, _ in transport.calls)
     assert any(tool == "browser_click" for tool, _ in transport.calls)
 

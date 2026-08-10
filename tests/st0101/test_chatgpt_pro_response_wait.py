@@ -61,6 +61,18 @@ def advanced_response_snapshot(
     )
 
 
+def embedded_pre_content_response_snapshot(response: str) -> str:
+    return snapshot(
+        '- heading "ChatGPT said:" [ref=e60]',
+        "- generic [ref=e61]:",
+        "  - generic [ref=e62]:",
+        '    - paragraph "silent outside wrapper" [ref=e70]:',
+        '    - group "Response actions":',
+        "      - paragraph:",
+        f"        - text: {json.dumps(response)}",
+    )
+
+
 def ambiguous_response_snapshot(response: str, *, ref_base: int) -> str:
     return snapshot(
         f'- heading "ChatGPT said:" [ref=e{ref_base}]',
@@ -624,6 +636,91 @@ def test_advanced_answer_now_waits_past_twenty_polls_without_click_or_parse(
         )
         == 1
     )
+
+
+def test_normal_live_ask_does_not_enable_bound_ref_free_fallback(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    response = advice_text("Normal ask must retain predecessor refusal.")
+    embedded = embedded_pre_content_response_snapshot(response)
+    transport = ScriptedTransport(
+        [
+            snapshot('- button "Send prompt" [ref=e50]', url="https://chatgpt.com/"),
+            embedded,
+            embedded,
+            embedded,
+        ]
+    )
+    monkeypatch.setattr(
+        orchestrator,
+        "_inspect_live_pre_submission_ui",
+        inspect_pre_submission,
+    )
+    monkeypatch.setattr(workflow, "_append_event", lambda *_args, **_kwargs: "d" * 64)
+
+    with pytest.raises(orchestrator.LiveResponseUnavailable) as captured:
+        orchestrator._live_capture(
+            prepared={
+                "run_id": "20260810T000000Z-aaaaaaaaaaaa",
+                "run_dir": str(tmp_path / "run"),
+                "record_path": str(tmp_path / "run-record.v1.jsonl"),
+                "prompt_sha256": "e" * 64,
+            },
+            transport=transport,
+        )
+
+    assert captured.value.code == "RESPONSE_NOT_IDENTIFIABLE"
+    assert transport.wait_calls == 2
+    assert sum(tool == "browser_type" for tool, _arguments in transport.calls) == 1
+    assert (
+        sum(
+            tool == "browser_click" and arguments.get("element") == "send prompt"
+            for tool, arguments in transport.calls
+        )
+        == 1
+    )
+
+
+def test_ordinary_waiting_resume_does_not_enable_bound_ref_free_fallback(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = private_root(tmp_path)
+    monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
+    response = advice_text("Ordinary WAITING must retain predecessor refusal.")
+    embedded = embedded_pre_content_response_snapshot(response)
+    transport = ScriptedTransport([embedded, embedded, embedded])
+
+    with pytest.raises(orchestrator._AdvancedResponseParserRefusal) as captured:
+        orchestrator._resume_live_capture(
+            prepared={
+                "run_id": "20260810T000000Z-bbbbbbbbbbbb",
+                "run_dir": str(tmp_path / "run"),
+                "record_path": str(tmp_path / "run-record.v1.jsonl"),
+                "prompt_sha256": "e" * 64,
+            },
+            transcript=pending_transcript(),
+            conversation_url=CONVERSATION_URL,
+            private_root=root,
+            browser="edge",
+            transport=transport,
+        )
+
+    assert captured.value.code == "RESPONSE_NOT_IDENTIFIABLE"
+    assert captured.value.diagnostic_context_shape_code == (
+        "ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING"
+    )
+    assert not hasattr(captured.value, "diagnostic_fallback_code")
+    assert not hasattr(captured.value, "diagnostic_fallback_entry_code")
+    assert transport.calls == [
+        ("browser_navigate", {"url": CONVERSATION_URL}),
+        ("browser_snapshot", {}),
+        ("browser_wait_for", {"time": 5}),
+        ("browser_snapshot", {}),
+        ("browser_wait_for", {"time": 5}),
+        ("browser_snapshot", {}),
+    ]
     assert not any(
         tool == "browser_click"
         and (
@@ -741,6 +838,92 @@ def test_live_ask_waits_past_twenty_polls_and_parses_only_stable_complete_body(
     )
     assert all(tool != "browser_close" for tool, _ in transport.calls)
     assert transport.closed is False
+
+
+def test_normal_ask_discards_internal_response_diagnostic_from_all_artifacts(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = private_root(tmp_path)
+    install_live_stubs(root, monkeypatch)
+    malformed = [
+        snapshot(
+            f'- heading "ChatGPT said:" [ref=e{1600 + index * 10}]',
+            f"- generic [ref=e{1601 + index * 10}]:",
+            '  - group "Response actions":',
+            "    - generic:",
+        )
+        for index in range(orchestrator.RESPONSE_STABILITY_OBSERVATIONS)
+    ]
+    transports: list[ScriptedTransport] = []
+
+    def transport_factory(
+        _wrapper: Path,
+        secret_file: Path,
+        browser: str,
+    ) -> ScriptedTransport:
+        assert browser == "edge"
+        transport = ScriptedTransport(
+            [
+                snapshot(
+                    '- button "Send prompt" [ref=e50]',
+                    url="https://chatgpt.com/",
+                ),
+                *malformed,
+            ],
+            secret_file=secret_file,
+            close_probe=close_probe(root),
+        )
+        transports.append(transport)
+        return transport
+
+    monkeypatch.setattr(orchestrator, "StdioMcpTransport", transport_factory)
+    exit_code, result = orchestrator.ask(
+        private_root=root,
+        request_file=private_request(root, "normal-ask-parser-refusal.txt"),
+        importance="ordinary",
+        fake_scenario=None,
+        parent_run_id=None,
+        gap_file=None,
+    )
+
+    assert exit_code == 0
+    assert result["status"] == "PRO_UNAVAILABLE_FALLBACK"
+    assert result["reason_code"] == "RESPONSE_NOT_IDENTIFIABLE"
+    assert "diagnostic_code" not in result
+    assert "diagnostic_detail_code" not in result
+    assert "diagnostic_context_code" not in result
+    assert "diagnostic_context_detail_code" not in result
+    assert "diagnostic_context_shape_code" not in result
+    assert "diagnostic_fallback_code" not in result
+    assert "diagnostic_fallback_entry_code" not in result
+    assert len(transports) == 1
+    run = run_dir(root, result["run_id"])
+    state_text = (run / "orchestration-state.v1.json").read_text(encoding="utf-8")
+    record_text = (run / "run-record.v1.jsonl").read_text(encoding="utf-8")
+    status_result = orchestrator.status(private_root=root, run_id=result["run_id"])
+    assert "diagnostic_code" not in state_text
+    assert "diagnostic_code" not in record_text
+    assert "diagnostic_code" not in status_result
+    assert "diagnostic_detail_code" not in state_text
+    assert "diagnostic_detail_code" not in record_text
+    assert "diagnostic_detail_code" not in status_result
+    assert "diagnostic_context_code" not in state_text
+    assert "diagnostic_context_code" not in record_text
+    assert "diagnostic_context_code" not in status_result
+    assert "diagnostic_context_detail_code" not in state_text
+    assert "diagnostic_context_detail_code" not in record_text
+    assert "diagnostic_context_detail_code" not in status_result
+    assert "diagnostic_context_shape_code" not in state_text
+    assert "diagnostic_context_shape_code" not in record_text
+    assert "diagnostic_context_shape_code" not in status_result
+    assert "diagnostic_fallback_code" not in state_text
+    assert "diagnostic_fallback_code" not in record_text
+    assert "diagnostic_fallback_code" not in status_result
+    assert "diagnostic_fallback_entry_code" not in state_text
+    assert "diagnostic_fallback_entry_code" not in record_text
+    assert "diagnostic_fallback_entry_code" not in status_result
+    assert not (run / "unapproved-proposal.md").exists()
 
 
 def test_interrupt_during_ask_finalization_is_not_misclassified_as_resumable(
@@ -1523,22 +1706,22 @@ def test_resume_transport_loss_and_start_failure_remain_waiting_without_resubmit
     ("response_snapshot", "expected_code"),
     [
         pytest.param(
-            snapshot("- Log in"),
+            snapshot('- button "Log in" [ref=e90]'),
             "STOP_LOGIN",
             id="authentication",
         ),
         pytest.param(
-            snapshot("- CAPTCHA"),
+            snapshot('- alert "CAPTCHA" [ref=e90]'),
             "STOP_CAPTCHA",
             id="captcha",
         ),
         pytest.param(
-            snapshot("- Too many requests"),
+            snapshot('- alert "Too many requests" [ref=e90]'),
             "STOP_RATE_LIMIT",
             id="rate-limit",
         ),
         pytest.param(
-            snapshot("- Choose an account"),
+            snapshot('- button "Choose an account" [ref=e90]'),
             "STOP_ACCOUNT_AMBIGUITY",
             id="account-ambiguity",
         ),

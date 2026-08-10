@@ -28,24 +28,358 @@
   gap. Stop on the same repeated gap, a materially duplicate response, no
   remaining open gap, or no material delta. Do not rephrase a gap to evade
   convergence.
-- Run `make pro-doctor`; when required, the user performs the one-time
-  interactive `make pro-setup` login in the dedicated ChatGPT-only profile.
-  `make pro-ask` and `make pro-resume` start the pinned MCP as a private child,
-  so no Codex restart or per-run exported variable is required.
+- Run `make pro-doctor` without installing or updating packages. If it reports
+  a missing or drifted MCP runtime, use the explicit online maintenance command
+  `make pro-runtime-install` with the exact Node 24.18.1 and npm 11.16.0
+  toolchain, then rerun doctor. The installed owner-private runtime remains
+  pinned to `@playwright/mcp@0.0.78`; doctor, ask, and resume must never execute
+  MCP from a shared `npx` cache. When browser setup is required, the user
+  performs the one-time interactive `make pro-setup` login in the dedicated
+  ChatGPT-only profile; rerun doctor and require `READY` before ask. A doctor
+  `LOGIN_REQUIRED` returns to `pro-setup`, while `STOPPED` remains `STOP` and
+  must not proceed. No Codex restart or per-run exported variable is required.
+- Keep the exact ST-0101 MCP package lock and committed expected full-runtime
+  inventory together under `scripts/chatgpt_pro_mcp_runtime/`. The installed
+  mutable manifest and a fresh private-tree scan must both equal that committed
+  inventory. Do not hand-edit or regenerate either anchor from an ambient npm,
+  a shared cache, a different platform, or a different MCP version.
 - The Pro workflow is restricted to the exact `https://chatgpt.com` origin and
   the allowlisted navigate/snapshot/click/type/wait/close tools. It visibly
   verifies both Pro and the maximum available Pro effort before submission and
-  types only the MCP secret name, never raw request text. Stop on login,
-  CAPTCHA, rate limit, account ambiguity, origin mismatch, selector drift,
-  unknown UI, or ambiguous model/effort state. Never inspect cookies, storage,
-  credentials, unrelated tabs, or browser-profile contents.
+  types only the MCP secret name, never raw request text. Stop on structurally
+  trusted login, reauthentication, account selection, page-level rate-limit or
+  CAPTCHA state, origin mismatch, selector drift, unknown UI, or ambiguous
+  model/effort state. Text inside assistant responses, user messages, sidebars,
+  citations, or other untrusted content is not a stop state by itself. Never
+  inspect cookies, storage, credentials, unrelated tabs, or browser-profile
+  contents.
+- For the strict current advanced profile, keep every clicked control exact:
+  the initial and closing picker is one enabled, ref-bearing raw `button Pro`,
+  and compact expansion, when both semantic sets are empty, is one enabled,
+  ref-bearing raw `menuitem Show advanced options`. Reject malformed or
+  duplicate clicked controls and ref collisions between controls required in
+  the same snapshot. After excluding
+  navigation, sidebar, user, response, citation, and other untrusted regions,
+  treat visible `Model GPT-5.6 Sol` and `Effort Pro` labels as non-clicked
+  semantic evidence. Normalize only internal horizontal whitespace. Their
+  approved leaf action or presentation records may be `button`, `description`,
+  `heading`, `link`, `menuitem`, `text`, or `statictext`; within that boundary,
+  ref presence and same-value duplicate descendants are inert. A `menu`,
+  `listbox`, `dialog`, or generic container and radio/option child inventory
+  never supply or compete with summary evidence. Reject missing, wrong-case,
+  edge-padded, renamed, near, or competing trusted Model or Effort values before
+  typing. Do not open, enumerate, compare, or click child model-option or
+  effort-option menus. New advanced workflow
+  transcripts record no action ref for these two evidence-only states; the
+  validator accepts the predecessor one-ref shape only for existing-record
+  compatibility and never turns either shape into an action. An exact model and
+  effort pair makes every expand-control shape irrelevant: do not resolve or
+  click it. Any nonempty partial or conflicting semantic set stops with the
+  model/effort missing-or-conflict priority before expansion. Resolve the exact
+  expand control only when both semantic sets are empty. Before closing, refuse
+  `ADVANCED_PRO_BUTTON_INVALID` if any exact raw expand candidate contains the
+  used Pro ref; this collision check protects the Pro action target without
+  resolving or clicking the ignored expand control.
+- At the initial current-profile landing, require the exact enabled,
+  ref-bearing raw `button Pro` and approved composer before the picker click.
+  Do not click `combobox Pro` when that approved composer is present; refuse in
+  phase `landing` with no input or submission. This intentionally retires only
+  that structurally colliding legacy shape. Preserve independently
+  distinguishable legacy combined and split profiles.
+- After opening the Pro menu, expanding advanced options, closing the verified
+  menu, or typing the secret-name placeholder, take an immediate snapshot and
+  allow at most twelve additional fixed five-second wait/snapshot observations
+  on the same transport. Revalidate exact origin and structural stops on every
+  observation, and never replay navigate, click, type, or Send. A remaining
+  pre-submission refusal may expose only its existing reason, submission false,
+  and one phase from `landing`, `pro_menu`, `advanced_summary`,
+  `closed_landing`, `typed_composer`, or `send_control`; never persist raw UI
+  material for diagnosis.
+- Only after the exact advanced landing and picker click are proven, classify
+  every stop-free, exact-origin post-click menu observation as advanced before
+  considering any legacy selector. The only advanced-menu diagnostics are
+  `ADVANCED_PRO_BUTTON_INVALID`, `ADVANCED_EXPAND_CONTROL_INVALID`,
+  `ADVANCED_MENU_STATE_MIXED`, `ADVANCED_MENU_UNRECOGNIZED`,
+  `ADVANCED_MODEL_EVIDENCE_MISSING`, `ADVANCED_MODEL_EVIDENCE_CONFLICT`,
+  `ADVANCED_EFFORT_EVIDENCE_MISSING`, and
+  `ADVANCED_EFFORT_EVIDENCE_CONFLICT`. After the Pro control, classify any
+  semantic evidence first in model-missing/model-conflict then
+  effort-missing/effort-conflict order. Only an empty pair reaches exact expand
+  validation or unrecognized-state classification. Retain
+  `ADVANCED_MENU_STATE_MIXED` only when verifying existing records; do not emit
+  it for a newly observed exact summary pair. Persist only the exact closed
+  code, its existing phase, and `submission_attempted: false` in matching
+  hash-bound state/event/status; no
+  dynamic suffix or browser material is permitted. A valid compact menu that
+  never expands remains generic `SELECTOR_AMBIGUITY` in `advanced_summary`; a
+  valid expanded menu that never closes remains generic in `closed_landing`.
+  Legacy, closed-landing composer/button, typed-composer, Send, and other
+  unclassified failures also retain the generic reason. A diagnostic never
+  authorizes another action, retry, selector fallback, input, or submission.
+- Keep the strict advanced response heading role `heading`, label
+  `ChatGPT said:`, sole valid structural `[ref=eN]`, and body-root boundary
+  exact. Around that sole ref, accept zero or more complete existing-grammar
+  non-ref accessibility attributes before or after it. Attribute names,
+  ordering, and non-whitespace values are ignored after validation and must be
+  removed from stability material; they contribute no response bytes, refs,
+  stop evidence, selectors, actions, persistence, or authority. Any reserved
+  bracketed or unbracketed `ref` attempt anywhere after the label—including in
+  an attribute name or value—remains invalid unless it is the sole exact
+  lower-case ref token. Inside the exact body, admit exact lower-case
+  JSON-string `text:`/`statictext:`
+  payloads through approved semantic nodes or only generic presentation, while
+  preserving predecessor outer-list reconstruction bytes. Allow one exact
+  `Response actions` group total: either strictly nested before content with
+  later valid non-whitespace sibling content, or after content inside the body
+  or at its first same- or shallower-indent boundary. Its complete subtree is
+  opaque to response bytes, refs, markers, stability, generating state, and
+  stop evidence. Complete button, link, citation, URL-metadata, and approved
+  structural-container chrome remains opaque. A same/shallow pre-content
+  group, no later content, a second group, content after the post-content
+  group, malformed/ref-bearing/attributed group, payload/scalar defect,
+  boundary escape, required-anchor/ref ambiguity, empty, oversized, or
+  sensitive output remains fail closed.
+- `pro-resume` may recover a terminal response only from one hash-verified LIVE
+  parser fallback whose exact reason is `RESPONSE_NOT_IDENTIFIABLE` or
+  `RESPONSE_SELECTOR_AMBIGUITY`, whose exact bound URL/browser/prompt and sole
+  `GPT-5.6 Sol`/`Pro` submission intent are proven, and whose suffix contains
+  only verified progress for the unchanged terminal state. Recovery may only
+  navigate, snapshot, wait, and close; it never reads a pending transcript,
+  types, clicks, sends, resubmits, or records another intent. Persist the
+  owner-only proposal first and append `BOUND_RESPONSE_RECOVERED` last with
+  `AUTOMATED_BOUND_CONVERSATION_RECOVERY`, source/proposal hashes, and
+  `resubmitted: false`; state remains byte-identical. Status projects the
+  captured outcome only from the fully verified event and proposal. An exact
+  uncommitted proposal is invisible and may be reused only after complete
+  validation; a committed repeat is idempotent. Manual import retains its
+  separate human-copy provenance through a verified progress-only tail.
+- If that exact terminal response recovery ends in an uncaught strict advanced-
+  parser refusal, the CLI may add one non-persistent `diagnostic_code` while
+  retaining the existing generic `reason_code`. The only values are
+  `ADVANCED_RESPONSE_GENERATING_MARKER_DUPLICATION`,
+  `ADVANCED_RESPONSE_MARKER_CONFLICT`,
+  `ADVANCED_RESPONSE_STRUCTURAL_REF_COLLISION`,
+  `ADVANCED_RESPONSE_HEADING_INVALID`,
+  `ADVANCED_RESPONSE_BODY_ROOT_ABSENT`,
+  `ADVANCED_RESPONSE_BODY_ROOT_INVALID`,
+  `ADVANCED_RESPONSE_BOUNDARY_CONFLICT`,
+  `ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID`, and
+  `ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID`. Never construct a value from
+  browser data. An invalid value is omitted without replacing the generic
+  reason. Normal ask, ordinary `WAITING` resume, legacy response parsing,
+  status, state, events, proposals, manual import, and unrelated terminal
+  resume never expose or persist this field.
+- Only when that recovery-only `diagnostic_code` is exactly
+  `ADVANCED_RESPONSE_HEADING_INVALID` beside generic
+  `RESPONSE_SELECTOR_AMBIGUITY`, the CLI may also add one non-persistent
+  `diagnostic_detail_code`. Its exact closed values are
+  `ADVANCED_RESPONSE_HEADING_ROLE_INVALID`,
+  `ADVANCED_RESPONSE_HEADING_LABEL_CASE_INVALID`,
+  `ADVANCED_RESPONSE_HEADING_LABEL_PUNCTUATION_INVALID`,
+  `ADVANCED_RESPONSE_HEADING_LABEL_EDGE_WHITESPACE_INVALID`,
+  `ADVANCED_RESPONSE_HEADING_LABEL_OTHER_INVALID`,
+  `ADVANCED_RESPONSE_HEADING_REF_MISSING`,
+  `ADVANCED_RESPONSE_HEADING_REF_INVALID`,
+  `ADVANCED_RESPONSE_HEADING_EXTRA_ATTRIBUTES`, and
+  `ADVANCED_RESPONSE_HEADING_LINE_SHAPE_INVALID`. The fixed precedence is raw
+  role, ASCII edge whitespace, pure case, terminal ASCII punctuation, other
+  label, missing ref, invalid/multiple ref, the predecessor extra-attribute
+  compatibility category, then residual line shape. Complete non-ref
+  attributes are now valid, so `ADVANCED_RESPONSE_HEADING_EXTRA_ATTRIBUTES`
+  remains in the closed validator only for predecessor compatibility and is
+  not emitted for those accepted forms. Competing markers keep
+  `ADVANCED_RESPONSE_MARKER_CONFLICT` and receive no detail. Invalid or
+  mismatched details are omitted without changing the generic reason or parent
+  diagnostic. Never expose observed UI data or persist/project this field
+  through any artifact, status, normal ask, ordinary resume, legacy path, or
+  manual import.
+- Only when that recovery-only `diagnostic_code` is exactly
+  `ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID` beside generic
+  `RESPONSE_NOT_IDENTIFIABLE`, the CLI may instead add one non-persistent
+  `diagnostic_detail_code`. Its exact closed values are
+  `ADVANCED_RESPONSE_ACTION_ROLE_INVALID`,
+  `ADVANCED_RESPONSE_ACTION_LABEL_INVALID`,
+  `ADVANCED_RESPONSE_ACTION_REF_PRESENT`,
+  `ADVANCED_RESPONSE_ACTION_EXTRA_ATTRIBUTES`,
+  `ADVANCED_RESPONSE_ACTION_LINE_SHAPE_INVALID`,
+  `ADVANCED_RESPONSE_ACTION_PRE_CONTENT`,
+  `ADVANCED_RESPONSE_ACTION_DUPLICATE`,
+  `ADVANCED_RESPONSE_ACTION_CONTENT_AFTER`, and
+  `ADVANCED_RESPONSE_ACTION_PLACEMENT_INVALID`. Classify only the current
+  trusted Response-actions-like physical line, with raw role, exact label,
+  reserved ref attempt, removable complete pre-colon non-ref attributes, and
+  residual line shape before its current lifecycle state. A valid pre-content
+  group is provisional: later content succeeds, a later encountered defect
+  keeps its existing category, and `PRE_CONTENT` applies only at a clean end
+  with no valid content. Stop at a decisive duplicate or content-after failure;
+  do not look ahead or inspect an untrusted candidate for detail. Placement is
+  a reserved validator-compatibility literal not emitted by current paths.
+  Invalid or mismatched details are omitted without changing the generic
+  reason or parent diagnostic. Never expose observed UI data, relax an action
+  boundary, or persist/project this field through normal ask, ordinary
+  `WAITING` resume, legacy parsing, manual import, status, state, events,
+  proposals, unrelated terminal resume, or committed recovery.
+- Only when recovery returns the exact generic/parent/detail conjunction
+  `RESPONSE_NOT_IDENTIFIABLE` /
+  `ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID` /
+  `ADVANCED_RESPONSE_ACTION_PRE_CONTENT`, the CLI may additionally emit one
+  non-persistent `diagnostic_context_code`. Its exact closed values are
+  `ADVANCED_RESPONSE_PRECONTENT_SAME_INDENT_BOUNDARY`,
+  `ADVANCED_RESPONSE_PRECONTENT_SHALLOW_BOUNDARY`,
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_CONTENT`,
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID`,
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_ONLY_OPAQUE`, and
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_EMPTY`. Same-indent precedes shallow;
+  for a strictly nested group, invalid response-bearing material precedes
+  content, opaque-only, and empty. Content requires every response-bearing
+  fragment to be a valid exact JSON string plus at least one non-whitespace,
+  UTF-8-encodable fragment. Empty/whitespace-only payloads are empty unless
+  approved opaque chrome is also present. A bare generic/semantic container is
+  invalid even when it contains only opaque descendants. Classification stays
+  inside the already owned action/body boundary, contributes no bytes, and
+  changes no parser, opacity, ref, stop, or stability decision. Missing,
+  unknown, padded, suffixed, case-varied, or wrong-conjunction values are
+  omitted without removing the existing valid generic, parent, or detail.
+  Never include raw UI data or persist/project context through normal ask,
+  ordinary `WAITING`, legacy/manual paths, status, state, events, proposals,
+  unrelated terminal resume, or committed recovery.
+- Only when those four fields are exactly `RESPONSE_NOT_IDENTIFIABLE` /
+  `ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID` /
+  `ADVANCED_RESPONSE_ACTION_PRE_CONTENT` /
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID`, the CLI may add one
+  non-persistent `diagnostic_context_detail_code`. Its exact closed values are
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_SHAPE_INVALID`,
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_VALUE_INVALID`,
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_CONTEXT_INVALID`,
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID`,
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_UNSATISFIED_WITH_CONTENT`,
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_UNSATISFIED_EMPTY`, and
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_MATERIAL_UNSUPPORTED`. Explicit scalar,
+  container-shape, and unsupported defects globally precede deferred
+  unsatisfied-container detection; the first physical explicit defect wins,
+  otherwise the first unsatisfied container selects with-content or empty.
+  `SCALAR_CONTEXT_INVALID` is reserved validator vocabulary and is unreachable
+  on the current production parser path. Complete bare `text:` and
+  `statictext:` structural containers remain predecessor opaque-only material
+  with no fifth field. Invalid or mismatched values omit only the fifth field;
+  never persist/project it, include raw UI data, or change parser acceptance,
+  bytes, opacity, refs, stops, stability, actions, or recovery behavior.
+- Only when those five fields additionally end in
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID`, the recovery
+  CLI may add one non-persistent `diagnostic_context_shape_code`. Its exact
+  closed values are
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING`,
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_INVALID`, and
+  `ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_LINE_SHAPE_INVALID`.
+  Classify only the first physical generic/semantic container already selected
+  by the predecessor as container-shape invalid. Ref-like text in a JSON label
+  is label material; outside it, a reserved malformed ref attempt is invalid,
+  an otherwise complete ref-free existing-grammar record is missing, and all
+  remaining selected shapes are line-shape invalid. Preserve predecessor
+  valid-ref/unsatisfied selections with no sixth field. Missing, invalid, or
+  mismatched shape omits only the sixth field; never include raw UI data,
+  persist/project it, or change acceptance, bytes, opacity, refs, stops,
+  stability, actions, proposals, recovery, or browser behavior.
+- The sole later exception is terminal bound-response recovery with that exact
+  six-field chain ending in `...CONTAINER_REF_MISSING`. Only there, reparse the
+  one already-selected strictly nested action subtree and admit complete
+  ref-free or sole-ref generic/semantic presentation wrappers plus exact
+  lower-case JSON-string `text:`/`statictext:` payloads. Reconstruct the
+  predecessor paragraph/list/list-item/quote/heading/code bytes; require every
+  admitted wrapper to own a valid scalar and at least one non-whitespace
+  fragment. Used wrapper refs must be unique and collision-free against every
+  trusted non-action ref. Complete opaque and untrusted subtrees remain
+  non-byte/non-ref/non-stop/non-marker/non-action material. Include only the
+  validated presentation/scalar lines in recovery-only in-memory stability,
+  canonicalize admitted refs, and still require three observations over at
+  least ten seconds. Any malformed, unsatisfied, outside-group, duplicate,
+  boundary, or collision fallback-validation failure reuses the predecessor
+  refusal and creates no proposal. A fully reconstructed response still applies
+  the existing size and sensitivity policy after stability, retaining its
+  existing policy refusal and likewise creating no proposal. Normal ask,
+  ordinary `WAITING`, legacy,
+  manual, status, and unrelated terminal paths never enable this fallback.
+- If that exact recovery-only fallback is attempted and still fails, the CLI
+  may append one non-persistent `diagnostic_fallback_code` to the exact existing
+  six-field `...CONTAINER_REF_MISSING` chain. Its closed values are
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_INVALID`,
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_SCALAR_INVALID`,
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_MATERIAL_UNSUPPORTED`,
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_REF_COLLISION`,
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_UNSATISFIED_WITH_CONTENT`,
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_WRAPPER_UNSATISFIED_EMPTY`, and
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_CONTENT_EMPTY`. The first physical
+  explicit wrapper/scalar/unsupported defect wins; after a clean scan, trusted
+  ref collision precedes the first unsatisfied-wrapper with-content/empty split,
+  then empty reconstructed content. Preserve unknown-container opacity first:
+  complete bare `Text:`/`StaticText:` controls remain accepted opaque chrome
+  with no seventh field. Complete approved opaque, URL, unknown-chrome,
+  untrusted, and action subtrees are also excluded from the fallback outside-ref
+  set; only heading/body and trusted non-action presentation/structural refs can
+  veto by collision, while malformed would-be opaque records remain subject to
+  the trusted structural scan. Invalid or mismatched seventh values omit only
+  that field and retain the six valid predecessors. Never include raw/dynamic
+  UI data, attach it to fallback success, persist/project it, or expose it in
+  normal ask, ordinary `WAITING`, legacy, manual, status, state, events,
+  proposals, unrelated terminal resume, or committed recovery.
+- If terminal bound recovery enables that fallback but the extractor is not
+  attempted, its CLI may add one non-persistent
+  `diagnostic_fallback_entry_code` to the exact same six-field
+  `...CONTAINER_REF_MISSING` chain. The closed values are
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR` and
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER`.
+  Existing empty or whitespace-only scalar blocks win over an independently
+  visible outside generic/semantic wrapper. The wrapper record enclosing the
+  selected group is excluded only from the wrapper predicate; an empty or
+  whitespace-only scalar sibling beneath it still selects the scalar code.
+  Complete approved opaque, untrusted, and action subtrees remain inert. Entry
+  and attempted-fallback diagnostics are mutually exclusive: fallback success
+  emits neither, and an attempted extractor failure emits only the existing
+  `diagnostic_fallback_code`. Invalid or mismatched entry values omit only that
+  field. Never include raw/dynamic UI data, persist/project the entry code, or
+  expose it in normal ask, ordinary `WAITING`, legacy, manual, status, state,
+  events, proposals, unrelated terminal resume, or committed recovery.
+- At that exact six-field/no-scalar recovery boundary, an
+  `...OUTSIDE_PRESENTATION_WRAPPER` entry suppressor may proceed to the
+  unchanged extractor only when every independently visible outside generic or
+  supported semantic wrapper is a complete silent tree. Each visible wrapper
+  must carry exactly one valid structural ref and no additional ref-like token;
+  it may contain only further silent wrappers or complete approved opaque, URL,
+  unknown-chrome, or untrusted subtrees, and no outside `text`/`statictext`
+  scalar at all. Independently visible exact or malformed action groups retain
+  predecessor duplicate/syntax refusal; action-looking material is inert only
+  inside the selected action subtree or already-approved inert chrome. Silent
+  wrapper refs remain trusted collision inputs, while independently outside
+  silent-wrapper root records contribute neither bytes nor stability material;
+  heading, body, and the selected group's enclosing presentation chain retain
+  predecessor stability. A non-silent wrapper keeps
+  the existing entry refusal without extractor invocation, including the
+  predecessor quirk that backtracks valid-looking ref text from a quoted label;
+  a truly ref-free predecessor-unrecognized wrapper remains bounded-content.
+  Extractor failure keeps only its fallback code, and success emits neither
+  diagnostic. Recheck
+  the predicate on every recovery observation and before proposal persistence;
+  no ordinary parser, state, event, proposal, action, or manual path changes.
 - Existing canonical decisions remain authoritative. All browser output stays
-  a hash-bound `UNAPPROVED_PROPOSAL`; `PRO_ADVICE_V1` may inform reversible
-  work only after canonical/local-evidence reconciliation.
+  a hash-bound `UNAPPROVED_PROPOSAL`; exact or sole-json-fenced
+  `PRO_ADVICE_V1` keeps its structured convergence behavior, while other
+  stable, bounded, non-sensitive Markdown or plain text is recorded only as
+  `PRO_REVIEW_TEXT_V1` with `REVIEW_CAPTURED` and authority
+  `UNAPPROVED_REVIEW`. An ordinary text review returns
+  `RECONCILE_CANONICAL_LOCAL`; gated work returns
+  `HUMAN_APPROVAL_REQUIRED`. Neither form may inform work until the applicable
+  canonical, local-evidence, and human-approval gates are satisfied.
   A proposed `DESIGN_HANDOFF_V1` remains unapproved until human approval and
   canonical reconciliation. Neither resolves an Open Decision or authorizes
   implementation by itself. Fixture/dry-run evidence, a live smoke, and formal
   validation remain separate.
+- Use `make pro-import-response PRO_RUN_ID=... PRO_RESPONSE_FILE=...` only for
+  one already-displayed answer bound to one once-submitted eligible run. The
+  file must be an owner-mode-`0600` regular file below
+  `.secrets/chatgpt-pro-responses/`. Import is lower-assurance
+  `HUMAN_COPIED_DISPLAYED_RESPONSE` provenance: it never starts a browser,
+  types, clicks, resumes, resubmits, creates submission evidence, or raises the
+  captured proposal's authority.
 - When implementation needs a new decision, require an approved
   `DESIGN_HANDOFF_V1` with `approved_story`, `approved_scope`,
   `source_design_refs`, `decision`, `rationale`, `rejected_alternatives`,

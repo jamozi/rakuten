@@ -1,0 +1,88 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Exact advanced button Pro priority at the initial ChatGPT landing
+    - Intentional retirement of the structurally indistinguishable legacy combobox Pro picker shape
+    - Focused no-click and legacy-compatibility tests under tests/st0101
+    - Affected operational documentation, append-only worklog, repository instructions, and raos-ask-pro Skill wording
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.summary-verified-pro-answer.v1.yaml
+    - changes/st-0101/design-handoff.role-scoped-summary-correction.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    At the initial landing, the strict current advanced path requires one exact,
+    enabled, ref-bearing raw button Pro and one exact approved composer before
+    any picker click. A raw combobox Pro is not an alternate form of that
+    advanced control and must not be clicked. Retire only the predecessor legacy
+    profile shape whose sole pre-click picker is combobox Pro and whose approved
+    composer makes it structurally indistinguishable from a wrong-role advanced
+    landing. Preserve legacy profiles whose pre-click structure is independently
+    distinguishable without clicking a control that the current advanced
+    contract classifies as wrong-role.
+
+    The later exact advanced-button security rule takes precedence over the
+    earlier general legacy-profile preservation rule for this one colliding
+    shape. A refused combobox Pro landing records phase landing and
+    submission_attempted false, with zero click and zero type. Keep every other
+    summary, transition, response, manual-import, authority, and no-resubmission
+    behavior unchanged.
+  rationale: >-
+    Before the first picker click, combobox Pro plus the approved composer is
+    simultaneously a predecessor legacy split picker and the wrong-role form of
+    the newly required advanced button Pro. No structural information available
+    before clicking can prove which interpretation is correct. Clicking it to
+    preserve legacy violates the later owner-approved rule that wrong-role
+    controls are never clicked; accepting it as advanced weakens exact-role
+    evidence. The owner approved every necessary change to stop the current
+    refusals and obtain a Pro answer. Prioritizing the exact current advanced
+    button is the only deterministic no-wrong-click choice and affects only an
+    obsolete colliding legacy fixture, not the live-proven current button Pro
+    landing.
+  rejected_alternatives:
+    - Click combobox Pro and decide whether it was legacy only after observing the resulting menu
+    - Treat combobox Pro as equivalent to button Pro for the current advanced profile
+    - Use position, OCR, approximate labels, screenshots, DOM scripts, or another profile to distinguish the collision
+    - Preserve every predecessor fixture at the cost of clicking a control forbidden by the later exact-role contract
+    - Relax exact origin, structural stops, dedicated profile, model/effort summaries, sensitivity, or exactly-once submission
+  constraints:
+    - Only the initial legacy combobox Pro collision is intentionally retired
+    - Exact button Pro remains unique, enabled, ref-bearing, raw-role and raw-label exact before click
+    - Combobox Pro plus any approved advanced composer refuses at phase landing with no click, type, intent, or Send
+    - Independently distinguishable predecessor combined and split profiles remain supported
+    - No post-click probing is allowed to resolve the initial collision
+    - Existing 1 plus 12 transition settling begins only after one approved exact picker click
+    - Exact origin and structural stop checks precede selector decisions
+    - Existing runtime, response, manual-import, hash-chain, authority, and formal-evidence boundaries remain unchanged
+    - The owner's broad approval does not authorize CAPTCHA bypass, credential inspection, another account/profile/origin, publication, release, or production action
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to avoid refusal and obtain a Pro answer in conversation on 2026-08-10
+    - The owner-approved exact advanced button rule supersedes general legacy preservation only for the structurally colliding combobox Pro shape
+    - No wrong-role initial picker is clicked to gather more evidence
+    - Structural stops, exact selected summaries, one durable intent, one Send, and no resubmission remain mandatory
+    - Captured output remains UNAPPROVED_PROPOSAL or UNAPPROVED_REVIEW pending applicable reconciliation
+    - Local fixtures, live smoke, formal TST-001, hosted CI, staging, production, publication, and release evidence remain separate
+  acceptance_criteria:
+    - Exact button Pro plus the approved composer enters the current advanced flow and clicks that button once
+    - Combobox Pro plus the approved composer refuses at phase landing before every click and type
+    - Wrong-case, padded, disabled, ref-free, malformed, duplicate, or ref-colliding button Pro refuses before click
+    - Independently distinguishable legacy pickers and profiles remain green
+    - Summary-only zero-child-click, transition settling, response capture, manual import, structural stops, phase evidence, runtime integrity, and no-resubmission regressions remain green
+    - One sanitized ordinary live run captures PRO_ADVICE_V1 or PRO_REVIEW_TEXT_V1 with record_verified true and exactly one submission
+  required_test_evidence:
+    - Exact advanced button success and combobox Pro zero-click refusal fixtures
+    - Initial button wrong-role, case, padding, disabled, ref-free, malformed, duplicate, and ref-collision no-click matrix
+    - Independently distinguishable legacy combined and split profile regressions
+    - Complete isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, canonical import verification, workspace drift detection, and git diff check
+    - Sanitized live doctor READY, exactly-one-submission answer capture, and read-only status evidence kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

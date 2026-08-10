@@ -1,0 +1,97 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Exact semantic-summary priority when the current Pro menu simultaneously exposes Show advanced options and the verified target summaries
+    - Elimination of the redundant expand click when the target model and maximum effort are already visibly proven
+    - Focused current-UI, diagnostic-compatibility, documentation, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.semantic-summary-evidence.v1.yaml
+    - changes/st-0101/design-handoff.closed-selector-diagnostics.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    After proving the exact top-level button Pro and checking exact origin and
+    structural stops, classify semantic model and effort evidence before any
+    Show advanced options control. If the trusted semantic sets are exactly
+    Model GPT-5.6 Sol and Effort Pro, treat the menu as summary-verified and do
+    not resolve or click Show advanced options, even when an exact, malformed,
+    disabled, duplicate, ref-free, or otherwise non-actionable copy of that
+    unused control is also present. Close only through the exact top-level
+    button Pro and continue through the existing exact composer and Send path.
+
+    If either semantic set is non-empty but the exact pair is incomplete or
+    conflicting, stop before any expand click using the existing model/effort
+    missing-or-conflict diagnostic priority. Only when both semantic sets are
+    empty may one exact enabled ref-bearing menuitem Show advanced options
+    define a compact view and be clicked once. When both sets are empty, an
+    exact raw expand candidate that cannot resolve remains
+    ADVANCED_EXPAND_CONTROL_INVALID, and absence of an exact raw candidate
+    remains ADVANCED_MENU_UNRECOGNIZED. Preserve
+    ADVANCED_MENU_STATE_MIXED only for verification and status compatibility
+    with already-recorded run 20260809T183455Z-c0e16f91052e; do not emit it for
+    the newly accepted exact-summary pair.
+  rationale: >-
+    The closed diagnostic live run 20260809T183455Z-c0e16f91052e returned
+    record_verified true, phase pro_menu, ADVANCED_MENU_STATE_MIXED, and
+    submission_attempted false. This proves the current live menu simultaneously
+    exposes a Show advanced options control and semantic model/effort content.
+    The target summaries are the approved visible proof of GPT-5.6 Sol and
+    maximum Pro effort, while expansion exists only to reveal information that
+    is already present and is never itself model or effort evidence. Clicking
+    or validating that unused control adds failure surface without increasing
+    selection certainty. The owner explicitly approved every necessary change
+    to avoid recoverable refusals and obtain an answer.
+  rejected_alternatives:
+    - Click Show advanced options despite already having the exact target summary pair
+    - Treat the simultaneous exact target pair as ambiguous solely because an unused expand control is present
+    - Accept a partial, near, wrong-case, padded, renamed, or competing semantic pair
+    - Accept only button Pro without separately verifying exact model and effort values
+    - Open or click child model or effort options
+    - Retry or resume any prior unsent run
+    - Persist or inspect raw snapshots, arbitrary labels, refs, counts, hashes, menu content, sidebar data, account data, or profile data
+  constraints:
+    - Exact origin and structural stops remain higher priority than every selector or semantic decision
+    - The top-level initial and closing button Pro, composer, and Send remain exact, unique, enabled, ref-bearing, and collision-checked when used
+    - Semantic evidence retains the approved trusted-region, closed-role, exact-value, internal-horizontal-whitespace-only, same-value-duplicate, competing-value, and non-action rules
+    - A complete exact semantic pair prevents every expand-control resolution and click
+    - Partial or conflicting semantic evidence prevents every expand click
+    - The compact expand control is resolved and clicked only when both semantic sets are empty
+    - No child model or effort option is opened, enumerated, compared, or clicked
+    - Existing 1 plus 12 observation-only settling, one submit-false type, one intent, one Send, response capture, manual import, runtime integrity, authority, and no-resubmission behavior remain unchanged
+    - The prior closed diagnostic record and its exact hash-bound ADVANCED_MENU_STATE_MIXED reason remain valid and read-only
+    - The owner's approval does not authorize CAPTCHA bypass, credential inspection, account/profile/origin substitution, publication, release, or production action
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to avoid refusal and obtain a Pro answer in conversation on 2026-08-10
+    - Only the exact complete model/effort pair makes an expand control irrelevant
+    - No ignored expand ref can become an action target or transcript evidence
+    - Incomplete or competing semantic evidence always stops before input
+    - Structural stops, exact used controls, one durable intent, one Send, and no resubmission remain mandatory
+    - Captured output remains UNAPPROVED_PROPOSAL or UNAPPROVED_REVIEW pending reconciliation
+    - Local fixtures, diagnostic smoke, answer capture, formal TST-001, hosted CI, staging, production, publication, and release evidence remain separate
+  acceptance_criteria:
+    - Exact target model and effort summaries plus an exact valid expand control proceed without an expand click
+    - Exact target summaries plus disabled, ref-free, malformed, multiple-ref, duplicate, wrong-role, wrong-case, padded, near, or presentational expand copies proceed without resolving or clicking them
+    - Any partial, missing counterpart, wrong-case, padded, renamed, near, or competing semantic value refuses before expand, type, intent, or Send
+    - Both semantic sets empty plus one exact valid expand control preserves the compact one-click path
+    - Both semantic sets empty plus an invalid exact expand candidate returns ADVANCED_EXPAND_CONTROL_INVALID; no exact candidate returns ADVANCED_MENU_UNRECOGNIZED
+    - The prior ADVANCED_MENU_STATE_MIXED state/event/status record remains verifiable and manual-import-ineligible
+    - Zero child-option clicks, exact close/composer/Send, transition settling, response capture, structural stops, phase evidence, runtime integrity, and no-resubmission regressions remain green
+    - One sanitized ordinary live run records exactly one submission and captures PRO_ADVICE_V1 or PRO_REVIEW_TEXT_V1 with record_verified true
+  required_test_evidence:
+    - Hybrid exact-summary matrices across every valid/invalid/inert expand shape with zero expand and child-option clicks
+    - Partial/conflicting semantic plus expand matrices proving no expand, type, intent, or Send
+    - Empty-semantic compact valid/invalid/unrecognized regressions
+    - Prior diagnostic state/event/status compatibility and tamper rejection
+    - Complete isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, canonical import verification, workspace drift detection, and git diff check
+    - Sanitized live doctor, exactly-one-submission answer capture, and read-only hash-bound status evidence kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

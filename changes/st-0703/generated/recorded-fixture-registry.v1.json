@@ -1,0 +1,148 @@
+{
+  "document": {
+    "id": "RAOS-ST0703-RECORDED-FIXTURE-REGISTRY-001",
+    "status": "IMPLEMENTATION_CANDIDATE",
+    "story_id": "ST-0703",
+    "version": "1.0.0"
+  },
+  "fixture_count": 5,
+  "fixtures": [
+    {
+      "bytes": 1736,
+      "expected": "ProviderError.RATE_LIMIT",
+      "path": "error-rate-limit-429.json",
+      "scenario": "rate_limit_429",
+      "sha256": "e0ce4372d287766cf4b5f3ec1f0afcaf17b49dc41939c379e64c4773dac2eb72"
+    },
+    {
+      "bytes": 3287,
+      "expected": "ProviderIncomplete.CONTENT_FILTER",
+      "path": "incomplete-content-filter.json",
+      "scenario": "incomplete_content_filter",
+      "sha256": "f894f71eb54e751a58b31bd61e18ac846841f58c59e901ae4d1f1c137d783e58"
+    },
+    {
+      "bytes": 3286,
+      "expected": "ProviderIncomplete.MAX_OUTPUT_TOKENS",
+      "path": "incomplete-max-output-tokens.json",
+      "scenario": "incomplete_max_output_tokens",
+      "sha256": "fe7bf867a169f05e615ef3c06146ea1a773999518c27ad58bb2ac1b3886be6d7"
+    },
+    {
+      "bytes": 3189,
+      "expected": "ProviderRefusal",
+      "path": "refusal-completed.json",
+      "scenario": "completed_refusal",
+      "sha256": "f77119e429d422b4e85c50537df14136f5c92e89f30549b26f18051e9e60e350"
+    },
+    {
+      "bytes": 3282,
+      "expected": "ProviderSuccess",
+      "path": "success-structured.json",
+      "scenario": "structured_success",
+      "sha256": "a6a7506c8201a979cdba2cf1e41c9c9d7288d801cf6f2f72aa5e6684e6da168c"
+    }
+  ],
+  "source_inputs": [
+    {
+      "path": "changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
+      "sha256": "08714a5ff21e1b7409d9f54079d34477b489ffe937d79e2f5182dc6eef18468e"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "d7a03c351a2ef20d6aaf45b4dff7775b3ce9dbb7e051323cfbf35d295344814e"
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729"
+    },
+    {
+      "path": "uv.toml",
+      "sha256": "02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "path": "changes/st-0703/DESIGN-DECISION-REQUEST-v3.md",
+      "sha256": "85bb47958a36e994e97cb182589c7e8eb7e20c283476bfd5e823951eea76d76c"
+    },
+    {
+      "path": "changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml",
+      "sha256": "a510526678190b0512a5d28e016f1ab978469e10cc5063d6a2482f93b6ce43c8"
+    },
+    {
+      "path": "changes/st-0703/DESIGN-HANDOFF-APPROVAL-v3.yaml",
+      "sha256": "df9b39bf9969618a34a58fc0dfab679467ab02a360f22c306d4d408a8ecd5eae"
+    },
+    {
+      "path": "changes/st-0703/CANONICAL-RECONCILIATION-v3.md",
+      "sha256": "3c0629b4c308e316991d64ae49d4a9b002f77dd78afe684c17da7e47d3bca290"
+    },
+    {
+      "path": "changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v4.yaml",
+      "sha256": "7d384015c2975d7a718ff348cb4d1538a354f095cc0d9a2b0c76dbca5f6e4898"
+    },
+    {
+      "path": "changes/st-0703/DESIGN-HANDOFF-APPROVAL-v4.yaml",
+      "sha256": "ed717125191c26dc609c61341320f020be7883add1f0967096b20d11e60eb202"
+    },
+    {
+      "path": "changes/st-0703/CANONICAL-RECONCILIATION-v4.md",
+      "sha256": "6c3285712156781c9a107dfb5417f87896246c75e3158fec485f1ea07be54887"
+    },
+    {
+      "path": "changes/st-0703/DESIGN-DECISION-REQUEST-v5.md",
+      "sha256": "e2cec557d0c412effd5ae4a7fa7d1069ff46579caada980a9c8dd7479a6a51cd"
+    },
+    {
+      "path": "changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v5.yaml",
+      "sha256": "ac8afef5f18b4602c099d27ad7f86f3880acb28be5e57badc47d45b27c3abe97"
+    },
+    {
+      "path": "changes/st-0703/DESIGN-HANDOFF-APPROVAL-v5.yaml",
+      "sha256": "3f3183275ed819349c2528bfd555d195d48b221f759bea42e29f8e941b048fb3"
+    },
+    {
+      "path": "changes/st-0703/CANONICAL-RECONCILIATION-v5.md",
+      "sha256": "65021265c8c5bd40bd8949eb876542e53400333bb615794d67418975873d6ac3"
+    },
+    {
+      "path": "changes/st-0701/manifest.yaml",
+      "sha256": "14d651ffcd99ec1d90f46ecd1585837aafb26a050024790c9304bc70b8f69852"
+    },
+    {
+      "path": "changes/st-0204/manifest.yaml",
+      "sha256": "b7c82cc0852358a85707dc0ebb4f576292b88a6ea201b17e031ccbb5be4b1f1e"
+    },
+    {
+      "path": "contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json",
+      "sha256": "163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31"
+    },
+    {
+      "path": "contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-result.schema.json",
+      "sha256": "ac59d14f41dbcabaaf98a5bea4b603313f3bb752fc6d8b4ca8b33973b3fdfd17"
+    }
+  ]
+}

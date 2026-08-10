@@ -1,0 +1,147 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Recovery-only tolerance for structurally complete silent presentation wrappers outside the selected embedded response subtree
+    - Reuse of the existing ref-free embedded extractor, stability barrier, safety checks, proposal-first persistence, and event-last commit
+    - Focused parser/recovery/non-exposure tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-ref-free-content.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-ref-free-fallback-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-ref-free-entry-diagnostics.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Permit one later acceptance only during exact eligible terminal bound-response
+    recovery. The existing generic reason and six diagnostic fields must be
+    exactly RESPONSE_NOT_IDENTIFIABLE /
+    ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID /
+    ADVANCED_RESPONSE_ACTION_PRE_CONTENT /
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID /
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID /
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING, the approved
+    ref-free fallback capability must be enabled, the ordinary scan must have
+    produced no scalar blocks, and the existing pre-extractor classifier must
+    otherwise select
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER.
+
+    At that exact boundary, do not suppress the existing pure embedded extractor
+    when every independently visible outside generic or semantic presentation
+    wrapper inside the owned assistant body is silent. Every independently
+    visible wrapper in a silent tree must remain structurally complete under the
+    predecessor generic/semantic entry grammar and must additionally contain
+    exactly one quote-aware valid structural ref token outside its quoted label,
+    with no additional malformed, duplicate, or distinct ref-like token. A truly
+    ref-free wrapper that is not recognized by the predecessor entry grammar
+    retains its bounded-content refusal. The predecessor `ELEMENT_PATTERN`
+    backtracking case that misreads valid-looking ref text inside a quoted label
+    as the first ref already reaches the exact-six plus entry refusal; it remains
+    non-silent with that same refusal and is not reclassified.
+    A predecessor-recognized wrapper with a valid first ref plus another valid,
+    duplicate, wrong-case, malformed, or residual ref-like token is non-silent
+    and retains the existing exact-six plus OUTSIDE_PRESENTATION_WRAPPER entry
+    refusal; it is not reclassified. Neither form reaches this tolerance. A
+    silent wrapper tree must own no text or statictext scalar at all outside the
+    selected action subtree and may otherwise contain only
+    further silent presentation wrappers or complete already-approved opaque,
+    URL-metadata, unknown-chrome, or untrusted subtrees. It contributes no
+    response bytes and cannot supply response content, a stability candidate, a
+    marker, a stop, a selector, or an action. An independently visible exact or
+    malformed action group inside an outside wrapper is never silent: the
+    predecessor one-group-total and action-syntax rules continue to refuse it.
+    Action material remains inert only when it is already inside the selected
+    action subtree or inside a predecessor-approved opaque, unknown-chrome, or
+    untrusted subtree. Multiple silent wrapper trees and placement before or
+    after the selected group are allowed only when each tree independently
+    satisfies the same closed predicate.
+
+    Preserve all outside trusted structural refs, including the silent wrapper
+    chain, in the existing fallback collision set. A collision, malformed
+    wrapper, scalar descendant, unsupported material, owned-body escape, or any
+    other non-silent condition keeps the existing refusal or closed fallback
+    diagnostic. Empty or whitespace scalar blocks retain the higher-priority
+    OUTSIDE_WHITESPACE_SCALAR entry refusal. Revalidate the silent predicate and
+    collision set on every observation and before proposal persistence. Only
+    validated lines from the selected embedded action subtree may feed response
+    bytes. Preserve the predecessor stability candidate for the heading, body,
+    and selected group's enclosing presentation chain; exclude only the newly
+    tolerated independently outside silent-wrapper root records and continue to
+    include the existing validated embedded candidate indexes.
+
+    If the unchanged pure extractor succeeds, continue through the existing
+    three-observation stability barrier, size and sensitivity gates, owner-only
+    proposal-first write, and BOUND_RESPONSE_RECOVERED event-last commit. If it
+    fails, preserve its existing diagnostic_fallback_code. A successful capture
+    emits neither fallback nor entry diagnostic. Normal ask, ordinary WAITING,
+    legacy parsing, manual import, unrelated terminal resume, and every
+    non-recovery parser call remain unchanged and cannot enable this tolerance.
+  rationale: >-
+    After exact fallback-entry diagnostics passed all local and independent
+    gates, sanitized recovery of existing run
+    20260809T185354Z-46c4528b4413 returned the exact six-field chain plus
+    ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER.
+    The ordinary parser already proved that no outside scalar block contributed
+    content. Allowing only structurally complete silent presentation wrappers
+    to stop suppressing the already approved pure extractor removes this one
+    UI-chrome dependency without accepting outside bytes or weakening trusted
+    ref collision, boundary, safety, persistence, or no-resubmission controls.
+  rejected_alternatives:
+    - Ignore every outside generic or semantic subtree regardless of descendants
+    - Accept response bytes, labels, refs, or scalar payloads from an outside wrapper
+    - Drop outside-wrapper refs from the trusted collision set
+    - Treat empty or whitespace scalars as silent wrapper material
+    - Read, display, persist, screenshot, or inspect the raw snapshot or response subtree
+    - Submit again, use another conversation, profile, account, origin, API, or manual browser extraction
+    - Add browser evaluation, OCR, CDP, storage access, dynamic selector rules, or an unbounded new parser
+  constraints:
+    - Exact terminal-recovery six-field REF_MISSING chain and enabled fallback capability are mandatory
+    - The scalar-block suppressor retains priority and is never relaxed by this handoff
+    - Silent-wrapper classification is structural, bounded to the owned assistant body, and uses no label or payload-derived exception
+    - Outside trusted structural refs remain collision-relevant; only existing approved opaque, untrusted, URL, unknown-chrome, and the already selected action subtree remain ref-inert as before
+    - An independently visible second or malformed action group inside an outside wrapper preserves predecessor DUPLICATE or action-syntax refusal and cannot satisfy the silent predicate
+    - Only selected embedded action-subtree lines can produce response bytes
+    - Stability preserves predecessor heading/body/enclosing-chain material and excludes only newly tolerated independently outside silent-wrapper root records before adding existing validated embedded candidate indexes
+    - No stop, marker, selector, authentication, origin, boundary, sensitivity, authority, state, event, proposal, or manual-import rule is weakened
+    - Recovery remains unchanged-state on failure, navigate/snapshot/wait/close-only, and resubmitted false
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - This handoff authorizes only the exact recovery-only silent-wrapper tolerance and no broader UI acceptance
+    - CAPTCHA, login, reauthentication, account ambiguity, page-level rate limit, origin mismatch, sensitivity, and transport stops remain fail closed
+    - No click, type, Send, new submission intent, resubmission, alternate profile, raw browser inspection, or credential access is authorized
+    - Captured output remains hash-bound unapproved advisory material requiring canonical and local-evidence reconciliation
+    - Local fixtures, sanitized live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Exact one-valid-ref silent generic and semantic wrapper trees before and after the selected group no longer suppress the existing pure extractor
+    - Truly ref-free or otherwise predecessor-unrecognized outside wrappers retain their existing bounded-content refusal and cannot enter this tolerance
+    - A predecessor-recognized wrapper whose only valid-looking ref text occurs inside its quoted label remains non-silent and retains the exact-six plus OUTSIDE_PRESENTATION_WRAPPER entry refusal
+    - Predecessor-recognized wrappers with a valid first ref plus any additional valid, duplicate, wrong-case, malformed, or residual ref-like token remain non-silent and retain the exact-six plus OUTSIDE_PRESENTATION_WRAPPER entry refusal
+    - Nested and multiple silent wrapper trees are accepted only when every outside tree is structurally complete and scalar-free
+    - Approved opaque, URL, unknown-chrome, and untrusted descendants remain inert and contribute no bytes, refs beyond predecessor policy, stops, markers, selectors, or actions
+    - Independently visible exact, near, or malformed action groups beneath an outside wrapper retain the predecessor one-group-total and syntax refusals; only action material already hidden by approved inert chrome remains inert
+    - Any direct or nested text/statictext scalar outside the selected subtree remains refused or follows its unchanged predecessor path; empty/whitespace scalars retain OUTSIDE_WHITESPACE_SCALAR priority
+    - Malformed, unsupported, response-bearing, boundary-crossing, and trusted-ref-colliding controls retain their existing refusal and diagnostic behavior
+    - Recovery stability resets or refuses when a silent wrapper becomes non-silent; only selected embedded lines determine accepted response bytes, while heading/body/enclosing-chain stability material remains unchanged
+    - Successful recovery writes one owner-only proposal and appends one verified BOUND_RESPONSE_RECOVERED commit with resubmitted false, then repeats idempotently without browser launch
+    - Failed recovery leaves the original terminal state, event anchor, proposal absence, progress-tail retry, and manual-copy fallback unchanged
+  required_test_evidence:
+    - Direct parser matrices for generic and every semantic wrapper role, before/after placement, nested chains, multiple trees, complete allowed attributes, exactly one valid ref per visible wrapper, and zero additional/duplicate/colliding refs across accepted trees
+    - Truly ref-free and predecessor-unrecognized outer and nested controls proving unchanged bounded-content refusal, quoted-label-ref backtracking controls proving unchanged exact-six entry refusal, plus structural-valid-first/additional-valid-or-malformed token controls proving unchanged exact-six entry refusal
+    - Silent descendants covering approved opaque, URL metadata, unknown chrome, and untrusted subtrees with byte/ref/stop/marker/action inertness assertions
+    - Exact, near, and malformed independently visible action-group descendants proving predecessor DUPLICATE/syntax refusal, plus action-looking material inside approved inert chrome proving unchanged opacity
+    - Refusal controls for direct/nested empty, whitespace, and non-whitespace scalars; malformed wrappers; unsupported material; body-boundary escape; and trusted-ref collisions
+    - Instrumentation proving the existing extractor is invoked exactly once only after the silent predicate, that only independently outside silent-wrapper root records are excluded, that heading/body/enclosing-chain stability records remain, and that outside wrappers never enter response bytes
+    - Stability matrices for inert wrapper churn, silent-to-non-silent transition, ref-collision transition, three stable observations, safety refusal, zero actions, proposal-first/event-last commit, and idempotent repeat
+    - Normal ask, ordinary WAITING, legacy, manual import, status, state, events, proposals, unrelated terminal resume, and committed-recovery non-exposure/non-enablement tests
+    - Complete isolated ST-0101 suite, Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - Two independent read-only adversarial audits and one sanitized same-run live recovery kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

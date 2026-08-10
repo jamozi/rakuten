@@ -1,0 +1,95 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Minimal strict advanced-response heading tolerance for complete non-ref accessibility attributes
+    - Existing live bound-response recovery without resubmission
+    - Focused parser/recovery tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-closed-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-heading-diagnostics.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Extend only the strict advanced response heading grammar. Continue to
+    require one exact raw lower-case role `heading`, the exact case- and
+    punctuation-sensitive JSON label `ChatGPT said:`, and exactly one valid
+    structural ref token `[ref=eN]`. Permit zero or more additional complete
+    non-ref accessibility attribute tokens accepted by the existing
+    ADVANCED_RESPONSE_ATTRIBUTE_PATTERN before or after that ref. Attribute
+    order, names, and non-whitespace values do not contribute response bytes or
+    authority and are ignored after structural validation.
+
+    Reject a ref-free heading; malformed, unclosed, unbracketed, or residual
+    text; a malformed or multiple ref attempt; a non-ref token outside the
+    existing attribute grammar; wrong role, label, case, punctuation, or edge
+    whitespace; duplicate/competing trusted markers; any heading/body/global
+    ref collision; or a missing/invalid body. A case-insensitive attribute name
+    `ref` is reserved and may occur only as the one exact valid lower-case ref
+    token. Preserve all origin, structural-stop, generating, stability,
+    bounded-body, sensitivity, and size gates.
+
+    Apply the grammar consistently to candidate discovery, stability-region
+    ownership, exact anchor resolution, body extraction, and distinct-ref
+    validation. Do not accept an additional heading identity, use any heading
+    or attribute as an action target, or change the response bytes. Keep the
+    existing closed diagnostics for all still-invalid forms. Recover only the
+    existing exact run through navigate/snapshot/wait/close; never click, type,
+    Send, create intent, or resubmit.
+  rationale: >-
+    Three sanitized no-resubmission recovery passes progressively isolated the
+    live refusal for run 20260809T185354Z-46c4528b4413 to exact detail
+    ADVANCED_RESPONSE_HEADING_EXTRA_ATTRIBUTES. The role, label family, and ref
+    contract therefore remain valid; the current UI adds syntactically complete
+    accessibility metadata to the heading. Those non-action attributes neither
+    identify the response nor contribute its content. Ignoring only complete
+    non-ref attributes preserves the existing anchor and boundary while
+    accommodating the observed UI drift.
+  rejected_alternatives:
+    - Accept a ref-free, wrong-role, approximate-label, malformed, or competing heading
+    - Whitelist a guessed attribute name or value from raw UI material
+    - Display, persist, log, screenshot, or inspect the raw heading or snapshot
+    - Submit again, create a new conversation, use another profile/origin, or call an API
+    - Treat heading attributes as response bytes, authority, selectors, or action targets
+    - Relax body-root, content, stop, stability, sensitivity, or proposal validation
+  constraints:
+    - Exact raw role, exact raw label, and exactly one valid ref remain mandatory
+    - Only complete existing-grammar non-ref accessibility attributes are ignored
+    - Attribute values cannot supply refs, response content, stop evidence, stability anchors, or action targets
+    - All structural refs, including the heading and body refs, remain globally distinct under the existing gate
+    - Existing semantic response reconstruction and output bytes remain unchanged
+    - Closed diagnostics remain recovery-only and non-persistent
+    - Recovery remains unchanged-state, proposal-first/event-last, navigate/snapshot/wait/close-only, and resubmitted false
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - The live closed detail is exactly ADVANCED_RESPONSE_HEADING_EXTRA_ATTRIBUTES; no broader heading defect is authorized
+    - The parser must prove the exact role, label, one valid ref, exact origin, no structural stop, no competitor, and exact body before collecting bytes
+    - Invalid or ref-like extra tokens remain refusals and cannot be normalized into success
+    - No recovery code path may click, type, Send, create a submission intent, or resubmit
+    - Captured output remains unapproved advisory material and cannot approve a handoff or resolve an Open Decision
+    - Local fixtures, live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Exact advanced heading plus one or more complete non-ref attributes before and/or after the sole valid ref is accepted
+    - The same heading without extra attributes stays accepted and byte-stable
+    - Ref-free, malformed, multiple-ref, ref-like, residual, wrong-role/label, duplicate, competing, and ref-colliding matrices refuse
+    - Accepted attributes contribute zero response bytes and never become action targets or persisted metadata
+    - Existing body, opacity, action-boundary, stability, stop, sensitivity, manual-import, and legacy tests remain green
+    - The exact live run is recovered without resubmission into a hash-verified PRO_ADVICE_V1 or PRO_REVIEW_TEXT_V1 proposal with recovery provenance and resubmitted false
+  required_test_evidence:
+    - Attribute-before-ref, attribute-after-ref, multiple valid attributes, valueless/value attributes, ordering, and predecessor no-extra success matrices
+    - Malformed/unclosed/residual, ref-free, wrong-case ref-name, malformed/multiple ref, wrong role/label, marker competition, and heading/body/global ref-collision refusals
+    - Stability/candidate/parser consistency and exact zero-action recovery traces
+    - Existing current-response, bound-recovery, diagnostic, manual-import, resume, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - Sanitized live recovery plus read-only verified status, kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。
