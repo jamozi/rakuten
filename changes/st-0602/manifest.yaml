@@ -1,0 +1,112 @@
+document:
+  id: RAOS-ST0602-FACT-EXTRACTION-VALIDATION-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0602
+  source_contract: repo://changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
+  generated_by: repo://scripts/build_st0602_fact_extraction_validation_reference_plan.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0602_fact_extraction_validation_reference_plan.py
+provenance:
+  contract_sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
+  canonical_story:
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  predecessors:
+  - story_id: ST-0601
+    commit: 2653f1a3f78172576818b032b0bd34b54360d9fb
+    inputs:
+    - uri: repo://changes/st-0601/README.md
+      sha256: 93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766
+    - uri: repo://python/raos/domain/ops/artifact_registry.py
+      sha256: 114da597e5a2350a3b5412a94c98f964397c86264009737183f225ad30f81af4
+    - uri: repo://python/raos/ports/artifact_registry.py
+      sha256: 973c43c6233eccd11f068ab69794c31e7f5fc81ed2f4632937a3bf392c25a747
+    - uri: repo://python/raos/application/ops/artifact_registry.py
+      sha256: 334b116682e37beb652e38354e62eaaacfb1c6be17f844a689401228f20edb9b
+    - uri: repo://python/raos/adapters/recorded_artifact_registry.py
+      sha256: a47dfa52627f8212a75f76f9b6ef8cf7e13fc6b6b90f171b1a72dbad6c0d06c5
+    - uri: repo://tests/st0601/conftest.py
+      sha256: 26d28a320cc0ccc6480aee68b508abf62b33cebb71177df629d5d61b81d2a459
+    - uri: repo://tests/st0601/test_artifact_registry.py
+      sha256: 827e3e6f522edf4c7bc5e83c49afbb41933b6d73e4efa9759a556f8702d91e82
+    - uri: repo://tests/st0601/test_failure_isolation.py
+      sha256: 89c13714d24f34d76ec49a4c3131ba1d53642393a7797d08e9e5fcb74f948970
+    - uri: repo://tests/st0601/test_boundaries.py
+      sha256: 5d5981813b80c2cd3d15f1b287ba3d4b601b114608e3e13b84058209f8aa3a72
+  - story_id: ST-0503
+    commit: b61d4dd83b87495dfd672bdf8960dc3b1ff29d79
+    inputs:
+    - uri: repo://changes/st-0503/README.md
+      sha256: aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138
+    - uri: repo://python/raos/domain/catalog/catalog_normalization.py
+      sha256: 6fa0adbd3ade25c5e6880e5aaec70f2c010173873b3cd3d11987d317f81642d9
+    - uri: repo://python/raos/ports/catalog_normalization.py
+      sha256: c2bd6979baf05f778059df28bb3c34cdcd3862d871fc0ea238626790bfa218e1
+    - uri: repo://python/raos/application/catalog/catalog_normalization.py
+      sha256: 02ec218119133ac64df4228a588f415c99f64e898be9c9fa581222b5933abfe4
+    - uri: repo://python/raos/adapters/recorded_catalog_normalization.py
+      sha256: 2f25cce21d5368d31a5129df61c07c12ae018f879631f760ee27c97cf917fa9b
+    - uri: repo://tests/st0503/conftest.py
+      sha256: 8073bb2e43b470bd19bcdf50fcb9f3a1fbc42e6614586e814c4bfd4452491bf1
+    - uri: repo://tests/st0503/test_normalization.py
+      sha256: 1bd442a1160be528e677a7f026e449f65a9bb937b91e29f78daa1d231c2feb1f
+    - uri: repo://tests/st0503/test_failure_isolation.py
+      sha256: 3655c1757ce6eee01cab7deb198f8daad25a61cf045de07165f0eda7368d0056
+    - uri: repo://tests/st0503/test_boundaries.py
+      sha256: f1ebe757961349fe8deac3ed2e3c4217181a9bef423f0091803a0459a655356a
+  implementation_helper:
+    uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
+  bytes: 5691
+  sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
+- uri: repo://changes/st-0602/README.md
+  bytes: 3007
+  sha256: c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5
+- uri: repo://scripts/build_st0602_fact_extraction_validation_reference_plan.py
+  bytes: 27961
+  sha256: 6ff038c9c2e06a6bef6b8fb2520ad5d62b9107bf80a77adcb0dd1811d399bd17
+- uri: repo://tests/st0602/conftest.py
+  bytes: 972
+  sha256: 8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9
+- uri: repo://tests/st0602/test_contract.py
+  bytes: 5718
+  sha256: 8d1fe6cfa6edac6910802a1be71370a2e371144e4b7ca7d4e3a3bc145f66e775
+- uri: repo://tests/st0602/test_generation.py
+  bytes: 3734
+  sha256: 1b5d8314fe24cbe9f76556fb5699d22168f17736ccce982f129de8a2209db2b2
+- uri: repo://tests/st0602/test_negative_cases.py
+  bytes: 12774
+  sha256: 46b65c0b3954da438425f734c7898dccdf39c9dd7445d4b4e15ac682b15c78c9
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
+  bytes: 7948
+  sha256: 09dfe62f6afbd5c531a96c22330fa920356abf614f0230ec2a6ff19c6ba1b157
+boundary:
+  classification: SOURCE_DERIVED_NON_EXECUTABLE_FACT_EXTRACTION_VALIDATION_REFERENCE_PLAN
+  executable: false
+  interface_only: true
+  decision: NOT_READY
+  canonical_context: DESCRIPTIVE_ONLY
+  real_artifact_available: false
+  source_snapshot_available: false
+  authoritative_subject_available: false
+  confidence_source: ABSENT
+  facts: 0
+  fact_ids: 0
+  derivations: 0
+  validation: NOT_EXECUTED
+  repository: NOT_EXECUTED
+  database: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event: NOT_EXECUTED
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_007: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+  production_eligible: false
+  effective_canonical_status: UNCHANGED

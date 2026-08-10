@@ -1,0 +1,158 @@
+schema_version: 1
+story_id: ST-0602
+classification: SOURCE_DERIVED_NON_EXECUTABLE_FACT_EXTRACTION_VALIDATION_REFERENCE_PLAN
+status: LOCAL_IMPLEMENTATION_CANDIDATE
+executable: false
+interface_only: true
+decision: NOT_READY
+production_eligible: false
+approval: null
+story_acceptance: false
+canonical_story_status:
+  implementation: NOT_STARTED
+  verification: NOT_EXECUTED
+authority:
+  canonical_story_path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  canonical_story_sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  objective: 原本から型付きFactを作成
+  requirement_ids:
+  - FR-004
+  acceptance_criteria:
+  - unit/time/source/confidence
+  test_suites:
+  - TST-005
+  - TST-007
+predecessors:
+- story_id: ST-0601
+  commit: 2653f1a3f78172576818b032b0bd34b54360d9fb
+  relationship: SOURCE_BOUND_RECORDED_NON_ATTESTING_INPUT_ONLY
+  files:
+  - path: changes/st-0601/README.md
+    sha256: 93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766
+  - path: python/raos/domain/ops/artifact_registry.py
+    sha256: 114da597e5a2350a3b5412a94c98f964397c86264009737183f225ad30f81af4
+  - path: python/raos/ports/artifact_registry.py
+    sha256: 973c43c6233eccd11f068ab69794c31e7f5fc81ed2f4632937a3bf392c25a747
+  - path: python/raos/application/ops/artifact_registry.py
+    sha256: 334b116682e37beb652e38354e62eaaacfb1c6be17f844a689401228f20edb9b
+  - path: python/raos/adapters/recorded_artifact_registry.py
+    sha256: a47dfa52627f8212a75f76f9b6ef8cf7e13fc6b6b90f171b1a72dbad6c0d06c5
+  - path: tests/st0601/conftest.py
+    sha256: 26d28a320cc0ccc6480aee68b508abf62b33cebb71177df629d5d61b81d2a459
+  - path: tests/st0601/test_artifact_registry.py
+    sha256: 827e3e6f522edf4c7bc5e83c49afbb41933b6d73e4efa9759a556f8702d91e82
+  - path: tests/st0601/test_failure_isolation.py
+    sha256: 89c13714d24f34d76ec49a4c3131ba1d53642393a7797d08e9e5fcb74f948970
+  - path: tests/st0601/test_boundaries.py
+    sha256: 5d5981813b80c2cd3d15f1b287ba3d4b601b114608e3e13b84058209f8aa3a72
+  required_semantics:
+    accepted_kind: raw_provider_response
+    real_artifact_available: false
+    source_snapshot_available: false
+    storage_execution: NOT_EXECUTED
+    read_execution: NOT_EXECUTED
+    write_execution: NOT_EXECUTED
+    roundtrip_execution: NOT_EXECUTED
+    attestation_execution: NOT_EXECUTED
+    persistence_execution: NOT_EXECUTED
+    matching_decision: NOT_READY
+    artifact_id: null
+    artifact_ref: null
+- story_id: ST-0503
+  commit: b61d4dd83b87495dfd672bdf8960dc3b1ff29d79
+  relationship: LOSSLESS_NORMALIZATION_CONTEXT_ONLY
+  files:
+  - path: changes/st-0503/README.md
+    sha256: aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138
+  - path: python/raos/domain/catalog/catalog_normalization.py
+    sha256: 6fa0adbd3ade25c5e6880e5aaec70f2c010173873b3cd3d11987d317f81642d9
+  - path: python/raos/ports/catalog_normalization.py
+    sha256: c2bd6979baf05f778059df28bb3c34cdcd3862d871fc0ea238626790bfa218e1
+  - path: python/raos/application/catalog/catalog_normalization.py
+    sha256: 02ec218119133ac64df4228a588f415c99f64e898be9c9fa581222b5933abfe4
+  - path: python/raos/adapters/recorded_catalog_normalization.py
+    sha256: 2f25cce21d5368d31a5129df61c07c12ae018f879631f760ee27c97cf917fa9b
+  - path: tests/st0503/conftest.py
+    sha256: 8073bb2e43b470bd19bcdf50fcb9f3a1fbc42e6614586e814c4bfd4452491bf1
+  - path: tests/st0503/test_normalization.py
+    sha256: 1bd442a1160be528e677a7f026e449f65a9bb937b91e29f78daa1d231c2feb1f
+  - path: tests/st0503/test_failure_isolation.py
+    sha256: 3655c1757ce6eee01cab7deb198f8daad25a61cf045de07165f0eda7368d0056
+  - path: tests/st0503/test_boundaries.py
+    sha256: f1ebe757961349fe8deac3ed2e3c4217181a9bef423f0091803a0459a655356a
+  required_semantics:
+    normalization: LOSSLESS_STRUCTURAL_ONLY
+    source_snapshot_id: null
+    source_snapshot_status: NOT_AVAILABLE
+    authoritative_subject_available: false
+    confidence: null
+    confidence_basis: SOURCE_ABSENT
+    identity_decision: REVIEW_REQUIRED
+    persistence_execution: NOT_EXECUTED
+canonical_context:
+  authority: DESCRIPTIVE_ONLY
+  creates_runtime_contract: false
+  fact_model: DESCRIPTIVE_ONLY_NOT_BOUND
+  extraction_job: DESCRIPTIVE_ONLY_NOT_BOUND
+  fact_event: DESCRIPTIVE_ONLY_NOT_BOUND
+  security_controls: DESCRIPTIVE_ONLY_NOT_BOUND
+input_defaults:
+  source_snapshot_id: null
+  artifact_id: null
+  artifact_ref: null
+  subject_id: null
+  predicate: null
+  unit: null
+  confidence: null
+  locator: null
+  extractor: null
+  manual_review_count: null
+fact_projection_defaults:
+  facts: []
+  fact_ids: []
+  derivations: []
+  validation_records: []
+  manual_review_records: []
+validation_defaults:
+  status: NOT_EXECUTED
+  unit_validation: NOT_EXECUTED
+  time_validation: NOT_EXECUTED
+  source_validation: NOT_EXECUTED
+  confidence_validation: NOT_EXECUTED
+  passed: false
+  blockers:
+  - REAL_ARTIFACT_UNAVAILABLE
+  - SOURCE_SNAPSHOT_UNAVAILABLE
+  - AUTHORITATIVE_SUBJECT_UNAVAILABLE
+  - CONFIDENCE_SOURCE_ABSENT
+  - EXTRACTOR_NOT_IMPLEMENTED
+  - PERSISTENCE_BOUNDARY_UNAVAILABLE
+execution_boundary:
+  extraction: NOT_EXECUTED
+  validation: NOT_EXECUTED
+  manual_review: NOT_EXECUTED
+  repository: NOT_EXECUTED
+  database: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  live: NOT_EXECUTED
+  external: NOT_EXECUTED
+  action_counts:
+    extract: 0
+    validate: 0
+    create_fact: 0
+    derive: 0
+    manual_review: 0
+    enqueue_job: 0
+    emit_event: 0
+    repository_write: 0
+    database_write: 0
+    external: 0
+verification_boundary:
+  TST-005: NOT_EXECUTED
+  TST-007: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
