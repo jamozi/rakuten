@@ -1,0 +1,79 @@
+document:
+  id: RAOS-STRATEGY-SWITCHBOARD-001
+  version: 1.0.0
+  status: IMPLEMENTATION_CANDIDATE
+scope:
+  canonical_story_coverage: ALL_STORIES_FROM_BACKLOG
+  open_decision_coverage: [OD-001, OD-002, OD-003, OD-004, OD-005, OD-006, OD-007, OD-008, OD-009, OD-010, OD-011, OD-012, OD-013, OD-014, OD-015]
+  candidates_per_boundary: 3
+candidate_tiers:
+  safe:
+    execution: deterministic_plan
+    external_side_effects: forbidden
+    allowed_environments: [local]
+    gate_material: none
+  standard:
+    execution: manual_input_or_injected_verifier
+    allowed_environments: [local, staging]
+    gate_material: explicit_approval_and_candidate_evidence
+  advanced:
+    execution: injected_adapter
+    allowed_environments: [local, staging, production]
+    gate_material:
+      - candidate_approval
+      - production-use approval
+      - candidate_evidence
+      - candidate_capability
+profiles:
+  safe-local:
+    preferred_tier: safe
+    fallback: safe_only
+  balanced-staging:
+    preferred_tier: standard
+    fallback: eligible_lower_tiers_only
+  advanced-external:
+    preferred_tier: advanced
+    fallback: fail_closed
+selection:
+  ambient_configuration_reads: forbidden
+  exact_profile_override: supported
+  exact_call_override: supported
+  cross_boundary_override: rejected
+  missing_gate_behavior: stable_content_free_error
+  production_to_nonproduction_fallback: forbidden
+  decision_record:
+    canonical_json: true
+    context_sha256: required
+    catalog_sha256: required
+    selected_strategy: required
+    requested_strategy: required
+    fallback_chain: required
+execution:
+  deterministic_plan:
+    payload_content_recording: forbidden
+    result: content_free_plan_and_payload_hash
+  manual_input:
+    empty_payload: rejected
+    payload_content_recording: forbidden
+    result: acceptance_and_payload_hash
+  injected_adapter:
+    application_wiring: required
+    adapter_key: exact
+    result: bounded_canonical_json
+    exception_passthrough: forbidden
+    missing_adapter: STRATEGY_ADAPTER_MISSING
+    adapter_failure: STRATEGY_ADAPTER_FAILED
+security:
+  credentials_in_catalog: forbidden
+  provider_values_in_catalog: forbidden
+  human_approval_invention: forbidden
+  open_decision_resolution: forbidden
+  raw_exception_message: forbidden
+  production_activation: forbidden
+generation:
+  command: python scripts/build_all_story_strategy_catalog.py --write
+  check: python scripts/build_all_story_strategy_catalog.py --check
+  output: repo://changes/all-stories/generated/switchable-strategy-catalog.v1.json
+  source_inputs:
+    - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
