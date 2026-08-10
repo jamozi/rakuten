@@ -65,6 +65,48 @@ jobs:
             --resolution highest --prerelease disallow \
             --exclude-newer 2026-08-01T16:50:16Z --no-progress
 
+      - name: Prime and verify offline drift-resolution cache
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          warm_root="$(mktemp -d "$RUNNER_TEMP/st0102-warm.XXXXXX")"
+          verify_root="$(mktemp -d "$RUNNER_TEMP/st0102-verify.XXXXXX")"
+          for root in "$warm_root" "$verify_root"; do
+            cp .python-version pyproject.toml uv.toml uv.lock "$root/"
+            /usr/bin/python3 -I - "$root/pyproject.toml" <<'PY'
+          from pathlib import Path
+          import sys
+
+          path = Path(sys.argv[1])
+          content = path.read_text(encoding="utf-8")
+          old = '  "types-pyyaml==6.0.12.20260724",\n'
+          if content.count(old) != 1:
+              raise SystemExit("drift-cache anchor mismatch")
+          path.write_text(content.replace(old, ""), encoding="utf-8")
+          PY
+          done
+          (
+            cd "$warm_root"
+            "$uv_path" --config-file "$warm_root/uv.toml" --color never lock \
+              --python 3.14.6 --no-python-downloads --no-sources \
+              --default-index https://pypi.org/simple --index-strategy first-index \
+              --keyring-provider disabled --resolution highest \
+              --prerelease disallow --exclude-newer 2026-08-01T16:50:16Z
+          )
+          verify_log="$RUNNER_TEMP/st0102-offline-drift.log"
+          set +e
+          (
+            cd "$verify_root"
+            env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+              "$uv_path" --config-file "$verify_root/uv.toml" --color never \
+              lock --check --offline
+          ) >"$verify_log" 2>&1
+          verify_status=$?
+          set -e
+          test "$verify_status" -ne 0
+          grep -Eiq 'lock' "$verify_log"
+          grep -Eiq 'update|changed' "$verify_log"
+
       - name: Update approved ST-0102 dependency inventory
         run: |
           set -euo pipefail
