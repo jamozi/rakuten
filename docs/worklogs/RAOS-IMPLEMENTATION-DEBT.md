@@ -2261,3 +2261,58 @@ original result.
   are not promoted to repository, formal, or deployment evidence.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe local ST-0503 lossless seam.
+
+### 2026-08-10 W2 / ST-0504 product-identity Human Review reference-plan checkpoint
+
+- Authority and scope: canonical `ST-0504` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0503, carries blocking OD-006,
+  and requires TST-007/TST-020. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint creates a source-derived,
+  non-executable Human Review reference plan; it does not choose category
+  identity rules, execute grouping, record a reviewer decision, or mutate
+  product membership.
+- The contract binds the committed ST-0503 feature commit and all nine owned
+  file hashes, then revalidates that its normalized candidate drafts preserve
+  source provenance and establish no canonical identity, automatic grouping,
+  merge/split result, ranking, or approval. OD-006 remains
+  `EXTERNAL_EVIDENCE_REQUIRED`; the exact safe default remains no automatic
+  merge and mandatory Human Review.
+- Category, candidate selections, rule version/set, thresholds, weights,
+  score, proposed product, decision, actor/reviewer, queue, and event remain
+  null or empty. Proposal, decision, supersession, membership, evidence,
+  approval, execution, and history collections remain empty. Empty means no
+  runtime input or evidence, not zero ambiguity or a successful decision.
+- Automatic grouping, merge, split, rejection, membership assignment, and
+  canonical-product assignment are disabled. The plan projects the canonical
+  decision vocabulary and append-only/supersession invariants only as
+  descriptive context; it emits no persisted `UNDECIDED` row, queue receipt,
+  audit event, or fabricated Human decision.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and no-write `--check`, isolated `tests/st0504`
+  (`164 passed`), ST-0503 regression (`59 passed`), Ruff lint/format, strict
+  mypy, compile/import, exact nine-path review, focused secret scan, canonical
+  import, workspace drift, and `git diff --check` returned `PASS`. Generated
+  JSON and manifest were written only by the Story owner builder. The linked-
+  worktree scanner remains inherited `DEBT-W0-003`.
+- `DEBT-W2-036` status: `OPEN`, introduced-by `ST-0504`, closure owner:
+  Domain Editor/Catalog/Product/Security, ST-0304/ST-0308 persistence,
+  authorization/audit, job/event, and final Wave integration owners. Exact
+  skipped command: `NOT_RUN — OD-006 category-specific merge/split rules,
+  identity attribute precedence, rule version, scoring/thresholds, trusted
+  reviewer selection, Human Review queue, authorization enforcement,
+  append-only decision/supersession/membership persistence, repository/UoW/
+  database constraints, and event publication are unresolved or absent`;
+  observed result: `NOT_EXECUTED`. The non-executable plan cannot satisfy the
+  rule-engine or decision-history deliverables.
+- `DEBT-W2-037` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0504`, closure
+  owner: Domain Editor/Product Owner/Security/QA, formal CI, PostgreSQL/runtime,
+  Staging, release, and Production owners. Exact skipped command: `NOT_RUN —
+  Human category evidence/approval, formal TST-007/TST-020, append-only and
+  membership runtime verification, hosted CI, Staging, release, and Production
+  are outside local authority`; observed result: `NOT_EXECUTED`. Local
+  generation and hostile tests are not promoted to a Human decision, formal
+  evidence, or release readiness.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable ST-0504 review
+  boundary.
