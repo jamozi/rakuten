@@ -1,0 +1,87 @@
+name: Export Combined All-Story Tree
+
+on:
+  push:
+    branches:
+      - agent/all-stories-materialize-run-20260811
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  export:
+    name: Export combined implementation
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out overlay transport
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: overlay-transport
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out implementation-first subject
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: codex/raos-implementation-first-goal
+          path: subject
+          fetch-depth: 0
+          persist-credentials: false
+          show-progress: false
+
+      - name: Reconstruct exact combined tree
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          parts=(overlay-transport/.github/all-stories-overlay/part-*)
+          ((${#parts[@]} > 0))
+          printf '%s\n' "${parts[@]}" | LC_ALL=C sort -c
+          archive="$RUNNER_TEMP/all-stories-overlay.tar.gz"
+          cat "${parts[@]}" | tr -d '\r\n\t ' | base64 --decode >"$archive"
+          gzip --test "$archive"
+          overlay_sha="$(sha256sum "$archive" | cut -d' ' -f1)"
+          extract="$RUNNER_TEMP/all-stories-overlay"
+          mkdir -p "$extract"
+          tar --extract --gzip --file "$archive" --directory "$extract" \
+            --no-same-owner --no-same-permissions
+          source_root="$extract"
+          mapfile -t entries < <(find "$extract" -mindepth 1 -maxdepth 1 -printf '%p\n')
+          if ((${#entries[@]} == 1)) && [[ -d ${entries[0]} ]]; then
+            source_root=${entries[0]}
+          fi
+          rsync --archive --exclude=.git/ "$source_root"/ subject/
+          rm -rf subject/.github/all-stories-overlay
+          git -C subject diff --check
+          printf '%s\n' "$overlay_sha" >subject/.combined-overlay.sha256
+          printf '%s\n' "$(git -C subject rev-parse HEAD)" >subject/.foundation-commit.sha
+
+      - name: Create deterministic source archive
+        run: |
+          set -euo pipefail
+          find subject -type d -name __pycache__ -prune -exec rm -rf {} +
+          find subject -type f -name '*.pyc' -delete
+          rm -rf subject/.git
+          output="$RUNNER_TEMP/rakuten-all-stories-combined.tar.gz"
+          tar --sort=name --mtime='UTC 2026-08-11' --owner=0 --group=0 --numeric-owner \
+            --format=posix --create --gzip --file "$output" --directory subject .
+          sha256sum "$output" >"$output.sha256"
+
+      - name: Upload combined source
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: rakuten-all-stories-combined-source
+          path: |
+            ${{ runner.temp }}/rakuten-all-stories-combined.tar.gz
+            ${{ runner.temp }}/rakuten-all-stories-combined.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
