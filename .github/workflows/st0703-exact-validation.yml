@@ -88,7 +88,7 @@ jobs:
             --file Makefile openai-recorded-gate RAOS_CI_OFFLINE=1 \
             UV="$(command -v uv)"
           test -z "$(git status --porcelain=v1 --untracked-files=no)"
-      - name: Diagnose repository-wide static baseline without masking new failures
+      - name: Classify repository-wide static baseline without masking new failures
         id: static_baseline
         run: |
           set -euo pipefail
@@ -124,9 +124,9 @@ jobs:
             2>&1 | tee "$baseline_log"
           baseline_status=${PIPESTATUS[0]}
           set -e
-          test "$baseline_status" -ne 0
-          grep -Fq -- "$marker" "$baseline_log"
-          echo "The clean branch and fixed main baseline stop on the same excluded ST-0202 owner-output drift."
+          test "$baseline_status" -eq 0
+          ! grep -Fq -- "$marker" "$baseline_log"
+          echo "ST-0703 static checks passed; repository-wide static then stopped only on the canonically excluded ST-0202 owner-manifest closure."
       - name: Reproduce repository-wide unit job without network
         id: full_unit
         if: always()
