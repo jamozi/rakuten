@@ -923,6 +923,41 @@ and TST-017, hosted CI, provider behavior, task/route activation, evaluation,
 human review, canonical status changes, staging, release, and production remain
 `NOT_EXECUTED`, unchanged, or outside ST-0701.
 
+### Recorded OpenAI Responses adapter
+
+ST-0703 implements the approved recorded-only `openai==2.52.0` Responses
+adapter behind provider-neutral inward ports. A preconfigured synchronous
+client is injected by application wiring; the adapter makes at most one
+`responses.create` call with `store=false`, `tools=[]`, strict JSON Schema,
+`max_retries=0`, and a bounded timeout. Recorded fixtures cover structured
+success, refusal, both approved incomplete reasons, sanitized provider errors,
+content-free canonical exchange recording, and deterministic synthetic pricing.
+
+Hydrate explicitly, then use the ST-0703 owner targets:
+
+```bash
+make python-sync UV=/absolute/path/to/reviewed/uv-0.12.1
+make openai-recorded-generate UV=/absolute/path/to/reviewed/uv-0.12.1
+make openai-recorded-check UV=/absolute/path/to/reviewed/uv-0.12.1
+make openai-recorded-static UV=/absolute/path/to/reviewed/uv-0.12.1
+make openai-recorded-test UV=/absolute/path/to/reviewed/uv-0.12.1
+make openai-recorded-gate UV=/absolute/path/to/reviewed/uv-0.12.1
+```
+
+`openai-recorded-gate` has exactly four prerequisites:
+`ai-registry-check`, `openai-recorded-check`, `openai-recorded-static`, and
+`openai-recorded-test`. The ST-0204 `config-check` target retains its owner
+`python-sync` prerequisite and is not part of that prerequisite closure.
+Instead, after explicit hydration the gate directly runs the existing
+ST-0204 owner generator once with `--check` through the offline, no-cache,
+no-sync `UV_READONLY_RUN` boundary. The gate does not recurse into Make,
+hydrate, install, read credentials, or use a provider network path.
+
+The adapter does not construct a live client or resolve credentials. Formal
+TST-017, live-provider/account validation, production pricing and FX, routing,
+retry orchestration, artifact storage, staging, release, and production remain
+separate and `NOT_EXECUTED`.
+
 ### Content AST domain loader
 
 ST-0801 implements only approved `CONT-SLICE-002`: the Content AST v1 domain
