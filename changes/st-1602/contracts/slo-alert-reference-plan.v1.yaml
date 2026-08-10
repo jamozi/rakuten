@@ -1,0 +1,102 @@
+document:
+  id: RAOS-ST1602-SLO-ALERT-REFERENCE-PLAN-001
+  version: 1.0.0
+  story_id: ST-1602
+  classification: SOURCE_DERIVED_NON_ATTESTING_SLO_ALERT_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  interface_only: true
+  decision: NOT_READY
+  story_acceptance: false
+  production_eligible: false
+  approval: null
+
+authority:
+  precedence: CANONICAL_INTEGRATION_THEN_STORY_THEN_CATALOGS
+  sources:
+    - role: integration
+      uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - role: open_decisions
+      uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - role: test_catalog
+      uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - role: slo_catalog
+      uri: repo://docs/canonical/06_ops/RAOS_12_slo_catalog_v1.0.yaml
+      sha256: 320a880073e3c9d87c361fa8620e1202898ffa719e2b8e94872d185415abcdf2
+    - role: alert_catalog
+      uri: repo://docs/canonical/06_ops/RAOS_12_alert_catalog_v1.0.yaml
+      sha256: f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0
+    - role: runbook_catalog
+      uri: repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml
+      sha256: 2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100
+    - role: story
+      uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+
+dependency:
+  story_id: ST-1601
+  uri: repo://changes/st-1601/README.md
+  sha256: 9eade86a2f3f7cae147d0ca26db1be0828be09250b068ac8f78832cf36ca65ef
+  interface_status: AVAILABLE_NOT_CONNECTED
+  connection_status: NOT_EXECUTED
+  semantics: UNCHANGED
+
+open_decision:
+  id: OD-011
+  status: HUMAN_DECISION_REQUIRED
+  safe_default: LOCAL_LOG_ONLY
+  notifications_enabled: false
+  channel: null
+  escalation_contact: null
+
+projection_rules:
+  preserve_catalog_order: true
+  exact_slo_count: 14
+  exact_alert_count: 20
+  exact_runbook_count: 20
+  infer_links_from_identifiers: false
+  initial_actions_are_inert_text: true
+  minimum_steps_are_inert_text: true
+  empty_arrays_mean_no_configuration_or_evidence: true
+
+routing_defaults:
+  mode: LOCAL_LOG_ONLY
+  route_status: NOT_CONFIGURED
+  notifications_enabled: false
+  channel: null
+  contact: null
+  owner: null
+  runbook_route: null
+  slo_links: []
+  runbook_links: []
+  delivery_records: []
+  external_actions: []
+
+telemetry_defaults:
+  interface_available: true
+  connected: false
+  runtime_status: NOT_EXECUTED
+  metric: null
+  log: null
+  formula: null
+  trigger: null
+  window: null
+  error_budget: null
+  backend: null
+
+verification_defaults:
+  implemented_count: 0
+  measured_count: 0
+  tested_count: 0
+  drilled_count: 0
+  owner_route_count: 0
+  runbook_route_count: 0
+  formal_tst_027: NOT_EXECUTED
+  formal_tst_028: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
