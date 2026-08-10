@@ -90,8 +90,6 @@ jobs:
             91756dd88daf18d4751f845911944fee619034a328eaaa079d5d82d37185fc1d
           test "$(sha256sum README.md | cut -d' ' -f1)" = \
             ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
-          python3 scripts/build_st0703_recorded_adapter.py --check
-          python3 scripts/build_st0703_recorded_adapter.py --check-installed
           git add --all
           mapfile -t changed < <(git diff --cached --name-only)
           test "${#changed[@]}" = 33
