@@ -1,0 +1,96 @@
+name: Materialize Reviewable Switchable Strategy Candidate
+
+on:
+  push:
+    branches:
+      - agent/all-stories-switchable-export-control-20260811
+    paths:
+      - .github/workflows/all-stories-switchable-candidate.yml
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  FOUNDATION_BRANCH: codex/raos-implementation-first-goal
+  TRANSPORT_BRANCH: agent/all-stories-materialize-run-20260811
+  STRATEGY_BRANCH: agent/all-stories-switchable-strategies-20260811
+  CANDIDATE_BRANCH: agent/all-stories-switchable-candidate-20260811
+  PYTHON_VERSION: 3.14.6
+  UV_VERSION: 0.12.1
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  materialize:
+    name: Reconstruct exact implementation candidate
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out transport branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.TRANSPORT_BRANCH }}
+          path: overlay-transport
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out strategy source branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.STRATEGY_BRANCH }}
+          path: subject
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Install exact uv and managed Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: false
+
+      - name: Reconstruct, normalize, and generate
+        run: |
+          set -euo pipefail
+          uv --no-config --color never python install \
+            --managed-python --no-bin --no-registry --no-cache --no-progress \
+            "$PYTHON_VERSION"
+          python_path="$(uv --no-config python find "$PYTHON_VERSION")"
+          "$python_path" overlay-transport/.github/scripts/materialize_switchable_tree.py \
+            --transport overlay-transport \
+            --subject subject \
+            --temporary "$RUNNER_TEMP/candidate-materialize" \
+            --foundation-branch "$FOUNDATION_BRANCH"
+          "$python_path" subject/scripts/finalize_strategy_switchboard_sources.py \
+            --apply --root subject
+          "$python_path" subject/scripts/finalize_strategy_switchboard_sources.py \
+            --check --root subject
+          PYTHONPATH="$GITHUB_WORKSPACE/subject/python" \
+            "$python_path" subject/scripts/build_all_story_strategy_catalog.py \
+            --write --root subject
+          PYTHONPATH="$GITHUB_WORKSPACE/subject/python" \
+            "$python_path" subject/scripts/build_all_story_strategy_catalog.py \
+            --check --root subject
+          git -C subject diff --check
+
+      - name: Commit and publish candidate ref
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -B "$CANDIDATE_BRANCH"
+          git add -A
+          git commit -m 'feat: materialize switchable strategies for all RAOS Stories'
+          candidate_ref="refs/heads/$CANDIDATE_BRANCH"
+          remote_sha="$(git ls-remote --heads origin "$candidate_ref" | awk '{print $1}')"
+          if [[ -n $remote_sha ]]; then
+            git push --force-with-lease="$candidate_ref:$remote_sha" \
+              origin "HEAD:$candidate_ref"
+          else
+            git push origin "HEAD:$candidate_ref"
+          fi
