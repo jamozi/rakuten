@@ -2592,3 +2592,58 @@ original result.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-executable ST-0605 coverage
   boundary.
+
+### 2026-08-10 W3 / ST-0606 disabled evidence-workspace checkpoint
+
+- Authority and scope: canonical `ST-0606` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0604/ST-0605/ST-1101, and
+  requires browser TST-022 plus manual accessibility TST-024. Effective status
+  remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint implements a disabled,
+  headless, deeply frozen JSON evidence-workspace model; it does not register a
+  route, render a UI, load data, authorize an actor, invoke an API, or attest
+  browser/accessibility acceptance.
+- Exact ordered EVD-001 through EVD-004 screen metadata is projected from
+  canonical sources. Screen roles remain display metadata only. Every EVD route
+  stays unregistered under the ST-1101 route guard, navigation/rendering/
+  authorization remain false, backend reauthorization remains mandatory, and
+  security authority remains server-side.
+- Input accepts only exact `screenId`; output is detached, deeply frozen, and
+  JSON-serializable. Data state remains `NOT_LOADED`, items remain empty, and
+  item count remains null so absence of loading is never reported as zero
+  records. No actions or component/API/navigation bindings are exposed, even
+  for critical EVD-002.
+- Keyboard and screen-reader requirements remain true, while browser,
+  automated accessibility, and manual accessibility statuses remain
+  `NOT_EXECUTED`; the two-action source-access requirement is recorded but not
+  evaluated. CAT-006/EDT-006/UI-C021 ownership, source-packet approval, conflict
+  resolution, Raw viewer, Claim matrix, React/DOM/fetch/auth/data behavior, and
+  all route effects remain outside this slice.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, Node `24.18.1`. Focused Node tests
+  (`16/16`), ST-1101 regression (`31/31`), ST-0604 owner check/regression
+  (`206 passed`), ST-0605 owner check/regression (`61 passed`), strict package
+  and standalone TypeScript, Prettier, ESLint, index import/model smoke, exact
+  seven-path review, focused secret scan, canonical import, workspace drift,
+  and `git diff --check` returned `PASS`. The inherited non-failing
+  `MODULE_TYPELESS_PACKAGE_JSON` warning remains; package configuration was not
+  modified. The linked-worktree scanner remains inherited `DEBT-W0-003`.
+- `DEBT-W3-001` status: `OPEN`, introduced-by `ST-0606`, closure owner:
+  Web/UI, ST-0401/ST-1101 auth transport, ST-0604/ST-0605 runtime/API,
+  authorization/audit, route/component/navigation owners, and final Wave
+  integration. Exact skipped command: `NOT_RUN — EVD routes, auth/session
+  transport, backend authorization, screen-to-component bindings, SourcePacket/
+  Fact/conflict/freshness/coverage API dependencies, two-action navigation
+  graph, loading/error/pagination/filtering behavior, approval/conflict command
+  contracts, and real data are absent`; observed result: `NOT_EXECUTED`. The
+  headless model cannot satisfy screen, source-access, or authorization
+  acceptance.
+- `DEBT-W3-002` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0606`, closure
+  owner: Product/Web/UI/Security/Accessibility/QA, formal CI, browser/assistive-
+  technology, Staging, release, and Production owners. Exact skipped command:
+  `NOT_RUN — React/DOM/browser implementation, keyboard/screen-reader/manual
+  review, formal TST-022/TST-024, hosted CI, Staging, release, and Production
+  are outside local authority`; observed result: `NOT_EXECUTED`. Node metadata
+  tests are not promoted to browser behavior, accessibility conformance, formal
+  evidence, or release readiness.
+- Inherited W0/W1/W2 debt remains unchanged and unclosed. This checkpoint
+  claims only the maximum-safe disabled headless ST-0606 model.
