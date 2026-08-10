@@ -117,7 +117,9 @@ override NPM_RUN := $(NODE_RUN) "$(NPM_CLI)" \
 	contract-codegen-environment-check \
 	contract-codegen-check contract-codegen-test contract-codegen-typecheck \
 	contract-codegen-gate ai-registry-generate ai-registry-check \
-	ai-registry-test content-ast-generate content-ast-check \
+	ai-registry-test openai-recorded-generate openai-recorded-check \
+	openai-recorded-static openai-recorded-test openai-recorded-gate \
+	content-ast-generate content-ast-check \
 	content-ast-test local-compose-generate local-compose-check \
 	queue-generate queue-check queue-test \
 	config-generate config-check config-test \
@@ -309,6 +311,50 @@ ai-registry-check:
 ai-registry-test:
 	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
 		-p no:cacheprovider -q tests/st0701
+
+openai-recorded-generate: | python-sync
+	$(UV_RUN) run --locked --no-sync --no-env-file python \
+		scripts/build_st0703_recorded_adapter.py
+
+openai-recorded-check:
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0703_recorded_adapter.py --check
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0703_recorded_adapter.py --check-installed
+
+openai-recorded-static:
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) ruff check --no-cache \
+		python/raos/adapters/__init__.py \
+		python/raos/adapters/openai_responses.py \
+		python/raos/adapters/recorded_ai.py \
+		python/raos/domain/ai/provider.py \
+		python/raos/ports/ai_provider.py \
+		scripts/build_st0703_recorded_adapter.py tests/st0703
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) ruff format --check --no-cache \
+		python/raos/adapters/__init__.py \
+		python/raos/adapters/openai_responses.py \
+		python/raos/adapters/recorded_ai.py \
+		python/raos/domain/ai/provider.py \
+		python/raos/ports/ai_provider.py \
+		scripts/build_st0703_recorded_adapter.py tests/st0703
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) /usr/bin/env \
+		MYPYPATH="$(RAOS_REPOSITORY_ROOT)/python:$(RAOS_REPOSITORY_ROOT)/tests/st0703" \
+		mypy --strict --explicit-package-bases --cache-dir=/dev/null \
+		python/raos/adapters/__init__.py \
+		python/raos/adapters/openai_responses.py \
+		python/raos/adapters/recorded_ai.py \
+		python/raos/domain/ai/provider.py \
+		python/raos/ports/ai_provider.py \
+		scripts/build_st0703_recorded_adapter.py tests/st0703
+
+openai-recorded-test:
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0703
+
+openai-recorded-gate: ai-registry-check openai-recorded-check \
+	openai-recorded-static openai-recorded-test
+	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
+		scripts/build_st0204_config_loader.py --check
 
 content-ast-generate: | python-sync
 	$(UV_RUN) run --locked --no-sync --no-env-file python \
@@ -589,7 +635,7 @@ ci-hydrate: python-sync node-sync
 
 ci-repository-policy: | python-sync local-compose-check queue-check config-check \
 	synthetic-data-check migration-check migration-fixture-check ai-registry-check \
-	content-ast-check
+	content-ast-check openai-recorded-check
 	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
 		scripts/import_raos_design.py verify
 	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
@@ -640,6 +686,7 @@ ci-unit: ci-network-assert | python-sync node-sync
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q \
 		tests/st0307 --ignore=tests/st0307/test_postgresql.py
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0701
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0703
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0801
 	$(NODE_RUN) "$(NODE_MODULES)/vitest/vitest.mjs" run \
 		--config "$(RAOS_REPOSITORY_ROOT)/vitest.config.ts" \

@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import stat
 import subprocess
@@ -25,10 +26,10 @@ CONTRACT_PATH = REPOSITORY_ROOT / generator.CONTRACT_PATH
 FIXTURE_ROOT = REPOSITORY_ROOT / generator.FIXTURE_ROOT
 GENERATOR_PATH = REPOSITORY_ROOT / "scripts/build_st0703_recorded_adapter.py"
 EXPECTED_CONTRACT_SHA256 = (
-    "5a2d68cb47dcf4494b0f3f8621579d163e25ca1f250682591f45cf32af108dbc"
+    "08714a5ff21e1b7409d9f54079d34477b489ffe937d79e2f5182dc6eef18468e"
 )
 EXPECTED_REGISTRY_SHA256 = (
-    "876c20b99734e0dddaa6933ab7bb8f233549c1c530f439ef78c9bd4483cdf361"
+    "215a38ace7e17064185c1ae4c17f92f57d88a71912d992a506d5f6484bd7e9d6"
 )
 EXPECTED_WHEEL_SHA256 = (
     "f97e231d9a8fa69ab55897df1080f02d99913fb0a30e3ee56ea16a1eb6c2d434"
@@ -36,6 +37,27 @@ EXPECTED_WHEEL_SHA256 = (
 EXPECTED_SDIST_SHA256 = (
     "7c736d592f81471ce1f734838390983c4d8c8aecff23dcd36e600a58e5032d9c"
 )
+EXPECTED_PREDECESSOR_MANIFEST_PROJECTION_SHA256 = {
+    Path("changes/st-0204/manifest.yaml"): (
+        "ab5f98cee069733201e145c5c238547019edb0c3f9bbec1c2337d9629151b60a"
+    ),
+    Path("changes/st-0701/manifest.yaml"): (
+        "a0d5aad3b2c95ba7a365d0fc0be5a7825834f7a9639260823e2729c27391ad0b"
+    ),
+    Path("changes/st-0801/manifest.yaml"): (
+        "7704359cb758e3bf35bbe88e91e41c7f484e8133f1ab7d4a139b2bafde7b2540"
+    ),
+}
+EXPECTED_PREDECESSOR_SEMANTIC_OUTPUT_SHA256 = {
+    Path("changes/st-0204/manifest.yaml"): (
+        "repo://changes/st-0204/generated/runtime-config.v1.schema.json",
+        "5633b01e4f660a048e57ca4501a6a7e66f4aeca8412ff36f8644e68d4e04006e",
+    ),
+    Path("changes/st-0701/manifest.yaml"): (
+        "repo://changes/st-0701/generated/ai-task-registry.v1.json",
+        "33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07",
+    ),
+}
 
 
 def _sha256(content: bytes) -> str:
@@ -65,6 +87,11 @@ def _copy_inputs(tmp_path: Path) -> Path:
             relative = Path(entry["uri"].removeprefix("repo://"))
             target = root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(REPOSITORY_ROOT / relative, target)
+    for relative in generator.PREDECESSOR_MANIFEST_PROJECTION_SHA256:
+        target = root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if not target.exists():
             shutil.copyfile(REPOSITORY_ROOT / relative, target)
     shutil.copytree(FIXTURE_ROOT, root / generator.FIXTURE_ROOT)
     script_target = root / GENERATOR_PATH.relative_to(REPOSITORY_ROOT)
@@ -117,6 +144,36 @@ def _write_fixture_document(
     ).encode("utf-8")
     (root / generator.FIXTURE_ROOT / filename).write_bytes(content)
     _repin_fixture(monkeypatch, filename, content)
+
+
+def _write_yaml_document(path: Path, document: object) -> None:
+    path.write_bytes(
+        yaml.safe_dump(
+            document,
+            allow_unicode=True,
+            default_flow_style=False,
+            sort_keys=False,
+            width=1000,
+        ).encode("utf-8")
+    )
+
+
+def _manifest_projection_sha256(document: dict[str, object]) -> str:
+    projection = copy.deepcopy(document)
+    source_artifacts = projection["source_artifacts"]
+    assert isinstance(source_artifacts, list)
+    for artifact in source_artifacts:
+        assert isinstance(artifact, dict)
+        artifact["bytes"] = 0
+        artifact["sha256"] = "0" * 64
+    content = json.dumps(
+        projection,
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return _sha256(content)
 
 
 def _replace_and_repin_input(
@@ -202,7 +259,6 @@ def test_registry_binds_all_dependency_source_inputs() -> None:
         for entries in contract["provenance"].values()
         for entry in entries
     ]
-
     assert registry["source_inputs"] == [
         {
             "path": generator.CONTRACT_PATH.as_posix(),
@@ -222,6 +278,347 @@ def test_registry_binds_all_dependency_source_inputs() -> None:
         },
         *provenance_inputs,
     ]
+
+
+def test_v5_authority_is_exact_approved_and_preserves_v4_d1_through_d4() -> None:
+    authority_sources = {
+        generator.V4_HANDOFF_PATH: generator.V4_HANDOFF_SHA256,
+        generator.V4_RECONCILIATION_PATH: generator.V4_RECONCILIATION_SHA256,
+        generator.V4_APPROVAL_PATH: generator.V4_APPROVAL_SHA256,
+        generator.V5_DECISION_REQUEST_PATH: generator.V5_DECISION_REQUEST_SHA256,
+        generator.V5_HANDOFF_PATH: generator.V5_HANDOFF_SHA256,
+        generator.V5_RECONCILIATION_PATH: generator.V5_RECONCILIATION_SHA256,
+        generator.V5_APPROVAL_PATH: generator.V5_APPROVAL_SHA256,
+    }
+    for relative, expected_digest in authority_sources.items():
+        assert _sha256((REPOSITORY_ROOT / relative).read_bytes()) == expected_digest
+
+    contract = yaml.load(CONTRACT_PATH.read_bytes(), Loader=generator.UniqueKeyLoader)
+    assert isinstance(contract, dict)
+    assert contract["implementation_authority"] == (
+        generator.EXPECTED_IMPLEMENTATION_AUTHORITY
+    )
+    generator._validate_v5_authority(REPOSITORY_ROOT, contract)
+
+    v4 = yaml.load(
+        (REPOSITORY_ROOT / generator.V4_HANDOFF_PATH).read_bytes(),
+        Loader=generator.UniqueKeyLoader,
+    )["DESIGN_HANDOFF_V1"]
+    v5 = yaml.load(
+        (REPOSITORY_ROOT / generator.V5_HANDOFF_PATH).read_bytes(),
+        Loader=generator.UniqueKeyLoader,
+    )["DESIGN_HANDOFF_V1"]
+    for key in generator.V5_INHERITED_DECISION_KEYS:
+        assert v5["decision"][key] == v4["decision"][key]
+    assert v5["decision"]["authority_revision"]["replaced_decision"] == ("ST0703-V3-D5")
+    assert v5["decision"]["gate_wiring"]["decision_id"] == ("ST0703-V5-D5-CORRECTION")
+
+    approval = yaml.load(
+        (REPOSITORY_ROOT / generator.V5_APPROVAL_PATH).read_bytes(),
+        Loader=generator.UniqueKeyLoader,
+    )["DESIGN_HANDOFF_APPROVAL_V1"]
+    assert approval["status"] == "APPROVED_FOR_IMPLEMENTATION"
+    assert approval["implementation_authority"] == "ST0703_RECORDED_SCOPE_ONLY"
+    assert approval["approved_decisions"] == list(generator.V5_APPROVED_DECISIONS)
+    assert approval["open_decisions"] == []
+
+
+def test_predecessor_manifest_semantic_projection_baselines_are_current() -> None:
+    expected = {
+        path.as_posix(): digest
+        for path, digest in EXPECTED_PREDECESSOR_MANIFEST_PROJECTION_SHA256.items()
+    }
+
+    assert generator.PREDECESSOR_MANIFEST_PROJECTION_SHA256 == (
+        EXPECTED_PREDECESSOR_MANIFEST_PROJECTION_SHA256
+    )
+    assert generator._validate_predecessor_manifest_semantics(REPOSITORY_ROOT) == (
+        expected
+    )
+    for (
+        relative,
+        expected_digest,
+    ) in EXPECTED_PREDECESSOR_MANIFEST_PROJECTION_SHA256.items():
+        document = yaml.load(
+            (REPOSITORY_ROOT / relative).read_bytes(),
+            Loader=generator.UniqueKeyLoader,
+        )
+        assert isinstance(document, dict)
+        assert _manifest_projection_sha256(document) == expected_digest
+
+
+def test_predecessor_manifest_semantic_outputs_retain_exact_hashes() -> None:
+    for relative, (
+        artifact_uri,
+        expected_digest,
+    ) in EXPECTED_PREDECESSOR_SEMANTIC_OUTPUT_SHA256.items():
+        document = yaml.load(
+            (REPOSITORY_ROOT / relative).read_bytes(),
+            Loader=generator.UniqueKeyLoader,
+        )
+        assert isinstance(document, dict)
+        generated_artifacts = document["generated_artifacts"]
+        assert isinstance(generated_artifacts, list)
+        matches = [
+            artifact
+            for artifact in generated_artifacts
+            if isinstance(artifact, dict) and artifact.get("uri") == artifact_uri
+        ]
+        assert len(matches) == 1
+        assert matches[0]["sha256"] == expected_digest
+        artifact_path = Path(artifact_uri.removeprefix("repo://"))
+        assert _sha256((REPOSITORY_ROOT / artifact_path).read_bytes()) == (
+            expected_digest
+        )
+
+
+@pytest.mark.parametrize(
+    ("relative", "expected_digest"),
+    tuple(EXPECTED_PREDECESSOR_MANIFEST_PROJECTION_SHA256.items()),
+    ids=("st-0204", "st-0701", "st-0801"),
+)
+def test_predecessor_manifest_guard_allows_only_source_byte_metadata_changes(
+    tmp_path: Path,
+    relative: Path,
+    expected_digest: str,
+) -> None:
+    root = _copy_inputs(tmp_path)
+    path = root / relative
+    document = yaml.safe_load(path.read_bytes())
+    for artifact in document["source_artifacts"]:
+        artifact["bytes"] += 1
+        artifact["sha256"] = "1" * 64
+    _write_yaml_document(path, document)
+
+    observed = generator._validate_predecessor_manifest_semantics(root)
+
+    assert observed[relative.as_posix()] == expected_digest
+
+
+@pytest.mark.parametrize(
+    "relative",
+    tuple(EXPECTED_PREDECESSOR_MANIFEST_PROJECTION_SHA256),
+    ids=("st-0204", "st-0701", "st-0801"),
+)
+def test_predecessor_manifest_semantic_tamper_fails_closed(
+    tmp_path: Path,
+    relative: Path,
+) -> None:
+    root = _copy_inputs(tmp_path)
+    path = root / relative
+    document = yaml.safe_load(path.read_bytes())
+    document["document"]["id"] += "-TAMPERED"
+    _write_yaml_document(path, document)
+
+    with pytest.raises(RuntimeError, match="semantic projection drift"):
+        generator.check(root)
+
+
+def test_generation_checks_predecessor_semantics_before_writing(
+    tmp_path: Path,
+) -> None:
+    root = _copy_inputs(tmp_path)
+    path = root / Path("changes/st-0801/manifest.yaml")
+    document = yaml.safe_load(path.read_bytes())
+    document["document"]["story_id"] = "ST-0801-TAMPERED"
+    _write_yaml_document(path, document)
+
+    with pytest.raises(RuntimeError, match="semantic projection drift"):
+        generator.generate(root)
+
+    assert not (root / generator.GENERATED_REGISTRY_PATH).exists()
+    assert not (root / generator.MANIFEST_PATH).exists()
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    (
+        ("added-key", "must contain exact keys"),
+        ("missing-key", "must contain exact keys"),
+        ("unnormalized-uri", "normalized POSIX relative path"),
+        ("duplicate-uri", "source artifact URI duplicated"),
+        ("zero-bytes", "byte count must be a positive integer"),
+        ("boolean-bytes", "byte count must be a positive integer"),
+        ("uppercase-digest", "digest must be lowercase SHA-256"),
+        ("short-digest", "digest must be lowercase SHA-256"),
+    ),
+)
+def test_predecessor_manifest_source_artifact_shape_fails_closed(
+    tmp_path: Path,
+    mutation: str,
+    message: str,
+) -> None:
+    root = _copy_inputs(tmp_path)
+    path = root / Path("changes/st-0801/manifest.yaml")
+    document = yaml.safe_load(path.read_bytes())
+    source_artifacts = document["source_artifacts"]
+    artifact = source_artifacts[0]
+
+    if mutation == "added-key":
+        artifact["unexpected"] = "value"
+    elif mutation == "missing-key":
+        artifact.pop("sha256")
+    elif mutation == "unnormalized-uri":
+        artifact["uri"] = "repo://changes/st-0801/../st-0801/README.md"
+    elif mutation == "duplicate-uri":
+        source_artifacts[1]["uri"] = artifact["uri"]
+    elif mutation == "zero-bytes":
+        artifact["bytes"] = 0
+    elif mutation == "boolean-bytes":
+        artifact["bytes"] = True
+    elif mutation == "uppercase-digest":
+        artifact["sha256"] = artifact["sha256"].upper()
+    else:
+        artifact["sha256"] = "0" * 63
+    _write_yaml_document(path, document)
+
+    with pytest.raises(RuntimeError, match=message):
+        generator.check(root)
+
+
+def test_predecessor_manifest_duplicate_yaml_key_fails_strict_load(
+    tmp_path: Path,
+) -> None:
+    root = _copy_inputs(tmp_path)
+    path = root / Path("changes/st-0801/manifest.yaml")
+    content = path.read_bytes()
+    member = b"  bytes: 18563\n  sha256:"
+    assert content.count(member) == 1
+    path.write_bytes(content.replace(member, b"  bytes: 18563\n  bytes: 1\n  sha256:"))
+
+    with pytest.raises(RuntimeError, match="must be strict YAML"):
+        generator.check(root)
+
+
+def _make_target_block(makefile: str, target: str) -> str:
+    match = re.search(
+        rf"(?ms)^{re.escape(target)}:.*?(?=^[A-Za-z0-9_.-]+:|\Z)",
+        makefile,
+    )
+    assert match is not None
+    return match.group(0)
+
+
+def test_openai_recorded_make_targets_are_exact_and_read_only_after_hydration() -> None:
+    makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
+    logical_makefile = makefile.replace("\\\n", " ")
+    phony_line = next(
+        line for line in logical_makefile.splitlines() if line.startswith(".PHONY:")
+    )
+    targets = (
+        "openai-recorded-generate",
+        "openai-recorded-check",
+        "openai-recorded-static",
+        "openai-recorded-test",
+        "openai-recorded-gate",
+    )
+    for target in targets:
+        assert phony_line.split().count(target) == 1
+        assert logical_makefile.count(f"\n{target}:") == 1
+
+    generate = _make_target_block(makefile, "openai-recorded-generate")
+    assert generate.splitlines()[0] == "openai-recorded-generate: | python-sync"
+    assert generate.count("$(UV_RUN) run --locked --no-sync --no-env-file") == 1
+    assert "scripts/build_st0703_recorded_adapter.py" in generate
+    assert "UV_READONLY_RUN" not in generate
+
+    check = _make_target_block(makefile, "openai-recorded-check")
+    assert check.splitlines()[0] == "openai-recorded-check:"
+    assert "python-sync" not in check
+    assert check.count("$(UV_READONLY_RUN)") == 2
+    assert check.count("scripts/build_st0703_recorded_adapter.py --check") == 2
+    assert check.count("--check-installed") == 1
+
+    test = _make_target_block(makefile, "openai-recorded-test")
+    assert test.splitlines()[0] == "openai-recorded-test:"
+    assert "python-sync" not in test
+    assert test.count("$(UV_READONLY_RUN)") == 1
+    assert "pytest \\\n\t\t-p no:cacheprovider -q tests/st0703" in test
+
+    gate = _make_target_block(makefile, "openai-recorded-gate").rstrip()
+    gate_header = gate.splitlines()[0:2]
+    logical_gate_header = " ".join(
+        line.removesuffix("\\").strip() for line in gate_header
+    )
+    gate_tokens = logical_gate_header.split()[1:]
+    assert gate_tokens == [
+        "ai-registry-check",
+        "openai-recorded-check",
+        "openai-recorded-static",
+        "openai-recorded-test",
+    ]
+    assert gate == (
+        "openai-recorded-gate: ai-registry-check openai-recorded-check \\\n"
+        "\topenai-recorded-static openai-recorded-test\n"
+        "\tPYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \\\n"
+        "\t\tscripts/build_st0204_config_loader.py --check"
+    )
+    assert "config-check" not in logical_gate_header
+    assert gate.count("$(UV_READONLY_RUN)") == 1
+    assert gate.count("scripts/build_st0204_config_loader.py --check") == 1
+    assert "$(UV_RUN)" not in gate
+    assert "python-sync" not in gate
+    assert "$(MAKE)" not in gate
+
+    config_check = _make_target_block(makefile, "config-check")
+    assert config_check.splitlines()[0] == "config-check: | python-sync"
+    assert config_check.count("python-sync") == 1
+    assert config_check.count("$(UV_READONLY_RUN)") == 1
+    assert config_check.count("scripts/build_st0204_config_loader.py --check") == 1
+
+
+def test_openai_recorded_static_target_has_the_exact_bounded_surface() -> None:
+    makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
+    static = _make_target_block(makefile, "openai-recorded-static")
+    sources = (
+        "python/raos/adapters/__init__.py",
+        "python/raos/adapters/openai_responses.py",
+        "python/raos/adapters/recorded_ai.py",
+        "python/raos/domain/ai/provider.py",
+        "python/raos/ports/ai_provider.py",
+        "scripts/build_st0703_recorded_adapter.py",
+        "tests/st0703",
+    )
+
+    assert static.splitlines()[0] == "openai-recorded-static:"
+    assert "python-sync" not in static
+    assert static.count("$(UV_READONLY_RUN)") == 3
+    assert "ruff check --no-cache" in static
+    assert "ruff format --check --no-cache" in static
+    assert "mypy --strict --explicit-package-bases --cache-dir=/dev/null" in static
+    assert (
+        'MYPYPATH="$(RAOS_REPOSITORY_ROOT)/python:'
+        '$(RAOS_REPOSITORY_ROOT)/tests/st0703"' in static
+    )
+    for source in sources:
+        expected_count = 4 if source == "tests/st0703" else 3
+        assert static.count(source) == expected_count
+
+
+def test_openai_recorded_base_ci_wiring_stays_in_existing_denied_jobs() -> None:
+    makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
+    logical_makefile = makefile.replace("\\\n", " ")
+    joined_policy_header = next(
+        line
+        for line in logical_makefile.splitlines()
+        if line.startswith("ci-repository-policy:")
+    )
+    assert joined_policy_header.count("openai-recorded-check") == 1
+    assert "openai-recorded-static" not in joined_policy_header
+    assert "openai-recorded-test" not in joined_policy_header
+    assert "openai-recorded-gate" not in joined_policy_header
+
+    unit = _make_target_block(makefile, "ci-unit")
+    assert unit.count("tests/st0703") == 1
+    assert unit.index("tests/st0701") < unit.index("tests/st0703")
+    assert unit.index("tests/st0703") < unit.index("tests/st0801")
+
+    workflow = (REPOSITORY_ROOT / ".github/workflows/ci.yml").read_bytes()
+    assert b"openai-recorded" not in workflow
+    assert b"OPENAI_API_KEY" not in workflow
+    assert _sha256(workflow) == (
+        "80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45"
+    )
 
 
 @pytest.mark.parametrize(

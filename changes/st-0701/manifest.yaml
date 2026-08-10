@@ -176,8 +176,8 @@ source_artifacts:
   bytes: 60811
   sha256: 2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360
 - uri: repo://python/raos/adapters/__init__.py
-  bytes: 242
-  sha256: a67419f26f8509cded6dd997e5140c0e8c7248072d2ae5243bfe3e29ad95b74f
+  bytes: 654
+  sha256: ac58bed7b50d35fffa7bd534f040f7fa0bafc8c87314beba67ca26dca638a939
 - uri: repo://python/raos/adapters/ai_contract_registry.py
   bytes: 28933
   sha256: 3bc0142bc29d644c4b5bc0fe4eac19b804ba06133d0e6bbaa96dc95b29e89fa2
@@ -215,20 +215,20 @@ source_artifacts:
   bytes: 25978
   sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
 - uri: repo://Makefile
-  bytes: 26913
-  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+  bytes: 28974
+  sha256: 91756dd88daf18d4751f845911944fee619034a328eaaa079d5d82d37185fc1d
 - uri: repo://README.md
-  bytes: 55645
-  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+  bytes: 57509
+  sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
 - uri: repo://.python-version
   bytes: 7
   sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
 - uri: repo://pyproject.toml
-  bytes: 1194
-  sha256: fe0d0e3ccb11083699705f6527315031927f22e65da234185fbbcc6c1952e26b
+  bytes: 1214
+  sha256: d7a03c351a2ef20d6aaf45b4dff7775b3ce9dbb7e051323cfbf35d295344814e
 - uri: repo://uv.lock
-  bytes: 111431
-  sha256: 9f8fef02f0df04f7fd0dd056499c4009e1e9c66413c818869e076c4db87642b0
+  bytes: 128286
+  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
 - uri: repo://uv.toml
   bytes: 349
   sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37

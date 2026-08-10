@@ -1,0 +1,427 @@
+DESIGN_HANDOFF_V1:
+  document_version: 5
+  approved_story: ST-0703
+  approved_scope:
+    - Implement one recorded OpenAI Responses adapter behind provider-neutral inward ports.
+    - Pin and verify openai==2.52.0 using the reviewed offline lock closure.
+    - Map one strict structured request to one responses.create call with store=false, tools=[], max_retries=0, and a bounded timeout.
+    - Classify completed structured output, completed refusal, incomplete max-output-tokens, incomplete content-filter, and sanitized provider failures.
+    - Record one bounded canonical content-free exchange through an injected ProviderExchangeRecorder.
+    - Calculate and independently verify fixture-only cost from an immutable expiring SyntheticPricingQuote.
+    - Wire deterministic offline generator, static, isolated test, and existing Base CI gates.
+  source_design_refs:
+    - uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v4.yaml
+      sha256: 7d384015c2975d7a718ff348cb4d1538a354f095cc0d9a2b0c76dbca5f6e4898
+    - uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v4.md
+      sha256: 6c3285712156781c9a107dfb5417f87896246c75e3158fec485f1ea07be54887
+    - uri: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v4.yaml
+      sha256: ed717125191c26dc609c61341320f020be7883add1f0967096b20d11e60eb202
+    - uri: repo://changes/st-0703/DESIGN-DECISION-REQUEST-v5.md
+      sha256: e2cec557d0c412effd5ae4a7fa7d1069ff46579caada980a9c8dd7479a6a51cd
+  decision:
+    authority_revision:
+      kind: D5_CROSS_STORY_BOUNDARY_CORRECTION
+      semantic_delta_from_approved_v4:
+        d1_through_d4: NONE
+        d5: REPLACED_BY_ST0703_V5_D5_CORRECTION
+      inherited_approved_decisions:
+        - ST0703-V3-D1
+        - ST0703-V3-D2
+        - ST0703-V3-D3
+        - ST0703-V3-D4
+      replaced_decision: ST0703-V3-D5
+      proposed_decision: ST0703-V5-D5-CORRECTION
+      correction_source:
+        decision_request:
+          uri: repo://changes/st-0703/DESIGN-DECISION-REQUEST-v5.md
+          sha256: e2cec557d0c412effd5ae4a7fa7d1069ff46579caada980a9c8dd7479a6a51cd
+      prior_approved_authority:
+        handoff:
+          uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v4.yaml
+          sha256: 7d384015c2975d7a718ff348cb4d1538a354f095cc0d9a2b0c76dbca5f6e4898
+        reconciliation:
+          uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v4.md
+          sha256: 6c3285712156781c9a107dfb5417f87896246c75e3158fec485f1ea07be54887
+        approval:
+          uri: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v4.yaml
+          sha256: ed717125191c26dc609c61341320f020be7883add1f0967096b20d11e60eb202
+        mutation: forbidden
+      v5_approval_requirement:
+        exact_handoff_sha256: required
+        exact_reconciliation_sha256: required
+        approval_artifact: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v5.yaml
+        implementation_authority_before_approval: NONE
+    provider_boundary:
+      sdk: openai==2.52.0
+      api: responses.create
+      client_lifecycle: preconfigured synchronous client injected by application wiring
+      credential_resolution: excluded; remains owned by ST-0407
+      calls_per_execute: 1
+      streaming: false
+      store: false
+      tools: []
+      max_retries: 0
+      timeout_seconds:
+        type: exact finite number
+        minimum_inclusive: 0.1
+        maximum_inclusive: 600
+      structured_output: strict JSON Schema using exact request schema bytes
+      sdk_types_cross_inward_port: false
+      adapter_retry: none
+      fallback: none
+    provider_error_mapping:
+      conflict_rule: recognized class and status selecting different rows maps to UNKNOWN and retryable false
+      malformed_status_rule: raising, boolean, or non-integer status maps to UNKNOWN and retryable false
+      no_status_rule: a recognized exception class may select its row
+      rows:
+        - signals: [HTTP_429, RateLimitError]
+          code: RATE_LIMIT
+          retryable: true
+        - signals: [HTTP_408, APITimeoutError, TimeoutError]
+          code: TIMEOUT
+          retryable: true
+        - signals: [HTTP_401, AuthenticationError]
+          code: AUTHENTICATION
+          retryable: false
+        - signals: [HTTP_403, PermissionDeniedError]
+          code: PERMISSION
+          retryable: false
+        - signals: [HTTP_400, HTTP_404, HTTP_409, HTTP_422, BadRequestError, ConflictError, NotFoundError, UnprocessableEntityError]
+          code: INVALID_REQUEST
+          retryable: false
+        - signals: [HTTP_502, HTTP_503, HTTP_504, APIConnectionError]
+          code: UNAVAILABLE
+          retryable: true
+        - signals: [OTHER_HTTP_STATUS_AT_LEAST_500, InternalServerError]
+          code: SERVER_ERROR
+          retryable: true
+        - signals: [EVERY_UNLISTED_SIGNAL]
+          code: UNKNOWN
+          retryable: false
+      provider_neutral_error_from_client:
+        pass_through: false
+        behavior: construct a new sanitized error from a recognized stable code and derive retryability from the closed table
+        malformed_behavior: UNKNOWN and retryable false
+      non_provider_rows:
+        malformed_response:
+          stages: [conversion, shape, identifier, timestamp, usage, status, refusal, incomplete_reason, output_extraction, output_validation]
+          code: MALFORMED_RESPONSE
+          retryable: false
+        route_mismatch:
+          stages: [requested_model, resolved_model, route_model, response_model]
+          code: ROUTE_MISMATCH
+          retryable: false
+        invalid_schema:
+          stages: [request_schema, result_schema]
+          code: INVALID_SCHEMA
+          retryable: false
+        recorder_failure:
+          stages: [canonical_construction, size_bound, recorder_exception, invalid_artifact_ref, artifact_mismatch]
+          code: RECORDER_FAILURE
+          retryable: false
+        pricing_missing:
+          stages: [missing_quote, calculator_exception_before_result]
+          code: PRICING_MISSING
+          retryable: false
+        pricing_mismatch:
+          stages: [quote, result_type, amount, currency, provider, model, usage, time, hash, reference_recomputation]
+          code: PRICING_MISMATCH
+          retryable: false
+        clock_failure:
+          code: UNKNOWN
+          retryable: false
+      sanitation:
+        public_error_fields: [stable_code, retryable]
+        forbidden: [message, args, status_object, response, request, headers, url, body, credential, prompt, source, output, provider_identifier]
+        raise_from_none: true
+    recorded_exchange:
+      exact_root_fields: [provider, request, response]
+      provider: openai
+      request_fields:
+        - request_sha256
+        - task_code
+        - model_route_version
+        - prompt_version
+        - input_artifact_sha256
+        - output_schema_sha256
+      response_fields:
+        - response_id
+        - requested_model_id
+        - resolved_model_id
+        - status
+        - created_at
+        - received_at
+        - latency_ms
+        - usage
+        - outcome
+      usage_fields: [input_tokens, cached_input_tokens, output_tokens]
+      outcomes:
+        success: {kind: success}
+        refusal: {kind: refusal, refusal: true}
+        incomplete_max_output_tokens: {kind: incomplete, reason: max_output_tokens}
+        incomplete_content_filter: {kind: incomplete, reason: content_filter}
+      identifier_pattern: '^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$'
+      integer_range: [0, 9223372036854775807]
+      cached_input_must_not_exceed_input: true
+      timestamps: timezone-aware UTC datetime.isoformat values
+      received_at_must_not_precede_created_at: true
+      canonical_json:
+        encoding: UTF-8
+        sorted_keys: true
+        compact_separators: true
+        ensure_ascii: false
+        allow_nan: false
+        bom: forbidden
+        trailing_newline: forbidden
+        duplicate_keys: forbidden
+        maximum_graph_visits: 100000
+        maximum_depth: 100
+        maximum_bytes: 4194304
+        digest: SHA-256 of exact canonical bytes
+        parse_reserialize_exact_match: required
+      forbidden_content:
+        - successful output
+        - refusal text
+        - partial output
+        - reasoning or chain-of-thought
+        - prompt or message
+        - source material
+        - provider request ID
+        - headers or URL
+        - credential
+        - exception or error body
+        - pricing value
+        - any unlisted provider field
+      ordering:
+        before_record:
+          - response normalization
+          - route matching
+          - usage validation
+          - outcome classification
+          - structured output validation when applicable
+          - complete pricing validation and independent recomputation
+        recorder_calls_for_success_refusal_incomplete: 1
+        recorder_calls_for_provider_malformed_route_schema_pricing_failure: 0
+      artifact_ref:
+        exact_type_required: true
+        sha256_equals_exchange: true
+        byte_size_equals_exchange: true
+        content_type: application/json
+        result_response_sha256_equals_exchange: true
+        production_uri_policy: excluded; remains owned by ST-0601
+        compensating_delete: forbidden in ST-0703
+      local_fixture_recorder:
+        scope: test and local recorded execution only
+        namespace_uuid: a6ac02c7-2f99-41dd-a918-8c54633e2f1d
+        artifact_id: UUIDv5 of lowercase exchange digest
+        uri_template: file://recorded/<lowercase-sha256>.json
+        idempotency: same digest and bytes returns the same reference
+        digest_collision_behavior: RECORDER_FAILURE
+    synthetic_pricing:
+      classification: SYNTHETIC_TEST_ONLY
+      quote_fields:
+        - quote_id
+        - provider
+        - model_id
+        - native_currency
+        - input_per_million
+        - cached_input_per_million
+        - output_per_million
+        - jpy_per_native_unit
+        - observed_at
+        - expires_at
+        - quote_sha256
+      provider: openai
+      currency_pattern: '^[A-Z]{3}$'
+      decimal_constraints:
+        exact_decimal: true
+        finite: true
+        negative_zero: forbidden
+        maximum_significant_digits: 38
+        exponent_minimum: -18
+        exponent_maximum: 18
+        jpy_rate_positive: true
+      validity_interval: observed_at <= evaluated_at < expires_at
+      evaluated_at_capture: injected UTC clock once at adapter entry before provider call
+      quote_hash:
+        kind: SYNTHETIC_TEST_ONLY
+        includes: [quote_id, provider, model_id, native_currency, input_per_million, cached_input_per_million, output_per_million, jpy_per_native_unit, observed_at, expires_at]
+        encoding: canonical UTF-8 JSON
+        digest: SHA-256
+      calculator_inputs: [usage, provider, model_id, quote, evaluated_at]
+      usage_digest_fields: [input_tokens, cached_input_tokens, output_tokens]
+      result_fields:
+        - estimated_cost_jpy
+        - provider_cost_native
+        - native_currency
+        - quote_id
+        - quote_sha256
+        - provider
+        - model_id
+        - usage_sha256
+        - evaluated_at
+        - calculation_sha256
+      decimal_context:
+        precision: 50
+        intermediate_rounding: ROUND_HALF_EVEN
+        final_jpy_rounding: ROUND_CEILING
+        ambient_context_used: false
+      formula:
+        regular_input_tokens: input_tokens - cached_input_tokens
+        provider_cost_native: (regular_input_tokens * input_per_million + cached_input_tokens * cached_input_per_million + output_tokens * output_per_million) / 1000000
+        estimated_cost_jpy: ceil(provider_cost_native * jpy_per_native_unit)
+      estimated_cost_jpy_range: [0, 9223372036854775807]
+      adapter_verification:
+        pure_reference_recomputation: required
+        compare_every_result_field: true
+        compare_usage_quote_model_provider_time_and_calculation_digests: true
+      not_owned:
+        - production price source
+        - production FX
+        - budget reservation or enforcement
+        - routing or fallback
+        - AI-OD-008 resolution
+    provenance_regeneration:
+      semantic_owner_of_dependency_and_lock: ST-0703
+      permitted_mechanical_outputs: [ST-0204 manifest, ST-0701 manifest, ST-0801 manifest]
+      owner_generator_required: true
+      semantic_payload_change: forbidden
+      permitted_diff_fields: [source inventory, byte size, SHA-256, provenance chain, self-integrity]
+      protected_or_append_only_change: forbidden
+      post_generation_no_write_check: required
+      st1203_st1204_partial_st0204_pin_edits: revert to exact pre-ST-0703 values
+      st1203_st1204_preexisting_st0305_staleness:
+        status: separate production-readiness blocker
+        resolution: separately approved maintenance authority
+        waived: false
+    gate_wiring:
+      decision_id: ST0703-V5-D5-CORRECTION
+      make_targets:
+        openai-recorded-generate: only mutating ST-0703 generator target after explicit python hydration
+        openai-recorded-check: offline no-cache no-sync generator --check and --check-installed
+        openai-recorded-static: offline Ruff lint, Ruff format check, and strict mypy for the bounded ST-0703 source set
+        openai-recorded-test: isolated pytest -p no:cacheprovider -q tests/st0703
+        openai-recorded-gate: read-only composite with four ST-0703 or approved predecessor targets and one direct ST-0204 owner --check command
+      config_check_owner_target:
+        exact_header: 'config-check: | python-sync'
+        recipe: PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python scripts/build_st0204_config_loader.py --check
+        final_delta_from_base: NONE
+      openai_recorded_gate:
+        prerequisites: [ai-registry-check, openai-recorded-check, openai-recorded-static, openai-recorded-test]
+        config_check_prerequisite: forbidden
+        direct_predecessor_command: PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python scripts/build_st0204_config_loader.py --check
+        direct_predecessor_command_count: 1
+        hydration: explicit and separate before the gate
+        recursive_make: forbidden
+        python_sync_uv_run_sync_install_hydrate: forbidden
+        network_cache_sync_environment_credential_external_service: forbidden
+      ci_repository_policy_addition: openai-recorded-check
+      ci_unit_addition: isolated tests/st0703 process
+      new_workflow_or_job: false
+      workflow_secrets: forbidden
+      live_provider_or_network: forbidden
+  rationale:
+    - V5 preserves approved D1 through D4 and replaces only D5 to remove the cross-Story ST-0204 target-semantic change discovered during implementation preflight.
+    - Directly invoking the existing ST-0204 owner generator in read-only --check mode under UV_READONLY_RUN preserves ST-0204 base semantics and the ST-0703 no-sync gate boundary.
+    - The canonical Story requires a recorded adapter, not live credential activation, provider routing, or production pricing.
+    - Closed error and retryability rows prevent hostile or inconsistent provider metadata from broadening retry behavior.
+    - Content-free canonical recording satisfies raw_artifact without retaining prompts, outputs, refusal text, partial text, reasoning, or provider errors.
+    - Deterministic quote validity, formula, binding digests, and independent recomputation prevent a substituted calculator from under-reporting cost.
+    - Owner-only mechanical regeneration preserves generated-artifact integrity without turning unrelated stale provenance into ST-0703 scope.
+    - Existing network-denied Base CI can validate recorded behavior without credentials or a new workflow.
+  rejected_alternatives:
+    - Retaining the no-sync config-check target because it is an unauthorized semantic ST-0204 command-contract change.
+    - Permitting openai-recorded-gate to hydrate because synchronization and potential cache writes violate its read-only contract.
+    - Adding a separate ST-0204 maintenance Story because the existing owner generator already provides the required deterministic read-only --check operation.
+    - Passing through provider exceptions or trusting conflicting exception class and HTTP status.
+    - Recording successful output, refusal text, partial output, headers, URLs, provider error bodies, or reasoning.
+    - Recording an artifact before schema, route, usage, or pricing validation completes.
+    - Trusting calculator metadata without independently recomputing every bound amount.
+    - Using an ambient wall clock, live pricing source, FX lookup, credential, or provider request in recorded tests.
+    - Hand-editing generated manifests or partially migrating ST-1203/ST-1204 provenance.
+    - Adding a credentialed or network-capable ST-0703 CI job.
+  constraints:
+    - V3 and V4 handoff, reconciliation, and approval bytes remain immutable historical evidence.
+    - This V5 proposal grants no implementation authority until its exact handoff and reconciliation SHA-256 values receive repository-owner approval.
+    - Exactly one approved Story, ST-0703, is semantically implemented.
+    - The Makefile config-check target and changes/st-0204/README.md are restored to exact base semantics and have no final ST-0204 semantic diff.
+    - No network call is made by recorded tests or local gates.
+    - No environment variable, Secret reference, credential, or configuration file is read by the adapter.
+    - No database, queue, object store, browser, live provider, or external service is activated.
+    - Generated and content-addressed artifacts are regenerated only through owner commands.
+    - Existing canonical, upstream, ZIP, status, approval, and append-only evidence files remain unchanged.
+    - ST-0407 retains credential resolution and live client construction.
+    - ST-0601 retains production artifact storage and orphan cleanup.
+    - ST-0704 and ST-0706 retain routing, fallback, circuit breaking, budget, and retry orchestration.
+    - ST-0705 retains factual, policy, and output-content validation beyond JSON Schema.
+  security_and_approval_gates:
+    - The D5 correction does not broaden Story scope, waive a gate, or authorize implementation before exact V5 approval.
+    - openai-recorded-gate invokes the ST-0204 owner generator --check exactly once through UV_READONLY_RUN and cannot hydrate, synchronize, install, recurse into Make, access credentials, use network, or call an external service.
+    - Raw provider material must not cross the inward boundary or enter public errors, reprs, logs, exception chains, or recorded artifacts.
+    - Every mapped error is stable, sanitized, immutable, and raised from None.
+    - Refusal and incomplete outcomes are classified before their text can be parsed as structured output.
+    - Recorded bytes are closed-schema canonical JSON, bounded, hash-bound, and content-free.
+    - Pricing is synthetic, time-bounded, fully input-bound, and independently recomputed before recording.
+    - Live account, credential, model, data-control, pricing, release, staging, publication, and production actions require separate approval.
+  acceptance_criteria:
+    - V4 handoff, reconciliation, and approval bytes match their exact SHA-256 values; D1 through D4 are unchanged and only D5 is replaced by ST0703-V5-D5-CORRECTION.
+    - 'The Makefile retains the exact base `config-check: | python-sync` header and existing owner recipe, while changes/st-0204/README.md is byte-identical to base.'
+    - openai-recorded-gate excludes config-check from its prerequisites and executes exactly one direct UV_READONLY_RUN ST-0204 owner --check command after separate hydration.
+    - A before/after filesystem snapshot proves openai-recorded-gate is no-write and its complete closure contains no implicit hydration or synchronization command.
+    - Exact request equality for all five recorded fixtures and exactly one provider call.
+    - store=false, tools=[], max_retries=0, explicit timeout, bounded output, bounded reasoning, and strict schema bytes are asserted.
+    - Every provider and non-provider error row, conflict, malformed status, and retryability value is covered.
+    - Public errors expose no raw cause, context, exception data, provider content, or untrusted identifier.
+    - Every exchange field and outcome is exact; output, refusal, partial, reasoning, prompt, source, and error content are absent.
+    - Canonical byte, size, hash, ArtifactRef, recorder-call-count, idempotency, and failure behavior are covered.
+    - Quote boundaries, cached pricing, Decimal context, ceiling, overflow, substituted amounts, all binding fields, and independent recomputation are covered.
+    - Adapter and support collaborators satisfy runtime-checkable provider-neutral ports with no OpenAI SDK type inward.
+    - Generator, lock, fixture registry, manifest, owner-regeneration, Ruff, format, strict mypy, isolated tests, and affected predecessor checks pass.
+    - Socket/network and environment/credential access are denied and tested.
+  required_test_evidence:
+    - Read-only hash, YAML-structure, D1-through-D4 semantic-parity, and exact D5 replacement checks for the V5 authority revision.
+    - Make target-structure tests for the restored config-check header, absence of config-check from openai-recorded-gate prerequisites, and one direct UV_READONLY_RUN ST-0204 --check recipe.
+    - Negative tests rejecting python-sync, UV_RUN, sync, install, hydrate, recursive Make, environment or credential access, network, cache writes, and extra direct commands from openai-recorded-gate.
+    - Direct ST-0204 owner --check under the exact wrapper with a before/after filesystem no-write snapshot.
+    - TST-017-equivalent recorded fixture tests for success, refusal, both incomplete reasons, rate limit, timeout, authentication, permission, invalid request, unavailable, server, malformed response, and unknown exception.
+    - Negative tests for class/status conflict, hostile status access, malformed identifiers, raw exception leakage, exception chaining, and retryability.
+    - Negative tests for exchange schema extension, output/refusal/partial/error leakage, canonical drift, maximum bytes, digest/reference mismatch, recorder exception, and unexpected recorder calls.
+    - Negative tests for absent, malformed, not-yet-valid, expired, or mismatched quotes; cached usage; wrong or zero substituted amounts; Decimal isolation; and overflow.
+    - Static dependency-direction, SDK-type isolation, no-network, no-environment, no-credential, and no-external-service tests.
+    - Deterministic pyproject, uv.lock, fixture, registry, manifest, generator, and mechanically regenerated owner-output parity.
+    - Isolated ST-0703, ST-0204, ST-0701, ST-0801, and ST-0102 local suites.
+    - Canonical import and workspace drift checks.
+  deferred_external_decisions:
+    - id: OD-015
+      topic: production_provider_credentials
+      blocks: LIVE_PROVIDER_EVIDENCE
+    - id: AI-OD-001
+      topic: production_openai_account_data_controls_and_zdr
+      blocks: LIVE_AND_PRODUCTION_USE
+    - id: AI-OD-008
+      topic: production_model_pricing_and_fx_source_of_truth
+      blocks: PRODUCTION_PRICING_AND_BUDGET_ENFORCEMENT
+  open_decisions: []
+  approval:
+    decision_content_status: D1_THROUGH_D4_PREVIOUSLY_APPROVED_D5_CORRECTION_PENDING_EXACT_V5_APPROVAL
+    inherited_approved_decisions:
+      - ST0703-V3-D1
+      - ST0703-V3-D2
+      - ST0703-V3-D3
+      - ST0703-V3-D4
+    proposed_decision: ST0703-V5-D5-CORRECTION
+    prior_handoff_ref: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v4.yaml
+    prior_handoff_sha256: 7d384015c2975d7a718ff348cb4d1538a354f095cc0d9a2b0c76dbca5f6e4898
+    prior_reconciliation_ref: repo://changes/st-0703/CANONICAL-RECONCILIATION-v4.md
+    prior_reconciliation_sha256: 6c3285712156781c9a107dfb5417f87896246c75e3158fec485f1ea07be54887
+    prior_approval_ref: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v4.yaml
+    prior_approval_sha256: ed717125191c26dc609c61341320f020be7883add1f0967096b20d11e60eb202
+    exact_handoff_status: PENDING_REPOSITORY_OWNER_SHA256_APPROVAL
+    implementation_authority: NOT_GRANTED_BY_V5_UNTIL_EXACT_HANDOFF_APPROVAL
+    canonical_reconciliation: PENDING_V5_HASH_BOUND_RECORD
+    required_approval_artifact: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v5.yaml
+    formal_tst_017: NOT_EXECUTED
+    live_provider_validation: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED

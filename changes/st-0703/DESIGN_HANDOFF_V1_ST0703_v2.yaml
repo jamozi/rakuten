@@ -1,0 +1,93 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0703
+  approved_scope:
+    - Implement one recorded OpenAI Responses adapter behind provider-neutral inward ports.
+    - Pin and verify openai==2.52.0 using the reviewed lock closure.
+    - Map one strict structured request to one responses.create call with store=false, tools=[], max_retries=0, and a bounded timeout.
+    - Classify completed structured output, completed refusal, incomplete max-output-tokens, incomplete content-filter, and sanitized provider failures.
+    - Record only a bounded canonical exchange through an injected ProviderExchangeRecorder.
+    - Calculate fixture-only cost through an injected RecordedCostCalculator and immutable SyntheticPricingQuote.
+  source_design_refs:
+    - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-0703
+    - repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+    - repo://changes/st-0703/DESIGN-DECISION-REQUEST-v2.md
+    - repo://changes/st-0701/manifest.yaml
+    - repo://changes/st-0204/manifest.yaml
+  decision:
+    provider_boundary:
+      sdk: openai==2.52.0
+      api: responses.create
+      client_lifecycle: preconfigured synchronous client injected by application wiring
+      credential_resolution: excluded; remains owned by ST-0407
+      sdk_types_cross_inward_port: false
+    request_mapping:
+      calls_per_execute: 1
+      store: false
+      tools: []
+      max_retries: 0
+      timeout: explicit route value from 0.1 through 600 seconds
+      output: strict JSON Schema using exact request schema bytes
+    outcome_mapping:
+      completed_output: validate strict JSON object and Draft 2020-12 schema before returning ProviderSuccess
+      completed_refusal: classify before JSON parsing and return ProviderRefusal with stable code AI-PRV-005
+      incomplete: classify reason before partial-output parsing and return ProviderIncomplete
+      transport_failure: expose only stable ProviderErrorCode and retryability
+    recording:
+      collaborator: injected ProviderExchangeRecorder
+      content: canonical allowlisted metadata, hashes, usage, and classified outcome only
+      forbidden: raw prompt, raw source packet, refusal text, partial text, response headers, provider error body, credentials, and reasoning summary
+      production_storage: excluded; remains owned by ST-0601
+    pricing:
+      collaborator: injected RecordedCostCalculator
+      allowed_quote: immutable SyntheticPricingQuote for recorded fixtures only
+      production_pricing_and_fx: excluded
+    retry_and_routing:
+      adapter_retry: none
+      fallback: none
+      circuit_breaker_budget_and_route_selection: excluded; remains owned by ST-0704
+  rationale:
+    - The canonical Story requires a recorded adapter, not live credential activation or routing.
+    - Injection keeps credential, provider construction, storage, routing, and budget authority outside this adapter.
+    - Stable provider-neutral values preserve domain/application dependency direction and make recorded tests deterministic.
+    - Refusal and incomplete outcomes must be classified before untrusted text is parsed.
+  rejected_alternatives:
+    - Constructing an OpenAI client from environment variables inside the adapter, because that crosses ST-0407 and can consume ambient credentials.
+    - Enabling SDK retries, because ST-0704 and ST-0706 own routing, retry, budget, and orchestration policy.
+    - Recording raw responses, headers, prompts, or provider error bodies, because those can retain secrets or untrusted content.
+    - Treating JSON Schema conformance as sufficient factual or policy validation, because ST-0705 owns those checks.
+    - Calling Chat Completions or enabling tools, because the approved contract is Responses-only and tool-free.
+  constraints:
+    - Exactly one approved Story is implemented by this change.
+    - No network call is made by tests.
+    - No environment variable or Secret reference is read by the adapter.
+    - No database, queue, object-store, browser, or provider credential is activated.
+    - Generated or content-addressed artifacts are regenerated through their owner commands.
+    - Existing canonical and upstream files remain unchanged.
+  security_and_approval_gates:
+    - Provider failure messages and raw exceptions must not cross the inward boundary.
+    - Recorded exchange bytes must be canonical JSON, bounded, hash-bound, and contain no raw prompt or refusal text.
+    - Live provider evaluation, credential use, production pricing, release, staging, and production remain separately approved operations.
+    - This handoff does not resolve OD-015, AI-OD-001, AI-OD-008, or any other external-evidence decision.
+  acceptance_criteria:
+    - Exact fixture request equality for all five recorded scenarios.
+    - store=false, tools=[], max_retries=0, explicit timeout, and one provider call are asserted.
+    - Refusal and incomplete outcomes are classified before parsing their text.
+    - Malformed usage, model mismatch, invalid schema, malformed output, recorder failure, and pricing mismatch fail closed.
+    - Adapter and support collaborators satisfy provider-neutral runtime-checkable ports.
+    - Ruff, strict mypy, deterministic generator checks, ST-0703 tests, and affected predecessor tests pass.
+  required_test_evidence:
+    - TST-017-equivalent recorded fixture tests with no network or credentials.
+    - Static dependency-direction and no-provider-type boundary checks.
+    - Deterministic pyproject/uv.lock/fixture registry hash checks.
+    - Negative response, error, recorder, pricing, and route tests.
+  open_decisions: []
+  approval:
+    status: APPROVED_FOR_RECORDED_SCOPE_ONLY
+    approved_by: repository_owner:jamozi
+    approved_at: 2026-08-08T12:19:14Z
+    approval_basis: Explicit user instruction in the connected ChatGPT session to continue implementation and logically resolve undecided implementation details.
+    canonical_reconciliation: PASS_NO_MATERIAL_CONFLICT_FOR_RECORDED_SCOPE
+    formal_tst_017: NOT_EXECUTED
+    live_provider_validation: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    production: NOT_EXECUTED
