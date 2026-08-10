@@ -110,11 +110,13 @@ jobs:
       - name: Run affected predecessor and dependent suites without network
         run: |
           set -euo pipefail
-          scripts/run_network_denied.sh --home "$HOME" -- \
-            "$(command -v uv)" --config-file uv.toml run --locked --offline \
-            --no-cache --no-sync --no-env-file --no-python-downloads pytest \
-            -p no:cacheprovider -q \
-            tests/st0102 tests/st0204 tests/st0701 tests/st0703 tests/st0801
+          for suite in st0102 st0204 st0701 st0703 st0801; do
+            echo "Running tests/$suite"
+            scripts/run_network_denied.sh --home "$HOME" -- \
+              "$(command -v uv)" --config-file uv.toml run --locked --offline \
+              --no-cache --no-sync --no-env-file --no-python-downloads pytest \
+              -p no:cacheprovider -q "tests/$suite"
+          done
 
       - name: Run repository Contracts job without network
         run: |
