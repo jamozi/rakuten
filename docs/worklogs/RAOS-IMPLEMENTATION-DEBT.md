@@ -2426,3 +2426,58 @@ original result.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-executable ST-0602 validation
   boundary.
+
+### 2026-08-10 W2 / ST-0603 Fact-conflict review reference-plan checkpoint
+
+- Authority and scope: canonical `ST-0603` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0602, has no direct Open
+  Decision, and requires TST-007/TST-020. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint creates a source-derived,
+  non-executable Fact-conflict review plan; it does not compare Facts, select a
+  winning source/value, create a queue/finding, resolve a conflict, or mutate
+  evidence history.
+- The contract binds the committed ST-0602 owner output and revalidates that it
+  has no authoritative source snapshot, subject, Fact, Fact ID, derivation, or
+  manual-review count; repository is absent and persistence/job/event remain
+  unexecuted. ST-0603 therefore receives no comparison inputs and does not
+  manufacture a synthetic pair or convert absent work into zero conflicts.
+- Canonical source-conflict rules and EVD-004 screen metadata are projected only
+  as descriptive context. Fact/comparison/conflict/finding/queue/resolution/
+  evidence collections remain empty; conflict and manual-review counts remain
+  null. Comparator/version, tolerance, unit/time equivalence, selected source/
+  value/severity, reviewer/actor, queue contract, and resolution remain null or
+  unavailable.
+- Auto-resolution is disabled and silent resolution is forbidden. Unknown is
+  never converted to zero, false, empty, mean/min/max/best/worst; newer,
+  higher-confidence, non-null, or majority values are never automatically
+  preferred. Comparison, queue, resolution, repository, database, job/event,
+  API/UI runtime, and formal verification remain `NOT_EXECUTED`; all action
+  counts are exact integer zero.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and post-commit no-write `--check`, isolated `tests/st0603`
+  (`164 passed`), ST-0602 regression (`160 passed`), Ruff lint/format, mypy,
+  compile/import, exact nine-path review, focused secret scan, canonical import,
+  workspace drift, and `git diff --check` returned `PASS`. Generated JSON and
+  manifest were written only by the Story owner builder. The linked-worktree
+  scanner remains inherited `DEBT-W0-003`.
+- `DEBT-W2-042` status: `OPEN`, introduced-by `ST-0603`, closure owner:
+  Editorial/Data/Security, ST-0602 real Fact inputs, authorization/audit,
+  repository/UoW/database, queue/event/API/UI, and final Wave integration
+  owners. Exact skipped command: `NOT_RUN — no canonical Fact inputs,
+  predicate/unit/time comparability policy, tolerance rules, confidence/source
+  weighting prohibition implementation, severity mapping, conflict identity/
+  lifecycle, review-queue contract, reviewer authorization, resolution/
+  supersession vocabulary, persistence, or emitted event exists`; observed
+  result: `NOT_EXECUTED`. The static plan cannot satisfy the conflict-rule or
+  queue deliverables.
+- `DEBT-W2-043` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0603`, closure
+  owner: Editorial/Data/Product/Security/QA, formal CI, runtime/PostgreSQL,
+  Staging, release, and Production owners. Exact skipped command: `NOT_RUN —
+  real conflict comparison/review/resolution evidence, formal TST-007/TST-020,
+  hosted CI, Staging, release, and Production are outside local authority`;
+  observed result: `NOT_EXECUTED`. Local generation and hostile tests are not
+  promoted to conflict-free, Human-reviewed, formal, or release evidence.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable ST-0603 conflict
+  boundary.
