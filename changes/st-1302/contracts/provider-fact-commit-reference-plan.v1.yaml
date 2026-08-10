@@ -1,0 +1,248 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1302
+  classification: SOURCE_DERIVED_NONEXECUTABLE_PROVIDER_FACT_COMMIT_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  activation: false
+  runtime_eligible: false
+  authority: NOT_GRANTED
+  decision: NOT_READY
+  story_acceptance: false
+  production_eligible: false
+  approval: null
+  canonical_status: UNCHANGED
+
+authority:
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1302
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    required_id: OD-003
+    required_status: EXTERNAL_EVIDENCE_REQUIRED
+    blocking: true
+  authority_kind: SOURCE_DERIVED_REFERENCE_ONLY
+  changes_canonical_status: false
+
+predecessor:
+  story_id: ST-1301
+  feature_commit: 20d1a2649f5b4635d49b970e76d17bd3ef93a1dc
+  binding: EXACT_CURRENT_COMMITTED_BYTES
+  artifacts:
+    changes/st-1301/README.md: 49ec7923d508c31ab5e29c1a53d59258e3c832859df142407beac72de284b7e0
+    python/raos/domain/finance/revenue_import.py: 9698846ff18dfa7fb81b338f126fe70e28f96151ed8283eac8cb5da7132265eb
+    python/raos/ports/revenue_import.py: d3c2adb05f3db3810a2d7bc7462dcb87b62fd45e308777d6575824733c940e48
+    python/raos/application/finance/revenue_import.py: 4ad42b6f47668c3e9a602efdd24e12ed41ccfa926f1ca4f30d27cc241e750421
+    python/raos/adapters/recorded_revenue_import.py: 9d5f2c0d9ee0f8a27d6468613d2d0487b24e2996cc1c5396b5343306da852889
+    tests/st1301/conftest.py: 0171298b72be27418efc7d0eac35551d12934b80bd82a3bf73f554c7040d4244
+    tests/st1301/test_contract.py: e496aa856a7bfaedb589ec62c7196ecb8d1595dcc992a525453c14bf718fb902
+    tests/st1301/test_revenue_import.py: 99b29264593f6fc92fea19540a6028830df854e3719542c3345b0455ab78133c
+    tests/st1301/test_negative_cases.py: a0fac1fea74bee63640d4d702223c1bd9f3933887f7ee887c3ef7cae7da51b07
+  required_semantics:
+    classification: MAXIMUM_SAFE_LOCAL_SYNTHETIC_NON_PERSISTENT_REVENUE_DRY_RUN_REFERENCE_SEAM
+    profile: RAOS_ST1301_SYNTHETIC_V1
+    execution: SYNTHETIC_FIXTURE_ONLY
+    mapping: UNVERIFIED
+    decision: NOT_READY
+    provider_total_jpy: null
+    reconciliation: NOT_EXECUTED
+    persistence: NOT_EXECUTED
+    facts: NOT_CREATED
+    commit_capability: ABSENT
+
+source_pins:
+  st0308_persistence_plan:
+    path: changes/st-0308/contracts/persistence-boundary-reference.v1.yaml
+    sha256: 584b2ffd2aa58132de262a7cab039a0fa41f71acc6444ad990105253b37ac56c
+  st0308_reference_plan:
+    path: changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
+    sha256: 928190e7a0bff9a3b8800d7fd5c70cde14e9f5099d75f35a9ed45ea1b2437289
+  st0308_manifest:
+    path: changes/st-0308/manifest.yaml
+    sha256: d0162c099ee02db746f8ba9eec40c354f4d8f9b95e4fd171c81e2d0d753273ee
+  st0305_contract:
+    path: changes/st-0305/contracts/publication-analytics-finance.v1.yaml
+    sha256: 2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f
+  st0305_catalog:
+    path: changes/st-0305/generated/publication-analytics-finance-catalog.v1.json
+    sha256: 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
+  canonical_row_schema:
+    path: contracts/raos-v0.4/contracts/schemas/imports/revenue-canonical-row.schema.json
+    sha256: 02bc3d854a7420a74a8b302342a9ad0e23cfe4529565716a185c333b43ebbff8
+  commit_job_schema:
+    path: contracts/raos-v0.4/contracts/schemas/jobs/finance-commit-revenue-import-v1.schema.json
+    sha256: 9e0b860aacd151888e67e76a64ad94e8c3dd33072de42f570b8b233e1a9dce0d
+  job_catalog:
+    path: contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+    sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+  state_transition_catalog:
+    path: contracts/raos-v0.4/contracts/catalogs/state-transition-catalog.v0.4.yaml
+    sha256: 203eb10d9b6fc6ba4fb0e9f0491f713c313a6a5627dcaf60b7ce53665ecec8a5
+  admin_openapi:
+    path: contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml
+    sha256: 6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70
+  rbac_matrix:
+    path: docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+
+vocabularies:
+  mapping_defined: false
+  canonical_row_event:
+    - GENERATED
+    - CONFIRMED
+    - CANCELLED
+    - ADJUSTED
+  commission_status:
+    - GENERATED
+    - CONFIRMED
+    - CANCELLED
+    - ADJUSTED
+    - UNKNOWN
+  commission_event:
+    - GENERATED
+    - CONFIRMED
+    - CANCELLED
+    - AMOUNT_CHANGED
+    - CORRECTED
+
+namespace_separation:
+  equivalence_inferred: false
+  api_operation: FIN-006
+  oauth_scope: finance:revenue:confirm
+  audit_action: revenue_import_confirm
+  rbac_action: commit_revenue_import
+  mapping: []
+
+unresolved_inconsistency:
+  status: UNRESOLVED
+  job_catalog_idempotency_basis:
+    - revenue_import_id
+    - source_sha256
+    - preview_hash
+  commit_job_payload_fields:
+    - revenue_import_id
+    - expected_source_sha256
+    - expected_accepted_count
+    - expected_commission_amount_jpy
+  admin_confirm_request_fields:
+    - expected_source_sha256
+    - expected_accepted_count
+    - expected_commission_amount_jpy
+  missing_field: preview_hash
+  selected_preview_hash: null
+  replacement_algorithm: null
+  resolved: false
+
+selection_boundary:
+  data_class: RESTRICTED
+  source_sha256: null
+  preview_hash: null
+  provider_identity: null
+  provider_event_identity: null
+  currency_literal: JPY
+  fx_policy: null
+  conversion_policy: null
+  business_policy: null
+  cost_policy: null
+  retention_policy: null
+  period: null
+  committed_at: null
+  actor: null
+  authorization: null
+  step_up: null
+  reconciliation_result: null
+  commit_result: null
+  approval: null
+
+collections:
+  canonical_rows: []
+  provider_facts: []
+  commission_events: []
+  emitted_events: []
+  writes: []
+  canonical_row_count: null
+  provider_fact_count: null
+  commission_event_count: null
+  emitted_event_count: null
+  write_count: null
+  amount_total_jpy: null
+  empty_means_zero: false
+
+evaluation_boundary:
+  same_hash:
+    evaluable: false
+    result: null
+  idempotency:
+    evaluable: false
+    result: null
+  reconciliation:
+    evaluable: false
+    result: null
+  authorization:
+    evaluable: false
+    result: null
+  step_up:
+    evaluable: false
+    result: null
+  audit_atomicity:
+    evaluable: false
+    result: null
+  vacuous_pass_allowed: false
+
+execution_boundary:
+  database: NOT_EXECUTED
+  repository: NOT_EXECUTED
+  unit_of_work: NOT_EXECUTED
+  transaction: NOT_EXECUTED
+  fake_persistence: NOT_EXECUTED
+  queue: NOT_EXECUTED
+  job: NOT_EXECUTED
+  audit: NOT_EXECUTED
+  outbox: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  network: NOT_EXECUTED
+  file_intake: NOT_EXECUTED
+  runtime: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  action_counts:
+    database: 0
+    repository: 0
+    unit_of_work: 0
+    transaction: 0
+    fake_persistence: 0
+    queue: 0
+    job: 0
+    audit: 0
+    outbox: 0
+    provider: 0
+    network: 0
+    file_intake: 0
+    write: 0
+    create_fact: 0
+    emit_event: 0
+    external: 0
+  external_actions: []
+
+diagnostic_boundary:
+  raw_row_allowed: false
+  provider_id_allowed: false
+  note_allowed: false
+  error_allowed: false
+  fixture_body_allowed: false
+  dynamic_values: []
+
+verification_boundary:
+  TST-008: NOT_EXECUTED
+  TST-030: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  story_acceptance: false
+  decision: NOT_READY
