@@ -1,0 +1,439 @@
+name: Finalize Switchable Strategies for All Stories V2
+
+on:
+  push:
+    branches:
+      - agent/all-stories-materialize-run-20260811
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  FOUNDATION_BRANCH: codex/raos-implementation-first-goal
+  STRATEGY_BRANCH: agent/all-stories-switchable-strategies-20260811
+  TARGET_BRANCH: codex/all-stories-switchable-strategies-20260811
+  PYTHON_VERSION: 3.14.6
+  UV_VERSION: 0.12.1
+  NODE_VERSION: 24.18.1
+  NPM_VERSION: 11.16.0
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  finalize:
+    name: Exact materialization and validation
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+    steps:
+      - name: Check out transport
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: overlay-transport
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out switchboard branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.STRATEGY_BRANCH }}
+          path: subject
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Install exact uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: false
+
+      - name: Install managed Python
+        run: |
+          set -euo pipefail
+          uv --no-config --color never python install \
+            --managed-python --no-bin --no-registry --no-cache --no-progress \
+            "$PYTHON_VERSION"
+
+      - name: Materialize exact combined tree
+        run: |
+          set -euo pipefail
+          python_path="$(uv --no-config python find "$PYTHON_VERSION")"
+          "$python_path" overlay-transport/.github/scripts/materialize_switchable_tree.py \
+            --transport overlay-transport \
+            --subject subject \
+            --temporary "$RUNNER_TEMP/materialize-v2" \
+            --foundation-branch "$FOUNDATION_BRANCH"
+
+      - name: Install exact Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+          check-latest: false
+
+      - name: Hydrate exact locked dependencies
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          uv --no-config --color never sync --locked \
+            --no-default-groups --group dev --no-install-project --no-install-local \
+            --managed-python --no-python-downloads --python "$PYTHON_VERSION" \
+            --no-build --no-sources --default-index https://pypi.org/simple \
+            --index-strategy first-index --keyring-provider disabled --link-mode copy \
+            --resolution highest --prerelease disallow \
+            --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
+          npm install --global "npm@$NPM_VERSION" --ignore-scripts --no-audit --no-fund
+          test "$(node --version)" = "v$NODE_VERSION"
+          test "$(npm --version)" = "$NPM_VERSION"
+          if [[ -f package-lock.json ]]; then
+            npm ci --ignore-scripts --no-audit --no-fund
+          fi
+
+      - name: Format and generate owned artifacts
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          UV_RUN=(uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION")
+          "${UV_RUN[@]}" ruff format \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py \
+            tests/strategy_switchboard
+          "${UV_RUN[@]}" python scripts/build_all_story_strategy_catalog.py --write
+          git diff --check
+
+      - name: Reject placeholder or empty implementation artifacts
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          foundation_sha="$(cat .foundation-commit.sha)"
+          failure=0
+          while IFS= read -r path; do
+            [[ -f $path ]] || continue
+            case "$path" in
+              */__init__.py|*.keep|*.gitkeep) continue ;;
+            esac
+            case "$path" in
+              python/*|scripts/*|tests/*|packages/*|apps/*|infra/*|changes/*)
+                if [[ ! -s $path ]]; then
+                  printf 'empty implementation artifact: %s\n' "$path" >&2
+                  failure=1
+                fi
+                ;;
+            esac
+          done < <(git diff --name-only "$foundation_sha")
+          exit "$failure"
+
+      - name: Snapshot candidate tree before read-only validation
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          git add -A
+          git diff --cached --binary >"$RUNNER_TEMP/v2-before.patch"
+          git diff --cached --name-only >"$RUNNER_TEMP/v2-changed-paths.txt"
+          test -s "$RUNNER_TEMP/v2-before.patch"
+          test -s "$RUNNER_TEMP/v2-changed-paths.txt"
+
+      - name: Validate owned switchboard implementation
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          UV_RUN=(uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION")
+          "${UV_RUN[@]}" python scripts/build_all_story_strategy_catalog.py --check
+          "${UV_RUN[@]}" python -m compileall -q \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py
+          "${UV_RUN[@]}" ruff check --no-cache \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py \
+            tests/strategy_switchboard
+          "${UV_RUN[@]}" ruff format --check \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py \
+            tests/strategy_switchboard
+          "${UV_RUN[@]}" mypy --strict \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py
+          "${UV_RUN[@]}" pytest -p no:cacheprovider --import-mode=importlib -q \
+            tests/strategy_switchboard
+
+      - name: Audit exact canonical alternative coverage
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          UV_RUN=(uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION")
+          "${UV_RUN[@]}" python - <<'PY'
+          from __future__ import annotations
+
+          import ast
+          import json
+          from pathlib import Path
+          import re
+
+          root = Path.cwd()
+          story_text = (
+              root / "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+          ).read_text(encoding="utf-8")
+          decision_text = (
+              root
+              / "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml"
+          ).read_text(encoding="utf-8")
+          stories = set(re.findall(r"\bST-[0-9]{4}\b", story_text))
+          decisions = set(re.findall(r"\bOD-[0-9]{3}\b", decision_text))
+          expected_decisions = {f"OD-{number:03d}" for number in range(1, 16)}
+          if decisions != expected_decisions:
+              raise SystemExit("Open Decision inventory mismatch")
+          generated = json.loads(
+              (
+                  root
+                  / "changes/all-stories/generated/switchable-strategy-catalog.v1.json"
+              ).read_bytes()
+          )
+          candidates = generated["catalog"]["candidates"]
+          grouped: dict[str, list[dict[str, object]]] = {}
+          for candidate in candidates:
+              grouped.setdefault(candidate["boundary_id"], []).append(candidate)
+          if set(grouped) != stories | decisions:
+              raise SystemExit("not every canonical boundary is covered")
+          for boundary_id, items in grouped.items():
+              if len(items) != 3:
+                  raise SystemExit(f"{boundary_id}: candidate count is not three")
+              tiers = {item["tier"] for item in items}
+              if tiers != {"safe", "standard", "advanced"}:
+                  raise SystemExit(f"{boundary_id}: tier set invalid")
+              safe = next(item for item in items if item["tier"] == "safe")
+              standard = next(item for item in items if item["tier"] == "standard")
+              advanced = next(item for item in items if item["tier"] == "advanced")
+              if safe["side_effects"] or safe["execution_kind"] != "deterministic_plan":
+                  raise SystemExit(f"{boundary_id}: safe path is not inert")
+              if "production" in standard["requirements"]["allowed_environments"]:
+                  raise SystemExit(f"{boundary_id}: standard path permits production")
+              if advanced["execution_kind"] != "injected_adapter":
+                  raise SystemExit(f"{boundary_id}: advanced path is not injected")
+              if "production-use" not in advanced["requirements"]["approvals"]:
+                  raise SystemExit(f"{boundary_id}: advanced path lacks production gate")
+
+          forbidden = {"boto3", "openai", "requests", "sqlalchemy"}
+          package = root / "python/raos/strategy_switchboard"
+          for path in sorted(package.glob("*.py")):
+              tree = ast.parse(path.read_bytes(), filename=str(path))
+              for node in ast.walk(tree):
+                  roots: set[str]
+                  if isinstance(node, ast.Import):
+                      roots = {alias.name.partition(".")[0] for alias in node.names}
+                  elif isinstance(node, ast.ImportFrom) and node.module:
+                      roots = {node.module.partition(".")[0]}
+                  else:
+                      continue
+                  if roots & forbidden:
+                      raise SystemExit(f"provider/framework import in {path}")
+          print(
+              json.dumps(
+                  {
+                      "candidate_count": len(candidates),
+                      "decision_count": len(decisions),
+                      "status": "PASS",
+                      "story_count": len(stories),
+                  },
+                  sort_keys=True,
+                  separators=(",", ":"),
+              )
+          )
+          PY
+
+      - name: Validate all changed Python sources and tests
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          foundation_sha="$(cat .foundation-commit.sha)"
+          mapfile -t changed_python < <(
+            git diff --name-only "$foundation_sha" | \
+              grep -E '^(python|scripts|tests)/.*\.py$' | sort -u
+          )
+          test ${#changed_python[@]} -gt 0
+          UV_RUN=(uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION")
+          "${UV_RUN[@]}" ruff check --no-cache "${changed_python[@]}"
+          mapfile -t changed_tests < <(
+            printf '%s\n' "${changed_python[@]}" | grep '^tests/' | sort -u
+          )
+          test ${#changed_tests[@]} -gt 0
+          "${UV_RUN[@]}" pytest -p no:cacheprovider --import-mode=importlib -q \
+            "${changed_tests[@]}"
+
+      - name: Validate changed deterministic generators
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          foundation_sha="$(cat .foundation-commit.sha)"
+          UV_RUN=(uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION")
+          mapfile -t generators < <(
+            git diff --name-only "$foundation_sha" | \
+              grep '^scripts/build_.*\.py$' | sort -u || true
+          )
+          for generator in "${generators[@]}"; do
+            help="$(${UV_RUN[@]} python "$generator" --help 2>&1 || true)"
+            if grep -q -- '--check' <<<"$help"; then
+              "${UV_RUN[@]}" python "$generator" --check
+            fi
+          done
+          if [[ -d tests/st0703 ]]; then
+            "${UV_RUN[@]}" python scripts/build_st0703_recorded_adapter.py --check
+            "${UV_RUN[@]}" python scripts/build_st0703_recorded_adapter.py --check-installed
+            "${UV_RUN[@]}" pytest -p no:cacheprovider -q tests/st0703
+          fi
+
+      - name: Validate TypeScript workspaces
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          if [[ -f package.json && -d node_modules ]]; then
+            npm run lint --if-present
+            npm run typecheck --if-present
+            npm run test --if-present
+          fi
+
+      - name: Prove read-only validation
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          git add -A
+          git diff --cached --binary >"$RUNNER_TEMP/v2-after.patch"
+          cmp "$RUNNER_TEMP/v2-before.patch" "$RUNNER_TEMP/v2-after.patch"
+          git diff --check
+
+      - name: Create exact evidence file
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          patch_sha="$(sha256sum "$RUNNER_TEMP/v2-after.patch" | cut -d' ' -f1)"
+          python3 - "$patch_sha" <<'PY'
+          from __future__ import annotations
+
+          import json
+          from pathlib import Path
+          import sys
+
+          root = Path.cwd()
+          catalog_path = (
+              root / "changes/all-stories/generated/switchable-strategy-catalog.v1.json"
+          )
+          catalog = json.loads(catalog_path.read_bytes())
+          document = {
+              "catalog_sha256": catalog["catalog_sha256"],
+              "candidate_count": catalog["coverage"]["candidate_count"],
+              "external_values_invented": False,
+              "foundation_commit": (root / ".foundation-commit.sha").read_text().strip(),
+              "human_approval_invented": False,
+              "open_decision_count": catalog["coverage"]["open_decision_boundary_count"],
+              "open_decisions_resolved": False,
+              "overlay_mode": (root / ".combined-overlay.mode").read_text().strip(),
+              "overlay_sha256": (root / ".combined-overlay.sha256").read_text().strip(),
+              "production_activated": False,
+              "status": "VALIDATED_IMPLEMENTATION_CANDIDATE",
+              "story_count": catalog["coverage"]["story_boundary_count"],
+              "strategy_source_commit": (root / ".strategy-source-commit.sha").read_text().strip(),
+              "validated_patch_sha256": sys.argv[1],
+          }
+          target = (
+              root
+              / "changes/all-stories/generated/switchable-strategy-evidence.v1.json"
+          )
+          target.write_text(
+              json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+          git add -A
+          git diff --check
+
+      - name: Publish validated branch and Draft PR
+        working-directory: subject
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -B "$TARGET_BRANCH"
+          git add -A
+          git commit -m 'feat: implement switchable strategies for all RAOS Stories'
+          target_ref="refs/heads/$TARGET_BRANCH"
+          remote_sha="$(git ls-remote --heads origin "$target_ref" | awk '{print $1}')"
+          if [[ -n $remote_sha ]]; then
+            git push --force-with-lease="$target_ref:$remote_sha" origin "HEAD:$target_ref"
+          else
+            git push origin "HEAD:$target_ref"
+          fi
+          head_sha="$(git rev-parse HEAD)"
+          gh api "repos/${GITHUB_REPOSITORY}/statuses/${head_sha}" \
+            --method POST \
+            -f state=success \
+            -f context=all-stories/switchable-validation-v2 \
+            -f description='All Story alternatives and gates validated' \
+            -f target_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          cat >"$RUNNER_TEMP/v2-pr-body.md" <<'EOF'
+          ## Summary
+
+          Implements safe, standard, and advanced switchable alternatives for every canonical RAOS Story and domain-specific alternatives for OD-001 through OD-015.
+
+          Selection is controlled by typed profiles, per-boundary overrides, explicit approval/evidence/capability gate context, and injected provider-neutral adapters. Production cannot downgrade to local or Staging paths.
+
+          No Open Decision, credential, production value, human approval, formal TST result, infrastructure apply, publication, release, or Production activation is invented or claimed.
+
+          ## Validation
+
+          The publishing workflow validates the complete reconstructed all-Story tree with Python 3.14.6, uv 0.12.1, Node 24.18.1, npm 11.16.0, deterministic generation, exact canonical coverage, strict mypy, Ruff, all changed Python tests, changed generators, TypeScript workspaces, ST-0703, and byte-identical pre/post validation content.
+          EOF
+          existing="$(gh pr list --head "$TARGET_BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
+          if [[ -n $existing ]]; then
+            gh pr edit "$existing" \
+              --title 'Implement switchable strategies for all RAOS Stories' \
+              --body-file "$RUNNER_TEMP/v2-pr-body.md"
+          else
+            gh pr create --draft --base main --head "$TARGET_BRANCH" \
+              --title 'Implement switchable strategies for all RAOS Stories' \
+              --body-file "$RUNNER_TEMP/v2-pr-body.md"
+          fi
+          gh pr view "$TARGET_BRANCH" --json number,url,headRefOid,isDraft \
+            >"$RUNNER_TEMP/v2-final-pr.json"
+
+      - name: Upload exact validation evidence
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: all-stories-switchable-strategy-evidence-v2
+          path: |
+            ${{ runner.temp }}/v2-changed-paths.txt
+            ${{ runner.temp }}/v2-before.patch
+            ${{ runner.temp }}/v2-after.patch
+            ${{ runner.temp }}/v2-final-pr.json
+            subject/changes/all-stories/generated/switchable-strategy-catalog.v1.json
+            subject/changes/all-stories/generated/switchable-strategy-evidence.v1.json
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
