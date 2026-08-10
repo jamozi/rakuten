@@ -2316,3 +2316,55 @@ original result.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-executable ST-0504 review
   boundary.
+
+### 2026-08-10 W2 / ST-0505 Rakuten live-smoke reference-plan checkpoint
+
+- Authority and scope: canonical `ST-0505` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0502, carries blocking OD-015,
+  and requires release-blocking TST-016 in Staging. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`, and ENV-STAGING/EXT-001 remain
+  `NOT_CONFIGURED`. This checkpoint creates a source-derived, non-executable
+  live-smoke reference plan; it does not add or invoke a provider adapter,
+  credential path, network client, runnable command, or live report.
+- The contract binds committed ST-0502 bytes and revalidates its
+  `RECORDED_TEST_ONLY`, `live_eligible: false`, one-page/one-call/zero-retry/
+  zero-pagination, storage/persistence `NOT_EXECUTED`, and no-network/no-SDK/
+  no-credential semantics. OD-015 remains `EXTERNAL_EVIDENCE_REQUIRED`; the
+  exact safe default remains recorded fixtures only.
+- Provider mode stays recorded-only and activation stays disabled. Selected
+  environment, account, endpoint/origin, credential reference/name, runner,
+  executor, schedule, request/query/header/payload, and all request/page/hit/
+  duration/retry/rate/quota/budget/cost bounds remain null or empty. Unset
+  bounds mean execution is forbidden, never an implied free or safe live run.
+- The report remains `NOT_EXECUTED`: auth/schema/rate observations, timestamps,
+  request/response identifiers, and HTTP status are null; results, warnings,
+  errors, evidence, and artifacts are empty. Empty means no live evidence was
+  collected, not zero findings or successful authentication. Provider,
+  credential, network, live, Staging, release, and Production action counts are
+  exact integer zero.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and no-write `--check`, isolated `tests/st0505`
+  (`162 passed`), ST-0502 regression (`68 passed`), Ruff lint/format, strict
+  mypy, compile/import, exact nine-path review, focused secret scan, canonical
+  import, workspace drift, and `git diff --check` returned `PASS`. Generated
+  JSON and manifest were written only by the Story owner builder. The linked-
+  worktree scanner remains inherited `DEBT-W0-003`.
+- `DEBT-W2-038` status: `OPEN`, introduced-by `ST-0505`, closure owner:
+  Catalog/Engineering/Operations/Security/Finance and final Wave integration
+  owners. Exact skipped command: `NOT_RUN — no owner-approved provider account,
+  dedicated Staging credential reference, endpoint/egress/TLS configuration,
+  request/rate/quota/retry/duration/cost bounds, runner, schedule, report
+  schema, secret rotation evidence, or live-smoke authorization exists`;
+  observed result: `NOT_EXECUTED`. The static disabled plan cannot satisfy the
+  auth/schema/rate observation or live-report acceptance boundary.
+- `DEBT-W2-039` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0505`, closure
+  owner: Operations/Security/Provider/QA, formal CI, Staging, release, and
+  Production owners. Exact skipped command: `NOT_RUN — real credential use,
+  provider network access, bounded Staging smoke, formal TST-016, live report,
+  hosted CI, release review, and Production are outside local authority`;
+  observed result: `NOT_EXECUTED`. Local recorded-fixture binding and hostile
+  tests are not promoted to live provider evidence, formal PASS, or readiness.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable ST-0505 live-smoke
+  boundary.
