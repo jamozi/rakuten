@@ -1,0 +1,224 @@
+document:
+  id: RAOS-ST0702-CONTEXT-PACK-REFERENCE-PLAN-001
+  version: 1.0.0
+  story_id: ST-0702
+  classification: SOURCE_DERIVED_NON_EXECUTABLE_CONTEXT_PACK_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  interface_only: true
+  decision: NOT_READY
+  story_acceptance: false
+  production_eligible: false
+  approval: null
+  canonical_status: UNCHANGED
+
+authority:
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-0702
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  authority_kind: SOURCE_DERIVED_REFERENCE_ONLY
+  changes_canonical_status: false
+
+predecessors:
+  st0604:
+    story_id: ST-0604
+    feature_commit: 24e9640f7fa2b681ea40bb539837e40403928ec8
+    binding: EXACT_COMMITTED_OWNED_BYTES
+    artifacts:
+      changes/st-0604/README.md: 5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8
+      changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml: df184e56224586ccb399da2f782e7a6a4fa202f4d9934be240be61dc75f1fb74
+      changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json: 92a65884534f2a9a1c9fe10473d6e85ecdf1308531518d97c768bc5ede7a4f0c
+      changes/st-0604/manifest.yaml: 07b399132fa15ce658931393dc56c7c11070152c1f7e1a1034783b230a0e170d
+      scripts/build_st0604_source_packet_lifecycle_reference_plan.py: f5e14432f9369e9ef82e4d2062480f11f6db3ba017bd38eeee988df622bf18c6
+      tests/st0604/conftest.py: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
+      tests/st0604/test_contract.py: 68c3fad0196b6fc353dd354c172d32dcc64106474754a54665f362a51b415462
+      tests/st0604/test_generation.py: 5ed32f62c06924f3f6931fb827a6c68dc4ffcbd415ddc6b8ece54c66e93a9cca
+      tests/st0604/test_negative_cases.py: 143ea1cf8f9b5558f98c521909be7c1506e8ad6cbda5534edb01c11ef8afdb45
+    required_semantics:
+      decision: NOT_READY
+      packet_count: null
+      fact_count: null
+      mapping_count: null
+      approval: false
+      generation_permitted: false
+      transition_status: UNAVAILABLE
+      mapping_status: UNAVAILABLE
+  st0701:
+    story_id: ST-0701
+    base_commit: d56da0c85035a85507636c025132550c0b1a7cd2
+    binding: CURRENT_COMMITTED_OWNED_BYTES_AT_ST0702_BASE
+    known_owner_debt: EXPECTED_MANIFEST_ONLY_DRIFT
+    artifacts:
+      changes/st-0701/README.md: 58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6
+      changes/st-0701/contracts/ai-contract-registry-loader.v1.yaml: 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
+      changes/st-0701/generated/ai-task-registry.v1.json: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
+      changes/st-0701/manifest.yaml: 14d651ffcd99ec1d90f46ecd1585837aafb26a050024790c9304bc70b8f69852
+      scripts/build_st0701_ai_registry.py: 2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360
+      tests/st0701/conftest.py: a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
+      tests/st0701/test_compiled_task_registry.py: bdc75302f0a901e2d0859c8fee03569db6d4f628f77515385d1c9a57d17e8854
+      tests/st0701/test_contract.py: d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55
+      tests/st0701/test_generation.py: 09fa81e4a46d8652c18b1993c200d508ff87e7970fc8f0222b8c6bbc387bf34e
+    required_semantics:
+      task_count: 12
+      complete_binding_metadata: true
+      task_activation: false
+      selected_provider: null
+      provider_call: NOT_EXECUTED
+      route_execution: NOT_EXECUTED
+      network_access: false
+      formal_validation: NOT_EXECUTED
+
+registry_projection:
+  source_path: changes/st-0701/generated/ai-task-registry.v1.json
+  source_sha256: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
+  order_source: EXACT_SOURCE_ORDER
+  projection: FULL_BINDING_METADATA
+  task_count: 12
+  activation_inferred: false
+  activated_task_count: null
+  selected_task_count: null
+
+packing_rules:
+  available:
+    typed_manifest_required: true
+    input_manifest_check_required: true
+    audit_manifest_check_required: true
+    source_packet_requirement_is_task_scoped: true
+    deterministic_repack_on_context_overflow_required: true
+    silent_required_fact_truncation_forbidden: true
+    only_allowlisted_inputs_may_be_considered: true
+    denied_inputs_must_be_excluded: true
+    task_input_and_output_bounds_are_descriptive_only: true
+  unavailable:
+    context_pack_manifest_schema: null
+    fact_field_mapping: null
+    canonical_json_algorithm: null
+    token_estimator: null
+    token_overhead: null
+    scope_reduction_algorithm: null
+    important_to_required_promotion_rule: null
+    recursive_input_scan_rule: null
+    packing_algorithm: null
+  unavailable_status: UNAVAILABLE
+
+selection_defaults:
+  task_code: null
+  prompt_code: null
+  route_code: null
+  provider: null
+  model: null
+  source_packet_id: null
+  source_packet_version: null
+  article_plan_id: null
+  context_pack_manifest_schema_id: null
+  context_pack_manifest_schema_version: null
+  canonical_json_algorithm: null
+  token_estimator: null
+  token_estimator_version: null
+  packing_algorithm: null
+  packing_algorithm_version: null
+  output_schema_id: null
+  environment: null
+  credential_reference: null
+
+collection_defaults:
+  source_packets: []
+  facts: []
+  claims: []
+  policies: []
+  manifests: []
+  pack_items: []
+  required_items: []
+  important_items: []
+  optional_items: []
+  dropped_items: []
+  provider_requests: []
+  provider_responses: []
+  source_packet_count: null
+  fact_count: null
+  claim_count: null
+  policy_count: null
+  manifest_count: null
+  pack_item_count: null
+  required_item_count: null
+  important_item_count: null
+  optional_item_count: null
+  dropped_item_count: null
+
+build_boundary:
+  build_permitted: false
+  provider_call_permitted: false
+  manifest_creation_permitted: false
+  context_pack: null
+  context_pack_manifest: null
+  context_pack_sha256: null
+  context_pack_byte_size: null
+  estimated_input_tokens: null
+  estimated_overhead_tokens: null
+  context_overflow: null
+  scope_reduction_records: []
+  decision: NOT_READY
+  blockers:
+    - APPROVED_SOURCE_PACKET_UNAVAILABLE
+    - FACTS_UNAVAILABLE
+    - CONTEXT_PACK_MANIFEST_SCHEMA_UNAVAILABLE
+    - FACT_FIELD_MAPPING_UNAVAILABLE
+    - PACKING_ALGORITHM_UNAVAILABLE
+    - CANONICAL_JSON_ALGORITHM_UNAVAILABLE
+    - TOKEN_ESTIMATOR_UNAVAILABLE
+    - SCOPE_REDUCTION_ALGORITHM_UNAVAILABLE
+    - GENERATION_PERMISSION_FALSE
+
+execution_boundary:
+  build: NOT_EXECUTED
+  selection: NOT_EXECUTED
+  recursive_scan: NOT_EXECUTED
+  packing: NOT_EXECUTED
+  serialization: NOT_EXECUTED
+  hashing: NOT_EXECUTED
+  token_estimation: NOT_EXECUTED
+  scope_reduction: NOT_EXECUTED
+  item_drop: NOT_EXECUTED
+  manifest_creation: NOT_EXECUTED
+  provider_call: NOT_EXECUTED
+  network_access: NOT_EXECUTED
+  repository_write: NOT_EXECUTED
+  database_write: NOT_EXECUTED
+  job_execution: NOT_EXECUTED
+  event_emission: NOT_EXECUTED
+  external_action: NOT_EXECUTED
+  action_counts:
+    build: 0
+    select: 0
+    scan: 0
+    pack: 0
+    serialize: 0
+    hash: 0
+    estimate: 0
+    reduce_scope: 0
+    drop_item: 0
+    create_manifest: 0
+    provider_call: 0
+    network: 0
+    repository_write: 0
+    database_write: 0
+    job: 0
+    event: 0
+    external: 0
+  external_actions: []
+
+verification_boundary:
+  local_projection_only: true
+  generated_output_is_recovery_or_runtime_evidence: false
+  context_pack_built: false
+  manifest_built: false
+  provider_invoked: false
+  formal_validation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false

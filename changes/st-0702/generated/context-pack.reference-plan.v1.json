@@ -1,0 +1,2431 @@
+{
+  "document": {
+    "id": "RAOS-ST0702-CONTEXT-PACK-REFERENCE-PLAN-001",
+    "version": "1.0.0",
+    "story_id": "ST-0702",
+    "classification": "SOURCE_DERIVED_NON_EXECUTABLE_CONTEXT_PACK_REFERENCE_PLAN",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "executable": false,
+    "interface_only": true,
+    "decision": "NOT_READY",
+    "story_acceptance": false,
+    "production_eligible": false,
+    "approval": null,
+    "canonical_status": "UNCHANGED"
+  },
+  "authority": {
+    "canonical_story": {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "story_id": "ST-0702"
+    },
+    "integration_precedence": {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    "authority_kind": "SOURCE_DERIVED_REFERENCE_ONLY",
+    "changes_canonical_status": false
+  },
+  "provenance": {
+    "source_contract": "repo://changes/st-0702/contracts/context-pack-reference-plan.v1.yaml",
+    "generated_by": "repo://scripts/build_st0702_context_pack_reference_plan.py",
+    "generation_command": "uv run --locked --offline --no-cache --no-sync --no-env-file python scripts/build_st0702_context_pack_reference_plan.py",
+    "inventory_derivation": "FIXED_OWNER_INVENTORY_AT_ST0702_BASE",
+    "implementation_helper": {
+      "uri": "repo://scripts/build_st1505_staging_deployment.py",
+      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    }
+  },
+  "predecessor_bindings": {
+    "st0604": {
+      "story_id": "ST-0604",
+      "feature_commit": "24e9640f7fa2b681ea40bb539837e40403928ec8",
+      "binding": "EXACT_COMMITTED_OWNED_BYTES",
+      "artifacts": {
+        "changes/st-0604/README.md": "5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8",
+        "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml": "df184e56224586ccb399da2f782e7a6a4fa202f4d9934be240be61dc75f1fb74",
+        "changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json": "92a65884534f2a9a1c9fe10473d6e85ecdf1308531518d97c768bc5ede7a4f0c",
+        "changes/st-0604/manifest.yaml": "07b399132fa15ce658931393dc56c7c11070152c1f7e1a1034783b230a0e170d",
+        "scripts/build_st0604_source_packet_lifecycle_reference_plan.py": "f5e14432f9369e9ef82e4d2062480f11f6db3ba017bd38eeee988df622bf18c6",
+        "tests/st0604/conftest.py": "d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a",
+        "tests/st0604/test_contract.py": "68c3fad0196b6fc353dd354c172d32dcc64106474754a54665f362a51b415462",
+        "tests/st0604/test_generation.py": "5ed32f62c06924f3f6931fb827a6c68dc4ffcbd415ddc6b8ece54c66e93a9cca",
+        "tests/st0604/test_negative_cases.py": "143ea1cf8f9b5558f98c521909be7c1506e8ad6cbda5534edb01c11ef8afdb45"
+      },
+      "required_semantics": {
+        "decision": "NOT_READY",
+        "packet_count": null,
+        "fact_count": null,
+        "mapping_count": null,
+        "approval": false,
+        "generation_permitted": false,
+        "transition_status": "UNAVAILABLE",
+        "mapping_status": "UNAVAILABLE"
+      }
+    },
+    "st0701": {
+      "story_id": "ST-0701",
+      "base_commit": "d56da0c85035a85507636c025132550c0b1a7cd2",
+      "binding": "CURRENT_COMMITTED_OWNED_BYTES_AT_ST0702_BASE",
+      "known_owner_debt": "EXPECTED_MANIFEST_ONLY_DRIFT",
+      "artifacts": {
+        "changes/st-0701/README.md": "58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6",
+        "changes/st-0701/contracts/ai-contract-registry-loader.v1.yaml": "8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a",
+        "changes/st-0701/generated/ai-task-registry.v1.json": "33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07",
+        "changes/st-0701/manifest.yaml": "14d651ffcd99ec1d90f46ecd1585837aafb26a050024790c9304bc70b8f69852",
+        "scripts/build_st0701_ai_registry.py": "2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360",
+        "tests/st0701/conftest.py": "a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b",
+        "tests/st0701/test_compiled_task_registry.py": "bdc75302f0a901e2d0859c8fee03569db6d4f628f77515385d1c9a57d17e8854",
+        "tests/st0701/test_contract.py": "d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55",
+        "tests/st0701/test_generation.py": "09fa81e4a46d8652c18b1993c200d508ff87e7970fc8f0222b8c6bbc387bf34e"
+      },
+      "required_semantics": {
+        "task_count": 12,
+        "complete_binding_metadata": true,
+        "task_activation": false,
+        "selected_provider": null,
+        "provider_call": "NOT_EXECUTED",
+        "route_execution": "NOT_EXECUTED",
+        "network_access": false,
+        "formal_validation": "NOT_EXECUTED"
+      }
+    }
+  },
+  "registry_projection": {
+    "source_path": "changes/st-0701/generated/ai-task-registry.v1.json",
+    "source_sha256": "33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07",
+    "order_source": "EXACT_SOURCE_ORDER",
+    "projection": "FULL_BINDING_METADATA",
+    "task_count": 12,
+    "activation_inferred": false,
+    "activated_task_count": null,
+    "selected_task_count": null,
+    "registry_document": {
+      "id": "RAOS-AI-TASK-REGISTRY-001",
+      "status": "IMPLEMENTATION_CANDIDATE",
+      "story_id": "ST-0701",
+      "version": "1.0.0"
+    },
+    "task_codes": [
+      "ai.article_draft.v1",
+      "ai.article_outline.v1",
+      "ai.claim_extraction.v1",
+      "ai.comparison_axis_suggestion.v1",
+      "ai.internal_link_suggestion.v1",
+      "ai.opportunity_assessment.v1",
+      "ai.policy_assist.v1",
+      "ai.quality_remediation.v1",
+      "ai.refresh_diff_summary.v1",
+      "ai.search_intent_classification.v1",
+      "ai.source_packet_gap_analysis.v1",
+      "ai.update_priority_explanation.v1"
+    ],
+    "token_limit_distribution": [
+      {
+        "task_code": "ai.article_draft.v1",
+        "max_input_tokens": 120000,
+        "max_output_tokens": 32000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.article_outline.v1",
+        "max_input_tokens": 70000,
+        "max_output_tokens": 12000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.claim_extraction.v1",
+        "max_input_tokens": 100000,
+        "max_output_tokens": 20000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.comparison_axis_suggestion.v1",
+        "max_input_tokens": 60000,
+        "max_output_tokens": 12000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.internal_link_suggestion.v1",
+        "max_input_tokens": 50000,
+        "max_output_tokens": 10000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.opportunity_assessment.v1",
+        "max_input_tokens": 80000,
+        "max_output_tokens": 12000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.policy_assist.v1",
+        "max_input_tokens": 120000,
+        "max_output_tokens": 24000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.quality_remediation.v1",
+        "max_input_tokens": 100000,
+        "max_output_tokens": 18000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.refresh_diff_summary.v1",
+        "max_input_tokens": 80000,
+        "max_output_tokens": 14000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.search_intent_classification.v1",
+        "max_input_tokens": 70000,
+        "max_output_tokens": 16000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.source_packet_gap_analysis.v1",
+        "max_input_tokens": 100000,
+        "max_output_tokens": 14000,
+        "max_output_characters": null
+      },
+      {
+        "task_code": "ai.update_priority_explanation.v1",
+        "max_input_tokens": 50000,
+        "max_output_tokens": 10000,
+        "max_output_characters": null
+      }
+    ],
+    "tasks": [
+      {
+        "binding_sha256": "44044c67bb514c9f8501157b99012234a9e6cb7ce12e05733892bfb1788a67c2",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.article_draft.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.article_draft.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/article_draft/v1",
+            "sha256": "3f7fe932eee1d967455a2613000bda988edd1b1848bca52933cc56d9ed985eae",
+            "title": "Article Draft Structured Output"
+          },
+          "schema_id": "https://schemas.raos.local/ai/article_draft/v1",
+          "sha256": "3f7fe932eee1d967455a2613000bda988edd1b1848bca52933cc56d9ed985eae"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-ARTICLE-DRAFT_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.article_draft.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-ARTICLE-DRAFT",
+              "route_code": "route.editorial_balanced.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.article_draft.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-ARTICLE-DRAFT_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-ARTICLE-DRAFT",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "b868eb4e131da15cfc7c7be20dc538dd70a5fe58b42f04f8e69414d0ffee294c",
+            "status": "CANDIDATE",
+            "task_code": "ai.article_draft.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-ARTICLE-DRAFT",
+          "sha256": "b868eb4e131da15cfc7c7be20dc538dd70a5fe58b42f04f8e69414d0ffee294c",
+          "status": "CANDIDATE",
+          "task_code": "ai.article_draft.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": false,
+            "canary_max_percent": 5,
+            "enabled": true,
+            "fallback_model_key": "openai.gpt-5.6-sol",
+            "fallback_on": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ],
+            "max_fallbacks": 1,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-terra",
+            "prompt_cache_eligible": true,
+            "purpose": "構成・記事Draft・Remediation。",
+            "reasoning_effort": "medium",
+            "route_code": "route.editorial_balanced.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.2
+          },
+          "route_code": "route.editorial_balanced.v1",
+          "sha256": "fb5d1af685315a8c23ee4f74387448144fa28cb6675173e5fc15bf0247fe8b75"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 240,
+          "human_review_required": true,
+          "id": "AIT-004",
+          "input_allowlist": [
+            "approved_source_packet",
+            "approved_article_outline",
+            "article_plan",
+            "style_profile",
+            "disclosure_template",
+            "policy_constraints"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": true
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "hidden_instruction"
+          ],
+          "job_types": [
+            "ai.generate_article_draft.v1",
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP",
+          "max_input_tokens": 120000,
+          "max_output_characters": null,
+          "max_output_tokens": 32000,
+          "name": "Evidence-Bounded Writer",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.article_draft.v1.output.schema.json",
+          "output_schema_sha256": "3f7fe932eee1d967455a2613000bda988edd1b1848bca52933cc56d9ed985eae",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "hidden_instruction",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-ARTICLE-DRAFT",
+          "prompt_template": "prompts/PROMPT-AI-ARTICLE-DRAFT_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "承認済みSource PacketだけからClaim・Fact参照付きの構造化記事Draftを作る。",
+          "release_suite": "suite.ai.article_draft.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-006",
+            "FR-007",
+            "FR-008",
+            "FR-009",
+            "FR-018"
+          ],
+          "risk_level": "CRITICAL",
+          "route_code": "route.editorial_balanced.v1",
+          "success_metrics": [
+            "critical_claim_support_rate",
+            "numeric_exactness",
+            "product_identity_accuracy",
+            "fabricated_experience_rate",
+            "human_edit_distance"
+          ],
+          "task_code": "ai.article_draft.v1",
+          "temperature_policy": 0.2,
+          "tools_allowed": false
+        },
+        "task_sha256": "6b681a5428499096fa5d329bead3dbdea1529c48abcae10f7f0ba6a8a407c653"
+      },
+      {
+        "binding_sha256": "d9b4eb6d8e014b8cf222633c4726c993833877dcaf8abd3a905ab5a6d04cdf3a",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.article_outline.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.article_outline.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/article_outline/v1",
+            "sha256": "d57afe6f1b4ab33cbb8553cee4a9270ff3800ae3372f76fa0ae6b47eeba84848",
+            "title": "Article Outline Output"
+          },
+          "schema_id": "https://schemas.raos.local/ai/article_outline/v1",
+          "sha256": "d57afe6f1b4ab33cbb8553cee4a9270ff3800ae3372f76fa0ae6b47eeba84848"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-ARTICLE-OUTLINE_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.article_outline.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-ARTICLE-OUTLINE",
+              "route_code": "route.editorial_balanced.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.article_outline.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-ARTICLE-OUTLINE_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-ARTICLE-OUTLINE",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "400c089e2cce0ff1956d476f7352bfe9d80f7ac9cd4ff41e72f52312571d9bd7",
+            "status": "CANDIDATE",
+            "task_code": "ai.article_outline.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-ARTICLE-OUTLINE",
+          "sha256": "400c089e2cce0ff1956d476f7352bfe9d80f7ac9cd4ff41e72f52312571d9bd7",
+          "status": "CANDIDATE",
+          "task_code": "ai.article_outline.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": false,
+            "canary_max_percent": 5,
+            "enabled": true,
+            "fallback_model_key": "openai.gpt-5.6-sol",
+            "fallback_on": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ],
+            "max_fallbacks": 1,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-terra",
+            "prompt_cache_eligible": true,
+            "purpose": "構成・記事Draft・Remediation。",
+            "reasoning_effort": "medium",
+            "route_code": "route.editorial_balanced.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.2
+          },
+          "route_code": "route.editorial_balanced.v1",
+          "sha256": "fb5d1af685315a8c23ee4f74387448144fa28cb6675173e5fc15bf0247fe8b75"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 110,
+          "human_review_required": true,
+          "id": "AIT-003",
+          "input_allowlist": [
+            "approved_source_packet",
+            "article_plan",
+            "intent_cluster",
+            "approved_comparison_axes",
+            "style_profile"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": true
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content"
+          ],
+          "job_types": [
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP",
+          "max_input_tokens": 70000,
+          "max_output_characters": null,
+          "max_output_tokens": 12000,
+          "name": "Outline Planner",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.article_outline.v1.output.schema.json",
+          "output_schema_sha256": "d57afe6f1b4ab33cbb8553cee4a9270ff3800ae3372f76fa0ae6b47eeba84848",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-ARTICLE-OUTLINE",
+          "prompt_template": "prompts/PROMPT-AI-ARTICLE-OUTLINE_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "承認済みSource Packetと検索意図から記事構成案を作る。",
+          "release_suite": "suite.ai.article_outline.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-001",
+            "FR-006",
+            "FR-018"
+          ],
+          "risk_level": "MEDIUM",
+          "route_code": "route.editorial_balanced.v1",
+          "success_metrics": [
+            "intent_coverage",
+            "evidence_reference_precision",
+            "human_acceptance_rate"
+          ],
+          "task_code": "ai.article_outline.v1",
+          "temperature_policy": 0.2,
+          "tools_allowed": false
+        },
+        "task_sha256": "e04d50480b9b357c174e325fa8d30f9be5c11995e7e439237dfd20523f8fc9c0"
+      },
+      {
+        "binding_sha256": "2b7101aa69ac5bdaf197b5866234c769fbadee190996653187411d8c79c21977",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.claim_extraction.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.claim_extraction.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/claim_extraction/v1",
+            "sha256": "54a4f58a3ba4136dbac0a17b992dcda969ef7d2a19d42ae8d3c4c253cc4302b5",
+            "title": "Claim Extraction Output"
+          },
+          "schema_id": "https://schemas.raos.local/ai/claim_extraction/v1",
+          "sha256": "54a4f58a3ba4136dbac0a17b992dcda969ef7d2a19d42ae8d3c4c253cc4302b5"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-CLAIM-EXTRACTION_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.claim_extraction.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-CLAIM-EXTRACTION",
+              "route_code": "route.extraction_balanced.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.claim_extraction.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-CLAIM-EXTRACTION_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-CLAIM-EXTRACTION",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "858bf873433c6ab43c94f02070797f3c9819fe71c176f3c60afb9951a2cad165",
+            "status": "CANDIDATE",
+            "task_code": "ai.claim_extraction.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-CLAIM-EXTRACTION",
+          "sha256": "858bf873433c6ab43c94f02070797f3c9819fe71c176f3c60afb9951a2cad165",
+          "status": "CANDIDATE",
+          "task_code": "ai.claim_extraction.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": true,
+            "canary_max_percent": 5,
+            "enabled": true,
+            "fallback_model_key": "openai.gpt-5.6-sol",
+            "fallback_on": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ],
+            "max_fallbacks": 1,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-terra",
+            "prompt_cache_eligible": true,
+            "purpose": "Claim抽出等の高再現率タスク。",
+            "reasoning_effort": "medium",
+            "route_code": "route.extraction_balanced.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.0
+          },
+          "route_code": "route.extraction_balanced.v1",
+          "sha256": "b3d911ac8bc4857f6349b09490488a140d37887cb3ccca851ff1f68ac955b3da"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 150,
+          "human_review_required": true,
+          "id": "AIT-005",
+          "input_allowlist": [
+            "article_ast",
+            "approved_source_packet",
+            "claim_taxonomy"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": true
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content"
+          ],
+          "job_types": [
+            "ai.extract_claims.v1",
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP",
+          "max_input_tokens": 100000,
+          "max_output_characters": null,
+          "max_output_tokens": 20000,
+          "name": "Claim Auditor",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.claim_extraction.v1.output.schema.json",
+          "output_schema_sha256": "54a4f58a3ba4136dbac0a17b992dcda969ef7d2a19d42ae8d3c4c253cc4302b5",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-CLAIM-EXTRACTION",
+          "prompt_template": "prompts/PROMPT-AI-CLAIM-EXTRACTION_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "記事から検証可能なClaimを高再現率で抽出しFact支持候補を返す。",
+          "release_suite": "suite.ai.claim_extraction.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-007",
+            "FR-008",
+            "FR-018"
+          ],
+          "risk_level": "CRITICAL",
+          "route_code": "route.extraction_balanced.v1",
+          "success_metrics": [
+            "critical_claim_recall",
+            "claim_precision",
+            "evidence_reference_precision"
+          ],
+          "task_code": "ai.claim_extraction.v1",
+          "temperature_policy": 0.0,
+          "tools_allowed": false
+        },
+        "task_sha256": "b95e86010c0a92afeb0442be1113251abcea8d57f2ca21ab19c9185063dd50f1"
+      },
+      {
+        "binding_sha256": "80035ba2c5455e083ba55c562379fdcdfbdf1ab785e6b4a1d9e64efe75a32d39",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/comparison_axis_suggestion/v1",
+            "sha256": "9702e97765468c7aa1fec27fbfec974dc8c8037ab154c647dfc0764ff693bb16",
+            "title": "Comparison Axis Suggestion Output"
+          },
+          "schema_id": "https://schemas.raos.local/ai/comparison_axis_suggestion/v1",
+          "sha256": "9702e97765468c7aa1fec27fbfec974dc8c8037ab154c647dfc0764ff693bb16"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-COMPARISON-AXIS_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-COMPARISON-AXIS",
+              "route_code": "route.editorial_balanced.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.comparison_axis_suggestion.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-COMPARISON-AXIS_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-COMPARISON-AXIS",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "2ee556ba6c828797b634f14f9365eaecca0ba4c85857451e7c1e27347c20b1e0",
+            "status": "CANDIDATE",
+            "task_code": "ai.comparison_axis_suggestion.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-COMPARISON-AXIS",
+          "sha256": "2ee556ba6c828797b634f14f9365eaecca0ba4c85857451e7c1e27347c20b1e0",
+          "status": "CANDIDATE",
+          "task_code": "ai.comparison_axis_suggestion.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": false,
+            "canary_max_percent": 5,
+            "enabled": true,
+            "fallback_model_key": "openai.gpt-5.6-sol",
+            "fallback_on": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ],
+            "max_fallbacks": 1,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-terra",
+            "prompt_cache_eligible": true,
+            "purpose": "構成・記事Draft・Remediation。",
+            "reasoning_effort": "medium",
+            "route_code": "route.editorial_balanced.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.2
+          },
+          "route_code": "route.editorial_balanced.v1",
+          "sha256": "fb5d1af685315a8c23ee4f74387448144fa28cb6675173e5fc15bf0247fe8b75"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 100,
+          "human_review_required": true,
+          "id": "AIT-002",
+          "input_allowlist": [
+            "approved_source_packet",
+            "intent_cluster",
+            "product_attributes",
+            "article_type"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": true
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content"
+          ],
+          "job_types": [
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP",
+          "max_input_tokens": 60000,
+          "max_output_characters": null,
+          "max_output_tokens": 12000,
+          "name": "Comparison Architect",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json",
+          "output_schema_sha256": "9702e97765468c7aa1fec27fbfec974dc8c8037ab154c647dfc0764ff693bb16",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-COMPARISON-AXIS",
+          "prompt_template": "prompts/PROMPT-AI-COMPARISON-AXIS_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "検索意図と一次情報から購買判断に有用な比較軸を提案する。",
+          "release_suite": "suite.ai.comparison_axis_suggestion.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-004",
+            "FR-005",
+            "FR-006",
+            "FR-018"
+          ],
+          "risk_level": "MEDIUM",
+          "route_code": "route.editorial_balanced.v1",
+          "success_metrics": [
+            "axis_relevance",
+            "evidence_reference_precision",
+            "human_acceptance_rate"
+          ],
+          "task_code": "ai.comparison_axis_suggestion.v1",
+          "temperature_policy": 0.2,
+          "tools_allowed": false
+        },
+        "task_sha256": "2817980fc695a413e7dab34543288585ca14fe5a07a0ae9ae3dc5bc68b589643"
+      },
+      {
+        "binding_sha256": "4c9e6809540c4f4e6a6084d42c9a7016337da2fc56b0b18c1803cd438e0befd0",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/internal_link_suggestion/v1",
+            "sha256": "1271052c0aa4105ac0b0c1824b057651339ba78f32eee4d7d4f4461067cf536b",
+            "title": "Internal Link Suggestion Output"
+          },
+          "schema_id": "https://schemas.raos.local/ai/internal_link_suggestion/v1",
+          "sha256": "1271052c0aa4105ac0b0c1824b057651339ba78f32eee4d7d4f4461067cf536b"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-INTERNAL-LINK_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-INTERNAL-LINK",
+              "route_code": "route.classification_economy.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.internal_link_suggestion.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-INTERNAL-LINK_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-INTERNAL-LINK",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "62b76734d1670c92388f267606c981c885927298bd841a5fdce6e9577fefcc7f",
+            "status": "CANDIDATE",
+            "task_code": "ai.internal_link_suggestion.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-INTERNAL-LINK",
+          "sha256": "62b76734d1670c92388f267606c981c885927298bd841a5fdce6e9577fefcc7f",
+          "status": "CANDIDATE",
+          "task_code": "ai.internal_link_suggestion.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": true,
+            "canary_max_percent": 10,
+            "enabled": true,
+            "fallback_model_key": "openai.gpt-5.6-terra",
+            "fallback_on": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ],
+            "max_fallbacks": 1,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-luna",
+            "prompt_cache_eligible": true,
+            "purpose": "分類・説明・候補生成。",
+            "reasoning_effort": "low",
+            "route_code": "route.classification_economy.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.0
+          },
+          "route_code": "route.classification_economy.v1",
+          "sha256": "13c0e92f58616a0534f917d5591ed0a0bfdcf97129c6afc552459f6150d49f03"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 45,
+          "human_review_required": true,
+          "id": "AIT-008",
+          "input_allowlist": [
+            "current_article_summary",
+            "candidate_article_summaries",
+            "site_taxonomy",
+            "existing_links"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": false
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "unpublished_article_body"
+          ],
+          "job_types": [
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP",
+          "max_input_tokens": 50000,
+          "max_output_characters": null,
+          "max_output_tokens": 10000,
+          "name": "Internal Link Planner",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json",
+          "output_schema_sha256": "1271052c0aa4105ac0b0c1824b057651339ba78f32eee4d7d4f4461067cf536b",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "unpublished_article_body",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-INTERNAL-LINK",
+          "prompt_template": "prompts/PROMPT-AI-INTERNAL-LINK_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "公開済み記事候補から読者の次の意思決定に有用な内部リンクを提案する。",
+          "release_suite": "suite.ai.internal_link_suggestion.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-001",
+            "FR-016",
+            "FR-018"
+          ],
+          "risk_level": "LOW",
+          "route_code": "route.classification_economy.v1",
+          "success_metrics": [
+            "link_relevance",
+            "human_acceptance_rate"
+          ],
+          "task_code": "ai.internal_link_suggestion.v1",
+          "temperature_policy": 0.0,
+          "tools_allowed": false
+        },
+        "task_sha256": "20722c82d430c864f0d725d80f602d69c74788ed8aeac20abd449646b995c67e"
+      },
+      {
+        "binding_sha256": "420020da04867fc2378371912ef995f15373892364f0ba4cf3a297606ef72faf",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.opportunity_assessment.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/opportunity_assessment/v1",
+            "sha256": "504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123",
+            "title": "Opportunity Assessment Assist Output"
+          },
+          "schema_id": "https://schemas.raos.local/ai/opportunity_assessment/v1",
+          "sha256": "504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-OPPORTUNITY-ASSESSMENT_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.opportunity_assessment.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-OPPORTUNITY-ASSESSMENT",
+              "route_code": "route.reasoning_high.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.opportunity_assessment.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-OPPORTUNITY-ASSESSMENT_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-OPPORTUNITY-ASSESSMENT",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "0d6f0eb38a025162124aaed10bca3ae4edc42ae52aeee3684c8c9f465dffa4a2",
+            "status": "CANDIDATE",
+            "task_code": "ai.opportunity_assessment.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-OPPORTUNITY-ASSESSMENT",
+          "sha256": "0d6f0eb38a025162124aaed10bca3ae4edc42ae52aeee3684c8c9f465dffa4a2",
+          "status": "CANDIDATE",
+          "task_code": "ai.opportunity_assessment.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": true,
+            "canary_max_percent": 2,
+            "enabled": true,
+            "fallback_model_key": null,
+            "fallback_on": [],
+            "max_fallbacks": 0,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-sol",
+            "prompt_cache_eligible": true,
+            "purpose": "市場機会・Evidence不足等の複雑な補助判断。",
+            "reasoning_effort": "high",
+            "route_code": "route.reasoning_high.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.0
+          },
+          "route_code": "route.reasoning_high.v1",
+          "sha256": "1b2ea7995eac2e0de24f4aa4063c7347e7d43497bbde95cec50f4ee55d5d7115"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 180,
+          "human_review_required": true,
+          "id": "AIT-001",
+          "input_allowlist": [
+            "approved_source_packet",
+            "category_profile",
+            "keyword_metrics",
+            "search_intent_candidates",
+            "editorial_constraints"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": true
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content"
+          ],
+          "job_types": [
+            "ai.assess_opportunity.v1",
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP",
+          "max_input_tokens": 80000,
+          "max_output_characters": null,
+          "max_output_tokens": 12000,
+          "name": "Opportunity Analyst",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.opportunity_assessment.v1.output.schema.json",
+          "output_schema_sha256": "504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-OPPORTUNITY-ASSESSMENT",
+          "prompt_template": "prompts/PROMPT-AI-OPPORTUNITY-ASSESSMENT_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "市場機会を読者価値と事業価値に分離し、承認済み根拠から評価する。",
+          "release_suite": "suite.ai.opportunity_assessment.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-005",
+            "FR-006",
+            "FR-016",
+            "FR-018"
+          ],
+          "risk_level": "HIGH",
+          "route_code": "route.reasoning_high.v1",
+          "success_metrics": [
+            "editorial_business_separation",
+            "evidence_reference_precision",
+            "human_acceptance_rate"
+          ],
+          "task_code": "ai.opportunity_assessment.v1",
+          "temperature_policy": 0.0,
+          "tools_allowed": false
+        },
+        "task_sha256": "54d5b066c3ad27100f76a3eb4fab288c81fde50b4252b5c9a5cea48f7de3f3f8"
+      },
+      {
+        "binding_sha256": "df1e6e0d3bea2b7f602c89359b447cafd9bedd62e94d1792d9f1246f2e0d1138",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.policy_assist.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.policy_assist.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/policy_assist/v1",
+            "sha256": "242428ea37446f57c6cc819770ae065004a411229fe04b3e60a8f780ae290e2f",
+            "title": "RAOS AI task output: policy_assist v1"
+          },
+          "schema_id": "https://schemas.raos.local/ai/policy_assist/v1",
+          "sha256": "242428ea37446f57c6cc819770ae065004a411229fe04b3e60a8f780ae290e2f"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-POLICY-ASSIST_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.policy_assist.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-POLICY-ASSIST",
+              "route_code": "route.policy_high.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.policy_assist.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-POLICY-ASSIST_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-POLICY-ASSIST",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "aedd521cbf676d9f28d0136ccc6d9fe5e6a1ade8e285f7545d146e4590fcafdd",
+            "status": "CANDIDATE",
+            "task_code": "ai.policy_assist.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-POLICY-ASSIST",
+          "sha256": "aedd521cbf676d9f28d0136ccc6d9fe5e6a1ade8e285f7545d146e4590fcafdd",
+          "status": "CANDIDATE",
+          "task_code": "ai.policy_assist.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": false,
+            "canary_max_percent": 1,
+            "enabled": true,
+            "fallback_model_key": null,
+            "fallback_on": [],
+            "max_fallbacks": 0,
+            "minimum_eval_status": "CERTIFIED_CRITICAL",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-sol",
+            "prompt_cache_eligible": true,
+            "purpose": "Policy意味判定補助。",
+            "reasoning_effort": "high",
+            "route_code": "route.policy_high.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.0
+          },
+          "route_code": "route.policy_high.v1",
+          "sha256": "20d7567c7351f24aca637e8a5fae4bd306a415b07459cfa590c9ad5c47a76376"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 260,
+          "human_review_required": true,
+          "id": "AIT-010",
+          "input_allowlist": [
+            "article_ast",
+            "claims",
+            "approved_source_packet",
+            "policy_bundle",
+            "disclosure_context"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": true
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "policy_override"
+          ],
+          "job_types": [
+            "ai.policy_assist.v1",
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP_ALIGNMENT_ADDITION",
+          "max_input_tokens": 120000,
+          "max_output_characters": null,
+          "max_output_tokens": 24000,
+          "name": "Policy Assistant",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.policy_assist.v1.output.schema.json",
+          "output_schema_sha256": "242428ea37446f57c6cc819770ae065004a411229fe04b3e60a8f780ae290e2f",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "policy_override",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-POLICY-ASSIST",
+          "prompt_template": "prompts/PROMPT-AI-POLICY-ASSIST_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "Policy Bundleに基づく意味的Finding候補を返すが、最終判定やBlock解除は行わない。",
+          "release_suite": "suite.ai.policy_assist.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-008",
+            "FR-009",
+            "FR-018",
+            "FR-020"
+          ],
+          "risk_level": "CRITICAL",
+          "route_code": "route.policy_high.v1",
+          "success_metrics": [
+            "policy_blocker_recall",
+            "false_clearance_rate",
+            "prompt_injection_follow_rate"
+          ],
+          "task_code": "ai.policy_assist.v1",
+          "temperature_policy": 0.0,
+          "tools_allowed": false
+        },
+        "task_sha256": "ebb1cc533a2b05651652d9a71779340f95883ced39c7e0d77acd4837735e33ba"
+      },
+      {
+        "binding_sha256": "671b65fecdcbb806422fa7e7730f11bc7d2944ac53cd6e1298e7734d8899ee17",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.quality_remediation.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.quality_remediation.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/quality_remediation/v1",
+            "sha256": "10098facd422a7b8bd9784b1091ff31b7b4a0b99e4add3d0e2b902e810f93581",
+            "title": "Quality Remediation Output"
+          },
+          "schema_id": "https://schemas.raos.local/ai/quality_remediation/v1",
+          "sha256": "10098facd422a7b8bd9784b1091ff31b7b4a0b99e4add3d0e2b902e810f93581"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-QUALITY-REMEDIATION_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.quality_remediation.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-QUALITY-REMEDIATION",
+              "route_code": "route.editorial_balanced.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.quality_remediation.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-QUALITY-REMEDIATION_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-QUALITY-REMEDIATION",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "7b4f0b62273ce4b83893b68d4f7b4d5d1c0f1f5eb4ebec8975cd79ca8b98138e",
+            "status": "CANDIDATE",
+            "task_code": "ai.quality_remediation.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-QUALITY-REMEDIATION",
+          "sha256": "7b4f0b62273ce4b83893b68d4f7b4d5d1c0f1f5eb4ebec8975cd79ca8b98138e",
+          "status": "CANDIDATE",
+          "task_code": "ai.quality_remediation.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": false,
+            "canary_max_percent": 5,
+            "enabled": true,
+            "fallback_model_key": "openai.gpt-5.6-sol",
+            "fallback_on": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ],
+            "max_fallbacks": 1,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-terra",
+            "prompt_cache_eligible": true,
+            "purpose": "構成・記事Draft・Remediation。",
+            "reasoning_effort": "medium",
+            "route_code": "route.editorial_balanced.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.2
+          },
+          "route_code": "route.editorial_balanced.v1",
+          "sha256": "fb5d1af685315a8c23ee4f74387448144fa28cb6675173e5fc15bf0247fe8b75"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 170,
+          "human_review_required": true,
+          "id": "AIT-006",
+          "input_allowlist": [
+            "article_ast",
+            "quality_findings",
+            "approved_source_packet",
+            "policy_bundle"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": true
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "unverified_new_fact"
+          ],
+          "job_types": [
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP",
+          "max_input_tokens": 100000,
+          "max_output_characters": null,
+          "max_output_tokens": 18000,
+          "name": "Remediation Editor",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.quality_remediation.v1.output.schema.json",
+          "output_schema_sha256": "10098facd422a7b8bd9784b1091ff31b7b4a0b99e4add3d0e2b902e810f93581",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "unverified_new_fact",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-QUALITY-REMEDIATION",
+          "prompt_template": "prompts/PROMPT-AI-QUALITY-REMEDIATION_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "確定済みFindingを根拠追加なしで解消する局所編集差分を提案する。",
+          "release_suite": "suite.ai.quality_remediation.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-008",
+            "FR-009",
+            "FR-018"
+          ],
+          "risk_level": "HIGH",
+          "route_code": "route.editorial_balanced.v1",
+          "success_metrics": [
+            "finding_resolution_rate",
+            "new_unsupported_claim_rate",
+            "human_acceptance_rate"
+          ],
+          "task_code": "ai.quality_remediation.v1",
+          "temperature_policy": 0.2,
+          "tools_allowed": false
+        },
+        "task_sha256": "bcce9db194d1bde9c14565352fdfd0f66d69b878479715df3e110ddb9077240b"
+      },
+      {
+        "binding_sha256": "8c28548b3dabb0555020bfbd55bc06d4aa64cd946ba0f97ee34a96d75dbc91ec",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/refresh_diff_summary/v1",
+            "sha256": "68b4c97de6d7811f20c88d6918d946de58e1489d0ac5a19f390f8301d929f0e2",
+            "title": "RAOS AI task output: refresh_diff_summary v1"
+          },
+          "schema_id": "https://schemas.raos.local/ai/refresh_diff_summary/v1",
+          "sha256": "68b4c97de6d7811f20c88d6918d946de58e1489d0ac5a19f390f8301d929f0e2"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-REFRESH-DIFF_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-REFRESH-DIFF",
+              "route_code": "route.editorial_balanced.v1",
+              "status": "DISABLED",
+              "task_code": "ai.refresh_diff_summary.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-REFRESH-DIFF_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-REFRESH-DIFF",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "164ddb69ba3b06ad8dc612163d1e01acf6ac6dffdacfb01205fe6d45efa96273",
+            "status": "DISABLED",
+            "task_code": "ai.refresh_diff_summary.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-REFRESH-DIFF",
+          "sha256": "164ddb69ba3b06ad8dc612163d1e01acf6ac6dffdacfb01205fe6d45efa96273",
+          "status": "DISABLED",
+          "task_code": "ai.refresh_diff_summary.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": false,
+            "canary_max_percent": 5,
+            "enabled": true,
+            "fallback_model_key": "openai.gpt-5.6-sol",
+            "fallback_on": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ],
+            "max_fallbacks": 1,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-terra",
+            "prompt_cache_eligible": true,
+            "purpose": "構成・記事Draft・Remediation。",
+            "reasoning_effort": "medium",
+            "route_code": "route.editorial_balanced.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.2
+          },
+          "route_code": "route.editorial_balanced.v1",
+          "sha256": "fb5d1af685315a8c23ee4f74387448144fa28cb6675173e5fc15bf0247fe8b75"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 140,
+          "human_review_required": true,
+          "id": "AIT-012",
+          "input_allowlist": [
+            "deterministic_fact_diff",
+            "published_claims",
+            "freshness_policy",
+            "current_publication_snapshot"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": false
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content"
+          ],
+          "job_types": [
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "GATE_2_PROPOSED_DISABLED",
+          "max_input_tokens": 80000,
+          "max_output_characters": null,
+          "max_output_tokens": 14000,
+          "name": "Change Impact Analyst",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json",
+          "output_schema_sha256": "68b4c97de6d7811f20c88d6918d946de58e1489d0ac5a19f390f8301d929f0e2",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-REFRESH-DIFF",
+          "prompt_template": "prompts/PROMPT-AI-REFRESH-DIFF_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "旧Factと新Factの決定論的Diffを影響Claimと必要Actionへ対応付ける。",
+          "release_suite": "suite.ai.refresh_diff_summary.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-012",
+            "FR-016",
+            "FR-018"
+          ],
+          "risk_level": "HIGH",
+          "route_code": "route.editorial_balanced.v1",
+          "success_metrics": [
+            "affected_claim_recall",
+            "human_acceptance_rate"
+          ],
+          "task_code": "ai.refresh_diff_summary.v1",
+          "temperature_policy": 0.2,
+          "tools_allowed": false
+        },
+        "task_sha256": "1d07573c205edaa665757745dae13c8a121c3130cab3322e5df269df2b240c76"
+      },
+      {
+        "binding_sha256": "47e2015ea374494857a02c798e70eaf724cd07d13e2fdf108adc5361fa11e6d6",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.search_intent_classification.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.search_intent_classification.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/search_intent_classification/v1",
+            "sha256": "c7753ca61a03868d7d91a0760b35224087fa09d2c99252621553d6c21edcc69d",
+            "title": "RAOS AI task output: search_intent_classification v1"
+          },
+          "schema_id": "https://schemas.raos.local/ai/search_intent_classification/v1",
+          "sha256": "c7753ca61a03868d7d91a0760b35224087fa09d2c99252621553d6c21edcc69d"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-SEARCH-INTENT_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.search_intent_classification.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-SEARCH-INTENT",
+              "route_code": "route.classification_economy.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.search_intent_classification.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-SEARCH-INTENT_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-SEARCH-INTENT",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "4b6a09622bf95e440a9cf5d2627263c897eece1f6107c31fc3729d36968ced81",
+            "status": "CANDIDATE",
+            "task_code": "ai.search_intent_classification.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-SEARCH-INTENT",
+          "sha256": "4b6a09622bf95e440a9cf5d2627263c897eece1f6107c31fc3729d36968ced81",
+          "status": "CANDIDATE",
+          "task_code": "ai.search_intent_classification.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": true,
+            "canary_max_percent": 10,
+            "enabled": true,
+            "fallback_model_key": "openai.gpt-5.6-terra",
+            "fallback_on": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ],
+            "max_fallbacks": 1,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-luna",
+            "prompt_cache_eligible": true,
+            "purpose": "分類・説明・候補生成。",
+            "reasoning_effort": "low",
+            "route_code": "route.classification_economy.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.0
+          },
+          "route_code": "route.classification_economy.v1",
+          "sha256": "13c0e92f58616a0534f917d5591ed0a0bfdcf97129c6afc552459f6150d49f03"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 70,
+          "human_review_required": true,
+          "id": "AIT-009",
+          "input_allowlist": [
+            "keyword_records",
+            "approved_source_packet",
+            "intent_taxonomy",
+            "category_context"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": true
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "live_serp_scrape"
+          ],
+          "job_types": [
+            "ai.classify_search_intent.v1",
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP_ALIGNMENT_ADDITION",
+          "max_input_tokens": 70000,
+          "max_output_characters": null,
+          "max_output_tokens": 16000,
+          "name": "Intent Analyst",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.search_intent_classification.v1.output.schema.json",
+          "output_schema_sha256": "c7753ca61a03868d7d91a0760b35224087fa09d2c99252621553d6c21edcc69d",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "live_serp_scrape",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-SEARCH-INTENT",
+          "prompt_template": "prompts/PROMPT-AI-SEARCH-INTENT_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "Keyword群を検索意図、ファネル段階、候補Clusterへ分類する。",
+          "release_suite": "suite.ai.search_intent_classification.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-005",
+            "FR-006",
+            "FR-018"
+          ],
+          "risk_level": "MEDIUM",
+          "route_code": "route.classification_economy.v1",
+          "success_metrics": [
+            "intent_accuracy",
+            "cluster_purity",
+            "uncertainty_calibration_error"
+          ],
+          "task_code": "ai.search_intent_classification.v1",
+          "temperature_policy": 0.0,
+          "tools_allowed": false
+        },
+        "task_sha256": "68ee8b905a9fb8374243e52ada8ad45273acfa6af55c2cc99396131575f8a2cd"
+      },
+      {
+        "binding_sha256": "3fc04fe7b9a5c2088ffaf31aa3367f81e296fa4d9d77e81a8f688696677df0d2",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/source_packet_gap_analysis/v1",
+            "sha256": "1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c",
+            "title": "RAOS AI task output: source_packet_gap_analysis v1"
+          },
+          "schema_id": "https://schemas.raos.local/ai/source_packet_gap_analysis/v1",
+          "sha256": "1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-SOURCE-PACKET-GAP_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": true,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-SOURCE-PACKET-GAP",
+              "route_code": "route.reasoning_high.v1",
+              "status": "DISABLED",
+              "task_code": "ai.source_packet_gap_analysis.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-SOURCE-PACKET-GAP_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-SOURCE-PACKET-GAP",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "5d6629ee37ccdbf685143e454cf9e07f715155d059e949aed2ba5bc8a186c2e0",
+            "status": "DISABLED",
+            "task_code": "ai.source_packet_gap_analysis.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-SOURCE-PACKET-GAP",
+          "sha256": "5d6629ee37ccdbf685143e454cf9e07f715155d059e949aed2ba5bc8a186c2e0",
+          "status": "DISABLED",
+          "task_code": "ai.source_packet_gap_analysis.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": true,
+            "canary_max_percent": 2,
+            "enabled": true,
+            "fallback_model_key": null,
+            "fallback_on": [],
+            "max_fallbacks": 0,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-sol",
+            "prompt_cache_eligible": true,
+            "purpose": "市場機会・Evidence不足等の複雑な補助判断。",
+            "reasoning_effort": "high",
+            "route_code": "route.reasoning_high.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.0
+          },
+          "route_code": "route.reasoning_high.v1",
+          "sha256": "1b2ea7995eac2e0de24f4aa4063c7347e7d43497bbde95cec50f4ee55d5d7115"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 180,
+          "human_review_required": true,
+          "id": "AIT-011",
+          "input_allowlist": [
+            "approved_or_review_source_packet",
+            "article_plan",
+            "claim_type_requirements",
+            "freshness_policy"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": true
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content"
+          ],
+          "job_types": [
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "GATE_1_PROPOSED_DISABLED",
+          "max_input_tokens": 100000,
+          "max_output_characters": null,
+          "max_output_tokens": 14000,
+          "name": "Evidence Gap Analyst",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json",
+          "output_schema_sha256": "1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-SOURCE-PACKET-GAP",
+          "prompt_template": "prompts/PROMPT-AI-SOURCE-PACKET-GAP_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "生成前に予定Claimに必要な不足Evidenceを検出する。",
+          "release_suite": "suite.ai.source_packet_gap_analysis.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-004",
+            "FR-006",
+            "FR-007",
+            "FR-018"
+          ],
+          "risk_level": "HIGH",
+          "route_code": "route.reasoning_high.v1",
+          "success_metrics": [
+            "blocking_gap_recall",
+            "human_acceptance_rate"
+          ],
+          "task_code": "ai.source_packet_gap_analysis.v1",
+          "temperature_policy": 0.0,
+          "tools_allowed": false
+        },
+        "task_sha256": "70ff062dd74375bc5f168fc75897d7fe9aced3998eeee9b10cf45b10d27c51fc"
+      },
+      {
+        "binding_sha256": "a0823f078c8254ff2ca436008c8358e190b4f5d4cfd5dee20780b365872048a4",
+        "output_schema": {
+          "artifact_path": "contracts/ai/schemas/tasks/ai.update_priority_explanation.v1.output.schema.json",
+          "metadata": {
+            "kind": "task_output",
+            "path": "schemas/tasks/ai.update_priority_explanation.v1.output.schema.json",
+            "schema_id": "https://schemas.raos.local/ai/update_priority_explanation/v1",
+            "sha256": "0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef",
+            "title": "Update Priority Explanation Output"
+          },
+          "schema_id": "https://schemas.raos.local/ai/update_priority_explanation/v1",
+          "sha256": "0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef"
+        },
+        "prompt": {
+          "artifact_path": "contracts/ai/prompts/PROMPT-AI-UPDATE-PRIORITY_v1.md",
+          "locale": "ja-JP",
+          "metadata": {
+            "change_requires": [
+              "prompt_unit_tests",
+              "task_eval_suite",
+              "human_review_for_high_or_critical",
+              "staged_route_release"
+            ],
+            "frontmatter": {
+              "human_review_required": false,
+              "locale": "ja-JP",
+              "network_access": false,
+              "output_schema": "schemas/tasks/ai.update_priority_explanation.v1.output.schema.json",
+              "prompt_code": "PROMPT-AI-UPDATE-PRIORITY",
+              "route_code": "route.classification_economy.v1",
+              "status": "CANDIDATE",
+              "task_code": "ai.update_priority_explanation.v1",
+              "tools_allowed": false,
+              "version": 1
+            },
+            "git_path": "prompts/PROMPT-AI-UPDATE-PRIORITY_v1.md",
+            "input_variables": [
+              "task_context_json",
+              "source_packet_json",
+              "policy_bundle_json",
+              "output_schema_json",
+              "request_metadata_json"
+            ],
+            "prompt_code": "PROMPT-AI-UPDATE-PRIORITY",
+            "required_runtime_checks": [
+              "typed_arguments",
+              "manifest_signature",
+              "schema_hash_match",
+              "policy_bundle_active",
+              "no_forbidden_input_fields"
+            ],
+            "sha256": "0e651ccd33524fcb8d90ea891b0b52285bacc15c58c6a474de83da38dc4a21bc",
+            "status": "CANDIDATE",
+            "task_code": "ai.update_priority_explanation.v1",
+            "version": 1
+          },
+          "prompt_code": "PROMPT-AI-UPDATE-PRIORITY",
+          "sha256": "0e651ccd33524fcb8d90ea891b0b52285bacc15c58c6a474de83da38dc4a21bc",
+          "status": "CANDIDATE",
+          "task_code": "ai.update_priority_explanation.v1",
+          "version": 1
+        },
+        "route": {
+          "metadata": {
+            "batch_eligible": true,
+            "canary_max_percent": 10,
+            "enabled": true,
+            "fallback_model_key": "openai.gpt-5.6-terra",
+            "fallback_on": [
+              "PROVIDER_TRANSIENT",
+              "RATE_LIMIT",
+              "MODEL_UNAVAILABLE",
+              "SCHEMA_OUTPUT_AFTER_ONE_REPAIR"
+            ],
+            "max_fallbacks": 1,
+            "minimum_eval_status": "CERTIFIED",
+            "never_fallback_on": [
+              "POLICY",
+              "CONTRACT",
+              "INVALID_EVIDENCE",
+              "BUDGET",
+              "REFUSAL",
+              "CONTENT_FILTER"
+            ],
+            "primary_model_key": "openai.gpt-5.6-luna",
+            "prompt_cache_eligible": true,
+            "purpose": "分類・説明・候補生成。",
+            "reasoning_effort": "low",
+            "route_code": "route.classification_economy.v1",
+            "store": false,
+            "strict_structured_output": true,
+            "temperature": 0.0
+          },
+          "route_code": "route.classification_economy.v1",
+          "sha256": "13c0e92f58616a0534f917d5591ed0a0bfdcf97129c6afc552459f6150d49f03"
+        },
+        "task": {
+          "can_change_state": false,
+          "default_max_cost_jpy": 40,
+          "human_review_required": false,
+          "id": "AIT-007",
+          "input_allowlist": [
+            "deterministic_priority_items",
+            "freshness_findings",
+            "article_metrics",
+            "affected_claims"
+          ],
+          "input_contract": {
+            "kind": "typed_manifest",
+            "source_packet_required": false
+          },
+          "input_denylist": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "unapproved_priority_override"
+          ],
+          "job_types": [
+            "ai.generic_task.v1"
+          ],
+          "lifecycle": "MVP",
+          "max_input_tokens": 50000,
+          "max_output_characters": null,
+          "max_output_tokens": 10000,
+          "name": "Refresh Prioritizer",
+          "network_access": false,
+          "output_schema": "schemas/tasks/ai.update_priority_explanation.v1.output.schema.json",
+          "output_schema_sha256": "0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef",
+          "prohibited": [
+            "affiliate_rate",
+            "commission_amount",
+            "revenue_by_product",
+            "rakuten_review_body",
+            "unapproved_web_content",
+            "unapproved_priority_override",
+            "state mutation",
+            "publication approval",
+            "policy clearance",
+            "hidden chain-of-thought persistence"
+          ],
+          "prompt_code": "PROMPT-AI-UPDATE-PRIORITY",
+          "prompt_template": "prompts/PROMPT-AI-UPDATE-PRIORITY_v1.md",
+          "provider_mode": "responses_api_strict_structured_output",
+          "purpose": "決定論的更新優先度を検証可能な説明に変換し、順位自体は変更しない。",
+          "release_suite": "suite.ai.update_priority_explanation.v1.release.v1",
+          "required_runtime_checks": [
+            "input_manifest",
+            "budget",
+            "strict_schema",
+            "refusal_and_incomplete",
+            "resource_reference",
+            "forbidden_content",
+            "audit_manifest"
+          ],
+          "requirements": [
+            "FR-012",
+            "FR-016",
+            "FR-018"
+          ],
+          "risk_level": "LOW",
+          "route_code": "route.classification_economy.v1",
+          "success_metrics": [
+            "priority_order_preservation",
+            "human_acceptance_rate"
+          ],
+          "task_code": "ai.update_priority_explanation.v1",
+          "temperature_policy": 0.0,
+          "tools_allowed": false
+        },
+        "task_sha256": "1ff531956222a34f2def0653553ed5980653cfcc45b69e4d052fd241eec389d0"
+      }
+    ]
+  },
+  "packing_rules": {
+    "available": {
+      "typed_manifest_required": true,
+      "input_manifest_check_required": true,
+      "audit_manifest_check_required": true,
+      "source_packet_requirement_is_task_scoped": true,
+      "deterministic_repack_on_context_overflow_required": true,
+      "silent_required_fact_truncation_forbidden": true,
+      "only_allowlisted_inputs_may_be_considered": true,
+      "denied_inputs_must_be_excluded": true,
+      "task_input_and_output_bounds_are_descriptive_only": true
+    },
+    "unavailable": {
+      "context_pack_manifest_schema": null,
+      "fact_field_mapping": null,
+      "canonical_json_algorithm": null,
+      "token_estimator": null,
+      "token_overhead": null,
+      "scope_reduction_algorithm": null,
+      "important_to_required_promotion_rule": null,
+      "recursive_input_scan_rule": null,
+      "packing_algorithm": null
+    },
+    "unavailable_status": "UNAVAILABLE"
+  },
+  "selection_boundary": {
+    "task_code": null,
+    "prompt_code": null,
+    "route_code": null,
+    "provider": null,
+    "model": null,
+    "source_packet_id": null,
+    "source_packet_version": null,
+    "article_plan_id": null,
+    "context_pack_manifest_schema_id": null,
+    "context_pack_manifest_schema_version": null,
+    "canonical_json_algorithm": null,
+    "token_estimator": null,
+    "token_estimator_version": null,
+    "packing_algorithm": null,
+    "packing_algorithm_version": null,
+    "output_schema_id": null,
+    "environment": null,
+    "credential_reference": null
+  },
+  "collection_boundary": {
+    "source_packets": [],
+    "facts": [],
+    "claims": [],
+    "policies": [],
+    "manifests": [],
+    "pack_items": [],
+    "required_items": [],
+    "important_items": [],
+    "optional_items": [],
+    "dropped_items": [],
+    "provider_requests": [],
+    "provider_responses": [],
+    "source_packet_count": null,
+    "fact_count": null,
+    "claim_count": null,
+    "policy_count": null,
+    "manifest_count": null,
+    "pack_item_count": null,
+    "required_item_count": null,
+    "important_item_count": null,
+    "optional_item_count": null,
+    "dropped_item_count": null
+  },
+  "build_boundary": {
+    "build_permitted": false,
+    "provider_call_permitted": false,
+    "manifest_creation_permitted": false,
+    "context_pack": null,
+    "context_pack_manifest": null,
+    "context_pack_sha256": null,
+    "context_pack_byte_size": null,
+    "estimated_input_tokens": null,
+    "estimated_overhead_tokens": null,
+    "context_overflow": null,
+    "scope_reduction_records": [],
+    "decision": "NOT_READY",
+    "blockers": [
+      "APPROVED_SOURCE_PACKET_UNAVAILABLE",
+      "FACTS_UNAVAILABLE",
+      "CONTEXT_PACK_MANIFEST_SCHEMA_UNAVAILABLE",
+      "FACT_FIELD_MAPPING_UNAVAILABLE",
+      "PACKING_ALGORITHM_UNAVAILABLE",
+      "CANONICAL_JSON_ALGORITHM_UNAVAILABLE",
+      "TOKEN_ESTIMATOR_UNAVAILABLE",
+      "SCOPE_REDUCTION_ALGORITHM_UNAVAILABLE",
+      "GENERATION_PERMISSION_FALSE"
+    ]
+  },
+  "execution_boundary": {
+    "build": "NOT_EXECUTED",
+    "selection": "NOT_EXECUTED",
+    "recursive_scan": "NOT_EXECUTED",
+    "packing": "NOT_EXECUTED",
+    "serialization": "NOT_EXECUTED",
+    "hashing": "NOT_EXECUTED",
+    "token_estimation": "NOT_EXECUTED",
+    "scope_reduction": "NOT_EXECUTED",
+    "item_drop": "NOT_EXECUTED",
+    "manifest_creation": "NOT_EXECUTED",
+    "provider_call": "NOT_EXECUTED",
+    "network_access": "NOT_EXECUTED",
+    "repository_write": "NOT_EXECUTED",
+    "database_write": "NOT_EXECUTED",
+    "job_execution": "NOT_EXECUTED",
+    "event_emission": "NOT_EXECUTED",
+    "external_action": "NOT_EXECUTED",
+    "action_counts": {
+      "build": 0,
+      "select": 0,
+      "scan": 0,
+      "pack": 0,
+      "serialize": 0,
+      "hash": 0,
+      "estimate": 0,
+      "reduce_scope": 0,
+      "drop_item": 0,
+      "create_manifest": 0,
+      "provider_call": 0,
+      "network": 0,
+      "repository_write": 0,
+      "database_write": 0,
+      "job": 0,
+      "event": 0,
+      "external": 0
+    },
+    "external_actions": []
+  },
+  "verification_boundary": {
+    "local_projection_only": true,
+    "generated_output_is_recovery_or_runtime_evidence": false,
+    "context_pack_built": false,
+    "manifest_built": false,
+    "provider_invoked": false,
+    "formal_validation": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "story_acceptance": false
+  }
+}
