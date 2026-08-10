@@ -1,0 +1,91 @@
+name: ST-0703 Generated Fix Export
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  generate:
+    name: Regenerate approved owner outputs
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out exact implementation branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: codex/st-0703-recorded-v4
+          fetch-depth: 0
+          persist-credentials: false
+          show-progress: false
+      - name: Install exact uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: 0.12.1
+          enable-cache: false
+      - name: Install exact Python
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            "$uv_path" --no-config --color never python install \
+            --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
+      - name: Hydrate exact locked Python dependencies
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            "$uv_path" --no-config --color never sync --locked \
+            --no-default-groups --group dev --no-install-project --no-install-local \
+            --managed-python --no-python-downloads --python 3.14.6 \
+            --no-build --no-sources --default-index https://pypi.org/simple \
+            --index-strategy first-index --keyring-provider disabled --link-mode copy \
+            --resolution highest --prerelease disallow \
+            --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
+      - name: Regenerate only approved owner outputs without network
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain=v1 --untracked-files=no)"
+          for target in config-generate ai-registry-generate content-ast-generate openai-recorded-generate; do
+            scripts/run_network_denied.sh --home "$HOME" -- \
+              /usr/bin/make --no-builtin-rules --no-builtin-variables \
+              --file Makefile "$target" RAOS_CI_OFFLINE=1 UV="$(command -v uv)"
+          done
+          mapfile -t changed < <(git diff --name-only --diff-filter=ACMRTUXB)
+          printf 'Changed owner outputs:\n'
+          printf '  %s\n' "${changed[@]}"
+          allowed='^(changes/st-0204/(manifest\.yaml|generated/runtime-config\.v1\.schema\.json)|changes/st-0701/(manifest\.yaml|generated/ai-task-registry\.v1\.json)|changes/st-0801/(manifest\.yaml|generated/content-ast\.v1\.schema\.json)|changes/st-0703/(manifest\.yaml|generated/recorded-fixture-registry\.v1\.json))$'
+          test "${#changed[@]}" -gt 0
+          for path in "${changed[@]}"; do
+            [[ "$path" =~ $allowed ]] || { echo "Unexpected generated path: $path" >&2; exit 1; }
+          done
+          git diff --check
+          git diff --binary --full-index >"$RUNNER_TEMP/st0703-generated-owner-fixes.patch"
+          git diff --stat >"$RUNNER_TEMP/st0703-generated-owner-fixes.stat"
+          tar -czf "$RUNNER_TEMP/st0703-generated-owner-files.tar.gz" -- "${changed[@]}"
+          sha256sum "$RUNNER_TEMP"/st0703-generated-owner-* >"$RUNNER_TEMP/st0703-generated-owner-fixes.sha256"
+      - name: Verify regenerated closure without network
+        run: |
+          set -euo pipefail
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            /usr/bin/make --no-builtin-rules --no-builtin-variables \
+            --file Makefile openai-recorded-gate RAOS_CI_OFFLINE=1 UV="$(command -v uv)"
+      - name: Upload generated patch
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: st0703-generated-owner-fixes
+          path: |
+            ${{ runner.temp }}/st0703-generated-owner-fixes.patch
+            ${{ runner.temp }}/st0703-generated-owner-fixes.stat
+            ${{ runner.temp }}/st0703-generated-owner-files.tar.gz
+            ${{ runner.temp }}/st0703-generated-owner-fixes.sha256
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
