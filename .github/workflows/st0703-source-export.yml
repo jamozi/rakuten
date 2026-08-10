@@ -1,0 +1,43 @@
+name: ST-0703 Source Export
+
+on:
+  push:
+    branches:
+      - agent/st0703-source-export-20260810
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  export:
+    name: Export tracked source
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact implementation branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: codex/st-0703-recorded-v4
+          fetch-depth: 0
+          persist-credentials: false
+          show-progress: false
+      - name: Create tracked-source archive
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/rakuten-st0703-recorded-v4.tar.gz"
+          git archive --format=tar.gz --output="$archive" HEAD
+          sha256sum "$archive" >"$archive.sha256"
+      - name: Upload archive
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: rakuten-st0703-recorded-v4-source
+          path: |
+            ${{ runner.temp }}/rakuten-st0703-recorded-v4.tar.gz
+            ${{ runner.temp }}/rakuten-st0703-recorded-v4.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
