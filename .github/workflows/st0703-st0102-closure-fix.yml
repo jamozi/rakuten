@@ -1,0 +1,184 @@
+name: ST-0703 ST-0102 Closure Fix
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  fix:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    name: Complete approved dependency-test closure
+    runs-on: ubuntu-22.04
+    timeout-minutes: 70
+    steps:
+      - name: Check out exact requested branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: codex/st-0703-recorded-v4
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Prove expected one-Story starting point
+        env:
+          BASE_SHA: 48a807672caa845df8e0251782f00bce8040663b
+          EXPECTED_HEAD: 8d3762edf6ea8698fb1f15722e9dc1eb44b628fd
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test "$(git rev-parse HEAD^)" = "$BASE_SHA"
+          test "$(git rev-list --count "$BASE_SHA"..HEAD)" = 1
+          test -z "$(git status --porcelain=v1)"
+
+      - name: Install exact uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: 0.12.1
+          enable-cache: false
+
+      - name: Install exact Python
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            "$uv_path" --no-config --color never python install \
+            --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
+
+      - name: Hydrate exact locked dependencies and reusable offline cache
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+            "$uv_path" --no-config --color never sync --locked \
+            --no-default-groups --group dev --no-install-project --no-install-local \
+            --managed-python --no-python-downloads --python 3.14.6 \
+            --no-build --no-sources --default-index https://pypi.org/simple \
+            --index-strategy first-index --keyring-provider disabled --link-mode copy \
+            --resolution highest --prerelease disallow \
+            --exclude-newer 2026-08-01T16:50:16Z --no-progress
+
+      - name: Update approved ST-0102 dependency inventory
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -I - <<'PY'
+          from pathlib import Path
+
+          path = Path("tests/st0102/test_toolchain_contract.py")
+          content = path.read_text(encoding="utf-8")
+          replacements = {
+              '    "jsonschema==4.26.0",\n    "pydantic==2.13.4",':
+                  '    "jsonschema==4.26.0",\n    "openai==2.52.0",\n    "pydantic==2.13.4",',
+              '    "jsonschema": "4.26.0",\n    "pydantic": "2.13.4",':
+                  '    "jsonschema": "4.26.0",\n    "openai": "2.52.0",\n    "pydantic": "2.13.4",',
+          }
+          for old, new in replacements.items():
+              if content.count(old) != 1:
+                  raise SystemExit("ST-0102 dependency inventory anchor mismatch")
+              content = content.replace(old, new)
+          path.write_text(content, encoding="utf-8")
+          PY
+
+      - name: Regenerate only approved owner outputs without network
+        run: |
+          set -euo pipefail
+          uv_path="$(command -v uv)"
+          readonly=(
+            "$uv_path" --config-file uv.toml run --locked --offline --no-cache
+            --no-sync --no-env-file --no-python-downloads python
+          )
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            "${readonly[@]}" scripts/build_st0801_content_ast.py
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            "${readonly[@]}" scripts/build_st0703_recorded_adapter.py
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            "${readonly[@]}" scripts/build_st0801_content_ast.py --check
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            "${readonly[@]}" scripts/build_st0703_recorded_adapter.py --check
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            "${readonly[@]}" scripts/build_st0703_recorded_adapter.py --check-installed
+
+      - name: Prove exact approved delta
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only --diff-filter=ACMRTUXB)
+          printf 'Changed closure paths:\n'
+          printf '  %s\n' "${changed[@]}"
+          test "${#changed[@]}" = 3
+          test "${changed[0]}" = changes/st-0703/manifest.yaml
+          test "${changed[1]}" = changes/st-0801/manifest.yaml
+          test "${changed[2]}" = tests/st0102/test_toolchain_contract.py
+          git diff --check
+
+      - name: Run isolated ST-0102 suite with hydrated cache and denied network
+        run: |
+          set -euo pipefail
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            "$(command -v uv)" --config-file uv.toml run --locked --offline \
+            --no-sync --no-env-file --no-python-downloads pytest \
+            -p no:cacheprovider -q tests/st0102
+
+      - name: Run approved ST-0703 gate without network
+        run: |
+          set -euo pipefail
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            /usr/bin/make --no-builtin-rules --no-builtin-variables \
+            --file Makefile openai-recorded-gate RAOS_CI_OFFLINE=1 \
+            UV="$(command -v uv)"
+
+      - name: Run isolated ST-0801 suite without network
+        run: |
+          set -euo pipefail
+          scripts/run_network_denied.sh --home "$HOME" -- \
+            "$(command -v uv)" --config-file uv.toml run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads pytest \
+            -p no:cacheprovider -q tests/st0801
+
+      - name: Prove revised source is secret-scanner clean
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -I - <<'PY'
+          from pathlib import Path
+          import importlib.util
+          import sys
+
+          module_path = Path("scripts/scan_secrets.py")
+          spec = importlib.util.spec_from_file_location("raos_secret_scan", module_path)
+          if spec is None or spec.loader is None:
+              raise SystemExit("scanner import failed")
+          module = importlib.util.module_from_spec(spec)
+          sys.modules[spec.name] = module
+          spec.loader.exec_module(module)
+          target = Path("tests/st0102/test_toolchain_contract.py")
+          findings = module.scan_bytes(target.read_bytes(), target.as_posix())
+          if findings:
+              module.emit_findings(findings)
+              raise SystemExit("updated ST-0102 source contains secret findings")
+          PY
+
+      - name: Replace branch with one corrected commit
+        env:
+          BASE_SHA: 48a807672caa845df8e0251782f00bce8040663b
+          EXPECTED_HEAD: 8d3762edf6ea8698fb1f15722e9dc1eb44b628fd
+        run: |
+          set -euo pipefail
+          git config user.name "RAOS ST-0703 Builder"
+          git config user.email "actions@users.noreply.github.com"
+          git add --all
+          git reset --soft "$BASE_SHA"
+          git commit -m "Complete ST-0703 recorded OpenAI Responses adapter"
+          new_head="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$BASE_SHA"
+          test "$(git rev-list --count "$BASE_SHA"..HEAD)" = 1
+          test "$(git diff --name-only "$BASE_SHA"..HEAD | wc -l)" = 34
+          git push \
+            --force-with-lease="refs/heads/codex/st-0703-recorded-v4:$EXPECTED_HEAD" \
+            origin "HEAD:refs/heads/codex/st-0703-recorded-v4"
+          echo "Corrected single-commit head: $new_head"
