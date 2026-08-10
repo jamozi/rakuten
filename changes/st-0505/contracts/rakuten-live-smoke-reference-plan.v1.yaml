@@ -1,0 +1,175 @@
+document:
+  id: RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001
+  version: 1.0.0
+  story_id: ST-0505
+  classification: SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  interface_only: true
+  decision: NOT_READY
+  story_acceptance: false
+  production_eligible: false
+  approval: null
+  effective_canonical_status: UNCHANGED
+
+authority:
+  precedence: CANONICAL_INTEGRATION_THEN_STORY_THEN_OPEN_DECISION_AND_TEST_CATALOG
+  sources:
+    - role: integration
+      uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - role: open_decisions
+      uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - role: test_catalog
+      uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - role: story
+      uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+
+predecessor:
+  story_id: ST-0502
+  commit: 74d4dab6cb682706e8db526a796c973b9b6e15fb
+  status: RECORDED_ONE_PAGE_CONTRACT_TEST_ONLY
+  connection_status: INTERFACE_AVAILABLE_NOT_CONNECTED
+  artifacts:
+    - uri: repo://changes/st-0502/README.md
+      sha256: e74805b634f4b775bf8765896f9c7f3b591cf2cf884e6f52743d94f765ec92e9
+    - uri: repo://python/raos/domain/catalog/rakuten_item_search.py
+      sha256: 5b49215f3c80f7af9618dabcddb3a98471976fa6e092ae7a09ed4131e48338ec
+    - uri: repo://python/raos/ports/rakuten_item_search.py
+      sha256: 63983941eeb4a485a3d169073f44c0e4241bdcad452d124cfce1dd07cf2d29fe
+    - uri: repo://python/raos/application/catalog/rakuten_item_search.py
+      sha256: 454c46f66ad473a81395bc08330e7b62635e78c0d1763424227d2f7ebd84688c
+    - uri: repo://python/raos/adapters/recorded_rakuten_item_search.py
+      sha256: ffdde9dda64800369ac1d90357a6b9300ff104447547bf8c4bb9bf28e89e7dd7
+    - uri: repo://tests/st0502/conftest.py
+      sha256: 31285176cd193385818f830c15b3a520195f8e5fe819e541fd916aad6bf66718
+    - uri: repo://tests/st0502/test_boundaries.py
+      sha256: d67b995da35bf31b5fb576ca291a9c16e34ccfa4a672377b83121b576ef8eb78
+    - uri: repo://tests/st0502/test_failure_isolation.py
+      sha256: 964139bc7e81e41d2dab066599cfa434ee186c465f417e51db97c930f0ea5d52
+    - uri: repo://tests/st0502/test_rakuten_item_search.py
+      sha256: 5d6d8767ea11124dc378cc52f18006fbb4eb9cdba3fbfe4bb7d06526ebddd42a
+  semantics:
+    provider: RAKUTEN_ICHIBA
+    operation: ITEM_SEARCH
+    purpose: CONTRACT_TEST
+    mode: RECORDED_TEST_ONLY
+    live_eligible: false
+    health: NOT_EXECUTED
+    requested_page: 1
+    page_fetch_count: 1
+    retry_count: 0
+    pagination_count: 0
+    storage: NOT_EXECUTED
+    persistence: NOT_EXECUTED
+    receipt_uri: null
+    endpoint_url: null
+    account: null
+    credential_access: FORBIDDEN
+    network_access: FORBIDDEN
+    provider_sdk: ABSENT
+    filesystem: ABSENT
+    repository: ABSENT
+    external_actions: []
+
+open_decision:
+  id: OD-015
+  status: EXTERNAL_EVIDENCE_REQUIRED
+  blocking: true
+  safe_default: RECORDED_FIXTURE_ONLY
+  resolved: false
+  live_credentials_available: false
+  live_execution_authorized: false
+
+live_smoke_definition:
+  status: NOT_CONFIGURED
+  runnable: false
+  runner: null
+  command: null
+  selected_environment: null
+  selected_account: null
+  selected_endpoint: null
+  credential_selection: ABSENT
+  request: null
+  response: null
+  report: null
+  retry_policy: null
+  pagination_policy: null
+  artifacts: []
+
+observation_defaults:
+  status: NOT_EXECUTED
+  started_at: null
+  finished_at: null
+  auth_observation: null
+  schema_observation: null
+  rate_observation: null
+  provider_request_id: null
+  http_status: null
+  latency: null
+  observations: []
+  errors: []
+  evidence: []
+  empty_interpretation: NO_LIVE_EXECUTION_EVIDENCE_NOT_ZERO_ERRORS_OR_SUCCESS
+
+rate_quota_cost_defaults:
+  rate_limit: null
+  rate_remaining: null
+  rate_reset: null
+  quota_limit: null
+  quota_remaining: null
+  cost: null
+  currency: null
+  capacity: null
+  values: []
+
+execution_boundary:
+  enabled: false
+  status: DISABLED
+  live_smoke: NOT_EXECUTED
+  network: FORBIDDEN
+  credential: FORBIDDEN
+  provider: FORBIDDEN
+  sdk: ABSENT
+  filesystem: ABSENT
+  repository: ABSENT
+  storage: NOT_EXECUTED
+  persistence: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  external_actions: []
+  action_counts:
+    live_call: 0
+    network: 0
+    credential_read: 0
+    retry: 0
+    paginate: 0
+    create: 0
+    update: 0
+    delete: 0
+    store: 0
+    persist: 0
+    external: 0
+
+verification_boundary:
+  formal_tst_016: NOT_EXECUTED
+  live_auth: NOT_EXECUTED
+  live_schema: NOT_EXECUTED
+  live_rate: NOT_EXECUTED
+  provider_runtime: NOT_EXECUTED
+  network: NOT_EXECUTED
+  credentials: NOT_EXECUTED
+  storage: NOT_EXECUTED
+  persistence: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  decision: NOT_READY
+  approval: null
+  story_acceptance: false
+  production_eligible: false
+  effective_canonical_status: UNCHANGED

@@ -1,0 +1,381 @@
+"""Hostile closed-boundary tests for the ST-0505 builder."""
+
+from __future__ import annotations
+
+import ast
+from copy import deepcopy
+import hashlib
+from pathlib import Path
+from typing import Any, Callable, cast
+
+import pytest
+import yaml
+
+from scripts import build_st1505_staging_deployment as base
+from scripts import build_st0505_rakuten_live_smoke_reference_plan as generator
+
+
+@pytest.mark.parametrize(
+    ("section", "field", "value"),
+    [
+        ("document", "executable", True),
+        ("document", "interface_only", False),
+        ("document", "decision", "READY"),
+        ("document", "approval", "approved"),
+        ("document", "story_acceptance", True),
+        ("document", "production_eligible", True),
+        ("predecessor", "commit", "0" * 40),
+        ("predecessor", "connection_status", "CONNECTED"),
+        ("open_decision", "resolved", True),
+        ("open_decision", "blocking", False),
+        ("open_decision", "safe_default", "LIVE"),
+        ("open_decision", "live_credentials_available", True),
+        ("open_decision", "live_execution_authorized", True),
+        ("live_smoke_definition", "status", "CONFIGURED"),
+        ("live_smoke_definition", "runnable", True),
+        ("live_smoke_definition", "runner", "runner"),
+        ("live_smoke_definition", "command", "smoke --live"),
+        ("live_smoke_definition", "selected_environment", "staging"),
+        ("live_smoke_definition", "selected_account", "account"),
+        ("live_smoke_definition", "selected_endpoint", "https://example.invalid"),
+        ("live_smoke_definition", "credential_selection", "secret-ref"),
+        ("live_smoke_definition", "request", "request"),
+        ("live_smoke_definition", "response", "response"),
+        ("live_smoke_definition", "report", "report"),
+        ("live_smoke_definition", "retry_policy", "retry"),
+        ("live_smoke_definition", "pagination_policy", "paginate"),
+        ("live_smoke_definition", "artifacts", ["artifact"]),
+        ("observation_defaults", "status", "PASS"),
+        ("observation_defaults", "started_at", "2026-08-10T00:00:00Z"),
+        ("observation_defaults", "finished_at", "2026-08-10T00:00:01Z"),
+        ("observation_defaults", "auth_observation", "SUCCESS"),
+        ("observation_defaults", "schema_observation", "VALID"),
+        ("observation_defaults", "rate_observation", "OK"),
+        ("observation_defaults", "provider_request_id", "request-1"),
+        ("observation_defaults", "http_status", 200),
+        ("observation_defaults", "latency", "100ms"),
+        ("observation_defaults", "observations", ["auth"]),
+        ("observation_defaults", "errors", ["none"]),
+        ("observation_defaults", "evidence", ["report"]),
+        ("rate_quota_cost_defaults", "rate_limit", 100),
+        ("rate_quota_cost_defaults", "rate_remaining", 99),
+        ("rate_quota_cost_defaults", "rate_reset", "later"),
+        ("rate_quota_cost_defaults", "quota_limit", 1000),
+        ("rate_quota_cost_defaults", "quota_remaining", 999),
+        ("rate_quota_cost_defaults", "cost", 1),
+        ("rate_quota_cost_defaults", "currency", "JPY"),
+        ("rate_quota_cost_defaults", "capacity", "1rps"),
+        ("rate_quota_cost_defaults", "values", [0]),
+        ("execution_boundary", "enabled", True),
+        ("execution_boundary", "live_smoke", "EXECUTED"),
+        ("execution_boundary", "network", "ALLOWED"),
+        ("execution_boundary", "credential", "ALLOWED"),
+        ("execution_boundary", "provider", "ALLOWED"),
+        ("execution_boundary", "sdk", "AVAILABLE"),
+        ("execution_boundary", "filesystem", "AVAILABLE"),
+        ("execution_boundary", "repository", "AVAILABLE"),
+        ("execution_boundary", "storage", "EXECUTED"),
+        ("execution_boundary", "persistence", "EXECUTED"),
+        ("execution_boundary", "staging", "EXECUTED"),
+        ("execution_boundary", "external_actions", ["provider-call"]),
+        ("verification_boundary", "formal_tst_016", "PASS"),
+        ("verification_boundary", "live_auth", "PASS"),
+        ("verification_boundary", "live_schema", "PASS"),
+        ("verification_boundary", "live_rate", "PASS"),
+        ("verification_boundary", "provider_runtime", "PASS"),
+        ("verification_boundary", "network", "PASS"),
+        ("verification_boundary", "credentials", "PASS"),
+        ("verification_boundary", "production", "READY"),
+    ],
+)
+def test_forbidden_live_selection_observation_or_claim_is_rejected(
+    section: str,
+    field: str,
+    value: object,
+) -> None:
+    contract = deepcopy(generator.load_contract())
+    contract[section][field] = value
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+@pytest.mark.parametrize("replacement", [False, True, 0.0, "0"])
+@pytest.mark.parametrize("action", generator.ACTION_COUNT_KEYS)
+def test_bool_float_string_and_nonzero_do_not_bypass_exact_zero_actions(
+    action: str,
+    replacement: object,
+) -> None:
+    contract = deepcopy(generator.load_contract())
+    contract["execution_boundary"]["action_counts"][action] = replacement
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+def _remove_top(value: dict[str, Any]) -> None:
+    value.pop("observation_defaults")
+
+
+def _add_top(value: dict[str, Any]) -> None:
+    value["unknown"] = None
+
+
+def _add_nested(value: dict[str, Any]) -> None:
+    value["live_smoke_definition"]["unknown"] = None
+
+
+def _reverse_sources(value: dict[str, Any]) -> None:
+    value["authority"]["sources"].reverse()
+
+
+def _reverse_actions(value: dict[str, Any]) -> None:
+    counts = value["execution_boundary"]["action_counts"]
+    value["execution_boundary"]["action_counts"] = dict(reversed(tuple(counts.items())))
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [_remove_top, _add_top, _add_nested, _reverse_sources, _reverse_actions],
+)
+def test_missing_unknown_and_reordered_keys_are_rejected(
+    mutation: Callable[[dict[str, Any]], None],
+) -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    mutation(contract)
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        b"document: {}\ndocument: {}\n",
+        b"document: &shared {}\nauthority: *shared\n",
+        b"document: !!python/object/apply:os.system [id]\n",
+        b"base: &base {enabled: false}\nmerged: {<<: *base}\n",
+    ],
+)
+def test_yaml_duplicate_alias_tag_and_merge_are_rejected(
+    isolated_repository: Path,
+    payload: bytes,
+) -> None:
+    (isolated_repository / generator.CONTRACT_PATH).write_bytes(payload)
+    with pytest.raises(
+        (generator.RakutenLiveSmokeReferenceError, base.StagingDeploymentContractError)
+    ):
+        generator.load_contract(isolated_repository)
+
+
+def test_oversized_contract_is_rejected(isolated_repository: Path) -> None:
+    path = isolated_repository / generator.CONTRACT_PATH
+    path.write_bytes(b"x" * (generator.MAX_SOURCE_BYTES + 1))
+    with pytest.raises(
+        (generator.RakutenLiveSmokeReferenceError, base.StagingDeploymentContractError)
+    ):
+        generator.load_contract(isolated_repository)
+
+
+def test_symlink_contract_is_rejected(
+    isolated_repository: Path,
+    tmp_path: Path,
+) -> None:
+    contract = isolated_repository / generator.CONTRACT_PATH
+    outside = tmp_path / "outside.yaml"
+    outside.write_bytes(contract.read_bytes())
+    contract.unlink()
+    contract.symlink_to(outside)
+    with pytest.raises(base.StagingDeploymentContractError):
+        generator.load_contract(isolated_repository)
+
+
+def test_symlink_contract_ancestor_is_rejected(
+    isolated_repository: Path,
+    tmp_path: Path,
+) -> None:
+    changes = isolated_repository / "changes"
+    moved = tmp_path / "changes"
+    changes.rename(moved)
+    changes.symlink_to(moved, target_is_directory=True)
+    with pytest.raises(base.StagingDeploymentContractError):
+        generator.load_contract(isolated_repository)
+
+
+def test_output_symlink_target_is_rejected(
+    isolated_repository: Path,
+    tmp_path: Path,
+) -> None:
+    target = isolated_repository / generator.REFERENCE_PLAN_PATH
+    target.parent.mkdir(parents=True)
+    outside = tmp_path / "outside.json"
+    outside.write_bytes(b"outside")
+    target.symlink_to(outside)
+    with pytest.raises(base.StagingDeploymentContractError):
+        generator.build(isolated_repository)
+    assert outside.read_bytes() == b"outside"
+
+
+def test_output_symlink_ancestor_is_rejected(
+    isolated_repository: Path,
+    tmp_path: Path,
+) -> None:
+    generated = isolated_repository / generator.REFERENCE_PLAN_PATH.parent
+    outside = tmp_path / "generated"
+    outside.mkdir()
+    generated.parent.mkdir(parents=True, exist_ok=True)
+    generated.symlink_to(outside, target_is_directory=True)
+    with pytest.raises(base.StagingDeploymentContractError):
+        generator.build(isolated_repository)
+    assert not tuple(outside.iterdir())
+
+
+def test_path_traversal_is_rejected(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(generator, "CONTRACT_PATH", Path("../outside.yaml"))
+    with pytest.raises(base.StagingDeploymentContractError):
+        generator.load_contract(isolated_repository)
+
+
+@pytest.mark.parametrize(
+    "relative",
+    [
+        generator.OPEN_DECISIONS_PATH,
+        generator.TEST_CATALOG_PATH,
+        generator.STORY_PATH,
+        *(path for path, _digest in generator.EXPECTED_PREDECESSOR_ARTIFACTS),
+    ],
+)
+def test_authority_or_predecessor_byte_drift_is_rejected(
+    isolated_repository: Path,
+    relative: Path,
+) -> None:
+    path = isolated_repository / relative
+    path.write_bytes(path.read_bytes() + b"\ndrift\n")
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.render_outputs(isolated_repository)
+
+
+def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    relative = generator.EXPECTED_PREDECESSOR_ARTIFACTS[1][0]
+    path = isolated_repository / relative
+    text = path.read_text(encoding="utf-8").replace(
+        'RECORDED_TEST_ONLY = "RECORDED_TEST_ONLY"',
+        'RECORDED_TEST_ONLY = "LIVE"',
+        1,
+    )
+    path.write_text(text, encoding="utf-8")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    rebound = tuple(
+        (candidate, digest if candidate == relative else expected)
+        for candidate, expected in generator.EXPECTED_PREDECESSOR_ARTIFACTS
+    )
+    monkeypatch.setattr(generator, "EXPECTED_PREDECESSOR_ARTIFACTS", rebound)
+    contract = yaml.safe_load(
+        (isolated_repository / generator.CONTRACT_PATH).read_bytes()
+    )
+    contract["predecessor"]["artifacts"][1]["sha256"] = digest
+    (isolated_repository / generator.CONTRACT_PATH).write_text(
+        yaml.safe_dump(contract, sort_keys=False), encoding="utf-8"
+    )
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.render_outputs(isolated_repository)
+
+
+def test_canonical_story_semantic_drift_is_rejected_even_when_hash_is_rebound(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = isolated_repository / generator.STORY_PATH
+    catalog = yaml.safe_load(path.read_bytes())
+    story = next(item for item in catalog["stories"] if item["id"] == "ST-0505")
+    story["verification_status"] = "PASS"
+    path.write_text(yaml.safe_dump(catalog, sort_keys=False), encoding="utf-8")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    rebound = tuple(
+        (
+            role,
+            source,
+            digest if source == generator.STORY_PATH.as_posix() else expected,
+        )
+        for role, source, expected in generator.EXPECTED_SOURCES
+    )
+    monkeypatch.setattr(generator, "EXPECTED_SOURCES", rebound)
+    contract = yaml.safe_load(
+        (isolated_repository / generator.CONTRACT_PATH).read_bytes()
+    )
+    for source in contract["authority"]["sources"]:
+        if source["role"] == "story":
+            source["sha256"] = digest
+    (isolated_repository / generator.CONTRACT_PATH).write_text(
+        yaml.safe_dump(contract, sort_keys=False), encoding="utf-8"
+    )
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.render_outputs(isolated_repository)
+
+
+def test_failure_is_stable_sanitized_and_does_not_echo_rejected_value() -> None:
+    canary = "secret-canary-live-endpoint-value"
+    contract = deepcopy(generator.load_contract())
+    contract["live_smoke_definition"]["selected_endpoint"] = canary
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError) as caught:
+        generator.validate_contract(contract)
+    assert canary not in str(caught.value)
+    assert caught.value.__cause__ is None
+
+
+def test_builder_ast_has_no_external_runtime_or_action_surface() -> None:
+    source = (generator.REPO_ROOT / generator.GENERATOR_PATH).read_text(
+        encoding="utf-8"
+    )
+    tree = ast.parse(source)
+    imported = {
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    } | {
+        node.module or "" for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)
+    }
+    assert imported.isdisjoint(
+        {
+            "boto3",
+            "httpx",
+            "requests",
+            "socket",
+            "subprocess",
+            "urllib",
+            "sqlalchemy",
+            "psycopg",
+            "os",
+            "random",
+            "time",
+            "uuid",
+        }
+    )
+    called = {
+        node.func.id
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+    }
+    attributes = {
+        node.func.attr
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+    }
+    assert called.isdisjoint(
+        {"eval", "exec", "getenv", "Popen", "system", "sleep", "urlopen"}
+    )
+    assert attributes.isdisjoint(
+        {
+            "connect",
+            "execute",
+            "publish",
+            "send",
+            "request",
+            "getenv",
+            "resolve_credentials",
+        }
+    )
