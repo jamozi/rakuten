@@ -1,0 +1,15 @@
+{
+  "candidate_count": null,
+  "catalog_sha256": null,
+  "checked_at": "2026-08-10T20:25:39.281140+00:00",
+  "evidence_status": "NOT_AVAILABLE",
+  "open_decision_count": null,
+  "pr_number": null,
+  "pr_url": null,
+  "repository": "jamozi/rakuten",
+  "status": "TARGET_MISSING",
+  "story_count": null,
+  "target_branch": "codex/all-stories-switchable-strategies-20260811",
+  "target_sha": null,
+  "validation_contexts": []
+}
