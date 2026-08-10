@@ -1,0 +1,156 @@
+name: Record Final Switchable Strategy Status
+
+on:
+  push:
+    branches:
+      - agent/all-stories-switchable-export-control-20260811
+    paths:
+      - .github/workflows/all-stories-switchable-final-status.yml
+
+permissions:
+  contents: write
+  pull-requests: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  FULL_BRANCH: codex/all-stories-switchable-strategies-20260811
+  BOUNDED_BRANCH: codex/all-stories-switchable-strategies-bounded-20260811
+
+jobs:
+  status:
+    name: Inspect full and bounded refs
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out status branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Build exact status record
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p .github/all-stories-switchable-status
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          from datetime import datetime, timezone
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+
+          root = Path.cwd()
+
+          def command(arguments: list[str]) -> str:
+              return subprocess.run(
+                  arguments,
+                  check=True,
+                  text=True,
+                  capture_output=True,
+              ).stdout.strip()
+
+          def inspect(branch: str, label: str) -> dict[str, object]:
+              reference = f"refs/heads/{branch}"
+              output = command(["git", "ls-remote", "--heads", "origin", reference])
+              if not output:
+                  return {
+                      "branch": branch,
+                      "evidence": None,
+                      "label": label,
+                      "pr": None,
+                      "sha": None,
+                      "status": "MISSING",
+                      "validation_contexts": [],
+                  }
+              sha = output.split()[0]
+              destination = Path(os.environ["RUNNER_TEMP"]) / label
+              command(["git", "fetch", "--no-tags", "origin", f"{reference}:{reference}"])
+              command(["git", "worktree", "add", "--detach", str(destination), sha])
+              evidence_paths = (
+                  destination
+                  / "changes/all-stories/generated/switchable-strategy-evidence.v1.json",
+                  destination
+                  / "changes/all-stories/generated/switchable-strategy-bounded-evidence.v1.json",
+              )
+              evidence = None
+              for path in evidence_paths:
+                  if path.is_file() and path.stat().st_size > 0:
+                      evidence = json.loads(path.read_bytes())
+                      break
+              pr_list = json.loads(
+                  command(
+                      [
+                          "gh",
+                          "pr",
+                          "list",
+                          "--head",
+                          branch,
+                          "--base",
+                          "main",
+                          "--state",
+                          "open",
+                          "--json",
+                          "number,url,headRefOid,isDraft,title",
+                      ]
+                  )
+              )
+              status_document = json.loads(
+                  command(
+                      [
+                          "gh",
+                          "api",
+                          f"repos/{os.environ['GITHUB_REPOSITORY']}/commits/{sha}/status",
+                      ]
+                  )
+              )
+              contexts = [
+                  {
+                      "context": item["context"],
+                      "description": item.get("description"),
+                      "state": item["state"],
+                      "target_url": item.get("target_url"),
+                  }
+                  for item in status_document.get("statuses", [])
+              ]
+              state = "CANDIDATE"
+              if evidence is not None:
+                  state = str(evidence.get("status", "EVIDENCE_PRESENT"))
+              return {
+                  "branch": branch,
+                  "evidence": evidence,
+                  "label": label,
+                  "pr": pr_list[0] if pr_list else None,
+                  "sha": sha,
+                  "status": state,
+                  "validation_contexts": contexts,
+              }
+
+          document = {
+              "bounded": inspect(os.environ["BOUNDED_BRANCH"], "bounded"),
+              "checked_at": datetime.now(timezone.utc).isoformat(),
+              "full": inspect(os.environ["FULL_BRANCH"], "full"),
+              "repository": os.environ["GITHUB_REPOSITORY"],
+          }
+          path = Path(".github/all-stories-switchable-status/final-status.json")
+          path.write_text(
+              json.dumps(document, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Commit final status
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .github/all-stories-switchable-status/final-status.json
+          git commit -m 'chore: record final switchable strategy status'
+          git push origin HEAD:agent/all-stories-switchable-export-control-20260811
