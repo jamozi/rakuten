@@ -17,30 +17,36 @@ defaults:
 
 jobs:
   export:
-    name: Export tracked source
+    name: Export tracked source and history
     runs-on: ubuntu-22.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
-      - name: Check out exact implementation branch
+      - name: Check out complete repository history
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: codex/st-0703-recorded-v4
           fetch-depth: 0
           persist-credentials: false
           show-progress: false
-      - name: Create tracked-source archive
+      - name: Create source archive and Git bundle
         run: |
           set -euo pipefail
           archive="$RUNNER_TEMP/rakuten-st0703-recorded-v4.tar.gz"
+          bundle="$RUNNER_TEMP/rakuten-all-refs.bundle"
           git archive --format=tar.gz --output="$archive" HEAD
+          git bundle create "$bundle" --all
           sha256sum "$archive" >"$archive.sha256"
-      - name: Upload archive
+          sha256sum "$bundle" >"$bundle.sha256"
+          git bundle verify "$bundle"
+      - name: Upload source and history
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: rakuten-st0703-recorded-v4-source
+          name: rakuten-st0703-source-and-history
           path: |
             ${{ runner.temp }}/rakuten-st0703-recorded-v4.tar.gz
             ${{ runner.temp }}/rakuten-st0703-recorded-v4.tar.gz.sha256
+            ${{ runner.temp }}/rakuten-all-refs.bundle
+            ${{ runner.temp }}/rakuten-all-refs.bundle.sha256
           if-no-files-found: error
           retention-days: 1
           compression-level: 0
