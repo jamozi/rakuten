@@ -1,0 +1,98 @@
+name: Finalize Switchable Strategies for All Stories V4
+
+on:
+  push:
+    branches:
+      - agent/all-stories-materialize-run-20260811
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  FOUNDATION_BRANCH: codex/raos-implementation-first-goal
+  STRATEGY_BRANCH: agent/all-stories-switchable-strategies-20260811
+  TARGET_BRANCH: codex/all-stories-switchable-strategies-20260811
+  PYTHON_VERSION: 3.14.6
+  UV_VERSION: 0.12.1
+  NODE_VERSION: 24.18.1
+  NPM_VERSION: 11.16.0
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  finalize:
+    name: Exact V4 validation and publication
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+    steps:
+      - name: Check out transport and finalizer
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: overlay-transport
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out latest strategy sources
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.STRATEGY_BRANCH }}
+          path: subject
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Install exact uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: false
+
+      - name: Install managed Python
+        run: |
+          set -euo pipefail
+          uv --no-config --color never python install \
+            --managed-python --no-bin --no-registry --no-cache --no-progress \
+            "$PYTHON_VERSION"
+
+      - name: Install exact Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+          check-latest: false
+
+      - name: Install exact npm
+        run: |
+          set -euo pipefail
+          npm install --global "npm@$NPM_VERSION" \
+            --ignore-scripts --no-audit --no-fund
+          test "$(node --version)" = "v$NODE_VERSION"
+          test "$(npm --version)" = "$NPM_VERSION"
+
+      - name: Run atomic V4 finalizer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          bash overlay-transport/.github/scripts/run_switchable_finalization_v4.sh
+
+      - name: Upload V4 evidence
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: all-stories-switchable-strategy-evidence-v4
+          path: |
+            ${{ runner.temp }}/v4-changed-paths.txt
+            ${{ runner.temp }}/v4-before.patch
+            ${{ runner.temp }}/v4-after.patch
+            ${{ runner.temp }}/v4-final-pr.json
+            subject/changes/all-stories/generated/switchable-strategy-catalog.v1.json
+            subject/changes/all-stories/generated/switchable-strategy-evidence.v1.json
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
