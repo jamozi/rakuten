@@ -2207,3 +2207,57 @@ original result.
   attainment, release evidence, or Production readiness.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-executable local ST-1604 plan.
+
+### 2026-08-10 W2 / ST-0503 lossless catalog-normalization checkpoint
+
+- Authority and scope: canonical `ST-0503` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0502, and requires
+  TST-005/TST-007/TST-008. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint implements a recorded lossless
+  structural normalizer only; it does not persist repositories, dispatch jobs
+  or events, invent product-identity rules, group/merge items, or satisfy the
+  full normalized-repository acceptance boundary.
+- Implemented strict immutable commands and source references binding exact
+  ST-0502 recorded request/result/raw receipt/API/provider/page/rate/item/time
+  provenance. Every candidate, offer, price, availability, and review-
+  aggregate draft preserves source values/order and remains persistence-
+  ineligible, repository `ABSENT`, database `NOT_EXECUTED`, with no fabricated
+  source snapshot or confidence.
+- Candidate names are exact lossless passthrough; provider item/shop/genre/name/
+  image/URL/price/availability/review aggregate values are not reinterpreted as
+  internal IDs, normalized identity, offer authority, stock/shipping meaning,
+  ranking, or affiliate economics. Model/JAN/brand/category extraction,
+  identity confidence, canonical product assignment, grouping/membership/
+  merge/split/supersession all remain null or empty. Even identical or JAN/
+  model-looking names remain separate `REVIEW_REQUIRED` drafts.
+- The inward port exposes only one normalize call. The ENV-DEV/CI service calls
+  once, validates full provenance/cardinality and the complete deterministic
+  lossless result, and fails without retry, partial output, echo, cause, or
+  retained context. The immutable exact-fixture adapter has no wildcard,
+  mutable state/history, filesystem/network/provider/environment/repository/
+  database/job/event surface.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st0503` (`59 passed`), ST-0502 regression (`68 passed`), Ruff
+  lint/format, strict mypy, compile/import, exact nine-path review, focused
+  secret scan, canonical import, workspace drift, and `git diff --check`
+  returned `PASS`. The linked-worktree scanner remains inherited
+  `DEBT-W0-003`.
+- `DEBT-W2-034` status: `OPEN`, introduced-by `ST-0503`, closure owner:
+  Catalog/data-model, ST-0504/product identity, ST-0304/ST-0308 persistence,
+  job/event, and final Wave integration owners. Exact skipped command:
+  `NOT_RUN — no persisted source snapshot, stable internal shop/genre/candidate/
+  offer mapping, approved normalization/version/model/JAN/category/confidence/
+  shipping/offer rules, repository/UoW/database constraints/roles/append-only
+  transaction, or job/event integration exists`; observed result:
+  `NOT_EXECUTED`. OD-006 keeps automatic identity/merge disabled and the
+  lossless drafts cannot satisfy repository or grouping acceptance.
+- `DEBT-W2-035` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0503`, closure
+  owner: Catalog/Product/Security/Data reviewers, formal CI, PostgreSQL/runtime,
+  Staging, release, and Production owners. Exact skipped command: `NOT_RUN —
+  formal TST-005/TST-007/TST-008, property/database runtime, identity-rule
+  review, hosted CI, Staging, release, and Production are outside local
+  authority`; observed result: `NOT_EXECUTED`. Recorded lossless fixture checks
+  are not promoted to repository, formal, or deployment evidence.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe local ST-0503 lossless seam.
