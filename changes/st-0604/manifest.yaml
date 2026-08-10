@@ -1,0 +1,139 @@
+document:
+  id: RAOS-ST0604-SOURCE-PACKET-LIFECYCLE-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0604
+  source_contract: repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml
+  generated_by: repo://scripts/build_st0604_source_packet_lifecycle_reference_plan.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0604_source_packet_lifecycle_reference_plan.py
+provenance:
+  contract_sha256: df184e56224586ccb399da2f782e7a6a4fa202f4d9934be240be61dc75f1fb74
+  canonical_story:
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  inventory_derivation: COMMIT_DIFF_TREE_FIXED_AT_AUTHORING
+  predecessors:
+  - story_id: ST-0602
+    commit: f281d02c489d4d9f74ec351a57a4a476fa77eab3
+    inputs:
+    - uri: repo://changes/st-0602/README.md
+      sha256: c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5
+    - uri: repo://changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
+      sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
+    - uri: repo://changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
+      sha256: 09dfe62f6afbd5c531a96c22330fa920356abf614f0230ec2a6ff19c6ba1b157
+    - uri: repo://changes/st-0602/manifest.yaml
+      sha256: 695cd282f3e4051e5e4012c5e38ca5ba68d9ede32c38edd7cbcd05a3ba89129e
+    - uri: repo://scripts/build_st0602_fact_extraction_validation_reference_plan.py
+      sha256: 6ff038c9c2e06a6bef6b8fb2520ad5d62b9107bf80a77adcb0dd1811d399bd17
+    - uri: repo://tests/st0602/conftest.py
+      sha256: 8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9
+    - uri: repo://tests/st0602/test_contract.py
+      sha256: 8d1fe6cfa6edac6910802a1be71370a2e371144e4b7ca7d4e3a3bc145f66e775
+    - uri: repo://tests/st0602/test_generation.py
+      sha256: 1b5d8314fe24cbe9f76556fb5699d22168f17736ccce982f129de8a2209db2b2
+    - uri: repo://tests/st0602/test_negative_cases.py
+      sha256: 46b65c0b3954da438425f734c7898dccdf39c9dd7445d4b4e15ac682b15c78c9
+  - story_id: ST-0603
+    commit: a64799570606aa4cb5e3ce79930e156fa500d644
+    inputs:
+    - uri: repo://changes/st-0603/README.md
+      sha256: 87398b8122d9ef365a073159dd65258488cc1482163ea7449504dccdb11887fb
+    - uri: repo://changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml
+      sha256: 65b9fb2a8bf95a3d983d88516fa00a917e4d329bd5ea60436c991e3846c8bec0
+    - uri: repo://changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json
+      sha256: 38db6d2622627b8d430d481b91ddd0cea943a82092d2086a086ca7c45a96e049
+    - uri: repo://changes/st-0603/manifest.yaml
+      sha256: 899383911718c8be82b852743b946ac96bb4ffcdd98d4a9aae8c97e4e6a86fef
+    - uri: repo://scripts/build_st0603_fact_conflict_review_reference_plan.py
+      sha256: 30a95f43624f749cc4ef526ba91b03b54378e43ef18d896cdce582e6b58a8f80
+    - uri: repo://tests/st0603/conftest.py
+      sha256: b0041b91eac50acd6ba109e7218b24886197619130b2ddf5e803e84a5311f977
+    - uri: repo://tests/st0603/test_contract.py
+      sha256: ad08282af371e0f207bfb54969944b63d52ad9796b016203cabd8c4a3c8b8c8a
+    - uri: repo://tests/st0603/test_generation.py
+      sha256: 30010ac3fb8dc51cb8ff1ebeb87ca689dde607713a43e26c8ebfdca5cb673c77
+    - uri: repo://tests/st0603/test_negative_cases.py
+      sha256: 1aa9580ccfe4a61fc9ad52899f09ca2366a8683a7d45454e92a00c26e6d9504e
+  - story_id: ST-0403
+    commit: 095046c752595bea3235caf2e3a653fd9383882e
+    inputs:
+    - uri: repo://changes/st-0403/README.md
+      sha256: e7c0e10e44abf6f5db2fbbd94c6a14ecbc9d6bc0ff77fcb312d652204165b6e9
+    - uri: repo://python/raos/adapters/development_authorization.py
+      sha256: 0d97b863f823db024fb508cee28c0a43fe1ee571e1a857d7f0eca1825dddd250
+    - uri: repo://python/raos/application/iam/authorization.py
+      sha256: 9dff51d659500862e537410dcb93b8b66117f65ed79cd99217a0a3708b287326
+    - uri: repo://python/raos/domain/iam/authorization.py
+      sha256: a818af48c4639246598cc31378e64dfa315b7086a866aeb42ce6f95bdcbf77b2
+    - uri: repo://python/raos/ports/authorization.py
+      sha256: 191b9b1fc0a2e0898beaf65b0e821d7030536218abc26fd262eb7dfde47d5157
+    - uri: repo://tests/st0403/conftest.py
+      sha256: 9811af4233700ac6ad4de6209d37d08ac442b7f3946f6e074e6a9839ed339459
+    - uri: repo://tests/st0403/test_authorization.py
+      sha256: 8a17049ecf7f66bf45020c868ec8cb0c2c7e943ebea4a1a2e4c01fe0832fc2ba
+    - uri: repo://tests/st0403/test_boundaries.py
+      sha256: bd05a349cb9bbfadbfed805fb05f99cca845cac40c58c557fc3affc3f02a856d
+  implementation_helper:
+    uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml
+  bytes: 7568
+  sha256: df184e56224586ccb399da2f782e7a6a4fa202f4d9934be240be61dc75f1fb74
+- uri: repo://changes/st-0604/README.md
+  bytes: 3142
+  sha256: 5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8
+- uri: repo://scripts/build_st0604_source_packet_lifecycle_reference_plan.py
+  bytes: 30855
+  sha256: f5e14432f9369e9ef82e4d2062480f11f6db3ba017bd38eeee988df622bf18c6
+- uri: repo://tests/st0604/conftest.py
+  bytes: 1034
+  sha256: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
+- uri: repo://tests/st0604/test_contract.py
+  bytes: 7893
+  sha256: 68c3fad0196b6fc353dd354c172d32dcc64106474754a54665f362a51b415462
+- uri: repo://tests/st0604/test_generation.py
+  bytes: 4501
+  sha256: 5ed32f62c06924f3f6931fb827a6c68dc4ffcbd415ddc6b8ece54c66e93a9cca
+- uri: repo://tests/st0604/test_negative_cases.py
+  bytes: 14644
+  sha256: 143ea1cf8f9b5558f98c521909be7c1506e8ad6cbda5534edb01c11ef8afdb45
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json
+  bytes: 10619
+  sha256: 92a65884534f2a9a1c9fe10473d6e85ecdf1308531518d97c768bc5ede7a4f0c
+boundary:
+  classification: SOURCE_DERIVED_NON_EXECUTABLE_SOURCE_PACKET_LIFECYCLE_REFERENCE_PLAN
+  executable: false
+  interface_only: true
+  decision: NOT_READY
+  vocabulary_authority: DESCRIPTIVE_ONLY
+  inferred_mapping_count: 0
+  packet_count: null
+  version_count: null
+  job_count: null
+  transition_count: null
+  mapping_count: null
+  review_count: null
+  approval_count: null
+  artifact_count: null
+  transition_status: UNAVAILABLE
+  mapping_status: UNAVAILABLE
+  approval: false
+  generation_permitted: false
+  repository: NOT_EXECUTED
+  database: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event: NOT_EXECUTED
+  api: NOT_EXECUTED
+  artifact: NOT_EXECUTED
+  formal_tst_012: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+  production_eligible: false
+  effective_canonical_status: UNCHANGED

@@ -1,0 +1,232 @@
+schema_version: 1
+story_id: ST-0604
+classification: SOURCE_DERIVED_NON_EXECUTABLE_SOURCE_PACKET_LIFECYCLE_REFERENCE_PLAN
+status: LOCAL_IMPLEMENTATION_CANDIDATE
+executable: false
+interface_only: true
+decision: NOT_READY
+production_eligible: false
+approval: false
+story_acceptance: false
+generation_permitted: false
+canonical_story_status:
+  implementation: NOT_STARTED
+  verification: NOT_EXECUTED
+authority:
+  canonical_story_path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  canonical_story_sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  objective: Draft/approve/version/lockを実装
+  requirement_ids:
+  - FR-006
+  acceptance_criteria:
+  - unapproved cannot generate
+  test_suites:
+  - TST-012
+  - TST-020
+predecessors:
+- story_id: ST-0602
+  commit: f281d02c489d4d9f74ec351a57a4a476fa77eab3
+  relationship: EMPTY_FACT_INPUT_REFERENCE_ONLY
+  files:
+  - path: changes/st-0602/README.md
+    sha256: c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5
+  - path: changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
+    sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
+  - path: changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
+    sha256: 09dfe62f6afbd5c531a96c22330fa920356abf614f0230ec2a6ff19c6ba1b157
+  - path: changes/st-0602/manifest.yaml
+    sha256: 695cd282f3e4051e5e4012c5e38ca5ba68d9ede32c38edd7cbcd05a3ba89129e
+  - path: scripts/build_st0602_fact_extraction_validation_reference_plan.py
+    sha256: 6ff038c9c2e06a6bef6b8fb2520ad5d62b9107bf80a77adcb0dd1811d399bd17
+  - path: tests/st0602/conftest.py
+    sha256: 8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9
+  - path: tests/st0602/test_contract.py
+    sha256: 8d1fe6cfa6edac6910802a1be71370a2e371144e4b7ca7d4e3a3bc145f66e775
+  - path: tests/st0602/test_generation.py
+    sha256: 1b5d8314fe24cbe9f76556fb5699d22168f17736ccce982f129de8a2209db2b2
+  - path: tests/st0602/test_negative_cases.py
+    sha256: 46b65c0b3954da438425f734c7898dccdf39c9dd7445d4b4e15ac682b15c78c9
+  required_semantics:
+    decision: NOT_READY
+    facts: []
+    fact_ids: []
+    fact_count: null
+    extraction: NOT_EXECUTED
+    validation: NOT_EXECUTED
+- story_id: ST-0603
+  commit: a64799570606aa4cb5e3ce79930e156fa500d644
+  relationship: EMPTY_CONFLICT_INPUT_REFERENCE_ONLY
+  files:
+  - path: changes/st-0603/README.md
+    sha256: 87398b8122d9ef365a073159dd65258488cc1482163ea7449504dccdb11887fb
+  - path: changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml
+    sha256: 65b9fb2a8bf95a3d983d88516fa00a917e4d329bd5ea60436c991e3846c8bec0
+  - path: changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json
+    sha256: 38db6d2622627b8d430d481b91ddd0cea943a82092d2086a086ca7c45a96e049
+  - path: changes/st-0603/manifest.yaml
+    sha256: 899383911718c8be82b852743b946ac96bb4ffcdd98d4a9aae8c97e4e6a86fef
+  - path: scripts/build_st0603_fact_conflict_review_reference_plan.py
+    sha256: 30a95f43624f749cc4ef526ba91b03b54378e43ef18d896cdce582e6b58a8f80
+  - path: tests/st0603/conftest.py
+    sha256: b0041b91eac50acd6ba109e7218b24886197619130b2ddf5e803e84a5311f977
+  - path: tests/st0603/test_contract.py
+    sha256: ad08282af371e0f207bfb54969944b63d52ad9796b016203cabd8c4a3c8b8c8a
+  - path: tests/st0603/test_generation.py
+    sha256: 30010ac3fb8dc51cb8ff1ebeb87ca689dde607713a43e26c8ebfdca5cb673c77
+  - path: tests/st0603/test_negative_cases.py
+    sha256: 1aa9580ccfe4a61fc9ad52899f09ca2366a8683a7d45454e92a00c26e6d9504e
+  required_semantics:
+    decision: NOT_READY
+    facts: []
+    fact_ids: []
+    fact_count: null
+    comparisons: []
+    conflicts: []
+    findings: []
+    queue: []
+    resolutions: []
+    comparison_count: null
+    conflict_count: null
+    finding_count: null
+    queue_count: null
+    resolution_count: null
+- story_id: ST-0403
+  commit: 095046c752595bea3235caf2e3a653fd9383882e
+  relationship: DENY_DEFAULT_RECORDED_AUTHORIZATION_CONTEXT_ONLY
+  files:
+  - path: changes/st-0403/README.md
+    sha256: e7c0e10e44abf6f5db2fbbd94c6a14ecbc9d6bc0ff77fcb312d652204165b6e9
+  - path: python/raos/adapters/development_authorization.py
+    sha256: 0d97b863f823db024fb508cee28c0a43fe1ee571e1a857d7f0eca1825dddd250
+  - path: python/raos/application/iam/authorization.py
+    sha256: 9dff51d659500862e537410dcb93b8b66117f65ed79cd99217a0a3708b287326
+  - path: python/raos/domain/iam/authorization.py
+    sha256: a818af48c4639246598cc31378e64dfa315b7086a866aeb42ce6f95bdcbf77b2
+  - path: python/raos/ports/authorization.py
+    sha256: 191b9b1fc0a2e0898beaf65b0e821d7030536218abc26fd262eb7dfde47d5157
+  - path: tests/st0403/conftest.py
+    sha256: 9811af4233700ac6ad4de6209d37d08ac442b7f3946f6e074e6a9839ed339459
+  - path: tests/st0403/test_authorization.py
+    sha256: 8a17049ecf7f66bf45020c868ec8cb0c2c7e943ebea4a1a2e4c01fe0832fc2ba
+  - path: tests/st0403/test_boundaries.py
+    sha256: bd05a349cb9bbfadbfed805fb05f99cca845cac40c58c557fc3affc3f02a856d
+  required_semantics:
+    mode: RECORDED_TEST
+    deny_by_default: true
+    live_authorization_available: false
+    production_approval_available: false
+vocabulary_context:
+  authority: DESCRIPTIVE_ONLY
+  creates_runtime_contract: false
+  packet_namespace:
+    name: STORY_PACKET_LIFECYCLE_TERMS
+    values:
+    - DRAFT
+    - APPROVE
+    - VERSION
+    - LOCK
+  version_namespace:
+    name: SOURCE_PACKET_VERSION_STATE_MACHINE
+    values:
+    - BUILDING
+    - READY
+    - IN_REVIEW
+    - APPROVED
+    - REJECTED
+    - SUPERSEDED
+    - INVALID
+  job_namespace:
+    name: CANONICAL_JOB_STATE
+    values:
+    - REQUESTED
+    - QUEUED
+    - RUNNING
+    - SUCCEEDED
+    - FAILED_RETRYABLE
+    - RETRY_SCHEDULED
+    - FAILED_TERMINAL
+    - QUARANTINED
+    - CANCELLED
+    - EXPIRED
+  inferred_mappings: []
+selection_defaults:
+  packet_id: null
+  packet_status: null
+  version_id: null
+  version_status: null
+  job_id: null
+  job_status: null
+  reviewer: null
+  authorization: null
+  artifact_id: null
+  artifact_ref: null
+  content_hash: null
+collection_defaults:
+  packets: []
+  versions: []
+  jobs: []
+  transitions: []
+  mappings: []
+  reviews: []
+  approvals: []
+  artifacts: []
+  packet_count: null
+  version_count: null
+  job_count: null
+  transition_count: null
+  mapping_count: null
+  review_count: null
+  approval_count: null
+  artifact_count: null
+lifecycle_defaults:
+  transition_status: UNAVAILABLE
+  mapping_status: UNAVAILABLE
+  approval: false
+  generation_permitted: false
+  blockers:
+  - SOURCE_FACTS_UNAVAILABLE
+  - CONFLICT_FINDINGS_UNAVAILABLE
+  - VOCABULARY_MAPPING_UNAVAILABLE
+  - LIFECYCLE_TRANSITIONS_UNAVAILABLE
+  - REVIEWER_UNAVAILABLE
+  - AUTHORIZATION_NOT_GRANTED
+  - ARTIFACT_BINDING_UNAVAILABLE
+execution_boundary:
+  packet: NOT_EXECUTED
+  version: NOT_EXECUTED
+  transition: NOT_EXECUTED
+  mapping: NOT_EXECUTED
+  review: NOT_EXECUTED
+  authorization: NOT_EXECUTED
+  artifact: NOT_EXECUTED
+  repository: NOT_EXECUTED
+  database: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event: NOT_EXECUTED
+  api: NOT_EXECUTED
+  approval: NOT_EXECUTED
+  generation: NOT_EXECUTED
+  external: NOT_EXECUTED
+  action_counts:
+    create_packet: 0
+    create_version: 0
+    transition: 0
+    map_status: 0
+    review: 0
+    authorize: 0
+    approve: 0
+    bind_artifact: 0
+    enqueue_job: 0
+    emit_event: 0
+    repository_write: 0
+    database_write: 0
+    generate: 0
+    external: 0
+verification_boundary:
+  predecessor_connection: NOT_EXECUTED
+  TST-012: NOT_EXECUTED
+  TST-020: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
