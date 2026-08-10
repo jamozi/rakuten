@@ -1733,3 +1733,63 @@ original result.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-persistent local ST-0501
   portfolio-workflow seam.
+
+### 2026-08-10 W2 / ST-0502 recorded Rakuten item-search checkpoint
+
+- Authority and scope: canonical `ST-0502` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0202 and ST-0308, has no
+  Story-local Open Decision, and requires TST-014/TST-015. Effective status
+  remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint does not call Rakuten,
+  archive an object, persist ingestion state, crawl pagination, or claim a
+  live adapter, runtime retry, or durable raw-response evidence.
+- Implemented strict immutable ITEM_SEARCH requests with canonical JSON and
+  SHA-256 binding, bounded hidden raw JSON bytes, non-storage validation
+  receipts, canonical pages/items, exact failure classes, rate metadata, and a
+  one-page recorded ingestion result. Only `TRANSIENT` is classified
+  retryable; the application itself never retries, sleeps, follows a page,
+  checks live health, or returns a partial/stale success.
+- The inward provider and raw-response-recorder ports expose one exact
+  recorded exchange and validation receipt only. The application validates
+  request/raw/provider/API/hash/receipt/page bindings in order and explicitly
+  returns `RECORDED_TEST_ONLY`, storage/persistence `NOT_EXECUTED`, and
+  `live_eligible=false`. Malformed and exceptional collaborators fail without
+  retry, echo, cause, retained context, or fallback.
+- The recorded adapter consumes immutable exact synthetic fixtures and never
+  reads environment/credentials, calls HTTP/provider SDKs, writes filesystem/
+  object storage, creates a repository/UoW/database record, rewrites affiliate
+  URLs, ranks by affiliate rate, or interprets hostile provider text. OD-001,
+  OD-006, OD-014, and OD-015 remain unresolved and no live category, product-
+  identity, retention, deletion, credential, or provider choice is inferred.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st0502` (`68 passed`), ST-0202 regression (`156 passed`),
+  ST-0308 owner check and regression (`134 passed`), Ruff lint/format, strict
+  mypy, compile/import, exact nine-path review, focused maintained secret scan,
+  canonical import, workspace drift, and `git diff --check` returned `PASS`.
+  The linked-worktree full scanner limitation remains inherited
+  `DEBT-W0-003`.
+- `DEBT-W2-013` status: `OPEN`, introduced-by `ST-0502`, closure owner:
+  Rakuten provider/normalization, ST-0202 storage, ST-0308 persistence, job/
+  retry/pagination, and final Wave integration owners. Exact skipped command:
+  `NOT_RUN — no source-bound live Rakuten wire mapping, durable raw-object
+  write/version/metadata round-trip, registry/UoW state, job lease/backoff/
+  circuit/rate thresholds, multi-page orchestration, or worker/API wiring
+  exists`; observed result: `NOT_EXECUTED`. The in-memory validation receipt
+  does not mean a raw response was archived.
+- `DEBT-W2-014` status: `OPEN`, observed-during `ST-0502`, introduced-by prior
+  moving sources, closure owner: ST-0202 and W2 provenance-freeze owners. Exact
+  failing command: `uv run --locked --offline --no-cache --no-sync --no-env-
+  file python scripts/build_local_compose.py --check`; observed result:
+  `error: generated artifact drift: changes/st-0202/manifest.yaml`. ST-0502 did
+  not edit or regenerate the owner artifact; focused ST-0202 behavior remains
+  green and closure stays with its generator after source freeze.
+- `DEBT-W2-015` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0502`, closure
+  owner: provider/credential, Security/Storage reviewers, formal CI,
+  runtime/Staging, release, and Production owners. Exact skipped command:
+  `NOT_RUN — formal TST-014/TST-015, live Rakuten/provider validation,
+  credentials, real object storage, hosted CI, Staging, release, and Production
+  are outside local authority`; observed result: `NOT_EXECUTED`. OD-015 blocks
+  live credentials/provider validation and recorded fixtures are not promoted
+  to formal evidence.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe recorded one-page ST-0502 seam.
