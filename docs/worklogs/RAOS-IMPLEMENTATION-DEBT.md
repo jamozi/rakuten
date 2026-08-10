@@ -1906,3 +1906,67 @@ original result.
   to formal editorial or operational readiness.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-persistent local ST-0802 seam.
+
+### 2026-08-10 W2 / ST-1201 disabled recorded event-collector checkpoint
+
+- Authority and scope: canonical `ST-1201` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0305 and ST-0404, and is blocked
+  by unresolved OD-012. Required TST-012/TST-030/TST-031 and effective status
+  remain `NOT_EXECUTED` and `NOT_STARTED`. This checkpoint does not enable
+  tracking, expose an HTTP endpoint, persist an event, approve consent/privacy,
+  or claim measurement, dedupe durability, browser, or production evidence.
+- Implemented the exact ordered twenty-event catalog projection, closed source/
+  consent/privacy vocabularies, strict immutable event envelopes and canonical
+  payload SHA-256, exact prohibited-parameter and PII rejection, and only two
+  modes: default `DISABLED_OD_012` and explicit `RECORDED_TEST_ONLY`. Disabled
+  mode has an empty allowlist and returns before any event-store call; recorded
+  mode permits only synthetic fixtures for the eleven MVP `public_web` events
+  and only `GRANTED` consent can reach the port.
+- The application applies the committed caller-supplied ST-0404 HTTP guard
+  first, requires synthetic anonymous POST/JSON metadata, rejects credential
+  modes, validates catalog/source/parameters/privacy/consent, and calls the
+  ordered recorded exchange once. Results remain tracking `DISABLED`,
+  persistence/formal tests `NOT_EXECUTED`, consent authority
+  `UNRESOLVED_OD_012`, measurement false, and decision `NOT_READY`.
+- The adapter matches event ID plus digest and may return only recorded accepted
+  or duplicate fixtures. Conflicts, reorder, exhaustion, extra calls, and
+  outcome drift fail closed. It stores no body and has no query/repository/
+  database/filesystem/network/browser/cookie/environment/retention surface.
+  `RECORDED_ACCEPTED` is explicitly not stored, committed, or persisted.
+- The incompatible canonical 20-event, frozen PUB-004 AffiliateClickInput, and
+  ST-0305 physical event vocabularies are not heuristically translated. No
+  owned function maps PUB-004 to EVT-004 or canonical events to ST-0305 rows.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st1201` (`67 passed`), ST-0404 regression (`27 passed`),
+  focused ST-0305 observation (`3 passed`, one generated-output drift), Ruff
+  lint/format, strict mypy, compile/import, exact nine-path review, focused
+  secret scan, canonical import, workspace drift, and `git diff --check`
+  returned `PASS` for the owned slice. The linked-worktree scanner remains
+  inherited `DEBT-W0-003`.
+- `DEBT-W2-021` status: `OPEN`, introduced-by `ST-1201`, closure owner:
+  Analytics/API/privacy, ST-0305 persistence, PUB-004 instrumentation, and final
+  Wave integration owners. Exact skipped command: `NOT_RUN — no approved PUB-
+  004-to-EVT-004 or canonical-event-to-ST-0305 mapping, durable repository/UoW/
+  uniqueness/append-only write, retention enforcement, pseudonym lifecycle,
+  timestamp thresholds, reference validation, rate/bot policy, public HTTP
+  route, beacon/navigation behavior, or RFC 9457 mapping exists`; observed
+  result: `NOT_EXECUTED`. Recorded fixtures cannot establish event-store or
+  analytics measurement acceptance.
+- `DEBT-W2-022` status: `OPEN`, observed-during `ST-1201`, introduced-by prior
+  moving sources, closure owner: ST-0305/ST-0306 and W2 provenance-freeze
+  owners. Exact failing owner command: `python scripts/
+  build_st0305_publication_analytics_finance.py --check`; observed result:
+  `ST-0306 generation failed: generated artifact drift: changes/st-0306/
+  manifest.yaml`; focused ST-0305 result: `3 passed, 1 generated-output
+  inventory drift`. No predecessor artifact was edited or regenerated.
+- `DEBT-W2-023` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1201`, closure
+  owner: Product/Privacy/Legal/Security, formal CI, browser/runtime/Staging,
+  release, and Production owners. Exact skipped command: `NOT_RUN — OD-012
+  consent/cookie/privacy decisions, formal TST-012/TST-030/TST-031, browser and
+  database runtime, privacy/retention review, hosted CI, Staging, release, and
+  Production are outside local authority`; observed result: `NOT_EXECUTED`.
+  Recorded acceptance is not tracking activation, consent approval, or formal
+  evidence.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe disabled recorded ST-1201 seam.
