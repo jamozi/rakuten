@@ -65,3 +65,22 @@ export type {
   DialogState,
   DialogTransition,
 } from './dialog.ts';
+
+export {
+  EVIDENCE_WORKSPACE_MODEL_ERROR_CODES,
+  EVIDENCE_WORKSPACE_SCREEN_IDS,
+  EVIDENCE_WORKSPACE_SCREENS,
+  EVIDENCE_WORKSPACE_SOURCE_BINDINGS,
+  EvidenceWorkspaceModelError,
+  createEvidenceWorkspaceModel,
+} from './evidence-workspace.ts';
+export type {
+  EvidenceWorkspaceInput,
+  EvidenceWorkspaceModel,
+  EvidenceWorkspaceModelErrorCode,
+  EvidenceWorkspaceRole,
+  EvidenceWorkspaceScreenId,
+  EvidenceWorkspaceScreenMetadata,
+  EvidenceWorkspaceSourceArtifact,
+  EvidenceWorkspaceSourceBinding,
+} from './evidence-workspace.ts';
