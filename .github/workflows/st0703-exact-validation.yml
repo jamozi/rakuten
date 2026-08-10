@@ -89,8 +89,10 @@ jobs:
             UV="$(command -v uv)"
           test -z "$(git status --porcelain=v1 --untracked-files=no)"
       - name: Diagnose repository-wide static baseline without masking new failures
+        id: static_baseline
         run: |
           set -euo pipefail
+          uv_path="$(command -v uv)"
           node_path="$(command -v node)"
           node_prefix="$(dirname "$(dirname "$node_path")")"
           npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
@@ -98,7 +100,7 @@ jobs:
           set +e
           scripts/run_network_denied.sh --home "$HOME" -- \
             "$GITHUB_WORKSPACE/scripts/ci_job.sh" \
-            --uv "$(command -v uv)" \
+            --uv "$uv_path" \
             --node "$node_path" \
             --npm-cli "$npm_cli" \
             static 2>&1 | tee "$clean_log"
@@ -115,7 +117,9 @@ jobs:
           baseline_log="$RUNNER_TEMP/static-main-baseline.log"
           set +e
           "$GITHUB_WORKSPACE/scripts/run_network_denied.sh" --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/.venv/bin/python" \
+            "$uv_path" --config-file "$GITHUB_WORKSPACE/uv.toml" \
+            run --locked --offline --no-cache --no-sync --no-env-file \
+            --no-python-downloads python \
             "$baseline/scripts/build_local_compose.py" --check \
             2>&1 | tee "$baseline_log"
           baseline_status=${PIPESTATUS[0]}
@@ -125,6 +129,7 @@ jobs:
           echo "The clean branch and fixed main baseline stop on the same excluded ST-0202 owner-output drift."
       - name: Reproduce repository-wide unit job without network
         id: full_unit
+        if: always()
         continue-on-error: true
         run: |
           set -euo pipefail
@@ -139,6 +144,7 @@ jobs:
             unit
       - name: Reproduce repository-wide contracts job without network
         id: full_contracts
+        if: always()
         continue-on-error: true
         run: |
           set -euo pipefail
@@ -153,10 +159,12 @@ jobs:
             contracts
       - name: Scan worktree and Git history without network
         id: secret_scan
+        if: always()
         continue-on-error: true
         run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree --git-history
       - name: Prove tracked worktree remained unchanged
         id: clean_tree
+        if: always()
         continue-on-error: true
         run: |
           git diff --exit-code -- .
@@ -165,11 +173,13 @@ jobs:
         if: always()
         run: |
           set -euo pipefail
-          printf 'unit=%s contracts=%s secrets=%s clean_tree=%s\n' \
+          printf 'static=%s unit=%s contracts=%s secrets=%s clean_tree=%s\n' \
+            '${{ steps.static_baseline.outcome }}' \
             '${{ steps.full_unit.outcome }}' \
             '${{ steps.full_contracts.outcome }}' \
             '${{ steps.secret_scan.outcome }}' \
             '${{ steps.clean_tree.outcome }}'
+          test '${{ steps.static_baseline.outcome }}' = success
           test '${{ steps.full_unit.outcome }}' = success
           test '${{ steps.full_contracts.outcome }}' = success
           test '${{ steps.secret_scan.outcome }}' = success
