@@ -2647,3 +2647,58 @@ original result.
   evidence, or release readiness.
 - Inherited W0/W1/W2 debt remains unchanged and unclosed. This checkpoint
   claims only the maximum-safe disabled headless ST-0606 model.
+
+### 2026-08-10 W2 / ST-0506 disabled portfolio/catalog workspace checkpoint
+
+- Authority and scope: canonical `ST-0506` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0501/ST-0504/ST-1101, and
+  requires browser TST-022 plus automated accessibility TST-023. Effective
+  status remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint implements a
+  disabled, headless, deeply frozen JSON PORT/CAT workspace model; it does not
+  register routes, render a UI, load data, authorize commands, perform CRUD,
+  execute identity review, or attest browser/accessibility/concurrency.
+- Exact ordered PORT-001 through PORT-006 and CAT-001 through CAT-006 screen
+  metadata is projected from canonical sources. Screen roles remain display
+  metadata only. Every route stays unregistered under the ST-1101 guard;
+  navigation/rendering/authorization remain false and backend reauthorization
+  remains mandatory. The shared package index was intentionally unchanged to
+  avoid cross-Story ownership.
+- Input accepts only exact `screenId`; returned models are detached, deeply
+  frozen, and JSON-serializable. Data remains `NOT_LOADED`, items empty, count
+  null, actions empty, and component/API bindings unavailable. Concurrency
+  ETag/If-Match/lock version remain null and `NOT_EVALUATED`, never a PASS.
+- OD-006 remains `EXTERNAL_EVIDENCE_REQUIRED`; automatic merge/split stay
+  disabled and ambiguity requires Human Review. CAT-003 remains actionless
+  despite being critical. Finance inputs remain hidden. Keyboard requirement is
+  true while browser and automated accessibility evidence remain
+  `NOT_EXECUTED`; decision remains `NOT_READY`.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, Node `24.18.1`. Focused Node tests
+  (`16/16`), ST-0501 (`48/48`), ST-0504 owner check/regression (`164/164`),
+  ST-1101 (`31/31`) regressions, strict package and standalone TypeScript,
+  Prettier, ESLint, direct-module import/model smoke, exact six-path review,
+  focused secret scan, canonical import, workspace drift, and `git diff
+  --check` returned `PASS`. Only the inherited non-failing
+  `MODULE_TYPELESS_PACKAGE_JSON` warning occurred; package configuration was
+  not modified. The linked-worktree scanner remains inherited `DEBT-W0-003`.
+- `DEBT-W2-048` status: `OPEN`, introduced-by `ST-0506`, closure owner:
+  Portfolio/Catalog/Web/UI, ST-0401/ST-1101 auth transport, ST-0501 real
+  backend, ST-0504 product identity, route/component/API/concurrency owners,
+  and final Wave integration. Exact skipped command: `NOT_RUN — PORT/CAT route
+  registration, OIDC/MFA/step-up/backend authorization, screen-to-component
+  and API bindings, real portfolio/catalog/ingestion/artifact data, filters/
+  pagination/forms/commands, ETag/If-Match conflict handling, Human identity
+  review/decision persistence, and CRUD are absent`; observed result:
+  `NOT_EXECUTED`. The headless model cannot satisfy screen, authorization, or
+  concurrency acceptance.
+- `DEBT-W2-049` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0506`, closure
+  owner: Product/Catalog/Web/UI/Security/Accessibility/QA, formal CI, browser/
+  assistive-technology, Staging, release, and Production owners. Exact skipped
+  command: `NOT_RUN — React/DOM/browser implementation, keyboard/automated
+  accessibility, real concurrent-resource workflow, formal TST-022/TST-023,
+  hosted CI, Staging, release, and Production are outside local authority`;
+  observed result: `NOT_EXECUTED`. Node metadata tests are not promoted to
+  browser behavior, accessibility conformance, concurrency evidence, or release
+  readiness.
+- Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe disabled headless ST-0506 model.
