@@ -42,16 +42,14 @@ jobs:
         run: |
           set -euo pipefail
           shopt -s nullglob
-          chunks=(
-            overlay-transport/.github/all-stories-overlay/part-*
-            overlay-transport/.github/all-stories-overlay/rest-*
-          )
-          ((${#chunks[@]} > 0))
+          parts=(overlay-transport/.github/all-stories-overlay/part-*)
+          rest=(overlay-transport/.github/all-stories-overlay/rest-*)
+          ((${#parts[@]} > 0))
           archive="$RUNNER_TEMP/all-stories-overlay.tar.gz"
-          : >"$archive"
-          for chunk in "${chunks[@]}"; do
-            tr -d '\r\n\t ' <"$chunk" | base64 --decode >>"$archive"
-          done
+          cat "${parts[@]}" | tr -d '\r\n\t ' | base64 --decode >"$archive"
+          if ((${#rest[@]} > 0)); then
+            cat "${rest[@]}" | tr -d '\r\n\t ' | base64 --decode >>"$archive"
+          fi
           gzip --test "$archive"
           overlay_sha="$(sha256sum "$archive" | cut -d' ' -f1)"
           extract="$RUNNER_TEMP/all-stories-overlay"
