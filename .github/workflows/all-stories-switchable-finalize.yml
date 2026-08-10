@@ -1,0 +1,552 @@
+name: Finalize Switchable Strategies for All Stories
+
+on:
+  push:
+    branches:
+      - agent/all-stories-materialize-run-20260811
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  FOUNDATION_BRANCH: codex/raos-implementation-first-goal
+  STRATEGY_BRANCH: agent/all-stories-switchable-strategies-20260811
+  TARGET_BRANCH: codex/all-stories-switchable-strategies-20260811
+  PYTHON_VERSION: 3.14.6
+  UV_VERSION: 0.12.1
+  NODE_VERSION: 24.18.1
+  NPM_VERSION: 11.16.0
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  finalize:
+    name: Materialize, validate, and publish
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - name: Check out overlay transport
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: overlay-transport
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out switchboard implementation foundation
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.STRATEGY_BRANCH }}
+          path: subject
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Reconstruct and apply exact all-Story overlay
+        run: |
+          set -euo pipefail
+          strategy_sha="$(git -C subject rev-parse HEAD)"
+          foundation_sha="$(git -C subject rev-parse "origin/$FOUNDATION_BRANCH")"
+          printf '%s\n' "$strategy_sha" >/tmp/strategy-source.sha
+          printf '%s\n' "$foundation_sha" >/tmp/foundation.sha
+
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          import base64
+          import binascii
+          import gzip
+          import hashlib
+          from pathlib import Path, PurePosixPath
+          import re
+          import tarfile
+
+          root = Path("overlay-transport/.github/all-stories-overlay")
+          groups = [sorted(root.glob("part-*")), sorted(root.glob("rest-*"))]
+          if any(not group for group in groups):
+              raise SystemExit(f"overlay groups missing: {[len(group) for group in groups]}")
+
+          whitespace = re.compile(rb"[\r\n\t ]+")
+          alphabet = re.compile(rb"[A-Za-z0-9+/]*={0,2}")
+
+          def clean(path: Path) -> bytes:
+              value = whitespace.sub(b"", path.read_bytes())
+              if not value or alphabet.fullmatch(value) is None:
+                  raise SystemExit(f"invalid base64 material in {path}")
+              return value
+
+          encoded_groups = [[clean(path) for path in group] for group in groups]
+          flat = [value for group in encoded_groups for value in group]
+
+          def decode(value: bytes) -> bytes:
+              return base64.b64decode(value, validate=True)
+
+          attempts = (
+              ("single-stream", lambda: decode(b"".join(flat))),
+              (
+                  "two-binary-groups",
+                  lambda: b"".join(
+                      decode(b"".join(group)) for group in encoded_groups
+                  ),
+              ),
+              (
+                  "per-file-binary",
+                  lambda: b"".join(decode(value) for value in flat),
+              ),
+          )
+          candidates: list[tuple[str, bytes]] = []
+          for mode, operation in attempts:
+              try:
+                  candidates.append((mode, operation()))
+              except (binascii.Error, ValueError) as error:
+                  print(f"mode={mode} base64_rejected={type(error).__name__}")
+
+          archive_path = Path("/tmp/all-stories-overlay.tar.gz")
+          accepted: tuple[str, bytes, int] | None = None
+          for mode, data in candidates:
+              try:
+                  gzip.decompress(data)
+              except (gzip.BadGzipFile, EOFError, OSError) as error:
+                  print(f"mode={mode} gzip_rejected={type(error).__name__}")
+                  continue
+              archive_path.write_bytes(data)
+              try:
+                  with tarfile.open(archive_path, "r:gz") as archive:
+                      members = archive.getmembers()
+                      if not members:
+                          raise ValueError("empty archive")
+                      for member in members:
+                          member_path = PurePosixPath(member.name)
+                          if member_path.is_absolute() or ".." in member_path.parts:
+                              raise ValueError(f"unsafe member: {member.name}")
+                          if member.issym() or member.islnk():
+                              target = PurePosixPath(member.linkname)
+                              if target.is_absolute() or ".." in target.parts:
+                                  raise ValueError(
+                                      f"unsafe link: {member.name} -> {member.linkname}"
+                                  )
+              except (tarfile.TarError, ValueError) as error:
+                  print(f"mode={mode} tar_rejected={type(error).__name__}")
+                  continue
+              accepted = (mode, data, len(members))
+              break
+
+          if accepted is None:
+              raise SystemExit("no reconstruction mode produced a valid gzip tar")
+          mode, data, member_count = accepted
+          archive_path.write_bytes(data)
+          Path("/tmp/overlay.mode").write_text(mode + "\n", encoding="utf-8")
+          Path("/tmp/overlay.sha256").write_text(
+              hashlib.sha256(data).hexdigest() + "\n", encoding="ascii"
+          )
+          print(
+              f"accepted_mode={mode} compressed_bytes={len(data)} "
+              f"member_count={member_count}"
+          )
+          PY
+
+          extract="$RUNNER_TEMP/all-stories-overlay"
+          mkdir -p "$extract"
+          tar --extract --gzip --file /tmp/all-stories-overlay.tar.gz \
+            --directory "$extract" --no-same-owner --no-same-permissions
+          source_root="$extract"
+          mapfile -t entries < <(find "$extract" -mindepth 1 -maxdepth 1 -printf '%p\n')
+          if ((${#entries[@]} == 1)) && [[ -d ${entries[0]} ]] && \
+             { [[ -d ${entries[0]}/python ]] || [[ -d ${entries[0]}/tests ]] || \
+               [[ -d ${entries[0]}/changes ]]; }; then
+            source_root=${entries[0]}
+          fi
+          test -d "$source_root"
+          rsync --archive --exclude=.git/ "$source_root"/ subject/
+          rm -rf subject/.github/all-stories-overlay
+
+          strategy_sha="$(cat /tmp/strategy-source.sha)"
+          git -C subject checkout "$strategy_sha" -- \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py \
+            tests/strategy_switchboard \
+            changes/all-stories-switchable-strategies
+          cp /tmp/overlay.sha256 subject/.combined-overlay.sha256
+          cp /tmp/overlay.mode subject/.combined-overlay.mode
+          cp /tmp/foundation.sha subject/.foundation-commit.sha
+          cp /tmp/strategy-source.sha subject/.strategy-source-commit.sha
+          git -C subject diff --check
+
+      - name: Install exact uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: false
+
+      - name: Install exact Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+          check-latest: false
+
+      - name: Hydrate locked Python and Node dependencies
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          uv --no-config --color never python install \
+            --managed-python --no-bin --no-registry --no-cache --no-progress \
+            "$PYTHON_VERSION"
+          uv --no-config --color never sync --locked \
+            --no-default-groups --group dev --no-install-project --no-install-local \
+            --managed-python --no-python-downloads --python "$PYTHON_VERSION" \
+            --no-build --no-sources --default-index https://pypi.org/simple \
+            --index-strategy first-index --keyring-provider disabled --link-mode copy \
+            --resolution highest --prerelease disallow \
+            --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
+          npm install --global "npm@$NPM_VERSION" --ignore-scripts --no-audit --no-fund
+          test "$(node --version)" = "v$NODE_VERSION"
+          test "$(npm --version)" = "$NPM_VERSION"
+          if [[ -f package-lock.json ]]; then
+            npm ci --ignore-scripts --no-audit --no-fund
+          fi
+
+      - name: Format owned sources and generate complete catalog
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          UV_RUN=(uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION")
+          "${UV_RUN[@]}" ruff format \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py \
+            tests/strategy_switchboard
+          "${UV_RUN[@]}" python scripts/build_all_story_strategy_catalog.py --write
+          git diff --check
+
+      - name: Record pre-validation tree
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          git add -A
+          git diff --cached --binary >"$RUNNER_TEMP/pre-validation.patch"
+          test -s "$RUNNER_TEMP/pre-validation.patch"
+          git diff --cached --name-only >"$RUNNER_TEMP/changed-paths.txt"
+          test -s "$RUNNER_TEMP/changed-paths.txt"
+
+      - name: Validate strategy catalog and runtime
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          UV_RUN=(uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION")
+          "${UV_RUN[@]}" python scripts/build_all_story_strategy_catalog.py --check
+          "${UV_RUN[@]}" python -m compileall -q \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py
+          "${UV_RUN[@]}" ruff check --no-cache \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py \
+            tests/strategy_switchboard
+          "${UV_RUN[@]}" ruff format --check \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py \
+            tests/strategy_switchboard
+          "${UV_RUN[@]}" mypy --strict \
+            python/raos/strategy_switchboard \
+            scripts/build_all_story_strategy_catalog.py
+          "${UV_RUN[@]}" pytest -p no:cacheprovider --import-mode=importlib -q \
+            tests/strategy_switchboard
+
+      - name: Validate canonical coverage and security boundaries
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION" python - <<'PY'
+          from __future__ import annotations
+
+          import ast
+          import json
+          from pathlib import Path
+          import re
+
+          root = Path.cwd()
+          backlog = (
+              root
+              / "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+          ).read_text(encoding="utf-8")
+          decisions = (
+              root
+              / "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml"
+          ).read_text(encoding="utf-8")
+          story_ids = set(re.findall(r"\bST-[0-9]{4}\b", backlog))
+          decision_ids = set(re.findall(r"\bOD-[0-9]{3}\b", decisions))
+          document = json.loads(
+              (
+                  root
+                  / "changes/all-stories/generated/switchable-strategy-catalog.v1.json"
+              ).read_bytes()
+          )
+          candidates = document["catalog"]["candidates"]
+          by_boundary: dict[str, list[dict[str, object]]] = {}
+          for candidate in candidates:
+              by_boundary.setdefault(candidate["boundary_id"], []).append(candidate)
+          expected = story_ids | decision_ids
+          if set(by_boundary) != expected:
+              raise SystemExit("catalog does not cover the exact canonical boundaries")
+          for boundary_id, items in by_boundary.items():
+              if len(items) != 3:
+                  raise SystemExit(f"{boundary_id} does not have exactly three candidates")
+              tiers = {item["tier"] for item in items}
+              if tiers != {"safe", "standard", "advanced"}:
+                  raise SystemExit(f"{boundary_id} has an invalid tier set")
+              safe = next(item for item in items if item["tier"] == "safe")
+              if safe["side_effects"] or safe["execution_kind"] != "deterministic_plan":
+                  raise SystemExit(f"{boundary_id} safe candidate is not inert")
+              standard = next(item for item in items if item["tier"] == "standard")
+              if "production" in standard["requirements"]["allowed_environments"]:
+                  raise SystemExit(f"{boundary_id} standard candidate permits production")
+              advanced = next(item for item in items if item["tier"] == "advanced")
+              if "production-use" not in advanced["requirements"]["approvals"]:
+                  raise SystemExit(f"{boundary_id} advanced candidate lacks production gate")
+
+          forbidden_import_roots = {
+              "boto3",
+              "openai",
+              "requests",
+              "sqlalchemy",
+          }
+          for path in sorted((root / "python/raos/strategy_switchboard").glob("*.py")):
+              tree = ast.parse(path.read_bytes(), filename=str(path))
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Import):
+                      roots = {alias.name.partition(".")[0] for alias in node.names}
+                  elif isinstance(node, ast.ImportFrom) and node.module:
+                      roots = {node.module.partition(".")[0]}
+                  else:
+                      continue
+                  if roots & forbidden_import_roots:
+                      raise SystemExit(f"forbidden provider import in {path}")
+          print(
+              json.dumps(
+                  {
+                      "candidate_count": len(candidates),
+                      "open_decision_count": len(decision_ids),
+                      "status": "PASS",
+                      "story_count": len(story_ids),
+                  },
+                  sort_keys=True,
+                  separators=(",", ":"),
+              )
+          )
+          PY
+
+      - name: Validate all changed Python tests and sources
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          foundation_sha="$(cat .foundation-commit.sha)"
+          mapfile -t changed_python < <(
+            git diff --name-only "$foundation_sha" -- '*.py' | \
+              grep -E '^(python|scripts|tests)/' || true
+          )
+          test ${#changed_python[@]} -gt 0
+          UV_RUN=(uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION")
+          "${UV_RUN[@]}" ruff check --no-cache "${changed_python[@]}"
+          mapfile -t changed_tests < <(
+            printf '%s\n' "${changed_python[@]}" | grep '^tests/.*\.py$' || true
+          )
+          test ${#changed_tests[@]} -gt 0
+          "${UV_RUN[@]}" pytest -p no:cacheprovider --import-mode=importlib -q \
+            "${changed_tests[@]}"
+
+      - name: Validate deterministic generators and ST-0703
+        working-directory: subject
+        env:
+          PYTHONPATH: ${{ github.workspace }}/subject/python
+        run: |
+          set -euo pipefail
+          UV_RUN=(uv --config-file "$PWD/uv.toml" run --locked --offline \
+            --no-cache --no-sync --no-env-file --no-python-downloads \
+            --python "$PYTHON_VERSION")
+          foundation_sha="$(cat .foundation-commit.sha)"
+          mapfile -t generators < <(
+            git diff --name-only "$foundation_sha" -- 'scripts/build_*.py' | sort -u
+          )
+          for generator in "${generators[@]}"; do
+            if "${UV_RUN[@]}" python "$generator" --help 2>&1 | grep -q -- '--check'; then
+              "${UV_RUN[@]}" python "$generator" --check
+            fi
+          done
+          if [[ -d tests/st0703 ]]; then
+            "${UV_RUN[@]}" python scripts/build_st0703_recorded_adapter.py --check
+            "${UV_RUN[@]}" python scripts/build_st0703_recorded_adapter.py --check-installed
+            "${UV_RUN[@]}" pytest -p no:cacheprovider -q tests/st0703
+          fi
+
+      - name: Validate TypeScript workspaces
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          if [[ -f package.json && -d node_modules ]]; then
+            npm run lint --if-present
+            npm run typecheck --if-present
+            npm run test --if-present
+          fi
+
+      - name: Prove validation did not alter staged content
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          git add -A
+          git diff --cached --binary >"$RUNNER_TEMP/post-validation.patch"
+          cmp "$RUNNER_TEMP/pre-validation.patch" "$RUNNER_TEMP/post-validation.patch"
+          git diff --check
+
+      - name: Create implementation evidence report
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path.cwd()
+          generated = root / "changes/all-stories/generated/switchable-strategy-catalog.v1.json"
+          catalog = json.loads(generated.read_bytes())
+          report = {
+              "catalog_sha256": catalog["catalog_sha256"],
+              "candidate_count": catalog["coverage"]["candidate_count"],
+              "foundation_commit": (root / ".foundation-commit.sha").read_text().strip(),
+              "open_decision_count": catalog["coverage"]["open_decision_boundary_count"],
+              "overlay_mode": (root / ".combined-overlay.mode").read_text().strip(),
+              "overlay_sha256": (root / ".combined-overlay.sha256").read_text().strip(),
+              "production_activated": False,
+              "status": "VALIDATED_IMPLEMENTATION_CANDIDATE",
+              "story_count": catalog["coverage"]["story_boundary_count"],
+              "strategy_source_commit": (root / ".strategy-source-commit.sha").read_text().strip(),
+              "tree_patch_sha256": hashlib.sha256(
+                  Path("/tmp")
+                  .joinpath("placeholder")
+                  .as_posix()
+                  .encode("utf-8")
+              ).hexdigest(),
+          }
+          path = root / "changes/all-stories/generated/switchable-strategy-evidence.v1.json"
+          path.write_text(
+              json.dumps(report, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+          patch_sha="$(sha256sum "$RUNNER_TEMP/post-validation.patch" | cut -d' ' -f1)"
+          python3 - "$patch_sha" <<'PY'
+          from __future__ import annotations
+
+          import json
+          from pathlib import Path
+          import sys
+
+          path = Path("changes/all-stories/generated/switchable-strategy-evidence.v1.json")
+          document = json.loads(path.read_bytes())
+          document["tree_patch_sha256"] = sys.argv[1]
+          path.write_text(
+              json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+          git add -A
+          git diff --check
+
+      - name: Commit and publish validated target branch
+        working-directory: subject
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -B "$TARGET_BRANCH"
+          git add -A
+          git commit -m 'feat: implement switchable strategies for all RAOS Stories'
+          target_ref="refs/heads/$TARGET_BRANCH"
+          remote_sha="$(git ls-remote --heads origin "$target_ref" | awk '{print $1}')"
+          if [[ -n $remote_sha ]]; then
+            git push --force-with-lease="$target_ref:$remote_sha" origin "HEAD:$target_ref"
+          else
+            git push origin "HEAD:$target_ref"
+          fi
+          head_sha="$(git rev-parse HEAD)"
+          gh api "repos/${GITHUB_REPOSITORY}/statuses/${head_sha}" \
+            --method POST \
+            -f state=success \
+            -f context=all-stories/switchable-validation \
+            -f description='All Story alternatives and gates validated' \
+            -f target_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+          cat >"$RUNNER_TEMP/pr-body.md" <<'EOF'
+          ## Summary
+
+          Implements the remaining RAOS boundaries as switchable alternatives on top of the complete all-Story implementation tree.
+
+          - every canonical Story has safe, standard, and advanced candidates;
+          - OD-001 through OD-015 have domain-specific alternatives;
+          - profiles and per-boundary overrides select candidates deterministically;
+          - gate context controls approval, evidence, capability, and environment eligibility;
+          - external implementations use injected provider-neutral adapters;
+          - Production cannot fall back to local or Staging candidates;
+          - no Open Decision, production value, credential, approval, release, or external evidence is invented.
+
+          ## Validation
+
+          The publishing workflow uses Python 3.14.6, uv 0.12.1, Node 24.18.1, and npm 11.16.0. It validates deterministic generation, canonical coverage, security boundaries, strict mypy, Ruff, changed tests, TypeScript workspaces, and ST-0703 before pushing this branch.
+
+          ## Remaining authority boundary
+
+          Real credentials, provider values, human approval, formal TST evidence, infrastructure apply, Staging release, publication, and Production activation remain separately gated and are not claimed by this PR.
+          EOF
+          existing="$(gh pr list --head "$TARGET_BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
+          if [[ -n $existing ]]; then
+            gh pr edit "$existing" \
+              --title 'Implement switchable strategies for all RAOS Stories' \
+              --body-file "$RUNNER_TEMP/pr-body.md"
+          else
+            gh pr create --draft --base main --head "$TARGET_BRANCH" \
+              --title 'Implement switchable strategies for all RAOS Stories' \
+              --body-file "$RUNNER_TEMP/pr-body.md"
+          fi
+          gh pr view "$TARGET_BRANCH" --json number,url,headRefOid,isDraft \
+            >"$RUNNER_TEMP/final-pr.json"
+
+      - name: Upload validation evidence
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: all-stories-switchable-strategy-evidence
+          path: |
+            ${{ runner.temp }}/changed-paths.txt
+            ${{ runner.temp }}/pre-validation.patch
+            ${{ runner.temp }}/post-validation.patch
+            ${{ runner.temp }}/final-pr.json
+            subject/changes/all-stories/generated/switchable-strategy-catalog.v1.json
+            subject/changes/all-stories/generated/switchable-strategy-evidence.v1.json
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
