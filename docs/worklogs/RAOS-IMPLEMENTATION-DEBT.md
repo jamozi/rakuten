@@ -2368,3 +2368,61 @@ original result.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-executable ST-0505 live-smoke
   boundary.
+
+### 2026-08-10 W2 / ST-0602 fact-extraction validation reference-plan checkpoint
+
+- Authority and scope: canonical `ST-0602` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0601/ST-0503, has no direct Open
+  Decision, and requires TST-005/TST-007. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint creates a source-derived,
+  non-executable fact-extraction validation plan; it does not fabricate a Fact,
+  source snapshot, artifact identity, subject, predicate, unit, confidence, or
+  locator and does not run extraction or persistence.
+- The contract binds committed ST-0601 and ST-0503 bytes and semantics. ST-0601
+  supplies only synthetic recorded metadata with no ArtifactRef, storage,
+  immutability attestation, or persistence. ST-0503 supplies source-preserving
+  drafts with source snapshot/confidence absent, identity review-required,
+  repository absent, and database/job/event unexecuted. Neither predecessor is
+  promoted into a validated source or authoritative subject.
+- The canonical Fact model, extraction job/event, security controls, threats,
+  and append-only/confidential invariants are projected only as descriptive
+  context. Source snapshot, artifact, extractor, authoritative subject,
+  predicate/unit/confidence/locator policies, and manual-review count remain
+  null or unavailable; facts, Fact IDs, derivations, hints, jobs, events, and
+  findings remain empty. Empty means extraction did not run, not zero Facts or
+  zero review cases.
+- Exact blockers retain unavailable validated snapshot, artifact identity and
+  immutability attestation, authoritative subject, predicate vocabulary, unit/
+  confidence/locator policies, and persistence boundary. Repository remains
+  absent; database, job, event, artifact attestation, and formal verification
+  remain `NOT_EXECUTED`; all action counts are exact integer zero.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and post-commit no-write `--check`, isolated `tests/st0602`
+  (`160 passed`), ST-0601 regression (`51 passed`), ST-0503 regression
+  (`59 passed`), Ruff lint/format, strict mypy, compile/import, exact nine-path
+  review, focused secret scan, canonical import, workspace drift, and
+  `git diff --check` returned `PASS`. Generated JSON and manifest were written
+  only by the Story owner builder. The linked-worktree scanner remains
+  inherited `DEBT-W0-003`.
+- `DEBT-W2-040` status: `OPEN`, introduced-by `ST-0602`, closure owner:
+  Editorial/Data, ST-0601 artifact/source capture, ST-0503 catalog identity,
+  ST-0304/ST-0308 persistence, job/event, and final Wave integration owners.
+  Exact skipped command: `NOT_RUN — no validated Source Snapshot/ArtifactRef,
+  authoritative subject mapping, predicate vocabulary, unit registry,
+  confidence/calibration policy, locator schema, manual-review threshold,
+  extraction service, Fact IDs/derivations, repository/UoW/database, or
+  job/event integration exists`; observed result: `NOT_EXECUTED`. The static
+  blocked plan cannot satisfy the fact-service, validator, source, unit/time,
+  or confidence acceptance boundary.
+- `DEBT-W2-041` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0602`, closure
+  owner: Editorial/Data/Security/QA, formal CI, storage/PostgreSQL/runtime,
+  Staging, release, and Production owners. Exact skipped command: `NOT_RUN —
+  real artifact/source validation, extraction runtime, append-only database
+  verification, formal TST-005/TST-007, hosted CI, Staging, release, and
+  Production are outside local authority`; observed result: `NOT_EXECUTED`.
+  Local generation and hostile tests are not promoted to extracted Facts,
+  formal evidence, or release readiness.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable ST-0602 validation
+  boundary.
