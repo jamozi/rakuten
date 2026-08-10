@@ -1,0 +1,22 @@
+{
+  "bounded": {
+    "branch": "codex/all-stories-switchable-strategies-bounded-20260811",
+    "evidence": null,
+    "label": "bounded",
+    "pr": null,
+    "sha": null,
+    "status": "MISSING",
+    "validation_contexts": []
+  },
+  "checked_at": "2026-08-10T20:39:00.599147+00:00",
+  "full": {
+    "branch": "codex/all-stories-switchable-strategies-20260811",
+    "evidence": null,
+    "label": "full",
+    "pr": null,
+    "sha": null,
+    "status": "MISSING",
+    "validation_contexts": []
+  },
+  "repository": "jamozi/rakuten"
+}
