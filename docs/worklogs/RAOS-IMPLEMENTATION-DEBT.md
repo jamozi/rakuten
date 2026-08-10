@@ -1970,3 +1970,69 @@ original result.
   evidence.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe disabled recorded ST-1201 seam.
+
+### 2026-08-10 W2 / ST-1203 recorded Search Console runtime checkpoint
+
+- Authority and scope: canonical `ST-1203` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0305 and ST-0204, is bounded by
+  unresolved OD-015, and requires TST-030. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint adds a runtime-facing recorded
+  seam around the existing three synthetic fixtures without modifying their
+  source contract, bytes, generator, or generated manifest. It does not call
+  Google, resolve credentials, create an import run, persist observations, or
+  choose current/superseded data.
+- Implemented strict immutable/redacted Search Console request/page/row/
+  pagination/reference/comparison values for exact `baseline`, `late-revised`,
+  and `start-beyond-data` fixtures. Exact fixture length/SHA, request hashing,
+  ordered dimensions, row arity/date/query/page/country/device/numeric values,
+  source-request/time/caveat bindings, duplicate-member rejection, and
+  non-finite rejection are validated before admission.
+- The credential-free inward exchange binds one exact recorded fixture. The
+  application validates the fixed recorded profile, invokes once, and returns
+  only `RECORDED_FIXTURE_ONLY`, provider/persistence/audit/outbox/formal
+  `NOT_EXECUTED`, credentials `NOT_USED`, import run `NOT_CREATED`,
+  supersession `NOT_DEFINED`, and decision `NOT_READY`. No pagination loop,
+  retry, queue/job, clock, or transaction exists. Baseline-versus-late may show
+  `RECORDED_METRICS_DIFFER` but never selects current or superseded state; the
+  empty page proves only zero rows in that recorded response.
+- The adapter validates bytes and digest before JSON parsing, permits only the
+  scripted request once, and has no fallback/discovery/replay, filesystem/
+  path, Google SDK/OAuth/network, environment/Secret, repository/database,
+  Audit/Outbox, staging, release, or Production surface. Errors expose no raw
+  fixture, query, page, site, credential-shaped value, or rejected payload.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  The four new runtime tests (`57 passed`), Ruff lint/format, strict mypy,
+  compile/import, exact nine-path review, focused secret scan, canonical import,
+  workspace drift, and `git diff --check` returned `PASS`. Existing checkpoint
+  observations were ST-1203 `80 passed/4 provenance-drift failures`, ST-0204
+  `176 passed/2 manifest-drift failures`, and ST-0305 `3 passed/1 inventory-
+  drift failure`. The linked-worktree scanner remains inherited
+  `DEBT-W0-003`.
+- `DEBT-W2-024` status: `OPEN`, introduced-by `ST-1203`, closure owner:
+  Search Console/provider, ST-0305 persistence, import-run/job/runtime,
+  privacy/data design, and final Wave integration owners. Exact skipped
+  command: `NOT_RUN — no approved live provider profile/property authorization,
+  country alpha-3-to-physical-alpha-2 mapping, query privacy/retention/suppression/
+  hash policy, numeric storage precision, durable request provenance, import-
+  run transaction, pagination/retry/rate/deadline/cancellation, durable replay/
+  late supersession, repository/UoW/schema correction, Audit, or Outbox exists`;
+  observed result: `NOT_EXECUTED`. The recorded comparison does not satisfy
+  late-reimport persistence acceptance.
+- `DEBT-W2-025` status: `OPEN`, observed-during `ST-1203`, introduced-by prior
+  predecessor regeneration, closure owner: ST-0204/ST-0305/ST-1203 and W2
+  provenance-freeze owners. Exact failing command: `python scripts/
+  build_st1203_search_console_recorded_adapter.py --check`; observed result:
+  `ST-1203 recorded fixture generation failed: pinned source hash drift in
+  predecessors`. The installed fixture bytes remain unchanged; closure must
+  rebind and regenerate through owners in dependency order after source freeze,
+  not hand-edit pins or outputs.
+- `DEBT-W2-026` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1203`, closure
+  owner: Google/provider/credential and Privacy/Security reviewers, formal CI,
+  runtime/Staging, release, and Production owners. Exact skipped command:
+  `NOT_RUN — OD-015 live-provider evidence, OAuth/credentials, formal TST-030,
+  database/provider runtime, hosted CI, Staging, release, and Production are
+  outside local authority`; observed result: `NOT_EXECUTED`. Recorded fixture
+  validation is not promoted to live, formal, or deployment evidence.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe local recorded ST-1203 runtime seam.
