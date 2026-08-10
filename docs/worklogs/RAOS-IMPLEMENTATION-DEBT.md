@@ -2481,3 +2481,57 @@ original result.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-executable ST-0603 conflict
   boundary.
+
+### 2026-08-10 W2 / ST-0604 Source Packet lifecycle reference-plan checkpoint
+
+- Authority and scope: canonical `ST-0604` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0602/ST-0603/ST-0403, requires
+  TST-012/TST-020, and blocks generation without an approved Source Packet.
+  Effective status remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint creates
+  a source-derived, non-executable lifecycle reference plan; it does not build,
+  persist, approve, version, lock, expose, or consume a Source Packet.
+- The contract binds the exact committed inventories and semantics of ST-0602,
+  ST-0603, and ST-0403. The Fact and conflict predecessors remain empty,
+  `NOT_READY`, and non-persistent; authorization remains a deny-default local
+  recorded seam. Hash rebinding alone cannot promote semantically tampered
+  predecessor generated plans.
+- Aggregate packet types/statuses, version statuses, job packet types, Fact/
+  Product roles, and canonical denial cases are projected in separate
+  namespaces as descriptive context. No job-to-aggregate packet-type mapping,
+  transition graph, packet/version/status selection, lifecycle rule, source-
+  packet content schema, or reviewer/approval authorization is inferred.
+- Packet/version/article-plan/fact/product/artifact/hash/schema/builder/actor/
+  reviewer/time/note fields remain null or empty; unavailable domain counts
+  remain null rather than zero. Build/API/job/event/repository/database/artifact
+  and approval operations remain `NOT_EXECUTED`, approval flags remain false,
+  and generation is explicitly forbidden with exact zero action counts.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and post-commit no-write `--check`, isolated `tests/st0604`
+  (`206 passed`), ST-0602 (`160 passed`), ST-0603 (`164 passed`), ST-0403
+  (`37 passed`) regressions, Ruff lint/format, mypy, compile/import, exact nine-
+  path review, focused secret scan, canonical import, workspace drift, and
+  `git diff --check` returned `PASS`. Generated JSON and manifest were written
+  only by the Story owner builder. The linked-worktree scanner remains
+  inherited `DEBT-W0-003`.
+- `DEBT-W2-044` status: `OPEN`, introduced-by `ST-0604`, closure owner:
+  Editorial/Data/Security, ST-0602/ST-0603 real inputs, ST-0403 authorization,
+  artifact/repository/UoW/database/job/event/API, AI-generation, and final Wave
+  integration owners. Exact skipped command: `NOT_RUN — no canonical mapping
+  between job and aggregate packet types, transition/lock/concurrency policy,
+  complete Source Packet content schema, Fact/Product/conflict/freshness input,
+  artifact/hash publisher, approval role/authorization/reviewer mapping,
+  durable version repository, API/job/event contract implementation, or
+  generation gate runtime exists`; observed result: `NOT_EXECUTED`. The static
+  plan cannot satisfy packet service/API or approval/version/lock acceptance.
+- `DEBT-W2-045` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0604`, closure
+  owner: Editorial/Product/Security/QA, formal CI, runtime/PostgreSQL/object
+  storage, Staging, release, and Production owners. Exact skipped command:
+  `NOT_RUN — real Source Packet build/review/approval, generation-denial runtime
+  evidence, formal TST-012/TST-020, hosted CI, Staging, release, and Production
+  are outside local authority`; observed result: `NOT_EXECUTED`. Local
+  generation and hostile tests are not promoted to an approved packet, formal
+  evidence, generation permission, or release readiness.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable ST-0604 lifecycle
+  boundary.
