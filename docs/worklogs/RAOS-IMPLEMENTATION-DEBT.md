@@ -2815,3 +2815,57 @@ original result.
   readiness.
 - Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe recorded ST-0808 media boundary.
+
+### 2026-08-10 W2 / ST-1205 non-attesting KPI read-model checkpoint
+
+- Authority and scope: canonical `ST-1205` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-1201/ST-1203/ST-1204, and
+  requires TST-030. Effective status remains `NOT_STARTED`/`NOT_EXECUTED`.
+  This checkpoint implements only a source-derived, non-executable,
+  non-attesting KPI reference plan; it does not calculate, persist, dispatch,
+  publish, or expose a KPI result.
+- The owner generator projects the exact ordered KPI-001..KPI-030 catalog and
+  all nine canonical fields without normalizing the free-form formula text.
+  Definitions are `30/30`; calculations and verified results are `0/30`.
+  Calculation version, source mapping, watermarks, period, numeric inputs,
+  SQL, table/read-model rows, results, evidence, and approval remain null or
+  empty. Empty results mean `NOT_CALCULATED`/no evidence, never a numeric zero.
+- Exact predecessor bytes and semantics are bound independently. ST-1201
+  remains tracking-disabled and nonpersistent; ST-1203 remains top-row-only
+  with an empty recorded page that cannot establish zero traffic; ST-1204
+  returns two rows while provider `rowCount` is three, performs no pagination
+  or numeric aggregation, retains string metrics, and has undefined
+  supersession. Rebinding a tampered predecessor digest does not bypass these
+  semantic guards.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and read-only `--check`, isolated `tests/st1205`
+  (`57 passed`), ST-1201 (`67 passed`), Ruff lint/format, strict mypy,
+  compile/import, exact nine-path review, focused secret scan, canonical import,
+  workspace drift, and `git diff --check` returned `PASS`. ST-1203 reproduced
+  `137 passed / 4 failed` and ST-1204 `130 passed / 4 failed`; all eight
+  failures are their inherited owner-generator predecessor-hash drift, not an
+  ST-1205 runtime failure or owned-path change. The linked-worktree scanner
+  remains inherited `DEBT-W0-003`.
+- `DEBT-W2-054` status: `OPEN`, introduced-by `ST-1205`, closure owner:
+  Analytics/Finance/Data, ST-1201 event mapping, ST-1203/ST-1204 completeness
+  and supersession, KPI governance, repository/job/SQL/read-model, and final
+  Wave integration owners. Exact skipped/failing boundary: `NOT_RUN — no
+  approved per-KPI executable formula version, source/grain/cohort/include-
+  exclude/attribution/rounding/zero/division rules, calculation fixtures,
+  complete event/provider inputs, SQL, job payload, persistence, or read-model
+  contract exists; ST-1203/ST-1204 owner suites retain eight total pinned-source
+  drift failures`; observed result: `calculations 0/30, verified 0/30,
+  NOT_EXECUTED`. Close predecessor provenance at source freeze and approve each
+  calculation contract before executable generation.
+- `DEBT-W2-055` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1205`, closure
+  owner: Product/Analytics/Finance/Security/QA, formal CI, Staging, release, and
+  Production owners. Exact skipped command: `NOT_RUN — OD-005 labor cost,
+  OD-012 tracking, OD-014 retention, OD-015 live-provider evidence, formal
+  TST-030 fixture reproduction, hosted CI, Staging, release, and Production are
+  outside local authority`; observed result: `NOT_EXECUTED`. Local catalog
+  projection is not promoted to a KPI value, finance result, formal evidence,
+  Story acceptance, public exposure, recommendation input, or release
+  readiness.
+- Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable ST-1205 KPI boundary.
