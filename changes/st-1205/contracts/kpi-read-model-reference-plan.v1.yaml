@@ -1,0 +1,199 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1205
+  classification: SOURCE_DERIVED_NON_EXECUTABLE_NON_ATTESTING_KPI_READ_MODEL_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  non_attesting: true
+  interface_only: true
+  decision: NOT_READY
+  story_acceptance: false
+  production_eligible: false
+  approval: null
+  canonical_status: UNCHANGED
+
+authority:
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1205
+  kpi_catalog:
+    path: docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  authority_kind: SOURCE_DERIVED_REFERENCE_ONLY
+  changes_canonical_status: false
+
+predecessors:
+  st1201:
+    story_id: ST-1201
+    feature_commit: db19e538ed5a8c7e208ded7c3319a15c5e809492
+    binding: EXACT_CURRENT_COMMITTED_BYTES
+    artifacts:
+      changes/st-1201/README.md: f7264bda2e0e6c4fcfbd6d7050552170974f85ae014106d10ad36e03b94b2e09
+      python/raos/domain/analytics/event_collector.py: e7350bac934fc3d190d9c041915a7ea708092519e4ddccb2c70e0c850bde50ff
+      python/raos/ports/event_collector.py: 29a5a3db729894cc3575205850dba559320b4c8b024cdcf8853b45005bbe9599
+      python/raos/application/analytics/event_collector.py: 8d35153ee3bc801e9653d4773358b31746fce195fd651b9caeaddfa8b1ebea85
+      python/raos/adapters/recorded_event_store.py: 1e80a17f648138c7cff885e06eae452c8c89f93e441c4efedbd3f65a9c6d6c30
+      tests/st1201/conftest.py: 4ae5cb8ca3cc747a269fd9d552d639cb8846935101ff3e208004b269246c555e
+      tests/st1201/test_collector.py: e009577784a5450b66dbd421fdfdf1e6c5beb0b8ab3fb1593735363b402bd183
+      tests/st1201/test_failure_isolation.py: 3acb571f2d5bc5323bd4246d71977342dad7d269196c2897b0c57000b7ea697e
+      tests/st1201/test_boundaries.py: aaf1e44f0a90c9ee3322d3be184cc00be6fea996aa7ccbd3ad29f021ba8d0a7a
+    required_semantics:
+      default_mode: DISABLED_OD_012
+      tracking: DISABLED
+      persistence: NOT_EXECUTED
+      measurement: false
+      decision: NOT_READY
+      read_model_rows: []
+  st1203:
+    story_id: ST-1203
+    feature_commit: bdb97355eb27100d92787b6bbd3b5608b729250e
+    binding: EXACT_CURRENT_COMMITTED_BYTES
+    artifacts:
+      changes/st-1203/README.md: c333b3400b8f0f13ce18be7e04d43345caa812b4d818dae8222cb8b498099c3e
+      python/raos/domain/analytics/search_console.py: e49396e6dfac336b05488ae4ba80100c106fc4bf64c2ed476d16f459c16759ce
+      python/raos/ports/search_console.py: e128bd48092e923356c7c1b21f093c181fb31943d19b8e913d28199c5634019f
+      python/raos/application/analytics/search_console_import.py: 9a74033080728fa1b65bec071ec5e97ccf74cd0151153455e022029320ffa40e
+      python/raos/adapters/recorded_search_console.py: d41615cd376b07090b5be3bc74797826f9db6b6f840a410ca9fc97e689469e01
+      tests/st1203/test_search_console_domain.py: 6ee3a1857d49d11447413955d0a65408c3a4f51e47f7d5c1eba95fd6783bea3c
+      tests/st1203/test_search_console_application.py: bc83080860f3217730876b48c1f6bd0f1b5c071d676984608da2eb4d99f30f98
+      tests/st1203/test_recorded_search_console.py: 03f07ce52f9863a22ea83732d11a4d1a501ef356c8f85b930a2c111bf2ae571b
+      tests/st1203/test_runtime_boundaries.py: 19ee7216c40948c888739a21c087f137019187a7e85abc88c8b6f768f4a8ce3d
+    required_semantics:
+      top_rows_only: true
+      rows_not_guaranteed_complete: true
+      empty_page_proves_zero: false
+      supersession: NOT_DEFINED
+      provider: NOT_EXECUTED
+      persistence: NOT_EXECUTED
+  st1204:
+    story_id: ST-1204
+    feature_commit: 73b7782502f249f91eafd3d0bc9d229fb770d7c6
+    binding: EXACT_CURRENT_COMMITTED_BYTES
+    known_owner_debt: INHERITED_PREDECESSOR_HASH_DRIFT
+    artifacts:
+      changes/st-1204/RUNTIME-SLICE-v1.md: fee3fd089ba7f0d5e70b2948fd0f2ca333d4a13b1f59e4a0e510c264147e3fa8
+      python/raos/domain/analytics/ga4.py: 785dd16788fffabd5ab6c05c6f43f535bc6521630a246c93a54d23d257de124f
+      python/raos/ports/ga4.py: 5f9c2206e1351a81eefd0c70a0a7030c8d912818b10e1b01f046883b4ef64d6e
+      python/raos/application/analytics/ga4_import.py: 663b057a4ce091d601ed0ea5b35a17632aaee0f53cb41d2c13eba69b27e28dc2
+      python/raos/adapters/recorded_ga4.py: bb4510a7956d7b84caa57d700048cdc552e685209d3a6aab3a677bca391756a7
+      tests/st1204/test_ga4_domain.py: d1afeb6e7537aa7be6e0e41bc51c02bbcec31d88af8cca493f083be665368a59
+      tests/st1204/test_ga4_application.py: 8e8aae09e0749a31957c91a1de8f76abbc61f2e57a3bfecb7382f137196caf52
+      tests/st1204/test_recorded_ga4.py: e8c427264d11fd9e88bfa92a663a8704fbccd70c443bd055e658062c48a95677
+      tests/st1204/test_runtime_boundaries.py: b47d3981eb6d36b8c0aed93fddb9fd939e663e3261f6a444ebe8069f551c20a9
+    required_semantics:
+      returned_row_count: 2
+      provider_row_count: 3
+      pagination_performed: false
+      numeric_aggregation_performed: false
+      metric_values_preserved_as_strings: true
+      supersession: NOT_DEFINED
+      tracking: DISABLED_OD_012
+      provider: NOT_EXECUTED
+      persistence: NOT_EXECUTED
+
+catalog_projection:
+  source_order: EXACT_CANONICAL_ORDER
+  source_fields:
+    - id
+    - name
+    - formula
+    - domain
+    - interpretation
+    - cadence
+    - design_status
+    - implementation_status
+    - runtime_verification
+  definition_count: 30
+  calculation_count: 0
+  verified_count: 0
+  domain_distribution:
+    finance: 9
+    finance+analytics: 2
+    analytics: 3
+    search: 6
+    quality: 2
+    freshness: 2
+    ai+finance: 1
+    ai/editorial: 1
+    operations: 2
+    ux: 1
+    governance: 1
+  formula_representation: NON_EXECUTABLE_SOURCE_TEXT
+  activation_inferred: false
+
+calculation_boundary:
+  calculation_version: null
+  kpi_mappings: []
+  source_mappings: []
+  watermarks: []
+  period: null
+  inputs: []
+  sql: null
+  tables: []
+  job_payloads: []
+  read_model_rows: []
+  results: []
+  evidence: []
+  mapping_count: null
+  watermark_count: null
+  input_count: null
+  table_count: null
+  job_payload_count: null
+  read_model_row_count: null
+  result_count: null
+  evidence_count: null
+  empty_means_zero: false
+
+execution_boundary:
+  formula_engine: NOT_EXECUTED
+  calculation: NOT_EXECUTED
+  verification: NOT_EXECUTED
+  sql: NOT_EXECUTED
+  job: NOT_EXECUTED
+  database: NOT_EXECUTED
+  repository: NOT_EXECUTED
+  tracking_activation: NOT_EXECUTED
+  public_projection: NOT_EXECUTED
+  recommendation_input: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  network: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  action_counts:
+    calculate: 0
+    verify: 0
+    map: 0
+    read: 0
+    write: 0
+    execute_sql: 0
+    create_table: 0
+    enqueue_job: 0
+    database: 0
+    repository: 0
+    activate_tracking: 0
+    public_projection: 0
+    recommendation_input: 0
+    provider: 0
+    network: 0
+    external: 0
+  external_actions: []
+
+verification_boundary:
+  definitions_projected: 30
+  definitions_total: 30
+  calculations_completed: 0
+  calculations_total: 30
+  calculations_verified: 0
+  verified_total: 30
+  calculation_status: NOT_EXECUTED
+  verification_status: NOT_EXECUTED
+  TST-030: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  story_acceptance: false
+  decision: NOT_READY
