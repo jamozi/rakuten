@@ -2155,3 +2155,55 @@ original result.
   formal result, or Production health claim.
 - Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-attesting local ST-1602 plan.
+
+### 2026-08-10 W2 / ST-1604 performance-load reference-plan checkpoint
+
+- Authority and scope: canonical `ST-1604` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-1505 and ST-1601, has no
+  Story-local Open Decision, and requires TST-027. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint creates a non-executable
+  source-derived performance/load reference plan; it does not select a tool,
+  endpoint, workload, staging topology, SLO subset, resource/cost cap, execute
+  load, or produce a load/capacity report.
+- The owner generator projects exact TST-027 and all fourteen provisional SLO
+  rows. PUBLIC/ADMIN/API/WORKER targets remain unconfigured; selected tool,
+  runner, executor/environment, URLs, authentication, scenarios, mixes,
+  fixtures, artifacts, and deployment references remain null/empty. The SLO
+  subset remains `NOT_DEFINED_IN_CANONICAL`, with no evaluation or documented
+  capacity.
+- All workload inputs and resource/cost/currency/stop/scale values remain
+  null/empty, never zero-filled or interpreted as unlimited/safe. Consequently
+  execution is forbidden. The report remains `NOT_EXECUTED` with no
+  measurements/errors/capacity/SLO/cost observations; empty fields mean no
+  evidence, not zero latency/errors/cost or infinite capacity.
+- ST-1505 remains an inert disabled zero-action Staging interface and ST-1601
+  remains `INTERFACE_AVAILABLE_NOT_CONNECTED` with no persistent backend.
+  Network, credentials, browser, provider, staging/Production actions, external
+  writes, and load execution are all forbidden with exact action counts zero.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and no-write `--check`, isolated `tests/st1604`
+  (`104 passed`), ST-1505 owner check/regression (`155 passed`), ST-1601
+  regression (`94 passed`), Ruff lint/format, strict mypy, compile/import,
+  exact nine-path review, focused secret scan, canonical import, workspace
+  drift, and `git diff --check` returned `PASS`. Generated JSON and manifest
+  were written only by the Story owner builder. The linked-worktree scanner
+  remains inherited `DEBT-W0-003`.
+- `DEBT-W2-032` status: `OPEN`, introduced-by `ST-1604`, closure owner:
+  Performance/SRE, ST-1505 staging, ST-1601 telemetry, ST-1006 RUM, Product/
+  Finance, and final Wave integration owners. Exact skipped command: `NOT_RUN —
+  no authoritative SLO subset, endpoint/scenario inventory, workload mix/data
+  volume, concurrency/rate/ramp/duration/soak ceilings, resource/cost budgets,
+  browser/device/network matrix, staging artifact/topology, persistent telemetry
+  queries, capacity-result format, or stop thresholds exist`; observed result:
+  `NOT_EXECUTED`. The static reference cannot satisfy load-report/budget or
+  capacity acceptance.
+- `DEBT-W2-033` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1604`, closure
+  owner: Engineering/QA/Security/Operations, formal CI, Staging, release, and
+  Production owners. Exact skipped command: `NOT_RUN — actual synthetic
+  staging load, browser RUM, formal TST-027, telemetry/cost evidence, hosted CI,
+  release review, and Production are outside local authority`; observed result:
+  `NOT_EXECUTED`. No static projection is promoted to TST PASS, capacity/SLO
+  attainment, release evidence, or Production readiness.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable local ST-1604 plan.
