@@ -1,0 +1,200 @@
+name: Publish Combined All-Story Inspection Tree
+
+on:
+  push:
+    branches:
+      - agent/all-stories-materialize-run-20260811
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  FOUNDATION_BRANCH: codex/raos-implementation-first-goal
+  INSPECTION_BRANCH: agent/all-stories-combined-inspection-20260811
+
+jobs:
+  publish:
+    name: Reconstruct and publish inspection tree
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out overlay transport
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: overlay-transport
+          fetch-depth: 1
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out implementation foundation
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.FOUNDATION_BRANCH }}
+          path: subject
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Reconstruct exact overlay
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          import base64
+          import binascii
+          import gzip
+          import hashlib
+          from pathlib import Path, PurePosixPath
+          import re
+          import tarfile
+
+          root = Path("overlay-transport/.github/all-stories-overlay")
+          groups = [sorted(root.glob("part-*")), sorted(root.glob("rest-*"))]
+          if any(not group for group in groups):
+              raise SystemExit(f"overlay groups missing: {[len(group) for group in groups]}")
+
+          whitespace = re.compile(rb"[\r\n\t ]+")
+          alphabet = re.compile(rb"[A-Za-z0-9+/]*={0,2}")
+
+          def clean(path: Path) -> bytes:
+              value = whitespace.sub(b"", path.read_bytes())
+              if not value or alphabet.fullmatch(value) is None:
+                  raise SystemExit(f"invalid base64 alphabet in {path}")
+              return value
+
+          values = [[clean(path) for path in group] for group in groups]
+          flat = [value for group in values for value in group]
+
+          for group, paths in zip(values, groups, strict=True):
+              for path, value in zip(paths, group, strict=True):
+                  print(
+                      f"chunk={path.name} length={len(value)} mod4={len(value) % 4} "
+                      f"padding={value.count(b'=')}"
+                  )
+
+          candidates: list[tuple[str, bytes]] = []
+
+          def decode(value: bytes) -> bytes:
+              return base64.b64decode(value, validate=True)
+
+          attempts = (
+              ("single-stream", lambda: decode(b"".join(flat))),
+              (
+                  "two-binary-groups",
+                  lambda: b"".join(decode(b"".join(group)) for group in values),
+              ),
+              ("per-file-binary", lambda: b"".join(decode(value) for value in flat)),
+          )
+          for mode, operation in attempts:
+              try:
+                  candidates.append((mode, operation()))
+              except (binascii.Error, ValueError) as error:
+                  print(f"mode={mode} base64_rejected={type(error).__name__}")
+
+          accepted: tuple[str, bytes, int] | None = None
+          archive_path = Path("/tmp/all-stories-overlay.tar.gz")
+          for mode, data in candidates:
+              try:
+                  gzip.decompress(data)
+              except (gzip.BadGzipFile, EOFError, OSError) as error:
+                  print(f"mode={mode} gzip_rejected={type(error).__name__}")
+                  continue
+              archive_path.write_bytes(data)
+              try:
+                  with tarfile.open(archive_path, "r:gz") as archive:
+                      members = archive.getmembers()
+                      if not members:
+                          raise ValueError("empty archive")
+                      for member in members:
+                          path = PurePosixPath(member.name)
+                          if path.is_absolute() or ".." in path.parts:
+                              raise ValueError(f"unsafe archive member: {member.name}")
+                          if member.issym() or member.islnk():
+                              target = PurePosixPath(member.linkname)
+                              if target.is_absolute() or ".." in target.parts:
+                                  raise ValueError(
+                                      f"unsafe archive link: {member.name} -> {member.linkname}"
+                                  )
+              except (tarfile.TarError, ValueError) as error:
+                  print(f"mode={mode} tar_rejected={type(error).__name__}")
+                  continue
+              accepted = (mode, data, len(members))
+              break
+
+          if accepted is None:
+              raise SystemExit("no reconstruction mode produced a valid gzip tar")
+
+          mode, data, member_count = accepted
+          archive_path.write_bytes(data)
+          Path("/tmp/all-stories-overlay.mode").write_text(mode + "\n", encoding="utf-8")
+          Path("/tmp/all-stories-overlay.sha256").write_text(
+              hashlib.sha256(data).hexdigest() + "\n", encoding="ascii"
+          )
+          print(
+              f"accepted_mode={mode} compressed_bytes={len(data)} members={member_count}"
+          )
+          PY
+
+          extract="$RUNNER_TEMP/all-stories-overlay"
+          mkdir -p "$extract"
+          tar --extract --gzip --file /tmp/all-stories-overlay.tar.gz --directory "$extract" \
+            --no-same-owner --no-same-permissions
+          source_root="$extract"
+          mapfile -t entries < <(find "$extract" -mindepth 1 -maxdepth 1 -printf '%p\n')
+          if ((${#entries[@]} == 1)) && [[ -d ${entries[0]} ]] && \
+             { [[ -d ${entries[0]}/python ]] || [[ -d ${entries[0]}/tests ]] || \
+               [[ -d ${entries[0]}/changes ]]; }; then
+            source_root=${entries[0]}
+          fi
+          test -d "$source_root"
+          rsync --archive --exclude=.git/ "$source_root"/ subject/
+          rm -rf subject/.github/all-stories-overlay
+          cp /tmp/all-stories-overlay.sha256 subject/.combined-overlay.sha256
+          cp /tmp/all-stories-overlay.mode subject/.combined-overlay.mode
+          printf '%s\n' "$(git -C subject rev-parse HEAD)" >subject/.foundation-commit.sha
+          git -C subject diff --check
+
+      - name: Publish exact inspection branch
+        working-directory: subject
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -B "$INSPECTION_BRANCH"
+          git add -A
+          test -n "$(git diff --cached --name-only)"
+          git commit -m 'chore: reconstruct all-Story implementation for inspection'
+          target_ref="refs/heads/$INSPECTION_BRANCH"
+          remote_sha="$(git ls-remote --heads origin "$target_ref" | awk '{print $1}')"
+          if [[ -n $remote_sha ]]; then
+            git push --force-with-lease="$target_ref:$remote_sha" origin "HEAD:$target_ref"
+          else
+            git push origin "HEAD:$target_ref"
+          fi
+
+      - name: Upload deterministic combined source
+        run: |
+          set -euo pipefail
+          rm -rf subject/.git
+          find subject -type d -name __pycache__ -prune -exec rm -rf {} +
+          find subject -type f -name '*.pyc' -delete
+          output="$RUNNER_TEMP/rakuten-all-stories-combined.tar.gz"
+          tar --sort=name --mtime='UTC 2026-08-11' --owner=0 --group=0 --numeric-owner \
+            --format=posix --create --gzip --file "$output" --directory subject .
+          sha256sum "$output" >"$output.sha256"
+
+      - name: Upload combined source artifact
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: rakuten-all-stories-combined-source
+          path: |
+            ${{ runner.temp }}/rakuten-all-stories-combined.tar.gz
+            ${{ runner.temp }}/rakuten-all-stories-combined.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
