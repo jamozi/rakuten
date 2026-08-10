@@ -1846,3 +1846,63 @@ original result.
   recorded in `DEBT-W2-014`; ST-0601 did not edit or regenerate predecessor
   files. Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-attesting local ST-0601 plan.
+
+### 2026-08-10 W2 / ST-0802 recorded article-lifecycle checkpoint
+
+- Authority and scope: canonical `ST-0802` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0501, ST-0801, and ST-0308, has
+  no Story-local Open Decision, and requires TST-012/TST-020. Effective status
+  remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint does not persist an
+  Article/ArticleVersion, allocate a durable version/history/ETag, verify a
+  Source Packet, expose HTTP routes, review content, or publish anything.
+- Implemented strict immutable Article/ArticleVersion/history values, the
+  exact seven ED-005 through ED-011 recorded operations, canonical state
+  vocabularies, exact five ArticlePlan-to-Content-AST type mappings, and
+  deterministic ST-0801 AST serialization/hash bindings. New Articles remain
+  `IDEA`, versions remain `DRAFT`, no transition is locally authorized, and a
+  source-packet UUID remains opaque and `NOT_EXECUTED`/`NOT_VERIFIED`.
+- The single inward recorded exchange is not a repository or UoW. The
+  application validates request/site/resource/type/AST/ETag/version/
+  idempotency, requires the exact TEST_ONLY authorization mapping before one
+  exchange call, validates every returned ID/state/history/hash/marker, and
+  returns only `RECORDED_ONLY`, persistence/source-packet/formal
+  `NOT_EXECUTED`, decision `NOT_READY`. No ETag algorithm or durable
+  idempotency claim is invented.
+- The ordered immutable adapter has no state map, clock, ID generation,
+  filesystem/network/environment/provider/database, HTTP, review, approval,
+  scheduling, renderer, AI, publication, staging, release, or Production
+  surface. Reorder, duplicate, exhaustion, conflicting replay, and outcome
+  drift fail without sensitive input echo or fallback.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Isolated `tests/st0802` (`59 passed`), ST-0501 regression (`48 passed`),
+  ST-0308 owner check/reference regression (`134 passed`), ST-0801 behavioral
+  regression (`281 passed` with two manifest-only generation failures), Ruff
+  lint/format, strict mypy, compile/import, exact nine-path review, focused
+  secret scan, canonical import, workspace drift, and `git diff --check`
+  returned `PASS` for the owned slice. The linked-worktree full scanner remains
+  inherited `DEBT-W0-003`.
+- `DEBT-W2-018` status: `OPEN`, introduced-by `ST-0802`, closure owner:
+  ST-0308/persistence, Article/Editorial runtime, ETag/idempotency, Source
+  Packet/review, API, and final Wave integration owners. Exact skipped command:
+  `NOT_RUN — no repository/UoW/database transaction, persistent monotonic
+  version/history/current pointer, durable ETag or idempotency reservation,
+  Source Packet validity/approval/freshness, review/quality/legal approval, or
+  HTTP controller exists`; observed result: `NOT_EXECUTED`. Recorded history
+  cannot satisfy the persisted lifecycle acceptance criteria.
+- `DEBT-W2-019` status: `OPEN`, observed-during `ST-0802`, introduced-by prior
+  moving sources, closure owner: ST-0801 and W2 provenance-freeze owners. Exact
+  failing command: `python scripts/build_st0801_content_ast.py --check`;
+  observed result: `generated ST-0801 manifest drift`; isolated ST-0801 result:
+  `281 passed, 2 manifest-generation failures`. ST-0802 did not edit or
+  regenerate predecessor bytes; closure remains with the ST-0801 owner after
+  source freeze.
+- `DEBT-W2-020` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0802`, closure
+  owner: Editorial/Security/API reviewers, formal CI, runtime/Staging, release,
+  and Production owners. Exact skipped command: `NOT_RUN — formal TST-012/
+  TST-020, HTTP/security runtime, Source Packet/review evidence, hosted CI,
+  Staging, release, publication, and Production are outside local authority`;
+  observed result: `NOT_EXECUTED`. Recorded AST/history checks are not promoted
+  to formal editorial or operational readiness.
+- Inherited W0/W1 and prior W2 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-persistent local ST-0802 seam.
