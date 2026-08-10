@@ -1,0 +1,6 @@
+{
+  "profile_id": "safe-local",
+  "preferred_tier": "safe",
+  "fallback_policy": "safe_only",
+  "overrides": {}
+}
