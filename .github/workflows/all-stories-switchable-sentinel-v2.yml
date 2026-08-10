@@ -1,0 +1,163 @@
+name: Record Switchable All-Story Publication Status V2
+
+on:
+  push:
+    branches:
+      - agent/all-stories-switchable-export-control-20260811
+    paths:
+      - .github/workflows/all-stories-switchable-sentinel-v2.yml
+
+permissions:
+  contents: write
+  pull-requests: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  TARGET_BRANCH: codex/all-stories-switchable-strategies-20260811
+
+jobs:
+  sentinel:
+    name: Verify target evidence and record status
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out sentinel branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Inspect target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p .github/all-stories-switchable-status
+          target_ref="refs/heads/$TARGET_BRANCH"
+          target_sha="$(git ls-remote --heads origin "$target_ref" | awk '{print $1}')"
+          status=TARGET_MISSING
+          evidence_status=NOT_AVAILABLE
+          catalog_sha256=null
+          candidate_count=null
+          story_count=null
+          decision_count=null
+          pr_number=null
+          pr_url=null
+          contexts='[]'
+
+          if [[ -n $target_sha ]]; then
+            status=TARGET_CANDIDATE
+            git fetch --no-tags origin "$target_ref:$target_ref"
+            git worktree add --detach "$RUNNER_TEMP/target" "$target_sha"
+            evidence="$RUNNER_TEMP/target/changes/all-stories/generated/switchable-strategy-evidence.v1.json"
+            catalog="$RUNNER_TEMP/target/changes/all-stories/generated/switchable-strategy-catalog.v1.json"
+            if [[ -s $catalog ]]; then
+              catalog_sha256="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["catalog_sha256"])' "$catalog")"
+              candidate_count="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["coverage"]["candidate_count"])' "$catalog")"
+              story_count="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["coverage"]["story_boundary_count"])' "$catalog")"
+              decision_count="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["coverage"]["open_decision_boundary_count"])' "$catalog")"
+            else
+              status=TARGET_INCOMPLETE
+            fi
+            if [[ -s $evidence && -s $catalog ]]; then
+              evidence_status="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$evidence")"
+              python3 - "$evidence" "$catalog" <<'PY'
+          from __future__ import annotations
+
+          import json
+          from pathlib import Path
+          import sys
+
+          evidence = json.loads(Path(sys.argv[1]).read_bytes())
+          catalog = json.loads(Path(sys.argv[2]).read_bytes())
+          required_false = (
+              "external_values_invented",
+              "formal_tst_claimed",
+              "human_approval_invented",
+              "open_decisions_resolved",
+              "production_activated",
+          )
+          if evidence["status"] != "VALIDATED_IMPLEMENTATION_CANDIDATE":
+              raise SystemExit("invalid evidence status")
+          if any(evidence[field] is not False for field in required_false):
+              raise SystemExit("invalid authority claim")
+          if evidence["catalog_sha256"] != catalog["catalog_sha256"]:
+              raise SystemExit("catalog digest mismatch")
+          if evidence["candidate_count"] != catalog["coverage"]["candidate_count"]:
+              raise SystemExit("candidate count mismatch")
+          if evidence["story_count"] != catalog["coverage"]["story_boundary_count"]:
+              raise SystemExit("Story count mismatch")
+          if evidence["open_decision_count"] != catalog["coverage"]["open_decision_boundary_count"]:
+              raise SystemExit("Open Decision count mismatch")
+          PY
+              status=TARGET_VALIDATED
+            fi
+            pr_json="$(gh pr list --head "$TARGET_BRANCH" --base main --state open --json number,url,headRefOid,isDraft)"
+            pr_number="$(jq -r '.[0].number // "null"' <<<"$pr_json")"
+            pr_url="$(jq -r '.[0].url // "null"' <<<"$pr_json")"
+            contexts="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${target_sha}/status" --jq '[.statuses[] | {context,state,target_url,description}]')"
+          fi
+
+          STATUS="$status" \
+          TARGET_SHA="${target_sha:-}" \
+          EVIDENCE_STATUS="$evidence_status" \
+          CATALOG_SHA256="$catalog_sha256" \
+          CANDIDATE_COUNT="$candidate_count" \
+          STORY_COUNT="$story_count" \
+          DECISION_COUNT="$decision_count" \
+          PR_NUMBER="$pr_number" \
+          PR_URL="$pr_url" \
+          CONTEXTS="$contexts" \
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          from datetime import datetime, timezone
+          import json
+          import os
+          from pathlib import Path
+
+          def number(name: str) -> int | None:
+              value = os.environ[name]
+              return None if value in {"", "null"} else int(value)
+
+          def text(name: str) -> str | None:
+              value = os.environ[name]
+              return None if value in {"", "null"} else value
+
+          document = {
+              "candidate_count": number("CANDIDATE_COUNT"),
+              "catalog_sha256": text("CATALOG_SHA256"),
+              "checked_at": datetime.now(timezone.utc).isoformat(),
+              "evidence_status": os.environ["EVIDENCE_STATUS"],
+              "open_decision_count": number("DECISION_COUNT"),
+              "pr_number": number("PR_NUMBER"),
+              "pr_url": text("PR_URL"),
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "status": os.environ["STATUS"],
+              "story_count": number("STORY_COUNT"),
+              "target_branch": os.environ["TARGET_BRANCH"],
+              "target_sha": text("TARGET_SHA"),
+              "validation_contexts": json.loads(os.environ["CONTEXTS"]),
+          }
+          root = Path(".github/all-stories-switchable-status")
+          root.joinpath("status-v2.json").write_text(
+              json.dumps(document, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          root.joinpath("STATUS-V2").write_text(
+              document["status"] + "\n", encoding="utf-8"
+          )
+          PY
+
+      - name: Commit status
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .github/all-stories-switchable-status
+          git commit -m 'chore: record switchable all-Story validation status v2'
+          git push origin HEAD:agent/all-stories-switchable-export-control-20260811
