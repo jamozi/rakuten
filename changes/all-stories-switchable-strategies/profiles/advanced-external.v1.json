@@ -1,0 +1,6 @@
+{
+  "profile_id": "advanced-external",
+  "preferred_tier": "advanced",
+  "fallback_policy": "fail_closed",
+  "overrides": {}
+}
