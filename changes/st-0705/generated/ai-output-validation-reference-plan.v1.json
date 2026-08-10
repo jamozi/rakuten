@@ -1,0 +1,661 @@
+{
+  "document": {
+    "schema_version": "1.0.0",
+    "story_id": "ST-0705",
+    "classification": "SOURCE_DERIVED_NON_EXECUTABLE_AI_OUTPUT_VALIDATION_REFERENCE_PLAN",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "executable": false,
+    "activation": false,
+    "runtime_eligible": false,
+    "authority": "SOURCE_DERIVED_REFERENCE_ONLY",
+    "decision": "NOT_READY",
+    "story_acceptance": false,
+    "production_eligible": false,
+    "approval": null,
+    "canonical_status": "UNCHANGED"
+  },
+  "authority": {
+    "dependencies": [
+      "ST-0702",
+      "ST-0703",
+      "ST-0605"
+    ],
+    "requirement_ids": [
+      "FR-007",
+      "FR-008"
+    ],
+    "test_suites": [
+      "TST-019",
+      "TST-020"
+    ],
+    "open_decisions": [],
+    "canonical_status_changes": false
+  },
+  "source_bindings": [
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "bytes": 7943,
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "bytes": 71458,
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "uri": "repo://docs/upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md",
+      "bytes": 123231,
+      "sha256": "475e4b6b4490110fd9f94a07aaf4cf979bea99d59b7ef8b95ba0fdbe61219476"
+    },
+    {
+      "uri": "repo://contracts/raos-v0.4/contracts/ai/RAOS_05_quality_gate_catalog_v0.1.yaml",
+      "bytes": 5594,
+      "sha256": "a4664f082662ced52c3316ffa95ba0a7e0362d87401871e7fc7f5fbb6a77ecdc"
+    },
+    {
+      "uri": "repo://contracts/raos-v0.4/contracts/ai/RAOS_05_failure_taxonomy_v0.1.yaml",
+      "bytes": 5335,
+      "sha256": "55db49d67678a1d8052fd4da9035ebfe2516913659c528bccd9f1a0313b38504"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "bytes": 24993,
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "bytes": 11395,
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    }
+  ],
+  "predecessor_bindings": [
+    {
+      "story_id": "ST-0702",
+      "feature_commit": "8d57e38b622285a4de1aeb2beeafcb3596b66d0b",
+      "binding": "EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS",
+      "artifacts": [
+        {
+          "uri": "repo://changes/st-0702/README.md",
+          "bytes": 2068,
+          "sha256": "c0e31aec0c41ccd61d91c0f3fba464a06464686eb961e3b855cef703051184d9"
+        },
+        {
+          "uri": "repo://changes/st-0702/contracts/context-pack-reference-plan.v1.yaml",
+          "bytes": 7791,
+          "sha256": "e629f10d72da65314364dbeef5120ebb96a8f0e4eb1aa3ebdd9cea7b994db0d0"
+        },
+        {
+          "uri": "repo://changes/st-0702/generated/context-pack.reference-plan.v1.json",
+          "bytes": 93842,
+          "sha256": "00190fd3e46dba2bc65a8dacc6d0741852c151317a39b9b2ae4f066f37102656"
+        },
+        {
+          "uri": "repo://changes/st-0702/manifest.yaml",
+          "bytes": 6016,
+          "sha256": "c9d30e2817ec6e63191c110dcaee6dc24a429ca71ab852b42646d3af6bf19b45"
+        },
+        {
+          "uri": "repo://scripts/build_st0702_context_pack_reference_plan.py",
+          "bytes": 32819,
+          "sha256": "44e846af460ed0951ba6cc0c4e29389eaf62f44e6061cb76be43d93b771c3222"
+        },
+        {
+          "uri": "repo://tests/st0702/conftest.py",
+          "bytes": 985,
+          "sha256": "264e9473e46515d4992542f38ea329887a316e9e9216a4db399727679df7f6ab"
+        },
+        {
+          "uri": "repo://tests/st0702/test_contract.py",
+          "bytes": 4065,
+          "sha256": "876b66542dd6f2ad338ed96aa7a2a793c3118e38329ee2da439cff8d48bc72df"
+        },
+        {
+          "uri": "repo://tests/st0702/test_generation.py",
+          "bytes": 3503,
+          "sha256": "f13d528f54216dfcba9b415acba7075bc28fb5263a4fa17ba0cbdafdda97c979"
+        },
+        {
+          "uri": "repo://tests/st0702/test_negative_cases.py",
+          "bytes": 3212,
+          "sha256": "c2e116fb803a013b80ed52cde46f0f8f7bb5dd210436f89ce98f9bd1d8272808"
+        }
+      ],
+      "runtime_activated": false,
+      "story_acceptance_inherited": false
+    },
+    {
+      "story_id": "ST-0703",
+      "feature_commit": "aff94a21ac9f03886b19e32fef6e1c8b16de5b95",
+      "binding": "EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS",
+      "artifacts": [
+        {
+          "uri": "repo://changes/st-0703/README.md",
+          "bytes": 5207,
+          "sha256": "18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c"
+        },
+        {
+          "uri": "repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
+          "bytes": 15689,
+          "sha256": "08714a5ff21e1b7409d9f54079d34477b489ffe937d79e2f5182dc6eef18468e"
+        },
+        {
+          "uri": "repo://changes/st-0703/generated/recorded-fixture-registry.v1.json",
+          "bytes": 5547,
+          "sha256": "215a38ace7e17064185c1ae4c17f92f57d88a71912d992a506d5f6484bd7e9d6"
+        },
+        {
+          "uri": "repo://python/raos/domain/ai/provider.py",
+          "bytes": 39487,
+          "sha256": "2d6982aa58280f4ce0afe43cde269ddbd1308fecca369fbb1ae654507eb1fed5"
+        },
+        {
+          "uri": "repo://python/raos/ports/ai_provider.py",
+          "bytes": 5993,
+          "sha256": "3b4ccb19ba26793251b938954c736fdc8be871d618312d3eea2d6a4eff1a5c62"
+        },
+        {
+          "uri": "repo://python/raos/adapters/openai_responses.py",
+          "bytes": 32712,
+          "sha256": "2ab243e2b223c9515eef168da59bd5c3c155331dd033d812864f21619566e6f7"
+        }
+      ],
+      "runtime_activated": false,
+      "story_acceptance_inherited": false,
+      "recorded_schema_success_is_content_validation": false,
+      "content_validation": "NOT_EXECUTED"
+    },
+    {
+      "story_id": "ST-0605",
+      "feature_commit": "72541b0e855954005231368e48a7811abe4b3ea4",
+      "binding": "EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS",
+      "artifacts": [
+        {
+          "uri": "repo://changes/st-0605/README.md",
+          "bytes": 3814,
+          "sha256": "f5a59ab0542a95987720c5d9ec43ef4355d92cea2b7bafcf8851e510fb98cf4b"
+        },
+        {
+          "uri": "repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml",
+          "bytes": 11114,
+          "sha256": "5f0892277351b22ade4bd3f31a68b53239fd57212fc3e81eb1dec7dcddf2c487"
+        },
+        {
+          "uri": "repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json",
+          "bytes": 78849,
+          "sha256": "f573ec26baac6e9e0cb16520861d165f16b6b81d7f77fabd9de1e900afb76a1c"
+        },
+        {
+          "uri": "repo://changes/st-0605/manifest.yaml",
+          "bytes": 8536,
+          "sha256": "7709c2e83db6ee683fe12eb1ebbe978e7bd95de23613131ea18ee4984504a840"
+        },
+        {
+          "uri": "repo://scripts/build_st0605_claim_evidence_coverage_reference_plan.py",
+          "bytes": 44975,
+          "sha256": "df81ec831d19aeb77a7f40b1cd17ccb594bc834dba43be180e0e4aa548eab7ae"
+        },
+        {
+          "uri": "repo://tests/st0605/conftest.py",
+          "bytes": 2071,
+          "sha256": "089d70a4d95bda6c984646153129cd091126199806136a71e2b8621a01cd1219"
+        },
+        {
+          "uri": "repo://tests/st0605/test_contract.py",
+          "bytes": 5269,
+          "sha256": "4dbfe43f08382899de0bd65901f91dda0831f64298ae3dafedb06fe6f20cff86"
+        },
+        {
+          "uri": "repo://tests/st0605/test_generation.py",
+          "bytes": 5305,
+          "sha256": "fd305593ae296ec6e763c5b88aa6ee89ff5aa25feb6b4296b3730d3b21f2e9e1"
+        },
+        {
+          "uri": "repo://tests/st0605/test_negative_cases.py",
+          "bytes": 8019,
+          "sha256": "463e15c2ead5deab957cf755a7865e38d92a3fa4fb270a8886c4dc10fe42bd35"
+        }
+      ],
+      "runtime_activated": false,
+      "story_acceptance_inherited": false
+    }
+  ],
+  "gate_catalog": [
+    {
+      "id": "AIG-000",
+      "name": "Task eligibility",
+      "stage": "PRE_REQUEST",
+      "blocking": true,
+      "checks": [
+        "task/route enabled",
+        "certified route",
+        "approved prompt/schema/policy",
+        "budget available"
+      ]
+    },
+    {
+      "id": "AIG-010",
+      "name": "Input manifest and provenance",
+      "stage": "PRE_REQUEST",
+      "blocking": true,
+      "checks": [
+        "signed manifest",
+        "approved source packet",
+        "allowlist only",
+        "denylist absent",
+        "hashes resolve"
+      ]
+    },
+    {
+      "id": "AIG-020",
+      "name": "Provider request safety",
+      "stage": "PRE_REQUEST",
+      "blocking": true,
+      "checks": [
+        "store=false",
+        "tools/network disabled",
+        "strict schema",
+        "timeout/token cap",
+        "safety identifier"
+      ]
+    },
+    {
+      "id": "AIG-030",
+      "name": "Transport completion",
+      "stage": "POST_RESPONSE",
+      "blocking": true,
+      "checks": [
+        "HTTP success",
+        "not incomplete",
+        "refusal/filter classified",
+        "request ID saved"
+      ]
+    },
+    {
+      "id": "AIG-040",
+      "name": "Schema and contract",
+      "stage": "POST_RESPONSE",
+      "blocking": true,
+      "checks": [
+        "JSON parse",
+        "schema hash",
+        "strict validation",
+        "unknown fields rejected",
+        "IDs valid"
+      ]
+    },
+    {
+      "id": "AIG-050",
+      "name": "Deterministic factual checks",
+      "stage": "POST_RESPONSE",
+      "blocking": true,
+      "checks": [
+        "fact IDs",
+        "numeric exactness",
+        "product identity",
+        "date/unit consistency",
+        "forbidden fields"
+      ]
+    },
+    {
+      "id": "AIG-060",
+      "name": "Policy and injection checks",
+      "stage": "POST_RESPONSE",
+      "blocking": true,
+      "checks": [
+        "review leakage",
+        "fabricated experience",
+        "affiliate bias",
+        "prompt injection",
+        "disclosure",
+        "secret scan"
+      ]
+    },
+    {
+      "id": "AIG-070",
+      "name": "Task semantic evaluation",
+      "stage": "OFFLINE_OR_REVIEW",
+      "blocking": true,
+      "checks": [
+        "task thresholds",
+        "regression/adversarial suites",
+        "human/judge calibration"
+      ]
+    },
+    {
+      "id": "AIG-080",
+      "name": "Human decision",
+      "stage": "WORKFLOW",
+      "blocking": true,
+      "checks": [
+        "required reviewer",
+        "no self-approval",
+        "finding disposition",
+        "immutable decision"
+      ]
+    },
+    {
+      "id": "AIG-090",
+      "name": "Route release",
+      "stage": "DEPLOYMENT",
+      "blocking": true,
+      "checks": [
+        "release decision",
+        "canary bound",
+        "rollback reference",
+        "monitors active",
+        "zero critical failures"
+      ]
+    }
+  ],
+  "validator_catalog": [
+    "JSON parse and exact JSON Schema",
+    "Unknown Property and Enum",
+    "Resource ID and Manifest membership",
+    "Fact ID and Subject/Product identity",
+    "Number/date/unit/tax/currency exactness",
+    "Rank/order preservation",
+    "Forbidden Field/Term and review-body contamination marker",
+    "Secret/credential pattern",
+    "Output length and Claim count",
+    "Hash/version consistency"
+  ],
+  "failure_catalog": [
+    {
+      "code": "AI-OUT-001",
+      "domain": "OUTPUT",
+      "name": "INVALID_JSON",
+      "disposition": "ONE_REPAIR_ALLOWED",
+      "required_action": "One strict schema-repair attempt."
+    },
+    {
+      "code": "AI-OUT-002",
+      "domain": "OUTPUT",
+      "name": "SCHEMA_VIOLATION",
+      "disposition": "ONE_REPAIR_ALLOWED",
+      "required_action": "Record paths; retry once then fail/fallback if permitted."
+    },
+    {
+      "code": "AI-OUT-003",
+      "domain": "OUTPUT",
+      "name": "UNKNOWN_RESOURCE_ID",
+      "disposition": "TERMINAL",
+      "required_action": "Reject; never auto-create entity."
+    },
+    {
+      "code": "AI-OUT-004",
+      "domain": "OUTPUT",
+      "name": "OUTPUT_TOO_LARGE",
+      "disposition": "TERMINAL",
+      "required_action": "Require evaluated task/prompt change."
+    },
+    {
+      "code": "AI-FCT-001",
+      "domain": "FACTUAL",
+      "name": "UNSUPPORTED_CRITICAL_CLAIM",
+      "disposition": "ZERO_TOLERANCE",
+      "required_action": "Block and open finding."
+    },
+    {
+      "code": "AI-FCT-002",
+      "domain": "FACTUAL",
+      "name": "NUMERIC_MISMATCH",
+      "disposition": "BLOCKING",
+      "required_action": "Block with source/output paths."
+    },
+    {
+      "code": "AI-FCT-003",
+      "domain": "FACTUAL",
+      "name": "PRODUCT_IDENTITY_MISMATCH",
+      "disposition": "ZERO_TOLERANCE",
+      "required_action": "Quarantine output and inspect siblings."
+    },
+    {
+      "code": "AI-FCT-004",
+      "domain": "FACTUAL",
+      "name": "FABRICATED_EXPERIENCE",
+      "disposition": "ZERO_TOLERANCE",
+      "required_action": "Block and add sanitized regression case."
+    },
+    {
+      "code": "AI-POL-001",
+      "domain": "POLICY",
+      "name": "RAKUTEN_REVIEW_BODY_LEAKAGE",
+      "disposition": "ZERO_TOLERANCE",
+      "required_action": "Quarantine and investigate contamination."
+    },
+    {
+      "code": "AI-POL-002",
+      "domain": "POLICY",
+      "name": "AFFILIATE_BIAS",
+      "disposition": "ZERO_TOLERANCE",
+      "required_action": "Block and inspect feature pipeline."
+    },
+    {
+      "code": "AI-POL-003",
+      "domain": "POLICY",
+      "name": "PROMPT_INJECTION_FOLLOWED",
+      "disposition": "ZERO_TOLERANCE",
+      "required_action": "Pause route and open security incident."
+    },
+    {
+      "code": "AI-POL-004",
+      "domain": "POLICY",
+      "name": "SECRET_OR_RESTRICTED_DATA",
+      "disposition": "ZERO_TOLERANCE",
+      "required_action": "Contain and rotate credentials if needed."
+    },
+    {
+      "code": "AI-POL-005",
+      "domain": "POLICY",
+      "name": "UNAUTHORIZED_STATE_CHANGE",
+      "disposition": "ZERO_TOLERANCE",
+      "required_action": "Reject and investigate authorization boundary."
+    }
+  ],
+  "security_controls": [
+    {
+      "id": "SEC-AI-001",
+      "category": "AI",
+      "title": "Untrusted source treatment",
+      "requirement": "Source/商品説明を命令として扱わない",
+      "verification": "red-team tests",
+      "priority": "P0",
+      "gate": "GATE-0",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "SEC-AI-002",
+      "category": "AI",
+      "title": "No tools by default",
+      "requirement": "AI Taskに自由Web/DB/queue/tool権限を与えない",
+      "verification": "provider request inspection",
+      "priority": "P0",
+      "gate": "GATE-0",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "SEC-AI-003",
+      "category": "AI",
+      "title": "Structured output",
+      "requirement": "strict schema＋domain validation",
+      "verification": "schema/fact tests",
+      "priority": "P0",
+      "gate": "GATE-0",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "SEC-AI-004",
+      "category": "AI",
+      "title": "Evidence bounded generation",
+      "requirement": "承認Source Packet外のFact補完禁止",
+      "verification": "eval suite",
+      "priority": "P0",
+      "gate": "GATE-0",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "SEC-AI-005",
+      "category": "AI",
+      "title": "Prompt/version integrity",
+      "requirement": "Prompt/schema/route/hashをReleaseへ束縛",
+      "verification": "release evidence",
+      "priority": "P0",
+      "gate": "GATE-0",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "SEC-AI-006",
+      "category": "AI",
+      "title": "Sensitive input filter",
+      "requirement": "Restricted dataをProvider送信前に拒否",
+      "verification": "DLP tests",
+      "priority": "P0",
+      "gate": "GATE-0",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "SEC-AI-007",
+      "category": "AI",
+      "title": "Human gate",
+      "requirement": "Critical Task出力は承認・公開できない",
+      "verification": "authorization/E2E",
+      "priority": "P0",
+      "gate": "GATE-0",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "SEC-AI-008",
+      "category": "AI",
+      "title": "AI incident rollback",
+      "requirement": "zero-tolerance時にRoute停止とartifact保全",
+      "verification": "tabletop",
+      "priority": "P0",
+      "gate": "GATE-0",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    }
+  ],
+  "test_suites": [
+    {
+      "id": "TST-019",
+      "name": "AI red-team regression",
+      "layer": "ai",
+      "purpose": "Prompt injection、虚偽、review、bias、secret",
+      "candidate_tools": [
+        "eval harness"
+      ],
+      "release_blocking": true,
+      "environments": [
+        "CI",
+        "staging"
+      ],
+      "owner": "AI/Security",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "TST-020",
+      "name": "Content AST and policy",
+      "layer": "content",
+      "purpose": "5記事型、Block、Claim、Recommendation、Disclosure",
+      "candidate_tools": [
+        "pytest",
+        "schema fixtures"
+      ],
+      "release_blocking": true,
+      "environments": [
+        "CI"
+      ],
+      "owner": "Engineering",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "execution_status": "NOT_EXECUTED"
+    }
+  ],
+  "evaluation_boundary": {
+    "candidate_validation": "UNEVALUABLE",
+    "content_validation": "UNEVALUABLE",
+    "decision": "NOT_READY",
+    "story_acceptance_satisfied": false,
+    "schema_only_acceptance_forbidden": true,
+    "event_emission": false
+  },
+  "validation_state": {
+    "validators": [],
+    "candidates": [],
+    "context": null,
+    "facts": [],
+    "claims": [],
+    "mappings": [],
+    "findings": [],
+    "evidence": [],
+    "reports": [],
+    "observed_counts": {
+      "candidates": null,
+      "facts": null,
+      "claims": null,
+      "mappings": null,
+      "findings": null,
+      "evidence": null,
+      "reports": null
+    }
+  },
+  "execution_state": {
+    "validation": "NOT_EXECUTED",
+    "runtime": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "job": "NOT_EXECUTED",
+    "event": "NOT_EXECUTED",
+    "formal": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "action_counts": {
+      "validation": 0,
+      "runtime": 0,
+      "provider": 0,
+      "job": 0,
+      "event": 0,
+      "formal": 0,
+      "live": 0
+    },
+    "external_actions": []
+  },
+  "prohibited_inferences": [
+    "algorithm",
+    "threshold",
+    "mapping",
+    "model",
+    "provider",
+    "cost",
+    "identity",
+    "persistence",
+    "approval"
+  ],
+  "acceptance_boundary": {
+    "local_generation_only": true,
+    "formal_tst_019": "NOT_EXECUTED",
+    "formal_tst_020": "NOT_EXECUTED",
+    "runtime_validation": "NOT_EXECUTED",
+    "provider_validation": "NOT_EXECUTED",
+    "staging_validation": "NOT_EXECUTED",
+    "release_validation": "NOT_EXECUTED",
+    "production_validation": "NOT_EXECUTED",
+    "release_candidate_created": false,
+    "story_acceptance": false
+  }
+}
