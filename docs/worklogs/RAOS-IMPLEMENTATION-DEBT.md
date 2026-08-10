@@ -2702,3 +2702,62 @@ original result.
   readiness.
 - Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe disabled headless ST-0506 model.
+
+### 2026-08-10 W2 / ST-0702 context-pack reference-plan checkpoint
+
+- Authority and scope: canonical `ST-0702` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-0604/ST-0701, and requires
+  TST-005/TST-019 with the rule that important-Fact truncation fails. Effective
+  status remains `NOT_STARTED`/`NOT_EXECUTED`. This checkpoint creates a
+  source-derived, non-executable context-pack reference plan; it does not build
+  an Input Manifest/context pack, select a task or Fact, estimate tokens, reduce
+  scope, hash a provider payload, or call a provider.
+- The contract binds committed ST-0604 and the current committed ST-0701 task
+  registry bytes/semantics. It projects all twelve tasks in exact source order,
+  full binding metadata, nine Source-Packet-required versus three not-required
+  tasks, and exact max-input-token distribution. Candidate/enabled/MVP metadata
+  is never treated as task, route, provider, or release activation.
+- Approved packing priority and failure vocabulary are descriptive context
+  only. Input Manifest schema, Fact-field allowlist, canonical Fact JSON,
+  tokenizer/estimator, prompt/schema/policy overhead allocation, deterministic
+  scope reduction, important-to-required Fact mapping, and recursive forbidden-
+  field scan semantics remain unavailable; task resource allowlists are not
+  relabeled as Fact-field allowlists.
+- Selected task/binding/job/attempt/packet/prompt/schema/policy/route/budget/
+  locale/estimator/scope/hash values remain null. Runtime packs, manifests,
+  artifacts, Facts, required/important/optional IDs, findings, and truncation/
+  repacking results remain empty with unavailable counts null. Empty means no
+  execution, not zero Facts/findings or successful packing. Build/provider
+  permission remains false and all operations/actions remain `NOT_EXECUTED`/
+  exact zero.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and deterministic no-write `--check`, isolated
+  `tests/st0702` (`32 passed`), ST-0604 regression (`206 passed`), Ruff
+  lint/format, compile/import, exact nine-path review, focused secret scan,
+  canonical/workspace/diff/scope checks returned `PASS`. The ST-0701 suite
+  reproduced only its inherited manifest-owner drift (`115 passed`, two
+  manifest-generation failures); no ST-0701 file was edited. The linked-
+  worktree scanner remains inherited `DEBT-W0-003`.
+- `DEBT-W2-050` status: `OPEN`, introduced-by `ST-0702`, closure owner:
+  AI platform/Editorial/Data, ST-0604 Source Packet, ST-0701 owner generation,
+  tokenizer/packing-policy, job/repository/event, and final Wave integration
+  owners. Exact skipped/failing boundary: `ST-0701 owner check — generated
+  ST-0701 artifact is out of date: changes/st-0701/manifest.yaml; additionally
+  no approved Source Packet/content schema/Facts, Input Manifest schema/hash
+  scope, Fact-field allowlist, canonical JSON/tokenizer/overhead allocation,
+  important-to-required mapping, or deterministic scope-reduction policy
+  exists`; observed result: `2 failed, 115 passed; context-pack execution
+  NOT_EXECUTED`. Close ST-0701 manifest drift first at Wave freeze, then
+  regenerate ST-0702 in topological order.
+- `DEBT-W2-051` status: `EXTERNAL_BLOCKED`, introduced-by `ST-0702`, closure
+  owner: AI/Editorial/Security/QA, formal CI, runtime/provider, Staging,
+  release, and Production owners. Exact skipped command: `NOT_RUN — real
+  Source Packet/Facts, context packing/token estimation, provider-bound input
+  validation, formal TST-005/TST-019, hosted CI, Staging, release, and
+  Production are outside local authority`; observed result: `NOT_EXECUTED`.
+  Local registry projection and hostile tests are not promoted to a provider
+  payload, formal evidence, or release readiness.
+- Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable ST-0702 packing
+  boundary.
