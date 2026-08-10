@@ -1,0 +1,425 @@
+{
+  "document": {
+    "id": "RAOS-ST1604-PERFORMANCE-LOAD-REFERENCE-PLAN-001",
+    "version": "1.0.0",
+    "story_id": "ST-1604",
+    "classification": "SOURCE_DERIVED_NON_EXECUTABLE_PERFORMANCE_LOAD_REFERENCE_PLAN",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "executable": false,
+    "interface_only": true,
+    "decision": "NOT_READY",
+    "story_acceptance": false,
+    "production_eligible": false,
+    "approval": null,
+    "effective_canonical_status": "UNCHANGED"
+  },
+  "authority": {
+    "precedence": "CANONICAL_INTEGRATION_THEN_STORY_THEN_TEST_AND_SLO_CATALOGS",
+    "sources": [
+      {
+        "role": "integration",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+      },
+      {
+        "role": "test_catalog",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+      },
+      {
+        "role": "slo_catalog",
+        "uri": "repo://docs/canonical/06_ops/RAOS_12_slo_catalog_v1.0.yaml",
+        "sha256": "320a880073e3c9d87c361fa8620e1202898ffa719e2b8e94872d185415abcdf2"
+      },
+      {
+        "role": "story",
+        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+      }
+    ]
+  },
+  "provenance": {
+    "source_contract": "repo://changes/st-1604/contracts/performance-load-reference-plan.v1.yaml",
+    "generated_by": "repo://scripts/build_st1604_performance_load_reference_plan.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st1604_performance_load_reference_plan.py",
+    "implementation_helper": {
+      "uri": "repo://scripts/build_st1505_staging_deployment.py",
+      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    }
+  },
+  "predecessor_bindings": [
+    {
+      "story_id": "ST-1505",
+      "status": "DISABLED_INERT_ZERO_ACTION",
+      "bindings": [
+        {
+          "uri": "repo://changes/st-1505/contracts/staging-deployment.v1.yaml",
+          "sha256": "1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2"
+        },
+        {
+          "uri": "repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+          "sha256": "33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f"
+        },
+        {
+          "uri": "repo://changes/st-1505/manifest.yaml",
+          "sha256": "b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2"
+        }
+      ]
+    },
+    {
+      "story_id": "ST-1601",
+      "status": "INTERFACE_AVAILABLE_NOT_CONNECTED",
+      "bindings": [
+        {
+          "uri": "repo://changes/st-1601/README.md",
+          "sha256": "9eade86a2f3f7cae147d0ca26db1be0828be09250b068ac8f78832cf36ca65ef"
+        }
+      ]
+    }
+  ],
+  "test_suite": {
+    "id": "TST-027",
+    "name": "Performance and load",
+    "layer": "performance",
+    "purpose": "Public/Admin/API/workerのSLO capacity",
+    "candidate_tools": [
+      "k6相当",
+      "browser RUM lab"
+    ],
+    "release_blocking": true,
+    "environments": [
+      "staging"
+    ],
+    "owner": "Engineering",
+    "design_status": "APPROVED_FOR_IMPLEMENTATION",
+    "implementation_status": "NOT_STARTED",
+    "execution_status": "NOT_EXECUTED",
+    "selected_tool": null,
+    "runner": null,
+    "version": null,
+    "executor": null,
+    "selected_environment": null,
+    "release_evidence_status": "NOT_EXECUTED",
+    "release_evidence": null
+  },
+  "target_surfaces": [
+    {
+      "surface": "PUBLIC",
+      "configuration_status": "NOT_CONFIGURED",
+      "endpoint": null,
+      "protocol": null,
+      "authentication": null,
+      "scenarios": [],
+      "scenario_mix": [],
+      "fixtures": [],
+      "artifacts": [],
+      "deployment": null
+    },
+    {
+      "surface": "ADMIN",
+      "configuration_status": "NOT_CONFIGURED",
+      "endpoint": null,
+      "protocol": null,
+      "authentication": null,
+      "scenarios": [],
+      "scenario_mix": [],
+      "fixtures": [],
+      "artifacts": [],
+      "deployment": null
+    },
+    {
+      "surface": "API",
+      "configuration_status": "NOT_CONFIGURED",
+      "endpoint": null,
+      "protocol": null,
+      "authentication": null,
+      "scenarios": [],
+      "scenario_mix": [],
+      "fixtures": [],
+      "artifacts": [],
+      "deployment": null
+    },
+    {
+      "surface": "WORKER",
+      "configuration_status": "NOT_CONFIGURED",
+      "endpoint": null,
+      "protocol": null,
+      "authentication": null,
+      "scenarios": [],
+      "scenario_mix": [],
+      "fixtures": [],
+      "artifacts": [],
+      "deployment": null
+    }
+  ],
+  "slo_context": {
+    "coverage": {
+      "projected": 14,
+      "canonical": 14
+    },
+    "slos": [
+      {
+        "id": "SLO-001",
+        "name": "Public availability",
+        "scope": "public web",
+        "sli": "successful eligible requests / eligible requests",
+        "target": "99.5%",
+        "window": "rolling 30d",
+        "notes": "planned maintenance and abusive traffic exclusion versioned",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-002",
+        "name": "Admin availability",
+        "scope": "admin",
+        "sli": "successful eligible admin requests / eligible requests",
+        "target": "99.0%",
+        "window": "rolling 30d",
+        "notes": "MVP business-hours operation",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-003",
+        "name": "Public API latency",
+        "scope": "public api",
+        "sli": "p95 server duration",
+        "target": "<=500 ms",
+        "window": "rolling 7d",
+        "notes": "cache hit/miss split",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-004",
+        "name": "Admin API latency",
+        "scope": "admin api",
+        "sli": "p95 non-job command/query duration",
+        "target": "<=1000 ms",
+        "window": "rolling 7d",
+        "notes": "long jobs return 202",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-005",
+        "name": "Publication completion",
+        "scope": "publishing",
+        "sli": "publish jobs completed or safely failed within threshold",
+        "target": "99% within 5 min",
+        "window": "rolling 30d",
+        "notes": "provider-independent",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-006",
+        "name": "Affiliate click continuity",
+        "scope": "public CTA",
+        "sli": "eligible clicks reaching direct Rakuten navigation when beacon fails",
+        "target": "99.9%",
+        "window": "rolling 30d",
+        "notes": "synthetic plus client telemetry",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-007",
+        "name": "Job terminal success",
+        "scope": "workers",
+        "sli": "succeeded / terminal jobs by type",
+        "target": ">=99% excluding validated business rejection",
+        "window": "rolling 7d",
+        "notes": "retry storm separately monitored",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-008",
+        "name": "Queue age",
+        "scope": "async",
+        "sli": "oldest ready message age",
+        "target": "<10 min P95",
+        "window": "rolling 24h",
+        "notes": "critical queues lower threshold",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-009",
+        "name": "Freshness scan completion",
+        "scope": "freshness",
+        "sli": "scheduled scans completed by deadline",
+        "target": ">=99%",
+        "window": "rolling 30d",
+        "notes": "category SLA provisional",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-010",
+        "name": "Analytics import freshness",
+        "scope": "analytics",
+        "sli": "latest successful GSC/GA4 import age",
+        "target": "<=72 h",
+        "window": "daily",
+        "notes": "provider availability considered",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-011",
+        "name": "Revenue reconciliation",
+        "scope": "finance",
+        "sli": "committed import batches reconciled",
+        "target": "100%",
+        "window": "per batch",
+        "notes": "no partial commit",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-012",
+        "name": "Core Web Vitals",
+        "scope": "public UX",
+        "sli": "75th percentile by device",
+        "target": "LCP<=2.5s, INP<=200ms, CLS<=0.1",
+        "window": "rolling 28d",
+        "notes": "field target, not achieved until RUM",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-013",
+        "name": "DB recovery point",
+        "scope": "recovery",
+        "sli": "maximum committed data loss in drill",
+        "target": "<=15 min",
+        "window": "per drill",
+        "notes": "design target",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      },
+      {
+        "id": "SLO-014",
+        "name": "DB recovery time",
+        "scope": "recovery",
+        "sli": "incident declaration to validated core service",
+        "target": "<=4 h",
+        "window": "per drill",
+        "notes": "MVP design target",
+        "status": "PROVISIONAL_TARGET",
+        "implementation_status": "NOT_STARTED",
+        "measurement_status": "NOT_EXECUTED"
+      }
+    ],
+    "selection_status": "NOT_DEFINED_IN_CANONICAL",
+    "selected_slo_ids": [],
+    "evaluations": [],
+    "targets_met": [],
+    "capacities": [],
+    "measurement_requirements": {
+      "dimensions": [
+        "P95",
+        "P99",
+        "ERRORS",
+        "QUEUE_AGE",
+        "DB_CONNECTIONS",
+        "COST"
+      ],
+      "status": "REQUIRED_NOT_MEASURED",
+      "values": [],
+      "evidence": []
+    }
+  },
+  "workload_definition": {
+    "concurrency": null,
+    "duration": null,
+    "ramp": null,
+    "arrival_rate": null,
+    "request_count": null,
+    "worker_job_count": null,
+    "dataset": null,
+    "random_seed": null,
+    "headers": [],
+    "payloads": []
+  },
+  "resource_and_cost_boundaries": {
+    "cpu_cap": null,
+    "memory_cap": null,
+    "db_connection_cap": null,
+    "queue_depth_cap": null,
+    "cost_cap": null,
+    "currency": null,
+    "stop_conditions": [],
+    "scale_caps": [],
+    "unset_cap_interpretation": "EXECUTION_NOT_PERMITTED_NOT_ZERO",
+    "execution_permitted": false
+  },
+  "load_report": {
+    "status": "NOT_EXECUTED",
+    "started_at": null,
+    "finished_at": null,
+    "summary": null,
+    "results": [],
+    "metrics": [],
+    "errors": [],
+    "artifacts": [],
+    "capacity_claim": null,
+    "slo_target_claim": null,
+    "empty_interpretation": "NO_EVIDENCE_COLLECTED_NOT_ZERO_RESULTS"
+  },
+  "activation": {
+    "enabled": false,
+    "status": "DISABLED",
+    "load_execution": "FORBIDDEN",
+    "browser_execution": "FORBIDDEN",
+    "network_access": "FORBIDDEN",
+    "credential_access": "FORBIDDEN",
+    "provider_access": "FORBIDDEN",
+    "external_actions": "FORBIDDEN",
+    "staging_action": "FORBIDDEN",
+    "release_action": "FORBIDDEN",
+    "production_action": "FORBIDDEN",
+    "action_counts": {
+      "load": 0,
+      "browser": 0,
+      "network": 0,
+      "credential": 0,
+      "provider": 0,
+      "external": 0,
+      "staging": 0,
+      "release": 0,
+      "production": 0
+    }
+  },
+  "verification_boundary": {
+    "projection_coverage": "14/14 SLO",
+    "formal_tst_027": "NOT_EXECUTED",
+    "actual_load": "NOT_EXECUTED",
+    "browser_rum": "NOT_EXECUTED",
+    "telemetry_backend": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "decision": "NOT_READY",
+    "approval": null,
+    "story_acceptance": false,
+    "production_eligible": false,
+    "effective_canonical_status": "UNCHANGED"
+  }
+}
