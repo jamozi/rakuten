@@ -2930,3 +2930,61 @@ original result.
   suitable for public/editorial use.
 - Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe synthetic ST-1301 dry-run seam.
+
+### 2026-08-10 W2 / ST-1302 provider-fact commit reference checkpoint
+
+- Authority and scope: canonical `ST-1302` is
+  `APPROVED_FOR_IMPLEMENTATION`, depends on ST-1301, carries blocking OD-003,
+  and requires TST-008/TST-030. Effective status remains
+  `NOT_STARTED`/`NOT_EXECUTED`. Feature commit
+  `8bee74745841c7ccd80fd0c3ad86232ab6bdddf0` implements only a deterministic,
+  source-derived, non-executable reference plan. It is not a commit command,
+  fact model, repository, unit of work, transaction, fake persistence layer,
+  queue/job, audit/outbox, provider adapter, or executable runtime.
+- The plan binds the exact nine committed ST-1301 artifacts and revalidates its
+  synthetic-only, nonpersistent, mapping-`UNVERIFIED`, `NOT_READY` boundary.
+  All canonical rows, provider facts, commission events, emitted events, and
+  writes remain empty; their counts, amounts, hashes, identities, timestamps,
+  and results remain null rather than zero. Same-hash, idempotency,
+  reconciliation, authorization, step-up, and audit-atomicity checks remain
+  unevaluable, and vacuous success is forbidden.
+- Three source vocabularies remain explicitly separate: canonical row events,
+  commission statuses, and commission events. No mapping is invented between
+  them. Likewise FIN-006, OAuth `finance:revenue:confirm`, audit
+  `revenue_import_confirm`, and RBAC `commit_revenue_import` remain distinct
+  namespaces. The catalog's idempotency basis requires `preview_hash`, while
+  the job payload and Admin confirmation request omit it; the plan records this
+  as unresolved and selects neither a preview hash nor a replacement
+  algorithm. JPY is only a schema literal; FX, conversion, business, cost, and
+  retention policies remain unset.
+- Environment: WSL/Linux isolated worktree
+  `/home/minami/rakuten/.worktrees/goal`, CPython `3.14.6`, pinned uv `0.12.1`.
+  Owner generation and read-only `--check`, isolated ST-1302 (`204 passed`),
+  ST-1301 (`58 passed`), ST-0308 reference (`134 passed`), Ruff lint/format,
+  strict mypy over five owned Python files, compile/import, exact nine-path
+  review, focused secret scan, canonical import, workspace drift, and
+  `git diff --check` returned `PASS`. The linked-worktree scanner remains
+  inherited `DEBT-W0-003`; no predecessor or generated owner outside ST-1302
+  was changed.
+- `DEBT-W2-058` status: `OPEN`, introduced-by `ST-1302`, closure owner:
+  Finance/Data/Security, OD-003 owner, ST-0305/ST-0308 persistence owners,
+  ST-1301 provider-mapping owner, authorization/step-up/audit/outbox owners,
+  and final Wave integration owner. Exact skipped boundary: `NOT_RUN — no
+  approved real provider row/status/event mapping, source/preview hash
+  contract, preview-hash inconsistency resolution, provider identity, period,
+  amount/reconciliation rules, persistence/UoW/transaction, commit
+  idempotency, authorization/step-up mapping, audit/outbox atomicity, job/event
+  execution, or fact repository exists`; observed result: `all facts/events/
+  writes empty, all observed counts null, decision NOT_READY`. Close only after
+  source provenance is frozen and these contracts receive explicit authority.
+- `DEBT-W2-059` status: `EXTERNAL_BLOCKED`, introduced-by `ST-1302`, closure
+  owner: Finance/Product/Security/QA, external provider-evidence owner, formal
+  CI, Staging, release, and Production owners. Exact skipped command:
+  `NOT_RUN — OD-003 evidence/approval, real provider report/data, human
+  reconciliation, database integration, formal TST-008/TST-030, hosted CI,
+  Staging, release, and Production are outside local authority`; observed
+  result: `NOT_EXECUTED`. The local inventory is not promoted to provider-fact
+  truth, successful commit, Story acceptance, formal evidence, finance-ready
+  data, release readiness, or Production eligibility.
+- Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
+  checkpoint claims only the maximum-safe non-executable ST-1302 boundary.
