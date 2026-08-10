@@ -1,0 +1,165 @@
+name: Record Switchable All-Story Publication Status
+
+on:
+  push:
+    branches:
+      - agent/all-stories-switchable-export-control-20260811
+    paths:
+      - .github/workflows/all-stories-switchable-sentinel.yml
+
+permissions:
+  contents: write
+  pull-requests: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  TARGET_BRANCH: codex/all-stories-switchable-strategies-20260811
+
+jobs:
+  sentinel:
+    name: Inspect final target and record status
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out sentinel branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          show-progress: false
+
+      - name: Inspect final target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p .github/all-stories-switchable-status
+          target_ref="refs/heads/$TARGET_BRANCH"
+          target_sha="$(git ls-remote --heads origin "$target_ref" | awk '{print $1}')"
+          status=TARGET_MISSING
+          evidence_status=NOT_AVAILABLE
+          evidence_sha256=null
+          catalog_sha256=null
+          candidate_count=null
+          story_count=null
+          open_decision_count=null
+          pr_number=null
+          pr_url=null
+          validation_contexts='[]'
+
+          if [[ -n $target_sha ]]; then
+            status=TARGET_PRESENT
+            git fetch --no-tags origin "$target_ref:$target_ref"
+            git worktree add --detach "$RUNNER_TEMP/target" "$target_sha"
+            evidence="$RUNNER_TEMP/target/changes/all-stories/generated/switchable-strategy-evidence.v1.json"
+            catalog="$RUNNER_TEMP/target/changes/all-stories/generated/switchable-strategy-catalog.v1.json"
+            if [[ -s $evidence && -s $catalog ]]; then
+              evidence_status="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$evidence")"
+              evidence_sha256="$(sha256sum "$evidence" | cut -d' ' -f1)"
+              catalog_sha256="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["catalog_sha256"])' "$evidence")"
+              candidate_count="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["candidate_count"])' "$evidence")"
+              story_count="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["story_count"])' "$evidence")"
+              open_decision_count="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["open_decision_count"])' "$evidence")"
+              python3 - "$evidence" "$catalog" <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import json
+          from pathlib import Path
+          import sys
+
+          evidence_path = Path(sys.argv[1])
+          catalog_path = Path(sys.argv[2])
+          evidence = json.loads(evidence_path.read_bytes())
+          catalog = json.loads(catalog_path.read_bytes())
+          if evidence["status"] != "VALIDATED_IMPLEMENTATION_CANDIDATE":
+              raise SystemExit("evidence status is not validated")
+          if evidence["catalog_sha256"] != catalog["catalog_sha256"]:
+              raise SystemExit("catalog digest binding mismatch")
+          if evidence["candidate_count"] != catalog["coverage"]["candidate_count"]:
+              raise SystemExit("candidate count binding mismatch")
+          if evidence["story_count"] != catalog["coverage"]["story_boundary_count"]:
+              raise SystemExit("Story count binding mismatch")
+          if evidence["open_decision_count"] != catalog["coverage"]["open_decision_boundary_count"]:
+              raise SystemExit("Open Decision count binding mismatch")
+          if evidence["production_activated"] is not False:
+              raise SystemExit("production activation claim is invalid")
+          if evidence["open_decisions_resolved"] is not False:
+              raise SystemExit("Open Decision resolution claim is invalid")
+          print(hashlib.sha256(catalog_path.read_bytes()).hexdigest())
+          PY
+              status=TARGET_VALIDATED
+            else
+              status=TARGET_INCOMPLETE
+            fi
+
+            pr_json="$(gh pr list --head "$TARGET_BRANCH" --base main --state open --json number,url,headRefOid,isDraft)"
+            pr_number="$(jq -r '.[0].number // "null"' <<<"$pr_json")"
+            pr_url="$(jq -r '.[0].url // "null"' <<<"$pr_json")"
+            validation_contexts="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${target_sha}/status" --jq '[.statuses[] | {context,state,target_url,description}]')"
+          fi
+
+          STATUS="$status" \
+          TARGET_SHA="${target_sha:-}" \
+          EVIDENCE_STATUS="$evidence_status" \
+          EVIDENCE_SHA256="$evidence_sha256" \
+          CATALOG_SHA256="$catalog_sha256" \
+          CANDIDATE_COUNT="$candidate_count" \
+          STORY_COUNT="$story_count" \
+          OPEN_DECISION_COUNT="$open_decision_count" \
+          PR_NUMBER="$pr_number" \
+          PR_URL="$pr_url" \
+          VALIDATION_CONTEXTS="$validation_contexts" \
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          from datetime import datetime, timezone
+          import json
+          import os
+          from pathlib import Path
+
+          def integer_or_none(name: str) -> int | None:
+              value = os.environ[name]
+              return None if value in {"", "null"} else int(value)
+
+          def string_or_none(name: str) -> str | None:
+              value = os.environ[name]
+              return None if value in {"", "null"} else value
+
+          document = {
+              "catalog_sha256": string_or_none("CATALOG_SHA256"),
+              "candidate_count": integer_or_none("CANDIDATE_COUNT"),
+              "checked_at": datetime.now(timezone.utc).isoformat(),
+              "evidence_sha256": string_or_none("EVIDENCE_SHA256"),
+              "evidence_status": os.environ["EVIDENCE_STATUS"],
+              "open_decision_count": integer_or_none("OPEN_DECISION_COUNT"),
+              "pr_number": integer_or_none("PR_NUMBER"),
+              "pr_url": string_or_none("PR_URL"),
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "status": os.environ["STATUS"],
+              "story_count": integer_or_none("STORY_COUNT"),
+              "target_branch": os.environ["TARGET_BRANCH"],
+              "target_sha": string_or_none("TARGET_SHA"),
+              "validation_contexts": json.loads(os.environ["VALIDATION_CONTEXTS"]),
+          }
+          path = Path(".github/all-stories-switchable-status/status.json")
+          path.write_text(
+              json.dumps(document, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          Path(".github/all-stories-switchable-status/STATUS").write_text(
+              document["status"] + "\n", encoding="utf-8"
+          )
+          PY
+
+      - name: Commit sentinel result
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .github/all-stories-switchable-status
+          git commit -m 'chore: record switchable all-Story validation status'
+          git push origin HEAD:agent/all-stories-switchable-export-control-20260811
