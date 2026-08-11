@@ -1,0 +1,285 @@
+document:
+  id: RAOS-ST0708-OPENAI-LIVE-BOUNDED-EVALUATION-REFERENCE-PLAN-001
+  version: 1.0.0
+  story_id: ST-0708
+  classification: SOURCE_DERIVED_NONEXECUTABLE_OPENAI_LIVE_BOUNDED_EVALUATION_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  interface_only: true
+  runtime_eligible: false
+  decision: NOT_READY
+  story_acceptance: false
+  release_candidate: false
+  release_eligible: false
+  production_eligible: false
+  approval: null
+  effective_canonical_status: UNCHANGED
+
+authority:
+  precedence: CANONICAL_INTEGRATION_THEN_STORY_THEN_OPEN_DECISION_TEST_AND_SECURITY_CATALOGS
+  implementation_mode: OWNER_APPROVED_IMPLEMENTATION_FIRST_WAVE_W3
+  base_commit: 6e56aa4d328ffb4135e9ad23145a611ab584b519
+  sources:
+    - role: integration
+      uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - role: open_decisions
+      uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - role: security_catalog
+      uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - role: test_catalog
+      uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - role: story
+      uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+
+story:
+  objective: CANDIDATE_MODEL_EVALUATION_ON_REAL_DATASET
+  dependencies:
+    - ST-0707
+    - ST-0703
+  acceptance_criterion: RISK_SPECIFIC_THRESHOLDS
+  test_suites:
+    - TST-018
+  open_decisions:
+    - OD-015
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  canonical_implementation_status: NOT_STARTED
+  canonical_verification_status: NOT_EXECUTED
+
+dependencies:
+  st_0707:
+    story_id: ST-0707
+    source_commit: 14f0813c443e22faab81dfce3507aff320831ac1
+    artifacts:
+      - uri: repo://changes/st-0707/README.md
+        sha256: 70feb638a72c33e78d23057a2fa1834d865aa92d07029908169892d34c7d67b7
+      - uri: repo://python/raos/domain/ai/evaluation.py
+        sha256: f5eba5617c24227ac09de7ce555a52a9454fe2e5320c8bbcaab8752f6945aff4
+      - uri: repo://python/raos/application/ai/evaluation.py
+        sha256: c8605b67d66af08940cc9ef416153e55e6ea71a571afe9244d7c4d362852b3c9
+      - uri: repo://tests/st0707/conftest.py
+        sha256: 6bade20471f8724fe2d131e57d806d1467b54d6467d77b1853e99732b3d94b78
+      - uri: repo://tests/st0707/test_boundaries.py
+        sha256: 5e5a3c2e07711f320ea9df9bcc36b950d1586e1b8a17366ababba3035528aec7
+      - uri: repo://tests/st0707/test_evaluation.py
+        sha256: 3680ff67bf147721d04ab9f50c5d5c10503f7120af70c3a1c2b9ae4a80431340
+      - uri: repo://tests/st0707/test_failure_isolation.py
+        sha256: c8444fd85609491bac33a151055a84c8be7cb2571c1a2db1b377100198537633
+    semantics:
+      mode: BOOTSTRAP_SMOKE_ONLY
+      authority: NONAUTHORITATIVE
+      runtime_actions: FORBIDDEN
+      release_decision: NOT_READY
+      release_eligible: false
+      production_eligible: false
+      canonical_bootstrap_payload: UNAVAILABLE
+      canonical_bootstrap_payload_bound: false
+      locked_holdout: NOT_LOADED
+      human_labels: NOT_OBTAINED
+      judge_calibration: NOT_OBTAINED
+      threshold_evaluation: NOT_PERFORMED
+      formal_tst_018: NOT_EXECUTED
+      formal_tst_019: NOT_EXECUTED
+      external_actions: []
+  st_0703:
+    story_id: ST-0703
+    authority: ST0703_RECORDED_SCOPE_ONLY
+    artifacts:
+      - uri: repo://changes/st-0703/README.md
+        sha256: 18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c
+      - uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+        sha256: 7e272b6f3f54197d3a613b854ea8ffdb787ef1b28c65c8ca3418512076f6df96
+      - uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
+        sha256: b306f8ef6989bf0a8ba00e636faf0a16f2c094cdddf61d979cdbc8955df2f76e
+      - uri: repo://changes/st-0703/manifest.yaml
+        sha256: 5544a81c1e81b69ec38d2be8694892ae44045bfd8d04d91c69cc379ca465ac9a
+      - uri: repo://python/raos/domain/ai/provider.py
+        sha256: 179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991
+      - uri: repo://python/raos/ports/ai_provider.py
+        sha256: 3b4ccb19ba26793251b938954c736fdc8be871d618312d3eea2d6a4eff1a5c62
+      - uri: repo://python/raos/adapters/openai_responses.py
+        sha256: d1ca262711e73af59923d852fdc299ecc9ba67ae29675fd8e2512ea357d26017
+      - uri: repo://python/raos/adapters/recorded_ai.py
+        sha256: 294394757d1739889f54dbb6cf20a8353275faf233bc3bba7fdd3f932671dc6a
+    semantics:
+      mode: RECORDED_ONLY
+      live_api: NOT_USED
+      account_selection: ABSENT
+      credential_or_secret_resolution: NOT_USED
+      client_construction: NOT_IMPLEMENTED_ST0407_BOUNDARY
+      live_request: NOT_EXECUTED
+      live_retry: FORBIDDEN
+      configured_sdk_retries: 0
+      release_decision: NOT_READY
+      release_eligible: false
+      production_ready: false
+      formal_tst_017: NOT_EXECUTED
+      live_tst_018: NOT_EXECUTED
+      external_actions: []
+
+open_decision:
+  id: OD-015
+  topic: production_provider_credentials
+  status: EXTERNAL_EVIDENCE_REQUIRED
+  blocking: true
+  resolved: false
+  safe_default: RECORDED_FIXTURE_ONLY
+  canonical_safe_default: Recorded fixtureのみ
+  credentials_available: false
+  account_available: false
+  secret_available: false
+  permissions_available: false
+  external_evidence_available: false
+  live_execution_authorized: false
+  authorization: null
+
+candidate_selection:
+  status: NOT_SELECTED
+  task_id: null
+  task_version: null
+  risk_profile_id: null
+  risk_profile_version: null
+  prompt_id: null
+  prompt_version: null
+  prompt_sha256: null
+  output_schema_id: null
+  output_schema_version: null
+  output_schema_sha256: null
+  route_id: null
+  route_version: null
+  route_sha256: null
+  model_id: null
+  model_version: null
+  provider_id: null
+  application_artifact_id: null
+  application_artifact_version: null
+  application_artifact_sha256: null
+
+dataset_boundary:
+  status: NOT_CONFIGURED
+  approved: false
+  locked: false
+  adjudicated: false
+  dataset_id: null
+  dataset_version: null
+  dataset_sha256: null
+  approved_dataset_id: null
+  approved_dataset_version: null
+  approved_dataset_sha256: null
+  locked_dataset_id: null
+  locked_dataset_version: null
+  locked_dataset_sha256: null
+  adjudicated_dataset_id: null
+  adjudicated_dataset_version: null
+  adjudicated_dataset_sha256: null
+  splits: []
+  holdout: NOT_LOADED
+  bootstrap_payload: UNAVAILABLE
+  bootstrap_payload_bound: false
+  observed_case_count: null
+
+thresholds:
+  status: NOT_SELECTED
+  risk_specific_thresholds: []
+  selected_threshold_set_id: null
+  selected_threshold_set_version: null
+  selected_threshold_set_sha256: null
+  zero_tolerance_classes: []
+  statistical_method: null
+  confidence_method: null
+  evaluation: NOT_EXECUTED
+
+execution_configuration:
+  status: NOT_CONFIGURED
+  runnable: false
+  runner: null
+  command: null
+  environment: null
+  account: null
+  endpoint: null
+  credential: null
+  credential_reference: null
+  request: null
+  response: null
+  report: null
+  provider_request_id: null
+  cost: null
+  currency: null
+  latency: null
+  quota: null
+  started_at: null
+  finished_at: null
+  artifacts: []
+
+observations:
+  status: NOT_EXECUTED
+  observations: []
+  findings: []
+  failures: []
+  evidence: []
+  empty_interpretation: NO_EXECUTION_EVIDENCE_NOT_SUCCESS_NOT_ZERO_FAILURES_NOT_THRESHOLD_SATISFACTION
+
+verification_boundary:
+  formal_tst_018: NOT_EXECUTED
+  live_evaluation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  human_labels: NOT_OBTAINED
+  judge_calibration: NOT_OBTAINED
+  security_review: NOT_EXECUTED
+  data_review: NOT_EXECUTED
+  policy_review: NOT_EXECUTED
+  canary: NOT_EXECUTED
+  rollback: NOT_EXECUTED
+  monitoring: NOT_EXECUTED
+  decision: NOT_READY
+  story_acceptance: false
+  release_candidate: false
+  release_eligible: false
+  production_eligible: false
+  approval: null
+
+activation_boundary:
+  enabled: false
+  status: DISABLED
+  provider: FORBIDDEN
+  network: FORBIDDEN
+  credential: FORBIDDEN
+  filesystem: FORBIDDEN
+  repository: FORBIDDEN
+  database: FORBIDDEN
+  job: FORBIDDEN
+  event: FORBIDDEN
+  release: FORBIDDEN
+  staging: NOT_EXECUTED
+  production: NOT_EXECUTED
+  external_actions: []
+  action_counts:
+    provider_call: 0
+    network: 0
+    credential_read: 0
+    filesystem_write: 0
+    repository_write: 0
+    database_write: 0
+    job_dispatch: 0
+    event_publish: 0
+    retry: 0
+    create: 0
+    update: 0
+    delete: 0
+    approve: 0
+    release: 0
+    external: 0
+
+command_surface:
+  run: null
+  apply: null
+  approve: null
+  activate: null
+  promote: null
+  deploy: null
+  release: null
+  commands: []

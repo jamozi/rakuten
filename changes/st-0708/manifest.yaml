@@ -1,0 +1,118 @@
+document:
+  id: RAOS-ST0708-OPENAI-LIVE-BOUNDED-EVALUATION-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0708
+  source_contract: repo://changes/st-0708/contracts/openai-live-bounded-evaluation-reference-plan.v1.yaml
+  generated_by: repo://scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py
+  generation_command: python scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py
+provenance:
+  base_commit: 6e56aa4d328ffb4135e9ad23145a611ab584b519
+  contract_sha256: 1dd7217f14d4ad54afcb59f595307a5dfeaa9e9812791bb8554df89f56ebb5e1
+  authority_inputs:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    bytes: 7943
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    bytes: 4956
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    bytes: 24993
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    bytes: 11395
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    bytes: 71458
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  dependency_inputs:
+    ST-0707:
+    - uri: repo://changes/st-0707/README.md
+      bytes: 3007
+      sha256: 70feb638a72c33e78d23057a2fa1834d865aa92d07029908169892d34c7d67b7
+    - uri: repo://python/raos/domain/ai/evaluation.py
+      bytes: 16824
+      sha256: f5eba5617c24227ac09de7ce555a52a9454fe2e5320c8bbcaab8752f6945aff4
+    - uri: repo://python/raos/application/ai/evaluation.py
+      bytes: 7110
+      sha256: c8605b67d66af08940cc9ef416153e55e6ea71a571afe9244d7c4d362852b3c9
+    - uri: repo://tests/st0707/conftest.py
+      bytes: 2070
+      sha256: 6bade20471f8724fe2d131e57d806d1467b54d6467d77b1853e99732b3d94b78
+    - uri: repo://tests/st0707/test_boundaries.py
+      bytes: 7942
+      sha256: 5e5a3c2e07711f320ea9df9bcc36b950d1586e1b8a17366ababba3035528aec7
+    - uri: repo://tests/st0707/test_evaluation.py
+      bytes: 4159
+      sha256: 3680ff67bf147721d04ab9f50c5d5c10503f7120af70c3a1c2b9ae4a80431340
+    - uri: repo://tests/st0707/test_failure_isolation.py
+      bytes: 10488
+      sha256: c8444fd85609491bac33a151055a84c8be7cb2571c1a2db1b377100198537633
+    ST-0703:
+    - uri: repo://changes/st-0703/README.md
+      bytes: 5207
+      sha256: 18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c
+    - uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+      bytes: 15689
+      sha256: 7e272b6f3f54197d3a613b854ea8ffdb787ef1b28c65c8ca3418512076f6df96
+    - uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
+      bytes: 5547
+      sha256: b306f8ef6989bf0a8ba00e636faf0a16f2c094cdddf61d979cdbc8955df2f76e
+    - uri: repo://changes/st-0703/manifest.yaml
+      bytes: 9401
+      sha256: 5544a81c1e81b69ec38d2be8694892ae44045bfd8d04d91c69cc379ca465ac9a
+    - uri: repo://python/raos/domain/ai/provider.py
+      bytes: 39611
+      sha256: 179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991
+    - uri: repo://python/raos/ports/ai_provider.py
+      bytes: 5993
+      sha256: 3b4ccb19ba26793251b938954c736fdc8be871d618312d3eea2d6a4eff1a5c62
+    - uri: repo://python/raos/adapters/openai_responses.py
+      bytes: 33352
+      sha256: d1ca262711e73af59923d852fdc299ecc9ba67ae29675fd8e2512ea357d26017
+    - uri: repo://python/raos/adapters/recorded_ai.py
+      bytes: 6998
+      sha256: 294394757d1739889f54dbb6cf20a8353275faf233bc3bba7fdd3f932671dc6a
+  implementation_helper:
+    uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-0708/README.md
+  bytes: 3651
+  sha256: 720239090812f709e26c80e8f6e443dad293b0b3a7324069c5bcf54a8a2f4222
+- uri: repo://changes/st-0708/contracts/openai-live-bounded-evaluation-reference-plan.v1.yaml
+  bytes: 8980
+  sha256: 1dd7217f14d4ad54afcb59f595307a5dfeaa9e9812791bb8554df89f56ebb5e1
+- uri: repo://scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py
+  bytes: 17851
+  sha256: 966f147a189c85dc4013e5db497766c17a3aff25905f2924f6abc54a088e598e
+- uri: repo://tests/st0708/conftest.py
+  bytes: 850
+  sha256: 727abc88ff1b9cda9ad62a56b3b9559d4c6551c581df6a033f8e60b6d1f0be9d
+- uri: repo://tests/st0708/test_contract.py
+  bytes: 8172
+  sha256: a71bf7f4b789d87848f3e8b0bdcac9e95c34c20941f548a44cdb04ecbb805043
+- uri: repo://tests/st0708/test_generation.py
+  bytes: 4190
+  sha256: 30ead129e68c969440aeb6832bac812ae9e6335fe99fa6b605300a88c6f6a6d3
+- uri: repo://tests/st0708/test_negative_cases.py
+  bytes: 12637
+  sha256: df9ef7ee4c722619a1eb9d5eb7ac4f2ffe0397f246662e569e59c4df2ceb94e8
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0708/generated/openai-live-bounded-evaluation-reference-plan.v1.json
+  bytes: 11104
+  sha256: 32a1c5e7f5494cd244794d0961317c9f1cb6a6140f4b0d070fbdb67ed7e8e394
+boundary:
+  classification: SOURCE_DERIVED_NONEXECUTABLE_OPENAI_LIVE_BOUNDED_EVALUATION_REFERENCE_PLAN
+  executable: false
+  interface_only: true
+  runtime_eligible: false
+  od_015: EXTERNAL_EVIDENCE_REQUIRED
+  safe_default: RECORDED_FIXTURE_ONLY
+  holdout: NOT_LOADED
+  formal_tst_018: NOT_EXECUTED
+  decision: NOT_READY
+  story_acceptance: false
+  release_eligible: false
+  production_eligible: false
