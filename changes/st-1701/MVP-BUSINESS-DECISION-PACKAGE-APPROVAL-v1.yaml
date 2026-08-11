@@ -1,0 +1,42 @@
+MVP_BUSINESS_DECISION_PACKAGE_APPROVAL_V1:
+  story_id: ST-1701
+  source_package_uri: repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
+  source_package_sha256: 7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f
+  source_package_bytes: 10678
+  status: APPROVED_AS_NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE
+  authority: OWNER_APPROVED_CANONICAL_REVISION_EVIDENCE_CANDIDATE_ONLY
+  approved_by: repository_owner:jamozi
+  approved_at: '2026-08-11T15:59:01Z'
+  approval_source: Exact source-package SHA-256 followed by explicit repository-owner approval in the connected Codex conversation.
+  approved_sha256_statement: ST-1701 final package 7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f
+  implementation_handoff:
+    uri: repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_MVP_DECISION_PACKAGE_v1.yaml
+    sha256: f5e8f70b74fd26c68b0dfd8a47dd35fc59b1651e9e553dad738d90b00acd1790
+  implementation_handoff_approval:
+    uri: repo://changes/st-1701/DESIGN-HANDOFF-APPROVAL-v1.yaml
+    sha256: 8a9029410bdad475eca2da7d0ab0f87cf0d3e1a8019e6102522d7cb18ac3dbd0
+  open_decisions: []
+  effective_boundary:
+    source_package_internal_pending_field: PRESERVED_IMMUTABLE_PROPOSAL_STATE
+    detached_exact_hash_approval: EFFECTIVE
+    canonical_revision_request: OWNER_APPROVED_EVIDENCE_CANDIDATE_NOT_READY
+    canonical_mutation_authority: NONE
+    canonical_open_decision_status: UNCHANGED
+    st0006_blocker_state: UNCHANGED
+    gate_state: BLOCKED
+    st1701_acceptance: NOT_ACHIEVED
+    st1702_ready: false
+  remaining_prerequisites:
+    od005_alternate_reviewer_or_approved_exception: NOT_SATISFIED
+    od006_gold_evidence: NOT_OBTAINED
+    od006_domain_editor_acceptance: NOT_OBTAINED
+    formal_tst_032: NOT_EXECUTED
+    canonical_revision_approval_and_import: NOT_EXECUTED
+  external_and_release_boundary:
+    domain_purchase_or_control: NOT_EXECUTED
+    account_or_credential_setup: NOT_EXECUTED
+    browser_or_provider_action: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    publication: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED

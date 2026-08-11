@@ -1,0 +1,31 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1701
+  handoff_uri: repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_MVP_DECISION_PACKAGE_v1.yaml
+  handoff_sha256: f5e8f70b74fd26c68b0dfd8a47dd35fc59b1651e9e553dad738d90b00acd1790
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST1701_MVP_DECISION_PACKAGE_V1_ONLY
+  approved_by: repository_owner:jamozi
+  approved_at: '2026-08-11T15:10:05Z'
+  approval_source: Exact handoff SHA-256 followed by explicit repository-owner approval in the connected Codex conversation.
+  approved_sha256_statement: ST-1701 handoff f5e8f70b74fd26c68b0dfd8a47dd35fc59b1651e9e553dad738d90b00acd1790
+  canonical_reconciliation: PASS_PROPOSAL_ONLY_NO_CANONICAL_MUTATION
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-1701
+    canonical_files: UNCHANGED
+    st0006_blocker_state: UNCHANGED
+    existing_unresolved_registry: PRESERVED_ACTIVE
+    canonical_resolution_authority: NONE
+    cross_story_owner_inputs: INFORMATION_ONLY_NO_IMPLEMENTATION_OR_STATUS_EFFECT
+    st1702_runtime_category_config: NOT_AUTHORIZED
+    st1702_golden_products: NOT_AUTHORIZED
+    od006_gold_evidence: NOT_OBTAINED
+    final_package_exact_owner_approval: REQUIRED_AFTER_IMPLEMENTATION
+    formal_tst_032: NOT_EXECUTED
+    external_account_or_domain_action: NOT_AUTHORIZED
+    live_provider_or_browser_action: NOT_AUTHORIZED
+    staging: NOT_EXECUTED
+    publication: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED

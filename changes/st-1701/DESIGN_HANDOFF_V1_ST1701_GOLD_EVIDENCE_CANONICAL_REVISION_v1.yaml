@@ -1,0 +1,422 @@
+DESIGN_HANDOFF_V1:
+  document_version: 1
+  proposal_status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+  approved_story: ST-1701
+  approved_scope:
+    - Record the repository owner's approved single-reviewer exception for OD-005 without using it as professional legal review.
+    - Collect one bounded, field-level, public-page Gold Evidence ledger for OD-006 under changes/st-1701/evidence.
+    - Extend the existing ST-1701 owner generator and its existing no-argument and --check entrypoints to validate and aggregate the approved ledger.
+    - Generate a proposal-only Gold Evidence summary, seven scoped resolution-record candidates, complete Open Decisions revision candidate, revision request, and hash-bound bundle manifest.
+    - Stop before canonical import, ST-1607, formal TST-032, staging, publication, release, Production, domain control, account setup, or credential use.
+  source_design_refs:
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      bytes: 7943
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      bytes: 4956
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      bytes: 71458
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      bytes: 11395
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      bytes: 24993
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
+      bytes: 1064
+      sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
+    - uri: repo://changes/st-0006/gate-blocker-report.v1.yaml
+      bytes: 9999
+      sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
+    - uri: repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml
+      bytes: 8680
+      sha256: d07a2f3902dcd23f7ef9d46ecd3ab68162bcc28f2b3ad849bbe0e27891f502aa
+    - uri: repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
+      bytes: 10678
+      sha256: 7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f
+    - uri: repo://changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml
+      bytes: 2098
+      sha256: 749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34
+    - uri: repo://changes/st-1701/generated/canonical-revision-request.v1.md
+      bytes: 4268
+      sha256: 6f6425ef97b53ca9a406b98ff5e9b2a64762adc5badc4569cc539afc53da7d04
+    - uri: repo://changes/st-1701/README.md
+      bytes: 10769
+      sha256: da33c6c0720d83477de3e73dc794863f33d2f7bf0304f55a9b23eeb23100525e
+    - uri: repo://scripts/build_st1701_business_inputs.py
+      bytes: 64297
+      sha256: cc89aabbebe241cd81d0f1247ef467b6f48e640ec6a3e8c8c3c4e570899a048b
+  decision:
+    authority_model:
+      evidence_authority: OWNER_REVIEWED_CANONICAL_REVISION_EVIDENCE_CANDIDATE_ONLY
+      canonical_mutation_authority: NONE
+      canonical_open_decision_status: UNCHANGED_UNTIL_SEPARATE_IMPORT
+      st0006_blocker_state: UNCHANGED_UNTIL_SEPARATE_IMPORT
+      gate_state: BLOCKED
+      st1701_acceptance: NOT_ACHIEVED
+      tst_032: NOT_EXECUTED
+      st1607: ABSENT_NOT_IMPLEMENTED_HERE
+      release_authority: NONE
+      production_authority: NONE
+    od005_single_reviewer_policy:
+      primary_reviewer: REPOSITORY_OWNER
+      domain_editor: REPOSITORY_OWNER
+      alternate_reviewer:
+        status: NOT_REQUIRED_BY_EXPLICIT_OWNER_EXCEPTION
+        person: null
+      delegation: FORBIDDEN_WITHOUT_NEW_EXPLICIT_APPROVAL
+      proxy_approval: FORBIDDEN
+      automatic_approval: FORBIDDEN
+      owner_unavailable_behavior: FAIL_CLOSED_STOP_AFFECTED_APPROVAL_AND_PUBLICATION
+      standard_labor_cost:
+        amount: 3000
+        currency: JPY
+        unit: HOUR
+      effective_until: SUPERSEDED_BY_NEW_EXACT_OWNER_APPROVAL
+      professional_legal_review_substitution: FORBIDDEN
+    od006_collection_policy:
+      category_id: suitcase_and_carry_bags
+      collection_mode: BOUNDED_PUBLIC_PAGE_DESK_RESEARCH
+      login: FORBIDDEN
+      authenticated_api: FORBIDDEN
+      browser_automation: FORBIDDEN
+      automatic_crawling: FORBIDDEN
+      primary_observation_source: PUBLIC_RAKUTEN_PRODUCT_LISTING
+      corroboration_source: OFFICIAL_MANUFACTURER_SPECIFICATION_PAGE
+      ranking_source: PUBLIC_RAKUTEN_OFFICIAL_SUITCASE_RANKING
+      candidate_pool:
+        first_bound: TOP_50_AT_SNAPSHOT
+        sole_expansion: TOP_100_AT_SAME_SNAPSHOT
+        expansion_condition: TOP_50_CANNOT_SATISFY_ALL_CLOSED_SELECTION_CONSTRAINTS
+        exhaustion_behavior: STOP_EVIDENCE_INSUFFICIENT
+        out_of_pool_manual_substitution: FORBIDDEN
+        ranking_entries_are_family_seeds_not_all_observations: true
+      related_listing_discovery:
+        query: EXACT_MANUFACTURER_MODEL_ON_PUBLIC_RAKUTEN_SEARCH
+        maximum_results_inspected_per_family_seed: 20
+        selection: FIRST_THREE_QUALIFYING_DISTINCT_LISTING_URLS_IN_DISPLAYED_RESULT_ORDER
+        minimum_distinct_shops_per_family: 2
+        insufficient_results: FAMILY_SEED_INELIGIBLE
+        result_order_tie_break: NORMALIZED_HTTPS_LISTING_URL
+      observation_window:
+        maximum_elapsed_hours: 48
+        one_collection_snapshot_id_required: true
+        timestamps_include_timezone: true
+      closed_counts:
+        listing_count: 30
+        family_count: 10
+        listings_per_family: 3
+        minimum_shops_per_family: 2
+        minimum_shop_count: 5
+        minimum_brand_count: 5
+        maximum_families_per_brand: 2
+        unordered_pair_count: 435
+      required_case_tags:
+        - exact_duplicates
+        - color_or_variant_differences
+        - size_or_capacity_differences
+        - missing_jan
+        - bundles_and_set_count
+        - conflicting_fields
+      price_mix:
+        low_family_count: 4
+        mid_family_count: 4
+        high_family_count: 2
+        family_price: MEDIAN_OF_THREE_OBSERVED_LISTING_PRICES_JPY
+        ordering: ASCENDING_FAMILY_PRICE_THEN_ASCENDING_RANK_POSITION_TUPLE_THEN_FAMILY_ID
+        tier_assignment:
+          low: SORTED_POSITIONS_1_THROUGH_4
+          mid: SORTED_POSITIONS_5_THROUGH_8
+          high: SORTED_POSITIONS_9_THROUGH_10
+        missing_or_nonpositive_price: REJECT_EVIDENCE
+      deterministic_family_set_selection:
+        eligibility: ALL_CLOSED_COUNTS_PRICE_MIX_AND_REQUIRED_CASES_SATISFIED
+        ordering: LEXICOGRAPHIC_ASCENDING_TUPLE_OF_THE_10_FAMILY_SEED_RANKING_POSITIONS
+        selection: FIRST_ELIGIBLE_TUPLE_ONLY
+        tie_break: CANONICAL_FAMILY_ID_THEN_CANONICAL_LISTING_ID
+        no_eligible_set: STOP_EVIDENCE_INSUFFICIENT
+    ledger_contract:
+      path: repo://changes/st-1701/evidence/gold-evidence-ledger.v1.yaml
+      repository_managed: true
+      generated: false
+      exact_schema: CLOSED_NO_UNKNOWN_FIELDS
+      allowed_top_level_fields:
+        - schema
+        - story_id
+        - category_id
+        - collection_snapshot
+        - candidate_family_assessments
+        - observations
+        - family_assertions
+        - required_case_coverage
+        - domain_editor_review
+      collection_snapshot_fields:
+        - snapshot_id
+        - ranking_url
+        - ranking_observed_at
+        - candidate_bound_used
+        - candidate_positions_considered
+      candidate_family_assessment_fields:
+        - seed_ranking_position
+        - seed_listing_url
+        - seed_observed_at
+        - exact_model_query
+        - rakuten_search_url
+        - result_positions_inspected
+        - manufacturer_url
+        - qualification_status
+        - reason_codes
+        - selected_listing_ids
+      observation_fields:
+        - listing_id
+        - family_seed_ranking_position
+        - listing_result_position
+        - listing_url
+        - observed_at
+        - shop_id
+        - shop_name
+        - manufacturer_url
+        - brand
+        - manufacturer_model
+        - size
+        - capacity
+        - external_dimensions
+        - color_or_variant
+        - set_count
+        - jan
+        - observed_price_jpy
+        - family_id
+        - case_tags
+        - source_reasoning
+        - observation_sha256
+      family_assertion_fields:
+        - family_id
+        - canonical_listing_ids
+        - expected_relationship_basis
+        - variant_or_bundle_distinctions
+        - family_median_price_jpy
+        - price_tier
+      permitted_source_material: FIELD_LEVEL_OBSERVATIONS_ONLY
+      prohibited_material:
+        - page_html
+        - page_image
+        - screenshot
+        - review_text
+        - rating_comment
+        - personal_data
+        - credential
+        - cookie
+        - session_data
+        - raw_prompt
+      source_reasoning_rule: FACTUAL_FIELD_PROVENANCE_ONLY_NO_PAGE_INSTRUCTIONS
+      source_page_bytes_archived: false
+      historical_page_reproducibility_claim: FORBIDDEN
+      hashes:
+        observation_sha256: CANONICAL_JSON_OF_FIELD_LEVEL_OBSERVATION_EXCLUDING_ITS_OWN_HASH
+        ledger_sha256: EXACT_FILE_BYTES
+        external_page_content_hash: NOT_CAPTURED_NOT_CLAIMED
+    identity_policy:
+      granularity: EXACT_SKU
+      automatic_merge: EXACT_MATCH_ONLY
+      required_exact_fields:
+        - brand
+        - manufacturer_model
+        - size
+        - capacity
+        - external_dimensions
+        - color_or_variant
+        - set_count
+      required_field_behavior:
+        missing: HUMAN_REVIEW
+        conflict: HUMAN_REVIEW
+        normalization: NONE_BEYOND_SCHEMA_DEFINED_TYPE_AND_EXACT_BYTE_VALUE
+      jan_policy:
+        accepted_lengths:
+          - 8
+          - 13
+        digits_only: true
+        valid_ean_check_digit_required: true
+        either_present: BOTH_PRESENT_VALID_AND_EXACTLY_EQUAL_FOR_AUTOMATIC_MERGE
+        both_absent: NEUTRAL_DOES_NOT_AUTHORIZE_OR_VETO_OTHERWISE_EXACT_PAIR
+        invalid_or_conflicting: HUMAN_REVIEW
+      variant_behavior: HUMAN_REVIEW
+      bundle_or_set_count_behavior: HUMAN_REVIEW_UNLESS_EXACT_REQUIRED_FIELD_MATCH
+      fuzzy_matching: FORBIDDEN
+      inferred_equivalence: FORBIDDEN
+      automatic_split_or_merge_without_exact_rule: FORBIDDEN
+    pair_evaluation:
+      pair_population: ALL_435_UNORDERED_PAIRS_DERIVED_FROM_EXACT_30_LISTING_IDS
+      expected_relationship_source: OWNER_APPROVED_FAMILY_LABELS_AND_EXPLICIT_VARIANT_OR_BUNDLE_DISTINCTIONS
+      result_values:
+        - AUTOMATIC_MERGE
+        - HUMAN_REVIEW
+      false_automatic_merge_definition: AUTOMATIC_MERGE_WHEN_EXPECTED_RELATIONSHIP_IS_NOT_SAME_EXACT_SKU
+      acceptance:
+        maximum_false_automatic_merges: 0
+        human_review_is_failure: false
+      report_only_metrics:
+        - automatic_merge_pair_count
+        - human_review_pair_count
+        - false_automatic_merge_count
+        - conservative_non_merge_count
+        - automation_rate_numerator
+        - automation_rate_denominator
+      confidence_interval: FORBIDDEN
+      runtime_performance_claim: FORBIDDEN
+      production_quality_claim: FORBIDDEN
+    domain_editor_approval:
+      approver: REPOSITORY_OWNER
+      review_scope:
+        - ALL_30_OBSERVATIONS
+        - ALL_FAMILY_ASSERTIONS
+        - ALL_AUTOMATIC_MERGE_CANDIDATES
+        - ALL_SIX_REQUIRED_CASE_TAGS
+        - ALL_435_DERIVED_EXPECTED_RELATIONSHIPS
+      approval_binding: EXACT_LEDGER_SHA256_AND_BYTES
+      approval_record_path: repo://changes/st-1701/evidence/GOLD-EVIDENCE-APPROVAL-v1.yaml
+      approval_record_generated: false
+      approval_required_before_revision_bundle_generation: true
+      approval_does_not_mutate_ledger: true
+      approval_does_not_resolve_canonical_decision: true
+    generator_contract:
+      owner: repo://scripts/build_st1701_business_inputs.py
+      entrypoints:
+        - NO_ARGUMENT_GENERATE
+        - EXACT_FLAG_--check
+      new_cli: FORBIDDEN
+      network_access: FORBIDDEN
+      environment_dependent_input: FORBIDDEN
+      reads_public_pages: false
+      reads_only_repo_bound_sources: true
+      outputs_are_deterministic: true
+      generation_requires_valid_domain_editor_approval: true
+      generation_before_approval:
+        evidence_validation_report: ALLOWED_NON_PROMOTING
+        resolution_candidates: FORBIDDEN
+        canonical_revision_bundle: FORBIDDEN
+      generated_outputs:
+        - repo://changes/st-1701/generated/gold-evidence-summary.v1.json
+        - repo://changes/st-1701/generated/st1701-resolution-record-candidates.v1.yaml
+        - repo://changes/st-1701/generated/open-decisions-revision-candidate.v1.yaml
+        - repo://changes/st-1701/generated/canonical-revision-request.v1.md
+        - repo://changes/st-1701/generated/canonical-revision-bundle-manifest.v1.yaml
+        - repo://changes/st-1701/manifest.yaml
+      generated_output_authority: PROPOSAL_ONLY_NON_CANONICAL
+      generated_output_editing: GENERATOR_ONLY
+    resolution_candidate_contract:
+      scoped_ids_in_exact_order:
+        - OD-001
+        - OD-002
+        - OD-005
+        - OD-006
+        - OD-007
+        - OD-008
+        - OD-009
+      permitted_proposed_status: RESOLVED
+      canonical_effect: NONE_UNTIL_SEPARATE_APPROVED_CANONICAL_IMPORT
+      other_open_decisions: BYTE_SEMANTICALLY_PRESERVED_FROM_PINNED_CANONICAL_SOURCE
+      od002_external_state:
+        decision_resolution_separate_from_domain_purchase: true
+        decision_resolution_separate_from_domain_control: true
+        decision_resolution_separate_from_credentials: true
+        decision_resolution_separate_from_public_activation: true
+      forbidden_promotions:
+        - GATE_PASS
+        - ST1701_ACHIEVED
+        - ST1702_READY
+        - TST032_PASS
+        - STAGING_READY
+        - RELEASE_READY
+        - PRODUCTION_READY
+    canonical_revision_bundle:
+      status: PROPOSAL_ONLY
+      exact_bundle_sha256_approval_required: true
+      approval_record_path: repo://changes/st-1701/CANONICAL-REVISION-BUNDLE-APPROVAL-v1.yaml
+      approval_record_generated: false
+      approval_effect: AUTHORIZES_ONLY_SEPARATE_FORMAL_IMPORT_REVIEW
+      direct_canonical_write: FORBIDDEN
+      direct_status_overlay_write: FORBIDDEN
+      direct_st0006_generated_output_write: FORBIDDEN
+      formal_import: NOT_EXECUTED_BY_THIS_SLICE
+      tst_032: NOT_EXECUTED_BY_THIS_SLICE
+  rationale:
+    - OD-005 is a repository-owner staffing policy choice and can be resolved by an explicit fail-closed single-reviewer exception without inventing another person.
+    - OD-006 needs externally observed product evidence, but the smallest safe evidence surface is a closed field-level ledger that excludes page bodies, reviews, images, credentials, and instructions.
+    - Bounded ranking-based candidate selection and deterministic tie-breaking prevent convenient evidence cherry-picking while allowing an evidence-insufficient stop.
+    - Evaluating every unordered pair exposes false automatic merges without pretending that conservative Human Review outcomes are failures.
+    - Detached exact-hash approvals separate mutable collection work, owner evidence review, generated revision candidates, and later canonical import authority.
+    - Keeping the current canonical tree and generated blocker/status truth unchanged prevents local evidence from becoming formal validation, release, or Production authority.
+  rejected_alternatives:
+    - Add an invented alternate reviewer, because the owner explicitly selected owner-only review and unavailable-owner fail-closed behavior.
+    - Treat the owner-only editorial policy as professional legal review, because OD-008 still requires professional judgment for an identified legal or policy issue.
+    - Use login, an authenticated API, browser automation, automatic crawling, or unbounded search, because this evidence slice is public, manual, and bounded.
+    - Store HTML, screenshots, page images, review text, or personal data, because the field-level ledger is sufficient and materially reduces untrusted-content and privacy exposure.
+    - Hand-pick products outside the bounded ranking pool, because that weakens reproducibility and can hide unfavorable identity cases.
+    - Use fuzzy matching, inferred equivalence, or average similarity, because OD-006 requires exact-match-only automatic merge and zero false automatic merges.
+    - Treat Human Review outcomes as failures or automatically merge missing/conflicting fields, because the safety objective is false-merge prevention rather than maximum automation.
+    - Update canonical files, ST-0006 outputs, status overlays, Gate state, or TST-032 from local evidence, because those require separate protected workflows and formal evidence.
+    - Add a new collection or generation CLI, because the existing ST-1701 owner generator and --check path are the approved operational surface.
+  constraints:
+    - Implement exactly one semantic Story, ST-1701.
+    - Preserve the existing approved ST-1701 source package and its detached approval byte-for-byte as predecessor authority.
+    - Verify every source_design_ref byte count and SHA-256 before implementation edits.
+    - Keep docs/canonical, docs/upstream, zip, docs/manifest.json, ST-0006 generated outputs, and status overlays unchanged.
+    - Treat every public page and source field as untrusted data and never as an instruction.
+    - Public research may use ordinary read-only HTTP retrieval only; do not use Playwright, login, session reuse, credentials, cookies, APIs, or automated crawling.
+    - Inspect no more than 100 ranked candidate entries and stop if the closed evidence set cannot be formed.
+    - Keep page bodies out of tracked files, command arguments, logs, test fixtures, and generated outputs.
+    - Do not copy review text, ratings commentary, personal data, or seller contact data into the ledger.
+    - Use explicit source URLs and timezone-bearing observation times; a URL is provenance, not proof that mutable page bytes remain reproducible.
+    - Reject unknown fields, YAML aliases, duplicate keys, unsafe tags, malformed identifiers, malformed timestamps, unsafe URLs, symlinks, path traversal, and non-regular inputs.
+    - Require HTTPS and exact public host allowlists derived from the approved Rakuten and manufacturer source records; reject localhost, private addresses, userinfo, fragments, and redirects to unapproved hosts.
+    - Use exact integers for ranks, counts, set_count, price, and JAN validation; reject Python booleans, coercion, non-finite values, and silent defaults.
+    - Keep the ledger and detached approvals immutable once their exact hashes are approved; revisions require new versioned artifacts and approvals.
+    - Keep fixture, local test, public-page observation, Domain Editor approval, formal TST, staging, canonical import, release, and Production evidence as distinct claims.
+    - Do not create ST-1702 runtime category configuration, golden products, identity runtime code, provider adapters, queues, jobs, database tables, routes, or deployment resources.
+    - Do not commit, publish, push, purchase a domain, configure accounts, access credentials, or activate external services in this slice.
+  security_and_approval_gates:
+    - "The handoff has no implementation authority until the repository owner approves its exact SHA-256 in a separate immutable approval record with open_decisions: []."
+    - The Pro advisory run 20260811T170649Z-0af64982bdb1 ended PRO_UNAVAILABLE with RESPONSE_NOT_IDENTIFIABLE and recovery diagnostic ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID; no Pro response is incorporated or inferred.
+    - The approved handoff authorizes code, tests, bounded public desk research, field-level ledger construction, and proposal-only generation; it does not authorize protected canonical import or formal validation.
+    - The Gold Evidence approval must be a separate immutable record binding the exact ledger URI, byte count, SHA-256, all 30 observations, all family assertions, all automatic-merge candidates, all six required cases, and all 435 derived pair labels.
+    - Any ledger change after Gold Evidence approval invalidates that approval and blocks revision-bundle generation.
+    - The Canonical Revision Bundle requires a second separate immutable owner approval of its exact manifest and aggregate hash before it may be submitted to a later formal import workflow.
+    - Gold Evidence approval and Canonical Revision Bundle approval do not themselves authorize canonical mutation, TST-032, staging, publication, release, or Production.
+    - A false automatic merge, missing observation, missing required case, out-of-window observation, unverifiable manufacturer corroboration, non-deterministic selection, approval drift, source drift, sensitive material, or prohibited surface is a hard stop.
+    - A missing owner stops affected review and publication; no delegate or automated approval may replace the owner.
+    - An identified legal or policy issue remains governed by OD-008 and may require professional review; the owner-only Domain Editor policy grants no legal authority.
+  acceptance_criteria:
+    - The new handoff and its detached approval match exact bytes and hashes, all required DESIGN_HANDOFF_V1 fields exist, approved_story is ST-1701, and open_decisions is empty before implementation.
+    - The evidence ledger has exactly 30 unique listings in exactly 10 unique families, exactly three listings and at least two shops per family, at least five shops overall, at least five brands, and no more than two families per brand.
+    - All observations are within one maximum 48-hour collection window and bind one ranking snapshot and the bounded candidate positions considered.
+    - Every ranking seed considered through the selected bound has one closed candidate assessment, and every related listing search records the bounded result positions inspected.
+    - The selected set is the first deterministic eligible ten-family seed ranking-position tuple and has exactly four low-, four mid-, and two high-price families under the closed ordering.
+    - Every required case tag is represented by explicit listing evidence, family assertions, and pair expectations.
+    - Every observation has a public Rakuten listing URL and official manufacturer corroboration URL for the required identity claims, or evidence collection stops as insufficient.
+    - Every one of the 435 unordered pairs has exactly one deterministic expected relationship and exactly one evaluated result.
+    - Automatic merge occurs only when all seven required fields are nonempty and byte-exact and the closed JAN policy is satisfied.
+    - False automatic merge count is exactly zero; conservative non-merges and the exact automation-rate numerator and denominator are reported without a production-quality claim.
+    - The exact Domain Editor approval is valid and binds the unchanged ledger before any resolution-record or revision-bundle candidate is generated.
+    - Exactly seven ST-1701 decision rows are proposed RESOLVED in canonical order, every other Open Decision is preserved, and no Gate, Story, test, runtime, release, or Production state is promoted.
+    - Generation and --check are deterministic; --check performs no write and rejects every source, approval, output, manifest, or predecessor drift.
+    - Existing approved source-package bytes, canonical imports, ST-0006 generated truth, status overlays, and unrelated Story artifacts remain unchanged.
+    - The generated bundle identifies itself as PROPOSAL_ONLY and stops before protected import and TST-032.
+  required_test_evidence:
+    - Isolated ST-1701 positive generation from ephemeral field-level fixtures and exact no-write --check behavior.
+    - Closed-schema tests for unknown fields, duplicate keys, aliases, unsafe YAML tags, malformed identifiers, booleans-as-integers, malformed timestamps, unsafe URLs, symlinks, path traversal, and non-regular files.
+    - Count and diversity tests for 30 listings, ten families, three listings per family, five shops, five brands, two-family brand maximum, and four/four/two price tiers.
+    - Candidate-bound, 48-hour-window, deterministic selection, tie-break, ranking-position, duplicate observation, duplicate listing, duplicate family, and evidence-insufficient tests.
+    - Required-case tests for exact duplicates, variant differences, size or capacity differences, missing JAN, bundles or set count, and conflicting fields.
+    - JAN/EAN-8 and JAN/EAN-13 digit, length, checksum, absent, one-sided, mismatch, and invalid-value tests.
+    - Exact identity-field missing, conflicting, reordered, Unicode, whitespace, case, variant, bundle, and no-normalization tests.
+    - Full 435-pair accounting, overlapping case-tag accounting, zero false automatic merge, one false-merge hard stop, conservative non-merge reporting, and exact automation-rate component tests.
+    - Tests proving result rows cannot spoof family labels, source fields, expected relationships, case tags, price tiers, ranking positions, or counts.
+    - Approval tests for missing, malformed, wrong-owner, wrong-URI, wrong-size, wrong-hash, stale-ledger, partial-scope, and post-approval mutation cases.
+    - Revision-candidate tests proving only the seven scoped IDs may be proposed RESOLVED, all other rows are preserved, and forged Gate, TST-032, Story, ST-1702, staging, release, or Production promotions are rejected.
+    - Tests proving page HTML, images, screenshots, review text, rating comments, personal data, credentials, cookies, prompts, and unknown source material cannot enter tracked or generated artifacts.
+    - Architecture tests proving no imports from providers, Playwright, network clients, browser automation, databases, repositories, queues, jobs, events, deployment, release, ST-1607, or ST-1702 runtime modules.
+    - Pinned Ruff format and lint, strict scoped mypy, in-memory compile and import, existing owner generator --check, isolated tests/st1701, ST-0006 owner check, canonical import verify, make check-workspace, worktree sensitive-data scan, and git diff --check.
+    - Explicit report that formal TST-032, CI, staging, canonical import, publication, release, Production, account setup, credential use, and domain purchase or control were not executed.
+  open_decisions: []

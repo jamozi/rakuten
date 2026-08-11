@@ -1,0 +1,356 @@
+DESIGN_HANDOFF_V1:
+  document_version: 1
+  proposal_status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+  approved_story: ST-1701
+  approved_scope:
+    - Add one non-authoritative, hash-bound MVP business-input decision package under changes/st-1701.
+    - Record the repository owner's selected values for OD-001, OD-002, OD-005, OD-006, OD-007, OD-008, and OD-009 without editing canonical sources or emitting canonical RESOLVED.
+    - Keep the existing unresolved ST-1701 registry and the ST-0006 blocker report truthful and active until a separately approved canonical revision is imported.
+    - Add one deterministic owner generator path for a strict source package, generated read model, manifest, canonical-revision request, and hostile validation tests.
+    - Record non-ST-1701 owner inputs only in a closed informational inventory with no status, activation, or implementation effect.
+    - Represent the suitcase and carry-bag category selection as a disabled decision-package candidate and evidence plan, not as the ST-1702 runtime category configuration or golden-product deliverable.
+  source_design_refs:
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      bytes: 7943
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      bytes: 4956
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      bytes: 71458
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      bytes: 11395
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      bytes: 24993
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
+      bytes: 1064
+      sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
+    - uri: repo://changes/st-0006/gate-blocker-report.v1.yaml
+      bytes: 9999
+      sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
+    - uri: repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml
+      bytes: 8680
+      sha256: d07a2f3902dcd23f7ef9d46ecd3ab68162bcc28f2b3ad849bbe0e27891f502aa
+    - uri: repo://changes/st-1701/README.md
+      bytes: 4690
+      sha256: c7337ffee3bb1e0aa15a9258d3a57a63ac1b65985745ed343d63e530ea77ad1d
+    - uri: repo://scripts/build_st1701_business_inputs.py
+      bytes: 23341
+      sha256: a9462d347c68ff8da234df16327298190ad54b453fce318358ed39d94a973528
+  decision:
+    authority_model:
+      package_authority: NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE
+      canonical_authority: UNCHANGED
+      canonical_open_decision_status: UNCHANGED
+      st0006_blocker_state: UNCHANGED
+      gate_state: BLOCKED
+      st1701_acceptance: NOT_ACHIEVED
+      tst_032: NOT_EXECUTED
+      implementation_authority_before_exact_handoff_approval: NONE
+      canonical_resolution_authority_from_local_package: NONE
+      exact_final_package_approval_required: true
+      canonical_revision_required_after_package_approval: true
+    record_status_model:
+      closed_values:
+        - OWNER_APPROVED
+        - PARTIAL
+        - EVIDENCE_PENDING
+        - EXECUTION_PENDING
+      meanings:
+        OWNER_APPROVED: The owner selected a complete business value, but canonical status and downstream gates remain unchanged.
+        PARTIAL: At least one decision element or required professional confirmation remains absent.
+        EVIDENCE_PENDING: The proposed value requires external or domain evidence before it can be proposed as canonically resolved.
+        EXECUTION_PENDING: The business choice is selected, but a separately approved external action or setup remains unexecuted.
+      forbidden_values:
+        - RESOLVED
+        - VALIDATED
+        - ACTIVE
+        - RELEASED
+        - PRODUCTION_READY
+      status_is_not_canonical_resolution: true
+    scoped_decisions:
+      - id: OD-001
+        record_status: OWNER_APPROVED
+        owner: Product Owner
+        selected_value:
+          category_id: suitcase_and_carry_bags
+          display_name_ja: スーツケース・キャリーバッグ
+        runtime_activation: DISABLED
+        synthetic_fixture_use_only: true
+        canonical_resolution: NOT_PROPOSED_UNTIL_PACKAGE_APPROVAL
+      - id: OD-002
+        record_status: EXECUTION_PENDING
+        owner: Product Owner
+        selected_value:
+          brand_name: 旅具比較ノート
+          formal_domain_candidate: tabigu-note.jp
+          operator_form: INDIVIDUAL_SOLE_PROPRIETOR_WITH_TRADE_NAME
+        execution_state:
+          domain_purchase: NOT_EXECUTED
+          domain_control_evidence: NOT_OBTAINED
+          public_activation: FORBIDDEN
+        domain_rules:
+          allowed_tld: .jp
+          fallback_domain: example.invalid
+          candidate_is_not_ownership_evidence: true
+      - id: OD-005
+        record_status: PARTIAL
+        owner: Business Owner
+        selected_value:
+          primary_reviewer: REPOSITORY_OWNER
+          alternate_reviewer: null
+          standard_labor_cost:
+            amount: 3000
+            currency: JPY
+            unit: HOUR
+        publication_until_alternate_or_explicit_exception: BLOCKED
+        contribution_profit_labor_basis: OWNER_SELECTED_NOT_CANONICALLY_ACTIVE
+      - id: OD-006
+        record_status: EVIDENCE_PENDING
+        owner: Domain Editor
+        selected_value:
+          category_id: suitcase_and_carry_bags
+          granularity: EXACT_SKU
+          automatic_merge: EXACT_MATCH_ONLY
+          required_exact_fields:
+            - brand
+            - manufacturer_model
+            - size
+            - capacity
+            - external_dimensions
+            - color_or_variant
+            - set_count
+          jan_policy:
+            optional_identity_evidence: true
+            if_either_value_present: both must be present, valid, and exactly equal
+            if_both_absent: absence alone neither authorizes nor vetoes an otherwise exact match
+          missing_required_field: HUMAN_REVIEW
+          conflict: HUMAN_REVIEW
+          fuzzy_matching: FORBIDDEN
+          inferred_equivalence: FORBIDDEN
+          automatic_split_or_merge_without_exact_rule: FORBIDDEN
+        evidence_gate:
+          status: EXTERNAL_GOLD_EVIDENCE_NOT_OBTAINED
+          minimum_listing_count: 30
+          minimum_product_family_count: 10
+          minimum_shop_count: 5
+          required_cases:
+            - exact_duplicates
+            - color_or_variant_differences
+            - size_or_capacity_differences
+            - missing_jan
+            - bundles_and_set_count
+            - conflicting_fields
+          maximum_false_automatic_merges: 0
+          reviewer: DOMAIN_EDITOR
+          raw_source_links_and_observations_required: true
+        runtime_automatic_merge: DISABLED_PENDING_EVIDENCE_AND_CANONICAL_REVISION
+      - id: OD-007
+        record_status: OWNER_APPROVED
+        owner: Managing Editor
+        selected_value:
+          maximum_age:
+            price_hours: 72
+            availability_hours: 48
+            affiliate_link_hours: 72
+            major_specifications_days: 90
+            image_days: 30
+          stale_or_missing_behavior:
+            price: HIDE_OR_MARK_UNAVAILABLE
+            availability: HIDE_OR_MARK_UNKNOWN
+            affiliate_link: DO_NOT_RENDER_ACTIONABLE_LINK
+            major_specifications: BLOCK_AFFECTED_CLAIM_OR_REQUIRE_REVIEW
+            image: HIDE_IMAGE_OR_USE_APPROVED_NON_PRODUCT_PLACEHOLDER
+          stale_never_treated_as_fresh: true
+        runtime_activation: DISABLED_PENDING_CANONICAL_REVISION
+      - id: OD-008
+        record_status: OWNER_APPROVED
+        owner: Business Owner / Legal
+        selected_value:
+          consultation_trigger: ACTUAL_IDENTIFIED_LEGAL_OR_POLICY_ISSUE
+          default_stop_scope: AFFECTED_SCOPE_ONLY
+          site_wide_stop_trigger: SHARED_POLICY_OR_SYSTEMIC_RISK
+          legal_judgment_by_ai_or_developer: FORBIDDEN
+          professional_decision_record_required: true
+        unresolved_issue_behavior: BLOCK_AFFECTED_PUBLICATION_OR_OPERATION
+      - id: OD-009
+        record_status: OWNER_APPROVED
+        owner: Business Owner
+        selected_value:
+          currency: JPY
+          monthly_external_spend_cap: 30000
+          thresholds:
+            warning_percent: 60
+            optional_external_work_stop_percent: 80
+            hard_stop_new_external_spend_percent: 100
+          initial_soft_allocation:
+            aws: 15000
+            llm: 10000
+            other_external: 5000
+          acceptable_loss_window:
+            months: 3
+            cumulative_amount: 90000
+            terminal_decision: EXPLICIT_GO_NO_GO
+          overrun_behavior: FAIL_CLOSED_NO_NEW_EXTERNAL_SPEND
+        production_activation: DISABLED_PENDING_CANONICAL_REVISION_AND_ACCOUNT_SETUP
+    informational_cross_story_owner_inputs:
+      authority: INFORMATION_ONLY_NO_IMPLEMENTATION_OR_STATUS_EFFECT
+      owner_follow_up_required: true
+      rows:
+        - id: OD-003
+          record_status: EVIDENCE_PENDING
+          selection: Rakuten account and report sample are not prepared
+        - id: OD-004
+          record_status: OWNER_APPROVED
+          selection: Search Console plus manual CSV for MVP; no paid rank provider
+        - id: OD-010
+          record_status: EXECUTION_PENDING
+          selection: Amazon Cognito with MFA
+        - id: OD-011
+          record_status: PARTIAL
+          selection:
+            critical: immediate email plus GitHub Issue
+            high: GitHub Issue plus daily email
+            primary: REPOSITORY_OWNER
+            alternate: null
+        - id: OD-012
+          record_status: PARTIAL
+          selection:
+            consent: EXPLICIT_OPT_IN
+            before_consent: FIRST_PARTY_MINIMAL_EVENTS_ONLY
+            ga4: OPT_IN_ONLY
+            exact_public_privacy_text: NOT_APPROVED
+        - id: OD-013
+          record_status: OWNER_APPROVED
+          selection:
+            primary_region: ap-northeast-1
+            backup_region: ap-northeast-3
+            foreign_copy_default: FORBIDDEN
+        - id: OD-014
+          record_status: PARTIAL
+          selection:
+            analytics_raw_days: 90
+            security_and_audit_years: 7
+            ai_run_and_evaluation_months: 37
+            publication_referenced_ai_artifact: EXTEND_WHILE_REQUIRED_BY_PUBLICATION_EVIDENCE
+            finance_fiscal_years: 7
+            professional_confirmation_before_production: REQUIRED
+        - id: OD-015
+          record_status: EXECUTION_PENDING
+          selection:
+            ordered_setup:
+              - domain_and_aws_cognito
+              - rakuten
+              - openai
+              - search_console
+              - ga4_after_consent
+            account_or_credential_setup: NOT_EXECUTED
+    implementation_artifacts:
+      source_contract: changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
+      generated_read_model: changes/st-1701/generated/mvp-business-decision-package.v1.json
+      generated_canonical_revision_request: changes/st-1701/generated/canonical-revision-request.v1.md
+      manifest: changes/st-1701/manifest.yaml
+      owner_generator: scripts/build_st1701_business_inputs.py
+      schema_strategy: CLOSED_EXACT_PYTHON_VALIDATION_MATCHING_EXISTING_ST1701_PATTERN
+      additional_entrypoint: FORBIDDEN
+      generated_file_hand_edit: FORBIDDEN
+      existing_unresolved_registry:
+        preserve: true
+        canonical_counts_and_blockers_unchanged: true
+    suitcase_candidate_boundary:
+      purpose: DECISION_PACKAGE_AND_EVIDENCE_PLANNING_ONLY
+      runtime_config: NOT_CREATED
+      golden_products: NOT_CREATED
+      production_data: FORBIDDEN
+      external_fetch: FORBIDDEN
+      st1702_authority: NOT_GRANTED
+      allowed_test_data: SYNTHETIC_VALIDATOR_FIXTURES_ONLY
+    canonical_revision_request:
+      generated: true
+      authority: PROPOSAL_ONLY
+      may_edit_canonical: false
+      may_emit_resolved: false
+      may_unblock_gate: false
+      prerequisite:
+        - exact final decision-package hash approval by repository owner
+        - OD-006 Gold Evidence accepted by Domain Editor
+        - all PARTIAL elements required for scoped ST-1701 acceptance completed or explicitly superseded by approved policy
+      external_execution_is_not_resolution_evidence: true
+  rationale:
+    - ST-0006 deliberately defines blocking semantics but not a decision-resolution record, so a new exact owner-approved contract is required.
+    - A separate non-authoritative package records owner intent without mutating imported canonical sources or lying about current gate status.
+    - Closed per-row statuses distinguish an owner selection from missing evidence, missing fields, and unexecuted external setup.
+    - Keeping the current unresolved registry active preserves canonical truth while the package and later canonical revision are reviewed independently.
+    - Restricting suitcase material to decision and evidence planning preserves the ST-1702 dependency and one-Story ownership boundary.
+    - A generated canonical-revision request makes the eventual authority transition explicit and reviewable instead of silently changing status.
+  rejected_alternatives:
+    - Edit docs/canonical open decisions directly, because imported canonical artifacts are checksum-pinned and immutable in this implementation pass.
+    - Mark all owner-selected rows RESOLVED locally, because OD-006 lacks external Gold Evidence, OD-005 is partial, and ST-0006 has no approved resolution-record contract.
+    - Treat domain availability, account setup, or local tests as business-decision approval, because execution and evidence are separate authority classes.
+    - Implement the ST-1702 runtime category configuration or golden products inside ST-1701, because that bypasses the canonical dependency and broadens the Story.
+    - Put all fifteen Open Decisions under ST-1701 implementation authority, because only seven are ST-1701 acceptance inputs.
+    - Use free-form Markdown as the only source, because deterministic validation, status separation, hostile tests, and hash-bound review would be lost.
+    - Activate automatic SKU merge before zero-false-merge Gold Evidence, because that can silently combine distinct products.
+    - Reuse Pro browser output as implementation authority, because Pro review is advisory and the attempted gated review did not yield a valid proposal.
+  constraints:
+    - Implement exactly one semantic Story, ST-1701.
+    - Preserve all existing canonical, upstream, ZIP, and docs/manifest.json bytes.
+    - Preserve the existing ST-0006 owner check and unresolved blocker report.
+    - Preserve the current unresolved ST-1701 registry and its global counts until a later approved canonical revision changes the authoritative source.
+    - Reject unknown, duplicate, missing, reordered, aliased, or unsafe-tagged package structures.
+    - Reject any status, value, evidence, or generated text that claims canonical RESOLVED, gate pass, VALIDATED, staging, release, or production readiness.
+    - Do not read or write credentials, .secrets content, provider accounts, domain registrar state, browser state, or external services.
+    - Do not purchase a domain, create an account, configure a provider, publish, deploy, release, or perform production actions.
+    - Do not include personal data beyond stable role identifiers such as REPOSITORY_OWNER.
+    - Do not place raw external evidence or untrusted page content in generated artifacts.
+    - Keep local fixture tests, formal TST-032, live evidence, staging, and production as separate claims.
+  security_and_approval_gates:
+    - Exact SHA-256 approval of this handoff by the repository owner is required before any implementation edit.
+    - After approval, implementation must be delegated to the repository implementation_worker in STRICT_STORY mode.
+    - The implementation worker must verify this exact handoff hash, source hashes, approved Story, and open_decisions before editing.
+    - The completed source decision package requires a second exact SHA-256 owner approval before any canonical-revision proposal can be treated as owner-approved evidence.
+    - OD-006 remains EVIDENCE_PENDING until the closed Gold dataset and Domain Editor review satisfy zero false automatic merges.
+    - OD-005 remains PARTIAL while alternate_reviewer is null unless a separately approved policy explicitly permits single-reviewer operation.
+    - OD-002 domain purchase and control, and OD-015 account and credential setup, remain separately approved external actions.
+    - OD-008 never authorizes AI or developer legal judgment; an identified issue blocks the affected scope pending professional review.
+    - OD-009 hard stop may only reduce external spending capability and cannot be bypassed by soft allocation or local fixture success.
+    - Formal TST-032, CI, live account evidence, staging, publication, release, and production remain NOT_EXECUTED.
+  acceptance_criteria:
+    - One strict source package contains exactly the seven scoped decision rows in canonical order and the informational cross-story inventory in exact closed order.
+    - Each scoped row exactly matches this handoff and uses only the four approved record-status values.
+    - The generated read model is canonical, deterministic, hash-bound, and explicitly non-authoritative.
+    - The generated canonical-revision request names every still-partial, evidence-pending, and execution-pending condition and never claims canonical resolution.
+    - The existing unresolved registry continues to report seven unresolved scoped rows, fourteen global blockers, six blocked targets, and BLOCKED_UNRESOLVED_INPUTS.
+    - No ST-1702 runtime category config, golden-product dataset, provider adapter, credential path, public route, or deployment path is added.
+    - The owner generator accepts only the existing no-argument generation mode and exact --check mode.
+    - Check mode is deterministic and no-write; output paths and ancestors fail closed on unsafe filesystem shapes.
+    - The manifest binds this approved handoff, source package, generator, tests, generated outputs, and exact canonical/predecessor sources.
+    - README documentation reports selected owner inputs, all pending boundaries, exact commands, and local-versus-formal evidence accurately.
+  required_test_evidence:
+    - Isolated pytest process for tests/st1701 with positive parity, generation, no-write, and hostile mutation cases.
+    - Exact status-enum, exact row-order, exact field, and exact numeric-threshold tests for every scoped decision.
+    - OD-006 matrix tests for exact duplicates, variants, missing required fields, optional JAN behavior, bundles, conflicts, and zero false automatic merges using synthetic data only.
+    - Negative tests proving PARTIAL, EVIDENCE_PENDING, and EXECUTION_PENDING cannot be promoted to RESOLVED or gate-pass states.
+    - Tests proving informational cross-story rows cannot affect ST-1701 activation, canonical status, generated revision readiness, or downstream readiness.
+    - Tests proving the existing unresolved registry, ST-0006 blocker report, and canonical source bytes remain unchanged.
+    - Static prohibited-surface tests for network, browser, environment credential, subprocess, provider SDK, publication, deployment, and external-action calls.
+    - Strict YAML duplicate-key, alias, unsafe-tag, unknown-key, missing-key, reordered-key, path traversal, symlink, and generated-drift refusals.
+    - Pinned Ruff format/lint, strict mypy or the existing ST-1701 type gate, in-memory compile/import, owner generator --check, isolated tests/st1701, canonical import verify, make check-workspace, sensitive-data scan, and git diff --check.
+    - Explicit report that formal TST-032, live evidence collection, external account setup, staging, publication, release, and production were not executed.
+  open_decisions: []
+  approval:
+    status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+    approved_by: null
+    approved_at: null
+    approval_source: null
+    canonical_reconciliation: PROPOSAL_ALIGNED_NO_CANONICAL_MUTATION
+    implementation_authority: NONE
+    formal_tst_032: NOT_EXECUTED
+    live_external_evidence: NOT_OBTAINED
+    staging: NOT_EXECUTED
+    publication: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED
