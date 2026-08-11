@@ -17,7 +17,7 @@ provenance:
 status_boundary:
   canonical_files_modified: false
   effective_apply_requests: 0
-  proposal_only_requests: 52
+  proposal_only_requests: 98
   authoritative_live_apply: BLOCKED_PENDING_GOVERNANCE
   live_apply_activation_requires:
   - ST-0006
@@ -236,6 +236,144 @@ source_artifacts:
 - path: changes/st-0005/requests/0052-st-0307-v3.yaml
   bytes: 1509
   sha256: e384cc1bc318c7dc2e1414a73587871b56ea2439af01445512f6ca43ee977c66
+- path: changes/st-0005/requests/0053-st-0308-v1.yaml
+  bytes: 1527
+  sha256: 399f320a01af34281f3fdf8ff2893dc27b735d989c7f58363eb9eb1e3b563ab0
+- path: changes/st-0005/requests/0054-st-0401-v1.yaml
+  bytes: 1802
+  sha256: 9060cc9920c22768a9ec4646b92dd6ebc7f8293b69f45fa1d4e634a39b99909c
+- path: changes/st-0005/requests/0055-st-0402-v1.yaml
+  bytes: 1802
+  sha256: 8d7b569f624bcfedfedce88c6b9ee40a0102721c2dfbf789a590b0f26ed8e569
+- path: changes/st-0005/requests/0056-st-0403-v1.yaml
+  bytes: 1802
+  sha256: 8e799fa13794a30782b8eb085a870cbc6b97af737b14365675994f8687d00207
+- path: changes/st-0005/requests/0057-st-0404-v1.yaml
+  bytes: 1527
+  sha256: 61378f2fc943c474125d78da2146b32d4dc9c61088c74ac346317641e2db31bf
+- path: changes/st-0005/requests/0058-st-0405-v1.yaml
+  bytes: 1527
+  sha256: 1e78dfe2e70fd254c2476b393adb866dd6191869e10904a6bb6647917af56e32
+- path: changes/st-0005/requests/0059-st-0406-v1.yaml
+  bytes: 1802
+  sha256: 549362a8af43c1419107c12a21c4fb1eb739f8add95ad24032abf3a62815069d
+- path: changes/st-0005/requests/0060-st-0407-v1.yaml
+  bytes: 1527
+  sha256: 4d52ceb51cfdb7bd6e90b5ac38bdfa82e8fc5de09065341e0bae6b0a36749239
+- path: changes/st-0005/requests/0061-st-0501-v1.yaml
+  bytes: 1527
+  sha256: b6d46addf5bd4dd878a559406aaec68ed6ed055cda89499a7fde2d1ce465d46a
+- path: changes/st-0005/requests/0062-st-0502-v1.yaml
+  bytes: 1527
+  sha256: 7a369b060eb422982b48c6e61d44c384d9a11d0411800b15c6f49ac3da7cfc16
+- path: changes/st-0005/requests/0063-st-0503-v1.yaml
+  bytes: 1802
+  sha256: 37382a2663fff787e0a98235c0e3144adc3c857a2630f51d0d1d0b630f1518ec
+- path: changes/st-0005/requests/0064-st-0504-v1.yaml
+  bytes: 1527
+  sha256: 209ffcc3ab06b456c697df9b0058a63f1084d2677e6f46cdca9d69fc76bf3d63
+- path: changes/st-0005/requests/0065-st-0505-v1.yaml
+  bytes: 1252
+  sha256: 3bd18e3de811d5bbf01239ce3a9c1aa369070f5846db31f39717eedb855c9138
+- path: changes/st-0005/requests/0066-st-0506-v1.yaml
+  bytes: 1527
+  sha256: 585145158e90453088df993d312e9b3bc48f2d08f09f5ce12eed1db3ea6608c7
+- path: changes/st-0005/requests/0067-st-0601-v1.yaml
+  bytes: 1252
+  sha256: c453949bb059129b694f0712bc5f6ce99b536c3d013607bab1fc6c8555225b7d
+- path: changes/st-0005/requests/0068-st-0602-v1.yaml
+  bytes: 1527
+  sha256: 207b5bf155dd5a385e939af81f98998b9c44a63a6ea7782b1f2a5607c5624be6
+- path: changes/st-0005/requests/0069-st-0603-v1.yaml
+  bytes: 1527
+  sha256: 4dfe65370c1684f3d59fe7a69fa1651b0685983e1ff558b249d9df7ebf33f2e1
+- path: changes/st-0005/requests/0070-st-0604-v1.yaml
+  bytes: 1527
+  sha256: 8ac236eaa7cd021c2a91b2885f8658ec1104f05b32e29f421e440350b9cc1b3f
+- path: changes/st-0005/requests/0071-st-0605-v1.yaml
+  bytes: 1527
+  sha256: a8e50f37a229176ebe526d10291774a0449ae4c616b1ca359ddaebfedd52c709
+- path: changes/st-0005/requests/0072-st-0606-v1.yaml
+  bytes: 1527
+  sha256: e8f449e4410ca315003b552f9cd25395948c32ad80e1705c56040eaffca17c00
+- path: changes/st-0005/requests/0073-st-0702-v1.yaml
+  bytes: 1527
+  sha256: 9bd30fdfbd9f16194bfbc8a407c23e5fd933fcd94dbb80bd74e93da4e57c2391
+- path: changes/st-0005/requests/0074-st-0703-v1.yaml
+  bytes: 1252
+  sha256: 582a4f92aa7026f72c6899a760fa14e6eaabe950391e897481e84f1cc5935b66
+- path: changes/st-0005/requests/0075-st-0704-v1.yaml
+  bytes: 1802
+  sha256: 1b8aa6b1817b97fa07791f1057c7f16d1d166e29aa936ec907b0b2fd262bd404
+- path: changes/st-0005/requests/0076-st-0705-v1.yaml
+  bytes: 1527
+  sha256: 678fde1d5787d0c0fc752422a4ee3903a974112aaa536de00b5d20c2e61c5a79
+- path: changes/st-0005/requests/0077-st-0706-v1.yaml
+  bytes: 1573
+  sha256: 403364a6b526ad0fa2f4ee540dd225cebfc9172c3c4bb469249919c872562c03
+- path: changes/st-0005/requests/0078-st-0802-v1.yaml
+  bytes: 1527
+  sha256: fec67ca9fe3a42e85a97aa5badda0709e70087f37d57688c3590affbf75bb18d
+- path: changes/st-0005/requests/0079-st-0808-v1.yaml
+  bytes: 1802
+  sha256: 014b7e62f7f829411ad084b02ad1ea4c83f19c005e8d68b1bc26384f851d0b0f
+- path: changes/st-0005/requests/0080-st-1101-v1.yaml
+  bytes: 1802
+  sha256: c1995011c6af74ecd970c13024029ff08a1dd07c679f2455c71cf61cdb4be482
+- path: changes/st-0005/requests/0081-st-1201-v1.yaml
+  bytes: 1802
+  sha256: 6d4fd38815bc0001516f254da92d5c693630705b3fada18bb8cc24183e7238a9
+- path: changes/st-0005/requests/0082-st-1203-v1.yaml
+  bytes: 1252
+  sha256: 8c46c5a7517344643ef380dac12fc57260fe3f20e2b111fe945fbf224f51febb
+- path: changes/st-0005/requests/0083-st-1205-v1.yaml
+  bytes: 1252
+  sha256: d19dc4813a56a503eb42c28def35f3eb97373ec3f12ecda0c2710a96095735c0
+- path: changes/st-0005/requests/0084-st-1301-v1.yaml
+  bytes: 1527
+  sha256: 128bbe61acfa8da4c5be8842b2289c22ba28d54907f6c2e897d98b563b75a042
+- path: changes/st-0005/requests/0085-st-1302-v1.yaml
+  bytes: 1527
+  sha256: c58c31e1dd88b7849df5486c37b2a8881ce6ceca101a49febad32bdeef490fce
+- path: changes/st-0005/requests/0086-st-1404-v1.yaml
+  bytes: 1527
+  sha256: c4dee704ca2fa358d604478c1b725ac10fa932d29b2622e60a33634bf79d2731
+- path: changes/st-0005/requests/0087-st-1501-v1.yaml
+  bytes: 1252
+  sha256: b06e1c6ca263a9d0301b049798ed83fd9ea55fb88cdb280fe31f34fa0e8a75c2
+- path: changes/st-0005/requests/0088-st-1502-v1.yaml
+  bytes: 1527
+  sha256: 231ef94a325b843fa34f9484dc9c4c5fa6061f278016f3811884b2093be8e8c9
+- path: changes/st-0005/requests/0089-st-1503-v1.yaml
+  bytes: 1527
+  sha256: 70cbbe3b64d9ca4adbf483adafdd331424e703770383c3a0389921b664580202
+- path: changes/st-0005/requests/0090-st-1504-v1.yaml
+  bytes: 1252
+  sha256: e07b32f9f4e96319a9e45be1eb5b65db6e87483d73918b4d9c32335383282084
+- path: changes/st-0005/requests/0091-st-1505-v1.yaml
+  bytes: 1527
+  sha256: eb4731083ebe0d46ab7e267d7469e4dec65eab11daf58481d682110665f9819b
+- path: changes/st-0005/requests/0092-st-1506-v1.yaml
+  bytes: 1252
+  sha256: 9682ed2c5f5f1e09d6835af9149f0cbc39ae37afdb51aab79d741363d98ae0f6
+- path: changes/st-0005/requests/0093-st-1601-v1.yaml
+  bytes: 1252
+  sha256: 0805624ed23e4a493fd6ce093bc2164b037c22bf1537d1b38435239ff2ed8040
+- path: changes/st-0005/requests/0094-st-1602-v1.yaml
+  bytes: 1527
+  sha256: 29ed58978da40c0a566df5680974b0260c8bf7a791b6b9cf3cdc9d315259091c
+- path: changes/st-0005/requests/0095-st-1603-v1.yaml
+  bytes: 1527
+  sha256: ecc3406bd846aaf2aa86c9ff6d4c0e86f232f399cf91449b0655de8d5bad9f4f
+- path: changes/st-0005/requests/0096-st-1604-v1.yaml
+  bytes: 1252
+  sha256: 7640ef754bf8c01676a5c06b9a2a35b1b9263ebec4a24e16889fc2714c8e66bf
+- path: changes/st-0005/requests/0097-st-1606-v1.yaml
+  bytes: 1252
+  sha256: 0bb28e5207c78a0c5d924799822a9302422316e64f59c2a438d678b92fed5362
+- path: changes/st-0005/requests/0098-st-1701-v1.yaml
+  bytes: 1252
+  sha256: 8ad18c850e7f0557374d2e10b5e652785059a348e104306e84b859fd6d0cceb2
 - path: changes/st-0005/evidence/ST-0001-local-20260801.yaml
   bytes: 1125
   sha256: c49f4baf42595c177f674a4685227f0efb44b818344bff8e8dba23508d6f124b
@@ -380,18 +518,156 @@ source_artifacts:
 - path: changes/st-0005/evidence/ST-0307-local-20260806-v3.yaml
   bytes: 3599
   sha256: 2e6a785734bac29a6a5f703d4244afdbcf5a5a201eff2eb1aba536f74ff4110a
+- path: changes/st-0005/evidence/ST-0308-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 59ff57d340b0774c94c83e2248f42daf4ee642c5c358bc8f7884cb08ae0a5aee
+- path: changes/st-0005/evidence/ST-0401-local-20260811-v1.yaml
+  bytes: 1529
+  sha256: 17417ab1c394ee4dc1a5f0e6b3a894d3098cfdcab1ef83650bde2245700a5288
+- path: changes/st-0005/evidence/ST-0402-local-20260811-v1.yaml
+  bytes: 1529
+  sha256: cff0660ea70bc5823d4f17723a7deec8893a2dd2349a84523df7c978fddf7d85
+- path: changes/st-0005/evidence/ST-0403-local-20260811-v1.yaml
+  bytes: 1529
+  sha256: 1abd006ec1c45cc94821b2706661da3134cb074830be5c7b6f26bc4a4a441ced
+- path: changes/st-0005/evidence/ST-0404-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 8b7ca6d37de3cbad66b444ac070dcb44e0028943fc2ef6e209b7f4ee97486605
+- path: changes/st-0005/evidence/ST-0405-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 0661ee35c892f9c3a41a3abb51ebc7c685ef97f473a2d634411f00a2449e54ac
+- path: changes/st-0005/evidence/ST-0406-local-20260811-v1.yaml
+  bytes: 1529
+  sha256: 5c7228a44c01aabc5a4dab447c7515ef91fc5101b9da8226c01d82f88b311e97
+- path: changes/st-0005/evidence/ST-0407-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: d3e20a3b9aa7add869c27dab4b58b35c1d068fdc8b48526849bc7625b5dd5b2c
+- path: changes/st-0005/evidence/ST-0501-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: c8da01252d14a4064cc90445ac27529d1eb7936ca7b9312f371d0b341ec1aee1
+- path: changes/st-0005/evidence/ST-0502-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 939cb5caa5bc76704b1bd5ba130e6a020f45febfc70c75030d739a47727548c7
+- path: changes/st-0005/evidence/ST-0503-local-20260811-v1.yaml
+  bytes: 1529
+  sha256: fba4a6f499a900e2d566a495387956c3c96b7c3bb480104acc7c85734b6769e5
+- path: changes/st-0005/evidence/ST-0504-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: c786648796979a7562569b8f6eb4270f009d84b10d7f489c13da6714586e55cc
+- path: changes/st-0005/evidence/ST-0505-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: 99fe97e07c7c524c6d164acdb50ce8101201f3f652aa6604f71d40b6cdb1056b
+- path: changes/st-0005/evidence/ST-0506-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 2b4c6e6edb009ad4128e3c1a4d421ae3be5492b802a935beb46acb6c49cd675d
+- path: changes/st-0005/evidence/ST-0601-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: 1543164ee543fb76863c1cfa86045caacf47fe81f5cf1a2d2bc7d8b921df3f66
+- path: changes/st-0005/evidence/ST-0602-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 2969c73dac0a9793684ed0710481d83a58e85e789e1a438415f1525a9033607f
+- path: changes/st-0005/evidence/ST-0603-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: b2ceee0d89fdd20682b2736ebba3718b8651aea9351359ff733e67c3157065b8
+- path: changes/st-0005/evidence/ST-0604-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 59be4acb09cb0aee423ff11062b5e57bf55d0719f4a3181112da040eef5c1d5e
+- path: changes/st-0005/evidence/ST-0605-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 65b871556c155d188d8df3dfd92b692f15df63512c4c850a4fe07a6c975073aa
+- path: changes/st-0005/evidence/ST-0606-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: f03ccd02ab4c0a043cdfc8e9650bb69fa6e52ebd0b5ac337a78e1ea57bd486c1
 - path: changes/st-0005/evidence/ST-0701-local-20260805-v2.yaml
   bytes: 3230
   sha256: 0d587619d1b2ace731bc93c509392b5558694f097b2da2bfbe32b96549b3fbfe
 - path: changes/st-0005/evidence/ST-0701-local-20260805.yaml
   bytes: 9227
   sha256: 237c2c59d05b1cd2fd845a49b5afe00bbffbc71f1ab931c5c96f29811faded53
+- path: changes/st-0005/evidence/ST-0702-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: eb88b405067bdf8b9b4ff7ab1b249558a9705b4a8d2ebc20d509815748b7da3c
+- path: changes/st-0005/evidence/ST-0703-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: 1a812aded2a7852520bbbe99366d423367c5886498215d3c221d36b46e35ea98
+- path: changes/st-0005/evidence/ST-0704-local-20260811-v1.yaml
+  bytes: 1529
+  sha256: 295921887489cf30e01fe9c21525c6f24f9833e7cc3d004a3628caf1258882c4
+- path: changes/st-0005/evidence/ST-0705-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 291d5ab04326db8186b6e2ae3030be78073345d9d88ae1f4ebfd970b42038d8a
+- path: changes/st-0005/evidence/ST-0706-local-20260811-v1.yaml
+  bytes: 1584
+  sha256: 128f5f4f641806855c0c5dd58a7bf76d96074e474c6248d61d7786e152331128
 - path: changes/st-0005/evidence/ST-0801-local-20260804.yaml
   bytes: 33312
   sha256: bba39e07744988c03c4d60e7da8dc7c7117af797ef22eca81711f2d8c12b9bae
 - path: changes/st-0005/evidence/ST-0801-local-20260805-v2.yaml
   bytes: 3167
   sha256: f97cffaaf64a8628912e9c12a1a3b94092f654f6a0762d4ee48ec4824d2a7372
+- path: changes/st-0005/evidence/ST-0802-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 9218af81e405b8116ff9d0b2fee236f7ca65496d2779ef9bd890e979fab83654
+- path: changes/st-0005/evidence/ST-0808-local-20260811-v1.yaml
+  bytes: 1529
+  sha256: cc1c92201c76b5a57052decff87fd9091e8a37d05ea35df25919fed34224f675
+- path: changes/st-0005/evidence/ST-1101-local-20260811-v1.yaml
+  bytes: 1529
+  sha256: 7f21bf95d805327e6dfb24b444b03759c5f01ad7b37627d72d2ac0c175566792
+- path: changes/st-0005/evidence/ST-1201-local-20260811-v1.yaml
+  bytes: 1529
+  sha256: 8a17fd6d7610df433e0825abe882ef62eb5761b755d39a0f10e789d37e6dd141
+- path: changes/st-0005/evidence/ST-1203-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: aa9566b91726573229350d47195bba8a660ebdbcead8574702b78a3d401ff34d
+- path: changes/st-0005/evidence/ST-1205-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: 5311e444fa883958b98bb48f112f291d5a81db0f78f36d3529f93486462d38e3
+- path: changes/st-0005/evidence/ST-1301-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 19165d75d95f5ecb6eb0df3c6bc81b6acb58fffd01f856da410b8375bf9b4eb2
+- path: changes/st-0005/evidence/ST-1302-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: e74d7c0cf8f8baf786c4cf740b29e4a8ea043472312544a0c28b78effd449023
+- path: changes/st-0005/evidence/ST-1404-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: a8f4920a3f1b356391e6deb64e2982b9997a301910c747416d6a65d3fbfc8841
+- path: changes/st-0005/evidence/ST-1501-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: acc852dbb088ba6e51dc941392874b512d00eb879de5d51dc81209ab3430e93d
+- path: changes/st-0005/evidence/ST-1502-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 180f3ba0d918f24c25529ad4577005ce5714db47af716a65bbf7f14701cf0d30
+- path: changes/st-0005/evidence/ST-1503-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: b9e8d6058a6ac88512b99e0c90214abef31468b31ff1bd3db2d550441894935a
+- path: changes/st-0005/evidence/ST-1504-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: 1496c1d80ba02afd15116d2a428cbc67b6fb1357d1dab4aeebb35fda186afd95
+- path: changes/st-0005/evidence/ST-1505-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: d2b1530f7eea04f651a57a0fb50e2090718f2461391eea5c706c8877c7d62d02
+- path: changes/st-0005/evidence/ST-1506-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: 8166a59cd54812f7ecd8ef69e7627e8709f6a88a4f3054060f85327b2878622b
+- path: changes/st-0005/evidence/ST-1601-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: 8dd505d077893810e7207107d29a646b7dda6e1a5474f6bd18c13d7842460c37
+- path: changes/st-0005/evidence/ST-1602-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 4acbb3f2c786d64c481f401b2d7f329df7ae6db16cd40234071b9c588b8cda06
+- path: changes/st-0005/evidence/ST-1603-local-20260811-v1.yaml
+  bytes: 1467
+  sha256: 80fb21eafe3b2687779e30a94d8d28c133aa5ad35827c0a64275c8d72610a1ff
+- path: changes/st-0005/evidence/ST-1604-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: 1c7dbe24f7a39903961bda2542aa2388f4a8c93a75092a008c165f1d2d9c05d8
+- path: changes/st-0005/evidence/ST-1606-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: a42d3c5f4a7dffcdf8722bb9744a43e9dca443c17983f7d0d40ea81365dc048f
+- path: changes/st-0005/evidence/ST-1701-local-20260811-v1.yaml
+  bytes: 1405
+  sha256: b55bf5c20bc8f549679b49aef779b8cf97d3c889eaa25baff117a89ab445124f
 - path: changes/st-0005/evidence/artifacts/00146f1f8c26e96098bc050c418e43ac2bbdc0d38a5fc3efeac256ed91a22ffb-build_st0201_postgres_service.py
   bytes: 37003
   sha256: 00146f1f8c26e96098bc050c418e43ac2bbdc0d38a5fc3efeac256ed91a22ffb
@@ -1526,6 +1802,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/768f04b316e6ac624108f65277ff2c7aa6850cb26e96177e598d5a7dd316ee97-Makefile
   bytes: 21790
   sha256: 768f04b316e6ac624108f65277ff2c7aa6850cb26e96177e598d5a7dd316ee97
+- path: changes/st-0005/evidence/artifacts/769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4-RAOS-PRO-BRANCH-INTEGRATION-20260811.md
+  bytes: 14321
+  sha256: 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
 - path: changes/st-0005/evidence/artifacts/76a810f4470542bc1e2e16ae096661e74a06a2b76474e07815e52fbc2937d94f-test_cli.py
   bytes: 2723
   sha256: 76a810f4470542bc1e2e16ae096661e74a06a2b76474e07815e52fbc2937d94f
@@ -2264,6 +2543,9 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/ccce5906137009c090fc038bd409d71c81fb2453385e385adbefc536bd791d3f-README.md
   bytes: 1934
   sha256: ccce5906137009c090fc038bd409d71c81fb2453385e385adbefc536bd791d3f
+- path: changes/st-0005/evidence/artifacts/cce1c68a0ed60f9a8fdcf63f60b67c45df5a00c1826eb05cab278c35f7127687-README.md
+  bytes: 5799
+  sha256: cce1c68a0ed60f9a8fdcf63f60b67c45df5a00c1826eb05cab278c35f7127687
 - path: changes/st-0005/evidence/artifacts/cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e-202607300013_content_expand.sql
   bytes: 54252
   sha256: cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e
@@ -2927,8 +3209,8 @@ source_artifacts:
 generated_artifact_count: 3
 generated_artifacts:
 - path: changes/st-0005/status-overlay.v1.yaml
-  bytes: 260756
-  sha256: 1508ff269b64ac47083c8bd989089d275823cf9fe45bf6eb408b2a13963b3811
+  bytes: 347416
+  sha256: d8f432c8fe79d6e4066a33c55d00527f23f93c2a810f88b0d8555bd317b77b90
 - path: changes/st-0005/contracts/status-policy.v1.yaml
   bytes: 8974
   sha256: 15969f4d5db3aee48059ece1fb572786f25bc0807eb34458b36f97f63f8ccfaf

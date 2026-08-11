@@ -1,0 +1,147 @@
+{
+  "schema": "GOLD_EVIDENCE_VALIDATION_V1",
+  "story_id": "ST-1701",
+  "status": "EVIDENCE_INSUFFICIENT",
+  "stop_code": "STOP_EVIDENCE_INSUFFICIENT",
+  "authority": "PROPOSAL_ONLY_NON_CANONICAL",
+  "authority_binding": {
+    "handoff": {
+      "uri": "repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_GOLD_EVIDENCE_CANONICAL_REVISION_v1.yaml",
+      "bytes": 26483,
+      "sha256": "c45bea63891448be4af4d696d7d164ea37f246b76f5acce91de791638f49c17f"
+    },
+    "detached_approval": {
+      "uri": "repo://changes/st-1701/DESIGN-HANDOFF-APPROVAL-GOLD-EVIDENCE-v1.yaml",
+      "bytes": 1876,
+      "sha256": "288e96b9e4814e1a3d9409addcee2bf1b5bdf12ab9e0a8e756ec66846f057197",
+      "status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_authority": "ST1701_GOLD_EVIDENCE_CANONICAL_REVISION_V1_ONLY",
+      "open_decisions": []
+    }
+  },
+  "collection_feasibility": {
+    "category_id": "suitcase_and_carry_bags",
+    "collection_mode": "BOUNDED_PUBLIC_PAGE_DESK_RESEARCH",
+    "ranking_source": "PUBLIC_RAKUTEN_OFFICIAL_SUITCASE_RANKING",
+    "ranking_url": "https://ranking.rakuten.co.jp/daily/301577/",
+    "ranking_observed_at": "2026-08-12T02:30:56+09:00",
+    "snapshot_update_date": "2026-08-11",
+    "snapshot_aggregate_date": "2026-08-10",
+    "required_first_bound": "TOP_50_AT_SNAPSHOT",
+    "accessible_contiguous_rank_positions": {
+      "first": 1,
+      "last": 20
+    },
+    "unavailable_required_same_snapshot_positions": {
+      "first": 21,
+      "last": 50
+    },
+    "same_snapshot_top_50_route_found": false,
+    "top_100_expansion_reached": false,
+    "candidate_bound_exhaustion_claimed": false,
+    "stale_snapshot_mixing_refused": true,
+    "ranking_entries_are_family_seeds_not_observations": true,
+    "out_of_pool_manual_substitution": "FORBIDDEN",
+    "page_bodies_archived": false
+  },
+  "closed_evidence_contract": {
+    "ledger_uri": "repo://changes/st-1701/evidence/gold-evidence-ledger.v1.yaml",
+    "complete_ledger_acceptance_enabled": false,
+    "closed_counts": {
+      "listing_count": 30,
+      "family_count": 10,
+      "listings_per_family": 3,
+      "minimum_shops_per_family": 2,
+      "minimum_shop_count": 5,
+      "minimum_brand_count": 5,
+      "maximum_families_per_brand": 2,
+      "unordered_pair_count": 435
+    },
+    "required_case_tags": [
+      "exact_duplicates",
+      "color_or_variant_differences",
+      "size_or_capacity_differences",
+      "missing_jan",
+      "bundles_and_set_count",
+      "conflicting_fields"
+    ],
+    "price_mix": {
+      "low_family_count": 4,
+      "mid_family_count": 4,
+      "high_family_count": 2
+    },
+    "required_exact_identity_fields": [
+      "brand",
+      "manufacturer_model",
+      "size",
+      "capacity",
+      "external_dimensions",
+      "color_or_variant",
+      "set_count"
+    ],
+    "jan_policy": {
+      "accepted_lengths": [
+        8,
+        13
+      ],
+      "digits_only": true,
+      "valid_ean_check_digit_required": true,
+      "either_present": "BOTH_PRESENT_VALID_AND_EXACTLY_EQUAL_FOR_AUTOMATIC_MERGE",
+      "both_absent": "NEUTRAL_DOES_NOT_AUTHORIZE_OR_VETO_OTHERWISE_EXACT_PAIR",
+      "invalid_or_conflicting": "HUMAN_REVIEW"
+    },
+    "pair_population": "ALL_435_UNORDERED_PAIRS_DERIVED_FROM_EXACT_30_LISTING_IDS",
+    "derived_unordered_pair_count": 435,
+    "pair_result_values": [
+      "AUTOMATIC_MERGE",
+      "HUMAN_REVIEW"
+    ],
+    "maximum_false_automatic_merges": 0,
+    "pair_metrics_emitted": false
+  },
+  "ledger_boundary": {
+    "ledger_present": false,
+    "domain_editor_approval_uri": "repo://changes/st-1701/evidence/GOLD-EVIDENCE-APPROVAL-v1.yaml",
+    "domain_editor_approval_present": false,
+    "preapproval_result_uri": "repo://changes/st-1701/generated/gold-evidence-validation.v1.json",
+    "gold_summary_generated": false,
+    "resolution_candidates_generated": false,
+    "open_decisions_revision_candidate_generated": false,
+    "gold_canonical_revision_request_generated": false,
+    "canonical_revision_bundle_manifest_generated": false,
+    "canonical_revision_bundle_approval_present": false,
+    "existing_predecessor_canonical_revision_request_preserved": true
+  },
+  "required_handoff_addendum": [
+    "ledger.schema literal",
+    "snapshot_id listing_id family_id and shop_id types and formats",
+    "candidate qualification_status and reason_codes closed values",
+    "required_case_coverage and domain_editor_review nested schemas",
+    "source_reasoning expected_relationship_basis and variant_or_bundle_distinctions shapes",
+    "observation canonical JSON hashing profile",
+    "derived expected-pair row structure and ordering",
+    "manufacturer host registry and redirect-chain proof",
+    "Domain Editor approval record field layout",
+    "postapproval Gold summary resolution revision and bundle schemas",
+    "per-result URL and outcome evidence for first-three qualifying results and first-eligible tuple proof"
+  ],
+  "non_promotion_boundary": {
+    "evidence_authority": "NONE",
+    "maximum_evidence_authority_after_valid_domain_editor_approval": "OWNER_REVIEWED_CANONICAL_REVISION_EVIDENCE_CANDIDATE_ONLY",
+    "canonical_mutation_authority": "NONE",
+    "canonical_open_decision_status": "UNCHANGED_UNTIL_SEPARATE_IMPORT",
+    "canonical_scoped_unresolved_count": 7,
+    "global_unresolved_blocker_count": 14,
+    "st0006_blocker_state": "UNCHANGED_UNTIL_SEPARATE_IMPORT",
+    "gate_state": "BLOCKED",
+    "st1701_acceptance": "NOT_ACHIEVED",
+    "tst_032": "NOT_EXECUTED",
+    "st1607": "ABSENT_NOT_IMPLEMENTED_HERE",
+    "st1702_ready": false,
+    "status_overlays": "UNCHANGED",
+    "staging": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  }
+}

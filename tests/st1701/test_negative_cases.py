@@ -20,6 +20,40 @@ def _validate(document: dict[str, Any]) -> None:
     generator.validate_contract(document, REPOSITORY_ROOT)
 
 
+def _validate_decision_package(document: dict[str, Any]) -> None:
+    generator.validate_decision_package(document, REPOSITORY_ROOT)
+
+
+def _leaf_paths(
+    value: object, prefix: tuple[str | int, ...] = ()
+) -> list[tuple[str | int, ...]]:
+    if isinstance(value, dict):
+        return [
+            path
+            for key, nested in value.items()
+            for path in _leaf_paths(nested, (*prefix, str(key)))
+        ]
+    if isinstance(value, list):
+        return [
+            path
+            for index, nested in enumerate(value)
+            for path in _leaf_paths(nested, (*prefix, index))
+        ]
+    return [prefix]
+
+
+def _different_leaf(value: object) -> object:
+    if type(value) is bool:
+        return not value
+    if type(value) is int:
+        return value + 1
+    if type(value) is str:
+        return f"{value}_DRIFT"
+    if value is None:
+        return MARKER
+    raise AssertionError("unsupported test leaf")
+
+
 @pytest.mark.parametrize("field", tuple(generator.EXPECTED_BUSINESS_INPUTS))
 def test_no_business_value_or_resolution_payload_can_be_selected(
     contract_document: dict[str, Any], field: str
@@ -159,3 +193,573 @@ def test_strict_yaml_rejects_duplicates_aliases_and_unsafe_tags(tmp_path: Path) 
         path.write_text(payload, encoding="utf-8")
         with pytest.raises(base_generator.ProductionDeploymentContractError):
             base_generator.load_yaml(path)
+
+
+@pytest.mark.parametrize("mutation", ("unknown", "missing", "reorder"))
+def test_decision_package_top_level_is_closed_and_ordered(
+    decision_package: dict[str, Any], mutation: str
+) -> None:
+    document = copy.deepcopy(decision_package)
+    if mutation == "unknown":
+        document[MARKER] = MARKER
+    elif mutation == "missing":
+        document.pop("action_boundary")
+    else:
+        first = document.pop("document")
+        document["document"] = first
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        _validate_decision_package(document)
+    assert MARKER not in str(captured.value)
+
+
+@pytest.mark.parametrize(
+    ("identifier", "field_path", "value"),
+    (
+        ("OD-001", ("record_status",), "RESOLVED"),
+        ("OD-001", ("runtime_activation",), "ACTIVE"),
+        ("OD-002", ("execution_state", "domain_purchase"), "EXECUTED"),
+        ("OD-005", ("selected_value", "alternate_reviewer"), "REVIEWER_2"),
+        ("OD-005", ("selected_value", "standard_labor_cost", "amount"), 3000.0),
+        ("OD-006", ("evidence_gate", "minimum_listing_count"), 29),
+        ("OD-006", ("evidence_gate", "minimum_product_family_count"), 9),
+        ("OD-006", ("evidence_gate", "minimum_shop_count"), 4),
+        ("OD-006", ("evidence_gate", "maximum_false_automatic_merges"), 1),
+        ("OD-007", ("selected_value", "maximum_age", "price_hours"), 73),
+        ("OD-009", ("selected_value", "monthly_external_spend_cap"), 30001),
+        (
+            "OD-009",
+            ("selected_value", "thresholds", "hard_stop_new_external_spend_percent"),
+            101,
+        ),
+    ),
+)
+def test_scoped_candidate_status_values_and_thresholds_are_exact(
+    decision_package: dict[str, Any],
+    identifier: str,
+    field_path: tuple[str, ...],
+    value: object,
+) -> None:
+    document = copy.deepcopy(decision_package)
+    row = next(row for row in document["scoped_decisions"] if row["id"] == identifier)
+    target = row
+    for field in field_path[:-1]:
+        target = target[field]
+    target[field_path[-1]] = value
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        _validate_decision_package(document)
+    assert MARKER not in str(captured.value)
+
+
+@pytest.mark.parametrize(
+    ("identifier", "original_status"),
+    (
+        ("OD-002", "EXECUTION_PENDING"),
+        ("OD-005", "PARTIAL"),
+        ("OD-006", "EVIDENCE_PENDING"),
+    ),
+)
+def test_each_pending_scoped_status_cannot_be_promoted_to_resolved(
+    decision_package: dict[str, Any], identifier: str, original_status: str
+) -> None:
+    document = copy.deepcopy(decision_package)
+    row = next(row for row in document["scoped_decisions"] if row["id"] == identifier)
+    assert row["record_status"] == original_status
+    row["record_status"] = "RESOLVED"
+    with pytest.raises(generator.BusinessInputsError):
+        _validate_decision_package(document)
+
+
+@pytest.mark.parametrize("mutation", ("remove", "duplicate", "reorder", "extra"))
+def test_decision_package_scoped_inventory_is_exact(
+    decision_package: dict[str, Any], mutation: str
+) -> None:
+    document = copy.deepcopy(decision_package)
+    rows = document["scoped_decisions"]
+    if mutation == "remove":
+        rows.pop()
+    elif mutation == "duplicate":
+        rows[1] = copy.deepcopy(rows[0])
+    elif mutation == "reorder":
+        rows[0], rows[1] = rows[1], rows[0]
+    else:
+        rows.append(copy.deepcopy(rows[-1]))
+    with pytest.raises(generator.BusinessInputsError):
+        _validate_decision_package(document)
+
+
+def test_every_scoped_decision_leaf_is_exactly_closed(
+    decision_package: dict[str, Any],
+) -> None:
+    handoff, _approval = generator._authority_documents(REPOSITORY_ROOT)  # noqa: SLF001
+    for row_index, row in enumerate(decision_package["scoped_decisions"]):
+        for path in _leaf_paths(row):
+            document = copy.deepcopy(decision_package)
+            target: Any = document["scoped_decisions"][row_index]
+            for field in path[:-1]:
+                target = target[field]
+            leaf = path[-1]
+            target[leaf] = _different_leaf(target[leaf])
+            with pytest.raises(generator.BusinessInputsError):
+                generator.validate_decision_package(
+                    document, REPOSITORY_ROOT, handoff=handoff
+                )
+
+
+@pytest.mark.parametrize("mutation", ("remove", "duplicate", "reorder", "promote"))
+def test_informational_inventory_is_exact_and_cannot_promote_status(
+    decision_package: dict[str, Any], mutation: str
+) -> None:
+    document = copy.deepcopy(decision_package)
+    rows = document["informational_cross_story_owner_inputs"]["rows"]
+    if mutation == "remove":
+        rows.pop()
+    elif mutation == "duplicate":
+        rows[1] = copy.deepcopy(rows[0])
+    elif mutation == "reorder":
+        rows[0], rows[1] = rows[1], rows[0]
+    else:
+        rows[0]["record_status"] = "RESOLVED"
+    with pytest.raises(generator.BusinessInputsError):
+        _validate_decision_package(document)
+
+
+def test_final_package_cannot_self_approve_or_promote_revision_readiness(
+    decision_package: dict[str, Any],
+) -> None:
+    mutations = (
+        ("status", "APPROVED"),
+        ("approved_source_contract_sha256", "0" * 64),
+        ("canonical_revision_evidence_authority", "OWNER_APPROVED"),
+    )
+    for field, value in mutations:
+        document = copy.deepcopy(decision_package)
+        document["final_package_approval"][field] = value
+        with pytest.raises(generator.BusinessInputsError):
+            _validate_decision_package(document)
+
+
+def test_candidate_cannot_change_canonical_gate_or_downstream_truth(
+    decision_package: dict[str, Any],
+) -> None:
+    mutations = (
+        ("canonical_open_decisions_document_status", "RESOLVED"),
+        ("scoped_unresolved_count", 0),
+        ("global_unresolved_blocker_count", 0),
+        ("activation", "ACTIVE"),
+        ("gate_state", "PASS"),
+        ("st1701_acceptance", "ACHIEVED"),
+    )
+    for field, value in mutations:
+        document = copy.deepcopy(decision_package)
+        document["canonical_truth_boundary"][field] = value
+        with pytest.raises(generator.BusinessInputsError):
+            _validate_decision_package(document)
+
+
+@pytest.mark.parametrize("value", (1, True, 0.0, "0"))
+def test_decision_action_counts_require_exact_builtin_zero(
+    decision_package: dict[str, Any], value: object
+) -> None:
+    document = copy.deepcopy(decision_package)
+    document["action_boundary"]["action_counts"]["external"] = value
+    with pytest.raises(generator.BusinessInputsError):
+        _validate_decision_package(document)
+
+
+def test_nested_mapping_key_reordering_is_rejected(
+    decision_package: dict[str, Any],
+) -> None:
+    document = copy.deepcopy(decision_package)
+    selected = document["scoped_decisions"][0]["selected_value"]
+    first = selected.pop("category_id")
+    selected["category_id"] = first
+    with pytest.raises(generator.BusinessInputsError):
+        _validate_decision_package(document)
+
+
+def test_authority_hash_or_scope_drift_is_rejected(
+    decision_package: dict[str, Any],
+) -> None:
+    for path, value in (
+        (("implementation_authority", "handoff", "sha256"), "0" * 64),
+        (("implementation_authority", "approval", "sha256"), "0" * 64),
+        (("implementation_authority", "approved_story"), "ST-1702"),
+    ):
+        document = copy.deepcopy(decision_package)
+        target = document
+        for field in path[:-1]:
+            target = target[field]
+        target[path[-1]] = value
+        with pytest.raises(generator.BusinessInputsError):
+            _validate_decision_package(document)
+
+
+def _copy_gold_authority_fixture(root: Path) -> None:
+    relative_paths = dict.fromkeys(
+        (
+            generator.HANDOFF_PATH,
+            generator.HANDOFF_APPROVAL_PATH,
+            generator.DECISION_PACKAGE_PATH,
+            generator.FINAL_PACKAGE_APPROVAL_PATH,
+            generator.GOLD_HANDOFF_PATH,
+            generator.GOLD_HANDOFF_APPROVAL_PATH,
+            *(
+                Path(path)
+                for path, _size, _digest in generator.EXPECTED_GOLD_SOURCE_ROWS[:-2]
+            ),
+        )
+    )
+    for relative in relative_paths:
+        target = root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((REPOSITORY_ROOT / relative).read_bytes())
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "missing_handoff",
+        "missing_approval",
+        "tampered_handoff",
+        "tampered_approval",
+        "mismatched_binding",
+        "predecessor_drift",
+    ),
+)
+def test_gold_authority_missing_tampered_or_mismatched_input_fails_closed(
+    tmp_path: Path, mutation: str
+) -> None:
+    root = tmp_path / "repository"
+    root.mkdir()
+    _copy_gold_authority_fixture(root)
+    handoff, approval = generator.load_gold_authority(root)
+    assert handoff["approved_story"] == "ST-1701"
+    assert approval["handoff_sha256"] == generator.GOLD_HANDOFF_SHA256
+
+    if mutation == "missing_handoff":
+        (root / generator.GOLD_HANDOFF_PATH).unlink()
+    elif mutation == "missing_approval":
+        (root / generator.GOLD_HANDOFF_APPROVAL_PATH).unlink()
+    elif mutation == "tampered_handoff":
+        path = root / generator.GOLD_HANDOFF_PATH
+        path.write_bytes(path.read_bytes() + b"# tampered\n")
+    elif mutation == "tampered_approval":
+        path = root / generator.GOLD_HANDOFF_APPROVAL_PATH
+        path.write_bytes(path.read_bytes() + b"# tampered\n")
+    elif mutation == "mismatched_binding":
+        path = root / generator.GOLD_HANDOFF_APPROVAL_PATH
+        content = path.read_bytes()
+        assert generator.GOLD_HANDOFF_SHA256.encode() in content
+        path.write_bytes(
+            content.replace(generator.GOLD_HANDOFF_SHA256.encode(), b"0" * 64)
+        )
+    else:
+        predecessor = root / Path(generator.EXPECTED_GOLD_SOURCE_ROWS[0][0])
+        predecessor.write_bytes(predecessor.read_bytes() + b"# drift\n")
+
+    with pytest.raises(
+        (
+            generator.BusinessInputsError,
+            base_generator.ProductionDeploymentContractError,
+        )
+    ):
+        generator.load_gold_authority(root)
+
+
+@pytest.mark.parametrize(
+    ("relative", "error_code"),
+    (
+        (
+            generator.GOLD_LEDGER_PATH,
+            "GOLD_LEDGER_ACCEPTANCE_UNAVAILABLE",
+        ),
+        (
+            generator.GOLD_EVIDENCE_APPROVAL_PATH,
+            "GOLD_APPROVAL_ACCEPTANCE_UNAVAILABLE",
+        ),
+        *(
+            (relative, "GOLD_POSTAPPROVAL_ARTIFACT_FORBIDDEN")
+            for relative in generator.GOLD_POSTAPPROVAL_PATHS
+        ),
+    ),
+)
+def test_any_unvalidated_gold_ledger_approval_or_postapproval_artifact_fails_closed(
+    tmp_path: Path, relative: Path, error_code: str
+) -> None:
+    root = tmp_path / "repository"
+    root.mkdir()
+    _copy_gold_authority_fixture(root)
+    assert generator.gold_evidence_validation_document(root)["status"] == (
+        "EVIDENCE_INSUFFICIENT"
+    )
+
+    target = root / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(b"intentionally-incomplete-test-marker\n")
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        generator.gold_evidence_validation_document(root)
+    assert f"code={error_code}" in str(captured.value)
+
+
+@pytest.mark.parametrize(
+    "relative", (generator.GOLD_LEDGER_PATH, generator.GOLD_EVIDENCE_APPROVAL_PATH)
+)
+@pytest.mark.parametrize("shape", ("symlink", "directory"))
+def test_optional_gold_input_non_regular_leaf_fails_closed(
+    tmp_path: Path, relative: Path, shape: str
+) -> None:
+    root = tmp_path / "repository"
+    root.mkdir()
+    _copy_gold_authority_fixture(root)
+    target = root / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if shape == "symlink":
+        outside = tmp_path / "outside.yaml"
+        outside.write_bytes(b"outside\n")
+        target.symlink_to(outside)
+    else:
+        target.mkdir()
+
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        generator.gold_evidence_validation_document(root)
+    assert "code=UNSAFE_FILE_TYPE" in str(captured.value)
+
+
+def test_optional_gold_input_symlinked_ancestor_fails_closed(tmp_path: Path) -> None:
+    root = tmp_path / "repository"
+    root.mkdir()
+    _copy_gold_authority_fixture(root)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    evidence_parent = root / generator.GOLD_LEDGER_PATH.parent
+    assert not evidence_parent.exists()
+    evidence_parent.symlink_to(outside, target_is_directory=True)
+
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        generator.gold_evidence_validation_document(root)
+    assert "code=UNSAFE_ANCESTOR" in str(captured.value)
+
+
+def _copy_final_approval_authority_fixture(root: Path) -> None:
+    for relative in (
+        generator.HANDOFF_PATH,
+        generator.HANDOFF_APPROVAL_PATH,
+        generator.DECISION_PACKAGE_PATH,
+        generator.FINAL_PACKAGE_APPROVAL_PATH,
+    ):
+        target = root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((REPOSITORY_ROOT / relative).read_bytes())
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ("missing_approval", "tampered_approval", "mismatched_source"),
+)
+def test_detached_final_approval_file_and_bound_source_fail_closed(
+    tmp_path: Path, mutation: str
+) -> None:
+    root = tmp_path / "repository"
+    root.mkdir()
+    _copy_final_approval_authority_fixture(root)
+    assert generator.load_final_package_approval(root)["status"] == (
+        generator.FINAL_PACKAGE_APPROVAL_STATUS
+    )
+
+    if mutation == "missing_approval":
+        (root / generator.FINAL_PACKAGE_APPROVAL_PATH).unlink()
+    elif mutation == "tampered_approval":
+        path = root / generator.FINAL_PACKAGE_APPROVAL_PATH
+        path.write_bytes(path.read_bytes() + b"# tampered\n")
+    else:
+        path = root / generator.DECISION_PACKAGE_PATH
+        source = path.read_bytes()
+        path.write_bytes(source[:-1] + (b" " if source[-1:] != b" " else b"\n"))
+
+    with pytest.raises(
+        (
+            generator.BusinessInputsError,
+            base_generator.ProductionDeploymentContractError,
+        )
+    ):
+        generator.load_final_package_approval(root)
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    (
+        (("story_id",), "ST-1702"),
+        (("source_package_uri",), "repo://changes/st-1701/contracts/other.yaml"),
+        (("source_package_sha256",), "0" * 64),
+        (("source_package_bytes",), generator.APPROVED_DECISION_PACKAGE_BYTES + 1),
+        (("status",), "RESOLVED"),
+        (("authority",), "CANONICAL_MUTATION"),
+        (("implementation_handoff", "sha256"), "0" * 64),
+        (("implementation_handoff_approval", "sha256"), "0" * 64),
+        (("open_decisions",), ["UNRESOLVED"]),
+        (("effective_boundary", "canonical_mutation_authority"), "WRITE"),
+        (("effective_boundary", "gate_state"), "PASS"),
+        (("effective_boundary", "st1701_acceptance"), "ACHIEVED"),
+    ),
+)
+def test_detached_final_approval_binding_or_promotion_mismatch_is_rejected(
+    path: tuple[str, ...], value: object
+) -> None:
+    document = copy.deepcopy(generator.EXPECTED_FINAL_PACKAGE_APPROVAL_DOCUMENT)
+    target: dict[str, Any] = document["MVP_BUSINESS_DECISION_PACKAGE_APPROVAL_V1"]
+    for field in path[:-1]:
+        target = target[field]
+    target[path[-1]] = value
+    with pytest.raises(generator.BusinessInputsError):
+        generator.validate_final_package_approval(document, REPOSITORY_ROOT)
+
+
+def test_projection_helpers_cannot_accept_a_forged_effective_approval(
+    decision_package: dict[str, Any], contract_document: dict[str, Any]
+) -> None:
+    forged = copy.deepcopy(dict(generator.load_final_package_approval(REPOSITORY_ROOT)))
+    forged["effective_boundary"]["gate_state"] = "PASS"
+    with pytest.raises(generator.BusinessInputsError):
+        generator.decision_read_model(
+            decision_package,
+            contract_document,
+            REPOSITORY_ROOT,
+            final_approval=forged,
+        )
+    with pytest.raises(generator.BusinessInputsError):
+        generator.canonical_revision_request_bytes(
+            decision_package,
+            REPOSITORY_ROOT,
+            final_approval=forged,
+        )
+
+
+def test_projection_helpers_cannot_claim_approved_hash_for_forged_package(
+    decision_package: dict[str, Any], contract_document: dict[str, Any]
+) -> None:
+    forged = copy.deepcopy(decision_package)
+    forged["scoped_decisions"][0]["record_status"] = "RESOLVED"
+    with pytest.raises(generator.BusinessInputsError):
+        generator.decision_read_model(forged, contract_document, REPOSITORY_ROOT)
+    with pytest.raises(generator.BusinessInputsError):
+        generator.canonical_revision_request_bytes(forged, REPOSITORY_ROOT)
+
+
+def test_projection_helpers_cannot_claim_source_truth_for_forged_unresolved_input(
+    decision_package: dict[str, Any], contract_document: dict[str, Any]
+) -> None:
+    forged = copy.deepcopy(contract_document)
+    forged["gates"][0]["status"] = "PASS"
+    with pytest.raises(generator.BusinessInputsError):
+        generator.reference_document(forged, REPOSITORY_ROOT)
+    with pytest.raises(generator.BusinessInputsError):
+        generator.decision_read_model(decision_package, forged, REPOSITORY_ROOT)
+
+
+def test_repository_path_traversal_and_symlinked_input_ancestor_are_rejected(
+    tmp_path: Path,
+) -> None:
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "payload.yaml").write_text("safe: true\n", encoding="utf-8")
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator._read(  # noqa: SLF001
+            tmp_path, Path("../outside/payload.yaml"), "hostile"
+        )
+    assert captured.value.code == "UNSAFE_REPOSITORY_PATH"
+
+    root = tmp_path / "root"
+    root.mkdir()
+    (root / "linked").symlink_to(outside, target_is_directory=True)
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator._read(root, Path("linked/payload.yaml"), "hostile")  # noqa: SLF001
+    assert captured.value.code == "UNSAFE_ANCESTOR"
+
+
+def test_input_leaf_root_and_regular_file_ancestor_shapes_are_rejected(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "root"
+    root.mkdir()
+    outside = tmp_path / "outside.yaml"
+    outside.write_text("safe: true\n", encoding="utf-8")
+
+    (root / "leaf.yaml").symlink_to(outside)
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator._read(root, Path("leaf.yaml"), "hostile")  # noqa: SLF001
+    assert captured.value.code == "UNSAFE_FILE_TYPE"
+
+    (root / "leaf.yaml").unlink()
+    (root / "leaf.yaml").mkdir()
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator._read(root, Path("leaf.yaml"), "hostile")  # noqa: SLF001
+    assert captured.value.code == "UNSAFE_FILE_TYPE"
+
+    (root / "ancestor").write_text("not a directory\n", encoding="utf-8")
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator._read(root, Path("ancestor/leaf.yaml"), "hostile")  # noqa: SLF001
+    assert captured.value.code == "UNSAFE_ANCESTOR"
+
+    root_link = tmp_path / "root-link"
+    root_link.symlink_to(root, target_is_directory=True)
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator._read(root_link, Path("leaf.yaml"), "hostile")  # noqa: SLF001
+    assert captured.value.code == "UNSAFE_ROOT_TYPE"
+
+
+def test_output_leaf_symlink_and_directory_are_rejected_without_escape(
+    tmp_path: Path,
+) -> None:
+    expected = generator.render_outputs(REPOSITORY_ROOT)
+    for relative, content in expected.items():
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(content)
+
+    outside = tmp_path / "outside"
+    outside.write_bytes(b"unchanged\n")
+    output = tmp_path / generator.REFERENCE_PATH
+    output.unlink()
+    output.symlink_to(outside)
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator.check_outputs(tmp_path, expected)
+    assert captured.value.code == "UNSAFE_FILE_TYPE"
+    assert outside.read_bytes() == b"unchanged\n"
+
+    output.unlink()
+    output.mkdir()
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator.check_outputs(tmp_path, expected)
+    assert captured.value.code == "UNSAFE_FILE_TYPE"
+    assert outside.read_bytes() == b"unchanged\n"
+
+
+def test_mutating_build_rejects_symlinked_output_leaf_without_escape(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    outside = tmp_path / "outside"
+    outside.write_bytes(b"unchanged\n")
+    output = tmp_path / generator.REFERENCE_PATH
+    output.parent.mkdir(parents=True)
+    output.symlink_to(outside)
+
+    def fake_render_outputs(_root: Path = tmp_path) -> dict[Path, bytes]:
+        return {generator.REFERENCE_PATH: b"replacement\n"}
+
+    monkeypatch.setattr(generator, "render_outputs", fake_render_outputs)
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator.build(tmp_path)
+    assert captured.value.code == "UNSAFE_FILE_TYPE"
+    assert outside.read_bytes() == b"unchanged\n"
+
+
+def test_check_outputs_rejects_generated_drift(tmp_path: Path) -> None:
+    expected = generator.render_outputs(REPOSITORY_ROOT)
+    for relative, content in expected.items():
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(content)
+    (tmp_path / generator.DECISION_READ_MODEL_PATH).write_bytes(b"{}\n")
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        generator.check_outputs(tmp_path, expected)
+    assert captured.value.code == "GENERATED_OUTPUT_DRIFT"

@@ -2988,3 +2988,150 @@ original result.
   data, release readiness, or Production eligibility.
 - Inherited W0/W1/W2 and W3 debt remains unchanged and unclosed. This
   checkpoint claims only the maximum-safe non-executable ST-1302 boundary.
+
+### 2026-08-11 local provenance-debt reconciliation
+
+- Authority and scope: operational append-only reconciliation under the
+  owner-approved implementation-first ExecPlan. This is not a Story
+  implementation, canonical status update, formal validation, release, or
+  permission for live, external-provider, container, database, Staging, or
+  Production activity.
+- Baseline: clean physical owner checkout on `main` at pre-append HEAD
+  `2a53b66146d27ea8f5e32c65888a13a32d576c88`. The final integrated source
+  evidence is recorded by
+  `f522f478e0ffd2f8038cf6b6f53dc9e184919f9b`; the principal closure commits
+  are transitive owner regeneration
+  `ccc33e42e9bc6f21337403266406812f4331f7bb`, validation and predecessor
+  reconciliation `0964dfb6b19fe1bbbb018f8aab04a941031f6ccf`, the ST-0305
+  owner path and downstream fan-out
+  `1bb6b5edcadcf448167f58f3d25f9d3db0462d01`, and scanner/Pyright cleanup
+  `2d55663dd85ebb5964ac14b82b148c8c414066e0`.
+- Local verifier: project `implementation_worker`. Review owner: root Codex
+  integration owner. Evidence date: `2026-08-11`. These are local WSL/Linux
+  results only; the append commit is reported in the integration handoff
+  because this record cannot embed its own commit recursively.
+
+#### Current owner and local-toolchain evidence
+
+- Every Python owner command below used the exact prefix
+  `env -i PATH=/usr/bin:/bin HOME=/home/minami/rakuten LANG=C.UTF-8
+  LC_ALL=C.UTF-8 TZ=UTC PYTHONDONTWRITEBYTECODE=1
+  /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv --config-file
+  /home/minami/rakuten/uv.toml run --locked --offline --no-cache --no-sync
+  --no-env-file --no-python-downloads`.
+- `python scripts/build_local_compose.py --check`: `PASS`, ST-0201/ST-0202
+  cumulative Compose current with two generated artifacts.
+- `python scripts/build_st0305_publication_analytics_finance.py --own-story
+  --check`: `PASS`, four ST-0305-owned artifacts current.
+- `python scripts/build_st0306_database_roles.py --check`: `PASS`, four
+  cumulative ST-0306-owned artifacts current.
+- `python scripts/build_st0701_ai_registry.py --check`: `PASS`, ST-0701 AI
+  registry current.
+- `python scripts/build_st0703_recorded_adapter.py --check` and the separate
+  `--check-installed`: both `PASS`; five fixtures, registry SHA-256
+  `b306f8ef6989bf0a8ba00e636faf0a16f2c094cdddf61d979cdbc8955df2f76e`.
+- `python scripts/build_st0801_content_ast.py --check`: `PASS`, the ST-0801
+  generated artifact is current.
+- `python scripts/build_st1203_search_console_recorded_adapter.py --check`:
+  `PASS`, manifest SHA-256
+  `74c5e9f2a8acaf4e9eb8f90a966c650b856657b44e5dfaa83e239edcd8bc1fd3`.
+- `python scripts/build_st1204_ga4_recorded_adapter.py --check`: `PASS`,
+  manifest SHA-256
+  `4d44e32123acd9f7732b640e593013fac6a129005021a76729834ae099fdd819`.
+- The same prefix with `pytest -p no:cacheprovider -q tests/st0106` returned
+  `307 passed`. With `tests/st0304` it returned `41 passed, 16 skipped`; every
+  skip is the documented absence of `RAOS_PG_BIN` for exact PostgreSQL 18.4
+  runtime cases and is not used as database evidence.
+- The same prefix with `pytest -p no:cacheprovider -q tests/st0102` returned
+  `47 passed, 1 skipped`; the sole skip requires a second locally discoverable
+  uv binary other than 0.12.1. The exact wrapper result preserved in the final
+  integration evidence is `48 passed`. Current `pyproject.toml`, `uv.lock`,
+  and the ST-0102 inventory all retain exact `openai==2.52.0` parity.
+- `/usr/bin/python3 -I scripts/scan_secrets.py --worktree` returned exit zero
+  with no finding. The current scanner still has no broad allowlist, and the
+  307-test ST-0106 suite retains mutation and redacted-diagnostic coverage.
+- `scripts/node_toolchain.sh --node
+  /home/minami/.local/share/raos-toolchains/node/24.18.1-npm11.16.0/bin/node
+  --npm-cli
+  /home/minami/.local/share/raos-toolchains/node/24.18.1-npm11.16.0/lib/node_modules/npm/bin/npm-cli.js
+  check` returned `PASS`: Node `24.18.1`, npm `11.16.0`, exact dependency
+  inventory, Prettier, ESLint, both TypeScript projects, Pyright
+  `0 errors, 0 warnings, 0 informations`, and ST-0103 Vitest `4 passed`.
+  Wrapper-defined local installed-tree hydration added no tracked change.
+- No generated output was hand-edited. Post-check tracked scope remained
+  clean before this append.
+
+#### Closed identities
+
+- `DEBT-W0-001` status update: `CLOSED`. The direct OpenAI runtime pin and
+  ST-0102 inventory are exact, and the affected ST-0202/ST-0305/ST-0306/
+  ST-0701/ST-0703/ST-0801/ST-1203/ST-1204 owner chain is reproducible through
+  the owner commands above. The original runtime-pin/provenance issue is
+  resolved without semantic activation or a hand-edited generated artifact.
+- `DEBT-W0-002` status update: `CLOSED`. ST-1203 and ST-1204 were regenerated
+  through `0964dfb6b19fe1bbbb018f8aab04a941031f6ccf` and
+  `1bb6b5edcadcf448167f58f3d25f9d3db0462d01`; both current independent owner
+  checks pass, with no partial predecessor-pin edit.
+- `DEBT-W0-003` status update: `CLOSED`. The physical normal-checkout worktree
+  scan now has zero findings, while ST-0106's hostile/mutation coverage passes.
+  This closes the inherited synthetic-fixture classification and linked-
+  worktree operational limitation; it does not claim formal CI or a new
+  credential exception.
+- `DEBT-W1-014` status update: `CLOSED`. Current ST-0701, ST-0703
+  regeneration, and ST-0703 installed-artifact checks all pass after the
+  owner-supported provenance closure in
+  `ccc33e42e9bc6f21337403266406812f4331f7bb`.
+- `DEBT-W1-022` status update: `CLOSED`. The moving-source expectations were
+  reconciled by the integrated closure commits and the current isolated
+  ST-0106 suite passes all 307 tests without weakening its controls.
+- `DEBT-W1-055` status update: `CLOSED`. ST-0304's locally runnable suite and
+  its ST-0305/ST-0306 owner chain are current, and the exact Node 24.18.1/npm
+  11.16.0 wrapper is available and green. The sixteen PostgreSQL-only skips
+  remain runtime/formal work, not predecessor-reproducibility debt.
+- `DEBT-W2-002` status update: `CLOSED`. The current ST-0306 owner check passes
+  after the cumulative regeneration in
+  `ccc33e42e9bc6f21337403266406812f4331f7bb` and
+  `1bb6b5edcadcf448167f58f3d25f9d3db0462d01`.
+- `DEBT-W2-008` and `DEBT-W2-014` status updates: `CLOSED`. Both identities
+  described the same moving-source ST-0202 manifest condition; the cumulative
+  Compose owner check now passes from frozen source and no duplicate or
+  hand-edited repair was applied.
+- `DEBT-W2-019` status update: `CLOSED`. The current ST-0801 owner check passes
+  after topological regeneration through the integrated provenance commits.
+- `DEBT-W2-022` status update: `CLOSED`. The explicit ST-0305 `--own-story
+  --check` and cumulative ST-0306 `--check` both pass after
+  `1bb6b5edcadcf448167f58f3d25f9d3db0462d01` introduced the supported owner
+  path and regenerated its consumers.
+- `DEBT-W2-025` status update: `CLOSED`. ST-0204/ST-0305 predecessor rebinding
+  was propagated through the ST-1203 owner by
+  `0964dfb6b19fe1bbbb018f8aab04a941031f6ccf` and
+  `1bb6b5edcadcf448167f58f3d25f9d3db0462d01`; the current ST-0305 and ST-1203
+  no-write owner checks pass.
+
+#### Identities intentionally not closed
+
+- `DEBT-W1-030` remains `OPEN`. Current ST-1504 authority still records the
+  executable workflow and IAM trust policy as absent and credential issuance
+  as `NOT_EXECUTED`; owner provenance does not supply that runtime.
+- `DEBT-W2-028` remains `OPEN`. The current
+  `changes/st-1204/ATOMIC-PUBLICATION-AUDIT-v1.md` disposition is still
+  `FAIL` with one `MEDIUM` multi-file publication/ancestor-swap finding. No
+  design, writer fix, or hostile atomic-publication evidence was added here.
+- `DEBT-W2-050` remains `OPEN`. Its ST-0701 manifest-provenance subcondition is
+  closed by the green owner check, but the Source Packet/content schema,
+  Input-Manifest and packing policies, tokenizer, reduction behavior, and
+  execution remain unavailable/`NOT_EXECUTED`.
+- `DEBT-W2-054` remains `OPEN`. Its ST-1203/ST-1204 provenance subcondition is
+  closed by the green owner checks, but KPI calculation and verification remain
+  `0/30`, with executable formulas, complete inputs, SQL/job/persistence, and
+  TST-030 still `NOT_EXECUTED`.
+- `DEBT-W2-056` remains `OPEN`. Its ST-0305 provenance subcondition is closed
+  by the green owner check, but the real provider mapping remains `UNVERIFIED`
+  and reconciliation, persistence, audit, outbox, events, and formal tests
+  remain `NOT_EXECUTED`.
+- All other debt identities retain their prior status. In particular every
+  `EXTERNAL_BLOCKED` item, unresolved Open Decision, formal CI/TST, live
+  provider/account/credential or human approval, PostgreSQL/container runtime,
+  Staging, publication, release, deployment, and Production boundary remains
+  open or unexecuted. No local result above is promoted to `VALIDATED`, formal,
+  live, release, or Production evidence.

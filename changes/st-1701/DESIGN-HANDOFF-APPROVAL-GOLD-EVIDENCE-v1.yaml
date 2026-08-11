@@ -1,0 +1,36 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1701
+  handoff_uri: repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_GOLD_EVIDENCE_CANONICAL_REVISION_v1.yaml
+  handoff_bytes: 26483
+  handoff_sha256: c45bea63891448be4af4d696d7d164ea37f246b76f5acce91de791638f49c17f
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST1701_GOLD_EVIDENCE_CANONICAL_REVISION_V1_ONLY
+  approved_by: repository_owner:jamozi
+  approved_at: '2026-08-11T17:54:14Z'
+  approval_source: Exact handoff SHA-256 followed by explicit repository-owner approval in the connected Codex conversation.
+  owner_approval_statement: ST-1701 Gold Evidence handoff c45bea63891448be4af4d696d7d164ea37f246b76f5acce91de791638f49c17f を承認します
+  approved_sha256_statement: ST-1701 Gold Evidence handoff c45bea63891448be4af4d696d7d164ea37f246b76f5acce91de791638f49c17f
+  canonical_reconciliation: PASS_PROPOSAL_ONLY_NO_CANONICAL_MUTATION
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-1701
+    bounded_public_page_desk_research: AUTHORIZED_WITHIN_HANDOFF_LIMITS
+    field_level_gold_evidence_ledger: AUTHORIZED_PENDING_DOMAIN_EDITOR_REVIEW
+    preapproval_generated_output: GOLD_EVIDENCE_VALIDATION_V1_ONLY
+    domain_editor_approval: REQUIRED_SEPARATE_EXACT_LEDGER_HASH_APPROVAL
+    resolution_candidates_before_domain_editor_approval: FORBIDDEN
+    canonical_revision_bundle_before_domain_editor_approval: FORBIDDEN
+    canonical_files: UNCHANGED
+    status_overlays: UNCHANGED
+    st0006_generated_truth: UNCHANGED
+    canonical_mutation_authority: NONE
+    st1607: NOT_AUTHORIZED
+    st1702_runtime_category_config: NOT_AUTHORIZED
+    st1702_golden_products: NOT_AUTHORIZED
+    formal_tst_032: NOT_EXECUTED
+    browser_login_api_or_credential_use: NOT_AUTHORIZED
+    staging: NOT_EXECUTED
+    publication: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED
