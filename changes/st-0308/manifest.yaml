@@ -32,8 +32,8 @@ source_artifacts:
   bytes: 4318
   sha256: cdcab34a6c14900c57f42a30286f63c59a82525790569f390027c79f14491d3d
 - uri: repo://tests/st0308_reference/test_negative_cases.py
-  bytes: 13492
-  sha256: 8d05e2a72ea52f5894eeff4d538e4e9addbb4eb8084d2c3a8963e5071d60bc10
+  bytes: 13520
+  sha256: 657db6ebf86a2caa87611b28de0e5ad347cedf86ce18452deaf15e17aad51542
 generated_artifacts:
 - uri: repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
   bytes: 17409
