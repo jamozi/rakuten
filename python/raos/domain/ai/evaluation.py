@@ -12,7 +12,7 @@ from enum import Enum
 import hashlib
 import json
 import re
-from typing import NoReturn, SupportsIndex, final
+from typing import NoReturn, SupportsIndex, cast, final
 
 
 BOOTSTRAP_DATASET_VERSION = "bootstrap-v0.1"
@@ -191,11 +191,14 @@ def _validate_checks(value: object) -> tuple[DeterministicCheckCode, ...]:
         fail_bootstrap_evaluation(
             BootstrapEvaluationFailureCode.INVALID_REQUIRED_CHECKS
         )
-    checks = value
-    if any(type(check) is not DeterministicCheckCode for check in checks):
+    if any(
+        type(check) is not DeterministicCheckCode
+        for check in cast(tuple[object, ...], value)
+    ):
         fail_bootstrap_evaluation(
             BootstrapEvaluationFailureCode.INVALID_REQUIRED_CHECKS
         )
+    checks = cast(tuple[DeterministicCheckCode, ...], value)
     canonical = tuple(check for check in DeterministicCheckCode if check in checks)
     if checks != canonical:
         fail_bootstrap_evaluation(
@@ -211,11 +214,14 @@ def _validate_zero_tolerance(
         fail_bootstrap_evaluation(
             BootstrapEvaluationFailureCode.INVALID_OBSERVATION_SET
         )
-    findings = value
-    if any(type(finding) is not ZeroToleranceClass for finding in findings):
+    if any(
+        type(finding) is not ZeroToleranceClass
+        for finding in cast(tuple[object, ...], value)
+    ):
         fail_bootstrap_evaluation(
             BootstrapEvaluationFailureCode.INVALID_OBSERVATION_SET
         )
+    findings = cast(tuple[ZeroToleranceClass, ...], value)
     canonical = tuple(finding for finding in ZeroToleranceClass if finding in findings)
     if findings != canonical:
         fail_bootstrap_evaluation(
