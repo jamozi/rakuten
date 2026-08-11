@@ -80,6 +80,7 @@ def test_check_detects_generated_output_drift(repository_copy: Path) -> None:
 
 def test_source_hash_drift_fails_closed(repository_copy: Path) -> None:
     source = repository_copy / next(iter(builder.EXPECTED_SOURCE_HASHES))
+    source.chmod(0o600)
     source.write_bytes(source.read_bytes() + b"\n")
     with pytest.raises(builder.BackupRestoreReferenceError) as error:
         builder.render_outputs(repository_copy)
