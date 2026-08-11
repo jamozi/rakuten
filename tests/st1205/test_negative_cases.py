@@ -124,6 +124,7 @@ def test_canonical_row_tamper_rejected_when_catalog_hash_is_rebound(
     isolated_root: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     path = isolated_root / builder.KPI_CATALOG_PATH
+    path.chmod(0o600)
     catalog = yaml.safe_load(path.read_text())
     catalog["kpis"][0]["formula"] = "SECRET_CANARY_ST1205"
     content = yaml.safe_dump(catalog, sort_keys=False, allow_unicode=True).encode()
@@ -169,6 +170,7 @@ def test_authority_or_helper_hash_drift_is_rejected(
     isolated_root: Path, relative: Path
 ) -> None:
     path = isolated_root / relative
+    path.chmod(0o600)
     path.write_bytes(path.read_bytes() + b"\n")
     with pytest.raises(builder.KpiReferencePlanError):
         builder.load_contract(isolated_root)

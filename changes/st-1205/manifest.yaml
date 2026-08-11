@@ -109,8 +109,8 @@ source_artifacts:
   bytes: 5486
   sha256: d94bf756afef90f72a0d81537592553e9d3499c2b14ae12bcd1f92d93789b543
 - uri: repo://tests/st1205/test_negative_cases.py
-  bytes: 9986
-  sha256: b34d15750ca19c46fd11235e3ab3f3c647c453aca3bdb854804979e596edd35c
+  bytes: 10030
+  sha256: 484b893ecb8eaf4b8a6a3fe22c06cdf32467ffca05029784fffcd3ade5cd8859
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1205/generated/kpi-read-model-reference-plan.v1.json
