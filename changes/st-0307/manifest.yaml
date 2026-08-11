@@ -52,7 +52,7 @@ provenance:
   - uri: repo://changes/st-0305/manifest.yaml
     sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
   - uri: repo://changes/st-0306/manifest.yaml
-    sha256: 0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8
+    sha256: 912670424d67da75a0006f87356e7c73756bdd793a029d09d50c8e706e3cface
 production_graph:
   anchor_revision: '202608030001'
   predecessor_revision: '202608030005'
@@ -70,11 +70,11 @@ source_artifacts:
   bytes: 2249
   sha256: 0b32aa4a289a297f47ddf770244d696f437a0e98cf857556ef3d6a6cede41023
 - uri: repo://README.md
-  bytes: 55645
-  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+  bytes: 57509
+  sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
 - uri: repo://Makefile
-  bytes: 26913
-  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+  bytes: 31323
+  sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
 - uri: repo://docs/execplans/ST-0307.md
   bytes: 2270
   sha256: 237d9c6369926402c8afe12de8f5a58c8bda76af36e735dbda0475ba336e0fb8
@@ -83,7 +83,7 @@ source_artifacts:
   sha256: a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9
 - uri: repo://scripts/build_st0307_migration_fixtures.py
   bytes: 34971
-  sha256: e328a956ecb2c31d0a042dceaade0e968d3aa8ea4b434741e89a1baf4923025c
+  sha256: ca489078b122db390c56875886065dce0e2b11189f630c48106a3781e992497d
 - uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
   bytes: 434952
   sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
@@ -128,7 +128,7 @@ source_artifacts:
   sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
 - uri: repo://changes/st-0306/manifest.yaml
   bytes: 8660
-  sha256: 0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8
+  sha256: 912670424d67da75a0006f87356e7c73756bdd793a029d09d50c8e706e3cface
 - uri: repo://python/raos/migrations/catalog.py
   bytes: 20363
   sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642

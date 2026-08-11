@@ -33,12 +33,12 @@ provenance:
     sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
   - story_id: ST-0202
     uri: repo://changes/st-0202/manifest.yaml
-    sha256: bf0552fc306d69c937c95a79f2a8c9dbb5686ed2e7fc90c1e11b8c6733f0e52d
+    sha256: 5b07ee92e4ce387df1ee752bb841cca2b63e3575cc5a06509ab990c09ab7dd56
 source_artifact_count: 17
 source_artifacts:
 - uri: repo://changes/st-0205/contracts/synthetic-data-factory.v1.yaml
   bytes: 5425
-  sha256: 0ef5399483deff43e5de306e66ba053a136e53abd547bc6cb7d3bc78882bd6f4
+  sha256: 5ef3a1f7ca925bf17a102b38bc12c67055bf4f87d4f90091629a84c7e45dac20
 - uri: repo://changes/st-0205/README.md
   bytes: 2404
   sha256: 30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6
@@ -50,7 +50,7 @@ source_artifacts:
   sha256: 52a2e3e23c105280eacc04e1ec74761480158a8ddf0e3dc38f97787dc3739fb9
 - uri: repo://scripts/build_st0205_synthetic_data.py
   bytes: 57003
-  sha256: 64a7d7dcc99a26555c697da4261e5257d81365dd3d62714d4bdff1e93556d103
+  sha256: 7435e008e7b6210de19b74410f7e8f1736f4fcc33ac2ee53c64290f9b2b6486f
 - uri: repo://tests/st0205/conftest.py
   bytes: 1101
   sha256: c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0
@@ -73,14 +73,14 @@ source_artifacts:
   bytes: 5656
   sha256: 3af19eab45beab577f8ad16e08cbe6e084ec00bb7c6509f35212a16bee8721dc
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 25978
-  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+  bytes: 26006
+  sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
 - uri: repo://Makefile
-  bytes: 26913
-  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+  bytes: 31323
+  sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
 - uri: repo://README.md
-  bytes: 55645
-  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+  bytes: 57509
+  sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
 - uri: repo://package.json
   bytes: 1850
   sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828

@@ -22,6 +22,7 @@ DIRECT_DEV_PINS = {
 DIRECT_RUNTIME_REQUIREMENTS = [
     "alembic==1.18.5",
     "jsonschema==4.26.0",
+    "openai==2.52.0",
     "pydantic==2.13.4",
     "psycopg[binary]==3.3.4",
     "sqlalchemy==2.0.51",
@@ -29,6 +30,7 @@ DIRECT_RUNTIME_REQUIREMENTS = [
 DIRECT_RUNTIME_PINS = {
     "alembic": "1.18.5",
     "jsonschema": "4.26.0",
+    "openai": "2.52.0",
     "pydantic": "2.13.4",
     "psycopg": "3.3.4",
     "sqlalchemy": "2.0.51",

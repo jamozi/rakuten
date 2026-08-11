@@ -139,7 +139,7 @@ EXPECTED_MIGRATION_MANIFESTS: Final = {
         "297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92"
     ),
     "changes/st-0306/manifest.yaml": (
-        "0d926bf7f540ba6424dd2afb77def5adc4f8a3662f380641eb37e633a93b9bb8"
+        "912670424d67da75a0006f87356e7c73756bdd793a029d09d50c8e706e3cface"
     ),
 }
 EXPECTED_CHECKPOINT_PREREQUISITE_ROLES: Final = (

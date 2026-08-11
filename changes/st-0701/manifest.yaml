@@ -212,8 +212,8 @@ source_artifacts:
   bytes: 11741
   sha256: 26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 25978
-  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+  bytes: 26006
+  sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
 - uri: repo://Makefile
   bytes: 31323
   sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860

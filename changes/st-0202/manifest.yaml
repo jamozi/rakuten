@@ -117,10 +117,10 @@ source_artifacts:
   sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: 71cff451d6c968c8d5c2ae733c990b68f0d25d4966b646015ab825ae0a6cc023
+  sha256: 88e3fc4362e7de81ff53008d53285c73f470df3ce9804154bccac6f0c60f86a0
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 25978
-  sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
+  bytes: 26006
+  sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
 - uri: repo://workspace-layout.json
   bytes: 6679
   sha256: 7d9e3a5d83fd20b10009c51f2589645e78a57eb6522ee9e060e9f6332d034a85
