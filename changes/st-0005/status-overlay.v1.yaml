@@ -330,11 +330,195 @@ request_inventory:
   path: changes/st-0005/requests/0052-st-0307-v3.yaml
   sha256: e384cc1bc318c7dc2e1414a73587871b56ea2439af01445512f6ca43ee977c66
   intent: PROPOSE
+- request_id: STATUS-ST0308-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0053-st-0308-v1.yaml
+  sha256: 399f320a01af34281f3fdf8ff2893dc27b735d989c7f58363eb9eb1e3b563ab0
+  intent: PROPOSE
+- request_id: STATUS-ST0401-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0054-st-0401-v1.yaml
+  sha256: 9060cc9920c22768a9ec4646b92dd6ebc7f8293b69f45fa1d4e634a39b99909c
+  intent: PROPOSE
+- request_id: STATUS-ST0402-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0055-st-0402-v1.yaml
+  sha256: 8d7b569f624bcfedfedce88c6b9ee40a0102721c2dfbf789a590b0f26ed8e569
+  intent: PROPOSE
+- request_id: STATUS-ST0403-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0056-st-0403-v1.yaml
+  sha256: 8e799fa13794a30782b8eb085a870cbc6b97af737b14365675994f8687d00207
+  intent: PROPOSE
+- request_id: STATUS-ST0404-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0057-st-0404-v1.yaml
+  sha256: 61378f2fc943c474125d78da2146b32d4dc9c61088c74ac346317641e2db31bf
+  intent: PROPOSE
+- request_id: STATUS-ST0405-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0058-st-0405-v1.yaml
+  sha256: 1e78dfe2e70fd254c2476b393adb866dd6191869e10904a6bb6647917af56e32
+  intent: PROPOSE
+- request_id: STATUS-ST0406-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0059-st-0406-v1.yaml
+  sha256: 549362a8af43c1419107c12a21c4fb1eb739f8add95ad24032abf3a62815069d
+  intent: PROPOSE
+- request_id: STATUS-ST0407-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0060-st-0407-v1.yaml
+  sha256: 4d52ceb51cfdb7bd6e90b5ac38bdfa82e8fc5de09065341e0bae6b0a36749239
+  intent: PROPOSE
+- request_id: STATUS-ST0501-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0061-st-0501-v1.yaml
+  sha256: b6d46addf5bd4dd878a559406aaec68ed6ed055cda89499a7fde2d1ce465d46a
+  intent: PROPOSE
+- request_id: STATUS-ST0502-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0062-st-0502-v1.yaml
+  sha256: 7a369b060eb422982b48c6e61d44c384d9a11d0411800b15c6f49ac3da7cfc16
+  intent: PROPOSE
+- request_id: STATUS-ST0503-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0063-st-0503-v1.yaml
+  sha256: 37382a2663fff787e0a98235c0e3144adc3c857a2630f51d0d1d0b630f1518ec
+  intent: PROPOSE
+- request_id: STATUS-ST0504-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0064-st-0504-v1.yaml
+  sha256: 209ffcc3ab06b456c697df9b0058a63f1084d2677e6f46cdca9d69fc76bf3d63
+  intent: PROPOSE
+- request_id: STATUS-ST0505-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0065-st-0505-v1.yaml
+  sha256: 3bd18e3de811d5bbf01239ce3a9c1aa369070f5846db31f39717eedb855c9138
+  intent: PROPOSE
+- request_id: STATUS-ST0506-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0066-st-0506-v1.yaml
+  sha256: 585145158e90453088df993d312e9b3bc48f2d08f09f5ce12eed1db3ea6608c7
+  intent: PROPOSE
+- request_id: STATUS-ST0601-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0067-st-0601-v1.yaml
+  sha256: c453949bb059129b694f0712bc5f6ce99b536c3d013607bab1fc6c8555225b7d
+  intent: PROPOSE
+- request_id: STATUS-ST0602-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0068-st-0602-v1.yaml
+  sha256: 207b5bf155dd5a385e939af81f98998b9c44a63a6ea7782b1f2a5607c5624be6
+  intent: PROPOSE
+- request_id: STATUS-ST0603-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0069-st-0603-v1.yaml
+  sha256: 4dfe65370c1684f3d59fe7a69fa1651b0685983e1ff558b249d9df7ebf33f2e1
+  intent: PROPOSE
+- request_id: STATUS-ST0604-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0070-st-0604-v1.yaml
+  sha256: 8ac236eaa7cd021c2a91b2885f8658ec1104f05b32e29f421e440350b9cc1b3f
+  intent: PROPOSE
+- request_id: STATUS-ST0605-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0071-st-0605-v1.yaml
+  sha256: a8e50f37a229176ebe526d10291774a0449ae4c616b1ca359ddaebfedd52c709
+  intent: PROPOSE
+- request_id: STATUS-ST0606-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0072-st-0606-v1.yaml
+  sha256: e8f449e4410ca315003b552f9cd25395948c32ad80e1705c56040eaffca17c00
+  intent: PROPOSE
+- request_id: STATUS-ST0702-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0073-st-0702-v1.yaml
+  sha256: 9bd30fdfbd9f16194bfbc8a407c23e5fd933fcd94dbb80bd74e93da4e57c2391
+  intent: PROPOSE
+- request_id: STATUS-ST0703-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0074-st-0703-v1.yaml
+  sha256: 582a4f92aa7026f72c6899a760fa14e6eaabe950391e897481e84f1cc5935b66
+  intent: PROPOSE
+- request_id: STATUS-ST0704-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0075-st-0704-v1.yaml
+  sha256: 1b8aa6b1817b97fa07791f1057c7f16d1d166e29aa936ec907b0b2fd262bd404
+  intent: PROPOSE
+- request_id: STATUS-ST0705-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0076-st-0705-v1.yaml
+  sha256: 678fde1d5787d0c0fc752422a4ee3903a974112aaa536de00b5d20c2e61c5a79
+  intent: PROPOSE
+- request_id: STATUS-ST0706-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0077-st-0706-v1.yaml
+  sha256: 403364a6b526ad0fa2f4ee540dd225cebfc9172c3c4bb469249919c872562c03
+  intent: PROPOSE
+- request_id: STATUS-ST0802-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0078-st-0802-v1.yaml
+  sha256: fec67ca9fe3a42e85a97aa5badda0709e70087f37d57688c3590affbf75bb18d
+  intent: PROPOSE
+- request_id: STATUS-ST0808-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0079-st-0808-v1.yaml
+  sha256: 014b7e62f7f829411ad084b02ad1ea4c83f19c005e8d68b1bc26384f851d0b0f
+  intent: PROPOSE
+- request_id: STATUS-ST1101-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0080-st-1101-v1.yaml
+  sha256: c1995011c6af74ecd970c13024029ff08a1dd07c679f2455c71cf61cdb4be482
+  intent: PROPOSE
+- request_id: STATUS-ST1201-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0081-st-1201-v1.yaml
+  sha256: 6d4fd38815bc0001516f254da92d5c693630705b3fada18bb8cc24183e7238a9
+  intent: PROPOSE
+- request_id: STATUS-ST1203-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0082-st-1203-v1.yaml
+  sha256: 8c46c5a7517344643ef380dac12fc57260fe3f20e2b111fe945fbf224f51febb
+  intent: PROPOSE
+- request_id: STATUS-ST1205-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0083-st-1205-v1.yaml
+  sha256: d19dc4813a56a503eb42c28def35f3eb97373ec3f12ecda0c2710a96095735c0
+  intent: PROPOSE
+- request_id: STATUS-ST1301-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0084-st-1301-v1.yaml
+  sha256: 128bbe61acfa8da4c5be8842b2289c22ba28d54907f6c2e897d98b563b75a042
+  intent: PROPOSE
+- request_id: STATUS-ST1302-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0085-st-1302-v1.yaml
+  sha256: c58c31e1dd88b7849df5486c37b2a8881ce6ceca101a49febad32bdeef490fce
+  intent: PROPOSE
+- request_id: STATUS-ST1404-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0086-st-1404-v1.yaml
+  sha256: c4dee704ca2fa358d604478c1b725ac10fa932d29b2622e60a33634bf79d2731
+  intent: PROPOSE
+- request_id: STATUS-ST1501-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0087-st-1501-v1.yaml
+  sha256: b06e1c6ca263a9d0301b049798ed83fd9ea55fb88cdb280fe31f34fa0e8a75c2
+  intent: PROPOSE
+- request_id: STATUS-ST1502-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0088-st-1502-v1.yaml
+  sha256: 231ef94a325b843fa34f9484dc9c4c5fa6061f278016f3811884b2093be8e8c9
+  intent: PROPOSE
+- request_id: STATUS-ST1503-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0089-st-1503-v1.yaml
+  sha256: 70cbbe3b64d9ca4adbf483adafdd331424e703770383c3a0389921b664580202
+  intent: PROPOSE
+- request_id: STATUS-ST1504-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0090-st-1504-v1.yaml
+  sha256: e07b32f9f4e96319a9e45be1eb5b65db6e87483d73918b4d9c32335383282084
+  intent: PROPOSE
+- request_id: STATUS-ST1505-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0091-st-1505-v1.yaml
+  sha256: eb4731083ebe0d46ab7e267d7469e4dec65eab11daf58481d682110665f9819b
+  intent: PROPOSE
+- request_id: STATUS-ST1506-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0092-st-1506-v1.yaml
+  sha256: 9682ed2c5f5f1e09d6835af9149f0cbc39ae37afdb51aab79d741363d98ae0f6
+  intent: PROPOSE
+- request_id: STATUS-ST1601-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0093-st-1601-v1.yaml
+  sha256: 0805624ed23e4a493fd6ce093bc2164b037c22bf1537d1b38435239ff2ed8040
+  intent: PROPOSE
+- request_id: STATUS-ST1602-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0094-st-1602-v1.yaml
+  sha256: 29ed58978da40c0a566df5680974b0260c8bf7a791b6b9cf3cdc9d315259091c
+  intent: PROPOSE
+- request_id: STATUS-ST1603-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0095-st-1603-v1.yaml
+  sha256: ecc3406bd846aaf2aa86c9ff6d4c0e86f232f399cf91449b0655de8d5bad9f4f
+  intent: PROPOSE
+- request_id: STATUS-ST1604-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0096-st-1604-v1.yaml
+  sha256: 7640ef754bf8c01676a5c06b9a2a35b1b9263ebec4a24e16889fc2714c8e66bf
+  intent: PROPOSE
+- request_id: STATUS-ST1606-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0097-st-1606-v1.yaml
+  sha256: 0bb28e5207c78a0c5d924799822a9302422316e64f59c2a438d678b92fed5362
+  intent: PROPOSE
+- request_id: STATUS-ST1701-LOCAL-PROPOSAL-001
+  path: changes/st-0005/requests/0098-st-1701-v1.yaml
+  sha256: 8ad18c850e7f0557374d2e10b5e652785059a348e104306e84b859fd6d0cceb2
+  intent: PROPOSE
 counts:
   story_rows: 129
   test_suite_rows: 32
   environment_rows: 6
-  proposal_requests: 52
+  proposal_requests: 98
   applied_requests: 0
 stories:
 - story_id: ST-0001
@@ -614,7 +798,8 @@ stories:
   - TST-005
   - TST-008
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0308-LOCAL-PROPOSAL-001
 - story_id: ST-0401
   base_record_sha256: 2632063e1f84717d8a9869287aad8928f5ca403705e433da6014449e6ea2aa44
   effective_implementation_status: NOT_STARTED
@@ -625,7 +810,8 @@ stories:
   - TST-026
   open_decisions:
   - OD-010
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0401-LOCAL-PROPOSAL-001
 - story_id: ST-0402
   base_record_sha256: 2e7691cff0fbd7ed07518455c2fd40846d93ad5114f5736f653160f558c0aa45
   effective_implementation_status: NOT_STARTED
@@ -635,7 +821,8 @@ stories:
   - TST-022
   - TST-026
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0402-LOCAL-PROPOSAL-001
 - story_id: ST-0403
   base_record_sha256: 625acd6dd4ddf1970abbf0bd0cc632c02f26aa7a24d6ba6d5974078d96df4743
   effective_implementation_status: NOT_STARTED
@@ -645,7 +832,8 @@ stories:
   - TST-012
   - TST-026
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0403-LOCAL-PROPOSAL-001
 - story_id: ST-0404
   base_record_sha256: 9bcc6f7542ec9a556e2f268067912397b3150cfe39c890816332a994984619d8
   effective_implementation_status: NOT_STARTED
@@ -654,7 +842,8 @@ stories:
   - TST-012
   - TST-026
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0404-LOCAL-PROPOSAL-001
 - story_id: ST-0405
   base_record_sha256: dea270ad25a4f9a397943ca13e3e36593310d30740dee53b38cadb97964016ea
   effective_implementation_status: NOT_STARTED
@@ -663,7 +852,8 @@ stories:
   - TST-011
   - TST-012
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0405-LOCAL-PROPOSAL-001
 - story_id: ST-0406
   base_record_sha256: 0a46850f9de27955e89d0b40cbfa9d17c16874fe440bd54c4e9c7cc74f175ee5
   effective_implementation_status: NOT_STARTED
@@ -673,7 +863,8 @@ stories:
   - TST-026
   - TST-031
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0406-LOCAL-PROPOSAL-001
 - story_id: ST-0407
   base_record_sha256: 1ab792fd3515b8afcf2da792bdf4661110e6cc5526d18b8c7f051239d6020207
   effective_implementation_status: NOT_STARTED
@@ -682,7 +873,8 @@ stories:
   - TST-026
   - TST-031
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0407-LOCAL-PROPOSAL-001
 - story_id: ST-0501
   base_record_sha256: 238d0bec2443fe22e14b6ef5a291730ee21bb28410c95ef7b3fe75208892a2f1
   effective_implementation_status: NOT_STARTED
@@ -691,7 +883,8 @@ stories:
   - TST-005
   - TST-012
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0501-LOCAL-PROPOSAL-001
 - story_id: ST-0502
   base_record_sha256: a4da17b81f3b08d2d2407c6b998d3abf4c185e3c02fac1fa0782c22b2582ad09
   effective_implementation_status: NOT_STARTED
@@ -700,7 +893,8 @@ stories:
   - TST-014
   - TST-015
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0502-LOCAL-PROPOSAL-001
 - story_id: ST-0503
   base_record_sha256: 5a99d5607de7750eb0c1226e214fa7f0e481f80c356e59b83e7d33a479184278
   effective_implementation_status: NOT_STARTED
@@ -710,7 +904,8 @@ stories:
   - TST-007
   - TST-008
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0503-LOCAL-PROPOSAL-001
 - story_id: ST-0504
   base_record_sha256: 7ec5ddff05d39356d16fd81be42956d2dfe844cb08d907f0fc49753f38cfc9dc
   effective_implementation_status: NOT_STARTED
@@ -720,7 +915,8 @@ stories:
   - TST-020
   open_decisions:
   - OD-006
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0504-LOCAL-PROPOSAL-001
 - story_id: ST-0505
   base_record_sha256: c73ec23740a4b4cbc899220e66ac0fba12f9815b9ae170988712aed2c85ea253
   effective_implementation_status: NOT_STARTED
@@ -729,7 +925,8 @@ stories:
   - TST-016
   open_decisions:
   - OD-015
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0505-LOCAL-PROPOSAL-001
 - story_id: ST-0506
   base_record_sha256: cc8adb3a3706c59b1d53c6577bb49d7ad5aa738af58e0624cf061ad7c0e7ec4c
   effective_implementation_status: NOT_STARTED
@@ -738,7 +935,8 @@ stories:
   - TST-022
   - TST-023
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0506-LOCAL-PROPOSAL-001
 - story_id: ST-0601
   base_record_sha256: 695b46b6255fa80f1c162478e8e8b313edadcd7b83ea08ae143195b8bce9e617
   effective_implementation_status: NOT_STARTED
@@ -746,7 +944,8 @@ stories:
   required_suites:
   - TST-014
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0601-LOCAL-PROPOSAL-001
 - story_id: ST-0602
   base_record_sha256: 1509ecfb67f21a45b38f2c7ee863238bc3b3430b03fd5f380d6d6da7556e5bae
   effective_implementation_status: NOT_STARTED
@@ -755,7 +954,8 @@ stories:
   - TST-005
   - TST-007
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0602-LOCAL-PROPOSAL-001
 - story_id: ST-0603
   base_record_sha256: e608f922be68fe81c99edc6dc5c36dcb2b928f86bb7fc90b91dbc65f374d650e
   effective_implementation_status: NOT_STARTED
@@ -764,7 +964,8 @@ stories:
   - TST-007
   - TST-020
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0603-LOCAL-PROPOSAL-001
 - story_id: ST-0604
   base_record_sha256: 90d95d84fbf743f3236cc3134b96fda70e80d1ce491ed931d0688956639c41bb
   effective_implementation_status: NOT_STARTED
@@ -773,7 +974,8 @@ stories:
   - TST-012
   - TST-020
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0604-LOCAL-PROPOSAL-001
 - story_id: ST-0605
   base_record_sha256: 0cfcf412a38f2c9896a0cffd1890f00bcf4134c1b58acf17baa8ded7bb65102c
   effective_implementation_status: NOT_STARTED
@@ -782,7 +984,8 @@ stories:
   - TST-020
   - TST-021
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0605-LOCAL-PROPOSAL-001
 - story_id: ST-0606
   base_record_sha256: ec82918b44718506ca96ecb0f5a1bb6d81177eae72f68ab56d1534f6195971bf
   effective_implementation_status: NOT_STARTED
@@ -791,7 +994,8 @@ stories:
   - TST-022
   - TST-024
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0606-LOCAL-PROPOSAL-001
 - story_id: ST-0701
   base_record_sha256: 28bd8268823fc5d5343a154f9b9bf7ffcf4df814fef3e372cd1c1ca97fea1af8
   effective_implementation_status: NOT_STARTED
@@ -811,7 +1015,8 @@ stories:
   - TST-005
   - TST-019
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0702-LOCAL-PROPOSAL-001
 - story_id: ST-0703
   base_record_sha256: 606fbef1beeac2dc2f74991dcb1e5ff4094467999885b1d73c81af351391179d
   effective_implementation_status: NOT_STARTED
@@ -819,7 +1024,8 @@ stories:
   required_suites:
   - TST-017
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0703-LOCAL-PROPOSAL-001
 - story_id: ST-0704
   base_record_sha256: 5aafd6c481d8826289ace2264c42c9215347f6bde83c421dfe2f8eb77f545f21
   effective_implementation_status: NOT_STARTED
@@ -830,7 +1036,8 @@ stories:
   - TST-019
   open_decisions:
   - OD-009
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0704-LOCAL-PROPOSAL-001
 - story_id: ST-0705
   base_record_sha256: 8da876f264de3a92a5f31b41593a701d43e991d5e456952a304d2873cdd738b2
   effective_implementation_status: NOT_STARTED
@@ -839,7 +1046,8 @@ stories:
   - TST-019
   - TST-020
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0705-LOCAL-PROPOSAL-001
 - story_id: ST-0706
   base_record_sha256: a9a09021bcdf115844d7627da38286d803328c4f30989b7e1fffc1f1c391c4ec
   effective_implementation_status: NOT_STARTED
@@ -848,7 +1056,8 @@ stories:
   - TST-013
   - TST-017
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0706-LOCAL-PROPOSAL-001
 - story_id: ST-0707
   base_record_sha256: abdbbb7616f7de70284ec769d24e63ea79e2b38a768a5408128fb3d8b76ba610
   effective_implementation_status: NOT_STARTED
@@ -893,7 +1102,8 @@ stories:
   - TST-012
   - TST-020
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0802-LOCAL-PROPOSAL-001
 - story_id: ST-0803
   base_record_sha256: 8b953ac53fae8548b75a53c069e77e88a66ad97b6a6ce8ba5d33a9609484df2b
   effective_implementation_status: NOT_STARTED
@@ -948,7 +1158,8 @@ stories:
   - TST-020
   - TST-024
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST0808-LOCAL-PROPOSAL-001
 - story_id: ST-0901
   base_record_sha256: ffd5d7dc87522c600c9c6cd82324ddc87d9aaf00e21e55d932399d5ac8b2d148
   effective_implementation_status: NOT_STARTED
@@ -1080,7 +1291,8 @@ stories:
   - TST-022
   - TST-023
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1101-LOCAL-PROPOSAL-001
 - story_id: ST-1102
   base_record_sha256: 6dda7f7b735284f4d8b23c30e7b2d864e40354ca49b5d6a608aad7d4cf2e623c
   effective_implementation_status: NOT_STARTED
@@ -1128,7 +1340,8 @@ stories:
   - TST-031
   open_decisions:
   - OD-012
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1201-LOCAL-PROPOSAL-001
 - story_id: ST-1202
   base_record_sha256: 7dc6c2628da315495e76008c1d72f0d50c54159200b0d5cb75dca7125c39f873
   effective_implementation_status: NOT_STARTED
@@ -1146,7 +1359,8 @@ stories:
   - TST-030
   open_decisions:
   - OD-015
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1203-LOCAL-PROPOSAL-001
 - story_id: ST-1204
   base_record_sha256: ac9ce98429b907bbc287e921a4ffedae794af67493039f028ab2a556a956c8e9
   effective_implementation_status: NOT_STARTED
@@ -1164,7 +1378,8 @@ stories:
   required_suites:
   - TST-030
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1205-LOCAL-PROPOSAL-001
 - story_id: ST-1206
   base_record_sha256: d6ee6a17718cb823e4add76347a735e92839047ec7fb2e7e352d7717ece683bd
   effective_implementation_status: DEFERRED_POST_MVP
@@ -1183,7 +1398,8 @@ stories:
   - TST-030
   open_decisions:
   - OD-003
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1301-LOCAL-PROPOSAL-001
 - story_id: ST-1302
   base_record_sha256: 4c8864083d0633fbbfd07ee3f88dbe8bae8e3da4d020c1f5a9ab842e01fee2f0
   effective_implementation_status: NOT_STARTED
@@ -1192,7 +1408,8 @@ stories:
   - TST-008
   - TST-030
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1302-LOCAL-PROPOSAL-001
 - story_id: ST-1303
   base_record_sha256: dc655be896e68de7a4b8c53325b2e2dd95e23cb286b38026c4051ef42dd37026
   effective_implementation_status: NOT_STARTED
@@ -1258,7 +1475,8 @@ stories:
   - TST-013
   - TST-028
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1404-LOCAL-PROPOSAL-001
 - story_id: ST-1405
   base_record_sha256: 7664dbea0396c635d37e182be5e52c5a5afb28e7cff47f8029bbab31990236b2
   effective_implementation_status: NOT_STARTED
@@ -1295,7 +1513,8 @@ stories:
   - TST-026
   open_decisions:
   - OD-013
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1501-LOCAL-PROPOSAL-001
 - story_id: ST-1502
   base_record_sha256: 51736f6682e55b91d58600bcfb252eb47e7147131d963f46b2a77f5db642397c
   effective_implementation_status: NOT_STARTED
@@ -1304,7 +1523,8 @@ stories:
   - TST-026
   - TST-029
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1502-LOCAL-PROPOSAL-001
 - story_id: ST-1503
   base_record_sha256: 036e00aed83fcf1b028795d40e29701898ec125ab2b83dbc3fcdd8883833c868
   effective_implementation_status: NOT_STARTED
@@ -1313,7 +1533,8 @@ stories:
   - TST-026
   - TST-027
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1503-LOCAL-PROPOSAL-001
 - story_id: ST-1504
   base_record_sha256: 7e1f0d25542d583a6ff46230efa75b282df886624bb68f2988b4aa21d7a75d0a
   effective_implementation_status: NOT_STARTED
@@ -1321,7 +1542,8 @@ stories:
   required_suites:
   - TST-026
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1504-LOCAL-PROPOSAL-001
 - story_id: ST-1505
   base_record_sha256: 7b923b39d5595e9ab5456ecceaa18cee954401b77dc58438c6d43448b08b9afd
   effective_implementation_status: NOT_STARTED
@@ -1330,7 +1552,8 @@ stories:
   - TST-009
   - TST-022
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1505-LOCAL-PROPOSAL-001
 - story_id: ST-1506
   base_record_sha256: d77f26be65c796e167906e4419c105d4f72d79e184db59aa24077f0ebf6961da
   effective_implementation_status: NOT_STARTED
@@ -1342,7 +1565,8 @@ stories:
   - OD-011
   - OD-013
   - OD-015
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1506-LOCAL-PROPOSAL-001
 - story_id: ST-1601
   base_record_sha256: 372be155f3ba4a17679bb561b2437073353f54ff07284e3226163eba7fa01bfb
   effective_implementation_status: NOT_STARTED
@@ -1350,7 +1574,8 @@ stories:
   required_suites:
   - TST-031
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1601-LOCAL-PROPOSAL-001
 - story_id: ST-1602
   base_record_sha256: e94597d1236faef7f6cdde5b980a6f8f9959655800f3abe031a0330d3e6f6e3c
   effective_implementation_status: NOT_STARTED
@@ -1360,7 +1585,8 @@ stories:
   - TST-028
   open_decisions:
   - OD-011
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1602-LOCAL-PROPOSAL-001
 - story_id: ST-1603
   base_record_sha256: 7ccb0e02b27aa296397cb7409adc7cf0cdd1acaf4124919d4c2c722ae800ca96
   effective_implementation_status: NOT_STARTED
@@ -1369,7 +1595,8 @@ stories:
   - TST-026
   - TST-031
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1603-LOCAL-PROPOSAL-001
 - story_id: ST-1604
   base_record_sha256: 07346dffe9c038b8e6ec0dd920c87b25766021c1a69aaa87b18e2ed95d54a7d2
   effective_implementation_status: NOT_STARTED
@@ -1377,7 +1604,8 @@ stories:
   required_suites:
   - TST-027
   open_decisions: []
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1604-LOCAL-PROPOSAL-001
 - story_id: ST-1605
   base_record_sha256: 1a5480de54b62f1bc576851b71eaccbf654b9f361282d56fc7d88e10a8002c35
   effective_implementation_status: NOT_STARTED
@@ -1394,7 +1622,8 @@ stories:
   - TST-029
   open_decisions:
   - OD-014
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1606-LOCAL-PROPOSAL-001
 - story_id: ST-1607
   base_record_sha256: d53894f3afa6c36f55e9229f799a9e67d73d7343da5298906cf178afe925108e
   effective_implementation_status: NOT_STARTED
@@ -1417,7 +1646,8 @@ stories:
   - OD-007
   - OD-008
   - OD-009
-  proposal_request_ids: []
+  proposal_request_ids:
+  - STATUS-ST1701-LOCAL-PROPOSAL-001
 - story_id: ST-1702
   base_record_sha256: 4f6d2d7426ba89c2228e5fdd76971d20f185632fb6b8780c04c96e82abd7dc57
   effective_implementation_status: NOT_STARTED
@@ -5181,5 +5411,1680 @@ proposals:
       - 2f07d42cde9be80a5ae16bb060c88f6e0ce4f65b204d54d903e0de705d88a488
       - a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9
       - e328a956ecb2c31d0a042dceaade0e968d3aa8ea4b434741e89a1baf4923025c
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0308-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0308 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0308
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0308-local-20260811-v1.yaml
+      sha256: 59ff57d340b0774c94c83e2248f42daf4ee642c5c358bc8f7884cb08ae0a5aee
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0308-local-20260811-v1.yaml
+      sha256: 59ff57d340b0774c94c83e2248f42daf4ee642c5c358bc8f7884cb08ae0a5aee
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0401-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0401 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0401
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0401-local-20260811-v1.yaml
+      sha256: 17417ab1c394ee4dc1a5f0e6b3a894d3098cfdcab1ef83650bde2245700a5288
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-022
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0401-local-20260811-v1.yaml
+      sha256: 17417ab1c394ee4dc1a5f0e6b3a894d3098cfdcab1ef83650bde2245700a5288
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0401-local-20260811-v1.yaml
+      sha256: 17417ab1c394ee4dc1a5f0e6b3a894d3098cfdcab1ef83650bde2245700a5288
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0402-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0402 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0402
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0402-local-20260811-v1.yaml
+      sha256: cff0660ea70bc5823d4f17723a7deec8893a2dd2349a84523df7c978fddf7d85
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-022
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0402-local-20260811-v1.yaml
+      sha256: cff0660ea70bc5823d4f17723a7deec8893a2dd2349a84523df7c978fddf7d85
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0402-local-20260811-v1.yaml
+      sha256: cff0660ea70bc5823d4f17723a7deec8893a2dd2349a84523df7c978fddf7d85
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0403-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0403 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0403
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-011
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0403-local-20260811-v1.yaml
+      sha256: 1abd006ec1c45cc94821b2706661da3134cb074830be5c7b6f26bc4a4a441ced
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0403-local-20260811-v1.yaml
+      sha256: 1abd006ec1c45cc94821b2706661da3134cb074830be5c7b6f26bc4a4a441ced
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0403-local-20260811-v1.yaml
+      sha256: 1abd006ec1c45cc94821b2706661da3134cb074830be5c7b6f26bc4a4a441ced
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0404-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0404 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0404
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0404-local-20260811-v1.yaml
+      sha256: 8b7ca6d37de3cbad66b444ac070dcb44e0028943fc2ef6e209b7f4ee97486605
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0404-local-20260811-v1.yaml
+      sha256: 8b7ca6d37de3cbad66b444ac070dcb44e0028943fc2ef6e209b7f4ee97486605
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0405-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0405 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0405
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-011
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0405-local-20260811-v1.yaml
+      sha256: 0661ee35c892f9c3a41a3abb51ebc7c685ef97f473a2d634411f00a2449e54ac
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0405-local-20260811-v1.yaml
+      sha256: 0661ee35c892f9c3a41a3abb51ebc7c685ef97f473a2d634411f00a2449e54ac
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0406-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0406 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0406
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-014
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0406-local-20260811-v1.yaml
+      sha256: 5c7228a44c01aabc5a4dab447c7515ef91fc5101b9da8226c01d82f88b311e97
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0406-local-20260811-v1.yaml
+      sha256: 5c7228a44c01aabc5a4dab447c7515ef91fc5101b9da8226c01d82f88b311e97
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0406-local-20260811-v1.yaml
+      sha256: 5c7228a44c01aabc5a4dab447c7515ef91fc5101b9da8226c01d82f88b311e97
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0407-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0407 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0407
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0407-local-20260811-v1.yaml
+      sha256: d3e20a3b9aa7add869c27dab4b58b35c1d068fdc8b48526849bc7625b5dd5b2c
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0407-local-20260811-v1.yaml
+      sha256: d3e20a3b9aa7add869c27dab4b58b35c1d068fdc8b48526849bc7625b5dd5b2c
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0501-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0501 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0501
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0501-local-20260811-v1.yaml
+      sha256: c8da01252d14a4064cc90445ac27529d1eb7936ca7b9312f371d0b341ec1aee1
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0501-local-20260811-v1.yaml
+      sha256: c8da01252d14a4064cc90445ac27529d1eb7936ca7b9312f371d0b341ec1aee1
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0502-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0502 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0502
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-014
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0502-local-20260811-v1.yaml
+      sha256: 939cb5caa5bc76704b1bd5ba130e6a020f45febfc70c75030d739a47727548c7
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-015
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0502-local-20260811-v1.yaml
+      sha256: 939cb5caa5bc76704b1bd5ba130e6a020f45febfc70c75030d739a47727548c7
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0503-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0503 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0503
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0503-local-20260811-v1.yaml
+      sha256: fba4a6f499a900e2d566a495387956c3c96b7c3bb480104acc7c85734b6769e5
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-007
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0503-local-20260811-v1.yaml
+      sha256: fba4a6f499a900e2d566a495387956c3c96b7c3bb480104acc7c85734b6769e5
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0503-local-20260811-v1.yaml
+      sha256: fba4a6f499a900e2d566a495387956c3c96b7c3bb480104acc7c85734b6769e5
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0504-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0504 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0504
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-007
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0504-local-20260811-v1.yaml
+      sha256: c786648796979a7562569b8f6eb4270f009d84b10d7f489c13da6714586e55cc
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0504-local-20260811-v1.yaml
+      sha256: c786648796979a7562569b8f6eb4270f009d84b10d7f489c13da6714586e55cc
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0505-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0505 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0505
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-016
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0505-local-20260811-v1.yaml
+      sha256: 99fe97e07c7c524c6d164acdb50ce8101201f3f652aa6604f71d40b6cdb1056b
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0506-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0506 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0506
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-022
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0506-local-20260811-v1.yaml
+      sha256: 2b4c6e6edb009ad4128e3c1a4d421ae3be5492b802a935beb46acb6c49cd675d
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-023
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0506-local-20260811-v1.yaml
+      sha256: 2b4c6e6edb009ad4128e3c1a4d421ae3be5492b802a935beb46acb6c49cd675d
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0601-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0601 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0601
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-014
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0601-local-20260811-v1.yaml
+      sha256: 1543164ee543fb76863c1cfa86045caacf47fe81f5cf1a2d2bc7d8b921df3f66
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0602-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0602 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0602
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0602-local-20260811-v1.yaml
+      sha256: 2969c73dac0a9793684ed0710481d83a58e85e789e1a438415f1525a9033607f
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-007
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0602-local-20260811-v1.yaml
+      sha256: 2969c73dac0a9793684ed0710481d83a58e85e789e1a438415f1525a9033607f
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0603-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0603 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0603
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-007
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0603-local-20260811-v1.yaml
+      sha256: b2ceee0d89fdd20682b2736ebba3718b8651aea9351359ff733e67c3157065b8
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0603-local-20260811-v1.yaml
+      sha256: b2ceee0d89fdd20682b2736ebba3718b8651aea9351359ff733e67c3157065b8
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0604-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0604 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0604
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0604-local-20260811-v1.yaml
+      sha256: 59be4acb09cb0aee423ff11062b5e57bf55d0719f4a3181112da040eef5c1d5e
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0604-local-20260811-v1.yaml
+      sha256: 59be4acb09cb0aee423ff11062b5e57bf55d0719f4a3181112da040eef5c1d5e
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0605-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0605 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0605
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0605-local-20260811-v1.yaml
+      sha256: 65b871556c155d188d8df3dfd92b692f15df63512c4c850a4fe07a6c975073aa
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-021
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0605-local-20260811-v1.yaml
+      sha256: 65b871556c155d188d8df3dfd92b692f15df63512c4c850a4fe07a6c975073aa
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0606-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0606 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0606
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-022
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0606-local-20260811-v1.yaml
+      sha256: f03ccd02ab4c0a043cdfc8e9650bb69fa6e52ebd0b5ac337a78e1ea57bd486c1
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-024
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0606-local-20260811-v1.yaml
+      sha256: f03ccd02ab4c0a043cdfc8e9650bb69fa6e52ebd0b5ac337a78e1ea57bd486c1
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0702-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0702 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0702
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0702-local-20260811-v1.yaml
+      sha256: eb88b405067bdf8b9b4ff7ab1b249558a9705b4a8d2ebc20d509815748b7da3c
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-019
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0702-local-20260811-v1.yaml
+      sha256: eb88b405067bdf8b9b4ff7ab1b249558a9705b4a8d2ebc20d509815748b7da3c
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0703-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0703 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0703
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-017
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0703-local-20260811-v1.yaml
+      sha256: 1a812aded2a7852520bbbe99366d423367c5886498215d3c221d36b46e35ea98
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0704-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0704 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0704
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-005
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0704-local-20260811-v1.yaml
+      sha256: 295921887489cf30e01fe9c21525c6f24f9833e7cc3d004a3628caf1258882c4
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-017
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0704-local-20260811-v1.yaml
+      sha256: 295921887489cf30e01fe9c21525c6f24f9833e7cc3d004a3628caf1258882c4
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-019
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0704-local-20260811-v1.yaml
+      sha256: 295921887489cf30e01fe9c21525c6f24f9833e7cc3d004a3628caf1258882c4
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0705-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0705 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0705
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-019
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0705-local-20260811-v1.yaml
+      sha256: 291d5ab04326db8186b6e2ae3030be78073345d9d88ae1f4ebfd970b42038d8a
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0705-local-20260811-v1.yaml
+      sha256: 291d5ab04326db8186b6e2ae3030be78073345d9d88ae1f4ebfd970b42038d8a
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0706-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T13:26:09Z'
+  reason: Record append-only local ST-0706 implementation-candidate evidence for the isolated 29-test,
+    Ruff, strict mypy, predecessor-regression, and static-boundary checks. This proposes IMPLEMENTED_NOT_VALIDATED
+    / NOT_EXECUTED only and does not claim formal TST-013 or TST-017, hosted CI, human review, canonical
+    APPLY, live provider, staging, publication, release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0706
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-013
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0706-local-20260811-v1.yaml
+      sha256: 128f5f4f641806855c0c5dd58a7bf76d96074e474c6248d61d7786e152331128
+      observed_at: '2026-08-11T13:26:08Z'
+      snapshot_artifact_sha256:
+      - cce1c68a0ed60f9a8fdcf63f60b67c45df5a00c1826eb05cab278c35f7127687
+      invalidates_evidence_sha256: []
+    - suite_id: TST-017
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0706-local-20260811-v1.yaml
+      sha256: 128f5f4f641806855c0c5dd58a7bf76d96074e474c6248d61d7786e152331128
+      observed_at: '2026-08-11T13:26:08Z'
+      snapshot_artifact_sha256:
+      - cce1c68a0ed60f9a8fdcf63f60b67c45df5a00c1826eb05cab278c35f7127687
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0802-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0802 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0802
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0802-local-20260811-v1.yaml
+      sha256: 9218af81e405b8116ff9d0b2fee236f7ca65496d2779ef9bd890e979fab83654
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0802-local-20260811-v1.yaml
+      sha256: 9218af81e405b8116ff9d0b2fee236f7ca65496d2779ef9bd890e979fab83654
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST0808-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-0808 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-0808
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-014
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0808-local-20260811-v1.yaml
+      sha256: cc1c92201c76b5a57052decff87fd9091e8a37d05ea35df25919fed34224f675
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-020
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0808-local-20260811-v1.yaml
+      sha256: cc1c92201c76b5a57052decff87fd9091e8a37d05ea35df25919fed34224f675
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-024
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-0808-local-20260811-v1.yaml
+      sha256: cc1c92201c76b5a57052decff87fd9091e8a37d05ea35df25919fed34224f675
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1101-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1101 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1101
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-006
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1101-local-20260811-v1.yaml
+      sha256: 7f21bf95d805327e6dfb24b444b03759c5f01ad7b37627d72d2ac0c175566792
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-022
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1101-local-20260811-v1.yaml
+      sha256: 7f21bf95d805327e6dfb24b444b03759c5f01ad7b37627d72d2ac0c175566792
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-023
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1101-local-20260811-v1.yaml
+      sha256: 7f21bf95d805327e6dfb24b444b03759c5f01ad7b37627d72d2ac0c175566792
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1201-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1201 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1201
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-012
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1201-local-20260811-v1.yaml
+      sha256: 8a17fd6d7610df433e0825abe882ef62eb5761b755d39a0f10e789d37e6dd141
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-030
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1201-local-20260811-v1.yaml
+      sha256: 8a17fd6d7610df433e0825abe882ef62eb5761b755d39a0f10e789d37e6dd141
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1201-local-20260811-v1.yaml
+      sha256: 8a17fd6d7610df433e0825abe882ef62eb5761b755d39a0f10e789d37e6dd141
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1203-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1203 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1203
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-030
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1203-local-20260811-v1.yaml
+      sha256: aa9566b91726573229350d47195bba8a660ebdbcead8574702b78a3d401ff34d
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1205-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1205 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1205
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-030
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1205-local-20260811-v1.yaml
+      sha256: 5311e444fa883958b98bb48f112f291d5a81db0f78f36d3529f93486462d38e3
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1301-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1301 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1301
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1301-local-20260811-v1.yaml
+      sha256: 19165d75d95f5ecb6eb0df3c6bc81b6acb58fffd01f856da410b8375bf9b4eb2
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-030
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1301-local-20260811-v1.yaml
+      sha256: 19165d75d95f5ecb6eb0df3c6bc81b6acb58fffd01f856da410b8375bf9b4eb2
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1302-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1302 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1302
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-008
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1302-local-20260811-v1.yaml
+      sha256: e74d7c0cf8f8baf786c4cf740b29e4a8ea043472312544a0c28b78effd449023
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-030
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1302-local-20260811-v1.yaml
+      sha256: e74d7c0cf8f8baf786c4cf740b29e4a8ea043472312544a0c28b78effd449023
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1404-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1404 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1404
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-013
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1404-local-20260811-v1.yaml
+      sha256: a8f4920a3f1b356391e6deb64e2982b9997a301910c747416d6a65d3fbfc8841
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-028
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1404-local-20260811-v1.yaml
+      sha256: a8f4920a3f1b356391e6deb64e2982b9997a301910c747416d6a65d3fbfc8841
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1501-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1501 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1501
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1501-local-20260811-v1.yaml
+      sha256: acc852dbb088ba6e51dc941392874b512d00eb879de5d51dc81209ab3430e93d
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1502-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1502 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1502
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1502-local-20260811-v1.yaml
+      sha256: 180f3ba0d918f24c25529ad4577005ce5714db47af716a65bbf7f14701cf0d30
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-029
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1502-local-20260811-v1.yaml
+      sha256: 180f3ba0d918f24c25529ad4577005ce5714db47af716a65bbf7f14701cf0d30
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1503-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1503 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1503
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1503-local-20260811-v1.yaml
+      sha256: b9e8d6058a6ac88512b99e0c90214abef31468b31ff1bd3db2d550441894935a
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-027
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1503-local-20260811-v1.yaml
+      sha256: b9e8d6058a6ac88512b99e0c90214abef31468b31ff1bd3db2d550441894935a
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1504-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1504 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1504
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1504-local-20260811-v1.yaml
+      sha256: 1496c1d80ba02afd15116d2a428cbc67b6fb1357d1dab4aeebb35fda186afd95
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1505-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1505 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1505
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-009
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1505-local-20260811-v1.yaml
+      sha256: d2b1530f7eea04f651a57a0fb50e2090718f2461391eea5c706c8877c7d62d02
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-022
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1505-local-20260811-v1.yaml
+      sha256: d2b1530f7eea04f651a57a0fb50e2090718f2461391eea5c706c8877c7d62d02
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1506-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1506 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1506
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-032
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1506-local-20260811-v1.yaml
+      sha256: 8166a59cd54812f7ecd8ef69e7627e8709f6a88a4f3054060f85327b2878622b
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1601-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1601 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1601
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1601-local-20260811-v1.yaml
+      sha256: 8dd505d077893810e7207107d29a646b7dda6e1a5474f6bd18c13d7842460c37
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1602-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1602 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1602
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-027
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1602-local-20260811-v1.yaml
+      sha256: 4acbb3f2c786d64c481f401b2d7f329df7ae6db16cd40234071b9c588b8cda06
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-028
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1602-local-20260811-v1.yaml
+      sha256: 4acbb3f2c786d64c481f401b2d7f329df7ae6db16cd40234071b9c588b8cda06
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1603-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1603 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1603
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-026
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1603-local-20260811-v1.yaml
+      sha256: 80fb21eafe3b2687779e30a94d8d28c133aa5ad35827c0a64275c8d72610a1ff
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+    - suite_id: TST-031
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1603-local-20260811-v1.yaml
+      sha256: 80fb21eafe3b2687779e30a94d8d28c133aa5ad35827c0a64275c8d72610a1ff
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1604-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1604 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1604
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-027
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1604-local-20260811-v1.yaml
+      sha256: 1c7dbe24f7a39903961bda2542aa2388f4a8c93a75092a008c165f1d2d9c05d8
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1606-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1606 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1606
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-029
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1606-local-20260811-v1.yaml
+      sha256: a42d3c5f4a7dffcdf8722bb9744a43e9dca443c17983f7d0d40ea81365dc048f
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
+      invalidates_evidence_sha256: []
+- request_id: STATUS-ST1701-LOCAL-PROPOSAL-001
+  requested_by:
+    id: codex-local-implementation
+    actor_type: AUTOMATION
+  requested_at: '2026-08-11T08:33:10Z'
+  reason: Record append-only local ST-1701 implementation-candidate evidence from the owner-approved Pro
+    branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and does not
+    claim formal required Suites, hosted CI, human review, canonical APPLY, live activity, staging, publication,
+    release, or Production execution.
+  outcome: PENDING_PR_EVIDENCE_AND_APPLY_REQUEST
+  changes:
+  - story_id: ST-1701
+    expected:
+      implementation_status: NOT_STARTED
+      verification_status: NOT_EXECUTED
+    target:
+      implementation_status: IMPLEMENTED_NOT_VALIDATED
+      verification_status: NOT_EXECUTED
+    evidence:
+    - suite_id: TST-032
+      environment: LOCAL
+      evidence_class: LOCAL_IMPLEMENTATION
+      uri: repo://changes/st-0005/evidence/ST-1701-local-20260811-v1.yaml
+      sha256: b55bf5c20bc8f549679b49aef779b8cf97d3c889eaa25baff117a89ab445124f
+      observed_at: '2026-08-11T08:33:09Z'
+      snapshot_artifact_sha256:
+      - 769f35760d8113066e22f52b7096a8c7dcc172a9247daffa846bb5622b7577b4
       invalidates_evidence_sha256: []
 applied_transitions: []

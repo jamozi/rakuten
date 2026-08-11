@@ -1,0 +1,31 @@
+document:
+  id: STATUS-ST0505-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-11T08:33:10Z'
+reason: >-
+  Record append-only local ST-0505 implementation-candidate evidence from the owner-approved
+  Pro branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and
+  does not claim formal required Suites, hosted CI, human review, canonical APPLY, live activity,
+  staging, publication, release, or Production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+- story_id: ST-0505
+  expected:
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  target:
+    implementation_status: IMPLEMENTED_NOT_VALIDATED
+    verification_status: NOT_EXECUTED
+  evidence:
+  - suite_id: TST-016
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-0505-local-20260811-v1.yaml
+    sha256: 99fe97e07c7c524c6d164acdb50ce8101201f3f652aa6604f71d40b6cdb1056b
+    observed_at: '2026-08-11T08:33:09Z'

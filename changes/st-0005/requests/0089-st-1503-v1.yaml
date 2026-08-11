@@ -1,0 +1,37 @@
+document:
+  id: STATUS-ST1503-LOCAL-PROPOSAL-001
+  schema_version: 1
+  intent: PROPOSE
+requested_by:
+  id: codex-local-implementation
+  actor_type: AUTOMATION
+requested_at: '2026-08-11T08:33:10Z'
+reason: >-
+  Record append-only local ST-1503 implementation-candidate evidence from the owner-approved
+  Pro branch integration worklog. This proposes IMPLEMENTED_NOT_VALIDATED / NOT_EXECUTED only and
+  does not claim formal required Suites, hosted CI, human review, canonical APPLY, live activity,
+  staging, publication, release, or Production execution.
+expected:
+  canonical_base_sha256: 73cf0a32b48db4f385de51bb732827d2d81b72c21a0e7c300b88a243a4d1955d
+  effective_status_sha256: 86ab530417cb395706806f388ced894f4f1ea71c60cbfad87502ba5dd6016085
+changes:
+- story_id: ST-1503
+  expected:
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  target:
+    implementation_status: IMPLEMENTED_NOT_VALIDATED
+    verification_status: NOT_EXECUTED
+  evidence:
+  - suite_id: TST-026
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-1503-local-20260811-v1.yaml
+    sha256: b9e8d6058a6ac88512b99e0c90214abef31468b31ff1bd3db2d550441894935a
+    observed_at: '2026-08-11T08:33:09Z'
+  - suite_id: TST-027
+    environment: LOCAL
+    evidence_class: LOCAL_IMPLEMENTATION
+    uri: repo://changes/st-0005/evidence/ST-1503-local-20260811-v1.yaml
+    sha256: b9e8d6058a6ac88512b99e0c90214abef31468b31ff1bd3db2d550441894935a
+    observed_at: '2026-08-11T08:33:09Z'

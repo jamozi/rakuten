@@ -1,0 +1,32 @@
+document:
+  id: RAOS-STATUS-EVIDENCE-ST0706-20260811-V1
+  schema_version: 1
+  recorded_at: '2026-08-11T13:26:08Z'
+story_id: ST-0706
+evidence_class: LOCAL_IMPLEMENTATION
+formal_suite_status: NOT_EXECUTED
+source_artifacts:
+- original_uri: repo://changes/st-0706/README.md
+  artifact_uri: repo://changes/st-0005/evidence/artifacts/cce1c68a0ed60f9a8fdcf63f60b67c45df5a00c1826eb05cab278c35f7127687-README.md
+  sha256: cce1c68a0ed60f9a8fdcf63f60b67c45df5a00c1826eb05cab278c35f7127687
+suite_results:
+- suite_id: TST-013
+  environment: LOCAL
+  result: LOCAL_PASS
+- suite_id: TST-017
+  environment: LOCAL
+  result: LOCAL_PASS
+local_results:
+- command: pinned isolated ST-0706 pytest
+  result: PASS; 29/29 focused orchestration and failure-isolation tests passed locally
+- command: pinned ST-0706 Ruff and strict mypy
+  result: PASS; owned metadata-only domain, port, application, recorded-adapter, and test paths passed
+    locally
+- command: focused predecessor regression and static boundary checks
+  result: PASS; predecessor behavior and prohibited-capability boundaries passed locally
+boundary: >-
+  Append-only local implementation candidate evidence only for ST-0706. Formal TST-013 and
+  TST-017, hosted CI, durable worker and persistence behavior, live provider or credential activity,
+  human review, canonical APPLY, staging, publication, release, and Production remain NOT_EXECUTED or
+  unclaimed. The isolated 29-test result, predecessor regressions, Ruff, mypy, and static boundary
+  checks are local evidence only. Effective canonical status remains NOT_STARTED / NOT_EXECUTED.
