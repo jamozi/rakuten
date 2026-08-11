@@ -84,3 +84,24 @@ export type {
   EvidenceWorkspaceSourceArtifact,
   EvidenceWorkspaceSourceBinding,
 } from './evidence-workspace.ts';
+
+export {
+  AI_GOVERNANCE_MODEL_ERROR_CODES,
+  AI_GOVERNANCE_SCREEN,
+  AI_GOVERNANCE_SECTION_IDS,
+  AI_GOVERNANCE_SECTIONS,
+  AI_GOVERNANCE_SOURCE_BINDINGS,
+  AiGovernanceModelError,
+  createAiGovernanceWorkspaceModel,
+} from './ai-governance-workspace.ts';
+export type {
+  AiGovernanceModelErrorCode,
+  AiGovernanceRole,
+  AiGovernanceScreenMetadata,
+  AiGovernanceSection,
+  AiGovernanceSectionId,
+  AiGovernanceSourceArtifact,
+  AiGovernanceSourceBinding,
+  AiGovernanceWorkspaceInput,
+  AiGovernanceWorkspaceModel,
+} from './ai-governance-workspace.ts';
