@@ -43,7 +43,7 @@ provenance:
       sha256: 12953e2e975c38108117001a75a18e385ab3a7a20de4a7cebbfd88f38bd58337
     - story_id: ST-0305
       uri: repo://changes/st-0305/manifest.yaml
-      sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+      sha256: 6665727d1f77eb519fb97afc713469d1f9f3eaf4c086affed10a3f13b1e3a843
   installed_contract_repository:
     uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
     sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef

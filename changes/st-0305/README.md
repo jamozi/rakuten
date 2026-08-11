@@ -24,6 +24,21 @@ RAOS_PG_BIN=/absolute/postgresql-18.4/bin \
   make migration-test UV=/absolute/path/to/uv
 ```
 
+Those cumulative commands and a default invocation of the historical ST-0305
+script continue to delegate to the active ST-0306 successor. Direct ST-0305
+owner maintenance is explicit and never delegates:
+
+```bash
+uv run --frozen --offline --no-cache --no-sync --no-env-file \
+  python scripts/build_st0305_publication_analytics_finance.py --own-story
+uv run --frozen --offline --no-cache --no-sync --no-env-file \
+  python scripts/build_st0305_publication_analytics_finance.py \
+  --own-story --check
+```
+
+The first command atomically regenerates only ST-0305's four owned outputs.
+The second is the corresponding deterministic no-write owner check.
+
 Local passes are implementation-candidate evidence only. Formal TST-008,
 TST-011, TST-030, hosted CI, independent review, staging, release, production,
 and canonical status application remain `NOT_EXECUTED`.

@@ -35,7 +35,7 @@ CONTRACT_PATH: Final = Path(
 # This digest is deliberately updated only after the declarative contract is
 # final.  A changed contract is a trusted-environment error.
 EXPECTED_CONTRACT_SHA256: Final = (
-    "05d0e4a78f302e4286bf3d861d7e31625993ecbc7f718f5f9a4024586c06879c"
+    "69818130069284f60bc98ef5163f8b8dd6d346df6cbca5447f737dd0516868d5"
 )
 
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")

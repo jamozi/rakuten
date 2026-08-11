@@ -32,7 +32,7 @@ provenance:
   predecessor_manifest:
     story_id: ST-0305
     uri: repo://changes/st-0305/manifest.yaml
-    sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+    sha256: 6665727d1f77eb519fb97afc713469d1f9f3eaf4c086affed10a3f13b1e3a843
 revision:
   revision: '202608030006'
   down_revision: '202608030005'
@@ -43,7 +43,7 @@ source_artifact_count: 38
 source_artifacts:
 - uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
   bytes: 4705
-  sha256: 1155942168373361579bd157b19be0d7babc7c260eb3389df21688eb455a567b
+  sha256: 20b5c37d6979b67f4b4a5b014f7b18a9f729c889b47ca6cc6916f58b2ef08fc5
 - uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
   bytes: 434952
   sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
@@ -70,7 +70,7 @@ source_artifacts:
   sha256: 687fd00f51c27a1181c213d044412f4c676d96b34e35f0590f0edcd5b4221699
 - uri: repo://scripts/build_st0306_database_roles.py
   bytes: 55822
-  sha256: 978955587e2d9dce34ccac77c203f4848a0fbde6af4fc67daff46cca32e9215b
+  sha256: d1f96eb3bbd8f8a6184f56dec3aa7cb947d08c6ad5f49640e69975a7f1978321
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -78,11 +78,11 @@ source_artifacts:
   bytes: 79921
   sha256: 17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c
 - uri: repo://scripts/build_st0305_publication_analytics_finance.py
-  bytes: 69283
-  sha256: 6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb
+  bytes: 69650
+  sha256: 6275ad1f451b16ff7a51fbaf7337917c262c668dca70257949c15ba015bb1435
 - uri: repo://changes/st-0305/manifest.yaml
-  bytes: 14830
-  sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+  bytes: 14863
+  sha256: 6665727d1f77eb519fb97afc713469d1f9f3eaf4c086affed10a3f13b1e3a843
 - uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
   bytes: 41097
   sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
@@ -144,8 +144,8 @@ source_artifacts:
   bytes: 50377
   sha256: 275dd08bf45fb88dd12ce9a9af699620aad287313a2f92c74a6bb132680d8d2b
 - uri: repo://tests/st0305/test_st0305_publication_analytics_finance.py
-  bytes: 2360
-  sha256: 62a69eb27f459553cb3ef3ef21acf2694198f92ddfa841e19c6f27e51b38b104
+  bytes: 3636
+  sha256: 766019587b11bf026d425f0dd97a122088e17f57698b2b8d77fa1882c1befee4
 - uri: repo://tests/st0306/conftest.py
   bytes: 393
   sha256: 53bc1d39f25ad327dddad0321a49e9e694d25770c83136310691ca91eff60899
