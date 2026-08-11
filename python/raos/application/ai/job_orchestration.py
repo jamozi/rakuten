@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import cast
 from uuid import UUID
 
 from raos.config.runtime import RuntimeEnvironment
@@ -79,7 +80,7 @@ def _normalize_reservation(candidate: object) -> BudgetReservation | None:
         return None
     # The ST-0704 control port deliberately binds the process-local handle by
     # object identity.  Return the validated original handle, not its copy.
-    return candidate
+    return cast(BudgetReservation, candidate)
 
 
 def _normalize_authorization(candidate: object) -> AuthorizedRouteReservation | None:
