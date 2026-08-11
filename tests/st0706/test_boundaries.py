@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import inspect
 from pathlib import Path
 from types import ModuleType
 
-from conftest import REPOSITORY_ROOT
+from conftest import PLAN, REPOSITORY_ROOT
 from raos.adapters.recorded_ai_job_orchestration import (
     RecordedAiJobOrchestrationAdapter,
     RecordedProviderStep,
@@ -95,6 +96,14 @@ def test_imported_modules_resolve_to_the_exact_owned_source_paths() -> None:
     assert tuple(_module_path(module) for module in modules) == tuple(
         path.resolve() for path in RUNTIME_PATHS
     )
+
+
+def test_st0705_validation_plan_binding_matches_committed_source_bytes() -> None:
+    source = (
+        REPOSITORY_ROOT
+        / "changes/st-0705/contracts/ai-output-validation-reference-plan.v1.yaml"
+    )
+    assert hashlib.sha256(source.read_bytes()).hexdigest() == PLAN.plan_sha256
 
 
 def test_public_method_inventory_exposes_only_one_call_and_metadata_snapshots() -> None:
