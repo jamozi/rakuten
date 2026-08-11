@@ -176,8 +176,8 @@ source_artifacts:
   bytes: 60811
   sha256: 2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360
 - uri: repo://python/raos/adapters/__init__.py
-  bytes: 654
-  sha256: ac58bed7b50d35fffa7bd534f040f7fa0bafc8c87314beba67ca26dca638a939
+  bytes: 889
+  sha256: e534922ed314f5c234fb32ab625c3b030277d9261b570616d8488f54fbdec7fa
 - uri: repo://python/raos/adapters/ai_contract_registry.py
   bytes: 28933
   sha256: 3bc0142bc29d644c4b5bc0fe4eac19b804ba06133d0e6bbaa96dc95b29e89fa2
@@ -188,8 +188,8 @@ source_artifacts:
   bytes: 7247
   sha256: d916a4a2ed9afd44fe0a4c01938a5b8aacbfc7323fd4d3cfcb0fa33d399a0e0e
 - uri: repo://python/raos/ports/__init__.py
-  bytes: 730
-  sha256: 316b2d195fb3366fefb991c84cdd2618530455fcc58f9d140fa699f66cf46d8a
+  bytes: 885
+  sha256: 3e3494de5cabf28a3857383e6a3c4833465cc442af4c75ae1a37c5d8104d3363
 - uri: repo://python/raos/ports/task_registry.py
   bytes: 917
   sha256: c3053d28c056fcc412e3852816528da92f301e369f5af45f9a1212cc920468ce
@@ -215,8 +215,8 @@ source_artifacts:
   bytes: 25978
   sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
 - uri: repo://Makefile
-  bytes: 28974
-  sha256: 91756dd88daf18d4751f845911944fee619034a328eaaa079d5d82d37185fc1d
+  bytes: 31323
+  sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
 - uri: repo://README.md
   bytes: 57509
   sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c

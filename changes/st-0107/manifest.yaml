@@ -73,11 +73,11 @@ source_artifacts:
   bytes: 25978
   sha256: 00de3e0640eca54b0161cecf9e45f1b7b3714afc255d644a58d276c18b51ff73
 - uri: repo://Makefile
-  bytes: 26913
-  sha256: 50657b94ce934de2177e0244708d0877cd8af83053d9d0cb0f8badbc04c0adae
+  bytes: 31323
+  sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
 - uri: repo://README.md
-  bytes: 55645
-  sha256: 05364d962ba892b6a176f6650e8200d42a602cef325b4eb91fefcf5e249072a1
+  bytes: 57509
+  sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://.github/CODEOWNERS
