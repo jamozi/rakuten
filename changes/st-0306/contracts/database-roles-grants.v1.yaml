@@ -33,7 +33,7 @@ source_precedence:
   predecessor_manifest:
     story_id: ST-0305
     path: changes/st-0305/manifest.yaml
-    sha256: df1f692cb49b21bd7c7a46db375e54f42cee6624a219482519f808b84e2192c2
+    sha256: 6665727d1f77eb519fb97afc713469d1f9f3eaf4c086affed10a3f13b1e3a843
 database:
   product: PostgreSQL
   exact_server_version_num: 180004

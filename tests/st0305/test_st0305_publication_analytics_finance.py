@@ -31,6 +31,51 @@ def test_legacy_entrypoint_delegates_to_active_cumulative_generator(
     assert observed == [["--check"]]
 
 
+def test_explicit_own_story_check_bypasses_successor_without_installing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observed: list[str] = []
+    successor_calls: list[Sequence[str] | None] = []
+
+    monkeypatch.setattr(
+        successor,
+        "main",
+        lambda argv=None: successor_calls.append(argv) or 0,
+    )
+    monkeypatch.setattr(generator, "check_generated", lambda: observed.append("check"))
+    monkeypatch.setattr(
+        generator,
+        "install_generated",
+        lambda root=generator.REPO_ROOT: observed.append("install"),
+    )
+
+    assert generator.main(["--own-story", "--check"]) == 0
+    assert successor_calls == []
+    assert observed == ["check"]
+
+
+def test_explicit_own_story_install_bypasses_successor(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observed: list[str] = []
+    successor_calls: list[Sequence[str] | None] = []
+
+    monkeypatch.setattr(
+        successor,
+        "main",
+        lambda argv=None: successor_calls.append(argv) or 0,
+    )
+    monkeypatch.setattr(
+        generator,
+        "install_generated",
+        lambda root=generator.REPO_ROOT: observed.append("install"),
+    )
+
+    assert generator.main(["--own-story"]) == 0
+    assert successor_calls == []
+    assert observed == ["install"]
+
+
 def test_source_contract_has_exact_approved_inventory() -> None:
     counts = generator.validate_source_inputs()
 

@@ -79,9 +79,10 @@ EXPECTED_UPSTREAM_DESIGN_SHA256: Final = (
 EXPECTED_PREDECESSOR_MANIFEST_SHA256: Final = (
     "d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51"
 )
+OWN_STORY_FLAG: Final = "--own-story"
 GENERATION_COMMAND: Final = (
-    "uv run --locked --no-sync --no-env-file python "
-    "scripts/build_st0305_publication_analytics_finance.py"
+    "uv run --frozen --offline --no-cache --no-sync --no-env-file python "
+    "scripts/build_st0305_publication_analytics_finance.py --own-story"
 )
 
 SCHEMAS: Final = ("publishing", "freshness", "analytics", "finance", "readmodel")
@@ -1659,6 +1660,11 @@ def check_generated(root: Path = REPO_ROOT) -> None:
 
 def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        OWN_STORY_FLAG,
+        action="store_true",
+        help="operate ST-0305 outputs instead of delegating to the successor",
+    )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--check", action="store_true", help="verify generated outputs")
     mode.add_argument(
@@ -1668,7 +1674,11 @@ def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    if (REPO_ROOT / SUCCESSOR_CONTRACT_PATH).is_file():
+    dispatch_arguments = sys.argv[1:] if argv is None else argv
+    if (
+        OWN_STORY_FLAG not in dispatch_arguments
+        and (REPO_ROOT / SUCCESSOR_CONTRACT_PATH).is_file()
+    ):
         try:
             from scripts import build_st0306_database_roles as successor
         except ModuleNotFoundError:

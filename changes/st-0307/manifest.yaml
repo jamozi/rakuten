@@ -50,9 +50,9 @@ provenance:
   - uri: repo://changes/st-0304/manifest.yaml
     sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
   - uri: repo://changes/st-0305/manifest.yaml
-    sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+    sha256: 6665727d1f77eb519fb97afc713469d1f9f3eaf4c086affed10a3f13b1e3a843
   - uri: repo://changes/st-0306/manifest.yaml
-    sha256: 912670424d67da75a0006f87356e7c73756bdd793a029d09d50c8e706e3cface
+    sha256: 6883b427cb790961e54c6398de9898639cec03b1661aa260bd14bd508aedcbc3
 production_graph:
   anchor_revision: '202608030001'
   predecessor_revision: '202608030005'
@@ -65,7 +65,7 @@ source_artifact_count: 45
 source_artifacts:
 - uri: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
   bytes: 14170
-  sha256: 2f5c8bd36c8db015cb428d934ee1f1ad747c9c6ea4b68dcc889f1c23ff0253ba
+  sha256: 06c9f26f61a420145d03fd61a1f8c598f9271641478e102d41a97d38172abfcb
 - uri: repo://changes/st-0307/README.md
   bytes: 2249
   sha256: 0b32aa4a289a297f47ddf770244d696f437a0e98cf857556ef3d6a6cede41023
@@ -83,7 +83,7 @@ source_artifacts:
   sha256: a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9
 - uri: repo://scripts/build_st0307_migration_fixtures.py
   bytes: 34971
-  sha256: ca489078b122db390c56875886065dce0e2b11189f630c48106a3781e992497d
+  sha256: 3dce1ab8cc80393231a3b211d8567b825862482c2c0690a4e8b7e3dd256ea433
 - uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
   bytes: 434952
   sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
@@ -124,11 +124,11 @@ source_artifacts:
   bytes: 11667
   sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
 - uri: repo://changes/st-0305/manifest.yaml
-  bytes: 14830
-  sha256: 297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92
+  bytes: 14863
+  sha256: 6665727d1f77eb519fb97afc713469d1f9f3eaf4c086affed10a3f13b1e3a843
 - uri: repo://changes/st-0306/manifest.yaml
   bytes: 8660
-  sha256: 912670424d67da75a0006f87356e7c73756bdd793a029d09d50c8e706e3cface
+  sha256: 6883b427cb790961e54c6398de9898639cec03b1661aa260bd14bd508aedcbc3
 - uri: repo://python/raos/migrations/catalog.py
   bytes: 20363
   sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
@@ -214,7 +214,7 @@ generated_artifacts:
   sha256: ac133f0d975241b22a8744bd7b78ec52904dc64414f344f7c3f1e83e9339cf3d
 - uri: repo://changes/st-0307/generated/migration-upgrade-fixture-catalog.v1.json
   bytes: 11444
-  sha256: df1b7f16226ac2e0e3a52b173b8c592f23a5ad015e9838272018d315f1746465
+  sha256: dd8e2069d8d5faea6038b091015d1adcf058b25299b9030cf76f27fa669a0698
 manifest_self_integrity:
   included_in_source_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
