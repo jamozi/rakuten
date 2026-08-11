@@ -338,9 +338,12 @@ def _rows(value: object, code: str) -> list[Mapping[str, Any]]:
 
 
 def _strict_match(actual: object, expected: object) -> None:
+    boundary_failed = False
     try:
         base._strict_match(actual, expected, "contract")
     except base.StagingDeploymentContractError:
+        boundary_failed = True
+    if boundary_failed:
         _fail("CONTRACT_BOUNDARY_VIOLATION")
 
 

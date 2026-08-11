@@ -78,9 +78,7 @@ def test_manifest_binds_catalog_helper_and_predecessors(
         "ST-1203",
         "ST-1204",
     ]
-    assert provenance["predecessors"][2]["known_owner_debt"] == (
-        "INHERITED_PREDECESSOR_HASH_DRIFT"
-    )
+    assert "known_owner_debt" not in provenance["predecessors"][2]
 
 
 def test_manifest_boundary_is_nonattesting(manifest: dict[str, Any]) -> None:
@@ -93,6 +91,7 @@ def test_manifest_boundary_is_nonattesting(manifest: dict[str, Any]) -> None:
     assert boundary["action_count_total"] == 0
     assert boundary["formal_tst_030"] == "NOT_EXECUTED"
     assert boundary["story_acceptance"] is False
+    assert "known_predecessor_debt" not in boundary
 
 
 def test_build_publishes_both_outputs_atomically_with_mode_0644(tmp_path: Path) -> None:

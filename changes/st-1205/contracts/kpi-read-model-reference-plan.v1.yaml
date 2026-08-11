@@ -73,9 +73,8 @@ predecessors:
     story_id: ST-1204
     feature_commit: 73b7782502f249f91eafd3d0bc9d229fb770d7c6
     binding: EXACT_CURRENT_COMMITTED_BYTES
-    known_owner_debt: INHERITED_PREDECESSOR_HASH_DRIFT
     artifacts:
-      changes/st-1204/RUNTIME-SLICE-v1.md: fee3fd089ba7f0d5e70b2948fd0f2ca333d4a13b1f59e4a0e510c264147e3fa8
+      changes/st-1204/RUNTIME-SLICE-v1.md: e5ca8b2e38e0b46c9a40232af26bd5b4ebbbf20099c6a7856a7ab007443ca17e
       python/raos/domain/analytics/ga4.py: 785dd16788fffabd5ab6c05c6f43f535bc6521630a246c93a54d23d257de124f
       python/raos/ports/ga4.py: 16edfe96aad71f44d454a5474fc99fcf0528d9a85f88fc2047680f8b0a3d9a80
       python/raos/application/analytics/ga4_import.py: 663b057a4ce091d601ed0ea5b35a17632aaee0f53cb41d2c13eba69b27e28dc2
