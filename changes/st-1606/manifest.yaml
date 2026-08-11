@@ -70,8 +70,8 @@ source_artifacts:
   bytes: 3935
   sha256: f42c6c27a299101bb08c80456ca316828a3691db1c7501951ed53f87bf0b0817
 - uri: repo://tests/st1606/test_generation.py
-  bytes: 4552
-  sha256: 32ba922ddfcf2485b026bc98f68ec36273f38aeec61ee74f191dbc724e6bb866
+  bytes: 4576
+  sha256: 0681916caeb62aa003257c3bf64ba88e688ca6282b68ed9d61a36fcc5e57eba7
 - uri: repo://tests/st1606/test_negative_cases.py
   bytes: 5889
   sha256: 70b7df4f94de7523a57934a6b438ee03fd7e1990d64972c584bc03d2e1ceda14
