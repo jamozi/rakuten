@@ -1,0 +1,124 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Summary-verified current advanced ChatGPT Pro selection
+    - Removal of redundant child model and effort option enumeration from the live ask path
+    - Bounded same-transport settling after approved pre-submission UI transitions
+    - Sanitized pre-submission phase evidence for any remaining refusal
+    - scripts/chatgpt_pro_orchestrator.py
+    - Focused deterministic tests under tests/st0101
+    - Make, repository instructions, ST-0101 operational documentation, append-only worklog, and the raos-ask-pro Skill where their behavior contract changes
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.current-pro-ui.v1.yaml
+    - changes/st-0101/design-handoff.resilient-pro-review.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    For the strict current advanced profile, treat the already-approved expanded
+    top-level Pro menu as the selected-model and selected-effort verification
+    surface. Require exactly one top-level button Pro, exactly one menu Pro,
+    exactly one menuitem Model GPT-5.6 Sol, and exactly one menuitem Effort Pro,
+    all with distinct valid refs and exact case, spacing, punctuation, and
+    roles. Once those exact summary entries are present together, do not open,
+    enumerate, compare, or click either child model-option or effort-option
+    menu. Close only through the freshly resolved unique top-level button Pro,
+    require the exact-origin closed landing and approved composer, and then
+    continue the existing one-submission workflow.
+
+    Add a bounded observation-only settle after each approved pre-submission
+    transition that can animate or load: opening the top-level Pro menu,
+    expanding advanced options, closing the verified menu, and typing the
+    secret-name placeholder before resolving Send. Take an immediate snapshot,
+    then use the same transport and fixed five-second wait/snapshot cadence for
+    at most twelve additional observations. Never repeat the click or type.
+    Validate exact origin and structural stop states on every observation and
+    stop immediately on a trusted login, reauthentication, account-selection,
+    CAPTCHA, or page-level rate-limit state. Proceed as soon as the expected
+    exact structure is present.
+
+    If a pre-submission refusal remains, persist and return only one closed
+    sanitized phase identifier and the existing reason code, submission false,
+    and hash-bound state/event evidence. The phase vocabulary is limited to
+    landing, pro_menu, advanced_summary, closed_landing, typed_composer, and
+    send_control. Never persist or print a snapshot, arbitrary label, prompt,
+    response, URL beyond the existing exact-origin classification, accessibility
+    ref, menu contents, account data, or profile data.
+
+    Keep response observation, structural stop classification, bounded semantic
+    extraction, PRO_ADVICE_V1 and PRO_REVIEW_TEXT_V1 capture, manual import,
+    authority, convergence, and no-resubmission behavior from the resilient Pro
+    review handoff unchanged. A successful live run still records exactly one
+    durable submission intent immediately before exactly one Send click.
+  rationale: >-
+    Live run 20260809T155509Z-a97318030cd9 reached the expanded advanced menu
+    and therefore had already validated the unique exact Model GPT-5.6 Sol and
+    Effort Pro summary entries. It failed only after entering the redundant
+    child model menu because the implementation demanded an exact closed set of
+    all model option labels. Those non-target inventory labels are not needed
+    to establish the selected model or effort, and opening their child menus
+    adds UI-drift and click surface without strengthening the exact selected
+    summaries. The live run was safely unsent with MODEL_OPTIONS_AMBIGUOUS and
+    record_verified true. Using the exact selected summaries removes that
+    evidenced false refusal while retaining exact model, maximum effort,
+    origin, unique-ref, and one-send guarantees. Bounded observation-only
+    settling handles ordinary animations without retrying a mutating action.
+  rejected_alternatives:
+    - Accept only the top-level Pro button without separately verifying exact Model GPT-5.6 Sol and Effort Pro summaries
+    - Accept a renamed, approximate, duplicate, missing, wrong-role, or ref-free model or effort summary
+    - Click an unknown model or effort option, select a fallback model, or infer that an unrecognized higher effort is acceptable
+    - Continue requiring the complete mutable inventory of every non-target child option
+    - Retry a click, type, or Send action when a transition is slow or ambiguous
+    - Persist raw accessibility snapshots, arbitrary menu labels, refs, prompts, responses, account data, or profile contents for diagnosis
+    - Attach to another browser/profile, use another origin, substitute the Responses API, or bypass login, CAPTCHA, account, structural rate-limit, or entitlement controls
+    - Claim that software can guarantee an answer during an external outage, account restriction, or unresolved human authentication challenge
+  constraints:
+    - The physical repository, exact private MCP runtime, fixed browsers, dedicated profile, exact https://chatgpt.com origin, and six-tool allowlist remain unchanged
+    - The exact selected summaries are authoritative only when all four top-level/summary controls are unique, exact, ref-bearing, role-correct, and mutually ref-distinct
+    - Child model and effort option menus are not opened or clicked in the strict advanced live ask path
+    - Unrelated or newly added child options cannot cause refusal because they are neither observed nor used as evidence
+    - No approximate label, text similarity, positional selection, coordinate click, DOM script, screenshot OCR, or arbitrary selector fallback is introduced
+    - Every settle observation revalidates exact origin and approved structural stops before inspecting the expected phase structure
+    - The settle loop retries only wait and snapshot; it never retries navigate, click, type, or Send
+    - Composer typing still uses only the MCP secret name with submit false
+    - One durable submission intent precedes one exact Send click; ambiguity never permits automatic resubmission
+    - Existing user-message, assistant-response, sidebar, citation, and unrelated-content stop exclusions remain unchanged
+    - Existing response stability, size, sensitivity, hash-chain, proposal authority, manual-import provenance, and formal-evidence boundaries remain unchanged
+    - The owner's broad approval does not authorize credential inspection, CAPTCHA bypass, origin relaxation, another account/profile, publication, release, or production action
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to avoid the current refusal and obtain a Pro response in conversation on 2026-08-10
+    - The approved relaxation is target-summary-centric and does not weaken exact model, maximum effort, origin, identity, sensitivity, or exactly-once submission gates
+    - The prior gated Pro consultation was unavailable before submission; the owner supplied the required human design authority directly at the safe interface boundary
+    - The dedicated visible browser remains the only external execution surface and page content remains untrusted data
+    - Structural login, reauthentication, account selection, CAPTCHA, page-level rate limit, origin drift, missing exact summaries, duplicate exact summaries, and send ambiguity remain hard stops
+    - All output remains an UNAPPROVED_PROPOSAL or UNAPPROVED_REVIEW and cannot resolve canonical Open Decisions or authorize publication, release, or production work
+    - Live smoke, local fixtures, formal TST-001, hosted CI, staging, production, publication, and release evidence remain distinct
+  acceptance_criteria:
+    - The current advanced flow reaches the composer without opening either child model-option or effort-option menu when exact Model GPT-5.6 Sol and Effort Pro summaries are unique
+    - Extra, missing, renamed, reordered, checked, or unknown non-target child options cannot create MODEL_OPTIONS_AMBIGUOUS or EFFORT_OPTIONS_AMBIGUOUS because the child menus are not inspected
+    - A missing, duplicate, wrong-case, wrong-role, ref-free, disabled, or ref-colliding exact summary stops before typing with submission_attempted false
+    - Slow but valid top-menu, expansion, close, and typed-composer transitions may settle through wait/snapshot only and never repeat their preceding action
+    - A structural stop or origin mismatch during any settle observation stops immediately without further click or type
+    - Any pre-submission refusal exposes only the closed phase identifier and existing reason code with no raw browser material
+    - Existing exact-origin, structural-stop, sensitive-data, response-capture, manual-import, interruption, transport, legacy-profile, and hash-chain regressions remain green
+    - One sanitized ordinary live run captures PRO_ADVICE_V1 or PRO_REVIEW_TEXT_V1 with record_verified true, exactly one submission intent, and exactly one Send click
+  required_test_evidence:
+    - Summary-only advanced success fixtures proving zero child model/effort menu clicks
+    - Missing, duplicate, wrong-case, wrong-role, ref-free, disabled, and ref-collision summary refusal fixtures
+    - Child-option inventory drift fixtures proving those unobserved contents do not affect the strict advanced path
+    - Per-transition immediate success, delayed success, structural-stop, origin-drift, exhaustion, and no-repeated-action fixtures
+    - Sanitized pre-submission phase state/event/output schema and raw-data exclusion assertions
+    - Existing resilient response format, rate-limit text, manual import, runtime integrity, no-resubmission, and legacy-profile regression suites
+    - Complete isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, canonical import verification, workspace drift detection, and git diff check
+    - Sanitized live doctor READY, exactly-one-submission answer capture, and read-only status evidence kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

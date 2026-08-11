@@ -117,10 +117,16 @@ def private_request(root: Path) -> Path:
 @pytest.mark.parametrize(
     "blocked_snapshot",
     [
-        pytest.param(snapshot("- Log in"), id="login"),
-        pytest.param(snapshot("- CAPTCHA"), id="captcha"),
-        pytest.param(snapshot("- Session expired"), id="reauthentication"),
-        pytest.param(snapshot("- Choose an account"), id="account-selection"),
+        pytest.param(snapshot('- button "Log in" [ref=e90]'), id="login"),
+        pytest.param(snapshot('- alert "CAPTCHA" [ref=e90]'), id="captcha"),
+        pytest.param(
+            snapshot('- dialog "Session expired" [ref=e90]'),
+            id="reauthentication",
+        ),
+        pytest.param(
+            snapshot('- button "Choose an account" [ref=e90]'),
+            id="account-selection",
+        ),
     ],
 )
 def test_each_approved_auth_state_uses_only_bounded_wait_and_snapshot(
@@ -153,7 +159,7 @@ def test_one_transport_spans_manual_auth_clear_and_secret_name_only_submission(
     response = advice_text()
     transport = ScriptedTransport(
         [
-            snapshot("- Log in"),
+            snapshot('- button "Log in" [ref=e90]'),
             landing_snapshot(),
             combined_model_menu_snapshot(),
             combined_ready_snapshot(),
@@ -230,7 +236,7 @@ def test_one_transport_spans_manual_auth_clear_and_secret_name_only_submission(
 
 
 def test_auth_timeout_is_bounded_and_remains_pre_submission() -> None:
-    blocked = snapshot("- CAPTCHA")
+    blocked = snapshot('- alert "CAPTCHA" [ref=e90]')
     transport = ScriptedTransport([blocked, blocked, blocked])
 
     with pytest.raises(orchestrator.LiveUiUnavailable) as captured:
@@ -261,7 +267,7 @@ def test_live_ask_propagates_timeout_without_second_transport_or_submission(
     root.mkdir(mode=0o700)
     root.chmod(0o700)
     write_setup_state(root)
-    blocked = snapshot("- CAPTCHA")
+    blocked = snapshot('- alert "CAPTCHA" [ref=e90]')
     transports: list[ScriptedTransport] = []
 
     def transport_factory(
@@ -290,6 +296,7 @@ def test_live_ask_propagates_timeout_without_second_transport_or_submission(
     assert exit_code == 0
     assert result["status"] == "PRO_UNAVAILABLE_FALLBACK"
     assert result["reason_code"] == "INTERACTIVE_AUTH_TIMEOUT"
+    assert result["phase"] == "landing"
     assert result["submission_attempted"] is False
     assert len(transports) == 1
     assert transports[0].closed is True
@@ -302,20 +309,22 @@ def test_live_ask_propagates_timeout_without_second_transport_or_submission(
             root / "chatgpt-pro-runs" / result["run_id"] / "orchestration-state.v1.json"
         ).read_text(encoding="utf-8")
     )
+    assert state["phase"] == "landing"
     assert state["submission_attempted"] is False
     assert not list((root / "chatgpt-pro").glob("*.env"))
 
 
 def test_zero_wait_preserves_immediate_fail_closed_behavior() -> None:
-    transport = ScriptedTransport([snapshot("- Log in")])
+    transport = ScriptedTransport([snapshot('- button "Log in" [ref=e90]')])
 
-    with pytest.raises(workflow.WorkflowRefusal) as captured:
+    with pytest.raises(orchestrator.LiveUiUnavailable) as captured:
         orchestrator._inspect_live_pre_submission_ui(
             transport,
             interactive_auth_wait_seconds=0,
         )
 
     assert captured.value.code == "STOP_LOGIN"
+    assert captured.value.phase == "landing"
     assert transport.calls == [
         ("browser_navigate", {"url": "https://chatgpt.com/"}),
         ("browser_snapshot", {}),
@@ -325,8 +334,11 @@ def test_zero_wait_preserves_immediate_fail_closed_behavior() -> None:
 def test_origin_drift_during_auth_wait_stops_before_input() -> None:
     transport = ScriptedTransport(
         [
-            snapshot("- Log in"),
-            snapshot("- Log in", url="https://chatgpt.com.evil.example/"),
+            snapshot('- button "Log in" [ref=e90]'),
+            snapshot(
+                '- button "Log in" [ref=e90]',
+                url="https://chatgpt.com.evil.example/",
+            ),
         ]
     )
 
@@ -349,24 +361,41 @@ def test_origin_drift_during_auth_wait_stops_before_input() -> None:
 
 
 @pytest.mark.parametrize(
-    ("snapshots", "expected_code"),
+    ("snapshots", "expected_code", "expected_waits"),
     [
-        pytest.param([snapshot("- Too many requests")], "STOP_RATE_LIMIT", id="rate"),
         pytest.param(
-            [snapshot("- CAPTCHA", "- Too many requests")],
+            [snapshot('- alert "Too many requests" [ref=e90]')],
             "STOP_RATE_LIMIT",
+            0,
+            id="rate",
+        ),
+        pytest.param(
+            [
+                snapshot(
+                    '- alert "CAPTCHA" [ref=e90]',
+                    '- alert "Too many requests" [ref=e91]',
+                )
+            ],
+            "STOP_RATE_LIMIT",
+            0,
             id="rate-overrides-waitable-auth",
         ),
         pytest.param(
             [
                 landing_snapshot(),
-                snapshot(
-                    '- menuitem "Pro Standard" [ref=e2]',
-                    '- menuitem "Pro Extended" [ref=e3]',
-                    '- menuitem "Pro" [ref=e4]',
-                ),
+                *[
+                    snapshot(
+                        '- menuitem "Pro Standard" [ref=e2]',
+                        '- menuitem "Pro Extended" [ref=e3]',
+                        '- menuitem "Pro" [ref=e4]',
+                    )
+                    for _ in range(
+                        orchestrator.PRE_SUBMISSION_SETTLE_ADDITIONAL_OBSERVATIONS + 1
+                    )
+                ],
             ],
             "MODEL_OPTIONS_AMBIGUOUS",
+            12,
             id="model-ambiguity",
         ),
         pytest.param(
@@ -380,6 +409,7 @@ def test_origin_drift_during_auth_wait_stops_before_input() -> None:
                 ),
             ],
             "SELECTOR_AMBIGUITY",
+            0,
             id="effort-selector-drift",
         ),
     ],
@@ -387,6 +417,7 @@ def test_origin_drift_during_auth_wait_stops_before_input() -> None:
 def test_non_authentication_failures_stop_immediately_without_wait_or_input(
     snapshots: list[str],
     expected_code: str,
+    expected_waits: int,
 ) -> None:
     transport = ScriptedTransport(snapshots)
 
@@ -399,7 +430,9 @@ def test_non_authentication_failures_stop_immediately_without_wait_or_input(
         )
 
     assert captured.value.code == expected_code
-    assert not any(tool == "browser_wait_for" for tool, _ in transport.calls)
+    assert sum(tool == "browser_wait_for" for tool, _ in transport.calls) == (
+        expected_waits
+    )
     assert not any(tool == "browser_type" for tool, _ in transport.calls)
     assert not any(
         tool == "browser_click" and arguments.get("element") == "send"

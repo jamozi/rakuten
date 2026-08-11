@@ -1,0 +1,109 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Recovery-only closed detail diagnostics for nested invalid pre-content response material
+    - Deterministic scalar, container, and unsupported-material classification inside the already bounded selected action subtree
+    - Focused recovery/non-persistence tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-action-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-actions.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-context-diagnostics.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Preserve every current parser acceptance/refusal rule. Only when an exact
+    eligible terminal recovery returns generic RESPONSE_NOT_IDENTIFIABLE,
+    parent ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID, detail
+    ADVANCED_RESPONSE_ACTION_PRE_CONTENT, and context
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID may the CLI add one
+    optional non-persistent diagnostic_context_detail_code from this exact set:
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_SHAPE_INVALID,
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_VALUE_INVALID,
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_SCALAR_CONTEXT_INVALID,
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_SHAPE_INVALID,
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_UNSATISFIED_WITH_CONTENT,
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_UNSATISFIED_EMPTY, or
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_MATERIAL_UNSUPPORTED.
+
+    Classify only the already bounded material used by the existing nested
+    invalid context classifier. Record the first invalid physical condition in
+    source order. Only a text/statictext-like candidate that the predecessor
+    context scanner already classifies as invalid participates in the scalar
+    detail mapping: a failure of its exact role/line/payload grammar is
+    SCALAR_SHAPE_INVALID, while a syntactically shaped payload that is not one
+    JSON string or cannot encode as UTF-8 is SCALAR_VALUE_INVALID. A complete
+    bare `text:` or `statictext:` structural-container form remains the
+    predecessor opaque/ONLY_OPAQUE context with no fifth field; do not reorder
+    opacity or reclassify it merely to emit a detail.
+    A valid string payload without an entirely approved generic/semantic
+    presentation ancestry is SCALAR_CONTEXT_INVALID. That literal is retained
+    as validator-only compatibility vocabulary: the current proven parser path
+    always supplies approved body/presentation ancestry or makes the enclosing
+    subtree opaque, so no production recovery path emits it and no acceptance
+    rule may be changed merely to make it reachable. A generic/semantic
+    container that fails the exact element grammar is CONTAINER_SHAPE_INVALID.
+    Any other nonblank, non-opaque, non-untrusted material is
+    MATERIAL_UNSUPPORTED. Explicit scalar/container/material defects have
+    global priority over deferred unsatisfied-container detection; among two
+    or more explicit defects, the first physical defect wins. Only if no
+    explicit defect exists anywhere in the bounded selection, classify the
+    first response container left without any valid descendant payload as
+    CONTAINER_UNSATISFIED_WITH_CONTENT when another valid non-whitespace,
+    UTF-8-encodable fragment exists in the same bounded selection, otherwise
+    CONTAINER_UNSATISFIED_EMPTY.
+
+    The new detail changes no opacity, content, boundary, stability, stop, ref,
+    proposal, or recovery behavior. It is emitted only with the exact five-field
+    conjunction above. Missing, unknown, padded, suffixed, case-varied, or
+    wrong-conjunction values are omitted while all existing valid codes remain.
+    It is never persisted or projected elsewhere.
+  rationale: >-
+    Sanitized live recovery of run 20260809T185354Z-46c4528b4413 returned the
+    exact nested-invalid context with no resubmission. That fixed result proves
+    response-bearing material exists inside the selected pre-content action
+    subtree but does not identify the narrow safe tolerance. One further closed
+    source-derived code distinguishes the actual structural defect without raw
+    UI inspection, debug output, or a guessed acceptance expansion.
+  rejected_alternatives:
+    - Accept every nested-invalid descendant or collect arbitrary action-subtree material
+    - Display, persist, log, screenshot, or inspect raw snapshot, subtree, labels, refs, indentation, or payloads
+    - Submit again, use another conversation/profile/origin, or call an API
+    - Add browser evaluation, OCR, CDP, storage access, or a dynamic error string
+    - Change parser acceptance in this diagnostic continuation
+  constraints:
+    - The seven detail literals and physical-order classification are exact source constants
+    - Detail is recovery-only, non-persistent, and requires the exact reason/parent/detail/context conjunction
+    - Classification stays inside the already proven body/action selection and emits no browser-derived substring, count, label, ref, or payload
+    - No accepted response bytes, action shape, body boundary, ref, stop, or stability rule changes
+    - Recovery remains unchanged-state, proposal-first/event-last, navigate/snapshot/wait/close-only, and no-resubmission
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - The detail value grants no authority and does not authorize a later tolerance by itself
+    - Action controls, labels, refs, and payloads remain unavailable and non-actionable
+    - Normal ask, WAITING, legacy, manual import, status, state, events, proposals, unrelated terminal resume, and committed recovery never expose or persist detail
+    - Local fixtures, sanitized diagnosis, live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Each reachable detail literal has deterministic direct and terminal-recovery fixtures; SCALAR_CONTEXT_INVALID has exact allowlist/validator compatibility evidence and remains unreachable without an acceptance change
+    - The live run returns the unchanged generic reason, parent, detail, context, and one context-detail code with no resubmission
+    - Parser success/refusal and captured bytes are identical before and after this diagnostic addition
+    - Invalid/missing context-detail preserves all four existing valid diagnostic fields
+    - Failed diagnosis leaves terminal state, events, proposal absence, and manual-copy fallback intact
+  required_test_evidence:
+    - Reachable scalar shape/value, container shape, unsatisfied-with-content, unsatisfied-empty, and unsupported-material matrices plus reserved SCALAR_CONTEXT_INVALID validator coverage and bare text/statictext opaque-preservation cases
+    - Mixed explicit-defect physical ordering, explicit-defect-over-unsatisfied priority, UTF-8/JSON edges, valid content coexistence, opaque/untrusted subtrees, and body containment probes
+    - CLI five-field conjunction/allowlist, zero-action, unchanged-state/event/proposal, retry, and all non-exposure paths
+    - Existing current-response, bound-recovery, precontent-actions/context, diagnostics, manual-import, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - One sanitized live context-detail refusal kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

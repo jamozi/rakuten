@@ -1,0 +1,102 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Role-scoped exact summary-control resolution for the current advanced ChatGPT Pro menu
+    - Removal of presentational and wrong-role near-label nodes from duplicate-control counting
+    - Focused deterministic selector regressions under tests/st0101
+    - Operational documentation, append-only worklog, repository instructions, and raos-ask-pro Skill only where this selector contract changes
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.resilient-pro-review.v1.yaml
+    - changes/st-0101/design-handoff.summary-verified-pro-answer.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Resolve each required advanced summary control only from trusted structural
+    elements whose raw role and raw label are both exactly the expected role and
+    label. For button Pro, menu Pro, menuitem Show advanced options, menuitem
+    Model GPT-5.6 Sol, and menuitem Effort Pro, require exactly one enabled,
+    ref-bearing exact-role/exact-label control and reject a second exact-role/
+    exact-label control even when it is ref-free or malformed. Continue to
+    reject multiple ref tokens on the selected control and ref collisions among
+    required controls.
+
+    Treat same- or near-label text, statictext, generic, heading, description,
+    and every other wrong-role element as presentational or inert. Such elements
+    neither satisfy a required control nor duplicate it. Wrong-case or padded
+    labels also neither satisfy nor duplicate the exact control. If the exact
+    expected-role control is absent, the phase remains unavailable before
+    typing. Do not persist or print the ignored elements, labels, refs, or raw
+    snapshot.
+
+    Keep the summary-only path, bounded observation-only settling, exact origin,
+    structural stops, one type, one durable intent, one Send, response capture,
+    manual import, authority, and no-resubmission contracts unchanged.
+  rationale: >-
+    The first live run after the summary-only change, run
+    20260809T165106Z-cbe89bc3d764, returned record_verified true with phase
+    pro_menu, SELECTOR_AMBIGUITY, and submission_attempted false. The predecessor
+    live run had already passed the normalized exact-role summary surface and
+    failed only in the removed child inventory. The new raw resolver broadened
+    duplicate counting from the required interactive role to every structural
+    element whose stripped case-folded label resembled the target. Accessibility
+    snapshots may legitimately expose a ref-bearing interactive menuitem and a
+    presentational descendant carrying the same visible text. A wrong-role node
+    cannot be clicked or used as selection evidence, so counting it as a
+    competing control creates refusal without improving model or effort safety.
+    Role-scoped exact matching restores the previously live-proven boundary
+    while keeping real duplicate actionable controls fail closed.
+  rejected_alternatives:
+    - Accept a presentational text, statictext, generic, heading, or description as the required control
+    - Accept approximate, case-folded, whitespace-trimmed, positional, OCR, or similarity-based control matching
+    - Ignore a second exact-role and exact-label required control
+    - Ignore ref-free, disabled, multiple-ref, or ref-colliding defects on an exact required control
+    - Reopen or enumerate child model and effort menus
+    - Persist raw snapshots or arbitrary labels and refs to diagnose the live page
+    - Retry or duplicate navigate, click, type, submission intent, or Send actions
+    - Relax exact origin, dedicated profile, structural login/CAPTCHA/account/rate-limit stops, sensitivity, or authority gates
+  constraints:
+    - Evidence requires exact raw role, exact raw label, one valid accessibility ref, and enabled state
+    - Presentational and wrong-role nodes are inert even when their visible label resembles or equals a required control label
+    - A wrong-role-only or near-label-only surface remains missing evidence and stops before typing
+    - A valid exact control plus a second malformed or ref-free exact-role/exact-label control remains ambiguous
+    - All required actionable refs remain mutually distinct
+    - Child option inventories remain unobserved and cannot influence the advanced path
+    - The fixed 1 plus 12 observation settle and no-action-replay behavior remain unchanged
+    - Exact origin and structural stop validation precede selector evaluation on every observation
+    - No prompt, response, snapshot, arbitrary label, ref, account/profile data, cookie, storage, credential, or noncanonical URL enters output or persisted diagnostic evidence
+    - Existing runtime, response, manual-import, hash-chain, proposal-authority, and formal-evidence boundaries remain unchanged
+    - The owner's broad approval does not authorize CAPTCHA bypass, credential inspection, another account/profile/origin, publication, release, or production action
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to avoid refusal and obtain a Pro answer in conversation on 2026-08-10
+    - The correction narrows candidate identity to the actionable role rather than accepting broader UI evidence
+    - No newly accepted wrong-role or approximate element is ever clicked or treated as model or effort proof
+    - Structural stops, exact selected summaries, dedicated browser/profile, and exactly-once submission remain mandatory
+    - All captured output remains UNAPPROVED_PROPOSAL or UNAPPROVED_REVIEW pending applicable reconciliation
+    - Local fixtures, live smoke, formal TST-001, hosted CI, staging, production, publication, and release evidence remain separate
+  acceptance_criteria:
+    - A required exact interactive control plus same-label presentational descendants resolves successfully to the one interactive ref
+    - A required exact interactive control plus wrong-role, wrong-case, or padded-label inert copies does not create selector ambiguity
+    - A wrong-role-only, wrong-case-only, padded-label-only, missing, disabled, ref-free-only, or multiple-ref required control stops before typing
+    - Two exact-role/exact-label controls, including one valid plus one ref-free or malformed duplicate, stop before typing
+    - Required-control ref collision stops before typing
+    - Summary-only advanced flow still performs zero child model or effort option clicks
+    - Existing transition, advanced/legacy discrimination, structural-stop, response, import, runtime, no-resubmission, and state/event regressions remain green
+    - One sanitized ordinary live run captures PRO_ADVICE_V1 or PRO_REVIEW_TEXT_V1 with record_verified true and exactly one submission
+  required_test_evidence:
+    - Presentational text, statictext, generic, heading, and description duplicate acceptance fixtures
+    - Wrong-role, wrong-case, and padded-label inert-copy acceptance fixtures paired with one valid exact control
+    - Wrong-role-only, wrong-case-only, padded-label-only, missing, disabled, ref-free, multiple-ref, duplicate actionable, and ref-collision refusal fixtures
+    - Zero-child-click and no-action-replay assertions
+    - Complete isolated tests/st0101, Ruff lint and format, Python compilation, shell syntax, Skill validation, canonical import verification, workspace drift detection, and git diff check
+    - Sanitized live doctor READY, exactly-one-submission answer capture, and read-only status evidence kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

@@ -550,35 +550,35 @@ class SnapshotTransport:
     ("snapshot", "expected_code", "returns_result", "settles"),
     [
         pytest.param(
-            "- Page URL: https://chatgpt.com/\n- Log in",
+            '- Page URL: https://chatgpt.com/\n- button "Log in" [ref=e90]',
             "STOP_LOGIN",
             True,
             False,
             id="login",
         ),
         pytest.param(
-            "- Page URL: https://chatgpt.com/\n- CAPTCHA",
+            '- Page URL: https://chatgpt.com/\n- alert "CAPTCHA" [ref=e90]',
             "STOP_CAPTCHA",
             True,
             False,
             id="captcha",
         ),
         pytest.param(
-            "- Page URL: https://chatgpt.com/\n- Too many requests",
+            '- Page URL: https://chatgpt.com/\n- alert "Too many requests" [ref=e90]',
             "STOP_RATE_LIMIT",
             True,
             False,
             id="rate-limit",
         ),
         pytest.param(
-            "- Page URL: https://chatgpt.com/\n- Choose an account",
+            '- Page URL: https://chatgpt.com/\n- button "Choose an account" [ref=e90]',
             "STOP_ACCOUNT_AMBIGUITY",
             True,
             False,
             id="account-ambiguity",
         ),
         pytest.param(
-            "- Page URL: https://chatgpt.com/\n- Session expired",
+            '- Page URL: https://chatgpt.com/\n- dialog "Session expired" [ref=e90]',
             "STOP_REAUTHENTICATION",
             True,
             False,
@@ -633,6 +633,9 @@ def test_stop_states_never_trigger_cross_browser_fallback(
         return transport
 
     monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
+    monkeypatch.setattr(
+        orchestrator, "_verify_private_runtime", lambda _root: {"status": "ready"}
+    )
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", factory)
 
     if returns_result:
@@ -685,6 +688,11 @@ def test_stdio_child_receives_only_the_selected_closed_browser(
     ):
         monkeypatch.setenv(name, f"untrusted-{name.lower()}")
     monkeypatch.setattr(orchestrator, "FIXED_WSLG_X11_SOCKET", display_socket_path)
+    monkeypatch.setattr(
+        orchestrator,
+        "_verify_private_runtime",
+        lambda _private_root: {"status": "PRO_RUNTIME_READY"},
+    )
     monkeypatch.setattr(orchestrator.subprocess, "Popen", refuse_popen)
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as display_socket:
         display_socket.bind(str(display_socket_path))

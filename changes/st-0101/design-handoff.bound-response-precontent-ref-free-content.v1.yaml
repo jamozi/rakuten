@@ -1,0 +1,135 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Strict advanced-response recovery for exact ref-free presentation containers inside one nested pre-content Response actions group
+    - Deterministic embedded semantic reconstruction and stability binding while retaining action chrome opacity
+    - Focused parser/recovery/security tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-heading-attributes.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-actions.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-context-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-invalid-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-container-shape-diagnostics.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Add one narrow strict-advanced acceptance path only after the predecessor
+    parser has selected exactly one strict `group "Response actions":` nested
+    deeper than the proven body root, found no valid later sibling content, and
+    produced the complete recovery diagnostic chain ending in
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_CONTAINER_REF_MISSING. Same-indent,
+    shallow, malformed-ref, residual-line, scalar, unsupported, empty,
+    opaque-only, duplicate-group, boundary, and every other path remain refused
+    exactly as before.
+
+    Reparse only descendants of that one already-bounded group. The group root
+    contributes no bytes and remains non-actionable. Admit a generic or one of
+    the existing semantic presentation roles only when its entire raw record is
+    complete existing grammar with exact lower-case role, optional valid
+    JSON-quoted label, zero or more complete non-ref accessibility attributes,
+    terminal colon, and either no structural ref or one sole exact lower-case
+    `[ref=eN]` outside the quoted label. Ref-free presentation is the newly
+    tolerated shape. A ref-bearing presentation record must be complete, its
+    sole ref must be unique among every trusted non-action structural ref and
+    must not collide with the response heading or body root. Any malformed,
+    multiple, duplicate, wrong-case, padded, bracketed or unbracketed reserved
+    ref attempt outside the label refuses the fallback. Quoted labels and
+    complete non-ref attributes contribute no bytes, actions, refs, or
+    authority.
+
+    Each contributing scalar must remain one exact lower-case `text:` or
+    `statictext:` line whose payload is one JSON string, UTF-8 encodable, under
+    only the group-excluded body/generic/semantic presentation ancestry.
+    Reconstruct the same paragraph/list/list-item/quote/heading/code block
+    semantics and predecessor list bytes as the ordinary strict parser. Every
+    admitted presentation container must own at least one valid contributing
+    descendant scalar, and at least one decoded fragment overall must be
+    non-whitespace. A direct exact scalar beneath the group may use the proven
+    body paragraph context only inside a subtree that independently contains
+    the predecessor-selected complete ref-free presentation container required
+    for the exact REF_MISSING entry. A direct-scalar-only subtree retains its
+    predecessor NESTED_DESCENDANT_CONTENT refusal and cannot enter this fallback.
+    Any malformed scalar, unsupported response
+    material, unsatisfied presentation container, content outside the selected
+    group, or boundary escape refuses with the existing predecessor outcome and
+    creates no proposal.
+
+    Exact button, link, citation-preview, URL metadata, approved unknown
+    structural chrome, nested action-like chrome already owned by the selected
+    group, and untrusted regions keep complete-subtree opacity and contribute
+    no bytes, refs, stops, generating evidence, selectors, or actions. The
+    selected group remains opaque for page-level stop classification,
+    generating-marker classification, click/type targets, and global UI
+    selectors. For stability only, include the validated embedded presentation
+    and scalar lines in the in-memory normalized response candidate, canonicalize
+    any admitted structural refs, and require the unchanged three observations
+    over at least ten seconds. Opaque action chrome remains excluded. Never
+    persist that material or digest.
+
+    On a fully valid fallback, run the existing size, sensitivity, response
+    schema/review capture, proposal-first/event-last, provenance, and authority
+    gates unchanged. Terminal recovery remains navigate/snapshot/wait/close-only
+    with `resubmitted: false`. A fallback validation failure retains the exact
+    existing generic and closed diagnostics, changes no state/event/proposal,
+    and authorizes no alternate parser or browser action.
+  rationale: >-
+    Sanitized recovery of run 20260809T185354Z-46c4528b4413 has deterministically
+    narrowed the stable response mismatch through six closed layers to one
+    complete presentation-container shape whose sole difference is a missing
+    accessibility ref inside the exact nested pre-content action group. The
+    accessibility ref is not used to reconstruct response bytes or perform an
+    action. Accepting only complete ref-free presentation records while keeping
+    exact payload, boundary, stability, sensitivity, provenance, and zero-action
+    controls recovers the already displayed answer without accepting malformed
+    refs or arbitrary UI text.
+  rejected_alternatives:
+    - Treat the whole action group as text or accept arbitrary descendants
+    - Accept malformed, multiple, duplicate, case-varied, residual, or ref-like presentation syntax
+    - Disable stability, sensitivity, boundary, structural-ref, stop, or provenance gates
+    - Display, log, screenshot, persist, or manually inspect raw UI snapshots or payloads
+    - Submit again, use another conversation/profile/origin, call an API, or use manual browser extraction
+    - Make the relaxation available to legacy, normal ask parsing, unrelated recovery, or any action selector
+  constraints:
+    - Entry requires the exact predecessor six-field diagnostic chain ending REF_MISSING
+    - Only one strictly nested exact action group and its existing bounded descendant subtree are eligible
+    - New presentation acceptance is complete ref-free existing grammar only; all scalar and semantic byte rules remain exact
+    - Used ref-bearing presentation wrappers, if any, are complete, sole-ref, unique, and anchor/body collision-free
+    - Opaque controls/untrusted regions remain non-byte, non-ref, non-stop, non-marker, non-selector, and non-action material
+    - Stability observes validated embedded response material without persisting snapshot, subtree, ref, payload, or digest
+    - Recovery remains unchanged-state on failure and proposal-first/event-last on success with no resubmission
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - Exact origin, authenticated dedicated profile, structural login/CAPTCHA/account/page-rate-limit stops, and runtime integrity remain mandatory
+    - The fallback never clicks, types, sends, records a new intent, changes browser/profile, or exposes private UI material
+    - Captured output remains hash-bound UNAPPROVED_PROPOSAL with existing `PRO_ADVICE_V1` or `PRO_REVIEW_TEXT_V1` authority rules
+    - Normal ask, ordinary WAITING, legacy, manual import, status-only validation, unrelated terminal resume, and committed recovery keep predecessor behavior
+    - Local fixtures, sanitized live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - The exact live REF_MISSING shape can produce one stable captured proposal from the already bound run with `resubmitted: false`
+    - Exact ref-free generic and each semantic wrapper reconstruct deterministic predecessor-equivalent bytes
+    - Opaque controls and their descendants never contribute bytes, refs, stop/marker evidence, stability material, or actions
+    - Malformed/ref-invalid/residual/unsatisfied/unsupported/boundary cases retain the existing refusal and diagnostics
+    - Embedded semantic or scalar changes reset stability; volatile admitted refs canonicalize in memory only
+    - Success appends one verified BOUND_RESPONSE_RECOVERED commit after the owner-only proposal; repeat recovery is idempotent and browser-free
+  required_test_evidence:
+    - Ref-free generic/paragraph/list/listitem/blockquote/heading/code matrices, direct scalar, multiple fragments/blocks, and exact byte comparisons
+    - Complete optional labels/non-ref attributes; strict ref-bearing wrapper uniqueness/collision controls; malformed/multiple/duplicate/ref-attempt refusals
+    - Empty/whitespace, non-string/malformed JSON, lone-surrogate, unsupported material, unsatisfied wrapper, second group, and boundary-escape refusals
+    - Button/link/citation/url/unknown/untrusted subtree opacity for bytes, refs, stops, generating markers, stability, selectors, and actions
+    - Three-observation stability reset and ref aliasing over embedded content; no persisted UI material or digest
+    - Terminal recovery success/failure, proposal-first/event-last, orphan retry, idempotent repeat, progress tail, exactly one prior intent, and zero click/type/Send/resubmission
+    - Existing current-response, response-wait, bound-recovery, diagnostics, manual-import, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - One sanitized live recovery kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

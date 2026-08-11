@@ -1,0 +1,92 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Recovery-only closed context diagnostics for the remaining exact pre-content action refusal
+    - Fixed body-boundary placement and action-subtree content-presence classification
+    - Focused recovery/non-persistence tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-action-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-precontent-actions.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Preserve every current parser acceptance/refusal rule. Only when an exact
+    eligible terminal recovery returns generic RESPONSE_NOT_IDENTIFIABLE,
+    parent ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID, and detail
+    ADVANCED_RESPONSE_ACTION_PRE_CONTENT may the CLI add one optional
+    non-persistent diagnostic_context_code from this exact set:
+    ADVANCED_RESPONSE_PRECONTENT_SAME_INDENT_BOUNDARY,
+    ADVANCED_RESPONSE_PRECONTENT_SHALLOW_BOUNDARY,
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_CONTENT,
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_DESCENDANT_INVALID,
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_ONLY_OPAQUE, or
+    ADVANCED_RESPONSE_PRECONTENT_NESTED_EMPTY.
+
+    Classify the exact physical pre-content group with closed precedence.
+    First compare its indent to the proven body root: equal is same-indent and
+    smaller is shallow. For a strictly nested group that still ends with no
+    valid later sibling content, inspect only its already bounded subtree and
+    already owned later siblings without contributing bytes. Report descendant
+    content when an exact valid text/statictext JSON-string payload exists
+    beneath approved generic/semantic presentation and outside known opaque
+    controls; descendant invalid when response-bearing scalar/semantic material
+    exists but fails that contract; only opaque when all nonblank material is
+    complete approved chrome; otherwise empty. Do not expose counts or inspect
+    beyond the existing body/boundary.
+
+    The context value changes no opacity, content, boundary, stability, stop,
+    ref, proposal, or recovery behavior. It is emitted only with the exact
+    generic/parent/detail conjunction above. Missing, unknown, padded,
+    suffixed, case-varied, or wrong-conjunction values are omitted while all
+    existing valid codes remain. It is never persisted or projected elsewhere.
+  rationale: >-
+    After permitting exactly one nested opaque pre-content action group with
+    required later sibling content, live recovery of run
+    20260809T185354Z-46c4528b4413 still returns the exact PRE_CONTENT detail.
+    The remaining safe alternatives are a same/shallow boundary group or
+    response-bearing material represented inside the group subtree. One closed
+    context code distinguishes these without raw UI inspection or a guessed
+    boundary/content relaxation.
+  rejected_alternatives:
+    - Accept same/shallow action groups or collect arbitrary action descendants without evidence
+    - Display, persist, log, screenshot, or inspect the raw snapshot, subtree, indentation, labels, refs, or payloads
+    - Submit again, use another conversation/profile/origin, or call an API
+    - Add a debug dump, DOM evaluation, OCR, CDP, or unbounded classifier
+    - Change parser acceptance in the diagnostic continuation
+  constraints:
+    - The six context literals and precedence are exact source constants
+    - Context is recovery-only, non-persistent, and requires the exact reason/parent/detail conjunction
+    - Classification stays within the already proven body/action subtree and emits no browser-derived substring
+    - No accepted response bytes, action shape, body boundary, ref, stop, or stability rule changes
+    - Recovery remains unchanged-state, proposal-first/event-last, navigate/snapshot/wait/close-only, and no-resubmission
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - The context value grants no authority and does not authorize a later tolerance by itself
+    - Action controls, labels, refs, and payloads remain unavailable and non-actionable
+    - Normal ask, WAITING, legacy, manual import, status, state, events, proposals, unrelated terminal resume, and committed recovery never expose or persist context
+    - Local fixtures, sanitized diagnosis, live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Each exact context literal has deterministic direct and recovery-path fixtures
+    - The live run returns the unchanged generic reason, parent, detail, and one context code with no resubmission
+    - Parser success/refusal and captured bytes are identical before and after this diagnostic addition
+    - Invalid/missing context preserves generic reason, parent, and detail
+    - Failed diagnosis leaves terminal state, events, proposal absence, and manual-copy fallback intact
+  required_test_evidence:
+    - Same-indent, shallow, nested valid descendant, nested invalid descendant, opaque-only, and empty matrices
+    - Known opaque controls, ref/stop/generating/assistant-like descendants, boundary containment, and no-byte-contribution probes
+    - CLI conjunction/allowlist, zero-action, unchanged-state/event/proposal, retry, and all non-exposure paths
+    - Existing current-response, bound-recovery, precontent-actions, diagnostics, manual-import, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - One sanitized live context refusal kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

@@ -1,0 +1,97 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Recovery-only closed diagnostics for the strict advanced response parser
+    - Exact allowlisted diagnostic output with no raw browser or response material
+    - Focused parser, recovery, CLI-output, documentation, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.current-response-ui.v1.yaml
+    - changes/st-0101/design-handoff.current-response-body.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Keep every current advanced-response acceptance and refusal rule unchanged,
+    but attach one optional closed diagnostic code to an advanced-parser
+    refusal. Preserve the public reason_code as RESPONSE_SELECTOR_AMBIGUITY,
+    RESPONSE_NOT_IDENTIFIABLE, or the existing sensitive/origin/stop reason.
+    Only an uncaught response-only terminal-recovery refusal may emit the
+    additional diagnostic_code field. Normal ask persistence, state, events,
+    status, proposals, manual import, and ordinary WAITING resume do not store
+    or project it.
+
+    Use an exact source-defined allowlist that distinguishes only structural
+    categories needed to select a later narrow fix: generating-marker
+    duplication, response-marker conflict, structural-ref collision, exact
+    heading invalidity, body-root absence, body-root invalidity, boundary
+    conflict, action-boundary invalidity, and bounded-content invalidity. Each
+    advanced-parser refusal site must either select exactly one applicable
+    allowlisted category or omit diagnostic_code. Never construct a code from
+    a role, label, ref, URL, count, line, snapshot, response fragment, hash, or
+    exception text.
+
+    The terminal-recovery path retains its unchanged-state, no-resubmission,
+    proposal-first/event-last contract. A diagnostic refusal creates no
+    proposal and no failure event, and changes no state. Existing sanitized
+    RESPONSE_WAIT_PROGRESS publication remains the only permitted durable
+    effect during a long recovery observation. A later resume remains eligible
+    through the same verified source-terminal/progress-only tail.
+  rationale: >-
+    Live response-only recovery for run 20260809T185354Z-46c4528b4413 reached
+    the already submitted bound conversation and stopped safely with
+    RESPONSE_SELECTOR_AMBIGUITY. The run remains record_verified with
+    submission_attempted true and no proposal. The generic code is deliberately
+    safe but does not identify which exact structural boundary must be relaxed.
+    Persisting or displaying raw browser material would violate the approved
+    trust boundary, while guessing another broad relaxation would be unsafe.
+    One closed, non-persistent diagnostic category provides enough local
+    evidence for a subsequent minimal approved correction without another
+    submission.
+  rejected_alternatives:
+    - Submit the request again or create a new conversation
+    - Display, persist, log, hash, screenshot, or inspect the raw snapshot or response subtree
+    - Emit roles, labels, refs, URLs, counts, line numbers, snippets, or dynamic exception text
+    - Relax parser acceptance before observing one closed diagnostic category
+    - Store the diagnostic in state, run events, proposal metadata, status, or canonical artifacts
+    - Add a debug CLI, environment switch, browser tool, DOM evaluation, CDP, OCR, API, or alternate profile
+  constraints:
+    - The diagnostic enum is fixed in source and rejects unknown, suffixed, padded, or case-varied values
+    - reason_code semantics and all current parser acceptance rules remain byte-for-byte compatible
+    - Only exact eligible response-only terminal recovery may expose diagnostic_code
+    - No diagnostic path adds browser calls or changes the navigate, snapshot, wait, and close allowlist
+    - A diagnostic refusal never clicks, types, sends, creates submission intent, or resubmits
+    - The original terminal state, event chain, conversation binding, and proposal absence remain authoritative
+    - Raw browser, response, prompt, profile, cookie, storage, secret, and accessibility material remains unavailable
+    - Existing manual import and all non-recovery behavior remain unchanged
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to avoid refusal and obtain the existing Pro answer in conversation on 2026-08-10
+    - A diagnostic value must be selected from a closed literal allowlist before JSON output
+    - The diagnostic carries no user-controlled or browser-controlled substring
+    - The diagnostic does not grant authority, approve a handoff, resolve an Open Decision, or authorize another submission
+    - Recovery eligibility and exact source-terminal, intent, URL, browser, state-hash, and progress-tail verification run before browser launch
+    - Local fixtures, sanitized live diagnosis, live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Every advanced RESPONSE_SELECTOR_AMBIGUITY site used by terminal recovery has a deterministic closed diagnostic category
+    - Advanced RESPONSE_NOT_IDENTIFIABLE sites needed to distinguish body, boundary, action, and bounded-content failures have deterministic closed categories
+    - The CLI refusal keeps its existing reason_code and adds only one allowlisted diagnostic_code for terminal response recovery
+    - Normal ask, status, events, state, proposals, manual import, WAITING resume, and unrelated terminal resume never expose or persist diagnostic_code
+    - The exact live recovery may be rerun without resubmission and returns one closed diagnostic sufficient to design a later minimal parser correction
+    - No fixture changes the accepted response bytes or turns a previously refused snapshot into success
+  required_test_evidence:
+    - One focused fixture for every closed diagnostic category and every advanced ambiguity/refusal branch
+    - Unknown/dynamic/padded/case-varied diagnostic rejection and no-raw-field output tests
+    - Terminal-recovery CLI output, state/event/proposal immutability, progress-tail retry, and zero type/click/send/intent traces
+    - Existing current-response, bound-recovery, resume, manual-import, and full isolated ST-0101 non-regressions
+    - Ruff lint and format, in-memory Python compilation, shell syntax, Skill validation, canonical import verification, workspace drift detection, and git diff check
+    - One sanitized live recovery refusal showing reason_code plus diagnostic_code, kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

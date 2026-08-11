@@ -1,0 +1,97 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - Recovery-only closed detail diagnostics for ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID
+    - Fixed action-group role, label, ref, attribute, shape, ordering, and placement classification
+    - Focused recovery/non-persistence tests plus affected AGENTS, README, Skill, and append-only worklog updates
+  source_design_refs:
+    - RAOS-ARCH-001
+    - RAOS-CODEX-001
+    - RAOS-SEC-001
+    - changes/st-0101/design-handoff.bound-response-recovery.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-closed-diagnostics.v1.yaml
+    - changes/st-0101/design-handoff.bound-response-heading-attributes.v1.yaml
+    - docs/worklogs/ST-0101.md
+  decision: >-
+    Preserve all current action-boundary acceptance and refusal semantics. Only
+    when an exact eligible terminal response recovery returns generic
+    RESPONSE_NOT_IDENTIFIABLE with parent diagnostic
+    ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID may the CLI add one optional
+    non-persistent diagnostic_detail_code from this exact set:
+    ADVANCED_RESPONSE_ACTION_ROLE_INVALID,
+    ADVANCED_RESPONSE_ACTION_LABEL_INVALID,
+    ADVANCED_RESPONSE_ACTION_REF_PRESENT,
+    ADVANCED_RESPONSE_ACTION_EXTRA_ATTRIBUTES,
+    ADVANCED_RESPONSE_ACTION_LINE_SHAPE_INVALID,
+    ADVANCED_RESPONSE_ACTION_PRE_CONTENT,
+    ADVANCED_RESPONSE_ACTION_DUPLICATE,
+    ADVANCED_RESPONSE_ACTION_CONTENT_AFTER, or
+    ADVANCED_RESPONSE_ACTION_PLACEMENT_INVALID.
+
+    Classify one trusted Response-actions-like candidate with exact closed
+    precedence: raw role; exact case-, punctuation-, and edge-sensitive label;
+    any structural reserved ref attempt; otherwise-complete non-ref existing-
+    grammar attributes; residual line syntax; occurrence before non-whitespace
+    response content; a second occurrence; response content after the first
+    valid occurrence; then invalid boundary position/state. Deduplicate a
+    physical line. A malformed/duplicate/competing outer assistant anchor keeps
+    its higher existing diagnostic. If no deterministic action detail applies,
+    omit it and preserve the parent and generic reason.
+
+    The classifier must not accept a new action-group shape, alter response
+    bytes, change opaque-region/stability ownership, or persist any detail.
+    Normal ask, ordinary WAITING resume, legacy parsing, manual import, status,
+    state, events, proposals, and unrelated terminal resume never expose it.
+    Invalid, padded, suffixed, case-varied, wrong-parent, or wrong-reason detail
+    values are omitted without replacing the existing generic reason or valid
+    parent diagnostic.
+  rationale: >-
+    After the exact live heading-attribute drift was corrected, sanitized
+    response-only recovery of run 20260809T185354Z-46c4528b4413 advanced
+    through the heading and bounded body but stopped with
+    ADVANCED_RESPONSE_ACTION_BOUNDARY_INVALID. This proves the remaining drift
+    is confined to the opaque Response actions boundary, but the parent code
+    intentionally combines syntax and ordering defects. A fixed detail is
+    needed before authorizing a minimal tolerance; raw UI inspection or a broad
+    action-boundary relaxation is unnecessary and unsafe.
+  rejected_alternatives:
+    - Accept every Response-actions-like group or ignore all boundary errors
+    - Submit again, create a new conversation, or use an API/alternate profile
+    - Display, persist, log, screenshot, or inspect the raw action line or snapshot
+    - Emit roles, labels, refs, attributes, counts, indentation, content, or dynamic exception text
+    - Change response content extraction, heading/body identity, stop checks, stability, or proposal authority
+  constraints:
+    - The nine detail strings and their precedence are exact source literals
+    - The detail appears only with the exact generic reason and parent action-boundary diagnostic during eligible terminal recovery
+    - No accepted action-boundary or response shape changes in this diagnostic continuation
+    - Detail values contain no raw or browser-derived substring and are never persisted
+    - The unchanged terminal state/event/proposal/no-resubmission contracts remain active
+    - Recovery remains navigate/snapshot/wait/close-only with no click, type, Send, or intent
+    - Never modify immutable canonical, upstream, zip, or manifest artifacts
+  security_and_approval_gates:
+    - The repository owner explicitly approved all work necessary to obtain the existing Pro answer on 2026-08-10
+    - Origin, structural stops, exact assistant heading/body, bounded content, sensitivity, size, and global ref checks run before or alongside diagnosis as currently specified
+    - The detail cannot grant authority or authorize a parser relaxation by itself
+    - A later tolerance requires a separate handoff limited to the observed exact detail
+    - Local fixtures, sanitized diagnosis, live recovery, formal TST-001, CI, staging, production, publication, and release remain separate
+  acceptance_criteria:
+    - Each exact action detail has direct and path-level adversarial fixtures with deterministic precedence
+    - The live recovery returns the unchanged generic reason, parent action-boundary diagnostic, and one fixed detail with no resubmission
+    - Parser acceptance, response bytes, state, events, proposal absence, and manual-import eligibility remain unchanged after a diagnostic refusal
+    - Normal ask, WAITING, legacy, manual import, status, proposals, unrelated terminal resume, and committed recovery never expose or persist the detail
+    - Missing/invalid detail preserves the existing generic reason and parent diagnostic
+  required_test_evidence:
+    - Role, label, ref, complete attribute, residual shape, pre-content, duplicate, content-after, and placement matrices including compound precedence
+    - Ref-like attribute name/value, malformed/multiple ref, untrusted subtree, physical-line deduplication, and outer-diagnostic priority tests
+    - Recovery CLI, zero-action, unchanged-state/event/proposal, retry, and all non-exposure path tests
+    - Existing current-response, bound-recovery, heading-attribute, manual-import, and complete isolated ST-0101 non-regressions
+    - Ruff lint/format, in-memory compile, shell syntax, Skill validation, canonical verification, workspace drift, and diff check
+    - One sanitized live action-boundary detail kept separate from formal TST-001
+  open_decisions: []
+  approval:
+    approved_by: repository-owner
+    approval_source: conversation
+    approved_on: 2026-08-10
+    statement: >-
+      拒否されないようにして。必ず回答を得られるようにして。そのために必要な
+      作業はすべて承認する。

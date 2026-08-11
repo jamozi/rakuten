@@ -129,7 +129,8 @@ override NPM_RUN := $(NODE_RUN) "$(NPM_CLI)" \
 	postgres-generate postgres-check postgres-config postgres-up postgres-health \
 	postgres-down postgres-test object-storage-config object-storage-up \
 	object-storage-health object-storage-down object-storage-test \
-	pro-setup pro-doctor pro-ask pro-resume \
+	pro-runtime-install pro-setup pro-doctor pro-ask pro-resume \
+	pro-import-response \
 	ci-network-assert ci-hydrate ci-repository-policy ci-static ci-unit \
 	ci-contracts ci-database ci-storage
 
@@ -140,6 +141,7 @@ check-workspace:
 	PYTHONDONTWRITEBYTECODE=1 "$(PYTHON)" scripts/bootstrap_workspace.py --check
 
 PRO_REQUEST_FILE ?=
+PRO_RESPONSE_FILE ?=
 PRO_PRIVATE_ROOT ?= $(RAOS_REPOSITORY_ROOT)/.secrets
 PRO_IMPORTANCE ?= ordinary
 PRO_RUN_ID ?=
@@ -149,7 +151,15 @@ PRO_GAP_FILE ?=
 PRO_NO_OPEN_LOGIN ?= 0
 PRO_BROWSER ?= auto
 PRO_INTERACTIVE_AUTH_WAIT_SECONDS ?= 900
+PRO_NODE ?= /home/minami/.nvm/versions/node/v24.18.1/bin/node
+PRO_NPM_CLI ?= /home/minami/.nvm/versions/node/v24.18.1/lib/node_modules/npm/bin/npm-cli.js
 override PRO_PYTHON_LAUNCHER := $(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_python.sh
+
+pro-runtime-install:
+	"$(PRO_PYTHON_LAUNCHER)" runtime-install \
+		--private-root "$(PRO_PRIVATE_ROOT)" \
+		--node "$(PRO_NODE)" \
+		--npm-cli "$(PRO_NPM_CLI)"
 
 pro-setup:
 	"$(PRO_PYTHON_LAUNCHER)" setup \
@@ -178,6 +188,14 @@ pro-resume:
 		--private-root "$(PRO_PRIVATE_ROOT)" \
 		--run-id "$(PRO_RUN_ID)" \
 		$(if $(strip $(PRO_FAKE_SCENARIO)),--fake-scenario "$(PRO_FAKE_SCENARIO)",)
+
+pro-import-response:
+	test -n "$(strip $(PRO_RUN_ID))"
+	test -n "$(strip $(PRO_RESPONSE_FILE))"
+	"$(PRO_PYTHON_LAUNCHER)" import-response \
+		--private-root "$(PRO_PRIVATE_ROOT)" \
+		--run-id "$(PRO_RUN_ID)" \
+		--response-file "$(PRO_RESPONSE_FILE)"
 
 python-install:
 	$(UV_RUN) python install $(PYTHON_VERSION)
