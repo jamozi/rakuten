@@ -30,7 +30,7 @@ PINNED_PREDECESSORS = {
     "changes/st-0305/manifest.yaml": "297abb870c7ff2a2456eb716088e5d9cf24587a67b0158eef562a5dd5533ab92",
     "scripts/build_st0305_publication_analytics_finance.py": "6769d6c4fb2b07cd22f7dec35bc4a2d2415bdfa1cf9b7dd19adc8892ac63f5bb",
     "changes/st-0404/README.md": "e86677ccceaa0991ffa641ffe22de22815a32f9e837bb4c924bf76d6958d680d",
-    "python/raos/domain/http/security.py": "7e5b00e4db477290c7db8539617c5bc852c75e7c65e028c316ff0c659afad7c4",
+    "python/raos/domain/http/security.py": "954bf52f719e95402847f82cfab1e616cf8b3988ab6467e577b3225f611ed532",
     "python/raos/application/http/security.py": "9d7e6538dd3f126abd0a1ced9f7fd91f5ff799b2d26b60e6740af7dcf0fbfaba",
     "docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml": "b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa",
     "contracts/raos-v0.4/contracts/schemas/imports/affiliate-click-input.schema.json": "fc99e614645a6dcb588c8ce9a3a417cfd90a79427f4c4b8da9181c0ba63df664",

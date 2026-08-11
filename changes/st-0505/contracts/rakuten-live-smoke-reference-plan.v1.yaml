@@ -37,7 +37,7 @@ predecessor:
     - uri: repo://changes/st-0502/README.md
       sha256: e74805b634f4b775bf8765896f9c7f3b591cf2cf884e6f52743d94f765ec92e9
     - uri: repo://python/raos/domain/catalog/rakuten_item_search.py
-      sha256: 5b49215f3c80f7af9618dabcddb3a98471976fa6e092ae7a09ed4131e48338ec
+      sha256: 4ea7f33ecee122f7e1e57590c2a972ffe7fb9aa493575a547e3354d0f01570c2
     - uri: repo://python/raos/ports/rakuten_item_search.py
       sha256: 63983941eeb4a485a3d169073f44c0e4241bdcad452d124cfce1dd07cf2d29fe
     - uri: repo://python/raos/application/catalog/rakuten_item_search.py

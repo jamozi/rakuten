@@ -239,7 +239,7 @@ class PortfolioWorkflowService:
 
     def __init__(self, *, exchange: PortfolioWorkflowExchange) -> None:
         try:
-            valid = isinstance(exchange, PortfolioWorkflowExchange)
+            valid = isinstance(cast(object, exchange), PortfolioWorkflowExchange)
         except TypeError:
             valid = False
         if not valid:

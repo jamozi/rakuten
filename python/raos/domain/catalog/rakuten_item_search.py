@@ -9,7 +9,7 @@ import hashlib
 import json
 import math
 import re
-from typing import Any, NoReturn, SupportsIndex
+from typing import Any, NoReturn, SupportsIndex, cast
 from uuid import UUID
 
 
@@ -219,10 +219,12 @@ def _validate_json_tree(value: object) -> None:
                 fail_item_search(RakutenItemSearchFailureCode.RAW_RESPONSE_INVALID)
             continue
         if type(current) is list:
-            pending.extend((item, depth + 1) for item in current)
+            sequence = cast(list[object], current)
+            pending.extend((item, depth + 1) for item in sequence)
             continue
         if type(current) is dict:
-            pending.extend((item, depth + 1) for item in current.values())
+            mapping = cast(dict[object, object], current)
+            pending.extend((item, depth + 1) for item in mapping.values())
             continue
         fail_item_search(RakutenItemSearchFailureCode.RAW_RESPONSE_INVALID)
 

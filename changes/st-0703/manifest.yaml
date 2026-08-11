@@ -127,14 +127,14 @@ source_artifacts:
   bytes: 889
   sha256: e534922ed314f5c234fb32ab625c3b030277d9261b570616d8488f54fbdec7fa
 - uri: repo://python/raos/adapters/openai_responses.py
-  bytes: 32712
-  sha256: 2ab243e2b223c9515eef168da59bd5c3c155331dd033d812864f21619566e6f7
+  bytes: 33352
+  sha256: d1ca262711e73af59923d852fdc299ecc9ba67ae29675fd8e2512ea357d26017
 - uri: repo://python/raos/adapters/recorded_ai.py
   bytes: 6998
   sha256: 294394757d1739889f54dbb6cf20a8353275faf233bc3bba7fdd3f932671dc6a
 - uri: repo://python/raos/domain/ai/provider.py
-  bytes: 39487
-  sha256: 2d6982aa58280f4ce0afe43cde269ddbd1308fecca369fbb1ae654507eb1fed5
+  bytes: 39611
+  sha256: 179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991
 - uri: repo://python/raos/ports/ai_provider.py
   bytes: 5993
   sha256: 3b4ccb19ba26793251b938954c736fdc8be871d618312d3eea2d6a4eff1a5c62

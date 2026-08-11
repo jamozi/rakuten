@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Callable, NoReturn
+from typing import Callable, NoReturn, cast
 
 from raos.application.iam.authentication import AuthenticationService
 from raos.domain.iam.authentication import (
@@ -122,11 +122,11 @@ class AuthorizationGuard:
     ) -> None:
         if type(session_service) is not AuthenticationService:
             raise TypeError("session_service must be an exact AuthenticationService")
-        if not isinstance(policy_source, AuthorizationPolicySource):
+        if not isinstance(cast(object, policy_source), AuthorizationPolicySource):
             raise TypeError("policy_source must implement AuthorizationPolicySource")
-        if not isinstance(entitlement_source, EntitlementSource):
+        if not isinstance(cast(object, entitlement_source), EntitlementSource):
             raise TypeError("entitlement_source must implement EntitlementSource")
-        if not isinstance(decision_sink, AuthorizationDecisionSink):
+        if not isinstance(cast(object, decision_sink), AuthorizationDecisionSink):
             raise TypeError("decision_sink must implement AuthorizationDecisionSink")
         self._session_service = session_service
         self._policy_source = policy_source

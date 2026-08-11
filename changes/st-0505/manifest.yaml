@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0505_rakuten_live_smoke_reference_plan.py
 provenance:
-  contract_sha256: 6cb87d725d203d21d71aaacaad2fc6790497e73db1781b6d9cdbbb65f273312e
+  contract_sha256: 34a669ade080f2e1d0a892f45be084b1b5969db08eb2df60a6b3a2a08f2cc3e7
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -25,7 +25,7 @@ provenance:
   - uri: repo://changes/st-0502/README.md
     sha256: e74805b634f4b775bf8765896f9c7f3b591cf2cf884e6f52743d94f765ec92e9
   - uri: repo://python/raos/domain/catalog/rakuten_item_search.py
-    sha256: 5b49215f3c80f7af9618dabcddb3a98471976fa6e092ae7a09ed4131e48338ec
+    sha256: 4ea7f33ecee122f7e1e57590c2a972ffe7fb9aa493575a547e3354d0f01570c2
   - uri: repo://python/raos/ports/rakuten_item_search.py
     sha256: 63983941eeb4a485a3d169073f44c0e4241bdcad452d124cfce1dd07cf2d29fe
   - uri: repo://python/raos/application/catalog/rakuten_item_search.py
@@ -47,13 +47,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0505/contracts/rakuten-live-smoke-reference-plan.v1.yaml
   bytes: 5311
-  sha256: 6cb87d725d203d21d71aaacaad2fc6790497e73db1781b6d9cdbbb65f273312e
+  sha256: 34a669ade080f2e1d0a892f45be084b1b5969db08eb2df60a6b3a2a08f2cc3e7
 - uri: repo://changes/st-0505/README.md
   bytes: 2720
   sha256: ec33238e56495697766217b32f1e0b6b4fff97041ee8214fe654e39809ede3e7
 - uri: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
   bytes: 24516
-  sha256: f1fb544e1fe3eff11b7ac35df3dec3f2047ce085a8f50b6fda0d73030ef8fc09
+  sha256: e9da5dba7a6fd80f95de2d873ef4b078bebfe6ed2c36d715034d9ef4f5d82ee1
 - uri: repo://tests/st0505/conftest.py
   bytes: 952
   sha256: c85ba1f8614db15f2723b7ba320a4ab7e31459188d1223828d2078bac7352dae
@@ -70,7 +70,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0505/generated/rakuten-live-smoke-reference-plan.v1.json
   bytes: 7729
-  sha256: c510473c46bbcd8b6ca8a5dfdbe721431a843017b9ef9c08b5336ae37e16198c
+  sha256: 07ef25b99b6a2bc95b5402d6a93061642781ef2f34a1da01cc7d86bf973ee7db
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN
   executable: false

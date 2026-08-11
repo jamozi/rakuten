@@ -18,8 +18,8 @@ from raos.domain.portfolio.workflow import (
     StrongEtag,
     UtcTimestamp,
     WorkflowTarget,
-    _RedactedValue,
-    _text,
+    _RedactedValue,  # pyright: ignore[reportPrivateUsage]
+    _text,  # pyright: ignore[reportPrivateUsage]
     fail_portfolio_workflow,
     require_uuid7,
 )

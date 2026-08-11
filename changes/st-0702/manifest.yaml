@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --offline --no-cache --no-sync --no-env-file
     python scripts/build_st0702_context_pack_reference_plan.py
 provenance:
-  contract_sha256: e629f10d72da65314364dbeef5120ebb96a8f0e4eb1aa3ebdd9cea7b994db0d0
+  contract_sha256: dfaa44687787dc9c38442d4e0bb3dbd2091e12ba78ffbc1a430f8d02a92b0320
   canonical_story:
     uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
@@ -23,13 +23,13 @@ provenance:
     - uri: repo://changes/st-0604/README.md
       sha256: 5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8
     - uri: repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml
-      sha256: df184e56224586ccb399da2f782e7a6a4fa202f4d9934be240be61dc75f1fb74
+      sha256: a537df987b1691234665ad38ef6a69c8eae64461d5f8f059e00dd25401484cd7
     - uri: repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json
-      sha256: 92a65884534f2a9a1c9fe10473d6e85ecdf1308531518d97c768bc5ede7a4f0c
+      sha256: e6f9c3e17cdc5255f1707abfd1c293fb2763fb5bff2e7ccf9cd814b9c6f0969e
     - uri: repo://changes/st-0604/manifest.yaml
-      sha256: 07b399132fa15ce658931393dc56c7c11070152c1f7e1a1034783b230a0e170d
+      sha256: e91045fc16dc6e60e952a73feffd80ddb50fa516f3a58888601a97697450eef1
     - uri: repo://scripts/build_st0604_source_packet_lifecycle_reference_plan.py
-      sha256: f5e14432f9369e9ef82e4d2062480f11f6db3ba017bd38eeee988df622bf18c6
+      sha256: c6ded6307d4c7eb2c5d1c4e9d80c0095e7b52e5a53541ed1d7f6e481f01bb97c
     - uri: repo://tests/st0604/conftest.py
       sha256: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
     - uri: repo://tests/st0604/test_contract.py
@@ -50,7 +50,7 @@ provenance:
     - uri: repo://changes/st-0701/generated/ai-task-registry.v1.json
       sha256: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
     - uri: repo://changes/st-0701/manifest.yaml
-      sha256: 14d651ffcd99ec1d90f46ecd1585837aafb26a050024790c9304bc70b8f69852
+      sha256: 021544cd8088bfb12e4ab48eabcfab567c77d31230e625e32babfc4383d87dd0
     - uri: repo://scripts/build_st0701_ai_registry.py
       sha256: 2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360
     - uri: repo://tests/st0701/conftest.py
@@ -68,13 +68,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0702/contracts/context-pack-reference-plan.v1.yaml
   bytes: 7791
-  sha256: e629f10d72da65314364dbeef5120ebb96a8f0e4eb1aa3ebdd9cea7b994db0d0
+  sha256: dfaa44687787dc9c38442d4e0bb3dbd2091e12ba78ffbc1a430f8d02a92b0320
 - uri: repo://changes/st-0702/README.md
   bytes: 2068
   sha256: c0e31aec0c41ccd61d91c0f3fba464a06464686eb961e3b855cef703051184d9
 - uri: repo://scripts/build_st0702_context_pack_reference_plan.py
   bytes: 32819
-  sha256: 44e846af460ed0951ba6cc0c4e29389eaf62f44e6061cb76be43d93b771c3222
+  sha256: 76be5a7756b9da1f76dca5c825457fa9aa3fff75fe3409c00e0157ddcff18b96
 - uri: repo://tests/st0702/conftest.py
   bytes: 985
   sha256: 264e9473e46515d4992542f38ea329887a316e9e9216a4db399727679df7f6ab
@@ -91,7 +91,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0702/generated/context-pack.reference-plan.v1.json
   bytes: 93842
-  sha256: 00190fd3e46dba2bc65a8dacc6d0741852c151317a39b9b2ae4f066f37102656
+  sha256: 7286ed1b1510fa7d12818023e6fb9fecab5147f06c6dfc5dd898a35eb81342cb
 boundary:
   classification: SOURCE_DERIVED_NON_EXECUTABLE_CONTEXT_PACK_REFERENCE_PLAN
   executable: false

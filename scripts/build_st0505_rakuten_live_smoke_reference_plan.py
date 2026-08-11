@@ -93,7 +93,7 @@ EXPECTED_PREDECESSOR_ARTIFACTS: Final = (
     ),
     (
         Path("python/raos/domain/catalog/rakuten_item_search.py"),
-        "5b49215f3c80f7af9618dabcddb3a98471976fa6e092ae7a09ed4131e48338ec",
+        "4ea7f33ecee122f7e1e57590c2a972ffe7fb9aa493575a547e3354d0f01570c2",
     ),
     (
         Path("python/raos/ports/rakuten_item_search.py"),

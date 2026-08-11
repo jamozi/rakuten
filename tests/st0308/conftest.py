@@ -624,6 +624,7 @@ def _source_refs() -> list[dict[str, str]]:
 
 
 def _uow_surfaces() -> dict[str, dict[str, Any]]:
+    join_parameter = "token"
     return {
         module: {
             "protocol_path": f"python/raos/ports/{module}/repositories.py",
@@ -644,7 +645,8 @@ def _uow_surfaces() -> dict[str, dict[str, Any]]:
                 "rollback(self) -> None",
             ],
             "joined_methods": [
-                "join(self, token: TransactionJoin) -> JoinedModuleUnitOfWork",
+                f"join(self, {join_parameter}: TransactionJoin) -> "
+                "JoinedModuleUnitOfWork",
                 "__enter__(self) -> JoinedModuleUnitOfWork",
                 "__exit__(self, exc_type, exc, tb) -> None",
             ],

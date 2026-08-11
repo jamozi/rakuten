@@ -276,9 +276,12 @@ def _parse_json_object(content: bytes, *, field_name: str) -> Mapping[str, objec
         content = b""
         value = None
         raise ValueError("content must be strict JSON") from None
-    if not isinstance(value, dict) or not all(type(key) is str for key in value):
+    if not isinstance(value, dict):
         raise ValueError(f"{field_name} must be a JSON object")
-    return cast(Mapping[str, object], value)
+    document = cast(dict[object, object], value)
+    if not all(type(key) is str for key in document):
+        raise ValueError(f"{field_name} must be a JSON object")
+    return cast(Mapping[str, object], document)
 
 
 @dataclass(frozen=True, slots=True)

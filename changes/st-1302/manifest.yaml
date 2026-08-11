@@ -8,13 +8,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml
   bytes: 7786
-  sha256: 9586b2cb8a424a87523c189bcfce7de00556f32448ac733af2166bf9a8afdbe0
+  sha256: 09bdf7187358291d7fbdf5237378867df29eb7dda3628b9643deddca42eb5c03
 - uri: repo://changes/st-1302/README.md
   bytes: 2787
   sha256: 849012183858a454ee20b504b695202e798d38dfde95704e077abf5709d14218
 - uri: repo://scripts/build_st1302_provider_fact_commit_reference_plan.py
   bytes: 31857
-  sha256: 3cdbfad67ad5b2a42011dbd6bad0b4983e24258a195129fd12d444270efba451
+  sha256: 5df2c28eeb92f3acd251b8e9969c0f58c7dab67b9dbcdc8586b6bfca0c85d40b
 - uri: repo://tests/st1302/conftest.py
   bytes: 956
   sha256: 2ee8fd7b038097a4457c6886343e0908b88a0b406186bd7f806c1755011875ab
@@ -30,7 +30,7 @@ source_artifacts:
 generated_artifacts:
 - uri: repo://changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json
   bytes: 10734
-  sha256: a8003b5bb94ff173fc2981b5277bfb515955f9f746ed624e535145503781794a
+  sha256: 76999d7db8707335aa080a5e865f08dafcac40e65fecb5a86dd528d16c277410
 provenance:
   generated_by: repo://scripts/build_st1302_provider_fact_commit_reference_plan.py
   generation_command: uv run --locked --offline --no-cache --no-sync --no-env-file
@@ -60,11 +60,11 @@ provenance:
     sha256: a0fac1fea74bee63640d4d702223c1bd9f3933887f7ee887c3ef7cae7da51b07
   reference_inputs:
   - uri: repo://changes/st-0308/contracts/persistence-boundary-reference.v1.yaml
-    sha256: 584b2ffd2aa58132de262a7cab039a0fa41f71acc6444ad990105253b37ac56c
+    sha256: 93d7a84ccd7c9f195119eca63762239c5ec903aae1f7bb4d7d81b73bbf838035
   - uri: repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
-    sha256: 928190e7a0bff9a3b8800d7fd5c70cde14e9f5099d75f35a9ed45ea1b2437289
+    sha256: e5caada483b12b6f7c9ea2fe0bd86c493b47b24a6d9bb5a11293eed8597f13b6
   - uri: repo://changes/st-0308/manifest.yaml
-    sha256: d0162c099ee02db746f8ba9eec40c354f4d8f9b95e4fd171c81e2d0d753273ee
+    sha256: 8c05065f29a2901f71fd59970e97cb0d69151a0c987b7ac4b42369f25faabad2
   - uri: repo://changes/st-0305/contracts/publication-analytics-finance.v1.yaml
     sha256: 2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f
   - uri: repo://changes/st-0305/generated/publication-analytics-finance-catalog.v1.json

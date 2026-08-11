@@ -87,15 +87,18 @@ def _strict_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
 
 
 def _document(value: object, keys: frozenset[str]) -> dict[str, object]:
-    if type(value) is not dict or frozenset(value) != keys:
+    if type(value) is not dict:
         _invalid()
-    return value
+    document = cast(dict[str, object], value)
+    if frozenset(document) != keys:
+        _invalid()
+    return document
 
 
 def _array(value: object) -> list[object]:
     if type(value) is not list:
         _invalid()
-    return value
+    return cast(list[object], value)
 
 
 def _text(value: object) -> str:

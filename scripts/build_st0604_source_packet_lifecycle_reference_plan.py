@@ -147,15 +147,15 @@ ST0403_ARTIFACTS: Final = (
     ),
     (
         Path("python/raos/adapters/development_authorization.py"),
-        "0d97b863f823db024fb508cee28c0a43fe1ee571e1a857d7f0eca1825dddd250",
+        "dbcb97f3f71a7359297f36cf29d5d6e88879c990ff506bc884b09de235c92658",
     ),
     (
         Path("python/raos/application/iam/authorization.py"),
-        "9dff51d659500862e537410dcb93b8b66117f65ed79cd99217a0a3708b287326",
+        "19e3d35a982234a612885d8390ba9fed3bca8e5dabeec326641e173124686b57",
     ),
     (
         Path("python/raos/domain/iam/authorization.py"),
-        "a818af48c4639246598cc31378e64dfa315b7086a866aeb42ce6f95bdcbf77b2",
+        "dd08de5f2330fd322571230f0634413665360b2c362968f2ee46647bd48b55ce",
     ),
     (
         Path("python/raos/ports/authorization.py"),

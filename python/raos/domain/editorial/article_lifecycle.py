@@ -33,7 +33,7 @@ from raos.domain.portfolio.workflow import (
     StrongEtag,
     UtcTimestamp,
     WorkflowTarget,
-    _RedactedValue,
+    _RedactedValue,  # pyright: ignore[reportPrivateUsage]
     require_positive_exact_int,
     require_uuid7,
 )

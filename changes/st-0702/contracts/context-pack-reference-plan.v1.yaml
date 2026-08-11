@@ -30,10 +30,10 @@ predecessors:
     binding: EXACT_COMMITTED_OWNED_BYTES
     artifacts:
       changes/st-0604/README.md: 5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8
-      changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml: df184e56224586ccb399da2f782e7a6a4fa202f4d9934be240be61dc75f1fb74
-      changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json: 92a65884534f2a9a1c9fe10473d6e85ecdf1308531518d97c768bc5ede7a4f0c
-      changes/st-0604/manifest.yaml: 07b399132fa15ce658931393dc56c7c11070152c1f7e1a1034783b230a0e170d
-      scripts/build_st0604_source_packet_lifecycle_reference_plan.py: f5e14432f9369e9ef82e4d2062480f11f6db3ba017bd38eeee988df622bf18c6
+      changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml: a537df987b1691234665ad38ef6a69c8eae64461d5f8f059e00dd25401484cd7
+      changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json: e6f9c3e17cdc5255f1707abfd1c293fb2763fb5bff2e7ccf9cd814b9c6f0969e
+      changes/st-0604/manifest.yaml: e91045fc16dc6e60e952a73feffd80ddb50fa516f3a58888601a97697450eef1
+      scripts/build_st0604_source_packet_lifecycle_reference_plan.py: c6ded6307d4c7eb2c5d1c4e9d80c0095e7b52e5a53541ed1d7f6e481f01bb97c
       tests/st0604/conftest.py: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
       tests/st0604/test_contract.py: 68c3fad0196b6fc353dd354c172d32dcc64106474754a54665f362a51b415462
       tests/st0604/test_generation.py: 5ed32f62c06924f3f6931fb827a6c68dc4ffcbd415ddc6b8ece54c66e93a9cca
@@ -56,7 +56,7 @@ predecessors:
       changes/st-0701/README.md: 58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6
       changes/st-0701/contracts/ai-contract-registry-loader.v1.yaml: 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
       changes/st-0701/generated/ai-task-registry.v1.json: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
-      changes/st-0701/manifest.yaml: 14d651ffcd99ec1d90f46ecd1585837aafb26a050024790c9304bc70b8f69852
+      changes/st-0701/manifest.yaml: 021544cd8088bfb12e4ab48eabcfab567c77d31230e625e32babfc4383d87dd0
       scripts/build_st0701_ai_registry.py: 2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360
       tests/st0701/conftest.py: a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
       tests/st0701/test_compiled_task_registry.py: bdc75302f0a901e2d0859c8fee03569db6d4f628f77515385d1c9a57d17e8854

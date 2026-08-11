@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from typing import cast
 
 from raos.domain.ops.job_runtime import (
     CompletionCommit,
@@ -38,12 +39,14 @@ def _supports(candidate: object, protocol: type[object]) -> bool:
 
 
 def _validate_schedule(value: object) -> tuple[timedelta, ...]:
-    if type(value) is not tuple or len(value) > 50:
+    if type(value) is not tuple:
         fail_runtime(RuntimeFailureCode.INVALID_ARGUMENT)
-    schedule = value
+    schedule = cast(tuple[object, ...], value)
+    if len(schedule) > 50:
+        fail_runtime(RuntimeFailureCode.INVALID_ARGUMENT)
     if any(type(delay) is not timedelta or delay < timedelta(0) for delay in schedule):
         fail_runtime(RuntimeFailureCode.INVALID_ARGUMENT)
-    return schedule
+    return cast(tuple[timedelta, ...], schedule)
 
 
 def _checked_add(when: datetime, delay: timedelta) -> datetime:
@@ -322,13 +325,15 @@ class RecordedJobRuntimeService:
     ) -> QueueDelivery[RecordedJobMessage] | None:
         if type(candidate) is not QueueDelivery:
             return None
-        delivery = candidate
-        message = delivery.message
+        delivery = cast(QueueDelivery[object], candidate)
+        untyped_message = delivery.message
         if (
-            type(message) is not QueueMessage
-            or type(message.payload) is not RecordedJobMessage
+            type(untyped_message) is not QueueMessage
+            or type(untyped_message.payload) is not RecordedJobMessage
         ):
             return None
+        typed_delivery = cast(QueueDelivery[RecordedJobMessage], delivery)
+        message = typed_delivery.message
         payload = message.payload
         identity = str(payload.event_id)
         try:
@@ -342,7 +347,7 @@ class RecordedJobRuntimeService:
             or message.idempotency_key != identity
         ):
             return None
-        return delivery
+        return typed_delivery
 
     def _receipt_is_current(
         self,
@@ -370,7 +375,7 @@ class RecordedJobRuntimeService:
         receipt_handle: str | None = None
         delivery_attempt: int | None = None
         if type(candidate) is QueueDelivery:
-            delivery = candidate
+            delivery = cast(QueueDelivery[object], candidate)
             receipt_handle = delivery.receipt_handle
             delivery_attempt = delivery.delivery_attempt
         if receipt_handle is None:

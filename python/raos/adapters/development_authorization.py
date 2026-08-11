@@ -13,7 +13,7 @@ from raos.domain.iam.authorization import (
     PolicyRevision,
     PolicySnapshot,
     PrincipalIdentity,
-    _recorded_test_policy_snapshot,
+    _recorded_test_policy_snapshot,  # pyright: ignore[reportPrivateUsage]
     deny_authorization,
 )
 

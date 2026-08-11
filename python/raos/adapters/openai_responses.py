@@ -92,6 +92,10 @@ class _OpenAIClient(Protocol):
     ) -> _ConfiguredClient: ...
 
 
+class _SchemaValidator(Protocol):
+    def validate(self, instance: object) -> None: ...
+
+
 @dataclass(frozen=True, slots=True)
 class OpenAIResponseRoute:
     """One explicit recorded route; it does not perform model selection."""
@@ -139,9 +143,9 @@ class OpenAIResponsesAdapter:
     ) -> None:
         if type(route) is not OpenAIResponseRoute:
             raise TypeError("route must be an exact OpenAIResponseRoute")
-        if not isinstance(recorder, ProviderExchangeRecorder):
+        if not isinstance(cast(object, recorder), ProviderExchangeRecorder):
             raise TypeError("recorder must implement ProviderExchangeRecorder")
-        if not isinstance(cost_calculator, RecordedCostCalculator):
+        if not isinstance(cast(object, cost_calculator), RecordedCostCalculator):
             raise TypeError("cost_calculator must implement RecordedCostCalculator")
         if not callable(clock):
             raise TypeError("clock must be callable")
@@ -217,7 +221,9 @@ class OpenAIResponsesAdapter:
             schema_document = json.loads(
                 request.output_schema.document_bytes.decode("utf-8", errors="strict")
             )
-            Draft202012Validator.check_schema(schema_document)
+            Draft202012Validator.check_schema(
+                cast(bool | Mapping[str, object], schema_document)
+            )
         except Exception:
             schema_invalid = True
         if schema_invalid:
@@ -466,7 +472,7 @@ def _response_mapping(response: object) -> Mapping[str, object]:
     conversion_failed = False
     try:
         if isinstance(response, Mapping):
-            value = response
+            value = cast(Mapping[object, object], response)
         else:
             model_dump = getattr(response, "model_dump", None)
             to_dict = getattr(response, "to_dict", None)
@@ -508,19 +514,22 @@ def _bounded_mapping(value: object) -> Mapping[str, object]:
             return item
         if not isinstance(item, (Mapping, list, tuple)):
             raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-        identity = id(item)
+        container = cast(
+            Mapping[object, object] | list[object] | tuple[object, ...], item
+        )
+        identity = id(container)
         if identity in active:
             raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
         active.add(identity)
         try:
-            if isinstance(item, Mapping):
+            if isinstance(container, Mapping):
                 result: dict[str, object] = {}
-                for key, child in item.items():
+                for key, child in container.items():
                     if type(key) is not str:
                         raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
                     result[key] = snapshot(child, depth + 1)
                 return result
-            return [snapshot(child, depth + 1) for child in item]
+            return [snapshot(child, depth + 1) for child in container]
         finally:
             active.remove(identity)
 
@@ -531,9 +540,12 @@ def _bounded_mapping(value: object) -> Mapping[str, object]:
 
 
 def _required_mapping(value: object) -> Mapping[str, object]:
-    if not isinstance(value, Mapping) or not all(type(key) is str for key in value):
+    if not isinstance(value, Mapping):
         raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
-    return cast(Mapping[str, object], value)
+    mapping = cast(Mapping[object, object], value)
+    if not all(type(key) is str for key in mapping):
+        raise ProviderError(ProviderErrorCode.MALFORMED_RESPONSE)
+    return cast(Mapping[str, object], mapping)
 
 
 def _required_sequence(value: object) -> Sequence[object]:
@@ -662,8 +674,12 @@ def _structured_output(
 
     validation_failure: ProviderErrorCode | None = None
     try:
-        schema = json.loads(request.output_schema.document_bytes)
-        Draft202012Validator(schema).validate(json.loads(output.canonical_bytes()))
+        schema = cast(
+            bool | Mapping[str, object],
+            json.loads(request.output_schema.document_bytes),
+        )
+        validator = cast(_SchemaValidator, Draft202012Validator(schema))
+        validator.validate(cast(object, json.loads(output.canonical_bytes())))
     except SchemaError:
         validation_failure = ProviderErrorCode.INVALID_SCHEMA
     except Exception:
@@ -690,7 +706,7 @@ def _recorded_exchange(
             or type(outcome) is not dict
         ):
             raise ValueError("record inputs must be exact value objects")
-        exact_outcome = dict(outcome)
+        exact_outcome = dict(cast(Mapping[str, object], outcome))
         kind = exact_outcome.get("kind")
         valid_success = (
             set(exact_outcome) == {"kind"} and type(kind) is str and kind == "success"

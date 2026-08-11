@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 import ipaddress
 import re
-from typing import NoReturn, Self, SupportsIndex, final
+from typing import Callable, NoReturn, Self, SupportsIndex, cast, final
 
 
 _ORIGIN = re.compile(
@@ -336,10 +336,18 @@ class HttpSecurityPolicy:
     """Caller-supplied exact allowlists and limits; every default fails closed."""
 
     max_content_length: int
-    allowed_origins: frozenset[CanonicalOrigin] = field(default_factory=frozenset)
-    allowed_methods: frozenset[HttpMethod] = field(default_factory=frozenset)
-    allowed_content_types: frozenset[str] = field(default_factory=frozenset)
-    allowed_request_headers: frozenset[str] = field(default_factory=frozenset)
+    allowed_origins: frozenset[CanonicalOrigin] = field(
+        default_factory=cast(Callable[[], frozenset[CanonicalOrigin]], frozenset)
+    )
+    allowed_methods: frozenset[HttpMethod] = field(
+        default_factory=cast(Callable[[], frozenset[HttpMethod]], frozenset)
+    )
+    allowed_content_types: frozenset[str] = field(
+        default_factory=cast(Callable[[], frozenset[str]], frozenset)
+    )
+    allowed_request_headers: frozenset[str] = field(
+        default_factory=cast(Callable[[], frozenset[str]], frozenset)
+    )
     hsts_max_age_seconds: int | None = None
     allow_credentials: bool = False
 
