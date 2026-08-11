@@ -79,12 +79,11 @@ repository, unit of work, database, object storage, audit write, status change,
 staging, release, or Production action. OD-012 optional tracking remains
 disabled and OD-015 remains recorded-fixture-only.
 
-The existing ST-1204 owner check currently stops on inherited predecessor hash
-drift. The ST-0204 and ST-0305 owner artifacts must be reconciled and ST-1204
-regenerated in dependency order by their owners at Wave freeze; this runtime
-slice does not rebind or repair them. The existing atomic-publication audit's
-`FAIL`/`MEDIUM` finding is likewise inherited and outside this read-only
-adapter boundary, which contains no publisher.
+The ST-1204 owner contract binds the exact current committed ST-0204 and ST-0305
+manifest bytes. Those predecessor artifacts remain unchanged; ST-1204 is
+regenerated through its owner after a mechanical downstream pin rebind. The
+existing atomic-publication audit's `FAIL`/`MEDIUM` finding remains inherited
+and outside this read-only adapter boundary, which contains no publisher.
 
 Local tests, lint, and type checks are implementation evidence only. They do
 not satisfy OD-012 or OD-015, live Google/provider or credential validation,

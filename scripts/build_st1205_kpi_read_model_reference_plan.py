@@ -47,7 +47,7 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1205_kpi_read_model_reference_plan.py"
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "8950e17feb58e28eebb82cd807ba37860b40e0cfa09729fb99c7f9ebe8dbb3ed"
+    "c5c65fe9690c25a9c199a1ed0aa7a28295e2682e4f61514e5b5daf72bc4c8448"
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
@@ -153,7 +153,7 @@ ST1203_ARTIFACTS: Final = (
 ST1204_ARTIFACTS: Final = (
     (
         Path("changes/st-1204/RUNTIME-SLICE-v1.md"),
-        "fee3fd089ba7f0d5e70b2948fd0f2ca333d4a13b1f59e4a0e510c264147e3fa8",
+        "e5ca8b2e38e0b46c9a40232af26bd5b4ebbbf20099c6a7856a7ab007443ca17e",
     ),
     (
         Path("python/raos/domain/analytics/ga4.py"),
@@ -385,7 +385,6 @@ EXPECTED_PREDECESSORS: Final = {
         "story_id": "ST-1204",
         "feature_commit": ST1204_COMMIT,
         "binding": "EXACT_CURRENT_COMMITTED_BYTES",
-        "known_owner_debt": "INHERITED_PREDECESSOR_HASH_DRIFT",
         "artifacts": _artifact_rows(ST1204_ARTIFACTS),
         "required_semantics": {
             "returned_row_count": 2,
@@ -837,7 +836,6 @@ def _predecessor_manifest_rows() -> list[dict[str, object]]:
             "story_id": "ST-1204",
             "feature_commit": ST1204_COMMIT,
             "binding": "EXACT_CURRENT_COMMITTED_BYTES",
-            "known_owner_debt": "INHERITED_PREDECESSOR_HASH_DRIFT",
             "inputs": _artifact_uri_rows(ST1204_ARTIFACTS),
         },
     ]
@@ -911,7 +909,6 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
             "story_acceptance": False,
             "production_eligible": False,
             "effective_canonical_status": "UNCHANGED",
-            "known_predecessor_debt": "INHERITED_PREDECESSOR_HASH_DRIFT",
         },
     }
     return yaml.dump(

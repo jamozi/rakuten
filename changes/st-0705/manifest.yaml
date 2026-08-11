@@ -11,8 +11,8 @@ source_artifacts:
   bytes: 2180
   sha256: ea935831a1bb667229ae5a5495a27a801b9c21ab3c3ddbe53e266b8f7c311c42
 - uri: repo://scripts/build_st0705_ai_output_validation_reference_plan.py
-  bytes: 26491
-  sha256: 3ad58c04f5cc90ea3d03e2ef66b1c9c6ad0fce2abf60530e4a59ed17f429e1d9
+  bytes: 26574
+  sha256: bfe27ad56bfd5d988c034e591768a39d3a9088a744fabe546cb6f1a94e1147d5
 - uri: repo://tests/st0705/conftest.py
   bytes: 1767
   sha256: afd9c595b76bef9fd650ac5672862b31cd874e1883241e4f141aa39f5636559f
