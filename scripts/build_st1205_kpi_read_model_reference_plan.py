@@ -47,7 +47,7 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1205_kpi_read_model_reference_plan.py"
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "d14c952f2d22abb802f81960f0ba18cafcc806e5b26944101d4ce27cad96bfae"
+    "8950e17feb58e28eebb82cd807ba37860b40e0cfa09729fb99c7f9ebe8dbb3ed"
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
@@ -85,7 +85,7 @@ ST1201_ARTIFACTS: Final = (
     ),
     (
         Path("python/raos/ports/event_collector.py"),
-        "29a5a3db729894cc3575205850dba559320b4c8b024cdcf8853b45005bbe9599",
+        "ab3f5b8df9dd7c324006c948ec0322c0c583dffe1b2facf7900d000cb632298c",
     ),
     (
         Path("python/raos/application/analytics/event_collector.py"),
@@ -109,7 +109,7 @@ ST1201_ARTIFACTS: Final = (
     ),
     (
         Path("tests/st1201/test_boundaries.py"),
-        "aaf1e44f0a90c9ee3322d3be184cc00be6fea996aa7ccbd3ad29f021ba8d0a7a",
+        "b0486cdb88de1fc9653ae058437aee1bc82a38300da847cbd16c3ff760b2ac80",
     ),
 )
 ST1203_ARTIFACTS: Final = (
@@ -123,7 +123,7 @@ ST1203_ARTIFACTS: Final = (
     ),
     (
         Path("python/raos/ports/search_console.py"),
-        "e128bd48092e923356c7c1b21f093c181fb31943d19b8e913d28199c5634019f",
+        "569ee34c9202bf673338c0b87039a3ad461cf56d964537750427512288ac1bf5",
     ),
     (
         Path("python/raos/application/analytics/search_console_import.py"),
@@ -131,7 +131,7 @@ ST1203_ARTIFACTS: Final = (
     ),
     (
         Path("python/raos/adapters/recorded_search_console.py"),
-        "d41615cd376b07090b5be3bc74797826f9db6b6f840a410ca9fc97e689469e01",
+        "410e04383731edac7228a522d0275e8ea6f43a1bdb981075740c426655577e49",
     ),
     (
         Path("tests/st1203/test_search_console_domain.py"),
@@ -161,7 +161,7 @@ ST1204_ARTIFACTS: Final = (
     ),
     (
         Path("python/raos/ports/ga4.py"),
-        "5f9c2206e1351a81eefd0c70a0a7030c8d912818b10e1b01f046883b4ef64d6e",
+        "16edfe96aad71f44d454a5474fc99fcf0528d9a85f88fc2047680f8b0a3d9a80",
     ),
     (
         Path("python/raos/application/analytics/ga4_import.py"),
@@ -169,7 +169,7 @@ ST1204_ARTIFACTS: Final = (
     ),
     (
         Path("python/raos/adapters/recorded_ga4.py"),
-        "bb4510a7956d7b84caa57d700048cdc552e685209d3a6aab3a677bca391756a7",
+        "9d07350b94109da403db764930be46fcfa666864350f1c6f6893f5daa759b840",
     ),
     (
         Path("tests/st1204/test_ga4_domain.py"),

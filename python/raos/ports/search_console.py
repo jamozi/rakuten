@@ -16,5 +16,7 @@ class RecordedSearchConsoleExchange(Protocol):
     def exchange(self, command: SearchConsoleCommand) -> RecordedSearchConsolePage:
         """Return the single pre-bound page without provider or persistence I/O."""
 
+        ...
+
 
 __all__ = ["RecordedSearchConsoleExchange"]

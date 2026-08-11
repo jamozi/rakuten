@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 from datetime import datetime, timedelta
-from typing import NoReturn
+from typing import NoReturn, cast
 
 from raos.domain.iam.authentication import (
     AuthenticationFailure,
@@ -61,11 +61,11 @@ class AuthenticationService:
         session_idle_lifetime: timedelta = timedelta(minutes=30),
         session_absolute_lifetime: timedelta = timedelta(hours=8),
     ) -> None:
-        if not isinstance(provider, OidcProvider):
+        if not isinstance(cast(object, provider), OidcProvider):
             raise TypeError("provider must implement OidcProvider")
-        if not isinstance(repository, AuthenticationRepository):
+        if not isinstance(cast(object, repository), AuthenticationRepository):
             raise TypeError("repository must implement AuthenticationRepository")
-        if not isinstance(entropy, EntropySource):
+        if not isinstance(cast(object, entropy), EntropySource):
             raise TypeError("entropy must implement EntropySource")
         if (
             type(authorization_lifetime) is not timedelta

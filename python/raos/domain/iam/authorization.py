@@ -841,7 +841,7 @@ def disabled_policy_snapshot() -> PolicySnapshot:
     )
 
 
-def _recorded_test_policy_snapshot(
+def _recorded_test_policy_snapshot(  # pyright: ignore[reportUnusedFunction]
     *, revision: PolicyRevision, rules: tuple[AuthorizationRule, ...]
 ) -> PolicySnapshot:
     """Construct a recorded policy for the exact ENV-DEV adapter only."""

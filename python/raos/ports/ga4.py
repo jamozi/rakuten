@@ -22,5 +22,7 @@ class RecordedGa4ReportPort(Protocol):
     ) -> Ga4RecordedExchange:
         """Return one immutable recorded exchange."""
 
+        ...
+
 
 __all__ = ["RecordedGa4ReportPort"]

@@ -1629,12 +1629,12 @@ def _contract_token_list(
         raise TrustedFailure("contract_boundary_tokens_empty")
     result: list[str] = []
     for value in values:
-        token = _trusted_string(value, code)
-        if not _BOUNDARY_TOKEN_PATTERN.fullmatch(token):
+        boundary_token = _trusted_string(value, code)
+        if not _BOUNDARY_TOKEN_PATTERN.fullmatch(boundary_token):
             raise TrustedFailure("contract_boundary_token_invalid")
-        if token in result:
+        if boundary_token in result:
             raise TrustedFailure("contract_boundary_token_duplicate")
-        result.append(token)
+        result.append(boundary_token)
     return tuple(result)
 
 

@@ -21,5 +21,7 @@ class EventCollectionExchange(Protocol):
     ) -> RecordedStoreOutcome:
         """Return one pre-recorded outcome without storing event content."""
 
+        ...
+
 
 __all__ = ["EventCollectionExchange"]

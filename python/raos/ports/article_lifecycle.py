@@ -16,5 +16,7 @@ class ArticleLifecycleExchange(Protocol):
     def exchange(self, request: ArticleLifecycleRequest) -> ArticleLifecycleOutcome:
         """Return the exact next scripted outcome without persistence."""
 
+        ...
+
 
 __all__ = ["ArticleLifecycleExchange"]

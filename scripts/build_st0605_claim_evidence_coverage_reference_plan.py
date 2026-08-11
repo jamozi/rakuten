@@ -195,21 +195,21 @@ ST0604_ARTIFACTS: Final = (
         Path(
             "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
         ),
-        "df184e56224586ccb399da2f782e7a6a4fa202f4d9934be240be61dc75f1fb74",
+        "a537df987b1691234665ad38ef6a69c8eae64461d5f8f059e00dd25401484cd7",
     ),
     (
         Path(
             "changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json"
         ),
-        "92a65884534f2a9a1c9fe10473d6e85ecdf1308531518d97c768bc5ede7a4f0c",
+        "e6f9c3e17cdc5255f1707abfd1c293fb2763fb5bff2e7ccf9cd814b9c6f0969e",
     ),
     (
         Path("changes/st-0604/manifest.yaml"),
-        "07b399132fa15ce658931393dc56c7c11070152c1f7e1a1034783b230a0e170d",
+        "e91045fc16dc6e60e952a73feffd80ddb50fa516f3a58888601a97697450eef1",
     ),
     (
         Path("scripts/build_st0604_source_packet_lifecycle_reference_plan.py"),
-        "f5e14432f9369e9ef82e4d2062480f11f6db3ba017bd38eeee988df622bf18c6",
+        "c6ded6307d4c7eb2c5d1c4e9d80c0095e7b52e5a53541ed1d7f6e481f01bb97c",
     ),
     (
         Path("tests/st0604/conftest.py"),

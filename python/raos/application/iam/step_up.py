@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 import hmac
+from typing import cast
 
 from raos.application.iam.authentication import AuthenticationService
 from raos.domain.iam.authentication import Session, SessionId
@@ -60,7 +61,7 @@ class StepUpGuard:
     ) -> None:
         if type(session_service) is not AuthenticationService:
             raise TypeError("session_service must be an exact AuthenticationService")
-        if not isinstance(verifier, StepUpVerifier):
+        if not isinstance(cast(object, verifier), StepUpVerifier):
             raise TypeError("verifier must implement StepUpVerifier")
         self._session_service = session_service
         self._verifier = verifier

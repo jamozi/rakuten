@@ -191,7 +191,7 @@ def _validate_request(request: ArticleLifecycleRequest) -> None:
     elif isinstance(request, GetVersionRequest):
         if request.version_id != target.resource_id:
             fail_article_lifecycle()
-    elif isinstance(request, UpdateVersionRequest):
+    elif isinstance(request, UpdateVersionRequest):  # pyright: ignore[reportUnnecessaryIsInstance]
         if (
             request.version_id != target.resource_id
             or type(request.expected_version) is not EntityVersion
@@ -284,7 +284,7 @@ def _validate_outcome(
         get_version_outcome = cast(GetVersionOutcome, outcome)
         version = _validate_version(get_version_outcome.version)
         valid = version.version_id == request.version_id and version in history.versions
-    elif isinstance(request, UpdateVersionRequest):
+    elif isinstance(request, UpdateVersionRequest):  # pyright: ignore[reportUnnecessaryIsInstance]
         update_version_outcome = cast(UpdateVersionOutcome, outcome)
         version = _validate_version(update_version_outcome.version)
         if update_version_outcome.disposition is OutcomeDisposition.UPDATED:

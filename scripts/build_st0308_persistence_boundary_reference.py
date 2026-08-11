@@ -136,8 +136,8 @@ SOURCE_ROWS: Final = (
     ),
     (
         "scripts/validate_st0308_design_handoff.py",
-        104128,
-        "e90cf0c39b8b965a521d11403c13e929d381c58ce077050bc36744efcc662dcc",
+        104164,
+        "716453ff1248ac47cb398b537fa093dc2a6b17fd5c8a027371369c30dd9f5ea7",
     ),
 )
 
