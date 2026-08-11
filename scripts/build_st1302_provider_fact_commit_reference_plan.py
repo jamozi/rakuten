@@ -156,7 +156,7 @@ REFERENCE_INPUT_ARTIFACTS: Final = (
     ),
     (
         ST0308_MANIFEST_PATH,
-        "5737e43c282e90c4491ba80ab2136232c1b7e4cefa2fce71f751eae679db4deb",
+        "a297bf015c9507ba0e649be2d77c5882e81bf760bc19e46089611c4e0e3d2ef3",
     ),
     (
         ST0305_CONTRACT_PATH,

@@ -272,6 +272,7 @@ def test_predecessor_and_source_byte_changes_are_rejected(
     )
     for relative in paths:
         target = repository_harness.root / relative
+        target.chmod(0o600)
         original = target.read_bytes()
         target.write_bytes(original + b"\n")
         with pytest.raises(builder.PersistenceReferenceError):
