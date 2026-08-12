@@ -194,3 +194,23 @@ export type {
   PublicShellScreenId,
   PublicShellScreenMetadata,
 } from './public-shell.ts';
+
+export {
+  PUBLIC_ARTICLE_METADATA_BLOCK_TYPES,
+  PUBLIC_ARTICLE_RENDERER_CLASSIFICATION,
+  PUBLIC_ARTICLE_RENDERER_ERROR_CODES,
+  PUBLIC_ARTICLE_RENDERER_SCREEN,
+  PublicArticleRendererError,
+  createPublicArticleRendererCandidate,
+  validatePublicArticleRendererCandidate,
+} from './public-article-renderer.ts';
+export type {
+  PublicArticleBoundaryResult,
+  PublicArticleMetadataBlockType,
+  PublicArticleMetadataSlotInput,
+  PublicArticleProjectionCoordinateInput,
+  PublicArticleRendererBoundaries,
+  PublicArticleRendererCandidate,
+  PublicArticleRendererErrorCode,
+  PublicArticleRendererInput,
+} from './public-article-renderer.ts';
