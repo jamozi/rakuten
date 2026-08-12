@@ -214,3 +214,28 @@ export type {
   PublicArticleRendererErrorCode,
   PublicArticleRendererInput,
 } from './public-article-renderer.ts';
+
+export {
+  PUBLIC_COMPARISON_COMPONENT_CLASSIFICATION,
+  PUBLIC_COMPARISON_COMPONENT_ERROR_CODES,
+  PUBLIC_COMPARISON_COMPONENT_IDS,
+  PUBLIC_COMPARISON_COMPONENT_SCREEN,
+  PUBLIC_COMPARISON_COMPONENTS,
+  PublicComparisonComponentError,
+  createPublicComparisonComponentsCandidate,
+  validatePublicComparisonComponentsCandidate,
+} from './comparison-product-components.ts';
+export type {
+  PublicComparisonBoundaryResult,
+  PublicComparisonComponentBoundaries,
+  PublicComparisonComponentErrorCode,
+  PublicComparisonComponentId,
+  PublicComparisonComponentMetadata,
+  PublicComparisonComponentsCandidate,
+  PublicComparisonComponentsInput,
+  PublicComparisonSyntheticCoordinateInput,
+  PublicComparisonTableSemanticMetadata,
+  PublicProductCardSemanticMetadata,
+  PublicTradeoffSemanticMetadata,
+  PublicUnknownValueSemanticMetadata,
+} from './comparison-product-components.ts';
