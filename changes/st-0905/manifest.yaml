@@ -1,0 +1,149 @@
+document:
+  id: RAOS-ST0905-PUBLICATION-COMMANDS-REFERENCE-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0905
+  source_contract: repo://changes/st-0905/contracts/publication-commands-reference-plan.v1.yaml
+  generated_by: repo://scripts/build_st0905_publication_commands_reference_plan.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0905_publication_commands_reference_plan.py
+provenance:
+  contract_sha256: 5153ca3d18f9498f0be517ec375478824177129289d71a0c8e346cee419a699a
+  authority_inputs:
+  - role: integration
+    uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - role: canonical_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - role: open_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - role: story
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - role: requirements
+    uri: repo://docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml
+    sha256: bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827
+  - role: master_traceability
+    uri: repo://docs/canonical/00_master/RAOS_master_traceability_v1.0.csv
+    sha256: 7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4
+  - role: acceptance_traceability
+    uri: repo://docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv
+    sha256: 253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341
+  - role: test_catalog
+    uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - role: system_architecture
+    uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - role: data_model
+    uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - role: api_event_job_design
+    uri: repo://docs/upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md
+    sha256: 1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf
+  - role: security_design
+    uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - role: security_controls
+    uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - role: role_matrix
+    uri: repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  - role: threat_register
+    uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - role: admin_openapi
+    uri: repo://contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml
+    sha256: 6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70
+  - role: state_transition_catalog
+    uri: repo://contracts/raos-v0.4/contracts/catalogs/state-transition-catalog.v0.4.yaml
+    sha256: 203eb10d9b6fc6ba4fb0e9f0491f713c313a6a5627dcaf60b7ce53665ecec8a5
+  - role: job_catalog
+    uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+    sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+  - role: publish_job_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-publish-snapshot-v1.schema.json
+    sha256: 81f885e435bcaf4af75ab3149a2007668b7585155cfbe730242e78efefc5a6e7
+  - role: unpublish_job_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-unpublish-v1.schema.json
+    sha256: 037516debc7d44f860de113f68973c85141ded552d9b45de88fdc6a6ac84a862
+  - role: rollback_job_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-rollback-v1.schema.json
+    sha256: 8dd422009feea40da8821e57403ac493dd86f24ccf333beb29b637b60d7276d9
+  - role: published_event_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-published-v1.schema.json
+    sha256: 70fbe58d58399d44bd386ed39673682f7fa3eb3acfdbc8c5e2f46fcf7be12f19
+  - role: unpublished_event_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-unpublished-v1.schema.json
+    sha256: 91fc5b6322bd98301440b493c639955541aba9a45b24420888ca855e90eac9b6
+  - role: rolled_back_event_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-rolled-back-v1.schema.json
+    sha256: a405b5826a80f2e95029d7a5b824caf9e5795e8050edfc97e2e76906742cf660
+  dependency_inputs:
+  - story_id: ST-0903
+    uri: repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml
+    sha256: cf6f9a55f769a2861cda655cdc7e963d6048a7ff721ded55a40aaa0978702692
+  - story_id: ST-0904
+    uri: repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml
+    sha256: a61b1d16c35c45b2c12b886222fc79dc36d46ca496223303c81b9f796f7ea672
+  - story_id: ST-0402
+    uri: repo://changes/st-0402/README.md
+    sha256: 6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b
+  implementation_helper:
+    uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+  pro_assistance: NOT_REQUIRED_FOR_REFERENCE_SLICE_NO_RUN_NO_DIAGNOSTIC
+  digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-0905/contracts/publication-commands-reference-plan.v1.yaml
+  bytes: 18838
+  sha256: 5153ca3d18f9498f0be517ec375478824177129289d71a0c8e346cee419a699a
+- uri: repo://changes/st-0905/README.md
+  bytes: 4641
+  sha256: 93d1fa584086c8b2d528d09761e3bab9180bad8b09bb3fbcae4dfe11f81706cf
+- uri: repo://scripts/build_st0905_publication_commands_reference_plan.py
+  bytes: 54481
+  sha256: c4fa59be74dd4c2e3e9d5267dd878d3bfb9ee2fc84c5db5c99e1756c5aa284c7
+- uri: repo://tests/st0905/conftest.py
+  bytes: 958
+  sha256: 000a0586a785d57b8e1853aee6cb3399fdd1fd1059717364c52db3c619ba73d8
+- uri: repo://tests/st0905/test_contract.py
+  bytes: 4624
+  sha256: 7ffff19ae7c5ed791e602154a1409f8245fb69e35c7b905f8302454bcda0be40
+- uri: repo://tests/st0905/test_generation.py
+  bytes: 3328
+  sha256: c5a01b80b34addfffab55a05084c1a3c27c1be114152dc628d759b1a8c0549d9
+- uri: repo://tests/st0905/test_negative_cases.py
+  bytes: 8706
+  sha256: b99a1fa6c329a0da7750e683771126e71332c8446096e9303511208a2d23ad37
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0905/generated/publication-commands-reference-plan.v1.json
+  bytes: 27008
+  sha256: f5e2b0df4daed2f8caf64238caf1c66b2772573814ee774a954c6d81fd84ddcd
+  digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
+boundary:
+  classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLICATION_COMMAND_EVENT_REFERENCE_PLAN
+  executable: false
+  command_handlers: NOT_IMPLEMENTED
+  job_producers: NOT_IMPLEMENTED
+  job_consumers: NOT_IMPLEMENTED
+  event_emitters: NOT_IMPLEMENTED
+  audit_writer: NOT_IMPLEMENTED
+  database_unit_of_work: NOT_IMPLEMENTED
+  external_cms_adapter: NOT_IMPLEMENTED
+  records: NOT_EVALUATED
+  empty_commands: NO_COMMAND_OR_EVIDENCE_NOT_ZERO_VALID_COMMANDS
+  formal_tst_012: NOT_EXECUTED
+  formal_tst_013: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  runtime: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+  readiness: NOT_READY
+  production_eligible: false
