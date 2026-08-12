@@ -1,0 +1,716 @@
+{
+  "document": {
+    "id": "RAOS-ST1407-EXTERNAL-POLICY-REGISTRY-REFERENCE-PLAN-001",
+    "version": "1.0.0",
+    "story_id": "ST-1407",
+    "classification": "SOURCE_DERIVED_NON_ATTESTING_EXTERNAL_POLICY_REFERENCE_PLAN",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "executable": false,
+    "interface_only": true,
+    "decision": "NOT_READY",
+    "story_acceptance": false,
+    "production_eligible": false,
+    "approval": null
+  },
+  "pro_assistance": {
+    "status": "PRO_UNAVAILABLE",
+    "authority": "NONE",
+    "proposal_captured": false,
+    "content_used": false
+  },
+  "authority": {
+    "precedence": "CANONICAL_INTEGRATION_THEN_STORY_THEN_INSTALLED_CONTRACTS",
+    "sources": [
+      {
+        "role": "integration",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+      },
+      {
+        "role": "open_decisions",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+      },
+      {
+        "role": "master_traceability",
+        "uri": "repo://docs/canonical/00_master/RAOS_master_traceability_v1.0.csv",
+        "sha256": "7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4"
+      },
+      {
+        "role": "acceptance_traceability",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv",
+        "sha256": "253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341"
+      },
+      {
+        "role": "test_catalog",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+      },
+      {
+        "role": "story",
+        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+      },
+      {
+        "role": "system_architecture",
+        "uri": "repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md",
+        "sha256": "00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3"
+      },
+      {
+        "role": "data_model",
+        "uri": "repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md",
+        "sha256": "dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c"
+      },
+      {
+        "role": "api_event_job_design",
+        "uri": "repo://docs/upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md",
+        "sha256": "1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf"
+      },
+      {
+        "role": "contract_repository",
+        "uri": "repo://contracts/raos-v0.4/contract-repository.v0.4.json",
+        "sha256": "54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef"
+      },
+      {
+        "role": "external_rule_snapshot",
+        "uri": "repo://contracts/raos-v0.4/contracts/content/RAOS_06_external_rule_snapshot_v0.1.yaml",
+        "sha256": "14a4131215f8c2f70a2f5b73aef0ccb1162f1a8ac6d410079c6a3b6b68955042"
+      },
+      {
+        "role": "official_references",
+        "uri": "repo://contracts/raos-v0.4/contracts/content/RAOS_06_official_references_v0.1.yaml",
+        "sha256": "d7a3986affce9d2fc1110d6b3fffb196c668dae7db00288d466b9e62ba57e030"
+      },
+      {
+        "role": "editorial_policy_catalog",
+        "uri": "repo://contracts/raos-v0.4/contracts/content/RAOS_06_editorial_policy_catalog_v0.1.yaml",
+        "sha256": "d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a"
+      },
+      {
+        "role": "job_catalog",
+        "uri": "repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml",
+        "sha256": "70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1"
+      },
+      {
+        "role": "admin_api",
+        "uri": "repo://contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml",
+        "sha256": "6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70"
+      },
+      {
+        "role": "asyncapi",
+        "uri": "repo://contracts/raos-v0.4/contracts/asyncapi.v0.4.yaml",
+        "sha256": "3373668d6028be7d90bb35c4ab893c4572201fd71c213d12a165ac1f190ee6dd"
+      },
+      {
+        "role": "alert_catalog",
+        "uri": "repo://docs/canonical/06_ops/RAOS_12_alert_catalog_v1.0.yaml",
+        "sha256": "f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0"
+      },
+      {
+        "role": "runbook_catalog",
+        "uri": "repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml",
+        "sha256": "2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100"
+      },
+      {
+        "role": "operations_design",
+        "uri": "repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md",
+        "sha256": "894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8"
+      },
+      {
+        "role": "security_controls",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+        "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+      },
+      {
+        "role": "threat_register",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
+        "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+      }
+    ]
+  },
+  "provenance": {
+    "source_contract": "repo://changes/st-1407/contracts/external-policy-registry-reference-plan.v1.yaml",
+    "source_contract_sha256": "6589699bce3dd9fa62ce38312568fe20f0c1a1b96c53e41909d7a5e09df049b0",
+    "generated_by": "repo://scripts/build_st1407_external_policy_registry_reference_plan.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st1407_external_policy_registry_reference_plan.py",
+    "implementation_helper": {
+      "uri": "repo://scripts/build_st1505_staging_deployment.py",
+      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    }
+  },
+  "dependencies": [
+    {
+      "story_id": "ST-0405",
+      "artifacts": [
+        {
+          "role": "readme",
+          "uri": "repo://changes/st-0405/README.md",
+          "sha256": "8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657"
+        },
+        {
+          "role": "audit_port",
+          "uri": "repo://python/raos/ports/audit.py",
+          "sha256": "d358f8349ebeb70c3b8f046b82c109a80f162fe88432d1e0d4e11e4ff21592ec"
+        }
+      ],
+      "implementation_scope": "PROCESS_LOCAL_RECORDED_AUDIT_SEAM",
+      "connection_status": "NOT_EXECUTED",
+      "use_status": "NOT_AUTHORIZED_FOR_ST1407_WRITES"
+    },
+    {
+      "story_id": "ST-0805",
+      "artifacts": [
+        {
+          "role": "readme",
+          "uri": "repo://changes/st-0805/README.md",
+          "sha256": "c0c05757da04bd59c56068d0e77359adbdf2032ade2528fac317705e8fb88b7b"
+        },
+        {
+          "role": "policy_engine",
+          "uri": "repo://python/raos/domain/editorial/policy_engine.py",
+          "sha256": "a9982c7f27b6cc4a1b50933d7a9e51ee24b07bcc0289c71ac20cf1d147c348ff"
+        }
+      ],
+      "implementation_scope": "PURE_LOCAL_EDITORIAL_POLICY_EVALUATOR",
+      "connection_status": "NOT_EXECUTED",
+      "bundle_identity_status": "NOT_AVAILABLE"
+    }
+  ],
+  "unresolved_gates": [
+    {
+      "id": "OPEN-018",
+      "topic": "primary_source_domain_allowlist",
+      "status": "UNRESOLVED",
+      "safe_default": "NO_AUTOMATED_SOURCE_ACQUISITION",
+      "human_gated": true
+    },
+    {
+      "id": "OD-008",
+      "topic": "legal_review_boundary",
+      "status": "HUMAN_DECISION_REQUIRED",
+      "safe_default": "BLOCK_PUBLICATION_NO_AI_LEGAL_SUBSTITUTION",
+      "human_gated": true
+    },
+    {
+      "id": "OD-011",
+      "topic": "notification_channels",
+      "status": "HUMAN_DECISION_REQUIRED",
+      "safe_default": "LOCAL_LOG_ONLY_PRODUCTION_DISABLED",
+      "human_gated": true
+    }
+  ],
+  "catalog_projection": {
+    "external_rule_snapshot": {
+      "document": {
+        "id": "RAOS-CONTENT-EXTERNAL-001",
+        "title": "外部ルールスナップショット",
+        "version": "0.1",
+        "status": "APPROVED_FOR_IMPLEMENTATION_CONTRACT",
+        "effective_date": "2026-07-30",
+        "generated_at": "2026-07-30T12:52:40Z",
+        "owner": "RAOS Product Owner / Managing Editor",
+        "language": "ja-JP",
+        "market": "JP"
+      },
+      "observed_at": "2026-07-30",
+      "review_policy": {
+        "frequency": "monthly and event-driven",
+        "authoritative_sources_only": true,
+        "change_action": "create policy diff, affected publication set, risk classification, approval and re-evaluation"
+      },
+      "rules": [
+        {
+          "id": "EXT-GOOGLE-001",
+          "domain": "Google Search",
+          "topic": "people_first_content",
+          "observed_rule": "独自情報、十分な説明、明確な出典、読者価値を優先し、検索流入目的の量産を避ける",
+          "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+          "content_policy_ids": [
+            "POL-CONT-019",
+            "POL-CONT-020",
+            "POL-CONT-021"
+          ]
+        },
+        {
+          "id": "EXT-GOOGLE-002",
+          "domain": "Google Search",
+          "topic": "scaled_content_abuse",
+          "observed_rule": "検索順位操作を主目的とした大量の低価値ページは生成手段を問わずSpam対象になり得る",
+          "url": "https://developers.google.com/search/docs/essentials/spam-policies",
+          "content_policy_ids": [
+            "POL-CONT-020",
+            "POL-CONT-030"
+          ]
+        },
+        {
+          "id": "EXT-GOOGLE-003",
+          "domain": "Google Search",
+          "topic": "affiliate_links",
+          "observed_rule": "広告・有償関係Linkにはrel=sponsoredを使用する",
+          "url": "https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links",
+          "content_policy_ids": [
+            "POL-CONT-010"
+          ]
+        },
+        {
+          "id": "EXT-GOOGLE-004",
+          "domain": "Google Search",
+          "topic": "generative_ai",
+          "observed_rule": "AI利用自体ではなく公開物の正確性・品質・関連性と付加価値が重要",
+          "url": "https://developers.google.com/search/docs/fundamentals/using-gen-ai-content",
+          "content_policy_ids": [
+            "POL-CONT-001",
+            "POL-CONT-002",
+            "POL-CONT-020"
+          ]
+        },
+        {
+          "id": "EXT-GOOGLE-005",
+          "domain": "Google Search",
+          "topic": "ai_search_optimization",
+          "observed_rule": "特別なAI用SchemaやQuery Variation量産ではなく通常の基礎SEOと独自価値を優先",
+          "url": "https://developers.google.com/search/docs/fundamentals/ai-optimization-guide",
+          "content_policy_ids": [
+            "POL-CONT-020",
+            "POL-CONT-030"
+          ]
+        },
+        {
+          "id": "EXT-GOOGLE-006",
+          "domain": "Google Search",
+          "topic": "product_structured_data",
+          "observed_rule": "Product Rich Resultは単一商品または同一商品のVariantに焦点を当てたページ向け。商品一覧型へは出さない",
+          "url": "https://developers.google.com/search/docs/appearance/structured-data/product-snippet",
+          "content_policy_ids": [
+            "POL-CONT-027",
+            "POL-CONT-029"
+          ]
+        },
+        {
+          "id": "EXT-GOOGLE-007",
+          "domain": "Google Search",
+          "topic": "faq_rich_result_removed",
+          "observed_rule": "FAQ Rich Resultは2026年にDocumentationから削除。可視FAQは可、FAQPage JSON-LDは無効化",
+          "url": "https://developers.google.com/search/updates#removing-faq-rich-result",
+          "content_policy_ids": [
+            "POL-CONT-028"
+          ]
+        },
+        {
+          "id": "EXT-GOOGLE-008",
+          "domain": "Google Search",
+          "topic": "image_seo",
+          "observed_rule": "標準img、適切な品質・速度、文脈に合う説明的altを使用しKeyword stuffingを避ける",
+          "url": "https://developers.google.com/search/docs/appearance/google-images",
+          "content_policy_ids": [
+            "POL-CONT-032",
+            "POL-CONT-033"
+          ]
+        },
+        {
+          "id": "EXT-W3C-001",
+          "domain": "W3C WAI",
+          "topic": "non_text_content",
+          "observed_rule": "非Text Contentには同等目的を持つText Alternativeを提供する",
+          "url": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html",
+          "content_policy_ids": [
+            "POL-CONT-032"
+          ]
+        },
+        {
+          "id": "EXT-RAKUTEN-001",
+          "domain": "Rakuten Affiliate",
+          "topic": "affiliate_guideline",
+          "observed_rule": "登録媒体、HTTPS、禁止行為、Link・画像等のGuidelineに従う",
+          "url": "https://affiliate.rakuten.co.jp/guideline/rule/",
+          "content_policy_ids": [
+            "POL-CONT-004",
+            "POL-CONT-007",
+            "POL-CONT-011",
+            "POL-CONT-013"
+          ]
+        },
+        {
+          "id": "EXT-RAKUTEN-002",
+          "domain": "Rakuten Affiliate",
+          "topic": "stealth_marketing",
+          "observed_rule": "対象施策で広告・PR関係を明瞭に表示し、証跡保存とMonitoringへ対応する",
+          "url": "https://affiliate.rakuten.co.jp/guideline/stealth_marketing_regulation/",
+          "content_policy_ids": [
+            "POL-CONT-008"
+          ]
+        },
+        {
+          "id": "EXT-RAKUTEN-003",
+          "domain": "Rakuten Web Service",
+          "topic": "api_credit",
+          "observed_rule": "公式API利用時に指定されたCredit表示を行う",
+          "url": "https://webservice.rakuten.co.jp/guide/credit",
+          "content_policy_ids": [
+            "POL-CONT-012"
+          ]
+        },
+        {
+          "id": "EXT-CAA-001",
+          "domain": "Consumer Affairs Agency Japan",
+          "topic": "stealth_marketing_regulation",
+          "observed_rule": "広告であることを一般消費者が判別しにくい表示は景品表示法上の規制対象",
+          "url": "https://www.caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing",
+          "content_policy_ids": [
+            "POL-CONT-008"
+          ]
+        }
+      ],
+      "coverage": {
+        "projected": 13,
+        "canonical": 13
+      },
+      "official_content_bytes": [],
+      "snapshot_instances": []
+    },
+    "official_reference_snapshot": {
+      "document": {
+        "id": "RAOS-CONTENT-REF-001",
+        "title": "RAOS-CONTENT-001 official reference snapshot",
+        "version": "0.1",
+        "verified_on": "2026-07-30",
+        "status": "CURRENT_SNAPSHOT_REVALIDATE_BEFORE_PRODUCTION",
+        "legal_notice": "本資料は設計上の基準整理であり、法律相談ではない。公開前に最新規約と必要な専門家確認を行う。"
+      },
+      "sources": [
+        {
+          "id": "REF-RAKUTEN-001",
+          "authority": "Rakuten Affiliate",
+          "title": "楽天アフィリエイトガイドライン",
+          "url": "https://affiliate.rakuten.co.jp/guideline/rule/",
+          "applied_to": [
+            "affiliate destination clarity",
+            "review-body prohibition",
+            "image and link handling",
+            "prohibited representations"
+          ]
+        },
+        {
+          "id": "REF-RAKUTEN-002",
+          "authority": "Rakuten Affiliate",
+          "title": "ステルスマーケティング規制の対応について",
+          "url": "https://affiliate.rakuten.co.jp/guideline/stealth_marketing_regulation/",
+          "applied_to": [
+            "PR disclosure",
+            "benefit-specific disclosure",
+            "monitoring and evidence retention"
+          ]
+        },
+        {
+          "id": "REF-CAA-001",
+          "authority": "Consumer Affairs Agency, Government of Japan",
+          "title": "令和5年10月1日からステルスマーケティングは景品表示法違反となります",
+          "url": "https://www.caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing",
+          "applied_to": [
+            "clear advertising identification",
+            "relationship disclosure"
+          ]
+        },
+        {
+          "id": "REF-CAA-002",
+          "authority": "Consumer Affairs Agency, Government of Japan",
+          "title": "ステルスマーケティングに関するQ&A",
+          "url": "https://www.caa.go.jp/policies/policy/representation/fair_labeling/faq/stealth_marketing/",
+          "applied_to": [
+            "free-product and benefit relationship handling",
+            "case-by-case disclosure review"
+          ]
+        },
+        {
+          "id": "REF-GOOGLE-001",
+          "authority": "Google Search Central",
+          "title": "Creating helpful, reliable, people-first content",
+          "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+          "applied_to": [
+            "unique decision value",
+            "people-first review",
+            "content quality"
+          ]
+        },
+        {
+          "id": "REF-GOOGLE-002",
+          "authority": "Google Search Central",
+          "title": "Spam policies for Google web search",
+          "url": "https://developers.google.com/search/docs/essentials/spam-policies",
+          "applied_to": [
+            "scaled content abuse",
+            "thin affiliation",
+            "doorway and copied content controls"
+          ]
+        },
+        {
+          "id": "REF-GOOGLE-003",
+          "authority": "Google Search Central",
+          "title": "Write high quality reviews",
+          "url": "https://developers.google.com/search/docs/specialty/ecommerce/write-high-quality-reviews",
+          "applied_to": [
+            "evidence-led review standards",
+            "original research requirement"
+          ]
+        },
+        {
+          "id": "REF-GOOGLE-004",
+          "authority": "Google Search Central",
+          "title": "Qualify your outbound links to Google",
+          "url": "https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links",
+          "applied_to": [
+            "rel=sponsored handling"
+          ]
+        },
+        {
+          "id": "REF-GOOGLE-005",
+          "authority": "Google Search Central",
+          "title": "Article structured data",
+          "url": "https://developers.google.com/search/docs/appearance/structured-data/article",
+          "applied_to": [
+            "Article or BlogPosting JSON-LD"
+          ]
+        },
+        {
+          "id": "REF-GOOGLE-006",
+          "authority": "Google Search Central",
+          "title": "Product structured data",
+          "url": "https://developers.google.com/search/docs/appearance/structured-data/product",
+          "applied_to": [
+            "product markup scope and merchant-listing exclusion"
+          ]
+        },
+        {
+          "id": "REF-GOOGLE-007",
+          "authority": "Google Search Central",
+          "title": "Search documentation updates",
+          "url": "https://developers.google.com/search/updates",
+          "applied_to": [
+            "FAQ rich-result removal and structured-data lifecycle monitoring"
+          ]
+        },
+        {
+          "id": "REF-W3C-001",
+          "authority": "W3C WAI",
+          "title": "WCAG 2.2 Understanding Success Criterion 1.1.1: Non-text Content",
+          "url": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html",
+          "applied_to": [
+            "alt text and non-text alternatives"
+          ]
+        }
+      ],
+      "revalidation_triggers": [
+        "Rakuten guideline or API policy revision",
+        "Consumer Affairs Agency guidance revision",
+        "Google Search structured-data or spam-policy revision",
+        "new article category with legal or safety implications",
+        "before every production release affecting disclosure, CTA, review, media, or structured data"
+      ],
+      "coverage": {
+        "projected": 12,
+        "canonical": 12
+      },
+      "inferred_external_rule_links": []
+    },
+    "editorial_policy_reference": {
+      "document": {
+        "id": "RAOS-CONTENT-POLICY-001",
+        "title": "編集・公開Policyカタログ",
+        "version": "0.1",
+        "status": "APPROVED_FOR_IMPLEMENTATION_CONTRACT",
+        "effective_date": "2026-07-30",
+        "generated_at": "2026-07-30T12:52:40Z",
+        "owner": "RAOS Product Owner / Managing Editor",
+        "language": "ja-JP",
+        "market": "JP"
+      },
+      "catalog_bundle_code": "content-editorial-policy.jp.v1",
+      "catalog_policy_ids": [
+        "POL-CONT-001",
+        "POL-CONT-002",
+        "POL-CONT-003",
+        "POL-CONT-004",
+        "POL-CONT-005",
+        "POL-CONT-006",
+        "POL-CONT-007",
+        "POL-CONT-008",
+        "POL-CONT-009",
+        "POL-CONT-010",
+        "POL-CONT-011",
+        "POL-CONT-012",
+        "POL-CONT-013",
+        "POL-CONT-014",
+        "POL-CONT-015",
+        "POL-CONT-016",
+        "POL-CONT-017",
+        "POL-CONT-018",
+        "POL-CONT-019",
+        "POL-CONT-020",
+        "POL-CONT-021",
+        "POL-CONT-022",
+        "POL-CONT-023",
+        "POL-CONT-024",
+        "POL-CONT-025",
+        "POL-CONT-026",
+        "POL-CONT-027",
+        "POL-CONT-028",
+        "POL-CONT-029",
+        "POL-CONT-030",
+        "POL-CONT-031",
+        "POL-CONT-032",
+        "POL-CONT-033",
+        "POL-CONT-034",
+        "POL-CONT-035",
+        "POL-CONT-036",
+        "POL-CONT-037",
+        "POL-CONT-038",
+        "POL-CONT-039",
+        "POL-CONT-040"
+      ],
+      "coverage": {
+        "projected_ids": 40,
+        "canonical": 40
+      },
+      "mapping_validation": "EXACT_REFERENCED_POLICY_IDS_EXIST",
+      "runtime_policy_bundle_id": null,
+      "rule_version_links": []
+    },
+    "alert_reference": {
+      "id": "ALT-019",
+      "severity": "SEV4",
+      "name": "Policy/reference due",
+      "condition": "external rules snapshot review overdue",
+      "detection": "weekly",
+      "initial_action": "assign reviewer",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "authority": "INERT_CATALOG_TEXT_ONLY",
+      "ops_severity_mapping": "NOT_DEFINED",
+      "state": "NOT_EVALUATED",
+      "records": []
+    },
+    "runbook_reference": {
+      "id": "RB-018",
+      "title": "External policy change",
+      "severity": "varies",
+      "minimum_steps": [
+        "capture official change",
+        "impact query",
+        "kill/hold affected flow",
+        "approve patch"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED",
+      "authority": "INERT_CATALOG_TEXT_ONLY",
+      "execution": "NOT_EXECUTED"
+    }
+  },
+  "candidate_seams": {
+    "source_snapshot": {
+      "entity": "evidence.source_snapshot",
+      "relation_to_external_policy": "UNSPECIFIED",
+      "instances": [],
+      "content_byte_artifacts": []
+    },
+    "policy_bundle": {
+      "entity": "policy.policy_bundle",
+      "identity_relation": "DISTINCT_NOT_IDENTICAL",
+      "bundle_links": [],
+      "rule_version_links": []
+    },
+    "publication_snapshot": {
+      "entity": "publishing.publication_snapshot",
+      "relation_status": "UNLINKED_CANDIDATE_SEAM",
+      "version_links": [],
+      "affected_articles": []
+    },
+    "alert": {
+      "entity": "ops.alert",
+      "catalog_id": "ALT-019",
+      "catalog_severity": "SEV4",
+      "ops_severity_mapping": "NOT_DEFINED",
+      "state": "NOT_EVALUATED",
+      "records": []
+    },
+    "audit": {
+      "entity": "ops.audit_event",
+      "action": "NOT_DEFINED",
+      "state": "NOT_EVALUATED",
+      "events": []
+    }
+  },
+  "evaluation_boundary": {
+    "snapshot_instances": [],
+    "official_content_bytes": [],
+    "change_diffs": [],
+    "join_records": [],
+    "version_links": [],
+    "due_evaluations": [],
+    "overdue": "NOT_EVALUATED",
+    "impact_query": "NOT_EVALUATED",
+    "affected_articles": [],
+    "affected_articles_empty_interpretation": "QUERY_NOT_EXECUTED_NOT_ZERO_AFFECTED",
+    "alert_records": [],
+    "audit_events": []
+  },
+  "execution_boundary": {
+    "runtime_reader": "NOT_IMPLEMENTED",
+    "network": "NOT_EXECUTED",
+    "filesystem_runtime": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "api": "NOT_EXECUTED",
+    "job": "NOT_EXECUTED",
+    "event": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "clock": "NOT_EXECUTED",
+    "alert": "NOT_EXECUTED",
+    "audit": "NOT_EXECUTED",
+    "activation": "NOT_EXECUTED",
+    "hold": "NOT_EXECUTED",
+    "kill": "NOT_EXECUTED",
+    "re_review": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "external_actions": [],
+    "action_counts": {
+      "fetch": 0,
+      "read_runtime": 0,
+      "create": 0,
+      "update": 0,
+      "delete": 0,
+      "publish": 0,
+      "notify": 0,
+      "activate": 0,
+      "hold": 0,
+      "kill": 0
+    }
+  },
+  "verification_boundary": {
+    "story_test_suites": [
+      "TST-005",
+      "TST-020"
+    ],
+    "master_trace_test_suites": [
+      "TST-005",
+      "TST-019",
+      "TST-020"
+    ],
+    "acceptance_trace_test_suites": [
+      "TST-008",
+      "TST-020"
+    ],
+    "traceability_status": "DIVERGENT_RECORDED_NOT_RESOLVED",
+    "formal_tst_005": "NOT_EXECUTED",
+    "formal_tst_019": "NOT_EXECUTED",
+    "formal_tst_020": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "approval": null,
+    "decision": "NOT_READY",
+    "story_acceptance": false,
+    "production_eligible": false,
+    "effective_canonical_status": "UNCHANGED"
+  }
+}
