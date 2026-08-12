@@ -1,0 +1,659 @@
+{
+  "document": {
+    "id": "RAOS-ST0902-FINAL-APPROVAL-REFERENCE-PLAN-001",
+    "version": "1.0.0",
+    "story_id": "ST-0902",
+    "classification": "SOURCE_DERIVED_NONEXECUTABLE_FINAL_APPROVAL_REFERENCE_PLAN",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "executable": false,
+    "interface_only": true,
+    "decision": "NOT_READY",
+    "readiness": "NOT_READY",
+    "story_acceptance": false,
+    "approval_authority": false,
+    "rejection_authority": false,
+    "revocation_authority": false,
+    "publication_permitted": false,
+    "production_eligible": false
+  },
+  "pro_assistance": {
+    "status": "PRO_UNAVAILABLE",
+    "authority": "NONE",
+    "proposal_captured": false,
+    "content_used": false
+  },
+  "authority": {
+    "precedence": "CANONICAL_INTEGRATION_THEN_STORY_THEN_INSTALLED_CONTRACTS",
+    "sources": [
+      {
+        "role": "integration",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+      },
+      {
+        "role": "canonical_decisions",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+        "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+      },
+      {
+        "role": "open_decisions",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+      },
+      {
+        "role": "story",
+        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+      },
+      {
+        "role": "master_traceability",
+        "uri": "repo://docs/canonical/00_master/RAOS_master_traceability_v1.0.csv",
+        "sha256": "7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4"
+      },
+      {
+        "role": "acceptance_traceability",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv",
+        "sha256": "253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341"
+      },
+      {
+        "role": "test_catalog",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+      },
+      {
+        "role": "role_matrix",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+        "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+      },
+      {
+        "role": "security_design",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+        "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+      },
+      {
+        "role": "security_controls",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+        "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+      },
+      {
+        "role": "system_architecture",
+        "uri": "repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md",
+        "sha256": "00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3"
+      },
+      {
+        "role": "data_model",
+        "uri": "repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md",
+        "sha256": "dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c"
+      },
+      {
+        "role": "api_event_job_design",
+        "uri": "repo://docs/upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md",
+        "sha256": "1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf"
+      },
+      {
+        "role": "content_design",
+        "uri": "repo://docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md",
+        "sha256": "a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682"
+      },
+      {
+        "role": "admin_openapi",
+        "uri": "repo://contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml",
+        "sha256": "6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70"
+      },
+      {
+        "role": "approval_granted_event_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-approval-granted-v1.schema.json",
+        "sha256": "ef597efed4ffe2d50440bec59dea9d1fa08ae0fa2f76ad20d3ce30e227b8e097"
+      },
+      {
+        "role": "approval_revoked_event_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-approval-revoked-v1.schema.json",
+        "sha256": "3ea30eefd85cdf9f48fa84a4caf3b26956d1943c621a2035cf4584477680f1c1"
+      }
+    ]
+  },
+  "provenance": {
+    "source_contract": "repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml",
+    "source_contract_sha256": "6f449d9a1bdc58baada052dbc89e71aa42d6a133ecc8ba3d64d57cc6f536c08f",
+    "generated_by": "repo://scripts/build_st0902_final_approval_reference_plan.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st0902_final_approval_reference_plan.py",
+    "implementation_helper": {
+      "uri": "repo://scripts/build_st1505_staging_deployment.py",
+      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    }
+  },
+  "dependencies": [
+    {
+      "story_id": "ST-0305",
+      "implementation_scope": "FINAL_APPROVAL_DATABASE_GUARD_FRAGMENT",
+      "artifacts": [
+        {
+          "role": "publishing_guard",
+          "uri": "repo://changes/st-0305/contracts/physical/publishing-guards.sql",
+          "sha256": "d3ecd89ac35c386333ac2bf75907259aa28fc8718f65e8c303499193d57fe82e"
+        }
+      ],
+      "connection_status": "NOT_EXECUTED",
+      "authority_status": "INSUFFICIENT_FOR_ST0902"
+    },
+    {
+      "story_id": "ST-0402",
+      "implementation_scope": "PROVIDER_NEUTRAL_LOCAL_STEP_UP_SEAM",
+      "artifacts": [
+        {
+          "role": "readme",
+          "uri": "repo://changes/st-0402/README.md",
+          "sha256": "6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b"
+        }
+      ],
+      "connection_status": "NOT_EXECUTED",
+      "authority_status": "ABSENT"
+    },
+    {
+      "story_id": "ST-0403",
+      "implementation_scope": "TEST_ONLY_DENY_DEFAULT_AUTHORIZATION_SEAM",
+      "artifacts": [
+        {
+          "role": "readme",
+          "uri": "repo://changes/st-0403/README.md",
+          "sha256": "e7c0e10e44abf6f5db2fbbd94c6a14ecbc9d6bc0ff77fcb312d652204165b6e9"
+        }
+      ],
+      "connection_status": "NOT_EXECUTED",
+      "authority_status": "ABSENT"
+    },
+    {
+      "story_id": "ST-0405",
+      "implementation_scope": "PROCESS_LOCAL_RECORDED_AUDIT_SEAM",
+      "artifacts": [
+        {
+          "role": "readme",
+          "uri": "repo://changes/st-0405/README.md",
+          "sha256": "8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657"
+        }
+      ],
+      "connection_status": "NOT_EXECUTED",
+      "authority_status": "ABSENT"
+    },
+    {
+      "story_id": "ST-0605",
+      "implementation_scope": "NONEXECUTABLE_CLAIM_EVIDENCE_REFERENCE_PLAN",
+      "artifacts": [
+        {
+          "role": "readme",
+          "uri": "repo://changes/st-0605/README.md",
+          "sha256": "f5a59ab0542a95987720c5d9ec43ef4355d92cea2b7bafcf8851e510fb98cf4b"
+        },
+        {
+          "role": "contract",
+          "uri": "repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml",
+          "sha256": "a8e1a07f2520b3b874d89fbfc44cd872fa84d6b193d2b433a4723e5e3523dd35"
+        }
+      ],
+      "connection_status": "NOT_EXECUTED",
+      "authority_status": "ABSENT"
+    },
+    {
+      "story_id": "ST-0805",
+      "implementation_scope": "PURE_LOCAL_EDITORIAL_POLICY_EVALUATOR",
+      "artifacts": [
+        {
+          "role": "readme",
+          "uri": "repo://changes/st-0805/README.md",
+          "sha256": "c0c05757da04bd59c56068d0e77359adbdf2032ade2528fac317705e8fb88b7b"
+        },
+        {
+          "role": "policy_engine",
+          "uri": "repo://python/raos/domain/editorial/policy_engine.py",
+          "sha256": "a9982c7f27b6cc4a1b50933d7a9e51ee24b07bcc0289c71ac20cf1d147c348ff"
+        }
+      ],
+      "connection_status": "NOT_EXECUTED",
+      "authority_status": "ABSENT"
+    },
+    {
+      "story_id": "ST-0901",
+      "implementation_scope": "PURE_AND_RECORDED_LOCAL_NEGATIVE_REVIEW_DECISIONS",
+      "artifacts": [
+        {
+          "role": "pr1_readme",
+          "uri": "repo://changes/st-0901/README.md",
+          "sha256": "413aaa64fe2909fb3bf731b5ab56c9a977e3850707475ee8fe111771a2b06f94"
+        },
+        {
+          "role": "pr3_readme",
+          "uri": "repo://changes/st-0901/README_PR3.md",
+          "sha256": "38bd82a5d7586ee78f7852d27aabfd18360796f21c45f05487f404da2976ce6d"
+        },
+        {
+          "role": "review_workflow",
+          "uri": "repo://python/raos/domain/publishing/review_workflow.py",
+          "sha256": "ca973cf1ba7b60c1323a7f8a47549ada8722ed7bcb9a657d2b6b0cc00c2f39d7"
+        },
+        {
+          "role": "review_decision_operations",
+          "uri": "repo://python/raos/domain/publishing/review_decision_operations.py",
+          "sha256": "773dd855ae9bcfa3d812782614ccf2d42c2cceb3774b5d4f64911f1e2eec5d7c"
+        }
+      ],
+      "connection_status": "NOT_EXECUTED",
+      "effective_decision_status": "NOT_DEFINED",
+      "authority_status": "ABSENT"
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "ST0902-GATE-001",
+      "topic": "identity_and_active_human_mapping",
+      "status": "UNRESOLVED",
+      "safe_default": "NO_ACTOR_OR_AUTHORITY",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-002",
+      "topic": "final_approve_role_and_resource_scope",
+      "status": "UNRESOLVED",
+      "safe_default": "DENY",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-003",
+      "topic": "mfa_claim_mapping",
+      "status": "UNRESOLVED",
+      "safe_default": "DENY",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-004",
+      "topic": "step_up_conflict_and_freshness",
+      "status": "CONFLICTING_SOURCES",
+      "safe_default": "DENY",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-005",
+      "topic": "separation_of_duties_self_comparator_and_solo_exception",
+      "status": "UNRESOLVED",
+      "safe_default": "DENY_WITH_NO_SOLO_EXCEPTION",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-006",
+      "topic": "effective_st0901_review_decision",
+      "status": "NOT_DEFINED",
+      "safe_default": "NO_EFFECTIVE_DECISION",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-007",
+      "topic": "checklist_and_preapproval_gate_hash_manifest",
+      "status": "NOT_DEFINED",
+      "safe_default": "NO_GATE_MANIFEST",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-008",
+      "topic": "finding_and_waiver_truth",
+      "status": "UNRESOLVED",
+      "safe_default": "NO_CLEARANCE_OR_ZERO_FINDING_CLAIM",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-009",
+      "topic": "quality_source_policy_evidence_and_freshness",
+      "status": "NOT_AUTHORITATIVE",
+      "safe_default": "NO_EVIDENCE_ELIGIBILITY",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-010",
+      "topic": "idempotency_audit_unit_of_work_transaction_and_outbox",
+      "status": "NOT_IMPLEMENTED",
+      "safe_default": "NO_COMMAND_OR_SIDE_EFFECT",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    },
+    {
+      "id": "ST0902-GATE-011",
+      "topic": "approval_revocation_supersession_effectiveness_and_publication",
+      "status": "NOT_DEFINED",
+      "safe_default": "NO_APPROVAL_REJECTION_REVOCATION_OR_PUBLICATION_EFFECT",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    }
+  ],
+  "contract_projection": {
+    "story": {
+      "id": "ST-0902",
+      "objective": "全Gate/hashを束ねる承認",
+      "depends_on": [
+        "ST-0901",
+        "ST-0605",
+        "ST-0805"
+      ],
+      "requirement_ids": [
+        "FR-009"
+      ],
+      "deliverables": [
+        "approval command"
+      ],
+      "acceptance_criteria": [
+        "self approval separation",
+        "blocking finding rejects"
+      ],
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    },
+    "trace_variants": {
+      "story_test_suites": [
+        "TST-012",
+        "TST-021"
+      ],
+      "master_fr009_test_suites": [
+        "TST-011",
+        "TST-012",
+        "TST-020",
+        "TST-021"
+      ],
+      "acceptance_fr009_test_suites": [
+        "TST-012",
+        "TST-021",
+        "TST-022"
+      ],
+      "traceability_status": "DIVERGENT_RECORDED_NOT_RESOLVED"
+    },
+    "pubadm_005": {
+      "method": "POST",
+      "path": "/api/v1/admin/approvals",
+      "operation_id": "PUBADM-005",
+      "kind": "command",
+      "authentication": "admin",
+      "scopes": [
+        "publishing:approval:decide"
+      ],
+      "request_schema": "ApprovalRequest",
+      "response_schema": "Approval",
+      "success": 201,
+      "idempotency_required": true,
+      "concurrency_required": false,
+      "async_job_type": null,
+      "audit_action": "approval_record",
+      "requirements": [
+        "FR-009",
+        "FR-020"
+      ],
+      "implementation_slice": "SLICE-014"
+    },
+    "pubadm_006": {
+      "method": "POST",
+      "path": "/api/v1/admin/approvals/{id}/revoke",
+      "operation_id": "PUBADM-006",
+      "kind": "command",
+      "authentication": "admin",
+      "scopes": [
+        "publishing:approval:revoke"
+      ],
+      "request_schema": "RevokeApprovalRequest",
+      "response_schema": "Approval",
+      "success": 201,
+      "idempotency_required": true,
+      "concurrency_required": false,
+      "async_job_type": null,
+      "audit_action": "approval_revoke",
+      "requirements": [
+        "FR-009",
+        "FR-020"
+      ],
+      "implementation_slice": "SLICE-014"
+    },
+    "approval_api": {
+      "request": {
+        "additional_properties": false,
+        "property_names": [
+          "article_version_id",
+          "approval_type",
+          "decision",
+          "quality_check_run_id",
+          "policy_bundle_id",
+          "decision_reason",
+          "valid_until"
+        ],
+        "required": [
+          "article_version_id",
+          "approval_type",
+          "decision",
+          "quality_check_run_id",
+          "policy_bundle_id",
+          "decision_reason"
+        ],
+        "approval_types": [
+          "EDITORIAL",
+          "COMPLIANCE",
+          "FINAL"
+        ],
+        "decisions": [
+          "APPROVED",
+          "REJECTED"
+        ],
+        "decision_reason_min_length": 1,
+        "decision_reason_max_length": 8000,
+        "valid_until_nullable": true
+      },
+      "revoke_request": {
+        "additional_properties": false,
+        "property_names": [
+          "reason"
+        ],
+        "required": [
+          "reason"
+        ],
+        "reason_min_length": 10,
+        "reason_max_length": 4000
+      },
+      "response": {
+        "additional_properties": false,
+        "required": [
+          "id",
+          "display_id",
+          "article_version_id",
+          "created_at"
+        ],
+        "approved_by_principal_id_exposed": false,
+        "revoked_by_principal_id_exposed": false
+      }
+    },
+    "approval_database": {
+      "write_pattern": "LIFECYCLE",
+      "classification": "RESTRICTED",
+      "approval_types": [
+        "EDITORIAL",
+        "FACT",
+        "COMPLIANCE",
+        "FINAL"
+      ],
+      "decisions": [
+        "APPROVED",
+        "REJECTED",
+        "REVOKED"
+      ],
+      "constraints": [
+        "approval_type IN ('EDITORIAL', 'FACT', 'COMPLIANCE', 'FINAL')",
+        "decision IN ('APPROVED', 'REJECTED', 'REVOKED')",
+        "valid_until IS NULL OR valid_until > approved_at",
+        "(revoked_at IS NULL) = (revoked_by_principal_id IS NULL)",
+        "decision <> 'REVOKED' OR (supersedes_approval_id IS NOT NULL AND revoked_at IS NOT NULL AND revoked_by_principal_id IS NOT NULL)"
+      ],
+      "final_approved_guard": {
+        "applies_to": "FINAL_APPROVED_ONLY",
+        "other_decision_outcome": "RETURN_NEW",
+        "requires_active_user": true,
+        "requires_passed_quality_run": true,
+        "requires_zero_cached_blocking_findings": true,
+        "requires_approved_source_packet": true,
+        "requires_passed_quality_score": true,
+        "blocking_query_status": "OPEN_ONLY",
+        "role_scope_mfa_step_up_sod_self_check": false,
+        "effective_review_check": false,
+        "full_gate_hash_manifest_check": false,
+        "authoritative_claim_coverage_check": false,
+        "waiver_truth_check": false
+      }
+    },
+    "approval_events": {
+      "granted": {
+        "event_type": "jp.raos.publishing.approval_granted.v1",
+        "producer": "publishing",
+        "property_names": [
+          "approval_id",
+          "article_version_id",
+          "approval_type",
+          "quality_check_run_id",
+          "policy_bundle_id",
+          "valid_until"
+        ],
+        "required": [
+          "approval_id",
+          "article_version_id",
+          "approval_type",
+          "quality_check_run_id",
+          "policy_bundle_id"
+        ]
+      },
+      "revoked": {
+        "event_type": "jp.raos.publishing.approval_revoked.v1",
+        "producer": "publishing",
+        "property_names": [
+          "approval_id",
+          "article_version_id",
+          "revoked_at",
+          "reason"
+        ],
+        "required": [
+          "approval_id",
+          "article_version_id",
+          "revoked_at",
+          "reason"
+        ]
+      },
+      "rejected_event_contract": "ABSENT",
+      "actor_and_gate_hash_binding": "ABSENT"
+    },
+    "security_projection": {
+      "final_approve_role": {
+        "allowed_roles": [
+          "MANAGING_EDITOR"
+        ],
+        "mfa_required": true,
+        "step_up_required": false,
+        "separation_of_duties": true,
+        "implementation_status": "NOT_STARTED",
+        "runtime_verification": "NOT_EXECUTED"
+      },
+      "security_and_api_require_step_up": true,
+      "step_up_contract_status": "CONFLICTING_SOURCES"
+    }
+  },
+  "record_boundary": {
+    "approval": {
+      "command_status": "NOT_EXECUTED",
+      "evaluation_status": "NOT_EVALUATED",
+      "authority": "ABSENT",
+      "commands": [],
+      "requests": [],
+      "results": [],
+      "records": []
+    },
+    "rejection": {
+      "command_status": "NOT_EXECUTED",
+      "evaluation_status": "NOT_EVALUATED",
+      "authority": "ABSENT",
+      "requests": [],
+      "results": [],
+      "records": [],
+      "empty_records_interpretation": "NO_COMMAND_OR_EVIDENCE_NOT_ZERO_REJECTED"
+    },
+    "revocation": {
+      "command_status": "NOT_EXECUTED",
+      "evaluation_status": "NOT_EVALUATED",
+      "authority": "ABSENT",
+      "requests": [],
+      "results": [],
+      "records": []
+    },
+    "events": {
+      "execution_status": "NOT_EXECUTED",
+      "approval_granted": [],
+      "approval_revoked": []
+    },
+    "audits": {
+      "execution_status": "NOT_EXECUTED",
+      "records": []
+    },
+    "idempotency": {
+      "execution_status": "NOT_EXECUTED",
+      "entries": []
+    }
+  },
+  "execution_boundary": {
+    "runtime_reader": "NOT_IMPLEMENTED",
+    "network": "NOT_EXECUTED",
+    "filesystem_runtime": "NOT_EXECUTED",
+    "clock": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "api": "NOT_EXECUTED",
+    "job": "NOT_EXECUTED",
+    "event": "NOT_EXECUTED",
+    "audit": "NOT_EXECUTED",
+    "idempotency": "NOT_EXECUTED",
+    "approval": "NOT_EXECUTED",
+    "rejection": "NOT_EXECUTED",
+    "revocation": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "external_actions": [],
+    "action_counts": {
+      "command": 0,
+      "request": 0,
+      "result": 0,
+      "approval_record": 0,
+      "rejection_record": null,
+      "revocation_record": 0,
+      "event": 0,
+      "audit": 0,
+      "idempotency_entry": 0,
+      "publication": 0
+    },
+    "rejection_count_interpretation": "NOT_EVALUATED_NO_COMMAND_OR_EVIDENCE"
+  },
+  "verification_boundary": {
+    "local_reference_checks": "NOT_EXECUTED",
+    "formal_tst_011": "NOT_EXECUTED",
+    "formal_tst_012": "NOT_EXECUTED",
+    "formal_tst_020": "NOT_EXECUTED",
+    "formal_tst_021": "NOT_EXECUTED",
+    "formal_tst_022": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "story_acceptance": false,
+    "readiness": "NOT_READY",
+    "production_eligible": false,
+    "effective_canonical_status": "UNCHANGED"
+  },
+  "implementation_boundary": {
+    "new_files": [
+      "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml",
+      "scripts/build_st0902_final_approval_reference_plan.py",
+      "changes/st-0902/generated/final-approval-reference-plan.v1.json",
+      "changes/st-0902/manifest.yaml",
+      "changes/st-0902/README.md",
+      "tests/st0902/conftest.py",
+      "tests/st0902/test_contract.py",
+      "tests/st0902/test_generation.py",
+      "tests/st0902/test_negative_cases.py"
+    ],
+    "existing_files_modified": false,
+    "runtime_modules": [],
+    "positive_executable_slice_requires": "SEPARATE_OWNER_APPROVED_DESIGN_HANDOFF_V1",
+    "negative_executable_slice_requires": "SEPARATE_OWNER_APPROVED_DESIGN_HANDOFF_V1"
+  }
+}
