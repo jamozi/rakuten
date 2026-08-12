@@ -107,6 +107,37 @@ export type {
 } from './ai-governance-workspace.ts';
 
 export {
+  ARTICLE_WORKSPACE_COMPONENT_IDS,
+  ARTICLE_WORKSPACE_COMPONENTS,
+  ARTICLE_WORKSPACE_ERROR_CODES,
+  ARTICLE_WORKSPACE_EXCLUDED_SCREEN_IDS,
+  ARTICLE_WORKSPACE_PROJECTION_IDS,
+  ARTICLE_WORKSPACE_SCREEN_IDS,
+  ARTICLE_WORKSPACE_SCREENS,
+  ARTICLE_WORKSPACE_SEMANTIC_IDS,
+  ARTICLE_WORKSPACE_SOURCE_REFS,
+  ArticleWorkspaceError,
+  createArticleWorkspaceCandidate,
+  createArticleWorkspaceModel,
+  validateArticleWorkspaceCandidate,
+} from './article-workspace.ts';
+export type {
+  ArticleWorkspaceCandidate,
+  ArticleWorkspaceComponentId,
+  ArticleWorkspaceComponentMetadata,
+  ArticleWorkspaceErrorCode,
+  ArticleWorkspaceInput,
+  ArticleWorkspaceLoadSlot,
+  ArticleWorkspaceModel,
+  ArticleWorkspaceProjection,
+  ArticleWorkspaceProjectionId,
+  ArticleWorkspaceRole,
+  ArticleWorkspaceScreenId,
+  ArticleWorkspaceScreenMetadata,
+  ArticleWorkspaceSourceReference,
+} from './article-workspace.ts';
+
+export {
   PUBLIC_SHELL_COMPONENT_IDS,
   PUBLIC_SHELL_COMPONENTS,
   PUBLIC_SHELL_CONTENT,
