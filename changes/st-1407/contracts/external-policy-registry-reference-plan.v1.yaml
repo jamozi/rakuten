@@ -1,0 +1,214 @@
+document:
+  id: RAOS-ST1407-EXTERNAL-POLICY-REGISTRY-REFERENCE-PLAN-001
+  version: 1.0.0
+  story_id: ST-1407
+  classification: SOURCE_DERIVED_NON_ATTESTING_EXTERNAL_POLICY_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  interface_only: true
+  decision: NOT_READY
+  story_acceptance: false
+  production_eligible: false
+  approval: null
+pro_assistance:
+  status: PRO_UNAVAILABLE
+  authority: NONE
+  proposal_captured: false
+  content_used: false
+authority:
+  precedence: CANONICAL_INTEGRATION_THEN_STORY_THEN_INSTALLED_CONTRACTS
+  sources:
+  - role: integration
+    uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - role: open_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - role: master_traceability
+    uri: repo://docs/canonical/00_master/RAOS_master_traceability_v1.0.csv
+    sha256: 7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4
+  - role: acceptance_traceability
+    uri: repo://docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv
+    sha256: 253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341
+  - role: test_catalog
+    uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - role: story
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - role: system_architecture
+    uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - role: data_model
+    uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - role: api_event_job_design
+    uri: repo://docs/upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md
+    sha256: 1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf
+  - role: contract_repository
+    uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
+    sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
+  - role: external_rule_snapshot
+    uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_external_rule_snapshot_v0.1.yaml
+    sha256: 14a4131215f8c2f70a2f5b73aef0ccb1162f1a8ac6d410079c6a3b6b68955042
+  - role: official_references
+    uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_official_references_v0.1.yaml
+    sha256: d7a3986affce9d2fc1110d6b3fffb196c668dae7db00288d466b9e62ba57e030
+  - role: editorial_policy_catalog
+    uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_editorial_policy_catalog_v0.1.yaml
+    sha256: d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a
+  - role: job_catalog
+    uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+    sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+  - role: admin_api
+    uri: repo://contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml
+    sha256: 6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70
+  - role: asyncapi
+    uri: repo://contracts/raos-v0.4/contracts/asyncapi.v0.4.yaml
+    sha256: 3373668d6028be7d90bb35c4ab893c4572201fd71c213d12a165ac1f190ee6dd
+  - role: alert_catalog
+    uri: repo://docs/canonical/06_ops/RAOS_12_alert_catalog_v1.0.yaml
+    sha256: f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0
+  - role: runbook_catalog
+    uri: repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml
+    sha256: 2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100
+  - role: operations_design
+    uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - role: security_controls
+    uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - role: threat_register
+    uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+dependencies:
+- story_id: ST-0405
+  artifacts:
+  - role: readme
+    uri: repo://changes/st-0405/README.md
+    sha256: 8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657
+  - role: audit_port
+    uri: repo://python/raos/ports/audit.py
+    sha256: d358f8349ebeb70c3b8f046b82c109a80f162fe88432d1e0d4e11e4ff21592ec
+  implementation_scope: PROCESS_LOCAL_RECORDED_AUDIT_SEAM
+  connection_status: NOT_EXECUTED
+  use_status: NOT_AUTHORIZED_FOR_ST1407_WRITES
+- story_id: ST-0805
+  artifacts:
+  - role: readme
+    uri: repo://changes/st-0805/README.md
+    sha256: c0c05757da04bd59c56068d0e77359adbdf2032ade2528fac317705e8fb88b7b
+  - role: policy_engine
+    uri: repo://python/raos/domain/editorial/policy_engine.py
+    sha256: a9982c7f27b6cc4a1b50933d7a9e51ee24b07bcc0289c71ac20cf1d147c348ff
+  implementation_scope: PURE_LOCAL_EDITORIAL_POLICY_EVALUATOR
+  connection_status: NOT_EXECUTED
+  bundle_identity_status: NOT_AVAILABLE
+unresolved_gates:
+- id: OPEN-018
+  topic: primary_source_domain_allowlist
+  status: UNRESOLVED
+  safe_default: NO_AUTOMATED_SOURCE_ACQUISITION
+  human_gated: true
+- id: OD-008
+  topic: legal_review_boundary
+  status: HUMAN_DECISION_REQUIRED
+  safe_default: BLOCK_PUBLICATION_NO_AI_LEGAL_SUBSTITUTION
+  human_gated: true
+- id: OD-011
+  topic: notification_channels
+  status: HUMAN_DECISION_REQUIRED
+  safe_default: LOCAL_LOG_ONLY_PRODUCTION_DISABLED
+  human_gated: true
+projection_rules:
+  preserve_catalog_order: true
+  exact_external_rule_count: 13
+  exact_official_reference_count: 12
+  exact_editorial_policy_count: 40
+  project_external_rule_to_content_policy_ids: true
+  infer_official_reference_links: false
+  infer_source_snapshot_links: false
+  infer_rule_version_links: false
+  identify_external_snapshot_as_policy_bundle: false
+  interpret_review_frequency_as_deadline: false
+  initial_actions_are_inert_text: true
+  runbook_steps_are_inert_text: true
+  empty_arrays_mean_not_evaluated_or_not_executed: true
+candidate_seam_defaults:
+  source_snapshot:
+    entity: evidence.source_snapshot
+    relation_to_external_policy: UNSPECIFIED
+    instances: []
+    content_byte_artifacts: []
+  policy_bundle:
+    entity: policy.policy_bundle
+    identity_relation: DISTINCT_NOT_IDENTICAL
+    bundle_links: []
+    rule_version_links: []
+  publication_snapshot:
+    entity: publishing.publication_snapshot
+    relation_status: UNLINKED_CANDIDATE_SEAM
+    version_links: []
+    affected_articles: []
+  alert:
+    entity: ops.alert
+    catalog_id: ALT-019
+    catalog_severity: SEV4
+    ops_severity_mapping: NOT_DEFINED
+    state: NOT_EVALUATED
+    records: []
+  audit:
+    entity: ops.audit_event
+    action: NOT_DEFINED
+    state: NOT_EVALUATED
+    events: []
+evaluation_defaults:
+  snapshot_instances: []
+  official_content_bytes: []
+  change_diffs: []
+  join_records: []
+  version_links: []
+  due_evaluations: []
+  overdue: NOT_EVALUATED
+  impact_query: NOT_EVALUATED
+  affected_articles: []
+  affected_articles_empty_interpretation: QUERY_NOT_EXECUTED_NOT_ZERO_AFFECTED
+  alert_records: []
+  audit_events: []
+execution_defaults:
+  runtime_reader: NOT_IMPLEMENTED
+  network: NOT_EXECUTED
+  filesystem_runtime: NOT_EXECUTED
+  database: NOT_EXECUTED
+  api: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  clock: NOT_EXECUTED
+  alert: NOT_EXECUTED
+  audit: NOT_EXECUTED
+  activation: NOT_EXECUTED
+  hold: NOT_EXECUTED
+  kill: NOT_EXECUTED
+  re_review: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  external_actions: []
+verification_defaults:
+  story_test_suites:
+  - TST-005
+  - TST-020
+  master_trace_test_suites:
+  - TST-005
+  - TST-019
+  - TST-020
+  acceptance_trace_test_suites:
+  - TST-008
+  - TST-020
+  traceability_status: DIVERGENT_RECORDED_NOT_RESOLVED
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_019: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
