@@ -1,0 +1,155 @@
+document:
+  id: RAOS-ST0903-PUBLICATION-SNAPSHOT-REFERENCE-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0903
+  source_contract: repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml
+  generated_by: repo://scripts/build_st0903_publication_snapshot_reference_plan.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0903_publication_snapshot_reference_plan.py
+provenance:
+  contract_sha256: cf6f9a55f769a2861cda655cdc7e963d6048a7ff721ded55a40aaa0978702692
+  authority_inputs:
+  - role: integration
+    uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - role: canonical_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - role: open_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - role: story
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - role: requirements
+    uri: repo://docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml
+    sha256: bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827
+  - role: master_traceability
+    uri: repo://docs/canonical/00_master/RAOS_master_traceability_v1.0.csv
+    sha256: 7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4
+  - role: acceptance_traceability
+    uri: repo://docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv
+    sha256: 253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341
+  - role: test_catalog
+    uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - role: system_architecture
+    uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - role: data_model
+    uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - role: api_event_job_design
+    uri: repo://docs/upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md
+    sha256: 1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf
+  - role: content_design
+    uri: repo://docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md
+    sha256: a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682
+  - role: security_design
+    uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - role: security_controls
+    uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - role: role_matrix
+    uri: repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  - role: threat_register
+    uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - role: content_manifest_schema
+    uri: repo://contracts/raos-v0.4/contracts/content/schemas/publication-content-manifest.schema.json
+    sha256: 97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881
+  - role: publication_snapshot_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/common/publication-snapshot.schema.json
+    sha256: 2b1aa3d1035cd997d3262786fdfd80aa5c25df62e2c758ac481179c5d6803c38
+  - role: artifact_ref_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/common/artifact-ref.schema.json
+    sha256: 9d47faf85d4986e6340a0d71dbf5e340b3475270c20a7d03056cd51d679ef930
+  - role: job_catalog
+    uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+    sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+  - role: build_snapshot_job_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-build-snapshot-v1.schema.json
+    sha256: e2b8680b25276a3b23002a567d65f333d7df4d13fdecb8d4e2b2f1d8919bbacd
+  - role: snapshot_built_event_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-snapshot-built-v1.schema.json
+    sha256: 6651393069ae07c1b45a9b6e2cece31157f7a821a53f68c88538fb8a4726727f
+  - role: public_openapi
+    uri: repo://contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml
+    sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797
+  dependency_inputs:
+  - story_id: ST-0902
+    uri: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
+    sha256: 6f449d9a1bdc58baada052dbc89e71aa42d6a133ecc8ba3d64d57cc6f536c08f
+  - story_id: ST-0807
+    uri: repo://changes/st-0807/README.md
+    sha256: 333f953e4f15b05c5b70705259643b3531e0259faa26c7612e278962130917a5
+  - story_id: ST-0808
+    uri: repo://changes/st-0808/README.md
+    sha256: 385f7f849bd4b16296ec47c512bf109b58f49861b0533df47a1825e65475651b
+  - story_id: ST-0202
+    uri: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
+    sha256: 389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c
+  - story_id: ST-0305
+    uri: repo://changes/st-0305/README.md
+    sha256: b45c333996c723ab1978c8b474420de86c563277a3c4a0d2e2a7d76cdbaed4bb
+  - story_id: ST-0306
+    uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
+    sha256: 20b5c37d6979b67f4b4a5b014f7b18a9f729c889b47ca6cc6916f58b2ef08fc5
+  - story_id: ST-0307
+    uri: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
+    sha256: 06c9f26f61a420145d03fd61a1f8c598f9271641478e102d41a97d38172abfcb
+  - story_id: ST-0601
+    uri: repo://changes/st-0601/README.md
+    sha256: 93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766
+  implementation_helper:
+    uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+  pro_assistance: PRO_UNAVAILABLE_NONE_NO_PROPOSAL_NO_CONTENT
+  digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml
+  bytes: 17189
+  sha256: cf6f9a55f769a2861cda655cdc7e963d6048a7ff721ded55a40aaa0978702692
+- uri: repo://changes/st-0903/README.md
+  bytes: 6430
+  sha256: e43d6e187acf7cae41fa3b57c429eef6bd846678ae22d42e2a128a3139e503d3
+- uri: repo://scripts/build_st0903_publication_snapshot_reference_plan.py
+  bytes: 44545
+  sha256: 8636af847dd5a02e619268100c7a4b0a138c21fef375421f793a84b1017199d6
+- uri: repo://tests/st0903/conftest.py
+  bytes: 958
+  sha256: 91fa3b32765bfe157516ddbb80eb9076732f5cce47a42e12875c26d8524e1c76
+- uri: repo://tests/st0903/test_contract.py
+  bytes: 6879
+  sha256: c3b30fe7f9c50738063cdb755aba4a785792b18e9ae1cfcb5a98754c991765f2
+- uri: repo://tests/st0903/test_generation.py
+  bytes: 5796
+  sha256: c8821b3e5258dfcbb1235ddfeaabe5843045cab8e30842b4c4d2b384467b0eb4
+- uri: repo://tests/st0903/test_negative_cases.py
+  bytes: 10233
+  sha256: 916aaf594f5e5a985a97de29fd18e1ae6e9e326aca22e724b87ae358fe146335
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0903/generated/publication-snapshot-reference-plan.v1.json
+  bytes: 23194
+  sha256: aa58b2b43d01a88286aff1bbb2d59710548d96518cb0bd2527c89edbb3be1b50
+  digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
+boundary:
+  classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLICATION_SNAPSHOT_REFERENCE_PLAN
+  executable: false
+  runtime_reader: NOT_IMPLEMENTED
+  pure_snapshot_builder: NOT_IMPLEMENTED
+  runtime_snapshot_builder: NOT_IMPLEMENTED
+  records: NOT_EVALUATED
+  empty_snapshots: NO_BUILD_OR_EVIDENCE_NOT_ZERO_VALID_SNAPSHOTS
+  formal_tst_014: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+  readiness: NOT_READY
+  production_eligible: false
