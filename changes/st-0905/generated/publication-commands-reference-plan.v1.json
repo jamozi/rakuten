@@ -1,0 +1,834 @@
+{
+  "document": {
+    "id": "RAOS-ST0905-PUBLICATION-COMMANDS-REFERENCE-PLAN-001",
+    "version": "1.0.0",
+    "story_id": "ST-0905",
+    "classification": "SOURCE_DERIVED_NONEXECUTABLE_PUBLICATION_COMMAND_EVENT_REFERENCE_PLAN",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "executable": false,
+    "interface_only": true,
+    "decision": "NOT_READY",
+    "readiness": "NOT_READY",
+    "story_acceptance": false,
+    "command_handlers_authorized": false,
+    "job_producers_authorized": false,
+    "event_emission_authorized": false,
+    "audit_mutation_authorized": false,
+    "database_mutation_authorized": false,
+    "external_actions_authorized": false,
+    "approval_authority": false,
+    "publication_authority": false,
+    "publication_permitted": false,
+    "production_eligible": false
+  },
+  "pro_assistance": {
+    "pro_required_for_reference_slice": false
+  },
+  "authority": {
+    "precedence": "CANONICAL_INTEGRATION_THEN_STORY_THEN_INSTALLED_CONTRACTS",
+    "sources": [
+      {
+        "role": "integration",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+      },
+      {
+        "role": "canonical_decisions",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+        "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+      },
+      {
+        "role": "open_decisions",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+      },
+      {
+        "role": "story",
+        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+      },
+      {
+        "role": "requirements",
+        "uri": "repo://docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml",
+        "sha256": "bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827"
+      },
+      {
+        "role": "master_traceability",
+        "uri": "repo://docs/canonical/00_master/RAOS_master_traceability_v1.0.csv",
+        "sha256": "7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4"
+      },
+      {
+        "role": "acceptance_traceability",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv",
+        "sha256": "253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341"
+      },
+      {
+        "role": "test_catalog",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+      },
+      {
+        "role": "system_architecture",
+        "uri": "repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md",
+        "sha256": "00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3"
+      },
+      {
+        "role": "data_model",
+        "uri": "repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md",
+        "sha256": "dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c"
+      },
+      {
+        "role": "api_event_job_design",
+        "uri": "repo://docs/upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md",
+        "sha256": "1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf"
+      },
+      {
+        "role": "security_design",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+        "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+      },
+      {
+        "role": "security_controls",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+        "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+      },
+      {
+        "role": "role_matrix",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+        "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+      },
+      {
+        "role": "threat_register",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
+        "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+      },
+      {
+        "role": "admin_openapi",
+        "uri": "repo://contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml",
+        "sha256": "6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70"
+      },
+      {
+        "role": "state_transition_catalog",
+        "uri": "repo://contracts/raos-v0.4/contracts/catalogs/state-transition-catalog.v0.4.yaml",
+        "sha256": "203eb10d9b6fc6ba4fb0e9f0491f713c313a6a5627dcaf60b7ce53665ecec8a5"
+      },
+      {
+        "role": "job_catalog",
+        "uri": "repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml",
+        "sha256": "70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1"
+      },
+      {
+        "role": "publish_job_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-publish-snapshot-v1.schema.json",
+        "sha256": "81f885e435bcaf4af75ab3149a2007668b7585155cfbe730242e78efefc5a6e7"
+      },
+      {
+        "role": "unpublish_job_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-unpublish-v1.schema.json",
+        "sha256": "037516debc7d44f860de113f68973c85141ded552d9b45de88fdc6a6ac84a862"
+      },
+      {
+        "role": "rollback_job_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-rollback-v1.schema.json",
+        "sha256": "8dd422009feea40da8821e57403ac493dd86f24ccf333beb29b637b60d7276d9"
+      },
+      {
+        "role": "published_event_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-published-v1.schema.json",
+        "sha256": "70fbe58d58399d44bd386ed39673682f7fa3eb3acfdbc8c5e2f46fcf7be12f19"
+      },
+      {
+        "role": "unpublished_event_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-unpublished-v1.schema.json",
+        "sha256": "91fc5b6322bd98301440b493c639955541aba9a45b24420888ca855e90eac9b6"
+      },
+      {
+        "role": "rolled_back_event_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-rolled-back-v1.schema.json",
+        "sha256": "a405b5826a80f2e95029d7a5b824caf9e5795e8050edfc97e2e76906742cf660"
+      }
+    ]
+  },
+  "provenance": {
+    "source_contract": "repo://changes/st-0905/contracts/publication-commands-reference-plan.v1.yaml",
+    "source_contract_sha256": "5153ca3d18f9498f0be517ec375478824177129289d71a0c8e346cee419a699a",
+    "generated_by": "repo://scripts/build_st0905_publication_commands_reference_plan.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st0905_publication_commands_reference_plan.py",
+    "implementation_helper": {
+      "uri": "repo://scripts/build_st1505_staging_deployment.py",
+      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    },
+    "digest_classification": "LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT"
+  },
+  "dependencies": [
+    {
+      "story_id": "ST-0903",
+      "artifact": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
+      "sha256": "cf6f9a55f769a2861cda655cdc7e963d6048a7ff721ded55a40aaa0978702692",
+      "connection_status": "NOT_EXECUTED",
+      "authority_status": "NONEXECUTABLE_REFERENCE_PLAN_NO_AUTHORITATIVE_SNAPSHOT"
+    },
+    {
+      "story_id": "ST-0904",
+      "artifact": "repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml",
+      "sha256": "a61b1d16c35c45b2c12b886222fc79dc36d46ca496223303c81b9f796f7ea672",
+      "connection_status": "NOT_EXECUTED",
+      "authority_status": "NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTOR_OR_PUBLIC_ROW"
+    },
+    {
+      "story_id": "ST-0402",
+      "artifact": "repo://changes/st-0402/README.md",
+      "sha256": "6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b",
+      "connection_status": "NOT_EXECUTED",
+      "authority_status": "DEVELOPMENT_SYNTHETIC_STEP_UP_ONLY_NO_PUBLIC_AUTHORITY"
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "ST0905-GATE-001",
+      "topic": "authoritative_effective_non_revoked_publication_snapshot",
+      "status": "ABSENT",
+      "safe_default": "NO_COMMAND"
+    },
+    {
+      "id": "ST0905-GATE-002",
+      "topic": "executable_public_projector_current_row_and_route",
+      "status": "ABSENT",
+      "safe_default": "NO_PUBLICATION"
+    },
+    {
+      "id": "ST0905-GATE-003",
+      "topic": "production_identity_mfa_step_up_and_action_mapping",
+      "status": "NOT_IMPLEMENTED",
+      "safe_default": "DENY_COMMAND"
+    },
+    {
+      "id": "ST0905-GATE-004",
+      "topic": "unpublish_role_mfa_step_up_and_separation_of_duties",
+      "status": "NOT_DEFINED",
+      "safe_default": "DENY_UNPUBLISH"
+    },
+    {
+      "id": "ST0905-GATE-005",
+      "topic": "http_request_job_payload_and_idempotency_mapping",
+      "status": "UNRESOLVED",
+      "safe_default": "KEEP_SURFACES_DISTINCT_NO_COMMAND"
+    },
+    {
+      "id": "ST0905-GATE-006",
+      "topic": "same_key_cross_key_job_outbox_and_event_deduplication",
+      "status": "NOT_DEFINED",
+      "safe_default": "NO_JOB_OR_EVENT"
+    },
+    {
+      "id": "ST0905-GATE-007",
+      "topic": "etag_current_snapshot_route_lock_and_state_resolution",
+      "status": "NOT_DEFINED",
+      "safe_default": "NO_DATABASE_MUTATION"
+    },
+    {
+      "id": "ST0905-GATE-008",
+      "topic": "idempotency_job_audit_outbox_event_publication_atomicity_and_crash_recovery",
+      "status": "NOT_IMPLEMENTED",
+      "safe_default": "NO_SIDE_EFFECT"
+    },
+    {
+      "id": "ST0905-GATE-009",
+      "topic": "publication_kill_switch_runtime_and_fail_closed_guard",
+      "status": "NOT_IMPLEMENTED",
+      "safe_default": "NO_PUBLISH_OR_ROLLBACK"
+    },
+    {
+      "id": "ST0905-GATE-010",
+      "topic": "approval_rights_policy_legal_freshness_and_rollback_target_eligibility",
+      "status": "NOT_AUTHORITATIVE",
+      "safe_default": "NO_PUBLICATION_OR_ROLLBACK"
+    },
+    {
+      "id": "ST0905-GATE-011",
+      "topic": "scheduled_publish_and_scheduler_authority_with_auto_publish_disabled",
+      "status": "PROHIBITED_FOR_MVP",
+      "safe_default": "NO_SCHEDULED_PUBLISH"
+    },
+    {
+      "id": "ST0905-GATE-012",
+      "topic": "executable_command_job_event_and_publication_authority",
+      "status": "ABSENT",
+      "safe_default": "REFERENCE_PLAN_ONLY",
+      "resolution_required": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+    }
+  ],
+  "contract_projection": {
+    "story": {
+      "id": "ST-0905",
+      "objective": "冪等CommandとEventを実装",
+      "depends_on": [
+        "ST-0903",
+        "ST-0904",
+        "ST-0402"
+      ],
+      "requirement_ids": [
+        "FR-010"
+      ],
+      "deliverables": [
+        "commands",
+        "events"
+      ],
+      "acceptance_criteria": [
+        "double publish no duplication",
+        "rollback smoke"
+      ],
+      "test_suites": [
+        "TST-012",
+        "TST-013",
+        "TST-021"
+      ],
+      "open_decisions": [],
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "verification_status": "NOT_EXECUTED"
+    },
+    "requirement": {
+      "id": "FR-010",
+      "level": "MUST",
+      "statement": "support_cms_draft_publish_update_stop_and_rollback"
+    },
+    "trace_variants": {
+      "story_test_suites": [
+        "TST-012",
+        "TST-013",
+        "TST-021"
+      ],
+      "master_story_ids": [
+        "ST-0004",
+        "ST-0305",
+        "ST-0807",
+        "ST-0903",
+        "ST-0904",
+        "ST-0905",
+        "ST-1002"
+      ],
+      "master_test_suites": [
+        "TST-002",
+        "TST-003",
+        "TST-008",
+        "TST-011",
+        "TST-012",
+        "TST-013",
+        "TST-014",
+        "TST-020",
+        "TST-021",
+        "TST-022",
+        "TST-023",
+        "TST-030"
+      ],
+      "acceptance_test_suites": [
+        "TST-021",
+        "TST-022"
+      ],
+      "traceability_status": "DIVERGENT_RECORDED_NOT_RESOLVED"
+    },
+    "command_surfaces": {
+      "publish": {
+        "operation_id": "PUBADM-009",
+        "method": "POST",
+        "path": "/api/v1/admin/publication-candidates/{id}/publish",
+        "kind": "async_command",
+        "scope": "publishing:publish",
+        "request_schema": "PublishRequest",
+        "request_required": [
+          "publication_candidate_id"
+        ],
+        "request_optional": [
+          "scheduled_for",
+          "verify_after_publish"
+        ],
+        "parameter_refs": [
+          "RequestID",
+          "Traceparent",
+          "IdempotencyKey",
+          "IfMatch"
+        ],
+        "response_status": 202,
+        "response_schema": "JobAccepted",
+        "async_job_type": "publishing.publish_snapshot.v1",
+        "audit_action": "publication_publish",
+        "implementation_slice": "SLICE-015",
+        "idempotency_required": true,
+        "concurrency_required": true,
+        "requirements": [
+          "FR-010",
+          "FR-019"
+        ],
+        "command_status": "NOT_IMPLEMENTED"
+      },
+      "rollback": {
+        "operation_id": "PUBADM-012",
+        "method": "POST",
+        "path": "/api/v1/admin/publications/{id}/rollback",
+        "kind": "async_command",
+        "scope": "publishing:rollback",
+        "request_schema": "RollbackRequest",
+        "request_required": [
+          "to_snapshot_id",
+          "reason"
+        ],
+        "request_optional": [
+          "incident_id",
+          "verification_required"
+        ],
+        "parameter_refs": [
+          "RequestID",
+          "Traceparent",
+          "IdempotencyKey",
+          "IfMatch"
+        ],
+        "response_status": 202,
+        "response_schema": "JobAccepted",
+        "async_job_type": "publishing.rollback.v1",
+        "audit_action": "publication_rollback",
+        "implementation_slice": "SLICE-015",
+        "idempotency_required": true,
+        "concurrency_required": true,
+        "requirements": [
+          "FR-010",
+          "FR-019"
+        ],
+        "command_status": "NOT_IMPLEMENTED"
+      },
+      "unpublish": {
+        "operation_id": "PUBADM-013",
+        "method": "POST",
+        "path": "/api/v1/admin/publications/{id}/unpublish",
+        "kind": "async_command",
+        "scope": "publishing:unpublish",
+        "request_schema": "UnpublishRequest",
+        "request_required": [
+          "reason"
+        ],
+        "request_optional": [
+          "incident_id"
+        ],
+        "parameter_refs": [
+          "RequestID",
+          "Traceparent",
+          "IdempotencyKey",
+          "IfMatch"
+        ],
+        "response_status": 202,
+        "response_schema": "JobAccepted",
+        "async_job_type": "publishing.unpublish.v1",
+        "audit_action": "publication_unpublish",
+        "implementation_slice": "SLICE-015",
+        "idempotency_required": true,
+        "concurrency_required": true,
+        "requirements": [
+          "FR-010",
+          "FR-019"
+        ],
+        "command_status": "NOT_IMPLEMENTED"
+      }
+    },
+    "job_surfaces": {
+      "publish": {
+        "job_type": "publishing.publish_snapshot.v1",
+        "queue": "publication",
+        "producers": [
+          "admin_api",
+          "scheduler"
+        ],
+        "consumer": "worker-publish",
+        "payload_required": [
+          "publication_candidate_id",
+          "publication_snapshot_id"
+        ],
+        "payload_optional": [
+          "scheduled_for",
+          "verify_after_publish"
+        ],
+        "idempotency_basis": [
+          "publication_candidate_id",
+          "publication_snapshot_id",
+          "route"
+        ],
+        "lock_scope": "public_route",
+        "emits": [
+          "jp.raos.publishing.article_published.v1"
+        ],
+        "enabled_in_catalog": true,
+        "execution_status": "NOT_IMPLEMENTED"
+      },
+      "unpublish": {
+        "job_type": "publishing.unpublish.v1",
+        "queue": "publication",
+        "producers": [
+          "admin_api",
+          "incident_flow"
+        ],
+        "consumer": "worker-publish",
+        "payload_required": [
+          "publication_id",
+          "reason"
+        ],
+        "payload_optional": [
+          "incident_id"
+        ],
+        "idempotency_basis": [
+          "publication_id",
+          "current_snapshot_id",
+          "reason_class"
+        ],
+        "lock_scope": "public_route",
+        "emits": [
+          "jp.raos.publishing.article_unpublished.v1"
+        ],
+        "enabled_in_catalog": true,
+        "execution_status": "NOT_IMPLEMENTED"
+      },
+      "rollback": {
+        "job_type": "publishing.rollback.v1",
+        "queue": "publication",
+        "producers": [
+          "admin_api",
+          "incident_flow"
+        ],
+        "consumer": "worker-publish",
+        "payload_required": [
+          "publication_id",
+          "from_snapshot_id",
+          "to_snapshot_id",
+          "reason"
+        ],
+        "payload_optional": [
+          "incident_id",
+          "verification_required"
+        ],
+        "idempotency_basis": [
+          "publication_id",
+          "from_snapshot_id",
+          "to_snapshot_id"
+        ],
+        "lock_scope": "public_route",
+        "emits": [
+          "jp.raos.publishing.article_rolled_back.v1"
+        ],
+        "enabled_in_catalog": true,
+        "execution_status": "NOT_IMPLEMENTED"
+      }
+    },
+    "event_surfaces": {
+      "published": {
+        "event_type": "jp.raos.publishing.article_published.v1",
+        "producer": "publishing",
+        "required": [
+          "publication_id",
+          "publication_snapshot_id",
+          "article_id",
+          "canonical_path",
+          "projection_generation",
+          "published_at"
+        ],
+        "emission_status": "NOT_IMPLEMENTED",
+        "envelope_allocation": "NOT_DEFINED"
+      },
+      "unpublished": {
+        "event_type": "jp.raos.publishing.article_unpublished.v1",
+        "producer": "publishing",
+        "required": [
+          "publication_id",
+          "article_id",
+          "previous_snapshot_id",
+          "unpublished_at",
+          "reason"
+        ],
+        "emission_status": "NOT_IMPLEMENTED",
+        "envelope_allocation": "NOT_DEFINED"
+      },
+      "rolled_back": {
+        "event_type": "jp.raos.publishing.article_rolled_back.v1",
+        "producer": "publishing",
+        "required": [
+          "publication_id",
+          "from_snapshot_id",
+          "to_snapshot_id",
+          "rollback_record_id",
+          "executed_at"
+        ],
+        "emission_status": "NOT_IMPLEMENTED",
+        "envelope_allocation": "NOT_DEFINED"
+      }
+    },
+    "state_surface": {
+      "id": "SM-PUBLICATION",
+      "aggregate": "publishing.publication",
+      "initial": "UNPUBLISHED",
+      "states": [
+        "UNPUBLISHED",
+        "PUBLISHED",
+        "SUSPENDED",
+        "ARCHIVED"
+      ],
+      "transitions": [
+        {
+          "from": "UNPUBLISHED",
+          "to": "PUBLISHED",
+          "reason": "valid snapshot publish"
+        },
+        {
+          "from": "PUBLISHED",
+          "to": "PUBLISHED",
+          "reason": "new snapshot or rollback"
+        },
+        {
+          "from": "PUBLISHED",
+          "to": "SUSPENDED",
+          "reason": "article/site pause"
+        },
+        {
+          "from": "SUSPENDED",
+          "to": "PUBLISHED",
+          "reason": "authorized resume with valid controls"
+        },
+        {
+          "from": "PUBLISHED",
+          "to": "UNPUBLISHED",
+          "reason": "explicit unpublish"
+        },
+        {
+          "from": "UNPUBLISHED",
+          "to": "ARCHIVED",
+          "reason": "retired route"
+        }
+      ],
+      "guards": [
+        "PUBLISHED requires current_snapshot_id.",
+        "Rollback is a new publication_event, never snapshot mutation."
+      ],
+      "runtime_status": "NOT_IMPLEMENTED"
+    },
+    "security_boundary": {
+      "publish": {
+        "scope": "publishing:publish",
+        "role_matrix_action_present": true,
+        "allowed_roles": [
+          "MANAGING_EDITOR",
+          "OPERATOR"
+        ],
+        "mfa_required": true,
+        "step_up_required": true,
+        "separation_of_duties": true,
+        "runtime_verification": "NOT_EXECUTED"
+      },
+      "rollback": {
+        "scope": "publishing:rollback",
+        "role_matrix_action_present": true,
+        "allowed_roles": [
+          "MANAGING_EDITOR",
+          "OPERATOR"
+        ],
+        "mfa_required": true,
+        "step_up_required": true,
+        "separation_of_duties": false,
+        "runtime_verification": "NOT_EXECUTED"
+      },
+      "unpublish": {
+        "scope": "publishing:unpublish",
+        "role_matrix_action_present": false,
+        "allowed_roles": [],
+        "mfa_required": "NOT_DEFINED",
+        "step_up_required": "NOT_DEFINED",
+        "separation_of_duties": "NOT_DEFINED",
+        "safe_default": "DENY_UNPUBLISH"
+      },
+      "controls": [
+        "SEC-IAM-003",
+        "SEC-IAM-004",
+        "SEC-IAM-005",
+        "SEC-IAM-007",
+        "SEC-DATA-005",
+        "SEC-DATA-006"
+      ],
+      "threats": [
+        "THR-002",
+        "THR-003",
+        "THR-015",
+        "THR-016",
+        "THR-017",
+        "THR-018",
+        "THR-019",
+        "THR-024"
+      ],
+      "auto_publish_mvp_enabled": false,
+      "publication_authority": false,
+      "external_publication_permitted": false
+    },
+    "surface_conflicts": [
+      {
+        "id": "ST0905-CONFLICT-001",
+        "topic": "publish_candidate_identity",
+        "api_surface": "path:{id}+body:publication_candidate_id",
+        "job_surface": "publication_candidate_id",
+        "status": "UNRESOLVED",
+        "safe_default": "NO_COMMAND"
+      },
+      {
+        "id": "ST0905-CONFLICT-002",
+        "topic": "publish_route_idempotency",
+        "api_surface": "route_absent",
+        "job_surface": "idempotency_basis:route+payload:route_absent",
+        "status": "UNRESOLVED",
+        "safe_default": "NO_JOB"
+      },
+      {
+        "id": "ST0905-CONFLICT-003",
+        "topic": "scheduled_publish_authority",
+        "api_surface": "scheduled_for_optional",
+        "job_surface": "scheduler_producer",
+        "status": "CONFLICTS_WITH_AUTO_PUBLISH_DISABLED",
+        "safe_default": "NO_SCHEDULED_PUBLISH"
+      },
+      {
+        "id": "ST0905-CONFLICT-004",
+        "topic": "rollback_from_snapshot_resolution",
+        "api_surface": "from_snapshot_id_absent",
+        "job_surface": "from_snapshot_id_required",
+        "status": "UNRESOLVED",
+        "safe_default": "NO_ROLLBACK"
+      },
+      {
+        "id": "ST0905-CONFLICT-005",
+        "topic": "unpublish_current_snapshot_and_reason_class",
+        "api_surface": "reason_only+current_snapshot_absent",
+        "job_surface": "idempotency_basis:current_snapshot_id+reason_class",
+        "status": "UNRESOLVED",
+        "safe_default": "NO_UNPUBLISH"
+      },
+      {
+        "id": "ST0905-CONFLICT-006",
+        "topic": "unpublish_authorization",
+        "api_surface": "scope:publishing:unpublish",
+        "job_surface": "role_matrix_action_absent",
+        "status": "SECURITY_DECISION_REQUIRED",
+        "safe_default": "DENY_UNPUBLISH"
+      },
+      {
+        "id": "ST0905-CONFLICT-007",
+        "topic": "logical_exactly_once_boundary",
+        "api_surface": "same_key_replay_only",
+        "job_surface": "cross_key_job_outbox_event_deduplication_not_defined",
+        "status": "UNRESOLVED",
+        "safe_default": "NO_SIDE_EFFECT"
+      },
+      {
+        "id": "ST0905-CONFLICT-008",
+        "topic": "atomic_publication_unit_of_work",
+        "api_surface": "async_202_job_acceptance",
+        "job_surface": "publication_readmodel_job_audit_outbox_event_atomicity_not_implemented",
+        "status": "NOT_IMPLEMENTED",
+        "safe_default": "NO_SIDE_EFFECT"
+      }
+    ]
+  },
+  "record_boundary": {
+    "commands": {
+      "status": "NOT_EVALUATED",
+      "records": [],
+      "empty_records_interpretation": "NO_COMMAND_OR_EVIDENCE_NOT_ZERO_VALID_COMMANDS"
+    },
+    "jobs": {
+      "status": "NOT_EVALUATED",
+      "records": []
+    },
+    "events": {
+      "status": "NOT_EVALUATED",
+      "records": []
+    },
+    "audits": {
+      "status": "NOT_EVALUATED",
+      "records": []
+    },
+    "database_mutations": {
+      "status": "NOT_EVALUATED",
+      "records": []
+    },
+    "external_actions": {
+      "status": "NOT_EVALUATED",
+      "records": []
+    },
+    "publications": {
+      "status": "NOT_EVALUATED",
+      "records": []
+    },
+    "rollbacks": {
+      "status": "NOT_EVALUATED",
+      "records": []
+    }
+  },
+  "execution_boundary": {
+    "command_handlers": "NOT_IMPLEMENTED",
+    "job_producers": "NOT_IMPLEMENTED",
+    "job_consumers": "NOT_IMPLEMENTED",
+    "event_emitters": "NOT_IMPLEMENTED",
+    "audit_writer": "NOT_IMPLEMENTED",
+    "database_unit_of_work": "NOT_IMPLEMENTED",
+    "external_cms_adapter": "NOT_IMPLEMENTED",
+    "http_api": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "job": "NOT_EXECUTED",
+    "event": "NOT_EXECUTED",
+    "audit": "NOT_EXECUTED",
+    "idempotency": "NOT_EXECUTED",
+    "unit_of_work": "NOT_EXECUTED",
+    "inbox": "NOT_EXECUTED",
+    "outbox": "NOT_EXECUTED",
+    "authorization": "NOT_EXECUTED",
+    "step_up": "NOT_EXECUTED",
+    "kill_switch": "NOT_EXECUTED",
+    "approval": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "external_side_effects": []
+  },
+  "verification_boundary": {
+    "local_reference_checks": "NOT_EXECUTED",
+    "formal_tst_012": "NOT_EXECUTED",
+    "formal_tst_013": "NOT_EXECUTED",
+    "formal_tst_021": "NOT_EXECUTED",
+    "affected_trace_suites": "NOT_EXECUTED",
+    "runtime_authorization": "NOT_EXECUTED",
+    "runtime_idempotency": "NOT_EXECUTED",
+    "runtime_atomicity": "NOT_EXECUTED",
+    "runtime_rollback": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "story_acceptance": false,
+    "readiness": "NOT_READY",
+    "production_eligible": false,
+    "effective_canonical_status": "UNCHANGED"
+  },
+  "implementation_boundary": {
+    "existing_file_changes": [],
+    "runtime_modules": [],
+    "domain_modules": [],
+    "application_modules": [],
+    "ports": [],
+    "adapters": [],
+    "database_changes": [],
+    "migration_changes": [],
+    "api_changes": [],
+    "job_changes": [],
+    "event_changes": [],
+    "canonical_changes": [],
+    "status_changes": [],
+    "generated_binding_changes": [],
+    "allowed_outputs": [
+      "reference_contract",
+      "deterministic_reference_projection",
+      "source_manifest",
+      "documentation",
+      "isolated_tests"
+    ],
+    "executable_work_requires": "OWNER_APPROVED_DESIGN_HANDOFF_V1"
+  }
+}
