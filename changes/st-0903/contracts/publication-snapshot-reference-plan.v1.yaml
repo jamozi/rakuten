@@ -1,0 +1,408 @@
+document:
+  id: RAOS-ST0903-PUBLICATION-SNAPSHOT-REFERENCE-PLAN-001
+  version: 1.0.0
+  story_id: ST-0903
+  classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLICATION_SNAPSHOT_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  interface_only: true
+  decision: NOT_READY
+  readiness: NOT_READY
+  story_acceptance: false
+  snapshot_builder_authorized: false
+  runtime_builder_authorized: false
+  approval_authority: false
+  publication_permitted: false
+  production_eligible: false
+pro_assistance:
+  status: PRO_UNAVAILABLE
+  authority: NONE
+  proposal_captured: false
+  content_used: false
+authority:
+  precedence: CANONICAL_INTEGRATION_THEN_STORY_THEN_INSTALLED_CONTRACTS
+  sources:
+  - role: integration
+    uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - role: canonical_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - role: open_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - role: story
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - role: requirements
+    uri: repo://docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml
+    sha256: bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827
+  - role: master_traceability
+    uri: repo://docs/canonical/00_master/RAOS_master_traceability_v1.0.csv
+    sha256: 7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4
+  - role: acceptance_traceability
+    uri: repo://docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv
+    sha256: 253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341
+  - role: test_catalog
+    uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - role: system_architecture
+    uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - role: data_model
+    uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - role: api_event_job_design
+    uri: repo://docs/upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md
+    sha256: 1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf
+  - role: content_design
+    uri: repo://docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md
+    sha256: a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682
+  - role: security_design
+    uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - role: security_controls
+    uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - role: role_matrix
+    uri: repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  - role: threat_register
+    uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - role: content_manifest_schema
+    uri: repo://contracts/raos-v0.4/contracts/content/schemas/publication-content-manifest.schema.json
+    sha256: 97b31e1e8b1288bdb25ec5d1df3c29f101912ca4b5b0c953ae07da809369c881
+  - role: publication_snapshot_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/common/publication-snapshot.schema.json
+    sha256: 2b1aa3d1035cd997d3262786fdfd80aa5c25df62e2c758ac481179c5d6803c38
+  - role: artifact_ref_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/common/artifact-ref.schema.json
+    sha256: 9d47faf85d4986e6340a0d71dbf5e340b3475270c20a7d03056cd51d679ef930
+  - role: job_catalog
+    uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+    sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+  - role: build_snapshot_job_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-build-snapshot-v1.schema.json
+    sha256: e2b8680b25276a3b23002a567d65f333d7df4d13fdecb8d4e2b2f1d8919bbacd
+  - role: snapshot_built_event_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-snapshot-built-v1.schema.json
+    sha256: 6651393069ae07c1b45a9b6e2cece31157f7a821a53f68c88538fb8a4726727f
+  - role: public_openapi
+    uri: repo://contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml
+    sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797
+dependencies:
+- story_id: ST-0902
+  artifact: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
+  sha256: 6f449d9a1bdc58baada052dbc89e71aa42d6a133ecc8ba3d64d57cc6f536c08f
+  connection_status: NOT_EXECUTED
+  authority_status: NONEXECUTABLE_REFERENCE_PLAN_INSUFFICIENT_FOR_APPROVAL
+- story_id: ST-0807
+  artifact: repo://changes/st-0807/README.md
+  sha256: 333f953e4f15b05c5b70705259643b3531e0259faa26c7612e278962130917a5
+  connection_status: NOT_EXECUTED
+  authority_status: CALLER_RESOLVED_NONAUTHORITATIVE_RENDERER_INPUTS
+- story_id: ST-0808
+  artifact: repo://changes/st-0808/README.md
+  sha256: 385f7f849bd4b16296ec47c512bf109b58f49861b0533df47a1825e65475651b
+  connection_status: NOT_EXECUTED
+  authority_status: ADMIN_ONLY_REFERENCE_NO_PUBLIC_RENDERER_INPUT
+- story_id: ST-0202
+  artifact: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
+  sha256: 389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c
+  connection_status: NOT_EXECUTED
+  authority_status: LOCAL_RAW_BUCKET_CONTRACT_ONLY
+- story_id: ST-0305
+  artifact: repo://changes/st-0305/README.md
+  sha256: b45c333996c723ab1978c8b474420de86c563277a3c4a0d2e2a7d76cdbaed4bb
+  connection_status: NOT_EXECUTED
+  authority_status: DATABASE_SCHEMA_CANDIDATE_ONLY
+- story_id: ST-0306
+  artifact: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
+  sha256: 20b5c37d6979b67f4b4a5b014f7b18a9f729c889b47ca6cc6916f58b2ef08fc5
+  connection_status: NOT_EXECUTED
+  authority_status: PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY
+- story_id: ST-0307
+  artifact: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
+  sha256: 06c9f26f61a420145d03fd61a1f8c598f9271641478e102d41a97d38172abfcb
+  connection_status: NOT_EXECUTED
+  authority_status: SYNTHETIC_FIXTURE_ONLY
+- story_id: ST-0601
+  artifact: repo://changes/st-0601/README.md
+  sha256: 93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766
+  connection_status: NOT_EXECUTED
+  authority_status: NONATTESTING_REFERENCE_PLAN_NO_ARTIFACT_REGISTRY
+hard_gates:
+- id: ST0903-GATE-001
+  topic: authoritative_non_revoked_final_approval
+  status: ABSENT
+  safe_default: NO_BUILD
+- id: ST0903-GATE-002
+  topic: complete_authoritative_input_aggregate
+  status: NOT_DEFINED
+  safe_default: NO_BUILD
+- id: ST0903-GATE-003
+  topic: manifest_snapshot_database_precedence_and_reconciliation
+  status: UNRESOLVED
+  safe_default: KEEP_SURFACES_DISTINCT_NO_BUILD
+- id: ST0903-GATE-004
+  topic: canonical_bytes_hash_self_exclusion_unicode_number_null_and_order
+  status: NOT_DEFINED
+  safe_default: NO_CANONICAL_OR_SNAPSHOT_DIGEST
+- id: ST0903-GATE-005
+  topic: id_display_version_time_generation_and_replay
+  status: NOT_DEFINED
+  safe_default: NO_IDENTIFIERS_OR_TIMESTAMPS
+- id: ST0903-GATE-006
+  topic: approval_revocation_and_effectiveness_at_build_time
+  status: NOT_DEFINED
+  safe_default: NO_BUILD
+- id: ST0903-GATE-007
+  topic: media_seo_disclosure_methodology_product_and_safe_offer_binding
+  status: NOT_AUTHORITATIVE
+  safe_default: NO_ELIGIBILITY_OR_BINDING
+- id: ST0903-GATE-008
+  topic: artifact_object_database_job_event_audit_idempotency_uow_outbox_and_crash_recovery
+  status: NOT_IMPLEMENTED
+  safe_default: NO_SIDE_EFFECT
+- id: ST0903-GATE-009
+  topic: confidential_snapshot_public_allowlist_and_redaction
+  status: NOT_DEFINED
+  safe_default: NO_PUBLIC_PROJECTION
+- id: ST0903-GATE-010
+  topic: executable_pure_or_runtime_builder_authority
+  status: ABSENT
+  safe_default: REFERENCE_PLAN_ONLY
+  resolution_required: OWNER_APPROVED_DESIGN_HANDOFF_V1
+contract_projection_defaults:
+  story:
+    id: ST-0903
+    objective: 承認版から不変Snapshotを生成
+    depends_on: [ST-0902, ST-0807, ST-0808]
+    requirement_ids: [FR-010]
+    deliverables: [manifest, snapshot, hash]
+    acceptance_criteria: [deterministic/immutable]
+    test_suites: [TST-014, TST-021]
+    open_decisions: []
+    design_status: APPROVED_FOR_IMPLEMENTATION
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  requirement:
+    id: FR-010
+    level: MUST
+    statement: support_cms_draft_publish_update_stop_and_rollback
+  trace_variants:
+    story_test_suites: [TST-014, TST-021]
+    master_story_ids: [ST-0004, ST-0305, ST-0807, ST-0903, ST-0904, ST-0905, ST-1002]
+    master_test_suites: [TST-002, TST-003, TST-008, TST-011, TST-012, TST-013, TST-014, TST-020, TST-021, TST-022, TST-023, TST-030]
+    acceptance_test_suites: [TST-021, TST-022]
+    traceability_status: DIVERGENT_RECORDED_NOT_RESOLVED
+  publication_content_manifest_schema:
+    title: Publication Content Manifest
+    additional_properties: false
+    required:
+    - publication_content_manifest_id
+    - article_version_id
+    - content_schema_version
+    - content_ast_sha256
+    - source_packet_version_ref
+    - methodology_version_ref
+    - policy_bundle_version_ref
+    - seo_metadata_version_ref
+    - disclosure_policy_version_ref
+    - quality_result_ref
+    - approval_refs
+    - renderer_version
+    - created_at
+    approval_refs_unique: true
+    content_schema_version_const: 1.0.0
+  publication_snapshot_schema:
+    title: Publication Snapshot Contract
+    additional_properties: false
+    required:
+    - publication_id
+    - publication_version
+    - article_id
+    - article_version_id
+    - content_schema_version
+    - renderable_content
+    - product_selection_refs
+    - safe_offer_projection_version
+    - disclosure_version
+    - policy_bundle_version
+    - quality_result_id
+    - approval_ids
+    - seo_metadata
+    - input_hashes
+    - snapshot_sha256
+    snapshot_digest_is_required_inside_surface: true
+    canonicalization_or_self_exclusion_defined: false
+    seo_metadata_additional_properties: true
+    input_hash_names_allowlisted: false
+  surface_reconciliation:
+    content_manifest_vs_snapshot: UNRESOLVED
+    snapshot_vs_database_manifest: UNRESOLVED
+    artifact_bytes_surface: UNRESOLVED
+    precedence_selected: false
+  architecture:
+    approved_article_version_required: true
+    immutable_new_version_not_overwrite: true
+    object_storage_required: true
+    public_reads_projection_only: true
+    worker_builds_snapshot: true
+    at_least_once_and_idempotent: true
+    required_manifest_bindings:
+    - article_version
+    - content_schema_and_article_type_and_template
+    - content_ast_hash
+    - source_packet_version_and_hash
+    - candidate_universe_hash
+    - methodology_version_and_hash
+    - policy_bundle_version
+    - seo_version_and_hash
+    - structured_data_manifest_and_hash
+    - disclosure_version
+    - quality_result
+    - review_and_approval_ids
+    - renderer_version
+    - media_ids_and_hashes
+    - safe_offer_projection_version
+  publication_snapshot_database:
+    owner: publishing
+    write_pattern: APPEND_ONLY
+    mutation_guard: true
+    classification: CONFIDENTIAL
+    retention: PUBLICATION_PERMANENT
+    columns: [id, display_id, site_id, article_id, article_version_id, publication_candidate_id, artifact_id, schema_version, content_sha256, source_packet_version_id, policy_bundle_id, quality_check_run_id, final_approval_id, canonical_path, title, meta_title, meta_description, disclosure_text, manifest, built_by_job_id, built_at, created_at]
+    primary_key: [id]
+    unique_constraints:
+    - [display_id]
+    - [artifact_id]
+    - [site_id, content_sha256]
+    checks: [schema_version_positive, content_sha256_lower_hex_64, manifest_json_object, canonical_path_safe_absolute]
+    immutable_runtime_proof: NOT_EXECUTED
+  build_snapshot_job_catalog:
+    job_type: publishing.build_snapshot.v1
+    version: 1
+    queue: publication
+    producer: [admin_api]
+    consumer: worker-publish
+    payload_schema: schemas/jobs/publishing-build-snapshot-v1.schema.json
+    idempotency_basis: [publication_candidate_id, article_body_sha256, approval_id, quality_run_id, safe_offer_projection_generation]
+    lock_scope: publication_candidate
+    max_attempts: 3
+    timeout_seconds: 600
+    retry_classes: [TRANSIENT]
+    non_retry_classes: [AUTH, CONTRACT, POLICY, PERMANENT, BUDGET]
+    emits: [jp.raos.publishing.snapshot_built.v1]
+  build_snapshot_job_schema:
+    job_type: publishing.build_snapshot.v1
+    queue: publication
+    payload_required: [publication_candidate_id, article_version_id, final_approval_id, quality_check_run_id]
+    payload_properties: [publication_candidate_id, article_version_id, final_approval_id, quality_check_run_id, canonical_path]
+    catalog_basis_vs_payload_reconciled: false
+  snapshot_built_event_schema:
+    event_type: jp.raos.publishing.snapshot_built.v1
+    producer: publishing
+    required: [publication_candidate_id, publication_snapshot_id, article_id, article_version_id, canonical_path, snapshot_sha256]
+    additional_properties: false
+  artifact_reference_schema:
+    required: [artifact_id, sha256]
+    optional: [uri, content_type, byte_size]
+    additional_properties: false
+  object_artifact_database:
+    write_pattern: APPEND_ONLY
+    classification: CONFIDENTIAL
+    artifact_kind: publication_snapshot
+    required_columns: [id, display_id, artifact_kind, storage_provider, bucket_name, object_key, content_type, byte_size, sha256, encryption_state, retention_class, is_immutable, source_system, metadata, created_at]
+    version_nullable: true
+    location_unique_with_nulls_not_distinct: true
+  local_storage_boundary:
+    bucket_name: raos-raw
+    bucket_visibility: PRIVATE
+    publication_bucket_or_key_contract: ABSENT
+    versioning: REQUIRED
+    object_lock_capability_at_creation: REQUIRED
+    retention_period: UNSET_HUMAN_DECISION_REQUIRED
+    automatic_deletion: DISABLED
+    formal_tst_014: NOT_EXECUTED
+  public_isolation:
+    snapshot_classification: CONFIDENTIAL
+    public_role_schema_usage: [readmodel]
+    public_role_table_privileges: [SELECT]
+    all_other_domain_schema_privileges: NONE
+    public_openapi_separate: true
+    exact_snapshot_to_public_allowlist: NOT_DEFINED
+    seo_and_input_hash_redaction: NOT_DEFINED
+    threats: [THR-018, THR-019]
+    controls: [SEC-DATA-004, SEC-DATA-006]
+record_defaults:
+  manifests: {status: NOT_EVALUATED, records: []}
+  snapshots:
+    status: NOT_EVALUATED
+    records: []
+    empty_records_interpretation: NO_BUILD_OR_EVIDENCE_NOT_ZERO_VALID_SNAPSHOTS
+  hashes: {status: NOT_EVALUATED, records: []}
+  version_links: {status: NOT_EVALUATED, records: []}
+  artifacts: {status: NOT_EVALUATED, records: []}
+  jobs: {status: NOT_EVALUATED, records: []}
+  events: {status: NOT_EVALUATED, records: []}
+  audits: {status: NOT_EVALUATED, records: []}
+  approvals: {status: NOT_EVALUATED, records: []}
+  publications: {status: NOT_EVALUATED, records: []}
+execution_defaults:
+  runtime_reader: NOT_IMPLEMENTED
+  pure_snapshot_builder: NOT_IMPLEMENTED
+  runtime_snapshot_builder: NOT_IMPLEMENTED
+  network: NOT_EXECUTED
+  filesystem_runtime: NOT_EXECUTED
+  clock: NOT_EXECUTED
+  randomness: NOT_EXECUTED
+  database: NOT_EXECUTED
+  object_storage: NOT_EXECUTED
+  api: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event: NOT_EXECUTED
+  audit: NOT_EXECUTED
+  idempotency: NOT_EXECUTED
+  unit_of_work: NOT_EXECUTED
+  outbox: NOT_EXECUTED
+  approval: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  external_actions: []
+verification_defaults:
+  local_reference_checks: NOT_EXECUTED
+  formal_tst_014: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  affected_trace_suites: NOT_EXECUTED
+  runtime_hash_integrity: NOT_EXECUTED
+  runtime_immutability: NOT_EXECUTED
+  runtime_public_isolation: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+  readiness: NOT_READY
+  production_eligible: false
+implementation_boundary:
+  runtime_modules: []
+  domain_modules: []
+  application_modules: []
+  ports: []
+  adapters: []
+  database_changes: []
+  storage_changes: []
+  api_changes: []
+  job_changes: []
+  event_changes: []
+  status_changes: []
+  generated_binding_changes: []
+  allowed_outputs:
+  - reference_contract
+  - deterministic_reference_projection
+  - source_manifest
+  - documentation
+  - isolated_tests
+  executable_builder_requires: OWNER_APPROVED_DESIGN_HANDOFF_V1
+  runtime_builder_requires: OWNER_APPROVED_DESIGN_HANDOFF_V1
