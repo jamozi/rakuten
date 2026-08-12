@@ -264,3 +264,28 @@ export type {
   PublicDisclosureAffiliateSyntheticCoordinateInput,
   PublicDisclosureSemanticMetadata,
 } from './disclosure-affiliate-cta.ts';
+
+export {
+  PUBLIC_SEO_ROUTE_POLICY_CLASSIFICATION,
+  PUBLIC_SEO_ROUTE_POLICY_ERROR_CODES,
+  PUBLIC_SEO_ROUTE_POLICY_PAGE_CLASSES,
+  PUBLIC_SEO_ROUTE_POLICY_SCREEN,
+  PublicSeoRoutePolicyError,
+  createPublicSeoRoutePolicyCandidate,
+  validatePublicSeoRoutePolicyCandidate,
+} from './seo-route-policy.ts';
+export type {
+  PublicSeoRouteBoundaryResult,
+  PublicSeoRouteFixedNoindexPolicy,
+  PublicSeoRouteNotEvaluatedAssessment,
+  PublicSeoRouteOriginInput,
+  PublicSeoRouteOriginMode,
+  PublicSeoRoutePagePolicy,
+  PublicSeoRoutePolicyBoundaries,
+  PublicSeoRoutePolicyCandidate,
+  PublicSeoRoutePolicyErrorCode,
+  PublicSeoRoutePolicyInput,
+  PublicSeoRoutePolicyPageClass,
+  PublicSeoRoutePublicArticlePolicy,
+  PublicSeoRouteSyntheticCoordinateInput,
+} from './seo-route-policy.ts';
