@@ -331,3 +331,24 @@ export type {
   PublicAccessibilitySyntheticCoordinateInput,
   PublicAccessibilityVerificationMethod,
 } from './public-accessibility-acceptance.ts';
+
+export {
+  FRESHNESS_OPERATIONS_SCREEN_IDS,
+  FRESHNESS_OPERATIONS_SCREENS,
+  FRESHNESS_OPERATIONS_WORKSPACE_CLASSIFICATION,
+  FRESHNESS_OPERATIONS_WORKSPACE_ERROR_CODES,
+  FreshnessOperationsWorkspaceError,
+  createFreshnessOperationsWorkspaceCandidate,
+  createFreshnessOperationsWorkspaceModel,
+  validateFreshnessOperationsWorkspaceCandidate,
+} from './freshness-operations-workspace.ts';
+export type {
+  FreshnessOperationsDataSlot,
+  FreshnessOperationsRole,
+  FreshnessOperationsScreenId,
+  FreshnessOperationsScreenMetadata,
+  FreshnessOperationsWorkspaceCandidate,
+  FreshnessOperationsWorkspaceErrorCode,
+  FreshnessOperationsWorkspaceInput,
+  FreshnessOperationsWorkspaceModel,
+} from './freshness-operations-workspace.ts';
