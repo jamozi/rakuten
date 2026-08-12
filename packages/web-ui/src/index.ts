@@ -105,3 +105,31 @@ export type {
   AiGovernanceWorkspaceInput,
   AiGovernanceWorkspaceModel,
 } from './ai-governance-workspace.ts';
+
+export {
+  PUBLIC_SHELL_COMPONENT_IDS,
+  PUBLIC_SHELL_COMPONENTS,
+  PUBLIC_SHELL_CONTENT,
+  PUBLIC_SHELL_ERROR_CODES,
+  PUBLIC_SHELL_IDS,
+  PUBLIC_SHELL_SCREEN_IDS,
+  PUBLIC_SHELL_SCREENS,
+  PublicShellError,
+  createPublicShellCandidate,
+  validatePublicShellCandidate,
+} from './public-shell.ts';
+export type {
+  PublicShellBoundaryResult,
+  PublicShellBoundaries,
+  PublicShellBreadcrumbItem,
+  PublicShellCandidate,
+  PublicShellComponentId,
+  PublicShellComponentMetadata,
+  PublicShellContentSlot,
+  PublicShellContentState,
+  PublicShellErrorCode,
+  PublicShellInput,
+  PublicShellNavigationItem,
+  PublicShellScreenId,
+  PublicShellScreenMetadata,
+} from './public-shell.ts';
