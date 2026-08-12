@@ -138,6 +138,36 @@ export type {
 } from './article-workspace.ts';
 
 export {
+  PUBLICATION_REVIEW_COMPONENT_IDS,
+  PUBLICATION_REVIEW_COMPONENTS,
+  PUBLICATION_REVIEW_ERROR_CODES,
+  PUBLICATION_REVIEW_LAYOUT_SECTION_IDS,
+  PUBLICATION_REVIEW_LAYOUT_SECTIONS,
+  PUBLICATION_REVIEW_SCREEN_IDS,
+  PUBLICATION_REVIEW_SCREENS,
+  PUBLICATION_REVIEW_SEMANTIC_IDS,
+  PUBLICATION_REVIEW_SOURCE_REFS,
+  PublicationReviewError,
+  createPublicationReviewWorkspaceModel,
+  validatePublicationReviewWorkspaceModel,
+} from './publication-review-workspace.ts';
+export type {
+  PublicationReviewCapabilityState,
+  PublicationReviewComponentId,
+  PublicationReviewComponentMetadata,
+  PublicationReviewDependencyState,
+  PublicationReviewErrorCode,
+  PublicationReviewLayoutSection,
+  PublicationReviewLayoutSectionId,
+  PublicationReviewRole,
+  PublicationReviewScreenId,
+  PublicationReviewScreenMetadata,
+  PublicationReviewSourceReference,
+  PublicationReviewWorkspaceInput,
+  PublicationReviewWorkspaceModel,
+} from './publication-review-workspace.ts';
+
+export {
   PUBLIC_SHELL_COMPONENT_IDS,
   PUBLIC_SHELL_COMPONENTS,
   PUBLIC_SHELL_CONTENT,
