@@ -1,0 +1,143 @@
+document:
+  id: RAOS-ST0904-PUBLIC-PROJECTION-REFERENCE-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0904
+  source_contract: repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml
+  generated_by: repo://scripts/build_st0904_public_projection_reference_plan.py
+  generation_command: uv run --locked --no-sync python scripts/build_st0904_public_projection_reference_plan.py
+provenance:
+  contract_sha256: a61b1d16c35c45b2c12b886222fc79dc36d46ca496223303c81b9f796f7ea672
+  authority_inputs:
+  - role: integration
+    uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - role: canonical_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - role: open_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - role: story
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - role: requirements
+    uri: repo://docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml
+    sha256: bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827
+  - role: master_traceability
+    uri: repo://docs/canonical/00_master/RAOS_master_traceability_v1.0.csv
+    sha256: 7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4
+  - role: acceptance_traceability
+    uri: repo://docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv
+    sha256: 253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341
+  - role: test_catalog
+    uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - role: system_architecture
+    uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - role: data_model
+    uri: repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c
+  - role: data_catalog
+    uri: repo://docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml
+    sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d
+  - role: api_event_job_design
+    uri: repo://docs/upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md
+    sha256: 1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf
+  - role: content_design
+    uri: repo://docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md
+    sha256: a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682
+  - role: security_design
+    uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - role: security_controls
+    uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - role: role_matrix
+    uri: repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  - role: threat_register
+    uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - role: publication_snapshot_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/common/publication-snapshot.schema.json
+    sha256: 2b1aa3d1035cd997d3262786fdfd80aa5c25df62e2c758ac481179c5d6803c38
+  - role: job_catalog
+    uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+    sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+  - role: rebuild_public_projection_job_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-rebuild-public-projection-v1.schema.json
+    sha256: a03cadf868e424fc471536b478189e152b28671167c5dde1871d925cceda5a03
+  - role: publish_snapshot_job_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-publish-snapshot-v1.schema.json
+    sha256: 81f885e435bcaf4af75ab3149a2007668b7585155cfbe730242e78efefc5a6e7
+  - role: ops_rebuild_readmodel_job_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/ops-rebuild-readmodel-v1.schema.json
+    sha256: b59e06560a629f69db4b9f1498c31f2fe8b7dd53768a6f7f3d33ff8353000ae7
+  - role: public_projection_rebuilt_event_schema
+    uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-public-projection-rebuilt-v1.schema.json
+    sha256: b204281bd26c57542219067a6ebd10aeeb68c1ba2dd6925cc6467ac3c420e3f8
+  - role: public_openapi
+    uri: repo://contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml
+    sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797
+  - role: internal_openapi
+    uri: repo://contracts/raos-v0.4/contracts/openapi-internal.v0.4.yaml
+    sha256: 616ea270aec830a987679853869c0d22e1114a95bcf0279d6e635a5f359a6f21
+  dependency_inputs:
+  - story_id: ST-0903
+    uri: repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml
+    sha256: cf6f9a55f769a2861cda655cdc7e963d6048a7ff721ded55a40aaa0978702692
+  - story_id: ST-0306
+    uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
+    sha256: 20b5c37d6979b67f4b4a5b014f7b18a9f729c889b47ca6cc6916f58b2ef08fc5
+  implementation_helper:
+    uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+  pro_assistance: PRO_UNAVAILABLE_NONE_NO_PROPOSAL_NO_CONTENT
+  digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml
+  bytes: 12960
+  sha256: a61b1d16c35c45b2c12b886222fc79dc36d46ca496223303c81b9f796f7ea672
+- uri: repo://changes/st-0904/README.md
+  bytes: 3962
+  sha256: e4015ac16ddd7383b0848283bebe2348020fb2fe7711d3a41a05e608b4ed2f16
+- uri: repo://scripts/build_st0904_public_projection_reference_plan.py
+  bytes: 45785
+  sha256: 7b73a982cf9095e6ff15fbb1bfb64674589b1a00ed97c4cbcd5cc234d8daae18
+- uri: repo://tests/st0904/conftest.py
+  bytes: 955
+  sha256: 88af5e0dff9071d5638c52fff6e2c2114025ca8f82199d434ce547318d067fed
+- uri: repo://tests/st0904/test_contract.py
+  bytes: 4370
+  sha256: 4c280da67afa361716bdbd76f195bc711243e697cac0d3b84cf6f91ed13bfdf7
+- uri: repo://tests/st0904/test_generation.py
+  bytes: 3308
+  sha256: 50b8cbcc57b3767392aa650eb7e5a1d0a9da4158b6160f62d70a87b7a7bd89e4
+- uri: repo://tests/st0904/test_negative_cases.py
+  bytes: 8262
+  sha256: dcbb4611252c1bb68c3514ca40a26ee144588094eda50f2b2b8f0b8497a02d82
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-0904/generated/public-projection-reference-plan.v1.json
+  bytes: 17894
+  sha256: 723e7650c07509f05386767721b60d5febda02f78e1a58cadf1690046cd74de7
+  digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
+boundary:
+  classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLIC_PROJECTION_REFERENCE_PLAN
+  executable: false
+  runtime_reader: NOT_IMPLEMENTED
+  pure_projector: NOT_IMPLEMENTED
+  runtime_projector: NOT_IMPLEMENTED
+  records: NOT_EVALUATED
+  empty_projections: NO_PROJECTION_OR_EVIDENCE_NOT_ZERO_VALID_PROJECTIONS
+  formal_tst_011: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+  readiness: NOT_READY
+  production_eligible: false
