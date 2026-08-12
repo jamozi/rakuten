@@ -239,3 +239,28 @@ export type {
   PublicTradeoffSemanticMetadata,
   PublicUnknownValueSemanticMetadata,
 } from './comparison-product-components.ts';
+
+export {
+  PUBLIC_DISCLOSURE_AFFILIATE_CLASSIFICATION,
+  PUBLIC_DISCLOSURE_AFFILIATE_COMPONENT_IDS,
+  PUBLIC_DISCLOSURE_AFFILIATE_COMPONENTS,
+  PUBLIC_DISCLOSURE_AFFILIATE_ERROR_CODES,
+  PUBLIC_DISCLOSURE_AFFILIATE_SCREEN,
+  PublicDisclosureAffiliateError,
+  createPublicDisclosureAffiliateCandidate,
+  validatePublicDisclosureAffiliateCandidate,
+} from './disclosure-affiliate-cta.ts';
+export type {
+  PublicAffiliateCtaSemanticMetadata,
+  PublicApiCreditSemanticMetadata,
+  PublicBeaconIndependenceSemanticMetadata,
+  PublicDisclosureAffiliateBoundaries,
+  PublicDisclosureAffiliateBoundaryResult,
+  PublicDisclosureAffiliateCandidate,
+  PublicDisclosureAffiliateComponentId,
+  PublicDisclosureAffiliateComponentMetadata,
+  PublicDisclosureAffiliateErrorCode,
+  PublicDisclosureAffiliateInput,
+  PublicDisclosureAffiliateSyntheticCoordinateInput,
+  PublicDisclosureSemanticMetadata,
+} from './disclosure-affiliate-cta.ts';
