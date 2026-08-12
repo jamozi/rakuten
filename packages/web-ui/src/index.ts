@@ -289,3 +289,24 @@ export type {
   PublicSeoRoutePublicArticlePolicy,
   PublicSeoRouteSyntheticCoordinateInput,
 } from './seo-route-policy.ts';
+
+export {
+  PUBLIC_PERFORMANCE_RUM_CLASSIFICATION,
+  PUBLIC_PERFORMANCE_RUM_ERROR_CODES,
+  PUBLIC_PERFORMANCE_RUM_METRICS,
+  PUBLIC_PERFORMANCE_RUM_SCREEN,
+  PublicPerformanceRumError,
+  createPublicPerformanceRumCandidate,
+  validatePublicPerformanceRumCandidate,
+} from './public-performance-rum.ts';
+export type {
+  PublicPerformanceRumBoundaries,
+  PublicPerformanceRumBoundaryResult,
+  PublicPerformanceRumCandidate,
+  PublicPerformanceRumErrorCode,
+  PublicPerformanceRumInput,
+  PublicPerformanceRumMetric,
+  PublicPerformanceRumNotEvaluated,
+  PublicPerformanceRumSyntheticCoordinateInput,
+  PublicPerformanceRumTarget,
+} from './public-performance-rum.ts';
