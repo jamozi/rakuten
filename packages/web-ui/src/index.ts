@@ -373,3 +373,23 @@ export type {
   AnalyticsFinanceWorkspaceInput,
   AnalyticsFinanceWorkspaceModel,
 } from './analytics-finance-workspace.ts';
+
+export {
+  ADMIN_VISUAL_ACCESSIBILITY_ACCEPTANCE_CLASSIFICATION,
+  ADMIN_VISUAL_ACCESSIBILITY_CHECKLIST,
+  ADMIN_VISUAL_ACCESSIBILITY_ERROR_CODES,
+  ADMIN_VISUAL_ACCESSIBILITY_SCREEN_GROUPS,
+  ADMIN_VISUAL_ACCESSIBILITY_SCREEN_IDS,
+  ADMIN_VISUAL_ACCESSIBILITY_SUITES,
+  AdminVisualAccessibilityError,
+  createAdminVisualAccessibilityCandidate,
+  validateAdminVisualAccessibilityCandidate,
+} from './admin-visual-accessibility-acceptance.ts';
+export type {
+  AdminVisualAccessibilityAssessment,
+  AdminVisualAccessibilityCandidate,
+  AdminVisualAccessibilityErrorCode,
+  AdminVisualAccessibilityInput,
+  AdminVisualAccessibilityScreenId,
+  AdminVisualAccessibilityVerificationMethod,
+} from './admin-visual-accessibility-acceptance.ts';
