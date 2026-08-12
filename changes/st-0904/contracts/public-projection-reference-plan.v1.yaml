@@ -1,0 +1,183 @@
+document:
+  id: RAOS-ST0904-PUBLIC-PROJECTION-REFERENCE-PLAN-001
+  version: 1.0.0
+  story_id: ST-0904
+  classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLIC_PROJECTION_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  interface_only: true
+  decision: NOT_READY
+  readiness: NOT_READY
+  story_acceptance: false
+  projector_authorized: false
+  runtime_projector_authorized: false
+  approval_authority: false
+  publication_permitted: false
+  production_eligible: false
+pro_assistance:
+  status: PRO_UNAVAILABLE
+  authority: NONE
+  proposal_captured: false
+  content_used: false
+authority:
+  precedence: CANONICAL_INTEGRATION_THEN_STORY_THEN_INSTALLED_CONTRACTS
+  sources:
+  - {role: integration, uri: 'repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md', sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a}
+  - {role: canonical_decisions, uri: 'repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml', sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626}
+  - {role: open_decisions, uri: 'repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml', sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e}
+  - {role: story, uri: 'repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml', sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d}
+  - {role: requirements, uri: 'repo://docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml', sha256: bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827}
+  - {role: master_traceability, uri: 'repo://docs/canonical/00_master/RAOS_master_traceability_v1.0.csv', sha256: 7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4}
+  - {role: acceptance_traceability, uri: 'repo://docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv', sha256: 253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341}
+  - {role: test_catalog, uri: 'repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml', sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b}
+  - {role: system_architecture, uri: 'repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md', sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3}
+  - {role: data_model, uri: 'repo://docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md', sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c}
+  - {role: data_catalog, uri: 'repo://docs/upstream/key_documents/RAOS_03_data_catalog_v0.1.yaml', sha256: 187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d}
+  - {role: api_event_job_design, uri: 'repo://docs/upstream/key_documents/RAOS_04_api_event_job_contract_design_v0.1.md', sha256: 1fe1e73db3c732379f3f83268141d2d1af72e921c0ed60e4d2fc40caf1973fcf}
+  - {role: content_design, uri: 'repo://docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md', sha256: a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682}
+  - {role: security_design, uri: 'repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md', sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b}
+  - {role: security_controls, uri: 'repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml', sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8}
+  - {role: role_matrix, uri: 'repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml', sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984}
+  - {role: threat_register, uri: 'repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml', sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd}
+  - {role: publication_snapshot_schema, uri: 'repo://contracts/raos-v0.4/contracts/schemas/common/publication-snapshot.schema.json', sha256: 2b1aa3d1035cd997d3262786fdfd80aa5c25df62e2c758ac481179c5d6803c38}
+  - {role: job_catalog, uri: 'repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml', sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1}
+  - {role: rebuild_public_projection_job_schema, uri: 'repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-rebuild-public-projection-v1.schema.json', sha256: a03cadf868e424fc471536b478189e152b28671167c5dde1871d925cceda5a03}
+  - {role: publish_snapshot_job_schema, uri: 'repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-publish-snapshot-v1.schema.json', sha256: 81f885e435bcaf4af75ab3149a2007668b7585155cfbe730242e78efefc5a6e7}
+  - {role: ops_rebuild_readmodel_job_schema, uri: 'repo://contracts/raos-v0.4/contracts/schemas/jobs/ops-rebuild-readmodel-v1.schema.json', sha256: b59e06560a629f69db4b9f1498c31f2fe8b7dd53768a6f7f3d33ff8353000ae7}
+  - {role: public_projection_rebuilt_event_schema, uri: 'repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-public-projection-rebuilt-v1.schema.json', sha256: b204281bd26c57542219067a6ebd10aeeb68c1ba2dd6925cc6467ac3c420e3f8}
+  - {role: public_openapi, uri: 'repo://contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml', sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797}
+  - {role: internal_openapi, uri: 'repo://contracts/raos-v0.4/contracts/openapi-internal.v0.4.yaml', sha256: 616ea270aec830a987679853869c0d22e1114a95bcf0279d6e635a5f359a6f21}
+dependencies:
+- {story_id: ST-0903, artifact: 'repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml', sha256: cf6f9a55f769a2861cda655cdc7e963d6048a7ff721ded55a40aaa0978702692, connection_status: NOT_EXECUTED, authority_status: NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTABLE_SNAPSHOT}
+- {story_id: ST-0306, artifact: 'repo://changes/st-0306/contracts/database-roles-grants.v1.yaml', sha256: 20b5c37d6979b67f4b4a5b014f7b18a9f729c889b47ca6cc6916f58b2ef08fc5, connection_status: NOT_EXECUTED, authority_status: PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY}
+hard_gates:
+- {id: ST0904-GATE-001, topic: authoritative_projectable_publication_snapshot, status: ABSENT, safe_default: NO_PROJECTION}
+- {id: ST0904-GATE-002, topic: exact_confidential_snapshot_to_public_allowlist_and_redaction, status: NOT_DEFINED, safe_default: NO_PUBLIC_ROW}
+- {id: ST0904-GATE-003, topic: snapshot_database_openapi_readmodel_mapping, status: UNRESOLVED, safe_default: KEEP_SURFACES_DISTINCT_NO_PROJECTION}
+- {id: ST0904-GATE-004, topic: publish_rebuild_and_ops_job_ownership, status: UNRESOLVED, safe_default: NO_JOB_OR_LIFECYCLE_ACTION}
+- {id: ST0904-GATE-005, topic: current_snapshot_publication_route_and_scope, status: NOT_DEFINED, safe_default: NO_CURRENT_SELECTION_OR_ROUTE}
+- {id: ST0904-GATE-006, topic: projection_generation_atomicity_ordering_concurrency_and_deletion, status: NOT_DEFINED, safe_default: NO_PROJECTION}
+- {id: ST0904-GATE-007, topic: idempotency_inbox_uow_outbox_event_audit_and_crash_recovery, status: NOT_IMPLEMENTED, safe_default: NO_SIDE_EFFECT}
+- {id: ST0904-GATE-008, topic: safe_offer_freshness_media_seo_disclosure_and_kill_switch_binding, status: NOT_AUTHORITATIVE, safe_default: NO_ELIGIBILITY_OR_BINDING}
+- {id: ST0904-GATE-009, topic: public_role_isolation_and_runtime_proof, status: NOT_EXECUTED, safe_default: NO_PUBLIC_RUNTIME}
+- {id: ST0904-GATE-010, topic: executable_pure_or_runtime_projector_authority, status: ABSENT, safe_default: REFERENCE_PLAN_ONLY, resolution_required: OWNER_APPROVED_DESIGN_HANDOFF_V1}
+contract_projection_defaults:
+  story:
+    id: ST-0904
+    objective: Snapshotをreadmodelへ投影
+    depends_on: [ST-0903, ST-0306]
+    requirement_ids: [FR-010]
+    deliverables: [projector]
+    acceptance_criteria: [public role only required fields]
+    test_suites: [TST-011, TST-021]
+    open_decisions: []
+    design_status: APPROVED_FOR_IMPLEMENTATION
+    implementation_status: NOT_STARTED
+    verification_status: NOT_EXECUTED
+  requirement: {id: FR-010, level: MUST, statement: support_cms_draft_publish_update_stop_and_rollback}
+  trace_variants:
+    story_test_suites: [TST-011, TST-021]
+    master_story_ids: [ST-0004, ST-0305, ST-0807, ST-0903, ST-0904, ST-0905, ST-1002]
+    master_test_suites: [TST-002, TST-003, TST-008, TST-011, TST-012, TST-013, TST-014, TST-020, TST-021, TST-022, TST-023, TST-030]
+    acceptance_test_suites: [TST-021, TST-022]
+    traceability_status: DIVERGENT_RECORDED_NOT_RESOLVED
+  publication_snapshot_schema:
+    title: Publication Snapshot Contract
+    classification: CONFIDENTIAL
+    additional_properties: false
+    required: [publication_id, publication_version, article_id, article_version_id, content_schema_version, renderable_content, product_selection_refs, safe_offer_projection_version, disclosure_version, policy_bundle_version, quality_result_id, approval_ids, seo_metadata, input_hashes, snapshot_sha256]
+    authoritative_instance_available: false
+  public_readmodel:
+    classification: PUBLIC
+    implementation_slice: SLICE-016
+    tables: [readmodel.public_article, readmodel.public_article_block, readmodel.public_product_card, readmodel.public_offer, readmodel.public_route]
+    runtime_control_table: readmodel.runtime_control
+    runtime_control_implementation_slice: SLICE-022
+    runtime_control_in_scope: false
+    exact_source_to_row_mapping: NOT_DEFINED
+  role_boundary:
+    projection_role: raos_projection_rw
+    projection_privileges: [SELECT, INSERT, UPDATE, DELETE]
+    public_role: raos_public_ro
+    public_role_schema_usage: [readmodel]
+    public_role_table_privileges: [SELECT]
+    all_other_domain_schema_privileges: NONE
+  job_surfaces:
+    publish_snapshot: {job_type: publishing.publish_snapshot.v1, implementation_slice: SLICE-015, ownership: UNRESOLVED}
+    rebuild_public_projection: {job_type: publishing.rebuild_public_projection.v1, implementation_slice: SLICE-016, idempotency_basis: [site_id, scope_type, scope_id, snapshot_generation], payload_required: [site_id, scope_type, scope_id], payload_optional: [expected_snapshot_hash], reconciled: false}
+    ops_rebuild_readmodel: {job_type: ops.rebuild_readmodel.v1, implementation_slice: SLICE-023, ownership: DISTINCT_UNCONNECTED_SURFACE}
+  event_surface:
+    event_type: jp.raos.publishing.public_projection_rebuilt.v1
+    required: [site_id, scope_type, scope_id, projection_generation, row_count]
+    snapshot_identity_present: false
+    row_count_semantics: NOT_DEFINED
+  surface_conflicts:
+    heading_level: {database: '2..6', public_openapi: '2..4', reconciled: false}
+    badges_shape: {database: object, public_openapi: array, reconciled: false}
+    destination_host: {database: nullable, public_openapi: required_string, reconciled: false}
+    projection_generation: {database: greater_than_0, public_openapi: minimum_0, reconciled: false}
+    rebuild_idempotency: {catalog: snapshot_generation, payload: expected_snapshot_hash, reconciled: false}
+  security_boundary:
+    public_reads_readmodel_only: true
+    minimum_necessary_public_fields: true
+    exact_snapshot_to_public_allowlist: NOT_DEFINED
+    finance_evidence_ai_raw_fields_forbidden: true
+    controls: [SEC-DATA-004, SEC-DATA-006]
+    threats: [THR-018, THR-019]
+record_defaults:
+  projections:
+    status: NOT_EVALUATED
+    records: []
+    empty_records_interpretation: NO_PROJECTION_OR_EVIDENCE_NOT_ZERO_VALID_PROJECTIONS
+  public_rows: {status: NOT_EVALUATED, records: []}
+  jobs: {status: NOT_EVALUATED, records: []}
+  events: {status: NOT_EVALUATED, records: []}
+  audits: {status: NOT_EVALUATED, records: []}
+  publications: {status: NOT_EVALUATED, records: []}
+execution_defaults:
+  runtime_reader: NOT_IMPLEMENTED
+  pure_projector: NOT_IMPLEMENTED
+  runtime_projector: NOT_IMPLEMENTED
+  filesystem_runtime: NOT_EXECUTED
+  database: NOT_EXECUTED
+  api: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event: NOT_EXECUTED
+  audit: NOT_EXECUTED
+  idempotency: NOT_EXECUTED
+  unit_of_work: NOT_EXECUTED
+  outbox: NOT_EXECUTED
+  approval: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  external_actions: []
+verification_defaults:
+  local_reference_checks: NOT_EXECUTED
+  formal_tst_011: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  affected_trace_suites: NOT_EXECUTED
+  runtime_public_isolation: NOT_EXECUTED
+  runtime_atomicity: NOT_EXECUTED
+  runtime_idempotency: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+  readiness: NOT_READY
+  production_eligible: false
+implementation_boundary:
+  runtime_modules: []
+  domain_modules: []
+  application_modules: []
+  ports: []
+  adapters: []
+  database_changes: []
+  storage_changes: []
+  api_changes: []
+  job_changes: []
+  event_changes: []
+  status_changes: []
+  generated_binding_changes: []
+  allowed_outputs: [reference_contract, deterministic_reference_projection, source_manifest, documentation, isolated_tests]
+  executable_projector_requires: OWNER_APPROVED_DESIGN_HANDOFF_V1
+  runtime_projector_requires: OWNER_APPROVED_DESIGN_HANDOFF_V1
