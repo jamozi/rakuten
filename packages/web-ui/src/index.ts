@@ -310,3 +310,24 @@ export type {
   PublicPerformanceRumSyntheticCoordinateInput,
   PublicPerformanceRumTarget,
 } from './public-performance-rum.ts';
+
+export {
+  PUBLIC_ACCESSIBILITY_ACCEPTANCE_CLASSIFICATION,
+  PUBLIC_ACCESSIBILITY_ACCEPTANCE_ERROR_CODES,
+  PUBLIC_ACCESSIBILITY_CHECKLIST,
+  PUBLIC_ACCESSIBILITY_COMPONENTS,
+  PUBLIC_ACCESSIBILITY_EVIDENCE_SUITES,
+  PUBLIC_ACCESSIBILITY_SCREENS,
+  PublicAccessibilityAcceptanceError,
+  createPublicAccessibilityAcceptanceCandidate,
+  validatePublicAccessibilityAcceptanceCandidate,
+} from './public-accessibility-acceptance.ts';
+export type {
+  PublicAccessibilityAcceptanceCandidate,
+  PublicAccessibilityAcceptanceErrorCode,
+  PublicAccessibilityAcceptanceInput,
+  PublicAccessibilityAssessment,
+  PublicAccessibilityBoundaryResult,
+  PublicAccessibilitySyntheticCoordinateInput,
+  PublicAccessibilityVerificationMethod,
+} from './public-accessibility-acceptance.ts';
