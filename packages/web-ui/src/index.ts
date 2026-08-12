@@ -352,3 +352,24 @@ export type {
   FreshnessOperationsWorkspaceInput,
   FreshnessOperationsWorkspaceModel,
 } from './freshness-operations-workspace.ts';
+
+export {
+  ANALYTICS_FINANCE_SCREEN_IDS,
+  ANALYTICS_FINANCE_SCREENS,
+  ANALYTICS_FINANCE_WORKSPACE_CLASSIFICATION,
+  ANALYTICS_FINANCE_WORKSPACE_ERROR_CODES,
+  AnalyticsFinanceWorkspaceError,
+  createAnalyticsFinanceWorkspaceCandidate,
+  createAnalyticsFinanceWorkspaceModel,
+  validateAnalyticsFinanceWorkspaceCandidate,
+} from './analytics-finance-workspace.ts';
+export type {
+  AnalyticsFinanceDataSlot,
+  AnalyticsFinanceRole,
+  AnalyticsFinanceScreenId,
+  AnalyticsFinanceScreenMetadata,
+  AnalyticsFinanceWorkspaceCandidate,
+  AnalyticsFinanceWorkspaceErrorCode,
+  AnalyticsFinanceWorkspaceInput,
+  AnalyticsFinanceWorkspaceModel,
+} from './analytics-finance-workspace.ts';
