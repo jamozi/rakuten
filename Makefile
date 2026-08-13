@@ -130,7 +130,9 @@ override NPM_RUN := $(NODE_RUN) "$(NPM_CLI)" \
 	postgres-down postgres-test object-storage-config object-storage-up \
 	object-storage-health object-storage-down object-storage-test \
 	pro-runtime-install pro-setup pro-doctor pro-ask pro-resume \
-	pro-import-response \
+	pro-import-response wordpresscom-oauth-setup \
+	wordpresscom-create-review-draft wordpresscom-prepare-mvp-drafts \
+	wordpresscom-preview-mvp \
 	ci-network-assert ci-hydrate ci-repository-policy ci-static ci-unit \
 	ci-contracts ci-database ci-storage
 
@@ -154,6 +156,19 @@ PRO_INTERACTIVE_AUTH_WAIT_SECONDS ?= 900
 PRO_NODE ?= /home/minami/.nvm/versions/node/v24.18.1/bin/node
 PRO_NPM_CLI ?= /home/minami/.nvm/versions/node/v24.18.1/lib/node_modules/npm/bin/npm-cli.js
 override PRO_PYTHON_LAUNCHER := $(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_python.sh
+override WORDPRESSCOM_REVIEW_DRAFT_LAUNCHER := $(RAOS_REPOSITORY_ROOT)/scripts/wordpresscom_review_draft_python.sh
+
+wordpresscom-oauth-setup:
+	"$(WORDPRESSCOM_REVIEW_DRAFT_LAUNCHER)" oauth-setup
+
+wordpresscom-create-review-draft:
+	"$(WORDPRESSCOM_REVIEW_DRAFT_LAUNCHER)" create-review-draft
+
+wordpresscom-prepare-mvp-drafts:
+	"$(WORDPRESSCOM_REVIEW_DRAFT_LAUNCHER)" prepare-mvp-drafts
+
+wordpresscom-preview-mvp:
+	"$(WORDPRESSCOM_REVIEW_DRAFT_LAUNCHER)" preview-mvp
 
 pro-runtime-install:
 	"$(PRO_PYTHON_LAUNCHER)" runtime-install \

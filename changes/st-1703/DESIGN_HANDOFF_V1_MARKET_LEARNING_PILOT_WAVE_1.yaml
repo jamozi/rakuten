@@ -1,0 +1,228 @@
+DESIGN_HANDOFF_V1:
+  document_version: 1
+  approval_status: APPROVED_BY_REPOSITORY_OWNER
+  approval_date: '2026-08-12'
+  approval_record:
+    owner_statement: >-
+      取得したProレビューの利用を承認。既に承認した市場学習パイロットの実装を続行。
+    approved_pro_run_id: 20260812T012017Z-10a03a59b00d
+    approved_pro_response_sha256: 2ebc30b1bae74eaeacaaeb26645be9bc164a550f03a7623ad1498bbc387ae92f
+    approved_pro_record_type: PRO_REVIEW_TEXT_V1
+    approved_pro_authority_before_owner_approval: UNAPPROVED_REVIEW
+    raw_pro_material_in_repository: FORBIDDEN
+  approved_story: ST-1703
+  slice_id: MARKET_LEARNING_PILOT_WAVE_1
+  approved_scope:
+    - >-
+      Implement one narrow local market-learning pilot slice that composes an
+      already evaluated ST-0805 PolicyEvaluationResult, one recorded ST-0502
+      Rakuten item-search result, and a WordPress draft-only port.
+    - >-
+      Add deterministic, immutable domain values for the 90-day pilot economics,
+      one draft candidate, one draft receipt, and one evidence record.
+    - >-
+      Add an application service that fails closed unless the ST-0805 result is
+      locally eligible and still explicitly not publication-authorized or
+      production-eligible.
+    - >-
+      Add a WordPress inward port and an immutable recorded adapter for local
+      ENV-DEV and ENV-CI execution. The adapter may only create or update an
+      exact draft and must expose no publish or delete capability.
+    - >-
+      Add a transport-neutral official WordPress REST request builder for
+      POST /wp/v2/posts and POST /wp/v2/posts/<id>. It must force status=draft,
+      require HTTPS, refer to credentials only by secret aliases, and perform no
+      network I/O itself.
+    - >-
+      Bind Rakuten inputs to the existing recorded-only ST-0502 result and the
+      official 2026-07-01 item-search semantics. No new live Rakuten provider is
+      included.
+    - >-
+      Make repeat execution idempotent by binding the draft operation to stable
+      content, policy-result, Rakuten-result, and pilot hashes.
+    - >-
+      Add isolated ST-1703 tests and local documentation that distinguish local
+      evidence from formal TST, staging, live, publication, release, revenue, and
+      production evidence.
+  excluded_scope:
+    - WordPress navigation, authentication, network calls, or creating a real draft
+    - Publishing, scheduling, changing a published post, deleting a post, or media upload
+    - Reading, printing, persisting, or committing credential values
+    - Live Rakuten API calls, affiliate account setup, or external data collection
+    - External spend, domain purchase, paid services, or revenue claims
+    - Canonical resolution of any Open Decision
+    - Formal completion of ST-1703 or any predecessor Story
+    - Formal TST-021, TST-022, TST-032, CI, staging, release, or production claims
+  source_design_refs:
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      bytes: 7943
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      bytes: 4956
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      bytes: 71458
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      bytes: 11395
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      bytes: 24993
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - uri: repo://python/raos/domain/editorial/policy_engine.py
+      bytes: 71740
+      sha256: a9982c7f27b6cc4a1b50933d7a9e51ee24b07bcc0289c71ac20cf1d147c348ff
+    - uri: repo://python/raos/application/catalog/rakuten_item_search.py
+      bytes: 6027
+      sha256: 454c46f66ad473a81395bc08330e7b62635e78c0d1763424227d2f7ebd84688c
+    - uri: repo://python/raos/domain/catalog/rakuten_item_search.py
+      bytes: 26586
+      sha256: 4ea7f33ecee122f7e1e57590c2a972ffe7fb9aa493575a547e3354d0f01570c2
+    - uri: repo://python/raos/ports/rakuten_item_search.py
+      bytes: 1091
+      sha256: 63983941eeb4a485a3d169073f44c0e4241bdcad452d124cfce1dd07cf2d29fe
+    - uri: repo://python/raos/adapters/recorded_rakuten_item_search.py
+      bytes: 5592
+      sha256: ffdde9dda64800369ac1d90357a6b9300ff104447547bf8c4bb9bf28e89e7dd7
+  current_official_spec_refs:
+    retrieved_at: '2026-08-12'
+    wordpress_posts: https://developer.wordpress.org/rest-api/reference/posts/
+    wordpress_authentication: https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/
+    wordpress_application_passwords: https://developer.wordpress.org/advanced-administration/security/application-passwords/
+    rakuten_item_search: https://webservice.rakuten.co.jp/documentation/ichiba-item-search
+  decision:
+    authority_model:
+      slice_authority: OWNER_APPROVED_LOCAL_IMPLEMENTATION
+      canonical_authority: UNCHANGED
+      canonical_open_decision_status: UNCHANGED
+      full_st1703_acceptance: NOT_ACHIEVED
+      formal_test: NOT_EXECUTED
+      live_validation: NOT_EXECUTED
+      staging: NOT_EXECUTED
+      publication: NOT_AUTHORIZED
+      release: NOT_EXECUTED
+      revenue: NOT_OBSERVED
+      production: NOT_EXECUTED
+    pilot_profile:
+      profile: MARKET_LEARNING_PILOT_WAVE_1
+      duration_days: 90
+      currency: JPY
+      monthly_external_spend_cap: 30000
+      cumulative_loss_cap: 90000
+      labor_cost_per_hour: 3000
+      spending_activation: DISABLED
+      runtime_environments:
+        - ENV-DEV
+        - ENV-CI
+    wordpress_boundary:
+      source_of_truth: RAOS_STRUCTURED_CONTENT
+      adapter_role: DRAFT_PUBLICATION_ADAPTER
+      exact_status: draft
+      allowed_operations:
+        - CREATE_DRAFT
+        - UPDATE_DRAFT
+      forbidden_operations:
+        - PUBLISH
+        - SCHEDULE
+        - UPDATE_PUBLISHED
+        - DELETE
+        - MEDIA_UPLOAD
+      create_endpoint: POST /wp/v2/posts
+      update_endpoint: POST /wp/v2/posts/<id>
+      transport_policy: HTTPS_ONLY
+      credential_policy: SECRET_ALIAS_ONLY
+      human_publication_approval_required: true
+      network_activation: DISABLED
+    rakuten_boundary:
+      provider: RAKUTEN_ICHIBA
+      api_version: '2026-07-01'
+      input_mode: RECORDED_TEST_ONLY
+      page: 1
+      affiliate_url_source: OFFICIAL_API_OUTPUT_ONLY
+      review_body_use: FORBIDDEN
+      live_activation: DISABLED
+    policy_boundary:
+      evaluator: ST-0805
+      required_local_eligibility: true
+      publication_authorized_must_remain: false
+      production_eligible_must_remain: false
+      formal_status_must_remain: NOT_EXECUTED
+    idempotency_boundary:
+      stable_inputs:
+        - pilot_config
+        - article_version_id
+        - title
+        - content
+        - policy_local_result_digest
+        - rakuten_request_fingerprint
+        - rakuten_raw_response_sha256
+      duplicate_create_behavior: REPLAY_EXISTING_DRAFT_RECEIPT
+      changed_content_behavior: EXPLICIT_UPDATE_DRAFT
+      automatic_resubmission: FORBIDDEN
+  rationale:
+    - >-
+      The user asked to reach observable iteration sooner, and approved both the
+      captured Pro review and the existing market-learning pilot plan.
+    - >-
+      A local draft seam delivers executable feedback without claiming that
+      unresolved canonical dependencies, publication approval, or provider
+      credentials already exist.
+    - >-
+      WordPress documents POST create/update endpoints and multiple status
+      values; forcing the sole value draft makes publish and schedule impossible
+      through this slice.
+    - >-
+      WordPress recommends revocable per-application credentials over HTTPS;
+      accepting only secret aliases prevents credential material from entering
+      domain values, logs, fixtures, or repository artifacts.
+    - >-
+      Reusing the existing recorded Rakuten and ST-0805 boundaries avoids a new
+      provider path and preserves all existing policy and review-body controls.
+  rejected_alternatives:
+    - alternative: Implement automatic WordPress publication now
+      reason: Human publication approval is a canonical and repository safety gate.
+    - alternative: Call WordPress or Rakuten live during this implementation
+      reason: No endpoint ownership or credential authority is present, and live execution is outside the approved slice.
+    - alternative: Mark ST-1703 complete when the local slice passes
+      reason: Canonical dependencies and formal TST suites remain unexecuted.
+    - alternative: Create a second policy engine for the pilot
+      reason: ST-0805 is the approved local editorial policy boundary and must be reused.
+    - alternative: Use browser automation or MCP as the production adapter
+      reason: Production integrations must use official APIs and MCP is development-only.
+  constraints:
+    - Preserve domain <- application <- adapters/framework dependency direction.
+    - Do not edit canonical, upstream, imported, or generated artifacts by hand.
+    - Do not inspect or expose .secrets contents.
+    - Do not touch tmp/docs/RAOS_PRO_EXECUTION_HANDOFF_V1.zip.
+    - Do not add a network dependency or execute network I/O from tests.
+    - Keep values exact, immutable, bounded, deterministic, and safe to represent.
+    - Keep request and receipt serialization free of credential values and raw provider bodies.
+    - Use the existing Python toolchain and isolated tests/st1703 process.
+  security_and_approval_gates:
+    - Invalid environment, policy result, Rakuten result, URL, status, operation, secret alias, or response shape fails closed with a closed sanitized code.
+    - Any publish, schedule, delete, media, or published-post mutation request is structurally unrepresentable.
+    - Only an exact HTTPS origin and exact /wp-json/wp/v2/posts path family may be represented.
+    - Credential values never appear in dataclass repr, exception text, JSON evidence, fixtures, docs, or commits.
+    - Real draft creation requires a separately authorized external action plus endpoint ownership and secret-reference configuration.
+    - Publication remains a separate explicit human approval after a real draft exists.
+    - Spend remains disabled until a separately approved external-cost action.
+  acceptance_criteria:
+    - A locally eligible exact ST-0805 result can create one deterministic recorded WordPress draft receipt from one valid recorded Rakuten result.
+    - Repeating the exact create returns the same receipt with a replay disposition and no second logical draft.
+    - Changed content requires an explicit update operation bound to the existing draft id.
+    - The official request builder emits only POST create/update paths, JSON content type, status=draft, and a secret alias reference.
+    - Non-HTTPS, foreign paths/origins, query/fragment/userinfo, publish-like status, delete-like operations, credentials, malformed responses, or unapproved policy/Rakuten inputs fail closed.
+    - Evidence records explicitly keep formal, live, staging, publication, revenue, release, and production states unexecuted or unauthorized.
+    - Tests prove no file, environment, clock, socket, browser, database, or external side effect is attempted by the domain/application/recorded path.
+    - Documentation includes exact local commands and the still-required external human gates.
+  required_test_evidence:
+    - Isolated tests/st1703 pytest pass
+    - Affected ST-0502 and ST-0805 pytest suites pass in separate processes
+    - Pinned Ruff lint and format checks pass for changed Python files
+    - Pinned mypy passes for the hand-maintained Python package
+    - bash -n passes for any changed shell file
+    - make check-workspace passes
+    - python3 scripts/import_raos_design.py verify passes
+    - Sensitive-data and forbidden-path diff scan passes
+    - Git diff and status confirm the user ZIP remains untouched and unstaged
+  open_decisions: []

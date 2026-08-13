@@ -1,0 +1,370 @@
+design_handoff:
+  schema: DESIGN_HANDOFF_V1
+  approval_status: PROPOSED_REQUIRES_REPOSITORY_OWNER_EXACT_SHA256_APPROVAL
+  approved_story: ST-1703
+  title: ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2
+
+  approved_scope:
+    - Reconcile the previously approved, non-executable ST-1703 low-cost publication pilot with the exact current committed Wave 3 runtime-manifest bytes without changing the approved pilot semantics.
+    - Preserve the V1 handoff, detached approval, source contract, and generated projection byte-for-byte as historical authority and source-derived data artifacts.
+    - Preserve the V1 proposal, WordPress.com Personal candidate, interactive Codex plus Git boundary, deferred components, JPY 2000 monthly incremental-spend ceiling, inherited blockers, empty action/effect/evidence lists, and all external and publication denials with semantic delta NONE.
+    - Bind the reconciliation proposal to the exact current target commit and tree, the exact divergent V1 source commit and tree, the exact eleven-path V1 source inventory, and the complete observed Wave 3 runtime-manifest lineage.
+    - Classify the current Wave 3 runtime as committed metadata only for this non-executable pilot reconciliation; do not infer or grant Wave 3 design, live, draft, publication, release, or production authority.
+    - Record the two immutable Wave 3A commit-reference defects and the absence of a separate exact hash-bound OBJECT_DRIFT approval artifact as unresolved provenance and authority gaps that this reconciliation cannot repair or approve retroactively.
+    - Define one closed post-approval repository-local integration file cut and require a new detached approval bound to this handoff's exact SHA-256 before any V1 import, cherry-pick, reconciliation implementation, or integration.
+
+  source_design_refs:
+    - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+      bytes: 2275
+      sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
+      authority: CANONICAL
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      bytes: 7943
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      authority: CANONICAL
+    - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+      bytes: 3955
+      sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      authority: CANONICAL
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      bytes: 4956
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+      authority: CANONICAL
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      bytes: 11395
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      authority: CANONICAL
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      bytes: 71458
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      authority: CANONICAL
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml
+      bytes: 29041
+      sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+      authority: APPROVED_WAVE3_HANDOFF_WITH_PRESERVED_GATES
+    - uri: repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml
+      bytes: 1991
+      sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
+      authority: APPROVED_WAVE3_IMPLEMENTATION_ONLY
+    - uri: repo://changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml
+      bytes: 12670
+      sha256: aca2af51e2571a62215c600357fb8f0ee246e8891e60d6e5afbe40d8235ee681
+      authority: APPROVED_WAVE3_CONTENT_WITH_PUBLICATION_AUTHORITY_NONE
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS.yaml
+      bytes: 12741
+      sha256: 1c0d50faedd3c76d18101afb1032d82da21a6daf0a01e9c687371d20519926aa
+      authority: APPROVED_WAVE3A_HANDOFF_WITH_IMMUTABLE_PROVENANCE_DEFECTS_RETAINED
+    - uri: repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3A-OPAQUE-DISCUSSION-EXTENSIONS-v1.yaml
+      bytes: 1852
+      sha256: c1002959dda0de0ba0c0535697a814fa3221fcb05c7947f543452ef99232afb0
+      authority: APPROVED_WAVE3A_IMPLEMENTATION_ONLY
+    - uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+      bytes: 5656
+      sha256: 8cf00ace6e2988c3bfb7969f13cfec0786137077c1319be4b043c4b762b5fba9
+      authority: CURRENT_COMMITTED_RUNTIME_METADATA_ONLY
+    - uri: repo://git/commit/e554148349b93c8d790e7d38da467569c5badafc
+      tree: 8031b0854a35b643b6bd13c877f9eae525f054f1
+      parent_commit: 0d6286ad19fe3a30599359a33b2409b64ae00f1f
+      authority: APPROVED_V1_SOURCE_COMMIT_METADATA_ONLY_NOT_A_RUNTIME_SUBSTITUTE
+
+  decision:
+    reconciliation_kind: MECHANICAL_CURRENT_RUNTIME_METADATA_REBIND_ONLY
+    semantic_delta_from_approved_v1: NONE
+    implementation_authority: NONE_PENDING_EXACT_HANDOFF_SHA256_APPROVAL
+    approval_target:
+      kind: EXACT_HANDOFF_BYTES_ONLY
+      uri: repo://changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2.yaml
+      additional_approval_targets: []
+      markdown_or_explanatory_text_is_authority: false
+      approval_before_import_or_integration: REQUIRED
+
+    inherited_v1_semantics:
+      exact_proposal_sha256: 131534a5c035096a3e18abbc1e82f9937b50cd7d3c84e4a3fc413d52e57b6a5b
+      exact_owner_response_sha256: 5d103c64a39b8ac1e10c8a7038fa6d780ed1d1b205e071e2b52236f9540f59a6
+      pilot_duration_days: 30
+      sole_candidate_public_platform: WORDPRESSCOM_PERSONAL
+      codex_and_git_mode: INTERACTIVE_HUMAN_CONTROLLED_DRAFT_AND_LOCAL_VALIDATION_ONLY
+      deferred_disabled_components:
+        - OPENAI_API
+        - AWS
+        - CLOUDFLARE_PAGES
+        - CUSTOM_ADMIN
+        - CUSTOM_API
+        - CUSTOM_WORKER
+      incremental_external_spend:
+        currency: JPY
+        period: MONTH
+        exact_cap: 2000
+        already_paid_chatgpt_subscription_excluded: true
+        purchase_authority: NONE
+        resolves_od_009: false
+      action_effect_evidence_lists: MUST_REMAIN_EMPTY
+      source_derived_projection_semantics: MUST_REMAIN_BYTE_IDENTICAL
+
+    target_repository_state:
+      physical_repository_root: /home/minami/rakuten
+      dedicated_integration_worktree: /home/minami/rakuten/.worktrees/st-1703-first-article-integration
+      branch: codex/st-1703-first-article-integration
+      exact_target_commit: 6c014bee7004a9f1dfa726686b91f436fc9cd2f7
+      exact_target_tree: 9a1824f948b0bceb416417bfedaf101f1a452ebf
+      target_status_at_proposal_freeze: CLEAN
+      common_ancestor_with_v1_source: 0d6286ad19fe3a30599359a33b2409b64ae00f1f
+      target_and_v1_source_ancestry_relationship: DIVERGED_NEITHER_IS_ANCESTOR_OF_THE_OTHER
+
+    v1_source_identity:
+      exact_commit: e554148349b93c8d790e7d38da467569c5badafc
+      exact_tree: 8031b0854a35b643b6bd13c877f9eae525f054f1
+      exact_parent_commit: 0d6286ad19fe3a30599359a33b2409b64ae00f1f
+      exact_parent_tree: 3b84020ed4c3aa232e2755ebf9e4607fa02a44e1
+      path_count: 11
+      paths:
+        - path: changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-v1.yaml
+          bytes: 2592
+          git_blob: e30e1837933c3f0502b517bb08ed431a871285ff
+          sha256: 60a442e87ba9d965e9c49609307bb4f004bd11f9a4b9f92d5e7bd635b2fca620
+        - path: changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml
+          bytes: 13776
+          git_blob: ab26a6eef73784c159544b16b7185e92e0da9b7d
+          sha256: 4730d8de3eb11cccd76081a34da4d55b2e7070467d53b7bdacd3fb95baa976a6
+        - path: changes/st-1703/low-cost-publication-pilot/README.md
+          bytes: 1851
+          git_blob: c29879540d343fadfa819e37548043facb0cc255
+          sha256: 4f1fb405f85daf16bf353c83862b5ba30e4293a5e84c19743123633f5c1c444d
+        - path: changes/st-1703/low-cost-publication-pilot/generated/low-cost-publication-pilot.v1.json
+          bytes: 9380
+          git_blob: 23ff677d43bd2bfe3aeb56ab2d512a23504d6a8d
+          sha256: 34194a4dd874c0b2194733514aa6421131a51a0e2c843e517e207b9d46f96317
+        - path: changes/st-1703/low-cost-publication-pilot/low-cost-publication-pilot.v1.yaml
+          bytes: 7525
+          git_blob: 40e046af2e507cb92ff48f98c83328927f7a005c
+          sha256: 2bc2329f760e1a7960196fec9960e2573ed2add653e6349150dffaddf60a90f3
+        - path: changes/st-1703/low-cost-publication-pilot/manifest.yaml
+          bytes: 6214
+          git_blob: fddb87d3bbce5a67db42470c5090ab4752ea1ff8
+          sha256: dd983347c4cbfb9c541df23f15d28f5ddd6e76441452ff353a2e2808207f6746
+        - path: scripts/build_st1703_low_cost_publication_pilot.py
+          bytes: 27778
+          git_blob: 0a39cf95cb46bccf562df204de42011da27aaa33
+          sha256: 213fc191689c3ced7ed580e10bea7da9d957ceb2ef5e554a9dec7f387329adfb
+        - path: tests/st1703_low_cost/conftest.py
+          bytes: 454
+          git_blob: 8b12c824cccd08de56afdc9e2e13fdbf3c0168a4
+          sha256: 6c9a3b846e574e61496c67f886b754c55eb39fbf5345849c869f7ae9f45b52a4
+        - path: tests/st1703_low_cost/test_contract.py
+          bytes: 2959
+          git_blob: d3358313a0b643c802be78c18605599f5e99c470
+          sha256: d1f845ab8d77b4f0b41ed93ae3bca3b2da9a55e5f2ea216af7b1d61ea86fb780
+        - path: tests/st1703_low_cost/test_generation.py
+          bytes: 7337
+          git_blob: 990a336e321255cac8fec3f45124a17c2419b5b0
+          sha256: c4b56d2274bdcdf086e96210e7e4739ea1a933fb5794fa3d2b8dc5d9c3346639
+        - path: tests/st1703_low_cost/test_negative_cases.py
+          bytes: 5698
+          git_blob: 8d64a8b1195a04aa154ca636c72733eb37b7465e
+          sha256: a6dedd1445cb919bc6402a69b7a4dc0215bc3b470c26a3d3d1939939d60f71b8
+
+    wave3_runtime_manifest_lineage:
+      classification: COMMITTED_RUNTIME_METADATA_HISTORY_NOT_DESIGN_AUTHORITY
+      entries:
+        - commit: 0d6286ad19fe3a30599359a33b2409b64ae00f1f
+          tree: 3b84020ed4c3aa232e2755ebf9e4607fa02a44e1
+          bytes: 5156
+          git_blob: 6dfe69e68c2d9fe954122092aa8a565a269fba74
+          sha256: ac5f80152c846df3be09b90a28a0bd5ca93f2e165807b9fcb50ca7eb569c908c
+          relationship: HISTORICAL_V1_FIXED_BINDING
+        - commit: 347ae444ac4d8788d83e21b8e00895048e5ca5ed
+          tree: 215fcaeb4b9aae9081b4b05f1d5d4ccdc8df2e62
+          bytes: 5156
+          git_blob: 596dbb6a9566aa07e54e657271ab5c361be85aae
+          sha256: b0d229ecfddea6523d56c29efc7e273609bb2d23e995a4efab7468683ffdf879
+          relationship: INTERMEDIATE_COMMITTED_RUNTIME
+        - commit: e3c26703cb9549af0a087d94058233df2d023acb
+          tree: 7fb6812559cd3af1cc93d9e61eb91d2cd6303a08
+          bytes: 5156
+          git_blob: 51f6fc2dbe2e8ccb0feac50be8b66d58be1c7f70
+          sha256: 83d8d08a30debbb028337cdc90f254b6c6ec18be67b5aff71c7b1e4b5e669186
+          relationship: INTERMEDIATE_COMMITTED_RUNTIME
+        - commit: bc0c6b83338b39227b020ac345f66c2ef41d68a4
+          tree: ef71b5dffe7c8b7ebb9a6b20445d8d8c3526881f
+          bytes: 5156
+          git_blob: 41b82ef0b7d85f3dcdb60702ea0d91ba9bcca8c9
+          sha256: 2b7f89f04a0ad83e4ac19c1c0ef4a7b08038ab699e9f0b3e82543179ddf71f62
+          relationship: INTERMEDIATE_COMMITTED_RUNTIME
+        - commit: 17f3f23355b445813b8d09284847e399881a2a59
+          tree: 87164c21ffa141d65b774464a0f28977682b41ac
+          bytes: 5656
+          git_blob: dc06a376102d51acbdffeb5347a319e20dae1276
+          sha256: 890528f1911eb3b1c9cc884300a867fb67359f102e09d89c44a204a3149eec9f
+          relationship: INTERMEDIATE_COMMITTED_RUNTIME
+        - commit: 6c014bee7004a9f1dfa726686b91f436fc9cd2f7
+          tree: 9a1824f948b0bceb416417bfedaf101f1a452ebf
+          bytes: 5656
+          git_blob: ac0eb1e10e74a5a8f2eb3a24914fc8eebd829857
+          sha256: 8cf00ace6e2988c3bfb7969f13cfec0786137077c1319be4b043c4b762b5fba9
+          relationship: EXACT_CURRENT_RECONCILIATION_TARGET_METADATA_ONLY
+
+    historical_and_current_manifest_rule:
+      v1_historical_sha256: ac5f80152c846df3be09b90a28a0bd5ca93f2e165807b9fcb50ca7eb569c908c
+      v1_historical_bytes: 5156
+      current_target_sha256: 8cf00ace6e2988c3bfb7969f13cfec0786137077c1319be4b043c4b762b5fba9
+      current_target_bytes: 5656
+      silent_repin: FORBIDDEN
+      historical_binding_mutation: FORBIDDEN
+      git_object_as_missing_filesystem_authority_input: FORBIDDEN
+      approved_reconciliation_behavior: >-
+        Preserve and validate the historical binding inside the exact frozen V1
+        handoff, approval, and contract bytes; separately require the current
+        target manifest to exist as an exact regular filesystem file with the
+        current bytes and SHA-256. Never satisfy either check by reading a
+        historical Git blob in place of the required current filesystem input.
+      later_target_drift: STOP_REQUIRES_NEW_EXACT_RECONCILIATION_AND_OWNER_APPROVAL
+
+    preserved_wave3_authority_gaps:
+      repair_or_retroactive_approval_by_v2: FORBIDDEN
+      wave3a_immutable_commit_reference_defects:
+        status: UNRESOLVED_IMMUTABLE_PROVENANCE_DEFECT
+        entries:
+          - embedded_nonexistent_commit: e3c2670805f32d9be06592128dd2225593318997
+            observed_same_subject_commit: e3c26703cb9549af0a087d94058233df2d023acb
+            substitution_as_authority: FORBIDDEN
+          - embedded_nonexistent_commit: bc0c6b8fc118c94e20c6df8eaa6337e7a3b64e92
+            observed_same_subject_commit: bc0c6b83338b39227b020ac345f66c2ef41d68a4
+            substitution_as_authority: FORBIDDEN
+      object_drift_slice:
+        commit: 6c014bee7004a9f1dfa726686b91f436fc9cd2f7
+        separate_exact_hash_bound_handoff_or_approval_found: false
+        worklog_owner_authorization_statement_is_detached_approval_authority: false
+        status: COMMITTED_RUNTIME_WITHOUT_SEPARATE_EXACT_HASH_BOUND_DESIGN_APPROVAL_ARTIFACT
+      effect_on_this_v2_scope: >-
+        These gaps block any authority promotion or inference for Wave 3 but do
+        not require a new business or runtime decision for the safe, inert,
+        metadata-only low-cost pilot reconciliation. All live and publication
+        boundaries therefore remain denied.
+
+    post_approval_integration_file_cut:
+      prerequisite:
+        detached_approval_path: changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-RECONCILIATION-v2.yaml
+        must_bind_exact_handoff_sha256: true
+        must_bind_target_commit_and_tree: true
+        must_bind_v1_source_commit_and_tree: true
+        must_bind_current_manifest_sha256: true
+        implementation_authority_before_detached_approval: NONE
+      import_rule:
+        source_commit: e554148349b93c8d790e7d38da467569c5badafc
+        exact_initial_path_count: 11
+        source_blob_inventory: EXACTLY_THE_V1_SOURCE_IDENTITY_PATHS_ABOVE
+        import_before_owner_exact_sha256_approval: FORBIDDEN
+        alternate_source_or_partial_import: FORBIDDEN
+      byte_identical_final_v1_paths:
+        - changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-v1.yaml
+        - changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml
+        - changes/st-1703/low-cost-publication-pilot/generated/low-cost-publication-pilot.v1.json
+        - changes/st-1703/low-cost-publication-pilot/low-cost-publication-pilot.v1.yaml
+        - tests/st1703_low_cost/conftest.py
+        - tests/st1703_low_cost/test_contract.py
+      only_v1_imported_paths_permitted_to_change_under_v2:
+        - changes/st-1703/low-cost-publication-pilot/README.md
+        - changes/st-1703/low-cost-publication-pilot/manifest.yaml
+        - scripts/build_st1703_low_cost_publication_pilot.py
+        - tests/st1703_low_cost/test_generation.py
+        - tests/st1703_low_cost/test_negative_cases.py
+      required_v2_changes:
+        - Append a clear V2 reconciliation section to README without changing the inherited V1 pilot semantics or claiming external evidence.
+        - Make the generator validate the exact frozen V1 authority/data artifacts, the exact V2 handoff and detached approval, and the exact current regular-file runtime manifest as separate historical and current inputs.
+        - Keep the generated low-cost-publication-pilot.v1.json projection byte-identical at 9380 bytes and SHA-256 34194a4dd874c0b2194733514aa6421131a51a0e2c843e517e207b9d46f96317.
+        - Regenerate manifest.yaml only through the generator and record both the superseded historical generated-manifest SHA-256 dd983347c4cbfb9c541df23f15d28f5ddd6e76441452ff353a2e2808207f6746 and the exact current runtime-manifest binding without treating either as formal evidence.
+        - Add focused positive and fail-closed tests for the two-era binding, exact V2 approval, current filesystem manifest drift, prohibited Git-object substitution, immutable V1 artifacts, and unchanged empty action/effect/evidence boundaries.
+      additional_new_paths_after_approval:
+        - changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-RECONCILIATION-v2.yaml
+      protected_outside_paths:
+        - changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml
+        - changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml
+        - changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml
+        - changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS.yaml
+        - changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3A-OPAQUE-DISCUSSION-EXTENSIONS-v1.yaml
+        - changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+        - scripts/build_wordpresscom_mvp_runtime_manifest.py
+        - docs/canonical/**
+        - docs/upstream/**
+        - docs/manifest.json
+        - changes/st-0005/**
+        - docs/worklogs/ST-1703.md
+      integration_outside_scope:
+        - shared Main mutation
+        - commit
+        - push
+        - pull request
+        - publication
+        - live provider action
+
+  rationale:
+    - The approved V1 pilot is already deliberately inert and fail closed; the only integration incompatibility is that its exact authority chain also binds an earlier Wave 3 runtime-manifest byte identity.
+    - The current target and V1 source diverged from one exact common ancestor, so a conflict-free Git import would not prove authority compatibility or make the old current-filesystem hash assertion true.
+    - Separating the immutable historical binding from the exact current filesystem binding preserves the approved V1 record without silently rewriting it or using a historical Git object as a substitute for current repository bytes.
+    - Exact target and source identities plus a closed path inventory make the later integration review reproducible while granting no authority before the owner's exact-SHA approval.
+    - The discovered Wave 3 provenance gaps are recorded rather than normalized, corrected, accepted, or hidden because this pilot reconciliation has no authority to amend approved Wave 3A bytes or retroactively approve a runtime slice.
+    - Keeping the generated projection byte-identical proves the V2 change is provenance reconciliation only and does not modify platform, spend, automation, quality, or publication semantics.
+
+  rejected_alternatives:
+    - alternative: Cherry-pick the V1 commit before a new exact-SHA owner approval
+      reason: The V1 generator would fail closed against the current runtime manifest, and Git conflict absence is not implementation authority.
+    - alternative: Edit or silently repin the V1 handoff, detached approval, source contract, or generated projection to the current manifest SHA-256
+      reason: Those bytes are the approved historical authority and data chain; changing them would destroy the exact approval binding or introduce an unapproved semantic record.
+    - alternative: Read the historical ac5f8015 runtime-manifest Git blob when the current filesystem contains 8cf00ace
+      reason: A historical object is provenance metadata, not a valid current runtime input, and would bypass fail-closed filesystem drift detection.
+    - alternative: Treat the current runtime manifest, commit history, author identity, README, or worklog as independent design approval
+      reason: Those artifacts prove bytes or record statements but do not replace a required exact hash-bound handoff and detached approval.
+    - alternative: Correct the two invalid Wave 3A commit IDs in place or substitute the same-subject commits as authority
+      reason: The Wave 3A handoff and approval are immutable; this V2 scope cannot repair or reinterpret their approved bytes.
+    - alternative: Treat this V2 approval as retroactive authority for OBJECT_DRIFT or any Wave 3 live operation
+      reason: The owner approval target is only the low-cost reconciliation handoff and expressly grants no Wave 3, live, draft, publication, release, or production authority.
+    - alternative: Add a second public platform, provider integration, unattended runtime, browser automation, or external action while reconciling the metadata
+      reason: Each would change approved V1 semantics and require separate canonical, security, credential, finance, and human authority.
+
+  constraints:
+    - Before exact owner approval, create or modify no file other than this all-new proposal and its non-authoritative one-way handshake explanation.
+    - This handoff is a proposal and grants no implementation, import, cherry-pick, integration, external, live, draft, publication, release, staging, or production authority.
+    - The repository owner must approve this exact handoff SHA-256; approval of prose, a summary, a branch, a commit, a tree, the V1 handoff, or the explanatory Markdown is insufficient.
+    - The future detached approval must be a new immutable file and must not mutate either V1 approval or this V2 handoff.
+    - Preserve the exact V1 proposal semantics and the exact byte-identical protected V1 paths listed in the post-approval file cut.
+    - Do not hand-edit generated output; manifest.yaml may change only through the owner generator after the V2 detached approval exists and validates.
+    - Do not alter the current Wave 3 runtime manifest, its generator, Wave 3/Wave 3A handoffs or approvals, canonical/imported/status/evidence/worklog files, or shared Main.
+    - Do not use a Git blob, alternate worktree, missing file, symlink, non-regular file, environment value, or runtime parameter as a substitute for an exact required filesystem input.
+    - Preserve OD-002, OD-005, OD-007, OD-008, OD-009, OD-012, OD-013, and OD-015 safe defaults and unresolved status.
+    - Preserve ST-1703 dependency promotion false, Story acceptance false, and formal TST-021, TST-022, and TST-032 as NOT_EXECUTED.
+    - Preserve all action, effect, provider, purchase, credential, domain, draft, publication, staging, release, production, and evidence lists as empty.
+
+  security_and_approval_gates:
+    - Implementation authority remains NONE until the repository owner explicitly approves this handoff's exact SHA-256 and a detached V2 approval artifact records that exact value.
+    - Approval, if later granted, authorizes only the exact repository-local post-approval integration file cut in this handoff.
+    - The future V2 detached approval cannot authorize a purchase, credential access, Secret access, browser action, WordPress.com call, draft creation or update, live preview or prepare, journal access, external write, affiliate activation, staging, publication, release, or production.
+    - The V2 generator must verify every authority and current-runtime input before producing or checking any output and must fail with closed sanitized errors on missing, changed, unsafe, malformed, or substituted input.
+    - The V2 generator and tests must not inspect `.secrets/`, call the network, invoke a browser, resolve credentials, access a provider, or use production or personal data.
+    - The two immutable Wave 3A commit-reference defects and the missing exact OBJECT_DRIFT approval artifact remain blockers to authority inference; V2 approval must not relabel them PASS.
+    - A later Wave 3 target commit, tree, or runtime-manifest change invalidates this proposal and requires a new exact reconciliation handoff and owner approval before integration.
+    - Publication remains manual and separately approval-gated under the canonical and Wave 3 boundaries even after any repository-local reconciliation is implemented.
+
+  acceptance_criteria:
+    - This handoff contains all required DESIGN_HANDOFF_V1 fields, has open_decisions exactly empty, and names exactly one approval target: its own exact bytes and SHA-256.
+    - Every canonical, Wave 3, Wave 3A, current manifest, target Git, source Git, lineage, and V1 blob identity in this handoff recomputes exactly in the designated checkout.
+    - The current manifest is exactly 5656 bytes with SHA-256 8cf00ace6e2988c3bfb7969f13cfec0786137077c1319be4b043c4b762b5fba9, while the V1 historical binding remains exactly 5156 bytes with SHA-256 ac5f80152c846df3be09b90a28a0bd5ca93f2e165807b9fcb50ca7eb569c908c.
+    - The V1 pilot semantic delta is NONE and no platform, spend, component, role, quality, blocker, action, effect, evidence, status, or external authority is added or promoted.
+    - The V1 handoff, V1 approval, V1 contract, and V1 generated projection are required to remain byte-identical in any later integration.
+    - The two Wave 3A invalid embedded commit references and the missing separate exact OBJECT_DRIFT approval artifact are retained as unresolved gaps and confer no authority.
+    - No V1 file import, generator/test reconciliation, cherry-pick, integration, or detached approval artifact is created before repository-owner exact-SHA approval.
+    - After approval, the final repository delta is restricted to the exact post-approval file cut; every protected outside path remains unchanged.
+    - The generated V1 projection remains exactly 9380 bytes with SHA-256 34194a4dd874c0b2194733514aa6421131a51a0e2c843e517e207b9d46f96317.
+    - All formal, live, browser, provider, staging, publication, release, revenue, and production evidence remains absent or NOT_EXECUTED.
+
+  required_test_evidence:
+    - Before approval, parse this YAML with the repository Python and PyYAML, verify its complete required-field shape and empty open_decisions, and recompute every exact existing filesystem and Git identity without writing.
+    - Before approval, verify the exact two-file proposal inventory, run git diff --check, and run a bounded sensitive-data scan over only the two proposal paths without traversing `.secrets/`.
+    - After approval, require the detached V2 approval to bind this handoff's exact byte count and SHA-256, the target commit/tree, V1 source commit/tree, and current runtime-manifest SHA-256.
+    - After approval, verify the exact initial eleven V1 source blobs and the exact final protected/mutable/new path inventories.
+    - After approval, run deterministic build and read-only --check and prove the generated V1 projection is byte-identical while manifest.yaml is generator-owned and records both eras without attestation inflation.
+    - After approval, run the isolated tests/st1703_low_cost suite with positive current-binding coverage and negative historical/current substitution, drift, malformed, unsafe-path, nonempty-action/effect/evidence, and authority-inflation cases.
+    - After approval, run the existing isolated tests/st1703 suite and current runtime-manifest generator --check without any live, browser, provider, Secret, or external action.
+    - After approval, run pinned Ruff format/check, strict mypy, Python parse/import, make check-workspace, canonical import verification, exact-path sensitive scan, and git diff --check.
+    - Formal TST-021, TST-022, TST-032, live browser/provider, staging, publication, release, revenue, and production evidence must remain explicitly NOT_EXECUTED.
+
+  open_decisions: []

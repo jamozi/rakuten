@@ -1,0 +1,244 @@
+DESIGN_HANDOFF_V1:
+  document_version: 1
+  approval_status: PROPOSED_REQUIRES_REPOSITORY_OWNER_APPROVAL
+  proposal_date: '2026-08-12'
+  approved_story: ST-1703
+  slice_id: WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_NUMERIC_PROXY_ACTIVATION
+
+  approval_record:
+    prior_owner_external_action_statement: >-
+      WordPress下書き連携の実装と、このサイトへの非公開下書き1件の作成を承認
+    prior_wave_2_approved_sha256: 798e005faee6c7367496a79e71b9a2d84fc9d9433e4e368276633a8539325cbd
+    external_action_authorized: true
+    exact_route_amendment_approved: false
+    publication_authorized: false
+
+  pro_advisory:
+    importance: gated
+    status: PRO_UNAVAILABLE
+    reason_code: MCP_CALL_FAILED
+    response_captured: false
+    reconciliation: >-
+      No Pro content is available or used. The route amendment is derived only
+      from current official WordPress.com documentation and bounded live/local
+      evidence, and remains proposal-only until the repository owner approves
+      this file's exact SHA-256.
+
+  objective: >-
+    Replace only the unavailable direct WordPress.com post route in the
+    approved Wave 2 review-draft integration with the current official,
+    numeric-site-ID WordPress.com API route, then use the already stored
+    single-blog posts-scope OAuth token to create at most one non-public draft
+    review copy on kurashierabinote.wordpress.com.
+
+  approved_scope:
+    - >-
+      Replace the direct API host/path only with exact HTTPS origin
+      public-api.wordpress.com and exact numeric-site path
+      /wp/v2/sites/256699520/posts.
+    - >-
+      Replace the direct preflight only with one authenticated read-only GET to
+      /wp/v2/sites/256699520/posts?context=edit&per_page=1&_fields=id before a
+      new durable INTENT. Accept only HTTP 200 and an empty array or one object
+      containing only a positive integer id.
+    - >-
+      Preserve the exact immutable title, rendered body, content hash,
+      operation binding, status=draft, one-create durable journal, committed
+      replay, OAuth secret aliases, sanitized receipt, and no-publication
+      boundary from approved Wave 2.
+    - >-
+      Execute the existing create-review-draft command at most once after all
+      amended offline gates pass. A successful result is only a non-public
+      editorial review copy.
+
+  excluded_scope:
+    - Direct-site, query-route, domain-name proxy, legacy REST v1, or browser fallback
+    - Dynamic endpoint discovery or accepting a site identifier from CLI, environment, or provider output
+    - Publication, scheduling, private publication, update, delete, media, taxonomy, comments, sharing, or publicize
+    - Automatic retry or resubmission after a persisted or ambiguous POST intent
+    - Any change to OAuth scope, token alias, redirect URI, article, Source Packet, renderer, title, or publication authority
+    - Formal TST, hosted CI, staging, release, production, revenue, or canonical ST-1703 completion claims
+
+  source_design_refs:
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2.yaml
+      bytes: 17895
+      sha256: 798e005faee6c7367496a79e71b9a2d84fc9d9433e4e368276633a8539325cbd
+      authority: APPROVED_BY_REPOSITORY_OWNER
+    - uri: repo://changes/st-1703/first-article-review-draft.v1.md
+      bytes: 11109
+      sha256: 58e225050d2bf30593fdd039ed9a307cd35db928b946bec470acbb7aa442a233
+      authority: PROPOSAL_ONLY
+    - uri: repo://changes/st-1703/source-packet-candidate.first-article.v1.yaml
+      bytes: 8116
+      sha256: 730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2
+      authority: REVIEW_REQUIRED_NOT_APPROVED
+    - uri: https://developer.wordpress.com/docs/api/getting-started/
+      retrieved_at: '2026-08-12'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+    - uri: https://developer.wordpress.com/docs/api/rest-api-reference/
+      retrieved_at: '2026-08-12'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+
+  bounded_live_evidence:
+    oauth_setup:
+      result: SUCCESS
+      access_token_stored: true
+      token_value_observed_or_logged: false
+      exact_scope: posts
+      exact_target_origin: https://kurashierabinote.wordpress.com
+      publication_authorized: false
+    approved_direct_route_attempt:
+      result: STOPPED_BEFORE_INTENT
+      reason_code: REVIEW_DRAFT_HTTPS_SETUP_INVALID
+      durable_state_file_present_after_stop: false
+      post_attempted: false
+    public_site_identity_lookup:
+      endpoint: https://public-api.wordpress.com/rest/v1.1/sites/kurashierabinote.wordpress.com
+      authentication_used: false
+      exact_positive_site_id: 256699520
+      returned_site_url_equivalent_to_exact_target: true
+      raw_response_persisted_or_logged: false
+
+  decision:
+    authority_model:
+      amendment_authority: OWNER_APPROVAL_REQUIRED
+      prior_external_action_authorization: RECEIVED
+      article_authority: UNAPPROVED_EDITORIAL_REVIEW_COPY
+      publication_authorized: false
+      formal_test: NOT_EXECUTED
+      live_draft_create: NOT_EXECUTED
+      production: NOT_EXECUTED
+
+    target:
+      canonical_site_origin: https://kurashierabinote.wordpress.com
+      provider_api_origin: https://public-api.wordpress.com
+      numeric_site_id: 256699520
+      exact_collection_path: /wp/v2/sites/256699520/posts
+      exact_preflight_path: /wp/v2/sites/256699520/posts?context=edit&per_page=1&_fields=id
+      create_method: POST
+      preflight_method: GET
+      expected_create_http_status: 201
+      exact_post_status: draft
+      maximum_successful_creates: 1
+      operation: CREATE_REVIEW_DRAFT
+
+    transport:
+      implementation: PYTHON_STANDARD_LIBRARY_HTTPS
+      exact_remote_host: public-api.wordpress.com
+      exact_remote_port: 443
+      tls_verification: SYSTEM_DEFAULT_REQUIRED_WITH_AMBIENT_OVERRIDES_REJECTED
+      proxy_inheritance: DISABLED
+      redirects: FORBIDDEN
+      request_retries: 0
+      query_route_fallback: FORBIDDEN
+      direct_site_fallback: FORBIDDEN
+      domain_identifier_fallback: FORBIDDEN
+      legacy_api_fallback: FORBIDDEN
+
+    immutable_bindings:
+      approved_wave_2_sha256: 798e005faee6c7367496a79e71b9a2d84fc9d9433e4e368276633a8539325cbd
+      route_amendment_authority: EXACT_FILE_SHA256_BOUND_BY_OWNER_STATEMENT
+      article_sha256: 58e225050d2bf30593fdd039ed9a307cd35db928b946bec470acbb7aa442a233
+      source_packet_sha256: 730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2
+      rendered_content_sha256: 6eab149a4057d3f21dad6fa9efdbe66aadfafa00f100038541a3971693a8503d
+      exact_title: '[レビュー用・未承認] 機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ'
+      title_or_content_change: FORBIDDEN
+
+    durable_state:
+      root: .secrets/wordpresscom-review-draft/state
+      committed_replay_before_preflight: REQUIRED_WITHOUT_NETWORK
+      new_create_order:
+        - ACQUIRE_EXCLUSIVE_LOCK
+        - PROVE_NO_EXISTING_STATE
+        - AUTHENTICATED_READ_ONLY_NUMERIC_SITE_PREFLIGHT
+        - FSYNC_INTENT
+        - ATTEMPT_ONE_POST
+        - VALIDATE_EXACT_DRAFT_RECEIPT
+        - FSYNC_COMMITTED
+      preflight_failure: STOP_WITHOUT_INTENT_OR_POST
+      ambiguous_post_failure: RETAIN_INTENT_AND_STOP_WITHOUT_RESUBMISSION
+      exact_committed_repeat: RETURN_REPLAY_WITHOUT_NETWORK
+
+    live_receipt:
+      schema: WORDPRESSCOM_REVIEW_DRAFT_RECEIPT_V1
+      canonical_target_origin: https://kurashierabinote.wordpress.com
+      authority: OWNER_AUTHORIZED_EXTERNAL_REVIEW_COPY
+      exact_status: draft
+      publication_authorized: false
+      production_eligible: false
+      raw_token_or_response_body: FORBIDDEN
+
+  rationale:
+    - >-
+      The approved direct free-subdomain route returned a closed setup refusal
+      even after OAuth succeeded, and the durable state remained absent, so no
+      create attempt needs reconciliation.
+    - >-
+      Current official WordPress.com documentation describes the standardized
+      site-specific route as /wp/v2/sites/{site_id}/{endpoint} and recommends a
+      numeric site ID as the reliable form across site types.
+    - >-
+      The public site-identity endpoint returned positive ID 256699520 bound to
+      the exact target site. Pinning it removes dynamic route discovery and
+      domain-alias ambiguity from the mutating request.
+    - >-
+      Changing only the remote API authority and path preserves all reviewed
+      content, OAuth, durable one-create, no-retry, and no-publication controls.
+
+  rejected_alternatives:
+    - alternative: Retry the unavailable direct /wp-json/wp/v2/posts route
+      reason: The authenticated preflight already failed closed and another identical attempt has no new evidence.
+    - alternative: Use the WordPress query-route form
+      reason: It is not the standardized current WordPress.com site-specific API and was not approved.
+    - alternative: Use a domain-name site identifier in the public API proxy
+      reason: Current official documentation recommends the numeric site ID as more reliable.
+    - alternative: Discover or accept the site ID dynamically for every run
+      reason: A mutating operation should be bound to one reviewed immutable identifier.
+    - alternative: Use REST v1 posts/new or browser automation
+      reason: The current official wp/v2 numeric-site route is available and keeps the existing response contract.
+    - alternative: Publish or privately publish the review copy
+      reason: Only status=draft is authorized.
+
+  constraints:
+    - Preserve domain <- application <- adapters/framework.
+    - Keep this amendment within ST-1703 and the existing Wave 2 review-draft command.
+    - Do not edit canonical, upstream, imported, generated, or owner ZIP artifacts.
+    - Do not read, print, persist in evidence, or commit any credential value.
+    - Do not add dependencies, hydrate toolchains, or add another command or CLI option.
+    - Preserve committed replay without preflight or network.
+    - Preserve fail-closed ambiguous intent without retry.
+    - Keep every API request on exact HTTPS public-api.wordpress.com:443.
+
+  security_and_approval_gates:
+    - This exact amendment SHA-256 requires explicit repository-owner approval before implementation.
+    - The existing owner-only access-token file must pass exact mode, owner, type, size, and symlink checks before use.
+    - Preflight and POST must reject ambient TLS overrides, proxy use, redirects, wrong host, wrong port, and wrong path.
+    - Preflight must complete before any new state or POST and must persist no response content.
+    - The sole POST must occur only after a durable fsynced INTENT.
+    - Only HTTP 201, positive integer id, exact status=draft, exact canonical target links, and exact echoed title/content are accepted.
+    - Any post-attempt uncertainty retains ambiguous state and forbids automatic retry.
+    - Publication continues to require a separate later explicit human approval.
+
+  acceptance_criteria:
+    - The provider API adapter can address only public-api.wordpress.com:443 and numeric site ID 256699520.
+    - The application-facing port is implemented only by the durable adapter; the one-attempt HTTPS adapter cannot bypass the journal.
+    - A committed replay performs no preflight, secret read, DNS, socket, or POST.
+    - A preflight refusal leaves no state file and performs no POST.
+    - A new successful path performs exactly GET, fsynced INTENT, one POST, validated COMMITTED in that order.
+    - The POST body contains exactly title, rendered content, and status=draft.
+    - Arbitrary or modified candidates fail before secret read or network.
+    - The sanitized receipt reports a positive draft ID, exact draft status, hashes, and explicit no-publication authority.
+    - No code path or CLI option can publish, schedule, update, delete, upload media, or insert affiliate URLs.
+
+  required_test_evidence:
+    - Focused numeric-site preflight, create, response, ordering, replay, ambiguity, and hostile-environment tests pass.
+    - Isolated tests/st1703 passes in one pytest process.
+    - Existing tests/st0502 and tests/st0805 pass in separate pytest processes.
+    - Pinned Ruff format/lint and mypy pass for all changed hand-maintained Python.
+    - py_compile and bash -n pass for changed Python and shell launchers.
+    - make check-workspace and python3 scripts/import_raos_design.py verify pass.
+    - Exact approved-input hashes and bounded sensitive-data scan pass without reading .secrets or the owner ZIP.
+    - Git staged-name and diff checks prove only amendment-owned paths are committed.
+    - Live OAuth, preflight, draft creation, and formal evidence are reported separately.
+
+  open_decisions: []

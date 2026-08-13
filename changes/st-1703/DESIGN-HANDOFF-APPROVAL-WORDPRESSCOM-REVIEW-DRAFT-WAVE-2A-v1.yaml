@@ -1,0 +1,37 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1703
+  slice_id: WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_NUMERIC_PROXY_ACTIVATION
+  handoff_uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_NUMERIC_PROXY_ACTIVATION.yaml
+  handoff_bytes: 12742
+  handoff_sha256: 5e69433222435305f8a2decef8840de4764565929d483f0e4d8b35fcd6ed7bf6
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST1703_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_ONLY
+  approved_by: repository_owner:jamozi
+  approved_on: '2026-08-12'
+  approval_source: >-
+    Exact handoff digest and slice followed by explicit repository-owner
+    approval in the connected Codex conversation. The owner statement's
+    `HA-256` prefix is recorded byte-for-byte and interpreted as the evident
+    `SHA-256` label typo only because the following 64-hex digest, exact slice,
+    and approval verb are unambiguous and the integration owner independently
+    reverified the file digest.
+  owner_approval_statement: >-
+    HA-256 5e69433222435305f8a2decef8840de4764565929d483f0e4d8b35fcd6ed7bf6 の WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_NUMERIC_PROXY_ACTIVATION を承認
+  prior_wave_2_approval_sha256: 798e005faee6c7367496a79e71b9a2d84fc9d9433e4e368276633a8539325cbd
+  canonical_reconciliation: PASS_ROUTE_ONLY_AMENDMENT_NO_CONTENT_OR_PUBLICATION_CHANGE
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-1703
+    provider_api_origin: https://public-api.wordpress.com
+    numeric_site_id: 256699520
+    maximum_successful_wordpress_creates: 1
+    canonical_target: https://kurashierabinote.wordpress.com
+    exact_status: draft
+    publication: NOT_AUTHORIZED
+    source_packet_approval: NOT_GRANTED
+    editorial_policy_pass: NOT_GRANTED
+    formal_tst: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED

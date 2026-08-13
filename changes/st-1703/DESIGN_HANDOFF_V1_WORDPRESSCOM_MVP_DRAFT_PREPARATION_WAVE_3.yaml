@@ -1,0 +1,477 @@
+design_handoff:
+  schema: DESIGN_HANDOFF_V1
+  approval_status: PROPOSED_REQUIRES_REPOSITORY_OWNER_APPROVAL
+  approved_story: ST-1703
+  title: WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3
+
+  pro_advisory:
+    importance: gated
+    doctor_status: READY
+    run_id: 20260812T181635Z-76a66bbdb404
+    first_capture_status: BLOCKED_PRO_REQUIRED
+    first_capture_reason_code: RESPONSE_NOT_IDENTIFIABLE
+    recovery_status: REFUSED
+    recovery_diagnostic_code: ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID
+    manual_import_status: ADVICE_CAPTURED
+    advice_type: PRO_ADVICE_V1
+    provenance: HUMAN_COPIED_DISPLAYED_RESPONSE
+    response_sha256: 4f6307cc00afd7f44df6cf402533bb0e433f7abbdfd773ad83d748422c921848
+    authority: UNAPPROVED_ADVICE
+    resubmitted: false
+    canonical_reconciliation: PASS_WITH_OWNER_AND_LIVE_GATES_RETAINED
+
+  owner_selected_inputs:
+    business_priority: ONE_ARTICLE_MVP_PUBLIC_LEARNING
+    operator_display_name: 暮らし選びノート編集部
+    rakuten_affiliate_registration: NOT_YET_REGISTERED
+    rakuten_id_available: false
+    affiliate_html_source: MANUAL_PASTE_FROM_OFFICIAL_RAKUTEN_AFFILIATE_UI
+    affiliate_display: IMAGE_WIDTH_128_AND_PRODUCT_NAME_WITHOUT_PRICE
+    site_title: 暮らし選びノート
+    tagline: EMPTY
+    contact_surface: WORDPRESSCOM_CONTACT_FORM_ONLY
+    improvement_cadence_days: 7
+    publication_mode: MANUAL_AFTER_SEPARATE_EXPLICIT_APPROVAL
+
+  approved_scope:
+    - Add a separate Wave 3 domain/application/ports/adapters slice for one fixed article update, five fixed page-draft creates, and read-only preview.
+    - Preserve the existing Wave 2/Wave 2A/Wave 2B create-only implementation and make the old Wave 2 journal inaccessible to Wave 3 code.
+    - Bind exact physical repository, target origin, provider origin, numeric site, article ID, author ID/name expectation, operation order, routes, queries, form members, content packet, validators, journal, and sanitized output schema.
+    - Update article ID 7 from one exact observed Wave 2 baseline to one exact placeholder-bearing draft after two exact baseline GETs and one fsynced INTENT.
+    - Create draft pages with exact slugs about, editorial-policy, privacy-policy, advertising-policy, and contact in that order, each with one independent POST budget.
+    - Reuse an exact unique existing desired object without mutation; refuse collisions, duplicates, drift, unsafe shapes, and wrong identity without overwrite.
+    - Reconcile a persisted INTENT or mutation ambiguity using bounded authenticated GET only and never resend that operation.
+    - Validate three manually filled affiliate slots in memory during preview without ingesting, persisting, printing, or authorizing their HTML or URLs.
+    - Expose only argument-free make targets wordpresscom-prepare-mvp-drafts and wordpresscom-preview-mvp.
+    - Update isolated tests, changes/st-1703/README.md, and the append-only ST-1703 worklog in one atomic Story slice.
+
+  source_design_refs:
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2B_V1_1_ACTIVATION.yaml
+      sha256: 0a10b777ccd1e786f34890458621a21a9684feb73cee2b6808a5facefeef65ee
+      authority: APPROVED_PREDECESSOR
+    - uri: repo://changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml
+      bytes: 12670
+      sha256: aca2af51e2571a62215c600357fb8f0ee246e8891e60d6e5afbe40d8235ee681
+      authority: PROPOSED_EXACT_WAVE3_CONTENT
+    - uri: repo://changes/st-1703/first-article-review-draft.v1.md
+      sha256: 58e225050d2bf30593fdd039ed9a307cd35db928b946bec470acbb7aa442a233
+      authority: APPROVED_PREDECESSOR_ARTICLE_INPUT
+    - uri: repo://changes/st-1703/source-packet-candidate.first-article.v1.yaml
+      sha256: 730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2
+      authority: REVIEW_REQUIRED_NOT_APPROVED
+    - uri: https://developer.wordpress.com/docs/api/1/get/sites/%24site/posts/%24post_ID/
+      retrieved_at: '2026-08-13'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+    - uri: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/posts/%24post_ID/
+      retrieved_at: '2026-08-13'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+    - uri: https://developer.wordpress.com/docs/api/1/get/sites/%24site/posts/
+      retrieved_at: '2026-08-13'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+    - uri: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/posts/new/
+      retrieved_at: '2026-08-13'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+
+  repository_and_executable_identity:
+    physical_repository_root: /home/minami/rakuten
+    approved_base_commit: 5e8fe71759e8f32cb510a136b6ddedaf44663703
+    exact_launcher_path: scripts/wordpresscom_review_draft_python.sh
+    exact_cli_path: scripts/wordpresscom_review_draft.py
+    launcher_sha256_at_handoff: 996e48cddb71598e181380e84531504a8a0649512861213a52b996fcb3108116
+    cli_sha256_at_handoff: 87e2d0ff06fc12059d724d74935672008f191f0623f64b879081691dac199384
+    oauth_adapter_sha256_at_handoff: ceb5ada087ef002213153ecf5bb6fb7f11f7cb4d87ee28063ebdf7ec7d6b6db1
+    predecessor_https_adapter_sha256: 02e26dbda6714fc36aa5b872df92bf0b056606a3a37ed3c4cfaa7a0dff4012a3
+    predecessor_journal_adapter_sha256: ce49db446902b56ab8450d9d3b3c86b266f7166c918642e39af791ab338654bc
+    final_live_executable_requirement: >-
+      Live execution is permitted only from the exact physical repository after
+      an atomic Wave 3 commit whose owned-path inventory and SHA-256 manifest
+      are recorded in the worklog and whose required local gates pass.
+
+  bounded_read_only_baseline_evidence:
+    observed_at: '2026-08-13'
+    method: GET
+    provider_origin: https://public-api.wordpress.com
+    path: /rest/v1.1/sites/256699520/posts/7
+    query: context=edit&fields=ID,site_ID,author,modified,title,content,URL,slug,status,type,discussion,likes_enabled,sharing_enabled,publicize_URLs
+    response_body_persisted_or_logged: false
+    article_id: '7'
+    site_id: '256699520'
+    author_id: '283672805'
+    observed_author_name_status: MISMATCH_REQUIRED_PUBLIC_DISPLAY_NAME
+    required_author_name_before_mutation: 暮らし選びノート編集部
+    modified: '2026-08-13T02:34:35+09:00'
+    title_sha256: 66899c76ff9113e5d658f412dc5faf4eb4b24bc99fc0313155dea2c8b3d9f352
+    content_sha256: 6eab149a4057d3f21dad6fa9efdbe66aadfafa00f100038541a3971693a8503d
+    slug: ''
+    status: draft
+    type: post
+    comments_open: true
+    pings_open: true
+    likes_enabled: true
+    sharing_enabled: true
+    publicize_urls_count: 0
+    mutation_performed: false
+
+  decision:
+    capability:
+      target_origin: https://kurashierabinote.wordpress.com
+      provider_origin: https://public-api.wordpress.com
+      provider_authority: public-api.wordpress.com:443
+      numeric_site_id: '256699520'
+      article_id: '7'
+      author_id: '283672805'
+      required_author_name: 暮らし選びノート編集部
+      access_token_alias: wordpresscom_oauth_access_token
+      commands:
+        prepare: make wordpresscom-prepare-mvp-drafts
+        preview: make wordpresscom-preview-mvp
+      runtime_parameters_allowed: false
+      publication_authority: NONE
+      production_eligible: false
+    immutable_operation_order:
+      - article-7-update
+      - page-about-create
+      - page-editorial-policy-create
+      - page-privacy-policy-create
+      - page-advertising-policy-create
+      - page-contact-create
+    exact_content:
+      packet_uri: repo://changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml
+      packet_bytes: 12670
+      packet_sha256: aca2af51e2571a62215c600357fb8f0ee246e8891e60d6e5afbe40d8235ee681
+      article_desired_content_sha256: 184a6214ed07ea4cf9f2acd6304df15464f21ef9e868cacb6ae71129178c63e4
+      article_outside_slots_sha256: fd2c91dc1e2664df3bccf6c20da432eac3e3cca70aabfe8dd03f55b1207a9905
+      page_content_sha256:
+        about: 147bfe03a538872597a014c41742d57f410355988c10fe246b92b5adcc1387d5
+        editorial-policy: 6a824c6cbda474db4921db134e9cb8adf6678221d3913b863f3ec81e729eb159
+        privacy-policy: 09c1442ab4479b582c2974e0f32512ff03e118e1a78848c6bf0bf57f5a4e8868
+        advertising-policy: 6731018bb1dfadcd83a82b3fc36dd288e5b3a2c946530a0ab36a88718337737f
+        contact: 03bb8256d4d93199f699c0919aa35570a29e7da4dd47d2b5d620f89970b98176
+      line_end_normalization: CRLF_AND_CR_TO_LF_ONLY
+      other_normalization_allowed: false
+      post_approval_content_edit_allowed: false
+    article_transport:
+      full_get:
+        method: GET
+        path: /rest/v1.1/sites/256699520/posts/7
+        query: context=edit&fields=ID,site_ID,author,modified,title,content,URL,slug,status,type,discussion,likes_enabled,sharing_enabled,publicize_URLs
+        required_http_status: 200
+        maximum_response_bytes: 1000000
+      update:
+        method: POST
+        path: /rest/v1.1/sites/256699520/posts/7
+        query: context=edit&fields=ID,site_ID
+        content_type: application/x-www-form-urlencoded
+        ordered_form_members:
+          - title
+          - content
+          - status
+          - publicize
+          - discussion[comments_open]
+          - discussion[pings_open]
+          - likes_enabled
+          - sharing_enabled
+        exact_status: draft
+        exact_publicize: 'false'
+        exact_comments_open: 'false'
+        exact_pings_open: 'false'
+        exact_likes_enabled: 'false'
+        exact_sharing_enabled: 'false'
+        author_member_present: false
+        extra_members_allowed: false
+      order:
+        - EXACT_FULL_BASELINE_GET
+        - FSYNC_INTENT
+        - EXACT_FULL_BASELINE_GET_AGAIN
+        - ATTEMPT_ONE_UPDATE_POST
+        - EXACT_FULL_DESIRED_READBACK_GET
+        - FSYNC_COMMITTED
+      exact_baseline_includes_modified: true
+      exact_desired_noop: REUSED_EXACT
+    page_transport:
+      exact_collection_get:
+        method: GET
+        path: /rest/v1.1/sites/256699520/posts/
+        query: context=edit&type=any&status=any&number=100&order=ASC&order_by=ID&fields=ID,site_ID,type,slug,status
+        required_http_status: 200
+        maximum_response_bytes: 1000000
+        require_found_equals_posts_length: true
+        maximum_found: 100
+        pagination_allowed: false
+      full_object_get:
+        method: GET
+        path_template: /rest/v1.1/sites/256699520/posts/{validated_positive_id}
+        query: context=edit&fields=ID,site_ID,author,modified,title,content,URL,slug,status,type,discussion,likes_enabled,sharing_enabled,publicize_URLs
+        dynamic_value_source: EXACT_VALIDATED_COLLECTION_ID_ONLY
+      create:
+        method: POST
+        path: /rest/v1.1/sites/256699520/posts/new
+        query: context=edit&fields=ID,site_ID
+        content_type: application/x-www-form-urlencoded
+        ordered_form_members:
+          - type
+          - slug
+          - title
+          - content
+          - author
+          - status
+          - publicize
+          - discussion[comments_open]
+          - discussion[pings_open]
+          - likes_enabled
+          - sharing_enabled
+        exact_type: page
+        exact_author: '283672805'
+        exact_status: draft
+        exact_publicize: 'false'
+        exact_comments_open: 'false'
+        exact_pings_open: 'false'
+        exact_likes_enabled: 'false'
+        exact_sharing_enabled: 'false'
+        extra_members_allowed: false
+      create_order:
+        - EXACT_COLLECTION_SCAN
+        - FSYNC_INTENT
+        - EXACT_COLLECTION_SCAN_AGAIN
+        - ATTEMPT_ONE_CREATE_POST
+        - EXACT_FULL_DESIRED_READBACK_GET
+        - FSYNC_COMMITTED
+      exact_unique_existing_desired: REUSED_EXACT
+      duplicate_or_mismatch: REFUSED_MISMATCH
+      slug_suffix_or_sanitization: MUTATION_AMBIGUOUS
+    response_validation:
+      duplicate_json_keys: REJECT
+      non_utf8: REJECT
+      excessive_size_or_depth: REJECT
+      unknown_or_missing_required_shape: REJECT
+      id_and_site_id_wire_forms:
+        - POSITIVE_NON_BOOL_JSON_INTEGER
+        - CANONICAL_UNSIGNED_DECIMAL_STRING_NO_LEADING_ZERO
+      booleans: EXACT_JSON_BOOLEANS_ONLY
+      required_author_id: '283672805'
+      required_author_name: 暮らし選びノート編集部
+      required_status: draft
+      required_comments_open: false
+      required_pings_open: false
+      required_likes_enabled: false
+      required_sharing_enabled: false
+      required_publicize_urls: []
+      publicize_claim: REQUEST_PUBLICIZE_FALSE_AND_NO_OBSERVED_PUBLICIZE_URLS
+      url: EXACT_TARGET_HOST_HTTPS_ONLY
+      provider_body_persisted_or_logged: false
+    no_compare_and_set_boundary:
+      etag_or_if_match_documented: false
+      metadata_previous_value_usable_for_post_wide_cas: false
+      accepted_control: EXACT_BASELINE_GET_THEN_FSYNC_INTENT_THEN_IMMEDIATE_EXACT_BASELINE_GET_THEN_ONE_POST
+      residual_race_window: FINAL_MATCHING_GET_TO_SERVER_APPLICATION_OF_POST
+      owner_risk_acceptance_required_in_handoff_approval: true
+      live_remote_writer_quiescence_required: true
+      quiescence_window: FIRST_PREFLIGHT_THROUGH_FINAL_READBACK
+      code_can_prove_quiescence: false
+      refusal_when_not_affirmed: LIVE_MUTATION_NOT_AUTHORIZED
+    journal:
+      root: .secrets/wordpresscom-review-draft/mvp-wave3-state
+      records_directory: .secrets/wordpresscom-review-draft/mvp-wave3-state/records
+      lock_file: .secrets/wordpresscom-review-draft/mvp-wave3-state/.mvp-wave3.lock
+      root_and_records_mode: '0700'
+      lock_and_record_mode: '0600'
+      format: IMMUTABLE_SEQUENCE_NUMBERED_CANONICAL_JSON_RECORD_FILES
+      maximum_records: 128
+      hash_chain: SHA256_OVER_EACH_COMPLETE_RECORD_WITH_PREVIOUS_RECORD_SHA256
+      publish_order: WRITE_EXCLUSIVE_THEN_FSYNC_FILE_THEN_FSYNC_RECORDS_DIRECTORY
+      persisted_provider_content: false
+      old_wave2_journal_access: HARD_DENY_NO_OPEN_READ_STAT_HASH_COPY_MIGRATE_OR_WRITE
+      old_wave2_journal_path: .secrets/wordpresscom-review-draft/state/review-draft-state.v1.json
+      per_operation_states:
+        - NO_STATE
+        - REUSED_EXACT
+        - INTENT
+        - COMMITTED
+        - MUTATION_AMBIGUOUS
+        - RECONCILED_COMMITTED
+        - REFUSED_MISMATCH
+      preview_only_state: DRIFT
+      intent_consumes_post_budget: true
+      later_process_may_post_after_intent: false
+      rollback_compensation_overwrite_rename_delete: false
+    repeat_and_partial_progress:
+      require_fixed_order: true
+      revalidate_all_predecessor_terminal_objects: true
+      stop_states:
+        - INVALID_JOURNAL_OR_BINDING
+        - REFUSED_MISMATCH
+        - DRIFT
+        - UNRESOLVED_MUTATION_AMBIGUOUS
+      persisted_intent_reconciliation:
+        article: ONE_FIXED_FULL_ID_GET
+        page: ONE_FIXED_COLLECTION_GET_AND_AT_MOST_ONE_FIXED_FULL_ID_GET
+      exact_reconciliation: APPEND_RECONCILED_COMMITTED_AND_CONTINUE
+      absent_duplicate_malformed_or_mismatch: PRESERVE_AMBIGUITY_AND_STOP
+      earlier_successes_preserved: true
+      next_operation_post_condition: EVERY_PREDECESSOR_CURRENTLY_EXACT
+      new_post_after_unresolved_ambiguity: REQUIRES_NEW_APPROVED_HANDOFF_AND_OPERATION_GENERATION
+    affiliate_scaffold:
+      preparation_contains_affiliate_urls: false
+      exact_slot_count: 3
+      ordered_unique_nonnested_markers: true
+      begin_marker_template: '<!-- RAOS-W3-AFFILIATE-SLOT-N-BEGIN -->'
+      end_marker_template: '<!-- RAOS-W3-AFFILIATE-SLOT-N-END -->'
+      block_wrapper: WORDPRESS_CUSTOM_HTML
+      preparation_rerun_after_manual_fill: STOP_ON_CONTENT_DRIFT
+      preview_outside_hash_required: fd2c91dc1e2664df3bccf6c20da432eac3e3cca70aabfe8dd03f55b1207a9905
+      filled_interior_grammar:
+        wrapper: OPTIONAL_ONE_ATTRIBUTE_FREE_P_OR_DIV
+        optional_br: true
+        anchors: EXACTLY_TWO_NONNESTED
+        images: EXACTLY_ONE
+        image_width: '128'
+        product_text: EXACT_BOUND_PRODUCT_NAME_NO_PRICE_OR_CURRENCY
+        href_and_src: ABSOLUTE_HTTPS_NONEMPTY_HOST_NO_USERINFO_NO_NONDEFAULT_PORT
+        anchor_attributes:
+          - href
+          - target
+          - rel
+        image_attributes:
+          - src
+          - alt
+          - width
+          - height
+          - border
+          - loading
+          - decoding
+        forbidden: ALL_OTHER_TAGS_ATTRIBUTES_COMMENTS_TEXT_IMAGES_AND_ACTIVE_URL_SCHEMES
+      host_allowlist: NONE_UNTIL_ACTUAL_OFFICIAL_BLOCKS_ARE_HUMAN_REVIEWED
+      url_or_html_persisted_or_printed: false
+      human_visual_and_destination_review_required: true
+    preview:
+      network_method: AUTHENTICATED_BOUNDED_GET_ONLY
+      journal_write: false
+      per_operation_values:
+        - EXACT
+        - MISSING
+        - DRIFT
+        - AMBIGUOUS
+        - REFUSED
+      base_state_values:
+        - PREPARED
+        - MISSING
+        - DRIFT
+        - AMBIGUOUS
+        - REFUSED
+      affiliate_state_values:
+        - AFFILIATE_SLOTS_PENDING
+        - AFFILIATE_SLOTS_VALIDATED
+        - AFFILIATE_SLOTS_INVALID
+        - NOT_EVALUATED
+      manual_review_state_values:
+        - READY_FOR_MANUAL_PUBLICATION_REVIEW
+        - NOT_READY
+      publication_authority: NONE
+      forbidden_output: REMOTE_CONTENT_TITLES_EXCERPTS_IDS_URLS_HOSTS_QUERIES_HTML_TOKEN_ALIASES_HEADERS_RAW_ERRORS_STACKS_OR_REVEALING_HASHES
+    current_activation_blockers:
+      - code: AUTHOR_DISPLAY_NAME_MISMATCH
+        observed_value_persisted: false
+        required: 暮らし選びノート編集部
+        resolution: MANUAL_WORDPRESSCOM_PROFILE_CHANGE_AND_READ_ONLY_RECHECK
+        api_profile_mutation_allowed: false
+      - code: REMOTE_WRITER_QUIESCENCE_NOT_YET_CONTEMPORANEOUSLY_AFFIRMED
+        resolution: OWNER_AFFIRMS_IMMEDIATELY_BEFORE_LIVE_PREPARE
+    post_preparation_manual_gates:
+      - Register for Rakuten Affiliate and generate three official image-link HTML blocks.
+      - Paste each block only between its matching markers without changing outside content.
+      - Run read-only preview and perform human desktop/mobile image, product-name, price-absence, destination, and tracking review.
+      - Review contact recipient, email notifications, WordPress.com or Jetpack storage and retention, anti-spam, consent, and privacy behavior.
+      - Review the substantive correctness of every policy page; the draft is not legal advice.
+      - Set site title to 暮らし選びノート and tagline to empty manually in WordPress.com.
+      - Inspect rendered discussion, likes, sharing, navigation, form, article, and pages.
+      - Obtain a separate explicit publication approval and publish manually.
+      - Perform the seven-day WordPress.com Stats versus Rakuten clicks, orders, sales, and reward review.
+
+  rationale:
+    - The owner selected the smallest revenue-learning path: one article, five trust/legal drafts, manual affiliate insertion, manual publication, and a seven-day review.
+    - The existing article was created exactly once, but its predecessor journal remains INTENT; a separate Wave 3 journal avoids reinterpreting or resubmitting that create.
+    - Exact per-operation INTENT and read-only reconciliation allow partial progress without automatic retries or duplicate pages.
+    - Two exact baseline GETs narrow the article-update race while making the residual lack of server-side compare-and-set explicit to the owner.
+    - Exact page scans plus full-object proof provide a bounded slug collision rule without overwrite, rename, delete, or pagination assumptions.
+    - Manual affiliate paste preserves the official Rakuten generator boundary; a narrow in-memory grammar can flag obvious unsafe structure but cannot replace human visual or destination review.
+    - Draft-only API preparation produces earlier real feedback while retaining publication, legal, identity, affiliate, formal test, and production gates.
+
+  rejected_alternatives:
+    - alternative: Retry, reconcile, migrate, delete, or reinterpret the old Wave 2 INTENT journal
+      reason: Its sole create POST opportunity was already consumed and its approved contract forbids replay.
+    - alternative: Update article ID 7 without an exact baseline and immediate second baseline GET
+      reason: It could overwrite an unobserved human or integration edit.
+    - alternative: Claim an atomic compare-and-set using ETag, If-Match, revision, or metadata previous_value
+      reason: No applicable documented post-wide v1.1 conditional update primitive was established.
+    - alternative: Automatically retry after any persisted INTENT or uncertain POST result
+      reason: It can duplicate a page or repeat the article mutation.
+    - alternative: Use a slug-only single-object lookup as uniqueness proof
+      reason: It cannot prove that no duplicate exact slug exists in the bounded collection.
+    - alternative: Automatically ingest or rewrite Rakuten affiliate HTML
+      reason: Actual generated hosts and tracking form are not yet known, and automation would broaden credential, HTML, and destination authority.
+    - alternative: Invent Rakuten image or tracking host allowlists before the official blocks exist
+      reason: It would be brittle or falsely authoritative; actual links require human review.
+    - alternative: Use browser automation, wp-admin, generic HTTP, dynamic routes, arbitrary IDs, or runtime parameters
+      reason: They broaden authority beyond the fixed official API slice.
+    - alternative: Change the WordPress.com author profile, title, tagline, form configuration, navigation, theme, or settings by API
+      reason: Those are manual human gates and are outside the approved post/page draft capability.
+    - alternative: Publish, privately publish, schedule, unpublish, delete, trash, upload media, or change taxonomy
+      reason: Publication and destructive or broader CMS operations remain unauthorized.
+
+  constraints:
+    - Preserve domain <- application <- adapters/framework with a narrow inward prepare/preview port and separate outward fixed read/one-attempt mutation port.
+    - Reuse the reviewed OAuth token store, system TLS, fixed launcher, and fixed WordPress.com connection abstractions without widening their credential or endpoint surfaces.
+    - Keep all provider access on exact HTTPS authority public-api.wordpress.com:443 with no proxy, redirect, TLS override, fallback, retry, or alternate site identifier.
+    - Verify exact handoff, content packet, predecessor inputs, base commit, physical repository, and fixed executable paths before token access, journal access, or network.
+    - Never expose or persist bearer tokens, authorization headers, provider bodies, remote content, raw affiliate HTML, affiliate URLs, raw errors, personal contact values, or stack traces.
+    - Never open, read, stat, hash, copy, migrate, rename, delete, or write the old Wave 2 journal path from Wave 3 production code or tests outside disposable fixtures.
+    - Bind each mutation to one operation generation and one POST budget; INTENT consumes that budget even if the process crashes before the request.
+    - Keep article/page content, author, site, routes, fields, form order, status, publicize, discussion, likes, sharing, operation order, and output vocabulary exact.
+    - Treat edit-context content as exact after JSON decoding and line-ending normalization only; do not apply Unicode, entity, DOM, or whitespace equivalence.
+    - Keep source packet approval, editorial/legal review, affiliate approval, formal TST, CI, staging, publication, release, revenue, production, and canonical Story completion separate.
+
+  security_and_approval_gates:
+    - Repository-owner implementation approval must cite the exact SHA-256 of this handoff and explicitly accept the documented no-CAS residual race.
+    - Handoff approval authorizes implementation only; it does not itself authorize the live prepare command, publication, credentials, or production.
+    - Immediately before any live prepare, the owner must affirm that dashboard/mobile editing, integrations, scheduled automation, and every other remote writer are quiesced until final readback.
+    - Live prepare must refuse before mutation while author ID 283672805 does not display exactly 暮らし選びノート編集部.
+    - All local implementation gates and the exact committed owned-path manifest must pass before any live prepare.
+    - A preflight mismatch or unsafe shape writes no INTENT and performs no POST unless the exact state machine explicitly records terminal REFUSED_MISMATCH.
+    - Once INTENT is durable, no process may send that operation again; only bounded read-only reconciliation is allowed.
+    - A POST response alone never commits. Exact authenticated full-object readback is required.
+    - Affiliate slot validation grants only readiness for manual publication review and never publication authority or destination legitimacy.
+    - Contact-form rendering, recipient, notification, storage/retention, anti-spam, privacy, and policy correctness require human review.
+    - Publication requires a later separate explicit human approval and manual WordPress.com action.
+
+  acceptance_criteria:
+    - The exact handoff and content packet bytes/hashes are verified before candidate construction.
+    - The implementation exposes exactly the two argument-free Make targets and no generic target, site, ID, slug, field, method, route, retry, or mutation options.
+    - Wave 3 production paths cannot access the old Wave 2 journal and use only the separate owner-private record directory and lock.
+    - Each immutable record is sequence-checked, hash-chain-checked, owner/mode/symlink-checked, exclusive-created, file-fsynced, and directory-fsynced.
+    - Fixed-order partial progress, terminal replay, INTENT reconciliation, and stop conditions cannot produce a second POST for one operation generation.
+    - Article mutation requires two exact matching baseline GETs around fsynced INTENT, one POST, and one exact full desired GET.
+    - Page mutation requires two exact zero-candidate collection scans around fsynced INTENT, one POST, and one exact full desired GET.
+    - Exact unique pre-existing desired pages and an exact desired article are reused without mutation; mismatch, duplicate, suffix, drift, and malformed data stop.
+    - Every full proof validates exact site, object, author, author name, type, slug, status, title, content, target URL, discussion, likes, sharing, and empty publicize URLs.
+    - Preview performs only bounded GETs, writes no journal, returns only the closed sanitized schema, and distinguishes pending versus three validated affiliate slots.
+    - Filled affiliate slots preserve the exact outside hash and pass the narrow grammar; all other HTML or marker variations fail without printing content or URLs.
+    - The contact draft contains literal [contact-form], no raw personal contact value, and no form submission or configuration capability.
+    - No path can publish, schedule, unpublish, delete, trash, upload media, change taxonomy/settings/profile/theme/plugin, or ingest affiliate HTML.
+    - README and append-only worklog report local, live, formal, publication, release, revenue, and production evidence separately.
+
+  required_test_evidence:
+    - Exact content-packet parse, transformation cardinality, six content hashes, operation bindings, and mutation-before-validation traps pass.
+    - Route/query/form allowlists and deterministic field-order tests pass for article full GET/update and page collection/full GET/create.
+    - Integer/string ID, duplicate-key, wrong shape, wrong author/name/site/type/slug/status/settings/URL, non-UTF-8, depth, size, and redirect matrices pass.
+    - Article exact baseline/no-op/desired/mismatch, modified drift, second-GET race, POST ambiguity, full-readback, and no-resend matrices pass.
+    - Page zero/one/duplicate/>100/pagination/malformed/mismatch/reuse/suffix/readback and no-resend matrices pass.
+    - Every crash point around lock, exclusive record creation, fsync, first/second GET, socket, POST, response parse, readback, and terminal append is exercised.
+    - Hash-chain, sequence, truncation, corruption, owner, mode, symlink ancestor, concurrency, maximum-record, partial-progress, and committed replay tests pass.
+    - Hard traps prove Wave 3 never opens, reads, stats, hashes, copies, migrates, renames, deletes, or writes the old Wave 2 journal.
+    - Affiliate marker/order/nesting/outside-edit and adversarial tag/attribute/URL/text/image/price/currency matrices pass without raw output.
+    - Preview schema and redaction tests prove no remote content, IDs, URLs, HTML, token aliases, headers, hashes, exceptions, or stack traces escape.
+    - Existing OAuth, review-draft, complete isolated ST-1703, ST-0502, and ST-0805 suites pass in separate pytest processes.
+    - Pinned Ruff format/check, mypy, py_compile, bash -n, workspace drift, canonical import, exact source hash, diff, staged-path, and bounded sensitive-data gates pass.
+    - A read-only live preview and any later live prepare evidence are reported separately from local tests and formal TST/CI/staging/publication/release/production.
+
+  open_decisions: []

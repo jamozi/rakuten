@@ -1,0 +1,192 @@
+SOURCE_PACKET_CANDIDATE_V1:
+  status: REVIEW_REQUIRED_NOT_APPROVED
+  authority: PROPOSAL_ONLY
+  publication_authorized: false
+  generated_at: "2026-08-12T08:36:35Z"
+  target_site:
+    origin: "https://kurashierabinote.wordpress.com"
+    observed_at: "2026-08-12T08:35:22Z"
+    public_http_status: 200
+    observed_state: COMING_SOON
+    observed_robots: "noindex, nofollow"
+    credentials_observed: false
+    external_mutation_performed: false
+
+  article_candidate:
+    category_id: suitcase_and_carry_bags
+    article_type: selection_guide
+    language: ja-JP
+    title: "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ"
+    primary_intent: "100席以上の航空機に持ち込める候補を、軽さ・基本容量・開き方・機能で条件別に絞る"
+    product_count: 3
+    universal_winner_allowed: false
+    hands_on_claims_allowed: false
+    affiliate_links_state: NOT_CONFIGURED
+
+  methodology:
+    compared_population: "エース公式オンラインストアとエース公式楽天市場店で同一型番を確認できる、100席以上の航空機向け機内持ち込み表記がある3モデル"
+    comparison_axes:
+      - base_external_dimensions
+      - expanded_external_dimensions_when_published
+      - base_and_expanded_capacity_when_published
+      - weight
+      - opening_and_access_features
+      - caster_stopper
+      - laptop_storage
+      - material
+      - country_of_manufacture
+    recommendation_rule: "各軸の一次情報から用途別に選択肢を示し、総合1位を作らない"
+    excluded_inputs:
+      - affiliate_rate
+      - epc
+      - rpm
+      - price
+      - points_or_campaigns
+      - inventory
+      - product_review_bodies
+      - ai_generated_product_claims
+      - fabricated_first_hand_experience
+    freshness_rule: "航空会社条件、価格、在庫、キャンペーンは変動するため購入・搭乗前に公式情報を再確認する"
+
+  products:
+    - product_key: ace_cresta_06316
+      brand_and_model: "ACE クレスタ 06316"
+      exact_product_code: "06316"
+      selected_manufacturer_sku: "06316-01"
+      manufacturer_url: "https://store.ace.jp/shop/g/g06316-01/"
+      official_rakuten_product_url: "https://item.rakuten.co.jp/ace-store/06316/"
+      evidence:
+        base_external_dimensions_cm:
+          height: 55
+          width: 35
+          depth: 25
+          three_side_total: 115
+        expanded_external_dimensions_cm:
+          height: 55
+          width: 35
+          depth: 29
+          three_side_total: 119
+        capacity_l:
+          base: 34
+          expanded: 39
+        weight_kg: 3.2
+        material: "ABS混合樹脂"
+        country_of_manufacture: "中国"
+        manufacturer_features:
+          - expansion
+        carry_on_scope: "100席以上の国内線・国際線は非拡張時のみ"
+      conditional_fit: "比較対象3モデルで最軽量の本体重量と、必要時の拡張を優先する場合"
+      caution: "拡張時は3辺合計119cmかつ奥行29cmとなるため、ANAの100席以上向け機内持ち込み寸法基準外"
+
+    - product_key: ace_tokyo_difference_05721
+      brand_and_model: "ace.TOKYO LABEL ディフェレンス 05721"
+      exact_product_code: "05721"
+      selected_manufacturer_sku: "05721-01"
+      manufacturer_url: "https://store.ace.jp/shop/g/g05721-01"
+      official_rakuten_product_url: "https://item.rakuten.co.jp/ace-store/05721/"
+      evidence:
+        base_external_dimensions_cm:
+          height: 55
+          width: 36
+          depth: 24
+          three_side_total: 115
+        expanded_external_dimensions_cm:
+          height: 55
+          width: 36
+          depth: 27
+          three_side_total: 118
+        capacity_l:
+          base: 32
+          expanded: 38
+        weight_kg: 3.5
+        material: "ポリカーボネート"
+        country_of_manufacture: "中国"
+        manufacturer_features:
+          - two_way_front_or_center_opening
+          - expansion
+          - caster_stopper
+        carry_on_scope: "100席以上の国内線・国際線は非拡張時のみ"
+      conditional_fit: "フロント側と中央側を使い分ける開き方、キャスターストッパー、必要時の拡張を組み合わせたい場合"
+      caution: "拡張時は3辺合計118cmかつ奥行27cmとなるため、ANAの100席以上向け機内持ち込み寸法基準外"
+
+    - product_key: proteca_maxpass4_01471
+      brand_and_model: "PROTECA マックスパス4 01471"
+      exact_product_code: "01471"
+      selected_manufacturer_sku: "01471-08"
+      manufacturer_url: "https://store.ace.jp/shop/g/g01471-08"
+      official_rakuten_product_url: "https://item.rakuten.co.jp/ace-store/01471/"
+      evidence:
+        base_external_dimensions_cm:
+          height: 50
+          width: 40
+          depth: 25
+          three_side_total: 115
+        capacity_l:
+          base: 40
+        weight_kg: 3.6
+        material: "ポリカーボネート"
+        country_of_manufacture: "日本"
+        manufacturer_features:
+          - front_pocket
+          - main_compartment_access
+          - caster_stopper
+          - fourteen_inch_laptop_storage
+        carry_on_scope: "100席以上の国内線・国際線"
+      conditional_fit: "比較対象3モデルで最大の基本容量40Lと、フロントポケット、14インチPC収納、キャスターストッパーを優先する場合"
+      caution: "比較対象3モデルでは最も重い3.6kg。公式の商品特徴欄に拡張機能の掲載は確認できないため、拡張の有無を推測しない"
+
+  carrier_rule:
+    carrier: ANA
+    source_url: "https://www.ana.co.jp/ja/tr/travel-information/baggage-information/"
+    evidence:
+      aircraft_100_seats_or_more:
+        max_three_side_total_cm: 115
+        max_height_cm: 55
+        max_width_cm: 40
+        max_depth_cm: 25
+      aircraft_under_100_seats:
+        max_three_side_total_cm: 100
+        max_height_cm: 45
+        max_width_cm: 35
+        max_depth_cm: 20
+      max_combined_weight_kg: 10
+    required_caveat: "航空会社、共同運航便、機材、運賃種別により条件が異なる場合があるため、実際の運航会社の最新条件を搭乗前に確認する"
+
+  policy_sources:
+    - source_type: rakuten_stealth_marketing_guideline
+      url: "https://affiliate.rakuten.co.jp/guideline/stealth_marketing_regulation/"
+      usage: "広告であることを読者が明瞭に認識できる表示を記事上部に置く"
+    - source_type: rakuten_affiliate_rules
+      url: "https://affiliate.rakuten.co.jp/guideline/rule/?l-id=afl_top_flash_newguide"
+      usage: "楽天アフィリエイトの最新ルールをリンク設定前と公開前に再確認する"
+    - source_type: rakuten_affiliate_link_guide
+      url: "https://affiliate.rakuten.co.jp/guides/link/"
+      usage: "アフィリエイトリンクは公式生成手段のみを使い、手入力や推測で作らない"
+
+  review_and_release_gates:
+    source_packet_approved: false
+    domain_editor_reviewed: false
+    affiliate_disclosure_approved: false
+    privacy_and_operator_pages_approved: false
+    wordpress_ownership_verified_for_api: false
+    wordpress_draft_credentials_configured: false
+    real_wordpress_draft_created: false
+    publication_human_approved: false
+    formal_tests_executed: false
+    live_provider_validation_executed: false
+
+  blocked_or_pending:
+    - "この候補Source Packetの人間レビューと承認"
+    - "canonical ST-1703依存Storyと正式検証"
+    - "WordPress.comのサイト所有確認と下書き専用OAuth接続"
+    - "運営者情報・プライバシーポリシー・広告表記の確定"
+    - "楽天アフィリエイト登録後の公式リンク生成"
+    - "実際のWordPress下書き確認後の別個の公開承認"
+
+  data_handling:
+    raw_pages_stored: false
+    review_bodies_stored_or_used: false
+    credentials_stored_or_requested: false
+    affiliate_urls_generated: false
+    prices_or_inventory_used_for_recommendation: false
+

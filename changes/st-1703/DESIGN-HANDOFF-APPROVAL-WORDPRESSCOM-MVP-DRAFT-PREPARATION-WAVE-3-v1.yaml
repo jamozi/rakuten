@@ -1,0 +1,43 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1703
+  slice_id: WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3
+  handoff_uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml
+  handoff_bytes: 29041
+  handoff_sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+  content_packet_uri: repo://changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml
+  content_packet_bytes: 12670
+  content_packet_sha256: aca2af51e2571a62215c600357fb8f0ee246e8891e60d6e5afbe40d8235ee681
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST1703_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3_ONLY
+  approved_by: repository_owner:jamozi
+  approved_on: '2026-08-13'
+  approval_source: >-
+    Exact handoff SHA-256 and exact Wave 3 slice followed by explicit
+    repository-owner approval in the connected Codex conversation, including
+    explicit acceptance of the documented no-CAS residual race.
+  owner_approval_statement: >-
+    SHA-256 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+    の WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3 を承認し、WordPress.com REST
+    v1.1に比較更新機能がないことによる、最終確認GETからPOST適用までの
+    残存競合リスクを受容します。
+  canonical_reconciliation: PASS_FAIL_CLOSED_DRAFT_ONLY_WAVE3_NO_PUBLICATION
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-1703
+    provider_api_origin: https://public-api.wordpress.com
+    numeric_site_id: '256699520'
+    article_id: '7'
+    fixed_operation_count: 6
+    publication_authority: NONE
+    live_prepare: NOT_AUTHORIZED_BY_THIS_APPROVAL
+    credentials: NOT_AUTHORIZED_BY_THIS_APPROVAL
+    source_packet_approval: NOT_GRANTED
+    editorial_policy_pass: NOT_GRANTED
+    legal_review: NOT_EXECUTED
+    affiliate_review: NOT_EXECUTED
+    formal_tst: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    publication: NOT_AUTHORIZED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED

@@ -1,0 +1,196 @@
+design_handoff:
+  schema: DESIGN_HANDOFF_V1
+  approval_status: APPROVED_FOR_IMPLEMENTATION
+  approved_story: ST-1703
+  title: ST1703_LOW_COST_PUBLICATION_PILOT_V1
+  approved_scope:
+    - Record the repository-owner-approved 30-day low-cost publication pilot as a deterministic, source-derived, non-executable governance plan.
+    - Select WordPress.com Personal as the sole candidate public platform while keeping subscription, custom-domain, draft, publication, and every external action unexecuted and unauthorized.
+    - Limit Codex plus Git to interactive, human-controlled article drafting and local validation; exclude production runtime, unattended operation, provider API use, publication, and approval authority.
+    - Keep OpenAI API, AWS, Cloudflare Pages, and custom Admin, API, and Worker components deferred and disabled.
+    - Enforce an exact incremental external-spend ceiling of JPY 2000 per month, excluding an already-paid ChatGPT subscription, without resolving canonical OD-009 or replacing the historical Wave 1 90-day JPY 30000 business cap.
+    - Record requirements-only quality, accessibility, affiliate, freshness, SEO, and Core Web Vitals gates without claiming that any check or external step ran.
+    - Generate only a non-attesting JSON projection and its manifest through a hardened, deterministic local generator with a read-only check mode.
+  source_design_refs:
+    - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+      bytes: 2275
+      sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
+      authority: CANONICAL
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      bytes: 7943
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      authority: CANONICAL
+    - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+      bytes: 3955
+      sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      authority: CANONICAL
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      bytes: 4956
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+      authority: CANONICAL
+    - uri: repo://docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+      bytes: 8046
+      sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+      authority: CANONICAL
+    - uri: repo://docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv
+      bytes: 4051
+      sha256: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+      authority: CANONICAL
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+      bytes: 7929
+      sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+      authority: CANONICAL
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      bytes: 24993
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      authority: CANONICAL
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      bytes: 11395
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      authority: CANONICAL
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+      bytes: 6609
+      sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+      authority: CANONICAL
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      bytes: 71458
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      authority: CANONICAL
+    - uri: repo://docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md
+      bytes: 78224
+      sha256: a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682
+      authority: UPSTREAM_DESIGN_UNDER_CANONICAL_PRECEDENCE
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml
+      bytes: 29041
+      sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+      authority: APPROVED_WAVE3_HANDOFF_METADATA_ONLY
+    - uri: repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml
+      bytes: 1991
+      sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
+      authority: APPROVED_WAVE3_DETACHED_APPROVAL_METADATA_ONLY
+    - uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+      bytes: 5156
+      sha256: ac5f80152c846df3be09b90a28a0bd5ca93f2e165807b9fcb50ca7eb569c908c
+      authority: FIXED_WAVE3_TARGET_METADATA_ONLY
+  decision:
+    approved_proposal:
+      text: 30日パイロットでは、WordPress.com Personalを唯一の公開基盤、Codex＋Gitを記事作成・品質管理基盤とする。OpenAI API、AWS、Cloudflare Pages、独自Admin/API/Workerは保留。既存ChatGPT契約を除く外部費上限は月2,000円。CodexはDraft作成と検証のみで、公開は人手に限定する。
+      utf8_bytes: 342
+      sha256: 131534a5c035096a3e18abbc1e82f9937b50cd7d3c84e4a3fc413d52e57b6a5b
+    semantic_approval_observed:
+      response: 承認
+      response_utf8_bytes: 6
+      response_sha256: 5d103c64a39b8ac1e10c8a7038fa6d780ed1d1b205e071e2b52236f9540f59a6
+      observed_on: '2026-08-13'
+      observation_context: CONNECTED_CONVERSATION
+    serialization_boundary: >-
+      The owner approved the exact proposal semantics before this YAML byte
+      serialization existed. The detached approval binds the later handoff
+      bytes solely as a faithful implementation serialization and adds no new
+      architecture, business, policy, purchase, provider, or publication
+      decision.
+    pilot_duration_days: 30
+    public_platform:
+      candidate: WORDPRESSCOM_PERSONAL
+      candidate_count: 1
+      role: SOLE_CANDIDATE_PUBLIC_PLATFORM
+      current_wave3_target: FIXED_METADATA_ONLY
+      dual_run: FORBIDDEN
+      cutover: NOT_AUTHORIZED
+    drafting_and_quality_platform:
+      components:
+        - CODEX
+        - GIT
+      operating_mode: INTERACTIVE_HUMAN_CONTROLLED_ONLY
+      codex_roles:
+        - DRAFT_CREATION
+        - LOCAL_VALIDATION
+      production_runtime: FORBIDDEN
+      unattended_operation: FORBIDDEN
+      provider_api_use: FORBIDDEN
+      publisher_role: FORBIDDEN
+      approver_role: FORBIDDEN
+    deferred_components:
+      - component: OPENAI_API
+        state: DEFERRED_DISABLED
+      - component: AWS
+        state: DEFERRED_DISABLED
+      - component: CLOUDFLARE_PAGES
+        state: DEFERRED_DISABLED
+      - component: CUSTOM_ADMIN
+        state: DEFERRED_DISABLED
+      - component: CUSTOM_API
+        state: DEFERRED_DISABLED
+      - component: CUSTOM_WORKER
+        state: DEFERRED_DISABLED
+    external_spend:
+      currency: JPY
+      period: MONTH
+      exact_cap: 2000
+      scope: INCREMENTAL_EXTERNAL_SPEND_FOR_30_DAY_PILOT
+      exclusions:
+        - ALREADY_PAID_CHATGPT_SUBSCRIPTION
+      purchase_authority: NONE
+      od_009_resolution: NOT_RESOLVED
+      historical_wave1_cap:
+        duration_days: 90
+        currency: JPY
+        amount: 30000
+        relationship: SEPARATE_SCOPE_NOT_SUPERSEDED
+    review_tooling:
+      github_free: NO_NEW_COST_REVIEW_TOOLING_ONLY
+      external_authority: NONE
+  rationale:
+    - The approved proposal deliberately minimizes incremental spend and operational surface for a reversible 30-day learning period.
+    - One candidate public platform avoids dual-run, migration, synchronization, and cutover complexity.
+    - Human-controlled Codex plus Git preserves local reviewability while keeping AI outside publication, approval, and production runtime authority.
+    - Deferring custom infrastructure and provider APIs preserves canonical provider, credential, finance, security, and release gates.
+    - The JPY 2000 monthly pilot ceiling is a narrower incremental-spend constraint and therefore cannot resolve the broader canonical OD-009 decision or supersede a differently scoped historical cap.
+  rejected_alternatives:
+    - alternative: OpenAI API during the 30-day pilot
+      reason: The owner explicitly deferred it; it would add provider, credential, data-control, and spend authority.
+    - alternative: AWS hosting or services during the 30-day pilot
+      reason: The owner explicitly deferred AWS; canonical region, credential, finance, staging, and release gates remain unresolved.
+    - alternative: Cloudflare Pages as a second or replacement public platform
+      reason: The owner selected WordPress.com Personal as the sole candidate and did not authorize dual-run or cutover.
+    - alternative: Custom Admin, API, or Worker implementation
+      reason: The owner explicitly deferred these components and the current slice is governance-only.
+    - alternative: WordPress.com API automation or Codex publication
+      reason: The owner limited Codex to draft creation and validation and reserved publication for a human under separate approval.
+    - alternative: Treat the pilot cap as OD-009 resolution or as replacement of the historical Wave 1 cap
+      reason: The scopes and time horizons differ and canonical truth cannot be revised by this Story-local plan.
+  constraints:
+    - Create exactly the delegated eleven all-new files; do not modify existing Wave 1, Wave 2, Wave 3, canonical, status, configuration, lock, or shared Main files.
+    - The contract, projection, manifest, and generator are non-executable and non-attesting; they contain no action runner, provider client, browser control, network request, credential reference, environment-driven activation, or runtime integration.
+    - Subscription, custom domain, WordPress.com draft creation, publication, purchase, account setup, credential use, and every external write remain NOT_EXECUTED and NOT_AUTHORIZED.
+    - Every planned 30-day checkpoint is descriptive only; an external, draft, or publication step requires separate explicit approval.
+    - Preserve unresolved OD-002, OD-005, OD-007, OD-008, OD-009, OD-012, OD-013, and OD-015 exactly and preserve their canonical safe defaults.
+    - Preserve ST-1703 dependency status, Story acceptance false, TST-021, TST-022, and TST-032 formal status NOT_EXECUTED, and all live, browser, provider, staging, release, and production evidence as absent.
+    - Requirements-only UX and quality gates remain NOT_EXECUTED and NOT_VERIFIED until separately performed with authorized artifacts.
+  security_and_approval_gates:
+    - This approval authorizes repository-local architecture and governance implementation only.
+    - It does not authorize purchase, credentials, WordPress.com API calls, WordPress.com drafts, publication, custom domain, external writes, AWS activation, OpenAI API activation, Cloudflare activation, release, staging, or production.
+    - Codex cannot approve or publish, and no unattended or production-runtime Codex path may be introduced.
+    - Every external, draft, domain, subscription, credential, provider, browser, publication, staging, release, and production step requires its own explicit approval and prerequisite gates.
+    - No action, effect, or evidence list may become nonempty in the source or generated projection.
+    - Generated content must be derived only from the exact source contract after strict validation and exact authority-hash verification.
+  acceptance_criteria:
+    - The exact approved proposal, owner response, handoff bytes, and detached approval are hash-bound without circular self-approval.
+    - WordPress.com Personal is the only candidate public platform; dual-run and cutover remain forbidden or unauthorized.
+    - Codex plus Git is limited to interactive human-controlled draft creation and local validation, with no API, unattended, runtime, publisher, or approver authority.
+    - OpenAI API, AWS, Cloudflare Pages, custom Admin, custom API, and custom Worker remain DEFERRED_DISABLED.
+    - The incremental external-spend cap is exactly JPY 2000 per month excluding an already-paid ChatGPT subscription, while OD-009 and the historical Wave 1 cap remain separate and unchanged.
+    - Subscription, domain, draft, publication, external actions, live evidence, formal evidence, Story acceptance, and dependency promotion remain blocked or unexecuted.
+    - All specified quality, accessibility, affiliate, freshness, SEO, and Core Web Vitals items are represented as requirements only with NOT_EXECUTED and NOT_VERIFIED status.
+    - The generator strictly parses and validates YAML, verifies exact source and helper hashes, deterministically emits only the JSON projection and manifest, supports read-only --check, and fails closed with sanitized errors.
+    - Negative tests reject semantic, authority, status, path, serialization, source, helper, output, and evidence drift.
+  required_test_evidence:
+    - Build and --check produce deterministic byte-identical JSON and manifest output.
+    - The isolated tests/st1703_low_cost suite passes, including critical negative-path and hostile-input cases.
+    - Exact Ruff check and format, strict mypy, py_compile, and import checks pass with the hydrated pinned repository toolchain.
+    - The affected existing tests/st1703 suite passes without invoking a live or external target.
+    - make check-workspace and python3 scripts/import_raos_design.py verify pass read-only.
+    - A sensitive-data scan covers the exact eleven-file inventory or records a linked-worktree-safe equivalent.
+    - git diff --check, exact path inventory, frozen self-review, and atomic commit checks pass.
+    - Formal TST-021, TST-022, TST-032, browser, provider, staging, release, publication, and production evidence remain explicitly unexecuted.
+  open_decisions: []

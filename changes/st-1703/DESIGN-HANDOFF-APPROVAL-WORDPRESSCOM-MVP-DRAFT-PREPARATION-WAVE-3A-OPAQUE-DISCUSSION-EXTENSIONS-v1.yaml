@@ -1,0 +1,38 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1703
+  slice_id: WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS
+  handoff_uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS.yaml
+  handoff_bytes: 12741
+  handoff_sha256: 1c0d50faedd3c76d18101afb1032d82da21a6daf0a01e9c687371d20519926aa
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST1703_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_ONLY
+  approved_by: repository_owner:jamozi
+  approved_on: '2026-08-13'
+  approval_source: >-
+    Exact handoff SHA-256 and exact Wave 3A slice followed by explicit
+    repository-owner approval in the connected Codex conversation.
+  owner_approval_statement: >-
+    Repository owner explicitly approved exact SHA
+    1c0d50faedd3c76d18101afb1032d82da21a6daf0a01e9c687371d20519926aa for
+    WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS.
+  prior_wave_3_handoff_sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+  prior_wave_3_approval_sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
+  canonical_reconciliation: PASS_OPAQUE_NESTED_DISCUSSION_EXTENSION_ONLY
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-1703
+    provider_api_origin: https://public-api.wordpress.com
+    numeric_site_id: '256699520'
+    fixed_operation_count: 6
+    additional_discussion_member_authority: NONE
+    publication_authority: NONE
+    post_commit_read_only_preview: EXACTLY_ONE_AUTHORIZED_BY_HANDOFF
+    live_prepare: NOT_AUTHORIZED_BY_THIS_APPROVAL
+    credentials: NOT_AUTHORIZED_BY_THIS_APPROVAL
+    profile_or_site_settings: NOT_AUTHORIZED
+    formal_tst: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    publication: NOT_AUTHORIZED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED

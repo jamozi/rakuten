@@ -1,0 +1,372 @@
+DESIGN_HANDOFF_V1:
+  document_version: 1
+  approval_status: PROPOSED_REQUIRES_REPOSITORY_OWNER_APPROVAL
+  proposal_date: '2026-08-12'
+  approval_record:
+    owner_external_action_statement: >-
+      WordPress下書き連携の実装と、このサイトへの非公開下書き1件の作成を承認
+    external_action_authorized: true
+    exact_design_handoff_approved: false
+    raw_credentials_or_pro_material_in_repository: FORBIDDEN
+  pro_advisory:
+    importance: gated
+    run_id: 20260812T084230Z-a6e26e61d7de
+    status: BLOCKED_PRO_REQUIRED
+    reason_code: RESPONSE_NOT_IDENTIFIABLE
+    recovery_status: REFUSED
+    recovery_diagnostic_code: ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID
+    response_captured: false
+    resubmission_permitted: false
+    reconciliation: >-
+      No Pro content is available or used. This locally reconciled handoff must
+      remain proposal-only until the repository owner approves its exact bytes.
+
+  approved_story: ST-1703
+  slice_id: WORDPRESSCOM_REVIEW_DRAFT_WAVE_2
+  objective: >-
+    Add one isolated official-API WordPress.com review-draft path and use it at
+    most once to create one non-public review copy of the exact first-article
+    proposal on kurashierabinote.wordpress.com, without changing the existing
+    local market-learning pilot semantics or granting publication authority.
+
+  approved_scope:
+    - >-
+      Add separate immutable review-draft domain values and a separate inward
+      create-only port. Do not widen WordPressDraftPort, WordPressDraftReceipt,
+      MarketLearningPilotService, or PilotEvidenceRecord from their exact
+      local-recorded-only Wave 1 semantics.
+    - >-
+      Add a deterministic renderer for the exact article region in
+      first-article-review-draft.v1.md. It must escape all input and emit only a
+      closed HTML tag/attribute vocabulary; raw HTML input is never accepted.
+    - >-
+      Add a WordPress.com OAuth2 Authorization Code setup command bound to one
+      exact blog, one exact posts scope, one exact loopback callback, and owner-
+      only secret files. The user alone performs WordPress.com login and grants
+      consent in the visible browser. No password is requested or handled.
+    - >-
+      Add an official HTTPS adapter that makes one authenticated POST to the
+      exact target /wp-json/wp/v2/posts endpoint with exactly title, rendered
+      content, and status=draft. It performs no retry and follows no redirect.
+    - >-
+      Add a durable owner-only intent/receipt journal so an exact committed
+      repeat returns the existing receipt without a second POST, while an
+      interrupted or ambiguous prior intent fails closed without resubmission.
+    - >-
+      Add one explicit maintenance command for OAuth setup and one explicit
+      create-review-draft command. Neither command exposes publish, schedule,
+      update, delete, media, taxonomy, comments, sharing, or publicize controls.
+    - >-
+      After offline gates pass and the owner completes the one-time OAuth
+      interaction, execute create-review-draft exactly once and return only a
+      sanitized review receipt. This live action is not formal ST-1703, staging,
+      publication, release, production, or revenue evidence.
+
+  excluded_scope:
+    - Publishing, scheduling, private publication, pending review, or auto-draft
+    - Updating any draft or changing any published post
+    - Delete, trash, media upload, sideload, category, tag, comment, sharing, or publicize
+    - Rakuten affiliate link generation or insertion
+    - Price, inventory, points, reviews, or live Rakuten API acquisition
+    - Approving the Source Packet or article for publication
+    - Treating the review copy as an ST-0805 policy pass or ST-1703 completion
+    - WordPress.com password grant, implicit grant, application password, or normal password
+    - Browser automation as a production dependency
+    - Proxy inheritance, redirects, automatic retry, or automatic ambiguous-run recovery
+    - Formal TST, hosted CI, staging, publication, release, revenue, or production claims
+
+  source_design_refs:
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_MARKET_LEARNING_PILOT_WAVE_1.yaml
+      bytes: 12224
+      sha256: a8a94f4e70b082fdacb8672e7d3118b4178b0d312b935715b4613b87f52d0238
+    - uri: repo://python/raos/domain/editorial/market_learning_pilot.py
+      bytes: 20400
+      sha256: 69f4c373dca5ddcbebf7dcefc23a8a9376792ca85b70fb3d48d6137212fb6f27
+    - uri: repo://python/raos/application/editorial/market_learning_pilot.py
+      bytes: 13013
+      sha256: 431e1006fff77614545af991837a2f7724b661a94dc0b7df0db87b88bde4bb26
+    - uri: repo://python/raos/ports/wordpress_draft.py
+      bytes: 516
+      sha256: 6a68cdffb97181265c18c5e397ed71d6f852ca1060d2acb1e042d300d40fcc77
+    - uri: repo://python/raos/adapters/wordpress_rest.py
+      bytes: 16659
+      sha256: 6fd143251ea017fe824d0481d41722650a727d06a85bd5187c90582a6e86439d
+    - uri: repo://changes/st-1703/source-packet-candidate.first-article.v1.yaml
+      bytes: 8116
+      sha256: 730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2
+      authority: REVIEW_REQUIRED_NOT_APPROVED
+    - uri: repo://changes/st-1703/first-article-review-draft.v1.md
+      bytes: 11109
+      sha256: 58e225050d2bf30593fdd039ed9a307cd35db928b946bec470acbb7aa442a233
+      authority: PROPOSAL_ONLY
+
+  current_official_spec_refs:
+    retrieved_at: '2026-08-12'
+    wordpresscom_api_url_selection: https://developer.wordpress.com/docs/rest-api-urls-by-site-type/
+    wordpresscom_getting_started: https://developer.wordpress.com/docs/api/getting-started/
+    wordpresscom_oauth2: https://developer.wordpress.com/docs/api/oauth2/
+    wordpresscom_posts: https://developer.wordpress.org/rest-api/reference/posts/
+
+  decision:
+    authority_model:
+      slice_authority: OWNER_APPROVAL_REQUIRED
+      external_action_authorization: RECEIVED
+      article_authority: UNAPPROVED_EDITORIAL_REVIEW_COPY
+      source_packet_authority: REVIEW_REQUIRED_NOT_APPROVED
+      publication_authorized: false
+      full_st1703_acceptance: NOT_ACHIEVED
+      formal_test: NOT_EXECUTED
+      live_validation: NOT_EXECUTED
+      staging: NOT_EXECUTED
+      release: NOT_EXECUTED
+      revenue: NOT_OBSERVED
+      production: NOT_EXECUTED
+
+    target:
+      site_origin: https://kurashierabinote.wordpress.com
+      site_host: kurashierabinote.wordpress.com
+      api_path: /wp-json/wp/v2/posts
+      method: POST
+      expected_http_status: 201
+      exact_post_status: draft
+      operation: CREATE_REVIEW_DRAFT
+      maximum_successful_creates: 1
+      title_prefix: '[レビュー用・未承認] '
+      publication_capability: ABSENT
+
+    content_binding:
+      source_file: changes/st-1703/first-article-review-draft.v1.md
+      source_file_sha256: 58e225050d2bf30593fdd039ed9a307cd35db928b946bec470acbb7aa442a233
+      region_rule: >-
+        Use only the UTF-8 text strictly between the first and second standalone
+        --- lines; strip outer whitespace and append exactly one LF.
+      extracted_markdown_bytes: 8789
+      extracted_markdown_sha256: 5a47d98a7dfb081529c58f362e85862de936c2f38e65c023cf8116391dc7d0ea
+      source_packet_file: changes/st-1703/source-packet-candidate.first-article.v1.yaml
+      source_packet_sha256: 730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2
+      affiliate_links: ABSENT
+      review_bodies: ABSENT
+      first_hand_claims: ABSENT
+      runtime_price_or_inventory: ABSENT
+
+    renderer:
+      input_language: CLOSED_MARKDOWN_SUBSET
+      raw_html_input: FORBIDDEN
+      escape_before_render: true
+      exact_allowed_tags:
+        - h1
+        - h2
+        - h3
+        - p
+        - strong
+        - ul
+        - ol
+        - li
+        - blockquote
+        - table
+        - thead
+        - tbody
+        - tr
+        - th
+        - td
+        - a
+        - code
+        - hr
+      exact_allowed_attributes:
+        a:
+          - href
+      allowed_link_policy: >-
+        Exact lower-case HTTPS links already present in the pinned Markdown only;
+        no redirects, affiliate parameters, userinfo, fragments, or generated URLs.
+      unsupported_syntax_behavior: FAIL_CLOSED
+
+    oauth2:
+      flow: AUTHORIZATION_CODE
+      authorization_endpoint: https://public-api.wordpress.com/oauth2/authorize
+      token_endpoint: https://public-api.wordpress.com/oauth2/token
+      exact_scope: posts
+      exact_blog: kurashierabinote.wordpress.com
+      exact_redirect_uri: http://127.0.0.1:18703/oauth/wordpresscom/callback
+      callback_listener: IPV4_LOOPBACK_ONLY
+      callback_method: GET
+      state_bytes: 32
+      state_storage: MEMORY_ONLY
+      state_comparison: CONSTANT_TIME
+      authorization_code_storage: MEMORY_ONLY
+      password_grant: FORBIDDEN
+      implicit_grant: FORBIDDEN
+      pkce_claim: NOT_MADE_BY_CURRENT_OFFICIAL_OAUTH2_REFERENCE
+      user_interaction: >-
+        The command may open the official authorization URL. The user alone logs
+        in and approves the exact single-blog posts permission. The command never
+        reads browser cookies, storage, password fields, or unrelated tabs.
+      unsupported_redirect_registration_behavior: STOP_NO_FALLBACK
+
+    secret_store:
+      root: .secrets/wordpresscom-review-draft
+      root_mode: '0700'
+      file_mode: '0600'
+      owner: CURRENT_EFFECTIVE_UID_ONLY
+      regular_files_only: true
+      symlinks: FORBIDDEN_FOR_EVERY_ANCESTOR_AND_FILE
+      aliases:
+        client_id: wordpresscom_oauth_client_id
+        client_secret: wordpresscom_oauth_client_secret
+        access_token: wordpresscom_oauth_access_token
+      raw_values_in_args_env_stdout_stderr_repr_exception_evidence_git: FORBIDDEN
+      overwrite_existing_token: FORBIDDEN
+      token_revocation: MANUAL_WORDPRESSCOM_CONNECTED_APPLICATION_ACTION
+
+    transport:
+      implementation: PYTHON_STANDARD_LIBRARY_HTTPS
+      tls_verification: SYSTEM_DEFAULT_REQUIRED
+      exact_hosts:
+        - public-api.wordpress.com
+        - kurashierabinote.wordpress.com
+      port: 443
+      proxy_inheritance: DISABLED
+      redirects: FORBIDDEN
+      request_retries: 0
+      connect_timeout_seconds: 5
+      response_timeout_seconds: 20
+      maximum_token_response_bytes: 65536
+      maximum_api_response_bytes: 4000000
+      token_header_materialization: OUTWARD_ADAPTER_ONLY
+      token_header_persistence: FORBIDDEN
+      ambiguous_post_behavior: RECORD_INTENT_AND_STOP_WITHOUT_RESUBMISSION
+
+    durable_state:
+      root: .secrets/wordpresscom-review-draft/state
+      exact_schema: WORDPRESSCOM_REVIEW_DRAFT_STATE_V1
+      intent_before_post: REQUIRED_AND_FSYNCED
+      committed_receipt_after_valid_response: REQUIRED_AND_FSYNCED
+      exact_committed_repeat: RETURN_REPLAY_WITHOUT_NETWORK
+      pending_or_ambiguous_repeat: STOP_WITHOUT_NETWORK
+      mismatched_content_or_target: STOP_WITHOUT_NETWORK
+      stored_fields:
+        - schema
+        - target_origin
+        - operation_binding_sha256
+        - content_sha256
+        - state
+        - positive_draft_id_on_success
+        - exact_status_on_success
+        - response_body_sha256_on_success
+      forbidden_fields:
+        - title
+        - article_content
+        - access_token
+        - authorization_code
+        - client_secret
+        - response_body
+        - browser_data
+
+    live_receipt:
+      schema: WORDPRESSCOM_REVIEW_DRAFT_RECEIPT_V1
+      authority: OWNER_AUTHORIZED_EXTERNAL_REVIEW_COPY
+      network_status: EXECUTED_LIVE_DRAFT_CREATE
+      publication_authorized: false
+      production_eligible: false
+      fields:
+        - target_origin
+        - draft_id
+        - status
+        - operation_binding_sha256
+        - content_sha256
+        - response_body_sha256
+        - disposition
+      forbidden_claims:
+        - source_packet_approved
+        - editorial_policy_passed
+        - formal_test_passed
+        - staging_validated
+        - publication_authorized
+        - production_ready
+        - revenue_observed
+
+  rationale:
+    - >-
+      The existing Wave 1 receipt structurally requires network_status
+      NOT_EXECUTED and its evidence is LOCAL_RECORDED_ONLY. A separate live
+      review-copy model preserves that invariant instead of relabeling a real
+      network call as local evidence.
+    - >-
+      The exact article and Source Packet remain unapproved. A visibly prefixed,
+      draft-only review copy enables real editorial inspection without creating
+      policy, publication, or production authority.
+    - >-
+      WordPress.com documents OAuth2 access tokens for authenticated writes and
+      a direct /wp-json/ base for free wordpress.com subdomain sites. The
+      Authorization Code flow avoids requesting the user's WordPress password.
+    - >-
+      Recording durable intent before the only POST and refusing every ambiguous
+      repeat is safer than relying on an idempotency header unsupported by the
+      official endpoint.
+    - >-
+      A closed renderer makes the WordPress preview readable while preventing
+      arbitrary HTML or link generation from entering the API request.
+
+  rejected_alternatives:
+    - alternative: Reuse WordPressDraftReceipt for the live operation
+      reason: It requires network_status NOT_EXECUTED and would make live evidence false.
+    - alternative: Fabricate ST-0805 or Rakuten hashes for the article proposal
+      reason: It would convert synthetic or unapproved inputs into misleading eligibility evidence.
+    - alternative: Relax MarketLearningPilotService to accept unapproved content
+      reason: It would weaken the committed Wave 1 fail-closed boundary.
+    - alternative: Use WordPress.com password grant or the user's normal password
+      reason: It handles high-value credentials and bypasses the recommended consent flow.
+    - alternative: Use browser automation or MCP as the runtime connector
+      reason: Repository policy requires the official API for production integrations.
+    - alternative: Automatically retry a timed-out POST
+      reason: WordPress does not provide a proven idempotency contract for this create endpoint.
+    - alternative: Publish, schedule, or privately publish the article
+      reason: Only a non-public draft review copy is authorized.
+
+  constraints:
+    - Preserve domain <- application <- adapters/framework.
+    - Keep this as one ST-1703 slice and one atomic commit.
+    - Do not edit canonical, upstream, imported, generated, or user ZIP artifacts.
+    - Do not read or expose existing .secrets contents during implementation or tests.
+    - Do not add a package dependency or hydrate/update toolchains.
+    - All offline tests use fake loopback transports and perform no external network call.
+    - The live command must require the approved handoff's exact SHA-256.
+    - The live command must require the exact target, article, Source Packet, and extracted-region hashes.
+    - A live draft is never publication approval and never resolves an Open Decision.
+
+  security_and_approval_gates:
+    - Exact handoff bytes require a new explicit repository-owner approval before implementation.
+    - OAuth application registration and consent are manual owner actions on exact WordPress.com origins.
+    - Secret setup stops unless every owner, mode, type, size, and symlink check passes.
+    - OAuth callback stops on wrong host, port, path, method, state, duplicate query member, error, or timeout.
+    - Token exchange and API calls stop on any redirect, proxy, non-TLS remote endpoint, oversized response, malformed JSON, duplicate JSON key, wrong target, wrong status, or unexpected post state.
+    - The only accepted create response has positive integer id and exact status draft.
+    - The POST occurs at most once after durable intent; any ambiguity requires human WordPress dashboard reconciliation.
+    - Source Packet and article review remain separate from publication approval.
+    - A later explicit human approval is still mandatory before any publication implementation or action.
+
+  acceptance_criteria:
+    - Existing Wave 1 files and their local-only behavior remain byte-identical except documentation append if required.
+    - The separate review-draft types cannot represent publish, update, delete, media, or a second create.
+    - Renderer output is deterministic, escaped, hash-bound, and limited to the exact closed tags/attributes.
+    - OAuth setup requests only posts for kurashierabinote.wordpress.com and validates one state-bound callback.
+    - Credential values cannot appear in repr, exceptions, logs, evidence, fixtures, diffs, or command arguments.
+    - Exact committed replay returns the same draft ID without DNS, socket, browser, clock, or network use.
+    - Pending, ambiguous, target-mismatched, content-mismatched, malformed, unauthorized, or unexpected-status operations fail closed without another POST.
+    - One separately executed live command creates exactly one WordPress draft with the review prefix and exact draft status.
+    - The sanitized receipt reports draft ID/status and explicit non-publication authority only.
+    - No code path or CLI option can publish, schedule, update, delete, upload media, or insert affiliate URLs.
+
+  required_test_evidence:
+    - Isolated tests/st1703 pytest pass in one process
+    - New offline OAuth callback, secret-file, renderer, journal, transport, replay, and ambiguity tests pass
+    - Existing tests/st0502 and tests/st0805 pass in separate processes
+    - Pinned Ruff lint and format pass for changed Python files
+    - Pinned mypy passes for hand-maintained Python
+    - bash -n passes for changed shell wrappers
+    - make check-workspace passes
+    - python3 scripts/import_raos_design.py verify passes
+    - Sensitive-data and forbidden-path scans pass
+    - Git diff/status prove the user ZIP is untouched and unstaged
+    - Live evidence is reported separately from offline and formal evidence
+
+  open_decisions: []

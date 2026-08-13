@@ -1,0 +1,203 @@
+design_handoff:
+  schema: DESIGN_HANDOFF_V1
+  approval_status: PROPOSED_REQUIRES_REPOSITORY_OWNER_APPROVAL
+  approved_story: ST-1703
+  title: WORDPRESSCOM_REVIEW_DRAFT_WAVE_2B_V1_1_ACTIVATION
+
+  pro_advisory:
+    importance: gated
+    doctor_status: READY
+    run_id: 20260812T132505Z-6795164fc0c6
+    submission_attempted: true
+    captured_response: false
+    terminal_status: BLOCKED_PRO_REQUIRED
+    terminal_reason_code: RESPONSE_NOT_IDENTIFIABLE
+    recovery_status: REFUSED
+    recovery_diagnostic_code: ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID
+    authority_used_for_decision: NONE
+    fallback_label: PRO_UNAVAILABLE
+
+  approved_scope:
+    - Replace only the unavailable WordPress.com wp/v2 numeric-site transport in the existing ST-1703 review-draft adapter.
+    - Keep the fixed remote authority public-api.wordpress.com:443 and fixed numeric site ID 256699520.
+    - Use one authenticated read-only GET to /rest/v1.1/sites/256699520/posts?context=edit&number=1&fields=ID before any new durable INTENT.
+    - Use one POST to /rest/v1.1/sites/256699520/posts/new only after the preflight succeeds and exact INTENT is fsynced.
+    - Encode exactly title, content, status=draft, and publicize=false as application/x-www-form-urlencoded with one reviewed deterministic UTF-8 encoding.
+    - Preserve the immutable article, source packet, target origin, OAuth token alias, durable one-create journal, ambiguity stop, committed replay, and no-publication controls.
+    - Validate one bounded provider response as an exact draft receipt without retaining its body.
+    - Update the existing Wave 2/Wave 2A implementation, isolated tests, README, and append-only ST-1703 worklog in one atomic Story slice.
+
+  source_design_refs:
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2.yaml
+      sha256: 798e005faee6c7367496a79e71b9a2d84fc9d9433e4e368276633a8539325cbd
+      authority: APPROVED_PREDECESSOR
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_NUMERIC_PROXY_ACTIVATION.yaml
+      sha256: 5e69433222435305f8a2decef8840de4764565929d483f0e4d8b35fcd6ed7bf6
+      authority: APPROVED_PREDECESSOR
+    - uri: repo://changes/st-1703/first-article-review-draft.v1.md
+      sha256: 58e225050d2bf30593fdd039ed9a307cd35db928b946bec470acbb7aa442a233
+      authority: OWNER_AUTHORIZED_EXTERNAL_REVIEW_COPY
+    - uri: repo://changes/st-1703/source-packet-candidate.first-article.v1.yaml
+      sha256: 730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2
+      authority: REVIEW_REQUIRED_NOT_APPROVED
+    - uri: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/posts/new/
+      retrieved_at: '2026-08-12'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+    - uri: https://developer.wordpress.com/docs/api/1/get/sites/%24site/posts/
+      retrieved_at: '2026-08-12'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+    - uri: https://developer.wordpress.com/docs/api/oauth2/
+      retrieved_at: '2026-08-12'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+
+  bounded_live_evidence:
+    secret_values_observed_logged_or_persisted: false
+    wp_v2_numeric_preflight:
+      path: /wp/v2/sites/256699520/posts?context=edit&per_page=1&_fields=id
+      result: HTTP_403
+      closed_provider_category: GENERIC_UNAUTHORIZED
+      durable_state_file_present_after_stop: false
+      post_attempted: false
+    v1_1_posts_scope_crosscheck:
+      path: /rest/v1.1/sites/256699520/posts?context=edit&number=1&fields=ID
+      result: HTTP_200
+      exact_top_level_keys:
+        - found
+        - meta
+        - posts
+      response_body_persisted_or_logged: false
+    create_route_options_check:
+      path_without_trailing_slash: HTTP_200_NO_REDIRECT
+      path_with_trailing_slash: HTTP_200_NO_REDIRECT
+      authentication_used: false
+      state_or_content_mutation: false
+
+  decision:
+    exact_provider_origin: https://public-api.wordpress.com
+    exact_remote_authority: public-api.wordpress.com:443
+    exact_numeric_site_id: 256699520
+    exact_target_origin: https://kurashierabinote.wordpress.com
+    exact_preflight:
+      method: GET
+      path: /rest/v1.1/sites/256699520/posts?context=edit&number=1&fields=ID
+      request_body: EMPTY
+      headers:
+        Accept: application/json
+        Authorization: FIXED_BEARER_TOKEN_ALIAS_ONLY
+      required_http_status: 200
+      maximum_response_bytes: 65536
+      exact_top_level_keys:
+        - found
+        - meta
+        - posts
+      required_shape:
+        found: NONNEGATIVE_NON_BOOL_INTEGER
+        meta: BOUNDED_JSON_OBJECT_NOT_PERSISTED
+        posts: EMPTY_OR_ONE_EXACT_POSITIVE_ID_OBJECT
+      response_content_persisted: false
+    exact_create:
+      method: POST
+      path: /rest/v1.1/sites/256699520/posts/new
+      headers:
+        Accept: application/json
+        Authorization: FIXED_BEARER_TOKEN_ALIAS_ONLY
+        Content-Type: application/x-www-form-urlencoded
+      body_encoding:
+        algorithm: UTF8_URLENCODE_QUOTE_PLUS
+        ordered_members:
+          - title
+          - content
+          - status
+          - publicize
+        exact_status: draft
+        exact_publicize: 'false'
+        extra_members_allowed: false
+      required_http_status: 200
+      maximum_response_bytes: 4000000
+      required_response_members:
+        ID: POSITIVE_NON_BOOL_INTEGER
+        site_ID: EXACT_256699520
+        status: EXACT_DRAFT
+        type: EXACT_POST
+        URL: EXACT_TARGET_HOST_HTTPS_POST_LINK
+      publicize_URLs: ABSENT_OR_EMPTY_ONLY
+      raw_response_persisted_or_logged: false
+      persisted_response_evidence: SHA256_ONLY
+    durable_order:
+      - ACQUIRE_EXCLUSIVE_LOCK
+      - VALIDATE_EXISTING_STATE_OR_RETURN_COMMITTED_REPLAY
+      - AUTHENTICATED_V1_1_EDIT_CONTEXT_PREFLIGHT
+      - FSYNC_INTENT
+      - ATTEMPT_EXACTLY_ONE_V1_1_POST
+      - VALIDATE_EXACT_DRAFT_RECEIPT
+      - FSYNC_COMMITTED
+    preflight_failure: STOP_WITHOUT_INTENT_OR_POST
+    post_or_response_ambiguity: RETAIN_INTENT_AND_STOP_WITHOUT_RESUBMISSION
+    committed_repeat: RETURN_REPLAY_WITHOUT_SECRET_READ_OR_NETWORK
+    publication_authorized: false
+    production_eligible: false
+
+  rationale:
+    - The approved wp/v2 numeric-site route returned a closed HTTP 403 unauthorized response with the same valid posts-scope token that returned HTTP 200 on the official v1.1 posts endpoint.
+    - Current live evidence disproves wp/v2 usability for this exact free WordPress.com site without showing that the OAuth token, numeric site binding, TLS transport, or posts scope is invalid.
+    - WordPress.com continues to document the v1.1 posts/new endpoint as an authenticated create endpoint and explicitly documents status=draft.
+    - Pinning numeric site ID, host, paths, request members, publicize=false, draft response, and durable one-attempt behavior keeps the transport change narrower than changing authentication method or permissions.
+    - Explicit publicize=false is required because the documented legacy endpoint otherwise defaults publicize to true even though this operation remains a non-public draft.
+
+  rejected_alternatives:
+    - alternative: Attempt wp/v2 POST after its authenticated edit-context preflight returned unauthorized
+      reason: It would cross the approved fail-closed preflight and could create an unverified ambiguous external mutation.
+    - alternative: Retry or weaken the wp/v2 preflight
+      reason: Repeated live evidence already isolates the route-specific authorization incompatibility; weakening it would remove the create-capability safety check.
+    - alternative: Use a global-scope token, password grant, WordPress password, or application password
+      reason: The existing least-privilege posts-scope token works on the official v1.1 posts API, so broader credentials are unnecessary.
+    - alternative: Omit publicize=false
+      reason: The official v1.1 create contract documents publicize=true as the default.
+    - alternative: Use browser automation, wp-admin, XML-RPC, a domain-name site identifier, or a dynamic route
+      reason: They broaden authority and reduce the fixed official-API audit boundary.
+    - alternative: Publish, privately publish, schedule, update, delete, or attach media
+      reason: The owner authorized one non-public draft only.
+
+  constraints:
+    - Preserve domain <- application <- adapters/framework and the existing inward durable port versus outward one-attempt port split.
+    - Keep all provider access on exact HTTPS authority public-api.wordpress.com:443 with system certificate validation and hostile TLS override rejection.
+    - Never expose, echo, log, hash into command output, or persist OAuth client values, bearer tokens, authorization headers, or provider response bodies.
+    - Never follow redirects, proxy through environment variables, accept a different site ID, accept a different target origin, or construct a dynamic route.
+    - Never add retry, fallback-chain, publish, private-publish, schedule, update, delete, media, taxonomy, password, author, slug, sticky, or arbitrary request-field capability.
+    - Keep the exact article title and rendered content immutable and source-hash bound.
+    - Preserve the existing owner-private 0700 roots, 0600 files, exclusive lock, fsync ordering, ambiguity classification, and offline committed replay.
+    - Treat tests, formal validation, live draft creation, publication, staging, release, and production as separate evidence boundaries.
+
+  security_and_approval_gates:
+    - Repository-owner approval must cite the exact SHA-256 of this handoff before implementation.
+    - Implementation approval does not authorize publication, private publication, scheduling, update, deletion, media upload, or a second external create.
+    - A preflight refusal creates no INTENT and performs no POST.
+    - Any exception or non-exact response after the POST attempt is CREATE_AMBIGUOUS, preserves INTENT, and forbids automatic or manual rerun without separate reconciliation.
+    - A successful response must prove exact site_ID 256699520 and exact status draft before COMMITTED is written.
+    - Only an exact COMMITTED receipt may replay without token access or network.
+    - The live create may run once only after implementation, focused tests, affected Story suites, static checks, hash checks, workspace checks, and sensitive-data review pass.
+
+  acceptance_criteria:
+    - The exact approved handoff bytes and all predecessor/article/source hashes are verified before candidate construction.
+    - The adapter opens only public-api.wordpress.com:443 and sends only the exact v1.1 preflight and create paths.
+    - The preflight validates HTTP 200 and the exact observed found/meta/posts envelope without persisting provider content.
+    - The POST body contains exactly title, content, status=draft, and publicize=false in deterministic form encoding.
+    - The POST is impossible before fsynced INTENT and is attempted at most once.
+    - The response validator requires HTTP 200, positive ID, exact site ID, exact draft status, exact post type, safe target-host link, and absent-or-empty publicize URLs.
+    - A successful live command returns a sanitized receipt with publication_authorized=false and production_eligible=false.
+    - Committed replay performs no secret read, preflight, DNS, socket, clock, browser, or POST.
+    - CLI and Make expose no provider origin, site ID, path, status, publicize, publish, update, delete, media, or retry control.
+    - No raw secret or provider body enters tracked files, terminal output, state, logs, or tests.
+
+  required_test_evidence:
+    - Focused v1.1 deterministic form-encoding and exact request tests pass.
+    - Preflight envelope, site authority, redirect, error, malformed, duplicate-key, size, and hostile-environment negative matrices pass.
+    - Response ID/site/status/type/link/publicize validation and ambiguity matrices pass.
+    - Durable GET -> fsynced INTENT -> one POST -> fsynced COMMITTED ordering, crash, concurrency, and no-resend tests pass.
+    - Committed replay with the token removed and hard traps for secret read, DNS, socket, preflight, and POST passes.
+    - Candidate and all bound source mutations fail before secret read, state creation, or network.
+    - Existing OAuth, rendering, CLI, ST-1703, ST-0502, and ST-0805 isolated suites pass.
+    - Pinned Ruff, mypy, py_compile, bash -n, workspace, canonical import, exact hash, diff, and bounded sensitive-data gates pass.
+    - Live preflight and one draft create are reported separately from local tests and from formal TST/CI/staging/publication/release/production.
+
+  open_decisions: []
