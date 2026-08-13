@@ -37,7 +37,7 @@ EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
     "9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291"
 )
 EXPECTED_ST0202_CONTRACT_OBJECT_SHA256: Final = (
-    "0203e43d6f118dcc31b983de16f8fdb01d8277e27a1624b3589271ba23dab85f"
+    "652bfb874deefb7cc5c3249a305d34b2bf83e87502394c655f4e70b5bfacb0d1"
 )
 OBJECT_STORAGE_WRAPPER_PATH: Final = Path("scripts/object_storage_service.sh")
 GENERATED_PATHS: Final = (COMPOSE_PATH, MANIFEST_PATH)
@@ -140,9 +140,11 @@ EXPECTED_ST0202_COMPOSE: Final = {
         "stop_grace_period": "30s",
     },
     "port": {
+        "syntax": "long",
         "host_ip": "127.0.0.1",
         "variable": "RAOS_OBJECT_STORAGE_PORT",
         "default": 8333,
+        "disposable_range": "49152-65535",
         "container": 8333,
         "protocol": "tcp",
     },
@@ -416,8 +418,12 @@ def render_st0202_component(contract: Mapping[str, Any]) -> dict[str, Any]:
                     *_list(compose["command"], "object-storage command"),
                 ],
                 "ports": [
-                    f"{port['host_ip']}:${{{port['variable']}-{port['default']}}}:"
-                    f"{port['container']}/{port['protocol']}"
+                    {
+                        "target": port["container"],
+                        "published": (f"${{{port['variable']}-{port['default']}}}"),
+                        "host_ip": port["host_ip"],
+                        "protocol": port["protocol"],
+                    }
                 ],
                 "secrets": [
                     {

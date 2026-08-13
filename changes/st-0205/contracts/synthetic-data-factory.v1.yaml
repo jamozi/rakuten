@@ -121,7 +121,7 @@ provenance:
       sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
     - story_id: ST-0202
       path: changes/st-0202/manifest.yaml
-      sha256: 5b07ee92e4ce387df1ee752bb841cca2b63e3575cc5a06509ab990c09ab7dd56
+      sha256: b1e78d7d29f8b382a7feb964e1f8cbe5f8ad01ff06891fc57330bfe219218f54
 security:
   control_mappings:
     - {id: SEC-APP-001, relationship: EXACT_UNKNOWN_DOMAIN_FIELD_AND_SCENARIO_REJECTION}

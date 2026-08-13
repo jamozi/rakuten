@@ -145,7 +145,7 @@
     },
     "predecessors": [
       {
-        "sha256": "12953e2e975c38108117001a75a18e385ab3a7a20de4a7cebbfd88f38bd58337",
+        "sha256": "e755dbe87d715149c69c78aaf0e69239cb3fa94edf14f8c970d2370a5294d570",
         "story_id": "ST-0204",
         "uri": "repo://changes/st-0204/manifest.yaml"
       },
@@ -166,12 +166,12 @@
   "source_artifacts": [
     {
       "bytes": 8970,
-      "sha256": "9ed8fc0961e80e6c805967fbe3a109984b31151d0036101a475eb33837f99179",
+      "sha256": "1d5181987dc4c8d692cc6bf2f6dceca748a62c03250068b84c40509d2414141b",
       "uri": "repo://changes/st-1203/contracts/search-console-recorded-fixtures.v1.yaml"
     },
     {
       "bytes": 49109,
-      "sha256": "a4abf1040745c833667772eb51ea5b5806422f2caf7469603602fd9d2c371cdc",
+      "sha256": "78aae0be44c59983f4d20eb82695659191a9e28f56d1e6bfdd4e05a9838f99b0",
       "uri": "repo://scripts/build_st1203_search_console_recorded_adapter.py"
     }
   ]

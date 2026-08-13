@@ -107,7 +107,7 @@ verification:
 predecessor:
   manifest_uri: repo://changes/st-0202/manifest.yaml
   story_id: ST-0202
-  sha256: 5b07ee92e4ce387df1ee752bb841cca2b63e3575cc5a06509ab990c09ab7dd56
+  sha256: b1e78d7d29f8b382a7feb964e1f8cbe5f8ad01ff06891fc57330bfe219218f54
 boundary:
   environment: LOCAL_AND_CI_FAKE_ONLY
   production_use: FORBIDDEN

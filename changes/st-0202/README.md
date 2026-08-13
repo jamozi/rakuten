@@ -11,7 +11,9 @@ the S3 endpoint on loopback. It is not a production object-store definition.
 - Contract and generated local candidate: `LOCAL_AND_CI_CANDIDATE`
 - Effective canonical Story status: `NOT_STARTED / NOT_EXECUTED` (unchanged)
 - Docker/Compose runtime on this implementation host: `NOT_EXECUTED`
-- Image pull and readiness probes: `NOT_EXECUTED`
+- Hosted Storage attempt `31738772138` / job `94576769752`: `FAILED_BEFORE_ACCEPTANCE`;
+  network preflight, generator check, image pull, and container health completed,
+  but the prior `published: 0` model exposed no `8333/tcp` host mapping
 - Authenticated put/get/version fixture: `NOT_EXECUTED`
 - Object-lock and version-delete regression fixture: `NOT_EXECUTED`
 - Container vulnerability scan: `NOT_EXECUTED`
@@ -78,14 +80,20 @@ command arguments, logs, or tracked files. `RAOS_OBJECT_STORAGE_PORT` defaults
 to `8333`; operator-facing commands accept only `1024` through `65535`, and
 publication is fixed to `127.0.0.1`.
 
-The disposable `test` command does not reserve an operator-selected fixed
-port. It supplies `RAOS_OBJECT_STORAGE_PORT=0` only inside its sanitized Docker
-environment so the local Docker Engine assigns an available host port. The
-wrapper then reads the actual mapping and fails closed unless exactly one
-`8333/tcp` mapping is present as `127.0.0.1:<assigned-port>` with the assigned
-port in `1024..65535`. The zero value is an internal disposable-test sentinel,
-not a supported value for `config`, `up`, `check`, or `down`; those commands
-reject it through the normal fixed-port validator.
+The generated object-storage publish uses Compose long syntax so `host_ip`
+remains exactly `127.0.0.1` while `published` can be a string range. The
+disposable `test` command does not reserve an operator-selected fixed port. It
+supplies the reviewed internal range `RAOS_OBJECT_STORAGE_PORT=49152-65535`
+only inside its sanitized Docker environment, allowing Compose to select one
+available port from that range. The wrapper then reads the actual mapping and
+fails closed unless exactly one `8333/tcp` mapping is present as
+`127.0.0.1:<assigned-port>` with the assigned port in both `1024..65535` and
+the narrower disposable range `49152..65535`. This follows the Compose
+[long-syntax port contract](https://docs.docker.com/reference/compose-file/services/#long-syntax-3),
+which defines `published` as a string that may be a range. The range is an
+internal disposable-test value, not a supported value for `config`, `up`,
+`check`, or `down`; those commands continue to accept only one decimal fixed
+port in `1024..65535` and still reject `0`.
 
 The service command explicitly disables master telemetry, WebDAV, the admin
 UI, the Iceberg S3 port, and deletion of nonempty buckets. It uses a named data
@@ -116,5 +124,6 @@ bootstrap, versioned put/get, metadata round-trip, SHA-256 mismatch rejection,
 object-lock/version-delete behavior, cleanup, and the required container
 vulnerability scan. Formal TST-014 belongs to the canonical CI environment.
 None of these runtime results is claimed by the contract or local unit tests.
-In particular, fake-Docker coverage of the internal random-port sentinel is
-not evidence that a hosted Docker Engine assigned and reported the mapping.
+In particular, fake-Docker coverage of the internal published-port range is
+not evidence that a hosted Docker Engine assigned and reported the mapping. A
+new hosted Storage run of this exact generated long-syntax model is required.

@@ -157,7 +157,14 @@ def test_static_identity_is_only_a_file_backed_compose_secret() -> None:
 def test_storage_mount_network_and_host_publish_are_private_by_default() -> None:
     compose = _rendered_compose()
     service = compose["services"]["object-storage"]
-    assert service["ports"] == ["127.0.0.1:${RAOS_OBJECT_STORAGE_PORT-8333}:8333/tcp"]
+    assert service["ports"] == [
+        {
+            "target": 8333,
+            "published": "${RAOS_OBJECT_STORAGE_PORT-8333}",
+            "host_ip": "127.0.0.1",
+            "protocol": "tcp",
+        }
+    ]
     assert service["volumes"] == ["object_storage_data:/data"]
     assert compose["volumes"]["object_storage_data"] is None
     assert service["networks"] == ["object_storage_internal"]

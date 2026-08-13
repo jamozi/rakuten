@@ -15,9 +15,12 @@ readonly expected_image_config_digest='sha256:10b004ca7cc8ee13615dbe670e1be04727
 readonly expected_platform='linux/amd64'
 readonly expected_revision='1355c7a102194d6c461baf090eff50367b575afb'
 readonly expected_version_line='version 8000GB 4.29 1355c7a linux amd64'
-readonly expected_compose_sha256='dd2b5a1cd608df31ba46dbdb38011d5a96faa145a86c2c33b8f1281e4290febf'
+readonly expected_compose_sha256='a6cd0109a2bc63dae10be59bd9aa32ab85e9c3fec3847bc43c413b452cb871f5'
 readonly expected_fixture_sha256='50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527'
 readonly local_project='raos-st0202-local'
+readonly disposable_port_min=49152
+readonly disposable_port_max=65535
+readonly disposable_port_range='49152-65535'
 
 docker_executable=''
 repository_root=''
@@ -327,6 +330,12 @@ assert_service() {
     error 'the S3 endpoint is not published on one bounded loopback port'
     return 1
   fi
+  if [[ $command == test ]] && \
+    ((observed_published_port < disposable_port_min || \
+      observed_published_port > disposable_port_max)); then
+    error 'the disposable S3 endpoint escaped the reviewed random host-port range'
+    return 1
+  fi
   published_port=$observed_published_port
   port_inventory=$(run_docker port "$container_id")
   if [[ $port_inventory != "8333/tcp -> 127.0.0.1:$published_port" ]]; then
@@ -432,7 +441,7 @@ fi
 
 docker_config_dir=$(mktemp -d "${TMPDIR:-/tmp}/raos-st0202-docker-config.XXXXXXXX")
 if [[ $command == test ]]; then
-  object_storage_port=0
+  object_storage_port=$disposable_port_range
 fi
 validate_docker_client
 

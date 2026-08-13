@@ -99,9 +99,11 @@ EXPECTED_COMPOSE = {
         "stop_grace_period": "30s",
     },
     "port": {
+        "syntax": "long",
         "host_ip": "127.0.0.1",
         "variable": "RAOS_OBJECT_STORAGE_PORT",
         "default": 8333,
+        "disposable_range": "49152-65535",
         "container": 8333,
         "protocol": "tcp",
     },

@@ -44,7 +44,9 @@ log = Path({str(log)!r})
 args = sys.argv[1:]
 config_path = os.environ.get("RAOS_OBJECT_STORAGE_S3_CONFIG_FILE", "")
 requested_port = os.environ.get("RAOS_OBJECT_STORAGE_PORT", "")
-published_port = "49123" if requested_port == "0" else (requested_port or "49123")
+published_port = (
+    "49153" if requested_port == "49152-65535" else (requested_port or "49153")
+)
 metadata = None
 if config_path and Path(config_path).is_file():
     item = Path(config_path).stat()
@@ -127,6 +129,8 @@ elif operation == "ps" and "--quiet" in payload:
 elif operation == "port":
     if mode == "low_assigned_port":
         published_port = "1023"
+    elif mode == "below_disposable_range":
+        published_port = "49151"
     elif mode == "high_assigned_port":
         published_port = "65536"
     elif mode == "overflow_assigned_port":
@@ -279,7 +283,7 @@ def test_config_uses_fixed_local_transport_and_passes_only_secret_path(
     assert "raos-st0202-local" in config["argv"]
     assert config["config_metadata"]["mode"] == "0o600"
     assert config["port"] == "58333"
-    assert all(row["port"] != "0" for row in rows)
+    assert all(row["port"] != "49152-65535" for row in rows)
 
 
 def test_wrapper_rejects_compose_or_fixture_digest_drift_before_docker(
@@ -332,11 +336,11 @@ def test_disposable_test_targets_only_object_service_and_removes_volume(
         "acceptance",
     ]
     assert all(row["raw_credentials_present"] is False for row in rows)
-    assert {row["port"] for row in rows if row["port"] is not None} == {"0"}
+    assert {row["port"] for row in rows if row["port"] is not None} == {"49152-65535"}
     compose_port = next(row for row in rows if _compose_operation(row) == "port")
-    assert compose_port["port"] == "0"
+    assert compose_port["port"] == "49152-65535"
     container_port = next(row for row in rows if row["argv"][2:3] == ["port"])
-    assert container_port["port"] == "0"
+    assert container_port["port"] == "49152-65535"
 
 
 @pytest.mark.parametrize(
@@ -351,7 +355,22 @@ def test_disposable_random_port_must_resolve_to_bounded_loopback_port(
     assert result.returncode != 0
     assert "not published on one bounded loopback port" in result.stderr
     rows = _rows(log)
-    assert {row["port"] for row in rows if row["port"] is not None} == {"0"}
+    assert {row["port"] for row in rows if row["port"] is not None} == {"49152-65535"}
+    down = [row for row in rows if _compose_operation(row) == "down"]
+    assert len(down) == 1
+    assert "--volumes" in down[0]["argv"]
+
+
+def test_disposable_random_port_must_remain_in_reviewed_range(
+    tmp_path: Path,
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path, "below_disposable_range")
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode != 0
+    assert "escaped the reviewed random host-port range" in result.stderr
+    rows = _rows(log)
+    assert {row["port"] for row in rows if row["port"] is not None} == {"49152-65535"}
     down = [row for row in rows if _compose_operation(row) == "down"]
     assert len(down) == 1
     assert "--volumes" in down[0]["argv"]
@@ -401,6 +420,17 @@ def test_invalid_port_mode_and_symlink_are_rejected(tmp_path: Path) -> None:
     assert result.returncode == 64
     assert "decimal integer from 1024 through 65535" in result.stderr
     assert all(row["port"] != "0" for row in _rows(log))
+
+    result = _run(
+        WRAPPER,
+        docker,
+        "config",
+        tmp_path / "range-port",
+        port="49152-65535",
+    )
+    assert result.returncode == 64
+    assert "decimal integer from 1024 through 65535" in result.stderr
+    assert all(row["port"] != "49152-65535" for row in _rows(log))
 
     weak = _identity(tmp_path / "weak")
     weak.chmod(0o640)
