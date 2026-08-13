@@ -1,0 +1,215 @@
+DESIGN_HANDOFF_V1:
+  document_version: 1
+  proposal_status: PENDING_OWNER_SHA256_APPROVAL
+  approved_story: ST-0106
+  approved_scope:
+    - Restore the existing ST-0106 denied-network boundary on GitHub-hosted Ubuntu 24.04 when unprivileged user namespaces are unavailable.
+    - Preserve the current non-root user-namespace launcher unchanged when its trusted probe succeeds.
+    - Add one fixed privileged namespace-creation fallback that drops every privilege before any repository-controlled Python, shell, test, or requested command executes.
+    - Extend runtime assertions and hostile tests without changing hydration, provider, credential, deployment, publication, or Production behavior.
+    - Regenerate only the ST-0107 manifest as a mechanical downstream provenance closure; grant no ST-0107 semantic or activation authority.
+  exact_target:
+    base_commit: 53a726e3716bc812bf2797570cf013f0445fb228
+    base_tree: 1c2df1756bbccdd6f9ee68d9d51eb1b3b06c616c
+    branch: codex/st-0106-ci-runner-network-boundary
+    runner: ubuntu-24.04
+    hosted_failure: 'unshare: write failed /proc/self/uid_map: Operation not permitted'
+  source_design_refs:
+    - uri: repo://scripts/run_network_denied.sh
+      sha256: 1e1c1681814865ba05238862b7eb7999a39b87a7844acb66d36e8b50d817d152
+    - uri: repo://scripts/assert_network_denied.py
+      sha256: 9c784f739b490bac141738f954f2d622f94408fcf24e6c42a21abe96a3ef7f04
+    - uri: repo://tests/st0106/test_network_isolation.py
+      sha256: 1639fd49c1dec22b4607d60a9214041b3bdb9a9dd0f12e0a52c50c18d209c7b1
+    - uri: repo://docs/execplans/ST-0106.md
+      sha256: b408360777f76ec93b582ca7e2ee5c9bf72b06fcbe9c76ebce2be71de4be319e
+    - uri: repo://docs/worklogs/ST-0106.md
+      sha256: 610631d8f8ff5cd0400d9615237252767d1a48528425289e7d0966b2769093f0
+    - uri: repo://.github/workflows/ci.yml
+      sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+    - uri: https://documentation.ubuntu.com/release-notes/24.04/
+      checked_at: '2026-08-13'
+      authority: Ubuntu 24.04 release security behavior and documented user-namespace alternatives
+    - uri: https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+      checked_at: '2026-08-13'
+      authority: GitHub-hosted VM lifecycle and passwordless sudo behavior
+    - kind: CHATGPT_PRO_REVIEW_ATTEMPT
+      run_id: 20260813T173614Z-ed417458ee9c
+      request_sha256: 0a8c8bb7cc6aa123fbf6d2b631a925d7452216f35bf397b17b97d9e4d766468c
+      outcome: REVIEW_NOT_OBTAINED
+      first_reason: RESPONSE_NOT_IDENTIFIABLE
+      recovery_diagnostic: ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID
+      design_authority: NONE
+  decision:
+    id: ST0106-HOSTED-NETWORK-ISOLATION-V1
+    selected_strategy: PRIVILEGED_NAMESPACE_CREATION_THEN_COMPLETE_DROP
+    normal_path:
+      probe:
+        executable: /usr/bin/unshare
+        arguments: [--user, --map-current-user, --, /bin/true]
+        environment: fixed_minimal
+        repository_code_executed: false
+      launcher:
+        executable: /usr/bin/unshare
+        arguments: [--user, --map-current-user, --net, --pid, --fork, --kill-child]
+        identity: current_non_root_uid_gid
+        launch_mode: UNPRIVILEGED_USER_NAMESPACE
+    fallback_activation:
+      condition: trusted normal-path probe returns nonzero
+      automatic_retry_count: 0
+      password_prompt: forbidden
+      persistent_host_mutation: forbidden
+      sysctl_mutation: forbidden
+      apparmor_policy_mutation: forbidden
+    fallback_trusted_chain:
+      - validate fixed /usr/bin/sudo as root-owned, executable, non-group/world-writable, and set-user-ID root
+      - validate fixed /usr/bin/unshare and /usr/bin/setpriv as root-owned, executable, and non-group/world-writable
+      - require fixed /usr/bin/sudo -n to execute a fixed /bin/true without repository code or input
+      - close every inherited descriptor above standard error before entering sudo
+      - execute fixed /usr/bin/env -i and fixed /usr/bin/unshare as root with fresh network, PID, and mount namespaces plus a private proc mount
+      - execute fixed /usr/bin/setpriv before the repository assertion or requested command
+      - set the original non-root UID and GID, clear supplementary groups, drop the complete capability bounding, inheritable, and ambient sets, and set no_new_privs
+      - execute /usr/bin/python3 -I scripts/assert_network_denied.py only after the complete drop
+      - execute the requested absolute command only after the assertion installs the existing socket-denying seccomp filter
+    fallback_launcher:
+      sudo: [/usr/bin/sudo, -n, --]
+      environment: /usr/bin/env -i with the existing fixed PATH, HOME, locale, timezone, namespace attestations, and closed launch-mode value only
+      unshare: [/usr/bin/unshare, --net, --pid, --mount, --fork, --kill-child, --mount-proc]
+      privilege_drop:
+        executable: /usr/bin/setpriv
+        required_arguments:
+          - original non-root --reuid and --regid
+          - --clear-groups
+          - --bounding-set=-all
+          - --inh-caps=-all
+          - --ambient-caps=-all
+          - --no-new-privs
+      launch_mode: PRIVILEGED_NAMESPACE_THEN_DROP
+    runtime_attestation:
+      existing:
+        - child network namespace differs from parent
+        - child PID namespace differs from parent and entry process is PID 1
+        - only loopback is visible and IPv4/IPv6 external routes are unusable
+        - real and effective UID/GID are equal and non-root
+        - no_new_privs and seccomp filter are active before requested command
+        - network-capable sockets and io_uring setup are denied while socketpair remains available
+      added:
+        - launch mode is one exact closed value
+        - fallback mount namespace differs from parent
+        - fallback supplementary group list is empty
+        - fallback effective, permitted, inheritable, ambient, and bounding capabilities are all zero
+        - report identifies the exact launch mode without dynamic host material
+  rationale:
+    - Ubuntu documents the global sysctl disable as losing the kernel-attack-surface mitigation; this proposal does not change it.
+    - A broad AppArmor profile for the general-purpose unshare executable would create a reusable bypass surface and requires additional host policy lifecycle not owned by ST-0106.
+    - Root is used only by fixed system binaries to create namespaces. The first repository-controlled executable runs after UID, GID, groups, capabilities, and privilege gain are closed.
+    - This exact architecture previously existed in repository history and was later removed by a broad refactor, so it is a bounded restoration with additional capability assertions rather than a new provider or CI platform.
+  rejected_alternatives:
+    - alternative: disable kernel.apparmor_restrict_unprivileged_userns for the whole runner
+      reason: broadens kernel attack surface for every later process and is unnecessary when a fixed root-created namespace can retain isolation
+    - alternative: install an AppArmor profile granting userns to /usr/bin/unshare
+      reason: the executable is general purpose, the policy would be broader than the one RAOS invocation, and profile installation/validation creates a new root policy lifecycle
+    - alternative: omit fresh user/network/PID namespaces and rely on seccomp only
+      reason: violates the approved multi-layer isolation contract and loses route/interface/PID-boundary evidence
+    - alternative: run repository checks as root inside the new namespace
+      reason: violates the non-root identity invariant and exposes repository-controlled code to root authority
+    - alternative: mutate .github/workflows/ci.yml with duplicated sudo or sysctl steps
+      reason: duplicates privileged policy across four jobs and moves it outside the single hardened wrapper
+  constraints:
+    - .github/workflows/ci.yml remains byte-identical.
+    - scripts/ci_job.sh and Makefile remain byte-identical.
+    - Database and Storage job behavior remains unchanged.
+    - No repository-controlled path, argument, environment value, or executable is interpreted by root before setpriv completes.
+    - Requested command remains an absolute canonical executable and is never evaluated by a shell.
+    - Failure of the normal probe, helper validation, passwordless sudo, namespace creation, privilege drop, or any assertion exits closed before requested-command execution.
+    - No credentials, secrets, OIDC token, network exception, deployment, publication, or Production authority is added.
+    - Formal TST-001 and TST-002 remain NOT_EXECUTED until a real reviewed GitHub-hosted run.
+    - ST-0202 Storage remains a separate Story and is not modified.
+  exact_file_cut:
+    proposed_new:
+      - changes/st-0106/DESIGN_HANDOFF_V1_ST0106_HOSTED_NETWORK_ISOLATION_COMPATIBILITY_V1.yaml
+      - changes/st-0106/DESIGN-HANDOFF-APPROVAL-HOSTED-NETWORK-ISOLATION-COMPATIBILITY-v1.yaml
+      - changes/st-0106/README.md
+    proposed_modified:
+      - scripts/run_network_denied.sh
+      - scripts/assert_network_denied.py
+      - tests/st0106/test_network_isolation.py
+      - docs/execplans/ST-0106.md
+      - docs/worklogs/ST-0106.md
+      - README.md
+    generated_only:
+      - changes/st-0107/manifest.yaml
+    prohibited:
+      - .github/workflows/ci.yml
+      - Makefile
+      - scripts/ci_job.sh
+      - docs/canonical/**
+      - docs/upstream/**
+      - docs/manifest.json
+      - changes/st-0202/**
+      - scripts/object_storage_service.sh
+      - tests/st0202/**
+  downstream_manifest_boundary:
+    current_base_drift:
+      artifact: changes/st-0107/manifest.yaml
+      committed_sha256: 88e3fc4362e7de81ff53008d53285c73f470df3ce9804154bccac6f0c60f86a0
+      expected_before_st0106_sha256: 18d25afd3a0d423fcff4182e4aa4fcb01a0f7f40b69997be6840ecb7e5361bcf
+      sole_current_difference: Makefile byte count and SHA-256 provenance record
+    allowed_reconciliation:
+      command: /home/minami/rakuten/.venv/bin/python scripts/build_st0107_pr_governance.py
+      ownership: generator_only
+      semantic_outputs_must_remain_byte_identical:
+        - .github/CODEOWNERS
+        - .github/PULL_REQUEST_TEMPLATE.md
+        - changes/st-0107/ruleset-policy.v1.json
+      status_or_activation_authority: NONE
+  security_and_approval_gates:
+    owner_approval:
+      target: exact SHA-256 of this handoff only
+      revisions_require_new_sha256: true
+      separate_detached_approval_record: required
+      implementation_authority_before_approval: NONE
+    implementation_delegate:
+      role: implementation_worker
+      may_start_only_after_exact_owner_approval: true
+    independent_read_only_review: required before commit
+    local_commit: requires exact frozen patch approval unless already covered by an explicit owner authorization
+    push_pr_merge: separate repository workflow authority; no publication or Production implication
+  acceptance_criteria:
+    - The normal unprivileged user-namespace path remains byte-for-byte behavior-compatible where available.
+    - On GitHub-hosted Ubuntu 24.04, the fallback reaches the requested command as a capability-free non-root identity inside fresh network/PID/mount namespaces.
+    - Static, Unit, Contracts, and Secrets all retain the same denied-network assertions and no repository check runs as root.
+    - A missing or unsafe helper, non-passwordless sudo, failed drop, nonempty fallback groups/capabilities, reused namespace, route, interface, or socket bypass fails closed.
+    - No sysctl or AppArmor configuration is changed.
+    - ST-0107 semantic generated outputs remain byte-identical and its manifest is regenerated only from current reviewed sources.
+  required_test_evidence:
+    local:
+      - bash -n scripts/run_network_denied.sh
+      - isolated pytest tests/st0106 with the pinned root environment
+      - exact Ruff format/lint and strict mypy for modified Python/test files
+      - scripts/build_st0107_pr_governance.py generation followed by --check
+      - isolated pytest tests/st0107
+      - make check-workspace
+      - python3 scripts/import_raos_design.py verify
+      - exact owned-path sensitive scan and git diff --check
+    hostile:
+      - reject root caller and root-mapped child
+      - reject unsafe helper ownership, mode, symlink, unavailable sudo, and unexpected launch-mode values
+      - prove fallback source order places setpriv before assertion and requested command
+      - prove fallback clears groups and all capability sets before requested command
+      - preserve inherited descriptor, Unix socket, external route, and descendant cleanup tests
+    hosted:
+      - a real pull-request run on ubuntu-24.04 records PRIVILEGED_NAMESPACE_THEN_DROP for Static, Unit, Contracts, and Secrets
+      - all four jobs reach and pass their existing repository checks
+      - no job log contains a credential, dynamic environment dump, or untrusted command under sudo
+      - formal status remains unchanged until reviewed append-only evidence is separately applied
+  explicit_non_claims:
+    local_fallback_runtime: NOT_EXECUTED_PASSWORDLESS_SUDO_UNAVAILABLE
+    chatgpt_pro_review: REVIEW_NOT_OBTAINED
+    hosted_github_run: NOT_EXECUTED
+    formal_tst_001: NOT_EXECUTED
+    formal_tst_002: NOT_EXECUTED
+    release: NOT_AUTHORIZED
+    production: NOT_AUTHORIZED
+    story_complete: false
+  open_decisions: []

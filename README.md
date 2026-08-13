@@ -456,6 +456,20 @@ connectable socket survives. The three Make targets repeat the assertion
 through `ci-network-assert`. Direct Make check targets remain developer
 conveniences; recorded evidence uses the guarded wrapper.
 
+GitHub-hosted Ubuntu 24.04 may deny the initial unprivileged current-user
+namespace mapping. In that exact condition, the guard validates fixed
+root-owned sudo, unshare, and setpriv helpers and a passwordless noninteractive
+sudo preflight. A kernel `close_range` call closes all non-standard descriptors
+independently of caller-controlled resource limits before either sudo entry.
+Root is then used only to create fresh network/PID/mount namespaces. Before the
+repository assertion or requested command runs, setpriv
+restores the caller's non-root UID/GID, clears supplementary groups, drops all
+bounding/inheritable/ambient capabilities, and sets no_new_privs. The assertion
+additionally requires a fresh mount namespace and zero inheritable, permitted,
+effective, bounding, and ambient capabilities. No sysctl or AppArmor setting
+is changed. A missing or unsafe helper, unavailable sudo, failed privilege
+drop, or unverifiable state fails closed.
+
 The ST-0106 adversarial suite also verifies the guard from an unsandboxed
 parent: fresh namespace entry, inherited TCP and standard-descriptor sockets,
 pathname Unix sockets, and PID-namespace descendant cleanup. When that suite

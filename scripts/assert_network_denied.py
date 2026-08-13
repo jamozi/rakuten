@@ -15,6 +15,11 @@ import sys
 
 NETWORK_NAMESPACE = re.compile(r"net:\[(?P<inode>[1-9][0-9]*)\]")
 PID_NAMESPACE = re.compile(r"pid:\[(?P<inode>[1-9][0-9]*)\]")
+MOUNT_NAMESPACE = re.compile(r"mnt:\[(?P<inode>[1-9][0-9]*)\]")
+LAUNCH_MODES = {
+    "PRIVILEGED_NAMESPACE_THEN_DROP",
+    "UNPRIVILEGED_USER_NAMESPACE",
+}
 EXPECTED_CONNECT_ERRORS = {
     errno.EACCES,
     errno.EADDRNOTAVAIL,
@@ -107,6 +112,9 @@ def assert_unreachable(
 
 
 def assert_namespace_and_routes(*, require_namespace_init: bool) -> None:
+    launch_mode = os.environ.get("RAOS_NETWORK_LAUNCH_MODE", "")
+    if launch_mode not in LAUNCH_MODES:
+        fail("launch-mode-invalid")
     parent_network = os.environ.get("RAOS_PARENT_NET_NS", "")
     if NETWORK_NAMESPACE.fullmatch(parent_network) is None:
         fail("parent-namespace-missing")
@@ -123,12 +131,44 @@ def assert_namespace_and_routes(*, require_namespace_init: bool) -> None:
         fail("privileged-identity")
     if os.getuid() != os.geteuid() or os.getgid() != os.getegid():
         fail("identity-mismatch")
+    if launch_mode == "PRIVILEGED_NAMESPACE_THEN_DROP":
+        parent_mount = os.environ.get("RAOS_PARENT_MNT_NS", "")
+        if MOUNT_NAMESPACE.fullmatch(parent_mount) is None:
+            fail("parent-mount-namespace-missing")
+        current_mount = namespace("/proc/self/ns/mnt", MOUNT_NAMESPACE)
+        if current_mount == parent_mount:
+            fail("mount-namespace-not-isolated")
+        assert_privilege_drop()
     if interfaces() != {"lo"}:
         fail("non-loopback-interface-present")
 
     assert_unreachable(socket.AF_INET, ("192.0.2.1", 9))
     if socket.has_ipv6:
         assert_unreachable(socket.AF_INET6, ("2001:db8::1", 9, 0, 0))
+
+
+def assert_privilege_drop() -> None:
+    try:
+        status_bytes = Path("/proc/self/status").read_bytes()
+    except OSError:
+        fail("process-status-unreadable")
+    try:
+        status = status_bytes.decode("ascii")
+    except UnicodeError:
+        fail("process-status-unreadable")
+
+    fields: dict[str, str] = {}
+    for line in status.splitlines():
+        name, separator, value = line.partition(":")
+        if separator:
+            fields[name] = value.strip()
+
+    if fields.get("Groups") != "":
+        fail("supplementary-groups-present")
+    for name in ("CapInh", "CapPrm", "CapEff", "CapBnd", "CapAmb"):
+        capability_value = fields.get(name)
+        if capability_value is None or re.fullmatch(r"0+", capability_value) is None:
+            fail("capabilities-present")
 
 
 def install_socket_filter() -> None:
@@ -186,10 +226,12 @@ def assert_socket_filter() -> None:
 
 
 def print_report() -> None:
+    launch_mode = os.environ.get("RAOS_NETWORK_LAUNCH_MODE", "")
     print(
         json.dumps(
             {
                 "external_network": "DENIED",
+                "launch_mode": launch_mode,
                 "local_socketpair": "ALLOWED",
                 "namespace": "ISOLATED",
                 "process_namespace": "ISOLATED",
