@@ -1,10 +1,14 @@
 # ST-1903 autonomous-publication policy revision candidate
 
-This Story-owned package serializes one proposed post-MVP policy revision. It
-is an `UNAPPROVED_POLICY_REVISION_CANDIDATE`, its approval status is
-`PENDING_OWNER_SHA256_APPROVAL`, and activation is disabled. It does not
-publish, unpublish, approve, merge, release, call a provider, or change any
-canonical artifact.
+This Story-owned package serializes one proposed post-MVP policy revision. Its
+immutable handoff and contract retain their original internal
+`UNAPPROVED_POLICY_REVISION_CANDIDATE` and
+`PENDING_OWNER_SHA256_APPROVAL` fields, while a detached exact-byte record now
+classifies the package only as an
+`OWNER_APPROVED_INERT_POLICY_CANDIDATE_ONLY`. Activation remains disabled. The
+approval authorizes no canonical mutation, status promotion, publication,
+unpublication, merge, release, provider call, external write, staging, or
+production action.
 
 Canonical ST-1903 remains `DEFERRED_POST_MVP` and depends on ST-1805, which is
 not implemented or verified. TST-032 is `NOT_EXECUTED`. The candidate conflicts
@@ -15,14 +19,22 @@ mandatory. No local artifact can satisfy either gate.
 
 ## Authority boundary
 
-- The handoff is pending exact-byte repository-owner approval. No detached
-  approval record is included in this slice.
+- The detached approval record binds the byte-identical 18,189-byte handoff at
+  SHA-256
+  `f7bda7008d10ecf5e1b980602495e487f694552a15b31ca60ec45eb0c61d810b`.
+  It records only owner approval of the inert candidate and grants canonical
+  mutation authority `NONE`.
+- The owner statement is preserved verbatim as 114 UTF-8 bytes with SHA-256
+  `88e64c18e6a0034369468e8ecd26955a6a55f3e08579212259d71e59fed8a35c`.
+  The approval was observed at `2026-08-13T14:16:02Z`; its message-authored
+  time was not supplied.
 - The handoff is the acyclic root approval target. It binds the exact contract
   bytes, contract SHA-256, and order-preserving semantic SHA-256; the contract
   does not point back to the handoff hash. Therefore any policy-source change
   necessarily changes the owner-visible handoff SHA-256.
-- A future approval must bind the exact immutable SHA-256. Any policy revision
-  requires a new exact SHA-256 and a new owner decision.
+- The detached record does not rewrite the immutable pending fields in the
+  handoff, contract, or generated policy projection. Any future policy revision
+  requires a new exact handoff SHA-256 and a new owner decision.
 - The generator, optimizer, Codex, Pro, CI, CMS, and publication engine cannot
   approve themselves or one another.
 - The prior bounded Pro attempt yielded no usable review. This package records
@@ -84,12 +96,14 @@ Owner sources:
 
 - `README.md`
 - `DESIGN_HANDOFF_V1_ST1903_AUTONOMOUS_PUBLICATION_POLICY_V1.yaml`
+- `DESIGN-HANDOFF-APPROVAL-AUTONOMOUS-PUBLICATION-POLICY-v1.yaml`
 - `contracts/autonomous-publication-policy.v1.yaml`
 - `../../scripts/build_st1903_autonomous_publication_policy.py`
 - `../../tests/st1903/conftest.py`
 - `../../tests/st1903/test_contract.py`
 - `../../tests/st1903/test_generation.py`
 - `../../tests/st1903/test_negative_cases.py`
+- `../../tests/st1903/test_approval.py`
 
 Generator-owned files:
 

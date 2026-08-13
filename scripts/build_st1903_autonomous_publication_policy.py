@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the inert, unapproved ST-1903 autonomous-publication policy pack."""
+"""Build the inert ST-1903 autonomous-publication policy pack."""
 
 from __future__ import annotations
 
@@ -25,6 +25,9 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 HANDOFF_PATH: Final = Path(
     "changes/st-1903/DESIGN_HANDOFF_V1_ST1903_AUTONOMOUS_PUBLICATION_POLICY_V1.yaml"
 )
+APPROVAL_PATH: Final = Path(
+    "changes/st-1903/DESIGN-HANDOFF-APPROVAL-AUTONOMOUS-PUBLICATION-POLICY-v1.yaml"
+)
 CONTRACT_PATH: Final = Path(
     "changes/st-1903/contracts/autonomous-publication-policy.v1.yaml"
 )
@@ -48,6 +51,17 @@ EXPECTED_HANDOFF_SHA256: Final = (
     "f7bda7008d10ecf5e1b980602495e487f694552a15b31ca60ec45eb0c61d810b"
 )
 EXPECTED_HANDOFF_BYTES: Final = 18_189
+EXPECTED_APPROVAL_SHA256: Final = (
+    "8b0d6dff7fe03fefda835d5bef90ff51832bd349205b941b1cb1ecafd211e37c"
+)
+EXPECTED_APPROVAL_BYTES: Final = 2_034
+EXPECTED_OWNER_APPROVAL_STATEMENT: Final = (
+    "SHA-256 f7bda7008d10ecf5e1b980602495e487f694552a15b31ca60ec45eb0c61d810b "
+    "の ST-1903 handoff を承認します。"
+)
+EXPECTED_OWNER_APPROVAL_STATEMENT_SHA256: Final = (
+    "88e64c18e6a0034369468e8ecd26955a6a55f3e08579212259d71e59fed8a35c"
+)
 EXPECTED_BASE_COMMIT: Final = "acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d"
 EXPECTED_BASE_TREE: Final = "85620e53419b65e3053e4454c6c1cb522de4459b"
 EXPECTED_PARALLEL_COMMIT: Final = "6c014bee7004a9f1dfa726686b91f436fc9cd2f7"
@@ -56,13 +70,71 @@ EXPECTED_PARALLEL_TREE: Final = "9a1824f948b0bceb416417bfedaf101f1a452ebf"
 SOURCE_ARTIFACT_PATHS: Final = (
     Path("changes/st-1903/README.md"),
     HANDOFF_PATH,
+    APPROVAL_PATH,
     CONTRACT_PATH,
     GENERATOR_PATH,
     Path("tests/st1903/conftest.py"),
     Path("tests/st1903/test_contract.py"),
     Path("tests/st1903/test_generation.py"),
     Path("tests/st1903/test_negative_cases.py"),
+    Path("tests/st1903/test_approval.py"),
 )
+
+EXPECTED_APPROVAL_DOCUMENT: Final = {
+    "DESIGN_HANDOFF_APPROVAL_V1": {
+        "story_id": "ST-1903",
+        "handoff_uri": f"repo://{HANDOFF_PATH.as_posix()}",
+        "handoff_bytes": EXPECTED_HANDOFF_BYTES,
+        "handoff_sha256": EXPECTED_HANDOFF_SHA256,
+        "status": "OWNER_APPROVED_INERT_POLICY_CANDIDATE_ONLY",
+        "implementation_authority": (
+            "ST1903_INERT_POLICY_CANDIDATE_LOCAL_SERIALIZATION_ONLY"
+        ),
+        "approved_by": "repository_owner:jamozi",
+        "approval_observed_at": "2026-08-13T14:16:02Z",
+        "message_authored_at": "NOT_SUPPLIED",
+        "approval_source": (
+            "Exact handoff SHA-256 followed by explicit repository-owner approval "
+            "in the connected Codex conversation."
+        ),
+        "owner_approval_statement": EXPECTED_OWNER_APPROVAL_STATEMENT,
+        "owner_approval_statement_utf8_bytes": 114,
+        "owner_approval_statement_sha256": (EXPECTED_OWNER_APPROVAL_STATEMENT_SHA256),
+        "canonical_reconciliation": "NOT_EXECUTED",
+        "open_decisions": [],
+        "boundaries": {
+            "semantic_story_changes": ["ST-1903"],
+            "source_internal_pending_state": "PRESERVED_IMMUTABLE",
+            "detached_exact_hash_approval": (
+                "EFFECTIVE_FOR_INERT_POLICY_CANDIDATE_ONLY"
+            ),
+            "candidate_authority": "OWNER_APPROVED_INERT_POLICY_CANDIDATE_ONLY",
+            "canonical_mutation_authority": "NONE",
+            "canonical_files": "UNCHANGED",
+            "status_files": "UNCHANGED",
+            "canonical_open_decision_status": "UNCHANGED",
+            "st_1805": "UNMET",
+            "formal_tst_032": "NOT_EXECUTED",
+            "canonical_reconciliation": "NOT_EXECUTED",
+            "separate_release_decision": "NOT_OBTAINED",
+            "activation": "DISABLED",
+            "live_provider_or_browser_action": "NOT_EXECUTED",
+            "live_provider_or_browser_authority": "NOT_AUTHORIZED",
+            "external_write": "NOT_EXECUTED",
+            "external_write_authority": "NOT_AUTHORIZED",
+            "staging": "NOT_EXECUTED",
+            "staging_authority": "NOT_AUTHORIZED",
+            "publication": "NOT_EXECUTED",
+            "publication_authority": "NOT_AUTHORIZED",
+            "release": "NOT_EXECUTED",
+            "release_authority": "NOT_AUTHORIZED",
+            "production": "NOT_EXECUTED",
+            "production_authority": "NOT_AUTHORIZED",
+        },
+        "actions": [],
+        "effects": [],
+    }
+}
 
 HANDOFF_KEYS: Final = (
     "schema",
@@ -119,6 +191,53 @@ CONTRACT_KEYS: Final = (
     "actions",
     "effects",
     "evidence",
+)
+APPROVAL_KEYS: Final = (
+    "story_id",
+    "handoff_uri",
+    "handoff_bytes",
+    "handoff_sha256",
+    "status",
+    "implementation_authority",
+    "approved_by",
+    "approval_observed_at",
+    "message_authored_at",
+    "approval_source",
+    "owner_approval_statement",
+    "owner_approval_statement_utf8_bytes",
+    "owner_approval_statement_sha256",
+    "canonical_reconciliation",
+    "open_decisions",
+    "boundaries",
+    "actions",
+    "effects",
+)
+APPROVAL_BOUNDARY_KEYS: Final = (
+    "semantic_story_changes",
+    "source_internal_pending_state",
+    "detached_exact_hash_approval",
+    "candidate_authority",
+    "canonical_mutation_authority",
+    "canonical_files",
+    "status_files",
+    "canonical_open_decision_status",
+    "st_1805",
+    "formal_tst_032",
+    "canonical_reconciliation",
+    "separate_release_decision",
+    "activation",
+    "live_provider_or_browser_action",
+    "live_provider_or_browser_authority",
+    "external_write",
+    "external_write_authority",
+    "staging",
+    "staging_authority",
+    "publication",
+    "publication_authority",
+    "release",
+    "release_authority",
+    "production",
+    "production_authority",
 )
 EXPECTED_DENIED_CATEGORIES: Final = (
     "MEDICAL",
@@ -445,6 +564,36 @@ def _validate_handoff(
         _fail("HANDOFF_GIT_BINDING_INVALID")
 
 
+def _validate_approval(
+    approval: dict[str, Any], raw: bytes, handoff_raw: bytes
+) -> None:
+    _exact_keys(approval, ("DESIGN_HANDOFF_APPROVAL_V1",), "APPROVAL_RECORD_INVALID")
+    if len(raw) != EXPECTED_APPROVAL_BYTES or _sha256(raw) != EXPECTED_APPROVAL_SHA256:
+        _fail("APPROVAL_BYTES_INVALID")
+    record = _exact_keys(
+        approval["DESIGN_HANDOFF_APPROVAL_V1"],
+        APPROVAL_KEYS,
+        "APPROVAL_RECORD_INVALID",
+    )
+    _exact_keys(record["boundaries"], APPROVAL_BOUNDARY_KEYS, "APPROVAL_RECORD_INVALID")
+    if approval != EXPECTED_APPROVAL_DOCUMENT:
+        _fail("APPROVAL_RECORD_INVALID")
+    statement = record["owner_approval_statement"]
+    if type(statement) is not str:
+        _fail("APPROVAL_RECORD_INVALID")
+    statement_bytes = statement.encode("utf-8")
+    if (
+        len(statement_bytes) != record["owner_approval_statement_utf8_bytes"]
+        or _sha256(statement_bytes) != record["owner_approval_statement_sha256"]
+    ):
+        _fail("APPROVAL_RECORD_INVALID")
+    if (
+        len(handoff_raw) != record["handoff_bytes"]
+        or _sha256(handoff_raw) != record["handoff_sha256"]
+    ):
+        _fail("APPROVAL_HANDOFF_BINDING_INVALID")
+
+
 def _validate_contract(contract: dict[str, Any]) -> None:
     _exact_keys(contract, CONTRACT_KEYS, "CONTRACT_SHAPE_INVALID")
     if _sha256(_canonical_json(contract)) != EXPECTED_CONTRACT_SEMANTIC_SHA256:
@@ -653,9 +802,11 @@ def _validate_canonical_records(contract: dict[str, Any]) -> None:
 
 def load_inputs() -> tuple[dict[str, Any], dict[str, Any]]:
     handoff, handoff_raw = _load_yaml(HANDOFF_PATH, "HANDOFF_YAML_INVALID")
+    approval, approval_raw = _load_yaml(APPROVAL_PATH, "APPROVAL_YAML_INVALID")
     contract, contract_raw = _load_yaml(CONTRACT_PATH, "CONTRACT_YAML_INVALID")
     _validate_contract(contract)
     _validate_handoff(handoff, handoff_raw, contract, contract_raw)
+    _validate_approval(approval, approval_raw, handoff_raw)
     _validate_source_refs(handoff)
     _validate_canonical_records(contract)
     _validate_git_binding(
@@ -696,7 +847,9 @@ def _render_manifest(
     manifest: dict[str, object] = {
         "schema": "RAOS_ST1903_AUTONOMOUS_PUBLICATION_POLICY_MANIFEST_V1",
         "story_id": "ST-1903",
-        "classification": "UNAPPROVED_NON_EXECUTABLE_NON_ATTESTING_POLICY_CANDIDATE",
+        "classification": (
+            "OWNER_APPROVED_INERT_NON_EXECUTABLE_NON_ATTESTING_POLICY_CANDIDATE_ONLY"
+        ),
         "generation": {
             "command": GENERATION_COMMAND,
             "check_command": CHECK_COMMAND,
@@ -706,8 +859,12 @@ def _render_manifest(
             "path": HANDOFF_PATH.as_posix(),
             "bytes": EXPECTED_HANDOFF_BYTES,
             "sha256": EXPECTED_HANDOFF_SHA256,
-            "status": "PENDING_OWNER_SHA256_APPROVAL",
-            "approval_record": None,
+            "source_internal_status": "PENDING_OWNER_SHA256_APPROVAL",
+            "effective_detached_status": ("OWNER_APPROVED_INERT_POLICY_CANDIDATE_ONLY"),
+            "approval_record": {
+                **_artifact(APPROVAL_PATH),
+                "approved_by": "repository_owner:jamozi",
+            },
             "policy_source_binding": handoff["policy_source_binding"],
         },
         "repository_bindings": handoff["repository_bindings"],
@@ -721,8 +878,17 @@ def _render_manifest(
             }
         ],
         "boundary": {
+            "canonical_mutation_authority": "NONE",
+            "st_1805": "UNMET",
+            "tst_032": "NOT_EXECUTED",
             "activation": contract["activation"],
             "canonical_reconciliation": contract["canonical_reconciliation"],
+            "release": "NOT_EXECUTED",
+            "release_authority": "NOT_AUTHORIZED",
+            "publication": "NOT_EXECUTED",
+            "publication_authority": "NOT_AUTHORIZED",
+            "production": "NOT_EXECUTED",
+            "production_authority": "NOT_AUTHORIZED",
             "pro_review": contract["prerequisites"]["pro_review"]["current_status"],
             "actions": [],
             "effects": [],

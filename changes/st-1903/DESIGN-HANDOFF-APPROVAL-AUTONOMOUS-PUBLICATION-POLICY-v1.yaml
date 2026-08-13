@@ -1,0 +1,45 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1903
+  handoff_uri: repo://changes/st-1903/DESIGN_HANDOFF_V1_ST1903_AUTONOMOUS_PUBLICATION_POLICY_V1.yaml
+  handoff_bytes: 18189
+  handoff_sha256: f7bda7008d10ecf5e1b980602495e487f694552a15b31ca60ec45eb0c61d810b
+  status: OWNER_APPROVED_INERT_POLICY_CANDIDATE_ONLY
+  implementation_authority: ST1903_INERT_POLICY_CANDIDATE_LOCAL_SERIALIZATION_ONLY
+  approved_by: repository_owner:jamozi
+  approval_observed_at: '2026-08-13T14:16:02Z'
+  message_authored_at: NOT_SUPPLIED
+  approval_source: Exact handoff SHA-256 followed by explicit repository-owner approval in the connected Codex conversation.
+  owner_approval_statement: 'SHA-256 f7bda7008d10ecf5e1b980602495e487f694552a15b31ca60ec45eb0c61d810b の ST-1903 handoff を承認します。'
+  owner_approval_statement_utf8_bytes: 114
+  owner_approval_statement_sha256: 88e64c18e6a0034369468e8ecd26955a6a55f3e08579212259d71e59fed8a35c
+  canonical_reconciliation: NOT_EXECUTED
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-1903
+    source_internal_pending_state: PRESERVED_IMMUTABLE
+    detached_exact_hash_approval: EFFECTIVE_FOR_INERT_POLICY_CANDIDATE_ONLY
+    candidate_authority: OWNER_APPROVED_INERT_POLICY_CANDIDATE_ONLY
+    canonical_mutation_authority: NONE
+    canonical_files: UNCHANGED
+    status_files: UNCHANGED
+    canonical_open_decision_status: UNCHANGED
+    st_1805: UNMET
+    formal_tst_032: NOT_EXECUTED
+    canonical_reconciliation: NOT_EXECUTED
+    separate_release_decision: NOT_OBTAINED
+    activation: DISABLED
+    live_provider_or_browser_action: NOT_EXECUTED
+    live_provider_or_browser_authority: NOT_AUTHORIZED
+    external_write: NOT_EXECUTED
+    external_write_authority: NOT_AUTHORIZED
+    staging: NOT_EXECUTED
+    staging_authority: NOT_AUTHORIZED
+    publication: NOT_EXECUTED
+    publication_authority: NOT_AUTHORIZED
+    release: NOT_EXECUTED
+    release_authority: NOT_AUTHORIZED
+    production: NOT_EXECUTED
+    production_authority: NOT_AUTHORIZED
+  actions: []
+  effects: []

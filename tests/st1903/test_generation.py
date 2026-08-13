@@ -30,13 +30,33 @@ def test_build_outputs_is_deterministic_and_matches_contract(
     assert json.loads(first[generator.OUTPUT_PATH]) == contract
     manifest = yaml.safe_load(first[generator.MANIFEST_PATH])
     assert manifest["classification"] == (
-        "UNAPPROVED_NON_EXECUTABLE_NON_ATTESTING_POLICY_CANDIDATE"
+        "OWNER_APPROVED_INERT_NON_EXECUTABLE_NON_ATTESTING_POLICY_CANDIDATE_ONLY"
     )
     assert manifest["approval_target"]["sha256"] == generator.EXPECTED_HANDOFF_SHA256
-    assert manifest["approval_target"]["approval_record"] is None
+    assert manifest["approval_target"]["source_internal_status"] == (
+        "PENDING_OWNER_SHA256_APPROVAL"
+    )
+    assert manifest["approval_target"]["effective_detached_status"] == (
+        "OWNER_APPROVED_INERT_POLICY_CANDIDATE_ONLY"
+    )
+    assert manifest["approval_target"]["approval_record"] == {
+        "path": generator.APPROVAL_PATH.as_posix(),
+        "bytes": generator.EXPECTED_APPROVAL_BYTES,
+        "sha256": generator.EXPECTED_APPROVAL_SHA256,
+        "approved_by": "repository_owner:jamozi",
+    }
     assert manifest["boundary"] == {
+        "canonical_mutation_authority": "NONE",
+        "st_1805": "UNMET",
+        "tst_032": "NOT_EXECUTED",
         "activation": "DISABLED",
         "canonical_reconciliation": "NOT_EXECUTED",
+        "release": "NOT_EXECUTED",
+        "release_authority": "NOT_AUTHORIZED",
+        "publication": "NOT_EXECUTED",
+        "publication_authority": "NOT_AUTHORIZED",
+        "production": "NOT_EXECUTED",
+        "production_authority": "NOT_AUTHORIZED",
         "pro_review": "REVIEW_NOT_OBTAINED",
         "actions": [],
         "effects": [],
