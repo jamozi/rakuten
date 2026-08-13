@@ -9,7 +9,7 @@ import json
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Final, NoReturn, cast
+from typing import Any, Final, NoReturn
 
 import yaml
 
@@ -375,10 +375,7 @@ def _sha256_bytes(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = cast(
-        Path,
-        base._repository_regular_file(root, relative, field),  # noqa: SLF001
-    )
+    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
     try:
         return physical.read_bytes()
     except OSError:

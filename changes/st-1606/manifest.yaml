@@ -61,8 +61,8 @@ source_artifacts:
   bytes: 3999
   sha256: 60e8a9fee8cf20f53a48bbb66d8699f8a6457039f66d2082f24f1ee64a704042
 - uri: repo://scripts/build_st1606_backup_restore_drill.py
-  bytes: 32710
-  sha256: a45aa629e82c34b61b2889990abeec4e06115e1def45cd0fb39fe22029c258ff
+  bytes: 32669
+  sha256: db84c028c6f44eac381b55daee3ff081b65aed75e3bc606883ba8174d10f5816
 - uri: repo://tests/st1606/conftest.py
   bytes: 819
   sha256: 05edc4e6adda86dabed53fa83c96f577f0c2204a2216254977b190a93bdb435d
