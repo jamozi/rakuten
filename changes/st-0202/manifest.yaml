@@ -47,35 +47,35 @@ stack:
 source_artifact_count: 30
 source_artifacts:
 - uri: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
-  bytes: 7152
-  sha256: 389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c
+  bytes: 7205
+  sha256: 3ccfbca3d2c679fc9b5419c385713cf5d82b9c673222c79ceb1df21c7e9792b2
 - uri: repo://changes/st-0202/README.md
-  bytes: 6681
-  sha256: 0c681333ca9cb8fdeabe1bb815659f8de5af78b0a771a562b52038beebe7b4d2
+  bytes: 7406
+  sha256: e89f21c6d97b79d6bcf556c0fb141810f029abcec151b0964e67b7345ac4f528
 - uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
   bytes: 9112
   sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
 - uri: repo://docs/execplans/ST-0202.md
-  bytes: 6118
-  sha256: f2928cc7d7953d303c63729c0a32d5ab33546abface6f390151e901317ad9bf3
+  bytes: 6222
+  sha256: 6238f40ddb8bcffac4918afe8cce46f6e75bf43886c6d30aacf7d1d9445685ea
 - uri: repo://docs/worklogs/ST-0202.md
-  bytes: 6094
-  sha256: 7424ab6a4697684223f5a9b7378773f3b5e6744cba459029100b64aec2c437c8
+  bytes: 6938
+  sha256: db3a054899af0f9b5f53cd7b7e421191e0cfeafb3eb94bfc841777a4f8114860
 - uri: repo://changes/st-0201/manifest.yaml
   bytes: 5607
   sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
 - uri: repo://scripts/build_local_compose.py
-  bytes: 33026
-  sha256: 79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9
+  bytes: 33237
+  sha256: 129ef914aeca1ade55718ceb3d3cf6d2b6619b4ff64f6d6a82a06d7ecc170ba5
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
 - uri: repo://scripts/postgres_service.sh
   bytes: 12609
-  sha256: 0ff924b0dea696db0117035c0077a77053d8724c76796866263163bb18b9e1fb
+  sha256: 09e0d1fbb3b7a8a5f702c47fa558528c9f13adfb8dbdb485f2bb0de3bc2a665e
 - uri: repo://scripts/object_storage_service.sh
-  bytes: 16088
-  sha256: 5e521a6187ea7e7bea90b45cd617bb0586394f454b059a633eaac2d03a729d3b
+  bytes: 16475
+  sha256: afe68a6b3ae10e5e4c5aba78e4c2e4a68f058fbc0eeb309e0c37e5e9f7fa3636
 - uri: repo://scripts/object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -95,20 +95,20 @@ source_artifacts:
   bytes: 17361
   sha256: 79398040a01d02a46e985ba37e9895c815097dbe2e3790172a58607c3d1384d8
 - uri: repo://tests/st0202/conftest.py
-  bytes: 13356
-  sha256: 2a509dcd7da3356d53c9691df104c0989b94f583f7eaf0c283ff729cfee8ec37
+  bytes: 13425
+  sha256: 8f754c64f2b6b18849903842aa688b6f8f0f1a6ac2029b0b550dcb4dccb2a5a6
 - uri: repo://tests/st0202/test_contract.py
-  bytes: 13622
-  sha256: 987e905696ecb99397a5babac314ac651cf8f33ad0c4acb528f01a335c631fa3
+  bytes: 13750
+  sha256: ccbc2658988ba517860f03026341faf1c7394e2bf22a86dea4c8cd142fcf9f5f
 - uri: repo://tests/st0202/test_fixture.py
   bytes: 14906
   sha256: 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
 - uri: repo://tests/st0202/test_negative_cases.py
-  bytes: 12407
-  sha256: d9a93f73b435932a8e1fb6291e1aa6bef5680daf9801424fce47b2d82a2cf6ce
+  bytes: 12493
+  sha256: 551ecd235626ad46e37f91d5e61e97d951c2410c6757a4b3a2550bbdb059bee8
 - uri: repo://tests/st0202/test_wrapper.py
-  bytes: 16434
-  sha256: e53f867f5c5d1eed1ce8ca1e92b6ff9fb33fdefef30f643175263181ea9174e4
+  bytes: 17518
+  sha256: 6fea5a4bf7ea42dab2f55430292b3161d70dff37205114a8c69d064853059fce
 - uri: repo://.github/workflows/ci.yml
   bytes: 19528
   sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
@@ -117,7 +117,7 @@ source_artifacts:
   sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: 9332940b39ceded7a5f51e65f7daa92916a3278547079c5906abe95c570cc04c
+  sha256: 0002e28dd97dd1e1c20a7c1d6efa4826af648cba30cb802214143f210aca647b
 - uri: repo://tests/st0106/test_workflow_contract.py
   bytes: 26006
   sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
@@ -139,8 +139,8 @@ source_artifacts:
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://docker-compose.yml
-  bytes: 3106
-  sha256: dd2b5a1cd608df31ba46dbdb38011d5a96faa145a86c2c33b8f1281e4290febf
+  bytes: 3162
+  sha256: a6cd0109a2bc63dae10be59bd9aa32ab85e9c3fec3847bc43c413b452cb871f5
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
