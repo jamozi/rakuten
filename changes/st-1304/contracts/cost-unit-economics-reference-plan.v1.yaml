@@ -1,0 +1,455 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1304
+  classification: SOURCE_DERIVED_NONEXECUTABLE_COST_UNIT_ECONOMICS_REFERENCE_PLAN
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  executable: false
+  activation: false
+  runtime_eligible: false
+  authority: NOT_GRANTED
+  decision: NOT_READY
+  story_acceptance: false
+  production_eligible: false
+  approval: null
+  canonical_status: UNCHANGED
+
+authority:
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1304
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  requirement:
+    path: docs/canonical/00_master/RAOS_master_traceability_v1.0.csv
+    sha256: 7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4
+    required_id: FR-015
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    required_ids:
+      - OD-005
+      - OD-009
+    required_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+  authority_kind: SOURCE_DERIVED_REFERENCE_ONLY
+  changes_canonical_status: false
+
+dependencies:
+  st0706:
+    story_id: ST-0706
+    feature_commit: fe867f85c68ea661b055f4edd32ef6fbc600fa68
+    artifact_binding_commit: 2a53b66146d27ea8f5e32c65888a13a32d576c88
+    binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
+    artifacts:
+      changes/st-0706/README.md: cce1c68a0ed60f9a8fdcf63f60b67c45df5a00c1826eb05cab278c35f7127687
+      python/raos/domain/ai/job_orchestration.py: 5ef0e0d90f5bb07257d4a9d27829647dd07ced443310f9ba5bc6fed8fc7d97c2
+      python/raos/ports/ai_job_orchestration.py: 6a3a33345d17ca4072c468b0a018d95b9b5f33241bbfe6d97a4ae260b992ff9d
+      python/raos/application/ai/job_orchestration.py: 515d9172400ec282c7b0b3893be8f66ec87dfb165a95bfab1d823371c9a4d244
+      python/raos/adapters/recorded_ai_job_orchestration.py: 089b8d3353e2adafe284c03839b2a36dc9a391ab0c060df28bf68dfc9bc38641
+      tests/st0706/conftest.py: 3121a41dc54fdc593d9599db864a6fff7efc897df3d4a7cfbafa02e775979b0b
+      tests/st0706/test_boundaries.py: 2dc8480e2360b83274b303cd5ea7142ad8bfb9b4d7b6d51fb251b026b37bb9a7
+      tests/st0706/test_failure_isolation.py: 15396dc093d69143456ecedfed749ab0ac20e73d6f4a6b9d3d8df9fd8e19712a
+      tests/st0706/test_orchestration.py: d15e19bdb2559043d9c74612bde81fba454b31c37acd8d5a00f54fa58718bf52
+    required_semantics:
+      environment: ENV_DEV_ONLY
+      adapter: RECORDED_PROCESS_LOCAL
+      actual_cost_source: CALLER_SCRIPTED_METADATA
+      actual_cost_verified: false
+      price_selected: false
+      budget_selected: false
+      durable_cost_fact: false
+      persistence: NOT_EXECUTED
+      provider: NOT_EXECUTED
+  st1205:
+    story_id: ST-1205
+    feature_commit: fe18734820cb6f78622950549d32f1ab5394214e
+    artifact_binding_commit: 8aab6c4720863f51854b89c4bcac19faabd733c6
+    binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
+    artifacts:
+      changes/st-1205/README.md: 546066c78458889c3fe962cc99cfef01d880b2b3c95d193070af3a9fa45c4018
+      changes/st-1205/contracts/kpi-read-model-reference-plan.v1.yaml: 30541e0f5c78147220068856b0de72deab39f7353b1b39fe130b8d6e91fa6c35
+      changes/st-1205/generated/kpi-read-model-reference-plan.v1.json: fa6f7d97069c26c237f7501437cc901c3b16a1c193a40286fd92780e4fdd1698
+      changes/st-1205/manifest.yaml: 7c23a4610097c6272dd6b87a2f07ad4233080109d924b1426e332c90d9f1f799
+      scripts/build_st1205_kpi_read_model_reference_plan.py: 143835a999d63788deefb96bba11b21709f86a342454f9705e8c0c2895138d7a
+      tests/st1205/conftest.py: c40c9db708d3bfc077c0e3dd9f0592bae52b3cf00dd731164f1c01244a81e05d
+      tests/st1205/test_contract.py: 1a10d7a37fc899f76c1e6b5581d81d1ae1fb5851a46e0b41f410705c73cab37f
+      tests/st1205/test_generation.py: d94bf756afef90f72a0d81537592553e9d3499c2b14ae12bcd1f92d93789b543
+      tests/st1205/test_negative_cases.py: 484b893ecb8eaf4b8a6a3fe22c06cdf32467ffca05029784fffcd3ade5cd8859
+    required_semantics:
+      classification: SOURCE_DERIVED_NON_EXECUTABLE_NON_ATTESTING_KPI_READ_MODEL_REFERENCE_PLAN
+      executable: false
+      definition_count: 30
+      calculation_count: 0
+      verified_count: 0
+      inputs: []
+      read_model_rows: []
+      results: []
+      evidence: []
+      empty_means_zero: false
+      decision: NOT_READY
+  st1303:
+    story_id: ST-1303
+    feature_commit: 0436364b8737d05b9aea3a08da8bf15c04292b12
+    artifact_binding_commit: 0436364b8737d05b9aea3a08da8bf15c04292b12
+    binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
+    artifacts:
+      changes/st-1303/README.md: d7f1bf588c88ee54c35dd386fca7ee125d66e8e655560f587854d17aa3eb9bef
+      changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml: 61afa77ec458604890e92e7dc1e60db47ad335f92bc4c83240ea8dd8a9a6ea62
+      changes/st-1303/generated/attribution-engine-reference-plan.v1.json: aa2097bcd4b7ac1f54d9caf6cb9e684f1dea6013391c294a73b1e421cff4d692
+      changes/st-1303/manifest.yaml: 1c286baf683262102bf8f42cd1faea4a67c0213b66cc30d17d2bd82ee8cea9d2
+      scripts/build_st1303_attribution_engine_reference_plan.py: e397b20a2ecb573aa241dcc92a15ddd5b8e200f464edbdff7db91e74a560f395
+      tests/st1303/conftest.py: 1d972ef360dbfda49b235f8c5066b8fa812d55db4cb0114cf34165cc7340e62f
+      tests/st1303/test_contract.py: fd91683a8f795092e8935f2468f2be4aaf9e071564eb28ae895afb77374b182a
+      tests/st1303/test_generation.py: 3a142d2368dc6aa629949185e7e51293ecd02befc091e86cd352c64227fbbb3c
+      tests/st1303/test_negative_cases.py: b2afcd5ea05cc8927becc95d3a7987ec72e3a14ef8386d4aebad7efd2a56bf52
+    required_semantics:
+      classification: SOURCE_DERIVED_NONEXECUTABLE_ATTRIBUTION_ENGINE_REFERENCE_PLAN
+      executable: false
+      authority: NOT_GRANTED
+      decision: NOT_READY
+      public_events: []
+      provider_facts: []
+      allocations: []
+      runs: []
+      provider_total_jpy: null
+      allocated_total_jpy: null
+      empty_means_zero: false
+
+source_pins:
+  analytics_design:
+    path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  kpi_catalog:
+    path: docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+  implementation_slices:
+    path: docs/canonical/03_analytics/RAOS_09_implementation_slices_v1.0.yaml
+    sha256: 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  data_classification:
+    path: docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  rbac_matrix:
+    path: docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  st0305_catalog:
+    path: changes/st-0305/generated/publication-analytics-finance-catalog.v1.json
+    sha256: 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
+  st0308_persistence_plan:
+    path: changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
+    sha256: ea9a06b4ee865889805b23a3626c09f95654a0655adb4ac955b25027e01e995e
+  job_catalog:
+    path: contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+    sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+  calculation_job_schema:
+    path: contracts/raos-v0.4/contracts/schemas/jobs/finance-calculate-unit-economics-v1.schema.json
+    sha256: a0e7ef5211b6e0dd3daeba65509df5967c86eaa1274917e0a01d258f04e5a443
+  calculation_event_schema:
+    path: contracts/raos-v0.4/contracts/schemas/events/jp-raos-finance-unit-economics-calculated-v1.schema.json
+    sha256: 977e5a1a525b1d4509eed7edd39c303a2931c9150f3ee18234de0d3b834949f9
+
+canonical_constraints:
+  measurement_principles:
+    measurement_failure_is_zero: false
+    finance_as_recommendation_input: false
+    basis_visible: true
+    source_visible: true
+    period_visible: true
+    freshness_visible: true
+    quality_visible: true
+    definition_version_required: true
+  relevant_kpi_ids:
+    - KPI-001
+    - KPI-002
+    - KPI-003
+    - KPI-004
+    - KPI-022
+    - KPI-023
+    - KPI-025
+  formula_representation: NONEXECUTABLE_SOURCE_TEXT
+  storage_shapes:
+    - table: finance.external_cost
+      classification: RESTRICTED
+      implementation_slice: SLICE-020
+      write_pattern: APPEND_ONLY
+    - table: finance.human_work_log
+      classification: RESTRICTED
+      implementation_slice: SLICE-020
+      write_pattern: APPEND_ONLY
+    - table: finance.allocation_rule
+      classification: RESTRICTED
+      implementation_slice: SLICE-020
+      write_pattern: LIFECYCLE
+    - table: finance.cost_allocation
+      classification: RESTRICTED
+      implementation_slice: SLICE-020
+      write_pattern: APPEND_ONLY
+    - table: finance.unit_economics_snapshot
+      classification: RESTRICTED
+      implementation_slice: SLICE-021
+      write_pattern: LIFECYCLE
+  cost_types:
+    - LLM
+    - API
+    - HOSTING
+    - OBSERVABILITY
+    - ANALYTICS
+    - CONTENT_TOOL
+    - OTHER
+  work_types:
+    - RESEARCH
+    - WRITING
+    - EDITING
+    - FACT_CHECK
+    - COMPLIANCE
+    - PUBLISHING
+    - REFRESH
+    - INCIDENT
+    - ENGINEERING
+    - OTHER
+  allocation_source_types:
+    - EXTERNAL_COST
+    - HUMAN_WORK
+    - SHARED_OVERHEAD
+  allocation_methods:
+    - DIRECT
+    - EQUAL
+    - SESSION_WEIGHTED
+    - CLICK_WEIGHTED
+    - AI_USAGE_WEIGHTED
+    - MANUAL
+  allocation_target_types:
+    - SITE
+    - CATEGORY
+    - ARTICLE
+  calculation_job:
+    job_type: finance.calculate_unit_economics.v1
+    queue: analytics
+    enabled_in_catalog: true
+    executable_here: false
+    payload_fields:
+      - site_id
+      - scope_type
+      - scope_id
+      - period_month
+      - calculation_version
+      - source_watermarks
+  calculation_event:
+    event_type: jp.raos.finance.unit_economics_calculated.v1
+    producer: finance
+    executable_here: false
+  contribution_profit_storage_constraint: confirmed_commission_jpy - external_cost_jpy - human_cost_jpy
+  unknown_labor_is_zero: false
+
+open_decision_boundary:
+  state: BLOCKED_PENDING_BUSINESS_OWNER
+  labor:
+    decision_id: OD-005
+    reviewer: null
+    backup_reviewer: null
+    hourly_cost_jpy: null
+    labor_cost_state: UNKNOWN
+    unknown_labor_is_zero: false
+    contribution_profit_state: UNKNOWN
+    publication_allowed: false
+  budget:
+    decision_id: OD-009
+    aws_monthly_cap_jpy: null
+    llm_monthly_cap_jpy: null
+    external_provider_monthly_cap_jpy: null
+    automatic_stop_threshold: null
+    development_cap: UNSELECTED_LOW_SAFE_DEFAULT
+    production_enabled: false
+
+selection_boundary:
+  state: NOT_EVALUATED
+  cost_fact_source: null
+  ai_cost_source: null
+  api_cost_source: null
+  hosting_cost_source: null
+  observability_cost_source: null
+  analytics_cost_source: null
+  content_tool_cost_source: null
+  human_work_source: null
+  shared_overhead_source: null
+  pricing_version: null
+  vendor_price: null
+  currency: null
+  fx_rate_source: null
+  tax_policy: null
+  scope_type: null
+  scope_id: null
+  period_month: null
+  calculation_version: null
+  source_watermarks: null
+  allocation_rule: null
+  allocation_basis: null
+  allocation_weights: null
+  attribution_basis: null
+  confirmed_commission_basis: null
+  eligible_click_rule: null
+  qualified_session_rule: null
+  denominator_zero_policy: null
+  unknown_policy: null
+  rounding_policy: null
+  precision: null
+  tolerance: null
+  correction_policy: null
+  supersession_policy: null
+  idempotency_basis: null
+  calculation_hash: null
+  job_identity: null
+  event_identity: null
+  repository: null
+  unit_of_work: null
+  transaction: null
+  persistence_policy: null
+  approval_policy: null
+  retention_policy: null
+
+collections:
+  ai_job_observations: []
+  external_cost_facts: []
+  human_work_logs: []
+  attribution_allocations: []
+  kpi_inputs: []
+  allocation_candidates: []
+  cost_allocations: []
+  unit_economics_snapshots: []
+  read_model_rows: []
+  emitted_events: []
+  writes: []
+  ai_job_observation_count: null
+  external_cost_fact_count: null
+  human_work_log_count: null
+  attribution_allocation_count: null
+  kpi_input_count: null
+  allocation_candidate_count: null
+  cost_allocation_count: null
+  unit_economics_snapshot_count: null
+  read_model_row_count: null
+  emitted_event_count: null
+  write_count: null
+  confirmed_commission_total_jpy: null
+  external_cost_total_jpy: null
+  human_cost_total_jpy: null
+  allocated_cost_total_jpy: null
+  contribution_profit_total_jpy: null
+  eligible_click_count: null
+  qualified_session_count: null
+  confirmed_epc_jpy: null
+  confirmed_rpm_jpy: null
+  empty_means_zero: false
+
+evaluation_boundary:
+  dependency_readiness: {status: NOT_EVALUATED, evaluable: false, result: null}
+  cost_fact_completeness: {status: NOT_EVALUATED, evaluable: false, result: null}
+  labor_cost_known: {status: NOT_EVALUATED, evaluable: false, result: null}
+  budget_selected: {status: NOT_EVALUATED, evaluable: false, result: null}
+  currency_normalization: {status: NOT_EVALUATED, evaluable: false, result: null}
+  allocation_rule_valid: {status: NOT_EVALUATED, evaluable: false, result: null}
+  cost_totals_conserved: {status: NOT_EVALUATED, evaluable: false, result: null}
+  attribution_basis_visible: {status: NOT_EVALUATED, evaluable: false, result: null}
+  denominator_quality: {status: NOT_EVALUATED, evaluable: false, result: null}
+  contribution_profit: {status: NOT_EVALUATED, evaluable: false, result: null}
+  epc: {status: NOT_EVALUATED, evaluable: false, result: null}
+  rpm: {status: NOT_EVALUATED, evaluable: false, result: null}
+  correction: {status: NOT_EVALUATED, evaluable: false, result: null}
+  supersession: {status: NOT_EVALUATED, evaluable: false, result: null}
+  idempotency: {status: NOT_EVALUATED, evaluable: false, result: null}
+  vacuous_pass_allowed: false
+
+execution_boundary:
+  cost_intake: NOT_EXECUTED
+  pricing: NOT_EXECUTED
+  currency_conversion: NOT_EXECUTED
+  labor_rate_application: NOT_EXECUTED
+  allocation: NOT_EXECUTED
+  calculation: NOT_EXECUTED
+  sql: NOT_EXECUTED
+  database: NOT_EXECUTED
+  repository: NOT_EXECUTED
+  unit_of_work: NOT_EXECUTED
+  transaction: NOT_EXECUTED
+  fake_persistence: NOT_EXECUTED
+  queue: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event_emission: NOT_EXECUTED
+  audit: NOT_EXECUTED
+  outbox: NOT_EXECUTED
+  dashboard: NOT_EXECUTED
+  public_projection: NOT_EXECUTED
+  recommendation_input: NOT_EXECUTED
+  authorization: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  network: NOT_EXECUTED
+  runtime: NOT_EXECUTED
+  live: NOT_EXECUTED
+  ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  action_counts:
+    cost_intake: 0
+    price: 0
+    convert_currency: 0
+    apply_labor_rate: 0
+    allocate: 0
+    calculate: 0
+    execute_sql: 0
+    database: 0
+    repository: 0
+    unit_of_work: 0
+    transaction: 0
+    fake_persistence: 0
+    queue: 0
+    job: 0
+    emit_event: 0
+    audit: 0
+    outbox: 0
+    dashboard: 0
+    public_projection: 0
+    recommendation_input: 0
+    authorize: 0
+    browser: 0
+    provider: 0
+    network: 0
+    write: 0
+    external: 0
+  external_actions: []
+
+diagnostic_boundary:
+  raw_cost_allowed: false
+  raw_finance_allowed: false
+  raw_provider_allowed: false
+  raw_identifier_allowed: false
+  note_allowed: false
+  error_allowed: false
+  fixture_body_allowed: false
+  dynamic_values: []
+
+verification_boundary:
+  relevant_definitions_projected: 7
+  relevant_definitions_total: 7
+  calculations_completed: 0
+  allocations_completed: 0
+  read_model_rows_created: 0
+  TST-030: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  story_acceptance: false
+  live_evidence: false
+  decision: NOT_READY
