@@ -1,0 +1,576 @@
+{
+  "document": {
+    "schema_version": "1.0.0",
+    "story_id": "ST-1305",
+    "classification": "SOURCE_DERIVED_NONEXECUTABLE_FINANCE_RECONCILIATION_REFERENCE_PLAN",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "executable": false,
+    "activation": false,
+    "runtime_eligible": false,
+    "authority": "NOT_GRANTED",
+    "decision": "NOT_READY",
+    "story_acceptance": false,
+    "production_eligible": false,
+    "approval": null,
+    "canonical_status": "UNCHANGED"
+  },
+  "authority": {
+    "canonical_story": {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "story_id": "ST-1305"
+    },
+    "integration_precedence": {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    "open_decisions": {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+      "inherited_safety_constraint_ids": [
+        "OD-003",
+        "OD-005",
+        "OD-009",
+        "OD-014"
+      ],
+      "story_local_ids": []
+    },
+    "authority_kind": "SOURCE_DERIVED_REFERENCE_ONLY",
+    "changes_canonical_status": false
+  },
+  "provenance": {
+    "source_contract": "repo://changes/st-1305/contracts/finance-reconciliation-reference-plan.v1.yaml",
+    "source_contract_sha256": "bb92363a0e29d63a927de75c59c079c83a5991cd0a0bd9fd1d1560274303cb42",
+    "source_contract_model_sha256": "420f6e492ebb7843f1705ffc6a895000e66568d283e5e5ba64dfc05fb9d18c4b",
+    "generated_by": "repo://scripts/build_st1305_finance_reconciliation_reference_plan.py",
+    "generation_command": "/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen --offline --no-cache --no-sync --no-env-file python scripts/build_st1305_finance_reconciliation_reference_plan.py",
+    "implementation_helper": {
+      "uri": "repo://scripts/build_st1505_staging_deployment.py",
+      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    }
+  },
+  "dependency_bindings": {
+    "st1304": {
+      "story_id": "ST-1304",
+      "feature_commit": "3c1b8ace2d0b82480cd144256d6fa1c758a2ae90",
+      "artifact_binding_commit": "3c1b8ace2d0b82480cd144256d6fa1c758a2ae90",
+      "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
+      "artifacts": {
+        "changes/st-1304/README.md": "6528d7d60c8686cdd4d85a8db7d78fad5440e7d19fd293881c28fda0b407a3f2",
+        "changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml": "c2743919e0caeda17ba91fb0090dc88e658101b6d1ea6e085535ad90119ebdb3",
+        "changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json": "f4cafbf3394c66ccd5ad4a8df235bd3f0139e8ccc1abd9f1f4693fccaafa616d",
+        "changes/st-1304/manifest.yaml": "9310541404044f156d9feda480afd53a0651d1a18c0964ded35da2e4605b9672",
+        "scripts/build_st1304_cost_unit_economics_reference_plan.py": "f9cdaf4ad2ef3b091b7964c147e27dbad93cfe1d96dde2e3477f449d7d50811d",
+        "tests/st1304/conftest.py": "913f94bbc4018b868679bdf3477a5c480ce8e9662ddffd43aff14c3cee670f4f",
+        "tests/st1304/test_contract.py": "21b1c08b66aa4621b66539ff5fffa02ac30ef6754daafec6df6baa73e7804fc5",
+        "tests/st1304/test_generation.py": "0d900252018b44b948f9e7b81eef5ecabb68f8381a6f7f3004cd3a75fcd1a676",
+        "tests/st1304/test_negative_cases.py": "50224c09d38959dfaf36ba1fc4125016920e709494eb71a47d1525d286a562dd"
+      },
+      "required_semantics": {
+        "classification": "SOURCE_DERIVED_NONEXECUTABLE_COST_UNIT_ECONOMICS_REFERENCE_PLAN",
+        "executable": false,
+        "authority": "NOT_GRANTED",
+        "decision": "NOT_READY",
+        "provider_reports": [],
+        "revenue_import_batches": [],
+        "provider_facts": [],
+        "attribution_allocations": [],
+        "external_cost_facts": [],
+        "human_work_logs": [],
+        "cost_allocations": [],
+        "unit_economics_snapshots": [],
+        "read_model_rows": [],
+        "confirmed_commission_total_jpy": null,
+        "external_cost_total_jpy": null,
+        "human_cost_total_jpy": null,
+        "contribution_profit_total_jpy": null,
+        "empty_means_zero": false
+      }
+    }
+  },
+  "source_bindings": [
+    {
+      "name": "analytics_design",
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+      "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460"
+    },
+    {
+      "name": "attribution_policy",
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml",
+      "sha256": "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c"
+    },
+    {
+      "name": "implementation_slices",
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_implementation_slices_v1.0.yaml",
+      "sha256": "2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d"
+    },
+    {
+      "name": "test_catalog",
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "name": "security_design",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+      "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+    },
+    {
+      "name": "data_classification",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml",
+      "sha256": "59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0"
+    },
+    {
+      "name": "security_controls",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "name": "threat_register",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
+      "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+    },
+    {
+      "name": "rbac_matrix",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+      "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+    },
+    {
+      "name": "st0305_catalog",
+      "uri": "repo://changes/st-0305/generated/publication-analytics-finance-catalog.v1.json",
+      "sha256": "0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61"
+    },
+    {
+      "name": "job_catalog",
+      "uri": "repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml",
+      "sha256": "70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1"
+    },
+    {
+      "name": "revenue_commit_job_schema",
+      "uri": "repo://contracts/raos-v0.4/contracts/schemas/jobs/finance-commit-revenue-import-v1.schema.json",
+      "sha256": "9e0b860aacd151888e67e76a64ad94e8c3dd33072de42f570b8b233e1a9dce0d"
+    },
+    {
+      "name": "unit_economics_job_schema",
+      "uri": "repo://contracts/raos-v0.4/contracts/schemas/jobs/finance-calculate-unit-economics-v1.schema.json",
+      "sha256": "a0e7ef5211b6e0dd3daeba65509df5967c86eaa1274917e0a01d258f04e5a443"
+    }
+  ],
+  "canonical_constraints": {
+    "measurement_principles": {
+      "provider_fact_immutable": true,
+      "estimated_separate_from_provider_fact": true,
+      "direct_estimated_unattributed_separate": true,
+      "measurement_failure_is_zero": false,
+      "finance_as_recommendation_input": false,
+      "source_visible": true,
+      "period_visible": true,
+      "freshness_visible": true,
+      "basis_visible": true,
+      "quality_visible": true
+    },
+    "attribution_classes": [
+      "PROVIDER_FACT",
+      "DIRECT",
+      "ESTIMATED",
+      "UNATTRIBUTED"
+    ],
+    "reconciliation_dimensions": [
+      "file_hash_uniqueness",
+      "row_count",
+      "generated_confirmed_cancelled_amount_totals",
+      "currency",
+      "period",
+      "duplicate_provider_row",
+      "dry_run_to_commit_hash_equality"
+    ],
+    "data_quality_dimensions": [
+      "revenue_row_amount_status_reconciliation",
+      "currency_period_mismatch",
+      "attribution_totals_to_provider_total",
+      "cost_allocation_unallocated",
+      "denominator_zero_or_unknown"
+    ],
+    "storage_shapes": [
+      {
+        "table": "finance.revenue_import",
+        "classification": "RESTRICTED",
+        "implementation_slice": "SLICE-020",
+        "write_pattern": "MUTABLE"
+      },
+      {
+        "table": "finance.commission_event",
+        "classification": "RESTRICTED",
+        "implementation_slice": "SLICE-020",
+        "write_pattern": "APPEND_ONLY"
+      },
+      {
+        "table": "finance.cost_allocation",
+        "classification": "RESTRICTED",
+        "implementation_slice": "SLICE-020",
+        "write_pattern": "APPEND_ONLY"
+      },
+      {
+        "table": "finance.unit_economics_snapshot",
+        "classification": "RESTRICTED",
+        "implementation_slice": "SLICE-021",
+        "write_pattern": "LIFECYCLE"
+      }
+    ],
+    "revenue_commit_job": {
+      "job_type": "finance.commit_revenue_import.v1",
+      "queue": "analytics",
+      "executable_here": false
+    },
+    "unit_economics_job": {
+      "job_type": "finance.calculate_unit_economics.v1",
+      "queue": "analytics",
+      "executable_here": false
+    },
+    "reconciliation_report_contract_available": false,
+    "reconciliation_job_available": false,
+    "reconciliation_event_available": false,
+    "finance_data_public": false,
+    "raw_finance_logging_allowed": false
+  },
+  "inherited_open_decision_boundary": {
+    "state": "BLOCKED_PENDING_EXTERNAL_OR_OWNER_INPUT",
+    "report_sample": {
+      "decision_id": "OD-003",
+      "status": "EXTERNAL_EVIDENCE_REQUIRED",
+      "report_sample": null,
+      "column_mapping": null,
+      "real_attribution_verified": false,
+      "synthetic_fixture_only": true
+    },
+    "labor": {
+      "decision_id": "OD-005",
+      "status": "HUMAN_DECISION_REQUIRED",
+      "hourly_cost_jpy": null,
+      "labor_cost_state": "UNKNOWN",
+      "unknown_labor_is_zero": false,
+      "contribution_profit_state": "UNKNOWN"
+    },
+    "budget": {
+      "decision_id": "OD-009",
+      "status": "HUMAN_DECISION_REQUIRED",
+      "monthly_caps": null,
+      "automatic_stop_threshold": null,
+      "production_enabled": false
+    },
+    "retention": {
+      "decision_id": "OD-014",
+      "status": "HUMAN_DECISION_REQUIRED",
+      "retention_period": null,
+      "automatic_deletion_enabled": false
+    }
+  },
+  "selection_boundary": {
+    "state": "NOT_EVALUATED",
+    "provider_report_format": null,
+    "provider_report_schema": null,
+    "provider_report_version": null,
+    "provider_identity": null,
+    "site_identity": null,
+    "revenue_import_batch_identity": null,
+    "source_artifact_identity": null,
+    "source_sha256": null,
+    "preview_hash": null,
+    "period": null,
+    "currency": null,
+    "status_namespace_mapping": null,
+    "source_watermarks": null,
+    "provider_total_basis": null,
+    "canonical_total_basis": null,
+    "attribution_total_basis": null,
+    "cost_total_basis": null,
+    "reconciliation_tolerance": null,
+    "precision": null,
+    "rounding_policy": null,
+    "duplicate_policy": null,
+    "correction_policy": null,
+    "supersession_policy": null,
+    "exception_schema": null,
+    "exception_severity_policy": null,
+    "exception_owner": null,
+    "exception_resolution_policy": null,
+    "approval_policy": null,
+    "approval_actor": null,
+    "authorization_policy": null,
+    "step_up_policy": null,
+    "audit_policy": null,
+    "evidence_format": null,
+    "report_artifact_identity": null,
+    "idempotency_basis": null,
+    "repository": null,
+    "unit_of_work": null,
+    "transaction": null,
+    "persistence_policy": null,
+    "retention_policy": null
+  },
+  "collections": {
+    "provider_reports": [],
+    "source_files": [],
+    "revenue_import_batches": [],
+    "canonical_rows": [],
+    "provider_facts": [],
+    "attribution_allocations": [],
+    "external_cost_facts": [],
+    "human_work_logs": [],
+    "cost_allocations": [],
+    "unit_economics_snapshots": [],
+    "reconciliation_candidates": [],
+    "total_comparisons": [],
+    "exceptions": [],
+    "reports": [],
+    "evidence_artifacts": [],
+    "approvals": [],
+    "audit_records": [],
+    "jobs": [],
+    "emitted_events": [],
+    "writes": [],
+    "provider_report_count": null,
+    "source_file_count": null,
+    "revenue_import_batch_count": null,
+    "canonical_row_count": null,
+    "provider_fact_count": null,
+    "attribution_allocation_count": null,
+    "external_cost_fact_count": null,
+    "human_work_log_count": null,
+    "cost_allocation_count": null,
+    "unit_economics_snapshot_count": null,
+    "reconciliation_candidate_count": null,
+    "total_comparison_count": null,
+    "exception_count": null,
+    "report_count": null,
+    "evidence_artifact_count": null,
+    "approval_count": null,
+    "audit_record_count": null,
+    "job_count": null,
+    "emitted_event_count": null,
+    "write_count": null,
+    "provider_generated_total_jpy": null,
+    "provider_confirmed_total_jpy": null,
+    "provider_cancelled_total_jpy": null,
+    "canonical_generated_total_jpy": null,
+    "canonical_confirmed_total_jpy": null,
+    "canonical_cancelled_total_jpy": null,
+    "attribution_allocated_total_jpy": null,
+    "attribution_unattributed_total_jpy": null,
+    "external_cost_total_jpy": null,
+    "human_cost_total_jpy": null,
+    "allocated_cost_total_jpy": null,
+    "contribution_profit_total_jpy": null,
+    "empty_means_zero": false
+  },
+  "evaluation_boundary": {
+    "dependency_readiness": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "source_integrity": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "file_hash_uniqueness": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "row_count": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "status_amount_totals": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "currency": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "period": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "duplicate_provider_row": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "dry_run_to_commit_hash_equality": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "provider_to_canonical_total": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "attribution_conservation": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "cost_allocation_completeness": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "denominator_quality": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "exception_completeness": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "approval": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "audit": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "evidence": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "idempotency": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "retention": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "vacuous_pass_allowed": false
+  },
+  "execution_boundary": {
+    "provider_report_intake": "NOT_EXECUTED",
+    "csv_intake": "NOT_EXECUTED",
+    "file_scan": "NOT_EXECUTED",
+    "parsing": "NOT_EXECUTED",
+    "schema_mapping": "NOT_EXECUTED",
+    "dry_run": "NOT_EXECUTED",
+    "canonical_commit": "NOT_EXECUTED",
+    "reconciliation": "NOT_EXECUTED",
+    "attribution": "NOT_EXECUTED",
+    "cost_allocation": "NOT_EXECUTED",
+    "unit_economics_calculation": "NOT_EXECUTED",
+    "exception_workflow": "NOT_EXECUTED",
+    "report_generation": "NOT_EXECUTED",
+    "evidence_creation": "NOT_EXECUTED",
+    "approval": "NOT_EXECUTED",
+    "authorization": "NOT_EXECUTED",
+    "step_up": "NOT_EXECUTED",
+    "audit": "NOT_EXECUTED",
+    "retention": "NOT_EXECUTED",
+    "sql": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "migration": "NOT_EXECUTED",
+    "repository": "NOT_EXECUTED",
+    "unit_of_work": "NOT_EXECUTED",
+    "transaction": "NOT_EXECUTED",
+    "fake_persistence": "NOT_EXECUTED",
+    "queue": "NOT_EXECUTED",
+    "job": "NOT_EXECUTED",
+    "event_emission": "NOT_EXECUTED",
+    "outbox": "NOT_EXECUTED",
+    "api": "NOT_EXECUTED",
+    "ui": "NOT_EXECUTED",
+    "public_projection": "NOT_EXECUTED",
+    "recommendation_input": "NOT_EXECUTED",
+    "browser": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "network": "NOT_EXECUTED",
+    "runtime": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "action_counts": {
+      "provider_report_intake": 0,
+      "csv_intake": 0,
+      "file_scan": 0,
+      "parse": 0,
+      "map_schema": 0,
+      "dry_run": 0,
+      "commit": 0,
+      "reconcile": 0,
+      "attribute": 0,
+      "allocate_cost": 0,
+      "calculate_unit_economics": 0,
+      "handle_exception": 0,
+      "generate_report": 0,
+      "create_evidence": 0,
+      "approve": 0,
+      "authorize": 0,
+      "step_up": 0,
+      "audit": 0,
+      "enforce_retention": 0,
+      "execute_sql": 0,
+      "database": 0,
+      "migrate": 0,
+      "repository": 0,
+      "unit_of_work": 0,
+      "transaction": 0,
+      "fake_persistence": 0,
+      "queue": 0,
+      "job": 0,
+      "emit_event": 0,
+      "outbox": 0,
+      "api": 0,
+      "ui": 0,
+      "public_projection": 0,
+      "recommendation_input": 0,
+      "browser": 0,
+      "provider": 0,
+      "network": 0,
+      "write": 0,
+      "external": 0
+    },
+    "external_actions": []
+  },
+  "diagnostic_boundary": {
+    "raw_provider_report_allowed": false,
+    "raw_csv_allowed": false,
+    "raw_finance_allowed": false,
+    "raw_identifier_allowed": false,
+    "raw_exception_allowed": false,
+    "raw_evidence_allowed": false,
+    "note_allowed": false,
+    "error_allowed": false,
+    "fixture_body_allowed": false,
+    "dynamic_values": []
+  },
+  "verification_boundary": {
+    "reconciliation_dimensions_projected": 7,
+    "reconciliation_dimensions_total": 7,
+    "evaluations_completed": 0,
+    "comparisons_completed": 0,
+    "exceptions_created": 0,
+    "reports_created": 0,
+    "evidence_artifacts_created": 0,
+    "TST-030": "NOT_EXECUTED",
+    "formal_validation": "NOT_EXECUTED",
+    "story_acceptance": false,
+    "live_evidence": false,
+    "decision": "NOT_READY"
+  }
+}
