@@ -312,6 +312,28 @@ export type {
 } from './public-performance-rum.ts';
 
 export {
+  PUBLIC_EVENT_INSTRUMENTATION_CLASSIFICATION,
+  PUBLIC_EVENT_INSTRUMENTATION_ERROR_CODES,
+  PUBLIC_EVENT_INSTRUMENTATION_EVENT_IDS,
+  PUBLIC_EVENT_INSTRUMENTATION_PROHIBITED_PARAMETERS,
+  PUBLIC_EVENT_INSTRUMENTATION_SCREEN,
+  PublicEventInstrumentationError,
+  createPublicEventInstrumentationCandidate,
+  validatePublicEventInstrumentationCandidate,
+} from './public-event-instrumentation.ts';
+export type {
+  PublicEventInstrumentationBoundaries,
+  PublicEventInstrumentationBoundaryResult,
+  PublicEventInstrumentationCandidate,
+  PublicEventInstrumentationErrorCode,
+  PublicEventInstrumentationEventId,
+  PublicEventInstrumentationEventRequirement,
+  PublicEventInstrumentationInput,
+  PublicEventInstrumentationSyntheticCoordinateInput,
+  PublicEventInstrumentationUnknownValue,
+} from './public-event-instrumentation.ts';
+
+export {
   PUBLIC_ACCESSIBILITY_ACCEPTANCE_CLASSIFICATION,
   PUBLIC_ACCESSIBILITY_ACCEPTANCE_ERROR_CODES,
   PUBLIC_ACCESSIBILITY_CHECKLIST,
