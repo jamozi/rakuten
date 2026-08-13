@@ -60,8 +60,8 @@ source_artifacts:
   bytes: 57509
   sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
 - uri: repo://Makefile
-  bytes: 31323
-  sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
+  bytes: 31909
+  sha256: 97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34
 - uri: repo://docs/execplans/ST-0306.md
   bytes: 2107
   sha256: d8214c475262aae4e68de9909fc7ee7825e20aeae00ea7220b130ad54e179f3d
