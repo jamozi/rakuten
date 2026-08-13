@@ -1,0 +1,106 @@
+schema: RAOS_ST1903_AUTONOMOUS_PUBLICATION_POLICY_MANIFEST_V1
+story_id: ST-1903
+classification: UNAPPROVED_NON_EXECUTABLE_NON_ATTESTING_POLICY_CANDIDATE
+generation:
+  command: python scripts/build_st1903_autonomous_publication_policy.py
+  check_command: python scripts/build_st1903_autonomous_publication_policy.py --check
+  contract_semantic_sha256: 1c9c1ab87d42cb07a8b1d1be8920dbe30e0bda73a21f61549b1e3a041c1fd3a9
+approval_target:
+  path: changes/st-1903/DESIGN_HANDOFF_V1_ST1903_AUTONOMOUS_PUBLICATION_POLICY_V1.yaml
+  bytes: 18189
+  sha256: f7bda7008d10ecf5e1b980602495e487f694552a15b31ca60ec45eb0c61d810b
+  status: PENDING_OWNER_SHA256_APPROVAL
+  approval_record: null
+  policy_source_binding:
+    path: changes/st-1903/contracts/autonomous-publication-policy.v1.yaml
+    bytes: 9303
+    sha256: dbfe3b7a0b97bae8ae7aa55bd8fdb6647aa05ba8e48f532b57a00e1e0fd0ef54
+    ordered_semantic_sha256: 1c9c1ab87d42cb07a8b1d1be8920dbe30e0bda73a21f61549b1e3a041c1fd3a9
+    generated_projection_path: changes/st-1903/generated/autonomous-publication-policy.v1.json
+    relationship: ROOT_HANDOFF_BINDS_EXACT_CONTRACT_BYTES_AND_ORDERED_SEMANTICS
+repository_bindings:
+  candidate_base:
+    commit: acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d
+    tree: 85620e53419b65e3053e4454c6c1cb522de4459b
+    relationship: EXACT_IMPLEMENTATION_BASE
+    validation_requirement: COMMIT_OBJECT_EXISTS_AND_TREE_MATCHES
+  parallel_lineage:
+    commit: 6c014bee7004a9f1dfa726686b91f436fc9cd2f7
+    tree: 9a1824f948b0bceb416417bfedaf101f1a452ebf
+    relationship: REFERENCE_ONLY_PARALLEL_LINEAGE_NOT_MERGED
+    validation_requirement: COMMIT_OBJECT_EXISTS_AND_TREE_MATCHES
+    merged_into_candidate: false
+    source_files_copied: false
+authority_sources:
+- path: AGENTS.md
+  bytes: 40758
+  sha256: 6973e46dfd9c2aeb7d93f53b43fbb070249ddf89857b44ee726eb768250475cb
+- path: docs/canonical/08_codex/AGENTS.md
+  bytes: 4972
+  sha256: 214c1158da975465e187720d0f7ebca2691dfb2bc02a9506b7ca5adb0c812520
+- path: docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+  bytes: 2275
+  sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
+- path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  bytes: 7943
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+- path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+  bytes: 3955
+  sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+- path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  bytes: 4956
+  sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+- path: docs/canonical/07_backlog/RAOS_13_implementation_backlog_design_v1.0.md
+  bytes: 4758
+  sha256: 0814ef66ae76bda7721c86ffc43095f125ecbee02ea9f270a926da7ae41a15b6
+- path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  bytes: 71458
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+- path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  bytes: 11395
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+- path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+  bytes: 7929
+  sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+- path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  bytes: 24993
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+- path: docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+  bytes: 5175
+  sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+source_artifacts:
+- path: changes/st-1903/README.md
+  bytes: 5887
+  sha256: f7e5604828b000eedf3d19f16a3d4bb3fa67960a2862e7b4e3414abc5af96246
+- path: changes/st-1903/DESIGN_HANDOFF_V1_ST1903_AUTONOMOUS_PUBLICATION_POLICY_V1.yaml
+  bytes: 18189
+  sha256: f7bda7008d10ecf5e1b980602495e487f694552a15b31ca60ec45eb0c61d810b
+- path: changes/st-1903/contracts/autonomous-publication-policy.v1.yaml
+  bytes: 9303
+  sha256: dbfe3b7a0b97bae8ae7aa55bd8fdb6647aa05ba8e48f532b57a00e1e0fd0ef54
+- path: scripts/build_st1903_autonomous_publication_policy.py
+  bytes: 31741
+  sha256: b489c1877ee05a4b2dad9f24db7c2c9bdc3632a33bd9a810da20df508bd350e5
+- path: tests/st1903/conftest.py
+  bytes: 1089
+  sha256: 94b04600531281e1f3770c34b8209bf2e1e69bc27598bce49f05fcf37fc0b13e
+- path: tests/st1903/test_contract.py
+  bytes: 7140
+  sha256: 26b8b1ca53a3cc09edb3fa266813141c9d38ddc7c26f3ad1d9fcf29e85f77504
+- path: tests/st1903/test_generation.py
+  bytes: 6416
+  sha256: e3e7381bc7d064d79f8fbc19159be58b00de875b6ceffe3f372db590f65e6054
+- path: tests/st1903/test_negative_cases.py
+  bytes: 8088
+  sha256: c2b9104ec8e0f818dbdd2e37d0e6794fb057676d96873d5aed070f571ef0b718
+generated_artifacts:
+- path: changes/st-1903/generated/autonomous-publication-policy.v1.json
+  bytes: 11371
+  sha256: 7fd8fe3f5b44ca0656b3da86a8efa02922361600aa93a97256aa8fc3a26e7575
+boundary:
+  activation: DISABLED
+  canonical_reconciliation: NOT_EXECUTED
+  pro_review: REVIEW_NOT_OBTAINED
+  actions: []
+  effects: []
+  evidence: []

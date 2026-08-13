@@ -1,0 +1,426 @@
+schema: DESIGN_HANDOFF_V1
+document_version: 1
+approval_status: PENDING_OWNER_SHA256_APPROVAL
+authority: UNAPPROVED_POLICY_REVISION_CANDIDATE
+approved_story: ST-1903
+approved_scope:
+  - Serialize one inert, hash-bound autonomous-publication policy revision candidate for ST-1903.
+  - Keep current canonical human approval, step-up, recommendation-finance separation, publication, release, and kill-switch controls unchanged.
+  - Project the candidate only as non-executable, non-attesting, pending data through one deterministic owner generator.
+  - Bind the candidate to the exact origin/main implementation base and to the exact reference-only parallel lineage without merging or copying parallel files.
+  - Add focused positive and hostile tests within the exact ten-path Story cut.
+  - Produce no approval record, canonical revision, status update, runtime adapter, workflow, provider call, external write, publication, release, or production effect.
+source_design_refs:
+  - path: AGENTS.md
+    bytes: 40758
+    sha256: 6973e46dfd9c2aeb7d93f53b43fbb070249ddf89857b44ee726eb768250475cb
+  - path: docs/canonical/08_codex/AGENTS.md
+    bytes: 4972
+    sha256: 214c1158da975465e187720d0f7ebca2691dfb2bc02a9506b7ca5adb0c812520
+  - path: docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+    bytes: 2275
+    sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
+  - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    bytes: 7943
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    bytes: 3955
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    bytes: 4956
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - path: docs/canonical/07_backlog/RAOS_13_implementation_backlog_design_v1.0.md
+    bytes: 4758
+    sha256: 0814ef66ae76bda7721c86ffc43095f125ecbee02ea9f270a926da7ae41a15b6
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    bytes: 71458
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    bytes: 11395
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    bytes: 7929
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    bytes: 24993
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - path: docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    bytes: 5175
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+repository_bindings:
+  candidate_base:
+    commit: acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d
+    tree: 85620e53419b65e3053e4454c6c1cb522de4459b
+    relationship: EXACT_IMPLEMENTATION_BASE
+    validation_requirement: COMMIT_OBJECT_EXISTS_AND_TREE_MATCHES
+  parallel_lineage:
+    commit: 6c014bee7004a9f1dfa726686b91f436fc9cd2f7
+    tree: 9a1824f948b0bceb416417bfedaf101f1a452ebf
+    relationship: REFERENCE_ONLY_PARALLEL_LINEAGE_NOT_MERGED
+    validation_requirement: COMMIT_OBJECT_EXISTS_AND_TREE_MATCHES
+    merged_into_candidate: false
+    source_files_copied: false
+policy_source_binding:
+  path: changes/st-1903/contracts/autonomous-publication-policy.v1.yaml
+  bytes: 9303
+  sha256: dbfe3b7a0b97bae8ae7aa55bd8fdb6647aa05ba8e48f532b57a00e1e0fd0ef54
+  ordered_semantic_sha256: 1c9c1ab87d42cb07a8b1d1be8920dbe30e0bda73a21f61549b1e3a041c1fd3a9
+  generated_projection_path: changes/st-1903/generated/autonomous-publication-policy.v1.json
+  relationship: ROOT_HANDOFF_BINDS_EXACT_CONTRACT_BYTES_AND_ORDERED_SEMANTICS
+decision:
+  authority_model:
+    candidate_authority: UNAPPROVED_POLICY_REVISION_CANDIDATE
+    canonical_authority: UNCHANGED
+    canonical_reconciliation: NOT_EXECUTED
+    owner_approval_binding: DETACHED_EXACT_IMMUTABLE_SHA256_REQUIRED
+    approval_record_in_scope: false
+    policy_revision_requires_new_sha256: true
+    self_approval_forbidden_for:
+      - GENERATOR
+      - OPTIMIZER
+      - CODEX
+      - PRO
+      - CI
+      - CMS
+      - PUBLICATION_ENGINE
+    implementation_effect_before_approval_and_reconciliation: NONE
+    activation_before_release_decision: FORBIDDEN
+    normal_eligible_article_per_article_owner_approval_after_activation: NOT_REQUIRED
+    exceptional_owner_review_remains_required_for:
+      - UNKNOWN_OR_AMBIGUOUS_CONTENT_RISK
+      - OWNER_GATED_CODE_CHANGE_CLASS
+      - ROOT_POLICY_REVISION
+      - CREDENTIAL_OR_EXTERNAL_COST_DECISION
+  publication_rate_policy:
+    timezone: Asia/Tokyo
+    maximum_new_articles_per_calendar_day: 1
+    catch_up: FORBIDDEN
+    unused_capacity_rollover: FORBIDDEN
+    deterministic_duplicate_prevention_required: true
+  content_risk_policy:
+    classification_gate: BEFORE_DRAFTING
+    denied_categories:
+      - MEDICAL
+      - FINANCIAL
+      - LEGAL
+      - SAFETY
+      - MINORS
+    denied_result: DENY_WITHOUT_DRAFT_OR_PUBLICATION
+    unknown_or_ambiguous_risk: QUEUE_FOR_OWNER_REVIEW
+    classifier_self_modification: FORBIDDEN
+  article_eligibility_policy:
+    evaluation_order:
+      - EVIDENCE
+      - USER_FIT
+      - QUALITY
+      - SAFETY
+      - COMMERCIAL_COMPONENT
+    eligibility_must_pass_before_commercial_component: true
+    critical_evidence_or_policy_defect: INELIGIBLE
+    fabricated_fact_or_first_person_experience: ZERO_TOLERANCE_DENY
+  commercial_policy:
+    scope: ELIGIBLE_PRODUCTS_ONLY
+    maximum_weight_basis_points: 1000
+    components_must_be_decomposed: true
+    components_must_be_disclosed: true
+    may_override_evidence_user_fit_quality_or_safety: false
+    expected_contribution_profit:
+      attribution_basis: ESTIMATED
+      confirmation_status: NON_CONFIRMED
+      may_be_presented_as_provider_fact_or_confirmed: false
+    canonical_compatibility: CONFLICT_REQUIRES_APPROVED_CANONICAL_REVISION
+    activation: DISABLED
+  pro_review_policy:
+    required_for_each_candidate_article: true
+    outage_or_unavailability_result: QUEUE_WITHOUT_PUBLICATION
+    timeout_result: QUEUE_WITHOUT_PUBLICATION
+    bypass: FORBIDDEN
+    approval_authority: NONE
+    recorded_review_status: REVIEW_NOT_OBTAINED
+  affiliate_policy:
+    provider: RAKUTEN
+    source_field: affiliateUrl
+    official_api_value_required: true
+    direct_destination_required: true
+    hand_built_url: FORBIDDEN
+    raos_redirect: FORBIDDEN
+    invalid_or_stale_cta: DISABLED
+    click_measurement_failure_may_block_destination: false
+  cms_write_policy:
+    provider: WORDPRESS
+    official_api_required: true
+    idempotency_binding_required: true
+    pre_write_duplicate_check_required: true
+    ambiguous_write_result: STOP_AND_QUEUE_RECONCILIATION
+    blind_retry_after_ambiguous_result: FORBIDDEN
+    publication_receipt_required_before_success: true
+  safety_contraction_policy:
+    critical_evidence_defect: FUTURE_DETERMINISTIC_UNPUBLISH_CANDIDATE
+    critical_policy_defect: FUTURE_DETERMINISTIC_UNPUBLISH_CANDIDATE
+    current_unpublish_authority: NONE
+    policy_activation_required: true
+    rollback_and_audit_required: true
+  code_change_policy:
+    auto_merge_scope: CLOSED_LOW_RISK_CLASSIFICATION_ONLY
+    required_conditions:
+      - TERMINAL_CI_PASS
+      - INDEPENDENT_CODEX_REVIEW_PASS
+      - PRO_REVIEW_PASS
+      - ROLLBACK_READY
+      - CHANGE_CLASSIFICATION_CLOSED
+    author_or_generator_self_review_sufficient: false
+    owner_required_change_classes:
+      - SECRETS
+      - PERMISSIONS
+      - DATABASE
+      - CANONICAL
+      - PUBLICATION
+      - RELEASE_POLICY
+    current_auto_merge_authority: NONE
+  execution_topology:
+    scheduler: LOCAL_SCHEDULED_CODEX
+    ci: GITHUB_DETERMINISTIC_CI
+    provider_interfaces:
+      - OFFICIAL_WORDPRESS_API
+      - OFFICIAL_RAKUTEN_API
+      - OFFICIAL_GA4_API
+      - OFFICIAL_GSC_API
+    initial_aws_requirement: NONE
+    production_runtime_implementation_in_scope: false
+    live_provider_use_in_scope: false
+  analytics_privacy_policy:
+    analytics_shape: AGGREGATE_ONLY
+    nonessential_tracking_without_consent: DENIED
+    raw_ip: FORBIDDEN
+    full_user_agent: FORBIDDEN
+    fingerprinting: FORBIDDEN
+    invented_identity: FORBIDDEN
+    personal_data_collection_in_scope: false
+  editorial_style_policy:
+    locale: ja-JP
+    tone: QUIET_EDITORIAL
+    natural_readability_required: true
+    evidence_grounding_required: true
+    fabricated_first_person_experience: FORBIDDEN
+    detector_evasion: FORBIDDEN
+  optimizer_containment:
+    optimizer_may_change_eligibility_gates: false
+    optimizer_may_change_risk_denylist: false
+    optimizer_may_change_daily_cap: false
+    optimizer_may_change_commercial_cap: false
+    optimizer_may_approve_policy: false
+    optimizer_may_activate_policy: false
+    optimizer_may_publish_or_unpublish: false
+rationale:
+  - Preserve the current fail-closed canonical publication and approval boundary while making the owner-proposed post-MVP policy reviewable as immutable data.
+  - Require exact-SHA owner review before the proposal can inform any later canonical reconciliation.
+  - Make rate, risk, evidence, commercial, provider, privacy, and code-governance limits machine-checkable without creating a runtime path.
+  - Keep external, live, irreversible, security-sensitive, release, and production work outside this candidate slice.
+rejected_alternatives:
+  - alternative: ACTIVATE_AUTONOMOUS_PUBLICATION_NOW
+    reason: Conflicts with canonical authority, unmet ST-1805, unexecuted TST-032, and missing release decision.
+  - alternative: TREAT_USER_PLANNING_TEXT_AS_CANONICAL_RESOLUTION
+    reason: Canonical reconciliation and exact-SHA repository-owner approval are not executed.
+  - alternative: INCLUDE_SELF_APPROVAL_OR_GENERATED_APPROVAL
+    reason: Approval must be detached, human-owned, exact-SHA-bound, and absent from this slice.
+  - alternative: BYPASS_PRO_WHEN_UNAVAILABLE
+    reason: The candidate requires queueing and fail-closed behavior.
+  - alternative: LET_COMMERCIAL_ECONOMICS_OVERRIDE_ELIGIBILITY
+    reason: Evidence, user fit, quality, and safety must pass first and the current canonical conflict remains unresolved.
+  - alternative: BUILD_OR_REDIRECT_AFFILIATE_URLS
+    reason: Only the official Rakuten API affiliateUrl direct destination is eligible.
+  - alternative: RETRY_AMBIGUOUS_WORDPRESS_WRITES
+    reason: Blind replay can duplicate publication and cannot prove the remote result.
+  - alternative: COPY_OR_MERGE_PARALLEL_WAVE3_FILES
+    reason: The parallel lineage is exact-object-bound reference-only evidence and is not an implementation input.
+  - alternative: ADD_AWS_OR_LIVE_PROVIDER_RUNTIME
+    reason: This slice is local policy serialization only and grants no credential, provider, staging, release, or production authority.
+  - alternative: OPTIMIZE_FOR_AI_DETECTOR_EVASION
+    reason: Natural evidence-grounded writing is required and detector evasion is forbidden.
+constraints:
+  execution_mode: STRICT_STORY_SAFE_INTERFACE_BOUNDARY
+  exact_owned_paths:
+    - changes/st-1903/README.md
+    - changes/st-1903/DESIGN_HANDOFF_V1_ST1903_AUTONOMOUS_PUBLICATION_POLICY_V1.yaml
+    - changes/st-1903/contracts/autonomous-publication-policy.v1.yaml
+    - changes/st-1903/generated/autonomous-publication-policy.v1.json
+    - changes/st-1903/manifest.yaml
+    - scripts/build_st1903_autonomous_publication_policy.py
+    - tests/st1903/conftest.py
+    - tests/st1903/test_contract.py
+    - tests/st1903/test_generation.py
+    - tests/st1903/test_negative_cases.py
+  generated_paths:
+    - changes/st-1903/generated/autonomous-publication-policy.v1.json
+    - changes/st-1903/manifest.yaml
+  generated_files_must_not_be_hand_edited: true
+  strict_yaml_and_json_shape_order_and_types: true
+  reject_yaml_alias_anchor_tag_merge_and_duplicate_keys: true
+  reject_json_duplicate_keys_and_non_data_shapes: true
+  bounded_regular_file_reads: true
+  exact_source_and_helper_hashes_required: true
+  sanitized_closed_failures_only: true
+  generation_inputs_from_network_environment_clock_random_or_secrets: FORBIDDEN
+  staged_two_output_atomic_install_with_rollback: REQUIRED
+  check_mode_must_be_no_write: true
+  external_actions: FORBIDDEN
+  external_writes: FORBIDDEN
+  publication: FORBIDDEN
+  release: FORBIDDEN
+  staging: FORBIDDEN
+  production: FORBIDDEN
+security_and_approval_gates:
+  canonical_conflicts:
+    - INT-DEC-009
+    - INT-DEC-013
+    - RAOS-INTEGRATION-001_SECTION_5
+    - ROOT_AGENTS_PUBLICATION_HUMAN_APPROVAL
+    - SEC-AI-007
+  security_controls:
+    - SEC-IAM-003
+    - SEC-IAM-004
+    - SEC-IAM-005
+    - SEC-APP-006
+    - SEC-APP-011
+    - SEC-APP-013
+    - SEC-DATA-004
+    - SEC-DATA-005
+    - SEC-DATA-006
+    - SEC-DATA-007
+    - SEC-AI-006
+    - SEC-AI-007
+    - SEC-AI-008
+    - SEC-SDLC-001
+    - SEC-SDLC-002
+  st_1805: UNMET
+  tst_032: NOT_EXECUTED
+  separate_release_decision: NOT_OBTAINED
+  canonical_reconciliation: NOT_EXECUTED
+  exact_sha256_owner_approval: NOT_OBTAINED
+  pro_review: REVIEW_NOT_OBTAINED
+  activation: DISABLED
+  approval_record: ABSENT
+  blocking_open_decision_ids:
+    - OD-001
+    - OD-002
+    - OD-003
+    - OD-005
+    - OD-006
+    - OD-007
+    - OD-008
+    - OD-009
+    - OD-010
+    - OD-011
+    - OD-012
+    - OD-013
+    - OD-014
+    - OD-015
+acceptance_criteria:
+  - The handoff and policy source remain UNAPPROVED/PENDING, non-executable, non-attesting, and activation-disabled.
+  - The generated projection contains no action, effect, evidence, approval, activation, release, publication, live-provider, staging, or production claim.
+  - Canonical conflicts, unmet ST-1805, NOT_EXECUTED TST-032, missing release decision, REVIEW_NOT_OBTAINED, and inherited unresolved Open Decisions remain explicit blockers.
+  - The policy enforces one new article per Asia/Tokyo day with no catch-up, pre-draft high-risk denial, mandatory Pro queue-on-outage, eligibility-first commercial containment, direct official affiliateUrl use, ambiguous-write stop, and duplicate prevention.
+  - After a separately approved canonical revision and activation, an ordinary article that satisfies every deterministic eligibility and release gate does not require per-article owner approval; ambiguous risk and all enumerated owner-gated exceptions remain queued.
+  - The policy forbids self-approval, optimizer gate mutation, fabricated first-person experience, detector evasion, economics presented as confirmed, and owner-gated code changes from auto-merge.
+  - The generator verifies exact canonical source hashes and exact Git commit/tree bindings, emits deterministic JSON and manifest bytes, installs both outputs atomically with rollback, and provides a no-write --check mode.
+  - Hostile authority, status, approval, action, dependency, Open Decision, Git binding, provider, privacy, optimizer, and generated-drift mutations fail closed with sanitized messages.
+required_test_evidence:
+  local_candidate_checks:
+    - ISOLATED_TESTS_ST1903_PASS
+    - GENERATOR_BUILD_PASS
+    - GENERATOR_CHECK_NO_WRITE_PASS
+    - RUFF_LINT_AND_FORMAT_PASS
+    - STRICT_MYPY_FIVE_FILES_PASS
+    - PY_COMPILE_AND_IMPORT_PASS
+    - WORKSPACE_CHECK_PASS
+    - CANONICAL_IMPORT_VERIFY_PASS
+    - EXACT_TEN_FILE_SECRET_SCAN_PASS
+    - GIT_DIFF_CHECK_PASS
+    - EXACT_INVENTORY_PASS
+  focused_negative_paths:
+    - SELF_APPROVAL_OR_ACTIVATION_REJECTED
+    - DAILY_CAP_OR_CATCH_UP_RELAXATION_REJECTED
+    - HIGH_RISK_DENYLIST_RELAXATION_REJECTED
+    - COMMERCIAL_CAP_OR_ELIGIBILITY_ORDER_RELAXATION_REJECTED
+    - PRO_OUTAGE_BYPASS_REJECTED
+    - AMBIGUOUS_WORDPRESS_RETRY_OR_DUPLICATION_REJECTED
+    - CONSENT_PII_OR_FINGERPRINTING_RELAXATION_REJECTED
+    - HAND_BUILT_OR_REDIRECTED_AFFILIATE_URL_REJECTED
+    - OPTIMIZER_AUTHORITY_ESCALATION_REJECTED
+    - ST1805_TST032_OR_OPEN_DECISION_PROMOTION_REJECTED
+    - PARALLEL_LINEAGE_MERGE_COPY_OR_REBIND_REJECTED
+    - ATOMIC_INSTALL_ROLLBACK_PROVEN
+  formal_tst_032: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+inherited_unresolved_canonical_open_decisions:
+  - id: OD-001
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-002
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-003
+    canonical_status: EXTERNAL_EVIDENCE_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-004
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: false
+    candidate_resolution: UNCHANGED
+  - id: OD-005
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-006
+    canonical_status: EXTERNAL_EVIDENCE_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-007
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-008
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-009
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-010
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-011
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-012
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-013
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-014
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-015
+    canonical_status: EXTERNAL_EVIDENCE_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+open_decisions: []
+canonical_reconciliation_status: NOT_EXECUTED
+pro_review_status: REVIEW_NOT_OBTAINED
+activation_status: DISABLED
+actions: []
+effects: []
+evidence: []

@@ -1,0 +1,297 @@
+schema: RAOS_AUTONOMOUS_PUBLICATION_POLICY_V1
+document_version: 1
+policy_id: st-1903-autonomous-publication-policy
+policy_version: 1
+story_id: ST-1903
+candidate_status: PENDING_OWNER_SHA256_APPROVAL
+authority: UNAPPROVED_POLICY_REVISION_CANDIDATE
+activation: DISABLED
+canonical_reconciliation: NOT_EXECUTED
+implementation_status: DEFERRED_POST_MVP
+verification_status: NOT_EXECUTED
+production_readiness: NOT_READY
+approval_binding:
+  target_kind: DESIGN_HANDOFF_V1_ROOT_POLICY
+  path: changes/st-1903/DESIGN_HANDOFF_V1_ST1903_AUTONOMOUS_PUBLICATION_POLICY_V1.yaml
+  contract_binding_direction: ROOT_HANDOFF_BINDS_EXACT_CONTRACT_BYTES_AND_ORDERED_SEMANTICS
+  status: PENDING_OWNER_SHA256_APPROVAL
+  exact_immutable_sha256_required: true
+  one_repository_owner_approval_required: true
+  normal_eligible_article_per_article_owner_approval_after_activation: NOT_REQUIRED
+  exception_queue_does_not_restore_blanket_per_article_approval: true
+  derived_contract_may_change_decision: false
+  revision_requires_new_sha256_and_owner_decision: true
+  approval_record: null
+  self_approval_forbidden_for:
+    - GENERATOR
+    - OPTIMIZER
+    - CODEX
+    - PRO
+    - CI
+    - CMS
+    - PUBLICATION_ENGINE
+repository_bindings:
+  candidate_base:
+    commit: acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d
+    tree: 85620e53419b65e3053e4454c6c1cb522de4459b
+    relationship: EXACT_IMPLEMENTATION_BASE
+  parallel_lineage:
+    commit: 6c014bee7004a9f1dfa726686b91f436fc9cd2f7
+    tree: 9a1824f948b0bceb416417bfedaf101f1a452ebf
+    relationship: REFERENCE_ONLY_PARALLEL_LINEAGE_NOT_MERGED
+    merged_into_candidate: false
+    source_files_copied: false
+prerequisites:
+  st_1805:
+    required: true
+    current_status: UNMET
+  tst_032:
+    required: true
+    current_status: NOT_EXECUTED
+  separate_release_decision:
+    required: true
+    current_status: NOT_OBTAINED
+  canonical_reconciliation:
+    required: true
+    current_status: NOT_EXECUTED
+  exact_sha256_owner_approval:
+    required: true
+    current_status: NOT_OBTAINED
+  pro_review:
+    required: true
+    current_status: REVIEW_NOT_OBTAINED
+  security_and_step_up_controls:
+    required: true
+    current_status: NOT_VALIDATED
+publication_policy:
+  engine:
+    kind: DETERMINISTIC_RELEASE_POLICY_ENGINE
+    implemented_in_this_slice: false
+    runtime_authority: NONE
+  rate_limit:
+    timezone: Asia/Tokyo
+    maximum_new_articles_per_calendar_day: 1
+    catch_up: FORBIDDEN
+    unused_capacity_rollover: FORBIDDEN
+    duplicate_prevention_required: true
+  risk_gate:
+    phase: BEFORE_DRAFTING
+    denied_categories:
+      - MEDICAL
+      - FINANCIAL
+      - LEGAL
+      - SAFETY
+      - MINORS
+    denied_result: DENY_WITHOUT_DRAFT_OR_PUBLICATION
+    unknown_or_ambiguous_result: QUEUE_FOR_OWNER_REVIEW
+    ordinary_eligible_result_after_activation: CONTINUE_WITHOUT_PER_ARTICLE_OWNER_APPROVAL
+    exceptional_queue_requires_owner_review: true
+    current_path_per_article_human_approval: REQUIRED
+    future_normal_eligible_path_per_article_human_approval: NOT_REQUIRED_ONLY_AFTER_EXACT_POLICY_APPROVAL_CANONICAL_RECONCILIATION_RELEASE_DECISION_AND_ACTIVATION
+    classifier_self_modification: FORBIDDEN
+  eligibility:
+    ordered_components:
+      - EVIDENCE
+      - USER_FIT
+      - QUALITY
+      - SAFETY
+      - COMMERCIAL_COMPONENT
+    pass_before_commercial_component:
+      - EVIDENCE
+      - USER_FIT
+      - QUALITY
+      - SAFETY
+    critical_evidence_or_policy_defect: INELIGIBLE
+    fabricated_fact_or_first_person_experience: ZERO_TOLERANCE_DENY
+  commercial_component:
+    eligible_products_only: true
+    maximum_weight_basis_points: 1000
+    decomposed: REQUIRED
+    disclosed: REQUIRED
+    may_override_prior_eligibility_components: false
+    expected_contribution_profit:
+      attribution_basis: ESTIMATED
+      confirmation_status: NON_CONFIRMED
+      may_be_presented_as_provider_fact_or_confirmed: false
+    canonical_compatibility: CONFLICT_REQUIRES_APPROVED_CANONICAL_REVISION
+    activation: DISABLED
+  pro_review:
+    required_for_each_candidate_article: true
+    outage_result: QUEUE_WITHOUT_PUBLICATION
+    timeout_result: QUEUE_WITHOUT_PUBLICATION
+    bypass: FORBIDDEN
+    approval_authority: NONE
+    current_review_status: REVIEW_NOT_OBTAINED
+  affiliate:
+    provider: RAKUTEN
+    source_field: affiliateUrl
+    official_api_value_required: true
+    direct_destination_required: true
+    hand_built_url: FORBIDDEN
+    raos_redirect: FORBIDDEN
+    invalid_or_stale_cta: DISABLED
+    click_measurement_failure_may_block_destination: false
+  wordpress:
+    official_api_required: true
+    idempotency_binding_required: true
+    pre_write_duplicate_check_required: true
+    ambiguous_write_result: STOP_AND_QUEUE_RECONCILIATION
+    blind_retry_after_ambiguous_result: FORBIDDEN
+    publication_receipt_required_before_success: true
+  safety_contraction:
+    critical_evidence_defect: FUTURE_DETERMINISTIC_UNPUBLISH_CANDIDATE
+    critical_policy_defect: FUTURE_DETERMINISTIC_UNPUBLISH_CANDIDATE
+    current_unpublish_authority: NONE
+    policy_activation_required: true
+    rollback_and_audit_required: true
+code_change_policy:
+  auto_merge_scope: CLOSED_LOW_RISK_CLASSIFICATION_ONLY
+  required_conditions:
+    - TERMINAL_CI_PASS
+    - INDEPENDENT_CODEX_REVIEW_PASS
+    - PRO_REVIEW_PASS
+    - ROLLBACK_READY
+    - CHANGE_CLASSIFICATION_CLOSED
+  author_or_generator_self_review_sufficient: false
+  owner_required_change_classes:
+    - SECRETS
+    - PERMISSIONS
+    - DATABASE
+    - CANONICAL
+    - PUBLICATION
+    - RELEASE_POLICY
+  current_auto_merge_authority: NONE
+execution_topology:
+  scheduler: LOCAL_SCHEDULED_CODEX
+  ci: GITHUB_DETERMINISTIC_CI
+  provider_interfaces:
+    - OFFICIAL_WORDPRESS_API
+    - OFFICIAL_RAKUTEN_API
+    - OFFICIAL_GA4_API
+    - OFFICIAL_GSC_API
+  initial_aws_requirement: NONE
+  runtime_implementation_in_scope: false
+  live_provider_use_in_scope: false
+analytics_privacy_policy:
+  analytics_shape: AGGREGATE_ONLY
+  nonessential_tracking_without_consent: DENIED
+  raw_ip: FORBIDDEN
+  full_user_agent: FORBIDDEN
+  fingerprinting: FORBIDDEN
+  invented_identity: FORBIDDEN
+  personal_data_collection_in_scope: false
+editorial_style_policy:
+  locale: ja-JP
+  tone: QUIET_EDITORIAL
+  natural_readability_required: true
+  evidence_grounding_required: true
+  fabricated_first_person_experience: FORBIDDEN
+  detector_evasion: FORBIDDEN
+optimizer_containment:
+  may_change_eligibility_gates: false
+  may_change_risk_denylist: false
+  may_change_daily_cap: false
+  may_change_commercial_cap: false
+  may_approve_policy: false
+  may_activate_policy: false
+  may_publish_or_unpublish: false
+canonical_conflicts:
+  current_result: BLOCKED_PENDING_APPROVED_CANONICAL_REVISION
+  authorities:
+    - INT-DEC-009
+    - INT-DEC-013
+    - RAOS-INTEGRATION-001_SECTION_5
+    - ROOT_AGENTS_PUBLICATION_HUMAN_APPROVAL
+    - SEC-AI-007
+  current_human_publish_requirement_removed: false
+  current_step_up_requirement_removed: false
+  current_finance_recommendation_separation_removed: false
+blocking_open_decision_ids:
+  - OD-001
+  - OD-002
+  - OD-003
+  - OD-005
+  - OD-006
+  - OD-007
+  - OD-008
+  - OD-009
+  - OD-010
+  - OD-011
+  - OD-012
+  - OD-013
+  - OD-014
+  - OD-015
+inherited_unresolved_canonical_open_decisions:
+  - id: OD-001
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-002
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-003
+    canonical_status: EXTERNAL_EVIDENCE_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-004
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: false
+    candidate_resolution: UNCHANGED
+  - id: OD-005
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-006
+    canonical_status: EXTERNAL_EVIDENCE_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-007
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-008
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-009
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-010
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-011
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-012
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-013
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-014
+    canonical_status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+  - id: OD-015
+    canonical_status: EXTERNAL_EVIDENCE_REQUIRED
+    blocking: true
+    candidate_resolution: UNCHANGED
+projection_boundary:
+  executable: false
+  attesting: false
+  approval_record_present: false
+  may_change_canonical_status: false
+  may_change_story_status: false
+  may_change_open_decision_status: false
+  may_satisfy_tst_032: false
+  may_activate_or_release: false
+  may_call_provider_or_write_external_state: false
+actions: []
+effects: []
+evidence: []
