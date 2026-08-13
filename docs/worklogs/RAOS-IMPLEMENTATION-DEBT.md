@@ -2887,7 +2887,7 @@ original result.
   sequence once and has no path discovery, retry, fallback, network, or mutable
   history.
 - The closed eight-column profile is explicitly
-  `RAOS_ST1301_SYNTHETIC_CANONICAL_V1`, not a provider mapping. It enforces
+  `RAOS_ST1301_SYNTHETIC_V1`, not a provider mapping. It enforces
   exact marker/provider/event/time/currency/int64 amount syntax, UTF-8 LF-only
   bounded CSV, formula-prefix recheck, count/cell agreement, repeated-row
   handling, and synthetic-event identity conflict detection. Results expose
