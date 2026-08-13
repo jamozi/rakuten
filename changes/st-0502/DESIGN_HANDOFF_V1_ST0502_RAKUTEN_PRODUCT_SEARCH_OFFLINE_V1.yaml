@@ -1,0 +1,266 @@
+DESIGN_HANDOFF_V1:
+  document_version: 1
+  proposal_status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+  approved_story: ST-0502
+  approved_scope:
+    - Add one separate recorded-only Rakuten Product Search 2025-08-01 boundary without changing the existing Rakuten Item Search 2026-07-01 boundary.
+    - Accept exactly one pre-resolved product selector, PRODUCT_ID or PRODUCT_CODE, and return one strict hash-bound product result from an exact synthetic fixture.
+    - Preserve exact validated UTF-8 response bytes in memory and expose only a validation receipt with uri null and storage and persistence NOT_EXECUTED.
+    - Record the future ST-0505 credential aliases and header-only access-key rule as non-executable boundary metadata without reading credentials or making a provider call.
+    - Keep ST-1703, WordPress, live provider access, storage, persistence, publication, release, and Production outside this change.
+  source_design_refs:
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+      sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - uri: repo://changes/st-0502/README.md
+      sha256: e74805b634f4b775bf8765896f9c7f3b591cf2cf884e6f52743d94f765ec92e9
+    - uri: repo://python/raos/domain/catalog/rakuten_item_search.py
+      sha256: 4ea7f33ecee122f7e1e57590c2a972ffe7fb9aa493575a547e3354d0f01570c2
+    - uri: repo://python/raos/application/catalog/rakuten_item_search.py
+      sha256: 454c46f66ad473a81395bc08330e7b62635e78c0d1763424227d2f7ebd84688c
+    - uri: repo://python/raos/ports/rakuten_item_search.py
+      sha256: 63983941eeb4a485a3d169073f44c0e4241bdcad452d124cfce1dd07cf2d29fe
+    - uri: repo://python/raos/adapters/recorded_rakuten_item_search.py
+      sha256: ffdde9dda64800369ac1d90357a6b9300ff104447547bf8c4bb9bf28e89e7dd7
+    - uri: repo://changes/st-0202/README.md
+      sha256: 9b865af6da33c61a889523eb42e28c3551205358111c9c59c8355b58e3adc5c3
+    - uri: repo://changes/st-0308/README.md
+      sha256: 65433f4a859d03d3c3897c2350417804df1d4084eb06db2a67bc38abbd6ef099
+    - uri: repo://changes/st-0505/README.md
+      sha256: ec33238e56495697766217b32f1e0b6b4fff97041ee8214fe654e39809ede3e7
+    - uri: https://webservice.rakuten.co.jp/documentation/ichiba-product-search
+      retrieved_at: 2026-08-13
+      api_version: 2025-08-01
+      evidence_class: CURRENT_OFFICIAL_PRIMARY_DOCUMENTATION
+  decision:
+    base:
+      commit: 542877827e1d42216e7610107af2d9cffcb8e88a
+      tree: 453a687cd9c944011455390f0927ec19b8dcbcd9
+      branch: codex/st-0502-product-search-offline
+    operation:
+      provider: RAKUTEN_ICHIBA
+      api_name: PRODUCT_SEARCH
+      api_version: '2025-08-01'
+      endpoint_path: /ichibaproduct/api/Product/Search/20250801
+      mode: RECORDED_TEST_ONLY
+      environment_allowlist:
+        - ENV_DEV
+        - CI
+      live_eligible: false
+      calls_per_application_execution: 1
+      retries_executed: 0
+      pagination_followups_executed: 0
+    request:
+      response_format: json
+      format_version: 2
+      hits: 1
+      page: 1
+      selector_union:
+        tag_values:
+          - PRODUCT_ID
+          - PRODUCT_CODE
+        exactly_one_required: true
+        mixed_selector_rejected: true
+        keyword_rejected: true
+        genre_id_rejected: true
+        price_filter_rejected: true
+        review_or_rank_selector_rejected: true
+      output_elements:
+        - affiliateUrl
+        - brandName
+        - count
+        - first
+        - hits
+        - last
+        - makerName
+        - mediumImageUrl
+        - page
+        - pageCount
+        - productCode
+        - productId
+        - productName
+        - productNo
+        - productUrlPC
+      element_order: LEXICOGRAPHIC_ASCENDING_EXACT
+      forbidden_fields:
+        - averagePrice
+        - detail
+        - genreId
+        - genreName
+        - itemCount
+        - maxPrice
+        - minPrice
+        - productCaption
+        - rank
+        - reviewAverage
+        - reviewCount
+        - salesItemCount
+        - salesMaxPrice
+        - salesMinPrice
+      recommendation_input_from_affiliate_or_finance: FORBIDDEN
+    response:
+      content_type: application/json
+      exact_top_level_keys:
+        - count
+        - first
+        - hits
+        - items
+        - last
+        - page
+        - pageCount
+      exact_item_keys:
+        - affiliateUrl
+        - brandName
+        - makerName
+        - mediumImageUrl
+        - productCode
+        - productId
+        - productName
+        - productNo
+        - productUrlPC
+      required_cardinality:
+        count: 1
+        first: 1
+        hits: 1
+        items: 1
+        last: 1
+        page: 1
+        pageCount: 1
+      selector_binding:
+        PRODUCT_ID: returned productId exactly equals the requested selector value
+        PRODUCT_CODE: returned productCode exactly equals the requested selector value
+      always_required_nonempty:
+        - productId
+        - productCode
+        - productUrlPC
+        - affiliateUrl
+      nullable_display_fields:
+        - brandName
+        - makerName
+        - mediumImageUrl
+        - productName
+        - productNo
+      url_validation:
+        absolute_https_required: true
+        userinfo_forbidden: true
+        fragment_forbidden: true
+        control_characters_forbidden: true
+        future_navigation_authority: NONE
+      raw_validation:
+        exact_utf8_json_bytes_preserved_in_memory: true
+        duplicate_keys_rejected: true
+        nonfinite_numbers_rejected: true
+        maximum_bytes: 2097152
+        maximum_depth: 32
+        maximum_nodes: 50000
+        unknown_keys_rejected: true
+        partial_result_rejected: true
+    recording:
+      receipt_purpose: VALIDATION_ONLY
+      receipt_uri: null
+      object_storage_access: NOT_EXECUTED
+      persistence_access: NOT_EXECUTED
+      retained_metadata:
+        - api_version
+        - byte_size
+        - caller_supplied_received_at_utc
+        - provider
+        - request_fingerprint
+        - response_sha256
+      caller_supplied_time_only: true
+      filesystem_access: FORBIDDEN
+      repository_or_unit_of_work: FORBIDDEN
+      retention_selection: NOT_MADE_OD_014_UNRESOLVED
+    error_classification:
+      mappings:
+        '400': PERMANENT
+        '404': PERMANENT
+        '429': THROTTLED_RETRYABLE_DECLARATION_ONLY
+        '500': TRANSIENT_RETRYABLE_DECLARATION_ONLY
+        '503': TRANSIENT_RETRYABLE_DECLARATION_ONLY
+      application_retry_execution: NONE
+      raw_error_body_exposure: FORBIDDEN
+      rejected_value_echo: FORBIDDEN
+      partial_success: FORBIDDEN
+    credentials:
+      current_slice_credential_use: NONE
+      current_slice_secret_lookup: FORBIDDEN
+      future_owner_story: ST-0505
+      future_secret_aliases:
+        application_id: rakuten_web_service_application_id
+        access_key: rakuten_web_service_access_key
+        affiliate_id: rakuten_affiliate_id
+      future_access_key_transport: DEDICATED_HTTP_HEADER_ONLY
+      access_key_query_parameter: FORBIDDEN_BY_RAOS
+      secret_in_log_exception_repr_fixture_or_tracked_file: FORBIDDEN
+    authority:
+      story_acceptance: false
+      formal_tst_014: NOT_EXECUTED
+      formal_tst_015: NOT_EXECUTED
+      live_tst_016: NOT_EXECUTED
+      storage_runtime: NOT_EXECUTED
+      persistence_runtime: NOT_EXECUTED
+      provider_runtime: NOT_EXECUTED
+      staging: NOT_EXECUTED
+      release: NOT_EXECUTED
+      production: NOT_EXECUTED
+      publication_authority: NONE
+  rationale:
+    - ST-0502 explicitly owns a recorded Rakuten search adapter and raw hash boundary, while ST-0505 owns bounded live credential evidence.
+    - Product ID or JAN lookup supplies a deterministic identity-oriented input without making keyword, price, review, rank, affiliate-rate, or finance signals editorial selection inputs.
+    - A separate Product Search module preserves the already reviewed Item Search behavior and prevents an incompatible API or schema change from silently altering existing fixtures.
+    - In-memory raw-byte validation with a null-URI receipt preserves the current maximum-safe evidence boundary because ST-0202 runtime and ST-0308 persistence authority are unavailable.
+    - Header-only future access-key transport narrows accidental secret exposure even though the official API also permits a query parameter.
+  rejected_alternatives:
+    - Extending or replacing the existing Item Search types with Product Search fields, because the provider APIs, versions, selectors, and response contracts are distinct.
+    - Keyword, genre, price, review, popularity, rank, affiliate-rate, EPC, RPM, or profit-driven product selection, because those either weaken exact identity or violate the editorial and finance boundary.
+    - Reading application ID, access key, or affiliate ID from environment variables or a secret store in ST-0502, because live credential wiring belongs to ST-0505 and OD-015 remains unresolved.
+    - Writing raw bytes to ST-0202 or a Repository, because object-storage runtime and ST-0308 persistence implementation authority are not available.
+    - Constructing affiliate URLs locally, because the selected boundary accepts only the official API output and grants no navigation or publication authority.
+    - Adding ST-1703 or WordPress binding, because it is a separate Story and concurrently owned workstream.
+  constraints:
+    - Exactly one Story, ST-0502, is changed.
+    - The implementation follows domain to application to inward port to outward recorded adapter boundaries.
+    - The recorded adapter imports no HTTP client, socket, provider SDK, filesystem, environment, secret, persistence, storage, clock, randomness, browser, or WordPress runtime.
+    - Domain and application expose no secret values, SDK types, raw provider error text, or mutable history.
+    - Existing Item Search source and tests remain behaviorally compatible.
+    - Canonical, upstream, generated, lock, workflow, status, ST-0505, and ST-1703 files are not modified.
+    - Formal, live, hosted, staging, release, publication, and Production results are not inferred from local tests.
+  security_and_approval_gates:
+    - Exact repository-owner approval of this handoff SHA-256 is required before implementation.
+    - The gated Pro run 20260813T093656Z-7833f62584e7 ended RESPONSE_NOT_IDENTIFIABLE and strict recovery refused ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID; no response content was captured or used.
+    - OD-014 remains unresolved; no retention period, lifecycle rule, or automatic deletion is added.
+    - OD-015 remains unresolved; no provider credential is read, accepted, logged, or exercised.
+    - HTTPS validation does not authorize navigation, redirect following, publication, or link activation.
+    - Any later live adapter, provider call, object write, persistence write, or ST-1703 connection requires its own approved Story boundary and evidence.
+  acceptance_criteria:
+    - Exact PRODUCT_ID and PRODUCT_CODE recorded fixtures each produce one deterministic detached result bound to the exact request and raw SHA-256.
+    - Mixed, empty, keyword, genre, price, review, and rank selectors fail before provider execution.
+    - Response envelope, exact item keys, count and page cardinality, selector equality, types, nullable fields, and HTTPS URL shapes are checked before any result is returned.
+    - Malformed UTF-8, duplicate keys, non-finite numbers, oversize, over-depth, over-node, unknown-key, hash-drift, selector-drift, and partial-result fixtures fail closed with stable non-echoing errors.
+    - Recorded 400, 404, 429, 500, and 503 failure classes are deterministic; retryability is descriptive only and the application performs zero retries.
+    - Raw bytes are not publicly exposed or pickleable, and the validation receipt has uri null with storage and persistence NOT_EXECUTED.
+    - Static tests prove no forbidden runtime import, environment or secret lookup, filesystem or network call, clock or randomness, external action, WordPress import, or ST-1703 path change.
+    - Existing tests/st0502 regression, affected ST-0503 tests, and the ST-0505 owner generator check remain passing.
+  required_test_evidence:
+    - Isolated local ST-0502 pytest for exact success and hostile failure fixtures.
+    - Strict mypy, Pyright, Ruff lint, Ruff format, and Python compile and import checks on the owned Python paths.
+    - Existing ST-0502 and affected ST-0503 isolated pytest, plus ST-0505 deterministic owner generator check.
+    - make check-workspace, canonical import verification, exact-owned-path sensitive-data scan, and git diff check.
+    - Frozen read-only review of the exact implementation diff with concrete findings fixed and re-reviewed before commit.
+    - Formal TST-014, TST-015, TST-016, live provider, storage, persistence, staging, release, and Production remain NOT_EXECUTED.
+  open_decisions: []
+  approval:
+    status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+    approved_by: null
+    approved_at: null
+    approved_sha256: null
+    canonical_reconciliation: PASS_FOR_RECORDED_OFFLINE_ST0502_SCOPE_ONLY
+    pro_advice_authority: NONE_PRO_UNAVAILABLE

@@ -1,0 +1,32 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-0502
+  handoff_uri: repo://changes/st-0502/DESIGN_HANDOFF_V1_ST0502_RAKUTEN_PRODUCT_SEARCH_OFFLINE_V1.yaml
+  handoff_bytes: 13755
+  handoff_sha256: c5574b8b7e7941c7781a795ac23f323fefbfc446c4fffecd208fe473bb6bda2d
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST0502_RECORDED_PRODUCT_SEARCH_OFFLINE_V1_ONLY
+  approved_by: repository_owner:jamozi
+  approval_observed_at: '2026-08-13T09:51:58Z'
+  message_authored_at: NOT_SUPPLIED
+  approval_source: Exact handoff SHA-256 followed by explicit repository-owner approval in the connected Codex conversation.
+  owner_approval_statement: 'SHA-256 c5574b8b7e7941c7781a795ac23f323fefbfc446c4fffecd208fe473bb6bda2d の ST-0502 handoff を承認します。'
+  approved_sha256_statement: ST-0502 Product Search offline handoff c5574b8b7e7941c7781a795ac23f323fefbfc446c4fffecd208fe473bb6bda2d
+  canonical_reconciliation: PASS_FOR_RECORDED_OFFLINE_ST0502_SCOPE_ONLY
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-0502
+    product_search_mode: RECORDED_TEST_ONLY
+    existing_item_search_behavior: UNCHANGED
+    object_storage_access: NOT_AUTHORIZED
+    persistence_access: NOT_AUTHORIZED
+    credential_or_secret_use: NOT_AUTHORIZED
+    live_provider_access: NOT_AUTHORIZED
+    wordpress_or_st1703_binding: NOT_AUTHORIZED
+    formal_tst_014: NOT_EXECUTED
+    formal_tst_015: NOT_EXECUTED
+    live_tst_016: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    publication: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED
