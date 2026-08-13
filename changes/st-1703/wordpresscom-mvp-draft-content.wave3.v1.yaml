@@ -1,0 +1,178 @@
+wordpresscom_mvp_draft_content:
+  schema: WORDPRESSCOM_MVP_DRAFT_CONTENT_V1
+  story_id: ST-1703
+  slice_id: WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3
+  target_origin: https://kurashierabinote.wordpress.com
+  provider_site_id: '256699520'
+  operator_display_name: 暮らし選びノート編集部
+  publication_authority: NONE
+
+  article:
+    operation_id: article-7-update
+    object_id: '7'
+    object_type: post
+    baseline:
+      title: '[レビュー用・未承認] 機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ'
+      title_sha256: 66899c76ff9113e5d658f412dc5faf4eb4b24bc99fc0313155dea2c8b3d9f352
+      content_sha256: 6eab149a4057d3f21dad6fa9efdbe66aadfafa00f100038541a3971693a8503d
+      modified: '2026-08-13T02:34:35+09:00'
+      slug: ''
+      status: draft
+      author_id: '283672805'
+      observed_author_name_status: MISMATCH_REQUIRED_PUBLIC_DISPLAY_NAME
+      comments_open: true
+      pings_open: true
+      likes_enabled: true
+      sharing_enabled: true
+      publicize_urls: []
+    desired:
+      title: 機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ
+      status: draft
+      expected_author_id: '283672805'
+      expected_author_name: 暮らし選びノート編集部
+      comments_open: false
+      pings_open: false
+      likes_enabled: false
+      sharing_enabled: false
+      request_publicize: false
+      required_publicize_urls: []
+      transform:
+        source_content_sha256: 6eab149a4057d3f21dad6fa9efdbe66aadfafa00f100038541a3971693a8503d
+        line_endings: NORMALIZE_CRLF_AND_CR_TO_LF_ONLY
+        exact_replacements:
+          - replacement_id: advertising-disclosure
+            exact_old: '<blockquote><p>広告について: この記事は、今後楽天アフィリエイトリンクを掲載する予定の比較下書きです。リンクが設定された場合、リンク経由の購入により運営者が成果報酬を受け取ることがあります。報酬率、価格、ポイント、在庫は評価に使っていません。</p></blockquote>'
+            exact_new: '<blockquote><p>広告・アフィリエイトについて: この記事は楽天アフィリエイトを利用しています。広告リンク経由で商品を購入した場合、運営者が成果報酬を受け取ることがあります。報酬率、価格、ポイント、在庫は評価や掲載順に使っていません。</p></blockquote>'
+          - replacement_id: affiliate-slot-1
+            exact_old: '<p>［楽天アフィリエイトリンク未設定：ACE クレスタ 06316］</p>'
+            exact_new: |-
+              <!-- wp:html -->
+              <!-- RAOS-W3-AFFILIATE-SLOT-1-BEGIN -->
+              <p>楽天公式アフィリエイトHTMLをここに貼り付け：ACE クレスタ 06316（画像幅128、価格表示なし）</p>
+              <!-- RAOS-W3-AFFILIATE-SLOT-1-END -->
+              <!-- /wp:html -->
+          - replacement_id: affiliate-slot-2
+            exact_old: '<p>［楽天アフィリエイトリンク未設定：ace.TOKYO LABEL ディフェレンス 05721］</p>'
+            exact_new: |-
+              <!-- wp:html -->
+              <!-- RAOS-W3-AFFILIATE-SLOT-2-BEGIN -->
+              <p>楽天公式アフィリエイトHTMLをここに貼り付け：ace.TOKYO LABEL ディフェレンス 05721（画像幅128、価格表示なし）</p>
+              <!-- RAOS-W3-AFFILIATE-SLOT-2-END -->
+              <!-- /wp:html -->
+          - replacement_id: affiliate-slot-3
+            exact_old: '<p>［楽天アフィリエイトリンク未設定：PROTECA マックスパス4 01471］</p>'
+            exact_new: |-
+              <!-- wp:html -->
+              <!-- RAOS-W3-AFFILIATE-SLOT-3-BEGIN -->
+              <p>楽天公式アフィリエイトHTMLをここに貼り付け：PROTECA マックスパス4 01471（画像幅128、価格表示なし）</p>
+              <!-- RAOS-W3-AFFILIATE-SLOT-3-END -->
+              <!-- /wp:html -->
+      desired_content_sha256: 184a6214ed07ea4cf9f2acd6304df15464f21ef9e868cacb6ae71129178c63e4
+      desired_content_bytes: 9919
+      outside_slots_sha256: fd2c91dc1e2664df3bccf6c20da432eac3e3cca70aabfe8dd03f55b1207a9905
+      outside_slots_hash_algorithm: >-
+        Normalize only CRLF and CR to LF, then for N=1..3 replace the exact
+        bytes strictly between the LF after
+        <!-- RAOS-W3-AFFILIATE-SLOT-N-BEGIN --> and the LF before
+        <!-- RAOS-W3-AFFILIATE-SLOT-N-END --> with the single exact line
+        <RAOS-W3-AFFILIATE-SLOT-N-CONTENT> while retaining both surrounding
+        LF bytes and all marker bytes.
+      affiliate_slots:
+        - slot: 1
+          product_name: ACE クレスタ 06316
+        - slot: 2
+          product_name: ace.TOKYO LABEL ディフェレンス 05721
+        - slot: 3
+          product_name: PROTECA マックスパス4 01471
+
+  pages:
+    - operation_id: page-about-create
+      slug: about
+      title: 運営者情報
+      type: page
+      status: draft
+      content: |-
+        <p>「暮らし選びノート」は、暮らしの道具を条件別に比較し、自分に合う選択を考えるための情報サイトです。</p>
+        <h2>運営者</h2>
+        <p>暮らし選びノート編集部</p>
+        <h2>運営方針</h2>
+        <p>メーカー、販売元、制度運営者などが公開する一次情報を優先し、確認日と比較条件を明示します。実際に使用していない商品について、使用経験があるような表現は行いません。</p>
+        <p>広告やアフィリエイトによる報酬の有無・料率を、商品の評価や掲載順の判断材料にはしません。内容に誤りや更新が必要な箇所を確認した場合は、根拠を再確認したうえで修正します。</p>
+        <p>ご連絡は「お問い合わせ」ページのフォームからお願いします。</p>
+      content_sha256: 147bfe03a538872597a014c41742d57f410355988c10fe246b92b5adcc1387d5
+      content_bytes: 842
+    - operation_id: page-editorial-policy-create
+      slug: editorial-policy
+      title: 編集方針
+      type: page
+      status: draft
+      content: |-
+        <h2>一次情報を優先します</h2>
+        <p>商品の仕様、制度、利用条件などは、メーカー、販売元、航空会社、制度運営者などが公開する一次情報を優先して確認します。確認日を記載し、価格、在庫、ポイントなど変動しやすい情報は購入前にリンク先で再確認するよう案内します。</p>
+        <h2>比較条件を明示します</h2>
+        <p>誰にとっても一つの商品が最良であるとは決めず、用途や優先条件ごとに候補を整理します。使用していない商品について使用感を断定せず、確認できた事実と編集部の判断を区別します。</p>
+        <h2>広告と編集を分けます</h2>
+        <p>広告やアフィリエイトによる報酬の有無・料率を、商品の評価や掲載順に反映しません。広告を含む記事では、読者が分かる位置にその旨を表示します。</p>
+        <h2>公開と修正</h2>
+        <p>記事は人が内容を確認した後に公開します。根拠の更新、誤り、リンク切れなどを確認した場合は再確認し、必要に応じて修正または公開停止を判断します。</p>
+      content_sha256: 6a824c6cbda474db4921db134e9cb8adf6678221d3913b863f3ec81e729eb159
+      content_bytes: 1178
+    - operation_id: page-privacy-policy-create
+      slug: privacy-policy
+      title: プライバシーポリシー
+      type: page
+      status: draft
+      content: |-
+        <h2>取得する情報</h2>
+        <p>当サイトでは、WordPress.comの機能により、閲覧時の端末・ブラウザー情報、IPアドレス、参照元、Cookie等の技術情報が取り扱われる場合があります。また、お問い合わせフォームから送信された内容、送信者が入力した連絡先、送信日時等が、通知メールやWordPress.com／Jetpack Formsの機能に保存される場合があります。</p>
+        <h2>利用目的</h2>
+        <p>取得した情報は、お問い合わせへの対応、迷惑送信の防止、サイトの利用状況の把握、記事やサイト運営の改善、法令上必要な対応のために利用します。</p>
+        <h2>アクセス解析とCookie</h2>
+        <p>当サイトはWordPress.comの統計機能等を利用する場合があります。これらの機能はCookie等を使って閲覧状況を集計することがあります。ブラウザーの設定によりCookieを制限できますが、一部機能が利用できなくなる場合があります。</p>
+        <h2>広告・アフィリエイト</h2>
+        <p>当サイトは楽天アフィリエイト等の広告リンクを掲載する場合があります。リンク先の事業者が、成果測定のためCookieその他の識別技術を利用することがあります。リンク先での情報の取扱いは、各事業者の方針をご確認ください。</p>
+        <h2>第三者提供と安全管理</h2>
+        <p>法令に基づく場合を除き、取得した個人情報を利用目的の範囲を超えて第三者に提供しません。利用するサービス事業者における取扱いを含め、必要な範囲で情報を管理します。</p>
+        <h2>お問い合わせと改定</h2>
+        <p>個人情報の取扱いに関するご連絡は「お問い合わせ」ページのフォームからお願いします。本方針は、サービスや法令等の変更に応じて改定することがあります。</p>
+        <p>制定日: 2026年8月13日</p>
+      content_sha256: 09c1442ab4479b582c2974e0f32512ff03e118e1a78848c6bf0bf57f5a4e8868
+      content_bytes: 1993
+    - operation_id: page-advertising-policy-create
+      slug: advertising-policy
+      title: 広告・アフィリエイトについて
+      type: page
+      status: draft
+      content: |-
+        <p>当サイトは、記事内に広告やアフィリエイトリンクを掲載する場合があります。読者がリンク経由で商品を購入またはサービスを利用した場合、運営者が成果報酬を受け取ることがあります。読者の購入価格に追加料金が発生することを意味するものではありません。</p>
+        <h2>編集上の独立性</h2>
+        <p>報酬の有無・料率、広告主との取引条件を、商品の評価や掲載順の判断材料にはしません。比較は、記事に明示した条件と確認できた一次情報に基づいて行います。</p>
+        <h2>表示と確認</h2>
+        <p>広告やアフィリエイトリンクを含む記事では、記事内の分かりやすい位置にその旨を表示します。価格、在庫、ポイント、配送条件、返品条件等は変動するため、購入前にリンク先で最新情報をご確認ください。</p>
+        <h2>リンクについて</h2>
+        <p>アフィリエイトリンクは制度運営者が提供する公式手段で生成したものを使用します。リンク先の商品・サービスの提供、契約、支払い、配送、返品等はリンク先の事業者が行います。</p>
+      content_sha256: 6731018bb1dfadcd83a82b3fc36dd288e5b3a2c946530a0ab36a88718337737f
+      content_bytes: 1234
+    - operation_id: page-contact-create
+      slug: contact
+      title: お問い合わせ
+      type: page
+      status: draft
+      content: |-
+        <p>暮らし選びノート編集部へのご連絡は、以下のフォームをご利用ください。記事の誤りや更新情報をお知らせいただく場合は、対象ページと確認できる一次情報を添えてください。</p>
+        <p>営業・勧誘など内容によっては返信できない場合があります。送信前にプライバシーポリシーをご確認ください。</p>
+        [contact-form]
+      content_sha256: 03bb8256d4d93199f699c0919aa35570a29e7da4dd47d2b5d620f89970b98176
+      content_bytes: 426
+
+  common_page_settings:
+    author_id: '283672805'
+    expected_author_name: 暮らし選びノート編集部
+    request_publicize: false
+    comments_open: false
+    pings_open: false
+    likes_enabled: false
+    sharing_enabled: false
+    required_publicize_urls: []
+    raw_personal_contact_value_present: false
+    publication_authorized: false

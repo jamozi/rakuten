@@ -1,0 +1,144 @@
+{
+  "approved_base_commit": "acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d",
+  "generated_by": "python3 scripts/build_wordpresscom_mvp_runtime_manifest.py",
+  "paths": [
+    {
+      "bytes": 31909,
+      "path": "Makefile",
+      "sha256": "97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34"
+    },
+    {
+      "bytes": 1991,
+      "path": "changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml",
+      "sha256": "e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660"
+    },
+    {
+      "bytes": 1852,
+      "path": "changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3A-OPAQUE-DISCUSSION-EXTENSIONS-v1.yaml",
+      "sha256": "c1002959dda0de0ba0c0535697a814fa3221fcb05c7947f543452ef99232afb0"
+    },
+    {
+      "bytes": 29041,
+      "path": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml",
+      "sha256": "46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be"
+    },
+    {
+      "bytes": 12741,
+      "path": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS.yaml",
+      "sha256": "1c0d50faedd3c76d18101afb1032d82da21a6daf0a01e9c687371d20519926aa"
+    },
+    {
+      "bytes": 17895,
+      "path": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2.yaml",
+      "sha256": "798e005faee6c7367496a79e71b9a2d84fc9d9433e4e368276633a8539325cbd"
+    },
+    {
+      "bytes": 12742,
+      "path": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_NUMERIC_PROXY_ACTIVATION.yaml",
+      "sha256": "5e69433222435305f8a2decef8840de4764565929d483f0e4d8b35fcd6ed7bf6"
+    },
+    {
+      "bytes": 12678,
+      "path": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2B_V1_1_ACTIVATION.yaml",
+      "sha256": "0a10b777ccd1e786f34890458621a21a9684feb73cee2b6808a5facefeef65ee"
+    },
+    {
+      "bytes": 11109,
+      "path": "changes/st-1703/first-article-review-draft.v1.md",
+      "sha256": "58e225050d2bf30593fdd039ed9a307cd35db928b946bec470acbb7aa442a233"
+    },
+    {
+      "bytes": 8116,
+      "path": "changes/st-1703/source-packet-candidate.first-article.v1.yaml",
+      "sha256": "730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2"
+    },
+    {
+      "bytes": 12670,
+      "path": "changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml",
+      "sha256": "aca2af51e2571a62215c600357fb8f0ee246e8891e60d6e5afbe40d8235ee681"
+    },
+    {
+      "bytes": 20624,
+      "path": "python/raos/adapters/wordpresscom_mvp_draft_https.py",
+      "sha256": "efdcb2b4f67b3b47bd172f2d8dbe6a9dd707678a1fafdc5f63152b1fd29f2a5a"
+    },
+    {
+      "bytes": 21243,
+      "path": "python/raos/adapters/wordpresscom_mvp_draft_journal.py",
+      "sha256": "8dfc0d98142ca4af4e2ff0ebb2d7f692c75283df1a1924479fb3e8f6a759bf61"
+    },
+    {
+      "bytes": 49981,
+      "path": "python/raos/adapters/wordpresscom_oauth.py",
+      "sha256": "ceb5ada087ef002213153ecf5bb6fb7f11f7cb4d87ee28063ebdf7ec7d6b6db1"
+    },
+    {
+      "bytes": 22458,
+      "path": "python/raos/adapters/wordpresscom_review_draft_https.py",
+      "sha256": "02e26dbda6714fc36aa5b872df92bf0b056606a3a37ed3c4cfaa7a0dff4012a3"
+    },
+    {
+      "bytes": 12125,
+      "path": "python/raos/adapters/wordpresscom_review_draft_journal.py",
+      "sha256": "ce49db446902b56ab8450d9d3b3c86b266f7166c918642e39af791ab338654bc"
+    },
+    {
+      "bytes": 10384,
+      "path": "python/raos/application/editorial/wordpresscom_mvp_affiliate.py",
+      "sha256": "c281994041273d5672a01f256cc480b9bcb36702572d6b73d7a596feba4d1d70"
+    },
+    {
+      "bytes": 9872,
+      "path": "python/raos/application/editorial/wordpresscom_mvp_drafts.py",
+      "sha256": "df093b9c1eafaf407b1a49c4c9e88d1407236b320ff30898d695752d0105c865"
+    },
+    {
+      "bytes": 39713,
+      "path": "python/raos/application/editorial/wordpresscom_mvp_preparation.py",
+      "sha256": "8f74272e2179250ba0f201be553842d585027089d2cb9b02412a31a2dd934d2e"
+    },
+    {
+      "bytes": 11623,
+      "path": "python/raos/application/editorial/wordpresscom_review_draft.py",
+      "sha256": "f1081015d774a5142856b8ea3397a8f81f06438bd26d9a2b9bee644c8989f420"
+    },
+    {
+      "bytes": 28416,
+      "path": "python/raos/domain/editorial/wordpresscom_mvp_drafts.py",
+      "sha256": "86e0daaf62a2f557e08b5e07ac0693b2b1d661da87c1a5d9e259f299552b5d9a"
+    },
+    {
+      "bytes": 11912,
+      "path": "python/raos/domain/editorial/wordpresscom_review_draft.py",
+      "sha256": "cec34dc3ddc6631f70c02af139694110da304481739f472665b40376e21ac3fd"
+    },
+    {
+      "bytes": 1256,
+      "path": "python/raos/ports/wordpresscom_mvp_draft_journal.py",
+      "sha256": "d52bf8eacfbfc0de3da796d6aab60068051da321af2d2eadf4a38ee45779cc7b"
+    },
+    {
+      "bytes": 1251,
+      "path": "python/raos/ports/wordpresscom_mvp_drafts.py",
+      "sha256": "472eaab0b1272112e7d99b457087a941cf2a79a208255471dd55b562f9060426"
+    },
+    {
+      "bytes": 722,
+      "path": "python/raos/ports/wordpresscom_review_draft_journal.py",
+      "sha256": "27648e8c3916cd4025d8dd8f9f7372b3046f32a8591291c3dc445be197d9cb0b"
+    },
+    {
+      "bytes": 43402,
+      "path": "scripts/wordpresscom_review_draft.py",
+      "sha256": "2303866f94aa3aae45c2d4b3162335eb7e60afd25ed18e42a3d7c30bd0debf01"
+    },
+    {
+      "bytes": 2834,
+      "path": "scripts/wordpresscom_review_draft_python.sh",
+      "sha256": "8b85027274b20931adf08d5b167eb6bdd9c3ce204ec367fd315afc2d57fcd35d"
+    }
+  ],
+  "schema": "WORDPRESSCOM_MVP_DRAFT_RUNTIME_MANIFEST_V1",
+  "slice_id": "WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3",
+  "story_id": "ST-1703"
+}

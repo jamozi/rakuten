@@ -1,0 +1,434 @@
+design_handoff:
+  schema: DESIGN_HANDOFF_V1
+  approval_status: PROPOSED_REQUIRES_REPOSITORY_OWNER_EXACT_SHA256_APPROVAL
+  approved_story: ST-1703
+  title: ST1703_ORIGIN_MAIN_INTEGRATION_V3
+
+  approved_scope:
+    - Import only the exact nine-commit ST-1703 source range after 290cb2e71b9b310e59500c5643fef4296c877f3f onto the exact current origin/main target acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d.
+    - Exclude the three source-only ST-0101 commits and preserve the absence of any ST-1703 runtime import of chatgpt_pro_orchestrator; historical handoffs may retain PRO record-type provenance only.
+    - Mechanically rebind the Wave 3 runtime identity base from the source ancestor 5e8fe71759e8f32cb510a136b6ddedaf44663703 to the exact target parent acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d, then regenerate its runtime manifest only through its owner generator.
+    - Extend the low-cost generator to validate this exact V3 handoff, its future detached approval, the exact target, and the newly generated current runtime manifest while preserving all V1 and V2 authority/data bytes as history.
+    - Preserve the low-cost generated projection exactly at 9380 bytes and SHA-256 34194a4dd874c0b2194733514aa6421131a51a0e2c843e517e207b9d46f96317, and regenerate only its owner manifest.
+    - Preserve the source packet exactly at 8116 bytes and SHA-256 730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2, including its known blank line at EOF, under the explicit exact-hash whitespace exception.
+    - Preserve the immutable Wave 3A nonexistent commit references and the missing separate exact hash-bound OBJECT_DRIFT approval as unresolved provenance gaps with authority NONE.
+    - Preserve every dependency, publication, credential, provider, browser, external-write, staging, release, production, formal-test, and kill-switch gate.
+    - Require a future detached approval bound only to this handoff's final exact bytes before any source import, target rebind, generation, test mutation, or local commit.
+
+  source_design_refs:
+    - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+      bytes: 2275
+      sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
+      authority: CANONICAL
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      bytes: 7943
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      authority: CANONICAL
+    - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+      bytes: 3955
+      sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      authority: CANONICAL
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      bytes: 4956
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+      authority: CANONICAL
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+      bytes: 7929
+      sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+      authority: CANONICAL
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      bytes: 24993
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      authority: CANONICAL
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      bytes: 11395
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      authority: CANONICAL
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+      bytes: 6609
+      sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+      authority: CANONICAL
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      bytes: 71458
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      authority: CANONICAL
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml
+      bytes: 29041
+      sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+      authority: APPROVED_WAVE3_HANDOFF_WITH_PRESERVED_GATES
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml
+      bytes: 1991
+      sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
+      authority: APPROVED_WAVE3_IMPLEMENTATION_ONLY
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS.yaml
+      bytes: 12741
+      sha256: 1c0d50faedd3c76d18101afb1032d82da21a6daf0a01e9c687371d20519926aa
+      authority: APPROVED_WAVE3A_HANDOFF_WITH_IMMUTABLE_DEFECTS
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3A-OPAQUE-DISCUSSION-EXTENSIONS-v1.yaml
+      bytes: 1852
+      sha256: c1002959dda0de0ba0c0535697a814fa3221fcb05c7947f543452ef99232afb0
+      authority: APPROVED_WAVE3A_IMPLEMENTATION_ONLY
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml
+      bytes: 12670
+      sha256: aca2af51e2571a62215c600357fb8f0ee246e8891e60d6e5afbe40d8235ee681
+      authority: APPROVED_CONTENT_WITH_PUBLICATION_AUTHORITY_NONE
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+      bytes: 5656
+      sha256: 8cf00ace6e2988c3bfb7969f13cfec0786137077c1319be4b043c4b762b5fba9
+      authority: SOURCE_RUNTIME_METADATA_ONLY
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/source-packet-candidate.first-article.v1.yaml
+      bytes: 8116
+      sha256: 730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2
+      authority: REVIEW_REQUIRED_NOT_APPROVED_SOURCE_PACKET
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml
+      bytes: 13776
+      sha256: 4730d8de3eb11cccd76081a34da4d55b2e7070467d53b7bdacd3fb95baa976a6
+      authority: APPROVED_V1_HISTORICAL
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-v1.yaml
+      bytes: 2592
+      sha256: 60a442e87ba9d965e9c49609307bb4f004bd11f9a4b9f92d5e7bd635b2fca620
+      authority: APPROVED_V1_HISTORICAL
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2.yaml
+      bytes: 28414
+      sha256: ff75d76479a6ebf85061e54529c0896cd1a203d8f1ab0d01655ecc18dc91a6db
+      authority: APPROVED_V2_HISTORICAL_TARGET_BOUND
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-RECONCILIATION-v2.yaml
+      bytes: 3756
+      sha256: cc1dd13e123bde10372a3f4576a851d555e20e7eac6071f3ed33ce5be6c77410
+      authority: APPROVED_V2_HISTORICAL_TARGET_BOUND
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/low-cost-publication-pilot/low-cost-publication-pilot.v1.yaml
+      bytes: 7525
+      sha256: 2bc2329f760e1a7960196fec9960e2573ed2add653e6349150dffaddf60a90f3
+      authority: APPROVED_V1_SOURCE_DATA
+    - uri: git-object://ca5ff2e419ffc07239b4c551146dd66b01489cc3/changes/st-1703/low-cost-publication-pilot/generated/low-cost-publication-pilot.v1.json
+      bytes: 9380
+      sha256: 34194a4dd874c0b2194733514aa6421131a51a0e2c843e517e207b9d46f96317
+      authority: SOURCE_DERIVED_NON_ATTESTING_PROJECTION
+
+  decision:
+    integration_kind: EXACT_RANGE_IMPORT_WITH_TARGET_SPECIFIC_MECHANICAL_REBIND
+    semantic_delta_from_source_st1703_runtime_behavior: TARGET_BASE_IDENTITY_ONLY
+    implementation_authority: NONE_PENDING_EXACT_HANDOFF_SHA256_APPROVAL
+    approval_target:
+      kind: EXACT_HANDOFF_BYTES_ONLY
+      uri: repo://changes/st-1703/origin-main-integration/DESIGN_HANDOFF_V1_ST1703_ORIGIN_MAIN_INTEGRATION_V3.yaml
+      final_bytes_and_sha256_supplied_out_of_band_after_freeze: true
+      additional_approval_targets: []
+      markdown_or_pr_text_is_authority: false
+      approval_before_import_rebind_generation_test_or_commit: REQUIRED
+      approval_is_necessary_but_not_sufficient_for_push_or_pr: true
+
+    exact_target:
+      remote_ref: refs/remotes/origin/main
+      branch: codex/st-1703-origin-main-integration
+      commit: acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d
+      tree: 85620e53419b65e3053e4454c6c1cb522de4459b
+      remote_ref_equal_at_proposal_freeze: true
+      later_origin_main_move: STOP_NEW_HANDOFF_AND_APPROVAL_REQUIRED
+
+    exact_source:
+      commit: ca5ff2e419ffc07239b4c551146dd66b01489cc3
+      tree: 53071f15d7dffc859e8e83e48531114069a0fb25
+      range_parent: 290cb2e71b9b310e59500c5643fef4296c877f3f
+      range_parent_tree: 81c5c1441b27a36b79fa3eddfba6dc66ac551aee
+      merge_base_with_target: 317561ba2f56e9e9c55d65f24df13db3dc3fa77d
+      merge_base_tree: 27ff32276408f74c09af3014d75c1547f2a7e3ae
+      relationship: DIVERGED_NEITHER_IS_ANCESTOR_OF_THE_OTHER
+
+    included_commits:
+      - commit: b8c5b0d69cd0b31c3a97ca78a19a0f8477c5cd5f
+        subject: ST-1703 add local market learning draft pilot
+      - commit: 5e8fe71759e8f32cb510a136b6ddedaf44663703
+        subject: ST-1703 add WordPress.com review draft integration
+      - commit: 0d6286ad19fe3a30599359a33b2409b64ae00f1f
+        subject: Implement ST-1703 WordPress.com MVP draft preparation
+      - commit: 347ae444ac4d8788d83e21b8e00895048e5ca5ed
+        subject: Refine ST-1703 Wave 3 preview diagnostics
+      - commit: e3c26703cb9549af0a087d94058233df2d023acb
+        subject: Split ST-1703 nested response diagnostics
+      - commit: bc0c6b83338b39227b020ac345f66c2ef41d68a4
+        subject: Refine ST-1703 discussion diagnostics
+      - commit: 17f3f23355b445813b8d09284847e399881a2a59
+        subject: Implement ST-1703 Wave 3A opaque discussion extensions
+      - commit: 6c014bee7004a9f1dfa726686b91f436fc9cd2f7
+        subject: Add Wave 3 object drift diagnostics
+      - commit: ca5ff2e419ffc07239b4c551146dd66b01489cc3
+        subject: "feat(st-1703): reconcile low-cost pilot with current Wave 3"
+
+    excluded_source_only_commits:
+      - commit: fc4ffda2090447e91c693c97007d997471d3e23f
+        classification: ST0101_OUT_OF_SCOPE
+      - commit: 60a3a27cffe8c573ccc48ce28682192a26ea61e6
+        classification: ST0101_OUT_OF_SCOPE
+      - commit: 290cb2e71b9b310e59500c5643fef4296c877f3f
+        classification: ST0101_RANGE_PARENT_OUT_OF_SCOPE
+
+    exact_range:
+      linear_no_merge_commits: true
+      commit_count: 9
+      final_path_count: 73
+      final_status_counts:
+        added: 72
+        modified: 1
+      group_counts:
+        changes: 25
+        tests: 22
+        python: 20
+        scripts: 4
+        Makefile: 1
+        docs: 1
+      aggregate_source_file_bytes: 1132076
+      patch_command:
+        - git
+        - diff
+        - --no-ext-diff
+        - --no-textconv
+        - --full-index
+        - --binary
+        - --no-renames
+        - 290cb2e71b9b310e59500c5643fef4296c877f3f
+        - ca5ff2e419ffc07239b4c551146dd66b01489cc3
+        - --
+      full_index_binary_no_renames_patch_bytes: 1153555
+      full_index_binary_no_renames_patch_sha256: 46b5235bd50ec0db8d37ddadbc9924c22db55d7c1c5db2f4293f38b3579cd68e
+      canonical_inventory_serialization:
+        record_order: LEXICAL_PATH_ASCENDING
+        record_fields: [path, mode, git_blob, bytes, sha256]
+        object_source: EXACT_SOURCE_TIP_TREE_BLOB_BYTES
+        json_call: "json.dumps(records, ensure_ascii=False, sort_keys=True, separators=(',', ':'))"
+        encoding: UTF_8
+        trailing_lf: REQUIRED_EXACTLY_ONE
+        records: 73
+        bytes: 16790
+        sha256: e3e642125a01e964f1849b181a727a184ae164196e7a96e8bc4247b527ebed3f
+        embedded_json_excludes_transport_lf: true
+        canonical_inventory_json: |-
+          [{"bytes":31909,"git_blob":"d7836a06767bad419f86fb848e6f0a492447b039","mode":"100644","path":"Makefile","sha256":"97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34"},{"bytes":1991,"git_blob":"ea066d1cdcbdee2bf04cf659d75a2613883751cc","mode":"100644","path":"changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml","sha256":"e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660"},{"bytes":1852,"git_blob":"af4263ac0ce009eb7488585fcff376f7aa72bd6d","mode":"100644","path":"changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3A-OPAQUE-DISCUSSION-EXTENSIONS-v1.yaml","sha256":"c1002959dda0de0ba0c0535697a814fa3221fcb05c7947f543452ef99232afb0"},{"bytes":1406,"git_blob":"9418b4bbe893882102686fdcad78e381b225bc88","mode":"100644","path":"changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-REVIEW-DRAFT-WAVE-2-v1.yaml","sha256":"49108caad16a6e6a157514b93f884a25f173ea56684e9d7c3c36888e7cf3cda6"},{"bytes":1840,"git_blob":"13089455fd4637579c1d8446e15333025305d2ed","mode":"100644","path":"changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-REVIEW-DRAFT-WAVE-2A-v1.yaml","sha256":"8b4eeaa5d264facd117167c22ab8d712a5b2a52a69f1c34d1ba9fe2d0c23ce2e"},{"bytes":1901,"git_blob":"50ec8998818a50954498696f26151bf4543bdc96","mode":"100644","path":"changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-REVIEW-DRAFT-WAVE-2B-v1.yaml","sha256":"8c0a68a3297d4e20d698beed48d9c0569b1de1c2682b6436911cc1b1195c798a"},{"bytes":12224,"git_blob":"64ff4b462a4198661421738ee544addb912a3370","mode":"100644","path":"changes/st-1703/DESIGN_HANDOFF_V1_MARKET_LEARNING_PILOT_WAVE_1.yaml","sha256":"a8a94f4e70b082fdacb8672e7d3118b4178b0d312b935715b4613b87f52d0238"},{"bytes":29041,"git_blob":"1d32a81d06b40c2ab45a6ccfdba6dcae79599b4a","mode":"100644","path":"changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml","sha256":"46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be"},{"bytes":12741,"git_blob":"91e56ee2de8c1e05006ff26cfc0aeaaea0c79d6d","mode":"100644","path":"changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS.yaml","sha256":"1c0d50faedd3c76d18101afb1032d82da21a6daf0a01e9c687371d20519926aa"},{"bytes":17895,"git_blob":"37390f067c7e3baa015bbc343b6f4790c3ddb7d8","mode":"100644","path":"changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2.yaml","sha256":"798e005faee6c7367496a79e71b9a2d84fc9d9433e4e368276633a8539325cbd"},{"bytes":12742,"git_blob":"ec08e66d1deee7e0668b964b74fe0bd0198d25ac","mode":"100644","path":"changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_NUMERIC_PROXY_ACTIVATION.yaml","sha256":"5e69433222435305f8a2decef8840de4764565929d483f0e4d8b35fcd6ed7bf6"},{"bytes":12678,"git_blob":"7dbf1153097580a6efd25084a76c53498a53d232","mode":"100644","path":"changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2B_V1_1_ACTIVATION.yaml","sha256":"0a10b777ccd1e786f34890458621a21a9684feb73cee2b6808a5facefeef65ee"},{"bytes":34575,"git_blob":"ef168baa754624c4c686025727ba9be71bcf7033","mode":"100644","path":"changes/st-1703/README.md","sha256":"f4514ff0d30b3a79fcfbe362b6d79162ba002f01c72592552ed2047d7ef8c4b4"},{"bytes":11109,"git_blob":"f2e2d58ad261f3130e979cbfb8fd0b1abf4bb0af","mode":"100644","path":"changes/st-1703/first-article-review-draft.v1.md","sha256":"58e225050d2bf30593fdd039ed9a307cd35db928b946bec470acbb7aa442a233"},{"bytes":2394,"git_blob":"c92ba89dfc5e79bbc9fe7a99c3c2ea645203e825","mode":"100644","path":"changes/st-1703/low-cost-publication-pilot/CANONICAL-RECONCILIATION-v2.md","sha256":"710bbdd53cdc517d8ec7ac73ad77ead1b1f8ed5c58e1b2a26708400166bdd21e"},{"bytes":3756,"git_blob":"584eebd637f600cdd7f9c838c3e4cfc6530e06ed","mode":"100644","path":"changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-RECONCILIATION-v2.yaml","sha256":"cc1dd13e123bde10372a3f4576a851d555e20e7eac6071f3ed33ce5be6c77410"},{"bytes":2592,"git_blob":"e30e1837933c3f0502b517bb08ed431a871285ff","mode":"100644","path":"changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-v1.yaml","sha256":"60a442e87ba9d965e9c49609307bb4f004bd11f9a4b9f92d5e7bd635b2fca620"},{"bytes":28414,"git_blob":"8a632932c36f49e2a04fd2041832d0a438637c2c","mode":"100644","path":"changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2.yaml","sha256":"ff75d76479a6ebf85061e54529c0896cd1a203d8f1ab0d01655ecc18dc91a6db"},{"bytes":13776,"git_blob":"ab26a6eef73784c159544b16b7185e92e0da9b7d","mode":"100644","path":"changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml","sha256":"4730d8de3eb11cccd76081a34da4d55b2e7070467d53b7bdacd3fb95baa976a6"},{"bytes":2903,"git_blob":"47aa745483dd63aea7cc29e055f69736ccb50a58","mode":"100644","path":"changes/st-1703/low-cost-publication-pilot/README.md","sha256":"8f05b77f3efe5c592bbcf6d2c9c35ccab84e85dc0953798b9d67c2b617012098"},{"bytes":9380,"git_blob":"23ff677d43bd2bfe3aeb56ab2d512a23504d6a8d","mode":"100644","path":"changes/st-1703/low-cost-publication-pilot/generated/low-cost-publication-pilot.v1.json","sha256":"34194a4dd874c0b2194733514aa6421131a51a0e2c843e517e207b9d46f96317"},{"bytes":7525,"git_blob":"40e046af2e507cb92ff48f98c83328927f7a005c","mode":"100644","path":"changes/st-1703/low-cost-publication-pilot/low-cost-publication-pilot.v1.yaml","sha256":"2bc2329f760e1a7960196fec9960e2573ed2add653e6349150dffaddf60a90f3"},{"bytes":11132,"git_blob":"e6d7d7bd606353499e3aac7683f05958bb52d483","mode":"100644","path":"changes/st-1703/low-cost-publication-pilot/manifest.yaml","sha256":"b397e26b54ba135842d3b95b130a1c5794343e80a674f49fb8ef0427e1d97a38"},{"bytes":8116,"git_blob":"c6e77eaaca99a4823ea09fcf895b8fe6c11c31fb","mode":"100644","path":"changes/st-1703/source-packet-candidate.first-article.v1.yaml","sha256":"730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2"},{"bytes":12670,"git_blob":"e38e3ef092971f2a5da2c91f7d3f499e2344948a","mode":"100644","path":"changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml","sha256":"aca2af51e2571a62215c600357fb8f0ee246e8891e60d6e5afbe40d8235ee681"},{"bytes":5656,"git_blob":"ac0eb1e10e74a5a8f2eb3a24914fc8eebd829857","mode":"100644","path":"changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json","sha256":"8cf00ace6e2988c3bfb7969f13cfec0786137077c1319be4b043c4b762b5fba9"},{"bytes":75049,"git_blob":"f53ce65f4dc036c107107a58e728cd98c0e65034","mode":"100644","path":"docs/worklogs/ST-1703.md","sha256":"2cc0f4b48dcd07cef54b75d15a2a0dc1aeeda7dcfc7d2205c4d9012c52d73f6e"},{"bytes":8111,"git_blob":"4bd5dc7e107746898ef30d897e00b98be84f5725","mode":"100644","path":"python/raos/adapters/recorded_wordpress_draft.py","sha256":"21ab41f20f620d4bdebe77ef1ab707c8705f6821d9fdef6bc01d568e5052aae3"},{"bytes":16659,"git_blob":"5f091f0e06669c08d7c6b5ade7ad3fed302ad37e","mode":"100644","path":"python/raos/adapters/wordpress_rest.py","sha256":"6fd143251ea017fe824d0481d41722650a727d06a85bd5187c90582a6e86439d"},{"bytes":20624,"git_blob":"57469b02373ac4c4130a5cf19dc2ecb22c0b6290","mode":"100644","path":"python/raos/adapters/wordpresscom_mvp_draft_https.py","sha256":"efdcb2b4f67b3b47bd172f2d8dbe6a9dd707678a1fafdc5f63152b1fd29f2a5a"},{"bytes":21243,"git_blob":"e1a10d295955f1484805ba97e4b8512b7fd03bf9","mode":"100644","path":"python/raos/adapters/wordpresscom_mvp_draft_journal.py","sha256":"8dfc0d98142ca4af4e2ff0ebb2d7f692c75283df1a1924479fb3e8f6a759bf61"},{"bytes":49981,"git_blob":"72b69c1c73621650cfd6ceb0cec4ad7ac8c64672","mode":"100644","path":"python/raos/adapters/wordpresscom_oauth.py","sha256":"ceb5ada087ef002213153ecf5bb6fb7f11f7cb4d87ee28063ebdf7ec7d6b6db1"},{"bytes":22458,"git_blob":"14665f4ac706f8e4f2d3c3ea1baa7c32d221fa41","mode":"100644","path":"python/raos/adapters/wordpresscom_review_draft_https.py","sha256":"02e26dbda6714fc36aa5b872df92bf0b056606a3a37ed3c4cfaa7a0dff4012a3"},{"bytes":12125,"git_blob":"cd354644da99ef4f18a7a306e23ce4efecce76c3","mode":"100644","path":"python/raos/adapters/wordpresscom_review_draft_journal.py","sha256":"ce49db446902b56ab8450d9d3b3c86b266f7166c918642e39af791ab338654bc"},{"bytes":13013,"git_blob":"86f72bf21689b06043535cbe51d0b1464784cee0","mode":"100644","path":"python/raos/application/editorial/market_learning_pilot.py","sha256":"431e1006fff77614545af991837a2f7724b661a94dc0b7df0db87b88bde4bb26"},{"bytes":10384,"git_blob":"c518748d546ba2c6ebf192714414e0107c0a1aa7","mode":"100644","path":"python/raos/application/editorial/wordpresscom_mvp_affiliate.py","sha256":"c281994041273d5672a01f256cc480b9bcb36702572d6b73d7a596feba4d1d70"},{"bytes":9872,"git_blob":"853e8e57cbd52a63fa6cecf39fc62f998c1a2c8c","mode":"100644","path":"python/raos/application/editorial/wordpresscom_mvp_drafts.py","sha256":"df093b9c1eafaf407b1a49c4c9e88d1407236b320ff30898d695752d0105c865"},{"bytes":39713,"git_blob":"9347848f0af4fab558c9041ca90cd658d4d9c886","mode":"100644","path":"python/raos/application/editorial/wordpresscom_mvp_preparation.py","sha256":"8f74272e2179250ba0f201be553842d585027089d2cb9b02412a31a2dd934d2e"},{"bytes":11623,"git_blob":"9d5cb92849837a9322b8d1c6edb22ed771d5a410","mode":"100644","path":"python/raos/application/editorial/wordpresscom_review_draft.py","sha256":"f1081015d774a5142856b8ea3397a8f81f06438bd26d9a2b9bee644c8989f420"},{"bytes":20400,"git_blob":"dfecdc96d1c3e76ade167252750654f6bccfc730","mode":"100644","path":"python/raos/domain/editorial/market_learning_pilot.py","sha256":"69f4c373dca5ddcbebf7dcefc23a8a9376792ca85b70fb3d48d6137212fb6f27"},{"bytes":28416,"git_blob":"5c9ad1fc4a187c7fd2e0fd5b260c7a89f1815bd3","mode":"100644","path":"python/raos/domain/editorial/wordpresscom_mvp_drafts.py","sha256":"86e0daaf62a2f557e08b5e07ac0693b2b1d661da87c1a5d9e259f299552b5d9a"},{"bytes":11912,"git_blob":"b905b3cb8c80673893b0d3d3c20c988f5208fe5e","mode":"100644","path":"python/raos/domain/editorial/wordpresscom_review_draft.py","sha256":"cec34dc3ddc6631f70c02af139694110da304481739f472665b40376e21ac3fd"},{"bytes":516,"git_blob":"9d1745b31e6dd4d17bbcdcd0fa53cca104f29072","mode":"100644","path":"python/raos/ports/wordpress_draft.py","sha256":"6a68cdffb97181265c18c5e397ed71d6f852ca1060d2acb1e042d300d40fcc77"},{"bytes":1256,"git_blob":"d4cd537d53eaef00aab36e09a06c1d760f9a7da0","mode":"100644","path":"python/raos/ports/wordpresscom_mvp_draft_journal.py","sha256":"d52bf8eacfbfc0de3da796d6aab60068051da321af2d2eadf4a38ee45779cc7b"},{"bytes":1251,"git_blob":"43a545b3f88eb27c4c71c7ef1cfedceae44a2261","mode":"100644","path":"python/raos/ports/wordpresscom_mvp_drafts.py","sha256":"472eaab0b1272112e7d99b457087a941cf2a79a208255471dd55b562f9060426"},{"bytes":596,"git_blob":"d18b401a0887725f27fe472307f8273129f68dab","mode":"100644","path":"python/raos/ports/wordpresscom_review_draft.py","sha256":"f8d25f29d5b16273d5d2bd242595b974ebdc03876270a0e34cc31a292ba4aee9"},{"bytes":722,"git_blob":"53462c9af4ea9c52a5ad49d1ccf4e0ef63dc84b4","mode":"100644","path":"python/raos/ports/wordpresscom_review_draft_journal.py","sha256":"27648e8c3916cd4025d8dd8f9f7372b3046f32a8591291c3dc445be197d9cb0b"},{"bytes":38178,"git_blob":"c73bc70e995a893f0caddec25b03729bbfffe33f","mode":"100644","path":"scripts/build_st1703_low_cost_publication_pilot.py","sha256":"31a8a799a817d345aa103618784a47aaebae26c4e13ae11e1f4c47ec06ba91a3"},{"bytes":2546,"git_blob":"94592525e28f62f1605b870d2ae015d53cbfc5cf","mode":"100644","path":"scripts/build_wordpresscom_mvp_runtime_manifest.py","sha256":"f80e421b8dda576fccebb624fe132c9c5a92cb83949a86f79a53ad76479c8c6d"},{"bytes":43402,"git_blob":"4371bc76864f25aa6865863ed445960cb222d1f8","mode":"100644","path":"scripts/wordpresscom_review_draft.py","sha256":"add343da6887cbe95c9b1d9cb9abf1b4bb80fb6505b2ef667174becb34a5a7b4"},{"bytes":2834,"git_blob":"f5b9581f0a3e5dbc770f3bc11ea9d70303c6f232","mode":"100755","path":"scripts/wordpresscom_review_draft_python.sh","sha256":"8b85027274b20931adf08d5b167eb6bdd9c3ce204ec367fd315afc2d57fcd35d"},{"bytes":4505,"git_blob":"63e09e63381743a8fe1529edb7137ca718da7a30","mode":"100644","path":"tests/st1703/conftest.py","sha256":"e43d03c581007be7a16e0c9f48768aa4421fd350fddb3774f8c98e959ab47082"},{"bytes":22645,"git_blob":"996f27dd7caa637613e439f788ea39e83c1d5d81","mode":"100644","path":"tests/st1703/test_boundaries.py","sha256":"f344075e4ad097d9906ed3d142a2ecc655985d88720bf4321c0dff439fed0d81"},{"bytes":2573,"git_blob":"06f3a924d0101abb554bf72260d3081e3d9fad69","mode":"100644","path":"tests/st1703/test_minimal_path.py","sha256":"5f15e6feb89fd722c7a1f8e6eab70a6e4255ef72945b7ad00ad763895f58a085"},{"bytes":9188,"git_blob":"3ba0fe27c60f50c18a854c99572fc91c57e011f2","mode":"100644","path":"tests/st1703/test_recorded_draft.py","sha256":"e79f03a8fee9f7b4a99a8f66591ec5ec20eca87c02172e94ece32d54bf00a482"},{"bytes":19519,"git_blob":"3d47a5dde40501f235d6c5cde147b3dfab1f0691","mode":"100644","path":"tests/st1703/test_wordpress_rest.py","sha256":"602d4ddc3e2864a0d3b636ed60008220b27e0e2c7ec8d160291ab7e1c478cabf"},{"bytes":5633,"git_blob":"fae1f57926e8499a6968ac41c277ede887be6871","mode":"100644","path":"tests/st1703/test_wordpresscom_mvp_wave3_affiliate.py","sha256":"bc44e2a212262064303c536129d1c5f2f1ee65c4b6a66a12be1dc982187b9e05"},{"bytes":25117,"git_blob":"ca3b671520210437b0667672b2a3d9f07fb43363","mode":"100644","path":"tests/st1703/test_wordpresscom_mvp_wave3_cli.py","sha256":"b288ed2ffcbbf7ca52d755caa04e6e2ce9c855c61a430c083ff139bcda0cd829"},{"bytes":4637,"git_blob":"37356541472b8f86707440a1e4365ee2993e3228","mode":"100644","path":"tests/st1703/test_wordpresscom_mvp_wave3_content.py","sha256":"48bfef53f91a266fdc435876bab7492a1a81c3d2cb2a4d81cff25f8297e1f21e"},{"bytes":12921,"git_blob":"f153c0a1c44a8aa12f5595bbb5dbf152cc533735","mode":"100644","path":"tests/st1703/test_wordpresscom_mvp_wave3_domain.py","sha256":"0858df9bf8e86a702078be0f7794d17ee250ce852d5d1862cb1b777dea157eda"},{"bytes":27294,"git_blob":"a715c24929cc7ade0181616ae21ae9f71746c7dc","mode":"100644","path":"tests/st1703/test_wordpresscom_mvp_wave3_https.py","sha256":"3ebf3f8e66c691741280749b5a433fb6d6752622b78c7af0e3a2c930e6f28a30"},{"bytes":22069,"git_blob":"55f5f0d877dfa6d326e7fda804aa762fb0d02641","mode":"100644","path":"tests/st1703/test_wordpresscom_mvp_wave3_journal.py","sha256":"e77bca783b4e2d9f1b5ca2553b6b787b923a8d2c80935560ded212b7b2d3f636"},{"bytes":51184,"git_blob":"847a65643c39a184ea690534ff7adca063af4f20","mode":"100644","path":"tests/st1703/test_wordpresscom_mvp_wave3_preparation.py","sha256":"0338cc3904b442f11756c449d296656a9705a1cc84e256e4f25b626b6890c3fd"},{"bytes":60424,"git_blob":"1082cddb83c97208d8f016c1683337d0c6e8a01c","mode":"100644","path":"tests/st1703/test_wordpresscom_oauth.py","sha256":"d3c58cdddac50ff59eef52e7658d0460829065df001d256ab5b268784bb5c74f"},{"bytes":22097,"git_blob":"32a39eb5b7c4f999c2821ce2f91b790af2bf6f91","mode":"100644","path":"tests/st1703/test_wordpresscom_review_draft_cli.py","sha256":"4a6af782efdde404e1f1c8ebae984f1bbbff5bbafe3aa955b0cb9b364cf705ba"},{"bytes":33671,"git_blob":"c70f788f8b0bd1bf1b0a442d83642c44d190edbd","mode":"100644","path":"tests/st1703/test_wordpresscom_review_draft_https.py","sha256":"d7a8fb6685a7665394f6dda3e22238b13d52a24657726459b24ef887082c8cf7"},{"bytes":19152,"git_blob":"a0a75e0d2d4f4eb68e583a84a2576f42fb7e3918","mode":"100644","path":"tests/st1703/test_wordpresscom_review_draft_journal.py","sha256":"03dff193e55c22bf825709dba40e6674f43b1d0992aac01ac9a9eaec5b5b0a84"},{"bytes":6004,"git_blob":"7d1a519819fa5f9e562331fecc33e21d82021189","mode":"100644","path":"tests/st1703/test_wordpresscom_review_draft_minimal.py","sha256":"ee7c43aa14f6c599619206df4e640ebfa15c279245a9b0f1317df4ce95849fd7"},{"bytes":6274,"git_blob":"ed4e3afdb4b5f1914bc54fd9c185b8347a028f3c","mode":"100644","path":"tests/st1703/test_wordpresscom_review_draft_rendering.py","sha256":"0e8f3b380df62910c4ae2946e66d7c2e050b7b1e70d15bb3eaba864b83d8af68"},{"bytes":454,"git_blob":"8b12c824cccd08de56afdc9e2e13fdbf3c0168a4","mode":"100644","path":"tests/st1703_low_cost/conftest.py","sha256":"6c9a3b846e574e61496c67f886b754c55eb39fbf5345849c869f7ae9f45b52a4"},{"bytes":2959,"git_blob":"d3358313a0b643c802be78c18605599f5e99c470","mode":"100644","path":"tests/st1703_low_cost/test_contract.py","sha256":"d1f845ab8d77b4f0b41ed93ae3bca3b2da9a55e5f2ea216af7b1d61ea86fb780"},{"bytes":11272,"git_blob":"43512c65a48b100e04f3b5490e8b60cbd49ae540","mode":"100644","path":"tests/st1703_low_cost/test_generation.py","sha256":"d7249a7fa5418e14d5041c659d1da8a00b101fa4e62aaa153b8dbdd29eb2d28e"},{"bytes":7382,"git_blob":"27897689ae51ea8821322107938aba492e3d1338","mode":"100644","path":"tests/st1703_low_cost/test_negative_cases.py","sha256":"b13c700e1d6cd064e20391aa0b8efd873643d61479c52863a3891b6a1b3e8723"}]
+
+    target_overlap_proof:
+      target_existing_path_count: 1
+      only_target_existing_path: Makefile
+      source_range_parent:
+        mode: '100644'
+        git_blob: 1f07602c8aa2f93de36af3d380d883f92295e3fe
+        bytes: 31323
+        sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
+      target:
+        mode: '100644'
+        git_blob: 1f07602c8aa2f93de36af3d380d883f92295e3fe
+        bytes: 31323
+        sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
+      source_tip:
+        mode: '100644'
+        git_blob: d7836a06767bad419f86fb848e6f0a492447b039
+        bytes: 31909
+        sha256: 97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34
+      proof: TARGET_MAKEFILE_EQUALS_SOURCE_RANGE_PARENT_BYTE_FOR_BYTE
+
+    patch_applicability:
+      target_checkout_command: git apply --check --whitespace=nowarn
+      target_checkout_result: PASS_EXIT_0
+      error_all_result: EXPECTED_EXIT_128_ONLY_SOURCE_PACKET_BLANK_EOF
+      exact_error_all_diagnostic: "new blank line at EOF; error: 1 line adds whitespace errors"
+      exception:
+        path: changes/st-1703/source-packet-candidate.first-article.v1.yaml
+        bytes: 8116
+        git_blob: c6e77eaaca99a4823ea09fcf895b8fe6c11c31fb
+        sha256: 730de77b730afd692ca734746a7321d29a5191244832e4f44fb0d84a871707b2
+        permitted_handling: PRESERVE_EXACT_BYTES_DO_NOT_FIX_OR_NORMALIZE
+        other_whitespace_exceptions: []
+
+    target_specific_rebind:
+      old_source_approved_base_commit: 5e8fe71759e8f32cb510a136b6ddedaf44663703
+      old_source_base_is_source_ancestor: true
+      old_source_base_is_target_ancestor: false
+      new_approved_base_commit: acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d
+      exact_mutation: REPLACE_ONE_MVP_APPROVED_BASE_COMMIT_LITERAL_ONLY
+      rebound_script:
+        path: scripts/wordpresscom_review_draft.py
+        bytes: 43402
+        sha256: 2303866f94aa3aae45c2d4b3162335eb7e60afd25ed18e42a3d7c30bd0debf01
+      generated_runtime_manifest:
+        path: changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+        generator: scripts/build_wordpresscom_mvp_runtime_manifest.py
+        expected_bytes: 5656
+        expected_sha256: b9ccd47c40b9bc9a7595f9e9de2d807232e2b084851b2057007d37b8c98b3c6e
+        expected_runtime_path_count: 27
+        authority: COMMITTED_RUNTIME_METADATA_ONLY_NOT_FORMAL_EVIDENCE
+      wave3_handoff_mutation: FORBIDDEN
+      wave3_approval_mutation: FORBIDDEN
+
+    low_cost_v3_reconciliation:
+      V1_semantic_delta: NONE
+      V2_semantic_delta: NONE
+      preserve_historical_target_bindings: true
+      current_target_commit: acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d
+      current_target_tree: 85620e53419b65e3053e4454c6c1cb522de4459b
+      future_current_runtime_manifest_bytes: 5656
+      future_current_runtime_manifest_sha256: b9ccd47c40b9bc9a7595f9e9de2d807232e2b084851b2057007d37b8c98b3c6e
+      generated_projection:
+        bytes: 9380
+        sha256: 34194a4dd874c0b2194733514aa6421131a51a0e2c843e517e207b9d46f96317
+        mutation: FORBIDDEN
+      low_cost_manifest:
+        generation_only: true
+        attestation_or_authority_inflation: FORBIDDEN
+      required_generator_bindings:
+        - exact V1 handoff and approval bytes
+        - exact V2 handoff and approval bytes
+        - exact V3 handoff and future detached approval bytes
+        - exact target commit and tree metadata
+        - exact current regular-filesystem runtime manifest bytes
+        - historical runtime-manifest bindings as immutable metadata
+
+    historical_immutables_and_gaps:
+      immutable_rule: ALL_IMPORTED_SOURCE_TIP_PATHS_EXCEPT_EXACT_MUTABLE_LIST_REMAIN_BYTE_IDENTICAL
+      explicitly_immutable:
+        - all Wave 1, Wave 2, Wave 2A, Wave 2B, Wave 3, and Wave 3A handoffs and detached approvals
+        - changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml
+        - changes/st-1703/source-packet-candidate.first-article.v1.yaml
+        - changes/st-1703/first-article-review-draft.v1.md
+        - changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml
+        - changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-v1.yaml
+        - changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2.yaml
+        - changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-RECONCILIATION-v2.yaml
+        - changes/st-1703/low-cost-publication-pilot/CANONICAL-RECONCILIATION-v2.md
+        - changes/st-1703/low-cost-publication-pilot/low-cost-publication-pilot.v1.yaml
+        - changes/st-1703/low-cost-publication-pilot/generated/low-cost-publication-pilot.v1.json
+        - docs/worklogs/ST-1703.md
+      wave3a_nonexistent_embedded_refs:
+        status: UNRESOLVED_IMMUTABLE_PROVENANCE_DEFECT
+        entries:
+          - embedded: e3c2670805f32d9be06592128dd2225593318997
+            observed_same_subject: e3c26703cb9549af0a087d94058233df2d023acb
+            authority_substitution: FORBIDDEN
+          - embedded: bc0c6b8fc118c94e20c6df8eaa6337e7a3b64e92
+            observed_same_subject: bc0c6b83338b39227b020ac345f66c2ef41d68a4
+            authority_substitution: FORBIDDEN
+      object_drift:
+        commit: 6c014bee7004a9f1dfa726686b91f436fc9cd2f7
+        separate_exact_hash_bound_approval: ABSENT
+        worklog_or_commit_authorship_is_detached_approval: false
+        retroactive_approval_by_v3: FORBIDDEN
+      authority_promotion: NONE
+
+    pro_review:
+      run_id: 20260813T160033Z-ed2a92ba91a8
+      result: PRO_UNAVAILABLE
+      reason_code: RESPONSE_NOT_IDENTIFIABLE
+      advice_or_review_obtained: false
+      authority: NONE
+      effect: CANONICAL_AND_LOCAL_EVIDENCE_ONLY
+
+    post_approval_file_cut:
+      prerequisite:
+        future_detached_approval_path: changes/st-1703/origin-main-integration/DESIGN-HANDOFF-APPROVAL-ST1703-ORIGIN-MAIN-INTEGRATION-V3.yaml
+        exact_handoff_bytes_and_sha256_binding: REQUIRED
+        exact_target_commit_and_tree_binding: REQUIRED
+        exact_source_commit_tree_range_patch_and_inventory_binding: REQUIRED
+        import_or_mutation_before_approval: FORBIDDEN
+      exact_initial_import:
+        source_tip: ca5ff2e419ffc07239b4c551146dd66b01489cc3
+        path_inventory: EXACT_73_RECORD_CANONICAL_INVENTORY_ABOVE
+        target_application: EXACT_FULL_INDEX_BINARY_NO_RENAMES_RANGE_PATCH
+        alternate_source_partial_import_or_unlisted_path: FORBIDDEN
+      only_imported_paths_permitted_to_change_after_exact_import:
+        - path: scripts/wordpresscom_review_draft.py
+          reason: Mechanically rebind the one runtime approved-base literal to the exact target parent.
+        - path: changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+          reason: Regenerate only through scripts/build_wordpresscom_mvp_runtime_manifest.py after the one-literal rebind.
+        - path: scripts/build_st1703_low_cost_publication_pilot.py
+          reason: Add V3 handoff, detached approval, target, and current-runtime fail-closed validation while retaining V1/V2 history.
+        - path: changes/st-1703/low-cost-publication-pilot/manifest.yaml
+          reason: Regenerate only through the low-cost generator to record V3 without formal-evidence or authority inflation.
+        - path: changes/st-1703/low-cost-publication-pilot/README.md
+          reason: Document the V3 origin/main reconciliation and unchanged external boundaries.
+        - path: tests/st1703/test_wordpresscom_mvp_wave3_cli.py
+          reason: Bind focused runtime identity and regenerated-manifest expectations to the exact V3 target.
+        - path: tests/st1703_low_cost/test_generation.py
+          reason: Cover exact V3 authority/current-manifest positive and protected historical byte identities.
+        - path: tests/st1703_low_cost/test_negative_cases.py
+          reason: Cover V3 approval, target/runtime drift, substitution, and authority-inflation refusals.
+      exact_mutable_imported_path_count: 8
+      imported_paths_required_byte_identical_final: ALL_73_INVENTORY_PATHS_EXCEPT_THE_EXACT_8_ABOVE
+      imported_byte_identical_final_path_count: 65
+      preapproval_new_paths_preserved:
+        - changes/st-1703/origin-main-integration/DESIGN_HANDOFF_V1_ST1703_ORIGIN_MAIN_INTEGRATION_V3.yaml
+        - changes/st-1703/origin-main-integration/PR-PREPARATION-v3.md
+      only_additional_new_path_after_approval:
+        - changes/st-1703/origin-main-integration/DESIGN-HANDOFF-APPROVAL-ST1703-ORIGIN-MAIN-INTEGRATION-V3.yaml
+      all_other_paths: PROTECTED
+      local_commit_after_all_gates: REQUIRES_EXPLICIT_OWNER_AUTHORITY
+      push_or_pull_request: REQUIRES_SEPARATE_EXPLICIT_OWNER_EXTERNAL_WRITE_AUTHORITY
+
+  rationale:
+    - The exact source range contains the complete ST-1703 implementation lineage while the preceding three commits are ST-0101-only and outside the integration scope.
+    - A range patch is deterministic and applies cleanly because the only target overlap is a Makefile byte-identical to the source range parent.
+    - The source Wave 3 base commit is not an ancestor of the target, so leaving it active would correctly fail runtime identity; a one-literal target-parent rebind plus owner-generator regeneration is the minimal mechanical repair.
+    - V2 explicitly stops on later target or runtime-manifest drift, making a new exact-SHA V3 handoff necessary.
+    - Historical authority/data artifacts remain byte-frozen; V3 records new target metadata separately and grants no retroactive Wave 3 or OBJECT_DRIFT authority.
+    - The source-packet whitespace warning is a known immutable byte property, not an apply conflict or permission to normalize the packet.
+
+  rejected_alternatives:
+    - alternative: Merge or cherry-pick the complete source branch history
+      reason: It would include three ST-0101 source-only commits outside this Story integration scope.
+    - alternative: Cherry-pick the nine commits one by one without an exact final inventory
+      reason: It increases conflict and history-shape variance without improving the exact final ST-1703 byte identity.
+    - alternative: Reuse the V2 low-cost approval for origin/main
+      reason: V2 binds the older target 6c014bee and explicitly requires a new handoff after target or current-manifest drift.
+    - alternative: Leave 5e8fe717 as the active runtime approved base
+      reason: It is not a target ancestor and must fail closed after integration.
+    - alternative: Mutate Wave 3 or Wave 3A handoffs, approvals, V1/V2 low-cost history, projection, source packet, or worklog
+      reason: Those exact bytes are historical provenance, authority, or source data and mutation would destroy their bindings.
+    - alternative: Normalize the source packet blank EOF to satisfy whitespace=error-all
+      reason: The packet is exact-hash-bound and must remain unchanged; whitespace=nowarn apply-check already proves patch applicability.
+    - alternative: Treat the PRO_UNAVAILABLE run, commit history, author identity, worklog, or runtime manifest as design approval
+      reason: None is an owner exact-SHA approval for this V3 handoff.
+
+  constraints:
+    - Before exact owner approval, only this all-new handoff and its non-authoritative one-way PR preparation Markdown may exist as a delta.
+    - No source import, target rebind, generated output, detached approval, test mutation, local commit, push, pull request, browser, network, Secret, provider, draft, publication, staging, release, production, or canonical/status mutation is authorized before approval.
+    - The future detached approval must be all-new, exact-hash-bound, and cannot mutate this handoff or any historical approval.
+    - Canonical and imported docs, status/evidence registries, shared Main, .codex/config.toml, tmp, ST-1903, existing worktrees, and other owners' changes remain out of scope.
+    - Never inspect .secrets, use credentials, contact WordPress.com, or perform any external state change.
+    - The current origin/main ref, target HEAD/tree, source tip/tree, merge base, range parent, nine commits, patch, inventory, or overlap proof moving invalidates this proposal and requires STOP plus a new V3 successor handoff.
+    - The V3 target rebind changes only repository ancestry metadata; it cannot change content, platform, spend, draft, publication, external-action, or business semantics.
+    - The source packet exact-hash whitespace exception applies only to its existing blank EOF and authorizes no other whitespace defect.
+    - ST-1703 remains canonical NOT_STARTED/NOT_EXECUTED with acceptance false and no production claim.
+    - Dependencies ST-1702, ST-0906, ST-1007, ST-1302, and ST-1505 are not promoted; absent, disabled, or non-executable states remain blockers.
+    - TST-021, TST-022, and TST-032 remain NOT_EXECUTED.
+
+  security_and_approval_gates:
+    - Implementation authority remains NONE until the repository owner approves the final exact handoff byte count and SHA-256 and a detached V3 approval records that exact binding.
+    - Exact V3 approval, if granted, authorizes only the closed repository-local import and eight-path target-specific mutation cut; it does not by itself authorize push or pull-request creation.
+    - A later local commit requires explicit owner authority over the exact reviewed diff; a push or pull request requires separate explicit owner external-write authority.
+    - Publication, credentials, browser/provider use, external writes, draft creation or update, WordPress.com prepare or preview, journal access, purchase, finance activation, staging, release, production, and kill-switch changes remain unauthorized.
+    - The current runtime manifest is metadata only; no local generator or test result is formal TST, staging, release, publication, production, or design-approval evidence.
+    - Known Wave 3A invalid commit references and missing OBJECT_DRIFT approval remain unresolved and confer no authority.
+    - GitHub remains the sole permitted review connector, but this pre-approval slice authorizes no connector call.
+
+  acceptance_criteria:
+    - The final handoff has every required DESIGN_HANDOFF_V1 field and open_decisions exactly empty.
+    - Exactly one approval target exists: this handoff's frozen bytes and SHA-256 supplied out of band; Markdown and PR text are non-authoritative.
+    - Target HEAD/tree and refs/remotes/origin/main equal the exact target, and any movement causes STOP.
+    - Every included and excluded commit, source/target/merge-base tree, patch byte/hash, 73-record inventory, group count, source blob, and overlap identity recomputes exactly.
+    - The target range patch passes git apply --check --whitespace=nowarn; error-all reports only the exact immutable source-packet blank-EOF warning.
+    - Before approval, the complete working-tree delta is exactly this handoff plus PR-PREPARATION-v3.md and no other path.
+    - After approval, the source range is imported exactly, only the closed eight imported paths may change, only the detached V3 approval may be newly added, and all other paths remain protected.
+    - The rebind script is exactly 43402 bytes with SHA-256 2303866f94aa3aae45c2d4b3162335eb7e60afd25ed18e42a3d7c30bd0debf01 before later commit metadata exists.
+    - The Wave 3 manifest is generated only by its owner to the exact predicted 5656 bytes and SHA-256 b9ccd47c40b9bc9a7595f9e9de2d807232e2b084851b2057007d37b8c98b3c6e.
+    - The low-cost V1/V2 artifacts and generated projection remain byte-identical, while its manifest is generator-owned and records V3 without authority inflation.
+    - Publication and all external/live/formal gates remain unchanged and unexecuted.
+
+  required_test_evidence:
+    - Before approval, safe-parse this YAML; verify required fields, one approval target, empty open_decisions, and the one-way Markdown relationship.
+    - Before approval, verify all canonical filesystem references and every Git commit/tree/path/blob/bytes/SHA-256 in the handoff without writing.
+    - Before approval, reconstruct canonical inventory by sorting paths lexically, reading exact source-tip blobs, serializing records with the documented compact sort_keys algorithm, appending one LF, and matching 16790 bytes plus e3e642125a01e964f1849b181a727a184ae164196e7a96e8bc4247b527ebed3f.
+    - Before approval, recompute the full-index binary no-renames patch, target overlap, Makefile three-way identity, apply-check distinction, exact two-path delta, bounded sensitive-data scan excluding .secrets, and diff checks.
+    - After approval, verify the exact 73-path import before target-specific edits and the exact final 65 immutable plus eight mutable imported path cut.
+    - After approval, run the Wave 3 and low-cost owner generators and their no-write checks, and prove the 9380-byte projection remains byte-identical.
+    - After approval, run isolated tests/st1703_low_cost, isolated tests/st1703, focused negative runtime-identity tests, Ruff format/check, strict mypy, Python parse/import, workspace check, canonical import verification, bounded sensitive scan, and diff checks.
+    - The linked integration worktree cannot establish the physical-root runtime identity evidence because the launcher requires /home/minami/rakuten and exact committed HEAD bytes; record this limitation, then require the integration owner to run the affected physical-root suite only after an authorized commit in an exact owner-controlled physical-root checkout.
+    - Formal TST-021, TST-022, TST-032, live browser/provider, credential, draft, external-write, staging, publication, release, and production checks remain NOT_EXECUTED.
+
+  open_decisions: []

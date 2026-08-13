@@ -1,0 +1,229 @@
+document:
+  schema: RAOS_LOW_COST_PUBLICATION_PILOT_V1
+  id: RAOS-ST1703-LOW-COST-PUBLICATION-PILOT-001
+  version: 1.0.0
+  story_id: ST-1703
+  classification: SOURCE_DERIVED_NON_EXECUTABLE_NON_ATTESTING_PLAN
+  design_status: OWNER_APPROVED_FOR_REPOSITORY_LOCAL_IMPLEMENTATION
+  implementation_status: LOCAL_GOVERNANCE_SLICE_ONLY
+  formal_verification: NOT_EXECUTED
+  production_readiness: NOT_READY
+authority:
+  approved_proposal:
+    text: 30日パイロットでは、WordPress.com Personalを唯一の公開基盤、Codex＋Gitを記事作成・品質管理基盤とする。OpenAI API、AWS、Cloudflare Pages、独自Admin/API/Workerは保留。既存ChatGPT契約を除く外部費上限は月2,000円。CodexはDraft作成と検証のみで、公開は人手に限定する。
+    utf8_bytes: 342
+    sha256: 131534a5c035096a3e18abbc1e82f9937b50cd7d3c84e4a3fc413d52e57b6a5b
+  owner_response:
+    text: 承認
+    utf8_bytes: 6
+    sha256: 5d103c64a39b8ac1e10c8a7038fa6d780ed1d1b205e071e2b52236f9540f59a6
+    observed_on: '2026-08-13'
+    semantic_approval_precedes_serialization: true
+  implementation_authority: REPOSITORY_LOCAL_ARCHITECTURE_AND_GOVERNANCE_ONLY
+  handoff_uri: repo://changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml
+  approval_uri: repo://changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-v1.yaml
+bindings:
+  approved_base_commit: 0d6286ad19fe3a30599359a33b2409b64ae00f1f
+  approved_base_tree: 3b84020ed4c3aa232e2755ebf9e4607fa02a44e1
+  wave3:
+    handoff:
+      uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml
+      sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+    approval:
+      uri: repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml
+      sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
+    runtime_manifest:
+      uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+      sha256: ac5f80152c846df3be09b90a28a0bd5ca93f2e165807b9fcb50ca7eb569c908c
+    relationship: CURRENT_FIXED_TARGET_METADATA_ONLY_NO_EXECUTION_AUTHORITY
+pilot:
+  duration_days: 30
+  public_platforms:
+    candidate_count: 1
+    candidates:
+      - id: WORDPRESSCOM_PERSONAL
+        role: SOLE_CANDIDATE_PUBLIC_PLATFORM
+        selection_status: OWNER_SELECTED_CANDIDATE
+        subscription_status: NOT_EXECUTED
+        subscription_authority: NOT_AUTHORIZED
+        custom_domain_status: NOT_EXECUTED
+        custom_domain_authority: NOT_AUTHORIZED
+        draft_status: NOT_EXECUTED
+        draft_authority: NOT_AUTHORIZED
+        publication_status: NOT_EXECUTED
+        publication_authority: NOT_AUTHORIZED
+    dual_run: FORBIDDEN
+    cutover: NOT_AUTHORIZED
+  drafting_and_quality:
+    components:
+      - CODEX
+      - GIT
+    mode: INTERACTIVE_HUMAN_CONTROLLED_ONLY
+    allowed_codex_roles:
+      - DRAFT_CREATION
+      - LOCAL_VALIDATION
+    forbidden_codex_roles:
+      - PRODUCTION_RUNTIME
+      - UNATTENDED_OPERATION
+      - PROVIDER_API_CLIENT
+      - PUBLISHER
+      - APPROVER
+  deferred_disabled_components:
+    - OPENAI_API
+    - AWS
+    - CLOUDFLARE_PAGES
+    - CUSTOM_ADMIN
+    - CUSTOM_API
+    - CUSTOM_WORKER
+  review_tooling:
+    github_free: NO_NEW_COST_REVIEW_TOOLING_ONLY
+    external_authority: NONE
+spend_boundary:
+  currency: JPY
+  period: MONTH
+  exact_incremental_external_spend_cap: 2000
+  excluded_existing_commitments:
+    - ALREADY_PAID_CHATGPT_SUBSCRIPTION
+  purchase_status: NOT_EXECUTED
+  purchase_authority: NOT_AUTHORIZED
+  canonical_od_009:
+    status: UNRESOLVED
+    changed_by_this_slice: false
+  historical_wave1_business_cap:
+    duration_days: 90
+    currency: JPY
+    amount: 30000
+    changed_by_this_slice: false
+    relationship: SEPARATE_SCOPE_NOT_SUPERSEDED
+quality_and_ux_requirements:
+  classification: REQUIREMENTS_ONLY
+  execution_status: NOT_EXECUTED
+  verification_status: NOT_VERIFIED
+  implementation_constraints:
+    page_builder: FORBIDDEN
+    heavy_plugins: FORBIDDEN
+    theme_profile: LIGHTWEIGHT
+    font_preference: SYSTEM_FONT
+  media:
+    preferred_formats:
+      - WEBP
+      - AVIF
+    explicit_dimensions: REQUIRED
+  comparison:
+    semantic_table: REQUIRED
+    mobile_axis_product_relationship: REQUIRED
+  affiliate:
+    disclosure_before_first_cta: REQUIRED
+    destination: DIRECT_RAKUTEN_URL
+    link_rel_tokens:
+      - sponsored
+      - nofollow
+  freshness:
+    stale_price_hidden: REQUIRED
+    stale_stock_hidden: REQUIRED
+    stale_link_hidden: REQUIRED
+    od_007_safe_default_preserved: true
+  seo:
+    unique_canonical: REQUIRED
+    drafts_noindex: REQUIRED
+    sitemap_scope: PUBLISHED_ONLY
+  content_checks:
+    heading_structure: REQUIRED
+    table_relationships: REQUIRED
+    image_alt_purpose: REQUIRED
+    link_purpose: REQUIRED
+  manual_checks:
+    viewport_320_css_px: REQUIRED_NOT_EXECUTED
+    zoom_200_percent: REQUIRED_NOT_EXECUTED
+    keyboard: REQUIRED_NOT_EXECUTED
+  core_web_vitals:
+    classification: CANONICAL_TARGETS_NOT_MEASURED
+    percentile: 75
+    lcp_seconds_max: 2.5
+    inp_milliseconds_max: 200
+    cls_max: 0.1
+planned_checkpoints:
+  classification: NON_EXECUTABLE_DESCRIPTIVE_SEQUENCE
+  external_step_rule: SEPARATE_EXPLICIT_APPROVAL_REQUIRED
+  checkpoints:
+    - sequence: 1
+      period: DAYS_1_TO_3
+      objective: LOCAL_REQUIREMENTS_AND_DRAFT_STRUCTURE_REVIEW
+      external_step: false
+      execution_status: NOT_EXECUTED
+    - sequence: 2
+      period: DAYS_4_TO_7
+      objective: CANDIDATE_PLATFORM_SUBSCRIPTION_AND_DOMAIN_DECISION_GATE
+      external_step: true
+      execution_status: NOT_EXECUTED
+    - sequence: 3
+      period: DAYS_8_TO_14
+      objective: HUMAN_CONTROLLED_DRAFT_AND_REQUIREMENTS_REVIEW
+      external_step: true
+      execution_status: NOT_EXECUTED
+    - sequence: 4
+      period: DAYS_15_TO_21
+      objective: MANUAL_QUALITY_ACCESSIBILITY_AND_POLICY_REVIEW
+      external_step: true
+      execution_status: NOT_EXECUTED
+    - sequence: 5
+      period: DAYS_22_TO_30
+      objective: SEPARATELY_APPROVED_MANUAL_PUBLICATION_AND_LEARNING_REVIEW
+      external_step: true
+      execution_status: NOT_EXECUTED
+inherited_blockers:
+  open_decisions:
+    - id: OD-002
+      status: UNRESOLVED
+    - id: OD-005
+      status: UNRESOLVED
+    - id: OD-007
+      status: UNRESOLVED
+    - id: OD-008
+      status: UNRESOLVED
+    - id: OD-009
+      status: UNRESOLVED
+    - id: OD-012
+      status: UNRESOLVED
+    - id: OD-013
+      status: UNRESOLVED
+    - id: OD-015
+      status: UNRESOLVED
+  st_1703_dependencies:
+    - ST-1702
+    - ST-0906
+    - ST-1007
+    - ST-1302
+    - ST-1505
+  dependencies_promoted: false
+  story_acceptance_achieved: false
+evidence_boundary:
+  formal_suites:
+    TST-021: NOT_EXECUTED
+    TST-022: NOT_EXECUTED
+    TST-032: NOT_EXECUTED
+  live_browser_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED
+  quality_requirements_executed: false
+  effective_canonical_status: UNCHANGED
+action_boundary:
+  external_actions: []
+  provider_calls: []
+  purchases: []
+  credential_operations: []
+  domain_operations: []
+  draft_operations: []
+  publication_operations: []
+  staging_operations: []
+  release_operations: []
+  production_operations: []
+effect_boundary:
+  external_effects: []
+  provider_effects: []
+  financial_effects: []
+  publication_effects: []
+  status_effects: []
+evidence_records: []

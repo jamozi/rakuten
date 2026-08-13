@@ -1,0 +1,166 @@
+design_handoff:
+  schema: DESIGN_HANDOFF_V1
+  approval_status: PROPOSED_REQUIRES_REPOSITORY_OWNER_APPROVAL
+  approved_story: ST-1703
+  title: WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS
+
+  pro_advisory:
+    importance: gated
+    doctor_status: READY
+    run_id: 20260813T122946Z-a9d6825c4da0
+    first_capture_status: BLOCKED_PRO_REQUIRED
+    first_capture_reason_code: RESPONSE_NOT_IDENTIFIABLE
+    recovery_status: REFUSED
+    recovery_diagnostic_code: ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID
+    advice_captured: false
+    resubmitted: false
+    fallback: HUMAN_APPROVAL_REQUIRED
+
+  approved_scope:
+    - Amend only the ST-1703 Wave 3 full-object response decoder for the nested discussion object.
+    - Require discussion to be a JSON object containing comments_open and pings_open.
+    - Continue to require both approved members to be actual JSON booleans and to equal false for exact remote-state proof.
+    - Permit additional discussion members only as opaque, non-authoritative response extensions after the existing whole-response bounds, UTF-8, duplicate-key, finite-number, depth, and node-count checks pass.
+    - Discard every additional discussion member before constructing the domain MvpRemoteObject; do not interpret, retain, persist, compare, hash, print, log, project, or use its name or value.
+    - Keep unknown or missing top-level full-object members rejected and keep every non-discussion response predicate unchanged.
+    - Keep the existing preview diagnostic vocabulary stable and reserve FULL_GET_DISCUSSION_EXTRA_KEYS for predecessor evidence and invalid-artifact compatibility rather than emitting it for an otherwise valid opaque extension.
+    - Update the existing isolated Wave 3 tests, runtime manifest, changes/st-1703/README.md, and append-only ST-1703 worklog in one atomic Story slice.
+
+  source_design_refs:
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml
+      sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+      authority: APPROVED_PREDECESSOR_HANDOFF
+    - uri: repo://changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml
+      sha256: aca2af51e2571a62215c600357fb8f0ee246e8891e60d6e5afbe40d8235ee681
+      authority: APPROVED_PREDECESSOR_CONTENT
+    - uri: repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml
+      sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
+      authority: APPROVED_PREDECESSOR_OWNER_RECORD
+    - uri: repo://git/commit/347ae444ac4d8788d83e21b8e00895048e5ca5ed
+      authority: COMMITTED_VALUE_FREE_PREVIEW_DIAGNOSTICS
+    - uri: repo://git/commit/e3c2670805f32d9be06592128dd2225593318997
+      authority: COMMITTED_NESTED_RESPONSE_DIAGNOSTICS
+    - uri: repo://git/commit/bc0c6b8fc118c94e20c6df8eaa6337e7a3b64e92
+      authority: COMMITTED_DISCUSSION_RESPONSE_DIAGNOSTICS
+    - uri: https://developer.wordpress.com/docs/api/1/get/sites/%24site/posts/%24post_ID/
+      retrieved_at: '2026-08-13'
+      authority: CURRENT_OFFICIAL_WORDPRESSCOM_DOCUMENTATION
+
+  decision:
+    response_boundary: REQUIRE_APPROVED_DISCUSSION_MEMBERS_AND_IGNORE_BOUNDED_OPAQUE_EXTENSIONS
+    required_members:
+      comments_open:
+        wire_type: EXACT_JSON_BOOLEAN
+        exact_proof_value: false
+      pings_open:
+        wire_type: EXACT_JSON_BOOLEAN
+        exact_proof_value: false
+    additional_members:
+      accepted_only_after_existing_json_safety_checks: true
+      authority: NONE
+      semantic_interpretation: FORBIDDEN
+      domain_projection: FORBIDDEN
+      persistence_or_output: FORBIDDEN
+      names_or_values_in_diagnostics: FORBIDDEN
+    top_level_unknown_members: REJECT
+    missing_required_discussion_members: REJECT
+    wrong_required_discussion_member_type: REJECT
+    required_discussion_member_value_mismatch: DRIFT_OR_REFUSAL_UNCHANGED
+
+  live_evidence:
+    evidence_class: OWNER_AUTHORIZED_READ_ONLY_PROVIDER_PREVIEW
+    provider_mutation: false
+    journal_write: false
+    raw_provider_material_persisted_or_output: false
+    observations:
+      - committed_runtime: 347ae444ac4d8788d83e21b8e00895048e5ca5ed
+        result: FULL_GET_NESTED_SHAPE_INVALID
+      - committed_runtime: e3c2670805f32d9be06592128dd2225593318997
+        result: FULL_GET_DISCUSSION_SHAPE_INVALID
+      - committed_runtime: bc0c6b8fc118c94e20c6df8eaa6337e7a3b64e92
+        result: FULL_GET_DISCUSSION_EXTRA_KEYS
+    affected_fixed_operations:
+      - article-7-update
+      - page-about-create
+    unaffected_missing_operations:
+      - page-editorial-policy-create
+      - page-privacy-policy-create
+      - page-advertising-policy-create
+      - page-contact-create
+    proven_preceding_checks:
+      - fixed authenticated HTTPS GET transport
+      - HTTP 200
+      - approved JSON content type
+      - bounded strict UTF-8 duplicate-key-rejecting JSON
+      - exact top-level key set
+      - exact site ID
+      - author object shape with required ID and name members
+      - discussion object with both required member names present
+    not_proven:
+      - exact required discussion boolean types or values after the current extra-key refusal
+      - exact author display-name value
+      - exact desired or predecessor article/page state
+      - live prepare eligibility
+      - publication readiness
+
+  rationale:
+    - The official response uses one nested discussion object while the application consumes only the two safety booleans bound by the approved Wave 3 handoff.
+    - Three read-only previews prove that fixed provider responses include both required members plus one or more additional nested members for both a post and a page.
+    - Rejecting every nested extension makes the fixed integration brittle even though no extension is used for identity, safety proof, mutation, or publication authority.
+    - Enumerating uninspected provider extension names would create a brittle and falsely authoritative allowlist and would require exposing provider-learned structure without improving the two approved safety proofs.
+    - The existing JSON decoder already validates the complete response tree for size, UTF-8, duplicate keys, finite numbers, depth, node count, and supported JSON value types before the discussion boundary.
+    - Dropping the extensions at the adapter boundary preserves the domain model and prevents later code from accidentally treating them as authority.
+
+  rejected_alternatives:
+    - alternative: Keep the exact-two-key nested discussion object forever
+      reason: It blocks the approved fixed WordPress.com response even when both required safety members are present and remains incompatible with provider response extension.
+    - alternative: Discover and enumerate the current additional discussion member names and values
+      reason: The names and values are not needed for the approved proof, could drift, and would broaden collection and authority without a safety benefit.
+    - alternative: Ignore missing, wrong-typed, or non-false required discussion members
+      reason: Those members are the approved discussion safety proof and must remain exact.
+    - alternative: Permit unknown top-level response members or extensions in author, identity, URL, status, content, or publication fields under this amendment
+      reason: The live incompatibility is isolated to nested discussion extensions; broader forward compatibility is not authorized.
+    - alternative: Change fields, routes, API version, target, site, object ID, HTTP method, or transport
+      reason: The current fixed GET reaches a valid bounded response and the incompatibility is only the nested extension rule.
+    - alternative: Proceed directly to live prepare from the diagnostic preview
+      reason: A decoder amendment, exact read-only preview, separate live-prepare approval, and contemporaneous remote-writer quiescence remain required first.
+
+  constraints:
+    - Preserve domain <- application <- adapters/framework and keep all additional discussion members outside domain types.
+    - Do not add a generic JSON passthrough, provider metadata map, arbitrary field selector, runtime switch, allowlist input, or debug output.
+    - Do not access a provider extension by name except the two fixed approved required names.
+    - Do not persist or print provider bodies, member names, values, response fragments, IDs, URLs, content, hashes, headers, tokens, or raw errors.
+    - Retain the exact response size, UTF-8, duplicate-key, finite-number, depth, node-count, top-level-key, ID, author, publicize_URLs, scalar-type, URL, and application-invariant checks.
+    - Retain the exact fixed provider origin, target origin, site, operation order, routes, queries, fields, timeouts, TLS, proxy rejection, no redirect, and one-attempt behavior.
+    - Retain prepare's exact baseline/desired comparison, immutable journal, INTENT-before-POST, no-resend, readback, and ambiguity behavior.
+    - Retain publication_authority NONE and every manual identity, legal, affiliate, rendered-review, publication, formal-test, staging, release, revenue, and Production gate.
+
+  security_and_approval_gates:
+    - Repository-owner implementation approval must cite the exact SHA-256 of this Wave 3A handoff.
+    - Approval of this handoff authorizes only implementation, local tests, one new atomic commit, and exactly one post-commit read-only preview through the existing argument-free wordpresscom-preview-mvp command after exact runtime-identity verification.
+    - This handoff does not authorize a live prepare, credential change, profile or site setting change, POST, publication, Production, or release.
+    - A later live prepare still requires separate explicit owner approval and a contemporaneous affirmation that every remote writer remains quiesced from the first preflight through final readback.
+    - Any failure after opaque-extension discard remains fail closed under the predecessor Wave 3 state machine.
+    - If either required discussion member is absent, duplicated at JSON parse, not an actual boolean, or not false for exact proof, no mutation is authorized.
+
+  acceptance_criteria:
+    - The full-object decoder accepts additional discussion members only when both fixed required members are present and the complete response already passed every predecessor JSON safety bound.
+    - The decoder continues to reject a non-object discussion value, either missing required member, duplicate JSON keys, and wrong required member types.
+    - Additional discussion members are absent from MvpRemoteObject and every application, journal, preview, CLI, repr, log, and persisted artifact.
+    - The application continues to prove comments_open and pings_open independently as actual false booleans.
+    - Unknown top-level members and every non-discussion predecessor-negative matrix remain rejected.
+    - Preview output remains the same closed schema and contains no dynamic provider material.
+    - Prepare, routes, transport, journal, POST budget, no-resend, publication, and human gates remain byte/behavior compatible except for the narrow decoder admission.
+    - README and append-only worklog clearly separate local implementation, read-only live preview, live mutation, formal TST/CI, staging, publication, release, revenue, and Production evidence.
+
+  required_test_evidence:
+    - Add focused decoder tests accepting one or more extra discussion members across bounded JSON scalar, object, and list shapes while projecting only the two approved booleans.
+    - Prove that extra member insertion order and names do not affect the constructed MvpRemoteObject or preview output.
+    - Retain rejection tests for non-object discussion, missing required members, duplicate keys, wrong boolean types, excessive size/depth/nodes, non-finite numbers, and unsupported JSON shapes.
+    - Retain top-level unknown-member, identity, author, URL, publicize, status, type, title/content, settings, mutation, and redaction negative matrices.
+    - Prove no domain field, exception, repr, CLI output, journal record, or persisted artifact contains an additional discussion name or value.
+    - Run the focused Wave 3 decoder/preparation/CLI suites and complete isolated ST-1703, ST-0502, and ST-0805 suites in separate pytest processes.
+    - Run pinned Ruff format/check, mypy, py_compile, bash -n, workspace drift, canonical import, runtime-manifest no-write, exact source-hash, staged-path, diff, and bounded sensitive-data gates.
+    - Keep the one authorized post-commit read-only live preview distinct from local tests and keep live prepare/formal TST/CI/staging/publication/release/Production unexecuted until separately authorized.
+
+  open_decisions: []

@@ -1,0 +1,52 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1703
+  slice_id: ST1703_LOW_COST_PUBLICATION_PILOT_V1
+  handoff_uri: repo://changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml
+  handoff_bytes: 13776
+  handoff_sha256: 4730d8de3eb11cccd76081a34da4d55b2e7070467d53b7bdacd3fb95baa976a6
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST1703_LOW_COST_PUBLICATION_PILOT_V1_REPOSITORY_LOCAL_ONLY
+  approved_by: repository_owner
+  approved_on: '2026-08-13'
+  approval_observation: CONNECTED_CONVERSATION
+  exact_proposal:
+    text: 30日パイロットでは、WordPress.com Personalを唯一の公開基盤、Codex＋Gitを記事作成・品質管理基盤とする。OpenAI API、AWS、Cloudflare Pages、独自Admin/API/Workerは保留。既存ChatGPT契約を除く外部費上限は月2,000円。CodexはDraft作成と検証のみで、公開は人手に限定する。
+    utf8_bytes: 342
+    sha256: 131534a5c035096a3e18abbc1e82f9937b50cd7d3c84e4a3fc413d52e57b6a5b
+  exact_owner_response:
+    text: 承認
+    utf8_bytes: 6
+    sha256: 5d103c64a39b8ac1e10c8a7038fa6d780ed1d1b205e071e2b52236f9540f59a6
+  semantic_approval_and_serialization:
+    proposal_semantics_approved_before_handoff_serialization: true
+    later_handoff_bytes_role: FAITHFUL_IMPLEMENTATION_SERIALIZATION_ONLY
+    later_handoff_bytes_add_decision: false
+    self_approval_binding: NOT_PRESENT_NO_CIRCULAR_APPROVAL
+  exact_base:
+    commit: 0d6286ad19fe3a30599359a33b2409b64ae00f1f
+    tree: 3b84020ed4c3aa232e2755ebf9e4607fa02a44e1
+  wave3_bindings:
+    handoff_sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+    approval_sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
+    runtime_manifest_sha256: ac5f80152c846df3be09b90a28a0bd5ca93f2e165807b9fcb50ca7eb569c908c
+  canonical_reconciliation: PASS_SAFE_DEFAULTS_AND_BLOCKERS_RETAINED
+  open_decisions: []
+  boundaries:
+    repository_local_architecture_and_governance: AUTHORIZED
+    purchase: NOT_AUTHORIZED
+    credentials: NOT_AUTHORIZED
+    wordpresscom_api_calls: NOT_AUTHORIZED
+    wordpresscom_drafts: NOT_AUTHORIZED
+    publication: NOT_AUTHORIZED
+    custom_domain: NOT_AUTHORIZED
+    external_writes: NOT_AUTHORIZED
+    openai_api_activation: NOT_AUTHORIZED
+    aws_activation: NOT_AUTHORIZED
+    cloudflare_activation: NOT_AUTHORIZED
+    browser: NOT_AUTHORIZED
+    staging: NOT_AUTHORIZED
+    release: NOT_AUTHORIZED
+    production: NOT_AUTHORIZED
+    formal_tst_021: NOT_EXECUTED
+    formal_tst_022: NOT_EXECUTED
+    formal_tst_032: NOT_EXECUTED

@@ -1,0 +1,82 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1703
+  slice_id: ST1703_ORIGIN_MAIN_INTEGRATION_V3
+  handoff_uri: repo://changes/st-1703/origin-main-integration/DESIGN_HANDOFF_V1_ST1703_ORIGIN_MAIN_INTEGRATION_V3.yaml
+  handoff_bytes: 46856
+  handoff_sha256: 94e21a08ca051cf66c4c635c9e018b9db313ac649fd2b0c2461d16712a80daba
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: EXACT_CLOSED_REPOSITORY_LOCAL_V3_SLICE_ONLY
+  approved_by: repository_owner:jamozi
+  observed_at: '2026-08-13T16:31:05Z'
+  message_authored_at: NOT_SUPPLIED
+  approval_observation: CONNECTED_CONVERSATION_VISIBLE_USER_MESSAGE
+  exact_received_user_message: |-
+    SHA-256
+      94e21a08ca051cf66c4c635c9e018b9db313ac649fd2b0c2461d16712a80
+      daba の ST1703_ORIGIN_MAIN_INTEGRATION_V3 handoff を承認しま
+      す。
+  exact_received_user_message_utf8_bytes: 148
+  exact_received_user_message_sha256: e25ac5305876a7f88903d576b97b58f19dea4143e76431f959cbb61f8b8e410b
+  sha256_token_validation:
+    extraction: REMOVE_ONLY_ASCII_WHITESPACE_FROM_THE_TWO_DISPLAY_WRAPPED_SHA256_FRAGMENTS
+    whitespace_removed_token: 94e21a08ca051cf66c4c635c9e018b9db313ac649fd2b0c2461d16712a80daba
+    token_length: 64
+    exact_handoff_sha256_match: true
+  normalized_semantic_statement: SHA-256 94e21a08ca051cf66c4c635c9e018b9db313ac649fd2b0c2461d16712a80daba の ST1703_ORIGIN_MAIN_INTEGRATION_V3 handoff を承認します。
+  normalized_semantic_statement_utf8_bytes: 140
+  normalized_semantic_statement_sha256: 2b298e21348776bf06ad075c7bc227f14f7892796528dbc603f658513d031fb8
+  normalization:
+    sha256_display_wrap_joined: true
+    sentence_display_wrap_joined: true
+    display_indentation_removed: true
+    other_text_change: false
+    semantic_delta: NONE
+  exact_target:
+    branch: codex/st-1703-origin-main-integration
+    commit: acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d
+    tree: 85620e53419b65e3053e4454c6c1cb522de4459b
+    origin_main_equal_at_approval_observation: true
+  exact_source:
+    commit: ca5ff2e419ffc07239b4c551146dd66b01489cc3
+    tree: 53071f15d7dffc859e8e83e48531114069a0fb25
+    range_parent: 290cb2e71b9b310e59500c5643fef4296c877f3f
+    merge_base: 317561ba2f56e9e9c55d65f24df13db3dc3fa77d
+  exact_range:
+    commit_count: 9
+    final_path_count: 73
+    patch_bytes: 1153555
+    patch_sha256: 46b5235bd50ec0db8d37ddadbc9924c22db55d7c1c5db2f4293f38b3579cd68e
+    inventory_bytes: 16790
+    inventory_sha256: e3e642125a01e964f1849b181a727a184ae164196e7a96e8bc4247b527ebed3f
+  authorized_file_cut:
+    exact_imported_path_count: 73
+    exact_mutable_imported_path_count: 8
+    exact_byte_identical_imported_path_count: 65
+    additional_new_path_count: 1
+    additional_new_path: changes/st-1703/origin-main-integration/DESIGN-HANDOFF-APPROVAL-ST1703-ORIGIN-MAIN-INTEGRATION-V3.yaml
+    all_other_paths: PROTECTED
+  historical_authority:
+    V1_semantic_delta: NONE
+    V2_semantic_delta: NONE
+    wave3a_nonexistent_commit_references: UNRESOLVED_NO_AUTHORITY
+    object_drift_separate_exact_hash_bound_approval: ABSENT_NO_RETROACTIVE_AUTHORITY
+  open_decisions: []
+  boundaries:
+    exact_repository_local_import_and_reconciliation: AUTHORIZED
+    local_commit: NOT_AUTHORIZED_REQUIRES_EXACT_REVIEWED_DIFF_OWNER_AUTHORITY
+    push: NOT_AUTHORIZED_REQUIRES_SEPARATE_EXTERNAL_WRITE_AUTHORITY
+    pull_request: NOT_AUTHORIZED_REQUIRES_SEPARATE_EXTERNAL_WRITE_AUTHORITY
+    canonical_or_status_mutation: NOT_AUTHORIZED
+    credentials_or_secrets: NOT_AUTHORIZED
+    browser_or_network: NOT_AUTHORIZED
+    provider_or_wordpresscom_call: NOT_AUTHORIZED
+    draft_or_journal_operation: NOT_AUTHORIZED
+    external_write: NOT_AUTHORIZED
+    purchase: NOT_AUTHORIZED
+    publication: NOT_AUTHORIZED
+    staging: NOT_AUTHORIZED
+    release: NOT_AUTHORIZED
+    production: NOT_AUTHORIZED
+    formal_tst_021: NOT_EXECUTED
+    formal_tst_022: NOT_EXECUTED
+    formal_tst_032: NOT_EXECUTED

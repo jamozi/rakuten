@@ -1,0 +1,78 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1703
+  slice_id: ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2
+  handoff_uri: repo://changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2.yaml
+  handoff_bytes: 28414
+  handoff_sha256: ff75d76479a6ebf85061e54529c0896cd1a203d8f1ab0d01655ecc18dc91a6db
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2_REPOSITORY_LOCAL_ONLY
+  approved_by: repository_owner:jamozi
+  observed_at: '2026-08-13T15:23:30Z'
+  message_authored_at: NOT_SUPPLIED
+  approval_observation: CONNECTED_CONVERSATION_VISIBLE_USER_MESSAGE
+  visible_user_rendering: |-
+    > SHA-256
+      > ff75d76479a6ebf85061e54529c0896cd1a203d8f1ab0d01655ecc18dc
+      > 91a6db の
+      > ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2
+      > handoff を承認します。
+  visible_user_rendering_utf8_bytes: 177
+  visible_user_rendering_sha256: b8d7a96d309ecfe589e66efd6a2079ff0939e3845abc3feeb3cbabfb99eb4fd6
+  normalized_semantic_statement: SHA-256 ff75d76479a6ebf85061e54529c0896cd1a203d8f1ab0d01655ecc18dc91a6db の ST1703_LOW_COST_PUBLICATION_PILOT_RECONCILIATION_V2 handoff を承認します。
+  normalized_semantic_statement_utf8_bytes: 158
+  normalized_semantic_statement_sha256: 0ad5451f4c9608ae91de1453464d590cb7682ac4141062c3895c87649eb3b539
+  normalization:
+    display_markdown_quote_markers_removed: true
+    display_line_wrapping_joined: true
+    other_text_change: false
+    semantic_delta: NONE
+  exact_target:
+    commit: 6c014bee7004a9f1dfa726686b91f436fc9cd2f7
+    tree: 9a1824f948b0bceb416417bfedaf101f1a452ebf
+  exact_v1_source:
+    commit: e554148349b93c8d790e7d38da467569c5badafc
+    tree: 8031b0854a35b643b6bd13c877f9eae525f054f1
+    parent_commit: 0d6286ad19fe3a30599359a33b2409b64ae00f1f
+    parent_tree: 3b84020ed4c3aa232e2755ebf9e4607fa02a44e1
+    exact_path_count: 11
+  current_wave3_runtime_manifest:
+    uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+    bytes: 5656
+    sha256: 8cf00ace6e2988c3bfb7969f13cfec0786137077c1319be4b043c4b762b5fba9
+    authority: COMMITTED_RUNTIME_METADATA_ONLY
+  historical_v1_runtime_manifest_binding:
+    bytes: 5156
+    sha256: ac5f80152c846df3be09b90a28a0bd5ca93f2e165807b9fcb50ca7eb569c908c
+    mutation_or_silent_repin: FORBIDDEN
+    git_object_as_current_filesystem_substitute: FORBIDDEN
+  semantic_delta_from_approved_v1: NONE
+  preserved_authority_gaps:
+    wave3a_invalid_embedded_commit_references: UNRESOLVED_NOT_REPAIRED_OR_APPROVED
+    object_drift_separate_exact_hash_bound_approval: ABSENT_NOT_RETROACTIVELY_APPROVED
+    wave3_authority_promotion: NONE
+  authorized_file_cut:
+    exact_v1_import_path_count: 11
+    byte_identical_v1_path_count: 6
+    mutable_v1_path_count: 5
+    additional_new_path_count: 1
+    additional_new_path: changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-RECONCILIATION-v2.yaml
+    all_other_paths: PROTECTED
+  open_decisions: []
+  boundaries:
+    repository_local_reconciliation_implementation: AUTHORIZED
+    v1_semantic_change: NOT_AUTHORIZED
+    wave3_or_wave3a_change: NOT_AUTHORIZED
+    canonical_status_evidence_or_worklog_change: NOT_AUTHORIZED
+    purchase: NOT_AUTHORIZED
+    credentials_or_secrets: NOT_AUTHORIZED
+    browser_or_network: NOT_AUTHORIZED
+    provider_or_wordpresscom_call: NOT_AUTHORIZED
+    draft_or_journal_operation: NOT_AUTHORIZED
+    external_write: NOT_AUTHORIZED
+    staging: NOT_AUTHORIZED
+    publication: NOT_AUTHORIZED
+    release: NOT_AUTHORIZED
+    production: NOT_AUTHORIZED
+    formal_tst_021: NOT_EXECUTED
+    formal_tst_022: NOT_EXECUTED
+    formal_tst_032: NOT_EXECUTED
