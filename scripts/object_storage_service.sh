@@ -130,14 +130,21 @@ validate_config_file() {
   fi
 }
 
+normalize_bounded_port() {
+  local candidate=$1
+  if [[ ! $candidate =~ ^[0-9]{1,5}$ ]] || \
+    ((10#$candidate < 1024 || 10#$candidate > 65535)); then
+    return 1
+  fi
+  printf -v "$2" '%d' "$((10#$candidate))"
+}
+
 validate_port() {
   local candidate=$1
-  if [[ ! $candidate =~ ^[0-9]+$ ]] || \
-    ((10#$candidate < 1024 || 10#$candidate > 65535)); then
+  if ! normalize_bounded_port "$candidate" object_storage_port; then
     error 'RAOS_OBJECT_STORAGE_PORT must be a decimal integer from 1024 through 65535'
     return 64
   fi
-  object_storage_port=$((10#$candidate))
 }
 
 run_docker() {
@@ -267,6 +274,7 @@ assert_service() {
   local image_license
   local image_source
   local published
+  local observed_published_port
   local port_inventory
   local process_uid
   local version_output
@@ -315,11 +323,11 @@ assert_service() {
 
   published=$(compose "$project" port object-storage 8333)
   if [[ ! $published =~ ^127\.0\.0\.1:([0-9]+)$ ]] || \
-    ((10#${BASH_REMATCH[1]} < 1024 || 10#${BASH_REMATCH[1]} > 65535)); then
+    ! normalize_bounded_port "${BASH_REMATCH[1]}" observed_published_port; then
     error 'the S3 endpoint is not published on one bounded loopback port'
     return 1
   fi
-  published_port=$((10#${BASH_REMATCH[1]}))
+  published_port=$observed_published_port
   port_inventory=$(run_docker port "$container_id")
   if [[ $port_inventory != "8333/tcp -> 127.0.0.1:$published_port" ]]; then
     error 'the object-storage container publishes an unexpected host port'
@@ -423,6 +431,9 @@ if [[ ! -x /usr/bin/python3 || ! -f /usr/bin/python3 ]]; then
 fi
 
 docker_config_dir=$(mktemp -d "${TMPDIR:-/tmp}/raos-st0202-docker-config.XXXXXXXX")
+if [[ $command == test ]]; then
+  object_storage_port=0
+fi
 validate_docker_client
 
 if [[ $command == test ]]; then
@@ -430,7 +441,6 @@ if [[ $command == test ]]; then
   config_file=$test_directory/object-storage-s3-config.json
   run_fixture create-config --output "$config_file" >/dev/null
   validate_config_file "$config_file"
-  object_storage_port=''
   cleanup_project="raos-st0202-test-$(id -u)-$$-$RANDOM"
   cleanup_volume=true
   assert_compose_model "$cleanup_project"

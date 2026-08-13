@@ -50,17 +50,17 @@ source_artifacts:
   bytes: 7152
   sha256: 389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c
 - uri: repo://changes/st-0202/README.md
-  bytes: 5874
-  sha256: 9b865af6da33c61a889523eb42e28c3551205358111c9c59c8355b58e3adc5c3
+  bytes: 6681
+  sha256: 0c681333ca9cb8fdeabe1bb815659f8de5af78b0a771a562b52038beebe7b4d2
 - uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
   bytes: 9112
   sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
 - uri: repo://docs/execplans/ST-0202.md
-  bytes: 5367
-  sha256: 19da203002f9135e38024b41edee5b328a8120bf08fa09b9991ef201dc4c8f1b
+  bytes: 6118
+  sha256: f2928cc7d7953d303c63729c0a32d5ab33546abface6f390151e901317ad9bf3
 - uri: repo://docs/worklogs/ST-0202.md
-  bytes: 4843
-  sha256: 77c8af5c7930f5c0acdca26f29bcd6ba4f515bcb1097afbea72b8f7c4d56b476
+  bytes: 6094
+  sha256: 7424ab6a4697684223f5a9b7378773f3b5e6744cba459029100b64aec2c437c8
 - uri: repo://changes/st-0201/manifest.yaml
   bytes: 5607
   sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
@@ -74,8 +74,8 @@ source_artifacts:
   bytes: 12609
   sha256: 0ff924b0dea696db0117035c0077a77053d8724c76796866263163bb18b9e1fb
 - uri: repo://scripts/object_storage_service.sh
-  bytes: 15876
-  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
+  bytes: 16088
+  sha256: 5e521a6187ea7e7bea90b45cd617bb0586394f454b059a633eaac2d03a729d3b
 - uri: repo://scripts/object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -107,8 +107,8 @@ source_artifacts:
   bytes: 12407
   sha256: d9a93f73b435932a8e1fb6291e1aa6bef5680daf9801424fce47b2d82a2cf6ce
 - uri: repo://tests/st0202/test_wrapper.py
-  bytes: 14300
-  sha256: 04636e3a2b0968ee337db788a7ac772f290006a2cc98fc4921617f80013764e6
+  bytes: 16434
+  sha256: e53f867f5c5d1eed1ce8ca1e92b6ff9fb33fdefef30f643175263181ea9174e4
 - uri: repo://.github/workflows/ci.yml
   bytes: 19528
   sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
@@ -117,7 +117,7 @@ source_artifacts:
   sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: 88e3fc4362e7de81ff53008d53285c73f470df3ce9804154bccac6f0c60f86a0
+  sha256: 9332940b39ceded7a5f51e65f7daa92916a3278547079c5906abe95c570cc04c
 - uri: repo://tests/st0106/test_workflow_contract.py
   bytes: 26006
   sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
@@ -131,11 +131,11 @@ source_artifacts:
   bytes: 40758
   sha256: 6973e46dfd9c2aeb7d93f53b43fbb070249ddf89857b44ee726eb768250475cb
 - uri: repo://Makefile
-  bytes: 31323
-  sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
+  bytes: 31909
+  sha256: 97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34
 - uri: repo://README.md
-  bytes: 57509
-  sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
+  bytes: 58459
+  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://docker-compose.yml

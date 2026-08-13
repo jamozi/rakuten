@@ -43,6 +43,8 @@ mode = {mode!r}
 log = Path({str(log)!r})
 args = sys.argv[1:]
 config_path = os.environ.get("RAOS_OBJECT_STORAGE_S3_CONFIG_FILE", "")
+requested_port = os.environ.get("RAOS_OBJECT_STORAGE_PORT", "")
+published_port = "49123" if requested_port == "0" else (requested_port or "49123")
 metadata = None
 if config_path and Path(config_path).is_file():
     item = Path(config_path).stat()
@@ -98,11 +100,10 @@ if payload[:2] == ["image", "inspect"]:
         print("https://example.invalid" if mode == "wrong_labels" else "https://github.com/seaweedfs/seaweedfs")
     raise SystemExit(0)
 if payload and payload[0] == "port":
-    port = os.environ.get("RAOS_OBJECT_STORAGE_PORT") or "49123"
     if mode == "extra_port":
-        print(f"8333/tcp -> 127.0.0.1:{{port}}\\n9333/tcp -> 0.0.0.0:9333")
+        print(f"8333/tcp -> 127.0.0.1:{{published_port}}\\n9333/tcp -> 0.0.0.0:9333")
     else:
-        print(f"8333/tcp -> 127.0.0.1:{{port}}")
+        print(f"8333/tcp -> 127.0.0.1:{{published_port}}")
     raise SystemExit(0)
 if not payload or payload[0] != "compose":
     print("unexpected Docker operation", file=sys.stderr)
@@ -124,8 +125,17 @@ elif operation == "ps" and "--services" in payload:
 elif operation == "ps" and "--quiet" in payload:
     print("a" * 64)
 elif operation == "port":
-    port = os.environ.get("RAOS_OBJECT_STORAGE_PORT") or "49123"
-    print("0.0.0.0:" + port if mode == "public_port" else "127.0.0.1:" + port)
+    if mode == "low_assigned_port":
+        published_port = "1023"
+    elif mode == "high_assigned_port":
+        published_port = "65536"
+    elif mode == "overflow_assigned_port":
+        published_port = "18446744073709559949"
+    print(
+        "0.0.0.0:" + published_port
+        if mode == "public_port"
+        else "127.0.0.1:" + published_port
+    )
 elif operation == "exec" and "/usr/bin/weed" in payload:
     print("version 8000GB 4.28 bad linux amd64" if mode == "wrong_version" else "version 8000GB 4.29 1355c7a linux amd64")
 elif operation == "exec" and "/bin/sh" in payload:
@@ -268,6 +278,8 @@ def test_config_uses_fixed_local_transport_and_passes_only_secret_path(
     assert "--project-name" in config["argv"]
     assert "raos-st0202-local" in config["argv"]
     assert config["config_metadata"]["mode"] == "0o600"
+    assert config["port"] == "58333"
+    assert all(row["port"] != "0" for row in rows)
 
 
 def test_wrapper_rejects_compose_or_fixture_digest_drift_before_docker(
@@ -320,6 +332,29 @@ def test_disposable_test_targets_only_object_service_and_removes_volume(
         "acceptance",
     ]
     assert all(row["raw_credentials_present"] is False for row in rows)
+    assert {row["port"] for row in rows if row["port"] is not None} == {"0"}
+    compose_port = next(row for row in rows if _compose_operation(row) == "port")
+    assert compose_port["port"] == "0"
+    container_port = next(row for row in rows if row["argv"][2:3] == ["port"])
+    assert container_port["port"] == "0"
+
+
+@pytest.mark.parametrize(
+    "mode", ["low_assigned_port", "high_assigned_port", "overflow_assigned_port"]
+)
+def test_disposable_random_port_must_resolve_to_bounded_loopback_port(
+    tmp_path: Path, mode: str
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path, mode)
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode != 0
+    assert "not published on one bounded loopback port" in result.stderr
+    rows = _rows(log)
+    assert {row["port"] for row in rows if row["port"] is not None} == {"0"}
+    down = [row for row in rows if _compose_operation(row) == "down"]
+    assert len(down) == 1
+    assert "--volumes" in down[0]["argv"]
 
 
 @pytest.mark.parametrize(
@@ -357,10 +392,15 @@ def test_unreviewed_compose_service_is_rejected(tmp_path: Path) -> None:
 
 
 def test_invalid_port_mode_and_symlink_are_rejected(tmp_path: Path) -> None:
-    docker, _log = _fake_docker(tmp_path)
+    docker, log = _fake_docker(tmp_path)
     result = _run(WRAPPER, docker, "config", tmp_path, port="8333x")
     assert result.returncode == 64
     assert "decimal integer" in result.stderr
+
+    result = _run(WRAPPER, docker, "config", tmp_path / "zero-port", port="0")
+    assert result.returncode == 64
+    assert "decimal integer from 1024 through 65535" in result.stderr
+    assert all(row["port"] != "0" for row in _rows(log))
 
     weak = _identity(tmp_path / "weak")
     weak.chmod(0o640)
@@ -374,6 +414,17 @@ def test_invalid_port_mode_and_symlink_are_rejected(tmp_path: Path) -> None:
     result = _run(WRAPPER, docker, "config", tmp_path, config_path=link)
     assert result.returncode == 69
     assert "non-symlinked" in result.stderr
+
+
+@pytest.mark.parametrize("port", ["65536", "18446744073709559949"])
+def test_out_of_range_fixed_port_is_rejected_before_compose(
+    tmp_path: Path, port: str
+) -> None:
+    docker, log = _fake_docker(tmp_path)
+    result = _run(WRAPPER, docker, "config", tmp_path, port=port)
+    assert result.returncode == 64
+    assert "decimal integer from 1024 through 65535" in result.stderr
+    assert all(row["port"] != port for row in _rows(log))
 
 
 def test_failed_disposable_start_still_attempts_volume_cleanup(tmp_path: Path) -> None:
