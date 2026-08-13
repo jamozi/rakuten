@@ -1,0 +1,487 @@
+{
+  "document": {
+    "schema_version": "1.0.0",
+    "story_id": "ST-1303",
+    "classification": "SOURCE_DERIVED_NONEXECUTABLE_ATTRIBUTION_ENGINE_REFERENCE_PLAN",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "executable": false,
+    "activation": false,
+    "runtime_eligible": false,
+    "authority": "NOT_GRANTED",
+    "decision": "NOT_READY",
+    "story_acceptance": false,
+    "production_eligible": false,
+    "approval": null,
+    "canonical_status": "UNCHANGED"
+  },
+  "authority": {
+    "canonical_story": {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "story_id": "ST-1303"
+    },
+    "integration_precedence": {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    "requirement": {
+      "path": "docs/canonical/00_master/RAOS_master_traceability_v1.0.csv",
+      "sha256": "7e9b9bf17582eae90a827fede5d5bab511a0411a50fbfe071fad73e0d11ccbf4",
+      "required_id": "FR-013"
+    },
+    "open_decision": {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+      "required_id": "OD-003",
+      "required_status": "EXTERNAL_EVIDENCE_REQUIRED",
+      "blocking": true
+    },
+    "inherited_privacy_decision": {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+      "required_id": "OD-012",
+      "required_status": "HUMAN_DECISION_REQUIRED",
+      "blocking": true,
+      "safe_default": "NONESSENTIAL_TRACKING_DISABLED"
+    },
+    "authority_kind": "SOURCE_DERIVED_REFERENCE_ONLY",
+    "changes_canonical_status": false
+  },
+  "provenance": {
+    "source_contract": "repo://changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml",
+    "source_contract_sha256": "61afa77ec458604890e92e7dc1e60db47ad335f92bc4c83240ea8dd8a9a6ea62",
+    "source_contract_model_sha256": "aa27a1f613a1576b2623e32b7bd8c0d9bf9a8f2087ada07e8714d9a922b4d7f0",
+    "generated_by": "repo://scripts/build_st1303_attribution_engine_reference_plan.py",
+    "generation_command": "/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen --offline --no-cache --no-sync --no-env-file python scripts/build_st1303_attribution_engine_reference_plan.py",
+    "implementation_helper": {
+      "uri": "repo://scripts/build_st1505_staging_deployment.py",
+      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    }
+  },
+  "dependency_bindings": {
+    "st1202": {
+      "story_id": "ST-1202",
+      "feature_commit": "9b67e60482ce6ab597559927ffbe5bbecacff902",
+      "artifact_binding_commit": "9b67e60482ce6ab597559927ffbe5bbecacff902",
+      "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
+      "artifacts": {
+        "changes/st-1202/README.md": "5ba96d4dd41115e3af0bc37703eb011defaff9eb681422093d126bf1338a8bba",
+        "packages/web-ui/src/public-event-instrumentation.ts": "3d5e96e34383349dbc106d370e18c21a7c31c2a4fe795446a8932e981da0ff39",
+        "packages/web-ui/src/index.ts": "5298f70c3697e713f73eeb31ac4972b01e854ee34002700c4509e96d9b20cd79",
+        "tests/st1202/public-event-instrumentation-contract.test.ts": "f19a47768d62e0cef8da208f6f20e8ac2806a1f1c6d3552e311ff721c982df6b",
+        "tests/st1202/public-event-instrumentation-model.test.ts": "be590bbb18e0af6012b440fc9a25e1d208f0f00fb875a5a08141330c4f674d9c",
+        "tests/st1202/public-event-instrumentation-boundaries.test.ts": "2c20d25c12bf61d52768fd176ea5f27206e6e9d1d3099bdd037f02b09abde922",
+        "tests/st1202/public-event-instrumentation-negative.test.ts": "3c9ead34e0e5ad5acc8f3e8688e1daa0b89ebdf94b2e4d315519bb6cac73ebbd"
+      },
+      "required_semantics": {
+        "classification": "UNREGISTERED_DISABLED_HEADLESS_ST1202_PUBLIC_EVENT_INSTRUMENTATION_REQUIREMENTS_CANDIDATE",
+        "event_requirement_ids": [
+          "EVT-001",
+          "EVT-002",
+          "EVT-003",
+          "EVT-004",
+          "EVT-006",
+          "EVT-012"
+        ],
+        "trigger_selection": "NOT_EVALUATED",
+        "identity_selection": "NOT_EVALUATED",
+        "value_selection": "NOT_EVALUATED",
+        "threshold_selection": "NOT_EVALUATED",
+        "transport_selection": "NOT_EVALUATED",
+        "collector_selection": "NOT_EVALUATED",
+        "instrumentation_implemented": false,
+        "emission_enabled": false,
+        "consent_eligibility": "NOT_EVALUATED",
+        "session_pseudonym": null,
+        "event_instances": [],
+        "actions": [],
+        "effects": []
+      }
+    },
+    "st1302": {
+      "story_id": "ST-1302",
+      "feature_commit": "8bee74745841c7ccd80fd0c3ad86232ab6bdddf0",
+      "artifact_binding_commit": "c4e1a17678e295e853caeab660470369cdcf6c55",
+      "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
+      "artifacts": {
+        "changes/st-1302/README.md": "849012183858a454ee20b504b695202e798d38dfde95704e077abf5709d14218",
+        "changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml": "9ec4bc5b267091b33a7befd9526d1eaaba57eb29372b39513722ca33eace585a",
+        "changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json": "42eb6143694238d75981c1635bb698fb7e85df43ea2717db55ddd354ce5007f3",
+        "changes/st-1302/manifest.yaml": "7f4316fe3502fe8b1383826566bc6db1f02a2b6339ecb178dcaef8d1c65cdfb1",
+        "scripts/build_st1302_provider_fact_commit_reference_plan.py": "18e6d2d3970245f96a9550703575873ec93b5bce6e7ad32256d5a043d1c09ca5",
+        "tests/st1302/conftest.py": "2ee8fd7b038097a4457c6886343e0908b88a0b406186bd7f806c1755011875ab",
+        "tests/st1302/test_contract.py": "ca2c055f6e155a8bf8ccb8a199a7b4e84daee5f73ef57680d1fdf0196563a955",
+        "tests/st1302/test_generation.py": "3eb59e0e5f4a297867b6505e41a92abfdece837812f88437fcdd38055d4c9055",
+        "tests/st1302/test_negative_cases.py": "61b41087a83acca1f5d22490841ae928ad6d74ed8550e36db822ad0dc4c6f32c"
+      },
+      "required_semantics": {
+        "classification": "SOURCE_DERIVED_NONEXECUTABLE_PROVIDER_FACT_COMMIT_REFERENCE_PLAN",
+        "executable": false,
+        "authority": "NOT_GRANTED",
+        "decision": "NOT_READY",
+        "mapping": "UNVERIFIED",
+        "provider_facts": [],
+        "provider_fact_count": null,
+        "amount_total_jpy": null,
+        "persistence": "NOT_EXECUTED",
+        "facts": "NOT_CREATED",
+        "commit_capability": "ABSENT"
+      }
+    }
+  },
+  "source_bindings": [
+    {
+      "name": "attribution_design",
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+      "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460"
+    },
+    {
+      "name": "attribution_policy",
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml",
+      "sha256": "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c"
+    },
+    {
+      "name": "event_catalog",
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml",
+      "sha256": "b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa"
+    },
+    {
+      "name": "kpi_catalog",
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
+      "sha256": "f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2"
+    },
+    {
+      "name": "test_catalog",
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "name": "security_design",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+      "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+    },
+    {
+      "name": "data_classification",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml",
+      "sha256": "59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0"
+    },
+    {
+      "name": "security_controls",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "name": "threat_register",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
+      "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+    },
+    {
+      "name": "rbac_matrix",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+      "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+    },
+    {
+      "name": "st0305_catalog",
+      "uri": "repo://changes/st-0305/generated/publication-analytics-finance-catalog.v1.json",
+      "sha256": "0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61"
+    },
+    {
+      "name": "st0308_persistence_plan",
+      "uri": "repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json",
+      "sha256": "ea9a06b4ee865889805b23a3626c09f95654a0655adb4ac955b25027e01e995e"
+    },
+    {
+      "name": "revenue_row_schema",
+      "uri": "repo://contracts/raos-v0.4/contracts/schemas/imports/revenue-canonical-row.schema.json",
+      "sha256": "02bc3d854a7420a74a8b302342a9ad0e23cfe4529565716a185c333b43ebbff8"
+    },
+    {
+      "name": "job_catalog",
+      "uri": "repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml",
+      "sha256": "70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1"
+    }
+  ],
+  "canonical_constraints": {
+    "attribution_classes": [
+      {
+        "code": "PROVIDER_FACT",
+        "basis": "IMMUTABLE_PROVIDER_SOURCE",
+        "confidence": 1.0
+      },
+      {
+        "code": "DIRECT",
+        "basis": "VERIFIABLE_PROVIDER_KEY_UNIQUELY_LINKS_ARTICLE_OR_CTA",
+        "confidence": "PROVIDER_DEPENDENT"
+      },
+      {
+        "code": "ESTIMATED",
+        "basis": "NON_OFFICIAL_ESTIMATE",
+        "confidence_required": true,
+        "confidence_range": [
+          0.0,
+          1.0
+        ]
+      },
+      {
+        "code": "UNATTRIBUTED",
+        "basis": "INSUFFICIENT_SIGNAL_REMAINS_UNATTRIBUTED",
+        "confidence": 0.0
+      }
+    ],
+    "estimation_narrative": {
+      "status": "PROVISIONAL_PENDING_REAL_REPORT_SAMPLE",
+      "same_site_provider_time_bucket": true,
+      "proportional_eligible_click_weight": true,
+      "method_version_required": true,
+      "input_hash_required": true,
+      "confidence_required": true,
+      "reason_required": true,
+      "executable_selection": false
+    },
+    "conservation": {
+      "required": true,
+      "provider_total_basis": null,
+      "tolerance": null,
+      "rounding": null
+    },
+    "prohibited_inputs": [
+      "raw_ip",
+      "fingerprinting",
+      "invented_user_identity",
+      "commission_rate_as_editorial_signal"
+    ],
+    "public_event_requirement_ids": [
+      "EVT-001",
+      "EVT-002",
+      "EVT-003",
+      "EVT-004",
+      "EVT-006",
+      "EVT-012"
+    ],
+    "attribution_run_event": {
+      "id": "EVT-018",
+      "event_name": "attribution_run_completed",
+      "source": "worker",
+      "parameters": [
+        "run_id",
+        "method_version",
+        "direct_count",
+        "estimated_count",
+        "unattributed_count"
+      ],
+      "implementation_status": "NOT_STARTED",
+      "runtime_verification": "NOT_EXECUTED"
+    },
+    "storage_shape": {
+      "table": "analytics.attribution_estimate",
+      "classification": "RESTRICTED",
+      "attribution_types": [
+        "DIRECT",
+        "ESTIMATED",
+        "UNATTRIBUTED"
+      ],
+      "allocation_ratio_range": [
+        0,
+        1
+      ],
+      "confidence_column_range": [
+        0,
+        100
+      ],
+      "confidence_unit_mapping": null,
+      "statuses": [
+        "PROPOSED",
+        "APPROVED",
+        "REJECTED",
+        "SUPERSEDED"
+      ],
+      "retention_class": "FINANCE_7Y_PROVISIONAL",
+      "retention_policy": null
+    }
+  },
+  "selection_boundary": {
+    "state": "NOT_EVALUATED",
+    "method_version": null,
+    "input_hash": null,
+    "identity_mapping": null,
+    "event_provider_link": null,
+    "direct_provider_key": null,
+    "session_pseudonym": null,
+    "consent_eligibility": "NOT_EVALUATED",
+    "event_eligibility": "NOT_EVALUATED",
+    "eligible_click_rule": null,
+    "lookback_window": null,
+    "time_bucket": null,
+    "timezone": null,
+    "article_active_window": null,
+    "provider_timestamp_rule": null,
+    "weight_rule": null,
+    "confidence_rule": null,
+    "confidence_scale_mapping": null,
+    "conservation_basis": null,
+    "conservation_tolerance": null,
+    "rounding_policy": null,
+    "remainder_policy": null,
+    "tie_breaker": null,
+    "correction_policy": null,
+    "supersession_policy": null,
+    "run_id": null,
+    "run_timestamp": null,
+    "source_watermarks": null,
+    "job_type": null,
+    "persistence_policy": null,
+    "repository": null,
+    "unit_of_work": null,
+    "transaction": null,
+    "approval_policy": null,
+    "retention_policy": null
+  },
+  "collections": {
+    "public_events": [],
+    "provider_facts": [],
+    "candidates": [],
+    "allocations": [],
+    "runs": [],
+    "emitted_events": [],
+    "writes": [],
+    "public_event_count": null,
+    "provider_fact_count": null,
+    "candidate_count": null,
+    "allocation_count": null,
+    "run_count": null,
+    "emitted_event_count": null,
+    "write_count": null,
+    "provider_total_jpy": null,
+    "direct_total_jpy": null,
+    "estimated_total_jpy": null,
+    "unattributed_total_jpy": null,
+    "allocated_total_jpy": null,
+    "difference_jpy": null,
+    "empty_means_zero": false
+  },
+  "evaluation_boundary": {
+    "identity_linkage": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "eligibility": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "direct_attribution": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "estimated_attribution": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "unattributed_assignment": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "method_version": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "input_hash": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "confidence": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "totals_conserved": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "correction": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "supersession": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "idempotency": {
+      "status": "NOT_EVALUATED",
+      "evaluable": false,
+      "result": null
+    },
+    "vacuous_pass_allowed": false
+  },
+  "execution_boundary": {
+    "database": "NOT_EXECUTED",
+    "repository": "NOT_EXECUTED",
+    "unit_of_work": "NOT_EXECUTED",
+    "transaction": "NOT_EXECUTED",
+    "fake_persistence": "NOT_EXECUTED",
+    "queue": "NOT_EXECUTED",
+    "job": "NOT_EXECUTED",
+    "event_collector": "NOT_EXECUTED",
+    "event_emission": "NOT_EXECUTED",
+    "audit": "NOT_EXECUTED",
+    "outbox": "NOT_EXECUTED",
+    "browser": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "network": "NOT_EXECUTED",
+    "runtime": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "action_counts": {
+      "database": 0,
+      "repository": 0,
+      "unit_of_work": 0,
+      "transaction": 0,
+      "fake_persistence": 0,
+      "queue": 0,
+      "job": 0,
+      "event_collector": 0,
+      "event_emission": 0,
+      "audit": 0,
+      "outbox": 0,
+      "browser": 0,
+      "provider": 0,
+      "network": 0,
+      "write": 0,
+      "create_fact": 0,
+      "create_candidate": 0,
+      "create_allocation": 0,
+      "create_run": 0,
+      "emit_event": 0,
+      "external": 0
+    },
+    "external_actions": []
+  },
+  "diagnostic_boundary": {
+    "raw_event_allowed": false,
+    "raw_provider_fact_allowed": false,
+    "raw_identifier_allowed": false,
+    "note_allowed": false,
+    "error_allowed": false,
+    "fixture_body_allowed": false,
+    "dynamic_values": []
+  },
+  "verification_boundary": {
+    "TST-007": "NOT_EXECUTED",
+    "TST-030": "NOT_EXECUTED",
+    "formal_validation": "NOT_EXECUTED",
+    "story_acceptance": false,
+    "live_evidence": false,
+    "decision": "NOT_READY"
+  }
+}
