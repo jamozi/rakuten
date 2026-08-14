@@ -16,7 +16,7 @@ import pytest
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 VALIDATOR = REPOSITORY_ROOT / "scripts/validate_ci_hydration.py"
-SYSTEM_PYTHON = Path("/usr/bin/python3.10")
+SYSTEM_PYTHON = Path("/usr/bin/python3")
 ROOT_INPUTS = (
     ".python-version",
     "pyproject.toml",

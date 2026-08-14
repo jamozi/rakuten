@@ -7,6 +7,7 @@ import io
 import os
 from pathlib import Path
 import random
+import re
 import runpy
 import shutil
 import stat
@@ -22,6 +23,10 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 SCANNER_SOURCE = REPOSITORY_ROOT / "scripts" / "scan_secrets.py"
 PYTHON = sys.executable
 GIT = shutil.which("git")
+SYSTEM_PYTHON = Path("/usr/bin/python3")
+SYSTEM_PYTHON_310_SKIP_REASON = (
+    "requires verified /usr/bin/python3 Python 3.10 for V3 compatibility evidence"
+)
 
 PROTECTED_GENERIC_SOURCES = (
     "changes/st-0502/DESIGN_HANDOFF_V1_ST0502_RAKUTEN_PRODUCT_SEARCH_OFFLINE_V1.yaml",
@@ -125,6 +130,42 @@ def zip_bytes(entries: list[tuple[str, bytes]], *, compression: int = 0) -> byte
 
 def combined_output(result: subprocess.CompletedProcess[str]) -> str:
     return result.stdout + result.stderr
+
+
+def require_system_python_310() -> Path:
+    if not SYSTEM_PYTHON.is_file():
+        pytest.fail("system Python is unavailable", pytrace=False)
+    try:
+        result = subprocess.run(
+            [
+                os.fspath(SYSTEM_PYTHON),
+                "-I",
+                "-S",
+                "-c",
+                (
+                    "import sys;sys.stdout.write("
+                    "f'{sys.version_info.major}.{sys.version_info.minor}\\n')"
+                ),
+            ],
+            cwd=REPOSITORY_ROOT,
+            env={"PATH": os.defpath},
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=20,
+        )
+    except OSError:
+        pytest.fail("system Python version probe failed", pytrace=False)
+    except subprocess.SubprocessError:
+        pytest.fail("system Python version probe failed", pytrace=False)
+    match = re.fullmatch(r"([0-9]+)\.([0-9]+)\n", result.stdout)
+    if result.returncode != 0 or result.stderr or match is None:
+        pytest.fail("system Python version probe failed", pytrace=False)
+    version = (int(match.group(1)), int(match.group(2)))
+    if version != (3, 10):
+        pytest.skip(SYSTEM_PYTHON_310_SKIP_REASON)
+    return SYSTEM_PYTHON
 
 
 def assert_values_are_redacted(
@@ -1222,6 +1263,62 @@ def test_entropy_implementation_has_no_floating_or_logarithmic_path() -> None:
                 pytest.fail("floating entropy operation remains present", pytrace=False)
 
 
+def test_system_python_310_probe_fails_closed_when_interpreter_is_missing(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with monkeypatch.context() as patch:
+        patch.setitem(
+            require_system_python_310.__globals__,
+            "SYSTEM_PYTHON",
+            tmp_path / "missing-python",
+        )
+        with pytest.raises(pytest.fail.Exception) as failure:
+            require_system_python_310()
+    assert str(failure.value) == "system Python is unavailable"
+
+
+@pytest.mark.parametrize(
+    ("returncode", "stdout", "stderr"),
+    [
+        pytest.param(1, "", "", id="nonzero"),
+        pytest.param(0, "3.12", "", id="unterminated"),
+        pytest.param(0, "3.12\n", "unexpected", id="stderr"),
+    ],
+)
+def test_system_python_310_probe_failure_never_skips(
+    monkeypatch: pytest.MonkeyPatch,
+    returncode: int,
+    stdout: str,
+    stderr: str,
+) -> None:
+    def failed_probe(
+        *args: object, **kwargs: object
+    ) -> subprocess.CompletedProcess[str]:
+        return subprocess.CompletedProcess([], returncode, stdout, stderr)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(subprocess, "run", failed_probe)
+        with pytest.raises(pytest.fail.Exception) as failure:
+            require_system_python_310()
+    assert str(failure.value) == "system Python version probe failed"
+
+
+def test_system_python_310_probe_skips_only_a_verified_different_version(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def verified_probe(
+        *args: object, **kwargs: object
+    ) -> subprocess.CompletedProcess[str]:
+        return subprocess.CompletedProcess([], 0, "3.12\n", "")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(subprocess, "run", verified_probe)
+        with pytest.raises(pytest.skip.Exception) as skipped:
+            require_system_python_310()
+    assert str(skipped.value) == SYSTEM_PYTHON_310_SKIP_REASON
+
+
 @pytest.mark.parametrize(
     "hash_seed",
     [
@@ -1232,9 +1329,7 @@ def test_entropy_implementation_has_no_floating_or_logarithmic_path() -> None:
     ],
 )
 def test_system_python_310_entropy_is_hash_seed_invariant(hash_seed: str) -> None:
-    system_python = Path("/usr/bin/python3")
-    if not system_python.is_file():
-        pytest.fail("system Python is unavailable", pytrace=False)
+    system_python = require_system_python_310()
     program = """
 import runpy
 import sys
