@@ -78,7 +78,7 @@ provenance:
       sha256: 021544cd8088bfb12e4ab48eabcfab567c77d31230e625e32babfc4383d87dd0
     - story_id: ST-0204
       uri: repo://changes/st-0204/manifest.yaml
-      sha256: e755dbe87d715149c69c78aaf0e69239cb3fa94edf14f8c970d2370a5294d570
+      sha256: 3b7b29005bdc657ff81c0364f847b1a67f3134e9f3885ac26e2d0c5e17e7b66e
   provider_contracts:
     - uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json
       sha256: 163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31

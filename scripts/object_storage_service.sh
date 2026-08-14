@@ -17,10 +17,10 @@ readonly expected_revision='1355c7a102194d6c461baf090eff50367b575afb'
 readonly expected_version_line='version 8000GB 4.29 1355c7a linux amd64'
 readonly expected_compose_sha256='a6cd0109a2bc63dae10be59bd9aa32ab85e9c3fec3847bc43c413b452cb871f5'
 readonly expected_fixture_sha256='50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527'
+readonly expected_ephemeral_override_sha256='8d7d2e57f174992dd703773f0c9031d58eddda8ab99d5e15ec67c7d247540022'
+readonly expected_ephemeral_override_bytes=119
+readonly maximum_ephemeral_override_bytes=256
 readonly local_project='raos-st0202-local'
-readonly disposable_port_min=49152
-readonly disposable_port_max=65535
-readonly disposable_port_range='49152-65535'
 
 docker_executable=''
 repository_root=''
@@ -33,6 +33,7 @@ published_port=''
 cleanup_project=''
 cleanup_volume=false
 test_directory=''
+ephemeral_override_file=''
 
 usage() {
   printf '%s\n' \
@@ -150,25 +151,124 @@ validate_port() {
   fi
 }
 
+validate_test_directory() {
+  local owner
+  local permissions
+
+  if [[ -z $test_directory || ! -d $test_directory || -L $test_directory ]]; then
+    error 'the disposable test directory must be a regular non-symlink directory'
+    return 69
+  fi
+  owner=$(stat --format='%u' -- "$test_directory")
+  if [[ $owner != "$(id -u)" ]]; then
+    error 'the disposable test directory must be owned by the current user'
+    return 69
+  fi
+  permissions=$(stat --format='%a' -- "$test_directory")
+  if [[ $permissions != 700 ]]; then
+    error 'the disposable test directory mode must be exactly 0700'
+    return 69
+  fi
+}
+
+validate_ephemeral_override() {
+  local digest
+  local owner
+  local permissions
+  local size
+
+  validate_test_directory || return $?
+  case $ephemeral_override_file in
+    "$test_directory"/object-storage-disposable-port.override.*.yml) ;;
+    *)
+      error 'the ephemeral Compose override escaped the disposable test directory'
+      return 69
+      ;;
+  esac
+  if [[ ! -f $ephemeral_override_file || -L $ephemeral_override_file ]]; then
+    error 'the ephemeral Compose override must be a regular non-symlink file'
+    return 69
+  fi
+  owner=$(stat --format='%u' -- "$ephemeral_override_file")
+  if [[ $owner != "$(id -u)" ]]; then
+    error 'the ephemeral Compose override must be owned by the current user'
+    return 69
+  fi
+  permissions=$(stat --format='%a' -- "$ephemeral_override_file")
+  if [[ $permissions != 600 ]]; then
+    error 'the ephemeral Compose override mode must be exactly 0600'
+    return 69
+  fi
+  size=$(stat --format='%s' -- "$ephemeral_override_file")
+  if ((size < 1 || size > maximum_ephemeral_override_bytes || \
+    size != expected_ephemeral_override_bytes)); then
+    error 'the ephemeral Compose override size differs from the exact contract'
+    return 69
+  fi
+  digest=$(sha256sum -- "$ephemeral_override_file")
+  digest=${digest%% *}
+  if [[ $digest != "$expected_ephemeral_override_sha256" ]]; then
+    error 'the ephemeral Compose override digest differs from the exact contract'
+    return 69
+  fi
+}
+
+create_ephemeral_override() {
+  if [[ ! -f /usr/bin/mktemp || -L /usr/bin/mktemp || ! -x /usr/bin/mktemp ]]; then
+    error 'the fixed mktemp executable is unavailable or unsafe'
+    return 69
+  fi
+  validate_test_directory
+  if ! ephemeral_override_file=$(
+    /usr/bin/mktemp \
+      "$test_directory/object-storage-disposable-port.override.XXXXXXXX.yml"
+  ); then
+    error 'unable to create the ephemeral Compose override'
+    return 69
+  fi
+  if ! printf '%s\n' \
+    'services:' \
+    '  object-storage:' \
+    '    ports: !override' \
+    '      - target: 8333' \
+    '        host_ip: 127.0.0.1' \
+    '        protocol: tcp' >"$ephemeral_override_file"; then
+    error 'unable to write the ephemeral Compose override'
+    return 69
+  fi
+  validate_ephemeral_override
+}
+
 run_docker() {
-  env -i \
+  local -a environment=(
+    env -i \
     PATH="$PATH" \
     HOME="$docker_config_dir" \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     TZ=UTC \
     DOCKER_CONFIG="$docker_config_dir" \
-    RAOS_OBJECT_STORAGE_S3_CONFIG_FILE="$config_file" \
-    RAOS_OBJECT_STORAGE_PORT="$object_storage_port" \
-    "$docker_executable" --host "$docker_host" "$@"
+    RAOS_OBJECT_STORAGE_S3_CONFIG_FILE="$config_file"
+  )
+  if [[ $command != test ]]; then
+    environment+=(RAOS_OBJECT_STORAGE_PORT="$object_storage_port")
+  fi
+  if [[ $command == test && ${1:-} == compose ]]; then
+    validate_ephemeral_override || return $?
+  fi
+  "${environment[@]}" "$docker_executable" --host "$docker_host" "$@"
 }
 
 compose() {
   local project=$1
   shift
+  local -a compose_files=(--file "$compose_file")
+  if [[ $command == test ]]; then
+    compose_files+=(--file "$ephemeral_override_file")
+  fi
   run_docker compose \
     --project-directory "$repository_root" \
-    --file "$compose_file" \
+    "${compose_files[@]}" \
     --project-name "$project" \
     "$@"
 }
@@ -330,12 +430,6 @@ assert_service() {
     error 'the S3 endpoint is not published on one bounded loopback port'
     return 1
   fi
-  if [[ $command == test ]] && \
-    ((observed_published_port < disposable_port_min || \
-      observed_published_port > disposable_port_max)); then
-    error 'the disposable S3 endpoint escaped the reviewed random host-port range'
-    return 1
-  fi
   published_port=$observed_published_port
   port_inventory=$(run_docker port "$container_id")
   if [[ $port_inventory != "8333/tcp -> 127.0.0.1:$published_port" ]]; then
@@ -441,15 +535,23 @@ fi
 
 docker_config_dir=$(mktemp -d "${TMPDIR:-/tmp}/raos-st0202-docker-config.XXXXXXXX")
 if [[ $command == test ]]; then
-  object_storage_port=$disposable_port_range
+  if [[ ! -f /usr/bin/mktemp || -L /usr/bin/mktemp || ! -x /usr/bin/mktemp ]]; then
+    error 'the fixed mktemp executable is unavailable or unsafe'
+    exit 69
+  fi
+  test_directory=$(
+    /usr/bin/mktemp -d "${TMPDIR:-/tmp}/raos-st0202-test.XXXXXXXX"
+  )
+  validate_test_directory
+  create_ephemeral_override
+  config_file=$test_directory/object-storage-s3-config.json
+  run_fixture create-config --output "$config_file" >/dev/null
+  validate_config_file "$config_file"
+  validate_ephemeral_override
 fi
 validate_docker_client
 
 if [[ $command == test ]]; then
-  test_directory=$(mktemp -d "${TMPDIR:-/tmp}/raos-st0202-test.XXXXXXXX")
-  config_file=$test_directory/object-storage-s3-config.json
-  run_fixture create-config --output "$config_file" >/dev/null
-  validate_config_file "$config_file"
   cleanup_project="raos-st0202-test-$(id -u)-$$-$RANDOM"
   cleanup_volume=true
   assert_compose_model "$cleanup_project"

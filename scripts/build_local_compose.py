@@ -37,7 +37,7 @@ EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
     "9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291"
 )
 EXPECTED_ST0202_CONTRACT_OBJECT_SHA256: Final = (
-    "652bfb874deefb7cc5c3249a305d34b2bf83e87502394c655f4e70b5bfacb0d1"
+    "ad35c717bae6130cb8e1738a002a57935d9e4c743da765df7e0432ddb28fd514"
 )
 OBJECT_STORAGE_WRAPPER_PATH: Final = Path("scripts/object_storage_service.sh")
 GENERATED_PATHS: Final = (COMPOSE_PATH, MANIFEST_PATH)
@@ -144,7 +144,6 @@ EXPECTED_ST0202_COMPOSE: Final = {
         "host_ip": "127.0.0.1",
         "variable": "RAOS_OBJECT_STORAGE_PORT",
         "default": 8333,
-        "disposable_range": "49152-65535",
         "container": 8333,
         "protocol": "tcp",
     },
@@ -195,6 +194,33 @@ EXPECTED_ST0202_COMPOSE: Final = {
         "timeout": "5s",
         "retries": 12,
         "start_period": "10s",
+    },
+}
+EXPECTED_ST0202_EPHEMERAL_OVERRIDE: Final = {
+    "command": "test",
+    "tracked_artifact": "ABSENT",
+    "creation_executable": "/usr/bin/mktemp",
+    "filename_template": "object-storage-disposable-port.override.XXXXXXXX.yml",
+    "parent_directory_mode": "0700",
+    "file_mode": "0600",
+    "maximum_bytes": 256,
+    "exact_bytes": 119,
+    "sha256": "8d7d2e57f174992dd703773f0c9031d58eddda8ab99d5e15ec67c7d247540022",
+    "compose_tag": "!override",
+    "target": 8333,
+    "host_ip": "127.0.0.1",
+    "protocol": "tcp",
+    "published": "OMITTED_RUNTIME_ASSIGNED",
+    "compose_file_order": ["docker-compose.yml", "EPHEMERAL_VALIDATED_OVERRIDE"],
+    "validation": "BEFORE_FIRST_DOCKER_AND_EVERY_COMPOSE_USE",
+    "cleanup": "EXIT_HUP_INT_TERM",
+    "forbidden_tokens": ["published", "${", "#"],
+    "observed_mapping": {
+        "exact_count": 1,
+        "host": "127.0.0.1",
+        "lexical_port_rule": "^[0-9]{1,5}$",
+        "minimum_port": 1024,
+        "maximum_port": 65535,
     },
 }
 
@@ -286,6 +312,16 @@ def load_and_validate_object_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     compose = _mapping(contract.get("compose"), "object-storage compose")
     st0201._require_exact(
         dict(compose), EXPECTED_ST0202_COMPOSE, "object-storage compose"
+    )
+    runtime = _mapping(contract.get("runtime"), "object-storage runtime")
+    ephemeral_override = _mapping(
+        runtime.get("ephemeral_port_override"),
+        "object-storage runtime.ephemeral_port_override",
+    )
+    st0201._require_exact(
+        dict(ephemeral_override),
+        EXPECTED_ST0202_EPHEMERAL_OVERRIDE,
+        "object-storage runtime.ephemeral_port_override",
     )
     st0201._require_exact(
         _contract_object_digest(contract),

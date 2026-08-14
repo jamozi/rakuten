@@ -185,7 +185,7 @@ PREDECESSOR_MANIFESTS: Final = (
     (
         "ST-0202",
         Path("changes/st-0202/manifest.yaml"),
-        "b1e78d7d29f8b382a7feb964e1f8cbe5f8ad01ff06891fc57330bfe219218f54",
+        "1be0c9e7cec24c57458febf25ad0e6ed3cd26f5a35e399f0ca5dd0623361b67c",
     ),
 )
 SOURCE_ARTIFACT_PATHS: Final = (
