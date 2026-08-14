@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
+import hashlib
 import io
 import json
 import os
@@ -33,6 +34,8 @@ MAX_ARCHIVE_DEPTH = 4
 MAX_COMPRESSION_RATIO = 200
 COMPRESSION_RATIO_MINIMUM_BYTES = 1024 * 1024
 GIT_TIMEOUT_SECONDS = 60
+MAX_REVIEWED_FINDINGS_BYTES = 2 * 1024 * 1024
+MAX_REVIEWED_FINDINGS_ENTRIES = 4096
 
 EXIT_CLEAN = 0
 EXIT_FINDINGS = 1
@@ -147,6 +150,26 @@ EXCLUDED_FILE_NAMES = frozenset(
 ZIP_SIGNATURES = (b"PK\x03\x04", b"PK\x05\x06", b"PK\x07\x08")
 ZIP_SUFFIXES = (".zip", ".jar", ".whl", ".docx", ".xlsx", ".pptx")
 HEX_OBJECT_ID = re.compile(rb"[0-9a-f]{40}(?:[0-9a-f]{24})?")
+LOWER_HEX_SHA256 = re.compile(r"[0-9a-f]{64}")
+REVIEWED_FINDINGS_TOP_LEVEL_KEYS = frozenset(
+    {"version", "status", "rule_id", "entries"}
+)
+REVIEWED_FINDING_ENTRY_KEYS = frozenset(
+    {
+        "scope",
+        "exact_source_identifier",
+        "exact_line_number",
+        "exact_source_bytes",
+        "exact_source_sha256",
+        "exact_line_sha256",
+        "classification",
+        "rationale",
+    }
+)
+REVIEWED_FINDING_CLASSIFICATION = "REVIEWED_FALSE_POSITIVE"
+REVIEWED_FINDING_RATIONALE = (
+    "Sanitized source location reviewed; no live credential is present."
+)
 ARCHIVE_READ_ERRORS = (
     EOFError,
     NotImplementedError,
@@ -167,6 +190,18 @@ class Finding:
     rule_id: str
 
 
+@dataclass(frozen=True)
+class ReviewedFinding:
+    """One exact, value-free reviewed GENERIC_CREDENTIAL binding."""
+
+    scope: str
+    source_identifier: str
+    line: int
+    source_bytes: int
+    source_sha256: str
+    line_sha256: str
+
+
 @dataclass
 class ArchiveBudget:
     """Expansion limits shared by one outer archive and all nested archives."""
@@ -182,6 +217,10 @@ class ScanError(RuntimeError):
         super().__init__(code)
         self.code = code
         self.source = source
+
+
+class DuplicateJsonKey(ValueError):
+    """A duplicate mapping key in the strict JSON-subset YAML ledger."""
 
 
 def _line_number(data: bytes, offset: int) -> int:
@@ -491,6 +530,194 @@ def read_maintained_file(root: Path, relative: str) -> bytes:
                 os.close(descriptor)
             except OSError:
                 pass
+
+
+def read_reviewed_findings_file(root: Path, path: str) -> bytes:
+    """Read one bounded regular ledger without following any path symlink."""
+
+    source = "reviewed-findings"
+    if not path or "\x00" in path:
+        raise ScanError("unsafe-reviewed-findings-path", source)
+    if path.startswith("/"):
+        if path == "/" or path.startswith("//"):
+            raise ScanError("unsafe-reviewed-findings-path", source)
+        raw_parts = path[1:].split("/")
+        start = Path("/")
+    else:
+        raw_parts = path.split("/")
+        start = root
+    if any(part in {"", ".", ".."} for part in raw_parts):
+        raise ScanError("unsafe-reviewed-findings-path", source)
+
+    descriptors: list[int] = []
+    try:
+        root_fd = os.open(os.fspath(start), _directory_open_flags())
+        descriptors.append(root_fd)
+        parent_fd = root_fd
+        for part in raw_parts[:-1]:
+            next_fd = os.open(part, _directory_open_flags(), dir_fd=parent_fd)
+            descriptors.append(next_fd)
+            parent_fd = next_fd
+        file_fd = os.open(raw_parts[-1], _file_open_flags(), dir_fd=parent_fd)
+        descriptors.append(file_fd)
+        before = os.fstat(file_fd)
+        if not stat.S_ISREG(before.st_mode):
+            raise ScanError("unsafe-reviewed-findings-file-type", source)
+        if before.st_size < 0 or before.st_size > MAX_REVIEWED_FINDINGS_BYTES:
+            raise ScanError("reviewed-findings-too-large", source)
+
+        chunks: list[bytes] = []
+        size = 0
+        while chunk := os.read(file_fd, READ_CHUNK_BYTES):
+            size += len(chunk)
+            if size > MAX_REVIEWED_FINDINGS_BYTES:
+                raise ScanError("reviewed-findings-too-large", source)
+            chunks.append(chunk)
+        after = os.fstat(file_fd)
+        identity_before = (
+            before.st_dev,
+            before.st_ino,
+            before.st_size,
+            before.st_mtime_ns,
+        )
+        identity_after = (
+            after.st_dev,
+            after.st_ino,
+            after.st_size,
+            after.st_mtime_ns,
+        )
+        if identity_before != identity_after or size != before.st_size:
+            raise ScanError("reviewed-findings-changed", source)
+        return b"".join(chunks)
+    except ScanError:
+        raise
+    except OSError:
+        raise ScanError("unreadable-reviewed-findings", source) from None
+    finally:
+        for descriptor in reversed(descriptors):
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+
+
+def _strict_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise DuplicateJsonKey
+        result[key] = value
+    return result
+
+
+def _reject_json_constant(_: str) -> object:
+    raise ValueError
+
+
+def _exact_object_keys(value: object, expected: frozenset[str]) -> bool:
+    return type(value) is dict and set(value) == expected
+
+
+def parse_reviewed_findings(data: bytes) -> list[ReviewedFinding]:
+    """Parse the JSON-compatible strict YAML subset used by the V1 ledger."""
+
+    source = "reviewed-findings"
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError:
+        raise ScanError("invalid-reviewed-findings-encoding", source) from None
+    if text.startswith("\ufeff"):
+        raise ScanError("invalid-reviewed-findings-encoding", source)
+    try:
+        document = json.loads(
+            text,
+            object_pairs_hook=_strict_json_object,
+            parse_constant=_reject_json_constant,
+        )
+    except DuplicateJsonKey:
+        raise ScanError("duplicate-reviewed-findings-key", source) from None
+    except RecursionError:
+        raise ScanError("invalid-reviewed-findings-syntax", source) from None
+    except ValueError:
+        raise ScanError("invalid-reviewed-findings-syntax", source) from None
+
+    if not _exact_object_keys(document, REVIEWED_FINDINGS_TOP_LEVEL_KEYS):
+        raise ScanError("invalid-reviewed-findings-schema", source)
+    assert isinstance(document, dict)
+    if type(document["version"]) is not int or document["version"] != 1:
+        raise ScanError("invalid-reviewed-findings-version", source)
+    if document["status"] != "UNAPPROVED_CANDIDATE":
+        raise ScanError("invalid-reviewed-findings-status", source)
+    if document["rule_id"] != RULE_GENERIC_CREDENTIAL:
+        raise ScanError("invalid-reviewed-findings-rule", source)
+    raw_entries = document["entries"]
+    if (
+        type(raw_entries) is not list
+        or len(raw_entries) > MAX_REVIEWED_FINDINGS_ENTRIES
+    ):
+        raise ScanError("invalid-reviewed-findings-entries", source)
+
+    entries: list[ReviewedFinding] = []
+    seen: set[tuple[str, str, int]] = set()
+    for raw_entry in raw_entries:
+        if not _exact_object_keys(raw_entry, REVIEWED_FINDING_ENTRY_KEYS):
+            raise ScanError("invalid-reviewed-finding-schema", source)
+        assert isinstance(raw_entry, dict)
+        scope = raw_entry["scope"]
+        identifier = raw_entry["exact_source_identifier"]
+        line = raw_entry["exact_line_number"]
+        source_bytes = raw_entry["exact_source_bytes"]
+        source_sha256 = raw_entry["exact_source_sha256"]
+        line_sha256 = raw_entry["exact_line_sha256"]
+        if type(scope) is not str or scope not in {"worktree", "git_history"}:
+            raise ScanError("invalid-reviewed-finding-scope", source)
+        if type(identifier) is not str or not identifier:
+            raise ScanError("invalid-reviewed-finding-source", source)
+        if type(line) is not int or line < 1:
+            raise ScanError("invalid-reviewed-finding-line", source)
+        if (
+            type(source_bytes) is not int
+            or source_bytes < 1
+            or source_bytes > MAX_INPUT_BYTES
+        ):
+            raise ScanError("invalid-reviewed-finding-size", source)
+        if (
+            type(source_sha256) is not str
+            or LOWER_HEX_SHA256.fullmatch(source_sha256) is None
+            or type(line_sha256) is not str
+            or LOWER_HEX_SHA256.fullmatch(line_sha256) is None
+        ):
+            raise ScanError("invalid-reviewed-finding-hash", source)
+        if raw_entry["classification"] != REVIEWED_FINDING_CLASSIFICATION:
+            raise ScanError("invalid-reviewed-finding-classification", source)
+        if raw_entry["rationale"] != REVIEWED_FINDING_RATIONALE:
+            raise ScanError("invalid-reviewed-finding-rationale", source)
+
+        if scope == "worktree":
+            _validated_relative_parts(identifier, source)
+            if any(character in identifier for character in ("*", "?", "[", "]", "\\")):
+                raise ScanError("unsafe-reviewed-finding-source", source)
+        elif re.fullmatch(r"[0-9a-f]{40}(?:[0-9a-f]{24})?", identifier) is None:
+            raise ScanError("invalid-reviewed-finding-object-id", source)
+
+        key = (scope, identifier, line)
+        if key in seen:
+            raise ScanError("duplicate-reviewed-finding", source)
+        seen.add(key)
+        entries.append(
+            ReviewedFinding(
+                scope=scope,
+                source_identifier=identifier,
+                line=line,
+                source_bytes=source_bytes,
+                source_sha256=source_sha256,
+                line_sha256=line_sha256,
+            )
+        )
+
+    if scan_bytes(data, source):
+        raise ScanError("sensitive-reviewed-findings-ledger", source)
+    return entries
 
 
 def _is_fallback_excluded(parts: tuple[str, ...], is_directory: bool) -> bool:
@@ -841,6 +1068,113 @@ def scan_git_history(root: Path) -> set[Finding]:
     return findings
 
 
+def _git_blob_if_present(root: Path, object_id: str) -> bytes | None:
+    source = "reviewed-findings"
+    metadata = _run_git(
+        root,
+        [
+            "cat-file",
+            "--batch-check=%(objectname) %(objecttype) %(objectsize)",
+        ],
+        input_bytes=object_id.encode("ascii") + b"\n",
+    )
+    if metadata.returncode != 0:
+        raise ScanError("reviewed-finding-object-check-failed", source)
+    fields = metadata.stdout.strip().split(b" ")
+    if fields == [object_id.encode("ascii"), b"missing"]:
+        return None
+    if (
+        len(fields) != 3
+        or fields[0] != object_id.encode("ascii")
+        or fields[1] != b"blob"
+    ):
+        raise ScanError("invalid-reviewed-finding-object", source)
+    try:
+        size = int(fields[2])
+    except ValueError:
+        raise ScanError("invalid-reviewed-finding-object", source) from None
+    if size < 0 or size > MAX_INPUT_BYTES:
+        raise ScanError("reviewed-finding-object-too-large", source)
+    result = _run_git(root, ["cat-file", "blob", object_id])
+    if result.returncode != 0 or len(result.stdout) != size:
+        raise ScanError("reviewed-finding-object-read-failed", source)
+    return result.stdout
+
+
+def _physical_line_bytes(data: bytes, line: int) -> bytes | None:
+    physical_lines = data.split(b"\n")
+    if line > len(physical_lines):
+        return None
+    selected = physical_lines[line - 1]
+    if line < len(physical_lines):
+        selected += b"\n"
+    return selected
+
+
+def _validate_reviewed_source(entry: ReviewedFinding, data: bytes) -> None:
+    source = "reviewed-findings"
+    if len(data) != entry.source_bytes:
+        raise ScanError("reviewed-finding-source-size-drift", source)
+    if hashlib.sha256(data).hexdigest() != entry.source_sha256:
+        raise ScanError("reviewed-finding-source-hash-drift", source)
+    line = _physical_line_bytes(data, entry.line)
+    if line is None or hashlib.sha256(line).hexdigest() != entry.line_sha256:
+        raise ScanError("reviewed-finding-line-hash-drift", source)
+
+
+def validated_reviewed_findings(
+    root: Path,
+    entries: list[ReviewedFinding],
+    findings: set[Finding],
+    *,
+    worktree_scanned: bool,
+    history_scanned: bool,
+) -> set[Finding]:
+    """Validate every binding, then return only exact generic set members."""
+
+    suppressions: set[Finding] = set()
+    worktree_cache: dict[str, bytes] = {}
+    git_cache: dict[str, bytes | None] = {}
+    repository_available: bool | None = None
+    for entry in entries:
+        if entry.scope == "worktree":
+            data = worktree_cache.get(entry.source_identifier)
+            if data is None:
+                data = read_maintained_file(root, entry.source_identifier)
+                worktree_cache[entry.source_identifier] = data
+            _validate_reviewed_source(entry, data)
+            finding = Finding(
+                source=entry.source_identifier,
+                line=entry.line,
+                rule_id=RULE_GENERIC_CREDENTIAL,
+            )
+            if worktree_scanned and finding not in findings:
+                raise ScanError("stale-reviewed-worktree-finding", "reviewed-findings")
+        else:
+            if repository_available is None:
+                repository_available = git_repository_available(root)
+            if repository_available:
+                if entry.source_identifier not in git_cache:
+                    git_cache[entry.source_identifier] = _git_blob_if_present(
+                        root, entry.source_identifier
+                    )
+                data = git_cache[entry.source_identifier]
+            else:
+                data = None
+            if data is not None:
+                _validate_reviewed_source(entry, data)
+            finding = Finding(
+                source=f"git-blob:{entry.source_identifier}",
+                line=entry.line,
+                rule_id=RULE_GENERIC_CREDENTIAL,
+            )
+            if history_scanned and data is not None and finding not in findings:
+                raise ScanError("stale-reviewed-history-finding", "reviewed-findings")
+        if finding in findings:
+            suppressions.add(finding)
+    return suppressions
+
+
 def _render_source(source: str) -> str:
     return json.dumps(source, ensure_ascii=True)
 
@@ -874,6 +1208,14 @@ def parse_arguments(argv: list[str] | None) -> argparse.Namespace:
         action="store_true",
         help="scan every blob in a complete, non-shallow local Git object database",
     )
+    parser.add_argument(
+        "--reviewed-findings",
+        metavar="PATH",
+        help=(
+            "subtract exact reviewed GENERIC_CREDENTIAL bindings from a strict "
+            "value-free V1 ledger"
+        ),
+    )
     arguments = parser.parse_args(argv)
     if not arguments.worktree and not arguments.git_history:
         parser.error("at least one of --worktree or --git-history is required")
@@ -888,6 +1230,19 @@ def main(argv: list[str] | None = None) -> int:
             findings.update(scan_worktree(REPOSITORY_ROOT))
         if arguments.git_history:
             findings.update(scan_git_history(REPOSITORY_ROOT))
+        if arguments.reviewed_findings is not None:
+            ledger_data = read_reviewed_findings_file(
+                REPOSITORY_ROOT, arguments.reviewed_findings
+            )
+            reviewed = parse_reviewed_findings(ledger_data)
+            suppressions = validated_reviewed_findings(
+                REPOSITORY_ROOT,
+                reviewed,
+                findings,
+                worktree_scanned=arguments.worktree,
+                history_scanned=arguments.git_history,
+            )
+            findings.difference_update(suppressions)
     except ScanError as error:
         emit_error(error)
         return EXIT_OPERATIONAL_ERROR

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from pathlib import Path
 import re
 from typing import Any
@@ -13,6 +15,21 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW_PATH = REPOSITORY_ROOT / ".github/workflows/ci.yml"
 WORKFLOW_TEXT = WORKFLOW_PATH.read_text(encoding="utf-8")
 WORKFLOW: dict[str, Any] = yaml.load(WORKFLOW_TEXT, Loader=yaml.BaseLoader)
+REVIEWED_FINDINGS_RELATIVE_PATH = (
+    "changes/st-0106/contracts/reviewed-secret-findings.v1.yaml"
+)
+REVIEWED_FINDINGS_PATH = REPOSITORY_ROOT / REVIEWED_FINDINGS_RELATIVE_PATH
+REVIEWED_FINDINGS_APPROVAL_PATH = (
+    REPOSITORY_ROOT / "changes/st-0106/REVIEWED-SECRET-FINDINGS-APPROVAL-v1.yaml"
+)
+EXPECTED_REVIEWED_FINDINGS_BYTES = 46295
+EXPECTED_REVIEWED_FINDINGS_SHA256 = (
+    "1038cf6ef81da0acab528cf8206086646b6e003f5ac0ceed4f2e4b994827bcc7"
+)
+EXPECTED_REVIEWED_FINDINGS_APPROVAL_BYTES = 5524
+EXPECTED_REVIEWED_FINDINGS_APPROVAL_SHA256 = (
+    "b683ae3b3b7312bd4ce04fe2c796f1157542f72c1b1bca79919a71b3a7c1acd9"
+)
 EXPECTED_ACTIONS = {
     "actions/checkout": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
     "actions/setup-node": "249970729cb0ef3589644e2896645e5dc5ba9c38",
@@ -117,6 +134,12 @@ def test_setup_and_hydration_are_exact_source_constrained_and_cache_isolated() -
             "package-manager-cache": "false",
             "check-latest": "false",
         }
+        cache_arguments = (
+            '  --uv-cache "$RUNNER_TEMP/raos-unit-uv-cache" \\\n'
+            '  --runner-temp "$RUNNER_TEMP" \\\n'
+            if job_id == "unit"
+            else ""
+        )
         reproduce_command = (
             "set -euo pipefail\n"
             'node_path="$(command -v node)"\n'
@@ -126,6 +149,7 @@ def test_setup_and_hydration_are_exact_source_constrained_and_cache_isolated() -
             '  --uv "$(command -v uv)" \\\n'
             '  --node "$node_path" \\\n'
             '  --npm-cli "$node_prefix/lib/node_modules/npm/bin/npm-cli.js" \\\n'
+            f"{cache_arguments}"
             f"  {job_id}\n"
         )
         observed_runs = {step["name"]: step["run"] for step in run_steps(job)}
@@ -190,8 +214,14 @@ def test_setup_and_hydration_are_exact_source_constrained_and_cache_isolated() -
 
         hydration = observed_runs["Hydrate source-constrained locked dependencies"]
         assert hydration.count("env -i PATH=/usr/bin:/bin") == 2
+        uv_sync_prefix = (
+            '"$uv_path" --no-config --color never --cache-dir "$uv_cache_dir" '
+            "\\\n  sync --locked"
+            if job_id == "unit"
+            else '"$uv_path" --no-config --color never sync --locked'
+        )
         for token in (
-            '"$uv_path" --no-config --color never sync --locked',
+            uv_sync_prefix,
             "--no-default-groups --group dev",
             "--no-install-project --no-install-local",
             "--managed-python --no-python-downloads --python 3.14.6",
@@ -217,6 +247,20 @@ def test_setup_and_hydration_are_exact_source_constrained_and_cache_isolated() -
         ):
             assert forbidden not in python_install
             assert forbidden not in hydration
+        if job_id == "unit":
+            for token in (
+                "umask 077",
+                'uv_cache_dir="$RUNNER_TEMP/raos-unit-uv-cache"',
+                'test ! -e "$uv_cache_dir"',
+                'test ! -L "$uv_cache_dir"',
+                'mkdir --mode=0700 -- "$uv_cache_dir"',
+            ):
+                assert token in hydration
+            assert "--no-cache --no-progress" not in hydration
+        else:
+            assert "raos-unit-uv-cache" not in hydration
+            assert "--cache-dir" not in hydration
+            assert "--no-cache --no-progress" in hydration
         assert observed_runs[f"Reproduce {job_id} job"] == reproduce_command
 
         step_names = [step["name"] for step in job["steps"]]
@@ -234,19 +278,151 @@ def test_setup_and_hydration_are_exact_source_constrained_and_cache_isolated() -
         )
 
 
-def test_secret_job_runs_the_exact_local_history_command() -> None:
+def test_reviewed_findings_ledger_has_exact_detached_activation_approval() -> None:
+    ledger_bytes = REVIEWED_FINDINGS_PATH.read_bytes()
+    assert len(ledger_bytes) == EXPECTED_REVIEWED_FINDINGS_BYTES
+    assert hashlib.sha256(ledger_bytes).hexdigest() == EXPECTED_REVIEWED_FINDINGS_SHA256
+    ledger = json.loads(ledger_bytes)
+    assert set(ledger) == {"version", "status", "rule_id", "entries"}
+    assert ledger["version"] == 1
+    assert ledger["status"] == "UNAPPROVED_CANDIDATE"
+    assert ledger["rule_id"] == "GENERIC_CREDENTIAL"
+    assert len(ledger["entries"]) == 89
+    assert sum(entry["scope"] == "worktree" for entry in ledger["entries"]) == 31
+    assert sum(entry["scope"] == "git_history" for entry in ledger["entries"]) == 58
+
+    approval_bytes = REVIEWED_FINDINGS_APPROVAL_PATH.read_bytes()
+    assert len(approval_bytes) == EXPECTED_REVIEWED_FINDINGS_APPROVAL_BYTES
+    assert (
+        hashlib.sha256(approval_bytes).hexdigest()
+        == EXPECTED_REVIEWED_FINDINGS_APPROVAL_SHA256
+    )
+    document = yaml.safe_load(approval_bytes)
+    assert set(document) == {"REVIEWED_SECRET_FINDINGS_APPROVAL_V1"}
+    approval = document["REVIEWED_SECRET_FINDINGS_APPROVAL_V1"]
+    assert approval["ledger_uri"] == f"repo://{REVIEWED_FINDINGS_RELATIVE_PATH}"
+    assert approval["ledger_bytes"] == EXPECTED_REVIEWED_FINDINGS_BYTES
+    assert approval["ledger_sha256"] == EXPECTED_REVIEWED_FINDINGS_SHA256
+    assert approval["ledger_version"] == 1
+    assert approval["ledger_internal_status"] == "UNAPPROVED_CANDIDATE"
+    assert approval["reviewed_entry_count"] == 89
+    assert approval["reviewed_scope_counts"] == {"worktree": 31, "git_history": 58}
+    assert approval["reviewed_rule_id"] == "GENERIC_CREDENTIAL"
+    assert approval["status"] == "OWNER_APPROVED_FOR_EXACT_CI_REFERENCE_ACTIVATION"
+    assert approval["approved_by"] == "repository_owner:jamozi"
+    assert approval["observed_at"] == "2026-08-14T19:16:10Z"
+    assert approval["message_authored_at"] == "NOT_SUPPLIED"
+    visible = approval["visible_user_rendering"].encode("utf-8")
+    normalized = approval["normalized_semantic_statement"].encode("utf-8")
+    assert len(visible) == approval["visible_user_rendering_utf8_bytes"] == 351
+    assert (
+        hashlib.sha256(visible).hexdigest()
+        == approval["visible_user_rendering_sha256"]
+        == "61fafd8cbf9b4b0b2b2571c5aa5e14e1e5d7206f05f48854670c0a6b6a97f478"
+    )
+    assert (
+        len(normalized) == approval["normalized_semantic_statement_utf8_bytes"] == 340
+    )
+    assert (
+        hashlib.sha256(normalized).hexdigest()
+        == approval["normalized_semantic_statement_sha256"]
+        == "99a3e6259cd40b2e9ceefd8620c208905bd2dc3f4a9ebf3a344ce02dc6fd2222"
+    )
+    assert approval["normalization"] == {
+        "display_markdown_quote_markers_removed": True,
+        "display_line_wrapping_joined": True,
+        "other_text_change": False,
+        "semantic_delta": "NONE",
+    }
+    assert approval["prerequisite_authority"] == {
+        "handoff_uri": "repo://changes/st-0106/DESIGN_HANDOFF_V1_ST0106_CI_CACHE_AND_REVIEWED_SECRET_FINDINGS_V2.yaml",
+        "handoff_bytes": 17952,
+        "handoff_sha256": "88a6d97cd70728c860ed7ab1b600d0c8cc69239a48a43d5c1b0c82919ff86e0c",
+        "detached_handoff_approval_uri": "repo://changes/st-0106/DESIGN-HANDOFF-APPROVAL-CI-CACHE-AND-REVIEWED-SECRET-FINDINGS-v2.yaml",
+        "detached_handoff_approval_bytes": 4179,
+        "detached_handoff_approval_sha256": "8cd1fb6ff25e3d33a4b96d790512162e8b18ff2f1a9ac3cf29e352d759be4d49",
+        "proposal_uri": "repo://changes/st-0106/CI-CACHE-AND-REVIEWED-SECRET-FINDINGS-V2-PROPOSAL.md",
+        "proposal_bytes": 4366,
+        "proposal_sha256": "3b5d2e17062b458934ac99766f78f05aa43c02150042e10061ba0a2081526966",
+        "decision_id": "ST0106-CI-CACHE-AND-REVIEWED-SECRET-FINDINGS-V2",
+        "handoff_open_decisions": [],
+    }
+    review = approval["sanitized_per_location_review"]
+    assert review["every_ledger_entry_individually_reviewed"] is True
+    assert review["total_reviewed"] == 89
+    assert review["worktree_reviewed"] == 31
+    assert review["git_history_reviewed"] == 58
+    assert review["generic_credential_reviewed"] == 89
+    assert review["specific_rule_findings_reviewed"] == {
+        "aws_access_key": 0,
+        "github_token": 0,
+        "openai_key": 0,
+        "private_key": 0,
+    }
+    assert review["plausible_real_credential_incident_candidate"] == "NONE_IDENTIFIED"
+    for key in (
+        "matched_secret_values_observed_during_review",
+        "matched_secret_values_persisted",
+        "ledger_contains_matched_secret_values",
+        "review_output_contains_matched_secret_values",
+    ):
+        assert review[key] is False
+    assert approval["open_decisions"] == []
+    boundaries = approval["boundaries"]
+    assert boundaries["exact_local_workflow_reference_activation"] == "AUTHORIZED"
+    for key in (
+        "ledger_content_mutation",
+        "scanner_or_wrapper_mutation",
+        "st_0102_mutation",
+        "network_isolation_mutation",
+        "authority_handoff_proposal_or_approval_mutation",
+        "st_0107_or_downstream_provenance_mutation",
+        "status_or_canonical_mutation",
+        "formal_evidence_or_formal_authority",
+        "staging_or_commit",
+        "push_or_pull_request",
+        "merge",
+        "external_write",
+        "release",
+        "production",
+    ):
+        assert boundaries[key] == "NOT_AUTHORIZED"
+    assert boundaries["hosted_ci"] == "NOT_EXECUTED"
+    assert boundaries["formal_tst_001"] == "NOT_EXECUTED"
+    assert boundaries["formal_tst_002"] == "NOT_EXECUTED"
+
+
+def test_secret_job_runs_the_exact_approved_local_history_command() -> None:
     job = WORKFLOW["jobs"]["secrets"]
+    expected_command = (
+        'scripts/run_network_denied.sh --home "$HOME" -- '
+        "/usr/bin/python3 -I scripts/scan_secrets.py "
+        "--worktree --git-history --reviewed-findings "
+        f"{REVIEWED_FINDINGS_RELATIVE_PATH}"
+    )
+    assert WORKFLOW_TEXT.count("--reviewed-findings") == 1
+    assert WORKFLOW_TEXT.count(REVIEWED_FINDINGS_RELATIVE_PATH) == 1
     assert len(action_steps(job)) == 1
     assert run_steps(job) == [
         {
             "name": "Reproduce secret scan",
-            "run": (
-                'scripts/run_network_denied.sh --home "$HOME" -- '
-                "/usr/bin/python3 -I scripts/scan_secrets.py "
-                "--worktree --git-history"
-            ),
+            "run": expected_command,
         }
     ]
+    approval = yaml.safe_load(REVIEWED_FINDINGS_APPROVAL_PATH.read_bytes())[
+        "REVIEWED_SECRET_FINDINGS_APPROVAL_V1"
+    ]
+    assert approval["authorized_activation"] == {
+        "workflow_uri": "repo://.github/workflows/ci.yml",
+        "job_id": "secrets",
+        "step_name": "Reproduce secret scan",
+        "exact_argument": f"--reviewed-findings {REVIEWED_FINDINGS_RELATIVE_PATH}",
+        "exact_command": expected_command,
+        "semantic_delta": "APPEND_EXACT_LEDGER_ARGUMENT_ONLY",
+        "unrelated_job_semantics": "MUST_REMAIN_UNCHANGED",
+        "ledger_bytes": "MUST_REMAIN_UNCHANGED",
+        "scanner_bytes": "MUST_REMAIN_UNCHANGED",
+    }
 
 
 def test_database_job_runs_only_the_exact_st0201_runtime_wrapper() -> None:

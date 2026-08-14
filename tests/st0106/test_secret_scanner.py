@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import hashlib
 import io
+import json
 import os
 from pathlib import Path
 import shutil
@@ -18,6 +20,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 SCANNER_SOURCE = REPOSITORY_ROOT / "scripts" / "scan_secrets.py"
 PYTHON = sys.executable
 GIT = shutil.which("git")
+LEDGER_RATIONALE = "Sanitized source location reviewed; no live credential is present."
 
 
 def aws_credential() -> str:
@@ -118,6 +121,54 @@ def assert_values_are_redacted(
         assert value not in output
 
 
+def exact_line_bytes(data: bytes, line: int) -> bytes:
+    lines = data.split(b"\n")
+    selected = lines[line - 1]
+    return selected + (b"\n" if line < len(lines) else b"")
+
+
+def reviewed_entry(
+    source_identifier: str,
+    data: bytes,
+    line: int,
+    *,
+    scope: str = "worktree",
+) -> dict[str, object]:
+    return {
+        "scope": scope,
+        "exact_source_identifier": source_identifier,
+        "exact_line_number": line,
+        "exact_source_bytes": len(data),
+        "exact_source_sha256": hashlib.sha256(data).hexdigest(),
+        "exact_line_sha256": hashlib.sha256(exact_line_bytes(data, line)).hexdigest(),
+        "classification": "REVIEWED_FALSE_POSITIVE",
+        "rationale": LEDGER_RATIONALE,
+    }
+
+
+def reviewed_document(entries: list[dict[str, object]]) -> dict[str, object]:
+    return {
+        "version": 1,
+        "status": "UNAPPROVED_CANDIDATE",
+        "rule_id": "GENERIC_CREDENTIAL",
+        "entries": entries,
+    }
+
+
+def write_reviewed_ledger(
+    root: Path,
+    entries: list[dict[str, object]],
+    *,
+    name: str = "reviewed-findings.yaml",
+) -> Path:
+    path = root / name
+    path.write_text(
+        json.dumps(reviewed_document(entries), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return path
+
+
 def test_worktree_detects_representative_rules_without_echoing_values(
     tmp_path: Path,
 ) -> None:
@@ -165,6 +216,251 @@ def test_clean_worktree_and_missing_mode_have_deterministic_exit_codes(
     assert clean.stderr == ""
     assert missing_mode.returncode == 2
     assert "at least one of --worktree or --git-history" in missing_mode.stderr
+
+
+def test_reviewed_ledger_subtracts_only_one_exact_generic_finding(
+    tmp_path: Path,
+) -> None:
+    install_scanner(tmp_path)
+    first = generic_assignment()
+    second = "to" + 'ken = "' + "u8Qp-4mNz-6rVk-3sTy" + '"'
+    source_data = f"{first}\n{second}\n".encode()
+    (tmp_path / "credentials.txt").write_bytes(source_data)
+    ledger = write_reviewed_ledger(
+        tmp_path, [reviewed_entry("credentials.txt", source_data, 1)]
+    )
+
+    without_ledger = run_scanner(tmp_path, "--worktree")
+    reviewed = run_scanner(
+        tmp_path,
+        "--worktree",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert without_ledger.returncode == 1
+    assert 'source="credentials.txt" line=1' in without_ledger.stdout
+    assert 'source="credentials.txt" line=2' in without_ledger.stdout
+    assert reviewed.returncode == 1
+    assert 'source="credentials.txt" line=1' not in reviewed.stdout
+    assert 'source="credentials.txt" line=2' in reviewed.stdout
+    assert first not in ledger.read_text(encoding="utf-8")
+    assert second not in ledger.read_text(encoding="utf-8")
+    assert_values_are_redacted(reviewed, [first, second])
+
+
+def test_specific_finding_remains_beside_reviewed_generic_finding(
+    tmp_path: Path,
+) -> None:
+    install_scanner(tmp_path)
+    generic = generic_assignment()
+    specific = aws_credential()
+    source_data = f"{generic} {specific}\n".encode()
+    (tmp_path / "mixed.txt").write_bytes(source_data)
+    ledger = write_reviewed_ledger(
+        tmp_path, [reviewed_entry("mixed.txt", source_data, 1)]
+    )
+
+    result = run_scanner(
+        tmp_path,
+        "--worktree",
+        "--reviewed-findings",
+        str(ledger),
+    )
+
+    assert result.returncode == 1
+    assert "rule=AWS_ACCESS_KEY_ID" in result.stdout
+    assert "rule=GENERIC_CREDENTIAL" not in result.stdout
+    assert_values_are_redacted(result, [generic, specific])
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected_code"),
+    [
+        ("top-level-key", "invalid-reviewed-findings-schema"),
+        ("entry-key", "invalid-reviewed-finding-schema"),
+        ("unknown-rule", "invalid-reviewed-findings-rule"),
+        ("scope-type", "invalid-reviewed-finding-scope"),
+        ("duplicate-entry", "duplicate-reviewed-finding"),
+        ("wildcard", "unsafe-reviewed-finding-source"),
+        ("prefix", "unreadable-worktree-input"),
+        ("traversal", "unsafe-worktree-path"),
+        ("size", "reviewed-finding-source-size-drift"),
+        ("source-hash", "reviewed-finding-source-hash-drift"),
+        ("line-hash", "reviewed-finding-line-hash-drift"),
+        ("line-number", "reviewed-finding-line-hash-drift"),
+        ("classification", "invalid-reviewed-finding-classification"),
+        ("rationale", "invalid-reviewed-finding-rationale"),
+    ],
+)
+def test_reviewed_ledger_rejects_hostile_schema_and_binding_mutations(
+    tmp_path: Path,
+    mutation: str,
+    expected_code: str,
+) -> None:
+    install_scanner(tmp_path)
+    source_data = (generic_assignment() + "\nordinary\n").encode()
+    (tmp_path / "credential.txt").write_bytes(source_data)
+    entry = reviewed_entry("credential.txt", source_data, 1)
+    document = reviewed_document([entry])
+
+    if mutation == "top-level-key":
+        document["unexpected"] = False
+    elif mutation == "entry-key":
+        entry["unexpected"] = False
+    elif mutation == "unknown-rule":
+        document["rule_id"] = "AWS_ACCESS_KEY_ID"
+    elif mutation == "scope-type":
+        entry["scope"] = ["worktree"]
+    elif mutation == "duplicate-entry":
+        document["entries"] = [entry, dict(entry)]
+    elif mutation == "wildcard":
+        entry["exact_source_identifier"] = "credential*"
+    elif mutation == "prefix":
+        entry["exact_source_identifier"] = "credential"
+    elif mutation == "traversal":
+        entry["exact_source_identifier"] = "../credential.txt"
+    elif mutation == "size":
+        entry["exact_source_bytes"] = len(source_data) + 1
+    elif mutation == "source-hash":
+        entry["exact_source_sha256"] = "0" * 64
+    elif mutation == "line-hash":
+        entry["exact_line_sha256"] = "0" * 64
+    elif mutation == "line-number":
+        entry["exact_line_number"] = 2
+    elif mutation == "classification":
+        entry["classification"] = "APPROVED"
+    elif mutation == "rationale":
+        entry["rationale"] = "broad exception"
+    else:
+        raise AssertionError(f"unhandled mutation: {mutation}")
+
+    ledger = tmp_path / "reviewed-findings.yaml"
+    ledger.write_text(
+        json.dumps(document, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    result = run_scanner(
+        tmp_path,
+        "--worktree",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert result.returncode == 2
+    assert expected_code in result.stderr
+    assert result.stdout == ""
+    assert_values_are_redacted(result, [generic_assignment()])
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        '{"version": 1, "version": 1, "status": "UNAPPROVED_CANDIDATE", '
+        '"rule_id": "GENERIC_CREDENTIAL", "entries": []}\n',
+        "version: 1\nstatus: &state UNAPPROVED_CANDIDATE\n",
+        "version: 1\nstatus: *state\n",
+        "version: 1\n<<: {status: UNAPPROVED_CANDIDATE}\n",
+        "!reviewed {version: 1}\n",
+    ],
+)
+def test_reviewed_ledger_rejects_duplicate_alias_anchor_merge_and_tag_syntax(
+    tmp_path: Path,
+    payload: str,
+) -> None:
+    install_scanner(tmp_path)
+    (tmp_path / "ordinary.txt").write_text("ordinary\n", encoding="utf-8")
+    ledger = tmp_path / "reviewed-findings.yaml"
+    ledger.write_text(payload, encoding="utf-8")
+
+    result = run_scanner(
+        tmp_path,
+        "--worktree",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert result.returncode == 2
+    assert (
+        "duplicate-reviewed-findings-key" in result.stderr
+        or "invalid-reviewed-findings-syntax" in result.stderr
+    )
+
+
+@pytest.mark.parametrize("shape", ["missing", "directory", "symlink", "oversized"])
+def test_reviewed_ledger_file_is_bounded_regular_and_symlink_free(
+    tmp_path: Path,
+    shape: str,
+) -> None:
+    install_scanner(tmp_path)
+    (tmp_path / "ordinary.txt").write_text("ordinary\n", encoding="utf-8")
+    ledger = tmp_path / "reviewed-findings.yaml"
+    if shape == "directory":
+        ledger.mkdir()
+    elif shape == "symlink":
+        target = tmp_path / "real-ledger.yaml"
+        target.write_text(json.dumps(reviewed_document([])) + "\n", encoding="utf-8")
+        ledger.symlink_to(target)
+    elif shape == "oversized":
+        ledger.write_bytes(b" " * (2 * 1024 * 1024 + 1))
+    elif shape != "missing":
+        raise AssertionError(f"unhandled shape: {shape}")
+
+    result = run_scanner(
+        tmp_path,
+        "--worktree",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert result.returncode == 2
+    assert result.stdout == ""
+
+
+def test_reviewed_worktree_entry_becomes_stale_after_source_change(
+    tmp_path: Path,
+) -> None:
+    install_scanner(tmp_path)
+    source = tmp_path / "credential.txt"
+    source_data = (generic_assignment() + "\n").encode()
+    source.write_bytes(source_data)
+    ledger = write_reviewed_ledger(
+        tmp_path, [reviewed_entry("credential.txt", source_data, 1)]
+    )
+    source.write_text("ordinary content\n", encoding="utf-8")
+
+    result = run_scanner(
+        tmp_path,
+        "--worktree",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert result.returncode == 2
+    assert "reviewed-finding-source" in result.stderr
+    assert result.stdout == ""
+
+
+def test_exact_but_nonfinding_worktree_entry_is_rejected_as_stale(
+    tmp_path: Path,
+) -> None:
+    install_scanner(tmp_path)
+    source_data = b"ordinary documentation text\n"
+    (tmp_path / "template.env").write_bytes(source_data)
+    ledger = write_reviewed_ledger(
+        tmp_path, [reviewed_entry("template.env", source_data, 1)]
+    )
+
+    result = run_scanner(
+        tmp_path,
+        "--worktree",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert result.returncode == 2
+    assert "stale-reviewed-worktree-finding" in result.stderr
+    assert result.stdout == ""
 
 
 def test_non_git_fallback_excludes_only_local_and_generated_state(
@@ -521,6 +817,107 @@ def test_history_scans_deleted_blob_from_detached_head_object_database(
     assert 'source="git-blob:' in result.stdout
     assert "retired.txt" not in result.stdout
     assert_values_are_redacted(result, [value])
+
+
+def test_reviewed_history_binding_uses_the_exact_present_blob_object(
+    tmp_path: Path,
+) -> None:
+    install_scanner(tmp_path)
+    initialize_repository(tmp_path)
+    value = generic_assignment()
+    source_data = (value + "\n").encode()
+    (tmp_path / "credential.txt").write_bytes(source_data)
+    commit_all(tmp_path, "generic fixture exists")
+    object_id = git(tmp_path, "rev-parse", "HEAD:credential.txt").stdout.strip()
+    ledger = write_reviewed_ledger(
+        tmp_path,
+        [
+            reviewed_entry(
+                object_id,
+                source_data,
+                1,
+                scope="git_history",
+            )
+        ],
+    )
+
+    result = run_scanner(
+        tmp_path,
+        "--git-history",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert result.returncode == 0, combined_output(result)
+    assert result.stdout == ""
+    assert_values_are_redacted(result, [value])
+
+
+def test_reviewed_history_binding_allows_an_absent_exact_object(
+    tmp_path: Path,
+) -> None:
+    install_scanner(tmp_path)
+    initialize_repository(tmp_path)
+    (tmp_path / "ordinary.txt").write_text("ordinary\n", encoding="utf-8")
+    commit_all(tmp_path, "clean history")
+    absent_data = b"historical source is unavailable\n"
+    ledger = write_reviewed_ledger(
+        tmp_path,
+        [
+            reviewed_entry(
+                "0" * 40,
+                absent_data,
+                1,
+                scope="git_history",
+            )
+        ],
+    )
+
+    result = run_scanner(
+        tmp_path,
+        "--git-history",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert result.returncode == 0, combined_output(result)
+    assert result.stdout == ""
+
+
+@pytest.mark.parametrize("mutation", ["size", "source-hash", "line-hash", "line"])
+def test_reviewed_history_binding_rejects_present_object_drift(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    install_scanner(tmp_path)
+    initialize_repository(tmp_path)
+    source_data = (generic_assignment() + "\nordinary\n").encode()
+    (tmp_path / "credential.txt").write_bytes(source_data)
+    commit_all(tmp_path, "generic fixture exists")
+    object_id = git(tmp_path, "rev-parse", "HEAD:credential.txt").stdout.strip()
+    entry = reviewed_entry(object_id, source_data, 1, scope="git_history")
+    if mutation == "size":
+        entry["exact_source_bytes"] = len(source_data) + 1
+    elif mutation == "source-hash":
+        entry["exact_source_sha256"] = "0" * 64
+    elif mutation == "line-hash":
+        entry["exact_line_sha256"] = "0" * 64
+    elif mutation == "line":
+        entry["exact_line_number"] = 2
+    else:
+        raise AssertionError(f"unhandled mutation: {mutation}")
+    ledger = write_reviewed_ledger(tmp_path, [entry])
+
+    result = run_scanner(
+        tmp_path,
+        "--git-history",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert result.returncode == 2
+    assert "reviewed-finding" in result.stderr
+    assert result.stdout == ""
 
 
 def test_combined_mode_returns_operational_error_when_history_is_unavailable(

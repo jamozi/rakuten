@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
+import functools
 import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import subprocess
+import tempfile
 import tomllib
 from typing import Any
 
@@ -17,6 +20,7 @@ import pytest
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 EXPECTED_UV_VERSION = "0.12.1"
 UV_VERSION_PATTERN = re.compile(r"^uv (?P<version>\d+\.\d+\.\d+)(?:\s|$)")
+UV_LOCK_INPUTS = (".python-version", "pyproject.toml", "uv.toml", "uv.lock")
 
 
 @pytest.fixture(scope="session")
@@ -59,6 +63,89 @@ def uv_environment(cache_directory: Path) -> dict[str, str]:
         if value := os.environ.get(name):
             environment[name] = value
     return environment
+
+
+def explicit_ci_uv_cache() -> Path | None:
+    """Return the exact CI cache, failing rather than falling back if unsafe."""
+
+    configured = os.environ.get("RAOS_CI_UV_CACHE_DIR")
+    if configured is None:
+        return None
+    if not configured.startswith("/"):
+        pytest.fail("RAOS_CI_UV_CACHE_DIR must be an absolute canonical directory")
+    candidate = Path(configured)
+    try:
+        metadata = candidate.lstat()
+        canonical = candidate.resolve(strict=True)
+    except OSError, RuntimeError:
+        pytest.fail("RAOS_CI_UV_CACHE_DIR must be an existing safe directory")
+    if (
+        str(canonical) != configured
+        or stat.S_ISLNK(metadata.st_mode)
+        or not stat.S_ISDIR(metadata.st_mode)
+        or metadata.st_uid != os.geteuid()
+        or stat.S_IMODE(metadata.st_mode) != 0o700
+    ):
+        pytest.fail("RAOS_CI_UV_CACHE_DIR ownership, mode, or path is unsafe")
+    return canonical
+
+
+@functools.cache
+def uv_cache_supports_locked_offline_sync(binary: Path, cache: Path) -> bool:
+    """Prove that a cache can build the exact locked dev environment offline."""
+
+    with tempfile.TemporaryDirectory(prefix="raos-st0102-cache-probe-") as temporary:
+        project = Path(temporary) / "project"
+        project.mkdir()
+        for relative in UV_LOCK_INPUTS:
+            shutil.copy2(REPOSITORY_ROOT / relative, project / relative)
+        process = subprocess.run(
+            [
+                str(binary),
+                "--no-config",
+                "--color",
+                "never",
+                "--cache-dir",
+                str(cache),
+                "sync",
+                "--locked",
+                "--offline",
+                "--no-default-groups",
+                "--group",
+                "dev",
+                "--no-install-project",
+                "--no-install-local",
+                "--managed-python",
+                "--no-python-downloads",
+                "--python",
+                "3.14.6",
+                "--no-build",
+                "--no-sources",
+                "--default-index",
+                "https://pypi.org/simple",
+                "--index-strategy",
+                "first-index",
+                "--keyring-provider",
+                "disabled",
+                "--link-mode",
+                "copy",
+                "--resolution",
+                "highest",
+                "--prerelease",
+                "disallow",
+                "--exclude-newer",
+                "2026-08-01T16:50:16Z",
+                "--no-progress",
+            ],
+            cwd=project,
+            env=uv_environment(cache),
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=60,
+        )
+        python = project / ".venv" / "bin" / "python"
+        return process.returncode == 0 and python.is_file()
 
 
 def _candidate_uv_paths() -> Iterator[Path]:
