@@ -30,6 +30,23 @@ AGENTS_PATH = REPOSITORY_ROOT / "AGENTS.md"
 SKILL_ROOT = Path("/home/minami/.codex/skills/raos-ask-pro")
 
 REQUEST_TEXT = "Compare the existing boundaries using only cited repository evidence."
+MCP_STALE_REF_SENTINEL = "f12e987654"
+MCP_STALE_REF_ERROR = (
+    f"### Error\nError: Ref {MCP_STALE_REF_SENTINEL} not found in the current "
+    "page snapshot. Try capturing new snapshot."
+)
+MCP_NONEDITABLE_ERROR = (
+    "### Error\nError: locator.fill: Error: Element is not an <input>, <textarea> "
+    "or [contenteditable] element"
+)
+MCP_FILL_TIMEOUT_ERROR = (
+    "### Error\nTimeoutError: locator.fill: Timeout 5000ms exceeded."
+)
+MCP_CALL_LOG_SENTINEL = "RAW_CALL_LOG_SENTINEL_TYPED_COMPOSER"
+MCP_CALL_LOG_CONTINUATION = (
+    "\nCall log:\n"
+    f"  - waiting for locator('aria-ref=e778899') {MCP_CALL_LOG_SENTINEL}\n"
+)
 EXPECTED_TOOLS = [
     "browser_navigate",
     "browser_click",
@@ -38,6 +55,13 @@ EXPECTED_TOOLS = [
     "browser_click",
     "browser_wait_for",
 ]
+
+
+def mcp_error_result(text: str) -> dict[str, Any]:
+    return {
+        "content": [{"type": "text", "text": text}],
+        "isError": True,
+    }
 
 
 def observation(
@@ -1147,10 +1171,19 @@ def test_pre_submission_phase_vocabulary_and_settle_bounds_are_closed() -> None:
             id="effort-conflict",
         ),
         pytest.param("ADVANCED_MENU_UNRECOGNIZED", "pro_menu", id="unrecognized"),
+        pytest.param("MCP_TYPE_REF_STALE", "typed_composer", id="typed-stale-ref"),
+        pytest.param(
+            "MCP_TYPE_ELEMENT_NOT_EDITABLE",
+            "typed_composer",
+            id="typed-noneditable",
+        ),
+        pytest.param(
+            "MCP_TYPE_FILL_TIMEOUT", "typed_composer", id="typed-fill-timeout"
+        ),
     ],
 )
 @pytest.mark.parametrize(
-    ("importance", "expected_exit", "expected_status", "expected_action"),
+    ("importance", "expected_exit", "expected_status", "importance_action"),
     [
         pytest.param(
             "ordinary",
@@ -1170,9 +1203,14 @@ def test_closed_diagnostic_is_hash_bound_in_state_event_result_and_status(
     importance: str,
     expected_exit: int,
     expected_status: str,
-    expected_action: str,
+    importance_action: str,
 ) -> None:
     root = private_root(tmp_path)
+    expected_action = (
+        "STOP"
+        if reason_code in orchestrator.TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES
+        else importance_action
+    )
     exit_code, result, transport = prepare_live_diagnostic_run(
         root,
         monkeypatch,
@@ -1272,6 +1310,8 @@ def test_closed_diagnostic_is_hash_bound_in_state_event_result_and_status(
         "ACCOUNT_SENTINEL_CLOSED_DIAGNOSTIC",
         "PROFILE_SENTINEL_CLOSED_DIAGNOSTIC",
         "https://unrelated.invalid/closed-diagnostic",
+        MCP_STALE_REF_SENTINEL,
+        MCP_CALL_LOG_SENTINEL,
     ):
         assert forbidden not in diagnostic_surfaces
     assert not any(
@@ -1286,6 +1326,12 @@ def test_closed_diagnostics_never_become_manual_import_reasons() -> None:
         orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
     )
     assert orchestrator.ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
+    )
+    assert orchestrator.TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES.isdisjoint(
+        orchestrator.MANUAL_IMPORT_TERMINAL_REASON_CODES
+    )
+    assert orchestrator.TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES.isdisjoint(
         orchestrator.MANUAL_IMPORT_WAIT_CONTINUES_REASON_CODES
     )
     assert orchestrator.BOUND_RESPONSE_RECOVERY_DIAGNOSTIC_CODES.isdisjoint(
@@ -1489,6 +1535,8 @@ def test_real_classifier_persists_no_raw_browser_material_or_submission_evidence
         "wrong-case-event-state-reason-missing",
         "event-reason-missing",
         "event-dynamic-field",
+        "phase-mismatch",
+        "action-mismatch",
     ],
 )
 @pytest.mark.parametrize(
@@ -1503,6 +1551,11 @@ def test_real_classifier_persists_no_raw_browser_material_or_submission_evidence
             "ADVANCED_MENU_STATE_MIXED",
             "pro_menu",
             id="predecessor-mixed-compatibility",
+        ),
+        pytest.param(
+            "MCP_TYPE_REF_STALE",
+            "typed_composer",
+            id="typed-composer-diagnostic",
         ),
     ],
 )
@@ -1522,31 +1575,54 @@ def test_status_rejects_semantically_invalid_hash_valid_diagnostic_records(
         importance="ordinary",
     )
     run_dir = root / "chatgpt-pro-runs" / result["run_id"]
+    typed_diagnostic = reason_code in orchestrator.TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES
+    dynamic_reason = f"{reason_code}_COUNT_2"
+    unknown_reason = (
+        "MCP_TYPE_UNKNOWN_BOUNDARY" if typed_diagnostic else "ADVANCED_UNKNOWN_BOUNDARY"
+    )
+    disagreeing_reason = (
+        "MCP_TYPE_FILL_TIMEOUT"
+        if typed_diagnostic
+        else "ADVANCED_EFFORT_EVIDENCE_MISSING"
+    )
+    invalid_phase = "advanced_summary" if typed_diagnostic else "typed_composer"
 
     def mutate_state(state: dict[str, Any]) -> None:
         if mutation == "dynamic-both":
-            state["reason_code"] = "ADVANCED_MODEL_EVIDENCE_MISSING_COUNT_2"
+            state["reason_code"] = dynamic_reason
         elif mutation == "unknown-both":
-            state["reason_code"] = "ADVANCED_UNKNOWN_BOUNDARY"
+            state["reason_code"] = unknown_reason
         elif mutation in {
             "state-reason-missing",
             "wrong-case-event-state-reason-missing",
         }:
             state.pop("reason_code")
+        elif mutation == "phase-mismatch":
+            state["phase"] = invalid_phase
+        elif mutation == "action-mismatch":
+            state["next_action"] = (
+                "CONTINUE_CANONICAL_LOCAL_ONLY" if typed_diagnostic else "STOP"
+            )
 
     def mutate_event(event: dict[str, Any]) -> None:
         if mutation == "dynamic-both":
-            event["payload"]["reason_code"] = "ADVANCED_MODEL_EVIDENCE_MISSING_COUNT_2"
+            event["payload"]["reason_code"] = dynamic_reason
         elif mutation == "unknown-both":
-            event["payload"]["reason_code"] = "ADVANCED_UNKNOWN_BOUNDARY"
+            event["payload"]["reason_code"] = unknown_reason
         elif mutation == "event-disagreement":
-            event["payload"]["reason_code"] = "ADVANCED_EFFORT_EVIDENCE_MISSING"
+            event["payload"]["reason_code"] = disagreeing_reason
         elif mutation == "wrong-case-event-state-reason-missing":
-            event["payload"]["reason_code"] = "advanced_model_evidence_missing"
+            event["payload"]["reason_code"] = reason_code.lower()
         elif mutation == "event-reason-missing":
             event["payload"].pop("reason_code")
         elif mutation == "event-dynamic-field":
             event["payload"]["raw_label"] = "Model secret sentinel"
+        elif mutation == "phase-mismatch":
+            event["payload"]["phase"] = invalid_phase
+        elif mutation == "action-mismatch":
+            event["payload"]["fallback_scope"] = (
+                "CONTINUE_CANONICAL_LOCAL_ONLY" if typed_diagnostic else "STOP"
+            )
 
     rewrite_hash_bound_terminal(
         run_dir,
@@ -1789,6 +1865,386 @@ def test_status_sanitizes_unhashable_phase_schema_values(
         orchestrator.status(private_root=root, run_id=asked["run_id"])
 
     assert captured.value.code == "STATE_INVALID"
+
+
+def test_browser_type_mcp_diagnostic_allowlist_is_closed() -> None:
+    assert orchestrator.TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES == {
+        "MCP_TYPE_REF_STALE",
+        "MCP_TYPE_ELEMENT_NOT_EDITABLE",
+        "MCP_TYPE_FILL_TIMEOUT",
+    }
+    assert orchestrator.CLOSED_PRE_SUBMISSION_DIAGNOSTIC_CODES == {
+        *orchestrator.ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES,
+        *orchestrator.TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES,
+    }
+
+
+@pytest.mark.parametrize(
+    ("text", "reason_code"),
+    [
+        pytest.param(MCP_STALE_REF_ERROR, "MCP_TYPE_REF_STALE", id="stale-ref"),
+        pytest.param(
+            MCP_NONEDITABLE_ERROR,
+            "MCP_TYPE_ELEMENT_NOT_EDITABLE",
+            id="noneditable-end-of-text",
+        ),
+        pytest.param(
+            MCP_NONEDITABLE_ERROR + MCP_CALL_LOG_CONTINUATION,
+            "MCP_TYPE_ELEMENT_NOT_EDITABLE",
+            id="noneditable-call-log",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR,
+            "MCP_TYPE_FILL_TIMEOUT",
+            id="timeout-end-of-text",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR
+            + "\nCall log:\n"
+            + "  2 × waiting for locator('aria-ref=e778899')\n"
+            + "    - locator resolved to hidden element\n",
+            "MCP_TYPE_FILL_TIMEOUT",
+            id="timeout-compressed-call-log",
+        ),
+    ],
+)
+def test_browser_type_mcp_classifier_accepts_only_pinned_signatures(
+    text: str,
+    reason_code: str,
+) -> None:
+    result = mcp_error_result(text)
+
+    assert orchestrator._classify_browser_type_mcp_error(result) == reason_code
+    assert result == mcp_error_result(text)
+
+
+@pytest.mark.parametrize(
+    "result",
+    [
+        pytest.param(None, id="not-a-mapping"),
+        pytest.param({}, id="empty-mapping"),
+        pytest.param(
+            {"content": [{"type": "text", "text": MCP_STALE_REF_ERROR}]},
+            id="is-error-missing",
+        ),
+        pytest.param(
+            {
+                "content": [{"type": "text", "text": MCP_STALE_REF_ERROR}],
+                "isError": False,
+            },
+            id="is-error-false",
+        ),
+        pytest.param(
+            {
+                "content": [{"type": "text", "text": MCP_STALE_REF_ERROR}],
+                "isError": 1,
+            },
+            id="is-error-integer",
+        ),
+        pytest.param(
+            {
+                "content": [{"type": "text", "text": MCP_STALE_REF_ERROR}],
+                "isError": True,
+                "structuredContent": {},
+            },
+            id="extra-result-field",
+        ),
+        pytest.param({"content": [], "isError": True}, id="zero-blocks"),
+        pytest.param(
+            {
+                "content": ({"type": "text", "text": MCP_STALE_REF_ERROR},),
+                "isError": True,
+            },
+            id="non-list-content",
+        ),
+        pytest.param(
+            {
+                "content": [
+                    {"type": "text", "text": MCP_STALE_REF_ERROR},
+                    {"type": "text", "text": MCP_STALE_REF_ERROR},
+                ],
+                "isError": True,
+            },
+            id="multiple-text-blocks",
+        ),
+        pytest.param(
+            {
+                "content": [
+                    {"type": "text", "text": MCP_STALE_REF_ERROR},
+                    {"type": "image", "data": "RAW_IMAGE_SENTINEL"},
+                ],
+                "isError": True,
+            },
+            id="text-and-non-text-blocks",
+        ),
+        pytest.param(
+            {
+                "content": [{"type": "image", "data": "RAW_IMAGE_SENTINEL"}],
+                "isError": True,
+            },
+            id="non-text-block",
+        ),
+        pytest.param(
+            {"content": [{"text": MCP_STALE_REF_ERROR}], "isError": True},
+            id="block-type-missing",
+        ),
+        pytest.param(
+            {
+                "content": [{"type": "Text", "text": MCP_STALE_REF_ERROR}],
+                "isError": True,
+            },
+            id="wrong-block-type-case",
+        ),
+        pytest.param(
+            {
+                "content": [{"type": "text", "text": MCP_STALE_REF_ERROR, "meta": {}}],
+                "isError": True,
+            },
+            id="extra-block-field",
+        ),
+        pytest.param(
+            {"content": [{"type": "text", "text": 7}], "isError": True},
+            id="non-string-text",
+        ),
+        pytest.param(
+            {"content": [{"type": "text", "text": ""}], "isError": True},
+            id="empty-text",
+        ),
+        pytest.param(
+            {
+                "content": [
+                    {"type": "text", "text": MCP_FILL_TIMEOUT_ERROR + "\ud800"}
+                ],
+                "isError": True,
+            },
+            id="invalid-utf8-surrogate",
+        ),
+    ],
+)
+def test_browser_type_mcp_classifier_rejects_malformed_result_shapes(
+    result: object,
+) -> None:
+    assert orchestrator._classify_browser_type_mcp_error(result) is None
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        pytest.param(MCP_STALE_REF_ERROR.lower(), id="wrong-case"),
+        pytest.param(" " + MCP_STALE_REF_ERROR, id="leading-padding"),
+        pytest.param(MCP_STALE_REF_ERROR + " ", id="trailing-padding"),
+        pytest.param(MCP_STALE_REF_ERROR + "\n", id="trailing-newline"),
+        pytest.param(MCP_STALE_REF_ERROR.replace("\n", "\r\n"), id="crlf"),
+        pytest.param(
+            MCP_STALE_REF_ERROR.replace(MCP_STALE_REF_SENTINEL, "f12"),
+            id="stale-ref-frame-only",
+        ),
+        pytest.param(
+            MCP_STALE_REF_ERROR.replace(MCP_STALE_REF_SENTINEL, "e12x"),
+            id="stale-ref-suffix",
+        ),
+        pytest.param(
+            MCP_STALE_REF_ERROR.replace(MCP_STALE_REF_SENTINEL, "[e12]"),
+            id="stale-ref-brackets",
+        ),
+        pytest.param(
+            MCP_STALE_REF_ERROR.replace(MCP_STALE_REF_SENTINEL, "F12E987654"),
+            id="stale-ref-uppercase",
+        ),
+        pytest.param(
+            MCP_STALE_REF_ERROR + MCP_CALL_LOG_CONTINUATION,
+            id="stale-ref-call-log-forbidden",
+        ),
+        pytest.param(MCP_NONEDITABLE_ERROR + ".", id="noneditable-punctuation"),
+        pytest.param(MCP_NONEDITABLE_ERROR + " ", id="noneditable-padding"),
+        pytest.param(
+            MCP_NONEDITABLE_ERROR.replace("Element", "element"),
+            id="noneditable-case",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR.replace("5000ms", "5001ms"),
+            id="timeout-value",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + "\ncall log:\n  - waiting\n",
+            id="call-log-case",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + "\nCall log:\n  - waiting",
+            id="call-log-final-newline-missing",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + "\nCall log:\n",
+            id="call-log-body-missing",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + "\nCall log:\n  - waiting\n\n",
+            id="call-log-blank-line",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + "\nCall log:\n - waiting\n",
+            id="call-log-indent",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + "\nCall log:\n  - waiting \n",
+            id="call-log-trailing-space",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + "\nCall log:\n  1 × waiting\n",
+            id="call-log-impossible-one-repeat",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + "\nCall log:\n  02 × waiting\n",
+            id="call-log-zero-padded-repeat",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + MCP_STALE_REF_ERROR,
+            id="concatenated-timeout-and-stale-signatures",
+        ),
+        pytest.param(
+            MCP_NONEDITABLE_ERROR + "\n" + MCP_FILL_TIMEOUT_ERROR,
+            id="concatenated-fill-signatures",
+        ),
+    ],
+)
+def test_browser_type_mcp_classifier_rejects_hostile_near_and_multi_signatures(
+    text: str,
+) -> None:
+    assert orchestrator._classify_browser_type_mcp_error(mcp_error_result(text)) is None
+
+
+def test_browser_type_mcp_classifier_enforces_exact_utf8_size_boundary() -> None:
+    line_prefix = MCP_FILL_TIMEOUT_ERROR + "\nCall log:\n  - "
+    final_newline = "\n"
+    padding_size = (
+        workflow.MAX_TEXT_BYTES
+        - len(line_prefix.encode("utf-8"))
+        - len(final_newline.encode("utf-8"))
+    )
+    at_limit = line_prefix + ("x" * padding_size) + final_newline
+    over_limit = line_prefix + ("x" * (padding_size + 1)) + final_newline
+
+    assert len(at_limit.encode("utf-8")) == workflow.MAX_TEXT_BYTES
+    assert len(over_limit.encode("utf-8")) == workflow.MAX_TEXT_BYTES + 1
+    assert (
+        orchestrator._classify_browser_type_mcp_error(mcp_error_result(at_limit))
+        == "MCP_TYPE_FILL_TIMEOUT"
+    )
+    assert (
+        orchestrator._classify_browser_type_mcp_error(mcp_error_result(over_limit))
+        is None
+    )
+    transport = object.__new__(orchestrator.StdioMcpTransport)
+    requests: list[tuple[str, dict[str, Any]]] = []
+
+    def request(method: str, params: dict[str, Any]) -> dict[str, Any]:
+        requests.append((method, params))
+        return mcp_error_result(over_limit)
+
+    transport._request = request
+    arguments = {"text": "RAOS_CHATGPT_PROMPT"}
+    with pytest.raises(orchestrator.TransportUnavailable) as captured:
+        transport.call("browser_type", arguments)
+
+    assert captured.value.code == "MCP_CALL_FAILED"
+    assert str(captured.value) == "MCP_CALL_FAILED"
+    assert requests == [
+        (
+            "tools/call",
+            {"name": "browser_type", "arguments": arguments},
+        )
+    ]
+
+
+def test_browser_type_mcp_classifier_rejects_ambiguous_match_count(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        orchestrator,
+        "_matches_pinned_mcp_fill_error",
+        lambda _text, _prefix: True,
+    )
+
+    assert (
+        orchestrator._classify_browser_type_mcp_error(
+            mcp_error_result(MCP_STALE_REF_ERROR)
+        )
+        is None
+    )
+
+
+@pytest.mark.parametrize(
+    ("tool", "result", "reason_code"),
+    [
+        pytest.param(
+            "browser_type",
+            mcp_error_result(MCP_STALE_REF_ERROR),
+            "MCP_TYPE_REF_STALE",
+            id="typed-stale-ref",
+        ),
+        pytest.param(
+            "browser_type",
+            mcp_error_result(MCP_NONEDITABLE_ERROR + MCP_CALL_LOG_CONTINUATION),
+            "MCP_TYPE_ELEMENT_NOT_EDITABLE",
+            id="typed-noneditable",
+        ),
+        pytest.param(
+            "browser_type",
+            mcp_error_result(MCP_FILL_TIMEOUT_ERROR),
+            "MCP_TYPE_FILL_TIMEOUT",
+            id="typed-timeout",
+        ),
+        pytest.param(
+            "browser_type",
+            {
+                "content": [
+                    {"type": "text", "text": MCP_STALE_REF_ERROR},
+                    {"type": "text", "text": MCP_FILL_TIMEOUT_ERROR},
+                ],
+                "isError": True,
+            },
+            "MCP_CALL_FAILED",
+            id="typed-multiple-blocks-generic",
+        ),
+        pytest.param(
+            "browser_click",
+            mcp_error_result(MCP_STALE_REF_ERROR),
+            "MCP_CALL_FAILED",
+            id="non-type-tool-generic",
+        ),
+    ],
+)
+def test_stdio_transport_sanitizes_browser_type_error_without_another_call(
+    tool: str,
+    result: dict[str, Any],
+    reason_code: str,
+) -> None:
+    transport = object.__new__(orchestrator.StdioMcpTransport)
+    requests: list[tuple[str, dict[str, Any]]] = []
+
+    def request(method: str, params: dict[str, Any]) -> dict[str, Any]:
+        requests.append((method, params))
+        return result
+
+    transport._request = request
+    arguments = {"text": "RAOS_CHATGPT_PROMPT"} if tool == "browser_type" else {}
+
+    with pytest.raises(orchestrator.TransportUnavailable) as captured:
+        transport.call(tool, arguments)
+
+    assert captured.value.code == reason_code
+    assert str(captured.value) == reason_code
+    assert requests == [
+        ("tools/call", {"name": tool, "arguments": arguments}),
+    ]
+    exception_surface = f"{captured.value!s}\n{captured.value!r}"
+    for forbidden in (
+        MCP_STALE_REF_SENTINEL,
+        MCP_CALL_LOG_SENTINEL,
+        "locator.fill",
+        "Call log:",
+    ):
+        assert forbidden not in exception_surface
 
 
 @pytest.mark.parametrize(
