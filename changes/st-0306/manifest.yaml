@@ -57,8 +57,8 @@ source_artifacts:
   bytes: 2385
   sha256: dd0cc0a6e99483d1975feae553736e142db54440fa5ff42d34d0d50d15c9b488
 - uri: repo://README.md
-  bytes: 57509
-  sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
+  bytes: 58459
+  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 - uri: repo://Makefile
   bytes: 31909
   sha256: 97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34
