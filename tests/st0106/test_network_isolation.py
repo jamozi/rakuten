@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import fcntl
 import json
 import os
 from pathlib import Path
+import runpy
+import shutil
 import socket
 import subprocess
 import time
@@ -66,14 +69,37 @@ def test_network_wrapper_is_hardened_and_has_valid_shell() -> None:
     content = WRAPPER.read_text(encoding="utf-8")
     assert content.startswith("#!/bin/bash -p\n\nPATH=/usr/bin:/bin")
     assert "exec env -i" in content
+    assert "launch_mode=UNPRIVILEGED_USER_NAMESPACE" in content
+    assert "launch_mode=PRIVILEGED_NAMESPACE_THEN_DROP" in content
     assert "--user --map-current-user --net --pid --fork" in content
+    assert '"$sudo_executable" -n --' in content
+    assert '"$unshare_executable" --net --pid --mount --fork --kill-child' in content
+    assert (
+        "--bounding-set=-all --inh-caps=-all --ambient-caps=-all --no-new-privs"
+        in content
+    )
+    fallback_launcher = content.split("else\n  launcher=(\n", maxsplit=1)[1].split(
+        "\n  )\nfi", maxsplit=1
+    )[0]
+    assert fallback_launcher.index('"$unshare_executable"') < fallback_launcher.index(
+        '"$setpriv_executable"'
+    )
+    assert fallback_launcher.index('"$setpriv_executable"') < fallback_launcher.index(
+        '/usr/bin/python3 -I "$assertion" --exec --'
+    )
+    assert (
+        '/usr/bin/python3 -I -c "$close_descriptors_program" \\\n'
+        '    "$sudo_executable" -n -- /bin/true' in content
+    )
     assert "--kill-child --" in content
     assert "EUID == 0" in content
     assert "RAOS_PARENT_NET_NS" in content
     assert "RAOS_PARENT_PID_NS" in content
+    assert "RAOS_PARENT_MNT_NS" in content
+    assert "RAOS_NETWORK_LAUNCH_MODE" in content
     assert "RAOS_NETWORK_DENIED=1" in content
     assert "/usr/bin/python3 -I" in content
-    assert "os.closerange" in content
+    assert "close_range(3, (1 << 32) - 1, 0)" in content
     assert '"$assertion" --exec --' in content
 
 
@@ -90,6 +116,8 @@ def test_outer_sandbox_delegation_requires_a_real_guard() -> None:
             "RAOS_NETWORK_DENIED": "1",
             "RAOS_PARENT_NET_NS": os.environ.get("RAOS_PARENT_NET_NS", ""),
             "RAOS_PARENT_PID_NS": os.environ.get("RAOS_PARENT_PID_NS", ""),
+            "RAOS_PARENT_MNT_NS": os.environ.get("RAOS_PARENT_MNT_NS", ""),
+            "RAOS_NETWORK_LAUNCH_MODE": os.environ.get("RAOS_NETWORK_LAUNCH_MODE", ""),
         },
         check=False,
         capture_output=True,
@@ -101,6 +129,7 @@ def test_outer_sandbox_delegation_requires_a_real_guard() -> None:
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout) == {
         "external_network": "DENIED",
+        "launch_mode": os.environ["RAOS_NETWORK_LAUNCH_MODE"],
         "local_socketpair": "ALLOWED",
         "namespace": "ISOLATED",
         "process_namespace": "ISOLATED",
@@ -154,6 +183,7 @@ def test_guard_creates_a_clean_network_namespace_before_child_execution(
     lines = result.stdout.splitlines()
     assert json.loads(lines[0]) == {
         "external_network": "DENIED",
+        "launch_mode": "UNPRIVILEGED_USER_NAMESPACE",
         "local_socketpair": "ALLOWED",
         "namespace": "ISOLATED",
         "process_namespace": "ISOLATED",
@@ -192,6 +222,64 @@ def test_guard_closes_an_inherited_connected_tcp_socket(tmp_path: Path) -> None:
                 )
                 assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
                 assert result.stdout.splitlines()[-1] == "INHERITED_FD_CLOSED"
+                peer.settimeout(0.1)
+                with pytest.raises(TimeoutError):
+                    peer.recv(1)
+
+
+@requires_unsandboxed_parent
+def test_guard_closes_a_high_socket_above_a_lowered_soft_limit(tmp_path: Path) -> None:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
+        listener.bind(("127.0.0.1", 0))
+        listener.listen(1)
+        with socket.create_connection(listener.getsockname(), timeout=2) as client:
+            peer, _ = listener.accept()
+            with peer:
+                high_fd = fcntl.fcntl(client.fileno(), fcntl.F_DUPFD, 512)
+                try:
+                    launcher = (
+                        "import os,resource,sys;"
+                        "_,hard=resource.getrlimit(resource.RLIMIT_NOFILE);"
+                        "resource.setrlimit(resource.RLIMIT_NOFILE,(64,hard));"
+                        "os.execve(sys.argv[1],sys.argv[1:],os.environ)"
+                    )
+                    child = (
+                        "import errno,os,sys;fd=int(sys.argv[1]);"
+                        "caught=False;"
+                        "\ntry:os.write(fd,b'high-fd-bypass')"
+                        "\nexcept OSError as error:"
+                        "caught=error.errno==errno.EBADF"
+                        "\nassert caught;print('HIGH_FD_CLOSED')"
+                    )
+                    result = subprocess.run(
+                        [
+                            str(SYSTEM_PYTHON),
+                            "-I",
+                            "-c",
+                            launcher,
+                            str(WRAPPER),
+                            "--home",
+                            str(tmp_path),
+                            "--",
+                            str(SYSTEM_PYTHON),
+                            "-I",
+                            "-c",
+                            child,
+                            str(high_fd),
+                        ],
+                        cwd=REPOSITORY_ROOT,
+                        env={"PATH": os.defpath, "HOME": str(tmp_path)},
+                        check=False,
+                        capture_output=True,
+                        text=True,
+                        encoding="utf-8",
+                        pass_fds=(high_fd,),
+                        timeout=20,
+                    )
+                finally:
+                    os.close(high_fd)
+                assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+                assert result.stdout.splitlines()[-1] == "HIGH_FD_CLOSED"
                 peer.settimeout(0.1)
                 with pytest.raises(TimeoutError):
                     peer.recv(1)
@@ -299,6 +387,7 @@ def test_assertion_rejects_the_parent_network_namespace() -> None:
             "PATH": os.defpath,
             "RAOS_PARENT_NET_NS": parent,
             "RAOS_PARENT_PID_NS": parent_pid,
+            "RAOS_NETWORK_LAUNCH_MODE": "UNPRIVILEGED_USER_NAMESPACE",
         },
         check=False,
         capture_output=True,
@@ -332,6 +421,7 @@ def test_assertion_rejects_a_root_mapped_child_namespace() -> None:
             "PATH": os.defpath,
             "RAOS_PARENT_NET_NS": parent,
             "RAOS_PARENT_PID_NS": parent_pid,
+            "RAOS_NETWORK_LAUNCH_MODE": "UNPRIVILEGED_USER_NAMESPACE",
         },
         check=False,
         capture_output=True,
@@ -342,6 +432,365 @@ def test_assertion_rejects_a_root_mapped_child_namespace() -> None:
     assert result.returncode == 2
     assert result.stdout == ""
     assert "network_isolation=privileged-identity" in result.stderr
+
+
+def test_assertion_rejects_an_unknown_launch_mode() -> None:
+    result = subprocess.run(
+        [str(SYSTEM_PYTHON), "-I", str(ASSERTION)],
+        cwd=REPOSITORY_ROOT,
+        env={
+            "PATH": os.defpath,
+            "RAOS_NETWORK_LAUNCH_MODE": "untrusted",
+        },
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=10,
+    )
+    assert result.returncode == 2
+    assert result.stdout == ""
+    assert "network_isolation=launch-mode-invalid" in result.stderr
+
+
+def test_assertion_requires_a_fresh_fallback_mount_namespace() -> None:
+    result = subprocess.run(
+        [str(SYSTEM_PYTHON), "-I", str(ASSERTION)],
+        cwd=REPOSITORY_ROOT,
+        env={
+            "PATH": os.defpath,
+            "RAOS_NETWORK_LAUNCH_MODE": "PRIVILEGED_NAMESPACE_THEN_DROP",
+            "RAOS_PARENT_NET_NS": "net:[1]",
+            "RAOS_PARENT_PID_NS": "pid:[1]",
+        },
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=10,
+    )
+    assert result.returncode == 2
+    assert result.stdout == ""
+    assert "network_isolation=parent-mount-namespace-missing" in result.stderr
+
+
+@requires_unsandboxed_parent
+def test_assertion_rejects_a_reused_fallback_mount_namespace() -> None:
+    parent_network = os.readlink("/proc/self/ns/net")
+    parent_pid = os.readlink("/proc/self/ns/pid")
+    parent_mount = os.readlink("/proc/self/ns/mnt")
+    result = subprocess.run(
+        [
+            "/usr/bin/unshare",
+            "--user",
+            "--map-current-user",
+            "--net",
+            "--pid",
+            "--fork",
+            "--",
+            str(SYSTEM_PYTHON),
+            "-I",
+            str(ASSERTION),
+        ],
+        cwd=REPOSITORY_ROOT,
+        env={
+            "PATH": os.defpath,
+            "RAOS_NETWORK_LAUNCH_MODE": "PRIVILEGED_NAMESPACE_THEN_DROP",
+            "RAOS_PARENT_NET_NS": parent_network,
+            "RAOS_PARENT_PID_NS": parent_pid,
+            "RAOS_PARENT_MNT_NS": parent_mount,
+        },
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=10,
+    )
+    assert result.returncode == 2
+    assert result.stdout == ""
+    assert "network_isolation=mount-namespace-not-isolated" in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("status", "expected_error"),
+    [
+        (
+            "Groups:\t1000\n"
+            "CapInh:\t0000000000000000\n"
+            "CapPrm:\t0000000000000000\n"
+            "CapEff:\t0000000000000000\n"
+            "CapBnd:\t0000000000000000\n"
+            "CapAmb:\t0000000000000000\n",
+            "supplementary-groups-present",
+        ),
+        (
+            "Groups:\t\n"
+            "CapInh:\t0000000000000000\n"
+            "CapPrm:\t0000000000000000\n"
+            "CapEff:\t0000000000000000\n"
+            "CapBnd:\t00000000a80425fb\n"
+            "CapAmb:\t0000000000000000\n",
+            "capabilities-present",
+        ),
+    ],
+)
+def test_fallback_attestation_rejects_residual_privilege(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    status: str,
+    expected_error: str,
+) -> None:
+    assertion_globals = runpy.run_path(str(ASSERTION))
+    assert_privilege_drop = assertion_globals["assert_privilege_drop"]
+
+    class FakePath:
+        def __init__(self, _path: str) -> None:
+            pass
+
+        def read_bytes(self) -> bytes:
+            return status.encode("ascii")
+
+    monkeypatch.setitem(assert_privilege_drop.__globals__, "Path", FakePath)
+    with pytest.raises(SystemExit) as raised:
+        assert_privilege_drop()
+    assert raised.value.code == 2
+    assert f"network_isolation={expected_error}" in capsys.readouterr().err
+
+
+def test_wrapper_rejects_an_untrusted_unshare_helper(
+    tmp_path: Path,
+) -> None:
+    repository = tmp_path / "repository"
+    scripts = repository / "scripts"
+    scripts.mkdir(parents=True)
+    copied_wrapper = scripts / WRAPPER.name
+    copied_assertion = scripts / ASSERTION.name
+    shutil.copy2(WRAPPER, copied_wrapper)
+    shutil.copy2(ASSERTION, copied_assertion)
+    fake_unshare = tmp_path / "unshare"
+    fake_unshare.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8")
+    fake_unshare.chmod(0o755)
+    copied_wrapper.write_text(
+        copied_wrapper.read_text(encoding="utf-8").replace(
+            "unshare_executable=/usr/bin/unshare",
+            f"unshare_executable={fake_unshare}",
+        ),
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [
+            str(copied_wrapper),
+            "--home",
+            str(tmp_path),
+            "--",
+            str(SYSTEM_PYTHON),
+            "-I",
+            "-c",
+            "raise AssertionError('must not execute')",
+        ],
+        cwd=repository,
+        env={"PATH": os.defpath, "HOME": str(tmp_path)},
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=10,
+    )
+    assert result.returncode == 69
+    assert result.stdout == ""
+    assert "unshare executable ownership or mode is unsafe" in result.stderr
+
+
+def test_wrapper_rejects_a_symlinked_unshare_helper(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    scripts = repository / "scripts"
+    scripts.mkdir(parents=True)
+    copied_wrapper = scripts / WRAPPER.name
+    copied_assertion = scripts / ASSERTION.name
+    shutil.copy2(WRAPPER, copied_wrapper)
+    shutil.copy2(ASSERTION, copied_assertion)
+    fake_unshare = tmp_path / "unshare-link"
+    fake_unshare.symlink_to("/usr/bin/false")
+    copied_wrapper.write_text(
+        copied_wrapper.read_text(encoding="utf-8").replace(
+            "unshare_executable=/usr/bin/unshare",
+            f"unshare_executable={fake_unshare}",
+        ),
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [
+            str(copied_wrapper),
+            "--home",
+            str(tmp_path),
+            "--",
+            str(SYSTEM_PYTHON),
+            "-I",
+            "-c",
+            "raise AssertionError('must not execute')",
+        ],
+        cwd=repository,
+        env={"PATH": os.defpath, "HOME": str(tmp_path)},
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=10,
+    )
+    assert result.returncode == 69
+    assert result.stdout == ""
+    assert "trusted unshare executable is unavailable" in result.stderr
+
+
+def test_wrapper_rejects_an_untrusted_setpriv_helper(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    scripts = repository / "scripts"
+    scripts.mkdir(parents=True)
+    copied_wrapper = scripts / WRAPPER.name
+    copied_assertion = scripts / ASSERTION.name
+    shutil.copy2(WRAPPER, copied_wrapper)
+    shutil.copy2(ASSERTION, copied_assertion)
+    fake_setpriv = tmp_path / "setpriv"
+    fake_setpriv.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8")
+    fake_setpriv.chmod(0o755)
+    copied_wrapper.write_text(
+        copied_wrapper.read_text(encoding="utf-8")
+        .replace(
+            "unshare_executable=/usr/bin/unshare", "unshare_executable=/usr/bin/false"
+        )
+        .replace(
+            "readonly setpriv_executable=/usr/bin/setpriv",
+            f"readonly setpriv_executable={fake_setpriv}",
+        ),
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [
+            str(copied_wrapper),
+            "--home",
+            str(tmp_path),
+            "--",
+            str(SYSTEM_PYTHON),
+            "-I",
+            "-c",
+            "raise AssertionError('must not execute')",
+        ],
+        cwd=repository,
+        env={"PATH": os.defpath, "HOME": str(tmp_path)},
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=10,
+    )
+    assert result.returncode == 69
+    assert result.stdout == ""
+    assert "setpriv executable ownership or mode is unsafe" in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("sudo_path", "expected_error"),
+    [
+        ("MISSING", "trusted sudo executable is unavailable"),
+        ("/usr/bin/true", "sudo executable is not set-user-ID root"),
+    ],
+)
+def test_wrapper_rejects_an_unavailable_or_non_setuid_sudo_helper(
+    tmp_path: Path,
+    sudo_path: str,
+    expected_error: str,
+) -> None:
+    repository = tmp_path / "repository"
+    scripts = repository / "scripts"
+    scripts.mkdir(parents=True)
+    copied_wrapper = scripts / WRAPPER.name
+    copied_assertion = scripts / ASSERTION.name
+    shutil.copy2(WRAPPER, copied_wrapper)
+    shutil.copy2(ASSERTION, copied_assertion)
+    effective_sudo_path = (
+        str(tmp_path / "missing-sudo") if sudo_path == "MISSING" else sudo_path
+    )
+    copied_wrapper.write_text(
+        copied_wrapper.read_text(encoding="utf-8")
+        .replace(
+            "unshare_executable=/usr/bin/unshare", "unshare_executable=/usr/bin/false"
+        )
+        .replace(
+            "readonly sudo_executable=/usr/bin/sudo",
+            f"readonly sudo_executable={effective_sudo_path}",
+        ),
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [
+            str(copied_wrapper),
+            "--home",
+            str(tmp_path),
+            "--",
+            str(SYSTEM_PYTHON),
+            "-I",
+            "-c",
+            "raise AssertionError('must not execute')",
+        ],
+        cwd=repository,
+        env={"PATH": os.defpath, "HOME": str(tmp_path)},
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=10,
+    )
+    assert result.returncode == 69
+    assert result.stdout == ""
+    assert expected_error in result.stderr
+
+
+def test_wrapper_rejects_a_failed_passwordless_sudo_preflight(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    scripts = repository / "scripts"
+    scripts.mkdir(parents=True)
+    copied_wrapper = scripts / WRAPPER.name
+    copied_assertion = scripts / ASSERTION.name
+    shutil.copy2(WRAPPER, copied_wrapper)
+    shutil.copy2(ASSERTION, copied_assertion)
+    copied_wrapper.write_text(
+        copied_wrapper.read_text(encoding="utf-8")
+        .replace(
+            "unshare_executable=/usr/bin/unshare", "unshare_executable=/usr/bin/false"
+        )
+        .replace(
+            '"$sudo_executable" -n -- /bin/true >/dev/null 2>&1',
+            '"$sudo_executable" -n -- /bin/false >/dev/null 2>&1',
+        ),
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [
+            str(copied_wrapper),
+            "--home",
+            str(tmp_path),
+            "--",
+            str(SYSTEM_PYTHON),
+            "-I",
+            "-c",
+            "raise AssertionError('must not execute')",
+        ],
+        cwd=repository,
+        env={"PATH": os.defpath, "HOME": str(tmp_path)},
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=10,
+    )
+    assert result.returncode == 69
+    assert result.stdout == ""
+    assert "trusted passwordless sudo fallback is not authorized" in result.stderr
 
 
 def test_wrapper_rejects_a_root_mapped_caller(tmp_path: Path) -> None:
