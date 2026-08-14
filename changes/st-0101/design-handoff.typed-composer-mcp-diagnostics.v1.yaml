@@ -1,0 +1,154 @@
+DESIGN_HANDOFF_V1:
+  document_version: 1
+  proposal_status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+  approved_story: ST-0101
+  approved_scope:
+    - Add one browser_type-only closed classifier for the integrity-pinned MCP tool error that currently collapses to MCP_CALL_FAILED in phase typed_composer.
+    - Replace generic MCP_CALL_FAILED only when one exact pinned error shape proves a stale accessibility ref, a non-editable element, or the fixed five-second locator.fill timeout.
+    - Preserve only one closed reason code, phase typed_composer, and submission_attempted false in the existing hash-bound state, event, CLI result, and read-only status.
+    - Keep every unknown, malformed, oversized, ambiguous, or non-browser_type MCP error generic MCP_CALL_FAILED.
+    - Add deterministic no-browser fixtures, documentation, and append-only ST-0101 worklog evidence without changing selectors, actions, retries, submission, response parsing, or runtime package bytes.
+  source_design_refs:
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - uri: repo://changes/st-0101/design-handoff.current-pro-ui.v1.yaml
+      sha256: 8211e0f177b62976d2a651bfc28bd947e12b3e64dd47aa22342ff27ae8d49f89
+    - uri: repo://changes/st-0101/design-handoff.closed-selector-diagnostics.v1.yaml
+      sha256: 04942e476df185489ee82043f9d82c07a68c0be4fb43e4d0ea2d0ae01422e310
+    - uri: repo://changes/st-0101/README.md
+      sha256: 4a2ed06400837d4e87959e2ec340814d5d9e42e031d5b390aa82d9184a1d05ac
+    - uri: repo://scripts/chatgpt_pro_orchestrator.py
+      sha256: bd0e59ba353bd7f31bf4559a28dab5edbca0c1055551b7357cec61ff7dd5efda
+    - uri: repo://scripts/chatgpt_pro_mcp_runtime/package-lock.json
+      sha256: 67d5785a7b401c97a352098cb646013f7677014e934521e4aad6dc4986bdadb2
+    - uri: https://github.com/microsoft/playwright-mcp
+      retrieved_at: 2026-08-14
+      evidence_class: CURRENT_OFFICIAL_PRIMARY_DOCUMENTATION
+  decision:
+    base:
+      commit: 53a726e3716bc812bf2797570cf013f0445fb228
+      tree: 1c2df1756bbccdd6f9ee68d9d51eb1b3b06c616c
+      branch: codex/st-0101-mcp-call-failed-v1
+    pinned_runtime:
+      mcp_package: '@playwright/mcp@0.0.78'
+      playwright_core: 1.62.0-alpha-1783623505000
+      action_timeout_ms: 5000
+      package_or_inventory_change: FORBIDDEN
+    current_failure:
+      run_ids:
+        - 20260813T230930Z-939153cbef27
+        - 20260813T233027Z-c4feb45d6842
+      common_reason_code: MCP_CALL_FAILED
+      common_phase: typed_composer
+      record_verified: true
+      submission_attempted: false
+      exact_live_subtype: NOT_IDENTIFIABLE_FROM_EXISTING_SANITIZED_RECORDS
+    classifier:
+      invocation_scope: browser_type only
+      activation_condition:
+        - The MCP result is a mapping with isError exactly true.
+        - Content is exactly one text block and no non-text block.
+        - The UTF-8 text is non-empty and within the existing MCP text-size limit.
+        - Exactly one closed signature below matches.
+      mappings:
+        - reason_code: MCP_TYPE_REF_STALE
+          signature: >-
+            The complete text is exactly the pinned MCP Error section whose
+            error is Ref followed by one syntactically valid accessibility ref,
+            followed by "not found in the current page snapshot. Try capturing
+            new snapshot." No captured ref is retained or returned.
+        - reason_code: MCP_TYPE_ELEMENT_NOT_EDITABLE
+          signature: >-
+            The text begins with the exact pinned MCP Error section and exact
+            locator.fill non-editable-element sentence "Element is not an
+            <input>, <textarea> or [contenteditable] element", followed only by
+            end of text or the pinned Playwright call-log continuation.
+        - reason_code: MCP_TYPE_FILL_TIMEOUT
+          signature: >-
+            The text begins with the exact pinned MCP Error section and exact
+            "TimeoutError: locator.fill: Timeout 5000ms exceeded." sentence,
+            followed only by end of text or the pinned Playwright call-log
+            continuation.
+      precedence:
+        - Invalid result structure or size returns generic MCP_CALL_FAILED.
+        - Zero signature matches return generic MCP_CALL_FAILED.
+        - More than one signature match returns generic MCP_CALL_FAILED.
+        - No substring, fuzzy, case-folded, whitespace-normalized, or version-inferred match is allowed.
+      data_handling:
+        raw_error_in_memory_only: true
+        raw_error_persistence: FORBIDDEN
+        raw_error_output: FORBIDDEN
+        raw_error_hashing: FORBIDDEN
+        dynamic_ref_output: FORBIDDEN
+        prompt_or_secret_output: FORBIDDEN
+    outcome:
+      phase: typed_composer
+      submission_attempted: false
+      retry_allowed: false
+      browser_type_replay: false
+      send_lookup: false
+      send_click: false
+      next_action: STOP
+      persistence: EXISTING_HASH_BOUND_STATE_EVENT_AND_STATUS
+      authority: DIAGNOSTIC_ONLY
+    follow_on_boundary:
+      automatic_fix_after_classification: FORBIDDEN
+      automatic_new_run: FORBIDDEN
+      required_next_step: EXACT_FOLLOW_ON_DESIGN_HANDOFF_FOR_THE_OBSERVED_CLOSED_CODE
+  rationale:
+    - The exact integrity-pinned MCP schema requires target, so changing target to ref would be incorrect.
+    - The pinned secret lookup does not throw when the key is absent; it falls back to the literal name, so missing-secret lookup does not explain MCP_CALL_FAILED.
+    - The pinned browser_type handler performs target normalization and locator.fill, and both operations can fail while earlier navigation, snapshot, and click calls remain successful.
+    - The current transport discards every MCP isError body and retains only MCP_CALL_FAILED, making stale-ref, non-editable-element, and fill-timeout failures observationally identical in the two verified records.
+    - A closed in-memory classifier follows the existing sanitized-diagnostic pattern and supplies the minimum evidence needed for a later narrow correction without exposing browser-controlled content.
+  rejected_alternatives:
+    - Guess that the failure is a timeout and increase timeouts before distinguishing it from a stale or non-editable target.
+    - Guess that the composer ref is stale and add a repeated snapshot or input action without evidence.
+    - Relax the approved composer roles, labels, ref rules, or exact-origin checks.
+    - Persist, print, return, log, hash, or manually inspect the raw MCP error, accessibility ref, call log, snapshot, prompt, secret, profile, cookie, storage, or account data.
+    - Retry browser_type, type the raw request, use submit true, press Enter, or click Send from the diagnostic path.
+    - Change the pinned MCP package, Playwright Core version, expected runtime inventory, browser, profile, origin, or tool allowlist.
+    - Treat the separately observed dotenv quote and backslash round-trip defect as the cause of MCP_CALL_FAILED; it changes bytes but does not make locator.fill throw.
+  constraints:
+    - Exactly one Story, ST-0101, is changed; ST-0505 remains paused and untouched.
+    - The classifier is pure, deterministic, version-bound, and receives only the already-returned MCP result object.
+    - Every output value is a source-defined closed literal with no dynamic suffix, count, label, ref, timeout text, or browser material.
+    - Existing reason MCP_CALL_FAILED remains valid for all predecessor records and every unclassified error.
+    - No existing successful action, selector, phase, response, proposal, manual-import, status, or resume behavior changes.
+    - No browser call, wait, retry, input, submission intent, Send, response capture, or proposal is added by this diagnostic change.
+    - Immutable canonical, upstream, zip, manifest, generated, lock, and runtime-inventory files are not modified.
+    - The separate dotenv quote and backslash round-trip defect is recorded as out of scope and requires its own approved correction before implementation.
+  security_and_approval_gates:
+    - Exact repository-owner approval of this handoff SHA-256 is required before implementation.
+    - The Pro advisory route is unavailable at the same typed-composer boundary; two verified unsent runs provide no Pro response or design authority.
+    - Implementation must be delegated to the repository implementation_worker after exact approval.
+    - A diagnostic code never authorizes a retry, selector relaxation, timeout change, input, submission, response import, or follow-on fix.
+    - One later live diagnostic run is permitted only after local gates, exact-head review, integration into the physical repository, a fresh READY doctor, and separate confirmation that the approved code is the physical-root code being executed.
+    - CAPTCHA, login, reauthentication, account ambiguity, rate limit, origin mismatch, publication, release, finance, provider credentials, and Production remain prohibited or separately gated.
+  acceptance_criteria:
+    - Exact synthetic stale-ref, non-editable-element, and 5000ms fill-timeout MCP results each produce only their one documented closed reason code.
+    - Unknown, near, wrong-case, padded, malformed, multi-block, non-text, oversized, and multi-signature results remain generic MCP_CALL_FAILED.
+    - The three closed reasons are accepted only with phase typed_composer and submission_attempted false by state, event, status, and record validators.
+    - Existing MCP_CALL_FAILED records remain byte-valid and read-only status continues to verify both current run IDs.
+    - Tests prove the raw error, dynamic ref, call log, prompt, and secret are absent from CLI output, state, events, status, logs, and exception text.
+    - Tests prove exactly one browser_type attempt, no replay, no new snapshot or wait caused by the classifier, no submission intent, and no Send click.
+    - All existing ST-0101 tests remain green apart from separately documented linked-worktree absolute-root assumptions.
+    - A later sanitized live run either yields one closed typed-composer reason or preserves generic MCP_CALL_FAILED; it is diagnostic evidence only and not formal TST-001.
+  required_test_evidence:
+    - Focused pure classifier tests for every exact signature, near miss, malformed result shape, size boundary, ambiguity, and generic fallback.
+    - Current-UI and transport tests proving phase, call count, no retry, no intent, no Send, and no raw-material persistence.
+    - State, event, read-only status, predecessor-record compatibility, tamper rejection, and closed-code allowlist tests.
+    - Complete isolated tests/st0101 in the physical repository, plus focused isolated worktree tests that do not depend on the hard-coded physical-root launcher.
+    - Pinned Ruff lint and format, Python compile, bash syntax, make check-workspace, canonical import verification, exact-owned-path sensitive-data scan, and git diff review.
+    - One independent frozen-diff review with concrete findings fixed and re-reviewed before the final Story commit.
+    - Formal TST-001, hosted CI, staging, release, publication, and Production remain NOT_EXECUTED.
+  open_decisions: []
+  approval:
+    status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+    approved_by: null
+    approved_at: null
+    approved_sha256: null
+    canonical_reconciliation: PASS_FOR_ST0101_DIAGNOSTIC_ONLY
+    pro_advice_authority: NONE_PRO_UNAVAILABLE_TYPED_COMPOSER
