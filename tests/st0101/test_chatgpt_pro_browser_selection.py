@@ -818,17 +818,27 @@ def test_wrapper_and_makefile_keep_only_fixed_browser_mappings() -> None:
 
 def test_documentation_records_edge_first_scope_and_profile_prohibition() -> None:
     readme = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(encoding="utf-8")
-    skill = Path("/home/minami/.codex/skills/raos-ask-pro/SKILL.md").read_text(
-        encoding="utf-8"
-    )
-    for text in (readme, skill):
-        assert "Edge" in text
-        assert "Chrome" in text
-        assert "unavailable before launch" in text
-        assert "never" in text
-        assert "Windows" in text
-        assert "personal" in text
-        assert "switch browsers" in text
+    assert "Edge" in readme
+    assert "Chrome" in readme
+    assert "unavailable before launch" in readme
+    assert "never" in readme
+    assert "Windows" in readme
+    assert "personal" in readme
+    assert "switch browsers" in readme
     assert "PRO_BROWSER=auto" in readme
     assert "PRO_BROWSER=edge" in readme
     assert "PRO_BROWSER=chrome" in readme
+
+
+@pytest.mark.raos_owner_private
+def test_owner_private_skill_records_edge_first_scope_and_profile_prohibition() -> None:
+    skill = Path("/home/minami/.codex/skills/raos-ask-pro/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "Edge" in skill
+    assert "Chrome" in skill
+    assert "unavailable before launch" in skill
+    assert "never" in skill
+    assert "Windows" in skill
+    assert "personal" in skill
+    assert "switch browsers" in skill

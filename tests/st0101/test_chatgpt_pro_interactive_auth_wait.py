@@ -505,11 +505,20 @@ def test_make_and_guidance_keep_wait_scoped_to_pro_ask() -> None:
     assert "interactive-auth-wait" not in resume_region
 
     readme = README_PATH.read_text(encoding="utf-8")
+    assert "900" in readme
+    assert "same" in readme.casefold()
+    assert "do not close" in readme.casefold()
+    assert "snapshot" in readme.casefold()
+    assert "CDP" in readme
+    assert "cookie" in readme.casefold()
+
+
+@pytest.mark.raos_owner_private
+def test_owner_private_skill_keeps_wait_scoped_to_pro_ask() -> None:
     skill = SKILL_PATH.read_text(encoding="utf-8")
-    for text in (readme, skill):
-        assert "900" in text
-        assert "same" in text.casefold()
-        assert "do not close" in text.casefold()
-        assert "snapshot" in text.casefold()
-        assert "CDP" in text
-        assert "cookie" in text.casefold()
+    assert "900" in skill
+    assert "same" in skill.casefold()
+    assert "do not close" in skill.casefold()
+    assert "snapshot" in skill.casefold()
+    assert "CDP" in skill
+    assert "cookie" in skill.casefold()

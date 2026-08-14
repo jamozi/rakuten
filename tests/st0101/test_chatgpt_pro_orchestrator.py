@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -637,6 +638,25 @@ def invoke_orchestrator_main(arguments: list[str]) -> int:
         os.umask(previous_umask)
 
 
+def invoke_portable_orchestrator_main(
+    arguments: list[str], monkeypatch: pytest.MonkeyPatch
+) -> int:
+    """Invoke the unchanged CLI against only test-owned checkout dependencies."""
+
+    monkeypatch.setattr(orchestrator, "EXACT_REPOSITORY_ROOT", REPOSITORY_ROOT)
+    monkeypatch.setattr(
+        orchestrator,
+        "DEFAULT_WRAPPER",
+        REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp.sh",
+    )
+    monkeypatch.setattr(
+        orchestrator,
+        "DEFAULT_RUNTIME_SOURCE",
+        REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp_runtime",
+    )
+    return invoke_orchestrator_main(arguments)
+
+
 def test_setup_without_login_is_noninteractive_and_owner_private(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -801,14 +821,15 @@ def test_live_doctor_reports_compound_cloudflare_challenge_as_captcha(
     )
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
 
-    exit_code = invoke_orchestrator_main(
+    exit_code = invoke_portable_orchestrator_main(
         [
             "doctor",
             "--private-root",
             str(root),
             "--wrapper",
             str(tmp_path / "unused-wrapper"),
-        ]
+        ],
+        monkeypatch,
     )
     captured = capsys.readouterr()
 
@@ -864,15 +885,15 @@ def test_cloudflare_challenge_near_misses_remain_unknown_ui(
 
 def test_successful_ask_emits_sanitized_result_and_hash_bound_private_artifacts(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     root = private_root(tmp_path)
     request = private_request(root, "successful-request.txt")
     response = advice_text(summary="A unique response that must not reach stdout.")
     scenario = successful_scenario(tmp_path / "success.json", response=response)
-    process = subprocess.run(
+    exit_code = invoke_portable_orchestrator_main(
         [
-            sys.executable,
-            str(ORCHESTRATOR_PATH),
             "ask",
             "--private-root",
             str(root),
@@ -883,20 +904,16 @@ def test_successful_ask_emits_sanitized_result_and_hash_bound_private_artifacts(
             "--fake-scenario",
             str(scenario),
         ],
-        cwd=REPOSITORY_ROOT,
-        env={"PATH": os.environ.get("PATH", ""), "PYTHONDONTWRITEBYTECODE": "1"},
-        check=False,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
+        monkeypatch,
     )
+    captured = capsys.readouterr()
 
-    assert process.returncode == 0
-    assert process.stderr == ""
-    assert process.stdout.count("\n") == 1
-    assert REQUEST_TEXT not in process.stdout
-    assert response not in process.stdout
-    result = json.loads(process.stdout)
+    assert exit_code == 0
+    assert captured.err == ""
+    assert captured.out.count("\n") == 1
+    assert REQUEST_TEXT not in captured.out
+    assert response not in captured.out
+    result = json.loads(captured.out)
     assert result["status"] == "ADVICE_CAPTURED"
     assert result["mode"] == "LOCAL_FIXTURE"
     assert result["advice_type"] == "PRO_ADVICE_V1"
@@ -985,15 +1002,16 @@ def test_successful_ask_emits_sanitized_result_and_hash_bound_private_artifacts(
 
 def test_cli_ask_without_request_file_reads_stdin_into_private_artifact(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     root = tmp_path / ".secrets"
     scenario = successful_scenario(
         tmp_path / "stdin-success.json", response=advice_text()
     )
-    process = subprocess.run(
+    monkeypatch.setattr(sys, "stdin", io.StringIO(REQUEST_TEXT))
+    exit_code = invoke_portable_orchestrator_main(
         [
-            sys.executable,
-            str(ORCHESTRATOR_PATH),
             "ask",
             "--private-root",
             str(root),
@@ -1002,19 +1020,14 @@ def test_cli_ask_without_request_file_reads_stdin_into_private_artifact(
             "--fake-scenario",
             str(scenario),
         ],
-        cwd=REPOSITORY_ROOT,
-        env={"PATH": os.environ.get("PATH", ""), "PYTHONDONTWRITEBYTECODE": "1"},
-        input=REQUEST_TEXT,
-        check=False,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
+        monkeypatch,
     )
+    captured = capsys.readouterr()
 
-    assert process.returncode == 0
-    assert process.stderr == ""
-    assert REQUEST_TEXT not in process.stdout
-    assert json.loads(process.stdout)["status"] == "ADVICE_CAPTURED"
+    assert exit_code == 0
+    assert captured.err == ""
+    assert REQUEST_TEXT not in captured.out
+    assert json.loads(captured.out)["status"] == "ADVICE_CAPTURED"
     staged = list((root / "chatgpt-pro-requests").glob("stdin-request.*.txt"))
     assert len(staged) == 1
     assert staged[0].read_text(encoding="utf-8") == REQUEST_TEXT
@@ -1637,7 +1650,7 @@ def test_live_no_model_picker_records_pre_submission_unavailability(
     monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
 
-    exit_code = invoke_orchestrator_main(
+    exit_code = invoke_portable_orchestrator_main(
         [
             "ask",
             "--private-root",
@@ -1646,7 +1659,8 @@ def test_live_no_model_picker_records_pre_submission_unavailability(
             str(request),
             "--importance",
             importance,
-        ]
+        ],
+        monkeypatch,
     )
     captured = capsys.readouterr()
 
@@ -1835,7 +1849,7 @@ def test_live_security_invariants_remain_hard_refusals(
     monkeypatch.setattr(orchestrator, "_live_capture", refuse_live_capture)
     monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
 
-    exit_code = invoke_orchestrator_main(
+    exit_code = invoke_portable_orchestrator_main(
         [
             "ask",
             "--private-root",
@@ -1844,7 +1858,8 @@ def test_live_security_invariants_remain_hard_refusals(
             str(request),
             "--importance",
             "ordinary",
-        ]
+        ],
+        monkeypatch,
     )
     captured = capsys.readouterr()
 
@@ -1908,7 +1923,7 @@ def test_live_contract_drift_remains_a_hard_refusal(
     monkeypatch.setattr(orchestrator, "StdioMcpTransport", scripted_transport)
     monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
 
-    exit_code = invoke_orchestrator_main(
+    exit_code = invoke_portable_orchestrator_main(
         [
             "ask",
             "--private-root",
@@ -1917,7 +1932,8 @@ def test_live_contract_drift_remains_a_hard_refusal(
             str(request),
             "--importance",
             "ordinary",
-        ]
+        ],
+        monkeypatch,
     )
     captured = capsys.readouterr()
 
@@ -2345,8 +2361,9 @@ def test_legacy_waiting_ambiguity_cli_remains_generic_without_diagnostic(
         accept_snapshot_as_stable,
     )
 
-    exit_code = invoke_orchestrator_main(
-        ["resume", "--private-root", str(root), "--run-id", run_id]
+    exit_code = invoke_portable_orchestrator_main(
+        ["resume", "--private-root", str(root), "--run-id", run_id],
+        monkeypatch,
     )
     captured = capsys.readouterr()
 
@@ -2891,8 +2908,9 @@ def test_live_resume_nonallowlisted_refusal_remains_hard_and_state_unchanged(
         if path.is_file()
     }
 
-    exit_code = invoke_orchestrator_main(
-        ["resume", "--private-root", str(root), "--run-id", run_id]
+    exit_code = invoke_portable_orchestrator_main(
+        ["resume", "--private-root", str(root), "--run-id", run_id],
+        monkeypatch,
     )
     captured = capsys.readouterr()
     after = {
@@ -3158,7 +3176,9 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     assert '"$(PRO_PYTHON_LAUNCHER)" runtime-install' in makefile
     assert '"$(PRO_PYTHON_LAUNCHER)" import-response' in makefile
     pro_targets = makefile[
-        makefile.index("PRO_REQUEST_FILE ?=") : makefile.index("python-install:")
+        makefile.index("PRO_REQUEST_FILE ?=") : makefile.index(
+            "pro-owner-private-test:"
+        )
     ]
     assert "UV_READONLY_RUN" not in pro_targets
     assert '--private-root "$(PRO_PRIVATE_ROOT)"' in pro_targets
@@ -3185,7 +3205,7 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     expected_tools = set(orchestrator.ALLOWED_MCP_TOOLS)
     assert playwright["enabled"] is False
     assert playwright["command"] == "/bin/bash"
-    assert playwright["args"] == [str(REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp.sh")]
+    assert playwright["args"] == [str(orchestrator.DEFAULT_WRAPPER)]
     assert set(playwright["enabled_tools"]) == expected_tools
     assert "env_vars" not in playwright
     assert set(playwright["tools"]) == expected_tools
@@ -3207,20 +3227,39 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     story_readme = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(
         encoding="utf-8"
     )
+    assert "After local exploration" in agents
+    assert "cross-module or architecture-boundary" in agents
+    assert "locally discoverable" in agents
+    assert "no fixed count cap" in agents
+    assert "materially duplicate" in agents
+    assert "no material delta" in agents
+    assert "DESIGN_HANDOFF_V1" in agents
+    assert "human approval" in agents
+    for policy in (agents, story_readme):
+        assert "diagnostic_fallback_entry_code" in policy
+        assert (
+            "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR"
+            in policy
+        )
+        assert (
+            "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER"
+            in policy
+        )
+
+
+@pytest.mark.raos_owner_private
+def test_owner_private_skill_and_metadata_retain_approved_policy() -> None:
     skill = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
     normalized_skill = " ".join(skill.split())
     skill_metadata = (SKILL_ROOT / "agents/openai.yaml").read_text(encoding="utf-8")
-    for policy in (agents, skill):
-        assert (
-            "After local exploration" in policy or "after local exploration" in policy
-        )
-        assert "cross-module or architecture-boundary" in policy
-        assert "locally discoverable" in policy
-        assert "no fixed count cap" in policy or "no numerical follow-up cap" in policy
-        assert "materially duplicate" in policy
-        assert "no material delta" in policy
-        assert "DESIGN_HANDOFF_V1" in policy
-        assert "human approval" in policy
+    assert "after local exploration" in skill
+    assert "cross-module or architecture-boundary" in skill
+    assert "locally discoverable" in skill
+    assert "no numerical follow-up cap" in skill
+    assert "materially duplicate" in skill
+    assert "no material delta" in skill
+    assert "DESIGN_HANDOFF_V1" in skill
+    assert "human approval" in skill
     assert "physical /home/minami/rakuten" in skill
     assert "make pro-doctor" in skill
     assert "make pro-setup" in skill
@@ -3243,18 +3282,17 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     assert "make pro-resume" in skill
     assert "allow_implicit_invocation: true" in skill_metadata
     assert "Use $raos-ask-pro" in skill_metadata
-    for policy in (agents, story_readme, skill):
-        assert "diagnostic_fallback_entry_code" in policy
-        assert (
-            "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR"
-            in policy
-        )
-        assert (
-            "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER"
-            in policy
-        )
+    assert "diagnostic_fallback_entry_code" in skill
+    assert (
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR" in skill
+    )
+    assert (
+        "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER"
+        in skill
+    )
 
 
+@pytest.mark.raos_owner_private
 def test_make_pro_launcher_ignores_wrong_ambient_uv_and_setup_uses_it(
     tmp_path: Path,
 ) -> None:

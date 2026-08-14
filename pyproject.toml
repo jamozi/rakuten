@@ -63,3 +63,6 @@ addopts = [
   "--strict-markers",
   "--disable-plugin-autoload",
 ]
+markers = [
+  "raos_owner_private: requires the physical owner repository and untracked owner-private policy inputs",
+]

@@ -1,0 +1,66 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-0101
+  slice_id: ST0101_HOSTED_UNIT_HYBRID_BOUNDARY_V1
+  handoff_uri: repo://changes/st-0101/DESIGN_HANDOFF_V1_ST0101_HOSTED_UNIT_HYBRID_BOUNDARY_V1.yaml
+  handoff_bytes: 22392
+  handoff_sha256: d3a644d67e5e96723c10da4cbf9f60323aa4394a89e4edbcd6fc41ed1972a88d
+  handoff_base_commit: 3c637fe7fca2905f9036c52371a4c1b2b142f3d0
+  handoff_base_tree: d82b37121326dae67f0172cb174e14156a5a8126
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST0101_HOSTED_UNIT_HYBRID_BOUNDARY_V1_ONLY
+  approved_by: repository_owner:jamozi
+  approval_observed_at: '2026-08-14T08:39:01Z'
+  approval_source: >-
+    Exact handoff SHA-256 and exact slice identifier followed by explicit
+    repository-owner approval in the connected Codex conversation.
+  owner_approval_statement: >-
+    SHA-256 d3a644d67e5e96723c10da4cbf9f60323aa4394a89e4edbcd6fc41ed1972a88d
+    の ST0101_HOSTED_UNIT_HYBRID_BOUNDARY_V1 handoff を承認します。
+  owner_approval_statement_bytes: 144
+  owner_approval_statement_sha256: 59e2c145554226a014d75ef19035092832faa6bdf161d4b21665b66315548dfc
+  owner_message_markdown: >-
+    > SHA-256 d3a644d67e5e96723c10da4cbf9f60323aa4394a89e4edbcd6fc41ed1972a88d
+    の ST0101_HOSTED_UNIT_HYBRID_BOUNDARY_V1 handoff を承認します。
+  owner_message_markdown_bytes: 146
+  owner_message_markdown_sha256: f55db7e3b077efbd2201f4cde5a15e43a7e49a4ba1e91ad8dc1dfec802d98866
+  markdown_presentation_note: >-
+    The leading greater-than and space are the owner's Markdown blockquote
+    presentation. Both the rendered semantic statement and the original
+    Markdown source form are hash-bound above.
+  canonical_reconciliation: PASS_ST0101_HOSTED_TEST_BOUNDARY_ONLY
+  pro_review:
+    run_id: 20260814T071215Z-482f82a588a0
+    result: REVIEW_NOT_OBTAINED
+    initial_reason: RESPONSE_NOT_IDENTIFIABLE
+    recovery_reason: ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID
+    retried_for_same_gap: false
+    authority: NONE
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-0101
+    mutable_path_count: 14
+    owner_private_inventory_count: 7
+    portable_failure_count: 16
+    existing_network_sandbox_skip_count: 9
+    production_orchestrator: IMMUTABLE
+    production_mcp_wrapper: IMMUTABLE
+    production_mcp_runtime: IMMUTABLE
+    private_skill_tree: IMMUTABLE_NOT_COPIED_TO_HOSTED_CI
+    active_agents: IMMUTABLE
+    codex_config: IMMUTABLE
+    github_workflows: IMMUTABLE
+    canonical_files: IMMUTABLE
+    status_and_evidence: UNCHANGED
+    pr_43: SEPARATE_UNCHANGED_MUST_REBASE_AFTER_THIS_SLICE
+    browser_or_provider_action: NOT_AUTHORIZED
+    account_or_credential_action: NOT_AUTHORIZED
+    formal_tst_001: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    publication: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED
+    commit: NOT_AUTHORIZED
+    push: NOT_AUTHORIZED
+    pull_request_create_or_update: NOT_AUTHORIZED
+    merge: NOT_AUTHORIZED

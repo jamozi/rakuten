@@ -564,11 +564,20 @@ def test_initial_settle_is_fixed_and_has_no_runtime_configuration() -> None:
 
 def test_initial_settle_guidance_preserves_narrow_boundary() -> None:
     readme = README_PATH.read_text(encoding="utf-8")
+    lowered = readme.casefold()
+    assert "five-second" in lowered
+    assert "exactly one" in lowered
+    assert "initial" in lowered
+    assert "no click" in lowered
+    assert "not an authentication wait" in lowered
+
+
+@pytest.mark.raos_owner_private
+def test_owner_private_skill_preserves_initial_settle_boundary() -> None:
     skill = SKILL_PATH.read_text(encoding="utf-8")
-    for text in (readme, skill):
-        lowered = text.casefold()
-        assert "five-second" in lowered
-        assert "exactly one" in lowered
-        assert "initial" in lowered
-        assert "no click" in lowered
-        assert "not an authentication wait" in lowered
+    lowered = skill.casefold()
+    assert "five-second" in lowered
+    assert "exactly one" in lowered
+    assert "initial" in lowered
+    assert "no click" in lowered
+    assert "not an authentication wait" in lowered

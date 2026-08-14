@@ -15,6 +15,24 @@ import pytest
 from scripts import chatgpt_pro_orchestrator as orchestrator
 
 
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+
+
+def install_portable_runtime_sources(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Bind immutable runtime inputs to this checkout for hosted unit tests."""
+
+    monkeypatch.setattr(
+        orchestrator,
+        "DEFAULT_WRAPPER",
+        REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp.sh",
+    )
+    monkeypatch.setattr(
+        orchestrator,
+        "DEFAULT_RUNTIME_SOURCE",
+        REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp_runtime",
+    )
+
+
 def private_root(tmp_path: Path) -> Path:
     root = tmp_path / ".secrets"
     root.mkdir(mode=0o700)
@@ -491,6 +509,7 @@ def test_doctor_reports_missing_runtime_before_missing_setup(
 def test_stdio_transport_verifies_runtime_before_process_start(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    install_portable_runtime_sources(monkeypatch)
     calls: list[str] = []
     monkeypatch.setattr(orchestrator, "_require_visible_wslg_display", lambda: None)
 
@@ -518,6 +537,7 @@ def test_stdio_transport_verifies_runtime_before_process_start(
 def test_stdio_transport_uses_fixed_path_despite_hostile_ambient_path(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    install_portable_runtime_sources(monkeypatch)
     captured: dict[str, Any] = {}
 
     class CapturedProcess(Exception):
@@ -550,6 +570,8 @@ def test_stdio_transport_uses_fixed_path_despite_hostile_ambient_path(
 def test_stdio_transport_cleans_process_when_initialize_fails(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    install_portable_runtime_sources(monkeypatch)
+
     class Process:
         def __init__(self) -> None:
             self.stdin = io.StringIO()
@@ -609,7 +631,10 @@ def test_orchestrator_and_wrapper_require_matching_exact_tool_modes(
     assert orchestrator._browser_probe("edge") == "invalid"
 
 
-def test_wrapper_and_runtime_resources_never_reference_shared_npx() -> None:
+def test_wrapper_and_runtime_resources_never_reference_shared_npx(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    install_portable_runtime_sources(monkeypatch)
     paths = [
         orchestrator.DEFAULT_WRAPPER,
         orchestrator.DEFAULT_RUNTIME_SOURCE / "verify_runtime.py",
