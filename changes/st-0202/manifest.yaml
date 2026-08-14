@@ -117,7 +117,7 @@ source_artifacts:
   sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: 88e3fc4362e7de81ff53008d53285c73f470df3ce9804154bccac6f0c60f86a0
+  sha256: 9332940b39ceded7a5f51e65f7daa92916a3278547079c5906abe95c570cc04c
 - uri: repo://tests/st0106/test_workflow_contract.py
   bytes: 26006
   sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
@@ -128,14 +128,14 @@ source_artifacts:
   bytes: 460
   sha256: 324a062bb99e482626fde5dfe9bbcca214f65eb6b8f07281f8b345698dab40f0
 - uri: repo://AGENTS.md
-  bytes: 40758
-  sha256: 6973e46dfd9c2aeb7d93f53b43fbb070249ddf89857b44ee726eb768250475cb
+  bytes: 43916
+  sha256: a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482
 - uri: repo://Makefile
-  bytes: 31323
-  sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
+  bytes: 34123
+  sha256: e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc
 - uri: repo://README.md
-  bytes: 57509
-  sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
+  bytes: 58459
+  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://docker-compose.yml
