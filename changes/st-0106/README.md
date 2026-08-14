@@ -38,6 +38,18 @@ closure, and fail-closed privilege assertions are tested locally. A real
 GitHub-hosted ubuntu-24.04
 pull-request run remains required for hosted fallback evidence.
 
+The hosted Unit test harness uses the workflow's stable
+`/usr/bin/python3 -I` system-Python contract rather than assuming that a
+version-specific `/usr/bin/python3.10` executable exists on every reviewed
+runner image. Two adversarial root-mapped-user-namespace probes remain required
+and run in the direct unsandboxed ST-0106 suite. In the already-denied Unit
+namespace only, they use the same existing `requires_unsandboxed_parent`
+delegation as the other nested-namespace probes; the always-collected outer
+assertion must still revalidate the real namespace, non-root identity,
+`no_new_privs`, and seccomp boundary before those two cases can be skipped.
+This is test-harness compatibility only: the wrapper, assertion, workflow, and
+their root-rejection behavior are unchanged.
+
 The ST-0107 manifest is regenerated only as mechanical current-source
 provenance. CODEOWNERS, the pull-request template, and the desired-state
 ruleset policy must stay byte-identical. This grants no ST-0107 activation,
