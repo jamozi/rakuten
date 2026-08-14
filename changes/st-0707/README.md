@@ -12,8 +12,8 @@ The approved ST-0707 Story depends only on ST-0705 and has
 plan, and manifest are bound by these exact SHA-256 values:
 
 - contract: `ea935831a1bb667229ae5a5495a27a801b9c21ab3c3ddbe53e266b8f7c311c42`
-- generated plan: `eaa515bfdf5c87cacc434967f4648776f8b05ca5962818c49ed056b52f1e1692`
-- manifest: `7266bdba4758bf53b3fde465b9e5d5d6066e0ff44b995e127ab273f36056aed6`
+- generated plan: `f0658e5b89cba25309b7a0faff5b749df9be1c8130fa375dec99e7d68c253d0d`
+- manifest: `8fc56eaffbff21f5be991fdf93437cdf05b89a79b515290f0a2018a157bbbf25`
 
 ST-0705 remains non-executable, `UNEVALUABLE`, `NOT_READY`, event-free, and
 action-free. This Story does not import or depend on ST-0706.

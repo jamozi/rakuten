@@ -82,22 +82,22 @@
         {
           "uri": "repo://changes/st-0702/contracts/context-pack-reference-plan.v1.yaml",
           "bytes": 7791,
-          "sha256": "dfaa44687787dc9c38442d4e0bb3dbd2091e12ba78ffbc1a430f8d02a92b0320"
+          "sha256": "7e693af7aa1e5d0df0923b0a67514aa0087a263fbdc2c5d7b4116e7c21864f96"
         },
         {
           "uri": "repo://changes/st-0702/generated/context-pack.reference-plan.v1.json",
           "bytes": 93842,
-          "sha256": "7286ed1b1510fa7d12818023e6fb9fecab5147f06c6dfc5dd898a35eb81342cb"
+          "sha256": "77626707bdf1343ecb16a62da5095917b077db2c3b6b501541c88b72b05aef2d"
         },
         {
           "uri": "repo://changes/st-0702/manifest.yaml",
           "bytes": 6016,
-          "sha256": "0b0e2ad6051759e3f0c2b0c4c4f232f1a62afc5d7fefc91a6a6414d15bdc776e"
+          "sha256": "cbe665392e14d5fbc8fc0b739af6bcb7d2f9c51c494ada3345628a84252b0f1d"
         },
         {
           "uri": "repo://scripts/build_st0702_context_pack_reference_plan.py",
           "bytes": 32819,
-          "sha256": "76be5a7756b9da1f76dca5c825457fa9aa3fff75fe3409c00e0157ddcff18b96"
+          "sha256": "6b5374f126fc59553df6ab8e59f439080139acf923ee9f375f278c96dae2ea6d"
         },
         {
           "uri": "repo://tests/st0702/conftest.py",
@@ -136,12 +136,12 @@
         {
           "uri": "repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
           "bytes": 15689,
-          "sha256": "2366b2f1041d14b4b87053f122b8df36cbf726acdf38c8722a3495667eb84b9b"
+          "sha256": "31543aca8fff236b929e4fdadcdf6335db43b7402f5b5f68d14b42c50d259a7b"
         },
         {
           "uri": "repo://changes/st-0703/generated/recorded-fixture-registry.v1.json",
           "bytes": 5547,
-          "sha256": "d1fa295307bdad7ec7fdb2f68167468c2209640d2c9fba8da881229f73bcc8d7"
+          "sha256": "dfd4b9ac8c04d96cbf701aa231901a0151283bea9ef93d3c6a36d4282e5143d8"
         },
         {
           "uri": "repo://python/raos/domain/ai/provider.py",

@@ -145,7 +145,7 @@ IMPLEMENTATION_SOURCE_PATHS: Final = (
     Path("tests/st0703/test_recorded_support.py"),
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "2366b2f1041d14b4b87053f122b8df36cbf726acdf38c8722a3495667eb84b9b"
+    "31543aca8fff236b929e4fdadcdf6335db43b7402f5b5f68d14b42c50d259a7b"
 )
 EXPECTED_PYPROJECT_SHA256: Final = (
     "0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6"

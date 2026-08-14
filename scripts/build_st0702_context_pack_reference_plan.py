@@ -45,7 +45,7 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st0702_context_pack_reference_plan.py"
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "dfaa44687787dc9c38442d4e0bb3dbd2091e12ba78ffbc1a430f8d02a92b0320"
+    "7e693af7aa1e5d0df0923b0a67514aa0087a263fbdc2c5d7b4116e7c21864f96"
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
@@ -121,7 +121,7 @@ ST0701_ARTIFACTS: Final = (
     ),
     (
         Path("changes/st-0701/manifest.yaml"),
-        "021544cd8088bfb12e4ab48eabcfab567c77d31230e625e32babfc4383d87dd0",
+        "5356d285cae582ad42dbf727ab4fd3077752887a1b900bc06c2dbc56616a6ec0",
     ),
     (
         Path("scripts/build_st0701_ai_registry.py"),

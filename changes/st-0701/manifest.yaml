@@ -170,8 +170,8 @@ source_artifacts:
   bytes: 3232
   sha256: 47dc2be6ba47964cb1c42a179b79d0ea5b65ab5d8d9004db46b31d528fc7512d
 - uri: repo://docs/worklogs/ST-0701.md
-  bytes: 21452
-  sha256: b669b670bd876624f00c877d9e5c4bc16ed780caa225bc2fdbe3e0a9711b2a0f
+  bytes: 23409
+  sha256: 7a2ddbb31fb2b931029491dfa7ddb4d10077f0c68ff88e458b1efcdbea779dd6
 - uri: repo://scripts/build_st0701_ai_registry.py
   bytes: 60811
   sha256: 2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360
@@ -215,17 +215,17 @@ source_artifacts:
   bytes: 26006
   sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
 - uri: repo://Makefile
-  bytes: 31323
-  sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
+  bytes: 34123
+  sha256: 20054f9a6df92d8b1d6a94dde4428eb24011f799121fdfbf67d42e4d63506101
 - uri: repo://README.md
-  bytes: 57509
-  sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
+  bytes: 61004
+  sha256: 07519d2d66c8bbf0ad5d28e9ca8eb23ac4015c90e1f352b15db19c638aabf563
 - uri: repo://.python-version
   bytes: 7
   sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
 - uri: repo://pyproject.toml
-  bytes: 1214
-  sha256: d7a03c351a2ef20d6aaf45b4dff7775b3ce9dbb7e051323cfbf35d295344814e
+  bytes: 1334
+  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
 - uri: repo://uv.lock
   bytes: 128286
   sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
