@@ -47,26 +47,26 @@ stack:
 source_artifact_count: 30
 source_artifacts:
 - uri: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
-  bytes: 8029
-  sha256: a1b301636078a460a46a157380c388312c53909ad4b80a07dc5ce844a146fb57
+  bytes: 8008
+  sha256: b5fa325fe9995582c1b542615cf9f51de81013737d79f248562404e936f89ea7
 - uri: repo://changes/st-0202/README.md
-  bytes: 7914
-  sha256: 926c615a5fb6e18a8c7e1ce6163cee7cee21a95e9fd58e6d5fc2ea93b0c838f7
+  bytes: 7918
+  sha256: 975746861392ede6a85a70d637877a14f2e7d47545ca1f195835b0c5c7f08fad
 - uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
   bytes: 9112
   sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
 - uri: repo://docs/execplans/ST-0202.md
-  bytes: 6475
-  sha256: f3c4c26c07688b065c51eecbe394cded3b5e0977cb2b3a21ad7434baa7d0eff2
+  bytes: 6597
+  sha256: 77c9507e7b36bb843781a6cb09ce82ff4590ab93ba8c2363f662ef4a44872a4d
 - uri: repo://docs/worklogs/ST-0202.md
-  bytes: 6912
-  sha256: d14a74527d5692ab50214aa2c966b68b1329d9546f0739dc9e389b8690a54d17
+  bytes: 6930
+  sha256: 6de38fb9e493013f57a9073d48f89b332ce16764423eb04772a7a577c409559d
 - uri: repo://changes/st-0201/manifest.yaml
   bytes: 5607
   sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
 - uri: repo://scripts/build_local_compose.py
-  bytes: 34583
-  sha256: 5d8ffba940ea5acb12209f865cafb6f5cfe54963e48a7224458d884ad5a8753b
+  bytes: 34558
+  sha256: a50a271665bbc622faa4a8217b24747742e57dd4bdb0f00bda7201ae2b6f237a
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -74,8 +74,8 @@ source_artifacts:
   bytes: 12609
   sha256: 09e0d1fbb3b7a8a5f702c47fa558528c9f13adfb8dbdb485f2bb0de3bc2a665e
 - uri: repo://scripts/object_storage_service.sh
-  bytes: 19746
-  sha256: 2ce26ceb90e4c2b3efaff593bc86daf024a29110f1b68f1a4ee0b52ee634342d
+  bytes: 20279
+  sha256: 511c74ee51f58a49bf0844f78ef6f5171fa5d51fd6cc1a8130a9f23e7ae4b84c
 - uri: repo://scripts/object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -95,20 +95,20 @@ source_artifacts:
   bytes: 17361
   sha256: 79398040a01d02a46e985ba37e9895c815097dbe2e3790172a58607c3d1384d8
 - uri: repo://tests/st0202/conftest.py
-  bytes: 14510
-  sha256: 2a1c67898b0921b8a8bdb4f28d34e9342159c8d6bc035ad27276d109774acbb3
+  bytes: 14485
+  sha256: b7b9e41f6af9c9a74fdd45a3cc312d4b9ba1127febfeed2988344aea8ca7d7a9
 - uri: repo://tests/st0202/test_contract.py
-  bytes: 14815
-  sha256: 38fbebb3e2c2af4b6bc3aa26a7010ebe254c412e9aa706f8c63b934f8375fab8
+  bytes: 14889
+  sha256: ab8977a48b23988dc1f18e7355a8e483d6651467fbca14b9c91aac72d40b623f
 - uri: repo://tests/st0202/test_fixture.py
   bytes: 14906
   sha256: 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
 - uri: repo://tests/st0202/test_negative_cases.py
-  bytes: 12870
-  sha256: bac78be554e8dbdd0a0f3cfbd86eaf5fb702e598ac06eecdaa68e2bbe0bf7a87
+  bytes: 13731
+  sha256: 22a20fe407634d1f6a56ff23d15754e1f8839f09f1ef883c9c4e279dec7560f1
 - uri: repo://tests/st0202/test_wrapper.py
-  bytes: 26999
-  sha256: ed16a14ab0d84d18fedec2a59e0eb9c911574483aadfa71a13008dfba15a4043
+  bytes: 27706
+  sha256: 1258da208bccc91f74358ab2220452b84318774a9fb9ffaa18a53acccd326b31
 - uri: repo://.github/workflows/ci.yml
   bytes: 19528
   sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
@@ -117,7 +117,7 @@ source_artifacts:
   sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: 203c5b24cf511f60a32d1c4e99c2ab585128b34a16b02bfa601759ff8f4dc0cb
+  sha256: 7a70861004a59b3cb90ab209bca511a67cd6f9c264e97af3d7dba801fb8f6bad
 - uri: repo://tests/st0106/test_workflow_contract.py
   bytes: 26006
   sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
@@ -131,8 +131,8 @@ source_artifacts:
   bytes: 40758
   sha256: 6973e46dfd9c2aeb7d93f53b43fbb070249ddf89857b44ee726eb768250475cb
 - uri: repo://Makefile
-  bytes: 31909
-  sha256: 97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34
+  bytes: 34123
+  sha256: 20054f9a6df92d8b1d6a94dde4428eb24011f799121fdfbf67d42e4d63506101
 - uri: repo://README.md
   bytes: 58459
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749

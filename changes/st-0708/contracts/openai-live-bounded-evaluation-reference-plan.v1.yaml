@@ -56,7 +56,7 @@ dependencies:
     source_commit: 14f0813c443e22faab81dfce3507aff320831ac1
     artifacts:
       - uri: repo://changes/st-0707/README.md
-        sha256: cd1add125f338d259d2ff1fc37deb6397b644df5ac4dedf92f416f73dfa541d1
+        sha256: 129015d503c36c3df71dc4d97225c6cf6ea31207ea88e0c12f69867ab6f0d741
       - uri: repo://python/raos/domain/ai/evaluation.py
         sha256: f5eba5617c24227ac09de7ce555a52a9454fe2e5320c8bbcaab8752f6945aff4
       - uri: repo://python/raos/application/ai/evaluation.py
@@ -64,7 +64,7 @@ dependencies:
       - uri: repo://tests/st0707/conftest.py
         sha256: 6bade20471f8724fe2d131e57d806d1467b54d6467d77b1853e99732b3d94b78
       - uri: repo://tests/st0707/test_boundaries.py
-        sha256: f2755b9929f81c5b10ff5cc76f0a3ca4dbabeb492e63d32210a342e2abc6126d
+        sha256: 80412d4e8472b4c039921ff62c874b61b94c064dfd38c56165b02e7f8d0d27c2
       - uri: repo://tests/st0707/test_evaluation.py
         sha256: 3680ff67bf147721d04ab9f50c5d5c10503f7120af70c3a1c2b9ae4a80431340
       - uri: repo://tests/st0707/test_failure_isolation.py
@@ -92,11 +92,11 @@ dependencies:
       - uri: repo://changes/st-0703/README.md
         sha256: 18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c
       - uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
-        sha256: af848e5b37d43efc6ae08da7ebc847208bfc02ff9a881a8cd37e5e7667a6eef2
+        sha256: 36b15a144410915b73336feec7e84dc69f4340cdecce1857f92e2c7d640de1cd
       - uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
-        sha256: ce386ab928c27ec53ad5553d53d8c6863c63cc2fcc2bf49208038f28b479a051
+        sha256: 6a7c5bb5ec7b50a63448fe27c61d2c27a8bb3ffd1a9703891b4ea1561c322e80
       - uri: repo://changes/st-0703/manifest.yaml
-        sha256: b8ec79e0b6c9bff684123184f14bca823005f00c4107f84cc42e317acd767845
+        sha256: f9d5289da0090631ec948e6d38d79b702996479d2741d208054da578ce063aa8
       - uri: repo://python/raos/domain/ai/provider.py
         sha256: 179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991
       - uri: repo://python/raos/ports/ai_provider.py

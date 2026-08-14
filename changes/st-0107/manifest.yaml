@@ -49,11 +49,11 @@ source_artifacts:
   bytes: 45264
   sha256: ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec
 - uri: repo://scripts/build_local_compose.py
-  bytes: 34583
-  sha256: 5d8ffba940ea5acb12209f865cafb6f5cfe54963e48a7224458d884ad5a8753b
+  bytes: 34558
+  sha256: a50a271665bbc622faa4a8217b24747742e57dd4bdb0f00bda7201ae2b6f237a
 - uri: repo://scripts/object_storage_service.sh
-  bytes: 19746
-  sha256: 2ce26ceb90e4c2b3efaff593bc86daf024a29110f1b68f1a4ee0b52ee634342d
+  bytes: 20279
+  sha256: 511c74ee51f58a49bf0844f78ef6f5171fa5d51fd6cc1a8130a9f23e7ae4b84c
 - uri: repo://scripts/object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -73,8 +73,8 @@ source_artifacts:
   bytes: 26006
   sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
 - uri: repo://Makefile
-  bytes: 31909
-  sha256: 97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34
+  bytes: 34123
+  sha256: 20054f9a6df92d8b1d6a94dde4428eb24011f799121fdfbf67d42e4d63506101
 - uri: repo://README.md
   bytes: 58459
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
