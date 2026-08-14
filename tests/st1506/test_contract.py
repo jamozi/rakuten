@@ -24,7 +24,7 @@ def test_contract_loads_as_closed_non_executable_definition(
     document = _mapping(production_model.contract["document"])
     assert document == {
         "id": "RAOS-PRODUCTION-DEPLOYMENT-DEFINITION-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1506",
         "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
         "classification": (
@@ -35,6 +35,139 @@ def test_contract_loads_as_closed_non_executable_definition(
         "formal_verification": "NOT_EXECUTED",
     }
     assert tuple(production_model.contract) == generator.TOP_LEVEL_KEYS
+
+
+def test_wordpress_signed_delivery_interface_is_exact_data_only_boundary(
+    production_model: generator.ProductionDeploymentModel,
+) -> None:
+    interface = _mapping(
+        production_model.contract["wordpress_signed_delivery_interface"]
+    )
+    assert tuple(interface) == generator.WORDPRESS_INTERFACE_KEYS
+    assert (
+        generator.reference_plan_document(production_model)[
+            "wordpress_signed_delivery_interface"
+        ]
+        == interface
+    )
+    status = _mapping(interface["interface_status"])
+    assert status == {
+        "classification": (
+            "SOURCE_DERIVED_NON_EXECUTABLE_WORDPRESS_SIGNED_DELIVERY_INTERFACE"
+        ),
+        "executable": False,
+        "activation_status": "DISABLED",
+        "configuration_status": "NOT_CONFIGURED",
+        "runtime_status": "NOT_EXECUTED",
+        "live_status": "NOT_EXECUTED",
+        "formal_verification_status": "NOT_EXECUTED",
+        "automatic_delivery_authority": "NONE",
+        "manual_delivery_authority": "NONE",
+        "external_access": "FORBIDDEN",
+        "credential_access": "FORBIDDEN",
+        "action_count": 0,
+    }
+    assert type(status["action_count"]) is int
+
+
+def test_wordpress_trust_release_package_and_replay_rules_are_closed(
+    production_model: generator.ProductionDeploymentModel,
+) -> None:
+    interface = _mapping(
+        production_model.contract["wordpress_signed_delivery_interface"]
+    )
+    bootstrap = _mapping(interface["trust_bootstrap"])
+    assert bootstrap["installation"] == "FUTURE_MANUAL_OWNER_GATED_ONLY"
+    assert bootstrap["pinned_update_service_origin"] == "REQUIRED_NOT_CONFIGURED"
+    assert bootstrap["pinned_offline_root_algorithm"] == "Ed25519"
+    assert bootstrap["pinned_root_public_key"] == "REQUIRED_NOT_CONFIGURED"
+    assert bootstrap["updater_self_update"] == "FORBIDDEN"
+    assert bootstrap["cross_origin_redirect"] == "FORBIDDEN"
+
+    encoding = _mapping(interface["canonical_encoding"])
+    assert encoding["format"] == "RFC_8785_CANONICAL_JSON"
+    assert encoding["duplicate_keys"] == "REJECT"
+    assert encoding["floating_point_values"] == "FORBIDDEN"
+    assert encoding["unknown_fields"] == "REJECT"
+
+    keyring = _mapping(interface["keyring"])
+    assert keyring["signer"] == "PINNED_OFFLINE_ROOT"
+    assert keyring["keyring_epoch"] == "STRICTLY_MONOTONIC_UNSIGNED_INTEGER"
+    assert keyring["required_release_purposes"] == [
+        "RELEASE_SIGNER",
+        "OWNER_RELEASE_APPROVAL_SIGNER",
+    ]
+    release_set = _mapping(interface["release_set"])
+    assert release_set["signature_requirement"] == (
+        "TWO_DISTINCT_ACTIVE_KEYS_OVER_IDENTICAL_CANONICAL_ENVELOPE"
+    )
+    assert release_set["release_sequence"] == ("STRICTLY_MONOTONIC_UNSIGNED_INTEGER")
+    assert release_set["semantic_version_as_replay_control"] == "FORBIDDEN"
+
+    package = _mapping(interface["package_admission"])
+    assert package["transport"] == "EXACT_PINNED_HTTPS_ORIGIN_ONLY"
+    assert package["redirect"] == "FORBIDDEN"
+    assert package["exact_limits"] == "REQUIRED_NOT_CONFIGURED"
+    assert {
+        "ABSOLUTE_PATH",
+        "DOT_SEGMENT",
+        "SYMLINK",
+        "HARD_LINK",
+        "DUPLICATE_MEMBER",
+        "CASE_FOLD_COLLISION",
+        "UNICODE_NORMALIZATION_COLLISION",
+        "COMPRESSION_LIMIT_EXCEEDED",
+    }.issubset(set(package["reject_entries"]))
+    replay = _mapping(interface["replay_and_journal"])
+    assert replay["sequence_consumed_before_filesystem_mutation"] is True
+    assert replay["equal_or_lower_release_sequence"] == "REJECT"
+    assert replay["restored_database_may_lower_high_water"] is False
+    assert replay["blind_retry"] == "FORBIDDEN"
+
+
+def test_wordpress_restore_authorization_receipts_and_control_planes_are_inert(
+    production_model: generator.ProductionDeploymentModel,
+) -> None:
+    interface = _mapping(
+        production_model.contract["wordpress_signed_delivery_interface"]
+    )
+    machine = _mapping(interface["transaction_state_machine"])
+    assert machine["initial_state"] == "DISABLED"
+    assert machine["runtime_transition_execution"] == "FORBIDDEN"
+    assert machine["concurrent_update"] == "STOP"
+    assert machine["partial_switch"] == "STOP"
+    assert machine["journal_corruption"] == "STOP"
+
+    health = _mapping(interface["health_and_restore"])
+    assert health["failed_new_release_restore_attempt_limit"] == 1
+    assert type(health["failed_new_release_restore_attempt_limit"]) is int
+    assert health["restore_may_reduce_high_water"] is False
+    assert health["successful_restore_result"] == "RESTORED_STOPPED"
+    assert health["further_automatic_write_after_restore"] == "FORBIDDEN"
+
+    authorization = _mapping(interface["authorization"])
+    assert authorization["authentication_transport"] == (
+        "WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS"
+    )
+    assert authorization["custom_minimal_roles"] == "REQUIRED_NOT_CONFIGURED"
+    assert authorization["update_custom_capability"] == "REQUIRED_NOT_CONFIGURED"
+    assert authorization["arbitrary_url_file_path_code_or_version_input"] == (
+        "FORBIDDEN"
+    )
+    receipts = _mapping(interface["receipts"])
+    assert receipts["tamper_evident_required"] is True
+    assert receipts["sanitized_required"] is True
+    assert "APPLICATION_PASSWORD" in receipts["forbidden_fields"]
+    assert "SIGNING_PRIVATE_KEY" in receipts["forbidden_fields"]
+
+    separation = _mapping(interface["control_plane_separation"])
+    assert separation["code_delivery_may_publish_content"] is False
+    assert separation["publication_may_trigger_deployment"] is False
+    assert separation["kill_switches_separate"] is True
+    assert separation["failed_code_delivery_may_modify_public_content"] is False
+    evidence = _mapping(interface["evidence_boundary"])
+    assert evidence["local_tests"] == "DEVELOPER_EVIDENCE_ONLY"
+    assert all(value == "NOT_EXECUTED" for value in list(evidence.values())[1:])
 
 
 def test_immediate_predecessor_and_all_transitive_bindings_are_exact(

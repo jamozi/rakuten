@@ -1,4 +1,4 @@
-# ST-1506 Production deployment reference boundary
+# ST-1506 Production deployment and WordPress signed-delivery boundary
 
 This Story-owned slice records the maximum-safe local reference for a future
 Production deployment. It is a closed, source-derived, non-executable
@@ -21,6 +21,57 @@ other external state.
 
 This local reference does not make ST-1506 Story Done, `VALIDATED`, deployed,
 release-ready, or Production-ready.
+
+## Exact implementation authority
+
+This additive `1.1.0` revision is authorized only by the immutable handoff and
+detached repository-owner approval below. The builder verifies their exact
+regular-file bytes, sizes, SHA-256 values, parsed semantics, approved Story,
+base literals, owned path cut, and empty implementation `open_decisions` before
+accepting the source contract.
+
+| Authority input | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `changes/st-1506/DESIGN_HANDOFF_V1_ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1.yaml` | 30,568 | `7973f7d4dca452da3325ecbfbd78d34faf6acdcd7d931de6d314ee2ef4a1acb3` |
+| `changes/st-1506/DESIGN-HANDOFF-APPROVAL-WORDPRESS-SIGNED-DELIVERY-INTERFACE-v1.yaml` | 2,298 | `89a8d77ca319a51d38bf7662c4d7a38763b13f66e5a33176ecaf93e598fd25bb` |
+
+The handoff's proposal-era embedded status remains byte-immutable. The
+detached approval binds those exact bytes to
+`APPROVED_FOR_IMPLEMENTATION` for this one non-executable ST-1506 slice. It
+does not approve a later runtime or release.
+
+## WordPress signed-delivery interface
+
+`wordpress_signed_delivery_interface` is a closed, generated-projection data
+interface. It records only future requirements for:
+
+- manual owner-gated bootstrap with an offline Ed25519 root that signs only a
+  versioned keyring;
+- two distinct active release-signing purposes over one RFC 8785 canonical
+  release-set envelope;
+- atomic coupled child-theme/companion-plugin release sets, strict package
+  admission, exact inventory, and archive traversal/collision rejection;
+- monotonic keyring and release high-water marks, durable pre-mutation journal,
+  stopped ambiguity states, and no blind retry;
+- same-filesystem staging requirements without assuming WordPress filesystem
+  atomicity;
+- bounded health verification and at most one restore from the immediately
+  previous locally verified release set;
+- separate least-privilege WordPress update/content identities, sanitized
+  tamper-evident receipts, and separate deployment/publication control planes.
+
+The interface is `executable: false`, `DISABLED`, `NOT_CONFIGURED`, and
+`NOT_EXECUTED`. Automatic and manual delivery authority are both `NONE`,
+external and credential access are `FORBIDDEN`, and its action count is the
+exact integer `0`. The existing Production action inventory also remains all
+zero.
+
+No update-service origin, public key, release key, WordPress identity,
+Application Password reference or value, filesystem method, compatibility
+bound, package limit, runtime endpoint, scheduler, provider, repository,
+workflow, role, credential, or Production endpoint is selected. The approved
+read-only target observation is not copied into the contract as a Production
+binding.
 
 ## Predecessor boundary
 
@@ -79,9 +130,11 @@ the owner command.
 
 | Classification | Path | Role |
 | --- | --- | --- |
-| Story source | `changes/st-1506/contracts/production-deployment-definition.v1.yaml` | Closed Production safety, approval, admission, canary, observation, rollback, and disabled-execution requirements |
+| Exact authority | `changes/st-1506/DESIGN_HANDOFF_V1_ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1.yaml` and detached approval | Hash-bound authority and approved path/safety boundary |
+| Story source | `changes/st-1506/contracts/production-deployment-definition.v1.yaml` | Closed Production safety plus signed-delivery trust, admission, replay, restore, authorization, receipt, separation, and disabled-execution requirements |
 | Owner builder | `scripts/build_st1506_production_deployment.py` | Strict deterministic validator and renderer |
 | Test source | `tests/st1506/*.py` | Positive, hostile, provenance, path-safety, no-write, and static-boundary coverage |
+| Work log | `docs/worklogs/ST-1506.md` | Local preflight, implementation, verification, and unexecuted-gate ledger |
 | Generated reference | `infra/terraform/deployment-production/production-deployment.reference-plan.v1.json` | Source-derived non-executable reference plan |
 | Generated inventory | `changes/st-1506/manifest.yaml` | Exact authority, predecessor, source, output, and boundary hashes |
 
@@ -107,6 +160,10 @@ write.
 Formal TST-009, TST-022, and TST-032; hosted CI; staging; a migration database;
 HTTP or browser smoke; telemetry and alert configuration; canary traffic;
 rollback exercise; provider/account/role/credential use; GitHub environment or
-workflow configuration; Production deployment; release; and status transition
-remain `NOT_EXECUTED`. Each requires its separately authorized owner,
-environment, immutable evidence, approvals, and resolved decisions.
+workflow configuration; PHP or JavaScript updater/loader code; cryptographic
+signing or verification; key generation or use; package build/upload/install;
+Application Password use; WordPress route, mutation, filesystem switch, health
+probe, restore, or scheduler execution; Production deployment; publication;
+release; and status transition remain `NOT_EXECUTED` or `NOT_AUTHORIZED`.
+Each requires its separately authorized owner, environment, immutable evidence,
+approvals, and resolved decisions.

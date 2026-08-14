@@ -1,0 +1,547 @@
+DESIGN_HANDOFF_V1:
+  document_version: 1
+  proposal_status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+  authority: UNAPPROVED_DESIGN_HANDOFF_CANDIDATE
+  approved_story: ST-1506
+  approved_scope:
+    - Extend the existing ST-1506 source-derived Production deployment definition with one closed, non-executable WordPress signed-delivery interface.
+    - Preserve the existing ST-1506 Production-disabled, action-count-zero, no-network, no-credential, no-provider, and no-external-write boundaries.
+    - Define the future manual bootstrap trust root, root-signed keyring, dual-purpose release signatures, release-set envelope, package admission, replay protection, transaction journal, health verification, one-restore containment, least-privilege authorization, receipts, and deployment kill switch as data only.
+    - Keep the update-service origin, signing keys, WordPress identities, Application Passwords, filesystem method, compatibility bounds, package limits, runtime endpoint, scheduler, and every live Production binding unselected.
+    - Add deterministic validation, generated projection, manifest binding, positive tests, and hostile fail-closed tests through the existing ST-1506 builder and test suite.
+    - Record the exact approved handoff and detached owner approval as Story authority inputs without changing Canonical status.
+    - Make no PHP plugin, theme, REST route, GitHub workflow, cryptographic runtime, package, deployment runtime, WordPress mutation, Rakuten call, publication path, release, or Production activation.
+  source_design_refs:
+    - uri: repo://AGENTS.md
+      bytes: 40758
+      sha256: 6973e46dfd9c2aeb7d93f53b43fbb070249ddf89857b44ee726eb768250475cb
+    - uri: repo://docs/canonical/08_codex/AGENTS.md
+      bytes: 4972
+      sha256: 214c1158da975465e187720d0f7ebca2691dfb2bc02a9506b7ca5adb0c812520
+    - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+      bytes: 2275
+      sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      bytes: 7943
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+      bytes: 3955
+      sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      bytes: 4956
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      bytes: 71458
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      bytes: 11395
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+      bytes: 7929
+      sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      bytes: 24993
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - uri: repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+      bytes: 5175
+      sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+    - uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+      bytes: 7217
+      sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+    - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
+      bytes: 11341
+      sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
+    - uri: repo://changes/st-1506/README.md
+      bytes: 5429
+      sha256: 4d419706d5e74d0ed2dad46ddea224d2f3804c68aedb40747b827bb5b08e2bc5
+    - uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
+      bytes: 17356
+      sha256: 36e9b96d4b681e63d0b74f4172b8fc73137a58785a0433cd959a8d22a7b91a90
+    - uri: repo://scripts/build_st1506_production_deployment.py
+      bytes: 42566
+      sha256: ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f
+    - uri: repo://tests/st1506/test_contract.py
+      bytes: 11183
+      sha256: c4f043918cf3f3c2e8bdc86db50585dd2207cfd16f41987ab9077d316650d890
+    - uri: repo://tests/st1506/test_generation.py
+      bytes: 8233
+      sha256: e789f8785f3187acc1c3235f687cc15a22941da6e22e9e4138dfc20c1431f5d0
+    - uri: repo://tests/st1506/test_negative_cases.py
+      bytes: 18770
+      sha256: 2572da4a70f4182ba18d7c066d69dc93b5bcc8044d127f50d12c42df8419db55
+    - uri: https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/
+      retrieved_at: '2026-08-15'
+      evidence_class: CURRENT_OFFICIAL_PRIMARY_DOCUMENTATION
+      relevant_fact: WordPress Application Passwords authenticate external HTTPS REST requests as their associated WordPress user.
+    - uri: https://developer.wordpress.org/plugins/plugin-basics/header-requirements/
+      retrieved_at: '2026-08-15'
+      evidence_class: CURRENT_OFFICIAL_PRIMARY_DOCUMENTATION
+      relevant_fact: Update URI identifies third-party plugin update ownership and prevents WordPress.org slug collision.
+    - uri: https://developer.wordpress.org/reference/hooks/update_plugins_hostname/
+      retrieved_at: '2026-08-15'
+      evidence_class: CURRENT_OFFICIAL_PRIMARY_DOCUMENTATION
+      relevant_fact: WordPress supplies a hostname-specific third-party plugin update filter derived from Update URI.
+  pro_advice_binding:
+    run_id: 20260814T190431Z-f766cd4f5994
+    importance: gated
+    status: CONVERGED_NO_OPEN_GAP
+    advice_type: PRO_ADVICE_V1
+    recommendation: REVISE
+    material_delta: true
+    authority: UNAPPROVED_ADVICE
+    provenance: HUMAN_COPIED_DISPLAYED_RESPONSE
+    resubmitted: false
+    response_sha256: fca5a6fa7370f4f082a5c353fd919ba57845c1a0af83a7ab0067a85bec48eb5c
+    proposal_sha256: 1164c2583a586bba79ca48f5c4115e9b847d258d92cf068a3496da551805ec62
+    reconciliation: ACCEPTED_AS_ADVISORY_INPUT_ONLY_AFTER_CANONICAL_AND_LOCAL_REVIEW
+  decision:
+    base:
+      commit: 8c8b9c4567392886f086d3dd69506619e5a83344
+      tree: 7f8a0f7c0d84282b2824c135f78a708a1cd1ed00
+      source_ref: origin/main
+      worktree_branch: codex/st-1506-wordpress-signed-delivery-interface-v1
+    story_boundary:
+      current_story: ST-1506
+      current_deliverable: WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1
+      predecessor: ST-1505
+      future_consumer: ST-1903
+      future_consumer_modified_in_this_slice: false
+      publication_policy_modified_in_this_slice: false
+      canonical_modified_in_this_slice: false
+      runtime_implementation_in_scope: false
+    contract_revision:
+      source_path: changes/st-1506/contracts/production-deployment-definition.v1.yaml
+      current_version: 1.0.0
+      proposed_version: 1.1.0
+      compatibility: ADDITIVE_STRICT_SCHEMA_REVISION_WITH_EXACT_OWNER_APPROVAL
+      new_top_level_section: wordpress_signed_delivery_interface
+      generated_projection_path: infra/terraform/deployment-production/production-deployment.reference-plan.v1.json
+      generator_path: scripts/build_st1506_production_deployment.py
+      generated_files_hand_edited: false
+    target_observation:
+      observed_at: '2026-08-15'
+      origin: https://kurashinoshirube.com
+      wordpress_version: 7.0.4
+      theme: twentytwentyfive
+      wp_v2_advertised: true
+      application_passwords_advertised: true
+      evidence_authority: READ_ONLY_OBSERVATION_NOT_PRODUCTION_BINDING
+      selected_production_endpoint: null
+    interface_status:
+      classification: SOURCE_DERIVED_NON_EXECUTABLE_WORDPRESS_SIGNED_DELIVERY_INTERFACE
+      executable: false
+      activation_status: DISABLED
+      configuration_status: NOT_CONFIGURED
+      runtime_status: NOT_EXECUTED
+      live_status: NOT_EXECUTED
+      formal_verification_status: NOT_EXECUTED
+      automatic_delivery_authority: NONE
+      manual_delivery_authority: NONE
+      external_access: FORBIDDEN
+      credential_access: FORBIDDEN
+      action_count: 0
+    trust_bootstrap:
+      installation: FUTURE_MANUAL_OWNER_GATED_ONLY
+      updater_self_update: FORBIDDEN
+      signed_channel_may_modify_bootstrap: false
+      pinned_update_service_origin: REQUIRED_NOT_CONFIGURED
+      origin_aliases: FORBIDDEN
+      cross_origin_redirect: FORBIDDEN
+      caller_supplied_artifact_url: FORBIDDEN
+      pinned_offline_root_algorithm: Ed25519
+      pinned_root_public_key: REQUIRED_NOT_CONFIGURED
+      root_key_purpose: KEYRING_SIGNATURE_ONLY
+      root_key_remote_rotation: FORBIDDEN
+      root_key_change: FUTURE_MANUAL_OWNER_GATED_BOOTSTRAP_REPLACEMENT_ONLY
+    canonical_encoding:
+      format: RFC_8785_CANONICAL_JSON
+      character_encoding: UTF-8
+      duplicate_keys: REJECT
+      floating_point_values: FORBIDDEN
+      nonfinite_values: FORBIDDEN
+      unicode_normalization_before_signature: FORBIDDEN
+      unknown_fields: REJECT
+      unknown_schema_versions: REJECT
+      keyring_domain_separator: RAOS_WP_KEYRING_V1
+      release_set_domain_separator: RAOS_WP_RELEASE_SET_V1
+    keyring:
+      schema: RAOS_WP_KEYRING_V1
+      signer: PINNED_OFFLINE_ROOT
+      keyring_epoch: STRICTLY_MONOTONIC_UNSIGNED_INTEGER
+      persisted_high_water_required: true
+      equal_or_lower_epoch: REJECT
+      key_fields:
+        - key_id
+        - algorithm
+        - purpose
+        - not_before
+        - not_after
+        - minimum_release_sequence
+        - revocation_status
+      allowed_algorithm: Ed25519
+      required_release_purposes:
+        - RELEASE_SIGNER
+        - OWNER_RELEASE_APPROVAL_SIGNER
+      wrong_purpose_duplicate_unknown_expired_not_yet_valid_or_revoked: REJECT
+    release_set:
+      schema: RAOS_WP_RELEASE_SET_V1
+      signature_requirement: TWO_DISTINCT_ACTIVE_KEYS_OVER_IDENTICAL_CANONICAL_ENVELOPE
+      required_signature_purposes:
+        - RELEASE_SIGNER
+        - OWNER_RELEASE_APPROVAL_SIGNER
+      envelope_fields:
+        - schema
+        - update_service_origin
+        - audience_host
+        - channel
+        - release_set_id
+        - release_sequence
+        - issued_at
+        - expires_at
+        - source_commit
+        - source_tree
+        - build_provenance_digest
+        - independent_review_evidence_digest
+        - exact_release_approval_record_digest
+        - keyring_epoch
+        - wordpress_compatibility
+        - php_compatibility
+        - components
+        - health_contract
+      release_sequence: STRICTLY_MONOTONIC_UNSIGNED_INTEGER
+      semantic_version_as_replay_control: FORBIDDEN
+      timestamp_as_sole_replay_control: FORBIDDEN
+      unsigned_digest_only_package: FORBIDDEN
+      exact_limits: REQUIRED_NOT_CONFIGURED
+    components:
+      allowed_kinds:
+        - WORDPRESS_CHILD_THEME
+        - WORDPRESS_COMPANION_PLUGIN
+      exact_slug_allowlist: REQUIRED_NOT_CONFIGURED
+      coupled_components_default: ONE_ATOMIC_RELEASE_SET
+      independent_release_requires_declared_no_dependency_and_hostile_compatibility_proof: true
+      required_component_fields:
+        - kind
+        - slug
+        - version
+        - update_uri
+        - artifact_url
+        - artifact_sha256
+        - inventory_sha256
+        - compressed_bytes
+        - expanded_bytes
+        - member_count
+      mixed_release_set: FORBIDDEN
+    package_admission:
+      transport: EXACT_PINNED_HTTPS_ORIGIN_ONLY
+      certificate_and_hostname_validation: REQUIRED
+      redirect: FORBIDDEN
+      manifest_verified_before_metadata_trust: true
+      complete_artifact_sha256_verified_before_extraction: true
+      extraction_location: PRIVATE_SAME_FILESYSTEM_STAGING_REQUIRED_NOT_CONFIGURED
+      exact_limits: REQUIRED_NOT_CONFIGURED
+      reject_entries:
+        - ABSOLUTE_PATH
+        - DOT_SEGMENT
+        - BACKSLASH_SEPARATOR
+        - NUL
+        - SYMLINK
+        - HARD_LINK
+        - DEVICE_ENTRY
+        - DUPLICATE_MEMBER
+        - CASE_FOLD_COLLISION
+        - UNICODE_NORMALIZATION_COLLISION
+        - UNDECLARED_NESTED_ARCHIVE
+        - UNSUPPORTED_PERMISSION_BITS
+        - TRAILING_PAYLOAD
+        - COMPRESSION_LIMIT_EXCEEDED
+        - SIZE_LIMIT_EXCEEDED
+        - FILE_COUNT_LIMIT_EXCEEDED
+      post_extraction_exact_inventory_revalidation: REQUIRED
+      time_of_check_time_of_use_replacement: REJECT
+    replay_and_journal:
+      highest_keyring_epoch_persisted: REQUIRED_NOT_CONFIGURED
+      highest_seen_release_sequence_persisted: REQUIRED_NOT_CONFIGURED
+      journal_persisted_before_filesystem_mutation: REQUIRED_NOT_CONFIGURED
+      sequence_consumed_before_filesystem_mutation: true
+      failed_or_interrupted_sequence_reuse: FORBIDDEN
+      equal_or_lower_release_sequence: REJECT
+      restored_database_may_lower_high_water: false
+      uncertain_high_water_result: DISABLE_AUTOMATIC_DELIVERY_AND_REQUIRE_OWNER_RECONSTRUCTION
+      blind_retry: FORBIDDEN
+    transaction_state_machine:
+      states:
+        - DISABLED
+        - EVALUATION_REJECTED
+        - PREPARED
+        - SWITCH_IN_PROGRESS
+        - HEALTH_CHECKING
+        - HEALTHY
+        - RESTORE_IN_PROGRESS
+        - RESTORED_STOPPED
+        - FAILED_STOPPED
+        - AMBIGUOUS_STOPPED
+      initial_state: DISABLED
+      runtime_transition_execution: FORBIDDEN
+      stage_all_components_before_switch: true
+      durable_prepared_state_required: true
+      concurrent_update: STOP
+      partial_switch: STOP
+      uncertain_active_files: STOP
+      journal_corruption: STOP
+      automatic_advance: FORBIDDEN
+    wordpress_filesystem:
+      atomicity_assumption: FORBIDDEN
+      direct_filesystem_method: REQUIRED_NOT_CONFIGURED
+      same_filesystem_staging: REQUIRED_NOT_CONFIGURED
+      bounded_free_space_preflight: REQUIRED_NOT_CONFIGURED
+      crash_recovery_at_every_mutation_boundary: REQUIRED_NOT_CONFIGURED
+      owner_gated_loader_or_pointer: OPTIONAL_FUTURE_SEPARATE_APPROVAL
+      ssh_or_ssh_backed_filesystem: FORBIDDEN
+    health_and_restore:
+      previous_verified_release_set_retained: REQUIRED_NOT_CONFIGURED
+      previous_inventory_reverified_before_switch: REQUIRED_NOT_CONFIGURED
+      health_contract_required_checks:
+        - ACTIVE_RELEASE_SET_IDENTITY
+        - WORDPRESS_BOOTSTRAP_SUCCESS
+        - REQUIRED_THEME_AND_PLUGIN_ACTIVE
+        - BOUNDED_INTERNAL_LOOPBACK
+        - BOUNDED_PUBLIC_HTTPS_WITH_NONSTALE_RELEASE_MARKER
+        - CRITICAL_RAOS_RENDERING_CONTRACT
+      failed_new_release_restore_attempt_limit: 1
+      restore_source: IMMEDIATELY_PREVIOUS_LOCAL_VERIFIED_RELEASE_SET_ONLY
+      remotely_supplied_downgrade: FORBIDDEN
+      restore_may_reduce_high_water: false
+      successful_restore_requires_same_health_contract: true
+      successful_restore_result: RESTORED_STOPPED
+      failed_or_ambiguous_restore_result: FAILED_STOPPED
+      further_automatic_write_after_restore: FORBIDDEN
+    authorization:
+      authentication_transport: WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS
+      update_and_content_identities_distinct: REQUIRED_NOT_CONFIGURED
+      application_password_has_independent_capability_scope: false
+      custom_minimal_roles: REQUIRED_NOT_CONFIGURED
+      update_custom_capability: REQUIRED_NOT_CONFIGURED
+      route_level_permission_callback: REQUIRED_NOT_CONFIGURED
+      update_identity_general_post_edit_or_publish: FORBIDDEN
+      update_identity_general_plugin_theme_user_option_admin: FORBIDDEN
+      content_identity_plugin_theme_user_option_update_admin: FORBIDDEN
+      arbitrary_url_file_path_code_or_version_input: FORBIDDEN
+      request_shape: RELEASE_SET_IDENTIFIER_ONLY_FUTURE_CONTRACT_REQUIRED
+      credential_values_in_repository_prompt_package_log_or_receipt: FORBIDDEN
+    availability:
+      update_service_is_request_serving_dependency: false
+      outage_result: KEEP_CURRENT_VERIFIED_RELEASE_AND_STOP
+      retry_storm: FORBIDDEN
+      fallback_origin_or_mirror: FORBIDDEN
+      unsigned_cached_package: FORBIDDEN
+      public_page_and_raos_api_availability_independent: REQUIRED_NOT_CONFIGURED
+    automatic_delivery_classification:
+      current_authority: NONE
+      default: MANUAL_OWNER_GATED
+      future_closed_low_risk_allowlist:
+        - BOUNDED_CSS
+        - BOUNDED_IMAGE
+        - TRANSLATION
+        - BLOCK_TEMPLATE
+        - BLOCK_PATTERN
+        - DECLARATIVE_METADATA
+      always_owner_gated:
+        - PHP_EXECUTION
+        - JAVASCRIPT_EXECUTION
+        - DEPENDENCY_CHANGE
+        - REST_ROUTE
+        - AUTHENTICATION
+        - CAPABILITY_OR_PERMISSION
+        - NETWORK_DESTINATION
+        - CRON
+        - FILESYSTEM_WRITE_LOGIC
+        - DATABASE_WRITE_OR_MIGRATION
+        - ACTIVATION_HOOK
+        - UPDATER_OR_LOADER
+        - CANONICAL_CONTRACT
+        - PUBLICATION_LOGIC
+        - RELEASE_OR_ROLLBACK_LOGIC
+        - TRUST_KEY_OR_ORIGIN
+        - ADMIN_BEHAVIOR
+      future_conjunctive_gates:
+        - TERMINAL_HOSTED_CI_PASS
+        - INDEPENDENT_CODE_REVIEW_PASS
+        - PRO_REVIEW_PASS
+        - REPRODUCIBLE_PACKAGE_EQUALITY_PASS
+        - BACKUP_AND_RESTORE_PROOF_PASS
+        - EXACT_RELEASE_APPROVAL_PASS
+      unknown_classification: OWNER_GATED
+    receipts:
+      tamper_evident_required: true
+      sanitized_required: true
+      retention: REQUIRED_NOT_CONFIGURED
+      allowed_deployment_fields:
+        - release_set_id
+        - release_sequence
+        - keyring_epoch
+        - key_ids
+        - manifest_sha256
+        - artifact_sha256_values
+        - component_versions
+        - previous_release_set_id
+        - observed_release_set_id
+        - bounded_timestamps
+        - health_outcomes
+        - restore_outcome
+        - closed_failure_code
+      forbidden_fields:
+        - PACKAGE_CONTENT
+        - AUTHORIZATION_HEADER
+        - APPLICATION_PASSWORD
+        - SIGNING_PRIVATE_KEY
+        - ARTICLE_BODY
+        - RAKUTEN_VALUE
+        - RAW_EXCEPTION
+    control_plane_separation:
+      code_delivery_may_publish_content: false
+      publication_may_trigger_deployment: false
+      identities_separate: true
+      queues_separate: true
+      state_machines_separate: true
+      receipts_separate: true
+      kill_switches_separate: true
+      failed_code_delivery_may_modify_public_content: false
+      future_publication_requires_compatible_active_release_set: true
+    evidence_boundary:
+      local_tests: DEVELOPER_EVIDENCE_ONLY
+      hosted_ci: NOT_EXECUTED
+      staging: NOT_EXECUTED
+      target_filesystem_proof: NOT_EXECUTED
+      crash_recovery: NOT_EXECUTED
+      live_wordpress: NOT_EXECUTED
+      release: NOT_EXECUTED
+      production: NOT_EXECUTED
+      status_transition: NOT_EXECUTED
+  rationale:
+    - ST-1506 already owns a default-disabled Production deployment definition, artifact admission, health, rollback, approvals, and TST-032 boundary; extending that source-derived contract is narrower than creating a second deployment Story or mixing deployment into ST-1903.
+    - Separating signed code delivery from article publication preserves distinct identities, trust roots, state machines, receipts, failures, approvals, and kill switches.
+    - A root-signed keyring plus two routine signing purposes prevents one routine release key from independently authorizing a deployment and makes key rotation and revocation explicit.
+    - Monotonic keyring and release high-water marks address replay and rollback attacks that semantic versions and expiry timestamps do not prevent.
+    - A release set prevents a coupled child theme and plugin from being declared healthy in an unreviewed mixed-version state.
+    - Interface-only data and hostile validation make the design reviewable without selecting credentials, endpoints, limits, filesystem behavior, or Production authority.
+  rejected_alternatives:
+    - alternative: COMBINE_CODE_DELIVERY_AND_ST1903_PUBLICATION_RUNTIME
+      reason: The two control planes have different trust roots, credentials, canonical authority, failure modes, evidence, and kill switches.
+    - alternative: IMPLEMENT_WORDPRESS_PHP_UPDATER_NOW
+      reason: The current Story slice has no trust bootstrap, credential, target-filesystem, release, or Production authority.
+    - alternative: SSH_OR_GIT_PULL_DEPLOYMENT
+      reason: The owner selected a WordPress custom signed update path and SSH-backed Production access is excluded.
+    - alternative: WORDPRESS_OR_BROWSER_CALLS_RAKUTEN
+      reason: Rakuten credentials and normalization remain owned by a future RAOS backend adapter and are unrelated to ST-1506.
+    - alternative: UNSIGNED_DIGEST_ONLY_OR_HTTPS_ONLY_TRUST
+      reason: Neither proves exact owner release approval, intended audience, review evidence, sequence freshness, or replay safety.
+    - alternative: SINGLE_LONG_LIVED_ROUTINE_SIGNING_KEY
+      reason: One compromised routine key must not independently authorize deployment.
+    - alternative: BOOTSTRAP_SELF_UPDATE_OR_REMOTE_ROOT_ROTATION
+      reason: A compromised channel cannot safely replace its own root of trust.
+    - alternative: SEMANTIC_VERSION_OR_EXPIRY_ONLY_REPLAY_CONTROL
+      reason: Neither prevents equal-sequence replay, coordinated component downgrade, or restored-state rollback.
+    - alternative: ASSUME_WORDPRESS_FILESYSTEM_ATOMICITY
+      reason: Filesystem method, mount layout, storage, process interruption, and multi-component switching require target-specific staging proof.
+    - alternative: BLIND_RETRY_OR_REMOTE_DOWNGRADE_ROLLBACK
+      reason: Ambiguous writes can compound corruption and a remote downgrade can bypass monotonic admission.
+    - alternative: AUTOMATIC_UNPUBLISH_ON_DEPLOYMENT_FAILURE
+      reason: A code delivery failure must not mutate already-public content.
+    - alternative: SELECT_ENDPOINT_CREDENTIAL_LIMIT_OR_RETENTION_VALUES_IN_THIS_SLICE
+      reason: OD-009, OD-011, OD-013, and OD-015 remain unresolved and the interface can fail closed while all live values stay unset.
+  constraints:
+    execution_profile: deep
+    exact_owned_paths:
+      - changes/st-1506/DESIGN_HANDOFF_V1_ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1.yaml
+      - changes/st-1506/DESIGN-HANDOFF-APPROVAL-WORDPRESS-SIGNED-DELIVERY-INTERFACE-v1.yaml
+      - changes/st-1506/README.md
+      - changes/st-1506/contracts/production-deployment-definition.v1.yaml
+      - changes/st-1506/manifest.yaml
+      - infra/terraform/deployment-production/production-deployment.reference-plan.v1.json
+      - scripts/build_st1506_production_deployment.py
+      - tests/st1506/test_contract.py
+      - tests/st1506/test_generation.py
+      - tests/st1506/test_negative_cases.py
+      - docs/worklogs/ST-1506.md
+    exact_story_count: 1
+    exact_story_id: ST-1506
+    generated_paths:
+      - changes/st-1506/manifest.yaml
+      - infra/terraform/deployment-production/production-deployment.reference-plan.v1.json
+    generated_files_must_not_be_hand_edited: true
+    use_existing_builder_and_tests: true
+    new_runtime_dependency: FORBIDDEN
+    cryptographic_execution_or_test_key_material: FORBIDDEN
+    environment_or_secret_lookup: FORBIDDEN
+    network_browser_provider_or_subprocess_use: FORBIDDEN
+    source_contract_unknown_fields: REJECT
+    yaml_alias_anchor_tag_merge_and_duplicate_keys: REJECT
+    json_duplicate_keys_and_non_data_shapes: REJECT
+    bounded_regular_file_reads: true
+    symlink_or_unsafe_ancestor: REJECT
+    canonical_upstream_lock_workflow_status_st1903_st1703_st0505_changes: FORBIDDEN
+    existing_st1506_safe_defaults_and_zero_action_counts: BYTE_SEMANTICALLY_PRESERVED
+    base_must_be_exact_parent_at_worker_start: true
+    one_atomic_commit_over_approved_base: true
+    push_pr_merge_release_or_external_status_write: FORBIDDEN
+  security_and_approval_gates:
+    - Exact repository-owner approval of this handoff SHA-256 is required before implementation.
+    - The detached approval must bind exact handoff bytes, size, SHA-256, ST-1506, this exact path cut, APPROVED_FOR_IMPLEMENTATION, and open_decisions empty.
+    - The implementation worker must verify the exact base commit and tree, source reference hashes, Pro binding, handoff bytes and SHA-256, detached approval, Story, scope, and open_decisions before editing.
+    - Canonical INT-DEC-009 and INT-DEC-013 remain unchanged; this code-delivery interface grants no publication, Production secret, kill-switch release, final approval, or autonomous authority.
+    - OD-009 remains unresolved; no budget, acceptable loss, or automatic Production activation is selected.
+    - OD-011 remains unresolved; notification remains local-only and no Production routing contact is selected.
+    - OD-013 remains unresolved; no hosting runtime, region, data-residency selection, update-service origin, or live endpoint is selected.
+    - OD-015 remains unresolved; no account, permission, Application Password, signing key, secret alias value, provider credential, or live provider use is selected or read.
+    - Manual bootstrap installation, updater or loader change, root key or pinned-origin change, WordPress identity or capability creation, and filesystem-method selection each require separate future owner authority.
+    - Any later PHP, JavaScript, dependency, route, authentication, permission, network, cron, filesystem, database, migration, publication, release, rollback, trust-key, origin, or admin-behavior change remains owner-gated.
+    - Hosted CI, independent review, Pro review, reproducible build, backup and restore proof, and exact release approval are conjunctive future gates and grant no current authority.
+    - ST-1903 remains disabled and untouched; a future revision may depend only on an exact approved digest of this interface and still requires its own exact canonical reconciliation and release decision.
+    - No local result may be reported as formal TST-032, staging, recovery, release, deployment, or Production evidence.
+  acceptance_criteria:
+    - The exact handoff and detached approval are strict, hash-bound, immutable Story authority inputs, and every required DESIGN_HANDOFF_V1 field exists with open_decisions empty.
+    - The ST-1506 source contract version is exactly 1.1.0 and adds exactly one closed wordpress_signed_delivery_interface top-level section without weakening any predecessor, open-decision safe default, human gate, selected-binding null, logical phase, execution prohibition, or zero action count.
+    - The interface remains executable false, activation DISABLED, configuration NOT_CONFIGURED, runtime/live/formal verification NOT_EXECUTED, automatic and manual delivery authority NONE, external and credential access FORBIDDEN, and action count 0.
+    - The contract and generated projection encode the bootstrap, encoding, keyring, dual-signature release set, component set, package admission, replay journal, state machine, filesystem, health and one-restore, authorization, availability, classification, receipt, control-plane, and evidence boundaries exactly.
+    - Missing, extra, reordered, padded, wrong-case, wrong-type, boolean-as-integer, unknown, weakened, or selected values in any new closed field fail with stable value-free errors.
+    - Hostile tests cover wrong origin policy, redirects, unknown algorithms and schemas, duplicate JSON semantics, wrong signature purposes, stale epochs and sequences, replay, component mismatch, archive traversal and collisions, excessive resources, concurrent or partial switch, journal corruption, ambiguous health and restore, broad WordPress roles, arbitrary inputs, fallback origins, retry, and cross-control-plane invocation as data-contract violations.
+    - The existing builder validates exact Story, Canonical, security, operations, test, predecessor, handoff, approval, and source hashes and rejects semantic drift even if a digest is rebound.
+    - The existing builder remains deterministic, offline, no-environment, no-network, no-browser, no-provider, no-subprocess, no-credential, no-deployment, and accepts only no arguments or exact --check.
+    - Generated JSON and manifest are regenerated only through the owner builder and exactly match a clean rerun.
+    - README and ST-1506 worklog clearly separate this local interface from future PHP/runtime, WordPress staging, live deployment, publication, release, formal TST-032, and Production evidence.
+    - Existing tests/st1506 behavior and all predecessor bindings remain passing and byte-semantic safe defaults remain unchanged.
+  required_test_evidence:
+    - Isolated pinned pytest for tests/st1506 with positive semantics, generation, and hostile fail-closed cases.
+    - Existing ST-1506 owner builder generation followed by exact --check and no-write verification.
+    - Pinned Ruff check and format check for changed Python tests and builder, plus isolated system-Python compile and import checks.
+    - Exact handoff and detached approval YAML parse, closed required-field validation, bytes and SHA-256 validation, approved Story validation, base commit/tree validation, and open_decisions empty validation.
+    - Existing ST-1505 builder --check and isolated tests/st1505 regression because ST-1506 binds its exact source and generated reference.
+    - make check-workspace, canonical import verification, git diff --check, exact-owned-path sensitive-data scan, generated-artifact no-drift check, and denied-network static audit.
+    - Frozen read-only review of the exact implementation diff with concrete findings fixed and re-reviewed before commit.
+    - Formal TST-009, TST-022, TST-032, hosted CI, staging, target-filesystem, Application Password, crash recovery, live WordPress, release, publication, and Production remain NOT_EXECUTED.
+  inherited_open_decisions:
+    - id: OD-009
+      status: HUMAN_DECISION_REQUIRED
+      candidate_resolution: UNCHANGED
+      safe_default: PRODUCTION_DISABLED
+    - id: OD-011
+      status: HUMAN_DECISION_REQUIRED
+      candidate_resolution: UNCHANGED
+      safe_default: LOCAL_LOG_ONLY
+    - id: OD-013
+      status: HUMAN_DECISION_REQUIRED
+      candidate_resolution: UNCHANGED
+      safe_default: REFERENCE_REGION_METADATA_ONLY_AND_NO_PRODUCTION_APPLY
+    - id: OD-015
+      status: EXTERNAL_EVIDENCE_REQUIRED
+      candidate_resolution: UNCHANGED
+      safe_default: RECORDED_FIXTURES_ONLY_AND_NO_LIVE_CREDENTIALS
+  open_decisions: []
+  approval:
+    status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+    approved_by: null
+    approved_at: null
+    approved_sha256: null
+    canonical_reconciliation: PASS_FOR_NONEXECUTABLE_ST1506_INTERFACE_ONLY
+    pro_advice_authority: UNAPPROVED_ADVISORY_RECONCILED_WITH_CANONICAL_AND_LOCAL_EVIDENCE

@@ -77,7 +77,7 @@
     "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
     "source_contract": "repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml",
     "story_id": "ST-1506",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "environment": {
     "activation_status": "DISABLED",
@@ -149,6 +149,18 @@
     "self_approval": "FORBIDDEN",
     "shared_artifact_slots": "FORBIDDEN",
     "synthesized_approval": "FORBIDDEN"
+  },
+  "implementation_authority": {
+    "approval_bytes": 2298,
+    "approval_sha256": "89a8d77ca319a51d38bf7662c4d7a38763b13f66e5a33176ecaf93e598fd25bb",
+    "approval_uri": "repo://changes/st-1506/DESIGN-HANDOFF-APPROVAL-WORDPRESS-SIGNED-DELIVERY-INTERFACE-v1.yaml",
+    "handoff_bytes": 30568,
+    "handoff_sha256": "7973f7d4dca452da3325ecbfbd78d34faf6acdcd7d931de6d314ee2ef4a1acb3",
+    "handoff_uri": "repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1.yaml",
+    "implementation_authority": "ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1_ONLY",
+    "open_decisions": [],
+    "status": "APPROVED_FOR_IMPLEMENTATION",
+    "story_id": "ST-1506"
   },
   "logical_phases": [
     {
@@ -427,5 +439,329 @@
     "status_transition": "NOT_EXECUTED",
     "terraform_or_cloud_runtime": "ABSENT",
     "workflow": "ABSENT"
+  },
+  "wordpress_signed_delivery_interface": {
+    "authorization": {
+      "application_password_has_independent_capability_scope": false,
+      "arbitrary_url_file_path_code_or_version_input": "FORBIDDEN",
+      "authentication_transport": "WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS",
+      "content_identity_plugin_theme_user_option_update_admin": "FORBIDDEN",
+      "credential_values_in_repository_prompt_package_log_or_receipt": "FORBIDDEN",
+      "custom_minimal_roles": "REQUIRED_NOT_CONFIGURED",
+      "request_shape": "RELEASE_SET_IDENTIFIER_ONLY_FUTURE_CONTRACT_REQUIRED",
+      "route_level_permission_callback": "REQUIRED_NOT_CONFIGURED",
+      "update_and_content_identities_distinct": "REQUIRED_NOT_CONFIGURED",
+      "update_custom_capability": "REQUIRED_NOT_CONFIGURED",
+      "update_identity_general_plugin_theme_user_option_admin": "FORBIDDEN",
+      "update_identity_general_post_edit_or_publish": "FORBIDDEN"
+    },
+    "automatic_delivery_classification": {
+      "always_owner_gated": [
+        "PHP_EXECUTION",
+        "JAVASCRIPT_EXECUTION",
+        "DEPENDENCY_CHANGE",
+        "REST_ROUTE",
+        "AUTHENTICATION",
+        "CAPABILITY_OR_PERMISSION",
+        "NETWORK_DESTINATION",
+        "CRON",
+        "FILESYSTEM_WRITE_LOGIC",
+        "DATABASE_WRITE_OR_MIGRATION",
+        "ACTIVATION_HOOK",
+        "UPDATER_OR_LOADER",
+        "CANONICAL_CONTRACT",
+        "PUBLICATION_LOGIC",
+        "RELEASE_OR_ROLLBACK_LOGIC",
+        "TRUST_KEY_OR_ORIGIN",
+        "ADMIN_BEHAVIOR"
+      ],
+      "current_authority": "NONE",
+      "default": "MANUAL_OWNER_GATED",
+      "future_closed_low_risk_allowlist": [
+        "BOUNDED_CSS",
+        "BOUNDED_IMAGE",
+        "TRANSLATION",
+        "BLOCK_TEMPLATE",
+        "BLOCK_PATTERN",
+        "DECLARATIVE_METADATA"
+      ],
+      "future_conjunctive_gates": [
+        "TERMINAL_HOSTED_CI_PASS",
+        "INDEPENDENT_CODE_REVIEW_PASS",
+        "PRO_REVIEW_PASS",
+        "REPRODUCIBLE_PACKAGE_EQUALITY_PASS",
+        "BACKUP_AND_RESTORE_PROOF_PASS",
+        "EXACT_RELEASE_APPROVAL_PASS"
+      ],
+      "unknown_classification": "OWNER_GATED"
+    },
+    "availability": {
+      "fallback_origin_or_mirror": "FORBIDDEN",
+      "outage_result": "KEEP_CURRENT_VERIFIED_RELEASE_AND_STOP",
+      "public_page_and_raos_api_availability_independent": "REQUIRED_NOT_CONFIGURED",
+      "retry_storm": "FORBIDDEN",
+      "unsigned_cached_package": "FORBIDDEN",
+      "update_service_is_request_serving_dependency": false
+    },
+    "canonical_encoding": {
+      "character_encoding": "UTF-8",
+      "duplicate_keys": "REJECT",
+      "floating_point_values": "FORBIDDEN",
+      "format": "RFC_8785_CANONICAL_JSON",
+      "keyring_domain_separator": "RAOS_WP_KEYRING_V1",
+      "nonfinite_values": "FORBIDDEN",
+      "release_set_domain_separator": "RAOS_WP_RELEASE_SET_V1",
+      "unicode_normalization_before_signature": "FORBIDDEN",
+      "unknown_fields": "REJECT",
+      "unknown_schema_versions": "REJECT"
+    },
+    "components": {
+      "allowed_kinds": [
+        "WORDPRESS_CHILD_THEME",
+        "WORDPRESS_COMPANION_PLUGIN"
+      ],
+      "coupled_components_default": "ONE_ATOMIC_RELEASE_SET",
+      "exact_slug_allowlist": "REQUIRED_NOT_CONFIGURED",
+      "independent_release_requires_declared_no_dependency_and_hostile_compatibility_proof": true,
+      "mixed_release_set": "FORBIDDEN",
+      "required_component_fields": [
+        "kind",
+        "slug",
+        "version",
+        "update_uri",
+        "artifact_url",
+        "artifact_sha256",
+        "inventory_sha256",
+        "compressed_bytes",
+        "expanded_bytes",
+        "member_count"
+      ]
+    },
+    "control_plane_separation": {
+      "code_delivery_may_publish_content": false,
+      "failed_code_delivery_may_modify_public_content": false,
+      "future_publication_requires_compatible_active_release_set": true,
+      "identities_separate": true,
+      "kill_switches_separate": true,
+      "publication_may_trigger_deployment": false,
+      "queues_separate": true,
+      "receipts_separate": true,
+      "state_machines_separate": true
+    },
+    "evidence_boundary": {
+      "crash_recovery": "NOT_EXECUTED",
+      "hosted_ci": "NOT_EXECUTED",
+      "live_wordpress": "NOT_EXECUTED",
+      "local_tests": "DEVELOPER_EVIDENCE_ONLY",
+      "production": "NOT_EXECUTED",
+      "release": "NOT_EXECUTED",
+      "staging": "NOT_EXECUTED",
+      "status_transition": "NOT_EXECUTED",
+      "target_filesystem_proof": "NOT_EXECUTED"
+    },
+    "health_and_restore": {
+      "failed_new_release_restore_attempt_limit": 1,
+      "failed_or_ambiguous_restore_result": "FAILED_STOPPED",
+      "further_automatic_write_after_restore": "FORBIDDEN",
+      "health_contract_required_checks": [
+        "ACTIVE_RELEASE_SET_IDENTITY",
+        "WORDPRESS_BOOTSTRAP_SUCCESS",
+        "REQUIRED_THEME_AND_PLUGIN_ACTIVE",
+        "BOUNDED_INTERNAL_LOOPBACK",
+        "BOUNDED_PUBLIC_HTTPS_WITH_NONSTALE_RELEASE_MARKER",
+        "CRITICAL_RAOS_RENDERING_CONTRACT"
+      ],
+      "previous_inventory_reverified_before_switch": "REQUIRED_NOT_CONFIGURED",
+      "previous_verified_release_set_retained": "REQUIRED_NOT_CONFIGURED",
+      "remotely_supplied_downgrade": "FORBIDDEN",
+      "restore_may_reduce_high_water": false,
+      "restore_source": "IMMEDIATELY_PREVIOUS_LOCAL_VERIFIED_RELEASE_SET_ONLY",
+      "successful_restore_requires_same_health_contract": true,
+      "successful_restore_result": "RESTORED_STOPPED"
+    },
+    "interface_status": {
+      "action_count": 0,
+      "activation_status": "DISABLED",
+      "automatic_delivery_authority": "NONE",
+      "classification": "SOURCE_DERIVED_NON_EXECUTABLE_WORDPRESS_SIGNED_DELIVERY_INTERFACE",
+      "configuration_status": "NOT_CONFIGURED",
+      "credential_access": "FORBIDDEN",
+      "executable": false,
+      "external_access": "FORBIDDEN",
+      "formal_verification_status": "NOT_EXECUTED",
+      "live_status": "NOT_EXECUTED",
+      "manual_delivery_authority": "NONE",
+      "runtime_status": "NOT_EXECUTED"
+    },
+    "keyring": {
+      "allowed_algorithm": "Ed25519",
+      "equal_or_lower_epoch": "REJECT",
+      "key_fields": [
+        "key_id",
+        "algorithm",
+        "purpose",
+        "not_before",
+        "not_after",
+        "minimum_release_sequence",
+        "revocation_status"
+      ],
+      "keyring_epoch": "STRICTLY_MONOTONIC_UNSIGNED_INTEGER",
+      "persisted_high_water_required": true,
+      "required_release_purposes": [
+        "RELEASE_SIGNER",
+        "OWNER_RELEASE_APPROVAL_SIGNER"
+      ],
+      "schema": "RAOS_WP_KEYRING_V1",
+      "signer": "PINNED_OFFLINE_ROOT",
+      "wrong_purpose_duplicate_unknown_expired_not_yet_valid_or_revoked": "REJECT"
+    },
+    "package_admission": {
+      "certificate_and_hostname_validation": "REQUIRED",
+      "complete_artifact_sha256_verified_before_extraction": true,
+      "exact_limits": "REQUIRED_NOT_CONFIGURED",
+      "extraction_location": "PRIVATE_SAME_FILESYSTEM_STAGING_REQUIRED_NOT_CONFIGURED",
+      "manifest_verified_before_metadata_trust": true,
+      "post_extraction_exact_inventory_revalidation": "REQUIRED",
+      "redirect": "FORBIDDEN",
+      "reject_entries": [
+        "ABSOLUTE_PATH",
+        "DOT_SEGMENT",
+        "BACKSLASH_SEPARATOR",
+        "NUL",
+        "SYMLINK",
+        "HARD_LINK",
+        "DEVICE_ENTRY",
+        "DUPLICATE_MEMBER",
+        "CASE_FOLD_COLLISION",
+        "UNICODE_NORMALIZATION_COLLISION",
+        "UNDECLARED_NESTED_ARCHIVE",
+        "UNSUPPORTED_PERMISSION_BITS",
+        "TRAILING_PAYLOAD",
+        "COMPRESSION_LIMIT_EXCEEDED",
+        "SIZE_LIMIT_EXCEEDED",
+        "FILE_COUNT_LIMIT_EXCEEDED"
+      ],
+      "time_of_check_time_of_use_replacement": "REJECT",
+      "transport": "EXACT_PINNED_HTTPS_ORIGIN_ONLY"
+    },
+    "receipts": {
+      "allowed_deployment_fields": [
+        "release_set_id",
+        "release_sequence",
+        "keyring_epoch",
+        "key_ids",
+        "manifest_sha256",
+        "artifact_sha256_values",
+        "component_versions",
+        "previous_release_set_id",
+        "observed_release_set_id",
+        "bounded_timestamps",
+        "health_outcomes",
+        "restore_outcome",
+        "closed_failure_code"
+      ],
+      "forbidden_fields": [
+        "PACKAGE_CONTENT",
+        "AUTHORIZATION_HEADER",
+        "APPLICATION_PASSWORD",
+        "SIGNING_PRIVATE_KEY",
+        "ARTICLE_BODY",
+        "RAKUTEN_VALUE",
+        "RAW_EXCEPTION"
+      ],
+      "retention": "REQUIRED_NOT_CONFIGURED",
+      "sanitized_required": true,
+      "tamper_evident_required": true
+    },
+    "release_set": {
+      "envelope_fields": [
+        "schema",
+        "update_service_origin",
+        "audience_host",
+        "channel",
+        "release_set_id",
+        "release_sequence",
+        "issued_at",
+        "expires_at",
+        "source_commit",
+        "source_tree",
+        "build_provenance_digest",
+        "independent_review_evidence_digest",
+        "exact_release_approval_record_digest",
+        "keyring_epoch",
+        "wordpress_compatibility",
+        "php_compatibility",
+        "components",
+        "health_contract"
+      ],
+      "exact_limits": "REQUIRED_NOT_CONFIGURED",
+      "release_sequence": "STRICTLY_MONOTONIC_UNSIGNED_INTEGER",
+      "required_signature_purposes": [
+        "RELEASE_SIGNER",
+        "OWNER_RELEASE_APPROVAL_SIGNER"
+      ],
+      "schema": "RAOS_WP_RELEASE_SET_V1",
+      "semantic_version_as_replay_control": "FORBIDDEN",
+      "signature_requirement": "TWO_DISTINCT_ACTIVE_KEYS_OVER_IDENTICAL_CANONICAL_ENVELOPE",
+      "timestamp_as_sole_replay_control": "FORBIDDEN",
+      "unsigned_digest_only_package": "FORBIDDEN"
+    },
+    "replay_and_journal": {
+      "blind_retry": "FORBIDDEN",
+      "equal_or_lower_release_sequence": "REJECT",
+      "failed_or_interrupted_sequence_reuse": "FORBIDDEN",
+      "highest_keyring_epoch_persisted": "REQUIRED_NOT_CONFIGURED",
+      "highest_seen_release_sequence_persisted": "REQUIRED_NOT_CONFIGURED",
+      "journal_persisted_before_filesystem_mutation": "REQUIRED_NOT_CONFIGURED",
+      "restored_database_may_lower_high_water": false,
+      "sequence_consumed_before_filesystem_mutation": true,
+      "uncertain_high_water_result": "DISABLE_AUTOMATIC_DELIVERY_AND_REQUIRE_OWNER_RECONSTRUCTION"
+    },
+    "transaction_state_machine": {
+      "automatic_advance": "FORBIDDEN",
+      "concurrent_update": "STOP",
+      "durable_prepared_state_required": true,
+      "initial_state": "DISABLED",
+      "journal_corruption": "STOP",
+      "partial_switch": "STOP",
+      "runtime_transition_execution": "FORBIDDEN",
+      "stage_all_components_before_switch": true,
+      "states": [
+        "DISABLED",
+        "EVALUATION_REJECTED",
+        "PREPARED",
+        "SWITCH_IN_PROGRESS",
+        "HEALTH_CHECKING",
+        "HEALTHY",
+        "RESTORE_IN_PROGRESS",
+        "RESTORED_STOPPED",
+        "FAILED_STOPPED",
+        "AMBIGUOUS_STOPPED"
+      ],
+      "uncertain_active_files": "STOP"
+    },
+    "trust_bootstrap": {
+      "caller_supplied_artifact_url": "FORBIDDEN",
+      "cross_origin_redirect": "FORBIDDEN",
+      "installation": "FUTURE_MANUAL_OWNER_GATED_ONLY",
+      "origin_aliases": "FORBIDDEN",
+      "pinned_offline_root_algorithm": "Ed25519",
+      "pinned_root_public_key": "REQUIRED_NOT_CONFIGURED",
+      "pinned_update_service_origin": "REQUIRED_NOT_CONFIGURED",
+      "root_key_change": "FUTURE_MANUAL_OWNER_GATED_BOOTSTRAP_REPLACEMENT_ONLY",
+      "root_key_purpose": "KEYRING_SIGNATURE_ONLY",
+      "root_key_remote_rotation": "FORBIDDEN",
+      "signed_channel_may_modify_bootstrap": false,
+      "updater_self_update": "FORBIDDEN"
+    },
+    "wordpress_filesystem": {
+      "atomicity_assumption": "FORBIDDEN",
+      "bounded_free_space_preflight": "REQUIRED_NOT_CONFIGURED",
+      "crash_recovery_at_every_mutation_boundary": "REQUIRED_NOT_CONFIGURED",
+      "direct_filesystem_method": "REQUIRED_NOT_CONFIGURED",
+      "owner_gated_loader_or_pointer": "OPTIONAL_FUTURE_SEPARATE_APPROVAL",
+      "same_filesystem_staging": "REQUIRED_NOT_CONFIGURED",
+      "ssh_or_ssh_backed_filesystem": "FORBIDDEN"
+    }
   }
 }

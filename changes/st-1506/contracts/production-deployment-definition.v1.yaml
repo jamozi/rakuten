@@ -1,6 +1,6 @@
 document:
   id: RAOS-PRODUCTION-DEPLOYMENT-DEFINITION-001
-  version: 1.0.0
+  version: 1.1.0
   story_id: ST-1506
   status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
   classification: SOURCE_DERIVED_NON_EXECUTABLE_PRODUCTION_DEPLOYMENT_DEFINITION
@@ -46,6 +46,10 @@ sources:
     sha256: 3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
     sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+  - uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1.yaml
+    sha256: 7973f7d4dca452da3325ecbfbd78d34faf6acdcd7d931de6d314ee2ef4a1acb3
+  - uri: repo://changes/st-1506/DESIGN-HANDOFF-APPROVAL-WORDPRESS-SIGNED-DELIVERY-INTERFACE-v1.yaml
+    sha256: 89a8d77ca319a51d38bf7662c4d7a38763b13f66e5a33176ecaf93e598fd25bb
   - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
     sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
   - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
@@ -442,3 +446,295 @@ evidence_boundary:
   production: NOT_EXECUTED
   status_transition: NOT_EXECUTED
   effective_canonical_status: UNCHANGED
+wordpress_signed_delivery_interface:
+  interface_status:
+    classification: SOURCE_DERIVED_NON_EXECUTABLE_WORDPRESS_SIGNED_DELIVERY_INTERFACE
+    executable: false
+    activation_status: DISABLED
+    configuration_status: NOT_CONFIGURED
+    runtime_status: NOT_EXECUTED
+    live_status: NOT_EXECUTED
+    formal_verification_status: NOT_EXECUTED
+    automatic_delivery_authority: NONE
+    manual_delivery_authority: NONE
+    external_access: FORBIDDEN
+    credential_access: FORBIDDEN
+    action_count: 0
+  trust_bootstrap:
+    installation: FUTURE_MANUAL_OWNER_GATED_ONLY
+    updater_self_update: FORBIDDEN
+    signed_channel_may_modify_bootstrap: false
+    pinned_update_service_origin: REQUIRED_NOT_CONFIGURED
+    origin_aliases: FORBIDDEN
+    cross_origin_redirect: FORBIDDEN
+    caller_supplied_artifact_url: FORBIDDEN
+    pinned_offline_root_algorithm: Ed25519
+    pinned_root_public_key: REQUIRED_NOT_CONFIGURED
+    root_key_purpose: KEYRING_SIGNATURE_ONLY
+    root_key_remote_rotation: FORBIDDEN
+    root_key_change: FUTURE_MANUAL_OWNER_GATED_BOOTSTRAP_REPLACEMENT_ONLY
+  canonical_encoding:
+    format: RFC_8785_CANONICAL_JSON
+    character_encoding: UTF-8
+    duplicate_keys: REJECT
+    floating_point_values: FORBIDDEN
+    nonfinite_values: FORBIDDEN
+    unicode_normalization_before_signature: FORBIDDEN
+    unknown_fields: REJECT
+    unknown_schema_versions: REJECT
+    keyring_domain_separator: RAOS_WP_KEYRING_V1
+    release_set_domain_separator: RAOS_WP_RELEASE_SET_V1
+  keyring:
+    schema: RAOS_WP_KEYRING_V1
+    signer: PINNED_OFFLINE_ROOT
+    keyring_epoch: STRICTLY_MONOTONIC_UNSIGNED_INTEGER
+    persisted_high_water_required: true
+    equal_or_lower_epoch: REJECT
+    key_fields:
+      - key_id
+      - algorithm
+      - purpose
+      - not_before
+      - not_after
+      - minimum_release_sequence
+      - revocation_status
+    allowed_algorithm: Ed25519
+    required_release_purposes:
+      - RELEASE_SIGNER
+      - OWNER_RELEASE_APPROVAL_SIGNER
+    wrong_purpose_duplicate_unknown_expired_not_yet_valid_or_revoked: REJECT
+  release_set:
+    schema: RAOS_WP_RELEASE_SET_V1
+    signature_requirement: TWO_DISTINCT_ACTIVE_KEYS_OVER_IDENTICAL_CANONICAL_ENVELOPE
+    required_signature_purposes:
+      - RELEASE_SIGNER
+      - OWNER_RELEASE_APPROVAL_SIGNER
+    envelope_fields:
+      - schema
+      - update_service_origin
+      - audience_host
+      - channel
+      - release_set_id
+      - release_sequence
+      - issued_at
+      - expires_at
+      - source_commit
+      - source_tree
+      - build_provenance_digest
+      - independent_review_evidence_digest
+      - exact_release_approval_record_digest
+      - keyring_epoch
+      - wordpress_compatibility
+      - php_compatibility
+      - components
+      - health_contract
+    release_sequence: STRICTLY_MONOTONIC_UNSIGNED_INTEGER
+    semantic_version_as_replay_control: FORBIDDEN
+    timestamp_as_sole_replay_control: FORBIDDEN
+    unsigned_digest_only_package: FORBIDDEN
+    exact_limits: REQUIRED_NOT_CONFIGURED
+  components:
+    allowed_kinds:
+      - WORDPRESS_CHILD_THEME
+      - WORDPRESS_COMPANION_PLUGIN
+    exact_slug_allowlist: REQUIRED_NOT_CONFIGURED
+    coupled_components_default: ONE_ATOMIC_RELEASE_SET
+    independent_release_requires_declared_no_dependency_and_hostile_compatibility_proof: true
+    required_component_fields:
+      - kind
+      - slug
+      - version
+      - update_uri
+      - artifact_url
+      - artifact_sha256
+      - inventory_sha256
+      - compressed_bytes
+      - expanded_bytes
+      - member_count
+    mixed_release_set: FORBIDDEN
+  package_admission:
+    transport: EXACT_PINNED_HTTPS_ORIGIN_ONLY
+    certificate_and_hostname_validation: REQUIRED
+    redirect: FORBIDDEN
+    manifest_verified_before_metadata_trust: true
+    complete_artifact_sha256_verified_before_extraction: true
+    extraction_location: PRIVATE_SAME_FILESYSTEM_STAGING_REQUIRED_NOT_CONFIGURED
+    exact_limits: REQUIRED_NOT_CONFIGURED
+    reject_entries:
+      - ABSOLUTE_PATH
+      - DOT_SEGMENT
+      - BACKSLASH_SEPARATOR
+      - NUL
+      - SYMLINK
+      - HARD_LINK
+      - DEVICE_ENTRY
+      - DUPLICATE_MEMBER
+      - CASE_FOLD_COLLISION
+      - UNICODE_NORMALIZATION_COLLISION
+      - UNDECLARED_NESTED_ARCHIVE
+      - UNSUPPORTED_PERMISSION_BITS
+      - TRAILING_PAYLOAD
+      - COMPRESSION_LIMIT_EXCEEDED
+      - SIZE_LIMIT_EXCEEDED
+      - FILE_COUNT_LIMIT_EXCEEDED
+    post_extraction_exact_inventory_revalidation: REQUIRED
+    time_of_check_time_of_use_replacement: REJECT
+  replay_and_journal:
+    highest_keyring_epoch_persisted: REQUIRED_NOT_CONFIGURED
+    highest_seen_release_sequence_persisted: REQUIRED_NOT_CONFIGURED
+    journal_persisted_before_filesystem_mutation: REQUIRED_NOT_CONFIGURED
+    sequence_consumed_before_filesystem_mutation: true
+    failed_or_interrupted_sequence_reuse: FORBIDDEN
+    equal_or_lower_release_sequence: REJECT
+    restored_database_may_lower_high_water: false
+    uncertain_high_water_result: DISABLE_AUTOMATIC_DELIVERY_AND_REQUIRE_OWNER_RECONSTRUCTION
+    blind_retry: FORBIDDEN
+  transaction_state_machine:
+    states:
+      - DISABLED
+      - EVALUATION_REJECTED
+      - PREPARED
+      - SWITCH_IN_PROGRESS
+      - HEALTH_CHECKING
+      - HEALTHY
+      - RESTORE_IN_PROGRESS
+      - RESTORED_STOPPED
+      - FAILED_STOPPED
+      - AMBIGUOUS_STOPPED
+    initial_state: DISABLED
+    runtime_transition_execution: FORBIDDEN
+    stage_all_components_before_switch: true
+    durable_prepared_state_required: true
+    concurrent_update: STOP
+    partial_switch: STOP
+    uncertain_active_files: STOP
+    journal_corruption: STOP
+    automatic_advance: FORBIDDEN
+  wordpress_filesystem:
+    atomicity_assumption: FORBIDDEN
+    direct_filesystem_method: REQUIRED_NOT_CONFIGURED
+    same_filesystem_staging: REQUIRED_NOT_CONFIGURED
+    bounded_free_space_preflight: REQUIRED_NOT_CONFIGURED
+    crash_recovery_at_every_mutation_boundary: REQUIRED_NOT_CONFIGURED
+    owner_gated_loader_or_pointer: OPTIONAL_FUTURE_SEPARATE_APPROVAL
+    ssh_or_ssh_backed_filesystem: FORBIDDEN
+  health_and_restore:
+    previous_verified_release_set_retained: REQUIRED_NOT_CONFIGURED
+    previous_inventory_reverified_before_switch: REQUIRED_NOT_CONFIGURED
+    health_contract_required_checks:
+      - ACTIVE_RELEASE_SET_IDENTITY
+      - WORDPRESS_BOOTSTRAP_SUCCESS
+      - REQUIRED_THEME_AND_PLUGIN_ACTIVE
+      - BOUNDED_INTERNAL_LOOPBACK
+      - BOUNDED_PUBLIC_HTTPS_WITH_NONSTALE_RELEASE_MARKER
+      - CRITICAL_RAOS_RENDERING_CONTRACT
+    failed_new_release_restore_attempt_limit: 1
+    restore_source: IMMEDIATELY_PREVIOUS_LOCAL_VERIFIED_RELEASE_SET_ONLY
+    remotely_supplied_downgrade: FORBIDDEN
+    restore_may_reduce_high_water: false
+    successful_restore_requires_same_health_contract: true
+    successful_restore_result: RESTORED_STOPPED
+    failed_or_ambiguous_restore_result: FAILED_STOPPED
+    further_automatic_write_after_restore: FORBIDDEN
+  authorization:
+    authentication_transport: WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS
+    update_and_content_identities_distinct: REQUIRED_NOT_CONFIGURED
+    application_password_has_independent_capability_scope: false
+    custom_minimal_roles: REQUIRED_NOT_CONFIGURED
+    update_custom_capability: REQUIRED_NOT_CONFIGURED
+    route_level_permission_callback: REQUIRED_NOT_CONFIGURED
+    update_identity_general_post_edit_or_publish: FORBIDDEN
+    update_identity_general_plugin_theme_user_option_admin: FORBIDDEN
+    content_identity_plugin_theme_user_option_update_admin: FORBIDDEN
+    arbitrary_url_file_path_code_or_version_input: FORBIDDEN
+    request_shape: RELEASE_SET_IDENTIFIER_ONLY_FUTURE_CONTRACT_REQUIRED
+    credential_values_in_repository_prompt_package_log_or_receipt: FORBIDDEN
+  availability:
+    update_service_is_request_serving_dependency: false
+    outage_result: KEEP_CURRENT_VERIFIED_RELEASE_AND_STOP
+    retry_storm: FORBIDDEN
+    fallback_origin_or_mirror: FORBIDDEN
+    unsigned_cached_package: FORBIDDEN
+    public_page_and_raos_api_availability_independent: REQUIRED_NOT_CONFIGURED
+  automatic_delivery_classification:
+    current_authority: NONE
+    default: MANUAL_OWNER_GATED
+    future_closed_low_risk_allowlist:
+      - BOUNDED_CSS
+      - BOUNDED_IMAGE
+      - TRANSLATION
+      - BLOCK_TEMPLATE
+      - BLOCK_PATTERN
+      - DECLARATIVE_METADATA
+    always_owner_gated:
+      - PHP_EXECUTION
+      - JAVASCRIPT_EXECUTION
+      - DEPENDENCY_CHANGE
+      - REST_ROUTE
+      - AUTHENTICATION
+      - CAPABILITY_OR_PERMISSION
+      - NETWORK_DESTINATION
+      - CRON
+      - FILESYSTEM_WRITE_LOGIC
+      - DATABASE_WRITE_OR_MIGRATION
+      - ACTIVATION_HOOK
+      - UPDATER_OR_LOADER
+      - CANONICAL_CONTRACT
+      - PUBLICATION_LOGIC
+      - RELEASE_OR_ROLLBACK_LOGIC
+      - TRUST_KEY_OR_ORIGIN
+      - ADMIN_BEHAVIOR
+    future_conjunctive_gates:
+      - TERMINAL_HOSTED_CI_PASS
+      - INDEPENDENT_CODE_REVIEW_PASS
+      - PRO_REVIEW_PASS
+      - REPRODUCIBLE_PACKAGE_EQUALITY_PASS
+      - BACKUP_AND_RESTORE_PROOF_PASS
+      - EXACT_RELEASE_APPROVAL_PASS
+    unknown_classification: OWNER_GATED
+  receipts:
+    tamper_evident_required: true
+    sanitized_required: true
+    retention: REQUIRED_NOT_CONFIGURED
+    allowed_deployment_fields:
+      - release_set_id
+      - release_sequence
+      - keyring_epoch
+      - key_ids
+      - manifest_sha256
+      - artifact_sha256_values
+      - component_versions
+      - previous_release_set_id
+      - observed_release_set_id
+      - bounded_timestamps
+      - health_outcomes
+      - restore_outcome
+      - closed_failure_code
+    forbidden_fields:
+      - PACKAGE_CONTENT
+      - AUTHORIZATION_HEADER
+      - APPLICATION_PASSWORD
+      - SIGNING_PRIVATE_KEY
+      - ARTICLE_BODY
+      - RAKUTEN_VALUE
+      - RAW_EXCEPTION
+  control_plane_separation:
+    code_delivery_may_publish_content: false
+    publication_may_trigger_deployment: false
+    identities_separate: true
+    queues_separate: true
+    state_machines_separate: true
+    receipts_separate: true
+    kill_switches_separate: true
+    failed_code_delivery_may_modify_public_content: false
+    future_publication_requires_compatible_active_release_set: true
+  evidence_boundary:
+    local_tests: DEVELOPER_EVIDENCE_ONLY
+    hosted_ci: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    target_filesystem_proof: NOT_EXECUTED
+    crash_recovery: NOT_EXECUTED
+    live_wordpress: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED
+    status_transition: NOT_EXECUTED

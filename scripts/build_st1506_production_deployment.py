@@ -11,7 +11,6 @@ import os
 import re
 import stat
 import sys
-import tempfile
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
@@ -23,11 +22,15 @@ from yaml.nodes import MappingNode
 from yaml.tokens import AliasToken, AnchorToken, TagToken
 
 
-REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+def _lexical_repository_root(script_path: str | os.PathLike[str]) -> Path:
+    """Bind the invocation path without following any repository symlink."""
+
+    return Path(os.path.abspath(os.fspath(script_path))).parents[1]
+
+
+REPO_ROOT: Final = _lexical_repository_root(__file__)
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
-
-from scripts import build_st1505_staging_deployment as st1505  # noqa: E402
 
 
 CONTRACT_PATH: Final = Path(
@@ -38,11 +41,36 @@ REFERENCE_PLAN_PATH: Final = Path(
 )
 MANIFEST_PATH: Final = Path("changes/st-1506/manifest.yaml")
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
+HANDOFF_PATH: Final = Path(
+    "changes/st-1506/"
+    "DESIGN_HANDOFF_V1_ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1.yaml"
+)
+APPROVAL_PATH: Final = Path(
+    "changes/st-1506/"
+    "DESIGN-HANDOFF-APPROVAL-WORDPRESS-SIGNED-DELIVERY-INTERFACE-v1.yaml"
+)
+WORKLOG_PATH: Final = Path("docs/worklogs/ST-1506.md")
 
 SOURCE_CONTRACT_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = "repo://scripts/build_st1506_production_deployment.py"
+HANDOFF_URI: Final = f"repo://{HANDOFF_PATH.as_posix()}"
+APPROVAL_URI: Final = f"repo://{APPROVAL_PATH.as_posix()}"
 GENERATION_COMMAND: Final = (
     "uv run --locked --no-sync python scripts/build_st1506_production_deployment.py"
+)
+HANDOFF_BYTES: Final = 30_568
+HANDOFF_SHA256: Final = (
+    "7973f7d4dca452da3325ecbfbd78d34faf6acdcd7d931de6d314ee2ef4a1acb3"
+)
+APPROVAL_BYTES: Final = 2_298
+APPROVAL_SHA256: Final = (
+    "89a8d77ca319a51d38bf7662c4d7a38763b13f66e5a33176ecaf93e598fd25bb"
+)
+EXPECTED_HANDOFF_OBJECT_FINGERPRINT: Final = (
+    "02a87ef1d840a88ffe16f0349733e9a168154f4e781a838ff24399bffa785205"
+)
+EXPECTED_APPROVAL_OBJECT_FINGERPRINT: Final = (
+    "280f1a897eca354274245f4294ee62aef6f153dab59636c8e8704bfef26ed4b3"
 )
 
 AUTHORITY_SOURCES: Final = {
@@ -130,16 +158,27 @@ PREDECESSOR_SOURCES: Final = {
         "6774c1e2553df4e1f3e7a85dc122b2462ddb575503a7c03b4ec8d9e18baecfbc"
     ),
 }
-PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
+IMPLEMENTATION_AUTHORITY_SOURCES: Final = {
+    HANDOFF_PATH.as_posix(): HANDOFF_SHA256,
+    APPROVAL_PATH.as_posix(): APPROVAL_SHA256,
+}
+PINNED_SOURCES: Final = {
+    **AUTHORITY_SOURCES,
+    **IMPLEMENTATION_AUTHORITY_SOURCES,
+    **PREDECESSOR_SOURCES,
+}
 
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
+    HANDOFF_PATH,
+    APPROVAL_PATH,
     Path("changes/st-1506/README.md"),
     Path("scripts/build_st1506_production_deployment.py"),
     Path("tests/st1506/conftest.py"),
     Path("tests/st1506/test_contract.py"),
     Path("tests/st1506/test_generation.py"),
     Path("tests/st1506/test_negative_cases.py"),
+    WORKLOG_PATH,
 )
 
 EXPECTED_STORY: Final = {
@@ -236,7 +275,61 @@ TOP_LEVEL_KEYS: Final = (
     "logical_phases",
     "execution_boundary",
     "evidence_boundary",
+    "wordpress_signed_delivery_interface",
 )
+WORDPRESS_INTERFACE_KEYS: Final = (
+    "interface_status",
+    "trust_bootstrap",
+    "canonical_encoding",
+    "keyring",
+    "release_set",
+    "components",
+    "package_admission",
+    "replay_and_journal",
+    "transaction_state_machine",
+    "wordpress_filesystem",
+    "health_and_restore",
+    "authorization",
+    "availability",
+    "automatic_delivery_classification",
+    "receipts",
+    "control_plane_separation",
+    "evidence_boundary",
+)
+EXPECTED_HANDOFF_KEYS: Final = (
+    "document_version",
+    "proposal_status",
+    "authority",
+    "approved_story",
+    "approved_scope",
+    "source_design_refs",
+    "pro_advice_binding",
+    "decision",
+    "rationale",
+    "rejected_alternatives",
+    "constraints",
+    "security_and_approval_gates",
+    "acceptance_criteria",
+    "required_test_evidence",
+    "inherited_open_decisions",
+    "open_decisions",
+    "approval",
+)
+EXPECTED_OWNED_PATHS: Final = (
+    HANDOFF_PATH.as_posix(),
+    APPROVAL_PATH.as_posix(),
+    "changes/st-1506/README.md",
+    CONTRACT_PATH.as_posix(),
+    MANIFEST_PATH.as_posix(),
+    REFERENCE_PLAN_PATH.as_posix(),
+    "scripts/build_st1506_production_deployment.py",
+    "tests/st1506/test_contract.py",
+    "tests/st1506/test_generation.py",
+    "tests/st1506/test_negative_cases.py",
+    WORKLOG_PATH.as_posix(),
+)
+HANDOFF_SOURCE_REF_COUNT: Final = 22
+HANDOFF_LIVE_REPOSITORY_REF_COUNT: Final = 13
 PHASE_NAMES: Final = ("CANARY", "OBSERVE", "ROLLBACK")
 ACTION_COUNT_NAMES: Final = (
     "create",
@@ -259,10 +352,29 @@ APPROVAL_ARTIFACT_NAMES: Final = (
     "operations_approval",
 )
 EXPECTED_CONTRACT_FINGERPRINT: Final = (
-    "79fbbf3333b168f2685e14bbbf8af7a9fb6e45a154cf64a5fe4723f40e4e0bd3"
+    "4df983411ed0df97d66e4ee074faf82e0d3da60a59d3b789e27c60cbbce87d6a"
+)
+EXPECTED_ST1505_CONTRACT_FINGERPRINT: Final = (
+    "d930e38a8b5b74a7fc8230b6edea4fcfea240080eaaf9623d6f4a0068d9bebe3"
+)
+ST1505_ACTION_COUNT_NAMES: Final = (
+    "create",
+    "update",
+    "delete",
+    "promote",
+    "deploy",
+    "migrate",
+    "smoke",
+    "browser",
+    "rollback",
+    "production",
 )
 MAX_DOCUMENT_BYTES: Final = 2 * 1024 * 1024
+READ_CHUNK_BYTES: Final = 64 * 1024
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
+YAML_PARSE_ERRORS: Final = (UnicodeError, yaml.YAMLError)
+JSON_PARSE_ERRORS: Final = (UnicodeError, json.JSONDecodeError)
+OBJECT_FINGERPRINT_ERRORS: Final = (TypeError, ValueError)
 
 
 class ProductionDeploymentContractError(RuntimeError):
@@ -288,6 +400,16 @@ class NoAliasDumper(yaml.SafeDumper):
 def _construct_unique_mapping(
     loader: UniqueKeyLoader, node: MappingNode, deep: bool = False
 ) -> dict[Any, Any]:
+    if any(
+        key_node.tag == "tag:yaml.org,2002:merge"
+        for key_node, _value_node in node.value
+    ):
+        raise ConstructorError(
+            "while constructing a mapping",
+            node.start_mark,
+            "found forbidden merge key",
+            node.start_mark,
+        )
     loader.flatten_mapping(node)
     result: dict[Any, Any] = {}
     for key_node, value_node in node.value:
@@ -323,6 +445,17 @@ class ProductionDeploymentModel:
     """A fully validated, closed ST-1506 contract."""
 
     contract: Mapping[str, Any]
+    approved_preimplementation_inputs: tuple[Mapping[str, Any], ...]
+    source_artifact_contents: tuple[tuple[Path, bytes], ...]
+
+
+@dataclass(frozen=True, slots=True)
+class ImplementationAuthorityModel:
+    """Exact detached authority material used to derive the additive section."""
+
+    wordpress_interface: Mapping[str, Any]
+    source_design_refs: tuple[Mapping[str, Any], ...]
+    validated_contents: tuple[tuple[str, bytes], ...]
 
 
 def sha256_bytes(content: bytes) -> str:
@@ -330,7 +463,14 @@ def sha256_bytes(content: bytes) -> str:
 
 
 def sha256_file(path: Path) -> str:
-    return sha256_bytes(path.read_bytes())
+    return sha256_bytes(
+        _read_bounded_regular_file(
+            path,
+            "sha256_source",
+            max_bytes=MAX_DOCUMENT_BYTES,
+            size_error_code="FILE_SIZE_LIMIT",
+        )
+    )
 
 
 def _fail(code: str, field: str) -> NoReturn:
@@ -380,6 +520,28 @@ def _strict_match(actual: object, expected: object, field: str) -> None:
         _fail("FIXED_VALUE_VIOLATION", field)
 
 
+def _strict_ordered_match(actual: object, expected: object, field: str) -> None:
+    """Match a closed value while treating every mapping order as contract data."""
+
+    if isinstance(expected, Mapping):
+        value = _mapping(actual, field)
+        expected_mapping = _mapping(expected, field)
+        if tuple(value) != tuple(expected_mapping):
+            _fail("CLOSED_SCHEMA_VIOLATION", field)
+        for key, expected_value in expected_mapping.items():
+            _strict_ordered_match(value[key], expected_value, f"{field}.{key}")
+        return
+    if type(expected) is list:
+        value_list = _list(actual, field)
+        expected_list = _list(expected, field)
+        if len(value_list) != len(expected_list):
+            _fail("FIXED_VALUE_VIOLATION", field)
+        for index, expected_value in enumerate(expected_list):
+            _strict_ordered_match(value_list[index], expected_value, f"{field}.item")
+        return
+    _strict_match(actual, expected, field)
+
+
 def _assert_unset_tree(value: object, field: str) -> None:
     if value is None:
         return
@@ -394,79 +556,225 @@ def _assert_unset_tree(value: object, field: str) -> None:
     _fail("SELECTION_MUST_REMAIN_UNSET", field)
 
 
-def _regular_file(path: Path, field: str) -> None:
-    try:
-        metadata = path.lstat()
-    except OSError:
-        _fail("FILE_UNAVAILABLE", field)
-    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISREG(metadata.st_mode):
+def _read_bounded_descriptor(
+    descriptor: int,
+    field: str,
+    *,
+    max_bytes: int,
+    size_error_code: str,
+) -> bytes:
+    before = os.fstat(descriptor)
+    if not stat.S_ISREG(before.st_mode):
         _fail("UNSAFE_FILE_TYPE", field)
+    if before.st_size < 0 or before.st_size > max_bytes:
+        _fail(size_error_code, field)
+
+    chunks: list[bytes] = []
+    total = 0
+    while True:
+        remaining = max_bytes + 1 - total
+        if remaining <= 0:
+            _fail(size_error_code, field)
+        chunk = os.read(descriptor, min(READ_CHUNK_BYTES, remaining))
+        if not chunk:
+            break
+        chunks.append(chunk)
+        total += len(chunk)
+        if total > max_bytes:
+            _fail(size_error_code, field)
+
+    after = os.fstat(descriptor)
+    identity_before = (
+        before.st_dev,
+        before.st_ino,
+        before.st_size,
+        before.st_mtime_ns,
+        before.st_ctime_ns,
+    )
+    identity_after = (
+        after.st_dev,
+        after.st_ino,
+        after.st_size,
+        after.st_mtime_ns,
+        after.st_ctime_ns,
+    )
+    if identity_before != identity_after or total != before.st_size:
+        _fail("FILE_CHANGED_DURING_READ", field)
+    return b"".join(chunks)
 
 
-def _real_repository_root(root: Path) -> Path:
-    try:
-        metadata = root.lstat()
-    except OSError:
-        _fail("ROOT_UNAVAILABLE", "repository")
-    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
-        _fail("UNSAFE_ROOT_TYPE", "repository")
-    try:
-        return root.resolve(strict=True)
-    except OSError:
-        _fail("ROOT_UNAVAILABLE", "repository")
-
-
-def _repository_regular_file(root: Path, relative: Path, field: str) -> Path:
+def _validate_relative_path(relative: Path, field: str, path_error_code: str) -> None:
     if (
         relative.is_absolute()
         or not relative.parts
         or any(part in {"", ".", ".."} for part in relative.parts)
     ):
-        _fail("UNSAFE_REPOSITORY_PATH", field)
-    current = _real_repository_root(root)
-    for part in relative.parts[:-1]:
-        current /= part
-        try:
-            metadata = current.lstat()
-        except OSError:
-            _fail("FILE_UNAVAILABLE", field)
-        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
-            _fail("UNSAFE_ANCESTOR", field)
-    target = current / relative.name
-    _regular_file(target, field)
-    return target
+        _fail(path_error_code, field)
 
 
-def load_yaml(path: Path) -> Any:
-    _regular_file(path, "yaml")
+def _absolute_lexical_path(path: Path, field: str) -> Path:
+    absolute = path if path.is_absolute() else Path.cwd() / path
+    if any(part in {"", ".", ".."} for part in absolute.parts[1:]):
+        _fail("UNSAFE_ROOT_TYPE", field)
+    return absolute
+
+
+def _required_safe_io_flag(name: str) -> int:
+    value = getattr(os, name, None)
+    if type(value) is not int or value == 0:
+        _fail("UNSUPPORTED_SAFE_IO", "filesystem")
+    return value
+
+
+def _close_descriptor(descriptor: int) -> None:
     try:
-        content = path.read_bytes()
+        os.close(descriptor)
     except OSError:
-        _fail("FILE_UNAVAILABLE", "yaml")
+        pass
+
+
+def _close_descriptors(descriptors: list[int]) -> None:
+    while descriptors:
+        _close_descriptor(descriptors.pop())
+
+
+def _open_physical_directory(root: Path, field: str) -> int:
+    absolute = _absolute_lexical_path(root, field)
+    directory_flags = (
+        os.O_RDONLY
+        | _required_safe_io_flag("O_CLOEXEC")
+        | _required_safe_io_flag("O_DIRECTORY")
+        | _required_safe_io_flag("O_NOFOLLOW")
+    )
+    descriptors: list[int] = []
+    try:
+        descriptors.append(os.open(os.path.sep, directory_flags))
+        for part in absolute.parts[1:]:
+            try:
+                child = os.open(part, directory_flags, dir_fd=descriptors[-1])
+            except FileNotFoundError:
+                _fail("ROOT_UNAVAILABLE", field)
+            except OSError:
+                _fail("UNSAFE_ROOT_TYPE", field)
+            descriptors.append(child)
+        return descriptors.pop()
+    except ProductionDeploymentContractError:
+        raise
+    except OSError:
+        _fail("ROOT_UNAVAILABLE", field)
+    finally:
+        _close_descriptors(descriptors)
+
+
+def _read_repository_file(
+    root: Path,
+    relative: Path,
+    field: str,
+    *,
+    max_bytes: int,
+    size_error_code: str,
+    path_error_code: str = "UNSAFE_REPOSITORY_PATH",
+    missing_error_code: str = "FILE_UNAVAILABLE",
+    ancestor_error_code: str = "UNSAFE_ANCESTOR",
+    file_type_error_code: str = "UNSAFE_FILE_TYPE",
+) -> bytes:
+    _validate_relative_path(relative, field, path_error_code)
+    directory_flags = (
+        os.O_RDONLY
+        | _required_safe_io_flag("O_CLOEXEC")
+        | _required_safe_io_flag("O_DIRECTORY")
+        | _required_safe_io_flag("O_NOFOLLOW")
+    )
+    file_flags = (
+        os.O_RDONLY
+        | _required_safe_io_flag("O_CLOEXEC")
+        | _required_safe_io_flag("O_NOFOLLOW")
+        | _required_safe_io_flag("O_NONBLOCK")
+    )
+    directories = [_open_physical_directory(root, field)]
+    descriptor = -1
+    try:
+        for part in relative.parts[:-1]:
+            try:
+                child = os.open(part, directory_flags, dir_fd=directories[-1])
+            except FileNotFoundError:
+                _fail(missing_error_code, field)
+            except OSError:
+                _fail(ancestor_error_code, field)
+            directories.append(child)
+        try:
+            descriptor = os.open(relative.name, file_flags, dir_fd=directories[-1])
+        except FileNotFoundError:
+            _fail(missing_error_code, field)
+        except OSError:
+            _fail(file_type_error_code, field)
+        return _read_bounded_descriptor(
+            descriptor,
+            field,
+            max_bytes=max_bytes,
+            size_error_code=size_error_code,
+        )
+    except ProductionDeploymentContractError:
+        raise
+    except OSError:
+        _fail("FILE_UNAVAILABLE", field)
+    finally:
+        if descriptor >= 0:
+            _close_descriptor(descriptor)
+        _close_descriptors(directories)
+
+
+def _read_bounded_regular_file(
+    path: Path,
+    field: str,
+    *,
+    max_bytes: int,
+    size_error_code: str,
+) -> bytes:
+    absolute = _absolute_lexical_path(path, field)
+    return _read_repository_file(
+        Path(os.path.sep),
+        Path(*absolute.parts[1:]),
+        field,
+        max_bytes=max_bytes,
+        size_error_code=size_error_code,
+    )
+
+
+def _parse_yaml_bytes(content: bytes, field: str) -> Any:
     if len(content) > MAX_DOCUMENT_BYTES:
-        _fail("YAML_SIZE_LIMIT", "yaml")
+        _fail("YAML_SIZE_LIMIT", field)
     try:
         text = content.decode("utf-8")
         for token in yaml.scan(text):
             if isinstance(token, (AliasToken, AnchorToken)):
-                _fail("YAML_ALIAS_FORBIDDEN", "yaml")
+                _fail("YAML_ALIAS_FORBIDDEN", field)
             if isinstance(token, TagToken):
-                _fail("YAML_TAG_FORBIDDEN", "yaml")
+                _fail("YAML_TAG_FORBIDDEN", field)
         return yaml.load(text, Loader=UniqueKeyLoader)
     except ProductionDeploymentContractError:
         raise
-    except UnicodeError, yaml.YAMLError:
-        _fail("YAML_INVALID", "yaml")
+    except YAML_PARSE_ERRORS:
+        _fail("YAML_INVALID", field)
+
+
+def load_yaml(path: Path) -> Any:
+    content = _read_bounded_regular_file(
+        path,
+        "yaml",
+        max_bytes=MAX_DOCUMENT_BYTES,
+        size_error_code="YAML_SIZE_LIMIT",
+    )
+    return _parse_yaml_bytes(content, "yaml")
 
 
 def load_json(path: Path) -> Any:
-    _regular_file(path, "json")
-    try:
-        content = path.read_bytes()
-    except OSError:
-        _fail("FILE_UNAVAILABLE", "json")
-    if len(content) > MAX_DOCUMENT_BYTES:
-        _fail("JSON_SIZE_LIMIT", "json")
+    content = _read_bounded_regular_file(
+        path,
+        "json",
+        max_bytes=MAX_DOCUMENT_BYTES,
+        size_error_code="JSON_SIZE_LIMIT",
+    )
 
     def unique_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
         result: dict[str, Any] = {}
@@ -484,7 +792,7 @@ def load_json(path: Path) -> Any:
         )
     except ProductionDeploymentContractError:
         raise
-    except UnicodeError, json.JSONDecodeError:
+    except JSON_PARSE_ERRORS:
         _fail("JSON_INVALID", "json")
 
 
@@ -500,7 +808,267 @@ def _repo_relative_uri(value: object) -> Path:
     return Path(*pure.parts)
 
 
-def _validate_sources(contract: Mapping[str, Any], root: Path) -> None:
+def _load_exact_authority_document(
+    root: Path,
+    relative: Path,
+    *,
+    expected_bytes: int,
+    expected_sha256: str,
+    root_key: str,
+    field: str,
+) -> tuple[Mapping[str, Any], bytes]:
+    content = _read_repository_file(
+        root,
+        relative,
+        field,
+        max_bytes=expected_bytes,
+        size_error_code="IMPLEMENTATION_AUTHORITY_BYTES_MISMATCH",
+    )
+    if len(content) != expected_bytes or sha256_bytes(content) != expected_sha256:
+        _fail("IMPLEMENTATION_AUTHORITY_BYTES_MISMATCH", field)
+    document = _mapping(_parse_yaml_bytes(content, field), field)
+    if tuple(document) != (root_key,):
+        _fail("IMPLEMENTATION_AUTHORITY_SCHEMA_DRIFT", field)
+    return document, content
+
+
+def _validate_implementation_authority(root: Path) -> ImplementationAuthorityModel:
+    handoff_document, handoff_content = _load_exact_authority_document(
+        root,
+        HANDOFF_PATH,
+        expected_bytes=HANDOFF_BYTES,
+        expected_sha256=HANDOFF_SHA256,
+        root_key="DESIGN_HANDOFF_V1",
+        field="implementation_handoff",
+    )
+    if _object_fingerprint(handoff_document) != EXPECTED_HANDOFF_OBJECT_FINGERPRINT:
+        _fail("IMPLEMENTATION_HANDOFF_SEMANTIC_DRIFT", "implementation_handoff")
+    handoff = _mapping(handoff_document["DESIGN_HANDOFF_V1"], "implementation_handoff")
+    if tuple(handoff) != EXPECTED_HANDOFF_KEYS:
+        _fail("IMPLEMENTATION_AUTHORITY_SCHEMA_DRIFT", "implementation_handoff")
+    _strict_match(handoff.get("document_version"), 1, "implementation_handoff.version")
+    _strict_match(
+        handoff.get("approved_story"), "ST-1506", "implementation_handoff.story"
+    )
+    _strict_match(
+        handoff.get("open_decisions"), [], "implementation_handoff.open_decisions"
+    )
+
+    source_refs = _list(
+        handoff.get("source_design_refs"), "implementation_handoff.source_refs"
+    )
+    if len(source_refs) != HANDOFF_SOURCE_REF_COUNT:
+        _fail(
+            "IMPLEMENTATION_AUTHORITY_SCHEMA_DRIFT",
+            "implementation_handoff.source_refs",
+        )
+    validated_contents: dict[str, bytes] = {
+        HANDOFF_PATH.as_posix(): handoff_content,
+    }
+    for index, raw_row in enumerate(source_refs[:HANDOFF_LIVE_REPOSITORY_REF_COUNT]):
+        row = _mapping(raw_row, "implementation_handoff.source_refs.item")
+        if tuple(row) != ("uri", "bytes", "sha256"):
+            _fail(
+                "IMPLEMENTATION_AUTHORITY_SCHEMA_DRIFT",
+                "implementation_handoff.source_refs.item",
+            )
+        relative = _repo_relative_uri(row.get("uri"))
+        expected_size = row.get("bytes")
+        expected_digest = row.get("sha256")
+        if type(expected_size) is not int or expected_size < 0:
+            _fail(
+                "IMPLEMENTATION_AUTHORITY_SCHEMA_DRIFT",
+                "implementation_handoff.source_refs.item",
+            )
+        if (
+            type(expected_digest) is not str
+            or SHA256_PATTERN.fullmatch(expected_digest) is None
+        ):
+            _fail(
+                "IMPLEMENTATION_AUTHORITY_SCHEMA_DRIFT",
+                "implementation_handoff.source_refs.item",
+            )
+        content = _read_repository_file(
+            root,
+            relative,
+            f"implementation_handoff.live_source_{index}",
+            max_bytes=expected_size,
+            size_error_code="IMPLEMENTATION_HANDOFF_SOURCE_DRIFT",
+        )
+        if len(content) != expected_size or sha256_bytes(content) != expected_digest:
+            _fail(
+                "IMPLEMENTATION_HANDOFF_SOURCE_DRIFT",
+                "implementation_handoff.live_source",
+            )
+        validated_contents[relative.as_posix()] = content
+    for raw_row in source_refs[
+        HANDOFF_LIVE_REPOSITORY_REF_COUNT : HANDOFF_LIVE_REPOSITORY_REF_COUNT + 6
+    ]:
+        row = _mapping(raw_row, "implementation_handoff.preimplementation_source")
+        if tuple(row) != ("uri", "bytes", "sha256"):
+            _fail(
+                "IMPLEMENTATION_AUTHORITY_SCHEMA_DRIFT",
+                "implementation_handoff.preimplementation_source",
+            )
+        _repo_relative_uri(row.get("uri"))
+    for raw_row in source_refs[-3:]:
+        row = _mapping(raw_row, "implementation_handoff.official_source")
+        if tuple(row) != (
+            "uri",
+            "retrieved_at",
+            "evidence_class",
+            "relevant_fact",
+        ):
+            _fail(
+                "IMPLEMENTATION_AUTHORITY_SCHEMA_DRIFT",
+                "implementation_handoff.official_source",
+            )
+
+    pro_binding = _mapping(
+        handoff.get("pro_advice_binding"), "implementation_handoff.pro_binding"
+    )
+    _strict_match(
+        pro_binding,
+        {
+            "run_id": "20260814T190431Z-f766cd4f5994",
+            "importance": "gated",
+            "status": "CONVERGED_NO_OPEN_GAP",
+            "advice_type": "PRO_ADVICE_V1",
+            "recommendation": "REVISE",
+            "material_delta": True,
+            "authority": "UNAPPROVED_ADVICE",
+            "provenance": "HUMAN_COPIED_DISPLAYED_RESPONSE",
+            "resubmitted": False,
+            "response_sha256": (
+                "fca5a6fa7370f4f082a5c353fd919ba57845c1a0af83a7ab0067a85bec48eb5c"
+            ),
+            "proposal_sha256": (
+                "1164c2583a586bba79ca48f5c4115e9b847d258d92cf068a3496da551805ec62"
+            ),
+            "reconciliation": (
+                "ACCEPTED_AS_ADVISORY_INPUT_ONLY_AFTER_CANONICAL_AND_LOCAL_REVIEW"
+            ),
+        },
+        "implementation_handoff.pro_binding",
+    )
+    decision = _mapping(handoff.get("decision"), "implementation_handoff.decision")
+    _strict_match(
+        decision.get("base"),
+        {
+            "commit": "8c8b9c4567392886f086d3dd69506619e5a83344",
+            "tree": "7f8a0f7c0d84282b2824c135f78a708a1cd1ed00",
+            "source_ref": "origin/main",
+            "worktree_branch": "codex/st-1506-wordpress-signed-delivery-interface-v1",
+        },
+        "implementation_handoff.base",
+    )
+    contract_revision = _mapping(
+        decision.get("contract_revision"), "implementation_handoff.contract_revision"
+    )
+    _strict_match(
+        contract_revision,
+        {
+            "source_path": CONTRACT_PATH.as_posix(),
+            "current_version": "1.0.0",
+            "proposed_version": "1.1.0",
+            "compatibility": (
+                "ADDITIVE_STRICT_SCHEMA_REVISION_WITH_EXACT_OWNER_APPROVAL"
+            ),
+            "new_top_level_section": "wordpress_signed_delivery_interface",
+            "generated_projection_path": REFERENCE_PLAN_PATH.as_posix(),
+            "generator_path": "scripts/build_st1506_production_deployment.py",
+            "generated_files_hand_edited": False,
+        },
+        "implementation_handoff.contract_revision",
+    )
+    constraints = _mapping(
+        handoff.get("constraints"), "implementation_handoff.constraints"
+    )
+    _strict_match(
+        constraints.get("exact_owned_paths"),
+        list(EXPECTED_OWNED_PATHS),
+        "implementation_handoff.owned_paths",
+    )
+    _strict_match(
+        constraints.get("exact_story_id"),
+        "ST-1506",
+        "implementation_handoff.story_id",
+    )
+
+    approval_document, approval_content = _load_exact_authority_document(
+        root,
+        APPROVAL_PATH,
+        expected_bytes=APPROVAL_BYTES,
+        expected_sha256=APPROVAL_SHA256,
+        root_key="DESIGN_HANDOFF_APPROVAL_V1",
+        field="implementation_approval",
+    )
+    if _object_fingerprint(approval_document) != EXPECTED_APPROVAL_OBJECT_FINGERPRINT:
+        _fail("IMPLEMENTATION_APPROVAL_SEMANTIC_DRIFT", "implementation_approval")
+    validated_contents[APPROVAL_PATH.as_posix()] = approval_content
+    approval = _mapping(
+        approval_document["DESIGN_HANDOFF_APPROVAL_V1"], "implementation_approval"
+    )
+    _strict_match(approval.get("story_id"), "ST-1506", "implementation_approval.story")
+    _strict_match(
+        approval.get("handoff_uri"), HANDOFF_URI, "implementation_approval.uri"
+    )
+    _strict_match(
+        approval.get("handoff_bytes"), HANDOFF_BYTES, "implementation_approval.bytes"
+    )
+    _strict_match(
+        approval.get("handoff_sha256"),
+        HANDOFF_SHA256,
+        "implementation_approval.sha256",
+    )
+    _strict_match(
+        approval.get("status"),
+        "APPROVED_FOR_IMPLEMENTATION",
+        "implementation_approval.status",
+    )
+    _strict_match(
+        approval.get("implementation_authority"),
+        "ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1_ONLY",
+        "implementation_approval.authority",
+    )
+    _strict_match(
+        approval.get("open_decisions"), [], "implementation_approval.open_decisions"
+    )
+    approval_boundaries = _mapping(
+        approval.get("boundaries"), "implementation_approval.boundaries"
+    )
+    _strict_match(
+        approval_boundaries.get("exact_base_commit"),
+        "8c8b9c4567392886f086d3dd69506619e5a83344",
+        "implementation_approval.base_commit",
+    )
+    _strict_match(
+        approval_boundaries.get("exact_base_tree"),
+        "7f8a0f7c0d84282b2824c135f78a708a1cd1ed00",
+        "implementation_approval.base_tree",
+    )
+
+    expected_interface = {
+        key: copy.deepcopy(decision[key]) for key in WORDPRESS_INTERFACE_KEYS
+    }
+    copied_source_refs = tuple(
+        copy.deepcopy(_mapping(row, "implementation_handoff.source_refs.item"))
+        for row in source_refs
+    )
+    return ImplementationAuthorityModel(
+        wordpress_interface=copy.deepcopy(
+            _mapping(expected_interface, "implementation_handoff.interface")
+        ),
+        source_design_refs=copied_source_refs,
+        validated_contents=tuple(validated_contents.items()),
+    )
+
+
+def _validate_sources(
+    contract: Mapping[str, Any],
+    root: Path,
+    validated_contents: dict[str, bytes],
+) -> None:
     rows = _list(contract.get("sources"), "sources")
     observed: dict[str, str] = {}
     observed_order: list[str] = []
@@ -520,9 +1088,18 @@ def _validate_sources(contract: Mapping[str, Any], root: Path) -> None:
     if observed != PINNED_SOURCES or tuple(observed_order) != tuple(PINNED_SOURCES):
         _fail("SOURCE_INVENTORY_DRIFT", "sources")
     for source_name, expected_digest in PINNED_SOURCES.items():
-        source = _repository_regular_file(root, Path(source_name), "pinned_source")
-        if sha256_file(source) != expected_digest:
+        content = validated_contents.get(source_name)
+        if content is None:
+            content = _read_repository_file(
+                root,
+                Path(source_name),
+                "pinned_source",
+                max_bytes=MAX_DOCUMENT_BYTES,
+                size_error_code="SOURCE_DIGEST_MISMATCH",
+            )
+        if sha256_bytes(content) != expected_digest:
             _fail("SOURCE_DIGEST_MISMATCH", "pinned_source")
+        validated_contents[source_name] = content
 
 
 def _find_exact_record(
@@ -539,15 +1116,20 @@ def _find_exact_record(
     return matches[0]
 
 
-def _load_repo_yaml(root: Path, relative: str, field: str) -> Mapping[str, Any]:
-    return _mapping(
-        load_yaml(_repository_regular_file(root, Path(relative), field)), field
-    )
+def _load_validated_yaml(
+    validated_contents: Mapping[str, bytes], relative: str, field: str
+) -> Mapping[str, Any]:
+    content = validated_contents.get(relative)
+    if content is None:
+        _fail("SOURCE_SNAPSHOT_INCOMPLETE", field)
+    return _mapping(_parse_yaml_bytes(content, field), field)
 
 
-def _validate_authority_semantics(root: Path) -> None:
-    backlog = _load_repo_yaml(
-        root,
+def _validate_authority_semantics(
+    validated_contents: Mapping[str, bytes],
+) -> None:
+    backlog = _load_validated_yaml(
+        validated_contents,
         "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
         "backlog",
     )
@@ -557,8 +1139,8 @@ def _validate_authority_semantics(root: Path) -> None:
         "backlog.ST-1506",
     )
 
-    decisions = _load_repo_yaml(
-        root,
+    decisions = _load_validated_yaml(
+        validated_contents,
         "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
         "open_decisions",
     )
@@ -569,8 +1151,8 @@ def _validate_authority_semantics(root: Path) -> None:
             f"open_decisions.{decision_id}",
         )
 
-    tests = _load_repo_yaml(
-        root,
+    tests = _load_validated_yaml(
+        validated_contents,
         "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
         "test_catalog",
     )
@@ -580,8 +1162,8 @@ def _validate_authority_semantics(root: Path) -> None:
         "test_catalog.TST-032",
     )
 
-    release = _load_repo_yaml(
-        root,
+    release = _load_validated_yaml(
+        validated_contents,
         "docs/canonical/05_test/RAOS_11_release_evidence_template_v1.0.yaml",
         "release_evidence",
     )
@@ -621,7 +1203,70 @@ def _validate_authority_semantics(root: Path) -> None:
     )
 
 
-def _validate_predecessor_semantics(contract: Mapping[str, Any], root: Path) -> None:
+def _render_st1505_reference_plan(contract: Mapping[str, Any]) -> bytes:
+    """Project the exact pinned ST-1505 contract without executing predecessor code."""
+
+    execution = _mapping(contract.get("execution_boundary"), "predecessor.execution")
+    evidence = _mapping(contract.get("evidence_boundary"), "predecessor.evidence")
+    document = {
+        "document": {
+            "id": "RAOS-STAGING-DEPLOYMENT-REFERENCE-PLAN-001",
+            "version": "1.0.0",
+            "story_id": "ST-1505",
+            "source_contract": (
+                "repo://changes/st-1505/contracts/staging-deployment.v1.yaml"
+            ),
+            "generated_by": "repo://scripts/build_st1505_staging_deployment.py",
+            "generation_command": (
+                "uv run --locked --no-sync python "
+                "scripts/build_st1505_staging_deployment.py"
+            ),
+            "artifact_kind": evidence["deliverable_classification"],
+            "executable": False,
+            "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        },
+        "predecessor_bindings": copy.deepcopy(contract["predecessor_bindings"]),
+        "environment": copy.deepcopy(contract["environment_boundary"]),
+        "selected_bindings": copy.deepcopy(contract["selected_bindings"]),
+        "artifact_admission": copy.deepcopy(contract["artifact_admission_intent"]),
+        "migration": copy.deepcopy(contract["migration_intent"]),
+        "health_and_smoke": copy.deepcopy(contract["health_and_smoke_intent"]),
+        "rollback": copy.deepcopy(contract["rollback_intent"]),
+        "logical_phases": copy.deepcopy(contract["logical_phases"]),
+        "action_counts": copy.deepcopy(execution["action_counts"]),
+        "activation": {
+            "enabled": execution["activation_enabled"],
+            "status": execution["activation_status"],
+            "runtime_status": execution["runtime_status"],
+            "network_access": execution["network_access"],
+            "credential_access": execution["credential_access"],
+            "live_provider_calls": execution["live_provider_calls"],
+            "external_writes": execution["external_writes"],
+            "staging_action": execution["staging_action"],
+            "release_action": execution["release_action"],
+            "production_action": execution["production_action"],
+            "operations": copy.deepcopy(execution["operations"]),
+        },
+        "verification_boundary": {
+            key: copy.deepcopy(value)
+            for key, value in evidence.items()
+            if key != "deliverable_classification"
+        },
+    }
+    return (
+        json.dumps(
+            document,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode("utf-8")
+
+
+def _validate_predecessor_semantics(
+    contract: Mapping[str, Any], validated_contents: Mapping[str, bytes]
+) -> None:
     binding = _mapping(contract.get("predecessor_binding"), "predecessor_binding")
     transitive = _mapping(
         binding.get("transitive_predecessor_bindings"),
@@ -629,13 +1274,23 @@ def _validate_predecessor_semantics(contract: Mapping[str, Any], root: Path) -> 
     )
     if tuple(transitive) != ("data_services", "compute_edge", "deployment_identity"):
         _fail("PREDECESSOR_BINDING_ORDER_DRIFT", "predecessor_binding.transitive")
-    try:
-        predecessor_model = st1505.load_and_validate_contract(root)
-        expected_plan = st1505.render_reference_plan(predecessor_model)
-    except Exception:
+    stage_contract_relative = "changes/st-1505/contracts/staging-deployment.v1.yaml"
+    stage_plan_relative = (
+        "infra/terraform/staging/staging-deployment.reference-plan.v1.json"
+    )
+    stage_contract_content = validated_contents.get(stage_contract_relative)
+    actual_plan = validated_contents.get(stage_plan_relative)
+    if stage_contract_content is None or actual_plan is None:
+        _fail("SOURCE_SNAPSHOT_INCOMPLETE", "predecessor")
+    stage_contract = _mapping(
+        _parse_yaml_bytes(stage_contract_content, "predecessor_contract"),
+        "predecessor_contract",
+    )
+    if _object_fingerprint(stage_contract) != EXPECTED_ST1505_CONTRACT_FINGERPRINT:
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor")
+    expected_plan = _render_st1505_reference_plan(stage_contract)
     expected_transitive = _mapping(
-        predecessor_model.contract.get("predecessor_bindings"),
+        stage_contract.get("predecessor_bindings"),
         "predecessor.predecessor_bindings",
     )
     if tuple(expected_transitive) != (
@@ -649,19 +1304,9 @@ def _validate_predecessor_semantics(contract: Mapping[str, Any], root: Path) -> 
         expected_transitive,
         "predecessor_binding.transitive",
     )
-    predecessor_plan = _repository_regular_file(
-        root,
-        Path("infra/terraform/staging/staging-deployment.reference-plan.v1.json"),
-        "predecessor_plan",
-    )
-    try:
-        actual_plan = predecessor_plan.read_bytes()
-    except OSError:
-        _fail("FILE_UNAVAILABLE", "predecessor_plan")
     if actual_plan != expected_plan:
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_plan")
 
-    stage_contract = predecessor_model.contract
     _assert_unset_tree(
         stage_contract.get("selected_bindings"), "predecessor.selected_bindings"
     )
@@ -678,7 +1323,7 @@ def _validate_predecessor_semantics(contract: Mapping[str, Any], root: Path) -> 
     _strict_match(execution.get("external_writes"), "FORBIDDEN", "predecessor.writes")
     _strict_match(
         execution.get("action_counts"),
-        {name: 0 for name in st1505.ACTION_COUNT_NAMES},
+        {name: 0 for name in ST1505_ACTION_COUNT_NAMES},
         "predecessor.action_counts",
     )
     for operation in _mapping(
@@ -714,15 +1359,18 @@ def _object_fingerprint(value: Mapping[str, Any]) -> str:
             separators=(",", ":"),
             sort_keys=False,
         ).encode("utf-8")
-    except TypeError, ValueError:
+    except OBJECT_FINGERPRINT_ERRORS:
         _fail("TYPE_MISMATCH", "contract")
     return sha256_bytes(encoded)
 
 
-def _validate_local_safety_invariants(contract: Mapping[str, Any]) -> None:
+def _validate_local_safety_invariants(
+    contract: Mapping[str, Any], expected_wordpress_interface: Mapping[str, Any]
+) -> None:
     if tuple(contract) != TOP_LEVEL_KEYS:
         _fail("CLOSED_SCHEMA_VIOLATION", "contract")
     document = _mapping(contract.get("document"), "document")
+    _strict_match(document.get("version"), "1.1.0", "document.version")
     _strict_match(document.get("story_id"), "ST-1506", "document.story_id")
     _strict_match(document.get("executable"), False, "document.executable")
     _strict_match(document.get("activation_status"), "DISABLED", "document.activation")
@@ -829,23 +1477,131 @@ def _validate_local_safety_invariants(contract: Mapping[str, Any]) -> None:
     ):
         _strict_match(evidence.get(field), "NOT_EXECUTED", f"evidence.{field}")
 
+    wordpress_interface = _mapping(
+        contract.get("wordpress_signed_delivery_interface"),
+        "wordpress_signed_delivery_interface",
+    )
+    _strict_ordered_match(
+        wordpress_interface,
+        expected_wordpress_interface,
+        "wordpress_signed_delivery_interface",
+    )
+    interface_status = _mapping(
+        wordpress_interface.get("interface_status"),
+        "wordpress_signed_delivery_interface.interface_status",
+    )
+    _strict_match(
+        interface_status.get("executable"),
+        False,
+        "wordpress_signed_delivery_interface.executable",
+    )
+    _strict_match(
+        interface_status.get("activation_status"),
+        "DISABLED",
+        "wordpress_signed_delivery_interface.activation",
+    )
+    _strict_match(
+        interface_status.get("automatic_delivery_authority"),
+        "NONE",
+        "wordpress_signed_delivery_interface.automatic_authority",
+    )
+    _strict_match(
+        interface_status.get("manual_delivery_authority"),
+        "NONE",
+        "wordpress_signed_delivery_interface.manual_authority",
+    )
+    _strict_match(
+        interface_status.get("action_count"),
+        0,
+        "wordpress_signed_delivery_interface.action_count",
+    )
+    control_plane = _mapping(
+        wordpress_interface.get("control_plane_separation"),
+        "wordpress_signed_delivery_interface.control_plane_separation",
+    )
+    for field in (
+        "code_delivery_may_publish_content",
+        "publication_may_trigger_deployment",
+        "failed_code_delivery_may_modify_public_content",
+    ):
+        _strict_match(
+            control_plane.get(field),
+            False,
+            f"wordpress_signed_delivery_interface.control_plane_separation.{field}",
+        )
+    interface_evidence = _mapping(
+        wordpress_interface.get("evidence_boundary"),
+        "wordpress_signed_delivery_interface.evidence_boundary",
+    )
+    for field in (
+        "hosted_ci",
+        "staging",
+        "target_filesystem_proof",
+        "crash_recovery",
+        "live_wordpress",
+        "release",
+        "production",
+        "status_transition",
+    ):
+        _strict_match(
+            interface_evidence.get(field),
+            "NOT_EXECUTED",
+            f"wordpress_signed_delivery_interface.evidence_boundary.{field}",
+        )
+
 
 def validate_contract(
-    contract: object, root: Path = REPO_ROOT
+    contract: object,
+    root: Path = REPO_ROOT,
+    *,
+    contract_content: bytes | None = None,
 ) -> ProductionDeploymentModel:
     value = _mapping(contract, "contract")
-    _validate_local_safety_invariants(value)
-    _validate_sources(value, root)
-    _validate_authority_semantics(root)
-    _validate_predecessor_semantics(value, root)
+    if contract_content is not None:
+        parsed_content = _mapping(
+            _parse_yaml_bytes(contract_content, "contract_content"),
+            "contract_content",
+        )
+        try:
+            _strict_ordered_match(parsed_content, value, "contract_content")
+        except ProductionDeploymentContractError:
+            _fail("CONTRACT_CONTENT_MISMATCH", "contract_content")
+    implementation_authority = _validate_implementation_authority(root)
+    _validate_local_safety_invariants(
+        value, implementation_authority.wordpress_interface
+    )
+    validated_contents = dict(implementation_authority.validated_contents)
+    _validate_sources(value, root, validated_contents)
+    _validate_authority_semantics(validated_contents)
+    _validate_predecessor_semantics(value, validated_contents)
     if _object_fingerprint(value) != EXPECTED_CONTRACT_FINGERPRINT:
         _fail("CONTRACT_DEFINITION_DRIFT", "contract")
-    return ProductionDeploymentModel(contract=copy.deepcopy(dict(value)))
+    source_artifact_contents: tuple[tuple[Path, bytes], ...] = ()
+    if contract_content is not None:
+        validated_contents[CONTRACT_PATH.as_posix()] = contract_content
+        source_artifact_contents = _capture_source_artifact_contents(
+            root, validated_contents
+        )
+    return ProductionDeploymentModel(
+        contract=copy.deepcopy(dict(value)),
+        approved_preimplementation_inputs=(implementation_authority.source_design_refs),
+        source_artifact_contents=source_artifact_contents,
+    )
 
 
 def load_and_validate_contract(root: Path = REPO_ROOT) -> ProductionDeploymentModel:
-    contract_path = _repository_regular_file(root, CONTRACT_PATH, "contract")
-    return validate_contract(load_yaml(contract_path), root)
+    content = _read_repository_file(
+        root,
+        CONTRACT_PATH,
+        "contract",
+        max_bytes=MAX_DOCUMENT_BYTES,
+        size_error_code="YAML_SIZE_LIMIT",
+    )
+    return validate_contract(
+        _parse_yaml_bytes(content, "contract"),
+        root,
+        contract_content=content,
+    )
 
 
 def _section(model: ProductionDeploymentModel, name: str) -> Any:
@@ -858,7 +1614,7 @@ def reference_plan_document(model: ProductionDeploymentModel) -> dict[str, objec
     return {
         "document": {
             "id": "RAOS-PRODUCTION-DEPLOYMENT-REFERENCE-PLAN-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1506",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -866,6 +1622,20 @@ def reference_plan_document(model: ProductionDeploymentModel) -> dict[str, objec
             "artifact_kind": evidence["deliverable_classification"],
             "executable": False,
             "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        },
+        "implementation_authority": {
+            "story_id": "ST-1506",
+            "handoff_uri": HANDOFF_URI,
+            "handoff_bytes": HANDOFF_BYTES,
+            "handoff_sha256": HANDOFF_SHA256,
+            "approval_uri": APPROVAL_URI,
+            "approval_bytes": APPROVAL_BYTES,
+            "approval_sha256": APPROVAL_SHA256,
+            "status": "APPROVED_FOR_IMPLEMENTATION",
+            "implementation_authority": (
+                "ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1_ONLY"
+            ),
+            "open_decisions": [],
         },
         "predecessor_binding": _section(model, "predecessor_binding"),
         "open_decision_defaults": _section(model, "open_decision_defaults"),
@@ -903,6 +1673,9 @@ def reference_plan_document(model: ProductionDeploymentModel) -> dict[str, objec
             for key, value in evidence.items()
             if key != "deliverable_classification"
         },
+        "wordpress_signed_delivery_interface": _section(
+            model, "wordpress_signed_delivery_interface"
+        ),
     }
 
 
@@ -918,9 +1691,25 @@ def render_reference_plan(model: ProductionDeploymentModel) -> bytes:
     ).encode("utf-8")
 
 
-def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
-    path = _repository_regular_file(root, relative, "source_artifact")
-    content = path.read_bytes()
+def _capture_source_artifact_contents(
+    root: Path, validated_contents: Mapping[str, bytes]
+) -> tuple[tuple[Path, bytes], ...]:
+    captured: list[tuple[Path, bytes]] = []
+    for relative in SOURCE_ARTIFACT_PATHS:
+        content = validated_contents.get(relative.as_posix())
+        if content is None:
+            content = _read_repository_file(
+                root,
+                relative,
+                "source_artifact",
+                max_bytes=MAX_DOCUMENT_BYTES,
+                size_error_code="SOURCE_ARTIFACT_SIZE_LIMIT",
+            )
+        captured.append((relative, content))
+    return tuple(captured)
+
+
+def _artifact_row(relative: Path, content: bytes) -> dict[str, object]:
     return {
         "uri": f"repo://{relative.as_posix()}",
         "bytes": len(content),
@@ -931,10 +1720,13 @@ def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
 def render_manifest(
     model: ProductionDeploymentModel,
     reference_plan: bytes,
-    root: Path = REPO_ROOT,
 ) -> bytes:
+    source_contents = dict(model.source_artifact_contents)
+    if tuple(source_contents) != SOURCE_ARTIFACT_PATHS:
+        _fail("SOURCE_SNAPSHOT_INCOMPLETE", "source_artifacts")
     source_artifacts = [
-        _artifact_row(root, relative) for relative in SOURCE_ARTIFACT_PATHS
+        _artifact_row(relative, source_contents[relative])
+        for relative in SOURCE_ARTIFACT_PATHS
     ]
     execution = _mapping(model.contract["execution_boundary"], "execution_boundary")
     evidence = _mapping(model.contract["evidence_boundary"], "evidence_boundary")
@@ -944,7 +1736,7 @@ def render_manifest(
     document: dict[str, object] = {
         "document": {
             "id": "RAOS-PRODUCTION-DEPLOYMENT-MANIFEST-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1506",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -952,13 +1744,26 @@ def render_manifest(
         },
         "provenance": {
             "contract_uri": SOURCE_CONTRACT_URI,
-            "contract_sha256": sha256_file(
-                _repository_regular_file(root, CONTRACT_PATH, "contract")
-            ),
+            "contract_sha256": sha256_bytes(source_contents[CONTRACT_PATH]),
             "authority_inputs": [
                 {"uri": f"repo://{relative}", "sha256": digest}
                 for relative, digest in AUTHORITY_SOURCES.items()
             ],
+            "implementation_authority_inputs": [
+                {
+                    "uri": HANDOFF_URI,
+                    "bytes": HANDOFF_BYTES,
+                    "sha256": HANDOFF_SHA256,
+                },
+                {
+                    "uri": APPROVAL_URI,
+                    "bytes": APPROVAL_BYTES,
+                    "sha256": APPROVAL_SHA256,
+                },
+            ],
+            "approved_preimplementation_inputs": copy.deepcopy(
+                list(model.approved_preimplementation_inputs)
+            ),
             "predecessor_inputs": [
                 {"uri": f"repo://{relative}", "sha256": digest}
                 for relative, digest in PREDECESSOR_SOURCES.items()
@@ -1024,89 +1829,136 @@ def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
     reference_plan = render_reference_plan(model)
     return {
         REFERENCE_PLAN_PATH: reference_plan,
-        MANIFEST_PATH: render_manifest(model, reference_plan, root),
+        MANIFEST_PATH: render_manifest(model, reference_plan),
     }
 
 
-def _safe_output_parent(root: Path, relative: Path, *, create: bool) -> Path:
-    if (
-        relative.is_absolute()
-        or not relative.parts
-        or any(part in {"", ".", ".."} for part in relative.parts)
-    ):
-        _fail("UNSAFE_OUTPUT_PATH", "output")
-    current = _real_repository_root(root)
-    for part in relative.parts[:-1]:
-        current /= part
-        try:
-            metadata = current.lstat()
-        except FileNotFoundError:
-            if not create:
-                _fail("GENERATED_OUTPUT_MISSING", "output")
+def _open_output_parent(root: Path, relative: Path, *, create: bool) -> int:
+    _validate_relative_path(relative, "output", "UNSAFE_OUTPUT_PATH")
+    directory_flags = (
+        os.O_RDONLY
+        | _required_safe_io_flag("O_CLOEXEC")
+        | _required_safe_io_flag("O_DIRECTORY")
+        | _required_safe_io_flag("O_NOFOLLOW")
+    )
+    directories = [_open_physical_directory(root, "repository")]
+    try:
+        for part in relative.parts[:-1]:
             try:
-                current.mkdir(mode=0o755)
-                metadata = current.lstat()
+                child = os.open(part, directory_flags, dir_fd=directories[-1])
+            except FileNotFoundError:
+                if not create:
+                    _fail("GENERATED_OUTPUT_MISSING", "output")
+                try:
+                    os.mkdir(part, mode=0o755, dir_fd=directories[-1])
+                    os.fsync(directories[-1])
+                except FileExistsError:
+                    pass
+                except OSError:
+                    _fail("OUTPUT_DIRECTORY_FAILED", "output")
+                try:
+                    child = os.open(part, directory_flags, dir_fd=directories[-1])
+                except OSError:
+                    _fail("UNSAFE_OUTPUT_ANCESTOR", "output")
             except OSError:
-                _fail("OUTPUT_DIRECTORY_FAILED", "output")
-        except OSError:
-            _fail("OUTPUT_DIRECTORY_FAILED", "output")
-        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
-            _fail("UNSAFE_OUTPUT_ANCESTOR", "output")
-    return current
-
-
-def _output_file(root: Path, relative: Path) -> Path:
-    parent = _safe_output_parent(root, relative, create=False)
-    target = parent / relative.name
-    _regular_file(target, "generated_output")
-    return target
+                _fail("UNSAFE_OUTPUT_ANCESTOR", "output")
+            directories.append(child)
+        return directories.pop()
+    except ProductionDeploymentContractError:
+        raise
+    except OSError:
+        _fail("OUTPUT_DIRECTORY_FAILED", "output")
+    finally:
+        _close_descriptors(directories)
 
 
 def _atomic_write(root: Path, relative: Path, content: bytes) -> None:
-    parent = _safe_output_parent(root, relative, create=True)
-    target = parent / relative.name
-    if target.exists() or target.is_symlink():
-        _regular_file(target, "generated_output")
+    parent_descriptor = _open_output_parent(root, relative, create=True)
     descriptor = -1
     temporary_name: str | None = None
     try:
-        descriptor, temporary_name = tempfile.mkstemp(
-            prefix=f".{relative.name}.", suffix=".tmp", dir=parent
-        )
-        os.fchmod(descriptor, 0o644)
-        with os.fdopen(descriptor, "wb", closefd=True) as stream:
-            descriptor = -1
-            stream.write(content)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(temporary_name, target)
-        temporary_name = None
-        directory_descriptor = os.open(parent, os.O_RDONLY | os.O_DIRECTORY)
         try:
-            os.fsync(directory_descriptor)
-        finally:
-            os.close(directory_descriptor)
+            target_metadata = os.stat(
+                relative.name,
+                dir_fd=parent_descriptor,
+                follow_symlinks=False,
+            )
+        except FileNotFoundError:
+            target_metadata = None
+        if target_metadata is not None and not stat.S_ISREG(target_metadata.st_mode):
+            _fail("UNSAFE_FILE_TYPE", "generated_output")
+
+        for attempt in range(100):
+            candidate = f".{relative.name}.st1506-{os.getpid()}-{attempt}.tmp"
+            try:
+                descriptor = os.open(
+                    candidate,
+                    os.O_WRONLY
+                    | os.O_CREAT
+                    | os.O_EXCL
+                    | _required_safe_io_flag("O_CLOEXEC")
+                    | _required_safe_io_flag("O_NOFOLLOW"),
+                    0o600,
+                    dir_fd=parent_descriptor,
+                )
+            except FileExistsError:
+                continue
+            temporary_name = candidate
+            break
+        else:
+            _fail("OUTPUT_WRITE_FAILED", "output")
+
+        view = memoryview(content)
+        while view:
+            written = os.write(descriptor, view)
+            if written <= 0:
+                _fail("OUTPUT_WRITE_FAILED", "output")
+            view = view[written:]
+        os.fchmod(descriptor, 0o644)
+        os.fsync(descriptor)
+        completed_descriptor = descriptor
+        descriptor = -1
+        os.close(completed_descriptor)
+        os.replace(
+            temporary_name,
+            relative.name,
+            src_dir_fd=parent_descriptor,
+            dst_dir_fd=parent_descriptor,
+        )
+        temporary_name = None
+        os.fsync(parent_descriptor)
+    except ProductionDeploymentContractError:
+        raise
     except OSError:
         _fail("OUTPUT_WRITE_FAILED", "output")
     finally:
         if descriptor >= 0:
-            os.close(descriptor)
-        if temporary_name is not None:
-            try:
-                os.unlink(temporary_name)
-            except FileNotFoundError:
-                pass
+            _close_descriptor(descriptor)
+        try:
+            if temporary_name is not None:
+                try:
+                    os.unlink(temporary_name, dir_fd=parent_descriptor)
+                except OSError:
+                    pass
+        finally:
+            _close_descriptor(parent_descriptor)
 
 
 def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = _output_file(root, relative)
-        try:
-            actual = path.read_bytes()
-        except OSError:
-            _fail("GENERATED_OUTPUT_UNAVAILABLE", "output")
+        actual = _read_repository_file(
+            root,
+            relative,
+            "output",
+            max_bytes=MAX_DOCUMENT_BYTES,
+            size_error_code="GENERATED_OUTPUT_DRIFT",
+            path_error_code="UNSAFE_OUTPUT_PATH",
+            missing_error_code="GENERATED_OUTPUT_MISSING",
+            ancestor_error_code="UNSAFE_OUTPUT_ANCESTOR",
+            file_type_error_code="UNSAFE_FILE_TYPE",
+        )
         if actual != expected[relative]:
             _fail("GENERATED_OUTPUT_DRIFT", "output")
 

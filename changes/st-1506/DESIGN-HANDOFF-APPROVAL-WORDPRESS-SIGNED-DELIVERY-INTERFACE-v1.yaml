@@ -1,0 +1,45 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-1506
+  handoff_uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1.yaml
+  handoff_bytes: 30568
+  handoff_sha256: 7973f7d4dca452da3325ecbfbd78d34faf6acdcd7d931de6d314ee2ef4a1acb3
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1_ONLY
+  approved_by: repository_owner:jamozi
+  approval_observed_at: '2026-08-14T19:30:48Z'
+  message_authored_at: NOT_SUPPLIED
+  approval_source: Exact handoff SHA-256 followed by explicit repository-owner approval in the connected Codex conversation.
+  owner_approval_statement: SHA-256 7973f7d4dca452da3325ecbfbd78d34faf6acdcd7d931de6d314ee2ef4a1acb3 の ST1506_WORDPRESS_SIGNED_DELIVERY_INTERFACE_V1 handoff を承認します。
+  approved_sha256_statement: ST-1506 WordPress signed delivery interface handoff 7973f7d4dca452da3325ecbfbd78d34faf6acdcd7d931de6d314ee2ef4a1acb3
+  canonical_reconciliation: PASS_FOR_NONEXECUTABLE_ST1506_INTERFACE_ONLY
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-1506
+    exact_base_commit: 8c8b9c4567392886f086d3dd69506619e5a83344
+    exact_base_tree: 7f8a0f7c0d84282b2824c135f78a708a1cd1ed00
+    implementation_kind: SOURCE_DERIVED_NONEXECUTABLE_WORDPRESS_SIGNED_DELIVERY_INTERFACE
+    existing_production_activation: DISABLED_UNCHANGED
+    existing_action_counts: EXACT_ZERO_UNCHANGED
+    inherited_open_decisions:
+      - OD-009
+      - OD-011
+      - OD-013
+      - OD-015
+    inherited_open_decisions_resolved: false
+    wordpress_php_or_javascript_runtime: NOT_AUTHORIZED
+    wordpress_rest_route_or_mutation: NOT_AUTHORIZED
+    application_password_or_identity_use: NOT_AUTHORIZED
+    signing_key_or_cryptographic_execution: NOT_AUTHORIZED
+    package_build_upload_install_or_switch: NOT_AUTHORIZED
+    github_workflow_or_external_status_write: NOT_AUTHORIZED
+    rakuten_api_or_credential_use: NOT_AUTHORIZED
+    st1903_or_publication_policy_change: NOT_AUTHORIZED
+    live_provider_or_network_access: NOT_AUTHORIZED
+    staging_or_target_filesystem_test: NOT_EXECUTED
+    formal_tst_009: NOT_EXECUTED
+    formal_tst_022: NOT_EXECUTED
+    formal_tst_032: NOT_EXECUTED
+    release: NOT_EXECUTED
+    publication: NOT_EXECUTED
+    production: NOT_EXECUTED
