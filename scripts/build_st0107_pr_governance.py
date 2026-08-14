@@ -72,7 +72,7 @@ PINNED_SOURCES: Final = {
         "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
     ),
     ".github/workflows/ci.yml": (
-        "c69bc26aa5be1aa3cbf52d717370301674cc5bca66405a0aaf7245d453d53db5"
+        "06872527682949b0fdfbb3a1e116fae205cd758f58fb5c233ab075075df0c647"
     ),
     ".github/workflows/status-registry.yml": (
         "4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a"

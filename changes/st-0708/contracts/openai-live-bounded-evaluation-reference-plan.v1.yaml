@@ -92,11 +92,11 @@ dependencies:
       - uri: repo://changes/st-0703/README.md
         sha256: 18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c
       - uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
-        sha256: a3bbed21e488834b936f8d7d42f87c513051e153ee5fcf00553bb5c5d1c70f96
+        sha256: 8298fa0cc27d498e2467a0bf9dd8c28ca338381002c46b240a06b9cc0bf7e388
       - uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
-        sha256: 84a8f9579eb0fa20fb52e5ab780fd310c9b481e75dc826f6389ba4aeb06ba2d4
+        sha256: 851c1e09110a39a96e9f8897245be2489dd089bcbd93c132aa13d2328f692c83
       - uri: repo://changes/st-0703/manifest.yaml
-        sha256: 4700feb331bae49212badf5e1915e4b99b0f6571fe5e895905b90107443e8bd1
+        sha256: 92af7eeeed2d15457aeb1b17a47ba3d3a2a431f768cd18b44cbef927e7198584
       - uri: repo://python/raos/domain/ai/provider.py
         sha256: 179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991
       - uri: repo://python/raos/ports/ai_provider.py

@@ -25,14 +25,14 @@ provenance:
   - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://.github/workflows/ci.yml
-    sha256: c69bc26aa5be1aa3cbf52d717370301674cc5bca66405a0aaf7245d453d53db5
+    sha256: 06872527682949b0fdfbb3a1e116fae205cd758f58fb5c233ab075075df0c647
   - uri: repo://.github/workflows/status-registry.yml
     sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
 source_artifact_count: 16
 source_artifacts:
 - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
   bytes: 7204
-  sha256: 2411cda730cf3d7a77362d7b2e994c675b001aed2e509e3a0390ad8e542a32e3
+  sha256: c24692fb91624e02ef4da3367b593ca7abfd9989b11ea06d9fe4ab6f4a51edae
 - uri: repo://changes/st-0107/README.md
   bytes: 8101
   sha256: 43cde305a084c686183f6d27930069ad6bfba809b027d5e093edeef55c607447
@@ -47,7 +47,7 @@ source_artifacts:
   sha256: a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524
 - uri: repo://scripts/build_st0107_pr_governance.py
   bytes: 45264
-  sha256: 4db415a829fc62d690d3089a56a017d597e06219febc6527f8d1f7cb8961be63
+  sha256: 31c4b06946693254901f86417be170618f9868f6b716009a0820d88d7be5e82c
 - uri: repo://scripts/build_local_compose.py
   bytes: 34986
   sha256: ca2facad9a081132a9fe483254abe5c5610a76c1d44b1fb5ef25cda28bf38960
@@ -70,8 +70,8 @@ source_artifacts:
   bytes: 14261
   sha256: 29c7b0a930d16746a2314a36b02412361b4ea8bfb8f668b0a04ad6388c131d71
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 34209
-  sha256: 82f43428b0b0e9881629b3d872e17f800bd8271569b07feb0708d1e521fec724
+  bytes: 36698
+  sha256: bcaee57eb104c6e090fb828162fd5799bfb7d469ee2351339e2415ea38884e58
 - uri: repo://Makefile
   bytes: 34123
   sha256: e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc

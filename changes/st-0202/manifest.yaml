@@ -110,17 +110,17 @@ source_artifacts:
   bytes: 34432
   sha256: 73637cfe3aee63eec5b5cbbc0f714876ea5bfb17b1db861e7625994e98b5d945
 - uri: repo://.github/workflows/ci.yml
-  bytes: 19916
-  sha256: c69bc26aa5be1aa3cbf52d717370301674cc5bca66405a0aaf7245d453d53db5
+  bytes: 20122
+  sha256: 06872527682949b0fdfbb3a1e116fae205cd758f58fb5c233ab075075df0c647
 - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
   bytes: 7204
-  sha256: 2411cda730cf3d7a77362d7b2e994c675b001aed2e509e3a0390ad8e542a32e3
+  sha256: c24692fb91624e02ef4da3367b593ca7abfd9989b11ea06d9fe4ab6f4a51edae
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: 87c2e8619b6f0058c4255805c386eddf1c8b5bf0f8335f410f5a5c02c48a0528
+  sha256: b78966ea4d44752d1ce44afb19dc712f47ac6442ebd5e90746967658601b202a
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 34209
-  sha256: 82f43428b0b0e9881629b3d872e17f800bd8271569b07feb0708d1e521fec724
+  bytes: 36698
+  sha256: bcaee57eb104c6e090fb828162fd5799bfb7d469ee2351339e2415ea38884e58
 - uri: repo://workspace-layout.json
   bytes: 6679
   sha256: 7d9e3a5d83fd20b10009c51f2589645e78a57eb6522ee9e060e9f6332d034a85

@@ -254,13 +254,47 @@ def test_setup_and_hydration_are_exact_source_constrained_and_cache_isolated() -
                 'test ! -e "$uv_cache_dir"',
                 'test ! -L "$uv_cache_dir"',
                 'mkdir --mode=0700 -- "$uv_cache_dir"',
+                'npm_cache_dir="$GITHUB_WORKSPACE/.npm-cache"',
+                'test ! -e "$npm_cache_dir"',
+                'test ! -L "$npm_cache_dir"',
+                'mkdir --mode=0700 -- "$npm_cache_dir"',
+                "stat --format='%u:%g:%a' -- \"$npm_cache_dir\"",
+                '"$(id -u):$(id -g):700"',
+                '--cache "$npm_cache_dir"',
             ):
                 assert token in hydration
+            assert hydration.count('npm_cache_dir="$GITHUB_WORKSPACE/.npm-cache"') == 1
+            assert "$RUNNER_TEMP/raos-npm-cache" not in hydration
+            npm_cache_guard_order = (
+                'npm_cache_dir="$GITHUB_WORKSPACE/.npm-cache"',
+                'test ! -e "$npm_cache_dir"',
+                'test ! -L "$npm_cache_dir"',
+                'mkdir --mode=0700 -- "$npm_cache_dir"',
+                "stat --format='%u:%g:%a' -- \"$npm_cache_dir\"",
+                '--cache "$npm_cache_dir"',
+            )
+            assert [
+                hydration.index(token) for token in npm_cache_guard_order
+            ] == sorted(hydration.index(token) for token in npm_cache_guard_order)
             assert "--no-cache --no-progress" not in hydration
         else:
             assert "raos-unit-uv-cache" not in hydration
             assert "--cache-dir" not in hydration
             assert "--no-cache --no-progress" in hydration
+            assert (
+                hydration.count(
+                    'npm_cache_dir="$(mktemp -d "$RUNNER_TEMP/raos-npm-cache.XXXXXX")"'
+                )
+                == 1
+            )
+            assert "$GITHUB_WORKSPACE/.npm-cache" not in hydration
+            for token in (
+                'test ! -e "$npm_cache_dir"',
+                'test ! -L "$npm_cache_dir"',
+                'mkdir --mode=0700 -- "$npm_cache_dir"',
+                "stat --format='%u:%g:%a'",
+            ):
+                assert token not in hydration
         assert observed_runs[f"Reproduce {job_id} job"] == reproduce_command
 
         step_names = [step["name"] for step in job["steps"]]
@@ -276,6 +310,26 @@ def test_setup_and_hydration_are_exact_source_constrained_and_cache_isolated() -
         assert step_names.index("Hydrate source-constrained locked dependencies") < (
             step_names.index(f"Reproduce {job_id} job")
         )
+
+
+def test_unit_hydrates_the_exact_npm_cache_consumed_by_st0103() -> None:
+    unit = WORKFLOW["jobs"]["unit"]
+    observed_runs = {step["name"]: step["run"] for step in run_steps(unit)}
+    hydration = observed_runs["Hydrate source-constrained locked dependencies"]
+    reproduction = observed_runs["Reproduce unit job"]
+    makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
+
+    assert 'npm_cache_dir="$GITHUB_WORKSPACE/.npm-cache"' in hydration
+    assert '--cache "$npm_cache_dir"' in hydration
+    assert 'scripts/run_network_denied.sh --home "$HOME" --' in reproduction
+    for token in (
+        "override NPM_CACHE := $(RAOS_REPOSITORY_ROOT)/.npm-cache",
+        'NPM_CONFIG_CACHE="$(NPM_CACHE)"',
+        '--cache "$(NPM_CACHE)"',
+        "node-sync-offline: node-storage-check",
+        "tests/st0103",
+    ):
+        assert token in makefile
 
 
 def test_reviewed_findings_ledger_has_exact_detached_activation_approval() -> None:

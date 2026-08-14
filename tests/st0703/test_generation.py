@@ -26,10 +26,10 @@ CONTRACT_PATH = REPOSITORY_ROOT / generator.CONTRACT_PATH
 FIXTURE_ROOT = REPOSITORY_ROOT / generator.FIXTURE_ROOT
 GENERATOR_PATH = REPOSITORY_ROOT / "scripts/build_st0703_recorded_adapter.py"
 EXPECTED_CONTRACT_SHA256 = (
-    "a3bbed21e488834b936f8d7d42f87c513051e153ee5fcf00553bb5c5d1c70f96"
+    "8298fa0cc27d498e2467a0bf9dd8c28ca338381002c46b240a06b9cc0bf7e388"
 )
 EXPECTED_REGISTRY_SHA256 = (
-    "84a8f9579eb0fa20fb52e5ab780fd310c9b481e75dc826f6389ba4aeb06ba2d4"
+    "851c1e09110a39a96e9f8897245be2489dd089bcbd93c132aa13d2328f692c83"
 )
 EXPECTED_WHEEL_SHA256 = (
     "f97e231d9a8fa69ab55897df1080f02d99913fb0a30e3ee56ea16a1eb6c2d434"
@@ -39,7 +39,7 @@ EXPECTED_SDIST_SHA256 = (
 )
 EXPECTED_PREDECESSOR_MANIFEST_PROJECTION_SHA256 = {
     Path("changes/st-0204/manifest.yaml"): (
-        "862de6453bd5a7992e94cc88878f51f42593a3fca3eb67819b18bf77bfec47a2"
+        "ab1b045107cde57b64adaf81a601d0e061d47773305ebd34029e2aa3bb7f8a68"
     ),
     Path("changes/st-0701/manifest.yaml"): (
         "a0d5aad3b2c95ba7a365d0fc0be5a7825834f7a9639260823e2729c27391ad0b"
@@ -617,7 +617,7 @@ def test_openai_recorded_base_ci_wiring_stays_in_existing_denied_jobs() -> None:
     assert b"openai-recorded" not in workflow
     assert b"OPENAI_API_KEY" not in workflow
     assert _sha256(workflow) == (
-        "c69bc26aa5be1aa3cbf52d717370301674cc5bca66405a0aaf7245d453d53db5"
+        "06872527682949b0fdfbb3a1e116fae205cd758f58fb5c233ab075075df0c647"
     )
 
 

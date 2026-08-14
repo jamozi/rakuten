@@ -72,6 +72,14 @@ proves a fresh locked offline sync from that exact cache. An explicitly bound
 incomplete cache fails; only a direct local ST-0102 run with no explicit cache
 retains the documented skip boundary.
 
+The same Unit hydration creates the exact physical-repository
+`$GITHUB_WORKSPACE/.npm-cache` only after rejecting a pre-existing path or
+symlink, and verifies the new directory is owned by the runner UID/GID with
+mode `0700`. The direct pinned npm install hydrates that fixed cache before the
+denied-network reproduction invokes the nested ST-0103 Node wrapper and its
+fresh offline install. Static and Contracts continue to use separate
+runner-temporary npm caches; no reusable Actions cache is introduced.
+
 `scripts/scan_secrets.py` also accepts an optional `--reviewed-findings PATH`.
 The file uses a JSON-compatible strict YAML subset so duplicate mapping keys
 and YAML aliases, anchors, tags, or merges are not part of the grammar. Its
