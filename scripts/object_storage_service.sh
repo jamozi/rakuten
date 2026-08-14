@@ -15,8 +15,13 @@ readonly expected_image_config_digest='sha256:10b004ca7cc8ee13615dbe670e1be04727
 readonly expected_platform='linux/amd64'
 readonly expected_revision='1355c7a102194d6c461baf090eff50367b575afb'
 readonly expected_version_line='version 8000GB 4.29 1355c7a linux amd64'
-readonly expected_compose_sha256='dd2b5a1cd608df31ba46dbdb38011d5a96faa145a86c2c33b8f1281e4290febf'
+readonly expected_compose_sha256='a6cd0109a2bc63dae10be59bd9aa32ab85e9c3fec3847bc43c413b452cb871f5'
 readonly expected_fixture_sha256='50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527'
+readonly expected_ephemeral_override_sha256='92e141f0c1b96ef47cf79855951d6cadaec509b9796cc03067186ff44dd27239'
+readonly expected_ephemeral_override_bytes=382
+readonly maximum_ephemeral_override_bytes=512
+readonly minimum_ephemeral_port=1024
+readonly maximum_ephemeral_port=65535
 readonly local_project='raos-st0202-local'
 
 docker_executable=''
@@ -30,6 +35,7 @@ published_port=''
 cleanup_project=''
 cleanup_volume=false
 test_directory=''
+ephemeral_override_file=''
 
 usage() {
   printf '%s\n' \
@@ -130,37 +136,178 @@ validate_config_file() {
   fi
 }
 
+normalize_bounded_port() {
+  local candidate=$1
+  if [[ ! $candidate =~ ^[0-9]{1,5}$ ]] || \
+    ((10#$candidate < 1024 || 10#$candidate > 65535)); then
+    return 1
+  fi
+  printf -v "$2" '%d' "$((10#$candidate))"
+}
+
+normalize_ephemeral_port() {
+  local candidate=$1
+  if [[ ! $candidate =~ ^[0-9]{1,5}$ ]] || \
+    ((10#$candidate < minimum_ephemeral_port || \
+      10#$candidate > maximum_ephemeral_port)); then
+    return 1
+  fi
+  printf -v "$2" '%d' "$((10#$candidate))"
+}
+
+normalize_observed_port() {
+  if [[ $command == test ]]; then
+    normalize_ephemeral_port "$1" "$2"
+  else
+    normalize_bounded_port "$1" "$2"
+  fi
+}
+
 validate_port() {
   local candidate=$1
-  if [[ ! $candidate =~ ^[0-9]+$ ]] || \
-    ((10#$candidate < 1024 || 10#$candidate > 65535)); then
+  if ! normalize_bounded_port "$candidate" object_storage_port; then
     error 'RAOS_OBJECT_STORAGE_PORT must be a decimal integer from 1024 through 65535'
     return 64
   fi
-  object_storage_port=$((10#$candidate))
+}
+
+validate_test_directory() {
+  local owner
+  local permissions
+
+  if [[ -z $test_directory || ! -d $test_directory || -L $test_directory ]]; then
+    error 'the disposable test directory must be a regular non-symlink directory'
+    return 69
+  fi
+  owner=$(stat --format='%u' -- "$test_directory")
+  if [[ $owner != "$(id -u)" ]]; then
+    error 'the disposable test directory must be owned by the current user'
+    return 69
+  fi
+  permissions=$(stat --format='%a' -- "$test_directory")
+  if [[ $permissions != 700 ]]; then
+    error 'the disposable test directory mode must be exactly 0700'
+    return 69
+  fi
+}
+
+validate_ephemeral_override() {
+  local digest
+  local owner
+  local permissions
+  local size
+
+  validate_test_directory || return $?
+  case $ephemeral_override_file in
+    "$test_directory"/object-storage-disposable-port.override.*.yml) ;;
+    *)
+      error 'the ephemeral Compose override escaped the disposable test directory'
+      return 69
+      ;;
+  esac
+  if [[ ! -f $ephemeral_override_file || -L $ephemeral_override_file ]]; then
+    error 'the ephemeral Compose override must be a regular non-symlink file'
+    return 69
+  fi
+  owner=$(stat --format='%u' -- "$ephemeral_override_file")
+  if [[ $owner != "$(id -u)" ]]; then
+    error 'the ephemeral Compose override must be owned by the current user'
+    return 69
+  fi
+  permissions=$(stat --format='%a' -- "$ephemeral_override_file")
+  if [[ $permissions != 600 ]]; then
+    error 'the ephemeral Compose override mode must be exactly 0600'
+    return 69
+  fi
+  size=$(stat --format='%s' -- "$ephemeral_override_file")
+  if ((size < 1 || size > maximum_ephemeral_override_bytes || \
+    size != expected_ephemeral_override_bytes)); then
+    error 'the ephemeral Compose override size differs from the exact contract'
+    return 69
+  fi
+  digest=$(sha256sum -- "$ephemeral_override_file")
+  digest=${digest%% *}
+  if [[ $digest != "$expected_ephemeral_override_sha256" ]]; then
+    error 'the ephemeral Compose override digest differs from the exact contract'
+    return 69
+  fi
+}
+
+create_ephemeral_override() {
+  if [[ ! -f /usr/bin/mktemp || -L /usr/bin/mktemp || ! -x /usr/bin/mktemp ]]; then
+    error 'the fixed mktemp executable is unavailable or unsafe'
+    return 69
+  fi
+  validate_test_directory
+  if ! ephemeral_override_file=$(
+    /usr/bin/mktemp \
+      "$test_directory/object-storage-disposable-port.override.XXXXXXXX.yml"
+  ); then
+    error 'unable to create the ephemeral Compose override'
+    return 69
+  fi
+  if ! printf '%s\n' \
+    'services:' \
+    '  object-storage:' \
+    '    ports: !override' \
+    '      - target: 8333' \
+    '        host_ip: 127.0.0.1' \
+    '        protocol: tcp' \
+    '    networks: !override' \
+    '      - object_storage_internal' \
+    '      - object_storage_disposable_publish' \
+    'networks:' \
+    '  object_storage_disposable_publish:' \
+    '    driver: bridge' \
+    '    internal: false' \
+    '    driver_opts:' \
+    '      com.docker.network.bridge.enable_ip_masquerade: "false"' \
+    >"$ephemeral_override_file"; then
+    error 'unable to write the ephemeral Compose override'
+    return 69
+  fi
+  validate_ephemeral_override
 }
 
 run_docker() {
-  env -i \
+  local -a environment=(
+    env -i \
     PATH="$PATH" \
     HOME="$docker_config_dir" \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     TZ=UTC \
     DOCKER_CONFIG="$docker_config_dir" \
-    RAOS_OBJECT_STORAGE_S3_CONFIG_FILE="$config_file" \
-    RAOS_OBJECT_STORAGE_PORT="$object_storage_port" \
-    "$docker_executable" --host "$docker_host" "$@"
+    RAOS_OBJECT_STORAGE_S3_CONFIG_FILE="$config_file"
+  )
+  if [[ $command != test ]]; then
+    environment+=(RAOS_OBJECT_STORAGE_PORT="$object_storage_port")
+  fi
+  if [[ $command == test && ${1:-} == compose ]]; then
+    validate_ephemeral_override || return $?
+  fi
+  "${environment[@]}" "$docker_executable" --host "$docker_host" "$@"
+}
+
+compose_raw() {
+  local project=$1
+  shift
+  local -a compose_files=(--file "$compose_file")
+  if [[ $command == test ]]; then
+    compose_files+=(--file "$ephemeral_override_file")
+  fi
+  run_docker compose \
+    --project-directory "$repository_root" \
+    "${compose_files[@]}" \
+    --project-name "$project" \
+    "$@"
 }
 
 compose() {
   local project=$1
   shift
-  run_docker compose \
-    --project-directory "$repository_root" \
-    --file "$compose_file" \
-    --project-name "$project" \
-    "$@"
+  assert_compose_model "$project" || return $?
+  compose_raw "$project" "$@"
 }
 
 run_fixture() {
@@ -188,27 +335,93 @@ run_fixture() {
 
 assert_compose_model() {
   local project=$1
-  local services
-  local service
-  local object_storage_count=0
 
-  services=$(compose "$project" config --services)
-  while IFS= read -r service; do
-    case $service in
-      object-storage) object_storage_count=$((object_storage_count + 1)) ;;
-      postgres) ;;
-      '') ;;
-      *)
-        error "the generated Compose model contains an unreviewed service: $service"
-        return 1
-        ;;
-    esac
-  done <<<"$services"
-  if ((object_storage_count != 1)); then
-    error 'the generated Compose model must contain exactly one object-storage service'
-    return 1
+  if ! compose_raw "$project" config --format json | \
+    /usr/bin/python3 -I -c '
+import json
+import sys
+
+command = sys.argv[1]
+expected_published = sys.argv[2]
+try:
+    model = json.load(sys.stdin)
+except (json.JSONDecodeError, UnicodeError):
+    raise SystemExit(1)
+if not isinstance(model, dict):
+    raise SystemExit(1)
+services = model.get("services")
+if not isinstance(services, dict) or set(services) != {"postgres", "object-storage"}:
+    raise SystemExit(1)
+service = services.get("object-storage")
+if not isinstance(service, dict):
+    raise SystemExit(1)
+ports = service.get("ports")
+if not isinstance(ports, list) or len(ports) != 1:
+    raise SystemExit(1)
+port = ports[0]
+if not isinstance(port, dict):
+    raise SystemExit(1)
+target = port.get("target")
+if isinstance(target, bool) or not isinstance(target, int) or target != 8333:
+    raise SystemExit(1)
+for key, value in {"host_ip": "127.0.0.1", "protocol": "tcp"}.items():
+    observed = port.get(key)
+    if not isinstance(observed, str) or observed != value:
+        raise SystemExit(1)
+if command == "test":
+    if "published" in port:
+        raise SystemExit(1)
+    expected_service_networks = {
+        "object_storage_internal",
+        "object_storage_disposable_publish",
+    }
+else:
+    observed = port.get("published")
+    if not isinstance(observed, str) or observed != expected_published:
+        raise SystemExit(1)
+    expected_service_networks = {"object_storage_internal"}
+
+service_networks = service.get("networks")
+if not isinstance(service_networks, dict) or set(service_networks) != expected_service_networks:
+    raise SystemExit(1)
+if any(value not in (None, {}) for value in service_networks.values()):
+    raise SystemExit(1)
+
+networks = model.get("networks")
+expected_networks = {"postgres_internal", "object_storage_internal"}
+if command == "test":
+    expected_networks.add("object_storage_disposable_publish")
+if not isinstance(networks, dict) or set(networks) != expected_networks:
+    raise SystemExit(1)
+
+internal_network = networks.get("object_storage_internal")
+if not isinstance(internal_network, dict):
+    raise SystemExit(1)
+if internal_network.get("driver") != "bridge" or internal_network.get("internal") is not True:
+    raise SystemExit(1)
+if internal_network.get("driver_opts") not in (None, {}):
+    raise SystemExit(1)
+if any(internal_network.get(key, False) is not False for key in ("external", "attachable", "enable_ipv6")):
+    raise SystemExit(1)
+
+if command == "test":
+    publish_network = networks.get("object_storage_disposable_publish")
+    if not isinstance(publish_network, dict):
+        raise SystemExit(1)
+    if publish_network.get("driver") != "bridge":
+        raise SystemExit(1)
+    if publish_network.get("internal", False) is not False:
+        raise SystemExit(1)
+    if any(publish_network.get(key, False) is not False for key in ("external", "attachable", "enable_ipv6")):
+        raise SystemExit(1)
+    if publish_network.get("driver_opts") != {
+        "com.docker.network.bridge.enable_ip_masquerade": "false"
+    }:
+        raise SystemExit(1)
+' "$command" "$object_storage_port"; then
+    error 'the normalized Compose model differs from the exact object-storage port and network contract'
+    return 69
   fi
-  compose "$project" config --quiet
 }
 
 version_at_least() {
@@ -267,6 +480,7 @@ assert_service() {
   local image_license
   local image_source
   local published
+  local observed_published_port
   local port_inventory
   local process_uid
   local version_output
@@ -315,11 +529,11 @@ assert_service() {
 
   published=$(compose "$project" port object-storage 8333)
   if [[ ! $published =~ ^127\.0\.0\.1:([0-9]+)$ ]] || \
-    ((10#${BASH_REMATCH[1]} < 1024 || 10#${BASH_REMATCH[1]} > 65535)); then
+    ! normalize_observed_port "${BASH_REMATCH[1]}" observed_published_port; then
     error 'the S3 endpoint is not published on one bounded loopback port'
     return 1
   fi
-  published_port=$((10#${BASH_REMATCH[1]}))
+  published_port=$observed_published_port
   port_inventory=$(run_docker port "$container_id")
   if [[ $port_inventory != "8333/tcp -> 127.0.0.1:$published_port" ]]; then
     error 'the object-storage container publishes an unexpected host port'
@@ -423,14 +637,24 @@ if [[ ! -x /usr/bin/python3 || ! -f /usr/bin/python3 ]]; then
 fi
 
 docker_config_dir=$(mktemp -d "${TMPDIR:-/tmp}/raos-st0202-docker-config.XXXXXXXX")
-validate_docker_client
-
 if [[ $command == test ]]; then
-  test_directory=$(mktemp -d "${TMPDIR:-/tmp}/raos-st0202-test.XXXXXXXX")
+  if [[ ! -f /usr/bin/mktemp || -L /usr/bin/mktemp || ! -x /usr/bin/mktemp ]]; then
+    error 'the fixed mktemp executable is unavailable or unsafe'
+    exit 69
+  fi
+  test_directory=$(
+    /usr/bin/mktemp -d "${TMPDIR:-/tmp}/raos-st0202-test.XXXXXXXX"
+  )
+  validate_test_directory
+  create_ephemeral_override
   config_file=$test_directory/object-storage-s3-config.json
   run_fixture create-config --output "$config_file" >/dev/null
   validate_config_file "$config_file"
-  object_storage_port=''
+  validate_ephemeral_override
+fi
+validate_docker_client
+
+if [[ $command == test ]]; then
   cleanup_project="raos-st0202-test-$(id -u)-$$-$RANDOM"
   cleanup_volume=true
   assert_compose_model "$cleanup_project"

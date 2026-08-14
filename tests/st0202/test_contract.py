@@ -157,7 +157,14 @@ def test_static_identity_is_only_a_file_backed_compose_secret() -> None:
 def test_storage_mount_network_and_host_publish_are_private_by_default() -> None:
     compose = _rendered_compose()
     service = compose["services"]["object-storage"]
-    assert service["ports"] == ["127.0.0.1:${RAOS_OBJECT_STORAGE_PORT-8333}:8333/tcp"]
+    assert service["ports"] == [
+        {
+            "target": 8333,
+            "published": "${RAOS_OBJECT_STORAGE_PORT-8333}",
+            "host_ip": "127.0.0.1",
+            "protocol": "tcp",
+        }
+    ]
     assert service["volumes"] == ["object_storage_data:/data"]
     assert compose["volumes"]["object_storage_data"] is None
     assert service["networks"] == ["object_storage_internal"]
@@ -211,6 +218,63 @@ def test_runtime_requires_authenticated_versioned_integrity_fixture(
     assert "put-two-object-versions" in fixture["operations"]
     assert "get-each-version-by-id" in fixture["operations"]
     assert "reject-declared-hash-mismatch" in fixture["operations"]
+
+
+def test_runtime_ephemeral_override_contract_is_exact_and_untracked(
+    object_storage_contract: dict[str, Any],
+) -> None:
+    override = object_storage_contract["runtime"]["ephemeral_port_override"]
+    template = b"""services:
+  object-storage:
+    ports: !override
+      - target: 8333
+        host_ip: 127.0.0.1
+        protocol: tcp
+    networks: !override
+      - object_storage_internal
+      - object_storage_disposable_publish
+networks:
+  object_storage_disposable_publish:
+    driver: bridge
+    internal: false
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "false"
+"""
+    assert len(template) == override["exact_bytes"] == 382
+    assert generator.st0201.sha256_bytes(template) == override["sha256"]
+    assert override["tracked_artifact"] == "ABSENT"
+    assert override["creation_executable"] == "/usr/bin/mktemp"
+    assert override["compose_file_order"] == [
+        "docker-compose.yml",
+        "EPHEMERAL_VALIDATED_OVERRIDE",
+    ]
+    assert override["published"] == "OMITTED_ENGINE_ASSIGNED"
+    assert override["service_networks"] == [
+        "object_storage_internal",
+        "object_storage_disposable_publish",
+    ]
+    assert override["publish_network"] == {
+        "name": "object_storage_disposable_publish",
+        "driver": "bridge",
+        "internal": False,
+        "driver_opts": {
+            "com.docker.network.bridge.enable_ip_masquerade": "false",
+        },
+        "scope": "DISPOSABLE_PROJECT_ONLY",
+    }
+    assert override["observed_mapping"] == {
+        "exact_count": 1,
+        "host": "127.0.0.1",
+        "lexical_port_rule": "^[0-9]{1,5}$",
+        "minimum_port": 1024,
+        "maximum_port": 65535,
+    }
+    assert b"published" not in template
+    assert b"object_storage_internal" in template
+    assert b"object_storage_disposable_publish" in template
+    assert b'com.docker.network.bridge.enable_ip_masquerade: "false"\n' in template
+    assert b"${" not in template
+    assert b"#" not in template
 
 
 def test_bucket_contract_is_private_versioned_hash_bound_and_retention_safe(

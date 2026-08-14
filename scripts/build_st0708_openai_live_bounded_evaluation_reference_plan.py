@@ -47,7 +47,7 @@ HELPER_SHA256: Final = (
     "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
 )
 CONTRACT_SHA256: Final = (
-    "1dd7217f14d4ad54afcb59f595307a5dfeaa9e9812791bb8554df89f56ebb5e1"
+    "43408117b2cee8cda266446747856bc9b8419da3d3af8fe29c441dc86ca7ddf5"
 )
 MAX_SOURCE_BYTES: Final = base.MAX_DOCUMENT_BYTES
 
@@ -75,7 +75,7 @@ AUTHORITY_SHA256: Final[dict[Path, str]] = {
 ST0707_SHA256: Final[dict[Path, str]] = {
     Path(
         "changes/st-0707/README.md"
-    ): "70feb638a72c33e78d23057a2fa1834d865aa92d07029908169892d34c7d67b7",
+    ): "d9c23dda26117a668df4b85650e46e4b831ab228061c9bb53d96f9dfbb38f812",
     Path(
         "python/raos/domain/ai/evaluation.py"
     ): "f5eba5617c24227ac09de7ce555a52a9454fe2e5320c8bbcaab8752f6945aff4",
@@ -87,7 +87,7 @@ ST0707_SHA256: Final[dict[Path, str]] = {
     ): "6bade20471f8724fe2d131e57d806d1467b54d6467d77b1853e99732b3d94b78",
     Path(
         "tests/st0707/test_boundaries.py"
-    ): "5e5a3c2e07711f320ea9df9bcc36b950d1586e1b8a17366ababba3035528aec7",
+    ): "4d978fb438bab49080a872c80c12d0e68eb7f572b7aaab90bcd8abfd96c0f9e4",
     Path(
         "tests/st0707/test_evaluation.py"
     ): "3680ff67bf147721d04ab9f50c5d5c10503f7120af70c3a1c2b9ae4a80431340",
@@ -101,13 +101,13 @@ ST0703_SHA256: Final[dict[Path, str]] = {
     ): "18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c",
     Path(
         "changes/st-0703/contracts/openai-responses-adapter.v1.yaml"
-    ): "7e272b6f3f54197d3a613b854ea8ffdb787ef1b28c65c8ca3418512076f6df96",
+    ): "a3bbed21e488834b936f8d7d42f87c513051e153ee5fcf00553bb5c5d1c70f96",
     Path(
         "changes/st-0703/generated/recorded-fixture-registry.v1.json"
-    ): "b306f8ef6989bf0a8ba00e636faf0a16f2c094cdddf61d979cdbc8955df2f76e",
+    ): "84a8f9579eb0fa20fb52e5ab780fd310c9b481e75dc826f6389ba4aeb06ba2d4",
     Path(
         "changes/st-0703/manifest.yaml"
-    ): "5544a81c1e81b69ec38d2be8694892ae44045bfd8d04d91c69cc379ca465ac9a",
+    ): "4700feb331bae49212badf5e1915e4b99b0f6571fe5e895905b90107443e8bd1",
     Path(
         "python/raos/domain/ai/provider.py"
     ): "179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991",

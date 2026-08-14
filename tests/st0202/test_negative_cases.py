@@ -100,8 +100,10 @@ def test_image_identity_cannot_be_weakened(
         ("service", "init", False),
         ("service", "restart", "always"),
         ("service", "stop_grace_period", "1s"),
+        ("port", "syntax", "short"),
         ("port", "host_ip", "0.0.0.0"),
         ("port", "default", 9000),
+        ("port", "protocol", "udp"),
         ("config_secret", "source_variable", "AWS_SECRET_ACCESS_KEY"),
         ("config_secret", "mount_path", "/tmp/s3-config.json"),
         ("data", "mount_path", "/host/data"),
@@ -186,6 +188,58 @@ def test_bool_as_integer_does_not_bypass_strict_comparison(
             "main",
         ),
         (("disposable_pull_policy",), "missing"),
+        (("ephemeral_port_override", "tracked_artifact"), "PRESENT"),
+        (("ephemeral_port_override", "creation_executable"), "mktemp"),
+        (("ephemeral_port_override", "file_mode"), "0644"),
+        (("ephemeral_port_override", "exact_bytes"), 142),
+        (
+            ("ephemeral_port_override", "sha256"),
+            "97c5eb86c4c625d083429870e46c646af1781d308af100831e621839ccc232fe",
+        ),
+        (("ephemeral_port_override", "published"), "OMITTED_RUNTIME_ASSIGNED"),
+        (("ephemeral_port_override", "published"), "0"),
+        (("ephemeral_port_override", "published"), 0),
+        (("ephemeral_port_override", "published"), ""),
+        (("ephemeral_port_override", "published"), "49152-65535"),
+        (("ephemeral_port_override", "published"), "1024-65535"),
+        (("ephemeral_port_override", "host_ip"), "0.0.0.0"),
+        (("ephemeral_port_override", "sha256"), "0" * 64),
+        (
+            ("ephemeral_port_override", "forbidden_tokens"),
+            ["${", "#"],
+        ),
+        (
+            ("ephemeral_port_override", "service_networks"),
+            ["object_storage_internal"],
+        ),
+        (
+            ("ephemeral_port_override", "service_networks"),
+            ["object_storage_disposable_publish"],
+        ),
+        (
+            ("ephemeral_port_override", "publish_network", "internal"),
+            True,
+        ),
+        (
+            ("ephemeral_port_override", "publish_network", "driver"),
+            "host",
+        ),
+        (
+            (
+                "ephemeral_port_override",
+                "publish_network",
+                "driver_opts",
+                "com.docker.network.bridge.enable_ip_masquerade",
+            ),
+            "true",
+        ),
+        (
+            ("ephemeral_port_override", "publish_network", "scope"),
+            "PERSISTENT",
+        ),
+        (("ephemeral_port_override", "observed_mapping", "minimum_port"), 1023),
+        (("ephemeral_port_override", "observed_mapping", "minimum_port"), 49152),
+        (("ephemeral_port_override", "observed_mapping", "maximum_port"), 65536),
         (("local_project",), "default"),
         (("commands",), ["up", "down"]),
         (("authentication", "mode"), "ANONYMOUS"),
@@ -209,6 +263,13 @@ def test_runtime_contract_cannot_be_weakened_or_promoted(
         target = target[component]
     target[path[-1]] = value
     reject_contract(mutable_contract, r"runtime\.")
+
+
+def test_ephemeral_engine_assigned_publication_contract_cannot_be_omitted(
+    mutable_contract: dict[str, Any], reject_contract: RejectContract
+) -> None:
+    del mutable_contract["runtime"]["ephemeral_port_override"]["published"]
+    reject_contract(mutable_contract, r"runtime\.ephemeral_port_override")
 
 
 @pytest.mark.parametrize(

@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0905_publication_commands_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0905_publication_commands_reference_plan.py
 provenance:
-  contract_sha256: 5153ca3d18f9498f0be517ec375478824177129289d71a0c8e346cee419a699a
+  contract_sha256: fb3cda64d479b55e4a876e160f239dd2270a01929008bb52d764d433f3042043
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -83,10 +83,10 @@ provenance:
   dependency_inputs:
   - story_id: ST-0903
     uri: repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml
-    sha256: cf6f9a55f769a2861cda655cdc7e963d6048a7ff721ded55a40aaa0978702692
+    sha256: d72cc166acf09ee5c3715cbc98ee74ff931aff938c1b2e83c4b03338bcceedbf
   - story_id: ST-0904
     uri: repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml
-    sha256: a61b1d16c35c45b2c12b886222fc79dc36d46ca496223303c81b9f796f7ea672
+    sha256: b5555fd86695d9ca8e33dce2bfc17c8d1a89c1bb496c93db9549ca3e7fdf918a
   - story_id: ST-0402
     uri: repo://changes/st-0402/README.md
     sha256: 6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b
@@ -99,13 +99,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0905/contracts/publication-commands-reference-plan.v1.yaml
   bytes: 18838
-  sha256: 5153ca3d18f9498f0be517ec375478824177129289d71a0c8e346cee419a699a
+  sha256: fb3cda64d479b55e4a876e160f239dd2270a01929008bb52d764d433f3042043
 - uri: repo://changes/st-0905/README.md
   bytes: 4641
   sha256: 93d1fa584086c8b2d528d09761e3bab9180bad8b09bb3fbcae4dfe11f81706cf
 - uri: repo://scripts/build_st0905_publication_commands_reference_plan.py
   bytes: 54481
-  sha256: c4fa59be74dd4c2e3e9d5267dd878d3bfb9ee2fc84c5db5c99e1756c5aa284c7
+  sha256: e5812dfa09ca0a93b4278976de4f318ba81a9dc24c83ae18c66fa2e2b7249697
 - uri: repo://tests/st0905/conftest.py
   bytes: 958
   sha256: 000a0586a785d57b8e1853aee6cb3399fdd1fd1059717364c52db3c619ba73d8
@@ -122,7 +122,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0905/generated/publication-commands-reference-plan.v1.json
   bytes: 27008
-  sha256: f5e2b0df4daed2f8caf64238caf1c66b2772573814ee774a954c6d81fd84ddcd
+  sha256: 82e34c943baa113c01bfe474764fcf99115144ee8269996bfe58de9a5bfc552a
   digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLICATION_COMMAND_EVENT_REFERENCE_PLAN

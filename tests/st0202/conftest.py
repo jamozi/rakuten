@@ -99,6 +99,7 @@ EXPECTED_COMPOSE = {
         "stop_grace_period": "30s",
     },
     "port": {
+        "syntax": "long",
         "host_ip": "127.0.0.1",
         "variable": "RAOS_OBJECT_STORAGE_PORT",
         "default": 8333,
@@ -151,6 +152,49 @@ EXPECTED_RUNTIME = {
     "disposable_project_prefix": "raos-st0202-test-",
     "disposable_config_mode": "0600",
     "disposable_pull_policy": "always",
+    "ephemeral_port_override": {
+        "command": "test",
+        "tracked_artifact": "ABSENT",
+        "creation_executable": "/usr/bin/mktemp",
+        "filename_template": "object-storage-disposable-port.override.XXXXXXXX.yml",
+        "parent_directory_mode": "0700",
+        "file_mode": "0600",
+        "maximum_bytes": 512,
+        "exact_bytes": 382,
+        "sha256": ("92e141f0c1b96ef47cf79855951d6cadaec509b9796cc03067186ff44dd27239"),
+        "compose_tag": "!override",
+        "target": 8333,
+        "host_ip": "127.0.0.1",
+        "protocol": "tcp",
+        "published": "OMITTED_ENGINE_ASSIGNED",
+        "service_networks": [
+            "object_storage_internal",
+            "object_storage_disposable_publish",
+        ],
+        "publish_network": {
+            "name": "object_storage_disposable_publish",
+            "driver": "bridge",
+            "internal": False,
+            "driver_opts": {
+                "com.docker.network.bridge.enable_ip_masquerade": "false",
+            },
+            "scope": "DISPOSABLE_PROJECT_ONLY",
+        },
+        "compose_file_order": [
+            "docker-compose.yml",
+            "EPHEMERAL_VALIDATED_OVERRIDE",
+        ],
+        "validation": "BEFORE_FIRST_DOCKER_AND_EVERY_COMPOSE_USE",
+        "cleanup": "EXIT_HUP_INT_TERM",
+        "forbidden_tokens": ["published", "${", "#"],
+        "observed_mapping": {
+            "exact_count": 1,
+            "host": "127.0.0.1",
+            "lexical_port_rule": "^[0-9]{1,5}$",
+            "minimum_port": 1024,
+            "maximum_port": 65535,
+        },
+    },
     "expected_image_config_digest": (
         "sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd"
     ),
@@ -254,8 +298,11 @@ EXPECTED_SECURITY_CONTROLS = [
     {
         "id": "SEC-INFRA-001",
         "implementation": (
-            "The host publish is loopback-only, the service uses an internal "
-            "bridge, and unneeded network interfaces are disabled."
+            "Persistent operation publishes only on loopback and uses only an "
+            "internal bridge; the disposable test retains that bridge and adds "
+            "one project-scoped non-internal bridge with IP masquerading disabled "
+            "solely so Docker Engine can create the loopback mapping. Unneeded "
+            "service interfaces remain disabled."
         ),
         "verification": "LOCAL_CONFIG_TEST_RUNTIME_NOT_EXECUTED",
     },

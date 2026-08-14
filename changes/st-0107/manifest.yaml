@@ -25,14 +25,14 @@ provenance:
   - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://.github/workflows/ci.yml
-    sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+    sha256: c69bc26aa5be1aa3cbf52d717370301674cc5bca66405a0aaf7245d453d53db5
   - uri: repo://.github/workflows/status-registry.yml
     sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
 source_artifact_count: 16
 source_artifacts:
 - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
   bytes: 7204
-  sha256: ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1
+  sha256: 2411cda730cf3d7a77362d7b2e994c675b001aed2e509e3a0390ad8e542a32e3
 - uri: repo://changes/st-0107/README.md
   bytes: 8101
   sha256: 43cde305a084c686183f6d27930069ad6bfba809b027d5e093edeef55c607447
@@ -47,13 +47,13 @@ source_artifacts:
   sha256: a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524
 - uri: repo://scripts/build_st0107_pr_governance.py
   bytes: 45264
-  sha256: ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec
+  sha256: 4db415a829fc62d690d3089a56a017d597e06219febc6527f8d1f7cb8961be63
 - uri: repo://scripts/build_local_compose.py
-  bytes: 33026
-  sha256: 79e4cdb2f73cd62b0400185a54adc108ab3d219eace6b2968e4ed43f352293e9
+  bytes: 34986
+  sha256: ca2facad9a081132a9fe483254abe5c5610a76c1d44b1fb5ef25cda28bf38960
 - uri: repo://scripts/object_storage_service.sh
-  bytes: 15876
-  sha256: 56ea0b6c4b9535dc9908b232ea7be84d0ebdafe09465cdda96cd77d13df43293
+  bytes: 23343
+  sha256: bf520f6490cfe4f1e245c4551338a79ca1b138250598f17b4df64e470f7e87ce
 - uri: repo://scripts/object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -70,11 +70,11 @@ source_artifacts:
   bytes: 14261
   sha256: 29c7b0a930d16746a2314a36b02412361b4ea8bfb8f668b0a04ad6388c131d71
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 26006
-  sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
+  bytes: 34209
+  sha256: 82f43428b0b0e9881629b3d872e17f800bd8271569b07feb0708d1e521fec724
 - uri: repo://Makefile
-  bytes: 31909
-  sha256: 97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34
+  bytes: 34123
+  sha256: e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc
 - uri: repo://README.md
   bytes: 58459
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749

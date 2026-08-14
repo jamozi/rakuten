@@ -158,7 +158,7 @@ verification:
 predecessor:
   manifest_uri: repo://changes/st-0203/manifest.yaml
   story_id: ST-0203
-  sha256: da03c5bb8f596d97bcc321d0f76f1527be1046a8124baccf42b62932e9ef5308
+  sha256: 02cc0dfc78af6112df8b8c47f9b018666c94d6bd7ec6cd64c871449836844f07
 boundary:
   environment: LOCAL_AND_CI_IMPLEMENTATION_CANDIDATE
   production_secret_resolution: NOT_IMPLEMENTED
