@@ -92,6 +92,7 @@ def test_orchestrator_refuses_absent_x11_endpoint_before_popen(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(orchestrator, "DEFAULT_WRAPPER", WRAPPER_PATH)
     monkeypatch.setenv("DISPLAY", ":0")
     monkeypatch.setattr(orchestrator, "FIXED_WSLG_X11_SOCKET", tmp_path / "absent-X0")
 
@@ -104,6 +105,7 @@ def test_orchestrator_refuses_regular_x11_endpoint_before_popen(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(orchestrator, "DEFAULT_WRAPPER", WRAPPER_PATH)
     socket_path = tmp_path / "X0"
     socket_path.write_text("not a socket", encoding="utf-8")
     monkeypatch.setenv("DISPLAY", ":0")
@@ -192,11 +194,18 @@ def test_visible_boundary_has_no_ambient_desktop_or_hidden_browser_option() -> N
 
 def test_documentation_requires_chatgpt_only_login_without_edge_sync() -> None:
     readme = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(encoding="utf-8")
+    assert "Microsoft" in readme
+    assert "sync" in readme.lower()
+    assert "ChatGPT" in readme
+    assert "do not close" in readme
+
+
+@pytest.mark.raos_owner_private
+def test_owner_private_skill_requires_chatgpt_only_login_without_edge_sync() -> None:
     skill = Path("/home/minami/.codex/skills/raos-ask-pro/SKILL.md").read_text(
         encoding="utf-8"
     )
-    for text in (readme, skill):
-        assert "Microsoft" in text
-        assert "sync" in text.lower()
-        assert "ChatGPT" in text
-        assert "do not close" in text
+    assert "Microsoft" in skill
+    assert "sync" in skill.lower()
+    assert "ChatGPT" in skill
+    assert "do not close" in skill

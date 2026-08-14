@@ -1,0 +1,394 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0101
+  approved_scope:
+    - >-
+      Reconcile the ST-0101 hosted Unit job with the intentionally owner-private
+      ChatGPT Pro runtime boundary without weakening the production physical-root,
+      wrapper, runtime, browser, origin, credential, or approval guards.
+    - >-
+      Keep sixteen behavior and security cases executable in a clean hosted clone
+      through test-only dependency substitution and in-process CLI invocation.
+    - >-
+      Move only seven irreducible physical-root or owner-private Skill checks into
+      one closed, machine-validated pytest marker inventory and provide a dedicated
+      local physical-root target for them.
+    - >-
+      Keep the existing nine network-sandbox skips separate and unchanged; their
+      real network-denial boundary remains owned by ci-network-assert.
+  source_design_refs:
+    - RAOS-INTEGRATION-001 sections 3, 6, 8, and 9
+    - INT-DEC-012 Security verification baseline
+    - INT-DEC-013 Codex authority boundary
+    - RAOS-SEC-001 sections 3, 7, 9, 10, 12, and 13
+    - RAOS-CODEX-001 sections 4, 10, 11, 12, and 14
+    - RAOS-TEST-SUITES-001 TST-001
+    - ST-0101 Create monorepo layout
+    - changes/st-0101/design-handoff.raos-ask-pro.v1.yaml
+    - changes/st-0101/design-handoff.pro-browser.v1.yaml
+    - changes/st-0101/design-handoff.resilient-pro-review.v1.yaml
+  decision: >-
+    Adopt the owner-approved hybrid boundary. Hosted CI must execute all ST-0101
+    behavior and security tests that can be made portable without changing a
+    production guard. Tests may replace exact repository, wrapper, runtime, and
+    process dependencies only inside the test process, and must restore them after
+    each case. Production constants and entry points remain exact and fail closed.
+    Only tests whose acceptance inherently reads the owner-private raos-ask-pro
+    Skill or executes the physical /home/minami/rakuten launcher may carry the
+    closed raos_owner_private marker. Hosted ci-unit excludes that marker only for
+    tests/st0101, while a repository test proves that the collected marked node IDs
+    equal the approved seven-node inventory. A dedicated local target executes the
+    exact marked inventory at the physical repository root. Missing, extra,
+    renamed, silently skipped, xfailed, or dynamically marked owner-private cases
+    fail the boundary validator.
+  rationale: >-
+    The current hosted failure mixes two different facts. Sixteen failures are
+    test-harness coupling: behavior is exercised only after an exact physical-root
+    guard or wrapper check, so a GitHub runner observes NOT_RAOS_REPOSITORY or
+    MCP_WRAPPER_INVALID before the intended fake behavior. Seven failures really do
+    depend on owner-private policy bytes or the exact physical launcher. Treating
+    all twenty-three as private would discard valuable hosted security coverage;
+    copying the private Skill/runtime into CI would duplicate authority and weaken
+    the trust boundary. The hybrid keeps production bytes and private material out
+    of hosted CI while making the maximum safe behavior set continuously verifiable.
+  rejected_alternatives:
+    - >-
+      Mark or skip all twenty-three hosted failures as owner-private. This is
+      faster but removes hosted coverage for fail-closed tool, prompt, runtime,
+      response, cleanup, and WSLg behavior.
+    - >-
+      Copy, generate, upload, or snapshot /home/minami/.codex/skills/raos-ask-pro,
+      the installed private MCP runtime, browser profile, secrets, or credentials
+      into the repository or GitHub Actions.
+    - >-
+      Relax EXACT_REPOSITORY_ROOT, DEFAULT_WRAPPER, private-root, WSLg, browser,
+      exact-origin, runtime-integrity, or production CLI validation to accommodate
+      a hosted checkout.
+    - >-
+      Add a production environment variable, command-line flag, alternate wrapper,
+      symlink, or fallback repository root that bypasses the physical-root guard.
+    - >-
+      Hide new failures with broad file-level skips, xfail, retry, continue-on-error,
+      allow-failure, or a count-only assertion.
+  constraints:
+    - The implementation base is exactly 3c637fe7fca2905f9036c52371a4c1b2b142f3d0.
+    - The implementation base tree is exactly d82b37121326dae67f0172cb174e14156a5a8126.
+    - >-
+      scripts/chatgpt_pro_orchestrator.py, scripts/chatgpt_pro_mcp.sh,
+      scripts/chatgpt_pro_python.sh, scripts/chatgpt_pro_mcp_runtime/**,
+      .codex/config.toml, AGENTS.md, .github/**, and the owner-private Skill tree
+      are immutable in this slice.
+    - >-
+      Test-only substitution must be scoped by monkeypatch or an equivalent
+      automatically restored in-process fixture; it must never become a production
+      argument, environment variable, configuration field, or fallback path.
+    - >-
+      Subprocess tests that intentionally prove the production physical launcher
+      remain owner-private. Other fake behavior tests must use an in-process entry
+      point or an inert test-owned dependency without changing production code.
+    - >-
+      The raos_owner_private marker has exactly seven approved node IDs. File-level,
+      module-level, dynamically inferred, wildcard, prefix, substring, and count-only
+      classification are prohibited.
+    - >-
+      The boundary contract is a tracked repository policy artifact. It contains
+      node IDs and requirement metadata only; it contains no private Skill bytes,
+      prompt, response, cookie, credential, browser profile, session, or secret.
+    - >-
+      The hosted selector applies only to tests/st0101. It must not exclude any
+      other Story suite or alter the existing nine network-sandbox skips.
+    - >-
+      Local physical-root execution must fail if the Skill, its agents metadata,
+      the wrapper, or other owner-private prerequisites are absent or drifted; it
+      must not silently skip them.
+    - >-
+      No status, evidence, canonical, upstream, release, publication, provider,
+      browser, account, credential, external API, or Production action is allowed.
+  security_and_approval_gates:
+    - >-
+      Exact handoff bytes require a separate repository-owner SHA-256 approval
+      before any implementation file is changed.
+    - >-
+      After exact approval, create one detached approval record that binds the
+      handoff bytes, handoff SHA-256, exact owner statement, base commit, and base
+      tree. The handoff and approval records are immutable implementation inputs.
+    - >-
+      Hosted CI receives no owner-private Skill/runtime/browser/profile/secret
+      material and no production Pro action authority.
+    - >-
+      Production root, wrapper, runtime, origin, allowlisted tools, raw-prompt,
+      credential, browser, WSLg, and private-file refusals must remain byte- and
+      behavior-equivalent outside the tests and Make selection boundary.
+    - >-
+      A new or renamed owner-private node, missing inventory node, marker drift,
+      hidden skip/xfail, production-source edit, or path outside the closed cut is
+      a hard stop requiring a new owner-approved handoff.
+    - >-
+      The existing nine RAOS_NETWORK_DENIED pathname-socket skips retain their
+      current reasons and are not evidence for this owner-private boundary.
+    - >-
+      ChatGPT Pro run 20260814T071215Z-482f82a588a0 is advisory-only and returned
+      RESPONSE_NOT_IDENTIFIABLE; its response-only resume returned
+      ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID. It grants no design authority and
+      must not be retried for the same gap.
+    - >-
+      The repository owner selected alternative A in the controlling conversation.
+      That selection authorizes this proposal direction but not implementation
+      until the exact completed handoff SHA-256 is separately approved.
+  acceptance_criteria:
+    - >-
+      The hosted Unit command collects and executes every non-owner-private
+      ST-0101 case and no owner-private case.
+    - >-
+      The exact seven marked node IDs match the tracked boundary contract in both
+      hosted collection and a full physical-root collection.
+    - >-
+      The sixteen previously failing portable node IDs pass in an isolated clean
+      checkout without /home/minami/rakuten, without the owner-private Skill, and
+      without the installed private MCP runtime.
+    - >-
+      The seven owner-private node IDs pass through the dedicated target only at the
+      physical owner repository with the current private Skill and runtime policy.
+    - >-
+      Existing ST-0101 fake, negative, policy, cleanup, response, browser, runtime,
+      WSLg, workspace, and network-boundary tests retain their intended assertions.
+    - >-
+      Production scripts, wrapper/runtime package bytes, AGENTS.md, .codex config,
+      workflow bytes, canonical files, and every path outside the approved cut are
+      unchanged.
+    - >-
+      PR 43 is not imported, cherry-picked, merged, amended, or silently reconciled
+      in this slice. The hybrid-boundary PR is intended to merge first; PR 43 must
+      then rebase onto the resulting main and undergo a fresh exact-head audit.
+    - >-
+      Local test success remains local evidence. TST-001, formal status, release,
+      staging, provider, browser, publication, and Production remain NOT_EXECUTED
+      unless independently produced by their required environments and approvals.
+  required_test_evidence:
+    - >-
+      Isolated tests/st0101 hosted selection with -m 'not raos_owner_private',
+      proving the sixteen reconciled nodes pass and the seven private nodes are
+      deselected rather than skipped or xfailed.
+    - >-
+      Isolated tests/st0101 owner-private selection with -m raos_owner_private at
+      the physical repository root, proving all seven nodes pass.
+    - >-
+      Boundary-contract tests for exact schema, exact node IDs, marker registration,
+      collection equality, no hidden skip/xfail, and rejection of missing, extra,
+      renamed, wildcard, file-level, or dynamically marked nodes.
+    - >-
+      Focused tests for the sixteen previously failing portable node IDs in a
+      sanitized hosted-like environment with no private Skill/runtime assets.
+    - >-
+      Full isolated tests/st0101 at the physical root, plus the existing nine
+      network-sandbox cases under their current separate boundary.
+    - >-
+      Pinned Ruff lint and format checks for changed Python tests; py_compile for
+      changed Python tests; bash -n for no changed shell files is not applicable.
+    - >-
+      make check-workspace, canonical import verification, git diff --check, exact
+      cut verification, protected-byte verification, and exact-path sensitive scan.
+    - >-
+      A clean hosted Unit rerun at the exact pushed head before any merge decision.
+  open_decisions: []
+  authority_inputs:
+    repository_base:
+      commit: 3c637fe7fca2905f9036c52371a4c1b2b142f3d0
+      tree: d82b37121326dae67f0172cb174e14156a5a8126
+      remote_ref: refs/remotes/origin/main
+    canonical_refs:
+      - path: docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+        bytes: 2275
+        sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
+      - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+        bytes: 7943
+        sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+      - path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+        bytes: 3955
+        sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+      - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+        bytes: 4956
+        sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+      - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+        bytes: 71458
+        sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+        bytes: 11395
+        sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      - path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+        bytes: 7929
+        sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+      - path: docs/canonical/08_codex/RAOS_14_codex_implementation_handbook_v1.0.md
+        bytes: 5044
+        sha256: 501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2
+    active_instruction_ref:
+      path: /home/minami/rakuten/AGENTS.md
+      bytes: 42645
+      sha256: 2013443a10002ec13fa9a4c43a0445a832cb9443306dd3d95e87b53193cd7795
+      role: active_stricter_instruction_only_not_mutable_source
+    base_story_instruction_ref:
+      path: AGENTS.md
+      bytes: 40758
+      sha256: 6973e46dfd9c2aeb7d93f53b43fbb070249ddf89857b44ee726eb768250475cb
+    private_policy_observation:
+      - path: /home/minami/.codex/skills/raos-ask-pro/SKILL.md
+        bytes: 35832
+        sha256: b3ad213caa07ddefccdd9a828d6a518bdfdc379e469c8bfd3ab96f4023f76987
+        role: owner_private_local_test_input_never_hosted_or_copied
+      - path: /home/minami/.codex/skills/raos-ask-pro/agents/openai.yaml
+        bytes: 243
+        sha256: 10356c522c40d9dbc63d0f4b16940f49eac7d7040f3b81ea8558c674af398b8b
+        role: owner_private_local_test_input_never_hosted_or_copied
+    protected_runtime_refs:
+      - path: scripts/chatgpt_pro_orchestrator.py
+        bytes: 330019
+        sha256: bd0e59ba353bd7f31bf4559a28dab5edbca0c1055551b7357cec61ff7dd5efda
+      - path: scripts/chatgpt_pro_mcp.sh
+        bytes: 4772
+        sha256: 06fbf7646f830182a5a424172bb76056bdda433a1a94d5f0784f19cb9681d77f
+      - path: scripts/chatgpt_pro_python.sh
+        bytes: 2736
+        sha256: acaefe2d566d84e504803b7df4d745d2eab5dd64fc8d548d4934dca1929cae07
+  hosted_failure_reconciliation:
+    workflow_run_id: 31778682444
+    job_id: 94699490419
+    exact_pr_head: d3198fc396e1f2fcb5e557b20fd0025aee9ed64c
+    exact_base: 3c637fe7fca2905f9036c52371a4c1b2b142f3d0
+    result: 23_failed_1847_passed_9_skipped
+    portable_node_ids:
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_doctor_reports_compound_cloudflare_challenge_as_captcha
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_successful_ask_emits_sanitized_result_and_hash_bound_private_artifacts
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_cli_ask_without_request_file_reads_stdin_into_private_artifact
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_no_model_picker_records_pre_submission_unavailability[ordinary-0-PRO_UNAVAILABLE_FALLBACK-CONTINUE_CANONICAL_LOCAL_ONLY]
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_no_model_picker_records_pre_submission_unavailability[gated-4-BLOCKED_PRO_REQUIRED-STOP]
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_security_invariants_remain_hard_refusals[MCP_TOOL_NOT_ALLOWED-browser_evaluate-arguments0]
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_security_invariants_remain_hard_refusals[RAW_PROMPT_TOOL_ARGUMENT-browser_type-arguments1]
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_contract_drift_remains_a_hard_refusal
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_legacy_waiting_ambiguity_cli_remains_generic_without_diagnostic
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_resume_nonallowlisted_refusal_remains_hard_and_state_unchanged
+      - tests/st0101/test_chatgpt_pro_private_runtime.py::test_stdio_transport_verifies_runtime_before_process_start
+      - tests/st0101/test_chatgpt_pro_private_runtime.py::test_stdio_transport_uses_fixed_path_despite_hostile_ambient_path
+      - tests/st0101/test_chatgpt_pro_private_runtime.py::test_stdio_transport_cleans_process_when_initialize_fails
+      - tests/st0101/test_chatgpt_pro_private_runtime.py::test_wrapper_and_runtime_resources_never_reference_shared_npx
+      - tests/st0101/test_chatgpt_pro_wslg_display.py::test_orchestrator_refuses_absent_x11_endpoint_before_popen
+      - tests/st0101/test_chatgpt_pro_wslg_display.py::test_orchestrator_refuses_regular_x11_endpoint_before_popen
+    owner_private_node_ids:
+      - tests/st0101/test_chatgpt_pro_browser_selection.py::test_owner_private_skill_records_edge_first_scope_and_profile_prohibition
+      - tests/st0101/test_chatgpt_pro_initial_ui_settle.py::test_owner_private_skill_preserves_initial_settle_boundary
+      - tests/st0101/test_chatgpt_pro_interactive_auth_wait.py::test_owner_private_skill_keeps_wait_scoped_to_pro_ask
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_owner_private_skill_and_metadata_retain_approved_policy
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_make_pro_launcher_ignores_wrong_ambient_uv_and_setup_uses_it
+      - tests/st0101/test_chatgpt_pro_response_wait.py::test_owner_private_skill_keeps_answer_now_observation_only
+      - tests/st0101/test_chatgpt_pro_wslg_display.py::test_owner_private_skill_requires_chatgpt_only_login_without_edge_sync
+    current_irreducible_failure_node_ids:
+      - tests/st0101/test_chatgpt_pro_browser_selection.py::test_documentation_records_edge_first_scope_and_profile_prohibition
+      - tests/st0101/test_chatgpt_pro_initial_ui_settle.py::test_initial_settle_guidance_preserves_narrow_boundary
+      - tests/st0101/test_chatgpt_pro_interactive_auth_wait.py::test_make_and_guidance_keep_wait_scoped_to_pro_ask
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_make_config_agents_and_skill_retain_approved_policy
+      - tests/st0101/test_chatgpt_pro_orchestrator.py::test_make_pro_launcher_ignores_wrong_ambient_uv_and_setup_uses_it
+      - tests/st0101/test_chatgpt_pro_response_wait.py::test_answer_now_guidance_is_advanced_exact_and_observation_only
+      - tests/st0101/test_chatgpt_pro_wslg_display.py::test_documentation_requires_chatgpt_only_login_without_edge_sync
+    owner_private_split_requirements:
+      - >-
+        Each current mixed README/Skill assertion becomes a portable repository
+        assertion plus one newly named owner-private Skill-only assertion.
+      - >-
+        test_make_config_agents_and_skill_retain_approved_policy becomes a portable
+        repository/config assertion and the separately named owner-private Skill
+        and metadata assertion listed above.
+      - >-
+        test_make_pro_launcher_ignores_wrong_ambient_uv_and_setup_uses_it keeps its
+        existing name and becomes owner-private because it executes the production
+        launcher at the exact physical repository root.
+    existing_network_sandbox_skips:
+      count: 9
+      policy: unchanged_and_outside_owner_private_inventory
+  implementation_contract:
+    contract_path: changes/st-0101/hosted-unit-hybrid-boundary.v1.yaml
+    marker_name: raos_owner_private
+    hosted_selector: not raos_owner_private
+    local_selector: raos_owner_private
+    local_target: pro-owner-private-test
+    inventory_count: 7
+    inventory_match: exact_full_node_id_equality
+    disallowed_outcomes:
+      - skip
+      - xfail
+      - xpass
+      - dynamic_marker_inference
+      - module_or_file_marker
+      - wildcard_or_prefix_inventory
+      - continue_on_error
+      - retry_masking
+      - production_guard_override
+  post_approval_implementation_file_cut:
+    immutable_proposal_paths:
+      - changes/st-0101/DESIGN_HANDOFF_V1_ST0101_HOSTED_UNIT_HYBRID_BOUNDARY_V1.yaml
+      - changes/st-0101/HOSTED-UNIT-HYBRID-BOUNDARY-v1.md
+    detached_approval_addition:
+      - changes/st-0101/DESIGN-HANDOFF-APPROVAL-HOSTED-UNIT-HYBRID-BOUNDARY-v1.yaml
+    mutable_paths:
+      - Makefile
+      - pyproject.toml
+      - changes/st-0101/README.md
+      - changes/st-0101/hosted-unit-hybrid-boundary.v1.yaml
+      - docs/execplans/ST-0101.md
+      - docs/worklogs/ST-0101.md
+      - tests/st0101/test_chatgpt_pro_browser_selection.py
+      - tests/st0101/test_chatgpt_pro_initial_ui_settle.py
+      - tests/st0101/test_chatgpt_pro_interactive_auth_wait.py
+      - tests/st0101/test_chatgpt_pro_orchestrator.py
+      - tests/st0101/test_chatgpt_pro_private_runtime.py
+      - tests/st0101/test_chatgpt_pro_response_wait.py
+      - tests/st0101/test_chatgpt_pro_wslg_display.py
+      - tests/st0101/test_hosted_unit_hybrid_boundary.py
+    mutable_path_count: 14
+    protected_paths:
+      - AGENTS.md
+      - .codex/config.toml
+      - .github/**
+      - scripts/chatgpt_pro_orchestrator.py
+      - scripts/chatgpt_pro_mcp.sh
+      - scripts/chatgpt_pro_python.sh
+      - scripts/chatgpt_pro_mcp_runtime/**
+      - tests/st0101/test_chatgpt_pro_current_ui.py
+      - docs/canonical/**
+      - docs/upstream/**
+      - zip/**
+      - changes/st-0005/**
+      - /home/minami/.codex/skills/raos-ask-pro/**
+  parallel_pr_reconciliation:
+    pull_request: 43
+    title: ST-0101 classify typed composer MCP errors
+    status_at_handoff: OPEN_DRAFT_UNSTABLE
+    head: 3d335574a70aa029cafa32a00712262361d02786
+    tree: dba45d4cd0627da83c86c04edfbe135015e76a14
+    merge_base: 53a726e3716bc812bf2797570cf013f0445fb228
+    patch_bytes: 68423
+    patch_sha256: a5c7bc86a50902588eba94bd232ae63ddd4fc49fd6a0eb9d741db8873b4593ef
+    overlap_paths:
+      - changes/st-0101/README.md
+      - docs/worklogs/ST-0101.md
+      - tests/st0101/test_chatgpt_pro_orchestrator.py
+    protected_parallel_paths:
+      - changes/st-0101/DESIGN-HANDOFF-APPROVAL-TYPED-COMPOSER-MCP-DIAGNOSTICS-v1.yaml
+      - changes/st-0101/design-handoff.typed-composer-mcp-diagnostics.v1.yaml
+      - scripts/chatgpt_pro_orchestrator.py
+      - tests/st0101/test_chatgpt_pro_current_ui.py
+    required_order: hybrid_boundary_pr_first_then_pr43_rebase_and_exact_head_audit
+    stop_conditions:
+      - PR 43 head changes before implementation freeze
+      - PR 43 is merged, closed, or rebased before this slice is complete
+      - Any PR 43-only production behavior enters the hybrid-boundary diff
+      - Conflict resolution requires changing a protected production path
+  execution_authority:
+    handoff_status: PENDING_EXACT_SHA_OWNER_APPROVAL
+    approval_target: exact_completed_handoff_bytes_only
+    implementation_authority: NOT_GRANTED
+    staging_authority: NONE
+    commit_authority: NONE
+    push_authority: NONE
+    pull_request_authority: NONE
+    merge_authority: NONE
+    release_authority: NONE
+    publication_authority: NONE
+    production_authority: NONE

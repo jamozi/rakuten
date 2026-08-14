@@ -17,6 +17,7 @@ This operational revision implements the approved
 `design-handoff.advanced-button-priority.v1.yaml` and
 `design-handoff.semantic-summary-evidence.v1.yaml` and
 `design-handoff.closed-selector-diagnostics.v1.yaml` and
+`design-handoff.typed-composer-mcp-diagnostics.v1.yaml` and
 `design-handoff.hybrid-summary-priority.v1.yaml` addenda. It does not
 change the immutable canonical package and it does not make automatically
 captured or manually imported model output authoritative.
@@ -342,6 +343,38 @@ remains after the one close click remains generic in `closed_landing`.
 Closed-landing composer/button, typed-composer, Send, independently
 distinguishable legacy, and other unclassified failures retain their existing
 generic reason.
+
+At the actual `StdioMcpTransport.call("browser_type", ...)` boundary, the
+separately approved typed-composer MCP handoff adds only three closed diagnostic
+reasons: `MCP_TYPE_REF_STALE`, `MCP_TYPE_ELEMENT_NOT_EDITABLE`, and
+`MCP_TYPE_FILL_TIMEOUT`. Classification activates only for an MCP result whose
+`isError` value is exactly `true`, whose content is exactly one text block, and
+whose non-empty strict UTF-8 text is at most the existing 1 MiB limit. A stale
+ref matches only the complete pinned error sentence with one syntactically
+valid accessibility ref. The non-editable and fixed 5000 ms `locator.fill`
+timeout signatures accept only their complete pinned sentence followed by end
+of text or the exact pinned Playwright `Call log:` continuation. Matching is
+byte-exact: there is no substring, case-folded, padded, whitespace-normalized,
+fuzzy, or version-inferred fallback.
+
+Zero or multiple signature matches, malformed or extra result structure,
+empty, invalid-UTF-8, multi-block, non-text, oversized, near, concatenated, and
+non-`browser_type` error results retain generic `MCP_CALL_FAILED`. Raw MCP text,
+the captured accessibility ref, call-log material, prompt, and secret material
+never enter an exception, CLI result, log, hash, state, event, or status. Only
+the source-defined closed code may be hash-bound, and validators accept it only
+with phase `typed_composer` and `submission_attempted: false`; predecessor
+generic `MCP_CALL_FAILED` records remain valid and expose no new state/status
+reason field. Each of these three typed-composer codes projects
+`next_action: STOP` and matching event `fallback_scope: STOP` for both ordinary
+and gated importance. Ordinary importance retains status
+`PRO_UNAVAILABLE_FALLBACK` and exit code `0`; gated importance retains
+`BLOCKED_PRO_REQUIRED` and exit code `4`. This does not change the existing
+advanced diagnostic convention: an ordinary advanced diagnostic still projects
+`CONTINUE_CANONICAL_LOCAL_ONLY`. A classification adds no browser call,
+snapshot, wait, retry, type replay, intent, Send lookup, Send click, response
+capture, or proposal. It is diagnostic evidence only and requires a separately
+approved exact follow-on handoff before any correction or new live run.
 
 That final pre-type landing does not require a visible send button. Automation
 types only `RAOS_CHATGPT_PROMPT` with `submit: false` and uses the bounded
@@ -931,3 +964,37 @@ authentication wait. Its same-transport behavior, no-input interval, timeout,
 bounds, and immediate stops are verified only with inert scripted transports;
 live authentication, Pro submission, formal TST-001, and production readiness
 remain separate evidence boundaries.
+
+## Hosted Unit hybrid boundary
+
+The owner-approved `ST0101_HOSTED_UNIT_HYBRID_BOUNDARY_V1` slice separates
+portable ST-0101 behavior coverage from irreducible owner-private policy
+checks. The tracked contract is
+`changes/st-0101/hosted-unit-hybrid-boundary.v1.yaml`. It binds the exact
+sixteen portable node IDs, exact seven `raos_owner_private` node IDs, hosted
+selector `not raos_owner_private`, and local target `pro-owner-private-test`.
+
+Hosted `ci-unit` applies that selector only to `tests/st0101`. The sixteen
+reconciled cases replace repository, wrapper, runtime, stdin, or process
+dependencies only inside the test process; the production physical-root,
+wrapper, runtime, WSLg, browser, origin, credential, and approval guards are
+unchanged. The existing nine network-sandbox skips remain separate and are
+still owned by `ci-network-assert`.
+
+At physical `/home/minami/rakuten`, run the irreducible boundary with:
+
+```bash
+make pro-owner-private-test
+```
+
+The target fails unless the physical root, exact owner-private Skill and agents
+metadata, protected launcher/runtime source bytes, and installed private MCP
+runtime are present and verified. It runs the non-private boundary validator
+first, then requires exactly seven passing private cases with no skip, xfail,
+or xpass. It performs no browser navigation, input, submission, provider call,
+installation, publication, release, or Production action.
+
+Local collection and fixture results are not hosted CI or formal TST-001
+evidence. A clean hosted Unit rerun at the exact pushed head remains required
+before merge review; browser/provider, staging, publication, release, and
+Production remain separately unexecuted and gated.

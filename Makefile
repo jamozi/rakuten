@@ -130,6 +130,7 @@ override NPM_RUN := $(NODE_RUN) "$(NPM_CLI)" \
 	postgres-down postgres-test object-storage-config object-storage-up \
 	object-storage-health object-storage-down object-storage-test \
 	pro-runtime-install pro-setup pro-doctor pro-ask pro-resume \
+	pro-owner-private-test \
 	pro-import-response wordpresscom-oauth-setup \
 	wordpresscom-create-review-draft wordpresscom-prepare-mvp-drafts \
 	wordpresscom-preview-mvp \
@@ -211,6 +212,32 @@ pro-import-response:
 		--private-root "$(PRO_PRIVATE_ROOT)" \
 		--run-id "$(PRO_RUN_ID)" \
 		--response-file "$(PRO_RESPONSE_FILE)"
+
+pro-owner-private-test:
+	test "$(RAOS_REPOSITORY_ROOT)" = /home/minami/rakuten
+	test -f /home/minami/.codex/skills/raos-ask-pro/SKILL.md
+	test ! -L /home/minami/.codex/skills/raos-ask-pro/SKILL.md
+	test "$$(sha256sum /home/minami/.codex/skills/raos-ask-pro/SKILL.md | cut -d ' ' -f 1)" = b3ad213caa07ddefccdd9a828d6a518bdfdc379e469c8bfd3ab96f4023f76987
+	test -f /home/minami/.codex/skills/raos-ask-pro/agents/openai.yaml
+	test ! -L /home/minami/.codex/skills/raos-ask-pro/agents/openai.yaml
+	test "$$(sha256sum /home/minami/.codex/skills/raos-ask-pro/agents/openai.yaml | cut -d ' ' -f 1)" = 10356c522c40d9dbc63d0f4b16940f49eac7d7040f3b81ea8558c674af398b8b
+	test "$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_orchestrator.py" | cut -d ' ' -f 1)" = b77308a94b3254f467391e37ba21741481acc6d4737905e4119b67b4407ccafd
+	test "$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_mcp.sh" | cut -d ' ' -f 1)" = 06fbf7646f830182a5a424172bb76056bdda433a1a94d5f0784f19cb9681d77f
+	test "$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_python.sh" | cut -d ' ' -f 1)" = acaefe2d566d84e504803b7df4d745d2eab5dd64fc8d548d4934dca1929cae07
+	cd "$(RAOS_REPOSITORY_ROOT)" && $(UV_READONLY_RUN) python -c \
+		'from pathlib import Path; from scripts import chatgpt_pro_orchestrator as o; assert o._verify_private_runtime(Path("/home/minami/rakuten/.secrets"))["status"] == "PRO_RUNTIME_READY"'
+	cd "$(RAOS_REPOSITORY_ROOT)" && $(UV_READONLY_RUN) pytest \
+		-p no:cacheprovider -q tests/st0101/test_hosted_unit_hybrid_boundary.py
+	@set -eu; \
+		report=$$(mktemp "$${TMPDIR:-/tmp}/raos-owner-private.XXXXXX.xml"); \
+		trap 'rm -f -- "$$report"' EXIT HUP INT TERM; \
+		cd "$(RAOS_REPOSITORY_ROOT)"; \
+		$(UV_READONLY_RUN) pytest -p no:cacheprovider -q \
+			-o xfail_strict=true -m raos_owner_private tests/st0101 \
+			--junitxml "$$report"; \
+		$(UV_READONLY_RUN) python -c \
+			'import sys, xml.etree.ElementTree as ET; root = ET.parse(sys.argv[1]).getroot(); cases = root.findall(".//testcase"); assert len(cases) == 7; assert not root.findall(".//failure"); assert not root.findall(".//error"); assert not root.findall(".//skipped")' \
+			"$$report"
 
 python-install:
 	$(UV_RUN) python install $(PYTHON_VERSION)
@@ -736,7 +763,8 @@ ci-unit: ci-network-assert | python-sync node-sync
 		tests/st0004 --ignore=tests/st0004/test_postgresql_migration.py
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0005
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0006
-	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0101
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q \
+		-m 'not raos_owner_private' tests/st0101
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0102
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0103
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0106
