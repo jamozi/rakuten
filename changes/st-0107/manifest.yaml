@@ -50,10 +50,10 @@ source_artifacts:
   sha256: 31c4b06946693254901f86417be170618f9868f6b716009a0820d88d7be5e82c
 - uri: repo://scripts/build_local_compose.py
   bytes: 34986
-  sha256: ca2facad9a081132a9fe483254abe5c5610a76c1d44b1fb5ef25cda28bf38960
+  sha256: 3b19aedfdab564ed974806b4f267e62d8e2084f22cc5b95565b37d9f8a6a994b
 - uri: repo://scripts/object_storage_service.sh
-  bytes: 23343
-  sha256: bf520f6490cfe4f1e245c4551338a79ca1b138250598f17b4df64e470f7e87ce
+  bytes: 27834
+  sha256: c05661474b4755732794e84c66a0476c2010eb4a409616bc23b1ade7e9ce68d7
 - uri: repo://scripts/object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527

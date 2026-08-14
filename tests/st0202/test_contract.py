@@ -206,7 +206,24 @@ def test_runtime_requires_authenticated_versioned_integrity_fixture(
     assert runtime == EXPECTED_RUNTIME
     assert runtime["docker_host"] == "unix:///var/run/docker.sock"
     assert runtime["expected_platform"] == "linux/amd64"
-    assert runtime["expected_process_uid"] == 1000
+    process_model = runtime["expected_process_model"]
+    assert process_model["host_config_init"] is True
+    assert process_model["init"] == {
+        "pid": 1,
+        "parent_pid": 0,
+        "uids": [0, 0, 0, 0],
+        "gids": [0, 0, 0, 0],
+        "executable": "/sbin/docker-init",
+    }
+    assert process_model["server"] == {
+        "direct_child_count": 1,
+        "parent_pid": 1,
+        "uids": [1000, 1000, 1000, 1000],
+        "gids": [1000, 1000, 1000, 1000],
+        "effective_capabilities": "0000000000000000",
+        "executable": "/usr/bin/weed",
+        "zombie_state": "FORBIDDEN",
+    }
     assert (
         runtime["expected_image_labels"]
         == (object_storage_contract["image"]["expected_config"]["labels"])

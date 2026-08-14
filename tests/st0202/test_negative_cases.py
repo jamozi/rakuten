@@ -182,7 +182,18 @@ def test_bool_as_integer_does_not_bypass_strict_comparison(
     [
         (("docker_host",), "tcp://127.0.0.1:2375"),
         (("expected_platform",), "linux/arm64"),
-        (("expected_process_uid",), 0),
+        (("expected_process_model", "host_config_init"), False),
+        (("expected_process_model", "init", "uids"), [1000, 1000, 1000, 1000]),
+        (("expected_process_model", "init", "executable"), "/usr/bin/weed"),
+        (("expected_process_model", "server", "direct_child_count"), 2),
+        (("expected_process_model", "server", "parent_pid"), 0),
+        (("expected_process_model", "server", "uids"), [1000, 0, 0, 0]),
+        (("expected_process_model", "server", "gids"), [1000, 0, 0, 0]),
+        (
+            ("expected_process_model", "server", "effective_capabilities"),
+            "0000000000000001",
+        ),
+        (("expected_process_model", "server", "executable"), "/bin/sh"),
         (
             ("expected_image_labels", "org.opencontainers.image.revision"),
             "main",

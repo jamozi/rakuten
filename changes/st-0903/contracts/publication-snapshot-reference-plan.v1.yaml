@@ -109,7 +109,7 @@ dependencies:
   authority_status: ADMIN_ONLY_REFERENCE_NO_PUBLIC_RENDERER_INPUT
 - story_id: ST-0202
   artifact: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
-  sha256: 5aad8d26b3f0b3d564187e558fc3a696c3c3e11875f84ffacaedae9fc3606b01
+  sha256: 2558fe98bd560e3ae5f082aca739d18d35a14a0425d24164baff648b91cce5e5
   connection_status: NOT_EXECUTED
   authority_status: LOCAL_RAW_BUCKET_CONTRACT_ONLY
 - story_id: ST-0305
@@ -124,7 +124,7 @@ dependencies:
   authority_status: PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY
 - story_id: ST-0307
   artifact: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
-  sha256: 06c9f26f61a420145d03fd61a1f8c598f9271641478e102d41a97d38172abfcb
+  sha256: 2473c0d1436c804d938db31ae4e512699f28190359b25cb8903e2a22a6556147
   connection_status: NOT_EXECUTED
   authority_status: SYNTHETIC_FIXTURE_ONLY
 - story_id: ST-0601

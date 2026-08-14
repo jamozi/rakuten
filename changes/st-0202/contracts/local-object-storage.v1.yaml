@@ -124,7 +124,25 @@ runtime:
       maximum_port: 65535
   expected_image_config_digest: sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd
   expected_platform: linux/amd64
-  expected_process_uid: 1000
+  expected_process_model:
+    observation: CONTAINER_PROCFS
+    host_config_init: true
+    observer_exclusion: EXACT_SELF_PID_ONLY
+    churn_check: CHILD_PID_STATUS_STARTTIME_AND_EXE_REREAD
+    init:
+      pid: 1
+      parent_pid: 0
+      uids: [0, 0, 0, 0]
+      gids: [0, 0, 0, 0]
+      executable: /sbin/docker-init
+    server:
+      direct_child_count: 1
+      parent_pid: 1
+      uids: [1000, 1000, 1000, 1000]
+      gids: [1000, 1000, 1000, 1000]
+      effective_capabilities: '0000000000000000'
+      executable: /usr/bin/weed
+      zombie_state: FORBIDDEN
   expected_image_labels:
     org.opencontainers.image.source: https://github.com/seaweedfs/seaweedfs
     org.opencontainers.image.revision: 1355c7a102194d6c461baf090eff50367b575afb
@@ -182,7 +200,7 @@ runtime:
     execution_status: NOT_EXECUTED
 security_controls:
   - id: SEC-DATA-003
-    implementation: Access and secret keys move only from a host 0600 file through a bootstrap Compose secret into a non-persistent UID 1000 mode 0400 tmpfs copy; before privilege drop the source directory becomes root-only, and values never enter Compose values, arguments, logs, or tracked files.
+    implementation: Access and secret keys move only from a host 0600 file through a bootstrap Compose secret into a non-persistent UID 1000 mode 0400 tmpfs copy; before privilege drop the source directory becomes root-only, and values never enter Compose values, arguments, logs, or tracked files. Runtime verification retains the root Docker init as PID 1 and requires its sole service child to be capability-free UID/GID 1000 /usr/bin/weed.
     verification: LOCAL_CONTRACT_AND_SECRET_SCAN
   - id: SEC-DATA-004
     implementation: The raos-raw contract requires SHA-256 metadata, versioning, version-specific retrieval, and rejection of a declared hash mismatch.

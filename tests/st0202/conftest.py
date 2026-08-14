@@ -199,7 +199,28 @@ EXPECTED_RUNTIME = {
         "sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd"
     ),
     "expected_platform": "linux/amd64",
-    "expected_process_uid": 1000,
+    "expected_process_model": {
+        "observation": "CONTAINER_PROCFS",
+        "host_config_init": True,
+        "observer_exclusion": "EXACT_SELF_PID_ONLY",
+        "churn_check": "CHILD_PID_STATUS_STARTTIME_AND_EXE_REREAD",
+        "init": {
+            "pid": 1,
+            "parent_pid": 0,
+            "uids": [0, 0, 0, 0],
+            "gids": [0, 0, 0, 0],
+            "executable": "/sbin/docker-init",
+        },
+        "server": {
+            "direct_child_count": 1,
+            "parent_pid": 1,
+            "uids": [1000, 1000, 1000, 1000],
+            "gids": [1000, 1000, 1000, 1000],
+            "effective_capabilities": "0000000000000000",
+            "executable": "/usr/bin/weed",
+            "zombie_state": "FORBIDDEN",
+        },
+    },
     "expected_image_labels": {
         "org.opencontainers.image.source": "https://github.com/seaweedfs/seaweedfs",
         "org.opencontainers.image.revision": (
@@ -275,7 +296,9 @@ EXPECTED_SECURITY_CONTROLS = [
             "bootstrap Compose secret into a non-persistent UID 1000 mode 0400 "
             "tmpfs copy; before privilege drop the source directory becomes "
             "root-only, and values never enter Compose values, arguments, logs, "
-            "or tracked files."
+            "or tracked files. Runtime verification retains the root Docker init "
+            "as PID 1 and requires its sole service child to be capability-free "
+            "UID/GID 1000 /usr/bin/weed."
         ),
         "verification": "LOCAL_CONTRACT_AND_SECRET_SCAN",
     },

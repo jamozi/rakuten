@@ -16,6 +16,12 @@ the S3 endpoint on loopback. It is not a production object-store definition.
   job `94895048736`: `FAILED_BEFORE_ACCEPTANCE`; the exact image pulled and the
   container became healthy, but Docker Engine exposed no `8333/tcp` host
   mapping while the service had only an internal network endpoint
+- Hosted Storage attempt `31848672728` / job `94920117911`:
+  `FAILED_BEFORE_ACCEPTANCE`; the disposable publish bridge repaired the prior
+  blocker, Docker Engine assigned the loopback mapping, and the container
+  became healthy. The wrapper then incorrectly treated the root Docker init at
+  PID 1 as the SeaweedFS process and stopped before the exact version or
+  authenticated fixture checks
 - Authenticated put/get/version fixture: `NOT_EXECUTED`
 - Object-lock and version-delete regression fixture: `NOT_EXECUTED`
 - Container vulnerability scan: `NOT_EXECUTED`
@@ -81,6 +87,18 @@ and secret key values never enter environment variables, Compose values,
 command arguments, logs, or tracked files. `RAOS_OBJECT_STORAGE_PORT` defaults
 to `8333`; operator-facing commands accept only `1024` through `65535`, and
 publication is fixed to `127.0.0.1`.
+
+Because the reviewed service retains `init: true`, Docker supplies the root
+`/sbin/docker-init` process at PID 1. The entrypoint privilege drop produces
+the sole service child beneath it. After readiness, the wrapper verifies
+`.HostConfig.Init=true` and a closed container-`/proc` model: root init PID 1;
+exactly one direct service child after excluding only the probe's own PID; and
+that child at PPid 1 with all four UID and GID values equal to 1000, zero
+effective capabilities, a non-zombie state, and executable `/usr/bin/weed`.
+It re-reads the child inventory, status, start time, and executable before
+emitting one fixed success token. Missing, extra, malformed, changed, or
+unexpected process material fails without printing process data or inspecting
+process environments or command lines.
 
 The generated root Compose remains the persistent contract: long syntax fixes
 `host_ip` to `127.0.0.1` and publishes the one operator-selected decimal port.
@@ -149,6 +167,8 @@ bootstrap, versioned put/get, metadata round-trip, SHA-256 mismatch rejection,
 object-lock/version-delete behavior, cleanup, and the required container
 vulnerability scan. Formal TST-014 belongs to the canonical CI environment.
 None of these runtime results is claimed by the contract or local unit tests.
-In particular, fake-Docker coverage of the private ephemeral override is not
-evidence that a hosted Docker Engine assigned and reported the mapping. A new
-hosted Storage run of this exact wrapper behavior is required.
+Hosted attempt `31848672728` established that the disposable bridge permits the
+reviewed Engine to assign and report the loopback mapping. It did not reach the
+exact runtime version or authenticated fixture because of the superseded PID 1
+observation. A new hosted Storage run of this exact process-model correction is
+required; local fake-Docker coverage is not that evidence.

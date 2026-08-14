@@ -12,7 +12,7 @@ source_artifacts:
   sha256: ea935831a1bb667229ae5a5495a27a801b9c21ab3c3ddbe53e266b8f7c311c42
 - uri: repo://scripts/build_st0705_ai_output_validation_reference_plan.py
   bytes: 26574
-  sha256: e3f04963b226a75efe73686bcce5be6ca1398c3a0bc4ac8ac37ed9efe54b3dd6
+  sha256: 3b1a31d4b3b679ffa6cdbf3562fbc5637b1f92f5df6293bedf2b365ba02feafc
 - uri: repo://tests/st0705/conftest.py
   bytes: 1767
   sha256: afd9c595b76bef9fd650ac5672862b31cd874e1883241e4f141aa39f5636559f
@@ -81,10 +81,10 @@ provenance:
     sha256: 18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c
   - uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
     bytes: 15689
-    sha256: 8298fa0cc27d498e2467a0bf9dd8c28ca338381002c46b240a06b9cc0bf7e388
+    sha256: 28c565107a81e3a0aece95d567614bd005c069bee9abc0d9bf860daa383db44b
   - uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
     bytes: 5547
-    sha256: 851c1e09110a39a96e9f8897245be2489dd089bcbd93c132aa13d2328f692c83
+    sha256: e7cc84ab72b673c543dc13ec2bd7aff51be565a7200f6c2b756ef6e4e5a7ba03
   - uri: repo://python/raos/domain/ai/provider.py
     bytes: 39611
     sha256: 179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991
@@ -128,4 +128,4 @@ provenance:
 generated_artifacts:
 - uri: repo://changes/st-0705/generated/ai-output-validation-reference-plan.v1.json
   bytes: 20174
-  sha256: 83e451914c0f883814def0c51095e0afc539a6a9990daa78ff5717fa3dfc3469
+  sha256: f451eccf05d6a0d7b76f7286725edee81283591fd066a15f856a256720c0bcdd

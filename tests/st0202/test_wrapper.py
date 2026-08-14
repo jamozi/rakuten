@@ -181,6 +181,8 @@ if payload and payload[0] == "inspect":
         print("seaweedfs:latest" if mode == "wrong_image" else {EXPECTED_IMAGE!r})
     elif ".Image" in template:
         print("sha256:" + "f" * 64 if mode == "wrong_config" else {EXPECTED_CONFIG_DIGEST!r})
+    elif ".HostConfig.Init" in template:
+        print("false" if mode == "runtime_init_false" else "true")
     else:
         print("starting" if mode == "unhealthy" else "healthy")
     raise SystemExit(0)
@@ -202,6 +204,31 @@ if payload and payload[0] == "port":
         print(f"8333/tcp -> 127.0.0.1:{{published_port}}\\n9333/tcp -> 0.0.0.0:9333")
     else:
         print(f"8333/tcp -> 127.0.0.1:{{published_port}}")
+    raise SystemExit(0)
+if payload and payload[0] == "exec":
+    if mode == "process_probe_nonzero":
+        raise SystemExit(44)
+    if mode == "process_probe_blank":
+        print("")
+    elif mode == "process_probe_extra_output":
+        print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1\\nunexpected")
+    elif mode in {{
+        "init_uid_process",
+        "wrong_init_executable",
+        "absent_server_child",
+        "extra_server_child",
+        "malformed_child_inventory",
+        "wrong_server_ppid",
+        "mixed_server_uids",
+        "mixed_server_gids",
+        "server_capability",
+        "wrong_server_executable",
+        "zombie_server",
+        "server_pid_churn",
+    }}:
+        print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_REJECTED")
+    else:
+        print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1")
     raise SystemExit(0)
 if not payload or payload[0] != "compose":
     print("unexpected Docker operation", file=sys.stderr)
@@ -339,8 +366,6 @@ elif operation == "port":
         print("127.0.0.1:" + published_port)
 elif operation == "exec" and "/usr/bin/weed" in payload:
     print("version 8000GB 4.28 bad linux amd64" if mode == "wrong_version" else "version 8000GB 4.29 1355c7a linux amd64")
-elif operation == "exec" and "/bin/sh" in payload:
-    print("0" if mode == "root_process" else "1000")
 raise SystemExit(0)
 """
     executable.write_text(program, encoding="utf-8")
@@ -830,7 +855,22 @@ def test_persistent_commands_accept_fixed_range_without_ephemeral_override(
         ("wrong_labels", "image labels differ"),
         ("public_port", "not published on one bounded loopback port"),
         ("extra_port", "publishes an unexpected host port"),
-        ("root_process", "did not drop to UID 1000"),
+        ("runtime_init_false", "did not retain the required init process"),
+        ("init_uid_process", "process model differs"),
+        ("wrong_init_executable", "process model differs"),
+        ("absent_server_child", "process model differs"),
+        ("extra_server_child", "process model differs"),
+        ("malformed_child_inventory", "process model differs"),
+        ("wrong_server_ppid", "process model differs"),
+        ("mixed_server_uids", "process model differs"),
+        ("mixed_server_gids", "process model differs"),
+        ("server_capability", "process model differs"),
+        ("wrong_server_executable", "process model differs"),
+        ("zombie_server", "process model differs"),
+        ("server_pid_churn", "process model differs"),
+        ("process_probe_nonzero", "could not be verified"),
+        ("process_probe_blank", "process model differs"),
+        ("process_probe_extra_output", "process model differs"),
         ("wrong_version", "runtime version differs"),
         ("extra_running", "not the sole requested running service"),
     ],
@@ -839,11 +879,54 @@ def test_runtime_identity_failures_are_rejected(
     tmp_path: Path, mode: str, message: str
 ) -> None:
     wrapper, _fixture_log = _isolated_repository(tmp_path)
-    docker, _log = _fake_docker(tmp_path, mode)
+    docker, log = _fake_docker(tmp_path, mode)
     result = _run(wrapper, docker, "up", tmp_path)
     assert result.returncode != 0
     assert message in result.stderr
     assert "PASS" not in result.stdout
+    if (
+        mode == "runtime_init_false"
+        or mode.startswith("process_probe_")
+        or mode
+        in {
+            "init_uid_process",
+            "wrong_init_executable",
+            "absent_server_child",
+            "extra_server_child",
+            "malformed_child_inventory",
+            "wrong_server_ppid",
+            "mixed_server_uids",
+            "mixed_server_gids",
+            "server_capability",
+            "wrong_server_executable",
+            "zombie_server",
+            "server_pid_churn",
+        }
+    ):
+        assert not any(
+            _compose_operation(row) == "exec" and "/usr/bin/weed" in row["argv"]
+            for row in _rows(log)
+        )
+
+
+def test_process_probe_is_closed_exact_and_does_not_inspect_sensitive_proc_data() -> (
+    None
+):
+    source = WRAPPER.read_text(encoding="utf-8")
+    assert "{{.HostConfig.Init}}" in source
+    assert 'run_docker exec "$container_id" /bin/sh -eu -c' in source
+    assert "/proc/1/task/1/children" in source
+    assert '[ "$candidate" = "$observer_pid" ] && continue' in source
+    assert '[ "$status_uids" = 0:0:0:0 ]' in source
+    assert '[ "$status_gids" = 0:0:0:0 ]' in source
+    assert '[ "$status_uids" = 1000:1000:1000:1000 ]' in source
+    assert '[ "$status_gids" = 1000:1000:1000:1000 ]' in source
+    assert '[ "$status_cap_eff" = 0000000000000000 ]' in source
+    assert '[ "$server_executable" = /usr/bin/weed ]' in source
+    assert '[ "$process_starttime" = "$first_starttime" ]' in source
+    assert "RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1" in source
+    assert "/proc/*/environ" not in source
+    assert "/proc/*/cmdline" not in source
 
 
 def test_unreviewed_compose_service_is_rejected(tmp_path: Path) -> None:
