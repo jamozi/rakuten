@@ -17,10 +17,10 @@ readonly expected_revision='1355c7a102194d6c461baf090eff50367b575afb'
 readonly expected_version_line='version 8000GB 4.29 1355c7a linux amd64'
 readonly expected_compose_sha256='a6cd0109a2bc63dae10be59bd9aa32ab85e9c3fec3847bc43c413b452cb871f5'
 readonly expected_fixture_sha256='50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527'
-readonly expected_ephemeral_override_sha256='16a0935b669afcdfbf1b819ee8abb773cd6978ebcb65f46c855764128547516a'
-readonly expected_ephemeral_override_bytes=152
+readonly expected_ephemeral_override_sha256='97c5eb86c4c625d083429870e46c646af1781d308af100831e621839ccc232fe'
+readonly expected_ephemeral_override_bytes=142
 readonly maximum_ephemeral_override_bytes=256
-readonly minimum_ephemeral_port=49152
+readonly minimum_ephemeral_port=1024
 readonly maximum_ephemeral_port=65535
 readonly local_project='raos-st0202-local'
 
@@ -251,7 +251,7 @@ create_ephemeral_override() {
     '  object-storage:' \
     '    ports: !override' \
     '      - target: 8333' \
-    '        published: "49152-65535"' \
+    '        published: "0"' \
     '        host_ip: 127.0.0.1' \
     '        protocol: tcp' >"$ephemeral_override_file"; then
     error 'unable to write the ephemeral Compose override'
@@ -280,7 +280,7 @@ run_docker() {
   "${environment[@]}" "$docker_executable" --host "$docker_host" "$@"
 }
 
-compose() {
+compose_raw() {
   local project=$1
   shift
   local -a compose_files=(--file "$compose_file")
@@ -292,6 +292,13 @@ compose() {
     "${compose_files[@]}" \
     --project-name "$project" \
     "$@"
+}
+
+compose() {
+  local project=$1
+  shift
+  assert_compose_model "$project" || return $?
+  compose_raw "$project" "$@"
 }
 
 run_fixture() {
@@ -319,27 +326,51 @@ run_fixture() {
 
 assert_compose_model() {
   local project=$1
-  local services
-  local service
-  local object_storage_count=0
-
-  services=$(compose "$project" config --services)
-  while IFS= read -r service; do
-    case $service in
-      object-storage) object_storage_count=$((object_storage_count + 1)) ;;
-      postgres) ;;
-      '') ;;
-      *)
-        error "the generated Compose model contains an unreviewed service: $service"
-        return 1
-        ;;
-    esac
-  done <<<"$services"
-  if ((object_storage_count != 1)); then
-    error 'the generated Compose model must contain exactly one object-storage service'
-    return 1
+  local expected_published=$object_storage_port
+  if [[ $command == test ]]; then
+    expected_published=0
   fi
-  compose "$project" config --quiet
+
+  if ! compose_raw "$project" config --format json | \
+    /usr/bin/python3 -I -c '
+import json
+import sys
+
+expected_published = sys.argv[1]
+try:
+    model = json.load(sys.stdin)
+except (json.JSONDecodeError, UnicodeError):
+    raise SystemExit(1)
+if not isinstance(model, dict):
+    raise SystemExit(1)
+services = model.get("services")
+if not isinstance(services, dict) or set(services) != {"postgres", "object-storage"}:
+    raise SystemExit(1)
+service = services.get("object-storage")
+if not isinstance(service, dict):
+    raise SystemExit(1)
+ports = service.get("ports")
+if not isinstance(ports, list) or len(ports) != 1:
+    raise SystemExit(1)
+port = ports[0]
+if not isinstance(port, dict):
+    raise SystemExit(1)
+target = port.get("target")
+if isinstance(target, bool) or not isinstance(target, int) or target != 8333:
+    raise SystemExit(1)
+expected = {
+    "published": expected_published,
+    "host_ip": "127.0.0.1",
+    "protocol": "tcp",
+}
+for key, value in expected.items():
+    observed = port.get(key)
+    if not isinstance(observed, str) or observed != value:
+        raise SystemExit(1)
+' "$expected_published"; then
+    error 'the normalized Compose model differs from the exact object-storage port contract'
+    return 69
+  fi
 }
 
 version_at_least() {

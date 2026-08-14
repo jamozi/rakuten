@@ -197,6 +197,9 @@ def test_bool_as_integer_does_not_bypass_strict_comparison(
             "8d7d2e57f174992dd703773f0c9031d58eddda8ab99d5e15ec67c7d247540022",
         ),
         (("ephemeral_port_override", "published"), "OMITTED_RUNTIME_ASSIGNED"),
+        (("ephemeral_port_override", "published"), 0),
+        (("ephemeral_port_override", "published"), ""),
+        (("ephemeral_port_override", "published"), "49152-65535"),
         (("ephemeral_port_override", "published"), "1024-65535"),
         (("ephemeral_port_override", "host_ip"), "0.0.0.0"),
         (("ephemeral_port_override", "sha256"), "0" * 64),
@@ -204,7 +207,8 @@ def test_bool_as_integer_does_not_bypass_strict_comparison(
             ("ephemeral_port_override", "forbidden_tokens"),
             ["published", "${", "#"],
         ),
-        (("ephemeral_port_override", "observed_mapping", "minimum_port"), 1024),
+        (("ephemeral_port_override", "observed_mapping", "minimum_port"), 1023),
+        (("ephemeral_port_override", "observed_mapping", "minimum_port"), 49152),
         (("ephemeral_port_override", "observed_mapping", "maximum_port"), 65536),
         (("local_project",), "default"),
         (("commands",), ["up", "down"]),
@@ -231,7 +235,7 @@ def test_runtime_contract_cannot_be_weakened_or_promoted(
     reject_contract(mutable_contract, r"runtime\.")
 
 
-def test_ephemeral_published_range_cannot_be_omitted(
+def test_ephemeral_explicit_zero_publication_cannot_be_omitted(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:
     del mutable_contract["runtime"]["ephemeral_port_override"]["published"]

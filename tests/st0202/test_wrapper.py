@@ -31,12 +31,12 @@ EXPECTED_EPHEMERAL_OVERRIDE = b"""services:
   object-storage:
     ports: !override
       - target: 8333
-        published: "49152-65535"
+        published: "0"
         host_ip: 127.0.0.1
         protocol: tcp
 """
 EXPECTED_EPHEMERAL_OVERRIDE_DIGEST = (
-    "16a0935b669afcdfbf1b819ee8abb773cd6978ebcb65f46c855764128547516a"
+    "97c5eb86c4c625d083429870e46c646af1781d308af100831e621839ccc232fe"
 )
 
 
@@ -59,11 +59,13 @@ args = sys.argv[1:]
 config_path = os.environ.get("RAOS_OBJECT_STORAGE_S3_CONFIG_FILE", "")
 requested_port = os.environ.get("RAOS_OBJECT_STORAGE_PORT", "")
 published_port = requested_port or "49153"
-if mode == "low_assigned_port":
-    published_port = "49151"
-elif mode == "lower_range_boundary":
-    published_port = "49152"
-elif mode == "upper_range_boundary":
+if mode == "zero_assigned_port":
+    published_port = "0"
+elif mode == "privileged_assigned_port":
+    published_port = "1023"
+elif mode == "lower_port_boundary":
+    published_port = "1024"
+elif mode == "upper_port_boundary":
     published_port = "65535"
 elif mode == "high_assigned_port":
     published_port = "65536"
@@ -214,7 +216,40 @@ if operation == "up" and mode in {{"signal_hup", "signal_int", "signal_term"}}:
     }}[mode]
     os.kill(os.getppid(), selected)
     raise SystemExit(0)
-if operation == "config" and "--services" in payload:
+if operation == "config" and "--format" in payload:
+    normalized_published = "0" if override_path else requested_port
+    port = {{
+        "target": 8333,
+        "published": normalized_published,
+        "host_ip": "127.0.0.1",
+        "protocol": "tcp",
+    }}
+    services = {{"postgres": {{}}, "object-storage": {{"ports": [port]}}}}
+    if mode == "extra_service":
+        services["rogue"] = {{}}
+    elif mode == "model_absent_port":
+        services["object-storage"]["ports"] = []
+    elif mode == "model_duplicate_port":
+        services["object-storage"]["ports"] = [port, dict(port)]
+    elif mode == "model_public_port":
+        port["host_ip"] = "0.0.0.0"
+    elif mode == "model_ipv6_port":
+        port["host_ip"] = "::1"
+    elif mode == "model_wrong_target":
+        port["target"] = 8334
+    elif mode == "model_published_absent":
+        del port["published"]
+    elif mode == "model_published_numeric_zero":
+        port["published"] = 0
+    elif mode == "model_published_range":
+        port["published"] = "49152-65535"
+    elif mode == "model_udp":
+        port["protocol"] = "udp"
+    if mode == "model_malformed_json":
+        print("{{")
+    else:
+        print(json.dumps({{"services": services}}, sort_keys=True))
+elif operation == "config" and "--services" in payload:
     print("postgres\\nobject-storage\\nrogue" if mode == "extra_service" else "postgres\\nobject-storage")
 elif operation == "ps" and "--services" in payload:
     print("object-storage\\npostgres" if mode == "extra_running" else "object-storage")
@@ -229,6 +264,8 @@ elif operation == "port":
         print("0.0.0.0:" + published_port)
     elif mode == "ipv6_port":
         print("[::1]:" + published_port)
+    elif mode == "malformed_port":
+        print("127.0.0.1:" + published_port + "/tcp")
     else:
         print("127.0.0.1:" + published_port)
 elif operation == "exec" and "/usr/bin/weed" in payload:
@@ -293,6 +330,14 @@ def _compose_operation(row: dict[str, Any]) -> str | None:
         if item in {"config", "up", "ps", "exec", "port", "down"}:
             return str(item)
     return None
+
+
+def _is_model_gate(row: dict[str, Any]) -> bool:
+    return _compose_operation(row) == "config" and row["argv"][-3:] == [
+        "config",
+        "--format",
+        "json",
+    ]
 
 
 def _test_directories(tmp_path: Path) -> list[Path]:
@@ -462,10 +507,12 @@ def test_test_command_passes_base_then_ephemeral_files_only(
         "duplicate_port",
         "public_port",
         "ipv6_port",
-        "low_assigned_port",
+        "zero_assigned_port",
+        "privileged_assigned_port",
         "high_assigned_port",
         "overflow_assigned_port",
         "non_decimal_port",
+        "malformed_port",
     ],
 )
 def test_observed_mapping_rejects_invalid_cardinality_host_and_range(
@@ -485,8 +532,8 @@ def test_observed_mapping_rejects_invalid_cardinality_host_and_range(
     assert _test_directories(tmp_path) == []
 
 
-@pytest.mark.parametrize("mode", ["lower_range_boundary", "upper_range_boundary"])
-def test_runtime_selected_port_accepts_exact_range_boundaries(
+@pytest.mark.parametrize("mode", ["lower_port_boundary", "upper_port_boundary"])
+def test_runtime_selected_port_accepts_exact_contract_boundaries(
     tmp_path: Path, mode: str
 ) -> None:
     wrapper, _fixture_log = _isolated_repository(tmp_path)
@@ -501,10 +548,10 @@ def test_runtime_selected_port_accepts_exact_range_boundaries(
     assert _test_directories(tmp_path) == []
 
 
-def test_ephemeral_template_is_exact_152_bytes_and_digest_bound(
+def test_ephemeral_template_is_exact_142_bytes_and_digest_bound(
     tmp_path: Path,
 ) -> None:
-    assert len(EXPECTED_EPHEMERAL_OVERRIDE) == 152
+    assert len(EXPECTED_EPHEMERAL_OVERRIDE) == 142
     assert hashlib.sha256(EXPECTED_EPHEMERAL_OVERRIDE).hexdigest() == (
         EXPECTED_EPHEMERAL_OVERRIDE_DIGEST
     )
@@ -605,6 +652,53 @@ def test_ephemeral_override_revalidates_before_every_compose_use(
     )
 
 
+@pytest.mark.parametrize(
+    "mode",
+    [
+        "model_absent_port",
+        "model_duplicate_port",
+        "model_public_port",
+        "model_ipv6_port",
+        "model_wrong_target",
+        "model_published_absent",
+        "model_published_numeric_zero",
+        "model_published_range",
+        "model_udp",
+        "model_malformed_json",
+    ],
+)
+def test_normalized_compose_model_rejects_hostile_port_shapes_before_up(
+    tmp_path: Path, mode: str
+) -> None:
+    wrapper, fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path, mode)
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode == 69
+    assert "normalized Compose model differs" in result.stderr
+    rows = _rows(log)
+    assert any(_is_model_gate(row) for row in rows)
+    assert not any(_compose_operation(row) == "up" for row in rows)
+    assert "acceptance" not in [row["argv"][0] for row in _rows(fixture_log)]
+    assert _test_directories(tmp_path) == []
+
+
+def test_normalized_compose_model_gate_precedes_every_project_compose_use(
+    tmp_path: Path,
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path)
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+    rows = _rows(log)
+    project_uses = [
+        index
+        for index, row in enumerate(rows)
+        if _compose_operation(row) is not None and not _is_model_gate(row)
+    ]
+    assert project_uses
+    assert all(index > 0 and _is_model_gate(rows[index - 1]) for index in project_uses)
+
+
 def test_ephemeral_override_rejects_owner_mismatch_by_exact_source_guard() -> None:
     source = WRAPPER.read_text(encoding="utf-8")
     assert "owner=$(stat --format='%u' -- \"$ephemeral_override_file\")" in source
@@ -675,7 +769,7 @@ def test_unreviewed_compose_service_is_rejected(tmp_path: Path) -> None:
     docker, _log = _fake_docker(tmp_path, "extra_service")
     result = _run(wrapper, docker, "config", tmp_path)
     assert result.returncode != 0
-    assert "unreviewed service: rogue" in result.stderr
+    assert "normalized Compose model differs" in result.stderr
 
 
 def test_invalid_port_mode_and_symlink_are_rejected(tmp_path: Path) -> None:

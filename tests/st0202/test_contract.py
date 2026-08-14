@@ -228,11 +228,11 @@ def test_runtime_ephemeral_override_contract_is_exact_and_untracked(
   object-storage:
     ports: !override
       - target: 8333
-        published: "49152-65535"
+        published: "0"
         host_ip: 127.0.0.1
         protocol: tcp
 """
-    assert len(template) == override["exact_bytes"] == 152
+    assert len(template) == override["exact_bytes"] == 142
     assert generator.st0201.sha256_bytes(template) == override["sha256"]
     assert override["tracked_artifact"] == "ABSENT"
     assert override["creation_executable"] == "/usr/bin/mktemp"
@@ -240,15 +240,15 @@ def test_runtime_ephemeral_override_contract_is_exact_and_untracked(
         "docker-compose.yml",
         "EPHEMERAL_VALIDATED_OVERRIDE",
     ]
-    assert override["published"] == "49152-65535"
+    assert override["published"] == "0"
     assert override["observed_mapping"] == {
         "exact_count": 1,
         "host": "127.0.0.1",
         "lexical_port_rule": "^[0-9]{1,5}$",
-        "minimum_port": 49152,
+        "minimum_port": 1024,
         "maximum_port": 65535,
     }
-    assert b'        published: "49152-65535"\n' in template
+    assert b'        published: "0"\n' in template
     assert b"${" not in template
     assert b"#" not in template
 
