@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
-from typing import Any
+from typing import Any, Literal
 
 import pytest
 
@@ -20,6 +20,35 @@ from conftest import (
     copy_node_project,
     run_wrapper,
 )
+
+
+NpmColdCacheMissKind = Literal["online-fetch", "offline-replay"]
+NPM_COLD_CACHE_TARBALL_URL = (
+    "https://registry.npmjs.org/zod-validation-error/-/zod-validation-error-4.0.2.tgz"
+)
+NPM_COLD_CACHE_ERROR_LINES: dict[NpmColdCacheMissKind, tuple[str, ...]] = {
+    "online-fetch": (
+        "npm error code EAI_AGAIN",
+        "npm error syscall getaddrinfo",
+        "npm error errno EAI_AGAIN",
+        f"npm error request to {NPM_COLD_CACHE_TARBALL_URL} failed, reason: "
+        "getaddrinfo EAI_AGAIN registry.npmjs.org",
+    ),
+    "offline-replay": (
+        "npm error code ENOTCACHED",
+        f"npm error request to {NPM_COLD_CACHE_TARBALL_URL} failed: cache mode "
+        "is 'only-if-cached' but no cached response is available.",
+    ),
+}
+NPM_DEBUG_LOG_PREFIX = "npm error A complete log of this run can be found in: "
+NPM_COLD_CACHE_MAKE_ERROR: dict[NpmColdCacheMissKind, str] = {
+    "online-fetch": "make: *** [Makefile:619: node-sync] Error 1",
+    "offline-replay": "make: *** [Makefile:637: node-sync-offline] Error 1",
+}
+NPM_COLD_CACHE_WRAPPER_COMMAND: dict[NpmColdCacheMissKind, str] = {
+    "online-fetch": "versions",
+    "offline-replay": "sync-offline",
+}
 
 
 def drift_manifest(project: Path) -> None:
@@ -120,6 +149,490 @@ def diagnostics(result: subprocess.CompletedProcess[str]) -> str:
     return f"{result.stdout}\n{result.stderr}"
 
 
+def continued_make_command(
+    command: str,
+    argument_rows: tuple[tuple[Path, ...], ...],
+) -> str:
+    """Render one reviewed multiline Make recipe command exactly."""
+
+    lines = [f"{command} \\"]
+    for index, row in enumerate(argument_rows):
+        suffix = " \\" if index < len(argument_rows) - 1 else ""
+        lines.append("\t" + " ".join(f'"{path}"' for path in row) + suffix)
+    return "\n".join(lines)
+
+
+def npm_cold_cache_wrapper_args(
+    kind: NpmColdCacheMissKind,
+    *,
+    node: Path,
+    npm_cli: Path,
+) -> list[str]:
+    """Return the one reviewed wrapper invocation for a cache-miss kind."""
+
+    return [
+        str(REPOSITORY_ROOT / "scripts/node_toolchain.sh"),
+        "--node",
+        str(node),
+        "--npm-cli",
+        str(npm_cli),
+        NPM_COLD_CACHE_WRAPPER_COMMAND[kind],
+    ]
+
+
+def npm_cold_cache_wrapper_stdout(
+    kind: NpmColdCacheMissKind,
+    *,
+    node: Path,
+) -> str:
+    """Render the complete reviewed pre-failure Make stdout."""
+
+    root = REPOSITORY_ROOT
+    node_environment = (
+        f'env -i PATH="/usr/bin:/bin" HOME="{root}" '
+        "LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC "
+        "COREPACK_ENABLE_NETWORK=0 COREPACK_ENABLE_PROJECT_SPEC=0 "
+        f'COREPACK_HOME="{root}/.npm-cache/corepack" '
+        "NEXT_TELEMETRY_DISABLED=1 "
+        f'NPM_CONFIG_USERCONFIG="{root}/.npmrc" '
+        "NPM_CONFIG_GLOBALCONFIG=/dev/null "
+        f'NPM_CONFIG_CACHE="{root}/.npm-cache" '
+        "NPM_CONFIG_REGISTRY=https://registry.npmjs.org/ "
+        "NPM_CONFIG_IGNORE_SCRIPTS=true NPM_CONFIG_AUDIT=false "
+        "NPM_CONFIG_FUND=false NPM_CONFIG_UPDATE_NOTIFIER=false "
+        f'"{node}" "{root}/scripts/node_inventory.mjs"'
+    )
+    records = [
+        continued_make_command(
+            f"{node_environment} guard",
+            (
+                (root / "apps",),
+                (root / "apps/web",),
+                (root / "packages",),
+                (root / "packages/web-contracts",),
+                (root / "packages/web-ui",),
+                (root / ".npm-cache", root / "node_modules"),
+                (root / "apps/web/node_modules",),
+                (root / "packages/web-contracts/node_modules",),
+                (root / "packages/web-ui/node_modules",),
+            ),
+        ),
+        continued_make_command(
+            f"{node_environment} guard-files",
+            (
+                (root / ".npmrc", root / "package.json"),
+                (root / "apps/web/package.json",),
+                (root / "packages/web-contracts/package.json",),
+                (root / "packages/web-contracts/tsconfig.json",),
+                (root / "packages/web-ui/package.json",),
+            ),
+        ),
+        continued_make_command(
+            f"{node_environment} guard-optional-files",
+            ((root / "package-lock.json",),),
+        ),
+        f'test -f "{root}/package-lock.json"',
+    ]
+    if kind == "online-fetch":
+        records.append(
+            continued_make_command(
+                f"{node_environment} verify-lock-manifests",
+                (
+                    (root / "package-lock.json",),
+                    (root / "package.json",),
+                    (root / "apps/web/package.json",),
+                    (root / "packages/web-contracts/package.json",),
+                    (root / "packages/web-ui/package.json",),
+                ),
+            )
+        )
+    else:
+        records.extend(
+            (
+                f'test -d "{root}/.npm-cache"',
+                f'test -d "{root}/node_modules"',
+            )
+        )
+    return "\n".join(records) + "\n"
+
+
+def npm_cold_cache_toolchain(
+    result: subprocess.CompletedProcess[str],
+    kind: NpmColdCacheMissKind,
+) -> tuple[Path, Path] | None:
+    """Validate and extract the reviewed wrapper invocation paths."""
+
+    if not isinstance(result.args, list) or not all(
+        isinstance(argument, str) for argument in result.args
+    ):
+        return None
+    if len(result.args) != 6:
+        return None
+    wrapper, node_flag, node_value, npm_flag, npm_value, command = result.args
+    node = Path(node_value)
+    npm_cli = Path(npm_value)
+    if (
+        wrapper != str(REPOSITORY_ROOT / "scripts/node_toolchain.sh")
+        or node_flag != "--node"
+        or npm_flag != "--npm-cli"
+        or command != NPM_COLD_CACHE_WRAPPER_COMMAND[kind]
+        or not node.is_absolute()
+        or not npm_cli.is_absolute()
+        or npm_cli != node.parent.parent / "lib/node_modules/npm/bin/npm-cli.js"
+    ):
+        return None
+    return node, npm_cli
+
+
+def is_exact_npm_cold_cache_miss(
+    result: subprocess.CompletedProcess[str],
+    kind: NpmColdCacheMissKind,
+) -> bool:
+    """Classify only the reviewed npm 11.16.0 missing-tarball diagnostics."""
+
+    if result.returncode == 0:
+        return False
+    toolchain = npm_cold_cache_toolchain(result, kind)
+    if toolchain is None:
+        return False
+    node, _ = toolchain
+    if result.stdout != npm_cold_cache_wrapper_stdout(kind, node=node):
+        return False
+    stderr_lines = result.stderr.splitlines()
+    expected_error_lines = NPM_COLD_CACHE_ERROR_LINES[kind]
+    if tuple(stderr_lines[: len(expected_error_lines)]) != expected_error_lines:
+        return False
+    remaining_lines = stderr_lines[len(expected_error_lines) :]
+    if len(remaining_lines) != 2:
+        return False
+    debug_log_line, make_error_line = remaining_lines
+    debug_log_path = debug_log_line.removeprefix(NPM_DEBUG_LOG_PREFIX)
+    expected_log_prefix = re.escape(f"{REPOSITORY_ROOT}/.npm-cache/_logs/")
+    if (
+        debug_log_path == debug_log_line
+        or re.fullmatch(
+            expected_log_prefix + r"[0-9]{4}-[0-9]{2}-[0-9]{2}T"
+            r"[0-9]{2}_[0-9]{2}_[0-9]{2}_[0-9]{3}Z-debug-0\.log",
+            debug_log_path,
+        )
+        is None
+    ):
+        return False
+    return make_error_line == NPM_COLD_CACHE_MAKE_ERROR[kind]
+
+
+def skip_exact_npm_cold_cache_miss(
+    result: subprocess.CompletedProcess[str],
+    kind: NpmColdCacheMissKind,
+) -> None:
+    """Skip a positive capability probe only for the exact cold-cache shape."""
+
+    if result.returncode == 0:
+        assert not any(
+            line.startswith("npm error ")
+            for line in (result.stdout + "\n" + result.stderr).splitlines()
+        ), diagnostics(result)
+        return
+    if is_exact_npm_cold_cache_miss(result, kind):
+        pytest.skip(
+            "the repository npm cache lacks the exact public "
+            "zod-validation-error@4.0.2 tarball"
+        )
+
+
+def npm_cold_cache_wrapper_stderr(
+    kind: NpmColdCacheMissKind,
+    error_lines: tuple[str, ...],
+    *,
+    debug_log_path: str | None = None,
+    make_error_line: str | None = None,
+) -> str:
+    """Build one deterministic npm wrapper diagnostic for classifier tests."""
+
+    if debug_log_path is None:
+        debug_log_path = (
+            f"{REPOSITORY_ROOT}/.npm-cache/_logs/2026-08-15T00_00_00_000Z-debug-0.log"
+        )
+    if make_error_line is None:
+        make_error_line = NPM_COLD_CACHE_MAKE_ERROR[kind]
+    return "\n".join(
+        (
+            *error_lines,
+            NPM_DEBUG_LOG_PREFIX + debug_log_path,
+            make_error_line,
+        )
+    )
+
+
+@pytest.mark.parametrize(
+    ("kind", "error_lines"),
+    list(NPM_COLD_CACHE_ERROR_LINES.items()),
+)
+def test_exact_npm_cold_cache_classifier_accepts_only_reviewed_shapes(
+    kind: NpmColdCacheMissKind,
+    error_lines: tuple[str, ...],
+) -> None:
+    node = Path("/opt/raos-node/bin/node")
+    npm_cli = Path("/opt/raos-node/lib/node_modules/npm/bin/npm-cli.js")
+    result = subprocess.CompletedProcess(
+        args=npm_cold_cache_wrapper_args(kind, node=node, npm_cli=npm_cli),
+        returncode=1,
+        stdout=npm_cold_cache_wrapper_stdout(kind, node=node),
+        stderr=npm_cold_cache_wrapper_stderr(kind, error_lines),
+    )
+    assert is_exact_npm_cold_cache_miss(result, kind)
+
+
+@pytest.mark.parametrize(
+    ("kind", "returncode", "error_lines"),
+    [
+        ("online-fetch", 0, NPM_COLD_CACHE_ERROR_LINES["online-fetch"]),
+        (
+            "online-fetch",
+            1,
+            NPM_COLD_CACHE_ERROR_LINES["online-fetch"][:-1],
+        ),
+        (
+            "online-fetch",
+            1,
+            (
+                *NPM_COLD_CACHE_ERROR_LINES["online-fetch"][:-1],
+                NPM_COLD_CACHE_ERROR_LINES["online-fetch"][-1].replace(
+                    "EAI_AGAIN", "EAI_AGAIN: temporary failure", 1
+                ),
+            ),
+        ),
+        (
+            "online-fetch",
+            1,
+            tuple(
+                line.replace("registry.npmjs.org", "registry.example.invalid")
+                for line in NPM_COLD_CACHE_ERROR_LINES["online-fetch"]
+            ),
+        ),
+        (
+            "online-fetch",
+            1,
+            tuple(
+                line.replace("zod-validation-error-4.0.2", "zod-validation-error-4.0.1")
+                for line in NPM_COLD_CACHE_ERROR_LINES["online-fetch"]
+            ),
+        ),
+        (
+            "online-fetch",
+            1,
+            (
+                *NPM_COLD_CACHE_ERROR_LINES["online-fetch"],
+                "npm error code EINTEGRITY",
+            ),
+        ),
+        (
+            "online-fetch",
+            1,
+            (
+                *NPM_COLD_CACHE_ERROR_LINES["online-fetch"],
+                "error: dependency integrity check failed",
+            ),
+        ),
+        (
+            "offline-replay",
+            1,
+            (
+                *NPM_COLD_CACHE_ERROR_LINES["offline-replay"],
+                "error: package-lock inventory mismatch",
+            ),
+        ),
+        (
+            "offline-replay",
+            1,
+            NPM_COLD_CACHE_ERROR_LINES["online-fetch"],
+        ),
+        (
+            "offline-replay",
+            1,
+            (
+                "npm error code ENOTCACHED",
+                NPM_COLD_CACHE_ERROR_LINES["offline-replay"][-1].replace(
+                    "no cached response is available.", "cache entry was not found."
+                ),
+            ),
+        ),
+        ("online-fetch", 1, ("error: package-lock inventory mismatch",)),
+        ("online-fetch", 1, ("error: dependency integrity check failed",)),
+        ("online-fetch", 1, ("error: shell injection marker was created",)),
+        ("online-fetch", 1, ("error: required Node version ==24.18.1",)),
+    ],
+)
+def test_exact_npm_cold_cache_classifier_rejects_hostile_near_misses(
+    kind: NpmColdCacheMissKind,
+    returncode: int,
+    error_lines: tuple[str, ...],
+) -> None:
+    node = Path("/opt/raos-node/bin/node")
+    npm_cli = Path("/opt/raos-node/lib/node_modules/npm/bin/npm-cli.js")
+    result = subprocess.CompletedProcess(
+        args=npm_cold_cache_wrapper_args(kind, node=node, npm_cli=npm_cli),
+        returncode=returncode,
+        stdout=npm_cold_cache_wrapper_stdout(kind, node=node),
+        stderr=npm_cold_cache_wrapper_stderr(kind, error_lines),
+    )
+    assert not is_exact_npm_cold_cache_miss(result, kind)
+
+
+@pytest.mark.parametrize(
+    "extra_stdout",
+    [
+        "cache capability probe complete",
+        "dependency integrity verification failed",
+        "security policy check failed",
+    ],
+)
+@pytest.mark.parametrize(
+    ("kind", "error_lines"),
+    list(NPM_COLD_CACHE_ERROR_LINES.items()),
+)
+def test_exact_npm_cold_cache_classifier_rejects_any_extra_stdout(
+    kind: NpmColdCacheMissKind,
+    error_lines: tuple[str, ...],
+    extra_stdout: str,
+) -> None:
+    node = Path("/opt/raos-node/bin/node")
+    npm_cli = Path("/opt/raos-node/lib/node_modules/npm/bin/npm-cli.js")
+    result = subprocess.CompletedProcess(
+        args=npm_cold_cache_wrapper_args(kind, node=node, npm_cli=npm_cli),
+        returncode=1,
+        stdout=(npm_cold_cache_wrapper_stdout(kind, node=node) + extra_stdout + "\n"),
+        stderr=npm_cold_cache_wrapper_stderr(kind, error_lines),
+    )
+    assert not is_exact_npm_cold_cache_miss(result, kind)
+
+
+@pytest.mark.parametrize(
+    "debug_log_path",
+    [
+        f"{REPOSITORY_ROOT}/.npm-cache/_logs/../outside-debug-0.log",
+        f"{REPOSITORY_ROOT}/.npm-cache/logs/2026-08-15T00_00_00_000Z-debug-0.log",
+        "/tmp/alternate/.npm-cache/_logs/2026-08-15T00_00_00_000Z-debug-0.log",
+        f"{REPOSITORY_ROOT}/.npm-cache/_logs/"
+        "2026-08-15T00_00_00_000Z-debug-0.log.residual",
+        f"{REPOSITORY_ROOT}/.npm-cache/_logs/2026-08-15T00:00:00.000Z-debug-0.log",
+        f"{REPOSITORY_ROOT}/.npm-cache/_logs/2026-08-15T00_00_00_000Z-debug-1.log",
+    ],
+)
+@pytest.mark.parametrize(
+    ("kind", "error_lines"),
+    list(NPM_COLD_CACHE_ERROR_LINES.items()),
+)
+def test_exact_npm_cold_cache_classifier_rejects_debug_log_path_near_misses(
+    kind: NpmColdCacheMissKind,
+    error_lines: tuple[str, ...],
+    debug_log_path: str,
+) -> None:
+    node = Path("/opt/raos-node/bin/node")
+    npm_cli = Path("/opt/raos-node/lib/node_modules/npm/bin/npm-cli.js")
+    result = subprocess.CompletedProcess(
+        args=npm_cold_cache_wrapper_args(kind, node=node, npm_cli=npm_cli),
+        returncode=1,
+        stdout=npm_cold_cache_wrapper_stdout(kind, node=node),
+        stderr=npm_cold_cache_wrapper_stderr(
+            kind,
+            error_lines,
+            debug_log_path=debug_log_path,
+        ),
+    )
+    assert not is_exact_npm_cold_cache_miss(result, kind)
+
+
+@pytest.mark.parametrize(
+    "make_error_line",
+    [
+        "make: *** [Makefile:619: node-sync-offline] Error 1",
+        "make: *** [Makefile:618: node-sync] Error 1",
+        "make: *** [Makefile:619: node-sync] Error 2",
+        "make: *** [Makefile:619: node-sync] Error 1 ",
+    ],
+)
+def test_exact_npm_cold_cache_classifier_rejects_make_error_near_misses(
+    make_error_line: str,
+) -> None:
+    kind: NpmColdCacheMissKind = "online-fetch"
+    node = Path("/opt/raos-node/bin/node")
+    npm_cli = Path("/opt/raos-node/lib/node_modules/npm/bin/npm-cli.js")
+    result = subprocess.CompletedProcess(
+        args=npm_cold_cache_wrapper_args(kind, node=node, npm_cli=npm_cli),
+        returncode=1,
+        stdout=npm_cold_cache_wrapper_stdout(kind, node=node),
+        stderr=npm_cold_cache_wrapper_stderr(
+            kind,
+            NPM_COLD_CACHE_ERROR_LINES[kind],
+            make_error_line=make_error_line,
+        ),
+    )
+    assert not is_exact_npm_cold_cache_miss(result, kind)
+
+
+@pytest.mark.parametrize(
+    "invocation_mutation",
+    ["wrapper", "node-flag", "unbundled-npm", "command", "extra-argument"],
+)
+def test_exact_npm_cold_cache_classifier_rejects_unreviewed_invocation(
+    invocation_mutation: str,
+) -> None:
+    kind: NpmColdCacheMissKind = "online-fetch"
+    node = Path("/opt/raos-node/bin/node")
+    npm_cli = Path("/opt/raos-node/lib/node_modules/npm/bin/npm-cli.js")
+    arguments = npm_cold_cache_wrapper_args(kind, node=node, npm_cli=npm_cli)
+    if invocation_mutation == "wrapper":
+        arguments[0] = "/tmp/unreviewed/node_toolchain.sh"
+    elif invocation_mutation == "node-flag":
+        arguments[1] = "--runtime"
+    elif invocation_mutation == "unbundled-npm":
+        arguments[4] = "/opt/unbundled/npm-cli.js"
+    elif invocation_mutation == "command":
+        arguments[5] = "check"
+    else:
+        arguments.append("extra")
+    result = subprocess.CompletedProcess(
+        args=arguments,
+        returncode=1,
+        stdout=npm_cold_cache_wrapper_stdout(kind, node=node),
+        stderr=npm_cold_cache_wrapper_stderr(
+            kind,
+            NPM_COLD_CACHE_ERROR_LINES[kind],
+        ),
+    )
+    assert not is_exact_npm_cold_cache_miss(result, kind)
+
+
+@pytest.mark.parametrize(
+    ("kind", "error_lines", "error_stream"),
+    [
+        (kind, error_lines, error_stream)
+        for kind, error_lines in NPM_COLD_CACHE_ERROR_LINES.items()
+        for error_stream in ("stdout", "stderr")
+    ],
+)
+def test_skip_helper_fails_closed_on_zero_exit_with_npm_errors(
+    kind: NpmColdCacheMissKind,
+    error_lines: tuple[str, ...],
+    error_stream: Literal["stdout", "stderr"],
+) -> None:
+    error_diagnostic = npm_cold_cache_wrapper_stderr(kind, error_lines)
+    node = Path("/opt/raos-node/bin/node")
+    npm_cli = Path("/opt/raos-node/lib/node_modules/npm/bin/npm-cli.js")
+    result = subprocess.CompletedProcess(
+        args=npm_cold_cache_wrapper_args(kind, node=node, npm_cli=npm_cli),
+        returncode=0,
+        stdout=(
+            f"v{EXPECTED_NODE_VERSION}\n{EXPECTED_NPM_VERSION}\n"
+            + (error_diagnostic if error_stream == "stdout" else "")
+        ),
+        stderr=error_diagnostic if error_stream == "stderr" else "",
+    )
+    with pytest.raises(AssertionError):
+        skip_exact_npm_cold_cache_miss(result, kind)
+
+
 def npm_debug_logs(project: Path) -> list[Path]:
     """Return npm debug logs created below an isolated fixture project."""
 
@@ -217,6 +730,7 @@ def test_wrapper_reports_the_exact_node_and_npm_versions(
         "versions",
         environment=clean_environment(tmp_path / "cache"),
     )
+    skip_exact_npm_cold_cache_miss(result, "online-fetch")
     assert result.returncode == 0, diagnostics(result)
     assert re.search(rf"(?m)^v?{re.escape(EXPECTED_NODE_VERSION)}$", result.stdout)
     assert re.search(rf"(?m)^{re.escape(EXPECTED_NPM_VERSION)}$", result.stdout)
@@ -333,8 +847,9 @@ def test_wrapper_ignores_bash_startup_injection(
     environment = clean_environment(tmp_path / "cache")
     environment["BASH_ENV"] = str(startup)
     result = run_wrapper(node, npm_cli, "versions", environment=environment)
-    assert result.returncode == 0, diagnostics(result)
     assert not marker.exists()
+    skip_exact_npm_cold_cache_miss(result, "online-fetch")
+    assert result.returncode == 0, diagnostics(result)
 
 
 def test_wrapper_removes_node_options_code_injection(
@@ -352,8 +867,9 @@ def test_wrapper_removes_node_options_code_injection(
     environment["NODE_OPTIONS"] = f"--require={injection}"
     environment["NODE_PATH"] = str(tmp_path / "untrusted-modules")
     result = run_wrapper(node, npm_cli, "versions", environment=environment)
-    assert result.returncode == 0, diagnostics(result)
     assert not marker.exists()
+    skip_exact_npm_cold_cache_miss(result, "online-fetch")
+    assert result.returncode == 0, diagnostics(result)
 
 
 @pytest.mark.parametrize(
@@ -1240,8 +1756,9 @@ def test_offline_sync_recreates_the_exact_installed_inventory(
         environment=clean_environment(tmp_path / "cache"),
         timeout=240,
     )
-    assert result.returncode == 0, diagnostics(result)
     assert not list(REPOSITORY_ROOT.glob(".node-offline-check.*"))
+    skip_exact_npm_cold_cache_miss(result, "offline-replay")
+    assert result.returncode == 0, diagnostics(result)
 
 
 def replace_directory_with_external_symlink(
