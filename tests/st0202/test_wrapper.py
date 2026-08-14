@@ -27,6 +27,16 @@ EXPECTED_IMAGE = (
 EXPECTED_CONFIG_DIGEST = (
     "sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd"
 )
+EXPECTED_EPHEMERAL_OVERRIDE = b"""services:
+  object-storage:
+    ports: !override
+      - target: 8333
+        host_ip: 127.0.0.1
+        protocol: tcp
+"""
+EXPECTED_EPHEMERAL_OVERRIDE_DIGEST = (
+    "8d7d2e57f174992dd703773f0c9031d58eddda8ab99d5e15ec67c7d247540022"
+)
 
 
 def _fake_docker(tmp_path: Path, mode: str = "ok") -> tuple[Path, Path]:
@@ -34,23 +44,58 @@ def _fake_docker(tmp_path: Path, mode: str = "ok") -> tuple[Path, Path]:
     executable = tmp_path / f"docker-{mode}"
     log = tmp_path / f"docker-{mode}.jsonl"
     program = f"""#!/usr/bin/python3
+import hashlib
 import json
 import os
 from pathlib import Path
+import signal
 import sys
 
 mode = {mode!r}
 log = Path({str(log)!r})
+sandbox = Path({str(tmp_path)!r})
 args = sys.argv[1:]
 config_path = os.environ.get("RAOS_OBJECT_STORAGE_S3_CONFIG_FILE", "")
 requested_port = os.environ.get("RAOS_OBJECT_STORAGE_PORT", "")
-published_port = (
-    "49153" if requested_port == "49152-65535" else (requested_port or "49153")
-)
+published_port = requested_port or "49153"
+if mode == "low_assigned_port":
+    published_port = "1023"
+elif mode == "below_disposable_range":
+    published_port = "49151"
+elif mode == "high_assigned_port":
+    published_port = "65536"
+elif mode == "overflow_assigned_port":
+    published_port = "18446744073709559949"
+elif mode == "non_decimal_port":
+    published_port = "not-a-port"
 metadata = None
 if config_path and Path(config_path).is_file():
     item = Path(config_path).stat()
     metadata = {{"mode": oct(item.st_mode & 0o777), "size": item.st_size}}
+override_candidates = sorted(
+    sandbox.glob(
+        "raos-st0202-test.*/object-storage-disposable-port.override.*.yml"
+    )
+)
+override_metadata = None
+override_path = ""
+if len(override_candidates) == 1:
+    override = override_candidates[0]
+    item = override.lstat()
+    content = override.read_bytes() if override.is_file() else b""
+    override_path = str(override)
+    override_metadata = {{
+        "digest": hashlib.sha256(content).hexdigest(),
+        "is_symlink": override.is_symlink(),
+        "mode": oct(item.st_mode & 0o777),
+        "owner": item.st_uid,
+        "size": len(content),
+    }}
+compose_files = [
+    args[index + 1]
+    for index, item in enumerate(args[:-1])
+    if item == "--file"
+]
 with log.open("a", encoding="utf-8") as stream:
     stream.write(json.dumps({{
         "argv": args,
@@ -59,6 +104,10 @@ with log.open("a", encoding="utf-8") as stream:
         "port": os.environ.get("RAOS_OBJECT_STORAGE_PORT"),
         "docker_config": os.environ.get("DOCKER_CONFIG"),
         "home": os.environ.get("HOME"),
+        "override_candidates": [str(item) for item in override_candidates],
+        "override_metadata": override_metadata,
+        "override_path": override_path,
+        "compose_files": compose_files,
         "raw_credentials_present": any(
             key in os.environ
             for key in ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY")
@@ -70,6 +119,36 @@ with log.open("a", encoding="utf-8") as stream:
     }}, sort_keys=True) + "\\n")
 
 if args == ["--version"]:
+    if override_path and mode in {{
+        "override_parent_mode",
+        "override_parent_symlink",
+        "override_mode",
+        "override_symlink",
+        "override_partial",
+        "override_digest",
+    }}:
+        override = Path(override_path)
+        if mode == "override_parent_mode":
+            override.parent.chmod(0o777)
+        elif mode == "override_parent_symlink":
+            parent = override.parent
+            target = parent.with_name(parent.name + ".real")
+            parent.rename(target)
+            parent.symlink_to(target, target_is_directory=True)
+        elif mode == "override_mode":
+            override.chmod(0o640)
+        elif mode == "override_symlink":
+            target = sandbox / "replacement-override.yml"
+            target.write_bytes(override.read_bytes())
+            override.unlink()
+            override.symlink_to(target)
+        elif mode == "override_partial":
+            override.write_bytes(b"services:\\n")
+        else:
+            changed = override.read_bytes().replace(
+                b"127.0.0.1", b"127.0.0.2", 1
+            )
+            override.write_bytes(changed)
     print("not docker" if mode == "not_docker" else "Docker version 28.3.0, build fake")
     raise SystemExit(0)
 if len(args) < 3 or args[:2] != ["--host", "unix:///var/run/docker.sock"]:
@@ -77,6 +156,10 @@ if len(args) < 3 or args[:2] != ["--host", "unix:///var/run/docker.sock"]:
     raise SystemExit(91)
 payload = args[2:]
 if payload == ["compose", "version", "--short"]:
+    if override_path and mode == "override_digest_after_compose_version":
+        override = Path(override_path)
+        changed = override.read_bytes().replace(b"127.0.0.1", b"127.0.0.2", 1)
+        override.write_bytes(changed)
     print("2.20.0" if mode == "old_compose" else "2.40.0")
     raise SystemExit(0)
 if payload and payload[0] == "inspect":
@@ -120,6 +203,14 @@ if operation == "up" and mode == "fail_up":
 if operation == "down" and mode == "fail_down":
     print("injected down failure", file=sys.stderr)
     raise SystemExit(43)
+if operation == "up" and mode in {{"signal_hup", "signal_int", "signal_term"}}:
+    selected = {{
+        "signal_hup": signal.SIGHUP,
+        "signal_int": signal.SIGINT,
+        "signal_term": signal.SIGTERM,
+    }}[mode]
+    os.kill(os.getppid(), selected)
+    raise SystemExit(0)
 if operation == "config" and "--services" in payload:
     print("postgres\\nobject-storage\\nrogue" if mode == "extra_service" else "postgres\\nobject-storage")
 elif operation == "ps" and "--services" in payload:
@@ -127,14 +218,6 @@ elif operation == "ps" and "--services" in payload:
 elif operation == "ps" and "--quiet" in payload:
     print("a" * 64)
 elif operation == "port":
-    if mode == "low_assigned_port":
-        published_port = "1023"
-    elif mode == "below_disposable_range":
-        published_port = "49151"
-    elif mode == "high_assigned_port":
-        published_port = "65536"
-    elif mode == "overflow_assigned_port":
-        published_port = "18446744073709559949"
     print(
         "0.0.0.0:" + published_port
         if mode == "public_port"
@@ -196,10 +279,16 @@ def _rows(log: Path) -> list[dict[str, Any]]:
 
 
 def _compose_operation(row: dict[str, Any]) -> str | None:
-    for item in row["argv"]:
+    if row["argv"][2:3] != ["compose"]:
+        return None
+    for item in row["argv"][3:]:
         if item in {"config", "up", "ps", "exec", "port", "down"}:
             return str(item)
     return None
+
+
+def _test_directories(tmp_path: Path) -> list[Path]:
+    return sorted(tmp_path.glob("raos-st0202-test.*"))
 
 
 def _isolated_repository(tmp_path: Path) -> tuple[Path, Path]:
@@ -283,7 +372,8 @@ def test_config_uses_fixed_local_transport_and_passes_only_secret_path(
     assert "raos-st0202-local" in config["argv"]
     assert config["config_metadata"]["mode"] == "0o600"
     assert config["port"] == "58333"
-    assert all(row["port"] != "49152-65535" for row in rows)
+    assert config["compose_files"] == [str(COMPOSE)]
+    assert all(row["override_candidates"] == [] for row in rows)
 
 
 def test_wrapper_rejects_compose_or_fixture_digest_drift_before_docker(
@@ -308,7 +398,7 @@ def test_wrapper_rejects_compose_or_fixture_digest_drift_before_docker(
     assert not log.exists()
 
 
-def test_disposable_test_targets_only_object_service_and_removes_volume(
+def test_test_command_passes_base_then_ephemeral_files_only(
     tmp_path: Path,
 ) -> None:
     wrapper, fixture_log = _isolated_repository(tmp_path)
@@ -317,6 +407,7 @@ def test_disposable_test_targets_only_object_service_and_removes_volume(
     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
     assert json.loads(result.stdout)["runtime"] == "LOCAL_CANDIDATE_PASS"
     rows = _rows(docker_log)
+    expected_compose = wrapper.parents[1] / "docker-compose.yml"
     up = next(row for row in rows if _compose_operation(row) == "up")
     assert up["argv"][-6:] == [
         "up",
@@ -336,17 +427,37 @@ def test_disposable_test_targets_only_object_service_and_removes_volume(
         "acceptance",
     ]
     assert all(row["raw_credentials_present"] is False for row in rows)
-    assert {row["port"] for row in rows if row["port"] is not None} == {"49152-65535"}
-    compose_port = next(row for row in rows if _compose_operation(row) == "port")
-    assert compose_port["port"] == "49152-65535"
-    container_port = next(row for row in rows if row["argv"][2:3] == ["port"])
-    assert container_port["port"] == "49152-65535"
+    assert all(row["port"] is None for row in rows)
+    project_compose_rows = [row for row in rows if _compose_operation(row) is not None]
+    assert project_compose_rows
+    override_paths = {row["compose_files"][1] for row in project_compose_rows}
+    assert len(override_paths) == 1
+    for row in project_compose_rows:
+        assert row["compose_files"][0] == str(expected_compose)
+        assert len(row["compose_files"]) == 2
+    first = rows[0]
+    assert first["argv"] == ["--version"]
+    assert first["override_metadata"] == {
+        "digest": EXPECTED_EPHEMERAL_OVERRIDE_DIGEST,
+        "is_symlink": False,
+        "mode": "0o600",
+        "owner": os.geteuid(),
+        "size": len(EXPECTED_EPHEMERAL_OVERRIDE),
+    }
+    assert _test_directories(tmp_path) == []
 
 
 @pytest.mark.parametrize(
-    "mode", ["low_assigned_port", "high_assigned_port", "overflow_assigned_port"]
+    "mode",
+    [
+        "public_port",
+        "low_assigned_port",
+        "high_assigned_port",
+        "overflow_assigned_port",
+        "non_decimal_port",
+    ],
 )
-def test_disposable_random_port_must_resolve_to_bounded_loopback_port(
+def test_observed_mapping_rejects_public_non_decimal_low_high_and_overflow_ports(
     tmp_path: Path, mode: str
 ) -> None:
     wrapper, _fixture_log = _isolated_repository(tmp_path)
@@ -355,25 +466,165 @@ def test_disposable_random_port_must_resolve_to_bounded_loopback_port(
     assert result.returncode != 0
     assert "not published on one bounded loopback port" in result.stderr
     rows = _rows(log)
-    assert {row["port"] for row in rows if row["port"] is not None} == {"49152-65535"}
+    assert all(row["port"] is None for row in rows)
     down = [row for row in rows if _compose_operation(row) == "down"]
     assert len(down) == 1
     assert "--volumes" in down[0]["argv"]
+    assert _test_directories(tmp_path) == []
 
 
-def test_disposable_random_port_must_remain_in_reviewed_range(
+def test_runtime_assigned_port_has_no_preselected_high_range(
     tmp_path: Path,
 ) -> None:
     wrapper, _fixture_log = _isolated_repository(tmp_path)
     docker, log = _fake_docker(tmp_path, "below_disposable_range")
     result = _run(wrapper, docker, "test", tmp_path)
-    assert result.returncode != 0
-    assert "escaped the reviewed random host-port range" in result.stderr
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
     rows = _rows(log)
-    assert {row["port"] for row in rows if row["port"] is not None} == {"49152-65535"}
+    assert all(row["port"] is None for row in rows)
     down = [row for row in rows if _compose_operation(row) == "down"]
     assert len(down) == 1
     assert "--volumes" in down[0]["argv"]
+    assert _test_directories(tmp_path) == []
+
+
+def test_ephemeral_template_is_exact_119_bytes_and_digest_bound(
+    tmp_path: Path,
+) -> None:
+    assert len(EXPECTED_EPHEMERAL_OVERRIDE) == 119
+    assert hashlib.sha256(EXPECTED_EPHEMERAL_OVERRIDE).hexdigest() == (
+        EXPECTED_EPHEMERAL_OVERRIDE_DIGEST
+    )
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path)
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+    assert _rows(log)[0]["override_metadata"]["digest"] == (
+        EXPECTED_EPHEMERAL_OVERRIDE_DIGEST
+    )
+
+
+def test_test_command_creates_override_before_first_docker_call(
+    tmp_path: Path,
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path)
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+    first = _rows(log)[0]
+    assert first["argv"] == ["--version"]
+    assert first["override_metadata"]["digest"] == EXPECTED_EPHEMERAL_OVERRIDE_DIGEST
+
+
+def _assert_ephemeral_override_rejected(
+    tmp_path: Path, mode: str, message: str, *, expected_docker_rows: int = 1
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path, mode)
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode == 69
+    assert message in result.stderr
+    assert "PASS" not in result.stdout
+    assert len(_rows(log)) == expected_docker_rows
+    assert _test_directories(tmp_path) == []
+
+
+def test_ephemeral_override_rejects_non_0600_mode(tmp_path: Path) -> None:
+    _assert_ephemeral_override_rejected(
+        tmp_path, "override_mode", "mode must be exactly 0600"
+    )
+
+
+def test_ephemeral_override_rejects_parent_mode_drift(tmp_path: Path) -> None:
+    _assert_ephemeral_override_rejected(
+        tmp_path,
+        "override_parent_mode",
+        "test directory mode must be exactly 0700",
+    )
+
+
+def test_ephemeral_override_rejects_parent_symlink_substitution(
+    tmp_path: Path,
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path, "override_parent_symlink")
+    result = _run(wrapper, docker, "test", tmp_path)
+    leftovers = _test_directories(tmp_path)
+    try:
+        assert result.returncode == 69
+        assert "regular non-symlink directory" in result.stderr
+        assert "PASS" not in result.stdout
+        assert len(_rows(log)) == 1
+        assert len(leftovers) == 2
+        assert sum(path.is_symlink() for path in leftovers) == 1
+    finally:
+        for path in leftovers:
+            if path.is_symlink():
+                path.unlink()
+            elif path.exists():
+                shutil.rmtree(path)
+
+
+def test_ephemeral_override_rejects_symlink_substitution(tmp_path: Path) -> None:
+    _assert_ephemeral_override_rejected(
+        tmp_path, "override_symlink", "regular non-symlink file"
+    )
+
+
+def test_ephemeral_override_rejects_partial_or_truncated_content(
+    tmp_path: Path,
+) -> None:
+    _assert_ephemeral_override_rejected(tmp_path, "override_partial", "size differs")
+
+
+def test_ephemeral_override_rejects_same_size_digest_drift(tmp_path: Path) -> None:
+    _assert_ephemeral_override_rejected(tmp_path, "override_digest", "digest differs")
+
+
+def test_ephemeral_override_revalidates_before_every_compose_use(
+    tmp_path: Path,
+) -> None:
+    _assert_ephemeral_override_rejected(
+        tmp_path,
+        "override_digest_after_compose_version",
+        "digest differs",
+        expected_docker_rows=2,
+    )
+
+
+def test_ephemeral_override_rejects_owner_mismatch_by_exact_source_guard() -> None:
+    source = WRAPPER.read_text(encoding="utf-8")
+    assert "owner=$(stat --format='%u' -- \"$ephemeral_override_file\")" in source
+    assert '[[ $owner != "$(id -u)" ]]' in source
+
+
+def test_ephemeral_validation_order_precedes_validate_docker_client() -> None:
+    source = WRAPPER.read_text(encoding="utf-8")
+    assert (
+        "/usr/bin/mktemp \\\n"
+        '      "$test_directory/object-storage-disposable-port.override.XXXXXXXX.yml"'
+    ) in source
+    assert '/usr/bin/mktemp -d "${TMPDIR:-/tmp}/raos-st0202-test.XXXXXXXX"' in source
+    assert source.index("validate_ephemeral_override\nfi\nvalidate_docker_client") < (
+        source.index("validate_docker_client\n\nif [[ $command == test ]]")
+    )
+
+
+@pytest.mark.parametrize("command", ["config", "up", "check", "down"])
+def test_persistent_commands_never_create_or_pass_ephemeral_override(
+    tmp_path: Path, command: str
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path)
+    result = _run(wrapper, docker, command, tmp_path)
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+    rows = _rows(log)
+    expected_compose = wrapper.parents[1] / "docker-compose.yml"
+    assert all(row["override_candidates"] == [] for row in rows)
+    for row in rows:
+        if _compose_operation(row) is not None:
+            assert row["compose_files"] == [str(expected_compose)]
+    assert _test_directories(tmp_path) == []
 
 
 @pytest.mark.parametrize(
@@ -466,3 +717,24 @@ def test_failed_disposable_start_still_attempts_volume_cleanup(tmp_path: Path) -
     down = [row for row in rows if _compose_operation(row) == "down"]
     assert len(down) == 1
     assert "--volumes" in down[0]["argv"]
+    assert _test_directories(tmp_path) == []
+
+
+@pytest.mark.parametrize(
+    ("mode", "expected_status"),
+    [
+        ("ok", 0),
+        ("fail_up", 42),
+        ("signal_hup", 129),
+        ("signal_int", 130),
+        ("signal_term", 143),
+    ],
+)
+def test_ephemeral_override_cleanup_runs_after_success_failure_and_signal(
+    tmp_path: Path, mode: str, expected_status: int
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, _log = _fake_docker(tmp_path, mode)
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode == expected_status
+    assert _test_directories(tmp_path) == []

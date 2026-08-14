@@ -36,7 +36,7 @@ provenance:
     sha256: 501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2
   predecessor_manifest:
     uri: repo://changes/st-0203/manifest.yaml
-    sha256: f55bfb12a42ee7ca856373e453e699f22437faac8bc526c94bdc95e73df200f2
+    sha256: 7a53c91373e8d96b5af76f3ac6845a6addf21b86380b1c4da19c9efe02ecd4aa
     story_id: ST-0203
 evidence_chain:
   stories:
@@ -60,7 +60,7 @@ source_artifacts:
   sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
 - uri: repo://changes/st-0204/contracts/runtime-config.v1.yaml
   bytes: 5113
-  sha256: e0a3b59171d9d448d76e493d3d722618cc292cb2a33ae1441e2459cdcf3f854e
+  sha256: b7726aa9b8f261a4be9394ba64ee5d41350352cb04d1622322c5a7fa2ef37235
 - uri: repo://changes/st-0204/README.md
   bytes: 3248
   sha256: 4940a6403abd59850ed870e48678ba258b59d393af31613780caeb7b5a1d2213
@@ -72,7 +72,7 @@ source_artifacts:
   sha256: 6426260acb608da19832965e8e2ddd7726745f3a8ef860fdf44bce22bba08d80
 - uri: repo://scripts/build_st0204_config_loader.py
   bytes: 21540
-  sha256: a7d128e0b041bfe2fbad92f6126b8bd39b4d1e41e3b178e081e6aa5b0f449a26
+  sha256: 7d89560802fda9bf65282585777b634b46ce756ba6b8f0ec70635d00f03ea09f
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -111,7 +111,7 @@ source_artifacts:
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 - uri: repo://changes/st-0203/manifest.yaml
   bytes: 5785
-  sha256: f55bfb12a42ee7ca856373e453e699f22437faac8bc526c94bdc95e73df200f2
+  sha256: 7a53c91373e8d96b5af76f3ac6845a6addf21b86380b1c4da19c9efe02ecd4aa
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0204/generated/runtime-config.v1.schema.json
