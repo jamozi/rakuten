@@ -20,6 +20,17 @@ from conftest import (
 
 
 LOCK_INPUTS = (".python-version", "pyproject.toml", "uv.toml", "uv.lock")
+UV_OFFLINE_RESOLUTION_CACHE_MISS = (
+    "was not found in the cache and your project depends on",
+    "packages were unavailable because the network was disabled. when the "
+    "network is disabled, registry packages may only be read from the cache.",
+)
+UV_OFFLINE_ARTIFACT_CACHE_MISS = (
+    "failed to download `",
+    "network connectivity is disabled, but the requested data wasn't found in "
+    "the cache for:",
+    "https://files.pythonhosted.org/packages/",
+)
 
 
 def run_lock_check(
@@ -57,8 +68,8 @@ def drift_project(project: Path) -> None:
     pyproject.write_text(drifted, encoding="utf-8")
 
 
-def hydrated_uv_cache(binary: Path) -> Path | None:
-    """Return uv's local cache when it can validate the current lock offline."""
+def local_uv_cache(binary: Path) -> Path | None:
+    """Return uv's existing local cache without claiming package hydration."""
 
     process = subprocess.run(
         [str(binary), "cache", "dir"],
@@ -69,13 +80,35 @@ def hydrated_uv_cache(binary: Path) -> Path | None:
         encoding="utf-8",
         timeout=10,
     )
-    if process.returncode != 0:
-        return None
-    cache = Path(process.stdout.strip())
-    if not cache.is_dir():
-        return None
-    baseline = run_lock_check(binary, REPOSITORY_ROOT, cache)
-    return cache if baseline.returncode == 0 else None
+    assert process.returncode == 0, process.stderr
+    cache_output = process.stdout.strip()
+    assert cache_output, "uv cache dir returned an empty path"
+    cache = Path(cache_output)
+    assert cache.is_absolute(), f"uv cache dir returned a relative path: {cache}"
+    return cache if cache.is_dir() else None
+
+
+def is_uv_offline_cache_miss(
+    process: subprocess.CompletedProcess[str],
+) -> bool:
+    """Recognize only uv 0.12.1's closed offline cache-miss diagnostics."""
+
+    if process.returncode == 0:
+        return False
+    diagnostic = " ".join(f"{process.stdout}\n{process.stderr}".lower().split())
+    return all(
+        marker in diagnostic for marker in UV_OFFLINE_RESOLUTION_CACHE_MISS
+    ) or all(marker in diagnostic for marker in UV_OFFLINE_ARTIFACT_CACHE_MISS)
+
+
+def skip_if_uv_cache_is_insufficient(
+    process: subprocess.CompletedProcess[str],
+    capability: str,
+) -> None:
+    """Skip only when exact uv output proves the named cache capability absent."""
+
+    if is_uv_offline_cache_miss(process):
+        pytest.skip(f"the local uv cache cannot provide {capability} offline")
 
 
 def installed_inventory(python: Path) -> list[str]:
@@ -118,11 +151,88 @@ def test_exact_uv_accepts_the_committed_lock_offline(
     assert result.returncode == 0, result.stderr
 
 
+def test_empty_cache_drift_failure_is_recognized_as_missing_capability(
+    exact_uv_binary: Path,
+    tmp_path: Path,
+) -> None:
+    copied_project = tmp_path / "cold-cache-drifted-project"
+    copy_lock_inputs(copied_project)
+    drift_project(copied_project)
+    empty_cache = tmp_path / "empty-cache"
+    empty_cache.mkdir()
+
+    result = run_lock_check(exact_uv_binary, copied_project, empty_cache)
+
+    assert result.returncode != 0
+    assert is_uv_offline_cache_miss(result)
+
+
+def test_offline_wheel_cache_miss_diagnostic_is_recognized() -> None:
+    result = subprocess.CompletedProcess(
+        args=["uv", "sync"],
+        returncode=1,
+        stdout="",
+        stderr=(
+            "Failed to download `example==1.0.0`\n"
+            "Network connectivity is disabled, but the requested data wasn't "
+            "found in the cache for:\n"
+            "https://files.pythonhosted.org/packages/example.whl\n"
+        ),
+    )
+
+    assert is_uv_offline_cache_miss(result)
+
+
+@pytest.mark.parametrize(
+    ("returncode", "diagnostic"),
+    [
+        (
+            0,
+            "package was not found in the cache and your project depends on it; "
+            "packages were unavailable because the network was disabled. when "
+            "the network is disabled, registry packages may only be read from "
+            "the cache.",
+        ),
+        (
+            1,
+            "package was not found in the cache and your project depends on it; "
+            "packages were unavailable because the network was disabled. when "
+            "the network is disabled, registry packages may only be read from "
+            "a local cache.",
+        ),
+        (
+            1,
+            "failed to download `example==1.0.0`; network connectivity is "
+            "disabled, but the requested data wasn't found in the cache for: "
+            "https://example.invalid/packages/example.whl",
+        ),
+        (
+            1,
+            "failed to download `example==1.0.0`; network is disabled and the "
+            "cache lookup failed for "
+            "https://files.pythonhosted.org/packages/example.whl",
+        ),
+    ],
+)
+def test_offline_cache_classifier_rejects_near_miss_diagnostics(
+    returncode: int,
+    diagnostic: str,
+) -> None:
+    result = subprocess.CompletedProcess(
+        args=["uv"],
+        returncode=returncode,
+        stdout="",
+        stderr=diagnostic,
+    )
+
+    assert not is_uv_offline_cache_miss(result)
+
+
 def test_exact_uv_rejects_deliberate_project_drift_offline(
     exact_uv_binary: Path,
     tmp_path: Path,
 ) -> None:
-    cache = hydrated_uv_cache(exact_uv_binary)
+    cache = local_uv_cache(exact_uv_binary)
     if cache is None:
         pytest.skip(
             "the local uv cache is not hydrated enough for an offline drift resolution"
@@ -132,6 +242,7 @@ def test_exact_uv_rejects_deliberate_project_drift_offline(
     drift_project(copied_project)
 
     result = run_lock_check(exact_uv_binary, copied_project, cache)
+    skip_if_uv_cache_is_insufficient(result, "dependency resolution for drift checks")
     assert result.returncode != 0
     diagnostic = f"{result.stdout}\n{result.stderr}".lower()
     assert "lock" in diagnostic
@@ -142,7 +253,7 @@ def test_make_removes_frozen_and_working_directory_bypasses(
     exact_uv_binary: Path,
     tmp_path: Path,
 ) -> None:
-    cache = hydrated_uv_cache(exact_uv_binary)
+    cache = local_uv_cache(exact_uv_binary)
     if cache is None:
         pytest.skip(
             "the local uv cache is not hydrated enough for an offline drift resolution"
@@ -179,6 +290,7 @@ def test_make_removes_frozen_and_working_directory_bypasses(
         encoding="utf-8",
         timeout=30,
     )
+    skip_if_uv_cache_is_insufficient(result, "dependency resolution for drift checks")
     assert result.returncode != 0
     diagnostic = f"{result.stdout}\n{result.stderr}".lower()
     assert "lock" in diagnostic
@@ -346,7 +458,7 @@ def test_trusted_wrapper_removes_preparse_make_injection(
     tmp_path: Path,
     injection_variable: str,
 ) -> None:
-    cache = hydrated_uv_cache(exact_uv_binary)
+    cache = local_uv_cache(exact_uv_binary)
     if cache is None:
         pytest.skip(
             "the local uv cache is not hydrated enough for an offline drift resolution"
@@ -378,6 +490,7 @@ def test_trusted_wrapper_removes_preparse_make_injection(
         encoding="utf-8",
         timeout=30,
     )
+    skip_if_uv_cache_is_insufficient(result, "dependency resolution for drift checks")
     assert result.returncode != 0
     diagnostic = f"{result.stdout}\n{result.stderr}".lower()
     assert "lock" in diagnostic
@@ -412,7 +525,7 @@ def test_make_offline_sync_builds_a_fresh_controlled_environment(
     exact_uv_binary: Path,
     tmp_path: Path,
 ) -> None:
-    cache = hydrated_uv_cache(exact_uv_binary)
+    cache = local_uv_cache(exact_uv_binary)
     if cache is None:
         pytest.skip("the local uv cache is not hydrated enough for an offline sync")
 
@@ -429,6 +542,7 @@ def test_make_offline_sync_builds_a_fresh_controlled_environment(
         encoding="utf-8",
         timeout=60,
     )
+    skip_if_uv_cache_is_insufficient(result, "the locked wheel inventory")
     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
     offline_environment = copied_project / ".venv-offline-check"
     assert offline_environment.is_dir()
