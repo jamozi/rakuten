@@ -9,6 +9,7 @@ rule identifier and source location; matched bytes are never rendered.
 from __future__ import annotations
 
 import argparse
+import ast
 from dataclasses import dataclass
 import io
 import json
@@ -18,6 +19,7 @@ import re
 import stat
 import subprocess
 import sys
+import tokenize
 import unicodedata
 import zipfile
 
@@ -33,6 +35,18 @@ MAX_ARCHIVE_DEPTH = 4
 MAX_COMPRESSION_RATIO = 200
 COMPRESSION_RATIO_MINIMUM_BYTES = 1024 * 1024
 GIT_TIMEOUT_SECONDS = 60
+
+MAX_RHS_PHYSICAL_LINE_BYTES = 4096
+MAX_RHS_EXPRESSION_BYTES = 2048
+MAX_RHS_SUBSTANTIVE_TOKENS = 256
+MAX_RHS_AST_NODES = 128
+MAX_RHS_AST_DEPTH = 24
+MAX_RHS_LITERAL_TOKENS = 16
+MAX_RHS_DECODED_BYTES_LITERAL = 1024
+MAX_RHS_DECODED_STR_CODE_POINTS = 1024
+MAX_RHS_DECODED_STR_UTF8_BYTES = 1024
+MAX_RHS_AGGREGATE_LITERAL_BYTES = 2048
+MAX_GENERIC_CANDIDATE_BYTES = 512
 
 EXIT_CLEAN = 0
 EXIT_FINDINGS = 1
@@ -100,6 +114,69 @@ GENERIC_PLACEHOLDER = re.compile(
     rb"))*"
 )
 
+GENERIC_SENTINELS = frozenset({b"none", b"null", b"required", b"undefined"})
+
+NOT_REAL_CREDENTIAL_KINDS_HYPHEN = (
+    rb"(?:access-key|api-key|auth-token|client-secret|"
+    rb"credential|key|password|secret|token)"
+)
+NOT_REAL_CREDENTIAL_KINDS_UNDERSCORE = (
+    rb"(?:access_key|api_key|auth_token|client_secret|"
+    rb"credential|key|password|secret|token)"
+)
+EXPLICIT_NOT_REAL_FIXTURE = re.compile(
+    rb"not-a-real-"
+    + NOT_REAL_CREDENTIAL_KINDS_HYPHEN
+    + rb"(?:-(?:[0-9]+|ST[0-9]+))?(?:-x{4,})?"
+    + rb"|not_real_"
+    + NOT_REAL_CREDENTIAL_KINDS_UNDERSCORE
+    + rb"(?:_(?:[0-9]+|ST[0-9]+))?(?:_x{4,})?"
+)
+KIND_FIRST_NOT_REAL_FIXTURE = re.compile(
+    rb"(?:client-secret|access-token)-not-real-[0-9]+-x{4,}"
+)
+
+ASCII_IDENTIFIER = rb"[A-Za-z_][A-Za-z0-9_]*"
+ANGLE_PLACEHOLDER_IDENTIFIER = (
+    rb"(?i:access_key|access_token|api_key|auth_token|client_secret|"
+    rb"password|passwd|pwd|secret|token)"
+)
+EXTERNAL_REFERENCE = re.compile(
+    rb"(?:"
+    rb"\$" + ASCII_IDENTIFIER + rb"|"
+    rb"\$\{" + ASCII_IDENTIFIER + rb"\}|"
+    rb"%" + ASCII_IDENTIFIER + rb"%|"
+    rb"\{\{" + ASCII_IDENTIFIER + rb"\}\}|"
+    rb"<" + ANGLE_PLACEHOLDER_IDENTIFIER + rb">"
+    rb")"
+)
+
+CREDENTIAL_VOCABULARY = frozenset(
+    {
+        b"access",
+        b"api",
+        b"auth",
+        b"client",
+        b"credential",
+        b"credentials",
+        b"key",
+        b"password",
+        b"secret",
+        b"token",
+    }
+)
+SYMBOLIC_REFERENCE = re.compile(rb"[a-z]+(?:[-_][a-z]+)*")
+LOWER_CASE_PASSPHRASE = re.compile(rb"[a-z]+(?:-[a-z]+){2,}")
+
+ENTROPY_FAMILY_DIGIT_BEARING = "digit_bearing"
+ENTROPY_FAMILY_DIGIT_FREE_OPAQUE = "digit_free_opaque"
+ENTROPY_FAMILY_LOWER_CASE_PASSPHRASE = "lower_case_passphrase"
+ENTROPY_THRESHOLDS = {
+    ENTROPY_FAMILY_DIGIT_BEARING: (7, 2),
+    ENTROPY_FAMILY_DIGIT_FREE_OPAQUE: (15, 4),
+    ENTROPY_FAMILY_LOWER_CASE_PASSPHRASE: (33, 10),
+}
+
 SAFE_BARE_SOURCE_EXPRESSIONS = frozenset(
     {
         b'content.decode("utf-8")',
@@ -156,6 +233,16 @@ ARCHIVE_READ_ERRORS = (
     zipfile.LargeZipFile,
 )
 GIT_EXECUTION_ERRORS = (OSError, subprocess.TimeoutExpired)
+ASCII_LITERAL_ERRORS = (
+    SyntaxError,
+    UnicodeError,
+    ValueError,
+    tokenize.TokenError,
+)
+TOKENIZED_LITERAL_ERRORS = (IndentationError, tokenize.TokenError)
+SOURCE_EXPRESSION_ERRORS = (SyntaxError, UnicodeError, ValueError)
+RHS_TOKEN_ERRORS = (IndentationError, SyntaxError, tokenize.TokenError)
+ENTROPY_LOOKUP_ERRORS = (KeyError, TypeError)
 
 
 @dataclass(frozen=True, order=True)
@@ -202,34 +289,464 @@ def _generic_value(
     raise AssertionError("generic credential expression has no value")
 
 
-def _looks_like_real_generic_credential(value: bytes, *, kind: str) -> bool:
-    candidate = value.strip()
-    if len(candidate) < 12:
-        return False
-    if kind == "bare" and candidate in SAFE_BARE_SOURCE_EXPRESSIONS:
-        return False
-    lowered = candidate.lower()
-    if GENERIC_PLACEHOLDER.fullmatch(lowered) is not None:
-        return False
-    if lowered in {b"none", b"null", b"undefined", b"required"}:
-        return False
-    if lowered.startswith((b"$", b"%", b"<", b"{{", b"http://", b"https://")):
-        return False
-    if any(
-        marker in lowered
-        for marker in (
-            b"getenv(",
-            b"match.group(",
-            b"os.environ",
-            b"process.env",
-            b".removeprefix(",
-            b".replace(",
-            b"secret_name",
-            b"secretref",
+def _greatest_common_divisor(left: int, right: int) -> int:
+    while right:
+        left, right = right, left % right
+    return left
+
+
+def _byte_histogram(candidate: bytes) -> tuple[int, ...]:
+    histogram = [0] * 256
+    for byte in candidate:
+        histogram[byte] += 1
+    return tuple(histogram)
+
+
+def _validated_entropy_threshold(family: str) -> tuple[int, int]:
+    expected_thresholds = (
+        ("digit_bearing", (7, 2)),
+        ("digit_free_opaque", (15, 4)),
+        ("lower_case_passphrase", (33, 10)),
+    )
+    if type(ENTROPY_THRESHOLDS) is not dict or len(ENTROPY_THRESHOLDS) != 3:
+        raise RuntimeError("invalid entropy configuration") from None
+    for expected_family, expected_pair in expected_thresholds:
+        configured_pair = ENTROPY_THRESHOLDS.get(expected_family)
+        if (
+            type(configured_pair) is not tuple
+            or len(configured_pair) != 2
+            or configured_pair != expected_pair
+            or type(configured_pair[0]) is not int
+            or type(configured_pair[1]) is not int
+            or configured_pair[0] <= 0
+            or configured_pair[1] <= 0
+            or _greatest_common_divisor(*configured_pair) != 1
+        ):
+            raise RuntimeError("invalid entropy configuration")
+    try:
+        return ENTROPY_THRESHOLDS[family]
+    except ENTROPY_LOOKUP_ERRORS:
+        raise RuntimeError("invalid entropy configuration") from None
+
+
+def _entropy_integer_operands(
+    candidate: bytes,
+    family: str,
+) -> tuple[int, int] | None:
+    numerator, denominator = _validated_entropy_threshold(family)
+    if type(candidate) is not bytes:
+        raise RuntimeError("invalid entropy candidate")
+
+    length = len(candidate)
+    if length > MAX_GENERIC_CANDIDATE_BYTES:
+        raise RuntimeError("invalid entropy candidate")
+    histogram = _byte_histogram(candidate)
+    if type(histogram) is not tuple or len(histogram) != 256:
+        raise RuntimeError("invalid entropy histogram")
+    positive_bins = 0
+    total = 0
+    for count in histogram:
+        if type(count) is not int or count < 0:
+            raise RuntimeError("invalid entropy histogram")
+        if count:
+            positive_bins += 1
+            total += count
+    if positive_bins > 256 or total != length:
+        raise RuntimeError("invalid entropy histogram")
+    if length == 0:
+        return None
+
+    left = pow(length, denominator * length)
+    right = 1 << (numerator * length)
+    for count in histogram:
+        if count:
+            right *= pow(count, denominator * count)
+    return left, right
+
+
+def _entropy_meets_threshold(candidate: bytes, family: str) -> bool:
+    operands = _entropy_integer_operands(candidate, family)
+    return operands is not None and operands[0] >= operands[1]
+
+
+def _has_digit_bearing_evidence(candidate: bytes) -> bool:
+    has_lower = any(0x61 <= byte <= 0x7A for byte in candidate)
+    has_upper = any(0x41 <= byte <= 0x5A for byte in candidate)
+    has_digit = any(0x30 <= byte <= 0x39 for byte in candidate)
+    has_non_alphanumeric = any(
+        not (0x30 <= byte <= 0x39 or 0x41 <= byte <= 0x5A or 0x61 <= byte <= 0x7A)
+        for byte in candidate
+    )
+    return (
+        has_digit
+        and (has_lower or has_upper)
+        and (
+            has_lower
+            and has_upper
+            or has_non_alphanumeric
+            or len(candidate) >= 20
+            and _entropy_meets_threshold(candidate, ENTROPY_FAMILY_DIGIT_BEARING)
         )
+    )
+
+
+def _has_digit_free_opaque_evidence(candidate: bytes) -> bool:
+    return (
+        not any(0x30 <= byte <= 0x39 for byte in candidate)
+        and len(candidate) >= 24
+        and any(0x61 <= byte <= 0x7A for byte in candidate)
+        and any(0x41 <= byte <= 0x5A for byte in candidate)
+        and all(
+            0x41 <= byte <= 0x5A or 0x61 <= byte <= 0x7A or byte in b"+/_-="
+            for byte in candidate
+        )
+        and _entropy_meets_threshold(candidate, ENTROPY_FAMILY_DIGIT_FREE_OPAQUE)
+    )
+
+
+def _has_lower_case_passphrase_evidence(candidate: bytes) -> bool:
+    return (
+        len(candidate) >= 20
+        and LOWER_CASE_PASSPHRASE.fullmatch(candidate) is not None
+        and not CREDENTIAL_VOCABULARY.intersection(candidate.split(b"-"))
+        and _entropy_meets_threshold(
+            candidate,
+            ENTROPY_FAMILY_LOWER_CASE_PASSPHRASE,
+        )
+    )
+
+
+def _has_high_confidence_generic_evidence(candidate: bytes) -> bool:
+    if len(set(candidate)) < 6:
+        return False
+    return (
+        _has_digit_bearing_evidence(candidate)
+        or _has_digit_free_opaque_evidence(candidate)
+        or _has_lower_case_passphrase_evidence(candidate)
+    )
+
+
+def _decoded_single_ascii_literal(candidate: bytes) -> bytes | None:
+    try:
+        source = candidate.decode("ascii")
+        tokens = [
+            token
+            for token in tokenize.generate_tokens(io.StringIO(source).readline)
+            if token.type not in {tokenize.NL, tokenize.NEWLINE, tokenize.ENDMARKER}
+        ]
+        if (
+            len(tokens) != 1
+            or tokens[0].type != tokenize.STRING
+            or tokens[0].start != (1, 0)
+            or tokens[0].end != (1, len(source))
+        ):
+            return None
+        decoded = ast.literal_eval(source)
+        if isinstance(decoded, str):
+            return decoded.encode("ascii")
+        if isinstance(decoded, bytes):
+            decoded.decode("ascii")
+            return decoded
+    except ASCII_LITERAL_ERRORS:
+        return None
+    return None
+
+
+def _is_explicit_not_real_fixture(candidate: bytes) -> bool:
+    if (
+        EXPLICIT_NOT_REAL_FIXTURE.fullmatch(candidate) is not None
+        or KIND_FIRST_NOT_REAL_FIXTURE.fullmatch(candidate) is not None
+    ):
+        return True
+    decoded = _decoded_single_ascii_literal(candidate)
+    return decoded is not None and (
+        EXPLICIT_NOT_REAL_FIXTURE.fullmatch(decoded) is not None
+        or KIND_FIRST_NOT_REAL_FIXTURE.fullmatch(decoded) is not None
+    )
+
+
+def _raw_string_constant_payload(source: str, node: ast.Constant) -> bytes | None:
+    segment = ast.get_source_segment(source, node)
+    if segment is None:
+        return None
+    try:
+        tokens = [
+            token
+            for token in tokenize.generate_tokens(io.StringIO(segment).readline)
+            if token.type not in {tokenize.NL, tokenize.NEWLINE, tokenize.ENDMARKER}
+        ]
+    except TOKENIZED_LITERAL_ERRORS:
+        return None
+    if len(tokens) != 1 or tokens[0].type != tokenize.STRING:
+        return None
+    literal = tokens[0].string
+    quote_index = min(
+        (index for index in (literal.find("'"), literal.find('"')) if index >= 0),
+        default=-1,
+    )
+    if quote_index < 0:
+        return None
+    quote = literal[quote_index]
+    delimiter = (
+        quote * 3 if literal[quote_index : quote_index + 3] == quote * 3 else quote
+    )
+    if not literal.endswith(delimiter):
+        return None
+    payload = literal[quote_index + len(delimiter) : -len(delimiter)]
+    return payload.encode("utf-8")
+
+
+def _constant_has_allowed_context(
+    node: ast.Constant,
+    parents: dict[int, ast.AST],
+) -> bool:
+    parent = parents.get(id(node))
+    if isinstance(parent, ast.Call):
+        return node in parent.args
+    if isinstance(parent, ast.keyword):
+        grandparent = parents.get(id(parent))
+        return (
+            parent.arg is not None
+            and parent.value is node
+            and isinstance(grandparent, ast.Call)
+        )
+    if isinstance(parent, ast.Subscript):
+        return parent.slice is node
+    if isinstance(parent, ast.Slice):
+        grandparent = parents.get(id(parent))
+        return node in {parent.lower, parent.upper, parent.step} and isinstance(
+            grandparent, ast.Subscript
+        )
+    return False
+
+
+def _closed_source_expression_is_safe(
+    source: str,
+    expression: ast.Expression,
+    *,
+    rhs_literal_tokens: int | None = None,
+) -> bool:
+    if not isinstance(
+        expression.body, (ast.Name, ast.Attribute, ast.Call, ast.Subscript)
     ):
         return False
-    return len(set(candidate)) >= 6
+    allowed_nodes = (
+        ast.Expression,
+        ast.Name,
+        ast.Load,
+        ast.Attribute,
+        ast.Call,
+        ast.Subscript,
+        ast.Constant,
+        ast.keyword,
+        ast.Slice,
+    )
+    enforce_rhs_limits = rhs_literal_tokens is not None
+    if enforce_rhs_limits and rhs_literal_tokens > MAX_RHS_LITERAL_TOKENS:
+        return False
+
+    nodes: list[ast.AST] = []
+    parents: dict[int, ast.AST] = {}
+    stack: list[tuple[ast.AST, ast.AST | None, int]] = [(expression, None, 0)]
+    while stack:
+        node, parent, depth = stack.pop()
+        nodes.append(node)
+        if parent is not None:
+            parents[id(node)] = parent
+        if enforce_rhs_limits and (
+            len(nodes) > MAX_RHS_AST_NODES or depth > MAX_RHS_AST_DEPTH
+        ):
+            return False
+        children = tuple(ast.iter_child_nodes(node))
+        stack.extend((child, node, depth + 1) for child in reversed(children))
+
+    if any(not isinstance(node, allowed_nodes) for node in nodes):
+        return False
+    aggregate_literal_bytes = 0
+    for node in nodes:
+        if isinstance(node, ast.keyword) and node.arg is None:
+            return False
+        if not isinstance(node, ast.Constant):
+            continue
+        if not _constant_has_allowed_context(node, parents):
+            return False
+        if isinstance(node.value, (str, bytes)):
+            if enforce_rhs_limits:
+                if isinstance(node.value, bytes):
+                    decoded_size = len(node.value)
+                    if decoded_size > MAX_RHS_DECODED_BYTES_LITERAL:
+                        return False
+                else:
+                    if len(node.value) > MAX_RHS_DECODED_STR_CODE_POINTS:
+                        return False
+                    try:
+                        decoded_size = len(node.value.encode("utf-8"))
+                    except UnicodeError:
+                        return False
+                    if decoded_size > MAX_RHS_DECODED_STR_UTF8_BYTES:
+                        return False
+                aggregate_literal_bytes += decoded_size
+                if aggregate_literal_bytes > MAX_RHS_AGGREGATE_LITERAL_BYTES:
+                    return False
+            payload = _raw_string_constant_payload(source, node)
+            if (
+                payload is None
+                or len(payload) > MAX_GENERIC_CANDIDATE_BYTES
+                or _has_high_confidence_generic_evidence(payload)
+            ):
+                return False
+    return True
+
+
+def _is_safe_bare_source_expression(candidate: bytes) -> bool:
+    if candidate in SAFE_BARE_SOURCE_EXPRESSIONS:
+        return True
+    try:
+        source = candidate.decode("utf-8")
+        expression = ast.parse(source, mode="eval")
+    except SOURCE_EXPRESSION_ERRORS:
+        return False
+    return _closed_source_expression_is_safe(source, expression)
+
+
+def _rhs_literal_token_count(source: str) -> int | None:
+    try:
+        tokens = tuple(tokenize.generate_tokens(io.StringIO(source).readline))
+    except RHS_TOKEN_ERRORS:
+        return None
+    ignored_types = {
+        tokenize.ENCODING,
+        tokenize.ENDMARKER,
+        tokenize.INDENT,
+        tokenize.DEDENT,
+        tokenize.NEWLINE,
+        tokenize.NL,
+    }
+    substantive_tokens = 0
+    literal_tokens = 0
+    for token in tokens:
+        if token.type == tokenize.COMMENT:
+            return None
+        if token.type == tokenize.ERRORTOKEN:
+            return None
+        if token.type == tokenize.OP and token.string == ";":
+            return None
+        if token.type == tokenize.STRING:
+            literal_tokens += 1
+        if token.type not in ignored_types:
+            substantive_tokens += 1
+    if (
+        substantive_tokens == 0
+        or substantive_tokens > MAX_RHS_SUBSTANTIVE_TOKENS
+        or literal_tokens > MAX_RHS_LITERAL_TOKENS
+    ):
+        return None
+    return literal_tokens
+
+
+def _rhs_reconstruction_is_safe(
+    data: bytes,
+    value_span: tuple[int, int],
+    candidate: bytes,
+) -> bool:
+    start, end = value_span
+    if (
+        type(data) is not bytes
+        or type(candidate) is not bytes
+        or type(start) is not int
+        or type(end) is not int
+        or start < 0
+        or end < start
+        or end > len(data)
+        or data[start:end] != candidate
+    ):
+        raise RuntimeError("invalid RHS reconstruction input")
+    if (
+        not candidate
+        or not candidate.isascii()
+        or not _has_digit_bearing_evidence(candidate)
+    ):
+        return False
+
+    candidate_source = candidate.decode("ascii")
+    try:
+        ast.parse(
+            candidate_source,
+            mode="eval",
+            feature_version=(3, 10),
+        )
+    except SyntaxError:
+        pass
+    except Exception:
+        return False
+    else:
+        return False
+
+    line_start = data.rfind(b"\n", 0, start) + 1
+    line_feed = data.find(b"\n", start)
+    content_end = len(data) if line_feed < 0 else line_feed
+    if line_feed >= 0 and content_end > line_start and data[content_end - 1] == 0x0D:
+        content_end -= 1
+    if start < line_start or end > content_end:
+        return False
+    physical_line = data[line_start:content_end]
+    if len(physical_line) > MAX_RHS_PHYSICAL_LINE_BYTES:
+        return False
+    if any(byte != 0x09 and not 0x20 <= byte <= 0x7E for byte in physical_line):
+        return False
+    if end >= content_end:
+        return False
+
+    rhs = data[start:content_end]
+    if (
+        len(rhs) > MAX_RHS_EXPRESSION_BYTES
+        or not rhs.startswith(candidate)
+        or rhs[: len(candidate)] != candidate
+        or rhs[0] in b" \t"
+        or rhs[-1] in b" \t"
+    ):
+        return False
+    source = rhs.decode("ascii")
+    literal_tokens = _rhs_literal_token_count(source)
+    if literal_tokens is None:
+        return False
+    try:
+        expression = ast.parse(
+            source,
+            mode="eval",
+            feature_version=(3, 10),
+        )
+    except SyntaxError:
+        return False
+    return _closed_source_expression_is_safe(
+        source,
+        expression,
+        rhs_literal_tokens=literal_tokens,
+    )
+
+
+def _is_symbolic_reference(candidate: bytes) -> bool:
+    if SYMBOLIC_REFERENCE.fullmatch(candidate) is None:
+        return False
+    words = re.split(rb"[-_]", candidate)
+    return bool(CREDENTIAL_VOCABULARY.intersection(words))
+
+
+def _looks_like_real_generic_credential(value: bytes, *, kind: str) -> bool:
+    candidate = value
+    if GENERIC_PLACEHOLDER.fullmatch(candidate.lower()) is not None:
+        return False
+    if candidate.lower() in GENERIC_SENTINELS:
+        return False
+    if _is_explicit_not_real_fixture(candidate):
+        return False
+    if EXTERNAL_REFERENCE.fullmatch(candidate) is not None:
+        return False
+    if kind == "bare" and _is_safe_bare_source_expression(candidate):
+        return False
+    if kind == "bare" and _is_symbolic_reference(candidate):
+        return False
+    return _has_high_confidence_generic_evidence(candidate)
 
 
 def scan_bytes(data: bytes, source: str) -> set[Finding]:
@@ -253,6 +770,12 @@ def scan_bytes(data: bytes, source: str) -> set[Finding]:
         if any(_overlaps(value_span, span) for span in specific_spans):
             continue
         if not _looks_like_real_generic_credential(value, kind=value_kind):
+            continue
+        if value_kind == "bare" and _rhs_reconstruction_is_safe(
+            data,
+            value_span,
+            value,
+        ):
             continue
         findings.add(
             Finding(

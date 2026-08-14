@@ -505,10 +505,54 @@ encrypted entries, unsafe links, and excessive expansion. Operational errors
 take precedence over findings and return exit 2; findings return exit 1; a
 clean complete scan returns exit 0.
 
-These commands are local implementation evidence only. The current source
-export has no valid Git history and no hosted workflow run, so TST-001 and
-TST-002 remain `NOT_EXECUTED`, and effective ST-0106 status remains
-`NOT_STARTED`. Branch rules and CODEOWNERS belong to ST-0107.
+Generic assignments use a content-only high-confidence policy. The existing
+AWS, GitHub, OpenAI, and private-key rules retain precedence. The generic rule
+then recognizes only complete approved placeholders/sentinels, explicit
+not-real fixtures, external references, bare closed-AST source expressions,
+and bare lower-case symbolic references as safe shapes. Everything else must
+meet the common six-distinct-byte gate plus the exact digit-bearing,
+digit-free opaque, or lower-case passphrase evidence family. A safe-looking
+word used only as a prefix or substring never suppresses a strong credential.
+
+The immutable V1 and V2 hosted-Secrets handoffs remain audit history. V3
+retains their complete safe-shape policy, including the case-sensitive,
+full-value fixture grammar below:
+
+```text
+(?:client-secret|access-token)-not-real-[0-9]+-x{4,}
+```
+
+The decimal identifier and lower-case `x{4,}` padding are mandatory. One
+complete ASCII/Python `str` or `bytes` literal may decode only for that exact
+fixture test.
+
+V3 also resolves an unchanged matcher boundary without declaring a truncated
+capture safe. Only an otherwise-live digit-bearing bare value that is ASCII
+and syntactically incomplete may reconstruct the raw bytes from its original
+start through the end of the same physical line. The result must be one
+bounded printable-ASCII Python 3.10 eval expression with exact token coverage,
+and it must pass the unchanged closed-AST and suspicious-literal validator.
+Comments, semicolons, trailing whitespace, continuations, multiline material,
+assignments, residual bytes, unmatched delimiters, unsupported AST, and every
+limit defect retain the original generic finding. Provider-specific and
+independent findings are never suppressed: overlap inside the original value
+span keeps existing provider-only precedence, while provider material found
+only in a refused omitted RHS retains both that specific finding and the
+original generic finding.
+
+The three entropy limbs use a fixed 256-slot histogram and exact integer
+rational comparisons at `7/2`, `15/4`, and `33/10`; floating point,
+logarithms, `Decimal`, tolerances, and fallback classification are absent.
+Equality remains included, and invalid internal configuration or resource
+failure reaches the sanitized operational-error boundary. There is no path,
+line, filename, archive-member, blob, assignment-key, callable, operation, or
+exact-value allowlist. Worktree files, supported nested archives, and all
+fetched Git blobs share the same decision, redaction, and exit contract.
+
+These commands and the disposable full-history clone are local implementation
+evidence only. No reviewed hosted workflow run exists, so TST-001 and TST-002
+remain `NOT_EXECUTED`, and effective ST-0106 status remains `NOT_STARTED`.
+Branch rules and CODEOWNERS belong to ST-0107.
 
 The `Database` job has a narrower, explicitly different network boundary. It
 does not hydrate repository dependencies or execute application code; it pulls
