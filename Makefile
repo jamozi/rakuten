@@ -221,7 +221,7 @@ pro-owner-private-test:
 	test -f /home/minami/.codex/skills/raos-ask-pro/agents/openai.yaml
 	test ! -L /home/minami/.codex/skills/raos-ask-pro/agents/openai.yaml
 	test "$$(sha256sum /home/minami/.codex/skills/raos-ask-pro/agents/openai.yaml | cut -d ' ' -f 1)" = 10356c522c40d9dbc63d0f4b16940f49eac7d7040f3b81ea8558c674af398b8b
-	test "$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_orchestrator.py" | cut -d ' ' -f 1)" = bd0e59ba353bd7f31bf4559a28dab5edbca0c1055551b7357cec61ff7dd5efda
+	test "$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_orchestrator.py" | cut -d ' ' -f 1)" = b77308a94b3254f467391e37ba21741481acc6d4737905e4119b67b4407ccafd
 	test "$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_mcp.sh" | cut -d ' ' -f 1)" = 06fbf7646f830182a5a424172bb76056bdda433a1a94d5f0784f19cb9681d77f
 	test "$$(sha256sum "$(RAOS_REPOSITORY_ROOT)/scripts/chatgpt_pro_python.sh" | cut -d ' ' -f 1)" = acaefe2d566d84e504803b7df4d745d2eab5dd64fc8d548d4934dca1929cae07
 	cd "$(RAOS_REPOSITORY_ROOT)" && $(UV_READONLY_RUN) python -c \

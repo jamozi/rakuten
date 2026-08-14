@@ -127,6 +127,19 @@ ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES = frozenset(
     }
 )
 ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_PHASES = frozenset({"pro_menu", "advanced_summary"})
+TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES = frozenset(
+    {
+        "MCP_TYPE_ELEMENT_NOT_EDITABLE",
+        "MCP_TYPE_FILL_TIMEOUT",
+        "MCP_TYPE_REF_STALE",
+    }
+)
+CLOSED_PRE_SUBMISSION_DIAGNOSTIC_CODES = frozenset(
+    {
+        *ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES,
+        *TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES,
+    }
+)
 PRE_SUBMISSION_SETTLE_RETRY_CODES = frozenset(
     {
         *ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES,
@@ -352,6 +365,20 @@ STATE_KEYS = frozenset(
 OPTIONAL_STATE_KEYS = frozenset({"phase", "reason_code"})
 RUN_ID_PATTERN = workflow.RUN_ID_PATTERN
 REF_PATTERN = workflow.REF_PATTERN
+MCP_TYPE_REF_STALE_PATTERN = re.compile(
+    r"\A### Error\nError: Ref (?:f[0-9]+)?e[0-9]+ not found in the current "
+    r"page snapshot\. Try capturing new snapshot\.\Z"
+)
+MCP_TYPE_ELEMENT_NOT_EDITABLE_PREFIX = (
+    "### Error\nError: locator.fill: Error: Element is not an <input>, <textarea> "
+    "or [contenteditable] element"
+)
+MCP_TYPE_FILL_TIMEOUT_PREFIX = (
+    "### Error\nTimeoutError: locator.fill: Timeout 5000ms exceeded."
+)
+MCP_CALL_LOG_LINE_PATTERN = re.compile(
+    r" {2}[\t ]*(?:- |(?:[2-9]|[1-9][0-9]+) × )\S(?:[^\r\n]*\S)?\Z"
+)
 URL_PATTERN = re.compile(r"(?m)^-?\s*Page URL:\s*(\S+)\s*$")
 ELEMENT_PATTERN = re.compile(
     r'^\s*-\s*(?P<role>[a-zA-Z][a-zA-Z0-9_-]*)(?:\s+"(?P<label>[^"]*)")?'
@@ -2028,6 +2055,36 @@ def _validate_hash_list(value: object, code: str) -> list[str]:
     return list(value)
 
 
+def _is_closed_pre_submission_diagnostic_candidate(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    normalized = value.strip().casefold()
+    return normalized.startswith("advanced_") or normalized.startswith("mcp_type_")
+
+
+def _closed_pre_submission_diagnostic_phase_is_valid(
+    reason_code: str, phase: object
+) -> bool:
+    if not isinstance(phase, str):
+        return False
+    if reason_code in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES:
+        return phase in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_PHASES
+    if reason_code in TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES:
+        return phase == "typed_composer"
+    return False
+
+
+def _pre_submission_unavailable_next_action(
+    reason_code: object, importance: object
+) -> str:
+    if importance == "gated" or (
+        isinstance(reason_code, str)
+        and reason_code in TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES
+    ):
+        return "STOP"
+    return "CONTINUE_CANONICAL_LOCAL_ONLY"
+
+
 def _validate_closed_diagnostic_state(state: Mapping[str, Any]) -> None:
     if "reason_code" not in state:
         return
@@ -2037,15 +2094,15 @@ def _validate_closed_diagnostic_state(state: Mapping[str, Any]) -> None:
         if state.get("importance") == "gated"
         else "PRO_UNAVAILABLE_FALLBACK"
     )
-    expected_action = (
-        "STOP"
-        if state.get("importance") == "gated"
-        else "CONTINUE_CANONICAL_LOCAL_ONLY"
+    expected_action = _pre_submission_unavailable_next_action(
+        reason_code, state.get("importance")
     )
     if (
         not isinstance(reason_code, str)
-        or reason_code not in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES
-        or state.get("phase") not in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_PHASES
+        or reason_code not in CLOSED_PRE_SUBMISSION_DIAGNOSTIC_CODES
+        or not _closed_pre_submission_diagnostic_phase_is_valid(
+            reason_code, state.get("phase")
+        )
         or state.get("submission_attempted") is not False
         or state.get("status") != expected_status
         or state.get("next_action") != expected_action
@@ -2061,14 +2118,12 @@ def _validate_closed_diagnostic_event(
         raise OrchestrationRefusal("RUN_RECORD_INVALID")
     state_reason = state.get("reason_code")
     event_reason = payload.get("reason_code")
-    diagnostic_event = isinstance(
-        event_reason, str
-    ) and event_reason.strip().casefold().startswith("advanced_")
+    diagnostic_event = _is_closed_pre_submission_diagnostic_candidate(event_reason)
     if state_reason is None and not diagnostic_event:
         return
     if (
         not isinstance(event_reason, str)
-        or event_reason not in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES
+        or event_reason not in CLOSED_PRE_SUBMISSION_DIAGNOSTIC_CODES
         or final_event.get("event_type") != "PRO_UNAVAILABLE"
         or set(payload)
         != {
@@ -2089,6 +2144,9 @@ def _validate_closed_diagnostic_event(
         or payload.get("fallback_scope") != state.get("next_action")
         or payload.get("submission_attempted") is not False
         or payload.get("phase") != state.get("phase")
+        or not _closed_pre_submission_diagnostic_phase_is_valid(
+            event_reason, payload.get("phase")
+        )
     ):
         raise OrchestrationRefusal("STATE_INVALID")
 
@@ -2902,6 +2960,64 @@ def _require_visible_wslg_display() -> None:
         raise TransportUnavailable("WSLG_X11_SOCKET_INVALID")
 
 
+def _is_pinned_mcp_call_log_continuation(value: str) -> bool:
+    """Recognize only the pinned Playwright call-log wire continuation."""
+
+    header = "\nCall log:\n"
+    if not value.startswith(header):
+        return False
+    body = value[len(header) :]
+    if not body.endswith("\n"):
+        return False
+    lines = body[:-1].split("\n")
+    return bool(lines) and all(
+        MCP_CALL_LOG_LINE_PATTERN.fullmatch(line) is not None for line in lines
+    )
+
+
+def _matches_pinned_mcp_fill_error(text: str, prefix: str) -> bool:
+    if text == prefix:
+        return True
+    if not text.startswith(prefix):
+        return False
+    return _is_pinned_mcp_call_log_continuation(text[len(prefix) :])
+
+
+def _classify_browser_type_mcp_error(result: object) -> str | None:
+    """Return one closed browser_type error code without retaining raw material."""
+
+    if not isinstance(result, Mapping) or set(result) != {"content", "isError"}:
+        return None
+    if result.get("isError") is not True:
+        return None
+    content = result.get("content")
+    if not isinstance(content, list) or len(content) != 1:
+        return None
+    block = content[0]
+    if not isinstance(block, Mapping) or set(block) != {"text", "type"}:
+        return None
+    if block.get("type") != "text":
+        return None
+    text = block.get("text")
+    if not isinstance(text, str) or not text:
+        return None
+    try:
+        encoded_size = len(text.encode("utf-8", errors="strict"))
+    except UnicodeEncodeError:
+        return None
+    if encoded_size > workflow.MAX_TEXT_BYTES:
+        return None
+
+    matches: list[str] = []
+    if MCP_TYPE_REF_STALE_PATTERN.fullmatch(text) is not None:
+        matches.append("MCP_TYPE_REF_STALE")
+    if _matches_pinned_mcp_fill_error(text, MCP_TYPE_ELEMENT_NOT_EDITABLE_PREFIX):
+        matches.append("MCP_TYPE_ELEMENT_NOT_EDITABLE")
+    if _matches_pinned_mcp_fill_error(text, MCP_TYPE_FILL_TIMEOUT_PREFIX):
+        matches.append("MCP_TYPE_FILL_TIMEOUT")
+    return matches[0] if len(matches) == 1 else None
+
+
 class StdioMcpTransport:
     """Minimal allowlisted NDJSON MCP client for the pinned child server."""
 
@@ -3019,7 +3135,12 @@ class StdioMcpTransport:
             "tools/call", {"name": tool, "arguments": dict(arguments)}
         )
         if result.get("isError") is True:
-            raise TransportUnavailable("MCP_CALL_FAILED")
+            reason_code = (
+                _classify_browser_type_mcp_error(result)
+                if tool == "browser_type"
+                else None
+            )
+            raise TransportUnavailable(reason_code or "MCP_CALL_FAILED")
         content = result.get("content")
         if not isinstance(content, list):
             raise TransportUnavailable("MCP_PROTOCOL_INVALID")
@@ -7365,8 +7486,8 @@ def _record_unavailable(
     resubmitted: bool | None = None,
     phase: str | None = None,
 ) -> dict[str, Any]:
-    diagnostic = reason_code in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_CODES
-    if reason_code.strip().casefold().startswith("advanced_") and not diagnostic:
+    diagnostic = reason_code in CLOSED_PRE_SUBMISSION_DIAGNOSTIC_CODES
+    if _is_closed_pre_submission_diagnostic_candidate(reason_code) and not diagnostic:
         raise OrchestrationRefusal("STATE_INVALID")
     if phase is not None:
         if (
@@ -7377,7 +7498,7 @@ def _record_unavailable(
         state["phase"] = phase
     if diagnostic:
         if (
-            phase not in ADVANCED_PRE_SUBMISSION_DIAGNOSTIC_PHASES
+            not _closed_pre_submission_diagnostic_phase_is_valid(reason_code, phase)
             or resubmitted is not None
             or state.get("submission_attempted") is not False
         ):
@@ -7385,7 +7506,9 @@ def _record_unavailable(
         state["reason_code"] = reason_code
     gated = state["importance"] == "gated"
     state["status"] = "BLOCKED_PRO_REQUIRED" if gated else "PRO_UNAVAILABLE_FALLBACK"
-    state["next_action"] = "STOP" if gated else "CONTINUE_CANONICAL_LOCAL_ONLY"
+    state["next_action"] = _pre_submission_unavailable_next_action(
+        reason_code, state["importance"]
+    )
     event_payload: dict[str, Any] = {
         "status": state["status"],
         "importance": state["importance"],

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +19,30 @@ CONTRACT_PATH = REPOSITORY_ROOT / "changes/st-0101/chatgpt-pro-known-ui.v1.json"
 ADVANCED_PROFILE_ID = "gpt-5.6-sol-pro-advanced-v1"
 MODEL_LABELS = ["GPT-5.6 Sol", "GPT-5.5", "GPT-5.3", "o3"]
 EFFORT_LABELS = ["Instant 5.5", "Medium", "High", "Extra High", "Pro"]
+MCP_STALE_REF_SENTINEL = "f77e991122"
+MCP_STALE_REF_ERROR = (
+    f"### Error\nError: Ref {MCP_STALE_REF_SENTINEL} not found in the current "
+    "page snapshot. Try capturing new snapshot."
+)
+MCP_NONEDITABLE_ERROR = (
+    "### Error\nError: locator.fill: Error: Element is not an <input>, <textarea> "
+    "or [contenteditable] element"
+)
+MCP_FILL_TIMEOUT_ERROR = (
+    "### Error\nTimeoutError: locator.fill: Timeout 5000ms exceeded."
+)
+MCP_CALL_LOG_SENTINEL = "RAW_CALL_LOG_SENTINEL_CURRENT_UI"
+MCP_CALL_LOG_CONTINUATION = (
+    "\nCall log:\n"
+    f"  - waiting for locator('aria-ref=e991122') {MCP_CALL_LOG_SENTINEL}\n"
+)
+
+
+def mcp_error_result(text: str) -> dict[str, Any]:
+    return {
+        "content": [{"type": "text", "text": text}],
+        "isError": True,
+    }
 
 
 class ScriptedTransport:
@@ -3159,8 +3184,18 @@ def test_typed_composer_settle_stops_without_retrying_type_or_send(
     assert transport.calls[-1] == ("browser_snapshot", {})
 
 
+@pytest.mark.parametrize(
+    "reason_code",
+    [
+        "MCP_CALL_FAILED",
+        "MCP_TYPE_REF_STALE",
+        "MCP_TYPE_ELEMENT_NOT_EDITABLE",
+        "MCP_TYPE_FILL_TIMEOUT",
+    ],
+)
 def test_type_transport_failure_is_typed_composer_phase_without_intent(
     monkeypatch: pytest.MonkeyPatch,
+    reason_code: str,
 ) -> None:
     events: list[str] = []
 
@@ -3170,7 +3205,7 @@ def test_type_transport_failure_is_typed_composer_phase_without_intent(
                 copied = dict(arguments)
                 self.calls.append((tool, copied))
                 self.trace.append(("tool", tool, copied))
-                raise orchestrator.TransportUnavailable("MCP_DISCONNECTED")
+                raise orchestrator.TransportUnavailable(reason_code)
             return super().call(tool, arguments)
 
     transport = TypeFailureTransport([])
@@ -3196,10 +3231,216 @@ def test_type_transport_failure_is_typed_composer_phase_without_intent(
             interactive_auth_wait_seconds=0,
         )
 
-    assert captured.value.code == "MCP_DISCONNECTED"
+    assert captured.value.code == reason_code
     assert captured.value.phase == "typed_composer"
     assert events == []
     assert [tool for tool, _arguments in transport.calls] == ["browser_type"]
+
+
+@pytest.mark.parametrize(
+    ("raw_error", "reason_code"),
+    [
+        pytest.param(
+            MCP_STALE_REF_ERROR,
+            "MCP_TYPE_REF_STALE",
+            id="stale-ref",
+        ),
+        pytest.param(
+            MCP_NONEDITABLE_ERROR + MCP_CALL_LOG_CONTINUATION,
+            "MCP_TYPE_ELEMENT_NOT_EDITABLE",
+            id="noneditable",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + MCP_CALL_LOG_CONTINUATION,
+            "MCP_TYPE_FILL_TIMEOUT",
+            id="fill-timeout",
+        ),
+        pytest.param(
+            MCP_FILL_TIMEOUT_ERROR + "\n" + MCP_STALE_REF_ERROR,
+            "MCP_CALL_FAILED",
+            id="multi-signature-predecessor-generic",
+        ),
+    ],
+)
+def test_actual_type_error_result_is_sanitized_and_never_retried_or_persisted(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    caplog: pytest.LogCaptureFixture,
+    raw_error: str,
+    reason_code: str,
+) -> None:
+    root = tmp_path / ".secrets"
+    root.mkdir(mode=0o700)
+    root.chmod(0o700)
+    layout = orchestrator._ensure_layout(root)
+    orchestrator._atomic_private_json(
+        orchestrator._setup_state_path(root),
+        {
+            "schema_version": orchestrator.ORCHESTRATION_SCHEMA_VERSION,
+            "story_id": orchestrator.STORY_ID,
+            "status": "LOGIN_NOT_VERIFIED",
+            "browser": "edge",
+            "browser_executable": str(orchestrator.DEFAULT_EDGE),
+            "profile": layout["edge_profile"].name,
+            "updated_at": "2026-08-14T00:00:00Z",
+        },
+    )
+    request_root = root / "chatgpt-pro-requests"
+    request_root.chmod(0o700)
+    request = request_root / "typed-composer-diagnostic.txt"
+    request.write_text("RAW_PROMPT_SENTINEL_TYPED_COMPOSER", encoding="utf-8")
+    request.chmod(0o600)
+    transports: list[orchestrator.StdioMcpTransport] = []
+
+    class ErrorResultTransport(orchestrator.StdioMcpTransport):
+        def __init__(self, secrets_file: Path) -> None:
+            self.secrets_file = secrets_file
+            self.requests: list[tuple[str, dict[str, Any]]] = []
+            self.closed = False
+
+        def _request(self, method: str, params: dict[str, Any]) -> dict[str, Any]:
+            self.requests.append((method, dict(params)))
+            return mcp_error_result(raw_error)
+
+        def close(self) -> None:
+            self.closed = True
+
+    def transport_factory(
+        _wrapper: Path,
+        secrets_file: Path,
+        browser: str,
+    ) -> ErrorResultTransport:
+        assert browser == "edge"
+        transport = ErrorResultTransport(secrets_file)
+        transports.append(transport)
+        return transport
+
+    monkeypatch.setattr(
+        orchestrator,
+        "_inspect_live_pre_submission_ui",
+        lambda *_args, **_kwargs: advanced_inspection_result(),
+    )
+    monkeypatch.setattr(orchestrator, "StdioMcpTransport", transport_factory)
+    monkeypatch.setattr(orchestrator, "DEFAULT_PRIVATE_ROOT", root)
+    monkeypatch.setattr(orchestrator, "_physical_repository_guard", lambda: None)
+
+    previous_umask = os.umask(0o077)
+    try:
+        exit_code = orchestrator.main(
+            [
+                "ask",
+                "--private-root",
+                str(root),
+                "--request-file",
+                str(request),
+                "--importance",
+                "ordinary",
+                "--interactive-auth-wait-seconds",
+                "0",
+            ]
+        )
+    finally:
+        os.umask(previous_umask)
+
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert captured.out.count("\n") == 1
+    result = json.loads(captured.out)
+    expected_action = (
+        "STOP"
+        if reason_code in orchestrator.TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES
+        else "CONTINUE_CANONICAL_LOCAL_ONLY"
+    )
+    assert exit_code == 0
+    assert result["status"] == "PRO_UNAVAILABLE_FALLBACK"
+    assert result["reason_code"] == reason_code
+    assert result["phase"] == "typed_composer"
+    assert result["submission_attempted"] is False
+    assert result["next_action"] == expected_action
+    assert len(transports) == 1
+    transport = transports[0]
+    assert transport.closed is True
+    assert transport.requests == [
+        (
+            "tools/call",
+            {
+                "name": "browser_type",
+                "arguments": {
+                    "element": "ChatGPT composer",
+                    "target": "e41",
+                    "text": "RAOS_CHATGPT_PROMPT",
+                    "submit": False,
+                },
+            },
+        )
+    ]
+    assert not transport.secrets_file.exists()
+
+    run_dir = root / "chatgpt-pro-runs" / result["run_id"]
+    state = json.loads(
+        (run_dir / "orchestration-state.v1.json").read_text(encoding="utf-8")
+    )
+    record_text = (run_dir / "run-record.v1.jsonl").read_text(encoding="utf-8")
+    events = [json.loads(line) for line in record_text.splitlines()]
+    final_event = events[-1]
+    status = orchestrator.status(private_root=root, run_id=result["run_id"])
+    assert state["phase"] == "typed_composer"
+    assert state["submission_attempted"] is False
+    assert state["next_action"] == expected_action
+    assert final_event["event_type"] == "PRO_UNAVAILABLE"
+    assert final_event["payload"]["reason_code"] == reason_code
+    assert final_event["payload"]["phase"] == "typed_composer"
+    assert final_event["payload"]["submission_attempted"] is False
+    assert final_event["payload"]["fallback_scope"] == expected_action
+    assert status["record_verified"] is True
+    assert status["phase"] == "typed_composer"
+    assert status["submission_attempted"] is False
+    assert status["next_action"] == expected_action
+    if reason_code in orchestrator.TYPED_COMPOSER_MCP_DIAGNOSTIC_CODES:
+        assert state["reason_code"] == reason_code
+        assert status["reason_code"] == reason_code
+    else:
+        assert reason_code == "MCP_CALL_FAILED"
+        assert "reason_code" not in state
+        assert "reason_code" not in status
+
+    persisted = b"\n".join(
+        path.read_bytes() for path in sorted(run_dir.iterdir()) if path.is_file()
+    )
+    diagnostic_surfaces = json.dumps(
+        {
+            "cli_result": result,
+            "state": state,
+            "events": events,
+            "status": status,
+        },
+        sort_keys=True,
+    ).encode()
+    for forbidden in (
+        raw_error,
+        MCP_STALE_REF_SENTINEL,
+        MCP_CALL_LOG_SENTINEL,
+        "RAW_PROMPT_SENTINEL_TYPED_COMPOSER",
+        "locator.fill",
+        "Call log:",
+    ):
+        encoded = forbidden.encode()
+        assert encoded not in persisted
+        assert encoded not in diagnostic_surfaces
+        assert forbidden not in captured.out
+        assert forbidden not in captured.err
+        assert forbidden not in caplog.text
+    assert not any(
+        event["event_type"] == "SUBMISSION_INTENT_RECORDED" for event in events
+    )
+    assert not any(
+        request_params.get("name")
+        in {"browser_snapshot", "browser_wait_for", "browser_click"}
+        for _method, request_params in transport.requests
+    )
+    assert not (run_dir / "pending-transcript.v1.json").exists()
+    assert not (run_dir / "unapproved-proposal.md").exists()
 
 
 @pytest.mark.parametrize(

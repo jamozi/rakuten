@@ -1,0 +1,37 @@
+DESIGN_HANDOFF_APPROVAL_V1:
+  story_id: ST-0101
+  slice_id: TYPED_COMPOSER_MCP_DIAGNOSTICS_V1
+  handoff_uri: repo://changes/st-0101/design-handoff.typed-composer-mcp-diagnostics.v1.yaml
+  handoff_bytes: 11648
+  handoff_sha256: a884945bb84ad899c008a85a9a6337a668aaa7f99976cdd71275292cd27a270b
+  status: APPROVED_FOR_IMPLEMENTATION
+  implementation_authority: ST0101_TYPED_COMPOSER_MCP_DIAGNOSTICS_V1_ONLY
+  approved_by: repository_owner
+  approved_at: '2026-08-14T00:02:50Z'
+  approval_source: >-
+    Exact handoff SHA-256 followed by explicit repository-owner approval in
+    the connected Codex conversation.
+  owner_approval_statement: >-
+    a884945bb84ad899c008a85a9a6337a668aaa7f99976cdd71275292cd27a270b
+    のST-0101診断handoffを承認
+  canonical_reconciliation: PASS_FOR_ST0101_DIAGNOSTIC_ONLY
+  pro_advice_authority: NONE_PRO_UNAVAILABLE_TYPED_COMPOSER
+  open_decisions: []
+  boundaries:
+    semantic_story_changes:
+      - ST-0101
+    st0505: PAUSED_UNCHANGED
+    canonical_files: UNCHANGED
+    mcp_package_or_inventory: UNCHANGED
+    selector_or_action_contract: UNCHANGED
+    browser_type_retry: FORBIDDEN
+    submission_or_send: NOT_AUTHORIZED
+    raw_mcp_error_persistence_or_output: FORBIDDEN
+    credential_or_secret_access: NOT_AUTHORIZED
+    live_browser_diagnostic: NOT_AUTHORIZED_BY_IMPLEMENTATION_APPROVAL_ALONE
+    formal_tst_001: NOT_EXECUTED
+    hosted_ci: NOT_EXECUTED
+    staging: NOT_EXECUTED
+    publication: NOT_EXECUTED
+    release: NOT_EXECUTED
+    production: NOT_EXECUTED
