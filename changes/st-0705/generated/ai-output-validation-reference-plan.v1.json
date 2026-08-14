@@ -136,12 +136,12 @@
         {
           "uri": "repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
           "bytes": 15689,
-          "sha256": "af848e5b37d43efc6ae08da7ebc847208bfc02ff9a881a8cd37e5e7667a6eef2"
+          "sha256": "36b15a144410915b73336feec7e84dc69f4340cdecce1857f92e2c7d640de1cd"
         },
         {
           "uri": "repo://changes/st-0703/generated/recorded-fixture-registry.v1.json",
           "bytes": 5547,
-          "sha256": "ce386ab928c27ec53ad5553d53d8c6863c63cc2fcc2bf49208038f28b479a051"
+          "sha256": "6a7c5bb5ec7b50a63448fe27c61d2c27a8bb3ffd1a9703891b4ea1561c322e80"
         },
         {
           "uri": "repo://python/raos/domain/ai/provider.py",

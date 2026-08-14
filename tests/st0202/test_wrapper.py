@@ -31,11 +31,12 @@ EXPECTED_EPHEMERAL_OVERRIDE = b"""services:
   object-storage:
     ports: !override
       - target: 8333
+        published: "49152-65535"
         host_ip: 127.0.0.1
         protocol: tcp
 """
 EXPECTED_EPHEMERAL_OVERRIDE_DIGEST = (
-    "8d7d2e57f174992dd703773f0c9031d58eddda8ab99d5e15ec67c7d247540022"
+    "16a0935b669afcdfbf1b819ee8abb773cd6978ebcb65f46c855764128547516a"
 )
 
 
@@ -59,9 +60,11 @@ config_path = os.environ.get("RAOS_OBJECT_STORAGE_S3_CONFIG_FILE", "")
 requested_port = os.environ.get("RAOS_OBJECT_STORAGE_PORT", "")
 published_port = requested_port or "49153"
 if mode == "low_assigned_port":
-    published_port = "1023"
-elif mode == "below_disposable_range":
     published_port = "49151"
+elif mode == "lower_range_boundary":
+    published_port = "49152"
+elif mode == "upper_range_boundary":
+    published_port = "65535"
 elif mode == "high_assigned_port":
     published_port = "65536"
 elif mode == "overflow_assigned_port":
@@ -218,11 +221,16 @@ elif operation == "ps" and "--services" in payload:
 elif operation == "ps" and "--quiet" in payload:
     print("a" * 64)
 elif operation == "port":
-    print(
-        "0.0.0.0:" + published_port
-        if mode == "public_port"
-        else "127.0.0.1:" + published_port
-    )
+    if mode == "absent_port":
+        print("")
+    elif mode == "duplicate_port":
+        print("127.0.0.1:49152\\n127.0.0.1:65535")
+    elif mode == "public_port":
+        print("0.0.0.0:" + published_port)
+    elif mode == "ipv6_port":
+        print("[::1]:" + published_port)
+    else:
+        print("127.0.0.1:" + published_port)
 elif operation == "exec" and "/usr/bin/weed" in payload:
     print("version 8000GB 4.28 bad linux amd64" if mode == "wrong_version" else "version 8000GB 4.29 1355c7a linux amd64")
 elif operation == "exec" and "/bin/sh" in payload:
@@ -450,17 +458,20 @@ def test_test_command_passes_base_then_ephemeral_files_only(
 @pytest.mark.parametrize(
     "mode",
     [
+        "absent_port",
+        "duplicate_port",
         "public_port",
+        "ipv6_port",
         "low_assigned_port",
         "high_assigned_port",
         "overflow_assigned_port",
         "non_decimal_port",
     ],
 )
-def test_observed_mapping_rejects_public_non_decimal_low_high_and_overflow_ports(
+def test_observed_mapping_rejects_invalid_cardinality_host_and_range(
     tmp_path: Path, mode: str
 ) -> None:
-    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    wrapper, fixture_log = _isolated_repository(tmp_path)
     docker, log = _fake_docker(tmp_path, mode)
     result = _run(wrapper, docker, "test", tmp_path)
     assert result.returncode != 0
@@ -470,14 +481,16 @@ def test_observed_mapping_rejects_public_non_decimal_low_high_and_overflow_ports
     down = [row for row in rows if _compose_operation(row) == "down"]
     assert len(down) == 1
     assert "--volumes" in down[0]["argv"]
+    assert "acceptance" not in [row["argv"][0] for row in _rows(fixture_log)]
     assert _test_directories(tmp_path) == []
 
 
-def test_runtime_assigned_port_has_no_preselected_high_range(
-    tmp_path: Path,
+@pytest.mark.parametrize("mode", ["lower_range_boundary", "upper_range_boundary"])
+def test_runtime_selected_port_accepts_exact_range_boundaries(
+    tmp_path: Path, mode: str
 ) -> None:
     wrapper, _fixture_log = _isolated_repository(tmp_path)
-    docker, log = _fake_docker(tmp_path, "below_disposable_range")
+    docker, log = _fake_docker(tmp_path, mode)
     result = _run(wrapper, docker, "test", tmp_path)
     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
     rows = _rows(log)
@@ -488,10 +501,10 @@ def test_runtime_assigned_port_has_no_preselected_high_range(
     assert _test_directories(tmp_path) == []
 
 
-def test_ephemeral_template_is_exact_119_bytes_and_digest_bound(
+def test_ephemeral_template_is_exact_152_bytes_and_digest_bound(
     tmp_path: Path,
 ) -> None:
-    assert len(EXPECTED_EPHEMERAL_OVERRIDE) == 119
+    assert len(EXPECTED_EPHEMERAL_OVERRIDE) == 152
     assert hashlib.sha256(EXPECTED_EPHEMERAL_OVERRIDE).hexdigest() == (
         EXPECTED_EPHEMERAL_OVERRIDE_DIGEST
     )
@@ -611,16 +624,20 @@ def test_ephemeral_validation_order_precedes_validate_docker_client() -> None:
 
 
 @pytest.mark.parametrize("command", ["config", "up", "check", "down"])
-def test_persistent_commands_never_create_or_pass_ephemeral_override(
-    tmp_path: Path, command: str
+@pytest.mark.parametrize("port", ["1024", "49151", "65535"])
+def test_persistent_commands_accept_fixed_range_without_ephemeral_override(
+    tmp_path: Path, command: str, port: str
 ) -> None:
     wrapper, _fixture_log = _isolated_repository(tmp_path)
     docker, log = _fake_docker(tmp_path)
-    result = _run(wrapper, docker, command, tmp_path)
+    result = _run(wrapper, docker, command, tmp_path, port=port)
     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
     rows = _rows(log)
     expected_compose = wrapper.parents[1] / "docker-compose.yml"
     assert all(row["override_candidates"] == [] for row in rows)
+    assert all(
+        row["port"] == port for row in rows if _compose_operation(row) is not None
+    )
     for row in rows:
         if _compose_operation(row) is not None:
             assert row["compose_files"] == [str(expected_compose)]

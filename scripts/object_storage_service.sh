@@ -17,9 +17,11 @@ readonly expected_revision='1355c7a102194d6c461baf090eff50367b575afb'
 readonly expected_version_line='version 8000GB 4.29 1355c7a linux amd64'
 readonly expected_compose_sha256='a6cd0109a2bc63dae10be59bd9aa32ab85e9c3fec3847bc43c413b452cb871f5'
 readonly expected_fixture_sha256='50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527'
-readonly expected_ephemeral_override_sha256='8d7d2e57f174992dd703773f0c9031d58eddda8ab99d5e15ec67c7d247540022'
-readonly expected_ephemeral_override_bytes=119
+readonly expected_ephemeral_override_sha256='16a0935b669afcdfbf1b819ee8abb773cd6978ebcb65f46c855764128547516a'
+readonly expected_ephemeral_override_bytes=152
 readonly maximum_ephemeral_override_bytes=256
+readonly minimum_ephemeral_port=49152
+readonly maximum_ephemeral_port=65535
 readonly local_project='raos-st0202-local'
 
 docker_executable=''
@@ -143,6 +145,24 @@ normalize_bounded_port() {
   printf -v "$2" '%d' "$((10#$candidate))"
 }
 
+normalize_ephemeral_port() {
+  local candidate=$1
+  if [[ ! $candidate =~ ^[0-9]{1,5}$ ]] || \
+    ((10#$candidate < minimum_ephemeral_port || \
+      10#$candidate > maximum_ephemeral_port)); then
+    return 1
+  fi
+  printf -v "$2" '%d' "$((10#$candidate))"
+}
+
+normalize_observed_port() {
+  if [[ $command == test ]]; then
+    normalize_ephemeral_port "$1" "$2"
+  else
+    normalize_bounded_port "$1" "$2"
+  fi
+}
+
 validate_port() {
   local candidate=$1
   if ! normalize_bounded_port "$candidate" object_storage_port; then
@@ -231,6 +251,7 @@ create_ephemeral_override() {
     '  object-storage:' \
     '    ports: !override' \
     '      - target: 8333' \
+    '        published: "49152-65535"' \
     '        host_ip: 127.0.0.1' \
     '        protocol: tcp' >"$ephemeral_override_file"; then
     error 'unable to write the ephemeral Compose override'
@@ -426,7 +447,7 @@ assert_service() {
 
   published=$(compose "$project" port object-storage 8333)
   if [[ ! $published =~ ^127\.0\.0\.1:([0-9]+)$ ]] || \
-    ! normalize_bounded_port "${BASH_REMATCH[1]}" observed_published_port; then
+    ! normalize_observed_port "${BASH_REMATCH[1]}" observed_published_port; then
     error 'the S3 endpoint is not published on one bounded loopback port'
     return 1
   fi
