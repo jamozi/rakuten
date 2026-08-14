@@ -37,7 +37,7 @@ EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
     "9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291"
 )
 EXPECTED_ST0202_CONTRACT_OBJECT_SHA256: Final = (
-    "b44925420d4a989dd6e7ea55aa0d8732e46d0626be4069d7c6db8feb013b32a5"
+    "6af7e7694cccda374343fc0945139b7c09679ad581705bfd92f2d500ae2aac83"
 )
 OBJECT_STORAGE_WRAPPER_PATH: Final = Path("scripts/object_storage_service.sh")
 GENERATED_PATHS: Final = (COMPOSE_PATH, MANIFEST_PATH)
@@ -204,13 +204,13 @@ EXPECTED_ST0202_EPHEMERAL_OVERRIDE: Final = {
     "parent_directory_mode": "0700",
     "file_mode": "0600",
     "maximum_bytes": 256,
-    "exact_bytes": 152,
-    "sha256": "16a0935b669afcdfbf1b819ee8abb773cd6978ebcb65f46c855764128547516a",
+    "exact_bytes": 142,
+    "sha256": "97c5eb86c4c625d083429870e46c646af1781d308af100831e621839ccc232fe",
     "compose_tag": "!override",
     "target": 8333,
     "host_ip": "127.0.0.1",
     "protocol": "tcp",
-    "published": "49152-65535",
+    "published": "0",
     "compose_file_order": ["docker-compose.yml", "EPHEMERAL_VALIDATED_OVERRIDE"],
     "validation": "BEFORE_FIRST_DOCKER_AND_EVERY_COMPOSE_USE",
     "cleanup": "EXIT_HUP_INT_TERM",
@@ -219,7 +219,7 @@ EXPECTED_ST0202_EPHEMERAL_OVERRIDE: Final = {
         "exact_count": 1,
         "host": "127.0.0.1",
         "lexical_port_rule": "^[0-9]{1,5}$",
-        "minimum_port": 49152,
+        "minimum_port": 1024,
         "maximum_port": 65535,
     },
 }

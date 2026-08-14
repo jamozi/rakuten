@@ -205,7 +205,7 @@ EXPECTED_PROVENANCE: Final[dict[str, object]] = {
             "story_id": "ST-0204",
             "uri": "repo://changes/st-0204/manifest.yaml",
             "sha256": (
-                "af19cf3f705dcf4c19a513d136ed17fb76e701b7a06ffa7951d985974368bbe8"
+                "8c6b0f78b39b5a15345a4be8d590d8d4dff823c379672614d56c124a98c9689f"
             ),
         },
         {

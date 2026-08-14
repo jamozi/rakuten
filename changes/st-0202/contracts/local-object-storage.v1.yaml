@@ -97,13 +97,13 @@ runtime:
     parent_directory_mode: '0700'
     file_mode: '0600'
     maximum_bytes: 256
-    exact_bytes: 152
-    sha256: 16a0935b669afcdfbf1b819ee8abb773cd6978ebcb65f46c855764128547516a
+    exact_bytes: 142
+    sha256: 97c5eb86c4c625d083429870e46c646af1781d308af100831e621839ccc232fe
     compose_tag: '!override'
     target: 8333
     host_ip: 127.0.0.1
     protocol: tcp
-    published: '49152-65535'
+    published: '0'
     compose_file_order: [docker-compose.yml, EPHEMERAL_VALIDATED_OVERRIDE]
     validation: BEFORE_FIRST_DOCKER_AND_EVERY_COMPOSE_USE
     cleanup: EXIT_HUP_INT_TERM
@@ -112,7 +112,7 @@ runtime:
       exact_count: 1
       host: 127.0.0.1
       lexical_port_rule: '^[0-9]{1,5}$'
-      minimum_port: 49152
+      minimum_port: 1024
       maximum_port: 65535
   expected_image_config_digest: sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd
   expected_platform: linux/amd64
