@@ -1,0 +1,53 @@
+schema: RAOS_HOSTED_UNIT_HYBRID_BOUNDARY_V1
+story_id: ST-0101
+slice_id: ST0101_HOSTED_UNIT_HYBRID_BOUNDARY_V1
+marker:
+  name: raos_owner_private
+  hosted_selector: not raos_owner_private
+  local_selector: raos_owner_private
+  local_target: pro-owner-private-test
+requirements:
+  owner_private_inventory:
+    count: 7
+    match: exact_full_node_id_equality
+    declaration: direct_function_marker_only
+    disallowed_outcomes:
+      - skip
+      - xfail
+      - xpass
+      - dynamic_marker
+      - module_or_file_marker
+      - wildcard_or_prefix_inventory
+  portable_inventory:
+    count: 16
+    execution: hosted_in_process_test_substitution
+    production_guards: unchanged
+  network_sandbox:
+    skip_count: 9
+    owner: ci-network-assert
+    relationship: separate_and_unchanged
+owner_private_node_ids:
+  - tests/st0101/test_chatgpt_pro_browser_selection.py::test_owner_private_skill_records_edge_first_scope_and_profile_prohibition
+  - tests/st0101/test_chatgpt_pro_initial_ui_settle.py::test_owner_private_skill_preserves_initial_settle_boundary
+  - tests/st0101/test_chatgpt_pro_interactive_auth_wait.py::test_owner_private_skill_keeps_wait_scoped_to_pro_ask
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_owner_private_skill_and_metadata_retain_approved_policy
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_make_pro_launcher_ignores_wrong_ambient_uv_and_setup_uses_it
+  - tests/st0101/test_chatgpt_pro_response_wait.py::test_owner_private_skill_keeps_answer_now_observation_only
+  - tests/st0101/test_chatgpt_pro_wslg_display.py::test_owner_private_skill_requires_chatgpt_only_login_without_edge_sync
+portable_node_ids:
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_doctor_reports_compound_cloudflare_challenge_as_captcha
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_successful_ask_emits_sanitized_result_and_hash_bound_private_artifacts
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_cli_ask_without_request_file_reads_stdin_into_private_artifact
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_no_model_picker_records_pre_submission_unavailability[ordinary-0-PRO_UNAVAILABLE_FALLBACK-CONTINUE_CANONICAL_LOCAL_ONLY]
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_no_model_picker_records_pre_submission_unavailability[gated-4-BLOCKED_PRO_REQUIRED-STOP]
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_security_invariants_remain_hard_refusals[MCP_TOOL_NOT_ALLOWED-browser_evaluate-arguments0]
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_security_invariants_remain_hard_refusals[RAW_PROMPT_TOOL_ARGUMENT-browser_type-arguments1]
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_contract_drift_remains_a_hard_refusal
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_legacy_waiting_ambiguity_cli_remains_generic_without_diagnostic
+  - tests/st0101/test_chatgpt_pro_orchestrator.py::test_live_resume_nonallowlisted_refusal_remains_hard_and_state_unchanged
+  - tests/st0101/test_chatgpt_pro_private_runtime.py::test_stdio_transport_verifies_runtime_before_process_start
+  - tests/st0101/test_chatgpt_pro_private_runtime.py::test_stdio_transport_uses_fixed_path_despite_hostile_ambient_path
+  - tests/st0101/test_chatgpt_pro_private_runtime.py::test_stdio_transport_cleans_process_when_initialize_fails
+  - tests/st0101/test_chatgpt_pro_private_runtime.py::test_wrapper_and_runtime_resources_never_reference_shared_npx
+  - tests/st0101/test_chatgpt_pro_wslg_display.py::test_orchestrator_refuses_absent_x11_endpoint_before_popen
+  - tests/st0101/test_chatgpt_pro_wslg_display.py::test_orchestrator_refuses_regular_x11_endpoint_before_popen

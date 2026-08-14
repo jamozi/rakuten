@@ -931,3 +931,37 @@ authentication wait. Its same-transport behavior, no-input interval, timeout,
 bounds, and immediate stops are verified only with inert scripted transports;
 live authentication, Pro submission, formal TST-001, and production readiness
 remain separate evidence boundaries.
+
+## Hosted Unit hybrid boundary
+
+The owner-approved `ST0101_HOSTED_UNIT_HYBRID_BOUNDARY_V1` slice separates
+portable ST-0101 behavior coverage from irreducible owner-private policy
+checks. The tracked contract is
+`changes/st-0101/hosted-unit-hybrid-boundary.v1.yaml`. It binds the exact
+sixteen portable node IDs, exact seven `raos_owner_private` node IDs, hosted
+selector `not raos_owner_private`, and local target `pro-owner-private-test`.
+
+Hosted `ci-unit` applies that selector only to `tests/st0101`. The sixteen
+reconciled cases replace repository, wrapper, runtime, stdin, or process
+dependencies only inside the test process; the production physical-root,
+wrapper, runtime, WSLg, browser, origin, credential, and approval guards are
+unchanged. The existing nine network-sandbox skips remain separate and are
+still owned by `ci-network-assert`.
+
+At physical `/home/minami/rakuten`, run the irreducible boundary with:
+
+```bash
+make pro-owner-private-test
+```
+
+The target fails unless the physical root, exact owner-private Skill and agents
+metadata, protected launcher/runtime source bytes, and installed private MCP
+runtime are present and verified. It runs the non-private boundary validator
+first, then requires exactly seven passing private cases with no skip, xfail,
+or xpass. It performs no browser navigation, input, submission, provider call,
+installation, publication, release, or Production action.
+
+Local collection and fixture results are not hosted CI or formal TST-001
+evidence. A clean hosted Unit rerun at the exact pushed head remains required
+before merge review; browser/provider, staging, publication, release, and
+Production remain separately unexecuted and gated.

@@ -546,15 +546,22 @@ def test_answer_now_resets_existing_advanced_stability_sequence() -> None:
 
 
 def test_answer_now_guidance_is_advanced_exact_and_observation_only() -> None:
-    for text in (
-        README_PATH.read_text(encoding="utf-8"),
-        SKILL_PATH.read_text(encoding="utf-8"),
-    ):
-        assert 'button "Answer now"' in text
-        assert "strict `gpt-5.6-sol-pro-advanced-v1` profile only" in text
-        assert "never click" in text
-        assert "text/statictext" in text
-        assert "legacy profile" in text
+    readme = README_PATH.read_text(encoding="utf-8")
+    assert 'button "Answer now"' in readme
+    assert "strict `gpt-5.6-sol-pro-advanced-v1` profile only" in readme
+    assert "never click" in readme
+    assert "text/statictext" in readme
+    assert "legacy profile" in readme
+
+
+@pytest.mark.raos_owner_private
+def test_owner_private_skill_keeps_answer_now_observation_only() -> None:
+    skill = SKILL_PATH.read_text(encoding="utf-8")
+    assert 'button "Answer now"' in skill
+    assert "strict `gpt-5.6-sol-pro-advanced-v1` profile only" in skill
+    assert "never click" in skill
+    assert "text/statictext" in skill
+    assert "legacy profile" in skill
 
 
 def test_advanced_answer_now_waits_past_twenty_polls_without_click_or_parse(
