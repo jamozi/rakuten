@@ -58,7 +58,7 @@ HELPER_SHA256: Final = (
     "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
 )
 CONTRACT_SHA256: Final = (
-    "0be5967de6ec5bffdb89cd9463443271c0b7b5abb8aebec5af09f7b542d01d0c"
+    "00d031f8ed8d2ab4597ef0de6e88ecbefaf1321f4829937d53ba9d682731d827"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -255,7 +255,7 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0307",
         "changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml",
-        "06c9f26f61a420145d03fd61a1f8c598f9271641478e102d41a97d38172abfcb",
+        "4139aca30bcb7376f806e2debc40bacb1fcdc59c934a419e7ea97859b7247ec4",
     ),
     (
         "ST-0601",

@@ -40,7 +40,7 @@ provenance:
   predecessors:
     - story_id: ST-0204
       uri: repo://changes/st-0204/manifest.yaml
-      sha256: 8c6b0f78b39b5a15345a4be8d590d8d4dff823c379672614d56c124a98c9689f
+      sha256: 08d932751fd3d8f7387f5688f8a6f3d1fa8e88d8ba063fa77e667b572114e158
     - story_id: ST-0305
       uri: repo://changes/st-0305/manifest.yaml
       sha256: 6665727d1f77eb519fb97afc713469d1f9f3eaf4c086affed10a3f13b1e3a843

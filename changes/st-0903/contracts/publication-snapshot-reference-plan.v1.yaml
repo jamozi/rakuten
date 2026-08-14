@@ -124,7 +124,7 @@ dependencies:
   authority_status: PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY
 - story_id: ST-0307
   artifact: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
-  sha256: 06c9f26f61a420145d03fd61a1f8c598f9271641478e102d41a97d38172abfcb
+  sha256: 4139aca30bcb7376f806e2debc40bacb1fcdc59c934a419e7ea97859b7247ec4
   connection_status: NOT_EXECUTED
   authority_status: SYNTHETIC_FIXTURE_ONLY
 - story_id: ST-0601

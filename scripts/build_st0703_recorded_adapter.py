@@ -99,7 +99,7 @@ EXPECTED_IMPLEMENTATION_AUTHORITY: Final[dict[str, object]] = {
 }
 PREDECESSOR_MANIFEST_PROJECTION_SHA256: Final = {
     Path("changes/st-0204/manifest.yaml"): (
-        "920296236799eadde0c45f9a5501881d258917ced9bc01bc859a9c9213043d89"
+        "eef287ef5fc35fbcd979dd6c85bbe89d0949fa1186967c167b33dc4a76defdb4"
     ),
     Path("changes/st-0701/manifest.yaml"): (
         "a0d5aad3b2c95ba7a365d0fc0be5a7825834f7a9639260823e2729c27391ad0b"
@@ -145,7 +145,7 @@ IMPLEMENTATION_SOURCE_PATHS: Final = (
     Path("tests/st0703/test_recorded_support.py"),
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "016396ae0e09152cdf46ad4e6b0e64c530d2c7435b3ff59dcac1c4056c8bdd09"
+    "2366b2f1041d14b4b87053f122b8df36cbf726acdf38c8722a3495667eb84b9b"
 )
 EXPECTED_PYPROJECT_SHA256: Final = (
     "0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6"

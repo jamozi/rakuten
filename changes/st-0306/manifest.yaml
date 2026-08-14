@@ -57,11 +57,11 @@ source_artifacts:
   bytes: 2385
   sha256: dd0cc0a6e99483d1975feae553736e142db54440fa5ff42d34d0d50d15c9b488
 - uri: repo://README.md
-  bytes: 58459
-  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
+  bytes: 61004
+  sha256: 07519d2d66c8bbf0ad5d28e9ca8eb23ac4015c90e1f352b15db19c638aabf563
 - uri: repo://Makefile
-  bytes: 31909
-  sha256: 97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34
+  bytes: 34123
+  sha256: 20054f9a6df92d8b1d6a94dde4428eb24011f799121fdfbf67d42e4d63506101
 - uri: repo://docs/execplans/ST-0306.md
   bytes: 2107
   sha256: d8214c475262aae4e68de9909fc7ee7825e20aeae00ea7220b130ad54e179f3d

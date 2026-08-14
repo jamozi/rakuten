@@ -144,7 +144,7 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-    "source_contract_sha256": "0be5967de6ec5bffdb89cd9463443271c0b7b5abb8aebec5af09f7b542d01d0c",
+    "source_contract_sha256": "00d031f8ed8d2ab4597ef0de6e88ecbefaf1321f4829937d53ba9d682731d827",
     "generated_by": "repo://scripts/build_st0903_publication_snapshot_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0903_publication_snapshot_reference_plan.py",
     "implementation_helper": {
@@ -199,7 +199,7 @@
     {
       "story_id": "ST-0307",
       "artifact": "repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml",
-      "sha256": "06c9f26f61a420145d03fd61a1f8c598f9271641478e102d41a97d38172abfcb",
+      "sha256": "4139aca30bcb7376f806e2debc40bacb1fcdc59c934a419e7ea97859b7247ec4",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "SYNTHETIC_FIXTURE_ONLY"
     },

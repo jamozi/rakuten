@@ -76,8 +76,8 @@ source_artifacts:
   bytes: 34123
   sha256: 20054f9a6df92d8b1d6a94dde4428eb24011f799121fdfbf67d42e4d63506101
 - uri: repo://README.md
-  bytes: 58459
-  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
+  bytes: 61004
+  sha256: 07519d2d66c8bbf0ad5d28e9ca8eb23ac4015c90e1f352b15db19c638aabf563
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://.github/CODEOWNERS
