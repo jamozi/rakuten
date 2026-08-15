@@ -392,9 +392,43 @@ def test_manifest_provenance_rows_match_independent_approved_literals() -> None:
     assert provenance["implementation_inputs"] == [
         {
             "uri": "repo://scripts/build_st1506_production_deployment.py",
-            "sha256": "ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f",
+            "sha256": "20e07ca05f5cb717654bfd98057863edbf699e674bb2594d2071fd474c366a30",
         }
     ]
+    current = provenance["current_development_rebinding"]
+    assert current["authority_source"] == {
+        "uri": f"repo://{generator.STANDING_DEVELOPMENT_AUTHORITY_PATH}",
+        "bytes": generator.STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+        "sha256": generator.STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+        "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+    }
+    assert current["current_authority_inputs"] == [
+        {
+            "uri": f"repo://{path}",
+            "bytes": binding[0],
+            "sha256": binding[1],
+        }
+        for path, binding in generator.CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.items()
+    ]
+    assert current["current_implementation_inputs"] == [
+        {
+            "uri": f"repo://{path}",
+            "bytes": (REPOSITORY_ROOT / path).stat().st_size,
+            "sha256": digest,
+        }
+        for path, digest in generator.IMPLEMENTATION_DEPENDENCIES.items()
+    ]
+    assert current["historical_source_and_authority_rows_preserved"] is True
+    assert current["semantic_delta_from_business_inputs"] == "NONE"
+    for field in (
+        "external_authority",
+        "live_provider_authority",
+        "credential_authority",
+        "publication_authority",
+        "release_authority",
+        "production_authority",
+    ):
+        assert current[field] == "NONE"
     assert provenance["source_contracts"] == [
         {
             "uri": "repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml",

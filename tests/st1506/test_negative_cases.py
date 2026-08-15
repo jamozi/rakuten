@@ -400,6 +400,50 @@ def _copy_pinned_sources(target_root: Path) -> None:
         shutil.copyfile(source, target)
 
 
+@pytest.mark.parametrize(
+    ("relative", "expected_code"),
+    (
+        (
+            generator.STANDING_DEVELOPMENT_AUTHORITY_PATH,
+            "CURRENT_DEVELOPMENT_AUTHORITY_DRIFT",
+        ),
+        (
+            Path("docs/execplans/RAOS-IMPLEMENTATION-FIRST.md"),
+            "CURRENT_DEVELOPMENT_SOURCE_DRIFT",
+        ),
+    ),
+)
+def test_current_development_binding_drift_fails_closed_without_echoing_bytes(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    relative: Path,
+    expected_code: str,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    path = tmp_path / relative
+    path.write_bytes(path.read_bytes() + f"\n{MARKER}\n".encode())
+    with pytest.raises(generator.ProductionDeploymentContractError) as captured:
+        generator.validate_contract(copy.deepcopy(contract_document), tmp_path)
+    assert captured.value.code == expected_code
+    assert MARKER not in str(captured.value)
+
+
+def test_current_development_policy_rejects_bool_as_zero_action_count(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    policy = copy.deepcopy(generator.CURRENT_DEVELOPMENT_REBINDING_POLICY)
+    policy["action_count"] = True
+    monkeypatch.setattr(generator, "CURRENT_DEVELOPMENT_REBINDING_POLICY", policy)
+    with pytest.raises(generator.ProductionDeploymentContractError) as captured:
+        generator._validate_current_development_rebinding_policy()
+    _assert_exact_value_free_diagnostic(
+        captured.value,
+        code="TYPE_MISMATCH",
+        field="current_development_rebinding.action_count",
+        rejected_value=True,
+    )
+
+
 def _rebind_immediate_predecessor(
     document: dict[str, Any],
     relative: str,
@@ -589,6 +633,45 @@ def test_source_order_symlink_ancestor_and_escaped_path_fail_closed(
             size_error_code="FILE_SIZE_LIMIT",
         )
     assert captured.value.code == "UNSAFE_REPOSITORY_PATH"
+
+
+@pytest.mark.parametrize(
+    "collision_field",
+    (
+        "size_error_code",
+        "path_error_code",
+        "ancestor_error_code",
+        "file_type_error_code",
+    ),
+)
+def test_optional_repository_read_rejects_internal_error_code_collisions(
+    tmp_path: Path,
+    collision_field: str,
+) -> None:
+    hostile = tmp_path / "hostile"
+    hostile.write_bytes(b"present")
+    error_codes = {
+        "size_error_code": "FILE_SIZE_LIMIT",
+        "path_error_code": "UNSAFE_REPOSITORY_PATH",
+        "ancestor_error_code": "UNSAFE_ANCESTOR",
+        "file_type_error_code": "UNSAFE_FILE_TYPE",
+    }
+    error_codes[collision_field] = generator.OPTIONAL_MISSING_ERROR_CODE
+
+    with pytest.raises(generator.ProductionDeploymentContractError) as captured:
+        generator._read_optional_repository_file(
+            tmp_path,
+            Path("hostile"),
+            "hostile_optional_read",
+            max_bytes=0,
+            **error_codes,
+        )
+    _assert_exact_value_free_diagnostic(
+        captured.value,
+        code="OPTIONAL_ERROR_CODE_COLLISION",
+        field="hostile_optional_read",
+        rejected_value=generator.OPTIONAL_MISSING_ERROR_CODE,
+    )
 
 
 def _set_interface_value(

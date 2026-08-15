@@ -72,6 +72,32 @@ def test_manifest_pins_authority_predecessors_and_status_boundary() -> None:
         {"uri": f"repo://{path}", "sha256": digest}
         for path, digest in generator.PREDECESSOR_SOURCES.items()
     ]
+    assert manifest["provenance"]["current_development_rebinding"] == {
+        "classification": "REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY",
+        "authority_source": {
+            "uri": f"repo://{generator.STANDING_DEVELOPMENT_AUTHORITY_PATH}",
+            "bytes": generator.STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+            "sha256": generator.STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+            "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+        },
+        "current_authority_inputs": [
+            {
+                "uri": f"repo://{path}",
+                "bytes": binding[0],
+                "sha256": binding[1],
+            }
+            for path, binding in generator.CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.items()
+        ],
+        "historical_source_rows_preserved": True,
+        "semantic_delta_from_staging_interface": "NONE",
+        "repository_git_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+        "external_authority": "NONE",
+        "live_provider_authority": "NONE",
+        "credential_authority": "NONE",
+        "publication_authority": "NONE",
+        "release_authority": "NONE",
+        "production_authority": "NONE",
+    }
     boundary = manifest["boundary"]
     assert boundary["environment_label"] == "STAGING"
     assert boundary["configuration_status"] == "NOT_CONFIGURED"

@@ -109,6 +109,17 @@ def test_check_rejects_any_reference_plan_drift(
         builder.build(repository_harness.root, check=True)
 
 
+def test_check_reads_output_content_and_mode_from_one_descriptor_snapshot(
+    repository_harness: RepositoryHarness,
+) -> None:
+    builder.build(repository_harness.root)
+    target = repository_harness.root / builder.REFERENCE_PLAN_PATH
+    target.chmod(0o600)
+    with pytest.raises(builder.PersistenceReferenceError) as captured:
+        builder.build(repository_harness.root, check=True)
+    assert captured.value.code == "OWNER_OUTPUT_MODE_INVALID"
+
+
 def test_cli_accepts_only_empty_or_exact_check() -> None:
     assert builder.parse_args([]).check is False
     assert builder.parse_args(["--check"]).check is True

@@ -40,6 +40,22 @@ detached approval binds those exact bytes to
 `APPROVED_FOR_IMPLEMENTATION` for this one non-executable ST-1506 slice. It
 does not approve a later runtime or release.
 
+## Current-main integration binding
+
+The immutable handoff continues to record the historical root `AGENTS.md` and
+historical ExecPlan source rows exactly as approved. Integration onto current
+main does not repin or rewrite either authority record. Instead, the builder
+separately verifies the exact current root `AGENTS.md`, the exact current
+ExecPlan, and the current-main integration base commit/tree, and emits them in
+`provenance.current_development_rebinding`.
+
+That rebinding is governance/provenance-only reversible repository work for
+ST-1506. Its action count is exact integer zero, Canonical status is unchanged,
+OD-009/OD-011/OD-013/OD-015 remain unresolved, and endpoint, account, identity,
+key, secret, workflow, and release selections remain null. It grants no
+runtime implementation, external, publication, release, status, credential,
+provider, network, browser, staging, or Production authority.
+
 ## WordPress signed-delivery interface
 
 `wordpress_signed_delivery_interface` is a closed, generated-projection data

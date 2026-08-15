@@ -27,6 +27,13 @@ empty and `NOT_EXECUTED`, and the decision remains `NOT_READY`.
 - ST-1505 is consumed only as a byte-bound, disabled, non-executable,
   zero-action staging reference. This Story cannot activate or extend it.
 
+The historical ExecPlan and ST-1505 manifest rows remain frozen in the source
+contract. Current repository development is separately exact-bound to the root
+`AGENTS.md`, current ExecPlan, and regenerated current ST-1505 manifest through
+`provenance.current_development_rebinding`. That mechanical binding preserves
+the non-attesting interface and grants no external, provider, credential,
+publication, release, or Production authority.
+
 ## Owned artifacts
 
 | Path | Purpose |

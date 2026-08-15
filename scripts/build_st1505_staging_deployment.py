@@ -99,6 +99,17 @@ PREDECESSOR_SOURCES: Final = {
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
+STANDING_DEVELOPMENT_AUTHORITY_PATH: Final = Path("AGENTS.md")
+STANDING_DEVELOPMENT_AUTHORITY_BYTES: Final = 43_916
+STANDING_DEVELOPMENT_AUTHORITY_SHA256: Final = (
+    "a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482"
+)
+CURRENT_DEVELOPMENT_SOURCE_OVERRIDES: Final = {
+    "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
+        11_132,
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234",
+    ),
+}
 
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
@@ -729,8 +740,41 @@ def _validate_sources(contract: Mapping[str, Any], root: Path) -> None:
         _fail("SOURCE_INVENTORY_DRIFT", "sources")
     for source_name, expected_digest in PINNED_SOURCES.items():
         source = _repository_regular_file(root, Path(source_name), "pinned_source")
-        if sha256_file(source) != expected_digest:
-            _fail("SOURCE_DIGEST_MISMATCH", "pinned_source")
+        current_override = CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.get(source_name)
+        if current_override is None:
+            if sha256_file(source) != expected_digest:
+                _fail("SOURCE_DIGEST_MISMATCH", "pinned_source")
+            continue
+        expected_size, current_digest = current_override
+        try:
+            content = source.read_bytes()
+        except OSError:
+            _fail("CURRENT_DEVELOPMENT_SOURCE_DRIFT", "current_development.source")
+        if len(content) != expected_size or sha256_bytes(content) != current_digest:
+            _fail("CURRENT_DEVELOPMENT_SOURCE_DRIFT", "current_development.source")
+
+
+def _validate_current_development_authority(root: Path) -> None:
+    path = _repository_regular_file(
+        root,
+        STANDING_DEVELOPMENT_AUTHORITY_PATH,
+        "current_development.authority_source",
+    )
+    try:
+        content = path.read_bytes()
+    except OSError:
+        _fail(
+            "CURRENT_DEVELOPMENT_AUTHORITY_DRIFT",
+            "current_development.authority_source",
+        )
+    if (
+        len(content) != STANDING_DEVELOPMENT_AUTHORITY_BYTES
+        or sha256_bytes(content) != STANDING_DEVELOPMENT_AUTHORITY_SHA256
+    ):
+        _fail(
+            "CURRENT_DEVELOPMENT_AUTHORITY_DRIFT",
+            "current_development.authority_source",
+        )
 
 
 def _find_exact_record(
@@ -913,7 +957,7 @@ def _validate_authority_semantics(root: Path) -> None:
         root,
         "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
         (
-            "Status: `OWNER_APPROVED_FOR_LOCAL_IMPLEMENTATION`",
+            "Status: `ACTIVE_UNDER_STANDING_DEVELOPMENT_AUTHORIZATION`",
             "`ST-1504`, `ST-1505`, `ST-1506`",
             "Open-Decision and infrastructure Stories remain disabled/synthetic",
         ),
@@ -1451,6 +1495,7 @@ def validate_contract(
     value = _mapping(contract, "contract")
     _exact_keys(value, TOP_LEVEL_KEYS, "contract")
     _validate_sources(value, root)
+    _validate_current_development_authority(root)
     _validate_authority_semantics(root)
     _validate_predecessor_semantics(root)
     for section, expected in EXPECTED_SECTIONS.items():
@@ -1566,6 +1611,34 @@ def render_manifest(
                 {"uri": f"repo://{relative}", "sha256": digest}
                 for relative, digest in PREDECESSOR_SOURCES.items()
             ],
+            "current_development_rebinding": {
+                "classification": "REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY",
+                "authority_source": {
+                    "uri": (f"repo://{STANDING_DEVELOPMENT_AUTHORITY_PATH.as_posix()}"),
+                    "bytes": STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+                    "sha256": STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+                    "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+                },
+                "current_authority_inputs": [
+                    {
+                        "uri": f"repo://{relative}",
+                        "bytes": override[0],
+                        "sha256": override[1],
+                    }
+                    for relative, override in (
+                        CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.items()
+                    )
+                ],
+                "historical_source_rows_preserved": True,
+                "semantic_delta_from_staging_interface": "NONE",
+                "repository_git_authority": ("ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"),
+                "external_authority": "NONE",
+                "live_provider_authority": "NONE",
+                "credential_authority": "NONE",
+                "publication_authority": "NONE",
+                "release_authority": "NONE",
+                "production_authority": "NONE",
+            },
         },
         "source_artifact_count": len(source_artifacts),
         "source_artifacts": source_artifacts,

@@ -10,9 +10,9 @@
     "implementation_dependencies": [
       {
         "uri": "repo://scripts/build_st1506_production_deployment.py",
-        "bytes": 42566,
-        "sha256": "ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f",
-        "use": "DESCRIPTOR_SAFE_YAML_PATH_AND_ATOMIC_OUTPUT_ONLY"
+        "bytes": 82181,
+        "sha256": "20e07ca05f5cb717654bfd98057863edbf699e674bb2594d2071fd474c366a30",
+        "use": "DESCRIPTOR_BOUNDED_BYTES_PARSE_AND_ATOMIC_OUTPUT_ONLY"
       }
     ]
   },

@@ -276,11 +276,42 @@ def test_source_inventory_digest_duplicate_and_reordering_fail_closed(
 
 
 def _copy_pinned_sources(target_root: Path) -> None:
-    for relative in generator.PINNED_SOURCES:
+    for relative in dict.fromkeys(
+        (*generator.PINNED_SOURCES, generator.STANDING_DEVELOPMENT_AUTHORITY_PATH)
+    ):
         source = REPOSITORY_ROOT / relative
         target = target_root / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
+
+
+@pytest.mark.parametrize(
+    ("relative", "expected_code"),
+    (
+        (
+            generator.STANDING_DEVELOPMENT_AUTHORITY_PATH,
+            "CURRENT_DEVELOPMENT_AUTHORITY_DRIFT",
+        ),
+        (
+            Path("docs/execplans/RAOS-IMPLEMENTATION-FIRST.md"),
+            "CURRENT_DEVELOPMENT_SOURCE_DRIFT",
+        ),
+    ),
+)
+def test_current_development_binding_drift_fails_closed_without_echoing_bytes(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    relative: Path,
+    expected_code: str,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    marker = f"\n{MARKER}\n".encode()
+    path = tmp_path / relative
+    path.write_bytes(path.read_bytes() + marker)
+    with pytest.raises(generator.StagingDeploymentContractError) as captured:
+        generator.validate_contract(copy.deepcopy(contract_document), tmp_path)
+    assert captured.value.code == expected_code
+    assert MARKER not in str(captured.value)
 
 
 @pytest.mark.parametrize("relative", tuple(generator.PREDECESSOR_SOURCES))

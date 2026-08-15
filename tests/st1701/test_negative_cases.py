@@ -540,6 +540,57 @@ def test_optional_gold_input_symlinked_ancestor_fails_closed(tmp_path: Path) -> 
     assert "code=UNSAFE_ANCESTOR" in str(captured.value)
 
 
+def test_optional_repository_state_distinguishes_absent_and_regular_files(
+    tmp_path: Path,
+) -> None:
+    relative = Path("optional/input.yaml")
+    assert generator._repository_path_state(tmp_path, relative, "optional") == (
+        "ABSENT"
+    )
+    target = tmp_path / relative
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b"")
+    assert generator._repository_path_state(tmp_path, relative, "optional") == (
+        "REGULAR"
+    )
+    target.write_bytes(b"present\n")
+    assert generator._repository_path_state(tmp_path, relative, "optional") == (
+        "REGULAR"
+    )
+
+
+def test_current_development_authority_drift_fails_closed_without_echo(
+    tmp_path: Path,
+) -> None:
+    marker = b"REJECTED_CURRENT_AUTHORITY_1701"
+    (tmp_path / generator.STANDING_DEVELOPMENT_AUTHORITY_PATH).write_bytes(marker)
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        generator._validate_current_development_authority(tmp_path)
+    assert captured.value.code == "CURRENT_DEVELOPMENT_AUTHORITY_DRIFT"
+    assert marker.decode() not in str(captured.value)
+
+
+def test_current_execplan_drift_uses_separate_fail_closed_binding(
+    contract_document: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    original_read = generator._read
+
+    def drifted_read(root: Path, relative: Path, field: str) -> bytes:
+        if relative == Path("docs/execplans/RAOS-IMPLEMENTATION-FIRST.md"):
+            return b"rejected current execplan"
+        return original_read(root, relative, field)
+
+    monkeypatch.setattr(generator, "_read", drifted_read)
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        generator._verify_rows(
+            REPOSITORY_ROOT,
+            contract_document["sources"],
+            generator.EXPECTED_SOURCE_ROWS,
+            "sources",
+        )
+    assert captured.value.code == "CURRENT_DEVELOPMENT_SOURCE_DRIFT"
+
+
 def _copy_final_approval_authority_fixture(root: Path) -> None:
     for relative in (
         generator.HANDOFF_PATH,

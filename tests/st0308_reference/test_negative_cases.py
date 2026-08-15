@@ -242,23 +242,27 @@ def test_repository_file_boundary_rejects_symlink_fifo_directory_and_oversize(
 
     symlink = root / "symlink"
     symlink.symlink_to(target)
-    with pytest.raises(builder.PersistenceReferenceError):
+    with pytest.raises(builder.PersistenceReferenceError) as captured:
         builder._read_bound_file(root, Path("symlink"), "test")
+    assert captured.value.code == "BOUND_FILE_UNAVAILABLE"
 
     fifo = root / "fifo"
     os.mkfifo(fifo)
-    with pytest.raises(builder.PersistenceReferenceError):
+    with pytest.raises(builder.PersistenceReferenceError) as captured:
         builder._read_bound_file(root, Path("fifo"), "test")
+    assert captured.value.code == "BOUND_FILE_UNAVAILABLE"
 
     directory = root / "directory"
     directory.mkdir()
-    with pytest.raises(builder.PersistenceReferenceError):
+    with pytest.raises(builder.PersistenceReferenceError) as captured:
         builder._read_bound_file(root, Path("directory"), "test")
+    assert captured.value.code == "BOUND_FILE_UNAVAILABLE"
 
     oversized = root / "oversized"
     oversized.write_bytes(b"x" * (builder.MAX_BOUND_FILE_BYTES + 1))
-    with pytest.raises(builder.PersistenceReferenceError, match="SIZE_LIMIT"):
+    with pytest.raises(builder.PersistenceReferenceError) as captured:
         builder._read_bound_file(root, Path("oversized"), "test")
+    assert captured.value.code == "BOUND_FILE_SIZE_LIMIT"
 
 
 def test_predecessor_and_source_byte_changes_are_rejected(

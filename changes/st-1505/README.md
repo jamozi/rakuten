@@ -20,6 +20,14 @@ deployment, smoke request, browser run, rollback, release, or external state.
 This local reference does not make ST-1505 Story Done, `VALIDATED`, deployed,
 or ready for a release or Production.
 
+The immutable historical source row for the implementation-first ExecPlan is
+preserved in the source contract. For current repository development only, the
+owner builder separately verifies the exact root `AGENTS.md` standing
+authorization and the exact current ExecPlan bytes in
+`provenance.current_development_rebinding`. That binding grants no external,
+provider, credential, publication, release, or Production authority and makes
+no semantic change to the disabled staging interface.
+
 ## Predecessor boundary
 
 The owner builder binds the exact bytes and fail-closed semantics of the

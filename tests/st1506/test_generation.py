@@ -102,6 +102,38 @@ def test_manifest_pins_authority_and_immediate_plus_transitive_predecessors() ->
     )
     assert len(manifest["provenance"]["approved_preimplementation_inputs"]) == 22
 
+    current = manifest["provenance"]["current_development_rebinding"]
+    assert current["classification"] == "REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY"
+    assert {
+        key: current[key] for key in generator.CURRENT_DEVELOPMENT_REBINDING_POLICY
+    } == generator.CURRENT_DEVELOPMENT_REBINDING_POLICY
+    assert current["authority_source"] == {
+        "uri": f"repo://{generator.STANDING_DEVELOPMENT_AUTHORITY_PATH}",
+        "bytes": generator.STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+        "sha256": generator.STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+        "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+    }
+    assert current["historical_authority_source"] == {
+        "uri": "repo://AGENTS.md",
+        "bytes": generator.HISTORICAL_STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+        "sha256": generator.HISTORICAL_STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+        "mutation": "FORBIDDEN",
+    }
+    assert current["current_authority_inputs"] == [
+        {
+            "uri": f"repo://{path}",
+            "bytes": binding[0],
+            "sha256": binding[1],
+        }
+        for path, binding in generator.CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.items()
+    ]
+    assert current["historical_source_rows_preserved"] is True
+    assert current["semantic_delta_from_approved_interface"] == "NONE"
+    assert current["repository_git_authority"] == (
+        "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"
+    )
+    assert current["external_authority"] == "NONE"
+
 
 def test_generated_plan_records_detached_authority_and_exact_interface() -> None:
     model = generator.load_and_validate_contract(REPOSITORY_ROOT)
@@ -560,6 +592,22 @@ def test_descriptor_cleanup_close_error_does_not_leak_or_mask_success(
     assert content == b"owned"
     assert raised is True
     assert len(closed) >= 4
+
+
+def test_repository_file_snapshot_captures_content_and_mode_from_one_descriptor(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "input.txt"
+    path.write_bytes(b"owned")
+    path.chmod(0o640)
+    snapshot = generator._read_repository_file_snapshot(
+        tmp_path,
+        Path("input.txt"),
+        "snapshot",
+        max_bytes=16,
+        size_error_code="FILE_SIZE_LIMIT",
+    )
+    assert snapshot == generator.RepositoryFileSnapshot(content=b"owned", mode=0o640)
 
 
 def test_atomic_cleanup_unlink_error_preserves_primary_error_and_closes_parent(

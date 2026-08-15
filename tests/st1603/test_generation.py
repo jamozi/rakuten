@@ -97,6 +97,64 @@ def test_manifest_inventory_hashes_every_owned_source_and_generated_plan() -> No
         {"uri": f"repo://{path}", "sha256": digest}
         for path, digest in generator.EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES.items()
     ]
+    current = manifest["provenance"]["current_development_rebinding"]
+    assert current["authority_source"] == {
+        "uri": f"repo://{generator.STANDING_DEVELOPMENT_AUTHORITY_PATH}",
+        "bytes": generator.STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+        "sha256": generator.STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+        "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+    }
+    assert current["current_authority_inputs"] == [
+        {
+            "uri": f"repo://{path}",
+            "bytes": binding[0],
+            "sha256": binding[1],
+        }
+        for path, binding in generator.CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.items()
+    ]
+    assert current["current_predecessor_inputs"] == [
+        {
+            "uri": f"repo://{path}",
+            "bytes": binding[0],
+            "sha256": binding[1],
+        }
+        for path, binding in (
+            generator.CURRENT_DEVELOPMENT_PREDECESSOR_OVERRIDES.items()
+        )
+    ]
+    assert current["historical_source_and_predecessor_rows_preserved"] is True
+    assert current["semantic_delta_from_security_interface"] == "NONE"
+    for field in (
+        "external_authority",
+        "live_provider_authority",
+        "credential_authority",
+        "publication_authority",
+        "release_authority",
+        "production_authority",
+    ):
+        assert current[field] == "NONE"
+
+
+@pytest.mark.parametrize("target_kind", ("symlink", "directory"))
+def test_check_rejects_unsafe_output_leaf_without_escape(
+    tmp_path: Path, target_kind: str
+) -> None:
+    expected = generator.render_outputs(REPOSITORY_ROOT)
+    for relative, content in expected.items():
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(content)
+    target = tmp_path / generator.REFERENCE_PLAN_PATH
+    target.unlink()
+    if target_kind == "symlink":
+        outside = tmp_path / "outside"
+        outside.write_bytes(b"outside")
+        target.symlink_to(outside)
+    else:
+        target.mkdir()
+    with pytest.raises(base_generator.ProductionDeploymentContractError) as captured:
+        generator.check_outputs(tmp_path, expected)
+    assert captured.value.code == "UNSAFE_FILE_TYPE"
 
 
 def test_imported_local_builder_dependency_is_hash_bound() -> None:

@@ -127,6 +127,57 @@ provenance:
     evidence_class: CURRENT_OFFICIAL_PRIMARY_DOCUMENTATION
     relevant_fact: WordPress supplies a hostname-specific third-party plugin update
       filter derived from Update URI.
+  current_development_rebinding:
+    classification: REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY
+    approved_story: ST-1506
+    integration_base:
+      commit: f733200d5b801a417d2f220e24efb9394f616be4
+      tree: 60bbeb3a0d319b4a348f1cdeed824218289149c7
+    change_classification: GOVERNANCE_PROVENANCE_ONLY
+    action_count: 0
+    canonical_status: UNCHANGED
+    unresolved_open_decisions:
+    - OD-009
+    - OD-011
+    - OD-013
+    - OD-015
+    selected_live_bindings:
+      endpoint: null
+      account: null
+      identity: null
+      key: null
+      secret: null
+      workflow: null
+      release: null
+    authority_boundary:
+      implementation_authority: NONE
+      publication_authority: NONE
+      release_authority: NONE
+      status_authority: NONE
+      credential_authority: NONE
+      provider_authority: NONE
+      network_authority: NONE
+      browser_authority: NONE
+      staging_authority: NONE
+      production_authority: NONE
+    authority_source:
+      uri: repo://AGENTS.md
+      bytes: 43916
+      sha256: a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482
+      authority: ROOT_STANDING_DEVELOPMENT_AUTHORIZATION
+    historical_authority_source:
+      uri: repo://AGENTS.md
+      bytes: 40758
+      sha256: 6973e46dfd9c2aeb7d93f53b43fbb070249ddf89857b44ee726eb768250475cb
+      mutation: FORBIDDEN
+    current_authority_inputs:
+    - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+      bytes: 11132
+      sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
+    historical_source_rows_preserved: true
+    semantic_delta_from_approved_interface: NONE
+    repository_git_authority: ROOT_STANDING_DEVELOPMENT_AUTHORIZATION
+    external_authority: NONE
   predecessor_inputs:
   - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
     sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
@@ -156,11 +207,11 @@ source_artifacts:
   bytes: 2298
   sha256: 89a8d77ca319a51d38bf7662c4d7a38763b13f66e5a33176ecaf93e598fd25bb
 - uri: repo://changes/st-1506/README.md
-  bytes: 8780
-  sha256: 057e3a655528ffe4ff1080acda9fbf9e136c5bbabfd5bd07a6b54d03179b4008
+  bytes: 9695
+  sha256: bbcbadce8333a8d84939401576f5a5ec5a9f31c8a3274dd171eaa232f0eabbac
 - uri: repo://scripts/build_st1506_production_deployment.py
-  bytes: 72534
-  sha256: dc0850f68c224eaf1964292d3e1ddca57e6f7a169f9a519fcb1da72798c44b37
+  bytes: 82181
+  sha256: 20e07ca05f5cb717654bfd98057863edbf699e674bb2594d2071fd474c366a30
 - uri: repo://tests/st1506/conftest.py
   bytes: 650
   sha256: 6e1d73217032d1b903701e6c589d89df06201adafa2185053a4a3500ef187eee
@@ -168,14 +219,14 @@ source_artifacts:
   bytes: 17090
   sha256: f8fb9e54563cef387d779319d4805c8eda9f84c75640493016e2b427ede82d85
 - uri: repo://tests/st1506/test_generation.py
-  bytes: 24540
-  sha256: 21a721061f997cd36cb5be3d52e8a34a80a0e13d1f976154e1ecc7df3d52033f
+  bytes: 26487
+  sha256: 04b894f07ab32182c4307ddcb00f197e720cf233e21d3385255277709042a6e4
 - uri: repo://tests/st1506/test_negative_cases.py
-  bytes: 39874
-  sha256: 27304509e510addfbb84ec31eb87f47de29bd7732062a075a3c15e253d997e2d
+  bytes: 42633
+  sha256: 23685f60eb2c7ffc6ff5e9a125c8728b9aa9c2d2bdbd7b41001b63f870985a74
 - uri: repo://docs/worklogs/ST-1506.md
-  bytes: 8690
-  sha256: 7d25696c68bc6b24ec87ae7efe6da8d2524f85037be7e04560ec5005e93d9f45
+  bytes: 11150
+  sha256: 6e762770c3836cbe0633525f3686a546815696309edf2830923b889605b0675b
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/deployment-production/production-deployment.reference-plan.v1.json

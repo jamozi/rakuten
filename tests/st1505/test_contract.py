@@ -250,7 +250,11 @@ def test_source_pins_match_regular_files() -> None:
         path = REPOSITORY_ROOT / relative
         assert path.is_file()
         assert not path.is_symlink()
-        assert generator.sha256_file(path) == expected_digest
+        current_override = generator.CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.get(relative)
+        live_digest = (
+            current_override[1] if current_override is not None else expected_digest
+        )
+        assert generator.sha256_file(path) == live_digest
 
 
 def test_generated_json_matches_strict_renderer(

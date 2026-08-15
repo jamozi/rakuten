@@ -8,7 +8,6 @@ import copy
 import hashlib
 import json
 import re
-import stat
 import sys
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -54,8 +53,8 @@ SOURCE_ARTIFACT_PATHS: Final = (
 
 SECURE_HELPER_ROW: Final = (
     "scripts/build_st1506_production_deployment.py",
-    42566,
-    "ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f",
+    82181,
+    "20e07ca05f5cb717654bfd98057863edbf699e674bb2594d2071fd474c366a30",
 )
 
 SOURCE_ROWS: Final = (
@@ -377,7 +376,7 @@ EXPECTED_DOCUMENT: Final = {
             "uri": f"repo://{SECURE_HELPER_ROW[0]}",
             "bytes": SECURE_HELPER_ROW[1],
             "sha256": SECURE_HELPER_ROW[2],
-            "use": "DESCRIPTOR_SAFE_YAML_PATH_AND_ATOMIC_OUTPUT_ONLY",
+            "use": "DESCRIPTOR_BOUNDED_BYTES_PARSE_AND_ATOMIC_OUTPUT_ONLY",
         }
     ],
 }
@@ -597,22 +596,19 @@ def _strict_match(actual: object, expected: object, field: str) -> None:
         _fail("FIXED_VALUE_VIOLATION", field)
 
 
-def _safe_repository_file(root: Path, relative: Path, field: str) -> Path:
-    try:
-        return secure_io._repository_regular_file(root, relative, field)
-    except secure_io.ProductionDeploymentContractError:
-        _fail("BOUND_FILE_UNAVAILABLE", field)
-
-
 def _read_bound_file(root: Path, relative: Path, field: str) -> bytes:
-    path = _safe_repository_file(root, relative, field)
     try:
-        content = path.read_bytes()
-    except OSError:
+        return secure_io._read_repository_file(
+            root,
+            relative,
+            field,
+            max_bytes=MAX_BOUND_FILE_BYTES,
+            size_error_code="BOUND_FILE_SIZE_LIMIT",
+        )
+    except secure_io.ProductionDeploymentContractError as exc:
+        if exc.code == "BOUND_FILE_SIZE_LIMIT":
+            _fail("BOUND_FILE_SIZE_LIMIT", field)
         _fail("BOUND_FILE_UNAVAILABLE", field)
-    if len(content) > MAX_BOUND_FILE_BYTES:
-        _fail("BOUND_FILE_SIZE_LIMIT", field)
-    return content
 
 
 def _repo_uri_path(value: object, field: str) -> Path:
@@ -649,19 +645,22 @@ def _validate_bound_rows(
 
 
 def _load_contract(root: Path) -> Mapping[str, Any]:
-    contract_path = _safe_repository_file(root, CONTRACT_PATH, "contract")
     try:
-        return _mapping(secure_io.load_yaml(contract_path), "contract")
+        content = _read_bound_file(root, CONTRACT_PATH, "contract")
+        return _mapping(secure_io._parse_yaml_bytes(content, "contract"), "contract")
     except secure_io.ProductionDeploymentContractError:
         _fail("CONTRACT_YAML_INVALID", "contract")
 
 
 def _load_st0105_manifest(root: Path) -> Mapping[str, Any]:
-    manifest_path = _safe_repository_file(
-        root, Path("changes/st-0105/manifest.json"), "st0105_manifest"
-    )
     try:
-        return _mapping(secure_io.load_json(manifest_path), "st0105_manifest")
+        content = _read_bound_file(
+            root, Path("changes/st-0105/manifest.json"), "st0105_manifest"
+        )
+        return _mapping(
+            secure_io._parse_json_bytes(content, "st0105_manifest"),
+            "st0105_manifest",
+        )
     except secure_io.ProductionDeploymentContractError:
         _fail("ST0105_MANIFEST_INVALID", "st0105_manifest")
 
@@ -775,10 +774,15 @@ def _validate_st0105_projection(raw_facts: object, root: Path) -> None:
 def validate_contract(
     contract: Mapping[str, Any], root: Path = REPO_ROOT
 ) -> PersistenceReferenceModel:
+    descriptor = -1
     try:
-        physical_root = secure_io._real_repository_root(root)
+        descriptor = secure_io._open_physical_directory(root, "repository")
     except secure_io.ProductionDeploymentContractError:
         _fail("UNSAFE_REPOSITORY_ROOT", "repository")
+    finally:
+        if descriptor >= 0:
+            secure_io._close_descriptor(descriptor)
+    physical_root = root
     if tuple(contract) != TOP_LEVEL_KEYS:
         _fail("ORDERED_CLOSED_SCHEMA_VIOLATION", "contract")
 
@@ -969,29 +973,33 @@ def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
     }
 
 
-def _owner_output(root: Path, relative: Path) -> Path:
+def _read_owner_output(root: Path, relative: Path) -> bytes:
     try:
-        path = secure_io._output_file(root, relative)
-    except secure_io.ProductionDeploymentContractError:
+        snapshot = secure_io._read_repository_file_snapshot(
+            root,
+            relative,
+            "output",
+            max_bytes=MAX_BOUND_FILE_BYTES,
+            size_error_code="OWNER_OUTPUT_SIZE_LIMIT",
+            path_error_code="UNSAFE_OUTPUT_PATH",
+            missing_error_code="OWNER_OUTPUT_UNAVAILABLE",
+            ancestor_error_code="UNSAFE_OUTPUT_ANCESTOR",
+            file_type_error_code="UNSAFE_FILE_TYPE",
+        )
+    except secure_io.ProductionDeploymentContractError as exc:
+        if exc.code in {"OWNER_OUTPUT_UNAVAILABLE", "OWNER_OUTPUT_SIZE_LIMIT"}:
+            _fail(exc.code, "output")
         _fail("OWNER_OUTPUT_UNSAFE", "output")
-    try:
-        metadata = path.lstat()
-    except OSError:
-        _fail("OWNER_OUTPUT_UNAVAILABLE", "output")
-    if stat.S_IMODE(metadata.st_mode) != 0o644:
+    if snapshot.mode != 0o644:
         _fail("OWNER_OUTPUT_MODE_INVALID", "output")
-    return path
+    return snapshot.content
 
 
 def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if tuple(expected) != OWNER_OUTPUT_PATHS:
         _fail("OWNER_OUTPUT_INVENTORY_DRIFT", "output")
     for relative in OWNER_OUTPUT_PATHS:
-        path = _owner_output(root, relative)
-        try:
-            actual = path.read_bytes()
-        except OSError:
-            _fail("OWNER_OUTPUT_UNAVAILABLE", "output")
+        actual = _read_owner_output(root, relative)
         if actual != expected[relative]:
             _fail("OWNER_OUTPUT_DRIFT", "output")
 

@@ -66,6 +66,53 @@ APPROVAL_BYTES: Final = 2_298
 APPROVAL_SHA256: Final = (
     "89a8d77ca319a51d38bf7662c4d7a38763b13f66e5a33176ecaf93e598fd25bb"
 )
+STANDING_DEVELOPMENT_AUTHORITY_PATH: Final = Path("AGENTS.md")
+STANDING_DEVELOPMENT_AUTHORITY_BYTES: Final = 43_916
+STANDING_DEVELOPMENT_AUTHORITY_SHA256: Final = (
+    "a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482"
+)
+HISTORICAL_STANDING_DEVELOPMENT_AUTHORITY_BYTES: Final = 40_758
+HISTORICAL_STANDING_DEVELOPMENT_AUTHORITY_SHA256: Final = (
+    "6973e46dfd9c2aeb7d93f53b43fbb070249ddf89857b44ee726eb768250475cb"
+)
+CURRENT_DEVELOPMENT_SOURCE_OVERRIDES: Final = {
+    "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
+        11_132,
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234",
+    ),
+}
+CURRENT_DEVELOPMENT_REBINDING_POLICY: Final = {
+    "approved_story": "ST-1506",
+    "integration_base": {
+        "commit": "f733200d5b801a417d2f220e24efb9394f616be4",
+        "tree": "60bbeb3a0d319b4a348f1cdeed824218289149c7",
+    },
+    "change_classification": "GOVERNANCE_PROVENANCE_ONLY",
+    "action_count": 0,
+    "canonical_status": "UNCHANGED",
+    "unresolved_open_decisions": ["OD-009", "OD-011", "OD-013", "OD-015"],
+    "selected_live_bindings": {
+        "endpoint": None,
+        "account": None,
+        "identity": None,
+        "key": None,
+        "secret": None,
+        "workflow": None,
+        "release": None,
+    },
+    "authority_boundary": {
+        "implementation_authority": "NONE",
+        "publication_authority": "NONE",
+        "release_authority": "NONE",
+        "status_authority": "NONE",
+        "credential_authority": "NONE",
+        "provider_authority": "NONE",
+        "network_authority": "NONE",
+        "browser_authority": "NONE",
+        "staging_authority": "NONE",
+        "production_authority": "NONE",
+    },
+}
 EXPECTED_HANDOFF_OBJECT_FINGERPRINT: Final = (
     "02a87ef1d840a88ffe16f0349733e9a168154f4e781a838ff24399bffa785205"
 )
@@ -371,6 +418,7 @@ ST1505_ACTION_COUNT_NAMES: Final = (
 )
 MAX_DOCUMENT_BYTES: Final = 2 * 1024 * 1024
 READ_CHUNK_BYTES: Final = 64 * 1024
+OPTIONAL_MISSING_ERROR_CODE: Final = "INTERNAL_OPTIONAL_FILE_MISSING"
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
 YAML_PARSE_ERRORS: Final = (UnicodeError, yaml.YAMLError)
 JSON_PARSE_ERRORS: Final = (UnicodeError, json.JSONDecodeError)
@@ -456,6 +504,14 @@ class ImplementationAuthorityModel:
     wordpress_interface: Mapping[str, Any]
     source_design_refs: tuple[Mapping[str, Any], ...]
     validated_contents: tuple[tuple[str, bytes], ...]
+
+
+@dataclass(frozen=True, slots=True)
+class RepositoryFileSnapshot:
+    """Bytes and mode captured from one descriptor-bounded regular-file read."""
+
+    content: bytes
+    mode: int
 
 
 def sha256_bytes(content: bytes) -> str:
@@ -556,13 +612,57 @@ def _assert_unset_tree(value: object, field: str) -> None:
     _fail("SELECTION_MUST_REMAIN_UNSET", field)
 
 
-def _read_bounded_descriptor(
+def _validate_current_development_rebinding_policy() -> None:
+    _strict_ordered_match(
+        CURRENT_DEVELOPMENT_REBINDING_POLICY,
+        {
+            "approved_story": "ST-1506",
+            "integration_base": {
+                "commit": "f733200d5b801a417d2f220e24efb9394f616be4",
+                "tree": "60bbeb3a0d319b4a348f1cdeed824218289149c7",
+            },
+            "change_classification": "GOVERNANCE_PROVENANCE_ONLY",
+            "action_count": 0,
+            "canonical_status": "UNCHANGED",
+            "unresolved_open_decisions": [
+                "OD-009",
+                "OD-011",
+                "OD-013",
+                "OD-015",
+            ],
+            "selected_live_bindings": {
+                "endpoint": None,
+                "account": None,
+                "identity": None,
+                "key": None,
+                "secret": None,
+                "workflow": None,
+                "release": None,
+            },
+            "authority_boundary": {
+                "implementation_authority": "NONE",
+                "publication_authority": "NONE",
+                "release_authority": "NONE",
+                "status_authority": "NONE",
+                "credential_authority": "NONE",
+                "provider_authority": "NONE",
+                "network_authority": "NONE",
+                "browser_authority": "NONE",
+                "staging_authority": "NONE",
+                "production_authority": "NONE",
+            },
+        },
+        "current_development_rebinding",
+    )
+
+
+def _read_bounded_descriptor_snapshot(
     descriptor: int,
     field: str,
     *,
     max_bytes: int,
     size_error_code: str,
-) -> bytes:
+) -> RepositoryFileSnapshot:
     before = os.fstat(descriptor)
     if not stat.S_ISREG(before.st_mode):
         _fail("UNSAFE_FILE_TYPE", field)
@@ -587,6 +687,7 @@ def _read_bounded_descriptor(
     identity_before = (
         before.st_dev,
         before.st_ino,
+        before.st_mode,
         before.st_size,
         before.st_mtime_ns,
         before.st_ctime_ns,
@@ -594,13 +695,32 @@ def _read_bounded_descriptor(
     identity_after = (
         after.st_dev,
         after.st_ino,
+        after.st_mode,
         after.st_size,
         after.st_mtime_ns,
         after.st_ctime_ns,
     )
     if identity_before != identity_after or total != before.st_size:
         _fail("FILE_CHANGED_DURING_READ", field)
-    return b"".join(chunks)
+    return RepositoryFileSnapshot(
+        content=b"".join(chunks),
+        mode=stat.S_IMODE(after.st_mode),
+    )
+
+
+def _read_bounded_descriptor(
+    descriptor: int,
+    field: str,
+    *,
+    max_bytes: int,
+    size_error_code: str,
+) -> bytes:
+    return _read_bounded_descriptor_snapshot(
+        descriptor,
+        field,
+        max_bytes=max_bytes,
+        size_error_code=size_error_code,
+    ).content
 
 
 def _validate_relative_path(relative: Path, field: str, path_error_code: str) -> None:
@@ -666,7 +786,7 @@ def _open_physical_directory(root: Path, field: str) -> int:
         _close_descriptors(descriptors)
 
 
-def _read_repository_file(
+def _read_repository_file_snapshot(
     root: Path,
     relative: Path,
     field: str,
@@ -677,7 +797,7 @@ def _read_repository_file(
     missing_error_code: str = "FILE_UNAVAILABLE",
     ancestor_error_code: str = "UNSAFE_ANCESTOR",
     file_type_error_code: str = "UNSAFE_FILE_TYPE",
-) -> bytes:
+) -> RepositoryFileSnapshot:
     _validate_relative_path(relative, field, path_error_code)
     directory_flags = (
         os.O_RDONLY
@@ -708,7 +828,7 @@ def _read_repository_file(
             _fail(missing_error_code, field)
         except OSError:
             _fail(file_type_error_code, field)
-        return _read_bounded_descriptor(
+        return _read_bounded_descriptor_snapshot(
             descriptor,
             field,
             max_bytes=max_bytes,
@@ -722,6 +842,70 @@ def _read_repository_file(
         if descriptor >= 0:
             _close_descriptor(descriptor)
         _close_descriptors(directories)
+
+
+def _read_repository_file(
+    root: Path,
+    relative: Path,
+    field: str,
+    *,
+    max_bytes: int,
+    size_error_code: str,
+    path_error_code: str = "UNSAFE_REPOSITORY_PATH",
+    missing_error_code: str = "FILE_UNAVAILABLE",
+    ancestor_error_code: str = "UNSAFE_ANCESTOR",
+    file_type_error_code: str = "UNSAFE_FILE_TYPE",
+) -> bytes:
+    return _read_repository_file_snapshot(
+        root,
+        relative,
+        field,
+        max_bytes=max_bytes,
+        size_error_code=size_error_code,
+        path_error_code=path_error_code,
+        missing_error_code=missing_error_code,
+        ancestor_error_code=ancestor_error_code,
+        file_type_error_code=file_type_error_code,
+    ).content
+
+
+def _read_optional_repository_file(
+    root: Path,
+    relative: Path,
+    field: str,
+    *,
+    max_bytes: int,
+    size_error_code: str,
+    path_error_code: str = "UNSAFE_REPOSITORY_PATH",
+    ancestor_error_code: str = "UNSAFE_ANCESTOR",
+    file_type_error_code: str = "UNSAFE_FILE_TYPE",
+) -> bytes | None:
+    """Read one bounded regular file, returning None only when it is absent."""
+
+    caller_error_codes = (
+        size_error_code,
+        path_error_code,
+        ancestor_error_code,
+        file_type_error_code,
+    )
+    if OPTIONAL_MISSING_ERROR_CODE in caller_error_codes:
+        _fail("OPTIONAL_ERROR_CODE_COLLISION", field)
+    try:
+        return _read_repository_file(
+            root,
+            relative,
+            field,
+            max_bytes=max_bytes,
+            size_error_code=size_error_code,
+            path_error_code=path_error_code,
+            missing_error_code=OPTIONAL_MISSING_ERROR_CODE,
+            ancestor_error_code=ancestor_error_code,
+            file_type_error_code=file_type_error_code,
+        )
+    except ProductionDeploymentContractError as exc:
+        if exc.code == OPTIONAL_MISSING_ERROR_CODE:
+            return None
+        raise
 
 
 def _read_bounded_regular_file(
@@ -768,19 +952,15 @@ def load_yaml(path: Path) -> Any:
     return _parse_yaml_bytes(content, "yaml")
 
 
-def load_json(path: Path) -> Any:
-    content = _read_bounded_regular_file(
-        path,
-        "json",
-        max_bytes=MAX_DOCUMENT_BYTES,
-        size_error_code="JSON_SIZE_LIMIT",
-    )
+def _parse_json_bytes(content: bytes, field: str) -> Any:
+    if len(content) > MAX_DOCUMENT_BYTES:
+        _fail("JSON_SIZE_LIMIT", field)
 
     def unique_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
         result: dict[str, Any] = {}
         for key, value in pairs:
             if key in result:
-                _fail("JSON_DUPLICATE_KEY", "json")
+                _fail("JSON_DUPLICATE_KEY", field)
             result[key] = value
         return result
 
@@ -788,12 +968,22 @@ def load_json(path: Path) -> Any:
         return json.loads(
             content.decode("utf-8"),
             object_pairs_hook=unique_pairs,
-            parse_constant=lambda _value: _fail("JSON_INVALID", "json"),
+            parse_constant=lambda _value: _fail("JSON_INVALID", field),
         )
     except ProductionDeploymentContractError:
         raise
     except JSON_PARSE_ERRORS:
-        _fail("JSON_INVALID", "json")
+        _fail("JSON_INVALID", field)
+
+
+def load_json(path: Path) -> Any:
+    content = _read_bounded_regular_file(
+        path,
+        "json",
+        max_bytes=MAX_DOCUMENT_BYTES,
+        size_error_code="JSON_SIZE_LIMIT",
+    )
+    return _parse_json_bytes(content, "json")
 
 
 def _repo_relative_uri(value: object) -> Path:
@@ -888,18 +1078,47 @@ def _validate_implementation_authority(root: Path) -> ImplementationAuthorityMod
                 "IMPLEMENTATION_AUTHORITY_SCHEMA_DRIFT",
                 "implementation_handoff.source_refs.item",
             )
-        content = _read_repository_file(
-            root,
-            relative,
-            f"implementation_handoff.live_source_{index}",
-            max_bytes=expected_size,
-            size_error_code="IMPLEMENTATION_HANDOFF_SOURCE_DRIFT",
-        )
-        if len(content) != expected_size or sha256_bytes(content) != expected_digest:
-            _fail(
-                "IMPLEMENTATION_HANDOFF_SOURCE_DRIFT",
-                "implementation_handoff.live_source",
+        if index == 0:
+            _strict_match(
+                row,
+                {
+                    "uri": "repo://AGENTS.md",
+                    "bytes": HISTORICAL_STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+                    "sha256": HISTORICAL_STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+                },
+                "implementation_handoff.historical_authority_source",
             )
+            content = _read_repository_file(
+                root,
+                STANDING_DEVELOPMENT_AUTHORITY_PATH,
+                "current_development.authority_source",
+                max_bytes=STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+                size_error_code="CURRENT_DEVELOPMENT_AUTHORITY_DRIFT",
+            )
+            if (
+                len(content) != STANDING_DEVELOPMENT_AUTHORITY_BYTES
+                or sha256_bytes(content) != STANDING_DEVELOPMENT_AUTHORITY_SHA256
+            ):
+                _fail(
+                    "CURRENT_DEVELOPMENT_AUTHORITY_DRIFT",
+                    "current_development.authority_source",
+                )
+        else:
+            content = _read_repository_file(
+                root,
+                relative,
+                f"implementation_handoff.live_source_{index}",
+                max_bytes=expected_size,
+                size_error_code="IMPLEMENTATION_HANDOFF_SOURCE_DRIFT",
+            )
+            if (
+                len(content) != expected_size
+                or sha256_bytes(content) != expected_digest
+            ):
+                _fail(
+                    "IMPLEMENTATION_HANDOFF_SOURCE_DRIFT",
+                    "implementation_handoff.live_source",
+                )
         validated_contents[relative.as_posix()] = content
     for raw_row in source_refs[
         HANDOFF_LIVE_REPOSITORY_REF_COUNT : HANDOFF_LIVE_REPOSITORY_REF_COUNT + 6
@@ -1089,16 +1308,34 @@ def _validate_sources(
         _fail("SOURCE_INVENTORY_DRIFT", "sources")
     for source_name, expected_digest in PINNED_SOURCES.items():
         content = validated_contents.get(source_name)
+        current_override = CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.get(source_name)
+        current_size = current_override[0] if current_override is not None else None
+        current_digest = (
+            current_override[1] if current_override is not None else expected_digest
+        )
         if content is None:
             content = _read_repository_file(
                 root,
                 Path(source_name),
                 "pinned_source",
-                max_bytes=MAX_DOCUMENT_BYTES,
-                size_error_code="SOURCE_DIGEST_MISMATCH",
+                max_bytes=current_size or MAX_DOCUMENT_BYTES,
+                size_error_code=(
+                    "CURRENT_DEVELOPMENT_SOURCE_DRIFT"
+                    if current_override is not None
+                    else "SOURCE_DIGEST_MISMATCH"
+                ),
             )
-        if sha256_bytes(content) != expected_digest:
-            _fail("SOURCE_DIGEST_MISMATCH", "pinned_source")
+        if (current_size is not None and len(content) != current_size) or sha256_bytes(
+            content
+        ) != current_digest:
+            _fail(
+                "CURRENT_DEVELOPMENT_SOURCE_DRIFT"
+                if current_override is not None
+                else "SOURCE_DIGEST_MISMATCH",
+                "current_development.source"
+                if current_override is not None
+                else "pinned_source",
+            )
         validated_contents[source_name] = content
 
 
@@ -1557,6 +1794,7 @@ def validate_contract(
     contract_content: bytes | None = None,
 ) -> ProductionDeploymentModel:
     value = _mapping(contract, "contract")
+    _validate_current_development_rebinding_policy()
     if contract_content is not None:
         parsed_content = _mapping(
             _parse_yaml_bytes(contract_content, "contract_content"),
@@ -1764,6 +2002,36 @@ def render_manifest(
             "approved_preimplementation_inputs": copy.deepcopy(
                 list(model.approved_preimplementation_inputs)
             ),
+            "current_development_rebinding": {
+                "classification": "REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY",
+                **copy.deepcopy(CURRENT_DEVELOPMENT_REBINDING_POLICY),
+                "authority_source": {
+                    "uri": (f"repo://{STANDING_DEVELOPMENT_AUTHORITY_PATH.as_posix()}"),
+                    "bytes": STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+                    "sha256": STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+                    "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+                },
+                "historical_authority_source": {
+                    "uri": "repo://AGENTS.md",
+                    "bytes": HISTORICAL_STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+                    "sha256": HISTORICAL_STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+                    "mutation": "FORBIDDEN",
+                },
+                "current_authority_inputs": [
+                    {
+                        "uri": f"repo://{relative}",
+                        "bytes": override[0],
+                        "sha256": override[1],
+                    }
+                    for relative, override in (
+                        CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.items()
+                    )
+                ],
+                "historical_source_rows_preserved": True,
+                "semantic_delta_from_approved_interface": "NONE",
+                "repository_git_authority": ("ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"),
+                "external_authority": "NONE",
+            },
             "predecessor_inputs": [
                 {"uri": f"repo://{relative}", "sha256": digest}
                 for relative, digest in PREDECESSOR_SOURCES.items()

@@ -231,7 +231,24 @@ EXPECTED_PREDECESSOR_HASHES: Final = {
 }
 EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
     "scripts/build_st1506_production_deployment.py": (
-        "ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f"
+        "20e07ca05f5cb717654bfd98057863edbf699e674bb2594d2071fd474c366a30"
+    ),
+}
+STANDING_DEVELOPMENT_AUTHORITY_PATH: Final = base.STANDING_DEVELOPMENT_AUTHORITY_PATH
+STANDING_DEVELOPMENT_AUTHORITY_BYTES: Final = base.STANDING_DEVELOPMENT_AUTHORITY_BYTES
+STANDING_DEVELOPMENT_AUTHORITY_SHA256: Final = (
+    base.STANDING_DEVELOPMENT_AUTHORITY_SHA256
+)
+CURRENT_DEVELOPMENT_SOURCE_OVERRIDES: Final = {
+    "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
+        11_132,
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234",
+    ),
+}
+CURRENT_DEVELOPMENT_PREDECESSOR_OVERRIDES: Final = {
+    "changes/st-1505/manifest.yaml": (
+        6_546,
+        "f5d9f2a130a2f70fa83e3da4d2897db492a16e9541f75cfa64ba32dc3caebf5c",
     ),
 }
 
@@ -280,18 +297,21 @@ def _sha256_bytes(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
-    return physical.read_bytes()
+    return base._read_repository_file(  # noqa: SLF001
+        root,
+        relative,
+        field,
+        max_bytes=base.MAX_DOCUMENT_BYTES,
+        size_error_code="FILE_SIZE_LIMIT",
+    )
 
 
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
-    return _mapping(base.load_yaml(root / relative), field)
+    return _mapping(base._parse_yaml_bytes(_read(root, relative, field), field), field)
 
 
 def _load_json(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
-    return _mapping(base.load_json(root / relative), field)
+    return _mapping(base._parse_json_bytes(_read(root, relative, field), field), field)
 
 
 def _uri_path(value: object, field: str) -> Path:
@@ -322,8 +342,31 @@ def _verify_hashes(
     if observed != list(expected.items()):
         _fail("SOURCE_INVENTORY_DRIFT", field)
     for expected_path, digest in expected.items():
-        if _sha256_bytes(_read(root, Path(expected_path), f"{field}.input")) != digest:
-            _fail("SOURCE_HASH_DRIFT", field)
+        content = _read(root, Path(expected_path), f"{field}.input")
+        current_override = CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.get(expected_path)
+        if current_override is None:
+            if _sha256_bytes(content) != digest:
+                _fail("SOURCE_HASH_DRIFT", field)
+            continue
+        expected_size, current_digest = current_override
+        if len(content) != expected_size or _sha256_bytes(content) != current_digest:
+            _fail("CURRENT_DEVELOPMENT_SOURCE_DRIFT", field)
+
+
+def _validate_current_development_authority(root: Path) -> None:
+    content = _read(
+        root,
+        STANDING_DEVELOPMENT_AUTHORITY_PATH,
+        "current_development.authority_source",
+    )
+    if (
+        len(content) != STANDING_DEVELOPMENT_AUTHORITY_BYTES
+        or _sha256_bytes(content) != STANDING_DEVELOPMENT_AUTHORITY_SHA256
+    ):
+        _fail(
+            "CURRENT_DEVELOPMENT_AUTHORITY_DRIFT",
+            "current_development.authority_source",
+        )
 
 
 def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
@@ -403,8 +446,15 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
         _exact_zero(value, f"staging.action_counts.{key}")
 
     for relative, digest in EXPECTED_PREDECESSOR_HASHES.items():
-        if _sha256_bytes(_read(root, Path(relative), "predecessor.input")) != digest:
-            _fail("PREDECESSOR_HASH_DRIFT", "predecessor_bindings")
+        content = _read(root, Path(relative), "predecessor.input")
+        current_override = CURRENT_DEVELOPMENT_PREDECESSOR_OVERRIDES.get(relative)
+        if current_override is None:
+            if _sha256_bytes(content) != digest:
+                _fail("PREDECESSOR_HASH_DRIFT", "predecessor_bindings")
+            continue
+        expected_size, current_digest = current_override
+        if len(content) != expected_size or _sha256_bytes(content) != current_digest:
+            _fail("CURRENT_DEVELOPMENT_PREDECESSOR_DRIFT", "predecessor_bindings")
 
     plan = _load_json(root, STAGING_PLAN_PATH, "staging.plan")
     document = _mapping(plan.get("document"), "staging.plan.document")
@@ -490,6 +540,7 @@ def validate_contract(
     }:
         _fail("DOCUMENT_DRIFT", "document")
     _verify_hashes(root, contract["sources"], EXPECTED_SOURCE_HASHES, "sources")
+    _validate_current_development_authority(root)
     _validate_implementation_dependencies(root)
     _validate_predecessors(contract, root)
 
@@ -628,6 +679,42 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
                 {"uri": f"repo://{path}", "sha256": digest}
                 for path, digest in EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES.items()
             ],
+            "current_development_rebinding": {
+                "classification": "REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY",
+                "authority_source": {
+                    "uri": (f"repo://{STANDING_DEVELOPMENT_AUTHORITY_PATH.as_posix()}"),
+                    "bytes": STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+                    "sha256": STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+                    "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+                },
+                "current_authority_inputs": [
+                    {
+                        "uri": f"repo://{path}",
+                        "bytes": binding[0],
+                        "sha256": binding[1],
+                    }
+                    for path, binding in (CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.items())
+                ],
+                "current_predecessor_inputs": [
+                    {
+                        "uri": f"repo://{path}",
+                        "bytes": binding[0],
+                        "sha256": binding[1],
+                    }
+                    for path, binding in (
+                        CURRENT_DEVELOPMENT_PREDECESSOR_OVERRIDES.items()
+                    )
+                ],
+                "historical_source_and_predecessor_rows_preserved": True,
+                "semantic_delta_from_security_interface": "NONE",
+                "repository_git_authority": ("ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"),
+                "external_authority": "NONE",
+                "live_provider_authority": "NONE",
+                "credential_authority": "NONE",
+                "publication_authority": "NONE",
+                "release_authority": "NONE",
+                "production_authority": "NONE",
+            },
         },
         "source_artifact_count": len(SOURCE_PATHS),
         "source_artifacts": [_artifact_row(root, path) for path in SOURCE_PATHS],
@@ -674,11 +761,17 @@ def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = base._output_file(root, relative)  # noqa: SLF001
-        try:
-            actual = path.read_bytes()
-        except OSError:
-            _fail("GENERATED_OUTPUT_UNAVAILABLE", "output")
+        actual = base._read_repository_file(  # noqa: SLF001
+            root,
+            relative,
+            "output",
+            max_bytes=base.MAX_DOCUMENT_BYTES,
+            size_error_code="GENERATED_OUTPUT_DRIFT",
+            path_error_code="UNSAFE_OUTPUT_PATH",
+            missing_error_code="GENERATED_OUTPUT_UNAVAILABLE",
+            ancestor_error_code="UNSAFE_OUTPUT_ANCESTOR",
+            file_type_error_code="UNSAFE_FILE_TYPE",
+        )
         if actual != expected[relative]:
             _fail("GENERATED_OUTPUT_DRIFT", "output")
 
