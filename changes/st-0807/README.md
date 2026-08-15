@@ -240,6 +240,29 @@ approved fallback uses a complete temporary snapshot of tracked `HEAD`,
 overlays only the seven owned files, and runs the same scanner in deterministic
 non-git walk mode. It changes no scanner rule or repository file.
 
+### Strict Pyright closure follow-up — 2026-08-15
+
+The renderer now gives strict static types to hostile tuple, list, and mapping
+contents only after the existing exact runtime-type checks accept their
+containers. The post-check casts are runtime no-ops: they do not coerce, copy,
+filter, or reorder a value. The recursive structured-data walk, exact JSON
+comparison, field-ledger evaluation order, compact serialized bytes, digest,
+public API, and fail-closed validation behavior therefore remain unchanged.
+No `Any`, ignore directive, Pyright configuration change, or relaxed check is
+used.
+
+The follow-up was checked with Node 24.18.1, Pyright 1.1.411, CPython 3.14.6,
+pytest 9.1.1, Ruff 0.16.1, and mypy 2.3.0. Exact file-level Pyright diagnostics
+fell from 44 to zero; the same whole-project invocation fell from 122 to the
+78 diagnostics owned by other Stories. The isolated ST-0807 suite remained
+145 passed, Ruff check and format-check passed, and strict mypy remained clean
+for the renderer and its five test modules. The ST-0802 and ST-0805 dependency
+suites remained 59 and 361 passed. The mechanically affected ST-0903,
+ST-0904, and ST-0905 suites passed 59, 34, and 43 tests, and each owning
+generator passed its no-write check after source-first regeneration. A
+standalone tracked snapshot overlaid with the exact 14 changed paths passed the
+repository secret scanner inside the network-denied wrapper with no findings.
+
 The exact owned files are:
 
 ```text

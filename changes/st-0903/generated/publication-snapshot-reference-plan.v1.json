@@ -144,7 +144,7 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-    "source_contract_sha256": "6474c424179fed84fb3787a2d7ef4b244bcc2a51a20765bd9400d5541dd344a0",
+    "source_contract_sha256": "0e650884dd257d608e4968d1d35a5ffe1547976bed4ac97e9bffa244e26c7a16",
     "generated_by": "repo://scripts/build_st0903_publication_snapshot_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0903_publication_snapshot_reference_plan.py",
     "implementation_helper": {
@@ -164,7 +164,7 @@
     {
       "story_id": "ST-0807",
       "artifact": "repo://changes/st-0807/README.md",
-      "sha256": "333f953e4f15b05c5b70705259643b3531e0259faa26c7612e278962130917a5",
+      "sha256": "841f8bc9a6cd15310d19f3be25121ef8875d51bbb0861745735b8a3b5d5caf2a",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "CALLER_RESOLVED_NONAUTHORITATIVE_RENDERER_INPUTS"
     },

@@ -58,7 +58,7 @@ HELPER_SHA256: Final = (
     "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
 )
 CONTRACT_SHA256: Final = (
-    "6474c424179fed84fb3787a2d7ef4b244bcc2a51a20765bd9400d5541dd344a0"
+    "0e650884dd257d608e4968d1d35a5ffe1547976bed4ac97e9bffa244e26c7a16"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -230,7 +230,7 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0807",
         "changes/st-0807/README.md",
-        "333f953e4f15b05c5b70705259643b3531e0259faa26c7612e278962130917a5",
+        "841f8bc9a6cd15310d19f3be25121ef8875d51bbb0861745735b8a3b5d5caf2a",
     ),
     (
         "ST-0808",
