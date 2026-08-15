@@ -229,13 +229,13 @@ DEPENDENCY_INPUTS: Final = (
         "ST-0805",
         "readme",
         "changes/st-0805/README.md",
-        "c0c05757da04bd59c56068d0e77359adbdf2032ade2528fac317705e8fb88b7b",
+        "914739de388086da1f83dc25691a89d877eba303ad51e0ab4068ac7105ddec13",
     ),
     (
         "ST-0805",
         "policy_engine",
         "python/raos/domain/editorial/policy_engine.py",
-        "a9982c7f27b6cc4a1b50933d7a9e51ee24b07bcc0289c71ac20cf1d147c348ff",
+        "d858a9b010253cf411083bd5eb9da995ff3f9a172c7626ca9e499a6256559e51",
     ),
     (
         "ST-0901",

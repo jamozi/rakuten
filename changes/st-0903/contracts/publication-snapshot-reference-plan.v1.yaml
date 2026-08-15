@@ -94,7 +94,7 @@ authority:
 dependencies:
 - story_id: ST-0902
   artifact: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
-  sha256: 6f449d9a1bdc58baada052dbc89e71aa42d6a133ecc8ba3d64d57cc6f536c08f
+  sha256: 4b8d52e8fc16bfa09a389cabd47c5b98ee1bed89875bb0bf304061692dc63a26
   connection_status: NOT_EXECUTED
   authority_status: NONEXECUTABLE_REFERENCE_PLAN_INSUFFICIENT_FOR_APPROVAL
 - story_id: ST-0807

@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0902_final_approval_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0902_final_approval_reference_plan.py
 provenance:
-  contract_sha256: 6f449d9a1bdc58baada052dbc89e71aa42d6a133ecc8ba3d64d57cc6f536c08f
+  contract_sha256: 4b8d52e8fc16bfa09a389cabd47c5b98ee1bed89875bb0bf304061692dc63a26
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -87,11 +87,11 @@ provenance:
   - story_id: ST-0805
     role: readme
     uri: repo://changes/st-0805/README.md
-    sha256: c0c05757da04bd59c56068d0e77359adbdf2032ade2528fac317705e8fb88b7b
+    sha256: 914739de388086da1f83dc25691a89d877eba303ad51e0ab4068ac7105ddec13
   - story_id: ST-0805
     role: policy_engine
     uri: repo://python/raos/domain/editorial/policy_engine.py
-    sha256: a9982c7f27b6cc4a1b50933d7a9e51ee24b07bcc0289c71ac20cf1d147c348ff
+    sha256: d858a9b010253cf411083bd5eb9da995ff3f9a172c7626ca9e499a6256559e51
   - story_id: ST-0901
     role: pr1_readme
     uri: repo://changes/st-0901/README.md
@@ -116,13 +116,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
   bytes: 16320
-  sha256: 6f449d9a1bdc58baada052dbc89e71aa42d6a133ecc8ba3d64d57cc6f536c08f
+  sha256: 4b8d52e8fc16bfa09a389cabd47c5b98ee1bed89875bb0bf304061692dc63a26
 - uri: repo://changes/st-0902/README.md
   bytes: 5240
   sha256: 2f7a746f806f18f47acff531a73f2617e601b09fdaad555cbe17f934e586c7ca
 - uri: repo://scripts/build_st0902_final_approval_reference_plan.py
   bytes: 50464
-  sha256: c0e5c2c03c68cb938ae9fcf65f3c96996907dcdd4ee732d80234511a1b70c37d
+  sha256: 3eed90bc25a431e954d3bc56ac0f8a7ba5ecc1b135921fa497f47936f7009b1d
 - uri: repo://tests/st0902/conftest.py
   bytes: 993
   sha256: 00ea54ee7928734d9ec998bb9db5399e9596624a9a1a89707a699f8eb4406576
@@ -139,7 +139,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0902/generated/final-approval-reference-plan.v1.json
   bytes: 21890
-  sha256: 86f97107f922b2a585416bda1ac150f11f8c01644f365b7eb956dcf08f87ec51
+  sha256: 0409c8172225576992ff41739c68ffcbfe80a55e24ea84fd0251ad413b4b58de
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_FINAL_APPROVAL_REFERENCE_PLAN
   executable: false

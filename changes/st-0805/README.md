@@ -196,6 +196,33 @@ scanned. The approved fallback uses a complete temporary snapshot of tracked
 its deterministic non-git walk mode. No scanner rule or repository file is
 changed.
 
+### Strict Pyright closure follow-up — 2026-08-15
+
+The bound-reference collection validator now gives tuple members the static
+type `object` only after the existing exact runtime-type guard accepts the
+container. The post-check cast is a runtime no-op: it does not coerce, copy,
+filter, or reorder a value, and it does not assume a member is a
+`BoundReference` before the existing validator and exact-type assertion prove
+that fact. Collection rejection, member-validation and error precedence,
+duplicate detection, prohibited-reference detection, serialized bytes,
+digest, public API, and authority boundaries therefore remain unchanged. No
+`Any`, ignore directive, Pyright configuration change, or relaxed diagnostic
+is used.
+
+With Node 24.18.1, Pyright 1.1.411, and CPython 3.14.6, exact file-level
+diagnostics fell from three to zero and the same whole-project invocation fell
+from 78 to the 75 diagnostics owned by other Stories. The isolated ST-0805
+suite remained 361 passed; strict mypy, Ruff check, and Ruff format-check also
+remained clean. Dependency suites ST-0605, ST-0802, and ST-0804 passed 61, 59,
+and 75 tests, and the ST-0807 consumer passed 145 tests.
+
+The approved ST-1703 handoff intentionally remains byte-bound to the prior
+ST-0805 source. Its full suite reached 754 passed and failed closed in 23
+source-binding/runtime-manifest CLI cases after this source hash changed. This
+Story does not rewrite that approved handoff, weaken its binding, or claim the
+ST-1703 runtime has been reapproved; a separately authorized rebind remains
+required before those commands can execute again.
+
 The exact owned files are:
 
 ```text

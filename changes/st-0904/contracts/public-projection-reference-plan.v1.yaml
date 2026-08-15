@@ -48,7 +48,7 @@ authority:
   - {role: public_openapi, uri: 'repo://contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml', sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797}
   - {role: internal_openapi, uri: 'repo://contracts/raos-v0.4/contracts/openapi-internal.v0.4.yaml', sha256: 616ea270aec830a987679853869c0d22e1114a95bcf0279d6e635a5f359a6f21}
 dependencies:
-- {story_id: ST-0903, artifact: 'repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml', sha256: 0e650884dd257d608e4968d1d35a5ffe1547976bed4ac97e9bffa244e26c7a16, connection_status: NOT_EXECUTED, authority_status: NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTABLE_SNAPSHOT}
+- {story_id: ST-0903, artifact: 'repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml', sha256: 40bf90b1d0cfeef58397711a5200539a3bcc27ec3f7738e0c718711871355f3c, connection_status: NOT_EXECUTED, authority_status: NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTABLE_SNAPSHOT}
 - {story_id: ST-0306, artifact: 'repo://changes/st-0306/contracts/database-roles-grants.v1.yaml', sha256: 20b5c37d6979b67f4b4a5b014f7b18a9f729c889b47ca6cc6916f58b2ef08fc5, connection_status: NOT_EXECUTED, authority_status: PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY}
 hard_gates:
 - {id: ST0904-GATE-001, topic: authoritative_projectable_publication_snapshot, status: ABSENT, safe_default: NO_PROJECTION}
