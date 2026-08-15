@@ -94,12 +94,12 @@ authority:
 dependencies:
 - story_id: ST-0902
   artifact: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
-  sha256: 6f449d9a1bdc58baada052dbc89e71aa42d6a133ecc8ba3d64d57cc6f536c08f
+  sha256: 432e0d327ff67c594db306337935137ffee1cdd708ae7ac69b29e00fff7c0bbc
   connection_status: NOT_EXECUTED
   authority_status: NONEXECUTABLE_REFERENCE_PLAN_INSUFFICIENT_FOR_APPROVAL
 - story_id: ST-0807
   artifact: repo://changes/st-0807/README.md
-  sha256: 333f953e4f15b05c5b70705259643b3531e0259faa26c7612e278962130917a5
+  sha256: 841f8bc9a6cd15310d19f3be25121ef8875d51bbb0861745735b8a3b5d5caf2a
   connection_status: NOT_EXECUTED
   authority_status: CALLER_RESOLVED_NONAUTHORITATIVE_RENDERER_INPUTS
 - story_id: ST-0808
@@ -109,7 +109,7 @@ dependencies:
   authority_status: ADMIN_ONLY_REFERENCE_NO_PUBLIC_RENDERER_INPUT
 - story_id: ST-0202
   artifact: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
-  sha256: 389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c
+  sha256: 2558fe98bd560e3ae5f082aca739d18d35a14a0425d24164baff648b91cce5e5
   connection_status: NOT_EXECUTED
   authority_status: LOCAL_RAW_BUCKET_CONTRACT_ONLY
 - story_id: ST-0305
@@ -119,12 +119,12 @@ dependencies:
   authority_status: DATABASE_SCHEMA_CANDIDATE_ONLY
 - story_id: ST-0306
   artifact: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
-  sha256: 20b5c37d6979b67f4b4a5b014f7b18a9f729c889b47ca6cc6916f58b2ef08fc5
+  sha256: 0fa422a6fa8f82e9cf5f1d25f134444211a44ea58e3d62480dee245cadfc2d2a
   connection_status: NOT_EXECUTED
   authority_status: PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY
 - story_id: ST-0307
   artifact: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
-  sha256: 06c9f26f61a420145d03fd61a1f8c598f9271641478e102d41a97d38172abfcb
+  sha256: e458bcb9c7f2f60665cf5715e7b71fae470ef63671d36dd27befc05b492d8bec
   connection_status: NOT_EXECUTED
   authority_status: SYNTHETIC_FIXTURE_ONLY
 - story_id: ST-0601

@@ -11,7 +11,7 @@ from pathlib import Path
 import re
 import stat
 from types import TracebackType
-from typing import Any, Iterator, NoReturn, cast, final
+from typing import Any, Generator, NoReturn, cast, final
 
 from raos.domain.editorial.wordpresscom_mvp_drafts import (
     MvpDraftOperationState,
@@ -427,7 +427,7 @@ class ImmutableWordPressComMvpDraftJournal:
         return "ImmutableWordPressComMvpDraftJournal(<redacted-wordpresscom-wave3>)"
 
     @contextmanager
-    def locked(self) -> Iterator[None]:
+    def locked(self) -> Generator[None]:
         if self._lock_depth != 0 or self._lock_descriptor is not None:
             _fail(WordPressComMvpDraftFailureCode.JOURNAL_INVALID)
         _no_symlink_ancestors(self._root)
@@ -486,6 +486,7 @@ class ImmutableWordPressComMvpDraftJournal:
         if self._lock_depth != 0 or self._lock_descriptor is not None:
             _fail(WordPressComMvpDraftFailureCode.JOURNAL_INVALID)
         lock_path = self._root / _LOCK_FILE
+        names_before: list[str] | None = None
         try:
             lock_metadata = lock_path.lstat()
         except FileNotFoundError:
@@ -497,7 +498,11 @@ class ImmutableWordPressComMvpDraftJournal:
                     names_after = os.listdir(self._records)
                 except OSError:
                     _fail(WordPressComMvpDraftFailureCode.JOURNAL_IO_FAILURE)
-                if names_before == [] and names_after == []:
+                if (
+                    names_before is not None
+                    and names_before == []
+                    and names_after == []
+                ):
                     return ()
                 _fail(WordPressComMvpDraftFailureCode.JOURNAL_INVALID)
             except OSError:

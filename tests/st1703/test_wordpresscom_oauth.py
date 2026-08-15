@@ -129,7 +129,7 @@ class FakeListener:
         assert opener.open(authorization_url) is True
         state = dict(parse_qsl(urlsplit(authorization_url).query))["state"]
         assert type(expected_state) is oauth_module.WordPressComOAuthState
-        assert expected_state._query_value() == state
+        assert expected_state.query_value() == state
         query = self.query or urlencode(
             [("code", AUTHORIZATION_CODE), ("state", state)]
         )
@@ -475,7 +475,7 @@ def test_exact_authorization_callback_exchange_and_exclusive_token_store(
     listener_call = listener.calls[0]
     expected_state = listener_call.pop("expected_state")
     assert type(expected_state) is oauth_module.WordPressComOAuthState
-    assert expected_state._query_value() == authorization_query["state"]
+    assert expected_state.query_value() == authorization_query["state"]
     assert listener_call == {
         "authorization_url": opener.urls[0],
         "host": "127.0.0.1",
@@ -519,7 +519,10 @@ def test_exact_authorization_callback_exchange_and_exclusive_token_store(
     )
     assert token_path.read_bytes() == ACCESS_TOKEN.encode() + b"\n"
     assert stat.S_IMODE(token_path.stat().st_mode) == 0o600
-    assert store.read(WORDPRESSCOM_ACCESS_TOKEN_ALIAS)._value == ACCESS_TOKEN.encode()
+    assert (
+        store.read(WORDPRESSCOM_ACCESS_TOKEN_ALIAS).storage_bytes()
+        == ACCESS_TOKEN.encode()
+    )
     assert receipt.target_origin == WORDPRESSCOM_REVIEW_DRAFT_TARGET
     assert receipt.scope == "posts"
     assert receipt.publication_authorized is False
@@ -580,7 +583,7 @@ def test_state_comparison_uses_constant_time_primitive(
 def test_authorization_code_accepts_rfc_vschar_bounds(value: str) -> None:
     code = oauth_module.WordPressComAuthorizationCode(value)
 
-    assert code._form_value() == value
+    assert code.form_value() == value
 
 
 @pytest.mark.parametrize("value", ["", "\x1f", "\x7f", "é", "x" * 2049])

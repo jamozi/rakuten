@@ -14,12 +14,22 @@ import pytest
 from conftest import (
     EXPECTED_UV_VERSION,
     REPOSITORY_ROOT,
+    explicit_ci_uv_cache,
     local_uv_binaries,
+    uv_cache_supports_locked_offline_sync,
     uv_environment,
 )
 
 
 LOCK_INPUTS = (".python-version", "pyproject.toml", "uv.toml", "uv.lock")
+STALE_LOCK_REFUSAL = (
+    "error: the lockfile at `uv.lock` needs to be updated, but `--check` was provided."
+)
+OFFLINE_RESOLUTION_REFUSAL = (
+    "not found in the cache",
+    "network was disabled",
+    "registry packages may only be read from the cache",
+)
 
 
 def run_lock_check(
@@ -57,8 +67,59 @@ def drift_project(project: Path) -> None:
     pyproject.write_text(drifted, encoding="utf-8")
 
 
+def is_fail_closed_drift_diagnostic(diagnostic: str) -> bool:
+    """Classify only uv 0.12.1's two coherent drift refusals."""
+
+    normalized = diagnostic.lower()
+    return STALE_LOCK_REFUSAL in normalized or all(
+        token in normalized for token in OFFLINE_RESOLUTION_REFUSAL
+    )
+
+
+def assert_drift_rejected_without_network(
+    result: subprocess.CompletedProcess[str],
+) -> None:
+    """Require one of uv's two exact fail-closed drift outcomes.
+
+    A cache that can rebuild the committed lock offline is not guaranteed to
+    contain the registry-resolution metadata needed after ``pyproject.toml``
+    changes. uv 0.12.1 therefore either identifies the stale lock directly or
+    refuses the forced re-resolution because the network is disabled. Both
+    outcomes reject the drift; unrelated command failures remain invalid.
+    """
+
+    assert result.returncode != 0
+    diagnostic = f"{result.stdout}\n{result.stderr}".lower()
+    assert is_fail_closed_drift_diagnostic(diagnostic), diagnostic
+
+
+@pytest.mark.parametrize(
+    ("diagnostic", "expected"),
+    [
+        (STALE_LOCK_REFUSAL, True),
+        ("; ".join(OFFLINE_RESOLUTION_REFUSAL), True),
+        ("; ".join(OFFLINE_RESOLUTION_REFUSAL[:-1]), False),
+        ("unable to acquire lock; configuration update failed", False),
+        ("lock acquisition changed while another process was running", False),
+    ],
+)
+def test_drift_diagnostic_classifier_is_closed(
+    diagnostic: str,
+    expected: bool,
+) -> None:
+    assert is_fail_closed_drift_diagnostic(diagnostic) is expected
+
+
 def hydrated_uv_cache(binary: Path) -> Path | None:
-    """Return uv's local cache when it can validate the current lock offline."""
+    """Return a cache only after a complete locked offline sync succeeds."""
+
+    explicit = explicit_ci_uv_cache()
+    if explicit is not None:
+        if uv_cache_supports_locked_offline_sync(binary, explicit):
+            return explicit
+        pytest.fail(
+            "the explicit RAOS CI uv cache is incomplete for locked offline sync"
+        )
 
     process = subprocess.run(
         [str(binary), "cache", "dir"],
@@ -74,8 +135,53 @@ def hydrated_uv_cache(binary: Path) -> Path | None:
     cache = Path(process.stdout.strip())
     if not cache.is_dir():
         return None
-    baseline = run_lock_check(binary, REPOSITORY_ROOT, cache)
-    return cache if baseline.returncode == 0 else None
+    return cache if uv_cache_supports_locked_offline_sync(binary, cache) else None
+
+
+def test_explicit_ci_cache_fails_closed_when_incomplete(
+    exact_uv_binary: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    cache = tmp_path / "incomplete-cache"
+    cache.mkdir(mode=0o700)
+    monkeypatch.setenv("RAOS_CI_UV_CACHE_DIR", str(cache))
+
+    with pytest.raises(
+        pytest.fail.Exception,
+        match="explicit RAOS CI uv cache is incomplete",
+    ):
+        hydrated_uv_cache(exact_uv_binary)
+
+
+@pytest.mark.parametrize("shape", ["relative", "missing", "file", "symlink", "mode"])
+def test_explicit_ci_cache_rejects_unsafe_paths_without_fallback(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    shape: str,
+) -> None:
+    cache = tmp_path / "cache"
+    if shape == "relative":
+        configured = "relative-cache"
+    elif shape == "missing":
+        configured = str(cache)
+    elif shape == "file":
+        cache.write_text("not a directory\n", encoding="utf-8")
+        configured = str(cache)
+    elif shape == "symlink":
+        target = tmp_path / "real-cache"
+        target.mkdir(mode=0o700)
+        cache.symlink_to(target, target_is_directory=True)
+        configured = str(cache)
+    elif shape == "mode":
+        cache.mkdir(mode=0o755)
+        configured = str(cache)
+    else:
+        raise AssertionError(f"unhandled shape: {shape}")
+    monkeypatch.setenv("RAOS_CI_UV_CACHE_DIR", configured)
+
+    with pytest.raises(pytest.fail.Exception, match="RAOS_CI_UV_CACHE_DIR"):
+        explicit_ci_uv_cache()
 
 
 def installed_inventory(python: Path) -> list[str]:
@@ -132,10 +238,7 @@ def test_exact_uv_rejects_deliberate_project_drift_offline(
     drift_project(copied_project)
 
     result = run_lock_check(exact_uv_binary, copied_project, cache)
-    assert result.returncode != 0
-    diagnostic = f"{result.stdout}\n{result.stderr}".lower()
-    assert "lock" in diagnostic
-    assert "update" in diagnostic or "changed" in diagnostic
+    assert_drift_rejected_without_network(result)
 
 
 def test_make_removes_frozen_and_working_directory_bypasses(
@@ -179,10 +282,7 @@ def test_make_removes_frozen_and_working_directory_bypasses(
         encoding="utf-8",
         timeout=30,
     )
-    assert result.returncode != 0
-    diagnostic = f"{result.stdout}\n{result.stderr}".lower()
-    assert "lock" in diagnostic
-    assert "update" in diagnostic or "changed" in diagnostic
+    assert_drift_rejected_without_network(result)
 
 
 def test_make_uses_only_the_repository_uv_configuration(
@@ -378,10 +478,7 @@ def test_trusted_wrapper_removes_preparse_make_injection(
         encoding="utf-8",
         timeout=30,
     )
-    assert result.returncode != 0
-    diagnostic = f"{result.stdout}\n{result.stderr}".lower()
-    assert "lock" in diagnostic
-    assert "update" in diagnostic or "changed" in diagnostic
+    assert_drift_rejected_without_network(result)
 
 
 def test_trusted_wrapper_ignores_bash_startup_injection(tmp_path: Path) -> None:

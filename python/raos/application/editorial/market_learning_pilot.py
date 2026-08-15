@@ -151,17 +151,17 @@ def _policy_article_version_id(result: PolicyEvaluationResult) -> str:
         )
     except UnicodeError, ValueError, RecursionError:
         fail_market_learning_pilot(MarketLearningPilotFailureCode.POLICY_RESULT_INVALID)
+    mapping = cast(dict[object, object], payload)
     if (
         hashlib.sha256(encoded).hexdigest() != result.local_result_digest
         or canonical != result.local_result_json
         or type(payload) is not dict
-        or set(payload) != _POLICY_RESULT_KEYS
-        or payload.get("profile") != POLICY_SERIALIZATION_PROFILE
-        or payload.get("status") != LocalEvaluationStatus.EVALUATED.value
-        or type(payload.get("article_version_id")) is not str
+        or set(mapping) != _POLICY_RESULT_KEYS
+        or mapping.get("profile") != POLICY_SERIALIZATION_PROFILE
+        or mapping.get("status") != LocalEvaluationStatus.EVALUATED.value
+        or type(mapping.get("article_version_id")) is not str
     ):
         fail_market_learning_pilot(MarketLearningPilotFailureCode.POLICY_RESULT_INVALID)
-    mapping = cast(dict[str, object], payload)
     authority = mapping.get("authority")
     derived = mapping.get("derived")
     exact_score = cast(Decimal, result.raw_quality_score)

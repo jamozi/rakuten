@@ -129,12 +129,12 @@ provenance:
         sha256: 8cf00ace6e2988c3bfb7969f13cfec0786137077c1319be4b043c4b762b5fba9
       silent_repin: FORBIDDEN
       git_object_as_current_filesystem_substitute: FORBIDDEN
-    current_wave3_runtime_manifest:
+    v3_target_runtime_manifest:
       uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
       bytes: 5656
       sha256: b9ccd47c40b9bc9a7595f9e9de2d807232e2b084851b2057007d37b8c98b3c6e
-      validation_source: EXACT_REGULAR_FILESYSTEM_FILE
-      authority: COMMITTED_RUNTIME_METADATA_ONLY
+      validation_source: IMMUTABLE_V3_HANDOFF_AND_APPROVAL
+      authority: HISTORICAL_COMMITTED_RUNTIME_METADATA_ONLY
       formal_evidence: false
     generated_projection:
       uri: repo://changes/st-1703/low-cost-publication-pilot/generated/low-cost-publication-pilot.v1.json
@@ -187,6 +187,77 @@ provenance:
     - uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
       bytes: 5656
       sha256: b9ccd47c40b9bc9a7595f9e9de2d807232e2b084851b2057007d37b8c98b3c6e
+  current_development_rebinding:
+    classification: REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY
+    authority_source:
+      uri: repo://AGENTS.md
+      bytes: 43916
+      sha256: a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482
+      authority: ROOT_STANDING_DEVELOPMENT_AUTHORIZATION
+    current_wave3_runtime_manifest:
+      uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+      bytes: 5776
+      sha256: 2d9c599c03bcd479137729ae2cd570ff7b60337511f543821aa5df959873a5d1
+      validation_source: EXACT_REGULAR_FILESYSTEM_FILE
+      authority: CURRENT_RUNTIME_METADATA_ONLY
+      formal_evidence: false
+    repository_git_authority: ROOT_STANDING_DEVELOPMENT_AUTHORIZATION
+    external_authority: NONE
+    live_prepare_authority: NONE
+    provider_authority: NONE
+    credential_authority: NONE
+    publication_authority: NONE
+    release_authority: NONE
+    production_authority: NONE
+    authority_inputs:
+    - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+      bytes: 2275
+      sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
+    - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      bytes: 7943
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+      bytes: 3955
+      sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+    - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      bytes: 4956
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - uri: repo://docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+      bytes: 8046
+      sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+    - uri: repo://docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv
+      bytes: 4051
+      sha256: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+      bytes: 7929
+      sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+    - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      bytes: 24993
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      bytes: 11395
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+      bytes: 6609
+      sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+    - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      bytes: 71458
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - uri: repo://docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md
+      bytes: 78224
+      sha256: a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682
+    - uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml
+      bytes: 29041
+      sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
+    - uri: repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml
+      bytes: 1991
+      sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
+    - uri: repo://AGENTS.md
+      bytes: 43916
+      sha256: a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482
+    - uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
+      bytes: 5776
+      sha256: 2d9c599c03bcd479137729ae2cd570ff7b60337511f543821aa5df959873a5d1
   authority_inputs:
   - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
     bytes: 2275
@@ -230,15 +301,18 @@ provenance:
   - uri: repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml
     bytes: 1991
     sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
+  - uri: repo://AGENTS.md
+    bytes: 43916
+    sha256: a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482
   - uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
-    bytes: 5656
-    sha256: b9ccd47c40b9bc9a7595f9e9de2d807232e2b084851b2057007d37b8c98b3c6e
+    bytes: 5776
+    sha256: 2d9c599c03bcd479137729ae2cd570ff7b60337511f543821aa5df959873a5d1
   generated_by: repo://scripts/build_st1703_low_cost_publication_pilot.py
   generation_command: /home/minami/rakuten/.venv/bin/python scripts/build_st1703_low_cost_publication_pilot.py
   helper_integrity:
     uri: repo://scripts/build_st1703_low_cost_publication_pilot.py
-    bytes: 51630
-    sha256: 5eef97c587654cc5a4a81a5b087b1d8e9118cca6323ebef291d6ba91e63b436c
+    bytes: 54161
+    sha256: 9803e4659562e05fea66928ae50756848aae15a7bf4018975876311f7b02fe3f
 source_artifact_count: 13
 source_artifacts:
 - uri: repo://changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml
@@ -263,11 +337,11 @@ source_artifacts:
   bytes: 7525
   sha256: 2bc2329f760e1a7960196fec9960e2573ed2add653e6349150dffaddf60a90f3
 - uri: repo://changes/st-1703/low-cost-publication-pilot/README.md
-  bytes: 4294
-  sha256: c15ac7318545da45b0b4f9d4f6b3df3a303fcecc4c09220848ebc1a65d6de6ad
+  bytes: 5128
+  sha256: ed4d9d5bd7a8d09940607393b202c92f44b633b3090a9832128756e478004d7b
 - uri: repo://scripts/build_st1703_low_cost_publication_pilot.py
-  bytes: 51630
-  sha256: 5eef97c587654cc5a4a81a5b087b1d8e9118cca6323ebef291d6ba91e63b436c
+  bytes: 54161
+  sha256: 9803e4659562e05fea66928ae50756848aae15a7bf4018975876311f7b02fe3f
 - uri: repo://tests/st1703_low_cost/conftest.py
   bytes: 454
   sha256: 6c9a3b846e574e61496c67f886b754c55eb39fbf5345849c869f7ae9f45b52a4
@@ -275,8 +349,8 @@ source_artifacts:
   bytes: 2959
   sha256: d1f845ab8d77b4f0b41ed93ae3bca3b2da9a55e5f2ea216af7b1d61ea86fb780
 - uri: repo://tests/st1703_low_cost/test_generation.py
-  bytes: 15333
-  sha256: 4e7b677ae62c93312f2f7ee77adbdc894678e42ed1b299f3e910f0a7d94a9c28
+  bytes: 17401
+  sha256: 1e5e814f7d06e389190ece3fc5faea7eae696c7f2b392f71dea344c1e7702be2
 - uri: repo://tests/st1703_low_cost/test_negative_cases.py
   bytes: 9902
   sha256: ba2813143657400d6fbf5adba24a3ff301ed30c95070cd1e3dbdc9d0acc1c9f2

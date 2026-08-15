@@ -103,11 +103,18 @@ class WordPressComBearerToken(_RedactedHttpsValue):
         ):
             _fail(WordPressComReviewDraftFailureCode.HTTPS_SETUP_INVALID)
 
-    def _authorization_header(self) -> str:
+    def authorization_header(self) -> str:
+        """Return the immutable token only in its fixed HTTP header form."""
+
         try:
             return "Bearer " + self._value.decode("ascii", errors="strict")
         except UnicodeError:
             _fail(WordPressComReviewDraftFailureCode.HTTPS_SETUP_INVALID)
+
+    def storage_bytes(self) -> bytes:
+        """Return the immutable token bytes only for the owner-private store."""
+
+        return self._value
 
 
 @runtime_checkable
@@ -309,15 +316,16 @@ def _validate_edit_context_preflight(value: object) -> None:
     found = mapping["found"]
     meta = mapping["meta"]
     posts = mapping["posts"]
+    post_values = cast(list[object], posts)
     if (
         type(found) is not int
         or found < 0
         or type(meta) is not dict
         or type(posts) is not list
-        or len(posts) > 1
+        or len(post_values) > 1
     ):
         _fail(WordPressComReviewDraftFailureCode.HTTPS_SETUP_INVALID)
-    for item in cast(list[object], posts):
+    for item in post_values:
         if type(item) is not dict or set(cast(dict[str, object], item)) != {"ID"}:
             _fail(WordPressComReviewDraftFailureCode.HTTPS_SETUP_INVALID)
         draft_id = cast(dict[str, object], item)["ID"]
@@ -393,8 +401,10 @@ class OfficialWordPressComReviewDraftAdapter:
         connection_factory: WordPressComHttpsConnectionFactory,
     ) -> None:
         if not isinstance(
-            token_reader, WordPressComAccessTokenReader
-        ) or not isinstance(connection_factory, WordPressComHttpsConnectionFactory):
+            cast(object, token_reader), WordPressComAccessTokenReader
+        ) or not isinstance(
+            cast(object, connection_factory), WordPressComHttpsConnectionFactory
+        ):
             _fail(WordPressComReviewDraftFailureCode.JOURNAL_INVALID)
         self._token_reader = token_reader
         self._connection_factory = connection_factory
@@ -424,7 +434,7 @@ class OfficialWordPressComReviewDraftAdapter:
                 connect_timeout_seconds=_CONNECT_TIMEOUT_SECONDS,
                 tls_context=context,
             )
-            if not isinstance(connection, WordPressComHttpsConnection):
+            if not isinstance(cast(object, connection), WordPressComHttpsConnection):
                 _fail(WordPressComReviewDraftFailureCode.HTTPS_SETUP_INVALID)
             connection.connect()
             connection.set_read_timeout(_READ_TIMEOUT_SECONDS)
@@ -434,11 +444,11 @@ class OfficialWordPressComReviewDraftAdapter:
                 b"",
                 {
                     "Accept": "application/json",
-                    "Authorization": token._authorization_header(),
+                    "Authorization": token.authorization_header(),
                 },
             )
             response = connection.getresponse()
-            if not isinstance(response, WordPressComHttpsResponse):
+            if not isinstance(cast(object, response), WordPressComHttpsResponse):
                 _fail(WordPressComReviewDraftFailureCode.HTTPS_SETUP_INVALID)
             body = _read_bounded(
                 response,
@@ -508,7 +518,7 @@ class OfficialWordPressComReviewDraftAdapter:
             _fail(WordPressComReviewDraftFailureCode.HTTPS_SETUP_INVALID)
         headers = {
             "Accept": "application/json",
-            "Authorization": token._authorization_header(),
+            "Authorization": token.authorization_header(),
             "Content-Type": "application/x-www-form-urlencoded",
         }
         context = ssl.create_default_context()
@@ -526,7 +536,7 @@ class OfficialWordPressComReviewDraftAdapter:
                 connect_timeout_seconds=_CONNECT_TIMEOUT_SECONDS,
                 tls_context=context,
             )
-            if not isinstance(connection, WordPressComHttpsConnection):
+            if not isinstance(cast(object, connection), WordPressComHttpsConnection):
                 _fail(WordPressComReviewDraftFailureCode.HTTPS_SETUP_INVALID)
             connection.connect()
             connection.set_read_timeout(_READ_TIMEOUT_SECONDS)
@@ -535,7 +545,7 @@ class OfficialWordPressComReviewDraftAdapter:
                 "POST", WORDPRESSCOM_REVIEW_DRAFT_API_PATH, body, headers
             )
             response = connection.getresponse()
-            if not isinstance(response, WordPressComHttpsResponse):
+            if not isinstance(cast(object, response), WordPressComHttpsResponse):
                 _fail(WordPressComReviewDraftFailureCode.CREATE_AMBIGUOUS)
             response_body = _read_bounded(
                 response,
@@ -561,7 +571,7 @@ class OfficialWordPressComReviewDraftAdapter:
                 _fail(WordPressComReviewDraftFailureCode.CREATE_AMBIGUOUS)
             if type(payload) is not dict:
                 _fail(WordPressComReviewDraftFailureCode.CREATE_AMBIGUOUS)
-            _validate_json_tree(payload)
+            _validate_json_tree(cast(object, payload))
             mapping = cast(dict[str, object], payload)
             draft_id_value = mapping.get("ID")
             if (

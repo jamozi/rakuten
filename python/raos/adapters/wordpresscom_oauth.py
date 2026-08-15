@@ -199,7 +199,9 @@ class WordPressComOAuthClientId(_RedactedOAuthValue):
     def __post_init__(self) -> None:
         _validate_opaque_bytes(self._value)
 
-    def _form_value(self) -> str:
+    def form_value(self) -> str:
+        """Return the immutable client identifier for fixed form encoding."""
+
         return _decode_opaque(self._value)
 
 
@@ -212,7 +214,9 @@ class WordPressComOAuthClientSecret(_RedactedOAuthValue):
             _fail(WordPressComReviewDraftFailureCode.OAUTH_SECRET_STORE_INVALID)
         _validate_opaque_bytes(self._value)
 
-    def _form_value(self) -> str:
+    def form_value(self) -> str:
+        """Return the immutable client secret for fixed form encoding."""
+
         return _decode_opaque(self._value)
 
 
@@ -231,7 +235,9 @@ class WordPressComOAuthState(_RedactedOAuthValue):
         encoded = base64.urlsafe_b64encode(value).rstrip(b"=").decode("ascii")
         return cls(encoded)
 
-    def _query_value(self) -> str:
+    def query_value(self) -> str:
+        """Return the immutable state for fixed query comparison/encoding."""
+
         return self._value
 
 
@@ -246,7 +252,9 @@ class WordPressComAuthorizationCode(_RedactedOAuthValue):
         ):
             _fail(WordPressComReviewDraftFailureCode.OAUTH_CALLBACK_INVALID)
 
-    def _form_value(self) -> str:
+    def form_value(self) -> str:
+        """Return the immutable authorization code for fixed form encoding."""
+
         return self._value
 
 
@@ -320,7 +328,7 @@ def _validate_opaque_bytes(value: object) -> None:
         _fail(WordPressComReviewDraftFailureCode.OAUTH_SECRET_STORE_INVALID)
 
 
-def _physical_absolute(path: Path) -> Path:
+def _physical_absolute(path: object) -> Path:
     if not isinstance(path, Path):
         _fail(WordPressComReviewDraftFailureCode.OAUTH_SECRET_STORE_INVALID)
     return Path(os.path.abspath(path))
@@ -462,7 +470,7 @@ class WordPressComOAuthSecretStore:
             except OSError:
                 raise error
             _fail(WordPressComReviewDraftFailureCode.OAUTH_TOKEN_EXISTS)
-        data = token._value + b"\n"
+        data = token.storage_bytes() + b"\n"
         try:
             offset = 0
             while offset < len(data):
@@ -753,7 +761,7 @@ class SystemWordPressComLoopbackListener:
             or port != _CALLBACK_PORT
             or path != _CALLBACK_PATH
             or timeout_seconds != _CALLBACK_TIMEOUT_SECONDS
-            or not isinstance(opener, WordPressComBrowserOpener)
+            or not isinstance(cast(object, opener), WordPressComBrowserOpener)
             or type(expected_state) is not WordPressComOAuthState
         ):
             _fail(WordPressComReviewDraftFailureCode.OAUTH_CALLBACK_INVALID)
@@ -780,17 +788,21 @@ class SystemWordPressComLoopbackListener:
                         _fail(WordPressComReviewDraftFailureCode.OAUTH_CALLBACK_INVALID)
                     connection.settimeout(remaining)
                     local = connection.getsockname()
+                    peer_values = cast(tuple[object, ...], peer)
+                    local_values = cast(tuple[object, ...], local)
                     if (
                         type(peer) is not tuple
-                        or len(peer) < 2
-                        or type(peer[0]) is not str
-                        or not peer[0]
-                        or type(peer[1]) is not int
-                        or not 1 <= peer[1] <= 65535
+                        or len(peer_values) < 2
+                        or type(peer_values[0]) is not str
+                        or not peer_values[0]
+                        or type(peer_values[1]) is not int
+                        or not 1 <= peer_values[1] <= 65535
                         or type(local) is not tuple
-                        or len(local) < 2
-                        or local[0] != host
-                        or local[1] != port
+                        or len(local_values) < 2
+                        or type(local_values[0]) is not str
+                        or local_values[0] != host
+                        or type(local_values[1]) is not int
+                        or local_values[1] != port
                     ):
                         _fail_callback(
                             WordPressComOAuthCallbackDiagnosticCode.LOCAL_INVALID
@@ -814,8 +826,8 @@ class SystemWordPressComLoopbackListener:
                         continue
                     callback = _parse_loopback_request(
                         bytes(raw),
-                        local_host=local[0],
-                        local_port=local[1],
+                        local_host=local_values[0],
+                        local_port=local_values[1],
                     )
                     _callback_code(callback, expected_state)
                     success = True
@@ -927,11 +939,11 @@ def _authorization_url(
     query = urlencode(
         [
             ("blog", WORDPRESSCOM_OAUTH_BLOG),
-            ("client_id", client_id._form_value()),
+            ("client_id", client_id.form_value()),
             ("redirect_uri", WORDPRESSCOM_OAUTH_REDIRECT_URI),
             ("response_type", "code"),
             ("scope", WORDPRESSCOM_OAUTH_SCOPE),
-            ("state", state._query_value()),
+            ("state", state.query_value()),
         ],
         doseq=False,
         safe="",
@@ -993,7 +1005,7 @@ def _callback_code(
         _fail_callback(WordPressComOAuthCallbackDiagnosticCode.STATE_MISSING)
     if set(members) != {"code", "state"}:
         _fail_callback(WordPressComOAuthCallbackDiagnosticCode.QUERY_INVALID)
-    if not hmac.compare_digest(members["state"], expected_state._query_value()):
+    if not hmac.compare_digest(members["state"], expected_state.query_value()):
         _fail_callback(WordPressComOAuthCallbackDiagnosticCode.STATE_MISMATCH)
     if _AUTHORIZATION_CODE.fullmatch(members["code"]) is None:
         _fail_callback(WordPressComOAuthCallbackDiagnosticCode.CODE_SHAPE_INVALID)
@@ -1105,7 +1117,7 @@ def _token_from_response(response: object) -> WordPressComBearerToken:
         _fail_token(WordPressComOAuthTokenDiagnosticCode.JSON_PARSE_INVALID)
     if type(payload) is not dict:
         _fail_token(WordPressComOAuthTokenDiagnosticCode.JSON_TREE_INVALID)
-    _validate_json_tree(payload)
+    _validate_json_tree(cast(object, payload))
     mapping = cast(dict[str, object], payload)
     if "error" in mapping:
         provider_error = mapping["error"]
@@ -1169,10 +1181,10 @@ class WordPressComOAuthSetup:
     ) -> None:
         if (
             type(store) is not WordPressComOAuthSecretStore
-            or not isinstance(entropy, WordPressComEntropySource)
-            or not isinstance(opener, WordPressComBrowserOpener)
-            or not isinstance(listener, WordPressComLoopbackListener)
-            or not isinstance(transport, WordPressComOAuthTokenTransport)
+            or not isinstance(cast(object, entropy), WordPressComEntropySource)
+            or not isinstance(cast(object, opener), WordPressComBrowserOpener)
+            or not isinstance(cast(object, listener), WordPressComLoopbackListener)
+            or not isinstance(cast(object, transport), WordPressComOAuthTokenTransport)
         ):
             _fail(WordPressComReviewDraftFailureCode.OAUTH_AUTHORIZATION_INVALID)
         self._store = store
@@ -1214,9 +1226,9 @@ class WordPressComOAuthSetup:
         try:
             form_body = urlencode(
                 [
-                    ("client_id", client_id._form_value()),
-                    ("client_secret", client_secret._form_value()),
-                    ("code", code._form_value()),
+                    ("client_id", client_id.form_value()),
+                    ("client_secret", client_secret.form_value()),
+                    ("code", code.form_value()),
                     ("grant_type", "authorization_code"),
                     ("redirect_uri", WORDPRESSCOM_OAUTH_REDIRECT_URI),
                 ],

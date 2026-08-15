@@ -544,5 +544,7 @@ def test_repository_policy_keeps_proposals_unapproved_and_live_separate() -> Non
         "no codex restart or per-run exported variable" in normalized_policy.casefold()
     )
     assert "`UNAPPROVED_PROPOSAL`" in policy
-    assert "Neither resolves an Open Decision" in normalized_policy
+    assert "Neither Pro content nor a handoff resolves a Canonical Open Decision" in (
+        normalized_policy
+    )
     assert "Fixture/dry-run evidence, a live smoke, and formal" in normalized_policy

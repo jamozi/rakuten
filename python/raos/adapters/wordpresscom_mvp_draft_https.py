@@ -274,16 +274,17 @@ def decode_wordpresscom_mvp_page_scan(body: bytes) -> MvpPageScan:
         _response_fail(MvpDraftResponseStage.TOP_LEVEL_KEYS)
     found = mapping["found"]
     posts = mapping["posts"]
+    post_values = cast(list[object], posts)
     if (
         type(found) is not int
         or not 0 <= found <= 100
         or type(mapping["meta"]) is not dict
         or type(posts) is not list
-        or len(posts) != found
+        or len(post_values) != found
     ):
         _response_fail(MvpDraftResponseStage.COLLECTION_SHAPE)
     entries: list[MvpPageEntry] = []
-    for value in cast(list[object], posts):
+    for value in post_values:
         if type(value) is not dict:
             _response_fail(MvpDraftResponseStage.ENTRY_SHAPE)
         post = cast(dict[str, object], value)
@@ -411,8 +412,10 @@ class OfficialWordPressComMvpDraftAdapter:
         connection_factory: WordPressComHttpsConnectionFactory,
     ) -> None:
         if not isinstance(
-            token_reader, WordPressComAccessTokenReader
-        ) or not isinstance(connection_factory, WordPressComHttpsConnectionFactory):
+            cast(object, token_reader), WordPressComAccessTokenReader
+        ) or not isinstance(
+            cast(object, connection_factory), WordPressComHttpsConnectionFactory
+        ):
             _fail(WordPressComMvpDraftFailureCode.HTTPS_SETUP_INVALID)
         self._token_reader = token_reader
         self._connection_factory = connection_factory
@@ -449,20 +452,20 @@ class OfficialWordPressComMvpDraftAdapter:
                 connect_timeout_seconds=_CONNECT_TIMEOUT_SECONDS,
                 tls_context=context,
             )
-            if not isinstance(connection, WordPressComHttpsConnection):
+            if not isinstance(cast(object, connection), WordPressComHttpsConnection):
                 _fail(WordPressComMvpDraftFailureCode.HTTPS_SETUP_INVALID)
             connection.connect()
             connection.set_read_timeout(_READ_TIMEOUT_SECONDS)
             headers = {
                 "Accept": "application/json",
-                "Authorization": token._authorization_header(),
+                "Authorization": token.authorization_header(),
             }
             if method == "POST":
                 headers["Content-Type"] = "application/x-www-form-urlencoded"
             request_attempted = True
             connection.request(method, path, body, headers)
             response = connection.getresponse()
-            if not isinstance(response, WordPressComHttpsResponse):
+            if not isinstance(cast(object, response), WordPressComHttpsResponse):
                 _response_fail(MvpDraftResponseStage.TRANSPORT)
             response_body = _read_bounded(response)
             content_type = response.getheader("Content-Type")

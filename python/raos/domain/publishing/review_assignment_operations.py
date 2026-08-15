@@ -233,12 +233,14 @@ class RecordedIdentityProjection(_RedactedValue):
             subject_status=self.subject_status,
         )
 
-    def _payload(self) -> dict[str, str]:
-        return {
-            "principal_id": str(self.principal_id.value),
-            "subject_kind": self.subject_kind.value,
-            "subject_status": self.subject_status.value,
-        }
+
+def _identity_payload(value: RecordedIdentityProjection) -> dict[str, str]:
+    value.require_valid()
+    return {
+        "principal_id": str(value.principal_id.value),
+        "subject_kind": value.subject_kind.value,
+        "subject_status": value.subject_status.value,
+    }
 
 
 def _canonical_bytes(payload: dict[str, object]) -> bytes:
@@ -734,7 +736,7 @@ def _authorization_payload(
     article_version_id: ArticleVersionId | None,
 ) -> dict[str, object]:
     return {
-        "actor": actor._payload(),
+        "actor": _identity_payload(actor),
         "article_version_id": (
             None if article_version_id is None else str(article_version_id.value)
         ),
@@ -745,7 +747,7 @@ def _authorization_payload(
         "permission_scope": permission_scope.value,
         "profile": RECORDED_LOCAL_PROFILE,
         "request_sha256": request_sha256.value,
-        "reviewer": None if reviewer is None else reviewer._payload(),
+        "reviewer": None if reviewer is None else _identity_payload(reviewer),
         "target": _target_payload(target),
     }
 
@@ -953,7 +955,7 @@ class RecordedReviewerAuthorizationV1(_RedactedValue):
         raise AttributeError("RecordedReviewerAuthorizationV1 is immutable")
 
 
-def _build_recorded_reviewer_authorization(
+def build_recorded_reviewer_authorization(
     *,
     request: ReviewAssignmentRequest,
     grant: AuthorizationGrant,
@@ -961,7 +963,7 @@ def _build_recorded_reviewer_authorization(
     actor: RecordedIdentityProjection,
     reviewer: RecordedIdentityProjection | None,
 ) -> RecordedReviewerAuthorizationV1:
-    """Module-private factory consumed only by the recorded outward adapter."""
+    """Build one immutable, non-authoritative recorded-local proof."""
 
     if type(request) not in {
         ListReviewAssignmentsRequest,

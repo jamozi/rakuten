@@ -17,7 +17,7 @@ from enum import Enum
 import hashlib
 import json
 import re
-from typing import NoReturn, TypeAlias
+from typing import NoReturn, TypeAlias, cast
 
 
 POLICY_CATALOG_ID = "RAOS-CONTENT-POLICY-001"
@@ -1009,7 +1009,7 @@ def _validate_bound_collection(
         return False, False
     seen: set[str] = set()
     prohibited = False
-    for item in value:
+    for item in cast(tuple[object, ...], value):
         if not _valid_bound_reference(item):
             return False, prohibited
         assert type(item) is BoundReference

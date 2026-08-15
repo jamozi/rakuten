@@ -317,8 +317,14 @@ def test_inactive_nonhuman_or_substitute_reviewer_is_rejected(
 
 def test_sealed_authorization_direct_construction_and_tamper_fail_closed() -> None:
     request = list_request()
-    recorded = adapter(list_step(request=request))
+    scripted = list_step(request=request)
+    recorded = adapter(scripted)
     authorization = recorded.issue_authorization(request)
+
+    assert scripted.authorization_sha256 == authorization.authorization_sha256
+    assert not hasattr(authorization.actor, "canonical_payload")
+    with pytest.raises(AttributeError):
+        setattr(scripted, "authorization_sha256", RecordedSha256("0" * 64))
 
     with pytest.raises(ReviewAssignmentOperationFailure) as direct_failure:
         RecordedReviewerAuthorizationV1(
@@ -352,6 +358,7 @@ def test_sealed_authorization_direct_construction_and_tamper_fail_closed() -> No
     )
     assert "_RECORDED_AUTHORIZATION_PERMIT" not in operations.__all__
     assert "_build_recorded_reviewer_authorization" not in operations.__all__
+    assert "build_recorded_reviewer_authorization" not in operations.__all__
 
 
 def test_subclass_and_duplicate_trust_paths_are_structurally_rejected() -> None:

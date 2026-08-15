@@ -8,7 +8,7 @@ import json
 import os
 from pathlib import Path
 import stat
-from typing import Any, Iterator, NoReturn, cast, final
+from typing import Any, Generator, NoReturn, cast, final
 
 from raos.domain.editorial.wordpresscom_review_draft import (
     ReviewDraftDisposition,
@@ -124,7 +124,7 @@ def _open_private_file(path: Path, flags: int, mode: int = 0o600) -> int:
 
 
 @contextmanager
-def _locked(root: Path) -> Iterator[None]:
+def _locked(root: Path) -> Generator[None]:
     descriptor = _open_private_file(root / _LOCK_FILE, os.O_RDWR | os.O_CREAT)
     try:
         fcntl.flock(descriptor, fcntl.LOCK_EX)

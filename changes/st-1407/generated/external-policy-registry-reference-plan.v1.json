@@ -130,7 +130,7 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-1407/contracts/external-policy-registry-reference-plan.v1.yaml",
-    "source_contract_sha256": "6589699bce3dd9fa62ce38312568fe20f0c1a1b96c53e41909d7a5e09df049b0",
+    "source_contract_sha256": "080fe7fae6ed8d91d9e9d5c7a1188721cd436d2f6a38ccc0514fe2c5f41c56c6",
     "generated_by": "repo://scripts/build_st1407_external_policy_registry_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st1407_external_policy_registry_reference_plan.py",
     "implementation_helper": {
@@ -163,12 +163,12 @@
         {
           "role": "readme",
           "uri": "repo://changes/st-0805/README.md",
-          "sha256": "c0c05757da04bd59c56068d0e77359adbdf2032ade2528fac317705e8fb88b7b"
+          "sha256": "914739de388086da1f83dc25691a89d877eba303ad51e0ab4068ac7105ddec13"
         },
         {
           "role": "policy_engine",
           "uri": "repo://python/raos/domain/editorial/policy_engine.py",
-          "sha256": "a9982c7f27b6cc4a1b50933d7a9e51ee24b07bcc0289c71ac20cf1d147c348ff"
+          "sha256": "d858a9b010253cf411083bd5eb9da995ff3f9a172c7626ca9e499a6256559e51"
         }
       ],
       "implementation_scope": "PURE_LOCAL_EDITORIAL_POLICY_EVALUATOR",

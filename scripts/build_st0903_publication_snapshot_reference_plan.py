@@ -58,7 +58,7 @@ HELPER_SHA256: Final = (
     "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
 )
 CONTRACT_SHA256: Final = (
-    "cf6f9a55f769a2861cda655cdc7e963d6048a7ff721ded55a40aaa0978702692"
+    "83e07087c67e28213237f7ab1f522594e72d2b33cbd3e17d50140f67d4222e28"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -225,12 +225,12 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0902",
         "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml",
-        "6f449d9a1bdc58baada052dbc89e71aa42d6a133ecc8ba3d64d57cc6f536c08f",
+        "432e0d327ff67c594db306337935137ffee1cdd708ae7ac69b29e00fff7c0bbc",
     ),
     (
         "ST-0807",
         "changes/st-0807/README.md",
-        "333f953e4f15b05c5b70705259643b3531e0259faa26c7612e278962130917a5",
+        "841f8bc9a6cd15310d19f3be25121ef8875d51bbb0861745735b8a3b5d5caf2a",
     ),
     (
         "ST-0808",
@@ -240,7 +240,7 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0202",
         "changes/st-0202/contracts/local-object-storage.v1.yaml",
-        "389c00f4b97fa502ac8ea75165a1680c14528fb30e337f22c2907c0ee8ce6f1c",
+        "2558fe98bd560e3ae5f082aca739d18d35a14a0425d24164baff648b91cce5e5",
     ),
     (
         "ST-0305",
@@ -250,12 +250,12 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0306",
         "changes/st-0306/contracts/database-roles-grants.v1.yaml",
-        "20b5c37d6979b67f4b4a5b014f7b18a9f729c889b47ca6cc6916f58b2ef08fc5",
+        "0fa422a6fa8f82e9cf5f1d25f134444211a44ea58e3d62480dee245cadfc2d2a",
     ),
     (
         "ST-0307",
         "changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml",
-        "06c9f26f61a420145d03fd61a1f8c598f9271641478e102d41a97d38172abfcb",
+        "e458bcb9c7f2f60665cf5715e7b71fae470ef63671d36dd27befc05b492d8bec",
     ),
     (
         "ST-0601",

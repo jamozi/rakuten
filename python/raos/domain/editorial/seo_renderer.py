@@ -13,7 +13,7 @@ from enum import Enum
 import hashlib
 import json
 import re
-from typing import NoReturn, TypeAlias
+from typing import NoReturn, TypeAlias, cast
 
 
 LOCAL_RENDER_PROFILE = "ST0807_LOCAL_RENDER_V1"
@@ -739,7 +739,7 @@ def _validate_breadcrumbs(
     records: list[BreadcrumbProjection] = []
     seen_refs: set[str] = set()
     seen_positions: set[int] = set()
-    for item in value:
+    for item in cast(tuple[object, ...], value):
         if type(item) is not BreadcrumbProjection:
             findings.add(InputFindingCode.BREADCRUMB_RECORD_INVALID)
             continue
@@ -802,7 +802,7 @@ def _validate_external_assessments(
         findings.add(InputFindingCode.ASSESSMENT_COLLECTION_INVALID)
         return ()
     records: dict[ExternalCheck, ExternalAssessment] = {}
-    for item in value:
+    for item in cast(tuple[object, ...], value):
         if type(item) is not ExternalAssessment:
             findings.add(InputFindingCode.ASSESSMENT_RECORD_INVALID)
             continue
@@ -973,11 +973,11 @@ def _structured_data_tree_is_valid(
     if type(value) is list:
         return all(
             _structured_data_tree_is_valid(item, expected_author=expected_author)
-            for item in value
+            for item in cast(list[object], value)
         )
     if type(value) is not dict:
         return False
-    for key, item in value.items():
+    for key, item in cast(dict[object, object], value).items():
         if (
             type(key) is not str
             or key in _FORBIDDEN_STRUCTURED_PROPERTIES
@@ -1141,22 +1141,44 @@ def _expected_jsonld_profile(
 def _mapping_value(value: object, key: str) -> object:
     if type(value) is not dict:
         return None
-    return value.get(key)
+    return cast(dict[object, object], value).get(key)
+
+
+def _mapping_omits(value: object, first: str, second: str) -> bool:
+    if type(value) is not dict:
+        return False
+    mapping = cast(dict[object, object], value)
+    return first not in mapping and second not in mapping
 
 
 def _exact_json_equal(actual: object, expected: object) -> bool:
     if type(actual) is not type(expected):
         return False
     if type(expected) is dict:
-        if type(actual) is not dict or actual.keys() != expected.keys():
+        if type(actual) is not dict:
             return False
-        return all(_exact_json_equal(actual[key], expected[key]) for key in expected)
+        actual_mapping = cast(dict[object, object], actual)
+        expected_mapping = cast(dict[object, object], expected)
+        if actual_mapping.keys() != expected_mapping.keys():
+            return False
+        return all(
+            _exact_json_equal(actual_mapping[key], expected_mapping[key])
+            for key in expected_mapping
+        )
     if type(expected) is list:
-        if type(actual) is not list or len(actual) != len(expected):
+        if type(actual) is not list:
+            return False
+        actual_items = cast(list[object], actual)
+        expected_items = cast(list[object], expected)
+        if len(actual_items) != len(expected_items):
             return False
         return all(
             _exact_json_equal(actual_item, expected_item)
-            for actual_item, expected_item in zip(actual, expected, strict=True)
+            for actual_item, expected_item in zip(
+                actual_items,
+                expected_items,
+                strict=True,
+            )
         )
     return actual == expected
 
@@ -1176,8 +1198,8 @@ def _binding_ledger(
     expected_enabled_types: tuple[str, ...],
 ) -> tuple[FieldBindingLedgerEntry, ...]:
     graph_value = _mapping_value(jsonld, "@graph")
-    graph = graph_value if type(graph_value) is list else []
-    article = graph[0] if graph else None
+    graph = cast(list[object], graph_value) if type(graph_value) is list else []
+    article: object = graph[0] if graph else None
     expected_author: dict[str, JsonValue] = {
         "@type": request.visible.author.kind.value,
         "name": request.visible.author.display_name,
@@ -1191,11 +1213,7 @@ def _binding_ledger(
         _mapping_value(article, "url") == expected_canonical_url
         and _mapping_value(article, "mainEntityOfPage") == expected_canonical_url
         if origin is not None
-        else (
-            type(article) is dict
-            and "url" not in article
-            and "mainEntityOfPage" not in article
-        )
+        else _mapping_omits(article, "url", "mainEntityOfPage")
     )
     entries = [
         FieldBindingLedgerEntry(
@@ -1297,7 +1315,9 @@ def _binding_ledger(
     ]
     breadcrumb_node = graph[1] if origin is not None and len(graph) > 1 else None
     item_list_value = _mapping_value(breadcrumb_node, "itemListElement")
-    item_list = item_list_value if type(item_list_value) is list else []
+    item_list = (
+        cast(list[object], item_list_value) if type(item_list_value) is list else []
+    )
     if origin is not None:
         for item in breadcrumbs:
             actual = (

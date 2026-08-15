@@ -49,7 +49,7 @@ ci-hydrate:
 ci-static:
 \t@printf 'static\\n' > "$(HOME)/observed-job"
 ci-unit:
-\t@printf 'unit\\n' > "$(HOME)/observed-job"
+\t@printf 'unit\\n%s\\n' "$(RAOS_CI_UV_CACHE_DIR)" > "$(HOME)/observed-job"
 ci-contracts:
 \t@printf 'contracts\\n' > "$(HOME)/observed-job"
 """
@@ -93,6 +93,8 @@ def run_wrapper(
     home: Path,
     job: str,
     *,
+    uv_cache: Path | None = None,
+    runner_temp: Path | None = None,
     extra_environment: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
     environment = {
@@ -101,17 +103,23 @@ def run_wrapper(
     }
     if extra_environment:
         environment.update(extra_environment)
+    arguments = [
+        str(wrapper),
+        "--uv",
+        str(uv),
+        "--node",
+        str(node),
+        "--npm-cli",
+        str(npm_cli),
+    ]
+    if uv_cache is not None or runner_temp is not None:
+        assert uv_cache is not None and runner_temp is not None
+        arguments.extend(
+            ["--uv-cache", str(uv_cache), "--runner-temp", str(runner_temp)]
+        )
+    arguments.append(job)
     return subprocess.run(
-        [
-            str(wrapper),
-            "--uv",
-            str(uv),
-            "--node",
-            str(node),
-            "--npm-cli",
-            str(npm_cli),
-            job,
-        ],
+        arguments,
         cwd=home,
         env=environment,
         check=False,
@@ -157,9 +165,162 @@ def test_wrapper_maps_each_fixed_job_to_one_make_target(
     tmp_path: Path, job: str
 ) -> None:
     wrapper, uv, node, npm_cli, home = make_fixture(tmp_path)
-    result = run_wrapper(wrapper, uv, node, npm_cli, home, job)
+    runner_temp = tmp_path / "runner-temp"
+    uv_cache = runner_temp / "uv-cache"
+    if job == "unit":
+        runner_temp.mkdir()
+        uv_cache.mkdir(mode=0o700)
+    result = run_wrapper(
+        wrapper,
+        uv,
+        node,
+        npm_cli,
+        home,
+        job,
+        uv_cache=uv_cache if job == "unit" else None,
+        runner_temp=runner_temp if job == "unit" else None,
+    )
     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
-    assert (home / "observed-job").read_text(encoding="utf-8") == f"{job}\n"
+    expected = f"unit\n{uv_cache}\n" if job == "unit" else f"{job}\n"
+    assert (home / "observed-job").read_text(encoding="utf-8") == expected
+
+
+@requires_unsandboxed_parent
+def test_unit_transports_only_the_exact_explicit_uv_cache(tmp_path: Path) -> None:
+    wrapper, uv, node, npm_cli, home = make_fixture(tmp_path)
+    runner_temp = tmp_path / "runner temp"
+    runner_temp.mkdir()
+    uv_cache = runner_temp / "unit uv cache"
+    uv_cache.mkdir(mode=0o700)
+
+    result = run_wrapper(
+        wrapper,
+        uv,
+        node,
+        npm_cli,
+        home,
+        "unit",
+        uv_cache=uv_cache,
+        runner_temp=runner_temp,
+        extra_environment={
+            "RAOS_CI_UV_CACHE_DIR": str(tmp_path / "ambient-decoy"),
+            "UV_CACHE_DIR": str(tmp_path / "ambient-uv-decoy"),
+        },
+    )
+
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+    assert (home / "observed-job").read_text(encoding="utf-8") == (
+        f"unit\n{uv_cache}\n"
+    )
+
+
+def test_unit_rejects_a_missing_explicit_cache_pair(tmp_path: Path) -> None:
+    wrapper, uv, node, npm_cli, home = make_fixture(tmp_path)
+
+    result = run_wrapper(wrapper, uv, node, npm_cli, home, "unit")
+
+    assert result.returncode != 0
+    assert "requires an explicit uv cache" in result.stderr
+    assert not (home / "observed-job").exists()
+
+
+@pytest.mark.parametrize("job", ["static", "contracts"])
+def test_non_unit_jobs_reject_an_explicit_cache_pair(tmp_path: Path, job: str) -> None:
+    wrapper, uv, node, npm_cli, home = make_fixture(tmp_path)
+    runner_temp = tmp_path / "runner-temp"
+    runner_temp.mkdir()
+    uv_cache = runner_temp / "uv-cache"
+    uv_cache.mkdir(mode=0o700)
+
+    result = run_wrapper(
+        wrapper,
+        uv,
+        node,
+        npm_cli,
+        home,
+        job,
+        uv_cache=uv_cache,
+        runner_temp=runner_temp,
+    )
+
+    assert result.returncode != 0
+    assert "valid only for the unit job" in result.stderr
+    assert not (home / "observed-job").exists()
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        "relative",
+        "missing",
+        "file",
+        "dangling-symlink",
+        "symlink",
+        "symlinked-ancestor",
+        "traversal",
+        "unsafe-mode",
+        "unsafe-owner-or-mode",
+        "outside-runner-temp",
+        "make-unsafe",
+    ],
+)
+def test_unit_rejects_unsafe_explicit_cache_paths(tmp_path: Path, shape: str) -> None:
+    wrapper, uv, node, npm_cli, home = make_fixture(tmp_path)
+    runner_temp = tmp_path / "runner-temp"
+    runner_temp.mkdir()
+    uv_cache = runner_temp / "uv-cache"
+
+    if shape == "relative":
+        uv_cache = Path("relative-cache")
+    elif shape == "missing":
+        pass
+    elif shape == "file":
+        uv_cache.write_text("not a directory\n", encoding="utf-8")
+    elif shape == "dangling-symlink":
+        uv_cache.symlink_to(runner_temp / "absent-target")
+    elif shape == "symlink":
+        target = runner_temp / "real-cache"
+        target.mkdir(mode=0o700)
+        uv_cache.symlink_to(target, target_is_directory=True)
+    elif shape == "symlinked-ancestor":
+        target = runner_temp / "real-parent"
+        target.mkdir()
+        (target / "uv-cache").mkdir(mode=0o700)
+        alias = runner_temp / "alias-parent"
+        alias.symlink_to(target, target_is_directory=True)
+        uv_cache = alias / "uv-cache"
+    elif shape == "traversal":
+        nested = runner_temp / "nested"
+        nested.mkdir()
+        uv_cache.mkdir(mode=0o700)
+        uv_cache = nested / ".." / "uv-cache"
+    elif shape == "unsafe-mode":
+        uv_cache.mkdir(mode=0o755)
+    elif shape == "unsafe-owner-or-mode":
+        runner_temp = Path("/")
+        uv_cache = Path("/usr")
+    elif shape == "outside-runner-temp":
+        uv_cache = tmp_path / "outside-cache"
+        uv_cache.mkdir(mode=0o700)
+    elif shape == "make-unsafe":
+        uv_cache = runner_temp / "uv$cache"
+        uv_cache.mkdir(mode=0o700)
+    else:
+        raise AssertionError(f"unhandled shape: {shape}")
+
+    result = run_wrapper(
+        wrapper,
+        uv,
+        node,
+        npm_cli,
+        home,
+        "unit",
+        uv_cache=uv_cache,
+        runner_temp=runner_temp,
+    )
+
+    assert result.returncode != 0
+    assert not (home / "observed-job").exists()
 
 
 @pytest.mark.parametrize(
@@ -205,8 +366,21 @@ def test_wrapper_rejects_invalid_or_extended_cli(arguments: list[str]) -> None:
 
 def test_wrapper_rejects_wrong_uv_before_make(tmp_path: Path) -> None:
     wrapper, uv, node, npm_cli, home = make_fixture(tmp_path)
+    runner_temp = tmp_path / "runner-temp"
+    runner_temp.mkdir()
+    uv_cache = runner_temp / "uv-cache"
+    uv_cache.mkdir(mode=0o700)
     uv.write_text("#!/bin/sh\nprintf 'uv 0.12.0\\n'\n", encoding="utf-8")
-    result = run_wrapper(wrapper, uv, node, npm_cli, home, "unit")
+    result = run_wrapper(
+        wrapper,
+        uv,
+        node,
+        npm_cli,
+        home,
+        "unit",
+        uv_cache=uv_cache,
+        runner_temp=runner_temp,
+    )
     assert result.returncode != 0
     assert "required uv version ==0.12.1" in result.stderr
     assert not (home / "observed-job").exists()
@@ -225,6 +399,10 @@ def test_wrapper_rejects_unbundled_npm_lookalike(tmp_path: Path) -> None:
 @requires_unsandboxed_parent
 def test_wrapper_canonicalizes_safe_tool_symlink_arguments(tmp_path: Path) -> None:
     wrapper, uv, node, npm_cli, home = make_fixture(tmp_path)
+    runner_temp = tmp_path / "runner-temp"
+    runner_temp.mkdir()
+    uv_cache = runner_temp / "uv-cache"
+    uv_cache.mkdir(mode=0o700)
     links = tmp_path / "tool links"
     links.mkdir()
     linked_uv = links / "uv"
@@ -244,10 +422,14 @@ def test_wrapper_canonicalizes_safe_tool_symlink_arguments(tmp_path: Path) -> No
         linked_npm_cli,
         home,
         "unit",
+        uv_cache=uv_cache,
+        runner_temp=runner_temp,
     )
 
     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
-    assert (home / "observed-job").read_text(encoding="utf-8") == "unit\n"
+    assert (home / "observed-job").read_text(encoding="utf-8") == (
+        f"unit\n{uv_cache}\n"
+    )
 
 
 @requires_unsandboxed_parent

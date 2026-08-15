@@ -49,8 +49,10 @@ def _render() -> bytes:
         )
     manifest = {
         "approved_base_commit": module._MVP_APPROVED_BASE_COMMIT,
+        "external_action_authority": "NONE",
         "generated_by": "python3 scripts/build_wordpresscom_mvp_runtime_manifest.py",
         "paths": entries,
+        "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
         "schema": "WORDPRESSCOM_MVP_DRAFT_RUNTIME_MANIFEST_V1",
         "slice_id": "WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3",
         "story_id": "ST-1703",

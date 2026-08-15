@@ -34,7 +34,7 @@ from raos.domain.publishing.review_assignment_operations import (
     ReviewAssignmentResult,
     UpdateReviewAssignmentRequest,
     UpdateReviewAssignmentResult,
-    _build_recorded_reviewer_authorization,
+    build_recorded_reviewer_authorization,
     fail_review_assignment_operation,
     recorded_mutation_output_sha256,
 )
@@ -85,7 +85,7 @@ class RecordedListReviewAssignmentsStep(_RedactedRecordedAdapterValue):
         self.actor.require_valid()
         for item in self.items:
             item.require_valid()
-        authorization = _build_recorded_reviewer_authorization(
+        authorization = build_recorded_reviewer_authorization(
             request=self.request,
             grant=self.grant,
             permission_scope=self.permission_scope,
@@ -98,6 +98,10 @@ class RecordedListReviewAssignmentsStep(_RedactedRecordedAdapterValue):
             "_authorization_sha256",
             authorization.authorization_sha256,
         )
+
+    @property
+    def authorization_sha256(self) -> RecordedSha256:
+        return self._authorization_sha256
 
 
 @final
@@ -130,7 +134,7 @@ class RecordedCreateReviewAssignmentStep(_RedactedRecordedAdapterValue):
         self.reviewer.require_valid()
         self.snapshot.require_valid()
         # The local audit value performs detached UUIDv7/timestamp validation.
-        authorization = _build_recorded_reviewer_authorization(
+        authorization = build_recorded_reviewer_authorization(
             request=self.request,
             grant=self.grant,
             permission_scope=self.permission_scope,
@@ -150,6 +154,10 @@ class RecordedCreateReviewAssignmentStep(_RedactedRecordedAdapterValue):
             audit_event_id=self.audit_event_id,
             audit_occurred_at=self.audit_occurred_at,
         )
+
+    @property
+    def authorization_sha256(self) -> RecordedSha256:
+        return self._authorization_sha256
 
 
 @final
@@ -181,7 +189,7 @@ class RecordedUpdateReviewAssignmentStep(_RedactedRecordedAdapterValue):
         self.actor.require_valid()
         self.reviewer.require_valid()
         self.transition.require_valid()
-        authorization = _build_recorded_reviewer_authorization(
+        authorization = build_recorded_reviewer_authorization(
             request=self.request,
             grant=self.grant,
             permission_scope=self.permission_scope,
@@ -202,6 +210,10 @@ class RecordedUpdateReviewAssignmentStep(_RedactedRecordedAdapterValue):
             audit_occurred_at=self.audit_occurred_at,
         )
 
+    @property
+    def authorization_sha256(self) -> RecordedSha256:
+        return self._authorization_sha256
+
 
 RecordedReviewAssignmentStep: TypeAlias = (
     RecordedListReviewAssignmentsStep
@@ -220,7 +232,7 @@ def _step_authorization(
     reviewer = getattr(step, "reviewer", None)
     if reviewer is not None and type(reviewer) is not RecordedIdentityProjection:
         fail_review_assignment_operation()
-    authorization = _build_recorded_reviewer_authorization(
+    authorization = build_recorded_reviewer_authorization(
         request=step.request,
         grant=step.grant,
         permission_scope=step.permission_scope,
@@ -228,8 +240,8 @@ def _step_authorization(
         reviewer=reviewer,
     )
     if (
-        type(step._authorization_sha256) is not RecordedSha256
-        or authorization.authorization_sha256 != step._authorization_sha256
+        type(step.authorization_sha256) is not RecordedSha256
+        or authorization.authorization_sha256 != step.authorization_sha256
     ):
         fail_review_assignment_operation(
             ReviewAssignmentOperationFailureCode.NOT_AUTHORIZED
@@ -476,7 +488,7 @@ class RecordedReviewAssignmentAdapter(_RedactedRecordedAdapterValue):
                     request, replay.request
                 ):
                     return replay.authorization
-                return _build_recorded_reviewer_authorization(
+                return build_recorded_reviewer_authorization(
                     request=request,
                     grant=replay.authorization.grant,
                     permission_scope=replay.authorization.permission_scope,

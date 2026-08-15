@@ -101,8 +101,8 @@ SOURCE_ROWS: Final = (
     ),
     (
         "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
-        10741,
-        "9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b",
+        11132,
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234",
     ),
     (
         "docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md",
@@ -132,12 +132,12 @@ SOURCE_ROWS: Final = (
     (
         "changes/st-0308/contracts/design-handoff-validation.v1.yaml",
         18293,
-        "69818130069284f60bc98ef5163f8b8dd6d346df6cbca5447f737dd0516868d5",
+        "ca814d0ccdd8b3375418c2e233360639f4d47fc0a17a95ba3af646de01c78c2a",
     ),
     (
         "scripts/validate_st0308_design_handoff.py",
         104164,
-        "db9ebebcccad144d2e004090766ad42cd37403f9e03150d260cabe7f492f11e7",
+        "36c7effc04aebed0250b68507acf4d3e6c74dfef8c2bb20d1df84891f1c5f95d",
     ),
 )
 

@@ -5,7 +5,7 @@ export PATH
 
 set -euo pipefail
 
-unset BASH_ENV ENV
+unset BASH_ENV ENV RAOS_CI_UV_CACHE_DIR RUNNER_TEMP UV_CACHE_DIR
 
 clean_path=$PATH
 original_home=${HOME:-}
@@ -37,12 +37,12 @@ reject_make_unsafe_path() {
 
 usage() {
   printf '%s\n' \
-    'usage: scripts/ci_job.sh --uv ABSOLUTE_PATH --node ABSOLUTE_PATH --npm-cli ABSOLUTE_PATH JOB' \
+    'usage: scripts/ci_job.sh --uv ABSOLUTE_PATH --node ABSOLUTE_PATH --npm-cli ABSOLUTE_PATH [--uv-cache ABSOLUTE_DIRECTORY --runner-temp ABSOLUTE_DIRECTORY] JOB' \
     '' \
-    'Jobs: static, unit, contracts'
+    'Jobs: static, unit, contracts (the explicit cache pair is valid only for unit)'
 }
 
-if (( $# != 7 )) || [[ $1 != --uv ]] || [[ $2 != /* ]] || \
+if (( $# != 7 && $# != 11 )) || [[ $1 != --uv ]] || [[ $2 != /* ]] || \
   [[ $3 != --node ]] || [[ $4 != /* ]] || [[ $5 != --npm-cli ]] || \
   [[ $6 != /* ]]; then
   usage >&2
@@ -52,7 +52,20 @@ fi
 uv_executable=$2
 node_executable=$4
 npm_cli=$6
-job=$7
+uv_cache_directory=
+runner_temp_directory=
+if (( $# == 11 )); then
+  if [[ $7 != --uv-cache ]] || [[ $8 != /* ]] || \
+    [[ $9 != --runner-temp ]] || [[ ${10} != /* ]]; then
+    usage >&2
+    exit 64
+  fi
+  uv_cache_directory=$8
+  runner_temp_directory=${10}
+  job=${11}
+else
+  job=$7
+fi
 
 case $job in
   static) target=ci-static ;;
@@ -63,10 +76,29 @@ case $job in
     exit 64
     ;;
 esac
+if [[ $job == unit && -z $uv_cache_directory ]]; then
+  printf 'error: the unit job requires an explicit uv cache and runner temporary directory\n' >&2
+  exit 64
+fi
+if [[ -n $uv_cache_directory && $job != unit ]]; then
+  printf 'error: an explicit uv cache is valid only for the unit job\n' >&2
+  exit 64
+fi
 
 canonicalize_existing 'uv executable' "$uv_executable" canonical_uv
 canonicalize_existing 'Node executable' "$node_executable" canonical_node
 canonicalize_existing 'npm CLI' "$npm_cli" canonical_npm_cli
+if [[ -n $uv_cache_directory ]]; then
+  canonicalize_existing 'uv cache directory' \
+    "$uv_cache_directory" canonical_uv_cache_directory
+  canonicalize_existing 'runner temporary directory' \
+    "$runner_temp_directory" canonical_runner_temp_directory
+  if [[ $canonical_uv_cache_directory != "$uv_cache_directory" || \
+    $canonical_runner_temp_directory != "$runner_temp_directory" ]]; then
+    printf 'error: uv cache and runner temporary paths must be exact canonical paths\n' >&2
+    exit 69
+  fi
+fi
 if [[ $original_home != /* ]]; then
   printf 'error: HOME must be an absolute existing directory\n' >&2
   exit 69
@@ -77,10 +109,41 @@ reject_make_unsafe_path 'canonical uv executable path' "$canonical_uv"
 reject_make_unsafe_path 'canonical Node executable path' "$canonical_node"
 reject_make_unsafe_path 'canonical npm CLI path' "$canonical_npm_cli"
 reject_make_unsafe_path 'canonical user home path' "$canonical_user_home"
+if [[ -n $uv_cache_directory ]]; then
+  reject_make_unsafe_path 'canonical uv cache path' \
+    "$canonical_uv_cache_directory"
+  reject_make_unsafe_path 'canonical runner temporary path' \
+    "$canonical_runner_temp_directory"
+fi
 
 uv_executable=$canonical_uv
 node_executable=$canonical_node
 npm_cli=$canonical_npm_cli
+
+make_cache_argument=()
+if [[ -n $uv_cache_directory ]]; then
+  if [[ ! -d $canonical_uv_cache_directory || \
+    -L $canonical_uv_cache_directory ]]; then
+    printf 'error: uv cache must be a regular directory\n' >&2
+    exit 69
+  fi
+  case $canonical_uv_cache_directory in
+    "$canonical_runner_temp_directory"/*) ;;
+    *)
+      printf 'error: uv cache must be below the runner temporary directory\n' >&2
+      exit 69
+      ;;
+  esac
+  cache_owner=$(stat --format=%u -- "$canonical_uv_cache_directory")
+  cache_mode=$(stat --format=%a -- "$canonical_uv_cache_directory")
+  if [[ $cache_owner != "$EUID" || $cache_mode != 700 ]]; then
+    printf 'error: uv cache ownership or mode is unsafe\n' >&2
+    exit 69
+  fi
+  make_cache_argument=(
+    "RAOS_CI_UV_CACHE_DIR=$canonical_uv_cache_directory"
+  )
+fi
 
 for executable in "$uv_executable" "$node_executable"; do
   if [[ ! -f $executable || ! -x $executable ]]; then
@@ -163,10 +226,12 @@ if [[ ${RAOS_NETWORK_DENIED:-} == 1 ]]; then
   exec /usr/bin/make --no-builtin-rules --no-builtin-variables \
     --file Makefile "$target" \
     RAOS_CI_OFFLINE=1 \
-    "UV=$uv_executable" "NODE=$node_executable" "NPM_CLI=$npm_cli"
+    "UV=$uv_executable" "NODE=$node_executable" "NPM_CLI=$npm_cli" \
+    "${make_cache_argument[@]}"
 fi
 exec "$network_wrapper" --home "$canonical_user_home" -- \
   /usr/bin/make --no-builtin-rules --no-builtin-variables \
     --file Makefile "$target" \
     RAOS_CI_OFFLINE=1 \
-    "UV=$uv_executable" "NODE=$node_executable" "NPM_CLI=$npm_cli"
+    "UV=$uv_executable" "NODE=$node_executable" "NPM_CLI=$npm_cli" \
+    "${make_cache_argument[@]}"
