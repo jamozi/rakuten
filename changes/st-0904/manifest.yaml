@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0904_public_projection_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0904_public_projection_reference_plan.py
 provenance:
-  contract_sha256: c677d1b34dbf4bbb67d09fb779f2cbcfb89460e73c64dd175ebea9923f33ce84
+  contract_sha256: bfc93f6d9b817c28ae5cb837dc31c4140451562d36784836213675af560c82d5
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -86,10 +86,10 @@ provenance:
   dependency_inputs:
   - story_id: ST-0903
     uri: repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml
-    sha256: 9b7c55dfd58213db86caea38cf5da8bfac65eaa3ba4aa194f82a6a1d83a0d838
+    sha256: 83e07087c67e28213237f7ab1f522594e72d2b33cbd3e17d50140f67d4222e28
   - story_id: ST-0306
     uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
-    sha256: 20b5c37d6979b67f4b4a5b014f7b18a9f729c889b47ca6cc6916f58b2ef08fc5
+    sha256: 0fa422a6fa8f82e9cf5f1d25f134444211a44ea58e3d62480dee245cadfc2d2a
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
     sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
@@ -99,13 +99,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml
   bytes: 12960
-  sha256: c677d1b34dbf4bbb67d09fb779f2cbcfb89460e73c64dd175ebea9923f33ce84
+  sha256: bfc93f6d9b817c28ae5cb837dc31c4140451562d36784836213675af560c82d5
 - uri: repo://changes/st-0904/README.md
   bytes: 3962
   sha256: e4015ac16ddd7383b0848283bebe2348020fb2fe7711d3a41a05e608b4ed2f16
 - uri: repo://scripts/build_st0904_public_projection_reference_plan.py
   bytes: 45785
-  sha256: 321dea7b347004a129d9cff477c81dd6b0b9a1b3c1abc686f957ce42c151a580
+  sha256: 5caedc01cff4658159402f337ee905629f88d0d4d21dbcb38f10b932f681ce2a
 - uri: repo://tests/st0904/conftest.py
   bytes: 955
   sha256: 88af5e0dff9071d5638c52fff6e2c2114025ca8f82199d434ce547318d067fed
@@ -122,7 +122,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0904/generated/public-projection-reference-plan.v1.json
   bytes: 17894
-  sha256: ff85b37e79d85532fde07d1e93a6411d093b1d53f4cdb2c69a93958267683812
+  sha256: df404149c475d331324c9b01cc654358da87a03b296f2087f99b95435fc2951e
   digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLIC_PROJECTION_REFERENCE_PLAN

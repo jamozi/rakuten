@@ -47,7 +47,7 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1205_kpi_read_model_reference_plan.py"
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "30541e0f5c78147220068856b0de72deab39f7353b1b39fe130b8d6e91fa6c35"
+    "c049f89200a3492ebf677e387906e11d5b2416bc670ae256d30f79d7e835e13c"
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
@@ -109,7 +109,7 @@ ST1201_ARTIFACTS: Final = (
     ),
     (
         Path("tests/st1201/test_boundaries.py"),
-        "411947c165fc0b8ae02f5286eba79efe0905ad2ac2a552366083311336c485e9",
+        "5d6f298a40aa613b67d696ce40eb28ed4459f11848d59391eaad89c576a01e8d",
     ),
 )
 ST1203_ARTIFACTS: Final = (

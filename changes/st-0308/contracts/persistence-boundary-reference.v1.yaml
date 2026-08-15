@@ -37,8 +37,8 @@ sources:
     bytes: 71458
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    bytes: 10741
-    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+    bytes: 11132
+    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
     bytes: 150878
     sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
@@ -56,10 +56,10 @@ sources:
     sha256: 29e90628cc8ed4259b54486ab12abddb606ae414e3a2391c5055dbbf521577f7
   - uri: repo://changes/st-0308/contracts/design-handoff-validation.v1.yaml
     bytes: 18293
-    sha256: 69818130069284f60bc98ef5163f8b8dd6d346df6cbca5447f737dd0516868d5
+    sha256: ca814d0ccdd8b3375418c2e233360639f4d47fc0a17a95ba3af646de01c78c2a
   - uri: repo://scripts/validate_st0308_design_handoff.py
     bytes: 104164
-    sha256: db9ebebcccad144d2e004090766ad42cd37403f9e03150d260cabe7f492f11e7
+    sha256: 36c7effc04aebed0250b68507acf4d3e6c74dfef8c2bb20d1df84891f1c5f95d
 predecessor_bindings:
   ST-0304:
     classification: OPAQUE_CONTEXT_ONLY
