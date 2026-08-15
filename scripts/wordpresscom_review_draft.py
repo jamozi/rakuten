@@ -708,8 +708,10 @@ def _verify_mvp_runtime_identity(repository_root: Path) -> None:
     manifest = parsed
     if set(manifest) != {
         "approved_base_commit",
+        "external_action_authority",
         "generated_by",
         "paths",
+        "repository_development_authority",
         "schema",
         "slice_id",
         "story_id",
@@ -720,6 +722,9 @@ def _verify_mvp_runtime_identity(repository_root: Path) -> None:
         or manifest.get("story_id") != "ST-1703"
         or manifest.get("slice_id") != "WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3"
         or manifest.get("approved_base_commit") != _MVP_APPROVED_BASE_COMMIT
+        or manifest.get("repository_development_authority")
+        != "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"
+        or manifest.get("external_action_authority") != "NONE"
     ):
         _mvp_fail(WordPressComMvpDraftFailureCode.BINDING_INVALID)
     values = manifest.get("paths")

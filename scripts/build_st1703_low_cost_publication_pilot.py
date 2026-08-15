@@ -155,9 +155,18 @@ CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES: Final = 5656
 CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256: Final = (
     "8cf00ace6e2988c3bfb7969f13cfec0786137077c1319be4b043c4b762b5fba9"
 )
-V3_CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES: Final = 5656
-V3_CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256: Final = (
+V3_TARGET_WAVE3_RUNTIME_MANIFEST_BYTES: Final = 5656
+V3_TARGET_WAVE3_RUNTIME_MANIFEST_SHA256: Final = (
     "b9ccd47c40b9bc9a7595f9e9de2d807232e2b084851b2057007d37b8c98b3c6e"
+)
+ACTIVE_CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES: Final = 5776
+ACTIVE_CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256: Final = (
+    "2d9c599c03bcd479137729ae2cd570ff7b60337511f543821aa5df959873a5d1"
+)
+STANDING_DEVELOPMENT_AUTHORITY_PATH: Final = Path("AGENTS.md")
+STANDING_DEVELOPMENT_AUTHORITY_BYTES: Final = 43916
+STANDING_DEVELOPMENT_AUTHORITY_SHA256: Final = (
+    "a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482"
 )
 PROJECTION_BYTES: Final = 9380
 PROJECTION_SHA256: Final = (
@@ -302,11 +311,23 @@ V3_AUTHORITY_INPUTS: Final = (
     *V2_AUTHORITY_INPUTS[:-1],
     (
         WAVE3_RUNTIME_MANIFEST_PATH,
-        V3_CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES,
-        V3_CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256,
+        V3_TARGET_WAVE3_RUNTIME_MANIFEST_BYTES,
+        V3_TARGET_WAVE3_RUNTIME_MANIFEST_SHA256,
     ),
 )
-V3_CURRENT_AUTHORITY_INPUTS: Final = (*BASE_AUTHORITY_INPUTS, V3_AUTHORITY_INPUTS[-1])
+ACTIVE_CURRENT_AUTHORITY_INPUTS: Final = (
+    *BASE_AUTHORITY_INPUTS,
+    (
+        STANDING_DEVELOPMENT_AUTHORITY_PATH,
+        STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+        STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+    ),
+    (
+        WAVE3_RUNTIME_MANIFEST_PATH,
+        ACTIVE_CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES,
+        ACTIVE_CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256,
+    ),
+)
 MAX_INPUT_BYTES: Final = 256_000
 
 
@@ -785,9 +806,9 @@ def _validate_v3_handoff(document: Mapping[str, Any]) -> None:
         or reconciliation.get("current_target_commit") != V3_TARGET_COMMIT
         or reconciliation.get("current_target_tree") != V3_TARGET_TREE
         or reconciliation.get("future_current_runtime_manifest_bytes")
-        != V3_CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES
+        != V3_TARGET_WAVE3_RUNTIME_MANIFEST_BYTES
         or reconciliation.get("future_current_runtime_manifest_sha256")
-        != V3_CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256
+        != V3_TARGET_WAVE3_RUNTIME_MANIFEST_SHA256
         or file_cut.get("exact_mutable_imported_path_count") != 8
         or file_cut.get("imported_byte_identical_final_path_count") != 65
         or file_cut.get("all_other_paths") != "PROTECTED"
@@ -934,7 +955,8 @@ def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
     _validate_v3_approval(load_yaml(root, V3_APPROVAL_PATH))
     _validate_authority_inputs(root, BASE_AUTHORITY_INPUTS)
     _validate_authority_inputs(root, V2_AUTHORITY_INPUTS[:-1])
-    _validate_authority_inputs(root, V3_AUTHORITY_INPUTS)
+    _validate_authority_inputs(root, V3_AUTHORITY_INPUTS[:-1])
+    _validate_authority_inputs(root, ACTIVE_CURRENT_AUTHORITY_INPUTS)
     projection = render_projection(document)
     if (len(projection), sha256_bytes(projection)) != (
         PROJECTION_BYTES,
@@ -1069,12 +1091,12 @@ def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
                     "silent_repin": "FORBIDDEN",
                     "git_object_as_current_filesystem_substitute": "FORBIDDEN",
                 },
-                "current_wave3_runtime_manifest": {
+                "v3_target_runtime_manifest": {
                     "uri": f"repo://{WAVE3_RUNTIME_MANIFEST_PATH.as_posix()}",
-                    "bytes": V3_CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES,
-                    "sha256": V3_CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256,
-                    "validation_source": "EXACT_REGULAR_FILESYSTEM_FILE",
-                    "authority": "COMMITTED_RUNTIME_METADATA_ONLY",
+                    "bytes": V3_TARGET_WAVE3_RUNTIME_MANIFEST_BYTES,
+                    "sha256": V3_TARGET_WAVE3_RUNTIME_MANIFEST_SHA256,
+                    "validation_source": "IMMUTABLE_V3_HANDOFF_AND_APPROVAL",
+                    "authority": "HISTORICAL_COMMITTED_RUNTIME_METADATA_ONLY",
                     "formal_evidence": False,
                 },
                 "generated_projection": {
@@ -1103,13 +1125,46 @@ def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
                     for path, byte_count, digest in V3_AUTHORITY_INPUTS
                 ],
             },
+            "current_development_rebinding": {
+                "classification": "REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY",
+                "authority_source": {
+                    "uri": f"repo://{STANDING_DEVELOPMENT_AUTHORITY_PATH.as_posix()}",
+                    "bytes": STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+                    "sha256": STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+                    "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+                },
+                "current_wave3_runtime_manifest": {
+                    "uri": f"repo://{WAVE3_RUNTIME_MANIFEST_PATH.as_posix()}",
+                    "bytes": ACTIVE_CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES,
+                    "sha256": ACTIVE_CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256,
+                    "validation_source": "EXACT_REGULAR_FILESYSTEM_FILE",
+                    "authority": "CURRENT_RUNTIME_METADATA_ONLY",
+                    "formal_evidence": False,
+                },
+                "repository_git_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+                "external_authority": "NONE",
+                "live_prepare_authority": "NONE",
+                "provider_authority": "NONE",
+                "credential_authority": "NONE",
+                "publication_authority": "NONE",
+                "release_authority": "NONE",
+                "production_authority": "NONE",
+                "authority_inputs": [
+                    {
+                        "uri": f"repo://{path.as_posix()}",
+                        "bytes": byte_count,
+                        "sha256": digest,
+                    }
+                    for path, byte_count, digest in ACTIVE_CURRENT_AUTHORITY_INPUTS
+                ],
+            },
             "authority_inputs": [
                 {
                     "uri": f"repo://{path.as_posix()}",
                     "bytes": byte_count,
                     "sha256": digest,
                 }
-                for path, byte_count, digest in V3_CURRENT_AUTHORITY_INPUTS
+                for path, byte_count, digest in ACTIVE_CURRENT_AUTHORITY_INPUTS
             ],
             "generated_by": f"repo://{GENERATOR_PATH.as_posix()}",
             "generation_command": (

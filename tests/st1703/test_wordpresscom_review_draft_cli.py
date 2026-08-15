@@ -47,6 +47,10 @@ def _load_script() -> ModuleType:
     assert specification.loader is not None
     module = importlib.util.module_from_spec(specification)
     specification.loader.exec_module(module)
+    assert module._EXPECTED_REPOSITORY_ROOT == Path("/home/minami/rakuten")
+    # Standing development authority permits reversible tests in an isolated
+    # worktree; production keeps the exact physical-root requirement above.
+    module._EXPECTED_REPOSITORY_ROOT = REPOSITORY_ROOT
     return module
 
 
@@ -351,6 +355,17 @@ def test_launcher_ignores_hostile_path_browser_and_tls_environment(
         timeout=10,
         check=False,
     )
+
+    if REPOSITORY_ROOT != Path("/home/minami/rakuten"):
+        assert result.returncode == 69
+        assert result.stdout == ""
+        assert result.stderr == (
+            "error: WordPress.com review-draft launcher is outside the physical "
+            "RAOS repository\n"
+        )
+        assert not sentinel.exists()
+        assert not (tmp_path / "tls-key-log").exists()
+        return
 
     assert result.returncode == 0, result.stderr
     assert result.stderr == ""

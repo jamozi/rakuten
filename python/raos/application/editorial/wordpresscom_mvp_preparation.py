@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from enum import Enum, auto
 import re
-from typing import NoReturn
+from typing import NoReturn, cast
 from urllib.parse import urlsplit
 
 from raos.application.editorial.wordpresscom_mvp_affiliate import (
@@ -579,8 +579,8 @@ class WordPressComMvpDraftPreparationService:
     ) -> None:
         if (
             type(bundle) is not MvpDraftContentBundle
-            or not isinstance(provider, WordPressComMvpFixedProviderPort)
-            or not isinstance(journal, WordPressComMvpDraftJournalPort)
+            or not isinstance(cast(object, provider), WordPressComMvpFixedProviderPort)
+            or not isinstance(cast(object, journal), WordPressComMvpDraftJournalPort)
         ):
             _fail(WordPressComMvpDraftFailureCode.BINDING_INVALID)
         bundle.__post_init__()

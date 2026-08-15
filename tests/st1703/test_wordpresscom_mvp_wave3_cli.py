@@ -281,6 +281,7 @@ def _identity_repository(
     )
     manifest_value = {
         "approved_base_commit": "PLACEHOLDER",
+        "external_action_authority": "NONE",
         "generated_by": "python3 scripts/build_wordpresscom_mvp_runtime_manifest.py",
         "paths": [
             {
@@ -289,6 +290,7 @@ def _identity_repository(
                 "sha256": hashlib.sha256(runtime.read_bytes()).hexdigest(),
             }
         ],
+        "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
         "schema": "WORDPRESSCOM_MVP_DRAFT_RUNTIME_MANIFEST_V1",
         "slice_id": "WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3",
         "story_id": "ST-1703",
@@ -335,6 +337,8 @@ def _identity_repository(
         "dirty",
         "staged",
         "manifest-mismatch",
+        "development-authority",
+        "external-authority",
         "non-ancestor",
         "skip-worktree",
     ],
@@ -359,6 +363,20 @@ def test_runtime_identity_fake_repository_failure_matrix_precedes_affirmer(
     elif case == "manifest-mismatch":
         value = json.loads(manifest.read_text(encoding="ascii"))
         value["paths"][0]["sha256"] = "0" * 64
+        manifest.write_text(
+            json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n",
+            encoding="ascii",
+        )
+    elif case == "development-authority":
+        value = json.loads(manifest.read_text(encoding="ascii"))
+        value["repository_development_authority"] = "PER_CHANGE_APPROVAL"
+        manifest.write_text(
+            json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n",
+            encoding="ascii",
+        )
+    elif case == "external-authority":
+        value = json.loads(manifest.read_text(encoding="ascii"))
+        value["external_action_authority"] = "LIVE_PROVIDER"
         manifest.write_text(
             json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n",
             encoding="ascii",
@@ -405,7 +423,7 @@ def test_runtime_manifest_generator_check_is_deterministic_and_current() -> None
     assert result.stderr == b""
 
 
-def test_runtime_identity_is_rebound_to_exact_v3_target_and_manifest() -> None:
+def test_runtime_identity_preserves_base_ancestry_and_binds_current_manifest() -> None:
     module = _load_script()
     target = "acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d"
     assert module._MVP_APPROVED_BASE_COMMIT == target
@@ -415,13 +433,18 @@ def test_runtime_identity_is_rebound_to_exact_v3_target_and_manifest() -> None:
         "wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json"
     )
     content = path.read_bytes()
-    assert len(content) == 5656
+    assert len(content) == 5776
     assert (
         hashlib.sha256(content).hexdigest()
-        == "b9ccd47c40b9bc9a7595f9e9de2d807232e2b084851b2057007d37b8c98b3c6e"
+        == "2d9c599c03bcd479137729ae2cd570ff7b60337511f543821aa5df959873a5d1"
     )
     manifest = json.loads(content)
     assert manifest["approved_base_commit"] == target
+    assert (
+        manifest["repository_development_authority"]
+        == "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"
+    )
+    assert manifest["external_action_authority"] == "NONE"
     assert len(manifest["paths"]) == 27
     script_row = next(
         row
@@ -429,9 +452,9 @@ def test_runtime_identity_is_rebound_to_exact_v3_target_and_manifest() -> None:
         if row["path"] == "scripts/wordpresscom_review_draft.py"
     )
     assert script_row == {
-        "bytes": 43402,
+        "bytes": 43659,
         "path": "scripts/wordpresscom_review_draft.py",
-        "sha256": "2303866f94aa3aae45c2d4b3162335eb7e60afd25ed18e42a3d7c30bd0debf01",
+        "sha256": "e1c1d725544f205354c6e0ba4e77bcf16d2df6b36a670c1136d6064730c5c931",
     }
 
 
