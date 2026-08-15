@@ -59,13 +59,13 @@ predecessor:
 source_pins:
   st0308_persistence_plan:
     path: changes/st-0308/contracts/persistence-boundary-reference.v1.yaml
-    sha256: 2b33ba8518e7b32296f5a2ad5fffee2b9f5291a4d18381339d573b36f8a34dca
+    sha256: 4916ac53e33b0785fff4b6d87ecc8c961c86624483bc80ab548b5d9e03e46176
   st0308_reference_plan:
     path: changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
-    sha256: 0c15435d23e238b1106b681c41b0aa08c270e7e8e9bdcf1090a1e197bc3db22a
+    sha256: c1b38b4a7bd881d45cc1792d9ba4d5dd5ccf142c9996329c5e8424290c9df99c
   st0308_manifest:
     path: changes/st-0308/manifest.yaml
-    sha256: a94142f5f383acbf67a460c6c0040c9f83995e8becc3d3f7ad146c66d1816c19
+    sha256: 8d7766fef1c5ca0826164e7a450e2fed645d1270c9bbf3f58fb1612019578567
   st0305_contract:
     path: changes/st-0305/contracts/publication-analytics-finance.v1.yaml
     sha256: 2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f

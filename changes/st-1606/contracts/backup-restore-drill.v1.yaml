@@ -34,7 +34,7 @@ sources:
 - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
   sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
 - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-  sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+  sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
 predecessor_bindings:
   data_services:
     story_id: ST-1502
@@ -62,7 +62,7 @@ predecessor_bindings:
     reference_plan_uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
     reference_plan_sha256: 33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f
     manifest_uri: repo://changes/st-1505/manifest.yaml
-    manifest_sha256: b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2
+    manifest_sha256: f5d9f2a130a2f70fa83e3da4d2897db492a16e9541f75cfa64ba32dc3caebf5c
     required_classification: SOURCE_DERIVED_NON_EXECUTABLE_STAGING_DEPLOYMENT_REFERENCE_PLAN
     required_executable: false
     required_activation_enabled: false

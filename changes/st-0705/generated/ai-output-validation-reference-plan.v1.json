@@ -82,22 +82,22 @@
         {
           "uri": "repo://changes/st-0702/contracts/context-pack-reference-plan.v1.yaml",
           "bytes": 7791,
-          "sha256": "73b5daf2d30bf5a595922385d2d4e5c0f5e306fe516fc8a9db6e17ebca3038d1"
+          "sha256": "2d0cfaba19451ab5040643447669a9e7f7593c58617f70180aa582e534a30a2b"
         },
         {
           "uri": "repo://changes/st-0702/generated/context-pack.reference-plan.v1.json",
           "bytes": 93842,
-          "sha256": "fb82de8cd7ee9d25c5c503c11a3dc22b017edde8968a50740d79402ed5612eee"
+          "sha256": "f9fbd84bdc89ce5b8699b084667e1769f538c9cd608df2004332f6504918c68d"
         },
         {
           "uri": "repo://changes/st-0702/manifest.yaml",
           "bytes": 6016,
-          "sha256": "25c75deef0d9e2d2b0e7421c15dab112489f3a7fffa4821d39cc94d40d5b23c7"
+          "sha256": "e2dd5d36d14fc6f9f5c5442da59d0c167b61d318441dc9fc0d220014055eef21"
         },
         {
           "uri": "repo://scripts/build_st0702_context_pack_reference_plan.py",
           "bytes": 32819,
-          "sha256": "d6b3da9302cbb0df53447ee8467ee10a84057b4bb95b5655cb3b65dcbacf0228"
+          "sha256": "bbe086c617481750112fe0a4a272072d025b3227702d950dffb82f8466e95bbb"
         },
         {
           "uri": "repo://tests/st0702/conftest.py",
@@ -136,12 +136,12 @@
         {
           "uri": "repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
           "bytes": 15689,
-          "sha256": "28c565107a81e3a0aece95d567614bd005c069bee9abc0d9bf860daa383db44b"
+          "sha256": "2a8150e5b80b13d118a982e84a30692955e4e9b62272896cdfe2720d56ffa654"
         },
         {
           "uri": "repo://changes/st-0703/generated/recorded-fixture-registry.v1.json",
           "bytes": 5547,
-          "sha256": "e7cc84ab72b673c543dc13ec2bd7aff51be565a7200f6c2b756ef6e4e5a7ba03"
+          "sha256": "427d17e0e511e273c74fc03d900ce80866eb1f3e7a280ad4d61404a5878d90b6"
         },
         {
           "uri": "repo://python/raos/domain/ai/provider.py",
@@ -177,22 +177,22 @@
         {
           "uri": "repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml",
           "bytes": 11114,
-          "sha256": "a8e1a07f2520b3b874d89fbfc44cd872fa84d6b193d2b433a4723e5e3523dd35"
+          "sha256": "3e9de9f652b6b6ef4b90614877ba25ad16285b6750966013a4c02dd7277771e6"
         },
         {
           "uri": "repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json",
           "bytes": 78849,
-          "sha256": "c691565befc1f49196a9b313543df8c0488cc19e7fc2ab78250fe98ab999cdb1"
+          "sha256": "d479a1dd4befc570f2ddf67ed7eafb0153c5889fae44a85760576c057250e6fd"
         },
         {
           "uri": "repo://changes/st-0605/manifest.yaml",
           "bytes": 8536,
-          "sha256": "ca59f65b8265212d0abf415a39df28b3abe157ff060edf0b4c3c469ffb5f92cf"
+          "sha256": "eadaf9a0e339641f9f4743ce48d4d09f11ec2fe457fb22523275459e340428a6"
         },
         {
           "uri": "repo://scripts/build_st0605_claim_evidence_coverage_reference_plan.py",
           "bytes": 44975,
-          "sha256": "2609a41dd138eeb8574c51f91bf931385183748a72a0914c59a817148835595f"
+          "sha256": "ad0f64bffa331e65f8d31109c7087e1d16b0718f6110b9a013858d1c25bf0c95"
         },
         {
           "uri": "repo://tests/st0605/conftest.py",

@@ -45,11 +45,11 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st0702_context_pack_reference_plan.py"
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "73b5daf2d30bf5a595922385d2d4e5c0f5e306fe516fc8a9db6e17ebca3038d1"
+    "2d0cfaba19451ab5040643447669a9e7f7593c58617f70180aa582e534a30a2b"
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    "9afb71a8715ea76a65e4a681a3d41940e38d5d3dc4a0b838f7bd7eea6180065b"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -73,21 +73,21 @@ ST0604_ARTIFACTS: Final = (
         Path(
             "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
         ),
-        "a537df987b1691234665ad38ef6a69c8eae64461d5f8f059e00dd25401484cd7",
+        "46cda9f058b4841c4516753e98e252cf56ae8e8165a42eef56e7061f5e52c6ed",
     ),
     (
         Path(
             "changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json"
         ),
-        "e6f9c3e17cdc5255f1707abfd1c293fb2763fb5bff2e7ccf9cd814b9c6f0969e",
+        "561d58abafcf198424fd906aa56970b1bb35ff86d720c510df938c013475f0b0",
     ),
     (
         Path("changes/st-0604/manifest.yaml"),
-        "e91045fc16dc6e60e952a73feffd80ddb50fa516f3a58888601a97697450eef1",
+        "540610b7b0582d3d373103c8a0b3cc83aefcb2a2d16bdc442af1fad0481a1f8b",
     ),
     (
         Path("scripts/build_st0604_source_packet_lifecycle_reference_plan.py"),
-        "c6ded6307d4c7eb2c5d1c4e9d80c0095e7b52e5a53541ed1d7f6e481f01bb97c",
+        "8e24fbf39e165ae053314244dba0bece8d8abad5859b933a26d85002aa5e7f36",
     ),
     (
         Path("tests/st0604/conftest.py"),
@@ -121,7 +121,7 @@ ST0701_ARTIFACTS: Final = (
     ),
     (
         Path("changes/st-0701/manifest.yaml"),
-        "ccd2231f3aa6cc0b90c906af8b746444583db3b084af6210d23a989c802b88b2",
+        "d033dbe399783a58cbd25325d0f765612ea2ad42b8041e75efc74aec25e436af",
     ),
     (
         Path("scripts/build_st0701_ai_registry.py"),

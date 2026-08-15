@@ -41,10 +41,10 @@ dependencies:
     binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     artifacts:
       changes/st-1304/README.md: 6528d7d60c8686cdd4d85a8db7d78fad5440e7d19fd293881c28fda0b407a3f2
-      changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml: bf54122e041b3dc2a005ef8ad0611b5d0175b85467a4442893f5fcd48dba0978
-      changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json: 895919e800cc3c5e76bf427c22d7562c86999cdc80eeda5e101a60d63ea43f29
-      changes/st-1304/manifest.yaml: 1bee03b9e42178a3023b59735a56b0ebb44459404a38dbe64b050b9a148a6996
-      scripts/build_st1304_cost_unit_economics_reference_plan.py: 210fc920a00152e8a5bffd2cf7d3681b402721218ea336744566cc3d641a5ea0
+      changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml: 80060272d17029ab1d2b4a601a5c9a2b3b30b58b2d11394aa88a5352de48cce1
+      changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json: 3d0383c59a9d3978ac77fc1fe73d6853610d76236b0b6a2952296d79932c3ad0
+      changes/st-1304/manifest.yaml: c1c7c651e36f98e25314cc1eee03ebfb145ccba2ad65f89077c371bf9e02b440
+      scripts/build_st1304_cost_unit_economics_reference_plan.py: 78b3b31deb1d222ecd954c6abf3c961e07d6438f42142dee6f0f434e86808ef8
       tests/st1304/conftest.py: 913f94bbc4018b868679bdf3477a5c480ce8e9662ddffd43aff14c3cee670f4f
       tests/st1304/test_contract.py: 21b1c08b66aa4621b66539ff5fffa02ac30ef6754daafec6df6baa73e7804fc5
       tests/st1304/test_generation.py: 0d900252018b44b948f9e7b81eef5ecabb68f8381a6f7f3004cd3a75fcd1a676

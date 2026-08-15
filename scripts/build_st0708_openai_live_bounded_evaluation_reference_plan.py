@@ -44,10 +44,10 @@ SOURCE_PATHS: Final = (README_PATH, CONTRACT_PATH, GENERATOR_PATH, *TEST_PATHS)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    "9afb71a8715ea76a65e4a681a3d41940e38d5d3dc4a0b838f7bd7eea6180065b"
 )
 CONTRACT_SHA256: Final = (
-    "e1b960af35d596d7bbe2c556d178de2c98d4ce5563b444a214270d3514149f98"
+    "04b4e9186f9b6ace3aace104ca6151c49b1bc50c1b9b92cb0b4afa152d71599c"
 )
 MAX_SOURCE_BYTES: Final = base.MAX_DOCUMENT_BYTES
 
@@ -75,7 +75,7 @@ AUTHORITY_SHA256: Final[dict[Path, str]] = {
 ST0707_SHA256: Final[dict[Path, str]] = {
     Path(
         "changes/st-0707/README.md"
-    ): "3b38143a5e6adcd28a68b16dd8244c4fe2024c4770068d46aa345a80e82d015f",
+    ): "cdd648859d24f173cf4c177293189d02e8172d32643c40c2eeea40d7c161d528",
     Path(
         "python/raos/domain/ai/evaluation.py"
     ): "f5eba5617c24227ac09de7ce555a52a9454fe2e5320c8bbcaab8752f6945aff4",
@@ -87,7 +87,7 @@ ST0707_SHA256: Final[dict[Path, str]] = {
     ): "6bade20471f8724fe2d131e57d806d1467b54d6467d77b1853e99732b3d94b78",
     Path(
         "tests/st0707/test_boundaries.py"
-    ): "c41e50bbbc3dcb4e0fa0dc3ae6998351d0fc9763ac2b4d3eb81c14bcd4c75f50",
+    ): "3bb523c1ff7c379d673cf9efbeaff8567ae16b55977836f1ddcd994daf378343",
     Path(
         "tests/st0707/test_evaluation.py"
     ): "3680ff67bf147721d04ab9f50c5d5c10503f7120af70c3a1c2b9ae4a80431340",
@@ -101,13 +101,13 @@ ST0703_SHA256: Final[dict[Path, str]] = {
     ): "18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c",
     Path(
         "changes/st-0703/contracts/openai-responses-adapter.v1.yaml"
-    ): "28c565107a81e3a0aece95d567614bd005c069bee9abc0d9bf860daa383db44b",
+    ): "2a8150e5b80b13d118a982e84a30692955e4e9b62272896cdfe2720d56ffa654",
     Path(
         "changes/st-0703/generated/recorded-fixture-registry.v1.json"
-    ): "e7cc84ab72b673c543dc13ec2bd7aff51be565a7200f6c2b756ef6e4e5a7ba03",
+    ): "427d17e0e511e273c74fc03d900ce80866eb1f3e7a280ad4d61404a5878d90b6",
     Path(
         "changes/st-0703/manifest.yaml"
-    ): "a41c07194e49db1d22e0620788657b24e5f56f69f398695204de69d73793b584",
+    ): "1c2ff75ae06971361415952c0c87a80e9a054a13843371dae1f74bfc3baa4d19",
     Path(
         "python/raos/domain/ai/provider.py"
     ): "179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991",

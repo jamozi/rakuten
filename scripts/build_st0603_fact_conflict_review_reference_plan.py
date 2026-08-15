@@ -48,7 +48,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    "9afb71a8715ea76a65e4a681a3d41940e38d5d3dc4a0b838f7bd7eea6180065b"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -72,15 +72,15 @@ PREDECESSOR_ARTIFACTS: Final = (
             "changes/st-0602/generated/"
             "fact-extraction-validation-reference-plan.v1.json"
         ),
-        "09dfe62f6afbd5c531a96c22330fa920356abf614f0230ec2a6ff19c6ba1b157",
+        "edc6362b5adf0924b5b6668b4bc96663c084ae44b8657b6c15f331edf5ad2ebc",
     ),
     (
         Path("changes/st-0602/manifest.yaml"),
-        "695cd282f3e4051e5e4012c5e38ca5ba68d9ede32c38edd7cbcd05a3ba89129e",
+        "48ae8d098a42924adf2cf614d1d3fee1f9ae7fa6f62c78e743cb03a246218762",
     ),
     (
         Path("scripts/build_st0602_fact_extraction_validation_reference_plan.py"),
-        "6ff038c9c2e06a6bef6b8fb2520ad5d62b9107bf80a77adcb0dd1811d399bd17",
+        "7ff99e7c23e182c4daf9c539674b37cdd2559dbbfdb01227d4aa07ee91d598e7",
     ),
     (
         Path("tests/st0602/conftest.py"),

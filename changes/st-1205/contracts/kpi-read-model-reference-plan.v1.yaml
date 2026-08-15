@@ -40,7 +40,7 @@ predecessors:
       tests/st1201/conftest.py: 4ae5cb8ca3cc747a269fd9d552d639cb8846935101ff3e208004b269246c555e
       tests/st1201/test_collector.py: e009577784a5450b66dbd421fdfdf1e6c5beb0b8ab3fb1593735363b402bd183
       tests/st1201/test_failure_isolation.py: 3acb571f2d5bc5323bd4246d71977342dad7d269196c2897b0c57000b7ea697e
-      tests/st1201/test_boundaries.py: 5d6f298a40aa613b67d696ce40eb28ed4459f11848d59391eaad89c576a01e8d
+      tests/st1201/test_boundaries.py: 3969ea00a38b6b7ab7152f0135ffbf7ae711b55d3726deafd5468c7b247b7ec2
     required_semantics:
       default_mode: DISABLED_OD_012
       tracking: DISABLED

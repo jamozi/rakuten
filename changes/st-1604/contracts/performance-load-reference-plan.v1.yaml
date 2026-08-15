@@ -37,7 +37,7 @@ predecessors:
       - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
         sha256: 33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f
       - uri: repo://changes/st-1505/manifest.yaml
-        sha256: b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2
+        sha256: f5d9f2a130a2f70fa83e3da4d2897db492a16e9541f75cfa64ba32dc3caebf5c
   - story_id: ST-1601
     status: INTERFACE_AVAILABLE_NOT_CONNECTED
     bindings:

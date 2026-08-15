@@ -146,3 +146,48 @@ drift can then be rejected either as a stale lock or at uv's exact
 network-disabled, package-not-in-cache resolver boundary. The latter does not
 make an incomplete cache acceptable: cache completeness is proven first, and
 arbitrary diagnostics still fail the test.
+
+## Exact-head reviewed-findings reconciliation
+
+The historical v1 ledger and detached owner approval remain byte-identical.
+They describe the earlier 31-worktree/58-history universe and are not rewritten
+as current authority. The local candidate workflow bytes now reference
+`contracts/reviewed-secret-findings.v2.yaml`. The filename is revisioned, but
+its strict scanner grammar intentionally remains internal `version: 1`; no
+scanner, generic-assignment, placeholder, AST, entropy, RHS, specific-rule, or
+subtraction behavior changes.
+
+The v2 ledger is 59,769 bytes at SHA-256
+`667fee6720dad2e25e71220b2ec2fc8918a845ee30309c581f687ca87f51ca1b`.
+It binds 115 sanitized metadata records: 31 maintained worktree locations and
+84 Git-history blobs. Every finding is `GENERIC_CREDENTIAL`; AWS, GitHub,
+OpenAI, and private-key findings are zero. All 31 current worktree line hashes
+and all 26 newly reachable history bindings reuse line hashes already reviewed
+under v1; the 58 earlier history bindings remain present. Review used only
+rule, source kind, path or blob, line, size, source hash, and line hash. No
+matched value was displayed or persisted.
+
+`REVIEWED-SECRET-FINDINGS-RECONCILIATION-v2.yaml` separately binds the exact
+v1 artifacts, v2 ledger, immutable integration base, current root standing
+development authority, exact physical origin-heads-plus-tags snapshot, and
+the workflow command. It claims no new repository-owner approval and grants
+no external authority. PR 49's V3 scanner/AST/entropy/RHS behavior is recorded
+as `NOT_ADOPTED` because it conflicts with the later broad generic-detection
+and exact-ledger policy; its nine historical authority artifacts are not
+imported.
+
+The value-free `contracts/origin-ref-inventory.v2.txt` freezes the canonical
+sorted `git for-each-ref` rows for all 44 origin heads and 17 tags. Its entry
+rows hash to
+`2a04841be9d2af3c0926adcba9bb7eb8940d0f432c9d62e8e65a5c13b217de28`;
+the reconciliation record binds the complete artifact bytes separately.
+
+The workflow delta in the local candidate bytes is only the v1-to-v2 ledger
+path rebinding. The generator provenance closure is regenerated mechanically in dependency order,
+without changing runtime contracts. ST-0308 is excluded because its ST-0306
+handoff-validation dependency is a separate semantic gate. A tracked record
+cannot bind the commit containing itself; the final commit/tree is reported
+outside tracked artifacts. The exact post-commit standalone replay is
+`NOT_EXECUTED`, so handoff and GitHub workflow activation remain `BLOCKED`.
+Hosted CI, formal TST-001/TST-002, status, staging, external writes, release,
+and Production remain unexecuted and unauthorized by this record.

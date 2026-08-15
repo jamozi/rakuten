@@ -44,7 +44,7 @@
     "generation_command": "uv run --locked --no-sync python scripts/build_st0504_product_identity_human_review_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+      "sha256": "9afb71a8715ea76a65e4a681a3d41940e38d5d3dc4a0b838f7bd7eea6180065b"
     }
   },
   "predecessor_binding": {

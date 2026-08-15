@@ -47,11 +47,11 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1205_kpi_read_model_reference_plan.py"
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "c049f89200a3492ebf677e387906e11d5b2416bc670ae256d30f79d7e835e13c"
+    "509bcd8e3e80ee2a82a4a8d4b3cde179d7cd6c52546da79f57728a456be36488"
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    "9afb71a8715ea76a65e4a681a3d41940e38d5d3dc4a0b838f7bd7eea6180065b"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -109,7 +109,7 @@ ST1201_ARTIFACTS: Final = (
     ),
     (
         Path("tests/st1201/test_boundaries.py"),
-        "5d6f298a40aa613b67d696ce40eb28ed4459f11848d59391eaad89c576a01e8d",
+        "3969ea00a38b6b7ab7152f0135ffbf7ae711b55d3726deafd5468c7b247b7ec2",
     ),
 )
 ST1203_ARTIFACTS: Final = (

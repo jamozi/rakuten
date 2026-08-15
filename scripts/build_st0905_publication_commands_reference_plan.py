@@ -55,10 +55,10 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    "9afb71a8715ea76a65e4a681a3d41940e38d5d3dc4a0b838f7bd7eea6180065b"
 )
 CONTRACT_SHA256: Final = (
-    "146d7ccc30de94581b5080386572c32bfd9b8d1c56b4d92aef22aab4dce472c5"
+    "92e591a898e59268c72af356bd09c52e0a30fcefada43d3e9e1a47e63661830c"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -249,12 +249,12 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0903",
         "changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-        "83e07087c67e28213237f7ab1f522594e72d2b33cbd3e17d50140f67d4222e28",
+        "d9e2747f31c5326fb7483108d0b1552c810eedc68fb492bb3c3de60b0325c39f",
     ),
     (
         "ST-0904",
         "changes/st-0904/contracts/public-projection-reference-plan.v1.yaml",
-        "bfc93f6d9b817c28ae5cb837dc31c4140451562d36784836213675af560c82d5",
+        "e2adc7c16b693375f74c70bcbbea35044d4dd36d72bb7d8e7b3a8ce5709571cd",
     ),
     (
         "ST-0402",

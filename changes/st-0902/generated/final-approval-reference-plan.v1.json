@@ -114,12 +114,12 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml",
-    "source_contract_sha256": "432e0d327ff67c594db306337935137ffee1cdd708ae7ac69b29e00fff7c0bbc",
+    "source_contract_sha256": "4f72b258c1e583d7efbab0b1f4fdd3998b3f1b14a70ea308720d49c0380aefa9",
     "generated_by": "repo://scripts/build_st0902_final_approval_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0902_final_approval_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+      "sha256": "9afb71a8715ea76a65e4a681a3d41940e38d5d3dc4a0b838f7bd7eea6180065b"
     }
   },
   "dependencies": [
@@ -187,7 +187,7 @@
         {
           "role": "contract",
           "uri": "repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml",
-          "sha256": "a8e1a07f2520b3b874d89fbfc44cd872fa84d6b193d2b433a4723e5e3523dd35"
+          "sha256": "3e9de9f652b6b6ef4b90614877ba25ad16285b6750966013a4c02dd7277771e6"
         }
       ],
       "connection_status": "NOT_EXECUTED",
