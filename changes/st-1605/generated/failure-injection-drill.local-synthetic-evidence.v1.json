@@ -1,0 +1,468 @@
+{
+  "schema_version": "1.0.0",
+  "generator": {
+    "uri": "repo://scripts/build_st1605_failure_injection_drill.py",
+    "command": "uv run --locked --no-sync python -I -B scripts/build_st1605_failure_injection_drill.py",
+    "source_contract": "repo://changes/st-1605/contracts/failure-injection-drill.v1.yaml"
+  },
+  "story": {
+    "id": "ST-1605",
+    "scope": "DETERMINISTIC_DEV_CI_LOCAL_SYNTHETIC_SLICE",
+    "effective_canonical_status": "UNCHANGED",
+    "acceptance_criteria_satisfied": false
+  },
+  "classification": "LOCAL_SYNTHETIC_NON_ATTESTING",
+  "authority_sources": [
+    {
+      "role": "integration",
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "role": "canonical_decisions",
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "role": "open_decisions",
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "role": "story_backlog",
+      "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "role": "test_catalog",
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "role": "operations_design",
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md",
+      "sha256": "894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8"
+    },
+    {
+      "role": "alert_catalog",
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_alert_catalog_v1.0.yaml",
+      "sha256": "f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0"
+    },
+    {
+      "role": "runbook_catalog",
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml",
+      "sha256": "2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100"
+    },
+    {
+      "role": "security_design",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+      "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+    },
+    {
+      "role": "security_controls",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "role": "threat_register",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
+      "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+    },
+    {
+      "role": "implementation_first_execplan",
+      "uri": "repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
+      "sha256": "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
+    }
+  ],
+  "dependency_bindings": {
+    "slo_alert_reference": {
+      "story_id": "ST-1602",
+      "inputs": [
+        {
+          "uri": "repo://changes/st-1602/README.md",
+          "sha256": "9ed7dfa14f736cf30aa166c8c79d3f42386abfab90ec31b2792454e89ad976bc"
+        },
+        {
+          "uri": "repo://changes/st-1602/contracts/slo-alert-reference-plan.v1.yaml",
+          "sha256": "31c8d3c57501e351bd9bcde3c796abe70eb80277b4cb7a1c738cf93817ba65b1"
+        },
+        {
+          "uri": "repo://changes/st-1602/generated/slo-alert-reference-plan.v1.json",
+          "sha256": "dadcc7a43d8746d894f0faf44d26aaea7e0dc81f61a2f5b68ac3a75f3198407f"
+        },
+        {
+          "uri": "repo://changes/st-1602/manifest.yaml",
+          "sha256": "2d3ca52179334204817e170a4fbf573f0cf56c32c7b8f0902e66dbfcc373c68b"
+        }
+      ],
+      "required_classification": "SOURCE_DERIVED_NON_ATTESTING_SLO_ALERT_REFERENCE_PLAN",
+      "required_decision": "NOT_READY",
+      "required_story_acceptance": false,
+      "required_production_eligible": false,
+      "open_decision_id": "OD-011",
+      "safe_default": "LOCAL_LOG_ONLY",
+      "notifications_enabled": false,
+      "formal_tst_028": "NOT_EXECUTED",
+      "external_actions": "FORBIDDEN"
+    },
+    "kill_switch_runtime": {
+      "story_id": "ST-1405",
+      "inputs": [
+        {
+          "uri": "repo://changes/st-1405/README.md",
+          "sha256": "e2a3852a020a2b64aa0f300cea5dcc7a99dacbf07337f9b511536ccb48b0c041"
+        },
+        {
+          "uri": "repo://python/raos/domain/ops/kill_switch.py",
+          "sha256": "6b4c014b89cb8b330885e5deae0849b9b0e2089272f7c8371627cd7f4eb353d3"
+        },
+        {
+          "uri": "repo://python/raos/application/ops/kill_switch.py",
+          "sha256": "15f4deef25bd60d07a69dab81c5427677c184be9b67a8c4b2cfe6eb96937f0de"
+        },
+        {
+          "uri": "repo://python/raos/adapters/recorded_kill_switch.py",
+          "sha256": "f88f23c6003e0a3d7859487426aa4dfa3c60f8687f4aab349501c01d3c72eeed"
+        },
+        {
+          "uri": "repo://python/raos/ports/kill_switch.py",
+          "sha256": "857f53d3e6f1efd41a31858d9c31241aef554f8322809276d6e435584a6c2880"
+        }
+      ],
+      "target_adapter_environment": "ENV-CI",
+      "step_up_fixture_environment": "ENV-DEV",
+      "adapter": "RecordedKillSwitchAdapter",
+      "service": "KillSwitchRuntimeService",
+      "switch_kind": "PUBLICATION",
+      "scope_types": [
+        "GLOBAL",
+        "SITE",
+        "CATEGORY",
+        "ARTICLE"
+      ],
+      "expected_eligibility": "ENGAGED",
+      "expected_allowed": false,
+      "command_execution": "FORBIDDEN",
+      "state_mutation": "FORBIDDEN",
+      "event_delivery": "FORBIDDEN",
+      "external_io": "FORBIDDEN"
+    }
+  },
+  "execution_boundary": {
+    "mode": "DETERMINISTIC_IN_PROCESS_LOCAL_SYNTHETIC",
+    "cli_python_isolated_mode": "REQUIRED",
+    "cli_python_no_bytecode_mode": "REQUIRED",
+    "runtime_module_loading": "DESCRIPTOR_CAPTURED_HASH_VERIFIED_IN_MEMORY",
+    "runtime_module_inventory_scope": "FI_005_TRANSITIVE_IMPORT_CLOSURE",
+    "runtime_adapter_package_boundary": "SOURCE_FREE_NAMESPACE",
+    "preloaded_raos_modules": "FORBIDDEN",
+    "unlisted_raos_dependencies": "FORBIDDEN",
+    "unrelated_provider_sdk_imports": "FORBIDDEN",
+    "runtime_module_cleanup": "OWNED_IDENTITY_ONLY",
+    "foreign_raos_modules_during_scope": "PRESERVE_AND_FAIL",
+    "preloaded_helper_module": "FORBIDDEN",
+    "process_context": "LOCAL_SYNTHETIC",
+    "target_adapter_environment": "ENV-CI",
+    "step_up_fixture_environment": "ENV-DEV",
+    "fixed_observation_time": "2026-08-16T00:00:00Z",
+    "fixed_inputs_only": true,
+    "ambient_clock": "FORBIDDEN",
+    "randomness": "FORBIDDEN",
+    "network_access": "FORBIDDEN",
+    "provider_calls": "FORBIDDEN",
+    "credential_access": "FORBIDDEN",
+    "credential_environment_reads": "FORBIDDEN",
+    "browser_access": "FORBIDDEN",
+    "subprocess_execution": "FORBIDDEN",
+    "database_connection": "FORBIDDEN",
+    "queue_connection": "FORBIDDEN",
+    "notification_delivery": "FORBIDDEN",
+    "staging_access": "FORBIDDEN",
+    "production_access": "FORBIDDEN",
+    "filesystem_inputs": "REPOSITORY_PINNED_READ_ONLY",
+    "filesystem_output_allowlist": [
+      "changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json",
+      "changes/st-1605/manifest.yaml"
+    ],
+    "external_action_counts": {
+      "network_request": 0,
+      "provider_call": 0,
+      "credential_read": 0,
+      "database_write": 0,
+      "queue_publish": 0,
+      "notification": 0,
+      "browser": 0,
+      "publication": 0,
+      "rollback": 0,
+      "staging": 0,
+      "release": 0,
+      "production": 0
+    }
+  },
+  "deterministic_fixture": {
+    "observation_time": "2026-08-16T00:00:00Z",
+    "site_id": "00000000-0000-0000-0000-000000001605",
+    "category_id": "00000000-0000-0000-0000-000000002605",
+    "article_id": "00000000-0000-0000-0000-000000003605",
+    "event_namespace": "00000000-0000-0000-0000-000000004605",
+    "kill_switch_id": "00000000-0000-0000-0000-000000005605",
+    "kill_switch_generation": 7,
+    "kill_switch_reason": "SYNTHETIC_DRILL_ENGAGED"
+  },
+  "scenario_results": [
+    {
+      "scenario_id": "FI-001",
+      "target": "RAKUTEN",
+      "fault": "SYNTHETIC_PROVIDER_UNAVAILABLE",
+      "runbook_reference": "RB-008",
+      "alert_reference": null,
+      "status": "STATIC_TABLETOP_REFERENCE",
+      "behavior_observed": false,
+      "input_fingerprint": "f20a54a85987890cf07ccef26b1402d13e5235229dd16af6a0162339fc85f577",
+      "observation": {
+        "outcome_code": "RAKUTEN_SAFE_DEGRADATION_SELECTED",
+        "required_response": "HIDE_UNVERIFIED_PRICE_STOCK_AND_STOP_CTA",
+        "guard_state": "PROVIDER_FAILURE_ISOLATED",
+        "public_state": "LAST_SAFE_PUBLICATION_UNCHANGED",
+        "operation_executed": false,
+        "external_effect": "NONE"
+      },
+      "external_action_counts": {
+        "network_request": 0,
+        "provider_call": 0,
+        "credential_read": 0,
+        "database_write": 0,
+        "queue_publish": 0,
+        "notification": 0,
+        "browser": 0,
+        "publication": 0,
+        "rollback": 0,
+        "staging": 0,
+        "release": 0,
+        "production": 0
+      }
+    },
+    {
+      "scenario_id": "FI-002",
+      "target": "OPENAI",
+      "fault": "SYNTHETIC_PROVIDER_UNAVAILABLE",
+      "runbook_reference": "RB-009",
+      "alert_reference": null,
+      "status": "STATIC_TABLETOP_REFERENCE",
+      "behavior_observed": false,
+      "input_fingerprint": "a49086feae3cba276b31f7d086afe0a09b0657b923db8ff795a535e05f46a62d",
+      "observation": {
+        "outcome_code": "OPENAI_SAFE_DEGRADATION_SELECTED",
+        "required_response": "DISABLE_GENERATION_ROUTE_AND_QUARANTINE",
+        "guard_state": "APPROVED_FALLBACK_REQUIRED",
+        "public_state": "PUBLISHED_CONTENT_UNCHANGED",
+        "operation_executed": false,
+        "external_effect": "NONE"
+      },
+      "external_action_counts": {
+        "network_request": 0,
+        "provider_call": 0,
+        "credential_read": 0,
+        "database_write": 0,
+        "queue_publish": 0,
+        "notification": 0,
+        "browser": 0,
+        "publication": 0,
+        "rollback": 0,
+        "staging": 0,
+        "release": 0,
+        "production": 0
+      }
+    },
+    {
+      "scenario_id": "FI-003",
+      "target": "DATABASE",
+      "fault": "SYNTHETIC_DATABASE_UNAVAILABLE",
+      "runbook_reference": "RB-005",
+      "alert_reference": "ALT-005",
+      "status": "STATIC_TABLETOP_REFERENCE",
+      "behavior_observed": false,
+      "input_fingerprint": "c4249733c962796de840b481366d565f7d97341816ed9b609da684c811c6e9db",
+      "observation": {
+        "outcome_code": "DATABASE_SAFE_DEGRADATION_SELECTED",
+        "required_response": "FREEZE_WRITES_AND_SERVE_LAST_SAFE_SNAPSHOT",
+        "guard_state": "DATABASE_PATH_ISOLATED",
+        "public_state": "LAST_SAFE_PUBLICATION_PREFERRED",
+        "operation_executed": false,
+        "external_effect": "NONE"
+      },
+      "external_action_counts": {
+        "network_request": 0,
+        "provider_call": 0,
+        "credential_read": 0,
+        "database_write": 0,
+        "queue_publish": 0,
+        "notification": 0,
+        "browser": 0,
+        "publication": 0,
+        "rollback": 0,
+        "staging": 0,
+        "release": 0,
+        "production": 0
+      }
+    },
+    {
+      "scenario_id": "FI-004",
+      "target": "QUEUE",
+      "fault": "SYNTHETIC_QUEUE_DELIVERY_FAILURE",
+      "runbook_reference": "RB-006",
+      "alert_reference": "ALT-006",
+      "status": "STATIC_TABLETOP_REFERENCE",
+      "behavior_observed": false,
+      "input_fingerprint": "d06ac1fa4169f24ae3a3b07931599e9d81fc867be97a8b2798171b225bf72b99",
+      "observation": {
+        "outcome_code": "QUEUE_SAFE_DEGRADATION_SELECTED",
+        "required_response": "PAUSE_PRODUCER_AND_REQUIRE_IDEMPOTENT_REPLAY",
+        "guard_state": "DELIVERY_AND_REPLAY_NOT_EXECUTED",
+        "public_state": "PUBLICATION_UNCHANGED",
+        "operation_executed": false,
+        "external_effect": "NONE"
+      },
+      "external_action_counts": {
+        "network_request": 0,
+        "provider_call": 0,
+        "credential_read": 0,
+        "database_write": 0,
+        "queue_publish": 0,
+        "notification": 0,
+        "browser": 0,
+        "publication": 0,
+        "rollback": 0,
+        "staging": 0,
+        "release": 0,
+        "production": 0
+      }
+    },
+    {
+      "scenario_id": "FI-005",
+      "target": "PUBLICATION",
+      "fault": "SYNTHETIC_ENGAGED_GENERATION",
+      "runbook_reference": "RB-015",
+      "alert_reference": null,
+      "status": "LOCAL_SYNTHETIC_BEHAVIOR_OBSERVED",
+      "behavior_observed": true,
+      "input_fingerprint": "64d766dc4d7f4d206ba5eb3376f94209e327aeb56ca8bc3de743b9efb2cf49a7",
+      "observation": {
+        "outcome_code": "PUBLICATION_COMMANDS_DENIED",
+        "required_response": "KEEP_SWITCH_ENGAGED",
+        "guard_state": "ENGAGED_GENERATION_7",
+        "public_state": "PUBLICATION_COMMAND_PATH_DENIED",
+        "operation_executed": false,
+        "external_effect": "NONE",
+        "target_adapter_environment": "ENV-CI",
+        "step_up_fixture_environment": "ENV-DEV",
+        "eligibility_code": "ENGAGED",
+        "allowed": false,
+        "observed_generation": 7,
+        "event_intent_count": 0
+      },
+      "external_action_counts": {
+        "network_request": 0,
+        "provider_call": 0,
+        "credential_read": 0,
+        "database_write": 0,
+        "queue_publish": 0,
+        "notification": 0,
+        "browser": 0,
+        "publication": 0,
+        "rollback": 0,
+        "staging": 0,
+        "release": 0,
+        "production": 0
+      }
+    },
+    {
+      "scenario_id": "FI-006",
+      "target": "RELEASE",
+      "fault": "SYNTHETIC_RELEASE_REGRESSION",
+      "runbook_reference": "RB-014",
+      "alert_reference": "ALT-016",
+      "status": "STATIC_TABLETOP_REFERENCE",
+      "behavior_observed": false,
+      "input_fingerprint": "98a8d34c9fb6bfa076c1d48977476a400b21e036798744b4bf6f63293de722c9",
+      "observation": {
+        "outcome_code": "ROLLBACK_RESPONSE_HELD_FOR_AUTHORIZED_EXECUTION",
+        "required_response": "STOP_ROLLOUT_AND_RESTORE_SAFE_ARTIFACT",
+        "guard_state": "TABLETOP_ONLY",
+        "public_state": "LAST_SAFE_PUBLICATION_PREFERRED",
+        "operation_executed": false,
+        "external_effect": "NONE"
+      },
+      "external_action_counts": {
+        "network_request": 0,
+        "provider_call": 0,
+        "credential_read": 0,
+        "database_write": 0,
+        "queue_publish": 0,
+        "notification": 0,
+        "browser": 0,
+        "publication": 0,
+        "rollback": 0,
+        "staging": 0,
+        "release": 0,
+        "production": 0
+      }
+    }
+  ],
+  "summary": {
+    "scenario_count": 6,
+    "behavioral_observation_count": 1,
+    "static_tabletop_reference_count": 5,
+    "behavioral_observation_scenario_ids": [
+      "FI-005"
+    ],
+    "external_action_counts": {
+      "network_request": 0,
+      "provider_call": 0,
+      "credential_read": 0,
+      "database_write": 0,
+      "queue_publish": 0,
+      "notification": 0,
+      "browser": 0,
+      "publication": 0,
+      "rollback": 0,
+      "staging": 0,
+      "release": 0,
+      "production": 0
+    }
+  },
+  "evidence_boundary": {
+    "classification": "LOCAL_SYNTHETIC_NON_ATTESTING",
+    "scenario_inventory": 6,
+    "behavioral_observation_scope": "FI-005_ONLY",
+    "behavioral_observation_scenarios": 1,
+    "static_tabletop_reference_scenarios": 5,
+    "operational_safe_degradation_claim": false,
+    "provider_behavior_claim": false,
+    "database_behavior_claim": false,
+    "queue_behavior_claim": false,
+    "rollback_behavior_claim": false,
+    "formal_tst_028": "NOT_EXECUTED",
+    "fault_proxy": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "owner_response": "NOT_EXECUTED",
+    "runbook_validation": "NOT_EXECUTED",
+    "alert_delivery": "NOT_EXECUTED",
+    "staging_drill": "NOT_EXECUTED",
+    "release": "NOT_AUTHORIZED",
+    "production": "NOT_AUTHORIZED",
+    "story_acceptance": false,
+    "st_1607_eligible": false,
+    "effective_canonical_status": "UNCHANGED"
+  },
+  "prohibited_interpretations": [
+    "STATIC_TABLETOP_REFERENCE_IS_NOT_BEHAVIOR_OBSERVED",
+    "LOCAL_SYNTHETIC_BEHAVIOR_OBSERVED_IS_NOT_FORMAL_TST_028",
+    "MODELED_SAFE_RESPONSE_IS_NOT_OWNER_RESPONSE",
+    "RUNBOOK_REFERENCE_IS_NOT_RUNBOOK_VALIDATION",
+    "PROVIDER_FAILURE_TOKEN_IS_NOT_PROVIDER_BEHAVIOR",
+    "IN_PROCESS_SEAM_IS_NOT_STAGING_KILL_SWITCH_EVIDENCE",
+    "ROLLBACK_TABLETOP_IS_NOT_ROLLBACK_EXECUTION",
+    "NO_STORY_ACCEPTANCE_RELEASE_OR_PRODUCTION_ELIGIBILITY_MAY_BE_INFERRED"
+  ]
+}
