@@ -440,8 +440,22 @@ def test_substitute_actor_cannot_construct_a_recorded_outcome() -> None:
 
 def test_sealed_authorization_direct_construction_subclass_and_tamper_fail() -> None:
     command = request()
-    recorded = adapter(step(value=command))
+    scripted = step(value=command)
+    recorded = adapter(scripted)
     authorization = recorded.issue_authorization(command)
+
+    assert scripted.authorization_sha256 == authorization.authorization_sha256
+    assert scripted.prior_history_bytes == scripted.prior_history.canonical_bytes()
+    assert scripted.result_bytes == scripted.result.canonical_bytes()
+    assert not hasattr(authorization.actor, "canonical_payload")
+    for attribute, value in (
+        ("authorization_sha256", RecordedSha256("0" * 64)),
+        ("prior_history_bytes", b"tampered"),
+        ("result", scripted.result),
+        ("result_bytes", b"tampered"),
+    ):
+        with pytest.raises(AttributeError):
+            setattr(scripted, attribute, value)
 
     with pytest.raises(ReviewDecisionOperationFailure) as direct:
         RecordedReviewDecisionAuthorizationV1(
@@ -488,6 +502,7 @@ def test_sealed_authorization_direct_construction_subclass_and_tamper_fail() -> 
     _assert_sanitized(tampered, ReviewDecisionOperationFailureCode.NOT_AUTHORIZED)
     assert "_RECORDED_AUTHORIZATION_PERMIT" not in operations.__all__
     assert "_build_recorded_review_decision_authorization" not in operations.__all__
+    assert "build_recorded_review_decision_authorization" not in operations.__all__
 
 
 def test_public_service_has_no_second_trust_or_mutation_path() -> None:

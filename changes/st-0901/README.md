@@ -200,6 +200,22 @@ python3 scripts/scan_secrets.py --worktree
 This disposable-checkout result is local contract/static evidence. It is not
 hosted CI or formal ST-0901 suite evidence.
 
+## Strict Pyright closure follow-up — 2026-08-15
+
+The four PR1 boundary helpers continue to reject every runtime subclass by
+their existing exact `type(...) is ...` checks. The redundant following
+`isinstance` clauses were removed because an exact-type match already proves
+the same base relationship; identifier, timestamp, decision-reference, and
+assignment validation still run in the same order with the same closed failure
+codes. No value is coerced, accepted more broadly, or retained differently.
+
+With Node 24.18.1 and Pyright 1.1.411, the combined ST-0901 strict closure
+reduced the five owned production files from 21 diagnostics to zero and the
+whole-project total from 75 to the 54 diagnostics owned by other Stories. The
+isolated PR1 suite remained 87 passed. No Pyright configuration, ignore,
+exclude, `Any` suppression, serialization byte, digest, validation precedence,
+immutability rule, or approval/publication boundary changed.
+
 The exact owned files are:
 
 ```text

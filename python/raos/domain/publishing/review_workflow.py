@@ -174,7 +174,7 @@ def _require_uuid_value(
     value: object,
     expected_type: type[_UuidValue],
 ) -> _UuidValue:
-    if type(value) is not expected_type or not isinstance(value, _UuidValue):
+    if type(value) is not expected_type:
         _fail(ReviewWorkflowFailureCode.IDENTIFIER_INVALID)
     _require_uuid7(value.value)
     return value
@@ -546,7 +546,7 @@ class ReviewAssignment(_RedactedValue):
 
 
 def _require_timestamp(value: object) -> UtcTimestamp:
-    if type(value) is not UtcTimestamp or not isinstance(value, UtcTimestamp):
+    if type(value) is not UtcTimestamp:
         _fail(ReviewWorkflowFailureCode.TIMESTAMP_INVALID)
     UtcTimestamp(value.value)
     return value
@@ -559,9 +559,7 @@ def _require_timestamp_or_none(value: object) -> UtcTimestamp | None:
 
 
 def _require_decision_reference(value: object) -> ReviewDecisionReference:
-    if type(value) is not ReviewDecisionReference or not isinstance(
-        value, ReviewDecisionReference
-    ):
+    if type(value) is not ReviewDecisionReference:
         _fail(ReviewWorkflowFailureCode.COMPLETION_DECISION_REQUIRED)
     ReviewDecisionReference(
         value.decision_id,
@@ -626,7 +624,7 @@ def _require_assignment_state_shape(assignment: ReviewAssignment) -> None:
 
 
 def _require_assignment(value: object) -> ReviewAssignment:
-    if type(value) is not ReviewAssignment or not isinstance(value, ReviewAssignment):
+    if type(value) is not ReviewAssignment:
         _fail(ReviewWorkflowFailureCode.INVALID_ARGUMENT)
     ReviewAssignment(
         value.assignment_id,

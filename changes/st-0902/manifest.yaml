@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0902_final_approval_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0902_final_approval_reference_plan.py
 provenance:
-  contract_sha256: 4b8d52e8fc16bfa09a389cabd47c5b98ee1bed89875bb0bf304061692dc63a26
+  contract_sha256: 432e0d327ff67c594db306337935137ffee1cdd708ae7ac69b29e00fff7c0bbc
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -95,19 +95,19 @@ provenance:
   - story_id: ST-0901
     role: pr1_readme
     uri: repo://changes/st-0901/README.md
-    sha256: 413aaa64fe2909fb3bf731b5ab56c9a977e3850707475ee8fe111771a2b06f94
+    sha256: e444a0dea6585ba88ac8705150caa633f095618daa0f2a8dd5fdf035121ec2b0
   - story_id: ST-0901
     role: pr3_readme
     uri: repo://changes/st-0901/README_PR3.md
-    sha256: 38bd82a5d7586ee78f7852d27aabfd18360796f21c45f05487f404da2976ce6d
+    sha256: 8b76eab672fb2941288cca91e57551ee1e3407776862166f7344dcd2048c1a5c
   - story_id: ST-0901
     role: review_workflow
     uri: repo://python/raos/domain/publishing/review_workflow.py
-    sha256: ca973cf1ba7b60c1323a7f8a47549ada8722ed7bcb9a657d2b6b0cc00c2f39d7
+    sha256: f7c84e1911d4570a4dc3492c395255da3fcef5eee5ec7b891058caf596e1efb5
   - story_id: ST-0901
     role: review_decision_operations
     uri: repo://python/raos/domain/publishing/review_decision_operations.py
-    sha256: 773dd855ae9bcfa3d812782614ccf2d42c2cceb3774b5d4f64911f1e2eec5d7c
+    sha256: f267f2af141d1269bceb175095dc4a397cafb78a120516bb3fb82a8c0706bc71
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
     sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
@@ -116,13 +116,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
   bytes: 16320
-  sha256: 4b8d52e8fc16bfa09a389cabd47c5b98ee1bed89875bb0bf304061692dc63a26
+  sha256: 432e0d327ff67c594db306337935137ffee1cdd708ae7ac69b29e00fff7c0bbc
 - uri: repo://changes/st-0902/README.md
   bytes: 5240
   sha256: 2f7a746f806f18f47acff531a73f2617e601b09fdaad555cbe17f934e586c7ca
 - uri: repo://scripts/build_st0902_final_approval_reference_plan.py
   bytes: 50464
-  sha256: 3eed90bc25a431e954d3bc56ac0f8a7ba5ecc1b135921fa497f47936f7009b1d
+  sha256: 8c1d79597a3fa3e2de15265d4c4e0c4b9a4cde448d2c192892cabf63fa14b4d1
 - uri: repo://tests/st0902/conftest.py
   bytes: 993
   sha256: 00ea54ee7928734d9ec998bb9db5399e9596624a9a1a89707a699f8eb4406576
@@ -139,7 +139,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0902/generated/final-approval-reference-plan.v1.json
   bytes: 21890
-  sha256: 0409c8172225576992ff41739c68ffcbfe80a55e24ea84fd0251ad413b4b58de
+  sha256: 133a2cff7a51e6100b2377e97f9e930c941ebb56bcc04b417f229e3d0a089b77
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_FINAL_APPROVAL_REFERENCE_PLAN
   executable: false

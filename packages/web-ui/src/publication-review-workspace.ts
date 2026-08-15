@@ -306,7 +306,7 @@ const sourceReferenceSource = [
     scope: 'DEPENDENCY',
     path: 'changes/st-0901/README_PR3.md',
     locator: 'recorded negative review decisions only',
-    sha256: '38bd82a5d7586ee78f7852d27aabfd18360796f21c45f05487f404da2976ce6d',
+    sha256: '8b76eab672fb2941288cca91e57551ee1e3407776862166f7344dcd2048c1a5c',
     consumption: 'REFERENCE_ONLY_NO_RUNTIME_IMPORT',
   },
   {

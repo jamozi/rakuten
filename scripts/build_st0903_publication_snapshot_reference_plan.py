@@ -58,7 +58,7 @@ HELPER_SHA256: Final = (
     "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
 )
 CONTRACT_SHA256: Final = (
-    "40bf90b1d0cfeef58397711a5200539a3bcc27ec3f7738e0c718711871355f3c"
+    "9b7c55dfd58213db86caea38cf5da8bfac65eaa3ba4aa194f82a6a1d83a0d838"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -225,7 +225,7 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0902",
         "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml",
-        "4b8d52e8fc16bfa09a389cabd47c5b98ee1bed89875bb0bf304061692dc63a26",
+        "432e0d327ff67c594db306337935137ffee1cdd708ae7ac69b29e00fff7c0bbc",
     ),
     (
         "ST-0807",
