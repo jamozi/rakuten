@@ -11,13 +11,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml
   bytes: 13051
-  sha256: 61afa77ec458604890e92e7dc1e60db47ad335f92bc4c83240ea8dd8a9a6ea62
+  sha256: 5d7d1edbde6087ee547d35b340406b0cbcf364c103c2cd88eae0be40e1fefe24
 - uri: repo://changes/st-1303/README.md
   bytes: 2764
   sha256: d7f1bf588c88ee54c35dd386fca7ee125d66e8e655560f587854d17aa3eb9bef
 - uri: repo://scripts/build_st1303_attribution_engine_reference_plan.py
   bytes: 30801
-  sha256: e397b20a2ecb573aa241dcc92a15ddd5b8e200f464edbdff7db91e74a560f395
+  sha256: 8b460bda992d309041f5650eb79db47cd21400e2dccbe0a6759c1893e96c4c0d
 - uri: repo://tests/st1303/conftest.py
   bytes: 1000
   sha256: 1d972ef360dbfda49b235f8c5066b8fa812d55db4cb0114cf34165cc7340e62f
@@ -33,7 +33,7 @@ source_artifacts:
 generated_artifacts:
 - uri: repo://changes/st-1303/generated/attribution-engine-reference-plan.v1.json
   bytes: 16908
-  sha256: aa2097bcd4b7ac1f54d9caf6cb9e684f1dea6013391c294a73b1e421cff4d692
+  sha256: da21eb229c6af2ef6b2efb6e01c51f8e6c1b5e9748d267c632d8c244ff277602
 provenance:
   generated_by: repo://scripts/build_st1303_attribution_engine_reference_plan.py
   generation_command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen
@@ -76,13 +76,13 @@ provenance:
   - uri: repo://changes/st-1302/README.md
     sha256: 849012183858a454ee20b504b695202e798d38dfde95704e077abf5709d14218
   - uri: repo://changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml
-    sha256: 9ec4bc5b267091b33a7befd9526d1eaaba57eb29372b39513722ca33eace585a
+    sha256: 7f14d3690a4e823a520d71b55a88f28121c6497f0caa964e4814d1162df1b046
   - uri: repo://changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json
-    sha256: 42eb6143694238d75981c1635bb698fb7e85df43ea2717db55ddd354ce5007f3
+    sha256: 6a9730320f240a01756cd30f5b56dedf9e421dbfc297e13512f06c5da5956533
   - uri: repo://changes/st-1302/manifest.yaml
-    sha256: 7f4316fe3502fe8b1383826566bc6db1f02a2b6339ecb178dcaef8d1c65cdfb1
+    sha256: ba1e000b071f8d542c7f8d41959785b6fb6c4dd6f9f63c1873a2b4efd2ea19e0
   - uri: repo://scripts/build_st1302_provider_fact_commit_reference_plan.py
-    sha256: 18e6d2d3970245f96a9550703575873ec93b5bce6e7ad32256d5a043d1c09ca5
+    sha256: b6bdc6d018f8e38325deec248725ddd12e6a02853ab837d5a1ec642a1712cc40
   - uri: repo://tests/st1302/conftest.py
     sha256: 2ee8fd7b038097a4457c6886343e0908b88a0b406186bd7f806c1755011875ab
   - uri: repo://tests/st1302/test_contract.py
@@ -114,7 +114,7 @@ provenance:
   - uri: repo://changes/st-0305/generated/publication-analytics-finance-catalog.v1.json
     sha256: 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
   - uri: repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
-    sha256: ea9a06b4ee865889805b23a3626c09f95654a0655adb4ac955b25027e01e995e
+    sha256: 0c15435d23e238b1106b681c41b0aa08c270e7e8e9bdcf1090a1e197bc3db22a
   - uri: repo://contracts/raos-v0.4/contracts/schemas/imports/revenue-canonical-row.schema.json
     sha256: 02bc3d854a7420a74a8b302342a9ad0e23cfe4529565716a185c333b43ebbff8
   - uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml

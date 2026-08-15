@@ -730,13 +730,14 @@ class RecordedIdentityProjection(_RedactedValue):
         ):
             fail_review_decision_operation()
 
-    def _payload(self) -> dict[str, str]:
-        self.require_valid()
-        return {
-            "principal_id": str(self.principal_id.value),
-            "subject_kind": self.subject_kind.value,
-            "subject_status": self.subject_status.value,
-        }
+
+def _identity_payload(value: RecordedIdentityProjection) -> dict[str, str]:
+    value.require_valid()
+    return {
+        "principal_id": str(value.principal_id.value),
+        "subject_kind": value.subject_kind.value,
+        "subject_status": value.subject_status.value,
+    }
 
 
 def _require_permission(value: object) -> PermissionScope:
@@ -822,7 +823,7 @@ def _authorization_payload(
 ) -> dict[str, object]:
     request.require_valid()
     return {
-        "actor": actor._payload(),
+        "actor": _identity_payload(actor),
         "article_version_id": str(request.assignment.article_version_id.value),
         "assignment_id": str(request.assignment.assignment_id.value),
         "assignment_sha256": request.assignment_sha256.value,
@@ -964,7 +965,7 @@ class RecordedReviewDecisionAuthorizationV1(_RedactedValue):
 
     def _payload(self) -> dict[str, object]:
         return {
-            "actor": self.actor._payload(),
+            "actor": _identity_payload(self.actor),
             "article_version_id": str(self.article_version_id.value),
             "assignment_id": str(self.assignment_id.value),
             "assignment_sha256": self.assignment_sha256.value,
@@ -1014,14 +1015,14 @@ class RecordedReviewDecisionAuthorizationV1(_RedactedValue):
         raise AttributeError("RecordedReviewDecisionAuthorizationV1 is immutable")
 
 
-def _build_recorded_review_decision_authorization(
+def build_recorded_review_decision_authorization(
     *,
     request: RecordReviewDecisionRequest,
     grant: AuthorizationGrant,
     permission_scope: PermissionScope,
     actor: RecordedIdentityProjection,
 ) -> RecordedReviewDecisionAuthorizationV1:
-    """Module-private factory consumed only by the recorded outward adapter."""
+    """Build one immutable, non-authoritative recorded-local proof."""
 
     if type(request) is not RecordReviewDecisionRequest:
         fail_review_decision_operation()

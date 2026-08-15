@@ -1,11 +1,12 @@
 {
   "approved_base_commit": "acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d",
+  "external_action_authority": "NONE",
   "generated_by": "python3 scripts/build_wordpresscom_mvp_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 31909,
+      "bytes": 34123,
       "path": "Makefile",
-      "sha256": "97767cc166096a719715cfc5d5b5b521e8b001d5d3bd59eae27e208748522d34"
+      "sha256": "e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc"
     },
     {
       "bytes": 1991,
@@ -58,29 +59,29 @@
       "sha256": "aca2af51e2571a62215c600357fb8f0ee246e8891e60d6e5afbe40d8235ee681"
     },
     {
-      "bytes": 20624,
+      "bytes": 20737,
       "path": "python/raos/adapters/wordpresscom_mvp_draft_https.py",
-      "sha256": "efdcb2b4f67b3b47bd172f2d8dbe6a9dd707678a1fafdc5f63152b1fd29f2a5a"
+      "sha256": "10b543917600434b3db6fe18adbf6471b481d0dd4faa9bab6e564f66785d5657"
     },
     {
-      "bytes": 21243,
+      "bytes": 21400,
       "path": "python/raos/adapters/wordpresscom_mvp_draft_journal.py",
-      "sha256": "8dfc0d98142ca4af4e2ff0ebb2d7f692c75283df1a1924479fb3e8f6a759bf61"
+      "sha256": "cf4132f1a018fc6864f88ae7eccf377f49641a171041a3ecbc6789fb147f660c"
     },
     {
-      "bytes": 49981,
+      "bytes": 50701,
       "path": "python/raos/adapters/wordpresscom_oauth.py",
-      "sha256": "ceb5ada087ef002213153ecf5bb6fb7f11f7cb4d87ee28063ebdf7ec7d6b6db1"
+      "sha256": "52c7ccd0be8fc98ee9d50d8bbfe8d53b84c52a3d1a37670d15166739f31aecba"
     },
     {
-      "bytes": 22458,
+      "bytes": 22837,
       "path": "python/raos/adapters/wordpresscom_review_draft_https.py",
-      "sha256": "02e26dbda6714fc36aa5b872df92bf0b056606a3a37ed3c4cfaa7a0dff4012a3"
+      "sha256": "1f8b2f734e3aba698baa141dfbb9bb95080dbfbd3dad0a75ea529213f758c5cb"
     },
     {
-      "bytes": 12125,
+      "bytes": 12127,
       "path": "python/raos/adapters/wordpresscom_review_draft_journal.py",
-      "sha256": "ce49db446902b56ab8450d9d3b3c86b266f7166c918642e39af791ab338654bc"
+      "sha256": "1b0c914f8a04ea882c4ad00df1787b72ca450fd2c8d16728eb89695f680b8217"
     },
     {
       "bytes": 10384,
@@ -88,14 +89,14 @@
       "sha256": "c281994041273d5672a01f256cc480b9bcb36702572d6b73d7a596feba4d1d70"
     },
     {
-      "bytes": 9872,
+      "bytes": 9922,
       "path": "python/raos/application/editorial/wordpresscom_mvp_drafts.py",
-      "sha256": "df093b9c1eafaf407b1a49c4c9e88d1407236b320ff30898d695752d0105c865"
+      "sha256": "f87e2f8c555d7c317e28bf0216c12b5450da4c27c03cf1616cf28a28e86fc23f"
     },
     {
-      "bytes": 39713,
+      "bytes": 39747,
       "path": "python/raos/application/editorial/wordpresscom_mvp_preparation.py",
-      "sha256": "8f74272e2179250ba0f201be553842d585027089d2cb9b02412a31a2dd934d2e"
+      "sha256": "6cef0ae9924be7f8cfcb6ae963a4338bff0012256d69e9d4e7791f0ad9495328"
     },
     {
       "bytes": 11623,
@@ -128,9 +129,9 @@
       "sha256": "27648e8c3916cd4025d8dd8f9f7372b3046f32a8591291c3dc445be197d9cb0b"
     },
     {
-      "bytes": 43402,
+      "bytes": 43659,
       "path": "scripts/wordpresscom_review_draft.py",
-      "sha256": "2303866f94aa3aae45c2d4b3162335eb7e60afd25ed18e42a3d7c30bd0debf01"
+      "sha256": "e1c1d725544f205354c6e0ba4e77bcf16d2df6b36a670c1136d6064730c5c931"
     },
     {
       "bytes": 2834,
@@ -138,6 +139,7 @@
       "sha256": "8b85027274b20931adf08d5b167eb6bdd9c3ce204ec367fd315afc2d57fcd35d"
     }
   ],
+  "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
   "schema": "WORDPRESSCOM_MVP_DRAFT_RUNTIME_MANIFEST_V1",
   "slice_id": "WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3",
   "story_id": "ST-1703"

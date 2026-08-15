@@ -37,7 +37,7 @@ EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
     "9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291"
 )
 EXPECTED_ST0202_CONTRACT_OBJECT_SHA256: Final = (
-    "0203e43d6f118dcc31b983de16f8fdb01d8277e27a1624b3589271ba23dab85f"
+    "c549cf0b795780bf724f7d23a590cc783ae830df9354688ca0d895e10c1af810"
 )
 OBJECT_STORAGE_WRAPPER_PATH: Final = Path("scripts/object_storage_service.sh")
 GENERATED_PATHS: Final = (COMPOSE_PATH, MANIFEST_PATH)
@@ -140,6 +140,7 @@ EXPECTED_ST0202_COMPOSE: Final = {
         "stop_grace_period": "30s",
     },
     "port": {
+        "syntax": "long",
         "host_ip": "127.0.0.1",
         "variable": "RAOS_OBJECT_STORAGE_PORT",
         "default": 8333,
@@ -193,6 +194,46 @@ EXPECTED_ST0202_COMPOSE: Final = {
         "timeout": "5s",
         "retries": 12,
         "start_period": "10s",
+    },
+}
+EXPECTED_ST0202_EPHEMERAL_OVERRIDE: Final = {
+    "command": "test",
+    "tracked_artifact": "ABSENT",
+    "creation_executable": "/usr/bin/mktemp",
+    "filename_template": "object-storage-disposable-port.override.XXXXXXXX.yml",
+    "parent_directory_mode": "0700",
+    "file_mode": "0600",
+    "maximum_bytes": 512,
+    "exact_bytes": 382,
+    "sha256": "92e141f0c1b96ef47cf79855951d6cadaec509b9796cc03067186ff44dd27239",
+    "compose_tag": "!override",
+    "target": 8333,
+    "host_ip": "127.0.0.1",
+    "protocol": "tcp",
+    "published": "OMITTED_ENGINE_ASSIGNED",
+    "service_networks": [
+        "object_storage_internal",
+        "object_storage_disposable_publish",
+    ],
+    "publish_network": {
+        "name": "object_storage_disposable_publish",
+        "driver": "bridge",
+        "internal": False,
+        "driver_opts": {
+            "com.docker.network.bridge.enable_ip_masquerade": "false",
+        },
+        "scope": "DISPOSABLE_PROJECT_ONLY",
+    },
+    "compose_file_order": ["docker-compose.yml", "EPHEMERAL_VALIDATED_OVERRIDE"],
+    "validation": "BEFORE_FIRST_DOCKER_AND_EVERY_COMPOSE_USE",
+    "cleanup": "EXIT_HUP_INT_TERM",
+    "forbidden_tokens": ["published", "${", "#"],
+    "observed_mapping": {
+        "exact_count": 1,
+        "host": "127.0.0.1",
+        "lexical_port_rule": "^[0-9]{1,5}$",
+        "minimum_port": 1024,
+        "maximum_port": 65535,
     },
 }
 
@@ -284,6 +325,16 @@ def load_and_validate_object_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     compose = _mapping(contract.get("compose"), "object-storage compose")
     st0201._require_exact(
         dict(compose), EXPECTED_ST0202_COMPOSE, "object-storage compose"
+    )
+    runtime = _mapping(contract.get("runtime"), "object-storage runtime")
+    ephemeral_override = _mapping(
+        runtime.get("ephemeral_port_override"),
+        "object-storage runtime.ephemeral_port_override",
+    )
+    st0201._require_exact(
+        dict(ephemeral_override),
+        EXPECTED_ST0202_EPHEMERAL_OVERRIDE,
+        "object-storage runtime.ephemeral_port_override",
     )
     st0201._require_exact(
         _contract_object_digest(contract),
@@ -416,8 +467,12 @@ def render_st0202_component(contract: Mapping[str, Any]) -> dict[str, Any]:
                     *_list(compose["command"], "object-storage command"),
                 ],
                 "ports": [
-                    f"{port['host_ip']}:${{{port['variable']}-{port['default']}}}:"
-                    f"{port['container']}/{port['protocol']}"
+                    {
+                        "target": port["container"],
+                        "published": (f"${{{port['variable']}-{port['default']}}}"),
+                        "host_ip": port["host_ip"],
+                        "protocol": port["protocol"],
+                    }
                 ],
                 "secrets": [
                     {

@@ -260,7 +260,7 @@ def step(
 
 
 def scripted_result(value: RecordedReviewDecisionStep) -> RecordReviewDecisionResultV1:
-    result = object.__getattribute__(value, "_result")
+    result = value.result
     if type(result) is not RecordReviewDecisionResultV1:
         raise AssertionError("invalid synthetic step result")
     return result

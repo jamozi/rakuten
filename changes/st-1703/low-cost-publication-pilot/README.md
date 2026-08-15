@@ -61,18 +61,34 @@ range to target commit
 and detached approval as new provenance inputs without changing the V1 or V2
 pilot semantics or rewriting either historical target/runtime-manifest binding.
 
-After the approved one-literal runtime-base rebind, the Wave 3 owner generator
-produces the current 5,656-byte runtime manifest with SHA-256
+At that historical V3 integration point, the Wave 3 owner generator produced a
+5,656-byte runtime manifest with SHA-256
 `b9ccd47c40b9bc9a7595f9e9de2d807232e2b084851b2057007d37b8c98b3c6e`.
-The low-cost generator requires that exact regular filesystem file and never
-uses a historical Git object as its substitute. The generated pilot projection
-remains exactly 9,380 bytes with SHA-256
+That identity remains immutable V3 metadata; it is not silently repinned to the
+current filesystem. The generated pilot projection remains exactly 9,380 bytes
+with SHA-256
 `34194a4dd874c0b2194733514aa6421131a51a0e2c843e517e207b9d46f96317`.
 
 The source packet, V1/V2 handoffs and approvals, Wave 3/Wave 3A authority
 artifacts, and known provenance defects remain byte-frozen. The Wave 3A
 nonexistent embedded commit references and absent separate exact-hash
-OBJECT_DRIFT approval remain unresolved and grant no authority. This V3
-reconciliation authorizes no local commit, push, pull request, credentials,
-browser/provider use, draft operation, external write, purchase, publication,
-staging, release, production, or formal TST result.
+OBJECT_DRIFT approval remain unresolved and grant no authority. The historical
+V3 reconciliation itself authorized no local commit, push, pull request,
+credentials, browser/provider use, draft operation, external write, purchase,
+publication, staging, release, production, or formal TST result.
+
+## Current standing-development binding
+
+Root `AGENTS.md` now separately authorizes reversible repository development
+and the ordinary Git development workflow without another exact-hash approval.
+It does not rewrite the V1/V2/V3 records or grant any credential, live prepare,
+provider, draft, purchase, external-write, publication, release, staging, or
+Production authority.
+
+Under that current local-only authority, the Wave 3 owner generator produces
+the exact 5,776-byte runtime manifest with SHA-256
+`2d9c599c03bcd479137729ae2cd570ff7b60337511f543821aa5df959873a5d1`.
+The low-cost generator validates that regular filesystem file and the exact
+root authority source independently from the frozen V3 target binding. It never
+substitutes a historical Git object for the active current file, and the pilot
+projection remains byte-identical and non-executable.

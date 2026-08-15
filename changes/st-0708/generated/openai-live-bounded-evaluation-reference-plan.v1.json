@@ -72,7 +72,7 @@
       "artifacts": [
         {
           "uri": "repo://changes/st-0707/README.md",
-          "sha256": "70feb638a72c33e78d23057a2fa1834d865aa92d07029908169892d34c7d67b7"
+          "sha256": "b46e739b85bafee78ffc9f975d45e5c1a444bf6397dc4831b7b796e6b92284d5"
         },
         {
           "uri": "repo://python/raos/domain/ai/evaluation.py",
@@ -88,7 +88,7 @@
         },
         {
           "uri": "repo://tests/st0707/test_boundaries.py",
-          "sha256": "5e5a3c2e07711f320ea9df9bcc36b950d1586e1b8a17366ababba3035528aec7"
+          "sha256": "4746ee342748f19dc86442f2258619c1061accdbb27e84d4a7d0ca5153bc1a9d"
         },
         {
           "uri": "repo://tests/st0707/test_evaluation.py",
@@ -127,15 +127,15 @@
         },
         {
           "uri": "repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
-          "sha256": "7e272b6f3f54197d3a613b854ea8ffdb787ef1b28c65c8ca3418512076f6df96"
+          "sha256": "28c565107a81e3a0aece95d567614bd005c069bee9abc0d9bf860daa383db44b"
         },
         {
           "uri": "repo://changes/st-0703/generated/recorded-fixture-registry.v1.json",
-          "sha256": "b306f8ef6989bf0a8ba00e636faf0a16f2c094cdddf61d979cdbc8955df2f76e"
+          "sha256": "e7cc84ab72b673c543dc13ec2bd7aff51be565a7200f6c2b756ef6e4e5a7ba03"
         },
         {
           "uri": "repo://changes/st-0703/manifest.yaml",
-          "sha256": "5544a81c1e81b69ec38d2be8694892ae44045bfd8d04d91c69cc379ca465ac9a"
+          "sha256": "a41c07194e49db1d22e0620788657b24e5f56f69f398695204de69d73793b584"
         },
         {
           "uri": "repo://python/raos/domain/ai/provider.py",

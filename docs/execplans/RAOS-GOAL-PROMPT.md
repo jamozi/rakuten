@@ -5,8 +5,8 @@ is intentionally broader than one interactive turn but narrower than release
 or production authority.
 
 ```text
-/home/minami/rakuten のRAOSを、repository owner承認済みの
-docs/execplans/RAOS-IMPLEMENTATION-FIRST.md に従って、実装優先で最後まで
+/home/minami/rakuten のRAOSを、root AGENTS.mdのstanding development
+authorizationとdocs/execplans/RAOS-IMPLEMENTATION-FIRST.md に従って、実装優先で最後まで
 自律実行してください。
 
 最終目的は、canonical backlogの全機能について、未解決の外部判断があるものは
@@ -52,9 +52,9 @@ deployment、production writeは目的外で、実行も主張もしないでく
 hard stopは次だけです:
 
 1. Secret/credential/PII/production data/raw prompt/prohibited provider materialが必要。
-2. external write、publish、live provider、staging、release、deployment、production apply/writeが必要。
-3. irreversible/destructive migrationまたはdata deletionが必要で、exact approval/recoveryがない。
-4. auth/authz/human approval/public isolation/editorial-finance separation/disclosure/
+2. 許可済みGitHub開発workflow以外のexternal provider/user-facing write、publish、live provider、staging、release、deployment、production apply/writeが必要。
+3. irreversible/destructive migrationまたはdata deletionの実行が必要。local migration code、rollback、fixture、recovery testは継続する。
+4. auth/authz/Canonical publication approval/public isolation/editorial-finance separation/disclosure/
    kill switch/security boundaryを弱める必要がある。
 5. unresolved Open Decisionにsafe interface-only pathがなく、実値選択なしでは一切進めない。
 6. active ownership collisionがあり、他者の変更を壊さず分離できない。
@@ -103,7 +103,9 @@ Git運用:
 - unrelated dirty filesをcommitへ含めない
 - commitをbisectableに保つ
 - 最大10 Story sliceまたはmacro-Wave末尾ごとにcheckpoint commit/push
-- force push、history rewrite、merge、release、publication、deploymentはしない
+- force push、history rewrite、release、publication、deploymentはしない。mergeはroot
+  AGENTS.mdのstanding authorizationに従い、scope、exact head、local checks、terminal CIを
+  確認して実行する
 - push失敗はlocal commitを保持して再診断し、実装自体を捨てない
 
 各goal turnの短い進捗報告には、完了Story IDs、LOCAL_CODE_COMPLETE数、直近commit、

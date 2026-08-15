@@ -231,6 +231,28 @@ validation resources but no worktree `.venv`, `.venv/bin/python`, or
 `node_modules`. Per the approved boundary, `contract-gate` was not invoked,
 nothing was installed or synchronized, and no contract result is claimed.
 
+## Strict Pyright closure follow-up — 2026-08-15
+
+The recorded adapter now uses the explicit non-underscored
+`build_recorded_review_decision_authorization` domain bridge instead of a
+private cross-module name. The bridge and constructor permit remain excluded
+from `__all__`; neither is a consumer API or a second application trust path.
+The bridge only rebuilds one fully revalidated, immutable
+`ST0901_PR3_RECORDED_LOCAL_V1` self-consistency record. The application keeps
+its sole `execute(request=...)` trust path and accepts no caller-provided
+authorization, actor, grant, Finding, completion, or approval value.
+
+Identity serialization stays in the same revalidating module-private,
+fresh-mapping boundary as PR2, with no public payload method. A scripted step
+now exposes only getter-only views of its retained authorization digest,
+immutable result, and immutable prior-history/result bytes; it exposes no
+setter or mutable payload. The test fixture consumes the result accessor, and
+hostile tests reject writes to every accessor while retaining bridge and
+permit exclusion plus direct-constructor, subclass, and tamper refusals.
+Canonical serialization and hash bytes, history/replay binding, validation and
+error precedence, append ordering, immutability, and approval semantics remain
+unchanged. The isolated PR3 suite remained 61 passed.
+
 Formal TST-011, TST-012, TST-020, TST-021, and TST-022 remain
 `NOT_EXECUTED`. Full PUBADM-004 HTTP/public response mapping (including
 `display_id`, `created_at`, and decision-artifact mapping), real identity and

@@ -13,7 +13,7 @@ readonly minimum_compose_version='2.24.4'
 readonly expected_image='postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296'
 readonly expected_image_config_digest='sha256:0a314d409a9633cff4f89dc18482262625c0ee78cb1aa2ff8e47bc6da0251e1b'
 readonly expected_platform='linux/amd64'
-readonly expected_compose_sha256='dd2b5a1cd608df31ba46dbdb38011d5a96faa145a86c2c33b8f1281e4290febf'
+readonly expected_compose_sha256='a6cd0109a2bc63dae10be59bd9aa32ab85e9c3fec3847bc43c413b452cb871f5'
 readonly expected_server_version_num='180004'
 readonly local_project='raos-st0201-local'
 

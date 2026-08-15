@@ -247,19 +247,20 @@ class WordPressRestRequest(_RedactedTransportValue):
             fail_market_learning_pilot(
                 MarketLearningPilotFailureCode.WORDPRESS_REQUEST_INVALID
             )
+        mapping = cast(dict[object, object], payload)
         if (
             type(payload) is not dict
             or canonical != self.body_json
-            or set(payload) != {"content", "status", "title"}
-            or type(payload.get("title")) is not str
-            or type(payload.get("content")) is not str
-            or payload.get("status") != WORDPRESS_DRAFT_STATUS
+            or set(mapping) != {"content", "status", "title"}
+            or type(mapping.get("title")) is not str
+            or type(mapping.get("content")) is not str
+            or mapping.get("status") != WORDPRESS_DRAFT_STATUS
         ):
             fail_market_learning_pilot(
                 MarketLearningPilotFailureCode.WORDPRESS_REQUEST_INVALID
             )
-        title = cast(str, payload["title"])
-        content = cast(str, payload["content"])
+        title = cast(str, mapping["title"])
+        content = cast(str, mapping["content"])
         try:
             title.encode("utf-8", errors="strict")
             content_size = len(content.encode("utf-8", errors="strict"))
@@ -427,7 +428,7 @@ class OfficialWordPressRestRequestBuilder:
             fail_market_learning_pilot(
                 MarketLearningPilotFailureCode.WORDPRESS_RESPONSE_INVALID
             )
-        _validate_response_tree(payload)
+        _validate_response_tree(cast(object, payload))
         mapping = cast(dict[str, object], payload)
         draft_id = mapping.get("id")
         status = mapping.get("status")

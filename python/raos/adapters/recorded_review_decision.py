@@ -29,7 +29,7 @@ from raos.domain.publishing.review_decision_operations import (
     RecordedSha256,
     ReviewDecisionOperation,
     ReviewDecisionOperationFailureCode,
-    _build_recorded_review_decision_authorization,
+    build_recorded_review_decision_authorization,
     fail_review_decision_operation,
     recorded_decision_output_sha256,
 )
@@ -148,7 +148,7 @@ class RecordedReviewDecisionStep(_RedactedRecordedAdapterValue):
             fail_review_decision_operation(
                 ReviewDecisionOperationFailureCode.HISTORY_MISMATCH
             )
-        authorization = _build_recorded_review_decision_authorization(
+        authorization = build_recorded_review_decision_authorization(
             request=self.request,
             grant=self.grant,
             permission_scope=self.permission_scope,
@@ -166,7 +166,7 @@ class RecordedReviewDecisionStep(_RedactedRecordedAdapterValue):
                 records=self.prior_history.records,
             ),
         )
-        authorization = _build_recorded_review_decision_authorization(
+        authorization = build_recorded_review_decision_authorization(
             request=self.request,
             grant=self.grant,
             permission_scope=self.permission_scope,
@@ -182,6 +182,22 @@ class RecordedReviewDecisionStep(_RedactedRecordedAdapterValue):
         )
         object.__setattr__(self, "_result", result)
         object.__setattr__(self, "_result_bytes", result.canonical_bytes())
+
+    @property
+    def authorization_sha256(self) -> RecordedSha256:
+        return self._authorization_sha256
+
+    @property
+    def prior_history_bytes(self) -> bytes:
+        return self._prior_history_bytes
+
+    @property
+    def result(self) -> RecordReviewDecisionResultV1:
+        return self._result
+
+    @property
+    def result_bytes(self) -> bytes:
+        return self._result_bytes
 
     def require_valid(self) -> None:
         if (
@@ -203,7 +219,7 @@ class RecordedReviewDecisionStep(_RedactedRecordedAdapterValue):
         self.request.require_valid()
         self.actor.require_valid()
         self.prior_history.require_valid()
-        authorization = _build_recorded_review_decision_authorization(
+        authorization = build_recorded_review_decision_authorization(
             request=self.request,
             grant=self.grant,
             permission_scope=self.permission_scope,
@@ -227,13 +243,13 @@ def _step_authorization(
     step: RecordedReviewDecisionStep,
 ) -> RecordedReviewDecisionAuthorizationV1:
     step.require_valid()
-    authorization = _build_recorded_review_decision_authorization(
+    authorization = build_recorded_review_decision_authorization(
         request=step.request,
         grant=step.grant,
         permission_scope=step.permission_scope,
         actor=step.actor,
     )
-    if authorization.authorization_sha256 != step._authorization_sha256:
+    if authorization.authorization_sha256 != step.authorization_sha256:
         fail_review_decision_operation(
             ReviewDecisionOperationFailureCode.NOT_AUTHORIZED
         )
@@ -352,7 +368,7 @@ class RecordedReviewDecisionAdapter(_RedactedRecordedAdapterValue):
                 fail_review_decision_operation(
                     ReviewDecisionOperationFailureCode.HISTORY_MISMATCH
                 )
-            expected_prior = step._result.history.canonical_bytes()
+            expected_prior = step.result.history.canonical_bytes()
         initial = scripts[0].prior_history
         self._scripts = scripts
         self._index = 0
@@ -383,7 +399,7 @@ class RecordedReviewDecisionAdapter(_RedactedRecordedAdapterValue):
             else:
                 consumed = self._scripts[self._index - 1]
                 consumed.require_valid()
-                expected = consumed._result.history
+                expected = consumed.result.history
             expected.require_valid()
             expected_bytes = expected.canonical_bytes()
             return (
@@ -414,7 +430,7 @@ class RecordedReviewDecisionAdapter(_RedactedRecordedAdapterValue):
                     request, replay.request
                 ):
                     return replay.authorization
-                return _build_recorded_review_decision_authorization(
+                return build_recorded_review_decision_authorization(
                     request=request,
                     grant=replay.authorization.grant,
                     permission_scope=replay.authorization.permission_scope,
@@ -427,7 +443,7 @@ class RecordedReviewDecisionAdapter(_RedactedRecordedAdapterValue):
             step = self._scripts[self._index]
             if (
                 not _same_request(request, step.request)
-                or self._history_bytes != step._prior_history_bytes
+                or self._history_bytes != step.prior_history_bytes
             ):
                 fail_review_decision_operation(
                     ReviewDecisionOperationFailureCode.NOT_AUTHORIZED
@@ -480,7 +496,7 @@ class RecordedReviewDecisionAdapter(_RedactedRecordedAdapterValue):
             step.require_valid()
             if (
                 not _same_request(request, step.request)
-                or self._history_bytes != step._prior_history_bytes
+                or self._history_bytes != step.prior_history_bytes
                 or self._history.canonical_bytes() != self._history_bytes
             ):
                 fail_review_decision_operation(
@@ -491,10 +507,10 @@ class RecordedReviewDecisionAdapter(_RedactedRecordedAdapterValue):
                 fail_review_decision_operation(
                     ReviewDecisionOperationFailureCode.LOCAL_EXCHANGE_UNAVAILABLE
                 )
-            result = step._result
+            result = step.result
             result.require_valid()
             canonical = result.canonical_bytes()
-            if canonical != step._result_bytes:
+            if canonical != step.result_bytes:
                 fail_review_decision_operation(
                     ReviewDecisionOperationFailureCode.OUTCOME_MISMATCH
                 )

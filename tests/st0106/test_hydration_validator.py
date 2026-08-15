@@ -16,7 +16,7 @@ import pytest
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 VALIDATOR = REPOSITORY_ROOT / "scripts/validate_ci_hydration.py"
-SYSTEM_PYTHON = Path("/usr/bin/python3.10")
+SYSTEM_PYTHON = Path("/usr/bin/python3")
 ROOT_INPUTS = (
     ".python-version",
     "pyproject.toml",
@@ -105,6 +105,7 @@ def first_external_lock_package(package_lock: dict[str, Any]) -> dict[str, Any]:
 
 
 def test_current_tree_passes_under_isolated_system_python_deterministically() -> None:
+    assert SYSTEM_PYTHON == Path("/usr/bin/python3")
     assert SYSTEM_PYTHON.is_file()
     assert VALIDATOR.is_file() and not VALIDATOR.is_symlink()
 

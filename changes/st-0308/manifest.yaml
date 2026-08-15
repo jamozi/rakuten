@@ -12,7 +12,7 @@ document:
 source_artifacts:
 - uri: repo://changes/st-0308/contracts/persistence-boundary-reference.v1.yaml
   bytes: 13782
-  sha256: 3ce120d2aa5a3d6c8d4241507efb2220fe4a546c064ea72dc1e17195114e4bcf
+  sha256: 2b33ba8518e7b32296f5a2ad5fffee2b9f5291a4d18381339d573b36f8a34dca
 - uri: repo://changes/st-0308/PERSISTENCE-BOUNDARY-REFERENCE.md
   bytes: 5072
   sha256: ddf353014a95c9243f937639dc2d382d8520bad956b080063c04cb94eeabd525
@@ -21,7 +21,7 @@ source_artifacts:
   sha256: 94739795deaa990009081f90faf0e9a0cc69cc222dd03a36672065412abb3751
 - uri: repo://scripts/build_st0308_persistence_boundary_reference.py
   bytes: 35779
-  sha256: 9f147a225bd73384a880d52c24176830364ec56717b9e15d9db8bd50db1018c3
+  sha256: 990926ac41d7424fd4dd2d4c5f8b88cb67683e7ca6af0bd7b2d719670f867ab7
 - uri: repo://tests/st0308_reference/conftest.py
   bytes: 3831
   sha256: 0707bba9ef6b97397395e049c3984d79f733f410cb6e8d0e264a7253af3243a2
@@ -37,7 +37,7 @@ source_artifacts:
 generated_artifacts:
 - uri: repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
   bytes: 17409
-  sha256: ea9a06b4ee865889805b23a3626c09f95654a0655adb4ac955b25027e01e995e
+  sha256: 0c15435d23e238b1106b681c41b0aa08c270e7e8e9bdcf1090a1e197bc3db22a
 boundary:
   classification: SOURCE_BOUND_NON_AUTHORITATIVE_NON_EXECUTABLE_PERSISTENCE_BOUNDARY_REFERENCE_PLAN
   implementation_authority: NOT_GRANTED

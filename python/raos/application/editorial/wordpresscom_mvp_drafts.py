@@ -121,11 +121,12 @@ def _build_article(
         _fail()
     transform = cast(dict[str, object], transform_value)
     replacements_value = transform.get("exact_replacements")
-    if type(replacements_value) is not list or len(replacements_value) != 4:
+    replacements = cast(list[object], replacements_value)
+    if type(replacements_value) is not list or len(replacements) != 4:
         _fail()
     rendered = normalize_wordpresscom_mvp_line_endings(baseline.rendered_content)
     replacement_ids: list[str] = []
-    for replacement_value in cast(list[object], replacements_value):
+    for replacement_value in replacements:
         if type(replacement_value) is not dict:
             _fail()
         replacement = cast(dict[str, object], replacement_value)
@@ -158,10 +159,11 @@ def _build_article(
     ):
         _fail()
     slots_value = desired.get("affiliate_slots")
-    if type(slots_value) is not list or len(slots_value) != 3:
+    slots = cast(list[object], slots_value)
+    if type(slots_value) is not list or len(slots) != 3:
         _fail()
     product_names: list[str] = []
-    for index, slot_value in enumerate(cast(list[object], slots_value), start=1):
+    for index, slot_value in enumerate(slots, start=1):
         if type(slot_value) is not dict:
             _fail()
         slot = cast(dict[str, object], slot_value)
@@ -182,11 +184,12 @@ def _build_article(
 
 def _build_pages(packet: dict[str, object]) -> tuple[MvpDraftOperation, ...]:
     pages_value = packet.get("pages")
-    if type(pages_value) is not list or len(pages_value) != 5:
+    pages = cast(list[object], pages_value)
+    if type(pages_value) is not list or len(pages) != 5:
         _fail()
     operations: list[MvpDraftOperation] = []
     for index, (slug, value) in enumerate(
-        zip(WORDPRESSCOM_MVP_WAVE3_PAGE_SLUGS, cast(list[object], pages_value)),
+        zip(WORDPRESSCOM_MVP_WAVE3_PAGE_SLUGS, pages),
         start=1,
     ):
         if type(value) is not dict:

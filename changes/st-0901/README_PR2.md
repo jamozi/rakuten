@@ -220,6 +220,27 @@ validation resources but no worktree `.venv`, `.venv/bin/python`, or
 `node_modules`. Per the approved boundary, `contract-gate` was not invoked,
 nothing was installed or synchronized, and no contract result is claimed.
 
+## Strict Pyright closure follow-up — 2026-08-15
+
+The recorded adapter now uses the explicit non-underscored
+`build_recorded_reviewer_authorization` domain bridge instead of importing a
+private cross-module name. The bridge and constructor permit remain excluded
+from `__all__`; neither is a consumer API or a second application trust path.
+The bridge still accepts only the complete revalidated request, detached grant,
+exact permission, actor, and optional reviewer needed to build one immutable
+`ST0901_PR2_RECORDED_LOCAL_V1` self-consistency record. It grants no
+authentication or approval authority, and the application still exposes only
+`execute(request=...)` with no caller-supplied authorization path.
+
+Identity serialization now stays in a revalidating module-private helper that
+returns a fresh scalar-only mapping for canonical hashing; the identity exposes
+no payload API. Script steps expose their retained authorization digest through
+a getter-only property. Hostile boundary coverage proves bridge and private
+permit exclusion, direct-constructor refusal, absence of a public identity
+payload, and rejection of writes to the read-only step property. Canonical
+bytes, digests, replay identity, error precedence, and result authority flags
+remain unchanged. The isolated PR2 suite remained 58 passed.
+
 Formal TST-011, TST-012, TST-020, TST-021, and TST-022 remain
 `NOT_EXECUTED`. HTTP/API behavior, real authentication/authorization, database
 guards, durable idempotency, durable/atomic audit, live human review, staging,

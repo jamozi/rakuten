@@ -1,10 +1,11 @@
-# Approved ExecPlan: RAOS implementation-first completion waves
+# Standing ExecPlan: RAOS implementation-first completion waves
 
-## Approval and objective
+## Standing authorization and objective
 
-- Status: `OWNER_APPROVED_FOR_LOCAL_IMPLEMENTATION`
-- Approval source: repository owner explicit approval in the connected Codex
-  conversation on `2026-08-09T14:54:30Z`.
+- Status: `ACTIVE_UNDER_STANDING_DEVELOPMENT_AUTHORIZATION`
+- Authority source: root `AGENTS.md`. Reversible repository development and the
+  normal GitHub development workflow do not require per-Story, per-slice,
+  handoff, exact-hash, patch, head, or commit approval.
 - Objective: finish every locally implementable RAOS capability in canonical
   dependency order, defer non-hard audit and provenance closure while source is
   moving, then perform one exhaustive local integration, review, and test phase.
@@ -12,7 +13,7 @@
 - Implementation role: a fresh project `implementation_worker` after this
   ExecPlan and worker configuration are committed.
 
-This approval changes implementation sequencing, not product truth. It does
+This standing authorization changes implementation sequencing, not product truth. It does
 not alter canonical requirements, resolve an Open Decision, approve a provider
 account or price, authorize a credential, apply infrastructure, publish
 content, merge a release, or make a production write.
@@ -46,8 +47,10 @@ requirements merely because its effective status is `NOT_STARTED`.
    boundary, and documented safe default. Do not invent the missing real value.
 5. Run the fast checks required below. Record any non-hard failure in the
    deferred-verification ledger and continue with dependency-independent work.
-6. Push recoverable checkpoints to the dedicated implementation branch. Do not
-   merge, publish, release, deploy, or apply infrastructure.
+6. Push recoverable checkpoints to the dedicated implementation branch. Merge
+   only after the root `AGENTS.md` scope, exact-head, local-check, and terminal
+   CI conditions are met. Do not publish, release, deploy, or apply
+   infrastructure.
 
 ### Fast checks required for every slice
 
@@ -85,13 +88,15 @@ Stop local implementation only when progress would require one of these:
 
 1. reading, exposing, committing, or inventing a Secret, credential, personal
    data, production data, raw prompt, or prohibited provider material;
-2. an external write, publication, live-provider request, staging action,
+2. an external provider or user-facing write outside the authorized GitHub
+   development workflow, publication, live-provider request, staging action,
    release, production action, or infrastructure apply;
 3. an irreversible/destructive migration, deletion, or data transformation
-   without exact human approval and recovery evidence;
-4. weakening authentication, authorization, human approval, public/internal
-   isolation, editorial/finance separation, disclosure, kill switch, or other
-   canonical safety boundary;
+   being applied; reversible local migration code, rollback logic, fixtures,
+   and recovery tests remain authorized;
+4. weakening authentication, authorization, Canonical publication approval,
+   public/internal isolation, editorial/finance separation, disclosure, kill
+   switch, or another Canonical safety boundary;
 5. choosing a real Open Decision value when no safe interface-only or disabled
    implementation exists;
 6. an active file-ownership collision that cannot be isolated without

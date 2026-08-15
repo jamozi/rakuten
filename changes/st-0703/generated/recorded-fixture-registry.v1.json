@@ -46,11 +46,11 @@
   "source_inputs": [
     {
       "path": "changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
-      "sha256": "7e272b6f3f54197d3a613b854ea8ffdb787ef1b28c65c8ca3418512076f6df96"
+      "sha256": "28c565107a81e3a0aece95d567614bd005c069bee9abc0d9bf860daa383db44b"
     },
     {
       "path": "pyproject.toml",
-      "sha256": "d7a03c351a2ef20d6aaf45b4dff7775b3ce9dbb7e051323cfbf35d295344814e"
+      "sha256": "0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6"
     },
     {
       "path": "uv.lock",
@@ -130,11 +130,11 @@
     },
     {
       "path": "changes/st-0701/manifest.yaml",
-      "sha256": "021544cd8088bfb12e4ab48eabcfab567c77d31230e625e32babfc4383d87dd0"
+      "sha256": "ccd2231f3aa6cc0b90c906af8b746444583db3b084af6210d23a989c802b88b2"
     },
     {
       "path": "changes/st-0204/manifest.yaml",
-      "sha256": "12953e2e975c38108117001a75a18e385ab3a7a20de4a7cebbfd88f38bd58337"
+      "sha256": "98bff85508e4fbcd3806f6dcd7740a81171451226890795d393479cfe8c92e62"
     },
     {
       "path": "contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json",

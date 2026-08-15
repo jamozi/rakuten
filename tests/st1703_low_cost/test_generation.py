@@ -144,12 +144,12 @@ def test_manifest_hashes_every_owned_source_and_generated_projection() -> None:
         "silent_repin": "FORBIDDEN",
         "git_object_as_current_filesystem_substitute": "FORBIDDEN",
     }
-    assert reconciliation_v3["current_wave3_runtime_manifest"] == {
+    assert reconciliation_v3["v3_target_runtime_manifest"] == {
         "uri": f"repo://{generator.WAVE3_RUNTIME_MANIFEST_PATH.as_posix()}",
-        "bytes": generator.V3_CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES,
-        "sha256": generator.V3_CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256,
-        "validation_source": "EXACT_REGULAR_FILESYSTEM_FILE",
-        "authority": "COMMITTED_RUNTIME_METADATA_ONLY",
+        "bytes": generator.V3_TARGET_WAVE3_RUNTIME_MANIFEST_BYTES,
+        "sha256": generator.V3_TARGET_WAVE3_RUNTIME_MANIFEST_SHA256,
+        "validation_source": "IMMUTABLE_V3_HANDOFF_AND_APPROVAL",
+        "authority": "HISTORICAL_COMMITTED_RUNTIME_METADATA_ONLY",
         "formal_evidence": False,
     }
     assert reconciliation_v3["generated_projection"] == {
@@ -167,13 +167,59 @@ def test_manifest_hashes_every_owned_source_and_generated_projection() -> None:
         }
         for path, byte_count, digest in generator.V3_AUTHORITY_INPUTS
     ]
+    current = manifest["provenance"]["current_development_rebinding"]
+    assert current["classification"] == "REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY"
+    assert current["authority_source"] == {
+        "uri": f"repo://{generator.STANDING_DEVELOPMENT_AUTHORITY_PATH.as_posix()}",
+        "bytes": generator.STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+        "sha256": generator.STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+        "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+    }
+    assert current["current_wave3_runtime_manifest"] == {
+        "uri": f"repo://{generator.WAVE3_RUNTIME_MANIFEST_PATH.as_posix()}",
+        "bytes": generator.ACTIVE_CURRENT_WAVE3_RUNTIME_MANIFEST_BYTES,
+        "sha256": generator.ACTIVE_CURRENT_WAVE3_RUNTIME_MANIFEST_SHA256,
+        "validation_source": "EXACT_REGULAR_FILESYSTEM_FILE",
+        "authority": "CURRENT_RUNTIME_METADATA_ONLY",
+        "formal_evidence": False,
+    }
+    assert {
+        key: current[key]
+        for key in (
+            "repository_git_authority",
+            "external_authority",
+            "live_prepare_authority",
+            "provider_authority",
+            "credential_authority",
+            "publication_authority",
+            "release_authority",
+            "production_authority",
+        )
+    } == {
+        "repository_git_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+        "external_authority": "NONE",
+        "live_prepare_authority": "NONE",
+        "provider_authority": "NONE",
+        "credential_authority": "NONE",
+        "publication_authority": "NONE",
+        "release_authority": "NONE",
+        "production_authority": "NONE",
+    }
+    assert current["authority_inputs"] == [
+        {
+            "uri": f"repo://{path.as_posix()}",
+            "bytes": byte_count,
+            "sha256": digest,
+        }
+        for path, byte_count, digest in generator.ACTIVE_CURRENT_AUTHORITY_INPUTS
+    ]
     assert manifest["provenance"]["authority_inputs"] == [
         {
             "uri": f"repo://{path.as_posix()}",
             "bytes": byte_count,
             "sha256": digest,
         }
-        for path, byte_count, digest in generator.V3_CURRENT_AUTHORITY_INPUTS
+        for path, byte_count, digest in generator.ACTIVE_CURRENT_AUTHORITY_INPUTS
     ]
 
 
@@ -200,6 +246,7 @@ def _copy_inputs(destination: Path) -> None:
         *(path for path, _bytes, _digest in generator.AUTHORITY_INPUTS),
         *(path for path, _bytes, _digest in generator.V2_AUTHORITY_INPUTS),
         *(path for path, _bytes, _digest in generator.V3_AUTHORITY_INPUTS),
+        *(path for path, _bytes, _digest in generator.ACTIVE_CURRENT_AUTHORITY_INPUTS),
     }
     for relative in paths:
         target = destination / relative
@@ -221,6 +268,7 @@ def test_authority_source_or_helper_drift_fails_closed(tmp_path: Path) -> None:
         generator.AUTHORITY_INPUTS[-1][0],
         generator.V2_AUTHORITY_INPUTS[-2][0],
         generator.V3_AUTHORITY_INPUTS[-1][0],
+        generator.STANDING_DEVELOPMENT_AUTHORITY_PATH,
     ):
         original = (tmp_path / relative).read_bytes()
         (tmp_path / relative).write_bytes(original + b"\n")

@@ -400,6 +400,7 @@ def test_assertion_rejects_the_parent_network_namespace() -> None:
     assert "network_isolation=namespace-not-isolated" in result.stderr
 
 
+@requires_unsandboxed_parent
 def test_assertion_rejects_a_root_mapped_child_namespace() -> None:
     parent = os.readlink("/proc/self/ns/net")
     parent_pid = os.readlink("/proc/self/ns/pid")
@@ -793,6 +794,7 @@ def test_wrapper_rejects_a_failed_passwordless_sudo_preflight(tmp_path: Path) ->
     assert "trusted passwordless sudo fallback is not authorized" in result.stderr
 
 
+@requires_unsandboxed_parent
 def test_wrapper_rejects_a_root_mapped_caller(tmp_path: Path) -> None:
     result = subprocess.run(
         [

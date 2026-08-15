@@ -22,7 +22,7 @@ sources:
   - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://.github/workflows/ci.yml
-    sha256: 80c98463465df12a4fc8106eba2bd29c43267b8839346a225166c24387945c45
+    sha256: 06872527682949b0fdfbb3a1e116fae205cd758f58fb5c233ab075075df0c647
   - uri: repo://.github/workflows/status-registry.yml
     sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
 owner_bindings:

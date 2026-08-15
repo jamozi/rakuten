@@ -53,10 +53,11 @@ captured or manually imported model output authoritative.
 - `.codex/config.toml` documents only navigate, snapshot, click, type, wait, and
   close through that pinned wrapper. The general MCP entry remains disabled;
   the orchestrator starts its private child directly.
-- `/home/minami/.codex/skills/raos-ask-pro/` is the RAOS-only implicitly
-  invocable Skill. It explores locally first, classifies ordinary versus gated
-  work, runs setup itself when necessary, and preserves canonical and human
-  authority.
+- `/home/minami/.codex/skills/raos-ask-pro/` is the RAOS-only explicitly
+  invocable optional-advice Skill. It explores locally first, runs setup itself
+  when necessary, and preserves Canonical authority. Complexity, security,
+  migration, or policy work does not invoke it implicitly, and its availability
+  never blocks repository-local development.
 
 The two legacy label profiles reflect OpenAI's 2026 ChatGPT documentation for
 the web model picker and its `Pro Standard` / `Pro Extended` choices. The
@@ -450,7 +451,10 @@ naming `DESIGN_HANDOFF_V1` cannot promote it to an approved handoff. Ordinary
 reversible work returns
 `RECONCILE_CANONICAL_LOCAL`; gated design, policy, safety, security, migration,
 irreversible, or external-cost work returns `HUMAN_APPROVAL_REQUIRED`. Legacy
-profiles retain their predecessor article selector and parser.
+profiles retain their predecessor article selector and parser. These are
+tool-local classifications retained for compatibility; the root `AGENTS.md`
+standing development authorization determines whether repository work
+continues.
 
 After the one approved send click, ask keeps that MCP transport, the selected
 dedicated browser, and the same window open while the response is absent,
@@ -947,11 +951,12 @@ hash-bound `UNAPPROVED_PROPOSAL` material. Exact or sole-json-fenced
 `PRO_ADVICE_V1` keeps structured convergence behavior and may inform reversible
 work only after canonical/local reconciliation. `PRO_REVIEW_TEXT_V1` never
 carries design authority: ordinary work must reconcile it with canonical and
-local evidence, while gated work must stop at `HUMAN_APPROVAL_REQUIRED` for
-separate explicit approval. Text proposing `DESIGN_HANDOFF_V1` remains
-unapproved until a human approves it and it is reconciled with canonical
-precedence. No captured artifact resolves an Open Decision or authorizes
-implementation by itself.
+local evidence. A gated run's `HUMAN_APPROVAL_REQUIRED` stops only that browser
+workflow and does not create a repository-development gate. Text proposing
+`DESIGN_HANDOFF_V1` remains advisory until it is reconciled with Canonical
+precedence. No captured artifact resolves an Open Decision or authorizes an
+external operation by itself; repository-local authority comes from the root
+`AGENTS.md` standing development authorization.
 
 No Edge or Chrome process, live browser navigation, login, or submission was
 executed for the Edge-first implementation revision. Fake fixture PASS, the

@@ -84,10 +84,10 @@ dependencies:
     binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     artifacts:
       changes/st-1302/README.md: 849012183858a454ee20b504b695202e798d38dfde95704e077abf5709d14218
-      changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml: 9ec4bc5b267091b33a7befd9526d1eaaba57eb29372b39513722ca33eace585a
-      changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json: 42eb6143694238d75981c1635bb698fb7e85df43ea2717db55ddd354ce5007f3
-      changes/st-1302/manifest.yaml: 7f4316fe3502fe8b1383826566bc6db1f02a2b6339ecb178dcaef8d1c65cdfb1
-      scripts/build_st1302_provider_fact_commit_reference_plan.py: 18e6d2d3970245f96a9550703575873ec93b5bce6e7ad32256d5a043d1c09ca5
+      changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml: 7f14d3690a4e823a520d71b55a88f28121c6497f0caa964e4814d1162df1b046
+      changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json: 6a9730320f240a01756cd30f5b56dedf9e421dbfc297e13512f06c5da5956533
+      changes/st-1302/manifest.yaml: ba1e000b071f8d542c7f8d41959785b6fb6c4dd6f9f63c1873a2b4efd2ea19e0
+      scripts/build_st1302_provider_fact_commit_reference_plan.py: b6bdc6d018f8e38325deec248725ddd12e6a02853ab837d5a1ec642a1712cc40
       tests/st1302/conftest.py: 2ee8fd7b038097a4457c6886343e0908b88a0b406186bd7f806c1755011875ab
       tests/st1302/test_contract.py: ca2c055f6e155a8bf8ccb8a199a7b4e84daee5f73ef57680d1fdf0196563a955
       tests/st1302/test_generation.py: 3eb59e0e5f4a297867b6505e41a92abfdece837812f88437fcdd38055d4c9055
@@ -141,7 +141,7 @@ source_pins:
     sha256: 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
   st0308_persistence_plan:
     path: changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
-    sha256: ea9a06b4ee865889805b23a3626c09f95654a0655adb4ac955b25027e01e995e
+    sha256: 0c15435d23e238b1106b681c41b0aa08c270e7e8e9bdcf1090a1e197bc3db22a
   revenue_row_schema:
     path: contracts/raos-v0.4/contracts/schemas/imports/revenue-canonical-row.schema.json
     sha256: 02bc3d854a7420a74a8b302342a9ad0e23cfe4529565716a185c333b43ebbff8

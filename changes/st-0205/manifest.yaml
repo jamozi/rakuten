@@ -33,12 +33,12 @@ provenance:
     sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
   - story_id: ST-0202
     uri: repo://changes/st-0202/manifest.yaml
-    sha256: 5b07ee92e4ce387df1ee752bb841cca2b63e3575cc5a06509ab990c09ab7dd56
+    sha256: cdc7020bbdc7d4633b2dc6c73ee6f024619c6b97d92da012112484d076c2a022
 source_artifact_count: 17
 source_artifacts:
 - uri: repo://changes/st-0205/contracts/synthetic-data-factory.v1.yaml
   bytes: 5425
-  sha256: 5ef3a1f7ca925bf17a102b38bc12c67055bf4f87d4f90091629a84c7e45dac20
+  sha256: 6ac2eeda6dcb7f21471cca399e122523ccf837cdc6d94d31b90e6d95c27b321c
 - uri: repo://changes/st-0205/README.md
   bytes: 2404
   sha256: 30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6
@@ -50,7 +50,7 @@ source_artifacts:
   sha256: 52a2e3e23c105280eacc04e1ec74761480158a8ddf0e3dc38f97787dc3739fb9
 - uri: repo://scripts/build_st0205_synthetic_data.py
   bytes: 57003
-  sha256: 7435e008e7b6210de19b74410f7e8f1736f4fcc33ac2ee53c64290f9b2b6486f
+  sha256: edf9c4d6d00a34a0224c52aa5417704ba114211cd0a94e668724f0e8acfca6b6
 - uri: repo://tests/st0205/conftest.py
   bytes: 1101
   sha256: c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0
@@ -73,20 +73,20 @@ source_artifacts:
   bytes: 5656
   sha256: 3af19eab45beab577f8ad16e08cbe6e084ec00bb7c6509f35212a16bee8721dc
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 26006
-  sha256: ffe07737023a01b64563033c47bd23b6d2588be8130e9599d941081c316ea572
+  bytes: 36698
+  sha256: bcaee57eb104c6e090fb828162fd5799bfb7d469ee2351339e2415ea38884e58
 - uri: repo://Makefile
-  bytes: 31323
-  sha256: dcb06ffb53cebf710f8df5b72aceffc328060c63c7cd67067a8ca39e191b9860
+  bytes: 34123
+  sha256: e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc
 - uri: repo://README.md
-  bytes: 57509
-  sha256: ccb0c8708e110fe93b4316a22ae46d0e3ce5a17dc1ac14e1b821c3128307fb6c
+  bytes: 58459
+  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 - uri: repo://package.json
   bytes: 1850
   sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
 - uri: repo://scripts/scan_secrets.py
-  bytes: 29532
-  sha256: cfaeb22a58dd29d76fb38f107648e2690f8e55ed758e0361e050362c5beea084
+  bytes: 43062
+  sha256: 3af1b7c468cd5eb55016f3a9199204dcac11ab8b1cbffee831876408d7b57970
 generated_artifact_count: 2
 generated_artifacts:
 - uri: repo://changes/st-0205/generated/synthetic-fixtures.v1.json

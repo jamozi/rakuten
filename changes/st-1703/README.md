@@ -611,3 +611,31 @@ browser, secret read, WordPress GET/POST, profile/site mutation, publication,
 formal TST-021/TST-022/TST-032, hosted CI, staging, release, production, or
 revenue review was executed. The exact local command results and owned-path
 inventory are appended to `docs/worklogs/ST-1703.md`.
+
+## Strict typing and current runtime maintenance
+
+The final ST-1703 strict-typing pass makes the existing JSON boundaries,
+runtime-checkable ports, immutable credential values, and journal control flow
+explicit to Pyright. Exact type guards and all fail-closed validation remain in
+place. OAuth and HTTP request bytes, headers, response ordering, journal
+atomicity, draft-only behavior, single-attempt mutation budget, no-resend rule,
+and public interfaces retain their predecessor semantics. Cross-object
+credential access is limited to named immutable getters; it adds no mutable
+payload or setter.
+
+Historical Wave 1/2/3/3A handoffs and detached approvals remain byte-identical.
+The active 27-path Wave 3 runtime manifest is regenerated from its owner and
+keeps the approved V3 commit as a minimum ancestry/integrity anchor. Its
+separate current-development fields bind repository-local maintenance to the
+root standing development authorization and bind all external action authority
+to `NONE`. The low-cost pilot preserves every historical manifest identity in
+its historical provenance and separately validates the active current runtime
+manifest; its 9,380-byte non-executable projection remains byte-identical.
+
+The physical `/home/minami/rakuten` production launcher guard is unchanged.
+Tests in an isolated linked worktree assert that literal before rebinding only
+the imported test module; the unmodified shell launcher must instead refuse the
+noncanonical root with its exact exit 69 boundary. No `.secrets/` content,
+browser, provider call, GET/POST, journal mutation, profile/site change,
+publication, formal TST/CI, staging, release, revenue review, or Production
+action is authorized or executed by this maintenance pass.

@@ -208,19 +208,29 @@ jobs:
           node_path="$(command -v node)"
           node_prefix="$(dirname "$(dirname "$node_path")")"
           npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
-          npm_config_dir="$(mktemp -d "$RUNNER_TEMP/raos-npm-config.XXXXXX")"
-          npm_cache_dir="$(mktemp -d "$RUNNER_TEMP/raos-npm-cache.XXXXXX")"
           umask 077
+          uv_cache_dir="$RUNNER_TEMP/raos-unit-uv-cache"
+          test ! -e "$uv_cache_dir"
+          test ! -L "$uv_cache_dir"
+          mkdir --mode=0700 -- "$uv_cache_dir"
+          npm_config_dir="$(mktemp -d "$RUNNER_TEMP/raos-npm-config.XXXXXX")"
+          npm_cache_dir="$GITHUB_WORKSPACE/.npm-cache"
+          test ! -e "$npm_cache_dir"
+          test ! -L "$npm_cache_dir"
+          mkdir --mode=0700 -- "$npm_cache_dir"
+          test "$(stat --format='%u:%g:%a' -- "$npm_cache_dir")" = \
+            "$(id -u):$(id -g):700"
           : >"$npm_config_dir/user.conf"
           : >"$npm_config_dir/global.conf"
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-            "$uv_path" --no-config --color never sync --locked \
+            "$uv_path" --no-config --color never --cache-dir "$uv_cache_dir" \
+            sync --locked \
             --no-default-groups --group dev --no-install-project --no-install-local \
             --managed-python --no-python-downloads --python 3.14.6 \
             --no-build --no-sources --default-index https://pypi.org/simple \
             --index-strategy first-index --keyring-provider disabled --link-mode copy \
             --resolution highest --prerelease disallow \
-            --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
+            --exclude-newer 2026-08-01T16:50:16Z --no-progress
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC CI=true \
             "$node_path" "$npm_cli" \
             --userconfig "$npm_config_dir/user.conf" \
@@ -241,6 +251,8 @@ jobs:
             --uv "$(command -v uv)" \
             --node "$node_path" \
             --npm-cli "$node_prefix/lib/node_modules/npm/bin/npm-cli.js" \
+            --uv-cache "$RUNNER_TEMP/raos-unit-uv-cache" \
+            --runner-temp "$RUNNER_TEMP" \
             unit
 
   contracts:
@@ -397,4 +409,4 @@ jobs:
           persist-credentials: false
           show-progress: false
       - name: Reproduce secret scan
-        run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree --git-history
+        run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree --git-history --reviewed-findings changes/st-0106/contracts/reviewed-secret-findings.v1.yaml

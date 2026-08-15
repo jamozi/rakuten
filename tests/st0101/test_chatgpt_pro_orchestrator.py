@@ -3683,14 +3683,17 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     story_readme = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(
         encoding="utf-8"
     )
-    assert "After local exploration" in agents
-    assert "cross-module or architecture-boundary" in agents
-    assert "locally discoverable" in agents
+    assert "Standing development authorization" in agents
+    assert "Do not invoke `raos-ask-pro` implicitly" in agents
+    assert "PRO_IMPORTANCE=ordinary" in agents
+    assert "does not stop repository-local work" in agents
+    assert "Separate owner approval" in agents
+    assert "publication" in agents
+    assert "Production" in agents
     assert "no fixed count cap" in agents
     assert "materially duplicate" in agents
     assert "no material delta" in agents
     assert "DESIGN_HANDOFF_V1" in agents
-    assert "human approval" in agents
     for policy in (agents, story_readme):
         assert "diagnostic_fallback_entry_code" in policy
         assert (
@@ -3709,8 +3712,10 @@ def test_owner_private_skill_and_metadata_retain_approved_policy() -> None:
     normalized_skill = " ".join(skill.split())
     skill_metadata = (SKILL_ROOT / "agents/openai.yaml").read_text(encoding="utf-8")
     assert "after local exploration" in skill
-    assert "cross-module or architecture-boundary" in skill
-    assert "locally discoverable" in skill
+    assert "Do not invoke implicitly" in skill
+    assert "explicit user request" in skill
+    assert "standing development authorization" in skill
+    assert "continue repository-local development" in skill
     assert "no numerical follow-up cap" in skill
     assert "materially duplicate" in skill
     assert "no material delta" in skill
@@ -3736,7 +3741,7 @@ def test_owner_private_skill_and_metadata_retain_approved_policy() -> None:
     assert "Skill always uses this private-file" in skill
     assert "make pro-ask" in skill
     assert "make pro-resume" in skill
-    assert "allow_implicit_invocation: true" in skill_metadata
+    assert "allow_implicit_invocation: false" in skill_metadata
     assert "Use $raos-ask-pro" in skill_metadata
     assert "diagnostic_fallback_entry_code" in skill
     assert (
