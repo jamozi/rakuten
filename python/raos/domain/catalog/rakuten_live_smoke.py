@@ -1,260 +1,54 @@
-"""Closed values for the bounded ST-0505 Rakuten live smoke."""
+"""Closed response and receipt values for the ST-0505 Rakuten live smoke."""
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
-from enum import Enum
+from datetime import datetime
 from typing import Final, NoReturn, SupportsIndex, final
 
-
-RAKUTEN_API_DOCUMENTATION_URL: Final = (
-    "https://webservice.rakuten.co.jp/documentation/ichiba-item-search"
+from raos.domain.catalog._rakuten_live_smoke_foundation import (
+    MAX_GRANT_LIFETIME,
+    MAX_JSON_DEPTH,
+    MAX_JSON_NODES,
+    MAX_RESPONSE_BYTES,
+    NETWORK_TIMEOUT_SECONDS,
+    RAKUTEN_ACCESS_KEY_ALIAS,
+    RAKUTEN_API_DOCUMENTATION_RETRIEVED_ON,
+    RAKUTEN_API_DOCUMENTATION_URL,
+    RAKUTEN_API_ORIGIN,
+    RAKUTEN_API_VERSION,
+    RAKUTEN_APPLICATION_ID_ALIAS,
+    RAKUTEN_ITEM_SEARCH_PATH,
+    STAGING_ENVIRONMENT,
+    RateObservation,
+    RakutenLiveSmokeFailure,
+    RakutenLiveSmokeFailureCode,
+    RakutenLiveSmokeGrant,
+    RakutenLiveSmokeRequest,
+    SecretText,
+    exact_int,
+    exact_sha256,
+    exact_utc,
+    fail_live_smoke,
 )
-RAKUTEN_API_DOCUMENTATION_RETRIEVED_ON: Final = "2026-08-18"
-RAKUTEN_API_ORIGIN: Final = "https://openapi.rakuten.co.jp"
-RAKUTEN_ITEM_SEARCH_PATH: Final = "/ichibams/api/IchibaItem/Search/20260701"
-RAKUTEN_API_VERSION: Final = "2026-07-01"
-RAKUTEN_APPLICATION_ID_ALIAS: Final = "rakuten_application_id"
-RAKUTEN_ACCESS_KEY_ALIAS: Final = "rakuten_access_key"
-STAGING_ENVIRONMENT: Final = "ENV-STAGING"
-MAX_RESPONSE_BYTES: Final = 256 * 1024
-MAX_JSON_DEPTH: Final = 32
-MAX_JSON_NODES: Final = 20_000
-NETWORK_TIMEOUT_SECONDS: Final = 5.0
-MAX_GRANT_LIFETIME: Final = timedelta(minutes=15)
 
-_SHA256: Final = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
+
 _HEADER_NAME: Final = re.compile(r"[!#$%&'*+.^_`|~0-9A-Za-z-]{1,128}\Z", re.ASCII)
-_REDACTED: Final = "<redacted-rakuten-live-smoke>"
-_REQUEST_ELEMENTS: Final = (
-    "itemCode",
-    "itemName",
-    "itemPrice",
-    "itemUrl",
-    "shopCode",
+_SAFE_RECEIPT_TOKEN: Final = re.compile(
+    r"[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}\Z", re.ASCII
 )
-
-
-class RakutenLiveSmokeFailureCode(str, Enum):
-    """Stable, sanitized failures for the live-smoke boundary."""
-
-    INVALID_ARGUMENT = "INVALID_ARGUMENT"
-    NOT_AUTHORIZED = "NOT_AUTHORIZED"
-    CREDENTIAL_UNAVAILABLE = "CREDENTIAL_UNAVAILABLE"
-    TRANSPORT_FAILURE = "TRANSPORT_FAILURE"
-    REDIRECT_FORBIDDEN = "REDIRECT_FORBIDDEN"
-    AUTH_REJECTED = "AUTH_REJECTED"
-    RATE_LIMITED = "RATE_LIMITED"
-    REQUEST_REJECTED = "REQUEST_REJECTED"
-    PROVIDER_UNAVAILABLE = "PROVIDER_UNAVAILABLE"
-    PROVIDER_REJECTED = "PROVIDER_REJECTED"
-    RESPONSE_TOO_LARGE = "RESPONSE_TOO_LARGE"
-    RESPONSE_INVALID = "RESPONSE_INVALID"
-    SCHEMA_MISMATCH = "SCHEMA_MISMATCH"
-
-
-@dataclass(frozen=True, slots=True, repr=False)
-class RakutenLiveSmokeFailure(RuntimeError):
-    """A failure whose display never includes provider or credential data."""
-
-    code: RakutenLiveSmokeFailureCode
-
-    def __post_init__(self) -> None:
-        if type(self.code) is not RakutenLiveSmokeFailureCode:
-            raise TypeError("invalid Rakuten live-smoke failure code")
-        RuntimeError.__init__(self, self.code.value)
-
-    def __str__(self) -> str:
-        return self.code.value
-
-    def __repr__(self) -> str:
-        return f"RakutenLiveSmokeFailure(code={self.code.value})"
-
-    def __reduce_ex__(self, protocol: SupportsIndex) -> NoReturn:
-        del protocol
-        raise TypeError("Rakuten live-smoke failure serialization is not supported")
-
-
-def fail_live_smoke(
-    code: RakutenLiveSmokeFailureCode = RakutenLiveSmokeFailureCode.INVALID_ARGUMENT,
-) -> NoReturn:
-    raise RakutenLiveSmokeFailure(code) from None
-
-
-def exact_sha256(value: object) -> str:
-    if type(value) is not str or _SHA256.fullmatch(value) is None:
-        fail_live_smoke()
-    return value
-
-
-def exact_utc(value: object) -> datetime:
-    if (
-        type(value) is not datetime
-        or value.tzinfo is not timezone.utc
-        or value.fold != 0
-    ):
-        fail_live_smoke()
-    return value
-
-
-def _bounded_keyword(value: object) -> str:
-    if type(value) is not str or value != value.strip() or not value:
-        fail_live_smoke()
-    if any(ord(character) < 32 or ord(character) == 127 for character in value):
-        fail_live_smoke()
-    try:
-        encoded = value.encode("utf-8", errors="strict")
-    except UnicodeError:
-        fail_live_smoke()
-    if not 2 <= len(encoded) <= 128:
-        fail_live_smoke()
-    return value
-
-
-def _safe_secret(value: object) -> str:
-    if type(value) is not str or not 1 <= len(value) <= 512:
-        fail_live_smoke(RakutenLiveSmokeFailureCode.CREDENTIAL_UNAVAILABLE)
-    if any(ord(character) < 33 or ord(character) > 126 for character in value):
-        fail_live_smoke(RakutenLiveSmokeFailureCode.CREDENTIAL_UNAVAILABLE)
-    return value
+_REDACTED: Final = "<redacted-rakuten-live-smoke>"
 
 
 @final
-class SecretText:
-    """Opaque in-memory credential material with redacted displays."""
-
-    __slots__ = ("__value",)
-    __value: str
-
-    def __init__(self, value: str) -> None:
-        object.__setattr__(self, "_SecretText__value", _safe_secret(value))
-
-    def __init_subclass__(cls, **kwargs: object) -> None:
-        del cls, kwargs
-        raise TypeError("SecretText subclassing is not supported") from None
-
-    def __setattr__(self, name: str, value: object) -> None:
-        del name, value
-        raise AttributeError("SecretText is immutable")
-
-    def __repr__(self) -> str:
-        return f"SecretText({_REDACTED!r})"
-
-    def __str__(self) -> str:
-        return _REDACTED
-
-    def __reduce_ex__(self, protocol: SupportsIndex) -> NoReturn:
-        del protocol
-        raise TypeError("SecretText serialization is not supported") from None
-
-    def _transport_value(self) -> str:
-        return self.__value
-
-
-@dataclass(frozen=True, slots=True, repr=False)
-class RakutenLiveSmokeRequest:
-    """One-page, one-hit keyword request; affiliate ID is not accepted."""
-
-    keyword: str
-
-    def __post_init__(self) -> None:
-        _bounded_keyword(self.keyword)
-
-    def __repr__(self) -> str:
-        return f"RakutenLiveSmokeRequest({_REDACTED})"
-
-    def __str__(self) -> str:
-        return _REDACTED
-
-    @property
-    def fingerprint(self) -> str:
-        canonical = json.dumps(
-            {
-                "api_version": RAKUTEN_API_VERSION,
-                "availability": 1,
-                "elements": list(_REQUEST_ELEMENTS),
-                "format": "json",
-                "format_version": 2,
-                "hits": 1,
-                "keyword": self.keyword,
-                "operation": "ITEM_SEARCH",
-                "page": 1,
-                "sort": "standard",
-            },
-            ensure_ascii=False,
-            allow_nan=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-        return hashlib.sha256(canonical).hexdigest()
-
-    def _query(self, application_id: SecretText) -> tuple[tuple[str, str], ...]:
-        return (
-            ("applicationId", application_id._transport_value()),
-            ("format", "json"),
-            ("formatVersion", "2"),
-            ("keyword", self.keyword),
-            ("hits", "1"),
-            ("page", "1"),
-            ("sort", "standard"),
-            ("availability", "1"),
-            ("elements", ",".join(_REQUEST_ELEMENTS)),
-        )
-
-
-@dataclass(frozen=True, slots=True, repr=False)
-class RakutenLiveSmokeGrant:
-    """Short-lived external gate binding for one exact staging request."""
-
-    environment: str
-    request_sha256: str
-    operations_evidence_sha256: str
-    execution_approval_sha256: str
-    issued_at: datetime
-    expires_at: datetime
-
-    def __post_init__(self) -> None:
-        if type(self.environment) is not str or self.environment != STAGING_ENVIRONMENT:
-            fail_live_smoke()
-        exact_sha256(self.request_sha256)
-        operations_digest = exact_sha256(self.operations_evidence_sha256)
-        execution_digest = exact_sha256(self.execution_approval_sha256)
-        if (
-            operations_digest == "0" * 64
-            or execution_digest == "0" * 64
-            or operations_digest == execution_digest
-        ):
-            fail_live_smoke()
-        issued = exact_utc(self.issued_at)
-        expires = exact_utc(self.expires_at)
-        lifetime = expires - issued
-        if lifetime <= timedelta(0) or lifetime > MAX_GRANT_LIFETIME:
-            fail_live_smoke()
-
-    def __repr__(self) -> str:
-        return f"RakutenLiveSmokeGrant({_REDACTED})"
-
-    def permits(self, request_sha256: str, now: datetime) -> bool:
-        return (
-            type(request_sha256) is str
-            and request_sha256 == self.request_sha256
-            and type(now) is datetime
-            and now.tzinfo is timezone.utc
-            and now.fold == 0
-            and self.issued_at <= now <= self.expires_at
-        )
-
-
-@dataclass(frozen=True, slots=True, repr=False, init=False)
 class RakutenHttpResponse:
-    """Bounded transport result whose raw body has no public display/accessor."""
+    """Bounded transport result with no public raw body or header access."""
 
-    status: int
-    headers: tuple[tuple[str, str], ...]
+    __slots__ = ("__body", "__headers", "__status")
+    __status: int
+    __headers: tuple[tuple[str, str], ...]
     __body: bytes
 
     def __init__(
@@ -266,7 +60,7 @@ class RakutenHttpResponse:
     ) -> None:
         if type(status) is not int or not 100 <= status <= 599:
             fail_live_smoke(RakutenLiveSmokeFailureCode.TRANSPORT_FAILURE)
-        if type(headers) is not tuple or len(headers) > 128:
+        if type(headers) is not tuple or len(headers) > 32:
             fail_live_smoke(RakutenLiveSmokeFailureCode.TRANSPORT_FAILURE)
         for row in headers:
             if type(row) is not tuple or len(row) != 2:
@@ -285,9 +79,13 @@ class RakutenHttpResponse:
                 fail_live_smoke(RakutenLiveSmokeFailureCode.TRANSPORT_FAILURE)
         if type(body) is not bytes or len(body) > MAX_RESPONSE_BYTES + 1:
             fail_live_smoke(RakutenLiveSmokeFailureCode.RESPONSE_TOO_LARGE)
-        object.__setattr__(self, "status", status)
-        object.__setattr__(self, "headers", headers)
+        object.__setattr__(self, "_RakutenHttpResponse__status", status)
+        object.__setattr__(self, "_RakutenHttpResponse__headers", headers)
         object.__setattr__(self, "_RakutenHttpResponse__body", body)
+
+    @property
+    def status(self) -> int:
+        return self.__status
 
     def __repr__(self) -> str:
         return f"RakutenHttpResponse({_REDACTED})"
@@ -295,18 +93,23 @@ class RakutenHttpResponse:
     def __str__(self) -> str:
         return _REDACTED
 
+    def __setattr__(self, name: str, value: object) -> None:
+        del name, value
+        raise AttributeError("RakutenHttpResponse is immutable")
+
+    def __delattr__(self, name: str) -> None:
+        del name
+        raise AttributeError("RakutenHttpResponse is immutable")
+
     def __reduce_ex__(self, protocol: SupportsIndex) -> NoReturn:
         del protocol
         raise TypeError("Rakuten HTTP response serialization is not supported")
 
+    def _headers_for_smoke(self) -> tuple[tuple[str, str], ...]:
+        return self.__headers
+
     def _body_for_smoke(self) -> bytes:
         return self.__body
-
-
-class RateObservation(str, Enum):
-    NOT_EXPOSED = "NOT_EXPOSED"
-    PARTIAL_HEADER_METADATA = "PARTIAL_HEADER_METADATA"
-    COMPLETE_HEADER_METADATA = "COMPLETE_HEADER_METADATA"
 
 
 @dataclass(frozen=True, slots=True)
@@ -337,6 +140,78 @@ class RakutenLiveSmokeReceipt:
     storage_write_count: int = 0
     persistence_write_count: int = 0
     publication_count: int = 0
+
+    def __post_init__(self) -> None:
+        if type(self.api_version) is not str or self.api_version != RAKUTEN_API_VERSION:
+            fail_live_smoke(RakutenLiveSmokeFailureCode.SCHEMA_MISMATCH)
+        exact_sha256(self.request_sha256)
+        exact_sha256(self.response_sha256)
+        exact_utc(self.observed_at)
+        exact_int(self.response_bytes, minimum=2, maximum=MAX_RESPONSE_BYTES)
+        if (
+            type(self.http_status) is not int
+            or self.http_status != 200
+            or type(self.auth_observation) is not str
+            or self.auth_observation != "HTTP_200_ACCEPTED"
+            or type(self.schema_observation) is not str
+            or self.schema_observation != "FORMAT_VERSION_2_COMPATIBLE"
+            or type(self.rate_observation) is not RateObservation
+        ):
+            fail_live_smoke(RakutenLiveSmokeFailureCode.SCHEMA_MISMATCH)
+        for value in (self.rate_limit, self.rate_remaining, self.rate_reset):
+            if value is not None:
+                exact_int(value, minimum=0, maximum=(1 << 63) - 1)
+        if self.rate_limit is not None and (
+            self.rate_limit < 1
+            or (
+                self.rate_remaining is not None
+                and self.rate_remaining > self.rate_limit
+            )
+        ):
+            fail_live_smoke(RakutenLiveSmokeFailureCode.SCHEMA_MISMATCH)
+        present_rate_values = sum(
+            value is not None
+            for value in (self.rate_limit, self.rate_remaining, self.rate_reset)
+        )
+        expected_observation = (
+            RateObservation.NOT_EXPOSED
+            if present_rate_values == 0
+            else RateObservation.COMPLETE_HEADER_METADATA
+            if present_rate_values == 3
+            else RateObservation.PARTIAL_HEADER_METADATA
+        )
+        if self.rate_observation is not expected_observation:
+            fail_live_smoke(RakutenLiveSmokeFailureCode.SCHEMA_MISMATCH)
+        if self.provider_request_id is not None and (
+            type(self.provider_request_id) is not str
+            or _SAFE_RECEIPT_TOKEN.fullmatch(self.provider_request_id) is None
+        ):
+            fail_live_smoke(RakutenLiveSmokeFailureCode.SCHEMA_MISMATCH)
+        exact_int(self.count, minimum=0, maximum=(1 << 63) - 1)
+        if type(self.page) is not int or self.page != 1:
+            fail_live_smoke(RakutenLiveSmokeFailureCode.SCHEMA_MISMATCH)
+        exact_int(self.hits, minimum=0, maximum=1)
+        exact_int(self.page_count, minimum=0, maximum=100)
+        exact_int(self.returned_item_count, minimum=0, maximum=1)
+        if (
+            self.returned_item_count > self.hits
+            or self.returned_item_count > self.count
+            or (self.count == 0) != (self.page_count == 0)
+        ):
+            fail_live_smoke(RakutenLiveSmokeFailureCode.SCHEMA_MISMATCH)
+        exact_counts = (
+            (self.network_request_count, 1),
+            (self.retry_count, 0),
+            (self.pagination_count, 0),
+            (self.storage_write_count, 0),
+            (self.persistence_write_count, 0),
+            (self.publication_count, 0),
+        )
+        if any(
+            type(value) is not int or value != expected
+            for value, expected in exact_counts
+        ):
+            fail_live_smoke(RakutenLiveSmokeFailureCode.SCHEMA_MISMATCH)
 
     @property
     def canonical_json(self) -> bytes:

@@ -1,27 +1,20 @@
-"""Bounded, fail-closed executable boundary for ST-0505.
+"""Fail-closed executable boundary for the bounded ST-0505 live smoke.
 
-No CLI, scheduler, persistence layer, publication path, or provider call is
-activated by importing this module. A caller must inject a short-lived staging
-grant and fixed-alias credentials. The default transport performs one HTTPS GET
-with system CA verification, proxy inheritance disabled, and redirects denied.
+Importing this module performs no I/O. A caller must inject an external
+one-shot authorizer and fixed-alias credential source before the runner can make
+one HTTPS GET. No concrete authorizer or credential reader is provided here.
 """
 
 from __future__ import annotations
 
-import ssl
 from datetime import datetime, timezone
 from threading import Lock
 from typing import Protocol, final
-from urllib.error import HTTPError
-from urllib.parse import urlencode, urlsplit
-from urllib.request import (
-    HTTPRedirectHandler,
-    HTTPSHandler,
-    ProxyHandler,
-    Request,
-    build_opener,
-)
 
+from raos.adapters._rakuten_live_smoke_transport import (
+    RakutenLiveSmokeTransport,
+    UrllibRakutenLiveSmokeTransport,
+)
 from raos.adapters._rakuten_live_smoke_validation import build_receipt
 from raos.domain.catalog.rakuten_live_smoke import (
     MAX_RESPONSE_BYTES,
@@ -46,6 +39,18 @@ from raos.domain.catalog.rakuten_live_smoke import (
 )
 
 
+class RakutenLiveSmokeAuthorizer(Protocol):
+    """Atomically validate and consume one externally trusted grant hash."""
+
+    def consume(
+        self,
+        *,
+        grant_sha256: str,
+        request_sha256: str,
+        observed_at: datetime,
+    ) -> bool: ...
+
+
 class RakutenCredentialSource(Protocol):
     """Resolve the two fixed aliases without exposing storage details."""
 
@@ -64,147 +69,28 @@ class SystemClock:
         return datetime.now(timezone.utc)
 
 
-class RakutenLiveSmokeTransport(Protocol):
-    def get(
-        self,
-        *,
-        origin: str,
-        path: str,
-        query: tuple[tuple[str, str], ...],
-        headers: tuple[tuple[str, str], ...],
-        timeout_seconds: float,
-        max_body_bytes: int,
-    ) -> RakutenHttpResponse: ...
-
-
-class _NoRedirectHandler(HTTPRedirectHandler):
-    def redirect_request(
-        self,
-        req: Request,
-        fp: object,
-        code: int,
-        msg: str,
-        headers: object,
-        newurl: str,
-    ) -> None:
-        del req, fp, code, msg, headers, newurl
-        return None
-
-
-@final
-class UrllibRakutenLiveSmokeTransport:
-    """One-attempt HTTPS transport using the system trust store."""
-
-    __slots__ = ()
-
-    def get(
-        self,
-        *,
-        origin: str,
-        path: str,
-        query: tuple[tuple[str, str], ...],
-        headers: tuple[tuple[str, str], ...],
-        timeout_seconds: float,
-        max_body_bytes: int,
-    ) -> RakutenHttpResponse:
-        if (
-            origin != RAKUTEN_API_ORIGIN
-            or path != RAKUTEN_ITEM_SEARCH_PATH
-            or type(query) is not tuple
-            or type(headers) is not tuple
-            or type(timeout_seconds) is not float
-            or timeout_seconds != NETWORK_TIMEOUT_SECONDS
-            or type(max_body_bytes) is not int
-            or max_body_bytes != MAX_RESPONSE_BYTES
-        ):
-            fail_live_smoke(RakutenLiveSmokeFailureCode.TRANSPORT_FAILURE)
-        encoded_query = urlencode(
-            query,
-            doseq=False,
-            encoding="utf-8",
-            errors="strict",
-        )
-        url = f"{origin}{path}?{encoded_query}"
-        parsed = urlsplit(url)
-        if (
-            parsed.scheme != "https"
-            or parsed.netloc != "openapi.rakuten.co.jp"
-            or parsed.path != RAKUTEN_ITEM_SEARCH_PATH
-            or parsed.fragment
-            or parsed.username is not None
-            or parsed.password is not None
-        ):
-            fail_live_smoke(RakutenLiveSmokeFailureCode.TRANSPORT_FAILURE)
-
-        context = ssl.create_default_context()
-        context.minimum_version = ssl.TLSVersion.TLSv1_2
-        opener = build_opener(
-            ProxyHandler({}),
-            _NoRedirectHandler(),
-            HTTPSHandler(context=context),
-        )
-        outgoing = Request(url=url, method="GET")
-        for name, value in headers:
-            outgoing.add_header(name, value)
-        try:
-            response = opener.open(outgoing, timeout=timeout_seconds)
-        except HTTPError as error:
-            try:
-                response_headers = tuple(error.headers.items())
-                status = int(error.code)
-            finally:
-                error.close()
-            return RakutenHttpResponse(
-                status=status,
-                headers=response_headers,
-                body=b"",
-            )
-        except Exception:
-            fail_live_smoke(RakutenLiveSmokeFailureCode.TRANSPORT_FAILURE)
-
-        try:
-            status = int(response.status)
-            if response.geturl() != url:
-                return RakutenHttpResponse(
-                    status=302,
-                    headers=tuple(response.headers.items()),
-                    body=b"",
-                )
-            content_length = response.headers.get("Content-Length")
-            if content_length is not None:
-                try:
-                    length = int(content_length, 10)
-                except ValueError:
-                    fail_live_smoke(RakutenLiveSmokeFailureCode.RESPONSE_INVALID)
-                if length < 0 or length > max_body_bytes:
-                    fail_live_smoke(RakutenLiveSmokeFailureCode.RESPONSE_TOO_LARGE)
-            body = response.read(max_body_bytes + 1)
-            return RakutenHttpResponse(
-                status=status,
-                headers=tuple(response.headers.items()),
-                body=body,
-            )
-        except RakutenLiveSmokeFailure:
-            raise
-        except Exception:
-            fail_live_smoke(RakutenLiveSmokeFailureCode.TRANSPORT_FAILURE)
-        finally:
-            response.close()
-
-
 @final
 class RakutenLiveSmokeRunner:
-    """Consume one exact grant, perform at most one GET, and return a receipt."""
+    """Consume one trusted grant, perform at most one GET, and return a receipt."""
 
-    __slots__ = ("_clock", "_consumed", "_credentials", "_lock", "_transport")
+    __slots__ = (
+        "_authorizer",
+        "_clock",
+        "_consumed",
+        "_credentials",
+        "_lock",
+        "_transport",
+    )
 
     def __init__(
         self,
         *,
+        authorizer: RakutenLiveSmokeAuthorizer,
         credentials: RakutenCredentialSource,
         transport: RakutenLiveSmokeTransport | None = None,
         clock: Clock | None = None,
     ) -> None:
+        self._authorizer = authorizer
         self._credentials = credentials
         self._transport = (
             UrllibRakutenLiveSmokeTransport() if transport is None else transport
@@ -234,6 +120,16 @@ class RakutenLiveSmokeRunner:
             if self._consumed:
                 fail_live_smoke(RakutenLiveSmokeFailureCode.NOT_AUTHORIZED)
             self._consumed = True
+        try:
+            authorized = self._authorizer.consume(
+                grant_sha256=grant.fingerprint,
+                request_sha256=request.fingerprint,
+                observed_at=now,
+            )
+        except Exception:
+            fail_live_smoke(RakutenLiveSmokeFailureCode.NOT_AUTHORIZED)
+        if authorized is not True:
+            fail_live_smoke(RakutenLiveSmokeFailureCode.NOT_AUTHORIZED)
 
         try:
             application_id = self._credentials.read(RAKUTEN_APPLICATION_ID_ALIAS)
@@ -294,6 +190,7 @@ __all__ = [
     "RateObservation",
     "RakutenCredentialSource",
     "RakutenHttpResponse",
+    "RakutenLiveSmokeAuthorizer",
     "RakutenLiveSmokeFailure",
     "RakutenLiveSmokeFailureCode",
     "RakutenLiveSmokeGrant",
