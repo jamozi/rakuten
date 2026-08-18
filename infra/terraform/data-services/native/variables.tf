@@ -76,20 +76,19 @@ variable "queue_configs" {
 
 variable "database" {
   type = object({
-    identifier                   = string
-    engine_version               = string
-    instance_class               = string
-    allocated_storage_gib        = number
-    max_allocated_storage_gib    = number
-    storage_type                 = string
-    subnet_ids                   = list(string)
-    vpc_security_group_ids       = list(string)
-    database_name                = string
-    username                     = string
-    port                         = number
-    multi_az                     = bool
-    backup_retention_days        = number
-    final_snapshot_identifier    = string
+    identifier                = string
+    engine_version            = string
+    instance_class            = string
+    allocated_storage_gib     = number
+    max_allocated_storage_gib = number
+    subnet_ids                = list(string)
+    vpc_security_group_ids    = list(string)
+    database_name             = string
+    username                  = string
+    port                      = number
+    multi_az                  = bool
+    backup_retention_days     = number
+    final_snapshot_identifier = string
   })
 
   validation {
@@ -98,8 +97,7 @@ variable "database" {
       length(trimspace(var.database.engine_version)) > 0 &&
       length(trimspace(var.database.instance_class)) > 0 &&
       var.database.allocated_storage_gib >= 20 &&
-      var.database.max_allocated_storage_gib >= var.database.allocated_storage_gib &&
-      contains(["gp3", "io1", "io2"], var.database.storage_type) &&
+      var.database.max_allocated_storage_gib >= var.database.allocated_storage_gib + 10 &&
       length(var.database.subnet_ids) >= 2 &&
       length(toset(var.database.subnet_ids)) == length(var.database.subnet_ids) &&
       length(var.database.vpc_security_group_ids) >= 1 &&
@@ -110,7 +108,7 @@ variable "database" {
       var.database.backup_retention_days >= 7 && var.database.backup_retention_days <= 35 &&
       length(trimspace(var.database.final_snapshot_identifier)) > 0
     )
-    error_message = "database requires explicit private networking, storage, identity, port, backup, and snapshot configuration."
+    error_message = "database requires explicit private networking, gp3 autoscaling, identity, port, backup, and snapshot configuration."
   }
 }
 
