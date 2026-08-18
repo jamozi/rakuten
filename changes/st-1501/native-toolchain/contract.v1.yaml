@@ -1,0 +1,82 @@
+document:
+  id: RAOS-TERRAFORM-NATIVE-TOOLCHAIN-CANDIDATE-001
+  version: 1.0.0
+  story_id: ST-1501
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_verification: NOT_EXECUTED
+parent_contract:
+  uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+  relationship: SUCCESSOR_CANDIDATE_DOES_NOT_REWRITE_PARENT
+source_retrieval:
+  retrieved_on: '2026-08-18'
+  terraform:
+    source: https://releases.hashicorp.com/terraform/
+    selected_version: 1.15.8
+    selection_basis: LATEST_STABLE_LISTED;_1.16_BETA_AND_1.17_ALPHA_REJECTED
+  aws_provider:
+    source: https://github.com/hashicorp/terraform-provider-aws/blob/main/CHANGELOG.md
+    selected_version: 6.57.1
+    selection_basis: BUGFIX_RELEASE_REPLACING_DEFECTIVE_6.57.0
+selected_toolchain:
+  terraform_cli_version: 1.15.8
+  providers:
+    - source: hashicorp/aws
+      version: 6.57.1
+selected_configuration:
+  cloud_provider: null
+  production_region: null
+  backup_region: null
+  development_account_id: null
+  production_account_id: null
+  state_backend: null
+  credential_source: null
+  network_cidrs: []
+  availability_zones: []
+  kms_key_reference: null
+  monthly_budget_jpy: null
+  resource_definitions: []
+native_hcl_boundary:
+  root: infra/terraform/foundation/native
+  allowed_files:
+    - versions.tf
+  provider_configuration: FORBIDDEN
+  backend_configuration: FORBIDDEN
+  resources: FORBIDDEN
+  data_sources: FORBIDDEN
+  modules: FORBIDDEN
+  outputs: FORBIDDEN
+execution_boundary:
+  activation_enabled: false
+  provider_installation: NOT_EXECUTED
+  provider_calls: FORBIDDEN
+  external_writes: FORBIDDEN
+  remote_state: NOT_CONFIGURED
+  commands:
+    version: ALLOWED_LOCAL_READ_ONLY
+    fmt_check: ALLOWED_LOCAL_READ_ONLY
+    init: FORBIDDEN
+    validate: DEFERRED_UNTIL_OFFLINE_PROVIDER_LOCK_BOUNDARY
+    plan: FORBIDDEN
+    apply: FORBIDDEN
+    destroy: FORBIDDEN
+    import: FORBIDDEN
+    refresh: FORBIDDEN
+  planned_actions:
+    create: 0
+    update: 0
+    delete: 0
+wrapper:
+  uri: repo://scripts/terraform_toolchain.sh
+  absolute_binary_required: true
+  symlink_binary_forbidden: true
+  exact_version_required: 1.15.8
+  inherited_environment: CLEARED
+  network_operation: ABSENT
+  credential_read: ABSENT
+completion_boundary:
+  provider_lock: NOT_GENERATED
+  terraform_validate: NOT_EXECUTED
+  tst_026: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  production: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
