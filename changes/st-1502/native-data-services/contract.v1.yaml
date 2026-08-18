@@ -1,0 +1,72 @@
+document:
+  id: RAOS-NATIVE-DATA-SERVICES-CANDIDATE-001
+  version: 1.0.0
+  story_id: ST-1502
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  formal_verification: NOT_EXECUTED
+predecessors:
+  st_1501_native_toolchain:
+    relationship: IMPLEMENTATION_PREDECESSOR_CANDIDATE
+    required_activation: DISABLED
+    required_provider_calls: FORBIDDEN
+selected_configuration:
+  aws_account_id: null
+  region: null
+  backup_region: null
+  state_backend: null
+  credential_source: null
+  vpc_id: null
+  physical_values: EXPLICIT_CALLER_INPUT_ONLY
+services:
+  kms:
+    rotation: REQUIRED
+    destroy: FORBIDDEN
+  s3:
+    roles:
+      - raw
+      - publication
+      - uploads_quarantine
+      - exports
+      - audit_logs
+    public_access: FORBIDDEN
+    encryption: REQUIRED
+    versioning: REQUIRED
+    force_destroy: FORBIDDEN
+    raw_object_lock: REQUIRED
+  sqs:
+    classes:
+      - ingestion
+      - ai
+      - quality
+      - publication
+      - freshness
+      - analytics
+      - notification
+    encryption: REQUIRED
+    dlq: REQUIRED
+    redrive: REQUIRED
+  rds:
+    engine: postgres
+    public_access: FORBIDDEN
+    encryption: REQUIRED
+    managed_master_password: REQUIRED
+    plaintext_password_input: FORBIDDEN
+    deletion_protection: REQUIRED
+    final_snapshot: REQUIRED
+    storage_type: gp3
+execution_boundary:
+  provider_installation: NOT_EXECUTED
+  provider_calls: FORBIDDEN
+  external_writes: FORBIDDEN
+  native_validate: NOT_EXECUTED
+  native_plan: NOT_EXECUTED
+  apply: FORBIDDEN
+  destroy: FORBIDDEN
+  staging: NOT_EXECUTED
+  production: NOT_EXECUTED
+completion_boundary:
+  iam_workload_policies: DEFERRED
+  restore_test: NOT_EXECUTED
+  alarms: DEFERRED
+  tst_029: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED
