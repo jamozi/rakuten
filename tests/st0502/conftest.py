@@ -42,12 +42,15 @@ ENDPOINT_ID = UUID("018f3e90-7b00-7000-8000-000000000101")
 ARTIFACT_ID = UUID("018f3e90-7b00-7000-8000-000000000102")
 OBSERVED_AT = datetime(2026, 8, 10, 4, 0, tzinfo=timezone.utc)
 RESET_AT = OBSERVED_AT + timedelta(minutes=1)
+# Official Rakuten 20260701 formatVersion=2 uses a lower-case `items` array
+# whose elements are the item objects directly, without the legacy `item`
+# wrapper. This fixture is synthetic and contains no provider response bytes.
 RAW_BODY = (
-    b'{"Items":[{"Item":{"affiliateUrl":"https://example.invalid/affiliate",'
+    b'{"items":[{"affiliateUrl":"https://example.invalid/affiliate",'
     b'"availability":1,"genreId":100,"itemCode":"test-shop:item-1",'
     b'"itemName":"Untrusted synthetic item","itemPrice":1234,'
     b'"itemUrl":"https://example.invalid/item-1","reviewAverage":4.5,'
-    b'"reviewCount":3,"shopCode":"test-shop","shopName":"Synthetic shop"}}],'
+    b'"reviewCount":3,"shopCode":"test-shop","shopName":"Synthetic shop"}],'
     b'"count":1,"hits":1,"page":1,"pageCount":1}'
 )
 RAW_SHA256 = hashlib.sha256(RAW_BODY).hexdigest()
