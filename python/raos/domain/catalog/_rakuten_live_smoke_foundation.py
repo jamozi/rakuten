@@ -30,6 +30,10 @@ MAX_GRANT_LIFETIME: Final = timedelta(minutes=15)
 _SHA256: Final = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _REDACTED: Final = "<redacted-rakuten-live-smoke>"
 _REQUEST_ELEMENTS: Final = (
+    "count",
+    "page",
+    "hits",
+    "pageCount",
     "itemCode",
     "itemName",
     "itemPrice",
@@ -290,4 +294,3 @@ class RateObservation(str, Enum):
     NOT_EXPOSED = "NOT_EXPOSED"
     PARTIAL_HEADER_METADATA = "PARTIAL_HEADER_METADATA"
     COMPLETE_HEADER_METADATA = "COMPLETE_HEADER_METADATA"
-
