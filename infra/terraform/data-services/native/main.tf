@@ -75,7 +75,10 @@ resource "aws_sqs_queue" "dlq" {
   fifo_queue                = each.value.fifo
   message_retention_seconds = each.value.retention_seconds
   kms_master_key_id         = aws_kms_key.data.arn
-  tags                      = merge(var.tags, { raos_queue_class = each.key, raos_queue_role = "dlq" })
+  tags = merge(
+    var.tags,
+    { raos_queue_class = each.key, raos_queue_role = "dlq" },
+  )
 }
 
 resource "aws_sqs_queue" "main" {
@@ -90,7 +93,10 @@ resource "aws_sqs_queue" "main" {
     deadLetterTargetArn = aws_sqs_queue.dlq[each.key].arn
     maxReceiveCount     = each.value.max_receive_count
   })
-  tags = merge(var.tags, { raos_queue_class = each.key, raos_queue_role = "main" })
+  tags = merge(
+    var.tags,
+    { raos_queue_class = each.key, raos_queue_role = "main" },
+  )
 }
 
 resource "aws_db_subnet_group" "postgres" {
@@ -108,7 +114,7 @@ resource "aws_db_instance" "postgres" {
 
   allocated_storage     = var.database.allocated_storage_gib
   max_allocated_storage = var.database.max_allocated_storage_gib
-  storage_type          = var.database.storage_type
+  storage_type          = "gp3"
   storage_encrypted     = true
   kms_key_id            = aws_kms_key.data.arn
 
@@ -124,13 +130,13 @@ resource "aws_db_instance" "postgres" {
   publicly_accessible    = false
   multi_az               = var.database.multi_az
 
-  backup_retention_period = var.database.backup_retention_days
-  deletion_protection     = true
-  skip_final_snapshot     = false
-  final_snapshot_identifier = var.database.final_snapshot_identifier
-  copy_tags_to_snapshot     = true
+  backup_retention_period    = var.database.backup_retention_days
+  deletion_protection        = true
+  skip_final_snapshot        = false
+  final_snapshot_identifier  = var.database.final_snapshot_identifier
+  copy_tags_to_snapshot      = true
   auto_minor_version_upgrade = true
-  apply_immediately           = false
+  apply_immediately          = false
 
   tags = var.tags
 
