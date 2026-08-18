@@ -29,7 +29,8 @@ if ! terraform_version_output=$(env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.
   exit 69
 fi
 
-if ! python3 -c '
+if ! env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
+  python3 -I -S -c '
 import json, sys
 payload = json.load(sys.stdin)
 if type(payload) is not dict or payload.get("terraform_version") != "1.15.8":
