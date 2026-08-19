@@ -76,7 +76,11 @@ variable "log_retention_days" {
   }
 }
 
-variable "certificate_arn" {
+variable "origin_certificate_arn" {
+  type = string
+}
+
+variable "viewer_certificate_arn" {
   type = string
 }
 
@@ -101,6 +105,18 @@ variable "web_acl_ids" {
   validation {
     condition     = length(trimspace(var.web_acl_ids.public)) > 0 && length(trimspace(var.web_acl_ids.admin)) > 0
     error_message = "WAF Web ACL IDs are mandatory for both CloudFront surfaces."
+  }
+}
+
+variable "cache_policy_ids" {
+  type = object({
+    public = string
+    admin  = string
+  })
+
+  validation {
+    condition     = length(trimspace(var.cache_policy_ids.public)) > 0 && length(trimspace(var.cache_policy_ids.admin)) > 0 && var.cache_policy_ids.public != var.cache_policy_ids.admin
+    error_message = "Distinct explicit public and admin cache policy IDs are required."
   }
 }
 
