@@ -4,7 +4,7 @@
 
 Operate the first revenue-learning MVP from the owner workstation with no AWS dependency:
 
-`approved fixed content -> WordPress.com draft -> affiliate slot completion -> human review -> human publish`
+`approved fixed content -> WordPress.com draft -> affiliate slot completion -> validation -> human review -> human publish`
 
 The first article/content packet already exists in ST-1703 Wave 3, including three product comparison slots. Therefore live Rakuten API automation is useful post-launch work, but is **not required to create and publish the first reviewed article**.
 
@@ -77,13 +77,27 @@ No automation may substitute `publish`, `schedule`, `delete`, media upload, taxo
 
 ## 5. Complete affiliate slots manually for launch
 
-For Minimum Start, use the official Rakuten affiliate tooling to generate the approved affiliate HTML for the three named products and paste it only into the marked Wave 3 affiliate slots. Do not change the surrounding reviewed article bytes during this step.
+Use the official Rakuten affiliate tooling to generate the approved affiliate HTML for the three named products and paste it only inside the marked Wave 3 affiliate slots. Do not change the surrounding reviewed article bytes.
 
-Before publication, verify each link reaches the intended product and that no commission/rate value has influenced product ordering or evaluation.
+The existing Wave 3 validator accepts a filled article only when all three slot interiors match its closed grammar and the hash of every byte outside those slots remains unchanged. A valid filled article is treated as an exact acceptable state rather than being overwritten back to placeholders.
+
+After filling the slots, run the read-only preview again:
+
+```bash
+make wordpresscom-preview-mvp
+```
+
+Do not publish unless the preview recognizes the filled article without object drift, affiliate validation failure, journal ambiguity, or discussion/sharing drift.
+
+Before publication, verify each link reaches the intended product and that no commission/rate value influenced product ordering or evaluation.
 
 Automating affiliate-link generation and product freshness through Rakuten API is post-launch optimization, not a blocker for the first article.
 
-## 6. Human review and publication
+## 6. Final public-domain check
+
+Resolve issue #91 before the human publication action. The repository currently uses one exact WordPress.com response host; do not widen it to multiple guessed hosts. Confirm the intended custom domain, HTTPS behavior, and the exact hostname WordPress returns for the numeric site.
+
+## 7. Human review and publication
 
 Review the resulting drafts in WordPress.com. Check at minimum:
 
@@ -96,7 +110,7 @@ Review the resulting drafts in WordPress.com. Check at minimum:
 
 Publication is a separate human WordPress.com action. The Minimum Start operator does not publish automatically.
 
-## 7. Post-launch Rakuten automation
+## 8. Post-launch Rakuten automation
 
 After the first article is live, integrate the bounded Rakuten live path for freshness and lower manual maintenance. A real Rakuten API call remains separately gated and must preserve:
 
@@ -115,9 +129,10 @@ Rakuten automation must not become publication authority.
 - `INTENT` or ambiguous WordPress network outcome: stop and inspect; never retry automatically.
 - credential metadata invalid: fix file ownership/permissions without printing values.
 - source/runtime binding invalid: reconcile the exact repository revision; do not bypass checks.
+- affiliate validation/object drift after manual fill: fix only the three slot interiors; do not edit surrounding reviewed article content.
 - WordPress 401/403/404/redirect/schema failure: stop according to the existing adapter/journal state.
 - future Rakuten ambiguous attempt: stop; no automatic second provider request.
 
 ## MVP exit criterion
 
-Minimum Start is operational when the existing ST-1703 Wave 3 content is prepared as real WordPress.com drafts, the three affiliate slots are completed with official Rakuten affiliate links, the owner reviews the article/pages, and publication can be performed manually without AWS infrastructure or live Rakuten API automation.
+Minimum Start is operational when the existing ST-1703 Wave 3 content is prepared as real WordPress.com drafts, the three affiliate slots are completed with official Rakuten affiliate links and pass read-only preview validation, the final public-domain binding is confirmed, the owner reviews the article/pages, and publication can be performed manually without AWS infrastructure or live Rakuten API automation.
