@@ -11,7 +11,7 @@ import json
 import os
 import stat
 from pathlib import Path
-from typing import Final
+from typing import Final, TypedDict
 
 
 SCHEMA: Final = "RAOS_MINIMUM_START_READINESS_V1"
@@ -36,6 +36,11 @@ _RAKUTEN_LIVE_FILES: Final = (
     "python/raos/domain/catalog/rakuten_live_smoke.py",
     "python/raos/adapters/rakuten_live_smoke.py",
 )
+
+
+class ComponentStatus(TypedDict):
+    status: str
+    reason_codes: list[str]
 
 
 def _regular_nonsymlink(path: Path) -> bool:
@@ -97,13 +102,17 @@ def _wordpress_credentials(
         return "BLOCKED", ("WORDPRESS_OAUTH_SETUP_REQUIRED",)
     if not all(presence):
         return "BLOCKED", ("WORDPRESS_SECRET_STORE_PARTIAL",)
-    if not all(_private_file(secret_root / name, uid) for name in _WORDPRESS_SECRET_FILES):
+    if not all(
+        _private_file(secret_root / name, uid) for name in _WORDPRESS_SECRET_FILES
+    ):
         return "BLOCKED", ("WORDPRESS_SECRET_STORE_INVALID",)
     return "READY", ()
 
 
 def _rakuten_runtime(root: Path) -> tuple[str, tuple[str, ...]]:
-    if not all(_regular_nonsymlink(root / relative) for relative in _RAKUTEN_LIVE_FILES):
+    if not all(
+        _regular_nonsymlink(root / relative) for relative in _RAKUTEN_LIVE_FILES
+    ):
         return "BLOCKED", ("RAKUTEN_LIVE_BOUNDARY_NOT_IN_MAIN",)
     return "READY", ("RAKUTEN_LIVE_EXECUTION_REQUIRES_SEPARATE_AUTHORITY",)
 
@@ -119,7 +128,7 @@ def evaluate(root: Path, *, uid: int | None = None) -> dict[str, object]:
     )
     rakuten_runtime, rakuten_reasons = _rakuten_runtime(exact_root)
 
-    components = {
+    components: dict[str, ComponentStatus] = {
         "aws": {
             "status": "NOT_REQUIRED",
             "reason_codes": ["MINIMUM_START_NO_AWS"],
