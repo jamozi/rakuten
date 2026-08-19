@@ -7,9 +7,10 @@ import argparse
 import hashlib
 import json
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 
 SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
+GIT_COMMIT = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z", re.ASCII)
 SAFE_TOKEN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._/-]{0,127}\Z", re.ASCII)
 
 
@@ -20,6 +21,12 @@ class AdmissionError(ValueError):
 def _digest(name: str, value: str) -> str:
     if SHA256.fullmatch(value) is None:
         raise AdmissionError(f"{name}:INVALID_SHA256")
+    return value
+
+
+def _commit(value: str) -> str:
+    if GIT_COMMIT.fullmatch(value) is None:
+        raise AdmissionError("commit:INVALID_GIT_OBJECT_ID")
     return value
 
 
@@ -74,7 +81,7 @@ def main() -> int:
                 "rollback_artifact", args.rollback_artifact_sha256
             ),
             migration_version=_token("migration_version", args.migration_version),
-            commit_sha=_digest("commit", args.commit_sha),
+            commit_sha=_commit(args.commit_sha),
         )
     except AdmissionError as error:
         print(str(error))
