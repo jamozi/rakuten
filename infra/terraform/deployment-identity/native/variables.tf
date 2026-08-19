@@ -2,7 +2,10 @@ variable "github_oidc_provider_arn" {
   type = string
 
   validation {
-    condition     = can(regex("^arn:aws:iam::[0-9]{12}:oidc-provider/token\\.actions\\.githubusercontent\\.com$", var.github_oidc_provider_arn))
+    condition = can(regex(
+      "^arn:aws:iam::[0-9]{12}:oidc-provider/token\\.actions\\.githubusercontent\\.com$",
+      var.github_oidc_provider_arn,
+    ))
     error_message = "github_oidc_provider_arn must identify the exact GitHub Actions OIDC provider."
   }
 }
@@ -40,10 +43,11 @@ variable "environments" {
 
 variable "max_session_duration_seconds" {
   type = number
+  default = 3600
 
   validation {
-    condition     = var.max_session_duration_seconds >= 900 && var.max_session_duration_seconds <= 3600
-    error_message = "OIDC deployment sessions must be between 15 and 60 minutes."
+    condition     = var.max_session_duration_seconds == 3600
+    error_message = "Deployment IAM roles use the minimum supported one-hour maximum session duration."
   }
 }
 
