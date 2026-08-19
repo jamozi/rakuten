@@ -113,8 +113,12 @@ def _rakuten_runtime(root: Path) -> tuple[str, tuple[str, ...]]:
     if not all(
         _regular_nonsymlink(root / relative) for relative in _RAKUTEN_LIVE_FILES
     ):
-        return "BLOCKED", ("RAKUTEN_LIVE_BOUNDARY_NOT_IN_MAIN",)
-    return "READY", ("RAKUTEN_LIVE_EXECUTION_REQUIRES_SEPARATE_AUTHORITY",)
+        return "POST_LAUNCH_OPTIONAL", (
+            "RAKUTEN_LIVE_NOT_REQUIRED_FOR_FIRST_DRAFT",
+        )
+    return "AVAILABLE_GATED", (
+        "RAKUTEN_LIVE_EXECUTION_REQUIRES_SEPARATE_AUTHORITY",
+    )
 
 
 def evaluate(root: Path, *, uid: int | None = None) -> dict[str, object]:
