@@ -1,0 +1,109 @@
+name: Staging Deployment Gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_sha256:
+        description: Immutable application artifact SHA-256
+        required: true
+        type: string
+      sbom_sha256:
+        description: SBOM artifact SHA-256
+        required: true
+        type: string
+      vulnerability_scan_sha256:
+        description: Vulnerability result SHA-256
+        required: true
+        type: string
+      provenance_sha256:
+        description: Signed provenance artifact SHA-256
+        required: true
+        type: string
+      rollback_artifact_sha256:
+        description: Previous immutable application artifact SHA-256
+        required: true
+        type: string
+      migration_version:
+        description: Reviewed migration version token
+        required: true
+        type: string
+      commit_sha:
+        description: Exact source commit SHA-256/40-hex normalized as 64-hex evidence token
+        required: true
+        type: string
+
+run-name: staging gate ${{ inputs.artifact_sha256 }}
+
+concurrency:
+  group: raos-staging-deployment
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  staging-gate:
+    if: ${{ vars.RAOS_STAGING_DEPLOYMENT_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: staging
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout exact triggering commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Admit immutable staging inputs before credential issuance
+        env:
+          ARTIFACT_SHA256: ${{ inputs.artifact_sha256 }}
+          SBOM_SHA256: ${{ inputs.sbom_sha256 }}
+          VULNERABILITY_SCAN_SHA256: ${{ inputs.vulnerability_scan_sha256 }}
+          PROVENANCE_SHA256: ${{ inputs.provenance_sha256 }}
+          ROLLBACK_ARTIFACT_SHA256: ${{ inputs.rollback_artifact_sha256 }}
+          MIGRATION_VERSION: ${{ inputs.migration_version }}
+          COMMIT_SHA: ${{ inputs.commit_sha }}
+        run: |
+          set -euo pipefail
+          python3 -I scripts/staging_deployment_admission.py \
+            --artifact-sha256 "$ARTIFACT_SHA256" \
+            --sbom-sha256 "$SBOM_SHA256" \
+            --vulnerability-scan-sha256 "$VULNERABILITY_SCAN_SHA256" \
+            --provenance-sha256 "$PROVENANCE_SHA256" \
+            --rollback-artifact-sha256 "$ROLLBACK_ARTIFACT_SHA256" \
+            --migration-version "$MIGRATION_VERSION" \
+            --commit-sha "$COMMIT_SHA"
+
+      - name: Acquire short-lived staging AWS session
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          role-to-assume: ${{ vars.RAOS_STAGING_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.RAOS_STAGING_AWS_REGION }}
+          allowed-account-ids: ${{ vars.RAOS_STAGING_AWS_ACCOUNT_ID }}
+          role-session-name: raos-staging-${{ github.run_id }}
+          role-duration-seconds: 1800
+          unset-current-credentials: true
+          output-credentials: false
+
+      - name: Preserve external-write phases closed
+        run: |
+          set -euo pipefail
+          printf '%s\n' \
+            'PREDECESSOR_GATE=PASS' \
+            'ARTIFACT_ADMISSION=PASS' \
+            'EXPAND_COMPATIBILITY_GATE=NOT_IMPLEMENTED' \
+            'ROLLBACK_READINESS_GATE=NOT_IMPLEMENTED' \
+            'ARTIFACT_PROMOTION=DISABLED' \
+            'STAGING_DEPLOYMENT=DISABLED' \
+            'MIGRATION_DRY_RUN_GATE=DISABLED' \
+            'MIGRATE=DISABLED' \
+            'STAGING_SMOKE_GATE=DISABLED' \
+            'BROWSER_E2E_GATE=DISABLED' \
+            'CONTRACT_DEFERRED=TRUE' \
+            'EXTERNAL_WRITE_COUNT=0' \
+            'PRODUCTION_ACTION_COUNT=0'
