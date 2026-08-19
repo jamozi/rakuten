@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "workload" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.workload[each.key].name
-          awslogs-region        = data.aws_region.current.name
+          awslogs-region        = var.aws_region
           awslogs-stream-prefix = each.key
         }
       }
@@ -55,8 +55,6 @@ resource "aws_ecs_task_definition" "workload" {
 
   tags = var.tags
 }
-
-data "aws_region" "current" {}
 
 resource "aws_lb" "edge" {
   for_each = local.edge_roles
@@ -80,7 +78,7 @@ resource "aws_lb_target_group" "edge" {
   port        = var.workloads[each.key].container_port
   protocol    = "HTTPS"
   target_type = "ip"
-  vpc_id      = data.aws_subnet.first.vpc_id
+  vpc_id      = var.vpc_id
 
   health_check {
     enabled             = true
@@ -94,10 +92,6 @@ resource "aws_lb_target_group" "edge" {
   }
 
   tags = var.tags
-}
-
-data "aws_subnet" "first" {
-  id = var.private_subnet_ids[0]
 }
 
 resource "aws_lb_listener" "edge" {
@@ -181,7 +175,7 @@ resource "aws_cloudfront_distribution" "edge" {
     origin_id   = each.key
 
     vpc_origin_config {
-      vpc_origin_id           = aws_cloudfront_vpc_origin.edge[each.key].id
+      vpc_origin_id            = aws_cloudfront_vpc_origin.edge[each.key].id
       origin_keepalive_timeout = 5
       origin_read_timeout      = 30
     }
