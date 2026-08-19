@@ -27,10 +27,6 @@ on:
         description: Reviewed migration version token
         required: true
         type: string
-      commit_sha:
-        description: Exact source commit SHA-256/40-hex normalized as 64-hex evidence token
-        required: true
-        type: string
 
 run-name: staging gate ${{ inputs.artifact_sha256 }}
 
@@ -67,7 +63,7 @@ jobs:
           PROVENANCE_SHA256: ${{ inputs.provenance_sha256 }}
           ROLLBACK_ARTIFACT_SHA256: ${{ inputs.rollback_artifact_sha256 }}
           MIGRATION_VERSION: ${{ inputs.migration_version }}
-          COMMIT_SHA: ${{ inputs.commit_sha }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           python3 -I scripts/staging_deployment_admission.py \
