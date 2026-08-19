@@ -1,0 +1,104 @@
+name: Production Deployment Admission
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_decision_sha256:
+        required: true
+        type: string
+      gate_report_sha256:
+        required: true
+        type: string
+      security_approval_sha256:
+        required: true
+        type: string
+      operations_approval_sha256:
+        required: true
+        type: string
+      staging_artifact_sha256:
+        required: true
+        type: string
+      staging_evidence_sha256:
+        required: true
+        type: string
+      rollback_artifact_sha256:
+        required: true
+        type: string
+
+run-name: production admission ${{ inputs.staging_artifact_sha256 }}
+
+concurrency:
+  group: raos-production-deployment
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  production-admission:
+    if: ${{ vars.RAOS_PRODUCTION_DEPLOYMENT_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout exact triggering commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Admit independent Production evidence before credential issuance
+        env:
+          RELEASE_DECISION_SHA256: ${{ inputs.release_decision_sha256 }}
+          GATE_REPORT_SHA256: ${{ inputs.gate_report_sha256 }}
+          SECURITY_APPROVAL_SHA256: ${{ inputs.security_approval_sha256 }}
+          OPERATIONS_APPROVAL_SHA256: ${{ inputs.operations_approval_sha256 }}
+          STAGING_ARTIFACT_SHA256: ${{ inputs.staging_artifact_sha256 }}
+          STAGING_EVIDENCE_SHA256: ${{ inputs.staging_evidence_sha256 }}
+          ROLLBACK_ARTIFACT_SHA256: ${{ inputs.rollback_artifact_sha256 }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 -I scripts/production_deployment_admission.py \
+            --release-decision-sha256 "$RELEASE_DECISION_SHA256" \
+            --gate-report-sha256 "$GATE_REPORT_SHA256" \
+            --security-approval-sha256 "$SECURITY_APPROVAL_SHA256" \
+            --operations-approval-sha256 "$OPERATIONS_APPROVAL_SHA256" \
+            --staging-artifact-sha256 "$STAGING_ARTIFACT_SHA256" \
+            --staging-evidence-sha256 "$STAGING_EVIDENCE_SHA256" \
+            --rollback-artifact-sha256 "$ROLLBACK_ARTIFACT_SHA256" \
+            --commit-sha "$COMMIT_SHA"
+
+      - name: Acquire short-lived Production AWS session
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          role-to-assume: ${{ vars.RAOS_PRODUCTION_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.RAOS_PRODUCTION_AWS_REGION }}
+          allowed-account-ids: ${{ vars.RAOS_PRODUCTION_AWS_ACCOUNT_ID }}
+          role-session-name: raos-production-${{ github.run_id }}
+          role-duration-seconds: 1800
+          unset-current-credentials: true
+          output-credentials: false
+
+      - name: Preserve Production actions disabled
+        run: |
+          set -euo pipefail
+          printf '%s\n' \
+            'RELEASE_DECISION=ADMITTED_REFERENCE_ONLY' \
+            'GATE_REPORT=ADMITTED_REFERENCE_ONLY' \
+            'SECURITY_APPROVAL=ADMITTED_REFERENCE_ONLY' \
+            'OPERATIONS_APPROVAL=ADMITTED_REFERENCE_ONLY' \
+            'ARTIFACT_PROMOTION=DISABLED' \
+            'PRODUCTION_DEPLOYMENT=DISABLED' \
+            'MIGRATION=DISABLED' \
+            'CANARY=DISABLED' \
+            'TRAFFIC_CHANGE=DISABLED' \
+            'ROLLBACK_EXECUTION=DISABLED' \
+            'TST_032=NOT_EXECUTED' \
+            'PRODUCTION_ACTION_COUNT=0' \
+            'TRAFFIC_CHANGE_COUNT=0'
