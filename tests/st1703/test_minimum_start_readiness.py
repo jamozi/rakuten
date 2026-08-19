@@ -38,10 +38,9 @@ def _rakuten(root: Path) -> None:
         path.write_text("runtime\n", encoding="utf-8")
 
 
-def test_complete_metadata_is_ready_and_aws_is_not_required(tmp_path: Path) -> None:
+def test_wordpress_metadata_alone_is_minimum_start_ready(tmp_path: Path) -> None:
     _runtime(tmp_path)
     _secrets(tmp_path)
-    _rakuten(tmp_path)
 
     receipt = MODULE.evaluate(tmp_path)
 
@@ -50,31 +49,36 @@ def test_complete_metadata_is_ready_and_aws_is_not_required(tmp_path: Path) -> N
         "status": "NOT_REQUIRED",
         "reason_codes": ["MINIMUM_START_NO_AWS"],
     }
+    assert receipt["components"]["rakuten_live"] == {
+        "status": "POST_LAUNCH_OPTIONAL",
+        "reason_codes": ["RAKUTEN_LIVE_NOT_REQUIRED_FOR_FIRST_DRAFT"],
+    }
     assert receipt["network_request_count"] == 0
     assert receipt["secret_value_read_count"] == 0
     assert receipt["external_write_count"] == 0
     assert receipt["publication_action_count"] == 0
 
 
-def test_missing_rakuten_live_boundary_blocks_without_affecting_wordpress(
+def test_integrated_rakuten_live_boundary_is_available_but_gated(
     tmp_path: Path,
 ) -> None:
     _runtime(tmp_path)
     _secrets(tmp_path)
+    _rakuten(tmp_path)
 
     receipt = MODULE.evaluate(tmp_path)
 
-    assert receipt["status"] == "BLOCKED"
-    assert receipt["components"]["wordpress_runtime"]["status"] == "READY"
-    assert receipt["components"]["wordpress_credentials"]["status"] == "READY"
-    assert receipt["components"]["rakuten_live"]["reason_codes"] == [
-        "RAKUTEN_LIVE_BOUNDARY_NOT_IN_MAIN"
-    ]
+    assert receipt["status"] == "READY"
+    assert receipt["components"]["rakuten_live"] == {
+        "status": "AVAILABLE_GATED",
+        "reason_codes": [
+            "RAKUTEN_LIVE_EXECUTION_REQUIRES_SEPARATE_AUTHORITY"
+        ],
+    }
 
 
 def test_missing_wordpress_credentials_requests_oauth_setup(tmp_path: Path) -> None:
     _runtime(tmp_path)
-    _rakuten(tmp_path)
 
     receipt = MODULE.evaluate(tmp_path)
 
@@ -84,7 +88,6 @@ def test_missing_wordpress_credentials_requests_oauth_setup(tmp_path: Path) -> N
 
 def test_partial_secret_store_fails_closed(tmp_path: Path) -> None:
     _runtime(tmp_path)
-    _rakuten(tmp_path)
     secret_root = tmp_path / MODULE._WORDPRESS_SECRET_ROOT
     secret_root.mkdir(parents=True, mode=0o700)
     secret_root.chmod(0o700)
@@ -100,7 +103,6 @@ def test_partial_secret_store_fails_closed(tmp_path: Path) -> None:
 
 def test_unsafe_secret_permissions_fail_closed(tmp_path: Path) -> None:
     _runtime(tmp_path)
-    _rakuten(tmp_path)
     secret_root = _secrets(tmp_path)
     (secret_root / MODULE._WORDPRESS_SECRET_FILES[1]).chmod(0o644)
 
@@ -112,7 +114,6 @@ def test_unsafe_secret_permissions_fail_closed(tmp_path: Path) -> None:
 def test_symlinked_runtime_file_is_rejected(tmp_path: Path) -> None:
     _runtime(tmp_path)
     _secrets(tmp_path)
-    _rakuten(tmp_path)
     target = tmp_path / "target"
     target.write_text("runtime\n", encoding="utf-8")
     runtime = tmp_path / MODULE._WORDPRESS_RUNTIME_FILES[0]
@@ -129,7 +130,6 @@ def test_secret_metadata_check_does_not_open_secret_values(
 ) -> None:
     _runtime(tmp_path)
     _secrets(tmp_path)
-    _rakuten(tmp_path)
 
     original_open = Path.open
 
