@@ -1,3 +1,21 @@
+variable "aws_region" {
+  type = string
+
+  validation {
+    condition     = can(regex("^[a-z]{2}-[a-z]+-[0-9]+$", var.aws_region))
+    error_message = "aws_region must be an explicit AWS region identifier."
+  }
+}
+
+variable "vpc_id" {
+  type = string
+
+  validation {
+    condition     = can(regex("^vpc-[0-9a-f]+$", var.vpc_id))
+    error_message = "vpc_id must be explicitly supplied."
+  }
+}
+
 variable "cluster_name" {
   type = string
 
