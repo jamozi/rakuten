@@ -3229,3 +3229,92 @@ original result.
   or external-blocked item remain unchanged. This checkpoint is local
   implementation evidence only and does not claim `VALIDATED` or live/formal
   evidence.
+
+### 2026-08-21 W2 / ST-0505 live-plan predecessor-rebind preflight
+
+- Story and objective: update only the disabled, non-executable ST-0505
+  reference-plan owner chain so it binds ST-0502 semantic implementation
+  commit `3b63ea8b35b25f1c38c53a7fb5e8c0b596ddd0ab`, its existing nine
+  predecessor artifacts, and the live-safe request-policy module and hostile
+  test as an exact ordered eleven-artifact inventory. Main merge
+  `5c1c40c03a69ddfd0bf6c7bd3f4b5ed68a426db9` has the same
+  `b4c48e5f66af6e0df001e85622bf66a20a35ed3a` tree as that Story commit.
+- Authority and dependencies read: repository and canonical implementation
+  rules, canonical integration precedence, ST-0505 and predecessor ST-0502,
+  FR-002 traceability, TST-016, OD-015, the active implementation-first W2
+  boundary, and the current ST-0505 contract, builder, tests, README,
+  generated plan, and manifest. No live/provider action is required for this
+  provenance-only closure.
+- Safe default: OD-015 remains unresolved and blocking; provider mode remains
+  recorded-only and `live_eligible=false`. The added predecessor binding
+  describes only the committed pure policy: 2026-07-01, non-executable, page
+  one, hits 1..30, retry and pagination-follow-up limits zero, review-derived
+  and affiliate-rate request inputs excluded, and provider text untrusted.
+  It does not add a live adapter, transport, request, runner, report, or
+  credential interface.
+- Owned paths: the ST-0505 source contract, owner builder, focused ST-0505
+  tests, README, builder-generated plan and manifest, and this append-only
+  ledger. ST-0502, canonical/upstream/imported/status/workflow/lock files,
+  WordPress, and every other Story remain outside the patch.
+- Consumer graph: no active downstream owner binds an ST-0505 artifact. The
+  ST-1703 owner remains independent and its read-only owner check passed. The
+  separate ST-0502 Product Search handoff retains its historical ST-0505
+  README pin as immutable authority; it is not current-consumer drift and is
+  not changed by this closure.
+- Planned checks: owner generation and `--check`, isolated ST-0505/ST-0502/
+  ST-0503 pytest, hostile omission/reorder/hash/semantic-inflation cases, Ruff
+  lint/format, strict mypy, configured Pyright, Python compile/import,
+  workspace and canonical verification, focused exact-path secret scan,
+  protected-scope and append-only-prefix review, and `git diff --check`.
+- Formal/live boundary: TST-016, credential access, network/provider calls,
+  live auth/schema/rate observation, staging, release, and Production remain
+  `NOT_EXECUTED`; local regeneration cannot establish any of them.
+
+### 2026-08-21 W2 / ST-0505 live-plan predecessor-rebind checkpoint
+
+- Implementation boundary: the containing single ST-0505 commit revises the
+  source contract and manifest from `1.0.0` to `1.1.0`, rebinds predecessor
+  commit `3b63ea8b35b25f1c38c53a7fb5e8c0b596ddd0ab`, preserves the original
+  nine-artifact order, and appends the committed live-safe request-policy
+  module and its hostile test for an exact ordered eleven-artifact inventory.
+  The generated JSON and manifest were updated only through the official
+  ST-0505 owner builder.
+- Closed semantics: the existing provider remains `RECORDED_TEST_ONLY` and
+  `live_eligible=false`. The new nested predecessor binding is exact and
+  closed: policy `RakutenItemSearchLiveRequestV1` / `V1`, provider API
+  version `2026-07-01`, non-executable, requested page one, hits 1..30, retry
+  and pagination-follow-up limits zero, review-derived and affiliate-rate
+  request inputs excluded, and provider text `UNTRUSTED_DATA`. Omission,
+  reordering, duplication, hash drift, unknown semantics, semantic inflation,
+  false review or affiliate-rate emission, and hash-rebound action, network,
+  credential, or source-bound relaxation fail closed.
+- Local environment and checks: Python 3.14.6, pytest 9.1.1, Ruff 0.16.1,
+  mypy 2.3.0, and Pyright 1.1.411. Owner generation and no-write `--check`
+  passed; isolated ST-0505 passed 185 tests, ST-0502 passed 167, and ST-0503
+  passed 59. Ruff lint/format, strict mypy with explicit package bases over
+  the six builder/test/predecessor-policy files, configured whole-project
+  Pyright with 0 errors/0 warnings/0 information, Python compile/import,
+  canonical import verify, workspace drift, and the independent ST-1703
+  owner sentinel passed. The focused maintained-file secret scan covered the
+  exact nine owned paths with zero findings; append-only-prefix, exact
+  protected-scope, and `git diff --check` checks passed.
+- `DEBT-W2-060` status update: `CLOSED`. The exact ST-0505 owner command
+  `/home/minami/rakuten/.venv/bin/python scripts/build_st0505_rakuten_live_smoke_reference_plan.py --check`
+  now returns
+  `ST-0505 Rakuten live-smoke reference plan checked`; the prior
+  `PREDECESSOR_HASH_DRIFT field=predecessor.artifact` is closed without
+  editing ST-0502 or weakening predecessor checks.
+- Historical authority and remaining debt: the immutable ST-0502 handoff
+  keeps its historical ST-0505 README pin and is not current-consumer drift.
+  Existing `DEBT-W2-038` remains `OPEN`, `DEBT-W2-039` remains
+  `EXTERNAL_BLOCKED`, and `DEBT-W2-061` plus all other inherited debt remain
+  unchanged. `/usr/bin/python3 -I scripts/scan_secrets.py --worktree` exited
+  2 with `ERROR code=unsafe-git-metadata source="."`; this linked-worktree
+  limitation is not promoted to a green full-worktree result.
+- Formal/live boundary: OD-015 remains unresolved and blocking. No provider
+  account or credential was accessed, no network/provider request was built
+  or sent, and no runner, report, retry/pagination execution, storage/
+  persistence, staging, release, or Production action was added or run.
+  TST-016 and live auth/schema/rate evidence remain `NOT_EXECUTED`; this is
+  local provenance closure only, not `VALIDATED`, live, formal, staging,
+  release, or Production evidence.

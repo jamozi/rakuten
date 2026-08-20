@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 import sys
@@ -85,11 +86,11 @@ EXPECTED_SOURCES: Final = (
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
     ),
 )
-PREDECESSOR_COMMIT: Final = "74d4dab6cb682706e8db526a796c973b9b6e15fb"
+PREDECESSOR_COMMIT: Final = "3b63ea8b35b25f1c38c53a7fb5e8c0b596ddd0ab"
 EXPECTED_PREDECESSOR_ARTIFACTS: Final = (
     (
         Path("changes/st-0502/README.md"),
-        "e74805b634f4b775bf8765896f9c7f3b591cf2cf884e6f52743d94f765ec92e9",
+        "d242024ecb824c36fe45d63709a34af7138f6101deb5c36782f78f8836c7b731",
     ),
     (
         Path("python/raos/domain/catalog/rakuten_item_search.py"),
@@ -122,6 +123,14 @@ EXPECTED_PREDECESSOR_ARTIFACTS: Final = (
     (
         Path("tests/st0502/test_rakuten_item_search.py"),
         "5d6d8767ea11124dc378cc52f18006fbb4eb9cdba3fbfe4bb7d06526ebddd42a",
+    ),
+    (
+        Path("python/raos/domain/catalog/rakuten_item_search_live_request_v1.py"),
+        "acd53bc3b12925e09859833ed9fc817e52a14872ae946336cc3dd039e990849e",
+    ),
+    (
+        Path("tests/st0502/test_rakuten_item_search_live_request_v1.py"),
+        "710ee36b2cc88d2f14c5a3e726b2fe50d1bd9fbc2bdd9bdb1a05c099bbf4c696",
     ),
 )
 
@@ -161,6 +170,201 @@ ACTION_COUNT_KEYS: Final = (
     "store",
     "persist",
     "external",
+)
+LIVE_POLICY_ALLOWED_IMPORTS: Final = frozenset(
+    {
+        "__future__",
+        "dataclasses",
+        "enum",
+        "hashlib",
+        "json",
+        "raos",
+        "typing",
+    }
+)
+LIVE_POLICY_ALLOWED_IMPORT_BINDINGS: Final[
+    frozenset[tuple[str, str, str, str | None, int]]
+] = frozenset(
+    {
+        ("from", "__future__", "annotations", None, 0),
+        ("from", "dataclasses", "dataclass", None, 0),
+        ("from", "enum", "Enum", None, 0),
+        ("import", "", "hashlib", None, 0),
+        ("import", "", "json", None, 0),
+        ("from", "typing", "NoReturn", None, 0),
+        ("from", "typing", "SupportsIndex", None, 0),
+        (
+            "from",
+            "raos.domain.catalog.rakuten_item_search",
+            "fail_item_search",
+            None,
+            0,
+        ),
+    }
+)
+LIVE_POLICY_ALLOWED_NAME_CALLS: Final = frozenset(
+    {
+        "TypeError",
+        "_bounded_text",
+        "_exact_int",
+        "any",
+        "dataclass",
+        "dict",
+        "fail_item_search",
+        "len",
+        "ord",
+        "sorted",
+        "tuple",
+        "type",
+    }
+)
+LIVE_POLICY_ALLOWED_ATTRIBUTE_CALLS: Final = frozenset(
+    {
+        "dumps",
+        "encode",
+        "hexdigest",
+        "items",
+        "partition",
+        "sha256",
+        "strip",
+        "update",
+    }
+)
+LIVE_POLICY_EXPECTED_TOP_LEVEL_FUNCTIONS: Final = frozenset(
+    {"_bounded_text", "_exact_int"}
+)
+LIVE_POLICY_EXPECTED_CLASS_METHODS: Final[Mapping[str, frozenset[str]]] = {
+    "LiveItemSearchSortV1": frozenset(),
+    "LiveItemSearchElementV1": frozenset(),
+    "ProviderTextTrustV1": frozenset(),
+    "_RedactedValue": frozenset({"__reduce_ex__", "__repr__", "__str__"}),
+    "RakutenItemSearchLiveRequestV1": frozenset(
+        {
+            "__post_init__",
+            "canonical_json",
+            "canonical_parameters",
+            "fingerprint",
+            "pagination_followup_limit",
+            "provider_derived_recommendation_inputs",
+            "provider_text_trust",
+            "retry_limit",
+        }
+    ),
+}
+LIVE_POLICY_EXPECTED_DEFINITION_AST_SHA256: Final[Mapping[str, str]] = {
+    "_bounded_text": (
+        "2bfc582b76f363ce8ff4714ca2d95466fd49a6b6ff262b65b3fb0c738aa66a0e"
+    ),
+    "_exact_int": ("5bc0641d1a1a36488cc7bef4b27e3a84af68f42f69bfe7739b4c697c46b9d104"),
+    "_RedactedValue.__repr__": (
+        "42234706298cad84560a330232331303f10bca79d121b21047b8527c013342fe"
+    ),
+    "_RedactedValue.__str__": (
+        "e83938cb60d4af60cce2aa0e50cd7c8c467446c90dfc03096f6b70dd8f351b5a"
+    ),
+    "_RedactedValue.__reduce_ex__": (
+        "ab186dc206a94c78126c33f97a540e5d05b07661f3b6210ed8995ba6ac6a929f"
+    ),
+    "RakutenItemSearchLiveRequestV1.__post_init__": (
+        "73ad229594810c26c3ec528b4763f3e1e380ecf48e974f446e84a794847858cc"
+    ),
+    "RakutenItemSearchLiveRequestV1.canonical_parameters": (
+        "2280325aa2398f58b2b2aba39f35db9572e4cef2b1672c1ecbf945200f086a8f"
+    ),
+    "RakutenItemSearchLiveRequestV1.canonical_json": (
+        "fdd0e5ed07d41d0cf3ac31058c9bfe7e71b4fec41cb102caf9c05238a124d853"
+    ),
+    "RakutenItemSearchLiveRequestV1.fingerprint": (
+        "8b47f804f96e82d6ce401addeb12d1ad67dd2e7f0fb767777e48dd56815a229d"
+    ),
+    "RakutenItemSearchLiveRequestV1.retry_limit": (
+        "d076b89c1eb6963ffb44acd1368485899aa98b7d50e6aaad5ac8d11ac6559e8c"
+    ),
+    "RakutenItemSearchLiveRequestV1.pagination_followup_limit": (
+        "169ee0a7d161698acdcde71b55c20370a9e59cd2347d92ba0db3693e4991bd74"
+    ),
+    "RakutenItemSearchLiveRequestV1.provider_text_trust": (
+        "6174281582ea9147c68f877d4750c0f78fc65c99b2738bdd8f4850742cc2b71e"
+    ),
+    "RakutenItemSearchLiveRequestV1.provider_derived_recommendation_inputs": (
+        "a7d21ee1bf2ad262ebbf723c3f6a4988ad18108225299830cd0a7325ceb5f590"
+    ),
+}
+LIVE_POLICY_EXPECTED_MODULE_AST_SHA256: Final = (
+    "b24db041cee99db89a1c951973f0a9fe6a5c3ae7e88729fef6ca21d95b04afcb"
+)
+LIVE_POLICY_FORBIDDEN_IMPORTS: Final = frozenset(
+    {
+        "builtins",
+        "boto3",
+        "botocore",
+        "http",
+        "httpx",
+        "importlib",
+        "os",
+        "pathlib",
+        "requests",
+        "socket",
+        "sqlalchemy",
+        "sqlite3",
+        "subprocess",
+        "sys",
+        "urllib",
+    }
+)
+LIVE_POLICY_FORBIDDEN_CALLS: Final = frozenset(
+    {
+        "commit",
+        "execute",
+        "getenv",
+        "open",
+        "persist",
+        "publish",
+        "request",
+        "save",
+        "send",
+        "store",
+        "unlink",
+        "upload",
+        "urlopen",
+        "write",
+    }
+)
+LIVE_POLICY_FORBIDDEN_DYNAMIC_REFERENCES: Final = frozenset(
+    {
+        "__builtins__",
+        "__dict__",
+        "__getattribute__",
+        "__globals__",
+        "__import__",
+        "__mro__",
+        "__subclasses__",
+        "compile",
+        "delattr",
+        "dir",
+        "eval",
+        "exec",
+        "getattr",
+        "globals",
+        "hasattr",
+        "import_module",
+        "locals",
+        "modules",
+        "setattr",
+        "vars",
+    }
+)
+LIVE_POLICY_FORBIDDEN_IDENTIFIER_PARTS: Final = (
+    "affiliate_rate",
+    "credential",
+    "endpoint",
+    "http",
+    "network",
+    "persistence",
+    "review_average",
+    "review_count",
+    "secret",
+    "storage",
 )
 
 
@@ -209,6 +413,15 @@ def _exact(value: object, expected: object, field: str) -> None:
 
 def _sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
+
+
+def _ast_sha256(node: ast.AST) -> str:
+    material = ast.dump(
+        node,
+        annotate_fields=True,
+        include_attributes=False,
+    ).encode("utf-8")
+    return _sha256(material)
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
@@ -390,10 +603,171 @@ def _validate_predecessor_semantics(root: Path) -> None:
     if any(fragment not in application for fragment in required_application):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.application")
 
+    live_policy = _read(
+        root, EXPECTED_PREDECESSOR_ARTIFACTS[9][0], "predecessor.live_policy"
+    ).decode("utf-8", errors="strict")
+    required_live_policy = (
+        '"""Pure non-executable live-safe Item Search request policy for ST-0502."""',
+        "class RakutenItemSearchLiveRequestV1(_RedactedValue):",
+        'self.api_version != "2026-07-01"',
+        "_exact_int(self.hits, minimum=1, maximum=30)",
+        "type(self.page) is not int or self.page != 1",
+        "def retry_limit(self) -> int:\n        return 0",
+        "def pagination_followup_limit(self) -> int:\n        return 0",
+        "return ProviderTextTrustV1.UNTRUSTED_DATA",
+        "if self.has_review_only:\n            fail_item_search()",
+    )
+    if any(fragment not in live_policy for fragment in required_live_policy):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    if any(
+        forbidden in live_policy
+        for forbidden in ("reviewAverage", "reviewCount", "affiliateRate")
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    live_policy_tree: ast.Module | None = None
+    try:
+        live_policy_tree = ast.parse(live_policy)
+    except SyntaxError:
+        pass
+    if live_policy_tree is None:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    if _ast_sha256(live_policy_tree) != LIVE_POLICY_EXPECTED_MODULE_AST_SHA256:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    top_level_definitions = [
+        node
+        for node in live_policy_tree.body
+        if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
+    ]
+    top_level_definition_names = [node.name for node in top_level_definitions]
+    class_definitions = [
+        node for node in live_policy_tree.body if isinstance(node, ast.ClassDef)
+    ]
+    class_definition_names = [node.name for node in class_definitions]
+    if (
+        len(top_level_definition_names) != len(set(top_level_definition_names))
+        or frozenset(top_level_definition_names)
+        != LIVE_POLICY_EXPECTED_TOP_LEVEL_FUNCTIONS
+        or len(class_definition_names) != len(set(class_definition_names))
+        or frozenset(class_definition_names)
+        != frozenset(LIVE_POLICY_EXPECTED_CLASS_METHODS)
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    definition_nodes: dict[str, ast.FunctionDef | ast.AsyncFunctionDef] = {
+        node.name: node for node in top_level_definitions
+    }
+    observed_class_methods: dict[str, frozenset[str]] = {}
+    for class_definition in class_definitions:
+        methods = [
+            node
+            for node in class_definition.body
+            if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
+        ]
+        method_names = [node.name for node in methods]
+        if len(method_names) != len(set(method_names)):
+            _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+        observed_class_methods[class_definition.name] = frozenset(method_names)
+        definition_nodes.update(
+            {f"{class_definition.name}.{method.name}": method for method in methods}
+        )
+    observed_definition_fingerprints = {
+        name: _ast_sha256(definition) for name, definition in definition_nodes.items()
+    }
+    if (
+        observed_class_methods != LIVE_POLICY_EXPECTED_CLASS_METHODS
+        or observed_definition_fingerprints
+        != LIVE_POLICY_EXPECTED_DEFINITION_AST_SHA256
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    imports: set[str] = set()
+    import_bindings: set[tuple[str, str, str, str | None, int]] = set()
+    calls: set[str] = set()
+    name_calls: set[str] = set()
+    attribute_calls: set[str] = set()
+    identifiers: set[str] = set()
+    string_values: set[str] = set()
+    has_indirect_call = False
+    for node in ast.walk(live_policy_tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                imports.add(alias.name.partition(".")[0])
+                import_bindings.add(("import", "", alias.name, alias.asname, 0))
+                identifiers.add(alias.name)
+                if alias.asname:
+                    identifiers.add(alias.asname)
+        elif isinstance(node, ast.ImportFrom):
+            module = node.module or ""
+            imports.add(module.partition(".")[0])
+            for alias in node.names:
+                import_bindings.add(
+                    ("from", module, alias.name, alias.asname, node.level)
+                )
+                identifiers.add(alias.name)
+                if alias.asname:
+                    identifiers.add(alias.asname)
+        elif isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Attribute):
+                calls.add(node.func.attr)
+                attribute_calls.add(node.func.attr)
+            elif isinstance(node.func, ast.Name):
+                calls.add(node.func.id)
+                name_calls.add(node.func.id)
+            else:
+                has_indirect_call = True
+        if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef)):
+            identifiers.add(node.name)
+        elif isinstance(node, ast.Name):
+            identifiers.add(node.id)
+        elif isinstance(node, ast.Attribute):
+            identifiers.add(node.attr)
+        elif isinstance(node, ast.arg):
+            identifiers.add(node.arg)
+        elif isinstance(node, ast.Constant) and type(node.value) is str:
+            string_values.add(node.value)
+    if (
+        not imports.issubset(LIVE_POLICY_ALLOWED_IMPORTS)
+        or import_bindings != LIVE_POLICY_ALLOWED_IMPORT_BINDINGS
+        or not imports.isdisjoint(LIVE_POLICY_FORBIDDEN_IMPORTS)
+        or not name_calls.issubset(LIVE_POLICY_ALLOWED_NAME_CALLS)
+        or not attribute_calls.issubset(LIVE_POLICY_ALLOWED_ATTRIBUTE_CALLS)
+        or not calls.isdisjoint(LIVE_POLICY_FORBIDDEN_CALLS)
+        or not identifiers.isdisjoint(LIVE_POLICY_FORBIDDEN_CALLS)
+        or not identifiers.isdisjoint(LIVE_POLICY_FORBIDDEN_DYNAMIC_REFERENCES)
+        or not string_values.isdisjoint(LIVE_POLICY_FORBIDDEN_DYNAMIC_REFERENCES)
+        or not string_values.isdisjoint(LIVE_POLICY_FORBIDDEN_IMPORTS)
+        or has_indirect_call
+        or any(
+            part in identifier.lower()
+            for identifier in identifiers
+            for part in LIVE_POLICY_FORBIDDEN_IDENTIFIER_PARTS
+        )
+        or any(
+            part in value.lower()
+            for value in string_values
+            for part in LIVE_POLICY_FORBIDDEN_IDENTIFIER_PARTS
+        )
+        or '"has_review_only":' in live_policy
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+
+    live_policy_test = _read(
+        root, EXPECTED_PREDECESSOR_ARTIFACTS[10][0], "predecessor.live_policy_test"
+    ).decode("utf-8", errors="strict")
+    required_live_policy_test = (
+        "assert request.retry_limit == request.pagination_followup_limit == 0",
+        "assert request.provider_text_trust is ProviderTextTrustV1.UNTRUSTED_DATA",
+        'assert b"reviewCount" not in request.canonical_json',
+        'assert b"reviewAverage" not in request.canonical_json',
+        'assert b"affiliateRate" not in request.canonical_json',
+        'assert "has_review_only" not in request.canonical_parameters',
+        "test_module_has_no_network_environment_filesystem_or_action_surface",
+    )
+    if any(fragment not in live_policy_test for fragment in required_live_policy_test):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy_test")
+
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -404,6 +778,20 @@ EXPECTED_DOCUMENT: Final = {
     "production_eligible": False,
     "approval": None,
     "effective_canonical_status": "UNCHANGED",
+}
+EXPECTED_LIVE_REQUEST_POLICY_SEMANTICS: Final[dict[str, object]] = {
+    "policy_name": "RakutenItemSearchLiveRequestV1",
+    "policy_version": "V1",
+    "provider_api_version": "2026-07-01",
+    "non_executable": True,
+    "requested_page": 1,
+    "hits_minimum": 1,
+    "hits_maximum": 30,
+    "retry_limit": 0,
+    "pagination_followup_limit": 0,
+    "review_derived_request_inputs": "EXCLUDED",
+    "affiliate_rate_request_inputs": "EXCLUDED",
+    "provider_text_trust": "UNTRUSTED_DATA",
 }
 EXPECTED_PREDECESSOR_SEMANTICS: Final[dict[str, object]] = {
     "provider": "RAKUTEN_ICHIBA",
@@ -427,6 +815,7 @@ EXPECTED_PREDECESSOR_SEMANTICS: Final[dict[str, object]] = {
     "filesystem": "ABSENT",
     "repository": "ABSENT",
     "external_actions": [],
+    "live_request_policy": EXPECTED_LIVE_REQUEST_POLICY_SEMANTICS,
 }
 EXPECTED_PREDECESSOR: Final = {
     "story_id": "ST-0502",
@@ -616,7 +1005,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,

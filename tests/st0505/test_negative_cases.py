@@ -145,6 +145,60 @@ def test_missing_unknown_and_reordered_keys_are_rejected(
         generator.validate_contract(contract)
 
 
+@pytest.mark.parametrize("mutation", ("omit", "reorder", "duplicate", "hash"))
+def test_predecessor_inventory_omission_reorder_duplicate_or_hash_drift_is_rejected(
+    mutation: str,
+) -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    artifacts = contract["predecessor"]["artifacts"]
+    if mutation == "omit":
+        artifacts.pop()
+    elif mutation == "reorder":
+        artifacts[-2:] = reversed(artifacts[-2:])
+    elif mutation == "duplicate":
+        artifacts.append(deepcopy(artifacts[-1]))
+    else:
+        artifacts[-1]["sha256"] = "0" * 64
+
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+@pytest.mark.parametrize(
+    ("field", "inflated"),
+    (
+        ("non_executable", False),
+        ("requested_page", 2),
+        ("hits_minimum", 0),
+        ("hits_maximum", 31),
+        ("retry_limit", 1),
+        ("pagination_followup_limit", 1),
+        ("review_derived_request_inputs", "AVAILABLE"),
+        ("affiliate_rate_request_inputs", "AVAILABLE"),
+        ("provider_text_trust", "TRUSTED"),
+    ),
+)
+def test_live_request_policy_semantic_inflation_is_rejected(
+    field: str,
+    inflated: object,
+) -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    policy = contract["predecessor"]["semantics"]["live_request_policy"]
+    policy[field] = inflated
+
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+def test_live_request_policy_unknown_semantic_is_rejected() -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    policy = contract["predecessor"]["semantics"]["live_request_policy"]
+    policy["unexpected"] = "AVAILABLE"
+
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
 @pytest.mark.parametrize(
     "payload",
     [
@@ -255,6 +309,12 @@ def test_authority_or_predecessor_byte_drift_is_rejected(
         generator.render_outputs(isolated_repository)
 
 
+def _rebind_expected_predecessor(monkeypatch: pytest.MonkeyPatch) -> None:
+    expected = cast(dict[str, Any], deepcopy(generator.EXPECTED_PREDECESSOR))
+    expected["artifacts"] = generator._expected_predecessor_artifacts()
+    monkeypatch.setattr(generator, "EXPECTED_PREDECESSOR", expected)
+
+
 def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
     isolated_repository: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -273,6 +333,7 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
         for candidate, expected in generator.EXPECTED_PREDECESSOR_ARTIFACTS
     )
     monkeypatch.setattr(generator, "EXPECTED_PREDECESSOR_ARTIFACTS", rebound)
+    _rebind_expected_predecessor(monkeypatch)
     contract = yaml.safe_load(
         (isolated_repository / generator.CONTRACT_PATH).read_bytes()
     )
@@ -280,7 +341,235 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
     (isolated_repository / generator.CONTRACT_PATH).write_text(
         yaml.safe_dump(contract, sort_keys=False), encoding="utf-8"
     )
-    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+    with pytest.raises(
+        generator.RakutenLiveSmokeReferenceError,
+        match=r"PREDECESSOR_SEMANTIC_DRIFT field=predecessor\.domain",
+    ):
+        generator.render_outputs(isolated_repository)
+
+
+@pytest.mark.parametrize(
+    ("needle", "replacement"),
+    (
+        (
+            "_exact_int(self.hits, minimum=1, maximum=30)",
+            "_exact_int(self.hits, minimum=1, maximum=31)",
+        ),
+        (
+            "    def __post_init__(self) -> None:\n"
+            '        if type(self.api_version) is not str or self.api_version != "2026-07-01":',
+            "    def __post_init__(self) -> None:\n"
+            "        return None\n"
+            '        if type(self.api_version) is not str or self.api_version != "2026-07-01":',
+        ),
+        (
+            "        _exact_int(self.hits, minimum=1, maximum=30)",
+            "        if False:\n"
+            "            _exact_int(self.hits, minimum=1, maximum=30)",
+        ),
+        (
+            "        _exact_int(self.hits, minimum=1, maximum=30)",
+            "        try:\n"
+            "            _exact_int(self.hits, minimum=1, maximum=30)\n"
+            "        except Exception:\n"
+            "            pass",
+        ),
+        (
+            "        if self.has_review_only:\n            fail_item_search()",
+            "        if self.has_review_only:\n"
+            "            return None\n"
+            "        if self.has_review_only:\n"
+            "            fail_item_search()",
+        ),
+        (
+            "    def provider_derived_recommendation_inputs(self) -> tuple[()]:\n"
+            "        return ()",
+            "    def provider_derived_recommendation_inputs(self) -> tuple[()]:\n"
+            "        return (None,)",
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action '
+            'surface."""',
+            '    """Validated policy projection only; it has no provider action '
+            'surface."""\n\n'
+            "    def __bool__(self) -> bool:\n"
+            "        return True",
+        ),
+        (
+            "__all__ = [",
+            "RakutenItemSearchLiveRequestV1.__post_init__ = lambda self: None\n\n"
+            "__all__ = [",
+        ),
+        (
+            "    genre_information_flag: bool",
+            "    genre_information_flag: bool\n    diagnostic_marker: bool",
+        ),
+        (
+            "        if self.attribute_flag and "
+            "(self.genre_id is None or self.genre_id == 0):\n"
+            "            fail_item_search()",
+            "        pass",
+        ),
+        (
+            "def _exact_int(value: object, *, minimum: int, maximum: int) -> int:\n"
+            "    if type(value) is not int or not minimum <= value <= maximum:",
+            "def _exact_int(value: object, *, minimum: int, maximum: int) -> int:\n"
+            "    return value\n"
+            "    if type(value) is not int or not minimum <= value <= maximum:",
+        ),
+        (
+            '            "hits": self.hits,',
+            '            "hits": self.hits,\n'
+            '            "has_review_only": self.has_review_only,',
+        ),
+        (
+            '            "hits": self.hits,',
+            '            "hits": self.hits,\n            "min_affiliate_rates": 0,',
+        ),
+        ("import json", "import json\nimport socket"),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def execute(self) -> None:\n"
+            "        return None",
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def dynamic_socket(self) -> object:\n"
+            '        return __import__("socket").socket()',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def dynamic_socket(self) -> object:\n"
+            "        from builtins import __import__ as loader\n\n"
+            '        return loader("socket").socket()',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def dynamic_socket(self) -> object:\n"
+            "        from importlib import import_module as loader\n\n"
+            '        return loader("socket").socket()',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def reflected_socket(self) -> object:\n"
+            "        from sys import modules as registry\n\n"
+            '        return registry["socket"].socket()',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def reflected_socket(self) -> object:\n"
+            "        from json import __builtins__ as loader\n\n"
+            '        return loader["__import__"]("socket").socket()',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def reflected_socket(self) -> object:\n"
+            '        return object.__getattribute__((lambda: None), "__globals__")'
+            '["__builtins__"]["__import__"]("socket").socket()',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def dynamic_marker(self) -> str:\n"
+            '        return "__getattribute__"',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def import_marker(self) -> str:\n"
+            '        return "socket"',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def indirect_call(self) -> object:\n"
+            "        return (lambda: None)()",
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def capability(self) -> object:\n"
+            "        return breakpoint()",
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def capability(self) -> object:\n"
+            "        loader = breakpoint\n"
+            "        return loader()",
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def capability(self) -> object:\n"
+            "        return self.unknown_call()",
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def capability(self) -> object:\n"
+            "        from raos.adapters.subprocess_runner import "
+            "SubprocessCommandRunner as dict\n"
+            "        return dict()",
+        ),
+        ("import hashlib", "import hashlib as safe_hashlib"),
+        (
+            "from dataclasses import dataclass",
+            "from dataclasses import dataclass as safe_dataclass",
+        ),
+        (
+            "from typing import NoReturn, SupportsIndex",
+            "from .typing import NoReturn, SupportsIndex",
+        ),
+        (
+            "from typing import NoReturn, SupportsIndex",
+            "from typing import *",
+        ),
+        ("import json", "import json\nimport collections"),
+        (
+            "    genre_information_flag: bool",
+            "    genre_information_flag: bool\n    credential_reference: str | None",
+        ),
+    ),
+)
+def test_live_policy_semantic_drift_is_rejected_even_when_hash_is_rebound(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    needle: str,
+    replacement: str,
+) -> None:
+    relative = generator.EXPECTED_PREDECESSOR_ARTIFACTS[9][0]
+    path = isolated_repository / relative
+    text = path.read_text(encoding="utf-8")
+    assert text.count(needle) == 1
+    text = text.replace(needle, replacement, 1)
+    path.write_text(text, encoding="utf-8")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    rebound = tuple(
+        (candidate, digest if candidate == relative else expected)
+        for candidate, expected in generator.EXPECTED_PREDECESSOR_ARTIFACTS
+    )
+    monkeypatch.setattr(generator, "EXPECTED_PREDECESSOR_ARTIFACTS", rebound)
+    _rebind_expected_predecessor(monkeypatch)
+    contract = yaml.safe_load(
+        (isolated_repository / generator.CONTRACT_PATH).read_bytes()
+    )
+    contract["predecessor"]["artifacts"][9]["sha256"] = digest
+    (isolated_repository / generator.CONTRACT_PATH).write_text(
+        yaml.safe_dump(contract, sort_keys=False), encoding="utf-8"
+    )
+
+    with pytest.raises(
+        generator.RakutenLiveSmokeReferenceError,
+        match=r"PREDECESSOR_SEMANTIC_DRIFT field=predecessor\.live_policy",
+    ):
         generator.render_outputs(isolated_repository)
 
 
