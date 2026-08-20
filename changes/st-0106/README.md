@@ -185,3 +185,35 @@ separate exact-hash owner approval, a refreshed standalone origin inventory,
 Security/Engineering review, and executable hosted CI. Downstream provenance is
 unchanged until that activation gate is satisfied. Formal TST-001/TST-002,
 status, external writes, staging, release, and Production remain unexecuted.
+
+## Current-main V2 exact activation
+
+The repository owner subsequently approved the exact source candidate commit
+`9ea1a52ded96c8d6532fe180997d2e60f7bb2a45`, the unchanged 59,769-byte V2
+ledger at SHA-256
+`667fee6720dad2e25e71220b2ec2fc8918a845ee30309c581f687ca87f51ca1b`,
+the value-free false-positive classification of the four reconciled Python
+`ast.Call` locations with no string literal, and the exact V1-to-V2 Secrets
+workflow reference switch.
+
+The historical reconciliation remains byte-identical and continues to record
+what was unapproved when that candidate was created. The append-only
+`REVIEWED-SECRET-FINDINGS-ACTIVATION-v2.yaml` binds the later approval,
+candidate, ledger, four sanitized locations, workflow before/after hashes, and
+the refreshed public-origin inventory without storing matched content. The four
+locations are not added to the exact ledger and receive no suppression
+authority; if their objects become reachable again, the unchanged scanner
+fails closed on them as new generic findings.
+
+At activation preflight, a physical standalone clone contained the then-current
+five origin heads and seventeen tags, including the newly created Base-CI
+restoration branch. Denied-network replay of the exact candidate checkout and
+V2 ledger returned clean with only the network-isolation report and no scanner
+finding line. The workflow change replaces the V1 path with the V2 path exactly
+once; reconstructing that path recovers the complete pre-activation workflow
+bytes. Scanner, network wrapper, CI wrapper, ledger, Canonical, status, and
+unrelated workflow semantics remain unchanged.
+
+This local activation is not hosted CI or formal TST-001/TST-002 evidence. It
+does not mutate ST-0107/downstream provenance and grants no external, staging,
+release, publication, or Production authority.

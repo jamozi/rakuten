@@ -38,8 +38,16 @@ V2_RECONCILIATION_RELATIVE_PATH = (
     "changes/st-0106/REVIEWED-SECRET-FINDINGS-RECONCILIATION-v2.yaml"
 )
 V2_RECONCILIATION_PATH = REPOSITORY_ROOT / V2_RECONCILIATION_RELATIVE_PATH
+V2_ACTIVATION_RELATIVE_PATH = (
+    "changes/st-0106/REVIEWED-SECRET-FINDINGS-ACTIVATION-v2.yaml"
+)
+V2_ACTIVATION_PATH = REPOSITORY_ROOT / V2_ACTIVATION_RELATIVE_PATH
 V2_INVENTORY_RELATIVE_PATH = "changes/st-0106/contracts/origin-ref-inventory.v2.txt"
 V2_INVENTORY_PATH = REPOSITORY_ROOT / V2_INVENTORY_RELATIVE_PATH
+ACTIVATION_INVENTORY_RELATIVE_PATH = (
+    "changes/st-0106/contracts/origin-ref-inventory.activation-v2.txt"
+)
+ACTIVATION_INVENTORY_PATH = REPOSITORY_ROOT / ACTIVATION_INVENTORY_RELATIVE_PATH
 EXPECTED_V2_REVIEWED_FINDINGS_BYTES = 59769
 EXPECTED_V2_REVIEWED_FINDINGS_SHA256 = (
     "667fee6720dad2e25e71220b2ec2fc8918a845ee30309c581f687ca87f51ca1b"
@@ -48,12 +56,31 @@ EXPECTED_V2_RECONCILIATION_BYTES = 9109
 EXPECTED_V2_RECONCILIATION_SHA256 = (
     "9cbe56b54eee9218e007d2c5f1b88d2a82bf58e8510ee7ab1c212610db39c3e7"
 )
+EXPECTED_V2_ACTIVATION_BYTES = 8878
+EXPECTED_V2_ACTIVATION_SHA256 = (
+    "b5293cbfeec9b75f861155770ea1b7e8d429bbe5ec61910afbea86429a9bc2bb"
+)
 EXPECTED_V2_INVENTORY_BYTES = 8436
 EXPECTED_V2_INVENTORY_SHA256 = (
     "fa244e651d3bf6aba5c494372b4963bb5420ac68ac998d1cb47a2bd0eed11c0c"
 )
 EXPECTED_V2_INVENTORY_ENTRIES_SHA256 = (
     "92d352e79d8b13d611c0689d2062a747390a38856208160e429f49f8af28b802"
+)
+EXPECTED_ACTIVATION_INVENTORY_BYTES = 2729
+EXPECTED_ACTIVATION_INVENTORY_SHA256 = (
+    "45d79e7741d9f9c540ecd9d87533e6b9d849115a48ddba991326efb2ef48d369"
+)
+EXPECTED_ACTIVATION_INVENTORY_ENTRIES_SHA256 = (
+    "be8ace03c736ca395b1cfbf5d7adc35fea8c654094cf315556f516eb508bb790"
+)
+EXPECTED_PRE_ACTIVATION_WORKFLOW_BYTES = 20122
+EXPECTED_PRE_ACTIVATION_WORKFLOW_SHA256 = (
+    "06872527682949b0fdfbb3a1e116fae205cd758f58fb5c233ab075075df0c647"
+)
+EXPECTED_POST_ACTIVATION_WORKFLOW_BYTES = 20122
+EXPECTED_POST_ACTIVATION_WORKFLOW_SHA256 = (
+    "790af484fea8aaa38f040de7bd51dbb729bd643d255847a23310aaa37462510f"
 )
 EXPECTED_FROZEN_SECURITY_IMPLEMENTATION = {
     "scripts/scan_secrets.py": (
@@ -713,8 +740,6 @@ def test_current_main_v2_candidate_keeps_four_unreviewed_bindings_fail_closed() 
         for entry in v2_history - v1_history
     )
 
-    assert V2_REVIEWED_FINDINGS_RELATIVE_PATH not in WORKFLOW_TEXT
-    assert WORKFLOW_TEXT.count(REVIEWED_FINDINGS_RELATIVE_PATH) == 1
     assert reconciliation["boundaries"]["approved_v1_workflow_binding"] == ("PRESERVED")
     assert reconciliation["boundaries"]["v2_workflow_rebinding"] == "BLOCKED"
     assert reconciliation["pr_49_v3_non_adoption"]["runtime_adoption"] == (
@@ -799,16 +824,300 @@ def test_current_origin_inventory_and_frozen_security_bytes_are_exact() -> None:
         assert hashlib.sha256(content).hexdigest() == expected_sha256
 
 
+def test_current_main_v2_activation_is_exact_hash_bound_and_append_only() -> None:
+    activation_bytes = V2_ACTIVATION_PATH.read_bytes()
+    assert len(activation_bytes) == EXPECTED_V2_ACTIVATION_BYTES
+    assert hashlib.sha256(activation_bytes).hexdigest() == EXPECTED_V2_ACTIVATION_SHA256
+    document = yaml.safe_load(activation_bytes)
+    assert set(document) == {"REVIEWED_SECRET_FINDINGS_ACTIVATION_V2"}
+    activation = document["REVIEWED_SECRET_FINDINGS_ACTIVATION_V2"]
+    assert set(activation) == {
+        "story_id",
+        "slice_id",
+        "status",
+        "canonical_status",
+        "open_decisions",
+        "exact_authority",
+        "source_candidate",
+        "exact_ledger",
+        "approved_sanitized_nonledger_locations",
+        "authorized_activation",
+        "current_ref_replay",
+        "frozen_security_implementation",
+        "boundaries",
+        "self_reference_boundary",
+    }
+    assert activation["story_id"] == "ST-0106"
+    assert activation["slice_id"] == (
+        "ST0106_CURRENT_MAIN_REVIEWED_SECRET_FINDINGS_V2_ACTIVATION"
+    )
+    assert activation["status"] == (
+        "OWNER_APPROVED_FOR_EXACT_V2_CI_REFERENCE_ACTIVATION"
+    )
+    assert activation["canonical_status"] == "UNCHANGED"
+    assert activation["open_decisions"] == []
+
+    authority = activation["exact_authority"]
+    statement = authority["normalized_semantic_statement"].encode("utf-8")
+    assert authority["approved_by"] == "repository_owner:jamozi"
+    assert authority["observed_at"] == "2026-08-20T13:03:40Z"
+    assert authority["message_authored_at"] == "NOT_SUPPLIED"
+    assert authority["provenance"] == ("CONNECTED_CONVERSATION_VISIBLE_USER_MESSAGE")
+    assert len(statement) == authority["normalized_semantic_statement_utf8_bytes"]
+    assert len(statement) == 299
+    assert (
+        hashlib.sha256(statement).hexdigest()
+        == (authority["normalized_semantic_statement_sha256"])
+    )
+    assert authority["normalized_semantic_statement_sha256"] == (
+        "4be3d3b4c3bf3fe203eaed68514b2fa4d2b1e6ca93b562d7cf6de63830590a63"
+    )
+    assert authority["normalization"] == {
+        "display_markdown_quote_markers_removed": True,
+        "display_line_wrapping_joined": True,
+        "other_text_change": False,
+        "semantic_delta": "NONE",
+    }
+
+    source = activation["source_candidate"]
+    assert source == {
+        "branch": "codex/st-0106-reviewed-ledger-v2-current-main",
+        "commit": "9ea1a52ded96c8d6532fe180997d2e60f7bb2a45",
+        "tree": "6e15340bc9c7c28ef815182c9e2a6d7794f4a4e1",
+        "parent_commit": "f733200d5b801a417d2f220e24efb9394f616be4",
+        "reconciliation_uri": f"repo://{V2_RECONCILIATION_RELATIVE_PATH}",
+        "reconciliation_bytes": EXPECTED_V2_RECONCILIATION_BYTES,
+        "reconciliation_sha256": EXPECTED_V2_RECONCILIATION_SHA256,
+        "reconciliation_history_mutation": "NONE",
+    }
+    reconciliation_bytes = repository_path_from_uri(
+        source["reconciliation_uri"]
+    ).read_bytes()
+    assert len(reconciliation_bytes) == source["reconciliation_bytes"]
+    assert (
+        hashlib.sha256(reconciliation_bytes).hexdigest()
+        == (source["reconciliation_sha256"])
+    )
+
+    ledger = activation["exact_ledger"]
+    assert ledger == {
+        "uri": f"repo://{V2_REVIEWED_FINDINGS_RELATIVE_PATH}",
+        "bytes": EXPECTED_V2_REVIEWED_FINDINGS_BYTES,
+        "sha256": EXPECTED_V2_REVIEWED_FINDINGS_SHA256,
+        "ledger_version": 1,
+        "internal_status": "UNAPPROVED_CANDIDATE",
+        "rule_id": "GENERIC_CREDENTIAL",
+        "entry_count": 115,
+        "scope_counts": {"worktree": 31, "git_history": 84},
+        "content_mutation": "NONE",
+        "specific_rule_suppression": "FORBIDDEN",
+    }
+    ledger_bytes = repository_path_from_uri(ledger["uri"]).read_bytes()
+    assert len(ledger_bytes) == ledger["bytes"]
+    assert hashlib.sha256(ledger_bytes).hexdigest() == ledger["sha256"]
+    ledger_entries = json.loads(ledger_bytes)["entries"]
+
+    historical = yaml.safe_load(V2_RECONCILIATION_PATH.read_bytes())[
+        "REVIEWED_SECRET_FINDINGS_RECONCILIATION_V2"
+    ]["pending_exact_owner_review"]
+    approved = activation["approved_sanitized_nonledger_locations"]
+    assert approved["source"] == (
+        f"repo://{V2_RECONCILIATION_RELATIVE_PATH}#pending_exact_owner_review.bindings"
+    )
+    assert approved["binding_count"] == 4
+    assert approved["scope_counts"] == {"worktree": 0, "git_history": 4}
+    assert approved["owner_classification"] == (
+        "REVIEWED_FALSE_POSITIVE_NON_SECRET_PYTHON_CALL_EXPRESSION"
+    )
+    assert approved["no_live_credential_conclusion"] == "CONFIRMED"
+    assert approved["review_method"] == (
+        "HASH_BOUND_LOCATION_AND_DETERMINISTIC_AST_SHAPE_ONLY"
+    )
+    assert approved["matched_values_extracted"] is False
+    assert approved["matched_values_printed"] is False
+    assert approved["matched_values_persisted"] is False
+    assert approved["ledger_membership"] == "ABSENT"
+    assert approved["scanner_suppression_eligibility"] == "NONE"
+    assert approved["reintroduction_behavior"] == ("FAIL_CLOSED_AS_NEW_GENERIC_FINDING")
+    approved_bindings = approved["bindings"]
+    assert len(approved_bindings) == len(historical["bindings"]) == 4
+    historical_metadata_keys = {
+        "scope",
+        "exact_source_identifier",
+        "exact_line_number",
+        "exact_source_bytes",
+        "exact_source_sha256",
+        "exact_line_sha256",
+        "path_hints",
+    }
+    for historical_binding, approved_binding in zip(
+        historical["bindings"], approved_bindings, strict=True
+    ):
+        assert {key: approved_binding[key] for key in historical_metadata_keys} == {
+            key: historical_binding[key] for key in historical_metadata_keys
+        }
+        assert approved_binding["selected_ast_shape"] == "ast.Call"
+        assert approved_binding["selected_string_literal_count"] == 0
+        assert approved_binding["classification"] == (
+            "REVIEWED_FALSE_POSITIVE_NON_SECRET_PYTHON_CALL_EXPRESSION"
+        )
+        assert approved_binding["no_live_credential"] is True
+        assert approved_binding["ledger_membership"] == "ABSENT"
+        assert approved_binding["scanner_suppression_eligibility"] == "NONE"
+    ledger_keys = {reviewed_finding_key(entry) for entry in ledger_entries}
+    approved_keys = {reviewed_finding_key(binding) for binding in approved_bindings}
+    assert approved_keys.isdisjoint(ledger_keys)
+
+    boundaries = activation["boundaries"]
+    assert boundaries["exact_local_workflow_reference_activation"] == "IMPLEMENTED"
+    assert boundaries["exact_v2_ledger_content"] == "UNCHANGED"
+    assert boundaries["four_reviewed_nonledger_location_suppression"] == "NONE"
+    assert boundaries["specific_rule_suppression"] == "FORBIDDEN"
+    for key in (
+        "scanner_or_wrapper_mutation",
+        "reconciliation_history_mutation",
+        "v1_ledger_or_approval_mutation",
+        "canonical_or_status_mutation",
+        "st_0107_or_downstream_provenance_mutation",
+    ):
+        assert boundaries[key] == "NONE"
+    for key in (
+        "hosted_ci",
+        "formal_tst_001",
+        "formal_tst_002",
+        "push_pull_request_or_merge",
+        "external_write",
+        "staging_release_or_production",
+    ):
+        assert boundaries[key] == "NOT_EXECUTED"
+    assert activation["self_reference_boundary"] == {
+        "tracked_record_final_activation_commit_binding": (
+            "IMPOSSIBLE_BY_SELF_REFERENCE_AND_NOT_CLAIMED"
+        ),
+        "activation_commit_and_post_commit_replay": ("REPORTED_OUTSIDE_TRACKED_RECORD"),
+    }
+
+
+def test_activation_origin_inventory_and_replay_boundary_are_exact() -> None:
+    inventory_bytes = ACTIVATION_INVENTORY_PATH.read_bytes()
+    assert len(inventory_bytes) == EXPECTED_ACTIVATION_INVENTORY_BYTES
+    assert hashlib.sha256(inventory_bytes).hexdigest() == (
+        EXPECTED_ACTIVATION_INVENTORY_SHA256
+    )
+    lines = inventory_bytes.decode("utf-8").splitlines()
+    assert lines[:13] == [
+        "format RAOS_ST0106_ORIGIN_REF_INVENTORY_ACTIVATION_V2",
+        (
+            "command git for-each-ref --format='%(refname) %(objectname)' "
+            "refs/remotes/origin refs/tags | awk "
+            "'$1 != \"refs/remotes/origin/HEAD\"' | LC_ALL=C sort"
+        ),
+        "source_remote https://github.com/jamozi/rakuten.git",
+        "observed_at 2026-08-20T13:14:44Z",
+        "remote_name origin",
+        "fetch_heads +refs/heads/*:refs/remotes/origin/*",
+        "fetch_tags +refs/tags/*:refs/tags/*",
+        "fetch_depth 0",
+        "symbolic_origin_head EXCLUDED",
+        "head_ref_count 5",
+        "tag_ref_count 17",
+        (f"entries_sha256 {EXPECTED_ACTIVATION_INVENTORY_ENTRIES_SHA256}"),
+        "entries",
+    ]
+    entries = lines[13:]
+    assert entries == sorted(entries)
+    assert len(entries) == len(set(entries)) == 22
+    assert all(
+        re.fullmatch(r"refs/(?:remotes/origin|tags)/[^ ]+ [0-9a-f]{40}", entry)
+        for entry in entries
+    )
+    assert sum(entry.startswith("refs/remotes/origin/") for entry in entries) == 5
+    assert sum(entry.startswith("refs/tags/") for entry in entries) == 17
+    assert not any(entry.startswith("refs/remotes/origin/HEAD ") for entry in entries)
+    assert not any(entry.startswith("refs/remotes/origin/pr/") for entry in entries)
+    entry_bytes = ("\n".join(entries) + "\n").encode("utf-8")
+    assert hashlib.sha256(entry_bytes).hexdigest() == (
+        EXPECTED_ACTIVATION_INVENTORY_ENTRIES_SHA256
+    )
+
+    activation = yaml.safe_load(V2_ACTIVATION_PATH.read_bytes())[
+        "REVIEWED_SECRET_FINDINGS_ACTIVATION_V2"
+    ]
+    replay = activation["current_ref_replay"]
+    assert replay == {
+        "observed_at": "2026-08-20T13:14:44Z",
+        "reconstruction": (
+            "PHYSICAL_STANDALONE_CURRENT_ORIGIN_HEADS_AND_TAGS_FETCH_DEPTH_0"
+        ),
+        "inventory_uri": f"repo://{ACTIVATION_INVENTORY_RELATIVE_PATH}",
+        "inventory_bytes": EXPECTED_ACTIVATION_INVENTORY_BYTES,
+        "inventory_sha256": EXPECTED_ACTIVATION_INVENTORY_SHA256,
+        "inventory_format": "RAOS_ST0106_ORIGIN_REF_INVENTORY_ACTIVATION_V2",
+        "inventory_entry_count": 22,
+        "inventory_entries_sha256": (EXPECTED_ACTIVATION_INVENTORY_ENTRIES_SHA256),
+        "actual_origin_head_count": 5,
+        "tag_ref_count": 17,
+        "checkout_commit": "9ea1a52ded96c8d6532fe180997d2e60f7bb2a45",
+        "physical_git_directory": True,
+        "shared_object_store": False,
+        "alternates": False,
+        "shallow": False,
+        "network_boundary": "DENIED",
+        "exact_v2_ledger_result": "CLEAN",
+        "exit_code": 0,
+        "network_report_lines": 1,
+        "scanner_finding_lines": 0,
+        "stderr_bytes": 0,
+        "residual_finding_count": 0,
+        "specific_rule_findings": 0,
+        "matched_values_printed": False,
+        "matched_values_persisted": False,
+        "post_activation_commit_replay": (
+            "REQUIRED_AND_REPORTED_OUTSIDE_TRACKED_RECORD"
+        ),
+    }
+    frozen = activation["frozen_security_implementation"]
+    assert len(frozen) == len(EXPECTED_FROZEN_SECURITY_IMPLEMENTATION)
+    for binding in frozen:
+        relative = binding["uri"].removeprefix("repo://")
+        expected_bytes, expected_sha256 = EXPECTED_FROZEN_SECURITY_IMPLEMENTATION[
+            relative
+        ]
+        content = repository_path_from_uri(binding["uri"]).read_bytes()
+        assert binding == {
+            "uri": f"repo://{relative}",
+            "bytes": expected_bytes,
+            "sha256": expected_sha256,
+            "mutation": "FORBIDDEN",
+        }
+        assert len(content) == expected_bytes
+        assert hashlib.sha256(content).hexdigest() == expected_sha256
+
+
 def test_secret_job_runs_the_exact_approved_local_history_command() -> None:
     job = WORKFLOW["jobs"]["secrets"]
     expected_command = (
         'scripts/run_network_denied.sh --home "$HOME" -- '
         "/usr/bin/python3 -I scripts/scan_secrets.py "
         "--worktree --git-history --reviewed-findings "
-        f"{REVIEWED_FINDINGS_RELATIVE_PATH}"
+        f"{V2_REVIEWED_FINDINGS_RELATIVE_PATH}"
     )
     assert WORKFLOW_TEXT.count("--reviewed-findings") == 1
-    assert WORKFLOW_TEXT.count(REVIEWED_FINDINGS_RELATIVE_PATH) == 1
+    assert WORKFLOW_TEXT.count(REVIEWED_FINDINGS_RELATIVE_PATH) == 0
+    assert WORKFLOW_TEXT.count(V2_REVIEWED_FINDINGS_RELATIVE_PATH) == 1
+    workflow_bytes = WORKFLOW_TEXT.encode("utf-8")
+    assert len(workflow_bytes) == EXPECTED_POST_ACTIVATION_WORKFLOW_BYTES
+    assert hashlib.sha256(workflow_bytes).hexdigest() == (
+        EXPECTED_POST_ACTIVATION_WORKFLOW_SHA256
+    )
+    reconstructed = WORKFLOW_TEXT.replace(
+        V2_REVIEWED_FINDINGS_RELATIVE_PATH,
+        REVIEWED_FINDINGS_RELATIVE_PATH,
+    ).encode("utf-8")
+    assert len(reconstructed) == EXPECTED_PRE_ACTIVATION_WORKFLOW_BYTES
+    assert hashlib.sha256(reconstructed).hexdigest() == (
+        EXPECTED_PRE_ACTIVATION_WORKFLOW_SHA256
+    )
     assert len(action_steps(job)) == 1
     assert run_steps(job) == [
         {
@@ -816,19 +1125,26 @@ def test_secret_job_runs_the_exact_approved_local_history_command() -> None:
             "run": expected_command,
         }
     ]
-    approval = yaml.safe_load(REVIEWED_FINDINGS_APPROVAL_PATH.read_bytes())[
-        "REVIEWED_SECRET_FINDINGS_APPROVAL_V1"
+    activation = yaml.safe_load(V2_ACTIVATION_PATH.read_bytes())[
+        "REVIEWED_SECRET_FINDINGS_ACTIVATION_V2"
     ]
-    assert approval["authorized_activation"] == {
+    assert activation["authorized_activation"] == {
         "workflow_uri": "repo://.github/workflows/ci.yml",
         "job_id": "secrets",
         "step_name": "Reproduce secret scan",
-        "exact_argument": f"--reviewed-findings {REVIEWED_FINDINGS_RELATIVE_PATH}",
+        "exact_argument": (f"--reviewed-findings {V2_REVIEWED_FINDINGS_RELATIVE_PATH}"),
         "exact_command": expected_command,
-        "semantic_delta": "APPEND_EXACT_LEDGER_ARGUMENT_ONLY",
-        "unrelated_job_semantics": "MUST_REMAIN_UNCHANGED",
-        "ledger_bytes": "MUST_REMAIN_UNCHANGED",
-        "scanner_bytes": "MUST_REMAIN_UNCHANGED",
+        "semantic_delta": "REPLACE_EXACT_LEDGER_PATH_V1_WITH_V2_ONCE",
+        "pre_activation_workflow_bytes": EXPECTED_PRE_ACTIVATION_WORKFLOW_BYTES,
+        "pre_activation_workflow_sha256": EXPECTED_PRE_ACTIVATION_WORKFLOW_SHA256,
+        "post_activation_workflow_bytes": EXPECTED_POST_ACTIVATION_WORKFLOW_BYTES,
+        "post_activation_workflow_sha256": EXPECTED_POST_ACTIVATION_WORKFLOW_SHA256,
+        "v1_workflow_reference_count": 0,
+        "v2_workflow_reference_count": 1,
+        "unrelated_workflow_bytes": "PRE_ACTIVATION_BYTES_RECONSTRUCTED_EXACTLY",
+        "scanner_semantics": "UNCHANGED",
+        "network_wrapper_semantics": "UNCHANGED",
+        "ci_wrapper_semantics": "UNCHANGED",
     }
 
 
