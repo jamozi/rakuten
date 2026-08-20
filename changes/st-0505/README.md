@@ -3,7 +3,7 @@
 Classification:
 `SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN`
 
-Contract revision `1.2.0` is partial, non-authoritative, local-only,
+Contract revision `1.2.1` is partial, non-authoritative, local-only,
 non-executable, and runtime-ineligible. It binds the committed ST-0502
 recorded-only adapter boundary and preserves OD-015's blocking safe default:
 `Recorded fixtureのみ`. It is a reviewable plan, not a live adapter, runnable
@@ -58,6 +58,11 @@ The fixed commands are:
 /home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh setup
 /home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh check
 ```
+
+The launcher uses the pinned CPython with exact `-I -S` flags for both its
+interpreter validation and the final credential CLI. Python `site` import and
+executable `.pth` startup hooks are therefore disabled; the credential CLI has
+a standard-library-only dependency surface.
 
 `setup` accepts exactly the application ID and access key from `/dev/tty` with
 terminal echo disabled. It never accepts values through argv, environment,

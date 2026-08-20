@@ -122,6 +122,9 @@ def test_bool_float_string_and_nonzero_do_not_bypass_exact_zero_actions(
         ("execution_evidence", "real_store_setup", "EXECUTED"),
         ("check_boundary", "secret_file_open", "ALLOWED"),
         ("check_boundary", "secret_content_read", "ALLOWED"),
+        ("launcher_boundary", "python_flags", ["-I"]),
+        ("launcher_boundary", "site_import", "ENABLED"),
+        ("launcher_boundary", "executable_pth_hooks", "ENABLED"),
         ("provider_contract_context", "future_access_key_transport", "QUERY"),
     ),
 )

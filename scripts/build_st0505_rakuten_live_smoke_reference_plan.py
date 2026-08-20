@@ -33,9 +33,9 @@ DESIGN_HANDOFF_PATH: Final = Path(
     "changes/st-0505/"
     "DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml"
 )
-DESIGN_HANDOFF_BYTES: Final = 12590
+DESIGN_HANDOFF_BYTES: Final = 13180
 DESIGN_HANDOFF_SHA256: Final = (
-    "e07069f6ddc84e8a298b5fd73677298c1b2d6b498f08620decea8e79df9dc38a"
+    "0292b38edcbf8b8639523c618bb19c3e696708d733fcfaac93006670cf361e30"
 )
 GENERATOR_PATH: Final = Path(
     "scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
@@ -796,7 +796,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -880,6 +880,13 @@ EXPECTED_CREDENTIAL_INTAKE: Final[dict[str, object]] = {
             "/home/minami/rakuten/scripts/"
             "rakuten_live_smoke_credentials_python.sh check"
         ),
+    },
+    "launcher_boundary": {
+        "python_flags": ["-I", "-S"],
+        "isolated_mode": "REQUIRED",
+        "site_import": "DISABLED",
+        "executable_pth_hooks": "DISABLED",
+        "dependency_surface": "PYTHON_STANDARD_LIBRARY_ONLY",
     },
     "repository_root": "/home/minami/rakuten",
     "store_root": ".secrets/rakuten-live-smoke",
@@ -1169,7 +1176,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,

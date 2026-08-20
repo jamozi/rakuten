@@ -52,7 +52,7 @@ if [[ $(/usr/bin/stat -c '%u' -- "$venv_root" "$venv_root/bin" "$expected_python
   exit 69
 fi
 
-if ! "$venv_python" -I - "$repository_root" "$expected_base" <<'PY'
+if ! "$venv_python" -I -S - "$repository_root" "$expected_base" <<'PY'
 from pathlib import Path
 import sys
 
@@ -71,6 +71,7 @@ valid = (
     and Path(sys.prefix) == repository_root / ".venv"
     and Path(sys.base_prefix) == expected_base
     and sys.flags.isolated == 1
+    and sys.flags.no_site == 1
     and (repository_root / ".venv/pyvenv.cfg").read_text(encoding="utf-8")
     == expected_cfg
 )
@@ -82,4 +83,4 @@ then
 fi
 
 cd -- "$repository_root"
-exec "$venv_python" -I "$repository_root/scripts/rakuten_live_smoke_credentials.py" "$1"
+exec "$venv_python" -I -S "$repository_root/scripts/rakuten_live_smoke_credentials.py" "$1"

@@ -8,7 +8,10 @@ import json
 import os
 from pathlib import Path
 import resource
+import shlex
 import stat
+import subprocess
+import sys
 import termios
 from typing import Any, Callable
 
@@ -1068,6 +1071,109 @@ def test_cli_rejects_missing_extra_root_and_wrong_case_arguments(
     }
 
 
+def test_launcher_never_executes_site_package_pth_startup_hooks(
+    tmp_path: Path,
+) -> None:
+    repository_root = tmp_path / "repository"
+    scripts = repository_root / "scripts"
+    venv_root = repository_root / ".venv"
+    venv_bin = venv_root / "bin"
+    site_packages = venv_root / "lib/python3.14/site-packages"
+    scripts.mkdir(parents=True)
+    venv_bin.mkdir(parents=True)
+    site_packages.mkdir(parents=True)
+
+    source_launcher = (
+        Path(__file__).resolve().parents[2]
+        / "scripts/rakuten_live_smoke_credentials_python.sh"
+    )
+    launcher_source = source_launcher.read_text(encoding="utf-8")
+    assert launcher_source.count("expected_repository_root=/home/minami/rakuten") == 1
+    assert (
+        launcher_source.count(
+            "expected_base=/home/minami/.local/share/uv/python/"
+            "cpython-3.14.6-linux-x86_64-gnu"
+        )
+        == 1
+    )
+    launcher_source = launcher_source.replace(
+        "expected_repository_root=/home/minami/rakuten",
+        f"expected_repository_root={shlex.quote(os.fspath(repository_root))}",
+    ).replace(
+        "expected_base=/home/minami/.local/share/uv/python/"
+        "cpython-3.14.6-linux-x86_64-gnu",
+        f"expected_base={shlex.quote(sys.base_prefix)}",
+    )
+    launcher = scripts / "rakuten_live_smoke_credentials_python.sh"
+    launcher.write_text(launcher_source, encoding="utf-8")
+    launcher.chmod(0o755)
+
+    expected_python = Path(sys.base_prefix) / "bin/python3.14"
+    assert sys.version_info[:3] == (3, 14, 6)
+    assert expected_python.is_file()
+    (venv_bin / "python").symlink_to(expected_python)
+    (venv_root / "pyvenv.cfg").write_text(
+        f"home = {Path(sys.base_prefix) / 'bin'}\n"
+        "implementation = CPython\n"
+        "uv = 0.12.1\n"
+        "version_info = 3.14.6\n"
+        "include-system-site-packages = false\n"
+        "prompt = raos\n",
+        encoding="utf-8",
+    )
+
+    canary = tmp_path / "executable-pth-hook-ran"
+    (site_packages / "hostile-startup.pth").write_text(
+        "import pathlib; "
+        f"pathlib.Path({str(canary)!r}).write_text('ran', encoding='utf-8')\n",
+        encoding="utf-8",
+    )
+    positive_control = subprocess.run(
+        [os.fspath(venv_bin / "python"), "-I", "-c", "pass"],
+        cwd=tmp_path,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    assert positive_control.returncode == 0
+    assert positive_control.stdout == ""
+    assert positive_control.stderr == ""
+    assert canary.read_text(encoding="utf-8") == "ran"
+    canary.unlink()
+
+    source_credential_script = (
+        Path(__file__).resolve().parents[2]
+        / "scripts/rakuten_live_smoke_credentials.py"
+    ).read_text(encoding="utf-8")
+    assert (
+        source_credential_script.count(
+            'EXPECTED_REPOSITORY_ROOT: Final = Path("/home/minami/rakuten")'
+        )
+        == 1
+    )
+    (scripts / "rakuten_live_smoke_credentials.py").write_text(
+        source_credential_script.replace(
+            'EXPECTED_REPOSITORY_ROOT: Final = Path("/home/minami/rakuten")',
+            f'EXPECTED_REPOSITORY_ROOT: Final = Path("{repository_root}")',
+        ),
+        encoding="utf-8",
+    )
+
+    completed = subprocess.run(
+        [os.fspath(launcher), "check"],
+        cwd=tmp_path,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    assert completed.returncode == 0
+    assert completed.stdout == '{"command":"check","ok":true,"status":"ABSENT"}\n'
+    assert completed.stderr == ""
+    assert not canary.exists()
+
+
 def test_launcher_is_fixed_pinned_sanitized_and_argument_closed() -> None:
     launcher = (
         credentials.EXPECTED_REPOSITORY_ROOT
@@ -1083,8 +1189,13 @@ def test_launcher_is_fixed_pinned_sanitized_and_argument_closed() -> None:
     assert source.startswith("#!/bin/bash -p\n")
     assert "expected_repository_root=/home/minami/rakuten" in source
     assert "version_info = 3.14.6" in source
+    assert "and sys.flags.no_site == 1" in source
     assert "if [[ $# -ne 1 || ( $1 != setup && $1 != check ) ]]" in source
-    assert 'exec "$venv_python" -I ' in source
+    assert 'if ! "$venv_python" -I -S - "$repository_root"' in source
+    assert (
+        'exec "$venv_python" -I -S '
+        '"$repository_root/scripts/rakuten_live_smoke_credentials.py" "$1"' in source
+    )
     assert '"$1"' in source
     for name in (
         "PYTHONPATH",

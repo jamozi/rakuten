@@ -1,7 +1,7 @@
 {
   "document": {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -150,12 +150,22 @@
     "version": "V1",
     "design_handoff": {
       "uri": "repo://changes/st-0505/DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml",
-      "bytes": 12590,
-      "sha256": "e07069f6ddc84e8a298b5fd73677298c1b2d6b498f08620decea8e79df9dc38a"
+      "bytes": 13180,
+      "sha256": "0292b38edcbf8b8639523c618bb19c3e696708d733fcfaac93006670cf361e30"
     },
     "commands": {
       "setup": "/home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh setup",
       "check": "/home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh check"
+    },
+    "launcher_boundary": {
+      "python_flags": [
+        "-I",
+        "-S"
+      ],
+      "isolated_mode": "REQUIRED",
+      "site_import": "DISABLED",
+      "executable_pth_hooks": "DISABLED",
+      "dependency_surface": "PYTHON_STANDARD_LIBRARY_ONLY"
     },
     "repository_root": "/home/minami/rakuten",
     "store_root": ".secrets/rakuten-live-smoke",

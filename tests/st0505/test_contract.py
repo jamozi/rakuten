@@ -31,7 +31,7 @@ def test_plan_has_exact_sections_and_non_executable_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
-    assert plan["document"]["version"] == "1.2.0"
+    assert plan["document"]["version"] == "1.2.1"
     assert plan["document"]["executable"] is False
     assert plan["document"]["interface_only"] is True
     assert plan["document"]["decision"] == "NOT_READY"
@@ -124,6 +124,13 @@ def test_local_credential_intake_is_exact_but_disconnected_from_live_runtime() -
         },
     ]
     assert intake["excluded_aliases"] == ["rakuten_affiliate_id"]
+    assert intake["launcher_boundary"] == {
+        "python_flags": ["-I", "-S"],
+        "isolated_mode": "REQUIRED",
+        "site_import": "DISABLED",
+        "executable_pth_hooks": "DISABLED",
+        "dependency_surface": "PYTHON_STANDARD_LIBRARY_ONLY",
+    }
     assert intake["staging_root"] == ".secrets/.rakuten-live-smoke.preparing"
     assert intake["committing_marker"] == ".secrets/.rakuten-live-smoke.committing"
     assert intake["ready_marker"] == ".secrets/.rakuten-live-smoke.ready"

@@ -55,7 +55,7 @@ def test_manifest_binds_sources_predecessor_generated_plan_and_helper() -> None:
         (generator.REPO_ROOT / generator.MANIFEST_PATH).read_bytes()
     )
     reference = (generator.REPO_ROOT / generator.REFERENCE_PLAN_PATH).read_bytes()
-    assert manifest["document"]["version"] == "1.2.0"
+    assert manifest["document"]["version"] == "1.2.1"
     assert manifest["source_artifact_count"] == len(generator.SOURCE_PATHS)
     assert [row["uri"] for row in manifest["source_artifacts"]] == [
         f"repo://{path.as_posix()}" for path in generator.SOURCE_PATHS
