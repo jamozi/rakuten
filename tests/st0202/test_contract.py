@@ -209,6 +209,10 @@ def test_runtime_requires_authenticated_versioned_integrity_fixture(
     assert runtime["expected_version_line"] == (
         "version 30GB 4.29 1355c7a10 linux amd64"
     )
+    assert (
+        generator.EXPECTED_ST0202_RUNTIME_VERSION_LINE
+        == runtime["expected_version_line"]
+    )
     process_model = runtime["expected_process_model"]
     assert process_model["host_config_init"] is True
     assert process_model["observation"] == "CONTAINER_PROCFS_SPLIT_UID"
