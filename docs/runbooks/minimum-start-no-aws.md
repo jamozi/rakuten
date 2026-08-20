@@ -18,7 +18,7 @@ The owner workstation and WordPress.com are the runtime boundary for the first l
 
 ## 1. Offline readiness
 
-From the exact repository checkout:
+Run the operator command only from the exact launcher-bound repository root `/home/minami/rakuten`, not from a linked worktree, copied checkout, or alternate path:
 
 ```bash
 .venv/bin/python -I scripts/minimum_start_readiness.py
@@ -26,24 +26,34 @@ From the exact repository checkout:
 
 The command performs no network request and does not read credential values. It checks:
 
+- the physical repository root is exactly `/home/minami/rakuten`, is owner-owned, is not a symlink, and the fixed secret path has no symlinked ancestor;
 - the required ST-1703 WordPress.com runtime files are regular non-symlink files;
-- the fixed WordPress.com secret directory/files, when present, have owner-private metadata;
+- `.secrets` and `.secrets/wordpresscom-review-draft`, when present, are owner-owned non-symlink directories with mode `0700`;
+- all three fixed OAuth aliases, when present, are owner-owned regular non-symlink files with mode `0600` and a metadata-known size between 1 and 4097 bytes;
 - AWS is not required;
 - Rakuten live availability is reported separately as optional post-launch capability.
 
 Exit `0` means the local WordPress minimum-start prerequisites represented by this check are ready. Exit `2` means a value-free WordPress/runtime blocker remains.
 
-`READY` is not permission to contact WordPress.com. It is only local configuration evidence.
+The receipt's `next_commands` is deliberately state-aware:
+
+- missing OAuth setup metadata, with a valid local runtime and no malformed secret-store structure: only `make wordpresscom-oauth-setup`;
+- repository-root mismatch (`WORDPRESS_REPOSITORY_ROOT_INVALID`) or invalid runtime/secret-store structure: no next command;
+- `READY`: only the read-only `make wordpresscom-preview-mvp` command.
+
+There is no command-line or environment override for the expected repository root. The test API injects an expected root only for isolated fixtures; non-test `main()` always supplies `/home/minami/rakuten`. The receipt never recommends draft preparation from readiness alone. `READY` is not permission to contact WordPress.com or perform a remote write; it is only local configuration evidence. The counters remain zero for network requests, secret-value reads, external writes, and publication actions.
 
 ## 2. WordPress.com OAuth
 
-When the readiness receipt reports `WORDPRESS_OAUTH_SETUP_REQUIRED`, use only the existing reviewed command:
+When the readiness receipt reports `WORDPRESS_OAUTH_SETUP_REQUIRED` and lists the following exact command, use only the existing reviewed setup path:
 
 ```bash
 make wordpresscom-oauth-setup
 ```
 
 The implementation uses WordPress.com's Authorization Code flow and stores the three fixed aliases under `.secrets/wordpresscom-review-draft` with owner-only permissions. Do not pass a client secret, token, site ID, endpoint, or password on the command line.
+
+OAuth setup is an external/browser operation and remains separately owner-controlled. Do not run it when the receipt has an invalid runtime or secret-store reason and an empty `next_commands` list.
 
 ## 3. Preview WordPress MVP state
 
@@ -53,7 +63,7 @@ Before any remote write:
 make wordpresscom-preview-mvp
 ```
 
-Treat the existing Wave 3 preview/journal result as authoritative for replay, pending intent, ambiguity, or mismatch. Do not delete or edit journal files to force a retry.
+This is the sole command listed by a fully `READY` offline receipt. Treat the existing Wave 3 preview/journal result as authoritative for replay, pending intent, ambiguity, or mismatch. Do not delete or edit journal files to force a retry.
 
 ## 4. Prepare the existing MVP drafts
 
@@ -65,7 +75,7 @@ Review the committed Wave 3 content packet first. It contains the initial suitca
 
 The existing contract keeps ranking independent from affiliate commission, price, points, and inventory.
 
-After confirming no other remote writer is active, use:
+Draft preparation is not authorized by the offline readiness receipt or by preview readiness. After separately reviewing the read-only preview and confirming no other remote writer is active, use the existing gated command only under its own remote-write authority:
 
 ```bash
 make wordpresscom-prepare-mvp-drafts
