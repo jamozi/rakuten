@@ -197,3 +197,72 @@ def test_parallel_lineage_is_not_candidate_ancestor() -> None:
         current_head,
         "PARALLEL_GIT_BINDING_INVALID",
     )
+
+
+def test_root_authority_ref_reads_exact_candidate_base(
+    handoff: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The approved root instruction hash remains tied to the candidate base."""
+
+    original_read = generator._git_regular_file_at_commit
+    observed: list[tuple[str, Path]] = []
+
+    def record_base_read(commit: str, path: Path, code: str) -> bytes:
+        observed.append((commit, path))
+        return original_read(commit, path, code)
+
+    monkeypatch.setattr(generator, "_git_regular_file_at_commit", record_base_read)
+    current_head = generator._git("rev-parse", "HEAD", code="CURRENT_HEAD_INVALID")
+    generator._validate_source_refs(handoff, current_head)
+    root_ref = next(
+        ref
+        for ref in handoff["source_design_refs"]
+        if ref["path"] == generator.ROOT_AUTHORITY_PATH.as_posix()
+    )
+    base_data = original_read(
+        generator.EXPECTED_BASE_COMMIT,
+        generator.ROOT_AUTHORITY_PATH,
+        "AUTHORITY_SOURCE_INVALID",
+    )
+    assert observed == [(generator.EXPECTED_BASE_COMMIT, generator.ROOT_AUTHORITY_PATH)]
+    assert len(base_data) == root_ref["bytes"]
+    assert generator._sha256(base_data) == root_ref["sha256"]
+
+
+def test_unreviewed_live_root_authority_drift_is_rejected(
+    handoff: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Only the historical or exact reconciled root instruction bytes are valid."""
+
+    original_read = generator._read_regular
+
+    def drift_root(path: Path, *, required: bool = True) -> bytes | None:
+        if path == generator.ROOT_AUTHORITY_PATH:
+            return b"unreviewed root authority drift\n"
+        return original_read(path, required=required)
+
+    monkeypatch.setattr(generator, "_read_regular", drift_root)
+    current_head = generator._git("rev-parse", "HEAD", code="CURRENT_HEAD_INVALID")
+    with pytest.raises(generator.BuildRefusal) as captured:
+        generator._validate_source_refs(handoff, current_head)
+    assert captured.value.code == "AUTHORITY_SOURCE_INVALID"
+
+
+def test_live_canonical_authority_drift_remains_rejected(
+    handoff: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Current Canonical sources do not inherit the root-instruction exception."""
+
+    original_read = generator._read_regular
+    canonical_path = Path("docs/canonical/08_codex/AGENTS.md")
+
+    def drift_canonical(path: Path, *, required: bool = True) -> bytes | None:
+        if path == canonical_path:
+            return b"unreviewed canonical drift\n"
+        return original_read(path, required=required)
+
+    monkeypatch.setattr(generator, "_read_regular", drift_canonical)
+    current_head = generator._git("rev-parse", "HEAD", code="CURRENT_HEAD_INVALID")
+    with pytest.raises(generator.BuildRefusal) as captured:
+        generator._validate_source_refs(handoff, current_head)
+    assert captured.value.code == "AUTHORITY_SOURCE_INVALID"

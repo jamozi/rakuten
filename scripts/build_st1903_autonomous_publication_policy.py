@@ -66,6 +66,13 @@ EXPECTED_BASE_COMMIT: Final = "acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d"
 EXPECTED_BASE_TREE: Final = "85620e53419b65e3053e4454c6c1cb522de4459b"
 EXPECTED_PARALLEL_COMMIT: Final = "6c014bee7004a9f1dfa726686b91f436fc9cd2f7"
 EXPECTED_PARALLEL_TREE: Final = "9a1824f948b0bceb416417bfedaf101f1a452ebf"
+RECONCILED_MAIN_COMMIT: Final = "f733200d5b801a417d2f220e24efb9394f616be4"
+RECONCILED_MAIN_TREE: Final = "60bbeb3a0d319b4a348f1cdeed824218289149c7"
+ROOT_AUTHORITY_PATH: Final = Path("AGENTS.md")
+RECONCILED_ROOT_AUTHORITY_BYTES: Final = 43_916
+RECONCILED_ROOT_AUTHORITY_SHA256: Final = (
+    "a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482"
+)
 
 SOURCE_ARTIFACT_PATHS: Final = (
     Path("changes/st-1903/README.md"),
@@ -445,6 +452,48 @@ def _git(*arguments: str, code: str) -> str:
     return result.stdout.strip()
 
 
+def _git_regular_file_at_commit(commit: str, path: Path, code: str) -> bytes:
+    pure = PurePosixPath(path.as_posix())
+    if path.is_absolute() or not pure.parts or ".." in pure.parts:
+        _fail(code)
+    path_text = pure.as_posix()
+    entry = _git("ls-tree", commit, "--", path_text, code=code)
+    metadata, separator, entry_path = entry.partition("\t")
+    fields = metadata.split()
+    if (
+        separator != "\t"
+        or entry_path != path_text
+        or len(fields) != 3
+        or fields[0] not in {"100644", "100755"}
+        or fields[1] != "blob"
+        or len(fields[2]) != 40
+        or any(character not in "0123456789abcdef" for character in fields[2])
+    ):
+        _fail(code)
+    object_id = fields[2]
+    size_text = _git("cat-file", "-s", object_id, code=code)
+    try:
+        expected_size = int(size_text)
+    except ValueError:
+        _fail(code)
+    if expected_size < 0 or expected_size > MAX_SOURCE_BYTES:
+        _fail(code)
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(REPO_ROOT), "cat-file", "blob", object_id],
+            check=False,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            timeout=10,
+        )
+    except OSError, subprocess.SubprocessError:
+        _fail(code)
+    if result.returncode != 0 or len(result.stdout) != expected_size:
+        _fail(code)
+    return result.stdout
+
+
 def _validate_git_binding(commit: str, tree: str, code: str) -> None:
     if not isinstance(commit, str) or not isinstance(tree, str):
         _fail(code)
@@ -744,7 +793,7 @@ def _validate_contract(contract: dict[str, Any]) -> None:
         _fail("CONTRACT_AUTHORITY_INVALID")
 
 
-def _validate_source_refs(handoff: dict[str, Any]) -> None:
+def _validate_source_refs(handoff: dict[str, Any], current_head: str) -> None:
     refs = handoff["source_design_refs"]
     if type(refs) is not list or not refs:
         _fail("AUTHORITY_SOURCE_INVALID")
@@ -755,7 +804,37 @@ def _validate_source_refs(handoff: dict[str, Any]) -> None:
         if type(path_text) is not str or path_text in seen:
             _fail("AUTHORITY_SOURCE_INVALID")
         seen.add(path_text)
-        data = _read_regular(Path(path_text))
+        path = Path(path_text)
+        data: bytes | None
+        if path == ROOT_AUTHORITY_PATH:
+            data = _git_regular_file_at_commit(
+                EXPECTED_BASE_COMMIT, path, "AUTHORITY_SOURCE_INVALID"
+            )
+            live_data = _read_regular(path)
+            assert live_data is not None
+            live_fingerprint = (len(live_data), _sha256(live_data))
+            historical_fingerprint = (ref["bytes"], ref["sha256"])
+            reconciled_fingerprint = (
+                RECONCILED_ROOT_AUTHORITY_BYTES,
+                RECONCILED_ROOT_AUTHORITY_SHA256,
+            )
+            if live_fingerprint == historical_fingerprint:
+                required_ancestor = EXPECTED_BASE_COMMIT
+            elif live_fingerprint == reconciled_fingerprint:
+                _validate_git_binding(
+                    RECONCILED_MAIN_COMMIT,
+                    RECONCILED_MAIN_TREE,
+                    "AUTHORITY_SOURCE_INVALID",
+                )
+                required_ancestor = RECONCILED_MAIN_COMMIT
+            else:
+                _fail("AUTHORITY_SOURCE_INVALID")
+            if not _git_is_ancestor(
+                required_ancestor, current_head, "AUTHORITY_SOURCE_INVALID"
+            ):
+                _fail("AUTHORITY_SOURCE_INVALID")
+        else:
+            data = _read_regular(path)
         assert data is not None
         if len(data) != ref["bytes"] or _sha256(data) != ref["sha256"]:
             _fail("AUTHORITY_SOURCE_INVALID")
@@ -807,8 +886,6 @@ def load_inputs() -> tuple[dict[str, Any], dict[str, Any]]:
     _validate_contract(contract)
     _validate_handoff(handoff, handoff_raw, contract, contract_raw)
     _validate_approval(approval, approval_raw, handoff_raw)
-    _validate_source_refs(handoff)
-    _validate_canonical_records(contract)
     _validate_git_binding(
         EXPECTED_BASE_COMMIT, EXPECTED_BASE_TREE, "BASE_GIT_BINDING_INVALID"
     )
@@ -826,6 +903,8 @@ def load_inputs() -> tuple[dict[str, Any], dict[str, Any]]:
         EXPECTED_PARALLEL_COMMIT, current_head, "PARALLEL_GIT_BINDING_INVALID"
     ):
         _fail("PARALLEL_LINEAGE_MERGED")
+    _validate_source_refs(handoff, current_head)
+    _validate_canonical_records(contract)
     return contract, handoff
 
 

@@ -75,8 +75,8 @@ authority_sources:
   sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
 source_artifacts:
 - path: changes/st-1903/README.md
-  bytes: 6696
-  sha256: d2d99d7305622ba14435c07b700d2ee88757d07fa46f84d6d7604bc29d1d344f
+  bytes: 7351
+  sha256: 38d9ac3ca105fc51c7085268f9573bef92e70ba2f92a12fcc306e2a57c4aeb9d
 - path: changes/st-1903/DESIGN_HANDOFF_V1_ST1903_AUTONOMOUS_PUBLICATION_POLICY_V1.yaml
   bytes: 18189
   sha256: f7bda7008d10ecf5e1b980602495e487f694552a15b31ca60ec45eb0c61d810b
@@ -87,8 +87,8 @@ source_artifacts:
   bytes: 9303
   sha256: dbfe3b7a0b97bae8ae7aa55bd8fdb6647aa05ba8e48f532b57a00e1e0fd0ef54
 - path: scripts/build_st1903_autonomous_publication_policy.py
-  bytes: 38042
-  sha256: d465ae36c1498dd17cd8e591605a7e4561f354fd452850fc1b8093015ca693ef
+  bytes: 41160
+  sha256: 8e7da2e9372a292fc8d06112f64d1df385e7542c3dd7e926f3d45d78ad70c97d
 - path: tests/st1903/conftest.py
   bytes: 1089
   sha256: 94b04600531281e1f3770c34b8209bf2e1e69bc27598bce49f05fcf37fc0b13e
@@ -99,8 +99,8 @@ source_artifacts:
   bytes: 7261
   sha256: dee4b9fd9d2e05c3beef5b4b7472e05fef12c80c3ea52ea5fcff63d2d7695a8e
 - path: tests/st1903/test_negative_cases.py
-  bytes: 8088
-  sha256: c2b9104ec8e0f818dbdd2e37d0e6794fb057676d96873d5aed070f571ef0b718
+  bytes: 11005
+  sha256: 613e6c11a440bb35ee0072b423f39368a9b356c2ad908afada475e9b0804c62d
 - path: tests/st1903/test_approval.py
   bytes: 2933
   sha256: b57a30577348e9cec8808c97c101beec45c7627ee7e54225acdf72ece8f64f13

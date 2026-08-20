@@ -57,6 +57,16 @@ Parallel Wave-3 lineage commit
 `REFERENCE_ONLY_PARALLEL_LINEAGE_NOT_MERGED`. No file from that lineage is an
 input, dependency, or copied source for this package.
 
+The root `AGENTS.md` source reference remains an approval-time snapshot read
+from the exact candidate-base Git object. The generator separately permits the
+live root instructions only when they are either those historical bytes or the
+exact standing-development-authorization revision present at reconciled main
+commit `f733200d5b801a417d2f220e24efb9394f616be4`; that commit must also be an
+ancestor of the checked head. Canonical source references remain live,
+byte-exact checks. This narrow distinction lets repository-local governance
+wording advance without weakening the frozen Canonical, publication, release,
+credential, or production boundaries.
+
 ## Candidate scope
 
 If a future owner-approved canonical revision and release boundary permit it,
