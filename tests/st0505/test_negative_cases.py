@@ -449,6 +449,27 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
             "    def capability(self) -> object:\n"
             "        return self.unknown_call()",
         ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def capability(self) -> object:\n"
+            "        from raos.adapters.subprocess_runner import "
+            "SubprocessCommandRunner as dict\n"
+            "        return dict()",
+        ),
+        ("import hashlib", "import hashlib as safe_hashlib"),
+        (
+            "from dataclasses import dataclass",
+            "from dataclasses import dataclass as safe_dataclass",
+        ),
+        (
+            "from typing import NoReturn, SupportsIndex",
+            "from .typing import NoReturn, SupportsIndex",
+        ),
+        (
+            "from typing import NoReturn, SupportsIndex",
+            "from typing import *",
+        ),
         ("import json", "import json\nimport collections"),
         (
             "    genre_information_flag: bool",

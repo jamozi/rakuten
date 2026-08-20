@@ -182,6 +182,26 @@ LIVE_POLICY_ALLOWED_IMPORTS: Final = frozenset(
         "typing",
     }
 )
+LIVE_POLICY_ALLOWED_IMPORT_BINDINGS: Final[
+    frozenset[tuple[str, str, str, str | None, int]]
+] = frozenset(
+    {
+        ("from", "__future__", "annotations", None, 0),
+        ("from", "dataclasses", "dataclass", None, 0),
+        ("from", "enum", "Enum", None, 0),
+        ("import", "", "hashlib", None, 0),
+        ("import", "", "json", None, 0),
+        ("from", "typing", "NoReturn", None, 0),
+        ("from", "typing", "SupportsIndex", None, 0),
+        (
+            "from",
+            "raos.domain.catalog.rakuten_item_search",
+            "fail_item_search",
+            None,
+            0,
+        ),
+    }
+)
 LIVE_POLICY_ALLOWED_NAME_CALLS: Final = frozenset(
     {
         "TypeError",
@@ -540,6 +560,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
     if live_policy_tree is None:
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
     imports: set[str] = set()
+    import_bindings: set[tuple[str, str, str, str | None, int]] = set()
     calls: set[str] = set()
     name_calls: set[str] = set()
     attribute_calls: set[str] = set()
@@ -548,13 +569,22 @@ def _validate_predecessor_semantics(root: Path) -> None:
     has_indirect_call = False
     for node in ast.walk(live_policy_tree):
         if isinstance(node, ast.Import):
-            imports.update(alias.name.partition(".")[0] for alias in node.names)
-            identifiers.update(alias.name for alias in node.names)
-            identifiers.update(alias.asname for alias in node.names if alias.asname)
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            imports.add(node.module.partition(".")[0])
-            identifiers.update(alias.name for alias in node.names)
-            identifiers.update(alias.asname for alias in node.names if alias.asname)
+            for alias in node.names:
+                imports.add(alias.name.partition(".")[0])
+                import_bindings.add(("import", "", alias.name, alias.asname, 0))
+                identifiers.add(alias.name)
+                if alias.asname:
+                    identifiers.add(alias.asname)
+        elif isinstance(node, ast.ImportFrom):
+            module = node.module or ""
+            imports.add(module.partition(".")[0])
+            for alias in node.names:
+                import_bindings.add(
+                    ("from", module, alias.name, alias.asname, node.level)
+                )
+                identifiers.add(alias.name)
+                if alias.asname:
+                    identifiers.add(alias.asname)
         elif isinstance(node, ast.Call):
             if isinstance(node.func, ast.Attribute):
                 calls.add(node.func.attr)
@@ -576,6 +606,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
             string_values.add(node.value)
     if (
         not imports.issubset(LIVE_POLICY_ALLOWED_IMPORTS)
+        or import_bindings != LIVE_POLICY_ALLOWED_IMPORT_BINDINGS
         or not imports.isdisjoint(LIVE_POLICY_FORBIDDEN_IMPORTS)
         or not name_calls.issubset(LIVE_POLICY_ALLOWED_NAME_CALLS)
         or not attribute_calls.issubset(LIVE_POLICY_ALLOWED_ATTRIBUTE_CALLS)
