@@ -114,6 +114,7 @@ def _wordpress_runtime(root: Path) -> tuple[str, tuple[str, ...]]:
         relative
         for relative in _WORDPRESS_RUNTIME_FILES
         if not _regular_nonsymlink(root / relative)
+        or not _nonsymlink_ancestors((root / relative).parent)
     )
     if missing:
         return "BLOCKED", ("WORDPRESS_RUNTIME_INCOMPLETE",)

@@ -249,6 +249,28 @@ def test_symlinked_runtime_file_is_rejected(tmp_path: Path) -> None:
     assert receipt["next_commands"] == []
 
 
+def test_symlinked_runtime_ancestor_is_rejected(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    _runtime(repository)
+    _secrets(repository)
+    outside_scripts = tmp_path / "outside-scripts"
+    (repository / "scripts").rename(outside_scripts)
+    (repository / "scripts").symlink_to(outside_scripts, target_is_directory=True)
+
+    receipt = MODULE.evaluate(repository, expected_root=repository)
+
+    assert receipt["components"]["wordpress_runtime"] == {
+        "status": "BLOCKED",
+        "reason_codes": ["WORDPRESS_RUNTIME_INCOMPLETE"],
+    }
+    assert receipt["network_request_count"] == 0
+    assert receipt["secret_value_read_count"] == 0
+    assert receipt["external_write_count"] == 0
+    assert receipt["publication_action_count"] == 0
+    assert receipt["next_commands"] == []
+
+
 def test_symlinked_repository_root_is_rejected(tmp_path: Path) -> None:
     real_root = tmp_path / "real-root"
     real_root.mkdir()

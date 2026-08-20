@@ -27,7 +27,8 @@ Run the operator command only from the exact launcher-bound repository root `/ho
 The command performs no network request and does not read credential values. It checks:
 
 - the physical repository root is exactly `/home/minami/rakuten`, is owner-owned, is not a symlink, and the fixed secret path has no symlinked ancestor;
-- the required ST-1703 WordPress.com runtime files are regular non-symlink files;
+- every required ST-1703 WordPress.com runtime path has no symlinked ancestor and
+  ends in a regular non-symlink file;
 - `.secrets` and `.secrets/wordpresscom-review-draft`, when present, are owner-owned non-symlink directories with mode `0700`;
 - all three fixed OAuth aliases, when present, are owner-owned regular non-symlink files with mode `0600` and a metadata-known size between 1 and 4097 bytes;
 - AWS is not required;

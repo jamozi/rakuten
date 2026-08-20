@@ -14,6 +14,7 @@ import sys
 import zipfile
 
 import pytest
+import yaml
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -21,6 +22,15 @@ SCANNER_SOURCE = REPOSITORY_ROOT / "scripts" / "scan_secrets.py"
 PYTHON = sys.executable
 GIT = shutil.which("git")
 LEDGER_RATIONALE = "Sanitized source location reviewed; no live credential is present."
+V2_RECONCILIATION_PATH = (
+    REPOSITORY_ROOT / "changes/st-0106/REVIEWED-SECRET-FINDINGS-RECONCILIATION-v2.yaml"
+)
+V2_ACTIVATION_PATH = (
+    REPOSITORY_ROOT / "changes/st-0106/REVIEWED-SECRET-FINDINGS-ACTIVATION-v2.yaml"
+)
+V2_LEDGER_PATH = (
+    REPOSITORY_ROOT / "changes/st-0106/contracts/reviewed-secret-findings.v2.yaml"
+)
 
 
 def aws_credential() -> str:
@@ -167,6 +177,80 @@ def write_reviewed_ledger(
         encoding="utf-8",
     )
     return path
+
+
+def test_pending_current_main_bindings_cannot_be_used_as_suppressions(
+    tmp_path: Path,
+) -> None:
+    install_scanner(tmp_path)
+    (tmp_path / "README.md").write_text("ordinary content\n", encoding="utf-8")
+    reconciliation = yaml.safe_load(V2_RECONCILIATION_PATH.read_bytes())[
+        "REVIEWED_SECRET_FINDINGS_RECONCILIATION_V2"
+    ]
+    pending = reconciliation["pending_exact_owner_review"]
+    bindings = pending["bindings"]
+
+    assert pending["state"] == "BLOCKING_NON_LEDGER_METADATA"
+    assert pending["scanner_suppression_eligibility"] == "NONE"
+    assert len(bindings) == 4
+    assert all("classification" not in binding for binding in bindings)
+    assert all("rationale" not in binding for binding in bindings)
+
+    activation = yaml.safe_load(V2_ACTIVATION_PATH.read_bytes())[
+        "REVIEWED_SECRET_FINDINGS_ACTIVATION_V2"
+    ]["approved_sanitized_nonledger_locations"]
+    approved_bindings = activation["bindings"]
+    assert activation["binding_count"] == len(approved_bindings) == 4
+    assert activation["owner_classification"] == (
+        "REVIEWED_FALSE_POSITIVE_NON_SECRET_PYTHON_CALL_EXPRESSION"
+    )
+    assert activation["ledger_membership"] == "ABSENT"
+    assert activation["scanner_suppression_eligibility"] == "NONE"
+    assert activation["reintroduction_behavior"] == (
+        "FAIL_CLOSED_AS_NEW_GENERIC_FINDING"
+    )
+    for pending_binding, approved_binding in zip(
+        bindings, approved_bindings, strict=True
+    ):
+        assert all(
+            approved_binding[key] == value
+            for key, value in pending_binding.items()
+            if key != "candidate_state"
+        )
+        assert approved_binding["selected_ast_shape"] == "ast.Call"
+        assert approved_binding["selected_string_literal_count"] == 0
+        assert approved_binding["no_live_credential"] is True
+        assert approved_binding["ledger_membership"] == "ABSENT"
+        assert approved_binding["scanner_suppression_eligibility"] == "NONE"
+
+    reviewed_entries = json.loads(V2_LEDGER_PATH.read_bytes())["entries"]
+    reviewed_keys = {
+        (entry["scope"], entry["exact_source_identifier"], entry["exact_line_number"])
+        for entry in reviewed_entries
+    }
+    approved_keys = {
+        (
+            binding["scope"],
+            binding["exact_source_identifier"],
+            binding["exact_line_number"],
+        )
+        for binding in approved_bindings
+    }
+    assert approved_keys.isdisjoint(reviewed_keys)
+
+    ledger = write_reviewed_ledger(tmp_path, bindings, name="pending-ledger.yaml")
+    result = run_scanner(
+        tmp_path,
+        "--worktree",
+        "--reviewed-findings",
+        ledger.name,
+    )
+
+    assert result.returncode == 2
+    assert result.stdout == ""
+    assert "invalid-reviewed-finding-schema" in result.stderr
+    for binding in bindings:
+        assert binding["exact_source_identifier"] not in combined_output(result)
 
 
 def test_worktree_detects_representative_rules_without_echoing_values(

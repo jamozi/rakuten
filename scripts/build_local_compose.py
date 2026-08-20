@@ -37,7 +37,7 @@ EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
     "9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291"
 )
 EXPECTED_ST0202_CONTRACT_OBJECT_SHA256: Final = (
-    "c549cf0b795780bf724f7d23a590cc783ae830df9354688ca0d895e10c1af810"
+    "4909563f9f9656c3b9ac7f6b13c9c557634e380e05db4ed96a5ea38c1514e327"
 )
 OBJECT_STORAGE_WRAPPER_PATH: Final = Path("scripts/object_storage_service.sh")
 GENERATED_PATHS: Final = (COMPOSE_PATH, MANIFEST_PATH)
@@ -236,6 +236,7 @@ EXPECTED_ST0202_EPHEMERAL_OVERRIDE: Final = {
         "maximum_port": 65535,
     },
 }
+EXPECTED_ST0202_RUNTIME_VERSION_LINE: Final = "version 30GB 4.29 1355c7a10 linux amd64"
 
 FORBIDDEN_SERVICE_KEYS: Final = frozenset(
     {
@@ -335,6 +336,11 @@ def load_and_validate_object_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         dict(ephemeral_override),
         EXPECTED_ST0202_EPHEMERAL_OVERRIDE,
         "object-storage runtime.ephemeral_port_override",
+    )
+    st0201._require_exact(
+        runtime.get("expected_version_line"),
+        EXPECTED_ST0202_RUNTIME_VERSION_LINE,
+        "object-storage runtime.expected_version_line",
     )
     st0201._require_exact(
         _contract_object_digest(contract),

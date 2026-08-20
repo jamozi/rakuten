@@ -1,0 +1,35 @@
+format RAOS_ST0106_ORIGIN_REF_INVENTORY_ACTIVATION_V2
+command git for-each-ref --format='%(refname) %(objectname)' refs/remotes/origin refs/tags | awk '$1 != "refs/remotes/origin/HEAD"' | LC_ALL=C sort
+source_remote https://github.com/jamozi/rakuten.git
+observed_at 2026-08-20T13:14:44Z
+remote_name origin
+fetch_heads +refs/heads/*:refs/remotes/origin/*
+fetch_tags +refs/tags/*:refs/tags/*
+fetch_depth 0
+symbolic_origin_head EXCLUDED
+head_ref_count 5
+tag_ref_count 17
+entries_sha256 be8ace03c736ca395b1cfbf5d7adc35fea8c654094cf315556f516eb508bb790
+entries
+refs/remotes/origin/agent/minimum-start-local-wordpress-runtime 6edd1e39d1777d9475ef3dd624134ce20d34cad7
+refs/remotes/origin/codex/base-ci-restoration-20260820 320ecdd2592c2e5f006392e75c7cd529c0004571
+refs/remotes/origin/codex/japanese-rule-localization-current-main 4ef53e72594f7522c58c6a9d2b42e0f70dcb404e
+refs/remotes/origin/codex/st-1903-autonomous-publication-policy-candidate c904e5182441082c184b0c275a0f14df75995606
+refs/remotes/origin/main f733200d5b801a417d2f220e24efb9394f616be4
+refs/tags/archive/pro-20260811/goal-validation-94529f6 90c95115c7c07d626b8217018fb4ed8a3b645800
+refs/tags/archive/pro-20260811/integration-final-f522f47 ac747119b01e9386ef2cdf1f3b8652908a29ca0b
+refs/tags/archive/pro-20260811/legacy-main-aliases-48a8076 a0cd80f2656316c9ad99c1becd6a99d22665fd71
+refs/tags/archive/pro-20260811/local-goal-final-7b57c9b 45e6db1643447245b04cd10289cafb608068a4c2
+refs/tags/archive/pro-20260811/local-pyright-worker-final-5ffa80d 228502e735b62f98eccccb9de65a915717545df6
+refs/tags/archive/pro-20260811/local-st0705-duplicate-a9be3c2 f6f856227fd13543ee010f16a42154cfe903c4dc
+refs/tags/archive/pro-20260811/materialize-a2da892 24260876f7df38767480e7a910238f21a38e533f
+refs/tags/archive/pro-20260811/materialize-run-ada5558 563aa235f1a4fd34fa21e6745ac8d390edffd75e
+refs/tags/archive/pro-20260811/pro-audit-wip-1ced643 6d5c586c136c2e97b89de02b99c0ee26c7fc8ca5
+refs/tags/archive/pro-20260811/st0703-clean-validation-4bcbf05 7fabcf7de2ad70c8f715d549e05c65ef08e2221e
+refs/tags/archive/pro-20260811/st0703-openai-adapter-58753ef 73740c882562e85138059a9f907be9e3ee699b94
+refs/tags/archive/pro-20260811/st0703-preclean-efafc70 38fd932ce12a549855c1b1bda14464dd3fd94c8b
+refs/tags/archive/pro-20260811/st0703-recorded-v4-2599bef c9409cc2ff10ff872c04031867da4c83fc92cdf5
+refs/tags/archive/pro-20260811/st0703-source-export-98f1eb5 b1099c77e3bc863314286eb9f76eecaf6d13eb83
+refs/tags/archive/pro-20260811/switchable-export-control-ce4cfe9 d080ad437e9b1effb26526accced7b18d4524f9f
+refs/tags/archive/pro-20260811/switchboard-unapproved-b127411 0d556dbb498928c75f9f29bcbc61d55cc0531858
+refs/tags/archive/pro-20260811/temp-noop-1e2811d 7c51d4a9a6b2dfddc7de23d432d621639d6d638f

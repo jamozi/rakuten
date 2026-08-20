@@ -8,7 +8,13 @@ from typing import Any
 import pytest
 from yaml.constructor import ConstructorError
 
-from conftest import RejectContract, RejectProductionContract
+from conftest import (
+    CONTRACT_FILE,
+    REPOSITORY_ROOT,
+    RejectContract,
+    RejectProductionContract,
+)
+from scripts import build_local_compose as generator
 from scripts import build_st0201_postgres_service as strict_yaml
 
 
@@ -183,6 +189,68 @@ def test_bool_as_integer_does_not_bypass_strict_comparison(
         (("docker_host",), "tcp://127.0.0.1:2375"),
         (("expected_platform",), "linux/arm64"),
         (("expected_process_model", "host_config_init"), False),
+        (("expected_process_model", "observation"), "CONTAINER_PROCFS"),
+        (
+            ("expected_process_model", "observer_exclusion"),
+            "EXACT_SELF_PID_ONLY",
+        ),
+        (
+            ("expected_process_model", "churn_check"),
+            "CHILD_PID_STATUS_STARTTIME_AND_EXE_REREAD",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "root",
+                "docker_exec_user",
+            ),
+            "1000:1000",
+        ),
+        (
+            ("expected_process_model", "probes", "root", "server_executable_read"),
+            "ALLOWED",
+        ),
+        (
+            ("expected_process_model", "probes", "root", "success_token"),
+            "RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "same_uid_server",
+                "docker_exec_user",
+            ),
+            "0:0",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "same_uid_server",
+                "server_executable_read",
+            ),
+            "OPTIONAL",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "same_uid_server",
+                "success_token",
+            ),
+            "RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "same_uid_server",
+                "independent_child_resolution",
+            ),
+            "OPTIONAL",
+        ),
         (("expected_process_model", "init", "uids"), [1000, 1000, 1000, 1000]),
         (("expected_process_model", "init", "executable"), "/usr/bin/weed"),
         (("expected_process_model", "server", "direct_child_count"), 2),
@@ -197,6 +265,22 @@ def test_bool_as_integer_does_not_bypass_strict_comparison(
         (
             ("expected_image_labels", "org.opencontainers.image.revision"),
             "main",
+        ),
+        (
+            ("expected_version_line",),
+            "Version 30GB 4.29 1355c7a10 linux amd64",
+        ),
+        (
+            ("expected_version_line",),
+            " version 30GB 4.29 1355c7a10 linux amd64 ",
+        ),
+        (
+            ("expected_version_line",),
+            "version 30GB 4.29 1355c7a10 linux amd64 trailing",
+        ),
+        (
+            ("expected_version_line",),
+            "version 30GB 4.29 1355c7a102 linux amd64",
         ),
         (("disposable_pull_policy",), "missing"),
         (("ephemeral_port_override", "tracked_artifact"), "PRESENT"),
@@ -274,6 +358,32 @@ def test_runtime_contract_cannot_be_weakened_or_promoted(
         target = target[component]
     target[path[-1]] = value
     reject_contract(mutable_contract, r"runtime\.")
+
+
+def test_production_version_guard_survives_a_matching_full_digest_pin(
+    mutable_contract: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    mutable_contract["runtime"]["expected_version_line"] = (
+        "version 30GB 4.29 1355c7a102 linux amd64"
+    )
+    real_load_yaml = strict_yaml.load_yaml
+
+    def load_yaml(path: Path) -> object:
+        if path == CONTRACT_FILE:
+            return mutable_contract
+        return real_load_yaml(path)
+
+    monkeypatch.setattr(strict_yaml, "load_yaml", load_yaml)
+    monkeypatch.setattr(
+        generator,
+        "EXPECTED_ST0202_CONTRACT_OBJECT_SHA256",
+        generator._contract_object_digest(mutable_contract),
+    )
+    with pytest.raises(
+        RuntimeError,
+        match=r"object-storage runtime\.expected_version_line differs",
+    ):
+        generator.load_and_validate_object_contract(REPOSITORY_ROOT)
 
 
 def test_ephemeral_engine_assigned_publication_contract_cannot_be_omitted(

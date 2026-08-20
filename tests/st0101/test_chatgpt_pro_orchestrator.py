@@ -28,6 +28,9 @@ PYTHON_LAUNCHER_PATH = REPOSITORY_ROOT / "scripts/chatgpt_pro_python.sh"
 MAKEFILE_PATH = REPOSITORY_ROOT / "Makefile"
 CONFIG_PATH = REPOSITORY_ROOT / ".codex/config.toml"
 AGENTS_PATH = REPOSITORY_ROOT / "AGENTS.md"
+IMPLEMENTATION_WORKER_PATH = (
+    REPOSITORY_ROOT / ".codex/agents/implementation-worker.toml"
+)
 SKILL_ROOT = Path("/home/minami/.codex/skills/raos-ask-pro")
 
 REQUEST_TEXT = "Compare the existing boundaries using only cited repository evidence."
@@ -3683,17 +3686,41 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     story_readme = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(
         encoding="utf-8"
     )
-    assert "Standing development authorization" in agents
-    assert "Do not invoke `raos-ask-pro` implicitly" in agents
+    assert "## 継続的な開発承認" in agents
+    assert "`raos-ask-pro` を暗黙的に使用してはならない" in agents
     assert "PRO_IMPORTANCE=ordinary" in agents
-    assert "does not stop repository-local work" in agents
-    assert "Separate owner approval" in agents
+    assert "リポジトリ内の作業は停止させない" in agents
+    assert "別個の owner approval" in agents
     assert "publication" in agents
     assert "Production" in agents
-    assert "no fixed count cap" in agents
-    assert "materially duplicate" in agents
-    assert "no material delta" in agents
+    assert "固定上限はない" in agents
+    assert "実質的に重複した response" in agents
+    assert "material delta" in agents
     assert "DESIGN_HANDOFF_V1" in agents
+
+    worker = tomllib.loads(IMPLEMENTATION_WORKER_PATH.read_text(encoding="utf-8"))
+    assert set(worker) == {
+        "name",
+        "description",
+        "model",
+        "model_reasoning_effort",
+        "developer_instructions",
+    }
+    assert worker["name"] == "implementation_worker"
+    assert worker["model"] == "gpt-5.6-sol"
+    assert worker["model_reasoning_effort"] == "ultra"
+    worker_instructions = worker["developer_instructions"]
+    for required in (
+        "あなたは RAOS implementation worker です",
+        "親エージェントは引き続き integration",
+        "STRICT_STORY",
+        "IMPLEMENTATION_FIRST_WAVE",
+        "DESIGN_HANDOFF_V1",
+        "generated output を手作業で編集してはいけません",
+        "`VALIDATED`",
+        "git diff --check",
+    ):
+        assert required in worker_instructions
     for policy in (agents, story_readme):
         assert "diagnostic_fallback_entry_code" in policy
         assert (

@@ -69,10 +69,10 @@ dependencies:
     binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     artifacts:
       changes/st-1205/README.md: 546066c78458889c3fe962cc99cfef01d880b2b3c95d193070af3a9fa45c4018
-      changes/st-1205/contracts/kpi-read-model-reference-plan.v1.yaml: c049f89200a3492ebf677e387906e11d5b2416bc670ae256d30f79d7e835e13c
-      changes/st-1205/generated/kpi-read-model-reference-plan.v1.json: 7b9e9efd21b74a26e7b3009d3c7fad1719bfef53b2ea5de4c6e5ae3820b67011
-      changes/st-1205/manifest.yaml: 1c6c44263230511fdd906d16aee09731e560250f2383d11412a4bac3df6b3b86
-      scripts/build_st1205_kpi_read_model_reference_plan.py: 2e6999c5a2fe73642dfd5c524d777a792ffb614733b0701fc3422ebe6083acf4
+      changes/st-1205/contracts/kpi-read-model-reference-plan.v1.yaml: 83335492346ccf1f830d859eb9930290f3bdd469f642db38eeb874995ddc8de7
+      changes/st-1205/generated/kpi-read-model-reference-plan.v1.json: 7f7f48cc8450eebdff500549f172f304b82b1e1f34cc8d65860d119e8e51b7ee
+      changes/st-1205/manifest.yaml: fbea9a703e50714d3d7bc725688971242a60fe27696d92abd2607fec5ed28470
+      scripts/build_st1205_kpi_read_model_reference_plan.py: 33c2c625b36729a88580d19a1153d7610cea9cb6a0d20328d58373c772b94a1f
       tests/st1205/conftest.py: c40c9db708d3bfc077c0e3dd9f0592bae52b3cf00dd731164f1c01244a81e05d
       tests/st1205/test_contract.py: 1a10d7a37fc899f76c1e6b5581d81d1ae1fb5851a46e0b41f410705c73cab37f
       tests/st1205/test_generation.py: d94bf756afef90f72a0d81537592553e9d3499c2b14ae12bcd1f92d93789b543
@@ -96,10 +96,10 @@ dependencies:
     binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     artifacts:
       changes/st-1303/README.md: d7f1bf588c88ee54c35dd386fca7ee125d66e8e655560f587854d17aa3eb9bef
-      changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml: 5d7d1edbde6087ee547d35b340406b0cbcf364c103c2cd88eae0be40e1fefe24
-      changes/st-1303/generated/attribution-engine-reference-plan.v1.json: da21eb229c6af2ef6b2efb6e01c51f8e6c1b5e9748d267c632d8c244ff277602
-      changes/st-1303/manifest.yaml: 3d731a2cbd24c4f3a66657a8d214f8693acd419b193d4bcf0922aefb985cec49
-      scripts/build_st1303_attribution_engine_reference_plan.py: 8b460bda992d309041f5650eb79db47cd21400e2dccbe0a6759c1893e96c4c0d
+      changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml: fe72c8a25bdceb2cf6c5a2099cdadce5edaa79a0e70b7020e2c8a8802c05ae2d
+      changes/st-1303/generated/attribution-engine-reference-plan.v1.json: 8ad90222a33ff6a39a7f5ef1a619641cb9c8ef7438088144c81b9fe3e04d4ece
+      changes/st-1303/manifest.yaml: 8a3d3ac8483f7c5bcd4b5954ed2a1a475a60004bada8e60cbfc001b25f9cd980
+      scripts/build_st1303_attribution_engine_reference_plan.py: 05b9c747513a89dc7c941c17ca557b0e869c675fdc1737c85ea5f9ee156fb311
       tests/st1303/conftest.py: 1d972ef360dbfda49b235f8c5066b8fa812d55db4cb0114cf34165cc7340e62f
       tests/st1303/test_contract.py: fd91683a8f795092e8935f2468f2be4aaf9e071564eb28ae895afb77374b182a
       tests/st1303/test_generation.py: 3a142d2368dc6aa629949185e7e51293ecd02befc091e86cd352c64227fbbb3c
@@ -150,7 +150,7 @@ source_pins:
     sha256: 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
   st0308_persistence_plan:
     path: changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
-    sha256: 0c15435d23e238b1106b681c41b0aa08c270e7e8e9bdcf1090a1e197bc3db22a
+    sha256: 0423fb07b068d47b8c56c1c5c0703a424ae1ec6d116e68a73ad4ff17d3dbd494
   job_catalog:
     path: contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
     sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
