@@ -119,12 +119,12 @@ dependencies:
   authority_status: DATABASE_SCHEMA_CANDIDATE_ONLY
 - story_id: ST-0306
   artifact: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
-  sha256: 0fa422a6fa8f82e9cf5f1d25f134444211a44ea58e3d62480dee245cadfc2d2a
+  sha256: 6b8710a79729bde75e96e1df3698a0928d4924e4bd10afaff5631fc00f70a0d4
   connection_status: NOT_EXECUTED
   authority_status: PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY
 - story_id: ST-0307
   artifact: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
-  sha256: e458bcb9c7f2f60665cf5715e7b71fae470ef63671d36dd27befc05b492d8bec
+  sha256: bda9ec7371799053c30326b63a3e5dc045e784c8b0cec1e59b083b80d2b8dd23
   connection_status: NOT_EXECUTED
   authority_status: SYNTHETIC_FIXTURE_ONLY
 - story_id: ST-0601

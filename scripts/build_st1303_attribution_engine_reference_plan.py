@@ -48,10 +48,10 @@ HELPER_SHA256: Final = (
     "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
 )
 CONTRACT_SHA256: Final = (
-    "5d7d1edbde6087ee547d35b340406b0cbcf364c103c2cd88eae0be40e1fefe24"
+    "fe72c8a25bdceb2cf6c5a2099cdadce5edaa79a0e70b7020e2c8a8802c05ae2d"
 )
 CONTRACT_MODEL_SHA256: Final = (
-    "0697bac1c843d911b2d61bca445d680cb3e4f3223ffc246b4a7f1e58242867ff"
+    "23655c08705b26915a1ef5fe7647ff8643c4532b64d09ef91f7cab33a6f8c0c7"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"

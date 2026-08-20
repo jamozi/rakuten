@@ -144,7 +144,7 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-    "source_contract_sha256": "83e07087c67e28213237f7ab1f522594e72d2b33cbd3e17d50140f67d4222e28",
+    "source_contract_sha256": "b2c677fc2505c50f7503adbf35f71dd13f7b27a4c3ed94741e46e172edbff876",
     "generated_by": "repo://scripts/build_st0903_publication_snapshot_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0903_publication_snapshot_reference_plan.py",
     "implementation_helper": {
@@ -192,14 +192,14 @@
     {
       "story_id": "ST-0306",
       "artifact": "repo://changes/st-0306/contracts/database-roles-grants.v1.yaml",
-      "sha256": "0fa422a6fa8f82e9cf5f1d25f134444211a44ea58e3d62480dee245cadfc2d2a",
+      "sha256": "6b8710a79729bde75e96e1df3698a0928d4924e4bd10afaff5631fc00f70a0d4",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY"
     },
     {
       "story_id": "ST-0307",
       "artifact": "repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml",
-      "sha256": "e458bcb9c7f2f60665cf5715e7b71fae470ef63671d36dd27befc05b492d8bec",
+      "sha256": "bda9ec7371799053c30326b63a3e5dc045e784c8b0cec1e59b083b80d2b8dd23",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "SYNTHETIC_FIXTURE_ONLY"
     },
