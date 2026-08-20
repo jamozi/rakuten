@@ -3,7 +3,7 @@
 Classification:
 `SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN`
 
-Contract revision `1.2.1` is partial, non-authoritative, local-only,
+Contract revision `1.2.3` is partial, non-authoritative, local-only,
 non-executable, and runtime-ineligible. It binds the committed ST-0502
 recorded-only adapter boundary and preserves OD-015's blocking safe default:
 `Recorded fixtureのみ`. It is a reviewable plan, not a live adapter, runnable
@@ -65,8 +65,21 @@ executable `.pth` startup hooks are therefore disabled; the credential CLI has
 a standard-library-only dependency surface.
 
 `setup` accepts exactly the application ID and access key from `/dev/tty` with
-terminal echo disabled. It never accepts values through argv, environment,
-stdin, chat, or tracked files. It creates only
+terminal echo disabled and requires canonical terminal mode. Values are
+bounded to 4094 bytes so Linux canonical input cannot silently truncate a
+submitted value at its 4095-byte payload boundary. On a control byte or length
+overflow, the mutable prefix is wiped immediately and the current line is
+drained only through its first LF while ECHO/ECHONL remain disabled. The drain
+switches its private descriptor to nonblocking mode and has a fixed 4096-byte
+cap and one-second monotonic deadline; incomplete drain uses atomic `TCSAFLUSH`
+input discard and terminal restoration and returns only the fixed sanitized
+failure. Every outcome after hidden mode was applied—including valid input,
+successful rejection drain, EOF, interrupt-equivalent, prompt/read error, and
+failure—restores the terminal with `TCSAFLUSH`. Each prompt therefore requires
+one fresh canonical line; queued typeahead or a multiline clipboard paste is
+discarded before echo returns and can never become input to a later prompt or
+the invoking shell. It never accepts values through argv, environment, stdin,
+chat, or tracked files. It creates only
 `rakuten_web_service_application_id` and
 `rakuten_web_service_access_key`; the optional `rakuten_affiliate_id` is
 excluded from V1. Existing exact metadata returns `READY` without prompting;

@@ -7,12 +7,16 @@ import ctypes
 import json
 import os
 from pathlib import Path
+import pty
 import resource
+import select
 import shlex
+import signal
 import stat
 import subprocess
 import sys
 import termios
+import time
 from typing import Any, Callable
 
 import pytest
@@ -826,7 +830,7 @@ def test_hidden_tty_uses_direct_device_cloexec_and_restores_terminal(
     descriptor = 91
     opened: list[tuple[object, int]] = []
     writes: list[bytes] = []
-    terminal_states: list[list[Any]] = []
+    terminal_states: list[tuple[int, list[Any]]] = []
     input_bytes = iter((b"v", b"a", b"l", b"u", b"e", b"\n"))
     original = [0, 0, 0, termios_flags(), 0, 0, []]
 
@@ -849,31 +853,208 @@ def test_hidden_tty_uses_direct_device_cloexec_and_restores_terminal(
     monkeypatch.setattr(
         termios,
         "tcsetattr",
-        lambda _fd, _when, state: terminal_states.append(state.copy()),
+        lambda _fd, when, state: terminal_states.append((when, state.copy())),
     )
     value = credentials._read_private_tty("ASCII prompt: ")
     assert value == bytearray(b"value")
     assert opened == [("/dev/tty", credentials._TTY_FLAGS)]
     assert credentials._TTY_FLAGS & getattr(os, "O_CLOEXEC", 0)
     assert credentials._TTY_FLAGS & getattr(os, "O_NOFOLLOW", 0)
-    assert terminal_states[0][3] & termios.ECHO == 0
-    assert terminal_states[0][3] & getattr(termios, "ECHONL", 0) == 0
-    assert terminal_states[-1] == original
+    assert terminal_states[0][1][3] & termios.ECHO == 0
+    assert terminal_states[0][1][3] & getattr(termios, "ECHONL", 0) == 0
+    assert terminal_states[-1] == (termios.TCSAFLUSH, original)
     assert b"".join(writes) == b"ASCII prompt: \n"
 
 
 def termios_flags() -> int:
-    return int(termios.ECHO) | int(getattr(termios, "ECHONL", 0))
+    return int(termios.ECHO) | int(getattr(termios, "ECHONL", 0)) | int(termios.ICANON)
 
 
 def _char_stat() -> os.stat_result:
     return os.stat_result((stat.S_IFCHR | 0o600, 0, 0, 1, os.geteuid(), 0, 0, 0, 0, 0))
 
 
+def _read_until_prompt(descriptor: int, prompt: bytes) -> None:
+    observed = bytearray()
+    deadline = time.monotonic() + 5
+    while prompt not in observed:
+        remaining = deadline - time.monotonic()
+        assert remaining > 0
+        readable, _, _ = select.select([descriptor], [], [], remaining)
+        assert readable
+        chunk = os.read(descriptor, 4096)
+        assert chunk
+        observed.extend(chunk)
+
+
+def _real_pty_rejection_report(line: bytes, *, maximum: int | None = None) -> bytes:
+    report_read, report_write = os.pipe()
+    child_pid, master_fd = pty.fork()
+    if child_pid == 0:
+        os.close(report_read)
+        if maximum is not None:
+            setattr(credentials, "MAX_SECRET_BYTES", maximum)
+        report = b"UNEXPECTED"
+        try:
+            credentials._read_private_tty("ASCII prompt: ")
+        except credentials.CredentialIntakeFailure as exc:
+            if exc.code is credentials.CredentialIntakeFailureCode.INPUT_UNAVAILABLE:
+                tty_fd = os.open(
+                    "/dev/tty",
+                    os.O_RDONLY
+                    | os.O_NONBLOCK
+                    | getattr(os, "O_NOFOLLOW", 0)
+                    | getattr(os, "O_CLOEXEC", 0),
+                )
+                try:
+                    try:
+                        remaining = os.read(tty_fd, 8192)
+                    except BlockingIOError:
+                        remaining = b""
+                    echo_restored = bool(termios.tcgetattr(tty_fd)[3] & termios.ECHO)
+                    report = (b"LEFTOVER" if remaining else b"DRAINED") + (
+                        b":ECHO_ON" if echo_restored else b":ECHO_OFF"
+                    )
+                finally:
+                    os.close(tty_fd)
+        except BaseException:
+            report = b"UNEXPECTED"
+        else:
+            report = b"ACCEPTED"
+        try:
+            os.write(report_write, report)
+        finally:
+            os.close(report_write)
+        os._exit(0)
+
+    os.close(report_write)
+    reaped = False
+    try:
+        _read_until_prompt(master_fd, b"ASCII prompt: ")
+        offset = 0
+        while offset < len(line):
+            written = os.write(master_fd, line[offset:])
+            assert written > 0
+            offset += written
+        readable, _, _ = select.select([report_read], [], [], 5)
+        assert readable
+        report = os.read(report_read, 64)
+        waited_pid, status = os.waitpid(child_pid, 0)
+        reaped = True
+        assert waited_pid == child_pid
+        assert os.waitstatus_to_exitcode(status) == 0
+        return report
+    finally:
+        os.close(report_read)
+        os.close(master_fd)
+        if not reaped:
+            try:
+                os.kill(child_pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            try:
+                os.waitpid(child_pid, 0)
+            except ChildProcessError:
+                pass
+
+
+def _real_pty_success_typeahead_report(line: bytes) -> bytes:
+    report_read, report_write = os.pipe()
+    child_pid, master_fd = pty.fork()
+    if child_pid == 0:
+        os.close(report_read)
+        report = b"UNEXPECTED"
+        value: bytearray | None = None
+        try:
+            value = credentials._read_private_tty("ASCII prompt: ")
+            if value == bytearray(b"accepted"):
+                tty_fd = os.open(
+                    "/dev/tty",
+                    os.O_RDONLY
+                    | os.O_NONBLOCK
+                    | getattr(os, "O_NOFOLLOW", 0)
+                    | getattr(os, "O_CLOEXEC", 0),
+                )
+                try:
+                    try:
+                        remaining = os.read(tty_fd, 8192)
+                    except BlockingIOError:
+                        remaining = b""
+                    echo_restored = bool(termios.tcgetattr(tty_fd)[3] & termios.ECHO)
+                    report = (b"LEFTOVER" if remaining else b"DRAINED") + (
+                        b":ECHO_ON" if echo_restored else b":ECHO_OFF"
+                    )
+                finally:
+                    os.close(tty_fd)
+        except BaseException:
+            report = b"UNEXPECTED"
+        finally:
+            credentials._wipe(value)
+        try:
+            os.write(report_write, report)
+        finally:
+            os.close(report_write)
+        os._exit(0)
+
+    os.close(report_write)
+    reaped = False
+    try:
+        _read_until_prompt(master_fd, b"ASCII prompt: ")
+        offset = 0
+        while offset < len(line):
+            written = os.write(master_fd, line[offset:])
+            assert written > 0
+            offset += written
+        readable, _, _ = select.select([report_read], [], [], 5)
+        assert readable
+        report = os.read(report_read, 64)
+        waited_pid, status = os.waitpid(child_pid, 0)
+        reaped = True
+        assert waited_pid == child_pid
+        assert os.waitstatus_to_exitcode(status) == 0
+        return report
+    finally:
+        os.close(report_read)
+        os.close(master_fd)
+        if not reaped:
+            try:
+                os.kill(child_pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            try:
+                os.waitpid(child_pid, 0)
+            except ChildProcessError:
+                pass
+
+
+@pytest.mark.parametrize(
+    ("line", "maximum"),
+    (
+        (b"prefix\x01shell-suffix\n", None),
+        (b"prefix\x01shell-suffix\nqueued-command\n", None),
+        (b"123456789shell-suffix\n", 8),
+        (b"x" * 4095 + b"shell-suffix\n", None),
+    ),
+)
+def test_hidden_tty_discards_rejected_canonical_line_before_restoring_echo(
+    line: bytes, maximum: int | None
+) -> None:
+    assert _real_pty_rejection_report(line, maximum=maximum) == b"DRAINED:ECHO_ON"
+
+
+def test_hidden_tty_discards_queued_line_after_valid_input_before_echo_restore() -> (
+    None
+):
+    assert (
+        _real_pty_success_typeahead_report(b"accepted\nqueued-command\n")
+        == b"DRAINED:ECHO_ON"
+    )
+
+
 def test_hidden_tty_restores_terminal_on_input_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    restored: list[list[Any]] = []
+    restored: list[tuple[int, list[Any]]] = []
     original = [0, 0, 0, termios_flags(), 0, 0, []]
     monkeypatch.setattr(os, "open", lambda _path, _flags: 92)
     monkeypatch.setattr(os, "set_inheritable", lambda _fd, _value: None)
@@ -886,11 +1067,234 @@ def test_hidden_tty_restores_terminal_on_input_failure(
     monkeypatch.setattr(
         termios,
         "tcsetattr",
-        lambda _fd, _when, state: restored.append(state.copy()),
+        lambda _fd, when, state: restored.append((when, state.copy())),
     )
     with pytest.raises(credentials.CredentialIntakeFailure):
         credentials._read_private_tty("ASCII prompt: ")
-    assert restored[-1] == original
+    assert restored[-1] == (termios.TCSAFLUSH, original)
+
+
+@pytest.mark.parametrize("termination", ("eof", "read_error", "interrupt", "prompt"))
+def test_hidden_tty_pre_rejection_failure_flushes_typeahead_with_terminal_restore(
+    termination: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    descriptor = 98
+    original: list[Any] = [0, 0, 0, termios_flags(), 0, 0, []]
+    terminal_states: list[tuple[int, list[Any]]] = []
+
+    def read_input(_fd: int, _size: int) -> bytes:
+        if termination == "eof":
+            return b""
+        if termination == "interrupt":
+            raise KeyboardInterrupt
+        raise OSError("read failed")
+
+    def write_output(_fd: int, value: bytes) -> int:
+        if termination == "prompt":
+            return 0
+        return len(value)
+
+    monkeypatch.setattr(os, "open", lambda _path, _flags: descriptor)
+    monkeypatch.setattr(os, "set_inheritable", lambda _fd, _value: None)
+    monkeypatch.setattr(os, "get_inheritable", lambda _fd: False)
+    monkeypatch.setattr(os, "fstat", lambda _fd: _char_stat())
+    monkeypatch.setattr(os, "read", read_input)
+    monkeypatch.setattr(os, "write", write_output)
+    monkeypatch.setattr(os, "close", lambda _fd: None)
+    monkeypatch.setattr(termios, "tcgetattr", lambda _fd: original.copy())
+    monkeypatch.setattr(
+        termios,
+        "tcsetattr",
+        lambda _fd, when, state: terminal_states.append((when, state.copy())),
+    )
+
+    with pytest.raises(credentials.CredentialIntakeFailure) as caught:
+        credentials._read_private_tty("ASCII prompt: ")
+    assert (
+        caught.value.code is credentials.CredentialIntakeFailureCode.INPUT_UNAVAILABLE
+    )
+    assert terminal_states[0][0] == termios.TCSANOW
+    assert terminal_states[0][1][3] & termios.ECHO == 0
+    assert terminal_states[-1] == (termios.TCSAFLUSH, original)
+
+
+def test_hidden_tty_rejects_noncanonical_mode_without_reading_input(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    descriptor = 95
+    original = [0, 0, 0, termios_flags() & ~termios.ICANON, 0, 0, []]
+    terminal_states: list[tuple[int, list[Any]]] = []
+    read_called = False
+
+    def unexpected_read(_fd: int, _size: int) -> bytes:
+        nonlocal read_called
+        read_called = True
+        return b"unexpected"
+
+    monkeypatch.setattr(os, "open", lambda _path, _flags: descriptor)
+    monkeypatch.setattr(os, "set_inheritable", lambda _fd, _value: None)
+    monkeypatch.setattr(os, "get_inheritable", lambda _fd: False)
+    monkeypatch.setattr(os, "fstat", lambda _fd: _char_stat())
+    monkeypatch.setattr(os, "read", unexpected_read)
+    monkeypatch.setattr(os, "write", lambda _fd, value: len(value))
+    monkeypatch.setattr(os, "close", lambda _fd: None)
+    monkeypatch.setattr(termios, "tcgetattr", lambda _fd: original.copy())
+    monkeypatch.setattr(
+        termios,
+        "tcsetattr",
+        lambda _fd, when, state: terminal_states.append((when, state.copy())),
+    )
+    with pytest.raises(credentials.CredentialIntakeFailure) as caught:
+        credentials._read_private_tty("ASCII prompt: ")
+    assert (
+        caught.value.code is credentials.CredentialIntakeFailureCode.INPUT_UNAVAILABLE
+    )
+    assert read_called is False
+    assert terminal_states == [(termios.TCSANOW, original)]
+
+
+@pytest.mark.parametrize(
+    "termination",
+    (
+        "eof",
+        "read_error",
+        "nonblocking_error",
+        "select_error",
+        "timeout",
+        "discard_limit",
+    ),
+)
+def test_hidden_tty_rejected_line_uses_atomic_flush_restore_when_drain_fails(
+    termination: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    descriptor = 96
+    original = [0, 0, 0, termios_flags(), 0, 0, []]
+    terminal_states: list[tuple[int, list[Any]]] = []
+    wiped: list[tuple[bytes, bytes]] = []
+    original_wipe = credentials._wipe
+    chunks: list[bytes | BaseException]
+    if termination == "eof":
+        chunks = [b"p", b"\x01", b""]
+    elif termination == "read_error":
+        chunks = [b"p", b"\x01", OSError("read failed")]
+    else:
+        chunks = [b"p", b"\x01", b"a", b"b"]
+        if termination == "discard_limit":
+            monkeypatch.setattr(credentials, "MAX_TTY_DISCARD_BYTES", 1)
+    input_chunks = iter(chunks)
+
+    def read_input(_fd: int, _size: int) -> bytes:
+        chunk = next(input_chunks)
+        if isinstance(chunk, BaseException):
+            raise chunk
+        return chunk
+
+    def record_wipe(value: bytearray | None) -> None:
+        before = bytes(value or b"")
+        original_wipe(value)
+        wiped.append((before, bytes(value or b"")))
+
+    monkeypatch.setattr(os, "open", lambda _path, _flags: descriptor)
+    monkeypatch.setattr(os, "set_inheritable", lambda _fd, _value: None)
+    monkeypatch.setattr(os, "get_inheritable", lambda _fd: False)
+    if termination == "nonblocking_error":
+        monkeypatch.setattr(
+            os, "set_blocking", lambda *_args: (_ for _ in ()).throw(OSError())
+        )
+    else:
+        monkeypatch.setattr(os, "set_blocking", lambda _fd, _value: None)
+    monkeypatch.setattr(os, "fstat", lambda _fd: _char_stat())
+    monkeypatch.setattr(os, "read", read_input)
+    monkeypatch.setattr(os, "write", lambda _fd, value: len(value))
+    monkeypatch.setattr(os, "close", lambda _fd: None)
+    monkeypatch.setattr(termios, "tcgetattr", lambda _fd: original.copy())
+    monkeypatch.setattr(
+        termios,
+        "tcsetattr",
+        lambda _fd, when, state: terminal_states.append((when, state.copy())),
+    )
+    monkeypatch.setattr(credentials, "_wipe", record_wipe)
+    if termination == "select_error":
+        monkeypatch.setattr(
+            select, "select", lambda *_args: (_ for _ in ()).throw(OSError())
+        )
+    elif termination == "timeout":
+        monkeypatch.setattr(select, "select", lambda *_args: ([], [], []))
+    else:
+        monkeypatch.setattr(
+            select, "select", lambda reads, _writes, _errors, _timeout: (reads, [], [])
+        )
+
+    with pytest.raises(credentials.CredentialIntakeFailure) as caught:
+        credentials._read_private_tty("ASCII prompt: ")
+    assert (
+        caught.value.code is credentials.CredentialIntakeFailureCode.INPUT_UNAVAILABLE
+    )
+    assert terminal_states[0][0] == termios.TCSANOW
+    assert terminal_states[0][1][3] & termios.ECHO == 0
+    assert terminal_states[-1] == (termios.TCSAFLUSH, original)
+    assert wiped[0] == (b"p", b"\x00")
+
+
+def test_hidden_tty_rejected_line_wipes_then_drains_through_first_lf_before_flush(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    descriptor = 97
+    original: list[Any] = [0, 0, 0, termios_flags(), 0, 0, []]
+    chunks = iter((b"p", b"\x01", b"s", b"u", b"f", b"\n", b"next\n"))
+    events: list[str] = []
+    terminal_state: list[Any] = original.copy()
+
+    def set_terminal(_fd: int, when: int, state: list[Any]) -> None:
+        nonlocal terminal_state
+        terminal_state = state.copy()
+        events.append("flush-restore" if when == termios.TCSAFLUSH else "set")
+
+    def read_input(_fd: int, _size: int) -> bytes:
+        value = next(chunks)
+        events.append(f"read:{value.hex()}")
+        return value
+
+    def ready(
+        reads: list[int], _writes: list[int], _errors: list[int], _timeout: float
+    ) -> tuple[list[int], list[int], list[int]]:
+        assert int(terminal_state[3]) & int(termios.ECHO) == 0
+        assert int(terminal_state[3]) & int(getattr(termios, "ECHONL", 0)) == 0
+        events.append("select")
+        return reads, [], []
+
+    original_wipe = credentials._wipe
+
+    def record_wipe(value: bytearray | None) -> None:
+        original_wipe(value)
+        events.append("wipe")
+
+    monkeypatch.setattr(os, "open", lambda _path, _flags: descriptor)
+    monkeypatch.setattr(os, "set_inheritable", lambda _fd, _value: None)
+    monkeypatch.setattr(os, "get_inheritable", lambda _fd: False)
+    blocking_states: list[bool] = []
+    monkeypatch.setattr(
+        os, "set_blocking", lambda _fd, value: blocking_states.append(value)
+    )
+    monkeypatch.setattr(os, "fstat", lambda _fd: _char_stat())
+    monkeypatch.setattr(os, "read", read_input)
+    monkeypatch.setattr(os, "write", lambda _fd, value: len(value))
+    monkeypatch.setattr(os, "close", lambda _fd: None)
+    monkeypatch.setattr(termios, "tcgetattr", lambda _fd: original.copy())
+    monkeypatch.setattr(termios, "tcsetattr", set_terminal)
+    monkeypatch.setattr(select, "select", ready)
+    monkeypatch.setattr(credentials, "_wipe", record_wipe)
+
+    with pytest.raises(credentials.CredentialIntakeFailure) as caught:
+        credentials._read_private_tty("ASCII prompt: ")
+    assert (
+        caught.value.code is credentials.CredentialIntakeFailureCode.INPUT_UNAVAILABLE
+    )
+    assert next(chunks) == b"next\n"
+    assert events.index("wipe") < events.index("select")
+    assert len([event for event in events if event == "set"]) == 1
+    assert events.index("flush-restore") > events.index("select")
+    assert blocking_states == [False]
 
 
 def test_hidden_tty_wipes_partial_value_and_fails_if_restore_fails(

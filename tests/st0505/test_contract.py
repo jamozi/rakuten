@@ -31,7 +31,7 @@ def test_plan_has_exact_sections_and_non_executable_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
-    assert plan["document"]["version"] == "1.2.1"
+    assert plan["document"]["version"] == "1.2.3"
     assert plan["document"]["executable"] is False
     assert plan["document"]["interface_only"] is True
     assert plan["document"]["decision"] == "NOT_READY"
@@ -137,6 +137,34 @@ def test_local_credential_intake_is_exact_but_disconnected_from_live_runtime() -
     assert intake["validating_marker"] == ".secrets/.rakuten-live-smoke.validating"
     assert intake["committed_marker"] == ".secrets/.rakuten-live-smoke.committed"
     assert intake["input_boundary"]["source"] == "/dev/tty"
+    assert intake["input_boundary"] == {
+        "source": "/dev/tty",
+        "terminal_mode": "CANONICAL_REQUIRED",
+        "echo": "DISABLED",
+        "echonl": "DISABLED",
+        "maximum_value_bytes": 4094,
+        "rejected_line_handling": (
+            "WIPE_PREFIX_THEN_DRAIN_THROUGH_FIRST_LF_WITH_ECHO_DISABLED"
+        ),
+        "rejected_line_descriptor": "NONBLOCKING_BEFORE_DRAIN",
+        "rejected_line_discard_limit_bytes": 4096,
+        "rejected_line_timeout_seconds": 1.0,
+        "incomplete_drain_restore": (
+            "TCSAFLUSH_ATOMIC_INPUT_DISCARD_AND_TERMINAL_RESTORE"
+        ),
+        "successful_drain_boundary": "FIRST_LF_ONLY",
+        "hidden_mode_restore": "TCSAFLUSH_ON_ALL_OUTCOMES",
+        "prompt_input_cardinality": "ONE_FRESH_CANONICAL_LINE",
+        "queued_typeahead": "DISCARDED_BEFORE_ECHO_RESTORE",
+        "argv_values": "FORBIDDEN",
+        "environment_values": "FORBIDDEN",
+        "stdin_values": "FORBIDDEN",
+        "chat_values": "FORBIDDEN",
+        "both_values_before_durable_write": True,
+        "process_disclosure_before_input": "DISABLED_REQUIRED_LINUX",
+        "child_process_after_input": "FORBIDDEN",
+        "mutable_buffer_wipe": "BEST_EFFORT",
+    }
     assert intake["check_boundary"]["secret_file_open"] == "FORBIDDEN"
     assert intake["check_boundary"]["secret_content_read"] == "FORBIDDEN"
     assert intake["check_boundary"]["any_active_marker_present"] == "INVALID"

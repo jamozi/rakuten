@@ -9,9 +9,11 @@ import json
 import os
 from pathlib import Path
 import resource
+import select
 import stat
 import sys
 import termios
+import time
 from typing import Any, Callable, Final, NoReturn, Sequence
 
 
@@ -26,7 +28,12 @@ SECRET_COMMITTED_NAME: Final = ".rakuten-live-smoke.committed"
 APPLICATION_ID_ALIAS: Final = "rakuten_web_service_application_id"
 ACCESS_KEY_ALIAS: Final = "rakuten_web_service_access_key"
 SECRET_ALIASES: Final = (APPLICATION_ID_ALIAS, ACCESS_KEY_ALIAS)
-MAX_SECRET_BYTES: Final = 4096
+# Linux N_TTY canonical input retains at most 4095 payload bytes before LF.
+# Keep the accepted value below that boundary so an overlong submitted line is
+# observed and rejected instead of being silently truncated by the line discipline.
+MAX_SECRET_BYTES: Final = 4094
+MAX_TTY_DISCARD_BYTES: Final = 4096
+TTY_REJECT_DRAIN_TIMEOUT_SECONDS: Final = 1.0
 
 _DIRECTORY_FLAGS: Final = (
     os.O_RDONLY
@@ -345,14 +352,21 @@ def _read_private_tty(prompt: str) -> bytearray:
     value = bytearray()
     completed = False
     restore_failed = False
+    rejected = False
+    discarded = 0
+    drain_deadline: float | None = None
+    hidden_restore_required = False
     try:
         descriptor = os.open("/dev/tty", _TTY_FLAGS)
         _set_cloexec(descriptor)
         if not stat.S_ISCHR(os.fstat(descriptor).st_mode):
             _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
         original = termios.tcgetattr(descriptor)
+        if int(original[3]) & termios.ICANON == 0:
+            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
         hidden = original.copy()
         hidden[3] = int(hidden[3]) & ~(termios.ECHO | getattr(termios, "ECHONL", 0))
+        hidden_restore_required = True
         termios.tcsetattr(descriptor, termios.TCSANOW, hidden)
         prompt_bytes = prompt.encode("ascii")
         offset = 0
@@ -362,20 +376,50 @@ def _read_private_tty(prompt: str) -> bytearray:
                 _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
             offset += written
         while True:
-            chunk = os.read(descriptor, 1)
+            if rejected:
+                try:
+                    if drain_deadline is None:
+                        raise RuntimeError("missing rejected-line deadline")
+                    remaining = drain_deadline - time.monotonic()
+                    if remaining <= 0:
+                        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+                    readable, _, _ = select.select([descriptor], [], [], remaining)
+                    if readable != [descriptor]:
+                        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+                except CredentialIntakeFailure:
+                    raise
+                except BaseException:
+                    raise
+            try:
+                chunk = os.read(descriptor, 1)
+            except BaseException:
+                raise
             if not chunk:
                 _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
             if chunk == b"\n":
                 break
+            if rejected:
+                discarded += len(chunk)
+                if discarded >= MAX_TTY_DISCARD_BYTES:
+                    _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+                continue
             if (
                 chunk == b"\r"
                 or chunk[0] < 0x20
                 or chunk[0] == 0x7F
                 or len(value) >= MAX_SECRET_BYTES
             ):
-                _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+                rejected = True
+                _wipe(value)
+                value.clear()
+                try:
+                    os.set_blocking(descriptor, False)
+                    drain_deadline = time.monotonic() + TTY_REJECT_DRAIN_TIMEOUT_SECONDS
+                except BaseException:
+                    raise
+                continue
             value.extend(chunk)
-        if not value:
+        if rejected or not value:
             _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
         completed = True
         return value
@@ -387,7 +431,15 @@ def _read_private_tty(prompt: str) -> bytearray:
         if descriptor is not None:
             if original is not None:
                 try:
-                    termios.tcsetattr(descriptor, termios.TCSANOW, original)
+                    termios.tcsetattr(
+                        descriptor,
+                        (
+                            termios.TCSAFLUSH
+                            if hidden_restore_required
+                            else termios.TCSANOW
+                        ),
+                        original,
+                    )
                 except BaseException:
                     restore_failed = True
             try:

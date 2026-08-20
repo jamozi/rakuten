@@ -3375,3 +3375,78 @@ original result.
   remain `NOT_EXECUTED`. Existing `DEBT-W2-061` remains open because the full
   scanner rejects linked-worktree Git indirection; no scanner control is
   weakened and no green full-worktree scan is claimed.
+
+### 2026-08-21 W2 / ST-0505 credential-intake revision and rejected-line correction
+
+- Append-only correction: the preceding credential-intake checkpoint's
+  unqualified `1.2.0` statement is not the current contract revision. It binds
+  the initial credential-intake commit
+  `1dd46762c676b4db4567c0026326fd258e40cea6`; follow-up commit
+  `28c00031da5b29258b40579fc7e0cb7c78b284ac` advanced the exact contract to
+  `1.2.1` and required pinned Python `-I -S` for both launcher validation and
+  the credential CLI, disabling site import and executable `.pth` startup
+  hooks. The earlier line remains byte-identical as append-only history.
+- Current security correction: the containing follow-up advances the contract
+  and manifest to `1.2.2`. Hidden input now requires canonical TTY mode and is
+  bounded to 4094 bytes, below Linux N_TTY's 4095-byte payload boundary. On a
+  control byte or 4095th byte, the mutable prefix is wiped before the current
+  canonical line is drained only through its first LF while ECHO/ECHONL remain
+  disabled. The private descriptor is switched to nonblocking mode before the
+  drain, which has a fixed 4096-byte cap and one-second monotonic deadline.
+  Timeout, cap, EOF, nonblocking transition, select/read error, or restore error
+  fails closed; incomplete drain uses `TCSAFLUSH` so pending input discard and
+  terminal-state restoration occur atomically. A completed drain does not
+  consume a later line, and external output retains the fixed sanitized failure
+  vocabulary.
+- Local evidence: the real Linux PTY regression produced
+  `LEFTOVER:ECHO_ON` for rejected control and oversize pasted lines before the
+  correction and `DRAINED:ECHO_ON` after it, including the production 4095th-
+  byte boundary. The credential-intake focused suite passed 83 tests, the
+  isolated ST-0505 suite passed 318, affected ST-0502 passed 167, and affected
+  ST-0503 passed 59. Owner generation and no-write `--check`, Ruff lint/format,
+  strict mypy, configured whole-project Pyright, Python compile/import, bash
+  syntax, Canonical import verification, workspace drift, and diff checks
+  passed.
+- Provenance and boundary: the ST-0505 owner generator exclusively regenerated
+  the reference JSON and manifest and repository search found no active
+  downstream hash consumer. No credential value or real store was entered,
+  opened, read, checked, or written. No network/provider request, formal
+  TST-016, staging, publication, release, or Production action was executed.
+  OD-015 remains unresolved and `RECORDED_FIXTURE_ONLY` remains the safe
+  default. The linked-worktree full scanner limitation remains
+  `DEBT-W2-061`; no green full-worktree scan is claimed.
+
+### 2026-08-21 W2 / ST-0505 queued-typeahead terminal correction
+
+- Append-only correction: the preceding `1.2.2` checkpoint remains
+  byte-identical evidence for local pre-push candidate
+  `924e5c40cb8b74d32f314b87b68308f1a771d05d`. It did not yet describe the
+  complete queued-typeahead boundary. The containing amended Story commit
+  advances the exact contract and manifest to `1.2.3` without changing the
+  fixed aliases, store, 4094-byte accepted maximum, same-line bounded reject
+  drain, runtime disconnection, or OD-015 safe default.
+- Terminal boundary: once the hidden terminal transition is attempted, every
+  outcome restores through `TCSAFLUSH`, including valid input, a completed
+  rejected-line drain, EOF, interrupt-equivalent, prompt/read/select error,
+  cap/timeout failure, and terminal failure handling. Application logic still
+  reads a rejected canonical line only through its first LF, but the atomic
+  restore discards all later queued input before echo returns. Each prompt
+  therefore requires one fresh canonical line; multiline clipboard paste and
+  typeahead cannot become a later credential or invoking-shell command.
+- Red/green evidence: before the correction, real PTY valid-plus-queued and
+  rejected-plus-queued cases both reported `LEFTOVER:ECHO_ON`, and nine focused
+  assertions exposed TCSANOW restoration. After the correction, the real PTY
+  cases report `DRAINED:ECHO_ON`; all hidden-TTY cases pass, including success,
+  rejected-line, EOF, read error, KeyboardInterrupt-equivalent, prompt failure,
+  nonblocking transition, select, timeout, cap, and restore paths.
+- Local checks: the credential-intake file passed 89 tests, the full isolated
+  ST-0505 suite passed 327, affected ST-0502 passed 167, and affected ST-0503
+  passed 59. Owner generation and no-write check, Ruff lint/format, strict mypy,
+  configured Pyright, Python compile/import, bash syntax, Canonical import
+  verification, workspace drift, and diff checks passed.
+- Remaining boundary: no credential value or real store was entered, opened,
+  read, checked, or written. No network/provider request, formal TST-016,
+  staging, publication, release, or Production action was executed. OD-015
+  remains unresolved and `RECORDED_FIXTURE_ONLY` remains the safe default. The
+  linked-worktree full scanner limitation remains `DEBT-W2-061`; no green
+  full-worktree scan is claimed.

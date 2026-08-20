@@ -33,9 +33,9 @@ DESIGN_HANDOFF_PATH: Final = Path(
     "changes/st-0505/"
     "DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml"
 )
-DESIGN_HANDOFF_BYTES: Final = 13180
+DESIGN_HANDOFF_BYTES: Final = 15331
 DESIGN_HANDOFF_SHA256: Final = (
-    "0292b38edcbf8b8639523c618bb19c3e696708d733fcfaac93006670cf361e30"
+    "27e689923ca153712a6477f9372598af3f92997b9d0a4250abfa430cc9caad78"
 )
 GENERATOR_PATH: Final = Path(
     "scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
@@ -796,7 +796,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.2.1",
+    "version": "1.2.3",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -920,8 +920,23 @@ EXPECTED_CREDENTIAL_INTAKE: Final[dict[str, object]] = {
     },
     "input_boundary": {
         "source": "/dev/tty",
+        "terminal_mode": "CANONICAL_REQUIRED",
         "echo": "DISABLED",
         "echonl": "DISABLED",
+        "maximum_value_bytes": 4094,
+        "rejected_line_handling": (
+            "WIPE_PREFIX_THEN_DRAIN_THROUGH_FIRST_LF_WITH_ECHO_DISABLED"
+        ),
+        "rejected_line_descriptor": "NONBLOCKING_BEFORE_DRAIN",
+        "rejected_line_discard_limit_bytes": 4096,
+        "rejected_line_timeout_seconds": 1.0,
+        "incomplete_drain_restore": (
+            "TCSAFLUSH_ATOMIC_INPUT_DISCARD_AND_TERMINAL_RESTORE"
+        ),
+        "successful_drain_boundary": "FIRST_LF_ONLY",
+        "hidden_mode_restore": "TCSAFLUSH_ON_ALL_OUTCOMES",
+        "prompt_input_cardinality": "ONE_FRESH_CANONICAL_LINE",
+        "queued_typeahead": "DISCARDED_BEFORE_ECHO_RESTORE",
         "argv_values": "FORBIDDEN",
         "environment_values": "FORBIDDEN",
         "stdin_values": "FORBIDDEN",
@@ -1176,7 +1191,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "1.2.1",
+            "version": "1.2.3",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,
