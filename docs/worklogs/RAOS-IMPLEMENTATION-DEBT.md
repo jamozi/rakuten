@@ -3135,3 +3135,97 @@ original result.
   Staging, publication, release, deployment, and Production boundary remains
   open or unexecuted. No local result above is promoted to `VALIDATED`, formal,
   live, release, or Production evidence.
+
+### 2026-08-15 W2 / ST-0502 Item Search live-safe request-policy preflight
+
+- Story and objective: extend only `ST-0502` with one offline, non-executable,
+  versioned 2026-07-01 Item Search request-policy projection needed by a later
+  ST-0505 adapter. Preserve the existing recorded Item Search behavior and the
+  separate recorded-only Product Search 2025-08-01 implementation byte-for-
+  byte.
+- Authority and dependencies read: root and canonical Codex instructions, the
+  owner-authorized implementation-first ExecPlan, canonical ST-0502 and its
+  ST-0202/ST-0308 dependencies, FR-002, TST-014/TST-015, OD-014/OD-015,
+  relevant security controls, installed v0.4 Item Search request/page schemas,
+  the current ST-0502 source/tests/README, and the ST-0505 non-executable owner
+  plan. Current official primary Item Search 2026-07-01 documentation was
+  checked read-only on 2026-08-15; no provider request was made.
+- Ambiguity and safe default: no live endpoint, account, credential transport,
+  purpose binding, or provider execution is selected. The exact safe element
+  vocabulary is the installed-v0.4/current-official intersection minus review
+  count, review average, and affiliate rate; undocumented `tagIds` and
+  `updateTimestamp` output elements are absent while documented update-time
+  sorting remains. Review/affiliate-rate sorts are absent,
+  `has_review_only` is an exact-false input guard omitted from the projection,
+  provider text is untrusted, page is exact one, `hits` is 1..30, and retry/
+  pagination-follow-up policy limits are zero without claiming execution.
+  `attribute_flag=true` additionally requires a nonzero genre ID.
+- Owned paths: one new pure ST-0502 domain module, one isolated ST-0502 hostile
+  test module, this Story README, and this append-only ledger only. Existing
+  Item Search source, Product Search, ST-0505, canonical/upstream/imported,
+  generated/status/workflow/lock, WordPress/UI, and all other Stories remain
+  outside the patch.
+- Planned checks: Python compile/import, isolated ST-0502 and affected ST-0503
+  pytest, ST-0505 owner `--check`, Ruff lint/format, strict mypy and available
+  Pyright, canonical/workspace checks, focused maintained-file secret scan,
+  prohibited-surface/static review, `git diff --check`, exact diff/scope review,
+  and byte checks for every protected predecessor path.
+- Formal/live boundary: no secret, provider call, external write, object-store
+  or persistence write, runtime retry/pagination, staging, publication, release,
+  or Production action is authorized or executed. Local checks cannot satisfy
+  formal TST-014/TST-015/TST-016 or claim `VALIDATED`/live readiness.
+
+### 2026-08-15 W2 / ST-0502 Item Search live-safe request-policy checkpoint
+
+- Implementation boundary: the containing single ST-0502 commit adds only the
+  pure `RakutenItemSearchLiveRequestV1` policy/projection, its hostile isolated
+  tests, and the ST-0502 public-contract documentation. It does not select or
+  implement an endpoint, account, credential, HTTP transport, network action,
+  storage/persistence action, retry/pagination execution, or provider adapter.
+  The existing four recorded Item Search source files, recorded Product Search
+  behavior, and every ST-0505 path remain byte-unchanged by this checkpoint.
+- Contract outcome: the exact output-element tuple is the intersection of the
+  installed v0.4 vocabulary and current documented 2026-07-01 output, further
+  excluding review count, review average, and affiliate rate. `tagIds` and
+  `updateTimestamp` are not output elements; the documented update-time sorts
+  remain. Active review filtering, review/rate sorts, unsafe or reordered/
+  duplicate element tuples, invalid selectors/types/bounds, equal or inverted
+  prices, and `attribute_flag=true` without a nonzero genre ID fail closed.
+  Page is one, hits are 1..30, retry and pagination-follow-up policy limits are
+  zero, and provider text is explicitly untrusted data. The exact-false
+  `has_review_only` constructor guard is not emitted to provider parameters.
+- Local environment: Python 3.14.6, pytest 9.1.1, Ruff 0.16.1, mypy 2.3.0,
+  and Pyright 1.1.411 from the repository-pinned environment/tool installation.
+  The isolated ST-0502 suite passed 166 tests; affected ST-0503 passed 59 tests;
+  Ruff, strict mypy, Pyright, Python compile/import, canonical import verify,
+  workspace drift check, `git diff --check`, exact owned-scope review, and
+  protected-predecessor byte checks passed. The focused maintained-file secret
+  scan found zero findings across the four owned paths.
+- `DEBT-W2-060` status: `OPEN`, introduced-by `ST-0502`, closure owner:
+  integration owner in a separate ST-0505 provenance-only Story/commit after
+  this ST-0502 commit is frozen. Exact command
+  `/home/minami/rakuten/.venv/bin/python scripts/build_st0505_rakuten_live_smoke_reference_plan.py --check`
+  exited 1 with
+  `ST-0505 build failed: PREDECESSOR_HASH_DRIFT field=predecessor.artifact`.
+  The affected owner artifacts are
+  `changes/st-0505/generated/rakuten-live-smoke-reference-plan.v1.json` and
+  `changes/st-0505/manifest.yaml`; the changed predecessor artifact is
+  `changes/st-0502/README.md`. ST-0505 remains disabled and non-executable, so
+  this provenance drift has no runtime/provider impact. No ST-0505 artifact was
+  hand-edited or regenerated in this Story.
+- `DEBT-W2-061` status: `OPEN`, introduced-by `ST-0502`, closure owner: scanner
+  tooling/integration owner in a normal checkout or an owner-supported linked-
+  worktree path. Exact command
+  `/usr/bin/python3 -I scripts/scan_secrets.py --worktree` exited 2 with
+  `ERROR code=unsafe-git-metadata source="."` because this isolated linked
+  worktree uses Git-file indirection. This is an environment-induced baseline
+  limitation, not a green full-worktree scan and not a scanner weakening. The
+  same scanner's maintained-file reader and payload scanner reported zero
+  findings for exactly the four owned paths.
+- Formal/live boundary: formal TST-014/TST-015/TST-016, live Item Search,
+  endpoint/account/credential selection, provider behavior, object-storage or
+  other persistence, staging, publication, release, and Production remain
+  `NOT_EXECUTED`. Inherited `DEBT-W2-015`, OD-014, OD-015, and every other open
+  or external-blocked item remain unchanged. This checkpoint is local
+  implementation evidence only and does not claim `VALIDATED` or live/formal
+  evidence.
