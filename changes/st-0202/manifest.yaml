@@ -50,23 +50,23 @@ source_artifacts:
   bytes: 9754
   sha256: 5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f
 - uri: repo://changes/st-0202/README.md
-  bytes: 12610
-  sha256: e19ae8db690a3aae5ea5f0af578bd2a5db04259bc6ed92dd1435bb1e10b1c2e8
+  bytes: 12862
+  sha256: 700ff32b9a99f91f6103daa23ea2b1b7d14444cb94d150c0d6ac0d4fe7fe297b
 - uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
   bytes: 9112
   sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
 - uri: repo://docs/execplans/ST-0202.md
-  bytes: 13777
-  sha256: 74c4c4468e5dc7a7ee6f67c3a62558d950559d586c1205dbc46bf3bbacb39447
+  bytes: 13797
+  sha256: 6f2494e9f508a9802e283ba6d12d641cd6886fa9bd692f7854491161ab4b6e53
 - uri: repo://docs/worklogs/ST-0202.md
-  bytes: 16647
-  sha256: 654108fc8a1c8163396a9d9e17fe45dd56a721a68feec9283340214e3334bfdc
+  bytes: 17465
+  sha256: d0b88c03025bdd72036fa8314ec645bb7fef8e2af8110ceffd91516566d98647
 - uri: repo://changes/st-0201/manifest.yaml
   bytes: 5607
   sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
 - uri: repo://scripts/build_local_compose.py
-  bytes: 34986
-  sha256: 6d420426f73276ee8f968e799674925c876bdc91141399e3b9e9b796ba99548b
+  bytes: 35255
+  sha256: 16225c1f832ac0a379b45d22648db63b024e3b66a0b9b7a86b072544895d2fb4
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -98,14 +98,14 @@ source_artifacts:
   bytes: 16851
   sha256: c684bd1ed82dd8240bd033d3c5ea44fa6d7c9fd61785245b05ee82d9c7eb0009
 - uri: repo://tests/st0202/test_contract.py
-  bytes: 17110
-  sha256: 9979630f9819a39f12f9cb8281df13852adcfd60644995cac716035d4d63b2b4
+  bytes: 17228
+  sha256: c5d656106721dcf789ac9a2a85d335909621f7ab8e24319626910bb822f8d3d2
 - uri: repo://tests/st0202/test_fixture.py
   bytes: 14906
   sha256: 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
 - uri: repo://tests/st0202/test_negative_cases.py
-  bytes: 17744
-  sha256: a3a7a297c88d058d1b06bf0f328a9edc2cd94362f86e5d121f4d071494a010aa
+  bytes: 18730
+  sha256: d0c3013c7b42112584523cdd142f98488fa2f827139c1f8cbfad916e80b180e1
 - uri: repo://tests/st0202/test_wrapper.py
   bytes: 49959
   sha256: 43589eebbdb50c978eafbec5f8420206745e086d713740e0f208d1a9b39ef1d6
@@ -117,7 +117,7 @@ source_artifacts:
   sha256: b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: c80609c6aefc7ffc25caffc3cfd9e51a4397d5a2c7d0be808e2887f9c4a4df81
+  sha256: 05140585e5796d9b88d4fcab6f4c5d04fbd96dd51323c39c234a86f387ee5582
 - uri: repo://tests/st0106/test_workflow_contract.py
   bytes: 65038
   sha256: aa25fdb3ed0071391699f06cb341d312f3b89e83ff974db34378aae9c27c4e32

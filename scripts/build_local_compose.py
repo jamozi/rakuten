@@ -236,6 +236,7 @@ EXPECTED_ST0202_EPHEMERAL_OVERRIDE: Final = {
         "maximum_port": 65535,
     },
 }
+EXPECTED_ST0202_RUNTIME_VERSION_LINE: Final = "version 30GB 4.29 1355c7a10 linux amd64"
 
 FORBIDDEN_SERVICE_KEYS: Final = frozenset(
     {
@@ -335,6 +336,11 @@ def load_and_validate_object_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         dict(ephemeral_override),
         EXPECTED_ST0202_EPHEMERAL_OVERRIDE,
         "object-storage runtime.ephemeral_port_override",
+    )
+    st0201._require_exact(
+        runtime.get("expected_version_line"),
+        EXPECTED_ST0202_RUNTIME_VERSION_LINE,
+        "object-storage runtime.expected_version_line",
     )
     st0201._require_exact(
         _contract_object_digest(contract),

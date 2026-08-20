@@ -8,7 +8,13 @@ from typing import Any
 import pytest
 from yaml.constructor import ConstructorError
 
-from conftest import RejectContract, RejectProductionContract
+from conftest import (
+    CONTRACT_FILE,
+    REPOSITORY_ROOT,
+    RejectContract,
+    RejectProductionContract,
+)
+from scripts import build_local_compose as generator
 from scripts import build_st0201_postgres_service as strict_yaml
 
 
@@ -352,6 +358,32 @@ def test_runtime_contract_cannot_be_weakened_or_promoted(
         target = target[component]
     target[path[-1]] = value
     reject_contract(mutable_contract, r"runtime\.")
+
+
+def test_production_version_guard_survives_a_matching_full_digest_pin(
+    mutable_contract: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    mutable_contract["runtime"]["expected_version_line"] = (
+        "version 30GB 4.29 1355c7a102 linux amd64"
+    )
+    real_load_yaml = strict_yaml.load_yaml
+
+    def load_yaml(path: Path) -> object:
+        if path == CONTRACT_FILE:
+            return mutable_contract
+        return real_load_yaml(path)
+
+    monkeypatch.setattr(strict_yaml, "load_yaml", load_yaml)
+    monkeypatch.setattr(
+        generator,
+        "EXPECTED_ST0202_CONTRACT_OBJECT_SHA256",
+        generator._contract_object_digest(mutable_contract),
+    )
+    with pytest.raises(
+        RuntimeError,
+        match=r"object-storage runtime\.expected_version_line differs",
+    ):
+        generator.load_and_validate_object_contract(REPOSITORY_ROOT)
 
 
 def test_ephemeral_engine_assigned_publication_contract_cannot_be_omitted(

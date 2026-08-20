@@ -202,5 +202,9 @@ reviewed Engine to assign and report the loopback mapping. Attempts
 `32372018897` and `32372405468` then established the exact remaining boundary:
 the root no-capability observer cannot read the privilege-dropped UID-1000
 server executable link even though the other topology and identity predicates
-pass. A new hosted Storage run of the split root/same-UID process-model
-correction is required; local fake-Docker coverage is not that evidence.
+pass. PR `#97` job `96458842213` subsequently proved both split root/same-UID
+probes and observed the exact runtime-version line, but the stale expectation
+stopped execution before the authenticated fixture. A new Hosted Storage run
+on the exact corrected head is required to prove version acceptance,
+authenticated fixture execution, and cleanup; local fake-Docker coverage is
+not that evidence.
