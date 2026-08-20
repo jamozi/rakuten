@@ -31,7 +31,7 @@ def test_plan_has_exact_sections_and_non_executable_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
-    assert plan["document"]["version"] == "1.2.3"
+    assert plan["document"]["version"] == "1.2.4"
     assert plan["document"]["executable"] is False
     assert plan["document"]["interface_only"] is True
     assert plan["document"]["decision"] == "NOT_READY"
@@ -130,6 +130,31 @@ def test_local_credential_intake_is_exact_but_disconnected_from_live_runtime() -
         "site_import": "DISABLED",
         "executable_pth_hooks": "DISABLED",
         "dependency_surface": "PYTHON_STANDARD_LIBRARY_ONLY",
+        "trusted_ancestor_owner": "ROOT_OR_CURRENT_EFFECTIVE_UID",
+        "owner_controlled_nodes": "CURRENT_EFFECTIVE_UID",
+        "group_world_writable": "FORBIDDEN",
+        "venv_python_symlink": (
+            "EXACT_ABSOLUTE_TARGET_WITH_PROTECTED_PARENT_AND_TARGET"
+        ),
+        "python_path": "EXACT_PINNED_STDLIB_ONLY",
+        "stdlib_metadata": (
+            "RECURSIVE_REGULAR_DIRECTORY_ONLY_ROOT_OR_CURRENT_UID_NO_GROUP_WORLD_WRITE"
+        ),
+        "python314_zip": "FORBIDDEN_ABSENT",
+        "pre_python_path_configuration": (
+            "DOT_PTH_AND_PYBUILDDIR_TXT_FORBIDDEN_ABSENT"
+        ),
+        "base_executable_override_environment": "SANITIZED",
+        "runtime_rpath_shadow_libraries": (
+            "RECURSIVE_LOADER_NAMESPACE_FORBIDDEN_ABSENT"
+        ),
+        "credential_script_open": "O_NOFOLLOW_CLOEXEC_LSTAT_FSTAT_IDENTITY",
+        "credential_script_execution": "INHERITED_PROC_SELF_FD_INODE_BOUND",
+        "interpreter_execution": "VALIDATED_VENV_PATH_FOR_PREFIX_PRESERVATION",
+        "same_euid_runtime_mutator": "FORBIDDEN_UNSUPPORTED",
+        "os_platform_tcb": (
+            "ROOT_OWNED_BASH_COREUTILS_LOADER_SYSTEM_LIBRARIES_AND_PROCFS"
+        ),
     }
     assert intake["staging_root"] == ".secrets/.rakuten-live-smoke.preparing"
     assert intake["committing_marker"] == ".secrets/.rakuten-live-smoke.committing"

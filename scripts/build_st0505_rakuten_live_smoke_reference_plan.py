@@ -33,9 +33,9 @@ DESIGN_HANDOFF_PATH: Final = Path(
     "changes/st-0505/"
     "DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml"
 )
-DESIGN_HANDOFF_BYTES: Final = 15331
+DESIGN_HANDOFF_BYTES: Final = 18473
 DESIGN_HANDOFF_SHA256: Final = (
-    "27e689923ca153712a6477f9372598af3f92997b9d0a4250abfa430cc9caad78"
+    "9dc1991e6bc0822b2c39410cff6ac7f248d6be3c037bc75c316b8352fce18339"
 )
 GENERATOR_PATH: Final = Path(
     "scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
@@ -796,7 +796,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -887,6 +887,31 @@ EXPECTED_CREDENTIAL_INTAKE: Final[dict[str, object]] = {
         "site_import": "DISABLED",
         "executable_pth_hooks": "DISABLED",
         "dependency_surface": "PYTHON_STANDARD_LIBRARY_ONLY",
+        "trusted_ancestor_owner": "ROOT_OR_CURRENT_EFFECTIVE_UID",
+        "owner_controlled_nodes": "CURRENT_EFFECTIVE_UID",
+        "group_world_writable": "FORBIDDEN",
+        "venv_python_symlink": (
+            "EXACT_ABSOLUTE_TARGET_WITH_PROTECTED_PARENT_AND_TARGET"
+        ),
+        "python_path": "EXACT_PINNED_STDLIB_ONLY",
+        "stdlib_metadata": (
+            "RECURSIVE_REGULAR_DIRECTORY_ONLY_ROOT_OR_CURRENT_UID_NO_GROUP_WORLD_WRITE"
+        ),
+        "python314_zip": "FORBIDDEN_ABSENT",
+        "pre_python_path_configuration": (
+            "DOT_PTH_AND_PYBUILDDIR_TXT_FORBIDDEN_ABSENT"
+        ),
+        "base_executable_override_environment": "SANITIZED",
+        "runtime_rpath_shadow_libraries": (
+            "RECURSIVE_LOADER_NAMESPACE_FORBIDDEN_ABSENT"
+        ),
+        "credential_script_open": "O_NOFOLLOW_CLOEXEC_LSTAT_FSTAT_IDENTITY",
+        "credential_script_execution": "INHERITED_PROC_SELF_FD_INODE_BOUND",
+        "interpreter_execution": "VALIDATED_VENV_PATH_FOR_PREFIX_PRESERVATION",
+        "same_euid_runtime_mutator": "FORBIDDEN_UNSUPPORTED",
+        "os_platform_tcb": (
+            "ROOT_OWNED_BASH_COREUTILS_LOADER_SYSTEM_LIBRARIES_AND_PROCFS"
+        ),
     },
     "repository_root": "/home/minami/rakuten",
     "store_root": ".secrets/rakuten-live-smoke",
@@ -1191,7 +1216,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "1.2.3",
+            "version": "1.2.4",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,

@@ -3,7 +3,7 @@
 Classification:
 `SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN`
 
-Contract revision `1.2.3` is partial, non-authoritative, local-only,
+Contract revision `1.2.4` is partial, non-authoritative, local-only,
 non-executable, and runtime-ineligible. It binds the committed ST-0502
 recorded-only adapter boundary and preserves OD-015's blocking safe default:
 `Recorded fixtureのみ`. It is a reviewable plan, not a live adapter, runnable
@@ -62,7 +62,29 @@ The fixed commands are:
 The launcher uses the pinned CPython with exact `-I -S` flags for both its
 interpreter validation and the final credential CLI. Python `site` import and
 executable `.pth` startup hooks are therefore disabled; the credential CLI has
-a standard-library-only dependency surface.
+a standard-library-only dependency surface. Before Python starts, every trusted
+ancestor must be a real root- or current-EUID-owned directory with no
+group/world write. Repository, launcher, credential-script, venv,
+`pyvenv.cfg`, interpreter, and runtime nodes are current-EUID-owned and likewise
+non-writable by group or world. The venv Python symlink's normal `0777` mode is
+not treated as file writability; its owner, raw absolute target, protected
+parent, and protected target are validated instead. The effective pinned
+stdlib tree is recursively limited to root/current-EUID regular files and
+directories with no group/world write. `python314.zip`, executable/shared-
+library `._pth` files and `pybuilddir.txt` must be absent. Interpreter RPATH
+shadow library basenames are rejected recursively, and the observed nested
+glibc loader-search namespaces are forbidden entirely. `__PYVENV_LAUNCHER__`
+is sanitized before Python starts, and the final Python path is exact.
+
+The launcher opens the credential script with `O_NOFOLLOW|O_CLOEXEC`, compares
+its lstat/fstat/procfs device and inode, explicitly makes only that source FD
+inheritable, and executes `/proc/self/fd/N`. A pathname replacement after that
+binding therefore cannot substitute the credential-handling source. The
+interpreter itself remains a validated venv pathname because fd-based execution
+would lose venv prefix semantics. Root-owned Bash/core utilities, the dynamic
+loader, system libraries, and procfs are the platform trust base; an
+uncoordinated same-EUID mutator of the validated repository, venv, interpreter,
+configuration, or runtime remains unsupported and forbidden during launch.
 
 `setup` accepts exactly the application ID and access key from `/dev/tty` with
 terminal echo disabled and requires canonical terminal mode. Values are

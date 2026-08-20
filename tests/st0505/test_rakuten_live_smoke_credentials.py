@@ -11,17 +11,180 @@ import pty
 import resource
 import select
 import shlex
+import shutil
 import signal
 import stat
 import subprocess
 import sys
 import termios
+import tempfile
 import time
-from typing import Any, Callable
+from typing import Any, Callable, Iterator, NamedTuple, cast
 
 import pytest
 
 from scripts import rakuten_live_smoke_credentials as credentials
+
+
+_RUNTIME_RELATIVE_FILES = (
+    "lib/python3.14/__future__.py",
+    "lib/python3.14/_weakrefset.py",
+    "lib/python3.14/collections/__init__.py",
+    "lib/python3.14/contextlib.py",
+    "lib/python3.14/copyreg.py",
+    "lib/python3.14/ctypes/__init__.py",
+    "lib/python3.14/ctypes/_endian.py",
+    "lib/python3.14/encodings/__init__.py",
+    "lib/python3.14/encodings/aliases.py",
+    "lib/python3.14/encodings/utf_8.py",
+    "lib/python3.14/encodings/utf_8_sig.py",
+    "lib/python3.14/enum.py",
+    "lib/python3.14/fnmatch.py",
+    "lib/python3.14/functools.py",
+    "lib/python3.14/glob.py",
+    "lib/python3.14/json/__init__.py",
+    "lib/python3.14/json/decoder.py",
+    "lib/python3.14/json/encoder.py",
+    "lib/python3.14/json/scanner.py",
+    "lib/python3.14/keyword.py",
+    "lib/python3.14/operator.py",
+    "lib/python3.14/pathlib/__init__.py",
+    "lib/python3.14/pathlib/_os.py",
+    "lib/python3.14/re/__init__.py",
+    "lib/python3.14/re/_casefix.py",
+    "lib/python3.14/re/_compiler.py",
+    "lib/python3.14/re/_constants.py",
+    "lib/python3.14/re/_parser.py",
+    "lib/python3.14/reprlib.py",
+    "lib/python3.14/struct.py",
+    "lib/python3.14/sysconfig/__init__.py",
+    "lib/python3.14/threading.py",
+    "lib/python3.14/types.py",
+    "lib/python3.14/typing.py",
+)
+
+
+class _LauncherEnvironment(NamedTuple):
+    trust_root: Path
+    repository_root: Path
+    scripts: Path
+    launcher: Path
+    credential_script: Path
+    venv_root: Path
+    venv_bin: Path
+    pyvenv_cfg: Path
+    runtime_parent: Path
+    expected_base: Path
+    expected_bin: Path
+    expected_python: Path
+    expected_lib: Path
+    expected_stdlib: Path
+    runtime_file: Path
+
+
+@pytest.fixture(scope="module")
+def launcher_environment() -> Iterator[_LauncherEnvironment]:
+    source_root = Path(__file__).resolve().parents[2]
+    temporary_root = Path(tempfile.mkdtemp(prefix=".st0505-launcher-", dir=source_root))
+    temporary_root.chmod(0o700)
+    try:
+        repository_root = temporary_root / "repository"
+        scripts = repository_root / "scripts"
+        venv_root = repository_root / ".venv"
+        venv_bin = venv_root / "bin"
+        expected_base = temporary_root / "runtime" / "cpython-3.14.6"
+        expected_python = expected_base / "bin/python3.14"
+        scripts.mkdir(parents=True, mode=0o755)
+        venv_bin.mkdir(parents=True, mode=0o755)
+        expected_python.parent.mkdir(parents=True, mode=0o755)
+        expected_python.write_bytes(
+            (Path(sys.base_prefix) / "bin/python3.14").read_bytes()
+        )
+        expected_python.chmod(0o755)
+
+        shutil.copytree(
+            Path(sys.base_prefix) / "lib/python3.14",
+            expected_base / "lib/python3.14",
+        )
+
+        (venv_bin / "python").symlink_to(expected_python)
+        pyvenv_cfg = venv_root / "pyvenv.cfg"
+        pyvenv_cfg.write_text(
+            f"home = {expected_base / 'bin'}\n"
+            "implementation = CPython\n"
+            "uv = 0.12.1\n"
+            "version_info = 3.14.6\n"
+            "include-system-site-packages = false\n"
+            "prompt = raos\n",
+            encoding="utf-8",
+        )
+        pyvenv_cfg.chmod(0o644)
+
+        launcher_source = (
+            source_root / "scripts/rakuten_live_smoke_credentials_python.sh"
+        ).read_text(encoding="utf-8")
+        assert (
+            launcher_source.count("expected_repository_root=/home/minami/rakuten") == 1
+        )
+        assert (
+            launcher_source.count(
+                "expected_base=/home/minami/.local/share/uv/python/"
+                "cpython-3.14.6-linux-x86_64-gnu"
+            )
+            == 1
+        )
+        launcher = scripts / "rakuten_live_smoke_credentials_python.sh"
+        launcher.write_text(
+            launcher_source.replace(
+                "expected_repository_root=/home/minami/rakuten",
+                f"expected_repository_root={shlex.quote(os.fspath(repository_root))}",
+            ).replace(
+                "expected_base=/home/minami/.local/share/uv/python/"
+                "cpython-3.14.6-linux-x86_64-gnu",
+                f"expected_base={shlex.quote(os.fspath(expected_base))}",
+            ),
+            encoding="utf-8",
+        )
+        launcher.chmod(0o755)
+
+        credential_source = (
+            source_root / "scripts/rakuten_live_smoke_credentials.py"
+        ).read_text(encoding="utf-8")
+        assert (
+            credential_source.count(
+                'EXPECTED_REPOSITORY_ROOT: Final = Path("/home/minami/rakuten")'
+            )
+            == 1
+        )
+        credential_script = scripts / "rakuten_live_smoke_credentials.py"
+        credential_script.write_text(
+            credential_source.replace(
+                'EXPECTED_REPOSITORY_ROOT: Final = Path("/home/minami/rakuten")',
+                f'EXPECTED_REPOSITORY_ROOT: Final = Path("{repository_root}")',
+            ),
+            encoding="utf-8",
+        )
+        credential_script.chmod(0o644)
+
+        yield _LauncherEnvironment(
+            trust_root=temporary_root,
+            repository_root=repository_root,
+            scripts=scripts,
+            launcher=launcher,
+            credential_script=credential_script,
+            venv_root=venv_root,
+            venv_bin=venv_bin,
+            pyvenv_cfg=pyvenv_cfg,
+            runtime_parent=expected_base.parent,
+            expected_base=expected_base,
+            expected_bin=expected_python.parent,
+            expected_python=expected_python,
+            expected_lib=expected_base / "lib",
+            expected_stdlib=expected_base / "lib/python3.14",
+            runtime_file=expected_base / _RUNTIME_RELATIVE_FILES[-1],
+        )
+    finally:
+        shutil.rmtree(temporary_root)
 
 
 def _private_directory(path: Path) -> None:
@@ -1476,48 +1639,27 @@ def test_cli_rejects_missing_extra_root_and_wrong_case_arguments(
 
 
 def test_launcher_never_executes_site_package_pth_startup_hooks(
-    tmp_path: Path,
+    launcher_environment: _LauncherEnvironment,
 ) -> None:
-    repository_root = tmp_path / "repository"
-    scripts = repository_root / "scripts"
-    venv_root = repository_root / ".venv"
-    venv_bin = venv_root / "bin"
-    site_packages = venv_root / "lib/python3.14/site-packages"
-    scripts.mkdir(parents=True)
-    venv_bin.mkdir(parents=True)
+    environment = launcher_environment
+    site_packages = environment.venv_root / "lib/python3.14/site-packages"
     site_packages.mkdir(parents=True)
+    canary = environment.repository_root / "executable-pth-hook-ran"
+    hostile_pth = (
+        "import builtins; "
+        f"builtins.open({str(canary)!r}, 'w', encoding='utf-8').write('ran')\n",
+    )
+    (site_packages / "hostile-startup.pth").write_text(*hostile_pth, encoding="utf-8")
 
-    source_launcher = (
-        Path(__file__).resolve().parents[2]
-        / "scripts/rakuten_live_smoke_credentials_python.sh"
-    )
-    launcher_source = source_launcher.read_text(encoding="utf-8")
-    assert launcher_source.count("expected_repository_root=/home/minami/rakuten") == 1
-    assert (
-        launcher_source.count(
-            "expected_base=/home/minami/.local/share/uv/python/"
-            "cpython-3.14.6-linux-x86_64-gnu"
-        )
-        == 1
-    )
-    launcher_source = launcher_source.replace(
-        "expected_repository_root=/home/minami/rakuten",
-        f"expected_repository_root={shlex.quote(os.fspath(repository_root))}",
-    ).replace(
-        "expected_base=/home/minami/.local/share/uv/python/"
-        "cpython-3.14.6-linux-x86_64-gnu",
-        f"expected_base={shlex.quote(sys.base_prefix)}",
-    )
-    launcher = scripts / "rakuten_live_smoke_credentials_python.sh"
-    launcher.write_text(launcher_source, encoding="utf-8")
-    launcher.chmod(0o755)
-
-    expected_python = Path(sys.base_prefix) / "bin/python3.14"
-    assert sys.version_info[:3] == (3, 14, 6)
-    assert expected_python.is_file()
-    (venv_bin / "python").symlink_to(expected_python)
-    (venv_root / "pyvenv.cfg").write_text(
-        f"home = {Path(sys.base_prefix) / 'bin'}\n"
+    positive_venv = environment.repository_root / "positive-control-venv"
+    positive_bin = positive_venv / "bin"
+    positive_site = positive_venv / "lib/python3.14/site-packages"
+    positive_bin.mkdir(parents=True)
+    positive_site.mkdir(parents=True)
+    real_base = Path(sys.base_prefix)
+    (positive_bin / "python").symlink_to(real_base / "bin/python3.14")
+    (positive_venv / "pyvenv.cfg").write_text(
+        f"home = {real_base / 'bin'}\n"
         "implementation = CPython\n"
         "uv = 0.12.1\n"
         "version_info = 3.14.6\n"
@@ -1525,16 +1667,10 @@ def test_launcher_never_executes_site_package_pth_startup_hooks(
         "prompt = raos\n",
         encoding="utf-8",
     )
-
-    canary = tmp_path / "executable-pth-hook-ran"
-    (site_packages / "hostile-startup.pth").write_text(
-        "import pathlib; "
-        f"pathlib.Path({str(canary)!r}).write_text('ran', encoding='utf-8')\n",
-        encoding="utf-8",
-    )
+    (positive_site / "hostile-startup.pth").write_text(*hostile_pth, encoding="utf-8")
     positive_control = subprocess.run(
-        [os.fspath(venv_bin / "python"), "-I", "-c", "pass"],
-        cwd=tmp_path,
+        [os.fspath(positive_bin / "python"), "-I", "-c", "pass"],
+        cwd=environment.repository_root,
         check=False,
         capture_output=True,
         text=True,
@@ -1546,27 +1682,9 @@ def test_launcher_never_executes_site_package_pth_startup_hooks(
     assert canary.read_text(encoding="utf-8") == "ran"
     canary.unlink()
 
-    source_credential_script = (
-        Path(__file__).resolve().parents[2]
-        / "scripts/rakuten_live_smoke_credentials.py"
-    ).read_text(encoding="utf-8")
-    assert (
-        source_credential_script.count(
-            'EXPECTED_REPOSITORY_ROOT: Final = Path("/home/minami/rakuten")'
-        )
-        == 1
-    )
-    (scripts / "rakuten_live_smoke_credentials.py").write_text(
-        source_credential_script.replace(
-            'EXPECTED_REPOSITORY_ROOT: Final = Path("/home/minami/rakuten")',
-            f'EXPECTED_REPOSITORY_ROOT: Final = Path("{repository_root}")',
-        ),
-        encoding="utf-8",
-    )
-
     completed = subprocess.run(
-        [os.fspath(launcher), "check"],
-        cwd=tmp_path,
+        [os.fspath(environment.launcher), "check"],
+        cwd=environment.repository_root,
         check=False,
         capture_output=True,
         text=True,
@@ -1576,6 +1694,402 @@ def test_launcher_never_executes_site_package_pth_startup_hooks(
     assert completed.stdout == '{"command":"check","ok":true,"status":"ABSENT"}\n'
     assert completed.stderr == ""
     assert not canary.exists()
+
+
+@pytest.mark.parametrize(
+    "target_name",
+    (
+        "trust_root",
+        "repository_root",
+        "scripts",
+        "launcher",
+        "credential_script",
+        "venv_root",
+        "venv_bin",
+        "pyvenv_cfg",
+        "runtime_parent",
+        "expected_base",
+        "expected_bin",
+        "expected_python",
+        "expected_lib",
+        "expected_stdlib",
+        "runtime_file",
+    ),
+)
+@pytest.mark.parametrize("writable_bits", (0o020, 0o002))
+def test_launcher_rejects_every_group_or_world_writable_trust_path(
+    launcher_environment: _LauncherEnvironment,
+    target_name: str,
+    writable_bits: int,
+) -> None:
+    environment = launcher_environment
+    target = cast(Path, getattr(environment, target_name))
+    original_mode = stat.S_IMODE(target.stat().st_mode)
+    try:
+        target.chmod(original_mode | writable_bits)
+        completed = subprocess.run(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    finally:
+        target.chmod(original_mode)
+
+    assert completed.returncode == 69
+    assert completed.stdout == (
+        '{"command":"invalid","ok":false,'
+        '"reason_code":"RAKUTEN_CREDENTIAL_LAUNCHER_INVALID",'
+        '"status":"INVALID"}\n'
+    )
+    assert completed.stderr == ""
+
+
+def test_launcher_accepts_exact_owned_symlink_and_copied_environment(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    python_link = environment.venv_bin / "python"
+    assert stat.S_ISLNK(python_link.lstat().st_mode)
+    assert stat.S_IMODE(python_link.lstat().st_mode) == 0o777
+    assert os.readlink(python_link) == os.fspath(environment.expected_python)
+
+    completed = subprocess.run(
+        [os.fspath(environment.launcher), "check"],
+        cwd=environment.repository_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+
+    assert completed.returncode == 0
+    assert completed.stdout == '{"command":"check","ok":true,"status":"ABSENT"}\n'
+    assert completed.stderr == ""
+
+
+def test_launcher_rejects_newline_suffixed_python_symlink_target(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    python_link = environment.venv_bin / "python"
+    python_link.unlink()
+    python_link.symlink_to(f"{environment.expected_python}\n")
+    try:
+        completed = subprocess.run(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    finally:
+        python_link.unlink()
+        python_link.symlink_to(environment.expected_python)
+
+    assert completed.returncode == 69
+    assert completed.stdout == (
+        '{"command":"invalid","ok":false,'
+        '"reason_code":"RAKUTEN_CREDENTIAL_LAUNCHER_INVALID",'
+        '"status":"INVALID"}\n'
+    )
+    assert completed.stderr == ""
+
+
+@pytest.mark.parametrize(
+    "relative",
+    ("lib/python314.zip", "lib/libc.so.6", "lib/libpthread.so.0"),
+)
+def test_launcher_rejects_unvalidated_python_or_loader_shadow(
+    launcher_environment: _LauncherEnvironment,
+    relative: str,
+) -> None:
+    environment = launcher_environment
+    shadow = environment.expected_base / relative
+    shadow.write_bytes(b"not executable\n")
+    shadow.chmod(0o600)
+    try:
+        completed = subprocess.run(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    finally:
+        shadow.unlink()
+
+    assert completed.returncode == 69
+    assert "RAKUTEN_CREDENTIAL_LAUNCHER_INVALID" in completed.stdout
+    assert completed.stderr == ""
+
+
+def test_launcher_rejects_nested_glibc_loader_shadow(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    namespace = environment.expected_lib / "glibc-hwcaps/x86-64-v3"
+    namespace.mkdir(parents=True)
+    shadow = namespace / "libc.so.6"
+    shadow.write_bytes(b"not executable\n")
+    shadow.chmod(0o600)
+    try:
+        completed = subprocess.run(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    finally:
+        shadow.unlink()
+        namespace.rmdir()
+        namespace.parent.rmdir()
+
+    assert completed.returncode == 69
+    assert "RAKUTEN_CREDENTIAL_LAUNCHER_INVALID" in completed.stdout
+    assert completed.stderr == ""
+
+
+def test_launcher_missing_trusted_leaf_has_only_fixed_sanitized_output(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    missing = environment.venv_root / "pyvenv.cfg.missing"
+    environment.pyvenv_cfg.rename(missing)
+    try:
+        completed = subprocess.run(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    finally:
+        missing.rename(environment.pyvenv_cfg)
+
+    assert completed.returncode == 69
+    assert completed.stdout == (
+        '{"command":"invalid","ok":false,'
+        '"reason_code":"RAKUTEN_CREDENTIAL_LAUNCHER_INVALID",'
+        '"status":"INVALID"}\n'
+    )
+    assert completed.stderr == ""
+
+
+@pytest.mark.parametrize(
+    ("directory_name", "filename"),
+    tuple(
+        (directory_name, filename)
+        for directory_name in ("venv_bin", "expected_bin", "expected_lib")
+        for filename in (
+            "python._pth",
+            "python3.14._pth",
+            "libpython3.14._pth",
+            "pybuilddir.txt",
+        )
+    ),
+)
+def test_launcher_rejects_every_pre_python_path_configuration_shadow(
+    launcher_environment: _LauncherEnvironment,
+    directory_name: str,
+    filename: str,
+) -> None:
+    environment = launcher_environment
+    directory = cast(Path, getattr(environment, directory_name))
+    shadow = directory / filename
+    shadow.write_text("import site\n", encoding="utf-8")
+    shadow.chmod(0o600)
+    try:
+        completed = subprocess.run(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    finally:
+        shadow.unlink()
+
+    assert completed.returncode == 69
+    assert "RAKUTEN_CREDENTIAL_LAUNCHER_INVALID" in completed.stdout
+    assert completed.stderr == ""
+
+
+def test_launcher_sanitizes_base_executable_override_before_python_start(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    hostile_environment = dict(os.environ)
+    hostile_environment["__PYVENV_LAUNCHER__"] = "/untrusted/python"
+
+    completed = subprocess.run(
+        [os.fspath(environment.launcher), "check"],
+        cwd=environment.repository_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+        env=hostile_environment,
+    )
+
+    assert completed.returncode == 0
+    assert completed.stdout == '{"command":"check","ok":true,"status":"ABSENT"}\n'
+    assert completed.stderr == ""
+
+
+def test_launcher_rejects_symlinked_runtime_ancestor(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    stdlib = environment.expected_stdlib
+    preserved = environment.expected_lib / "python3.14-preserved"
+    stdlib.rename(preserved)
+    stdlib.symlink_to(preserved)
+    try:
+        completed = subprocess.run(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    finally:
+        stdlib.unlink()
+        preserved.rename(stdlib)
+
+    assert completed.returncode == 69
+    assert "RAKUTEN_CREDENTIAL_LAUNCHER_INVALID" in completed.stdout
+    assert completed.stderr == ""
+
+
+def test_launcher_rejects_wrong_owner_from_metadata_helper(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    original_launcher = environment.launcher.read_text(encoding="utf-8")
+    assert original_launcher.count("/usr/bin/stat -c '%f %u'") == 1
+    fake_stat = environment.repository_root / "fixture-stat"
+    fake_stat.write_text(
+        "#!/bin/bash -p\n"
+        "set -euo pipefail\n"
+        f"target={shlex.quote(os.fspath(environment.credential_script))}\n"
+        'if [[ ${!#} == "$target" ]]; then\n'
+        "  mode=$(/usr/bin/stat -c '%f' -- \"$target\")\n"
+        f"  printf '%s %s\\n' \"$mode\" {os.geteuid() + 1}\n"
+        "else\n"
+        '  exec /usr/bin/stat "$@"\n'
+        "fi\n",
+        encoding="utf-8",
+    )
+    fake_stat.chmod(0o700)
+    try:
+        environment.launcher.write_text(
+            original_launcher.replace(
+                "/usr/bin/stat -c '%f %u'",
+                f"{shlex.quote(os.fspath(fake_stat))} -c '%f %u'",
+            ),
+            encoding="utf-8",
+        )
+        environment.launcher.chmod(0o755)
+        completed = subprocess.run(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    finally:
+        environment.launcher.write_text(original_launcher, encoding="utf-8")
+        environment.launcher.chmod(0o755)
+        fake_stat.unlink()
+
+    assert completed.returncode == 69
+    assert "RAKUTEN_CREDENTIAL_LAUNCHER_INVALID" in completed.stdout
+    assert completed.stderr == ""
+
+
+def test_launcher_executes_opened_script_inode_after_path_replacement(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    original_launcher = environment.launcher.read_text(encoding="utf-8")
+    original_script = environment.credential_script.read_bytes()
+    synchronization_point = "    os.set_inheritable(script_descriptor, True)\n"
+    assert original_launcher.count(synchronization_point) == 1
+    opened = environment.repository_root / "script-opened"
+    release = environment.repository_root / "release-opened-script"
+    os.mkfifo(release, 0o600)
+    injected = (
+        f"    signal_fd = os.open({os.fspath(opened)!r}, "
+        "os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC, 0o600)\n"
+        "    os.close(signal_fd)\n"
+        f"    release_fd = os.open({os.fspath(release)!r}, os.O_RDONLY)\n"
+        "    try:\n"
+        '        if os.read(release_fd, 1) != b"x":\n'
+        "            raise OSError\n"
+        "    finally:\n"
+        "        os.close(release_fd)\n"
+    )
+    replacement = environment.scripts / "replacement-credential.py"
+    replacement.write_text('print("REPLACED")\n', encoding="utf-8")
+    replacement.chmod(0o644)
+    process: subprocess.Popen[str] | None = None
+    try:
+        environment.launcher.write_text(
+            original_launcher.replace(
+                synchronization_point,
+                injected + synchronization_point,
+            ),
+            encoding="utf-8",
+        )
+        environment.launcher.chmod(0o755)
+        process = subprocess.Popen(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        deadline = time.monotonic() + 10.0
+        while not opened.exists() and time.monotonic() < deadline:
+            time.sleep(0.01)
+        assert opened.is_file()
+        os.replace(replacement, environment.credential_script)
+        release_fd = os.open(release, os.O_WRONLY)
+        try:
+            assert os.write(release_fd, b"x") == 1
+        finally:
+            os.close(release_fd)
+        stdout, stderr = process.communicate(timeout=10)
+    finally:
+        if process is not None and process.poll() is None:
+            process.kill()
+            process.wait(timeout=10)
+        environment.launcher.write_text(original_launcher, encoding="utf-8")
+        environment.launcher.chmod(0o755)
+        environment.credential_script.write_bytes(original_script)
+        environment.credential_script.chmod(0o644)
+        if replacement.exists():
+            replacement.unlink()
+        if opened.exists():
+            opened.unlink()
+        if release.exists():
+            release.unlink()
+
+    assert process.returncode == 0
+    assert stdout == '{"command":"check","ok":true,"status":"ABSENT"}\n'
+    assert "REPLACED" not in stdout
+    assert stderr == ""
 
 
 def test_launcher_is_fixed_pinned_sanitized_and_argument_closed() -> None:
@@ -1595,14 +2109,40 @@ def test_launcher_is_fixed_pinned_sanitized_and_argument_closed() -> None:
     assert "version_info = 3.14.6" in source
     assert "and sys.flags.no_site == 1" in source
     assert "if [[ $# -ne 1 || ( $1 != setup && $1 != check ) ]]" in source
-    assert 'if ! "$venv_python" -I -S - "$repository_root"' in source
+    assert 'exec "$venv_python" -I -S - \\' in source
+    assert "-perm /022" in source
+    assert '! -uid "$effective_uid" ! -uid 0' in source
+    assert "readlink_target_with_sentinel=$(" in source
     assert (
-        'exec "$venv_python" -I -S '
-        '"$repository_root/scripts/rakuten_live_smoke_credentials.py" "$1"' in source
+        "/usr/bin/readlink -n -- \"$venv_python\" 2>/dev/null && printf '\\034'"
+        in source
+    )
+    assert (
+        "[[ $readlink_target_with_sentinel == \"$expected_python\"$'\\034' ]]" in source
+    )
+    assert "os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC" in source
+    assert "os.set_inheritable(script_descriptor, True)" in source
+    assert 'f"/proc/self/fd/{script_descriptor}"' in source
+    assert "os.execve(" in source
+    assert '"LC_ALL": "C"' in source
+    assert "sys.path == expected_path" in source
+    for path_configuration_name in (
+        "python._pth",
+        "python3.14._pth",
+        "libpython3.14._pth",
+        "pybuilddir.txt",
+    ):
+        assert path_configuration_name in source
+    for loader_namespace in ("glibc-hwcaps", "tls", "haswell", "avx512_1", "x86_64"):
+        assert loader_namespace in source
+    assert (
+        '"$repository_root/scripts/rakuten_live_smoke_credentials.py" "$1"'
+        not in source
     )
     assert '"$1"' in source
     for name in (
         "PYTHONPATH",
+        "__PYVENV_LAUNCHER__",
         "RAKUTEN_WEB_SERVICE_APPLICATION_ID",
         "RAKUTEN_WEB_SERVICE_ACCESS_KEY",
         "RAKUTEN_AFFILIATE_ID",
@@ -1613,6 +2153,8 @@ def test_launcher_is_fixed_pinned_sanitized_and_argument_closed() -> None:
         assert "unset " in source and name in source
     assert "curl" not in source
     assert "wget" not in source
+    credential_source = Path(credentials.__file__).read_text(encoding="utf-8")
+    assert "__file__" not in credential_source
 
 
 def test_python_module_has_no_network_subprocess_environment_or_runtime_reader() -> (

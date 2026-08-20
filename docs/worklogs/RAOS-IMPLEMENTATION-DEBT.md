@@ -3450,3 +3450,47 @@ original result.
   remains unresolved and `RECORDED_FIXTURE_ONLY` remains the safe default. The
   linked-worktree full scanner limitation remains `DEBT-W2-061`; no green
   full-worktree scan is claimed.
+
+### 2026-08-21 W2 / ST-0505 credential-launcher trust correction
+
+- Append-only correction: the preceding `1.2.3` checkpoint remains
+  byte-identical evidence for parent commit
+  `e0bd671583222dc57f94f8f1f068051055ed7014`. The containing follow-up advances
+  the exact contract and manifest to `1.2.4`; it does not change the two fixed
+  aliases, credential-store protocol, terminal-input rules, runtime
+  disconnection, or OD-015 safe default.
+- Trust boundary: before either pinned-Python invocation, the launcher now
+  validates the physical repository, launcher and credential-script path,
+  venv/configuration/interpreter path, resolved Python runtime, required
+  ancestors, and the complete effective standard-library tree. Required
+  owner-controlled files use the current EUID, permitted platform/runtime
+  ancestors use root or the current EUID, and every validated regular file or
+  directory rejects group/world write. The exact interpreter symlink target is
+  checked without treating a symlink's inert mode bits as target permissions.
+- Pre-interpreter hardening rejects Python `._pth`, `pybuilddir.txt`,
+  `python314.zip`, loader-library shadows including nested glibc/tls/platform
+  namespaces, and sanitizes `__PYVENV_LAUNCHER__`. The final credential script
+  is opened with `O_NOFOLLOW|O_CLOEXEC`, bound by `lstat`/`fstat` identity and
+  metadata, deliberately inherited as the sole script descriptor, and executed
+  through `/proc/self/fd`. Metadata-command failures retain fixed JSON and
+  empty stderr. The interpreter remains an exact protected pathname because
+  descriptor execution would lose the venv prefix; concurrent same-EUID
+  mutation is outside the supported execution boundary, and the system dynamic
+  loader and OS libraries remain the platform trust base.
+- Red/green evidence: before the correction, a group-writable repository root
+  still returned the successful `ABSENT` receipt. After the correction, the
+  launcher hostile selection passed 55 cases, including writable and
+  wrong-owner nodes, path replacement after descriptor binding, missing
+  metadata with no stderr, newline-suffixed interpreter targets, all applicable
+  path-configuration names, `__PYVENV_LAUNCHER__`, direct and nested loader
+  shadows, and the valid copied runtime. The full isolated ST-0505 suite passed
+  395 tests; affected ST-0502
+  passed 167 and ST-0503 passed 59. Owner generation/no-write check, bash
+  syntax, Ruff lint/format, strict mypy, configured whole-project Pyright,
+  Canonical import verification, workspace drift, and diff checks passed.
+- Remaining boundary: no credential value or real store was entered, opened,
+  read, checked, or written. No network/provider request, formal TST-016,
+  staging, publication, release, or Production action was executed. OD-015
+  remains unresolved and `RECORDED_FIXTURE_ONLY` remains the safe default. The
+  linked-worktree full scanner limitation remains `DEBT-W2-061`; no green
+  full-worktree scan is claimed.
