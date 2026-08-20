@@ -128,8 +128,8 @@ source_artifacts:
   bytes: 460
   sha256: 324a062bb99e482626fde5dfe9bbcca214f65eb6b8f07281f8b345698dab40f0
 - uri: repo://AGENTS.md
-  bytes: 43916
-  sha256: a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482
+  bytes: 54428
+  sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
 - uri: repo://Makefile
   bytes: 34123
   sha256: e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc

@@ -191,8 +191,8 @@ provenance:
     classification: REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY
     authority_source:
       uri: repo://AGENTS.md
-      bytes: 43916
-      sha256: a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482
+      bytes: 54428
+      sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
       authority: ROOT_STANDING_DEVELOPMENT_AUTHORIZATION
     current_wave3_runtime_manifest:
       uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
@@ -253,8 +253,8 @@ provenance:
       bytes: 1991
       sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
     - uri: repo://AGENTS.md
-      bytes: 43916
-      sha256: a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482
+      bytes: 54428
+      sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
     - uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
       bytes: 5776
       sha256: 2d9c599c03bcd479137729ae2cd570ff7b60337511f543821aa5df959873a5d1
@@ -302,8 +302,8 @@ provenance:
     bytes: 1991
     sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
   - uri: repo://AGENTS.md
-    bytes: 43916
-    sha256: a4b8f16d0a6ef073899381ee90597495b4264fc271bf9142f8866561f14ba482
+    bytes: 54428
+    sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
   - uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
     bytes: 5776
     sha256: 2d9c599c03bcd479137729ae2cd570ff7b60337511f543821aa5df959873a5d1
@@ -312,7 +312,7 @@ provenance:
   helper_integrity:
     uri: repo://scripts/build_st1703_low_cost_publication_pilot.py
     bytes: 54161
-    sha256: 9803e4659562e05fea66928ae50756848aae15a7bf4018975876311f7b02fe3f
+    sha256: 44d8f2ee94d8a62420a82ad241b8b260ec027baa97c5492c22dc4f393afcec81
 source_artifact_count: 13
 source_artifacts:
 - uri: repo://changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml
@@ -341,7 +341,7 @@ source_artifacts:
   sha256: ed4d9d5bd7a8d09940607393b202c92f44b633b3090a9832128756e478004d7b
 - uri: repo://scripts/build_st1703_low_cost_publication_pilot.py
   bytes: 54161
-  sha256: 9803e4659562e05fea66928ae50756848aae15a7bf4018975876311f7b02fe3f
+  sha256: 44d8f2ee94d8a62420a82ad241b8b260ec027baa97c5492c22dc4f393afcec81
 - uri: repo://tests/st1703_low_cost/conftest.py
   bytes: 454
   sha256: 6c9a3b846e574e61496c67f886b754c55eb39fbf5345849c869f7ae9f45b52a4

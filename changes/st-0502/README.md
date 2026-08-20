@@ -68,6 +68,22 @@ fixtures, and it grants them no live eligibility.
   one requested page, and exact integer `hits` from 1 through 30. Retry and
   pagination-follow-up policy limits are fixed to zero; they are not execution
   observations.
+- `keyword` follows the official 2026-07-01 Item Search input contract before
+  any URL encoding: its exact UTF-8 representation is at most 128 bytes, and
+  its terms are delimited only by one ASCII space (`U+0020`). Each half-width
+  term has at least two characters; one full-width letter or number (including
+  an ideograph) is accepted, while hiragana, katakana, punctuation, and symbol
+  terms require at least two characters. Empty terms, repeated delimiters,
+  non-ASCII separators, combining marks, controls or format characters,
+  invalid Unicode, and overlong UTF-8 fail closed. Case and exact bytes are
+  preserved without normalization.
+- `or_flag=false` preserves the official default AND behavior;
+  `or_flag=true` selects OR and is representable only with at least two valid
+  `keyword` terms. The safe subset exposes neither the separately documented
+  `NGKeyword` input nor a syntax for mixed or nested Boolean expressions. The
+  source vocabulary is the official
+  [Rakuten Ichiba Item Search API 2026-07-01 documentation](https://webservice.rakuten.co.jp/documentation/ichiba-item-search);
+  this local review and validator perform no provider call.
 - When both price bounds are present, `max_price_jpy` must be strictly greater
   than `min_price_jpy`; equal or inverted bounds fail closed.
 - Its exact sorted element allowlist is the intersection of the installed v0.4

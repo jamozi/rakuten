@@ -157,6 +157,108 @@ def test_each_installed_selector_remains_available_without_live_execution(
     assert request.retry_limit == request.pagination_followup_limit == 0
 
 
+@pytest.mark.parametrize(
+    "keyword",
+    (
+        "ab",
+        "鞄",
+        "Ａ",
+        "あい",
+        "アイ",
+        "ｱｲ",
+        "★★",
+        "a鞄",
+        "鞄a",
+        "aあ",
+        "!鞄",
+        "ab 鞄",
+        "鞄 suitcase",
+    ),
+)
+def test_keyword_accepts_only_documented_minimum_term_shapes(keyword: str) -> None:
+    request = replace(_request(), keyword=keyword)
+
+    assert request.canonical_parameters["keyword"] == keyword
+
+
+@pytest.mark.parametrize(
+    "keyword",
+    (
+        "a",
+        "1",
+        "あ",
+        "ア",
+        "ｱ",
+        "★",
+        "！",
+        " ab",
+        "ab ",
+        "ab a",
+        "a 鞄",
+        "ab  鞄",
+        "ab\t鞄",
+        "ab\u3000鞄",
+        "ab\u00a0鞄",
+        "ab\u200b鞄",
+        "a\u0301",
+        "か\u3099",
+        "★\ufe0f",
+    ),
+)
+def test_keyword_rejects_short_or_non_ascii_space_delimited_terms(
+    keyword: str,
+) -> None:
+    with pytest.raises(RakutenItemSearchFailure):
+        replace(_request(), keyword=keyword)
+
+
+def test_keyword_enforces_the_pre_encoding_utf8_byte_boundary() -> None:
+    ascii_boundary = "a" * 128
+    multibyte_boundary = "界" * 42 + "ab"
+
+    assert len(ascii_boundary.encode("utf-8")) == 128
+    assert len(multibyte_boundary.encode("utf-8")) == 128
+    assert replace(_request(), keyword=ascii_boundary).keyword == ascii_boundary
+    assert replace(_request(), keyword=multibyte_boundary).keyword == (
+        multibyte_boundary
+    )
+
+    for keyword in ("a" * 129, "界" * 42 + "abc"):
+        assert len(keyword.encode("utf-8")) == 129
+        with pytest.raises(RakutenItemSearchFailure):
+            replace(_request(), keyword=keyword)
+
+
+def test_keyword_case_and_bytes_are_preserved_without_normalization() -> None:
+    upper = replace(_request(), keyword="AB")
+    lower = replace(_request(), keyword="ab")
+    full_width = replace(_request(), keyword="Ａ")
+
+    assert upper.canonical_parameters["keyword"] == "AB"
+    assert lower.canonical_parameters["keyword"] == "ab"
+    assert full_width.canonical_parameters["keyword"] == "Ａ"
+    assert full_width.canonical_json != upper.canonical_json
+    assert upper.canonical_json != lower.canonical_json
+    assert upper.fingerprint != lower.fingerprint
+
+
+def test_or_flag_is_available_only_for_multiple_valid_keyword_terms() -> None:
+    and_request = replace(_request(), keyword="ab 鞄", or_flag=False)
+    or_request = replace(_request(), keyword="ab 鞄", or_flag=True)
+
+    assert and_request.canonical_parameters["or_flag"] is False
+    assert or_request.canonical_parameters["or_flag"] is True
+    assert and_request.canonical_json != or_request.canonical_json
+    assert and_request.fingerprint != or_request.fingerprint
+
+    for changes in (
+        {"keyword": "ab", "or_flag": True},
+        {"keyword": None, "shop_code": "synthetic-shop", "or_flag": True},
+    ):
+        with pytest.raises(RakutenItemSearchFailure):
+            replace(_request(), **changes)
+
+
 def test_attribute_output_requires_an_exact_nonzero_genre_selector() -> None:
     request = replace(
         _request(),
@@ -398,8 +500,10 @@ def test_provider_parameter_surface_has_no_rate_or_active_review_filter() -> Non
             "max_affiliate_rate",
             "review_average",
             "review_count",
+            "ng_keyword",
         }
     )
     assert not any("affiliate_rate" in key for key in parameters)
     assert not any(key in parameters for key in ("review_average", "review_count"))
+    assert not any(key in parameters for key in ("ng_keyword", "NGKeyword"))
     assert "purpose" not in parameters

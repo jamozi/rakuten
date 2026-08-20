@@ -7,6 +7,7 @@ from enum import Enum
 import hashlib
 import json
 from typing import NoReturn, SupportsIndex
+import unicodedata
 
 from raos.domain.catalog.rakuten_item_search import fail_item_search
 
@@ -90,6 +91,42 @@ def _bounded_text(value: object, *, maximum: int) -> str:
     return value
 
 
+def _keyword_terms(value: object) -> tuple[str, ...]:
+    if type(value) is not str or value != value.strip():
+        fail_item_search()
+    encoding_invalid = False
+    try:
+        encoded = value.encode("utf-8", errors="strict")
+    except UnicodeError:
+        encoding_invalid = True
+        encoded = b""
+    if encoding_invalid or not 1 <= len(encoded) <= 128:
+        fail_item_search()
+    if any(
+        character != " " and unicodedata.category(character)[0] in {"C", "M", "Z"}
+        for character in value
+    ):
+        fail_item_search()
+
+    terms = tuple(value.split(" "))
+    for term in terms:
+        if len(term) >= 2:
+            continue
+        if len(term) != 1:
+            fail_item_search()
+        character = term[0]
+        category = unicodedata.category(character)
+        name = unicodedata.name(character, "")
+        if (
+            unicodedata.east_asian_width(character) not in {"F", "W"}
+            or category[0] not in {"L", "N"}
+            or "HIRAGANA" in name
+            or "KATAKANA" in name
+        ):
+            fail_item_search()
+    return terms
+
+
 def _exact_int(value: object, *, minimum: int, maximum: int) -> int:
     if type(value) is not int or not minimum <= value <= maximum:
         fail_item_search()
@@ -125,8 +162,9 @@ class RakutenItemSearchLiveRequestV1(_RedactedValue):
             fail_item_search()
         if type(self.format_version) is not int or self.format_version != 2:
             fail_item_search()
+        keyword_terms: tuple[str, ...] | None = None
         if self.keyword is not None:
-            _bounded_text(self.keyword, maximum=128)
+            keyword_terms = _keyword_terms(self.keyword)
         if self.shop_code is not None:
             _bounded_text(self.shop_code, maximum=128)
         if self.item_code is not None:
@@ -173,6 +211,8 @@ class RakutenItemSearchLiveRequestV1(_RedactedValue):
         ):
             if type(flag) is not bool:
                 fail_item_search()
+        if self.or_flag and (keyword_terms is None or len(keyword_terms) < 2):
+            fail_item_search()
         if self.has_review_only:
             fail_item_search()
         if self.attribute_flag and (self.genre_id is None or self.genre_id == 0):

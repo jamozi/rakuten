@@ -537,14 +537,19 @@ def test_transport_wrapper_is_exact_origin_pinned_and_fail_closed() -> None:
 def test_repository_policy_keeps_proposals_unapproved_and_live_separate() -> None:
     policy = (REPOSITORY_ROOT / "AGENTS.md").read_text(encoding="utf-8")
     normalized_policy = " ".join(policy.split())
-    assert "exact `https://chatgpt.com` origin" in policy
-    assert "maximum available Pro" in policy
-    assert "types only the MCP secret name" in normalized_policy
+    assert "正確な `https://chatgpt.com` origin" in policy
+    assert "利用可能な最大の Pro effort" in normalized_policy
+    assert "MCP secret name のみを type する" in normalized_policy
     assert (
-        "no codex restart or per-run exported variable" in normalized_policy.casefold()
+        "Codex の restart や run ごとの exported variable は 必要ない"
+        in normalized_policy
     )
     assert "`UNAPPROVED_PROPOSAL`" in policy
-    assert "Neither Pro content nor a handoff resolves a Canonical Open Decision" in (
-        normalized_policy
+    assert (
+        "Pro content も handoff も、それ自体では Canonical Open Decision を解決しない"
+        in normalized_policy
     )
-    assert "Fixture/dry-run evidence, a live smoke, and formal" in normalized_policy
+    assert (
+        "fixture/dry-run evidence、live smoke、および formal validation は別個"
+        in normalized_policy
+    )
