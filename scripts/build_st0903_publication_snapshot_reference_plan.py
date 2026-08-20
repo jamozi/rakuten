@@ -58,7 +58,7 @@ HELPER_SHA256: Final = (
     "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
 )
 CONTRACT_SHA256: Final = (
-    "83e07087c67e28213237f7ab1f522594e72d2b33cbd3e17d50140f67d4222e28"
+    "6e9a1fc7f00517f89b0e0c3ff7816595e0455ba73d73d11c613d623312a49fca"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -240,7 +240,7 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0202",
         "changes/st-0202/contracts/local-object-storage.v1.yaml",
-        "2558fe98bd560e3ae5f082aca739d18d35a14a0425d24164baff648b91cce5e5",
+        "3e9208a9fd270e36729b561cba7c853da1aabdd33ef2657cdb01fd33ac333b2e",
     ),
     (
         "ST-0305",

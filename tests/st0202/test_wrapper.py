@@ -180,7 +180,9 @@ if payload and payload[0] == "inspect":
     if ".Config.Image" in template:
         print("seaweedfs:latest" if mode == "wrong_image" else {EXPECTED_IMAGE!r})
     elif ".Image" in template:
-        print("sha256:" + "f" * 64 if mode == "wrong_config" else {EXPECTED_CONFIG_DIGEST!r})
+        print("sha256:" + "f" * 64 if mode == "wrong_config" else {
+        EXPECTED_CONFIG_DIGEST!r
+    })
     elif ".HostConfig.Init" in template:
         print("false" if mode == "runtime_init_false" else "true")
     else:
@@ -206,29 +208,90 @@ if payload and payload[0] == "port":
         print(f"8333/tcp -> 127.0.0.1:{{published_port}}")
     raise SystemExit(0)
 if payload and payload[0] == "exec":
-    if mode == "process_probe_nonzero":
-        raise SystemExit(44)
-    if mode == "process_probe_blank":
-        print("")
-    elif mode == "process_probe_extra_output":
-        print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1\\nunexpected")
-    elif mode in {{
-        "init_uid_process",
-        "wrong_init_executable",
-        "absent_server_child",
-        "extra_server_child",
-        "malformed_child_inventory",
-        "wrong_server_ppid",
-        "mixed_server_uids",
-        "mixed_server_gids",
-        "server_capability",
-        "wrong_server_executable",
-        "zombie_server",
-        "server_pid_churn",
-    }}:
-        print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_REJECTED")
+    container_id = "a" * 64
+    root_shape = len(payload) == 6 and payload[1:5] == [
+        container_id,
+        "/bin/sh",
+        "-eu",
+        "-c",
+    ]
+    same_uid_shape = len(payload) == 8 and payload[1:7] == [
+        "--user",
+        "1000:1000",
+        container_id,
+        "/bin/sh",
+        "-eu",
+        "-c",
+    ]
+    if not root_shape and not same_uid_shape:
+        raise SystemExit(45)
+    if root_shape:
+        if mode in {"process_probe_nonzero", "process_probe_nonzero_with_token"}:
+            if mode == "process_probe_nonzero_with_token":
+                print("RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1")
+            raise SystemExit(44)
+        if mode == "process_probe_blank":
+            print("")
+        elif mode == "process_probe_extra_output":
+            print("RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1\\nunexpected")
+        elif mode == "process_probe_padded":
+            print(" RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1 ")
+        elif mode == "process_probe_swapped_token":
+            print("RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1")
+        elif mode == "process_probe_wrong_token":
+            print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_UNKNOWN")
+        elif mode in {{
+            "init_uid_process",
+            "wrong_init_executable",
+            "absent_server_child",
+            "extra_server_child",
+            "malformed_child_inventory",
+            "wrong_server_ppid",
+            "mixed_server_uids",
+            "mixed_server_gids",
+            "server_capability",
+            "zombie_server",
+            "server_pid_churn",
+        }}:
+            print("RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_REJECTED")
+        else:
+            print("RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1")
     else:
-        print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1")
+        if mode in {
+        (
+            "same_uid_process_probe_nonzero",
+            "same_uid_process_probe_nonzero_with_token",
+        )
+    }:
+            if mode == "same_uid_process_probe_nonzero_with_token":
+                print("RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1")
+            raise SystemExit(46)
+        if mode == "same_uid_process_probe_blank":
+            print("")
+        elif mode == "same_uid_process_probe_extra_output":
+            print("RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1\\nunexpected")
+        elif mode == "same_uid_process_probe_padded":
+            print(" RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1 ")
+        elif mode == "same_uid_process_probe_swapped_token":
+            print("RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1")
+        elif mode == "same_uid_process_probe_wrong_token":
+            print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_UNKNOWN")
+        elif mode in {{
+            "wrong_server_executable",
+            "same_uid_absent_server_child",
+            "same_uid_extra_server_child",
+            "same_uid_malformed_child_inventory",
+            "same_uid_wrong_server_ppid",
+            "same_uid_mixed_server_uids",
+            "same_uid_mixed_server_gids",
+            "same_uid_server_capability",
+            "same_uid_wrong_server_executable",
+            "same_uid_zombie_server",
+            "same_uid_server_pid_churn",
+        }}:
+            print("RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_REJECTED")
+        else:
+            print("RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1")
     raise SystemExit(0)
 if not payload or payload[0] != "compose":
     print("unexpected Docker operation", file=sys.stderr)
@@ -869,8 +932,29 @@ def test_persistent_commands_accept_fixed_range_without_ephemeral_override(
         ("zombie_server", "process model differs"),
         ("server_pid_churn", "process model differs"),
         ("process_probe_nonzero", "could not be verified"),
+        ("process_probe_nonzero_with_token", "could not be verified"),
         ("process_probe_blank", "process model differs"),
         ("process_probe_extra_output", "process model differs"),
+        ("process_probe_padded", "process model differs"),
+        ("process_probe_swapped_token", "process model differs"),
+        ("process_probe_wrong_token", "process model differs"),
+        ("same_uid_absent_server_child", "process model differs"),
+        ("same_uid_extra_server_child", "process model differs"),
+        ("same_uid_malformed_child_inventory", "process model differs"),
+        ("same_uid_wrong_server_ppid", "process model differs"),
+        ("same_uid_mixed_server_uids", "process model differs"),
+        ("same_uid_mixed_server_gids", "process model differs"),
+        ("same_uid_server_capability", "process model differs"),
+        ("same_uid_wrong_server_executable", "process model differs"),
+        ("same_uid_zombie_server", "process model differs"),
+        ("same_uid_server_pid_churn", "process model differs"),
+        ("same_uid_process_probe_nonzero", "could not be verified"),
+        ("same_uid_process_probe_nonzero_with_token", "could not be verified"),
+        ("same_uid_process_probe_blank", "process model differs"),
+        ("same_uid_process_probe_extra_output", "process model differs"),
+        ("same_uid_process_probe_padded", "process model differs"),
+        ("same_uid_process_probe_swapped_token", "process model differs"),
+        ("same_uid_process_probe_wrong_token", "process model differs"),
         ("wrong_version", "runtime version differs"),
         ("extra_running", "not the sole requested running service"),
     ],
@@ -884,9 +968,55 @@ def test_runtime_identity_failures_are_rejected(
     assert result.returncode != 0
     assert message in result.stderr
     assert "PASS" not in result.stdout
+    process_execs = [row for row in _rows(log) if row["argv"][2:3] == ["exec"]]
+    root_probe_failures = {
+        "init_uid_process",
+        "wrong_init_executable",
+        "absent_server_child",
+        "extra_server_child",
+        "malformed_child_inventory",
+        "wrong_server_ppid",
+        "mixed_server_uids",
+        "mixed_server_gids",
+        "server_capability",
+        "zombie_server",
+        "server_pid_churn",
+        "process_probe_nonzero",
+        "process_probe_nonzero_with_token",
+        "process_probe_blank",
+        "process_probe_extra_output",
+        "process_probe_padded",
+        "process_probe_swapped_token",
+        "process_probe_wrong_token",
+    }
+    same_uid_probe_failures = {
+        "wrong_server_executable",
+        "same_uid_absent_server_child",
+        "same_uid_extra_server_child",
+        "same_uid_malformed_child_inventory",
+        "same_uid_wrong_server_ppid",
+        "same_uid_mixed_server_uids",
+        "same_uid_mixed_server_gids",
+        "same_uid_server_capability",
+        "same_uid_wrong_server_executable",
+        "same_uid_zombie_server",
+        "same_uid_server_pid_churn",
+        "same_uid_process_probe_nonzero",
+        "same_uid_process_probe_nonzero_with_token",
+        "same_uid_process_probe_blank",
+        "same_uid_process_probe_extra_output",
+        "same_uid_process_probe_padded",
+        "same_uid_process_probe_swapped_token",
+        "same_uid_process_probe_wrong_token",
+    }
+    if mode in root_probe_failures:
+        assert len(process_execs) == 1
+    elif mode in same_uid_probe_failures:
+        assert len(process_execs) == 2
     if (
         mode == "runtime_init_false"
         or mode.startswith("process_probe_")
+        or mode.startswith("same_uid_")
         or mode
         in {
             "init_uid_process",
@@ -909,24 +1039,150 @@ def test_runtime_identity_failures_are_rejected(
         )
 
 
-def test_process_probe_is_closed_exact_and_does_not_inspect_sensitive_proc_data() -> (
+def test_process_probes_are_closed_exact_and_do_not_inspect_sensitive_proc_data() -> (
     None
 ):
     source = WRAPPER.read_text(encoding="utf-8")
     assert "{{.HostConfig.Init}}" in source
-    assert 'run_docker exec "$container_id" /bin/sh -eu -c' in source
-    assert "/proc/1/task/1/children" in source
-    assert '[ "$candidate" = "$observer_pid" ] && continue' in source
-    assert '[ "$status_uids" = 0:0:0:0 ]' in source
-    assert '[ "$status_gids" = 0:0:0:0 ]' in source
-    assert '[ "$status_uids" = 1000:1000:1000:1000 ]' in source
-    assert '[ "$status_gids" = 1000:1000:1000:1000 ]' in source
-    assert '[ "$status_cap_eff" = 0000000000000000 ]' in source
-    assert '[ "$server_executable" = /usr/bin/weed ]' in source
-    assert '[ "$process_starttime" = "$first_starttime" ]' in source
-    assert "RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1" in source
-    assert "/proc/*/environ" not in source
-    assert "/proc/*/cmdline" not in source
+    root_probe = source.split(
+        'if ! root_process_model=$(run_docker exec "$container_id" /bin/sh -eu -c \'',
+        1,
+    )[1].split("' 2>/dev/null); then", 1)[0]
+    server_probe = source.split(
+        "if ! server_process_model=$(run_docker exec --user 1000:1000 "
+        '"$container_id" /bin/sh -eu -c \'',
+        1,
+    )[1].split("' 2>/dev/null); then", 1)[0]
+
+    assert root_probe.count("/proc/1/task/1/children") == 1
+    assert root_probe.count('[ "$candidate" = "$observer_pid" ] && continue') == 1
+    assert root_probe.count('[ "$status_uids" = 0:0:0:0 ]') == 1
+    assert root_probe.count('[ "$status_gids" = 0:0:0:0 ]') == 1
+    assert root_probe.count('[ "$status_uids" = 1000:1000:1000:1000 ]') == 2
+    assert root_probe.count('[ "$status_gids" = 1000:1000:1000:1000 ]') == 2
+    assert root_probe.count('[ "$status_cap_eff" = 0000000000000000 ]') == 2
+    assert root_probe.count('load_status "/proc/$') == 2
+    assert root_probe.count('load_starttime "$') == 2
+    assert root_probe.count("readlink /proc/1/exe") == 1
+    assert "server_executable" not in root_probe
+    assert '"/proc/$first_server_pid/exe"' not in root_probe
+    assert '"/proc/$server_pid/exe"' not in root_probe
+    assert (
+        root_probe.count('printf "%s\\n" RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1')
+        == 1
+    )
+
+    assert server_probe.count("/proc/1/task/1/children") == 1
+    assert server_probe.count('[ "$candidate" = "$observer_pid" ] && continue') == 1
+    assert server_probe.count('[ "$status_uids" = 1000:1000:1000:1000 ]') == 2
+    assert server_probe.count('[ "$status_gids" = 1000:1000:1000:1000 ]') == 2
+    assert server_probe.count('[ "$status_cap_eff" = 0000000000000000 ]') == 2
+    assert server_probe.count('load_status "/proc/$') == 2
+    assert server_probe.count('load_starttime "$') == 2
+    assert server_probe.count('server_executable=$(readlink "/proc/$') == 2
+    assert server_probe.count('[ "$server_executable" = /usr/bin/weed ]') == 2
+    assert server_probe.count('[ "$process_starttime" = "$first_starttime" ]') == 1
+    assert (
+        server_probe.count('printf "%s\\n" RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1')
+        == 1
+    )
+
+    for probe in (root_probe, server_probe):
+        assert "/environ" not in probe
+        assert "/cmdline" not in probe
+        assert "docker top" not in probe
+        assert "CAP_SYS_PTRACE" not in probe
+        assert "--cap-add" not in probe
+        assert "--privileged" not in probe
+        assert "/proc:/proc" not in probe
+
+
+def test_process_probe_command_shape_and_order_are_exact(tmp_path: Path) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path)
+    result = _run(wrapper, docker, "up", tmp_path)
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+    process_execs = [row["argv"] for row in _rows(log) if row["argv"][2:3] == ["exec"]]
+    assert len(process_execs) == 2
+    container_id = "a" * 64
+    assert process_execs[0][:7] == [
+        "--host",
+        "unix:///var/run/docker.sock",
+        "exec",
+        container_id,
+        "/bin/sh",
+        "-eu",
+        "-c",
+    ]
+    assert len(process_execs[0]) == 8
+    assert process_execs[1][:9] == [
+        "--host",
+        "unix:///var/run/docker.sock",
+        "exec",
+        "--user",
+        "1000:1000",
+        container_id,
+        "/bin/sh",
+        "-eu",
+        "-c",
+    ]
+    assert len(process_execs[1]) == 10
+
+
+@pytest.mark.parametrize(
+    ("old", "new"),
+    [
+        (
+            'exec --user 1000:1000 "$container_id"',
+            'exec "$container_id"',
+        ),
+        (
+            'exec --user 1000:1000 "$container_id"',
+            'exec --user 1001:1000 "$container_id"',
+        ),
+        (
+            'exec --user 1000:1000 "$container_id"',
+            'exec "$container_id" --user 1000:1000',
+        ),
+        (
+            'exec --user 1000:1000 "$container_id"',
+            'exec --user 1000:1000 --privileged "$container_id"',
+        ),
+    ],
+)
+def test_same_uid_probe_rejects_missing_wrong_or_malformed_user_shape(
+    tmp_path: Path, old: str, new: str
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    source = wrapper.read_text(encoding="utf-8")
+    assert source.count(old) == 1
+    wrapper.write_text(source.replace(old, new, 1), encoding="utf-8")
+    docker, log = _fake_docker(tmp_path)
+    result = _run(wrapper, docker, "up", tmp_path)
+    assert result.returncode != 0
+    assert "PASS" not in result.stdout
+    assert not any(
+        _compose_operation(row) == "exec" and "/usr/bin/weed" in row["argv"]
+        for row in _rows(log)
+    )
+
+
+@pytest.mark.parametrize(
+    "mode",
+    ["process_probe_wrong_token", "same_uid_process_probe_wrong_token"],
+)
+def test_process_probe_failure_stops_before_version_and_fixture(
+    tmp_path: Path, mode: str
+) -> None:
+    wrapper, fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path, mode)
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode != 0
+    assert not any(
+        _compose_operation(row) == "exec" and "/usr/bin/weed" in row["argv"]
+        for row in _rows(log)
+    )
+    assert "acceptance" not in [row["argv"][0] for row in _rows(fixture_log)]
 
 
 def test_unreviewed_compose_service_is_rejected(tmp_path: Path) -> None:

@@ -47,26 +47,26 @@ stack:
 source_artifact_count: 30
 source_artifacts:
 - uri: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
-  bytes: 9205
-  sha256: 2558fe98bd560e3ae5f082aca739d18d35a14a0425d24164baff648b91cce5e5
+  bytes: 9689
+  sha256: 3e9208a9fd270e36729b561cba7c853da1aabdd33ef2657cdb01fd33ac333b2e
 - uri: repo://changes/st-0202/README.md
-  bytes: 10442
-  sha256: 70ad03a33916f477222fd6f716af996bb26b3012905c1efad108d8d3ff5b7786
+  bytes: 11743
+  sha256: 530ebea4e9613f3a06d2230d82aca552da35b7e7372cca7314a35115a097a9aa
 - uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
   bytes: 9112
   sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
 - uri: repo://docs/execplans/ST-0202.md
-  bytes: 8700
-  sha256: f22b80e5bd435053a5d85778c5c0dc6f471055f3adbec7de2f90d119abb02f7c
+  bytes: 11580
+  sha256: d8a01a7f00f78d3e4b63f8f0f429a0aa21eabed3b1127555dd7467c7fbaa83ab
 - uri: repo://docs/worklogs/ST-0202.md
-  bytes: 12796
-  sha256: c8f1c16b0c3785e597d18b0aadf064156a9765556e326d30c2c5eb3f58ce9796
+  bytes: 14929
+  sha256: 0af4cebdff30352bb04ae3578a04e269300dd61aa553e1c1386171d6caf51d05
 - uri: repo://changes/st-0201/manifest.yaml
   bytes: 5607
   sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
 - uri: repo://scripts/build_local_compose.py
   bytes: 34986
-  sha256: 3b19aedfdab564ed974806b4f267e62d8e2084f22cc5b95565b37d9f8a6a994b
+  sha256: f2f0864dbc488838c812fca4969c35df3239f85d59477ee9efa8423432164527
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -74,8 +74,8 @@ source_artifacts:
   bytes: 12609
   sha256: 09e0d1fbb3b7a8a5f702c47fa558528c9f13adfb8dbdb485f2bb0de3bc2a665e
 - uri: repo://scripts/object_storage_service.sh
-  bytes: 27834
-  sha256: c05661474b4755732794e84c66a0476c2010eb4a409616bc23b1ade7e9ce68d7
+  bytes: 31873
+  sha256: b78e275d71e0000ac97c13a8e5ce0784fd460934acfd988e355cc9651df4536d
 - uri: repo://scripts/object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -92,23 +92,23 @@ source_artifacts:
   bytes: 10845
   sha256: e32afefa7070ac148d8d5a953624e61e455b142af0c8c81a76fa1df70edf5d09
 - uri: repo://tests/st0201/test_wrapper.py
-  bytes: 17361
-  sha256: 79398040a01d02a46e985ba37e9895c815097dbe2e3790172a58607c3d1384d8
+  bytes: 18844
+  sha256: 6857ff30a797e29c65e7a371449aea622b7d358fa1940adbbe7ad8807f538039
 - uri: repo://tests/st0202/conftest.py
-  bytes: 16098
-  sha256: 13f5b543d0846d96a0d4540b863fed63539f7e8ec63d99dd1ebaf354362a8946
+  bytes: 16779
+  sha256: 53f5383ef11a58ed05a704a9324af0dab3ceca1dc5eb76ee93d59b418c17b823
 - uri: repo://tests/st0202/test_contract.py
-  bytes: 16307
-  sha256: 865b165482c2b96efc0788896caea39e16af6c2e4f55e4faa352fbf1f4287160
+  bytes: 17005
+  sha256: 3a8a13ef6c39aff1162935ca5cb1a0ab3ccfaf027131d89c9f64ce7fa4b0e8f6
 - uri: repo://tests/st0202/test_fixture.py
   bytes: 14906
   sha256: 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
 - uri: repo://tests/st0202/test_negative_cases.py
-  bytes: 15563
-  sha256: 28bc08d6ea45582169415c49090e209508a114d696b462f70d24011689ca2feb
+  bytes: 17268
+  sha256: d1f663b4252ab416ba4d949e454bef3bcd20bff8847fceec25369c8714b5144e
 - uri: repo://tests/st0202/test_wrapper.py
-  bytes: 37795
-  sha256: 86bda35457f4e1dba26131ee30c81b38291c4a87ab8282b6bb33612df86390b5
+  bytes: 48015
+  sha256: 410b9d377d0c766d20c7cccd4aed9324222343514b01529a1cbf44669d5447ee
 - uri: repo://.github/workflows/ci.yml
   bytes: 20122
   sha256: 06872527682949b0fdfbb3a1e116fae205cd758f58fb5c233ab075075df0c647
@@ -117,7 +117,7 @@ source_artifacts:
   sha256: c24692fb91624e02ef4da3367b593ca7abfd9989b11ea06d9fe4ab6f4a51edae
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: a9076d422a3166afef1d27e20da13b1f314b7bb3753b50ef2c561e3102956a3a
+  sha256: 22e0837ab25ccf58ff0df073f63f4a3ff6315b41ec1ba195413b1b7a14dc68b0
 - uri: repo://tests/st0106/test_workflow_contract.py
   bytes: 36698
   sha256: bcaee57eb104c6e090fb828162fd5799bfb7d469ee2351339e2415ea38884e58

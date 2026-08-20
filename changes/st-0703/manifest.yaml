@@ -7,10 +7,10 @@ document:
   generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0703_recorded_adapter.py
 provenance:
   contract_uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
-  contract_sha256: 28c565107a81e3a0aece95d567614bd005c069bee9abc0d9bf860daa383db44b
+  contract_sha256: debc1e5ce1bdc1e68dbb4dbcd09a893fd8626321c91cd78ba0893103631011a0
   handoff_uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v5.yaml
   fixture_registry_uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
-  fixture_registry_sha256: e7cc84ab72b673c543dc13ec2bd7aff51be565a7200f6c2b756ef6e4e5a7ba03
+  fixture_registry_sha256: 5d2632e8cd49d8a8063fbf5582241789ae150613477fc761349bf23a9b048fc9
   predecessor_story_ids:
   - ST-0204
   - ST-0701
@@ -32,7 +32,7 @@ source_artifacts:
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 - uri: repo://changes/st-0204/manifest.yaml
   bytes: 5976
-  sha256: 98bff85508e4fbcd3806f6dcd7740a81171451226890795d393479cfe8c92e62
+  sha256: a92a82aae9f1ff690787d4b744b5d5b433d5996fe82a7ba8022e03a624590c45
 - uri: repo://changes/st-0701/manifest.yaml
   bytes: 15114
   sha256: ccd2231f3aa6cc0b90c906af8b746444583db3b084af6210d23a989c802b88b2
@@ -77,7 +77,7 @@ source_artifacts:
   sha256: 18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c
 - uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
   bytes: 15689
-  sha256: 28c565107a81e3a0aece95d567614bd005c069bee9abc0d9bf860daa383db44b
+  sha256: debc1e5ce1bdc1e68dbb4dbcd09a893fd8626321c91cd78ba0893103631011a0
 - uri: repo://changes/st-0703/fixtures/recorded/error-rate-limit-429.json
   bytes: 1736
   sha256: e0ce4372d287766cf4b5f3ec1f0afcaf17b49dc41939c379e64c4773dac2eb72
@@ -140,7 +140,7 @@ source_artifacts:
   sha256: 3b4ccb19ba26793251b938954c736fdc8be871d618312d3eea2d6a4eff1a5c62
 - uri: repo://scripts/build_st0703_recorded_adapter.py
   bytes: 78521
-  sha256: 92066d1c48761291cccd807a1092c3dccee31e56f639a2e6ee43c5df5a67b1a4
+  sha256: a667559c67ab6e6925da46cbe50856d53fcffb30572a8eba5f31a0aab7175b21
 - uri: repo://scripts/ci_job.sh
   bytes: 7456
   sha256: 6f93f7ceeacf1ed69158adc6d0e9176ec658cd1a71d6db05fb90d84a1570a067
@@ -161,7 +161,7 @@ source_artifacts:
   sha256: 3912a42b5a3417901c555db9fabdc2c96cfa29d8f1812f8939ff6b360861203b
 - uri: repo://tests/st0703/test_generation.py
   bytes: 58129
-  sha256: 951f3319a401be6db36a0e0ed910f52265bdab497d33425d0841db2a6802898c
+  sha256: aa6d9f241ec1a1b24631f3d639ea474e33e3f8679ec97b31840102a5d099b492
 - uri: repo://tests/st0703/test_implementation_manifest.py
   bytes: 2343
   sha256: 6a2f721e321227f2e97f30fad67605485d69a11431f1987b801f9aa51d6c389b
@@ -178,7 +178,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
   bytes: 5547
-  sha256: e7cc84ab72b673c543dc13ec2bd7aff51be565a7200f6c2b756ef6e4e5a7ba03
+  sha256: 5d2632e8cd49d8a8063fbf5582241789ae150613477fc761349bf23a9b048fc9
 manifest_self_integrity:
   included_in_source_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check-installed

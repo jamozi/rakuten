@@ -208,6 +208,21 @@ def test_runtime_requires_authenticated_versioned_integrity_fixture(
     assert runtime["expected_platform"] == "linux/amd64"
     process_model = runtime["expected_process_model"]
     assert process_model["host_config_init"] is True
+    assert process_model["observation"] == "CONTAINER_PROCFS_SPLIT_UID"
+    assert process_model["observer_exclusion"] == "EXACT_SELF_PID_ONLY_PER_PROBE"
+    assert process_model["probes"] == {
+        "root": {
+            "docker_exec_user": "DEFAULT_CONTAINER_ROOT",
+            "server_executable_read": "FORBIDDEN_CROSS_UID",
+            "success_token": "RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1",
+        },
+        "same_uid_server": {
+            "docker_exec_user": "1000:1000",
+            "independent_child_resolution": "REQUIRED",
+            "server_executable_read": "REQUIRED_SAME_UID",
+            "success_token": "RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1",
+        },
+    }
     assert process_model["init"] == {
         "pid": 1,
         "parent_pid": 0,

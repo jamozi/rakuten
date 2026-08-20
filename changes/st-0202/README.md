@@ -22,6 +22,14 @@ the S3 endpoint on loopback. It is not a production object-store definition.
   became healthy. The wrapper then incorrectly treated the root Docker init at
   PID 1 as the SeaweedFS process and stopped before the exact version or
   authenticated fixture checks
+- Hosted Storage attempt `32372018897` / job `96434544048`:
+  `FAILED_BEFORE_ACCEPTANCE`; init identity, the sole-child relation, server
+  UID/GID, zero-capability, state, and churn predicates all passed before the
+  root observer rejected the server executable identity
+- Hosted Storage attempt `32372405468` / job `96435870237`:
+  `FAILED_BEFORE_ACCEPTANCE`; the refined bounded probe established that the
+  root observer could not read the UID-1000 server executable link. Exact
+  version and authenticated fixture checks remained unexecuted
 - Authenticated put/get/version fixture: `NOT_EXECUTED`
 - Object-lock and version-delete regression fixture: `NOT_EXECUTED`
 - Container vulnerability scan: `NOT_EXECUTED`
@@ -91,14 +99,23 @@ publication is fixed to `127.0.0.1`.
 Because the reviewed service retains `init: true`, Docker supplies the root
 `/sbin/docker-init` process at PID 1. The entrypoint privilege drop produces
 the sole service child beneath it. After readiness, the wrapper verifies
-`.HostConfig.Init=true` and a closed container-`/proc` model: root init PID 1;
-exactly one direct service child after excluding only the probe's own PID; and
-that child at PPid 1 with all four UID and GID values equal to 1000, zero
-effective capabilities, a non-zombie state, and executable `/usr/bin/weed`.
-It re-reads the child inventory, status, start time, and executable before
-emitting one fixed success token. Missing, extra, malformed, changed, or
-unexpected process material fails without printing process data or inspecting
-process environments or command lines.
+`.HostConfig.Init=true` through two closed container-`/proc` probes. The first
+probe runs as container root and verifies exact init PID/PPID/UID/GID/state and
+`/sbin/docker-init`, plus the sole direct server child's PID/PPID, all four UID
+and GID values at 1000, zero effective capabilities, non-zombie state, and
+start time. It repeats child inventory, status, and start time, but deliberately
+does not read the cross-UID server executable link.
+
+The second probe uses exact Docker exec user `1000:1000`, independently
+resolves the sole server child after excluding only its own observer PID, and
+verifies the same server PID/PPID/UID/GID/capability/state/start-time shape plus
+exact executable `/usr/bin/weed`. It repeats the child inventory, status,
+executable, and start time before emitting its own fixed success token. Linux
+guards `/proc/<pid>/exe` reads with ptrace access checks, so the split preserves
+the unprivileged container while making executable identity a same-UID
+observation. Both probes reject nonzero, blank, extra, or unknown output. They
+print no process values, pass no dynamic PID or start time, and inspect neither
+process environments nor command lines.
 
 The generated root Compose remains the persistent contract: long syntax fixes
 `host_ip` to `127.0.0.1` and publishes the one operator-selected decimal port.
@@ -168,7 +185,9 @@ object-lock/version-delete behavior, cleanup, and the required container
 vulnerability scan. Formal TST-014 belongs to the canonical CI environment.
 None of these runtime results is claimed by the contract or local unit tests.
 Hosted attempt `31848672728` established that the disposable bridge permits the
-reviewed Engine to assign and report the loopback mapping. It did not reach the
-exact runtime version or authenticated fixture because of the superseded PID 1
-observation. A new hosted Storage run of this exact process-model correction is
-required; local fake-Docker coverage is not that evidence.
+reviewed Engine to assign and report the loopback mapping. Attempts
+`32372018897` and `32372405468` then established the exact remaining boundary:
+the root no-capability observer cannot read the privilege-dropped UID-1000
+server executable link even though the other topology and identity predicates
+pass. A new hosted Storage run of the split root/same-UID process-model
+correction is required; local fake-Docker coverage is not that evidence.
