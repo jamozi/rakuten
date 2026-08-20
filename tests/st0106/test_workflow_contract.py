@@ -30,6 +30,45 @@ EXPECTED_REVIEWED_FINDINGS_APPROVAL_BYTES = 5524
 EXPECTED_REVIEWED_FINDINGS_APPROVAL_SHA256 = (
     "b683ae3b3b7312bd4ce04fe2c796f1157542f72c1b1bca79919a71b3a7c1acd9"
 )
+V2_REVIEWED_FINDINGS_RELATIVE_PATH = (
+    "changes/st-0106/contracts/reviewed-secret-findings.v2.yaml"
+)
+V2_REVIEWED_FINDINGS_PATH = REPOSITORY_ROOT / V2_REVIEWED_FINDINGS_RELATIVE_PATH
+V2_RECONCILIATION_RELATIVE_PATH = (
+    "changes/st-0106/REVIEWED-SECRET-FINDINGS-RECONCILIATION-v2.yaml"
+)
+V2_RECONCILIATION_PATH = REPOSITORY_ROOT / V2_RECONCILIATION_RELATIVE_PATH
+V2_INVENTORY_RELATIVE_PATH = "changes/st-0106/contracts/origin-ref-inventory.v2.txt"
+V2_INVENTORY_PATH = REPOSITORY_ROOT / V2_INVENTORY_RELATIVE_PATH
+EXPECTED_V2_REVIEWED_FINDINGS_BYTES = 59769
+EXPECTED_V2_REVIEWED_FINDINGS_SHA256 = (
+    "667fee6720dad2e25e71220b2ec2fc8918a845ee30309c581f687ca87f51ca1b"
+)
+EXPECTED_V2_RECONCILIATION_BYTES = 9109
+EXPECTED_V2_RECONCILIATION_SHA256 = (
+    "9cbe56b54eee9218e007d2c5f1b88d2a82bf58e8510ee7ab1c212610db39c3e7"
+)
+EXPECTED_V2_INVENTORY_BYTES = 8436
+EXPECTED_V2_INVENTORY_SHA256 = (
+    "fa244e651d3bf6aba5c494372b4963bb5420ac68ac998d1cb47a2bd0eed11c0c"
+)
+EXPECTED_V2_INVENTORY_ENTRIES_SHA256 = (
+    "92d352e79d8b13d611c0689d2062a747390a38856208160e429f49f8af28b802"
+)
+EXPECTED_FROZEN_SECURITY_IMPLEMENTATION = {
+    "scripts/scan_secrets.py": (
+        43062,
+        "3af1b7c468cd5eb55016f3a9199204dcac11ab8b1cbffee831876408d7b57970",
+    ),
+    "scripts/run_network_denied.sh": (
+        6688,
+        "171e9be2a368473dc855cf5bf996df14762766791f06569fd70e7ab90ebe0efd",
+    ),
+    "scripts/ci_job.sh": (
+        7456,
+        "6f93f7ceeacf1ed69158adc6d0e9176ec658cd1a71d6db05fb90d84a1570a067",
+    ),
+}
 EXPECTED_ACTIONS = {
     "actions/checkout": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
     "actions/setup-node": "249970729cb0ef3589644e2896645e5dc5ba9c38",
@@ -51,6 +90,23 @@ def action_step(job: dict[str, Any], repository: str) -> dict[str, Any]:
     ]
     assert len(matches) == 1
     return matches[0]
+
+
+def repository_path_from_uri(uri: str) -> Path:
+    assert uri.startswith("repo://")
+    relative = Path(uri.removeprefix("repo://"))
+    assert not relative.is_absolute()
+    assert relative.parts
+    assert all(part not in {"", ".", ".."} for part in relative.parts)
+    return REPOSITORY_ROOT / relative
+
+
+def reviewed_finding_key(entry: dict[str, Any]) -> tuple[str, str, int]:
+    return (
+        entry["scope"],
+        entry["exact_source_identifier"],
+        entry["exact_line_number"],
+    )
 
 
 def test_workflow_uses_only_the_unprivileged_pull_request_event() -> None:
@@ -444,6 +500,303 @@ def test_reviewed_findings_ledger_has_exact_detached_activation_approval() -> No
     assert boundaries["hosted_ci"] == "NOT_EXECUTED"
     assert boundaries["formal_tst_001"] == "NOT_EXECUTED"
     assert boundaries["formal_tst_002"] == "NOT_EXECUTED"
+
+
+def test_current_main_v2_candidate_keeps_four_unreviewed_bindings_fail_closed() -> None:
+    ledger_bytes = V2_REVIEWED_FINDINGS_PATH.read_bytes()
+    assert len(ledger_bytes) == EXPECTED_V2_REVIEWED_FINDINGS_BYTES
+    assert (
+        hashlib.sha256(ledger_bytes).hexdigest() == EXPECTED_V2_REVIEWED_FINDINGS_SHA256
+    )
+    ledger = json.loads(ledger_bytes)
+    assert set(ledger) == {"version", "status", "rule_id", "entries"}
+    assert ledger["version"] == 1
+    assert ledger["status"] == "UNAPPROVED_CANDIDATE"
+    assert ledger["rule_id"] == "GENERIC_CREDENTIAL"
+    entries = ledger["entries"]
+    assert len(entries) == 115
+    assert sum(entry["scope"] == "worktree" for entry in entries) == 31
+    assert sum(entry["scope"] == "git_history" for entry in entries) == 84
+    entry_keys = [reviewed_finding_key(entry) for entry in entries]
+    assert len(entry_keys) == len(set(entry_keys)) == 115
+
+    reconciliation_bytes = V2_RECONCILIATION_PATH.read_bytes()
+    assert len(reconciliation_bytes) == EXPECTED_V2_RECONCILIATION_BYTES
+    assert (
+        hashlib.sha256(reconciliation_bytes).hexdigest()
+        == EXPECTED_V2_RECONCILIATION_SHA256
+    )
+    document = yaml.safe_load(reconciliation_bytes)
+    assert set(document) == {"REVIEWED_SECRET_FINDINGS_RECONCILIATION_V2"}
+    reconciliation = document["REVIEWED_SECRET_FINDINGS_RECONCILIATION_V2"]
+    assert set(reconciliation) == {
+        "story_id",
+        "status",
+        "reconciliation_classification",
+        "canonical_status",
+        "open_decisions",
+        "semantic_selection",
+        "candidate_base",
+        "immutable_historical_inputs",
+        "candidate_ledger",
+        "complete_current_scan",
+        "active_v1_replay",
+        "pending_exact_owner_review",
+        "candidate_replay",
+        "history_universe",
+        "frozen_security_implementation",
+        "pr_49_v3_non_adoption",
+        "boundaries",
+        "self_reference_boundary",
+    }
+    assert reconciliation["story_id"] == "ST-0106"
+    assert reconciliation["status"] == "UNAPPROVED_CURRENT_MAIN_CANDIDATE"
+    assert reconciliation["reconciliation_classification"] == (
+        "FAIL_CLOSED_EXACT_LEDGER_REVIEW_BOUNDARY"
+    )
+    assert reconciliation["canonical_status"] == "UNCHANGED"
+    assert reconciliation["open_decisions"] == []
+
+    selection = reconciliation["semantic_selection"]
+    assert selection["decision_id"] == (
+        "ST0106-CI-CACHE-AND-REVIEWED-SECRET-FINDINGS-V2"
+    )
+    assert selection["selected_strategy"] == ("EXACT_REVIEWED_GENERIC_FINDINGS_LEDGER")
+    assert selection["rejected_strategy"] == ("GLOBAL_V3_GENERIC_CLASSIFIER_CHANGE")
+    assert selection["current_main_reconstruction"] == "AUTHORIZED"
+    assert selection["current_main_confirmation"] == {
+        "provenance": ("REPOSITORY_OWNER_CONFIRMATION_REPORTED_BY_INTEGRATION_OWNER"),
+        "observed_date": "2026-08-20",
+        "scope": "SEMANTIC_APPROACH_SELECTION_ONLY",
+        "exact_candidate_ledger_approval": "NONE",
+        "workflow_rebinding_approval": "NONE",
+    }
+    for key in ("approved_handoff", "detached_handoff_approval"):
+        binding = selection[key]
+        content = repository_path_from_uri(binding["uri"]).read_bytes()
+        assert len(content) == binding["bytes"]
+        assert hashlib.sha256(content).hexdigest() == binding["sha256"]
+    assert selection["approved_handoff"]["open_decisions"] == []
+
+    assert reconciliation["candidate_base"] == {
+        "branch": "codex/st-0106-reviewed-ledger-v2-current-main",
+        "commit": "f733200d5b801a417d2f220e24efb9394f616be4",
+        "tree": "60bbeb3a0d319b4a348f1cdeed824218289149c7",
+        "base_ref": "origin/main",
+    }
+    candidate = reconciliation["candidate_ledger"]
+    assert candidate == {
+        "uri": f"repo://{V2_REVIEWED_FINDINGS_RELATIVE_PATH}",
+        "source": "BYTE_IDENTICAL_PR_50_CANDIDATE",
+        "source_commit": "bfac4720d9936a6806cc4fdf9f4c284b73e078d8",
+        "bytes": EXPECTED_V2_REVIEWED_FINDINGS_BYTES,
+        "sha256": EXPECTED_V2_REVIEWED_FINDINGS_SHA256,
+        "ledger_version": 1,
+        "internal_status": "UNAPPROVED_CANDIDATE",
+        "rule_id": "GENERIC_CREDENTIAL",
+        "entry_count": 115,
+        "scope_counts": {"worktree": 31, "git_history": 84},
+        "exact_members_present_in_current_scan": 115,
+        "owner_approval": "NOT_EXECUTED",
+        "workflow_binding": "ABSENT",
+        "activation": "BLOCKED",
+        "scanner_semantics": "UNCHANGED_BROAD_GENERIC_DETECTION",
+    }
+
+    current_scan = reconciliation["complete_current_scan"]
+    assert current_scan["total_findings"] == 119
+    assert current_scan["scope_counts"] == {"worktree": 31, "git_history": 88}
+    assert current_scan["rule_counts"] == {
+        "GENERIC_CREDENTIAL": 119,
+        "AWS_ACCESS_KEY_ID": 0,
+        "GITHUB_TOKEN": 0,
+        "OPENAI_API_KEY": 0,
+        "PRIVATE_KEY": 0,
+    }
+    assert current_scan["matched_values_printed"] is False
+    assert current_scan["matched_values_persisted"] is False
+    assert current_scan["stderr_bytes"] == 0
+
+    assert reconciliation["active_v1_replay"] == {
+        "network_boundary": "DENIED",
+        "result": "EXPECTED_FAIL_CLOSED_STALE_WORKTREE_BINDING",
+        "exit_code": 2,
+        "error_code": "reviewed-finding-source-size-drift",
+        "finding_count": 0,
+        "stderr_bytes": 73,
+        "stderr_sha256": (
+            "d7019d56871988a4bc3ed0ebe9c2b54fdc14795ba63753d1805ba0c523e60b00"
+        ),
+        "current_main_clean_scan_claim": "NONE",
+        "historical_owner_approval_mutation": "NONE",
+    }
+
+    pending = reconciliation["pending_exact_owner_review"]
+    assert pending["state"] == "BLOCKING_NON_LEDGER_METADATA"
+    assert pending["binding_count"] == 4
+    assert pending["scope_counts"] == {"worktree": 0, "git_history": 4}
+    assert pending["bindings_with_line_hash_absent_from_v1_and_pr50_v2"] == 4
+    assert pending["owner_per_location_review"] == "NOT_EXECUTED"
+    assert pending["false_positive_classification"] == "NOT_ASSIGNED"
+    assert pending["no_live_credential_rationale"] == "NOT_ASSIGNED"
+    assert pending["scanner_suppression_eligibility"] == "NONE"
+    pending_bindings = pending["bindings"]
+    assert len(pending_bindings) == 4
+    assert all(
+        set(binding)
+        == {
+            "scope",
+            "exact_source_identifier",
+            "exact_line_number",
+            "exact_source_bytes",
+            "exact_source_sha256",
+            "exact_line_sha256",
+            "path_hints",
+            "candidate_state",
+        }
+        for binding in pending_bindings
+    )
+    assert all(
+        binding["scope"] == "git_history"
+        and binding["candidate_state"] == "PENDING_EXACT_OWNER_REVIEW"
+        for binding in pending_bindings
+    )
+    pending_keys = {reviewed_finding_key(binding) for binding in pending_bindings}
+    assert pending_keys.isdisjoint(entry_keys)
+    ledger_line_hashes = {entry["exact_line_sha256"] for entry in entries}
+    v1_entries = json.loads(REVIEWED_FINDINGS_PATH.read_bytes())["entries"]
+    v1_line_hashes = {entry["exact_line_sha256"] for entry in v1_entries}
+    assert all(
+        binding["exact_line_sha256"] not in ledger_line_hashes
+        and binding["exact_line_sha256"] not in v1_line_hashes
+        for binding in pending_bindings
+    )
+    assert pending["forbidden_interpretations"] == [
+        "reviewed ledger entry",
+        "reviewed false positive",
+        "no-live-credential conclusion",
+        "suppression authority",
+    ]
+
+    replay = reconciliation["candidate_replay"]
+    assert replay == {
+        "ledger_entries_validated": 115,
+        "result": "EXPECTED_FAIL_CLOSED_PENDING_REVIEW",
+        "exit_code": 1,
+        "residual_finding_count": 4,
+        "residual_scope_counts": {"worktree": 0, "git_history": 4},
+        "residual_rule_counts": {"GENERIC_CREDENTIAL": 4},
+        "residual_sanitized_output_bytes": 400,
+        "residual_sanitized_output_sha256": (
+            "b71ffaf6e1d2cb7164e42a789153d58a10d80f21e2cbff390d45310385ab2fbb"
+        ),
+        "stderr_bytes": 0,
+        "scan_pass_claim": "NONE",
+        "activation_claim": "NONE",
+    }
+
+    v1_history = {
+        json.dumps(entry, sort_keys=True, separators=(",", ":"))
+        for entry in v1_entries
+        if entry["scope"] == "git_history"
+    }
+    v2_history = {
+        json.dumps(entry, sort_keys=True, separators=(",", ":"))
+        for entry in entries
+        if entry["scope"] == "git_history"
+    }
+    assert len(v1_history) == 58
+    assert v1_history < v2_history
+    assert len(v2_history - v1_history) == 26
+    assert all(
+        json.loads(entry)["exact_line_sha256"] in v1_line_hashes
+        for entry in v2_history - v1_history
+    )
+
+    assert V2_REVIEWED_FINDINGS_RELATIVE_PATH not in WORKFLOW_TEXT
+    assert WORKFLOW_TEXT.count(REVIEWED_FINDINGS_RELATIVE_PATH) == 1
+    assert reconciliation["boundaries"]["approved_v1_workflow_binding"] == ("PRESERVED")
+    assert reconciliation["boundaries"]["v2_workflow_rebinding"] == "BLOCKED"
+    assert reconciliation["pr_49_v3_non_adoption"]["runtime_adoption"] == (
+        "NOT_ADOPTED"
+    )
+    assert (
+        reconciliation["pr_49_v3_non_adoption"]["ast_entropy_rhs_classifier_semantics"]
+        == "NOT_ADOPTED"
+    )
+
+
+def test_current_origin_inventory_and_frozen_security_bytes_are_exact() -> None:
+    inventory_bytes = V2_INVENTORY_PATH.read_bytes()
+    assert len(inventory_bytes) == EXPECTED_V2_INVENTORY_BYTES
+    assert hashlib.sha256(inventory_bytes).hexdigest() == EXPECTED_V2_INVENTORY_SHA256
+    lines = inventory_bytes.decode("utf-8").splitlines()
+    assert lines[:11] == [
+        "format RAOS_ST0106_ORIGIN_REF_INVENTORY_V2",
+        (
+            "command git for-each-ref --format='%(refname) %(objectname)' "
+            "refs/remotes/origin refs/tags | awk "
+            "'$1 != \"refs/remotes/origin/HEAD\"' | LC_ALL=C sort"
+        ),
+        "remote_name origin",
+        "fetch_heads +refs/heads/*:refs/remotes/origin/*",
+        "fetch_tags +refs/tags/*:refs/tags/*",
+        "fetch_depth 0",
+        "symbolic_origin_head EXCLUDED",
+        "head_ref_count 62",
+        "tag_ref_count 17",
+        f"entries_sha256 {EXPECTED_V2_INVENTORY_ENTRIES_SHA256}",
+        "entries",
+    ]
+    entries = lines[11:]
+    assert entries == sorted(entries)
+    assert len(entries) == len(set(entries)) == 79
+    assert all(
+        re.fullmatch(r"refs/(?:remotes/origin|tags)/[^ ]+ [0-9a-f]{40}", entry)
+        for entry in entries
+    )
+    assert sum(entry.startswith("refs/remotes/origin/") for entry in entries) == 62
+    assert sum(entry.startswith("refs/tags/") for entry in entries) == 17
+    assert not any(entry.startswith("refs/remotes/origin/HEAD ") for entry in entries)
+    assert not any(entry.startswith("refs/remotes/origin/pr/") for entry in entries)
+    entry_bytes = ("\n".join(entries) + "\n").encode("utf-8")
+    assert hashlib.sha256(entry_bytes).hexdigest() == (
+        EXPECTED_V2_INVENTORY_ENTRIES_SHA256
+    )
+
+    reconciliation = yaml.safe_load(V2_RECONCILIATION_PATH.read_bytes())[
+        "REVIEWED_SECRET_FINDINGS_RECONCILIATION_V2"
+    ]
+    history = reconciliation["history_universe"]
+    assert history["actual_origin_head_count"] == 62
+    assert history["tag_ref_count"] == 17
+    assert history["symbolic_origin_head"] == "EXCLUDED"
+    assert history["local_origin_pr_refs"] == "EXCLUDED"
+    assert history["entries_sha256"] == EXPECTED_V2_INVENTORY_ENTRIES_SHA256
+    assert history["ref_inventory"] == {
+        "uri": f"repo://{V2_INVENTORY_RELATIVE_PATH}",
+        "bytes": EXPECTED_V2_INVENTORY_BYTES,
+        "sha256": EXPECTED_V2_INVENTORY_SHA256,
+        "format": "RAOS_ST0106_ORIGIN_REF_INVENTORY_V2",
+        "entry_count": 79,
+    }
+
+    frozen = reconciliation["frozen_security_implementation"]
+    assert len(frozen) == len(EXPECTED_FROZEN_SECURITY_IMPLEMENTATION)
+    for binding in frozen:
+        relative = binding["uri"].removeprefix("repo://")
+        expected_bytes, expected_sha256 = EXPECTED_FROZEN_SECURITY_IMPLEMENTATION[
+            relative
+        ]
+        content = repository_path_from_uri(binding["uri"]).read_bytes()
+        assert binding == {
+            "uri": f"repo://{relative}",
+            "bytes": expected_bytes,
+            "sha256": expected_sha256,
+            "mutation": "FORBIDDEN",
+        }
+        assert len(content) == expected_bytes
+        assert hashlib.sha256(content).hexdigest() == expected_sha256
 
 
 def test_secret_job_runs_the_exact_approved_local_history_command() -> None:

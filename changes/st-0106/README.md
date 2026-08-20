@@ -146,3 +146,42 @@ drift can then be rejected either as a stale lock or at uv's exact
 network-disabled, package-not-in-cache resolver boundary. The latter does not
 make an incomplete cache acceptable: cache completeness is proven first, and
 arbitrary diagnostics still fail the test.
+
+## Current-main V2 reconciliation candidate
+
+The repository owner selected the exact-reviewed-findings V2 strategy over
+the mutually exclusive global V3 classifier strategy for reconstruction from
+current `main`. That selection does not approve any newly computed ledger
+bytes or per-location classification. The approved v1 ledger, its detached
+approval, the active workflow reference, and the scanner/network/CI wrappers
+therefore remain byte-identical.
+
+`contracts/reviewed-secret-findings.v2.yaml` preserves the exact 115-entry
+candidate from PR #50: 31 worktree and 84 Git-history bindings. All 115 are
+members of the current sanitized finding set, but the file remains
+`UNAPPROVED_CANDIDATE` and is not referenced by the workflow. A fresh physical
+non-shallow clone of all 62 actual origin heads and 17 tags found 119 locations:
+31 worktree and 88 Git history, all `GENERIC_CREDENTIAL`, with zero specific
+AWS, GitHub, OpenAI, or private-key finding.
+
+The unchanged active v1 reference is fail closed rather than current-main
+clean: exact denied-network replay exits operationally with
+`reviewed-finding-source-size-drift` before emitting findings. Its historical
+approval remains immutable, but it is not evidence that the present source and
+origin universe pass the Secrets job.
+
+Four new history bindings have line hashes absent from both the owner-approved
+v1 ledger and PR #50's V2 candidate. They are recorded only as value-free
+`pending_exact_owner_review` metadata in
+`REVIEWED-SECRET-FINDINGS-RECONCILIATION-v2.yaml`; they are not ledger entries,
+not classified as false positives, and have no no-live-credential rationale.
+Denied-network replay with the 115-entry V2 candidate intentionally exits with
+those four sanitized generic findings. This is the required fail-closed result,
+not a scan pass.
+
+Before V2 can replace v1, the four pending locations require exact owner review,
+incident escalation for any plausible credential, regenerated candidate bytes,
+separate exact-hash owner approval, a refreshed standalone origin inventory,
+Security/Engineering review, and executable hosted CI. Downstream provenance is
+unchanged until that activation gate is satisfied. Formal TST-001/TST-002,
+status, external writes, staging, release, and Production remain unexecuted.
