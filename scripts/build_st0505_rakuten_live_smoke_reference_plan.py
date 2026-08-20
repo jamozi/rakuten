@@ -182,6 +182,34 @@ LIVE_POLICY_ALLOWED_IMPORTS: Final = frozenset(
         "typing",
     }
 )
+LIVE_POLICY_ALLOWED_NAME_CALLS: Final = frozenset(
+    {
+        "TypeError",
+        "_bounded_text",
+        "_exact_int",
+        "any",
+        "dataclass",
+        "dict",
+        "fail_item_search",
+        "len",
+        "ord",
+        "sorted",
+        "tuple",
+        "type",
+    }
+)
+LIVE_POLICY_ALLOWED_ATTRIBUTE_CALLS: Final = frozenset(
+    {
+        "dumps",
+        "encode",
+        "hexdigest",
+        "items",
+        "partition",
+        "sha256",
+        "strip",
+        "update",
+    }
+)
 LIVE_POLICY_FORBIDDEN_IMPORTS: Final = frozenset(
     {
         "builtins",
@@ -513,6 +541,8 @@ def _validate_predecessor_semantics(root: Path) -> None:
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
     imports: set[str] = set()
     calls: set[str] = set()
+    name_calls: set[str] = set()
+    attribute_calls: set[str] = set()
     identifiers: set[str] = set()
     string_values: set[str] = set()
     has_indirect_call = False
@@ -526,12 +556,12 @@ def _validate_predecessor_semantics(root: Path) -> None:
             identifiers.update(alias.name for alias in node.names)
             identifiers.update(alias.asname for alias in node.names if alias.asname)
         elif isinstance(node, ast.Call):
-            if isinstance(node.func, (ast.Attribute, ast.Name)):
-                calls.add(
-                    node.func.attr
-                    if isinstance(node.func, ast.Attribute)
-                    else node.func.id
-                )
+            if isinstance(node.func, ast.Attribute):
+                calls.add(node.func.attr)
+                attribute_calls.add(node.func.attr)
+            elif isinstance(node.func, ast.Name):
+                calls.add(node.func.id)
+                name_calls.add(node.func.id)
             else:
                 has_indirect_call = True
         if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef)):
@@ -547,6 +577,8 @@ def _validate_predecessor_semantics(root: Path) -> None:
     if (
         not imports.issubset(LIVE_POLICY_ALLOWED_IMPORTS)
         or not imports.isdisjoint(LIVE_POLICY_FORBIDDEN_IMPORTS)
+        or not name_calls.issubset(LIVE_POLICY_ALLOWED_NAME_CALLS)
+        or not attribute_calls.issubset(LIVE_POLICY_ALLOWED_ATTRIBUTE_CALLS)
         or not calls.isdisjoint(LIVE_POLICY_FORBIDDEN_CALLS)
         or not identifiers.isdisjoint(LIVE_POLICY_FORBIDDEN_CALLS)
         or not identifiers.isdisjoint(LIVE_POLICY_FORBIDDEN_DYNAMIC_REFERENCES)

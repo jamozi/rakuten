@@ -430,6 +430,25 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
             "    def indirect_call(self) -> object:\n"
             "        return (lambda: None)()",
         ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def capability(self) -> object:\n"
+            "        return breakpoint()",
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def capability(self) -> object:\n"
+            "        loader = breakpoint\n"
+            "        return loader()",
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def capability(self) -> object:\n"
+            "        return self.unknown_call()",
+        ),
         ("import json", "import json\nimport collections"),
         (
             "    genre_information_flag: bool",
