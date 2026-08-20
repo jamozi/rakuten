@@ -3,7 +3,7 @@
 Classification:
 `SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN`
 
-This implementation-first slice is partial, non-authoritative, local-only,
+Contract revision `1.1.0` is partial, non-authoritative, local-only,
 non-executable, and runtime-ineligible. It binds the committed ST-0502
 recorded-only adapter boundary and preserves OD-015's blocking safe default:
 `Recorded fixtureのみ`. It is a reviewable plan, not a live adapter, runnable
@@ -12,12 +12,27 @@ smoke command, provider observation, credential interface, or formal result.
 ## Closed reference boundary
 
 - The plan binds ST-0502 commit
-  `74d4dab6cb682706e8db526a796c973b9b6e15fb` and all nine committed owner
-  artifacts by exact SHA-256.
+  `3a16f556b5285d96d597e95b545b66b16db4c2f1` and an exact ordered inventory of
+  eleven committed owner artifacts by SHA-256: the existing nine recorded
+  contract artifacts followed by the live-safe request-policy module and its
+  dedicated hostile test.
 - ST-0502 supports only deterministic, one-page `ITEM_SEARCH` for
   `CONTRACT_TEST` using `RECORDED_TEST_ONLY`. It is not live eligible; provider
   health, storage, and persistence remain `NOT_EXECUTED`; its validation
   receipt has no URI; it retries and paginates zero times.
+- The separately bound `RakutenItemSearchLiveRequestV1` policy is pure and
+  non-executable. Its provider API version is `2026-07-01`, page is exactly one,
+  hits are bounded from 1 through 30, retry and pagination-follow-up limits are
+  zero, review-derived and affiliate-rate request inputs are excluded, and
+  provider text is `UNTRUSTED_DATA`. This binding does not make the recorded
+  provider live eligible or make the policy executable.
+- The policy also binds the documented pre-URL-encoding keyword boundary:
+  exact UTF-8 is at most 128 bytes, terms use only one ASCII-space delimiter,
+  half-width terms require two characters, and a wide/full-width letter or
+  number may stand alone while kana, punctuation, and symbols require two.
+  Other separators, combining/control/format characters, normalization, and
+  `NGKeyword` are excluded. `or_flag=false` is AND; `or_flag=true` is OR and
+  requires at least two valid terms.
 - No live provider/runtime adapter, SDK, network client, filesystem path,
   repository, unit of work, account, endpoint, environment, credential,
   secret name, token, request payload, runner, or executable smoke command is

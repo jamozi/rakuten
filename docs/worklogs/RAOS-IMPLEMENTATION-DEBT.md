@@ -3229,3 +3229,69 @@ original result.
   or external-blocked item remain unchanged. This checkpoint is local
   implementation evidence only and does not claim `VALIDATED` or live/formal
   evidence.
+
+### 2026-08-21 W2 / ST-0502 keyword policy correction and ST-0505 closure
+
+- Integration boundary: normal merge commit
+  `3a16f556b5285d96d597e95b545b66b16db4c2f1` joins the exact prior ST-0502
+  candidate `675b09bdcbb773941728d1108209661acf654242` with current main
+  `9d1f19754018c677997e2e3dbfc4243a63755784`. It preserves both histories and
+  contains no rebase, force update, provider action, or Canonical/status
+  mutation. The official Rakuten Item Search API 2026-07-01 documentation was
+  inspected read-only on 2026-08-21; no API request or credential access was
+  performed.
+- Corrected policy boundary: `keyword` is validated before URL encoding as
+  strict UTF-8 of at most 128 bytes. Terms are separated only by exact ASCII
+  space; every half-width term has at least two characters, while one
+  wide/full-width letter or number is allowed and kana, punctuation, and
+  symbols require at least two. Empty terms, non-ASCII separators, combining
+  marks, controls, formats, invalid Unicode, and normalization fail closed.
+  Exact case and width are preserved. `or_flag=false` is AND;
+  `or_flag=true` is OR and requires at least two valid terms. `NGKeyword` and
+  mixed/nested Boolean syntax remain absent from the representable surface.
+- Provenance closure: ST-0505 contract revision `1.1.0` binds the exact ordered
+  eleven-artifact ST-0502 inventory at `3a16f556...`, including the corrected
+  live-policy module and hostile test. Six ST-0505 manual owner sources were
+  updated; the generated reference plan and manifest were written only by
+  `scripts/build_st0505_rakuten_live_smoke_reference_plan.py`. Its offline
+  owner generation and subsequent `--check` both passed. Active reverse-hash
+  traversal terminates at the ST-0505 manifest. The detached historical
+  ST-0502 design handoff retains its original input hashes and was not edited.
+- Local regression evidence: focused live-policy tests passed `90`; isolated
+  ST-0502 passed `201`, ST-0503 passed `59`, ST-0505 passed `206`, and the
+  integrated current-main ST-1703 suite passed `803`. Ruff lint and format,
+  strict mypy over six changed Python files, Python compilation, whole-project
+  Pyright (`0 errors, 0 warnings, 0 informations`), ST-1703 owner check,
+  workspace drift check, Canonical import verification, and `git diff --check`
+  passed. The first combined ST-0505 semantic test run was `197 passed / 1
+  failed`: the negative mutation retained the required function-name substring;
+  replacing it with a non-overlapping disabled name made the focused rerun and
+  full suite pass. The first offline generator invocation selected a new empty
+  worktree `.venv` and stopped before generation because PyYAML was absent;
+  that tool-created environment was removed, the repository-pinned environment
+  was explicitly selected, and generation/check then passed.
+- Protected evidence: the owner-approved ST-0106 V2 ledger remains byte-exact
+  at SHA-256
+  `667fee6720dad2e25e71220b2ec2fc8918a845ee30309c581f687ca87f51ca1b`.
+  The Secrets workflow contains exactly one V2 ledger reference and no V1
+  reference; scanner, network-denial wrapper, CI wrapper, activation evidence,
+  and all other ST-0106 paths have no diff from current main.
+- `DEBT-W2-060` status update: `CLOSED`. The final ST-0502 commit and all eleven
+  artifacts are bound by current ST-0505 source, generated plan, and manifest;
+  the owner no-write check passes and removed active predecessor/output hashes
+  have zero current consumers outside the immutable historical handoff.
+- `DEBT-W2-061` status update: `CLOSED`. A physical non-linked, single-branch,
+  no-tag clone of exact commit `3a16f556...` ran the V2 reviewed-ledger worktree
+  and complete-history scanner under the denied-network wrapper and exited
+  zero. Inventory was one local branch, two remote-ref records, and zero tags.
+  Scanner stdout was 195 bytes with SHA-256
+  `603857943af7e17a264f80596a04a5b905fa4a5f7da8c40c87cf14cb3b7d92b2`;
+  stderr was empty with the standard empty SHA-256. Output content and matched
+  values were not displayed or retained after the temporary clone was moved to
+  trash.
+- Formal/live boundary: hosted CI for the combined head, formal
+  TST-014/TST-015/TST-016, live Item Search, endpoint/account/credential
+  selection, provider behavior, storage or persistence, staging, publication,
+  release, and Production remain `NOT_EXECUTED`. OD-015 remains blocking with
+  `RECORDED_FIXTURE_ONLY`. This is local implementation and provenance evidence
+  only; it does not claim `VALIDATED` or live/formal readiness.

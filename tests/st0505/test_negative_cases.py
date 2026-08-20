@@ -145,6 +145,70 @@ def test_missing_unknown_and_reordered_keys_are_rejected(
         generator.validate_contract(contract)
 
 
+@pytest.mark.parametrize("mutation", ("omit", "reorder", "duplicate", "hash"))
+def test_predecessor_inventory_omission_reorder_duplicate_or_hash_drift_is_rejected(
+    mutation: str,
+) -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    artifacts = contract["predecessor"]["artifacts"]
+    if mutation == "omit":
+        artifacts.pop()
+    elif mutation == "reorder":
+        artifacts[-2:] = reversed(artifacts[-2:])
+    elif mutation == "duplicate":
+        artifacts.append(deepcopy(artifacts[-1]))
+    else:
+        artifacts[-1]["sha256"] = "0" * 64
+
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+@pytest.mark.parametrize(
+    ("field", "inflated"),
+    (
+        ("non_executable", False),
+        ("requested_page", 2),
+        ("hits_minimum", 0),
+        ("hits_maximum", 31),
+        ("retry_limit", 1),
+        ("pagination_followup_limit", 1),
+        ("keyword_maximum_pre_encoding_utf8_bytes", 129),
+        ("keyword_term_delimiter", "ANY_WHITESPACE"),
+        ("half_width_term_minimum_characters", 1),
+        ("wide_or_fullwidth_letter_or_number_term_minimum_characters", 0),
+        ("hiragana_katakana_punctuation_symbol_term_minimum_characters", 1),
+        ("non_ascii_separator_combining_control_format", "AVAILABLE"),
+        ("exact_case_and_bytes", "NORMALIZED"),
+        ("or_flag_false_behavior", "OR"),
+        ("or_flag_true_behavior", "OR_SINGLE_TERM_ALLOWED"),
+        ("ng_keyword", "AVAILABLE"),
+        ("review_derived_request_inputs", "AVAILABLE"),
+        ("affiliate_rate_request_inputs", "AVAILABLE"),
+        ("provider_text_trust", "TRUSTED"),
+    ),
+)
+def test_live_request_policy_semantic_inflation_is_rejected(
+    field: str,
+    inflated: object,
+) -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    policy = contract["predecessor"]["semantics"]["live_request_policy"]
+    policy[field] = inflated
+
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+def test_live_request_policy_unknown_semantic_is_rejected() -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    policy = contract["predecessor"]["semantics"]["live_request_policy"]
+    policy["unexpected"] = "AVAILABLE"
+
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
 @pytest.mark.parametrize(
     "payload",
     [
@@ -255,6 +319,12 @@ def test_authority_or_predecessor_byte_drift_is_rejected(
         generator.render_outputs(isolated_repository)
 
 
+def _rebind_expected_predecessor(monkeypatch: pytest.MonkeyPatch) -> None:
+    expected = cast(dict[str, Any], deepcopy(generator.EXPECTED_PREDECESSOR))
+    expected["artifacts"] = generator._expected_predecessor_artifacts()
+    monkeypatch.setattr(generator, "EXPECTED_PREDECESSOR", expected)
+
+
 def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
     isolated_repository: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -273,6 +343,7 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
         for candidate, expected in generator.EXPECTED_PREDECESSOR_ARTIFACTS
     )
     monkeypatch.setattr(generator, "EXPECTED_PREDECESSOR_ARTIFACTS", rebound)
+    _rebind_expected_predecessor(monkeypatch)
     contract = yaml.safe_load(
         (isolated_repository / generator.CONTRACT_PATH).read_bytes()
     )
@@ -280,7 +351,138 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
     (isolated_repository / generator.CONTRACT_PATH).write_text(
         yaml.safe_dump(contract, sort_keys=False), encoding="utf-8"
     )
-    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+    with pytest.raises(
+        generator.RakutenLiveSmokeReferenceError,
+        match=r"PREDECESSOR_SEMANTIC_DRIFT field=predecessor\.domain",
+    ):
+        generator.render_outputs(isolated_repository)
+
+
+@pytest.mark.parametrize(
+    ("needle", "replacement"),
+    (
+        (
+            "not 1 <= len(encoded) <= 128",
+            "not 1 <= len(encoded) <= 129",
+        ),
+        ('tuple(value.split(" "))', "tuple(value.split())"),
+        (
+            'unicodedata.category(character)[0] in {"C", "M", "Z"}',
+            'unicodedata.category(character)[0] in {"C", "Z"}',
+        ),
+        (
+            'unicodedata.east_asian_width(character) not in {"F", "W"}',
+            'unicodedata.east_asian_width(character) not in {"F", "Na", "W"}',
+        ),
+        (
+            'category[0] not in {"L", "N"}',
+            'category[0] not in {"L", "N", "P", "S"}',
+        ),
+        ('"HIRAGANA" in name', '"HIRAGANA" not in name'),
+        ('"KATAKANA" in name', '"KATAKANA" not in name'),
+        (
+            "self.or_flag and (keyword_terms is None or len(keyword_terms) < 2)",
+            "self.or_flag and (keyword_terms is None or len(keyword_terms) < 1)",
+        ),
+        (
+            "    return terms\n\n\ndef _exact_int",
+            "    return tuple(term.casefold() for term in terms)\n\n\ndef _exact_int",
+        ),
+        (
+            "_exact_int(self.hits, minimum=1, maximum=30)",
+            "_exact_int(self.hits, minimum=1, maximum=31)",
+        ),
+        (
+            '            "hits": self.hits,',
+            '            "hits": self.hits,\n'
+            '            "has_review_only": self.has_review_only,',
+        ),
+        (
+            '            "hits": self.hits,',
+            '            "hits": self.hits,\n            "min_affiliate_rates": 0,',
+        ),
+        ("import json", "import json\nimport socket"),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def execute(self) -> None:\n"
+            "        return None",
+        ),
+        (
+            "    genre_information_flag: bool",
+            "    genre_information_flag: bool\n    credential_reference: str | None",
+        ),
+        (
+            "    genre_information_flag: bool",
+            "    genre_information_flag: bool\n    ng_keyword: str | None",
+        ),
+    ),
+)
+def test_live_policy_semantic_drift_is_rejected_even_when_hash_is_rebound(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    needle: str,
+    replacement: str,
+) -> None:
+    relative = generator.EXPECTED_PREDECESSOR_ARTIFACTS[9][0]
+    path = isolated_repository / relative
+    text = path.read_text(encoding="utf-8")
+    assert text.count(needle) == 1
+    text = text.replace(needle, replacement, 1)
+    path.write_text(text, encoding="utf-8")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    rebound = tuple(
+        (candidate, digest if candidate == relative else expected)
+        for candidate, expected in generator.EXPECTED_PREDECESSOR_ARTIFACTS
+    )
+    monkeypatch.setattr(generator, "EXPECTED_PREDECESSOR_ARTIFACTS", rebound)
+    _rebind_expected_predecessor(monkeypatch)
+    contract = yaml.safe_load(
+        (isolated_repository / generator.CONTRACT_PATH).read_bytes()
+    )
+    contract["predecessor"]["artifacts"][9]["sha256"] = digest
+    (isolated_repository / generator.CONTRACT_PATH).write_text(
+        yaml.safe_dump(contract, sort_keys=False), encoding="utf-8"
+    )
+
+    with pytest.raises(
+        generator.RakutenLiveSmokeReferenceError,
+        match=r"PREDECESSOR_SEMANTIC_DRIFT field=predecessor\.live_policy",
+    ):
+        generator.render_outputs(isolated_repository)
+
+
+def test_live_policy_test_drift_is_rejected_even_when_hash_is_rebound(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    relative = generator.EXPECTED_PREDECESSOR_ARTIFACTS[10][0]
+    path = isolated_repository / relative
+    text = path.read_text(encoding="utf-8")
+    needle = "test_keyword_enforces_the_pre_encoding_utf8_byte_boundary"
+    assert text.count(needle) == 1
+    path.write_text(
+        text.replace(needle, "disabled_keyword_byte_boundary", 1), encoding="utf-8"
+    )
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    rebound = tuple(
+        (candidate, digest if candidate == relative else expected)
+        for candidate, expected in generator.EXPECTED_PREDECESSOR_ARTIFACTS
+    )
+    monkeypatch.setattr(generator, "EXPECTED_PREDECESSOR_ARTIFACTS", rebound)
+    _rebind_expected_predecessor(monkeypatch)
+    contract = yaml.safe_load(
+        (isolated_repository / generator.CONTRACT_PATH).read_bytes()
+    )
+    contract["predecessor"]["artifacts"][10]["sha256"] = digest
+    (isolated_repository / generator.CONTRACT_PATH).write_text(
+        yaml.safe_dump(contract, sort_keys=False), encoding="utf-8"
+    )
+
+    with pytest.raises(
+        generator.RakutenLiveSmokeReferenceError,
+        match=r"PREDECESSOR_SEMANTIC_DRIFT field=predecessor\.live_policy_test",
+    ):
         generator.render_outputs(isolated_repository)
 
 
