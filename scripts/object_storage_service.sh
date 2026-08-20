@@ -546,7 +546,23 @@ assert_service() {
     return 1
   fi
 
+  # TEMPORARY HOSTED DIAGNOSTIC, NOT MERGE-READY. Replace this closed-code
+  # instrumentation with the verified predicate fix before regenerating provenance.
   if ! process_model=$(run_docker exec "$container_id" /bin/sh -eu -c '
+probe_fail() {
+  case ${1:-} in
+    OBSERVER_INVALID|INIT_STATUS_INVALID|INIT_RELATION_INVALID|\
+      INIT_IDENTITY_INVALID|INIT_STATE_INVALID|INIT_EXECUTABLE_INVALID|\
+      SERVER_CHILD_INVENTORY_INVALID|SERVER_STATUS_INVALID|\
+      SERVER_RELATION_INVALID|SERVER_IDENTITY_INVALID|\
+      SERVER_CAPABILITIES_INVALID|SERVER_STATE_INVALID|\
+      SERVER_EXECUTABLE_INVALID|SERVER_STARTTIME_INVALID|SERVER_CHURN_INVALID) ;;
+    *) exit 1 ;;
+  esac
+  printf "RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_%s\n" "$1"
+  exit 1
+}
+
 load_status() {
   status_path=$1
   status_pid=
@@ -643,46 +659,95 @@ load_starttime() {
 
 observer_pid=$$
 case $observer_pid in
-  ""|*[!0-9]*) exit 1 ;;
+  ""|*[!0-9]*) probe_fail OBSERVER_INVALID ;;
 esac
-[ "$observer_pid" -ne 1 ] || exit 1
+[ "$observer_pid" -ne 1 ] || probe_fail OBSERVER_INVALID
 
-load_status /proc/1/status || exit 1
-[ "$status_pid" = 1 ] && [ "$status_ppid" = 0 ] || exit 1
-[ "$status_uids" = 0:0:0:0 ] && [ "$status_gids" = 0:0:0:0 ] || exit 1
-case $status_state in ""|Z|X|x) exit 1 ;; esac
-init_executable=$(readlink /proc/1/exe 2>/dev/null) || exit 1
-[ "$init_executable" = /sbin/docker-init ] || exit 1
+load_status /proc/1/status || probe_fail INIT_STATUS_INVALID
+[ "$status_pid" = 1 ] && [ "$status_ppid" = 0 ] || probe_fail INIT_RELATION_INVALID
+[ "$status_uids" = 0:0:0:0 ] && [ "$status_gids" = 0:0:0:0 ] || probe_fail INIT_IDENTITY_INVALID
+case $status_state in ""|Z|X|x) probe_fail INIT_STATE_INVALID ;; esac
+init_executable=$(readlink /proc/1/exe 2>/dev/null) || probe_fail INIT_EXECUTABLE_INVALID
+[ "$init_executable" = /sbin/docker-init ] || probe_fail INIT_EXECUTABLE_INVALID
 
-load_server_child || exit 1
+load_server_child || probe_fail SERVER_CHILD_INVENTORY_INVALID
 first_server_pid=$server_pid
-load_status "/proc/$first_server_pid/status" || exit 1
-[ "$status_pid" = "$first_server_pid" ] && [ "$status_ppid" = 1 ] || exit 1
-[ "$status_uids" = 1000:1000:1000:1000 ] || exit 1
-[ "$status_gids" = 1000:1000:1000:1000 ] || exit 1
-[ "$status_cap_eff" = 0000000000000000 ] || exit 1
-case $status_state in ""|Z|X|x) exit 1 ;; esac
-server_executable=$(readlink "/proc/$first_server_pid/exe" 2>/dev/null) || exit 1
-[ "$server_executable" = /usr/bin/weed ] || exit 1
-load_starttime "$first_server_pid" || exit 1
+load_status "/proc/$first_server_pid/status" || probe_fail SERVER_STATUS_INVALID
+[ "$status_pid" = "$first_server_pid" ] && [ "$status_ppid" = 1 ] || probe_fail SERVER_RELATION_INVALID
+[ "$status_uids" = 1000:1000:1000:1000 ] || probe_fail SERVER_IDENTITY_INVALID
+[ "$status_gids" = 1000:1000:1000:1000 ] || probe_fail SERVER_IDENTITY_INVALID
+[ "$status_cap_eff" = 0000000000000000 ] || probe_fail SERVER_CAPABILITIES_INVALID
+case $status_state in ""|Z|X|x) probe_fail SERVER_STATE_INVALID ;; esac
+server_executable=$(readlink "/proc/$first_server_pid/exe" 2>/dev/null) || probe_fail SERVER_EXECUTABLE_INVALID
+[ "$server_executable" = /usr/bin/weed ] || probe_fail SERVER_EXECUTABLE_INVALID
+load_starttime "$first_server_pid" || probe_fail SERVER_STARTTIME_INVALID
 first_starttime=$process_starttime
 
-load_server_child || exit 1
-[ "$server_pid" = "$first_server_pid" ] || exit 1
-load_status "/proc/$server_pid/status" || exit 1
-[ "$status_pid" = "$server_pid" ] && [ "$status_ppid" = 1 ] || exit 1
-[ "$status_uids" = 1000:1000:1000:1000 ] || exit 1
-[ "$status_gids" = 1000:1000:1000:1000 ] || exit 1
-[ "$status_cap_eff" = 0000000000000000 ] || exit 1
-case $status_state in ""|Z|X|x) exit 1 ;; esac
-server_executable=$(readlink "/proc/$server_pid/exe" 2>/dev/null) || exit 1
-[ "$server_executable" = /usr/bin/weed ] || exit 1
-load_starttime "$server_pid" || exit 1
-[ "$process_starttime" = "$first_starttime" ] || exit 1
+load_server_child || probe_fail SERVER_CHURN_INVALID
+[ "$server_pid" = "$first_server_pid" ] || probe_fail SERVER_CHURN_INVALID
+load_status "/proc/$server_pid/status" || probe_fail SERVER_CHURN_INVALID
+[ "$status_pid" = "$server_pid" ] && [ "$status_ppid" = 1 ] || probe_fail SERVER_CHURN_INVALID
+[ "$status_uids" = 1000:1000:1000:1000 ] || probe_fail SERVER_CHURN_INVALID
+[ "$status_gids" = 1000:1000:1000:1000 ] || probe_fail SERVER_CHURN_INVALID
+[ "$status_cap_eff" = 0000000000000000 ] || probe_fail SERVER_CHURN_INVALID
+case $status_state in ""|Z|X|x) probe_fail SERVER_CHURN_INVALID ;; esac
+server_executable=$(readlink "/proc/$server_pid/exe" 2>/dev/null) || probe_fail SERVER_CHURN_INVALID
+[ "$server_executable" = /usr/bin/weed ] || probe_fail SERVER_CHURN_INVALID
+load_starttime "$server_pid" || probe_fail SERVER_CHURN_INVALID
+[ "$process_starttime" = "$first_starttime" ] || probe_fail SERVER_CHURN_INVALID
 
 printf "%s\n" RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1
 ' 2>/dev/null); then
-    error 'the object-storage runtime process model could not be verified'
+    case $process_model in
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_OBSERVER_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: OBSERVER_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_INIT_STATUS_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: INIT_STATUS_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_INIT_RELATION_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: INIT_RELATION_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_INIT_IDENTITY_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: INIT_IDENTITY_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_INIT_STATE_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: INIT_STATE_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_INIT_EXECUTABLE_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: INIT_EXECUTABLE_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_CHILD_INVENTORY_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_CHILD_INVENTORY_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_STATUS_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_STATUS_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_RELATION_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_RELATION_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_IDENTITY_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_IDENTITY_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_CAPABILITIES_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_CAPABILITIES_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_STATE_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_STATE_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_EXECUTABLE_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_EXECUTABLE_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_STARTTIME_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_STARTTIME_INVALID'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_CHURN_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_CHURN_INVALID'
+        ;;
+      *)
+        error 'the object-storage runtime process model could not be verified'
+        ;;
+    esac
     return 1
   fi
   if [[ $process_model != RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1 ]]; then

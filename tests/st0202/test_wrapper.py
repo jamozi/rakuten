@@ -46,6 +46,28 @@ networks:
 EXPECTED_EPHEMERAL_OVERRIDE_DIGEST = (
     "92e141f0c1b96ef47cf79855951d6cadaec509b9796cc03067186ff44dd27239"
 )
+PROCESS_DIAGNOSTIC_MODES = {
+    "observer_pid_invalid": "OBSERVER_INVALID",
+    "init_status_invalid": "INIT_STATUS_INVALID",
+    "init_relation_invalid": "INIT_RELATION_INVALID",
+    "init_uid_process": "INIT_IDENTITY_INVALID",
+    "init_state_invalid": "INIT_STATE_INVALID",
+    "wrong_init_executable": "INIT_EXECUTABLE_INVALID",
+    "absent_server_child": "SERVER_CHILD_INVENTORY_INVALID",
+    "extra_server_child": "SERVER_CHILD_INVENTORY_INVALID",
+    "malformed_child_inventory": "SERVER_CHILD_INVENTORY_INVALID",
+    "server_status_invalid": "SERVER_STATUS_INVALID",
+    "wrong_server_ppid": "SERVER_RELATION_INVALID",
+    "mixed_server_uids": "SERVER_IDENTITY_INVALID",
+    "mixed_server_gids": "SERVER_IDENTITY_INVALID",
+    "server_capability": "SERVER_CAPABILITIES_INVALID",
+    "zombie_server": "SERVER_STATE_INVALID",
+    "wrong_server_executable": "SERVER_EXECUTABLE_INVALID",
+    "server_starttime_invalid": "SERVER_STARTTIME_INVALID",
+    "server_pid_churn": "SERVER_CHURN_INVALID",
+}
+PROCESS_DIAGNOSTIC_CODES = frozenset(PROCESS_DIAGNOSTIC_MODES.values())
+PROCESS_DIAGNOSTIC_PREFIX = "RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_"
 
 
 def _fake_docker(tmp_path: Path, mode: str = "ok") -> tuple[Path, Path]:
@@ -61,6 +83,7 @@ import signal
 import sys
 
 mode = {mode!r}
+process_diagnostics = {PROCESS_DIAGNOSTIC_MODES!r}
 log = Path({str(log)!r})
 sandbox = Path({str(tmp_path)!r})
 args = sys.argv[1:]
@@ -206,27 +229,44 @@ if payload and payload[0] == "port":
         print(f"8333/tcp -> 127.0.0.1:{{published_port}}")
     raise SystemExit(0)
 if payload and payload[0] == "exec":
+    if mode in process_diagnostics:
+        print({PROCESS_DIAGNOSTIC_PREFIX!r} + process_diagnostics[mode])
+        raise SystemExit(44)
     if mode == "process_probe_nonzero":
+        raise SystemExit(44)
+    if mode == "process_probe_success_token_nonzero":
+        print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1")
         raise SystemExit(44)
     if mode == "process_probe_blank":
         print("")
+        raise SystemExit(44)
     elif mode == "process_probe_extra_output":
+        print({PROCESS_DIAGNOSTIC_PREFIX!r} + "OBSERVER_INVALID\\nunexpected")
+        raise SystemExit(44)
+    elif mode == "process_probe_multiple_tokens":
+        print(
+            {PROCESS_DIAGNOSTIC_PREFIX!r}
+            + "OBSERVER_INVALID\\n"
+            + {PROCESS_DIAGNOSTIC_PREFIX!r}
+            + "INIT_STATUS_INVALID"
+        )
+        raise SystemExit(44)
+    elif mode == "process_probe_unknown_token":
+        print({PROCESS_DIAGNOSTIC_PREFIX!r} + "UNKNOWN")
+        raise SystemExit(44)
+    elif mode == "process_probe_padded_token":
+        print(" " + {PROCESS_DIAGNOSTIC_PREFIX!r} + "OBSERVER_INVALID ")
+        raise SystemExit(44)
+    elif mode == "process_probe_suffixed_token":
+        print({PROCESS_DIAGNOSTIC_PREFIX!r} + "OBSERVER_INVALID:suffix")
+        raise SystemExit(44)
+    elif mode == "process_probe_docker_output":
+        print("Error response from daemon: fixed test failure")
+        raise SystemExit(44)
+    elif mode == "process_probe_diagnostic_zero_exit":
+        print({PROCESS_DIAGNOSTIC_PREFIX!r} + "OBSERVER_INVALID")
+    elif mode == "process_probe_success_extra_output":
         print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1\\nunexpected")
-    elif mode in {{
-        "init_uid_process",
-        "wrong_init_executable",
-        "absent_server_child",
-        "extra_server_child",
-        "malformed_child_inventory",
-        "wrong_server_ppid",
-        "mixed_server_uids",
-        "mixed_server_gids",
-        "server_capability",
-        "wrong_server_executable",
-        "zombie_server",
-        "server_pid_churn",
-    }}:
-        print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_REJECTED")
     else:
         print("RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1")
     raise SystemExit(0)
@@ -856,21 +896,17 @@ def test_persistent_commands_accept_fixed_range_without_ephemeral_override(
         ("public_port", "not published on one bounded loopback port"),
         ("extra_port", "publishes an unexpected host port"),
         ("runtime_init_false", "did not retain the required init process"),
-        ("init_uid_process", "process model differs"),
-        ("wrong_init_executable", "process model differs"),
-        ("absent_server_child", "process model differs"),
-        ("extra_server_child", "process model differs"),
-        ("malformed_child_inventory", "process model differs"),
-        ("wrong_server_ppid", "process model differs"),
-        ("mixed_server_uids", "process model differs"),
-        ("mixed_server_gids", "process model differs"),
-        ("server_capability", "process model differs"),
-        ("wrong_server_executable", "process model differs"),
-        ("zombie_server", "process model differs"),
-        ("server_pid_churn", "process model differs"),
         ("process_probe_nonzero", "could not be verified"),
-        ("process_probe_blank", "process model differs"),
-        ("process_probe_extra_output", "process model differs"),
+        ("process_probe_success_token_nonzero", "could not be verified"),
+        ("process_probe_blank", "could not be verified"),
+        ("process_probe_extra_output", "could not be verified"),
+        ("process_probe_multiple_tokens", "could not be verified"),
+        ("process_probe_unknown_token", "could not be verified"),
+        ("process_probe_padded_token", "could not be verified"),
+        ("process_probe_suffixed_token", "could not be verified"),
+        ("process_probe_docker_output", "could not be verified"),
+        ("process_probe_diagnostic_zero_exit", "process model differs"),
+        ("process_probe_success_extra_output", "process model differs"),
         ("wrong_version", "runtime version differs"),
         ("extra_running", "not the sole requested running service"),
     ],
@@ -884,29 +920,36 @@ def test_runtime_identity_failures_are_rejected(
     assert result.returncode != 0
     assert message in result.stderr
     assert "PASS" not in result.stdout
-    if (
-        mode == "runtime_init_false"
-        or mode.startswith("process_probe_")
-        or mode
-        in {
-            "init_uid_process",
-            "wrong_init_executable",
-            "absent_server_child",
-            "extra_server_child",
-            "malformed_child_inventory",
-            "wrong_server_ppid",
-            "mixed_server_uids",
-            "mixed_server_gids",
-            "server_capability",
-            "wrong_server_executable",
-            "zombie_server",
-            "server_pid_churn",
-        }
-    ):
+    if mode == "runtime_init_false" or mode.startswith("process_probe_"):
         assert not any(
             _compose_operation(row) == "exec" and "/usr/bin/weed" in row["argv"]
             for row in _rows(log)
         )
+    if mode.startswith("process_probe_"):
+        assert PROCESS_DIAGNOSTIC_PREFIX not in result.stderr
+        assert "fixed test failure" not in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("mode", "diagnostic_code"),
+    sorted(PROCESS_DIAGNOSTIC_MODES.items()),
+)
+def test_process_probe_maps_only_allowlisted_nonzero_diagnostics(
+    tmp_path: Path, mode: str, diagnostic_code: str
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, log = _fake_docker(tmp_path, mode)
+    result = _run(wrapper, docker, "up", tmp_path)
+
+    assert result.returncode != 0
+    assert result.stderr.count("sanitized diagnostic code:") == 1
+    assert f"sanitized diagnostic code: {diagnostic_code}" in result.stderr
+    assert PROCESS_DIAGNOSTIC_PREFIX not in result.stderr
+    assert "PASS" not in result.stdout
+    assert not any(
+        _compose_operation(row) == "exec" and "/usr/bin/weed" in row["argv"]
+        for row in _rows(log)
+    )
 
 
 def test_process_probe_is_closed_exact_and_does_not_inspect_sensitive_proc_data() -> (
@@ -925,8 +968,13 @@ def test_process_probe_is_closed_exact_and_does_not_inspect_sensitive_proc_data(
     assert '[ "$server_executable" = /usr/bin/weed ]' in source
     assert '[ "$process_starttime" = "$first_starttime" ]' in source
     assert "RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1" in source
-    assert "/proc/*/environ" not in source
-    assert "/proc/*/cmdline" not in source
+    assert set(PROCESS_DIAGNOSTIC_MODES.values()) == PROCESS_DIAGNOSTIC_CODES
+    for diagnostic_code in PROCESS_DIAGNOSTIC_CODES:
+        assert f"probe_fail {diagnostic_code}" in source
+        assert f"{PROCESS_DIAGNOSTIC_PREFIX}{diagnostic_code})" in source
+        assert f"sanitized diagnostic code: {diagnostic_code}'" in source
+    assert "/environ" not in source
+    assert "/cmdline" not in source
 
 
 def test_unreviewed_compose_service_is_rejected(tmp_path: Path) -> None:
