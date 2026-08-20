@@ -32,7 +32,7 @@ provenance:
   predecessor_manifest:
     story_id: ST-0305
     uri: repo://changes/st-0305/manifest.yaml
-    sha256: 5f8b663b5ebc72960dadf662c1cc251d5e36ff7849ddfbfb67bbc9a113d45353
+    sha256: ee7ef9a8fac40dc11ed90f4fe90e3cd78560ecdff8e4f8f84202a4b0609b681d
 revision:
   revision: '202608030006'
   down_revision: '202608030005'
@@ -43,7 +43,7 @@ source_artifact_count: 38
 source_artifacts:
 - uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
   bytes: 4705
-  sha256: 0fa422a6fa8f82e9cf5f1d25f134444211a44ea58e3d62480dee245cadfc2d2a
+  sha256: 6b8710a79729bde75e96e1df3698a0928d4924e4bd10afaff5631fc00f70a0d4
 - uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
   bytes: 434952
   sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
@@ -70,7 +70,7 @@ source_artifacts:
   sha256: 687fd00f51c27a1181c213d044412f4c676d96b34e35f0590f0edcd5b4221699
 - uri: repo://scripts/build_st0306_database_roles.py
   bytes: 55822
-  sha256: 599ce9f213e816fdb9233652f257fdbbe5d73c6704ac64fbe30509cbe9db386f
+  sha256: 51cb74ea1b4b14e4740b2c1dee256fe730792c1fef6de69b231a1d1e1b6278a8
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -82,7 +82,7 @@ source_artifacts:
   sha256: 6275ad1f451b16ff7a51fbaf7337917c262c668dca70257949c15ba015bb1435
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14863
-  sha256: 5f8b663b5ebc72960dadf662c1cc251d5e36ff7849ddfbfb67bbc9a113d45353
+  sha256: ee7ef9a8fac40dc11ed90f4fe90e3cd78560ecdff8e4f8f84202a4b0609b681d
 - uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
   bytes: 41097
   sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
@@ -96,8 +96,8 @@ source_artifacts:
   bytes: 8049
   sha256: 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 36698
-  sha256: bcaee57eb104c6e090fb828162fd5799bfb7d469ee2351339e2415ea38884e58
+  bytes: 65038
+  sha256: aa25fdb3ed0071391699f06cb341d312f3b89e83ff974db34378aae9c27c4e32
 - uri: repo://tests/st0301/test_catalog.py
   bytes: 11918
   sha256: 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
