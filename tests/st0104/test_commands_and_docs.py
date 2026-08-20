@@ -14,7 +14,12 @@ from conftest import REPO_ROOT
 def test_make_targets_separate_mutation_from_read_only_gate() -> None:
     makefile = (REPO_ROOT / "Makefile").read_text(encoding="utf-8")
     assert "contract-install: | python-sync" in makefile
-    for target in ("contract-check", "contract-verify", "contract-test", "contract-gate"):
+    for target in (
+        "contract-check",
+        "contract-verify",
+        "contract-test",
+        "contract-gate",
+    ):
         assert f"{target}:\n" in makefile
         assert f"{target}: | python-sync" not in makefile
     assert "UV_READONLY_RUN :=" in makefile
@@ -84,13 +89,13 @@ def test_pinned_specification_resources_are_documented_and_hash_bound() -> None:
 def test_agents_records_contract_ownership_and_non_goals() -> None:
     instructions = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
     for required in (
-        "command `contract-install`",
-        "commands `contract-check`",
+        "wrapper command `contract-install`",
+        "wrapper command `contract-check`",
         "`contract-verify`",
         "`contract-test`",
         "`contract-gate`",
         "contracts/raos-v0.4/{job-state.v1.yaml,contracts/**}",
-        "Do not flatten or rewrite hash-pinned payloads",
+        "hash 固定済み payload を平坦化または書き換えたり",
         "scripts/contract_validation_resources/",
     ):
         assert required in instructions
