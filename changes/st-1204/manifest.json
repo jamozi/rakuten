@@ -241,7 +241,7 @@
     },
     "predecessors": [
       {
-        "sha256": "e09a1edc978e30beb08ec160f9f77743c1ef2c4a6b4568ac8f41b1e65e28ac90",
+        "sha256": "064cc7a686cc785fe0981e5f68bac3fac48624cf850c38c8ea03244473d5a5f2",
         "story_id": "ST-0204",
         "uri": "repo://changes/st-0204/manifest.yaml"
       },
@@ -255,7 +255,7 @@
   "source_artifacts": [
     {
       "bytes": 19285,
-      "sha256": "f0aa7c026c6783389dbc1715b89ad7dedc2025ea1f2e80939e085891a28df4f4",
+      "sha256": "6ef0766daf2f0af943adcf6049f70d7dc76f5a4b1f8900e3f4345f075ebe2eb1",
       "uri": "repo://changes/st-1204/contracts/ga4-recorded-fixtures.v1.yaml"
     },
     {
