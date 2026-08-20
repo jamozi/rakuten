@@ -550,6 +550,113 @@ def test_v2_reviewed_findings_is_the_exact_remote_origin_reconciliation() -> Non
     assert record["open_decisions"] == []
 
 
+def test_current_reconciliation_records_the_complete_live_integration_fixed_point() -> (
+    None
+):
+    record = yaml.safe_load(REVIEWED_FINDINGS_RECONCILIATION_PATH.read_bytes())[
+        "DESIGN_HANDOFF_V1"
+    ]
+    mechanical = record["mechanical_provenance"]
+    direct_bindings = {
+        "st_0202_contract_sha256": (
+            "changes/st-0202/contracts/local-object-storage.v1.yaml"
+        ),
+        "st_0202_generator_sha256": "scripts/build_local_compose.py",
+        "st_0202_runtime_wrapper_sha256": "scripts/object_storage_service.sh",
+        "st_0202_wrapper_test_sha256": "tests/st0202/test_wrapper.py",
+        "st_0306_contract_sha256": (
+            "changes/st-0306/contracts/database-roles-grants.v1.yaml"
+        ),
+        "st_0306_generator_sha256": "scripts/build_st0306_database_roles.py",
+        "st_0306_generated_revision_sha256": (
+            "migrations/versions/202608030006_database_roles.py"
+        ),
+        "st_0306_generated_catalog_sha256": (
+            "changes/st-0306/generated/database-roles-grants.v1.json"
+        ),
+        "st_0306_generated_validation_sha256": (
+            "changes/st-0306/generated/database-roles-validation.v1.sql"
+        ),
+        "st_0306_generated_manifest_sha256": "changes/st-0306/manifest.yaml",
+        "st_0307_contract_sha256": (
+            "changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml"
+        ),
+        "st_0307_generator_sha256": "scripts/build_st0307_migration_fixtures.py",
+        "st_0307_job_fixture_sha256": (
+            "tests/fixtures/migrations/st0307/v0.1-job-alignment.v1.sql"
+        ),
+        "st_0307_ai_fixture_sha256": (
+            "tests/fixtures/migrations/st0307/v0.2-ai-alignment.v1.sql"
+        ),
+        "st_0307_content_fixture_sha256": (
+            "tests/fixtures/migrations/st0307/v0.3-content-alignment.v1.sql"
+        ),
+        "st_0307_predecessor_fixture_sha256": (
+            "tests/fixtures/migrations/st0307/202608030005-predecessor.v1.sql"
+        ),
+        "st_0307_generated_catalog_sha256": (
+            "changes/st-0307/generated/migration-upgrade-fixture-catalog.v1.json"
+        ),
+        "st_0307_generated_manifest_sha256": "changes/st-0307/manifest.yaml",
+    }
+    for field, relative in direct_bindings.items():
+        assert (
+            mechanical[field]
+            == hashlib.sha256((REPOSITORY_ROOT / relative).read_bytes()).hexdigest()
+        )
+
+    chain = mechanical[
+        "integrated_st0202_and_st0307_contracts_to_st0903_st0904_st0905_chain"
+    ]
+    downstream_bindings = {
+        "st_0903_contract_sha256": (
+            "changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml"
+        ),
+        "st_0903_generator_sha256": (
+            "scripts/build_st0903_publication_snapshot_reference_plan.py"
+        ),
+        "st_0903_generated_plan_sha256": (
+            "changes/st-0903/generated/publication-snapshot-reference-plan.v1.json"
+        ),
+        "st_0903_generated_manifest_sha256": "changes/st-0903/manifest.yaml",
+        "st_0904_contract_sha256": (
+            "changes/st-0904/contracts/public-projection-reference-plan.v1.yaml"
+        ),
+        "st_0904_generator_sha256": (
+            "scripts/build_st0904_public_projection_reference_plan.py"
+        ),
+        "st_0904_generated_plan_sha256": (
+            "changes/st-0904/generated/public-projection-reference-plan.v1.json"
+        ),
+        "st_0904_generated_manifest_sha256": "changes/st-0904/manifest.yaml",
+        "st_0905_contract_sha256": (
+            "changes/st-0905/contracts/publication-commands-reference-plan.v1.yaml"
+        ),
+        "st_0905_generator_sha256": (
+            "scripts/build_st0905_publication_commands_reference_plan.py"
+        ),
+        "st_0905_generated_plan_sha256": (
+            "changes/st-0905/generated/publication-commands-reference-plan.v1.json"
+        ),
+        "st_0905_generated_manifest_sha256": "changes/st-0905/manifest.yaml",
+    }
+    for field, relative in downstream_bindings.items():
+        assert (
+            chain[field]
+            == hashlib.sha256((REPOSITORY_ROOT / relative).read_bytes()).hexdigest()
+        )
+
+    assert mechanical["combined_integration_additional_semantic_delta"] == {
+        "story_id": "ST-0202",
+        "decision": "EXACT_HOSTED_RUNTIME_VERSION_FIRST_LINE_CORRECTION",
+        "expected_line": "version 30GB 4.29 1355c7a10 linux amd64",
+        "full_image_revision_changed": False,
+        "compose_changed": False,
+        "od_014_changed": False,
+    }
+    assert mechanical["st0106_semantic_contract_delta"] == "NONE"
+
+
 def test_secret_job_runs_the_exact_current_reconciliation_command() -> None:
     job = WORKFLOW["jobs"]["secrets"]
     expected_command = (

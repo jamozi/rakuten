@@ -206,6 +206,9 @@ def test_runtime_requires_authenticated_versioned_integrity_fixture(
     assert runtime == EXPECTED_RUNTIME
     assert runtime["docker_host"] == "unix:///var/run/docker.sock"
     assert runtime["expected_platform"] == "linux/amd64"
+    assert runtime["expected_version_line"] == (
+        "version 30GB 4.29 1355c7a10 linux amd64"
+    )
     process_model = runtime["expected_process_model"]
     assert process_model["host_config_init"] is True
     assert process_model["observation"] == "CONTAINER_PROCFS_SPLIT_UID"

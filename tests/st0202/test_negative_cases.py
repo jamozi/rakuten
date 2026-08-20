@@ -260,6 +260,22 @@ def test_bool_as_integer_does_not_bypass_strict_comparison(
             ("expected_image_labels", "org.opencontainers.image.revision"),
             "main",
         ),
+        (
+            ("expected_version_line",),
+            "Version 30GB 4.29 1355c7a10 linux amd64",
+        ),
+        (
+            ("expected_version_line",),
+            " version 30GB 4.29 1355c7a10 linux amd64 ",
+        ),
+        (
+            ("expected_version_line",),
+            "version 30GB 4.29 1355c7a10 linux amd64 trailing",
+        ),
+        (
+            ("expected_version_line",),
+            "version 30GB 4.29 1355c7a102 linux amd64",
+        ),
         (("disposable_pull_policy",), "missing"),
         (("ephemeral_port_override", "tracked_artifact"), "PRESENT"),
         (("ephemeral_port_override", "creation_executable"), "mktemp"),

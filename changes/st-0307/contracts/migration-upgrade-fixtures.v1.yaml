@@ -53,7 +53,7 @@ source_precedence:
   - {story_id: ST-0303, path: changes/st-0303/manifest.yaml, sha256: f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b}
   - {story_id: ST-0304, path: changes/st-0304/manifest.yaml, sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51}
   - {story_id: ST-0305, path: changes/st-0305/manifest.yaml, sha256: 5f8b663b5ebc72960dadf662c1cc251d5e36ff7849ddfbfb67bbc9a113d45353}
-  - {story_id: ST-0306, path: changes/st-0306/manifest.yaml, sha256: 70e085b69e256225508d68d27151b8fd8eb54e5f8a8ebbe8b8e726821d26058b}
+  - {story_id: ST-0306, path: changes/st-0306/manifest.yaml, sha256: 30c710cc2fbbb8a75b648b2437dfad99b180ab72b17b506fc67a6e10c91e2b9c}
 checkpoint_catalog:
   authority: python/raos/migrations/catalog.py
   authority_file_sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642

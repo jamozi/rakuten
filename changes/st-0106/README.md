@@ -192,8 +192,12 @@ release, or Production authority.
 Mechanical provenance is regenerated through the exact owner chain
 ST-0107 -> ST-0202 -> ST-0203 -> ST-0204, then through ST-0205,
 ST-0703 -> ST-0705 -> the narrow ST-0707 exact-byte binder -> ST-0708, and
-ST-1203/ST-1204. The root Compose bytes and frozen ST-0201 predecessor remain
-unchanged. These hash repairs do not change semantic contracts, activation
-authority. Final integration also preserves the ST-0202
-source-to-ST-0903/ST-0904/ST-0905 raw-hash chain and verifies its owner
-generators at the combined fixed point.
+ST-1203/ST-1204. The ST-0106 workflow-contract source inventory also closes
+ST-0306 -> ST-0307. Separately, Hosted Storage evidence corrects ST-0202's
+exact runtime-version first line to
+`version 30GB 4.29 1355c7a10 linux amd64`; the full image revision, exact
+digest, Compose bytes, fixture bytes, and OD-014 remain unchanged. The new
+ST-0202 and ST-0307 raw contract hashes converge at ST-0903 and are propagated
+through ST-0904/ST-0905. The root Compose bytes and frozen ST-0201 predecessor
+remain unchanged. ST-0106 semantics and every external authority gate remain
+unchanged.

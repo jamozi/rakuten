@@ -428,7 +428,18 @@ elif operation == "port":
     else:
         print("127.0.0.1:" + published_port)
 elif operation == "exec" and "/usr/bin/weed" in payload:
-    print("version 8000GB 4.28 bad linux amd64" if mode == "wrong_version" else "version 8000GB 4.29 1355c7a linux amd64")
+    if mode == "wrong_version":
+        print("version 30GB 4.28 bad linux amd64")
+    elif mode == "version_case_changed":
+        print("Version 30GB 4.29 1355c7a10 linux amd64")
+    elif mode == "version_padded":
+        print(" version 30GB 4.29 1355c7a10 linux amd64 ")
+    elif mode == "version_suffixed":
+        print("version 30GB 4.29 1355c7a10 linux amd64 trailing")
+    elif mode == "version_longer_short_sha":
+        print("version 30GB 4.29 1355c7a102 linux amd64")
+    else:
+        print("version 30GB 4.29 1355c7a10 linux amd64")
 raise SystemExit(0)
 """
     executable.write_text(program, encoding="utf-8")
@@ -956,6 +967,10 @@ def test_persistent_commands_accept_fixed_range_without_ephemeral_override(
         ("same_uid_process_probe_swapped_token", "process model differs"),
         ("same_uid_process_probe_wrong_token", "process model differs"),
         ("wrong_version", "runtime version differs"),
+        ("version_case_changed", "runtime version differs"),
+        ("version_padded", "runtime version differs"),
+        ("version_suffixed", "runtime version differs"),
+        ("version_longer_short_sha", "runtime version differs"),
         ("extra_running", "not the sole requested running service"),
     ],
 )
@@ -1097,6 +1112,18 @@ def test_process_probes_are_closed_exact_and_do_not_inspect_sensitive_proc_data(
         assert "/proc:/proc" not in probe
 
 
+def test_runtime_version_first_line_is_one_exact_closed_value() -> None:
+    source = WRAPPER.read_text(encoding="utf-8")
+    assert (
+        source.count(
+            "readonly expected_version_line='version 30GB 4.29 1355c7a10 linux amd64'"
+        )
+        == 1
+    )
+    assert source.count("version_line=${version_output%%$'\\n'*}") == 1
+    assert source.count('if [[ $version_line != "$expected_version_line" ]]; then') == 1
+
+
 def test_process_probe_command_shape_and_order_are_exact(tmp_path: Path) -> None:
     wrapper, _fixture_log = _isolated_repository(tmp_path)
     docker, log = _fake_docker(tmp_path)
@@ -1182,6 +1209,28 @@ def test_process_probe_failure_stops_before_version_and_fixture(
         _compose_operation(row) == "exec" and "/usr/bin/weed" in row["argv"]
         for row in _rows(log)
     )
+    assert "acceptance" not in [row["argv"][0] for row in _rows(fixture_log)]
+
+
+@pytest.mark.parametrize(
+    "mode",
+    [
+        "wrong_version",
+        "version_case_changed",
+        "version_padded",
+        "version_suffixed",
+        "version_longer_short_sha",
+    ],
+)
+def test_non_exact_runtime_version_stops_before_authenticated_fixture(
+    tmp_path: Path, mode: str
+) -> None:
+    wrapper, fixture_log = _isolated_repository(tmp_path)
+    docker, _log = _fake_docker(tmp_path, mode)
+    result = _run(wrapper, docker, "test", tmp_path)
+    assert result.returncode != 0
+    assert "runtime version differs" in result.stderr
+    assert "PASS" not in result.stdout
     assert "acceptance" not in [row["argv"][0] for row in _rows(fixture_log)]
 
 

@@ -47,26 +47,26 @@ stack:
 source_artifact_count: 30
 source_artifacts:
 - uri: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
-  bytes: 9689
-  sha256: 3e9208a9fd270e36729b561cba7c853da1aabdd33ef2657cdb01fd33ac333b2e
+  bytes: 9754
+  sha256: 5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f
 - uri: repo://changes/st-0202/README.md
-  bytes: 11743
-  sha256: 530ebea4e9613f3a06d2230d82aca552da35b7e7372cca7314a35115a097a9aa
+  bytes: 12610
+  sha256: e19ae8db690a3aae5ea5f0af578bd2a5db04259bc6ed92dd1435bb1e10b1c2e8
 - uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
   bytes: 9112
   sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
 - uri: repo://docs/execplans/ST-0202.md
-  bytes: 11580
-  sha256: d8a01a7f00f78d3e4b63f8f0f429a0aa21eabed3b1127555dd7467c7fbaa83ab
+  bytes: 13777
+  sha256: 74c4c4468e5dc7a7ee6f67c3a62558d950559d586c1205dbc46bf3bbacb39447
 - uri: repo://docs/worklogs/ST-0202.md
-  bytes: 14929
-  sha256: 0af4cebdff30352bb04ae3578a04e269300dd61aa553e1c1386171d6caf51d05
+  bytes: 16243
+  sha256: cb993e39c975d5e6496daa97ff71f1123191557890bbb1e0bfbe7aa7191784de
 - uri: repo://changes/st-0201/manifest.yaml
   bytes: 5607
   sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
 - uri: repo://scripts/build_local_compose.py
-  bytes: 34986
-  sha256: f2f0864dbc488838c812fca4969c35df3239f85d59477ee9efa8423432164527
+  bytes: 35255
+  sha256: 16225c1f832ac0a379b45d22648db63b024e3b66a0b9b7a86b072544895d2fb4
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -75,7 +75,7 @@ source_artifacts:
   sha256: 09e0d1fbb3b7a8a5f702c47fa558528c9f13adfb8dbdb485f2bb0de3bc2a665e
 - uri: repo://scripts/object_storage_service.sh
   bytes: 31873
-  sha256: b78e275d71e0000ac97c13a8e5ce0784fd460934acfd988e355cc9651df4536d
+  sha256: 335929f32b87bae3d9a4038d11a432db23b3836351495df6f33f6ca6cb0f774c
 - uri: repo://scripts/object_storage_fixture.py
   bytes: 30201
   sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
@@ -95,20 +95,20 @@ source_artifacts:
   bytes: 18844
   sha256: 6857ff30a797e29c65e7a371449aea622b7d358fa1940adbbe7ad8807f538039
 - uri: repo://tests/st0202/conftest.py
-  bytes: 16779
-  sha256: 53f5383ef11a58ed05a704a9324af0dab3ceca1dc5eb76ee93d59b418c17b823
+  bytes: 16851
+  sha256: c684bd1ed82dd8240bd033d3c5ea44fa6d7c9fd61785245b05ee82d9c7eb0009
 - uri: repo://tests/st0202/test_contract.py
-  bytes: 17005
-  sha256: 3a8a13ef6c39aff1162935ca5cb1a0ab3ccfaf027131d89c9f64ce7fa4b0e8f6
+  bytes: 17110
+  sha256: 9979630f9819a39f12f9cb8281df13852adcfd60644995cac716035d4d63b2b4
 - uri: repo://tests/st0202/test_fixture.py
   bytes: 14906
   sha256: 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
 - uri: repo://tests/st0202/test_negative_cases.py
-  bytes: 17268
-  sha256: d1f663b4252ab416ba4d949e454bef3bcd20bff8847fceec25369c8714b5144e
+  bytes: 17744
+  sha256: a3a7a297c88d058d1b06bf0f328a9edc2cd94362f86e5d121f4d071494a010aa
 - uri: repo://tests/st0202/test_wrapper.py
-  bytes: 48015
-  sha256: 410b9d377d0c766d20c7cccd4aed9324222343514b01529a1cbf44669d5447ee
+  bytes: 49792
+  sha256: b54c2f4d772e3e53e937cc8805d4e68d799a8766c9a1941d159422bef25962a2
 - uri: repo://.github/workflows/ci.yml
   bytes: 20122
   sha256: 790af484fea8aaa38f040de7bd51dbb729bd643d255847a23310aaa37462510f
@@ -117,10 +117,10 @@ source_artifacts:
   sha256: b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: 4af0dbd412bce44ace408b50e554005f1e243c659b4dadbd129f2a50225ae01b
+  sha256: eab80c69a7fac15d4f90372d366d35c1378e5f8dfa399b9e48e6bc35382ac818
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 42216
-  sha256: 6f25529260db4ae4b8e7bc69f92b7c3d2c942e6810fdfd5686d4203c3bca256e
+  bytes: 46816
+  sha256: 79620c20b7b21fab14d17053c1936cd53cbd0e43f70b61ea3fb0e172b6f72a83
 - uri: repo://workspace-layout.json
   bytes: 6679
   sha256: 7d9e3a5d83fd20b10009c51f2589645e78a57eb6522ee9e060e9f6332d034a85

@@ -154,7 +154,7 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml",
-    "source_contract_sha256": "900a5f8d838bf592a815cd136648b43c22546ecf3eb35e7c05bb76cc564e3e7d",
+    "source_contract_sha256": "3a57ec730d806e31090f370bd4bc4fcf4089261dde4ed219818b25c1b876c7dc",
     "generated_by": "repo://scripts/build_st0904_public_projection_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0904_public_projection_reference_plan.py",
     "implementation_helper": {
@@ -167,7 +167,7 @@
     {
       "story_id": "ST-0903",
       "artifact": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-      "sha256": "6e9a1fc7f00517f89b0e0c3ff7816595e0455ba73d73d11c613d623312a49fca",
+      "sha256": "027c6fae328ca47ef64448de2aa3a1067dde18bb59d9e151092966d913bc9625",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTABLE_SNAPSHOT"
     },

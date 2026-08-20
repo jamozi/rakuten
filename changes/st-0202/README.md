@@ -30,6 +30,11 @@ the S3 endpoint on loopback. It is not a production object-store definition.
   `FAILED_BEFORE_ACCEPTANCE`; the refined bounded probe established that the
   root observer could not read the UID-1000 server executable link. Exact
   version and authenticated fixture checks remained unexecuted
+- PR `#97` Hosted Storage job `96458842213`: `FAILED_BEFORE_ACCEPTANCE`; the
+  pinned image/digest/labels, init identity, root topology probe, and same-UID
+  executable probe all passed. The exact first runtime-version line was
+  `version 30GB 4.29 1355c7a10 linux amd64`, which exposed the stale local
+  expected line. The authenticated fixture was not reached and job cleanup ran
 - Authenticated put/get/version fixture: `NOT_EXECUTED`
 - Object-lock and version-delete regression fixture: `NOT_EXECUTED`
 - Container vulnerability scan: `NOT_EXECUTED`
@@ -116,6 +121,14 @@ the unprivileged container while making executable identity a same-UID
 observation. Both probes reject nonzero, blank, extra, or unknown output. They
 print no process values, pass no dynamic PID or start time, and inspect neither
 process environments nor command lines.
+
+After both process probes pass, the wrapper reads only the first line from the
+pinned `/usr/bin/weed version` command and requires exact byte-for-byte equality
+with `version 30GB 4.29 1355c7a10 linux amd64`. Case changes, edge padding,
+suffixes, a longer short revision, or any other near match fail before the
+authenticated fixture. This runtime display binding does not change or shorten
+the independently checked full OCI revision label
+`1355c7a102194d6c461baf090eff50367b575afb`.
 
 The generated root Compose remains the persistent contract: long syntax fixes
 `host_ip` to `127.0.0.1` and publishes the one operator-selected decimal port.

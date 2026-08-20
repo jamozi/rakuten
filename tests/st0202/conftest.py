@@ -199,6 +199,7 @@ EXPECTED_RUNTIME = {
         "sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd"
     ),
     "expected_platform": "linux/amd64",
+    "expected_version_line": "version 30GB 4.29 1355c7a10 linux amd64",
     "expected_process_model": {
         "observation": "CONTAINER_PROCFS_SPLIT_UID",
         "host_config_init": True,

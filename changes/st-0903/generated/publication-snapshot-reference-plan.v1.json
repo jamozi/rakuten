@@ -144,7 +144,7 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-    "source_contract_sha256": "6e9a1fc7f00517f89b0e0c3ff7816595e0455ba73d73d11c613d623312a49fca",
+    "source_contract_sha256": "027c6fae328ca47ef64448de2aa3a1067dde18bb59d9e151092966d913bc9625",
     "generated_by": "repo://scripts/build_st0903_publication_snapshot_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0903_publication_snapshot_reference_plan.py",
     "implementation_helper": {
@@ -178,7 +178,7 @@
     {
       "story_id": "ST-0202",
       "artifact": "repo://changes/st-0202/contracts/local-object-storage.v1.yaml",
-      "sha256": "3e9208a9fd270e36729b561cba7c853da1aabdd33ef2657cdb01fd33ac333b2e",
+      "sha256": "5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "LOCAL_RAW_BUCKET_CONTRACT_ONLY"
     },
@@ -199,7 +199,7 @@
     {
       "story_id": "ST-0307",
       "artifact": "repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml",
-      "sha256": "e458bcb9c7f2f60665cf5715e7b71fae470ef63671d36dd27befc05b492d8bec",
+      "sha256": "eb0cd68306775e29951ffde349eea388c680ff6f0eb6945bf8ec3bd502c58fc0",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "SYNTHETIC_FIXTURE_ONLY"
     },
