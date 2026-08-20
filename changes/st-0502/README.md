@@ -1,4 +1,4 @@
-# ST-0502 — recorded-only one-page Rakuten item search
+# ST-0502 — recorded Item Search and non-executable live-safe request policy
 
 Classification: `MAXIMUM_SAFE_LOCAL_RECORDED_TEST_ONLY_ONE_PAGE_ITEM_SEARCH_SEAM`
 
@@ -57,10 +57,50 @@ job/runtime integration, staging, release, and Production remain
 `NOT_EXECUTED` and `NOT_AUTHORIZED`. Local pytest is development evidence only;
 it is not `VALIDATED`, recoverability evidence, or release eligibility.
 
+## Non-executable 2026-07-01 live-safe request policy v1
+
+`python/raos/domain/catalog/rakuten_item_search_live_request_v1.py` adds a
+separate pure request-policy projection for a later ST-0505 HTTPS adapter. It
+does not change or convert the existing recorded request, command, service, or
+fixtures, and it grants them no live eligibility.
+
+- The projection accepts only API version `2026-07-01`, format version `2`,
+  one requested page, and exact integer `hits` from 1 through 30. Retry and
+  pagination-follow-up policy limits are fixed to zero; they are not execution
+  observations.
+- When both price bounds are present, `max_price_jpy` must be strictly greater
+  than `min_price_jpy`; equal or inverted bounds fail closed.
+- Its exact sorted element allowlist is the intersection of the installed v0.4
+  vocabulary and the current official 2026-07-01 output table, minus
+  `reviewCount`, `reviewAverage`, and `affiliateRate`. `tagIds` and
+  `updateTimestamp` are absent because they are not in the current official
+  output table; update-time sorting remains allowed. `affiliateUrl` remains
+  permitted as a product-link output field.
+- Its sort type contains only `standard`, item-price ascending/descending, and
+  update-time ascending/descending. Review and affiliate-rate sorts cannot be
+  represented.
+- The normalized `has_review_only` constructor field is retained only as an
+  exact-false guard for compatibility with the installed request vocabulary.
+  It is omitted from the canonical projection, so no review or affiliate-rate
+  filter field can reach the future provider-facing parameter surface.
+- `attribute_flag=true` or `genre_information_flag=true` requires an exact
+  nonzero `genre_id`, matching the current official input constraints;
+  otherwise validation fails closed.
+- Provider names, captions, URLs, and all other returned text remain
+  `UNTRUSTED_DATA`; the projection exposes no provider-derived recommendation
+  input. Legacy recorded review aggregates and affiliate rate may remain
+  nullable inert facts, but this policy neither requests nor ranks by them.
+- Values and validation failures are redacted and non-pickleable. The module
+  contains no endpoint, account, credential, HTTP, network, environment,
+  filesystem, storage, persistence, retry, pagination, or external-action
+  implementation.
+
+ST-0505 still owns any later adapter, wire mapping, account and credential
+selection, live call, and TST-016 evidence. This ST-0502 policy is offline and
+non-executable; it does not choose those values or authorize that work.
+
 ## Focused local check
 
 ```bash
-/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run \
-  --locked --offline --no-cache --no-sync --no-env-file \
-  pytest -q tests/st0502
+.venv/bin/pytest -q -p no:cacheprovider tests/st0502
 ```
