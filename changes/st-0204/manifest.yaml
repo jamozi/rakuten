@@ -36,7 +36,7 @@ provenance:
     sha256: 501858e7cdb47db5d2987f6e3d778da4fb8d72224b4380790dcd91ffcac615b2
   predecessor_manifest:
     uri: repo://changes/st-0203/manifest.yaml
-    sha256: 89d6524d40c0088434e4debebc051cd3eafe101f0ff826993ddf45aba9113eab
+    sha256: 89f6ca8bb0261b82998001f0a6a954a2152437cc4e51e2f8671bc67e9b7c0a3c
     story_id: ST-0203
 evidence_chain:
   stories:
@@ -60,7 +60,7 @@ source_artifacts:
   sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
 - uri: repo://changes/st-0204/contracts/runtime-config.v1.yaml
   bytes: 5113
-  sha256: f0d6347fc06c30dbe86324a6b7f8948921a2e04587a54f3ed683d8a4aea938c7
+  sha256: 50b34bb28c9013c251b85663b64acf53ac03e1f19e2dd67e879faedeaa893f9f
 - uri: repo://changes/st-0204/README.md
   bytes: 3248
   sha256: 4940a6403abd59850ed870e48678ba258b59d393af31613780caeb7b5a1d2213
@@ -72,7 +72,7 @@ source_artifacts:
   sha256: 6426260acb608da19832965e8e2ddd7726745f3a8ef860fdf44bce22bba08d80
 - uri: repo://scripts/build_st0204_config_loader.py
   bytes: 21540
-  sha256: 88f77e6a29056e697ba665e73926b7d4e7a55dcba03e37df573ca24f02f87aed
+  sha256: 0cdc3766ba578c55c87e9c39d35237dac0ab960e6d89e34d69189960bd77cbce
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -101,8 +101,8 @@ source_artifacts:
   bytes: 9196
   sha256: 8d0986edb94818b94d6c5f1335a387a9f6698422638e30bf0906a7bca5039c2c
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 36698
-  sha256: bcaee57eb104c6e090fb828162fd5799bfb7d469ee2351339e2415ea38884e58
+  bytes: 42216
+  sha256: 6f25529260db4ae4b8e7bc69f92b7c3d2c942e6810fdfd5686d4203c3bca256e
 - uri: repo://Makefile
   bytes: 34123
   sha256: e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc
@@ -111,7 +111,7 @@ source_artifacts:
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 - uri: repo://changes/st-0203/manifest.yaml
   bytes: 5785
-  sha256: 89d6524d40c0088434e4debebc051cd3eafe101f0ff826993ddf45aba9113eab
+  sha256: 89f6ca8bb0261b82998001f0a6a954a2152437cc4e51e2f8671bc67e9b7c0a3c
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0204/generated/runtime-config.v1.schema.json

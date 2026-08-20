@@ -135,10 +135,13 @@ or Production. Those remain separately gated.
 The approval-named files above are retained as exact audit and allowlist
 records for the reviewed ledger contract; they are not an ongoing permission
 checkpoint. The repository owner's later standing development authorization
-separately covers reversible local implementation, verification,
-documentation, and an atomic ST-0106 commit. It does not cover push, pull
-request, merge, hosted/formal evidence, status transition, staging, external
-writes, release, or Production.
+separately covers reversible repository implementation, verification,
+documentation, commit, and the normal GitHub development workflow when its
+exact-head and CI conditions are met. The historical V1 approval neither
+grants nor limits that standing authority. It also does not transfer its exact
+V1 ledger authority to a later ledger. Credentials, providers, publication,
+status transitions, staging, release, and Production remain outside standing
+development authority.
 
 For uv 0.12.1, the explicit cache is accepted only after a fresh project can
 rebuild the exact lock with `uv sync --locked --offline`. A deliberate project
@@ -146,3 +149,51 @@ drift can then be rejected either as a stale lock or at uv's exact
 network-disabled, package-not-in-cache resolver boundary. The latter does not
 make an incomplete cache acceptable: cache completeness is proven first, and
 arbitrary diagnostics still fail the test.
+
+## Current-main reviewed-findings reconciliation V2
+
+`DESIGN_HANDOFF_V1_ST0106_REVIEWED_SECRET_FINDINGS_CURRENT_MAIN_RECONCILIATION_V2.yaml`
+records the append-only reconciliation decision. The original V1 ledger stays
+exactly 46,295 bytes at SHA-256
+`1038cf6ef81da0acab528cf8206086646b6e003f5ac0ceed4f2e4b994827bcc7`,
+and its detached approval stays exactly 5,524 bytes at SHA-256
+`b683ae3b3b7312bd4ce04fe2c796f1157542f72c1b1bca79919a71b3a7c1acd9`.
+They are immutable audit records; neither file was revised or treated as a
+continuing approval checkpoint.
+
+The initial mode-`0600` preflight input was 79,457 bytes at SHA-256
+`390826ccee2072586fb31cb317a048d45f2d74f52908312b1b98b0e6ffec2e0d`
+with 153 bindings. It was a shared-object-database superset, not an activation
+ledger: 38 history bindings belonged only to unrelated local branch objects.
+The V2 ledger instead reconstructs the GitHub `fetch-depth: 0` boundary from a
+fresh clone of all current remote origin refs plus 17 tags. It contains exactly
+115 bindings: 31 worktree and 84 Git history. Its final bytes are 59,769 at
+SHA-256
+`52a5c8057599108c8765b85d95dfac55a96da12eff64cc80d00c90ddd8781c7d`.
+
+The filename's `v2` identifies this second immutable reconciliation
+generation. The file deliberately retains internal `version: 1` and
+`status: UNAPPROVED_CANDIDATE` because the unchanged closed scanner grammar
+accepts only schema version 1; no parser or scanner rule changed. All 115
+entries are `GENERIC_CREDENTIAL`, all 32 unique line hashes were already in
+the immutable V1 review set, and the reconstructed remote universe has zero
+AWS, GitHub, OpenAI, or private-key findings. No matched bytes were printed or
+persisted.
+
+The Secrets job now changes only its exact ledger filename from
+`reviewed-secret-findings.v1.yaml` to `reviewed-secret-findings.v2.yaml` inside
+the existing denied-network command. A new or changed generic finding remains
+fail closed, and every specific rule remains unsuppressible. The V1 approval
+is not copied, broadened, or fabricated for V2; repository-local work proceeds
+under root standing development authorization. This reconciliation creates no
+credential, provider, publication, status, hosted/formal evidence, staging,
+release, or Production authority.
+
+Mechanical provenance is regenerated through the exact owner chain
+ST-0107 -> ST-0202 -> ST-0203 -> ST-0204, then through ST-0205,
+ST-0703 -> ST-0705 -> the narrow ST-0707 exact-byte binder -> ST-0708, and
+ST-1203/ST-1204. The root Compose bytes and frozen ST-0201 predecessor remain
+unchanged. These hash repairs do not change semantic contracts, activation
+authority. Final integration also preserves the ST-0202
+source-to-ST-0903/ST-0904/ST-0905 raw-hash chain and verifies its owner
+generators at the combined fixed point.

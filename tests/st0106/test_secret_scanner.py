@@ -249,12 +249,23 @@ def test_reviewed_ledger_subtracts_only_one_exact_generic_finding(
     assert_values_are_redacted(reviewed, [first, second])
 
 
-def test_specific_finding_remains_beside_reviewed_generic_finding(
+@pytest.mark.parametrize(
+    ("specific", "rule_id"),
+    [
+        (aws_credential(), "AWS_ACCESS_KEY_ID"),
+        (github_credential(), "GITHUB_TOKEN"),
+        (openai_credential(), "OPENAI_API_KEY"),
+        (private_key_header(), "PRIVATE_KEY"),
+    ],
+    ids=("aws", "github", "openai", "private-key"),
+)
+def test_every_specific_finding_remains_beside_reviewed_generic_finding(
     tmp_path: Path,
+    specific: str,
+    rule_id: str,
 ) -> None:
     install_scanner(tmp_path)
     generic = generic_assignment()
-    specific = aws_credential()
     source_data = f"{generic} {specific}\n".encode()
     (tmp_path / "mixed.txt").write_bytes(source_data)
     ledger = write_reviewed_ledger(
@@ -269,7 +280,7 @@ def test_specific_finding_remains_beside_reviewed_generic_finding(
     )
 
     assert result.returncode == 1
-    assert "rule=AWS_ACCESS_KEY_ID" in result.stdout
+    assert f"rule={rule_id}" in result.stdout
     assert "rule=GENERIC_CREDENTIAL" not in result.stdout
     assert_values_are_redacted(result, [generic, specific])
 

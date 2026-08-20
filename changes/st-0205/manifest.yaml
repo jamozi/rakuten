@@ -33,12 +33,12 @@ provenance:
     sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
   - story_id: ST-0202
     uri: repo://changes/st-0202/manifest.yaml
-    sha256: 3f35267d76cf3846a20c7c2b3ee49d3471723f6c944f0b2019a451c6b710ee1b
+    sha256: a1233eac3a71448230121b4e1acaae6ed0a6d127efea1cb5f216d5c2260534ce
 source_artifact_count: 17
 source_artifacts:
 - uri: repo://changes/st-0205/contracts/synthetic-data-factory.v1.yaml
   bytes: 5425
-  sha256: 6a68bb5b943e879fa206e0083b693fc03bd5af10a6e85efaa63f72ba227c578c
+  sha256: 892418c467006b95e8b6600d11f0eb568d966d8d4e1aad21243cc694ef3b3c5a
 - uri: repo://changes/st-0205/README.md
   bytes: 2404
   sha256: 30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6
@@ -50,7 +50,7 @@ source_artifacts:
   sha256: 52a2e3e23c105280eacc04e1ec74761480158a8ddf0e3dc38f97787dc3739fb9
 - uri: repo://scripts/build_st0205_synthetic_data.py
   bytes: 57003
-  sha256: c89eb292d170b4c01c59d14d8f426dd4ed894b14c8b5d643c104b5dffae60dbc
+  sha256: 2c01c884b28d17d5ef344e5beb8c79f54e249493e0fd20249f422b756a9e5af1
 - uri: repo://tests/st0205/conftest.py
   bytes: 1101
   sha256: c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0
@@ -73,8 +73,8 @@ source_artifacts:
   bytes: 5656
   sha256: 3af19eab45beab577f8ad16e08cbe6e084ec00bb7c6509f35212a16bee8721dc
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 36698
-  sha256: bcaee57eb104c6e090fb828162fd5799bfb7d469ee2351339e2415ea38884e58
+  bytes: 42216
+  sha256: 6f25529260db4ae4b8e7bc69f92b7c3d2c942e6810fdfd5686d4203c3bca256e
 - uri: repo://Makefile
   bytes: 34123
   sha256: e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc
