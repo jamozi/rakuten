@@ -556,7 +556,8 @@ probe_fail() {
       SERVER_CHILD_INVENTORY_INVALID|SERVER_STATUS_INVALID|\
       SERVER_RELATION_INVALID|SERVER_IDENTITY_INVALID|\
       SERVER_CAPABILITIES_INVALID|SERVER_STATE_INVALID|\
-      SERVER_EXECUTABLE_INVALID|SERVER_STARTTIME_INVALID|SERVER_CHURN_INVALID) ;;
+      SERVER_EXECUTABLE_READ_FAILED|SERVER_EXECUTABLE_PATH_INVALID|\
+      SERVER_STARTTIME_INVALID|SERVER_CHURN_INVALID) ;;
     *) exit 1 ;;
   esac
   printf "RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_%s\n" "$1"
@@ -678,8 +679,8 @@ load_status "/proc/$first_server_pid/status" || probe_fail SERVER_STATUS_INVALID
 [ "$status_gids" = 1000:1000:1000:1000 ] || probe_fail SERVER_IDENTITY_INVALID
 [ "$status_cap_eff" = 0000000000000000 ] || probe_fail SERVER_CAPABILITIES_INVALID
 case $status_state in ""|Z|X|x) probe_fail SERVER_STATE_INVALID ;; esac
-server_executable=$(readlink "/proc/$first_server_pid/exe" 2>/dev/null) || probe_fail SERVER_EXECUTABLE_INVALID
-[ "$server_executable" = /usr/bin/weed ] || probe_fail SERVER_EXECUTABLE_INVALID
+server_executable=$(readlink "/proc/$first_server_pid/exe" 2>/dev/null) || probe_fail SERVER_EXECUTABLE_READ_FAILED
+[ "$server_executable" = /usr/bin/weed ] || probe_fail SERVER_EXECUTABLE_PATH_INVALID
 load_starttime "$first_server_pid" || probe_fail SERVER_STARTTIME_INVALID
 first_starttime=$process_starttime
 
@@ -691,8 +692,8 @@ load_status "/proc/$server_pid/status" || probe_fail SERVER_CHURN_INVALID
 [ "$status_gids" = 1000:1000:1000:1000 ] || probe_fail SERVER_CHURN_INVALID
 [ "$status_cap_eff" = 0000000000000000 ] || probe_fail SERVER_CHURN_INVALID
 case $status_state in ""|Z|X|x) probe_fail SERVER_CHURN_INVALID ;; esac
-server_executable=$(readlink "/proc/$server_pid/exe" 2>/dev/null) || probe_fail SERVER_CHURN_INVALID
-[ "$server_executable" = /usr/bin/weed ] || probe_fail SERVER_CHURN_INVALID
+server_executable=$(readlink "/proc/$server_pid/exe" 2>/dev/null) || probe_fail SERVER_EXECUTABLE_READ_FAILED
+[ "$server_executable" = /usr/bin/weed ] || probe_fail SERVER_EXECUTABLE_PATH_INVALID
 load_starttime "$server_pid" || probe_fail SERVER_CHURN_INVALID
 [ "$process_starttime" = "$first_starttime" ] || probe_fail SERVER_CHURN_INVALID
 
@@ -735,8 +736,11 @@ printf "%s\n" RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1
       RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_STATE_INVALID)
         error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_STATE_INVALID'
         ;;
-      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_EXECUTABLE_INVALID)
-        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_EXECUTABLE_INVALID'
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_EXECUTABLE_READ_FAILED)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_EXECUTABLE_READ_FAILED'
+        ;;
+      RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_EXECUTABLE_PATH_INVALID)
+        error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_EXECUTABLE_PATH_INVALID'
         ;;
       RAOS_OBJECT_STORAGE_PROCESS_MODEL_DIAGNOSTIC_V1_SERVER_STARTTIME_INVALID)
         error 'the object-storage runtime process model probe failed with sanitized diagnostic code: SERVER_STARTTIME_INVALID'

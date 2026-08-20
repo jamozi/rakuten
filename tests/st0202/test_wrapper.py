@@ -62,7 +62,10 @@ PROCESS_DIAGNOSTIC_MODES = {
     "mixed_server_gids": "SERVER_IDENTITY_INVALID",
     "server_capability": "SERVER_CAPABILITIES_INVALID",
     "zombie_server": "SERVER_STATE_INVALID",
-    "wrong_server_executable": "SERVER_EXECUTABLE_INVALID",
+    "server_executable_read_failed": "SERVER_EXECUTABLE_READ_FAILED",
+    "wrong_server_executable": "SERVER_EXECUTABLE_PATH_INVALID",
+    "server_executable_reread_failed": "SERVER_EXECUTABLE_READ_FAILED",
+    "server_executable_path_changed": "SERVER_EXECUTABLE_PATH_INVALID",
     "server_starttime_invalid": "SERVER_STARTTIME_INVALID",
     "server_pid_churn": "SERVER_CHURN_INVALID",
 }
@@ -975,6 +978,26 @@ def test_process_probe_is_closed_exact_and_does_not_inspect_sensitive_proc_data(
         assert f"sanitized diagnostic code: {diagnostic_code}'" in source
     assert "/environ" not in source
     assert "/cmdline" not in source
+
+
+def test_server_executable_diagnostics_split_read_and_exact_path_failures() -> None:
+    source = WRAPPER.read_text(encoding="utf-8")
+
+    assert source.count("probe_fail SERVER_EXECUTABLE_READ_FAILED") == 2
+    assert source.count("probe_fail SERVER_EXECUTABLE_PATH_INVALID") == 2
+    assert (
+        'server_executable=$(readlink "/proc/$first_server_pid/exe" 2>/dev/null) '
+        "|| probe_fail SERVER_EXECUTABLE_READ_FAILED"
+    ) in source
+    assert (
+        'server_executable=$(readlink "/proc/$server_pid/exe" 2>/dev/null) '
+        "|| probe_fail SERVER_EXECUTABLE_READ_FAILED"
+    ) in source
+    assert (
+        '[ "$server_executable" = /usr/bin/weed ] '
+        "|| probe_fail SERVER_EXECUTABLE_PATH_INVALID"
+    ) in source
+    assert "SERVER_EXECUTABLE_INVALID" not in source
 
 
 def test_unreviewed_compose_service_is_rejected(tmp_path: Path) -> None:
