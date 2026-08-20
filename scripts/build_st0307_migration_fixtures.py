@@ -57,7 +57,7 @@ GENERATED_PATHS: Final = (
 
 EXPECTED_SERVER_VERSION_NUM: Final = 180004
 EXPECTED_CONTRACT_SHA256: Final = (
-    "e458bcb9c7f2f60665cf5715e7b71fae470ef63671d36dd27befc05b492d8bec"
+    "bda9ec7371799053c30326b63a3e5dc045e784c8b0cec1e59b083b80d2b8dd23"
 )
 EXPECTED_ARCHIVE_SHA256: Final = (
     "82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357"
@@ -136,10 +136,10 @@ EXPECTED_MIGRATION_MANIFESTS: Final = {
         "d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51"
     ),
     "changes/st-0305/manifest.yaml": (
-        "5f8b663b5ebc72960dadf662c1cc251d5e36ff7849ddfbfb67bbc9a113d45353"
+        "ee7ef9a8fac40dc11ed90f4fe90e3cd78560ecdff8e4f8f84202a4b0609b681d"
     ),
     "changes/st-0306/manifest.yaml": (
-        "70e085b69e256225508d68d27151b8fd8eb54e5f8a8ebbe8b8e726821d26058b"
+        "143b800b79bf4a5330a7bc03c9a38bfb82c796eaa34c98289cf71f77853666ce"
     ),
 }
 EXPECTED_CHECKPOINT_PREREQUISITE_ROLES: Final = (

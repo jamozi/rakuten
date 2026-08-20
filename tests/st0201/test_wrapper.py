@@ -443,6 +443,11 @@ def test_wrapper_rejects_relative_docker_path_and_unknown_command() -> None:
 
 
 def test_real_docker_runtime_or_explicit_environment_skip(tmp_path: Path) -> None:
+    if os.environ.get("RAOS_NETWORK_DENIED") == "1":
+        pytest.skip(
+            "Network-denied Unit context cannot pull the exact PostgreSQL image; "
+            "the Database job owns the isolated runtime assertion"
+        )
     docker = shutil.which("docker")
     if docker is None:
         pytest.skip(
@@ -487,6 +492,42 @@ def test_real_docker_runtime_or_explicit_environment_skip(tmp_path: Path) -> Non
     )
     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
     assert json.loads(result.stdout)["server_version_num"] == "180004"
+
+
+def test_real_docker_runtime_skips_before_docker_lookup_in_denied_network_context(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("RAOS_NETWORK_DENIED", "1")
+
+    def unexpected_docker_lookup(_executable: str) -> str | None:
+        pytest.fail("the denied-network Unit context touched Docker discovery")
+
+    monkeypatch.setattr(shutil, "which", unexpected_docker_lookup)
+
+    with pytest.raises(pytest.skip.Exception, match="Network-denied Unit context"):
+        test_real_docker_runtime_or_explicit_environment_skip(tmp_path)
+
+
+@pytest.mark.parametrize(
+    "network_denied",
+    ["", "0", "01", "true", "TRUE", " 1", "1 ", "1\n"],
+)
+def test_real_docker_runtime_does_not_skip_for_nonexact_denied_network_values(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    network_denied: str,
+) -> None:
+    class DockerLookupReached(Exception):
+        pass
+
+    def stop_at_docker_lookup(_executable: str) -> str | None:
+        raise DockerLookupReached
+
+    monkeypatch.setenv("RAOS_NETWORK_DENIED", network_denied)
+    monkeypatch.setattr(shutil, "which", stop_at_docker_lookup)
+
+    with pytest.raises(DockerLookupReached):
+        test_real_docker_runtime_or_explicit_environment_skip(tmp_path)
 
 
 def test_wrapper_source_is_executable_and_not_group_writable() -> None:
