@@ -406,6 +406,32 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
             '        return loader["__import__"]("socket").socket()',
         ),
         (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def reflected_socket(self) -> object:\n"
+            '        return object.__getattribute__((lambda: None), "__globals__")'
+            '["__builtins__"]["__import__"]("socket").socket()',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def dynamic_marker(self) -> str:\n"
+            '        return "__getattribute__"',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def import_marker(self) -> str:\n"
+            '        return "socket"',
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action surface."""',
+            '    """Validated policy projection only; it has no provider action surface."""\n\n'
+            "    def indirect_call(self) -> object:\n"
+            "        return (lambda: None)()",
+        ),
+        ("import json", "import json\nimport collections"),
+        (
             "    genre_information_flag: bool",
             "    genre_information_flag: bool\n    credential_reference: str | None",
         ),

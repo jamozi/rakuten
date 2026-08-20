@@ -171,6 +171,17 @@ ACTION_COUNT_KEYS: Final = (
     "persist",
     "external",
 )
+LIVE_POLICY_ALLOWED_IMPORTS: Final = frozenset(
+    {
+        "__future__",
+        "dataclasses",
+        "enum",
+        "hashlib",
+        "json",
+        "raos",
+        "typing",
+    }
+)
 LIVE_POLICY_FORBIDDEN_IMPORTS: Final = frozenset(
     {
         "builtins",
@@ -212,6 +223,7 @@ LIVE_POLICY_FORBIDDEN_DYNAMIC_REFERENCES: Final = frozenset(
     {
         "__builtins__",
         "__dict__",
+        "__getattribute__",
         "__globals__",
         "__import__",
         "__mro__",
@@ -503,6 +515,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
     calls: set[str] = set()
     identifiers: set[str] = set()
     string_values: set[str] = set()
+    has_indirect_call = False
     for node in ast.walk(live_policy_tree):
         if isinstance(node, ast.Import):
             imports.update(alias.name.partition(".")[0] for alias in node.names)
@@ -512,12 +525,15 @@ def _validate_predecessor_semantics(root: Path) -> None:
             imports.add(node.module.partition(".")[0])
             identifiers.update(alias.name for alias in node.names)
             identifiers.update(alias.asname for alias in node.names if alias.asname)
-        elif isinstance(node, ast.Call) and isinstance(
-            node.func, (ast.Attribute, ast.Name)
-        ):
-            calls.add(
-                node.func.attr if isinstance(node.func, ast.Attribute) else node.func.id
-            )
+        elif isinstance(node, ast.Call):
+            if isinstance(node.func, (ast.Attribute, ast.Name)):
+                calls.add(
+                    node.func.attr
+                    if isinstance(node.func, ast.Attribute)
+                    else node.func.id
+                )
+            else:
+                has_indirect_call = True
         if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef)):
             identifiers.add(node.name)
         elif isinstance(node, ast.Name):
@@ -529,10 +545,14 @@ def _validate_predecessor_semantics(root: Path) -> None:
         elif isinstance(node, ast.Constant) and type(node.value) is str:
             string_values.add(node.value)
     if (
-        not imports.isdisjoint(LIVE_POLICY_FORBIDDEN_IMPORTS)
+        not imports.issubset(LIVE_POLICY_ALLOWED_IMPORTS)
+        or not imports.isdisjoint(LIVE_POLICY_FORBIDDEN_IMPORTS)
         or not calls.isdisjoint(LIVE_POLICY_FORBIDDEN_CALLS)
         or not identifiers.isdisjoint(LIVE_POLICY_FORBIDDEN_CALLS)
         or not identifiers.isdisjoint(LIVE_POLICY_FORBIDDEN_DYNAMIC_REFERENCES)
+        or not string_values.isdisjoint(LIVE_POLICY_FORBIDDEN_DYNAMIC_REFERENCES)
+        or not string_values.isdisjoint(LIVE_POLICY_FORBIDDEN_IMPORTS)
+        or has_indirect_call
         or any(
             part in identifier.lower()
             for identifier in identifiers

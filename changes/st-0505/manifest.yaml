@@ -56,8 +56,8 @@ source_artifacts:
   bytes: 3310
   sha256: 0d3e5425de95961edc76494498fba5d66930ab81e75a8fa1801c3445d05b643a
 - uri: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
-  bytes: 31108
-  sha256: 6a0e464de952dbcd52c27083e10a96afef7a759c4c9760edee96a300781953ca
+  bytes: 31702
+  sha256: b3089c996f7ae997b77cc692e68aac1dfec7e7b70a11b91647201f89f8c1f18e
 - uri: repo://tests/st0505/conftest.py
   bytes: 952
   sha256: c85ba1f8614db15f2723b7ba320a4ab7e31459188d1223828d2078bac7352dae
@@ -68,8 +68,8 @@ source_artifacts:
   bytes: 3908
   sha256: 30e186e0e4befbe4cadf194c207ab0cf406446fec585a704e46a2ce49f2d338c
 - uri: repo://tests/st0505/test_negative_cases.py
-  bytes: 20941
-  sha256: fec6ed2657ac73d389c5e1e8baa0be033c31492bc216ec762731ac69ee6a31c2
+  bytes: 22351
+  sha256: b927b5bcad36f81ad73ab6990d6c363e6f419f601fa23ed9f4742f6ce34efa10
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0505/generated/rakuten-live-smoke-reference-plan.v1.json
