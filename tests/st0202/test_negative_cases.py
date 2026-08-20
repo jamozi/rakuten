@@ -183,6 +183,68 @@ def test_bool_as_integer_does_not_bypass_strict_comparison(
         (("docker_host",), "tcp://127.0.0.1:2375"),
         (("expected_platform",), "linux/arm64"),
         (("expected_process_model", "host_config_init"), False),
+        (("expected_process_model", "observation"), "CONTAINER_PROCFS"),
+        (
+            ("expected_process_model", "observer_exclusion"),
+            "EXACT_SELF_PID_ONLY",
+        ),
+        (
+            ("expected_process_model", "churn_check"),
+            "CHILD_PID_STATUS_STARTTIME_AND_EXE_REREAD",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "root",
+                "docker_exec_user",
+            ),
+            "1000:1000",
+        ),
+        (
+            ("expected_process_model", "probes", "root", "server_executable_read"),
+            "ALLOWED",
+        ),
+        (
+            ("expected_process_model", "probes", "root", "success_token"),
+            "RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "same_uid_server",
+                "docker_exec_user",
+            ),
+            "0:0",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "same_uid_server",
+                "server_executable_read",
+            ),
+            "OPTIONAL",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "same_uid_server",
+                "success_token",
+            ),
+            "RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1",
+        ),
+        (
+            (
+                "expected_process_model",
+                "probes",
+                "same_uid_server",
+                "independent_child_resolution",
+            ),
+            "OPTIONAL",
+        ),
         (("expected_process_model", "init", "uids"), [1000, 1000, 1000, 1000]),
         (("expected_process_model", "init", "executable"), "/usr/bin/weed"),
         (("expected_process_model", "server", "direct_child_count"), 2),
@@ -197,6 +259,22 @@ def test_bool_as_integer_does_not_bypass_strict_comparison(
         (
             ("expected_image_labels", "org.opencontainers.image.revision"),
             "main",
+        ),
+        (
+            ("expected_version_line",),
+            "Version 30GB 4.29 1355c7a10 linux amd64",
+        ),
+        (
+            ("expected_version_line",),
+            " version 30GB 4.29 1355c7a10 linux amd64 ",
+        ),
+        (
+            ("expected_version_line",),
+            "version 30GB 4.29 1355c7a10 linux amd64 trailing",
+        ),
+        (
+            ("expected_version_line",),
+            "version 30GB 4.29 1355c7a102 linux amd64",
         ),
         (("disposable_pull_policy",), "missing"),
         (("ephemeral_port_override", "tracked_artifact"), "PRESENT"),

@@ -14,7 +14,7 @@ readonly expected_image='docker.io/chrislusf/seaweedfs:4.29@sha256:d47c7ee99fcb9
 readonly expected_image_config_digest='sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd'
 readonly expected_platform='linux/amd64'
 readonly expected_revision='1355c7a102194d6c461baf090eff50367b575afb'
-readonly expected_version_line='version 8000GB 4.29 1355c7a linux amd64'
+readonly expected_version_line='version 30GB 4.29 1355c7a10 linux amd64'
 readonly expected_compose_sha256='a6cd0109a2bc63dae10be59bd9aa32ab85e9c3fec3847bc43c413b452cb871f5'
 readonly expected_fixture_sha256='50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527'
 readonly expected_ephemeral_override_sha256='92e141f0c1b96ef47cf79855951d6cadaec509b9796cc03067186ff44dd27239'
@@ -483,7 +483,8 @@ assert_service() {
   local published
   local observed_published_port
   local port_inventory
-  local process_model
+  local root_process_model
+  local server_process_model
   local version_output
   local version_line
 
@@ -546,7 +547,7 @@ assert_service() {
     return 1
   fi
 
-  if ! process_model=$(run_docker exec "$container_id" /bin/sh -eu -c '
+  if ! root_process_model=$(run_docker exec "$container_id" /bin/sh -eu -c '
 load_status() {
   status_path=$1
   status_pid=
@@ -662,6 +663,139 @@ load_status "/proc/$first_server_pid/status" || exit 1
 [ "$status_gids" = 1000:1000:1000:1000 ] || exit 1
 [ "$status_cap_eff" = 0000000000000000 ] || exit 1
 case $status_state in ""|Z|X|x) exit 1 ;; esac
+load_starttime "$first_server_pid" || exit 1
+first_starttime=$process_starttime
+
+load_server_child || exit 1
+[ "$server_pid" = "$first_server_pid" ] || exit 1
+load_status "/proc/$server_pid/status" || exit 1
+[ "$status_pid" = "$server_pid" ] && [ "$status_ppid" = 1 ] || exit 1
+[ "$status_uids" = 1000:1000:1000:1000 ] || exit 1
+[ "$status_gids" = 1000:1000:1000:1000 ] || exit 1
+[ "$status_cap_eff" = 0000000000000000 ] || exit 1
+case $status_state in ""|Z|X|x) exit 1 ;; esac
+load_starttime "$server_pid" || exit 1
+[ "$process_starttime" = "$first_starttime" ] || exit 1
+
+printf "%s\n" RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1
+' 2>/dev/null); then
+    error 'the object-storage root process model could not be verified'
+    return 1
+  fi
+  if [[ $root_process_model != RAOS_OBJECT_STORAGE_ROOT_PROCESS_MODEL_V1 ]]; then
+    error 'the object-storage root process model differs from the pinned contract'
+    return 1
+  fi
+
+  if ! server_process_model=$(run_docker exec --user 1000:1000 "$container_id" /bin/sh -eu -c '
+load_status() {
+  status_path=$1
+  status_pid=
+  status_ppid=
+  status_state=
+  status_uids=
+  status_gids=
+  status_cap_eff=
+  status_pid_count=0
+  status_ppid_count=0
+  status_state_count=0
+  status_uid_count=0
+  status_gid_count=0
+  status_cap_eff_count=0
+  while IFS= read -r status_line || [ -n "$status_line" ]; do
+    case $status_line in
+      Pid:*)
+        status_pid_count=$((status_pid_count + 1))
+        set -- ${status_line#Pid:}
+        [ "$#" -eq 1 ] || return 1
+        status_pid=$1
+        ;;
+      PPid:*)
+        status_ppid_count=$((status_ppid_count + 1))
+        set -- ${status_line#PPid:}
+        [ "$#" -eq 1 ] || return 1
+        status_ppid=$1
+        ;;
+      State:*)
+        status_state_count=$((status_state_count + 1))
+        set -- ${status_line#State:}
+        [ "$#" -ge 1 ] || return 1
+        status_state=$1
+        ;;
+      Uid:*)
+        status_uid_count=$((status_uid_count + 1))
+        set -- ${status_line#Uid:}
+        [ "$#" -eq 4 ] || return 1
+        status_uids=$1:$2:$3:$4
+        ;;
+      Gid:*)
+        status_gid_count=$((status_gid_count + 1))
+        set -- ${status_line#Gid:}
+        [ "$#" -eq 4 ] || return 1
+        status_gids=$1:$2:$3:$4
+        ;;
+      CapEff:*)
+        status_cap_eff_count=$((status_cap_eff_count + 1))
+        set -- ${status_line#CapEff:}
+        [ "$#" -eq 1 ] || return 1
+        status_cap_eff=$1
+        ;;
+    esac
+  done < "$status_path"
+  [ "$status_pid_count" -eq 1 ] &&
+    [ "$status_ppid_count" -eq 1 ] &&
+    [ "$status_state_count" -eq 1 ] &&
+    [ "$status_uid_count" -eq 1 ] &&
+    [ "$status_gid_count" -eq 1 ] &&
+    [ "$status_cap_eff_count" -eq 1 ]
+}
+
+load_server_child() {
+  server_pid=
+  server_count=0
+  children=
+  IFS= read -r children < /proc/1/task/1/children || [ -n "$children" ]
+  set -- $children
+  for candidate in "$@"; do
+    case $candidate in
+      ""|*[!0-9]*) return 1 ;;
+    esac
+    [ "$candidate" = "$observer_pid" ] && continue
+    server_count=$((server_count + 1))
+    server_pid=$candidate
+  done
+  [ "$server_count" -eq 1 ] && [ "$server_pid" -ne 1 ]
+}
+
+load_starttime() {
+  process_pid=$1
+  stat_line=
+  IFS= read -r stat_line < "/proc/$process_pid/stat" || [ -n "$stat_line" ]
+  stat_fields=${stat_line##*) }
+  [ "$stat_fields" != "$stat_line" ] || return 1
+  set -- $stat_fields
+  [ "$#" -ge 20 ] || return 1
+  shift 19
+  process_starttime=$1
+  case $process_starttime in
+    ""|*[!0-9]*) return 1 ;;
+  esac
+}
+
+observer_pid=$$
+case $observer_pid in
+  ""|*[!0-9]*) exit 1 ;;
+esac
+[ "$observer_pid" -ne 1 ] || exit 1
+
+load_server_child || exit 1
+first_server_pid=$server_pid
+load_status "/proc/$first_server_pid/status" || exit 1
+[ "$status_pid" = "$first_server_pid" ] && [ "$status_ppid" = 1 ] || exit 1
+[ "$status_uids" = 1000:1000:1000:1000 ] || exit 1
+[ "$status_gids" = 1000:1000:1000:1000 ] || exit 1
+[ "$status_cap_eff" = 0000000000000000 ] || exit 1
+case $status_state in ""|Z|X|x) exit 1 ;; esac
 server_executable=$(readlink "/proc/$first_server_pid/exe" 2>/dev/null) || exit 1
 [ "$server_executable" = /usr/bin/weed ] || exit 1
 load_starttime "$first_server_pid" || exit 1
@@ -680,13 +814,13 @@ server_executable=$(readlink "/proc/$server_pid/exe" 2>/dev/null) || exit 1
 load_starttime "$server_pid" || exit 1
 [ "$process_starttime" = "$first_starttime" ] || exit 1
 
-printf "%s\n" RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1
+printf "%s\n" RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1
 ' 2>/dev/null); then
-    error 'the object-storage runtime process model could not be verified'
+    error 'the object-storage same-UID server process model could not be verified'
     return 1
   fi
-  if [[ $process_model != RAOS_OBJECT_STORAGE_PROCESS_MODEL_V1 ]]; then
-    error 'the object-storage runtime process model differs from the pinned contract'
+  if [[ $server_process_model != RAOS_OBJECT_STORAGE_SERVER_PROCESS_MODEL_V1 ]]; then
+    error 'the object-storage same-UID server process model differs from the pinned contract'
     return 1
   fi
   version_output=$(compose "$project" exec -T object-storage /usr/bin/weed version 2>/dev/null)

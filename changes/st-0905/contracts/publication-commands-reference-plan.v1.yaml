@@ -49,8 +49,8 @@ authority:
   - {role: unpublished_event_schema, uri: 'repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-unpublished-v1.schema.json', sha256: 91fc5b6322bd98301440b493c639955541aba9a45b24420888ca855e90eac9b6}
   - {role: rolled_back_event_schema, uri: 'repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-rolled-back-v1.schema.json', sha256: a405b5826a80f2e95029d7a5b824caf9e5795e8050edfc97e2e76906742cf660}
 dependencies:
-- {story_id: ST-0903, artifact: 'repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml', sha256: b2c677fc2505c50f7503adbf35f71dd13f7b27a4c3ed94741e46e172edbff876, connection_status: NOT_EXECUTED, authority_status: NONEXECUTABLE_REFERENCE_PLAN_NO_AUTHORITATIVE_SNAPSHOT}
-- {story_id: ST-0904, artifact: 'repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml', sha256: d38a0a1146394ba6b8bab2a0ef9bc93a14b29890dd25431880b8abf7c59d3d4c, connection_status: NOT_EXECUTED, authority_status: NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTOR_OR_PUBLIC_ROW}
+- {story_id: ST-0903, artifact: 'repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml', sha256: b741b850a0bbb8d65d97d4993da18277d112b79cb64e5494688f6356941e6553, connection_status: NOT_EXECUTED, authority_status: NONEXECUTABLE_REFERENCE_PLAN_NO_AUTHORITATIVE_SNAPSHOT}
+- {story_id: ST-0904, artifact: 'repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml', sha256: aa8865e5569ce3a8dbcad9e4a34156991acbc8f8f6dfda9876920d4912ae2b3f, connection_status: NOT_EXECUTED, authority_status: NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTOR_OR_PUBLIC_ROW}
 - {story_id: ST-0402, artifact: 'repo://changes/st-0402/README.md', sha256: 6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b, connection_status: NOT_EXECUTED, authority_status: DEVELOPMENT_SYNTHETIC_STEP_UP_ONLY_NO_PUBLIC_AUTHORITY}
 hard_gates:
 - {id: ST0905-GATE-001, topic: authoritative_effective_non_revoked_publication_snapshot, status: ABSENT, safe_default: NO_COMMAND}

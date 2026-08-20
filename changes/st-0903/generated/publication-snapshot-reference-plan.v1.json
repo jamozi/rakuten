@@ -144,7 +144,7 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-    "source_contract_sha256": "b2c677fc2505c50f7503adbf35f71dd13f7b27a4c3ed94741e46e172edbff876",
+    "source_contract_sha256": "b741b850a0bbb8d65d97d4993da18277d112b79cb64e5494688f6356941e6553",
     "generated_by": "repo://scripts/build_st0903_publication_snapshot_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0903_publication_snapshot_reference_plan.py",
     "implementation_helper": {
@@ -178,7 +178,7 @@
     {
       "story_id": "ST-0202",
       "artifact": "repo://changes/st-0202/contracts/local-object-storage.v1.yaml",
-      "sha256": "2558fe98bd560e3ae5f082aca739d18d35a14a0425d24164baff648b91cce5e5",
+      "sha256": "5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "LOCAL_RAW_BUCKET_CONTRACT_ONLY"
     },

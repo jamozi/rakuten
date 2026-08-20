@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0904_public_projection_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0904_public_projection_reference_plan.py
 provenance:
-  contract_sha256: d38a0a1146394ba6b8bab2a0ef9bc93a14b29890dd25431880b8abf7c59d3d4c
+  contract_sha256: aa8865e5569ce3a8dbcad9e4a34156991acbc8f8f6dfda9876920d4912ae2b3f
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -86,7 +86,7 @@ provenance:
   dependency_inputs:
   - story_id: ST-0903
     uri: repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml
-    sha256: b2c677fc2505c50f7503adbf35f71dd13f7b27a4c3ed94741e46e172edbff876
+    sha256: b741b850a0bbb8d65d97d4993da18277d112b79cb64e5494688f6356941e6553
   - story_id: ST-0306
     uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
     sha256: 6b8710a79729bde75e96e1df3698a0928d4924e4bd10afaff5631fc00f70a0d4
@@ -99,13 +99,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml
   bytes: 12960
-  sha256: d38a0a1146394ba6b8bab2a0ef9bc93a14b29890dd25431880b8abf7c59d3d4c
+  sha256: aa8865e5569ce3a8dbcad9e4a34156991acbc8f8f6dfda9876920d4912ae2b3f
 - uri: repo://changes/st-0904/README.md
   bytes: 3962
   sha256: e4015ac16ddd7383b0848283bebe2348020fb2fe7711d3a41a05e608b4ed2f16
 - uri: repo://scripts/build_st0904_public_projection_reference_plan.py
   bytes: 45785
-  sha256: 87647f3413efc8fcf0604ca67a8b296ae927fb9871a5b44f4353928b92216574
+  sha256: f9ba70ab5a2aa88d71aab59a2f8c47c555fcaa2be442e0d609fba3ddc5fe5b8e
 - uri: repo://tests/st0904/conftest.py
   bytes: 955
   sha256: 88af5e0dff9071d5638c52fff6e2c2114025ca8f82199d434ce547318d067fed
@@ -122,7 +122,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0904/generated/public-projection-reference-plan.v1.json
   bytes: 17894
-  sha256: 319332eb4cb8d0dcc37af9edcea717a872bbdaa5c05e04527e5a2b2d62890b39
+  sha256: 65c1a07f3387fc974922a90752c3521fc525dc441323815c3f4751b57c923324
   digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLIC_PROJECTION_REFERENCE_PLAN

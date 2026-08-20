@@ -34,7 +34,7 @@ provenance:
       sha256: 9f6d39a784cb00d6ec5159fe45eddaf92d661a939b63cbcad6f33c899faab87a
   predecessor_manifest:
     uri: repo://changes/st-0202/manifest.yaml
-    sha256: 540494f4cd71992ca547d35ee3347828f83682c998273ebaac76a8a3b4d5f072
+    sha256: ca324b20d3e1e036ae97a5c57fb2bf898ff7199c3064f0032fb5f70be9b46925
     story_id: ST-0202
 evidence_chain:
   stories:
@@ -45,7 +45,7 @@ source_artifact_count: 22
 source_artifacts:
 - uri: repo://changes/st-0203/contracts/local-queue.v1.yaml
   bytes: 3727
-  sha256: 290b8f237bc6b175d8df3a2bfdd34b3b6dc7a2f852b507e4385edfa628bdcfda
+  sha256: aea743bdfc070710ee7f64cd22d2f3c8d57cc9f48cd8b38ba7b796d08f7e813b
 - uri: repo://changes/st-0203/README.md
   bytes: 1934
   sha256: ccce5906137009c090fc038bd409d71c81fb2453385e385adbefc536bd791d3f
@@ -57,7 +57,7 @@ source_artifacts:
   sha256: dd5ad08e8e38e5eb84071d603416793748ecf316cfd37ffd77cf8ebc59f503e1
 - uri: repo://scripts/build_st0203_queue_fake.py
   bytes: 16428
-  sha256: c3349be90e696d24f6d18f30c1df11f35ae7164e280c75f8f278c34882191355
+  sha256: 350508ad8cc2cb9e815e725abec3654ed186f680ac1d3f6b5b788ce779b884b0
 - uri: repo://python/raos/ports/__init__.py
   bytes: 885
   sha256: 3e3494de5cabf28a3857383e6a3c4833465cc442af4c75ae1a37c5d8104d3363
@@ -98,8 +98,8 @@ source_artifacts:
   bytes: 58459
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 - uri: repo://changes/st-0202/manifest.yaml
-  bytes: 7727
-  sha256: 540494f4cd71992ca547d35ee3347828f83682c998273ebaac76a8a3b4d5f072
+  bytes: 7728
+  sha256: ca324b20d3e1e036ae97a5c57fb2bf898ff7199c3064f0032fb5f70be9b46925
 - uri: repo://contracts/raos-v0.4/contracts/schemas/common/job-message.schema.json
   bytes: 2987
   sha256: cdb8e8094d4fa74843c26ea453354df7083bc41a6f165220ddd0e263e37db8d5
