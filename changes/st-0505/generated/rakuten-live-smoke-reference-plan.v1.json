@@ -1,7 +1,7 @@
 {
   "document": {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -49,13 +49,13 @@
   },
   "predecessor_binding": {
     "story_id": "ST-0502",
-    "commit": "74d4dab6cb682706e8db526a796c973b9b6e15fb",
+    "commit": "3b63ea8b35b25f1c38c53a7fb5e8c0b596ddd0ab",
     "status": "RECORDED_ONE_PAGE_CONTRACT_TEST_ONLY",
     "connection_status": "INTERFACE_AVAILABLE_NOT_CONNECTED",
     "artifacts": [
       {
         "uri": "repo://changes/st-0502/README.md",
-        "sha256": "e74805b634f4b775bf8765896f9c7f3b591cf2cf884e6f52743d94f765ec92e9"
+        "sha256": "d242024ecb824c36fe45d63709a34af7138f6101deb5c36782f78f8836c7b731"
       },
       {
         "uri": "repo://python/raos/domain/catalog/rakuten_item_search.py",
@@ -88,6 +88,14 @@
       {
         "uri": "repo://tests/st0502/test_rakuten_item_search.py",
         "sha256": "5d6d8767ea11124dc378cc52f18006fbb4eb9cdba3fbfe4bb7d06526ebddd42a"
+      },
+      {
+        "uri": "repo://python/raos/domain/catalog/rakuten_item_search_live_request_v1.py",
+        "sha256": "acd53bc3b12925e09859833ed9fc817e52a14872ae946336cc3dd039e990849e"
+      },
+      {
+        "uri": "repo://tests/st0502/test_rakuten_item_search_live_request_v1.py",
+        "sha256": "710ee36b2cc88d2f14c5a3e726b2fe50d1bd9fbc2bdd9bdb1a05c099bbf4c696"
       }
     ],
     "semantics": {
@@ -111,7 +119,21 @@
       "provider_sdk": "ABSENT",
       "filesystem": "ABSENT",
       "repository": "ABSENT",
-      "external_actions": []
+      "external_actions": [],
+      "live_request_policy": {
+        "policy_name": "RakutenItemSearchLiveRequestV1",
+        "policy_version": "V1",
+        "provider_api_version": "2026-07-01",
+        "non_executable": true,
+        "requested_page": 1,
+        "hits_minimum": 1,
+        "hits_maximum": 30,
+        "retry_limit": 0,
+        "pagination_followup_limit": 0,
+        "review_derived_request_inputs": "EXCLUDED",
+        "affiliate_rate_request_inputs": "EXCLUDED",
+        "provider_text_trust": "UNTRUSTED_DATA"
+      }
     }
   },
   "open_decision": {

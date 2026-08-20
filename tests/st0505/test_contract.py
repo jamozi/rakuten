@@ -8,6 +8,21 @@ from typing import Any
 from scripts import build_st0505_rakuten_live_smoke_reference_plan as generator
 
 
+EXPECTED_PREDECESSOR_URIS = (
+    "repo://changes/st-0502/README.md",
+    "repo://python/raos/domain/catalog/rakuten_item_search.py",
+    "repo://python/raos/ports/rakuten_item_search.py",
+    "repo://python/raos/application/catalog/rakuten_item_search.py",
+    "repo://python/raos/adapters/recorded_rakuten_item_search.py",
+    "repo://tests/st0502/conftest.py",
+    "repo://tests/st0502/test_boundaries.py",
+    "repo://tests/st0502/test_failure_isolation.py",
+    "repo://tests/st0502/test_rakuten_item_search.py",
+    "repo://python/raos/domain/catalog/rakuten_item_search_live_request_v1.py",
+    "repo://tests/st0502/test_rakuten_item_search_live_request_v1.py",
+)
+
+
 def _plan() -> dict[str, Any]:
     return generator.reference_plan(generator.load_contract())
 
@@ -16,6 +31,7 @@ def test_plan_has_exact_sections_and_non_executable_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
+    assert plan["document"]["version"] == "1.1.0"
     assert plan["document"]["executable"] is False
     assert plan["document"]["interface_only"] is True
     assert plan["document"]["decision"] == "NOT_READY"
@@ -29,6 +45,10 @@ def test_predecessor_binds_commit_artifacts_and_recorded_only_semantics() -> Non
     assert predecessor["story_id"] == "ST-0502"
     assert predecessor["commit"] == generator.PREDECESSOR_COMMIT
     assert predecessor["artifacts"] == generator._expected_predecessor_artifacts()
+    assert tuple(row["uri"] for row in predecessor["artifacts"]) == (
+        EXPECTED_PREDECESSOR_URIS
+    )
+    assert len(predecessor["artifacts"]) == 11
     assert predecessor["semantics"] == generator.EXPECTED_PREDECESSOR_SEMANTICS
     semantics = predecessor["semantics"]
     assert semantics["purpose"] == "CONTRACT_TEST"
@@ -44,6 +64,26 @@ def test_predecessor_binds_commit_artifacts_and_recorded_only_semantics() -> Non
     assert semantics["storage"] == "NOT_EXECUTED"
     assert semantics["persistence"] == "NOT_EXECUTED"
     assert semantics["receipt_uri"] is None
+
+
+def test_predecessor_binds_exact_non_executable_live_request_policy() -> None:
+    policy = _plan()["predecessor_binding"]["semantics"]["live_request_policy"]
+
+    assert policy == generator.EXPECTED_LIVE_REQUEST_POLICY_SEMANTICS
+    assert policy == {
+        "policy_name": "RakutenItemSearchLiveRequestV1",
+        "policy_version": "V1",
+        "provider_api_version": "2026-07-01",
+        "non_executable": True,
+        "requested_page": 1,
+        "hits_minimum": 1,
+        "hits_maximum": 30,
+        "retry_limit": 0,
+        "pagination_followup_limit": 0,
+        "review_derived_request_inputs": "EXCLUDED",
+        "affiliate_rate_request_inputs": "EXCLUDED",
+        "provider_text_trust": "UNTRUSTED_DATA",
+    }
 
 
 def test_predecessor_selects_no_live_endpoint_account_or_capability() -> None:

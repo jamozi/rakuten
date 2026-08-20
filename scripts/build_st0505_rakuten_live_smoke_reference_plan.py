@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 import sys
@@ -85,11 +86,11 @@ EXPECTED_SOURCES: Final = (
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
     ),
 )
-PREDECESSOR_COMMIT: Final = "74d4dab6cb682706e8db526a796c973b9b6e15fb"
+PREDECESSOR_COMMIT: Final = "3b63ea8b35b25f1c38c53a7fb5e8c0b596ddd0ab"
 EXPECTED_PREDECESSOR_ARTIFACTS: Final = (
     (
         Path("changes/st-0502/README.md"),
-        "e74805b634f4b775bf8765896f9c7f3b591cf2cf884e6f52743d94f765ec92e9",
+        "d242024ecb824c36fe45d63709a34af7138f6101deb5c36782f78f8836c7b731",
     ),
     (
         Path("python/raos/domain/catalog/rakuten_item_search.py"),
@@ -122,6 +123,14 @@ EXPECTED_PREDECESSOR_ARTIFACTS: Final = (
     (
         Path("tests/st0502/test_rakuten_item_search.py"),
         "5d6d8767ea11124dc378cc52f18006fbb4eb9cdba3fbfe4bb7d06526ebddd42a",
+    ),
+    (
+        Path("python/raos/domain/catalog/rakuten_item_search_live_request_v1.py"),
+        "acd53bc3b12925e09859833ed9fc817e52a14872ae946336cc3dd039e990849e",
+    ),
+    (
+        Path("tests/st0502/test_rakuten_item_search_live_request_v1.py"),
+        "710ee36b2cc88d2f14c5a3e726b2fe50d1bd9fbc2bdd9bdb1a05c099bbf4c696",
     ),
 )
 
@@ -161,6 +170,78 @@ ACTION_COUNT_KEYS: Final = (
     "store",
     "persist",
     "external",
+)
+LIVE_POLICY_FORBIDDEN_IMPORTS: Final = frozenset(
+    {
+        "builtins",
+        "boto3",
+        "botocore",
+        "http",
+        "httpx",
+        "importlib",
+        "os",
+        "pathlib",
+        "requests",
+        "socket",
+        "sqlalchemy",
+        "sqlite3",
+        "subprocess",
+        "sys",
+        "urllib",
+    }
+)
+LIVE_POLICY_FORBIDDEN_CALLS: Final = frozenset(
+    {
+        "commit",
+        "execute",
+        "getenv",
+        "open",
+        "persist",
+        "publish",
+        "request",
+        "save",
+        "send",
+        "store",
+        "unlink",
+        "upload",
+        "urlopen",
+        "write",
+    }
+)
+LIVE_POLICY_FORBIDDEN_DYNAMIC_REFERENCES: Final = frozenset(
+    {
+        "__builtins__",
+        "__dict__",
+        "__globals__",
+        "__import__",
+        "__mro__",
+        "__subclasses__",
+        "compile",
+        "delattr",
+        "dir",
+        "eval",
+        "exec",
+        "getattr",
+        "globals",
+        "hasattr",
+        "import_module",
+        "locals",
+        "modules",
+        "setattr",
+        "vars",
+    }
+)
+LIVE_POLICY_FORBIDDEN_IDENTIFIER_PARTS: Final = (
+    "affiliate_rate",
+    "credential",
+    "endpoint",
+    "http",
+    "network",
+    "persistence",
+    "review_average",
+    "review_count",
+    "secret",
+    "storage",
 )
 
 
@@ -390,10 +471,101 @@ def _validate_predecessor_semantics(root: Path) -> None:
     if any(fragment not in application for fragment in required_application):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.application")
 
+    live_policy = _read(
+        root, EXPECTED_PREDECESSOR_ARTIFACTS[9][0], "predecessor.live_policy"
+    ).decode("utf-8", errors="strict")
+    required_live_policy = (
+        '"""Pure non-executable live-safe Item Search request policy for ST-0502."""',
+        "class RakutenItemSearchLiveRequestV1(_RedactedValue):",
+        'self.api_version != "2026-07-01"',
+        "_exact_int(self.hits, minimum=1, maximum=30)",
+        "type(self.page) is not int or self.page != 1",
+        "def retry_limit(self) -> int:\n        return 0",
+        "def pagination_followup_limit(self) -> int:\n        return 0",
+        "return ProviderTextTrustV1.UNTRUSTED_DATA",
+        "if self.has_review_only:\n            fail_item_search()",
+    )
+    if any(fragment not in live_policy for fragment in required_live_policy):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    if any(
+        forbidden in live_policy
+        for forbidden in ("reviewAverage", "reviewCount", "affiliateRate")
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    live_policy_tree: ast.Module | None = None
+    try:
+        live_policy_tree = ast.parse(live_policy)
+    except SyntaxError:
+        pass
+    if live_policy_tree is None:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    imports: set[str] = set()
+    calls: set[str] = set()
+    identifiers: set[str] = set()
+    string_values: set[str] = set()
+    for node in ast.walk(live_policy_tree):
+        if isinstance(node, ast.Import):
+            imports.update(alias.name.partition(".")[0] for alias in node.names)
+            identifiers.update(alias.name for alias in node.names)
+            identifiers.update(alias.asname for alias in node.names if alias.asname)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            imports.add(node.module.partition(".")[0])
+            identifiers.update(alias.name for alias in node.names)
+            identifiers.update(alias.asname for alias in node.names if alias.asname)
+        elif isinstance(node, ast.Call) and isinstance(
+            node.func, (ast.Attribute, ast.Name)
+        ):
+            calls.add(
+                node.func.attr if isinstance(node.func, ast.Attribute) else node.func.id
+            )
+        if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef)):
+            identifiers.add(node.name)
+        elif isinstance(node, ast.Name):
+            identifiers.add(node.id)
+        elif isinstance(node, ast.Attribute):
+            identifiers.add(node.attr)
+        elif isinstance(node, ast.arg):
+            identifiers.add(node.arg)
+        elif isinstance(node, ast.Constant) and type(node.value) is str:
+            string_values.add(node.value)
+    if (
+        not imports.isdisjoint(LIVE_POLICY_FORBIDDEN_IMPORTS)
+        or not calls.isdisjoint(LIVE_POLICY_FORBIDDEN_CALLS)
+        or not identifiers.isdisjoint(LIVE_POLICY_FORBIDDEN_CALLS)
+        or not identifiers.isdisjoint(LIVE_POLICY_FORBIDDEN_DYNAMIC_REFERENCES)
+        or any(
+            part in identifier.lower()
+            for identifier in identifiers
+            for part in LIVE_POLICY_FORBIDDEN_IDENTIFIER_PARTS
+        )
+        or any(
+            part in value.lower()
+            for value in string_values
+            for part in LIVE_POLICY_FORBIDDEN_IDENTIFIER_PARTS
+        )
+        or '"has_review_only":' in live_policy
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+
+    live_policy_test = _read(
+        root, EXPECTED_PREDECESSOR_ARTIFACTS[10][0], "predecessor.live_policy_test"
+    ).decode("utf-8", errors="strict")
+    required_live_policy_test = (
+        "assert request.retry_limit == request.pagination_followup_limit == 0",
+        "assert request.provider_text_trust is ProviderTextTrustV1.UNTRUSTED_DATA",
+        'assert b"reviewCount" not in request.canonical_json',
+        'assert b"reviewAverage" not in request.canonical_json',
+        'assert b"affiliateRate" not in request.canonical_json',
+        'assert "has_review_only" not in request.canonical_parameters',
+        "test_module_has_no_network_environment_filesystem_or_action_surface",
+    )
+    if any(fragment not in live_policy_test for fragment in required_live_policy_test):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy_test")
+
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -404,6 +576,20 @@ EXPECTED_DOCUMENT: Final = {
     "production_eligible": False,
     "approval": None,
     "effective_canonical_status": "UNCHANGED",
+}
+EXPECTED_LIVE_REQUEST_POLICY_SEMANTICS: Final[dict[str, object]] = {
+    "policy_name": "RakutenItemSearchLiveRequestV1",
+    "policy_version": "V1",
+    "provider_api_version": "2026-07-01",
+    "non_executable": True,
+    "requested_page": 1,
+    "hits_minimum": 1,
+    "hits_maximum": 30,
+    "retry_limit": 0,
+    "pagination_followup_limit": 0,
+    "review_derived_request_inputs": "EXCLUDED",
+    "affiliate_rate_request_inputs": "EXCLUDED",
+    "provider_text_trust": "UNTRUSTED_DATA",
 }
 EXPECTED_PREDECESSOR_SEMANTICS: Final[dict[str, object]] = {
     "provider": "RAKUTEN_ICHIBA",
@@ -427,6 +613,7 @@ EXPECTED_PREDECESSOR_SEMANTICS: Final[dict[str, object]] = {
     "filesystem": "ABSENT",
     "repository": "ABSENT",
     "external_actions": [],
+    "live_request_policy": EXPECTED_LIVE_REQUEST_POLICY_SEMANTICS,
 }
 EXPECTED_PREDECESSOR: Final = {
     "story_id": "ST-0502",
@@ -616,7 +803,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,
