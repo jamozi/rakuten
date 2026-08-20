@@ -356,6 +356,68 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
             "_exact_int(self.hits, minimum=1, maximum=31)",
         ),
         (
+            "    def __post_init__(self) -> None:\n"
+            '        if type(self.api_version) is not str or self.api_version != "2026-07-01":',
+            "    def __post_init__(self) -> None:\n"
+            "        return None\n"
+            '        if type(self.api_version) is not str or self.api_version != "2026-07-01":',
+        ),
+        (
+            "        _exact_int(self.hits, minimum=1, maximum=30)",
+            "        if False:\n"
+            "            _exact_int(self.hits, minimum=1, maximum=30)",
+        ),
+        (
+            "        _exact_int(self.hits, minimum=1, maximum=30)",
+            "        try:\n"
+            "            _exact_int(self.hits, minimum=1, maximum=30)\n"
+            "        except Exception:\n"
+            "            pass",
+        ),
+        (
+            "        if self.has_review_only:\n            fail_item_search()",
+            "        if self.has_review_only:\n"
+            "            return None\n"
+            "        if self.has_review_only:\n"
+            "            fail_item_search()",
+        ),
+        (
+            "    def provider_derived_recommendation_inputs(self) -> tuple[()]:\n"
+            "        return ()",
+            "    def provider_derived_recommendation_inputs(self) -> tuple[()]:\n"
+            "        return (None,)",
+        ),
+        (
+            '    """Validated policy projection only; it has no provider action '
+            'surface."""',
+            '    """Validated policy projection only; it has no provider action '
+            'surface."""\n\n'
+            "    def __bool__(self) -> bool:\n"
+            "        return True",
+        ),
+        (
+            "__all__ = [",
+            "RakutenItemSearchLiveRequestV1.__post_init__ = lambda self: None\n\n"
+            "__all__ = [",
+        ),
+        (
+            "    genre_information_flag: bool",
+            "    genre_information_flag: bool\n    diagnostic_marker: bool",
+        ),
+        (
+            "        if self.attribute_flag and "
+            "(self.genre_id is None or self.genre_id == 0):\n"
+            "            fail_item_search()",
+            "        pass",
+        ),
+        (
+            "def _exact_int(value: object, *, minimum: int, maximum: int) -> int:\n"
+            "    if type(value) is not int or not minimum <= value <= maximum:",
+            "def _exact_int(value: object, *, minimum: int, maximum: int) -> int:\n"
+            "    return value\n"
+            "    if type(value) is not int or not minimum <= value <= maximum:",
+        ),
+        (
             '            "hits": self.hits,',
             '            "hits": self.hits,\n'
             '            "has_review_only": self.has_review_only,',

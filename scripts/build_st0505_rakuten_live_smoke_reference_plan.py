@@ -230,6 +230,69 @@ LIVE_POLICY_ALLOWED_ATTRIBUTE_CALLS: Final = frozenset(
         "update",
     }
 )
+LIVE_POLICY_EXPECTED_TOP_LEVEL_FUNCTIONS: Final = frozenset(
+    {"_bounded_text", "_exact_int"}
+)
+LIVE_POLICY_EXPECTED_CLASS_METHODS: Final[Mapping[str, frozenset[str]]] = {
+    "LiveItemSearchSortV1": frozenset(),
+    "LiveItemSearchElementV1": frozenset(),
+    "ProviderTextTrustV1": frozenset(),
+    "_RedactedValue": frozenset({"__reduce_ex__", "__repr__", "__str__"}),
+    "RakutenItemSearchLiveRequestV1": frozenset(
+        {
+            "__post_init__",
+            "canonical_json",
+            "canonical_parameters",
+            "fingerprint",
+            "pagination_followup_limit",
+            "provider_derived_recommendation_inputs",
+            "provider_text_trust",
+            "retry_limit",
+        }
+    ),
+}
+LIVE_POLICY_EXPECTED_DEFINITION_AST_SHA256: Final[Mapping[str, str]] = {
+    "_bounded_text": (
+        "2bfc582b76f363ce8ff4714ca2d95466fd49a6b6ff262b65b3fb0c738aa66a0e"
+    ),
+    "_exact_int": ("5bc0641d1a1a36488cc7bef4b27e3a84af68f42f69bfe7739b4c697c46b9d104"),
+    "_RedactedValue.__repr__": (
+        "42234706298cad84560a330232331303f10bca79d121b21047b8527c013342fe"
+    ),
+    "_RedactedValue.__str__": (
+        "e83938cb60d4af60cce2aa0e50cd7c8c467446c90dfc03096f6b70dd8f351b5a"
+    ),
+    "_RedactedValue.__reduce_ex__": (
+        "ab186dc206a94c78126c33f97a540e5d05b07661f3b6210ed8995ba6ac6a929f"
+    ),
+    "RakutenItemSearchLiveRequestV1.__post_init__": (
+        "73ad229594810c26c3ec528b4763f3e1e380ecf48e974f446e84a794847858cc"
+    ),
+    "RakutenItemSearchLiveRequestV1.canonical_parameters": (
+        "2280325aa2398f58b2b2aba39f35db9572e4cef2b1672c1ecbf945200f086a8f"
+    ),
+    "RakutenItemSearchLiveRequestV1.canonical_json": (
+        "fdd0e5ed07d41d0cf3ac31058c9bfe7e71b4fec41cb102caf9c05238a124d853"
+    ),
+    "RakutenItemSearchLiveRequestV1.fingerprint": (
+        "8b47f804f96e82d6ce401addeb12d1ad67dd2e7f0fb767777e48dd56815a229d"
+    ),
+    "RakutenItemSearchLiveRequestV1.retry_limit": (
+        "d076b89c1eb6963ffb44acd1368485899aa98b7d50e6aaad5ac8d11ac6559e8c"
+    ),
+    "RakutenItemSearchLiveRequestV1.pagination_followup_limit": (
+        "169ee0a7d161698acdcde71b55c20370a9e59cd2347d92ba0db3693e4991bd74"
+    ),
+    "RakutenItemSearchLiveRequestV1.provider_text_trust": (
+        "6174281582ea9147c68f877d4750c0f78fc65c99b2738bdd8f4850742cc2b71e"
+    ),
+    "RakutenItemSearchLiveRequestV1.provider_derived_recommendation_inputs": (
+        "a7d21ee1bf2ad262ebbf723c3f6a4988ad18108225299830cd0a7325ceb5f590"
+    ),
+}
+LIVE_POLICY_EXPECTED_MODULE_AST_SHA256: Final = (
+    "b24db041cee99db89a1c951973f0a9fe6a5c3ae7e88729fef6ca21d95b04afcb"
+)
 LIVE_POLICY_FORBIDDEN_IMPORTS: Final = frozenset(
     {
         "builtins",
@@ -350,6 +413,15 @@ def _exact(value: object, expected: object, field: str) -> None:
 
 def _sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
+
+
+def _ast_sha256(node: ast.AST) -> str:
+    material = ast.dump(
+        node,
+        annotate_fields=True,
+        include_attributes=False,
+    ).encode("utf-8")
+    return _sha256(material)
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
@@ -558,6 +630,53 @@ def _validate_predecessor_semantics(root: Path) -> None:
     except SyntaxError:
         pass
     if live_policy_tree is None:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    if _ast_sha256(live_policy_tree) != LIVE_POLICY_EXPECTED_MODULE_AST_SHA256:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    top_level_definitions = [
+        node
+        for node in live_policy_tree.body
+        if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
+    ]
+    top_level_definition_names = [node.name for node in top_level_definitions]
+    class_definitions = [
+        node for node in live_policy_tree.body if isinstance(node, ast.ClassDef)
+    ]
+    class_definition_names = [node.name for node in class_definitions]
+    if (
+        len(top_level_definition_names) != len(set(top_level_definition_names))
+        or frozenset(top_level_definition_names)
+        != LIVE_POLICY_EXPECTED_TOP_LEVEL_FUNCTIONS
+        or len(class_definition_names) != len(set(class_definition_names))
+        or frozenset(class_definition_names)
+        != frozenset(LIVE_POLICY_EXPECTED_CLASS_METHODS)
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+    definition_nodes: dict[str, ast.FunctionDef | ast.AsyncFunctionDef] = {
+        node.name: node for node in top_level_definitions
+    }
+    observed_class_methods: dict[str, frozenset[str]] = {}
+    for class_definition in class_definitions:
+        methods = [
+            node
+            for node in class_definition.body
+            if isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
+        ]
+        method_names = [node.name for node in methods]
+        if len(method_names) != len(set(method_names)):
+            _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
+        observed_class_methods[class_definition.name] = frozenset(method_names)
+        definition_nodes.update(
+            {f"{class_definition.name}.{method.name}": method for method in methods}
+        )
+    observed_definition_fingerprints = {
+        name: _ast_sha256(definition) for name, definition in definition_nodes.items()
+    }
+    if (
+        observed_class_methods != LIVE_POLICY_EXPECTED_CLASS_METHODS
+        or observed_definition_fingerprints
+        != LIVE_POLICY_EXPECTED_DEFINITION_AST_SHA256
+    ):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy")
     imports: set[str] = set()
     import_bindings: set[tuple[str, str, str, str | None, int]] = set()
