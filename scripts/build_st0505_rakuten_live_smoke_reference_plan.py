@@ -29,17 +29,38 @@ REFERENCE_PLAN_PATH: Final = Path(
     "changes/st-0505/generated/rakuten-live-smoke-reference-plan.v1.json"
 )
 MANIFEST_PATH: Final = Path("changes/st-0505/manifest.yaml")
+DESIGN_HANDOFF_PATH: Final = Path(
+    "changes/st-0505/"
+    "DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml"
+)
+DESIGN_HANDOFF_BYTES: Final = 12590
+DESIGN_HANDOFF_SHA256: Final = (
+    "e07069f6ddc84e8a298b5fd73677298c1b2d6b498f08620decea8e79df9dc38a"
+)
 GENERATOR_PATH: Final = Path(
     "scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
 )
 README_PATH: Final = Path("changes/st-0505/README.md")
+CREDENTIAL_SCRIPT_PATH: Final = Path("scripts/rakuten_live_smoke_credentials.py")
+CREDENTIAL_LAUNCHER_PATH: Final = Path(
+    "scripts/rakuten_live_smoke_credentials_python.sh"
+)
 TEST_PATHS: Final = (
     Path("tests/st0505/conftest.py"),
     Path("tests/st0505/test_contract.py"),
     Path("tests/st0505/test_generation.py"),
     Path("tests/st0505/test_negative_cases.py"),
+    Path("tests/st0505/test_rakuten_live_smoke_credentials.py"),
 )
-SOURCE_PATHS: Final = (CONTRACT_PATH, README_PATH, GENERATOR_PATH, *TEST_PATHS)
+SOURCE_PATHS: Final = (
+    CONTRACT_PATH,
+    DESIGN_HANDOFF_PATH,
+    README_PATH,
+    GENERATOR_PATH,
+    CREDENTIAL_SCRIPT_PATH,
+    CREDENTIAL_LAUNCHER_PATH,
+    *TEST_PATHS,
+)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = f"repo://{GENERATOR_PATH.as_posix()}"
@@ -139,6 +160,7 @@ CONTRACT_KEYS: Final = (
     "authority",
     "predecessor",
     "open_decision",
+    "local_credential_intake",
     "live_smoke_definition",
     "observation_defaults",
     "rate_quota_cost_defaults",
@@ -151,6 +173,7 @@ PLAN_KEYS: Final = (
     "provenance",
     "predecessor_binding",
     "open_decision",
+    "local_credential_intake",
     "test_suite",
     "live_smoke_definition",
     "observation_boundary",
@@ -474,6 +497,12 @@ def _validate_hashes(root: Path) -> None:
             _fail("PREDECESSOR_HASH_DRIFT", "predecessor.artifact")
     if _sha256(_read(root, HELPER_PATH, "implementation.helper")) != HELPER_SHA256:
         _fail("IMPLEMENTATION_HELPER_DRIFT", "implementation.helper")
+    handoff = _read(root, DESIGN_HANDOFF_PATH, "credential_intake.design_handoff")
+    if (
+        len(handoff) != DESIGN_HANDOFF_BYTES
+        or _sha256(handoff) != DESIGN_HANDOFF_SHA256
+    ):
+        _fail("DESIGN_HANDOFF_DRIFT", "credential_intake.design_handoff")
 
 
 EXPECTED_STORY: Final = {
@@ -767,7 +796,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -834,6 +863,133 @@ EXPECTED_OPEN_DECISION: Final = {
     "live_credentials_available": False,
     "live_execution_authorized": False,
 }
+EXPECTED_CREDENTIAL_INTAKE: Final[dict[str, object]] = {
+    "status": "LOCAL_CREDENTIAL_INTAKE_AVAILABLE",
+    "version": "V1",
+    "design_handoff": {
+        "uri": f"repo://{DESIGN_HANDOFF_PATH.as_posix()}",
+        "bytes": DESIGN_HANDOFF_BYTES,
+        "sha256": DESIGN_HANDOFF_SHA256,
+    },
+    "commands": {
+        "setup": (
+            "/home/minami/rakuten/scripts/"
+            "rakuten_live_smoke_credentials_python.sh setup"
+        ),
+        "check": (
+            "/home/minami/rakuten/scripts/"
+            "rakuten_live_smoke_credentials_python.sh check"
+        ),
+    },
+    "repository_root": "/home/minami/rakuten",
+    "store_root": ".secrets/rakuten-live-smoke",
+    "staging_root": ".secrets/.rakuten-live-smoke.preparing",
+    "committing_marker": ".secrets/.rakuten-live-smoke.committing",
+    "ready_marker": ".secrets/.rakuten-live-smoke.ready",
+    "validating_marker": ".secrets/.rakuten-live-smoke.validating",
+    "committed_marker": ".secrets/.rakuten-live-smoke.committed",
+    "aliases": [
+        {
+            "logical_name": "application_id",
+            "alias": "rakuten_web_service_application_id",
+        },
+        {
+            "logical_name": "access_key",
+            "alias": "rakuten_web_service_access_key",
+        },
+    ],
+    "excluded_aliases": ["rakuten_affiliate_id"],
+    "provider_contract_context": {
+        "official_documentation": (
+            "https://webservice.rakuten.co.jp/documentation/ichiba-item-search"
+        ),
+        "retrieved_at": "2026-08-21",
+        "api_version": "2026-07-01",
+        "application_id_required": True,
+        "access_key_required": True,
+        "affiliate_id_optional": True,
+        "future_access_key_transport": "DEDICATED_HTTP_HEADER_ONLY",
+        "access_key_query_parameter": "FORBIDDEN_BY_RAOS",
+    },
+    "input_boundary": {
+        "source": "/dev/tty",
+        "echo": "DISABLED",
+        "echonl": "DISABLED",
+        "argv_values": "FORBIDDEN",
+        "environment_values": "FORBIDDEN",
+        "stdin_values": "FORBIDDEN",
+        "chat_values": "FORBIDDEN",
+        "both_values_before_durable_write": True,
+        "process_disclosure_before_input": "DISABLED_REQUIRED_LINUX",
+        "child_process_after_input": "FORBIDDEN",
+        "mutable_buffer_wipe": "BEST_EFFORT",
+    },
+    "filesystem_boundary": {
+        "secret_parent_mode": "0700",
+        "store_mode": "0700",
+        "alias_mode": "0600",
+        "owner": "CURRENT_EFFECTIVE_UID_ONLY",
+        "exact_inventory_only": True,
+        "regular_files_only": True,
+        "link_count": 1,
+        "symlinks": "FORBIDDEN",
+        "hardlinks": "FORBIDDEN",
+        "special_files": "FORBIDDEN",
+        "exclusive_create": True,
+        "close_on_exec": True,
+        "file_and_parent_fsync": True,
+        "prepublish_file_stage_parent_fsync": "REQUIRED",
+        "publish": "RENAMEAT2_RENAME_NOREPLACE",
+        "publish_inode_binding": "RETAINED_DIRECTORY_FD_BEFORE_AND_AFTER_RENAME",
+        "postpublish_parent_fsync": "REQUIRED",
+        "readiness_intermediate": "COMMITTING_TO_READY_RENAME_NOREPLACE",
+        "validating_state": "INVALID_UNTIL_FINAL_METADATA_INSPECTION_PASSES",
+        "readiness_commit": ("VALIDATING_TO_COMMITTED_RENAME_NOREPLACE_LAST_OPERATION"),
+        "external_ready_shape": (
+            "FINAL_STORE_PLUS_READY_PLUS_COMMITTED_WITH_NO_ACTIVE_MARKERS"
+        ),
+        "overwrite": "FORBIDDEN",
+        "rotation": "OUTSIDE_V1",
+        "rollback": "NO_AUTOMATIC_ROLLBACK_OR_REPAIR",
+        "failure_residue": "OWNER_ONLY_FAIL_CLOSED",
+        "crash_residue": "FAIL_CLOSED_NO_AUTOMATIC_DELETE_OR_REPAIR",
+        "same_euid_concurrent_mutator": "FORBIDDEN_DURING_SETUP_OR_CHECK",
+    },
+    "check_boundary": {
+        "metadata_only": True,
+        "secret_file_open": "FORBIDDEN",
+        "secret_content_read": "FORBIDDEN",
+        "active_markers": [
+            ".rakuten-live-smoke.preparing",
+            ".rakuten-live-smoke.committing",
+            ".rakuten-live-smoke.validating",
+        ],
+        "any_active_marker_present": "INVALID",
+        "ready_markers_required_with_final_store": [
+            ".rakuten-live-smoke.ready",
+            ".rakuten-live-smoke.committed",
+        ],
+        "statuses": ["ABSENT", "READY", "INVALID_WITH_FIXED_REASON_CODE"],
+        "ready_meaning": (
+            "METADATA_STRUCTURE_ONLY_NOT_CREDENTIAL_VALIDITY_OR_LIVE_AUTHORITY"
+        ),
+    },
+    "runtime_boundary": {
+        "credential_reader": "ABSENT",
+        "provider_adapter": "ABSENT",
+        "endpoint": "ABSENT",
+        "account": "ABSENT",
+        "network": "FORBIDDEN",
+        "provider_call": "FORBIDDEN",
+        "live_smoke_connection": "NOT_CONNECTED",
+    },
+    "execution_evidence": {
+        "credential_values_received": False,
+        "real_store_setup": "NOT_EXECUTED",
+        "real_store_check": "NOT_EXECUTED",
+        "provider_call": "NOT_EXECUTED",
+    },
+}
 EXPECTED_SMOKE: Final[dict[str, object]] = {
     "status": "NOT_CONFIGURED",
     "runnable": False,
@@ -882,11 +1038,11 @@ EXPECTED_EXECUTION: Final[dict[str, object]] = {
     "status": "DISABLED",
     "live_smoke": "NOT_EXECUTED",
     "network": "FORBIDDEN",
-    "credential": "FORBIDDEN",
+    "credential": "LIVE_RUNTIME_FORBIDDEN_LOCAL_INTAKE_INTERFACE_ONLY",
     "provider": "FORBIDDEN",
     "sdk": "ABSENT",
-    "filesystem": "ABSENT",
-    "repository": "ABSENT",
+    "filesystem": "FIXED_LOCAL_SECRET_STORE_SETUP_ONLY_NOT_EXECUTED",
+    "repository": "TRACKED_CREDENTIAL_STORAGE_FORBIDDEN",
     "storage": "NOT_EXECUTED",
     "persistence": "NOT_EXECUTED",
     "staging": "NOT_EXECUTED",
@@ -902,7 +1058,9 @@ EXPECTED_VERIFICATION: Final = {
     "live_rate": "NOT_EXECUTED",
     "provider_runtime": "NOT_EXECUTED",
     "network": "NOT_EXECUTED",
-    "credentials": "NOT_EXECUTED",
+    "credentials": "VALUES_NOT_RECEIVED_OR_READ",
+    "credential_intake_interface": "LOCAL_IMPLEMENTATION_AVAILABLE",
+    "real_credential_store": "NOT_EXECUTED",
     "storage": "NOT_EXECUTED",
     "persistence": "NOT_EXECUTED",
     "staging": "NOT_EXECUTED",
@@ -933,6 +1091,11 @@ def validate_contract(
     _exact(authority["sources"], _expected_source_rows(), "authority.sources")
     _exact(contract["predecessor"], EXPECTED_PREDECESSOR, "predecessor")
     _exact(contract["open_decision"], EXPECTED_OPEN_DECISION, "open_decision")
+    _exact(
+        contract["local_credential_intake"],
+        EXPECTED_CREDENTIAL_INTAKE,
+        "local_credential_intake",
+    )
     _exact(contract["live_smoke_definition"], EXPECTED_SMOKE, "live_smoke_definition")
     _exact(contract["observation_defaults"], EXPECTED_OBSERVATIONS, "observations")
     _exact(
@@ -968,6 +1131,7 @@ def reference_plan(contract: Mapping[str, Any]) -> dict[str, Any]:
         },
         "predecessor_binding": contract["predecessor"],
         "open_decision": contract["open_decision"],
+        "local_credential_intake": contract["local_credential_intake"],
         "test_suite": {
             **EXPECTED_TEST_SUITE,
             "formal_execution": "NOT_EXECUTED",
@@ -1005,7 +1169,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,
@@ -1016,6 +1180,11 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
             "authority_inputs": _expected_source_rows(),
             "predecessor_commit": PREDECESSOR_COMMIT,
             "predecessor_inputs": _expected_predecessor_artifacts(),
+            "credential_intake_design_handoff": {
+                "uri": f"repo://{DESIGN_HANDOFF_PATH.as_posix()}",
+                "bytes": DESIGN_HANDOFF_BYTES,
+                "sha256": DESIGN_HANDOFF_SHA256,
+            },
             "implementation_helper": {
                 "uri": f"repo://{HELPER_PATH.as_posix()}",
                 "sha256": HELPER_SHA256,
@@ -1037,9 +1206,12 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
             "interface_only": True,
             "od_015": "EXTERNAL_EVIDENCE_REQUIRED",
             "safe_default": "RECORDED_FIXTURE_ONLY",
+            "credential_intake_interface": "LOCAL_IMPLEMENTATION_AVAILABLE",
+            "credential_values": "NOT_RECEIVED_OR_READ",
+            "real_credential_store": "NOT_EXECUTED",
             "live_smoke": "NOT_EXECUTED",
             "network": "NOT_EXECUTED",
-            "credentials": "NOT_EXECUTED",
+            "credentials": "LIVE_RUNTIME_NOT_EXECUTED",
             "provider_runtime": "NOT_EXECUTED",
             "storage": "NOT_EXECUTED",
             "persistence": "NOT_EXECUTED",

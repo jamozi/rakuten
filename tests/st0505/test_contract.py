@@ -31,7 +31,7 @@ def test_plan_has_exact_sections_and_non_executable_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
-    assert plan["document"]["version"] == "1.1.0"
+    assert plan["document"]["version"] == "1.2.0"
     assert plan["document"]["executable"] is False
     assert plan["document"]["interface_only"] is True
     assert plan["document"]["decision"] == "NOT_READY"
@@ -107,6 +107,51 @@ def test_od_015_stays_blocking_unresolved_and_recorded_only() -> None:
     assert decision["safe_default"] == "RECORDED_FIXTURE_ONLY"
     assert decision["live_credentials_available"] is False
     assert decision["live_execution_authorized"] is False
+
+
+def test_local_credential_intake_is_exact_but_disconnected_from_live_runtime() -> None:
+    intake = _plan()["local_credential_intake"]
+    assert intake == generator.EXPECTED_CREDENTIAL_INTAKE
+    assert intake["status"] == "LOCAL_CREDENTIAL_INTAKE_AVAILABLE"
+    assert intake["aliases"] == [
+        {
+            "logical_name": "application_id",
+            "alias": "rakuten_web_service_application_id",
+        },
+        {
+            "logical_name": "access_key",
+            "alias": "rakuten_web_service_access_key",
+        },
+    ]
+    assert intake["excluded_aliases"] == ["rakuten_affiliate_id"]
+    assert intake["staging_root"] == ".secrets/.rakuten-live-smoke.preparing"
+    assert intake["committing_marker"] == ".secrets/.rakuten-live-smoke.committing"
+    assert intake["ready_marker"] == ".secrets/.rakuten-live-smoke.ready"
+    assert intake["validating_marker"] == ".secrets/.rakuten-live-smoke.validating"
+    assert intake["committed_marker"] == ".secrets/.rakuten-live-smoke.committed"
+    assert intake["input_boundary"]["source"] == "/dev/tty"
+    assert intake["check_boundary"]["secret_file_open"] == "FORBIDDEN"
+    assert intake["check_boundary"]["secret_content_read"] == "FORBIDDEN"
+    assert intake["check_boundary"]["any_active_marker_present"] == "INVALID"
+    assert intake["check_boundary"]["ready_markers_required_with_final_store"] == [
+        ".rakuten-live-smoke.ready",
+        ".rakuten-live-smoke.committed",
+    ]
+    assert intake["runtime_boundary"] == {
+        "credential_reader": "ABSENT",
+        "provider_adapter": "ABSENT",
+        "endpoint": "ABSENT",
+        "account": "ABSENT",
+        "network": "FORBIDDEN",
+        "provider_call": "FORBIDDEN",
+        "live_smoke_connection": "NOT_CONNECTED",
+    }
+    assert intake["execution_evidence"] == {
+        "credential_values_received": False,
+        "real_store_setup": "NOT_EXECUTED",
+        "real_store_check": "NOT_EXECUTED",
+        "provider_call": "NOT_EXECUTED",
+    }
 
 
 def test_tst_016_is_exact_but_has_no_formal_evidence() -> None:
@@ -191,11 +236,15 @@ def test_execution_is_disabled_with_exact_integer_zero_actions() -> None:
         for value in execution["action_counts"].values()
     )
     assert execution["network"] == "FORBIDDEN"
-    assert execution["credential"] == "FORBIDDEN"
+    assert execution["credential"] == (
+        "LIVE_RUNTIME_FORBIDDEN_LOCAL_INTAKE_INTERFACE_ONLY"
+    )
     assert execution["provider"] == "FORBIDDEN"
     assert execution["sdk"] == "ABSENT"
-    assert execution["filesystem"] == "ABSENT"
-    assert execution["repository"] == "ABSENT"
+    assert execution["filesystem"] == (
+        "FIXED_LOCAL_SECRET_STORE_SETUP_ONLY_NOT_EXECUTED"
+    )
+    assert execution["repository"] == "TRACKED_CREDENTIAL_STORAGE_FORBIDDEN"
     assert execution["external_actions"] == []
 
 
@@ -210,7 +259,6 @@ def test_verification_boundary_contains_no_live_or_formal_claim() -> None:
         "live_rate",
         "provider_runtime",
         "network",
-        "credentials",
         "storage",
         "persistence",
         "staging",
@@ -218,6 +266,11 @@ def test_verification_boundary_contains_no_live_or_formal_claim() -> None:
         "production",
     ):
         assert verification[key] == "NOT_EXECUTED"
+    assert verification["credentials"] == "VALUES_NOT_RECEIVED_OR_READ"
+    assert verification["credential_intake_interface"] == (
+        "LOCAL_IMPLEMENTATION_AVAILABLE"
+    )
+    assert verification["real_credential_store"] == "NOT_EXECUTED"
     assert verification["story_acceptance"] is False
     assert verification["production_eligible"] is False
     assert verification["approval"] is None
@@ -240,7 +293,6 @@ def test_installed_plan_contains_no_false_completion_claim_values() -> None:
 
     assert {
         "PASS",
-        "READY",
         "VALIDATED",
         "IMPLEMENTED",
         "LIVE_SUCCESS",

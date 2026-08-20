@@ -1,7 +1,7 @@
 {
   "document": {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -145,6 +145,127 @@
     "live_credentials_available": false,
     "live_execution_authorized": false
   },
+  "local_credential_intake": {
+    "status": "LOCAL_CREDENTIAL_INTAKE_AVAILABLE",
+    "version": "V1",
+    "design_handoff": {
+      "uri": "repo://changes/st-0505/DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml",
+      "bytes": 12590,
+      "sha256": "e07069f6ddc84e8a298b5fd73677298c1b2d6b498f08620decea8e79df9dc38a"
+    },
+    "commands": {
+      "setup": "/home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh setup",
+      "check": "/home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh check"
+    },
+    "repository_root": "/home/minami/rakuten",
+    "store_root": ".secrets/rakuten-live-smoke",
+    "staging_root": ".secrets/.rakuten-live-smoke.preparing",
+    "committing_marker": ".secrets/.rakuten-live-smoke.committing",
+    "ready_marker": ".secrets/.rakuten-live-smoke.ready",
+    "validating_marker": ".secrets/.rakuten-live-smoke.validating",
+    "committed_marker": ".secrets/.rakuten-live-smoke.committed",
+    "aliases": [
+      {
+        "logical_name": "application_id",
+        "alias": "rakuten_web_service_application_id"
+      },
+      {
+        "logical_name": "access_key",
+        "alias": "rakuten_web_service_access_key"
+      }
+    ],
+    "excluded_aliases": [
+      "rakuten_affiliate_id"
+    ],
+    "provider_contract_context": {
+      "official_documentation": "https://webservice.rakuten.co.jp/documentation/ichiba-item-search",
+      "retrieved_at": "2026-08-21",
+      "api_version": "2026-07-01",
+      "application_id_required": true,
+      "access_key_required": true,
+      "affiliate_id_optional": true,
+      "future_access_key_transport": "DEDICATED_HTTP_HEADER_ONLY",
+      "access_key_query_parameter": "FORBIDDEN_BY_RAOS"
+    },
+    "input_boundary": {
+      "source": "/dev/tty",
+      "echo": "DISABLED",
+      "echonl": "DISABLED",
+      "argv_values": "FORBIDDEN",
+      "environment_values": "FORBIDDEN",
+      "stdin_values": "FORBIDDEN",
+      "chat_values": "FORBIDDEN",
+      "both_values_before_durable_write": true,
+      "process_disclosure_before_input": "DISABLED_REQUIRED_LINUX",
+      "child_process_after_input": "FORBIDDEN",
+      "mutable_buffer_wipe": "BEST_EFFORT"
+    },
+    "filesystem_boundary": {
+      "secret_parent_mode": "0700",
+      "store_mode": "0700",
+      "alias_mode": "0600",
+      "owner": "CURRENT_EFFECTIVE_UID_ONLY",
+      "exact_inventory_only": true,
+      "regular_files_only": true,
+      "link_count": 1,
+      "symlinks": "FORBIDDEN",
+      "hardlinks": "FORBIDDEN",
+      "special_files": "FORBIDDEN",
+      "exclusive_create": true,
+      "close_on_exec": true,
+      "file_and_parent_fsync": true,
+      "prepublish_file_stage_parent_fsync": "REQUIRED",
+      "publish": "RENAMEAT2_RENAME_NOREPLACE",
+      "publish_inode_binding": "RETAINED_DIRECTORY_FD_BEFORE_AND_AFTER_RENAME",
+      "postpublish_parent_fsync": "REQUIRED",
+      "readiness_intermediate": "COMMITTING_TO_READY_RENAME_NOREPLACE",
+      "validating_state": "INVALID_UNTIL_FINAL_METADATA_INSPECTION_PASSES",
+      "readiness_commit": "VALIDATING_TO_COMMITTED_RENAME_NOREPLACE_LAST_OPERATION",
+      "external_ready_shape": "FINAL_STORE_PLUS_READY_PLUS_COMMITTED_WITH_NO_ACTIVE_MARKERS",
+      "overwrite": "FORBIDDEN",
+      "rotation": "OUTSIDE_V1",
+      "rollback": "NO_AUTOMATIC_ROLLBACK_OR_REPAIR",
+      "failure_residue": "OWNER_ONLY_FAIL_CLOSED",
+      "crash_residue": "FAIL_CLOSED_NO_AUTOMATIC_DELETE_OR_REPAIR",
+      "same_euid_concurrent_mutator": "FORBIDDEN_DURING_SETUP_OR_CHECK"
+    },
+    "check_boundary": {
+      "metadata_only": true,
+      "secret_file_open": "FORBIDDEN",
+      "secret_content_read": "FORBIDDEN",
+      "active_markers": [
+        ".rakuten-live-smoke.preparing",
+        ".rakuten-live-smoke.committing",
+        ".rakuten-live-smoke.validating"
+      ],
+      "any_active_marker_present": "INVALID",
+      "ready_markers_required_with_final_store": [
+        ".rakuten-live-smoke.ready",
+        ".rakuten-live-smoke.committed"
+      ],
+      "statuses": [
+        "ABSENT",
+        "READY",
+        "INVALID_WITH_FIXED_REASON_CODE"
+      ],
+      "ready_meaning": "METADATA_STRUCTURE_ONLY_NOT_CREDENTIAL_VALIDITY_OR_LIVE_AUTHORITY"
+    },
+    "runtime_boundary": {
+      "credential_reader": "ABSENT",
+      "provider_adapter": "ABSENT",
+      "endpoint": "ABSENT",
+      "account": "ABSENT",
+      "network": "FORBIDDEN",
+      "provider_call": "FORBIDDEN",
+      "live_smoke_connection": "NOT_CONNECTED"
+    },
+    "execution_evidence": {
+      "credential_values_received": false,
+      "real_store_setup": "NOT_EXECUTED",
+      "real_store_check": "NOT_EXECUTED",
+      "provider_call": "NOT_EXECUTED"
+    }
+  },
   "test_suite": {
     "id": "TST-016",
     "name": "Rakuten adapter live smoke",
@@ -211,11 +332,11 @@
     "status": "DISABLED",
     "live_smoke": "NOT_EXECUTED",
     "network": "FORBIDDEN",
-    "credential": "FORBIDDEN",
+    "credential": "LIVE_RUNTIME_FORBIDDEN_LOCAL_INTAKE_INTERFACE_ONLY",
     "provider": "FORBIDDEN",
     "sdk": "ABSENT",
-    "filesystem": "ABSENT",
-    "repository": "ABSENT",
+    "filesystem": "FIXED_LOCAL_SECRET_STORE_SETUP_ONLY_NOT_EXECUTED",
+    "repository": "TRACKED_CREDENTIAL_STORAGE_FORBIDDEN",
     "storage": "NOT_EXECUTED",
     "persistence": "NOT_EXECUTED",
     "staging": "NOT_EXECUTED",
@@ -245,7 +366,9 @@
     "live_rate": "NOT_EXECUTED",
     "provider_runtime": "NOT_EXECUTED",
     "network": "NOT_EXECUTED",
-    "credentials": "NOT_EXECUTED",
+    "credentials": "VALUES_NOT_RECEIVED_OR_READ",
+    "credential_intake_interface": "LOCAL_IMPLEMENTATION_AVAILABLE",
+    "real_credential_store": "NOT_EXECUTED",
     "storage": "NOT_EXECUTED",
     "persistence": "NOT_EXECUTED",
     "staging": "NOT_EXECUTED",

@@ -1,12 +1,12 @@
 document:
   id: RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001
-  version: 1.1.0
+  version: 1.2.0
   story_id: ST-0505
   source_contract: repo://changes/st-0505/contracts/rakuten-live-smoke-reference-plan.v1.yaml
   generated_by: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0505_rakuten_live_smoke_reference_plan.py
 provenance:
-  contract_sha256: 3a52ced98d4d806e369405abda9fbe8b3ba49b2b24979ed92b8ae5d5b8e67309
+  contract_sha256: d0fce3f188567498fe21ed55ea4811b74177df0d88c54a660605b9ebf790fcda
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -44,46 +44,65 @@ provenance:
     sha256: acd53bc3b12925e09859833ed9fc817e52a14872ae946336cc3dd039e990849e
   - uri: repo://tests/st0502/test_rakuten_item_search_live_request_v1.py
     sha256: 710ee36b2cc88d2f14c5a3e726b2fe50d1bd9fbc2bdd9bdb1a05c099bbf4c696
+  credential_intake_design_handoff:
+    uri: repo://changes/st-0505/DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml
+    bytes: 12590
+    sha256: e07069f6ddc84e8a298b5fd73677298c1b2d6b498f08620decea8e79df9dc38a
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
     sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
-source_artifact_count: 7
+source_artifact_count: 11
 source_artifacts:
 - uri: repo://changes/st-0505/contracts/rakuten-live-smoke-reference-plan.v1.yaml
-  bytes: 6055
-  sha256: 3a52ced98d4d806e369405abda9fbe8b3ba49b2b24979ed92b8ae5d5b8e67309
+  bytes: 10206
+  sha256: d0fce3f188567498fe21ed55ea4811b74177df0d88c54a660605b9ebf790fcda
+- uri: repo://changes/st-0505/DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml
+  bytes: 12590
+  sha256: e07069f6ddc84e8a298b5fd73677298c1b2d6b498f08620decea8e79df9dc38a
 - uri: repo://changes/st-0505/README.md
-  bytes: 3310
-  sha256: 0d3e5425de95961edc76494498fba5d66930ab81e75a8fa1801c3445d05b643a
+  bytes: 6443
+  sha256: 8fd9596b9a28a7c52598d3f2b62e0c5fdc79a7a05171336c084fe4162e87c0d5
 - uri: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
-  bytes: 38479
-  sha256: 6310932b8d789b25eac79fcdc15f721ea99d80f61830e08ff6f6db9618ad762a
+  bytes: 45240
+  sha256: 5b7ed61ef078ef30d5efd7cbae8b2902f378f9a0d496c0a335501eabe4397ca5
+- uri: repo://scripts/rakuten_live_smoke_credentials.py
+  bytes: 26340
+  sha256: 71caa77ff6f972dfe15af1240d8f7dd5c6b21cf503edb6f6d2985fc0b295b0d5
+- uri: repo://scripts/rakuten_live_smoke_credentials_python.sh
+  bytes: 3375
+  sha256: aea873ea6ddf7ef3aaa24cbea8a4d70311bf514a1cb7423dda70a3ded4356008
 - uri: repo://tests/st0505/conftest.py
   bytes: 952
   sha256: c85ba1f8614db15f2723b7ba320a4ab7e31459188d1223828d2078bac7352dae
 - uri: repo://tests/st0505/test_contract.py
-  bytes: 9055
-  sha256: 5997c7f199578a25c15d807fb963e4a7c3f29e8fe067302835eee9a1b5151907
+  bytes: 11402
+  sha256: 5b6be4c1ccd706de1cae1cac26b55284474ad341b78348d5be96dc4d74e3c1dd
 - uri: repo://tests/st0505/test_generation.py
-  bytes: 3908
-  sha256: 30e186e0e4befbe4cadf194c207ab0cf406446fec585a704e46a2ce49f2d338c
+  bytes: 4427
+  sha256: 403eb8ffec518356af3dc6b539b8da7c00ed6d8ade9c63424240b324a5d8e2d2
 - uri: repo://tests/st0505/test_negative_cases.py
-  bytes: 26770
-  sha256: c7d74c18fce7295080433a8beb58f4bc6b0bf51f6922bd05c8c9011a902e0d93
+  bytes: 27850
+  sha256: 228a49e4bd3a142164f35adef63630917a874999f64b3f7d29cf1db0b1c1f580
+- uri: repo://tests/st0505/test_rakuten_live_smoke_credentials.py
+  bytes: 42394
+  sha256: 2c06dbc167200f57dc37eda5bcc3d878fc722848f9254ad4fd74ef3484efd11f
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0505/generated/rakuten-live-smoke-reference-plan.v1.json
-  bytes: 8617
-  sha256: e114963604ce631431ea0b027e24d22b0ba499a89e8d0a50114bab975ecde001
+  bytes: 13536
+  sha256: 9cf1f558effdc391ee07768749211aa2981a91aa5850fcd40524a2e87191395a
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN
   executable: false
   interface_only: true
   od_015: EXTERNAL_EVIDENCE_REQUIRED
   safe_default: RECORDED_FIXTURE_ONLY
+  credential_intake_interface: LOCAL_IMPLEMENTATION_AVAILABLE
+  credential_values: NOT_RECEIVED_OR_READ
+  real_credential_store: NOT_EXECUTED
   live_smoke: NOT_EXECUTED
   network: NOT_EXECUTED
-  credentials: NOT_EXECUTED
+  credentials: LIVE_RUNTIME_NOT_EXECUTED
   provider_runtime: NOT_EXECUTED
   storage: NOT_EXECUTED
   persistence: NOT_EXECUTED

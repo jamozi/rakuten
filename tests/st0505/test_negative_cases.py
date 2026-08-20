@@ -111,6 +111,29 @@ def test_bool_float_string_and_nonzero_do_not_bypass_exact_zero_actions(
         generator.validate_contract(contract)
 
 
+@pytest.mark.parametrize(
+    ("section", "field", "value"),
+    (
+        ("runtime_boundary", "credential_reader", "AVAILABLE"),
+        ("runtime_boundary", "provider_adapter", "AVAILABLE"),
+        ("runtime_boundary", "endpoint", "https://example.invalid"),
+        ("runtime_boundary", "provider_call", "ALLOWED"),
+        ("execution_evidence", "credential_values_received", True),
+        ("execution_evidence", "real_store_setup", "EXECUTED"),
+        ("check_boundary", "secret_file_open", "ALLOWED"),
+        ("check_boundary", "secret_content_read", "ALLOWED"),
+        ("provider_contract_context", "future_access_key_transport", "QUERY"),
+    ),
+)
+def test_credential_intake_runtime_or_secret_read_inflation_is_rejected(
+    section: str, field: str, value: object
+) -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    contract["local_credential_intake"][section][field] = value
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
 def _remove_top(value: dict[str, Any]) -> None:
     value.pop("observation_defaults")
 
@@ -296,6 +319,7 @@ def test_path_traversal_is_rejected(
         generator.OPEN_DECISIONS_PATH,
         generator.TEST_CATALOG_PATH,
         generator.STORY_PATH,
+        generator.DESIGN_HANDOFF_PATH,
         *(path for path, _digest in generator.EXPECTED_PREDECESSOR_ARTIFACTS),
     ],
 )

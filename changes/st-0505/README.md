@@ -3,11 +3,13 @@
 Classification:
 `SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN`
 
-Contract revision `1.1.0` is partial, non-authoritative, local-only,
+Contract revision `1.2.0` is partial, non-authoritative, local-only,
 non-executable, and runtime-ineligible. It binds the committed ST-0502
 recorded-only adapter boundary and preserves OD-015's blocking safe default:
 `Recorded fixtureのみ`. It is a reviewable plan, not a live adapter, runnable
-smoke command, provider observation, credential interface, or formal result.
+smoke command, provider observation, or formal result. A separate local-only
+credential setup/check interface is now available, but it has no runtime reader
+and is not connected to this live-smoke plan.
 
 ## Closed reference boundary
 
@@ -26,10 +28,10 @@ smoke command, provider observation, credential interface, or formal result.
   zero, review-derived and affiliate-rate request inputs are excluded, and
   provider text is `UNTRUSTED_DATA`. This binding does not make the recorded
   provider live eligible or make the policy executable.
-- No live provider/runtime adapter, SDK, network client, filesystem path,
-  repository, unit of work, account, endpoint, environment, credential,
-  secret name, token, request payload, runner, or executable smoke command is
-  added or selected.
+- No live provider/runtime adapter, SDK, network client, repository, unit of
+  work, account, endpoint, request payload, runner, or executable smoke command
+  is added or selected. The only new filesystem interface is the fixed ignored
+  local store `.secrets/rakuten-live-smoke`; no runtime consumer is added.
 - No auth, schema, rate, quota, capacity, cost, latency, response, provider
   request ID, timestamp, or success/failure observation is fabricated. Empty
   observations mean no execution evidence, not zero errors or successful auth.
@@ -41,6 +43,60 @@ The generated JSON is produced only by the strict fixed-path owner builder. It
 contains plan and boundary metadata only. It cannot read process environment,
 resolve credentials, contact Rakuten, construct a live request, execute a
 smoke, retry, paginate, write a report externally, or persist provider data.
+
+## Local credential intake
+
+The implementation-ready design is
+`DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml`.
+It records the connected owner directives as setup/check-only authority; it
+does not claim an exact-hash owner statement or approval for credential values
+or a provider call.
+
+The fixed commands are:
+
+```bash
+/home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh setup
+/home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh check
+```
+
+`setup` accepts exactly the application ID and access key from `/dev/tty` with
+terminal echo disabled. It never accepts values through argv, environment,
+stdin, chat, or tracked files. It creates only
+`rakuten_web_service_application_id` and
+`rakuten_web_service_access_key`; the optional `rakuten_affiliate_id` is
+excluded from V1. Existing exact metadata returns `READY` without prompting;
+partial, unknown, linked, special, or unsafe state fails closed without
+overwrite, automatic deletion, or repair. A failed normal write leaves its
+owner-only residue fail closed because Linux has no inode-bound unlink for this
+path-based store; the command never risks deleting a replacement entry.
+
+Both aliases are written below the fixed non-ready
+`.secrets/.rakuten-live-smoke.preparing` directory. Only a fully fsynced pair
+is atomically promoted with Linux `renameat2(RENAME_NOREPLACE)`. A retained
+`.rakuten-live-smoke.committing` directory becomes the metadata-only
+`.rakuten-live-smoke.ready` marker after final-store inode verification. A
+separately retained `.rakuten-live-smoke.validating` marker keeps every
+post-READY verification or fsync failure `INVALID`; only after internal
+metadata inspection passes is it promoted, as the last operation, to
+`.rakuten-live-smoke.committed`. External `READY` requires the final store plus
+both ready and committed markers, with no preparing, committing, or validating
+marker. Thus a final-looking two-file directory alone is never READY.
+
+`check` inspects names and filesystem metadata only. It never opens or reads an
+alias file. `READY` means only that the exact owner-only `0700`/`0600` shape is
+present; it does not establish credential validity, consent, account binding,
+live-provider authority, or TST-016 evidence.
+
+Setup and check are single-process maintenance commands. No uncoordinated
+same-EUID process may mutate `.secrets/rakuten-live-smoke` or the five fixed
+preparing, committing, ready, validating, and committed transaction names while
+either command runs; such a mutator is outside this local trust boundary.
+
+The current Item Search `2026-07-01` documentation requires an application ID
+and access key and makes affiliate ID optional. Future access-key transport is
+still restricted by RAOS to `DEDICATED_HTTP_HEADER_ONLY`; this slice adds no
+transport or endpoint execution. No real credential setup/check or provider
+call was executed while implementing this interface.
 
 ## Completion boundary
 

@@ -1,0 +1,744 @@
+#!/usr/bin/env python3
+"""Initialize or inspect the fixed local ST-0505 Rakuten credential store."""
+
+from __future__ import annotations
+
+import ctypes
+from enum import Enum
+import json
+import os
+from pathlib import Path
+import resource
+import stat
+import sys
+import termios
+from typing import Any, Callable, Final, NoReturn, Sequence
+
+
+EXPECTED_REPOSITORY_ROOT: Final = Path("/home/minami/rakuten")
+SECRET_PARENT_NAME: Final = ".secrets"
+SECRET_STORE_NAME: Final = "rakuten-live-smoke"
+SECRET_STAGING_NAME: Final = ".rakuten-live-smoke.preparing"
+SECRET_COMMITTING_NAME: Final = ".rakuten-live-smoke.committing"
+SECRET_READY_NAME: Final = ".rakuten-live-smoke.ready"
+SECRET_VALIDATING_NAME: Final = ".rakuten-live-smoke.validating"
+SECRET_COMMITTED_NAME: Final = ".rakuten-live-smoke.committed"
+APPLICATION_ID_ALIAS: Final = "rakuten_web_service_application_id"
+ACCESS_KEY_ALIAS: Final = "rakuten_web_service_access_key"
+SECRET_ALIASES: Final = (APPLICATION_ID_ALIAS, ACCESS_KEY_ALIAS)
+MAX_SECRET_BYTES: Final = 4096
+
+_DIRECTORY_FLAGS: Final = (
+    os.O_RDONLY
+    | os.O_DIRECTORY
+    | getattr(os, "O_NOFOLLOW", 0)
+    | getattr(os, "O_CLOEXEC", 0)
+)
+_TTY_FLAGS: Final = (
+    os.O_RDWR
+    | getattr(os, "O_NOCTTY", 0)
+    | getattr(os, "O_NOFOLLOW", 0)
+    | getattr(os, "O_CLOEXEC", 0)
+)
+_WRITE_FLAGS: Final = (
+    os.O_WRONLY
+    | os.O_CREAT
+    | os.O_EXCL
+    | getattr(os, "O_NOFOLLOW", 0)
+    | getattr(os, "O_CLOEXEC", 0)
+)
+_PR_GET_DUMPABLE: Final = 3
+_PR_SET_DUMPABLE: Final = 4
+_RENAME_NOREPLACE: Final = 1
+
+
+class CredentialStoreStatus(str, Enum):
+    """Closed metadata-only store states."""
+
+    ABSENT = "ABSENT"
+    READY = "READY"
+
+
+class CredentialIntakeFailureCode(str, Enum):
+    """Fixed value-free failure codes."""
+
+    REPOSITORY_INVALID = "RAKUTEN_CREDENTIAL_REPOSITORY_INVALID"
+    STORE_INVALID = "RAKUTEN_CREDENTIAL_STORE_INVALID"
+    INPUT_UNAVAILABLE = "RAKUTEN_CREDENTIAL_INPUT_UNAVAILABLE"
+    PLATFORM_UNSAFE = "RAKUTEN_CREDENTIAL_PLATFORM_UNSAFE"
+    WRITE_FAILED = "RAKUTEN_CREDENTIAL_WRITE_FAILED"
+    ARGUMENT_INVALID = "RAKUTEN_CREDENTIAL_ARGUMENT_INVALID"
+
+
+class CredentialIntakeFailure(RuntimeError):
+    """Sanitized credential-intake failure."""
+
+    def __init__(self, code: CredentialIntakeFailureCode) -> None:
+        self.code = code
+        super().__init__(code.value)
+
+
+def _fail(code: CredentialIntakeFailureCode) -> NoReturn:
+    raise CredentialIntakeFailure(code)
+
+
+def _set_cloexec(descriptor: int) -> None:
+    try:
+        os.set_inheritable(descriptor, False)
+        if os.get_inheritable(descriptor):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    except OSError:
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+
+
+def _require_no_symlink_ancestors(path: Path) -> None:
+    if not path.is_absolute():
+        _fail(CredentialIntakeFailureCode.REPOSITORY_INVALID)
+    parts = path.parts
+    current = Path(parts[0])
+    for part in parts[1:]:
+        current /= part
+        try:
+            metadata = current.lstat()
+        except OSError:
+            _fail(CredentialIntakeFailureCode.REPOSITORY_INVALID)
+        if stat.S_ISLNK(metadata.st_mode):
+            _fail(CredentialIntakeFailureCode.REPOSITORY_INVALID)
+
+
+def _physical_repository_root(value: object, expected_root: Path) -> Path:
+    if not isinstance(value, Path) or not isinstance(expected_root, Path):
+        _fail(CredentialIntakeFailureCode.REPOSITORY_INVALID)
+    if (
+        not value.is_absolute()
+        or not expected_root.is_absolute()
+        or value != expected_root
+    ):
+        _fail(CredentialIntakeFailureCode.REPOSITORY_INVALID)
+    _require_no_symlink_ancestors(value)
+    try:
+        metadata = value.lstat()
+    except OSError:
+        _fail(CredentialIntakeFailureCode.REPOSITORY_INVALID)
+    if (
+        not stat.S_ISDIR(metadata.st_mode)
+        or metadata.st_uid != os.geteuid()
+        or stat.S_ISLNK(metadata.st_mode)
+    ):
+        _fail(CredentialIntakeFailureCode.REPOSITORY_INVALID)
+    return value
+
+
+def _open_directory(name: str | Path, *, dir_fd: int | None = None) -> int:
+    descriptor: int | None = None
+    try:
+        descriptor = os.open(name, _DIRECTORY_FLAGS, dir_fd=dir_fd)
+        _set_cloexec(descriptor)
+        return descriptor
+    except CredentialIntakeFailure:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+        raise
+    except BaseException:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+        _fail(CredentialIntakeFailureCode.STORE_INVALID)
+
+
+def _private_directory(metadata: os.stat_result) -> bool:
+    return (
+        stat.S_ISDIR(metadata.st_mode)
+        and not stat.S_ISLNK(metadata.st_mode)
+        and metadata.st_uid == os.geteuid()
+        and stat.S_IMODE(metadata.st_mode) == 0o700
+    )
+
+
+def _private_file(metadata: os.stat_result) -> bool:
+    return (
+        stat.S_ISREG(metadata.st_mode)
+        and not stat.S_ISLNK(metadata.st_mode)
+        and metadata.st_uid == os.geteuid()
+        and stat.S_IMODE(metadata.st_mode) == 0o600
+        and metadata.st_nlink == 1
+        and 2 <= metadata.st_size <= MAX_SECRET_BYTES + 1
+    )
+
+
+def _stat_child(parent_fd: int, name: str) -> os.stat_result | None:
+    try:
+        return os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+    except FileNotFoundError:
+        return None
+    except BaseException:
+        _fail(CredentialIntakeFailureCode.STORE_INVALID)
+
+
+def _open_verified_child_directory(
+    parent_fd: int, name: str, metadata: os.stat_result
+) -> int:
+    if not _private_directory(metadata):
+        _fail(CredentialIntakeFailureCode.STORE_INVALID)
+    descriptor = _open_directory(name, dir_fd=parent_fd)
+    try:
+        opened = os.fstat(descriptor)
+    except BaseException:
+        os.close(descriptor)
+        _fail(CredentialIntakeFailureCode.STORE_INVALID)
+    if (opened.st_dev, opened.st_ino) != (metadata.st_dev, metadata.st_ino):
+        os.close(descriptor)
+        _fail(CredentialIntakeFailureCode.STORE_INVALID)
+    return descriptor
+
+
+def inspect_store(
+    repository_root: Path = EXPECTED_REPOSITORY_ROOT,
+    *,
+    expected_root: Path = EXPECTED_REPOSITORY_ROOT,
+) -> CredentialStoreStatus:
+    """Inspect only directory entries and metadata; never open secret files."""
+
+    return _inspect_store_state(
+        repository_root, expected_root=expected_root, allow_validating=False
+    )
+
+
+def _inspect_store_state(
+    repository_root: Path,
+    *,
+    expected_root: Path,
+    allow_validating: bool,
+) -> CredentialStoreStatus:
+    """Inspect the public state or the one internal precommit state."""
+
+    root = _physical_repository_root(repository_root, expected_root)
+    root_fd = _open_directory(root)
+    try:
+        secret_parent_metadata = _stat_child(root_fd, SECRET_PARENT_NAME)
+        if secret_parent_metadata is None:
+            return CredentialStoreStatus.ABSENT
+        secret_parent_fd = _open_verified_child_directory(
+            root_fd, SECRET_PARENT_NAME, secret_parent_metadata
+        )
+        try:
+            if (
+                _stat_child(secret_parent_fd, SECRET_STAGING_NAME) is not None
+                or _stat_child(secret_parent_fd, SECRET_COMMITTING_NAME) is not None
+            ):
+                _fail(CredentialIntakeFailureCode.STORE_INVALID)
+            store_metadata = _stat_child(secret_parent_fd, SECRET_STORE_NAME)
+            ready_metadata = _stat_child(secret_parent_fd, SECRET_READY_NAME)
+            validating_metadata = _stat_child(secret_parent_fd, SECRET_VALIDATING_NAME)
+            committed_metadata = _stat_child(secret_parent_fd, SECRET_COMMITTED_NAME)
+            if allow_validating:
+                if validating_metadata is None or committed_metadata is not None:
+                    _fail(CredentialIntakeFailureCode.STORE_INVALID)
+                final_marker_name = SECRET_VALIDATING_NAME
+                final_marker_metadata = validating_metadata
+            else:
+                if validating_metadata is not None:
+                    _fail(CredentialIntakeFailureCode.STORE_INVALID)
+                if (
+                    store_metadata is None
+                    and ready_metadata is None
+                    and committed_metadata is None
+                ):
+                    return CredentialStoreStatus.ABSENT
+                if committed_metadata is None:
+                    _fail(CredentialIntakeFailureCode.STORE_INVALID)
+                final_marker_name = SECRET_COMMITTED_NAME
+                final_marker_metadata = committed_metadata
+            if store_metadata is None or ready_metadata is None:
+                _fail(CredentialIntakeFailureCode.STORE_INVALID)
+            return _inspect_ready_metadata(
+                secret_parent_fd,
+                store_metadata,
+                ready_metadata,
+                final_marker_name,
+                final_marker_metadata,
+            )
+        finally:
+            os.close(secret_parent_fd)
+    finally:
+        os.close(root_fd)
+
+
+def _inspect_empty_private_marker(
+    secret_parent_fd: int, name: str, metadata: os.stat_result
+) -> None:
+    marker_fd = _open_verified_child_directory(secret_parent_fd, name, metadata)
+    try:
+        if os.listdir(marker_fd):
+            _fail(CredentialIntakeFailureCode.STORE_INVALID)
+    finally:
+        os.close(marker_fd)
+
+
+def _inspect_ready_metadata(
+    secret_parent_fd: int,
+    store_metadata: os.stat_result,
+    ready_metadata: os.stat_result,
+    final_marker_name: str,
+    final_marker_metadata: os.stat_result,
+) -> CredentialStoreStatus:
+    _inspect_empty_private_marker(secret_parent_fd, SECRET_READY_NAME, ready_metadata)
+    _inspect_empty_private_marker(
+        secret_parent_fd, final_marker_name, final_marker_metadata
+    )
+    store_fd = _open_verified_child_directory(
+        secret_parent_fd, SECRET_STORE_NAME, store_metadata
+    )
+    try:
+        try:
+            entries = tuple(sorted(os.listdir(store_fd)))
+        except OSError:
+            _fail(CredentialIntakeFailureCode.STORE_INVALID)
+        if entries != tuple(sorted(SECRET_ALIASES)):
+            _fail(CredentialIntakeFailureCode.STORE_INVALID)
+        for alias in SECRET_ALIASES:
+            metadata = _stat_child(store_fd, alias)
+            if metadata is None or not _private_file(metadata):
+                _fail(CredentialIntakeFailureCode.STORE_INVALID)
+        return CredentialStoreStatus.READY
+    finally:
+        os.close(store_fd)
+
+
+def _disable_process_disclosure() -> None:
+    if sys.platform != "linux" or not hasattr(resource, "RLIMIT_CORE"):
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    try:
+        resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        if resource.getrlimit(resource.RLIMIT_CORE) != (0, 0):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        libc = ctypes.CDLL(None, use_errno=True)
+        prctl = libc.prctl
+        prctl.restype = ctypes.c_int
+        prctl.argtypes = [
+            ctypes.c_int,
+            ctypes.c_ulong,
+            ctypes.c_ulong,
+            ctypes.c_ulong,
+            ctypes.c_ulong,
+        ]
+        if prctl(_PR_SET_DUMPABLE, 0, 0, 0, 0) != 0:
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        if prctl(_PR_GET_DUMPABLE, 0, 0, 0, 0) != 0:
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    except CredentialIntakeFailure:
+        raise
+    except BaseException:
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+
+
+def _read_private_tty(prompt: str) -> bytearray:
+    if type(prompt) is not str or not prompt or not prompt.isascii():
+        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+    descriptor: int | None = None
+    original: list[Any] | None = None
+    value = bytearray()
+    completed = False
+    restore_failed = False
+    try:
+        descriptor = os.open("/dev/tty", _TTY_FLAGS)
+        _set_cloexec(descriptor)
+        if not stat.S_ISCHR(os.fstat(descriptor).st_mode):
+            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+        original = termios.tcgetattr(descriptor)
+        hidden = original.copy()
+        hidden[3] = int(hidden[3]) & ~(termios.ECHO | getattr(termios, "ECHONL", 0))
+        termios.tcsetattr(descriptor, termios.TCSANOW, hidden)
+        prompt_bytes = prompt.encode("ascii")
+        offset = 0
+        while offset < len(prompt_bytes):
+            written = os.write(descriptor, prompt_bytes[offset:])
+            if written <= 0:
+                _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+            offset += written
+        while True:
+            chunk = os.read(descriptor, 1)
+            if not chunk:
+                _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+            if chunk == b"\n":
+                break
+            if (
+                chunk == b"\r"
+                or chunk[0] < 0x20
+                or chunk[0] == 0x7F
+                or len(value) >= MAX_SECRET_BYTES
+            ):
+                _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+            value.extend(chunk)
+        if not value:
+            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+        completed = True
+        return value
+    except CredentialIntakeFailure:
+        raise
+    except BaseException:
+        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+    finally:
+        if descriptor is not None:
+            if original is not None:
+                try:
+                    termios.tcsetattr(descriptor, termios.TCSANOW, original)
+                except BaseException:
+                    restore_failed = True
+            try:
+                os.write(descriptor, b"\n")
+            except BaseException:
+                pass
+            try:
+                os.close(descriptor)
+            except BaseException:
+                pass
+        if not completed or restore_failed:
+            _wipe(value)
+        if restore_failed:
+            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+
+
+def _wipe(value: bytearray | None) -> None:
+    if value is not None:
+        for index in range(len(value)):
+            value[index] = 0
+
+
+def _mkdir_private(parent_fd: int, name: str) -> int:
+    descriptor: int | None = None
+    try:
+        os.mkdir(name, 0o700, dir_fd=parent_fd)
+        metadata = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+        if not _private_directory(metadata):
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        os.fsync(parent_fd)
+        descriptor = _open_verified_child_directory(parent_fd, name, metadata)
+        return descriptor
+    except CredentialIntakeFailure:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+        raise
+    except BaseException:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+        _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+
+
+def _write_secret(store_fd: int, name: str, value: bytearray) -> None:
+    descriptor: int | None = None
+    try:
+        descriptor = os.open(name, _WRITE_FLAGS, 0o600, dir_fd=store_fd)
+        _set_cloexec(descriptor)
+        metadata = os.fstat(descriptor)
+        if not _private_file_for_new_write(metadata):
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        view = memoryview(value)
+        offset = 0
+        while offset < len(view):
+            written = os.write(descriptor, view[offset:])
+            if written <= 0:
+                _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+            offset += written
+        if os.write(descriptor, b"\n") != 1:
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        os.fsync(descriptor)
+        os.fsync(store_fd)
+    except CredentialIntakeFailure:
+        raise
+    except BaseException:
+        _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+    finally:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+
+
+def _private_file_for_new_write(metadata: os.stat_result) -> bool:
+    return (
+        stat.S_ISREG(metadata.st_mode)
+        and metadata.st_uid == os.geteuid()
+        and stat.S_IMODE(metadata.st_mode) == 0o600
+        and metadata.st_nlink == 1
+        and metadata.st_size == 0
+    )
+
+
+def _rename_noreplace(secret_parent_fd: int, source: str, target: str) -> None:
+    if (source, target) not in {
+        (SECRET_STAGING_NAME, SECRET_STORE_NAME),
+        (SECRET_COMMITTING_NAME, SECRET_READY_NAME),
+        (SECRET_VALIDATING_NAME, SECRET_COMMITTED_NAME),
+    }:
+        _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+    try:
+        libc = ctypes.CDLL(None, use_errno=True)
+        renameat2 = libc.renameat2
+        renameat2.restype = ctypes.c_int
+        renameat2.argtypes = [
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_uint,
+        ]
+        result = renameat2(
+            secret_parent_fd,
+            source.encode("ascii"),
+            secret_parent_fd,
+            target.encode("ascii"),
+            _RENAME_NOREPLACE,
+        )
+    except BaseException:
+        _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+    if result != 0:
+        _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+
+
+def _create_pair(repository_root: Path, values: tuple[bytearray, bytearray]) -> None:
+    root_fd = _open_directory(repository_root)
+    secret_parent_fd: int | None = None
+    store_fd: int | None = None
+    committing_fd: int | None = None
+    validating_fd: int | None = None
+    try:
+        parent_metadata = _stat_child(root_fd, SECRET_PARENT_NAME)
+        if parent_metadata is None:
+            secret_parent_fd = _mkdir_private(root_fd, SECRET_PARENT_NAME)
+        else:
+            secret_parent_fd = _open_verified_child_directory(
+                root_fd, SECRET_PARENT_NAME, parent_metadata
+            )
+        store_metadata = _stat_child(secret_parent_fd, SECRET_STORE_NAME)
+        staging_metadata = _stat_child(secret_parent_fd, SECRET_STAGING_NAME)
+        committing_metadata = _stat_child(secret_parent_fd, SECRET_COMMITTING_NAME)
+        ready_metadata = _stat_child(secret_parent_fd, SECRET_READY_NAME)
+        validating_metadata = _stat_child(secret_parent_fd, SECRET_VALIDATING_NAME)
+        committed_metadata = _stat_child(secret_parent_fd, SECRET_COMMITTED_NAME)
+        if any(
+            metadata is not None
+            for metadata in (
+                store_metadata,
+                staging_metadata,
+                committing_metadata,
+                ready_metadata,
+                validating_metadata,
+                committed_metadata,
+            )
+        ):
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        committing_fd = _mkdir_private(secret_parent_fd, SECRET_COMMITTING_NAME)
+        validating_fd = _mkdir_private(secret_parent_fd, SECRET_VALIDATING_NAME)
+        store_fd = _mkdir_private(secret_parent_fd, SECRET_STAGING_NAME)
+        if os.listdir(store_fd):
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        for alias, value in zip(SECRET_ALIASES, values, strict=True):
+            _write_secret(store_fd, alias, value)
+        os.fsync(store_fd)
+        os.fsync(secret_parent_fd)
+        staging_identity = os.fstat(store_fd)
+        _rename_noreplace(secret_parent_fd, SECRET_STAGING_NAME, SECRET_STORE_NAME)
+        published_identity = os.fstat(store_fd)
+        final_metadata = _stat_child(secret_parent_fd, SECRET_STORE_NAME)
+        if (
+            final_metadata is None
+            or not _private_directory(final_metadata)
+            or (final_metadata.st_dev, final_metadata.st_ino)
+            != (staging_identity.st_dev, staging_identity.st_ino)
+            or (published_identity.st_dev, published_identity.st_ino)
+            != (staging_identity.st_dev, staging_identity.st_ino)
+        ):
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        if tuple(sorted(os.listdir(store_fd))) != tuple(sorted(SECRET_ALIASES)):
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        os.fsync(secret_parent_fd)
+        committing_identity = os.fstat(committing_fd)
+        _rename_noreplace(secret_parent_fd, SECRET_COMMITTING_NAME, SECRET_READY_NAME)
+        published_ready_identity = os.fstat(committing_fd)
+        ready_metadata = _stat_child(secret_parent_fd, SECRET_READY_NAME)
+        if (
+            ready_metadata is None
+            or not _private_directory(ready_metadata)
+            or (ready_metadata.st_dev, ready_metadata.st_ino)
+            != (committing_identity.st_dev, committing_identity.st_ino)
+            or (published_ready_identity.st_dev, published_ready_identity.st_ino)
+            != (committing_identity.st_dev, committing_identity.st_ino)
+        ):
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        os.fsync(secret_parent_fd)
+        if (
+            _inspect_store_state(
+                repository_root,
+                expected_root=repository_root,
+                allow_validating=True,
+            )
+            is not CredentialStoreStatus.READY
+        ):
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        validating_identity = os.fstat(validating_fd)
+        validating_metadata = _stat_child(secret_parent_fd, SECRET_VALIDATING_NAME)
+        if (
+            validating_metadata is None
+            or not _private_directory(validating_metadata)
+            or (validating_metadata.st_dev, validating_metadata.st_ino)
+            != (validating_identity.st_dev, validating_identity.st_ino)
+        ):
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+        _rename_noreplace(
+            secret_parent_fd, SECRET_VALIDATING_NAME, SECRET_COMMITTED_NAME
+        )
+    except BaseException as exc:
+        if isinstance(exc, CredentialIntakeFailure):
+            raise
+        _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+    finally:
+        if store_fd is not None:
+            try:
+                os.close(store_fd)
+            except OSError:
+                pass
+        if committing_fd is not None:
+            try:
+                os.close(committing_fd)
+            except OSError:
+                pass
+        if validating_fd is not None:
+            try:
+                os.close(validating_fd)
+            except OSError:
+                pass
+        if secret_parent_fd is not None:
+            try:
+                os.close(secret_parent_fd)
+            except OSError:
+                pass
+        try:
+            os.close(root_fd)
+        except OSError:
+            pass
+
+
+def setup_store(
+    repository_root: Path = EXPECTED_REPOSITORY_ROOT,
+    *,
+    expected_root: Path = EXPECTED_REPOSITORY_ROOT,
+    reader: Callable[[str], bytearray] = _read_private_tty,
+    disclosure_guard: Callable[[], None] = _disable_process_disclosure,
+) -> CredentialStoreStatus:
+    """Initialize the exact pair once, or return metadata-only READY."""
+
+    root = _physical_repository_root(repository_root, expected_root)
+    existing = inspect_store(root, expected_root=expected_root)
+    if existing is CredentialStoreStatus.READY:
+        return existing
+    disclosure_guard()
+    application_id: bytearray | None = None
+    access_material: bytearray | None = None
+    try:
+        application_id = _read_value(reader, "Rakuten application ID: ")
+        access_material = _read_value(reader, "Rakuten access key: ")
+        _create_pair(root, (application_id, access_material))
+        return CredentialStoreStatus.READY
+    except CredentialIntakeFailure:
+        raise
+    except BaseException:
+        _fail(CredentialIntakeFailureCode.WRITE_FAILED)
+    finally:
+        _wipe(application_id)
+        _wipe(access_material)
+
+
+def _read_value(reader: Callable[[str], bytearray], prompt: str) -> bytearray:
+    try:
+        value = reader(prompt)
+    except CredentialIntakeFailure:
+        raise
+    except BaseException:
+        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+    invalid = (
+        type(value) is not bytearray
+        or not value
+        or len(value) > MAX_SECRET_BYTES
+        or any(byte < 0x20 or byte == 0x7F for byte in value)
+    )
+    if invalid:
+        if type(value) is bytearray:
+            _wipe(value)
+        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+    return value
+
+
+def _receipt(command: str, status: CredentialStoreStatus) -> str:
+    return json.dumps(
+        {"command": command, "ok": True, "status": status.value},
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+
+
+def _failure_receipt(command: str, code: CredentialIntakeFailureCode) -> str:
+    return json.dumps(
+        {
+            "command": command,
+            "ok": False,
+            "reason_code": code.value,
+            "status": "INVALID",
+        },
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+
+
+def parse_args(argv: Sequence[str] | None = None) -> str:
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    if arguments not in (["setup"], ["check"]):
+        _fail(CredentialIntakeFailureCode.ARGUMENT_INVALID)
+    return arguments[0]
+
+
+def main(
+    argv: Sequence[str] | None = None,
+    *,
+    repository_root: Path = EXPECTED_REPOSITORY_ROOT,
+    expected_root: Path = EXPECTED_REPOSITORY_ROOT,
+    reader: Callable[[str], bytearray] = _read_private_tty,
+    disclosure_guard: Callable[[], None] = _disable_process_disclosure,
+) -> int:
+    command = "invalid"
+    previous_umask = os.umask(0o077)
+    try:
+        command = parse_args(argv)
+        status = (
+            setup_store(
+                repository_root,
+                expected_root=expected_root,
+                reader=reader,
+                disclosure_guard=disclosure_guard,
+            )
+            if command == "setup"
+            else inspect_store(repository_root, expected_root=expected_root)
+        )
+    except CredentialIntakeFailure as exc:
+        print(_failure_receipt(command, exc.code))
+        return 1
+    finally:
+        os.umask(previous_umask)
+    print(_receipt(command, status))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

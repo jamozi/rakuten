@@ -3318,3 +3318,60 @@ original result.
   TST-016 and live auth/schema/rate evidence remain `NOT_EXECUTED`; this is
   local provenance closure only, not `VALIDATED`, live, formal, staging,
   release, or Production evidence.
+
+### 2026-08-21 W2 / ST-0505 local Rakuten credential-intake checkpoint
+
+- Authority and boundary: the connected repository-owner directives asked for
+  a safe way to provide the Rakuten API keys and to proceed with the plan. The
+  new `DESIGN_HANDOFF_V1` records that authority only for reversible local
+  setup/check implementation. No exact-hash owner statement is claimed. No
+  credential value entry/read, provider call, account/endpoint selection,
+  network action, publication, staging, release, or Production action was
+  authorized or executed. OD-015 remains unresolved and blocking with
+  `RECORDED_FIXTURE_ONLY` as the live-provider safe default.
+- Implementation: ST-0505 contract revision `1.2.0` adds one disconnected
+  `LOCAL_CREDENTIAL_INTAKE_AVAILABLE` interface. The fixed launcher accepts
+  only literal `setup` or `check` and runs pinned isolated Python from the
+  physical `/home/minami/rakuten` repository. The store is fixed at
+  `.secrets/rakuten-live-smoke` with exactly
+  `rakuten_web_service_application_id` and
+  `rakuten_web_service_access_key`; optional `rakuten_affiliate_id` is excluded
+  from V1. No root Makefile or other Story was changed.
+- Security properties: setup accepts both values only through direct hidden
+  `/dev/tty` input after disabling core dumps and Linux dumpability. It uses
+  owner-only `0700` directories, exclusive/no-follow/close-on-exec `0600`
+  regular files with link count one, file and parent fsync, no overwrite or
+  rotation, and best-effort mutable-buffer wiping. Normal failures perform no
+  name-based unlink or rmdir because those operations cannot be bound to a
+  previously verified inode; owner-only partial and crash residue instead
+  remains in the fixed preparing/committing namespace and fail closed with no
+  automatic deletion or repair. A fully written and fsynced pair is published
+  only by `renameat2(RENAME_NOREPLACE)` with retained directory-FD inode checks;
+  a separate committing directory becomes the intermediate READY marker, while
+  a precreated validating marker keeps external check invalid through READY
+  inode verification, post-publish parent fsync, and internal metadata-only
+  inspection. The final validating-to-committed no-replace rename is the last
+  operation; external READY requires final+ready+committed with no active
+  marker. Unknown, symlink, hardlink, special-file, ownership, and mode drift
+  likewise remains fail closed. Metadata-only `check` never opens or reads
+  alias file contents; `READY` is structural only and grants no credential or
+  live authority. Setup/check require exclusive same-EUID access to the fixed
+  store and all five transaction names.
+- Owner provenance: the existing ST-0505 generator exclusively regenerated the
+  reference JSON and manifest, binds the exact handoff plus the credential
+  script, launcher, and hostile test, and completed its no-write `--check`.
+  Repository search found no active downstream hash consumer, so the generated
+  closure ends inside ST-0505. The historical ST-0502 handoff remains immutable.
+- Local checks: focused credential-intake tests passed 71 tests; the full
+  isolated ST-0505 suite passed 295, affected ST-0502 passed 167, and affected
+  ST-0503 passed 59. Bash syntax, Ruff lint/format, strict mypy, configured
+  whole-project Pyright, Python compile/import, Canonical import verification,
+  workspace drift, owner generation/no-write check, and `git diff --check`
+  passed. The maintained-file scanner reported zero findings over the final
+  exact 13-path diff after this append-only checkpoint.
+- Remaining evidence: no real credential was supplied, opened, read, checked,
+  or written. Formal TST-016, live auth/schema/rate evidence, provider runtime,
+  network, storage/persistence, staging, publication, release, and Production
+  remain `NOT_EXECUTED`. Existing `DEBT-W2-061` remains open because the full
+  scanner rejects linked-worktree Git indirection; no scanner control is
+  weakened and no green full-worktree scan is claimed.
