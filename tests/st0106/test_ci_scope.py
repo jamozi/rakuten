@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import fnmatch
 import json
 import subprocess
 from pathlib import Path
@@ -15,6 +14,42 @@ from scripts import classify_ci_scope as classifier
 @pytest.fixture
 def scope_contract() -> dict[str, object]:
     return classifier.load_contract()
+
+
+@pytest.mark.parametrize(
+    ("path", "pattern", "expected"),
+    [
+        ("scripts/build_contract.py", "scripts/*contract*", True),
+        (
+            "scripts/contract_validation_resources/README.md",
+            "scripts/*contract*",
+            False,
+        ),
+        (
+            "scripts/contract_validation_resources/README.md",
+            "scripts/contract_validation_resources/**",
+            True,
+        ),
+        ("changes/st-0106/contracts/example.json", "changes/*/contracts/**", True),
+        ("scripts/build_st0107.py", "scripts/*st????*", True),
+        ("scripts/nested/build_st0107.py", "scripts/*st????*", False),
+    ],
+)
+def test_repository_globs_use_segment_aware_star_semantics(
+    path: str, pattern: str, expected: bool
+) -> None:
+    assert classifier.path_glob_matches(path, pattern) is expected
+
+
+def test_codeowner_global_default_matches_nested_paths() -> None:
+    assert classifier.codeowner_pattern_matches("future/new/path.txt", "*") is True
+    assert (
+        classifier.codeowner_pattern_matches(
+            "scripts/contract_validation_resources/README.md",
+            "/scripts/*contract*",
+        )
+        is False
+    )
 
 
 def test_docs_only_selects_light_static_and_secrets(
@@ -203,7 +238,7 @@ def test_every_tracked_story_surface_is_high_or_has_closed_ordinary_proof(
         for path in tracked
         if path
         and any(
-            fnmatch.fnmatchcase(path, pattern)
+            classifier.path_glob_matches(path, pattern)
             for pattern in scope_contract["story_scope_globs"]
         )
     )
@@ -303,6 +338,22 @@ def test_story_detection_includes_scripts_and_suffixed_test_suites(
         ],
         patterns,
     ) == ["ST-0901", "ST-1703"]
+
+
+def test_detected_story_union_includes_generator_owned_outputs(
+    scope_contract: dict[str, object],
+) -> None:
+    assert classifier.detected_story_ids([".github/CODEOWNERS"], scope_contract) == [
+        "ST-0107"
+    ]
+    paths = [".github/CODEOWNERS", "tests/st0501/test_workflow.py"]
+    assert classifier.detected_story_ids(paths, scope_contract) == [
+        "ST-0107",
+        "ST-0501",
+    ]
+    result = classifier.classify_paths("pull_request", paths, scope_contract)
+    assert result["risk"] == "multi_story"
+    assert result["full_required"] is True
 
 
 def test_github_output_contains_every_required_job_without_path_material(

@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import fnmatch
 import json
 import os
 import re
@@ -12,6 +11,7 @@ import stat
 import subprocess
 import sys
 from collections.abc import Mapping, Sequence
+from functools import cache
 from pathlib import Path, PurePosixPath
 from typing import Any, Final
 
@@ -105,7 +105,7 @@ EXPECTED_ORDINARY_STORY_PATHS: Final = {
 EXPECTED_ORDINARY_DOC_PATHS: Final = ("README.md",)
 EXPECTED_STORY_SCOPE_GLOBS: Final = (
     "changes/st-*/**",
-    "scripts/*st[0-9][0-9][0-9][0-9]*",
+    "scripts/*st????*",
     "tests/st*/**",
 )
 EXPECTED_STORY_DEFAULT_OWNER_ROLES: Final = ("engineering", "security")
@@ -367,8 +367,44 @@ def story_ids(paths: Sequence[str], patterns: Sequence[str]) -> list[str]:
     return sorted(identifiers)
 
 
+@cache
+def _compile_segment_glob(pattern: str) -> re.Pattern[str]:
+    """Compile a repository glob where only a double star may cross `/`."""
+
+    if not pattern or "\x00" in pattern or "\\" in pattern:
+        raise ClassificationError("path glob is empty or unsafe")
+    expression: list[str] = ["^"]
+    index = 0
+    while index < len(pattern):
+        character = pattern[index]
+        if character == "*":
+            if index + 1 < len(pattern) and pattern[index + 1] == "*":
+                if index + 2 < len(pattern) and pattern[index + 2] == "*":
+                    raise ClassificationError("path glob contains an invalid star run")
+                if index + 2 < len(pattern) and pattern[index + 2] == "/":
+                    expression.append("(?:[^/]+/)*")
+                    index += 3
+                    continue
+                expression.append(".*")
+                index += 2
+                continue
+            expression.append("[^/]*")
+        elif character == "?":
+            expression.append("[^/]")
+        else:
+            expression.append(re.escape(character))
+        index += 1
+    expression.append("$")
+    return re.compile("".join(expression))
+
+
+def path_glob_matches(path: str, raw_pattern: str) -> bool:
+    pattern = raw_pattern.removeprefix("/")
+    return _compile_segment_glob(pattern).fullmatch(path) is not None
+
+
 def _matches_any(path: str, patterns: Sequence[str]) -> bool:
-    return any(fnmatch.fnmatchcase(path, pattern) for pattern in patterns)
+    return any(path_glob_matches(path, pattern) for pattern in patterns)
 
 
 def is_proven_ordinary_path(path: str, config: Mapping[str, Any]) -> bool:
@@ -387,11 +423,29 @@ def bound_ordinary_story_ids(
     )
 
 
+def detected_story_ids(paths: Sequence[str], config: Mapping[str, Any]) -> list[str]:
+    generator_stories = {
+        story
+        for story, outputs in config["generator_owned_outputs"].items()
+        if set(paths).intersection(outputs)
+    }
+    return sorted(
+        set(story_ids(paths, config["story_path_patterns"]))
+        | set(bound_ordinary_story_ids(paths, config))
+        | generator_stories
+    )
+
+
 def codeowner_pattern_matches(path: str, raw_pattern: str) -> bool:
+    # GitHub treats a slash-free CODEOWNERS pattern as matching at any depth.
+    # This contract permits only the global slash-free form; every other
+    # reviewed pattern is root-anchored and uses segment-aware glob semantics.
+    if raw_pattern == "*":
+        return True
     pattern = raw_pattern.removeprefix("/")
     if pattern.endswith("/"):
-        pattern += "*"
-    return fnmatch.fnmatchcase(path, pattern)
+        pattern += "**"
+    return path_glob_matches(path, pattern)
 
 
 def high_risk_categories(path: str, config: Mapping[str, Any]) -> list[str]:
@@ -424,10 +478,8 @@ def required_owner_roles(path: str, config: Mapping[str, Any]) -> list[str]:
         if category_name in explicit
         for role in explicit[category_name]["required_roles"]
     }
-    if explicit_roles:
-        return sorted(explicit_roles)
     if categories:
-        return sorted(config["story_default_owner_roles"])
+        return sorted(explicit_roles | set(config["story_default_owner_roles"]))
     return []
 
 
@@ -466,10 +518,7 @@ def classify_paths(
     if not visible_paths:
         return _full_result(config, "unknown", ["no_changed_paths"], 0)
 
-    stories = sorted(
-        set(story_ids(visible_paths, config["story_path_patterns"]))
-        | set(bound_ordinary_story_ids(visible_paths, config))
-    )
+    stories = detected_story_ids(visible_paths, config)
     if len(stories) > 1:
         return _full_result(
             config,

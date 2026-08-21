@@ -28,9 +28,11 @@ make dev-check STORY=ST-0106 BASE_REF=origin/main
 make dev-check STORY=ST-0106 STORIES=ST-0106,ST-0107 BASE_REF=main
 ```
 
-It unions committed, staged, unstaged, and untracked paths; runs Git whitespace
-checks, changed-language checks, every declared and detected isolated Story
-suite exactly once, and allowlisted owner generator checks; and emits one
+It unions committed, staged, unstaged, and untracked paths. Story detection
+uses the same classifier helper for Story-local names, exact ordinary-path
+bindings, and generated-output owner bindings. It runs Git whitespace checks,
+changed-language checks, every declared and detected isolated Story suite
+exactly once, and allowlisted owner generator checks; and emits one
 `RAOS_DEV_CHECK_V1` JSON receipt whose `executed_story_suites` lists each suite. A changed
 `.secrets/**` path makes the orchestrator fail before child commands and exposes
 only the sensitive-path count. The orchestrator does not pass private path names

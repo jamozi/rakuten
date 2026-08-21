@@ -210,13 +210,11 @@ def test_story_scope_ownership_cannot_diverge_from_scope_contract(
     reject_contract(mutable_contract, "Story-scope ownership policy differs")
 
 
-def test_codeowners_global_default_row_is_rejected(
+def test_codeowners_global_default_row_is_required_first(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:
-    mutable_contract["codeowners"]["entries"].insert(
-        0, {"pattern": "*", "roles": ["engineering"]}
-    )
-    reject_contract(mutable_contract, "global default CODEOWNER row is forbidden")
+    mutable_contract["codeowners"]["entries"].pop(0)
+    reject_contract(mutable_contract, "global default CODEOWNER row must be first")
 
 
 def test_codeowners_github_row_must_be_last(

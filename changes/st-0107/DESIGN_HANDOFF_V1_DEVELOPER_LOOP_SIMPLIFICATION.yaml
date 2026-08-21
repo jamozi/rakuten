@@ -69,7 +69,10 @@ constraints:
   - Mandatory high-risk categories and their CODEOWNERS patterns come from the
     ST-0106 versioned developer-loop scope contract and are cross-checked by the
     ST-0107 generator, including effective GitHub last-match owner resolution
-    for category representatives and every tracked high-risk path.
+    for category representatives and every tracked path. A global Engineering
+    and Security baseline covers unknown and new paths, exact reviewed ordinary
+    paths may narrow to Engineering, and later semantic rows must preserve the
+    baseline plus their applicable category roles.
   - Preserve strict checks, linear history, deletion/force-push protection, and
     an empty bypass actor list.
   - The classifier and dev-check orchestrator fail before child checks when a
@@ -94,7 +97,7 @@ acceptance_criteria:
     unmapped build script, and a protected Canonical/upstream path select full
     Base CI; only the closed ordinary proof retains affected CI.
   - Explicit multi-Story developer checks execute every declared and detected isolated Story suite exactly once.
-  - Generated governance requires one exact-head human approval as the fail-closed independent-review fallback, retains effective high-risk CODEOWNER coverage for every tracked path, has no bypass actor, and preserves branch protections.
+  - Generated governance requires one exact-head human approval as the fail-closed independent-review fallback, retains fail-closed effective CODEOWNER coverage for every tracked and new path, has no bypass actor, and preserves branch protections.
   - The bounded ruleset operator is fixed to `jamozi/rakuten` and `https://api.github.com`.
 required_test_evidence:
   minimum_checks:

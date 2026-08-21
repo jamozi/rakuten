@@ -56,7 +56,7 @@
     ]
   },
   "ordinary_docs_paths": ["README.md"],
-  "story_scope_globs": ["changes/st-*/**", "scripts/*st[0-9][0-9][0-9][0-9]*", "tests/st*/**"],
+  "story_scope_globs": ["changes/st-*/**", "scripts/*st????*", "tests/st*/**"],
   "story_default_owner_roles": ["engineering", "security"],
   "mandatory_high_risk_categories": {
     "contract_codegen": {
@@ -66,6 +66,7 @@
         "changes/**/generated/**",
         "python/raos/generated/**",
         "packages/web-contracts/src/generated/**",
+        "scripts/contract_validation_resources/**",
         "scripts/*contract*",
         "scripts/*codegen*",
         "tests/st0104/**",
@@ -78,6 +79,7 @@
         "/changes/**/generated/",
         "/python/raos/generated/",
         "/packages/web-contracts/src/generated/",
+        "/scripts/contract_validation_resources/",
         "/scripts/*contract*",
         "/scripts/*codegen*",
         "/tests/st0104/",
@@ -86,6 +88,11 @@
       "representative_paths": [
         "scripts/build_st0104_contract_repository.py",
         "scripts/build_st0105_generated_contracts.py",
+        "scripts/contract_validation_resources/ASYNCAPI-LICENSE.txt",
+        "scripts/contract_validation_resources/OPENAPI-LICENSE.txt",
+        "scripts/contract_validation_resources/README.md",
+        "scripts/contract_validation_resources/asyncapi-3.0.0-schema.json",
+        "scripts/contract_validation_resources/openapi-3.1-schema-2025-11-23.json",
         "tests/st0104/test_verifier.py",
         "changes/st-0301/generated/migration-catalog.v1.json",
         "changes/st-0005/contracts/status-policy.v1.yaml",
@@ -161,6 +168,8 @@
         "changes/st-1603/**",
         "python/raos/domain/http/**",
         "python/raos/application/http/**",
+        "python/raos/**/rakuten_live_smoke.py",
+        "scripts/*rakuten_live_smoke*",
         "scripts/*security*",
         "tests/security/**",
         "tests/st04*/**",
@@ -172,6 +181,8 @@
         "/changes/st-1603/",
         "/python/raos/domain/http/",
         "/python/raos/application/http/",
+        "/python/raos/**/rakuten_live_smoke.py",
+        "/scripts/*rakuten_live_smoke*",
         "/scripts/*security*",
         "/tests/security/",
         "/tests/st04*/",
@@ -180,6 +191,8 @@
       "representative_paths": [
         "python/raos/domain/http/security.py",
         "python/raos/application/http/security.py",
+        "python/raos/domain/catalog/rakuten_live_smoke.py",
+        "scripts/rakuten_live_smoke_launcher.sh",
         "scripts/build_st1603_security_verification_pack.py",
         "tests/st0401/test_authentication.py",
         "tests/st1603/test_contract.py",
@@ -250,6 +263,8 @@
         "python/raos/adapters/**",
         "python/raos/ports/*provider*",
         "python/raos/domain/ai/provider.py",
+        "python/raos/**/rakuten_live_smoke.py",
+        "scripts/*rakuten_live_smoke*",
         "scripts/*provider*"
       ],
       "required_roles": ["operations", "security"],
@@ -257,11 +272,20 @@
         "/python/raos/adapters/",
         "/python/raos/ports/*provider*",
         "/python/raos/domain/ai/provider.py",
+        "/python/raos/**/rakuten_live_smoke.py",
+        "/scripts/*rakuten_live_smoke*",
         "/scripts/*provider*"
       ],
       "representative_paths": [
         "python/raos/adapters/wordpresscom_oauth.py",
         "python/raos/ports/ai_provider.py",
+        "python/raos/application/catalog/rakuten_live_smoke.py",
+        "python/raos/domain/catalog/rakuten_live_smoke.py",
+        "python/raos/ports/rakuten_live_smoke.py",
+        "scripts/install_rakuten_live_smoke_runtime.py",
+        "scripts/rakuten_live_smoke.py",
+        "scripts/rakuten_live_smoke_launcher.sh",
+        "scripts/rakuten_live_smoke_runtime_install.sh",
         "scripts/build_st1302_provider_fact_commit_reference_plan.py"
       ]
     },

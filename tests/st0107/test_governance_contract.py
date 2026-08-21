@@ -15,6 +15,7 @@ from scripts import build_st0107_pr_governance as generator
 from scripts.classify_ci_scope import (
     codeowner_pattern_matches,
     high_risk_categories,
+    is_proven_ordinary_path,
     load_contract as load_scope_contract,
     required_owner_roles,
 )
@@ -90,11 +91,14 @@ def test_owner_placeholders_are_complete_unique_and_not_live_verified(
         "scope_contract": generator.SCOPE_CONTRACT_URI,
         "canonical_story_source": generator.CANONICAL_STORY_SOURCE_URI,
         "default_roles": ["engineering", "security"],
-        "ordering": "derived_story_defaults_before_path_specific_rows",
+        "ordinary_roles": ["engineering"],
+        "ordering": (
+            "global_default_then_ordinary_exact_then_story_defaults_then_semantic_rows"
+        ),
     }
 
 
-def test_rendered_codeowners_routes_only_declared_paths_and_preserves_last_match_control(
+def test_rendered_codeowners_has_fail_closed_default_and_preserves_last_match_control(
     governance_contract: dict[str, Any],
 ) -> None:
     rendered = generator.render_codeowners(governance_contract)
@@ -104,14 +108,13 @@ def test_rendered_codeowners_routes_only_declared_paths_and_preserves_last_match
 
     assert text.endswith("\n")
     assert "UNVERIFIED_PLACEHOLDERS" in text
-    assert "*" not in by_pattern
     assert rows[0] == (
-        "/changes/st-0001/",
+        "*",
         ("@raos/engineering", "@raos/security"),
     )
     assert rows[-1] == (
         "/.github/",
-        ("@raos/security", "@raos/operations"),
+        ("@raos/engineering", "@raos/operations", "@raos/security"),
     )
     assert len(by_pattern) == len(rows)
     expected_rows = [
@@ -132,7 +135,7 @@ def test_rendered_codeowners_routes_only_declared_paths_and_preserves_last_match
     ).items():
         if pattern == "*":
             continue
-        assert by_pattern[pattern] == owners
+        assert set(owners).issubset(by_pattern[pattern])
 
 
 def test_mandatory_high_risk_categories_have_enforced_rows(
@@ -216,76 +219,79 @@ def test_governance_category_covers_ci_and_policy_sources(
     [
         (
             "scripts/build_st0104_contract_repository.py",
-            ("@raos/architecture", "@raos/engineering"),
+            ("@raos/architecture", "@raos/engineering", "@raos/security"),
         ),
         (
             "tests/st0104/test_verifier.py",
-            ("@raos/architecture", "@raos/engineering"),
+            ("@raos/architecture", "@raos/engineering", "@raos/security"),
         ),
         (
             "scripts/build_st0301_migration_framework.py",
-            ("@raos/data", "@raos/security"),
+            ("@raos/data", "@raos/engineering", "@raos/security"),
         ),
-        ("tests/st0301/test_generation.py", ("@raos/data", "@raos/security")),
+        (
+            "tests/st0301/test_generation.py",
+            ("@raos/data", "@raos/engineering", "@raos/security"),
+        ),
         (
             "scripts/build_st0005_status.py",
-            ("@raos/security", "@raos/operations"),
+            ("@raos/engineering", "@raos/operations", "@raos/security"),
         ),
         (
             "tests/st0005/test_overlay_contract.py",
-            ("@raos/security", "@raos/operations"),
+            ("@raos/engineering", "@raos/operations", "@raos/security"),
         ),
         (
             "python/raos/application/iam/authentication.py",
-            ("@raos/security", "@raos/engineering"),
+            ("@raos/engineering", "@raos/security"),
         ),
         (
             "python/raos/domain/iam/authorization.py",
-            ("@raos/security", "@raos/architecture"),
+            ("@raos/architecture", "@raos/engineering", "@raos/security"),
         ),
         (
             "python/raos/adapters/development_workload_credentials.py",
-            ("@raos/security", "@raos/operations"),
+            ("@raos/engineering", "@raos/operations", "@raos/security"),
         ),
         (
             "python/raos/adapters/wordpresscom_oauth.py",
-            ("@raos/security", "@raos/operations"),
+            ("@raos/engineering", "@raos/operations", "@raos/security"),
         ),
         (
             "python/raos/domain/publishing/review_workflow.py",
-            ("@raos/editorial", "@raos/security"),
+            ("@raos/editorial", "@raos/engineering", "@raos/security"),
         ),
         (
             "tests/st0904/test_contract.py",
-            ("@raos/editorial", "@raos/security"),
+            ("@raos/editorial", "@raos/engineering", "@raos/security"),
         ),
         (
             "python/raos/domain/http/security.py",
-            ("@raos/security", "@raos/architecture"),
+            ("@raos/architecture", "@raos/engineering", "@raos/security"),
         ),
         (
             "python/raos/application/http/security.py",
-            ("@raos/security", "@raos/engineering"),
+            ("@raos/engineering", "@raos/security"),
         ),
         (
             "tests/st0401/test_authentication.py",
-            ("@raos/security", "@raos/engineering"),
+            ("@raos/engineering", "@raos/security"),
         ),
         (
             "scripts/build_st1603_security_verification_pack.py",
-            ("@raos/security", "@raos/engineering"),
+            ("@raos/engineering", "@raos/security"),
         ),
         (
             "tests/st1603/test_contract.py",
-            ("@raos/security", "@raos/operations"),
+            ("@raos/engineering", "@raos/operations", "@raos/security"),
         ),
         (
             "changes/st-0106/contracts/developer-loop-scope.v1.json",
             (
                 "@raos/architecture",
                 "@raos/engineering",
-                "@raos/security",
                 "@raos/operations",
+                "@raos/security",
             ),
         ),
         (
@@ -293,8 +299,8 @@ def test_governance_category_covers_ci_and_policy_sources(
             (
                 "@raos/architecture",
                 "@raos/engineering",
-                "@raos/security",
                 "@raos/operations",
+                "@raos/security",
             ),
         ),
         (
@@ -302,16 +308,16 @@ def test_governance_category_covers_ci_and_policy_sources(
             (
                 "@raos/architecture",
                 "@raos/engineering",
-                "@raos/security",
                 "@raos/operations",
+                "@raos/security",
             ),
         ),
         (
             "changes/st-0301/generated/migration-catalog.v1.json",
             (
                 "@raos/architecture",
-                "@raos/engineering",
                 "@raos/data",
+                "@raos/engineering",
                 "@raos/security",
             ),
         ),
@@ -320,8 +326,8 @@ def test_governance_category_covers_ci_and_policy_sources(
             (
                 "@raos/architecture",
                 "@raos/engineering",
-                "@raos/security",
                 "@raos/operations",
+                "@raos/security",
             ),
         ),
         (
@@ -329,6 +335,7 @@ def test_governance_category_covers_ci_and_policy_sources(
             (
                 "@raos/ai",
                 "@raos/editorial",
+                "@raos/engineering",
                 "@raos/operations",
                 "@raos/security",
             ),
@@ -343,7 +350,7 @@ def test_governance_category_covers_ci_and_policy_sources(
         ),
         (
             "docs/upstream/README.md",
-            ("@raos/architecture",),
+            ("@raos/architecture", "@raos/engineering", "@raos/security"),
         ),
     ],
 )
@@ -356,7 +363,71 @@ def test_representative_high_risk_paths_resolve_to_expected_final_codeowners(
     assert _owners_for_path(rows, path) == expected_owners
 
 
-def test_every_tracked_high_risk_path_retains_all_effective_category_owners(
+def test_contract_validation_resources_use_explicit_recursive_owner_route(
+    governance_contract: dict[str, Any],
+) -> None:
+    resources = [
+        "scripts/contract_validation_resources/ASYNCAPI-LICENSE.txt",
+        "scripts/contract_validation_resources/OPENAPI-LICENSE.txt",
+        "scripts/contract_validation_resources/README.md",
+        "scripts/contract_validation_resources/asyncapi-3.0.0-schema.json",
+        "scripts/contract_validation_resources/openapi-3.1-schema-2025-11-23.json",
+    ]
+    tracked = {
+        path
+        for path in subprocess.run(
+            ["git", "ls-files", "scripts/contract_validation_resources"],
+            cwd=REPOSITORY_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+        if path
+    }
+    rows = _codeowner_rows(generator.render_codeowners(governance_contract))
+
+    assert tracked == set(resources)
+    for path in resources:
+        assert not codeowner_pattern_matches(path, "/scripts/*contract*")
+        assert codeowner_pattern_matches(
+            path, "/scripts/contract_validation_resources/"
+        )
+        assert _owners_for_path(rows, path) == (
+            "@raos/architecture",
+            "@raos/engineering",
+            "@raos/security",
+        )
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "python/raos/application/catalog/rakuten_live_smoke.py",
+        "python/raos/domain/catalog/rakuten_live_smoke.py",
+        "python/raos/ports/rakuten_live_smoke.py",
+        "scripts/install_rakuten_live_smoke_runtime.py",
+        "scripts/rakuten_live_smoke.py",
+        "scripts/rakuten_live_smoke_launcher.sh",
+        "scripts/rakuten_live_smoke_runtime_install.sh",
+    ],
+)
+def test_rakuten_live_runtime_has_provider_security_owners(
+    governance_contract: dict[str, Any], path: str
+) -> None:
+    scope = load_scope_contract(REPOSITORY_ROOT)
+    categories = high_risk_categories(path, scope)
+    rows = _codeowner_rows(generator.render_codeowners(governance_contract))
+
+    assert "provider_runtime" in categories
+    assert "security_controls" in categories
+    assert _owners_for_path(rows, path) == (
+        "@raos/engineering",
+        "@raos/operations",
+        "@raos/security",
+    )
+
+
+def test_every_tracked_path_retains_fail_closed_effective_owners(
     governance_contract: dict[str, Any],
 ) -> None:
     scope = load_scope_contract(REPOSITORY_ROOT)
@@ -378,22 +449,34 @@ def test_every_tracked_high_risk_path_retains_all_effective_category_owners(
         if not path:
             continue
         matching_categories = high_risk_categories(path, scope)
-        if not matching_categories:
-            continue
-        required = {teams[role] for role in required_owner_roles(path, scope)}
+        if is_proven_ordinary_path(path, scope) and not matching_categories:
+            required_roles = set(
+                governance_contract["story_scope_ownership"]["ordinary_roles"]
+            )
+        else:
+            required_roles = set(
+                governance_contract["story_scope_ownership"]["default_roles"]
+            ) | set(required_owner_roles(path, scope))
+        required = {teams[role] for role in required_roles}
         effective = _owners_for_path(rows, path)
         if not required.issubset(effective):
             gaps.append((path, sorted(required), effective))
 
     assert gaps == []
+    assert _owners_for_path(rows, "future/new/nested/surface.txt") == (
+        "@raos/engineering",
+        "@raos/security",
+    )
 
 
-def test_closed_ordinary_story_roots_do_not_receive_derived_default_owners(
+def test_closed_ordinary_paths_override_default_without_unproven_script_escape(
     governance_contract: dict[str, Any],
 ) -> None:
     rows = _codeowner_rows(generator.render_codeowners(governance_contract))
-    assert _owners_for_path(rows, "tests/st0501/test_workflow.py") == ()
-    assert _owners_for_path(rows, "changes/st-0501/README.md") == ()
+    assert _owners_for_path(rows, "tests/st0501/test_workflow.py") == (
+        "@raos/engineering",
+    )
+    assert _owners_for_path(rows, "changes/st-0501/README.md") == ("@raos/engineering",)
     assert _owners_for_path(rows, "scripts/build_st0501_unmapped_generator.py") == (
         "@raos/engineering",
         "@raos/security",
@@ -411,13 +494,13 @@ def test_pull_request_template_captures_the_short_development_loop(
         "<!-- Generated by scripts/build_st0107_pr_governance.py. Do not edit. -->\n"
         f"<!-- Source contract: {generator.SOURCE_CONTRACT_URI} -->\n"
         f"<!-- Generation command: {generator.GENERATION_COMMAND} -->\n"
-        "<!-- High-risk CODEOWNER and live GitHub evidence cannot be supplied by this template. -->\n"
+        "<!-- CODEOWNER and live GitHub evidence cannot be supplied by this template. -->\n"
     )
     for heading in (
         "## Story or slice",
         "## Risk",
         "## Development evidence",
-        "## High-risk CODEOWNER review",
+        "## CODEOWNER review",
         "## Deferred formal or live work",
         "## Evidence boundary",
     ):
@@ -446,6 +529,7 @@ def test_pull_request_template_captures_the_short_development_loop(
     )
     assert "- Hosted Base CI at the exact head:" in rendered
     assert "- Exact-head human approval (required fallback;" in rendered
+    assert "- Baseline CODEOWNER routing for every changed path:" in rendered
     assert (
         "- Independent automated review: `NOT_AVAILABLE_HUMAN_REVIEW_FALLBACK`"
         in rendered
@@ -453,11 +537,11 @@ def test_pull_request_template_captures_the_short_development_loop(
     assert "- Formal TST not executed:" in rendered
     assert "- Provider / live / staging / Production work not executed:" in rendered
     assert (
-        "Use `N/A` only when the path family is unchanged, and record the rationale."
+        "Use `N/A` for a\nsemantic row only when that path family is unchanged"
         in rendered
     )
     assert (
-        "- [ ] High-risk CODEOWNER review is complete, or every row has an `N/A` rationale"
+        "- [ ] Baseline CODEOWNER review is complete; every unchanged semantic row has an `N/A` rationale"
         in rendered
     )
 

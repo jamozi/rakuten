@@ -31,6 +31,7 @@ from scripts.classify_ci_scope import (  # noqa: E402
     EXPECTED_HIGH_RISK_CATEGORIES,
     codeowner_pattern_matches,
     high_risk_categories,
+    is_proven_ordinary_path,
     load_contract as load_scope_contract,
     normalize_path,
     required_owner_roles,
@@ -146,6 +147,7 @@ EXPECTED_OWNER_ROLES: Final = (
     "security",
 )
 EXPECTED_CODEOWNER_ENTRIES: Final = (
+    ("*", ("engineering", "security")),
     ("/contracts/", ("architecture", "engineering")),
     ("/migrations/", ("data", "security")),
     ("/infra/", ("operations", "security")),
@@ -162,6 +164,10 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ("/changes/**/generated/", ("architecture", "engineering")),
     ("/python/raos/generated/", ("architecture", "engineering")),
     ("/packages/web-contracts/src/generated/", ("architecture", "engineering")),
+    (
+        "/scripts/contract_validation_resources/",
+        ("architecture", "engineering"),
+    ),
     ("/scripts/*contract*", ("architecture", "engineering")),
     ("/scripts/*codegen*", ("architecture", "engineering")),
     ("/tests/st0104/", ("architecture", "engineering")),
@@ -191,6 +197,8 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
         "/python/raos/domain/ai/provider.py",
         ("ai", "editorial", "operations", "security"),
     ),
+    ("/python/raos/**/rakuten_live_smoke.py", ("operations", "security")),
+    ("/scripts/*rakuten_live_smoke*", ("operations", "security")),
     ("/scripts/*provider*", ("operations", "security")),
     ("/python/raos/domain/iam/", ("security", "architecture")),
     ("/python/raos/application/iam/", ("security", "engineering")),
@@ -811,27 +819,46 @@ def _canonical_codeowner_entries(root: Path) -> dict[str, tuple[str, ...]]:
 
 def _validate_story_scope_ownership(
     contract: Mapping[str, Any], root: Path
-) -> tuple[str, ...]:
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    scope = load_scope_contract(root)
     ownership = _mapping(contract["story_scope_ownership"], "story_scope_ownership")
     expected = {
         "scope_contract": SCOPE_CONTRACT_URI,
         "canonical_story_source": CANONICAL_STORY_SOURCE_URI,
-        "default_roles": list(load_scope_contract(root)["story_default_owner_roles"]),
-        "ordering": "derived_story_defaults_before_path_specific_rows",
+        "default_roles": list(scope["story_default_owner_roles"]),
+        "ordinary_roles": ["engineering"],
+        "ordering": (
+            "global_default_then_ordinary_exact_then_story_defaults_then_semantic_rows"
+        ),
     }
     if dict(ownership) != expected:
         raise RuntimeError("Story-scope ownership policy differs")
     canonical = set(_canonical_story_ids(root))
-    ordinary = set(load_scope_contract(root)["ordinary_story_ids"])
+    ordinary = set(scope["ordinary_story_ids"])
     if not ordinary < canonical:
         raise RuntimeError("ordinary Story proof is not a strict Canonical subset")
-    return tuple(_list(ownership["default_roles"], "story_scope_ownership roles"))
+    return (
+        tuple(_list(ownership["default_roles"], "story_scope_ownership roles")),
+        tuple(
+            _list(
+                ownership["ordinary_roles"],
+                "story_scope_ownership ordinary roles",
+            )
+        ),
+    )
+
+
+def _ordered_role_union(*role_groups: Sequence[str]) -> list[str]:
+    roles = {role for group in role_groups for role in group}
+    if not roles.issubset(EXPECTED_OWNER_ROLES):
+        raise RuntimeError("expanded CODEOWNERS role is not reviewed")
+    return [role for role in EXPECTED_OWNER_ROLES if role in roles]
 
 
 def _expanded_codeowner_entries(
     contract: Mapping[str, Any], root: Path = REPO_ROOT
 ) -> list[dict[str, Any]]:
-    default_roles = _validate_story_scope_ownership(contract, root)
+    default_roles, ordinary_roles = _validate_story_scope_ownership(contract, root)
     scope = load_scope_contract(root)
     ordinary = set(scope["ordinary_story_ids"])
     raw_static = _list(
@@ -845,7 +872,19 @@ def _expanded_codeowner_entries(
         }
         for row in raw_static
     ]
+    if not static_entries or static_entries[0]["pattern"] != "*":
+        raise RuntimeError("global default CODEOWNER row must be first")
     static_patterns = {str(entry["pattern"]) for entry in static_entries}
+
+    ordinary_paths = set(scope["ordinary_docs_paths"])
+    for paths in scope["ordinary_story_paths"].values():
+        ordinary_paths.update(paths)
+    ordinary_entries = [
+        {"pattern": f"/{path}", "roles": list(ordinary_roles)}
+        for path in sorted(ordinary_paths)
+        if f"/{path}" not in static_patterns
+    ]
+
     derived: list[dict[str, Any]] = []
     for story in _canonical_story_ids(root):
         compact = story.lower().replace("-", "")
@@ -858,10 +897,34 @@ def _expanded_codeowner_entries(
         for pattern in patterns:
             if pattern not in static_patterns:
                 derived.append({"pattern": pattern, "roles": list(default_roles)})
-    patterns = [str(entry["pattern"]) for entry in [*derived, *static_entries]]
+
+    roles_by_pattern: dict[str, set[str]] = {}
+    for category in scope["mandatory_high_risk_categories"].values():
+        for pattern in category["codeowner_patterns"]:
+            roles_by_pattern.setdefault(pattern, set()).update(
+                category["required_roles"]
+            )
+    semantic_entries = [
+        {
+            "pattern": entry["pattern"],
+            "roles": _ordered_role_union(
+                default_roles,
+                entry["roles"],
+                tuple(roles_by_pattern.get(str(entry["pattern"]), set())),
+            ),
+        }
+        for entry in static_entries[1:]
+    ]
+    expanded = [
+        {"pattern": "*", "roles": list(default_roles)},
+        *ordinary_entries,
+        *derived,
+        *semantic_entries,
+    ]
+    patterns = [str(entry["pattern"]) for entry in expanded]
     if len(patterns) != len(set(patterns)):
         raise RuntimeError("expanded CODEOWNERS pattern inventory is duplicated")
-    return [*derived, *static_entries]
+    return expanded
 
 
 def _validate_owner_bindings(
@@ -901,9 +964,9 @@ def _validate_owner_bindings(
         roles = _list(entry["roles"], f"codeowners.entries[{index}].roles")
         if not isinstance(pattern, str) or not pattern:
             raise RuntimeError("CODEOWNERS pattern must be a nonempty string")
-        if pattern == "*":
-            raise RuntimeError("global default CODEOWNER row is forbidden")
-        if not pattern.startswith("/"):
+        if pattern == "*" and index != 0:
+            raise RuntimeError("global default CODEOWNER row must be first")
+        if pattern != "*" and not pattern.startswith("/"):
             raise RuntimeError(f"CODEOWNERS pattern must be root anchored: {pattern}")
         if any(token in pattern for token in ("!", "[", "]", "\\", "#")):
             raise RuntimeError(f"unsupported CODEOWNERS pattern syntax: {pattern}")
@@ -925,6 +988,8 @@ def _validate_owner_bindings(
         entries.append({"pattern": pattern, "roles": list(normalized_roles)})
     if not entries:
         raise RuntimeError("CODEOWNERS cannot be empty")
+    if entries[0]["pattern"] != "*":
+        raise RuntimeError("global default CODEOWNER row must be first")
     if entries[-1]["pattern"] != "/.github/":
         raise RuntimeError("/.github/ must be the last and therefore controlling row")
     observed_entries = tuple(
@@ -954,6 +1019,7 @@ def _validate_owner_bindings(
                 )
 
     scope = load_scope_contract(root)
+    default_roles, ordinary_roles = _validate_story_scope_ownership(contract, root)
     expanded_entries = _expanded_codeowner_entries(contract, root)
     scope_categories = _mapping(
         scope["mandatory_high_risk_categories"], "mandatory high-risk categories"
@@ -977,16 +1043,18 @@ def _validate_owner_bindings(
                 )
 
     for path in _tracked_paths(root):
-        if not high_risk_categories(path, scope):
-            continue
-        required_effective_roles = set(required_owner_roles(path, scope))
+        categories = high_risk_categories(path, scope)
+        if is_proven_ordinary_path(path, scope) and not categories:
+            required_effective_roles = set(ordinary_roles)
+        else:
+            required_effective_roles = set(default_roles) | set(
+                required_owner_roles(path, scope)
+            )
         effective_roles = set(_effective_codeowner_roles(path, expanded_entries))
         if not required_effective_roles or not required_effective_roles.issubset(
             effective_roles
         ):
-            raise RuntimeError(
-                "tracked high-risk path lacks effective CODEOWNERS role coverage"
-            )
+            raise RuntimeError("tracked path lacks effective CODEOWNERS role coverage")
 
     return handles, expanded_entries
 
@@ -1242,11 +1310,13 @@ def render_pull_request_template(contract: Mapping[str, Any], root: Path) -> byt
 - `make dev-check STORY=ST-XXXX [STORIES=ST-XXXX,ST-YYYY] [BASE_REF=<ref>]`:
 - Hosted Base CI at the exact head:
 - Exact-head human approval (required fallback; stale approvals are dismissed):
+- Baseline CODEOWNER routing for every changed path:
 - Independent automated review: `NOT_AVAILABLE_HUMAN_REVIEW_FALLBACK`
 
-## High-risk CODEOWNER review
+## CODEOWNER review
 
-Use `N/A` only when the path family is unchanged, and record the rationale.
+Every changed path retains the Engineering/Security baseline. Use `N/A` for a
+semantic row only when that path family is unchanged, and record the rationale.
 
 | Area                                         | Changed paths or N/A rationale | Required CODEOWNER review  |
 | -------------------------------------------- | ------------------------------ | -------------------------- |
@@ -1272,13 +1342,13 @@ Use `N/A` only when the path family is unchanged, and record the rationale.
 - [ ] Local and hosted CI results are not represented as formal, live, release, staging, or Production evidence
 - [ ] No credential, secret, personal data, production data, or raw provider material is included
 - [ ] Exact-head human approval is present; no in-PR self-review is represented as independent review
-- [ ] High-risk CODEOWNER review is complete, or every row has an `N/A` rationale
+- [ ] Baseline CODEOWNER review is complete; every unchanged semantic row has an `N/A` rationale
 """
     header = (
         "<!-- Generated by scripts/build_st0107_pr_governance.py. Do not edit. -->\n"
         f"<!-- Source contract: {SOURCE_CONTRACT_URI} -->\n"
         f"<!-- Generation command: {GENERATION_COMMAND} -->\n"
-        "<!-- High-risk CODEOWNER and live GitHub evidence cannot be supplied by this template. -->\n\n"
+        "<!-- CODEOWNER and live GitHub evidence cannot be supplied by this template. -->\n\n"
     )
     return (header + rendered).encode("utf-8")
 

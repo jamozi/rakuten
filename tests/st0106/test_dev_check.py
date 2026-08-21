@@ -212,10 +212,10 @@ def test_invalid_story_returns_machine_readable_error(
     }
 
 
-def test_changed_generator_output_runs_owner_check_for_another_story(
+def test_changed_generator_output_runs_owning_story_check(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    (tmp_path / "tests/st0106").mkdir(parents=True)
+    (tmp_path / "tests/st0107").mkdir(parents=True)
     (tmp_path / "generated.json").write_text("{}\n", encoding="utf-8")
     observed: list[tuple[str, list[str]]] = []
 
@@ -238,7 +238,7 @@ def test_changed_generator_output_runs_owner_check_for_another_story(
     }
     result = dev_check.run_checks(
         tmp_path,
-        "ST-0106",
+        "ST-0107",
         "main",
         ["generated.json"],
         config,
@@ -247,6 +247,7 @@ def test_changed_generator_output_runs_owner_check_for_another_story(
     assert "generator-check:ST-0107:1" in [name for name, _ in observed]
     assert "prettier-check-changed" not in [name for name, _ in observed]
     assert result["status"] == "PASSED"
+    assert result["executed_story_suites"] == ["tests/st0107"]
 
 
 def test_private_file_name_never_appears_in_error_receipt(
@@ -327,3 +328,177 @@ def test_story_scope_mismatch_fails_and_explicit_multi_story_is_reported(
     allowed = json.loads(capsys.readouterr().out)
     assert allowed["detected_story_ids"] == ["ST-0106", "ST-0107"]
     assert allowed["declared_story_ids"] == ["ST-0106", "ST-0107"]
+
+
+def test_main_detects_story_from_bound_ordinary_source_path(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    (tmp_path / ".git").mkdir()
+    config = dev_check.load_contract()
+    observed_stories: list[list[str]] = []
+    monkeypatch.setattr(dev_check, "resolve_base_ref", lambda _root, _ref: "main")
+    monkeypatch.setattr(
+        dev_check,
+        "collect_changed_paths",
+        lambda _root, _base: (["python/raos/domain/portfolio/workflow.py"], 0),
+    )
+    monkeypatch.setattr(dev_check, "load_contract", lambda _root: config)
+
+    def pass_checks(*_args: object, **kwargs: object) -> dict[str, str]:
+        stories = kwargs["stories"]
+        assert isinstance(stories, list)
+        observed_stories.append(stories)
+        return {"schema": "RAOS_DEV_CHECK_V1", "status": "PASSED"}
+
+    monkeypatch.setattr(dev_check, "run_checks", pass_checks)
+
+    assert (
+        dev_check.main(["--repository-root", str(tmp_path), "--story", "ST-0501"]) == 0
+    )
+    receipt = json.loads(capsys.readouterr().out)
+    assert receipt["detected_story_ids"] == ["ST-0501"]
+    assert receipt["declared_story_ids"] == ["ST-0501"]
+    assert observed_stories == [["ST-0501"]]
+
+
+def test_main_bound_source_and_other_story_test_require_full_declared_scope(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    (tmp_path / ".git").mkdir()
+    config = dev_check.load_contract()
+    paths = [
+        "python/raos/domain/portfolio/workflow.py",
+        "tests/st0503/test_normalization.py",
+    ]
+    monkeypatch.setattr(dev_check, "resolve_base_ref", lambda _root, _ref: "main")
+    monkeypatch.setattr(
+        dev_check,
+        "collect_changed_paths",
+        lambda _root, _base: (paths, 0),
+    )
+    monkeypatch.setattr(dev_check, "load_contract", lambda _root: config)
+
+    assert (
+        dev_check.main(["--repository-root", str(tmp_path), "--story", "ST-0503"]) == 2
+    )
+    mismatch = json.loads(capsys.readouterr().out)
+    assert mismatch["reason"] == "changed_story_scope_mismatch"
+    assert mismatch["detected_story_ids"] == ["ST-0501", "ST-0503"]
+    assert mismatch["declared_story_ids"] == ["ST-0503"]
+
+    observed_stories: list[list[str]] = []
+
+    def pass_checks(*_args: object, **kwargs: object) -> dict[str, str]:
+        stories = kwargs["stories"]
+        assert isinstance(stories, list)
+        observed_stories.append(stories)
+        return {"schema": "RAOS_DEV_CHECK_V1", "status": "PASSED"}
+
+    monkeypatch.setattr(dev_check, "run_checks", pass_checks)
+    assert (
+        dev_check.main(
+            [
+                "--repository-root",
+                str(tmp_path),
+                "--story",
+                "ST-0501",
+                "--stories",
+                "ST-0501,ST-0503",
+            ]
+        )
+        == 0
+    )
+    allowed = json.loads(capsys.readouterr().out)
+    assert allowed["detected_story_ids"] == ["ST-0501", "ST-0503"]
+    assert allowed["declared_story_ids"] == ["ST-0501", "ST-0503"]
+    assert observed_stories == [["ST-0501", "ST-0503"]]
+
+
+def test_main_generator_output_requires_owning_story_declaration(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    (tmp_path / ".git").mkdir()
+    config = dev_check.load_contract()
+    monkeypatch.setattr(dev_check, "resolve_base_ref", lambda _root, _ref: "main")
+    monkeypatch.setattr(
+        dev_check,
+        "collect_changed_paths",
+        lambda _root, _base: ([".github/CODEOWNERS"], 0),
+    )
+    monkeypatch.setattr(dev_check, "load_contract", lambda _root: config)
+
+    assert (
+        dev_check.main(["--repository-root", str(tmp_path), "--story", "ST-0106"]) == 2
+    )
+    mismatch = json.loads(capsys.readouterr().out)
+    assert mismatch["reason"] == "changed_story_scope_mismatch"
+    assert mismatch["detected_story_ids"] == ["ST-0107"]
+    assert mismatch["declared_story_ids"] == ["ST-0106"]
+
+
+def test_main_generator_output_and_ordinary_test_run_both_story_suites(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    (tmp_path / ".git").mkdir()
+    (tmp_path / ".github").mkdir()
+    (tmp_path / ".github/CODEOWNERS").write_text("generated\n", encoding="utf-8")
+    test_file = tmp_path / "tests/st0501/test_workflow.py"
+    test_file.parent.mkdir(parents=True)
+    test_file.write_text("def test_placeholder(): pass\n", encoding="utf-8")
+    (tmp_path / "tests/st0107").mkdir()
+    config = dev_check.load_contract()
+    observed: list[str] = []
+
+    def record(self: dev_check.StepRunner, name: str, command: list[str]) -> None:
+        observed.append(name)
+        self.executed.append(
+            {
+                "name": name,
+                "command": list(command),
+                "status": "passed",
+                "returncode": 0,
+            }
+        )
+
+    monkeypatch.setattr(dev_check.StepRunner, "run", record)
+    monkeypatch.setattr(dev_check, "resolve_base_ref", lambda _root, _ref: "main")
+    monkeypatch.setattr(
+        dev_check,
+        "collect_changed_paths",
+        lambda _root, _base: (
+            [".github/CODEOWNERS", "tests/st0501/test_workflow.py"],
+            0,
+        ),
+    )
+    monkeypatch.setattr(dev_check, "load_contract", lambda _root: config)
+
+    assert (
+        dev_check.main(
+            [
+                "--repository-root",
+                str(tmp_path),
+                "--story",
+                "ST-0501",
+                "--stories",
+                "ST-0107,ST-0501",
+            ]
+        )
+        == 0
+    )
+    receipt = json.loads(capsys.readouterr().out)
+    assert receipt["detected_story_ids"] == ["ST-0107", "ST-0501"]
+    assert receipt["declared_story_ids"] == ["ST-0107", "ST-0501"]
+    assert receipt["executed_story_suites"] == ["tests/st0107", "tests/st0501"]
+    assert [name for name in observed if name.startswith("pytest:")] == [
+        "pytest:tests/st0107",
+        "pytest:tests/st0501",
+    ]
+    assert "generator-check:ST-0107:1" in observed

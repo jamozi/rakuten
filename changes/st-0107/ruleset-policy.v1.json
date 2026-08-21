@@ -77,6 +77,7 @@
           "/changes/**/generated/",
           "/python/raos/generated/",
           "/packages/web-contracts/src/generated/",
+          "/scripts/contract_validation_resources/",
           "/scripts/*contract*",
           "/scripts/*codegen*",
           "/tests/st0104/",
@@ -118,6 +119,8 @@
           "/changes/st-1603/",
           "/python/raos/domain/http/",
           "/python/raos/application/http/",
+          "/python/raos/**/rakuten_live_smoke.py",
+          "/scripts/*rakuten_live_smoke*",
           "/scripts/*security*",
           "/tests/security/",
           "/tests/st04*/",
@@ -156,6 +159,8 @@
           "/python/raos/adapters/",
           "/python/raos/ports/*provider*",
           "/python/raos/domain/ai/provider.py",
+          "/python/raos/**/rakuten_live_smoke.py",
+          "/scripts/*rakuten_live_smoke*",
           "/scripts/*provider*"
         ],
         "roles": ["operations", "security"]

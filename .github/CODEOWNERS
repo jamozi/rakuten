@@ -3,6 +3,42 @@
 # Generation command: uv run --locked --no-sync python scripts/build_st0107_pr_governance.py
 # Owner binding status: UNVERIFIED_PLACEHOLDERS (@raos/* canonical placeholders).
 # Do not enforce until every team is visible and has repository write access.
+* @raos/engineering @raos/security
+/README.md @raos/engineering
+/changes/st-0501/README.md @raos/engineering
+/changes/st-0503/README.md @raos/engineering
+/changes/st-0506/README.md @raos/engineering
+/changes/st-0606/README.md @raos/engineering
+/changes/st-1105/README.md @raos/engineering
+/packages/web-ui/src/admin-visual-accessibility-acceptance.ts @raos/engineering
+/packages/web-ui/src/evidence-workspace.ts @raos/engineering
+/packages/web-ui/src/portfolio-catalog-workspace.ts @raos/engineering
+/python/raos/application/catalog/catalog_normalization.py @raos/engineering
+/python/raos/application/portfolio/workflow.py @raos/engineering
+/python/raos/domain/catalog/catalog_normalization.py @raos/engineering
+/python/raos/domain/portfolio/workflow.py @raos/engineering
+/python/raos/ports/catalog_normalization.py @raos/engineering
+/python/raos/ports/portfolio_workflow.py @raos/engineering
+/tests/st0501/conftest.py @raos/engineering
+/tests/st0501/test_boundaries.py @raos/engineering
+/tests/st0501/test_workflow.py @raos/engineering
+/tests/st0503/conftest.py @raos/engineering
+/tests/st0503/test_boundaries.py @raos/engineering
+/tests/st0503/test_failure_isolation.py @raos/engineering
+/tests/st0503/test_normalization.py @raos/engineering
+/tests/st0506/portfolio-catalog-accessibility-concurrency.test.ts @raos/engineering
+/tests/st0506/portfolio-catalog-contract.test.ts @raos/engineering
+/tests/st0506/portfolio-catalog-model.test.ts @raos/engineering
+/tests/st0506/portfolio-catalog-negative.test.ts @raos/engineering
+/tests/st0606/evidence-workspace-accessibility.test.ts @raos/engineering
+/tests/st0606/evidence-workspace-contract.test.ts @raos/engineering
+/tests/st0606/evidence-workspace-model.test.ts @raos/engineering
+/tests/st0606/evidence-workspace-negative.test.ts @raos/engineering
+/tests/st1105/admin-visual-accessibility-accessibility.test.ts @raos/engineering
+/tests/st1105/admin-visual-accessibility-boundaries.test.ts @raos/engineering
+/tests/st1105/admin-visual-accessibility-contract.test.ts @raos/engineering
+/tests/st1105/admin-visual-accessibility-model.test.ts @raos/engineering
+/tests/st1105/admin-visual-accessibility-negative.test.ts @raos/engineering
 /changes/st-0001/ @raos/engineering @raos/security
 /tests/st0001*/ @raos/engineering @raos/security
 /scripts/*st0001* @raos/engineering @raos/security
@@ -375,103 +411,106 @@
 /changes/st-1908/ @raos/engineering @raos/security
 /tests/st1908*/ @raos/engineering @raos/security
 /scripts/*st1908* @raos/engineering @raos/security
-/contracts/ @raos/architecture @raos/engineering
-/migrations/ @raos/data @raos/security
-/infra/ @raos/operations @raos/security
-/apps/admin/ @raos/editorial @raos/security
-/apps/public/ @raos/editorial @raos/accessibility
-/apps/web/ @raos/editorial @raos/security @raos/accessibility
-/packages/ai/ @raos/ai @raos/security @raos/editorial
-/packages/finance/ @raos/finance @raos/security
-/python/raos/domain/ai/ @raos/ai @raos/security @raos/editorial
-/python/raos/domain/finance/ @raos/finance @raos/security
-/docs/canonical/ @raos/architecture
-/docs/upstream/ @raos/architecture
-/changes/*/contracts/ @raos/architecture @raos/engineering
-/changes/**/generated/ @raos/architecture @raos/engineering
-/python/raos/generated/ @raos/architecture @raos/engineering
-/packages/web-contracts/src/generated/ @raos/architecture @raos/engineering
-/scripts/*contract* @raos/architecture @raos/engineering
-/scripts/*codegen* @raos/architecture @raos/engineering
-/tests/st0104/ @raos/architecture @raos/engineering
-/tests/st0105/ @raos/architecture @raos/engineering
-/changes/*/database/ @raos/data @raos/security
-/changes/st-0301/ @raos/data @raos/security
-/python/raos/migrations/ @raos/data @raos/security
-/scripts/*migration* @raos/data @raos/security
-/tests/st0301/ @raos/data @raos/security
-/python/raos/application/finance/ @raos/finance @raos/security
-/python/raos/domain/publishing/ @raos/editorial @raos/security
-/python/raos/application/publishing/ @raos/editorial @raos/security
-/scripts/*finance* @raos/finance @raos/security
-/scripts/*publication* @raos/editorial @raos/security
-/scripts/*kill_switch* @raos/operations @raos/security
-/packages/**/*finance* @raos/finance @raos/security
-/packages/**/*publication* @raos/editorial @raos/security
-/tests/st09*/ @raos/editorial @raos/security
-/docker-compose.yml @raos/operations @raos/security
-/scripts/build_local_compose.py @raos/operations @raos/security
-/scripts/*deploy* @raos/operations @raos/security
-/scripts/*storage* @raos/operations @raos/security
-/scripts/*postgres* @raos/operations @raos/security
-/python/raos/adapters/ @raos/operations @raos/security
-/python/raos/ports/*provider* @raos/operations @raos/security
-/python/raos/domain/ai/provider.py @raos/ai @raos/editorial @raos/operations @raos/security
-/scripts/*provider* @raos/operations @raos/security
-/python/raos/domain/iam/ @raos/security @raos/architecture
-/python/raos/application/iam/ @raos/security @raos/engineering
-/python/raos/ports/*authorization* @raos/security @raos/architecture
-/python/raos/ports/*credential* @raos/security @raos/architecture
-/python/raos/adapters/*credential* @raos/security @raos/operations
-/python/raos/adapters/*oauth* @raos/security @raos/operations
-/scripts/*auth* @raos/security @raos/operations
-/scripts/*credential* @raos/security @raos/operations
-/scripts/*secret* @raos/security @raos/engineering
-/scripts/run_network_denied.sh @raos/security @raos/engineering
-/scripts/assert_network_denied.py @raos/security @raos/engineering
-/docs/canonical/04_security/ @raos/security @raos/architecture
-/tests/security/ @raos/security @raos/engineering
-/changes/st-04*/ @raos/security @raos/engineering
-/changes/st-1603/ @raos/security @raos/operations
-/python/raos/domain/http/ @raos/security @raos/architecture
-/python/raos/application/http/ @raos/security @raos/engineering
-/scripts/*security* @raos/security @raos/engineering
-/tests/st04*/ @raos/security @raos/engineering
-/tests/st1603/ @raos/security @raos/operations
-/.codex/ @raos/security @raos/operations
-/AGENTS.md @raos/security @raos/operations
-/Makefile @raos/security @raos/operations
-/package.json @raos/security @raos/operations
-/package-lock.json @raos/security @raos/operations
-/pyproject.toml @raos/security @raos/operations
-/uv.lock @raos/security @raos/operations
-/uv.toml @raos/security @raos/operations
-/workspace-layout.json @raos/security @raos/operations
-/changes/st-0005/ @raos/security @raos/operations
-/changes/st-0106/ @raos/security @raos/operations
-/changes/st-0107/ @raos/security @raos/operations
-/docs/architecture/ST-0107-github-governance-snapshot.yaml @raos/security @raos/operations
-/docs/execplans/ST-0107.md @raos/security @raos/operations
-/docs/worklogs/ST-0107.md @raos/security @raos/operations
-/scripts/build_st0005_status.py @raos/security @raos/operations
-/scripts/build_st0107_pr_governance.py @raos/security @raos/operations
-/scripts/classify_ci_scope.py @raos/security @raos/operations
-/scripts/ci_job.sh @raos/security @raos/operations
-/scripts/dev_check.py @raos/security @raos/operations
-/scripts/github_ruleset_operator.py @raos/security @raos/operations
-/scripts/node_toolchain.sh @raos/security @raos/operations
-/scripts/python_toolchain.sh @raos/security @raos/operations
-/tests/st0005/ @raos/security @raos/operations
-/tests/st0106/ @raos/security @raos/operations
-/tests/st0107/ @raos/security @raos/operations
-/changes/st-0005/contracts/ @raos/architecture @raos/engineering @raos/security @raos/operations
-/changes/st-0005/generated/ @raos/architecture @raos/engineering @raos/security @raos/operations
-/changes/st-0106/contracts/ @raos/architecture @raos/engineering @raos/security @raos/operations
-/changes/st-0106/generated/ @raos/architecture @raos/engineering @raos/security @raos/operations
-/changes/st-0107/contracts/ @raos/architecture @raos/engineering @raos/security @raos/operations
-/changes/st-0107/generated/ @raos/architecture @raos/engineering @raos/security @raos/operations
-/changes/st-0301/contracts/ @raos/architecture @raos/engineering @raos/data @raos/security
-/changes/st-0301/generated/ @raos/architecture @raos/engineering @raos/data @raos/security
-/changes/st-1603/contracts/ @raos/architecture @raos/engineering @raos/security @raos/operations
-/changes/st-1603/generated/ @raos/architecture @raos/engineering @raos/security @raos/operations
-/.github/ @raos/security @raos/operations
+/contracts/ @raos/architecture @raos/engineering @raos/security
+/migrations/ @raos/data @raos/engineering @raos/security
+/infra/ @raos/engineering @raos/operations @raos/security
+/apps/admin/ @raos/editorial @raos/engineering @raos/security
+/apps/public/ @raos/accessibility @raos/editorial @raos/engineering @raos/security
+/apps/web/ @raos/accessibility @raos/editorial @raos/engineering @raos/security
+/packages/ai/ @raos/ai @raos/editorial @raos/engineering @raos/security
+/packages/finance/ @raos/engineering @raos/finance @raos/security
+/python/raos/domain/ai/ @raos/ai @raos/editorial @raos/engineering @raos/security
+/python/raos/domain/finance/ @raos/engineering @raos/finance @raos/security
+/docs/canonical/ @raos/architecture @raos/engineering @raos/security
+/docs/upstream/ @raos/architecture @raos/engineering @raos/security
+/changes/*/contracts/ @raos/architecture @raos/engineering @raos/security
+/changes/**/generated/ @raos/architecture @raos/engineering @raos/security
+/python/raos/generated/ @raos/architecture @raos/engineering @raos/security
+/packages/web-contracts/src/generated/ @raos/architecture @raos/engineering @raos/security
+/scripts/contract_validation_resources/ @raos/architecture @raos/engineering @raos/security
+/scripts/*contract* @raos/architecture @raos/engineering @raos/security
+/scripts/*codegen* @raos/architecture @raos/engineering @raos/security
+/tests/st0104/ @raos/architecture @raos/engineering @raos/security
+/tests/st0105/ @raos/architecture @raos/engineering @raos/security
+/changes/*/database/ @raos/data @raos/engineering @raos/security
+/changes/st-0301/ @raos/data @raos/engineering @raos/security
+/python/raos/migrations/ @raos/data @raos/engineering @raos/security
+/scripts/*migration* @raos/data @raos/engineering @raos/security
+/tests/st0301/ @raos/data @raos/engineering @raos/security
+/python/raos/application/finance/ @raos/engineering @raos/finance @raos/security
+/python/raos/domain/publishing/ @raos/editorial @raos/engineering @raos/security
+/python/raos/application/publishing/ @raos/editorial @raos/engineering @raos/security
+/scripts/*finance* @raos/engineering @raos/finance @raos/security
+/scripts/*publication* @raos/editorial @raos/engineering @raos/security
+/scripts/*kill_switch* @raos/engineering @raos/operations @raos/security
+/packages/**/*finance* @raos/engineering @raos/finance @raos/security
+/packages/**/*publication* @raos/editorial @raos/engineering @raos/security
+/tests/st09*/ @raos/editorial @raos/engineering @raos/security
+/docker-compose.yml @raos/engineering @raos/operations @raos/security
+/scripts/build_local_compose.py @raos/engineering @raos/operations @raos/security
+/scripts/*deploy* @raos/engineering @raos/operations @raos/security
+/scripts/*storage* @raos/engineering @raos/operations @raos/security
+/scripts/*postgres* @raos/engineering @raos/operations @raos/security
+/python/raos/adapters/ @raos/engineering @raos/operations @raos/security
+/python/raos/ports/*provider* @raos/engineering @raos/operations @raos/security
+/python/raos/domain/ai/provider.py @raos/ai @raos/editorial @raos/engineering @raos/operations @raos/security
+/python/raos/**/rakuten_live_smoke.py @raos/engineering @raos/operations @raos/security
+/scripts/*rakuten_live_smoke* @raos/engineering @raos/operations @raos/security
+/scripts/*provider* @raos/engineering @raos/operations @raos/security
+/python/raos/domain/iam/ @raos/architecture @raos/engineering @raos/security
+/python/raos/application/iam/ @raos/engineering @raos/security
+/python/raos/ports/*authorization* @raos/architecture @raos/engineering @raos/security
+/python/raos/ports/*credential* @raos/architecture @raos/engineering @raos/security
+/python/raos/adapters/*credential* @raos/engineering @raos/operations @raos/security
+/python/raos/adapters/*oauth* @raos/engineering @raos/operations @raos/security
+/scripts/*auth* @raos/engineering @raos/operations @raos/security
+/scripts/*credential* @raos/engineering @raos/operations @raos/security
+/scripts/*secret* @raos/engineering @raos/security
+/scripts/run_network_denied.sh @raos/engineering @raos/security
+/scripts/assert_network_denied.py @raos/engineering @raos/security
+/docs/canonical/04_security/ @raos/architecture @raos/engineering @raos/security
+/tests/security/ @raos/engineering @raos/security
+/changes/st-04*/ @raos/engineering @raos/security
+/changes/st-1603/ @raos/engineering @raos/operations @raos/security
+/python/raos/domain/http/ @raos/architecture @raos/engineering @raos/security
+/python/raos/application/http/ @raos/engineering @raos/security
+/scripts/*security* @raos/engineering @raos/security
+/tests/st04*/ @raos/engineering @raos/security
+/tests/st1603/ @raos/engineering @raos/operations @raos/security
+/.codex/ @raos/engineering @raos/operations @raos/security
+/AGENTS.md @raos/engineering @raos/operations @raos/security
+/Makefile @raos/engineering @raos/operations @raos/security
+/package.json @raos/engineering @raos/operations @raos/security
+/package-lock.json @raos/engineering @raos/operations @raos/security
+/pyproject.toml @raos/engineering @raos/operations @raos/security
+/uv.lock @raos/engineering @raos/operations @raos/security
+/uv.toml @raos/engineering @raos/operations @raos/security
+/workspace-layout.json @raos/engineering @raos/operations @raos/security
+/changes/st-0005/ @raos/engineering @raos/operations @raos/security
+/changes/st-0106/ @raos/engineering @raos/operations @raos/security
+/changes/st-0107/ @raos/engineering @raos/operations @raos/security
+/docs/architecture/ST-0107-github-governance-snapshot.yaml @raos/engineering @raos/operations @raos/security
+/docs/execplans/ST-0107.md @raos/engineering @raos/operations @raos/security
+/docs/worklogs/ST-0107.md @raos/engineering @raos/operations @raos/security
+/scripts/build_st0005_status.py @raos/engineering @raos/operations @raos/security
+/scripts/build_st0107_pr_governance.py @raos/engineering @raos/operations @raos/security
+/scripts/classify_ci_scope.py @raos/engineering @raos/operations @raos/security
+/scripts/ci_job.sh @raos/engineering @raos/operations @raos/security
+/scripts/dev_check.py @raos/engineering @raos/operations @raos/security
+/scripts/github_ruleset_operator.py @raos/engineering @raos/operations @raos/security
+/scripts/node_toolchain.sh @raos/engineering @raos/operations @raos/security
+/scripts/python_toolchain.sh @raos/engineering @raos/operations @raos/security
+/tests/st0005/ @raos/engineering @raos/operations @raos/security
+/tests/st0106/ @raos/engineering @raos/operations @raos/security
+/tests/st0107/ @raos/engineering @raos/operations @raos/security
+/changes/st-0005/contracts/ @raos/architecture @raos/engineering @raos/operations @raos/security
+/changes/st-0005/generated/ @raos/architecture @raos/engineering @raos/operations @raos/security
+/changes/st-0106/contracts/ @raos/architecture @raos/engineering @raos/operations @raos/security
+/changes/st-0106/generated/ @raos/architecture @raos/engineering @raos/operations @raos/security
+/changes/st-0107/contracts/ @raos/architecture @raos/engineering @raos/operations @raos/security
+/changes/st-0107/generated/ @raos/architecture @raos/engineering @raos/operations @raos/security
+/changes/st-0301/contracts/ @raos/architecture @raos/data @raos/engineering @raos/security
+/changes/st-0301/generated/ @raos/architecture @raos/data @raos/engineering @raos/security
+/changes/st-1603/contracts/ @raos/architecture @raos/engineering @raos/operations @raos/security
+/changes/st-1603/generated/ @raos/architecture @raos/engineering @raos/operations @raos/security
+/.github/ @raos/engineering @raos/operations @raos/security

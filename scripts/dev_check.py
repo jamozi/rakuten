@@ -21,9 +21,9 @@ if os.fspath(SCRIPT_ROOT) not in sys.path:
 
 from classify_ci_scope import (  # noqa: E402
     ClassificationError,
+    detected_story_ids,
     load_contract,
     normalize_path,
-    story_ids,
 )
 
 
@@ -482,7 +482,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return 2
         config = load_contract(root)
-        detected = story_ids(paths, config["story_path_patterns"])
+        detected = detected_story_ids(paths, config)
         declared = declared_story_ids(args.story, args.stories)
         if detected != declared:
             raise DeveloperCheckScopeError(detected, declared)

@@ -40,6 +40,8 @@ owner_bindings:
     security: '@raos/security'
 codeowners:
   entries:
+    - pattern: '*'
+      roles: [engineering, security]
     - pattern: /contracts/
       roles: [architecture, engineering]
     - pattern: /migrations/
@@ -71,6 +73,8 @@ codeowners:
     - pattern: /python/raos/generated/
       roles: [architecture, engineering]
     - pattern: /packages/web-contracts/src/generated/
+      roles: [architecture, engineering]
+    - pattern: /scripts/contract_validation_resources/
       roles: [architecture, engineering]
     - pattern: /scripts/*contract*
       roles: [architecture, engineering]
@@ -124,6 +128,10 @@ codeowners:
       roles: [operations, security]
     - pattern: /python/raos/domain/ai/provider.py
       roles: [ai, editorial, operations, security]
+    - pattern: /python/raos/**/rakuten_live_smoke.py
+      roles: [operations, security]
+    - pattern: /scripts/*rakuten_live_smoke*
+      roles: [operations, security]
     - pattern: /scripts/*provider*
       roles: [operations, security]
     - pattern: /python/raos/domain/iam/
@@ -244,7 +252,8 @@ story_scope_ownership:
   scope_contract: repo://changes/st-0106/contracts/developer-loop-scope.v1.json
   canonical_story_source: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
   default_roles: [engineering, security]
-  ordering: derived_story_defaults_before_path_specific_rows
+  ordinary_roles: [engineering]
+  ordering: global_default_then_ordinary_exact_then_story_defaults_then_semantic_rows
 pull_request_template:
   canonical_source: repo://docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md
   required_owner_categories:
@@ -313,6 +322,7 @@ ruleset_policy:
         - /changes/**/generated/
         - /python/raos/generated/
         - /packages/web-contracts/src/generated/
+        - /scripts/contract_validation_resources/
         - /scripts/*contract*
         - /scripts/*codegen*
         - /tests/st0104/
@@ -348,6 +358,8 @@ ruleset_policy:
         - /changes/st-1603/
         - /python/raos/domain/http/
         - /python/raos/application/http/
+        - /python/raos/**/rakuten_live_smoke.py
+        - /scripts/*rakuten_live_smoke*
         - /scripts/*security*
         - /tests/security/
         - /tests/st04*/
@@ -380,6 +392,8 @@ ruleset_policy:
         - /python/raos/adapters/
         - /python/raos/ports/*provider*
         - /python/raos/domain/ai/provider.py
+        - /python/raos/**/rakuten_live_smoke.py
+        - /scripts/*rakuten_live_smoke*
         - /scripts/*provider*
       roles: [operations, security]
     governance_ci_status:
