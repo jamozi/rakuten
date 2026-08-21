@@ -428,9 +428,13 @@ def test_regular_file_rejects_postopen_leaf_swap_without_reading_symlink_target(
         return descriptor
 
     monkeypatch.setattr(generator.os, "open", open_then_swap)
-    with pytest.raises(RuntimeError, match="changed while being read"):
+    with pytest.raises(RuntimeError) as raised:
         generator._regular_file(repository, relative, "source")
 
+    assert str(raised.value) in {
+        "source size or type is invalid",
+        "source changed while being read",
+    }
     assert swapped is True
     assert held.read_bytes() == b"inside"
     assert outside.read_bytes() == b"outside"
