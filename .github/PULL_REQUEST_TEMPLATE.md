@@ -2,6 +2,7 @@
 <!-- Source contract: repo://changes/st-0107/contracts/pr-governance.v1.yaml -->
 <!-- Generation command: uv run --locked --no-sync python scripts/build_st0107_pr_governance.py -->
 <!-- High-risk CODEOWNER and live GitHub evidence cannot be supplied by this template. -->
+
 ## Story or slice
 
 - Story ID or named integration slice:
@@ -23,13 +24,13 @@
 
 Use `N/A` only when the path family is unchanged, and record the rationale.
 
-| Area | Changed paths or N/A rationale | Required CODEOWNER review |
-|---|---|---|
-| Contract / generated types |  | Architecture / Engineering |
-| Migration / database |  | Data / Security |
-| Authentication / secrets / security |  | Security |
-| Deployment / infrastructure / provider runtime |  | Operations / Security |
-| Governance / CI (`.github/**`) |  | Security / Operations |
+| Area                                           | Changed paths or N/A rationale | Required CODEOWNER review  |
+| ---------------------------------------------- | ------------------------------ | -------------------------- |
+| Contract / generated types                     |                                | Architecture / Engineering |
+| Migration / database                           |                                | Data / Security            |
+| Authentication / secrets / security            |                                | Security                   |
+| Deployment / infrastructure / provider runtime |                                | Operations / Security      |
+| Governance / CI (`.github/**`)                 |                                | Security / Operations      |
 
 ## Deferred formal or live work
 

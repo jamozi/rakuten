@@ -198,14 +198,23 @@ def test_pull_request_template_captures_the_short_development_loop(
         "## Evidence boundary",
     ):
         assert rendered.count(heading) == 1
+    table_rows = {
+        tuple(cell.strip() for cell in line.strip("|").split("|"))
+        for line in rendered.splitlines()
+        if line.startswith("|")
+    }
     for row in (
-        "| Contract / generated types |  | Architecture / Engineering |",
-        "| Migration / database |  | Data / Security |",
-        "| Authentication / secrets / security |  | Security |",
-        "| Deployment / infrastructure / provider runtime |  | Operations / Security |",
-        "| Governance / CI (`.github/**`) |  | Security / Operations |",
+        ("Contract / generated types", "", "Architecture / Engineering"),
+        ("Migration / database", "", "Data / Security"),
+        ("Authentication / secrets / security", "", "Security"),
+        (
+            "Deployment / infrastructure / provider runtime",
+            "",
+            "Operations / Security",
+        ),
+        ("Governance / CI (`.github/**`)", "", "Security / Operations"),
     ):
-        assert row in rendered
+        assert row in table_rows
     assert "`make dev-check STORY=ST-XXXX [BASE_REF=<ref>]`" in rendered
     assert "- Hosted Base CI at the exact head:" in rendered
     assert "- Independent automated review:" in rendered
@@ -297,6 +306,9 @@ def test_architecture_snapshot_is_strictly_parsed_and_hash_pinned() -> None:
     assert snapshot["local_candidate"]["remote_mutation_scope"] == "GENERATOR_ONLY"
     assert snapshot["bounded_operator"]["repository"] == "jamozi/rakuten"
     assert snapshot["bounded_operator"]["api_origin"] == "https://api.github.com"
+    assert snapshot["bounded_operator"]["live_mutation_activation"] == (
+        "DISABLED_PENDING_REVIEWED_ACTIVATION_CONTRACT"
+    )
     assert snapshot["bounded_operator"]["owner_bindings"] == ("UNVERIFIED_PLACEHOLDERS")
     assert snapshot["bounded_operator"]["mutation_with_unverified_owner_bindings"] == (
         "FORBIDDEN"

@@ -88,6 +88,7 @@ bounded_operator:
   default_branch: main
   rest_api_version: '2026-03-10'
   commands: [status, plan, apply, rollback]
+  live_mutation_activation: DISABLED_PENDING_REVIEWED_ACTIVATION_CONTRACT
   token_file_environment: RAOS_GITHUB_RULESET_TOKEN_FILE
   token_file_mode: '0600'
   plan_binding: POLICY_COMMIT_POLICY_HASH_LIVE_BEFORE_HASH_DESIRED_HASH

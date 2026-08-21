@@ -70,6 +70,7 @@ class FakeTransport:
         self.mutation_count = 0
         self.ambiguous_once = False
         self.readback_mismatch_once = False
+        self.reported_check_total: int | None = None
 
     def _inventory(self) -> list[dict[str, Any]]:
         rows = deepcopy(self.extra_inventory)
@@ -105,7 +106,14 @@ class FakeTransport:
         if method == "GET" and path == operator.MAIN_COMMIT_PATH:
             return {"sha": self.main_sha}
         if method == "GET" and path == operator.CHECK_RUNS_PATH:
-            return {"check_runs": deepcopy(self.check_runs)}
+            return {
+                "total_count": (
+                    len(self.check_runs)
+                    if self.reported_check_total is None
+                    else self.reported_check_total
+                ),
+                "check_runs": deepcopy(self.check_runs),
+            }
         if method == "GET" and path == operator.RULESET_INVENTORY_PATH:
             return self._inventory()
         if method == "GET" and path == operator.EFFECTIVE_RULES_PATH:
@@ -207,8 +215,13 @@ def test_plan_is_private_and_fails_on_duplicate_or_missing_check_binding(
     assert record["plan"]["live_before_sha256"]
     assert record["plan"]["desired_sha256"]
     assert record["plan"]["rollback"]["kind"] == "disable_created"
+    assert record["plan"]["rollback"]["payload"]["enforcement"] == "disabled"
     assert record["plan"]["operation"]["method"] == "POST"
-    assert operator.load_operator_contract(root)["github"]["owner"] == "jamozi"
+    contract = operator.load_operator_contract(root)
+    assert contract["github"]["owner"] == "jamozi"
+    assert contract["mutation_boundary"]["live_mutation_activation"] == (
+        "DISABLED_PENDING_REVIEWED_ACTIVATION_CONTRACT"
+    )
 
     duplicate = FakeTransport()
     duplicate.extra_inventory = [
@@ -235,6 +248,25 @@ def test_plan_is_private_and_fails_on_duplicate_or_missing_check_binding(
     with pytest.raises(operator.OperatorError, match="CHECK_BINDING_MISSING"):
         operator.status_operation(missing)
 
+    incomplete = FakeTransport()
+    incomplete.extra_inventory = [
+        {
+            "id": index + 1,
+            "name": f"unrelated-{index}",
+            "source": operator.REPOSITORY_FULL_NAME,
+            "source_type": "Repository",
+            "enforcement": "active",
+        }
+        for index in range(100)
+    ]
+    with pytest.raises(operator.OperatorError, match="RULESET_INVENTORY_INCOMPLETE"):
+        operator.status_operation(incomplete)
+
+    incomplete_checks = FakeTransport()
+    incomplete_checks.reported_check_total = len(incomplete_checks.check_runs) + 1
+    with pytest.raises(operator.OperatorError, match="CHECK_BINDINGS_INCOMPLETE"):
+        operator.status_operation(incomplete_checks)
+
 
 def test_status_validates_operator_contract_before_transport(tmp_path: Path) -> None:
     root = _repository_root(tmp_path)
@@ -245,16 +277,11 @@ def test_status_validates_operator_contract_before_transport(tmp_path: Path) -> 
     assert fake.calls == []
 
 
-def test_apply_refuses_plan_hash_and_live_main_drift_without_mutation(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_apply_and_rollback_are_hard_disabled_before_transport(tmp_path: Path) -> None:
     fake = FakeTransport()
-    root, private_root, plan = _plan(tmp_path, fake)
-    monkeypatch.setattr(operator, "current_policy_commit", lambda _root: COMMIT)
-    monkeypatch.setattr(
-        operator, "_require_verified_owner_bindings", lambda _root: None
-    )
-    with pytest.raises(operator.OperatorError, match="PLAN_HASH_MISMATCH"):
+    root = _repository_root(tmp_path)
+    private_root = tmp_path / "private"
+    with pytest.raises(operator.OperatorError, match="LIVE_MUTATION_DISABLED"):
         operator.apply_plan(
             fake,
             run_id=RUN_ID,
@@ -262,114 +289,15 @@ def test_apply_refuses_plan_hash_and_live_main_drift_without_mutation(
             root=root,
             private_root=private_root,
         )
-    assert fake.mutation_count == 0
-    fake.main_sha = "c" * 40
-    with pytest.raises(operator.OperatorError, match="LIVE_BEFORE_DRIFT"):
-        operator.apply_plan(
+    with pytest.raises(operator.OperatorError, match="LIVE_MUTATION_DISABLED"):
+        operator.rollback_plan(
             fake,
             run_id=RUN_ID,
-            plan_sha256=plan["plan_sha256"],
             root=root,
             private_root=private_root,
         )
+    assert fake.calls == []
     assert fake.mutation_count == 0
-
-
-def test_ambiguous_apply_is_not_retried_and_uses_get_only_reconciliation(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    fake = FakeTransport()
-    root, private_root, plan = _plan(tmp_path, fake)
-    monkeypatch.setattr(operator, "current_policy_commit", lambda _root: COMMIT)
-    monkeypatch.setattr(
-        operator, "_require_verified_owner_bindings", lambda _root: None
-    )
-    fake.ambiguous_once = True
-    result = operator.apply_plan(
-        fake,
-        run_id=RUN_ID,
-        plan_sha256=plan["plan_sha256"],
-        root=root,
-        private_root=private_root,
-    )
-    assert result["status"] == "RECONCILED"
-    assert fake.mutation_count == 1
-    mutation_index = next(
-        index for index, call in enumerate(fake.calls) if call[0] in {"POST", "PUT"}
-    )
-    assert all(call[0] == "GET" for call in fake.calls[mutation_index + 1 :])
-    apply_record = json.loads((private_root / RUN_ID / "apply.v1.json").read_text())
-    assert apply_record["mutation_retried"] is False
-
-
-def test_readback_mismatch_fails_after_one_mutation(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    fake = FakeTransport()
-    root, private_root, plan = _plan(tmp_path, fake)
-    monkeypatch.setattr(operator, "current_policy_commit", lambda _root: COMMIT)
-    monkeypatch.setattr(
-        operator, "_require_verified_owner_bindings", lambda _root: None
-    )
-    fake.readback_mismatch_once = True
-    with pytest.raises(operator.OperatorError, match="READBACK_MISMATCH"):
-        operator.apply_plan(
-            fake,
-            run_id=RUN_ID,
-            plan_sha256=plan["plan_sha256"],
-            root=root,
-            private_root=private_root,
-        )
-    assert fake.mutation_count == 1
-    apply_record = json.loads((private_root / RUN_ID / "apply.v1.json").read_text())
-    assert apply_record["status"] == "READBACK_MISMATCH"
-    assert apply_record["mutation_retried"] is False
-
-
-def test_apply_rejects_current_placeholder_owner_bindings_before_mutation(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    fake = FakeTransport()
-    root, private_root, plan = _plan(tmp_path, fake)
-    monkeypatch.setattr(operator, "current_policy_commit", lambda _root: COMMIT)
-    with pytest.raises(operator.OperatorError, match="OWNER_BINDINGS_UNVERIFIED"):
-        operator.apply_plan(
-            fake,
-            run_id=RUN_ID,
-            plan_sha256=plan["plan_sha256"],
-            root=root,
-            private_root=private_root,
-        )
-    assert fake.mutation_count == 0
-
-
-def test_new_ruleset_rollback_uses_put_to_disable_and_never_delete(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    fake = FakeTransport()
-    root, private_root, plan = _plan(tmp_path, fake)
-    monkeypatch.setattr(operator, "current_policy_commit", lambda _root: COMMIT)
-    monkeypatch.setattr(
-        operator, "_require_verified_owner_bindings", lambda _root: None
-    )
-    operator.apply_plan(
-        fake,
-        run_id=RUN_ID,
-        plan_sha256=plan["plan_sha256"],
-        root=root,
-        private_root=private_root,
-    )
-    result = operator.rollback_plan(
-        fake,
-        run_id=RUN_ID,
-        root=root,
-        private_root=private_root,
-    )
-    assert result["rollback_kind"] == "disable_created"
-    assert fake.target is not None
-    assert fake.target["enforcement"] == "disabled"
-    assert fake.mutation_count == 2
-    assert [call[0] for call in fake.calls if call[0] != "GET"] == ["POST", "PUT"]
 
 
 def test_cli_error_is_closed_and_does_not_echo_token(
@@ -385,3 +313,20 @@ def test_cli_error_is_closed_and_does_not_echo_token(
     assert secret not in captured.out
     assert secret not in captured.err
     assert "TOKEN_FILE_INVALID" in captured.out
+
+    monkeypatch.delenv(operator.TOKEN_FILE_ENVIRONMENT)
+    assert (
+        operator.main(
+            [
+                "apply",
+                "--run-id",
+                RUN_ID,
+                "--plan-sha256",
+                "0" * 64,
+            ]
+        )
+        == 2
+    )
+    disabled = capsys.readouterr()
+    assert "LIVE_MUTATION_DISABLED" in disabled.out
+    assert "TOKEN_FILE_REQUIRED" not in disabled.out

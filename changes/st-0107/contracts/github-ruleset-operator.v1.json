@@ -54,6 +54,7 @@
     "expected_check_source": "github-actions"
   },
   "mutation_boundary": {
+    "live_mutation_activation": "DISABLED_PENDING_REVIEWED_ACTIVATION_CONTRACT",
     "allowed_methods": ["POST", "PUT"],
     "delete_allowed": false,
     "automatic_retry_allowed": false,

@@ -300,6 +300,7 @@ def load_operator_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
     }:
         raise OperatorError("CONTRACT_INVALID")
     if document["mutation_boundary"] != {
+        "live_mutation_activation": ("DISABLED_PENDING_REVIEWED_ACTIVATION_CONTRACT"),
         "allowed_methods": ["POST", "PUT"],
         "delete_allowed": False,
         "automatic_retry_allowed": False,
@@ -309,6 +310,15 @@ def load_operator_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
     }:
         raise OperatorError("CONTRACT_INVALID")
     return document
+
+
+def _require_live_mutation_enabled(contract: Mapping[str, Any]) -> None:
+    boundary = _mapping(contract.get("mutation_boundary"), "CONTRACT_INVALID")
+    if (
+        boundary.get("live_mutation_activation")
+        != "ENABLED_BY_REVIEWED_ACTIVATION_CONTRACT"
+    ):
+        raise OperatorError("LIVE_MUTATION_DISABLED")
 
 
 def _require_verified_owner_bindings(root: Path = REPOSITORY_ROOT) -> None:
@@ -551,6 +561,8 @@ def _ruleset_inventory(transport: JsonTransport) -> list[dict[str, Any]]:
         _request(transport, "GET", RULESET_INVENTORY_PATH),
         "RULESET_INVENTORY_INVALID",
     )
+    if len(rows) >= 100:
+        raise OperatorError("RULESET_INVENTORY_INCOMPLETE")
     result: list[dict[str, Any]] = []
     for value in rows:
         row = _mapping(value, "RULESET_INVENTORY_INVALID")
@@ -687,6 +699,9 @@ def _check_bindings(transport: JsonTransport) -> dict[str, int]:
         _request(transport, "GET", CHECK_RUNS_PATH), "CHECK_BINDINGS_INVALID"
     )
     rows = _list(response.get("check_runs"), "CHECK_BINDINGS_INVALID")
+    total_count = response.get("total_count")
+    if type(total_count) is not int or total_count != len(rows) or len(rows) >= 100:
+        raise OperatorError("CHECK_BINDINGS_INCOMPLETE")
     bindings: dict[str, int] = {}
     for context in REQUIRED_CONTEXTS:
         matching = [
@@ -1181,7 +1196,8 @@ def apply_plan(
     root: Path = REPOSITORY_ROOT,
     private_root: Path | None = None,
 ) -> dict[str, Any]:
-    load_operator_contract(root)
+    contract = load_operator_contract(root)
+    _require_live_mutation_enabled(contract)
     selected_root = prepare_private_root(root, private_root)
     run_directory, plan, _ = _load_bound_plan(selected_root, run_id, plan_sha256)
     _verify_policy_binding(root, plan)
@@ -1223,7 +1239,8 @@ def rollback_plan(
     root: Path = REPOSITORY_ROOT,
     private_root: Path | None = None,
 ) -> dict[str, Any]:
-    load_operator_contract(root)
+    contract = load_operator_contract(root)
+    _require_live_mutation_enabled(contract)
     selected_root = prepare_private_root(root, private_root)
     run_directory, plan, _ = _load_bound_plan(selected_root, run_id)
     apply_record = _read_private_record(run_directory / "apply.v1.json")
@@ -1280,6 +1297,8 @@ def _parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = _parser().parse_args(sys.argv[1:] if argv is None else argv)
     try:
+        if arguments.command in {"apply", "rollback"}:
+            _require_live_mutation_enabled(load_operator_contract())
         token = read_token_from_environment()
         transport = FixedGitHubTransport(token)
         if arguments.command == "status":

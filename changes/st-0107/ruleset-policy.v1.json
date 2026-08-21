@@ -14,9 +14,7 @@
   "ruleset": {
     "name": "RAOS protected default branch",
     "target": "branch",
-    "include": [
-      "~DEFAULT_BRANCH"
-    ],
+    "include": ["~DEFAULT_BRANCH"],
     "exclude": [],
     "desired_enforcement": "active",
     "local_application_status": "NOT_EXECUTED",
@@ -25,9 +23,7 @@
     "prohibit_force_push": true,
     "require_linear_history": true,
     "pull_request": {
-      "allowed_merge_methods": [
-        "squash"
-      ],
+      "allowed_merge_methods": ["squash"],
       "dismiss_stale_reviews_on_push": true,
       "require_code_owner_review": true,
       "require_last_push_approval": false,
@@ -75,24 +71,12 @@
     "do_not_enforce_on_create": false,
     "required_owner_categories": {
       "contract": {
-        "patterns": [
-          "/contracts/",
-          "/changes/*/contracts/"
-        ],
-        "roles": [
-          "architecture",
-          "engineering"
-        ]
+        "patterns": ["/contracts/", "/changes/*/contracts/"],
+        "roles": ["architecture", "engineering"]
       },
       "migration": {
-        "patterns": [
-          "/migrations/",
-          "/changes/*/database/"
-        ],
-        "roles": [
-          "data",
-          "security"
-        ]
+        "patterns": ["/migrations/", "/changes/*/database/"],
+        "roles": ["data", "security"]
       },
       "security": {
         "patterns": [
@@ -103,9 +87,7 @@
           "/scripts/assert_network_denied.py",
           "/.github/"
         ],
-        "roles": [
-          "security"
-        ]
+        "roles": ["security"]
       },
       "deployment": {
         "patterns": [
@@ -116,10 +98,7 @@
           "/scripts/object_storage_service.sh",
           "/scripts/object_storage_fixture.py"
         ],
-        "roles": [
-          "operations",
-          "security"
-        ]
+        "roles": ["operations", "security"]
       },
       "governance": {
         "patterns": [
@@ -139,10 +118,7 @@
           "/tests/st0107/",
           "/.github/"
         ],
-        "roles": [
-          "security",
-          "operations"
-        ]
+        "roles": ["security", "operations"]
       }
     }
   },

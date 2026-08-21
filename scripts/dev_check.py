@@ -263,7 +263,11 @@ def run_checks(
         ["git", "diff", "--check", "--", *SAFE_DIFF_PATHSPEC],
     )
 
-    generator_outputs = set(config["generator_owned_outputs"].get(story, []))
+    generator_outputs = {
+        output
+        for outputs in config["generator_owned_outputs"].values()
+        for output in outputs
+    }
     source_paths = [path for path in paths if path not in generator_outputs]
 
     python_files = _existing_files(root, source_paths, PYTHON_SUFFIXES)
@@ -357,15 +361,21 @@ def run_checks(
         ],
     )
 
-    commands = config["generator_checks"].get(story, [])
-    if commands:
-        for index, command in enumerate(commands, start=1):
-            runner.run(
-                f"generator-check:{story}:{index}",
-                _expand_generator_command(command),
-            )
+    generator_stories = sorted(
+        generator_story
+        for generator_story, outputs in config["generator_owned_outputs"].items()
+        if generator_story == story or generator_outputs.intersection(paths, outputs)
+    )
+    if generator_stories:
+        for generator_story in generator_stories:
+            commands = config["generator_checks"][generator_story]
+            for index, command in enumerate(commands, start=1):
+                runner.run(
+                    f"generator-check:{generator_story}:{index}",
+                    _expand_generator_command(command),
+                )
     else:
-        deferred.append(f"generator:{story}:not_allowlisted")
+        deferred.append(f"generator:{story}:not_allowlisted_or_unchanged")
 
     return {
         "schema": "RAOS_DEV_CHECK_V1",

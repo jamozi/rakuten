@@ -132,6 +132,42 @@ def test_invalid_story_returns_machine_readable_error(
     }
 
 
+def test_changed_generator_output_runs_owner_check_for_another_story(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / "tests/st0106").mkdir(parents=True)
+    (tmp_path / "generated.json").write_text("{}\n", encoding="utf-8")
+    observed: list[tuple[str, list[str]]] = []
+
+    def record(self: dev_check.StepRunner, name: str, command: list[str]) -> None:
+        observed.append((name, list(command)))
+        self.executed.append(
+            {
+                "name": name,
+                "command": list(command),
+                "status": "passed",
+                "returncode": 0,
+            }
+        )
+
+    monkeypatch.setattr(dev_check.StepRunner, "run", record)
+    config = {
+        "generator_checks": {"ST-0107": [["generator", "--check"]]},
+        "generator_owned_outputs": {"ST-0107": ["generated.json"]},
+    }
+    result = dev_check.run_checks(
+        tmp_path,
+        "ST-0106",
+        "main",
+        ["generated.json"],
+        config,
+    )
+
+    assert "generator-check:ST-0107:1" in [name for name, _ in observed]
+    assert "prettier-check-changed" not in [name for name, _ in observed]
+    assert result["status"] == "PASSED"
+
+
 def test_private_file_name_never_appears_in_receipt(tmp_path: Path) -> None:
     base = _repository(tmp_path)
     private_name = ".secrets/do-not-print"

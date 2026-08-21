@@ -41,9 +41,9 @@ decision:
     full Base CI and independent automated review. Last-push approval is not a
     separate repository-local prerequisite.
   ruleset_operation: >-
-    A fixed-repository, plan-hash-bound operator may prepare status, plan,
-    apply, read-back, and rollback operations, but live mutation remains an
-    external action and is not authorized by this handoff.
+    A fixed-repository operator may prepare status and hash-bound plans. Its
+    apply and rollback interfaces are hard-disabled pending a separately
+    reviewed live-activation contract; live mutation is not authorized here.
 rationale:
   - Short feedback loops improve implementation throughput and early learning.
   - Full validation remains available at high-risk and integration boundaries.
@@ -122,6 +122,19 @@ deferred_verification_ledger:
       safe_impact: >-
         The live ruleset operator remains disabled by unverified owner bindings;
         no OIDC, deployment, provider, staging, or Production action was executed.
+    - id: DLS-DEBT-003
+      introduced_by_story: ST-0107 bounded ruleset operator
+      failing_command: read-only independent operator audit
+      observed_result: >-
+        Live apply lacks hash-bound owner-resolution evidence, durable
+        single-attempt serialization, and complete ruleset pagination.
+      affected_owner_artifact: >-
+        changes/st-0107/contracts/github-ruleset-operator.v1.json and
+        scripts/github_ruleset_operator.py
+      closure_wave: separately reviewed ST-0107 live-activation contract
+      safe_impact: >-
+        The versioned contract hard-disables apply and rollback before
+        credential intake, API reads, or mutation; status and plan remain read-only.
 open_decision_state:
   canonical_open_decisions_introduced: []
   unresolved_business_or_provider_values: []

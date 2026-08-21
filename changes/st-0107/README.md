@@ -77,10 +77,12 @@ make github-ruleset-apply \
 make github-ruleset-rollback GITHUB_RULESET_RUN_ID=<run-id>
 ```
 
-The current `UNVERIFIED_PLACEHOLDERS` owner-binding state fails closed before
-any mutation. A future activation must replace it with contract-bound evidence
-for real CODEOWNER identities and permissions, then separately authorize the
-external operation. Planning does not grant apply authority.
+The versioned operator contract currently hard-disables `apply` and `rollback`
+before credential intake, API reads, or mutation. `UNVERIFIED_PLACEHOLDERS`
+would independently fail the owner-binding guard. A future activation must add
+a separately reviewed contract for real CODEOWNER identity/permission evidence,
+HEAD/live-main binding, pagination, and durable single-attempt serialization.
+Planning does not grant apply authority.
 
 ## Local candidate semantics
 
