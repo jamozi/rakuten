@@ -105,7 +105,7 @@ override NPM_RUN := $(NODE_RUN) "$(NPM_CLI)" \
 	--cache "$(NPM_CACHE)" --registry https://registry.npmjs.org/ \
 	--ignore-scripts --no-audit --no-fund
 
-.PHONY: bootstrap check-workspace python-install python-lock python-lock-check \
+.PHONY: bootstrap check-workspace dev-check python-install python-lock python-lock-check \
 	python-lock-check-offline python-sync python-sync-offline \
 	python-tool-versions python-lint python-format-check \
 	python-typecheck python-test python-check node-storage-check node-lock \
@@ -142,6 +142,20 @@ bootstrap:
 
 check-workspace:
 	PYTHONDONTWRITEBYTECODE=1 "$(PYTHON)" scripts/bootstrap_workspace.py --check
+
+STORY ?=
+BASE_REF ?=
+
+dev-check:
+	test -n "$(STORY)"
+	test -x "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python"
+	if test -n "$(BASE_REF)"; then \
+		PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
+			scripts/dev_check.py --story "$(STORY)" --base-ref "$(BASE_REF)"; \
+	else \
+		PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
+			scripts/dev_check.py --story "$(STORY)"; \
+	fi
 
 PRO_REQUEST_FILE ?=
 PRO_RESPONSE_FILE ?=
