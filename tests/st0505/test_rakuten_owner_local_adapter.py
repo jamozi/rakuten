@@ -816,6 +816,188 @@ def test_item_exact_selector_requires_the_selected_response_field(
 
 
 @pytest.mark.parametrize(
+    ("api", "request_mode", "invalid_url"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "smoke", None),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "genre", ""),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "item-code", 7),
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            "shop-code",
+            "http://example.invalid/not-https",
+        ),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "smoke", None),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "genre", ""),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "product-id", 7),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            "product-code",
+            "http://example.invalid/not-https",
+        ),
+    ),
+)
+def test_transport_requires_non_null_https_mandatory_url_in_every_request_mode(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    request_mode: str,
+    invalid_url: object,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    record_overrides: dict[str, object]
+    if api is RakutenOwnerLocalApi.ITEM_SEARCH:
+        assert type(request) is RakutenOwnerLocalItemSearchRequest
+        record_overrides = {"itemUrl": invalid_url}
+        if request_mode == "genre":
+            request = RakutenOwnerLocalItemSearchRequest(
+                policy=replace(request.policy, keyword=None, genre_id=100)
+            )
+        elif request_mode == "item-code":
+            request = _item_exact_request("itemCode", "shop:item")
+        elif request_mode == "shop-code":
+            request = _item_exact_request("shopCode", "shop")
+            record_overrides["shopCode"] = "shop"
+        else:
+            assert request_mode == "smoke"
+        body = _item_body(**record_overrides)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        record_overrides = {"productUrlPC": invalid_url}
+        if request_mode == "genre":
+            request = RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=100,
+                product_id=None,
+                product_code=None,
+                hits=1,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            )
+        elif request_mode == "product-id":
+            request = RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=None,
+                product_id="fixture-product-id",
+                product_code=None,
+                hits=1,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            )
+        elif request_mode == "product-code":
+            request = RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=None,
+                product_id=None,
+                product_code="fixture-product-code",
+                hits=1,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            )
+        else:
+            assert request_mode == "smoke"
+        body = _product_body(**record_overrides)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.disposition
+        is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    )
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+    assert failure.value.request_count == 1
+
+
+@pytest.mark.parametrize(
+    ("api", "missing_url"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemUrl"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "productUrlPC"),
+    ),
+)
+def test_transport_requires_mandatory_result_url_key(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    missing_url: str,
+) -> None:
+    record = (
+        _item_record() if api is RakutenOwnerLocalApi.ITEM_SEARCH else _product_record()
+    )
+    record.pop(missing_url)
+    body = _summary_body(
+        api,
+        count=1,
+        first=1,
+        last=1,
+        hits=1,
+        page_count=1,
+        records=[record],
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert failure.value.request_count == 1
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "owner_request", "body"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_exact_request("itemCode", "requested-shop:item"),
+            _item_body(itemCode="different-shop:item", itemUrl=None),
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=None,
+                product_id="requested-product-id",
+                product_code=None,
+                hits=1,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            ),
+            _product_body(productId="different-product-id", productUrlPC=None),
+        ),
+    ),
+)
+def test_exact_selector_mismatch_precedes_mandatory_url_schema_refusal(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    owner_request: RakutenOwnerLocalRequest,
+    body: bytes,
+) -> None:
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=owner_request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert failure.value.request_count == 1
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
     ("selector_field", "requested_value"),
     (("itemCode", "requested-shop:item"), ("shopCode", "requested-shop")),
 )

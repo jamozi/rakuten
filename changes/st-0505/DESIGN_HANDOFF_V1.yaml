@@ -52,10 +52,10 @@ decision:
     classification: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
     runtime_name: rakuten-owner-local
     trusted_runtime_root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    installed_bundle_sha256: e3a41a7b72cdb94c9ec06bbf94d3bb2f438341feb85ef7db1a9ce6b8150ec846
+    installed_bundle_sha256: 4db6cfa26c9edb7c588b62d6fc3f4b596f51c78979fa7674bead8de1952d4bca
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 1016436e1518bbf376d28e2c19a5c70d6a0c6b2d56d8f8d6b5e747c079ae3e46
-    install_stage_sha256: 3c28852ad3cf03c9fa43bfbe6277442a1cf7c64924999b796ddcafeb8cca4e81
+    installer_sha256: 4d2d90d6162869afd7c2d82bc6ca047069cdb4b6ee684dcc92ca300d1315cc2b
+    install_stage_sha256: b26d60123827adc906e0d2f183b6a797ada94f6c1a9d0459323de50656911ae9
     runtime_install_execution: NOT_EXECUTED
     credential_store: .secrets/rakuten-owner-local/credentials.v1.json
     credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
@@ -118,6 +118,7 @@ constraints:
   - owner-local Product requests allow keyword with optional genreId, genreId alone, or one exclusive productId/productCode; page is 1 and sort is standard
   - an exact owner-local Product productId or productCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH
   - page-1 response summaries bind empty collections to zero count, pageCount, first, and last; non-empty collections require count at least the returned cardinality, pageCount from 1 through 100, first 1, and last equal to returned cardinality
+  - every non-empty Item record requires itemUrl and every non-empty Product record requires productUrlPC as a non-null strict HTTPS URL; missing, null, empty, non-string, or non-HTTPS required URL values fail as RESPONSE_SCHEMA_DRIFT before success or persistence, while the existing nullable scalar affiliateUrl and Product image URL values and non-null URL-list rules remain unchanged
   - after API/fingerprint/hits binding and before a success envelope, every normalized record string, list member, and canonical scalar representation is checked against all three non-empty known credential values in raw and single-percent-decoded form; any match fails as fixed RESPONSE_SCHEMA_DRIFT with complete response metadata and request_count 1 but no matched value
   - every owner-local invocation uses at most one GET, one resolved public IP candidate, zero redirect, zero retry, zero pagination follow-up, and no proxy or TLS override environment
   - setup refuses an existing record; rotate atomically replaces only a fully validated record; installer is credential-blind and never opens .secrets

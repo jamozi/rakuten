@@ -67,6 +67,12 @@ class RakutenOwnerLocalApi(StrEnum):
     PRODUCT_SEARCH = "product-search"
 
 
+_NON_NULL_URL_FIELDS = {
+    RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"itemUrl"}),
+    RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset({"productUrlPC"}),
+}
+
+
 class RakutenOwnerLocalProductSort(StrEnum):
     """Review-derived Product Search ordering is deliberately unavailable."""
 
@@ -663,8 +669,11 @@ def _validate_normalized_value(
             _https_url(member)
         return
     if name in _URL_FIELDS:
-        if value is not None:
-            _https_url(value)
+        if value is None:
+            if name in _NON_NULL_URL_FIELDS[api]:
+                fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            return
+        _https_url(value)
         return
     if api is RakutenOwnerLocalApi.ITEM_SEARCH and name in _ITEM_INTEGER_FIELDS:
         if type(value) is not int or value < 0:

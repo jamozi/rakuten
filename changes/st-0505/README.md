@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/e3a41a7b72cdb94c9ec06bbf94d3bb2f438341feb85ef7db1a9ce6b8150ec846/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/4db6cfa26c9edb7c588b62d6fc3f4b596f51c78979fa7674bead8de1952d4bca/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`1016436e1518bbf376d28e2c19a5c70d6a0c6b2d56d8f8d6b5e747c079ae3e46`,
+`4d2d90d6162869afd7c2d82bc6ca047069cdb4b6ee684dcc92ca300d1315cc2b`,
 and install-stage SHA-256
-`3c28852ad3cf03c9fa43bfbe6277442a1cf7c64924999b796ddcafeb8cca4e81`.
+`b26d60123827adc906e0d2f183b6a797ada94f6c1a9d0459323de50656911ae9`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -292,7 +292,14 @@ SHA-256 of the complete bounded raw response bytes, precise request disposition,
 summary, and allowlisted normalized records. Raw bodies/headers, provider error
 descriptions, captions, review bodies or aggregates, affiliate rate, EPC, RPM,
 revenue, and all credentials are forbidden. Stored provider fields are always
-classified `UNTRUSTED_PROVIDER_DATA`. After result identity and request binding
+classified `UNTRUSTED_PROVIDER_DATA`. Every returned Item record requires a
+non-null strict HTTPS `itemUrl`, and every returned Product record requires a
+non-null strict HTTPS `productUrlPC`; missing, null, empty, non-string, or
+non-HTTPS values fail as `RESPONSE_SCHEMA_DRIFT` before success or persistence.
+The existing nullable scalar `affiliateUrl` and Product image URL values remain
+nullable; URL-list values remain non-null tuples whose members are HTTPS. Field
+presence is checked before exact-selector identity, then URL value shape is
+checked before credential reflection. After result identity and request binding
 but before a success envelope or result write, every normalized record string,
 URL/list member, and canonical numeric/boolean representation is compared with
 all three known non-empty credential values. Raw UTF-8 and one percent-decoding

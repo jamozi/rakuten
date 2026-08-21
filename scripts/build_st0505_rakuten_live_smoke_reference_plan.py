@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "e3a41a7b72cdb94c9ec06bbf94d3bb2f438341feb85ef7db1a9ce6b8150ec846"
+    "4db6cfa26c9edb7c588b62d6fc3f4b596f51c78979fa7674bead8de1952d4bca"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "1016436e1518bbf376d28e2c19a5c70d6a0c6b2d56d8f8d6b5e747c079ae3e46"
+    "4d2d90d6162869afd7c2d82bc6ca047069cdb4b6ee684dcc92ca300d1315cc2b"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "3c28852ad3cf03c9fa43bfbe6277442a1cf7c64924999b796ddcafeb8cca4e81"
+    "b26d60123827adc906e0d2f183b6a797ada94f6c1a9d0459323de50656911ae9"
 )
 INSTALLED_LAUNCHER_PATH: Final = (
     "/home/minami/.local/share/raos/rakuten-live-smoke/runtime/"
@@ -1452,6 +1452,9 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             'RAKUTEN_OWNER_LOCAL_PROVIDER_DATA_CLASSIFICATION = "UNTRUSTED_PROVIDER_DATA"',
             'RAKUTEN_OWNER_LOCAL_FORMAL_TST_016 = "NOT_EXECUTED"',
             'RAKUTEN_OWNER_LOCAL_OD_015 = "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED"',
+            "_NON_NULL_URL_FIELDS = {",
+            'frozenset({"itemUrl"})',
+            'frozenset({"productUrlPC"})',
         ),
         Path("python/raos/application/catalog/rakuten_owner_local.py"): (
             "self.result_writer.preflight()",
@@ -2130,6 +2133,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "path",
             "publication",
             "response_sha256",
+            "url_validation",
             "credential_reflection",
             "forbidden",
             "request_disposition",
@@ -2139,6 +2143,27 @@ def _validate_owner_local_read_integration(value: object) -> None:
         != ".secrets/rakuten-owner-local/results/<UTC-run-id>.json"
         or result.get("publication") != "ATOMIC_0600_NO_REPLACE"
         or result.get("response_sha256") != "SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES"
+        or result.get("url_validation")
+        != {
+            "non_null_https": {
+                "item-search": ["itemUrl"],
+                "product-search": ["productUrlPC"],
+            },
+            "nullable_scalar_url_values": {
+                "item-search": ["affiliateUrl"],
+                "product-search": [
+                    "affiliateUrl",
+                    "mediumImageUrl",
+                    "smallImageUrl",
+                ],
+            },
+            "url_list_values": "NON_NULL_TUPLE_OF_HTTPS_URLS",
+            "precedence": (
+                "FIELD_PRESENCE_THEN_EXACT_SELECTOR_THEN_URL_VALUE_SHAPE_BEFORE_"
+                "CREDENTIAL_REFLECTION"
+            ),
+            "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+        }
         or result.get("credential_reflection")
         != {
             "inspected_record_values": (

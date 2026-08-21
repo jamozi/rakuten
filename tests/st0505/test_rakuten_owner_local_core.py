@@ -95,6 +95,7 @@ def _product_result(
     request: RakutenOwnerLocalProductSearchRequest,
     *,
     product_name: str = "untrusted synthetic product",
+    product_url_pc: str = "https://example.rakuten.co.jp/product",
 ) -> RakutenOwnerLocalProviderResult:
     record = normalized_record(
         RakutenOwnerLocalApi.PRODUCT_SEARCH,
@@ -103,7 +104,7 @@ def _product_result(
             "productCode": "synthetic-product-code",
             "productId": "synthetic-product-id",
             "productName": product_name,
-            "productUrlPC": "https://example.rakuten.co.jp/product",
+            "productUrlPC": product_url_pc,
         },
     )
     return RakutenOwnerLocalProviderResult(
@@ -272,6 +273,134 @@ def test_normalized_record_rejects_review_fields_and_bad_numeric_shapes() -> Non
             RakutenOwnerLocalApi.PRODUCT_SEARCH,
             {**valid, "averagePrice": 1.5},
         )
+
+
+@pytest.mark.parametrize(
+    ("api", "mandatory_url", "valid"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            "itemUrl",
+            {
+                "affiliateUrl": None,
+                "itemCode": "shop:item",
+                "itemName": "untrusted item",
+                "itemPrice": 100,
+                "itemUrl": "https://example.rakuten.co.jp/item",
+            },
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            "productUrlPC",
+            {
+                "affiliateUrl": None,
+                "productCode": "code",
+                "productId": "id",
+                "productUrlPC": "https://example.rakuten.co.jp/product",
+            },
+        ),
+    ),
+)
+@pytest.mark.parametrize(
+    "invalid_value",
+    (None, "", 7, "http://example.rakuten.co.jp/not-https"),
+)
+def test_normalized_record_requires_non_null_https_mandatory_result_url(
+    api: RakutenOwnerLocalApi,
+    mandatory_url: str,
+    valid: dict[str, object],
+    invalid_value: object,
+) -> None:
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        normalized_record(api, {**valid, mandatory_url: invalid_value})
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+
+
+def test_normalized_record_preserves_optional_product_url_nullability() -> None:
+    record = normalized_record(
+        RakutenOwnerLocalApi.PRODUCT_SEARCH,
+        {
+            "affiliateUrl": None,
+            "mediumImageUrl": None,
+            "productCode": "code",
+            "productId": "id",
+            "productUrlPC": "https://example.rakuten.co.jp/product",
+            "smallImageUrl": None,
+        },
+    )
+
+    assert record.as_object()["affiliateUrl"] is None
+    assert record.as_object()["mediumImageUrl"] is None
+    assert record.as_object()["smallImageUrl"] is None
+
+    item = normalized_record(
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        {
+            "affiliateUrl": None,
+            "itemCode": "shop:item",
+            "itemName": "untrusted item",
+            "itemPrice": 100,
+            "itemUrl": "https://example.rakuten.co.jp/item",
+        },
+    )
+    assert item.as_object()["affiliateUrl"] is None
+
+    with pytest.raises(RakutenOwnerLocalFailure) as invalid_optional_url:
+        normalized_record(
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            {
+                "affiliateUrl": None,
+                "productCode": "code",
+                "productId": "id",
+                "productUrlPC": "https://example.rakuten.co.jp/product",
+                "smallImageUrl": "http://example.rakuten.co.jp/not-https",
+            },
+        )
+    assert (
+        invalid_optional_url.value.code
+        is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    )
+
+
+@pytest.mark.parametrize(
+    ("api", "valid", "missing_url"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            {
+                "affiliateUrl": None,
+                "itemCode": "shop:item",
+                "itemName": "untrusted item",
+                "itemPrice": 100,
+                "itemUrl": "https://example.rakuten.co.jp/item",
+            },
+            "itemUrl",
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            {
+                "affiliateUrl": None,
+                "productCode": "code",
+                "productId": "id",
+                "productUrlPC": "https://example.rakuten.co.jp/product",
+            },
+            "productUrlPC",
+        ),
+    ),
+)
+def test_normalized_record_requires_mandatory_result_url_key(
+    api: RakutenOwnerLocalApi,
+    valid: dict[str, object],
+    missing_url: str,
+) -> None:
+    without_url = dict(valid)
+    without_url.pop(missing_url)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        normalized_record(api, without_url)
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
 
 
 def test_provider_result_summary_relationships_are_domain_invariants() -> None:
@@ -485,7 +614,7 @@ def test_service_product_identity_mismatch_uses_the_shared_binding_boundary() ->
 )
 @pytest.mark.parametrize(
     "position",
-    ("url", "ordinary-text", "nested-url-list"),
+    ("url", "mandatory-url", "ordinary-text", "nested-url-list"),
 )
 def test_service_rejects_each_reflected_credential_before_persistence(
     credential_value: str,
@@ -498,6 +627,8 @@ def test_service_rejects_each_reflected_credential_before_persistence(
         fields["affiliateUrl"] = (
             f"https://example.rakuten.co.jp/affiliate/{credential_value}"
         )
+    elif position == "mandatory-url":
+        fields["itemUrl"] = f"https://example.rakuten.co.jp/item/{credential_value}"
     elif position == "ordinary-text":
         fields["itemName"] = f"untrusted {credential_value} reflected item"
     else:
@@ -607,12 +738,22 @@ def test_service_rejects_url_encoded_credential_reflection() -> None:
     assert writer.writes == [envelope]
 
 
-def test_service_rejects_product_credential_reflection() -> None:
+@pytest.mark.parametrize("position", ("ordinary-text", "mandatory-url"))
+def test_service_rejects_product_credential_reflection(position: str) -> None:
     request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.PRODUCT_SEARCH)
     assert type(request) is RakutenOwnerLocalProductSearchRequest
     result = _product_result(
         request,
-        product_name="untrusted synthetic-affiliate reflected product",
+        product_name=(
+            "untrusted synthetic-affiliate reflected product"
+            if position == "ordinary-text"
+            else "untrusted synthetic product"
+        ),
+        product_url_pc=(
+            "https://example.rakuten.co.jp/product/synthetic-affiliate"
+            if position == "mandatory-url"
+            else "https://example.rakuten.co.jp/product"
+        ),
     )
     writer = _Writer()
     envelope = RakutenOwnerLocalService(

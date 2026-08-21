@@ -204,6 +204,26 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
         "PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY"
     )
+    assert owner["normalized_result"]["url_validation"] == {
+        "non_null_https": {
+            "item-search": ["itemUrl"],
+            "product-search": ["productUrlPC"],
+        },
+        "nullable_scalar_url_values": {
+            "item-search": ["affiliateUrl"],
+            "product-search": [
+                "affiliateUrl",
+                "mediumImageUrl",
+                "smallImageUrl",
+            ],
+        },
+        "url_list_values": "NON_NULL_TUPLE_OF_HTTPS_URLS",
+        "precedence": (
+            "FIELD_PRESENCE_THEN_EXACT_SELECTOR_THEN_URL_VALUE_SHAPE_BEFORE_"
+            "CREDENTIAL_REFLECTION"
+        ),
+        "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+    }
     assert owner["normalized_result"]["credential_reflection"] == {
         "inspected_record_values": (
             "ALL_NORMALIZED_STRING_LIST_INTEGER_BOOLEAN_LEAVES"
