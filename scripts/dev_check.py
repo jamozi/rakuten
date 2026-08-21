@@ -257,13 +257,43 @@ def declared_story_ids(selected_story: str, raw_stories: str | None) -> list[str
     return sorted(values)
 
 
+def _story_suites(
+    root: Path, selected_story: str, stories: Sequence[str] | None
+) -> list[Path]:
+    scoped_stories = [selected_story] if stories is None else list(stories)
+    if (
+        not scoped_stories
+        or selected_story not in scoped_stories
+        or len(scoped_stories) != len(set(scoped_stories))
+        or any(STORY_ID.fullmatch(story) is None for story in scoped_stories)
+    ):
+        raise DeveloperCheckError(
+            "Story suite scope must be a unique set containing selected Story"
+        )
+
+    suites: list[Path] = []
+    for scoped_story in sorted(scoped_stories):
+        story_number = STORY_ID.fullmatch(scoped_story)
+        assert story_number is not None
+        suite = root / f"tests/st{story_number.group(1)}"
+        if not suite.is_dir() or suite.is_symlink():
+            raise DeveloperCheckError(
+                f"isolated Story suite is missing: {suite.relative_to(root)}"
+            )
+        suites.append(suite)
+    return suites
+
+
 def run_checks(
     root: Path,
     story: str,
     base_ref: str,
     paths: Sequence[str],
     config: Mapping[str, Any],
+    *,
+    stories: Sequence[str] | None = None,
 ) -> dict[str, Any]:
+    story_suites = _story_suites(root, story, stories)
     runner = StepRunner(root)
     deferred: list[str] = []
 
@@ -366,28 +396,24 @@ def run_checks(
     else:
         deferred.append("node:no_changed_node_surface")
 
-    story_number = STORY_ID.fullmatch(story)
-    if story_number is None:
-        raise DeveloperCheckError("STORY must have the form ST-XXXX")
-    suite = root / f"tests/st{story_number.group(1)}"
-    if not suite.is_dir() or suite.is_symlink():
-        raise DeveloperCheckError(
-            f"isolated Story suite is missing: {suite.relative_to(root)}"
+    executed_story_suites: list[str] = []
+    for suite in story_suites:
+        relative_suite = suite.relative_to(root)
+        runner.run(
+            f"pytest:{relative_suite}",
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                "-p",
+                "no:cacheprovider",
+                "-q",
+                "-m",
+                "not raos_owner_private",
+                os.fspath(relative_suite),
+            ],
         )
-    runner.run(
-        f"pytest:{suite.relative_to(root)}",
-        [
-            sys.executable,
-            "-m",
-            "pytest",
-            "-p",
-            "no:cacheprovider",
-            "-q",
-            "-m",
-            "not raos_owner_private",
-            os.fspath(suite.relative_to(root)),
-        ],
-    )
+        executed_story_suites.append(os.fspath(relative_suite))
 
     generator_stories = sorted(
         generator_story
@@ -411,6 +437,7 @@ def run_checks(
         "story": story,
         "base_ref": base_ref,
         "changed_paths": list(paths),
+        "executed_story_suites": executed_story_suites,
         "executed": runner.executed,
         "deferred": deferred,
     }
@@ -459,7 +486,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         declared = declared_story_ids(args.story, args.stories)
         if detected != declared:
             raise DeveloperCheckScopeError(detected, declared)
-        receipt = run_checks(root, args.story, base_ref, paths, config)
+        receipt = run_checks(
+            root, args.story, base_ref, paths, config, stories=declared
+        )
         receipt["detected_story_ids"] = detected
         receipt["declared_story_ids"] = declared
     except DeveloperCheckScopeError as exc:

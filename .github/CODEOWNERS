@@ -28,11 +28,14 @@
 /scripts/*migration* @raos/data @raos/security
 /tests/st0301/ @raos/data @raos/security
 /python/raos/application/finance/ @raos/finance @raos/security
+/python/raos/domain/publishing/ @raos/editorial @raos/security
+/python/raos/application/publishing/ @raos/editorial @raos/security
 /scripts/*finance* @raos/finance @raos/security
 /scripts/*publication* @raos/editorial @raos/security
 /scripts/*kill_switch* @raos/operations @raos/security
 /packages/**/*finance* @raos/finance @raos/security
 /packages/**/*publication* @raos/editorial @raos/security
+/tests/st09*/ @raos/editorial @raos/security
 /docker-compose.yml @raos/operations @raos/security
 /scripts/build_local_compose.py @raos/operations @raos/security
 /scripts/*deploy* @raos/operations @raos/security
@@ -40,7 +43,7 @@
 /scripts/*postgres* @raos/operations @raos/security
 /python/raos/adapters/ @raos/operations @raos/security
 /python/raos/ports/*provider* @raos/operations @raos/security
-/python/raos/domain/ai/provider.py @raos/operations @raos/security
+/python/raos/domain/ai/provider.py @raos/ai @raos/editorial @raos/operations @raos/security
 /scripts/*provider* @raos/operations @raos/security
 /python/raos/domain/iam/ @raos/security @raos/architecture
 /python/raos/application/iam/ @raos/security @raos/engineering
@@ -55,6 +58,13 @@
 /scripts/assert_network_denied.py @raos/security @raos/engineering
 /docs/canonical/04_security/ @raos/security @raos/architecture
 /tests/security/ @raos/security @raos/engineering
+/changes/st-04*/ @raos/security @raos/engineering
+/changes/st-1603/ @raos/security @raos/operations
+/python/raos/domain/http/ @raos/security @raos/architecture
+/python/raos/application/http/ @raos/security @raos/engineering
+/scripts/*security* @raos/security @raos/engineering
+/tests/st04*/ @raos/security @raos/engineering
+/tests/st1603/ @raos/security @raos/operations
 /.codex/ @raos/security @raos/operations
 /AGENTS.md @raos/security @raos/operations
 /Makefile @raos/security @raos/operations
@@ -81,4 +91,14 @@
 /tests/st0005/ @raos/security @raos/operations
 /tests/st0106/ @raos/security @raos/operations
 /tests/st0107/ @raos/security @raos/operations
+/changes/st-0005/contracts/ @raos/architecture @raos/engineering @raos/security @raos/operations
+/changes/st-0005/generated/ @raos/architecture @raos/engineering @raos/security @raos/operations
+/changes/st-0106/contracts/ @raos/architecture @raos/engineering @raos/security @raos/operations
+/changes/st-0106/generated/ @raos/architecture @raos/engineering @raos/security @raos/operations
+/changes/st-0107/contracts/ @raos/architecture @raos/engineering @raos/security @raos/operations
+/changes/st-0107/generated/ @raos/architecture @raos/engineering @raos/security @raos/operations
+/changes/st-0301/contracts/ @raos/architecture @raos/engineering @raos/data @raos/security
+/changes/st-0301/generated/ @raos/architecture @raos/engineering @raos/data @raos/security
+/changes/st-1603/contracts/ @raos/architecture @raos/engineering @raos/security @raos/operations
+/changes/st-1603/generated/ @raos/architecture @raos/engineering @raos/security @raos/operations
 /.github/ @raos/security @raos/operations

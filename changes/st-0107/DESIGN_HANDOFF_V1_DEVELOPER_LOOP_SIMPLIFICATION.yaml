@@ -39,7 +39,7 @@ decision:
     no-network local slice. Every pull request therefore retains one approving
     human review, and stale approvals are dismissed on push so the review binds
     the current diff. Contract/codegen, migration/database, authentication,
-    publication/finance, deployment, provider-runtime, and governance paths
+    security-control, publication/finance, deployment, provider-runtime, and governance paths
     additionally retain CODEOWNERS routing and code-owner approval. Last-push
     approval is not a separate repository-local prerequisite.
   ruleset_operation: >-
@@ -62,7 +62,8 @@ constraints:
   - Unknown, multi-Story, and high-risk changes fail safe to full Base CI.
   - Mandatory high-risk categories and their CODEOWNERS patterns come from the
     ST-0106 versioned developer-loop scope contract and are cross-checked by the
-    ST-0107 generator.
+    ST-0107 generator, including effective GitHub last-match owner resolution
+    for category representatives.
   - Preserve strict checks, linear history, deletion/force-push protection, and
     an empty bypass actor list.
   - The classifier and dev-check orchestrator fail before child checks when a
@@ -83,6 +84,7 @@ acceptance_criteria:
   - '`make dev-check STORY=ST-XXXX [STORIES=ST-XXXX,ST-YYYY] [BASE_REF=<ref>]` emits a machine-readable summary.'
   - PR CI selects affected jobs while required contexts remain terminal.
   - High-risk, unknown, multi-Story, main, nightly, and manual runs select full Base CI.
+  - Explicit multi-Story developer checks execute every declared and detected isolated Story suite exactly once.
   - Generated governance requires one exact-head human approval as the fail-closed independent-review fallback, retains high-risk CODEOWNER review, has no bypass actor, and preserves branch protections.
   - The bounded ruleset operator is fixed to `jamozi/rakuten` and `https://api.github.com`.
 required_test_evidence:

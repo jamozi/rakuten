@@ -112,15 +112,31 @@
         ],
         "roles": ["security"]
       },
+      "security_controls": {
+        "patterns": [
+          "/changes/st-04*/",
+          "/changes/st-1603/",
+          "/python/raos/domain/http/",
+          "/python/raos/application/http/",
+          "/scripts/*security*",
+          "/tests/security/",
+          "/tests/st04*/",
+          "/tests/st1603/"
+        ],
+        "roles": ["security"]
+      },
       "publication_finance_kill_switch": {
         "patterns": [
           "/python/raos/domain/finance/",
           "/python/raos/application/finance/",
+          "/python/raos/domain/publishing/",
+          "/python/raos/application/publishing/",
           "/scripts/*finance*",
           "/scripts/*publication*",
           "/scripts/*kill_switch*",
           "/packages/**/*finance*",
-          "/packages/**/*publication*"
+          "/packages/**/*publication*",
+          "/tests/st09*/"
         ],
         "roles": ["security"]
       },

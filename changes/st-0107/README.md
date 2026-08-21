@@ -102,14 +102,17 @@ declared rows is an ordinary path and does not add a CODEOWNER requirement.
 Because this local slice cannot establish a trusted independent automated
 reviewer, every pull request still requires one approving human review. Stale
 approvals are dismissed after a push. Contract/codegen, migration/database,
-authentication, publication/finance, deployment, provider-runtime, and
+authentication, security-control, publication/finance, deployment, provider-runtime, and
 governance paths retain their specific additional routes.
 
 Owners listed on one CODEOWNERS line are eligible alternatives. GitHub's code
-owner rule does not require every listed team to approve. Before activation, a
-matching CODEOWNER and live probes must confirm that contract, migration,
-security, deployment, and governance paths receive the intended owner
-coverage.
+owner rule does not require every listed team to approve, and the last matching
+row controls. The generator therefore validates effective last-match owners for
+the versioned taxonomy's representative paths and uses union rows where
+contract/generated paths intersect migration or governance routes. Before
+activation, a matching CODEOWNER and live probes must confirm that contract,
+migration, security, deployment, and governance paths receive the intended
+owner coverage.
 
 The PR template records the Story or named slice, risk classification,
 `make dev-check`, exact-head hosted CI, the exact-head human-review fallback,

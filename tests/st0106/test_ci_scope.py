@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import fnmatch
 import json
 import subprocess
 from pathlib import Path
@@ -9,6 +10,19 @@ from pathlib import Path
 import pytest
 
 from scripts import classify_ci_scope as classifier
+
+
+SEMANTIC_HIGH_RISK_GLOBS = (
+    "changes/st-04*/**",
+    "changes/st-1603/**",
+    "python/raos/domain/publishing/**",
+    "python/raos/application/publishing/**",
+    "python/raos/**/security.py",
+    "scripts/*security*",
+    "tests/st04*/**",
+    "tests/st09*/**",
+    "tests/st1603/**",
+)
 
 
 @pytest.fixture
@@ -115,6 +129,14 @@ def test_secret_path_cli_fails_with_only_closed_reason_and_count(
         "python/raos/domain/iam/authorization.py",
         "python/raos/adapters/development_workload_credentials.py",
         "python/raos/adapters/wordpresscom_oauth.py",
+        "python/raos/domain/publishing/review_workflow.py",
+        "python/raos/application/publishing/review_decision.py",
+        "tests/st0904/test_contract.py",
+        "python/raos/domain/http/security.py",
+        "python/raos/application/http/security.py",
+        "tests/st0401/test_authentication.py",
+        "scripts/build_st1603_security_verification_pack.py",
+        "tests/st1603/test_contract.py",
     ],
 )
 def test_mandatory_taxonomy_examples_are_high_risk(
@@ -124,6 +146,56 @@ def test_mandatory_taxonomy_examples_are_high_risk(
     assert result["risk"] == "high"
     assert result["full_required"] is True
     assert result["jobs"] == list(classifier.EXPECTED_JOBS)
+
+
+def test_every_versioned_taxonomy_representative_is_high_risk(
+    scope_contract: dict[str, object],
+) -> None:
+    categories = scope_contract["mandatory_high_risk_categories"]
+    assert isinstance(categories, dict)
+    for category_name, raw_category in categories.items():
+        assert isinstance(category_name, str)
+        assert isinstance(raw_category, dict)
+        representatives = raw_category["representative_paths"]
+        assert isinstance(representatives, list)
+        for path in representatives:
+            assert isinstance(path, str)
+            assert category_name in classifier.high_risk_categories(
+                path, scope_contract
+            )
+            result = classifier.classify_paths("pull_request", [path], scope_contract)
+            assert result["risk"] == "high"
+            assert result["full_required"] is True
+
+
+def test_every_tracked_publication_or_security_surface_is_high_risk(
+    scope_contract: dict[str, object],
+) -> None:
+    tracked = (
+        subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=classifier.REPOSITORY_ROOT,
+            check=True,
+            capture_output=True,
+        )
+        .stdout.decode("utf-8")
+        .split("\0")
+    )
+    semantic_paths = sorted(
+        path
+        for path in tracked
+        if path
+        and any(
+            fnmatch.fnmatchcase(path, pattern) for pattern in SEMANTIC_HIGH_RISK_GLOBS
+        )
+    )
+
+    assert semantic_paths
+    assert [
+        path
+        for path in semantic_paths
+        if not classifier.high_risk_categories(path, scope_contract)
+    ] == []
 
 
 def test_github_output_contains_every_required_job_without_path_material(

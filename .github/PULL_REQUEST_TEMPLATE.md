@@ -30,6 +30,7 @@ Use `N/A` only when the path family is unchanged, and record the rationale.
 | Contract / generated types                   |                                | Architecture / Engineering |
 | Migration / database                         |                                | Data / Security            |
 | Authentication / authorization / credentials |                                | Security                   |
+| Security controls                            |                                | Security                   |
 | Publication / finance / kill switch          |                                | Security                   |
 | Deployment / infrastructure                  |                                | Operations / Security      |
 | Provider runtime                             |                                | Operations / Security      |

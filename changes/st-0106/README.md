@@ -20,8 +20,9 @@ make dev-check STORY=ST-0106 STORIES=ST-0106,ST-0107 BASE_REF=main
 ```
 
 It unions committed, staged, unstaged, and untracked paths; runs Git whitespace
-checks, changed-language checks, the isolated Story suite, and allowlisted owner
-generator checks; and emits one `RAOS_DEV_CHECK_V1` JSON receipt. A changed
+checks, changed-language checks, every declared and detected isolated Story
+suite exactly once, and allowlisted owner generator checks; and emits one
+`RAOS_DEV_CHECK_V1` JSON receipt whose `executed_story_suites` lists each suite. A changed
 `.secrets/**` path makes the orchestrator fail before child commands and exposes
 only the sensitive-path count. The orchestrator does not pass private path names
 to its checks, but pytest and generator children remain trusted local processes

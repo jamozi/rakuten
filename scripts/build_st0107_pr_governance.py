@@ -27,6 +27,8 @@ if os.fspath(REPO_ROOT) not in sys.path:
 
 from scripts.classify_ci_scope import (  # noqa: E402
     EXPECTED_HIGH_RISK_CATEGORIES,
+    codeowner_pattern_matches,
+    high_risk_categories,
     load_contract as load_scope_contract,
 )
 
@@ -159,11 +161,14 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ("/scripts/*migration*", ("data", "security")),
     ("/tests/st0301/", ("data", "security")),
     ("/python/raos/application/finance/", ("finance", "security")),
+    ("/python/raos/domain/publishing/", ("editorial", "security")),
+    ("/python/raos/application/publishing/", ("editorial", "security")),
     ("/scripts/*finance*", ("finance", "security")),
     ("/scripts/*publication*", ("editorial", "security")),
     ("/scripts/*kill_switch*", ("operations", "security")),
     ("/packages/**/*finance*", ("finance", "security")),
     ("/packages/**/*publication*", ("editorial", "security")),
+    ("/tests/st09*/", ("editorial", "security")),
     ("/docker-compose.yml", ("operations", "security")),
     ("/scripts/build_local_compose.py", ("operations", "security")),
     ("/scripts/*deploy*", ("operations", "security")),
@@ -171,7 +176,10 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ("/scripts/*postgres*", ("operations", "security")),
     ("/python/raos/adapters/", ("operations", "security")),
     ("/python/raos/ports/*provider*", ("operations", "security")),
-    ("/python/raos/domain/ai/provider.py", ("operations", "security")),
+    (
+        "/python/raos/domain/ai/provider.py",
+        ("ai", "editorial", "operations", "security"),
+    ),
     ("/scripts/*provider*", ("operations", "security")),
     ("/python/raos/domain/iam/", ("security", "architecture")),
     ("/python/raos/application/iam/", ("security", "engineering")),
@@ -186,6 +194,13 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ("/scripts/assert_network_denied.py", ("security", "engineering")),
     ("/docs/canonical/04_security/", ("security", "architecture")),
     ("/tests/security/", ("security", "engineering")),
+    ("/changes/st-04*/", ("security", "engineering")),
+    ("/changes/st-1603/", ("security", "operations")),
+    ("/python/raos/domain/http/", ("security", "architecture")),
+    ("/python/raos/application/http/", ("security", "engineering")),
+    ("/scripts/*security*", ("security", "engineering")),
+    ("/tests/st04*/", ("security", "engineering")),
+    ("/tests/st1603/", ("security", "operations")),
     ("/.codex/", ("security", "operations")),
     ("/AGENTS.md", ("security", "operations")),
     ("/Makefile", ("security", "operations")),
@@ -215,6 +230,46 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ("/tests/st0005/", ("security", "operations")),
     ("/tests/st0106/", ("security", "operations")),
     ("/tests/st0107/", ("security", "operations")),
+    (
+        "/changes/st-0005/contracts/",
+        ("architecture", "engineering", "security", "operations"),
+    ),
+    (
+        "/changes/st-0005/generated/",
+        ("architecture", "engineering", "security", "operations"),
+    ),
+    (
+        "/changes/st-0106/contracts/",
+        ("architecture", "engineering", "security", "operations"),
+    ),
+    (
+        "/changes/st-0106/generated/",
+        ("architecture", "engineering", "security", "operations"),
+    ),
+    (
+        "/changes/st-0107/contracts/",
+        ("architecture", "engineering", "security", "operations"),
+    ),
+    (
+        "/changes/st-0107/generated/",
+        ("architecture", "engineering", "security", "operations"),
+    ),
+    (
+        "/changes/st-0301/contracts/",
+        ("architecture", "engineering", "data", "security"),
+    ),
+    (
+        "/changes/st-0301/generated/",
+        ("architecture", "engineering", "data", "security"),
+    ),
+    (
+        "/changes/st-1603/contracts/",
+        ("architecture", "engineering", "security", "operations"),
+    ),
+    (
+        "/changes/st-1603/generated/",
+        ("architecture", "engineering", "security", "operations"),
+    ),
     ("/.github/", ("security", "operations")),
 )
 EXPECTED_CHECK_CONTEXTS: Final = (
@@ -345,6 +400,17 @@ def _expected_owner_categories(root: Path) -> dict[str, dict[str, list[str]]]:
         }
         for name, category in categories.items()
     }
+
+
+def _effective_codeowner_roles(
+    path: str, entries: Sequence[Mapping[str, Any]]
+) -> tuple[str, ...]:
+    effective: tuple[str, ...] = ()
+    for entry in entries:
+        pattern = entry.get("pattern")
+        if isinstance(pattern, str) and codeowner_pattern_matches(path, pattern):
+            effective = tuple(_list(entry.get("roles"), "effective CODEOWNERS roles"))
+    return effective
 
 
 def _render_prettier_json_value(value: object, indent: int, column: int) -> str:
@@ -780,6 +846,37 @@ def _validate_owner_bindings(
                     f"mandatory taxonomy owner coverage differs for {category_name}"
                 )
 
+    scope = load_scope_contract(root)
+    scope_categories = _mapping(
+        scope["mandatory_high_risk_categories"], "mandatory high-risk categories"
+    )
+    for category_name, raw_category in scope_categories.items():
+        scope_category = _mapping(raw_category, f"mandatory category {category_name}")
+        representatives = _list(
+            scope_category.get("representative_paths"),
+            f"mandatory category {category_name} representatives",
+        )
+        for representative in representatives:
+            if not isinstance(representative, str):
+                raise RuntimeError("mandatory representative path is invalid")
+            matching_categories = high_risk_categories(representative, scope)
+            required_effective_roles = {
+                role
+                for matching_name in matching_categories
+                for role in _list(
+                    _mapping(
+                        scope_categories[matching_name],
+                        f"mandatory category {matching_name}",
+                    ).get("required_roles"),
+                    f"mandatory category {matching_name} roles",
+                )
+            }
+            effective_roles = set(_effective_codeowner_roles(representative, entries))
+            if not required_effective_roles.issubset(effective_roles):
+                raise RuntimeError(
+                    "effective CODEOWNERS roles differ for mandatory representative"
+                )
+
     return handles, entries
 
 
@@ -1045,6 +1142,7 @@ Use `N/A` only when the path family is unchanged, and record the rationale.
 | Contract / generated types                   |                                | Architecture / Engineering |
 | Migration / database                         |                                | Data / Security            |
 | Authentication / authorization / credentials |                                | Security                   |
+| Security controls                            |                                | Security                   |
 | Publication / finance / kill switch          |                                | Security                   |
 | Deployment / infrastructure                  |                                | Operations / Security      |
 | Provider runtime                             |                                | Operations / Security      |

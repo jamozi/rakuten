@@ -119,6 +119,85 @@ def test_run_checks_selects_changed_languages_story_and_generator(
     )
     assert all("generated.json" not in command for _, command in observed)
     assert result["status"] == "PASSED"
+    assert result["executed_story_suites"] == ["tests/st0107"]
+
+
+def test_run_checks_executes_every_declared_story_suite_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / "tests/st0106").mkdir(parents=True)
+    (tmp_path / "tests/st0107").mkdir()
+    observed: list[tuple[str, list[str]]] = []
+
+    def record(self: dev_check.StepRunner, name: str, command: list[str]) -> None:
+        observed.append((name, list(command)))
+        self.executed.append(
+            {
+                "name": name,
+                "command": list(command),
+                "status": "passed",
+                "returncode": 0,
+            }
+        )
+
+    monkeypatch.setattr(dev_check.StepRunner, "run", record)
+    result = dev_check.run_checks(
+        tmp_path,
+        "ST-0106",
+        "main",
+        [],
+        {
+            "generator_checks": {},
+            "generator_owned_outputs": {},
+            "node_suffixes": [".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx"],
+        },
+        stories=["ST-0107", "ST-0106"],
+    )
+
+    suite_steps = [name for name, _ in observed if name.startswith("pytest:")]
+    assert suite_steps == ["pytest:tests/st0106", "pytest:tests/st0107"]
+    assert result["executed_story_suites"] == [
+        "tests/st0106",
+        "tests/st0107",
+    ]
+
+
+def test_run_checks_fails_closed_before_execution_when_declared_suite_is_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / "tests/st0106").mkdir(parents=True)
+    observed: list[str] = []
+
+    def record(self: dev_check.StepRunner, name: str, command: list[str]) -> None:
+        observed.append(name)
+
+    monkeypatch.setattr(dev_check.StepRunner, "run", record)
+
+    with pytest.raises(
+        dev_check.DeveloperCheckError,
+        match=r"isolated Story suite is missing: tests/st0107",
+    ):
+        dev_check.run_checks(
+            tmp_path,
+            "ST-0106",
+            "main",
+            [],
+            {
+                "generator_checks": {},
+                "generator_owned_outputs": {},
+                "node_suffixes": [
+                    ".cjs",
+                    ".js",
+                    ".jsx",
+                    ".mjs",
+                    ".ts",
+                    ".tsx",
+                ],
+            },
+            stories=["ST-0106", "ST-0107"],
+        )
+
+    assert observed == []
 
 
 def test_invalid_story_returns_machine_readable_error(

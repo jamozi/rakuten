@@ -295,6 +295,27 @@ def test_required_owner_category_inventory_cannot_be_reduced(
     reject_contract(mutable_contract, "required owner categories differ")
 
 
+def test_effective_last_match_owners_cannot_drop_intersecting_category_roles(
+    mutable_contract: dict[str, Any],
+    reject_contract: RejectContract,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _entry(mutable_contract, "/changes/st-0106/contracts/")["roles"] = [
+        "security",
+        "operations",
+    ]
+    observed_entries = tuple(
+        (row["pattern"], tuple(row["roles"]))
+        for row in mutable_contract["codeowners"]["entries"]
+    )
+    monkeypatch.setattr(generator, "EXPECTED_CODEOWNER_ENTRIES", observed_entries)
+
+    reject_contract(
+        mutable_contract,
+        "effective CODEOWNERS roles differ for mandatory representative",
+    )
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [

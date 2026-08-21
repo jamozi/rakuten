@@ -1,7 +1,7 @@
 {
   "document": {
     "id": "RAOS-DEVELOPER-LOOP-SCOPE-001",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "story_id": "ST-0106"
   },
   "required_jobs": ["Static", "Unit", "Contracts", "Database", "Storage", "Secrets"],
@@ -48,7 +48,11 @@
         "scripts/build_st0104_contract_repository.py",
         "scripts/build_st0105_generated_contracts.py",
         "tests/st0104/test_verifier.py",
-        "changes/st-0301/generated/migration-catalog.v1.json"
+        "changes/st-0301/generated/migration-catalog.v1.json",
+        "changes/st-0005/contracts/status-policy.v1.yaml",
+        "changes/st-0106/contracts/developer-loop-scope.v1.json",
+        "changes/st-0107/contracts/pr-governance.v1.yaml",
+        "changes/st-1603/generated/security-verification-pack.reference-plan.v1.json"
       ]
     },
     "migration_database": {
@@ -112,30 +116,70 @@
         "python/raos/adapters/wordpresscom_oauth.py"
       ]
     },
+    "security_controls": {
+      "classification_globs": [
+        "changes/st-04*/**",
+        "changes/st-1603/**",
+        "python/raos/domain/http/**",
+        "python/raos/application/http/**",
+        "scripts/*security*",
+        "tests/security/**",
+        "tests/st04*/**",
+        "tests/st1603/**"
+      ],
+      "required_roles": ["security"],
+      "codeowner_patterns": [
+        "/changes/st-04*/",
+        "/changes/st-1603/",
+        "/python/raos/domain/http/",
+        "/python/raos/application/http/",
+        "/scripts/*security*",
+        "/tests/security/",
+        "/tests/st04*/",
+        "/tests/st1603/"
+      ],
+      "representative_paths": [
+        "python/raos/domain/http/security.py",
+        "python/raos/application/http/security.py",
+        "scripts/build_st1603_security_verification_pack.py",
+        "tests/st0401/test_authentication.py",
+        "tests/st1603/test_contract.py",
+        "changes/st-1603/generated/security-verification-pack.reference-plan.v1.json"
+      ]
+    },
     "publication_finance_kill_switch": {
       "classification_globs": [
         "python/raos/domain/finance/**",
         "python/raos/application/finance/**",
+        "python/raos/domain/publishing/**",
+        "python/raos/application/publishing/**",
         "scripts/*finance*",
         "scripts/*publication*",
         "scripts/*kill_switch*",
         "packages/**/*finance*",
-        "packages/**/*publication*"
+        "packages/**/*publication*",
+        "tests/st09*/**"
       ],
       "required_roles": ["security"],
       "codeowner_patterns": [
         "/python/raos/domain/finance/",
         "/python/raos/application/finance/",
+        "/python/raos/domain/publishing/",
+        "/python/raos/application/publishing/",
         "/scripts/*finance*",
         "/scripts/*publication*",
         "/scripts/*kill_switch*",
         "/packages/**/*finance*",
-        "/packages/**/*publication*"
+        "/packages/**/*publication*",
+        "/tests/st09*/"
       ],
       "representative_paths": [
         "python/raos/application/finance/revenue_import.py",
+        "python/raos/domain/publishing/review_workflow.py",
+        "python/raos/application/publishing/review_decision.py",
         "scripts/build_st0905_publication_commands_reference_plan.py",
-        "packages/web-ui/src/publication-review-workspace.ts"
+        "packages/web-ui/src/publication-review-workspace.ts",
+        "tests/st0904/test_contract.py"
       ]
     },
     "infrastructure_deployment": {

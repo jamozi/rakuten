@@ -90,6 +90,10 @@ codeowners:
       roles: [data, security]
     - pattern: /python/raos/application/finance/
       roles: [finance, security]
+    - pattern: /python/raos/domain/publishing/
+      roles: [editorial, security]
+    - pattern: /python/raos/application/publishing/
+      roles: [editorial, security]
     - pattern: /scripts/*finance*
       roles: [finance, security]
     - pattern: /scripts/*publication*
@@ -99,6 +103,8 @@ codeowners:
     - pattern: /packages/**/*finance*
       roles: [finance, security]
     - pattern: /packages/**/*publication*
+      roles: [editorial, security]
+    - pattern: /tests/st09*/
       roles: [editorial, security]
     - pattern: /docker-compose.yml
       roles: [operations, security]
@@ -115,7 +121,7 @@ codeowners:
     - pattern: /python/raos/ports/*provider*
       roles: [operations, security]
     - pattern: /python/raos/domain/ai/provider.py
-      roles: [operations, security]
+      roles: [ai, editorial, operations, security]
     - pattern: /scripts/*provider*
       roles: [operations, security]
     - pattern: /python/raos/domain/iam/
@@ -144,6 +150,20 @@ codeowners:
       roles: [security, architecture]
     - pattern: /tests/security/
       roles: [security, engineering]
+    - pattern: /changes/st-04*/
+      roles: [security, engineering]
+    - pattern: /changes/st-1603/
+      roles: [security, operations]
+    - pattern: /python/raos/domain/http/
+      roles: [security, architecture]
+    - pattern: /python/raos/application/http/
+      roles: [security, engineering]
+    - pattern: /scripts/*security*
+      roles: [security, engineering]
+    - pattern: /tests/st04*/
+      roles: [security, engineering]
+    - pattern: /tests/st1603/
+      roles: [security, operations]
     - pattern: /.codex/
       roles: [security, operations]
     - pattern: /AGENTS.md
@@ -196,6 +216,26 @@ codeowners:
       roles: [security, operations]
     - pattern: /tests/st0107/
       roles: [security, operations]
+    - pattern: /changes/st-0005/contracts/
+      roles: [architecture, engineering, security, operations]
+    - pattern: /changes/st-0005/generated/
+      roles: [architecture, engineering, security, operations]
+    - pattern: /changes/st-0106/contracts/
+      roles: [architecture, engineering, security, operations]
+    - pattern: /changes/st-0106/generated/
+      roles: [architecture, engineering, security, operations]
+    - pattern: /changes/st-0107/contracts/
+      roles: [architecture, engineering, security, operations]
+    - pattern: /changes/st-0107/generated/
+      roles: [architecture, engineering, security, operations]
+    - pattern: /changes/st-0301/contracts/
+      roles: [architecture, engineering, data, security]
+    - pattern: /changes/st-0301/generated/
+      roles: [architecture, engineering, data, security]
+    - pattern: /changes/st-1603/contracts/
+      roles: [architecture, engineering, security, operations]
+    - pattern: /changes/st-1603/generated/
+      roles: [architecture, engineering, security, operations]
     - pattern: /.github/
       roles: [security, operations]
 pull_request_template:
@@ -204,6 +244,7 @@ pull_request_template:
     - contract_codegen
     - migration_database
     - authentication_authorization_credentials
+    - security_controls
     - publication_finance_kill_switch
     - infrastructure_deployment
     - provider_runtime
@@ -293,15 +334,29 @@ ruleset_policy:
         - /scripts/assert_network_denied.py
         - /tests/security/
       roles: [security]
+    security_controls:
+      patterns:
+        - /changes/st-04*/
+        - /changes/st-1603/
+        - /python/raos/domain/http/
+        - /python/raos/application/http/
+        - /scripts/*security*
+        - /tests/security/
+        - /tests/st04*/
+        - /tests/st1603/
+      roles: [security]
     publication_finance_kill_switch:
       patterns:
         - /python/raos/domain/finance/
         - /python/raos/application/finance/
+        - /python/raos/domain/publishing/
+        - /python/raos/application/publishing/
         - /scripts/*finance*
         - /scripts/*publication*
         - /scripts/*kill_switch*
         - /packages/**/*finance*
         - /packages/**/*publication*
+        - /tests/st09*/
       roles: [security]
     infrastructure_deployment:
       patterns:

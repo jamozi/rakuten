@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import subprocess
 from typing import Any
 
 import pytest
@@ -11,7 +12,11 @@ import yaml
 
 from conftest import REPOSITORY_ROOT
 from scripts import build_st0107_pr_governance as generator
-from scripts.classify_ci_scope import codeowner_pattern_matches
+from scripts.classify_ci_scope import (
+    codeowner_pattern_matches,
+    high_risk_categories,
+    load_contract as load_scope_contract,
+)
 
 
 EXPECTED_CHECKS = (
@@ -133,6 +138,7 @@ def test_mandatory_high_risk_categories_have_enforced_rows(
         "contract_codegen",
         "migration_database",
         "authentication_authorization_credentials",
+        "security_controls",
         "publication_finance_kill_switch",
         "infrastructure_deployment",
         "provider_runtime",
@@ -233,6 +239,88 @@ def test_governance_category_covers_ci_and_policy_sources(
             "python/raos/adapters/wordpresscom_oauth.py",
             ("@raos/security", "@raos/operations"),
         ),
+        (
+            "python/raos/domain/publishing/review_workflow.py",
+            ("@raos/editorial", "@raos/security"),
+        ),
+        (
+            "tests/st0904/test_contract.py",
+            ("@raos/editorial", "@raos/security"),
+        ),
+        (
+            "python/raos/domain/http/security.py",
+            ("@raos/security", "@raos/architecture"),
+        ),
+        (
+            "python/raos/application/http/security.py",
+            ("@raos/security", "@raos/engineering"),
+        ),
+        (
+            "tests/st0401/test_authentication.py",
+            ("@raos/security", "@raos/engineering"),
+        ),
+        (
+            "scripts/build_st1603_security_verification_pack.py",
+            ("@raos/security", "@raos/engineering"),
+        ),
+        (
+            "tests/st1603/test_contract.py",
+            ("@raos/security", "@raos/operations"),
+        ),
+        (
+            "changes/st-0106/contracts/developer-loop-scope.v1.json",
+            (
+                "@raos/architecture",
+                "@raos/engineering",
+                "@raos/security",
+                "@raos/operations",
+            ),
+        ),
+        (
+            "changes/st-0005/contracts/status-policy.v1.yaml",
+            (
+                "@raos/architecture",
+                "@raos/engineering",
+                "@raos/security",
+                "@raos/operations",
+            ),
+        ),
+        (
+            "changes/st-0107/contracts/pr-governance.v1.yaml",
+            (
+                "@raos/architecture",
+                "@raos/engineering",
+                "@raos/security",
+                "@raos/operations",
+            ),
+        ),
+        (
+            "changes/st-0301/generated/migration-catalog.v1.json",
+            (
+                "@raos/architecture",
+                "@raos/engineering",
+                "@raos/data",
+                "@raos/security",
+            ),
+        ),
+        (
+            "changes/st-1603/generated/security-verification-pack.reference-plan.v1.json",
+            (
+                "@raos/architecture",
+                "@raos/engineering",
+                "@raos/security",
+                "@raos/operations",
+            ),
+        ),
+        (
+            "python/raos/domain/ai/provider.py",
+            (
+                "@raos/ai",
+                "@raos/editorial",
+                "@raos/operations",
+                "@raos/security",
+            ),
+        ),
     ],
 )
 def test_representative_high_risk_paths_resolve_to_expected_final_codeowners(
@@ -242,6 +330,43 @@ def test_representative_high_risk_paths_resolve_to_expected_final_codeowners(
 ) -> None:
     rows = _codeowner_rows(generator.render_codeowners(governance_contract))
     assert _owners_for_path(rows, path) == expected_owners
+
+
+def test_every_tracked_high_risk_path_retains_all_effective_category_owners(
+    governance_contract: dict[str, Any],
+) -> None:
+    scope = load_scope_contract(REPOSITORY_ROOT)
+    categories = scope["mandatory_high_risk_categories"]
+    teams = governance_contract["owner_bindings"]["teams"]
+    rows = _codeowner_rows(generator.render_codeowners(governance_contract))
+    tracked = (
+        subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=REPOSITORY_ROOT,
+            check=True,
+            capture_output=True,
+        )
+        .stdout.decode("utf-8")
+        .split("\0")
+    )
+
+    gaps: list[tuple[str, list[str], tuple[str, ...]]] = []
+    for path in tracked:
+        if not path:
+            continue
+        matching_categories = high_risk_categories(path, scope)
+        if not matching_categories:
+            continue
+        required = {
+            teams[role]
+            for category_name in matching_categories
+            for role in categories[category_name]["required_roles"]
+        }
+        effective = _owners_for_path(rows, path)
+        if not required.issubset(effective):
+            gaps.append((path, sorted(required), effective))
+
+    assert gaps == []
 
 
 def test_pull_request_template_captures_the_short_development_loop(
@@ -275,6 +400,7 @@ def test_pull_request_template_captures_the_short_development_loop(
         ("Contract / generated types", "", "Architecture / Engineering"),
         ("Migration / database", "", "Data / Security"),
         ("Authentication / authorization / credentials", "", "Security"),
+        ("Security controls", "", "Security"),
         ("Publication / finance / kill switch", "", "Security"),
         ("Deployment / infrastructure", "", "Operations / Security"),
         ("Provider runtime", "", "Operations / Security"),

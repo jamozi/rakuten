@@ -48,6 +48,7 @@ EXPECTED_HIGH_RISK_CATEGORIES: Final = (
     "contract_codegen",
     "migration_database",
     "authentication_authorization_credentials",
+    "security_controls",
     "publication_finance_kill_switch",
     "infrastructure_deployment",
     "provider_runtime",
@@ -117,7 +118,7 @@ def load_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
     document = parsed["document"]
     if document != {
         "id": "RAOS-DEVELOPER-LOOP-SCOPE-001",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "story_id": "ST-0106",
     }:
         raise ClassificationError("scope contract identity differs")
