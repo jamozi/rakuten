@@ -96,8 +96,32 @@ required_test_evidence:
     - release, staging, publication, provider, and Production evidence
 deferred_verification_ledger:
   owner: integration owner
-  closure_wave: wave-freeze
-  entries: []
+  closure_wave: downstream owner maintenance after integration
+  entries:
+    - id: DLS-DEBT-001
+      introduced_by_story: ST-0106/ST-0107 integration slice
+      failing_command: >-
+        PYTHONDONTWRITEBYTECODE=1 .venv/bin/python
+        scripts/build_local_compose.py --check
+      observed_result: 'exit 1: generated artifact drift: changes/st-0202/manifest.yaml'
+      affected_owner_artifact: changes/st-0202/manifest.yaml
+      closure_wave: ST-0202 owner provenance regeneration
+      safe_impact: >-
+        The generated Compose runtime bytes did not drift; only the downstream
+        source/hash inventory is stale and this slice does not claim ST-0202 validation.
+    - id: DLS-DEBT-002
+      introduced_by_story: ST-0107 governance policy simplification
+      failing_command: >-
+        PYTHONDONTWRITEBYTECODE=1 .venv/bin/python
+        scripts/build_st1504_github_oidc.py --check
+      observed_result: 'exit 1: ERROR code=SOURCE_DIGEST_MISMATCH field=pinned_source'
+      affected_owner_artifact: >-
+        scripts/build_st1504_github_oidc.py PREDECESSOR_SOURCES and the
+        changes/st-1504 generated bundle
+      closure_wave: ST-1504 owner semantic reconciliation and regeneration
+      safe_impact: >-
+        The live ruleset operator remains disabled by unverified owner bindings;
+        no OIDC, deployment, provider, staging, or Production action was executed.
 open_decision_state:
   canonical_open_decisions_introduced: []
   unresolved_business_or_provider_values: []

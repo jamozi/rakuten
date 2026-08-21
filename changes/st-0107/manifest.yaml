@@ -37,8 +37,8 @@ source_artifacts:
   bytes: 1926
   sha256: debbb20474ae75e097e99edc8249b5577b1007a3883ecf206ad1eeeb6067bc54
 - uri: repo://changes/st-0107/DESIGN_HANDOFF_V1_DEVELOPER_LOOP_SIMPLIFICATION.yaml
-  bytes: 5059
-  sha256: 3320fd0ccc284465b9c897bfd06e862ab07ddf3969b3a832e2bf09cca8972d9c
+  bytes: 6412
+  sha256: afaf45d1203e91c82e1c13c6779ed55a7d401ab65ae26fb9d931f03f07748acb
 - uri: repo://changes/st-0107/README.md
   bytes: 10121
   sha256: 01bdae4bcf0b046e1419e9afe7f336fa129c6649595509e2ec7bf1d1c1ddce7a
