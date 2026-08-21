@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "eaa030a70e7b566804388760d574375427d8089538058851560b7d2c75b48a7c"
+    "f86698df9373bd9157464128cf088d8ed3aa6ab5854322b8d7338f65f7b89391"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "6ab444b2e1b9e775bdbdedb6d9ade4e22fcbc78066f88d5dc86985eaf863aabb"
+    "208f00462c3bbbf83548054c765c47f99d393229844f2fe95bf2eed46d41eaa0"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "f51f5fc7930a58751c46a11cb5b784204d9ac262c9bd94205ef6188e2bcf382e"
+    "ab92305f7dbaead089245a79fd42f27d0fd48283069228d299a843a7c79c2f36"
 )
 INSTALLED_LAUNCHER_PATH: Final = (
     "/home/minami/.local/share/raos/rakuten-live-smoke/runtime/"
@@ -2124,6 +2124,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "path",
             "publication",
             "response_sha256",
+            "credential_reflection",
             "forbidden",
             "request_disposition",
         )
@@ -2132,6 +2133,18 @@ def _validate_owner_local_read_integration(value: object) -> None:
         != ".secrets/rakuten-owner-local/results/<UTC-run-id>.json"
         or result.get("publication") != "ATOMIC_0600_NO_REPLACE"
         or result.get("response_sha256") != "SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES"
+        or result.get("credential_reflection")
+        != {
+            "inspected_record_values": (
+                "ALL_NORMALIZED_STRING_LIST_INTEGER_BOOLEAN_LEAVES"
+            ),
+            "representations": "RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES",
+            "match": "ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING",
+            "refusal": ("RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE"),
+            "failure_evidence": (
+                "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"
+            ),
+        }
         or result.get("forbidden")
         != [
             "raw body and provider headers or reflected error material",

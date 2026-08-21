@@ -205,6 +205,23 @@ class RakutenOwnerLocalService:
                     result=provider_result,
                 )
                 provider_result = None
+            else:
+                if type(credentials) is not RakutenOwnerLocalCredentials:
+                    fail_owner_local(
+                        RakutenOwnerLocalFailureCode.CREDENTIAL_STORE_INVALID,
+                        api=api,
+                        request_fingerprint=request_fingerprint,
+                    )
+                try:
+                    credentials.reject_reflected_result(provider_result)
+                except RakutenOwnerLocalFailure:
+                    failure = _response_failure(
+                        RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                        api=api,
+                        request_fingerprint=request_fingerprint,
+                        result=provider_result,
+                    )
+                    provider_result = None
 
         finished_at = self.clock()
         if failure is None:

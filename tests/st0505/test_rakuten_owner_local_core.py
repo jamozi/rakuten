@@ -4,10 +4,12 @@ from __future__ import annotations
 
 from dataclasses import replace
 from datetime import datetime, timezone
+import json
 import pickle
 
 import pytest
 
+from scripts import rakuten_owner_local as owner_local_cli
 from raos.application.catalog.rakuten_owner_local import RakutenOwnerLocalService
 from raos.domain.catalog.rakuten_item_search_live_request_v1 import (
     LiveItemSearchSortV1,
@@ -79,6 +81,37 @@ def _item_result(
         http_status=200,
         body_byte_count=256,
         response_sha256="a" * 64,
+        count=1,
+        page=1,
+        first=1,
+        last=1,
+        hits=1,
+        page_count=1,
+        records=(record,),
+    )
+
+
+def _product_result(
+    request: RakutenOwnerLocalProductSearchRequest,
+    *,
+    product_name: str = "untrusted synthetic product",
+) -> RakutenOwnerLocalProviderResult:
+    record = normalized_record(
+        RakutenOwnerLocalApi.PRODUCT_SEARCH,
+        {
+            "affiliateUrl": "https://example.rakuten.co.jp/affiliate-product",
+            "productCode": "synthetic-product-code",
+            "productId": "synthetic-product-id",
+            "productName": product_name,
+            "productUrlPC": "https://example.rakuten.co.jp/product",
+        },
+    )
+    return RakutenOwnerLocalProviderResult(
+        api=RakutenOwnerLocalApi.PRODUCT_SEARCH,
+        request_fingerprint=request.fingerprint,
+        http_status=200,
+        body_byte_count=256,
+        response_sha256="b" * 64,
         count=1,
         page=1,
         first=1,
@@ -270,12 +303,13 @@ def test_provider_result_summary_relationships_are_domain_invariants() -> None:
 
 
 class _Reader:
-    def __init__(self) -> None:
+    def __init__(self, credentials: RakutenOwnerLocalCredentials | None = None) -> None:
         self.calls = 0
+        self.credentials = _credentials() if credentials is None else credentials
 
     def read(self) -> RakutenOwnerLocalCredentials:
         self.calls += 1
-        return _credentials()
+        return self.credentials
 
 
 class _Transport:
@@ -354,6 +388,235 @@ def test_service_calls_transport_once_writes_once_and_marks_nonformal() -> None:
     assert captured.value.code is RakutenOwnerLocalFailureCode.REQUEST_ALREADY_ATTEMPTED
     assert transport.calls == 1
     assert len(writer.writes) == 1
+
+
+@pytest.mark.parametrize(
+    "credential_value",
+    ("synthetic-application", "synthetic-access", "synthetic-affiliate"),
+)
+@pytest.mark.parametrize(
+    "position",
+    ("url", "ordinary-text", "nested-url-list"),
+)
+def test_service_rejects_each_reflected_credential_before_persistence(
+    credential_value: str,
+    position: str,
+) -> None:
+    request = _item_request()
+    source_result = _item_result(request)
+    fields = source_result.records[0].as_object()
+    if position == "url":
+        fields["affiliateUrl"] = (
+            f"https://example.rakuten.co.jp/affiliate/{credential_value}"
+        )
+    elif position == "ordinary-text":
+        fields["itemName"] = f"untrusted {credential_value} reflected item"
+    else:
+        fields["smallImageUrls"] = [
+            f"https://example.rakuten.co.jp/{credential_value}/small.jpg"
+        ]
+    reflected_result = replace(
+        source_result,
+        records=(normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields),),
+    )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=_Transport(reflected_result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        envelope.failure.disposition
+        is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    )
+    assert envelope.failure.http_status == reflected_result.http_status
+    assert envelope.failure.body_byte_count == reflected_result.body_byte_count
+    assert envelope.failure.response_sha256 == reflected_result.response_sha256
+    assert envelope.request_count == 1
+    assert writer.writes == [envelope]
+    persisted = json.dumps(
+        envelope.as_result_object(),
+        ensure_ascii=True,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    for known_value in (
+        "synthetic-application",
+        "synthetic-access",
+        "synthetic-affiliate",
+    ):
+        assert known_value not in persisted
+        assert known_value not in str(envelope.failure)
+        assert known_value not in repr(envelope.failure)
+
+
+def test_service_rejects_numeric_credential_reflected_as_integer() -> None:
+    request = _item_request()
+    source_result = _item_result(request)
+    credentials = RakutenOwnerLocalCredentials(
+        profile=RAKUTEN_OWNER_LOCAL_PROFILE,
+        _application_id=b"1000",
+        _access_key=b"synthetic-access",
+        _affiliate_id=b"synthetic-affiliate",
+    )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(credentials),
+        transport=_Transport(source_result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert envelope.failure.request_count == 1
+    assert envelope.failure.http_status == 200
+    assert "1000" not in json.dumps(envelope.as_result_object(), sort_keys=True)
+    assert writer.writes == [envelope]
+
+
+def test_service_rejects_url_encoded_credential_reflection() -> None:
+    request = _item_request()
+    source_result = _item_result(request)
+    fields = source_result.records[0].as_object()
+    fields["affiliateUrl"] = (
+        "https://example.rakuten.co.jp/affiliate/synthetic%2fapplication"
+    )
+    reflected_result = replace(
+        source_result,
+        records=(normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields),),
+    )
+    credentials = RakutenOwnerLocalCredentials(
+        profile=RAKUTEN_OWNER_LOCAL_PROFILE,
+        _application_id=b"synthetic/application",
+        _access_key=b"synthetic-access",
+        _affiliate_id=b"synthetic-affiliate",
+    )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(credentials),
+        transport=_Transport(reflected_result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert envelope.failure.request_count == 1
+    persisted = json.dumps(envelope.as_result_object(), sort_keys=True)
+    assert "synthetic/application" not in persisted
+    assert "synthetic%2fapplication" not in persisted
+    assert writer.writes == [envelope]
+
+
+def test_service_rejects_product_credential_reflection() -> None:
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.PRODUCT_SEARCH)
+    assert type(request) is RakutenOwnerLocalProductSearchRequest
+    result = _product_result(
+        request,
+        product_name="untrusted synthetic-affiliate reflected product",
+    )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.PRODUCT_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert envelope.failure.request_count == 1
+    persisted = json.dumps(envelope.as_result_object(), sort_keys=True)
+    assert "synthetic-affiliate" not in persisted
+    assert envelope.as_result_object()["products"] is None
+    assert writer.writes == [envelope]
+
+
+def test_result_binding_mismatch_precedes_credential_reflection() -> None:
+    request = _item_request()
+    source_result = _item_result(request)
+    fields = source_result.records[0].as_object()
+    fields["itemName"] = "untrusted synthetic-access reflected item"
+    result = replace(
+        source_result,
+        request_fingerprint="b" * 64,
+        records=(normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields),),
+    )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert envelope.failure.request_count == 1
+    assert "synthetic-access" not in json.dumps(
+        envelope.as_result_object(), sort_keys=True
+    )
+
+
+def test_near_miss_credential_text_remains_a_valid_result() -> None:
+    request = _item_request()
+    source_result = _item_result(request)
+    fields = source_result.records[0].as_object()
+    fields["itemName"] = "untrusted synthetic-accesx item"
+    result = replace(
+        source_result,
+        records=(normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields),),
+    )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.request_count == 1
+    assert "synthetic-accesx" in json.dumps(envelope.as_result_object(), sort_keys=True)
+
+
+def test_cli_emits_only_fixed_failure_for_credential_reflection() -> None:
+    request = _item_request()
+    source_result = _item_result(request)
+    fields = source_result.records[0].as_object()
+    fields["itemName"] = "untrusted synthetic-access reflected item"
+    result = replace(
+        source_result,
+        records=(normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields),),
+    )
+    code, message = owner_local_cli._execute_request(  # noqa: SLF001
+        RakutenOwnerLocalApi.ITEM_SEARCH.value,
+        request,
+        reader=_Reader(),
+        writer=_Writer(),
+        transport=_Transport(result),
+    )
+
+    assert code == 1
+    assert message == "RAKUTEN_OWNER_LOCAL_FAIL_RESPONSE_SCHEMA_DRIFT"
+    for known_value in (
+        "synthetic-application",
+        "synthetic-access",
+        "synthetic-affiliate",
+    ):
+        assert known_value not in message
 
 
 def test_service_preserves_ambiguous_one_attempt_as_a_written_failure() -> None:

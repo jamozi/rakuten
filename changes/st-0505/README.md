@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/eaa030a70e7b566804388760d574375427d8089538058851560b7d2c75b48a7c/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/f86698df9373bd9157464128cf088d8ed3aa6ab5854322b8d7338f65f7b89391/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`6ab444b2e1b9e775bdbdedb6d9ade4e22fcbc78066f88d5dc86985eaf863aabb`,
+`208f00462c3bbbf83548054c765c47f99d393229844f2fe95bf2eed46d41eaa0`,
 and install-stage SHA-256
-`f51f5fc7930a58751c46a11cb5b784204d9ac262c9bd94205ef6188e2bcf382e`.
+`ab92305f7dbaead089245a79fd42f27d0fd48283069228d299a843a7c79c2f36`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -288,7 +288,14 @@ SHA-256 of the complete bounded raw response bytes, precise request disposition,
 summary, and allowlisted normalized records. Raw bodies/headers, provider error
 descriptions, captions, review bodies or aggregates, affiliate rate, EPC, RPM,
 revenue, and all credentials are forbidden. Stored provider fields are always
-classified `UNTRUSTED_PROVIDER_DATA`.
+classified `UNTRUSTED_PROVIDER_DATA`. After result identity and request binding
+but before a success envelope or result write, every normalized record string,
+URL/list member, and canonical numeric/boolean representation is compared with
+all three known non-empty credential values. Raw UTF-8 and one percent-decoding
+pass are checked so reflected query material cannot bypass the boundary. Any
+match fails with the fixed `RESPONSE_SCHEMA_DRIFT` code while retaining only
+complete HTTP/body/SHA metadata and `request_count=1`; the matched value and the
+normalized record are neither redacted nor persisted.
 
 Every local result is `OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE`. Implementation
 and fake tests do not execute a real credential read, provider call, formal

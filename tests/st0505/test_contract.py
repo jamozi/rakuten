@@ -200,6 +200,17 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
         "PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY"
     )
+    assert owner["normalized_result"]["credential_reflection"] == {
+        "inspected_record_values": (
+            "ALL_NORMALIZED_STRING_LIST_INTEGER_BOOLEAN_LEAVES"
+        ),
+        "representations": "RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES",
+        "match": "ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING",
+        "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+        "failure_evidence": (
+            "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"
+        ),
+    }
     assert owner["verification"] == {
         "fake_and_recorded_only": True,
         "real_credentials": "NOT_READ",

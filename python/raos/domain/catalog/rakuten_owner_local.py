@@ -10,7 +10,7 @@ import hashlib
 import json
 import re
 from typing import NoReturn, SupportsIndex, TypeAlias, cast
-from urllib.parse import urlsplit
+from urllib.parse import unquote_to_bytes, urlsplit
 
 from raos.domain.catalog.rakuten_item_search_live_request_v1 import (
     LIVE_ITEM_SEARCH_ELEMENTS_V1,
@@ -539,6 +539,43 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
 
     def affiliate_id_query_value(self) -> str:
         return self._affiliate_id.decode("ascii", errors="strict")
+
+    def reject_reflected_result(self, result: RakutenOwnerLocalProviderResult) -> None:
+        """Reject normalized provider values containing any exact credential value."""
+
+        if type(result) is not RakutenOwnerLocalProviderResult:
+            fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
+        credential_values = (
+            self._application_id,
+            self._access_key,
+            self._affiliate_id,
+        )
+        for record in result.records:
+            for _name, candidate in record.fields:
+                text_values: tuple[str, ...]
+                if type(candidate) is str:
+                    text_values = (candidate,)
+                elif type(candidate) is tuple:
+                    text_values = candidate
+                elif type(candidate) is bool:
+                    text_values = ("true" if candidate else "false",)
+                elif type(candidate) is int:
+                    text_values = (str(candidate),)
+                else:
+                    continue
+                for text in text_values:
+                    encoded_values = (
+                        text.encode("utf-8", errors="strict"),
+                        unquote_to_bytes(text),
+                    )
+                    if any(
+                        credential in encoded
+                        for encoded in encoded_values
+                        for credential in credential_values
+                    ):
+                        fail_owner_local(
+                            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+                        )
 
 
 NormalizedValue: TypeAlias = None | bool | int | str | tuple[str, ...]

@@ -267,10 +267,10 @@ owner_local_read_integration:
   runtime:
     name: rakuten-owner-local
     root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    bundle_sha256: eaa030a70e7b566804388760d574375427d8089538058851560b7d2c75b48a7c
+    bundle_sha256: f86698df9373bd9157464128cf088d8ed3aa6ab5854322b8d7338f65f7b89391
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 6ab444b2e1b9e775bdbdedb6d9ade4e22fcbc78066f88d5dc86985eaf863aabb
-    install_stage_sha256: f51f5fc7930a58751c46a11cb5b784204d9ac262c9bd94205ef6188e2bcf382e
+    installer_sha256: 208f00462c3bbbf83548054c765c47f99d393229844f2fe95bf2eed46d41eaa0
+    install_stage_sha256: ab92305f7dbaead089245a79fd42f27d0fd48283069228d299a843a7c79c2f36
     install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
     installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
     installer_credential_access: FORBIDDEN
@@ -342,6 +342,12 @@ owner_local_read_integration:
     path: .secrets/rakuten-owner-local/results/<UTC-run-id>.json
     publication: ATOMIC_0600_NO_REPLACE
     response_sha256: SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES
+    credential_reflection:
+      inspected_record_values: ALL_NORMALIZED_STRING_LIST_INTEGER_BOOLEAN_LEAVES
+      representations: RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES
+      match: ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING
+      refusal: RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE
+      failure_evidence: COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE
     forbidden:
       - raw body and provider headers or reflected error material
       - credentials or credential aliases containing values
