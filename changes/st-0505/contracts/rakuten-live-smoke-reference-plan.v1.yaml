@@ -267,10 +267,10 @@ owner_local_read_integration:
   runtime:
     name: rakuten-owner-local
     root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    bundle_sha256: 5d04203ba5cc356ad21738b20b707a95f5c005b2f6376d447d74f16eecc30518
+    bundle_sha256: 424672d17a7425eb132e492f78bdc19cc5e1faa7272cf434d79fd031168da686
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 68ca984c26c214f824014ed4a25925de66a2504dac1f174beff18a3af1f970ba
-    install_stage_sha256: cf4a3e253a69d4004130f440037e663da7ad429dae26a733884bf5ad9d994931
+    installer_sha256: 463a9cb7be142188aa33ae4be731efc782af8ddbe40794645d176e7aace5347d
+    install_stage_sha256: 20cdc564f756e247d327d19b8598c865206ab8c878ab954b19373a08c578322c
     install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
     installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
     installer_credential_access: FORBIDDEN
@@ -344,6 +344,53 @@ owner_local_read_integration:
     path: .secrets/rakuten-owner-local/results/<UTC-run-id>.json
     publication: ATOMIC_0600_NO_REPLACE
     response_sha256: SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES
+    envelope:
+      schema: RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1
+      version: 1
+      exact_object_keys:
+        - schema
+        - version
+        - run_id
+        - started_at
+        - finished_at
+        - api
+        - endpoint_id
+        - api_version
+        - outcome
+        - diagnostic_code
+        - request_fingerprint
+        - request_disposition
+        - request_count
+        - retry_count
+        - pagination_count
+        - http_status
+        - body_byte_count
+        - response_sha256
+        - count
+        - page
+        - first
+        - last
+        - hits
+        - pageCount
+        - items
+        - products
+        - provider_data_classification
+        - evidence_authority
+        - formal_tst_016
+        - staging
+        - production
+        - od_015
+      summary_fields:
+        - count
+        - page
+        - first
+        - last
+        - hits
+        - pageCount
+      success_summary: VALIDATED_INTEGER_VALUES
+      failure_summary: ALL_SIX_KEYS_NULL
+      canonical_json: UTF8_SORTED_KEYS_COMPACT_TRAILING_LF
+      compatibility: REPOSITORY_V1_COMPLETION_RUNTIME_EVIDENCE_NOT_EXECUTED_NO_DEPLOYED_MIGRATION
     url_validation:
       syntax:
         scheme: EXACT_LOWERCASE_HTTPS

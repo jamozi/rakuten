@@ -14,6 +14,7 @@ from urllib.parse import parse_qs, urlsplit
 
 import pytest
 
+from raos.application.catalog.rakuten_owner_local import RakutenOwnerLocalService
 from raos.adapters import rakuten_owner_local as adapter
 from raos.adapters.rakuten_owner_local import (
     DirectRakutenOwnerLocalTransport,
@@ -1650,6 +1651,14 @@ def _success_envelope() -> RakutenOwnerLocalResultEnvelope:
     )
 
 
+class _StaticResultTransport:
+    def __init__(self, result: RakutenOwnerLocalProviderResult) -> None:
+        self._result = result
+
+    def execute(self, *_arguments: object) -> RakutenOwnerLocalProviderResult:
+        return self._result
+
+
 def test_result_writer_preflight_no_replace_and_sanitized_metadata(
     tmp_path: Path,
 ) -> None:
@@ -1670,8 +1679,23 @@ def test_result_writer_preflight_no_replace_and_sanitized_metadata(
     assert value["production"] == "NOT_EXECUTED"
     assert value["od_015"] == "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED"
     assert value["provider_data_classification"] == "UNTRUSTED_PROVIDER_DATA"
+    assert tuple(
+        value[field]
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    ) == (1, 1, 1, 1, 1, 1)
     assert len(value["items"]) == 1
     raw = path.read_bytes()
+    assert raw == (
+        json.dumps(
+            envelope.as_result_object(),
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        + b"\n"
+    )
+    assert tuple(value) == tuple(sorted(envelope.as_result_object()))
     assert b"fixture-key" not in raw
     assert b"reviewCount" not in raw
     assert b"reviewAverage" not in raw
@@ -1686,6 +1710,58 @@ def test_result_writer_preflight_no_replace_and_sanitized_metadata(
     )
     assert duplicate.value.http_status == 200
     assert duplicate.value.response_sha256 == envelope.provider_result.response_sha256
+
+
+def test_result_writer_persists_closed_failure_schema_for_credential_reflection(
+    tmp_path: Path,
+) -> None:
+    root = _repository(tmp_path)
+    OwnerPrivateRakutenOwnerLocalCredentialStore(root).setup(
+        _credentials(application=b"1")
+    )
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.ITEM_SEARCH)
+    source = _success_envelope()
+    assert source.provider_result is not None
+    writer = OwnerPrivateRakutenOwnerLocalResultWriter(root)
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=OwnerPrivateRakutenOwnerLocalCredentialReader(root),
+        transport=_StaticResultTransport(source.provider_result),
+        result_writer=writer,
+    ).run(
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        request,
+        run_id="20260821T120001.000000Z-0123456789abcdef0123456789abcdef",
+    )
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert envelope.failure.request_count == 1
+    path = root / f".secrets/rakuten-owner-local/results/{envelope.run_id}.json"
+    raw = path.read_bytes()
+    value = json.loads(raw)
+    assert tuple(value) == tuple(sorted(envelope.as_result_object()))
+    assert all(
+        value[field] is None
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    )
+    assert value["items"] is None
+    assert value["products"] is None
+    assert value["provider_data_classification"] is None
+    assert raw == (
+        json.dumps(
+            envelope.as_result_object(),
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        + b"\n"
+    )
+    assert b"fixture-key" not in raw
+    assert b"fixture-affiliate" not in raw
 
 
 def test_result_rollback_failure_preserves_metadata_and_blocks_future_preflight(

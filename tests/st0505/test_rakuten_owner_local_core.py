@@ -39,6 +39,40 @@ from raos.domain.catalog.rakuten_owner_local import (
 RUN_ID = "20260821T010203.123456Z-0123456789abcdef0123456789abcdef"
 STARTED = datetime(2026, 8, 21, 1, 2, 3, tzinfo=timezone.utc)
 FINISHED = datetime(2026, 8, 21, 1, 2, 4, tzinfo=timezone.utc)
+RESULT_OBJECT_KEYS = (
+    "schema",
+    "version",
+    "run_id",
+    "started_at",
+    "finished_at",
+    "api",
+    "endpoint_id",
+    "api_version",
+    "outcome",
+    "diagnostic_code",
+    "request_fingerprint",
+    "request_disposition",
+    "request_count",
+    "retry_count",
+    "pagination_count",
+    "http_status",
+    "body_byte_count",
+    "response_sha256",
+    "count",
+    "page",
+    "first",
+    "last",
+    "hits",
+    "pageCount",
+    "items",
+    "products",
+    "provider_data_classification",
+    "evidence_authority",
+    "formal_tst_016",
+    "staging",
+    "production",
+    "od_015",
+)
 
 
 def _credentials() -> RakutenOwnerLocalCredentials:
@@ -761,7 +795,9 @@ def test_service_calls_transport_once_writes_once_and_marks_nonformal() -> None:
     assert persisted["formal_tst_016"] == "NOT_EXECUTED"
     assert persisted["staging"] == "NOT_EXECUTED"
     assert persisted["production"] == "NOT_EXECUTED"
+    assert tuple(persisted) == RESULT_OBJECT_KEYS
     assert persisted["count"] == persisted["page"] == persisted["hits"] == 1
+    assert persisted["first"] == persisted["last"] == 1
     assert persisted["pageCount"] == 1
     assert type(persisted["items"]) is list
     assert persisted["products"] is None
@@ -772,6 +808,58 @@ def test_service_calls_transport_once_writes_once_and_marks_nonformal() -> None:
     assert captured.value.code is RakutenOwnerLocalFailureCode.REQUEST_ALREADY_ATTEMPTED
     assert transport.calls == 1
     assert len(writer.writes) == 1
+
+
+@pytest.mark.parametrize(
+    "api",
+    (RakutenOwnerLocalApi.ITEM_SEARCH, RakutenOwnerLocalApi.PRODUCT_SEARCH),
+)
+def test_success_and_empty_results_serialize_all_six_summary_scalars(
+    api: RakutenOwnerLocalApi,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        nonempty = _item_result(request)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        nonempty = _product_result(request)
+
+    for result, expected in (
+        (nonempty, (1, 1, 1, 1, 1, 1)),
+        (
+            replace(
+                nonempty,
+                count=0,
+                first=0,
+                last=0,
+                page_count=0,
+                records=(),
+            ),
+            (0, 1, 0, 0, 1, 0),
+        ),
+    ):
+        writer = _Writer()
+        envelope = RakutenOwnerLocalService(
+            credential_reader=_Reader(),
+            transport=_Transport(result),
+            result_writer=writer,
+            clock=_clock(),  # type: ignore[arg-type]
+        ).run(api, request, run_id=RUN_ID)
+
+        persisted = envelope.as_result_object()
+        assert tuple(persisted) == RESULT_OBJECT_KEYS
+        assert (
+            tuple(
+                persisted[field]
+                for field in ("count", "page", "first", "last", "hits", "pageCount")
+            )
+            == expected
+        )
+        collection = "items" if api is RakutenOwnerLocalApi.ITEM_SEARCH else "products"
+        assert persisted[collection] == (
+            [result.records[0].as_object()] if result.records else []
+        )
+        assert writer.writes == [envelope]
 
 
 @pytest.mark.parametrize(
@@ -1025,8 +1113,10 @@ def test_service_rejects_each_credential_reflected_in_each_summary_scalar(
     assert persisted["products"] is None
     assert persisted["provider_data_classification"] is None
     assert all(
-        persisted[field] is None for field in ("count", "page", "hits", "pageCount")
+        persisted[field] is None
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
     )
+    assert tuple(persisted) == RESULT_OBJECT_KEYS
     assert writer.writes == [envelope]
 
 
@@ -1090,7 +1180,47 @@ def test_cli_emits_only_fixed_failure_for_summary_credential_reflection() -> Non
     assert envelope.provider_result is None
     assert envelope.failure is not None
     assert envelope.failure.request_count == 1
-    assert envelope.as_result_object()["items"] is None
+    persisted = envelope.as_result_object()
+    assert tuple(persisted) == RESULT_OBJECT_KEYS
+    assert persisted["items"] is None
+    assert all(
+        persisted[field] is None
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    )
+
+
+@pytest.mark.parametrize(
+    "api",
+    (RakutenOwnerLocalApi.ITEM_SEARCH, RakutenOwnerLocalApi.PRODUCT_SEARCH),
+)
+def test_cli_success_writes_complete_summary_envelope(
+    api: RakutenOwnerLocalApi,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        result = _item_result(request)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        result = _product_result(request)
+    writer = _Writer()
+
+    code, message = owner_local_cli._execute_request(  # noqa: SLF001
+        api.value,
+        request,
+        reader=_Reader(),
+        writer=writer,
+        transport=_Transport(result),
+    )
+
+    assert code == 0
+    assert message == owner_local_cli.OWNER_LOCAL_OK
+    assert len(writer.writes) == 1
+    persisted = writer.writes[0].as_result_object()
+    assert tuple(persisted) == RESULT_OBJECT_KEYS
+    assert tuple(
+        persisted[field]
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    ) == (1, 1, 1, 1, 1, 1)
 
 
 def test_service_rejects_url_encoded_credential_reflection() -> None:
@@ -1267,6 +1397,12 @@ def test_service_preserves_ambiguous_one_attempt_as_a_written_failure() -> None:
     assert envelope.request_count == 1
     assert transport.calls == 1
     assert writer.writes == [envelope]
+    persisted = envelope.as_result_object()
+    assert tuple(persisted) == RESULT_OBJECT_KEYS
+    assert all(
+        persisted[field] is None
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    )
 
 
 def test_fixed_smoke_is_one_page_standard_for_both_apis() -> None:

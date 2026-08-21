@@ -1093,6 +1093,8 @@ class RakutenOwnerLocalResultEnvelope(_RedactedValue):
             ),
             "count": result.count if result is not None else None,
             "page": result.page if result is not None else None,
+            "first": result.first if result is not None else None,
+            "last": result.last if result is not None else None,
             "hits": result.hits if result is not None else None,
             "pageCount": result.page_count if result is not None else None,
             "items": (

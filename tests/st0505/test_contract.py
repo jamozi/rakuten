@@ -220,6 +220,19 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
         "PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY"
     )
+    assert owner["normalized_result"]["envelope"] == {
+        "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1",
+        "version": 1,
+        "exact_object_keys": list(generator.EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
+        "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
+        "success_summary": "VALIDATED_INTEGER_VALUES",
+        "failure_summary": "ALL_SIX_KEYS_NULL",
+        "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
+        "compatibility": (
+            "REPOSITORY_V1_COMPLETION_RUNTIME_EVIDENCE_NOT_EXECUTED_NO_"
+            "DEPLOYED_MIGRATION"
+        ),
+    }
     assert owner["normalized_result"]["url_validation"] == {
         "syntax": {
             "scheme": "EXACT_LOWERCASE_HTTPS",

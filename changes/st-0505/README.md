@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/5d04203ba5cc356ad21738b20b707a95f5c005b2f6376d447d74f16eecc30518/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/424672d17a7425eb132e492f78bdc19cc5e1faa7272cf434d79fd031168da686/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`68ca984c26c214f824014ed4a25925de66a2504dac1f174beff18a3af1f970ba`,
+`463a9cb7be142188aa33ae4be731efc782af8ddbe40794645d176e7aace5347d`,
 and install-stage SHA-256
-`cf4a3e253a69d4004130f440037e663da7ad429dae26a733884bf5ad9d994931`.
+`20cdc564f756e247d327d19b8598c865206ab8c878ab954b19373a08c578322c`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -299,7 +299,17 @@ SHA-256 of the complete bounded raw response bytes, precise request disposition,
 summary, and allowlisted normalized records. Raw bodies/headers, provider error
 descriptions, captions, review bodies or aggregates, affiliate rate, EPC, RPM,
 revenue, and all credentials are forbidden. Stored provider fields are always
-classified `UNTRUSTED_PROVIDER_DATA`. Every returned Item record requires a
+classified `UNTRUSTED_PROVIDER_DATA`. The closed
+`RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1` object always contains the same
+exact keys for success and failure. Success persists all six validated summary
+scalars in the in-memory result-object order `count`, `page`, `first`, `last`,
+`hits`, `pageCount`;
+failure retains those six keys with `null` values, including sanitized
+credential-reflection failures. Result files are compact UTF-8 JSON with
+lexicographically sorted keys and one trailing LF. Adding `first` and `last`
+completes the repository V1 contract while runtime install and execution evidence
+remain `NOT_EXECUTED`; there is no deployed-result migration or compatibility
+claim. Every returned Item record requires a
 non-null, non-empty, bounded UTF-8 `itemCode` and `itemName`; every returned
 Product record requires the same shape for `productCode` and `productId`.
 `shopCode`, `shopName`, and `productName` retain their existing optional and

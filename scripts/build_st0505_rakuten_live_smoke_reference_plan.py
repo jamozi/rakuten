@@ -96,16 +96,50 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "5d04203ba5cc356ad21738b20b707a95f5c005b2f6376d447d74f16eecc30518"
+    "424672d17a7425eb132e492f78bdc19cc5e1faa7272cf434d79fd031168da686"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "68ca984c26c214f824014ed4a25925de66a2504dac1f174beff18a3af1f970ba"
+    "463a9cb7be142188aa33ae4be731efc782af8ddbe40794645d176e7aace5347d"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "cf4a3e253a69d4004130f440037e663da7ad429dae26a733884bf5ad9d994931"
+    "20cdc564f756e247d327d19b8598c865206ab8c878ab954b19373a08c578322c"
+)
+EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS: Final = (
+    "schema",
+    "version",
+    "run_id",
+    "started_at",
+    "finished_at",
+    "api",
+    "endpoint_id",
+    "api_version",
+    "outcome",
+    "diagnostic_code",
+    "request_fingerprint",
+    "request_disposition",
+    "request_count",
+    "retry_count",
+    "pagination_count",
+    "http_status",
+    "body_byte_count",
+    "response_sha256",
+    "count",
+    "page",
+    "first",
+    "last",
+    "hits",
+    "pageCount",
+    "items",
+    "products",
+    "provider_data_classification",
+    "evidence_authority",
+    "formal_tst_016",
+    "staging",
+    "production",
+    "od_015",
 )
 INSTALLED_LAUNCHER_PATH: Final = (
     "/home/minami/.local/share/raos/rakuten-live-smoke/runtime/"
@@ -1508,6 +1542,8 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "result.page_count,",
             "mandatory_record_fields(self.api)",
             "validated_response_text(value)",
+            '"first": result.first if result is not None else None,',
+            '"last": result.last if result is not None else None,',
             "_MALFORMED_PERCENT_ESCAPE =",
             'unicodedata.category(character) == "Cc"',
             "_validate_https_host(parsed.hostname, parsed.netloc)",
@@ -2195,6 +2231,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "path",
             "publication",
             "response_sha256",
+            "envelope",
             "url_validation",
             "mandatory_text",
             "credential_reflection",
@@ -2206,6 +2243,20 @@ def _validate_owner_local_read_integration(value: object) -> None:
         != ".secrets/rakuten-owner-local/results/<UTC-run-id>.json"
         or result.get("publication") != "ATOMIC_0600_NO_REPLACE"
         or result.get("response_sha256") != "SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES"
+        or result.get("envelope")
+        != {
+            "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1",
+            "version": 1,
+            "exact_object_keys": list(EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
+            "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
+            "success_summary": "VALIDATED_INTEGER_VALUES",
+            "failure_summary": "ALL_SIX_KEYS_NULL",
+            "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
+            "compatibility": (
+                "REPOSITORY_V1_COMPLETION_RUNTIME_EVIDENCE_NOT_EXECUTED_NO_"
+                "DEPLOYED_MIGRATION"
+            ),
+        }
         or result.get("url_validation")
         != {
             "syntax": {
