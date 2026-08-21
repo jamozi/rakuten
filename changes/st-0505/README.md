@@ -1,7 +1,7 @@
 # ST-0505 — Rakuten owner-local one-call smoke
 
 Classification: `SOURCE_DERIVED_EXPLICIT_LOCAL_RAKUTEN_LIVE_SMOKE_PLAN`.
-Contract revision `2.2.0` implements an installable, owner-local, explicit
+Contract revision `3.0.0` implements an installable, owner-local, explicit
 Rakuten Ichiba Item Search 2026-07-01 smoke. Default activation remains
 disabled. This repository revision, its tests, and its generated plan contain
 no live-provider execution evidence and do not satisfy formal TST-016,
@@ -194,3 +194,98 @@ Generated JSON and manifest output are owned only by the builder:
 python3 scripts/build_st0505_rakuten_live_smoke_reference_plan.py
 python3 scripts/build_st0505_rakuten_live_smoke_reference_plan.py --check
 ```
+
+## Separate owner-local provider production-read integration
+
+`rakuten-owner-local` is a second, side-by-side installed runtime. It does not
+replace, migrate, invoke, or change the staging-bound `rakuten-live-smoke`
+runtime above. The word `production` in the credential profile means only that
+the credential belongs to Rakuten's provider-production API. It does not select
+RAOS Production, ENV-STAGING, release authority, or formal TST-016.
+
+The credential-blind installer publishes a reviewed versioned bundle only at
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/28c3729a25171c6c2128db1085c31d59cb0016aad59398c7a8f48bf343c623d8/`.
+No repository Make target is an authoritative secret-bearing entry. The exact
+static-BusyBox install and invocation commands are emitted by the generated
+contract after the final payload hashes are fixed. Direct repository Python,
+installer, or launcher execution refuses before prompt, credential, result, or
+network access.
+
+The generated plan binds launcher SHA-256
+`27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
+installer SHA-256
+`07a651ded4a59a3a2f52bfab7624ad6512a77400fcb94a69751533215124edd0`,
+and install-stage SHA-256
+`e7e416b2bceceb821e8178641c9097aa9e7309b182fb3b384be9c5d1a461eeb3`.
+Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
+before the installed launcher body. Request-file invocation uses the same gate,
+with the selected API and absolute path passed only as positional arguments;
+shell interpolation of request material is forbidden.
+
+The installed command surface is closed:
+
+- `setup` creates the absent exact-schema credential record after hidden,
+  repeated `/dev/tty` entry and a hidden confirmation.
+- `rotate` atomically replaces one already-valid credential record after the
+  same hidden entry flow.
+- `doctor` checks result-store metadata before reading and validating the
+  credential record and never constructs a network transport.
+- `list-apis` emits only the fixed registry containing `item-search` and
+  `product-search`.
+- `request --api <item-search|product-search> --request-file <absolute-json>`
+  performs at most one reviewed read request.
+- `smoke --api <item-search|product-search>` uses fixed keyword `収納`, hits 1,
+  page 1, and standard sort for one request.
+
+Credentials exist only at
+`.secrets/rakuten-owner-local/credentials.v1.json`. Exact keys are
+`schema_version: 1`, `profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API`,
+`application_id`, `access_key`, and `affiliate_id`. Private ancestors are
+mode `0700`; the regular single-link file is mode `0600`. Descriptor-relative
+`O_NOFOLLOW` reads reject symlinks, owner/mode/type/link drift, oversized or
+unstable bytes, duplicate/unknown/missing keys, controls, and edge whitespace.
+Setup never overwrites; rotation uses an atomic replacement and directory
+fsync. Secret values never appear in argv, environment, stdout, stderr,
+exceptions, repr, result files, generated files, or install metadata.
+
+Item request V1 wraps the unchanged ST-0502
+`RakutenItemSearchLiveRequestV1`. It requires exactly one of keyword, genre,
+item, or shop, page 1, hits 1 through 30, and only the existing safe sorts and
+elements. Review aggregates and affiliate-rate fields remain excluded from the
+normalized result even though the unchanged predecessor element projection may
+include other inert product-description fields. Product request V1 permits a
+keyword with optional genre, a genre alone, or one exclusive product ID/code;
+it fixes page 1 and allows only standard sort. Product review-derived sort and
+review aggregates are unavailable.
+
+Both adapters fix `openapi.rakuten.co.jp:443`, their reviewed versioned paths,
+GET, format JSON/version 2, and exact elements. `applicationId` and
+`affiliateId` are query values. The access credential is sent only in the
+header whose name is `accessKey`; it is never a query value. Proxy discovery,
+TLS override environment, redirects, retries, pagination follow-ups,
+concurrency, arbitrary endpoints/headers/parameters, and IP fallback are
+rejected. Every resolved candidate must be a public address before the first
+candidate is pinned for the sole TCP attempt. TLS SNI, certificate hostname
+verification, and HTTP host remain the fixed Rakuten hostname.
+
+Complete bodies are bounded to 2 MiB and validated as strict UTF-8 JSON with
+duplicate-key, nonfinite-number, depth, node, summary, collection, and field
+checks. Product Search's official page does not unambiguously name its
+format-version-2 collection envelope, so the adapter recognizes only the two
+reviewed literal envelope names documented in its tests and treats any other
+shape as schema drift; this does not permit an arbitrary schema fallback.
+
+Results are atomically and exclusively published mode `0600` under
+`.secrets/rakuten-owner-local/results/<UTC-run-id>.json`. They contain the
+request fingerprint, timestamps, fixed endpoint/version, HTTP/body metadata,
+SHA-256 of the complete bounded raw response bytes, precise request disposition,
+summary, and allowlisted normalized records. Raw bodies/headers, provider error
+descriptions, captions, review bodies or aggregates, affiliate rate, EPC, RPM,
+revenue, and all credentials are forbidden. Stored provider fields are always
+classified `UNTRUSTED_PROVIDER_DATA`.
+
+Every local result is `OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE`. Implementation
+and fake tests do not execute a real credential read, provider call, formal
+TST-016, ENV-STAGING, release, or RAOS Production. OD-015 remains blocking and
+unresolved with safe default `RECORDED_FIXTURE_ONLY`; the existing recorded
+ST-0502 service remains unchanged.

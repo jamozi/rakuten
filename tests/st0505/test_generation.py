@@ -55,9 +55,18 @@ def test_manifest_binds_sources_predecessor_generated_plan_and_helper() -> None:
         (generator.REPO_ROOT / generator.MANIFEST_PATH).read_bytes()
     )
     reference = (generator.REPO_ROOT / generator.REFERENCE_PLAN_PATH).read_bytes()
-    assert manifest["document"]["version"] == "2.2.0"
+    assert manifest["document"]["version"] == "3.0.0"
     assert manifest["boundary"]["default_activation"] == "DISABLED"
     assert manifest["boundary"]["installed_entry"] == "INSTALLABLE_NOT_INSTALLED"
+    assert manifest["boundary"]["owner_local_read_entry"] == (
+        "INSTALLABLE_NOT_INSTALLED_OR_EXECUTED"
+    )
+    assert manifest["boundary"]["owner_local_evidence_authority"] == (
+        "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"
+    )
+    assert manifest["boundary"]["owner_local_provider_data"] == (
+        "UNTRUSTED_PROVIDER_DATA"
+    )
     assert manifest["boundary"]["repository_make_entrypoints"] == (
         "NOT_PROVIDED_USE_REVIEWED_DIRECT_COMMANDS"
     )

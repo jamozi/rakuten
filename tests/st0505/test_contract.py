@@ -32,7 +32,7 @@ def test_plan_has_exact_sections_and_installable_disabled_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
-    assert plan["document"]["version"] == "2.2.0"
+    assert plan["document"]["version"] == "3.0.0"
     assert plan["document"]["executable"] is True
     assert plan["document"]["interface_only"] is False
     assert plan["document"]["decision"] == "EXACT_OWNER_INSTALLED_ENTRY_REQUIRED"
@@ -118,6 +118,91 @@ def test_tst_016_is_exact_but_has_no_formal_evidence() -> None:
     assert suite["environments"] == ["staging"]
     assert suite["formal_execution"] == "NOT_EXECUTED"
     assert suite["evidence"] is None
+
+
+def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
+    owner = _plan()["owner_local_read_integration"]
+    runtime = owner["runtime"]
+    commands = owner["authoritative_fixed_commands"]
+
+    assert owner["status"] == "INSTALLABLE_NOT_INSTALLED_OR_EXECUTED"
+    assert owner["default_activation"] == "DISABLED_EXPLICIT_INSTALLED_COMMAND_ONLY"
+    assert owner["evidence_authority"] == "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"
+    assert owner["provider_data_classification"] == "UNTRUSTED_PROVIDER_DATA"
+    assert owner["provider_credential_profile"] == (
+        "OWNER_LOCAL_RAKUTEN_PRODUCTION_API"
+    )
+    assert owner["raos_environment"] == (
+        "OWNER_LOCAL_NOT_ENV_STAGING_NOT_RAOS_PRODUCTION"
+    )
+    assert runtime["bundle_sha256"] == generator.EXPECTED_OWNER_LOCAL_BUNDLE_SHA256
+    assert runtime["launcher_sha256"] == (
+        generator.EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256
+    )
+    assert runtime["installer_sha256"] == (
+        generator.EXPECTED_OWNER_LOCAL_INSTALLER_SHA256
+    )
+    assert runtime["install_stage_sha256"] == (
+        generator.EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256
+    )
+    assert runtime["repository_make_entrypoint"] == "NOT_PROVIDED"
+    assert runtime["installer_credential_access"] == "FORBIDDEN"
+    assert runtime["install_execution"] == "NOT_EXECUTED"
+    assert commands["runtime_install"] == (
+        generator._owner_local_authoritative_runtime_install_command()
+    )
+    assert commands["setup"] == generator._owner_local_authoritative_installed_command(
+        ("setup",)
+    )
+    assert commands["rotate"] == generator._owner_local_authoritative_installed_command(
+        ("rotate",)
+    )
+    assert commands["doctor"] == generator._owner_local_authoritative_installed_command(
+        ("doctor",)
+    )
+    assert commands["list_apis"] == (
+        generator._owner_local_authoritative_installed_command(("list-apis",))
+    )
+    assert commands["smoke_item_search"] == (
+        generator._owner_local_authoritative_installed_command(
+            ("smoke", "--api", "item-search")
+        )
+    )
+    assert commands["smoke_product_search"] == (
+        generator._owner_local_authoritative_installed_command(
+            ("smoke", "--api", "product-search")
+        )
+    )
+    for command in commands.values():
+        assert command.startswith("/usr/bin/busybox env -i ")
+        assert " make " not in f" {command} "
+    assert owner["authoritative_request_gate"] == {
+        "launcher_path": generator.OWNER_LOCAL_INSTALLED_LAUNCHER_PATH,
+        "launcher_sha256": generator.EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256,
+        "authentication": "STATIC_BUSYBOX_FD4_SHA256_BEFORE_LAUNCHER_BODY",
+        "argument_contract": (
+            "request --api <item-search|product-search> --request-file <absolute-json>"
+        ),
+        "shell_interpolation": "FORBIDDEN_USE_POSITIONAL_ARGUMENTS",
+    }
+    assert owner["registry"]["item-search"]["api_version"] == "2026-07-01"
+    assert owner["registry"]["item-search"]["page"] == 1
+    assert owner["registry"]["product-search"]["api_version"] == "2025-08-01"
+    assert owner["registry"]["product-search"]["page"] == 1
+    assert owner["transport"]["requests_per_invocation_maximum"] == 1
+    assert owner["transport"]["retries"] == 0
+    assert owner["transport"]["pagination_followups"] == 0
+    assert owner["verification"] == {
+        "fake_and_recorded_only": True,
+        "real_credentials": "NOT_READ",
+        "provider_call": "NOT_EXECUTED",
+        "formal_tst_016": "NOT_EXECUTED",
+        "env_staging": "NOT_EXECUTED",
+        "od_015": "UNRESOLVED",
+        "raos_production": "NOT_EXECUTED",
+    }
+    assert Path("Makefile") not in generator.RUNTIME_PATHS
+    assert Path("Makefile") not in generator.SOURCE_PATHS
 
 
 def test_live_smoke_is_installable_but_not_installed_or_runnable() -> None:
