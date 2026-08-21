@@ -216,6 +216,20 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
     assert owner["transport"]["requests_per_invocation_maximum"] == 1
     assert owner["transport"]["retries"] == 0
     assert owner["transport"]["pagination_followups"] == 0
+    assert owner["transport"]["dns_resolution_deadline_seconds"] == 5
+    assert owner["transport"]["dns_execution_isolation"] == (
+        "AUTHENTICATED_PROC_SELF_EXE_ISOLATED_NO_SITE_FIXED_HELPER_"
+        "MINIMAL_ENV_CLOSE_FDS_PARENT_DEATH_SIGKILL"
+    )
+    assert owner["transport"]["dns_ipc_limits"] == (
+        "MAX_64_CANDIDATES_MAX_65536_BYTES_STRICT_PARENT_REVALIDATION"
+    )
+    assert owner["transport"]["dns_failure"] == (
+        "DNS_FAILED_NOT_SENT_REQUEST_COUNT_0_NO_PROVIDER_METADATA_NO_RETRY"
+    )
+    assert owner["transport"]["dns_process_cleanup"] == (
+        "SIGKILL_TWO_BOUNDED_REAP_WAITS_AND_PIPE_CLOSE"
+    )
     assert owner["transport"]["per_operation_read_timeout_seconds"] == 20
     assert owner["transport"]["response_read_deadline_seconds"] == 20
     assert owner["transport"]["response_read_deadline_scope"] == (

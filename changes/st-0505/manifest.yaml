@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
   generation_command: python3 scripts/build_st0505_rakuten_live_smoke_reference_plan.py
 provenance:
-  contract_sha256: 48b4590b110e2ef1b5f89911f687f0a2e762248568835324aee3a8aecb152f92
+  contract_sha256: 4e511dd1c7c0bdb48ff56ea8de7abbfdd48b201718f96c416af18be493dcb334
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -56,17 +56,17 @@ provenance:
 source_artifact_count: 30
 source_artifacts:
 - uri: repo://changes/st-0505/contracts/rakuten-live-smoke-reference-plan.v1.yaml
-  bytes: 24326
-  sha256: 48b4590b110e2ef1b5f89911f687f0a2e762248568835324aee3a8aecb152f92
+  bytes: 24730
+  sha256: 4e511dd1c7c0bdb48ff56ea8de7abbfdd48b201718f96c416af18be493dcb334
 - uri: repo://changes/st-0505/DESIGN_HANDOFF_V1.yaml
-  bytes: 25386
-  sha256: 4de99602344f570a0e0937f2472d8eeee7a0678b7bfe930281be08e2d29cace7
+  bytes: 26250
+  sha256: f056381ac6bd7e938886436d2a28809a29cc5f3f230e54e229d7bf4c534ed351
 - uri: repo://changes/st-0505/README.md
-  bytes: 25912
-  sha256: 82a26b2d9c8ea44ed1b9bf9969e98fad2ab8c1e77aba907b58599ff34b19e6d8
+  bytes: 26707
+  sha256: 3855556010222a3c45df4a214d46105d1d4589d5e935d63c5f1e19f202d1e8e6
 - uri: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
-  bytes: 103779
-  sha256: 6e1fd4f51f1465b19993396b7b806361cfb18fad8b9cd52c44b96942c9aa2732
+  bytes: 104815
+  sha256: 2cc6d3bacadfd8485584b9565827ef63caed1a14ae4df8390624eee7ba45d9fa
 - uri: repo://python/raos/__init__.py
   bytes: 77
   sha256: 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
@@ -104,14 +104,14 @@ source_artifacts:
   bytes: 1110
   sha256: 711e4f48180bcce6d0a83fa4f12ef65480526eecec543968a45e55c96275c142
 - uri: repo://python/raos/adapters/rakuten_owner_local.py
-  bytes: 74700
-  sha256: 01b7fe53f9b967a62c8d3fafcf57c0e0e7f4d3c51ee9d9d5ae7ccc45ae00a3c5
+  bytes: 81032
+  sha256: dbd630e827e4f8e0284e4285aace7387a3d6fc3aeb496ba3677df49819e00f80
 - uri: repo://scripts/install_rakuten_owner_local_runtime.py
   bytes: 19137
-  sha256: 4dbc28f0b458d2914bf5c4608952a096694ef7468a701781dd438e7b830da2f0
+  sha256: 60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b
 - uri: repo://scripts/rakuten_owner_local_runtime_install.sh
   bytes: 10584
-  sha256: 2c71152a422c7324fc5b1ad69de1188eb0821acc8de6cf5f489764792e86a3f8
+  sha256: 0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6
 - uri: repo://scripts/rakuten_owner_local.py
   bytes: 20800
   sha256: 6ccc123d3d075e81283447c7439de36d8ca52cd5ba8e7185aeefa1bf78cf949a
@@ -122,8 +122,8 @@ source_artifacts:
   bytes: 952
   sha256: c85ba1f8614db15f2723b7ba320a4ab7e31459188d1223828d2078bac7352dae
 - uri: repo://tests/st0505/test_contract.py
-  bytes: 23663
-  sha256: 052282de6e948c71bbc9851a3b19f187550dd166735589e29e44a876482ff67c
+  bytes: 24305
+  sha256: 73bbd11b0492d36139bec9fee756ca7ecbc40247ac8ca08eba2b36cbba97fd26
 - uri: repo://tests/st0505/test_generation.py
   bytes: 4531
   sha256: 7ceec0e0d0edfb8038949bc4b2a8dbdc32e6ee2d6279206b890bb55214afe5d4
@@ -140,16 +140,16 @@ source_artifacts:
   bytes: 67037
   sha256: 83d6be9ec22ecf0f64a073a50a22d434af0743003d05fb2339537f6fa0799cb6
 - uri: repo://tests/st0505/test_rakuten_owner_local_adapter.py
-  bytes: 80512
-  sha256: 9d3c95c93b05731d0c4f516bea3692819a93a00585170b7fed12c8012c518ad4
+  bytes: 91425
+  sha256: d02edfc0187bdc5f78f4edeeda805ec5789ff5f4ecbc38ed36f7f83e6bcca82d
 - uri: repo://tests/st0505/test_rakuten_owner_local_installed_runtime.py
   bytes: 17842
   sha256: b2a3b6347c7a30a17d0e62bf876ae59554062c29c2ab5c29333cd426ef613928
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0505/generated/rakuten-live-smoke-reference-plan.v1.json
-  bytes: 37840
-  sha256: 0b366d0874eb8bd82d05fa54e762ca14ec48e60ac8ee39485bcc6d2092180a25
+  bytes: 38277
+  sha256: 2e72102cbccd0b84a15a998cc971c479cc00eec9c85367921f94998a35449376
 boundary:
   classification: SOURCE_DERIVED_EXPLICIT_LOCAL_RAKUTEN_LIVE_SMOKE_PLAN
   executable: true

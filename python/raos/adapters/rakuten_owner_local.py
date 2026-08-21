@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import ctypes
 import errno
 import hashlib
@@ -18,6 +18,7 @@ import re
 import socket
 import ssl
 import stat
+import subprocess
 import time
 from typing import Any, NoReturn, Protocol, cast, final, runtime_checkable
 from urllib.parse import quote, urlencode
@@ -56,6 +57,7 @@ from raos.domain.catalog.rakuten_owner_local import (
 
 
 CONNECT_TIMEOUT_SECONDS = 5
+DNS_RESOLUTION_DEADLINE_SECONDS = 5
 READ_TIMEOUT_SECONDS = 20
 RESPONSE_READ_DEADLINE_SECONDS = 20
 MAX_CREDENTIAL_BYTES = 16 * 1024
@@ -63,6 +65,8 @@ MAX_REQUEST_BYTES = 64 * 1024
 MAX_RESULT_BYTES = 4 * 1024 * 1024
 MAX_JSON_DEPTH = 32
 MAX_JSON_NODES = 50_000
+MAX_DNS_CANDIDATES = 64
+MAX_DNS_RESULT_BYTES = 64 * 1024
 
 _OWNER_DIRECTORY = (".secrets", "rakuten-owner-local")
 _CREDENTIAL_FILE = "credentials.v1.json"
@@ -131,6 +135,34 @@ _ACCESS_HEADER = "access" + "Key"
 _ACCESS_RECORD_KEY = "access" + "_key"
 _ACCEPT = "application/json"
 _USER_AGENT = "RAOS-ST-0505-owner-local/1"
+_DNS_CHILD_SUCCESS = b"S"
+_DNS_CHILD_FAILURE = b"F"
+_DNS_PROCESS_REAP_TIMEOUT_SECONDS = 1
+_DNS_HELPER_SOURCE = r"""import ctypes,json,os,signal,socket,sys
+parent_pid=int(sys.argv[1])
+libc=ctypes.CDLL(None,use_errno=True)
+prctl=libc.prctl
+prctl.argtypes=(ctypes.c_int,ctypes.c_ulong,ctypes.c_ulong,ctypes.c_ulong,ctypes.c_ulong)
+prctl.restype=ctypes.c_int
+if prctl(1,signal.SIGKILL,0,0,0)!=0 or os.getppid()!=parent_pid:
+    os._exit(70)
+try:
+    rows=socket.getaddrinfo("openapi.rakuten.co.jp",443,family=socket.AF_UNSPEC,type=socket.SOCK_STREAM,proto=socket.IPPROTO_TCP,flags=0)
+    if type(rows) is not list or not rows or len(rows)>64:
+        raise ValueError
+    encoded=json.dumps(rows,ensure_ascii=True,allow_nan=False,separators=(",",":")).encode("ascii")
+    payload=b"S"+encoded
+    if len(payload)>65536:
+        raise ValueError
+except BaseException:
+    payload=b"F"
+offset=0
+while offset<len(payload):
+    written=os.write(1,payload[offset:])
+    if written<=0:
+        os._exit(71)
+    offset+=written
+"""
 
 
 def _fail(
@@ -1046,6 +1078,147 @@ class _ResolvedAddress:
     ip: ipaddress.IPv4Address | ipaddress.IPv6Address
 
 
+def _close_dns_process_pipes(process: subprocess.Popen[bytes]) -> None:
+    for stream in (process.stdin, process.stdout, process.stderr):
+        if stream is not None:
+            try:
+                stream.close()
+            except BaseException:
+                pass
+
+
+def _kill_and_reap_dns_process(process: subprocess.Popen[bytes]) -> bool:
+    """Stop one isolated resolver and bound every wait used for cleanup."""
+
+    try:
+        running = process.poll() is None
+    except BaseException:
+        running = True
+    if running:
+        try:
+            process.kill()
+        except BaseException:
+            pass
+    for _attempt in range(2):
+        try:
+            process.wait(timeout=_DNS_PROCESS_REAP_TIMEOUT_SECONDS)
+            return True
+        except subprocess.TimeoutExpired:
+            try:
+                process.kill()
+            except BaseException:
+                pass
+        except BaseException:
+            break
+    try:
+        return process.poll() is not None
+    except BaseException:
+        return False
+
+
+def _decoded_dns_rows(payload: bytes) -> list[tuple[object, ...]]:
+    if (
+        payload == _DNS_CHILD_FAILURE
+        or not payload.startswith(_DNS_CHILD_SUCCESS)
+        or not 2 <= len(payload) <= MAX_DNS_RESULT_BYTES
+    ):
+        _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+    try:
+        decoded = json.loads(
+            payload[1:].decode("ascii", errors="strict"),
+            parse_constant=lambda ignored: (_ for _ in ()).throw(_NonfiniteValue()),
+        )
+    except BaseException:
+        _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+    if type(decoded) is not list:
+        _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+    decoded_rows = cast(list[object], decoded)
+    if not decoded_rows or len(decoded_rows) > MAX_DNS_CANDIDATES:
+        _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+    rows: list[tuple[object, ...]] = []
+    for row in decoded_rows:
+        if type(row) is not list:
+            _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+        values = cast(list[object], row)
+        if len(values) != 5 or type(values[4]) is not list:
+            _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+        rows.append((*values[:4], tuple(cast(list[object], values[4]))))
+    return rows
+
+
+@dataclass(slots=True)
+class _BoundedSystemDnsResolver:
+    """Run the sole system resolver in an exec-isolated, killable process."""
+
+    process_factory: Callable[..., subprocess.Popen[bytes]] = subprocess.Popen
+    monotonic_clock: Callable[[], float] = time.monotonic
+    deadline_seconds: float = float(DNS_RESOLUTION_DEADLINE_SECONDS)
+
+    def __post_init__(self) -> None:
+        if (
+            not callable(self.process_factory)
+            or not callable(self.monotonic_clock)
+            or type(self.deadline_seconds) is not float
+            or not math.isfinite(self.deadline_seconds)
+            or not 0.0 < self.deadline_seconds <= DNS_RESOLUTION_DEADLINE_SECONDS
+        ):
+            _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+
+    def _now(self) -> float:
+        try:
+            value = self.monotonic_clock()
+        except BaseException:
+            _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+        if type(value) is not float or not math.isfinite(value):
+            _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+        return value
+
+    def resolve(self, *, host: str, port: int) -> list[tuple[object, ...]]:
+        if host != RAKUTEN_OWNER_LOCAL_HOST or port != RAKUTEN_OWNER_LOCAL_PORT:
+            _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+        process: subprocess.Popen[bytes] | None = None
+        payload: bytes | None = None
+        reaped = False
+        try:
+            deadline = self._now() + self.deadline_seconds
+            process = self.process_factory(
+                (
+                    "/proc/self/exe",
+                    "-B",
+                    "-I",
+                    "-S",
+                    "-c",
+                    _DNS_HELPER_SOURCE,
+                    str(os.getpid()),
+                ),
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                cwd="/",
+                env={"LC_ALL": "C.UTF-8"},
+                close_fds=True,
+            )
+            remaining_seconds = deadline - self._now()
+            if remaining_seconds <= 0.0:
+                raise subprocess.TimeoutExpired("resolver", self.deadline_seconds)
+            stdout, _stderr = process.communicate(timeout=remaining_seconds)
+            if self._now() > deadline or process.returncode != 0:
+                _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+            if type(stdout) is bytes and len(stdout) <= MAX_DNS_RESULT_BYTES:
+                payload = stdout
+        except RakutenOwnerLocalFailure:
+            raise
+        except BaseException:
+            payload = None
+        finally:
+            if process is not None:
+                reaped = _kill_and_reap_dns_process(process)
+                _close_dns_process_pipes(process)
+        if not reaped or payload is None:
+            _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+        return _decoded_dns_rows(payload)
+
+
 def _public_ip(
     value: object, *, family: int
 ) -> ipaddress.IPv4Address | ipaddress.IPv6Address:
@@ -1138,21 +1311,17 @@ def _validated_resolved_address(row: object) -> _ResolvedAddress:
 
 
 def _resolve_public_rakuten_addresses(
-    host: str, port: int
+    host: str,
+    port: int,
+    resolver: _BoundedSystemDnsResolver,
 ) -> tuple[_ResolvedAddress, ...]:
-    if host != RAKUTEN_OWNER_LOCAL_HOST or port != RAKUTEN_OWNER_LOCAL_PORT:
+    if (
+        host != RAKUTEN_OWNER_LOCAL_HOST
+        or port != RAKUTEN_OWNER_LOCAL_PORT
+        or type(resolver) is not _BoundedSystemDnsResolver
+    ):
         _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
-    try:
-        rows = socket.getaddrinfo(
-            host,
-            port,
-            family=socket.AF_UNSPEC,
-            type=socket.SOCK_STREAM,
-            proto=socket.IPPROTO_TCP,
-            flags=0,
-        )
-    except OSError, UnicodeError, ValueError, TypeError:
-        _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
+    rows = resolver.resolve(host=host, port=port)
     if type(rows) is not list or not rows:
         _fail(RakutenOwnerLocalFailureCode.DNS_FAILED)
     # Materialize all rows before selecting the first. One unsafe row vetoes all.
@@ -1276,8 +1445,11 @@ class _SystemHttpsConnection:
 
 
 @final
+@dataclass(slots=True)
 class SystemRakutenOwnerLocalHttpsConnectionFactory:
-    __slots__ = ()
+    resolver: _BoundedSystemDnsResolver = field(
+        default_factory=_BoundedSystemDnsResolver
+    )
 
     def open(
         self,
@@ -1296,7 +1468,7 @@ class SystemRakutenOwnerLocalHttpsConnectionFactory:
             or not tls_context.check_hostname
         ):
             _fail(RakutenOwnerLocalFailureCode.TLS_CONTEXT_INVALID)
-        candidates = _resolve_public_rakuten_addresses(host, port)
+        candidates = _resolve_public_rakuten_addresses(host, port, self.resolver)
         candidate = candidates[0]
         connection = http.client.HTTPSConnection(
             host=host,

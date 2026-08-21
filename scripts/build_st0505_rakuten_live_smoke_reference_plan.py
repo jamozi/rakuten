@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "e7fa043b75f2e10d8cefc19f80a265731fe963aef844f3e96f7734878dc33fbf"
+    "c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "4dbc28f0b458d2914bf5c4608952a096694ef7468a701781dd438e7b830da2f0"
+    "60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "2c71152a422c7324fc5b1ad69de1188eb0821acc8de6cf5f489764792e86a3f8"
+    "0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
     "129f7f01fb5bafc13ddd54d39bacdc0d28975478ebff8a84bf1b57c37f90c0e5"
@@ -1578,6 +1578,11 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "mandatory_record_fields(api)",
             "validated_response_text(returned_value)",
             "socket.getaddrinfo(",
+            "DNS_RESOLUTION_DEADLINE_SECONDS = 5",
+            "class _BoundedSystemDnsResolver:",
+            '"/proc/self/exe",',
+            "process.communicate(timeout=remaining_seconds)",
+            "_kill_and_reap_dns_process(process)",
             "ssl.create_default_context(",
             "RESPONSE_READ_DEADLINE_SECONDS = 20",
             "class _ResponseReadDeadline:",
@@ -2228,6 +2233,11 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "proxy_discovery",
             "tls_override_environment",
             "dns",
+            "dns_resolution_deadline_seconds",
+            "dns_execution_isolation",
+            "dns_ipc_limits",
+            "dns_failure",
+            "dns_process_cleanup",
             "redirects",
             "retries",
             "pagination_followups",
@@ -2258,6 +2268,18 @@ def _validate_owner_local_read_integration(value: object) -> None:
         or transport.get("tls_override_environment") != "REJECT"
         or transport.get("dns")
         != "VALIDATE_ENTIRE_CANDIDATE_SET_PUBLIC_THEN_PIN_FIRST_ONLY"
+        or transport.get("dns_resolution_deadline_seconds") != 5
+        or transport.get("dns_execution_isolation")
+        != (
+            "AUTHENTICATED_PROC_SELF_EXE_ISOLATED_NO_SITE_FIXED_HELPER_"
+            "MINIMAL_ENV_CLOSE_FDS_PARENT_DEATH_SIGKILL"
+        )
+        or transport.get("dns_ipc_limits")
+        != "MAX_64_CANDIDATES_MAX_65536_BYTES_STRICT_PARENT_REVALIDATION"
+        or transport.get("dns_failure")
+        != "DNS_FAILED_NOT_SENT_REQUEST_COUNT_0_NO_PROVIDER_METADATA_NO_RETRY"
+        or transport.get("dns_process_cleanup")
+        != "SIGKILL_TWO_BOUNDED_REAP_WAITS_AND_PIPE_CLOSE"
         or transport.get("redirects") != 0
         or transport.get("retries") != 0
         or transport.get("pagination_followups") != 0

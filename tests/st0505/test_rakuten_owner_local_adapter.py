@@ -3,12 +3,14 @@ from __future__ import annotations
 from dataclasses import replace
 from datetime import datetime, timezone
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
 import socket
 import ssl
 import stat
+import subprocess
 from typing import Any, cast
 from urllib.parse import parse_qs, urlsplit
 
@@ -282,6 +284,77 @@ class _FakeFactory:
         self.open_count += 1
         self.arguments = arguments
         return self.connection
+
+
+class _FakeDnsProcess:
+    def __init__(self, payload: bytes, *, blocks: bool = False) -> None:
+        self.payload = payload
+        self.blocks = blocks
+        self.stdin = None
+        self.stdout = io.BytesIO()
+        self.stderr = None
+        self.returncode: int | None = None
+        self.communicate_count = 0
+        self.kill_count = 0
+        self.wait_count = 0
+
+    def communicate(self, timeout: float | None = None) -> tuple[bytes, None]:
+        self.communicate_count += 1
+        if self.blocks and self.returncode is None:
+            raise subprocess.TimeoutExpired("resolver", timeout)
+        self.returncode = 0 if self.returncode is None else self.returncode
+        return self.payload, None
+
+    def poll(self) -> int | None:
+        return self.returncode
+
+    def kill(self) -> None:
+        self.kill_count += 1
+        self.returncode = -9
+
+    def wait(self, timeout: float | None = None) -> int:
+        self.wait_count += 1
+        if self.returncode is None:
+            raise subprocess.TimeoutExpired("resolver", timeout)
+        return self.returncode
+
+
+class _FakeDnsProcessFactory:
+    def __init__(self, process: _FakeDnsProcess) -> None:
+        self.process = process
+        self.arguments: tuple[object, ...] | None = None
+        self.keywords: dict[str, object] | None = None
+        self.call_count = 0
+
+    def __call__(self, *arguments: object, **keywords: object) -> _FakeDnsProcess:
+        self.call_count += 1
+        self.arguments = arguments
+        self.keywords = keywords
+        return self.process
+
+
+def _dns_payload(rows: object) -> bytes:
+    return b"S" + json.dumps(
+        rows,
+        ensure_ascii=True,
+        allow_nan=False,
+        separators=(",", ":"),
+    ).encode("ascii")
+
+
+def _dns_resolver(
+    process: _FakeDnsProcess,
+    *,
+    clock: Any | None = None,
+) -> tuple[adapter._BoundedSystemDnsResolver, _FakeDnsProcessFactory]:
+    factory = _FakeDnsProcessFactory(process)
+    arguments: dict[str, object] = {
+        "process_factory": factory,
+        "deadline_seconds": 5.0,
+    }
+    if clock is not None:
+        arguments["monotonic_clock"] = clock
+    return adapter._BoundedSystemDnsResolver(**arguments), factory
 
 
 def _clean_transport_environment(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -1982,26 +2055,27 @@ def test_proxy_or_tls_override_refuses_before_factory_open(
 def test_mixed_public_and_private_dns_vetoes_before_https_construction(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr(
-        socket,
-        "getaddrinfo",
-        lambda *_args, **_kwargs: [
-            (
-                socket.AF_INET,
-                socket.SOCK_STREAM,
-                socket.IPPROTO_TCP,
-                "",
-                ("8.8.8.8", 443),
-            ),
-            (
-                socket.AF_INET,
-                socket.SOCK_STREAM,
-                socket.IPPROTO_TCP,
-                "",
-                ("127.0.0.1", 443),
-            ),
-        ],
+    process = _FakeDnsProcess(
+        _dns_payload(
+            [
+                (
+                    socket.AF_INET,
+                    socket.SOCK_STREAM,
+                    socket.IPPROTO_TCP,
+                    "",
+                    ("8.8.8.8", 443),
+                ),
+                (
+                    socket.AF_INET,
+                    socket.SOCK_STREAM,
+                    socket.IPPROTO_TCP,
+                    "",
+                    ("127.0.0.1", 443),
+                ),
+            ]
+        )
     )
+    resolver, process_factory = _dns_resolver(process)
     constructed = False
 
     def forbidden_https(*_args: object, **_kwargs: object) -> object:
@@ -2012,7 +2086,7 @@ def test_mixed_public_and_private_dns_vetoes_before_https_construction(
     monkeypatch.setattr(adapter.http.client, "HTTPSConnection", forbidden_https)
     context = ssl.create_default_context()
     with pytest.raises(RakutenOwnerLocalFailure) as failure:
-        SystemRakutenOwnerLocalHttpsConnectionFactory().open(
+        SystemRakutenOwnerLocalHttpsConnectionFactory(resolver=resolver).open(
             host="openapi.rakuten.co.jp",
             port=443,
             connect_timeout_seconds=5,
@@ -2020,6 +2094,169 @@ def test_mixed_public_and_private_dns_vetoes_before_https_construction(
         )
     assert failure.value.code is RakutenOwnerLocalFailureCode.DNS_ADDRESS_REJECTED
     assert not constructed
+    assert process_factory.call_count == 1
+    assert process.returncode == 0
+    assert process.kill_count == 0
+    assert process.wait_count == 1
+    assert process.stdout.closed
+
+
+def test_bounded_dns_resolver_accepts_normal_ipv4_and_ipv6_rows() -> None:
+    process = _FakeDnsProcess(
+        _dns_payload(
+            [
+                (
+                    socket.AF_INET,
+                    socket.SOCK_STREAM,
+                    socket.IPPROTO_TCP,
+                    "",
+                    ("8.8.8.8", 443),
+                ),
+                (
+                    socket.AF_INET6,
+                    socket.SOCK_STREAM,
+                    socket.IPPROTO_TCP,
+                    "",
+                    ("2606:4700:4700::1111", 443, 0, 0),
+                ),
+            ]
+        )
+    )
+    resolver, process_factory = _dns_resolver(process)
+
+    addresses = adapter._resolve_public_rakuten_addresses(
+        "openapi.rakuten.co.jp", 443, resolver
+    )
+
+    assert tuple(str(candidate.ip) for candidate in addresses) == (
+        "8.8.8.8",
+        "2606:4700:4700::1111",
+    )
+    assert process_factory.call_count == process.communicate_count == 1
+    assert process.kill_count == 0
+    assert process.wait_count == 1
+    assert process.stdout.closed
+    assert process_factory.arguments is not None
+    command = process_factory.arguments[0]
+    assert type(command) is tuple
+    assert command[:5] == ("/proc/self/exe", "-B", "-I", "-S", "-c")
+    assert "socket.getaddrinfo" in command[5]
+    compile(command[5], "<rakuten-owner-local-dns-helper>", "exec")
+    assert process_factory.keywords == {
+        "stdin": subprocess.DEVNULL,
+        "stdout": subprocess.PIPE,
+        "stderr": subprocess.DEVNULL,
+        "cwd": "/",
+        "env": {"LC_ALL": "C.UTF-8"},
+        "close_fds": True,
+    }
+
+
+def test_bounded_dns_resolver_sanitizes_raising_and_malformed_results() -> None:
+    for payload in (b"F", b"Snot-json", b"S[]", b"S" + b"0" * 65536):
+        process = _FakeDnsProcess(payload)
+        resolver, _factory = _dns_resolver(process)
+        with pytest.raises(RakutenOwnerLocalFailure) as failure:
+            resolver.resolve(host="openapi.rakuten.co.jp", port=443)
+        assert failure.value.code is RakutenOwnerLocalFailureCode.DNS_FAILED
+        assert failure.value.disposition is RakutenOwnerLocalRequestDisposition.NOT_SENT
+        assert "not-json" not in str(failure.value)
+        assert process.kill_count == 0
+        assert process.wait_count == 1
+        assert process.stdout.closed
+
+
+def test_bounded_dns_resolver_kills_reaps_and_closes_a_blocked_child() -> None:
+    process = _FakeDnsProcess(b"", blocks=True)
+    resolver, factory = _dns_resolver(process)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        resolver.resolve(host="openapi.rakuten.co.jp", port=443)
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.DNS_FAILED
+    assert failure.value.disposition is RakutenOwnerLocalRequestDisposition.NOT_SENT
+    assert factory.call_count == 1
+    assert process.communicate_count == 1
+    assert process.kill_count == 1
+    assert process.wait_count == 1
+    assert process.returncode == -9
+    assert process.stdout.closed
+
+
+def test_bounded_dns_resolver_reaps_a_real_offline_blocked_process() -> None:
+    captured: subprocess.Popen[bytes] | None = None
+
+    def blocking_process_factory(
+        _command: object, **keywords: object
+    ) -> subprocess.Popen[bytes]:
+        nonlocal captured
+        captured = subprocess.Popen(
+            (
+                "/proc/self/exe",
+                "-B",
+                "-I",
+                "-S",
+                "-c",
+                "import signal;signal.pause()",
+            ),
+            **keywords,
+        )
+        return captured
+
+    resolver = adapter._BoundedSystemDnsResolver(
+        process_factory=blocking_process_factory,
+        deadline_seconds=0.05,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        resolver.resolve(host="openapi.rakuten.co.jp", port=443)
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.DNS_FAILED
+    assert failure.value.disposition is RakutenOwnerLocalRequestDisposition.NOT_SENT
+    assert captured is not None
+    assert captured.poll() is not None
+    assert captured.returncode == -9
+    assert captured.stdout is not None
+    assert captured.stdout.closed
+
+
+def test_bounded_dns_resolver_rejects_a_result_observed_after_deadline() -> None:
+    values = iter((100.0, 100.0, 106.0))
+    process = _FakeDnsProcess(
+        _dns_payload(
+            [
+                (
+                    socket.AF_INET,
+                    socket.SOCK_STREAM,
+                    socket.IPPROTO_TCP,
+                    "",
+                    ("8.8.8.8", 443),
+                )
+            ]
+        )
+    )
+    resolver, _factory = _dns_resolver(process, clock=lambda: next(values))
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        resolver.resolve(host="openapi.rakuten.co.jp", port=443)
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.DNS_FAILED
+    assert failure.value.disposition is RakutenOwnerLocalRequestDisposition.NOT_SENT
+    assert process.kill_count == 0
+    assert process.wait_count == 1
+    assert process.stdout.closed
+
+
+def test_bounded_dns_resolver_sanitizes_process_start_failure() -> None:
+    def raising_factory(*_args: object, **_kwargs: object) -> Any:
+        raise OSError("fixture-key must not escape")
+
+    resolver = adapter._BoundedSystemDnsResolver(process_factory=raising_factory)
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        resolver.resolve(host="openapi.rakuten.co.jp", port=443)
+    assert failure.value.code is RakutenOwnerLocalFailureCode.DNS_FAILED
+    assert failure.value.disposition is RakutenOwnerLocalRequestDisposition.NOT_SENT
+    assert "fixture-key" not in str(failure.value)
 
 
 def _success_envelope() -> RakutenOwnerLocalResultEnvelope:
@@ -2084,6 +2321,65 @@ class _CountingResultWriter:
     def write(self, envelope: RakutenOwnerLocalResultEnvelope) -> None:
         self.write_count += 1
         self.delegate.write(envelope)
+
+
+def test_dns_deadline_failure_persists_one_sanitized_unsent_result(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = _repository(tmp_path)
+    OwnerPrivateRakutenOwnerLocalCredentialStore(root).setup(_credentials())
+    process = _FakeDnsProcess(b"", blocks=True)
+    resolver, process_factory = _dns_resolver(process)
+    transport = DirectRakutenOwnerLocalTransport(
+        SystemRakutenOwnerLocalHttpsConnectionFactory(resolver=resolver)
+    )
+    writer = _CountingResultWriter(OwnerPrivateRakutenOwnerLocalResultWriter(root))
+    _clean_transport_environment(monkeypatch)
+    constructed = False
+
+    def forbidden_https(*_args: object, **_kwargs: object) -> object:
+        nonlocal constructed
+        constructed = True
+        raise AssertionError("DNS failure must precede HTTPS construction")
+
+    monkeypatch.setattr(adapter.http.client, "HTTPSConnection", forbidden_https)
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.ITEM_SEARCH)
+    run_id = "20260822T020304.000000Z-0123456789abcdef0123456789abcdef"
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=OwnerPrivateRakutenOwnerLocalCredentialReader(root),
+        transport=transport,
+        result_writer=writer,
+    ).run(request.api, request, run_id=run_id)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.DNS_FAILED
+    assert envelope.disposition is RakutenOwnerLocalRequestDisposition.NOT_SENT
+    assert envelope.request_count == 0
+    assert envelope.failure.http_status is None
+    assert envelope.failure.body_byte_count is None
+    assert envelope.failure.response_sha256 is None
+    assert writer.preflight_count == writer.write_count == 1
+    assert process_factory.call_count == 1
+    assert process.kill_count == 1
+    assert process.wait_count == 1
+    assert not constructed
+    raw = (root / f".secrets/rakuten-owner-local/results/{run_id}.json").read_bytes()
+    value = json.loads(raw)
+    assert value["diagnostic_code"] == "DNS_FAILED"
+    assert value["request_disposition"] == "NOT_SENT"
+    assert value["request_count"] == 0
+    assert value["retry_count"] == value["pagination_count"] == 0
+    assert value["http_status"] is None
+    assert value["body_byte_count"] is None
+    assert value["response_sha256"] is None
+    assert value["count"] is None
+    assert value["items"] is None
+    assert value["products"] is None
+    for forbidden in (b"fixture-app", b"fixture-key", b"fixture-affiliate"):
+        assert forbidden not in raw
 
 
 def test_total_deadline_persists_one_sanitized_ambiguous_result(

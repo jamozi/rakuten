@@ -21,6 +21,16 @@ staging, release, or Production.
   numeric address is pinned for the sole TCP attempt without fallback, while
   TLS SNI, certificate hostname verification, and HTTP `Host` remain fixed to
   `openapi.rakuten.co.jp`.
+- The blocking system resolver runs in one exec-isolated child of the already
+  authenticated `/proc/self/exe`, with `-B -I -S`, a fixed helper body, minimal
+  environment, closed inherited descriptors, parent-death `SIGKILL`, at most
+  64 candidates, and at most 64 KiB of bounded IPC. A monotonic five-second
+  deadline covers child launch through complete resolver output. Expiry,
+  resolver failure, late completion, malformed output, or failed bounded reap
+  closes the pipe and fails as fixed `DNS_FAILED`, `NOT_SENT`,
+  `request_count=0`, with no provider metadata and no retry; a live service run
+  still writes exactly one sanitized failure result when its result store is
+  safe.
 - One explicit invocation sends at most one GET. After all local preconditions
   pass, it sends exactly one GET with `keyword=収納`, `hits=1`,
   `page=1`, `format=json`, `formatVersion=2`, `sort=standard`, and the exact
@@ -204,7 +214,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/e7fa043b75f2e10d8cefc19f80a265731fe963aef844f3e96f7734878dc33fbf/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +224,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`4dbc28f0b458d2914bf5c4608952a096694ef7468a701781dd438e7b830da2f0`,
+`60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b`,
 and install-stage SHA-256
-`2c71152a422c7324fc5b1ad69de1188eb0821acc8de6cf5f489764792e86a3f8`.
+`0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -292,7 +302,9 @@ format-version-2 collection envelope, so the adapter recognizes only the two
 reviewed literal envelope names documented in its tests and treats any other
 shape as schema drift; this does not permit an arbitrary schema fallback.
 
-The existing 20-second per-operation socket timeout remains an upper bound.
+The DNS deadline is complete before any socket is constructed or any
+credential-bearing request is sent. The existing 20-second per-operation socket
+timeout remains an upper bound.
 After the sole GET is sent, a separate monotonic 20-second absolute deadline
 covers response headers through the complete Content-Length or chunked body,
 or through EOF for a close-delimited body. The response socket recomputes the

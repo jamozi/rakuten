@@ -267,10 +267,10 @@ owner_local_read_integration:
   runtime:
     name: rakuten-owner-local
     root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    bundle_sha256: e7fa043b75f2e10d8cefc19f80a265731fe963aef844f3e96f7734878dc33fbf
+    bundle_sha256: c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 4dbc28f0b458d2914bf5c4608952a096694ef7468a701781dd438e7b830da2f0
-    install_stage_sha256: 2c71152a422c7324fc5b1ad69de1188eb0821acc8de6cf5f489764792e86a3f8
+    installer_sha256: 60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b
+    install_stage_sha256: 0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6
     install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
     installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
     installer_credential_access: FORBIDDEN
@@ -330,6 +330,11 @@ owner_local_read_integration:
     proxy_discovery: REJECT
     tls_override_environment: REJECT
     dns: VALIDATE_ENTIRE_CANDIDATE_SET_PUBLIC_THEN_PIN_FIRST_ONLY
+    dns_resolution_deadline_seconds: 5
+    dns_execution_isolation: AUTHENTICATED_PROC_SELF_EXE_ISOLATED_NO_SITE_FIXED_HELPER_MINIMAL_ENV_CLOSE_FDS_PARENT_DEATH_SIGKILL
+    dns_ipc_limits: MAX_64_CANDIDATES_MAX_65536_BYTES_STRICT_PARENT_REVALIDATION
+    dns_failure: DNS_FAILED_NOT_SENT_REQUEST_COUNT_0_NO_PROVIDER_METADATA_NO_RETRY
+    dns_process_cleanup: SIGKILL_TWO_BOUNDED_REAP_WAITS_AND_PIPE_CLOSE
     redirects: 0
     retries: 0
     pagination_followups: 0
