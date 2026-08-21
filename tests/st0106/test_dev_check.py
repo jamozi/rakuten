@@ -105,6 +105,14 @@ def test_run_checks_selects_changed_languages_story_and_generator(
     assert "bash-syntax-changed" in names
     assert "pytest:tests/st0107" in names
     assert "generator-check:ST-0107:1" in names
+    git_diff_commands = [
+        command for name, command in observed if name.startswith("git-diff-check-")
+    ]
+    assert git_diff_commands
+    assert all(
+        ":(top,exclude).secrets" in command and ":(top,exclude).secrets/**" in command
+        for command in git_diff_commands
+    )
     assert result["status"] == "PASSED"
 
 

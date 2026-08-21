@@ -40,6 +40,11 @@ NODE_FORMAT_SUFFIXES: Final = NODE_CODE_SUFFIXES | {
     ".yml",
 }
 MAX_STEP_OUTPUT: Final = 16 * 1024
+SAFE_DIFF_PATHSPEC: Final = (
+    ".",
+    ":(top,exclude).secrets",
+    ":(top,exclude).secrets/**",
+)
 
 
 class DeveloperCheckError(RuntimeError):
@@ -241,10 +246,24 @@ def run_checks(
 
     runner.run(
         "git-diff-check-committed",
-        ["git", "diff", "--check", "--no-renames", f"{base_ref}...HEAD", "--"],
+        [
+            "git",
+            "diff",
+            "--check",
+            "--no-renames",
+            f"{base_ref}...HEAD",
+            "--",
+            *SAFE_DIFF_PATHSPEC,
+        ],
     )
-    runner.run("git-diff-check-staged", ["git", "diff", "--cached", "--check", "--"])
-    runner.run("git-diff-check-worktree", ["git", "diff", "--check", "--"])
+    runner.run(
+        "git-diff-check-staged",
+        ["git", "diff", "--cached", "--check", "--", *SAFE_DIFF_PATHSPEC],
+    )
+    runner.run(
+        "git-diff-check-worktree",
+        ["git", "diff", "--check", "--", *SAFE_DIFF_PATHSPEC],
+    )
 
     python_files = _existing_files(root, paths, PYTHON_SUFFIXES)
     if python_files:
