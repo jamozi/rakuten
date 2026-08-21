@@ -82,8 +82,6 @@ def _safe_revision(value: str, label: str) -> str:
 def resolve_base_ref(root: Path, requested: str | None) -> str:
     candidates = [requested] if requested else ["main", "origin/main"]
     for candidate in candidates:
-        if candidate is None:
-            continue
         safe = _safe_revision(candidate, "base ref")
         verified = subprocess.run(
             [
