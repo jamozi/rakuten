@@ -3,7 +3,7 @@
 Classification:
 `SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN`
 
-Contract revision `1.2.5` is partial, non-authoritative, local-only,
+Contract revision `1.2.6` is partial, non-authoritative, local-only,
 non-executable, and runtime-ineligible. It binds the committed ST-0502
 recorded-only adapter boundary and preserves OD-015's blocking safe default:
 `Recorded fixtureのみ`. It is a reviewable plan, not a live adapter, runnable
@@ -140,6 +140,29 @@ partial, unknown, linked, special, or unsafe state fails closed without
 overwrite, automatic deletion, or repair. A failed normal write leaves its
 owner-only residue fail closed because Linux has no inode-bound unlink for this
 path-based store; the command never risks deleting a replacement entry.
+
+While a prompt is hidden, the credential process temporarily handles exactly
+46 catchable asynchronous default terminate, core, and job-control signals:
+15 named signals plus Linux realtime signals 34 through 64. The first handler
+blocks the complete temporary set; cleanup restores the terminal with
+`TCSAFLUSH`, restores the prior mask while every temporary handler remains
+active, and restores prior handlers only after an unmask with no termination.
+A caught signal wipes both mutable inputs and is then re-delivered with
+kernel-default disposition. A continued
+job-control stop exits immediately instead of resuming secret processing, and
+SIGINT likewise terminates without a Python traceback after cleanup. Cleanup
+also promotes a signal already pending after `TCSAFLUSH`; a signal arriving
+during mask restoration is caught by the still-active temporary handler and
+reblocks the complete set. After outer buffers are wiped, only the selected
+signal is unblocked for redelivery; every other protected signal remains
+blocked through termination or the fixed post-`SIGCONT` exit.
+Python's pinned ignored SIGPIPE and SIGXFSZ dispositions are unchanged. SIGKILL and
+SIGSTOP cannot be caught, while synchronous fatal/abort signals are
+deliberately excluded because Python cannot safely recover from native faults;
+those cases and an OS-TCB terminal-restoration failure are explicit limits.
+An uncoordinated same-EUID or privileged signal storm is also outside this
+single-owner local trust boundary; the first supported signal blocks re-entry,
+but the intake is not a kernel sandbox against a hostile peer.
 
 Both aliases are written below the fixed non-ready
 `.secrets/.rakuten-live-smoke.preparing` directory. Only a fully fsynced pair

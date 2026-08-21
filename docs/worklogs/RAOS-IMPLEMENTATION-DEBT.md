@@ -3545,3 +3545,46 @@ original result.
   remains unresolved and `RECORDED_FIXTURE_ONLY` remains the safe default. The
   linked-worktree full scanner limitation remains `DEBT-W2-061`; no green
   full-worktree scan is claimed.
+
+### 2026-08-21 W2 / ST-0505 hidden-terminal signal restoration correction
+
+- Append-only correction: the preceding `1.2.5` checkpoint remains
+  byte-identical evidence for exact parent commit
+  `b3c783e6aaf6945081fe244930f2c27bf2d1916a`. It did not protect terminal
+  cleanup from catchable asynchronous termination after ECHO/ECHONL were
+  disabled. The containing follow-up advances the exact contract and manifest
+  to `1.2.6` without changing the two aliases, credential-store transaction
+  protocol, loader/native-runtime boundary, live disconnection, or OD-015 safe
+  default.
+- Signal boundary: hidden input temporarily installs a value-free handler for
+  the exact 46 catchable asynchronous default terminate, core, and job-control
+  signals: 15 named signals plus Linux realtime signals 34 through 64. The
+  first handler blocks the complete temporary set, cleanup restores the
+  terminal with `TCSAFLUSH`, and the prior mask is restored while every
+  temporary handler remains active. A pending or newly arriving signal is
+  caught and reblocks the set; otherwise prior handlers are restored only
+  after that unmask. On termination both mutable input buffers are wiped and
+  the same signal is then re-delivered with kernel-default disposition. A
+  continued job-control stop exits immediately without returning to secret
+  processing; SIGINT likewise terminates after cleanup without a traceback.
+  After outer wipes, only the selected signal is unblocked and every other
+  protected signal stays blocked.
+- Explicit limits: pinned ignored SIGPIPE and SIGXFSZ remain ignored. SIGKILL
+  and SIGSTOP cannot be caught. Synchronous native fatal or abort signals are
+  deliberately not handled because Python cannot safely recover from those
+  faults; OS-TCB failure while restoring the terminal also remains outside the
+  catchable-asynchronous guarantee. An uncoordinated same-EUID or privileged
+  signal storm remains outside the local single-owner trust boundary.
+- Red/green evidence: exact parent bytes terminated on real PTYs with ECHO
+  still disabled after SIGTERM and SIGQUIT, and SIGTERM left the synthetic
+  canonical fragment queued. The corrected focused signal selection passed 18
+  cases covering all 46 handler/mask round trips, real HUP/INT/QUIT/USR1/TERM/
+  realtime termination, pinned ignored signals, and a non-orphan job-control
+  stop whose continuation cannot resume secret handling. The full isolated
+  ST-0505 suite passed 458 tests.
+- Remaining boundary: no credential value or real store was entered, opened,
+  read, checked, or written. No network/provider request, formal TST-016,
+  staging, publication, release, or Production action was executed. OD-015
+  remains unresolved and `RECORDED_FIXTURE_ONLY` remains the safe default. The
+  linked-worktree full scanner limitation remains `DEBT-W2-061`; no green
+  full-worktree scan is claimed.

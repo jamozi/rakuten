@@ -31,7 +31,7 @@ def test_plan_has_exact_sections_and_non_executable_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
-    assert plan["document"]["version"] == "1.2.5"
+    assert plan["document"]["version"] == "1.2.6"
     assert plan["document"]["executable"] is False
     assert plan["document"]["interface_only"] is True
     assert plan["document"]["decision"] == "NOT_READY"
@@ -211,6 +211,57 @@ def test_local_credential_intake_is_exact_but_disconnected_from_live_runtime() -
         "hidden_mode_restore": "TCSAFLUSH_ON_ALL_OUTCOMES",
         "prompt_input_cardinality": "ONE_FRESH_CANONICAL_LINE",
         "queued_typeahead": "DISCARDED_BEFORE_ECHO_RESTORE",
+        "signal_boundary": {
+            "temporary_handler_count": 46,
+            "named_async_signals": [
+                "SIGHUP",
+                "SIGINT",
+                "SIGQUIT",
+                "SIGUSR1",
+                "SIGUSR2",
+                "SIGALRM",
+                "SIGTERM",
+                "SIGTSTP",
+                "SIGTTIN",
+                "SIGTTOU",
+                "SIGXCPU",
+                "SIGVTALRM",
+                "SIGPROF",
+                "SIGIO",
+                "SIGPWR",
+            ],
+            "realtime_signals": "34_THROUGH_64",
+            "pinned_ignored_signals": ["SIGPIPE", "SIGXFSZ"],
+            "synchronous_fatal_signals_not_caught": [
+                "SIGILL",
+                "SIGTRAP",
+                "SIGABRT",
+                "SIGBUS",
+                "SIGFPE",
+                "SIGSEGV",
+                "SIGSTKFLT",
+                "SIGSYS",
+            ],
+            "uncatchable_signals": ["SIGKILL", "SIGSTOP"],
+            "cleanup_reentry": (
+                "TCSAFLUSH_THEN_TEMPORARY_HANDLERS_ACTIVE_MASK_RESTORE_THEN_PRIOR_HANDLERS"
+            ),
+            "pending_during_cleanup": (
+                "PROMOTED_AFTER_TCSAFLUSH_OR_CAUGHT_DURING_TEMPORARY_HANDLER_MASK_RESTORE"
+            ),
+            "redelivery": (
+                "KERNEL_DEFAULT_SAME_SIGNAL_AFTER_ALL_MUTABLE_INPUT_BUFFERS_WIPED"
+            ),
+            "redelivery_mask": (
+                "SELECTED_SIGNAL_ONLY_UNBLOCKED_ALL_OTHER_TEMPORARY_SIGNALS_"
+                "REMAIN_BLOCKED"
+            ),
+            "sigint_semantics": (
+                "KERNEL_DEFAULT_TERMINATION_AFTER_CLEANUP_NO_TRACEBACK"
+            ),
+            "job_control_continue": "FIXED_EXIT_WITHOUT_SECRET_PROCESSING",
+            "concurrent_signal_storm": ("SAME_EUID_OR_PRIVILEGED_ATTACKER_UNSUPPORTED"),
+        },
         "argv_values": "FORBIDDEN",
         "environment_values": "FORBIDDEN",
         "stdin_values": "FORBIDDEN",

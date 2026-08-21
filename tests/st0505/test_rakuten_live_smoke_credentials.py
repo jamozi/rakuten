@@ -1094,6 +1094,585 @@ def _read_until_prompt(descriptor: int, prompt: bytes) -> None:
         observed.extend(chunk)
 
 
+class _SignalPTYResult(NamedTuple):
+    exit_code: int
+    echo_restored: bool
+    queued_fragment: bool
+    fragment_in_output: bool
+
+
+def _waitpid_with_deadline(pid: int, options: int = 0) -> int:
+    deadline = time.monotonic() + 5
+    while True:
+        waited_pid, status = os.waitpid(pid, options | os.WNOHANG)
+        if waited_pid == pid:
+            return status
+        assert time.monotonic() < deadline
+        time.sleep(0.01)
+
+
+def _real_hidden_tty_signal_report(signum: int) -> _SignalPTYResult:
+    master_fd, slave_fd = os.openpty()
+    child_pid = os.fork()
+    fragment = b"synthetic-fragment"
+    reaped = False
+    if child_pid == 0:
+        try:
+            os.close(master_fd)
+            os.setsid()
+            os.login_tty(slave_fd)
+            try:
+                credentials._read_private_tty("ASCII prompt: ")
+            except credentials._HiddenTTYTermination as exc:
+                credentials._terminate_after_hidden_tty_signal(exc)
+        except BaseException:
+            os._exit(91)
+        os._exit(92)
+
+    try:
+        _read_until_prompt(master_fd, b"ASCII prompt: ")
+        os.write(master_fd, fragment)
+        os.kill(child_pid, signum)
+        status = _waitpid_with_deadline(child_pid)
+        reaped = True
+        echo_restored = bool(termios.tcgetattr(slave_fd)[3] & termios.ECHO)
+        os.set_blocking(slave_fd, False)
+        os.write(master_fd, b"\n")
+        queued = b""
+        deadline = time.monotonic() + 0.5
+        while time.monotonic() < deadline:
+            readable, _, _ = select.select([slave_fd], [], [], 0.05)
+            if not readable:
+                continue
+            try:
+                queued += os.read(slave_fd, 4096)
+            except BlockingIOError:
+                continue
+            break
+        os.set_blocking(master_fd, False)
+        output = b""
+        try:
+            while True:
+                output += os.read(master_fd, 4096)
+        except BlockingIOError, OSError:
+            pass
+        return _SignalPTYResult(
+            os.waitstatus_to_exitcode(status),
+            echo_restored,
+            fragment in queued,
+            fragment in output,
+        )
+    finally:
+        os.close(master_fd)
+        os.close(slave_fd)
+        if not reaped:
+            try:
+                os.kill(child_pid, signal.SIGCONT)
+                os.kill(child_pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            try:
+                os.waitpid(child_pid, 0)
+            except ChildProcessError:
+                pass
+
+
+def _read_exact_with_deadline(descriptor: int, size: int) -> bytes:
+    value = bytearray()
+    deadline = time.monotonic() + 5
+    while len(value) < size:
+        remaining = deadline - time.monotonic()
+        assert remaining > 0
+        readable, _, _ = select.select([descriptor], [], [], remaining)
+        assert readable == [descriptor]
+        chunk = os.read(descriptor, size - len(value))
+        assert chunk
+        value.extend(chunk)
+    return bytes(value)
+
+
+def _real_hidden_tty_job_control_report() -> tuple[bool, bool, int, int]:
+    master_fd, slave_fd = os.openpty()
+    report_read, report_write = os.pipe()
+    supervisor_pid = os.fork()
+    fragment = b"synthetic-fragment"
+    supervisor_reaped = False
+    worker_pid = -1
+    if supervisor_pid == 0:
+        os.close(master_fd)
+        os.close(report_read)
+        try:
+            os.setsid()
+            os.login_tty(slave_fd)
+            worker_pid = os.fork()
+            if worker_pid == 0:
+                os.close(report_write)
+                os.setpgid(0, 0)
+                try:
+                    credentials._read_private_tty("ASCII prompt: ")
+                except credentials._HiddenTTYTermination as exc:
+                    credentials._terminate_after_hidden_tty_signal(exc)
+                except BaseException:
+                    os._exit(91)
+                os._exit(92)
+            os.tcsetpgrp(0, worker_pid)
+            os.write(report_write, struct.pack("!i", worker_pid))
+            waited_pid, stopped_status = os.waitpid(worker_pid, os.WUNTRACED)
+            assert waited_pid == worker_pid
+            os.write(report_write, struct.pack("!i", stopped_status))
+            waited_pid, final_status = os.waitpid(worker_pid, 0)
+            assert waited_pid == worker_pid
+            os.write(report_write, struct.pack("!i", final_status))
+        except BaseException:
+            os._exit(93)
+        finally:
+            os.close(report_write)
+        os._exit(0)
+
+    os.close(report_write)
+    try:
+        worker_pid = struct.unpack("!i", _read_exact_with_deadline(report_read, 4))[0]
+        _read_until_prompt(master_fd, b"ASCII prompt: ")
+        os.write(master_fd, fragment)
+        os.kill(worker_pid, signal.SIGTSTP)
+        stopped_status = struct.unpack("!i", _read_exact_with_deadline(report_read, 4))[
+            0
+        ]
+        echo_restored = bool(termios.tcgetattr(slave_fd)[3] & termios.ECHO)
+        os.set_blocking(slave_fd, False)
+        os.write(master_fd, b"\n")
+        queued = b""
+        deadline = time.monotonic() + 0.5
+        while time.monotonic() < deadline:
+            readable, _, _ = select.select([slave_fd], [], [], 0.05)
+            if not readable:
+                continue
+            try:
+                queued += os.read(slave_fd, 4096)
+            except BlockingIOError:
+                continue
+            break
+        os.kill(worker_pid, signal.SIGCONT)
+        final_status = struct.unpack("!i", _read_exact_with_deadline(report_read, 4))[0]
+        waited_pid, supervisor_status = os.waitpid(supervisor_pid, 0)
+        supervisor_reaped = True
+        assert waited_pid == supervisor_pid
+        assert os.waitstatus_to_exitcode(supervisor_status) == 0
+        return (
+            echo_restored,
+            fragment in queued,
+            stopped_status,
+            final_status,
+        )
+    finally:
+        os.close(report_read)
+        os.close(master_fd)
+        os.close(slave_fd)
+        if not supervisor_reaped:
+            if worker_pid > 0:
+                try:
+                    os.kill(worker_pid, signal.SIGCONT)
+                    os.kill(worker_pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+            try:
+                os.kill(supervisor_pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            try:
+                os.waitpid(supervisor_pid, 0)
+            except ChildProcessError:
+                pass
+
+
+def _real_hidden_tty_ignored_signal_report(signum: int) -> tuple[int, bool]:
+    report_read, report_write = os.pipe()
+    child_pid, master_fd = pty.fork()
+    reaped = False
+    if child_pid == 0:
+        os.close(report_read)
+        value: bytearray | None = None
+        try:
+            value = credentials._read_private_tty("ASCII prompt: ")
+            status = 0 if value == bytearray(b"accepted") else 91
+        except BaseException:
+            status = 92
+        finally:
+            credentials._wipe(value)
+        echo_restored = bool(termios.tcgetattr(0)[3] & termios.ECHO)
+        os.write(report_write, struct.pack("!?", echo_restored))
+        os.close(report_write)
+        os._exit(status)
+    os.close(report_write)
+    try:
+        _read_until_prompt(master_fd, b"ASCII prompt: ")
+        os.kill(child_pid, signum)
+        os.write(master_fd, b"accepted\n")
+        echo_restored = struct.unpack(
+            "!?", _read_exact_with_deadline(report_read, struct.calcsize("!?"))
+        )[0]
+        status = _waitpid_with_deadline(child_pid)
+        reaped = True
+        return os.waitstatus_to_exitcode(status), echo_restored
+    finally:
+        os.close(report_read)
+        os.close(master_fd)
+        if not reaped:
+            try:
+                os.kill(child_pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            try:
+                os.waitpid(child_pid, 0)
+            except ChildProcessError:
+                pass
+
+
+def test_hidden_tty_signal_policy_is_exact_and_preserves_ignored_signals() -> None:
+    assert credentials._HIDDEN_TTY_ASYNC_SIGNAL_NAMES == (
+        "SIGHUP",
+        "SIGINT",
+        "SIGQUIT",
+        "SIGUSR1",
+        "SIGUSR2",
+        "SIGALRM",
+        "SIGTERM",
+        "SIGTSTP",
+        "SIGTTIN",
+        "SIGTTOU",
+        "SIGXCPU",
+        "SIGVTALRM",
+        "SIGPROF",
+        "SIGIO",
+        "SIGPWR",
+    )
+    assert credentials._HIDDEN_TTY_IGNORED_SIGNAL_NAMES == ("SIGPIPE", "SIGXFSZ")
+    assert len(credentials._HIDDEN_TTY_ASYNC_SIGNALS) == 46
+    assert credentials._HIDDEN_TTY_ASYNC_SIGNALS[-31:] == tuple(range(34, 65))
+    assert signal.getsignal(signal.SIGPIPE) is signal.SIG_IGN
+    assert signal.getsignal(signal.SIGXFSZ) is signal.SIG_IGN
+
+
+def test_hidden_tty_signal_state_roundtrips_all_46_handlers_and_mask() -> None:
+    before_mask = frozenset(int(item) for item in signal.pthread_sigmask(0, ()))
+    before_handlers = tuple(
+        signal.getsignal(signum) for signum in credentials._HIDDEN_TTY_ASYNC_SIGNALS
+    )
+    state = credentials._install_hidden_tty_signal_state()
+    try:
+        assert len(state.handlers) == 46
+        assert all(
+            signal.getsignal(signum) is credentials._hidden_tty_signal_handler
+            for signum in credentials._HIDDEN_TTY_ASYNC_SIGNALS
+        )
+        assert credentials._block_hidden_tty_signals() is True
+    finally:
+        assert credentials._restore_hidden_tty_signal_state(state, restore_mask=True)
+    assert (
+        tuple(
+            signal.getsignal(signum) for signum in credentials._HIDDEN_TTY_ASYNC_SIGNALS
+        )
+        == before_handlers
+    )
+    assert frozenset(int(item) for item in signal.pthread_sigmask(0, ())) == before_mask
+
+
+def test_hidden_tty_signal_handler_blocks_reentry_and_exposes_no_message(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[int, tuple[int, ...]]] = []
+
+    def block(how: int, signals: tuple[int, ...]) -> set[signal.Signals]:
+        calls.append((how, signals))
+        return set()
+
+    monkeypatch.setattr(signal, "pthread_sigmask", block)
+    monkeypatch.setattr(credentials, "_HIDDEN_TTY_CAUGHT_SIGNAL", 0)
+    with pytest.raises(credentials._HiddenTTYTermination) as caught:
+        credentials._hidden_tty_signal_handler(int(signal.SIGTERM), None)
+    assert caught.value.args == ()
+    assert caught.value.signum == signal.SIGTERM
+    assert calls == [(signal.SIG_BLOCK, credentials._HIDDEN_TTY_ASYNC_SIGNALS)]
+
+
+def test_hidden_tty_mask_restore_keeps_temporary_handlers_until_unmask(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    state = credentials._HiddenTTYSignalState(
+        ((int(signal.SIGTSTP), signal.SIG_DFL),), frozenset()
+    )
+    handler_restores: list[tuple[int, Any]] = []
+    mask_calls: list[int] = []
+
+    def set_mask(how: int, _signals: object) -> set[signal.Signals]:
+        mask_calls.append(how)
+        if how == signal.SIG_SETMASK:
+            credentials._hidden_tty_signal_handler(int(signal.SIGTSTP), None)
+        return set()
+
+    monkeypatch.setattr(credentials, "_HIDDEN_TTY_CAUGHT_SIGNAL", 0)
+    monkeypatch.setattr(signal, "pthread_sigmask", set_mask)
+    monkeypatch.setattr(
+        signal,
+        "signal",
+        lambda signum, handler: handler_restores.append((signum, handler)),
+    )
+
+    with pytest.raises(credentials._HiddenTTYTermination) as caught:
+        credentials._restore_hidden_tty_signal_state(state, restore_mask=True)
+    assert caught.value.signum == signal.SIGTSTP
+    assert handler_restores == []
+    assert mask_calls == [signal.SIG_SETMASK, signal.SIG_BLOCK]
+
+
+def test_hidden_tty_retries_cleanup_if_signal_arrives_at_cleanup_entry(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    descriptor = 99
+    original = [0, 0, 0, termios_flags(), 0, 0, []]
+    input_bytes = iter((b"v", b"a", b"l", b"u", b"e", b"\n"))
+    terminal_states: list[tuple[int, list[Any]]] = []
+    wiped: list[tuple[bytes, bytes]] = []
+    block_calls = 0
+    original_wipe = credentials._wipe
+
+    def block() -> bool:
+        nonlocal block_calls
+        block_calls += 1
+        if block_calls == 1:
+            raise credentials._HiddenTTYTermination(int(signal.SIGTERM))
+        return True
+
+    def record_wipe(value: bytearray | None) -> None:
+        before = bytes(value or b"")
+        original_wipe(value)
+        wiped.append((before, bytes(value or b"")))
+
+    monkeypatch.setattr(os, "open", lambda _path, _flags: descriptor)
+    monkeypatch.setattr(os, "set_inheritable", lambda _fd, _value: None)
+    monkeypatch.setattr(os, "get_inheritable", lambda _fd: False)
+    monkeypatch.setattr(os, "fstat", lambda _fd: _char_stat())
+    monkeypatch.setattr(os, "read", lambda _fd, _size: next(input_bytes))
+    monkeypatch.setattr(os, "write", lambda _fd, value: len(value))
+    monkeypatch.setattr(os, "close", lambda _fd: None)
+    monkeypatch.setattr(termios, "tcgetattr", lambda _fd: original.copy())
+    monkeypatch.setattr(
+        termios,
+        "tcsetattr",
+        lambda _fd, when, state: terminal_states.append((when, state.copy())),
+    )
+    monkeypatch.setattr(credentials, "_block_hidden_tty_signals", block)
+    monkeypatch.setattr(credentials, "_wipe", record_wipe)
+
+    with pytest.raises(credentials._HiddenTTYTermination) as caught:
+        credentials._read_private_tty("ASCII prompt: ")
+    assert caught.value.signum == signal.SIGTERM
+    assert caught.value.previous_mask == frozenset()
+    assert block_calls == 2
+    assert terminal_states[-1] == (termios.TCSAFLUSH, original)
+    assert wiped == [(b"value", b"\x00" * 5)]
+
+
+def test_hidden_tty_promotes_signal_pending_during_flush_before_unmask(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    descriptor = 100
+    original = [0, 0, 0, termios_flags(), 0, 0, []]
+    input_bytes = iter((b"v", b"a", b"l", b"u", b"e", b"\n"))
+    pending = iter((set(), {signal.SIGTERM}))
+    wiped: list[tuple[bytes, bytes]] = []
+    original_wipe = credentials._wipe
+
+    def record_wipe(value: bytearray | None) -> None:
+        before = bytes(value or b"")
+        original_wipe(value)
+        wiped.append((before, bytes(value or b"")))
+
+    monkeypatch.setattr(os, "open", lambda _path, _flags: descriptor)
+    monkeypatch.setattr(os, "set_inheritable", lambda _fd, _value: None)
+    monkeypatch.setattr(os, "get_inheritable", lambda _fd: False)
+    monkeypatch.setattr(os, "fstat", lambda _fd: _char_stat())
+    monkeypatch.setattr(os, "read", lambda _fd, _size: next(input_bytes))
+    monkeypatch.setattr(os, "write", lambda _fd, value: len(value))
+    monkeypatch.setattr(os, "close", lambda _fd: None)
+    monkeypatch.setattr(termios, "tcgetattr", lambda _fd: original.copy())
+    monkeypatch.setattr(termios, "tcsetattr", lambda _fd, _when, _state: None)
+    monkeypatch.setattr(signal, "sigpending", lambda: next(pending))
+    monkeypatch.setattr(credentials, "_block_hidden_tty_signals", lambda: True)
+    monkeypatch.setattr(credentials, "_wipe", record_wipe)
+
+    with pytest.raises(credentials._HiddenTTYTermination) as caught:
+        credentials._read_private_tty("ASCII prompt: ")
+    assert caught.value.signum == signal.SIGTERM
+    assert caught.value.previous_mask == frozenset()
+    assert wiped == [(b"value", b"\x00" * 5)]
+
+
+def test_hidden_tty_retries_cleanup_after_signal_during_mask_restore(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    descriptor = 101
+    original = [0, 0, 0, termios_flags(), 0, 0, []]
+    input_bytes = iter((b"v", b"a", b"l", b"u", b"e", b"\n"))
+    state = credentials._HiddenTTYSignalState(tuple(), frozenset())
+    termination = credentials._HiddenTTYTermination(int(signal.SIGTSTP))
+    restore_masks: list[bool] = []
+    wiped: list[tuple[bytes, bytes]] = []
+    closed = False
+    original_wipe = credentials._wipe
+
+    def set_terminal(_fd: int, _when: int, _state: list[Any]) -> None:
+        if closed:
+            raise OSError("descriptor already closed")
+
+    def close_terminal(_fd: int) -> None:
+        nonlocal closed
+        closed = True
+
+    def restore_signal_state(
+        _state: credentials._HiddenTTYSignalState, *, restore_mask: bool
+    ) -> bool:
+        restore_masks.append(restore_mask)
+        if len(restore_masks) == 1:
+            raise termination
+        return True
+
+    def record_wipe(value: bytearray | None) -> None:
+        before = bytes(value or b"")
+        original_wipe(value)
+        wiped.append((before, bytes(value or b"")))
+
+    monkeypatch.setattr(os, "open", lambda _path, _flags: descriptor)
+    monkeypatch.setattr(os, "set_inheritable", lambda _fd, _value: None)
+    monkeypatch.setattr(os, "get_inheritable", lambda _fd: False)
+    monkeypatch.setattr(os, "fstat", lambda _fd: _char_stat())
+    monkeypatch.setattr(os, "read", lambda _fd, _size: next(input_bytes))
+    monkeypatch.setattr(os, "write", lambda _fd, value: len(value))
+    monkeypatch.setattr(os, "close", close_terminal)
+    monkeypatch.setattr(termios, "tcgetattr", lambda _fd: original.copy())
+    monkeypatch.setattr(termios, "tcsetattr", set_terminal)
+    monkeypatch.setattr(credentials, "_install_hidden_tty_signal_state", lambda: state)
+    monkeypatch.setattr(credentials, "_block_hidden_tty_signals", lambda: True)
+    monkeypatch.setattr(
+        credentials, "_restore_hidden_tty_signal_state", restore_signal_state
+    )
+    monkeypatch.setattr(signal, "sigpending", lambda: set())
+    monkeypatch.setattr(credentials, "_wipe", record_wipe)
+
+    with pytest.raises(credentials._HiddenTTYTermination) as caught:
+        credentials._read_private_tty("ASCII prompt: ")
+    assert caught.value is termination
+    assert caught.value.previous_mask == frozenset()
+    assert restore_masks == [True, False]
+    assert wiped == [(b"value", b"\x00" * 5)]
+
+
+def test_signal_redelivery_unblocks_only_the_selected_signal(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    termination = credentials._HiddenTTYTermination(int(signal.SIGTERM))
+    termination.previous_mask = frozenset({int(signal.SIGCHLD)})
+    masks: list[set[int]] = []
+    kills: list[tuple[int, int]] = []
+
+    class ExitAfterRedelivery(BaseException):
+        def __init__(self, code: int) -> None:
+            self.code = code
+
+    monkeypatch.setattr(signal, "signal", lambda _signum, _handler: None)
+    monkeypatch.setattr(
+        signal,
+        "pthread_sigmask",
+        lambda _how, mask: masks.append({int(item) for item in mask}),
+    )
+    monkeypatch.setattr(os, "getpid", lambda: 123)
+    monkeypatch.setattr(os, "kill", lambda pid, signum: kills.append((pid, signum)))
+    monkeypatch.setattr(
+        os, "_exit", lambda code: (_ for _ in ()).throw(ExitAfterRedelivery(code))
+    )
+
+    with pytest.raises(ExitAfterRedelivery) as caught:
+        credentials._terminate_after_hidden_tty_signal(termination)
+    assert caught.value.code == 128 + signal.SIGTERM
+    assert kills == [(123, signal.SIGTERM)]
+    assert len(masks) == 1
+    assert signal.SIGTERM not in masks[0]
+    assert signal.SIGCHLD in masks[0]
+    assert set(credentials._HIDDEN_TTY_ASYNC_SIGNALS) - {signal.SIGTERM} <= masks[0]
+
+
+def test_setup_wipes_prior_input_before_signal_redelivery(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    application_id = bytearray(b"synthetic-application-id")
+    termination = credentials._HiddenTTYTermination(int(signal.SIGTERM))
+    termination.previous_mask = frozenset()
+    calls = 0
+
+    def reader(_prompt: str) -> bytearray:
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            return application_id
+        raise termination
+
+    class TerminatedAfterWipe(BaseException):
+        pass
+
+    def terminate(observed: credentials._HiddenTTYTermination) -> None:
+        assert observed is termination
+        assert application_id == bytearray(len(application_id))
+        raise TerminatedAfterWipe
+
+    monkeypatch.setattr(credentials, "_terminate_after_hidden_tty_signal", terminate)
+    with pytest.raises(TerminatedAfterWipe):
+        credentials.setup_store(
+            tmp_path,
+            expected_root=tmp_path,
+            reader=reader,
+            disclosure_guard=lambda: None,
+        )
+    assert calls == 2
+
+
+@pytest.mark.parametrize(
+    "signum",
+    (
+        signal.SIGHUP,
+        signal.SIGINT,
+        signal.SIGQUIT,
+        signal.SIGUSR1,
+        signal.SIGTERM,
+        signal.SIGRTMIN,
+    ),
+)
+def test_hidden_tty_catchable_termination_restores_and_flushes_before_redelivery(
+    signum: signal.Signals | int,
+) -> None:
+    report = _real_hidden_tty_signal_report(int(signum))
+    assert report == _SignalPTYResult(-int(signum), True, False, False)
+
+
+@pytest.mark.parametrize("signum", (signal.SIGPIPE, signal.SIGXFSZ))
+def test_hidden_tty_preserves_pinned_ignored_signal_disposition(
+    signum: signal.Signals,
+) -> None:
+    assert _real_hidden_tty_ignored_signal_report(int(signum)) == (0, True)
+
+
+def test_hidden_tty_job_control_stops_only_after_cleanup_and_never_resumes_input() -> (
+    None
+):
+    echo_restored, queued_fragment, stopped_status, final_status = (
+        _real_hidden_tty_job_control_report()
+    )
+    assert echo_restored is True
+    assert queued_fragment is False
+    assert os.WIFSTOPPED(stopped_status)
+    assert os.WSTOPSIG(stopped_status) == signal.SIGTSTP
+    assert os.waitstatus_to_exitcode(final_status) == 128 + signal.SIGTSTP
+
+
 def _real_pty_rejection_report(line: bytes, *, maximum: int | None = None) -> bytes:
     report_read, report_write = os.pipe()
     child_pid, master_fd = pty.fork()

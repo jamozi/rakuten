@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import resource
 import select
+import signal
 import stat
 import sys
 import termios
@@ -73,6 +74,45 @@ _RENAME_NOREPLACE: Final = 1
 _RUNTIME_SPECIAL_MAPPINGS: Final = frozenset({"[heap]", "[stack]", "[vdso]", "[vvar]"})
 _RENAMEAT2: Callable[..., int] | None = None
 _RUNTIME_LOCKED = False
+_HIDDEN_TTY_CAUGHT_SIGNAL = 0
+
+_HIDDEN_TTY_ASYNC_SIGNAL_NAMES: Final = (
+    "SIGHUP",
+    "SIGINT",
+    "SIGQUIT",
+    "SIGUSR1",
+    "SIGUSR2",
+    "SIGALRM",
+    "SIGTERM",
+    "SIGTSTP",
+    "SIGTTIN",
+    "SIGTTOU",
+    "SIGXCPU",
+    "SIGVTALRM",
+    "SIGPROF",
+    "SIGIO",
+    "SIGPWR",
+)
+_HIDDEN_TTY_IGNORED_SIGNAL_NAMES: Final = ("SIGPIPE", "SIGXFSZ")
+_HIDDEN_TTY_SYNCHRONOUS_FATAL_SIGNAL_NAMES: Final = (
+    "SIGILL",
+    "SIGTRAP",
+    "SIGABRT",
+    "SIGBUS",
+    "SIGFPE",
+    "SIGSEGV",
+    "SIGSTKFLT",
+    "SIGSYS",
+)
+_HIDDEN_TTY_ASYNC_SIGNALS: Final = tuple(
+    int(getattr(signal, name)) for name in _HIDDEN_TTY_ASYNC_SIGNAL_NAMES
+) + tuple(range(34, 65))
+_HIDDEN_TTY_IGNORED_SIGNALS: Final = tuple(
+    int(getattr(signal, name)) for name in _HIDDEN_TTY_IGNORED_SIGNAL_NAMES
+)
+_HIDDEN_TTY_SYNCHRONOUS_FATAL_SIGNALS: Final = tuple(
+    int(getattr(signal, name)) for name in _HIDDEN_TTY_SYNCHRONOUS_FATAL_SIGNAL_NAMES
+)
 
 
 class CredentialStoreStatus(str, Enum):
@@ -99,6 +139,31 @@ class CredentialIntakeFailure(RuntimeError):
     def __init__(self, code: CredentialIntakeFailureCode) -> None:
         self.code = code
         super().__init__(code.value)
+
+
+class _HiddenTTYTermination(BaseException):
+    """Value-free propagation of the first protected hidden-TTY signal."""
+
+    __slots__ = ("previous_mask", "signum")
+
+    def __init__(self, signum: int) -> None:
+        self.signum = signum
+        self.previous_mask: frozenset[int] | None = None
+        super().__init__()
+
+
+class _HiddenTTYSignalState:
+    """Exact signal state retained until terminal cleanup is complete."""
+
+    __slots__ = ("handlers", "previous_mask")
+
+    def __init__(
+        self,
+        handlers: tuple[tuple[int, Any], ...],
+        previous_mask: frozenset[int],
+    ) -> None:
+        self.handlers = handlers
+        self.previous_mask = previous_mask
 
 
 def _fail(code: CredentialIntakeFailureCode) -> NoReturn:
@@ -603,6 +668,145 @@ def _disable_process_disclosure(
         _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
 
 
+def _hidden_tty_signal_handler(signum: int, _frame: object) -> NoReturn:
+    """Block re-entry and propagate the first protected signal without text."""
+
+    global _HIDDEN_TTY_CAUGHT_SIGNAL
+    if _HIDDEN_TTY_CAUGHT_SIGNAL == 0:
+        _HIDDEN_TTY_CAUGHT_SIGNAL = signum
+    try:
+        signal.pthread_sigmask(signal.SIG_BLOCK, _HIDDEN_TTY_ASYNC_SIGNALS)
+    except BaseException:
+        pass
+    raise _HiddenTTYTermination(_HIDDEN_TTY_CAUGHT_SIGNAL)
+
+
+def _install_hidden_tty_signal_state() -> _HiddenTTYSignalState:
+    """Install the exact catchable asynchronous policy before hiding input."""
+
+    global _HIDDEN_TTY_CAUGHT_SIGNAL
+    previous_mask: frozenset[int] | None = None
+    handlers: list[tuple[int, Any]] = []
+    try:
+        if (
+            sys.platform != "linux"
+            or int(signal.SIGRTMIN) != 34
+            or int(signal.SIGRTMAX) != 64
+            or not hasattr(signal, "pthread_sigmask")
+        ):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        valid_signals = {int(item) for item in signal.valid_signals()}
+        if (
+            len(_HIDDEN_TTY_ASYNC_SIGNALS) != 46
+            or len(set(_HIDDEN_TTY_ASYNC_SIGNALS)) != 46
+            or not set(_HIDDEN_TTY_ASYNC_SIGNALS).issubset(valid_signals)
+            or not set(_HIDDEN_TTY_IGNORED_SIGNALS).issubset(valid_signals)
+            or not set(_HIDDEN_TTY_SYNCHRONOUS_FATAL_SIGNALS).issubset(valid_signals)
+        ):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        previous_mask = frozenset(
+            int(item)
+            for item in signal.pthread_sigmask(
+                signal.SIG_BLOCK, _HIDDEN_TTY_ASYNC_SIGNALS
+            )
+        )
+        if set(previous_mask) & set(_HIDDEN_TTY_ASYNC_SIGNALS):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        if {int(item) for item in signal.sigpending()} & set(_HIDDEN_TTY_ASYNC_SIGNALS):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        for ignored in _HIDDEN_TTY_IGNORED_SIGNALS:
+            if signal.getsignal(ignored) is not signal.SIG_IGN:
+                _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        for fatal in _HIDDEN_TTY_SYNCHRONOUS_FATAL_SIGNALS:
+            if signal.getsignal(fatal) is not signal.SIG_DFL:
+                _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        for signum in _HIDDEN_TTY_ASYNC_SIGNALS:
+            current = signal.getsignal(signum)
+            expected = (
+                signal.default_int_handler
+                if signum == int(signal.SIGINT)
+                else signal.SIG_DFL
+            )
+            if current is not expected:
+                _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+            handlers.append((signum, current))
+            signal.signal(signum, _hidden_tty_signal_handler)
+        _HIDDEN_TTY_CAUGHT_SIGNAL = 0
+        signal.pthread_sigmask(signal.SIG_SETMASK, previous_mask)
+        return _HiddenTTYSignalState(tuple(handlers), previous_mask)
+    except CredentialIntakeFailure:
+        pass
+    except BaseException:
+        pass
+    for signum, previous in reversed(handlers):
+        try:
+            signal.signal(signum, previous)
+        except BaseException:
+            pass
+    if previous_mask is not None:
+        try:
+            signal.pthread_sigmask(signal.SIG_SETMASK, previous_mask)
+        except BaseException:
+            pass
+    _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+
+
+def _block_hidden_tty_signals() -> bool:
+    try:
+        signal.pthread_sigmask(signal.SIG_BLOCK, _HIDDEN_TTY_ASYNC_SIGNALS)
+        return True
+    except _HiddenTTYTermination:
+        raise
+    except BaseException:
+        return False
+
+
+def _restore_hidden_tty_signal_state(
+    state: _HiddenTTYSignalState,
+    *,
+    restore_mask: bool,
+) -> bool:
+    restored = True
+    if restore_mask:
+        try:
+            signal.pthread_sigmask(signal.SIG_SETMASK, state.previous_mask)
+        except _HiddenTTYTermination:
+            raise
+        except BaseException:
+            restored = False
+    for signum, previous in reversed(state.handlers):
+        try:
+            signal.signal(signum, previous)
+        except _HiddenTTYTermination:
+            raise
+        except BaseException:
+            restored = False
+    return restored
+
+
+def _terminate_after_hidden_tty_signal(termination: _HiddenTTYTermination) -> NoReturn:
+    """Restore kernel-default disposition and re-deliver after all wipes."""
+
+    signum = termination.signum
+    previous_mask = termination.previous_mask
+    if (
+        signum not in _HIDDEN_TTY_ASYNC_SIGNALS
+        or previous_mask is None
+        or set(previous_mask) & set(_HIDDEN_TTY_ASYNC_SIGNALS)
+    ):
+        os._exit(127)
+    try:
+        signal.signal(signum, signal.SIG_DFL)
+        redelivery_mask = set(previous_mask) | (
+            set(_HIDDEN_TTY_ASYNC_SIGNALS) - {signum}
+        )
+        signal.pthread_sigmask(signal.SIG_SETMASK, redelivery_mask)
+        os.kill(os.getpid(), signum)
+    except BaseException:
+        os._exit(128 + signum)
+    os._exit(128 + signum)
+
+
 def _read_private_tty(prompt: str) -> bytearray:
     if type(prompt) is not str or not prompt or not prompt.isascii():
         _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
@@ -615,83 +819,22 @@ def _read_private_tty(prompt: str) -> bytearray:
     discarded = 0
     drain_deadline: float | None = None
     hidden_restore_required = False
-    try:
-        descriptor = os.open("/dev/tty", _TTY_FLAGS)
-        _set_cloexec(descriptor)
-        if not stat.S_ISCHR(os.fstat(descriptor).st_mode):
-            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
-        original = termios.tcgetattr(descriptor)
-        if int(original[3]) & termios.ICANON == 0:
-            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
-        hidden = original.copy()
-        hidden[3] = int(hidden[3]) & ~(termios.ECHO | getattr(termios, "ECHONL", 0))
-        hidden_restore_required = True
-        termios.tcsetattr(descriptor, termios.TCSANOW, hidden)
-        prompt_bytes = prompt.encode("ascii")
-        offset = 0
-        while offset < len(prompt_bytes):
-            written = os.write(descriptor, prompt_bytes[offset:])
-            if written <= 0:
-                _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
-            offset += written
-        while True:
-            if rejected:
-                try:
-                    if drain_deadline is None:
-                        raise RuntimeError("missing rejected-line deadline")
-                    remaining = drain_deadline - time.monotonic()
-                    if remaining <= 0:
-                        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
-                    readable, _, _ = select.select([descriptor], [], [], remaining)
-                    if readable != [descriptor]:
-                        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
-                except CredentialIntakeFailure:
-                    raise
-                except BaseException:
-                    raise
-            try:
-                chunk = os.read(descriptor, 1)
-            except BaseException:
-                raise
-            if not chunk:
-                _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
-            if chunk == b"\n":
-                break
-            if rejected:
-                discarded += len(chunk)
-                if discarded >= MAX_TTY_DISCARD_BYTES:
-                    _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
-                continue
-            if (
-                chunk == b"\r"
-                or chunk[0] < 0x20
-                or chunk[0] == 0x7F
-                or len(value) >= MAX_SECRET_BYTES
-            ):
-                rejected = True
-                _wipe(value)
-                value.clear()
-                try:
-                    os.set_blocking(descriptor, False)
-                    drain_deadline = time.monotonic() + TTY_REJECT_DRAIN_TIMEOUT_SECONDS
-                except BaseException:
-                    raise
-                continue
-            value.extend(chunk)
-        if rejected or not value:
-            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
-        completed = True
-        return value
-    except CredentialIntakeFailure:
-        raise
-    except BaseException:
-        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
-    finally:
-        if descriptor is not None:
+    signal_state: _HiddenTTYSignalState | None = None
+    termination: _HiddenTTYTermination | None = None
+    cleanup_complete = False
+
+    def cleanup() -> None:
+        nonlocal cleanup_complete, descriptor, restore_failed, termination
+        if cleanup_complete:
+            return
+        signals_blocked = signal_state is None or _block_hidden_tty_signals()
+        active_descriptor = descriptor
+        descriptor = None
+        if active_descriptor is not None:
             if original is not None:
                 try:
                     termios.tcsetattr(
-                        descriptor,
+                        active_descriptor,
                         (
                             termios.TCSAFLUSH
                             if hidden_restore_required
@@ -702,17 +845,131 @@ def _read_private_tty(prompt: str) -> bytearray:
                 except BaseException:
                     restore_failed = True
             try:
-                os.write(descriptor, b"\n")
+                os.write(active_descriptor, b"\n")
             except BaseException:
                 pass
             try:
-                os.close(descriptor)
+                os.close(active_descriptor)
             except BaseException:
                 pass
-        if not completed or restore_failed:
+        pending_check_failed = False
+        if signal_state is not None and termination is None:
+            try:
+                pending = {int(item) for item in signal.sigpending()} & set(
+                    _HIDDEN_TTY_ASYNC_SIGNALS
+                )
+                if pending:
+                    termination = _HiddenTTYTermination(min(pending))
+            except BaseException:
+                pending_check_failed = True
+        signal_state_restored = True
+        if signal_state is not None:
+            if termination is not None:
+                termination.previous_mask = signal_state.previous_mask
+            signal_state_restored = _restore_hidden_tty_signal_state(
+                signal_state,
+                restore_mask=termination is None,
+            )
+        if not completed or restore_failed or termination is not None:
             _wipe(value)
-        if restore_failed:
+        cleanup_complete = True
+        if (
+            restore_failed
+            or pending_check_failed
+            or not signals_blocked
+            or not signal_state_restored
+        ):
             _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+        if termination is not None:
+            raise termination
+
+    try:
+        try:
+            descriptor = os.open("/dev/tty", _TTY_FLAGS)
+            _set_cloexec(descriptor)
+            if not stat.S_ISCHR(os.fstat(descriptor).st_mode):
+                _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+            original = termios.tcgetattr(descriptor)
+            if int(original[3]) & termios.ICANON == 0:
+                _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+            signal_state = _install_hidden_tty_signal_state()
+            hidden = original.copy()
+            hidden[3] = int(hidden[3]) & ~(termios.ECHO | getattr(termios, "ECHONL", 0))
+            hidden_restore_required = True
+            termios.tcsetattr(descriptor, termios.TCSANOW, hidden)
+            prompt_bytes = prompt.encode("ascii")
+            offset = 0
+            while offset < len(prompt_bytes):
+                written = os.write(descriptor, prompt_bytes[offset:])
+                if written <= 0:
+                    _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+                offset += written
+            while True:
+                if rejected:
+                    try:
+                        if drain_deadline is None:
+                            raise RuntimeError("missing rejected-line deadline")
+                        remaining = drain_deadline - time.monotonic()
+                        if remaining <= 0:
+                            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+                        readable, _, _ = select.select([descriptor], [], [], remaining)
+                        if readable != [descriptor]:
+                            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+                    except CredentialIntakeFailure:
+                        raise
+                    except BaseException:
+                        raise
+                try:
+                    chunk = os.read(descriptor, 1)
+                except BaseException:
+                    raise
+                if not chunk:
+                    _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+                if chunk == b"\n":
+                    break
+                if rejected:
+                    discarded += len(chunk)
+                    if discarded >= MAX_TTY_DISCARD_BYTES:
+                        _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+                    continue
+                if (
+                    chunk == b"\r"
+                    or chunk[0] < 0x20
+                    or chunk[0] == 0x7F
+                    or len(value) >= MAX_SECRET_BYTES
+                ):
+                    rejected = True
+                    _wipe(value)
+                    value.clear()
+                    try:
+                        os.set_blocking(descriptor, False)
+                        drain_deadline = (
+                            time.monotonic() + TTY_REJECT_DRAIN_TIMEOUT_SECONDS
+                        )
+                    except BaseException:
+                        raise
+                    continue
+                value.extend(chunk)
+            if rejected or not value:
+                _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+            completed = True
+            return value
+        except _HiddenTTYTermination as exc:
+            termination = exc
+            raise
+        except CredentialIntakeFailure:
+            raise
+        except BaseException:
+            _fail(CredentialIntakeFailureCode.INPUT_UNAVAILABLE)
+        finally:
+            cleanup()
+    except _HiddenTTYTermination as exc:
+        if termination is None:
+            termination = exc
+        cleanup()
+        if termination.previous_mask is None and signal_state is not None:
+            termination.previous_mask = signal_state.previous_mask
+        raise termination
 
 
 def _wipe(value: bytearray | None) -> None:
@@ -951,11 +1208,13 @@ def setup_store(
     disclosure_guard()
     application_id: bytearray | None = None
     access_material: bytearray | None = None
+    termination: _HiddenTTYTermination | None = None
     try:
         application_id = _read_value(reader, "Rakuten application ID: ")
         access_material = _read_value(reader, "Rakuten access key: ")
         _create_pair(root, (application_id, access_material))
-        return CredentialStoreStatus.READY
+    except _HiddenTTYTermination as exc:
+        termination = exc
     except CredentialIntakeFailure:
         raise
     except BaseException:
@@ -963,6 +1222,9 @@ def setup_store(
     finally:
         _wipe(application_id)
         _wipe(access_material)
+    if termination is not None:
+        _terminate_after_hidden_tty_signal(termination)
+    return CredentialStoreStatus.READY
 
 
 def _read_value(reader: Callable[[str], bytearray], prompt: str) -> bytearray:
@@ -970,6 +1232,8 @@ def _read_value(reader: Callable[[str], bytearray], prompt: str) -> bytearray:
         if reader is _read_private_tty:
             _assert_runtime_lock_intact()
         value = reader(prompt)
+    except _HiddenTTYTermination:
+        raise
     except CredentialIntakeFailure:
         raise
     except BaseException:

@@ -158,6 +158,7 @@ def test_bool_float_string_and_nonzero_do_not_bypass_exact_zero_actions(
         ("input_boundary", "hidden_mode_restore", "TCSANOW_ON_SUCCESS"),
         ("input_boundary", "prompt_input_cardinality", "QUEUED_LINE_ALLOWED"),
         ("input_boundary", "queued_typeahead", "PRESERVED"),
+        ("input_boundary", "signal_boundary", {}),
         ("provider_contract_context", "future_access_key_transport", "QUERY"),
     ),
 )
@@ -166,6 +167,34 @@ def test_credential_intake_runtime_or_secret_read_inflation_is_rejected(
 ) -> None:
     contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
     contract["local_credential_intake"][section][field] = value
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("temporary_handler_count", 45),
+        ("named_async_signals", ["SIGTERM"]),
+        ("realtime_signals", "ABSENT"),
+        ("pinned_ignored_signals", ["SIGPIPE"]),
+        ("synchronous_fatal_signals_not_caught", []),
+        ("uncatchable_signals", ["SIGKILL"]),
+        ("cleanup_reentry", "UNMASKED"),
+        ("pending_during_cleanup", "IGNORED"),
+        ("redelivery", "RETURN_TO_SECRET_PROCESSING"),
+        ("redelivery_mask", "ALL_UNBLOCKED"),
+        ("job_control_continue", "RESUME_SECRET_PROCESSING"),
+        ("concurrent_signal_storm", "SUPPORTED"),
+    ),
+)
+def test_credential_intake_signal_boundary_drift_is_rejected(
+    field: str, value: object
+) -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    contract["local_credential_intake"]["input_boundary"]["signal_boundary"][field] = (
+        value
+    )
     with pytest.raises(generator.RakutenLiveSmokeReferenceError):
         generator.validate_contract(contract)
 

@@ -1,12 +1,12 @@
 document:
   id: RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001
-  version: 1.2.5
+  version: 1.2.6
   story_id: ST-0505
   source_contract: repo://changes/st-0505/contracts/rakuten-live-smoke-reference-plan.v1.yaml
   generated_by: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0505_rakuten_live_smoke_reference_plan.py
 provenance:
-  contract_sha256: a2debee943f679d2c7a692d5c7698c03382915e752175b707201dc5f614edcf7
+  contract_sha256: 887a082084d061a5522873fcee65d247e2649dff7e9fa6385805fe89e8d805ef
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -46,28 +46,28 @@ provenance:
     sha256: 710ee36b2cc88d2f14c5a3e726b2fe50d1bd9fbc2bdd9bdb1a05c099bbf4c696
   credential_intake_design_handoff:
     uri: repo://changes/st-0505/DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml
-    bytes: 22108
-    sha256: 39e201e361bd77a18d1c1b92072a5cc9e1e6163ebb91ff8db5448ce0ac85f6fe
+    bytes: 25316
+    sha256: c2a5545debde1083467300b7b501e63d3c555559abb76d2d8870ae1abc055992
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
     sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
 source_artifact_count: 11
 source_artifacts:
 - uri: repo://changes/st-0505/contracts/rakuten-live-smoke-reference-plan.v1.yaml
-  bytes: 12943
-  sha256: a2debee943f679d2c7a692d5c7698c03382915e752175b707201dc5f614edcf7
+  bytes: 14244
+  sha256: 887a082084d061a5522873fcee65d247e2649dff7e9fa6385805fe89e8d805ef
 - uri: repo://changes/st-0505/DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml
-  bytes: 22108
-  sha256: 39e201e361bd77a18d1c1b92072a5cc9e1e6163ebb91ff8db5448ce0ac85f6fe
+  bytes: 25316
+  sha256: c2a5545debde1083467300b7b501e63d3c555559abb76d2d8870ae1abc055992
 - uri: repo://changes/st-0505/README.md
-  bytes: 11430
-  sha256: 53a157a2c66eb164e7685989a3fdd9c8be4676a29e1800a3809bbfbc079e4a49
+  bytes: 13039
+  sha256: e603dbdc6dbce178493802f82679b96b021d679118fd778024d4733b014f7013
 - uri: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
-  bytes: 50437
-  sha256: 02a8c95ab13c608b089d677c2de5f12da32f5a7e68f34e9b83804be9f1f55b4c
+  bytes: 52284
+  sha256: 7eaba008f9c0cbb28116cb7dba9ed4bf60fc63ccebf1f81e51e13e24938d5564
 - uri: repo://scripts/rakuten_live_smoke_credentials.py
-  bytes: 37888
-  sha256: e4036fbc8f38c6eb04738af835d1d6aaf78a3645f2c4e5fcc2eb59d29b57527e
+  bytes: 47188
+  sha256: 40e9bd5ec3b6d01b0a46dc5decab66b74e0ceffc237ad837d67f20302441b974
 - uri: repo://scripts/rakuten_live_smoke_credentials_python.sh
   bytes: 12993
   sha256: 6ceca9789b4f89f6a03d851b88fb765058ff8c92de1beb44a8e0a95d5eb4914d
@@ -75,22 +75,22 @@ source_artifacts:
   bytes: 952
   sha256: c85ba1f8614db15f2723b7ba320a4ab7e31459188d1223828d2078bac7352dae
 - uri: repo://tests/st0505/test_contract.py
-  bytes: 15456
-  sha256: 761ccdede334c425ed82467d830ac24b94ddceda64dbb97dbbc0384375136393
+  bytes: 17303
+  sha256: dfd9a077f2abea9ec7942c4bfa43467056751c4a9673d949801f4355868780cf
 - uri: repo://tests/st0505/test_generation.py
   bytes: 4427
-  sha256: 5840faecfb49d260ac9a266f2ff5882c52046e118cd10b11ed018bc4921f56f4
+  sha256: f59f6cec8a2a812414afa3acebaf65adb88fb11e07b5f8e6e176846fa0fcead4
 - uri: repo://tests/st0505/test_negative_cases.py
-  bytes: 32120
-  sha256: be32159d8531852d7afb1c6d8ed2f416d9143e7c7139a786ebcf033dae6db304
+  bytes: 33211
+  sha256: 411cf8fac6f736315274636ae2587ac8dec8239a7bdae58a9ecd74adcc86fddb
 - uri: repo://tests/st0505/test_rakuten_live_smoke_credentials.py
-  bytes: 93014
-  sha256: 025269dd1ef1df007becdb2a7342c0cd8ab0f222c960203789f467ffc5f6b0e6
+  bytes: 114382
+  sha256: 5c11e8dde00ceebdd339bec42a2fc99962bb0d6bc974ed15de27db68226d0872
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0505/generated/rakuten-live-smoke-reference-plan.v1.json
-  bytes: 16628
-  sha256: c2325184f1d21860c70be1e28318510d4d66664eead9787b96f89270653c89b7
+  bytes: 18149
+  sha256: 8dafc59f2caecddd2e81a1ec8c30b1c338936812d088b5561bb4906f4d7ace7b
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN
   executable: false

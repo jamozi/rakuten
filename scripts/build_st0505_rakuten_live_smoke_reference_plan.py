@@ -33,9 +33,9 @@ DESIGN_HANDOFF_PATH: Final = Path(
     "changes/st-0505/"
     "DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml"
 )
-DESIGN_HANDOFF_BYTES: Final = 22108
+DESIGN_HANDOFF_BYTES: Final = 25316
 DESIGN_HANDOFF_SHA256: Final = (
-    "39e201e361bd77a18d1c1b92072a5cc9e1e6163ebb91ff8db5448ce0ac85f6fe"
+    "c2a5545debde1083467300b7b501e63d3c555559abb76d2d8870ae1abc055992"
 )
 GENERATOR_PATH: Final = Path(
     "scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
@@ -46,7 +46,7 @@ CREDENTIAL_LAUNCHER_PATH: Final = Path(
     "scripts/rakuten_live_smoke_credentials_python.sh"
 )
 CREDENTIAL_SCRIPT_EXPECTED_MODULE_AST_SHA256: Final = (
-    "919bfac90d51c5ad68db3c4a4eafad50d78361e58dd6b2ed2a6b2c014e70db6f"
+    "fe6c6ed693c5d68bd2cb981ac874117a6c29d2e2249c09a0ad9772657a7bf63b"
 )
 CREDENTIAL_LAUNCHER_SHA256: Final = (
     "6ceca9789b4f89f6a03d851b88fb765058ff8c92de1beb44a8e0a95d5eb4914d"
@@ -834,7 +834,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -1030,6 +1030,57 @@ EXPECTED_CREDENTIAL_INTAKE: Final[dict[str, object]] = {
         "hidden_mode_restore": "TCSAFLUSH_ON_ALL_OUTCOMES",
         "prompt_input_cardinality": "ONE_FRESH_CANONICAL_LINE",
         "queued_typeahead": "DISCARDED_BEFORE_ECHO_RESTORE",
+        "signal_boundary": {
+            "temporary_handler_count": 46,
+            "named_async_signals": [
+                "SIGHUP",
+                "SIGINT",
+                "SIGQUIT",
+                "SIGUSR1",
+                "SIGUSR2",
+                "SIGALRM",
+                "SIGTERM",
+                "SIGTSTP",
+                "SIGTTIN",
+                "SIGTTOU",
+                "SIGXCPU",
+                "SIGVTALRM",
+                "SIGPROF",
+                "SIGIO",
+                "SIGPWR",
+            ],
+            "realtime_signals": "34_THROUGH_64",
+            "pinned_ignored_signals": ["SIGPIPE", "SIGXFSZ"],
+            "synchronous_fatal_signals_not_caught": [
+                "SIGILL",
+                "SIGTRAP",
+                "SIGABRT",
+                "SIGBUS",
+                "SIGFPE",
+                "SIGSEGV",
+                "SIGSTKFLT",
+                "SIGSYS",
+            ],
+            "uncatchable_signals": ["SIGKILL", "SIGSTOP"],
+            "cleanup_reentry": (
+                "TCSAFLUSH_THEN_TEMPORARY_HANDLERS_ACTIVE_MASK_RESTORE_THEN_PRIOR_HANDLERS"
+            ),
+            "pending_during_cleanup": (
+                "PROMOTED_AFTER_TCSAFLUSH_OR_CAUGHT_DURING_TEMPORARY_HANDLER_MASK_RESTORE"
+            ),
+            "redelivery": (
+                "KERNEL_DEFAULT_SAME_SIGNAL_AFTER_ALL_MUTABLE_INPUT_BUFFERS_WIPED"
+            ),
+            "redelivery_mask": (
+                "SELECTED_SIGNAL_ONLY_UNBLOCKED_ALL_OTHER_TEMPORARY_SIGNALS_"
+                "REMAIN_BLOCKED"
+            ),
+            "sigint_semantics": (
+                "KERNEL_DEFAULT_TERMINATION_AFTER_CLEANUP_NO_TRACEBACK"
+            ),
+            "job_control_continue": "FIXED_EXIT_WITHOUT_SECRET_PROCESSING",
+            "concurrent_signal_storm": ("SAME_EUID_OR_PRIVILEGED_ATTACKER_UNSUPPORTED"),
+        },
         "argv_values": "FORBIDDEN",
         "environment_values": "FORBIDDEN",
         "stdin_values": "FORBIDDEN",
@@ -1285,7 +1336,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "1.2.5",
+            "version": "1.2.6",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,
