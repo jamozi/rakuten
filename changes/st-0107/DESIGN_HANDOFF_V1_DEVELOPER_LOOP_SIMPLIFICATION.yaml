@@ -1,0 +1,104 @@
+document:
+  kind: DESIGN_HANDOFF_V1
+  id: RAOS-DEVELOPER-LOOP-SIMPLIFICATION-001
+  version: 1.0.0
+  recorded_at: '2026-08-21T00:00:00+09:00'
+  authority: REPOSITORY_LOCAL_DESIGN_RECORD
+approved_story: ST-0107
+approved_scope:
+  name: Developer Loop Simplification V1
+  mode: IMPLEMENTATION_FIRST_WAVE
+  integration_owner: parent Codex agent
+  candidate_stories: [ST-0106, ST-0107]
+  waves:
+    - instructions-and-handoff
+    - affected-ci-and-dev-check
+    - pr-governance-and-bounded-ruleset-operator
+  completion_boundary: >-
+    Reversible repository implementation, generated artifacts, focused local
+    checks, and commits only; no push, PR, live ruleset apply, release, staging,
+    publication, provider mutation, or Production write.
+source_design_refs:
+  - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  - repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+  - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  - repo://docs/canonical/08_codex/AGENTS.md
+decision:
+  development_loop:
+    implementation: focused checks
+    pull_request: affected Base CI jobs
+    high_risk_unknown_or_multi_story: full Base CI
+    main_nightly_or_manual: full Base CI
+    formal_or_live: only at the governed external transition
+  repository_approval: >-
+    Reversible local development and the normal exact-head GitHub development
+    workflow do not require repeated human approval.
+  pull_request_review: >-
+    Ordinary paths require terminal affected checks but no general approving
+    review. Contract, migration, security, deployment, and governance paths
+    retain CODEOWNERS routing and code-owner approval; high-risk PRs also require
+    full Base CI and independent automated review. Last-push approval is not a
+    separate repository-local prerequisite.
+  ruleset_operation: >-
+    A fixed-repository, plan-hash-bound operator may prepare status, plan,
+    apply, read-back, and rollback operations, but live mutation remains an
+    external action and is not authorized by this handoff.
+rationale:
+  - Short feedback loops improve implementation throughput and early learning.
+  - Full validation remains available at high-risk and integration boundaries.
+  - External human gates remain attached to the real-world action they govern.
+rejected_alternatives:
+  - Run every local and hosted suite after every edit.
+  - Require a new owner or exact-hash approval before reversible local work.
+  - Use workflow-level path filters that can leave required checks pending.
+  - Permit an unbounded GitHub administration client or automatic live apply.
+constraints:
+  - Preserve Canonical precedence and unresolved Open Decisions.
+  - Keep Static, Unit, Contracts, Database, Storage, and Secrets check names.
+  - Secrets always runs; classifier failure must fail required jobs.
+  - Unknown, multi-Story, and high-risk changes fail safe to full Base CI.
+  - Contract, migration, security, deployment, and governance paths retain
+    CODEOWNERS routing and `require_code_owner_review`.
+  - Preserve strict checks, linear history, deletion/force-push protection, and
+    an empty bypass actor list.
+  - Do not read `.secrets/**` during classification or developer checks.
+security_and_approval_gates:
+  preserved:
+    - credential entry or exposure
+    - terms acceptance and spending
+    - publication and live-provider mutation
+    - irreversible data operations
+    - kill-switch disablement
+    - release, staging, and Production writes
+  ruleset_live_apply: HUMAN_EXTERNAL_ACTION_NOT_AUTHORIZED
+  credential_values: FORBIDDEN_IN_ARGUMENTS_LOGS_AND_TRACKED_FILES
+acceptance_criteria:
+  - Root AGENTS.md is at most 180 lines and points ST-0101 detail to Story-local sources.
+  - '`make dev-check STORY=ST-XXXX [BASE_REF=<ref>]` emits a machine-readable summary.'
+  - PR CI selects affected jobs while required contexts remain terminal.
+  - High-risk, unknown, multi-Story, main, nightly, and manual runs select full Base CI.
+  - Generated governance sets general review count to zero, retains high-risk CODEOWNER review, has no bypass actor, and preserves branch protections.
+  - The bounded ruleset operator is fixed to `jamozi/rakuten` and `https://api.github.com`.
+required_test_evidence:
+  minimum_checks:
+    - isolated tests/st0106
+    - isolated tests/st0107
+    - changed-source Ruff and mypy
+    - changed shell bash syntax
+    - ST-0107 regeneration and no-write check
+    - sensitive-value redaction and unsafe credential-file negative tests
+    - git diff --check
+  deferred_checks:
+    - hosted Base CI
+    - formal TST-001 and TST-002
+    - live GitHub ruleset read-back and PR probes
+    - release, staging, publication, provider, and Production evidence
+deferred_verification_ledger:
+  owner: integration owner
+  closure_wave: wave-freeze
+  entries: []
+open_decision_state:
+  canonical_open_decisions_introduced: []
+  unresolved_business_or_provider_values: []
+  live_activation: DEFERRED_EXTERNAL_ACTION
