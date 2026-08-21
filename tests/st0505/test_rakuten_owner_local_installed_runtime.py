@@ -15,6 +15,7 @@ import sys
 import termios
 import pytest
 
+from scripts import build_st0505_rakuten_live_smoke_reference_plan as generator
 from scripts import install_rakuten_owner_local_runtime as installer
 from scripts import rakuten_owner_local as cli
 
@@ -222,6 +223,116 @@ def test_cli_argument_surface_is_closed() -> None:
         ("setup", "secret"),
     ):
         assert not cli._valid_arguments(rejected)  # noqa: SLF001
+
+
+def _fake_request_launcher(
+    tmp_path: Path,
+    *,
+    expected_request_file: str,
+) -> tuple[Path, str]:
+    request_file_sha256 = hashlib.sha256(expected_request_file.encode()).hexdigest()
+    launcher = tmp_path / "rakuten-owner-local"
+    launcher.write_text(
+        "#!/usr/bin/busybox sh\n"
+        '[ "$#" -eq 5 ] && [ "$1" = request ] && '
+        '[ "$2" = --api ] && [ "$3" = item-search ] && '
+        '[ "$4" = --request-file ] || exit 91\n'
+        'h=$(/usr/bin/busybox printf "%s" "$5" | '
+        "/usr/bin/busybox sha256sum) || exit 92\n"
+        f'[ "$h" = "{request_file_sha256}  -" ] || exit 93\n'
+        '/usr/bin/busybox printf "%s\\n" FAKE_REQUEST_EXECUTED\n',
+        encoding="utf-8",
+    )
+    launcher.chmod(0o500)
+    return launcher, hashlib.sha256(launcher.read_bytes()).hexdigest()
+
+
+def _render_request_template(
+    launcher: Path,
+    launcher_sha256: str,
+    *,
+    api: str = "item-search",
+    request_file: str = "/tmp/request.json",
+) -> list[str]:
+    argv = generator._owner_local_authoritative_request_argv_template()
+    script = argv[10]
+    assert isinstance(script, str)
+    script = script.replace(
+        generator.OWNER_LOCAL_INSTALLED_LAUNCHER_PATH,
+        os.fspath(launcher),
+    ).replace(generator.EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256, launcher_sha256)
+    argv[10] = script
+    argv[12] = api
+    argv[13] = request_file
+    return argv
+
+
+def test_generated_request_template_authenticates_and_preserves_hostile_path(
+    tmp_path: Path,
+) -> None:
+    sentinel = tmp_path / "must-not-execute"
+    request_file = f"/tmp/owner local/'quoted'/$(touch {sentinel});semi\nline.json"
+    launcher, digest = _fake_request_launcher(
+        tmp_path,
+        expected_request_file=request_file,
+    )
+    result = subprocess.run(
+        _render_request_template(
+            launcher,
+            digest,
+            request_file=request_file,
+        ),
+        check=False,
+        capture_output=True,
+    )
+    assert result.returncode == 0
+    assert result.stdout == b"FAKE_REQUEST_EXECUTED\n"
+    assert result.stderr == b""
+    assert not sentinel.exists()
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    (
+        ("<item-search|product-search>", "<absolute-json>"),
+        ("unknown-api", "/tmp/request.json"),
+        ("item-search", "relative.json"),
+        (),
+        ("item-search", "/tmp/request.json", "extra"),
+    ),
+)
+def test_generated_request_template_rejects_unrendered_invalid_or_extra_arguments(
+    tmp_path: Path,
+    arguments: tuple[str, ...],
+) -> None:
+    launcher, digest = _fake_request_launcher(
+        tmp_path,
+        expected_request_file="/tmp/request.json",
+    )
+    argv = _render_request_template(launcher, digest)
+    del argv[12:]
+    argv.extend(arguments)
+    result = subprocess.run(argv, check=False, capture_output=True)
+    assert result.returncode == 2
+    assert result.stdout == b"RAKUTEN_OWNER_LOCAL_FAIL\n"
+    assert result.stderr == b""
+
+
+def test_generated_request_template_rejects_launcher_tamper_before_body(
+    tmp_path: Path,
+) -> None:
+    launcher, digest = _fake_request_launcher(
+        tmp_path,
+        expected_request_file="/tmp/request.json",
+    )
+    argv = _render_request_template(launcher, digest)
+    launcher.chmod(0o700)
+    launcher.write_bytes(launcher.read_bytes() + b"# tampered\n")
+    launcher.chmod(0o500)
+    result = subprocess.run(argv, check=False, capture_output=True)
+    assert result.returncode == 2
+    assert result.stdout == b"RAKUTEN_OWNER_LOCAL_FAIL\n"
+    assert result.stderr == b""
 
 
 def test_hidden_capture_repeats_confirms_and_wipes(

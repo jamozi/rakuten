@@ -363,6 +363,102 @@ def test_normalized_record_preserves_optional_product_url_nullability() -> None:
     )
 
 
+def _record_with_test_url(position: str, value: str) -> object:
+    if position == "mandatory":
+        return normalized_record(
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            {
+                "affiliateUrl": None,
+                "itemCode": "shop:item",
+                "itemName": "untrusted item",
+                "itemPrice": 100,
+                "itemUrl": value,
+            },
+        )
+    if position == "optional":
+        return normalized_record(
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            {
+                "affiliateUrl": None,
+                "productCode": "code",
+                "productId": "id",
+                "productUrlPC": "https://example.rakuten.co.jp/product",
+                "smallImageUrl": value,
+            },
+        )
+    assert position == "list"
+    return normalized_record(
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        {
+            "affiliateUrl": None,
+            "itemCode": "shop:item",
+            "itemName": "untrusted item",
+            "itemPrice": 100,
+            "itemUrl": "https://example.rakuten.co.jp/item",
+            "smallImageUrls": [value],
+        },
+    )
+
+
+@pytest.mark.parametrize("position", ("mandatory", "optional", "list"))
+@pytest.mark.parametrize(
+    "invalid_url",
+    (
+        "https://example .com/item",
+        "https://example.com/item name",
+        "https://example.com/\titem",
+        "https://example.com/\\item",
+        "https://example.com/\x1fitem",
+        "https://example.com/\x7fitem",
+        "https://example.com/\u0085item",
+        "HTTPS://example.com/item",
+        "https://-example.com/item",
+        "https://example-.com/item",
+        "https://example..com/item",
+        "https://exa_mple.com/item",
+        f"https://{'a' * 64}.example/item",
+        f"https://{'a' * 63}.{'b' * 63}.{'c' * 63}.{'d' * 63}.example/item",
+        "https://example.com\\@evil.invalid/item",
+        "https://[not-ipv6]/item",
+        "https://example.com:abc/item",
+        "https://user@example.com/item",
+        "https://user:password@example.com/item",
+        "https://example.com/item#fragment",
+        "https://example.com/%",
+        "https://example.com/%2",
+        "https://example.com/%GG",
+        "https://example.com/item?q=%0",
+    ),
+)
+def test_all_normalized_url_positions_reject_hostile_syntax(
+    position: str,
+    invalid_url: str,
+) -> None:
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _record_with_test_url(position, invalid_url)
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+
+
+@pytest.mark.parametrize("position", ("mandatory", "optional", "list"))
+@pytest.mark.parametrize(
+    "valid_url",
+    (
+        "https://例え.テスト/商品?q=収納",
+        "https://xn--r8jz45g.xn--zckzah/item",
+        "https://[2001:DB8::1]/item",
+        "https://[2001:db8::1]:8443/item?q=one%20two",
+        "https://example.com.:443/item?next=%2Fcatalog%3Fa%3D1",
+        "https://192.0.2.1/item?x=1&y=2",
+    ),
+)
+def test_all_normalized_url_positions_preserve_valid_url_forms(
+    position: str,
+    valid_url: str,
+) -> None:
+    _record_with_test_url(position, valid_url)
+
+
 @pytest.mark.parametrize(
     ("api", "valid", "missing_url"),
     (

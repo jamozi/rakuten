@@ -7,9 +7,11 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import StrEnum
 import hashlib
+import ipaddress
 import json
 import re
 from typing import NoReturn, SupportsIndex, TypeAlias, cast
+import unicodedata
 from urllib.parse import unquote_to_bytes, urlsplit
 
 from raos.domain.catalog.rakuten_item_search_live_request_v1 import (
@@ -33,6 +35,8 @@ RAKUTEN_OWNER_LOCAL_OD_015 = "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED"
 
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _RUN_ID = re.compile(r"[0-9]{8}T[0-9]{6}\.[0-9]{6}Z-[0-9a-f]{32}\Z", re.ASCII)
+_HOST_LABEL = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\Z")
+_MALFORMED_PERCENT_ESCAPE = re.compile(r"%(?![0-9A-Fa-f]{2})", re.ASCII)
 _REDACTED = "<redacted-rakuten-owner-local>"
 _SUMMARY_FIELDS = frozenset({"count", "first", "hits", "last", "page", "pageCount"})
 _URL_FIELDS = frozenset(
@@ -197,6 +201,17 @@ def _https_url(value: object) -> str:
         maximum=4096,
         failure_code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
     )
+    if (
+        not text.startswith("https://")
+        or "\\" in text
+        or any(
+            character in " \t\n\r\f\v" or unicodedata.category(character) == "Cc"
+            for character in text
+        )
+    ):
+        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+    if _MALFORMED_PERCENT_ESCAPE.search(text) is not None:
+        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
     try:
         parsed = urlsplit(text)
         port = parsed.port
@@ -213,7 +228,41 @@ def _https_url(value: object) -> str:
         or (port is not None and not 1 <= port <= 65535)
     ):
         fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+    _validate_https_host(parsed.hostname, parsed.netloc)
     return text
+
+
+def _validate_https_host(host: str, netloc: str) -> None:
+    if netloc.startswith("["):
+        closing = netloc.find("]")
+        if closing < 0:
+            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        suffix = netloc[closing + 1 :]
+        if suffix and not suffix.startswith(":"):
+            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        try:
+            bracket_address = ipaddress.IPv6Address(netloc[1:closing])
+            parsed_address = ipaddress.IPv6Address(host)
+        except ipaddress.AddressValueError:
+            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        if bracket_address != parsed_address:
+            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        return
+    if any(character in netloc for character in "[]\\"):
+        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+    try:
+        ascii_host = host.encode("idna").decode("ascii")
+    except UnicodeError:
+        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+    if ascii_host.endswith("."):
+        ascii_host = ascii_host[:-1]
+    labels = ascii_host.split(".")
+    if (
+        not ascii_host
+        or len(ascii_host) > 253
+        or any(_HOST_LABEL.fullmatch(label) is None for label in labels)
+    ):
+        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
 
 
 @dataclass(frozen=True, slots=True, repr=False)

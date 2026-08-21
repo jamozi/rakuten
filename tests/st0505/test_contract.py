@@ -185,6 +185,22 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         ),
         "shell_interpolation": "FORBIDDEN_USE_POSITIONAL_ARGUMENTS",
     }
+    request_template = owner["authoritative_request_template"]
+    assert request_template == {
+        "argv": generator._owner_local_authoritative_request_argv_template(),
+        "api_argv_index": 12,
+        "request_file_argv_index": 13,
+        "rendering": "REPLACE_EXACT_TWO_ARRAY_ELEMENTS_THEN_DIRECT_EXECVE_NO_EVAL",
+        "unrendered_or_extra_arguments": "FAIL_CLOSED",
+    }
+    argv = request_template["argv"]
+    assert argv[11:] == [
+        "rakuten-owner-local-request",
+        "<item-search|product-search>",
+        "<absolute-json>",
+    ]
+    assert 'exec "$p" request --api "$1" --request-file "$2"' in argv[10]
+    assert "eval" not in argv[10]
     assert owner["registry"]["item-search"]["api_version"] == "2026-07-01"
     assert owner["registry"]["item-search"]["page"] == 1
     assert owner["registry"]["item-search"]["exact_selector_response_binding"] == (
@@ -205,6 +221,14 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY"
     )
     assert owner["normalized_result"]["url_validation"] == {
+        "syntax": {
+            "scheme": "EXACT_LOWERCASE_HTTPS",
+            "whitespace_and_controls": "REJECT_ASCII_WHITESPACE_AND_UNICODE_CC",
+            "raw_backslash": "REJECT",
+            "host": "VALID_IDNA_DNS_OR_BRACKETED_IPV6_WITH_OPTIONAL_PORT",
+            "percent_escapes": "COMPLETE_HEX_PAIR_REQUIRED",
+            "userinfo_and_fragment": "REJECT",
+        },
         "non_null_https": {
             "item-search": ["itemUrl"],
             "product-search": ["productUrlPC"],

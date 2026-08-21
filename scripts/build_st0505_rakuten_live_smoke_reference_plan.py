@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "4db6cfa26c9edb7c588b62d6fc3f4b596f51c78979fa7674bead8de1952d4bca"
+    "a01bda9b8465c7fcc5c20d46e98403176b8b4216081e17dab43b3f43ad0e3ffe"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "4d2d90d6162869afd7c2d82bc6ca047069cdb4b6ee684dcc92ca300d1315cc2b"
+    "953211e2e450b42ec94964a2edc55245abfc4899b0ec5fb9ed9b251db7d50530"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "b26d60123827adc906e0d2f183b6a797ada94f6c1a9d0459323de50656911ae9"
+    "9b41650f732ecf76927afebfeda1efcbb5bc9c9edb4dcc043b8fd3d4c476309e"
 )
 INSTALLED_LAUNCHER_PATH: Final = (
     "/home/minami/.local/share/raos/rakuten-live-smoke/runtime/"
@@ -310,6 +310,46 @@ def _owner_local_authoritative_installed_command(arguments: tuple[str, ...]) -> 
     )
 
 
+def _owner_local_authoritative_request_argv_template() -> list[str]:
+    command = _owner_local_authoritative_installed_command(("list-apis",))
+    prefix = (
+        "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 "
+        "TZ=UTC /usr/bin/busybox sh -c '"
+    )
+    if not command.startswith(prefix) or not command.endswith("'"):
+        raise ValueError("owner-local installed gate shape")
+    script = command[len(prefix) : -1]
+    fixed_dispatch = 'exec "$p" list-apis'
+    positional_dispatch = (
+        '[ "$#" -eq 2 ] || { /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; "
+        'case "$1" in item-search|product-search) ;; *) '
+        '/usr/bin/busybox printf "%s\\n" RAKUTEN_OWNER_LOCAL_FAIL; exit 2;; esac; '
+        'case "$2" in /*) ;; *) /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_OWNER_LOCAL_FAIL; exit 2;; esac; "
+        'exec "$p" request --api "$1" --request-file "$2"'
+    )
+    if script.count(fixed_dispatch) != 1:
+        raise ValueError("owner-local installed dispatch shape")
+    script = script.replace(fixed_dispatch, positional_dispatch)
+    return [
+        "/usr/bin/busybox",
+        "env",
+        "-i",
+        "PATH=/usr/bin:/bin",
+        "LANG=C.UTF-8",
+        "LC_ALL=C.UTF-8",
+        "TZ=UTC",
+        "/usr/bin/busybox",
+        "sh",
+        "-c",
+        script,
+        "rakuten-owner-local-request",
+        "<item-search|product-search>",
+        "<absolute-json>",
+    ]
+
+
 def _owner_local_reference_binding(value: object) -> dict[str, object]:
     owner = dict(_mapping(value, "owner_local_read_integration"))
     owner["authoritative_fixed_commands"] = {
@@ -333,6 +373,13 @@ def _owner_local_reference_binding(value: object) -> dict[str, object]:
             "request --api <item-search|product-search> --request-file <absolute-json>"
         ),
         "shell_interpolation": "FORBIDDEN_USE_POSITIONAL_ARGUMENTS",
+    }
+    owner["authoritative_request_template"] = {
+        "argv": _owner_local_authoritative_request_argv_template(),
+        "api_argv_index": 12,
+        "request_file_argv_index": 13,
+        "rendering": "REPLACE_EXACT_TWO_ARRAY_ELEMENTS_THEN_DIRECT_EXECVE_NO_EVAL",
+        "unrendered_or_extra_arguments": "FAIL_CLOSED",
     }
     return owner
 
@@ -1455,6 +1502,9 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "_NON_NULL_URL_FIELDS = {",
             'frozenset({"itemUrl"})',
             'frozenset({"productUrlPC"})',
+            "_MALFORMED_PERCENT_ESCAPE =",
+            'unicodedata.category(character) == "Cc"',
+            "_validate_https_host(parsed.hostname, parsed.netloc)",
         ),
         Path("python/raos/application/catalog/rakuten_owner_local.py"): (
             "self.result_writer.preflight()",
@@ -1963,6 +2013,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
         "doctor",
         "list_apis",
         "request",
+        "authenticated_request_entry",
         "smoke",
     ):
         _fail("CONTRACT_SCHEMA_DRIFT", "owner_local.commands")
@@ -1976,6 +2027,9 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "request": (
                 "request --api <item-search|product-search> "
                 "--request-file <absolute-json>"
+            ),
+            "authenticated_request_entry": (
+                "GENERATED_POSITIONAL_FD4_DIGEST_GATE_ARGV_TEMPLATE"
             ),
             "smoke": "smoke --api <item-search|product-search>",
         },
@@ -2145,6 +2199,14 @@ def _validate_owner_local_read_integration(value: object) -> None:
         or result.get("response_sha256") != "SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES"
         or result.get("url_validation")
         != {
+            "syntax": {
+                "scheme": "EXACT_LOWERCASE_HTTPS",
+                "whitespace_and_controls": ("REJECT_ASCII_WHITESPACE_AND_UNICODE_CC"),
+                "raw_backslash": "REJECT",
+                "host": "VALID_IDNA_DNS_OR_BRACKETED_IPV6_WITH_OPTIONAL_PORT",
+                "percent_escapes": "COMPLETE_HEX_PAIR_REQUIRED",
+                "userinfo_and_fragment": "REJECT",
+            },
             "non_null_https": {
                 "item-search": ["itemUrl"],
                 "product-search": ["productUrlPC"],

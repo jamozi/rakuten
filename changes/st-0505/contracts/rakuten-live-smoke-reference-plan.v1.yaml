@@ -267,10 +267,10 @@ owner_local_read_integration:
   runtime:
     name: rakuten-owner-local
     root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    bundle_sha256: 4db6cfa26c9edb7c588b62d6fc3f4b596f51c78979fa7674bead8de1952d4bca
+    bundle_sha256: a01bda9b8465c7fcc5c20d46e98403176b8b4216081e17dab43b3f43ad0e3ffe
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 4d2d90d6162869afd7c2d82bc6ca047069cdb4b6ee684dcc92ca300d1315cc2b
-    install_stage_sha256: b26d60123827adc906e0d2f183b6a797ada94f6c1a9d0459323de50656911ae9
+    installer_sha256: 953211e2e450b42ec94964a2edc55245abfc4899b0ec5fb9ed9b251db7d50530
+    install_stage_sha256: 9b41650f732ecf76927afebfeda1efcbb5bc9c9edb4dcc043b8fd3d4c476309e
     install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
     installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
     installer_credential_access: FORBIDDEN
@@ -282,6 +282,7 @@ owner_local_read_integration:
     doctor: LOCAL_METADATA_AND_CREDENTIAL_SCHEMA_ONLY_NO_NETWORK
     list_apis: FIXED_CLOSED_REGISTRY_NO_NETWORK
     request: request --api <item-search|product-search> --request-file <absolute-json>
+    authenticated_request_entry: GENERATED_POSITIONAL_FD4_DIGEST_GATE_ARGV_TEMPLATE
     smoke: smoke --api <item-search|product-search>
   credential_record:
     path: .secrets/rakuten-owner-local/credentials.v1.json
@@ -344,6 +345,13 @@ owner_local_read_integration:
     publication: ATOMIC_0600_NO_REPLACE
     response_sha256: SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES
     url_validation:
+      syntax:
+        scheme: EXACT_LOWERCASE_HTTPS
+        whitespace_and_controls: REJECT_ASCII_WHITESPACE_AND_UNICODE_CC
+        raw_backslash: REJECT
+        host: VALID_IDNA_DNS_OR_BRACKETED_IPV6_WITH_OPTIONAL_PORT
+        percent_escapes: COMPLETE_HEX_PAIR_REQUIRED
+        userinfo_and_fragment: REJECT
       non_null_https:
         item-search:
           - itemUrl
