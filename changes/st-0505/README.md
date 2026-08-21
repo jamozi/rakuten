@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/a01bda9b8465c7fcc5c20d46e98403176b8b4216081e17dab43b3f43ad0e3ffe/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/5d04203ba5cc356ad21738b20b707a95f5c005b2f6376d447d74f16eecc30518/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`953211e2e450b42ec94964a2edc55245abfc4899b0ec5fb9ed9b251db7d50530`,
+`68ca984c26c214f824014ed4a25925de66a2504dac1f174beff18a3af1f970ba`,
 and install-stage SHA-256
-`9b41650f732ecf76927afebfeda1efcbb5bc9c9edb4dcc043b8fd3d4c476309e`.
+`cf4a3e253a69d4004130f440037e663da7ad429dae26a733884bf5ad9d994931`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -300,7 +300,16 @@ summary, and allowlisted normalized records. Raw bodies/headers, provider error
 descriptions, captions, review bodies or aggregates, affiliate rate, EPC, RPM,
 revenue, and all credentials are forbidden. Stored provider fields are always
 classified `UNTRUSTED_PROVIDER_DATA`. Every returned Item record requires a
-non-null strict HTTPS `itemUrl`, and every returned Product record requires a
+non-null, non-empty, bounded UTF-8 `itemCode` and `itemName`; every returned
+Product record requires the same shape for `productCode` and `productId`.
+`shopCode`, `shopName`, and `productName` retain their existing optional and
+nullable behavior unless a field is the selected exact selector. Mandatory-key
+presence is checked before exact-selector identity; a valid-but-different exact
+selector remains `RESULT_MISMATCH`, while an invalid mandatory text shape is
+`RESPONSE_SCHEMA_DRIFT` before success or persistence.
+
+Every returned Item record also requires a non-null strict HTTPS `itemUrl`, and
+every returned Product record requires a
 non-null strict HTTPS `productUrlPC`; missing, null, empty, non-string, or
 non-HTTPS values fail as `RESPONSE_SCHEMA_DRIFT` before success or persistence.
 The existing nullable scalar `affiliateUrl` and Product image URL values remain
@@ -312,15 +321,20 @@ international or punycode hostnames, IPv4, bracketed IPv6, optional ports,
 paths, and queries remain supported; this syntax check does not expand the
 transport SSRF policy.
 
-Field presence is checked before exact-selector identity, then URL value shape is
-checked before credential reflection. After result identity and request binding
-but before a success envelope or result write, every normalized record string,
-URL/list member, and canonical numeric/boolean representation is compared with
-all three known non-empty credential values. Raw UTF-8 and one percent-decoding
-pass are checked so reflected query material cannot bypass the boundary. Any
-match fails with the fixed `RESPONSE_SCHEMA_DRIFT` code while retaining only
-complete HTTP/body/SHA metadata and `request_count=1`; the matched value and the
-normalized record are neither redacted nor persisted.
+Field presence is checked before exact-selector identity, then mandatory text
+and URL value shape are checked before credential reflection. After result
+identity and request binding but before a success envelope or result write, all
+six provider-controlled summary scalars (`count`, `page`, `first`, `last`,
+`hits`, and `pageCount`) plus every normalized record string, URL/list member,
+and canonical numeric/boolean representation are compared with all three known
+non-empty credential values. These summaries and records are the complete
+provider-controlled values eligible for success persistence; HTTP status, body
+byte count, response hash, request count, and fixed identifiers remain required
+local evidence metadata rather than reflected provider values. Raw UTF-8 and
+one percent-decoding pass are checked so reflected query material cannot bypass
+the boundary. Any match fails with the fixed `RESPONSE_SCHEMA_DRIFT` code while
+retaining only complete HTTP/body/SHA metadata and `request_count=1`; the
+matched value, summaries, and normalized records are not persisted.
 
 Every local result is `OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE`. Implementation
 and fake tests do not execute a real credential read, provider call, formal

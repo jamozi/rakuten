@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "a01bda9b8465c7fcc5c20d46e98403176b8b4216081e17dab43b3f43ad0e3ffe"
+    "5d04203ba5cc356ad21738b20b707a95f5c005b2f6376d447d74f16eecc30518"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "953211e2e450b42ec94964a2edc55245abfc4899b0ec5fb9ed9b251db7d50530"
+    "68ca984c26c214f824014ed4a25925de66a2504dac1f174beff18a3af1f970ba"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "9b41650f732ecf76927afebfeda1efcbb5bc9c9edb4dcc043b8fd3d4c476309e"
+    "cf4a3e253a69d4004130f440037e663da7ad429dae26a733884bf5ad9d994931"
 )
 INSTALLED_LAUNCHER_PATH: Final = (
     "/home/minami/.local/share/raos/rakuten-live-smoke/runtime/"
@@ -1502,6 +1502,12 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "_NON_NULL_URL_FIELDS = {",
             'frozenset({"itemUrl"})',
             'frozenset({"productUrlPC"})',
+            "_MANDATORY_TEXT_FIELDS = {",
+            'frozenset({"itemCode", "itemName"})',
+            'frozenset({"productCode", "productId"})',
+            "result.page_count,",
+            "mandatory_record_fields(self.api)",
+            "validated_response_text(value)",
             "_MALFORMED_PERCENT_ESCAPE =",
             'unicodedata.category(character) == "Cc"',
             "_validate_https_host(parsed.hostname, parsed.netloc)",
@@ -1521,6 +1527,8 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             '"applicationId"',
             '"affiliateId"',
             '"access" + "Key"',
+            "mandatory_record_fields(api)",
+            "validated_response_text(returned_value)",
             "socket.getaddrinfo(",
             "ssl.create_default_context(",
             "O_TMPFILE",
@@ -2188,6 +2196,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "publication",
             "response_sha256",
             "url_validation",
+            "mandatory_text",
             "credential_reflection",
             "forbidden",
             "request_disposition",
@@ -2226,10 +2235,29 @@ def _validate_owner_local_read_integration(value: object) -> None:
             ),
             "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
         }
+        or result.get("mandatory_text")
+        != {
+            "item-search": ["itemCode", "itemName"],
+            "product-search": ["productCode", "productId"],
+            "maximum_characters": 20_000,
+            "shape": "NON_NULL_NONEMPTY_NO_EDGE_WHITESPACE_UTF8_STRING",
+            "optional_fields_unchanged": (
+                "SHOP_CODE_SHOP_NAME_AND_PRODUCT_NAME_REMAIN_OPTIONAL_NULLABLE"
+            ),
+            "precedence": (
+                "MANDATORY_KEY_PRESENCE_THEN_EXACT_SELECTOR_THEN_MANDATORY_TEXT_"
+                "THEN_URL_THEN_CREDENTIAL_REFLECTION"
+            ),
+            "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+        }
         or result.get("credential_reflection")
         != {
-            "inspected_record_values": (
-                "ALL_NORMALIZED_STRING_LIST_INTEGER_BOOLEAN_LEAVES"
+            "inspected_provider_values": (
+                "ALL_SIX_SUMMARY_SCALARS_AND_ALL_NORMALIZED_RECORD_LEAVES"
+            ),
+            "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
+            "provider_controlled_persisted_values": (
+                "COMPLETE_SUMMARY_AND_RECORD_SET_NO_OTHER_PROVIDER_CONTROLLED_FIELDS"
             ),
             "representations": "RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES",
             "match": "ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING",

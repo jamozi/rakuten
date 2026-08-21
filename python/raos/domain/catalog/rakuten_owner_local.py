@@ -334,6 +334,18 @@ _PRODUCT_ELEMENTS = (
 _PRODUCT_RECORD_FIELDS = tuple(
     field for field in _PRODUCT_ELEMENTS if field not in _SUMMARY_FIELDS
 )
+_MANDATORY_RECORD_FIELDS = {
+    RakutenOwnerLocalApi.ITEM_SEARCH: frozenset(
+        {"affiliateUrl", "itemCode", "itemName", "itemPrice", "itemUrl"}
+    ),
+    RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset(
+        {"affiliateUrl", "productCode", "productId", "productUrlPC"}
+    ),
+}
+_MANDATORY_TEXT_FIELDS = {
+    RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"itemCode", "itemName"}),
+    RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset({"productCode", "productId"}),
+}
 
 _API_DEFINITION_VALUES: dict[
     RakutenOwnerLocalApi,
@@ -619,7 +631,7 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
         return self._affiliate_id.decode("ascii", errors="strict")
 
     def reject_reflected_result(self, result: RakutenOwnerLocalProviderResult) -> None:
-        """Reject normalized provider values containing any exact credential value."""
+        """Reject provider-controlled summary or record values reflecting credentials."""
 
         if type(result) is not RakutenOwnerLocalProviderResult:
             fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
@@ -628,32 +640,40 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
             self._access_key,
             self._affiliate_id,
         )
-        for record in result.records:
-            for _name, candidate in record.fields:
-                text_values: tuple[str, ...]
-                if type(candidate) is str:
-                    text_values = (candidate,)
-                elif type(candidate) is tuple:
-                    text_values = candidate
-                elif type(candidate) is bool:
-                    text_values = ("true" if candidate else "false",)
-                elif type(candidate) is int:
-                    text_values = (str(candidate),)
-                else:
-                    continue
-                for text in text_values:
-                    encoded_values = (
-                        text.encode("utf-8", errors="strict"),
-                        unquote_to_bytes(text),
-                    )
-                    if any(
-                        credential in encoded
-                        for encoded in encoded_values
-                        for credential in credential_values
-                    ):
-                        fail_owner_local(
-                            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
-                        )
+        candidates: list[NormalizedValue] = [
+            result.count,
+            result.page,
+            result.first,
+            result.last,
+            result.hits,
+            result.page_count,
+        ]
+        candidates.extend(
+            candidate for record in result.records for _name, candidate in record.fields
+        )
+        for candidate in candidates:
+            text_values: tuple[str, ...]
+            if type(candidate) is str:
+                text_values = (candidate,)
+            elif type(candidate) is tuple:
+                text_values = candidate
+            elif type(candidate) is bool:
+                text_values = ("true" if candidate else "false",)
+            elif type(candidate) is int:
+                text_values = (str(candidate),)
+            else:
+                continue
+            for text in text_values:
+                encoded_values = (
+                    text.encode("utf-8", errors="strict"),
+                    unquote_to_bytes(text),
+                )
+                if any(
+                    credential in encoded
+                    for encoded in encoded_values
+                    for credential in credential_values
+                ):
+                    fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
 
 
 NormalizedValue: TypeAlias = None | bool | int | str | tuple[str, ...]
@@ -676,14 +696,7 @@ class RakutenOwnerLocalNormalizedRecord(_RedactedValue):
         ):
             fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
         allowed = frozenset(definition.normalized_record_fields)
-        expected_mandatory = {
-            RakutenOwnerLocalApi.ITEM_SEARCH: frozenset(
-                {"affiliateUrl", "itemCode", "itemName", "itemPrice", "itemUrl"}
-            ),
-            RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset(
-                {"affiliateUrl", "productCode", "productId", "productUrlPC"}
-            ),
-        }[self.api]
+        expected_mandatory = mandatory_record_fields(self.api)
         names = tuple(name for name, _value in self.fields)
         if (
             names != tuple(sorted(names))
@@ -708,6 +721,9 @@ class RakutenOwnerLocalNormalizedRecord(_RedactedValue):
 def _validate_normalized_value(
     api: RakutenOwnerLocalApi, name: str, value: object
 ) -> None:
+    if name in _MANDATORY_TEXT_FIELDS[api]:
+        validated_response_text(value)
+        return
     if name in _URL_LIST_FIELDS:
         if type(value) is not tuple:
             fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
@@ -742,6 +758,20 @@ def _validate_normalized_value(
         value.encode("utf-8", errors="strict")
     except UnicodeError:
         fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+
+
+def mandatory_record_fields(api: RakutenOwnerLocalApi) -> frozenset[str]:
+    if type(api) is not RakutenOwnerLocalApi:
+        fail_owner_local(RakutenOwnerLocalFailureCode.API_NOT_ALLOWED)
+    return _MANDATORY_RECORD_FIELDS[api]
+
+
+def validated_response_text(value: object) -> str:
+    return _bounded_text(
+        value,
+        maximum=20_000,
+        failure_code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+    )
 
 
 def normalized_record(

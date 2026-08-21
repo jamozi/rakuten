@@ -267,10 +267,10 @@ owner_local_read_integration:
   runtime:
     name: rakuten-owner-local
     root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    bundle_sha256: a01bda9b8465c7fcc5c20d46e98403176b8b4216081e17dab43b3f43ad0e3ffe
+    bundle_sha256: 5d04203ba5cc356ad21738b20b707a95f5c005b2f6376d447d74f16eecc30518
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 953211e2e450b42ec94964a2edc55245abfc4899b0ec5fb9ed9b251db7d50530
-    install_stage_sha256: 9b41650f732ecf76927afebfeda1efcbb5bc9c9edb4dcc043b8fd3d4c476309e
+    installer_sha256: 68ca984c26c214f824014ed4a25925de66a2504dac1f174beff18a3af1f970ba
+    install_stage_sha256: cf4a3e253a69d4004130f440037e663da7ad429dae26a733884bf5ad9d994931
     install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
     installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
     installer_credential_access: FORBIDDEN
@@ -367,8 +367,28 @@ owner_local_read_integration:
       url_list_values: NON_NULL_TUPLE_OF_HTTPS_URLS
       precedence: FIELD_PRESENCE_THEN_EXACT_SELECTOR_THEN_URL_VALUE_SHAPE_BEFORE_CREDENTIAL_REFLECTION
       refusal: RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE
+    mandatory_text:
+      item-search:
+        - itemCode
+        - itemName
+      product-search:
+        - productCode
+        - productId
+      maximum_characters: 20000
+      shape: NON_NULL_NONEMPTY_NO_EDGE_WHITESPACE_UTF8_STRING
+      optional_fields_unchanged: SHOP_CODE_SHOP_NAME_AND_PRODUCT_NAME_REMAIN_OPTIONAL_NULLABLE
+      precedence: MANDATORY_KEY_PRESENCE_THEN_EXACT_SELECTOR_THEN_MANDATORY_TEXT_THEN_URL_THEN_CREDENTIAL_REFLECTION
+      refusal: RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE
     credential_reflection:
-      inspected_record_values: ALL_NORMALIZED_STRING_LIST_INTEGER_BOOLEAN_LEAVES
+      inspected_provider_values: ALL_SIX_SUMMARY_SCALARS_AND_ALL_NORMALIZED_RECORD_LEAVES
+      summary_fields:
+        - count
+        - page
+        - first
+        - last
+        - hits
+        - pageCount
+      provider_controlled_persisted_values: COMPLETE_SUMMARY_AND_RECORD_SET_NO_OTHER_PROVIDER_CONTROLLED_FIELDS
       representations: RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES
       match: ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING
       refusal: RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE

@@ -248,9 +248,27 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         ),
         "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
     }
+    assert owner["normalized_result"]["mandatory_text"] == {
+        "item-search": ["itemCode", "itemName"],
+        "product-search": ["productCode", "productId"],
+        "maximum_characters": 20_000,
+        "shape": "NON_NULL_NONEMPTY_NO_EDGE_WHITESPACE_UTF8_STRING",
+        "optional_fields_unchanged": (
+            "SHOP_CODE_SHOP_NAME_AND_PRODUCT_NAME_REMAIN_OPTIONAL_NULLABLE"
+        ),
+        "precedence": (
+            "MANDATORY_KEY_PRESENCE_THEN_EXACT_SELECTOR_THEN_MANDATORY_TEXT_THEN_"
+            "URL_THEN_CREDENTIAL_REFLECTION"
+        ),
+        "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+    }
     assert owner["normalized_result"]["credential_reflection"] == {
-        "inspected_record_values": (
-            "ALL_NORMALIZED_STRING_LIST_INTEGER_BOOLEAN_LEAVES"
+        "inspected_provider_values": (
+            "ALL_SIX_SUMMARY_SCALARS_AND_ALL_NORMALIZED_RECORD_LEAVES"
+        ),
+        "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
+        "provider_controlled_persisted_values": (
+            "COMPLETE_SUMMARY_AND_RECORD_SET_NO_OTHER_PROVIDER_CONTROLLED_FIELDS"
         ),
         "representations": "RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES",
         "match": "ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING",

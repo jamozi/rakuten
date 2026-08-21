@@ -45,7 +45,9 @@ from raos.domain.catalog.rakuten_owner_local import (
     api_definition,
     exact_response_selector,
     fail_owner_local,
+    mandatory_record_fields,
     normalized_record,
+    validated_response_text,
 )
 
 
@@ -1399,8 +1401,7 @@ def _validate_exact_selector(
         return
     field, requested_value = selector
     returned_value = record.get(field)
-    if type(returned_value) is not str or not returned_value:
-        _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+    returned_value = validated_response_text(returned_value)
     if returned_value != requested_value:
         _fail(RakutenOwnerLocalFailureCode.RESULT_MISMATCH)
 
@@ -1448,14 +1449,7 @@ def _parse_provider_success(
             _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
         definition_record_fields = frozenset(definition.elements) - _SUMMARY_KEYS
         normalized_fields = frozenset(definition.normalized_record_fields)
-        mandatory = {
-            RakutenOwnerLocalApi.ITEM_SEARCH: frozenset(
-                {"affiliateUrl", "itemCode", "itemName", "itemPrice", "itemUrl"}
-            ),
-            RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset(
-                {"affiliateUrl", "productCode", "productId", "productUrlPC"}
-            ),
-        }[api]
+        mandatory = mandatory_record_fields(api)
         records: list[RakutenOwnerLocalNormalizedRecord] = []
         for member in values:
             raw_record = _unwrap_record(api, member)

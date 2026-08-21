@@ -123,6 +123,73 @@ def _product_result(
     )
 
 
+def _minimal_provider_result(
+    api: RakutenOwnerLocalApi,
+    request: RakutenOwnerLocalRequest,
+    **summary_overrides: int,
+) -> RakutenOwnerLocalProviderResult:
+    record = normalized_record(
+        api,
+        (
+            {
+                "affiliateUrl": None,
+                "itemCode": "shop:item",
+                "itemName": "untrusted item",
+                "itemPrice": 22,
+                "itemUrl": "https://example.rakuten.co.jp/item",
+            }
+            if api is RakutenOwnerLocalApi.ITEM_SEARCH
+            else {
+                "affiliateUrl": None,
+                "productCode": "product-code",
+                "productId": "product-id",
+                "productUrlPC": "https://example.rakuten.co.jp/product",
+            }
+        ),
+    )
+    summary = {
+        "count": 2,
+        "page": 1,
+        "first": 1,
+        "last": 1,
+        "hits": (
+            request.policy.hits
+            if type(request) is RakutenOwnerLocalItemSearchRequest
+            else request.hits
+        ),
+        "page_count": 2,
+    }
+    summary.update(summary_overrides)
+    return RakutenOwnerLocalProviderResult(
+        api=api,
+        request_fingerprint=request.fingerprint,
+        http_status=200,
+        body_byte_count=256,
+        response_sha256="c" * 64,
+        records=(record,),
+        **summary,
+    )
+
+
+def _credentials_with_summary_value(
+    credential_name: str,
+    value: str,
+) -> RakutenOwnerLocalCredentials:
+    values = [b"application-no-match", b"header-no-match", b"affiliate-no-match"]
+    index = {
+        "application_id": 0,
+        "access_key": 1,
+        "affiliate_id": 2,
+    }[credential_name]
+    values[index] = value.encode("ascii")
+    return RakutenOwnerLocalCredentials(
+        profile=RAKUTEN_OWNER_LOCAL_PROFILE,
+        _application_id=values[0],
+        _access_key=values[1],
+        _affiliate_id=values[2],
+    )
+
+
 def test_registry_is_closed_and_excludes_review_and_rate_material() -> None:
     registry = owner_local_api_registry()
 
@@ -273,6 +340,98 @@ def test_normalized_record_rejects_review_fields_and_bad_numeric_shapes() -> Non
             RakutenOwnerLocalApi.PRODUCT_SEARCH,
             {**valid, "averagePrice": 1.5},
         )
+
+
+@pytest.mark.parametrize(
+    ("api", "field", "valid"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            "itemCode",
+            {
+                "affiliateUrl": None,
+                "itemCode": "shop:item",
+                "itemName": "untrusted item",
+                "itemPrice": 22,
+                "itemUrl": "https://example.rakuten.co.jp/item",
+            },
+        ),
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            "itemName",
+            {
+                "affiliateUrl": None,
+                "itemCode": "shop:item",
+                "itemName": "untrusted item",
+                "itemPrice": 22,
+                "itemUrl": "https://example.rakuten.co.jp/item",
+            },
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            "productCode",
+            {
+                "affiliateUrl": None,
+                "productCode": "product-code",
+                "productId": "product-id",
+                "productUrlPC": "https://example.rakuten.co.jp/product",
+            },
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            "productId",
+            {
+                "affiliateUrl": None,
+                "productCode": "product-code",
+                "productId": "product-id",
+                "productUrlPC": "https://example.rakuten.co.jp/product",
+            },
+        ),
+    ),
+)
+@pytest.mark.parametrize(
+    "invalid_value",
+    (None, "", " ", " padded", "padded ", 7, "x" * 20_001),
+)
+def test_normalized_record_requires_bounded_nonempty_mandatory_text(
+    api: RakutenOwnerLocalApi,
+    field: str,
+    valid: dict[str, object],
+    invalid_value: object,
+) -> None:
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        normalized_record(api, {**valid, field: invalid_value})
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+
+
+def test_optional_text_fields_keep_existing_nullability() -> None:
+    item = normalized_record(
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        {
+            "affiliateUrl": None,
+            "itemCode": "shop:item",
+            "itemName": "untrusted item",
+            "itemPrice": 22,
+            "itemUrl": "https://example.rakuten.co.jp/item",
+            "shopCode": None,
+            "shopName": "",
+        },
+    )
+    product = normalized_record(
+        RakutenOwnerLocalApi.PRODUCT_SEARCH,
+        {
+            "affiliateUrl": None,
+            "productCode": "product-code",
+            "productId": "product-id",
+            "productName": None,
+            "productUrlPC": "https://example.rakuten.co.jp/product",
+        },
+    )
+
+    assert item.as_object()["shopCode"] is None
+    assert item.as_object()["shopName"] == ""
+    assert product.as_object()["productName"] is None
 
 
 @pytest.mark.parametrize(
@@ -638,7 +797,9 @@ def test_service_item_identity_mismatch_precedes_credential_reflection(
     )
     writer = _Writer()
     envelope = RakutenOwnerLocalService(
-        credential_reader=_Reader(),
+        credential_reader=_Reader(
+            _credentials_with_summary_value("application_id", "1")
+        ),
         transport=_Transport(result),
         result_writer=writer,
         clock=_clock(),  # type: ignore[arg-type]
@@ -683,7 +844,9 @@ def test_service_product_identity_mismatch_uses_the_shared_binding_boundary() ->
     )
     writer = _Writer()
     envelope = RakutenOwnerLocalService(
-        credential_reader=_Reader(),
+        credential_reader=_Reader(
+            _credentials_with_summary_value("application_id", "1")
+        ),
         transport=_Transport(result),
         result_writer=writer,
         clock=_clock(),  # type: ignore[arg-type]
@@ -797,6 +960,137 @@ def test_service_rejects_numeric_credential_reflected_as_integer() -> None:
     assert envelope.failure.http_status == 200
     assert "1000" not in json.dumps(envelope.as_result_object(), sort_keys=True)
     assert writer.writes == [envelope]
+
+
+@pytest.mark.parametrize(
+    "api",
+    (RakutenOwnerLocalApi.ITEM_SEARCH, RakutenOwnerLocalApi.PRODUCT_SEARCH),
+)
+@pytest.mark.parametrize(
+    ("summary_field", "summary_value"),
+    (
+        ("count", 7),
+        ("page", 1),
+        ("first", 1),
+        ("last", 1),
+        ("hits", 7),
+        ("page_count", 7),
+    ),
+)
+@pytest.mark.parametrize(
+    "credential_name",
+    ("application_id", "access_key", "affiliate_id"),
+)
+def test_service_rejects_each_credential_reflected_in_each_summary_scalar(
+    api: RakutenOwnerLocalApi,
+    summary_field: str,
+    summary_value: int,
+    credential_name: str,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if summary_field == "hits":
+        if type(request) is RakutenOwnerLocalItemSearchRequest:
+            request = RakutenOwnerLocalItemSearchRequest(
+                policy=replace(request.policy, hits=summary_value)
+            )
+        else:
+            assert type(request) is RakutenOwnerLocalProductSearchRequest
+            request = replace(request, hits=summary_value)
+    result = _minimal_provider_result(
+        api,
+        request,
+        **{summary_field: summary_value},
+    )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(
+            _credentials_with_summary_value(credential_name, str(summary_value))
+        ),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(api, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert envelope.failure.request_count == 1
+    assert envelope.failure.http_status == result.http_status
+    assert envelope.failure.body_byte_count == result.body_byte_count
+    assert envelope.failure.response_sha256 == result.response_sha256
+    assert envelope.request_count == 1
+    persisted = envelope.as_result_object()
+    assert persisted["items"] is None
+    assert persisted["products"] is None
+    assert persisted["provider_data_classification"] is None
+    assert all(
+        persisted[field] is None for field in ("count", "page", "hits", "pageCount")
+    )
+    assert writer.writes == [envelope]
+
+
+@pytest.mark.parametrize("binding", ("api", "fingerprint", "hits"))
+def test_result_binding_mismatch_precedes_summary_credential_reflection(
+    binding: str,
+) -> None:
+    request = _item_request()
+    if binding == "api":
+        product_request = fixed_owner_local_smoke_request(
+            RakutenOwnerLocalApi.PRODUCT_SEARCH
+        )
+        result = replace(
+            _minimal_provider_result(
+                RakutenOwnerLocalApi.PRODUCT_SEARCH,
+                product_request,
+            ),
+            request_fingerprint=request.fingerprint,
+        )
+    else:
+        result = _minimal_provider_result(RakutenOwnerLocalApi.ITEM_SEARCH, request)
+        if binding == "fingerprint":
+            result = replace(result, request_fingerprint="d" * 64)
+        else:
+            assert binding == "hits"
+            result = replace(result, hits=2)
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(
+            _credentials_with_summary_value("application_id", "1")
+        ),
+        transport=_Transport(result),
+        result_writer=_Writer(),
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert envelope.failure.request_count == 1
+    assert envelope.failure.http_status == 200
+    assert envelope.as_result_object()["items"] is None
+
+
+def test_cli_emits_only_fixed_failure_for_summary_credential_reflection() -> None:
+    request = _item_request()
+    result = _minimal_provider_result(RakutenOwnerLocalApi.ITEM_SEARCH, request)
+    writer = _Writer()
+    code, message = owner_local_cli._execute_request(  # noqa: SLF001
+        RakutenOwnerLocalApi.ITEM_SEARCH.value,
+        request,
+        reader=_Reader(_credentials_with_summary_value("application_id", "1")),
+        writer=writer,
+        transport=_Transport(result),
+    )
+
+    assert code == 1
+    assert message == "RAKUTEN_OWNER_LOCAL_FAIL_RESPONSE_SCHEMA_DRIFT"
+    assert len(writer.writes) == 1
+    envelope = writer.writes[0]
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.request_count == 1
+    assert envelope.as_result_object()["items"] is None
 
 
 def test_service_rejects_url_encoded_credential_reflection() -> None:
