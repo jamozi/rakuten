@@ -25,6 +25,7 @@ def test_docs_only_selects_light_static_and_secrets(
     assert result["mode"] == "affected"
     assert result["risk"] == "docs_only"
     assert result["jobs"] == ["Static", "Secrets"]
+    assert result["job_modes"]["Static"] == "light"
     assert result["full_required"] is False
 
 
@@ -39,6 +40,7 @@ def test_single_story_selects_static_unit_and_secrets(
     assert result["risk"] == "ordinary"
     assert result["story_suites"] == ["tests/st0804"]
     assert result["jobs"] == ["Static", "Unit", "Secrets"]
+    assert result["job_modes"]["Unit"] == "focused"
 
 
 @pytest.mark.parametrize(
@@ -106,6 +108,9 @@ def test_github_output_contains_every_required_job_without_path_material(
     assert values["database"] == "false"
     assert values["storage"] == "false"
     assert values["secrets"] == "true"
+    assert values["static_mode"] == "full"
+    assert values["unit_mode"] == "focused"
+    assert values["story_suite"] == "tests/st0804"
 
 
 def _git(root: Path, *arguments: str) -> None:

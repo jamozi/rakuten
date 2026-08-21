@@ -2,12 +2,17 @@ name: Base CI
 
 on:
   pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 18 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: base-ci-${{ github.event.pull_request.number }}
+  group: base-ci-${{ github.event.pull_request.number || github.ref || github.run_id }}
   cancel-in-progress: true
 
 defaults:
@@ -15,31 +20,92 @@ defaults:
     shell: bash
 
 jobs:
+  classify:
+    name: Classify Base CI scope
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      static: ${{ steps.scope.outputs.static }}
+      static_mode: ${{ steps.scope.outputs.static_mode }}
+      unit: ${{ steps.scope.outputs.unit }}
+      unit_mode: ${{ steps.scope.outputs.unit_mode }}
+      story_suite: ${{ steps.scope.outputs.story_suite }}
+      contracts: ${{ steps.scope.outputs.contracts }}
+      database: ${{ steps.scope.outputs.database }}
+      storage: ${{ steps.scope.outputs.storage }}
+      secrets: ${{ steps.scope.outputs.secrets }}
+      full_required: ${{ steps.scope.outputs.full_required }}
+      classification_json: ${{ steps.scope.outputs.classification_json }}
+    steps:
+      - name: Check out classification tree and history
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          show-progress: false
+      - name: Classify affected jobs
+        id: scope
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == pull_request ]]; then
+            /usr/bin/python3 -I scripts/classify_ci_scope.py \
+              --event pull_request \
+              --base-ref '${{ github.event.pull_request.base.sha }}' \
+              --head-ref '${{ github.event.pull_request.head.sha }}' \
+              --github-output "$GITHUB_OUTPUT"
+          else
+            /usr/bin/python3 -I scripts/classify_ci_scope.py \
+              --event "$GITHUB_EVENT_NAME" \
+              --github-output "$GITHUB_OUTPUT"
+          fi
+
   static:
     name: Static
+    needs: classify
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - name: Check out pull-request tree
+      - name: Require successful CI classification
+        run: test '${{ needs.classify.result }}' = success
+      - name: Record not applicable
+        if: ${{ needs.classify.result == 'success' && needs.classify.outputs.static == 'false' }}
+        run: echo 'Static is not applicable to this change.'
+      - name: Check out selected tree
+        if: ${{ needs.classify.outputs.static == 'true' }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 1
+          fetch-depth: 0
           persist-credentials: false
           show-progress: false
+      - name: Run lightweight static check
+        if: ${{ needs.classify.outputs.static_mode == 'light' }}
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -I scripts/classify_ci_scope.py \
+            --event pull_request \
+            --base-ref '${{ github.event.pull_request.base.sha }}' \
+            --head-ref '${{ github.event.pull_request.head.sha }}' >/dev/null
+          git diff --check --no-renames \
+            '${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}' --
       - name: Validate dependency metadata without network
+        if: ${{ needs.classify.outputs.static_mode == 'full' }}
         run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/validate_ci_hydration.py
       - name: Install exact uv
+        if: ${{ needs.classify.outputs.static_mode == 'full' }}
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: 0.12.1
           enable-cache: false
       - name: Install exact Node
+        if: ${{ needs.classify.outputs.static_mode == 'full' }}
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: 24.18.1
           package-manager-cache: false
           check-latest: false
       - name: Prove npm lock closure without network
+        if: ${{ needs.classify.outputs.static_mode == 'full' }}
         run: |
           set -euo pipefail
           node_path="$(command -v node)"
@@ -81,6 +147,7 @@ jobs:
           test "$lock_sha" = \
             "$(sha256sum "$preflight_workspace/package-lock.json" | cut -d' ' -f1)"
       - name: Install exact Python without repository code
+        if: ${{ needs.classify.outputs.static_mode == 'full' }}
         run: |
           set -euo pipefail
           uv_path="$(command -v uv)"
@@ -88,6 +155,7 @@ jobs:
             "$uv_path" --no-config --color never python install \
             --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
       - name: Hydrate source-constrained locked dependencies
+        if: ${{ needs.classify.outputs.static_mode == 'full' }}
         run: |
           set -euo pipefail
           uv_path="$(command -v uv)"
@@ -118,6 +186,7 @@ jobs:
             --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
             --provenance=false ci
       - name: Reproduce static job
+        if: ${{ needs.classify.outputs.static_mode == 'full' }}
         run: |
           set -euo pipefail
           node_path="$(command -v node)"
@@ -131,29 +200,41 @@ jobs:
 
   unit:
     name: Unit
+    needs: classify
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - name: Check out pull-request tree
+      - name: Require successful CI classification
+        run: test '${{ needs.classify.result }}' = success
+      - name: Record not applicable
+        if: ${{ needs.classify.result == 'success' && needs.classify.outputs.unit == 'false' }}
+        run: echo 'Unit is not applicable to this change.'
+      - name: Check out selected tree
+        if: ${{ needs.classify.outputs.unit == 'true' }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
           persist-credentials: false
           show-progress: false
       - name: Validate dependency metadata without network
+        if: ${{ needs.classify.outputs.unit == 'true' }}
         run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/validate_ci_hydration.py
       - name: Install exact uv
+        if: ${{ needs.classify.outputs.unit == 'true' }}
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: 0.12.1
           enable-cache: false
       - name: Install exact Node
+        if: ${{ needs.classify.outputs.unit == 'true' }}
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: 24.18.1
           package-manager-cache: false
           check-latest: false
       - name: Prove npm lock closure without network
+        if: ${{ needs.classify.outputs.unit == 'true' }}
         run: |
           set -euo pipefail
           node_path="$(command -v node)"
@@ -195,6 +276,7 @@ jobs:
           test "$lock_sha" = \
             "$(sha256sum "$preflight_workspace/package-lock.json" | cut -d' ' -f1)"
       - name: Install exact Python without repository code
+        if: ${{ needs.classify.outputs.unit == 'true' }}
         run: |
           set -euo pipefail
           uv_path="$(command -v uv)"
@@ -202,6 +284,7 @@ jobs:
             "$uv_path" --no-config --color never python install \
             --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
       - name: Hydrate source-constrained locked dependencies
+        if: ${{ needs.classify.outputs.unit == 'true' }}
         run: |
           set -euo pipefail
           uv_path="$(command -v uv)"
@@ -242,6 +325,7 @@ jobs:
             --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
             --provenance=false ci
       - name: Reproduce unit job
+        if: ${{ needs.classify.outputs.unit_mode == 'full' }}
         run: |
           set -euo pipefail
           node_path="$(command -v node)"
@@ -254,32 +338,66 @@ jobs:
             --uv-cache "$RUNNER_TEMP/raos-unit-uv-cache" \
             --runner-temp "$RUNNER_TEMP" \
             unit
+      - name: Reproduce focused Story unit job
+        if: ${{ needs.classify.outputs.unit_mode == 'focused' }}
+        run: |
+          set -euo pipefail
+          suite='${{ needs.classify.outputs.story_suite }}'
+          [[ "$suite" =~ ^tests/st[0-9]{4}$ ]]
+          test -d "$suite"
+          python_count="$(find "$suite" -type f -name '*.py' -print -quit | wc -l)"
+          node_count="$(find "$suite" -type f \( -name '*.ts' -o -name '*.tsx' \) -print -quit | wc -l)"
+          test "$python_count" -gt 0 || test "$node_count" -gt 0
+          if test "$python_count" -gt 0; then
+            scripts/run_network_denied.sh --home "$HOME" -- \
+              "$GITHUB_WORKSPACE/.venv/bin/python" -m pytest \
+              -p no:cacheprovider -q -m 'not raos_owner_private' "$suite"
+          fi
+          if test "$node_count" -gt 0; then
+            node_path="$(command -v node)"
+            scripts/run_network_denied.sh --home "$HOME" -- \
+              "$node_path" "$GITHUB_WORKSPACE/node_modules/vitest/vitest.mjs" run \
+              --config "$GITHUB_WORKSPACE/vitest.config.ts" \
+              --configLoader native "$suite"
+          fi
 
   contracts:
     name: Contracts
+    needs: classify
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - name: Check out pull-request tree
+      - name: Require successful CI classification
+        run: test '${{ needs.classify.result }}' = success
+      - name: Record not applicable
+        if: ${{ needs.classify.result == 'success' && needs.classify.outputs.contracts == 'false' }}
+        run: echo 'Contracts is not applicable to this change.'
+      - name: Check out selected tree
+        if: ${{ needs.classify.outputs.contracts == 'true' }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
           persist-credentials: false
           show-progress: false
       - name: Validate dependency metadata without network
+        if: ${{ needs.classify.outputs.contracts == 'true' }}
         run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/validate_ci_hydration.py
       - name: Install exact uv
+        if: ${{ needs.classify.outputs.contracts == 'true' }}
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: 0.12.1
           enable-cache: false
       - name: Install exact Node
+        if: ${{ needs.classify.outputs.contracts == 'true' }}
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: 24.18.1
           package-manager-cache: false
           check-latest: false
       - name: Prove npm lock closure without network
+        if: ${{ needs.classify.outputs.contracts == 'true' }}
         run: |
           set -euo pipefail
           node_path="$(command -v node)"
@@ -321,6 +439,7 @@ jobs:
           test "$lock_sha" = \
             "$(sha256sum "$preflight_workspace/package-lock.json" | cut -d' ' -f1)"
       - name: Install exact Python without repository code
+        if: ${{ needs.classify.outputs.contracts == 'true' }}
         run: |
           set -euo pipefail
           uv_path="$(command -v uv)"
@@ -328,6 +447,7 @@ jobs:
             "$uv_path" --no-config --color never python install \
             --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
       - name: Hydrate source-constrained locked dependencies
+        if: ${{ needs.classify.outputs.contracts == 'true' }}
         run: |
           set -euo pipefail
           uv_path="$(command -v uv)"
@@ -358,6 +478,7 @@ jobs:
             --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
             --provenance=false ci
       - name: Reproduce contracts job
+        if: ${{ needs.classify.outputs.contracts == 'true' }}
         run: |
           set -euo pipefail
           node_path="$(command -v node)"
@@ -371,42 +492,69 @@ jobs:
 
   database:
     name: Database
+    needs: classify
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - name: Check out pull-request tree
+      - name: Require successful CI classification
+        run: test '${{ needs.classify.result }}' = success
+      - name: Record not applicable
+        if: ${{ needs.classify.result == 'success' && needs.classify.outputs.database == 'false' }}
+        run: echo 'Database is not applicable to this change.'
+      - name: Check out selected tree
+        if: ${{ needs.classify.outputs.database == 'true' }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
           persist-credentials: false
           show-progress: false
       - name: Verify exact PostgreSQL service
+        if: ${{ needs.classify.outputs.database == 'true' }}
         run: scripts/postgres_service.sh --docker "$(command -v docker)" test
 
   storage:
     name: Storage
+    needs: classify
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - name: Check out pull-request tree
+      - name: Require successful CI classification
+        run: test '${{ needs.classify.result }}' = success
+      - name: Record not applicable
+        if: ${{ needs.classify.result == 'success' && needs.classify.outputs.storage == 'false' }}
+        run: echo 'Storage is not applicable to this change.'
+      - name: Check out selected tree
+        if: ${{ needs.classify.outputs.storage == 'true' }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
           persist-credentials: false
           show-progress: false
       - name: Verify exact object-storage service
+        if: ${{ needs.classify.outputs.storage == 'true' }}
         run: scripts/object_storage_service.sh --docker "$(command -v docker)" test
 
   secrets:
     name: Secrets
+    needs: classify
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Check out complete pull-request history
+      - name: Require successful CI classification
+        run: test '${{ needs.classify.result }}' = success
+      - name: Record not applicable
+        if: ${{ needs.classify.result == 'success' && needs.classify.outputs.secrets == 'false' }}
+        run: echo 'Secrets is not applicable to this change.'
+      - name: Check out complete selected history
+        if: ${{ needs.classify.outputs.secrets == 'true' }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           persist-credentials: false
           show-progress: false
       - name: Reproduce secret scan
+        if: ${{ needs.classify.outputs.secrets == 'true' }}
         run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree --git-history --reviewed-findings changes/st-0106/contracts/reviewed-secret-findings.v2.yaml

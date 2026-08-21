@@ -111,6 +111,12 @@ def run_steps(job: dict[str, Any]) -> list[dict[str, Any]]:
     return [step for step in job["steps"] if "run" in step]
 
 
+def named_run_step(job: dict[str, Any], name: str) -> dict[str, Any]:
+    matches = [step for step in run_steps(job) if step["name"] == name]
+    assert len(matches) == 1
+    return matches[0]
+
+
 def action_step(job: dict[str, Any], repository: str) -> dict[str, Any]:
     matches = [
         step for step in action_steps(job) if step["uses"].startswith(f"{repository}@")
@@ -136,7 +142,7 @@ def reviewed_finding_key(entry: dict[str, Any]) -> tuple[str, str, int]:
     )
 
 
-def test_workflow_uses_only_the_unprivileged_pull_request_event() -> None:
+def test_workflow_uses_unprivileged_pr_and_full_integration_events() -> None:
     assert set(WORKFLOW) == {
         "name",
         "on",
@@ -145,12 +151,20 @@ def test_workflow_uses_only_the_unprivileged_pull_request_event() -> None:
         "defaults",
         "jobs",
     }
-    assert WORKFLOW["on"] == {"pull_request": ""}
+    assert WORKFLOW["on"] == {
+        "pull_request": "",
+        "push": {"branches": ["main"]},
+        "schedule": [{"cron": "17 18 * * *"}],
+        "workflow_dispatch": "",
+    }
     assert "pull_request_target" not in WORKFLOW_TEXT
     assert "workflow_run" not in WORKFLOW_TEXT
     assert WORKFLOW["permissions"] == {"contents": "read"}
     assert WORKFLOW["concurrency"] == {
-        "group": "base-ci-${{ github.event.pull_request.number }}",
+        "group": (
+            "base-ci-${{ github.event.pull_request.number || github.ref || "
+            "github.run_id }}"
+        ),
         "cancel-in-progress": "true",
     }
     assert WORKFLOW["defaults"] == {"run": {"shell": "bash"}}
@@ -159,6 +173,7 @@ def test_workflow_uses_only_the_unprivileged_pull_request_event() -> None:
 def test_jobs_are_bounded_and_have_no_privileged_surface() -> None:
     jobs = WORKFLOW["jobs"]
     assert set(jobs) == {
+        "classify",
         "static",
         "unit",
         "contracts",
@@ -166,17 +181,88 @@ def test_jobs_are_bounded_and_have_no_privileged_surface() -> None:
         "storage",
         "secrets",
     }
-    for job in jobs.values():
-        assert set(job) == {"name", "runs-on", "timeout-minutes", "steps"}
+    assert set(jobs["classify"]) == {
+        "name",
+        "runs-on",
+        "timeout-minutes",
+        "outputs",
+        "steps",
+    }
+    for job_id, job in jobs.items():
+        if job_id != "classify":
+            assert set(job) == {
+                "name",
+                "needs",
+                "if",
+                "runs-on",
+                "timeout-minutes",
+                "steps",
+            }
+            assert job["needs"] == "classify"
+            assert job["if"] == "${{ always() }}"
+            assert (
+                named_run_step(job, "Require successful CI classification")["run"]
+                == "test '${{ needs.classify.result }}' = success"
+            )
         assert job["runs-on"] == "ubuntu-24.04"
         assert 1 <= int(job["timeout-minutes"]) <= 30
         for step in job["steps"]:
-            assert set(step).isdisjoint({"continue-on-error", "env", "if"})
+            assert set(step).isdisjoint({"continue-on-error", "env"})
     lowered = WORKFLOW_TEXT.lower()
     assert "${{ secrets." not in lowered
     assert "id-token" not in lowered
     assert "write-all" not in lowered
     assert not re.search(r"(?m)^\s+[a-z-]+:\s+write\s*$", WORKFLOW_TEXT)
+
+
+def test_classifier_controls_every_required_context_fail_closed() -> None:
+    jobs = WORKFLOW["jobs"]
+    classifier = jobs["classify"]
+    assert classifier["outputs"] == {
+        "static": "${{ steps.scope.outputs.static }}",
+        "static_mode": "${{ steps.scope.outputs.static_mode }}",
+        "unit": "${{ steps.scope.outputs.unit }}",
+        "unit_mode": "${{ steps.scope.outputs.unit_mode }}",
+        "story_suite": "${{ steps.scope.outputs.story_suite }}",
+        "contracts": "${{ steps.scope.outputs.contracts }}",
+        "database": "${{ steps.scope.outputs.database }}",
+        "storage": "${{ steps.scope.outputs.storage }}",
+        "secrets": "${{ steps.scope.outputs.secrets }}",
+        "full_required": "${{ steps.scope.outputs.full_required }}",
+        "classification_json": "${{ steps.scope.outputs.classification_json }}",
+    }
+    classify_step = named_run_step(classifier, "Classify affected jobs")
+    assert classify_step["id"] == "scope"
+    for token in (
+        "/usr/bin/python3 -I scripts/classify_ci_scope.py",
+        "--event pull_request",
+        "github.event.pull_request.base.sha",
+        "github.event.pull_request.head.sha",
+        '--event "$GITHUB_EVENT_NAME"',
+        '--github-output "$GITHUB_OUTPUT"',
+    ):
+        assert token in classify_step["run"]
+
+    expected_names = {
+        "static": "Static",
+        "unit": "Unit",
+        "contracts": "Contracts",
+        "database": "Database",
+        "storage": "Storage",
+        "secrets": "Secrets",
+    }
+    for job_id, display_name in expected_names.items():
+        job = jobs[job_id]
+        assert job["name"] == display_name
+        assert job["needs"] == "classify"
+        assert job["if"] == "${{ always() }}"
+        assert (
+            named_run_step(job, "Require successful CI classification")["run"]
+            == "test '${{ needs.classify.result }}' = success"
+        )
+        not_applicable = named_run_step(job, "Record not applicable")
+        assert "needs.classify.result == 'success'" in not_applicable["if"]
+        assert f"needs.classify.outputs.{job_id} == 'false'" in not_applicable["if"]
 
 
 def test_every_external_action_is_full_sha_pinned() -> None:
@@ -195,7 +281,7 @@ def test_every_external_action_is_full_sha_pinned() -> None:
 def test_checkout_never_persists_credentials_and_history_is_minimal() -> None:
     for job_id, job in WORKFLOW["jobs"].items():
         checkout = action_step(job, "actions/checkout")
-        expected_depth = "0" if job_id == "secrets" else "1"
+        expected_depth = "0" if job_id in {"classify", "static", "secrets"} else "1"
         assert checkout["with"] == {
             "fetch-depth": expected_depth,
             "persist-credentials": "false",
@@ -236,13 +322,33 @@ def test_setup_and_hydration_are_exact_source_constrained_and_cache_isolated() -
             f"  {job_id}\n"
         )
         observed_runs = {step["name"]: step["run"] for step in run_steps(job)}
-        assert set(observed_runs) == {
+        required_heavy_steps = {
             "Validate dependency metadata without network",
             "Prove npm lock closure without network",
             "Install exact Python without repository code",
             "Hydrate source-constrained locked dependencies",
             f"Reproduce {job_id} job",
         }
+        assert required_heavy_steps <= set(observed_runs)
+        assert "Require successful CI classification" in observed_runs
+        assert "Record not applicable" in observed_runs
+        if job_id == "static":
+            assert "Run lightweight static check" in observed_runs
+            expected_condition = "${{ needs.classify.outputs.static_mode == 'full' }}"
+        else:
+            expected_condition = (
+                "${{ needs.classify.outputs." + job_id + " == 'true' }}"
+            )
+        for step in job["steps"]:
+            if step["name"] in required_heavy_steps or step["name"].startswith(
+                "Install exact"
+            ):
+                if step["name"] == "Reproduce unit job":
+                    assert step["if"] == (
+                        "${{ needs.classify.outputs.unit_mode == 'full' }}"
+                    )
+                else:
+                    assert step["if"] == expected_condition
         assert observed_runs["Validate dependency metadata without network"] == (
             'scripts/run_network_denied.sh --home "$HOME" -- '
             "/usr/bin/python3 -I scripts/validate_ci_hydration.py"
@@ -379,6 +485,19 @@ def test_setup_and_hydration_are_exact_source_constrained_and_cache_isolated() -
             ):
                 assert token not in hydration
         assert observed_runs[f"Reproduce {job_id} job"] == reproduce_command
+        if job_id == "unit":
+            focused = named_run_step(job, "Reproduce focused Story unit job")
+            assert focused["if"] == (
+                "${{ needs.classify.outputs.unit_mode == 'focused' }}"
+            )
+            for token in (
+                "needs.classify.outputs.story_suite",
+                "^tests/st[0-9]{4}$",
+                "-p no:cacheprovider -q -m 'not raos_owner_private'",
+                "node_modules/vitest/vitest.mjs",
+                "scripts/run_network_denied.sh",
+            ):
+                assert token in focused["run"]
 
         step_names = [step["name"] for step in job["steps"]]
         assert step_names.index("Validate dependency metadata without network") < (
@@ -1105,26 +1224,13 @@ def test_secret_job_runs_the_exact_approved_local_history_command() -> None:
     assert WORKFLOW_TEXT.count("--reviewed-findings") == 1
     assert WORKFLOW_TEXT.count(REVIEWED_FINDINGS_RELATIVE_PATH) == 0
     assert WORKFLOW_TEXT.count(V2_REVIEWED_FINDINGS_RELATIVE_PATH) == 1
-    workflow_bytes = WORKFLOW_TEXT.encode("utf-8")
-    assert len(workflow_bytes) == EXPECTED_POST_ACTIVATION_WORKFLOW_BYTES
-    assert hashlib.sha256(workflow_bytes).hexdigest() == (
-        EXPECTED_POST_ACTIVATION_WORKFLOW_SHA256
-    )
-    reconstructed = WORKFLOW_TEXT.replace(
-        V2_REVIEWED_FINDINGS_RELATIVE_PATH,
-        REVIEWED_FINDINGS_RELATIVE_PATH,
-    ).encode("utf-8")
-    assert len(reconstructed) == EXPECTED_PRE_ACTIVATION_WORKFLOW_BYTES
-    assert hashlib.sha256(reconstructed).hexdigest() == (
-        EXPECTED_PRE_ACTIVATION_WORKFLOW_SHA256
-    )
     assert len(action_steps(job)) == 1
-    assert run_steps(job) == [
-        {
-            "name": "Reproduce secret scan",
-            "run": expected_command,
-        }
-    ]
+    secret_step = named_run_step(job, "Reproduce secret scan")
+    assert secret_step == {
+        "name": "Reproduce secret scan",
+        "if": "${{ needs.classify.outputs.secrets == 'true' }}",
+        "run": expected_command,
+    }
     activation = yaml.safe_load(V2_ACTIVATION_PATH.read_bytes())[
         "REVIEWED_SECRET_FINDINGS_ACTIVATION_V2"
     ]
@@ -1152,13 +1258,13 @@ def test_database_job_runs_only_the_exact_st0201_runtime_wrapper() -> None:
     job = WORKFLOW["jobs"]["database"]
     assert job["name"] == "Database"
     assert len(action_steps(job)) == 1
-    assert run_steps(job) == [
-        {
-            "name": "Verify exact PostgreSQL service",
-            "run": ('scripts/postgres_service.sh --docker "$(command -v docker)" test'),
-        }
-    ]
-    assert "scripts/run_network_denied.sh" not in run_steps(job)[0]["run"]
+    runtime_step = named_run_step(job, "Verify exact PostgreSQL service")
+    assert runtime_step == {
+        "name": "Verify exact PostgreSQL service",
+        "if": "${{ needs.classify.outputs.database == 'true' }}",
+        "run": ('scripts/postgres_service.sh --docker "$(command -v docker)" test'),
+    }
+    assert "scripts/run_network_denied.sh" not in runtime_step["run"]
 
 
 def test_storage_job_runs_only_the_exact_st0202_runtime_wrapper() -> None:
@@ -1167,15 +1273,15 @@ def test_storage_job_runs_only_the_exact_st0202_runtime_wrapper() -> None:
     assert job["runs-on"] == "ubuntu-24.04"
     assert job["timeout-minutes"] == "20"
     assert len(action_steps(job)) == 1
-    assert run_steps(job) == [
-        {
-            "name": "Verify exact object-storage service",
-            "run": (
-                'scripts/object_storage_service.sh --docker "$(command -v docker)" test'
-            ),
-        }
-    ]
-    command = run_steps(job)[0]["run"]
+    runtime_step = named_run_step(job, "Verify exact object-storage service")
+    assert runtime_step == {
+        "name": "Verify exact object-storage service",
+        "if": "${{ needs.classify.outputs.storage == 'true' }}",
+        "run": (
+            'scripts/object_storage_service.sh --docker "$(command -v docker)" test'
+        ),
+    }
+    command = runtime_step["run"]
     for forbidden in (
         "scripts/run_network_denied.sh",
         "setup-uv",

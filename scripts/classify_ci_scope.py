@@ -155,6 +155,7 @@ def _full_result(
         "risk": risk,
         "story_suites": [],
         "jobs": list(config["required_jobs"]),
+        "job_modes": {job: "full" for job in config["required_jobs"]},
         "reasons": list(reasons),
         "full_required": True,
         "path_count": path_count,
@@ -216,6 +217,16 @@ def classify_paths(
             "risk": "docs_only",
             "story_suites": [],
             "jobs": ["Static", "Secrets"],
+            "job_modes": {
+                job: (
+                    "light"
+                    if job == "Static"
+                    else "full"
+                    if job == "Secrets"
+                    else "skip"
+                )
+                for job in config["required_jobs"]
+            },
             "reasons": ["documentation_only"],
             "full_required": False,
             "path_count": len(visible_paths),
@@ -237,6 +248,16 @@ def classify_paths(
         "risk": "ordinary",
         "story_suites": [f"tests/st{stories[0].removeprefix('ST-').lower()}"],
         "jobs": ["Static", "Unit", "Secrets"],
+        "job_modes": {
+            job: (
+                "focused"
+                if job == "Unit"
+                else "full"
+                if job in {"Static", "Secrets"}
+                else "skip"
+            )
+            for job in config["required_jobs"]
+        },
         "reasons": [f"single_story:{stories[0]}"],
         "full_required": False,
         "path_count": len(visible_paths),
@@ -285,6 +306,10 @@ def _write_github_output(path: Path, result: Mapping[str, Any]) -> None:
     lines.extend(
         (
             f"full_required={'true' if result['full_required'] else 'false'}",
+            f"static_mode={result['job_modes']['Static']}",
+            f"unit_mode={result['job_modes']['Unit']}",
+            "story_suite="
+            + (result["story_suites"][0] if result["story_suites"] else ""),
             "classification_json="
             + json.dumps(result, ensure_ascii=True, separators=(",", ":")),
         )

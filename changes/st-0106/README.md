@@ -1,5 +1,30 @@
 # ST-0106 hosted network-isolation compatibility
 
+## Developer Loop Simplification V1
+
+`changes/st-0106/contracts/developer-loop-scope.v1.json` is the versioned
+affected-CI and local-check contract. `scripts/classify_ci_scope.py` is a
+standard-library-only classifier. Pull requests always run `Secrets`; docs-only
+changes run a lightweight `Static`; a single ordinary Story runs `Static`, its
+focused `Unit` suite, and `Secrets`; high-risk, unknown, or multi-Story changes
+run all six Base CI contexts. Pushes to `main`, scheduled runs, and manual runs
+also run all six contexts. Classifier failure makes every required context fail
+rather than reporting a successful skip.
+
+The fast local entrypoint is:
+
+```bash
+make dev-check STORY=ST-0106
+make dev-check STORY=ST-0106 BASE_REF=origin/main
+```
+
+It unions committed, staged, unstaged, and untracked paths; runs Git whitespace
+checks, changed-language checks, the isolated Story suite, and allowlisted owner
+generator checks; and emits one `RAOS_DEV_CHECK_V1` JSON receipt. It neither
+reads nor reports `.secrets/**`. This receipt is focused local evidence only,
+not hosted Base CI, formal TST-001/TST-002, live, release, or Production
+evidence.
+
 This change restores the existing denied-network boundary on GitHub-hosted
 Ubuntu 24.04 without weakening it to a sysctl, AppArmor, or seccomp-only
 exception.
