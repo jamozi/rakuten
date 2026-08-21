@@ -1389,6 +1389,25 @@ def _unwrap_record(api: RakutenOwnerLocalApi, value: object) -> dict[str, object
     return cast(dict[str, object], value)
 
 
+def _validate_exact_product_selector(
+    request: RakutenOwnerLocalRequest,
+    record: dict[str, object],
+) -> None:
+    if type(request) is not RakutenOwnerLocalProductSearchRequest:
+        return
+    exact_selectors = (
+        ("productId", request.product_id),
+        ("productCode", request.product_code),
+    )
+    for field, requested_value in exact_selectors:
+        if requested_value is not None:
+            returned_value = record.get(field)
+            if type(returned_value) is not str or not returned_value:
+                _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            if returned_value != requested_value:
+                _fail(RakutenOwnerLocalFailureCode.RESULT_MISMATCH)
+
+
 def _parse_provider_success(
     definition: RakutenOwnerLocalApiDefinition,
     request: RakutenOwnerLocalRequest,
@@ -1417,8 +1436,17 @@ def _parse_provider_success(
             or first < 0
             or last < 0
             or hits != _request_hits(request)
-            or page_count < 0
+            or not 0 <= page_count <= 100
             or len(values) > hits
+        ):
+            _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        record_count = len(values)
+        if (
+            count < record_count
+            or (count == 0) != (record_count == 0)
+            or (page_count == 0) != (record_count == 0)
+            or first != (1 if record_count else 0)
+            or last != record_count
         ):
             _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
         definition_record_fields = frozenset(definition.elements) - _SUMMARY_KEYS
@@ -1443,6 +1471,7 @@ def _parse_provider_success(
                 )
             ):
                 _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            _validate_exact_product_selector(request, raw_record)
             projected = {
                 name: item
                 for name, item in raw_record.items()

@@ -241,6 +241,34 @@ def test_normalized_record_rejects_review_fields_and_bad_numeric_shapes() -> Non
         )
 
 
+def test_provider_result_summary_relationships_are_domain_invariants() -> None:
+    request = _item_request()
+    result = _item_result(request)
+
+    empty = replace(
+        result,
+        count=0,
+        first=0,
+        last=0,
+        page_count=0,
+        records=(),
+    )
+    assert empty.records == ()
+    capped = replace(result, count=101, page_count=100)
+    assert capped.page_count == 100
+
+    for contradictory in (
+        {"count": 0},
+        {"first": 0},
+        {"last": 2},
+        {"page_count": 0},
+        {"page_count": 101},
+    ):
+        with pytest.raises(RakutenOwnerLocalFailure) as failure:
+            replace(result, **contradictory)
+        assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+
+
 class _Reader:
     def __init__(self) -> None:
         self.calls = 0

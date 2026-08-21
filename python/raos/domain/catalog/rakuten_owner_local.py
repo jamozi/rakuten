@@ -691,7 +691,7 @@ class RakutenOwnerLocalProviderResult(_RedactedValue):
             or type(self.hits) is not int
             or not 1 <= self.hits <= 30
             or type(self.page_count) is not int
-            or self.page_count < 0
+            or not 0 <= self.page_count <= 100
             or type(self.records) is not tuple
             or len(self.records) > self.hits
             or any(
@@ -703,8 +703,13 @@ class RakutenOwnerLocalProviderResult(_RedactedValue):
             is not RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
         ):
             fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
-        if (not self.records and (self.first != 0 or self.last != 0)) or (
-            self.records and (self.first < 1 or self.last < self.first)
+        record_count = len(self.records)
+        if (
+            self.count < record_count
+            or (self.count == 0) != (record_count == 0)
+            or (self.page_count == 0) != (record_count == 0)
+            or self.first != (1 if record_count else 0)
+            or self.last != record_count
         ):
             fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
 

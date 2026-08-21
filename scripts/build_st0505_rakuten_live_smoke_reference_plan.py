@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "28c3729a25171c6c2128db1085c31d59cb0016aad59398c7a8f48bf343c623d8"
+    "eaa030a70e7b566804388760d574375427d8089538058851560b7d2c75b48a7c"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "07a651ded4a59a3a2f52bfab7624ad6512a77400fcb94a69751533215124edd0"
+    "6ab444b2e1b9e775bdbdedb6d9ade4e22fcbc78066f88d5dc86985eaf863aabb"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "e7e416b2bceceb821e8178641c9097aa9e7309b182fb3b384be9c5d1a461eeb3"
+    "f51f5fc7930a58751c46a11cb5b784204d9ac262c9bd94205ef6188e2bcf382e"
 )
 INSTALLED_LAUNCHER_PATH: Final = (
     "/home/minami/.local/share/raos/rakuten-live-smoke/runtime/"
@@ -2034,6 +2034,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "path",
             "request_policy",
             "selectors",
+            "exact_selector_response_binding",
             "page",
             "sort",
             "review_derived_inputs",
@@ -2051,6 +2052,11 @@ def _validate_owner_local_read_integration(value: object) -> None:
         or product.get("request_policy") != "OWNER_LOCAL_PRODUCT_SEARCH_V1"
         or product.get("selectors")
         != "KEYWORD_OPTIONAL_GENRE_OR_GENRE_OR_EXCLUSIVE_PRODUCT_ID_OR_CODE"
+        or product.get("exact_selector_response_binding")
+        != (
+            "SELECTED_PRODUCT_ID_OR_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_"
+            "RESULT_MISMATCH"
+        )
         or product.get("page") != 1
         or product.get("sort") != "standard"
         or product.get("review_derived_inputs") != "EXCLUDED"
@@ -2077,6 +2083,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "requests_per_invocation_maximum",
             "response_maximum_bytes",
             "response_json",
+            "response_summary_relationships",
         )
         or tuple(authentication)
         != ("applicationId", "affiliateId", "header_name", "access_key")
@@ -2102,6 +2109,11 @@ def _validate_owner_local_read_integration(value: object) -> None:
         or transport.get("response_maximum_bytes") != 2 * 1024 * 1024
         or transport.get("response_json")
         != "STRICT_UTF8_DUPLICATE_NONFINITE_DEPTH_NODE_SCHEMA"
+        or transport.get("response_summary_relationships")
+        != (
+            "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
+            "PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY"
+        )
     ):
         _fail("VALUE_MISMATCH", "owner_local.transport")
     result = _mapping(owner["normalized_result"], "owner_local.result")

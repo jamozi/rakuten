@@ -29,7 +29,10 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalFailure,
     RakutenOwnerLocalFailureCode,
     RakutenOwnerLocalOutcome,
+    RakutenOwnerLocalProductSearchRequest,
+    RakutenOwnerLocalProductSort,
     RakutenOwnerLocalProviderResult,
+    RakutenOwnerLocalRequest,
     RakutenOwnerLocalRequestDisposition,
     RakutenOwnerLocalResultEnvelope,
     api_definition,
@@ -210,7 +213,7 @@ def _json_body(value: object) -> bytes:
     ).encode("utf-8")
 
 
-def _item_body(**record_overrides: object) -> bytes:
+def _item_record(**overrides: object) -> dict[str, object]:
     record: dict[str, object] = {
         "affiliateUrl": "https://example.invalid/affiliate/item",
         "itemCode": "shop:item",
@@ -218,7 +221,11 @@ def _item_body(**record_overrides: object) -> bytes:
         "itemPrice": 100,
         "itemUrl": "https://example.invalid/item",
     }
-    record.update(record_overrides)
+    record.update(overrides)
+    return record
+
+
+def _item_body(**record_overrides: object) -> bytes:
     return _json_body(
         {
             "count": 1,
@@ -227,19 +234,23 @@ def _item_body(**record_overrides: object) -> bytes:
             "last": 1,
             "hits": 1,
             "pageCount": 1,
-            "items": [record],
+            "items": [_item_record(**record_overrides)],
         }
     )
 
 
-def _product_body(collection: str = "products", **record_overrides: object) -> bytes:
+def _product_record(**overrides: object) -> dict[str, object]:
     record: dict[str, object] = {
         "affiliateUrl": "https://example.invalid/affiliate/product",
         "productCode": "fixture-product-code",
         "productId": "fixture-product-id",
         "productUrlPC": "https://example.invalid/product",
     }
-    record.update(record_overrides)
+    record.update(overrides)
+    return record
+
+
+def _product_body(collection: str = "products", **record_overrides: object) -> bytes:
     return _json_body(
         {
             "count": 1,
@@ -248,7 +259,31 @@ def _product_body(collection: str = "products", **record_overrides: object) -> b
             "last": 1,
             "hits": 1,
             "pageCount": 1,
-            collection: [record],
+            collection: [_product_record(**record_overrides)],
+        }
+    )
+
+
+def _summary_body(
+    api: RakutenOwnerLocalApi,
+    *,
+    count: int,
+    first: int,
+    last: int,
+    hits: int,
+    page_count: int,
+    records: list[object],
+) -> bytes:
+    collection = "items" if api is RakutenOwnerLocalApi.ITEM_SEARCH else "products"
+    return _json_body(
+        {
+            "count": count,
+            "page": 1,
+            "first": first,
+            "last": last,
+            "hits": hits,
+            "pageCount": page_count,
+            collection: records,
         }
     )
 
@@ -259,13 +294,16 @@ def _execute(
     response: _FakeResponse,
     *,
     request_error: BaseException | None = None,
+    request: RakutenOwnerLocalRequest | None = None,
 ) -> tuple[object, _FakeConnection, _FakeFactory, DirectRakutenOwnerLocalTransport]:
     _clean_transport_environment(monkeypatch)
     connection = _FakeConnection(response, request_error=request_error)
     factory = _FakeFactory(connection)
     transport = DirectRakutenOwnerLocalTransport(factory)
-    request = fixed_owner_local_smoke_request(api)
-    result = transport.execute(api_definition(api), request, _credentials())
+    selected_request = (
+        fixed_owner_local_smoke_request(api) if request is None else request
+    )
+    result = transport.execute(api_definition(api), selected_request, _credentials())
     return result, connection, factory, transport
 
 
@@ -586,6 +624,203 @@ def test_product_transport_accepts_only_closed_flat_v2_collection_aliases(
     assert "reviewCount" not in query["elements"][0]
     assert "reviewAverage" not in query["elements"][0]
     assert "affiliateRate" not in query["elements"][0]
+
+
+@pytest.mark.parametrize(
+    ("selector_field", "request_keyword"),
+    (("productId", "product_id"), ("productCode", "product_code")),
+)
+def test_product_exact_selector_requires_an_exact_returned_match(
+    monkeypatch: pytest.MonkeyPatch,
+    selector_field: str,
+    request_keyword: str,
+) -> None:
+    requested_value = f"requested-{request_keyword}"
+    request = RakutenOwnerLocalProductSearchRequest(
+        keyword=None,
+        genre_id=None,
+        product_id=requested_value if request_keyword == "product_id" else None,
+        product_code=requested_value if request_keyword == "product_code" else None,
+        hits=1,
+        page=1,
+        sort=RakutenOwnerLocalProductSort.STANDARD,
+    )
+    matching_body = _product_body(**{selector_field: requested_value})
+    result, connection, _factory, _transport = _execute(
+        monkeypatch,
+        RakutenOwnerLocalApi.PRODUCT_SEARCH,
+        _FakeResponse(matching_body, content_length=str(len(matching_body))),
+        request=request,
+    )
+    record = cast(RakutenOwnerLocalProviderResult, result).records[0].as_object()
+    assert record[selector_field] == requested_value
+    nonselected_field = "productCode" if selector_field == "productId" else "productId"
+    assert (
+        record[nonselected_field]
+        == {
+            "productCode": "fixture-product-code",
+            "productId": "fixture-product-id",
+        }[nonselected_field]
+    )
+    assert connection.target is not None
+    assert parse_qs(urlsplit(connection.target).query)[selector_field] == [
+        requested_value
+    ]
+
+    mismatched_body = _product_body(**{selector_field: "different-provider-value"})
+    with pytest.raises(RakutenOwnerLocalFailure) as mismatch:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            _FakeResponse(
+                mismatched_body,
+                content_length=str(len(mismatched_body)),
+            ),
+            request=request,
+        )
+    assert mismatch.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert (
+        mismatch.value.disposition
+        is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    )
+    assert mismatch.value.http_status == 200
+    assert mismatch.value.body_byte_count == len(mismatched_body)
+    assert mismatch.value.response_sha256 == hashlib.sha256(mismatched_body).hexdigest()
+    assert mismatch.value.request_count == 1
+
+
+@pytest.mark.parametrize(
+    "api",
+    (RakutenOwnerLocalApi.ITEM_SEARCH, RakutenOwnerLocalApi.PRODUCT_SEARCH),
+)
+def test_summary_relationships_accept_consistent_empty_and_capped_results(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+) -> None:
+    empty_body = _summary_body(
+        api,
+        count=0,
+        first=0,
+        last=0,
+        hits=1,
+        page_count=0,
+        records=[],
+    )
+    empty, _connection, _factory, _transport = _execute(
+        monkeypatch,
+        api,
+        _FakeResponse(empty_body, content_length=str(len(empty_body))),
+    )
+    assert cast(RakutenOwnerLocalProviderResult, empty).records == ()
+
+    record = (
+        _item_record() if api is RakutenOwnerLocalApi.ITEM_SEARCH else _product_record()
+    )
+    capped_body = _summary_body(
+        api,
+        count=101,
+        first=1,
+        last=1,
+        hits=1,
+        page_count=100,
+        records=[record],
+    )
+    capped, _connection, _factory, _transport = _execute(
+        monkeypatch,
+        api,
+        _FakeResponse(capped_body, content_length=str(len(capped_body))),
+    )
+    capped_result = cast(RakutenOwnerLocalProviderResult, capped)
+    assert capped_result.count == 101
+    assert capped_result.page_count == 100
+    assert len(capped_result.records) == 1
+
+
+@pytest.mark.parametrize(
+    ("count", "first", "last", "page_count", "records"),
+    (
+        (0, 0, 0, 0, [_item_record()]),
+        (1, 0, 0, 1, []),
+        (0, 0, 0, 1, []),
+        (0, 1, 0, 0, []),
+        (0, 0, 1, 0, []),
+        (2, 1, 1, 0, [_item_record()]),
+        (1, 2, 2, 1, [_item_record()]),
+        (1, 1, 2, 1, [_item_record()]),
+        (101, 1, 1, 101, [_item_record()]),
+    ),
+)
+def test_summary_relationship_contradictions_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+    count: int,
+    first: int,
+    last: int,
+    page_count: int,
+    records: list[object],
+) -> None:
+    body = _summary_body(
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        count=count,
+        first=first,
+        last=last,
+        hits=1,
+        page_count=page_count,
+        records=records,
+    )
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.disposition
+        is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    )
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+    assert failure.value.request_count == 1
+
+
+def test_summary_count_cannot_be_less_than_returned_cardinality(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    request = RakutenOwnerLocalProductSearchRequest(
+        keyword="収納",
+        genre_id=None,
+        product_id=None,
+        product_code=None,
+        hits=2,
+        page=1,
+        sort=RakutenOwnerLocalProductSort.STANDARD,
+    )
+    body = _summary_body(
+        RakutenOwnerLocalApi.PRODUCT_SEARCH,
+        count=1,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=[
+            _product_record(),
+            _product_record(
+                productId="fixture-product-id-2",
+                productCode="fixture-product-code-2",
+            ),
+        ],
+    )
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=request,
+        )
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+    assert failure.value.request_count == 1
 
 
 @pytest.mark.parametrize(

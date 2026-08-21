@@ -52,10 +52,10 @@ decision:
     classification: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
     runtime_name: rakuten-owner-local
     trusted_runtime_root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    installed_bundle_sha256: 28c3729a25171c6c2128db1085c31d59cb0016aad59398c7a8f48bf343c623d8
+    installed_bundle_sha256: eaa030a70e7b566804388760d574375427d8089538058851560b7d2c75b48a7c
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 07a651ded4a59a3a2f52bfab7624ad6512a77400fcb94a69751533215124edd0
-    install_stage_sha256: e7e416b2bceceb821e8178641c9097aa9e7309b182fb3b384be9c5d1a461eeb3
+    installer_sha256: 6ab444b2e1b9e775bdbdedb6d9ade4e22fcbc78066f88d5dc86985eaf863aabb
+    install_stage_sha256: f51f5fc7930a58751c46a11cb5b784204d9ac262c9bd94205ef6188e2bcf382e
     runtime_install_execution: NOT_EXECUTED
     credential_store: .secrets/rakuten-owner-local/credentials.v1.json
     credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
@@ -115,6 +115,8 @@ constraints:
   - run proves anonymous publication, identity, rollback, and directory fsync before reading credentials or attempting the GET
   - owner-local Item requests reuse the unchanged ST-0502 RakutenItemSearchLiveRequestV1, require exactly one selector and page 1, and omit review aggregates and affiliate-rate material from normalized output
   - owner-local Product requests allow keyword with optional genreId, genreId alone, or one exclusive productId/productCode; page is 1 and sort is standard
+  - an exact owner-local Product productId or productCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH
+  - page-1 response summaries bind empty collections to zero count, pageCount, first, and last; non-empty collections require count at least the returned cardinality, pageCount from 1 through 100, first 1, and last equal to returned cardinality
   - every owner-local invocation uses at most one GET, one resolved public IP candidate, zero redirect, zero retry, zero pagination follow-up, and no proxy or TLS override environment
   - setup refuses an existing record; rotate atomically replaces only a fully validated record; installer is credential-blind and never opens .secrets
   - persisted owner-local results are mode 0600, no-replace, normalized UNTRUSTED_PROVIDER_DATA and contain response SHA-256 but no raw body, headers, provider errors, credentials, affiliate-rate, review bodies, EPC, RPM, or revenue material
@@ -145,6 +147,7 @@ acceptance_criteria:
   - generated plan exposes the explicit command while default activation and all formal/live evidence remain disabled or NOT_EXECUTED
   - setup/rotate preserve hidden TTY input and atomic owner-only storage without secret values in argv, environment, output, exceptions, repr, results, or generated artifacts
   - item-search and product-search request fixtures prove exact authentication placement, fixed origin/path/version, safe parameter sets, response allowlists, and at-most-one-call failure semantics
+  - productId/productCode identity drift and contradictory empty or non-empty response summaries fail closed with complete sanitized response metadata
   - owner-local result envelopes remain OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE and UNTRUSTED_PROVIDER_DATA with formal TST-016, ENV-STAGING, OD-015 resolution, and RAOS Production unchanged
 required_test_evidence:
   - isolated tests/st0505 with no owner credential read and no provider network

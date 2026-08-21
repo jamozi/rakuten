@@ -189,9 +189,17 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
     assert owner["registry"]["item-search"]["page"] == 1
     assert owner["registry"]["product-search"]["api_version"] == "2025-08-01"
     assert owner["registry"]["product-search"]["page"] == 1
+    assert owner["registry"]["product-search"]["exact_selector_response_binding"] == (
+        "SELECTED_PRODUCT_ID_OR_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_"
+        "RESULT_MISMATCH"
+    )
     assert owner["transport"]["requests_per_invocation_maximum"] == 1
     assert owner["transport"]["retries"] == 0
     assert owner["transport"]["pagination_followups"] == 0
+    assert owner["transport"]["response_summary_relationships"] == (
+        "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
+        "PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY"
+    )
     assert owner["verification"] == {
         "fake_and_recorded_only": True,
         "real_credentials": "NOT_READ",

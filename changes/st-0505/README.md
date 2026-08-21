@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/28c3729a25171c6c2128db1085c31d59cb0016aad59398c7a8f48bf343c623d8/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/eaa030a70e7b566804388760d574375427d8089538058851560b7d2c75b48a7c/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`07a651ded4a59a3a2f52bfab7624ad6512a77400fcb94a69751533215124edd0`,
+`6ab444b2e1b9e775bdbdedb6d9ade4e22fcbc78066f88d5dc86985eaf863aabb`,
 and install-stage SHA-256
-`e7e416b2bceceb821e8178641c9097aa9e7309b182fb3b384be9c5d1a461eeb3`.
+`f51f5fc7930a58751c46a11cb5b784204d9ac262c9bd94205ef6188e2bcf382e`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -256,7 +256,9 @@ normalized result even though the unchanged predecessor element projection may
 include other inert product-description fields. Product request V1 permits a
 keyword with optional genre, a genre alone, or one exclusive product ID/code;
 it fixes page 1 and allows only standard sort. Product review-derived sort and
-review aggregates are unavailable.
+review aggregates are unavailable. For an exclusive `productId` or
+`productCode` request, every returned record must contain the exact selected
+identity; a different valid provider identity fails as `RESULT_MISMATCH`.
 
 Both adapters fix `openapi.rakuten.co.jp:443`, their reviewed versioned paths,
 GET, format JSON/version 2, and exact elements. `applicationId` and
@@ -270,7 +272,11 @@ verification, and HTTP host remain the fixed Rakuten hostname.
 
 Complete bodies are bounded to 2 MiB and validated as strict UTF-8 JSON with
 duplicate-key, nonfinite-number, depth, node, summary, collection, and field
-checks. Product Search's official page does not unambiguously name its
+checks. Because page is fixed to 1, an empty collection requires zero
+`count`, `pageCount`, `first`, and `last`; a non-empty collection requires
+`count` at least its cardinality, `pageCount` from 1 through 100, `first=1`,
+and `last` equal to the returned cardinality. Product Search's official page
+does not unambiguously name its
 format-version-2 collection envelope, so the adapter recognizes only the two
 reviewed literal envelope names documented in its tests and treats any other
 shape as schema drift; this does not permit an arbitrary schema fallback.
