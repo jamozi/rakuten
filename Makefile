@@ -105,7 +105,9 @@ override NPM_RUN := $(NODE_RUN) "$(NPM_CLI)" \
 	--cache "$(NPM_CACHE)" --registry https://registry.npmjs.org/ \
 	--ignore-scripts --no-audit --no-fund
 
-.PHONY: bootstrap check-workspace dev-check python-install python-lock python-lock-check \
+.PHONY: bootstrap check-workspace dev-check \
+	github-ruleset-status github-ruleset-plan github-ruleset-apply \
+	github-ruleset-rollback python-install python-lock python-lock-check \
 	python-lock-check-offline python-sync python-sync-offline \
 	python-tool-versions python-lint python-format-check \
 	python-typecheck python-test python-check node-storage-check node-lock \
@@ -156,6 +158,36 @@ dev-check:
 		PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
 			scripts/dev_check.py --story "$(STORY)"; \
 	fi
+
+GITHUB_RULESET_RUN_ID ?=
+GITHUB_RULESET_PLAN_SHA256 ?=
+override GITHUB_RULESET_OPERATOR := $(RAOS_REPOSITORY_ROOT)/scripts/github_ruleset_operator.py
+
+github-ruleset-status:
+	test -x "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python"
+	PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
+		"$(GITHUB_RULESET_OPERATOR)" status
+
+github-ruleset-plan:
+	test -x "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python"
+	PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
+		"$(GITHUB_RULESET_OPERATOR)" plan
+
+github-ruleset-apply:
+	test -n "$(strip $(GITHUB_RULESET_RUN_ID))"
+	test -n "$(strip $(GITHUB_RULESET_PLAN_SHA256))"
+	test -x "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python"
+	PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
+		"$(GITHUB_RULESET_OPERATOR)" apply \
+		--run-id "$(GITHUB_RULESET_RUN_ID)" \
+		--plan-sha256 "$(GITHUB_RULESET_PLAN_SHA256)"
+
+github-ruleset-rollback:
+	test -n "$(strip $(GITHUB_RULESET_RUN_ID))"
+	test -x "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python"
+	PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
+		"$(GITHUB_RULESET_OPERATOR)" rollback \
+		--run-id "$(GITHUB_RULESET_RUN_ID)"
 
 PRO_REQUEST_FILE ?=
 PRO_RESPONSE_FILE ?=

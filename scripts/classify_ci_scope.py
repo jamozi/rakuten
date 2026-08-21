@@ -29,6 +29,7 @@ EXPECTED_KEYS: Final = {
     "story_path_patterns",
     "node_suffixes",
     "generator_checks",
+    "generator_owned_outputs",
 }
 EXPECTED_JOBS: Final = (
     "Static",
@@ -108,8 +109,11 @@ def load_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
         if not values or any(not value for value in values):
             raise ClassificationError(f"{key} must not be empty")
     generators = parsed["generator_checks"]
-    if not isinstance(generators, dict):
-        raise ClassificationError("generator_checks must be a mapping")
+    generator_outputs = parsed["generator_owned_outputs"]
+    if not isinstance(generators, dict) or not isinstance(generator_outputs, dict):
+        raise ClassificationError("generator configuration must be a mapping")
+    if set(generators) != set(generator_outputs):
+        raise ClassificationError("generator check and output stories differ")
     for story, commands in generators.items():
         if not re.fullmatch(r"ST-\d{4}", story) or not isinstance(commands, list):
             raise ClassificationError("generator_checks contains an invalid story")
@@ -120,6 +124,14 @@ def load_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
                 or not all(isinstance(token, str) and token for token in command)
             ):
                 raise ClassificationError("generator command must be tokenized")
+        outputs = _string_list(
+            generator_outputs[story], f"generator outputs for {story}"
+        )
+        if not outputs:
+            raise ClassificationError("generator output inventory must not be empty")
+        for output in outputs:
+            if normalize_path(output) != output:
+                raise ClassificationError("generator output path is not normalized")
     return parsed
 
 

@@ -62,5 +62,13 @@
   "node_suffixes": [".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx"],
   "generator_checks": {
     "ST-0107": [["{python}", "-I", "scripts/build_st0107_pr_governance.py", "--check"]]
+  },
+  "generator_owned_outputs": {
+    "ST-0107": [
+      ".github/CODEOWNERS",
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      "changes/st-0107/manifest.yaml",
+      "changes/st-0107/ruleset-policy.v1.json"
+    ]
   }
 }

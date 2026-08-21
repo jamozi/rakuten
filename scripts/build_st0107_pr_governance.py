@@ -43,7 +43,7 @@ GENERATION_COMMAND: Final = (
 )
 CHECK_COMMAND: Final = f"{GENERATION_COMMAND} --check"
 EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
-    "2aae849de862a8391610e1991619af3559568c770fff13d2f3670d94030a714e"
+    "8031c3f71816506fd13bb0042b7264e9557f6ae6ef4e28a63f2b225036dac986"
 )
 
 PINNED_SOURCES: Final = {
@@ -72,7 +72,7 @@ PINNED_SOURCES: Final = {
         "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
     ),
     ".github/workflows/ci.yml": (
-        "790af484fea8aaa38f040de7bd51dbb729bd643d255847a23310aaa37462510f"
+        "69dc1a2be4ddfa6a70066ec40009cb6c7fcfc5d0ee060b9b2615721d7d085a16"
     ),
     ".github/workflows/status-registry.yml": (
         "4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a"
@@ -81,11 +81,14 @@ PINNED_SOURCES: Final = {
 
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
+    Path("changes/st-0107/contracts/github-ruleset-operator.v1.json"),
+    Path("changes/st-0107/DESIGN_HANDOFF_V1_DEVELOPER_LOOP_SIMPLIFICATION.yaml"),
     Path("changes/st-0107/README.md"),
     Path("docs/architecture/ST-0107-github-governance-snapshot.yaml"),
     Path("docs/execplans/ST-0107.md"),
     Path("docs/worklogs/ST-0107.md"),
     Path("scripts/build_st0107_pr_governance.py"),
+    Path("scripts/github_ruleset_operator.py"),
     Path("scripts/build_local_compose.py"),
     Path("scripts/object_storage_service.sh"),
     Path("scripts/object_storage_fixture.py"),
@@ -93,6 +96,7 @@ SOURCE_ARTIFACT_PATHS: Final = (
     Path("tests/st0107/test_generation.py"),
     Path("tests/st0107/test_governance_contract.py"),
     Path("tests/st0107/test_negative_cases.py"),
+    Path("tests/st0107/test_ruleset_operator.py"),
     Path("tests/st0106/test_workflow_contract.py"),
     Path("Makefile"),
     Path("README.md"),
@@ -117,7 +121,6 @@ EXPECTED_OWNER_ROLES: Final = (
     "security",
 )
 EXPECTED_CODEOWNER_ENTRIES: Final = (
-    ("*", ("engineering",)),
     ("/contracts/", ("architecture", "engineering")),
     ("/migrations/", ("data", "security")),
     ("/infra/", ("operations", "security")),
@@ -139,6 +142,26 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
         ("architecture", "engineering"),
     ),
     ("/docs/canonical/", ("architecture",)),
+    ("/AGENTS.md", ("security", "operations")),
+    ("/.codex/", ("security", "operations")),
+    ("/Makefile", ("security", "operations")),
+    ("/changes/st-0106/", ("security", "operations")),
+    ("/changes/st-0107/", ("security", "operations")),
+    (
+        "/docs/architecture/ST-0107-github-governance-snapshot.yaml",
+        ("security", "operations"),
+    ),
+    ("/docs/execplans/ST-0107.md", ("security", "operations")),
+    ("/docs/worklogs/ST-0107.md", ("security", "operations")),
+    ("/scripts/classify_ci_scope.py", ("security", "operations")),
+    ("/scripts/dev_check.py", ("security", "operations")),
+    (
+        "/scripts/build_st0107_pr_governance.py",
+        ("security", "operations"),
+    ),
+    ("/scripts/github_ruleset_operator.py", ("security", "operations")),
+    ("/tests/st0106/", ("security", "operations")),
+    ("/tests/st0107/", ("security", "operations")),
     ("/changes/*/contracts/", ("architecture", "engineering")),
     ("/changes/*/database/", ("data", "security")),
     ("/docs/canonical/04_security/", ("security", "architecture")),
@@ -188,14 +211,34 @@ EXPECTED_OWNER_CATEGORIES: Final = {
         ],
         "roles": ["operations", "security"],
     },
+    "governance": {
+        "patterns": [
+            "/AGENTS.md",
+            "/.codex/",
+            "/Makefile",
+            "/changes/st-0106/",
+            "/changes/st-0107/",
+            "/docs/architecture/ST-0107-github-governance-snapshot.yaml",
+            "/docs/execplans/ST-0107.md",
+            "/docs/worklogs/ST-0107.md",
+            "/scripts/classify_ci_scope.py",
+            "/scripts/dev_check.py",
+            "/scripts/build_st0107_pr_governance.py",
+            "/scripts/github_ruleset_operator.py",
+            "/tests/st0106/",
+            "/tests/st0107/",
+            "/.github/",
+        ],
+        "roles": ["security", "operations"],
+    },
 }
 EXPECTED_ACTIVATION_PREREQUISITES: Final = (
     "real repository and default branch identified",
     "every team binding resolves to a visible GitHub team with write permission",
     "every required check has run in the repository and is bound to the expected GitHub Actions app",
     "ruleset API request is assembled from the reviewed policy and live numeric bindings, and authenticated read-back matches the desired active policy with no bypass actor",
-    "contract, migration, security, deployment, direct-push, stale-review, last-push, missing-check, deletion, and force-push PR probes pass",
-    "a distinct human reviewer approves the governance change",
+    "ordinary-path zero-approval, high-risk CODEOWNER, direct-push, stale-review, missing-check, unresolved-thread, deletion, and force-push PR probes pass",
+    "a matching governance CODEOWNER approves the high-risk activation change and read-back confirms zero general approvals, code-owner review enabled, and last-push approval disabled",
 )
 CANONICAL_STORY: Final = {
     "id": "ST-0107",
@@ -247,7 +290,7 @@ UniqueKeyLoader.yaml_implicit_resolvers = {
     ]
     for first_character, resolvers in UniqueKeyLoader.yaml_implicit_resolvers.items()
 }
-UniqueKeyLoader.add_implicit_resolver(
+UniqueKeyLoader.add_implicit_resolver(  # type: ignore[no-untyped-call]
     "tag:yaml.org,2002:bool",
     re.compile(r"^(?:true|false)$", re.IGNORECASE),
     list("tTfF"),
@@ -401,12 +444,15 @@ def _validate_sources(contract: Mapping[str, Any], root: Path) -> None:
         observed[key] = expected
     if observed != PINNED_SOURCES:
         raise RuntimeError("source inventory differs from the reviewed pinned set")
-    for relative, expected in PINNED_SOURCES.items():
-        source_path = _repository_regular_file(root, Path(relative), "pinned source")
+    for relative_name, pinned_digest in PINNED_SOURCES.items():
+        source_path = _repository_regular_file(
+            root, Path(relative_name), "pinned source"
+        )
         actual = sha256_file(source_path)
-        if actual != expected:
+        if actual != pinned_digest:
             raise RuntimeError(
-                f"pinned source hash mismatch: {relative}: {actual} != {expected}"
+                "pinned source hash mismatch: "
+                f"{relative_name}: {actual} != {pinned_digest}"
             )
 
 
@@ -421,6 +467,7 @@ def _validate_architecture_snapshot(root: Path) -> None:
             "document",
             "official_sources",
             "local_candidate",
+            "bounded_operator",
             "unverified_live_bindings",
             "desired_ruleset_semantics",
             "activation_preflight",
@@ -495,6 +542,42 @@ def _validate_architecture_snapshot(root: Path) -> None:
         raise RuntimeError("architecture snapshot check command drifted")
     if local_candidate.get("remote_mutation_capability") != "FORBIDDEN":
         raise RuntimeError("architecture snapshot remote boundary drifted")
+    if local_candidate.get("remote_mutation_scope") != "GENERATOR_ONLY":
+        raise RuntimeError("architecture snapshot remote scope drifted")
+
+    bounded_operator = _mapping(
+        snapshot["bounded_operator"], "architecture snapshot bounded_operator"
+    )
+    if bounded_operator != {
+        "source": "scripts/github_ruleset_operator.py",
+        "contract": (
+            "repo://changes/st-0107/contracts/github-ruleset-operator.v1.json"
+        ),
+        "api_origin": "https://api.github.com",
+        "repository": "jamozi/rakuten",
+        "default_branch": "main",
+        "rest_api_version": "2026-03-10",
+        "commands": ["status", "plan", "apply", "rollback"],
+        "token_file_environment": "RAOS_GITHUB_RULESET_TOKEN_FILE",
+        "token_file_mode": "0600",
+        "plan_binding": "POLICY_COMMIT_POLICY_HASH_LIVE_BEFORE_HASH_DESIRED_HASH",
+        "mutation_retry": "FORBIDDEN",
+        "ambiguous_mutation_reconciliation": "GET_ONLY",
+        "new_ruleset_rollback": "PUT_DISABLED_NEVER_DELETE",
+        "owner_bindings": "UNVERIFIED_PLACEHOLDERS",
+        "mutation_with_unverified_owner_bindings": "FORBIDDEN",
+        "live_execution": "NOT_EXECUTED",
+    }:
+        raise RuntimeError("architecture snapshot bounded operator drifted")
+
+    desired_ruleset = _mapping(
+        snapshot["desired_ruleset_semantics"],
+        "architecture snapshot desired_ruleset_semantics",
+    )
+    if desired_ruleset.get("general_required_approving_review_count") != 0:
+        raise RuntimeError("architecture snapshot general review count drifted")
+    if desired_ruleset.get("require_last_push_approval") is not False:
+        raise RuntimeError("architecture snapshot last-push policy drifted")
 
     boundary = _mapping(
         snapshot["verification_boundary"],
@@ -590,7 +673,9 @@ def _validate_owner_bindings(
         roles = _list(entry["roles"], f"codeowners.entries[{index}].roles")
         if not isinstance(pattern, str) or not pattern:
             raise RuntimeError("CODEOWNERS pattern must be a nonempty string")
-        if pattern != "*" and not pattern.startswith("/"):
+        if pattern == "*":
+            raise RuntimeError("global default CODEOWNER row is forbidden")
+        if not pattern.startswith("/"):
             raise RuntimeError(f"CODEOWNERS pattern must be root anchored: {pattern}")
         if any(token in pattern for token in ("!", "[", "]", "\\", "#")):
             raise RuntimeError(f"unsupported CODEOWNERS pattern syntax: {pattern}")
@@ -610,8 +695,8 @@ def _validate_owner_bindings(
         normalized_roles = tuple(roles)
         by_pattern[pattern] = normalized_roles
         entries.append({"pattern": pattern, "roles": list(normalized_roles)})
-    if not entries or entries[0]["pattern"] != "*":
-        raise RuntimeError("CODEOWNERS must start with the default owner row")
+    if not entries:
+        raise RuntimeError("CODEOWNERS cannot be empty")
     if entries[-1]["pattern"] != "/.github/":
         raise RuntimeError("/.github/ must be the last and therefore controlling row")
     observed_entries = tuple(
@@ -623,6 +708,8 @@ def _validate_owner_bindings(
 
     inverse = {handle: role for role, handle in handles.items()}
     for pattern, canonical_handles in _canonical_codeowner_entries(root).items():
+        if pattern == "*":
+            continue
         try:
             expected_roles = tuple(inverse[handle] for handle in canonical_handles)
         except KeyError as exc:
@@ -703,8 +790,8 @@ def _validate_ruleset(
         "allowed_merge_methods": ["squash"],
         "dismiss_stale_reviews_on_push": True,
         "require_code_owner_review": True,
-        "require_last_push_approval": True,
-        "required_approving_review_count": 1,
+        "require_last_push_approval": False,
+        "required_approving_review_count": 0,
         "required_review_thread_resolution": True,
     }
     if dict(pull_request) != expected_pull_request:
@@ -732,7 +819,11 @@ def _validate_ruleset(
     contexts = tuple(check["context"] for check in checks)
     if contexts != EXPECTED_CHECK_CONTEXTS:
         raise RuntimeError("required status-check inventory differs from policy")
-    if _workflow_check_names(root) != EXPECTED_CHECK_CONTEXTS:
+    workflow_names = _workflow_check_names(root)
+    required_workflow_names = tuple(
+        name for name in workflow_names if name in EXPECTED_CHECK_CONTEXTS
+    )
+    if required_workflow_names != EXPECTED_CHECK_CONTEXTS:
         raise RuntimeError("required status checks drifted from workflow job names")
 
     categories = _mapping(
@@ -773,9 +864,13 @@ def _validate_template(contract: Mapping[str, Any]) -> Mapping[str, Any]:
             "migration",
             "security",
             "deployment",
+            "governance",
         ],
         "require_not_applicable_rationale": True,
-        "require_generated_or_ai_assisted_review": True,
+        "require_dev_check": True,
+        "require_hosted_ci": True,
+        "require_automated_review": True,
+        "require_deferred_formal_live_items": True,
     }
     if dict(template) != expected:
         raise RuntimeError("pull-request template extension differs from policy")
@@ -859,50 +954,57 @@ def render_codeowners(contract: Mapping[str, Any]) -> bytes:
 
 def render_pull_request_template(contract: Mapping[str, Any], root: Path) -> bytes:
     _validate_template(contract)
-    canonical_path = _repository_regular_file(
+    _repository_regular_file(
         root,
         Path("docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md"),
         "canonical pull-request template",
     )
-    canonical = canonical_path.read_text(encoding="utf-8")
-    marker = "## Contract and migration impact\n\n## Tests"
-    if canonical.count(marker) != 1:
-        raise RuntimeError("canonical pull-request template insertion marker drifted")
-    owner_section = """## Contract and migration impact
+    rendered = """## Story or slice
 
-## Required owner routing
+- Story ID or named integration slice:
+- Canonical / design references:
+- Scope summary:
 
-Use `N/A` only when the area is unchanged, and always record the rationale.
+## Risk
 
-| Area | Changed? | Required owner | Review or N/A rationale |
-|---|---|---|---|
-| Contract |  | Architecture / Engineering |  |
-| Migration |  | Data / Security |  |
-| Security |  | Security |  |
-| Deployment |  | Operations / Security |  |
+- Classification: `ordinary` / `high-risk` / `unknown` / `multi-story`
+- High-risk areas and rationale:
 
-## Generated or AI-assisted changes
+## Development evidence
 
-- Generated or AI-assisted files:
-- Human reviewer and verification performed:
+- `make dev-check STORY=ST-XXXX [BASE_REF=<ref>]`:
+- Hosted Base CI at the exact head:
+- Independent automated review:
 
-## Tests"""
-    rendered = canonical.replace(marker, owner_section)
-    checklist_marker = "- [ ] Status is supported by evidence\n"
-    if rendered.count(checklist_marker) != 1:
-        raise RuntimeError("canonical reviewer checklist marker drifted")
-    rendered = rendered.replace(
-        checklist_marker,
-        "- [ ] Contract, migration, security, and deployment owner routing is declared\n"
-        "- [ ] Every N/A owner-routing entry includes a concrete rationale\n"
-        "- [ ] Generated or AI-assisted changes received explicit human review\n"
-        + checklist_marker,
-    )
+## High-risk CODEOWNER review
+
+Use `N/A` only when the path family is unchanged, and record the rationale.
+
+| Area | Changed paths or N/A rationale | Required CODEOWNER review |
+|---|---|---|
+| Contract / generated types |  | Architecture / Engineering |
+| Migration / database |  | Data / Security |
+| Authentication / secrets / security |  | Security |
+| Deployment / infrastructure / provider runtime |  | Operations / Security |
+| Governance / CI (`.github/**`) |  | Security / Operations |
+
+## Deferred formal or live work
+
+- Formal TST not executed:
+- Provider / live / staging / Production work not executed:
+- External gate or follow-up:
+
+## Evidence boundary
+
+- [ ] Local and hosted CI results are not represented as formal, live, release, staging, or Production evidence
+- [ ] No credential, secret, personal data, production data, or raw provider material is included
+- [ ] High-risk CODEOWNER review is complete, or every row has an `N/A` rationale
+"""
     header = (
         "<!-- Generated by scripts/build_st0107_pr_governance.py. Do not edit. -->\n"
         f"<!-- Source contract: {SOURCE_CONTRACT_URI} -->\n"
         f"<!-- Generation command: {GENERATION_COMMAND} -->\n"
-        "<!-- Human approval and live GitHub evidence cannot be supplied by automation. -->\n"
+        "<!-- High-risk CODEOWNER and live GitHub evidence cannot be supplied by this template. -->\n"
     )
     return (header + rendered).encode("utf-8")
 
@@ -984,7 +1086,8 @@ def render_manifest(
         "boundary": {
             "owner_bindings": "UNVERIFIED_PLACEHOLDERS",
             "ruleset_policy": "DESIRED_STATE_NOT_API_PAYLOAD",
-            "remote_mutation": "FORBIDDEN",
+            "generator_remote_mutation": "FORBIDDEN",
+            "bounded_operator_live_execution": "NOT_EXECUTED",
             "live_ruleset": "NOT_EXECUTED",
             "formal_tst_001": "NOT_EXECUTED",
         },

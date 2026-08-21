@@ -148,3 +148,16 @@ def test_contract_duplicate_key_is_rejected(tmp_path: Path) -> None:
     contract.write_text('{"document": {}, "document": {}}', encoding="utf-8")
     with pytest.raises(classifier.ClassificationError, match="duplicate JSON key"):
         classifier.load_contract(tmp_path)
+
+
+def test_generator_check_and_output_story_sets_must_match(tmp_path: Path) -> None:
+    contract = classifier.load_contract()
+    contract["generator_owned_outputs"] = {}
+    path = tmp_path / classifier.CONTRACT_PATH
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(contract), encoding="utf-8")
+    with pytest.raises(
+        classifier.ClassificationError,
+        match="generator check and output stories differ",
+    ):
+        classifier.load_contract(tmp_path)

@@ -64,6 +64,7 @@ local_candidate:
     - path: changes/st-0107/manifest.yaml
       classification: GENERATED_HASH_INVENTORY
   remote_mutation_capability: FORBIDDEN
+  remote_mutation_scope: GENERATOR_ONLY
   database_check_boundary:
     source_story: ST-0201
     context: Database
@@ -78,6 +79,24 @@ local_candidate:
     network_scope: EXACT_DIGEST_PINNED_SEAWEEDFS_IMAGE_PULL_ONLY
     repository_dependency_hydration: FORBIDDEN
     hosted_execution: NOT_EXECUTED
+
+bounded_operator:
+  source: scripts/github_ruleset_operator.py
+  contract: repo://changes/st-0107/contracts/github-ruleset-operator.v1.json
+  api_origin: https://api.github.com
+  repository: jamozi/rakuten
+  default_branch: main
+  rest_api_version: '2026-03-10'
+  commands: [status, plan, apply, rollback]
+  token_file_environment: RAOS_GITHUB_RULESET_TOKEN_FILE
+  token_file_mode: '0600'
+  plan_binding: POLICY_COMMIT_POLICY_HASH_LIVE_BEFORE_HASH_DESIRED_HASH
+  mutation_retry: FORBIDDEN
+  ambiguous_mutation_reconciliation: GET_ONLY
+  new_ruleset_rollback: PUT_DISABLED_NEVER_DELETE
+  owner_bindings: UNVERIFIED_PLACEHOLDERS
+  mutation_with_unverified_owner_bindings: FORBIDDEN
+  live_execution: NOT_EXECUTED
 
 unverified_live_bindings:
   status: UNVERIFIED_PLACEHOLDERS
@@ -107,6 +126,8 @@ desired_ruleset_semantics:
   desired_enforcement_after_approval: active
   current_enforcement_claim: NONE
   bypass_actors: NONE_DESIRED
+  general_required_approving_review_count: 0
+  require_last_push_approval: false
   rules:
     - prohibit_deletion
     - prohibit_force_push
@@ -114,12 +135,13 @@ desired_ruleset_semantics:
     - require_pull_request
     - dismiss_stale_reviews_on_push
     - require_code_owner_review
-    - require_last_push_approval
     - require_review_thread_resolution
     - require_status_checks_with_expected_source_binding
   owner_semantics_note: >-
     Owners on the same CODEOWNERS line are eligible alternatives. The local
     mapping does not claim that GitHub requires every listed team to approve.
+    There is no global owner row: unmatched ordinary paths require no owner
+    approval, while matching high-risk paths retain code-owner review.
   required_status_candidates:
     - context: Static
       expected_source: github-actions
@@ -155,9 +177,9 @@ activation_preflight:
     - id: authenticated-effective-snapshot
       requirement: Capture repository and parent rulesets plus active branch rules with sufficient access to expose the complete bypass state.
     - id: live-probes
-      requirement: Prove owner coverage, review invalidation, last-push approval, thread resolution, missing-check blocking, direct-push denial, deletion denial, and force-push denial on real pull requests and refs.
-    - id: human-review
-      requirement: Obtain distinct human approval of the identities, final API payload diff, authenticated read-back, probe results, and rollback plan.
+      requirement: Prove ordinary-path zero-approval, high-risk CODEOWNER coverage, review invalidation, thread resolution, missing-check blocking, direct-push denial, deletion denial, and force-push denial on real pull requests and refs.
+    - id: high-risk-codeowner-review
+      requirement: Obtain matching governance CODEOWNER approval of the high-risk activation change and verify that read-back keeps zero general approvals, code-owner review enabled, and last-push approval disabled.
 
 verification_boundary:
   local_generation: DOES_NOT_PROVE_GITHUB_ENFORCEMENT
@@ -172,4 +194,5 @@ verification_boundary:
     The recorded GitHub pages are official documentation, not evidence about a
     particular repository. The local ruleset JSON is deliberately incomplete
     as an API payload and may not be POSTed or PUT without all live bindings,
-    read-back planning, probes, rollback evidence, and human approval.
+    read-back planning, probes, rollback evidence, and matching high-risk
+    CODEOWNER approval.

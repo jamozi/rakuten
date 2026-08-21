@@ -176,7 +176,8 @@ def test_manifest_preserves_provenance_and_unexecuted_boundary() -> None:
     assert manifest["boundary"] == {
         "owner_bindings": "UNVERIFIED_PLACEHOLDERS",
         "ruleset_policy": "DESIRED_STATE_NOT_API_PAYLOAD",
-        "remote_mutation": "FORBIDDEN",
+        "generator_remote_mutation": "FORBIDDEN",
+        "bounded_operator_live_execution": "NOT_EXECUTED",
         "live_ruleset": "NOT_EXECUTED",
         "formal_tst_001": "NOT_EXECUTED",
     }

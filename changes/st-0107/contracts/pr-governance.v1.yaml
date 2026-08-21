@@ -22,7 +22,7 @@ sources:
   - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://.github/workflows/ci.yml
-    sha256: 790af484fea8aaa38f040de7bd51dbb729bd643d255847a23310aaa37462510f
+    sha256: 69dc1a2be4ddfa6a70066ec40009cb6c7fcfc5d0ee060b9b2615721d7d085a16
   - uri: repo://.github/workflows/status-registry.yml
     sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
 owner_bindings:
@@ -40,8 +40,6 @@ owner_bindings:
     security: '@raos/security'
 codeowners:
   entries:
-    - pattern: '*'
-      roles: [engineering]
     - pattern: /contracts/
       roles: [architecture, engineering]
     - pattern: /migrations/
@@ -78,6 +76,34 @@ codeowners:
       roles: [architecture, engineering]
     - pattern: /docs/canonical/
       roles: [architecture]
+    - pattern: /AGENTS.md
+      roles: [security, operations]
+    - pattern: /.codex/
+      roles: [security, operations]
+    - pattern: /Makefile
+      roles: [security, operations]
+    - pattern: /changes/st-0106/
+      roles: [security, operations]
+    - pattern: /changes/st-0107/
+      roles: [security, operations]
+    - pattern: /docs/architecture/ST-0107-github-governance-snapshot.yaml
+      roles: [security, operations]
+    - pattern: /docs/execplans/ST-0107.md
+      roles: [security, operations]
+    - pattern: /docs/worklogs/ST-0107.md
+      roles: [security, operations]
+    - pattern: /scripts/classify_ci_scope.py
+      roles: [security, operations]
+    - pattern: /scripts/dev_check.py
+      roles: [security, operations]
+    - pattern: /scripts/build_st0107_pr_governance.py
+      roles: [security, operations]
+    - pattern: /scripts/github_ruleset_operator.py
+      roles: [security, operations]
+    - pattern: /tests/st0106/
+      roles: [security, operations]
+    - pattern: /tests/st0107/
+      roles: [security, operations]
     - pattern: /changes/*/contracts/
       roles: [architecture, engineering]
     - pattern: /changes/*/database/
@@ -96,9 +122,12 @@ codeowners:
       roles: [security, operations]
 pull_request_template:
   canonical_source: repo://docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md
-  required_owner_categories: [contract, migration, security, deployment]
+  required_owner_categories: [contract, migration, security, deployment, governance]
   require_not_applicable_rationale: true
-  require_generated_or_ai_assisted_review: true
+  require_dev_check: true
+  require_hosted_ci: true
+  require_automated_review: true
+  require_deferred_formal_live_items: true
 ruleset_policy:
   name: RAOS protected default branch
   target: branch
@@ -114,8 +143,8 @@ ruleset_policy:
     allowed_merge_methods: [squash]
     dismiss_stale_reviews_on_push: true
     require_code_owner_review: true
-    require_last_push_approval: true
-    required_approving_review_count: 1
+    require_last_push_approval: false
+    required_approving_review_count: 0
     required_review_thread_resolution: true
   required_status_checks:
     - context: Static
@@ -166,6 +195,24 @@ ruleset_policy:
         - /scripts/object_storage_service.sh
         - /scripts/object_storage_fixture.py
       roles: [operations, security]
+    governance:
+      patterns:
+        - /AGENTS.md
+        - /.codex/
+        - /Makefile
+        - /changes/st-0106/
+        - /changes/st-0107/
+        - /docs/architecture/ST-0107-github-governance-snapshot.yaml
+        - /docs/execplans/ST-0107.md
+        - /docs/worklogs/ST-0107.md
+        - /scripts/classify_ci_scope.py
+        - /scripts/dev_check.py
+        - /scripts/build_st0107_pr_governance.py
+        - /scripts/github_ruleset_operator.py
+        - /tests/st0106/
+        - /tests/st0107/
+        - /.github/
+      roles: [security, operations]
 activation:
   generator_remote_mutation: FORBIDDEN
   live_status: NOT_EXECUTED
@@ -175,5 +222,5 @@ activation:
     - every team binding resolves to a visible GitHub team with write permission
     - every required check has run in the repository and is bound to the expected GitHub Actions app
     - ruleset API request is assembled from the reviewed policy and live numeric bindings, and authenticated read-back matches the desired active policy with no bypass actor
-    - contract, migration, security, deployment, direct-push, stale-review, last-push, missing-check, deletion, and force-push PR probes pass
-    - a distinct human reviewer approves the governance change
+    - ordinary-path zero-approval, high-risk CODEOWNER, direct-push, stale-review, missing-check, unresolved-thread, deletion, and force-push PR probes pass
+    - a matching governance CODEOWNER approves the high-risk activation change and read-back confirms zero general approvals, code-owner review enabled, and last-push approval disabled

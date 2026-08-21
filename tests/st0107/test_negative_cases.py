@@ -203,11 +203,13 @@ def test_missing_owner_role_is_rejected(
     reject_contract(mutable_contract, "owner role inventory differs")
 
 
-def test_codeowners_default_row_must_be_first(
+def test_codeowners_global_default_row_is_rejected(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:
-    mutable_contract["codeowners"]["entries"].pop(0)
-    reject_contract(mutable_contract, "must start with the default owner row")
+    mutable_contract["codeowners"]["entries"].insert(
+        0, {"pattern": "*", "roles": ["engineering"]}
+    )
+    reject_contract(mutable_contract, "global default CODEOWNER row is forbidden")
 
 
 def test_codeowners_github_row_must_be_last(
@@ -222,7 +224,7 @@ def test_duplicate_codeowners_pattern_is_rejected(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:
     mutable_contract["codeowners"]["entries"].insert(
-        1, {"pattern": "*", "roles": ["engineering"]}
+        1, {"pattern": "/contracts/", "roles": ["engineering"]}
     )
     reject_contract(mutable_contract, "duplicate CODEOWNERS pattern")
 
@@ -322,8 +324,8 @@ def test_fail_closed_ruleset_field_cannot_be_weakened(
         ("allowed_merge_methods", ["merge", "squash"]),
         ("dismiss_stale_reviews_on_push", False),
         ("require_code_owner_review", False),
-        ("require_last_push_approval", False),
-        ("required_approving_review_count", 0),
+        ("require_last_push_approval", True),
+        ("required_approving_review_count", 1),
         ("required_review_thread_resolution", False),
     ],
 )
@@ -423,7 +425,10 @@ def test_activation_prerequisite_cannot_be_omitted(
     ("field", "value"),
     [
         ("require_not_applicable_rationale", False),
-        ("require_generated_or_ai_assisted_review", False),
+        ("require_dev_check", False),
+        ("require_hosted_ci", False),
+        ("require_automated_review", False),
+        ("require_deferred_formal_live_items", False),
         ("required_owner_categories", ["contract", "migration", "security"]),
     ],
 )

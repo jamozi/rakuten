@@ -89,13 +89,16 @@ def test_run_checks_selects_changed_languages_story_and_generator(
 
     monkeypatch.setattr(dev_check.StepRunner, "run", record)
     config = {
-        "generator_checks": {"ST-0107": [["{python}", "-I", "generator.py", "--check"]]}
+        "generator_checks": {
+            "ST-0107": [["{python}", "-I", "generator.py", "--check"]]
+        },
+        "generator_owned_outputs": {"ST-0107": ["generated.json"]},
     }
     result = dev_check.run_checks(
         tmp_path,
         "ST-0107",
         "main",
-        ["scripts/example.py", "scripts/example.sh"],
+        ["scripts/example.py", "scripts/example.sh", "generated.json"],
         config,
     )
 
@@ -113,6 +116,7 @@ def test_run_checks_selects_changed_languages_story_and_generator(
         ":(top,exclude).secrets" in command and ":(top,exclude).secrets/**" in command
         for command in git_diff_commands
     )
+    assert all("generated.json" not in command for _, command in observed)
     assert result["status"] == "PASSED"
 
 

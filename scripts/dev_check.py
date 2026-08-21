@@ -265,7 +265,10 @@ def run_checks(
         ["git", "diff", "--check", "--", *SAFE_DIFF_PATHSPEC],
     )
 
-    python_files = _existing_files(root, paths, PYTHON_SUFFIXES)
+    generator_outputs = set(config["generator_owned_outputs"].get(story, []))
+    source_paths = [path for path in paths if path not in generator_outputs]
+
+    python_files = _existing_files(root, source_paths, PYTHON_SUFFIXES)
     if python_files:
         ruff = root / ".venv/bin/ruff"
         runner.run(
@@ -284,7 +287,7 @@ def run_checks(
     else:
         deferred.append("bash_n:no_changed_shell")
 
-    node_files = _existing_files(root, paths, NODE_FORMAT_SUFFIXES)
+    node_files = _existing_files(root, source_paths, NODE_FORMAT_SUFFIXES)
     node_projects = _node_projects(paths)
     if node_files or node_projects:
         node = shutil.which("node")

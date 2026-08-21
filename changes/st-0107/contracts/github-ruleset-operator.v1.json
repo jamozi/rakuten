@@ -1,0 +1,64 @@
+{
+  "document": {
+    "id": "RAOS-GITHUB-RULESET-OPERATOR-001",
+    "version": "1.0.0",
+    "story_id": "ST-0107",
+    "status": "LOCAL_OPERATOR_CONTRACT"
+  },
+  "github": {
+    "api_origin": "https://api.github.com",
+    "api_version": "2026-03-10",
+    "owner": "jamozi",
+    "repository": "rakuten",
+    "default_branch": "main",
+    "ruleset_name": "RAOS protected default branch"
+  },
+  "local": {
+    "policy_path": "changes/st-0107/ruleset-policy.v1.json",
+    "governance_source_path": "changes/st-0107/contracts/pr-governance.v1.yaml",
+    "generated_codeowners_path": ".github/CODEOWNERS",
+    "private_root": ".secrets/github-ruleset-runs",
+    "token_file_environment": "RAOS_GITHUB_RULESET_TOKEN_FILE",
+    "required_owner_binding_status": "LIVE_VERIFIED",
+    "private_directory_mode": "0700",
+    "private_record_mode": "0600",
+    "maximum_token_bytes": 8192,
+    "maximum_record_bytes": 4194304
+  },
+  "required_status_contexts": [
+    "Static",
+    "Unit",
+    "Contracts",
+    "Database",
+    "Storage",
+    "Secrets",
+    "Validate status overlay"
+  ],
+  "ruleset_invariants": {
+    "target": "branch",
+    "include": ["~DEFAULT_BRANCH"],
+    "exclude": [],
+    "enforcement": "active",
+    "bypass_actors": [],
+    "required_rule_types": [
+      "deletion",
+      "non_fast_forward",
+      "required_linear_history",
+      "pull_request",
+      "required_status_checks"
+    ],
+    "required_approving_review_count": 0,
+    "require_code_owner_review": true,
+    "require_last_push_approval": false,
+    "strict_required_status_checks_policy": true,
+    "expected_check_source": "github-actions"
+  },
+  "mutation_boundary": {
+    "allowed_methods": ["POST", "PUT"],
+    "delete_allowed": false,
+    "automatic_retry_allowed": false,
+    "ambiguous_result_action": "GET_RECONCILIATION_ONLY",
+    "new_ruleset_rollback": "PUT_ENFORCEMENT_DISABLED",
+    "existing_ruleset_rollback": "PUT_PRIOR_PAYLOAD"
+  }
+}

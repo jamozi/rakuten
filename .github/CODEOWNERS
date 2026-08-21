@@ -3,7 +3,6 @@
 # Generation command: uv run --locked --no-sync python scripts/build_st0107_pr_governance.py
 # Owner binding status: UNVERIFIED_PLACEHOLDERS (@raos/* canonical placeholders).
 # Do not enforce until every team is visible and has repository write access.
-* @raos/engineering
 /contracts/ @raos/architecture @raos/engineering
 /migrations/ @raos/data @raos/security
 /infra/ @raos/operations @raos/security
@@ -22,6 +21,20 @@
 /python/raos/generated/ @raos/architecture @raos/engineering
 /packages/web-contracts/src/generated/ @raos/architecture @raos/engineering
 /docs/canonical/ @raos/architecture
+/AGENTS.md @raos/security @raos/operations
+/.codex/ @raos/security @raos/operations
+/Makefile @raos/security @raos/operations
+/changes/st-0106/ @raos/security @raos/operations
+/changes/st-0107/ @raos/security @raos/operations
+/docs/architecture/ST-0107-github-governance-snapshot.yaml @raos/security @raos/operations
+/docs/execplans/ST-0107.md @raos/security @raos/operations
+/docs/worklogs/ST-0107.md @raos/security @raos/operations
+/scripts/classify_ci_scope.py @raos/security @raos/operations
+/scripts/dev_check.py @raos/security @raos/operations
+/scripts/build_st0107_pr_governance.py @raos/security @raos/operations
+/scripts/github_ruleset_operator.py @raos/security @raos/operations
+/tests/st0106/ @raos/security @raos/operations
+/tests/st0107/ @raos/security @raos/operations
 /changes/*/contracts/ @raos/architecture @raos/engineering
 /changes/*/database/ @raos/data @raos/security
 /docs/canonical/04_security/ @raos/security @raos/architecture
