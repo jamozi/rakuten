@@ -143,8 +143,8 @@ source_artifacts:
   bytes: 62332
   sha256: 1d60fb9deb8a347c6fdbdd8197333b525f956275b62d2e397f1228c1e111c6af
 - uri: repo://tests/st0505/test_rakuten_owner_local_installed_runtime.py
-  bytes: 17390
-  sha256: 89948c71bc7f4d4d6b6b8b722fc615c7e372e0d14c332ab85efb455699c7e5e4
+  bytes: 17842
+  sha256: b2a3b6347c7a30a17d0e62bf876ae59554062c29c2ab5c29333cd426ef613928
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0505/generated/rakuten-live-smoke-reference-plan.v1.json

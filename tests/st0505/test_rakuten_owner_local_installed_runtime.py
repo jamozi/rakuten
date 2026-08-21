@@ -482,18 +482,30 @@ def test_installer_payload_inventory_matches_cli_inventory() -> None:
     assert cli._INSTALLED_PAYLOAD_MODES == expected  # noqa: SLF001
 
 
-def test_no_existing_staging_runtime_file_is_changed() -> None:
-    paths = (
-        "scripts/rakuten_live_smoke.py",
-        "scripts/rakuten_live_smoke_launcher.sh",
-        "scripts/rakuten_live_smoke_runtime_install.sh",
-        "scripts/install_rakuten_live_smoke_runtime.py",
-        "python/raos/adapters/rakuten_live_smoke.py",
+def test_existing_staging_runtime_is_bound_to_local_reviewed_hashes() -> None:
+    bundle_bound_paths = {
+        Path("scripts/rakuten_live_smoke.py"),
+        Path("scripts/rakuten_live_smoke_launcher.sh"),
+        Path("python/raos/adapters/rakuten_live_smoke.py"),
+    }
+    installed_sources = {
+        source for source, _installed, _mode in generator.INSTALLED_PAYLOADS
+    }
+    assert bundle_bound_paths <= installed_sources
+    assert (
+        generator._installed_bundle_sha256(SOURCE_ROOT)  # noqa: SLF001
+        == generator.EXPECTED_INSTALLED_BUNDLE_SHA256
     )
-    result = subprocess.run(
-        ["git", "diff", "--exit-code", "origin/main", "--", *paths],
-        cwd=SOURCE_ROOT,
-        check=False,
-        capture_output=True,
-    )
-    assert result.returncode == 0, result.stdout.decode("utf-8", errors="replace")
+
+    standalone_hashes = {
+        Path(
+            "scripts/rakuten_live_smoke_runtime_install.sh"
+        ): generator.EXPECTED_RUNTIME_INSTALL_STAGE_SHA256,
+        Path(
+            "scripts/install_rakuten_live_smoke_runtime.py"
+        ): generator.EXPECTED_RUNTIME_INSTALLER_SHA256,
+    }
+    for path, expected_sha256 in standalone_hashes.items():
+        assert hashlib.sha256((SOURCE_ROOT / path).read_bytes()).hexdigest() == (
+            expected_sha256
+        )
