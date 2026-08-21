@@ -16,6 +16,7 @@ from scripts.classify_ci_scope import (
     codeowner_pattern_matches,
     high_risk_categories,
     load_contract as load_scope_contract,
+    required_owner_roles,
 )
 
 
@@ -85,6 +86,13 @@ def test_owner_placeholders_are_complete_unique_and_not_live_verified(
         f"@raos/{role}" for role in generator.EXPECTED_OWNER_ROLES
     }
 
+    assert governance_contract["story_scope_ownership"] == {
+        "scope_contract": generator.SCOPE_CONTRACT_URI,
+        "canonical_story_source": generator.CANONICAL_STORY_SOURCE_URI,
+        "default_roles": ["engineering", "security"],
+        "ordering": "derived_story_defaults_before_path_specific_rows",
+    }
+
 
 def test_rendered_codeowners_routes_only_declared_paths_and_preserves_last_match_control(
     governance_contract: dict[str, Any],
@@ -98,8 +106,8 @@ def test_rendered_codeowners_routes_only_declared_paths_and_preserves_last_match
     assert "UNVERIFIED_PLACEHOLDERS" in text
     assert "*" not in by_pattern
     assert rows[0] == (
-        "/contracts/",
-        ("@raos/architecture", "@raos/engineering"),
+        "/changes/st-0001/",
+        ("@raos/engineering", "@raos/security"),
     )
     assert rows[-1] == (
         "/.github/",
@@ -108,12 +116,15 @@ def test_rendered_codeowners_routes_only_declared_paths_and_preserves_last_match
     assert len(by_pattern) == len(rows)
     expected_rows = [
         (
-            pattern,
+            row["pattern"],
             tuple(
-                governance_contract["owner_bindings"]["teams"][role] for role in roles
+                governance_contract["owner_bindings"]["teams"][role]
+                for role in row["roles"]
             ),
         )
-        for pattern, roles in generator.EXPECTED_CODEOWNER_ENTRIES
+        for row in generator._expanded_codeowner_entries(
+            governance_contract, REPOSITORY_ROOT
+        )
     ]
     assert rows == expected_rows
     for pattern, owners in generator._canonical_codeowner_entries(
@@ -143,6 +154,7 @@ def test_mandatory_high_risk_categories_have_enforced_rows(
         "infrastructure_deployment",
         "provider_runtime",
         "governance_ci_status",
+        "protected_sources",
     )
     assert categories == generator._expected_owner_categories(REPOSITORY_ROOT)
     for category in categories.values():
@@ -321,6 +333,18 @@ def test_governance_category_covers_ci_and_policy_sources(
                 "@raos/security",
             ),
         ),
+        (
+            "tests/st0305/test_st0305_publication_analytics_finance.py",
+            ("@raos/engineering", "@raos/security"),
+        ),
+        (
+            "tests/st1703/test_wordpresscom_oauth.py",
+            ("@raos/engineering", "@raos/security"),
+        ),
+        (
+            "docs/upstream/README.md",
+            ("@raos/architecture",),
+        ),
     ],
 )
 def test_representative_high_risk_paths_resolve_to_expected_final_codeowners(
@@ -336,7 +360,6 @@ def test_every_tracked_high_risk_path_retains_all_effective_category_owners(
     governance_contract: dict[str, Any],
 ) -> None:
     scope = load_scope_contract(REPOSITORY_ROOT)
-    categories = scope["mandatory_high_risk_categories"]
     teams = governance_contract["owner_bindings"]["teams"]
     rows = _codeowner_rows(generator.render_codeowners(governance_contract))
     tracked = (
@@ -357,16 +380,24 @@ def test_every_tracked_high_risk_path_retains_all_effective_category_owners(
         matching_categories = high_risk_categories(path, scope)
         if not matching_categories:
             continue
-        required = {
-            teams[role]
-            for category_name in matching_categories
-            for role in categories[category_name]["required_roles"]
-        }
+        required = {teams[role] for role in required_owner_roles(path, scope)}
         effective = _owners_for_path(rows, path)
         if not required.issubset(effective):
             gaps.append((path, sorted(required), effective))
 
     assert gaps == []
+
+
+def test_closed_ordinary_story_roots_do_not_receive_derived_default_owners(
+    governance_contract: dict[str, Any],
+) -> None:
+    rows = _codeowner_rows(generator.render_codeowners(governance_contract))
+    assert _owners_for_path(rows, "tests/st0501/test_workflow.py") == ()
+    assert _owners_for_path(rows, "changes/st-0501/README.md") == ()
+    assert _owners_for_path(rows, "scripts/build_st0501_unmapped_generator.py") == (
+        "@raos/engineering",
+        "@raos/security",
+    )
 
 
 def test_pull_request_template_captures_the_short_development_loop(
@@ -405,6 +436,8 @@ def test_pull_request_template_captures_the_short_development_loop(
         ("Deployment / infrastructure", "", "Operations / Security"),
         ("Provider runtime", "", "Operations / Security"),
         ("Governance / CI / status", "", "Security / Operations"),
+        ("Unproven or new Story scope", "", "Engineering / Security"),
+        ("Protected Canonical / upstream source", "", "Architecture"),
     ):
         assert row in table_rows
     assert (

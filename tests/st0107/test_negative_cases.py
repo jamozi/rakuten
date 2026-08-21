@@ -203,6 +203,13 @@ def test_missing_owner_role_is_rejected(
     reject_contract(mutable_contract, "owner role inventory differs")
 
 
+def test_story_scope_ownership_cannot_diverge_from_scope_contract(
+    mutable_contract: dict[str, Any], reject_contract: RejectContract
+) -> None:
+    mutable_contract["story_scope_ownership"]["default_roles"] = ["security"]
+    reject_contract(mutable_contract, "Story-scope ownership policy differs")
+
+
 def test_codeowners_global_default_row_is_rejected(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:

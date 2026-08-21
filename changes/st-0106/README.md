@@ -11,6 +11,15 @@ run all six Base CI contexts. Pushes to `main`, scheduled runs, and manual runs
 also run all six contexts. Classifier failure makes every required context fail
 rather than reporting a successful skip.
 
+The affected path is deliberately finite and fail closed. The versioned
+contract names the reviewed ordinary Story IDs and exact tracked paths; a path must
+satisfy both proofs to remain ordinary. Every other detected Story, every
+Story-local surface that cannot be identified, and every Story-bearing build
+script runs full Base CI. This makes a newly added or previously omitted Story
+full by default instead of relying on an ever-growing high-risk allowlist.
+Imported Canonical and upstream sources remain prohibited edit targets and are
+also classified full if they nevertheless appear in a diff.
+
 The fast local entrypoint is:
 
 ```bash

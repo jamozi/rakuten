@@ -35,6 +35,8 @@ Use `N/A` only when the path family is unchanged, and record the rationale.
 | Deployment / infrastructure                  |                                | Operations / Security      |
 | Provider runtime                             |                                | Operations / Security      |
 | Governance / CI / status                     |                                | Security / Operations      |
+| Unproven or new Story scope                  |                                | Engineering / Security     |
+| Protected Canonical / upstream source        |                                | Architecture               |
 
 ## Deferred formal or live work
 

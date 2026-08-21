@@ -89,21 +89,25 @@ apply authority.
 
 ## Local candidate semantics
 
-The generated CODEOWNERS candidate selectively covers contract, migration,
-security, deployment infrastructure, the shared local Compose
-generator, root Compose file, PostgreSQL wrapper, object-storage wrapper and
-fixture, application, finance, canonical-document, and `.github/` paths
-described by the source contract. All `@raos/*` handles remain placeholders.
-GitHub requires an owner team to be visible and to have explicit write
-permission; local syntax and generation cannot establish either fact.
+The generated CODEOWNERS candidate covers the versioned high-risk categories,
+protected Canonical/upstream sources, and every Canonical Story that is not in
+the ST-0106 contract's small reviewed ordinary set. Story-bearing build scripts
+remain owned even for an otherwise ordinary Story. All `@raos/*` handles
+remain placeholders. GitHub requires an owner team to be visible and to have
+explicit write permission; local syntax and generation cannot establish either
+fact.
 
-There is deliberately no global `*` owner row. A path that matches none of the
-declared rows is an ordinary path and does not add a CODEOWNER requirement.
-Because this local slice cannot establish a trusted independent automated
-reviewer, every pull request still requires one approving human review. Stale
-approvals are dismissed after a push. Contract/codegen, migration/database,
-authentication, security-control, publication/finance, deployment, provider-runtime, and
-governance paths retain their specific additional routes.
+There is deliberately no global `*` owner row. A path is ordinary only when
+the same versioned ST-0106 contract proves both its Story and path surface
+ordinary; new, unproven, or unidentifiable Story-local surfaces fail closed to
+full CI. The generator scans every tracked path classified high-risk and
+rejects any candidate whose effective last matching CODEOWNERS row lacks the
+required category owners. Because this local slice cannot establish a trusted
+independent automated reviewer, every pull request still requires one
+approving human review. Stale approvals are dismissed after a push.
+Contract/codegen, migration/database, authentication, security-control,
+publication/finance, deployment, provider-runtime, governance, and protected
+source paths retain their specific additional routes.
 
 Owners listed on one CODEOWNERS line are eligible alternatives. GitHub's code
 owner rule does not require every listed team to approve, and the last matching

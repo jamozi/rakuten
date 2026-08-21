@@ -12,19 +12,6 @@ import pytest
 from scripts import classify_ci_scope as classifier
 
 
-SEMANTIC_HIGH_RISK_GLOBS = (
-    "changes/st-04*/**",
-    "changes/st-1603/**",
-    "python/raos/domain/publishing/**",
-    "python/raos/application/publishing/**",
-    "python/raos/**/security.py",
-    "scripts/*security*",
-    "tests/st04*/**",
-    "tests/st09*/**",
-    "tests/st1603/**",
-)
-
-
 @pytest.fixture
 def scope_contract() -> dict[str, object]:
     return classifier.load_contract()
@@ -34,7 +21,7 @@ def test_docs_only_selects_light_static_and_secrets(
     scope_contract: dict[str, object],
 ) -> None:
     result = classifier.classify_paths(
-        "pull_request", ["docs/worklogs/ST-0804.md", "README.md"], scope_contract
+        "pull_request", ["changes/st-0501/README.md", "README.md"], scope_contract
     )
     assert result["mode"] == "affected"
     assert result["risk"] == "docs_only"
@@ -48,13 +35,38 @@ def test_single_story_selects_static_unit_and_secrets(
 ) -> None:
     result = classifier.classify_paths(
         "pull_request",
-        ["python/raos/domain/example.py", "tests/st0804/test_example.py"],
+        [
+            "python/raos/domain/portfolio/workflow.py",
+            "tests/st0501/test_workflow.py",
+        ],
         scope_contract,
     )
     assert result["risk"] == "ordinary"
-    assert result["story_suites"] == ["tests/st0804"]
+    assert result["story_suites"] == ["tests/st0501"]
     assert result["jobs"] == ["Static", "Unit", "Secrets"]
     assert result["job_modes"]["Unit"] == "focused"
+
+
+@pytest.mark.parametrize(
+    ("path", "story_suite"),
+    [
+        ("python/raos/domain/portfolio/workflow.py", "tests/st0501"),
+        ("python/raos/domain/catalog/catalog_normalization.py", "tests/st0503"),
+        ("packages/web-ui/src/portfolio-catalog-workspace.ts", "tests/st0506"),
+        ("packages/web-ui/src/evidence-workspace.ts", "tests/st0606"),
+        (
+            "packages/web-ui/src/admin-visual-accessibility-acceptance.ts",
+            "tests/st1105",
+        ),
+    ],
+)
+def test_bound_ordinary_source_selects_its_owned_story_suite(
+    scope_contract: dict[str, object], path: str, story_suite: str
+) -> None:
+    result = classifier.classify_paths("pull_request", [path], scope_contract)
+    assert result["risk"] == "ordinary"
+    assert result["story_suites"] == [story_suite]
+    assert result["jobs"] == ["Static", "Unit", "Secrets"]
 
 
 @pytest.mark.parametrize(
@@ -137,6 +149,11 @@ def test_secret_path_cli_fails_with_only_closed_reason_and_count(
         "tests/st0401/test_authentication.py",
         "scripts/build_st1603_security_verification_pack.py",
         "tests/st1603/test_contract.py",
+        "tests/st0305/test_st0305_publication_analytics_finance.py",
+        "changes/st-1703/README.md",
+        "tests/st1703/test_wordpresscom_oauth.py",
+        "docs/canonical/START_HERE.md",
+        "docs/upstream/README.md",
     ],
 )
 def test_mandatory_taxonomy_examples_are_high_risk(
@@ -168,7 +185,7 @@ def test_every_versioned_taxonomy_representative_is_high_risk(
             assert result["full_required"] is True
 
 
-def test_every_tracked_publication_or_security_surface_is_high_risk(
+def test_every_tracked_story_surface_is_high_or_has_closed_ordinary_proof(
     scope_contract: dict[str, object],
 ) -> None:
     tracked = (
@@ -181,21 +198,111 @@ def test_every_tracked_publication_or_security_surface_is_high_risk(
         .stdout.decode("utf-8")
         .split("\0")
     )
-    semantic_paths = sorted(
+    story_paths = sorted(
         path
         for path in tracked
         if path
         and any(
-            fnmatch.fnmatchcase(path, pattern) for pattern in SEMANTIC_HIGH_RISK_GLOBS
+            fnmatch.fnmatchcase(path, pattern)
+            for pattern in scope_contract["story_scope_globs"]
         )
     )
 
-    assert semantic_paths
+    assert story_paths
     assert [
         path
-        for path in semantic_paths
-        if not classifier.high_risk_categories(path, scope_contract)
+        for path in story_paths
+        if not classifier.is_proven_ordinary_path(path, scope_contract)
+        and not classifier.high_risk_categories(path, scope_contract)
     ] == []
+
+
+def test_ordinary_proof_is_an_exact_tracked_path_inventory(
+    scope_contract: dict[str, object],
+) -> None:
+    tracked = set(
+        subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=classifier.REPOSITORY_ROOT,
+            check=True,
+            capture_output=True,
+        )
+        .stdout.decode("utf-8")
+        .split("\0")
+    )
+    ordinary_story_paths = scope_contract["ordinary_story_paths"]
+    ordinary_paths = [
+        *scope_contract["ordinary_docs_paths"],
+        *(
+            path
+            for story_paths in ordinary_story_paths.values()
+            for path in story_paths
+        ),
+    ]
+
+    assert ordinary_paths
+    assert all(path in tracked for path in ordinary_paths)
+    assert all(not any(token in path for token in "*?[") for path in ordinary_paths)
+
+
+@pytest.mark.parametrize(
+    "paths",
+    [
+        [
+            "packages/web-ui/src/evidence-workspace.ts",
+            "tests/st0501/test_workflow.py",
+        ],
+        [
+            "python/raos/domain/portfolio/workflow.py",
+            "tests/st0503/test_normalization.py",
+        ],
+        [
+            "packages/web-ui/src/evidence-workspace.ts",
+            "python/raos/domain/portfolio/workflow.py",
+        ],
+    ],
+)
+def test_cross_story_ordinary_paths_fail_safe_to_full(
+    scope_contract: dict[str, object], paths: list[str]
+) -> None:
+    result = classifier.classify_paths("pull_request", paths, scope_contract)
+    assert result["risk"] == "multi_story"
+    assert result["full_required"] is True
+    assert result["jobs"] == list(classifier.EXPECTED_JOBS)
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "changes/st-9999/README.md",
+        "tests/st9999/test_new_story.py",
+        "tests/st-invalid/test_new_story.py",
+        "changes/st-0501/new_unreviewed_surface.py",
+        "tests/st0501/test_new_unreviewed_surface.py",
+        "scripts/build_st9999_new_story.py",
+        "scripts/build_st0501_unmapped_generator.py",
+    ],
+)
+def test_new_or_unproven_story_surface_defaults_high(
+    scope_contract: dict[str, object], path: str
+) -> None:
+    result = classifier.classify_paths("pull_request", [path], scope_contract)
+    assert result["risk"] == "high"
+    assert result["full_required"] is True
+    assert result["jobs"] == list(classifier.EXPECTED_JOBS)
+
+
+def test_story_detection_includes_scripts_and_suffixed_test_suites(
+    scope_contract: dict[str, object],
+) -> None:
+    patterns = scope_contract["story_path_patterns"]
+    assert classifier.story_ids(
+        [
+            "scripts/build_st1703_minimum_start.py",
+            "tests/st0901_pr2/test_assignment.py",
+        ],
+        patterns,
+    ) == ["ST-0901", "ST-1703"]
 
 
 def test_github_output_contains_every_required_job_without_path_material(
@@ -208,7 +315,7 @@ def test_github_output_contains_every_required_job_without_path_material(
             "--event",
             "pull_request",
             "--path",
-            "tests/st0804/test_example.py",
+            "tests/st0501/test_workflow.py",
             "--github-output",
             str(output),
         ]
@@ -225,7 +332,7 @@ def test_github_output_contains_every_required_job_without_path_material(
     assert values["secrets"] == "true"
     assert values["static_mode"] == "full"
     assert values["unit_mode"] == "focused"
-    assert values["story_suite"] == "tests/st0804"
+    assert values["story_suite"] == "tests/st0501"
 
 
 def _git(root: Path, *arguments: str) -> None:
@@ -282,6 +389,19 @@ def test_generator_check_and_output_story_sets_must_match(tmp_path: Path) -> Non
     "field,value,error",
     [
         ("story_path_patterns", ["changes/{digits}/"], "story path patterns differ"),
+        ("ordinary_story_ids", ["ST-9999"], "ordinary Story inventory differs"),
+        (
+            "ordinary_story_paths",
+            {"ST-0501": ["tests/new.py"]},
+            "ordinary Story path bindings differ",
+        ),
+        (
+            "ordinary_docs_paths",
+            ["docs/new.md"],
+            "ordinary documentation inventory differs",
+        ),
+        ("story_scope_globs", ["changes/**"], "Story scope glob inventory differs"),
+        ("story_default_owner_roles", ["engineering"], "default owner roles differ"),
         ("node_suffixes", [".js"], "Node suffix inventory differs"),
         ("mandatory_high_risk_categories", {}, "category inventory differs"),
     ],

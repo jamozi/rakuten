@@ -9,6 +9,7 @@ import json
 import os
 import re
 import stat
+import subprocess
 import sys
 import tempfile
 from collections.abc import Mapping, Sequence
@@ -26,10 +27,13 @@ if os.fspath(REPO_ROOT) not in sys.path:
     sys.path.insert(0, os.fspath(REPO_ROOT))
 
 from scripts.classify_ci_scope import (  # noqa: E402
+    ClassificationError,
     EXPECTED_HIGH_RISK_CATEGORIES,
     codeowner_pattern_matches,
     high_risk_categories,
     load_contract as load_scope_contract,
+    normalize_path,
+    required_owner_roles,
 )
 
 CONTRACT_PATH: Final = Path("changes/st-0107/contracts/pr-governance.v1.yaml")
@@ -52,6 +56,12 @@ GENERATION_COMMAND: Final = (
     "uv run --locked --no-sync python scripts/build_st0107_pr_governance.py"
 )
 CHECK_COMMAND: Final = f"{GENERATION_COMMAND} --check"
+SCOPE_CONTRACT_URI: Final = (
+    "repo://changes/st-0106/contracts/developer-loop-scope.v1.json"
+)
+CANONICAL_STORY_SOURCE_URI: Final = (
+    "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+)
 EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
     "b0f8c7060c8446805b9fb9d68a6e71778e2117ae224283214e9a086e5c54955b"
 )
@@ -147,6 +157,7 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ("/python/raos/domain/ai/", ("ai", "security", "editorial")),
     ("/python/raos/domain/finance/", ("finance", "security")),
     ("/docs/canonical/", ("architecture",)),
+    ("/docs/upstream/", ("architecture",)),
     ("/changes/*/contracts/", ("architecture", "engineering")),
     ("/changes/**/generated/", ("architecture", "engineering")),
     ("/python/raos/generated/", ("architecture", "engineering")),
@@ -411,6 +422,24 @@ def _effective_codeowner_roles(
         if isinstance(pattern, str) and codeowner_pattern_matches(path, pattern):
             effective = tuple(_list(entry.get("roles"), "effective CODEOWNERS roles"))
     return effective
+
+
+def _tracked_paths(root: Path) -> list[str]:
+    result = subprocess.run(
+        ["git", "-C", os.fspath(root), "ls-files", "-z"],
+        check=False,
+        capture_output=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError("unable to inspect tracked governance inventory")
+    try:
+        return [
+            normalize_path(raw.decode("utf-8"))
+            for raw in result.stdout.split(b"\0")
+            if raw
+        ]
+    except (UnicodeDecodeError, ClassificationError) as exc:
+        raise RuntimeError("tracked governance inventory is invalid") from exc
 
 
 def _render_prettier_json_value(value: object, indent: int, column: int) -> str:
@@ -739,6 +768,29 @@ def _validate_canonical_story(root: Path) -> None:
         )
 
 
+def _canonical_story_ids(root: Path) -> tuple[str, ...]:
+    backlog_path = _repository_regular_file(
+        root,
+        Path("docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"),
+        "canonical backlog",
+    )
+    backlog = _mapping(load_yaml(backlog_path), "canonical backlog")
+    stories = _list(backlog.get("stories"), "canonical backlog stories")
+    identifiers: list[str] = []
+    for row in stories:
+        story = _mapping(row, "canonical backlog story")
+        identifier = story.get("id")
+        if (
+            not isinstance(identifier, str)
+            or re.fullmatch(r"ST-\d{4}", identifier) is None
+        ):
+            raise RuntimeError("canonical backlog contains an invalid Story ID")
+        identifiers.append(identifier)
+    if not identifiers or len(identifiers) != len(set(identifiers)):
+        raise RuntimeError("canonical backlog Story inventory is empty or duplicated")
+    return tuple(identifiers)
+
+
 def _canonical_codeowner_entries(root: Path) -> dict[str, tuple[str, ...]]:
     path = _repository_regular_file(
         root,
@@ -755,6 +807,61 @@ def _canonical_codeowner_entries(root: Path) -> dict[str, tuple[str, ...]]:
             raise RuntimeError("canonical CODEOWNERS example contains an invalid row")
         entries[fields[0]] = tuple(fields[1:])
     return entries
+
+
+def _validate_story_scope_ownership(
+    contract: Mapping[str, Any], root: Path
+) -> tuple[str, ...]:
+    ownership = _mapping(contract["story_scope_ownership"], "story_scope_ownership")
+    expected = {
+        "scope_contract": SCOPE_CONTRACT_URI,
+        "canonical_story_source": CANONICAL_STORY_SOURCE_URI,
+        "default_roles": list(load_scope_contract(root)["story_default_owner_roles"]),
+        "ordering": "derived_story_defaults_before_path_specific_rows",
+    }
+    if dict(ownership) != expected:
+        raise RuntimeError("Story-scope ownership policy differs")
+    canonical = set(_canonical_story_ids(root))
+    ordinary = set(load_scope_contract(root)["ordinary_story_ids"])
+    if not ordinary < canonical:
+        raise RuntimeError("ordinary Story proof is not a strict Canonical subset")
+    return tuple(_list(ownership["default_roles"], "story_scope_ownership roles"))
+
+
+def _expanded_codeowner_entries(
+    contract: Mapping[str, Any], root: Path = REPO_ROOT
+) -> list[dict[str, Any]]:
+    default_roles = _validate_story_scope_ownership(contract, root)
+    scope = load_scope_contract(root)
+    ordinary = set(scope["ordinary_story_ids"])
+    raw_static = _list(
+        _mapping(contract["codeowners"], "codeowners")["entries"],
+        "codeowners.entries",
+    )
+    static_entries = [
+        {
+            "pattern": str(_mapping(row, "codeowners entry")["pattern"]),
+            "roles": list(_list(_mapping(row, "codeowners entry")["roles"], "roles")),
+        }
+        for row in raw_static
+    ]
+    static_patterns = {str(entry["pattern"]) for entry in static_entries}
+    derived: list[dict[str, Any]] = []
+    for story in _canonical_story_ids(root):
+        compact = story.lower().replace("-", "")
+        patterns = [f"/scripts/*{compact}*"]
+        if story not in ordinary:
+            patterns[0:0] = [
+                f"/changes/{story.lower()}/",
+                f"/tests/{compact}*/",
+            ]
+        for pattern in patterns:
+            if pattern not in static_patterns:
+                derived.append({"pattern": pattern, "roles": list(default_roles)})
+    patterns = [str(entry["pattern"]) for entry in [*derived, *static_entries]]
+    if len(patterns) != len(set(patterns)):
+        raise RuntimeError("expanded CODEOWNERS pattern inventory is duplicated")
+    return [*derived, *static_entries]
 
 
 def _validate_owner_bindings(
@@ -847,6 +954,7 @@ def _validate_owner_bindings(
                 )
 
     scope = load_scope_contract(root)
+    expanded_entries = _expanded_codeowner_entries(contract, root)
     scope_categories = _mapping(
         scope["mandatory_high_risk_categories"], "mandatory high-risk categories"
     )
@@ -859,25 +967,28 @@ def _validate_owner_bindings(
         for representative in representatives:
             if not isinstance(representative, str):
                 raise RuntimeError("mandatory representative path is invalid")
-            matching_categories = high_risk_categories(representative, scope)
-            required_effective_roles = {
-                role
-                for matching_name in matching_categories
-                for role in _list(
-                    _mapping(
-                        scope_categories[matching_name],
-                        f"mandatory category {matching_name}",
-                    ).get("required_roles"),
-                    f"mandatory category {matching_name} roles",
-                )
-            }
-            effective_roles = set(_effective_codeowner_roles(representative, entries))
+            required_effective_roles = set(required_owner_roles(representative, scope))
+            effective_roles = set(
+                _effective_codeowner_roles(representative, expanded_entries)
+            )
             if not required_effective_roles.issubset(effective_roles):
                 raise RuntimeError(
                     "effective CODEOWNERS roles differ for mandatory representative"
                 )
 
-    return handles, entries
+    for path in _tracked_paths(root):
+        if not high_risk_categories(path, scope):
+            continue
+        required_effective_roles = set(required_owner_roles(path, scope))
+        effective_roles = set(_effective_codeowner_roles(path, expanded_entries))
+        if not required_effective_roles or not required_effective_roles.issubset(
+            effective_roles
+        ):
+            raise RuntimeError(
+                "tracked high-risk path lacks effective CODEOWNERS role coverage"
+            )
+
+    return handles, expanded_entries
 
 
 def _workflow_check_names(root: Path) -> tuple[str, ...]:
@@ -1069,6 +1180,7 @@ def load_and_validate_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
             "sources",
             "owner_bindings",
             "codeowners",
+            "story_scope_ownership",
             "pull_request_template",
             "ruleset_policy",
             "activation",
@@ -1088,11 +1200,10 @@ def load_and_validate_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     return dict(contract)
 
 
-def render_codeowners(contract: Mapping[str, Any]) -> bytes:
+def render_codeowners(contract: Mapping[str, Any], root: Path = REPO_ROOT) -> bytes:
     bindings = _mapping(contract["owner_bindings"], "owner_bindings")
     teams = _mapping(bindings["teams"], "owner_bindings.teams")
-    codeowners = _mapping(contract["codeowners"], "codeowners")
-    entries = _list(codeowners["entries"], "codeowners.entries")
+    entries = _expanded_codeowner_entries(contract, root)
     lines = [
         "# Generated by scripts/build_st0107_pr_governance.py. Do not edit.",
         f"# Source contract: {SOURCE_CONTRACT_URI}",
@@ -1147,6 +1258,8 @@ Use `N/A` only when the path family is unchanged, and record the rationale.
 | Deployment / infrastructure                  |                                | Operations / Security      |
 | Provider runtime                             |                                | Operations / Security      |
 | Governance / CI / status                     |                                | Security / Operations      |
+| Unproven or new Story scope                  |                                | Engineering / Security     |
+| Protected Canonical / upstream source        |                                | Architecture               |
 
 ## Deferred formal or live work
 
@@ -1264,7 +1377,7 @@ def render_manifest(
 def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
     contract = load_and_validate_contract(root)
     outputs: dict[Path, bytes] = {
-        CODEOWNERS_PATH: render_codeowners(contract),
+        CODEOWNERS_PATH: render_codeowners(contract, root),
         PULL_REQUEST_TEMPLATE_PATH: render_pull_request_template(contract, root),
         RULESET_POLICY_PATH: render_ruleset_policy(contract),
     }

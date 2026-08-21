@@ -24,7 +24,11 @@ EXPECTED_KEYS: Final = {
     "always_jobs",
     "full_events",
     "docs_suffixes",
-    "ordinary_prefixes",
+    "ordinary_story_ids",
+    "ordinary_story_paths",
+    "ordinary_docs_paths",
+    "story_scope_globs",
+    "story_default_owner_roles",
     "mandatory_high_risk_categories",
     "story_path_patterns",
     "node_suffixes",
@@ -41,8 +45,70 @@ EXPECTED_JOBS: Final = (
 )
 EXPECTED_STORY_PATH_PATTERNS: Final = (
     "changes/st-{digits}/",
+    "scripts/*st{digits}*",
     "tests/st{digits}/",
+    "tests/st{digits}_",
 )
+EXPECTED_ORDINARY_STORY_IDS: Final = (
+    "ST-0501",
+    "ST-0503",
+    "ST-0506",
+    "ST-0606",
+    "ST-1105",
+)
+EXPECTED_ORDINARY_STORY_PATHS: Final = {
+    "ST-0501": (
+        "changes/st-0501/README.md",
+        "python/raos/application/portfolio/workflow.py",
+        "python/raos/domain/portfolio/workflow.py",
+        "python/raos/ports/portfolio_workflow.py",
+        "tests/st0501/conftest.py",
+        "tests/st0501/test_boundaries.py",
+        "tests/st0501/test_workflow.py",
+    ),
+    "ST-0503": (
+        "changes/st-0503/README.md",
+        "python/raos/application/catalog/catalog_normalization.py",
+        "python/raos/domain/catalog/catalog_normalization.py",
+        "python/raos/ports/catalog_normalization.py",
+        "tests/st0503/conftest.py",
+        "tests/st0503/test_boundaries.py",
+        "tests/st0503/test_failure_isolation.py",
+        "tests/st0503/test_normalization.py",
+    ),
+    "ST-0506": (
+        "changes/st-0506/README.md",
+        "packages/web-ui/src/portfolio-catalog-workspace.ts",
+        "tests/st0506/portfolio-catalog-accessibility-concurrency.test.ts",
+        "tests/st0506/portfolio-catalog-contract.test.ts",
+        "tests/st0506/portfolio-catalog-model.test.ts",
+        "tests/st0506/portfolio-catalog-negative.test.ts",
+    ),
+    "ST-0606": (
+        "changes/st-0606/README.md",
+        "packages/web-ui/src/evidence-workspace.ts",
+        "tests/st0606/evidence-workspace-accessibility.test.ts",
+        "tests/st0606/evidence-workspace-contract.test.ts",
+        "tests/st0606/evidence-workspace-model.test.ts",
+        "tests/st0606/evidence-workspace-negative.test.ts",
+    ),
+    "ST-1105": (
+        "changes/st-1105/README.md",
+        "packages/web-ui/src/admin-visual-accessibility-acceptance.ts",
+        "tests/st1105/admin-visual-accessibility-accessibility.test.ts",
+        "tests/st1105/admin-visual-accessibility-boundaries.test.ts",
+        "tests/st1105/admin-visual-accessibility-contract.test.ts",
+        "tests/st1105/admin-visual-accessibility-model.test.ts",
+        "tests/st1105/admin-visual-accessibility-negative.test.ts",
+    ),
+}
+EXPECTED_ORDINARY_DOC_PATHS: Final = ("README.md",)
+EXPECTED_STORY_SCOPE_GLOBS: Final = (
+    "changes/st-*/**",
+    "scripts/*st[0-9][0-9][0-9][0-9]*",
+    "tests/st*/**",
+)
+EXPECTED_STORY_DEFAULT_OWNER_ROLES: Final = ("engineering", "security")
 EXPECTED_NODE_SUFFIXES: Final = (".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx")
 EXPECTED_HIGH_RISK_CATEGORIES: Final = (
     "contract_codegen",
@@ -53,7 +119,10 @@ EXPECTED_HIGH_RISK_CATEGORIES: Final = (
     "infrastructure_deployment",
     "provider_runtime",
     "governance_ci_status",
+    "protected_sources",
 )
+UNPROVEN_STORY_SCOPE_CATEGORY: Final = "unproven_story_scope"
+UNCLASSIFIED_STORY_SCOPE_CATEGORY: Final = "unclassified_story_scope"
 OWNER_ROLES: Final = {
     "accessibility",
     "ai",
@@ -65,6 +134,7 @@ OWNER_ROLES: Final = {
     "operations",
     "security",
 }
+STORY_ID: Final = re.compile(r"^ST-\d{4}$")
 SAFE_REVISION: Final = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/@^{}~+-]*$")
 MAX_CONTRACT_BYTES: Final = 256 * 1024
 
@@ -118,7 +188,7 @@ def load_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
     document = parsed["document"]
     if document != {
         "id": "RAOS-DEVELOPER-LOOP-SCOPE-001",
-        "version": "1.2.0",
+        "version": "1.3.0",
         "story_id": "ST-0106",
     }:
         raise ClassificationError("scope contract identity differs")
@@ -131,10 +201,51 @@ def load_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
     full_events = _string_list(parsed["full_events"], "full_events")
     if full_events != ["push", "schedule", "workflow_dispatch"]:
         raise ClassificationError("full event inventory differs")
-    for key in ("docs_suffixes", "ordinary_prefixes"):
+    for key in ("docs_suffixes", "ordinary_docs_paths", "story_scope_globs"):
         values = _string_list(parsed[key], key)
         if not values or any(not value for value in values):
             raise ClassificationError(f"{key} must not be empty")
+    ordinary_story_ids = _string_list(
+        parsed["ordinary_story_ids"], "ordinary_story_ids"
+    )
+    if tuple(ordinary_story_ids) != EXPECTED_ORDINARY_STORY_IDS:
+        raise ClassificationError("ordinary Story inventory differs")
+    ordinary_story_paths = parsed["ordinary_story_paths"]
+    if not isinstance(ordinary_story_paths, dict) or tuple(ordinary_story_paths) != (
+        EXPECTED_ORDINARY_STORY_IDS
+    ):
+        raise ClassificationError("ordinary Story path bindings differ")
+    for story, expected_paths in EXPECTED_ORDINARY_STORY_PATHS.items():
+        paths = _string_list(ordinary_story_paths[story], f"ordinary paths for {story}")
+        if tuple(paths) != expected_paths or any(
+            normalize_path(path) != path for path in paths
+        ):
+            raise ClassificationError("ordinary path proof inventory differs")
+    ordinary_docs_paths = _string_list(
+        parsed["ordinary_docs_paths"], "ordinary_docs_paths"
+    )
+    if tuple(ordinary_docs_paths) != EXPECTED_ORDINARY_DOC_PATHS or any(
+        normalize_path(path) != path for path in ordinary_docs_paths
+    ):
+        raise ClassificationError("ordinary documentation inventory differs")
+    story_scope_globs = _string_list(parsed["story_scope_globs"], "story_scope_globs")
+    if tuple(story_scope_globs) != EXPECTED_STORY_SCOPE_GLOBS:
+        raise ClassificationError("Story scope glob inventory differs")
+    story_default_owner_roles = _string_list(
+        parsed["story_default_owner_roles"], "story_default_owner_roles"
+    )
+    if tuple(story_default_owner_roles) != EXPECTED_STORY_DEFAULT_OWNER_ROLES:
+        raise ClassificationError("Story default owner roles differ")
+    for story, ordinary_paths in ordinary_story_paths.items():
+        compact = story.lower().replace("-", "")
+        if (
+            STORY_ID.fullmatch(story) is None
+            or not any(
+                path.startswith(f"changes/{story.lower()}/") for path in ordinary_paths
+            )
+            or not any(path.startswith(f"tests/{compact}/") for path in ordinary_paths)
+        ):
+            raise ClassificationError("ordinary Story proof is incomplete")
     story_patterns = _string_list(parsed["story_path_patterns"], "story_path_patterns")
     if tuple(story_patterns) != EXPECTED_STORY_PATH_PATTERNS:
         raise ClassificationError("story path patterns differ")
@@ -241,7 +352,9 @@ def story_ids(paths: Sequence[str], patterns: Sequence[str]) -> list[str]:
     expressions = [
         re.compile(
             "^"
-            + re.escape(pattern).replace(re.escape("{digits}"), r"(?P<digits>\d{4})")
+            + re.escape(pattern)
+            .replace(r"\*", ".*")
+            .replace(re.escape("{digits}"), r"(?P<digits>\d{4})")
         )
         for pattern in patterns
     ]
@@ -258,6 +371,22 @@ def _matches_any(path: str, patterns: Sequence[str]) -> bool:
     return any(fnmatch.fnmatchcase(path, pattern) for pattern in patterns)
 
 
+def is_proven_ordinary_path(path: str, config: Mapping[str, Any]) -> bool:
+    return path in config["ordinary_docs_paths"] or any(
+        path in paths for paths in config["ordinary_story_paths"].values()
+    )
+
+
+def bound_ordinary_story_ids(
+    paths: Sequence[str], config: Mapping[str, Any]
+) -> list[str]:
+    return sorted(
+        story
+        for story, story_paths in config["ordinary_story_paths"].items()
+        if any(path in story_paths for path in paths)
+    )
+
+
 def codeowner_pattern_matches(path: str, raw_pattern: str) -> bool:
     pattern = raw_pattern.removeprefix("/")
     if pattern.endswith("/"):
@@ -266,11 +395,40 @@ def codeowner_pattern_matches(path: str, raw_pattern: str) -> bool:
 
 
 def high_risk_categories(path: str, config: Mapping[str, Any]) -> list[str]:
-    return [
+    categories = [
         name
         for name, category in config["mandatory_high_risk_categories"].items()
         if _matches_any(path, category["classification_globs"])
     ]
+    path_stories = story_ids([path], config["story_path_patterns"])
+    story_scoped = _matches_any(path, config["story_scope_globs"])
+    proven_ordinary = is_proven_ordinary_path(path, config)
+    if story_scoped and not path_stories:
+        categories.append(UNCLASSIFIED_STORY_SCOPE_CATEGORY)
+    elif path_stories and (
+        any(story not in config["ordinary_story_ids"] for story in path_stories)
+        or not proven_ordinary
+    ):
+        categories.append(UNPROVEN_STORY_SCOPE_CATEGORY)
+    return categories
+
+
+def required_owner_roles(path: str, config: Mapping[str, Any]) -> list[str]:
+    """Return the effective mandatory role union for one high-risk path."""
+
+    categories = high_risk_categories(path, config)
+    explicit = config["mandatory_high_risk_categories"]
+    explicit_roles = {
+        role
+        for category_name in categories
+        if category_name in explicit
+        for role in explicit[category_name]["required_roles"]
+    }
+    if explicit_roles:
+        return sorted(explicit_roles)
+    if categories:
+        return sorted(config["story_default_owner_roles"])
+    return []
 
 
 def _full_result(
@@ -308,7 +466,10 @@ def classify_paths(
     if not visible_paths:
         return _full_result(config, "unknown", ["no_changed_paths"], 0)
 
-    stories = story_ids(visible_paths, config["story_path_patterns"])
+    stories = sorted(
+        set(story_ids(visible_paths, config["story_path_patterns"]))
+        | set(bound_ordinary_story_ids(visible_paths, config))
+    )
     if len(stories) > 1:
         return _full_result(
             config,
@@ -326,8 +487,12 @@ def classify_paths(
             len(visible_paths),
         )
 
+    proven_ordinary_paths = {
+        path for path in visible_paths if is_proven_ordinary_path(path, config)
+    }
     docs_only = all(
         PurePosixPath(path).suffix.lower() in config["docs_suffixes"]
+        and path in proven_ordinary_paths
         for path in visible_paths
     )
     if docs_only:
@@ -353,11 +518,7 @@ def classify_paths(
             "path_count": len(visible_paths),
         }
 
-    unknown = [
-        path
-        for path in visible_paths
-        if not any(path.startswith(prefix) for prefix in config["ordinary_prefixes"])
-    ]
+    unknown = [path for path in visible_paths if path not in proven_ordinary_paths]
     if unknown or not stories:
         reason = "unknown_path" if unknown else "runtime_story_not_identifiable"
         return _full_result(config, "unknown", [reason], len(visible_paths))

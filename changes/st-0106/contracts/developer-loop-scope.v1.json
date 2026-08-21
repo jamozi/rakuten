@@ -1,24 +1,63 @@
 {
   "document": {
     "id": "RAOS-DEVELOPER-LOOP-SCOPE-001",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "story_id": "ST-0106"
   },
   "required_jobs": ["Static", "Unit", "Contracts", "Database", "Storage", "Secrets"],
   "always_jobs": ["Secrets"],
   "full_events": ["push", "schedule", "workflow_dispatch"],
   "docs_suffixes": [".md", ".rst", ".txt"],
-  "ordinary_prefixes": [
-    "apps/",
-    "changes/",
-    "docs/architecture/",
-    "docs/execplans/",
-    "docs/worklogs/",
-    "packages/",
-    "python/",
-    "scripts/",
-    "tests/"
-  ],
+  "ordinary_story_ids": ["ST-0501", "ST-0503", "ST-0506", "ST-0606", "ST-1105"],
+  "ordinary_story_paths": {
+    "ST-0501": [
+      "changes/st-0501/README.md",
+      "python/raos/application/portfolio/workflow.py",
+      "python/raos/domain/portfolio/workflow.py",
+      "python/raos/ports/portfolio_workflow.py",
+      "tests/st0501/conftest.py",
+      "tests/st0501/test_boundaries.py",
+      "tests/st0501/test_workflow.py"
+    ],
+    "ST-0503": [
+      "changes/st-0503/README.md",
+      "python/raos/application/catalog/catalog_normalization.py",
+      "python/raos/domain/catalog/catalog_normalization.py",
+      "python/raos/ports/catalog_normalization.py",
+      "tests/st0503/conftest.py",
+      "tests/st0503/test_boundaries.py",
+      "tests/st0503/test_failure_isolation.py",
+      "tests/st0503/test_normalization.py"
+    ],
+    "ST-0506": [
+      "changes/st-0506/README.md",
+      "packages/web-ui/src/portfolio-catalog-workspace.ts",
+      "tests/st0506/portfolio-catalog-accessibility-concurrency.test.ts",
+      "tests/st0506/portfolio-catalog-contract.test.ts",
+      "tests/st0506/portfolio-catalog-model.test.ts",
+      "tests/st0506/portfolio-catalog-negative.test.ts"
+    ],
+    "ST-0606": [
+      "changes/st-0606/README.md",
+      "packages/web-ui/src/evidence-workspace.ts",
+      "tests/st0606/evidence-workspace-accessibility.test.ts",
+      "tests/st0606/evidence-workspace-contract.test.ts",
+      "tests/st0606/evidence-workspace-model.test.ts",
+      "tests/st0606/evidence-workspace-negative.test.ts"
+    ],
+    "ST-1105": [
+      "changes/st-1105/README.md",
+      "packages/web-ui/src/admin-visual-accessibility-acceptance.ts",
+      "tests/st1105/admin-visual-accessibility-accessibility.test.ts",
+      "tests/st1105/admin-visual-accessibility-boundaries.test.ts",
+      "tests/st1105/admin-visual-accessibility-contract.test.ts",
+      "tests/st1105/admin-visual-accessibility-model.test.ts",
+      "tests/st1105/admin-visual-accessibility-negative.test.ts"
+    ]
+  },
+  "ordinary_docs_paths": ["README.md"],
+  "story_scope_globs": ["changes/st-*/**", "scripts/*st[0-9][0-9][0-9][0-9]*", "tests/st*/**"],
+  "story_default_owner_roles": ["engineering", "security"],
   "mandatory_high_risk_categories": {
     "contract_codegen": {
       "classification_globs": [
@@ -292,9 +331,20 @@
         ".github/workflows/ci.yml",
         "scripts/classify_ci_scope.py"
       ]
+    },
+    "protected_sources": {
+      "classification_globs": ["docs/canonical/**", "docs/upstream/**"],
+      "required_roles": ["architecture"],
+      "codeowner_patterns": ["/docs/canonical/", "/docs/upstream/"],
+      "representative_paths": ["docs/canonical/START_HERE.md", "docs/upstream/README.md"]
     }
   },
-  "story_path_patterns": ["changes/st-{digits}/", "tests/st{digits}/"],
+  "story_path_patterns": [
+    "changes/st-{digits}/",
+    "scripts/*st{digits}*",
+    "tests/st{digits}/",
+    "tests/st{digits}_"
+  ],
   "node_suffixes": [".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx"],
   "generator_checks": {
     "ST-0107": [["{python}", "-I", "scripts/build_st0107_pr_governance.py", "--check"]]

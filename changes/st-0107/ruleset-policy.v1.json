@@ -191,6 +191,10 @@
           "/tests/st0107/"
         ],
         "roles": ["security", "operations"]
+      },
+      "protected_sources": {
+        "patterns": ["/docs/canonical/", "/docs/upstream/"],
+        "roles": ["architecture"]
       }
     }
   },
