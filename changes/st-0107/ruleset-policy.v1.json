@@ -27,7 +27,7 @@
       "dismiss_stale_reviews_on_push": true,
       "require_code_owner_review": true,
       "require_last_push_approval": false,
-      "required_approving_review_count": 0,
+      "required_approving_review_count": 1,
       "required_review_thread_resolution": true
     },
     "required_status_checks": [
@@ -70,53 +70,109 @@
     "strict_required_status_checks_policy": true,
     "do_not_enforce_on_create": false,
     "required_owner_categories": {
-      "contract": {
-        "patterns": ["/contracts/", "/changes/*/contracts/"],
+      "contract_codegen": {
+        "patterns": [
+          "/contracts/",
+          "/changes/*/contracts/",
+          "/changes/**/generated/",
+          "/python/raos/generated/",
+          "/packages/web-contracts/src/generated/",
+          "/scripts/*contract*",
+          "/scripts/*codegen*",
+          "/tests/st0104/",
+          "/tests/st0105/"
+        ],
         "roles": ["architecture", "engineering"]
       },
-      "migration": {
-        "patterns": ["/migrations/", "/changes/*/database/"],
+      "migration_database": {
+        "patterns": [
+          "/migrations/",
+          "/changes/*/database/",
+          "/changes/st-0301/",
+          "/python/raos/migrations/",
+          "/scripts/*migration*",
+          "/tests/st0301/"
+        ],
         "roles": ["data", "security"]
       },
-      "security": {
+      "authentication_authorization_credentials": {
         "patterns": [
-          "/docs/canonical/04_security/",
-          "/tests/security/",
-          "/scripts/scan_secrets.py",
+          "/python/raos/domain/iam/",
+          "/python/raos/application/iam/",
+          "/python/raos/ports/*authorization*",
+          "/python/raos/ports/*credential*",
+          "/python/raos/adapters/*credential*",
+          "/python/raos/adapters/*oauth*",
+          "/scripts/*auth*",
+          "/scripts/*credential*",
+          "/scripts/*secret*",
           "/scripts/run_network_denied.sh",
           "/scripts/assert_network_denied.py",
-          "/.github/"
+          "/tests/security/"
         ],
         "roles": ["security"]
       },
-      "deployment": {
+      "publication_finance_kill_switch": {
+        "patterns": [
+          "/python/raos/domain/finance/",
+          "/python/raos/application/finance/",
+          "/scripts/*finance*",
+          "/scripts/*publication*",
+          "/scripts/*kill_switch*",
+          "/packages/**/*finance*",
+          "/packages/**/*publication*"
+        ],
+        "roles": ["security"]
+      },
+      "infrastructure_deployment": {
         "patterns": [
           "/infra/",
           "/docker-compose.yml",
           "/scripts/build_local_compose.py",
-          "/scripts/postgres_service.sh",
-          "/scripts/object_storage_service.sh",
-          "/scripts/object_storage_fixture.py"
+          "/scripts/*deploy*",
+          "/scripts/*storage*",
+          "/scripts/*postgres*"
         ],
         "roles": ["operations", "security"]
       },
-      "governance": {
+      "provider_runtime": {
         "patterns": [
-          "/AGENTS.md",
+          "/python/raos/adapters/",
+          "/python/raos/ports/*provider*",
+          "/python/raos/domain/ai/provider.py",
+          "/scripts/*provider*"
+        ],
+        "roles": ["operations", "security"]
+      },
+      "governance_ci_status": {
+        "patterns": [
           "/.codex/",
+          "/.github/",
+          "/AGENTS.md",
           "/Makefile",
+          "/package.json",
+          "/package-lock.json",
+          "/pyproject.toml",
+          "/uv.lock",
+          "/uv.toml",
+          "/workspace-layout.json",
+          "/changes/st-0005/",
           "/changes/st-0106/",
           "/changes/st-0107/",
           "/docs/architecture/ST-0107-github-governance-snapshot.yaml",
           "/docs/execplans/ST-0107.md",
           "/docs/worklogs/ST-0107.md",
-          "/scripts/classify_ci_scope.py",
-          "/scripts/dev_check.py",
+          "/scripts/build_st0005_status.py",
           "/scripts/build_st0107_pr_governance.py",
+          "/scripts/classify_ci_scope.py",
+          "/scripts/ci_job.sh",
+          "/scripts/dev_check.py",
           "/scripts/github_ruleset_operator.py",
+          "/scripts/node_toolchain.sh",
+          "/scripts/python_toolchain.sh",
+          "/tests/st0005/",
           "/tests/st0106/",
-          "/tests/st0107/",
-          "/.github/"
+          "/tests/st0107/"
         ],
         "roles": ["security", "operations"]
       }
@@ -131,8 +187,8 @@
       "every team binding resolves to a visible GitHub team with write permission",
       "every required check has run in the repository and is bound to the expected GitHub Actions app",
       "ruleset API request is assembled from the reviewed policy and live numeric bindings, and authenticated read-back matches the desired active policy with no bypass actor",
-      "ordinary-path zero-approval, high-risk CODEOWNER, direct-push, stale-review, missing-check, unresolved-thread, deletion, and force-push PR probes pass",
-      "a matching governance CODEOWNER approves the high-risk activation change and read-back confirms zero general approvals, code-owner review enabled, and last-push approval disabled"
+      "ordinary-path exact-head approval, high-risk CODEOWNER, direct-push, stale-review, missing-check, unresolved-thread, deletion, and force-push PR probes pass",
+      "a matching governance CODEOWNER approves the high-risk activation change and read-back confirms one general approval, code-owner review enabled, stale-review dismissal enabled, and last-push approval disabled"
     ]
   }
 }

@@ -16,14 +16,19 @@ The fast local entrypoint is:
 ```bash
 make dev-check STORY=ST-0106
 make dev-check STORY=ST-0106 BASE_REF=origin/main
+make dev-check STORY=ST-0106 STORIES=ST-0106,ST-0107 BASE_REF=main
 ```
 
 It unions committed, staged, unstaged, and untracked paths; runs Git whitespace
 checks, changed-language checks, the isolated Story suite, and allowlisted owner
-generator checks; and emits one `RAOS_DEV_CHECK_V1` JSON receipt. It neither
-reads nor reports `.secrets/**`. This receipt is focused local evidence only,
-not hosted Base CI, formal TST-001/TST-002, live, release, or Production
-evidence.
+generator checks; and emits one `RAOS_DEV_CHECK_V1` JSON receipt. A changed
+`.secrets/**` path makes the orchestrator fail before child commands and exposes
+only the sensitive-path count. The orchestrator does not pass private path names
+to its checks, but pytest and generator children remain trusted local processes
+with ambient environment access; this command is not a filesystem or network
+sandbox. `STORIES` is required when a named integration slice changes more than
+one detected Story. This receipt is focused local evidence only, not hosted Base
+CI, formal TST-001/TST-002, live, release, or Production evidence.
 
 This change restores the existing denied-network boundary on GitHub-hosted
 Ubuntu 24.04 without weakening it to a sysctl, AppArmor, or seccomp-only

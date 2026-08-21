@@ -63,6 +63,7 @@ EXPECTED_RULE_TYPES: Final = (
 MAX_TOKEN_BYTES: Final = 8 * 1024
 MAX_RECORD_BYTES: Final = 4 * 1024 * 1024
 MAX_HTTP_BYTES: Final = 4 * 1024 * 1024
+CHECK_MAX_AGE_SECONDS: Final = 24 * 60 * 60
 REQUIRED_OWNER_BINDING_STATUS: Final = "LIVE_VERIFIED"
 RUN_ID_PATTERN: Final = re.compile(r"^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{24}$")
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
@@ -250,13 +251,14 @@ def load_operator_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
         "github",
         "local",
         "required_status_contexts",
+        "check_binding_eligibility",
         "ruleset_invariants",
         "mutation_boundary",
     }:
         raise OperatorError("CONTRACT_INVALID")
     if document["document"] != {
         "id": "RAOS-GITHUB-RULESET-OPERATOR-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-0107",
         "status": "LOCAL_OPERATOR_CONTRACT",
     }:
@@ -285,6 +287,13 @@ def load_operator_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
         raise OperatorError("CONTRACT_INVALID")
     if document["required_status_contexts"] != list(REQUIRED_CONTEXTS):
         raise OperatorError("CONTRACT_INVALID")
+    if document["check_binding_eligibility"] != {
+        "required_status": "completed",
+        "required_conclusion": "success",
+        "maximum_age_seconds": CHECK_MAX_AGE_SECONDS,
+        "head_sha_must_match_main": True,
+    }:
+        raise OperatorError("CONTRACT_INVALID")
     if document["ruleset_invariants"] != {
         "target": "branch",
         "include": ["~DEFAULT_BRANCH"],
@@ -292,7 +301,7 @@ def load_operator_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
         "enforcement": "active",
         "bypass_actors": [],
         "required_rule_types": list(EXPECTED_RULE_TYPES),
-        "required_approving_review_count": 0,
+        "required_approving_review_count": 1,
         "require_code_owner_review": True,
         "require_last_push_approval": False,
         "strict_required_status_checks_policy": True,
@@ -378,7 +387,7 @@ def load_policy(root: Path = REPOSITORY_ROOT) -> tuple[dict[str, Any], str]:
         "dismiss_stale_reviews_on_push": True,
         "require_code_owner_review": True,
         "require_last_push_approval": False,
-        "required_approving_review_count": 0,
+        "required_approving_review_count": 1,
         "required_review_thread_resolution": True,
     }:
         raise OperatorError("POLICY_INVALID")
@@ -694,7 +703,24 @@ def _normalized_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
     return copied
 
 
-def _check_bindings(transport: JsonTransport) -> dict[str, int]:
+def _completed_at(value: object) -> datetime:
+    if type(value) is not str or not value.endswith("Z"):
+        raise OperatorError("CHECK_BINDING_UNVERIFIED")
+    try:
+        completed = datetime.fromisoformat(value.removesuffix("Z") + "+00:00")
+    except ValueError as error:
+        raise OperatorError("CHECK_BINDING_UNVERIFIED") from error
+    if completed.tzinfo != UTC:
+        raise OperatorError("CHECK_BINDING_UNVERIFIED")
+    return completed
+
+
+def _check_bindings(
+    transport: JsonTransport,
+    main_sha: str,
+    *,
+    observed_at: datetime | None = None,
+) -> dict[str, int]:
     response = _mapping(
         _request(transport, "GET", CHECK_RUNS_PATH), "CHECK_BINDINGS_INVALID"
     )
@@ -702,6 +728,9 @@ def _check_bindings(transport: JsonTransport) -> dict[str, int]:
     total_count = response.get("total_count")
     if type(total_count) is not int or total_count != len(rows) or len(rows) >= 100:
         raise OperatorError("CHECK_BINDINGS_INCOMPLETE")
+    now = datetime.now(UTC) if observed_at is None else observed_at
+    if now.tzinfo != UTC:
+        raise OperatorError("CHECK_BINDING_UNVERIFIED")
     bindings: dict[str, int] = {}
     for context in REQUIRED_CONTEXTS:
         matching = [
@@ -709,8 +738,20 @@ def _check_bindings(transport: JsonTransport) -> dict[str, int]:
         ]
         if not matching:
             raise OperatorError("CHECK_BINDING_MISSING")
+        if len(matching) != 1:
+            raise OperatorError("CHECK_BINDING_UNVERIFIED")
         identifiers: set[int] = set()
         for row in matching:
+            completed = _completed_at(row.get("completed_at"))
+            age = (now - completed).total_seconds()
+            if (
+                row.get("head_sha") != main_sha
+                or row.get("status") != "completed"
+                or row.get("conclusion") != "success"
+                or age < 0
+                or age > CHECK_MAX_AGE_SECONDS
+            ):
+                raise OperatorError("CHECK_BINDING_UNVERIFIED")
             app = _mapping(row.get("app"), "CHECK_BINDINGS_INVALID")
             app_id = app.get("id")
             if (
@@ -791,7 +832,7 @@ def _validate_desired_payload(payload: Mapping[str, Any]) -> None:
         "dismiss_stale_reviews_on_push": True,
         "require_code_owner_review": True,
         "require_last_push_approval": False,
-        "required_approving_review_count": 0,
+        "required_approving_review_count": 1,
         "required_review_thread_resolution": True,
     }:
         raise OperatorError("READBACK_MISMATCH")
@@ -874,7 +915,7 @@ def _live_snapshot(transport: JsonTransport) -> dict[str, Any]:
         "target_ruleset_id": ruleset_id,
         "target_ruleset": detail,
         "effective_rules": _effective_rules(transport),
-        "check_bindings": _check_bindings(transport),
+        "check_bindings": _check_bindings(transport, main_sha),
     }
 
 

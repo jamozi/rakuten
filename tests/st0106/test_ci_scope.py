@@ -76,11 +76,54 @@ def test_secret_path_name_is_not_returned(
     scope_contract: dict[str, object],
 ) -> None:
     sensitive = ".secrets/do-not-echo-this-name"
-    result = classifier.classify_paths("pull_request", [sensitive], scope_contract)
-    rendered = json.dumps(result)
-    assert sensitive not in rendered
-    assert result["reasons"] == ["forbidden_secret_path_changed"]
+    with pytest.raises(classifier.SensitivePathChangedError) as captured:
+        classifier.classify_paths("pull_request", [sensitive], scope_contract)
+    assert captured.value.count == 1
+    assert sensitive not in str(captured.value)
+
+
+def test_secret_path_cli_fails_with_only_closed_reason_and_count(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    sensitive = ".secrets/do-not-echo-this-name"
+    assert (
+        classifier.main(
+            ["--event", "pull_request", "--path", sensitive, "--path", ".secrets/x"]
+        )
+        == 2
+    )
+    captured = capsys.readouterr()
+    assert sensitive not in captured.out + captured.err
+    assert json.loads(captured.out) == {
+        "reason": "forbidden_secret_path_changed",
+        "schema": "RAOS_CI_SCOPE_V1",
+        "sensitive_path_count": 2,
+        "status": "ERROR",
+    }
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "scripts/build_st0104_contract_repository.py",
+        "tests/st0104/test_verifier.py",
+        "scripts/build_st0301_migration_framework.py",
+        "tests/st0301/test_generation.py",
+        "scripts/build_st0005_status.py",
+        "tests/st0005/test_overlay_contract.py",
+        "python/raos/application/iam/authentication.py",
+        "python/raos/domain/iam/authorization.py",
+        "python/raos/adapters/development_workload_credentials.py",
+        "python/raos/adapters/wordpresscom_oauth.py",
+    ],
+)
+def test_mandatory_taxonomy_examples_are_high_risk(
+    scope_contract: dict[str, object], path: str
+) -> None:
+    result = classifier.classify_paths("pull_request", [path], scope_contract)
+    assert result["risk"] == "high"
     assert result["full_required"] is True
+    assert result["jobs"] == list(classifier.EXPECTED_JOBS)
 
 
 def test_github_output_contains_every_required_job_without_path_material(
@@ -160,4 +203,24 @@ def test_generator_check_and_output_story_sets_must_match(tmp_path: Path) -> Non
         classifier.ClassificationError,
         match="generator check and output stories differ",
     ):
+        classifier.load_contract(tmp_path)
+
+
+@pytest.mark.parametrize(
+    "field,value,error",
+    [
+        ("story_path_patterns", ["changes/{digits}/"], "story path patterns differ"),
+        ("node_suffixes", [".js"], "Node suffix inventory differs"),
+        ("mandatory_high_risk_categories", {}, "category inventory differs"),
+    ],
+)
+def test_behavioral_contract_fields_are_bound_fail_closed(
+    tmp_path: Path, field: str, value: object, error: str
+) -> None:
+    contract = classifier.load_contract()
+    contract[field] = value
+    path = tmp_path / classifier.CONTRACT_PATH
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(contract), encoding="utf-8")
+    with pytest.raises(classifier.ClassificationError, match=error):
         classifier.load_contract(tmp_path)

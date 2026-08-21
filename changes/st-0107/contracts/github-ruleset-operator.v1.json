@@ -1,7 +1,7 @@
 {
   "document": {
     "id": "RAOS-GITHUB-RULESET-OPERATOR-001",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "story_id": "ST-0107",
     "status": "LOCAL_OPERATOR_CONTRACT"
   },
@@ -34,6 +34,12 @@
     "Secrets",
     "Validate status overlay"
   ],
+  "check_binding_eligibility": {
+    "required_status": "completed",
+    "required_conclusion": "success",
+    "maximum_age_seconds": 86400,
+    "head_sha_must_match_main": true
+  },
   "ruleset_invariants": {
     "target": "branch",
     "include": ["~DEFAULT_BRANCH"],
@@ -47,7 +53,7 @@
       "pull_request",
       "required_status_checks"
     ],
-    "required_approving_review_count": 0,
+    "required_approving_review_count": 1,
     "require_code_owner_review": true,
     "require_last_push_approval": false,
     "strict_required_status_checks_policy": true,

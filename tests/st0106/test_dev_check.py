@@ -93,6 +93,7 @@ def test_run_checks_selects_changed_languages_story_and_generator(
             "ST-0107": [["{python}", "-I", "generator.py", "--check"]]
         },
         "generator_owned_outputs": {"ST-0107": ["generated.json"]},
+        "node_suffixes": [".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx"],
     }
     result = dev_check.run_checks(
         tmp_path,
@@ -154,6 +155,7 @@ def test_changed_generator_output_runs_owner_check_for_another_story(
     config = {
         "generator_checks": {"ST-0107": [["generator", "--check"]]},
         "generator_owned_outputs": {"ST-0107": ["generated.json"]},
+        "node_suffixes": [".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx"],
     }
     result = dev_check.run_checks(
         tmp_path,
@@ -168,16 +170,81 @@ def test_changed_generator_output_runs_owner_check_for_another_story(
     assert result["status"] == "PASSED"
 
 
-def test_private_file_name_never_appears_in_receipt(tmp_path: Path) -> None:
+def test_private_file_name_never_appears_in_error_receipt(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     base = _repository(tmp_path)
     private_name = ".secrets/do-not-print"
     private = tmp_path / private_name
     private.write_text("value\n", encoding="utf-8")
     _git(tmp_path, "add", private_name)
-    paths, sensitive_count = dev_check.collect_changed_paths(tmp_path, base)
-    receipt = {
-        "changed_paths": paths,
-        "ignored_sensitive_path_count": sensitive_count,
+    assert (
+        dev_check.main(
+            [
+                "--repository-root",
+                str(tmp_path),
+                "--story",
+                "ST-0106",
+                "--base-ref",
+                base,
+            ]
+        )
+        == 2
+    )
+    captured = capsys.readouterr()
+    assert private_name not in captured.out + captured.err
+    assert json.loads(captured.out) == {
+        "reason": "forbidden_secret_path_changed",
+        "schema": "RAOS_DEV_CHECK_V1",
+        "sensitive_path_count": 1,
+        "status": "ERROR",
     }
-    assert private_name not in json.dumps(receipt)
-    assert sensitive_count == 1
+
+
+def test_story_scope_mismatch_fails_and_explicit_multi_story_is_reported(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    (tmp_path / ".git").mkdir()
+    config = dev_check.load_contract()
+    monkeypatch.setattr(dev_check, "resolve_base_ref", lambda _root, _ref: "main")
+    monkeypatch.setattr(
+        dev_check,
+        "collect_changed_paths",
+        lambda _root, _base: (
+            ["changes/st-0106/README.md", "tests/st0107/test_generation.py"],
+            0,
+        ),
+    )
+    monkeypatch.setattr(dev_check, "load_contract", lambda _root: config)
+
+    assert (
+        dev_check.main(["--repository-root", str(tmp_path), "--story", "ST-0106"]) == 2
+    )
+    mismatch = json.loads(capsys.readouterr().out)
+    assert mismatch["reason"] == "changed_story_scope_mismatch"
+    assert mismatch["detected_story_ids"] == ["ST-0106", "ST-0107"]
+    assert mismatch["declared_story_ids"] == ["ST-0106"]
+
+    monkeypatch.setattr(
+        dev_check,
+        "run_checks",
+        lambda *_args, **_kwargs: {"schema": "RAOS_DEV_CHECK_V1", "status": "PASSED"},
+    )
+    assert (
+        dev_check.main(
+            [
+                "--repository-root",
+                str(tmp_path),
+                "--story",
+                "ST-0106",
+                "--stories",
+                "ST-0107,ST-0106",
+            ]
+        )
+        == 0
+    )
+    allowed = json.loads(capsys.readouterr().out)
+    assert allowed["detected_story_ids"] == ["ST-0106", "ST-0107"]
+    assert allowed["declared_story_ids"] == ["ST-0106", "ST-0107"]

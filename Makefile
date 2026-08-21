@@ -146,18 +146,16 @@ check-workspace:
 	PYTHONDONTWRITEBYTECODE=1 "$(PYTHON)" scripts/bootstrap_workspace.py --check
 
 STORY ?=
+STORIES ?=
 BASE_REF ?=
 
 dev-check:
 	test -n "$(STORY)"
 	test -x "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python"
-	if test -n "$(BASE_REF)"; then \
-		PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
-			scripts/dev_check.py --story "$(STORY)" --base-ref "$(BASE_REF)"; \
-	else \
-		PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
-			scripts/dev_check.py --story "$(STORY)"; \
-	fi
+	PYTHONDONTWRITEBYTECODE=1 "$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -I \
+		scripts/dev_check.py --story "$(STORY)" \
+		$(if $(STORIES),--stories "$(STORIES)") \
+		$(if $(BASE_REF),--base-ref "$(BASE_REF)")
 
 GITHUB_RULESET_RUN_ID ?=
 GITHUB_RULESET_PLAN_SHA256 ?=

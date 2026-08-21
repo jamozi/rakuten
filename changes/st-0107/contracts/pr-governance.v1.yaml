@@ -22,7 +22,7 @@ sources:
   - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://.github/workflows/ci.yml
-    sha256: 69dc1a2be4ddfa6a70066ec40009cb6c7fcfc5d0ee060b9b2615721d7d085a16
+    sha256: 530e1e77be09cc63bd4e3efc6bbe2e019226a48f9a6ea111b45e2d081efd292c
   - uri: repo://.github/workflows/status-registry.yml
     sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
 owner_bindings:
@@ -46,16 +46,6 @@ codeowners:
       roles: [data, security]
     - pattern: /infra/
       roles: [operations, security]
-    - pattern: /docker-compose.yml
-      roles: [operations, security]
-    - pattern: /scripts/build_local_compose.py
-      roles: [operations, security]
-    - pattern: /scripts/postgres_service.sh
-      roles: [operations, security]
-    - pattern: /scripts/object_storage_service.sh
-      roles: [operations, security]
-    - pattern: /scripts/object_storage_fixture.py
-      roles: [operations, security]
     - pattern: /apps/admin/
       roles: [editorial, security]
     - pattern: /apps/public/
@@ -70,17 +60,109 @@ codeowners:
       roles: [ai, security, editorial]
     - pattern: /python/raos/domain/finance/
       roles: [finance, security]
+    - pattern: /docs/canonical/
+      roles: [architecture]
+    - pattern: /changes/*/contracts/
+      roles: [architecture, engineering]
+    - pattern: /changes/**/generated/
+      roles: [architecture, engineering]
     - pattern: /python/raos/generated/
       roles: [architecture, engineering]
     - pattern: /packages/web-contracts/src/generated/
       roles: [architecture, engineering]
-    - pattern: /docs/canonical/
-      roles: [architecture]
-    - pattern: /AGENTS.md
+    - pattern: /scripts/*contract*
+      roles: [architecture, engineering]
+    - pattern: /scripts/*codegen*
+      roles: [architecture, engineering]
+    - pattern: /tests/st0104/
+      roles: [architecture, engineering]
+    - pattern: /tests/st0105/
+      roles: [architecture, engineering]
+    - pattern: /changes/*/database/
+      roles: [data, security]
+    - pattern: /changes/st-0301/
+      roles: [data, security]
+    - pattern: /python/raos/migrations/
+      roles: [data, security]
+    - pattern: /scripts/*migration*
+      roles: [data, security]
+    - pattern: /tests/st0301/
+      roles: [data, security]
+    - pattern: /python/raos/application/finance/
+      roles: [finance, security]
+    - pattern: /scripts/*finance*
+      roles: [finance, security]
+    - pattern: /scripts/*publication*
+      roles: [editorial, security]
+    - pattern: /scripts/*kill_switch*
+      roles: [operations, security]
+    - pattern: /packages/**/*finance*
+      roles: [finance, security]
+    - pattern: /packages/**/*publication*
+      roles: [editorial, security]
+    - pattern: /docker-compose.yml
+      roles: [operations, security]
+    - pattern: /scripts/build_local_compose.py
+      roles: [operations, security]
+    - pattern: /scripts/*deploy*
+      roles: [operations, security]
+    - pattern: /scripts/*storage*
+      roles: [operations, security]
+    - pattern: /scripts/*postgres*
+      roles: [operations, security]
+    - pattern: /python/raos/adapters/
+      roles: [operations, security]
+    - pattern: /python/raos/ports/*provider*
+      roles: [operations, security]
+    - pattern: /python/raos/domain/ai/provider.py
+      roles: [operations, security]
+    - pattern: /scripts/*provider*
+      roles: [operations, security]
+    - pattern: /python/raos/domain/iam/
+      roles: [security, architecture]
+    - pattern: /python/raos/application/iam/
+      roles: [security, engineering]
+    - pattern: /python/raos/ports/*authorization*
+      roles: [security, architecture]
+    - pattern: /python/raos/ports/*credential*
+      roles: [security, architecture]
+    - pattern: /python/raos/adapters/*credential*
       roles: [security, operations]
+    - pattern: /python/raos/adapters/*oauth*
+      roles: [security, operations]
+    - pattern: /scripts/*auth*
+      roles: [security, operations]
+    - pattern: /scripts/*credential*
+      roles: [security, operations]
+    - pattern: /scripts/*secret*
+      roles: [security, engineering]
+    - pattern: /scripts/run_network_denied.sh
+      roles: [security, engineering]
+    - pattern: /scripts/assert_network_denied.py
+      roles: [security, engineering]
+    - pattern: /docs/canonical/04_security/
+      roles: [security, architecture]
+    - pattern: /tests/security/
+      roles: [security, engineering]
     - pattern: /.codex/
       roles: [security, operations]
+    - pattern: /AGENTS.md
+      roles: [security, operations]
     - pattern: /Makefile
+      roles: [security, operations]
+    - pattern: /package.json
+      roles: [security, operations]
+    - pattern: /package-lock.json
+      roles: [security, operations]
+    - pattern: /pyproject.toml
+      roles: [security, operations]
+    - pattern: /uv.lock
+      roles: [security, operations]
+    - pattern: /uv.toml
+      roles: [security, operations]
+    - pattern: /workspace-layout.json
+      roles: [security, operations]
+    - pattern: /changes/st-0005/
       roles: [security, operations]
     - pattern: /changes/st-0106/
       roles: [security, operations]
@@ -92,41 +174,45 @@ codeowners:
       roles: [security, operations]
     - pattern: /docs/worklogs/ST-0107.md
       roles: [security, operations]
-    - pattern: /scripts/classify_ci_scope.py
-      roles: [security, operations]
-    - pattern: /scripts/dev_check.py
+    - pattern: /scripts/build_st0005_status.py
       roles: [security, operations]
     - pattern: /scripts/build_st0107_pr_governance.py
       roles: [security, operations]
+    - pattern: /scripts/classify_ci_scope.py
+      roles: [security, operations]
+    - pattern: /scripts/ci_job.sh
+      roles: [security, operations]
+    - pattern: /scripts/dev_check.py
+      roles: [security, operations]
     - pattern: /scripts/github_ruleset_operator.py
+      roles: [security, operations]
+    - pattern: /scripts/node_toolchain.sh
+      roles: [security, operations]
+    - pattern: /scripts/python_toolchain.sh
+      roles: [security, operations]
+    - pattern: /tests/st0005/
       roles: [security, operations]
     - pattern: /tests/st0106/
       roles: [security, operations]
     - pattern: /tests/st0107/
       roles: [security, operations]
-    - pattern: /changes/*/contracts/
-      roles: [architecture, engineering]
-    - pattern: /changes/*/database/
-      roles: [data, security]
-    - pattern: /docs/canonical/04_security/
-      roles: [security, architecture]
-    - pattern: /tests/security/
-      roles: [security, engineering]
-    - pattern: /scripts/scan_secrets.py
-      roles: [security, engineering]
-    - pattern: /scripts/run_network_denied.sh
-      roles: [security, engineering]
-    - pattern: /scripts/assert_network_denied.py
-      roles: [security, engineering]
     - pattern: /.github/
       roles: [security, operations]
 pull_request_template:
   canonical_source: repo://docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md
-  required_owner_categories: [contract, migration, security, deployment, governance]
+  required_owner_categories:
+    - contract_codegen
+    - migration_database
+    - authentication_authorization_credentials
+    - publication_finance_kill_switch
+    - infrastructure_deployment
+    - provider_runtime
+    - governance_ci_status
   require_not_applicable_rationale: true
   require_dev_check: true
   require_hosted_ci: true
-  require_automated_review: true
+  independent_automated_review: NOT_AVAILABLE_HUMAN_REVIEW_FALLBACK
+  require_exact_head_human_review: true
   require_deferred_formal_live_items: true
 ruleset_policy:
   name: RAOS protected default branch
@@ -144,7 +230,7 @@ ruleset_policy:
     dismiss_stale_reviews_on_push: true
     require_code_owner_review: true
     require_last_push_approval: false
-    required_approving_review_count: 0
+    required_approving_review_count: 1
     required_review_thread_resolution: true
   required_status_checks:
     - context: Static
@@ -171,47 +257,97 @@ ruleset_policy:
   strict_required_status_checks_policy: true
   do_not_enforce_on_create: false
   required_owner_categories:
-    contract:
-      patterns: [/contracts/, /changes/*/contracts/]
-      roles: [architecture, engineering]
-    migration:
-      patterns: [/migrations/, /changes/*/database/]
-      roles: [data, security]
-    security:
+    contract_codegen:
       patterns:
-        - /docs/canonical/04_security/
-        - /tests/security/
-        - /scripts/scan_secrets.py
+        - /contracts/
+        - /changes/*/contracts/
+        - /changes/**/generated/
+        - /python/raos/generated/
+        - /packages/web-contracts/src/generated/
+        - /scripts/*contract*
+        - /scripts/*codegen*
+        - /tests/st0104/
+        - /tests/st0105/
+      roles: [architecture, engineering]
+    migration_database:
+      patterns:
+        - /migrations/
+        - /changes/*/database/
+        - /changes/st-0301/
+        - /python/raos/migrations/
+        - /scripts/*migration*
+        - /tests/st0301/
+      roles: [data, security]
+    authentication_authorization_credentials:
+      patterns:
+        - /python/raos/domain/iam/
+        - /python/raos/application/iam/
+        - /python/raos/ports/*authorization*
+        - /python/raos/ports/*credential*
+        - /python/raos/adapters/*credential*
+        - /python/raos/adapters/*oauth*
+        - /scripts/*auth*
+        - /scripts/*credential*
+        - /scripts/*secret*
         - /scripts/run_network_denied.sh
         - /scripts/assert_network_denied.py
-        - /.github/
+        - /tests/security/
       roles: [security]
-    deployment:
+    publication_finance_kill_switch:
+      patterns:
+        - /python/raos/domain/finance/
+        - /python/raos/application/finance/
+        - /scripts/*finance*
+        - /scripts/*publication*
+        - /scripts/*kill_switch*
+        - /packages/**/*finance*
+        - /packages/**/*publication*
+      roles: [security]
+    infrastructure_deployment:
       patterns:
         - /infra/
         - /docker-compose.yml
         - /scripts/build_local_compose.py
-        - /scripts/postgres_service.sh
-        - /scripts/object_storage_service.sh
-        - /scripts/object_storage_fixture.py
+        - /scripts/*deploy*
+        - /scripts/*storage*
+        - /scripts/*postgres*
       roles: [operations, security]
-    governance:
+    provider_runtime:
       patterns:
-        - /AGENTS.md
+        - /python/raos/adapters/
+        - /python/raos/ports/*provider*
+        - /python/raos/domain/ai/provider.py
+        - /scripts/*provider*
+      roles: [operations, security]
+    governance_ci_status:
+      patterns:
         - /.codex/
+        - /.github/
+        - /AGENTS.md
         - /Makefile
+        - /package.json
+        - /package-lock.json
+        - /pyproject.toml
+        - /uv.lock
+        - /uv.toml
+        - /workspace-layout.json
+        - /changes/st-0005/
         - /changes/st-0106/
         - /changes/st-0107/
         - /docs/architecture/ST-0107-github-governance-snapshot.yaml
         - /docs/execplans/ST-0107.md
         - /docs/worklogs/ST-0107.md
-        - /scripts/classify_ci_scope.py
-        - /scripts/dev_check.py
+        - /scripts/build_st0005_status.py
         - /scripts/build_st0107_pr_governance.py
+        - /scripts/classify_ci_scope.py
+        - /scripts/ci_job.sh
+        - /scripts/dev_check.py
         - /scripts/github_ruleset_operator.py
+        - /scripts/node_toolchain.sh
+        - /scripts/python_toolchain.sh
+        - /tests/st0005/
         - /tests/st0106/
         - /tests/st0107/
-        - /.github/
       roles: [security, operations]
 activation:
   generator_remote_mutation: FORBIDDEN
@@ -222,5 +358,5 @@ activation:
     - every team binding resolves to a visible GitHub team with write permission
     - every required check has run in the repository and is bound to the expected GitHub Actions app
     - ruleset API request is assembled from the reviewed policy and live numeric bindings, and authenticated read-back matches the desired active policy with no bypass actor
-    - ordinary-path zero-approval, high-risk CODEOWNER, direct-push, stale-review, missing-check, unresolved-thread, deletion, and force-push PR probes pass
-    - a matching governance CODEOWNER approves the high-risk activation change and read-back confirms zero general approvals, code-owner review enabled, and last-push approval disabled
+    - ordinary-path exact-head approval, high-risk CODEOWNER, direct-push, stale-review, missing-check, unresolved-thread, deletion, and force-push PR probes pass
+    - a matching governance CODEOWNER approves the high-risk activation change and read-back confirms one general approval, code-owner review enabled, stale-review dismissal enabled, and last-push approval disabled

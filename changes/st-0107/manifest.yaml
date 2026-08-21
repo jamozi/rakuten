@@ -25,26 +25,26 @@ provenance:
     - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
       sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
     - uri: repo://.github/workflows/ci.yml
-      sha256: 69dc1a2be4ddfa6a70066ec40009cb6c7fcfc5d0ee060b9b2615721d7d085a16
+      sha256: 530e1e77be09cc63bd4e3efc6bbe2e019226a48f9a6ea111b45e2d081efd292c
     - uri: repo://.github/workflows/status-registry.yml
       sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
-source_artifact_count: 20
+source_artifact_count: 25
 source_artifacts:
   - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
-    bytes: 9000
-    sha256: 7d3e1caecde8162f2b09c99999f011462a1a6cd76f338c9a9cc33369c407b645
+    bytes: 13636
+    sha256: 44a7a95e8f2b53b45b2d0db93b325d35749f7a76996fa454729be7c25c61938d
   - uri: repo://changes/st-0107/contracts/github-ruleset-operator.v1.json
-    bytes: 2007
-    sha256: dc279ea5504ab0658cf86bc25e97c8e5ab7aa1b7aa7473f97ef2a815ea0324c6
+    bytes: 2190
+    sha256: 951cee8c5d0a1c8df64039e82e9d769aec2e5afd2b1c47e2b59ce655011a0d1a
   - uri: repo://changes/st-0107/DESIGN_HANDOFF_V1_DEVELOPER_LOOP_SIMPLIFICATION.yaml
-    bytes: 7138
-    sha256: 23e3082da06bea2afb9bb5c4a3db25c743fa4fe53fb32168500388e123309d4c
+    bytes: 8339
+    sha256: 342336e5a261f16aa035026c1eefd04d61b0e7ccae245cf21b8d4caef70143ef
   - uri: repo://changes/st-0107/README.md
-    bytes: 10259
-    sha256: 634da776732604aad55a0b1bc13b50be0818ebd18f33de0a51508f7a8addd1fc
+    bytes: 10849
+    sha256: 8f9a77554b19afff532ebfe5f142f40b77a704a67c9be633370c95bfce448fdd
   - uri: repo://docs/architecture/ST-0107-github-governance-snapshot.yaml
-    bytes: 9690
-    sha256: 29207dc067ad39e7df1760ac7516d2b2fbccfe8a8266b4398ab1aa592c288973
+    bytes: 9859
+    sha256: b0f8c7060c8446805b9fb9d68a6e71778e2117ae224283214e9a086e5c54955b
   - uri: repo://docs/execplans/ST-0107.md
     bytes: 14400
     sha256: dc1b4179365b8db690ab5ee4ee7276953213a774561c963afd8be93d43afd2e3
@@ -52,11 +52,17 @@ source_artifacts:
     bytes: 11507
     sha256: a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524
   - uri: repo://scripts/build_st0107_pr_governance.py
-    bytes: 51891
-    sha256: f20da6331c5bbba9b9ee956fee1b220965c233cf3fba7d19cd7d283f29a73845
+    bytes: 54236
+    sha256: ad99b7ef614460abd761fe7d6d66e04b20b07d1014db5b491f40ceae5b9ca10c
+  - uri: repo://scripts/classify_ci_scope.py
+    bytes: 17853
+    sha256: c5ca5d6cf3bcbbf126dbe8c6e753ef818cfdc9a76296fde3edd2560156b6551c
+  - uri: repo://scripts/dev_check.py
+    bytes: 16047
+    sha256: 36005b03377e9c307196809dabbac944cf665f181bde22bc0e522b6bc353ee2c
   - uri: repo://scripts/github_ruleset_operator.py
-    bytes: 48268
-    sha256: 95a7b897545f724f42b4d5dfbc8c3502d4d3937a316dbd60a7d9ded3af29d6e6
+    bytes: 49854
+    sha256: fb33bc99838c07f30f831c77a05e6333340fc3b0aff17431d03de0268cb489fe
   - uri: repo://scripts/build_local_compose.py
     bytes: 35255
     sha256: 16225c1f832ac0a379b45d22648db63b024e3b66a0b9b7a86b072544895d2fb4
@@ -73,34 +79,43 @@ source_artifacts:
     bytes: 11303
     sha256: 45a15bc74d1cf486740d1d6827eff2071ce60eda65c6119b5f92ac5b0ad89fd8
   - uri: repo://tests/st0107/test_governance_contract.py
-    bytes: 14148
-    sha256: af9ea25c7e605642158af5241e8087e3485c03865ab3814fb14539e1de8e9332
+    bytes: 16764
+    sha256: 22f2560f00afcfb255d816078e523d4293b95e1622f1bd779a2869aa7da1e3f1
   - uri: repo://tests/st0107/test_negative_cases.py
-    bytes: 14456
-    sha256: 713f87cdc35c747671c1a872272d28321d490f5fe7871a07ede6d3c1a70b1896
+    bytes: 14617
+    sha256: 88dc0f3043096452ecb3f0992a89d2fd87e04797d2b02437085909656a638711
   - uri: repo://tests/st0107/test_ruleset_operator.py
-    bytes: 12211
-    sha256: 32e42762c1bcb108ff129e86e4283ac7a966162bdc02537f74d73f5c2882917f
+    bytes: 13524
+    sha256: 1ceb6b4a0294264383aaa1d404861d69d7a9d3c3b275c1d65603532a1ee8d4f4
+  - uri: repo://tests/st0106/test_ci_scope.py
+    bytes: 7895
+    sha256: 85063024580534f459ca1a63aef8438e319c913fb2d2bebe4130a5ee9fc14c80
+  - uri: repo://tests/st0106/test_dev_check.py
+    bytes: 8390
+    sha256: 00a32709aeeb512de2baf2831b32dc2e326dfc9bb846a8fc793bad5e6f6051c6
   - uri: repo://tests/st0106/test_workflow_contract.py
-    bytes: 69462
-    sha256: 14b8b7d736f1418d5323ec425a27fd038645dd2910a7f788239d9b6bfda40d36
+    bytes: 70039
+    sha256: f3d6d93dff99fc8148b88419622b137292b58e34fe073313bd71e9aeb14f430d
+  - uri: repo://changes/st-0106/contracts/developer-loop-scope.v1.json
+    bytes: 8493
+    sha256: 87c6f4c26032a3598620440c38eb49425d432309dbf9a242c2725e59784ce08f
   - uri: repo://Makefile
-    bytes: 35822
-    sha256: 9c89a6489f4591f1efe4c7e5e7647b86110365e9a5b79f808f61c0aff67a896e
+    bytes: 35726
+    sha256: 57943bb72f9c0dd1f0460b63158781c869c67a40f84a6731f3e819c679983c44
   - uri: repo://README.md
     bytes: 58459
     sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 generated_artifact_count: 3
 generated_artifacts:
   - uri: repo://.github/CODEOWNERS
-    bytes: 2619
-    sha256: 80fa942e0da67182aec6dc45636a9afb8f5d8a0925428b0ba81e7e9f90433011
+    bytes: 4698
+    sha256: 7f96cd6c0bfef1afe3a85d74a78287868570709fd740e57e525364d83f9d70e1
   - uri: repo://.github/PULL_REQUEST_TEMPLATE.md
-    bytes: 2080
-    sha256: ebf9a270f3a5b55895b13b5cfd4b28a2d2a46ec47fc86b2059a4e61214360216
+    bytes: 2534
+    sha256: 3e2777b854227bf5fffeb33bdd907802b178f0a1bcc10a77992a964648968c4f
   - uri: repo://changes/st-0107/ruleset-policy.v1.json
-    bytes: 4934
-    sha256: cd7ebedb862c3e1a92c4f0227ee5e8ffb8ee46979a013b2c048a69df73b82c10
+    bytes: 6738
+    sha256: 7508cb2bec7f27dc7dd0981680758213dfd1e54276045f80537e0a1724fbe54a
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check

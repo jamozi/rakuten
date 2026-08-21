@@ -1,7 +1,7 @@
 {
   "document": {
     "id": "RAOS-DEVELOPER-LOOP-SCOPE-001",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "story_id": "ST-0106"
   },
   "required_jobs": ["Static", "Unit", "Contracts", "Database", "Storage", "Secrets"],
@@ -19,45 +19,237 @@
     "scripts/",
     "tests/"
   ],
-  "high_risk_globs": [
-    ".github/**",
-    ".codex/**",
-    "Makefile",
-    "docker-compose.yml",
-    "package.json",
-    "package-lock.json",
-    "pyproject.toml",
-    "uv.lock",
-    "uv.toml",
-    "workspace-layout.json",
-    "contracts/**",
-    "migrations/**",
-    "infra/**",
-    "**/generated/**",
-    "**/contracts/**",
-    "**/database/**",
-    "**/*auth*",
-    "**/*credential*",
-    "**/*deploy*",
-    "**/*finance*",
-    "**/*kill_switch*",
-    "**/*provider*",
-    "**/*publication*",
-    "**/*secret*",
-    "**/*security*",
-    "scripts/build_local_compose.py",
-    "scripts/classify_ci_scope.py",
-    "scripts/ci_job.sh",
-    "scripts/dev_check.py",
-    "scripts/node_toolchain.sh",
-    "scripts/python_toolchain.sh",
-    "scripts/*storage*",
-    "scripts/*postgres*",
-    "tests/st0106/**",
-    "tests/st0107/**",
-    "changes/st-0106/**",
-    "changes/st-0107/**"
-  ],
+  "mandatory_high_risk_categories": {
+    "contract_codegen": {
+      "classification_globs": [
+        "contracts/**",
+        "changes/*/contracts/**",
+        "changes/**/generated/**",
+        "python/raos/generated/**",
+        "packages/web-contracts/src/generated/**",
+        "scripts/*contract*",
+        "scripts/*codegen*",
+        "tests/st0104/**",
+        "tests/st0105/**"
+      ],
+      "required_roles": ["architecture", "engineering"],
+      "codeowner_patterns": [
+        "/contracts/",
+        "/changes/*/contracts/",
+        "/changes/**/generated/",
+        "/python/raos/generated/",
+        "/packages/web-contracts/src/generated/",
+        "/scripts/*contract*",
+        "/scripts/*codegen*",
+        "/tests/st0104/",
+        "/tests/st0105/"
+      ],
+      "representative_paths": [
+        "scripts/build_st0104_contract_repository.py",
+        "scripts/build_st0105_generated_contracts.py",
+        "tests/st0104/test_verifier.py",
+        "changes/st-0301/generated/migration-catalog.v1.json"
+      ]
+    },
+    "migration_database": {
+      "classification_globs": [
+        "migrations/**",
+        "changes/*/database/**",
+        "changes/st-0301/**",
+        "python/raos/migrations/**",
+        "scripts/*migration*",
+        "tests/st0301/**"
+      ],
+      "required_roles": ["data", "security"],
+      "codeowner_patterns": [
+        "/migrations/",
+        "/changes/*/database/",
+        "/changes/st-0301/",
+        "/python/raos/migrations/",
+        "/scripts/*migration*",
+        "/tests/st0301/"
+      ],
+      "representative_paths": [
+        "scripts/build_st0301_migration_framework.py",
+        "tests/st0301/test_generation.py",
+        "python/raos/migrations/runner.py"
+      ]
+    },
+    "authentication_authorization_credentials": {
+      "classification_globs": [
+        "python/raos/domain/iam/**",
+        "python/raos/application/iam/**",
+        "python/raos/ports/*authorization*",
+        "python/raos/ports/*credential*",
+        "python/raos/adapters/*credential*",
+        "python/raos/adapters/*oauth*",
+        "scripts/*auth*",
+        "scripts/*credential*",
+        "scripts/*secret*",
+        "scripts/run_network_denied.sh",
+        "scripts/assert_network_denied.py",
+        "tests/security/**"
+      ],
+      "required_roles": ["security"],
+      "codeowner_patterns": [
+        "/python/raos/domain/iam/",
+        "/python/raos/application/iam/",
+        "/python/raos/ports/*authorization*",
+        "/python/raos/ports/*credential*",
+        "/python/raos/adapters/*credential*",
+        "/python/raos/adapters/*oauth*",
+        "/scripts/*auth*",
+        "/scripts/*credential*",
+        "/scripts/*secret*",
+        "/scripts/run_network_denied.sh",
+        "/scripts/assert_network_denied.py",
+        "/tests/security/"
+      ],
+      "representative_paths": [
+        "python/raos/application/iam/authentication.py",
+        "python/raos/domain/iam/authorization.py",
+        "python/raos/adapters/development_workload_credentials.py",
+        "python/raos/adapters/wordpresscom_oauth.py"
+      ]
+    },
+    "publication_finance_kill_switch": {
+      "classification_globs": [
+        "python/raos/domain/finance/**",
+        "python/raos/application/finance/**",
+        "scripts/*finance*",
+        "scripts/*publication*",
+        "scripts/*kill_switch*",
+        "packages/**/*finance*",
+        "packages/**/*publication*"
+      ],
+      "required_roles": ["security"],
+      "codeowner_patterns": [
+        "/python/raos/domain/finance/",
+        "/python/raos/application/finance/",
+        "/scripts/*finance*",
+        "/scripts/*publication*",
+        "/scripts/*kill_switch*",
+        "/packages/**/*finance*",
+        "/packages/**/*publication*"
+      ],
+      "representative_paths": [
+        "python/raos/application/finance/revenue_import.py",
+        "scripts/build_st0905_publication_commands_reference_plan.py",
+        "packages/web-ui/src/publication-review-workspace.ts"
+      ]
+    },
+    "infrastructure_deployment": {
+      "classification_globs": [
+        "infra/**",
+        "docker-compose.yml",
+        "scripts/build_local_compose.py",
+        "scripts/*deploy*",
+        "scripts/*storage*",
+        "scripts/*postgres*"
+      ],
+      "required_roles": ["operations", "security"],
+      "codeowner_patterns": [
+        "/infra/",
+        "/docker-compose.yml",
+        "/scripts/build_local_compose.py",
+        "/scripts/*deploy*",
+        "/scripts/*storage*",
+        "/scripts/*postgres*"
+      ],
+      "representative_paths": [
+        "scripts/build_local_compose.py",
+        "scripts/build_st1505_staging_deployment.py",
+        "scripts/object_storage_service.sh"
+      ]
+    },
+    "provider_runtime": {
+      "classification_globs": [
+        "python/raos/adapters/**",
+        "python/raos/ports/*provider*",
+        "python/raos/domain/ai/provider.py",
+        "scripts/*provider*"
+      ],
+      "required_roles": ["operations", "security"],
+      "codeowner_patterns": [
+        "/python/raos/adapters/",
+        "/python/raos/ports/*provider*",
+        "/python/raos/domain/ai/provider.py",
+        "/scripts/*provider*"
+      ],
+      "representative_paths": [
+        "python/raos/adapters/wordpresscom_oauth.py",
+        "python/raos/ports/ai_provider.py",
+        "scripts/build_st1302_provider_fact_commit_reference_plan.py"
+      ]
+    },
+    "governance_ci_status": {
+      "classification_globs": [
+        ".github/**",
+        ".codex/**",
+        "AGENTS.md",
+        "Makefile",
+        "package.json",
+        "package-lock.json",
+        "pyproject.toml",
+        "uv.lock",
+        "uv.toml",
+        "workspace-layout.json",
+        "changes/st-0005/**",
+        "changes/st-0106/**",
+        "changes/st-0107/**",
+        "docs/architecture/ST-0107-github-governance-snapshot.yaml",
+        "docs/execplans/ST-0107.md",
+        "docs/worklogs/ST-0107.md",
+        "scripts/build_st0005_status.py",
+        "scripts/build_st0107_pr_governance.py",
+        "scripts/classify_ci_scope.py",
+        "scripts/ci_job.sh",
+        "scripts/dev_check.py",
+        "scripts/github_ruleset_operator.py",
+        "scripts/node_toolchain.sh",
+        "scripts/python_toolchain.sh",
+        "tests/st0005/**",
+        "tests/st0106/**",
+        "tests/st0107/**"
+      ],
+      "required_roles": ["security", "operations"],
+      "codeowner_patterns": [
+        "/.codex/",
+        "/.github/",
+        "/AGENTS.md",
+        "/Makefile",
+        "/package.json",
+        "/package-lock.json",
+        "/pyproject.toml",
+        "/uv.lock",
+        "/uv.toml",
+        "/workspace-layout.json",
+        "/changes/st-0005/",
+        "/changes/st-0106/",
+        "/changes/st-0107/",
+        "/docs/architecture/ST-0107-github-governance-snapshot.yaml",
+        "/docs/execplans/ST-0107.md",
+        "/docs/worklogs/ST-0107.md",
+        "/scripts/build_st0005_status.py",
+        "/scripts/build_st0107_pr_governance.py",
+        "/scripts/classify_ci_scope.py",
+        "/scripts/ci_job.sh",
+        "/scripts/dev_check.py",
+        "/scripts/github_ruleset_operator.py",
+        "/scripts/node_toolchain.sh",
+        "/scripts/python_toolchain.sh",
+        "/tests/st0005/",
+        "/tests/st0106/",
+        "/tests/st0107/"
+      ],
+      "representative_paths": [
+        "scripts/build_st0005_status.py",
+        "tests/st0005/test_overlay_contract.py",
+        ".github/workflows/ci.yml",
+        "scripts/classify_ci_scope.py"
+      ]
+    }
+  },
   "story_path_patterns": ["changes/st-{digits}/", "tests/st{digits}/"],
   "node_suffixes": [".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx"],
   "generator_checks": {

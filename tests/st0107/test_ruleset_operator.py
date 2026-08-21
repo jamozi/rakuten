@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import stat
 from copy import deepcopy
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +17,10 @@ from scripts import github_ruleset_operator as operator
 COMMIT = "a" * 40
 RUN_ID = "20260821T000000Z-0123456789abcdef01234567"
 APP_ID = 15368
+
+
+def _utc_z(value: datetime) -> str:
+    return value.isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def _repository_root(tmp_path: Path) -> Path:
@@ -33,7 +38,7 @@ def _repository_root(tmp_path: Path) -> Path:
         {
             "require_code_owner_review": True,
             "require_last_push_approval": False,
-            "required_approving_review_count": 0,
+            "required_approving_review_count": 1,
         }
     )
     (root / operator.POLICY_PATH).write_text(
@@ -59,9 +64,14 @@ class FakeTransport:
         self.ruleset_id = 401
         self.target: dict[str, Any] | None = None
         self.extra_inventory: list[dict[str, Any]] = []
+        completed_at = _utc_z(datetime.now(UTC) - timedelta(seconds=1))
         self.check_runs = [
             {
                 "name": context,
+                "head_sha": self.main_sha,
+                "status": "completed",
+                "conclusion": "success",
+                "completed_at": completed_at,
                 "app": {"slug": "github-actions", "id": APP_ID},
             }
             for context in operator.REQUIRED_CONTEXTS
@@ -266,6 +276,34 @@ def test_plan_is_private_and_fails_on_duplicate_or_missing_check_binding(
     incomplete_checks.reported_check_total = len(incomplete_checks.check_runs) + 1
     with pytest.raises(operator.OperatorError, match="CHECK_BINDINGS_INCOMPLETE"):
         operator.status_operation(incomplete_checks)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        pytest.param("conclusion", "failure", id="failed-conclusion"),
+        pytest.param("status", "in_progress", id="in-progress"),
+        pytest.param("head_sha", "c" * 40, id="wrong-head"),
+        pytest.param(
+            "completed_at",
+            _utc_z(datetime.now(UTC) - timedelta(hours=25)),
+            id="stale-completion",
+        ),
+        pytest.param(
+            "completed_at",
+            _utc_z(datetime.now(UTC) + timedelta(hours=1)),
+            id="future-completion",
+        ),
+    ],
+)
+def test_status_rejects_unverified_check_binding(
+    tmp_path: Path, field: str, value: str
+) -> None:
+    fake = FakeTransport()
+    fake.check_runs[0][field] = value
+    root = _repository_root(tmp_path)
+    with pytest.raises(operator.OperatorError, match="CHECK_BINDING_UNVERIFIED"):
+        operator.status_operation(fake, root=root)
 
 
 def test_status_validates_operator_contract_before_transport(tmp_path: Path) -> None:

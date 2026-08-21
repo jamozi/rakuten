@@ -25,7 +25,7 @@ EXPECTED_KEYS: Final = {
     "full_events",
     "docs_suffixes",
     "ordinary_prefixes",
-    "high_risk_globs",
+    "mandatory_high_risk_categories",
     "story_path_patterns",
     "node_suffixes",
     "generator_checks",
@@ -39,13 +39,45 @@ EXPECTED_JOBS: Final = (
     "Storage",
     "Secrets",
 )
-STORY_PATH: Final = re.compile(r"^(?:changes/st-|tests/st)(\d{4})(?:/|$)")
+EXPECTED_STORY_PATH_PATTERNS: Final = (
+    "changes/st-{digits}/",
+    "tests/st{digits}/",
+)
+EXPECTED_NODE_SUFFIXES: Final = (".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx")
+EXPECTED_HIGH_RISK_CATEGORIES: Final = (
+    "contract_codegen",
+    "migration_database",
+    "authentication_authorization_credentials",
+    "publication_finance_kill_switch",
+    "infrastructure_deployment",
+    "provider_runtime",
+    "governance_ci_status",
+)
+OWNER_ROLES: Final = {
+    "accessibility",
+    "ai",
+    "architecture",
+    "data",
+    "editorial",
+    "engineering",
+    "finance",
+    "operations",
+    "security",
+}
 SAFE_REVISION: Final = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/@^{}~+-]*$")
 MAX_CONTRACT_BYTES: Final = 256 * 1024
 
 
 class ClassificationError(RuntimeError):
     """Raised when classifier input or configuration is unsafe."""
+
+
+class SensitivePathChangedError(ClassificationError):
+    """A changed private path was observed without retaining its name."""
+
+    def __init__(self, count: int) -> None:
+        super().__init__("forbidden_secret_path_changed")
+        self.count = count
 
 
 def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -85,7 +117,7 @@ def load_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
     document = parsed["document"]
     if document != {
         "id": "RAOS-DEVELOPER-LOOP-SCOPE-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-0106",
     }:
         raise ClassificationError("scope contract identity differs")
@@ -98,16 +130,76 @@ def load_contract(root: Path = REPOSITORY_ROOT) -> dict[str, Any]:
     full_events = _string_list(parsed["full_events"], "full_events")
     if full_events != ["push", "schedule", "workflow_dispatch"]:
         raise ClassificationError("full event inventory differs")
-    for key in (
-        "docs_suffixes",
-        "ordinary_prefixes",
-        "high_risk_globs",
-        "story_path_patterns",
-        "node_suffixes",
-    ):
+    for key in ("docs_suffixes", "ordinary_prefixes"):
         values = _string_list(parsed[key], key)
         if not values or any(not value for value in values):
             raise ClassificationError(f"{key} must not be empty")
+    story_patterns = _string_list(parsed["story_path_patterns"], "story_path_patterns")
+    if tuple(story_patterns) != EXPECTED_STORY_PATH_PATTERNS:
+        raise ClassificationError("story path patterns differ")
+    node_suffixes = _string_list(parsed["node_suffixes"], "node_suffixes")
+    if tuple(node_suffixes) != EXPECTED_NODE_SUFFIXES:
+        raise ClassificationError("Node suffix inventory differs")
+    categories = parsed["mandatory_high_risk_categories"]
+    if not isinstance(categories, dict) or tuple(categories) != (
+        EXPECTED_HIGH_RISK_CATEGORIES
+    ):
+        raise ClassificationError("mandatory high-risk category inventory differs")
+    for category_name, raw_category in categories.items():
+        if not isinstance(raw_category, dict) or set(raw_category) != {
+            "classification_globs",
+            "required_roles",
+            "codeowner_patterns",
+            "representative_paths",
+        }:
+            raise ClassificationError(
+                f"mandatory high-risk category {category_name} differs"
+            )
+        globs = _string_list(
+            raw_category["classification_globs"],
+            f"{category_name}.classification_globs",
+        )
+        roles = _string_list(
+            raw_category["required_roles"], f"{category_name}.required_roles"
+        )
+        owner_patterns = _string_list(
+            raw_category["codeowner_patterns"],
+            f"{category_name}.codeowner_patterns",
+        )
+        representatives = _string_list(
+            raw_category["representative_paths"],
+            f"{category_name}.representative_paths",
+        )
+        if not globs or not roles or not owner_patterns or not representatives:
+            raise ClassificationError(
+                f"mandatory high-risk category {category_name} must not be empty"
+            )
+        if not set(roles) <= OWNER_ROLES:
+            raise ClassificationError(
+                f"mandatory high-risk category {category_name} has unknown roles"
+            )
+        if any(
+            not pattern.startswith("/")
+            or pattern == "*"
+            or any(token in pattern for token in ("!", "[", "]", "\\", "#"))
+            for pattern in owner_patterns
+        ):
+            raise ClassificationError(
+                f"mandatory high-risk category {category_name} has unsafe CODEOWNERS patterns"
+            )
+        for representative in representatives:
+            normalized = normalize_path(representative)
+            if normalized != representative or not _matches_any(representative, globs):
+                raise ClassificationError(
+                    f"mandatory high-risk category {category_name} representative is not classified"
+                )
+            if not any(
+                codeowner_pattern_matches(representative, pattern)
+                for pattern in owner_patterns
+            ):
+                raise ClassificationError(
+                    f"mandatory high-risk category {category_name} representative is not owned"
+                )
     generators = parsed["generator_checks"]
     generator_outputs = parsed["generator_owned_outputs"]
     if not isinstance(generators, dict) or not isinstance(generator_outputs, dict):
@@ -144,17 +236,40 @@ def normalize_path(raw_path: str) -> str:
     return path.as_posix()
 
 
-def _story_ids(paths: Sequence[str]) -> list[str]:
+def story_ids(paths: Sequence[str], patterns: Sequence[str]) -> list[str]:
+    expressions = [
+        re.compile(
+            "^"
+            + re.escape(pattern).replace(re.escape("{digits}"), r"(?P<digits>\d{4})")
+        )
+        for pattern in patterns
+    ]
     identifiers = {
-        f"ST-{match.group(1)}"
+        f"ST-{match.group('digits')}"
         for path in paths
-        if (match := STORY_PATH.match(path)) is not None
+        for expression in expressions
+        if (match := expression.match(path)) is not None
     }
     return sorted(identifiers)
 
 
 def _matches_any(path: str, patterns: Sequence[str]) -> bool:
     return any(fnmatch.fnmatchcase(path, pattern) for pattern in patterns)
+
+
+def codeowner_pattern_matches(path: str, raw_pattern: str) -> bool:
+    pattern = raw_pattern.removeprefix("/")
+    if pattern.endswith("/"):
+        pattern += "*"
+    return fnmatch.fnmatchcase(path, pattern)
+
+
+def high_risk_categories(path: str, config: Mapping[str, Any]) -> list[str]:
+    return [
+        name
+        for name, category in config["mandatory_high_risk_categories"].items()
+        if _matches_any(path, category["classification_globs"])
+    ]
 
 
 def _full_result(
@@ -188,16 +303,11 @@ def classify_paths(
     ]
     visible_paths = [path for path in paths if path not in sensitive_paths]
     if sensitive_paths:
-        return _full_result(
-            config,
-            "high",
-            ["forbidden_secret_path_changed"],
-            len(paths),
-        )
+        raise SensitivePathChangedError(len(sensitive_paths))
     if not visible_paths:
         return _full_result(config, "unknown", ["no_changed_paths"], 0)
 
-    stories = _story_ids(visible_paths)
+    stories = story_ids(visible_paths, config["story_path_patterns"])
     if len(stories) > 1:
         return _full_result(
             config,
@@ -206,9 +316,7 @@ def classify_paths(
             len(visible_paths),
         )
 
-    high_risk = [
-        path for path in visible_paths if _matches_any(path, config["high_risk_globs"])
-    ]
+    high_risk = [path for path in visible_paths if high_risk_categories(path, config)]
     if high_risk:
         return _full_result(
             config,
@@ -357,6 +465,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         result = classify_paths(args.event, paths, config)
         if args.github_output is not None:
             _write_github_output(args.github_output, result)
+    except SensitivePathChangedError as exc:
+        receipt = {
+            "schema": "RAOS_CI_SCOPE_V1",
+            "status": "ERROR",
+            "reason": "forbidden_secret_path_changed",
+            "sensitive_path_count": exc.count,
+        }
+        print(
+            json.dumps(
+                receipt, ensure_ascii=True, separators=(",", ":"), sort_keys=True
+            )
+        )
+        return 2
     except (ClassificationError, FileNotFoundError, OSError) as exc:
         print(f"ci-scope: {exc}", file=sys.stderr)
         return 2

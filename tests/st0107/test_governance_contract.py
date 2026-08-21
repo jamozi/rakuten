@@ -6,10 +6,12 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
 import yaml
 
 from conftest import REPOSITORY_ROOT
 from scripts import build_st0107_pr_governance as generator
+from scripts.classify_ci_scope import codeowner_pattern_matches
 
 
 EXPECTED_CHECKS = (
@@ -32,6 +34,16 @@ def _codeowner_rows(content: bytes) -> list[tuple[str, tuple[str, ...]]]:
         pattern, *owners = line.split()
         rows.append((pattern, tuple(owners)))
     return rows
+
+
+def _owners_for_path(
+    rows: list[tuple[str, tuple[str, ...]]], path: str
+) -> tuple[str, ...]:
+    owners: tuple[str, ...] = ()
+    for pattern, candidate in rows:
+        if codeowner_pattern_matches(path, pattern):
+            owners = candidate
+    return owners
 
 
 def test_contract_is_pinned_to_reviewed_sources_and_safe_local_status(
@@ -107,7 +119,7 @@ def test_rendered_codeowners_routes_only_declared_paths_and_preserves_last_match
         assert by_pattern[pattern] == owners
 
 
-def test_contract_migration_and_security_categories_have_enforced_rows(
+def test_mandatory_high_risk_categories_have_enforced_rows(
     governance_contract: dict[str, Any],
 ) -> None:
     policy = governance_contract["ruleset_policy"]
@@ -117,14 +129,16 @@ def test_contract_migration_and_security_categories_have_enforced_rows(
         for row in governance_contract["codeowners"]["entries"]
     }
 
-    assert set(categories) == {
-        "contract",
-        "migration",
-        "security",
-        "deployment",
-        "governance",
-    }
-    assert categories == generator.EXPECTED_OWNER_CATEGORIES
+    assert tuple(categories) == (
+        "contract_codegen",
+        "migration_database",
+        "authentication_authorization_credentials",
+        "publication_finance_kill_switch",
+        "infrastructure_deployment",
+        "provider_runtime",
+        "governance_ci_status",
+    )
+    assert categories == generator._expected_owner_categories(REPOSITORY_ROOT)
     for category in categories.values():
         required_roles = set(category["roles"])
         assert category["patterns"]
@@ -137,16 +151,16 @@ def test_deployment_category_covers_database_and_object_storage_surfaces(
     governance_contract: dict[str, Any],
 ) -> None:
     deployment = governance_contract["ruleset_policy"]["required_owner_categories"][
-        "deployment"
+        "infrastructure_deployment"
     ]
     assert deployment == {
         "patterns": [
             "/infra/",
             "/docker-compose.yml",
             "/scripts/build_local_compose.py",
-            "/scripts/postgres_service.sh",
-            "/scripts/object_storage_service.sh",
-            "/scripts/object_storage_fixture.py",
+            "/scripts/*deploy*",
+            "/scripts/*storage*",
+            "/scripts/*postgres*",
         ],
         "roles": ["operations", "security"],
     }
@@ -156,9 +170,12 @@ def test_governance_category_covers_ci_and_policy_sources(
     governance_contract: dict[str, Any],
 ) -> None:
     governance = governance_contract["ruleset_policy"]["required_owner_categories"][
-        "governance"
+        "governance_ci_status"
     ]
-    assert governance == generator.EXPECTED_OWNER_CATEGORIES["governance"]
+    assert (
+        governance
+        == generator._expected_owner_categories(REPOSITORY_ROOT)["governance_ci_status"]
+    )
     assert {
         "/AGENTS.md",
         "/.codex/",
@@ -174,6 +191,57 @@ def test_governance_category_covers_ci_and_policy_sources(
         "/.github/",
     } <= set(governance["patterns"])
     assert governance["roles"] == ["security", "operations"]
+
+
+@pytest.mark.parametrize(
+    ("path", "expected_owners"),
+    [
+        (
+            "scripts/build_st0104_contract_repository.py",
+            ("@raos/architecture", "@raos/engineering"),
+        ),
+        (
+            "tests/st0104/test_verifier.py",
+            ("@raos/architecture", "@raos/engineering"),
+        ),
+        (
+            "scripts/build_st0301_migration_framework.py",
+            ("@raos/data", "@raos/security"),
+        ),
+        ("tests/st0301/test_generation.py", ("@raos/data", "@raos/security")),
+        (
+            "scripts/build_st0005_status.py",
+            ("@raos/security", "@raos/operations"),
+        ),
+        (
+            "tests/st0005/test_overlay_contract.py",
+            ("@raos/security", "@raos/operations"),
+        ),
+        (
+            "python/raos/application/iam/authentication.py",
+            ("@raos/security", "@raos/engineering"),
+        ),
+        (
+            "python/raos/domain/iam/authorization.py",
+            ("@raos/security", "@raos/architecture"),
+        ),
+        (
+            "python/raos/adapters/development_workload_credentials.py",
+            ("@raos/security", "@raos/operations"),
+        ),
+        (
+            "python/raos/adapters/wordpresscom_oauth.py",
+            ("@raos/security", "@raos/operations"),
+        ),
+    ],
+)
+def test_representative_high_risk_paths_resolve_to_expected_final_codeowners(
+    governance_contract: dict[str, Any],
+    path: str,
+    expected_owners: tuple[str, ...],
+) -> None:
+    rows = _codeowner_rows(generator.render_codeowners(governance_contract))
+    assert _owners_for_path(rows, path) == expected_owners
 
 
 def test_pull_request_template_captures_the_short_development_loop(
@@ -206,18 +274,23 @@ def test_pull_request_template_captures_the_short_development_loop(
     for row in (
         ("Contract / generated types", "", "Architecture / Engineering"),
         ("Migration / database", "", "Data / Security"),
-        ("Authentication / secrets / security", "", "Security"),
-        (
-            "Deployment / infrastructure / provider runtime",
-            "",
-            "Operations / Security",
-        ),
-        ("Governance / CI (`.github/**`)", "", "Security / Operations"),
+        ("Authentication / authorization / credentials", "", "Security"),
+        ("Publication / finance / kill switch", "", "Security"),
+        ("Deployment / infrastructure", "", "Operations / Security"),
+        ("Provider runtime", "", "Operations / Security"),
+        ("Governance / CI / status", "", "Security / Operations"),
     ):
         assert row in table_rows
-    assert "`make dev-check STORY=ST-XXXX [BASE_REF=<ref>]`" in rendered
+    assert (
+        "`make dev-check STORY=ST-XXXX [STORIES=ST-XXXX,ST-YYYY] "
+        "[BASE_REF=<ref>]`" in rendered
+    )
     assert "- Hosted Base CI at the exact head:" in rendered
-    assert "- Independent automated review:" in rendered
+    assert "- Exact-head human approval (required fallback;" in rendered
+    assert (
+        "- Independent automated review: `NOT_AVAILABLE_HUMAN_REVIEW_FALLBACK`"
+        in rendered
+    )
     assert "- Formal TST not executed:" in rendered
     assert "- Provider / live / staging / Production work not executed:" in rendered
     assert (
@@ -282,7 +355,7 @@ def test_ruleset_artifact_is_fail_closed_desired_state_not_api_payload(
         "dismiss_stale_reviews_on_push": True,
         "require_code_owner_review": True,
         "require_last_push_approval": False,
-        "required_approving_review_count": 0,
+        "required_approving_review_count": 1,
         "required_review_thread_resolution": True,
     }
 
@@ -316,7 +389,7 @@ def test_architecture_snapshot_is_strictly_parsed_and_hash_pinned() -> None:
     assert snapshot["bounded_operator"]["live_execution"] == "NOT_EXECUTED"
     assert (
         snapshot["desired_ruleset_semantics"]["general_required_approving_review_count"]
-        == 0
+        == 1
     )
     assert snapshot["desired_ruleset_semantics"]["require_last_push_approval"] is False
     assert snapshot["local_candidate"]["storage_check_boundary"] == {
@@ -354,14 +427,21 @@ def test_sec_sdlc_010_maps_migrations_to_independent_review_controls(
     governance_contract: dict[str, Any],
 ) -> None:
     policy = governance_contract["ruleset_policy"]
-    migration = policy["required_owner_categories"]["migration"]
+    migration = policy["required_owner_categories"]["migration_database"]
     assert migration == {
-        "patterns": ["/migrations/", "/changes/*/database/"],
+        "patterns": [
+            "/migrations/",
+            "/changes/*/database/",
+            "/changes/st-0301/",
+            "/python/raos/migrations/",
+            "/scripts/*migration*",
+            "/tests/st0301/",
+        ],
         "roles": ["data", "security"],
     }
     assert policy["pull_request"]["require_code_owner_review"] is True
     assert policy["pull_request"]["require_last_push_approval"] is False
-    assert policy["pull_request"]["required_approving_review_count"] == 0
+    assert policy["pull_request"]["required_approving_review_count"] == 1
     execplan = (REPOSITORY_ROOT / "docs/execplans/ST-0107.md").read_text(
         encoding="utf-8"
     )

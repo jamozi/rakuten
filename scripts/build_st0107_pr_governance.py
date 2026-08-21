@@ -22,6 +22,14 @@ from yaml.tokens import AliasToken, AnchorToken
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+if os.fspath(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, os.fspath(REPO_ROOT))
+
+from scripts.classify_ci_scope import (  # noqa: E402
+    EXPECTED_HIGH_RISK_CATEGORIES,
+    load_contract as load_scope_contract,
+)
+
 CONTRACT_PATH: Final = Path("changes/st-0107/contracts/pr-governance.v1.yaml")
 ARCHITECTURE_SNAPSHOT_PATH: Final = Path(
     "docs/architecture/ST-0107-github-governance-snapshot.yaml"
@@ -43,7 +51,7 @@ GENERATION_COMMAND: Final = (
 )
 CHECK_COMMAND: Final = f"{GENERATION_COMMAND} --check"
 EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
-    "29207dc067ad39e7df1760ac7516d2b2fbccfe8a8266b4398ab1aa592c288973"
+    "b0f8c7060c8446805b9fb9d68a6e71778e2117ae224283214e9a086e5c54955b"
 )
 
 PINNED_SOURCES: Final = {
@@ -72,7 +80,7 @@ PINNED_SOURCES: Final = {
         "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
     ),
     ".github/workflows/ci.yml": (
-        "69dc1a2be4ddfa6a70066ec40009cb6c7fcfc5d0ee060b9b2615721d7d085a16"
+        "530e1e77be09cc63bd4e3efc6bbe2e019226a48f9a6ea111b45e2d081efd292c"
     ),
     ".github/workflows/status-registry.yml": (
         "4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a"
@@ -88,6 +96,8 @@ SOURCE_ARTIFACT_PATHS: Final = (
     Path("docs/execplans/ST-0107.md"),
     Path("docs/worklogs/ST-0107.md"),
     Path("scripts/build_st0107_pr_governance.py"),
+    Path("scripts/classify_ci_scope.py"),
+    Path("scripts/dev_check.py"),
     Path("scripts/github_ruleset_operator.py"),
     Path("scripts/build_local_compose.py"),
     Path("scripts/object_storage_service.sh"),
@@ -97,7 +107,10 @@ SOURCE_ARTIFACT_PATHS: Final = (
     Path("tests/st0107/test_governance_contract.py"),
     Path("tests/st0107/test_negative_cases.py"),
     Path("tests/st0107/test_ruleset_operator.py"),
+    Path("tests/st0106/test_ci_scope.py"),
+    Path("tests/st0106/test_dev_check.py"),
     Path("tests/st0106/test_workflow_contract.py"),
+    Path("changes/st-0106/contracts/developer-loop-scope.v1.json"),
     Path("Makefile"),
     Path("README.md"),
 )
@@ -124,11 +137,6 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ("/contracts/", ("architecture", "engineering")),
     ("/migrations/", ("data", "security")),
     ("/infra/", ("operations", "security")),
-    ("/docker-compose.yml", ("operations", "security")),
-    ("/scripts/build_local_compose.py", ("operations", "security")),
-    ("/scripts/postgres_service.sh", ("operations", "security")),
-    ("/scripts/object_storage_service.sh", ("operations", "security")),
-    ("/scripts/object_storage_fixture.py", ("operations", "security")),
     ("/apps/admin/", ("editorial", "security")),
     ("/apps/public/", ("editorial", "accessibility")),
     ("/apps/web/", ("editorial", "security", "accessibility")),
@@ -136,15 +144,58 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ("/packages/finance/", ("finance", "security")),
     ("/python/raos/domain/ai/", ("ai", "security", "editorial")),
     ("/python/raos/domain/finance/", ("finance", "security")),
-    ("/python/raos/generated/", ("architecture", "engineering")),
-    (
-        "/packages/web-contracts/src/generated/",
-        ("architecture", "engineering"),
-    ),
     ("/docs/canonical/", ("architecture",)),
-    ("/AGENTS.md", ("security", "operations")),
+    ("/changes/*/contracts/", ("architecture", "engineering")),
+    ("/changes/**/generated/", ("architecture", "engineering")),
+    ("/python/raos/generated/", ("architecture", "engineering")),
+    ("/packages/web-contracts/src/generated/", ("architecture", "engineering")),
+    ("/scripts/*contract*", ("architecture", "engineering")),
+    ("/scripts/*codegen*", ("architecture", "engineering")),
+    ("/tests/st0104/", ("architecture", "engineering")),
+    ("/tests/st0105/", ("architecture", "engineering")),
+    ("/changes/*/database/", ("data", "security")),
+    ("/changes/st-0301/", ("data", "security")),
+    ("/python/raos/migrations/", ("data", "security")),
+    ("/scripts/*migration*", ("data", "security")),
+    ("/tests/st0301/", ("data", "security")),
+    ("/python/raos/application/finance/", ("finance", "security")),
+    ("/scripts/*finance*", ("finance", "security")),
+    ("/scripts/*publication*", ("editorial", "security")),
+    ("/scripts/*kill_switch*", ("operations", "security")),
+    ("/packages/**/*finance*", ("finance", "security")),
+    ("/packages/**/*publication*", ("editorial", "security")),
+    ("/docker-compose.yml", ("operations", "security")),
+    ("/scripts/build_local_compose.py", ("operations", "security")),
+    ("/scripts/*deploy*", ("operations", "security")),
+    ("/scripts/*storage*", ("operations", "security")),
+    ("/scripts/*postgres*", ("operations", "security")),
+    ("/python/raos/adapters/", ("operations", "security")),
+    ("/python/raos/ports/*provider*", ("operations", "security")),
+    ("/python/raos/domain/ai/provider.py", ("operations", "security")),
+    ("/scripts/*provider*", ("operations", "security")),
+    ("/python/raos/domain/iam/", ("security", "architecture")),
+    ("/python/raos/application/iam/", ("security", "engineering")),
+    ("/python/raos/ports/*authorization*", ("security", "architecture")),
+    ("/python/raos/ports/*credential*", ("security", "architecture")),
+    ("/python/raos/adapters/*credential*", ("security", "operations")),
+    ("/python/raos/adapters/*oauth*", ("security", "operations")),
+    ("/scripts/*auth*", ("security", "operations")),
+    ("/scripts/*credential*", ("security", "operations")),
+    ("/scripts/*secret*", ("security", "engineering")),
+    ("/scripts/run_network_denied.sh", ("security", "engineering")),
+    ("/scripts/assert_network_denied.py", ("security", "engineering")),
+    ("/docs/canonical/04_security/", ("security", "architecture")),
+    ("/tests/security/", ("security", "engineering")),
     ("/.codex/", ("security", "operations")),
+    ("/AGENTS.md", ("security", "operations")),
     ("/Makefile", ("security", "operations")),
+    ("/package.json", ("security", "operations")),
+    ("/package-lock.json", ("security", "operations")),
+    ("/pyproject.toml", ("security", "operations")),
+    ("/uv.lock", ("security", "operations")),
+    ("/uv.toml", ("security", "operations")),
+    ("/workspace-layout.json", ("security", "operations")),
+    ("/changes/st-0005/", ("security", "operations")),
     ("/changes/st-0106/", ("security", "operations")),
     ("/changes/st-0107/", ("security", "operations")),
     (
@@ -153,22 +204,17 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ),
     ("/docs/execplans/ST-0107.md", ("security", "operations")),
     ("/docs/worklogs/ST-0107.md", ("security", "operations")),
+    ("/scripts/build_st0005_status.py", ("security", "operations")),
+    ("/scripts/build_st0107_pr_governance.py", ("security", "operations")),
     ("/scripts/classify_ci_scope.py", ("security", "operations")),
+    ("/scripts/ci_job.sh", ("security", "operations")),
     ("/scripts/dev_check.py", ("security", "operations")),
-    (
-        "/scripts/build_st0107_pr_governance.py",
-        ("security", "operations"),
-    ),
     ("/scripts/github_ruleset_operator.py", ("security", "operations")),
+    ("/scripts/node_toolchain.sh", ("security", "operations")),
+    ("/scripts/python_toolchain.sh", ("security", "operations")),
+    ("/tests/st0005/", ("security", "operations")),
     ("/tests/st0106/", ("security", "operations")),
     ("/tests/st0107/", ("security", "operations")),
-    ("/changes/*/contracts/", ("architecture", "engineering")),
-    ("/changes/*/database/", ("data", "security")),
-    ("/docs/canonical/04_security/", ("security", "architecture")),
-    ("/tests/security/", ("security", "engineering")),
-    ("/scripts/scan_secrets.py", ("security", "engineering")),
-    ("/scripts/run_network_denied.sh", ("security", "engineering")),
-    ("/scripts/assert_network_denied.py", ("security", "engineering")),
     ("/.github/", ("security", "operations")),
 )
 EXPECTED_CHECK_CONTEXTS: Final = (
@@ -180,65 +226,13 @@ EXPECTED_CHECK_CONTEXTS: Final = (
     "Secrets",
     "Validate status overlay",
 )
-EXPECTED_OWNER_CATEGORIES: Final = {
-    "contract": {
-        "patterns": ["/contracts/", "/changes/*/contracts/"],
-        "roles": ["architecture", "engineering"],
-    },
-    "migration": {
-        "patterns": ["/migrations/", "/changes/*/database/"],
-        "roles": ["data", "security"],
-    },
-    "security": {
-        "patterns": [
-            "/docs/canonical/04_security/",
-            "/tests/security/",
-            "/scripts/scan_secrets.py",
-            "/scripts/run_network_denied.sh",
-            "/scripts/assert_network_denied.py",
-            "/.github/",
-        ],
-        "roles": ["security"],
-    },
-    "deployment": {
-        "patterns": [
-            "/infra/",
-            "/docker-compose.yml",
-            "/scripts/build_local_compose.py",
-            "/scripts/postgres_service.sh",
-            "/scripts/object_storage_service.sh",
-            "/scripts/object_storage_fixture.py",
-        ],
-        "roles": ["operations", "security"],
-    },
-    "governance": {
-        "patterns": [
-            "/AGENTS.md",
-            "/.codex/",
-            "/Makefile",
-            "/changes/st-0106/",
-            "/changes/st-0107/",
-            "/docs/architecture/ST-0107-github-governance-snapshot.yaml",
-            "/docs/execplans/ST-0107.md",
-            "/docs/worklogs/ST-0107.md",
-            "/scripts/classify_ci_scope.py",
-            "/scripts/dev_check.py",
-            "/scripts/build_st0107_pr_governance.py",
-            "/scripts/github_ruleset_operator.py",
-            "/tests/st0106/",
-            "/tests/st0107/",
-            "/.github/",
-        ],
-        "roles": ["security", "operations"],
-    },
-}
 EXPECTED_ACTIVATION_PREREQUISITES: Final = (
     "real repository and default branch identified",
     "every team binding resolves to a visible GitHub team with write permission",
     "every required check has run in the repository and is bound to the expected GitHub Actions app",
     "ruleset API request is assembled from the reviewed policy and live numeric bindings, and authenticated read-back matches the desired active policy with no bypass actor",
-    "ordinary-path zero-approval, high-risk CODEOWNER, direct-push, stale-review, missing-check, unresolved-thread, deletion, and force-push PR probes pass",
-    "a matching governance CODEOWNER approves the high-risk activation change and read-back confirms zero general approvals, code-owner review enabled, and last-push approval disabled",
+    "ordinary-path exact-head approval, high-risk CODEOWNER, direct-push, stale-review, missing-check, unresolved-thread, deletion, and force-push PR probes pass",
+    "a matching governance CODEOWNER approves the high-risk activation change and read-back confirms one general approval, code-owner review enabled, stale-review dismissal enabled, and last-push approval disabled",
 )
 CANONICAL_STORY: Final = {
     "id": "ST-0107",
@@ -339,6 +333,18 @@ def sha256_bytes(content: bytes) -> str:
 
 def sha256_file(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
+
+
+def _expected_owner_categories(root: Path) -> dict[str, dict[str, list[str]]]:
+    scope = load_scope_contract(root)
+    categories = scope["mandatory_high_risk_categories"]
+    return {
+        name: {
+            "patterns": list(category["codeowner_patterns"]),
+            "roles": list(category["required_roles"]),
+        }
+        for name, category in categories.items()
+    }
 
 
 def _render_prettier_json_value(value: object, indent: int, column: int) -> str:
@@ -623,7 +629,7 @@ def _validate_architecture_snapshot(root: Path) -> None:
         snapshot["desired_ruleset_semantics"],
         "architecture snapshot desired_ruleset_semantics",
     )
-    if desired_ruleset.get("general_required_approving_review_count") != 0:
+    if desired_ruleset.get("general_required_approving_review_count") != 1:
         raise RuntimeError("architecture snapshot general review count drifted")
     if desired_ruleset.get("require_last_push_approval") is not False:
         raise RuntimeError("architecture snapshot last-push policy drifted")
@@ -766,6 +772,14 @@ def _validate_owner_bindings(
         if by_pattern.get(pattern) != expected_roles:
             raise RuntimeError(f"canonical CODEOWNERS row is not preserved: {pattern}")
 
+    for category_name, category in _expected_owner_categories(root).items():
+        required_roles = set(category["roles"])
+        for pattern in category["patterns"]:
+            if not required_roles.issubset(by_pattern.get(pattern, ())):
+                raise RuntimeError(
+                    f"mandatory taxonomy owner coverage differs for {category_name}"
+                )
+
     return handles, entries
 
 
@@ -840,7 +854,7 @@ def _validate_ruleset(
         "dismiss_stale_reviews_on_push": True,
         "require_code_owner_review": True,
         "require_last_push_approval": False,
-        "required_approving_review_count": 0,
+        "required_approving_review_count": 1,
         "required_review_thread_resolution": True,
     }
     if dict(pull_request) != expected_pull_request:
@@ -879,7 +893,8 @@ def _validate_ruleset(
         policy["required_owner_categories"],
         "ruleset_policy.required_owner_categories",
     )
-    if dict(categories) != EXPECTED_OWNER_CATEGORIES:
+    expected_categories = _expected_owner_categories(root)
+    if dict(categories) != expected_categories:
         raise RuntimeError("required owner categories differ from the reviewed policy")
     entry_roles = {
         str(entry["pattern"]): set(_list(entry["roles"], "entry roles"))
@@ -904,21 +919,16 @@ def _validate_ruleset(
     return policy
 
 
-def _validate_template(contract: Mapping[str, Any]) -> Mapping[str, Any]:
+def _validate_template(contract: Mapping[str, Any], root: Path) -> Mapping[str, Any]:
     template = _mapping(contract["pull_request_template"], "pull_request_template")
     expected = {
         "canonical_source": "repo://docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md",
-        "required_owner_categories": [
-            "contract",
-            "migration",
-            "security",
-            "deployment",
-            "governance",
-        ],
+        "required_owner_categories": list(EXPECTED_HIGH_RISK_CATEGORIES),
         "require_not_applicable_rationale": True,
         "require_dev_check": True,
         "require_hosted_ci": True,
-        "require_automated_review": True,
+        "independent_automated_review": "NOT_AVAILABLE_HUMAN_REVIEW_FALLBACK",
+        "require_exact_head_human_review": True,
         "require_deferred_formal_live_items": True,
     }
     if dict(template) != expected:
@@ -975,7 +985,7 @@ def load_and_validate_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     _validate_architecture_snapshot(root)
     _validate_canonical_story(root)
     _, entries = _validate_owner_bindings(contract, root)
-    _validate_template(contract)
+    _validate_template(contract, root)
     _validate_ruleset(contract, entries, root)
     _validate_activation(contract)
     return dict(contract)
@@ -1002,7 +1012,7 @@ def render_codeowners(contract: Mapping[str, Any]) -> bytes:
 
 
 def render_pull_request_template(contract: Mapping[str, Any], root: Path) -> bytes:
-    _validate_template(contract)
+    _validate_template(contract, root)
     _repository_regular_file(
         root,
         Path("docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md"),
@@ -1021,21 +1031,24 @@ def render_pull_request_template(contract: Mapping[str, Any], root: Path) -> byt
 
 ## Development evidence
 
-- `make dev-check STORY=ST-XXXX [BASE_REF=<ref>]`:
+- `make dev-check STORY=ST-XXXX [STORIES=ST-XXXX,ST-YYYY] [BASE_REF=<ref>]`:
 - Hosted Base CI at the exact head:
-- Independent automated review:
+- Exact-head human approval (required fallback; stale approvals are dismissed):
+- Independent automated review: `NOT_AVAILABLE_HUMAN_REVIEW_FALLBACK`
 
 ## High-risk CODEOWNER review
 
 Use `N/A` only when the path family is unchanged, and record the rationale.
 
-| Area                                           | Changed paths or N/A rationale | Required CODEOWNER review  |
-| ---------------------------------------------- | ------------------------------ | -------------------------- |
-| Contract / generated types                     |                                | Architecture / Engineering |
-| Migration / database                           |                                | Data / Security            |
-| Authentication / secrets / security            |                                | Security                   |
-| Deployment / infrastructure / provider runtime |                                | Operations / Security      |
-| Governance / CI (`.github/**`)                 |                                | Security / Operations      |
+| Area                                         | Changed paths or N/A rationale | Required CODEOWNER review  |
+| -------------------------------------------- | ------------------------------ | -------------------------- |
+| Contract / generated types                   |                                | Architecture / Engineering |
+| Migration / database                         |                                | Data / Security            |
+| Authentication / authorization / credentials |                                | Security                   |
+| Publication / finance / kill switch          |                                | Security                   |
+| Deployment / infrastructure                  |                                | Operations / Security      |
+| Provider runtime                             |                                | Operations / Security      |
+| Governance / CI / status                     |                                | Security / Operations      |
 
 ## Deferred formal or live work
 
@@ -1047,6 +1060,7 @@ Use `N/A` only when the path family is unchanged, and record the rationale.
 
 - [ ] Local and hosted CI results are not represented as formal, live, release, staging, or Production evidence
 - [ ] No credential, secret, personal data, production data, or raw provider material is included
+- [ ] Exact-head human approval is present; no in-PR self-review is represented as independent review
 - [ ] High-risk CODEOWNER review is complete, or every row has an `N/A` rationale
 """
     header = (

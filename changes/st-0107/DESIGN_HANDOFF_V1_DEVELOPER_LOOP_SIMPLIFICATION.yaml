@@ -35,11 +35,13 @@ decision:
     Reversible local development and the normal exact-head GitHub development
     workflow do not require repeated human approval.
   pull_request_review: >-
-    Ordinary paths require terminal affected checks but no general approving
-    review. Contract, migration, security, deployment, and governance paths
-    retain CODEOWNERS routing and code-owner approval; high-risk PRs also require
-    full Base CI and independent automated review. Last-push approval is not a
-    separate repository-local prerequisite.
+    A trusted independent automated reviewer is not available inside this
+    no-network local slice. Every pull request therefore retains one approving
+    human review, and stale approvals are dismissed on push so the review binds
+    the current diff. Contract/codegen, migration/database, authentication,
+    publication/finance, deployment, provider-runtime, and governance paths
+    additionally retain CODEOWNERS routing and code-owner approval. Last-push
+    approval is not a separate repository-local prerequisite.
   ruleset_operation: >-
     A fixed-repository operator may prepare status and hash-bound plans. Its
     apply and rollback interfaces are hard-disabled pending a separately
@@ -58,11 +60,14 @@ constraints:
   - Keep Static, Unit, Contracts, Database, Storage, and Secrets check names.
   - Secrets always runs; classifier failure must fail required jobs.
   - Unknown, multi-Story, and high-risk changes fail safe to full Base CI.
-  - Contract, migration, security, deployment, and governance paths retain
-    CODEOWNERS routing and `require_code_owner_review`.
+  - Mandatory high-risk categories and their CODEOWNERS patterns come from the
+    ST-0106 versioned developer-loop scope contract and are cross-checked by the
+    ST-0107 generator.
   - Preserve strict checks, linear history, deletion/force-push protection, and
     an empty bypass actor list.
-  - Do not read `.secrets/**` during classification or developer checks.
+  - The classifier and dev-check orchestrator fail before child checks when a
+    changed `.secrets/**` path is detected, and expose only its count. Child
+    pytest and generator commands remain trusted local processes, not a sandbox.
 security_and_approval_gates:
   preserved:
     - credential entry or exposure
@@ -75,10 +80,10 @@ security_and_approval_gates:
   credential_values: FORBIDDEN_IN_ARGUMENTS_LOGS_AND_TRACKED_FILES
 acceptance_criteria:
   - Root AGENTS.md is at most 180 lines and points ST-0101 detail to Story-local sources.
-  - '`make dev-check STORY=ST-XXXX [BASE_REF=<ref>]` emits a machine-readable summary.'
+  - '`make dev-check STORY=ST-XXXX [STORIES=ST-XXXX,ST-YYYY] [BASE_REF=<ref>]` emits a machine-readable summary.'
   - PR CI selects affected jobs while required contexts remain terminal.
   - High-risk, unknown, multi-Story, main, nightly, and manual runs select full Base CI.
-  - Generated governance sets general review count to zero, retains high-risk CODEOWNER review, has no bypass actor, and preserves branch protections.
+  - Generated governance requires one exact-head human approval as the fail-closed independent-review fallback, retains high-risk CODEOWNER review, has no bypass actor, and preserves branch protections.
   - The bounded ruleset operator is fixed to `jamozi/rakuten` and `https://api.github.com`.
 required_test_evidence:
   minimum_checks:
@@ -135,6 +140,18 @@ deferred_verification_ledger:
       safe_impact: >-
         The versioned contract hard-disables apply and rollback before
         credential intake, API reads, or mutation; status and plan remain read-only.
+    - id: DLS-DEBT-004
+      introduced_by_story: ST-0106 developer-check orchestration
+      failing_command: make dev-check STORY=ST-XXXX BASE_REF=main
+      observed_result: >-
+        The orchestrator excludes and fail-closes changed `.secrets/**` paths,
+        but isolated pytest and allowlisted generator children inherit the
+        trusted caller environment and are not filesystem/network sandboxed.
+      affected_owner_artifact: scripts/dev_check.py and changes/st-0106/README.md
+      closure_wave: dedicated local child-process sandbox design
+      safe_impact: >-
+        The command no longer claims sandbox isolation; run it only in a trusted
+        local environment. Hosted denied-network CI boundaries remain separate.
 open_decision_state:
   canonical_open_decisions_introduced: []
   unresolved_business_or_provider_values: []

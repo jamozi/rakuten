@@ -127,7 +127,7 @@ desired_ruleset_semantics:
   desired_enforcement_after_approval: active
   current_enforcement_claim: NONE
   bypass_actors: NONE_DESIRED
-  general_required_approving_review_count: 0
+  general_required_approving_review_count: 1
   require_last_push_approval: false
   rules:
     - prohibit_deletion
@@ -141,8 +141,10 @@ desired_ruleset_semantics:
   owner_semantics_note: >-
     Owners on the same CODEOWNERS line are eligible alternatives. The local
     mapping does not claim that GitHub requires every listed team to approve.
-    There is no global owner row: unmatched ordinary paths require no owner
-    approval, while matching high-risk paths retain code-owner review.
+    There is no global owner row: unmatched ordinary paths do not add a
+    CODEOWNER requirement, but the fail-closed human-review fallback requires
+    one exact-head approving review for every pull request. Matching high-risk
+    paths additionally retain code-owner review.
   required_status_candidates:
     - context: Static
       expected_source: github-actions
@@ -178,9 +180,9 @@ activation_preflight:
     - id: authenticated-effective-snapshot
       requirement: Capture repository and parent rulesets plus active branch rules with sufficient access to expose the complete bypass state.
     - id: live-probes
-      requirement: Prove ordinary-path zero-approval, high-risk CODEOWNER coverage, review invalidation, thread resolution, missing-check blocking, direct-push denial, deletion denial, and force-push denial on real pull requests and refs.
+      requirement: Prove ordinary-path one-approval fallback, high-risk CODEOWNER coverage, review invalidation, thread resolution, missing-check blocking, direct-push denial, deletion denial, and force-push denial on real pull requests and refs.
     - id: high-risk-codeowner-review
-      requirement: Obtain matching governance CODEOWNER approval of the high-risk activation change and verify that read-back keeps zero general approvals, code-owner review enabled, and last-push approval disabled.
+      requirement: Obtain matching governance CODEOWNER approval of the high-risk activation change and verify that read-back keeps one general approval, code-owner review enabled, stale-review dismissal enabled, and last-push approval disabled.
 
 verification_boundary:
   local_generation: DOES_NOT_PROVE_GITHUB_ENFORCEMENT

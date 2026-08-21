@@ -162,11 +162,21 @@ def test_workflow_uses_unprivileged_pr_and_full_integration_events() -> None:
     assert WORKFLOW["permissions"] == {"contents": "read"}
     assert WORKFLOW["concurrency"] == {
         "group": (
-            "base-ci-${{ github.event.pull_request.number || github.ref || "
-            "github.run_id }}"
+            "base-ci-${{ github.event_name == 'pull_request' && "
+            "format('pr-{0}', github.event.pull_request.number) || "
+            "github.event_name == 'push' && format('push-{0}', github.ref) || "
+            "format('{0}-{1}', github.event_name, github.run_id) }}"
         ),
         "cancel-in-progress": "true",
     }
+
+
+def test_concurrency_groups_separate_pr_push_schedule_and_manual_runs() -> None:
+    group = WORKFLOW["concurrency"]["group"]
+    assert "format('pr-{0}', github.event.pull_request.number)" in group
+    assert "format('push-{0}', github.ref)" in group
+    assert "format('{0}-{1}', github.event_name, github.run_id)" in group
+    assert "github.event.pull_request.number || github.ref" not in group
     assert WORKFLOW["defaults"] == {"run": {"shell": "bash"}}
 
 

@@ -82,7 +82,10 @@ before credential intake, API reads, or mutation. `UNVERIFIED_PLACEHOLDERS`
 would independently fail the owner-binding guard. A future activation must add
 a separately reviewed contract for real CODEOWNER identity/permission evidence,
 HEAD/live-main binding, pagination, and durable single-attempt serialization.
-Planning does not grant apply authority.
+Read-only `status` and `plan` also fail closed unless every required context has
+one GitHub Actions check run on the observed `main` SHA with terminal
+`completed` / `success` state no more than 24 hours old. Planning does not grant
+apply authority.
 
 ## Local candidate semantics
 
@@ -95,9 +98,12 @@ GitHub requires an owner team to be visible and to have explicit write
 permission; local syntax and generation cannot establish either fact.
 
 There is deliberately no global `*` owner row. A path that matches none of the
-declared rows is an ordinary path and does not require CODEOWNER approval.
-Contract, migration, security, deployment, and governance paths retain their
-specific routes.
+declared rows is an ordinary path and does not add a CODEOWNER requirement.
+Because this local slice cannot establish a trusted independent automated
+reviewer, every pull request still requires one approving human review. Stale
+approvals are dismissed after a push. Contract/codegen, migration/database,
+authentication, publication/finance, deployment, provider-runtime, and
+governance paths retain their specific additional routes.
 
 Owners listed on one CODEOWNERS line are eligible alternatives. GitHub's code
 owner rule does not require every listed team to approve. Before activation, a
@@ -106,15 +112,16 @@ security, deployment, and governance paths receive the intended owner
 coverage.
 
 The PR template records the Story or named slice, risk classification,
-`make dev-check`, exact-head hosted CI, independent automated review, high-risk
-CODEOWNER review or an `N/A` rationale, and deferred formal/live work. Template
-completion is evidence metadata; it is not itself an authorization or GitHub
-enforcement control.
+`make dev-check`, exact-head hosted CI, the exact-head human-review fallback,
+high-risk CODEOWNER review or an `N/A` rationale, and deferred formal/live
+work. It explicitly records that an in-PR self-check is not independent review.
+Template completion is evidence metadata; it is not itself authorization or a
+GitHub enforcement control.
 
 The ruleset desired state has no bypass actors, targets the symbolic default
 branch, blocks deletion and force pushes, requires linear history, stale-review
 dismissal, resolved threads, and code-owner review for matching paths. General
-approving-review count is zero and last-push approval is disabled. The named
+approving-review count is one and last-push approval is disabled. The named
 ST-0106, ST-0201 `Database`, ST-0202 `Storage`, and status checks remain
 required. Each required check source remains unbound until its real GitHub
 Actions integration identity is observed. The Database and Storage jobs' exact
@@ -135,12 +142,12 @@ high-risk activation change:
    exact context and expected GitHub Actions App/integration ID;
 4. obtain an authenticated ruleset snapshot with parent rules included and
    enough permission to expose the complete bypass-actor state;
-5. execute positive and negative probes for ordinary-path zero-approval,
+5. execute positive and negative probes for ordinary-path one-approval fallback,
    high-risk CODEOWNER coverage, required checks, stale reviews, unresolved
    threads, direct pushes, deletion, and force pushing; and
 6. obtain matching governance CODEOWNER approval and verify by authenticated
-   read-back that general approvals are zero, code-owner review is enabled, and
-   last-push approval is disabled.
+   read-back that general approvals are one, stale approvals are dismissed,
+   code-owner review is enabled, and last-push approval is disabled.
 
 The bounded operator flow remains separate from this generator:
 

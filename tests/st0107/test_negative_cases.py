@@ -280,16 +280,18 @@ def test_unreviewed_codeowners_entry_cannot_be_added(
 def test_required_owner_category_cannot_reference_an_unowned_pattern(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:
-    mutable_contract["ruleset_policy"]["required_owner_categories"]["security"][
-        "patterns"
-    ].append("/not-owned/")
+    mutable_contract["ruleset_policy"]["required_owner_categories"][
+        "authentication_authorization_credentials"
+    ]["patterns"].append("/not-owned/")
     reject_contract(mutable_contract, "required owner categories differ")
 
 
 def test_required_owner_category_inventory_cannot_be_reduced(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:
-    del mutable_contract["ruleset_policy"]["required_owner_categories"]["migration"]
+    del mutable_contract["ruleset_policy"]["required_owner_categories"][
+        "migration_database"
+    ]
     reject_contract(mutable_contract, "required owner categories differ")
 
 
@@ -325,7 +327,7 @@ def test_fail_closed_ruleset_field_cannot_be_weakened(
         ("dismiss_stale_reviews_on_push", False),
         ("require_code_owner_review", False),
         ("require_last_push_approval", True),
-        ("required_approving_review_count", 1),
+        ("required_approving_review_count", 0),
         ("required_review_thread_resolution", False),
     ],
 )
@@ -427,9 +429,13 @@ def test_activation_prerequisite_cannot_be_omitted(
         ("require_not_applicable_rationale", False),
         ("require_dev_check", False),
         ("require_hosted_ci", False),
-        ("require_automated_review", False),
+        ("require_exact_head_human_review", False),
+        ("independent_automated_review", "SELF_ATTESTED"),
         ("require_deferred_formal_live_items", False),
-        ("required_owner_categories", ["contract", "migration", "security"]),
+        (
+            "required_owner_categories",
+            ["contract_codegen", "migration_database"],
+        ),
     ],
 )
 def test_pull_request_template_review_requirements_cannot_be_reduced(

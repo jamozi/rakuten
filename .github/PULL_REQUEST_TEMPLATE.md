@@ -16,21 +16,24 @@
 
 ## Development evidence
 
-- `make dev-check STORY=ST-XXXX [BASE_REF=<ref>]`:
+- `make dev-check STORY=ST-XXXX [STORIES=ST-XXXX,ST-YYYY] [BASE_REF=<ref>]`:
 - Hosted Base CI at the exact head:
-- Independent automated review:
+- Exact-head human approval (required fallback; stale approvals are dismissed):
+- Independent automated review: `NOT_AVAILABLE_HUMAN_REVIEW_FALLBACK`
 
 ## High-risk CODEOWNER review
 
 Use `N/A` only when the path family is unchanged, and record the rationale.
 
-| Area                                           | Changed paths or N/A rationale | Required CODEOWNER review  |
-| ---------------------------------------------- | ------------------------------ | -------------------------- |
-| Contract / generated types                     |                                | Architecture / Engineering |
-| Migration / database                           |                                | Data / Security            |
-| Authentication / secrets / security            |                                | Security                   |
-| Deployment / infrastructure / provider runtime |                                | Operations / Security      |
-| Governance / CI (`.github/**`)                 |                                | Security / Operations      |
+| Area                                         | Changed paths or N/A rationale | Required CODEOWNER review  |
+| -------------------------------------------- | ------------------------------ | -------------------------- |
+| Contract / generated types                   |                                | Architecture / Engineering |
+| Migration / database                         |                                | Data / Security            |
+| Authentication / authorization / credentials |                                | Security                   |
+| Publication / finance / kill switch          |                                | Security                   |
+| Deployment / infrastructure                  |                                | Operations / Security      |
+| Provider runtime                             |                                | Operations / Security      |
+| Governance / CI / status                     |                                | Security / Operations      |
 
 ## Deferred formal or live work
 
@@ -42,4 +45,5 @@ Use `N/A` only when the path family is unchanged, and record the rationale.
 
 - [ ] Local and hosted CI results are not represented as formal, live, release, staging, or Production evidence
 - [ ] No credential, secret, personal data, production data, or raw provider material is included
+- [ ] Exact-head human approval is present; no in-PR self-review is represented as independent review
 - [ ] High-risk CODEOWNER review is complete, or every row has an `N/A` rationale

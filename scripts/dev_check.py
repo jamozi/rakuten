@@ -23,6 +23,7 @@ from classify_ci_scope import (  # noqa: E402
     ClassificationError,
     load_contract,
     normalize_path,
+    story_ids,
 )
 
 
@@ -31,8 +32,7 @@ STORY_ID: Final = re.compile(r"^ST-(\d{4})$")
 SAFE_REVISION: Final = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/@^{}~+-]*$")
 PYTHON_SUFFIXES: Final = {".py", ".pyi"}
 SHELL_SUFFIXES: Final = {".bash", ".sh"}
-NODE_CODE_SUFFIXES: Final = {".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx"}
-NODE_FORMAT_SUFFIXES: Final = NODE_CODE_SUFFIXES | {
+NODE_FORMAT_EXTRA_SUFFIXES: Final = {
     ".css",
     ".json",
     ".md",
@@ -49,6 +49,15 @@ SAFE_DIFF_PATHSPEC: Final = (
 
 class DeveloperCheckError(RuntimeError):
     """Raised when the local developer-check boundary is invalid."""
+
+
+class DeveloperCheckScopeError(DeveloperCheckError):
+    """The selected Story declaration does not equal detected changed Stories."""
+
+    def __init__(self, detected: Sequence[str], declared: Sequence[str]) -> None:
+        super().__init__("changed_story_scope_mismatch")
+        self.detected = list(detected)
+        self.declared = list(declared)
 
 
 def _git_bytes(root: Path, arguments: Sequence[str]) -> bytes:
@@ -232,6 +241,22 @@ def _expand_generator_command(command: Sequence[str]) -> list[str]:
     return [sys.executable if token == "{python}" else token for token in command]
 
 
+def declared_story_ids(selected_story: str, raw_stories: str | None) -> list[str]:
+    if raw_stories is None:
+        return [selected_story]
+    values = raw_stories.split(",")
+    if (
+        not values
+        or any(STORY_ID.fullmatch(value) is None for value in values)
+        or len(values) != len(set(values))
+        or selected_story not in values
+    ):
+        raise DeveloperCheckError(
+            "STORIES must be a unique comma-separated set containing STORY"
+        )
+    return sorted(values)
+
+
 def run_checks(
     root: Path,
     story: str,
@@ -289,7 +314,10 @@ def run_checks(
     else:
         deferred.append("bash_n:no_changed_shell")
 
-    node_files = _existing_files(root, source_paths, NODE_FORMAT_SUFFIXES)
+    node_code_suffixes = set(config["node_suffixes"])
+    node_files = _existing_files(
+        root, source_paths, node_code_suffixes | NODE_FORMAT_EXTRA_SUFFIXES
+    )
     node_projects = _node_projects(paths)
     if node_files or node_projects:
         node = shutil.which("node")
@@ -310,7 +338,7 @@ def run_checks(
             eslint_files = [
                 path
                 for path in node_files
-                if PurePosixPath(path).suffix.lower() in NODE_CODE_SUFFIXES
+                if PurePosixPath(path).suffix.lower() in node_code_suffixes
                 and "/generated/" not in f"/{path}"
             ]
             if eslint_files:
@@ -391,6 +419,10 @@ def run_checks(
 def parse_args(argv: Sequence[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--story", required=True)
+    parser.add_argument(
+        "--stories",
+        help="explicit comma-separated changed Story set for a named integration slice",
+    )
     parser.add_argument("--base-ref")
     parser.add_argument("--repository-root", type=Path, default=REPOSITORY_ROOT)
     return parser.parse_args(argv)
@@ -406,9 +438,44 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise DeveloperCheckError("STORY must have the form ST-XXXX")
         base_ref = resolve_base_ref(root, args.base_ref)
         paths, sensitive_count = collect_changed_paths(root, base_ref)
+        if sensitive_count:
+            receipt = {
+                "schema": "RAOS_DEV_CHECK_V1",
+                "status": "ERROR",
+                "reason": "forbidden_secret_path_changed",
+                "sensitive_path_count": sensitive_count,
+            }
+            print(
+                json.dumps(
+                    receipt,
+                    ensure_ascii=True,
+                    separators=(",", ":"),
+                    sort_keys=True,
+                )
+            )
+            return 2
         config = load_contract(root)
+        detected = story_ids(paths, config["story_path_patterns"])
+        declared = declared_story_ids(args.story, args.stories)
+        if detected != declared:
+            raise DeveloperCheckScopeError(detected, declared)
         receipt = run_checks(root, args.story, base_ref, paths, config)
-        receipt["ignored_sensitive_path_count"] = sensitive_count
+        receipt["detected_story_ids"] = detected
+        receipt["declared_story_ids"] = declared
+    except DeveloperCheckScopeError as exc:
+        receipt = {
+            "schema": "RAOS_DEV_CHECK_V1",
+            "status": "ERROR",
+            "reason": "changed_story_scope_mismatch",
+            "detected_story_ids": exc.detected,
+            "declared_story_ids": exc.declared,
+        }
+        print(
+            json.dumps(
+                receipt, ensure_ascii=True, separators=(",", ":"), sort_keys=True
+            )
+        )
+        return 2
     except (
         DeveloperCheckError,
         ClassificationError,
