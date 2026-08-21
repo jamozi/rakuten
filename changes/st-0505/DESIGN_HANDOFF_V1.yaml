@@ -52,10 +52,10 @@ decision:
     classification: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
     runtime_name: rakuten-owner-local
     trusted_runtime_root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    installed_bundle_sha256: 668d97a8487c3fc019017274265e03282da5617e4938c9aed934a321facd1e60
+    installed_bundle_sha256: e7fa043b75f2e10d8cefc19f80a265731fe963aef844f3e96f7734878dc33fbf
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 6b148cb4cb5a61b9f2b4576bdd54d25e20bba61dd07ee6c9c61a2c9be10d08cc
-    install_stage_sha256: 6cf38d28d065b67f5e6484933c09da2c91964a7bad1e7d2439251b15cc9325d3
+    installer_sha256: 4dbc28f0b458d2914bf5c4608952a096694ef7468a701781dd438e7b830da2f0
+    install_stage_sha256: 2c71152a422c7324fc5b1ad69de1188eb0821acc8de6cf5f489764792e86a3f8
     runtime_install_execution: NOT_EXECUTED
     credential_store: .secrets/rakuten-owner-local/credentials.v1.json
     credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
@@ -119,7 +119,7 @@ constraints:
   - an exact owner-local Item itemCode or shopCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH before credential-reflection inspection
   - owner-local Product requests allow keyword with optional genreId, genreId alone, or one exclusive productId/productCode; page is 1 and sort is standard
   - an exact owner-local Product productId or productCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH
-  - page-1 response summaries bind empty collections to zero count, pageCount, first, and last; non-empty collections require count at least the returned cardinality, pageCount from 1 through 100, first 1, and last equal to returned cardinality
+  - page-1 response summaries bind empty collections to zero count, pageCount, first, and last; non-empty collections require count at least the returned cardinality, pageCount exactly equal to min(ceil(count / hits), 100), first 1, and last equal to returned cardinality
   - the closed owner-local result V1 key set always includes count, page, first, last, hits, and pageCount; success stores their validated integers, every failure stores all six keys as null, and canonical result files sort keys in compact UTF-8 JSON with one trailing LF
   - if an exact timezone.utc fold-0 second wall-clock observation moves before an equally valid started_at, finished_at is clamped to started_at; if terminal clock sampling raises after the attempt, the already sampled started_at is reused so every post-request success, received failure, or ambiguous outcome still reaches the single bounded result write without changing the V1 schema; other returned clock shapes remain subject to the existing fixed INVALID_ARGUMENT result-envelope validation
   - first and last complete the repository V1 contract while runtime install and execution evidence remain NOT_EXECUTED; no deployed-result migration or backward-compatibility status is claimed
@@ -162,7 +162,7 @@ acceptance_criteria:
   - keyword, genre, smoke, and exact-selector fixtures reject null, empty, edge-whitespace, non-string, or oversized mandatory Item itemCode/itemName and Product productCode/productId values while preserving optional shopCode/shopName/productName behavior
   - normalized mandatory, optional, and list URL positions reject hostile Unicode whitespace, control, format, backslash, host, userinfo, fragment, port, and percent-escape syntax while retaining the documented valid international, IPv6, port, path, and query forms
   - the generated custom-request argv template rejects unrendered placeholders, unknown APIs, relative paths, extra arguments, and launcher tampering before dispatch, while hostile absolute path bytes remain one quoted positional argument
-  - itemCode/shopCode and productId/productCode identity drift and contradictory empty or non-empty response summaries fail closed with complete sanitized response metadata
+  - itemCode/shopCode and productId/productCode identity drift and contradictory empty or non-empty response summaries, including a pageCount different from min(ceil(count / hits), 100), fail closed with complete sanitized response metadata
   - provider reflection of each known credential value through every normalized URL, ordinary string, string-list member, or percent-encoded string fails before result persistence without redaction or secret-bearing output
   - short numeric application/access/affiliate credentials coinciding with each validated count, page, first, last, hits, or pageCount value for both enabled APIs, or with any non-text normalized value accepted by its field schema, do not fail solely because of typed scalar equality
   - Item and Product success, including empty collections, persist all six validated summary scalars; every ordinary or credential-reflection failure retains the same exact result-object key set with all six summary values null

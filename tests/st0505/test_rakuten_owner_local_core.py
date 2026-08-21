@@ -708,6 +708,12 @@ def test_provider_result_summary_relationships_are_domain_invariants() -> None:
         records=(),
     )
     assert empty.records == ()
+    one_page = replace(result, count=10, hits=10, page_count=1)
+    assert one_page.page_count == 1
+    partial_final_page = replace(result, count=11, hits=10, page_count=2)
+    assert partial_final_page.page_count == 2
+    exact_cap = replace(result, count=100, page_count=100)
+    assert exact_cap.page_count == 100
     capped = replace(result, count=101, page_count=100)
     assert capped.page_count == 100
 
@@ -717,6 +723,10 @@ def test_provider_result_summary_relationships_are_domain_invariants() -> None:
         {"last": 2},
         {"page_count": 0},
         {"page_count": 101},
+        {"count": 50, "hits": 10, "page_count": 1},
+        {"count": 50, "hits": 10, "page_count": 6},
+        {"count": 11, "hits": 10, "page_count": 1},
+        {"count": 100, "page_count": 99},
     ):
         with pytest.raises(RakutenOwnerLocalFailure) as failure:
             replace(result, **contradictory)
@@ -1497,7 +1507,18 @@ def test_short_credential_does_not_collide_with_validated_summary_scalar(
     result = _minimal_provider_result(
         api,
         request,
-        **{summary_field: summary_value},
+        **{
+            summary_field: summary_value,
+            **(
+                {"page_count": 7}
+                if summary_field == "count"
+                else {"page_count": 1}
+                if summary_field == "hits"
+                else {"count": 7}
+                if summary_field == "page_count"
+                else {}
+            ),
+        },
     )
     writer = _Writer()
     envelope = RakutenOwnerLocalService(
@@ -1591,7 +1612,7 @@ def test_result_binding_mismatch_precedes_short_summary_credential_coincidence(
             result = replace(result, request_fingerprint="d" * 64)
         else:
             assert binding == "hits"
-            result = replace(result, hits=2)
+            result = replace(result, hits=2, page_count=1)
     envelope = RakutenOwnerLocalService(
         credential_reader=_Reader(
             _credentials_with_summary_value("application_id", "1")

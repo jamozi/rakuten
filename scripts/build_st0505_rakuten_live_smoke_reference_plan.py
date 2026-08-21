@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "668d97a8487c3fc019017274265e03282da5617e4938c9aed934a321facd1e60"
+    "e7fa043b75f2e10d8cefc19f80a265731fe963aef844f3e96f7734878dc33fbf"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "6b148cb4cb5a61b9f2b4576bdd54d25e20bba61dd07ee6c9c61a2c9be10d08cc"
+    "4dbc28f0b458d2914bf5c4608952a096694ef7468a701781dd438e7b830da2f0"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "6cf38d28d065b67f5e6484933c09da2c91964a7bad1e7d2439251b15cc9325d3"
+    "2c71152a422c7324fc5b1ad69de1188eb0821acc8de6cf5f489764792e86a3f8"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
     "129f7f01fb5bafc13ddd54d39bacdc0d28975478ebff8a84bf1b57c37f90c0e5"
@@ -1552,6 +1552,9 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "character.isspace()",
             'unicodedata.category(character) in {"Cc", "Cf"}',
             "_validate_https_host(parsed.hostname, parsed.netloc)",
+            "def expected_response_page_count(count: object, hits: object) -> int:",
+            "return min((count + hits - 1) // hits, 100)",
+            "expected_response_page_count(self.count, self.hits)",
         ),
         Path("python/raos/application/catalog/rakuten_owner_local.py"): (
             "self.result_writer.preflight()",
@@ -1582,6 +1585,7 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "self._socket.settimeout(self.deadline.operation_timeout())",
             "chunk = response.read1(",
             "connection.set_response_read_deadline(deadline)",
+            "expected_response_page_count(count, hits)",
             "O_TMPFILE",
         ),
         Path("scripts/rakuten_owner_local.py"): (
@@ -2274,7 +2278,8 @@ def _validate_owner_local_read_integration(value: object) -> None:
         or transport.get("response_summary_relationships")
         != (
             "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
-            "PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY"
+            "PAGECOUNT_EQUALS_MIN_CEIL_COUNT_DIV_HITS_100_FIRST_1_LAST_"
+            "CARDINALITY"
         )
     ):
         _fail("VALUE_MISMATCH", "owner_local.transport")

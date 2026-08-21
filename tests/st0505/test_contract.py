@@ -229,7 +229,8 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
     )
     assert owner["transport"]["response_summary_relationships"] == (
         "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
-        "PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY"
+        "PAGECOUNT_EQUALS_MIN_CEIL_COUNT_DIV_HITS_100_FIRST_1_LAST_"
+        "CARDINALITY"
     )
     assert owner["normalized_result"]["envelope"] == {
         "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1",

@@ -47,6 +47,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalResultEnvelope,
     api_definition,
     exact_response_selector,
+    expected_response_page_count,
     fail_owner_local,
     mandatory_record_fields,
     normalized_record,
@@ -1598,6 +1599,7 @@ def _parse_provider_success(
             count < record_count
             or (count == 0) != (record_count == 0)
             or (page_count == 0) != (record_count == 0)
+            or page_count != expected_response_page_count(count, hits)
             or first != (1 if record_count else 0)
             or last != record_count
         ):

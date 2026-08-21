@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/668d97a8487c3fc019017274265e03282da5617e4938c9aed934a321facd1e60/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/e7fa043b75f2e10d8cefc19f80a265731fe963aef844f3e96f7734878dc33fbf/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`6b148cb4cb5a61b9f2b4576bdd54d25e20bba61dd07ee6c9c61a2c9be10d08cc`,
+`4dbc28f0b458d2914bf5c4608952a096694ef7468a701781dd438e7b830da2f0`,
 and install-stage SHA-256
-`6cf38d28d065b67f5e6484933c09da2c91964a7bad1e7d2439251b15cc9325d3`.
+`2c71152a422c7324fc5b1ad69de1188eb0821acc8de6cf5f489764792e86a3f8`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -285,9 +285,9 @@ Complete bodies are bounded to 2 MiB and validated as strict UTF-8 JSON with
 duplicate-key, nonfinite-number, depth, node, summary, collection, and field
 checks. Because page is fixed to 1, an empty collection requires zero
 `count`, `pageCount`, `first`, and `last`; a non-empty collection requires
-`count` at least its cardinality, `pageCount` from 1 through 100, `first=1`,
-and `last` equal to the returned cardinality. Product Search's official page
-does not unambiguously name its
+`count` at least its cardinality, `pageCount` exactly equal to
+`min(ceil(count / hits), 100)`, `first=1`, and `last` equal to the returned
+cardinality. Product Search's official page does not unambiguously name its
 format-version-2 collection envelope, so the adapter recognizes only the two
 reviewed literal envelope names documented in its tests and treats any other
 shape as schema drift; this does not permit an arbitrary schema fallback.

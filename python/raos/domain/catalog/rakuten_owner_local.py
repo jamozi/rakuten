@@ -181,6 +181,21 @@ def _exact_int(value: object, *, minimum: int, maximum: int) -> int:
     return value
 
 
+def expected_response_page_count(count: object, hits: object) -> int:
+    """Return the provider's capped page count for a validated result summary."""
+
+    if (
+        type(count) is not int
+        or count < 0
+        or type(hits) is not int
+        or not 1 <= hits <= 30
+    ):
+        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+    if count == 0:
+        return 0
+    return min((count + hits - 1) // hits, 100)
+
+
 def _utc(value: object) -> datetime:
     if (
         type(value) is not datetime
@@ -845,6 +860,7 @@ class RakutenOwnerLocalProviderResult(_RedactedValue):
             self.count < record_count
             or (self.count == 0) != (record_count == 0)
             or (self.page_count == 0) != (record_count == 0)
+            or self.page_count != expected_response_page_count(self.count, self.hits)
             or self.first != (1 if record_count else 0)
             or self.last != record_count
         ):

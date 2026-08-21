@@ -392,6 +392,18 @@ def _request_mode(
     return replace(request, keyword=None, product_code="fixture-product-code")
 
 
+def _request_with_hits(
+    api: RakutenOwnerLocalApi, hits: int
+) -> RakutenOwnerLocalRequest:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        return RakutenOwnerLocalItemSearchRequest(
+            policy=replace(request.policy, hits=hits)
+        )
+    assert type(request) is RakutenOwnerLocalProductSearchRequest
+    return replace(request, hits=hits)
+
+
 def _product_record(**overrides: object) -> dict[str, object]:
     record: dict[str, object] = {
         "affiliateUrl": "https://example.invalid/affiliate/product",
@@ -1596,6 +1608,108 @@ def test_summary_relationships_accept_consistent_empty_and_capped_results(
     assert capped_result.count == 101
     assert capped_result.page_count == 100
     assert len(capped_result.records) == 1
+
+
+@pytest.mark.parametrize(
+    "api",
+    (RakutenOwnerLocalApi.ITEM_SEARCH, RakutenOwnerLocalApi.PRODUCT_SEARCH),
+)
+@pytest.mark.parametrize(
+    ("count", "hits", "page_count"),
+    (
+        (1, 30, 1),
+        (30, 30, 1),
+        (31, 30, 2),
+        (3000, 30, 100),
+        (3001, 30, 100),
+    ),
+)
+def test_summary_page_count_accepts_capped_ceiling_boundaries(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    count: int,
+    hits: int,
+    page_count: int,
+) -> None:
+    request = _request_with_hits(api, hits)
+    record = (
+        _item_record() if api is RakutenOwnerLocalApi.ITEM_SEARCH else _product_record()
+    )
+    records = [record] * min(count, hits)
+    body = _summary_body(
+        api,
+        count=count,
+        first=1,
+        last=len(records),
+        hits=hits,
+        page_count=page_count,
+        records=records,
+    )
+
+    result, _connection, _factory, _transport = _execute(
+        monkeypatch,
+        api,
+        _FakeResponse(body, content_length=str(len(body))),
+        request=request,
+    )
+
+    normalized = cast(RakutenOwnerLocalProviderResult, result)
+    assert normalized.page_count == page_count
+    assert len(normalized.records) == len(records)
+
+
+@pytest.mark.parametrize(
+    "api",
+    (RakutenOwnerLocalApi.ITEM_SEARCH, RakutenOwnerLocalApi.PRODUCT_SEARCH),
+)
+@pytest.mark.parametrize(
+    ("count", "hits", "page_count"),
+    (
+        (50, 10, 1),
+        (50, 10, 6),
+        (31, 30, 1),
+        (3000, 30, 99),
+        (3001, 30, 99),
+    ),
+)
+def test_summary_page_count_rejects_non_capped_ceiling_values(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    count: int,
+    hits: int,
+    page_count: int,
+) -> None:
+    request = _request_with_hits(api, hits)
+    record = (
+        _item_record() if api is RakutenOwnerLocalApi.ITEM_SEARCH else _product_record()
+    )
+    records = [record] * min(count, hits)
+    body = _summary_body(
+        api,
+        count=count,
+        first=1,
+        last=len(records),
+        hits=hits,
+        page_count=page_count,
+        records=records,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.disposition
+        is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    )
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+    assert failure.value.request_count == 1
 
 
 @pytest.mark.parametrize(
