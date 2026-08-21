@@ -205,7 +205,7 @@ def _https_url(value: object) -> str:
         not text.startswith("https://")
         or "\\" in text
         or any(
-            character in " \t\n\r\f\v" or unicodedata.category(character) == "Cc"
+            character.isspace() or unicodedata.category(character) in {"Cc", "Cf"}
             for character in text
         )
     ):

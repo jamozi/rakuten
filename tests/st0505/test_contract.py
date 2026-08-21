@@ -251,7 +251,7 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
     assert owner["normalized_result"]["url_validation"] == {
         "syntax": {
             "scheme": "EXACT_LOWERCASE_HTTPS",
-            "whitespace_and_controls": "REJECT_ASCII_WHITESPACE_AND_UNICODE_CC",
+            "whitespace_and_controls": ("REJECT_UNICODE_WHITESPACE_AND_UNICODE_CC_CF"),
             "raw_backslash": "REJECT",
             "host": "VALID_IDNA_DNS_OR_BRACKETED_IPV6_WITH_OPTIONAL_PORT",
             "percent_escapes": "COMPLETE_HEX_PAIR_REQUIRED",

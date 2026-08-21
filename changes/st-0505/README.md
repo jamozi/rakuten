@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/496b79fa0a3a45201d2af2e25a52eb832d50b7dcc17caf4246a35d7b640ba518/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/668d97a8487c3fc019017274265e03282da5617e4938c9aed934a321facd1e60/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`ea3bc2cc30441d463a90772299eb0ab8575b21661b60d389287f7807df7c2942`,
+`6b148cb4cb5a61b9f2b4576bdd54d25e20bba61dd07ee6c9c61a2c9be10d08cc`,
 and install-stage SHA-256
-`28b37bb5cf924cb7ecd31e5f493598b4fd855abcfdd4a80e348874b48e0df927`.
+`6cf38d28d065b67f5e6484933c09da2c91964a7bad1e7d2439251b15cc9325d3`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -342,12 +342,12 @@ non-null strict HTTPS `productUrlPC`; missing, null, empty, non-string, or
 non-HTTPS values fail as `RESPONSE_SCHEMA_DRIFT` before success or persistence.
 The existing nullable scalar `affiliateUrl` and Product image URL values remain
 nullable; URL-list values remain non-null tuples whose members are HTTPS.
-All normalized URL positions also reject embedded ASCII whitespace, Unicode
-control characters, raw backslashes, malformed percent escapes, userinfo,
-fragments, invalid IDNA DNS labels, and invalid bracketed IPv6 syntax. Valid
-international or punycode hostnames, IPv4, bracketed IPv6, optional ports,
-paths, and queries remain supported; this syntax check does not expand the
-transport SSRF policy.
+All normalized URL positions also reject embedded Unicode whitespace, Unicode
+control and format characters, raw backslashes, malformed percent escapes,
+userinfo, fragments, invalid IDNA DNS labels, and invalid bracketed IPv6
+syntax. Valid international or punycode hostnames, IPv4, bracketed IPv6,
+optional ports, paths, and queries remain supported; this syntax check does not
+expand the transport SSRF policy.
 
 Field presence is checked before exact-selector identity, then mandatory text
 and URL value shape are checked before credential reflection. After result

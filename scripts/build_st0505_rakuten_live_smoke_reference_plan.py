@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "496b79fa0a3a45201d2af2e25a52eb832d50b7dcc17caf4246a35d7b640ba518"
+    "668d97a8487c3fc019017274265e03282da5617e4938c9aed934a321facd1e60"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "ea3bc2cc30441d463a90772299eb0ab8575b21661b60d389287f7807df7c2942"
+    "6b148cb4cb5a61b9f2b4576bdd54d25e20bba61dd07ee6c9c61a2c9be10d08cc"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "28b37bb5cf924cb7ecd31e5f493598b4fd855abcfdd4a80e348874b48e0df927"
+    "6cf38d28d065b67f5e6484933c09da2c91964a7bad1e7d2439251b15cc9325d3"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
     "129f7f01fb5bafc13ddd54d39bacdc0d28975478ebff8a84bf1b57c37f90c0e5"
@@ -1549,7 +1549,8 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             '"first": result.first if result is not None else None,',
             '"last": result.last if result is not None else None,',
             "_MALFORMED_PERCENT_ESCAPE =",
-            'unicodedata.category(character) == "Cc"',
+            "character.isspace()",
+            'unicodedata.category(character) in {"Cc", "Cf"}',
             "_validate_https_host(parsed.hostname, parsed.netloc)",
         ),
         Path("python/raos/application/catalog/rakuten_owner_local.py"): (
@@ -2319,7 +2320,9 @@ def _validate_owner_local_read_integration(value: object) -> None:
         != {
             "syntax": {
                 "scheme": "EXACT_LOWERCASE_HTTPS",
-                "whitespace_and_controls": ("REJECT_ASCII_WHITESPACE_AND_UNICODE_CC"),
+                "whitespace_and_controls": (
+                    "REJECT_UNICODE_WHITESPACE_AND_UNICODE_CC_CF"
+                ),
                 "raw_backslash": "REJECT",
                 "host": "VALID_IDNA_DNS_OR_BRACKETED_IPV6_WITH_OPTIONAL_PORT",
                 "percent_escapes": "COMPLETE_HEX_PAIR_REQUIRED",
