@@ -25,14 +25,14 @@ provenance:
     - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
       sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
     - uri: repo://.github/workflows/ci.yml
-      sha256: 530e1e77be09cc63bd4e3efc6bbe2e019226a48f9a6ea111b45e2d081efd292c
+      sha256: 9f42d58d4ed66216f3fcf544691b29bc3b328952d7c8005102e2012e8f50bedd
     - uri: repo://.github/workflows/status-registry.yml
       sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
 source_artifact_count: 25
 source_artifacts:
   - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
     bytes: 16978
-    sha256: 57137fbff22c0c848066aab5282d83cf28423d627f3bb847cf556f0b40100706
+    sha256: 9415d62c57fc0ba5b333ac272b0f38b29a1f6b1d8ac634364db619d61fcd867d
   - uri: repo://changes/st-0107/contracts/github-ruleset-operator.v1.json
     bytes: 2190
     sha256: 951cee8c5d0a1c8df64039e82e9d769aec2e5afd2b1c47e2b59ce655011a0d1a
@@ -53,7 +53,7 @@ source_artifacts:
     sha256: a56d0e3779f3cb5927866bdd820fcbb06f4173d4f416e2068b85a864557b5524
   - uri: repo://scripts/build_st0107_pr_governance.py
     bytes: 65407
-    sha256: be821ffb6625c8237e68cacf1e4841b2046e0db0dc6fd4353efdc0f2c4f1a7e5
+    sha256: a28a9769f2a8230bc7d6a5cc12160cde3afbb9a696efbdd4afcc17a2125b08ff
   - uri: repo://scripts/classify_ci_scope.py
     bytes: 26553
     sha256: d8cb1886e67c2e275450bd57d6475757b1b19bd1825a9d83cc02fa37a3dddfec
@@ -61,8 +61,8 @@ source_artifacts:
     bytes: 17095
     sha256: 3a0dee416198d5a58a06e14e1972b7f1522d5a83d389ea626cf64c0c2b142397
   - uri: repo://scripts/github_ruleset_operator.py
-    bytes: 49854
-    sha256: fb33bc99838c07f30f831c77a05e6333340fc3b0aff17431d03de0268cb489fe
+    bytes: 49832
+    sha256: c0ba1c26e6b70aeb8aeae2aba41787ec3e07e02743e5eaad19d24a21de32cedf
   - uri: repo://scripts/build_local_compose.py
     bytes: 35255
     sha256: 16225c1f832ac0a379b45d22648db63b024e3b66a0b9b7a86b072544895d2fb4
@@ -94,11 +94,11 @@ source_artifacts:
     bytes: 16938
     sha256: 110b8029135d77244d82c1373aae172f7054a4cdb0ad6f876c2589732b58cb36
   - uri: repo://tests/st0106/test_workflow_contract.py
-    bytes: 70039
-    sha256: f3d6d93dff99fc8148b88419622b137292b58e34fe073313bd71e9aeb14f430d
+    bytes: 71397
+    sha256: 1fa4abf7fb4a4851362ba7b8ed539c81e1d4efdce48d9ff3b279e8b2ca5dccee
   - uri: repo://changes/st-0106/contracts/developer-loop-scope.v1.json
-    bytes: 13866
-    sha256: 51b68b607ffa12dacf6764e234f6bab8b6dd8073c25c8501dd6c88f4bd6231fb
+    bytes: 14060
+    sha256: f09d1035995a274dd8bf3eaeaad7adc5c4eb6e54860a3c0cd7c5db5e941816d3
   - uri: repo://Makefile
     bytes: 35726
     sha256: 57943bb72f9c0dd1f0460b63158781c869c67a40f84a6731f3e819c679983c44

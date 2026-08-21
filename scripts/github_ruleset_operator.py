@@ -1340,8 +1340,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         if arguments.command in {"apply", "rollback"}:
             _require_live_mutation_enabled(load_operator_contract())
-        token = read_token_from_environment()
-        transport = FixedGitHubTransport(token)
+        transport = FixedGitHubTransport(read_token_from_environment())
         if arguments.command == "status":
             result = status_operation(transport)
         elif arguments.command == "plan":

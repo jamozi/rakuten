@@ -371,9 +371,13 @@
   ],
   "node_suffixes": [".cjs", ".js", ".jsx", ".mjs", ".ts", ".tsx"],
   "generator_checks": {
+    "ST-0106": [
+      ["{python}", "-I", "scripts/build_st0106_reviewed_secret_findings_v3.py", "--check"]
+    ],
     "ST-0107": [["{python}", "-I", "scripts/build_st0107_pr_governance.py", "--check"]]
   },
   "generator_owned_outputs": {
+    "ST-0106": ["changes/st-0106/contracts/reviewed-secret-findings.v3.yaml"],
     "ST-0107": [
       ".github/CODEOWNERS",
       ".github/PULL_REQUEST_TEMPLATE.md",

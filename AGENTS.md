@@ -14,12 +14,13 @@
   `docs/manifest.json`. Put Story revisions and operational overlays under
   `changes/<story>/`.
 
-## Standing development authorization
+## 継続的な開発承認
 
 - The owner authorizes reversible repository-local design, implementation,
   refactoring, tests, documentation, generators, fixtures, migrations, and
   security hardening within the selected scope. Do not pause for another owner,
   handoff, exact-hash, patch, or commit approval.
+- 可逆的なrepository-local workに別個の owner approvalを要求しない。
 - This authorization also covers commit, push, PR creation/update, and merge
   when the exact head remains in scope, proportionate local checks pass,
   required CI is terminal and acceptable, review is complete, and material
@@ -80,6 +81,28 @@
   handoffs, implementation, and tests. `raos-ask-pro` is optional and
   non-blocking unless explicitly requested; never improvise its browser state
   machine or inspect browser storage, cookies, or unrelated tabs.
+- ST-0101 compatibility guard: `raos-ask-pro` を暗黙的に使用してはならない。
+  Optional advice uses `PRO_IMPORTANCE=ordinary`; refusal or unavailabilityで
+  リポジトリ内の作業は停止させない。Follow-up回数に固定上限はないが、
+  実質的に重複した response、解消済みgap、または material delta がない場合は停止する。
+- Browser transportは正確な `https://chatgpt.com` origin、利用可能な最大の Pro effort、
+  および MCP secret name のみを type する境界を維持する。Codex の restart や run ごとの
+  exported variable は 必要ない。Browser outputは常に `UNAPPROVED_PROPOSAL` であり、
+  Pro content も handoff も、それ自体では Canonical Open Decision を解決しない。
+  fixture/dry-run evidence、live smoke、および formal validation は別個である。
+- Recovery診断の `diagnostic_fallback_entry_code` と
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR` /
+  `ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER` は
+  Story-local contractどおりnon-persistentかつnon-authoritativeに保つ。
+
+## ST-0104 contract compatibility guards
+
+- Mutationはwrapper command `contract-install`だけを使い、read-only operationは
+  wrapper command `contract-check`、`contract-verify`、`contract-test`、`contract-gate`
+  を使う。詳細なtoolchain契約はST-0104のREADME、wrapper、およびtestsを正とする。
+- `contracts/raos-v0.4/{job-state.v1.yaml,contracts/**}` の二階層形状を維持し、
+  hash 固定済み payload を平坦化または書き換えたり、remote取得を追加したりしない。
+  `scripts/contract_validation_resources/` の固定schema/licenseは使用前にhash-checkする。
 
 ## External and human gates
 

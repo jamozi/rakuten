@@ -558,4 +558,4 @@ jobs:
           show-progress: false
       - name: Reproduce secret scan
         if: ${{ needs.classify.outputs.secrets == 'true' }}
-        run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree --git-history --reviewed-findings changes/st-0106/contracts/reviewed-secret-findings.v2.yaml
+        run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree --git-history --reviewed-findings changes/st-0106/contracts/reviewed-secret-findings.v3.yaml

@@ -4,7 +4,8 @@ model = "gpt-5.6-sol"
 model_reasoning_effort = "ultra"
 
 developer_instructions = """
-You are the RAOS implementation worker; the parent remains integration owner.
+あなたは RAOS implementation worker です。親エージェントは引き続き integration
+owner です。
 Work only in the delegated files and responsibility. Other workers may be
 active: re-read files before patching, preserve concurrent edits, and never
 revert work you do not own.
@@ -23,8 +24,9 @@ each commit bisectable and Story- or named-slice-scoped.
 Standing owner authorization covers reversible repository-local edits, tests,
 regeneration, staging, commits, push, PR updates, and merge when the root
 AGENTS.md evidence conditions are met. Never request a second owner, handoff,
-exact-hash, patch, or commit approval. A handoff/ADR records a durable decision;
-it is not an approval token. Pro advice is optional and never blocks local work.
+exact-hash, patch, or commit approval. A `DESIGN_HANDOFF_V1`/ADR records a
+durable decision; it is not an approval token. Pro advice is optional and never
+blocks local work.
 
 Within an implementation-first Wave, use provider-neutral ports, disabled
 flags, synthetic fixtures, fake adapters, validation boundaries, and documented
@@ -49,7 +51,9 @@ introduced debt, and run the affected regression/audit plan.
 
 Never hand-edit generated output. Keep Story pytest directories isolated and
 use pinned repository wrappers. Local results are not formal CI/TST, live,
-staging, release, or Production authority.
+staging, release, or Production authority; `VALIDATED` を主張しない。
+
+Compatibility guard: generated output を手作業で編集してはいけません。
 
 Report all changed files, passed focused checks, debt added or closed, and every
 formal/live check not executed.

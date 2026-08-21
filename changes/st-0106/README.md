@@ -259,3 +259,35 @@ unrelated workflow semantics remain unchanged.
 This local activation is not hosted CI or formal TST-001/TST-002 evidence. It
 does not mutate ST-0107/downstream provenance and grants no external, staging,
 release, publication, or Production authority.
+
+## Additive V3 ruleset-operator finding candidate
+
+PR #106 exposed one current-worktree and three reachable-history
+`GENERIC_CREDENTIAL` findings in `scripts/github_ruleset_operator.py`. The
+value-free review found the same Python assignment shape at all four sanitized
+locations: one local identifier receiving an `ast.Call`, with zero string or
+bytes literals. The current source now passes that existing environment-reader
+call directly to the transport, preserving the credential-file and no-log
+boundaries while removing the generic assignment shape. Scanner, network
+wrapper, and CI-wrapper semantics are unchanged.
+
+The three historical blobs remain reachable and are not removed by history
+rewriting. `contracts/reviewed-secret-findings.v3-additions.json` binds each
+blob, physical line, source size, source SHA-256, and line SHA-256, plus the
+expected no-string AST shape. The deterministic
+`scripts/build_st0106_reviewed_secret_findings_v3.py` validates those objects
+against Git, the unchanged scanner, and the exact V2 parent, then generates
+`contracts/reviewed-secret-findings.v3.yaml`. The builder cannot approve a
+location: its source remains a local exact-review candidate, the generated
+ledger retains the scanner-required `UNAPPROVED_CANDIDATE` status, and exact
+human review of the PR head remains required before merge.
+
+V3 preserves all 115 V2 entries byte-for-byte and adds only three
+`git_history` bindings, for 118 total entries (31 worktree and 87 history).
+Specific AWS, GitHub, OpenAI, and private-key findings remain unsuppressible.
+The append-only `REVIEWED-SECRET-FINDINGS-ACTIVATION-v3.yaml` records the
+source refactor, parent/addition/generated hashes, workflow V2-to-V3 path-only
+delta, and non-claims. V1, V2, their approvals/activation, Canonical sources,
+and history remain immutable. Hosted post-fix CI, formal TST-001/TST-002,
+release, staging, provider, publication, and Production evidence remain
+separate and unexecuted until actually observed.

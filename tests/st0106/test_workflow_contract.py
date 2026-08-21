@@ -42,6 +42,14 @@ V2_ACTIVATION_RELATIVE_PATH = (
     "changes/st-0106/REVIEWED-SECRET-FINDINGS-ACTIVATION-v2.yaml"
 )
 V2_ACTIVATION_PATH = REPOSITORY_ROOT / V2_ACTIVATION_RELATIVE_PATH
+V3_REVIEWED_FINDINGS_RELATIVE_PATH = (
+    "changes/st-0106/contracts/reviewed-secret-findings.v3.yaml"
+)
+V3_REVIEWED_FINDINGS_PATH = REPOSITORY_ROOT / V3_REVIEWED_FINDINGS_RELATIVE_PATH
+V3_ACTIVATION_RELATIVE_PATH = (
+    "changes/st-0106/REVIEWED-SECRET-FINDINGS-ACTIVATION-v3.yaml"
+)
+V3_ACTIVATION_PATH = REPOSITORY_ROOT / V3_ACTIVATION_RELATIVE_PATH
 V2_INVENTORY_RELATIVE_PATH = "changes/st-0106/contracts/origin-ref-inventory.v2.txt"
 V2_INVENTORY_PATH = REPOSITORY_ROOT / V2_INVENTORY_RELATIVE_PATH
 ACTIVATION_INVENTORY_RELATIVE_PATH = (
@@ -59,6 +67,14 @@ EXPECTED_V2_RECONCILIATION_SHA256 = (
 EXPECTED_V2_ACTIVATION_BYTES = 8878
 EXPECTED_V2_ACTIVATION_SHA256 = (
     "b5293cbfeec9b75f861155770ea1b7e8d429bbe5ec61910afbea86429a9bc2bb"
+)
+EXPECTED_V3_REVIEWED_FINDINGS_BYTES = 61326
+EXPECTED_V3_REVIEWED_FINDINGS_SHA256 = (
+    "6d5fc23a07edaadc60ed245109f5acf4cdc3558bcbaac1f836d065fc4b426584"
+)
+EXPECTED_V3_ACTIVATION_BYTES = 4430
+EXPECTED_V3_ACTIVATION_SHA256 = (
+    "46b6facb6d6eefaf5aa4eb218bd239c8f6bbd5247aeb56efc6d4fc94b2420ebb"
 )
 EXPECTED_V2_INVENTORY_BYTES = 8436
 EXPECTED_V2_INVENTORY_SHA256 = (
@@ -1223,17 +1239,18 @@ def test_activation_origin_inventory_and_replay_boundary_are_exact() -> None:
         assert hashlib.sha256(content).hexdigest() == expected_sha256
 
 
-def test_secret_job_runs_the_exact_approved_local_history_command() -> None:
+def test_secret_job_runs_the_exact_v3_candidate_local_history_command() -> None:
     job = WORKFLOW["jobs"]["secrets"]
     expected_command = (
         'scripts/run_network_denied.sh --home "$HOME" -- '
         "/usr/bin/python3 -I scripts/scan_secrets.py "
         "--worktree --git-history --reviewed-findings "
-        f"{V2_REVIEWED_FINDINGS_RELATIVE_PATH}"
+        f"{V3_REVIEWED_FINDINGS_RELATIVE_PATH}"
     )
     assert WORKFLOW_TEXT.count("--reviewed-findings") == 1
     assert WORKFLOW_TEXT.count(REVIEWED_FINDINGS_RELATIVE_PATH) == 0
-    assert WORKFLOW_TEXT.count(V2_REVIEWED_FINDINGS_RELATIVE_PATH) == 1
+    assert WORKFLOW_TEXT.count(V2_REVIEWED_FINDINGS_RELATIVE_PATH) == 0
+    assert WORKFLOW_TEXT.count(V3_REVIEWED_FINDINGS_RELATIVE_PATH) == 1
     assert len(action_steps(job)) == 1
     secret_step = named_run_step(job, "Reproduce secret scan")
     assert secret_step == {
@@ -1241,23 +1258,42 @@ def test_secret_job_runs_the_exact_approved_local_history_command() -> None:
         "if": "${{ needs.classify.outputs.secrets == 'true' }}",
         "run": expected_command,
     }
-    activation = yaml.safe_load(V2_ACTIVATION_PATH.read_bytes())[
-        "REVIEWED_SECRET_FINDINGS_ACTIVATION_V2"
+    ledger_bytes = V3_REVIEWED_FINDINGS_PATH.read_bytes()
+    activation_bytes = V3_ACTIVATION_PATH.read_bytes()
+    assert len(ledger_bytes) == EXPECTED_V3_REVIEWED_FINDINGS_BYTES
+    assert hashlib.sha256(ledger_bytes).hexdigest() == (
+        EXPECTED_V3_REVIEWED_FINDINGS_SHA256
+    )
+    assert len(activation_bytes) == EXPECTED_V3_ACTIVATION_BYTES
+    assert hashlib.sha256(activation_bytes).hexdigest() == EXPECTED_V3_ACTIVATION_SHA256
+    activation = yaml.safe_load(activation_bytes)[
+        "REVIEWED_SECRET_FINDINGS_ACTIVATION_V3"
     ]
-    assert activation["authorized_activation"] == {
-        "workflow_uri": "repo://.github/workflows/ci.yml",
+    assert activation["status"] == (
+        "LOCAL_EXACT_REVIEWED_CANDIDATE_PENDING_HUMAN_PR_REVIEW"
+    )
+    assert activation["authority_boundary"] == {
+        "repository_development": "STANDING_OWNER_AUTHORIZATION",
+        "local_exact_review": "DETERMINISTIC_HASH_AND_AST_EVIDENCE",
+        "detached_exact_hash_owner_approval": "NOT_CLAIMED",
+        "exact_head_human_pr_review": "REQUIRED_BEFORE_MERGE",
+        "hosted_ci_rerun": "REQUIRED",
+    }
+    assert activation["workflow_candidate"] == {
+        "uri": "repo://.github/workflows/ci.yml",
         "job_id": "secrets",
         "step_name": "Reproduce secret scan",
-        "exact_argument": (f"--reviewed-findings {V2_REVIEWED_FINDINGS_RELATIVE_PATH}"),
-        "exact_command": expected_command,
-        "semantic_delta": "REPLACE_EXACT_LEDGER_PATH_V1_WITH_V2_ONCE",
-        "pre_activation_workflow_bytes": EXPECTED_PRE_ACTIVATION_WORKFLOW_BYTES,
-        "pre_activation_workflow_sha256": EXPECTED_PRE_ACTIVATION_WORKFLOW_SHA256,
-        "post_activation_workflow_bytes": EXPECTED_POST_ACTIVATION_WORKFLOW_BYTES,
-        "post_activation_workflow_sha256": EXPECTED_POST_ACTIVATION_WORKFLOW_SHA256,
-        "v1_workflow_reference_count": 0,
-        "v2_workflow_reference_count": 1,
-        "unrelated_workflow_bytes": "PRE_ACTIVATION_BYTES_RECONSTRUCTED_EXACTLY",
+        "semantic_delta": "REPLACE_EXACT_LEDGER_PATH_V2_WITH_V3_ONCE",
+        "pre_change_bytes": 27592,
+        "pre_change_sha256": (
+            "530e1e77be09cc63bd4e3efc6bbe2e019226a48f9a6ea111b45e2d081efd292c"
+        ),
+        "post_change_bytes": 27592,
+        "post_change_sha256": (
+            "9f42d58d4ed66216f3fcf544691b29bc3b328952d7c8005102e2012e8f50bedd"
+        ),
+        "v2_reference_count": 0,
+        "v3_reference_count": 1,
         "scanner_semantics": "UNCHANGED",
         "network_wrapper_semantics": "UNCHANGED",
         "ci_wrapper_semantics": "UNCHANGED",
