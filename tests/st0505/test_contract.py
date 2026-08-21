@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import Any
 
 from scripts import build_st0505_rakuten_live_smoke_reference_plan as generator
@@ -27,14 +28,14 @@ def _plan() -> dict[str, Any]:
     return generator.reference_plan(generator.load_contract())
 
 
-def test_plan_has_exact_sections_and_non_executable_document() -> None:
+def test_plan_has_exact_sections_and_installable_disabled_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
-    assert plan["document"]["version"] == "1.1.0"
-    assert plan["document"]["executable"] is False
-    assert plan["document"]["interface_only"] is True
-    assert plan["document"]["decision"] == "NOT_READY"
+    assert plan["document"]["version"] == "2.2.0"
+    assert plan["document"]["executable"] is True
+    assert plan["document"]["interface_only"] is False
+    assert plan["document"]["decision"] == "EXACT_OWNER_INSTALLED_ENTRY_REQUIRED"
     assert plan["document"]["story_acceptance"] is False
     assert plan["document"]["production_eligible"] is False
     assert plan["document"]["approval"] is None
@@ -105,7 +106,7 @@ def test_od_015_stays_blocking_unresolved_and_recorded_only() -> None:
     assert decision["blocking"] is True
     assert decision["resolved"] is False
     assert decision["safe_default"] == "RECORDED_FIXTURE_ONLY"
-    assert decision["live_credentials_available"] is False
+    assert decision["live_credentials_evidenced"] is False
     assert decision["live_execution_authorized"] is False
 
 
@@ -119,26 +120,126 @@ def test_tst_016_is_exact_but_has_no_formal_evidence() -> None:
     assert suite["evidence"] is None
 
 
-def test_live_smoke_is_not_configured_or_runnable() -> None:
+def test_live_smoke_is_installable_but_not_installed_or_runnable() -> None:
     smoke = _plan()["live_smoke_definition"]
     assert smoke == generator.EXPECTED_SMOKE
-    assert smoke["status"] == "NOT_CONFIGURED"
+    assert smoke["status"] == "INSTALLABLE_NOT_INSTALLED_OR_EXECUTED"
     assert smoke["runnable"] is False
-    for key in (
-        "runner",
-        "command",
-        "selected_environment",
-        "selected_account",
-        "selected_endpoint",
-        "request",
-        "response",
-        "report",
-        "retry_policy",
-        "pagination_policy",
+    assert smoke["technical_entry_invocable_after_install_and_doctor"] is True
+    assert smoke["runner"] == "OWNER_PRIVATE_VERSIONED_INSTALLED_ENTRY"
+    assert smoke["runtime_install_command"] == (
+        generator._authoritative_runtime_install_command()
+    )
+    assert smoke["runtime_install_command"].startswith("/usr/bin/busybox env -i ")
+    for fragment in (
+        '/usr/bin/busybox stat -Lc "%d %i %f %u %a %h %s" /proc/self/fd/4',
+        '/usr/bin/busybox stat -c "%d %i %f %u %a %h %s" -- "$p"',
+        '[ "$fm" = "$nm" ]',
+        "[ $((v & 0xf000)) -eq 32768 ]",
+        '[ "$4" -eq "$u" ]',
+        "[ $((v & 18)) -eq 0 ]",
+        '[ "$6" -eq 1 ]',
+        '[ "$7" -le 2097152 ]',
     ):
-        assert smoke[key] is None
-    assert smoke["credential_selection"] == "ABSENT"
-    assert smoke["artifacts"] == []
+        assert fragment in smoke["runtime_install_command"]
+    assert " make " not in f" {smoke['runtime_install_command']} "
+    assert smoke["runtime_installer_sha256"] == (
+        generator.EXPECTED_RUNTIME_INSTALLER_SHA256
+    )
+    assert smoke["runtime_install_stage_sha256"] == (
+        generator.EXPECTED_RUNTIME_INSTALL_STAGE_SHA256
+    )
+    assert smoke["runtime_install_entry_authentication"] == (
+        "ROOT_OWNED_STATIC_BUSYBOX_FIXED_STAGE_AND_INSTALLER_FD_SHA256_GATE"
+    )
+    assert smoke["runtime_install_python_trust"] == (
+        "EXACT_ROOT_PYTHON_BINARY_WITH_ROOT_OWNED_OS_RUNTIME_METADATA_CLOSURE"
+    )
+    assert smoke["direct_repository_installer_entry"] == (
+        "REFUSE_BEFORE_RUNTIME_MUTATION"
+    )
+    assert smoke["credential_tree_during_install"] == "FORBIDDEN"
+    assert smoke["automatic_post_install_doctor_or_run"] == "FORBIDDEN"
+    assert smoke["runtime_install_execution"] == "NOT_EXECUTED"
+    assert smoke["command"] == generator._authoritative_installed_command("run")
+    assert smoke["doctor_command"] == generator._authoritative_installed_command(
+        "doctor"
+    )
+    assert smoke["repository_make_entrypoints"] == (
+        "NOT_PROVIDED_USE_REVIEWED_DIRECT_COMMANDS"
+    )
+    assert Path("Makefile") not in generator.RUNTIME_PATHS
+    assert Path("Makefile") not in generator.SOURCE_PATHS
+    make_lines = (
+        (generator.REPO_ROOT / "Makefile").read_text(encoding="utf-8").splitlines()
+    )
+    for target in (
+        "rakuten-live-smoke-runtime-install",
+        "rakuten-live-smoke-doctor",
+        "rakuten-live-smoke",
+    ):
+        assert f"{target}:" not in make_lines
+    assert smoke["installed_bundle_sha256"] == (
+        generator.EXPECTED_INSTALLED_BUNDLE_SHA256
+    )
+    assert (
+        smoke["installed_launcher_sha256"]
+        == generator.EXPECTED_INSTALLED_LAUNCHER_SHA256
+    )
+    assert smoke["direct_installed_launcher_entry"] == ("REFUSE_WITHOUT_OUTER_GATE_FD4")
+    assert "repo://scripts/rakuten_live_smoke_runtime_install.sh" in smoke["artifacts"]
+    assert smoke["invocation_gate"] == "FRESH_OWNER_INVOCATION_REQUIRED"
+    assert smoke["live_execution_authority"] == "NOT_GRANTED_BY_THIS_ARTIFACT"
+    assert smoke["evidence_authority"] == "NON_FORMAL_DIAGNOSTIC_ONLY"
+    assert smoke["selected_environment"] == (
+        "OWNER_LOCAL_NON_FORMAL_DIAGNOSTIC_WITH_STAGING_CREDENTIAL_BINDING"
+    )
+    assert smoke["selected_account"] is None
+    assert smoke["selected_endpoint"] == "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701"
+    assert smoke["credential_selection"] == (
+        "FIXED_OWNER_PRIVATE_JSON_HASH_BOUND_TO_STAGING_ATTESTATION"
+    )
+    binding = smoke["staging_credential_binding"]
+    assert binding["environment"] == "staging"
+    assert binding["credential_purpose"] == (
+        "DEDICATED_TEST_CREDENTIAL_FOR_NON_FORMAL_DIAGNOSTIC"
+    )
+    assert binding["creation"] == (
+        "EXTERNAL_OPERATIONS_PROCESS_NOT_PROVIDED_BY_THIS_ARTIFACT"
+    )
+    assert binding["authority"] == "DOES_NOT_EXECUTE_OR_SATISFY_TST_016"
+    request = smoke["request"]
+    assert request["method"] == "GET"
+    assert request["authority"] == "openapi.rakuten.co.jp:443"
+    assert request["path"] == "/ichibams/api/IchibaItem/Search/20260701"
+    assert request["query"]["elements"] == (
+        "count,page,first,last,hits,pageCount,affiliateUrl"
+    )
+    assert request["access_key_transport"] == "HEADER_accessKey_ONLY"
+    assert request["request_limit"] == 1
+    assert request["redirect_limit"] == 0
+    assert request["dns_resolution_count"] == 1
+    assert request["dns_candidate_policy"] == (
+        "REJECT_ENTIRE_SET_IF_ANY_NON_PUBLIC_OR_MALFORMED"
+    )
+    assert request["tcp_candidate_policy"] == (
+        "FIRST_VALIDATED_CANDIDATE_ONLY_NO_FALLBACK"
+    )
+    assert request["tls_hostname"] == "openapi.rakuten.co.jp"
+    assert smoke["retry_policy"] == "ZERO_RETRY"
+    assert smoke["pagination_policy"] == "ZERO_FOLLOWUP"
+    assert smoke["response"]["response_sha256"] == (
+        "REQUIRED_FOR_EACH_COMPLETE_BOUNDED_RESPONSE_BODY"
+    )
+    assert smoke["response"]["framing_policy"] == (
+        "STRICT_CONTENT_LENGTH_CHUNKED_OR_CLOSE_DELIMITED"
+    )
+    assert smoke["response"]["incomplete_framing"] == (
+        "REQUEST_AMBIGUOUS_NO_RESPONSE_DIGEST"
+    )
+    assert smoke["report"]["schema"] == ("RAOS_ST0505_RAKUTEN_LIVE_SMOKE_REPORT_V2")
+    assert "response_sha256" in smoke["report"]["fields"]
+    assert len(smoke["artifacts"]) == 8
 
 
 def test_observations_are_absent_not_success_or_zero_errors() -> None:
@@ -184,19 +285,27 @@ def test_rate_quota_cost_and_capacity_values_are_all_unset() -> None:
 def test_execution_is_disabled_with_exact_integer_zero_actions() -> None:
     execution = _plan()["execution_boundary"]
     assert execution["enabled"] is False
-    assert execution["status"] == "DISABLED"
+    assert execution["status"] == "DISABLED_BY_DEFAULT_EXPLICIT_COMMAND_ONLY"
+    assert execution["default_activation"] == "DISABLED"
+    assert execution["explicit_invocation_required"] is True
     assert tuple(execution["action_counts"]) == generator.ACTION_COUNT_KEYS
     assert all(
         type(value) is int and value == 0
         for value in execution["action_counts"].values()
     )
-    assert execution["network"] == "FORBIDDEN"
-    assert execution["credential"] == "FORBIDDEN"
-    assert execution["provider"] == "FORBIDDEN"
+    assert execution["network"] == "EXPLICIT_ONE_DIRECT_GET_ONLY"
+    assert execution["credential"] == (
+        "FIXED_OWNER_PRIVATE_STORE_WITH_STAGING_HASH_BINDING_ONLY"
+    )
+    assert execution["provider"] == "FIXED_RAKUTEN_ICHIBA_ENDPOINT_ONLY"
     assert execution["sdk"] == "ABSENT"
-    assert execution["filesystem"] == "ABSENT"
-    assert execution["repository"] == "ABSENT"
-    assert execution["external_actions"] == []
+    assert execution["filesystem"] == (
+        "PRIVATE_CREDENTIAL_READ_AND_SANITIZED_REPORT_ONLY"
+    )
+    assert execution["repository"] == (
+        "NO_RAW_PROVIDER_MATERIAL_OR_TRACKED_REPOSITORY_PERSISTENCE"
+    )
+    assert execution["external_actions"] == ["EXPLICIT_ONE_GET"]
 
 
 def test_verification_boundary_contains_no_live_or_formal_claim() -> None:

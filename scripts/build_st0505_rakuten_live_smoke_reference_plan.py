@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the non-executable ST-0505 Rakuten live-smoke reference plan."""
+"""Build the explicit-but-disabled-by-default ST-0505 live-smoke plan."""
 
 from __future__ import annotations
 
@@ -33,25 +33,168 @@ GENERATOR_PATH: Final = Path(
     "scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
 )
 README_PATH: Final = Path("changes/st-0505/README.md")
+DESIGN_HANDOFF_PATH: Final = Path("changes/st-0505/DESIGN_HANDOFF_V1.yaml")
 TEST_PATHS: Final = (
     Path("tests/st0505/conftest.py"),
     Path("tests/st0505/test_contract.py"),
     Path("tests/st0505/test_generation.py"),
     Path("tests/st0505/test_negative_cases.py"),
+    Path("tests/st0505/test_rakuten_live_smoke_installed_runtime.py"),
+    Path("tests/st0505/test_rakuten_live_smoke_runtime.py"),
 )
-SOURCE_PATHS: Final = (CONTRACT_PATH, README_PATH, GENERATOR_PATH, *TEST_PATHS)
+RUNTIME_PATHS: Final = (
+    Path("python/raos/__init__.py"),
+    Path("python/raos/domain/catalog/rakuten_live_smoke.py"),
+    Path("python/raos/application/catalog/rakuten_live_smoke.py"),
+    Path("python/raos/ports/rakuten_live_smoke.py"),
+    Path("python/raos/adapters/rakuten_live_smoke.py"),
+    Path("scripts/install_rakuten_live_smoke_runtime.py"),
+    Path("scripts/rakuten_live_smoke_runtime_install.sh"),
+    Path("scripts/rakuten_live_smoke.py"),
+    Path("scripts/rakuten_live_smoke_launcher.sh"),
+)
+SOURCE_PATHS: Final = (
+    CONTRACT_PATH,
+    DESIGN_HANDOFF_PATH,
+    README_PATH,
+    GENERATOR_PATH,
+    *RUNTIME_PATHS,
+    *TEST_PATHS,
+)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = f"repo://{GENERATOR_PATH.as_posix()}"
 GENERATION_COMMAND: Final = (
-    "uv run --locked --no-sync python "
-    "scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
+    "python3 scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
     "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
+EXPECTED_INSTALLED_BUNDLE_SHA256: Final = (
+    "94c256d8832167c6df89327fc2840bc6db6fc82af4c912286b95ee6e8084148d"
+)
+EXPECTED_INSTALLED_LAUNCHER_SHA256: Final = (
+    "9deabbf7dff82e43b87a793a27b0c7f0d7371e97559755484f0c5cba9ddeabed"
+)
+EXPECTED_RUNTIME_INSTALLER_SHA256: Final = (
+    "e59ba05bfd97b56e9a59b1ceac9ee54a16ef461af43ae5f01ace5322319bf3da"
+)
+EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
+    "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
+)
+INSTALLED_LAUNCHER_PATH: Final = (
+    "/home/minami/.local/share/raos/rakuten-live-smoke/runtime/"
+    f"{EXPECTED_INSTALLED_BUNDLE_SHA256}/bin/rakuten-live-smoke"
+)
+REVIEWED_RUNTIME_INSTALL_STAGE: Final = (
+    "/home/minami/rakuten/scripts/rakuten_live_smoke_runtime_install.sh"
+)
+INSTALLED_PAYLOADS: Final = (
+    (Path("scripts/rakuten_live_smoke_launcher.sh"), "bin/rakuten-live-smoke", 0o500),
+    (Path("scripts/rakuten_live_smoke.py"), "scripts/rakuten_live_smoke.py", 0o400),
+    (Path("python/raos/__init__.py"), "python/raos/__init__.py", 0o400),
+    (
+        Path("python/raos/domain/catalog/rakuten_item_search.py"),
+        "python/raos/domain/catalog/rakuten_item_search.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/domain/catalog/rakuten_item_search_live_request_v1.py"),
+        "python/raos/domain/catalog/rakuten_item_search_live_request_v1.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/domain/catalog/rakuten_live_smoke.py"),
+        "python/raos/domain/catalog/rakuten_live_smoke.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/application/catalog/rakuten_live_smoke.py"),
+        "python/raos/application/catalog/rakuten_live_smoke.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/ports/rakuten_live_smoke.py"),
+        "python/raos/ports/rakuten_live_smoke.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/adapters/rakuten_live_smoke.py"),
+        "python/raos/adapters/rakuten_live_smoke.py",
+        0o400,
+    ),
+)
+
+
+def _authoritative_runtime_install_command() -> str:
+    return (
+        "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 "
+        "TZ=UTC /usr/bin/busybox sh -c 'umask 077; "
+        f"p={REVIEWED_RUNTIME_INSTALL_STAGE}; "
+        'exec 4<"$p" || { /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2; }; "
+        "u=$(/usr/bin/busybox id -u 2>/dev/null) || { "
+        '/usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2; }; "
+        'case "$u" in ""|*[!0-9]*) /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2;; esac; "
+        'fm=$(/usr/bin/busybox stat -Lc "%d %i %f %u %a %h %s" '
+        "/proc/self/fd/4 2>/dev/null) || { "
+        '/usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2; }; "
+        'nm=$(/usr/bin/busybox stat -c "%d %i %f %u %a %h %s" -- '
+        '"$p" 2>/dev/null) || { /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2; }; "
+        '[ "$fm" = "$nm" ] || { /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2; }; "
+        'set -- $fm; [ "$#" -eq 7 ] || { '
+        '/usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2; }; "
+        'case "$1:$2:$3:$4:$5:$6:$7" in *[!0-9a-f:]*) '
+        '/usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2;; esac; "
+        "v=$((0x$3)); [ $((v & 0xf000)) -eq 32768 ] "
+        '&& [ "$4" -eq "$u" ] && [ $((v & 18)) -eq 0 ] '
+        '&& [ "$6" -eq 1 ] && [ "$7" -ge 1 ] && [ "$7" -le 2097152 ] '
+        '|| { /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2; }; "
+        "h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { "
+        '/usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2; }; "
+        f'[ "$h" = "{EXPECTED_RUNTIME_INSTALL_STAGE_SHA256}  '
+        '/proc/self/fd/4" ] || { /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED; exit 2; }; "
+        "exec /usr/bin/busybox sh /proc/self/fd/4'"
+    )
+
+
+def _authoritative_installed_command(command: str) -> str:
+    if command not in {"doctor", "run"}:
+        raise ValueError("closed installed command")
+    failure = (
+        "RAKUTEN_LIVE_SMOKE_DOCTOR_NOT_READY"
+        if command == "doctor"
+        else "RAKUTEN_LIVE_SMOKE_FAIL"
+    )
+    return (
+        "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 "
+        "TZ=UTC /usr/bin/busybox sh -c 'umask 077; "
+        f"p={INSTALLED_LAUNCHER_PATH}; "
+        'exec 4<"$p" || { '
+        f'/usr/bin/busybox printf "%s\\n" {failure}; exit 2; '
+        "}; "
+        "h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { "
+        f'/usr/bin/busybox printf "%s\\n" {failure}; exit 2; '
+        "}; "
+        f'[ "$h" = "{EXPECTED_INSTALLED_LAUNCHER_SHA256}  '
+        '/proc/self/fd/4" ] || { '
+        f'/usr/bin/busybox printf "%s\\n" {failure}; exit 2; '
+        "}; "
+        f'exec "$p" {command}\''
+    )
+
 
 INTEGRATION_PATH: Final = Path(
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md"
@@ -61,6 +204,12 @@ OPEN_DECISIONS_PATH: Final = Path(
 )
 TEST_CATALOG_PATH: Final = Path(
     "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml"
+)
+TEST_ACCEPTANCE_PATH: Final = Path(
+    "docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md"
+)
+TEST_ENVIRONMENT_PATH: Final = Path(
+    "docs/canonical/05_test/RAOS_11_test_environment_matrix_v1.0.yaml"
 )
 STORY_PATH: Final = Path("docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml")
 
@@ -79,6 +228,16 @@ EXPECTED_SOURCES: Final = (
         "test_catalog",
         TEST_CATALOG_PATH.as_posix(),
         "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
+    ),
+    (
+        "test_acceptance",
+        TEST_ACCEPTANCE_PATH.as_posix(),
+        "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac",
+    ),
+    (
+        "test_environment",
+        TEST_ENVIRONMENT_PATH.as_posix(),
+        "3dc59c8c951a39d2079eb82e6a3e5adde3ce1910296abf8e1a3a539107a96b68",
     ),
     (
         "story",
@@ -765,15 +924,368 @@ def _validate_predecessor_semantics(root: Path) -> None:
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.live_policy_test")
 
 
+def _installed_bundle_sha256(root: Path) -> str:
+    rows = [
+        {
+            "path": installed,
+            "sha256": _sha256(_read(root, source, "runtime.payload")),
+            "mode": f"{mode:04o}",
+        }
+        for source, installed, mode in INSTALLED_PAYLOADS
+    ]
+    canonical = json.dumps(
+        rows,
+        ensure_ascii=True,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    return _sha256(canonical)
+
+
+def _literal_assignment(source: str, name: str, field: str) -> object:
+    tree = ast.parse(source)
+    values: list[ast.expr] = []
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(
+            isinstance(target, ast.Name) and target.id == name
+            for target in node.targets
+        ):
+            values.append(node.value)
+        elif (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.target, ast.Name)
+            and node.target.id == name
+            and node.value is not None
+        ):
+            values.append(node.value)
+    if len(values) != 1:
+        _fail("RUNTIME_SEMANTIC_DRIFT", field)
+    try:
+        return ast.literal_eval(values[0])
+    except ValueError, TypeError, SyntaxError:
+        _fail("RUNTIME_SEMANTIC_DRIFT", field)
+
+
+def _validate_runtime_semantics(root: Path) -> None:
+    required_fragments = {
+        Path("python/raos/domain/catalog/rakuten_live_smoke.py"): (
+            'RAKUTEN_LIVE_SMOKE_HOST = "openapi.rakuten.co.jp"',
+            'RAKUTEN_LIVE_SMOKE_PATH = "/ichibams/api/IchibaItem/Search/20260701"',
+            'RAKUTEN_LIVE_SMOKE_ACCEPT = "application/json"',
+            'RAKUTEN_LIVE_SMOKE_USER_AGENT = "RAOS-ST-0505-live-smoke/1"',
+            'RAKUTEN_LIVE_SMOKE_ACCESS_HEADER = "access" + "Key"',
+            'RAKUTEN_LIVE_SMOKE_REPORT_SCHEMA = "RAOS_ST0505_RAKUTEN_LIVE_SMOKE_REPORT_V2"',
+            "elements=LIVE_ITEM_SEARCH_ELEMENTS_V1",
+            '"access_key_transport": "HEADER_accessKey_ONLY"',
+            '"query_credentials": ["affiliateId", "applicationId"]',
+            '"retry_count": 0',
+            '"pagination_count": 0',
+            '"formal_tst_016": "NOT_EXECUTED"',
+            '"staging": "NOT_EXECUTED"',
+            '"production": "NOT_EXECUTED"',
+            '"response_sha256": self.response_sha256',
+        ),
+        Path("python/raos/application/catalog/rakuten_live_smoke.py"): (
+            '_ITEM_KEYS = frozenset({"affiliateUrl"})',
+            'not 1 <= root["count"] <= (1 << 63) - 1',
+            'not 1 <= root["pageCount"] <= 100',
+            "len(items) != 1",
+            'affiliate_url = item["affiliateUrl"]',
+            "response_sha256 = response.response_sha256",
+        ),
+        Path("python/raos/adapters/rakuten_live_smoke.py"): (
+            "headers[RAKUTEN_LIVE_SMOKE_ACCESS_HEADER] = (",
+            "credentials.access_key_header_value()",
+            'connection.request("GET", target, headers)',
+            "host=RAKUTEN_LIVE_SMOKE_HOST",
+            'anonymous_flag = getattr(os, "O_TMPFILE", 0)',
+            "_report_store_has_recovery(report_fd)",
+            "os.unlink(target, dir_fd=report_fd)",
+            "request_count=int(request_started)",
+            "_fail_report_store(report)",
+            "after.st_mtime_ns != before.st_mtime_ns",
+            "after.st_ctime_ns != before.st_ctime_ns",
+            "verification != data",
+            '_STAGING_BINDING_FILE = "staging-credential-binding.v1.json"',
+            "binding_digest != hashlib.sha256(raw).hexdigest()",
+            "_resolve_public_rakuten_addresses(host, port)",
+            'setattr(connection, "_create_connection", _PinnedSocketConnector(candidate))',
+            "_require_exact_peer(self._candidate, self._connection.sock.getpeername())",
+            "_CHUNKED.fullmatch(transfer_encoding)",
+            "expected_length is not None and len(body) != expected_length",
+        ),
+        Path("scripts/rakuten_live_smoke.py"): (
+            'TRUSTED_RUNTIME_PARENT = TRUSTED_OWNER_ROOT / "rakuten-live-smoke" / "runtime"',
+            "runtime_root = _verify_installed_runtime()",
+            "_verify_stage_zero_entry()",
+            "_validate_runtime_inventory(",
+            "transport, writer = _production_dependencies()",
+            "writer.doctor_ready()\n        reader.read()",
+            "writer.preflight()",
+            "request_count=failure.request_count",
+            "response_sha256=failure.response_sha256",
+        ),
+        Path("scripts/rakuten_live_smoke_launcher.sh"): (
+            "#!/usr/bin/busybox sh",
+            "expected_busybox_sha256=b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9",
+            "expected_python_sha256=c2afa8cc3c59d32bac482c122633a352c3910bfed85b59efd8ef49511d46bd2b",
+            "stdlib_invalid=$(",
+            "pyvenv.cfg",
+            '[ ! -L "$runtime_cli" ]',
+            'require_metadata "$runtime_cli" regular current 400',
+            "stat -Lc '%d %i %f %u %a %h' /proc/self/fd/4",
+            '[ "$outer_gate_metadata" = "$entry_gate_metadata" ]',
+            "exec 4<&-",
+            'exec 3<"$entry_path"',
+            '"$python" -B -I -S',
+            "exec /usr/bin/busybox env -i",
+        ),
+        Path("scripts/install_rakuten_live_smoke_runtime.py"): (
+            "EXPECTED_BUNDLE_SHA256 = (",
+            '"94c256d8832167c6df89327fc2840bc6db6fc82af4c912286b95ee6e8084148d"',
+            "EXPECTED_SYSTEM_PYTHON_SHA256 = (",
+            'REVIEWED_SYSTEM_PYTHON = Path("/usr/bin/python3.10")',
+            '_INSTALL_STAGE_PYTHON_ENTRY = f"/proc/self/fd/{_INSTALL_STAGE_PYTHON_FD}"',
+            '_INSTALL_STAGE_SOURCE_ENTRY = f"/proc/self/fd/{_INSTALL_STAGE_SOURCE_FD}"',
+            "_validate_authenticated_bootstrap()",
+            "_RENAME_NOREPLACE = 1",
+            "os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW",
+        ),
+        Path("scripts/rakuten_live_smoke_runtime_install.sh"): (
+            "#!/usr/bin/busybox sh",
+            "expected_busybox_sha256=b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9",
+            "expected_python_sha256=7d51cd6b48b521277f5caa4610a82126e315fa2be4df069823a8b1eeb5bd4a86",
+            f"expected_installer_sha256={EXPECTED_RUNTIME_INSTALLER_SHA256}",
+            'require_hash /proc/self/fd/5 "$expected_python_sha256"',
+            'require_hash /proc/self/fd/6 "$expected_installer_sha256"',
+            "require_absent /etc/ld.so.preload",
+            "require_root_tree /usr/lib/python3.10",
+            "/proc/self/fd/5 -B -I -S /proc/self/fd/6",
+        ),
+    }
+    for path, fragments in required_fragments.items():
+        source = _read(root, path, "runtime.source").decode("utf-8", errors="strict")
+        if any(fragment not in source for fragment in fragments):
+            _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.source")
+    domain_source = _read(
+        root,
+        Path("python/raos/domain/catalog/rakuten_live_smoke.py"),
+        "runtime.domain",
+    ).decode("utf-8", errors="strict")
+    adapter_source = _read(
+        root,
+        Path("python/raos/adapters/rakuten_live_smoke.py"),
+        "runtime.adapter",
+    ).decode("utf-8", errors="strict")
+    if adapter_source.count("_report_store_has_recovery(report_fd)") != 3:
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.adapter")
+    if _literal_assignment(domain_source, "_REPORT_KEYS", "runtime.report") != tuple(
+        EXPECTED_REPORT_FIELDS
+    ):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.report")
+    if _literal_assignment(
+        domain_source, "RAKUTEN_LIVE_SMOKE_MINIMAL_ELEMENTS", "runtime.elements"
+    ) != ("count", "page", "first", "last", "hits", "pageCount", "affiliateUrl"):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.elements")
+    installer_source = _read(
+        root,
+        Path("scripts/install_rakuten_live_smoke_runtime.py"),
+        "runtime.installer",
+    ).decode("utf-8", errors="strict")
+    install_stage_source = _read(
+        root,
+        Path("scripts/rakuten_live_smoke_runtime_install.sh"),
+        "runtime.install_stage",
+    ).decode("utf-8", errors="strict")
+    cli_source = _read(
+        root, Path("scripts/rakuten_live_smoke.py"), "runtime.cli"
+    ).decode("utf-8", errors="strict")
+    launcher_source = _read(
+        root,
+        Path("scripts/rakuten_live_smoke_launcher.sh"),
+        "runtime.launcher",
+    ).decode("utf-8", errors="strict")
+    if (
+        hashlib.sha256(launcher_source.encode("utf-8")).hexdigest()
+        != EXPECTED_INSTALLED_LAUNCHER_SHA256
+    ):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.launcher")
+    if (
+        hashlib.sha256(installer_source.encode("utf-8")).hexdigest()
+        != EXPECTED_RUNTIME_INSTALLER_SHA256
+        or hashlib.sha256(install_stage_source.encode("utf-8")).hexdigest()
+        != EXPECTED_RUNTIME_INSTALL_STAGE_SHA256
+    ):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.install_bootstrap")
+    expected_installer_payloads = tuple(
+        (source.as_posix(), installed, mode)
+        for source, installed, mode in INSTALLED_PAYLOADS
+    )
+    expected_cli_payloads = {
+        installed: f"{mode:04o}" for _source, installed, mode in INSTALLED_PAYLOADS
+    }
+    if _literal_assignment(installer_source, "_PAYLOADS", "runtime.installer") != (
+        expected_installer_payloads
+    ):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.installer")
+    if (
+        _literal_assignment(cli_source, "_INSTALLED_PAYLOAD_MODES", "runtime.cli")
+        != expected_cli_payloads
+    ):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.cli")
+    cli_sha256 = hashlib.sha256(cli_source.encode("utf-8")).hexdigest()
+    required_launcher_hash_fragments = (
+        f"expected_cli_sha256={cli_sha256}",
+        '/usr/bin/busybox sha256sum "$runtime_cli"',
+        '[ "$cli_hash" = "$expected_cli_sha256  $runtime_cli" ]',
+        '"$python" -B -I -S "$runtime_cli" "$command"',
+    )
+    if any(
+        fragment not in launcher_source for fragment in required_launcher_hash_fragments
+    ):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.launcher")
+    readme_source = _read(root, README_PATH, "runtime.readme").decode(
+        "utf-8", errors="strict"
+    )
+    if (
+        _authoritative_runtime_install_command() not in readme_source
+        or "make rakuten-live-smoke" in readme_source
+    ):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.readme")
+    handoff = _load_yaml(root, DESIGN_HANDOFF_PATH, "runtime.handoff")
+    handoff_decision = handoff.get("decision")
+    open_decision = handoff.get("open_decision_state")
+    handoff_gates = handoff.get("security_and_approval_gates")
+    if (
+        handoff.get("schema") != "DESIGN_HANDOFF_V1"
+        or handoff.get("approved_story") != "ST-0505"
+        or type(handoff_decision) is not dict
+        or cast(dict[str, object], handoff_decision).get("local_interface")
+        != "OWNER_INSTALLED_EXACT_DIGEST_ENTRY_INSTALLABLE_NOT_INSTALLED"
+        or cast(dict[str, object], handoff_decision).get("default_activation")
+        != "DISABLED"
+        or cast(dict[str, object], handoff_decision).get("installed_bundle_sha256")
+        != EXPECTED_INSTALLED_BUNDLE_SHA256
+        or cast(dict[str, object], handoff_decision).get("runtime_installer_sha256")
+        != EXPECTED_RUNTIME_INSTALLER_SHA256
+        or cast(dict[str, object], handoff_decision).get("runtime_install_stage_sha256")
+        != EXPECTED_RUNTIME_INSTALL_STAGE_SHA256
+        or cast(dict[str, object], handoff_decision).get(
+            "runtime_install_entry_authentication"
+        )
+        != "ROOT_OWNED_STATIC_BUSYBOX_FIXED_STAGE_AND_INSTALLER_FD_SHA256_GATE"
+        or cast(dict[str, object], handoff_decision).get("runtime_install_python_trust")
+        != "EXACT_ROOT_PYTHON_BINARY_WITH_ROOT_OWNED_OS_RUNTIME_METADATA_CLOSURE"
+        or cast(dict[str, object], handoff_decision).get(
+            "direct_repository_installer_entry"
+        )
+        != "REFUSE_BEFORE_RUNTIME_MUTATION"
+        or cast(dict[str, object], handoff_decision).get("runtime_install_scope")
+        != "CREDENTIAL_BLIND_OWNER_LOCAL_MAINTENANCE_ONLY"
+        or cast(dict[str, object], handoff_decision).get(
+            "credential_tree_during_install"
+        )
+        != "FORBIDDEN"
+        or cast(dict[str, object], handoff_decision).get("reinstall_policy")
+        != "VALIDATE_EXACT_VERSIONED_BUNDLE_RETURN_ALREADY_INSTALLED_NO_CREDENTIAL_ACCESS"
+        or cast(dict[str, object], handoff_decision).get(
+            "automatic_post_install_doctor_or_run"
+        )
+        != "FORBIDDEN"
+        or cast(dict[str, object], handoff_decision).get("runtime_install_execution")
+        != "NOT_EXECUTED"
+        or cast(dict[str, object], handoff_decision).get(
+            "authoritative_runtime_install"
+        )
+        != _authoritative_runtime_install_command()
+        or cast(dict[str, object], handoff_decision).get("authoritative_doctor")
+        != _authoritative_installed_command("doctor")
+        or cast(dict[str, object], handoff_decision).get("authoritative_live_command")
+        != _authoritative_installed_command("run")
+        or cast(dict[str, object], handoff_decision).get("repository_make_entrypoints")
+        != "NOT_PROVIDED_USE_REVIEWED_DIRECT_COMMANDS"
+        or cast(dict[str, object], handoff_decision).get("staging_credential_binding")
+        != ".secrets/rakuten-live-smoke/staging-credential-binding.v1.json"
+        or cast(dict[str, object], handoff_decision).get("local_diagnostic_authority")
+        != "NON_FORMAL_NON_ATTESTING_ONLY"
+        or cast(dict[str, object], handoff_decision).get("live_execution_authority")
+        != "NOT_GRANTED_BY_THIS_ARTIFACT"
+        or cast(dict[str, object], handoff_decision).get("formal_tst_016")
+        != "NOT_EXECUTED"
+        or cast(dict[str, object], handoff_decision).get("staging") != "NOT_EXECUTED"
+        or cast(dict[str, object], handoff_decision).get("production") != "NOT_EXECUTED"
+        or type(open_decision) is not dict
+        or cast(dict[str, object], open_decision).get("id") != "OD-015"
+        or cast(dict[str, object], open_decision).get("status")
+        != "EXTERNAL_EVIDENCE_REQUIRED"
+        or cast(dict[str, object], open_decision).get("blocking") is not True
+        or cast(dict[str, object], open_decision).get("resolved") is not False
+        or cast(dict[str, object], open_decision).get("safe_default")
+        != "RECORDED_FIXTURE_ONLY"
+        or type(handoff_gates) is not list
+        or (
+            "repository Make entrypoints are not provided; installation, "
+            "doctor, and live execution use only the complete reviewed direct "
+            "commands" not in cast(list[object], handoff_gates)
+        )
+        or (
+            "direct installed launcher invocation refuses before credential "
+            "access without the authenticated outer-gate launcher descriptor "
+            "on fd 4" not in cast(list[object], handoff_gates)
+        )
+        or (
+            "every install and reinstall validates stage path/descriptor "
+            "identity and safe metadata before authenticating the exact stage, "
+            "root Python trust closure, and installer descriptor before Python "
+            "parses repository bytes" not in cast(list[object], handoff_gates)
+        )
+    ):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.handoff")
+    readme = _read(root, README_PATH, "runtime.readme").decode("utf-8", errors="strict")
+    required_readme = (
+        "Default activation remains\ndisabled.",
+        "Repository Make entrypoints are intentionally not provided.",
+        "root-owned\nstatic BusyBox entry.",
+        "requires the\nopened stage and named path to identify the same current-UID, "
+        "regular,\nsingle-link, bounded, non-group/world-writable inode",
+        "does not construct a transport",
+        "before reading credentials\nor attempting the GET",
+        "outer static, root-owned `/usr/bin/busybox` stage zero authenticates the\nlauncher SHA-256 before executing it",
+        "bare invocation of the installed launcher refuses before constructing the\ncredential reader",
+        "installed-runtime status is\n`NOT_EXECUTED` and `NOT_EVIDENCED`",
+        "formal TST-016, live auth/schema/rate, staging, release, and Production all\nremain `NOT_EXECUTED`",
+        "non-formal, non-attesting diagnostic\nsurface only",
+        "This artifact grants no live-provider execution authority.",
+        "staging-credential-binding.v1.json",
+        "response_sha256",
+        "Content-Length is parsed strictly",
+        "truncated, oversized, or otherwise incomplete reads do not\n  claim a response-body digest",
+        "first fully validated\n  numeric address is pinned",
+        "Every install\nand reinstall first binds the named stage through fd 4",
+        "Only after this check does\nit authenticate the exact stage bytes",
+        "root-owned OS runtime metadata closure",
+        "Direct repository-path execution of the Python installer refuses before",
+        "do not open, stat, list, read, write,\nor mutate `.secrets`",
+        "never chains doctor or run",
+        "`ALREADY_INSTALLED`",
+        "Authenticated installation is credential-blind owner-local maintenance",
+    )
+    if any(fragment not in readme for fragment in required_readme):
+        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.readme")
+    if _installed_bundle_sha256(root) != EXPECTED_INSTALLED_BUNDLE_SHA256:
+        _fail("RUNTIME_BUNDLE_DRIFT", "runtime.bundle")
+
+
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.1.0",
+    "version": "2.2.0",
     "story_id": "ST-0505",
-    "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
-    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
-    "executable": False,
-    "interface_only": True,
-    "decision": "NOT_READY",
+    "classification": "SOURCE_DERIVED_EXPLICIT_LOCAL_RAKUTEN_LIVE_SMOKE_PLAN",
+    "status": "OWNER_INSTALLED_ENTRY_INSTALLABLE_NOT_INSTALLED",
+    "executable": True,
+    "interface_only": False,
+    "decision": "EXACT_OWNER_INSTALLED_ENTRY_REQUIRED",
     "story_acceptance": False,
     "production_eligible": False,
     "approval": None,
@@ -831,24 +1343,202 @@ EXPECTED_OPEN_DECISION: Final = {
     "blocking": True,
     "safe_default": "RECORDED_FIXTURE_ONLY",
     "resolved": False,
-    "live_credentials_available": False,
+    "live_credentials_evidenced": False,
     "live_execution_authorized": False,
 }
+EXPECTED_REPORT_FIELDS: Final = [
+    "schema",
+    "version",
+    "run_id",
+    "started_at",
+    "finished_at",
+    "result",
+    "diagnostic_code",
+    "api_version",
+    "endpoint_id",
+    "request_policy_fingerprint",
+    "http_status",
+    "body_byte_count",
+    "response_sha256",
+    "auth_classification",
+    "schema_classification",
+    "rate_classification",
+    "affiliate_url_present",
+    "request_count",
+    "retry_count",
+    "pagination_count",
+    "formal_tst_016",
+    "staging",
+    "production",
+]
 EXPECTED_SMOKE: Final[dict[str, object]] = {
-    "status": "NOT_CONFIGURED",
+    "status": "INSTALLABLE_NOT_INSTALLED_OR_EXECUTED",
     "runnable": False,
-    "runner": None,
-    "command": None,
-    "selected_environment": None,
+    "technical_entry_invocable_after_install_and_doctor": True,
+    "invocation_gate": "FRESH_OWNER_INVOCATION_REQUIRED",
+    "live_execution_authority": "NOT_GRANTED_BY_THIS_ARTIFACT",
+    "evidence_authority": "NON_FORMAL_DIAGNOSTIC_ONLY",
+    "runner": "OWNER_PRIVATE_VERSIONED_INSTALLED_ENTRY",
+    "runtime_install_command": _authoritative_runtime_install_command(),
+    "runtime_installer_sha256": EXPECTED_RUNTIME_INSTALLER_SHA256,
+    "runtime_install_stage_sha256": EXPECTED_RUNTIME_INSTALL_STAGE_SHA256,
+    "runtime_install_entry_authentication": (
+        "ROOT_OWNED_STATIC_BUSYBOX_FIXED_STAGE_AND_INSTALLER_FD_SHA256_GATE"
+    ),
+    "runtime_install_python_trust": (
+        "EXACT_ROOT_PYTHON_BINARY_WITH_ROOT_OWNED_OS_RUNTIME_METADATA_CLOSURE"
+    ),
+    "direct_repository_installer_entry": "REFUSE_BEFORE_RUNTIME_MUTATION",
+    "runtime_install_scope": "CREDENTIAL_BLIND_OWNER_LOCAL_MAINTENANCE_ONLY",
+    "credential_tree_during_install": "FORBIDDEN",
+    "reinstall_policy": (
+        "VALIDATE_EXACT_VERSIONED_BUNDLE_RETURN_ALREADY_INSTALLED_NO_CREDENTIAL_ACCESS"
+    ),
+    "automatic_post_install_doctor_or_run": "FORBIDDEN",
+    "runtime_install_execution": "NOT_EXECUTED",
+    "command": _authoritative_installed_command("run"),
+    "doctor_command": _authoritative_installed_command("doctor"),
+    "repository_make_entrypoints": "NOT_PROVIDED_USE_REVIEWED_DIRECT_COMMANDS",
+    "direct_installed_launcher_entry": "REFUSE_WITHOUT_OUTER_GATE_FD4",
+    "direct_python_entry": "REFUSE_WITHOUT_STAGE_ZERO_DESCRIPTOR",
+    "installed_bundle_sha256": (
+        "94c256d8832167c6df89327fc2840bc6db6fc82af4c912286b95ee6e8084148d"
+    ),
+    "installed_launcher_sha256": EXPECTED_INSTALLED_LAUNCHER_SHA256,
+    "public_entry_authentication": (
+        "ROOT_OWNED_STATIC_BUSYBOX_FIXED_LAUNCHER_FD_SHA256_GATE"
+    ),
+    "selected_environment": (
+        "OWNER_LOCAL_NON_FORMAL_DIAGNOSTIC_WITH_STAGING_CREDENTIAL_BINDING"
+    ),
     "selected_account": None,
-    "selected_endpoint": None,
-    "credential_selection": "ABSENT",
-    "request": None,
-    "response": None,
-    "report": None,
-    "retry_policy": None,
-    "pagination_policy": None,
-    "artifacts": [],
+    "selected_endpoint": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
+    "credential_selection": (
+        "FIXED_OWNER_PRIVATE_JSON_HASH_BOUND_TO_STAGING_ATTESTATION"
+    ),
+    "credential_record": {
+        "path": ".secrets/rakuten-live-smoke/credentials.v1.json",
+        "schema_version": 1,
+        "exact_keys": [
+            "schema_version",
+            "application_id",
+            "access_key",
+            "affiliate_id",
+        ],
+        "file_mode": "0600",
+        "directory_mode": "0700",
+        "symlinks": "REJECT",
+        "read_stability": (
+            "DESCRIPTOR_DOUBLE_READ_EQUAL_IDENTITY_SIZE_MTIME_CTIME_STABLE"
+        ),
+        "rotation": "ATOMIC_REPLACE_REQUIRED",
+    },
+    "staging_credential_binding": {
+        "path": ".secrets/rakuten-live-smoke/staging-credential-binding.v1.json",
+        "schema_version": 1,
+        "exact_keys": [
+            "schema_version",
+            "environment",
+            "credential_purpose",
+            "credential_record_sha256",
+        ],
+        "environment": "staging",
+        "credential_purpose": ("DEDICATED_TEST_CREDENTIAL_FOR_NON_FORMAL_DIAGNOSTIC"),
+        "credential_record_sha256": "SHA256_OF_EXACT_CREDENTIAL_RECORD_BYTES",
+        "file_mode": "0600",
+        "directory_mode": "0700",
+        "symlinks": "REJECT",
+        "read_stability": (
+            "DESCRIPTOR_DOUBLE_READ_EQUAL_IDENTITY_SIZE_MTIME_CTIME_STABLE"
+        ),
+        "creation": "EXTERNAL_OPERATIONS_PROCESS_NOT_PROVIDED_BY_THIS_ARTIFACT",
+        "authority": "DOES_NOT_EXECUTE_OR_SATISFY_TST_016",
+    },
+    "doctor_scope": (
+        "INSTALLED_RUNTIME_STAGING_BINDING_CREDENTIAL_AND_REPORT_METADATA_ONLY_NO_NETWORK"
+    ),
+    "run_preflight": ("EXACT_ANONYMOUS_PUBLICATION_ROLLBACK_BEFORE_CREDENTIAL_AND_GET"),
+    "request": {
+        "method": "GET",
+        "authority": "openapi.rakuten.co.jp:443",
+        "path": "/ichibams/api/IchibaItem/Search/20260701",
+        "api_version": "2026-07-01",
+        "query": {
+            "keyword": "収納",
+            "hits": 1,
+            "page": 1,
+            "format": "json",
+            "formatVersion": 2,
+            "sort": "standard",
+            "elements": "count,page,first,last,hits,pageCount,affiliateUrl",
+            "applicationId": "CREDENTIAL_APPLICATION_ID",
+            "affiliateId": "CREDENTIAL_AFFILIATE_ID",
+        },
+        "headers": [
+            {"header_name": "Accept", "fixed_value": "application/json"},
+            {
+                "header_name": "User-Agent",
+                "fixed_value": "RAOS-ST-0505-live-smoke/1",
+            },
+            {
+                "header_name": "accessKey",
+                "value_source": "OWNER_PRIVATE_CREDENTIAL_RECORD",
+            },
+        ],
+        "access_key_transport": "HEADER_accessKey_ONLY",
+        "redirect_limit": 0,
+        "request_limit": 1,
+        "dns_resolution_count": 1,
+        "dns_candidate_policy": ("REJECT_ENTIRE_SET_IF_ANY_NON_PUBLIC_OR_MALFORMED"),
+        "tcp_candidate_policy": "FIRST_VALIDATED_CANDIDATE_ONLY_NO_FALLBACK",
+        "tls_hostname": "openapi.rakuten.co.jp",
+        "connect_timeout_seconds": 5,
+        "read_timeout_seconds": 20,
+    },
+    "response": {
+        "maximum_bytes": 2_097_152,
+        "encoding": "STRICT_UTF_8",
+        "media_type": "application/json",
+        "duplicate_keys": "REJECT",
+        "nonfinite_numbers": "REJECT",
+        "maximum_depth": 32,
+        "maximum_nodes": 50_000,
+        "affiliate_url": "REQUIRED_HTTPS_PRESENCE_ONLY",
+        "http_429_classification": "AUTH_NOT_OBSERVED_RATE_THROTTLED",
+        "framing_policy": "STRICT_CONTENT_LENGTH_CHUNKED_OR_CLOSE_DELIMITED",
+        "incomplete_framing": "REQUEST_AMBIGUOUS_NO_RESPONSE_DIGEST",
+        "response_sha256": "REQUIRED_FOR_EACH_COMPLETE_BOUNDED_RESPONSE_BODY",
+        "raw_or_reflected_provider_material_persistence": "FORBIDDEN",
+    },
+    "report": {
+        "directory": ".secrets/rakuten-live-smoke/reports",
+        "schema": "RAOS_ST0505_RAKUTEN_LIVE_SMOKE_REPORT_V2",
+        "file_mode": "0600",
+        "publication": "ATOMIC_NO_REPLACE",
+        "rollback_failure_evidence": (
+            "BEST_EFFORT_FIXED_0600_RECOVERY_REQUIRED_MARKER"
+        ),
+        "recovery_evidence_gate": (
+            "BLOCKS_DOCTOR_PREFLIGHT_AND_ALL_REPORT_PUBLICATION"
+        ),
+        "failures_persisted_when_store_is_safe": True,
+        "raw_body": "FORBIDDEN",
+        "product_text_and_urls": "FORBIDDEN",
+        "credential_values": "FORBIDDEN",
+        "fields": EXPECTED_REPORT_FIELDS,
+    },
+    "retry_policy": "ZERO_RETRY",
+    "pagination_policy": "ZERO_FOLLOWUP",
+    "artifacts": [
+        "repo://python/raos/domain/catalog/rakuten_live_smoke.py",
+        "repo://python/raos/application/catalog/rakuten_live_smoke.py",
+        "repo://python/raos/ports/rakuten_live_smoke.py",
+        "repo://python/raos/adapters/rakuten_live_smoke.py",
+        "repo://scripts/rakuten_live_smoke.py",
+        "repo://scripts/rakuten_live_smoke_launcher.sh",
+        "repo://scripts/install_rakuten_live_smoke_runtime.py",
+        "repo://scripts/rakuten_live_smoke_runtime_install.sh",
+    ],
 }
 EXPECTED_OBSERVATIONS: Final[dict[str, object]] = {
     "status": "NOT_EXECUTED",
@@ -879,20 +1569,22 @@ EXPECTED_RATE_QUOTA_COST: Final[dict[str, object]] = {
 EXPECTED_ACTION_COUNTS: Final = {name: 0 for name in ACTION_COUNT_KEYS}
 EXPECTED_EXECUTION: Final[dict[str, object]] = {
     "enabled": False,
-    "status": "DISABLED",
+    "status": "DISABLED_BY_DEFAULT_EXPLICIT_COMMAND_ONLY",
+    "default_activation": "DISABLED",
+    "explicit_invocation_required": True,
     "live_smoke": "NOT_EXECUTED",
-    "network": "FORBIDDEN",
-    "credential": "FORBIDDEN",
-    "provider": "FORBIDDEN",
+    "network": "EXPLICIT_ONE_DIRECT_GET_ONLY",
+    "credential": "FIXED_OWNER_PRIVATE_STORE_WITH_STAGING_HASH_BINDING_ONLY",
+    "provider": "FIXED_RAKUTEN_ICHIBA_ENDPOINT_ONLY",
     "sdk": "ABSENT",
-    "filesystem": "ABSENT",
-    "repository": "ABSENT",
+    "filesystem": "PRIVATE_CREDENTIAL_READ_AND_SANITIZED_REPORT_ONLY",
+    "repository": "NO_RAW_PROVIDER_MATERIAL_OR_TRACKED_REPOSITORY_PERSISTENCE",
     "storage": "NOT_EXECUTED",
     "persistence": "NOT_EXECUTED",
     "staging": "NOT_EXECUTED",
     "release": "NOT_EXECUTED",
     "production": "NOT_EXECUTED",
-    "external_actions": [],
+    "external_actions": ["EXPLICIT_ONE_GET"],
     "action_counts": EXPECTED_ACTION_COUNTS,
 }
 EXPECTED_VERIFICATION: Final = {
@@ -908,7 +1600,7 @@ EXPECTED_VERIFICATION: Final = {
     "staging": "NOT_EXECUTED",
     "release": "NOT_EXECUTED",
     "production": "NOT_EXECUTED",
-    "decision": "NOT_READY",
+    "decision": "LOCAL_INTERFACE_INSTALLABLE_NOT_INSTALLED",
     "approval": None,
     "story_acceptance": False,
     "production_eligible": False,
@@ -945,6 +1637,7 @@ def validate_contract(
     _validate_hashes(root)
     _validate_authority_semantics(root)
     _validate_predecessor_semantics(root)
+    _validate_runtime_semantics(root)
     return contract
 
 
@@ -1005,7 +1698,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "1.1.0",
+            "version": "2.2.0",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,
@@ -1033,8 +1726,13 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
         ],
         "boundary": {
             "classification": EXPECTED_DOCUMENT["classification"],
-            "executable": False,
-            "interface_only": True,
+            "executable": True,
+            "interface_only": False,
+            "default_activation": "DISABLED",
+            "installed_entry": "INSTALLABLE_NOT_INSTALLED",
+            "repository_make_entrypoints": (
+                "NOT_PROVIDED_USE_REVIEWED_DIRECT_COMMANDS"
+            ),
             "od_015": "EXTERNAL_EVIDENCE_REQUIRED",
             "safe_default": "RECORDED_FIXTURE_ONLY",
             "live_smoke": "NOT_EXECUTED",
