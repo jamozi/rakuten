@@ -133,6 +133,40 @@ def test_forbidden_live_selection_observation_or_claim_is_rejected(
         generator.validate_contract(contract)
 
 
+@pytest.mark.parametrize(
+    ("section", "field", "value"),
+    [
+        ("runtime", "bundle_sha256", "0" * 64),
+        ("runtime", "launcher_sha256", "0" * 64),
+        ("runtime", "installer_sha256", "0" * 64),
+        ("runtime", "install_stage_sha256", "0" * 64),
+        ("runtime", "installer_credential_access", "ALLOWED"),
+        ("commands", "doctor", "NETWORK"),
+        ("credential_record", "profile", "STAGING"),
+        ("transport", "origin", "example.invalid:443"),
+        ("transport", "retries", 1),
+        ("normalized_result", "publication", "OVERWRITE"),
+        ("verification", "provider_call", "PASS"),
+    ],
+)
+def test_owner_local_scope_hash_or_external_claim_drift_is_rejected(
+    section: str,
+    field: str,
+    value: object,
+) -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    contract["owner_local_read_integration"][section][field] = value
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+def test_owner_local_nested_unknown_field_is_rejected() -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    contract["owner_local_read_integration"]["runtime"]["unknown"] = "READY"
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
 @pytest.mark.parametrize("replacement", [False, True, 0.0, "0"])
 @pytest.mark.parametrize("action", generator.ACTION_COUNT_KEYS)
 def test_bool_float_string_and_nonzero_do_not_bypass_exact_zero_actions(

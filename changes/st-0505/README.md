@@ -1,7 +1,7 @@
 # ST-0505 — Rakuten owner-local one-call smoke
 
 Classification: `SOURCE_DERIVED_EXPLICIT_LOCAL_RAKUTEN_LIVE_SMOKE_PLAN`.
-Contract revision `2.2.0` implements an installable, owner-local, explicit
+Contract revision `3.0.0` implements an installable, owner-local, explicit
 Rakuten Ichiba Item Search 2026-07-01 smoke. Default activation remains
 disabled. This repository revision, its tests, and its generated plan contain
 no live-provider execution evidence and do not satisfy formal TST-016,
@@ -21,6 +21,16 @@ staging, release, or Production.
   numeric address is pinned for the sole TCP attempt without fallback, while
   TLS SNI, certificate hostname verification, and HTTP `Host` remain fixed to
   `openapi.rakuten.co.jp`.
+- The blocking system resolver runs in one exec-isolated child of the already
+  authenticated `/proc/self/exe`, with `-B -I -S`, a fixed helper body, minimal
+  environment, closed inherited descriptors, parent-death `SIGKILL`, at most
+  64 candidates, and at most 64 KiB of bounded IPC. A monotonic five-second
+  deadline covers child launch through complete resolver output. Expiry,
+  resolver failure, late completion, malformed output, or failed bounded reap
+  closes the pipe and fails as fixed `DNS_FAILED`, `NOT_SENT`,
+  `request_count=0`, with no provider metadata and no retry; a live service run
+  still writes exactly one sanitized failure result when its result store is
+  safe.
 - One explicit invocation sends at most one GET. After all local preconditions
   pass, it sends exactly one GET with `keyword=収納`, `hits=1`,
   `page=1`, `format=json`, `formatVersion=2`, `sort=standard`, and the exact
@@ -194,3 +204,181 @@ Generated JSON and manifest output are owned only by the builder:
 python3 scripts/build_st0505_rakuten_live_smoke_reference_plan.py
 python3 scripts/build_st0505_rakuten_live_smoke_reference_plan.py --check
 ```
+
+## Separate owner-local provider production-read integration
+
+`rakuten-owner-local` is a second, side-by-side installed runtime. It does not
+replace, migrate, invoke, or change the staging-bound `rakuten-live-smoke`
+runtime above. The word `production` in the credential profile means only that
+the credential belongs to Rakuten's provider-production API. It does not select
+RAOS Production, ENV-STAGING, release authority, or formal TST-016.
+
+The credential-blind installer publishes a reviewed versioned bundle only at
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9/`.
+No repository Make target is an authoritative secret-bearing entry. The exact
+static-BusyBox install and invocation commands are emitted by the generated
+contract after the final payload hashes are fixed. Direct repository Python,
+installer, or launcher execution refuses before prompt, credential, result, or
+network access.
+
+The generated plan binds launcher SHA-256
+`27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
+installer SHA-256
+`60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b`,
+and install-stage SHA-256
+`0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6`.
+Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
+before the installed launcher body. Request-file invocation uses the same gate,
+with the selected API and absolute path passed only as positional arguments;
+shell interpolation of request material is forbidden.
+
+The generated plan exposes custom request invocation as a structured argv
+template, not as a copy-and-edit shell command. Callers replace only the two
+declared array elements for the closed API name and owner-selected absolute JSON
+path, then invoke that argv directly. The gate rejects unrendered placeholders,
+unknown APIs, relative paths, or extra values before the launcher body; values
+are never concatenated into the shell program and `eval` is forbidden.
+
+The installed command surface is closed:
+
+- `setup` creates the absent exact-schema credential record after hidden,
+  repeated `/dev/tty` entry and a hidden confirmation.
+- `rotate` atomically replaces one already-valid credential record after the
+  same hidden entry flow.
+- `doctor` checks result-store metadata before reading and validating the
+  credential record and never constructs a network transport.
+- `list-apis` emits only the fixed registry containing `item-search` and
+  `product-search`.
+- `request --api <item-search|product-search> --request-file <absolute-json>`
+  performs at most one reviewed read request.
+- `smoke --api <item-search|product-search>` uses fixed keyword `収納`, hits 1,
+  page 1, and standard sort for one request.
+
+Credentials exist only at
+`.secrets/rakuten-owner-local/credentials.v1.json`. Exact keys are
+`schema_version: 1`, `profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API`,
+`application_id`, `access_key`, and `affiliate_id`. Private ancestors are
+mode `0700`; the regular single-link file is mode `0600`. Descriptor-relative
+`O_NOFOLLOW` reads reject symlinks, owner/mode/type/link drift, oversized or
+unstable bytes, duplicate/unknown/missing keys, controls, and edge whitespace.
+Setup never overwrites; rotation uses an atomic replacement and directory
+fsync. Secret values never appear in argv, environment, stdout, stderr,
+exceptions, repr, result files, generated files, or install metadata.
+
+Item request V1 wraps the unchanged ST-0502
+`RakutenItemSearchLiveRequestV1`. It requires exactly one of keyword, genre,
+item, or shop, page 1, hits 1 through 30, and only the existing safe sorts and
+elements. Review aggregates and affiliate-rate fields remain excluded from the
+normalized result even though the unchanged predecessor element projection may
+include other inert product-description fields. For an exact `itemCode` or
+`shopCode` request, every returned Item record must contain the exact selected
+identity; a different valid provider identity fails as `RESULT_MISMATCH` before
+credential-reflection inspection. Empty results remain valid and fields that
+were not selected are not identity constraints. Product request V1 permits a
+keyword with optional genre, a genre alone, or one exclusive product ID/code;
+it fixes page 1 and allows only standard sort. Product review-derived sort and
+review aggregates are unavailable. For an exclusive `productId` or
+`productCode` request, every returned record must contain the exact selected
+identity; a different valid provider identity fails as `RESULT_MISMATCH`.
+
+Both adapters fix `openapi.rakuten.co.jp:443`, their reviewed versioned paths,
+GET, format JSON/version 2, and exact elements. `applicationId` and
+`affiliateId` are query values. The access credential is sent only in the
+header whose name is `accessKey`; it is never a query value. Proxy discovery,
+TLS override environment, redirects, retries, pagination follow-ups,
+concurrency, arbitrary endpoints/headers/parameters, and IP fallback are
+rejected. Every resolved candidate must be a public address before the first
+candidate is pinned for the sole TCP attempt. TLS SNI, certificate hostname
+verification, and HTTP host remain the fixed Rakuten hostname.
+
+Complete bodies are bounded to 2 MiB and validated as strict UTF-8 JSON with
+duplicate-key, nonfinite-number, depth, node, summary, collection, and field
+checks. Because page is fixed to 1, an empty collection requires zero
+`count`, `pageCount`, `first`, and `last`; a non-empty collection requires
+`count` at least its cardinality, `pageCount` exactly equal to
+`min(ceil(count / hits), 100)`, `first=1`, and `last` equal to the returned
+cardinality. Product Search's official page does not unambiguously name its
+format-version-2 collection envelope, so the adapter recognizes only the two
+reviewed literal envelope names documented in its tests and treats any other
+shape as schema drift; this does not permit an arbitrary schema fallback.
+
+The DNS deadline is complete before any socket is constructed or any
+credential-bearing request is sent. The existing 20-second per-operation socket
+timeout remains an upper bound.
+After the sole GET is sent, a separate monotonic 20-second absolute deadline
+covers response headers through the complete Content-Length or chunked body,
+or through EOF for a close-delimited body. The response socket recomputes the
+positive remaining budget before every raw `recv_into`, including header,
+chunk-header, trailer, and body parsing, and the bounded body loop uses only
+`HTTPResponse.read1`. Continuous trickling therefore cannot refresh the
+budget indefinitely. Deadline expiry is the fixed sanitized `TIMEOUT` with
+`OUTCOME_AMBIGUOUS` and `request_count=1`; no partial body, status, byte count,
+digest, normalized record, or credential-bearing material is persisted.
+
+Results are atomically and exclusively published mode `0600` under
+`.secrets/rakuten-owner-local/results/<UTC-run-id>.json`. They contain the
+request fingerprint, timestamps, fixed endpoint/version, HTTP/body metadata,
+SHA-256 of the complete bounded raw response bytes, precise request disposition,
+summary, and allowlisted normalized records. Raw bodies/headers, provider error
+descriptions, captions, review bodies or aggregates, affiliate rate, EPC, RPM,
+revenue, and all credentials are forbidden. Stored provider fields are always
+classified `UNTRUSTED_PROVIDER_DATA`. The closed
+`RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1` object always contains the same
+exact keys for success and failure. Success persists all six validated summary
+scalars in the in-memory result-object order `count`, `page`, `first`, `last`,
+`hits`, `pageCount`;
+failure retains those six keys with `null` values, including sanitized
+credential-reflection failures. Result files are compact UTF-8 JSON with
+lexicographically sorted keys and one trailing LF. Adding `first` and `last`
+completes the repository V1 contract while runtime install and execution evidence
+remain `NOT_EXECUTED`; there is no deployed-result migration or compatibility
+claim. If exact `timezone.utc`, fold-0 start and terminal wall-clock values show
+the terminal observation earlier than `started_at`, `finished_at` is clamped to
+`started_at`. If terminal clock sampling raises after the attempt, the already
+sampled `started_at` is reused. Success, received provider failure, and
+outcome-ambiguous evidence therefore retain their original disposition, request
+count, and response metadata and still reach the one bounded result write.
+Invalid values returned by the clock are not compared or clamped and retain the
+existing fixed `INVALID_ARGUMENT` result-envelope validation. Every returned Item record requires a
+non-null, non-empty, bounded UTF-8 `itemCode` and `itemName`; every returned
+Product record requires the same shape for `productCode` and `productId`.
+`shopCode`, `shopName`, and `productName` retain their existing optional and
+nullable behavior unless a field is the selected exact selector. Mandatory-key
+presence is checked before exact-selector identity; a valid-but-different exact
+selector remains `RESULT_MISMATCH`, while an invalid mandatory text shape is
+`RESPONSE_SCHEMA_DRIFT` before success or persistence.
+
+Every returned Item record also requires a non-null strict HTTPS `itemUrl`, and
+every returned Product record requires a
+non-null strict HTTPS `productUrlPC`; missing, null, empty, non-string, or
+non-HTTPS values fail as `RESPONSE_SCHEMA_DRIFT` before success or persistence.
+The existing nullable scalar `affiliateUrl` and Product image URL values remain
+nullable; URL-list values remain non-null tuples whose members are HTTPS.
+All normalized URL positions also reject embedded Unicode whitespace, Unicode
+control and format characters, raw backslashes, malformed percent escapes,
+userinfo, fragments, invalid IDNA DNS labels, and invalid bracketed IPv6
+syntax. Valid international or punycode hostnames, IPv4, bracketed IPv6,
+optional ports, paths, and queries remain supported; this syntax check does not
+expand the transport SSRF policy.
+
+Field presence is checked before exact-selector identity, then mandatory text
+and URL value shape are checked before credential reflection. After result
+identity and request binding but before a success envelope or result write,
+every normalized record string and string-list member, including every URL, is
+compared with all three known non-empty credential values. Raw UTF-8 and one
+percent-decoding pass are checked so reflected query material cannot bypass the
+boundary. The six schema- and relationship-validated summary integers and every
+non-text normalized value already accepted by its field schema are not
+converted to text for credential comparison; typed scalar equality alone is not
+evidence of reflected credential bytes. HTTP
+status, body byte count, response hash, request count, and fixed identifiers
+remain required local evidence metadata rather than reflected provider text.
+Any inspected-text match fails with the fixed `RESPONSE_SCHEMA_DRIFT` code while
+retaining only complete HTTP/body/SHA metadata and `request_count=1`; the
+matched value, summaries, and normalized records are not persisted.
+
+Every local result is `OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE`. Implementation
+and fake tests do not execute a real credential read, provider call, formal
+TST-016, ENV-STAGING, release, or RAOS Production. OD-015 remains blocking and
+unresolved with safe default `RECORDED_FIXTURE_ONLY`; the existing recorded
+ST-0502 service remains unchanged.

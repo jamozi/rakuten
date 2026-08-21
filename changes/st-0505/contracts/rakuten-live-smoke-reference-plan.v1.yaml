@@ -1,6 +1,6 @@
 document:
   id: RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001
-  version: 2.2.0
+  version: 3.0.0
   story_id: ST-0505
   classification: SOURCE_DERIVED_EXPLICIT_LOCAL_RAKUTEN_LIVE_SMOKE_PLAN
   status: OWNER_INSTALLED_ENTRY_INSTALLABLE_NOT_INSTALLED
@@ -256,6 +256,225 @@ live_smoke_definition:
     - repo://scripts/rakuten_live_smoke_launcher.sh
     - repo://scripts/install_rakuten_live_smoke_runtime.py
     - repo://scripts/rakuten_live_smoke_runtime_install.sh
+
+owner_local_read_integration:
+  status: INSTALLABLE_NOT_INSTALLED_OR_EXECUTED
+  default_activation: DISABLED_EXPLICIT_INSTALLED_COMMAND_ONLY
+  evidence_authority: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
+  provider_data_classification: UNTRUSTED_PROVIDER_DATA
+  provider_credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
+  raos_environment: OWNER_LOCAL_NOT_ENV_STAGING_NOT_RAOS_PRODUCTION
+  runtime:
+    name: rakuten-owner-local
+    root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
+    bundle_sha256: c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9
+    launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
+    installer_sha256: 60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b
+    install_stage_sha256: 0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6
+    install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
+    installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
+    installer_credential_access: FORBIDDEN
+    repository_make_entrypoint: NOT_PROVIDED
+    install_execution: NOT_EXECUTED
+  commands:
+    setup: HIDDEN_DEV_TTY_NO_EXISTING_RECORD
+    rotate: HIDDEN_DEV_TTY_ATOMIC_REPLACEMENT
+    doctor: LOCAL_METADATA_AND_CREDENTIAL_SCHEMA_ONLY_NO_NETWORK
+    list_apis: FIXED_CLOSED_REGISTRY_NO_NETWORK
+    request: request --api <item-search|product-search> --request-file <absolute-json>
+    authenticated_request_entry: GENERATED_POSITIONAL_FD4_DIGEST_GATE_ARGV_TEMPLATE
+    smoke: smoke --api <item-search|product-search>
+  credential_record:
+    path: .secrets/rakuten-owner-local/credentials.v1.json
+    schema_version: 1
+    exact_keys:
+      - schema_version
+      - profile
+      - application_id
+      - access_key
+      - affiliate_id
+    profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
+    directory_mode: '0700'
+    file_mode: '0600'
+    symlinks: REJECT
+    hardlinks: REJECT
+    stability: DESCRIPTOR_DOUBLE_READ_IDENTITY_SIZE_MTIME_CTIME
+    argv_environment_output_persistence: FORBIDDEN
+  registry:
+    extensibility: REVIEWED_CODE_ENTRY_ONLY
+    item-search:
+      api_version: '2026-07-01'
+      path: /ichibams/api/IchibaItem/Search/20260701
+      request_policy: UNCHANGED_ST0502_RakutenItemSearchLiveRequestV1
+      selectors: EXACTLY_ONE_KEYWORD_GENRE_ITEM_SHOP
+      exact_selector_response_binding: SELECTED_ITEM_CODE_OR_SHOP_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_RESULT_MISMATCH
+      page: 1
+      review_and_affiliate_rate_inputs: EXCLUDED
+    product-search:
+      api_version: '2025-08-01'
+      path: /ichibaproduct/api/Product/Search/20250801
+      request_policy: OWNER_LOCAL_PRODUCT_SEARCH_V1
+      selectors: KEYWORD_OPTIONAL_GENRE_OR_GENRE_OR_EXCLUSIVE_PRODUCT_ID_OR_CODE
+      exact_selector_response_binding: SELECTED_PRODUCT_ID_OR_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_RESULT_MISMATCH
+      page: 1
+      sort: standard
+      review_derived_inputs: EXCLUDED
+  transport:
+    origin: openapi.rakuten.co.jp:443
+    method: GET
+    authentication:
+      applicationId: QUERY_ONLY
+      affiliateId: QUERY_ONLY
+      header_name: accessKey
+      access_key: HEADER_ONLY
+    proxy_discovery: REJECT
+    tls_override_environment: REJECT
+    dns: VALIDATE_ENTIRE_CANDIDATE_SET_PUBLIC_THEN_PIN_FIRST_ONLY
+    dns_resolution_deadline_seconds: 5
+    dns_execution_isolation: AUTHENTICATED_PROC_SELF_EXE_ISOLATED_NO_SITE_FIXED_HELPER_MINIMAL_ENV_CLOSE_FDS_PARENT_DEATH_SIGKILL
+    dns_ipc_limits: MAX_64_CANDIDATES_MAX_65536_BYTES_STRICT_PARENT_REVALIDATION
+    dns_failure: DNS_FAILED_NOT_SENT_REQUEST_COUNT_0_NO_PROVIDER_METADATA_NO_RETRY
+    dns_process_cleanup: SIGKILL_TWO_BOUNDED_REAP_WAITS_AND_PIPE_CLOSE
+    redirects: 0
+    retries: 0
+    pagination_followups: 0
+    concurrency: 0
+    ip_fallback: 0
+    requests_per_invocation_maximum: 1
+    per_operation_read_timeout_seconds: 20
+    response_read_deadline_seconds: 20
+    response_read_deadline_scope: HEADERS_THROUGH_COMPLETE_BODY_OR_EOF
+    response_read_primitive: RAW_RECV_INTO_REMAINING_TIMEOUT_AND_HTTPRESPONSE_READ1
+    deadline_timeout: TIMEOUT_OUTCOME_AMBIGUOUS_NO_PARTIAL_RESPONSE_METADATA
+    response_maximum_bytes: 2097152
+    response_json: STRICT_UTF8_DUPLICATE_NONFINITE_DEPTH_NODE_SCHEMA
+    response_summary_relationships: PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_PAGECOUNT_EQUALS_MIN_CEIL_COUNT_DIV_HITS_100_FIRST_1_LAST_CARDINALITY
+  normalized_result:
+    directory: .secrets/rakuten-owner-local/results
+    path: .secrets/rakuten-owner-local/results/<UTC-run-id>.json
+    publication: ATOMIC_0600_NO_REPLACE
+    response_sha256: SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES
+    envelope:
+      schema: RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1
+      version: 1
+      exact_object_keys:
+        - schema
+        - version
+        - run_id
+        - started_at
+        - finished_at
+        - api
+        - endpoint_id
+        - api_version
+        - outcome
+        - diagnostic_code
+        - request_fingerprint
+        - request_disposition
+        - request_count
+        - retry_count
+        - pagination_count
+        - http_status
+        - body_byte_count
+        - response_sha256
+        - count
+        - page
+        - first
+        - last
+        - hits
+        - pageCount
+        - items
+        - products
+        - provider_data_classification
+        - evidence_authority
+        - formal_tst_016
+        - staging
+        - production
+        - od_015
+      summary_fields:
+        - count
+        - page
+        - first
+        - last
+        - hits
+        - pageCount
+      success_summary: VALIDATED_INTEGER_VALUES
+      terminal_time: CLAMP_EXACT_UTC_BACKWARD_OR_TERMINAL_SAMPLE_EXCEPTION_TO_STARTED_AT_OTHERWISE_VALIDATE
+      failure_summary: ALL_SIX_KEYS_NULL
+      canonical_json: UTF8_SORTED_KEYS_COMPACT_TRAILING_LF
+      compatibility: REPOSITORY_V1_COMPLETION_RUNTIME_EVIDENCE_NOT_EXECUTED_NO_DEPLOYED_MIGRATION
+    url_validation:
+      syntax:
+        scheme: EXACT_LOWERCASE_HTTPS
+        whitespace_and_controls: REJECT_UNICODE_WHITESPACE_AND_UNICODE_CC_CF
+        raw_backslash: REJECT
+        host: VALID_IDNA_DNS_OR_BRACKETED_IPV6_WITH_OPTIONAL_PORT
+        percent_escapes: COMPLETE_HEX_PAIR_REQUIRED
+        userinfo_and_fragment: REJECT
+      non_null_https:
+        item-search:
+          - itemUrl
+        product-search:
+          - productUrlPC
+      nullable_scalar_url_values:
+        item-search:
+          - affiliateUrl
+        product-search:
+          - affiliateUrl
+          - mediumImageUrl
+          - smallImageUrl
+      url_list_values: NON_NULL_TUPLE_OF_HTTPS_URLS
+      precedence: FIELD_PRESENCE_THEN_EXACT_SELECTOR_THEN_URL_VALUE_SHAPE_BEFORE_CREDENTIAL_REFLECTION
+      refusal: RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE
+    mandatory_text:
+      item-search:
+        - itemCode
+        - itemName
+      product-search:
+        - productCode
+        - productId
+      maximum_characters: 20000
+      shape: NON_NULL_NONEMPTY_NO_EDGE_WHITESPACE_UTF8_STRING
+      optional_fields_unchanged: SHOP_CODE_SHOP_NAME_AND_PRODUCT_NAME_REMAIN_OPTIONAL_NULLABLE
+      precedence: MANDATORY_KEY_PRESENCE_THEN_EXACT_SELECTOR_THEN_MANDATORY_TEXT_THEN_URL_THEN_CREDENTIAL_REFLECTION
+      refusal: RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE
+    credential_reflection:
+      inspected_text_values: ALL_NORMALIZED_RECORD_STRING_VALUES_AND_STRING_LIST_MEMBERS
+      excluded_typed_values:
+        summary_fields:
+          - count
+          - page
+          - first
+          - last
+          - hits
+          - pageCount
+        normalized_record_types:
+          - "NULL"
+          - INTEGER
+        policy: VALIDATE_BY_FIELD_SCHEMA_AND_DO_NOT_COMPARE_AS_CREDENTIAL_TEXT
+        rationale: TYPED_SCALAR_COINCIDENCE_IS_NOT_TEXT_REFLECTION
+      success_persistence_scope: ALL_SIX_VALIDATED_SUMMARIES_AND_ALL_NORMALIZED_RECORD_VALUES
+      representations: INSPECTED_TEXT_RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES
+      match: ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING_IN_INSPECTED_TEXT
+      refusal: RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE
+      failure_evidence: COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE
+    forbidden:
+      - raw body and provider headers or reflected error material
+      - credentials or credential aliases containing values
+      - captions and review bodies
+      - review aggregates and affiliateRate
+      - EPC RPM revenue or finance material
+    request_disposition:
+      - NOT_SENT
+      - RESPONSE_RECEIVED
+      - OUTCOME_AMBIGUOUS
+  verification:
+    fake_and_recorded_only: true
+    real_credentials: NOT_READ
+    provider_call: NOT_EXECUTED
+    formal_tst_016: NOT_EXECUTED
+    env_staging: NOT_EXECUTED
+    od_015: UNRESOLVED
+    raos_production: NOT_EXECUTED
 
 observation_defaults:
   status: NOT_EXECUTED

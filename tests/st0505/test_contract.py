@@ -32,7 +32,7 @@ def test_plan_has_exact_sections_and_installable_disabled_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
-    assert plan["document"]["version"] == "2.2.0"
+    assert plan["document"]["version"] == "3.0.0"
     assert plan["document"]["executable"] is True
     assert plan["document"]["interface_only"] is False
     assert plan["document"]["decision"] == "EXACT_OWNER_INSTALLED_ENTRY_REQUIRED"
@@ -118,6 +118,231 @@ def test_tst_016_is_exact_but_has_no_formal_evidence() -> None:
     assert suite["environments"] == ["staging"]
     assert suite["formal_execution"] == "NOT_EXECUTED"
     assert suite["evidence"] is None
+
+
+def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
+    owner = _plan()["owner_local_read_integration"]
+    runtime = owner["runtime"]
+    commands = owner["authoritative_fixed_commands"]
+
+    assert owner["status"] == "INSTALLABLE_NOT_INSTALLED_OR_EXECUTED"
+    assert owner["default_activation"] == "DISABLED_EXPLICIT_INSTALLED_COMMAND_ONLY"
+    assert owner["evidence_authority"] == "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"
+    assert owner["provider_data_classification"] == "UNTRUSTED_PROVIDER_DATA"
+    assert owner["provider_credential_profile"] == (
+        "OWNER_LOCAL_RAKUTEN_PRODUCTION_API"
+    )
+    assert owner["raos_environment"] == (
+        "OWNER_LOCAL_NOT_ENV_STAGING_NOT_RAOS_PRODUCTION"
+    )
+    assert runtime["bundle_sha256"] == generator.EXPECTED_OWNER_LOCAL_BUNDLE_SHA256
+    assert runtime["launcher_sha256"] == (
+        generator.EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256
+    )
+    assert runtime["installer_sha256"] == (
+        generator.EXPECTED_OWNER_LOCAL_INSTALLER_SHA256
+    )
+    assert runtime["install_stage_sha256"] == (
+        generator.EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256
+    )
+    assert runtime["repository_make_entrypoint"] == "NOT_PROVIDED"
+    assert runtime["installer_credential_access"] == "FORBIDDEN"
+    assert runtime["install_execution"] == "NOT_EXECUTED"
+    assert commands["runtime_install"] == (
+        generator._owner_local_authoritative_runtime_install_command()
+    )
+    assert commands["setup"] == generator._owner_local_authoritative_installed_command(
+        ("setup",)
+    )
+    assert commands["rotate"] == generator._owner_local_authoritative_installed_command(
+        ("rotate",)
+    )
+    assert commands["doctor"] == generator._owner_local_authoritative_installed_command(
+        ("doctor",)
+    )
+    assert commands["list_apis"] == (
+        generator._owner_local_authoritative_installed_command(("list-apis",))
+    )
+    assert commands["smoke_item_search"] == (
+        generator._owner_local_authoritative_installed_command(
+            ("smoke", "--api", "item-search")
+        )
+    )
+    assert commands["smoke_product_search"] == (
+        generator._owner_local_authoritative_installed_command(
+            ("smoke", "--api", "product-search")
+        )
+    )
+    for command in commands.values():
+        assert command.startswith("/usr/bin/busybox env -i ")
+        assert " make " not in f" {command} "
+    assert owner["authoritative_request_gate"] == {
+        "launcher_path": generator.OWNER_LOCAL_INSTALLED_LAUNCHER_PATH,
+        "launcher_sha256": generator.EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256,
+        "authentication": "STATIC_BUSYBOX_FD4_SHA256_BEFORE_LAUNCHER_BODY",
+        "argument_contract": (
+            "request --api <item-search|product-search> --request-file <absolute-json>"
+        ),
+        "shell_interpolation": "FORBIDDEN_USE_POSITIONAL_ARGUMENTS",
+    }
+    request_template = owner["authoritative_request_template"]
+    assert request_template == {
+        "argv": generator._owner_local_authoritative_request_argv_template(),
+        "api_argv_index": 12,
+        "request_file_argv_index": 13,
+        "rendering": "REPLACE_EXACT_TWO_ARRAY_ELEMENTS_THEN_DIRECT_EXECVE_NO_EVAL",
+        "unrendered_or_extra_arguments": "FAIL_CLOSED",
+    }
+    argv = request_template["argv"]
+    assert argv[11:] == [
+        "rakuten-owner-local-request",
+        "<item-search|product-search>",
+        "<absolute-json>",
+    ]
+    assert 'exec "$p" request --api "$1" --request-file "$2"' in argv[10]
+    assert "eval" not in argv[10]
+    assert owner["registry"]["item-search"]["api_version"] == "2026-07-01"
+    assert owner["registry"]["item-search"]["page"] == 1
+    assert owner["registry"]["item-search"]["exact_selector_response_binding"] == (
+        "SELECTED_ITEM_CODE_OR_SHOP_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_"
+        "RESULT_MISMATCH"
+    )
+    assert owner["registry"]["product-search"]["api_version"] == "2025-08-01"
+    assert owner["registry"]["product-search"]["page"] == 1
+    assert owner["registry"]["product-search"]["exact_selector_response_binding"] == (
+        "SELECTED_PRODUCT_ID_OR_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_"
+        "RESULT_MISMATCH"
+    )
+    assert owner["transport"]["requests_per_invocation_maximum"] == 1
+    assert owner["transport"]["retries"] == 0
+    assert owner["transport"]["pagination_followups"] == 0
+    assert owner["transport"]["dns_resolution_deadline_seconds"] == 5
+    assert owner["transport"]["dns_execution_isolation"] == (
+        "AUTHENTICATED_PROC_SELF_EXE_ISOLATED_NO_SITE_FIXED_HELPER_"
+        "MINIMAL_ENV_CLOSE_FDS_PARENT_DEATH_SIGKILL"
+    )
+    assert owner["transport"]["dns_ipc_limits"] == (
+        "MAX_64_CANDIDATES_MAX_65536_BYTES_STRICT_PARENT_REVALIDATION"
+    )
+    assert owner["transport"]["dns_failure"] == (
+        "DNS_FAILED_NOT_SENT_REQUEST_COUNT_0_NO_PROVIDER_METADATA_NO_RETRY"
+    )
+    assert owner["transport"]["dns_process_cleanup"] == (
+        "SIGKILL_TWO_BOUNDED_REAP_WAITS_AND_PIPE_CLOSE"
+    )
+    assert owner["transport"]["per_operation_read_timeout_seconds"] == 20
+    assert owner["transport"]["response_read_deadline_seconds"] == 20
+    assert owner["transport"]["response_read_deadline_scope"] == (
+        "HEADERS_THROUGH_COMPLETE_BODY_OR_EOF"
+    )
+    assert owner["transport"]["response_read_primitive"] == (
+        "RAW_RECV_INTO_REMAINING_TIMEOUT_AND_HTTPRESPONSE_READ1"
+    )
+    assert owner["transport"]["deadline_timeout"] == (
+        "TIMEOUT_OUTCOME_AMBIGUOUS_NO_PARTIAL_RESPONSE_METADATA"
+    )
+    assert owner["transport"]["response_summary_relationships"] == (
+        "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
+        "PAGECOUNT_EQUALS_MIN_CEIL_COUNT_DIV_HITS_100_FIRST_1_LAST_"
+        "CARDINALITY"
+    )
+    assert owner["normalized_result"]["envelope"] == {
+        "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1",
+        "version": 1,
+        "exact_object_keys": list(generator.EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
+        "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
+        "success_summary": "VALIDATED_INTEGER_VALUES",
+        "terminal_time": (
+            "CLAMP_EXACT_UTC_BACKWARD_OR_TERMINAL_SAMPLE_EXCEPTION_TO_STARTED_"
+            "AT_OTHERWISE_VALIDATE"
+        ),
+        "failure_summary": "ALL_SIX_KEYS_NULL",
+        "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
+        "compatibility": (
+            "REPOSITORY_V1_COMPLETION_RUNTIME_EVIDENCE_NOT_EXECUTED_NO_"
+            "DEPLOYED_MIGRATION"
+        ),
+    }
+    assert owner["normalized_result"]["url_validation"] == {
+        "syntax": {
+            "scheme": "EXACT_LOWERCASE_HTTPS",
+            "whitespace_and_controls": ("REJECT_UNICODE_WHITESPACE_AND_UNICODE_CC_CF"),
+            "raw_backslash": "REJECT",
+            "host": "VALID_IDNA_DNS_OR_BRACKETED_IPV6_WITH_OPTIONAL_PORT",
+            "percent_escapes": "COMPLETE_HEX_PAIR_REQUIRED",
+            "userinfo_and_fragment": "REJECT",
+        },
+        "non_null_https": {
+            "item-search": ["itemUrl"],
+            "product-search": ["productUrlPC"],
+        },
+        "nullable_scalar_url_values": {
+            "item-search": ["affiliateUrl"],
+            "product-search": [
+                "affiliateUrl",
+                "mediumImageUrl",
+                "smallImageUrl",
+            ],
+        },
+        "url_list_values": "NON_NULL_TUPLE_OF_HTTPS_URLS",
+        "precedence": (
+            "FIELD_PRESENCE_THEN_EXACT_SELECTOR_THEN_URL_VALUE_SHAPE_BEFORE_"
+            "CREDENTIAL_REFLECTION"
+        ),
+        "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+    }
+    assert owner["normalized_result"]["mandatory_text"] == {
+        "item-search": ["itemCode", "itemName"],
+        "product-search": ["productCode", "productId"],
+        "maximum_characters": 20_000,
+        "shape": "NON_NULL_NONEMPTY_NO_EDGE_WHITESPACE_UTF8_STRING",
+        "optional_fields_unchanged": (
+            "SHOP_CODE_SHOP_NAME_AND_PRODUCT_NAME_REMAIN_OPTIONAL_NULLABLE"
+        ),
+        "precedence": (
+            "MANDATORY_KEY_PRESENCE_THEN_EXACT_SELECTOR_THEN_MANDATORY_TEXT_THEN_"
+            "URL_THEN_CREDENTIAL_REFLECTION"
+        ),
+        "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+    }
+    assert owner["normalized_result"]["credential_reflection"] == {
+        "inspected_text_values": (
+            "ALL_NORMALIZED_RECORD_STRING_VALUES_AND_STRING_LIST_MEMBERS"
+        ),
+        "excluded_typed_values": {
+            "summary_fields": [
+                "count",
+                "page",
+                "first",
+                "last",
+                "hits",
+                "pageCount",
+            ],
+            "normalized_record_types": ["NULL", "INTEGER"],
+            "policy": "VALIDATE_BY_FIELD_SCHEMA_AND_DO_NOT_COMPARE_AS_CREDENTIAL_TEXT",
+            "rationale": "TYPED_SCALAR_COINCIDENCE_IS_NOT_TEXT_REFLECTION",
+        },
+        "success_persistence_scope": (
+            "ALL_SIX_VALIDATED_SUMMARIES_AND_ALL_NORMALIZED_RECORD_VALUES"
+        ),
+        "representations": ("INSPECTED_TEXT_RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES"),
+        "match": ("ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING_IN_INSPECTED_TEXT"),
+        "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+        "failure_evidence": (
+            "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"
+        ),
+    }
+    assert owner["verification"] == {
+        "fake_and_recorded_only": True,
+        "real_credentials": "NOT_READ",
+        "provider_call": "NOT_EXECUTED",
+        "formal_tst_016": "NOT_EXECUTED",
+        "env_staging": "NOT_EXECUTED",
+        "od_015": "UNRESOLVED",
+        "raos_production": "NOT_EXECUTED",
+    }
+    assert Path("Makefile") not in generator.RUNTIME_PATHS
+    assert Path("Makefile") not in generator.SOURCE_PATHS
 
 
 def test_live_smoke_is_installable_but_not_installed_or_runnable() -> None:

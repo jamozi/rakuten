@@ -41,6 +41,9 @@ TEST_PATHS: Final = (
     Path("tests/st0505/test_negative_cases.py"),
     Path("tests/st0505/test_rakuten_live_smoke_installed_runtime.py"),
     Path("tests/st0505/test_rakuten_live_smoke_runtime.py"),
+    Path("tests/st0505/test_rakuten_owner_local_core.py"),
+    Path("tests/st0505/test_rakuten_owner_local_adapter.py"),
+    Path("tests/st0505/test_rakuten_owner_local_installed_runtime.py"),
 )
 RUNTIME_PATHS: Final = (
     Path("python/raos/__init__.py"),
@@ -52,6 +55,14 @@ RUNTIME_PATHS: Final = (
     Path("scripts/rakuten_live_smoke_runtime_install.sh"),
     Path("scripts/rakuten_live_smoke.py"),
     Path("scripts/rakuten_live_smoke_launcher.sh"),
+    Path("python/raos/domain/catalog/rakuten_owner_local.py"),
+    Path("python/raos/application/catalog/rakuten_owner_local.py"),
+    Path("python/raos/ports/rakuten_owner_local.py"),
+    Path("python/raos/adapters/rakuten_owner_local.py"),
+    Path("scripts/install_rakuten_owner_local_runtime.py"),
+    Path("scripts/rakuten_owner_local_runtime_install.sh"),
+    Path("scripts/rakuten_owner_local.py"),
+    Path("scripts/rakuten_owner_local_launcher.sh"),
 )
 SOURCE_PATHS: Final = (
     CONTRACT_PATH,
@@ -84,12 +95,68 @@ EXPECTED_RUNTIME_INSTALLER_SHA256: Final = (
 EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
+EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
+    "c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9"
+)
+EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
+    "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
+)
+EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
+    "60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b"
+)
+EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
+    "0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6"
+)
+OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
+    "129f7f01fb5bafc13ddd54d39bacdc0d28975478ebff8a84bf1b57c37f90c0e5"
+)
+EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS: Final = (
+    "schema",
+    "version",
+    "run_id",
+    "started_at",
+    "finished_at",
+    "api",
+    "endpoint_id",
+    "api_version",
+    "outcome",
+    "diagnostic_code",
+    "request_fingerprint",
+    "request_disposition",
+    "request_count",
+    "retry_count",
+    "pagination_count",
+    "http_status",
+    "body_byte_count",
+    "response_sha256",
+    "count",
+    "page",
+    "first",
+    "last",
+    "hits",
+    "pageCount",
+    "items",
+    "products",
+    "provider_data_classification",
+    "evidence_authority",
+    "formal_tst_016",
+    "staging",
+    "production",
+    "od_015",
+)
 INSTALLED_LAUNCHER_PATH: Final = (
     "/home/minami/.local/share/raos/rakuten-live-smoke/runtime/"
     f"{EXPECTED_INSTALLED_BUNDLE_SHA256}/bin/rakuten-live-smoke"
 )
+OWNER_LOCAL_INSTALLED_LAUNCHER_PATH: Final = (
+    "/home/minami/.local/share/raos/rakuten-owner-local/runtime/"
+    f"{EXPECTED_OWNER_LOCAL_BUNDLE_SHA256}/bin/rakuten-owner-local"
+)
 REVIEWED_RUNTIME_INSTALL_STAGE: Final = (
     "/home/minami/rakuten/scripts/rakuten_live_smoke_runtime_install.sh"
+)
+OWNER_LOCAL_REVIEWED_RUNTIME_INSTALL_STAGE: Final = (
+    "/home/minami/rakuten/scripts/rakuten_owner_local_runtime_install.sh"
 )
 INSTALLED_PAYLOADS: Final = (
     (Path("scripts/rakuten_live_smoke_launcher.sh"), "bin/rakuten-live-smoke", 0o500),
@@ -123,6 +190,41 @@ INSTALLED_PAYLOADS: Final = (
     (
         Path("python/raos/adapters/rakuten_live_smoke.py"),
         "python/raos/adapters/rakuten_live_smoke.py",
+        0o400,
+    ),
+)
+OWNER_LOCAL_INSTALLED_PAYLOADS: Final = (
+    (Path("scripts/rakuten_owner_local_launcher.sh"), "bin/rakuten-owner-local", 0o500),
+    (Path("scripts/rakuten_owner_local.py"), "scripts/rakuten_owner_local.py", 0o400),
+    (Path("python/raos/__init__.py"), "python/raos/__init__.py", 0o400),
+    (
+        Path("python/raos/domain/catalog/rakuten_item_search.py"),
+        "python/raos/domain/catalog/rakuten_item_search.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/domain/catalog/rakuten_item_search_live_request_v1.py"),
+        "python/raos/domain/catalog/rakuten_item_search_live_request_v1.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/domain/catalog/rakuten_owner_local.py"),
+        "python/raos/domain/catalog/rakuten_owner_local.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/application/catalog/rakuten_owner_local.py"),
+        "python/raos/application/catalog/rakuten_owner_local.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/ports/rakuten_owner_local.py"),
+        "python/raos/ports/rakuten_owner_local.py",
+        0o400,
+    ),
+    (
+        Path("python/raos/adapters/rakuten_owner_local.py"),
+        "python/raos/adapters/rakuten_owner_local.py",
         0o400,
     ),
 )
@@ -194,6 +296,129 @@ def _authoritative_installed_command(command: str) -> str:
         "}; "
         f'exec "$p" {command}\''
     )
+
+
+def _owner_local_authoritative_runtime_install_command() -> str:
+    return (
+        _authoritative_runtime_install_command()
+        .replace(
+            REVIEWED_RUNTIME_INSTALL_STAGE,
+            OWNER_LOCAL_REVIEWED_RUNTIME_INSTALL_STAGE,
+        )
+        .replace(
+            EXPECTED_RUNTIME_INSTALL_STAGE_SHA256,
+            EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256,
+        )
+        .replace(
+            "RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED",
+            "RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED",
+        )
+    )
+
+
+def _owner_local_authoritative_installed_command(arguments: tuple[str, ...]) -> str:
+    allowed = {
+        ("setup",),
+        ("rotate",),
+        ("doctor",),
+        ("list-apis",),
+        ("smoke", "--api", "item-search"),
+        ("smoke", "--api", "product-search"),
+    }
+    if arguments not in allowed:
+        raise ValueError("closed owner-local installed command")
+    old_command = "doctor" if arguments == ("doctor",) else "run"
+    command = _authoritative_installed_command(old_command)
+    command = command.replace(
+        INSTALLED_LAUNCHER_PATH, OWNER_LOCAL_INSTALLED_LAUNCHER_PATH
+    )
+    command = command.replace(
+        EXPECTED_INSTALLED_LAUNCHER_SHA256,
+        EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256,
+    )
+    command = command.replace(
+        "RAKUTEN_LIVE_SMOKE_DOCTOR_NOT_READY",
+        "RAKUTEN_OWNER_LOCAL_DOCTOR_NOT_READY",
+    ).replace("RAKUTEN_LIVE_SMOKE_FAIL", "RAKUTEN_OWNER_LOCAL_FAIL")
+    rendered_arguments = " ".join(arguments)
+    return command.replace(
+        f'exec "$p" {old_command}\'',
+        f'exec "$p" {rendered_arguments}\'',
+    )
+
+
+def _owner_local_authoritative_request_argv_template() -> list[str]:
+    command = _owner_local_authoritative_installed_command(("list-apis",))
+    prefix = (
+        "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 "
+        "TZ=UTC /usr/bin/busybox sh -c '"
+    )
+    if not command.startswith(prefix) or not command.endswith("'"):
+        raise ValueError("owner-local installed gate shape")
+    script = command[len(prefix) : -1]
+    fixed_dispatch = 'exec "$p" list-apis'
+    positional_dispatch = (
+        '[ "$#" -eq 2 ] || { /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; "
+        'case "$1" in item-search|product-search) ;; *) '
+        '/usr/bin/busybox printf "%s\\n" RAKUTEN_OWNER_LOCAL_FAIL; exit 2;; esac; '
+        'case "$2" in /*) ;; *) /usr/bin/busybox printf "%s\\n" '
+        "RAKUTEN_OWNER_LOCAL_FAIL; exit 2;; esac; "
+        'exec "$p" request --api "$1" --request-file "$2"'
+    )
+    if script.count(fixed_dispatch) != 1:
+        raise ValueError("owner-local installed dispatch shape")
+    script = script.replace(fixed_dispatch, positional_dispatch)
+    return [
+        "/usr/bin/busybox",
+        "env",
+        "-i",
+        "PATH=/usr/bin:/bin",
+        "LANG=C.UTF-8",
+        "LC_ALL=C.UTF-8",
+        "TZ=UTC",
+        "/usr/bin/busybox",
+        "sh",
+        "-c",
+        script,
+        "rakuten-owner-local-request",
+        "<item-search|product-search>",
+        "<absolute-json>",
+    ]
+
+
+def _owner_local_reference_binding(value: object) -> dict[str, object]:
+    owner = dict(_mapping(value, "owner_local_read_integration"))
+    owner["authoritative_fixed_commands"] = {
+        "runtime_install": _owner_local_authoritative_runtime_install_command(),
+        "setup": _owner_local_authoritative_installed_command(("setup",)),
+        "rotate": _owner_local_authoritative_installed_command(("rotate",)),
+        "doctor": _owner_local_authoritative_installed_command(("doctor",)),
+        "list_apis": _owner_local_authoritative_installed_command(("list-apis",)),
+        "smoke_item_search": _owner_local_authoritative_installed_command(
+            ("smoke", "--api", "item-search")
+        ),
+        "smoke_product_search": _owner_local_authoritative_installed_command(
+            ("smoke", "--api", "product-search")
+        ),
+    }
+    owner["authoritative_request_gate"] = {
+        "launcher_path": OWNER_LOCAL_INSTALLED_LAUNCHER_PATH,
+        "launcher_sha256": EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256,
+        "authentication": "STATIC_BUSYBOX_FD4_SHA256_BEFORE_LAUNCHER_BODY",
+        "argument_contract": (
+            "request --api <item-search|product-search> --request-file <absolute-json>"
+        ),
+        "shell_interpolation": "FORBIDDEN_USE_POSITIONAL_ARGUMENTS",
+    }
+    owner["authoritative_request_template"] = {
+        "argv": _owner_local_authoritative_request_argv_template(),
+        "api_argv_index": 12,
+        "request_file_argv_index": 13,
+        "rendering": "REPLACE_EXACT_TWO_ARRAY_ELEMENTS_THEN_DIRECT_EXECVE_NO_EVAL",
+        "unrendered_or_extra_arguments": "FAIL_CLOSED",
+    }
+    return owner
 
 
 INTEGRATION_PATH: Final = Path(
@@ -299,6 +524,7 @@ CONTRACT_KEYS: Final = (
     "predecessor",
     "open_decision",
     "live_smoke_definition",
+    "owner_local_read_integration",
     "observation_defaults",
     "rate_quota_cost_defaults",
     "execution_boundary",
@@ -312,6 +538,7 @@ PLAN_KEYS: Final = (
     "open_decision",
     "test_suite",
     "live_smoke_definition",
+    "owner_local_read_integration",
     "observation_boundary",
     "rate_quota_cost_boundary",
     "execution_boundary",
@@ -943,6 +1170,25 @@ def _installed_bundle_sha256(root: Path) -> str:
     return _sha256(canonical)
 
 
+def _owner_local_bundle_sha256(root: Path) -> str:
+    rows = [
+        {
+            "path": installed,
+            "sha256": _sha256(_read(root, source, "owner_local.payload")),
+            "mode": f"{mode:04o}",
+        }
+        for source, installed, mode in OWNER_LOCAL_INSTALLED_PAYLOADS
+    ]
+    canonical = json.dumps(
+        rows,
+        ensure_ascii=True,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    return _sha256(canonical)
+
+
 def _literal_assignment(source: str, name: str, field: str) -> object:
     tree = ast.parse(source)
     values: list[ast.expr] = []
@@ -1277,9 +1523,199 @@ def _validate_runtime_semantics(root: Path) -> None:
         _fail("RUNTIME_BUNDLE_DRIFT", "runtime.bundle")
 
 
+def _validate_owner_local_runtime_semantics(root: Path) -> None:
+    required_fragments = {
+        Path("python/raos/domain/catalog/rakuten_owner_local.py"): (
+            'RAKUTEN_OWNER_LOCAL_PROFILE = "OWNER_LOCAL_RAKUTEN_PRODUCTION_API"',
+            'RAKUTEN_OWNER_LOCAL_HOST = "openapi.rakuten.co.jp"',
+            '"2026-07-01"',
+            '"2025-08-01"',
+            '"/ichibams/api/IchibaItem/Search/20260701"',
+            '"/ichibaproduct/api/Product/Search/20250801"',
+            'RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY = "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"',
+            'RAKUTEN_OWNER_LOCAL_PROVIDER_DATA_CLASSIFICATION = "UNTRUSTED_PROVIDER_DATA"',
+            'RAKUTEN_OWNER_LOCAL_FORMAL_TST_016 = "NOT_EXECUTED"',
+            'RAKUTEN_OWNER_LOCAL_OD_015 = "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED"',
+            "_NON_NULL_URL_FIELDS = {",
+            'frozenset({"itemUrl"})',
+            'frozenset({"productUrlPC"})',
+            "_MANDATORY_TEXT_FIELDS = {",
+            'frozenset({"itemCode", "itemName"})',
+            'frozenset({"productCode", "productId"})',
+            "if type(candidate) in {str, tuple}",
+            "unquote_to_bytes(text)",
+            "mandatory_record_fields(self.api)",
+            "validated_response_text(value)",
+            '"first": result.first if result is not None else None,',
+            '"last": result.last if result is not None else None,',
+            "_MALFORMED_PERCENT_ESCAPE =",
+            "character.isspace()",
+            'unicodedata.category(character) in {"Cc", "Cf"}',
+            "_validate_https_host(parsed.hostname, parsed.netloc)",
+            "def expected_response_page_count(count: object, hits: object) -> int:",
+            "return min((count + hits - 1) // hits, 100)",
+            "expected_response_page_count(self.count, self.hits)",
+        ),
+        Path("python/raos/application/catalog/rakuten_owner_local.py"): (
+            "self.result_writer.preflight()",
+            "self.credential_reader.read()",
+            "self.transport.execute(",
+            "observed_finished_at = self.clock()",
+            "except BaseException:",
+            "observed_finished_at = started_at",
+            "finished_at = _normalized_finished_at(started_at, observed_finished_at)",
+            "self.result_writer.write(envelope)",
+            "REQUEST_ALREADY_ATTEMPTED",
+        ),
+        Path("python/raos/adapters/rakuten_owner_local.py"): (
+            '".secrets", "rakuten-owner-local"',
+            '"credentials.v1.json"',
+            '"results"',
+            'connection.request("GET"',
+            '"applicationId"',
+            '"affiliateId"',
+            '"access" + "Key"',
+            "mandatory_record_fields(api)",
+            "validated_response_text(returned_value)",
+            "socket.getaddrinfo(",
+            "DNS_RESOLUTION_DEADLINE_SECONDS = 5",
+            "class _BoundedSystemDnsResolver:",
+            '"/proc/self/exe",',
+            "process.communicate(timeout=remaining_seconds)",
+            "_kill_and_reap_dns_process(process)",
+            "ssl.create_default_context(",
+            "RESPONSE_READ_DEADLINE_SECONDS = 20",
+            "class _ResponseReadDeadline:",
+            "class _DeadlineSocketProxy:",
+            "self._socket.settimeout(self.deadline.operation_timeout())",
+            "chunk = response.read1(",
+            "connection.set_response_read_deadline(deadline)",
+            "expected_response_page_count(count, hits)",
+            "O_TMPFILE",
+        ),
+        Path("scripts/rakuten_owner_local.py"): (
+            'TRUSTED_RUNTIME_PARENT = TRUSTED_OWNER_ROOT / "rakuten-owner-local" / "runtime"',
+            '"bin/rakuten-owner-local"',
+            '"setup"',
+            '"rotate"',
+            '"doctor"',
+            '"list-apis"',
+            '"request"',
+            '"smoke"',
+            'os.open(\n        "/dev/tty"',
+            "_verify_stage_zero_entry()",
+            "_verify_installed_runtime()",
+        ),
+        Path("scripts/rakuten_owner_local_launcher.sh"): (
+            "#!/usr/bin/busybox sh",
+            "/home/minami/.local/share/raos/rakuten-owner-local/runtime/",
+            "exec /usr/bin/busybox env -i",
+            'exec 3<"$entry_path"',
+            '"$python" -B -I -S "$runtime_cli" "$@"',
+        ),
+        Path("scripts/rakuten_owner_local_runtime_install.sh"): (
+            "#!/usr/bin/busybox sh",
+            "rakuten_owner_local_runtime_install.sh",
+            "install_rakuten_owner_local_runtime.py",
+            "/proc/self/fd/5 -B -I -S /proc/self/fd/6",
+        ),
+        Path("scripts/install_rakuten_owner_local_runtime.py"): (
+            'runtime_path = owner_base / "raos" / "rakuten-owner-local" / "runtime"',
+            '"RAOS_ST0505_OWNER_LOCAL_INSTALLED_RUNTIME_V1"',
+            "_validate_authenticated_bootstrap()",
+            "_RENAME_NOREPLACE = 1",
+        ),
+    }
+    for path, fragments in required_fragments.items():
+        source = _read(root, path, "owner_local.source").decode(
+            "utf-8", errors="strict"
+        )
+        if any(fragment not in source for fragment in fragments):
+            _fail("OWNER_LOCAL_RUNTIME_SEMANTIC_DRIFT", path.as_posix())
+    domain_source = _read(
+        root,
+        Path("python/raos/domain/catalog/rakuten_owner_local.py"),
+        "owner_local.domain",
+    ).decode("utf-8", errors="strict")
+    try:
+        domain_tree = ast.parse(domain_source)
+    except SyntaxError:
+        _fail("OWNER_LOCAL_RUNTIME_SEMANTIC_DRIFT", "owner_local.domain")
+    reflection_methods = [
+        member
+        for node in domain_tree.body
+        if isinstance(node, ast.ClassDef)
+        and node.name == "RakutenOwnerLocalCredentials"
+        for member in node.body
+        if isinstance(member, (ast.AsyncFunctionDef, ast.FunctionDef))
+        and member.name == "reject_reflected_result"
+    ]
+    if (
+        len(reflection_methods) != 1
+        or _ast_sha256(reflection_methods[0])
+        != OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256
+    ):
+        _fail(
+            "OWNER_LOCAL_RUNTIME_SEMANTIC_DRIFT",
+            "owner_local.credential_reflection",
+        )
+    installer_source = _read(
+        root,
+        Path("scripts/install_rakuten_owner_local_runtime.py"),
+        "owner_local.installer",
+    ).decode("utf-8", errors="strict")
+    cli_source = _read(
+        root, Path("scripts/rakuten_owner_local.py"), "owner_local.cli"
+    ).decode("utf-8", errors="strict")
+    launcher = _read(
+        root,
+        Path("scripts/rakuten_owner_local_launcher.sh"),
+        "owner_local.launcher",
+    )
+    stage = _read(
+        root,
+        Path("scripts/rakuten_owner_local_runtime_install.sh"),
+        "owner_local.install_stage",
+    )
+    expected_installer_payloads = tuple(
+        (source.as_posix(), installed, mode)
+        for source, installed, mode in OWNER_LOCAL_INSTALLED_PAYLOADS
+    )
+    expected_cli_payloads = {
+        installed: f"{mode:04o}"
+        for _source, installed, mode in OWNER_LOCAL_INSTALLED_PAYLOADS
+    }
+    if (
+        _literal_assignment(installer_source, "_PAYLOADS", "owner_local.installer")
+        != expected_installer_payloads
+    ):
+        _fail("OWNER_LOCAL_RUNTIME_SEMANTIC_DRIFT", "owner_local.installer")
+    if (
+        _literal_assignment(cli_source, "_INSTALLED_PAYLOAD_MODES", "owner_local.cli")
+        != expected_cli_payloads
+    ):
+        _fail("OWNER_LOCAL_RUNTIME_SEMANTIC_DRIFT", "owner_local.cli")
+    if _sha256(launcher) != EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256:
+        _fail("OWNER_LOCAL_RUNTIME_HASH_DRIFT", "owner_local.launcher")
+    if (
+        _sha256(
+            _read(
+                root,
+                Path("scripts/install_rakuten_owner_local_runtime.py"),
+                "owner_local.installer",
+            )
+        )
+        != EXPECTED_OWNER_LOCAL_INSTALLER_SHA256
+        or _sha256(stage) != EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256
+    ):
+        _fail("OWNER_LOCAL_RUNTIME_HASH_DRIFT", "owner_local.install")
+    if _owner_local_bundle_sha256(root) != EXPECTED_OWNER_LOCAL_BUNDLE_SHA256:
+        _fail("OWNER_LOCAL_RUNTIME_BUNDLE_DRIFT", "owner_local.bundle")
+
+
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "2.2.0",
+    "version": "3.0.0",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_EXPLICIT_LOCAL_RAKUTEN_LIVE_SMOKE_PLAN",
     "status": "OWNER_INSTALLED_ENTRY_INSTALLABLE_NOT_INSTALLED",
@@ -1608,6 +2044,420 @@ EXPECTED_VERIFICATION: Final = {
 }
 
 
+def _validate_owner_local_read_integration(value: object) -> None:
+    owner = _mapping(value, "owner_local_read_integration")
+    if tuple(owner) != (
+        "status",
+        "default_activation",
+        "evidence_authority",
+        "provider_data_classification",
+        "provider_credential_profile",
+        "raos_environment",
+        "runtime",
+        "commands",
+        "credential_record",
+        "registry",
+        "transport",
+        "normalized_result",
+        "verification",
+    ):
+        _fail("CONTRACT_SCHEMA_DRIFT", "owner_local_read_integration")
+    required = {
+        "status": "INSTALLABLE_NOT_INSTALLED_OR_EXECUTED",
+        "default_activation": "DISABLED_EXPLICIT_INSTALLED_COMMAND_ONLY",
+        "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
+        "provider_data_classification": "UNTRUSTED_PROVIDER_DATA",
+        "provider_credential_profile": "OWNER_LOCAL_RAKUTEN_PRODUCTION_API",
+        "raos_environment": "OWNER_LOCAL_NOT_ENV_STAGING_NOT_RAOS_PRODUCTION",
+    }
+    for key, expected in required.items():
+        _exact(owner[key], expected, f"owner_local_read_integration.{key}")
+    runtime = _mapping(owner["runtime"], "owner_local.runtime")
+    if (
+        tuple(runtime)
+        != (
+            "name",
+            "root",
+            "bundle_sha256",
+            "launcher_sha256",
+            "installer_sha256",
+            "install_stage_sha256",
+            "install_entry",
+            "installed_entry",
+            "installer_credential_access",
+            "repository_make_entrypoint",
+            "install_execution",
+        )
+        or runtime.get("name") != "rakuten-owner-local"
+        or runtime.get("root")
+        != "/home/minami/.local/share/raos/rakuten-owner-local/runtime"
+        or runtime.get("bundle_sha256") != EXPECTED_OWNER_LOCAL_BUNDLE_SHA256
+        or runtime.get("launcher_sha256") != EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256
+        or runtime.get("installer_sha256") != EXPECTED_OWNER_LOCAL_INSTALLER_SHA256
+        or runtime.get("install_stage_sha256")
+        != EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256
+        or runtime.get("installer_credential_access") != "FORBIDDEN"
+        or runtime.get("repository_make_entrypoint") != "NOT_PROVIDED"
+        or runtime.get("install_execution") != "NOT_EXECUTED"
+    ):
+        _fail("VALUE_MISMATCH", "owner_local.runtime")
+    commands = _mapping(owner["commands"], "owner_local.commands")
+    if tuple(commands) != (
+        "setup",
+        "rotate",
+        "doctor",
+        "list_apis",
+        "request",
+        "authenticated_request_entry",
+        "smoke",
+    ):
+        _fail("CONTRACT_SCHEMA_DRIFT", "owner_local.commands")
+    _exact(
+        commands,
+        {
+            "setup": "HIDDEN_DEV_TTY_NO_EXISTING_RECORD",
+            "rotate": "HIDDEN_DEV_TTY_ATOMIC_REPLACEMENT",
+            "doctor": "LOCAL_METADATA_AND_CREDENTIAL_SCHEMA_ONLY_NO_NETWORK",
+            "list_apis": "FIXED_CLOSED_REGISTRY_NO_NETWORK",
+            "request": (
+                "request --api <item-search|product-search> "
+                "--request-file <absolute-json>"
+            ),
+            "authenticated_request_entry": (
+                "GENERATED_POSITIONAL_FD4_DIGEST_GATE_ARGV_TEMPLATE"
+            ),
+            "smoke": "smoke --api <item-search|product-search>",
+        },
+        "owner_local.commands",
+    )
+    credentials = _mapping(owner["credential_record"], "owner_local.credential_record")
+    if (
+        tuple(credentials)
+        != (
+            "path",
+            "schema_version",
+            "exact_keys",
+            "profile",
+            "directory_mode",
+            "file_mode",
+            "symlinks",
+            "hardlinks",
+            "stability",
+            "argv_environment_output_persistence",
+        )
+        or credentials.get("path") != ".secrets/rakuten-owner-local/credentials.v1.json"
+        or credentials.get("schema_version") != 1
+        or credentials.get("exact_keys")
+        != [
+            "schema_version",
+            "profile",
+            "application_id",
+            "access_key",
+            "affiliate_id",
+        ]
+        or credentials.get("profile") != "OWNER_LOCAL_RAKUTEN_PRODUCTION_API"
+        or credentials.get("file_mode") != "0600"
+        or credentials.get("directory_mode") != "0700"
+        or credentials.get("symlinks") != "REJECT"
+        or credentials.get("hardlinks") != "REJECT"
+        or credentials.get("stability")
+        != "DESCRIPTOR_DOUBLE_READ_IDENTITY_SIZE_MTIME_CTIME"
+        or credentials.get("argv_environment_output_persistence") != "FORBIDDEN"
+    ):
+        _fail("VALUE_MISMATCH", "owner_local.credential_record")
+    registry = _mapping(owner["registry"], "owner_local.registry")
+    if tuple(registry) != ("extensibility", "item-search", "product-search"):
+        _fail("CONTRACT_SCHEMA_DRIFT", "owner_local.registry")
+    item = _mapping(registry["item-search"], "owner_local.registry.item")
+    product = _mapping(registry["product-search"], "owner_local.registry.product")
+    if (
+        tuple(item)
+        != (
+            "api_version",
+            "path",
+            "request_policy",
+            "selectors",
+            "exact_selector_response_binding",
+            "page",
+            "review_and_affiliate_rate_inputs",
+        )
+        or tuple(product)
+        != (
+            "api_version",
+            "path",
+            "request_policy",
+            "selectors",
+            "exact_selector_response_binding",
+            "page",
+            "sort",
+            "review_derived_inputs",
+        )
+        or registry.get("extensibility") != "REVIEWED_CODE_ENTRY_ONLY"
+        or item.get("api_version") != "2026-07-01"
+        or item.get("path") != "/ichibams/api/IchibaItem/Search/20260701"
+        or item.get("request_policy")
+        != "UNCHANGED_ST0502_RakutenItemSearchLiveRequestV1"
+        or item.get("selectors") != "EXACTLY_ONE_KEYWORD_GENRE_ITEM_SHOP"
+        or item.get("exact_selector_response_binding")
+        != (
+            "SELECTED_ITEM_CODE_OR_SHOP_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_"
+            "RESULT_MISMATCH"
+        )
+        or item.get("page") != 1
+        or item.get("review_and_affiliate_rate_inputs") != "EXCLUDED"
+        or product.get("api_version") != "2025-08-01"
+        or product.get("path") != "/ichibaproduct/api/Product/Search/20250801"
+        or product.get("request_policy") != "OWNER_LOCAL_PRODUCT_SEARCH_V1"
+        or product.get("selectors")
+        != "KEYWORD_OPTIONAL_GENRE_OR_GENRE_OR_EXCLUSIVE_PRODUCT_ID_OR_CODE"
+        or product.get("exact_selector_response_binding")
+        != (
+            "SELECTED_PRODUCT_ID_OR_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_"
+            "RESULT_MISMATCH"
+        )
+        or product.get("page") != 1
+        or product.get("sort") != "standard"
+        or product.get("review_derived_inputs") != "EXCLUDED"
+    ):
+        _fail("VALUE_MISMATCH", "owner_local.registry")
+    transport = _mapping(owner["transport"], "owner_local.transport")
+    authentication = _mapping(
+        transport.get("authentication"), "owner_local.transport.authentication"
+    )
+    if (
+        tuple(transport)
+        != (
+            "origin",
+            "method",
+            "authentication",
+            "proxy_discovery",
+            "tls_override_environment",
+            "dns",
+            "dns_resolution_deadline_seconds",
+            "dns_execution_isolation",
+            "dns_ipc_limits",
+            "dns_failure",
+            "dns_process_cleanup",
+            "redirects",
+            "retries",
+            "pagination_followups",
+            "concurrency",
+            "ip_fallback",
+            "requests_per_invocation_maximum",
+            "per_operation_read_timeout_seconds",
+            "response_read_deadline_seconds",
+            "response_read_deadline_scope",
+            "response_read_primitive",
+            "deadline_timeout",
+            "response_maximum_bytes",
+            "response_json",
+            "response_summary_relationships",
+        )
+        or tuple(authentication)
+        != ("applicationId", "affiliateId", "header_name", "access_key")
+        or authentication
+        != {
+            "applicationId": "QUERY_ONLY",
+            "affiliateId": "QUERY_ONLY",
+            "header_name": "accessKey",
+            "access_key": "HEADER_ONLY",
+        }
+        or transport.get("origin") != "openapi.rakuten.co.jp:443"
+        or transport.get("method") != "GET"
+        or transport.get("proxy_discovery") != "REJECT"
+        or transport.get("tls_override_environment") != "REJECT"
+        or transport.get("dns")
+        != "VALIDATE_ENTIRE_CANDIDATE_SET_PUBLIC_THEN_PIN_FIRST_ONLY"
+        or transport.get("dns_resolution_deadline_seconds") != 5
+        or transport.get("dns_execution_isolation")
+        != (
+            "AUTHENTICATED_PROC_SELF_EXE_ISOLATED_NO_SITE_FIXED_HELPER_"
+            "MINIMAL_ENV_CLOSE_FDS_PARENT_DEATH_SIGKILL"
+        )
+        or transport.get("dns_ipc_limits")
+        != "MAX_64_CANDIDATES_MAX_65536_BYTES_STRICT_PARENT_REVALIDATION"
+        or transport.get("dns_failure")
+        != "DNS_FAILED_NOT_SENT_REQUEST_COUNT_0_NO_PROVIDER_METADATA_NO_RETRY"
+        or transport.get("dns_process_cleanup")
+        != "SIGKILL_TWO_BOUNDED_REAP_WAITS_AND_PIPE_CLOSE"
+        or transport.get("redirects") != 0
+        or transport.get("retries") != 0
+        or transport.get("pagination_followups") != 0
+        or transport.get("concurrency") != 0
+        or transport.get("ip_fallback") != 0
+        or transport.get("requests_per_invocation_maximum") != 1
+        or transport.get("per_operation_read_timeout_seconds") != 20
+        or transport.get("response_read_deadline_seconds") != 20
+        or transport.get("response_read_deadline_scope")
+        != "HEADERS_THROUGH_COMPLETE_BODY_OR_EOF"
+        or transport.get("response_read_primitive")
+        != "RAW_RECV_INTO_REMAINING_TIMEOUT_AND_HTTPRESPONSE_READ1"
+        or transport.get("deadline_timeout")
+        != "TIMEOUT_OUTCOME_AMBIGUOUS_NO_PARTIAL_RESPONSE_METADATA"
+        or transport.get("response_maximum_bytes") != 2 * 1024 * 1024
+        or transport.get("response_json")
+        != "STRICT_UTF8_DUPLICATE_NONFINITE_DEPTH_NODE_SCHEMA"
+        or transport.get("response_summary_relationships")
+        != (
+            "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
+            "PAGECOUNT_EQUALS_MIN_CEIL_COUNT_DIV_HITS_100_FIRST_1_LAST_"
+            "CARDINALITY"
+        )
+    ):
+        _fail("VALUE_MISMATCH", "owner_local.transport")
+    result = _mapping(owner["normalized_result"], "owner_local.result")
+    if (
+        tuple(result)
+        != (
+            "directory",
+            "path",
+            "publication",
+            "response_sha256",
+            "envelope",
+            "url_validation",
+            "mandatory_text",
+            "credential_reflection",
+            "forbidden",
+            "request_disposition",
+        )
+        or result.get("directory") != ".secrets/rakuten-owner-local/results"
+        or result.get("path")
+        != ".secrets/rakuten-owner-local/results/<UTC-run-id>.json"
+        or result.get("publication") != "ATOMIC_0600_NO_REPLACE"
+        or result.get("response_sha256") != "SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES"
+        or result.get("envelope")
+        != {
+            "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1",
+            "version": 1,
+            "exact_object_keys": list(EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
+            "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
+            "success_summary": "VALIDATED_INTEGER_VALUES",
+            "terminal_time": (
+                "CLAMP_EXACT_UTC_BACKWARD_OR_TERMINAL_SAMPLE_EXCEPTION_TO_STARTED_"
+                "AT_OTHERWISE_VALIDATE"
+            ),
+            "failure_summary": "ALL_SIX_KEYS_NULL",
+            "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
+            "compatibility": (
+                "REPOSITORY_V1_COMPLETION_RUNTIME_EVIDENCE_NOT_EXECUTED_NO_"
+                "DEPLOYED_MIGRATION"
+            ),
+        }
+        or result.get("url_validation")
+        != {
+            "syntax": {
+                "scheme": "EXACT_LOWERCASE_HTTPS",
+                "whitespace_and_controls": (
+                    "REJECT_UNICODE_WHITESPACE_AND_UNICODE_CC_CF"
+                ),
+                "raw_backslash": "REJECT",
+                "host": "VALID_IDNA_DNS_OR_BRACKETED_IPV6_WITH_OPTIONAL_PORT",
+                "percent_escapes": "COMPLETE_HEX_PAIR_REQUIRED",
+                "userinfo_and_fragment": "REJECT",
+            },
+            "non_null_https": {
+                "item-search": ["itemUrl"],
+                "product-search": ["productUrlPC"],
+            },
+            "nullable_scalar_url_values": {
+                "item-search": ["affiliateUrl"],
+                "product-search": [
+                    "affiliateUrl",
+                    "mediumImageUrl",
+                    "smallImageUrl",
+                ],
+            },
+            "url_list_values": "NON_NULL_TUPLE_OF_HTTPS_URLS",
+            "precedence": (
+                "FIELD_PRESENCE_THEN_EXACT_SELECTOR_THEN_URL_VALUE_SHAPE_BEFORE_"
+                "CREDENTIAL_REFLECTION"
+            ),
+            "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+        }
+        or result.get("mandatory_text")
+        != {
+            "item-search": ["itemCode", "itemName"],
+            "product-search": ["productCode", "productId"],
+            "maximum_characters": 20_000,
+            "shape": "NON_NULL_NONEMPTY_NO_EDGE_WHITESPACE_UTF8_STRING",
+            "optional_fields_unchanged": (
+                "SHOP_CODE_SHOP_NAME_AND_PRODUCT_NAME_REMAIN_OPTIONAL_NULLABLE"
+            ),
+            "precedence": (
+                "MANDATORY_KEY_PRESENCE_THEN_EXACT_SELECTOR_THEN_MANDATORY_TEXT_"
+                "THEN_URL_THEN_CREDENTIAL_REFLECTION"
+            ),
+            "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
+        }
+        or result.get("credential_reflection")
+        != {
+            "inspected_text_values": (
+                "ALL_NORMALIZED_RECORD_STRING_VALUES_AND_STRING_LIST_MEMBERS"
+            ),
+            "excluded_typed_values": {
+                "summary_fields": [
+                    "count",
+                    "page",
+                    "first",
+                    "last",
+                    "hits",
+                    "pageCount",
+                ],
+                "normalized_record_types": ["NULL", "INTEGER"],
+                "policy": (
+                    "VALIDATE_BY_FIELD_SCHEMA_AND_DO_NOT_COMPARE_AS_CREDENTIAL_TEXT"
+                ),
+                "rationale": "TYPED_SCALAR_COINCIDENCE_IS_NOT_TEXT_REFLECTION",
+            },
+            "success_persistence_scope": (
+                "ALL_SIX_VALIDATED_SUMMARIES_AND_ALL_NORMALIZED_RECORD_VALUES"
+            ),
+            "representations": (
+                "INSPECTED_TEXT_RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES"
+            ),
+            "match": (
+                "ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING_IN_INSPECTED_TEXT"
+            ),
+            "refusal": ("RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE"),
+            "failure_evidence": (
+                "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"
+            ),
+        }
+        or result.get("forbidden")
+        != [
+            "raw body and provider headers or reflected error material",
+            "credentials or credential aliases containing values",
+            "captions and review bodies",
+            "review aggregates and affiliateRate",
+            "EPC RPM revenue or finance material",
+        ]
+        or result.get("request_disposition")
+        != ["NOT_SENT", "RESPONSE_RECEIVED", "OUTCOME_AMBIGUOUS"]
+    ):
+        _fail("VALUE_MISMATCH", "owner_local.result")
+    verification = _mapping(owner["verification"], "owner_local.verification")
+    if (
+        tuple(verification)
+        != (
+            "fake_and_recorded_only",
+            "real_credentials",
+            "provider_call",
+            "formal_tst_016",
+            "env_staging",
+            "od_015",
+            "raos_production",
+        )
+        or verification.get("fake_and_recorded_only") is not True
+        or verification.get("real_credentials") != "NOT_READ"
+        or verification.get("provider_call") != "NOT_EXECUTED"
+        or verification.get("formal_tst_016") != "NOT_EXECUTED"
+        or verification.get("env_staging") != "NOT_EXECUTED"
+        or verification.get("od_015") != "UNRESOLVED"
+        or verification.get("raos_production") != "NOT_EXECUTED"
+    ):
+        _fail("VALUE_MISMATCH", "owner_local.verification")
+
+
 def validate_contract(
     contract: Mapping[str, Any], root: Path = REPO_ROOT
 ) -> Mapping[str, Any]:
@@ -1626,6 +2476,7 @@ def validate_contract(
     _exact(contract["predecessor"], EXPECTED_PREDECESSOR, "predecessor")
     _exact(contract["open_decision"], EXPECTED_OPEN_DECISION, "open_decision")
     _exact(contract["live_smoke_definition"], EXPECTED_SMOKE, "live_smoke_definition")
+    _validate_owner_local_read_integration(contract["owner_local_read_integration"])
     _exact(contract["observation_defaults"], EXPECTED_OBSERVATIONS, "observations")
     _exact(
         contract["rate_quota_cost_defaults"],
@@ -1638,6 +2489,7 @@ def validate_contract(
     _validate_authority_semantics(root)
     _validate_predecessor_semantics(root)
     _validate_runtime_semantics(root)
+    _validate_owner_local_runtime_semantics(root)
     return contract
 
 
@@ -1667,6 +2519,9 @@ def reference_plan(contract: Mapping[str, Any]) -> dict[str, Any]:
             "evidence": None,
         },
         "live_smoke_definition": contract["live_smoke_definition"],
+        "owner_local_read_integration": _owner_local_reference_binding(
+            contract["owner_local_read_integration"]
+        ),
         "observation_boundary": contract["observation_defaults"],
         "rate_quota_cost_boundary": contract["rate_quota_cost_defaults"],
         "execution_boundary": contract["execution_boundary"],
@@ -1698,7 +2553,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "2.2.0",
+            "version": "3.0.0",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,
@@ -1730,6 +2585,9 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
             "interface_only": False,
             "default_activation": "DISABLED",
             "installed_entry": "INSTALLABLE_NOT_INSTALLED",
+            "owner_local_read_entry": "INSTALLABLE_NOT_INSTALLED_OR_EXECUTED",
+            "owner_local_evidence_authority": ("OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"),
+            "owner_local_provider_data": "UNTRUSTED_PROVIDER_DATA",
             "repository_make_entrypoints": (
                 "NOT_PROVIDED_USE_REVIEWED_DIRECT_COMMANDS"
             ),

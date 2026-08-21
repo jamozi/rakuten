@@ -6,6 +6,8 @@ approved_scope:
   - at most one explicit GET per invocation, exactly one only after all local preconditions pass, with zero retry and zero pagination
   - owner-private fixed JSON credential read only when hash-bound to a separate staging credential attestation, plus sanitized private report write
   - fake-only local verification and generated ST-0505 reference artifacts
+  - separate reversible owner-local production-read integration for the reviewed Item Search 2026-07-01 and Product Search 2025-08-01 APIs
+  - authenticated setup, rotate, doctor, closed API registry, explicit request-file reads, and fixed one-call smoke commands in an independently installed owner-private runtime
 source_design_refs:
   - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015
@@ -46,11 +48,42 @@ decision:
   formal_tst_016: NOT_EXECUTED
   staging: NOT_EXECUTED
   production: NOT_EXECUTED
+  owner_local_read_integration:
+    classification: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
+    runtime_name: rakuten-owner-local
+    trusted_runtime_root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
+    installed_bundle_sha256: c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9
+    launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
+    installer_sha256: 60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b
+    install_stage_sha256: 0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6
+    runtime_install_execution: NOT_EXECUTED
+    credential_store: .secrets/rakuten-owner-local/credentials.v1.json
+    credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
+    result_store: .secrets/rakuten-owner-local/results/<UTC-run-id>.json
+    commands:
+      - setup
+      - rotate
+      - doctor
+      - list-apis
+      - request --api <item-search|product-search> --request-file <absolute-json>
+      - smoke --api <item-search|product-search>
+    authenticated_request_entry: GENERATED_POSITIONAL_FD4_DIGEST_GATE_ARGV_TEMPLATE
+    enabled_apis:
+      item-search: /ichibams/api/IchibaItem/Search/20260701
+      product-search: /ichibaproduct/api/Product/Search/20250801
+    provider_credential_scope: RAKUTEN_PROVIDER_PRODUCTION_API_ONLY
+    raos_environment_scope: OWNER_LOCAL_NOT_ENV_STAGING_NOT_RAOS_PRODUCTION
+    formal_tst_016: NOT_EXECUTED
+    od_015_resolution: UNCHANGED_UNRESOLVED
+    staging: NOT_EXECUTED
+    raos_production: NOT_EXECUTED
 rationale:
   - isolates an owner-local non-formal diagnostic surface from the recorded production search service without treating it as Canonical live-test evidence
   - preserves the unchanged ST-0502 request policy and OD-015 default-safe behavior
   - makes the smallest provider call capable of checking auth, schema, rate classification, and affiliateUrl presence
   - prevents credential values and raw or provider-reflected response material from entering tracked repository content or reports
+  - provides a separately named owner-local read surface without changing the staging-only rakuten-live-smoke entry or the recorded ST-0502 adapter
+  - treats a provider-production credential as local provider access only, never as evidence of RAOS Production or formal staging acceptance
 rejected_alternatives:
   - provider SDK or third-party HTTP dependency
   - ambient proxy discovery, redirect following, endpoint overrides, retry, or pagination
@@ -58,13 +91,18 @@ rejected_alternatives:
   - review bodies, review-derived inputs, affiliate rate, EPC, RPM, or revenue fields
   - treating a local invocation as TST-016, staging, release, or Production evidence
   - accepting an arbitrary structurally valid or production credential without a separate exact-byte staging-purpose binding
+  - repurposing or weakening the staging-only rakuten-live-smoke runtime
+  - arbitrary provider origins, paths, headers, API registration, request parameters, redirects, retries, pagination follow-ups, or IP fallback
+  - passing secret values through argv, environment, stdout, stderr, shell history, repository files, or generated artifacts
 constraints:
   - fixed GET keyword=収納 hits=1 page=1 format=json formatVersion=2 sort=standard
   - applicationId and affiliateId appear only in the query; accessKey appears only in the accessKey header
   - credential file is exact-schema, current-UID, regular, non-symlink, mode 0600, bounded, byte-identical across two descriptor reads, and identity/size/mtime/ctime-stable; rotation uses atomic replacement
   - a separate exact-schema mode-0600 staging binding must classify the purpose as DEDICATED_TEST_CREDENTIAL_FOR_NON_FORMAL_DIAGNOSTIC and bind the SHA-256 of the exact credential-record bytes; the repository never creates this Operations evidence
   - every DNS candidate is parsed and public-address validated before connection; one unsafe or malformed candidate rejects the entire set, and the first validated numeric sockaddr is pinned for the only TCP attempt while TLS SNI, certificate hostname verification, and HTTP Host remain openapi.rakuten.co.jp
-  - connect and read timeouts are bounded; response maximum is 2 MiB
+  - the one blocking system DNS lookup runs in an exec-isolated child of the authenticated current Python executable with isolated/no-site flags, a fixed helper, minimal environment, close_fds, parent-death SIGKILL, a monotonic five-second deadline, at most 64 candidates, and at most 64 KiB of parent-revalidated IPC; expiry, failure, late output, malformed output, or failed bounded reap is fixed DNS_FAILED with NOT_SENT, request_count 0, no provider metadata, no retry, and one sanitized result write when the result store is safe
+  - connect and per-operation read timeouts are bounded; after the one GET is sent, one monotonic 20-second deadline covers response headers through the complete Content-Length/chunked body or close-delimited EOF, and every raw recv timeout is reduced to the positive remaining budget before HTTPResponse.read1 advances the bounded body loop
+  - response deadline expiry fails as TIMEOUT with OUTCOME_AMBIGUOUS, request_count 1, and no partial HTTP/body/hash metadata or provider material; response maximum remains 2 MiB
   - response is strict UTF-8 JSON with duplicate, nonfinite, depth, node, and schema checks
   - HTTP 429 classifies rate as THROTTLED while authentication remains NOT_OBSERVED
   - reports contain only the closed sanitized field set and are atomically published mode 0600
@@ -78,6 +116,22 @@ constraints:
   - the static root-owned BusyBox stage zero replaces loader and shell environment, verifies the exact launcher SHA-256, and only then executes the launcher
   - doctor checks report metadata before reading the credential record and performs no network or filesystem mutation
   - run proves anonymous publication, identity, rollback, and directory fsync before reading credentials or attempting the GET
+  - owner-local Item requests reuse the unchanged ST-0502 RakutenItemSearchLiveRequestV1, require exactly one selector and page 1, and omit review aggregates and affiliate-rate material from normalized output
+  - an exact owner-local Item itemCode or shopCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH before credential-reflection inspection
+  - owner-local Product requests allow keyword with optional genreId, genreId alone, or one exclusive productId/productCode; page is 1 and sort is standard
+  - an exact owner-local Product productId or productCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH
+  - page-1 response summaries bind empty collections to zero count, pageCount, first, and last; non-empty collections require count at least the returned cardinality, pageCount exactly equal to min(ceil(count / hits), 100), first 1, and last equal to returned cardinality
+  - the closed owner-local result V1 key set always includes count, page, first, last, hits, and pageCount; success stores their validated integers, every failure stores all six keys as null, and canonical result files sort keys in compact UTF-8 JSON with one trailing LF
+  - if an exact timezone.utc fold-0 second wall-clock observation moves before an equally valid started_at, finished_at is clamped to started_at; if terminal clock sampling raises after the attempt, the already sampled started_at is reused so every post-request success, received failure, or ambiguous outcome still reaches the single bounded result write without changing the V1 schema; other returned clock shapes remain subject to the existing fixed INVALID_ARGUMENT result-envelope validation
+  - first and last complete the repository V1 contract while runtime install and execution evidence remain NOT_EXECUTED; no deployed-result migration or backward-compatibility status is claimed
+  - every Item record requires itemCode and itemName as non-null non-empty bounded UTF-8 strings, and every Product record requires productCode and productId with the same shape; shopCode, shopName, and productName remain optional and nullable unless selected as an exact selector
+  - every non-empty Item record requires itemUrl and every non-empty Product record requires productUrlPC as a non-null strict HTTPS URL; missing, null, empty, non-string, or non-HTTPS required URL values fail as RESPONSE_SCHEMA_DRIFT before success or persistence, while the existing nullable scalar affiliateUrl and Product image URL values and non-null URL-list rules remain unchanged
+  - every normalized URL rejects Unicode whitespace plus Unicode control and format characters, raw backslashes, malformed percent escapes, userinfo, fragments, and invalid IDNA DNS or bracketed-IPv6 host syntax while preserving valid international or punycode hostnames, IPv4, bracketed IPv6, ports, paths, and queries
+  - after API/fingerprint/hits and exact-selector binding and before a success envelope, every normalized record string and string-list member is checked against all three non-empty known credential values in raw and single-percent-decoded form; any inspected-text match fails as fixed RESPONSE_SCHEMA_DRIFT with complete response metadata and request_count 1 but no provider_result, summary, record, or matched value
+  - all six schema- and relationship-validated summary integers plus every non-text normalized value already accepted by its field schema are not converted to credential-comparison text; typed scalar coincidence alone is not credential reflection
+  - every owner-local invocation uses at most one GET, one resolved public IP candidate, zero redirect, zero retry, zero pagination follow-up, and no proxy or TLS override environment
+  - setup refuses an existing record; rotate atomically replaces only a fully validated record; installer is credential-blind and never opens .secrets
+  - persisted owner-local results are mode 0600, no-replace, normalized UNTRUSTED_PROVIDER_DATA and contain response SHA-256 but no raw body, headers, provider errors, credentials, affiliate-rate, review bodies, EPC, RPM, or revenue material
 security_and_approval_gates:
   - the complete static-BusyBox environment-cleared runtime-install command is the only reviewed repository maintenance entry and never reads credentials
   - every install and reinstall validates stage path/descriptor identity and safe metadata before authenticating the exact stage, root Python trust closure, and installer descriptor before Python parses repository bytes
@@ -93,6 +147,10 @@ security_and_approval_gates:
   - repository drift and other-UID mutation cannot modify the owner-private installed tree; the current-UID managed Python and stdlib tree is trusted after owner/type/no-group-or-world-write checks
   - the install bootstrap trusts the exact root-owned Python binary plus a root-owned, non-group-or-world-writable OS loader, native-library, and stdlib metadata closure; root or package-manager compromise is out of scope and OS drift fails closed pending review
   - same-UID in-place mutation after final descriptor hashing or deliberate stage-zero descriptor forgery is out of scope; pathname replacement is bound or refused through inherited descriptors
+  - the owner-local setup/rotate prompt and every secret-bearing command are reachable only after the exact installed launcher and payload have been authenticated before body execution
+  - the generated custom-request entry authenticates the exact installed launcher through the same fd-4 SHA-256 gate before body execution, accepts exactly two positional values at fixed argv indices for a closed API name and absolute request file, and direct-executes quoted arguments without eval or shell interpolation
+  - owner-local installation is side-by-side and credential-blind; no repository Make entry is authoritative for setup, rotation, credential reads, or provider requests
+  - all owner-local tests use disposable secret roots, fake transports, and recorded bodies; they never inspect the real credential path or call Rakuten
 acceptance_criteria:
   - fake success produces LIVE_SMOKE_PASS with request_count=1 retry_count=0 pagination_count=0 and affiliate_url_present=true
   - success and every complete bounded provider response body persist SHA-256 of the body bytes without raw or reflected body material
@@ -100,11 +158,25 @@ acceptance_criteria:
   - accessKey is absent from query, output, report, repr, and sanitized exceptions
   - all fixed HTTP, network, malformed-response, credential-store, and report-store failures are non-reflective and fail closed
   - generated plan exposes the explicit command while default activation and all formal/live evidence remain disabled or NOT_EXECUTED
+  - setup/rotate preserve hidden TTY input and atomic owner-only storage without secret values in argv, environment, output, exceptions, repr, results, or generated artifacts
+  - item-search and product-search request fixtures prove exact authentication placement, fixed origin/path/version, safe parameter sets, response allowlists, and at-most-one-call failure semantics
+  - keyword, genre, smoke, and exact-selector fixtures reject null, empty, edge-whitespace, non-string, or oversized mandatory Item itemCode/itemName and Product productCode/productId values while preserving optional shopCode/shopName/productName behavior
+  - normalized mandatory, optional, and list URL positions reject hostile Unicode whitespace, control, format, backslash, host, userinfo, fragment, port, and percent-escape syntax while retaining the documented valid international, IPv6, port, path, and query forms
+  - the generated custom-request argv template rejects unrendered placeholders, unknown APIs, relative paths, extra arguments, and launcher tampering before dispatch, while hostile absolute path bytes remain one quoted positional argument
+  - itemCode/shopCode and productId/productCode identity drift and contradictory empty or non-empty response summaries, including a pageCount different from min(ceil(count / hits), 100), fail closed with complete sanitized response metadata
+  - provider reflection of each known credential value through every normalized URL, ordinary string, string-list member, or percent-encoded string fails before result persistence without redaction or secret-bearing output
+  - short numeric application/access/affiliate credentials coinciding with each validated count, page, first, last, hits, or pageCount value for both enabled APIs, or with any non-text normalized value accepted by its field schema, do not fail solely because of typed scalar equality
+  - Item and Product success, including empty collections, persist all six validated summary scalars; every ordinary or credential-reflection failure retains the same exact result-object key set with all six summary values null
+  - terminal clock sampling exceptions after success, a complete received provider failure, or an outcome-ambiguous attempt reuse started_at and preserve the original disposition, request count, response metadata, and single result write without exposing credentials
+  - deterministic no-sleep fakes prove normal response completion and Content-Length, chunked, close-delimited, and raw header-line trickling cannot extend the single response-read deadline; timeout produces exactly one sanitized ambiguous result write with no credential or partial provider material
+  - deterministic resolver-process fakes and one offline blocking child prove DNS success for reviewed IPv4/IPv6 rows, fixed sanitized raising/late/malformed/oversized failures, deadline kill, bounded reap, pipe closure, zero HTTPS construction, and a single NOT_SENT failure result with request_count 0 and no provider metadata
+  - owner-local result envelopes remain OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE and UNTRUSTED_PROVIDER_DATA with formal TST-016, ENV-STAGING, OD-015 resolution, and RAOS Production unchanged
 required_test_evidence:
   - isolated tests/st0505 with no owner credential read and no provider network
   - affected tests/st0502
   - owner generator regeneration and --check
   - Ruff, strict type checks, shell syntax if present, workspace/canonical checks, sensitive scan, and git diff --check
+  - hostile installed-runtime, installer, TTY, credential-store, request-file, result-store, DNS/TLS, response-parser, credential-reflection, and secret-leakage tests for rakuten-owner-local
 known_non_blocking_residuals: []
 open_decision_state:
   id: OD-015
