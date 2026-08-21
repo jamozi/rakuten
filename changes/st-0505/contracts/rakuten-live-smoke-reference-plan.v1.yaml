@@ -267,10 +267,10 @@ owner_local_read_integration:
   runtime:
     name: rakuten-owner-local
     root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    bundle_sha256: f86698df9373bd9157464128cf088d8ed3aa6ab5854322b8d7338f65f7b89391
+    bundle_sha256: e3a41a7b72cdb94c9ec06bbf94d3bb2f438341feb85ef7db1a9ce6b8150ec846
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 208f00462c3bbbf83548054c765c47f99d393229844f2fe95bf2eed46d41eaa0
-    install_stage_sha256: ab92305f7dbaead089245a79fd42f27d0fd48283069228d299a843a7c79c2f36
+    installer_sha256: 1016436e1518bbf376d28e2c19a5c70d6a0c6b2d56d8f8d6b5e747c079ae3e46
+    install_stage_sha256: 3c28852ad3cf03c9fa43bfbe6277442a1cf7c64924999b796ddcafeb8cca4e81
     install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
     installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
     installer_credential_access: FORBIDDEN
@@ -306,6 +306,7 @@ owner_local_read_integration:
       path: /ichibams/api/IchibaItem/Search/20260701
       request_policy: UNCHANGED_ST0502_RakutenItemSearchLiveRequestV1
       selectors: EXACTLY_ONE_KEYWORD_GENRE_ITEM_SHOP
+      exact_selector_response_binding: SELECTED_ITEM_CODE_OR_SHOP_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_RESULT_MISMATCH
       page: 1
       review_and_affiliate_rate_inputs: EXCLUDED
     product-search:

@@ -43,6 +43,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalRequestDisposition,
     RakutenOwnerLocalResultEnvelope,
     api_definition,
+    exact_response_selector,
     fail_owner_local,
     normalized_record,
 )
@@ -1389,23 +1390,19 @@ def _unwrap_record(api: RakutenOwnerLocalApi, value: object) -> dict[str, object
     return cast(dict[str, object], value)
 
 
-def _validate_exact_product_selector(
+def _validate_exact_selector(
     request: RakutenOwnerLocalRequest,
     record: dict[str, object],
 ) -> None:
-    if type(request) is not RakutenOwnerLocalProductSearchRequest:
+    selector = exact_response_selector(request)
+    if selector is None:
         return
-    exact_selectors = (
-        ("productId", request.product_id),
-        ("productCode", request.product_code),
-    )
-    for field, requested_value in exact_selectors:
-        if requested_value is not None:
-            returned_value = record.get(field)
-            if type(returned_value) is not str or not returned_value:
-                _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
-            if returned_value != requested_value:
-                _fail(RakutenOwnerLocalFailureCode.RESULT_MISMATCH)
+    field, requested_value = selector
+    returned_value = record.get(field)
+    if type(returned_value) is not str or not returned_value:
+        _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+    if returned_value != requested_value:
+        _fail(RakutenOwnerLocalFailureCode.RESULT_MISMATCH)
 
 
 def _parse_provider_success(
@@ -1471,7 +1468,7 @@ def _parse_provider_success(
                 )
             ):
                 _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
-            _validate_exact_product_selector(request, raw_record)
+            _validate_exact_selector(request, raw_record)
             projected = {
                 name: item
                 for name, item in raw_record.items()

@@ -52,10 +52,10 @@ decision:
     classification: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
     runtime_name: rakuten-owner-local
     trusted_runtime_root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    installed_bundle_sha256: f86698df9373bd9157464128cf088d8ed3aa6ab5854322b8d7338f65f7b89391
+    installed_bundle_sha256: e3a41a7b72cdb94c9ec06bbf94d3bb2f438341feb85ef7db1a9ce6b8150ec846
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 208f00462c3bbbf83548054c765c47f99d393229844f2fe95bf2eed46d41eaa0
-    install_stage_sha256: ab92305f7dbaead089245a79fd42f27d0fd48283069228d299a843a7c79c2f36
+    installer_sha256: 1016436e1518bbf376d28e2c19a5c70d6a0c6b2d56d8f8d6b5e747c079ae3e46
+    install_stage_sha256: 3c28852ad3cf03c9fa43bfbe6277442a1cf7c64924999b796ddcafeb8cca4e81
     runtime_install_execution: NOT_EXECUTED
     credential_store: .secrets/rakuten-owner-local/credentials.v1.json
     credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
@@ -114,6 +114,7 @@ constraints:
   - doctor checks report metadata before reading the credential record and performs no network or filesystem mutation
   - run proves anonymous publication, identity, rollback, and directory fsync before reading credentials or attempting the GET
   - owner-local Item requests reuse the unchanged ST-0502 RakutenItemSearchLiveRequestV1, require exactly one selector and page 1, and omit review aggregates and affiliate-rate material from normalized output
+  - an exact owner-local Item itemCode or shopCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH before credential-reflection inspection
   - owner-local Product requests allow keyword with optional genreId, genreId alone, or one exclusive productId/productCode; page is 1 and sort is standard
   - an exact owner-local Product productId or productCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH
   - page-1 response summaries bind empty collections to zero count, pageCount, first, and last; non-empty collections require count at least the returned cardinality, pageCount from 1 through 100, first 1, and last equal to returned cardinality
@@ -148,7 +149,7 @@ acceptance_criteria:
   - generated plan exposes the explicit command while default activation and all formal/live evidence remain disabled or NOT_EXECUTED
   - setup/rotate preserve hidden TTY input and atomic owner-only storage without secret values in argv, environment, output, exceptions, repr, results, or generated artifacts
   - item-search and product-search request fixtures prove exact authentication placement, fixed origin/path/version, safe parameter sets, response allowlists, and at-most-one-call failure semantics
-  - productId/productCode identity drift and contradictory empty or non-empty response summaries fail closed with complete sanitized response metadata
+  - itemCode/shopCode and productId/productCode identity drift and contradictory empty or non-empty response summaries fail closed with complete sanitized response metadata
   - provider reflection of each known credential value through URL, ordinary string, list, percent-encoded, or canonical numeric record values fails before result persistence without redaction or secret-bearing output
   - owner-local result envelopes remain OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE and UNTRUSTED_PROVIDER_DATA with formal TST-016, ENV-STAGING, OD-015 resolution, and RAOS Production unchanged
 required_test_evidence:

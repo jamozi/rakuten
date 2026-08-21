@@ -58,23 +58,23 @@ def _item_request() -> RakutenOwnerLocalItemSearchRequest:
 
 def _item_result(
     request: RakutenOwnerLocalItemSearchRequest,
+    **record_overrides: object,
 ) -> RakutenOwnerLocalProviderResult:
-    record = normalized_record(
-        RakutenOwnerLocalApi.ITEM_SEARCH,
-        {
-            "affiliateUrl": "https://example.rakuten.co.jp/affiliate",
-            "availability": 1,
-            "genreId": 1,
-            "itemCode": "shop:item",
-            "itemName": "untrusted synthetic item",
-            "itemPrice": 1000,
-            "itemUrl": "https://example.rakuten.co.jp/item",
-            "mediumImageUrls": ["https://example.rakuten.co.jp/medium.jpg"],
-            "shopCode": "shop",
-            "shopName": "untrusted synthetic shop",
-            "smallImageUrls": ["https://example.rakuten.co.jp/small.jpg"],
-        },
-    )
+    fields: dict[str, object] = {
+        "affiliateUrl": "https://example.rakuten.co.jp/affiliate",
+        "availability": 1,
+        "genreId": 1,
+        "itemCode": "shop:item",
+        "itemName": "untrusted synthetic item",
+        "itemPrice": 1000,
+        "itemUrl": "https://example.rakuten.co.jp/item",
+        "mediumImageUrls": ["https://example.rakuten.co.jp/medium.jpg"],
+        "shopCode": "shop",
+        "shopName": "untrusted synthetic shop",
+        "smallImageUrls": ["https://example.rakuten.co.jp/small.jpg"],
+    }
+    fields.update(record_overrides)
+    record = normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields)
     return RakutenOwnerLocalProviderResult(
         api=RakutenOwnerLocalApi.ITEM_SEARCH,
         request_fingerprint=request.fingerprint,
@@ -388,6 +388,95 @@ def test_service_calls_transport_once_writes_once_and_marks_nonformal() -> None:
     assert captured.value.code is RakutenOwnerLocalFailureCode.REQUEST_ALREADY_ATTEMPTED
     assert transport.calls == 1
     assert len(writer.writes) == 1
+
+
+@pytest.mark.parametrize(
+    ("selector_field", "requested_value"),
+    (("itemCode", "requested-shop:item"), ("shopCode", "requested-shop")),
+)
+def test_service_item_identity_mismatch_precedes_credential_reflection(
+    selector_field: str,
+    requested_value: str,
+) -> None:
+    base = _item_request()
+    if selector_field == "itemCode":
+        policy = replace(base.policy, keyword=None, item_code=requested_value)
+    else:
+        policy = replace(base.policy, keyword=None, shop_code=requested_value)
+    request = RakutenOwnerLocalItemSearchRequest(policy=policy)
+    result = _item_result(
+        request,
+        **{
+            selector_field: "different-provider-value",
+            "itemName": "untrusted synthetic-access reflected item",
+        },
+    )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert (
+        envelope.failure.disposition
+        is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    )
+    assert envelope.failure.http_status == result.http_status
+    assert envelope.failure.body_byte_count == result.body_byte_count
+    assert envelope.failure.response_sha256 == result.response_sha256
+    assert envelope.request_count == 1
+    assert envelope.as_result_object()["items"] is None
+    assert writer.writes == [envelope]
+    persisted = json.dumps(envelope.as_result_object(), sort_keys=True)
+    assert "different-provider-value" not in persisted
+    assert "synthetic-access" not in persisted
+
+
+def test_service_product_identity_mismatch_uses_the_shared_binding_boundary() -> None:
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.PRODUCT_SEARCH)
+    assert type(request) is RakutenOwnerLocalProductSearchRequest
+    request = replace(
+        request,
+        keyword=None,
+        product_id="requested-product-id",
+    )
+    result = _product_result(
+        request,
+        product_name="untrusted synthetic-access reflected product",
+    )
+    fields = result.records[0].as_object()
+    fields["productId"] = "different-provider-value"
+    result = replace(
+        result,
+        records=(normalized_record(RakutenOwnerLocalApi.PRODUCT_SEARCH, fields),),
+    )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.PRODUCT_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert envelope.failure.request_count == 1
+    assert envelope.failure.http_status == result.http_status
+    assert envelope.failure.body_byte_count == result.body_byte_count
+    assert envelope.failure.response_sha256 == result.response_sha256
+    assert envelope.as_result_object()["products"] is None
+    assert writer.writes == [envelope]
+    persisted = json.dumps(envelope.as_result_object(), sort_keys=True)
+    assert "different-provider-value" not in persisted
+    assert "synthetic-access" not in persisted
 
 
 @pytest.mark.parametrize(

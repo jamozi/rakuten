@@ -187,6 +187,10 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
     }
     assert owner["registry"]["item-search"]["api_version"] == "2026-07-01"
     assert owner["registry"]["item-search"]["page"] == 1
+    assert owner["registry"]["item-search"]["exact_selector_response_binding"] == (
+        "SELECTED_ITEM_CODE_OR_SHOP_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_"
+        "RESULT_MISMATCH"
+    )
     assert owner["registry"]["product-search"]["api_version"] == "2025-08-01"
     assert owner["registry"]["product-search"]["page"] == 1
     assert owner["registry"]["product-search"]["exact_selector_response_binding"] == (

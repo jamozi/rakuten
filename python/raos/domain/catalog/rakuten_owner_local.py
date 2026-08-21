@@ -455,6 +455,29 @@ RakutenOwnerLocalRequest: TypeAlias = (
 )
 
 
+def exact_response_selector(
+    request: RakutenOwnerLocalRequest,
+) -> tuple[str, str] | None:
+    """Return the one response identity field selected by an exact lookup."""
+
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        selectors = (
+            ("itemCode", request.policy.item_code),
+            ("shopCode", request.policy.shop_code),
+        )
+    elif type(request) is RakutenOwnerLocalProductSearchRequest:
+        selectors = (
+            ("productId", request.product_id),
+            ("productCode", request.product_code),
+        )
+    else:
+        fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
+    selected = tuple((field, value) for field, value in selectors if value is not None)
+    if len(selected) > 1:
+        fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
+    return selected[0] if selected else None
+
+
 def _canonical_json(value: object) -> bytes:
     return json.dumps(
         value,
@@ -1044,6 +1067,7 @@ __all__ = [
     "RakutenOwnerLocalResultEnvelope",
     "api_definition",
     "contextual_failure",
+    "exact_response_selector",
     "fail_owner_local",
     "fixed_owner_local_smoke_request",
     "normalized_record",

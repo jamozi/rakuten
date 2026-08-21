@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "f86698df9373bd9157464128cf088d8ed3aa6ab5854322b8d7338f65f7b89391"
+    "e3a41a7b72cdb94c9ec06bbf94d3bb2f438341feb85ef7db1a9ce6b8150ec846"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "208f00462c3bbbf83548054c765c47f99d393229844f2fe95bf2eed46d41eaa0"
+    "1016436e1518bbf376d28e2c19a5c70d6a0c6b2d56d8f8d6b5e747c079ae3e46"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "ab92305f7dbaead089245a79fd42f27d0fd48283069228d299a843a7c79c2f36"
+    "3c28852ad3cf03c9fa43bfbe6277442a1cf7c64924999b796ddcafeb8cca4e81"
 )
 INSTALLED_LAUNCHER_PATH: Final = (
     "/home/minami/.local/share/raos/rakuten-live-smoke/runtime/"
@@ -2025,6 +2025,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "path",
             "request_policy",
             "selectors",
+            "exact_selector_response_binding",
             "page",
             "review_and_affiliate_rate_inputs",
         )
@@ -2045,6 +2046,11 @@ def _validate_owner_local_read_integration(value: object) -> None:
         or item.get("request_policy")
         != "UNCHANGED_ST0502_RakutenItemSearchLiveRequestV1"
         or item.get("selectors") != "EXACTLY_ONE_KEYWORD_GENRE_ITEM_SHOP"
+        or item.get("exact_selector_response_binding")
+        != (
+            "SELECTED_ITEM_CODE_OR_SHOP_CODE_MUST_MATCH_EVERY_RETURNED_RECORD_OR_"
+            "RESULT_MISMATCH"
+        )
         or item.get("page") != 1
         or item.get("review_and_affiliate_rate_inputs") != "EXCLUDED"
         or product.get("api_version") != "2025-08-01"

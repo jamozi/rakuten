@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -28,6 +29,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalCredentials,
     RakutenOwnerLocalFailure,
     RakutenOwnerLocalFailureCode,
+    RakutenOwnerLocalItemSearchRequest,
     RakutenOwnerLocalOutcome,
     RakutenOwnerLocalProductSearchRequest,
     RakutenOwnerLocalProductSort,
@@ -237,6 +239,32 @@ def _item_body(**record_overrides: object) -> bytes:
             "items": [_item_record(**record_overrides)],
         }
     )
+
+
+def _item_exact_request(
+    selector_field: str,
+    requested_value: str,
+    *,
+    hits: int = 1,
+) -> RakutenOwnerLocalItemSearchRequest:
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.ITEM_SEARCH)
+    assert type(request) is RakutenOwnerLocalItemSearchRequest
+    if selector_field == "itemCode":
+        policy = replace(
+            request.policy,
+            keyword=None,
+            item_code=requested_value,
+            hits=hits,
+        )
+    else:
+        assert selector_field == "shopCode"
+        policy = replace(
+            request.policy,
+            keyword=None,
+            shop_code=requested_value,
+            hits=hits,
+        )
+    return RakutenOwnerLocalItemSearchRequest(policy=policy)
 
 
 def _product_record(**overrides: object) -> dict[str, object]:
@@ -687,6 +715,159 @@ def test_product_exact_selector_requires_an_exact_returned_match(
     assert mismatch.value.body_byte_count == len(mismatched_body)
     assert mismatch.value.response_sha256 == hashlib.sha256(mismatched_body).hexdigest()
     assert mismatch.value.request_count == 1
+
+
+@pytest.mark.parametrize(
+    ("selector_field", "requested_value", "nonselected_field", "nonselected_value"),
+    (
+        ("itemCode", "requested-shop:item", "shopCode", "other-shop"),
+        ("shopCode", "requested-shop", "itemCode", "other-shop:other-item"),
+    ),
+)
+def test_item_exact_selector_requires_an_exact_returned_match(
+    monkeypatch: pytest.MonkeyPatch,
+    selector_field: str,
+    requested_value: str,
+    nonselected_field: str,
+    nonselected_value: str,
+) -> None:
+    request = _item_exact_request(selector_field, requested_value)
+    matching_body = _item_body(
+        **{
+            selector_field: requested_value,
+            nonselected_field: nonselected_value,
+        }
+    )
+    result, connection, _factory, _transport = _execute(
+        monkeypatch,
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        _FakeResponse(matching_body, content_length=str(len(matching_body))),
+        request=request,
+    )
+    record = cast(RakutenOwnerLocalProviderResult, result).records[0].as_object()
+    assert record[selector_field] == requested_value
+    assert record[nonselected_field] == nonselected_value
+    assert connection.target is not None
+    assert parse_qs(urlsplit(connection.target).query)[selector_field] == [
+        requested_value
+    ]
+
+    mismatched_body = _item_body(
+        **{
+            selector_field: "different-provider-value",
+            nonselected_field: nonselected_value,
+        }
+    )
+    with pytest.raises(RakutenOwnerLocalFailure) as mismatch:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _FakeResponse(
+                mismatched_body,
+                content_length=str(len(mismatched_body)),
+            ),
+            request=request,
+        )
+    assert mismatch.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert (
+        mismatch.value.disposition
+        is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    )
+    assert mismatch.value.http_status == 200
+    assert mismatch.value.body_byte_count == len(mismatched_body)
+    assert mismatch.value.response_sha256 == hashlib.sha256(mismatched_body).hexdigest()
+    assert mismatch.value.request_count == 1
+
+
+@pytest.mark.parametrize(
+    ("selector_field", "requested_value"),
+    (("itemCode", "requested-shop:item"), ("shopCode", "requested-shop")),
+)
+def test_item_exact_selector_requires_the_selected_response_field(
+    monkeypatch: pytest.MonkeyPatch,
+    selector_field: str,
+    requested_value: str,
+) -> None:
+    request = _item_exact_request(selector_field, requested_value)
+    record = _item_record()
+    record.pop(selector_field, None)
+    body = _summary_body(
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        count=1,
+        first=1,
+        last=1,
+        hits=1,
+        page_count=1,
+        records=[record],
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as missing:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=request,
+        )
+
+    assert missing.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert missing.value.request_count == 1
+    assert missing.value.body_byte_count == len(body)
+    assert missing.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("selector_field", "requested_value"),
+    (("itemCode", "requested-shop:item"), ("shopCode", "requested-shop")),
+)
+def test_item_exact_selector_checks_every_record_and_accepts_empty_results(
+    monkeypatch: pytest.MonkeyPatch,
+    selector_field: str,
+    requested_value: str,
+) -> None:
+    request = _item_exact_request(selector_field, requested_value, hits=2)
+    nonselected = (
+        {"shopCode": "other-shop"}
+        if selector_field == "itemCode"
+        else {"itemCode": "other-shop:item"}
+    )
+    mismatched_body = _summary_body(
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        count=2,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=[
+            _item_record(**{selector_field: requested_value}, **nonselected),
+            _item_record(**{selector_field: "different-provider-value"}, **nonselected),
+        ],
+    )
+    with pytest.raises(RakutenOwnerLocalFailure) as mismatch:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _FakeResponse(mismatched_body, content_length=str(len(mismatched_body))),
+            request=request,
+        )
+    assert mismatch.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert mismatch.value.request_count == 1
+
+    empty_body = _summary_body(
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        count=0,
+        first=0,
+        last=0,
+        hits=2,
+        page_count=0,
+        records=[],
+    )
+    empty, _connection, _factory, _transport = _execute(
+        monkeypatch,
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        _FakeResponse(empty_body, content_length=str(len(empty_body))),
+        request=request,
+    )
+    assert cast(RakutenOwnerLocalProviderResult, empty).records == ()
 
 
 @pytest.mark.parametrize(

@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/f86698df9373bd9157464128cf088d8ed3aa6ab5854322b8d7338f65f7b89391/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/e3a41a7b72cdb94c9ec06bbf94d3bb2f438341feb85ef7db1a9ce6b8150ec846/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`208f00462c3bbbf83548054c765c47f99d393229844f2fe95bf2eed46d41eaa0`,
+`1016436e1518bbf376d28e2c19a5c70d6a0c6b2d56d8f8d6b5e747c079ae3e46`,
 and install-stage SHA-256
-`ab92305f7dbaead089245a79fd42f27d0fd48283069228d299a843a7c79c2f36`.
+`3c28852ad3cf03c9fa43bfbe6277442a1cf7c64924999b796ddcafeb8cca4e81`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -253,7 +253,11 @@ Item request V1 wraps the unchanged ST-0502
 item, or shop, page 1, hits 1 through 30, and only the existing safe sorts and
 elements. Review aggregates and affiliate-rate fields remain excluded from the
 normalized result even though the unchanged predecessor element projection may
-include other inert product-description fields. Product request V1 permits a
+include other inert product-description fields. For an exact `itemCode` or
+`shopCode` request, every returned Item record must contain the exact selected
+identity; a different valid provider identity fails as `RESULT_MISMATCH` before
+credential-reflection inspection. Empty results remain valid and fields that
+were not selected are not identity constraints. Product request V1 permits a
 keyword with optional genre, a genre alone, or one exclusive product ID/code;
 it fixes page 1 and allows only standard sort. Product review-derived sort and
 review aggregates are unavailable. For an exclusive `productId` or
