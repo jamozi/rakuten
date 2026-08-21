@@ -1712,7 +1712,7 @@ def test_result_writer_preflight_no_replace_and_sanitized_metadata(
     assert duplicate.value.response_sha256 == envelope.provider_result.response_sha256
 
 
-def test_result_writer_persists_closed_failure_schema_for_credential_reflection(
+def test_result_writer_accepts_short_credential_matching_validated_summary(
     tmp_path: Path,
 ) -> None:
     root = _repository(tmp_path)
@@ -1734,22 +1734,21 @@ def test_result_writer_persists_closed_failure_schema_for_credential_reflection(
         run_id="20260821T120001.000000Z-0123456789abcdef0123456789abcdef",
     )
 
-    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
-    assert envelope.provider_result is None
-    assert envelope.failure is not None
-    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
-    assert envelope.failure.request_count == 1
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.provider_result is source.provider_result
+    assert envelope.failure is None
+    assert envelope.request_count == 1
     path = root / f".secrets/rakuten-owner-local/results/{envelope.run_id}.json"
     raw = path.read_bytes()
     value = json.loads(raw)
     assert tuple(value) == tuple(sorted(envelope.as_result_object()))
-    assert all(
-        value[field] is None
+    assert tuple(
+        value[field]
         for field in ("count", "page", "first", "last", "hits", "pageCount")
-    )
-    assert value["items"] is None
+    ) == (1, 1, 1, 1, 1, 1)
+    assert len(value["items"]) == 1
     assert value["products"] is None
-    assert value["provider_data_classification"] is None
+    assert value["provider_data_classification"] == "UNTRUSTED_PROVIDER_DATA"
     assert raw == (
         json.dumps(
             envelope.as_result_object(),
@@ -1762,6 +1761,79 @@ def test_result_writer_persists_closed_failure_schema_for_credential_reflection(
     )
     assert b"fixture-key" not in raw
     assert b"fixture-affiliate" not in raw
+
+
+@pytest.mark.parametrize(
+    ("field", "reflected_value"),
+    (
+        ("itemName", "untrusted reflection/token item"),
+        (
+            "affiliateUrl",
+            "https://example.invalid/affiliate/reflection%2ftoken",
+        ),
+    ),
+)
+def test_result_writer_persists_sanitized_failure_for_text_reflection(
+    tmp_path: Path,
+    field: str,
+    reflected_value: str,
+) -> None:
+    root = _repository(tmp_path)
+    OwnerPrivateRakutenOwnerLocalCredentialStore(root).setup(
+        _credentials(application=b"reflection/token")
+    )
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.ITEM_SEARCH)
+    source = _success_envelope()
+    assert source.provider_result is not None
+    fields = source.provider_result.records[0].as_object()
+    fields[field] = reflected_value
+    reflected = replace(
+        source.provider_result,
+        records=(normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields),),
+    )
+    writer = OwnerPrivateRakutenOwnerLocalResultWriter(root)
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=OwnerPrivateRakutenOwnerLocalCredentialReader(root),
+        transport=_StaticResultTransport(reflected),
+        result_writer=writer,
+    ).run(
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        request,
+        run_id="20260821T120002.000000Z-0123456789abcdef0123456789abcdef",
+    )
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert envelope.failure.request_count == 1
+    assert envelope.failure.http_status == reflected.http_status
+    assert envelope.failure.body_byte_count == reflected.body_byte_count
+    assert envelope.failure.response_sha256 == reflected.response_sha256
+    path = root / f".secrets/rakuten-owner-local/results/{envelope.run_id}.json"
+    raw = path.read_bytes()
+    value = json.loads(raw)
+    assert all(
+        value[name] is None
+        for name in (
+            "count",
+            "page",
+            "first",
+            "last",
+            "hits",
+            "pageCount",
+            "items",
+            "products",
+            "provider_data_classification",
+        )
+    )
+    assert value["request_count"] == 1
+    assert value["http_status"] == reflected.http_status
+    assert value["body_byte_count"] == reflected.body_byte_count
+    assert value["response_sha256"] == reflected.response_sha256
+    assert b"reflection/token" not in raw
+    assert b"reflection%2ftoken" not in raw.lower()
 
 
 def test_result_rollback_failure_preserves_metadata_and_blocks_future_preflight(

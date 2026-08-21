@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/424672d17a7425eb132e492f78bdc19cc5e1faa7272cf434d79fd031168da686/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/af69bc9b7153d14ea00739b9479001dca20652844b105f75fc88a3187ac372b8/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`463a9cb7be142188aa33ae4be731efc782af8ddbe40794645d176e7aace5347d`,
+`90d40c86af676cc0d2c959ca5aaa1615cc95a52102b64d54332c507599e84931`,
 and install-stage SHA-256
-`20cdc564f756e247d327d19b8598c865206ab8c878ab954b19373a08c578322c`.
+`18af67a14afc33a014733d1d7e79e1bc8a217b57c93b0c3411f38e54c8c4c8d5`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -333,16 +333,17 @@ transport SSRF policy.
 
 Field presence is checked before exact-selector identity, then mandatory text
 and URL value shape are checked before credential reflection. After result
-identity and request binding but before a success envelope or result write, all
-six provider-controlled summary scalars (`count`, `page`, `first`, `last`,
-`hits`, and `pageCount`) plus every normalized record string, URL/list member,
-and canonical numeric/boolean representation are compared with all three known
-non-empty credential values. These summaries and records are the complete
-provider-controlled values eligible for success persistence; HTTP status, body
-byte count, response hash, request count, and fixed identifiers remain required
-local evidence metadata rather than reflected provider values. Raw UTF-8 and
-one percent-decoding pass are checked so reflected query material cannot bypass
-the boundary. Any match fails with the fixed `RESPONSE_SCHEMA_DRIFT` code while
+identity and request binding but before a success envelope or result write,
+every normalized record string and string-list member, including every URL, is
+compared with all three known non-empty credential values. Raw UTF-8 and one
+percent-decoding pass are checked so reflected query material cannot bypass the
+boundary. The six schema- and relationship-validated summary integers and every
+non-text normalized value already accepted by its field schema are not
+converted to text for credential comparison; typed scalar equality alone is not
+evidence of reflected credential bytes. HTTP
+status, body byte count, response hash, request count, and fixed identifiers
+remain required local evidence metadata rather than reflected provider text.
+Any inspected-text match fails with the fixed `RESPONSE_SCHEMA_DRIFT` code while
 retaining only complete HTTP/body/SHA metadata and `request_count=1`; the
 matched value, summaries, and normalized records are not persisted.
 

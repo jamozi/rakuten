@@ -276,15 +276,27 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
     }
     assert owner["normalized_result"]["credential_reflection"] == {
-        "inspected_provider_values": (
-            "ALL_SIX_SUMMARY_SCALARS_AND_ALL_NORMALIZED_RECORD_LEAVES"
+        "inspected_text_values": (
+            "ALL_NORMALIZED_RECORD_STRING_VALUES_AND_STRING_LIST_MEMBERS"
         ),
-        "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
-        "provider_controlled_persisted_values": (
-            "COMPLETE_SUMMARY_AND_RECORD_SET_NO_OTHER_PROVIDER_CONTROLLED_FIELDS"
+        "excluded_typed_values": {
+            "summary_fields": [
+                "count",
+                "page",
+                "first",
+                "last",
+                "hits",
+                "pageCount",
+            ],
+            "normalized_record_types": ["NULL", "INTEGER"],
+            "policy": "VALIDATE_BY_FIELD_SCHEMA_AND_DO_NOT_COMPARE_AS_CREDENTIAL_TEXT",
+            "rationale": "TYPED_SCALAR_COINCIDENCE_IS_NOT_TEXT_REFLECTION",
+        },
+        "success_persistence_scope": (
+            "ALL_SIX_VALIDATED_SUMMARIES_AND_ALL_NORMALIZED_RECORD_VALUES"
         ),
-        "representations": "RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES",
-        "match": "ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING",
+        "representations": ("INSPECTED_TEXT_RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES"),
+        "match": ("ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING_IN_INSPECTED_TEXT"),
         "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
         "failure_evidence": (
             "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"

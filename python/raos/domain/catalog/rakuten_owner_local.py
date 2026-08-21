@@ -631,7 +631,7 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
         return self._affiliate_id.decode("ascii", errors="strict")
 
     def reject_reflected_result(self, result: RakutenOwnerLocalProviderResult) -> None:
-        """Reject provider-controlled summary or record values reflecting credentials."""
+        """Reject credentials reflected through normalized provider text."""
 
         if type(result) is not RakutenOwnerLocalProviderResult:
             fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
@@ -640,29 +640,18 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
             self._access_key,
             self._affiliate_id,
         )
-        candidates: list[NormalizedValue] = [
-            result.count,
-            result.page,
-            result.first,
-            result.last,
-            result.hits,
-            result.page_count,
-        ]
-        candidates.extend(
-            candidate for record in result.records for _name, candidate in record.fields
+        candidates = (
+            candidate
+            for record in result.records
+            for _name, candidate in record.fields
+            if type(candidate) in {str, tuple}
         )
         for candidate in candidates:
             text_values: tuple[str, ...]
             if type(candidate) is str:
                 text_values = (candidate,)
-            elif type(candidate) is tuple:
-                text_values = candidate
-            elif type(candidate) is bool:
-                text_values = ("true" if candidate else "false",)
-            elif type(candidate) is int:
-                text_values = (str(candidate),)
             else:
-                continue
+                text_values = cast(tuple[str, ...], candidate)
             for text in text_values:
                 encoded_values = (
                     text.encode("utf-8", errors="strict"),

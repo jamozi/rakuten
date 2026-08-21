@@ -885,9 +885,7 @@ def test_service_item_identity_mismatch_precedes_credential_reflection(
     )
     writer = _Writer()
     envelope = RakutenOwnerLocalService(
-        credential_reader=_Reader(
-            _credentials_with_summary_value("application_id", "1")
-        ),
+        credential_reader=_Reader(),
         transport=_Transport(result),
         result_writer=writer,
         clock=_clock(),  # type: ignore[arg-type]
@@ -932,9 +930,7 @@ def test_service_product_identity_mismatch_uses_the_shared_binding_boundary() ->
     )
     writer = _Writer()
     envelope = RakutenOwnerLocalService(
-        credential_reader=_Reader(
-            _credentials_with_summary_value("application_id", "1")
-        ),
+        credential_reader=_Reader(),
         transport=_Transport(result),
         result_writer=writer,
         clock=_clock(),  # type: ignore[arg-type]
@@ -1024,29 +1020,198 @@ def test_service_rejects_each_reflected_credential_before_persistence(
         assert known_value not in repr(envelope.failure)
 
 
-def test_service_rejects_numeric_credential_reflected_as_integer() -> None:
-    request = _item_request()
-    source_result = _item_result(request)
-    credentials = RakutenOwnerLocalCredentials(
-        profile=RAKUTEN_OWNER_LOCAL_PROFILE,
-        _application_id=b"1000",
-        _access_key=b"synthetic-access",
-        _affiliate_id=b"synthetic-affiliate",
+@pytest.mark.parametrize(
+    ("api", "field", "shape"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "affiliateUrl", "url"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemCode", "text"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemName", "text"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemUrl", "url"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "mediumImageUrls", "url-list"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "shopCode", "text"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "shopName", "text"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "smallImageUrls", "url-list"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "affiliateUrl", "url"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "brandName", "text"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "genreName", "text"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "mediumImageUrl", "url"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "productCode", "text"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "productId", "text"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "productName", "text"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "productNo", "text"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "productUrlPC", "url"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "smallImageUrl", "url"),
+    ),
+)
+@pytest.mark.parametrize(
+    "credential_name",
+    ("application_id", "access_key", "affiliate_id"),
+)
+def test_each_credential_is_rejected_in_every_persisted_text_leaf(
+    api: RakutenOwnerLocalApi,
+    field: str,
+    shape: str,
+    credential_name: str,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        source = _item_result(request)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        source = _product_result(request)
+    fields = source.records[0].as_object()
+    credential_value = "reflection-token"
+    if shape == "url":
+        fields[field] = f"https://example.rakuten.co.jp/{credential_value}/{field}"
+    elif shape == "url-list":
+        fields[field] = [f"https://example.rakuten.co.jp/{credential_value}/{field}"]
+    else:
+        assert shape == "text"
+        fields[field] = f"untrusted-{credential_value}-{field}"
+    reflected = replace(
+        source,
+        records=(normalized_record(api, fields),),
     )
     writer = _Writer()
+
     envelope = RakutenOwnerLocalService(
-        credential_reader=_Reader(credentials),
-        transport=_Transport(source_result),
+        credential_reader=_Reader(
+            _credentials_with_summary_value(credential_name, credential_value)
+        ),
+        transport=_Transport(reflected),
         result_writer=writer,
         clock=_clock(),  # type: ignore[arg-type]
-    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+    ).run(api, request, run_id=RUN_ID)
 
     assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
     assert envelope.failure is not None
     assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
     assert envelope.failure.request_count == 1
-    assert envelope.failure.http_status == 200
-    assert "1000" not in json.dumps(envelope.as_result_object(), sort_keys=True)
+    assert envelope.failure.http_status == reflected.http_status
+    assert envelope.failure.body_byte_count == reflected.body_byte_count
+    assert envelope.failure.response_sha256 == reflected.response_sha256
+    assert credential_value not in json.dumps(
+        envelope.as_result_object(), sort_keys=True
+    )
+    assert credential_value not in str(envelope.failure)
+    assert credential_value not in repr(envelope.failure)
+    assert writer.writes == [envelope]
+
+
+@pytest.mark.parametrize(
+    ("api", "field", "value"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemName", "untrusted-1-item"),
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            "itemUrl",
+            "https://example.rakuten.co.jp/item/1",
+        ),
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            "smallImageUrls",
+            ["https://example.rakuten.co.jp/image/%31"],
+        ),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "productName", "untrusted-1-product"),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            "productUrlPC",
+            "https://example.rakuten.co.jp/product/1",
+        ),
+    ),
+)
+@pytest.mark.parametrize(
+    "credential_name",
+    ("application_id", "access_key", "affiliate_id"),
+)
+def test_short_credential_reflected_in_provider_text_still_fails_closed(
+    api: RakutenOwnerLocalApi,
+    field: str,
+    value: object,
+    credential_name: str,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        source = _item_result(request)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        source = _product_result(request)
+    fields = source.records[0].as_object()
+    fields[field] = value
+    reflected = replace(
+        source,
+        records=(normalized_record(api, fields),),
+    )
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(
+            _credentials_with_summary_value(credential_name, "1")
+        ),
+        transport=_Transport(reflected),
+        result_writer=_Writer(),
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(api, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert envelope.failure.request_count == 1
+    persisted = envelope.as_result_object()
+    assert persisted["items"] is None
+    assert persisted["products"] is None
+
+
+@pytest.mark.parametrize(
+    "api",
+    (RakutenOwnerLocalApi.ITEM_SEARCH, RakutenOwnerLocalApi.PRODUCT_SEARCH),
+)
+@pytest.mark.parametrize(
+    "credential_name",
+    ("application_id", "access_key", "affiliate_id"),
+)
+def test_short_numeric_credential_does_not_collide_with_structural_numbers(
+    api: RakutenOwnerLocalApi,
+    credential_name: str,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        source_result = _item_result(request, itemPrice=1)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        source = _product_result(request)
+        fields = source.records[0].as_object()
+        fields.update(
+            {
+                "averagePrice": 1,
+                "genreId": 1,
+                "itemCount": 1,
+                "maxPrice": 1,
+                "minPrice": 1,
+                "salesItemCount": 1,
+                "salesMaxPrice": 1,
+                "salesMinPrice": 1,
+            }
+        )
+        source_result = replace(
+            source,
+            records=(normalized_record(api, fields),),
+        )
+    writer = _Writer()
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(
+            _credentials_with_summary_value(credential_name, "1")
+        ),
+        transport=_Transport(source_result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(api, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.failure is None
+    assert envelope.provider_result is source_result
+    assert envelope.request_count == 1
     assert writer.writes == [envelope]
 
 
@@ -1069,7 +1234,7 @@ def test_service_rejects_numeric_credential_reflected_as_integer() -> None:
     "credential_name",
     ("application_id", "access_key", "affiliate_id"),
 )
-def test_service_rejects_each_credential_reflected_in_each_summary_scalar(
+def test_short_credential_does_not_collide_with_validated_summary_scalar(
     api: RakutenOwnerLocalApi,
     summary_field: str,
     summary_value: int,
@@ -1099,29 +1264,68 @@ def test_service_rejects_each_credential_reflected_in_each_summary_scalar(
         clock=_clock(),  # type: ignore[arg-type]
     ).run(api, request, run_id=RUN_ID)
 
-    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
-    assert envelope.provider_result is None
-    assert envelope.failure is not None
-    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
-    assert envelope.failure.request_count == 1
-    assert envelope.failure.http_status == result.http_status
-    assert envelope.failure.body_byte_count == result.body_byte_count
-    assert envelope.failure.response_sha256 == result.response_sha256
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.provider_result is result
+    assert envelope.failure is None
     assert envelope.request_count == 1
     persisted = envelope.as_result_object()
-    assert persisted["items"] is None
-    assert persisted["products"] is None
-    assert persisted["provider_data_classification"] is None
-    assert all(
-        persisted[field] is None
-        for field in ("count", "page", "first", "last", "hits", "pageCount")
-    )
+    persisted_name = "pageCount" if summary_field == "page_count" else summary_field
+    assert persisted[persisted_name] == summary_value
+    assert persisted["provider_data_classification"] == "UNTRUSTED_PROVIDER_DATA"
     assert tuple(persisted) == RESULT_OBJECT_KEYS
     assert writer.writes == [envelope]
 
 
+@pytest.mark.parametrize(
+    "api",
+    (RakutenOwnerLocalApi.ITEM_SEARCH, RakutenOwnerLocalApi.PRODUCT_SEARCH),
+)
+@pytest.mark.parametrize(
+    "credential_name",
+    ("application_id", "access_key", "affiliate_id"),
+)
+@pytest.mark.parametrize("credential_value", ("0", "1"))
+def test_short_credential_does_not_collide_with_empty_result_summaries(
+    api: RakutenOwnerLocalApi,
+    credential_name: str,
+    credential_value: str,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    result = replace(
+        _minimal_provider_result(api, request),
+        count=0,
+        first=0,
+        last=0,
+        page_count=0,
+        records=(),
+    )
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(
+            _credentials_with_summary_value(credential_name, credential_value)
+        ),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(api, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.provider_result is result
+    assert envelope.failure is None
+    assert envelope.request_count == 1
+    persisted = envelope.as_result_object()
+    assert tuple(
+        persisted[field]
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    ) == (0, 1, 0, 0, 1, 0)
+    collection = "items" if api is RakutenOwnerLocalApi.ITEM_SEARCH else "products"
+    assert persisted[collection] == []
+    assert writer.writes == [envelope]
+
+
 @pytest.mark.parametrize("binding", ("api", "fingerprint", "hits"))
-def test_result_binding_mismatch_precedes_summary_credential_reflection(
+def test_result_binding_mismatch_precedes_short_summary_credential_coincidence(
     binding: str,
 ) -> None:
     request = _item_request()
@@ -1161,7 +1365,7 @@ def test_result_binding_mismatch_precedes_summary_credential_reflection(
     assert envelope.as_result_object()["items"] is None
 
 
-def test_cli_emits_only_fixed_failure_for_summary_credential_reflection() -> None:
+def test_cli_accepts_short_credential_matching_validated_summary() -> None:
     request = _item_request()
     result = _minimal_provider_result(RakutenOwnerLocalApi.ITEM_SEARCH, request)
     writer = _Writer()
@@ -1173,20 +1377,19 @@ def test_cli_emits_only_fixed_failure_for_summary_credential_reflection() -> Non
         transport=_Transport(result),
     )
 
-    assert code == 1
-    assert message == "RAKUTEN_OWNER_LOCAL_FAIL_RESPONSE_SCHEMA_DRIFT"
+    assert code == 0
+    assert message == owner_local_cli.OWNER_LOCAL_OK
     assert len(writer.writes) == 1
     envelope = writer.writes[0]
-    assert envelope.provider_result is None
-    assert envelope.failure is not None
-    assert envelope.failure.request_count == 1
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.provider_result is result
+    assert envelope.failure is None
     persisted = envelope.as_result_object()
     assert tuple(persisted) == RESULT_OBJECT_KEYS
-    assert persisted["items"] is None
-    assert all(
-        persisted[field] is None
+    assert tuple(
+        persisted[field]
         for field in ("count", "page", "first", "last", "hits", "pageCount")
-    )
+    ) == (2, 1, 1, 1, 1, 2)
 
 
 @pytest.mark.parametrize(

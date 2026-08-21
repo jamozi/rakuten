@@ -96,16 +96,19 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "424672d17a7425eb132e492f78bdc19cc5e1faa7272cf434d79fd031168da686"
+    "af69bc9b7153d14ea00739b9479001dca20652844b105f75fc88a3187ac372b8"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "463a9cb7be142188aa33ae4be731efc782af8ddbe40794645d176e7aace5347d"
+    "90d40c86af676cc0d2c959ca5aaa1615cc95a52102b64d54332c507599e84931"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "20cdc564f756e247d327d19b8598c865206ab8c878ab954b19373a08c578322c"
+    "18af67a14afc33a014733d1d7e79e1bc8a217b57c93b0c3411f38e54c8c4c8d5"
+)
+OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
+    "129f7f01fb5bafc13ddd54d39bacdc0d28975478ebff8a84bf1b57c37f90c0e5"
 )
 EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS: Final = (
     "schema",
@@ -1539,7 +1542,8 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "_MANDATORY_TEXT_FIELDS = {",
             'frozenset({"itemCode", "itemName"})',
             'frozenset({"productCode", "productId"})',
-            "result.page_count,",
+            "if type(candidate) in {str, tuple}",
+            "unquote_to_bytes(text)",
             "mandatory_record_fields(self.api)",
             "validated_response_text(value)",
             '"first": result.first if result is not None else None,',
@@ -1608,6 +1612,33 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
         )
         if any(fragment not in source for fragment in fragments):
             _fail("OWNER_LOCAL_RUNTIME_SEMANTIC_DRIFT", path.as_posix())
+    domain_source = _read(
+        root,
+        Path("python/raos/domain/catalog/rakuten_owner_local.py"),
+        "owner_local.domain",
+    ).decode("utf-8", errors="strict")
+    try:
+        domain_tree = ast.parse(domain_source)
+    except SyntaxError:
+        _fail("OWNER_LOCAL_RUNTIME_SEMANTIC_DRIFT", "owner_local.domain")
+    reflection_methods = [
+        member
+        for node in domain_tree.body
+        if isinstance(node, ast.ClassDef)
+        and node.name == "RakutenOwnerLocalCredentials"
+        for member in node.body
+        if isinstance(member, (ast.AsyncFunctionDef, ast.FunctionDef))
+        and member.name == "reject_reflected_result"
+    ]
+    if (
+        len(reflection_methods) != 1
+        or _ast_sha256(reflection_methods[0])
+        != OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256
+    ):
+        _fail(
+            "OWNER_LOCAL_RUNTIME_SEMANTIC_DRIFT",
+            "owner_local.credential_reflection",
+        )
     installer_source = _read(
         root,
         Path("scripts/install_rakuten_owner_local_runtime.py"),
@@ -2303,15 +2334,33 @@ def _validate_owner_local_read_integration(value: object) -> None:
         }
         or result.get("credential_reflection")
         != {
-            "inspected_provider_values": (
-                "ALL_SIX_SUMMARY_SCALARS_AND_ALL_NORMALIZED_RECORD_LEAVES"
+            "inspected_text_values": (
+                "ALL_NORMALIZED_RECORD_STRING_VALUES_AND_STRING_LIST_MEMBERS"
             ),
-            "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
-            "provider_controlled_persisted_values": (
-                "COMPLETE_SUMMARY_AND_RECORD_SET_NO_OTHER_PROVIDER_CONTROLLED_FIELDS"
+            "excluded_typed_values": {
+                "summary_fields": [
+                    "count",
+                    "page",
+                    "first",
+                    "last",
+                    "hits",
+                    "pageCount",
+                ],
+                "normalized_record_types": ["NULL", "INTEGER"],
+                "policy": (
+                    "VALIDATE_BY_FIELD_SCHEMA_AND_DO_NOT_COMPARE_AS_CREDENTIAL_TEXT"
+                ),
+                "rationale": "TYPED_SCALAR_COINCIDENCE_IS_NOT_TEXT_REFLECTION",
+            },
+            "success_persistence_scope": (
+                "ALL_SIX_VALIDATED_SUMMARIES_AND_ALL_NORMALIZED_RECORD_VALUES"
             ),
-            "representations": "RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES",
-            "match": "ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING",
+            "representations": (
+                "INSPECTED_TEXT_RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES"
+            ),
+            "match": (
+                "ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING_IN_INSPECTED_TEXT"
+            ),
             "refusal": ("RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE"),
             "failure_evidence": (
                 "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"
