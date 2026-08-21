@@ -3,7 +3,7 @@
 Classification:
 `SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN`
 
-Contract revision `1.2.4` is partial, non-authoritative, local-only,
+Contract revision `1.2.5` is partial, non-authoritative, local-only,
 non-executable, and runtime-ineligible. It binds the committed ST-0502
 recorded-only adapter boundary and preserves OD-015's blocking safe default:
 `Recorded fixtureのみ`. It is a reviewable plan, not a live adapter, runnable
@@ -59,7 +59,19 @@ The fixed commands are:
 /home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh check
 ```
 
-The launcher uses the pinned CPython with exact `-I -S` flags for both its
+The launcher begins only through exact root-owned `/usr/bin/busybox`, pinned to
+SHA-256 `b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9`.
+That supported owner-workstation artifact is a static ELF64 x86-64 executable
+with neither `PT_INTERP` nor `PT_DYNAMIC`; any absence, hash/ELF drift,
+wrong ownership, or group/world write fails closed. This host-specific bridge
+uses only BusyBox shell builtins and fixed absolute BusyBox applets before
+`busybox env -i` replaces the complete inherited environment. Only then may
+the first dynamic program, protected root-owned `/usr/bin/bash`, start. Thus
+`LD_PRELOAD`, `LD_AUDIT`, shell startup controls, Python controls, proxies,
+TLS controls, and credential-like inherited names are never observed by a
+dynamic launcher process.
+
+The clean Bash stage uses the pinned CPython with exact `-I -S` flags for both its
 interpreter validation and the final credential CLI. Python `site` import and
 executable `.pth` startup hooks are therefore disabled; the credential CLI has
 a standard-library-only dependency surface. Before Python starts, every trusted
@@ -85,6 +97,25 @@ would lose venv prefix semantics. Root-owned Bash/core utilities, the dynamic
 loader, system libraries, and procfs are the platform trust base; an
 uncoordinated same-EUID mutator of the validated repository, venv, interpreter,
 configuration, or runtime remains unsupported and forbidden during launch.
+A repository-owned native trampoline was rejected for this V1 correction
+because it would introduce a new compiled artifact, toolchain/generator,
+architecture contract, and cross-owner provenance surface beyond the approved
+fixed-command slice; the exact OS-packaged static BusyBox is the smaller
+fail-closed platform prerequisite.
+
+Before any terminal input, the final Python process resolves both `prctl` and
+`renameat2`, disables core dumps and dumpability, and validates two stable,
+bounded `/proc/self/maps` snapshots. The only permitted file-backed objects are
+the SHA-pinned CPython executable and seven exact root-owned OS loader/library
+paths (`ld-linux`, `libc`, `libdl`, `libm`, `libpthread`, `librt`, and
+`libutil`). Every object must match its path FD by device/inode, every ancestor
+must be protected and non-symlinked, no W+X or unknown mapping is permitted,
+and the process must have exactly one task. A lifetime audit lock then rejects
+later `import`, `ctypes.dlopen`, and `ctypes.dlsym`; the exact inventory is
+rechecked immediately before each production TTY prompt. The fixed source and
+offline AST fingerprint contain no other late native-loading path, while
+root/OS compromise and a malicious concurrent same-EUID mutator remain outside
+the stated local trust boundary.
 
 `setup` accepts exactly the application ID and access key from `/dev/tty` with
 terminal echo disabled and requires canonical terminal mode. Values are

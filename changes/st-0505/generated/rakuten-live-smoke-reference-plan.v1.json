@@ -1,7 +1,7 @@
 {
   "document": {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -150,14 +150,24 @@
     "version": "V1",
     "design_handoff": {
       "uri": "repo://changes/st-0505/DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml",
-      "bytes": 18473,
-      "sha256": "9dc1991e6bc0822b2c39410cff6ac7f248d6be3c037bc75c316b8352fce18339"
+      "bytes": 22108,
+      "sha256": "39e201e361bd77a18d1c1b92072a5cc9e1e6163ebb91ff8db5448ce0ac85f6fe"
     },
     "commands": {
       "setup": "/home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh setup",
       "check": "/home/minami/rakuten/scripts/rakuten_live_smoke_credentials_python.sh check"
     },
     "launcher_boundary": {
+      "loader_clean_entry": {
+        "interpreter": "/usr/bin/busybox",
+        "format": "STATIC_ELF64_X86_64_NO_PT_INTERP_NO_PT_DYNAMIC",
+        "sha256": "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9",
+        "owner": "ROOT",
+        "group_world_writable": "FORBIDDEN",
+        "environment_replacement": "BUSYBOX_ENV_I_BEFORE_FIRST_DYNAMIC_EXECUTABLE",
+        "inherited_loader_environment": "NEVER_OBSERVED_BY_DYNAMIC_EXECUTABLE",
+        "dynamic_shell": "ROOT_OWNED_PROTECTED_USR_BIN_BASH_AFTER_CLEAN_ENVIRONMENT"
+      },
       "python_flags": [
         "-I",
         "-S"
@@ -179,8 +189,15 @@
       "credential_script_open": "O_NOFOLLOW_CLOEXEC_LSTAT_FSTAT_IDENTITY",
       "credential_script_execution": "INHERITED_PROC_SELF_FD_INODE_BOUND",
       "interpreter_execution": "VALIDATED_VENV_PATH_FOR_PREFIX_PRESERVATION",
+      "python_executable_sha256": "c2afa8cc3c59d32bac482c122633a352c3910bfed85b59efd8ef49511d46bd2b",
+      "native_runtime_inventory": "EXACT_PINNED_PYTHON_PLUS_SEVEN_ROOT_OWNED_OS_OBJECTS",
+      "native_runtime_maps": "TWO_STABLE_BOUNDED_PROC_SELF_MAPS_SNAPSHOTS",
+      "unexpected_native_object": "FORBIDDEN",
+      "late_code_loading": "IMPORT_CTYPES_DLOPEN_CTYPES_DLSYM_FORBIDDEN_AFTER_FREEZE",
+      "renameat2_resolution": "PRE_RESOLVED_BEFORE_NATIVE_RUNTIME_FREEZE",
+      "runtime_inventory_recheck": "BEFORE_EACH_PRODUCTION_TTY_PROMPT",
       "same_euid_runtime_mutator": "FORBIDDEN_UNSUPPORTED",
-      "os_platform_tcb": "ROOT_OWNED_BASH_COREUTILS_LOADER_SYSTEM_LIBRARIES_AND_PROCFS"
+      "os_platform_tcb": "EXACT_STATIC_BUSYBOX_ROOT_OWNED_BASH_COREUTILS_LOADER_SYSTEM_LIBRARIES_AND_PROCFS"
     },
     "repository_root": "/home/minami/rakuten",
     "store_root": ".secrets/rakuten-live-smoke",

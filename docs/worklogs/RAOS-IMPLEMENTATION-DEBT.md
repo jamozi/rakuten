@@ -3494,3 +3494,54 @@ original result.
   remains unresolved and `RECORDED_FIXTURE_ONLY` remains the safe default. The
   linked-worktree full scanner limitation remains `DEBT-W2-061`; no green
   full-worktree scan is claimed.
+
+### 2026-08-21 W2 / ST-0505 loader-clean entry and native-runtime correction
+
+- Append-only correction: the preceding `1.2.4` checkpoint remains
+  byte-identical evidence for exact parent commit
+  `edcc005253fbe463d36688a0ece88eeb884c68e0`. It did not close inherited
+  dynamic-loader controls before `/bin/bash` startup or bind every native
+  object present immediately before hidden TTY input. The containing follow-up
+  advances the exact contract and manifest to `1.2.5` without changing the two
+  aliases, credential-store transaction protocol, terminal-input rules,
+  runtime disconnection, or OD-015 safe default.
+- Loader-clean boundary: the public launcher now enters through the exact
+  statically linked `/usr/bin/busybox` ELF and immediately replaces the
+  inherited environment with a closed fixed environment before starting any
+  dynamic executable. It fail-closes on BusyBox path, owner, mode, ELF-shape,
+  or exact digest drift. This fixed OS-package bridge stays within the existing
+  command and artifact boundary; a repository-owned native trampoline was
+  rejected because adding a compiler, native build product, and toolchain
+  provenance would expand this local setup-only Story. Root/OS trust and the
+  exact BusyBox availability remain explicit platform prerequisites.
+- Native-runtime boundary: the single final Python process pre-resolves the
+  required `prctl` and `renameat2` symbols, loads all credential-module
+  dependencies, and validates two byte-identical bounded `/proc/self/maps`
+  snapshots immediately before TTY access. The accepted inventory is the exact
+  pinned Python executable plus seven root-owned OS loader/library objects;
+  every mapped path, device/inode identity, owner, mode, link count, ancestor,
+  executable segment, task count, and non-W+X property is checked. Unexpected
+  DSOs, separate `libpython`/`libffi`, deleted or anonymous executable objects,
+  map drift, late imports, and late `dlopen`/`dlsym` fail closed through a
+  process-lifetime audit lock and an immediate pre-reader recheck. A malicious
+  root/OS change or concurrent same-EUID mutation remains outside the supported
+  execution boundary and grants no live-provider authority.
+- Red/green evidence: under the preceding dynamic-Bash launcher, functional
+  `LD_PRELOAD` interposition and `LD_AUDIT` callback fixtures both created their
+  canaries before repository code could sanitize the environment. The corrected
+  static entry prevented both canaries. Hostile native-runtime tests also reject
+  a named DSO before freeze, named loading and import after freeze, malformed or
+  changing maps, unexpected executable mappings, metadata/identity drift, and
+  the prohibited separate-runtime objects while preserving fixed value-free
+  failure receipts.
+- Local checks: the full isolated ST-0505 suite passed 427 tests; affected
+  ST-0502 passed 167 and affected ST-0503 passed 59. Owner generation and the
+  final no-write check, Bash/BusyBox syntax, Ruff lint/format, strict mypy,
+  configured whole-project Pyright, Python compile/import, Canonical import
+  verification, workspace drift, and diff checks passed.
+- Remaining boundary: no credential value or real store was entered, opened,
+  read, checked, or written. No network/provider request, formal TST-016,
+  staging, publication, release, or Production action was executed. OD-015
+  remains unresolved and `RECORDED_FIXTURE_ONLY` remains the safe default. The
+  linked-worktree full scanner limitation remains `DEBT-W2-061`; no green
+  full-worktree scan is claimed.

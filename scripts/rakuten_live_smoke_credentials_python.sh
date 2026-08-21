@@ -1,4 +1,64 @@
-#!/bin/bash -p
+#!/usr/bin/busybox sh
+
+# Loader-clean stage zero. /usr/bin/busybox is an exact root-owned static OS
+# trust anchor on the supported owner workstation. Do not execute a dynamic
+# program until inherited environment state has been replaced in full.
+entry_invalid() {
+  printf '%s\n' '{"command":"invalid","ok":false,"reason_code":"RAKUTEN_CREDENTIAL_LAUNCHER_INVALID","status":"INVALID"}'
+  exit 69
+}
+
+entry_argument_invalid() {
+  printf '%s\n' '{"command":"invalid","ok":false,"reason_code":"RAKUTEN_CREDENTIAL_ARGUMENT_INVALID","status":"INVALID"}'
+  exit 64
+}
+
+entry_require_metadata() {
+  entry_path=$1
+  entry_type=$2
+  entry_metadata=$(/usr/bin/busybox stat -c '%f %u' -- "$entry_path" 2>/dev/null) \
+    || entry_invalid
+  entry_mode_hex=${entry_metadata%% *}
+  entry_owner=${entry_metadata#* }
+  [ "$entry_metadata" = "$entry_mode_hex $entry_owner" ] || entry_invalid
+  case "$entry_mode_hex" in
+    ''|*[!0-9a-f]*) entry_invalid ;;
+  esac
+  case "$entry_owner" in
+    ''|*[!0-9]*) entry_invalid ;;
+  esac
+  entry_mode=$((0x$entry_mode_hex))
+  if [ "$entry_type" = directory ]; then
+    [ $((entry_mode & 0xf000)) -eq 16384 ] || entry_invalid
+  elif [ "$entry_type" = regular ]; then
+    [ $((entry_mode & 0xf000)) -eq 32768 ] || entry_invalid
+  else
+    entry_invalid
+  fi
+  [ "$entry_owner" -eq 0 ] || entry_invalid
+  [ $((entry_mode & 18)) -eq 0 ] || entry_invalid
+}
+
+IFS=$(/usr/bin/busybox printf ' \t\n_') || entry_invalid
+IFS=${IFS%_}
+umask 077
+if [ "$#" -ne 1 ] || { [ "$1" != setup ] && [ "$1" != check ]; }; then
+  entry_argument_invalid
+fi
+entry_require_metadata / directory
+entry_require_metadata /usr directory
+entry_require_metadata /usr/bin directory
+entry_require_metadata /usr/bin/busybox regular
+entry_require_metadata /usr/bin/bash regular
+expected_busybox_sha256=b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9
+entry_busybox_hash=$(
+  /usr/bin/busybox sha256sum /usr/bin/busybox 2>/dev/null
+) || entry_invalid
+[ "$entry_busybox_hash" = "$expected_busybox_sha256  /usr/bin/busybox" ] \
+  || entry_invalid
+
+exec /usr/bin/busybox env -i PATH=/usr/bin:/bin LC_ALL=C \
+  /usr/bin/bash -p -s -- "$@" <<'RAOS_CREDENTIAL_CLEAN_BASH'
 
 set -euo pipefail
 
@@ -13,7 +73,8 @@ unset RAKUTEN_WEB_SERVICE_APPLICATION_ID RAKUTEN_WEB_SERVICE_ACCESS_KEY
 unset RAKUTEN_AFFILIATE_ID HTTPS_PROXY HTTP_PROXY ALL_PROXY NO_PROXY
 unset https_proxy http_proxy all_proxy no_proxy
 unset BROWSER SSL_CERT_FILE SSL_CERT_DIR SSLKEYLOGFILE
-unset LD_PRELOAD LD_LIBRARY_PATH
+unset LD_PRELOAD LD_AUDIT LD_LIBRARY_PATH LD_DEBUG LD_DEBUG_OUTPUT
+unset GLIBC_TUNABLES
 
 LC_ALL=C
 export LC_ALL
@@ -52,6 +113,8 @@ require_metadata() {
   esac
   if [[ $owner_policy == current ]]; then
     ((owner == effective_uid)) || launcher_invalid
+  elif [[ $owner_policy == root ]]; then
+    ((owner == 0)) || launcher_invalid
   elif [[ $owner_policy == root-or-current ]]; then
     ((owner == 0 || owner == effective_uid)) || launcher_invalid
   else
@@ -99,9 +162,9 @@ if [[ $# -ne 1 || ( $1 != setup && $1 != check ) ]]; then
   exit 64
 fi
 
-script_directory=$(CDPATH= cd -- "$(/usr/bin/dirname -- "${BASH_SOURCE[0]}" 2>/dev/null)" 2>/dev/null && pwd -P)
-repository_root=$(CDPATH= cd -- "$script_directory/.." 2>/dev/null && pwd -P)
 expected_repository_root=/home/minami/rakuten
+repository_root=$expected_repository_root
+script_directory=$repository_root/scripts
 expected_base=/home/minami/.local/share/uv/python/cpython-3.14.6-linux-x86_64-gnu
 launcher_path=$script_directory/rakuten_live_smoke_credentials_python.sh
 credential_script=$script_directory/rakuten_live_smoke_credentials.py
@@ -109,14 +172,16 @@ venv_root=$repository_root/.venv
 venv_python=$venv_root/bin/python
 venv_config=$venv_root/pyvenv.cfg
 expected_python=$expected_base/bin/python3.14
+expected_python_sha256=c2afa8cc3c59d32bac482c122633a352c3910bfed85b59efd8ef49511d46bd2b
 expected_lib=$expected_base/lib
 expected_stdlib=$expected_lib/python3.14
-effective_uid=$(/usr/bin/id -u 2>/dev/null) || launcher_invalid
+effective_uid=$EUID
 
 [[ $effective_uid =~ ^[0-9]+$ ]] || launcher_invalid
 [[ $repository_root == "$expected_repository_root" ]] || launcher_invalid
-[[ ${BASH_SOURCE[0]} == "$launcher_path" ]] || launcher_invalid
 
+require_secure_path /usr/bin/busybox regular root true
+require_secure_path /usr/bin/bash regular root true
 require_secure_path "$repository_root" directory current
 require_secure_path "$script_directory" directory current
 require_secure_path "$launcher_path" regular current true
@@ -133,6 +198,11 @@ readlink_target_with_sentinel=$(
 require_secure_path "$expected_base" directory current
 require_secure_path "$expected_base/bin" directory current
 require_secure_path "$expected_python" regular current true
+python_hash=$(
+  /usr/bin/busybox sha256sum "$expected_python" 2>/dev/null
+) || launcher_invalid
+[[ $python_hash == "$expected_python_sha256  $expected_python" ]] \
+  || launcher_invalid
 require_secure_path "$expected_lib" directory current
 require_secure_path "$expected_stdlib" directory current
 
@@ -312,3 +382,4 @@ try:
 except BaseException:
     fail()
 PY
+RAOS_CREDENTIAL_CLEAN_BASH

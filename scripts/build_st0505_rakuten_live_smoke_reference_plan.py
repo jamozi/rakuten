@@ -33,9 +33,9 @@ DESIGN_HANDOFF_PATH: Final = Path(
     "changes/st-0505/"
     "DESIGN_HANDOFF_V1_ST0505_RAKUTEN_LIVE_SMOKE_CREDENTIAL_INTAKE_V1.yaml"
 )
-DESIGN_HANDOFF_BYTES: Final = 18473
+DESIGN_HANDOFF_BYTES: Final = 22108
 DESIGN_HANDOFF_SHA256: Final = (
-    "9dc1991e6bc0822b2c39410cff6ac7f248d6be3c037bc75c316b8352fce18339"
+    "39e201e361bd77a18d1c1b92072a5cc9e1e6163ebb91ff8db5448ce0ac85f6fe"
 )
 GENERATOR_PATH: Final = Path(
     "scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
@@ -44,6 +44,12 @@ README_PATH: Final = Path("changes/st-0505/README.md")
 CREDENTIAL_SCRIPT_PATH: Final = Path("scripts/rakuten_live_smoke_credentials.py")
 CREDENTIAL_LAUNCHER_PATH: Final = Path(
     "scripts/rakuten_live_smoke_credentials_python.sh"
+)
+CREDENTIAL_SCRIPT_EXPECTED_MODULE_AST_SHA256: Final = (
+    "919bfac90d51c5ad68db3c4a4eafad50d78361e58dd6b2ed2a6b2c014e70db6f"
+)
+CREDENTIAL_LAUNCHER_SHA256: Final = (
+    "6ceca9789b4f89f6a03d851b88fb765058ff8c92de1beb44a8e0a95d5eb4914d"
 )
 TEST_PATHS: Final = (
     Path("tests/st0505/conftest.py"),
@@ -505,6 +511,38 @@ def _validate_hashes(root: Path) -> None:
         _fail("DESIGN_HANDOFF_DRIFT", "credential_intake.design_handoff")
 
 
+def _validate_credential_intake_semantics(root: Path) -> None:
+    credential_source = _read(
+        root, CREDENTIAL_SCRIPT_PATH, "credential_intake.source"
+    ).decode("utf-8", errors="strict")
+    try:
+        credential_tree = ast.parse(
+            credential_source,
+            mode="exec",
+            type_comments=False,
+            feature_version=(3, 14),
+            optimize=0,
+        )
+    except SyntaxError, ValueError:
+        _fail("CREDENTIAL_INTAKE_SEMANTIC_DRIFT", "credential_intake.source")
+    if _ast_sha256(credential_tree) != CREDENTIAL_SCRIPT_EXPECTED_MODULE_AST_SHA256:
+        _fail("CREDENTIAL_INTAKE_SEMANTIC_DRIFT", "credential_intake.source")
+
+    launcher = _read(root, CREDENTIAL_LAUNCHER_PATH, "credential_intake.launcher")
+    if _sha256(launcher) != CREDENTIAL_LAUNCHER_SHA256:
+        _fail("CREDENTIAL_INTAKE_SEMANTIC_DRIFT", "credential_intake.launcher")
+    required_launcher_fragments = (
+        b"#!/usr/bin/busybox sh\n",
+        b"exec /usr/bin/busybox env -i PATH=/usr/bin:/bin LC_ALL=C \\\n",
+        b'/usr/bin/bash -p -s -- "$@"',
+        b'exec "$venv_python" -I -S - \\\n',
+        b"os.execve(",
+        b'f"/proc/self/fd/{script_descriptor}"',
+    )
+    if any(fragment not in launcher for fragment in required_launcher_fragments):
+        _fail("CREDENTIAL_INTAKE_SEMANTIC_DRIFT", "credential_intake.launcher")
+
+
 EXPECTED_STORY: Final = {
     "id": "ST-0505",
     "epic_id": "EPIC-05",
@@ -796,7 +834,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-REFERENCE-PLAN-001",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "story_id": "ST-0505",
     "classification": "SOURCE_DERIVED_NONEXECUTABLE_RAKUTEN_LIVE_SMOKE_REFERENCE_PLAN",
     "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
@@ -882,6 +920,22 @@ EXPECTED_CREDENTIAL_INTAKE: Final[dict[str, object]] = {
         ),
     },
     "launcher_boundary": {
+        "loader_clean_entry": {
+            "interpreter": "/usr/bin/busybox",
+            "format": "STATIC_ELF64_X86_64_NO_PT_INTERP_NO_PT_DYNAMIC",
+            "sha256": (
+                "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9"
+            ),
+            "owner": "ROOT",
+            "group_world_writable": "FORBIDDEN",
+            "environment_replacement": (
+                "BUSYBOX_ENV_I_BEFORE_FIRST_DYNAMIC_EXECUTABLE"
+            ),
+            "inherited_loader_environment": ("NEVER_OBSERVED_BY_DYNAMIC_EXECUTABLE"),
+            "dynamic_shell": (
+                "ROOT_OWNED_PROTECTED_USR_BIN_BASH_AFTER_CLEAN_ENVIRONMENT"
+            ),
+        },
         "python_flags": ["-I", "-S"],
         "isolated_mode": "REQUIRED",
         "site_import": "DISABLED",
@@ -908,9 +962,23 @@ EXPECTED_CREDENTIAL_INTAKE: Final[dict[str, object]] = {
         "credential_script_open": "O_NOFOLLOW_CLOEXEC_LSTAT_FSTAT_IDENTITY",
         "credential_script_execution": "INHERITED_PROC_SELF_FD_INODE_BOUND",
         "interpreter_execution": "VALIDATED_VENV_PATH_FOR_PREFIX_PRESERVATION",
+        "python_executable_sha256": (
+            "c2afa8cc3c59d32bac482c122633a352c3910bfed85b59efd8ef49511d46bd2b"
+        ),
+        "native_runtime_inventory": (
+            "EXACT_PINNED_PYTHON_PLUS_SEVEN_ROOT_OWNED_OS_OBJECTS"
+        ),
+        "native_runtime_maps": "TWO_STABLE_BOUNDED_PROC_SELF_MAPS_SNAPSHOTS",
+        "unexpected_native_object": "FORBIDDEN",
+        "late_code_loading": (
+            "IMPORT_CTYPES_DLOPEN_CTYPES_DLSYM_FORBIDDEN_AFTER_FREEZE"
+        ),
+        "renameat2_resolution": "PRE_RESOLVED_BEFORE_NATIVE_RUNTIME_FREEZE",
+        "runtime_inventory_recheck": "BEFORE_EACH_PRODUCTION_TTY_PROMPT",
         "same_euid_runtime_mutator": "FORBIDDEN_UNSUPPORTED",
         "os_platform_tcb": (
-            "ROOT_OWNED_BASH_COREUTILS_LOADER_SYSTEM_LIBRARIES_AND_PROCFS"
+            "EXACT_STATIC_BUSYBOX_ROOT_OWNED_BASH_COREUTILS_LOADER_"
+            "SYSTEM_LIBRARIES_AND_PROCFS"
         ),
     },
     "repository_root": "/home/minami/rakuten",
@@ -1155,6 +1223,7 @@ def validate_contract(
     _validate_hashes(root)
     _validate_authority_semantics(root)
     _validate_predecessor_semantics(root)
+    _validate_credential_intake_semantics(root)
     return contract
 
 
@@ -1216,7 +1285,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
     manifest = {
         "document": {
             "id": "RAOS-ST0505-RAKUTEN-LIVE-SMOKE-MANIFEST-001",
-            "version": "1.2.4",
+            "version": "1.2.5",
             "story_id": "ST-0505",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,

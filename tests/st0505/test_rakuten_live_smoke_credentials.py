@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import ctypes
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -14,6 +15,7 @@ import shlex
 import shutil
 import signal
 import stat
+import struct
 import subprocess
 import sys
 import termios
@@ -82,6 +84,24 @@ class _LauncherEnvironment(NamedTuple):
     runtime_file: Path
 
 
+@pytest.fixture(autouse=True)
+def _closed_native_runtime_test_state(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep injected unit stores behind the same pre-resolved native boundary."""
+
+    library = ctypes.CDLL(None, use_errno=True)
+    renameat2 = library.renameat2
+    renameat2.restype = ctypes.c_int
+    renameat2.argtypes = [
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_uint,
+    ]
+    monkeypatch.setattr(credentials, "_RENAMEAT2", renameat2)
+    monkeypatch.setattr(credentials, "_RUNTIME_LOCKED", True)
+
+
 @pytest.fixture(scope="module")
 def launcher_environment() -> Iterator[_LauncherEnvironment]:
     source_root = Path(__file__).resolve().parents[2]
@@ -133,15 +153,32 @@ def launcher_environment() -> Iterator[_LauncherEnvironment]:
             )
             == 1
         )
+        assert launcher_source.count("expected_busybox_sha256=") == 1
+        assert launcher_source.count("expected_python_sha256=") == 1
+        busybox_sha256 = hashlib.sha256(
+            Path("/usr/bin/busybox").read_bytes()
+        ).hexdigest()
+        python_sha256 = hashlib.sha256(expected_python.read_bytes()).hexdigest()
         launcher = scripts / "rakuten_live_smoke_credentials_python.sh"
         launcher.write_text(
             launcher_source.replace(
                 "expected_repository_root=/home/minami/rakuten",
                 f"expected_repository_root={shlex.quote(os.fspath(repository_root))}",
-            ).replace(
+            )
+            .replace(
                 "expected_base=/home/minami/.local/share/uv/python/"
                 "cpython-3.14.6-linux-x86_64-gnu",
                 f"expected_base={shlex.quote(os.fspath(expected_base))}",
+            )
+            .replace(
+                "expected_busybox_sha256="
+                "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9",
+                f"expected_busybox_sha256={busybox_sha256}",
+            )
+            .replace(
+                "expected_python_sha256="
+                "c2afa8cc3c59d32bac482c122633a352c3910bfed85b59efd8ef49511d46bd2b",
+                f"expected_python_sha256={python_sha256}",
             ),
             encoding="utf-8",
         )
@@ -156,11 +193,21 @@ def launcher_environment() -> Iterator[_LauncherEnvironment]:
             )
             == 1
         )
+        expected_runtime_python = (
+            "EXPECTED_RUNTIME_PYTHON: Final = Path(\n"
+            '    "/home/minami/.local/share/uv/python/'
+            'cpython-3.14.6-linux-x86_64-gnu/bin/python3.14"\n'
+            ")"
+        )
+        assert credential_source.count(expected_runtime_python) == 1
         credential_script = scripts / "rakuten_live_smoke_credentials.py"
         credential_script.write_text(
             credential_source.replace(
                 'EXPECTED_REPOSITORY_ROOT: Final = Path("/home/minami/rakuten")',
                 f'EXPECTED_REPOSITORY_ROOT: Final = Path("{repository_root}")',
+            ).replace(
+                expected_runtime_python,
+                f"EXPECTED_RUNTIME_PYTHON: Final = Path({os.fspath(expected_python)!r})",
             ),
             encoding="utf-8",
         )
@@ -914,14 +961,11 @@ def test_rename_noreplace_unavailable_or_nonzero_fails_closed(
         def __call__(self, *_args: object) -> int:
             return -1
 
-    class MissingLibc:
-        pass
-
-    class FailingLibc:
-        renameat2 = FakeRename()
-
-    library: object = MissingLibc() if rename_result == "unavailable" else FailingLibc()
-    monkeypatch.setattr(ctypes, "CDLL", lambda *_args, **_kwargs: library)
+    monkeypatch.setattr(
+        credentials,
+        "_RENAMEAT2",
+        None if rename_result == "unavailable" else FakeRename(),
+    )
     parent_fd = os.open(tmp_path, os.O_RDONLY | os.O_DIRECTORY)
     try:
         with pytest.raises(credentials.CredentialIntakeFailure) as caught:
@@ -1559,11 +1603,12 @@ def test_process_disclosure_guard_requires_core_and_prctl(
 
     class FakeLibc:
         prctl = FakePrctl()
+        renameat2 = FakePrctl()
 
     monkeypatch.setattr(resource, "setrlimit", lambda _which, _value: None)
     monkeypatch.setattr(resource, "getrlimit", lambda _which: (0, 0))
     monkeypatch.setattr(ctypes, "CDLL", lambda *_args, **_kwargs: FakeLibc())
-    credentials._disable_process_disclosure()
+    credentials._disable_process_disclosure(runtime_lock=lambda: None)
     assert calls == [
         (credentials._PR_SET_DUMPABLE, 0),
         (credentials._PR_GET_DUMPABLE, 0),
@@ -1581,7 +1626,131 @@ def test_process_disclosure_guard_fails_closed_when_prctl_is_unavailable(
         lambda *_args, **_kwargs: (_ for _ in ()).throw(OSError("unavailable")),
     )
     with pytest.raises(credentials.CredentialIntakeFailure) as caught:
-        credentials._disable_process_disclosure()
+        credentials._disable_process_disclosure(runtime_lock=lambda: None)
+    assert caught.value.code is credentials.CredentialIntakeFailureCode.PLATFORM_UNSAFE
+
+
+def _run_runtime_child(code: str, *arguments: Path) -> subprocess.CompletedProcess[str]:
+    source_root = Path(__file__).resolve().parents[2]
+    return subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "-S",
+            "-c",
+            (f"import sys; sys.path.insert(0, {os.fspath(source_root)!r}); " + code),
+            *(os.fspath(argument) for argument in arguments),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+        env={"PATH": "/usr/bin:/bin", "LC_ALL": "C"},
+    )
+
+
+def test_native_runtime_inventory_is_exact_and_locked_before_input() -> None:
+    completed = _run_runtime_child(
+        "from scripts import rakuten_live_smoke_credentials as c; "
+        "c._disable_process_disclosure(); "
+        "c._assert_runtime_lock_intact(); "
+        "c.os.write(1, b'LOCKED\\n')"
+    )
+
+    assert completed.returncode == 0
+    assert completed.stdout == "LOCKED\n"
+    assert completed.stderr == ""
+
+
+@pytest.mark.parametrize("late_action", ("named_dlopen", "import"))
+def test_native_runtime_lock_rejects_late_code_loading_with_fixed_receipt(
+    tmp_path: Path,
+    late_action: str,
+) -> None:
+    hostile_library = tmp_path / "late-loader.so"
+    _build_hostile_loader_hook(hostile_library)
+    code = (
+        "from pathlib import Path; "
+        "from scripts import rakuten_live_smoke_credentials as c; "
+        "root=Path(sys.argv[1]); library=sys.argv[2]; "
+        "c._disable_process_disclosure(); "
+        "reader=(lambda _prompt: c.ctypes.CDLL(library)) "
+        "if sys.argv[3] == 'named_dlopen' "
+        "else (lambda _prompt: __import__('fractions')); "
+        "raise SystemExit(c.main(['setup'], repository_root=root, "
+        "expected_root=root, reader=reader, disclosure_guard=lambda: None))"
+    )
+    completed = _run_runtime_child(code, tmp_path, hostile_library, Path(late_action))
+
+    assert completed.returncode == 1
+    assert completed.stdout == (
+        '{"command":"setup","ok":false,'
+        '"reason_code":"RAKUTEN_CREDENTIAL_PLATFORM_UNSAFE",'
+        '"status":"INVALID"}\n'
+    )
+    assert completed.stderr == ""
+    assert os.fspath(hostile_library) not in completed.stdout
+
+
+def test_native_runtime_inventory_rejects_object_loaded_before_freeze(
+    tmp_path: Path,
+) -> None:
+    hostile_library = tmp_path / "prefreeze-loader.so"
+    _build_hostile_loader_hook(hostile_library)
+    code = (
+        "from pathlib import Path; "
+        "from scripts import rakuten_live_smoke_credentials as c; "
+        "root=Path(sys.argv[1]); c.ctypes.CDLL(sys.argv[2]); "
+        "raise SystemExit(c.main(['setup'], repository_root=root, "
+        "expected_root=root, reader=lambda _prompt: bytearray(b'never'), "
+        "disclosure_guard=c._disable_process_disclosure))"
+    )
+    completed = _run_runtime_child(code, tmp_path, hostile_library)
+
+    assert completed.returncode == 1
+    assert completed.stdout == (
+        '{"command":"setup","ok":false,'
+        '"reason_code":"RAKUTEN_CREDENTIAL_PLATFORM_UNSAFE",'
+        '"status":"INVALID"}\n'
+    )
+    assert completed.stderr == ""
+    assert os.fspath(hostile_library) not in completed.stdout
+
+
+def test_native_runtime_freeze_keeps_cached_publish_primitive_usable(
+    tmp_path: Path,
+) -> None:
+    code = (
+        "from pathlib import Path; "
+        "from scripts import rakuten_live_smoke_credentials as c; "
+        "root=Path(sys.argv[1]); values=iter((bytearray(b'a'), bytearray(b'b'))); "
+        "raise SystemExit(c.main(['setup'], repository_root=root, "
+        "expected_root=root, reader=lambda _prompt: next(values), "
+        "disclosure_guard=c._disable_process_disclosure))"
+    )
+    completed = _run_runtime_child(code, tmp_path)
+
+    assert completed.returncode == 0
+    assert completed.stdout == '{"command":"setup","ok":true,"status":"READY"}\n'
+    assert completed.stderr == ""
+    assert _inspect(tmp_path) is credentials.CredentialStoreStatus.READY
+
+
+@pytest.mark.parametrize(
+    "raw",
+    (
+        b"not-a-map-line\n",
+        b"1000-2000 rwxp 00000000 00:00 0\n",
+        b"1000-2000 r-xp 00000000 00:00 0\n",
+        b"1000-2000 r-xp 00000000 00:00 0 [unexpected]\n",
+        b"1000-2000 r-xp 00000000 08:30 0 /tmp/object\n",
+    ),
+)
+def test_runtime_map_parser_rejects_malformed_or_executable_unknown_maps(
+    raw: bytes,
+) -> None:
+    with pytest.raises(credentials.CredentialIntakeFailure) as caught:
+        credentials._parse_runtime_maps(raw)
     assert caught.value.code is credentials.CredentialIntakeFailureCode.PLATFORM_UNSAFE
 
 
@@ -1694,6 +1863,199 @@ def test_launcher_never_executes_site_package_pth_startup_hooks(
     assert completed.stdout == '{"command":"check","ok":true,"status":"ABSENT"}\n'
     assert completed.stderr == ""
     assert not canary.exists()
+
+
+def _build_hostile_loader_hook(output: Path) -> None:
+    source = r"""
+#define _GNU_SOURCE
+#include <fcntl.h>
+#include <link.h>
+#include <stdlib.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+static void mark(char value) {
+    const char *path = getenv("RAOS_TEST_LOADER_CANARY");
+    if (path == NULL) {
+        return;
+    }
+    int descriptor = open(path, O_WRONLY | O_CREAT | O_APPEND | O_CLOEXEC, 0600);
+    if (descriptor >= 0) {
+        ssize_t written = write(descriptor, &value, 1);
+        (void)written;
+        (void)close(descriptor);
+    }
+}
+
+__attribute__((constructor)) static void loaded(void) {
+    mark('C');
+}
+
+uid_t getuid(void) {
+    mark('I');
+    return (uid_t)syscall(SYS_getuid);
+}
+
+unsigned int la_version(unsigned int version) {
+    (void)version;
+    mark('A');
+    return LAV_CURRENT;
+}
+
+unsigned int la_objopen(
+    struct link_map *map,
+    Lmid_t namespace_id,
+    uintptr_t *cookie
+) {
+    (void)map;
+    (void)namespace_id;
+    (void)cookie;
+    mark('O');
+    return LA_FLG_BINDTO | LA_FLG_BINDFROM;
+}
+"""
+    completed = subprocess.run(
+        [
+            "/usr/bin/gcc",
+            "-shared",
+            "-fPIC",
+            "-O2",
+            "-Wl,-z,relro,-z,now",
+            "-x",
+            "c",
+            "-",
+            "-o",
+            os.fspath(output),
+        ],
+        input=source,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert completed.returncode == 0
+    assert completed.stdout == ""
+    assert completed.stderr == ""
+    output.chmod(0o700)
+
+
+@pytest.mark.parametrize(
+    ("loader_variable", "positive_marker"),
+    (("LD_PRELOAD", b"I"), ("LD_AUDIT", b"A")),
+)
+def test_launcher_static_entry_never_runs_hostile_loader_hook(
+    launcher_environment: _LauncherEnvironment,
+    loader_variable: str,
+    positive_marker: bytes,
+) -> None:
+    environment = launcher_environment
+    hostile_library = environment.trust_root / f"{loader_variable.lower()}.so"
+    canary = environment.trust_root / f"{loader_variable.lower()}.canary"
+    _build_hostile_loader_hook(hostile_library)
+    hostile_environment = dict(os.environ)
+    hostile_environment[loader_variable] = os.fspath(hostile_library)
+    hostile_environment["RAOS_TEST_LOADER_CANARY"] = os.fspath(canary)
+
+    positive = subprocess.run(
+        ["/bin/bash", "-p", "-c", "/usr/bin/id -u >/dev/null"],
+        check=False,
+        capture_output=True,
+        env=hostile_environment,
+        timeout=10,
+    )
+    assert positive.returncode == 0
+    assert canary.is_file()
+    assert positive_marker in canary.read_bytes()
+    canary.unlink()
+
+    completed = subprocess.run(
+        [os.fspath(environment.launcher), "check"],
+        cwd=environment.repository_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+        env=hostile_environment,
+    )
+    assert completed.returncode == 0
+    assert completed.stdout == '{"command":"check","ok":true,"status":"ABSENT"}\n'
+    assert completed.stderr == ""
+    assert not canary.exists()
+
+
+def test_launcher_static_entry_replaces_shell_control_environment(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    canary = environment.trust_root / "shell-control.canary"
+    startup = environment.trust_root / "hostile-bash-env.sh"
+    startup.write_text(
+        f"printf ran > {shlex.quote(os.fspath(canary))}\n", encoding="ascii"
+    )
+    startup.chmod(0o600)
+    hostile_environment = dict(os.environ)
+    hostile_environment.update(
+        {
+            "ASH_ENV": os.fspath(startup),
+            "BASH_ENV": os.fspath(startup),
+            "ENV": os.fspath(startup),
+            "GLIBC_TUNABLES": "glibc.rtld.nns=8",
+            "IFS": ":",
+            "LD_DEBUG": "libs",
+            "LD_LIBRARY_PATH": os.fspath(environment.trust_root),
+            "PATH": os.fspath(environment.trust_root),
+        }
+    )
+
+    positive = subprocess.run(
+        ["/usr/bin/bash", "-c", ":"],
+        check=False,
+        capture_output=True,
+        env=hostile_environment,
+        timeout=10,
+    )
+    assert positive.returncode == 0
+    assert canary.read_text(encoding="ascii") == "ran"
+    canary.unlink()
+
+    completed = subprocess.run(
+        [os.fspath(environment.launcher), "check"],
+        cwd=environment.repository_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+        env=hostile_environment,
+    )
+    assert completed.returncode == 0
+    assert completed.stdout == '{"command":"check","ok":true,"status":"ABSENT"}\n'
+    assert completed.stderr == ""
+    assert not canary.exists()
+
+
+def test_static_busybox_entry_is_exact_loader_free_elf() -> None:
+    busybox = Path("/usr/bin/busybox")
+    metadata = busybox.lstat()
+    data = busybox.read_bytes()
+    assert metadata.st_uid == 0
+    assert stat.S_ISREG(metadata.st_mode)
+    assert stat.S_IMODE(metadata.st_mode) & 0o022 == 0
+    assert hashlib.sha256(data).hexdigest() == (
+        "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9"
+    )
+    assert data[:6] == b"\x7fELF\x02\x01"
+    assert struct.unpack_from("<H", data, 16)[0] == 2
+    assert struct.unpack_from("<H", data, 18)[0] == 62
+    program_offset = struct.unpack_from("<Q", data, 32)[0]
+    program_entry_size = struct.unpack_from("<H", data, 54)[0]
+    program_count = struct.unpack_from("<H", data, 56)[0]
+    program_types = {
+        struct.unpack_from("<I", data, program_offset + index * program_entry_size)[0]
+        for index in range(program_count)
+    }
+    assert 2 not in program_types
+    assert 3 not in program_types
 
 
 @pytest.mark.parametrize(
@@ -1822,6 +2184,33 @@ def test_launcher_rejects_unvalidated_python_or_loader_shadow(
         )
     finally:
         shadow.unlink()
+
+    assert completed.returncode == 69
+    assert "RAKUTEN_CREDENTIAL_LAUNCHER_INVALID" in completed.stdout
+    assert completed.stderr == ""
+
+
+def test_launcher_rejects_pinned_python_content_digest_drift(
+    launcher_environment: _LauncherEnvironment,
+) -> None:
+    environment = launcher_environment
+    original = environment.expected_python.read_bytes()
+    mutated = bytearray(original)
+    mutated[-1] ^= 1
+    try:
+        environment.expected_python.write_bytes(mutated)
+        environment.expected_python.chmod(0o755)
+        completed = subprocess.run(
+            [os.fspath(environment.launcher), "check"],
+            cwd=environment.repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    finally:
+        environment.expected_python.write_bytes(original)
+        environment.expected_python.chmod(0o755)
 
     assert completed.returncode == 69
     assert "RAKUTEN_CREDENTIAL_LAUNCHER_INVALID" in completed.stdout
@@ -2104,7 +2493,11 @@ def test_launcher_is_fixed_pinned_sanitized_and_argument_closed() -> None:
         )
     source = launcher.read_text(encoding="utf-8")
     assert stat.S_IMODE(launcher.stat().st_mode) == 0o755
-    assert source.startswith("#!/bin/bash -p\n")
+    assert source.startswith("#!/usr/bin/busybox sh\n")
+    assert "exec /usr/bin/busybox env -i PATH=/usr/bin:/bin LC_ALL=C \\" in source
+    assert '/usr/bin/bash -p -s -- "$@"' in source
+    assert "expected_busybox_sha256=b3c1009e" in source
+    assert "expected_python_sha256=c2afa8cc" in source
     assert "expected_repository_root=/home/minami/rakuten" in source
     assert "version_info = 3.14.6" in source
     assert "and sys.flags.no_site == 1" in source
@@ -2149,6 +2542,8 @@ def test_launcher_is_fixed_pinned_sanitized_and_argument_closed() -> None:
         "HTTPS_PROXY",
         "SSLKEYLOGFILE",
         "LD_PRELOAD",
+        "LD_AUDIT",
+        "GLIBC_TUNABLES",
     ):
         assert "unset " in source and name in source
     assert "curl" not in source

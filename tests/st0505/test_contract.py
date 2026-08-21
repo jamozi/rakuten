@@ -31,7 +31,7 @@ def test_plan_has_exact_sections_and_non_executable_document() -> None:
     plan = _plan()
     assert tuple(plan) == generator.PLAN_KEYS
     assert plan["document"] == generator.EXPECTED_DOCUMENT
-    assert plan["document"]["version"] == "1.2.4"
+    assert plan["document"]["version"] == "1.2.5"
     assert plan["document"]["executable"] is False
     assert plan["document"]["interface_only"] is True
     assert plan["document"]["decision"] == "NOT_READY"
@@ -125,6 +125,22 @@ def test_local_credential_intake_is_exact_but_disconnected_from_live_runtime() -
     ]
     assert intake["excluded_aliases"] == ["rakuten_affiliate_id"]
     assert intake["launcher_boundary"] == {
+        "loader_clean_entry": {
+            "interpreter": "/usr/bin/busybox",
+            "format": "STATIC_ELF64_X86_64_NO_PT_INTERP_NO_PT_DYNAMIC",
+            "sha256": (
+                "b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9"
+            ),
+            "owner": "ROOT",
+            "group_world_writable": "FORBIDDEN",
+            "environment_replacement": (
+                "BUSYBOX_ENV_I_BEFORE_FIRST_DYNAMIC_EXECUTABLE"
+            ),
+            "inherited_loader_environment": ("NEVER_OBSERVED_BY_DYNAMIC_EXECUTABLE"),
+            "dynamic_shell": (
+                "ROOT_OWNED_PROTECTED_USR_BIN_BASH_AFTER_CLEAN_ENVIRONMENT"
+            ),
+        },
         "python_flags": ["-I", "-S"],
         "isolated_mode": "REQUIRED",
         "site_import": "DISABLED",
@@ -151,9 +167,23 @@ def test_local_credential_intake_is_exact_but_disconnected_from_live_runtime() -
         "credential_script_open": "O_NOFOLLOW_CLOEXEC_LSTAT_FSTAT_IDENTITY",
         "credential_script_execution": "INHERITED_PROC_SELF_FD_INODE_BOUND",
         "interpreter_execution": "VALIDATED_VENV_PATH_FOR_PREFIX_PRESERVATION",
+        "python_executable_sha256": (
+            "c2afa8cc3c59d32bac482c122633a352c3910bfed85b59efd8ef49511d46bd2b"
+        ),
+        "native_runtime_inventory": (
+            "EXACT_PINNED_PYTHON_PLUS_SEVEN_ROOT_OWNED_OS_OBJECTS"
+        ),
+        "native_runtime_maps": "TWO_STABLE_BOUNDED_PROC_SELF_MAPS_SNAPSHOTS",
+        "unexpected_native_object": "FORBIDDEN",
+        "late_code_loading": (
+            "IMPORT_CTYPES_DLOPEN_CTYPES_DLSYM_FORBIDDEN_AFTER_FREEZE"
+        ),
+        "renameat2_resolution": "PRE_RESOLVED_BEFORE_NATIVE_RUNTIME_FREEZE",
+        "runtime_inventory_recheck": "BEFORE_EACH_PRODUCTION_TTY_PROMPT",
         "same_euid_runtime_mutator": "FORBIDDEN_UNSUPPORTED",
         "os_platform_tcb": (
-            "ROOT_OWNED_BASH_COREUTILS_LOADER_SYSTEM_LIBRARIES_AND_PROCFS"
+            "EXACT_STATIC_BUSYBOX_ROOT_OWNED_BASH_COREUTILS_LOADER_"
+            "SYSTEM_LIBRARIES_AND_PROCFS"
         ),
     }
     assert intake["staging_root"] == ".secrets/.rakuten-live-smoke.preparing"

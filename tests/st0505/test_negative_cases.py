@@ -138,6 +138,13 @@ def test_bool_float_string_and_nonzero_do_not_bypass_exact_zero_actions(
         ("launcher_boundary", "credential_script_open", "PATH_ONLY"),
         ("launcher_boundary", "credential_script_execution", "PATH_REOPEN"),
         ("launcher_boundary", "interpreter_execution", "UNVALIDATED_PATH"),
+        ("launcher_boundary", "python_executable_sha256", "0" * 64),
+        ("launcher_boundary", "native_runtime_inventory", "AMBIENT"),
+        ("launcher_boundary", "native_runtime_maps", "SINGLE_UNBOUNDED_READ"),
+        ("launcher_boundary", "unexpected_native_object", "ALLOWED"),
+        ("launcher_boundary", "late_code_loading", "ALLOWED"),
+        ("launcher_boundary", "renameat2_resolution", "AFTER_INPUT"),
+        ("launcher_boundary", "runtime_inventory_recheck", "ABSENT"),
         ("launcher_boundary", "same_euid_runtime_mutator", "SUPPORTED"),
         ("launcher_boundary", "os_platform_tcb", "UNBOUNDED"),
         ("input_boundary", "terminal_mode", "NONCANONICAL_ALLOWED"),
@@ -159,6 +166,30 @@ def test_credential_intake_runtime_or_secret_read_inflation_is_rejected(
 ) -> None:
     contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
     contract["local_credential_intake"][section][field] = value
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError):
+        generator.validate_contract(contract)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("interpreter", "/bin/bash"),
+        ("format", "DYNAMIC_ELF"),
+        ("sha256", "0" * 64),
+        ("owner", "CURRENT_EFFECTIVE_UID"),
+        ("group_world_writable", "ALLOWED"),
+        ("environment_replacement", "SHELL_UNSET_AFTER_LOAD"),
+        ("inherited_loader_environment", "OBSERVED"),
+        ("dynamic_shell", "BEFORE_ENVIRONMENT_REPLACEMENT"),
+    ),
+)
+def test_loader_clean_entry_contract_drift_is_rejected(
+    field: str, value: object
+) -> None:
+    contract = cast(dict[str, Any], deepcopy(generator.load_contract()))
+    contract["local_credential_intake"]["launcher_boundary"]["loader_clean_entry"][
+        field
+    ] = value
     with pytest.raises(generator.RakutenLiveSmokeReferenceError):
         generator.validate_contract(contract)
 
@@ -360,6 +391,36 @@ def test_authority_or_predecessor_byte_drift_is_rejected(
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
     with pytest.raises(generator.RakutenLiveSmokeReferenceError):
         generator.render_outputs(isolated_repository)
+
+
+@pytest.mark.parametrize(
+    ("relative", "needle", "replacement"),
+    (
+        (
+            generator.CREDENTIAL_SCRIPT_PATH,
+            "        runtime_lock()\n",
+            "        return\n",
+        ),
+        (
+            generator.CREDENTIAL_LAUNCHER_PATH,
+            "#!/usr/bin/busybox sh\n",
+            "#!/bin/bash -p\n",
+        ),
+    ),
+)
+def test_credential_runtime_semantic_drift_is_rejected_before_manifest_rebind(
+    isolated_repository: Path,
+    relative: Path,
+    needle: str,
+    replacement: str,
+) -> None:
+    path = isolated_repository / relative
+    source = path.read_text(encoding="utf-8")
+    assert source.count(needle) == 1
+    path.write_text(source.replace(needle, replacement), encoding="utf-8")
+    with pytest.raises(generator.RakutenLiveSmokeReferenceError) as caught:
+        generator.render_outputs(isolated_repository)
+    assert "CREDENTIAL_INTAKE_SEMANTIC_DRIFT" in str(caught.value)
 
 
 def _rebind_expected_predecessor(monkeypatch: pytest.MonkeyPatch) -> None:

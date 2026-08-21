@@ -34,6 +34,19 @@ SECRET_ALIASES: Final = (APPLICATION_ID_ALIAS, ACCESS_KEY_ALIAS)
 MAX_SECRET_BYTES: Final = 4094
 MAX_TTY_DISCARD_BYTES: Final = 4096
 TTY_REJECT_DRAIN_TIMEOUT_SECONDS: Final = 1.0
+EXPECTED_RUNTIME_PYTHON: Final = Path(
+    "/home/minami/.local/share/uv/python/cpython-3.14.6-linux-x86_64-gnu/bin/python3.14"
+)
+EXPECTED_OS_RUNTIME_OBJECTS: Final = (
+    Path("/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"),
+    Path("/usr/lib/x86_64-linux-gnu/libc.so.6"),
+    Path("/usr/lib/x86_64-linux-gnu/libdl.so.2"),
+    Path("/usr/lib/x86_64-linux-gnu/libm.so.6"),
+    Path("/usr/lib/x86_64-linux-gnu/libpthread.so.0"),
+    Path("/usr/lib/x86_64-linux-gnu/librt.so.1"),
+    Path("/usr/lib/x86_64-linux-gnu/libutil.so.1"),
+)
+MAX_RUNTIME_MAP_BYTES: Final = 262_144
 
 _DIRECTORY_FLAGS: Final = (
     os.O_RDONLY
@@ -57,6 +70,9 @@ _WRITE_FLAGS: Final = (
 _PR_GET_DUMPABLE: Final = 3
 _PR_SET_DUMPABLE: Final = 4
 _RENAME_NOREPLACE: Final = 1
+_RUNTIME_SPECIAL_MAPPINGS: Final = frozenset({"[heap]", "[stack]", "[vdso]", "[vvar]"})
+_RENAMEAT2: Callable[..., int] | None = None
+_RUNTIME_LOCKED = False
 
 
 class CredentialStoreStatus(str, Enum):
@@ -317,7 +333,239 @@ def _inspect_ready_metadata(
         os.close(store_fd)
 
 
-def _disable_process_disclosure() -> None:
+def _read_runtime_maps() -> bytes:
+    descriptor: int | None = None
+    try:
+        descriptor = os.open(
+            "/proc/self/maps",
+            os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC,
+        )
+        _set_cloexec(descriptor)
+        chunks = bytearray()
+        while len(chunks) <= MAX_RUNTIME_MAP_BYTES:
+            chunk = os.read(
+                descriptor,
+                min(8192, MAX_RUNTIME_MAP_BYTES + 1 - len(chunks)),
+            )
+            if not chunk:
+                break
+            chunks.extend(chunk)
+        if not chunks or len(chunks) > MAX_RUNTIME_MAP_BYTES or chunks[-1:] != b"\n":
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        return bytes(chunks)
+    except CredentialIntakeFailure:
+        raise
+    except BaseException:
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    finally:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+
+
+def _hexadecimal(value: bytes) -> bool:
+    return bool(value) and all(byte in b"0123456789abcdefABCDEF" for byte in value)
+
+
+def _parse_runtime_maps(
+    raw: bytes,
+) -> dict[str, tuple[tuple[int, int, int], bool]]:
+    objects: dict[str, tuple[tuple[int, int, int], bool]] = {}
+    for line in raw.splitlines():
+        fields = line.split(maxsplit=5)
+        if len(fields) not in (5, 6):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        address, permissions, offset, device, inode = fields[:5]
+        address_parts = address.split(b"-")
+        device_parts = device.split(b":")
+        if (
+            len(address_parts) != 2
+            or not all(_hexadecimal(part) for part in address_parts)
+            or len(permissions) != 4
+            or permissions[0] not in b"r-"
+            or permissions[1] not in b"w-"
+            or permissions[2] not in b"x-"
+            or permissions[3] not in b"ps"
+            or not _hexadecimal(offset)
+            or len(device_parts) != 2
+            or not all(_hexadecimal(part) for part in device_parts)
+            or not inode.isdigit()
+            or permissions[1:3] == b"wx"
+        ):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        inode_value = int(inode, 10)
+        identity = (
+            int(device_parts[0], 16),
+            int(device_parts[1], 16),
+            inode_value,
+        )
+        if len(fields) == 5:
+            if inode_value != 0 or permissions[2:3] == b"x":
+                _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+            continue
+        try:
+            path = fields[5].decode("ascii")
+        except UnicodeDecodeError:
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        if path.startswith("["):
+            if (
+                path not in _RUNTIME_SPECIAL_MAPPINGS
+                or inode_value != 0
+                or device != b"00:00"
+                or (permissions[2:3] == b"x" and path != "[vdso]")
+            ):
+                _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+            continue
+        if not path.startswith("/") or inode_value == 0:
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        executable = permissions[2:3] == b"x"
+        existing = objects.get(path)
+        if existing is None:
+            objects[path] = (identity, executable)
+        elif existing[0] != identity:
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        elif executable and not existing[1]:
+            objects[path] = (identity, True)
+    return objects
+
+
+def _secure_runtime_object(
+    path: Path,
+    identity: tuple[int, int, int],
+    *,
+    leaf_owner: int,
+    ancestors_allow_current: bool,
+) -> None:
+    if not path.is_absolute() or path.parts[0] != "/":
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    effective_uid = os.geteuid()
+    current = Path("/")
+    try:
+        root_metadata = current.lstat()
+        if (
+            not stat.S_ISDIR(root_metadata.st_mode)
+            or root_metadata.st_uid != 0
+            or stat.S_IMODE(root_metadata.st_mode) & 0o022
+        ):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        for part in path.parts[1:-1]:
+            current /= part
+            metadata = current.lstat()
+            allowed_owners = {0, effective_uid} if ancestors_allow_current else {0}
+            if (
+                not stat.S_ISDIR(metadata.st_mode)
+                or stat.S_ISLNK(metadata.st_mode)
+                or metadata.st_uid not in allowed_owners
+                or stat.S_IMODE(metadata.st_mode) & 0o022
+            ):
+                _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        before = path.lstat()
+        if (
+            not stat.S_ISREG(before.st_mode)
+            or stat.S_ISLNK(before.st_mode)
+            or before.st_uid != leaf_owner
+            or stat.S_IMODE(before.st_mode) & 0o022
+            or before.st_nlink != 1
+            or (os.major(before.st_dev), os.minor(before.st_dev), before.st_ino)
+            != identity
+        ):
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
+        try:
+            _set_cloexec(descriptor)
+            opened = os.fstat(descriptor)
+            current_metadata = path.lstat()
+            opened_identity = (
+                os.major(opened.st_dev),
+                os.minor(opened.st_dev),
+                opened.st_ino,
+            )
+            if (
+                opened_identity != identity
+                or (current_metadata.st_dev, current_metadata.st_ino)
+                != (opened.st_dev, opened.st_ino)
+                or not stat.S_ISREG(opened.st_mode)
+                or opened.st_uid != leaf_owner
+                or stat.S_IMODE(opened.st_mode) & 0o022
+                or opened.st_nlink != 1
+            ):
+                _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        finally:
+            os.close(descriptor)
+    except CredentialIntakeFailure:
+        raise
+    except BaseException:
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+
+
+def _validate_runtime_inventory(raw: bytes) -> None:
+    effective_uid = os.geteuid()
+    objects = _parse_runtime_maps(raw)
+    expected_paths = {os.fspath(EXPECTED_RUNTIME_PYTHON)} | {
+        os.fspath(path) for path in EXPECTED_OS_RUNTIME_OBJECTS
+    }
+    if set(objects) != expected_paths or tuple(os.listdir("/proc/self/task")) != (
+        str(os.getpid()),
+    ):
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    if os.readlink("/proc/self/exe") != os.fspath(
+        EXPECTED_RUNTIME_PYTHON
+    ) or os.path.realpath(sys.executable) != os.fspath(EXPECTED_RUNTIME_PYTHON):
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    for path_text, (identity, executable) in objects.items():
+        path = Path(path_text)
+        if not executable:
+            _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        if path == EXPECTED_RUNTIME_PYTHON:
+            _secure_runtime_object(
+                path,
+                identity,
+                leaf_owner=effective_uid,
+                ancestors_allow_current=True,
+            )
+        else:
+            _secure_runtime_object(
+                path,
+                identity,
+                leaf_owner=0,
+                ancestors_allow_current=False,
+            )
+
+
+def _runtime_audit_hook(event: str, arguments: tuple[object, ...]) -> None:
+    del arguments
+    if event == "import" or event in {"ctypes.dlopen", "ctypes.dlsym"}:
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+
+
+def _freeze_runtime() -> None:
+    global _RUNTIME_LOCKED
+    if _RUNTIME_LOCKED:
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    first = _read_runtime_maps()
+    _validate_runtime_inventory(first)
+    second = _read_runtime_maps()
+    if second != first:
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    sys.addaudithook(_runtime_audit_hook)
+    _RUNTIME_LOCKED = True
+
+
+def _assert_runtime_lock_intact() -> None:
+    if not _RUNTIME_LOCKED:
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+    first = _read_runtime_maps()
+    _validate_runtime_inventory(first)
+    if _read_runtime_maps() != first:
+        _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+
+
+def _disable_process_disclosure(
+    *, runtime_lock: Callable[[], None] = _freeze_runtime
+) -> None:
+    global _RENAMEAT2
     if sys.platform != "linux" or not hasattr(resource, "RLIMIT_CORE"):
         _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
     try:
@@ -334,10 +582,21 @@ def _disable_process_disclosure() -> None:
             ctypes.c_ulong,
             ctypes.c_ulong,
         ]
+        renameat2 = libc.renameat2
+        renameat2.restype = ctypes.c_int
+        renameat2.argtypes = [
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_uint,
+        ]
         if prctl(_PR_SET_DUMPABLE, 0, 0, 0, 0) != 0:
             _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
         if prctl(_PR_GET_DUMPABLE, 0, 0, 0, 0) != 0:
             _fail(CredentialIntakeFailureCode.PLATFORM_UNSAFE)
+        _RENAMEAT2 = renameat2
+        runtime_lock()
     except CredentialIntakeFailure:
         raise
     except BaseException:
@@ -537,16 +796,9 @@ def _rename_noreplace(secret_parent_fd: int, source: str, target: str) -> None:
     }:
         _fail(CredentialIntakeFailureCode.WRITE_FAILED)
     try:
-        libc = ctypes.CDLL(None, use_errno=True)
-        renameat2 = libc.renameat2
-        renameat2.restype = ctypes.c_int
-        renameat2.argtypes = [
-            ctypes.c_int,
-            ctypes.c_char_p,
-            ctypes.c_int,
-            ctypes.c_char_p,
-            ctypes.c_uint,
-        ]
+        renameat2 = _RENAMEAT2
+        if renameat2 is None or not _RUNTIME_LOCKED:
+            _fail(CredentialIntakeFailureCode.WRITE_FAILED)
         result = renameat2(
             secret_parent_fd,
             source.encode("ascii"),
@@ -715,6 +967,8 @@ def setup_store(
 
 def _read_value(reader: Callable[[str], bytearray], prompt: str) -> bytearray:
     try:
+        if reader is _read_private_tty:
+            _assert_runtime_lock_intact()
         value = reader(prompt)
     except CredentialIntakeFailure:
         raise
