@@ -12,7 +12,6 @@ import re
 import stat
 import subprocess
 import sys
-import tempfile
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Final
@@ -24,7 +23,10 @@ if os.fspath(REPOSITORY_ROOT) not in sys.path:
 
 from scripts.scan_secrets import (  # noqa: E402
     Finding,
+    GIT_TIMEOUT_SECONDS,
     RULE_GENERIC_CREDENTIAL,
+    _git_environment as scanner_git_environment,
+    _git_executable as scanner_git_executable,
     parse_reviewed_findings,
     scan_bytes,
 )
@@ -49,6 +51,9 @@ EXPECTED_PARENT_SHA256: Final = (
 EXPECTED_PARENT_ENTRIES: Final = 115
 EXPECTED_NEW_ENTRIES: Final = 3
 MAX_INPUT_BYTES: Final = 2 * 1024 * 1024
+READ_CHUNK_BYTES: Final = 64 * 1024
+MAX_GIT_HEADER_BYTES: Final = 256
+TEMPORARY_ATTEMPTS: Final = 32
 OBJECT_ID: Final = re.compile(r"^[0-9a-f]{40}$")
 SHA256: Final = re.compile(r"^[0-9a-f]{64}$")
 EXPECTED_DOCUMENT: Final = {
@@ -104,18 +109,188 @@ def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
+def _directory_flags() -> int:
+    if not getattr(os, "O_DIRECTORY", 0) or not getattr(os, "O_NOFOLLOW", 0):
+        raise RuntimeError("descriptor-bound filesystem support is unavailable")
+    return os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | os.O_DIRECTORY | os.O_NOFOLLOW
+
+
+def _open_root_descriptor(root: Path) -> int:
+    try:
+        before = os.stat(root, follow_symlinks=False)
+        if stat.S_ISLNK(before.st_mode) or not stat.S_ISDIR(before.st_mode):
+            raise RuntimeError("repository root must be a non-symlink directory")
+        descriptor = os.open(os.fspath(root), _directory_flags())
+    except OSError as exc:
+        raise RuntimeError("repository root must be a non-symlink directory") from exc
+    after = os.fstat(descriptor)
+    if not stat.S_ISDIR(after.st_mode) or (before.st_dev, before.st_ino) != (
+        after.st_dev,
+        after.st_ino,
+    ):
+        os.close(descriptor)
+        raise RuntimeError("repository root must be a non-symlink directory")
+    return descriptor
+
+
+def _open_directory_descriptor(root_descriptor: int, relative: Path, label: str) -> int:
+    current = os.dup(root_descriptor)
+    try:
+        for component in relative.parts:
+            if component in {"", ".", ".."}:
+                raise RuntimeError(f"unsafe {label} parent")
+            try:
+                before = os.stat(component, dir_fd=current, follow_symlinks=False)
+                if stat.S_ISLNK(before.st_mode) or not stat.S_ISDIR(before.st_mode):
+                    raise RuntimeError(
+                        f"{label} parent must contain only non-symlink directories"
+                    )
+                following = os.open(component, _directory_flags(), dir_fd=current)
+            except OSError as exc:
+                raise RuntimeError(
+                    f"{label} parent must contain only non-symlink directories"
+                ) from exc
+            after = os.fstat(following)
+            if not stat.S_ISDIR(after.st_mode) or (before.st_dev, before.st_ino) != (
+                after.st_dev,
+                after.st_ino,
+            ):
+                os.close(following)
+                raise RuntimeError(f"{label} parent changed during traversal")
+            os.close(current)
+            current = following
+        return current
+    except BaseException:
+        os.close(current)
+        raise
+
+
+def _descriptor_identity(descriptor: int) -> tuple[int, int]:
+    metadata = os.fstat(descriptor)
+    return metadata.st_dev, metadata.st_ino
+
+
+def _stable_file_identity(metadata: os.stat_result) -> tuple[int, ...]:
+    return (
+        metadata.st_dev,
+        metadata.st_ino,
+        metadata.st_mode,
+        metadata.st_size,
+        metadata.st_mtime_ns,
+        metadata.st_ctime_ns,
+    )
+
+
+def _assert_root_identity(root: Path, expected: tuple[int, int]) -> None:
+    try:
+        metadata = os.stat(root, follow_symlinks=False)
+    except OSError as exc:
+        raise RuntimeError("repository root changed during operation") from exc
+    if (
+        stat.S_ISLNK(metadata.st_mode)
+        or not stat.S_ISDIR(metadata.st_mode)
+        or (metadata.st_dev, metadata.st_ino) != expected
+    ):
+        raise RuntimeError("repository root changed during operation")
+
+
+def _assert_directory_identity(
+    root_descriptor: int,
+    relative: Path,
+    expected: tuple[int, int],
+    label: str,
+) -> None:
+    current = _open_directory_descriptor(root_descriptor, relative, label)
+    try:
+        if _descriptor_identity(current) != expected:
+            raise RuntimeError(f"{label} parent changed during operation")
+    finally:
+        os.close(current)
+
+
+def _read_exact_descriptor(descriptor: int, size: int, label: str) -> bytes:
+    chunks: list[bytes] = []
+    remaining = size
+    while remaining:
+        chunk = os.read(descriptor, min(READ_CHUNK_BYTES, remaining))
+        if not chunk:
+            raise RuntimeError(f"{label} was truncated while being read")
+        chunks.append(chunk)
+        remaining -= len(chunk)
+    return b"".join(chunks)
+
+
 def _regular_file(root: Path, relative: Path, label: str) -> bytes:
     if relative.is_absolute() or any(
         part in {"", ".", ".."} for part in relative.parts
     ):
         raise RuntimeError(f"unsafe {label} path")
-    path = root / relative
-    metadata = path.lstat()
-    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISREG(metadata.st_mode):
-        raise RuntimeError(f"{label} must be a regular non-symlink file")
-    if metadata.st_size < 1 or metadata.st_size > MAX_INPUT_BYTES:
-        raise RuntimeError(f"{label} size is invalid")
-    return path.read_bytes()
+    root_descriptor = _open_root_descriptor(root)
+    parent_descriptor = -1
+    descriptor = -1
+    try:
+        root_identity = _descriptor_identity(root_descriptor)
+        parent_descriptor = _open_directory_descriptor(
+            root_descriptor, relative.parent, label
+        )
+        parent_identity = _descriptor_identity(parent_descriptor)
+        try:
+            path_before = os.stat(
+                relative.name,
+                dir_fd=parent_descriptor,
+                follow_symlinks=False,
+            )
+            if stat.S_ISLNK(path_before.st_mode) or not stat.S_ISREG(
+                path_before.st_mode
+            ):
+                raise RuntimeError(f"{label} must be a regular non-symlink file")
+            descriptor = os.open(
+                relative.name,
+                os.O_RDONLY
+                | getattr(os, "O_CLOEXEC", 0)
+                | getattr(os, "O_NONBLOCK", 0)
+                | os.O_NOFOLLOW,
+                dir_fd=parent_descriptor,
+            )
+        except OSError as exc:
+            raise RuntimeError(f"{label} must be a regular non-symlink file") from exc
+        before = os.fstat(descriptor)
+        if (
+            not stat.S_ISREG(before.st_mode)
+            or _stable_file_identity(path_before) != _stable_file_identity(before)
+            or before.st_size < 1
+            or before.st_size > MAX_INPUT_BYTES
+        ):
+            raise RuntimeError(f"{label} size or type is invalid")
+        content = _read_exact_descriptor(descriptor, before.st_size, label)
+        if os.read(descriptor, 1):
+            raise RuntimeError(f"{label} grew while being read")
+        after = os.fstat(descriptor)
+        if _stable_file_identity(before) != _stable_file_identity(after):
+            raise RuntimeError(f"{label} changed while being read")
+        try:
+            named = os.stat(
+                relative.name,
+                dir_fd=parent_descriptor,
+                follow_symlinks=False,
+            )
+        except OSError as exc:
+            raise RuntimeError(f"{label} changed while being read") from exc
+        if not stat.S_ISREG(named.st_mode) or _stable_file_identity(
+            named
+        ) != _stable_file_identity(after):
+            raise RuntimeError(f"{label} changed while being read")
+        _assert_directory_identity(
+            root_descriptor, relative.parent, parent_identity, label
+        )
+        _assert_root_identity(root, root_identity)
+        return content
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        if parent_descriptor >= 0:
+            os.close(parent_descriptor)
+        os.close(root_descriptor)
 
 
 def _strict_json(data: bytes, label: str) -> dict[str, Any]:
@@ -142,26 +317,114 @@ def _physical_line(data: bytes, line_number: int) -> bytes:
     return selected
 
 
-def _git_blob(root: Path, object_id: str) -> bytes:
-    kind = subprocess.run(
-        ["git", "cat-file", "-t", object_id],
-        cwd=root,
-        check=False,
-        capture_output=True,
-        timeout=30,
-    )
-    if kind.returncode != 0 or kind.stdout != b"blob\n":
+def _trusted_git_command(*arguments: str) -> list[str]:
+    executable = scanner_git_executable()
+    if executable is None:
+        raise RuntimeError("trusted Git executable is unavailable")
+    return [executable, "-c", "core.quotePath=true", *arguments]
+
+
+def _git_blob_metadata(root: Path, object_id: str) -> int:
+    try:
+        result = subprocess.run(
+            _trusted_git_command(
+                "cat-file",
+                "--batch-check=%(objectname) %(objecttype) %(objectsize)",
+            ),
+            cwd=root,
+            env=scanner_git_environment(),
+            input=object_id.encode("ascii") + b"\n",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            check=False,
+            timeout=GIT_TIMEOUT_SECONDS,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise RuntimeError("reviewed Git object metadata check failed") from exc
+    fields = result.stdout.strip().split(b" ")
+    if (
+        result.returncode != 0
+        or len(fields) != 3
+        or fields[0] != object_id.encode("ascii")
+        or fields[1] != b"blob"
+    ):
         raise RuntimeError("reviewed Git object is unavailable or not a blob")
-    blob = subprocess.run(
-        ["git", "cat-file", "blob", object_id],
-        cwd=root,
-        check=False,
-        capture_output=True,
-        timeout=30,
-    )
-    if blob.returncode != 0 or len(blob.stdout) > MAX_INPUT_BYTES:
-        raise RuntimeError("reviewed Git blob cannot be read safely")
-    return blob.stdout
+    try:
+        size = int(fields[2])
+    except ValueError as exc:
+        raise RuntimeError("reviewed Git object metadata is invalid") from exc
+    if size < 1 or size > MAX_INPUT_BYTES:
+        raise RuntimeError("reviewed Git blob exceeds the bounded input size")
+    return size
+
+
+def _read_exact_stream(stream: Any, size: int) -> bytes:
+    chunks: list[bytes] = []
+    remaining = size
+    while remaining:
+        chunk = stream.read(min(READ_CHUNK_BYTES, remaining))
+        if not chunk:
+            raise RuntimeError("reviewed Git blob response is truncated")
+        chunks.append(chunk)
+        remaining -= len(chunk)
+    return b"".join(chunks)
+
+
+def _parse_git_batch_blob(stream: Any, object_id: str, expected_size: int) -> bytes:
+    header = stream.readline(MAX_GIT_HEADER_BYTES + 1)
+    expected_header = f"{object_id} blob {expected_size}\n".encode("ascii")
+    if len(header) > MAX_GIT_HEADER_BYTES or header != expected_header:
+        raise RuntimeError("reviewed Git blob response header differs")
+    content = _read_exact_stream(stream, expected_size)
+    if stream.read(1) != b"\n":
+        raise RuntimeError("reviewed Git blob response delimiter differs")
+    if stream.read(1) != b"":
+        raise RuntimeError("reviewed Git blob response has trailing data")
+    return content
+
+
+def _read_git_blob(root: Path, object_id: str, expected_size: int) -> bytes:
+    try:
+        process = subprocess.Popen(
+            _trusted_git_command("cat-file", "--batch"),
+            cwd=root,
+            env=scanner_git_environment(),
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+    except OSError as exc:
+        raise RuntimeError("reviewed Git blob reader failed to start") from exc
+    try:
+        if process.stdin is None or process.stdout is None:
+            raise RuntimeError("reviewed Git blob reader pipes are unavailable")
+        process.stdin.write(object_id.encode("ascii") + b"\n")
+        process.stdin.close()
+        content = _parse_git_batch_blob(process.stdout, object_id, expected_size)
+        try:
+            return_code = process.wait(timeout=GIT_TIMEOUT_SECONDS)
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError("reviewed Git blob reader timed out") from exc
+        if return_code != 0:
+            raise RuntimeError("reviewed Git blob reader failed")
+        return content
+    except OSError, RuntimeError:
+        if process.poll() is None:
+            process.kill()
+        process.wait()
+        raise
+    finally:
+        if process.stdin is not None and not process.stdin.closed:
+            process.stdin.close()
+        if process.stdout is not None:
+            process.stdout.close()
+
+
+def _git_blob(root: Path, object_id: str, expected_size: int) -> bytes:
+    actual_size = _git_blob_metadata(root, object_id)
+    if actual_size != expected_size:
+        raise RuntimeError("reviewed Git blob declared size differs")
+    return _read_git_blob(root, object_id, actual_size)
 
 
 def _validate_python_shape(data: bytes, line_number: int) -> None:
@@ -222,7 +485,7 @@ def _ledger_entry(raw: object, root: Path, index: int) -> dict[str, Any]:
     ):
         raise RuntimeError(f"reviewed addition {index} binding differs")
 
-    blob = _git_blob(root, object_id)
+    blob = _git_blob(root, object_id, source_bytes)
     line = _physical_line(blob, line_number)
     if (
         len(blob) != source_bytes
@@ -295,41 +558,152 @@ def render(root: Path = REPOSITORY_ROOT) -> bytes:
     return content
 
 
-def _install(root: Path, content: bytes) -> None:
-    target = root / OUTPUT_PATH
-    parent = target.parent
-    parent_metadata = parent.lstat()
-    if stat.S_ISLNK(parent_metadata.st_mode) or not stat.S_ISDIR(
-        parent_metadata.st_mode
-    ):
-        raise RuntimeError("generated ledger parent is unsafe")
-    if target.exists() or target.is_symlink():
-        target_metadata = target.lstat()
-        if stat.S_ISLNK(target_metadata.st_mode) or not stat.S_ISREG(
-            target_metadata.st_mode
-        ):
-            raise RuntimeError("generated ledger target is unsafe")
-    descriptor, temporary_name = tempfile.mkstemp(prefix=".reviewed-v3-", dir=parent)
-    temporary = Path(temporary_name)
+def _capture_target_state(parent_descriptor: int, name: str) -> tuple[int, ...] | None:
     try:
-        os.fchmod(descriptor, 0o644)
-        with os.fdopen(descriptor, "wb", closefd=True) as stream:
-            stream.write(content)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(temporary, target)
-        parent_descriptor = os.open(parent, os.O_RDONLY | os.O_DIRECTORY)
-        try:
-            os.fsync(parent_descriptor)
-        finally:
+        metadata = os.stat(name, dir_fd=parent_descriptor, follow_symlinks=False)
+    except FileNotFoundError:
+        return None
+    if not stat.S_ISREG(metadata.st_mode):
+        raise RuntimeError("generated ledger target is unsafe")
+    return _stable_file_identity(metadata)
+
+
+def _validate_staged_output(
+    parent_descriptor: int,
+    name: str,
+    descriptor: int,
+    expected_size: int,
+) -> os.stat_result:
+    staged = os.fstat(descriptor)
+    named = os.stat(name, dir_fd=parent_descriptor, follow_symlinks=False)
+    if (
+        not stat.S_ISREG(staged.st_mode)
+        or staged.st_nlink != 1
+        or staged.st_size != expected_size
+        or stat.S_IMODE(staged.st_mode) != 0o644
+        or _stable_file_identity(staged) != _stable_file_identity(named)
+        or named.st_nlink != 1
+    ):
+        raise RuntimeError("generated ledger stage changed before publication")
+    return staged
+
+
+def _publication_identity(metadata: os.stat_result) -> tuple[int, ...]:
+    return (
+        metadata.st_dev,
+        metadata.st_ino,
+        metadata.st_mode,
+        metadata.st_size,
+        metadata.st_nlink,
+    )
+
+
+def _install(root: Path, content: bytes) -> None:
+    if not content or len(content) > MAX_INPUT_BYTES:
+        raise RuntimeError("generated ledger content size is invalid")
+    root_descriptor = _open_root_descriptor(root)
+    parent_descriptor = -1
+    output_descriptor = -1
+    temporary_name: str | None = None
+    published = False
+    try:
+        root_identity = _descriptor_identity(root_descriptor)
+        parent_descriptor = _open_directory_descriptor(
+            root_descriptor, OUTPUT_PATH.parent, "generated ledger"
+        )
+        parent_identity = _descriptor_identity(parent_descriptor)
+        target_state = _capture_target_state(parent_descriptor, OUTPUT_PATH.name)
+
+        for _attempt in range(TEMPORARY_ATTEMPTS):
+            candidate = (
+                f".{OUTPUT_PATH.name}.st0106-{os.getpid()}-{os.urandom(8).hex()}"
+            )
+            try:
+                output_descriptor = os.open(
+                    candidate,
+                    os.O_WRONLY
+                    | os.O_CREAT
+                    | os.O_EXCL
+                    | getattr(os, "O_CLOEXEC", 0)
+                    | os.O_NOFOLLOW,
+                    0o600,
+                    dir_fd=parent_descriptor,
+                )
+            except FileExistsError:
+                continue
+            temporary_name = candidate
+            break
+        else:
+            raise RuntimeError("cannot allocate a safe generated ledger stage")
+
+        view = memoryview(content)
+        while view:
+            written = os.write(output_descriptor, view)
+            if written <= 0:
+                raise RuntimeError("short write while staging generated ledger")
+            view = view[written:]
+        os.fchmod(output_descriptor, 0o644)
+        os.fsync(output_descriptor)
+        staged = _validate_staged_output(
+            parent_descriptor,
+            temporary_name,
+            output_descriptor,
+            len(content),
+        )
+
+        _assert_directory_identity(
+            root_descriptor,
+            OUTPUT_PATH.parent,
+            parent_identity,
+            "generated ledger",
+        )
+        _assert_root_identity(root, root_identity)
+        if _capture_target_state(parent_descriptor, OUTPUT_PATH.name) != target_state:
+            raise RuntimeError("generated ledger target changed before publication")
+        rechecked_stage = _validate_staged_output(
+            parent_descriptor,
+            temporary_name,
+            output_descriptor,
+            len(content),
+        )
+        if _stable_file_identity(rechecked_stage) != _stable_file_identity(staged):
+            raise RuntimeError("generated ledger stage changed before publication")
+        os.replace(
+            temporary_name,
+            OUTPUT_PATH.name,
+            src_dir_fd=parent_descriptor,
+            dst_dir_fd=parent_descriptor,
+        )
+        published = True
+        temporary_name = None
+        current = os.stat(
+            OUTPUT_PATH.name,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+        if not stat.S_ISREG(current.st_mode) or _publication_identity(
+            current
+        ) != _publication_identity(staged):
+            raise RuntimeError("generated ledger target changed during publication")
+        os.fsync(parent_descriptor)
+        _assert_directory_identity(
+            root_descriptor,
+            OUTPUT_PATH.parent,
+            parent_identity,
+            "generated ledger",
+        )
+        _assert_root_identity(root, root_identity)
+    finally:
+        if output_descriptor >= 0:
+            os.close(output_descriptor)
+        if temporary_name is not None and parent_descriptor >= 0 and not published:
+            try:
+                os.unlink(temporary_name, dir_fd=parent_descriptor)
+            except FileNotFoundError:
+                pass
+        if parent_descriptor >= 0:
             os.close(parent_descriptor)
-    except BaseException:
-        try:
-            os.close(descriptor)
-        except OSError:
-            pass
-        temporary.unlink(missing_ok=True)
-        raise
+        os.close(root_descriptor)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -339,11 +713,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         content = render()
         if arguments.check:
-            target = REPOSITORY_ROOT / OUTPUT_PATH
             if (
-                target.is_symlink()
-                or not target.is_file()
-                or target.read_bytes() != content
+                _regular_file(REPOSITORY_ROOT, OUTPUT_PATH, "generated ledger")
+                != content
             ):
                 raise RuntimeError("generated V3 ledger drift")
             mode = "check"
