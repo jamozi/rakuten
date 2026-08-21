@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 import pickle
 
@@ -768,6 +768,33 @@ def _clock() -> object:
     return lambda: next(values)
 
 
+def _backward_clock() -> object:
+    values = iter((STARTED, STARTED - timedelta(seconds=1)))
+    return lambda: next(values)
+
+
+def _invalid_finished_clock() -> object:
+    values = iter((STARTED, FINISHED.replace(tzinfo=None)))
+    return lambda: next(values)
+
+
+class _TerminalClockFailure(BaseException):
+    pass
+
+
+def _raising_finished_clock() -> object:
+    first = True
+
+    def sample() -> datetime:
+        nonlocal first
+        if first:
+            first = False
+            return STARTED
+        raise _TerminalClockFailure
+
+    return sample
+
+
 def test_service_calls_transport_once_writes_once_and_marks_nonformal() -> None:
     request = _item_request()
     reader = _Reader()
@@ -808,6 +835,221 @@ def test_service_calls_transport_once_writes_once_and_marks_nonformal() -> None:
     assert captured.value.code is RakutenOwnerLocalFailureCode.REQUEST_ALREADY_ATTEMPTED
     assert transport.calls == 1
     assert len(writer.writes) == 1
+
+
+def test_service_clamps_backward_wall_clock_and_writes_success_once() -> None:
+    request = _item_request()
+    result = _item_result(request)
+    transport = _Transport(result)
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=transport,
+        result_writer=writer,
+        clock=_backward_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.started_at == envelope.finished_at == STARTED
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.provider_result is result
+    assert envelope.request_count == 1
+    assert transport.calls == 1
+    assert writer.writes == [envelope]
+    assert "synthetic-access" not in json.dumps(
+        envelope.as_result_object(), sort_keys=True
+    )
+
+
+def test_service_clamps_backward_wall_clock_and_preserves_provider_failure() -> None:
+    request = _item_request()
+    failure = RakutenOwnerLocalFailure(
+        code=RakutenOwnerLocalFailureCode.HTTP_503,
+        disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
+        http_status=503,
+        body_byte_count=31,
+        response_sha256="d" * 64,
+    )
+    transport = _Transport(failure)
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=transport,
+        result_writer=writer,
+        clock=_backward_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.started_at == envelope.finished_at == STARTED
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.HTTP_503
+    assert (
+        envelope.failure.disposition
+        is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    )
+    assert envelope.failure.http_status == 503
+    assert envelope.failure.body_byte_count == 31
+    assert envelope.failure.response_sha256 == "d" * 64
+    assert envelope.request_count == 1
+    assert transport.calls == 1
+    assert writer.writes == [envelope]
+    persisted_object = envelope.as_result_object()
+    assert all(
+        persisted_object[field] is None
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    )
+    assert persisted_object["items"] is None
+    assert persisted_object["products"] is None
+    assert "synthetic-access" not in json.dumps(persisted_object, sort_keys=True)
+
+
+def test_service_invalid_finished_clock_uses_fixed_failure_and_does_not_write() -> None:
+    request = _item_request()
+    transport = _Transport(_item_result(request))
+    writer = _Writer()
+    service = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=transport,
+        result_writer=writer,
+        clock=_invalid_finished_clock(),  # type: ignore[arg-type]
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as captured:
+        service.run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert captured.value.code is RakutenOwnerLocalFailureCode.INVALID_ARGUMENT
+    assert transport.calls == 1
+    assert writer.preflights == 1
+    assert writer.writes == []
+
+
+def test_service_terminal_clock_exception_preserves_success_and_writes_once() -> None:
+    request = _item_request()
+    result = _item_result(request)
+    reader = _Reader()
+    transport = _Transport(result)
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=reader,
+        transport=transport,
+        result_writer=writer,
+        clock=_raising_finished_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.started_at == envelope.finished_at == STARTED
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.provider_result is result
+    assert envelope.disposition is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    assert envelope.request_count == 1
+    assert reader.calls == transport.calls == writer.preflights == 1
+    assert writer.writes == [envelope]
+    persisted = envelope.as_result_object()
+    assert persisted["http_status"] == result.http_status
+    assert persisted["body_byte_count"] == result.body_byte_count
+    assert persisted["response_sha256"] == result.response_sha256
+    serialized = json.dumps(persisted, sort_keys=True)
+    for credential_value in (
+        "synthetic-application",
+        "synthetic-access",
+        "synthetic-affiliate",
+    ):
+        assert credential_value not in serialized
+
+
+def test_service_terminal_clock_exception_preserves_received_failure() -> None:
+    request = _item_request()
+    failure = RakutenOwnerLocalFailure(
+        code=RakutenOwnerLocalFailureCode.HTTP_503,
+        disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
+        http_status=503,
+        body_byte_count=31,
+        response_sha256="d" * 64,
+    )
+    reader = _Reader()
+    transport = _Transport(failure)
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=reader,
+        transport=transport,
+        result_writer=writer,
+        clock=_raising_finished_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.started_at == envelope.finished_at == STARTED
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.HTTP_503
+    assert envelope.disposition is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+    assert envelope.request_count == 1
+    assert envelope.failure.http_status == 503
+    assert envelope.failure.body_byte_count == 31
+    assert envelope.failure.response_sha256 == "d" * 64
+    assert reader.calls == transport.calls == writer.preflights == 1
+    assert writer.writes == [envelope]
+    persisted = envelope.as_result_object()
+    assert all(
+        persisted[field] is None
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    )
+    assert persisted["items"] is None
+    assert persisted["products"] is None
+    serialized = json.dumps(persisted, sort_keys=True)
+    for credential_value in (
+        "synthetic-application",
+        "synthetic-access",
+        "synthetic-affiliate",
+    ):
+        assert credential_value not in serialized
+
+
+def test_service_terminal_clock_exception_preserves_ambiguous_failure() -> None:
+    request = _item_request()
+    failure = RakutenOwnerLocalFailure(
+        code=RakutenOwnerLocalFailureCode.TIMEOUT,
+        disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+    )
+    reader = _Reader()
+    transport = _Transport(failure)
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=reader,
+        transport=transport,
+        result_writer=writer,
+        clock=_raising_finished_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.started_at == envelope.finished_at == STARTED
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.TIMEOUT
+    assert envelope.disposition is RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS
+    assert envelope.request_count == 1
+    assert envelope.failure.http_status is None
+    assert envelope.failure.body_byte_count is None
+    assert envelope.failure.response_sha256 is None
+    assert reader.calls == transport.calls == writer.preflights == 1
+    assert writer.writes == [envelope]
+    persisted = envelope.as_result_object()
+    assert all(
+        persisted[field] is None
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    )
+    assert persisted["items"] is None
+    assert persisted["products"] is None
+    serialized = json.dumps(persisted, sort_keys=True)
+    for credential_value in (
+        "synthetic-application",
+        "synthetic-access",
+        "synthetic-affiliate",
+    ):
+        assert credential_value not in serialized
 
 
 @pytest.mark.parametrize(
@@ -1606,6 +1848,44 @@ def test_service_preserves_ambiguous_one_attempt_as_a_written_failure() -> None:
         persisted[field] is None
         for field in ("count", "page", "first", "last", "hits", "pageCount")
     )
+
+
+def test_service_clamps_backward_wall_clock_and_preserves_ambiguous_attempt() -> None:
+    request = _item_request()
+    failure = RakutenOwnerLocalFailure(
+        code=RakutenOwnerLocalFailureCode.TIMEOUT,
+        disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+    )
+    transport = _Transport(failure)
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=transport,
+        result_writer=writer,
+        clock=_backward_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    assert envelope.started_at == envelope.finished_at == STARTED
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.TIMEOUT
+    assert envelope.disposition is RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS
+    assert envelope.request_count == 1
+    assert envelope.failure.http_status is None
+    assert envelope.failure.body_byte_count is None
+    assert envelope.failure.response_sha256 is None
+    assert transport.calls == 1
+    assert writer.writes == [envelope]
+    persisted_object = envelope.as_result_object()
+    assert all(
+        persisted_object[field] is None
+        for field in ("count", "page", "first", "last", "hits", "pageCount")
+    )
+    assert persisted_object["items"] is None
+    assert persisted_object["products"] is None
+    assert "synthetic-access" not in json.dumps(persisted_object, sort_keys=True)
 
 
 def test_fixed_smoke_is_one_page_standard_for_both_apis() -> None:

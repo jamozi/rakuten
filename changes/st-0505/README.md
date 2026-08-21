@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/af69bc9b7153d14ea00739b9479001dca20652844b105f75fc88a3187ac372b8/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/7c0e5799349e95793dbdb49b7cde89b2e16429e9d8fad171e9348f3487882a06/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`90d40c86af676cc0d2c959ca5aaa1615cc95a52102b64d54332c507599e84931`,
+`cb5528a0aa268f066300cb9dce90cc2fc99a348c26afbed482d02eabeb1e2ef8`,
 and install-stage SHA-256
-`18af67a14afc33a014733d1d7e79e1bc8a217b57c93b0c3411f38e54c8c4c8d5`.
+`d94f0ba7257cb2e75d0fb1942f6389aa809214485e94d5fab061233cd0a991d7`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -309,7 +309,14 @@ credential-reflection failures. Result files are compact UTF-8 JSON with
 lexicographically sorted keys and one trailing LF. Adding `first` and `last`
 completes the repository V1 contract while runtime install and execution evidence
 remain `NOT_EXECUTED`; there is no deployed-result migration or compatibility
-claim. Every returned Item record requires a
+claim. If exact `timezone.utc`, fold-0 start and terminal wall-clock values show
+the terminal observation earlier than `started_at`, `finished_at` is clamped to
+`started_at`. If terminal clock sampling raises after the attempt, the already
+sampled `started_at` is reused. Success, received provider failure, and
+outcome-ambiguous evidence therefore retain their original disposition, request
+count, and response metadata and still reach the one bounded result write.
+Invalid values returned by the clock are not compared or clamped and retain the
+existing fixed `INVALID_ARGUMENT` result-envelope validation. Every returned Item record requires a
 non-null, non-empty, bounded UTF-8 `itemCode` and `itemName`; every returned
 Product record requires the same shape for `productCode` and `productId`.
 `shopCode`, `shopName`, and `productName` retain their existing optional and

@@ -226,6 +226,10 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "exact_object_keys": list(generator.EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
         "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
         "success_summary": "VALIDATED_INTEGER_VALUES",
+        "terminal_time": (
+            "CLAMP_EXACT_UTC_BACKWARD_OR_TERMINAL_SAMPLE_EXCEPTION_TO_STARTED_"
+            "AT_OTHERWISE_VALIDATE"
+        ),
         "failure_summary": "ALL_SIX_KEYS_NULL",
         "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
         "compatibility": (

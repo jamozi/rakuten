@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "af69bc9b7153d14ea00739b9479001dca20652844b105f75fc88a3187ac372b8"
+    "7c0e5799349e95793dbdb49b7cde89b2e16429e9d8fad171e9348f3487882a06"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "90d40c86af676cc0d2c959ca5aaa1615cc95a52102b64d54332c507599e84931"
+    "cb5528a0aa268f066300cb9dce90cc2fc99a348c26afbed482d02eabeb1e2ef8"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "18af67a14afc33a014733d1d7e79e1bc8a217b57c93b0c3411f38e54c8c4c8d5"
+    "d94f0ba7257cb2e75d0fb1942f6389aa809214485e94d5fab061233cd0a991d7"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
     "129f7f01fb5bafc13ddd54d39bacdc0d28975478ebff8a84bf1b57c37f90c0e5"
@@ -1556,6 +1556,10 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "self.result_writer.preflight()",
             "self.credential_reader.read()",
             "self.transport.execute(",
+            "observed_finished_at = self.clock()",
+            "except BaseException:",
+            "observed_finished_at = started_at",
+            "finished_at = _normalized_finished_at(started_at, observed_finished_at)",
             "self.result_writer.write(envelope)",
             "REQUEST_ALREADY_ATTEMPTED",
         ),
@@ -2281,6 +2285,10 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "exact_object_keys": list(EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
             "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
             "success_summary": "VALIDATED_INTEGER_VALUES",
+            "terminal_time": (
+                "CLAMP_EXACT_UTC_BACKWARD_OR_TERMINAL_SAMPLE_EXCEPTION_TO_STARTED_"
+                "AT_OTHERWISE_VALIDATE"
+            ),
             "failure_summary": "ALL_SIX_KEYS_NULL",
             "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
             "compatibility": (

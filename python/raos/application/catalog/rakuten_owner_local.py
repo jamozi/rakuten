@@ -43,6 +43,23 @@ def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _normalized_finished_at(
+    started_at: datetime,
+    observed_finished_at: datetime,
+) -> datetime:
+    if (
+        type(started_at) is datetime
+        and started_at.tzinfo is timezone.utc
+        and started_at.fold == 0
+        and type(observed_finished_at) is datetime
+        and observed_finished_at.tzinfo is timezone.utc
+        and observed_finished_at.fold == 0
+        and observed_finished_at < started_at
+    ):
+        return started_at
+    return observed_finished_at
+
+
 def _request_hits(request: RakutenOwnerLocalRequest) -> int:
     if type(request) is RakutenOwnerLocalItemSearchRequest:
         return request.policy.hits
@@ -253,7 +270,14 @@ class RakutenOwnerLocalService:
                         )
                         provider_result = None
 
-        finished_at = self.clock()
+        # Wall time may move backwards or terminal sampling may fail after the one
+        # provider attempt. Keep the closed result schema and preserve every
+        # post-request outcome through the single bounded result write.
+        try:
+            observed_finished_at = self.clock()
+        except BaseException:
+            observed_finished_at = started_at
+        finished_at = _normalized_finished_at(started_at, observed_finished_at)
         if failure is None:
             if provider_result is None:
                 fail_owner_local(
