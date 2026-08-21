@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import hashlib
-import io
 import json
 import os
 from pathlib import Path
 import shlex
 import subprocess
+import sys
 
 import pytest
 
@@ -136,15 +136,87 @@ def test_generator_rejects_reviewed_blob_hash_drift(
 def test_batch_blob_parser_rejects_truncated_and_trailing_responses() -> None:
     object_id = "1" * 40
     valid = f"{object_id} blob 3\n".encode() + b"abc\n"
-    assert generator._parse_git_batch_blob(io.BytesIO(valid), object_id, 3) == b"abc"
+    assert generator._parse_git_batch_blob(valid, object_id, 3) == b"abc"
 
     truncated = f"{object_id} blob 3\n".encode() + b"ab"
     with pytest.raises(RuntimeError, match="truncated"):
-        generator._parse_git_batch_blob(io.BytesIO(truncated), object_id, 3)
+        generator._parse_git_batch_blob(truncated, object_id, 3)
 
     trailing = valid + b"unexpected"
     with pytest.raises(RuntimeError, match="trailing data"):
-        generator._parse_git_batch_blob(io.BytesIO(trailing), object_id, 3)
+        generator._parse_git_batch_blob(trailing, object_id, 3)
+
+
+@pytest.mark.parametrize(
+    "response",
+    [
+        pytest.param(b"1" * 20, id="partial-header"),
+        pytest.param(f"{'1' * 40} blob 3\n".encode() + b"a", id="partial-content"),
+        pytest.param(
+            f"{'1' * 40} blob 3\n".encode() + b"abc\n",
+            id="post-delimiter-no-eof",
+        ),
+    ],
+)
+def test_git_blob_reader_times_out_and_reaps_stalled_fake_git(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    response: bytes,
+) -> None:
+    fake_git = tmp_path / "stalled_git.py"
+    fake_git.write_text(
+        "import os\n"
+        "import time\n"
+        "os.read(0, 4096)\n"
+        f"os.write(1, {response!r})\n"
+        "time.sleep(2)\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        generator,
+        "_trusted_git_command",
+        lambda *_arguments: [sys.executable, os.fspath(fake_git)],
+    )
+    monkeypatch.setattr(generator, "GIT_TIMEOUT_SECONDS", 0.1)
+    created: list[subprocess.Popen[bytes]] = []
+    actual_popen = subprocess.Popen
+
+    def recording_popen(
+        command: list[str], **kwargs: object
+    ) -> subprocess.Popen[bytes]:
+        process = actual_popen(command, **kwargs)  # type: ignore[arg-type]
+        created.append(process)
+        return process
+
+    monkeypatch.setattr(generator.subprocess, "Popen", recording_popen)
+    with pytest.raises(RuntimeError, match="timed out"):
+        generator._read_git_blob(tmp_path, "1" * 40, 3)
+
+    assert len(created) == 1
+    assert created[0].poll() is not None
+    assert created[0].stdin is not None and created[0].stdin.closed
+    assert created[0].stdout is not None and created[0].stdout.closed
+
+
+def test_git_blob_reader_attempts_each_pipe_close_after_an_earlier_failure() -> None:
+    close_calls: list[str] = []
+
+    class CloseProbe:
+        def __init__(self, label: str, *, fail: bool) -> None:
+            self.label = label
+            self.fail = fail
+
+        def close(self) -> None:
+            close_calls.append(self.label)
+            if self.fail:
+                raise ValueError("simulated closed descriptor")
+
+    generator._close_process_pipes(
+        CloseProbe("stdin", fail=True),
+        CloseProbe("stdout", fail=False),
+    )
+
+    assert close_calls == ["stdin", "stdout"]
 
 
 def test_git_blob_rejects_oversized_object_before_content_read(

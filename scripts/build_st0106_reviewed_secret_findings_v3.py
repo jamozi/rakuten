@@ -9,9 +9,11 @@ import hashlib
 import json
 import os
 import re
+import selectors
 import stat
 import subprocess
 import sys
+import time
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Final
@@ -54,6 +56,10 @@ MAX_INPUT_BYTES: Final = 2 * 1024 * 1024
 READ_CHUNK_BYTES: Final = 64 * 1024
 MAX_GIT_HEADER_BYTES: Final = 256
 TEMPORARY_ATTEMPTS: Final = 32
+PROCESS_REAP_TIMEOUT_SECONDS: Final = 5.0
+NONBLOCKING_READ_RETRY_ERRORS: Final = (BlockingIOError, InterruptedError)
+GIT_READER_ERRORS: Final = (OSError, RuntimeError, ValueError)
+PIPE_CLOSE_ERRORS: Final = (OSError, ValueError)
 OBJECT_ID: Final = re.compile(r"^[0-9a-f]{40}$")
 SHA256: Final = re.compile(r"^[0-9a-f]{64}$")
 EXPECTED_DOCUMENT: Final = {
@@ -358,32 +364,91 @@ def _git_blob_metadata(root: Path, object_id: str) -> int:
     return size
 
 
-def _read_exact_stream(stream: Any, size: int) -> bytes:
-    chunks: list[bytes] = []
-    remaining = size
-    while remaining:
-        chunk = stream.read(min(READ_CHUNK_BYTES, remaining))
-        if not chunk:
-            raise RuntimeError("reviewed Git blob response is truncated")
-        chunks.append(chunk)
-        remaining -= len(chunk)
-    return b"".join(chunks)
-
-
-def _parse_git_batch_blob(stream: Any, object_id: str, expected_size: int) -> bytes:
-    header = stream.readline(MAX_GIT_HEADER_BYTES + 1)
+def _parse_git_batch_blob(response: bytes, object_id: str, expected_size: int) -> bytes:
     expected_header = f"{object_id} blob {expected_size}\n".encode("ascii")
-    if len(header) > MAX_GIT_HEADER_BYTES or header != expected_header:
+    if len(expected_header) > MAX_GIT_HEADER_BYTES:
+        raise RuntimeError("reviewed Git blob response header is oversized")
+    if len(response) < len(expected_header):
+        if expected_header.startswith(response):
+            raise RuntimeError("reviewed Git blob response is truncated")
         raise RuntimeError("reviewed Git blob response header differs")
-    content = _read_exact_stream(stream, expected_size)
-    if stream.read(1) != b"\n":
+    if response[: len(expected_header)] != expected_header:
+        raise RuntimeError("reviewed Git blob response header differs")
+    payload = response[len(expected_header) :]
+    if len(payload) < expected_size:
+        raise RuntimeError("reviewed Git blob response is truncated")
+    content = payload[:expected_size]
+    suffix = payload[expected_size:]
+    if not suffix or suffix[:1] != b"\n":
         raise RuntimeError("reviewed Git blob response delimiter differs")
-    if stream.read(1) != b"":
+    if len(suffix) != 1:
         raise RuntimeError("reviewed Git blob response has trailing data")
     return content
 
 
+def _remaining_git_time(deadline: float) -> float:
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise RuntimeError("reviewed Git blob reader timed out")
+    return remaining
+
+
+def _read_git_response(stream: Any, maximum_size: int, deadline: float) -> bytes:
+    descriptor = stream.fileno()
+    os.set_blocking(descriptor, False)
+    response = bytearray()
+    selector = selectors.DefaultSelector()
+    try:
+        selector.register(descriptor, selectors.EVENT_READ)
+        while True:
+            events = selector.select(_remaining_git_time(deadline))
+            if not events:
+                _remaining_git_time(deadline)
+                continue
+            try:
+                chunk = os.read(
+                    descriptor,
+                    min(READ_CHUNK_BYTES, maximum_size + 1 - len(response)),
+                )
+            except NONBLOCKING_READ_RETRY_ERRORS:
+                continue
+            if not chunk:
+                return bytes(response)
+            response.extend(chunk)
+            if len(response) > maximum_size:
+                raise RuntimeError("reviewed Git blob response has trailing data")
+    finally:
+        selector.close()
+
+
+def _kill_and_reap_git_process(process: subprocess.Popen[bytes]) -> None:
+    if process.poll() is None:
+        try:
+            process.kill()
+        except OSError as exc:
+            if process.poll() is None:
+                raise RuntimeError(
+                    "reviewed Git blob reader could not be killed"
+                ) from exc
+    try:
+        process.wait(timeout=PROCESS_REAP_TIMEOUT_SECONDS)
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError("reviewed Git blob reader could not be reaped") from exc
+
+
+def _close_process_pipes(*streams: Any | None) -> None:
+    for stream in streams:
+        if stream is None:
+            continue
+        try:
+            stream.close()
+        except PIPE_CLOSE_ERRORS:
+            pass
+
+
 def _read_git_blob(root: Path, object_id: str, expected_size: int) -> bytes:
+    if expected_size < 1 or expected_size > MAX_INPUT_BYTES:
+        raise RuntimeError("reviewed Git blob declared size is invalid")
     try:
         process = subprocess.Popen(
             _trusted_git_command("cat-file", "--batch"),
@@ -395,29 +460,31 @@ def _read_git_blob(root: Path, object_id: str, expected_size: int) -> bytes:
         )
     except OSError as exc:
         raise RuntimeError("reviewed Git blob reader failed to start") from exc
+    deadline = time.monotonic() + GIT_TIMEOUT_SECONDS
     try:
         if process.stdin is None or process.stdout is None:
             raise RuntimeError("reviewed Git blob reader pipes are unavailable")
         process.stdin.write(object_id.encode("ascii") + b"\n")
         process.stdin.close()
-        content = _parse_git_batch_blob(process.stdout, object_id, expected_size)
+        expected_header = f"{object_id} blob {expected_size}\n".encode("ascii")
+        response = _read_git_response(
+            process.stdout,
+            len(expected_header) + expected_size + 1,
+            deadline,
+        )
+        content = _parse_git_batch_blob(response, object_id, expected_size)
         try:
-            return_code = process.wait(timeout=GIT_TIMEOUT_SECONDS)
+            return_code = process.wait(timeout=_remaining_git_time(deadline))
         except subprocess.TimeoutExpired as exc:
             raise RuntimeError("reviewed Git blob reader timed out") from exc
         if return_code != 0:
             raise RuntimeError("reviewed Git blob reader failed")
         return content
-    except OSError, RuntimeError:
-        if process.poll() is None:
-            process.kill()
-        process.wait()
+    except GIT_READER_ERRORS:
+        _kill_and_reap_git_process(process)
         raise
     finally:
-        if process.stdin is not None and not process.stdin.closed:
-            process.stdin.close()
-        if process.stdout is not None:
-            process.stdout.close()
+        _close_process_pipes(process.stdin, process.stdout)
 
 
 def _git_blob(root: Path, object_id: str, expected_size: int) -> bytes:
