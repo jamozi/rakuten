@@ -204,7 +204,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/7c0e5799349e95793dbdb49b7cde89b2e16429e9d8fad171e9348f3487882a06/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/496b79fa0a3a45201d2af2e25a52eb832d50b7dcc17caf4246a35d7b640ba518/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -214,9 +214,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`cb5528a0aa268f066300cb9dce90cc2fc99a348c26afbed482d02eabeb1e2ef8`,
+`ea3bc2cc30441d463a90772299eb0ab8575b21661b60d389287f7807df7c2942`,
 and install-stage SHA-256
-`d94f0ba7257cb2e75d0fb1942f6389aa809214485e94d5fab061233cd0a991d7`.
+`28b37bb5cf924cb7ecd31e5f493598b4fd855abcfdd4a80e348874b48e0df927`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -291,6 +291,17 @@ does not unambiguously name its
 format-version-2 collection envelope, so the adapter recognizes only the two
 reviewed literal envelope names documented in its tests and treats any other
 shape as schema drift; this does not permit an arbitrary schema fallback.
+
+The existing 20-second per-operation socket timeout remains an upper bound.
+After the sole GET is sent, a separate monotonic 20-second absolute deadline
+covers response headers through the complete Content-Length or chunked body,
+or through EOF for a close-delimited body. The response socket recomputes the
+positive remaining budget before every raw `recv_into`, including header,
+chunk-header, trailer, and body parsing, and the bounded body loop uses only
+`HTTPResponse.read1`. Continuous trickling therefore cannot refresh the
+budget indefinitely. Deadline expiry is the fixed sanitized `TIMEOUT` with
+`OUTCOME_AMBIGUOUS` and `request_count=1`; no partial body, status, byte count,
+digest, normalized record, or credential-bearing material is persisted.
 
 Results are atomically and exclusively published mode `0600` under
 `.secrets/rakuten-owner-local/results/<UTC-run-id>.json`. They contain the

@@ -9,7 +9,7 @@ from pathlib import Path
 import socket
 import ssl
 import stat
-from typing import cast
+from typing import Any, cast
 from urllib.parse import parse_qs, urlsplit
 
 import pytest
@@ -137,6 +137,98 @@ class _FakeResponse:
         self._offset = min(len(self._body), self._offset + amount)
         return self._body[start : self._offset]
 
+    def read1(self, amount: int = -1) -> bytes:
+        return self.read(amount)
+
+
+class _FakeMonotonic:
+    def __init__(self, initial: float = 100.0) -> None:
+        self.now = initial
+
+    def __call__(self) -> float:
+        return self.now
+
+    def advance(self, seconds: float) -> None:
+        self.now += seconds
+
+
+class _TimedResponse(_FakeResponse):
+    def __init__(
+        self,
+        body: bytes,
+        clock: _FakeMonotonic,
+        *,
+        seconds_per_read: float,
+        maximum_read_size: int,
+        content_length: str | None = None,
+        transfer_encoding: str | None = None,
+    ) -> None:
+        super().__init__(
+            body,
+            content_length=content_length,
+            transfer_encoding=transfer_encoding,
+        )
+        self._clock = clock
+        self._seconds_per_read = seconds_per_read
+        self._maximum_read_size = maximum_read_size
+        self.read1_count = 0
+
+    def read1(self, amount: int = -1) -> bytes:
+        self.read1_count += 1
+        if amount < 0:
+            amount = self._maximum_read_size
+        chunk = super().read1(min(amount, self._maximum_read_size))
+        if chunk:
+            self._clock.advance(self._seconds_per_read)
+        return chunk
+
+
+class _SocketTimeoutResponse(_FakeResponse):
+    def read1(self, amount: int = -1) -> bytes:
+        raise socket.timeout("untrusted timeout detail")
+
+
+class _TricklingSocket:
+    def __init__(self, clock: _FakeMonotonic) -> None:
+        self.clock = clock
+        self.timeouts: list[float] = []
+        self.recv_count = 0
+        self.closed = False
+
+    def settimeout(self, seconds: float) -> None:
+        self.timeouts.append(seconds)
+
+    def recv_into(self, buffer: object) -> int:
+        self.recv_count += 1
+        self.clock.advance(7.0)
+        memoryview(buffer)[0] = ord("a")
+        return 1
+
+    def close(self) -> None:
+        self.closed = True
+
+
+class _ScriptedSocket:
+    def __init__(self, payload: bytes) -> None:
+        self.payload = payload
+        self.offset = 0
+        self.timeouts: list[float] = []
+        self.closed = False
+
+    def settimeout(self, seconds: float) -> None:
+        self.timeouts.append(seconds)
+
+    def recv_into(self, buffer: object) -> int:
+        target = memoryview(buffer)
+        remaining = self.payload[self.offset :]
+        amount = min(len(target), len(remaining))
+        target[:amount] = remaining[:amount]
+        self.offset += amount
+        return amount
+
+    def close(self) -> None:
+        self.closed = True
+
 
 class _FakeConnection:
     def __init__(
@@ -151,6 +243,7 @@ class _FakeConnection:
         self.request_count = 0
         self.closed = False
         self.read_timeout: int | None = None
+        self.response_deadline: object | None = None
         self.method: str | None = None
         self.target: str | None = None
         self.headers: dict[str, str] | None = None
@@ -160,6 +253,9 @@ class _FakeConnection:
 
     def set_read_timeout(self, seconds: int) -> None:
         self.read_timeout = seconds
+
+    def set_response_read_deadline(self, deadline: object) -> None:
+        self.response_deadline = deadline
 
     def request(self, method: str, path: str, headers: dict[str, str]) -> None:
         self.request_count += 1
@@ -627,6 +723,7 @@ def test_item_transport_exact_placement_and_single_call(
     assert connection.connect_count == 1
     assert connection.closed
     assert connection.read_timeout == 20
+    assert connection.response_deadline is not None
     assert factory.open_count == 1
     assert factory.arguments is not None
     assert factory.arguments["host"] == "openapi.rakuten.co.jp"
@@ -659,6 +756,207 @@ def test_item_transport_exact_placement_and_single_call(
         )
     assert repeated.value.code is RakutenOwnerLocalFailureCode.REQUEST_ALREADY_ATTEMPTED
     assert connection.request_count == 1
+
+
+def _framed_timed_response(
+    body: bytes,
+    clock: _FakeMonotonic,
+    framing: str,
+    *,
+    seconds_per_read: float,
+    maximum_read_size: int,
+) -> _TimedResponse:
+    if framing == "content-length":
+        return _TimedResponse(
+            body,
+            clock,
+            seconds_per_read=seconds_per_read,
+            maximum_read_size=maximum_read_size,
+            content_length=str(len(body)),
+        )
+    if framing == "chunked":
+        return _TimedResponse(
+            body,
+            clock,
+            seconds_per_read=seconds_per_read,
+            maximum_read_size=maximum_read_size,
+            transfer_encoding="chunked",
+        )
+    assert framing == "close-delimited"
+    return _TimedResponse(
+        body,
+        clock,
+        seconds_per_read=seconds_per_read,
+        maximum_read_size=maximum_read_size,
+    )
+
+
+@pytest.mark.parametrize("framing", ["content-length", "chunked", "close-delimited"])
+def test_transport_total_deadline_rejects_every_trickling_framing_without_retry(
+    monkeypatch: pytest.MonkeyPatch, framing: str
+) -> None:
+    body = _item_body()
+    clock = _FakeMonotonic()
+    response = _framed_timed_response(
+        body,
+        clock,
+        framing,
+        seconds_per_read=7.0,
+        maximum_read_size=1,
+    )
+    connection = _FakeConnection(response)
+    factory = _FakeFactory(connection)
+    _clean_transport_environment(monkeypatch)
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.ITEM_SEARCH)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        DirectRakutenOwnerLocalTransport(factory, monotonic_clock=clock).execute(
+            api_definition(request.api), request, _credentials()
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.TIMEOUT
+    assert (
+        failure.value.disposition
+        is RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS
+    )
+    assert failure.value.api is request.api
+    assert failure.value.request_fingerprint == request.fingerprint
+    assert failure.value.request_count == 1
+    assert failure.value.http_status is None
+    assert failure.value.body_byte_count is None
+    assert failure.value.response_sha256 is None
+    assert str(failure.value) == "TIMEOUT"
+    assert "fixture-key" not in repr(failure.value)
+    assert response.read1_count == 3
+    assert connection.request_count == factory.open_count == 1
+    assert connection.closed
+
+
+def test_transport_total_deadline_allows_complete_normal_response(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    body = _item_body()
+    clock = _FakeMonotonic()
+    response = _framed_timed_response(
+        body,
+        clock,
+        "content-length",
+        seconds_per_read=1.0,
+        maximum_read_size=len(body),
+    )
+    connection = _FakeConnection(response)
+    factory = _FakeFactory(connection)
+    _clean_transport_environment(monkeypatch)
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.ITEM_SEARCH)
+
+    result = DirectRakutenOwnerLocalTransport(factory, monotonic_clock=clock).execute(
+        api_definition(request.api), request, _credentials()
+    )
+
+    assert result.response_sha256 == hashlib.sha256(body).hexdigest()
+    assert result.body_byte_count == len(body)
+    assert response.read1_count == 2
+    assert connection.request_count == factory.open_count == 1
+    assert connection.closed
+
+
+def test_transport_socket_timeout_after_request_is_timeout_ambiguous(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    response = _SocketTimeoutResponse(
+        _item_body(),
+        content_length=str(len(_item_body())),
+    )
+    connection = _FakeConnection(response)
+    factory = _FakeFactory(connection)
+    _clean_transport_environment(monkeypatch)
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.ITEM_SEARCH)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        DirectRakutenOwnerLocalTransport(factory).execute(
+            api_definition(request.api), request, _credentials()
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.TIMEOUT
+    assert (
+        failure.value.disposition
+        is RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS
+    )
+    assert failure.value.api is request.api
+    assert failure.value.request_fingerprint == request.fingerprint
+    assert failure.value.request_count == 1
+    assert failure.value.http_status is None
+    assert failure.value.body_byte_count is None
+    assert failure.value.response_sha256 is None
+    assert str(failure.value) == "TIMEOUT"
+    assert "untrusted timeout detail" not in repr(failure.value)
+    assert connection.request_count == factory.open_count == 1
+    assert connection.closed
+
+
+def test_raw_response_reader_recomputes_deadline_inside_header_line_reads() -> None:
+    clock = _FakeMonotonic()
+    source = _TricklingSocket(clock)
+    deadline = adapter._ResponseReadDeadline.start(clock)
+    connection = adapter._DeadlineSocketProxy(cast(socket.socket, source), deadline)
+    reader = connection.makefile("rb")
+
+    try:
+        with pytest.raises(RakutenOwnerLocalFailure) as failure:
+            reader.readline(64 * 1024)
+    finally:
+        reader.close()
+        connection.force_close()
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.TIMEOUT
+    assert (
+        failure.value.disposition
+        is RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS
+    )
+    assert source.recv_count == 3
+    assert source.timeouts == [20.0, 13.0, 6.0]
+    assert source.closed
+
+
+def test_deadline_socket_supports_real_http_response_and_forced_close() -> None:
+    body = b"{}"
+    wire = (
+        b"HTTP/1.1 200 OK\r\n"
+        b"Content-Type: application/json\r\n"
+        b"Content-Length: 2\r\n"
+        b"\r\n" + body
+    )
+    clock = _FakeMonotonic()
+    source = _ScriptedSocket(wire)
+    deadline = adapter._ResponseReadDeadline.start(clock)
+    connection = adapter._DeadlineSocketProxy(cast(socket.socket, source), deadline)
+    response = adapter.http.client.HTTPResponse(cast(Any, connection), method="GET")
+
+    try:
+        response.begin()
+        assert response.status == 200
+        assert adapter._read_bounded_response(response, deadline) == body
+    finally:
+        connection.force_close()
+
+    assert source.offset == len(wire)
+    assert source.timeouts
+    assert source.closed
+
+
+def test_deadline_socket_defers_http_close_until_open_response_file_closes() -> None:
+    clock = _FakeMonotonic()
+    source = _ScriptedSocket(b"body")
+    deadline = adapter._ResponseReadDeadline.start(clock)
+    connection = adapter._DeadlineSocketProxy(cast(socket.socket, source), deadline)
+    reader = connection.makefile("rb")
+
+    connection.close()
+    assert not source.closed
+    assert reader.read1(4) == b"body"
+    reader.close()
+
+    assert source.closed
 
 
 @pytest.mark.parametrize("collection", ["products", "items"])
@@ -1657,6 +1955,80 @@ class _StaticResultTransport:
 
     def execute(self, *_arguments: object) -> RakutenOwnerLocalProviderResult:
         return self._result
+
+
+class _CountingResultWriter:
+    def __init__(self, delegate: OwnerPrivateRakutenOwnerLocalResultWriter) -> None:
+        self.delegate = delegate
+        self.preflight_count = 0
+        self.write_count = 0
+
+    def preflight(self) -> None:
+        self.preflight_count += 1
+        self.delegate.preflight()
+
+    def write(self, envelope: RakutenOwnerLocalResultEnvelope) -> None:
+        self.write_count += 1
+        self.delegate.write(envelope)
+
+
+def test_total_deadline_persists_one_sanitized_ambiguous_result(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = _repository(tmp_path)
+    OwnerPrivateRakutenOwnerLocalCredentialStore(root).setup(_credentials())
+    body = _item_body(itemName="untrusted fixture body")
+    clock = _FakeMonotonic()
+    response = _framed_timed_response(
+        body,
+        clock,
+        "content-length",
+        seconds_per_read=7.0,
+        maximum_read_size=1,
+    )
+    connection = _FakeConnection(response)
+    factory = _FakeFactory(connection)
+    transport = DirectRakutenOwnerLocalTransport(factory, monotonic_clock=clock)
+    writer = _CountingResultWriter(OwnerPrivateRakutenOwnerLocalResultWriter(root))
+    _clean_transport_environment(monkeypatch)
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.ITEM_SEARCH)
+    run_id = "20260822T010203.000000Z-0123456789abcdef0123456789abcdef"
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=OwnerPrivateRakutenOwnerLocalCredentialReader(root),
+        transport=transport,
+        result_writer=writer,
+    ).run(request.api, request, run_id=run_id)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.TIMEOUT
+    assert envelope.disposition is RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS
+    assert envelope.request_count == 1
+    assert envelope.failure.http_status is None
+    assert envelope.failure.body_byte_count is None
+    assert envelope.failure.response_sha256 is None
+    assert connection.request_count == factory.open_count == 1
+    assert writer.preflight_count == writer.write_count == 1
+    path = root / f".secrets/rakuten-owner-local/results/{run_id}.json"
+    raw = path.read_bytes()
+    value = json.loads(raw)
+    assert value["diagnostic_code"] == "TIMEOUT"
+    assert value["request_disposition"] == "OUTCOME_AMBIGUOUS"
+    assert value["request_count"] == 1
+    assert value["http_status"] is None
+    assert value["body_byte_count"] is None
+    assert value["response_sha256"] is None
+    assert value["items"] is None
+    assert value["products"] is None
+    for forbidden in (
+        b"fixture-app",
+        b"fixture-key",
+        b"fixture-affiliate",
+        b"untrusted fixture body",
+    ):
+        assert forbidden not in raw
 
 
 def test_result_writer_preflight_no_replace_and_sanitized_metadata(

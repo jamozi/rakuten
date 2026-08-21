@@ -267,10 +267,10 @@ owner_local_read_integration:
   runtime:
     name: rakuten-owner-local
     root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    bundle_sha256: 7c0e5799349e95793dbdb49b7cde89b2e16429e9d8fad171e9348f3487882a06
+    bundle_sha256: 496b79fa0a3a45201d2af2e25a52eb832d50b7dcc17caf4246a35d7b640ba518
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: cb5528a0aa268f066300cb9dce90cc2fc99a348c26afbed482d02eabeb1e2ef8
-    install_stage_sha256: d94f0ba7257cb2e75d0fb1942f6389aa809214485e94d5fab061233cd0a991d7
+    installer_sha256: ea3bc2cc30441d463a90772299eb0ab8575b21661b60d389287f7807df7c2942
+    install_stage_sha256: 28b37bb5cf924cb7ecd31e5f493598b4fd855abcfdd4a80e348874b48e0df927
     install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
     installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
     installer_credential_access: FORBIDDEN
@@ -336,6 +336,11 @@ owner_local_read_integration:
     concurrency: 0
     ip_fallback: 0
     requests_per_invocation_maximum: 1
+    per_operation_read_timeout_seconds: 20
+    response_read_deadline_seconds: 20
+    response_read_deadline_scope: HEADERS_THROUGH_COMPLETE_BODY_OR_EOF
+    response_read_primitive: RAW_RECV_INTO_REMAINING_TIMEOUT_AND_HTTPRESPONSE_READ1
+    deadline_timeout: TIMEOUT_OUTCOME_AMBIGUOUS_NO_PARTIAL_RESPONSE_METADATA
     response_maximum_bytes: 2097152
     response_json: STRICT_UTF8_DUPLICATE_NONFINITE_DEPTH_NODE_SCHEMA
     response_summary_relationships: PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY

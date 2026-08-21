@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 import ctypes
 import errno
 import hashlib
 import http.client
+import io
 import ipaddress
 import json
 import math
@@ -16,6 +18,7 @@ import re
 import socket
 import ssl
 import stat
+import time
 from typing import Any, NoReturn, Protocol, cast, final, runtime_checkable
 from urllib.parse import quote, urlencode
 
@@ -53,6 +56,7 @@ from raos.domain.catalog.rakuten_owner_local import (
 
 CONNECT_TIMEOUT_SECONDS = 5
 READ_TIMEOUT_SECONDS = 20
+RESPONSE_READ_DEADLINE_SECONDS = 20
 MAX_CREDENTIAL_BYTES = 16 * 1024
 MAX_REQUEST_BYTES = 64 * 1024
 MAX_RESULT_BYTES = 4 * 1024 * 1024
@@ -871,13 +875,138 @@ def require_clean_rakuten_owner_local_environment() -> None:
         _fail(RakutenOwnerLocalFailureCode.TLS_ENVIRONMENT_INVALID)
 
 
+@dataclass(slots=True)
+class _ResponseReadDeadline:
+    monotonic_clock: Callable[[], float]
+    expires_at: float
+    last_observation: float
+
+    @classmethod
+    def start(cls, monotonic_clock: Callable[[], float]) -> _ResponseReadDeadline:
+        observed = cls._read_clock(monotonic_clock)
+        expires_at = observed + RESPONSE_READ_DEADLINE_SECONDS
+        if not math.isfinite(expires_at):
+            _fail(
+                RakutenOwnerLocalFailureCode.REQUEST_AMBIGUOUS,
+                disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+            )
+        return cls(monotonic_clock, expires_at, observed)
+
+    @staticmethod
+    def _read_clock(monotonic_clock: Callable[[], float]) -> float:
+        try:
+            observed = monotonic_clock()
+        except BaseException:
+            _fail(
+                RakutenOwnerLocalFailureCode.REQUEST_AMBIGUOUS,
+                disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+            )
+        if type(observed) is not float or not math.isfinite(observed):
+            _fail(
+                RakutenOwnerLocalFailureCode.REQUEST_AMBIGUOUS,
+                disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+            )
+        return observed
+
+    def operation_timeout(self) -> float:
+        observed = self._read_clock(self.monotonic_clock)
+        if observed < self.last_observation:
+            _fail(
+                RakutenOwnerLocalFailureCode.REQUEST_AMBIGUOUS,
+                disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+            )
+        self.last_observation = observed
+        remaining = self.expires_at - observed
+        if remaining <= 0:
+            _fail(
+                RakutenOwnerLocalFailureCode.TIMEOUT,
+                disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+            )
+        return min(float(READ_TIMEOUT_SECONDS), remaining)
+
+    def checkpoint(self) -> None:
+        self.operation_timeout()
+
+
+@final
+class _DeadlineSocketProxy:
+    __slots__ = ("_close_requested", "_file_open", "_forced", "_socket", "deadline")
+
+    def __init__(
+        self, connection: socket.socket, deadline: _ResponseReadDeadline
+    ) -> None:
+        self._socket = connection
+        self.deadline = deadline
+        self._file_open = False
+        self._close_requested = False
+        self._forced = False
+
+    def makefile(self, mode: str) -> io.BufferedReader:
+        if mode != "rb" or self._file_open or self._forced:
+            _fail(
+                RakutenOwnerLocalFailureCode.REQUEST_AMBIGUOUS,
+                disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+            )
+        self._file_open = True
+        return io.BufferedReader(_DeadlineSocketIO(self))
+
+    def recv_into(self, buffer: Any) -> int:
+        if self._forced:
+            raise OSError("closed response socket")
+        self._socket.settimeout(self.deadline.operation_timeout())
+        received = self._socket.recv_into(buffer)
+        self.deadline.checkpoint()
+        return received
+
+    def release_file(self) -> None:
+        if not self._file_open:
+            return
+        self._file_open = False
+        if self._close_requested:
+            self.force_close()
+
+    def close(self) -> None:
+        self._close_requested = True
+        if not self._file_open:
+            self.force_close()
+
+    def force_close(self) -> None:
+        if self._forced:
+            return
+        self._forced = True
+        self._socket.close()
+
+
+@final
+class _DeadlineSocketIO(io.RawIOBase):
+    def __init__(self, connection: _DeadlineSocketProxy) -> None:
+        super().__init__()
+        self._connection = connection
+
+    def readable(self) -> bool:
+        return True
+
+    def readinto(self, buffer: Any) -> int:
+        if self.closed:
+            raise ValueError("read of closed response socket")
+        return self._connection.recv_into(buffer)
+
+    def close(self) -> None:
+        if self.closed:
+            return
+        try:
+            super().close()
+        finally:
+            self._connection.release_file()
+
+
 @runtime_checkable
 class RakutenOwnerLocalHttpsResponse(Protocol):
     status: int
 
     def getheader(self, name: str, default: str | None = None) -> str | None: ...
 
-    def read(self, amount: int | None = None) -> bytes: ...
+    def read1(self, amount: int = -1) -> bytes: ...
 
 
 @runtime_checkable
@@ -885,6 +1014,8 @@ class RakutenOwnerLocalHttpsConnection(Protocol):
     def connect(self) -> None: ...
 
     def set_read_timeout(self, seconds: int) -> None: ...
+
+    def set_response_read_deadline(self, deadline: _ResponseReadDeadline) -> None: ...
 
     def request(self, method: str, path: str, headers: dict[str, str]) -> None: ...
 
@@ -1088,13 +1219,14 @@ class _PinnedSocketConnector:
 
 @final
 class _SystemHttpsConnection:
-    __slots__ = ("_candidate", "_connection")
+    __slots__ = ("_candidate", "_connection", "_response_socket")
 
     def __init__(
         self, connection: http.client.HTTPSConnection, candidate: _ResolvedAddress
     ) -> None:
         self._connection = connection
         self._candidate = candidate
+        self._response_socket: _DeadlineSocketProxy | None = None
 
     def connect(self) -> None:
         if getattr(self._connection, "_tunnel_host", None) is not None:
@@ -1113,6 +1245,21 @@ class _SystemHttpsConnection:
             _fail(RakutenOwnerLocalFailureCode.CONNECTION_FAILED)
         self._connection.sock.settimeout(seconds)
 
+    def set_response_read_deadline(self, deadline: _ResponseReadDeadline) -> None:
+        connection = self._connection.sock
+        if (
+            connection is None
+            or self._response_socket is not None
+            or type(deadline) is not _ResponseReadDeadline
+        ):
+            _fail(
+                RakutenOwnerLocalFailureCode.REQUEST_AMBIGUOUS,
+                disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+            )
+        response_socket = _DeadlineSocketProxy(connection, deadline)
+        self._response_socket = response_socket
+        self._connection.sock = cast(Any, response_socket)
+
     def request(self, method: str, path: str, headers: dict[str, str]) -> None:
         self._connection.request(method, path, body=None, headers=headers)
 
@@ -1120,7 +1267,11 @@ class _SystemHttpsConnection:
         return cast(RakutenOwnerLocalHttpsResponse, self._connection.getresponse())
 
     def close(self) -> None:
-        self._connection.close()
+        try:
+            self._connection.close()
+        finally:
+            if self._response_socket is not None:
+                self._response_socket.force_close()
 
 
 @final
@@ -1156,7 +1307,9 @@ class SystemRakutenOwnerLocalHttpsConnectionFactory:
         return _SystemHttpsConnection(connection, candidate)
 
 
-def _read_bounded_response(response: RakutenOwnerLocalHttpsResponse) -> bytes:
+def _read_bounded_response(
+    response: RakutenOwnerLocalHttpsResponse, deadline: _ResponseReadDeadline
+) -> bytes:
     content_length_value = response.getheader("Content-Length")
     transfer_encoding = response.getheader("Transfer-Encoding")
     if transfer_encoding is not None:
@@ -1196,7 +1349,9 @@ def _read_bounded_response(response: RakutenOwnerLocalHttpsResponse) -> bytes:
     chunks: list[bytes] = []
     remaining = RAKUTEN_OWNER_LOCAL_MAX_RESPONSE_BYTES + 1
     while remaining:
-        chunk = response.read(min(remaining, 64 * 1024))
+        deadline.checkpoint()
+        chunk = response.read1(min(remaining, 64 * 1024))
+        deadline.checkpoint()
         if type(chunk) is not bytes:
             _fail(
                 RakutenOwnerLocalFailureCode.REQUEST_AMBIGUOUS,
@@ -1573,6 +1728,7 @@ class DirectRakutenOwnerLocalTransport:
     """Issue one direct fixed-origin GET; retry, redirect, and fallback do not exist."""
 
     connection_factory: RakutenOwnerLocalHttpsConnectionFactory
+    monotonic_clock: Callable[[], float] = time.monotonic
     _attempted: bool = False
 
     def execute(
@@ -1628,13 +1784,16 @@ class DirectRakutenOwnerLocalTransport:
             connection.set_read_timeout(READ_TIMEOUT_SECONDS)
             request_started = True
             connection.request("GET", target, headers)
+            deadline = _ResponseReadDeadline.start(self.monotonic_clock)
+            connection.set_response_read_deadline(deadline)
             response = connection.getresponse()
+            deadline.checkpoint()
             if type(response.status) is not int or not 100 <= response.status <= 599:
                 _fail(
                     RakutenOwnerLocalFailureCode.REQUEST_AMBIGUOUS,
                     disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
                 )
-            body = _read_bounded_response(response)
+            body = _read_bounded_response(response, deadline)
             status = response.status
             if status != 200:
                 code = _HTTP_FAILURES.get(status)
@@ -1672,14 +1831,18 @@ class DirectRakutenOwnerLocalTransport:
                 )
             raise
         except BaseException as error:
-            if request_started:
+            if isinstance(error, (TimeoutError, socket.timeout)):
+                code = RakutenOwnerLocalFailureCode.TIMEOUT
+                disposition = (
+                    RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS
+                    if request_started
+                    else RakutenOwnerLocalRequestDisposition.NOT_SENT
+                )
+            elif request_started:
                 code = RakutenOwnerLocalFailureCode.REQUEST_AMBIGUOUS
                 disposition = RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS
             elif isinstance(error, (ssl.SSLError, ssl.CertificateError)):
                 code = RakutenOwnerLocalFailureCode.TLS_FAILED
-                disposition = RakutenOwnerLocalRequestDisposition.NOT_SENT
-            elif isinstance(error, (TimeoutError, socket.timeout)):
-                code = RakutenOwnerLocalFailureCode.TIMEOUT
                 disposition = RakutenOwnerLocalRequestDisposition.NOT_SENT
             elif isinstance(error, socket.gaierror):
                 code = RakutenOwnerLocalFailureCode.DNS_FAILED
@@ -1937,6 +2100,7 @@ __all__ = [
     "OwnerPrivateRakutenOwnerLocalRequestReader",
     "OwnerPrivateRakutenOwnerLocalResultWriter",
     "READ_TIMEOUT_SECONDS",
+    "RESPONSE_READ_DEADLINE_SECONDS",
     "RakutenOwnerLocalHttpsConnection",
     "RakutenOwnerLocalHttpsConnectionFactory",
     "RakutenOwnerLocalHttpsResponse",

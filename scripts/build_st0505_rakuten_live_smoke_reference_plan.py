@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "7c0e5799349e95793dbdb49b7cde89b2e16429e9d8fad171e9348f3487882a06"
+    "496b79fa0a3a45201d2af2e25a52eb832d50b7dcc17caf4246a35d7b640ba518"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "cb5528a0aa268f066300cb9dce90cc2fc99a348c26afbed482d02eabeb1e2ef8"
+    "ea3bc2cc30441d463a90772299eb0ab8575b21661b60d389287f7807df7c2942"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "d94f0ba7257cb2e75d0fb1942f6389aa809214485e94d5fab061233cd0a991d7"
+    "28b37bb5cf924cb7ecd31e5f493598b4fd855abcfdd4a80e348874b48e0df927"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
     "129f7f01fb5bafc13ddd54d39bacdc0d28975478ebff8a84bf1b57c37f90c0e5"
@@ -1575,6 +1575,12 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "validated_response_text(returned_value)",
             "socket.getaddrinfo(",
             "ssl.create_default_context(",
+            "RESPONSE_READ_DEADLINE_SECONDS = 20",
+            "class _ResponseReadDeadline:",
+            "class _DeadlineSocketProxy:",
+            "self._socket.settimeout(self.deadline.operation_timeout())",
+            "chunk = response.read1(",
+            "connection.set_response_read_deadline(deadline)",
             "O_TMPFILE",
         ),
         Path("scripts/rakuten_owner_local.py"): (
@@ -2223,6 +2229,11 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "concurrency",
             "ip_fallback",
             "requests_per_invocation_maximum",
+            "per_operation_read_timeout_seconds",
+            "response_read_deadline_seconds",
+            "response_read_deadline_scope",
+            "response_read_primitive",
+            "deadline_timeout",
             "response_maximum_bytes",
             "response_json",
             "response_summary_relationships",
@@ -2248,6 +2259,14 @@ def _validate_owner_local_read_integration(value: object) -> None:
         or transport.get("concurrency") != 0
         or transport.get("ip_fallback") != 0
         or transport.get("requests_per_invocation_maximum") != 1
+        or transport.get("per_operation_read_timeout_seconds") != 20
+        or transport.get("response_read_deadline_seconds") != 20
+        or transport.get("response_read_deadline_scope")
+        != "HEADERS_THROUGH_COMPLETE_BODY_OR_EOF"
+        or transport.get("response_read_primitive")
+        != "RAW_RECV_INTO_REMAINING_TIMEOUT_AND_HTTPRESPONSE_READ1"
+        or transport.get("deadline_timeout")
+        != "TIMEOUT_OUTCOME_AMBIGUOUS_NO_PARTIAL_RESPONSE_METADATA"
         or transport.get("response_maximum_bytes") != 2 * 1024 * 1024
         or transport.get("response_json")
         != "STRICT_UTF8_DUPLICATE_NONFINITE_DEPTH_NODE_SCHEMA"

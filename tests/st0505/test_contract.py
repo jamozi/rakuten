@@ -216,6 +216,17 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
     assert owner["transport"]["requests_per_invocation_maximum"] == 1
     assert owner["transport"]["retries"] == 0
     assert owner["transport"]["pagination_followups"] == 0
+    assert owner["transport"]["per_operation_read_timeout_seconds"] == 20
+    assert owner["transport"]["response_read_deadline_seconds"] == 20
+    assert owner["transport"]["response_read_deadline_scope"] == (
+        "HEADERS_THROUGH_COMPLETE_BODY_OR_EOF"
+    )
+    assert owner["transport"]["response_read_primitive"] == (
+        "RAW_RECV_INTO_REMAINING_TIMEOUT_AND_HTTPRESPONSE_READ1"
+    )
+    assert owner["transport"]["deadline_timeout"] == (
+        "TIMEOUT_OUTCOME_AMBIGUOUS_NO_PARTIAL_RESPONSE_METADATA"
+    )
     assert owner["transport"]["response_summary_relationships"] == (
         "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_"
         "PAGECOUNT_1_TO_100_FIRST_1_LAST_CARDINALITY"

@@ -52,10 +52,10 @@ decision:
     classification: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
     runtime_name: rakuten-owner-local
     trusted_runtime_root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    installed_bundle_sha256: 7c0e5799349e95793dbdb49b7cde89b2e16429e9d8fad171e9348f3487882a06
+    installed_bundle_sha256: 496b79fa0a3a45201d2af2e25a52eb832d50b7dcc17caf4246a35d7b640ba518
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: cb5528a0aa268f066300cb9dce90cc2fc99a348c26afbed482d02eabeb1e2ef8
-    install_stage_sha256: d94f0ba7257cb2e75d0fb1942f6389aa809214485e94d5fab061233cd0a991d7
+    installer_sha256: ea3bc2cc30441d463a90772299eb0ab8575b21661b60d389287f7807df7c2942
+    install_stage_sha256: 28b37bb5cf924cb7ecd31e5f493598b4fd855abcfdd4a80e348874b48e0df927
     runtime_install_execution: NOT_EXECUTED
     credential_store: .secrets/rakuten-owner-local/credentials.v1.json
     credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
@@ -100,7 +100,8 @@ constraints:
   - credential file is exact-schema, current-UID, regular, non-symlink, mode 0600, bounded, byte-identical across two descriptor reads, and identity/size/mtime/ctime-stable; rotation uses atomic replacement
   - a separate exact-schema mode-0600 staging binding must classify the purpose as DEDICATED_TEST_CREDENTIAL_FOR_NON_FORMAL_DIAGNOSTIC and bind the SHA-256 of the exact credential-record bytes; the repository never creates this Operations evidence
   - every DNS candidate is parsed and public-address validated before connection; one unsafe or malformed candidate rejects the entire set, and the first validated numeric sockaddr is pinned for the only TCP attempt while TLS SNI, certificate hostname verification, and HTTP Host remain openapi.rakuten.co.jp
-  - connect and read timeouts are bounded; response maximum is 2 MiB
+  - connect and per-operation read timeouts are bounded; after the one GET is sent, one monotonic 20-second deadline covers response headers through the complete Content-Length/chunked body or close-delimited EOF, and every raw recv timeout is reduced to the positive remaining budget before HTTPResponse.read1 advances the bounded body loop
+  - response deadline expiry fails as TIMEOUT with OUTCOME_AMBIGUOUS, request_count 1, and no partial HTTP/body/hash metadata or provider material; response maximum remains 2 MiB
   - response is strict UTF-8 JSON with duplicate, nonfinite, depth, node, and schema checks
   - HTTP 429 classifies rate as THROTTLED while authentication remains NOT_OBSERVED
   - reports contain only the closed sanitized field set and are atomically published mode 0600
@@ -166,6 +167,7 @@ acceptance_criteria:
   - short numeric application/access/affiliate credentials coinciding with each validated count, page, first, last, hits, or pageCount value for both enabled APIs, or with any non-text normalized value accepted by its field schema, do not fail solely because of typed scalar equality
   - Item and Product success, including empty collections, persist all six validated summary scalars; every ordinary or credential-reflection failure retains the same exact result-object key set with all six summary values null
   - terminal clock sampling exceptions after success, a complete received provider failure, or an outcome-ambiguous attempt reuse started_at and preserve the original disposition, request count, response metadata, and single result write without exposing credentials
+  - deterministic no-sleep fakes prove normal response completion and Content-Length, chunked, close-delimited, and raw header-line trickling cannot extend the single response-read deadline; timeout produces exactly one sanitized ambiguous result write with no credential or partial provider material
   - owner-local result envelopes remain OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE and UNTRUSTED_PROVIDER_DATA with formal TST-016, ENV-STAGING, OD-015 resolution, and RAOS Production unchanged
 required_test_evidence:
   - isolated tests/st0505 with no owner credential read and no provider network
