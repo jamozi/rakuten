@@ -39,8 +39,25 @@ def test_generated_v3_ledger_preserves_parent_and_adds_three_history_bindings() 
     assert len(source["entries"]) == generator.EXPECTED_NEW_ENTRIES
     assert output["entries"][: generator.EXPECTED_PARENT_ENTRIES] == parent["entries"]
     additions = output["entries"][generator.EXPECTED_PARENT_ENTRIES :]
-    assert len(additions) == generator.EXPECTED_NEW_ENTRIES
-    assert all(entry["scope"] == "git_history" for entry in additions)
+    expected_additions = []
+    for entry in source["entries"]:
+        assert set(entry) == generator.ENTRY_KEYS
+        assert entry["scope"] == "git_history"
+        assert entry["path_hint"] == generator.CURRENT_OPERATOR_PATH.as_posix()
+        assert entry["expected_ast"] == generator.EXPECTED_AST
+        expected_additions.append(
+            {
+                "scope": entry["scope"],
+                "exact_source_identifier": entry["exact_source_identifier"],
+                "exact_line_number": entry["exact_line_number"],
+                "exact_source_bytes": entry["exact_source_bytes"],
+                "exact_source_sha256": entry["exact_source_sha256"],
+                "exact_line_sha256": entry["exact_line_sha256"],
+                "classification": generator.EXPECTED_REVIEW["classification"],
+                "rationale": generator.EXPECTED_REVIEW["rationale"],
+            }
+        )
+    assert additions == expected_additions
     assert sum(entry["scope"] == "worktree" for entry in output["entries"]) == 31
     assert sum(entry["scope"] == "git_history" for entry in output["entries"]) == 87
     assert len(parse_reviewed_findings(output_bytes)) == 118
