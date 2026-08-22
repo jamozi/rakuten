@@ -44,10 +44,10 @@ SOURCE_PATHS: Final = (README_PATH, CONTRACT_PATH, GENERATOR_PATH, *TEST_PATHS)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 CONTRACT_SHA256: Final = (
-    "cb17c32c7f41cac56ea2e6af573db741b98a01497101bad6b99e96265a66958b"
+    "4252b0dd7c92a494b281ca406183b593b5d8ea6fb8b1f54d57c3d73efc6a1f65"
 )
 MAX_SOURCE_BYTES: Final = base.MAX_DOCUMENT_BYTES
 
@@ -75,7 +75,7 @@ AUTHORITY_SHA256: Final[dict[Path, str]] = {
 ST0707_SHA256: Final[dict[Path, str]] = {
     Path(
         "changes/st-0707/README.md"
-    ): "26826289a4d00c2e3304e0c81f177655ab60ca3f4cd45c5a644c160e055f7529",
+    ): "3ba589dc165e0347fb2d3ca16e92188919046b5a8e4a92e4d62d206fcdacf3ff",
     Path(
         "python/raos/domain/ai/evaluation.py"
     ): "f5eba5617c24227ac09de7ce555a52a9454fe2e5320c8bbcaab8752f6945aff4",
@@ -87,7 +87,7 @@ ST0707_SHA256: Final[dict[Path, str]] = {
     ): "6bade20471f8724fe2d131e57d806d1467b54d6467d77b1853e99732b3d94b78",
     Path(
         "tests/st0707/test_boundaries.py"
-    ): "071648ee8fa7a0d168b1bd8bc5db58113c4111f218535a04d460e8fe58960f4f",
+    ): "e5dba0b58ba1acbb7fe3ba67363645acab0a7b5345af7c21aafec16eb92180c1",
     Path(
         "tests/st0707/test_evaluation.py"
     ): "3680ff67bf147721d04ab9f50c5d5c10503f7120af70c3a1c2b9ae4a80431340",
