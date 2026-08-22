@@ -1,0 +1,37 @@
+{
+  "check_command": "make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-check",
+  "generated_by": "scripts/build_st1703_self_hosted_theme.py",
+  "package_command": "make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-package",
+  "required_images": [
+    {
+      "alt": "静かな旅支度を想起させる抽象的な布と光の情景",
+      "path": "assets/images/home-hero.webp",
+      "prompt": "Japanese premium travel editorial hero, quiet folded textile and soft window light, deep indigo and warm clay accents, no people, no text, no logo, no product, no trademark, no claim of real experience, wide 16:9 composition",
+      "sha256": null,
+      "status": "PENDING_FINAL_ASSET",
+      "usage": "front-page full-bleed hero"
+    },
+    {
+      "alt": "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景",
+      "path": "assets/images/article-suitcase-guide.webp",
+      "prompt": "Japanese editorial travel preparation still life, abstract unbranded luggage silhouette and measuring tape motif, no logo, no recognizable product, no people, no text, no fabricated usage scene, deep indigo paper texture, wide 16:9 composition",
+      "sha256": null,
+      "status": "PENDING_FINAL_ASSET",
+      "usage": "first article featured image"
+    }
+  ],
+  "schema": "RAOS_WORDPRESS_THEME_ASSETS_V1",
+  "source_files": [
+    "assets/theme.css",
+    "assets/theme.js",
+    "functions.php",
+    "parts/footer.html",
+    "parts/header.html",
+    "raos-assets.v1.json",
+    "style.css",
+    "templates/front-page.html",
+    "templates/single.html",
+    "theme.json"
+  ],
+  "theme_slug": "kurashinoshirube-child"
+}
