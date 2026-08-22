@@ -386,8 +386,19 @@ EXPECTED_GOLD_SOURCE_ROWS: Final = (
 )
 IMPLEMENTATION_DEPENDENCIES: Final = {
     "scripts/build_st1506_production_deployment.py": (
-        "ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f"
+        "a57808e2c44feb51ebb4bcc1127c3aa0a64ef77d45d5c570207f66750b04d304"
     )
+}
+STANDING_DEVELOPMENT_AUTHORITY_PATH: Final = Path("AGENTS.md")
+STANDING_DEVELOPMENT_AUTHORITY_BYTES: Final = 54_428
+STANDING_DEVELOPMENT_AUTHORITY_SHA256: Final = (
+    "a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127"
+)
+CURRENT_DEVELOPMENT_SOURCE_OVERRIDES: Final = {
+    "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
+        11_132,
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234",
+    ),
 }
 
 EXPECTED_APPROVAL_DOCUMENT: Final = {
@@ -947,8 +958,30 @@ def _verify_rows(
         if row != {"uri": f"repo://{relative}", "bytes": size, "sha256": digest}:
             _fail("INVENTORY_DRIFT", f"{field}[{index}]")
         content = _read(root, Path(relative), f"{field}.input")
-        if len(content) != size or _sha256(content) != digest:
-            _fail("INPUT_HASH_DRIFT", field)
+        current_override = CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.get(relative)
+        if current_override is None:
+            if len(content) != size or _sha256(content) != digest:
+                _fail("INPUT_HASH_DRIFT", field)
+            continue
+        current_size, current_digest = current_override
+        if len(content) != current_size or _sha256(content) != current_digest:
+            _fail("CURRENT_DEVELOPMENT_SOURCE_DRIFT", field)
+
+
+def _validate_current_development_authority(root: Path) -> None:
+    content = _read(
+        root,
+        STANDING_DEVELOPMENT_AUTHORITY_PATH,
+        "current_development.authority_source",
+    )
+    if (
+        len(content) != STANDING_DEVELOPMENT_AUTHORITY_BYTES
+        or _sha256(content) != STANDING_DEVELOPMENT_AUTHORITY_SHA256
+    ):
+        _fail(
+            "CURRENT_DEVELOPMENT_AUTHORITY_DRIFT",
+            "current_development.authority_source",
+        )
 
 
 def _validate_implementation_dependencies(root: Path) -> None:
@@ -1098,6 +1131,7 @@ def validate_contract(
         "document",
     )
     _verify_rows(root, contract["sources"], EXPECTED_SOURCE_ROWS, "sources")
+    _validate_current_development_authority(root)
     _validate_implementation_dependencies(root)
     _report, report_decisions = _validate_predecessor(contract, root)
     _exact_mapping(
@@ -2146,6 +2180,48 @@ def _manifest_bytes(
                 {"uri": f"repo://{path}", "sha256": digest}
                 for path, digest in IMPLEMENTATION_DEPENDENCIES.items()
             ],
+            "current_development_rebinding": {
+                "classification": "REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY",
+                "authority_source": {
+                    "uri": f"repo://{STANDING_DEVELOPMENT_AUTHORITY_PATH.as_posix()}",
+                    "bytes": STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+                    "sha256": STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+                    "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+                },
+                "current_authority_inputs": [
+                    {
+                        "uri": f"repo://{path}",
+                        "bytes": binding[0],
+                        "sha256": binding[1],
+                    }
+                    for path, binding in CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.items()
+                ],
+                "current_implementation_inputs": [
+                    {
+                        "uri": f"repo://{path}",
+                        "bytes": len(
+                            _read(
+                                root, Path(path), "current_development.implementation"
+                            )
+                        ),
+                        "sha256": digest,
+                    }
+                    for path, digest in IMPLEMENTATION_DEPENDENCIES.items()
+                ],
+                "historical_source_and_authority_rows_preserved": True,
+                "semantic_delta_from_business_inputs": "NONE",
+                "formal_evidence": False,
+                "repository_git_authority": (
+                    "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"
+                ),
+                "external_authority": "NONE",
+                "live_provider_authority": "NONE",
+                "credential_authority": "NONE",
+                "staging_authority": "NONE",
+                "publication_authority": "NONE",
+                "release_authority": "NONE",
+                "production_authority": "NONE",
+            },
             "source_contracts": [
                 {
                     "uri": SOURCE_URI,

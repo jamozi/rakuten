@@ -156,7 +156,33 @@ provenance:
     sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
   implementation_inputs:
   - uri: repo://scripts/build_st1506_production_deployment.py
-    sha256: ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f
+    sha256: a57808e2c44feb51ebb4bcc1127c3aa0a64ef77d45d5c570207f66750b04d304
+  current_development_rebinding:
+    classification: REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY
+    authority_source:
+      uri: repo://AGENTS.md
+      bytes: 54428
+      sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
+      authority: ROOT_STANDING_DEVELOPMENT_AUTHORIZATION
+    current_authority_inputs:
+    - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+      bytes: 11132
+      sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
+    current_implementation_inputs:
+    - uri: repo://scripts/build_st1506_production_deployment.py
+      bytes: 74945
+      sha256: a57808e2c44feb51ebb4bcc1127c3aa0a64ef77d45d5c570207f66750b04d304
+    historical_source_and_authority_rows_preserved: true
+    semantic_delta_from_business_inputs: NONE
+    formal_evidence: false
+    repository_git_authority: ROOT_STANDING_DEVELOPMENT_AUTHORIZATION
+    external_authority: NONE
+    live_provider_authority: NONE
+    credential_authority: NONE
+    staging_authority: NONE
+    publication_authority: NONE
+    release_authority: NONE
+    production_authority: NONE
   source_contracts:
   - uri: repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml
     bytes: 8680
@@ -182,11 +208,11 @@ source_artifacts:
   bytes: 1876
   sha256: 288e96b9e4814e1a3d9409addcee2bf1b5bdf12ab9e0a8e756ec66846f057197
 - uri: repo://changes/st-1701/README.md
-  bytes: 15412
-  sha256: 866614331b943fcb8d49cbb132ae26187054f1bb52b20e894b5a3c3531ef2bd6
+  bytes: 15933
+  sha256: 9ff100dfcdcf5fb1f94705ebdd7d4b8a87a8d734450db8ad3c51eb0e0a1337fa
 - uri: repo://scripts/build_st1701_business_inputs.py
-  bytes: 88123
-  sha256: fd299fcd2f5dbad75daa8a55b5a721fee1a0a4d0be399f600feedcc018689797
+  bytes: 91391
+  sha256: 7c87d388ef78e98ca12288bee5afd0f8602f0aac0749643d19b5befa0627f8c9
 - uri: repo://tests/st1701/conftest.py
   bytes: 1358
   sha256: 63463ddef096ed3e0fcb2d1cf098dc39c4959e8ba136979743ec4d347809085a
@@ -194,11 +220,11 @@ source_artifacts:
   bytes: 26903
   sha256: d6b1d10644b79dcb4ca221ab474cffa1562cd2858f399b13f41e9eb0f838c856
 - uri: repo://tests/st1701/test_generation.py
-  bytes: 28619
-  sha256: 7a2617d65fd96165dfd356afafcf0cf718f97a2079567225e7f42018072769ed
+  bytes: 32527
+  sha256: 2a10898552aaa44c52fafe985d8965b3b7f1d00a44e1f37426219d54d05735fc
 - uri: repo://tests/st1701/test_negative_cases.py
-  bytes: 28836
-  sha256: d88cb6ac42dd56f627752c602ae8f960cb588da040eea1af2164751169e01a8c
+  bytes: 31554
+  sha256: 30d5a31e012b17778a03bc6119a55b5ff11d46add7f64f858589a26951650c3d
 generated_artifact_count: 4
 generated_artifacts:
 - uri: repo://changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json
