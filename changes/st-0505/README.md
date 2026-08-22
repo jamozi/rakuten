@@ -214,7 +214,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -224,9 +224,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`9f656e06e241528e3d9a4877268128acf89308afd9791fbcb6de8b6285e0fc04`,
+`6e96c55f41506de347087054d31b58f80488bdb626628a657ea1bb8004929153`,
 and install-stage SHA-256
-`d041b21a1dc5fba8608016d6f3d7bc5f5509f98fd063e6dd0bf7e7a91bbbd947`.
+`6a4f76542dd39efab9779ea46cda99ac8063d1f0012873c803416670111e8b50`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -301,6 +301,11 @@ cardinality. Product Search's official page does not unambiguously name its
 format-version-2 collection envelope, so the adapter recognizes only the two
 reviewed literal envelope names documented in its tests and treats any other
 shape as schema drift; this does not permit an arbitrary schema fallback.
+Item Search alone also permits the documented optional top-level carrier. If
+present, it must be exact integer `0`; `bool`, nonzero integers, and every
+non-integer fail closed. The carrier is never normalized or persisted. Product
+Search and every root member other than its existing reviewed keys remain
+unchanged and fail as unrecognized root material.
 
 The DNS deadline is complete before any socket is constructed or any
 credential-bearing request is sent. The existing 20-second per-operation socket
@@ -323,16 +328,18 @@ summary, and allowlisted normalized records. Raw bodies/headers, provider error
 descriptions, captions, review bodies or aggregates, affiliate rate, EPC, RPM,
 revenue, and all credentials are forbidden. Stored provider fields are always
 classified `UNTRUSTED_PROVIDER_DATA`. The closed
-`RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2` object always contains the same
+`RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3` object always contains the same
 exact keys for success and failure. Success persists all six validated summary
 scalars in the in-memory result-object order `count`, `page`, `first`, `last`,
 `hits`, `pageCount`;
 failure retains those six keys with `null` values, including sanitized
 credential-reflection failures. Result files are compact UTF-8 JSON with
-lexicographically sorted keys and one trailing LF. Existing V1 evidence remains
-immutable and is never rewritten. V2 adds one always-present nullable
-`validation_stage_code`; this side-by-side schema change makes no deployed-result
-migration or backward-compatibility claim. If exact `timezone.utc`, fold-0 start
+lexicographically sorted keys and one trailing LF. Existing V1 and V2 evidence
+remain immutable and are never rewritten. V3 keeps the always-present nullable
+`validation_stage_code` and adds one always-present nullable
+`validation_detail_code`; this side-by-side schema change makes no
+deployed-result migration or backward-compatibility claim. If exact
+`timezone.utc`, fold-0 start
 and terminal wall-clock values show
 the terminal observation earlier than `started_at`, `finished_at` is clamped to
 `started_at`. If terminal clock sampling raises after the attempt, the already
@@ -379,7 +386,7 @@ retaining only complete HTTP/body/SHA metadata and `request_count=1`; the
 matched value, summaries, and normalized records are not persisted.
 
 Response-validation failures retain their existing generic `diagnostic_code`
-and fixed CLI output. V2 additionally persists only one closed, value-free
+and fixed CLI output. V3 retains the closed, value-free
 `validation_stage_code`: `SUMMARY_SHAPE`, `COLLECTION_SHAPE`, `RECORD_SHAPE`,
 `EXACT_SELECTOR`, `MANDATORY_TEXT`, `URL`, or `CREDENTIAL_REFLECTION`. Success
 and failures outside these validation boundaries store `null`. The stage never
@@ -390,6 +397,14 @@ mandatory text, URL, then credential reflection. An exact-selector identity
 mismatch retains `RESULT_MISMATCH`; all other listed validation refusals retain
 `RESPONSE_SCHEMA_DRIFT`. Available response metadata and `request_count=1` are
 preserved while provider results and summaries remain absent on failure.
+`validation_detail_code` is non-null if and only if the generic diagnostic is
+`RESPONSE_SCHEMA_DRIFT` and the stage is `COLLECTION_SHAPE`. Its closed values
+are `ROOT_NOT_OBJECT`, `COLLECTION_KEY_INVALID`,
+`ROOT_MEMBER_UNRECOGNIZED`, `COLLECTION_NOT_ARRAY`, and
+`OPTIONAL_ROOT_MEMBER_VALUE_INVALID`, in that precedence order. No value names
+the observed key or contains a provider value, index, expected/actual material,
+body, header, exception detail, or credential. Success, non-validation failures,
+and every other validation stage store `null`.
 Every returned record completes each stage before any record enters the next,
 so provider record order cannot make an earlier URL defect hide a later
 exact-selector or mandatory-text refusal.

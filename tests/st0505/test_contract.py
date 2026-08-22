@@ -246,9 +246,15 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "PAGECOUNT_EQUALS_MIN_CEIL_COUNT_DIV_HITS_100_FIRST_1_LAST_"
         "CARDINALITY"
     )
+    assert owner["transport"]["item_response_carrier"] == {
+        "presence": "OPTIONAL",
+        "accepted_value": "EXACT_INTEGER_ZERO",
+        "normalized_or_persisted": False,
+        "product_search": "UNCHANGED_REJECT_AS_UNRECOGNIZED_ROOT_MEMBER",
+    }
     assert owner["normalized_result"]["envelope"] == {
-        "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2",
-        "version": 2,
+        "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3",
+        "version": 3,
         "exact_object_keys": list(generator.EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
         "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
         "success_summary": "VALIDATED_INTEGER_VALUES",
@@ -259,8 +265,8 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "failure_summary": "ALL_SIX_KEYS_NULL",
         "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
         "compatibility": (
-            "V1_EVIDENCE_IMMUTABLE_V2_ADDS_NULLABLE_VALUE_FREE_VALIDATION_"
-            "STAGE_NO_REWRITE"
+            "V1_V2_EVIDENCE_IMMUTABLE_V3_ADDS_NULLABLE_VALUE_FREE_"
+            "COLLECTION_DETAIL_NO_REWRITE"
         ),
     }
     assert owner["normalized_result"]["validation_diagnostic"] == {
@@ -299,7 +305,33 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
             "COMPLETE_AVAILABLE_RESPONSE_METADATA_REQUEST_COUNT_PRESERVED_"
             "PROVIDER_RESULT_NULL"
         ),
-        "previous_schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1_IMMUTABLE",
+        "previous_schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2_IMMUTABLE",
+    }
+    assert owner["normalized_result"]["validation_detail"] == {
+        "field": "validation_detail_code",
+        "parent_stage": "COLLECTION_SHAPE",
+        "parent_diagnostic": "RESPONSE_SCHEMA_DRIFT",
+        "values": [
+            "ROOT_NOT_OBJECT",
+            "COLLECTION_KEY_INVALID",
+            "ROOT_MEMBER_UNRECOGNIZED",
+            "COLLECTION_NOT_ARRAY",
+            "OPTIONAL_ROOT_MEMBER_VALUE_INVALID",
+        ],
+        "success_and_other_failures": None,
+        "conjunction": (
+            "NON_NULL_IF_AND_ONLY_IF_RESPONSE_SCHEMA_DRIFT_AND_COLLECTION_SHAPE"
+        ),
+        "precedence": (
+            "ROOT_NOT_OBJECT_THEN_COLLECTION_KEY_INVALID_THEN_ROOT_MEMBER_"
+            "UNRECOGNIZED_THEN_COLLECTION_NOT_ARRAY_THEN_OPTIONAL_ROOT_MEMBER_"
+            "VALUE_INVALID"
+        ),
+        "persisted_material": (
+            "CLOSED_ENUM_ONLY_NO_FIELD_NAME_INDEX_EXPECTED_ACTUAL_PROVIDER_VALUE_"
+            "BODY_HEADER_EXCEPTION_OR_CREDENTIAL"
+        ),
+        "previous_evidence": "RESULT_V1_AND_V2_IMMUTABLE",
     }
     assert owner["normalized_result"]["url_validation"] == {
         "syntax": {

@@ -40,6 +40,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalRequest,
     RakutenOwnerLocalRequestDisposition,
     RakutenOwnerLocalResultEnvelope,
+    RakutenOwnerLocalValidationDetailCode,
     RakutenOwnerLocalValidationStageCode,
     api_definition,
     fixed_owner_local_smoke_request,
@@ -410,6 +411,20 @@ def _item_body(**record_overrides: object) -> bytes:
             "items": [_item_record(**record_overrides)],
         }
     )
+
+
+def _item_root(**overrides: object) -> dict[str, object]:
+    root: dict[str, object] = {
+        "count": 1,
+        "page": 1,
+        "first": 1,
+        "last": 1,
+        "hits": 1,
+        "pageCount": 1,
+        "items": [_item_record()],
+    }
+    root.update(overrides)
+    return root
 
 
 def _item_exact_request(
@@ -1793,10 +1808,175 @@ def test_collection_shape_precedes_a_simultaneously_missing_summary_field(
         failure.value.validation_stage_code
         is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
     )
+    assert failure.value.validation_detail_code is (
+        RakutenOwnerLocalValidationDetailCode.ROOT_MEMBER_UNRECOGNIZED
+        if extra
+        else RakutenOwnerLocalValidationDetailCode.COLLECTION_NOT_ARRAY
+    )
     assert failure.value.request_count == 1
     assert failure.value.http_status == 200
     assert failure.value.body_byte_count == len(body)
     assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize("carrier_present", (False, True))
+def test_item_carrier_omitted_or_exact_zero_is_accepted_but_not_normalized(
+    monkeypatch: pytest.MonkeyPatch,
+    carrier_present: bool,
+) -> None:
+    root = _item_root()
+    if carrier_present:
+        root["carrier"] = 0
+    body = _json_body(root)
+
+    result, _connection, _factory, _transport = _execute(
+        monkeypatch,
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+        _FakeResponse(body, content_length=str(len(body))),
+    )
+
+    provider_result = cast(RakutenOwnerLocalProviderResult, result)
+    normalized = provider_result.normalized_object()
+    assert provider_result.request_count == 1
+    assert "carrier" not in normalized
+    assert "carrier" not in json.dumps(normalized, sort_keys=True)
+
+
+@pytest.mark.parametrize("invalid_carrier", (True, -1, 1, 2, "0", None, 0.0))
+def test_item_carrier_rejects_every_value_except_exact_integer_zero(
+    monkeypatch: pytest.MonkeyPatch,
+    invalid_carrier: object,
+) -> None:
+    body = _json_body(_item_root(carrier=invalid_carrier))
+
+    with pytest.raises(RakutenOwnerLocalFailure) as captured:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+
+    failure = captured.value
+    assert failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+    )
+    assert failure.validation_detail_code is (
+        RakutenOwnerLocalValidationDetailCode.OPTIONAL_ROOT_MEMBER_VALUE_INVALID
+    )
+    assert failure.request_count == 1
+    assert failure.http_status == 200
+    assert failure.body_byte_count == len(body)
+    assert failure.response_sha256 == hashlib.sha256(body).hexdigest()
+    assert str(invalid_carrier) not in str(failure)
+    assert str(invalid_carrier) not in repr(failure)
+
+
+@pytest.mark.parametrize(
+    ("api", "root", "expected_detail"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            [],
+            RakutenOwnerLocalValidationDetailCode.ROOT_NOT_OBJECT,
+        ),
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            {name: value for name, value in _item_root().items() if name != "items"},
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID,
+        ),
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_root(items={}),
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_NOT_ARRAY,
+        ),
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_root(unrecognized="provider-controlled-value"),
+            RakutenOwnerLocalValidationDetailCode.ROOT_MEMBER_UNRECOGNIZED,
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            {
+                **json.loads(_product_body()),
+                "items": [_product_record()],
+            },
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID,
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            {
+                **json.loads(_product_body()),
+                "carrier": 0,
+            },
+            RakutenOwnerLocalValidationDetailCode.ROOT_MEMBER_UNRECOGNIZED,
+        ),
+    ),
+)
+def test_collection_detail_is_closed_value_free_and_product_remains_unchanged(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    root: object,
+    expected_detail: RakutenOwnerLocalValidationDetailCode,
+) -> None:
+    body = _json_body(root)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as captured:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+
+    failure = captured.value
+    assert failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+    )
+    assert failure.validation_detail_code is expected_detail
+    assert failure.request_count == 1
+    assert failure.body_byte_count == len(body)
+    assert failure.response_sha256 == hashlib.sha256(body).hexdigest()
+    for forbidden in ("provider-controlled-value", "unrecognized", "carrier"):
+        assert forbidden not in str(failure)
+        assert forbidden not in repr(failure)
+
+
+@pytest.mark.parametrize(
+    ("root", "expected_detail"),
+    (
+        (
+            _item_root(
+                items={},
+                carrier=1,
+                unrecognized="provider-controlled-value",
+            ),
+            RakutenOwnerLocalValidationDetailCode.ROOT_MEMBER_UNRECOGNIZED,
+        ),
+        (
+            _item_root(items={}, carrier=1),
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_NOT_ARRAY,
+        ),
+    ),
+)
+def test_collection_detail_precedence_is_independent_of_dynamic_values(
+    monkeypatch: pytest.MonkeyPatch,
+    root: dict[str, object],
+    expected_detail: RakutenOwnerLocalValidationDetailCode,
+) -> None:
+    body = _json_body(root)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as captured:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+
+    assert captured.value.validation_detail_code is expected_detail
+    assert captured.value.request_count == 1
 
 
 @pytest.mark.parametrize(
@@ -2328,6 +2508,11 @@ def test_product_transport_rejects_case_alias_and_wrapped_v1_records(
         )
     assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
     assert failure.value.validation_stage_code is expected_stage
+    assert failure.value.validation_detail_code is (
+        RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID
+        if expected_stage is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+        else None
+    )
     assert (
         failure.value.disposition
         is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED

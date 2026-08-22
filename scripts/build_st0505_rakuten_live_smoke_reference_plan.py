@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859"
+    "83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "9f656e06e241528e3d9a4877268128acf89308afd9791fbcb6de8b6285e0fc04"
+    "6e96c55f41506de347087054d31b58f80488bdb626628a657ea1bb8004929153"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "d041b21a1dc5fba8608016d6f3d7bc5f5509f98fd063e6dd0bf7e7a91bbbd947"
+    "6a4f76542dd39efab9779ea46cda99ac8063d1f0012873c803416670111e8b50"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
     "42324711aff4bc5560e942f99cbcf97b39493604d49915436966812567c10ab8"
@@ -122,6 +122,7 @@ EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS: Final = (
     "outcome",
     "diagnostic_code",
     "validation_stage_code",
+    "validation_detail_code",
     "request_fingerprint",
     "request_disposition",
     "request_count",
@@ -1550,8 +1551,10 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "def validate_record_mandatory_text(",
             "def validate_record_shape(",
             "def validate_record_urls(",
-            '"RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2"',
+            '"RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3"',
             '"validation_stage_code"',
+            '"validation_detail_code"',
+            "class RakutenOwnerLocalValidationDetailCode(StrEnum):",
             '"first": result.first if result is not None else None,',
             '"last": result.last if result is not None else None,',
             "_MALFORMED_PERCENT_ESCAPE =",
@@ -1584,6 +1587,12 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "mandatory_record_fields(api)",
             "returned_value = validated_response_text(",
             "RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE",
+            "RakutenOwnerLocalValidationDetailCode.ROOT_NOT_OBJECT",
+            "RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID",
+            "RakutenOwnerLocalValidationDetailCode.ROOT_MEMBER_UNRECOGNIZED",
+            "RakutenOwnerLocalValidationDetailCode.COLLECTION_NOT_ARRAY",
+            "RakutenOwnerLocalValidationDetailCode.OPTIONAL_ROOT_MEMBER_VALUE_INVALID",
+            'type(root["carrier"]) is not int or root["carrier"] != 0',
             "RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR",
             "for raw_record in raw_records:",
             "for projected in projected_records:",
@@ -2265,6 +2274,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "response_maximum_bytes",
             "response_json",
             "response_summary_relationships",
+            "item_response_carrier",
         )
         or tuple(authentication)
         != ("applicationId", "affiliateId", "header_name", "access_key")
@@ -2316,6 +2326,13 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "PAGECOUNT_EQUALS_MIN_CEIL_COUNT_DIV_HITS_100_FIRST_1_LAST_"
             "CARDINALITY"
         )
+        or transport.get("item_response_carrier")
+        != {
+            "presence": "OPTIONAL",
+            "accepted_value": "EXACT_INTEGER_ZERO",
+            "normalized_or_persisted": False,
+            "product_search": "UNCHANGED_REJECT_AS_UNRECOGNIZED_ROOT_MEMBER",
+        }
     ):
         _fail("VALUE_MISMATCH", "owner_local.transport")
     result = _mapping(owner["normalized_result"], "owner_local.result")
@@ -2328,6 +2345,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "response_sha256",
             "envelope",
             "validation_diagnostic",
+            "validation_detail",
             "url_validation",
             "mandatory_text",
             "credential_reflection",
@@ -2341,8 +2359,8 @@ def _validate_owner_local_read_integration(value: object) -> None:
         or result.get("response_sha256") != "SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES"
         or result.get("envelope")
         != {
-            "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2",
-            "version": 2,
+            "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3",
+            "version": 3,
             "exact_object_keys": list(EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
             "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
             "success_summary": "VALIDATED_INTEGER_VALUES",
@@ -2353,8 +2371,8 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "failure_summary": "ALL_SIX_KEYS_NULL",
             "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
             "compatibility": (
-                "V1_EVIDENCE_IMMUTABLE_V2_ADDS_NULLABLE_VALUE_FREE_VALIDATION_"
-                "STAGE_NO_REWRITE"
+                "V1_V2_EVIDENCE_IMMUTABLE_V3_ADDS_NULLABLE_VALUE_FREE_"
+                "COLLECTION_DETAIL_NO_REWRITE"
             ),
         }
         or result.get("validation_diagnostic")
@@ -2395,7 +2413,34 @@ def _validate_owner_local_read_integration(value: object) -> None:
                 "COMPLETE_AVAILABLE_RESPONSE_METADATA_REQUEST_COUNT_PRESERVED_"
                 "PROVIDER_RESULT_NULL"
             ),
-            "previous_schema": ("RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1_IMMUTABLE"),
+            "previous_schema": ("RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2_IMMUTABLE"),
+        }
+        or result.get("validation_detail")
+        != {
+            "field": "validation_detail_code",
+            "parent_stage": "COLLECTION_SHAPE",
+            "parent_diagnostic": "RESPONSE_SCHEMA_DRIFT",
+            "values": [
+                "ROOT_NOT_OBJECT",
+                "COLLECTION_KEY_INVALID",
+                "ROOT_MEMBER_UNRECOGNIZED",
+                "COLLECTION_NOT_ARRAY",
+                "OPTIONAL_ROOT_MEMBER_VALUE_INVALID",
+            ],
+            "success_and_other_failures": None,
+            "conjunction": (
+                "NON_NULL_IF_AND_ONLY_IF_RESPONSE_SCHEMA_DRIFT_AND_COLLECTION_SHAPE"
+            ),
+            "precedence": (
+                "ROOT_NOT_OBJECT_THEN_COLLECTION_KEY_INVALID_THEN_ROOT_MEMBER_"
+                "UNRECOGNIZED_THEN_COLLECTION_NOT_ARRAY_THEN_OPTIONAL_ROOT_MEMBER_"
+                "VALUE_INVALID"
+            ),
+            "persisted_material": (
+                "CLOSED_ENUM_ONLY_NO_FIELD_NAME_INDEX_EXPECTED_ACTUAL_PROVIDER_VALUE_"
+                "BODY_HEADER_EXCEPTION_OR_CREDENTIAL"
+            ),
+            "previous_evidence": "RESULT_V1_AND_V2_IMMUTABLE",
         }
         or result.get("url_validation")
         != {
