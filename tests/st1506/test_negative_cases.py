@@ -475,6 +475,31 @@ def test_aws_reference_cannot_be_promoted_to_provider_semantics(
 
 
 @pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("role", "OPTIONAL_HISTORICAL_REFERENCE_ONLY"),
+        (
+            "canonical_story_deliverables",
+            "CANONICAL_STORY_DELIVERABLES_REPLACED_BY_PORTABILITY_OVERLAY",
+        ),
+        ("non_aws_owner_managed_profiles", "REPLACEMENT_IMPLEMENTATION_PATHS"),
+    ),
+)
+def test_canonical_reference_and_portable_path_semantics_survive_fingerprint_rebind(
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    value: str,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_admission"]["aws_reference_boundary"][field] = value
+    _refresh_contract_fingerprint(document, monkeypatch)
+    with pytest.raises(generator.ProductionDeploymentContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "FIXED_VALUE_VIOLATION"
+
+
+@pytest.mark.parametrize(
     "field",
     (
         "provider_label_as_evidence",
@@ -1111,6 +1136,45 @@ def test_every_handoff_normative_section_is_exact_after_raw_hash_rebinding(
         "SAFE_BOUNDARY_VIOLATION",
         "SELECTION_MUST_REMAIN_UNSET",
     }
+    assert MARKER not in str(captured.value)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("role", "OPTIONAL_HISTORICAL_REFERENCE_ONLY"),
+        (
+            "canonical_story_deliverables",
+            "CANONICAL_STORY_DELIVERABLES_REPLACED_BY_PORTABILITY_OVERLAY",
+        ),
+        ("non_aws_owner_managed_profiles", "REPLACEMENT_IMPLEMENTATION_PATHS"),
+    ),
+)
+def test_handoff_canonical_reference_semantics_survive_raw_and_semantic_rebind(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    value: str,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    path = tmp_path / generator.DESIGN_HANDOFF_PATH
+    handoff = yaml.safe_load(path.read_bytes())
+    handoff["decision"]["aws_reference_boundary"][field] = value
+    path.write_text(
+        yaml.safe_dump(handoff, sort_keys=False, allow_unicode=True),
+        encoding="utf-8",
+    )
+    document = copy.deepcopy(contract_document)
+    _rebind_handoff_raw_digest(document, generator.sha256_file(path), monkeypatch)
+    monkeypatch.setattr(
+        generator,
+        "EXPECTED_HANDOFF_SEMANTIC_SHA256",
+        generator.semantic_sha256(handoff),
+    )
+    with pytest.raises(generator.ProductionDeploymentContractError) as captured:
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code == "FIXED_VALUE_VIOLATION"
     assert MARKER not in str(captured.value)
 
 

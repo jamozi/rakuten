@@ -191,7 +191,13 @@ def test_provider_neutral_admission_is_closed_unselected_and_evidence_equal(
     aws = _mapping(admission["aws_reference_boundary"])
     assert aws["canonical_decision_id"] == "INT-DEC-007"
     assert aws["reference_profile"] == "AWS_TOKYO"
-    assert aws["role"] == "OPTIONAL_HISTORICAL_REFERENCE_ONLY"
+    assert aws["role"] == "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    assert aws["canonical_story_deliverables"] == (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    )
+    assert aws["non_aws_owner_managed_profiles"] == (
+        "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+    )
     assert all(
         aws[field] is False
         for field in (

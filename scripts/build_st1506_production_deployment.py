@@ -104,45 +104,45 @@ AUTHORITY_SOURCES: Final = {
         "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
     ),
     "changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml": (
-        "91fabd10025a866796de62ad65072cb6a7d2c39c26c9f43ad802bffe45e8065f"
+        "5dc4ccfaa954b65aaae39a5d899c1c4e7f7d106787780d502514a48c7c13ad5e"
     ),
 }
 PREDECESSOR_SOURCES: Final = {
     "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
-        "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61"
+        "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
     ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6"
+        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559"
+        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
     ),
     "scripts/build_st1501_terraform_foundation.py": (
-        "558e1f8dc20331730582e62018cd88579f4b82e295bffad617049a925ab466a7"
+        "8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8"
     ),
     "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
-        "40d866ae30199748c9d91b8152aaa4fb4ca2721e5e722bcff05cf97760f1c228"
+        "ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5"
     ),
     "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "4d0ca4188c4a4ee7c8f6c8417afc6880b9ac0f89b6e4bd63703eb98d8368dddb"
+        "bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041"
     ),
     "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "28f4ae25fd66f0bb999a1918e72a5d108f38991bb5104e2726b01a0997a6087c"
+        "84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699"
     ),
     "scripts/build_st1502_data_services.py": (
-        "fcb488254a09bf5ac686a66d75865ccef8ee0e027360e3131c8aacea8de01484"
+        "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf"
     ),
     "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml": (
-        "de21922772e9e88ba830fc33c82848a9423d492fc9696027b91febf9aebb0646"
+        "2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d"
     ),
     "changes/st-1503/contracts/compute-edge-foundation.v1.yaml": (
-        "7d742065c5ffda0dbecf04c144af7daf0de2fdc0d2598e85bc9af656c4ac242d"
+        "07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60"
     ),
     "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json": (
-        "a894504b51f2cc5f77d05a00c12fdcbd854a49d74d80822c9564f08957bd3888"
+        "62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8"
     ),
     "scripts/build_st1503_compute_edge.py": (
-        "554d00a82f1a48d1e154e5aaff63fad7330e46a81e862e6bc0a2b30385029a7b"
+        "9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d"
     ),
     "changes/st-0107/contracts/pr-governance.v1.yaml": (
         "b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92"
@@ -151,76 +151,76 @@ PREDECESSOR_SOURCES: Final = {
         "e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5"
     ),
     "changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml": (
-        "f6a89722b86a8a47288da86c09214a3a926061d16489737170edc07398b2be61"
+        "36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04"
     ),
     "changes/st-1504/contracts/github-oidc-deployment.v1.yaml": (
-        "d7e6922ff953434435509a4bd3aca0251b57dc699e990fae3ae06c75af229b4c"
+        "c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b"
     ),
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json": (
-        "7566adbe5a9eff81144ceffb9ec233ba98322c2d01f399e5a103a033d0b35974"
+        "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4"
     ),
     "scripts/build_st1504_github_oidc.py": (
-        "3972533552bf2e1d3265ae4a41571872a5c0aa6fd537fa69c7afd3736eb53a28"
+        "996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f"
     ),
     "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml": (
-        "146351e1ba13970b33bccc0df3683c8b650769b1357f829424f1d53bce8a3937"
+        "5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "c70deefd72bd84f4196bea7f078a70f511397f1d759846c200cfb9224468cc69"
+        "b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "ba65ac0776c4dd811a2918843e8984945ab92e370892b164bb8099df67950cac"
+        "8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4"
     ),
     "scripts/build_st1505_staging_deployment.py": (
-        "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+        "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
 PREDECESSOR_SEMANTIC_SHA256: Final = {
     "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
-        "0915d6ec4949babebf43f307b2ac1569fa76213c96a3be9009dfaec660e34030"
+        "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
     ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "715fbdd46467ac282333c486850a5571d27836d5d028f971e5840f755e338a6e"
+        "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "6521f7396e8b076177cd00d297342a482ac664809c432dde48c8c7d55d01d32f"
+        "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
     ),
     "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
-        "53a640dd58c222296da2c079a374daf55e6a55e40fb1944bae6070b7ef559450"
+        "fda0d363d17ca4d8197179b74ad0fac23d252fc3a4e7ef0dc66c2c10a7fc3500"
     ),
     "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "3b696b86edd9b0a04e85c99f3306deb4879a935c381351276136a49e7423f440"
+        "733d4b6f8c057f3b6d73b413c9ca63b642087005e6f159ae0104a95bf1ff374c"
     ),
     "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "777368a0ee051d9f74f1bb4b25216ddf4ea4b1000f16a283e387df197b1095d7"
+        "8af68f20679a97fc45c20ed9db15edb704edfa7ce63b03b389437cb3eee91329"
     ),
     "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml": (
-        "0e3d26dc01e244034567bbd6fe13ace689447cc5f835e6b3581b64120cfbc7fe"
+        "ad5e207a8f201d0ccdff72670a0f1cd7d90ba76f3e52ad7e51db2eb96d0dd707"
     ),
     "changes/st-1503/contracts/compute-edge-foundation.v1.yaml": (
-        "4ee5dfb892be42119d4f2c77c07e850a93785458e47c496e0e953fd83fc276ac"
+        "3d802aa46e08af8241e0feca42ffa7a3d3397a49d4f839cbfef28321cdd52852"
     ),
     "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json": (
-        "50d334f3d28a0c0b56623b3960a6b1d3398d861aeda72d6abee1339f84b4e6a8"
+        "8e483d3448213f8fd328241c39029e4ed443a3ffc0df7a358ed0de6870eb074a"
     ),
     "changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml": (
-        "8afd193ddc98a0193e21032a3058c157fe75f12151cb06d80a9ea198efbc5f8c"
+        "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
     ),
     "changes/st-1504/contracts/github-oidc-deployment.v1.yaml": (
-        "795f7ec4218e029feef40aee6d6616ff62e3f9cc847a8383f4f847514c8c3d22"
+        "86c418b07701b4cf47f478b13f7665911ece7c4a46d39edd07f7b6944019a4b7"
     ),
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json": (
-        "256550caaf1c7fba5aca5b4c74015590d052941e87e9fcaf4c2eb3db7af25697"
+        "9fac1776d4b7cd2a89999559036e4c465979d5de0f80ccaff26004e56ade5951"
     ),
     "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml": (
-        "30eaec3fbeceec8b3b4043777d7c3fe8b97082e36f585e70899ba6104fa3bc32"
+        "d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "a7d9a9cb6f791116b30d086f824101bf547782f2b785a538a331f83b16b8eeff"
+        "9c5e6c5a8c52e40cb43e7405f95492d75bf0096430566425e0b47b550ade1215"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "72337829f619da5a266b09bbe14017ade796e38b2394fb2e7fe5dc15c2d6ec96"
+        "f01f3e7618e5ea66419225a5fc8c1d0866d1b09e284b923b04a3f0b279930414"
     ),
 }
 DEPENDENCY_POLICIES: Final = {
@@ -500,10 +500,10 @@ APPROVAL_ARTIFACT_NAMES: Final = (
     "operations_approval",
 )
 EXPECTED_CONTRACT_FINGERPRINT: Final = (
-    "585ecdc4ea352fa78d83ddcb1491c483ada74289b2a72eb1915be7c92dcb369e"
+    "1f09e61baed0164bee155de33068a90f0a993880e55738f90e3ca5771cd9dbd3"
 )
 EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
-    "19235956b20edbc0ad3363ae5b65752f7715f3af021c24a449ac5d2bdc19506b"
+    "ab5e93f86fc2d78f4775c1d73af3766df679bd01b5aa5a62d5c4edca906ad130"
 )
 MAX_DOCUMENT_BYTES: Final = 2 * 1024 * 1024
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
@@ -939,6 +939,27 @@ def _validate_authority_semantics(root: Path) -> None:
         "handoff.decision.required_dependency_stories",
     )
     _strict_match(
+        decision.get("aws_reference_boundary"),
+        {
+            "canonical_decision_id": "INT-DEC-007",
+            "reference_profile": "AWS_TOKYO",
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "handoff.decision.aws_reference_boundary",
+    )
+    _strict_match(
         decision.get("predecessor_boundary"),
         {
             "st_1501_through_st_1505": (
@@ -1275,7 +1296,13 @@ def _validate_provider_neutral_admission(contract: Mapping[str, Any]) -> None:
             "canonical_decision_id": "INT-DEC-007",
             "reference_profile": "AWS_TOKYO",
             "reference_region_metadata": "ap-northeast-1",
-            "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
             "default": False,
             "implicit_fallback": False,
             "selected_binding": False,
@@ -1745,6 +1772,12 @@ def render_manifest(
                 "configured_mapping_count"
             ],
             "aws_reference_role": admission["aws_reference_boundary"]["role"],
+            "canonical_story_deliverables": admission["aws_reference_boundary"][
+                "canonical_story_deliverables"
+            ],
+            "portable_implementation_paths": admission["aws_reference_boundary"][
+                "non_aws_owner_managed_profiles"
+            ],
             "aws_reference_default": admission["aws_reference_boundary"]["default"],
             "aws_reference_fallback": admission["aws_reference_boundary"][
                 "implicit_fallback"

@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --no-sync python scripts/build_st1506_production_deployment.py
 provenance:
   contract_uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
-  contract_sha256: 24f365b0e4f547e7859207251bf8d2de58120b52aaad62b494386d7b4ee23b42
+  contract_sha256: 4e9b8bd3726c86b709552cd5814db8f7c4fa1c18995809e639c3d2e3c917ffd1
   authority_inputs:
   - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
     sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
@@ -48,83 +48,83 @@ provenance:
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
     sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
-    sha256: 91fabd10025a866796de62ad65072cb6a7d2c39c26c9f43ad802bffe45e8065f
+    sha256: 5dc4ccfaa954b65aaae39a5d899c1c4e7f7d106787780d502514a48c7c13ad5e
   predecessor_inputs:
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
-    sha256: ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61
+    sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
   - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    sha256: c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6
+    sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
   - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    sha256: c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559
+    sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
   - uri: repo://scripts/build_st1501_terraform_foundation.py
-    sha256: 558e1f8dc20331730582e62018cd88579f4b82e295bffad617049a925ab466a7
+    sha256: 8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8
   - uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
-    sha256: 40d866ae30199748c9d91b8152aaa4fb4ca2721e5e722bcff05cf97760f1c228
+    sha256: ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5
   - uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-    sha256: 4d0ca4188c4a4ee7c8f6c8417afc6880b9ac0f89b6e4bd63703eb98d8368dddb
+    sha256: bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041
   - uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
-    sha256: 28f4ae25fd66f0bb999a1918e72a5d108f38991bb5104e2726b01a0997a6087c
+    sha256: 84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699
   - uri: repo://scripts/build_st1502_data_services.py
-    sha256: fcb488254a09bf5ac686a66d75865ccef8ee0e027360e3131c8aacea8de01484
+    sha256: ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf
   - uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
-    sha256: de21922772e9e88ba830fc33c82848a9423d492fc9696027b91febf9aebb0646
+    sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
   - uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-    sha256: 7d742065c5ffda0dbecf04c144af7daf0de2fdc0d2598e85bc9af656c4ac242d
+    sha256: 07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60
   - uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
-    sha256: a894504b51f2cc5f77d05a00c12fdcbd854a49d74d80822c9564f08957bd3888
+    sha256: 62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8
   - uri: repo://scripts/build_st1503_compute_edge.py
-    sha256: 554d00a82f1a48d1e154e5aaff63fad7330e46a81e862e6bc0a2b30385029a7b
+    sha256: 9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d
   - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
     sha256: b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92
   - uri: repo://changes/st-0107/ruleset-policy.v1.json
     sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
   - uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
-    sha256: f6a89722b86a8a47288da86c09214a3a926061d16489737170edc07398b2be61
+    sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
   - uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-    sha256: d7e6922ff953434435509a4bd3aca0251b57dc699e990fae3ae06c75af229b4c
+    sha256: c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b
   - uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
-    sha256: 7566adbe5a9eff81144ceffb9ec233ba98322c2d01f399e5a103a033d0b35974
+    sha256: 1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4
   - uri: repo://scripts/build_st1504_github_oidc.py
-    sha256: 3972533552bf2e1d3265ae4a41571872a5c0aa6fd537fa69c7afd3736eb53a28
+    sha256: 996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f
   - uri: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
-    sha256: 146351e1ba13970b33bccc0df3683c8b650769b1357f829424f1d53bce8a3937
+    sha256: 5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5
   - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
-    sha256: c70deefd72bd84f4196bea7f078a70f511397f1d759846c200cfb9224468cc69
+    sha256: b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b
   - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
-    sha256: ba65ac0776c4dd811a2918843e8984945ab92e370892b164bb8099df67950cac
+    sha256: 8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4
   - uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522
+    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
 source_artifact_count: 8
 source_artifacts:
 - uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
-  bytes: 33996
-  sha256: 24f365b0e4f547e7859207251bf8d2de58120b52aaad62b494386d7b4ee23b42
+  bytes: 34190
+  sha256: 4e9b8bd3726c86b709552cd5814db8f7c4fa1c18995809e639c3d2e3c917ffd1
 - uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
-  bytes: 10655
-  sha256: 91fabd10025a866796de62ad65072cb6a7d2c39c26c9f43ad802bffe45e8065f
+  bytes: 11679
+  sha256: 5dc4ccfaa954b65aaae39a5d899c1c4e7f7d106787780d502514a48c7c13ad5e
 - uri: repo://changes/st-1506/README.md
-  bytes: 8689
-  sha256: f070e08a9b7982e9411b727317c23f5a6fe5412e412dd9b1a0c6a26d467f6148
+  bytes: 9249
+  sha256: 6c6af3972a75a6f9c3d7af8952332cf84c8f811cc893bc8f5cf742f120846270
 - uri: repo://scripts/build_st1506_production_deployment.py
-  bytes: 74945
-  sha256: a57808e2c44feb51ebb4bcc1127c3aa0a64ef77d45d5c570207f66750b04d304
+  bytes: 76341
+  sha256: f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176
 - uri: repo://tests/st1506/conftest.py
   bytes: 650
   sha256: 6e1d73217032d1b903701e6c589d89df06201adafa2185053a4a3500ef187eee
 - uri: repo://tests/st1506/test_contract.py
-  bytes: 19751
-  sha256: f3ba180616760800a1d33f8747ec76960e21203744acbff3a99b15be87fbeda5
+  bytes: 20013
+  sha256: c6ddeed3fae2396a8f68222fff5f03a7c7fcf1c104efd65eafb8d69935799d20
 - uri: repo://tests/st1506/test_generation.py
-  bytes: 11422
-  sha256: 62ff184e3ceac6ab899834b3155f582ab3060e10aa21784d1a430328e3874315
+  bytes: 11709
+  sha256: 7b9a98f4562f78e8967c70525b09e821da9e031e044acf859c1284c4dd21ccb5
 - uri: repo://tests/st1506/test_negative_cases.py
-  bytes: 41888
-  sha256: 1c9c5db62dbcb86210ce528ba62d50c6a7d155c8f9e67dc4afe83888539830ec
+  bytes: 44187
+  sha256: 0398c42f9aa039fdd32b190821831df8ac611b602eada43f428d9ea692b88d70
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/deployment-production/production-deployment.reference-plan.v1.json
-  bytes: 32517
-  sha256: b900d577289e2bbb22e058d6d663f3711068f71c93922ee4acd00e0bf0dbc9e2
+  bytes: 32725
+  sha256: d3cc3524483974145683ab87b841475b4c65e784214d7b8fb19773c985cf69ba
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
@@ -162,7 +162,9 @@ boundary:
   fallback_profile: null
   required_capability_count: 10
   configured_capability_count: 0
-  aws_reference_role: OPTIONAL_HISTORICAL_REFERENCE_ONLY
+  aws_reference_role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+  canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+  portable_implementation_paths: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
   aws_reference_default: false
   aws_reference_fallback: false
   aws_reference_eligibility_shortcut: false

@@ -105,7 +105,15 @@ def test_manifest_inventory_hashes_and_boundary_are_complete() -> None:
     assert boundary["required_dependency_count"] == 5
     assert boundary["satisfied_dependency_count"] == 0
     assert boundary["complete_dependency_chain"] is False
-    assert boundary["aws_reference_role"] == "OPTIONAL_HISTORICAL_REFERENCE_ONLY"
+    assert boundary["aws_reference_role"] == (
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    )
+    assert boundary["canonical_story_deliverables"] == (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    )
+    assert boundary["portable_implementation_paths"] == (
+        "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+    )
     assert boundary["aws_reference_default"] is False
     assert boundary["aws_reference_fallback"] is False
     assert boundary["aws_reference_eligibility_shortcut"] is False

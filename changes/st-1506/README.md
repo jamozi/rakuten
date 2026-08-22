@@ -27,15 +27,17 @@ release-ready, or Production-ready.
 
 ## Provider-neutral Production admission
 
-Full RAOS Production admission does not require AWS or any other named
-infrastructure provider. The direct-owner
+This overlay adds a provider-neutral Full RAOS Production admission boundary;
+it does not make AWS or any other named infrastructure provider a selected,
+default, fallback, or Production-admission binding. The direct-owner
 `DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml` is hash-pinned as
 an authority input and defines a strict dependency and capability contract. A
-future profile may identify AWS, another cloud, or owner-managed infrastructure
-only after all five current provider-neutral predecessor admissions are
-satisfied, it maps exactly one implementation to every required Production
-capability, and it supplies the same security, operations, release,
-backup/restore, and residency evidence.
+A future non-AWS or owner-managed profile is an additional portable
+implementation path. Any future profile, including AWS, is admitted only after
+all five current provider-neutral predecessor admissions are satisfied, it maps
+exactly one implementation to every required Production capability, and it
+supplies the same security, operations, release, backup/restore, and residency
+evidence.
 
 The closed required capability inventory covers:
 
@@ -58,20 +60,25 @@ profile is currently selected or eligible. This slice defines provider-neutral
 admission; it does not implement a non-AWS deployment profile or make the full
 deployment chain runnable.
 
-INT-DEC-007's AWS Tokyo record and `ap-northeast-1` remain visible only as
-optional historical reference metadata. They are never a default, implicit
-fallback, selected binding, admission prerequisite, eligibility shortcut, or
-evidence substitute.
+INT-DEC-007's AWS Tokyo record and `ap-northeast-1` remain the current Canonical
+Reference Architecture. The Canonical AWS-specific ST-1506 objective and
+disabled-by-default Production pipeline deliverable remain authoritative and
+NOT_STARTED/NOT_EXECUTED; this portability overlay does not erase, replace, or
+complete them. Canonical reference status is never a default, implicit fallback,
+selected binding, admission prerequisite, eligibility shortcut, or evidence
+substitute.
 
 ## Provider-neutral predecessor boundary
 
 ST-1501 foundation, ST-1502 data services, ST-1503 compute and edge, ST-1504
-deployment identity, and ST-1505 staging are current provider-neutral
-dependency contracts, not immutable AWS-specific history. The owner builder
-raw-hash and semantic-hash binds every handoff, contract, owner generator, and
-reference plan. It also binds the ST-0107 governance inputs required by the
-ST-1504 owner. Each owner validator must accept the complete closed contract
-and reproduce the committed plan bytes exactly.
+deployment identity, and ST-1505 staging provide current provider-neutral
+dependency overlays that supplement rather than replace their Canonical
+AWS-specific objectives and deliverables. Those Canonical Story deliverables
+remain authoritative and NOT_STARTED/NOT_EXECUTED. The owner builder raw-hash
+and semantic-hash binds every provider-neutral handoff, contract, owner
+generator, and reference plan. It also binds the ST-0107 governance inputs
+required by the ST-1504 owner. Each owner validator must accept the complete
+closed contract and reproduce the committed plan bytes exactly.
 
 All five predecessor admissions are mandatory Production dependency semantics.
 They remain non-executable and disabled, with all selected values unset,

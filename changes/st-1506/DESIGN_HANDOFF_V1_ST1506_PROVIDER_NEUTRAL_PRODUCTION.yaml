@@ -3,9 +3,11 @@ version: 1
 record_status: RECORDED_DURABLE_OWNER_DECISION
 approved_story: ST-1506
 approved_scope:
-  - Define Full RAOS Production admission without assuming or requiring AWS or any other infrastructure provider.
+  - Define an additional provider-neutral Full RAOS Production admission boundary without making AWS or any provider a selected, default, fallback, or Production-admission binding.
   - Bind the current provider-neutral ST-1501 foundation, ST-1502 data-services, ST-1503 compute-edge, ST-1504 deployment-identity, and ST-1505 staging handoffs, contracts, owner generators, and reference plans as mandatory future Production dependency evidence.
-  - Retain AWS Tokyo only as optional historical reference metadata inherited from INT-DEC-007.
+  - Preserve AWS Tokyo as the current Canonical Reference Architecture inherited from INT-DEC-007.
+  - Preserve the Canonical AWS-specific ST-1506 objective and disabled-by-default Production pipeline deliverable as authoritative, not erased, replaced, or completed by this portability overlay.
+  - Admit non-AWS and owner-managed Production profiles only as additional portable implementation paths with identical complete capabilities and evidence.
   - Require every future Production profile to satisfy the complete five-story dependency chain, map the same closed ten-capability inventory, and provide equivalent security, operations, release, and residency evidence.
   - Keep every current provider/profile binding unset and Production disabled while OD-009, OD-011, OD-013, and OD-015 remain unresolved.
 source_design_refs:
@@ -39,7 +41,9 @@ decision:
   aws_reference_boundary:
     canonical_decision_id: INT-DEC-007
     reference_profile: AWS_TOKYO
-    role: OPTIONAL_HISTORICAL_REFERENCE_ONLY
+    role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
     default: false
     implicit_fallback: false
     selected_binding: false
@@ -73,7 +77,7 @@ decision:
 rationale:
   - The RAOS Core already uses portable protocol and adapter boundaries, so Production admission should evaluate capabilities and evidence rather than a provider name.
   - The current five predecessor Stories now define complementary provider-neutral foundation, data, compute-edge, identity, and staging admission boundaries that Production must preserve as a complete chain.
-  - Provider-name admission would turn historical reference metadata into an unsafe default and would allow unequal security or operational assurance.
+  - Provider-name admission would turn Canonical Reference Architecture status into an unsafe default and would allow unequal security or operational assurance.
   - A closed dependency and capability inventory permits AWS, another cloud, or owner-managed infrastructure without selecting an unreviewed live provider now.
   - Keeping all bindings null and eligibility not evaluated preserves the documented safe defaults and external human gates.
 rejected_alternatives:
@@ -105,12 +109,14 @@ security_and_approval_gates:
   - Preserve protected-environment, exact repository/ref/workflow, least-privilege identity, artifact provenance, independent migration review, cross-capability transport security, canary, smoke, and rollback requirements.
   - Preserve OD-009 budget, OD-011 notification, OD-013 region/residency, and OD-015 credential blockers until their owners provide valid evidence.
   - Require the same security, operations, release, backup/restore, and residency evidence for AWS, another cloud, and owner-managed infrastructure.
-  - Never infer eligibility from a provider name, AWS reference metadata, a partial predecessor chain, predecessor completion alone, or local generator/test success.
+  - Never infer eligibility from a provider name, AWS Canonical Reference Architecture status, a partial predecessor chain, predecessor completion alone, or local generator/test success.
 acceptance_criteria:
   - The ST-1506 source and generated reference expose a closed five-story provider-neutral dependency inventory and ten-capability inventory with no selected, default, or fallback profile.
   - Every future eligible profile must satisfy all five exact predecessor admissions, have exactly one explicit mapping for every required Production capability, and provide complete equivalent evidence.
   - Unknown, missing, duplicate, reordered, partial, implicit, predecessor-only, or label-only dependency or capability mappings are rejected before eligibility.
-  - AWS Tokyo remains visible only as optional historical reference metadata and cannot satisfy admission or evidence by itself.
+  - AWS Tokyo remains the current Canonical Reference Architecture, while that status alone cannot satisfy admission or evidence.
+  - The Canonical AWS-specific ST-1506 objective and disabled-by-default Production pipeline deliverable remain authoritative and NOT_STARTED/NOT_EXECUTED; this overlay neither erases, replaces, nor completes them.
+  - Non-AWS and owner-managed Production profiles remain additional portable implementation paths admitted only by identical complete capabilities and evidence.
   - Independent migration review and authenticated, encrypted, peer-verified, downgrade-resistant cross-capability transport evidence remain required and unconfigured.
   - All existing disabled activation, zero action counts, unresolved decisions, human approvals, and NOT_EXECUTED evidence remain unchanged.
 required_test_evidence:
