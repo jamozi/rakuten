@@ -53,10 +53,10 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 CONTRACT_SHA256: Final = (
-    "9a3500b2e8f7571accaf9aefad3304a148f04e7f19410e12e85f285cd3660641"
+    "f078865e762f3fa8f5aaf7227409558de5fed706a509cbd67a92365a61da3d36"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -242,7 +242,7 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0903",
         "changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-        "d6a98010b7fee35aee3fe51eb915f6b1b34a5ee91ef5f40ef2075f3b33d85263",
+        "e38e644ace8ad86f8c16e178221fa461360518abf5a080ea572c475d7d273c82",
     ),
     (
         "ST-0306",
