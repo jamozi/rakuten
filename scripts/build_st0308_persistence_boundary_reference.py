@@ -54,8 +54,8 @@ SOURCE_ARTIFACT_PATHS: Final = (
 
 SECURE_HELPER_ROW: Final = (
     "scripts/build_st1506_production_deployment.py",
-    42566,
-    "ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f",
+    76341,
+    "f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176",
 )
 
 SOURCE_ROWS: Final = (

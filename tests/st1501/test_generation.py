@@ -66,7 +66,7 @@ def test_manifest_pins_contract_authority_and_status_boundary() -> None:
     manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
     assert manifest["document"] == {
         "id": "RAOS-TERRAFORM-FOUNDATION-MANIFEST-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1501",
         "source_contract": generator.SOURCE_CONTRACT_URI,
         "generated_by": generator.GENERATOR_URI,
@@ -81,6 +81,25 @@ def test_manifest_pins_contract_authority_and_status_boundary() -> None:
     ]
     assert manifest["boundary"] == {
         "classification": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
+        "provider_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
+        "admission_status": "NOT_EVALUATED",
+        "eligible": False,
+        "selected_profile": None,
+        "default_profile": None,
+        "fallback_profile": None,
+        "required_capability_count": 10,
+        "configured_mapping_count": 0,
+        "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+        "canonical_story_deliverables": (
+            "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+        ),
+        "portable_implementation_paths": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
+        "aws_reference_default": False,
+        "aws_reference_fallback": False,
+        "aws_reference_selected": False,
+        "aws_reference_eligibility_shortcut": False,
+        "aws_reference_admission_requirement": False,
+        "aws_reference_evidence_substitute": False,
         "activation": "DISABLED",
         "planned_actions": {"create": 0, "update": 0, "delete": 0},
         "selected_cloud_provider": None,
@@ -88,6 +107,7 @@ def test_manifest_pins_contract_authority_and_status_boundary() -> None:
         "selected_production_account": None,
         "selected_state_backend": None,
         "credentials": "ABSENT",
+        "provider_account_or_project": "UNSET",
         "resource_definitions": [],
         "native_iac_validation": "NOT_EXECUTED",
         "formal_tst_026": "NOT_EXECUTED",
@@ -101,6 +121,17 @@ def test_manifest_pins_contract_authority_and_status_boundary() -> None:
         row["uri"] != f"repo://{generator.MANIFEST_PATH.as_posix()}"
         for row in manifest["generated_artifacts"]
     )
+
+
+def test_manifest_hash_pins_direct_owner_handoff() -> None:
+    manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
+    handoff_uri = f"repo://{generator.DESIGN_HANDOFF_PATH.as_posix()}"
+    assert {
+        row["uri"]: row["sha256"] for row in manifest["provenance"]["authority_inputs"]
+    }[handoff_uri] == generator.sha256_file(
+        REPOSITORY_ROOT / generator.DESIGN_HANDOFF_PATH
+    )
+    assert handoff_uri in {row["uri"] for row in manifest["source_artifacts"]}
 
 
 def test_check_rejects_drift_without_echoing_bytes(tmp_path: Path) -> None:

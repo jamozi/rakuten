@@ -1,0 +1,170 @@
+schema: DESIGN_HANDOFF_V1
+version: 1
+record_status: RECORDED_DURABLE_OWNER_DECISION
+approved_story: ST-1502
+approved_scope:
+  - Define an additional provider-neutral data-services admission boundary for Full RAOS without making AWS or any provider a selected, default, fallback, or Production-admission binding.
+  - Preserve AWS Tokyo and the RDS, S3, SQS, Secrets Manager, and KMS mappings as the current Canonical Reference Architecture inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Preserve the Canonical AWS-specific ST-1502 objective and modules/config deliverable as authoritative, not erased, replaced, or completed by this portability overlay.
+  - Admit non-AWS and owner-managed profiles only as additional portable implementation paths with identical complete capabilities and evidence.
+  - Require every future data-services profile to map the same closed capability inventory and provide equivalent security, operations, release, recovery, migration, isolation, and residency evidence.
+  - Keep every provider, account or project, region, service, plugin or adapter, credential, network, retention, and physical-resource binding unset while the relevant Open Decisions remain unresolved.
+source_design_refs:
+  - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  - repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-007
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-013
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-014
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015
+  - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1502
+  - repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+  - repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md#RAOS-ARCH-001
+  - repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md#RAOS-OPS-001
+  - repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md#RAOS-SEC-001
+  - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-026
+  - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-029
+decision:
+  data_services_provider_policy: STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION
+  selected_profile: null
+  default_profile: null
+  fallback_profile: null
+  concrete_alternate_provider_selected: false
+  eligible_profile_kinds:
+    - AWS
+    - OTHER_CLOUD
+    - OWNER_MANAGED_INFRASTRUCTURE
+  eligibility_condition: COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE
+  aws_reference_mapping_boundary:
+    canonical_decision_id: INT-DEC-007
+    architecture_id: RAOS-ARCH-001
+    classification: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
+    mappings:
+      - reference_name: RDS
+        capability_id: relational_postgresql_compatible_persistence_and_migrations
+      - reference_name: S3
+        capability_id: immutable_versioned_object_storage_and_integrity
+      - reference_name: SQS
+        capability_id: at_least_once_queue_dlq_and_idempotency
+      - reference_name: Secrets Manager
+        capability_id: workload_secrets_and_key_management
+      - reference_name: KMS
+        capability_id: workload_secrets_and_key_management
+    default: false
+    implicit_fallback: false
+    selected_binding: false
+    eligibility_shortcut: false
+    admission_requirement: false
+    evidence_substitute: false
+  binding_policy:
+    provider:
+      selected: null
+      default: null
+      fallback: null
+    account_or_project:
+      selected: null
+      default: null
+      fallback: null
+    region:
+      selected: null
+      default: null
+      fallback: null
+    relational_persistence:
+      selected: null
+      default: null
+      fallback: null
+    object_storage:
+      selected: null
+      default: null
+      fallback: null
+    queue:
+      selected: null
+      default: null
+      fallback: null
+    secrets:
+      selected: null
+      default: null
+      fallback: null
+    key_management:
+      selected: null
+      default: null
+      fallback: null
+    data_services_plugin_or_adapter:
+      selected: null
+      default: null
+      fallback: null
+    implicit_binding: FORBIDDEN
+    name_or_reference_only_eligibility: FORBIDDEN
+  cross_capability_security_requirements:
+    transport_encryption: REQUIRED_FOR_ALL_DATA_SERVICE_INTERACTIONS
+    encryption_at_rest: REQUIRED_FOR_ALL_PERSISTED_DATA
+    selected_exceptions: []
+  required_capability_ids:
+    - relational_postgresql_compatible_persistence_and_migrations
+    - immutable_versioned_object_storage_and_integrity
+    - at_least_once_queue_dlq_and_idempotency
+    - workload_secrets_and_key_management
+    - data_service_backup_restore_and_recovery
+    - data_service_observability_audit_and_alerting
+    - environment_and_private_data_plane_isolation
+    - region_and_data_residency
+    - human_approved_release_migration_and_rollback
+rationale:
+  - INT-DEC-007 makes AWS Tokyo a Reference Architecture while requiring a portable Core, so data-service admission must evaluate capabilities and evidence rather than AWS service names.
+  - Provider, account, region, service, plugin, adapter, or backend defaults would silently turn the current Canonical Reference Architecture mappings into live selected infrastructure choices.
+  - PostgreSQL-compatible persistence, object durability, at-least-once delivery, secret and key boundaries, recovery, observability, isolation, and residency are provider-neutral operational outcomes.
+  - Keeping all bindings null and eligibility unevaluated preserves OD-013, OD-014, OD-015, TST-026, TST-029, and every external security, operations, release, and Production gate.
+rejected_alternatives:
+  - Require AWS, RDS, S3, SQS, Secrets Manager, KMS, an AWS account, or ap-northeast-1 merely because Canonical sources record them as reference mappings.
+  - Select a different cloud or owner-managed data platform before capability mapping, residency, retention, credentials, operations, migration, and recovery evidence exist.
+  - Infer a provider or service binding from names, reference metadata, defaults, ambient configuration, compatibility claims, or fallback behavior.
+  - Permit partial, unknown, duplicate, implicit, provider-label-only, service-label-only, or reference-only capability mappings.
+  - Lower security, operations, release, backup, restore, migration, isolation, or residency evidence for any provider kind.
+constraints:
+  - Exactly one explicit mapping is required for every required data-services capability before a future profile can be eligible.
+  - Missing, unknown, duplicate, partial, implicit, provider-label-only, service-label-only, or reference-only mappings fail closed.
+  - Relational persistence must prove PostgreSQL compatibility, private encrypted access, controlled migrations, backup and point-in-time recovery, deletion protection, and isolated restore evidence.
+  - Object storage must prove private encrypted versioning, required immutability and integrity metadata, deletion-role separation, and recoverability without selecting a service now.
+  - Queue capability must assume at-least-once and duplicate delivery, require idempotent consumers, DLQs, controlled redrive, separated roles, and actionable queue and DLQ telemetry.
+  - Secrets and keys must be least-privilege, non-ambient, auditable, rotatable, recoverable, and absent from repository, logs, generated artifacts, and configuration dumps.
+  - Development and Production must be isolated by account, project, tenant, or equivalent boundary, and every data plane must remain private unless a separately reviewed interface explicitly permits access.
+  - Region, backup region, cross-border transfer, retention, automatic deletion, credentials, and physical service choices remain unset while OD-013, OD-014, and OD-015 are unresolved.
+  - No credential, provider call, network access, external write, infrastructure init, plan, apply, migration, deployment, release, restore, deletion, or status transition is authorized by this record.
+security_and_approval_gates:
+  - Preserve private data planes, encryption in transit and at rest, least privilege, workload identity, separated duties, auditability, deletion protection, and immutable evidence requirements.
+  - Preserve explicit human approval for Production change, migration, restore, redrive, destructive action, release, rollback, and every external status transition.
+  - Preserve formal TST-026 security evidence and TST-029 isolated backup-restore drill evidence as release-blocking and NOT_EXECUTED.
+  - Preserve OD-013 residency, OD-014 retention and deletion, and OD-015 credential blocking states until their human owners provide valid evidence.
+  - Require the same security, operations, release, recovery, migration, isolation, and residency evidence for AWS, another cloud, and owner-managed infrastructure.
+  - Never infer eligibility from a provider or service label, account or project name, region, plugin or adapter, Canonical Reference Architecture status, local generator success, or predecessor completion.
+acceptance_criteria:
+  - The ST-1502 source and generated reference expose a closed provider-neutral data-services capability inventory with no selected, default, or fallback profile, provider, service, adapter, credential, region, or physical resource.
+  - Every future eligible profile must have exactly one explicit mapping for every required capability and complete equivalent evidence.
+  - Unknown, missing, duplicate, partial, implicit, defaulted, fallback, provider-label-only, service-label-only, or reference-only mappings are rejected before eligibility.
+  - AWS Tokyo and the RDS, S3, SQS, Secrets Manager, and KMS mappings remain the current Canonical Reference Architecture, while that status alone cannot select or satisfy any capability, admission, or evidence.
+  - The Canonical AWS-specific ST-1502 objective and modules/config deliverable remain authoritative and NOT_STARTED/NOT_EXECUTED; this overlay neither erases, replaces, nor completes them.
+  - Non-AWS and owner-managed profiles are additional portable implementation paths only and require the same complete capability mapping and evidence as AWS.
+  - Existing private, encrypted, backup, policy, retention, deletion, disabled activation, forbidden native commands, zero action counts, and NOT_EXECUTED boundaries remain fail closed.
+required_test_evidence:
+  - Isolated tests/st1502 positive contract and generated-plan assertions.
+  - Hostile tests for missing, unknown, duplicate, reordered, partial, defaulted, fallback, provider or service binding, and AWS-label-only admission attempts.
+  - Hash-rebound hostile tests for the complete direct-owner handoff and exact ST-1501 provider-neutral predecessor semantics.
+  - Existing hostile filesystem, closed-schema, exact-type, no-provider-call, no-network, and no-write tests remain passing.
+  - Owner generator regeneration and read-only --check, Ruff for changed Python, and git diff --check.
+  - Formal TST-026, TST-029, hosted CI, native IaC, provider, migration, restore, staging, release, deployment, and Production evidence remain separately unexecuted.
+open_decision_state:
+  OD-013:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: REFERENCE_REGION_ONLY_PRODUCTION_APPLY_FORBIDDEN
+  OD-014:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: RETENTION_UNSET_AUTOMATIC_DELETION_FORBIDDEN
+  OD-015:
+    status: EXTERNAL_EVIDENCE_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: RECORDED_FIXTURE_ONLY_CREDENTIALS_ABSENT_PROVIDER_CALLS_FORBIDDEN

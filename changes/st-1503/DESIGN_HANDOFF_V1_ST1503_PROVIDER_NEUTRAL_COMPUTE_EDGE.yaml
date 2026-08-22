@@ -1,0 +1,197 @@
+schema: DESIGN_HANDOFF_V1
+version: 1
+record_status: RECORDED_DURABLE_OWNER_DECISION
+approved_story: ST-1503
+approved_scope:
+  - Define an additional provider-neutral compute-edge admission boundary for Full RAOS without making AWS or any provider a selected, default, fallback, or Production-admission binding.
+  - Preserve AWS Tokyo and the ECS, Fargate, ECR, ALB, CloudFront, WAF, Route53, and ACM mappings as the current Canonical Reference Architecture inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Preserve the Canonical AWS-specific ST-1503 objective and modules deliverable as authoritative, not erased, replaced, or completed by this portability overlay.
+  - Admit non-AWS and owner-managed profiles only as additional portable implementation paths with identical complete capabilities and evidence.
+  - Require every future compute-edge profile to map the same closed capability inventory and provide equivalent security, operations, release, health, performance, rollback, isolation, and residency evidence.
+  - Keep every provider, account or project, region, runtime, scheduler, registry, edge, ingress, DNS, TLS, WAF, identity, secret, credential, network, and physical-resource binding unset while the relevant Open Decisions remain unresolved.
+source_design_refs:
+  - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  - repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-007
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-002
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-009
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-010
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-011
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-013
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015
+  - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1503
+  - repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+  - repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md#RAOS-ARCH-001
+  - repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md#RAOS-OPS-001
+  - repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md#RAOS-SEC-001
+  - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-026
+  - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-027
+decision:
+  compute_edge_provider_policy: STRICT_PROVIDER_NEUTRAL_COMPUTE_EDGE_CAPABILITY_ADMISSION
+  selected_profile: null
+  default_profile: null
+  fallback_profile: null
+  concrete_alternate_provider_selected: false
+  eligible_profile_kinds:
+    - AWS
+    - OTHER_CLOUD
+    - OWNER_MANAGED_INFRASTRUCTURE
+  eligibility_condition: COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE
+  aws_reference_mapping_boundary:
+    canonical_decision_id: INT-DEC-007
+    architecture_id: RAOS-ARCH-001
+    classification: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
+    mappings:
+      - reference_name: ECS
+        capability_id: workload_runtime_scheduling_and_supply_chain
+      - reference_name: Fargate
+        capability_id: workload_runtime_scheduling_and_supply_chain
+      - reference_name: ECR
+        capability_id: workload_runtime_scheduling_and_supply_chain
+      - reference_name: ALB
+        capability_id: public_ingress_edge_cdn_and_origin_control
+      - reference_name: CloudFront
+        capability_id: public_ingress_edge_cdn_and_origin_control
+      - reference_name: Route53
+        capability_id: dns_tls_certificate_and_transport_security
+      - reference_name: ACM
+        capability_id: dns_tls_certificate_and_transport_security
+      - reference_name: WAF
+        capability_id: waf_abuse_rate_limiting_and_attack_controls
+    default: false
+    implicit_fallback: false
+    selected_binding: false
+    eligibility_shortcut: false
+    admission_requirement: false
+    evidence_substitute: false
+  binding_policy:
+    provider:
+      selected: null
+      default: null
+      fallback: null
+    account_or_project:
+      selected: null
+      default: null
+      fallback: null
+    region:
+      selected: null
+      default: null
+      fallback: null
+    workload_runtime_or_scheduler:
+      selected: null
+      default: null
+      fallback: null
+    image_registry:
+      selected: null
+      default: null
+      fallback: null
+    ingress_or_edge:
+      selected: null
+      default: null
+      fallback: null
+    dns_or_tls:
+      selected: null
+      default: null
+      fallback: null
+    waf_or_abuse_control:
+      selected: null
+      default: null
+      fallback: null
+    compute_edge_plugin_or_adapter:
+      selected: null
+      default: null
+      fallback: null
+    implicit_binding: FORBIDDEN
+    name_or_reference_only_eligibility: FORBIDDEN
+  cross_capability_transport_security_requirements:
+    public_transport: TLS_REQUIRED_NOT_CONFIGURED
+    internal_transport: TLS_REQUIRED_NOT_CONFIGURED
+    provider_transport: TLS_REQUIRED_NOT_CONFIGURED
+    origin_transport: TLS_REQUIRED_NOT_CONFIGURED
+    selected_exceptions: []
+  required_capability_ids:
+    - workload_runtime_scheduling_and_supply_chain
+    - public_ingress_edge_cdn_and_origin_control
+    - dns_tls_certificate_and_transport_security
+    - waf_abuse_rate_limiting_and_attack_controls
+    - public_admin_internal_surface_and_data_plane_isolation
+    - workload_identity_secrets_and_controlled_egress
+    - observability_health_canary_and_rollback
+    - region_data_residency_and_failure_domain_evidence
+rationale:
+  - INT-DEC-007 makes AWS Tokyo a Reference Architecture while requiring a portable Core, so compute-edge admission must evaluate capabilities and evidence rather than AWS service names.
+  - Provider, account, region, runtime, scheduler, registry, ingress, edge, DNS, TLS, WAF, plugin, or adapter defaults would silently turn the current Canonical Reference Architecture mappings into live selected infrastructure choices.
+  - Runtime scheduling, edge mediation, DNS and TLS across Public, Internal, Provider, and origin interactions, abuse controls, trust-boundary isolation, workload identity, observability, rollback, and residency are provider-neutral operational outcomes.
+  - Keeping all bindings null and eligibility unevaluated preserves OD-002, OD-009, OD-010, OD-011, OD-013, OD-015, TST-026, TST-027, and every external security, operations, release, and Production gate.
+rejected_alternatives:
+  - Require AWS, ECS, Fargate, ECR, ALB, CloudFront, WAF, Route53, ACM, an AWS account, or ap-northeast-1 merely because Canonical sources record them as reference mappings.
+  - Select a different cloud or owner-managed compute-edge platform before capability mapping, residency, credentials, identity, operations, performance, health, and rollback evidence exist.
+  - Infer a provider or resource binding from names, reference metadata, defaults, ambient configuration, compatibility claims, or fallback behavior.
+  - Permit partial, unknown, duplicate, implicit, provider-label-only, service-label-only, or reference-only capability mappings.
+  - Lower security, operations, release, performance, health, rollback, isolation, or residency evidence for any provider kind.
+constraints:
+  - Exactly one explicit mapping is required for every required compute-edge capability before a future profile can be eligible.
+  - Missing, unknown, duplicate, partial, implicit, provider-label-only, service-label-only, or reference-only mappings fail closed.
+  - Runtime capability must prove isolated workload scheduling, immutable image identity, provenance, SBOM, vulnerability controls, bounded scaling, graceful shutdown, and safe rollback without selecting a runtime now.
+  - Public ingress must remain edge mediated with private origins; API, worker, provider, and data-plane access must never become a public shortcut.
+  - DNS and TLS must prove controlled zone ownership, certificate lifecycle, modern transport security across Public, Internal, Provider, and origin interactions, and fail-closed origin authentication without selecting a service now.
+  - WAF and abuse controls must prove managed ingress, rate limiting, abuse and attack protection, telemetry, ownership, and tested response procedures.
+  - Public, Admin, Internal, data-plane, control-plane, and provider boundaries require distinct policy, cache, cookie, identity, route, ingress, and controlled-egress semantics.
+  - Workload identities and secrets must be least-privilege, non-ambient, auditable, rotatable, and absent from repository, logs, generated artifacts, and configuration dumps.
+  - Observability must include health, SLO, alert owner and runbook evidence plus human-approved canary, promotion, rollback, and kill-switch boundaries.
+  - Site name and domain, region, data residency, failure-domain topology, budget, identity provider, notification channel, credentials, and physical resource choices remain unset while OD-002, OD-009, OD-010, OD-011, OD-013, and OD-015 are unresolved.
+  - No credential, provider call, network access, external write, infrastructure init, plan, apply, deployment, release, Production action, or status transition is authorized by this record.
+security_and_approval_gates:
+  - Preserve private data planes, edge-only public entry, controlled ingress and egress, TLS across Public, Internal, Provider, and origin interactions, least privilege, workload identity, secret absence, separated duties, auditability, and supply-chain evidence requirements.
+  - Preserve explicit human approval for Production change, identity-provider selection, public exposure, canary, promotion, rollback, release, kill-switch change, and every external status transition.
+  - Preserve formal TST-026 security evidence and TST-027 staging performance and load evidence as release-blocking and NOT_EXECUTED.
+  - Preserve OD-002 site and domain, OD-009 budget, OD-010 identity provider, OD-011 notification channel, OD-013 residency, and OD-015 credential blocking states until their owners provide valid evidence.
+  - Require the same security, operations, release, performance, health, rollback, isolation, and residency evidence for AWS, another cloud, and owner-managed infrastructure.
+  - Never infer eligibility from a provider or service label, account or project name, region, plugin or adapter, Canonical Reference Architecture status, local generator success, predecessor completion, health endpoint declaration, or AWS-labelled evidence.
+acceptance_criteria:
+  - The ST-1503 source and generated reference expose a closed provider-neutral compute-edge capability inventory with no selected, default, or fallback profile, provider, runtime, registry, edge, DNS, TLS, WAF, credential, region, or physical resource.
+  - Every future eligible profile must have exactly one explicit mapping for every required capability and complete equivalent evidence.
+  - Unknown, missing, duplicate, partial, implicit, defaulted, fallback, provider-label-only, service-label-only, or reference-only mappings are rejected before eligibility.
+  - AWS Tokyo and the ECS, Fargate, ECR, ALB, CloudFront, WAF, Route53, and ACM mappings remain the current Canonical Reference Architecture, while that status alone cannot select or satisfy any capability, admission, or evidence.
+  - The Canonical AWS-specific ST-1503 objective and modules deliverable remain authoritative and NOT_STARTED/NOT_EXECUTED; this overlay neither erases, replaces, nor completes them.
+  - Non-AWS and owner-managed profiles are additional portable implementation paths only and require the same complete capability mapping and evidence as AWS.
+  - Existing public, Admin, Internal and data-plane boundaries, health intent, disabled activation, forbidden native commands, zero action counts, unresolved Open Decisions, and NOT_EXECUTED evidence remain fail closed.
+required_test_evidence:
+  - Isolated tests/st1503 positive contract and generated-plan assertions.
+  - Hostile tests for missing, unknown, duplicate, reordered, partial, defaulted, fallback, provider or resource binding, and AWS-label-only admission attempts.
+  - Hash-rebound hostile tests for every normative direct-owner handoff section and exact ST-1501 provider-neutral predecessor semantics.
+  - Existing hostile filesystem, closed-schema, exact-type, no-provider-call, no-network, and no-write tests remain passing.
+  - Owner generator regeneration and read-only --check, Ruff for changed Python, and git diff --check.
+  - Formal TST-026, TST-027, hosted CI, native IaC, provider, performance, staging, release, deployment, and Production evidence remain separately unexecuted.
+open_decision_state:
+  OD-002:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: EXAMPLE_INVALID_PROVISIONAL_BRAND_EXTERNAL_PUBLICATION_FORBIDDEN
+  OD-009:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: LOW_DEVELOPMENT_CAP_PRODUCTION_DISABLED
+  OD-010:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: LOCAL_FAKE_AUTH_DEVELOPMENT_ONLY_EXTERNAL_PUBLICATION_FORBIDDEN
+  OD-011:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE
+  OD-013:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: REFERENCE_REGION_ONLY_PRODUCTION_APPLY_FORBIDDEN
+  OD-015:
+    status: EXTERNAL_EVIDENCE_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: RECORDED_FIXTURE_ONLY_CREDENTIALS_ABSENT_PROVIDER_CALLS_FORBIDDEN

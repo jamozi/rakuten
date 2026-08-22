@@ -20,12 +20,15 @@ from typing import Any, Final, NoReturn
 import yaml
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
-from yaml.tokens import AliasToken, AnchorToken
+from yaml.tokens import AliasToken, AnchorToken, TagToken
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 CONTRACT_PATH: Final = Path(
     "changes/st-1502/contracts/data-services-foundation.v1.yaml"
+)
+DESIGN_HANDOFF_PATH: Final = Path(
+    "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml"
 )
 REFERENCE_PLAN_PATH: Final = Path(
     "infra/terraform/data-services/data-services.reference-plan.v1.json"
@@ -43,6 +46,9 @@ CHECK_COMMAND: Final = f"{GENERATION_COMMAND} --check"
 AUTHORITY_SOURCES: Final = {
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": (
         "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    ),
+    "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml": (
+        "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
     ),
     "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml": (
         "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
@@ -72,27 +78,65 @@ AUTHORITY_SOURCES: Final = {
         "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
     ),
     "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
-        "9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b"
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
+    ),
+    "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
+        "ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5"
     ),
 }
 PREDECESSOR_SOURCES: Final = {
+    "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
+        "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
+    ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2"
+        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f"
+        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
 
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
+    DESIGN_HANDOFF_PATH,
     Path("changes/st-1502/README.md"),
     Path("scripts/build_st1502_data_services.py"),
     Path("tests/st1502/conftest.py"),
     Path("tests/st1502/test_contract.py"),
     Path("tests/st1502/test_generation.py"),
     Path("tests/st1502/test_negative_cases.py"),
+)
+
+EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
+    "fda0d363d17ca4d8197179b74ad0fac23d252fc3a4e7ef0dc66c2c10a7fc3500"
+)
+EXPECTED_PREDECESSOR_HANDOFF_SEMANTIC_SHA256: Final = (
+    "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
+)
+EXPECTED_PREDECESSOR_CONTRACT_SEMANTIC_SHA256: Final = (
+    "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
+)
+EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256: Final = (
+    "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
+)
+EXPECTED_HANDOFF_SOURCE_DESIGN_REFS: Final = (
+    "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+    "repo://docs/canonical/01_integration/"
+    "RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-007",
+    "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-013",
+    "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-014",
+    "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015",
+    "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1502",
+    "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
+    "repo://docs/upstream/key_documents/"
+    "RAOS_02_system_architecture_v0.1.md#RAOS-ARCH-001",
+    "repo://docs/canonical/06_ops/"
+    "RAOS_12_operations_reliability_design_v1.0.md#RAOS-OPS-001",
+    "repo://docs/canonical/04_security/"
+    "RAOS_10_security_privacy_design_v1.0.md#RAOS-SEC-001",
+    "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-026",
+    "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-029",
 )
 
 EXPECTED_STORY: Final = {
@@ -115,6 +159,15 @@ EXPECTED_STORY: Final = {
     "implementation_status": "NOT_STARTED",
     "verification_status": "NOT_EXECUTED",
 }
+EXPECTED_INT_DEC_007: Final = {
+    "id": "INT-DEC-007",
+    "title": "Reference Cloud",
+    "status": "RESOLVED",
+    "decision": (
+        "AWS東京リージョンをReference ArchitectureとするがCoreをAWS固有Domain Modelへ密結合させない"
+    ),
+    "implementation_effect": "TerraformとAdapter境界を用意。実AWS Accountは未設定",
+}
 EXPECTED_OPEN_DECISIONS: Final = {
     "OD-013": {
         "id": "OD-013",
@@ -136,6 +189,16 @@ EXPECTED_OPEN_DECISIONS: Final = {
             "Analytics個票、Security Log、AI Artifact、成果データの保持期間を承認"
         ),
         "default_behavior": "自動削除Jobは無効、最小収集",
+        "blocking": True,
+    },
+    "OD-015": {
+        "id": "OD-015",
+        "topic": "production_provider_credentials",
+        "status": "EXTERNAL_EVIDENCE_REQUIRED",
+        "required_by": "Live adapter test",
+        "owner": "Operations Owner",
+        "decision_needed": "楽天、OpenAI、Google、AWSの専用Account/権限/Secretを設定",
+        "default_behavior": "Recorded fixtureのみ",
         "blocking": True,
     },
 }
@@ -170,6 +233,7 @@ EXPECTED_TESTS: Final = {
 EXPECTED_SECURITY_CONTROLS: Final = {
     "SEC-IAM-004": "Role/Scope/Siteで最小権限",
     "SEC-IAM-009": "Worker/CIは人間Credentialを共有しない",
+    "SEC-DATA-001": "TLSをPublic/Internal/Providerで要求",
     "SEC-DATA-002": "RDS/S3/backup/logを暗号化",
     "SEC-DATA-003": "SecretをDB/Repo/Logへ置かない",
     "SEC-DATA-004": "Raw/SnapshotへSHA-256とVersionを記録",
@@ -198,8 +262,82 @@ BUCKET_ROLES: Final = (
     "exports",
     "audit_logs",
 )
+ELIGIBLE_PROFILE_KINDS: Final = (
+    "AWS",
+    "OTHER_CLOUD",
+    "OWNER_MANAGED_INFRASTRUCTURE",
+)
+DATA_SERVICE_BINDING_NAMES: Final = (
+    "provider",
+    "account_or_project",
+    "region",
+    "relational_persistence",
+    "object_storage",
+    "queue",
+    "secrets",
+    "key_management",
+    "data_services_plugin_or_adapter",
+)
+DATA_SERVICE_CAPABILITY_OUTCOMES: Final = (
+    (
+        "relational_postgresql_compatible_persistence_and_migrations",
+        "PRIVATE_ENCRYPTED_POSTGRESQL_COMPATIBLE_PERSISTENCE_WITH_CONTROLLED_MIGRATIONS",
+    ),
+    (
+        "immutable_versioned_object_storage_and_integrity",
+        "PRIVATE_ENCRYPTED_VERSIONED_OBJECT_STORAGE_WITH_REQUIRED_IMMUTABILITY_AND_INTEGRITY",
+    ),
+    (
+        "at_least_once_queue_dlq_and_idempotency",
+        "AT_LEAST_ONCE_DELIVERY_WITH_DLQ_REDIVE_ALERTING_AND_IDEMPOTENT_CONSUMERS",
+    ),
+    (
+        "workload_secrets_and_key_management",
+        "NON_AMBIENT_LEAST_PRIVILEGE_ROTATABLE_SECRETS_AND_KEYS_WITH_AUDIT",
+    ),
+    (
+        "data_service_backup_restore_and_recovery",
+        "RELATIONAL_OBJECT_CONFIGURATION_AND_SECRET_RECOVERY_WITH_ISOLATED_RESTORE_DRILL",
+    ),
+    (
+        "data_service_observability_audit_and_alerting",
+        "DATABASE_STORAGE_QUEUE_SECRET_KEY_TELEMETRY_AUDIT_ALERTING_AND_DRIFT_EVIDENCE",
+    ),
+    (
+        "environment_and_private_data_plane_isolation",
+        "SEPARATE_DEVELOPMENT_PRODUCTION_AND_PRIVATE_DATA_PLANE_BOUNDARIES",
+    ),
+    (
+        "region_and_data_residency",
+        "APPROVED_PRIMARY_BACKUP_CROSS_BORDER_AND_DATA_RESIDENCY_EVIDENCE",
+    ),
+    (
+        "human_approved_release_migration_and_rollback",
+        "HUMAN_APPROVED_IAC_MIGRATION_PROMOTION_ROLLBACK_AND_RECOVERY",
+    ),
+)
+AWS_REFERENCE_SERVICE_MAPPINGS: Final = (
+    (
+        "RDS",
+        "relational_postgresql_compatible_persistence_and_migrations",
+    ),
+    ("S3", "immutable_versioned_object_storage_and_integrity"),
+    ("SQS", "at_least_once_queue_dlq_and_idempotency"),
+    ("Secrets Manager", "workload_secrets_and_key_management"),
+    ("KMS", "workload_secrets_and_key_management"),
+)
 NATIVE_COMMANDS: Final = ("init", "plan", "apply", "destroy", "import", "refresh")
-ACTION_NAMES: Final = ("create", "update", "delete")
+PREDECESSOR_ACTION_NAMES: Final = ("create", "update", "delete")
+ACTION_NAMES: Final = (
+    "create",
+    "update",
+    "delete",
+    "migrate",
+    "backup",
+    "restore",
+    "redrive",
+    "rotate",
+)
 MAX_DOCUMENT_BYTES: Final = 2 * 1024 * 1024
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
 
@@ -207,16 +345,16 @@ SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
 def _queue_selection() -> dict[str, object]:
     return {
         "physical_name": None,
-        "queue_url": None,
-        "queue_arn": None,
+        "endpoint": None,
+        "resource_identifier": None,
         "dlq_name": None,
-        "dlq_url": None,
-        "dlq_arn": None,
+        "dlq_endpoint": None,
+        "dlq_resource_identifier": None,
         "delay_seconds": None,
         "visibility_timeout_seconds": None,
         "retention_seconds": None,
         "max_receive_count": None,
-        "fifo": None,
+        "ordering_mode": None,
         "policy_document": None,
     }
 
@@ -227,14 +365,117 @@ def _queue_intent(queue_class: str) -> dict[str, object]:
         "dlq": "REQUIRED_NOT_CONFIGURED",
         "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
         "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
+        "redrive_control": "REQUIRED_NOT_CONFIGURED",
         "selected": _queue_selection(),
+    }
+
+
+def _binding_policy() -> dict[str, object]:
+    policy: dict[str, object] = {
+        name: {"selected": None, "default": None, "fallback": None}
+        for name in DATA_SERVICE_BINDING_NAMES
+    }
+    policy.update(
+        {
+            "implicit_binding": "FORBIDDEN",
+            "name_or_reference_only_eligibility": "FORBIDDEN",
+        }
+    )
+    return policy
+
+
+def _capability_mapping_requirements() -> list[dict[str, object]]:
+    return [
+        {
+            "capability_id": capability_id,
+            "required_outcome": required_outcome,
+            "selected_mapping": None,
+            "evidence_refs": [],
+            "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        }
+        for capability_id, required_outcome in DATA_SERVICE_CAPABILITY_OUTCOMES
+    ]
+
+
+def _aws_reference_service_mappings() -> list[dict[str, str]]:
+    return [
+        {"reference_name": reference_name, "capability_id": capability_id}
+        for reference_name, capability_id in AWS_REFERENCE_SERVICE_MAPPINGS
+    ]
+
+
+def _provider_neutral_admission() -> dict[str, object]:
+    return {
+        "classification": "STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION",
+        "admission_status": "NOT_EVALUATED",
+        "eligible": False,
+        "selected_profile_id": None,
+        "selected_profile_kind": None,
+        "selected_provider_name": None,
+        "default_profile_id": None,
+        "fallback_profile_id": None,
+        "concrete_alternate_provider_selected": False,
+        "eligible_profile_kinds": list(ELIGIBLE_PROFILE_KINDS),
+        "eligibility_condition": (
+            "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE"
+        ),
+        "binding_policy": _binding_policy(),
+        "cross_capability_security_policy": {
+            "transport_encryption": ("REQUIRED_FOR_ALL_DATA_SERVICE_INTERACTIONS"),
+            "encryption_at_rest": "REQUIRED_FOR_ALL_PERSISTED_DATA",
+            "selected_exceptions": [],
+        },
+        "mapping_policy": {
+            "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+            "required_capability_count": len(DATA_SERVICE_CAPABILITY_OUTCOMES),
+            "configured_mapping_count": 0,
+            "complete_mapping": False,
+            "missing_mapping": "REJECT",
+            "unknown_mapping": "REJECT",
+            "duplicate_mapping": "REJECT",
+            "implicit_mapping": "REJECT",
+            "partial_mapping": "REJECT",
+            "provider_label_only_mapping": "REJECT",
+            "service_label_only_mapping": "REJECT",
+            "reference_only_mapping": "REJECT",
+        },
+        "aws_reference_boundary": {
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "evidence_equivalence_policy": {
+            "identical_security_evidence": "REQUIRED",
+            "identical_operations_evidence": "REQUIRED",
+            "identical_release_evidence": "REQUIRED",
+            "identical_backup_restore_evidence": "REQUIRED",
+            "identical_region_residency_evidence": "REQUIRED",
+            "identical_migration_compatibility_evidence": "REQUIRED",
+            "identical_isolation_evidence": "REQUIRED",
+            "identical_transport_encryption_evidence": "REQUIRED",
+            "provider_label_as_evidence": "FORBIDDEN",
+            "service_label_as_evidence": "FORBIDDEN",
+            "reference_metadata_as_evidence": "FORBIDDEN",
+            "local_test_as_live_evidence": "FORBIDDEN",
+        },
+        "capability_mapping_requirements": _capability_mapping_requirements(),
     }
 
 
 EXPECTED_SECTIONS: Final[dict[str, Any]] = {
     "document": {
         "id": "RAOS-DATA-SERVICES-FOUNDATION-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1502",
         "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
         "formal_verification": "NOT_EXECUTED",
@@ -242,6 +483,13 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
     "predecessor_binding": {
         "story_id": "ST-1501",
         "extension_kind": "DATA_SERVICES",
+        "design_handoff_uri": (
+            "repo://changes/st-1501/"
+            "DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml"
+        ),
+        "design_handoff_sha256": PREDECESSOR_SOURCES[
+            "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml"
+        ],
         "contract_uri": (
             "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml"
         ),
@@ -255,6 +503,11 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
         "reference_plan_sha256": PREDECESSOR_SOURCES[
             "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
         ],
+        "required_provider_policy": (
+            "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION"
+        ),
+        "required_admission_status": "NOT_EVALUATED",
+        "required_eligible": False,
         "required_activation_status": "DISABLED",
         "required_resource_payloads": "FORBIDDEN",
         "required_planned_actions": {"create": 0, "update": 0, "delete": 0},
@@ -262,55 +515,71 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
     "reference_architecture": {
         "cloud": "AWS",
         "region": "ap-northeast-1",
-        "classification": "INHERITED_REFERENCE_METADATA_ONLY",
+        "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+        "inherited_from": "INT-DEC-007",
         "portable_core_required": True,
+        "service_mappings": _aws_reference_service_mappings(),
+        "default": False,
+        "implicit_fallback": False,
+        "selected_binding": False,
+        "eligibility_shortcut": False,
+        "admission_requirement": False,
+        "evidence_substitute": False,
     },
+    "provider_neutral_data_services_admission": _provider_neutral_admission(),
     "selected_configuration": {
-        "cloud_provider": None,
+        "provider_name": None,
+        "provider_account_or_project": None,
         "production_region": None,
         "backup_region": None,
-        "aws_account_id": None,
-        "terraform_cli_version": None,
-        "provider_plugins": [],
-        "state_backend": None,
+        "relational_service_binding": None,
+        "object_storage_service_binding": None,
+        "queue_service_binding": None,
+        "secrets_service_binding": None,
+        "key_management_service_binding": None,
+        "data_services_plugin_or_adapter": None,
         "credential_source": None,
-        "network_cidrs": [],
-        "availability_zones": [],
-        "subnet_ids": [],
-        "security_group_ids": [],
+        "network_segment_ids": [],
+        "traffic_control_policy_ids": [],
         "physical_resource_definitions": [],
     },
-    "rds_intent": {
-        "service": "PostgreSQL",
-        "classification": "LOGICAL_SERVICE_INTENT_ONLY",
+    "relational_persistence_intent": {
+        "service_contract": "POSTGRESQL_COMPATIBLE_RELATIONAL_PERSISTENCE",
+        "classification": "LOGICAL_PROVIDER_NEUTRAL_SERVICE_INTENT_ONLY",
         "private_only": "REQUIRED",
         "publicly_accessible": False,
+        "transport_encryption": "REQUIRED_NOT_CONFIGURED",
+        "tls_in_transit": "REQUIRED_NOT_CONFIGURED",
         "encryption_at_rest": "REQUIRED_NOT_CONFIGURED",
         "backup": "REQUIRED_NOT_CONFIGURED",
         "point_in_time_recovery": "REQUIRED_NOT_CONFIGURED",
         "deletion_protection": "REQUIRED_NOT_CONFIGURED",
-        "final_snapshot": "REQUIRED_NOT_CONFIGURED",
+        "final_snapshot_or_equivalent": "REQUIRED_NOT_CONFIGURED",
+        "migration_framework_compatibility": "REQUIRED_NOT_CONFIGURED",
+        "expand_migrate_contract": "REQUIRED",
         "restore_test": "REQUIRED_NOT_EXECUTED",
         "selected": {
             "engine_version": None,
-            "instance_class": None,
-            "storage_gib": None,
-            "storage_class": None,
-            "subnet_ids": [],
+            "deployment_class": None,
+            "storage_capacity_gib": None,
+            "storage_profile": None,
+            "network_segment_ids": [],
             "endpoint": None,
             "database_name": None,
             "username": None,
             "password_secret_reference": None,
             "port": None,
-            "multi_az": None,
+            "high_availability_mode": None,
             "backup_retention_days": None,
             "backup_region": None,
-            "kms_key_reference": None,
+            "encryption_key_reference": None,
         },
     },
-    "s3_intent": {
-        "classification": "LOGICAL_BUCKET_ROLE_INTENT_ONLY",
-        "public_access_block": "REQUIRED",
+    "object_storage_intent": {
+        "service_contract": "PRIVATE_VERSIONED_OBJECT_STORAGE",
+        "classification": "LOGICAL_PROVIDER_NEUTRAL_SERVICE_INTENT_ONLY",
+        "public_access": "FORBIDDEN",
+        "transport_encryption": "REQUIRED_NOT_CONFIGURED",
         "encryption_at_rest": "REQUIRED_NOT_CONFIGURED",
         "versioning": "REQUIRED_NOT_CONFIGURED",
         "force_destroy": "FORBIDDEN",
@@ -323,66 +592,129 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
             {
                 "role": "raw",
                 "physical_name": None,
-                "arn": None,
+                "resource_identifier": None,
                 "immutability": "REQUIRED_NOT_CONFIGURED",
                 "integrity_metadata": "REQUIRED_NOT_CONFIGURED",
                 "deletion_role_separation": "REQUIRED_NOT_CONFIGURED",
             },
             *[
-                {"role": role, "physical_name": None, "arn": None}
+                {"role": role, "physical_name": None, "resource_identifier": None}
                 for role in BUCKET_ROLES[1:]
             ],
         ],
     },
-    "sqs_intent": {
-        "classification": "LOGICAL_QUEUE_CLASS_INTENT_ONLY",
+    "queue_intent": {
+        "service_contract": "AT_LEAST_ONCE_MESSAGE_QUEUE_WITH_DLQ",
+        "classification": "LOGICAL_PROVIDER_NEUTRAL_SERVICE_INTENT_ONLY",
+        "delivery_semantics": "AT_LEAST_ONCE_REQUIRED_NOT_CONFIGURED",
+        "duplicate_delivery": "EXPECTED",
+        "consumer_idempotency": "REQUIRED_NOT_CONFIGURED",
+        "transport_encryption": "REQUIRED_NOT_CONFIGURED",
         "classes": [_queue_intent(queue_class) for queue_class in QUEUE_CLASSES],
     },
-    "secrets_manager_intent": {
-        "classification": "METADATA_INTENT_ONLY",
+    "secrets_intent": {
+        "classification": "LOGICAL_PROVIDER_NEUTRAL_METADATA_INTENT_ONLY",
+        "transport_encryption": "REQUIRED_NOT_CONFIGURED",
         "secret_values": "ABSENT",
         "secret_names": [],
-        "secret_arns": [],
+        "secret_references": [],
         "ambient_credential_resolution": "FORBIDDEN",
         "environment_credential_resolution": "FORBIDDEN",
         "rotation": "REQUIRED_NOT_CONFIGURED",
         "workload_least_privilege": "REQUIRED_NOT_CONFIGURED",
+        "access_audit": "REQUIRED_NOT_CONFIGURED",
+        "recovery_or_reissuance": "REQUIRED_NOT_CONFIGURED",
     },
-    "kms_intent": {
-        "classification": "LOGICAL_ENCRYPTION_INTENT_ONLY",
+    "key_management_intent": {
+        "classification": "LOGICAL_PROVIDER_NEUTRAL_ENCRYPTION_INTENT_ONLY",
+        "transport_encryption": "REQUIRED_NOT_CONFIGURED",
         "encryption": "REQUIRED",
         "rotation": "REQUIRED_NOT_CONFIGURED",
         "audit_logging": "REQUIRED_NOT_CONFIGURED",
         "workload_least_privilege": "REQUIRED_NOT_CONFIGURED",
+        "recovery": "REQUIRED_NOT_CONFIGURED",
         "key_deletion": "FORBIDDEN",
-        "key_ids": [],
-        "key_arns": [],
+        "key_identifiers": [],
+        "key_references": [],
         "aliases": [],
         "policy_document": None,
         "deletion_window_days": None,
+    },
+    "recovery_intent": {
+        "classification": "LOGICAL_PROVIDER_NEUTRAL_RECOVERY_INTENT_ONLY",
+        "relational_backup_and_pitr": "REQUIRED_NOT_CONFIGURED",
+        "relational_snapshot_or_equivalent": "REQUIRED_NOT_CONFIGURED",
+        "object_version_and_manifest_recovery": "REQUIRED_NOT_CONFIGURED",
+        "configuration_reconstruction": "REQUIRED_NOT_CONFIGURED",
+        "secret_reissuance": "REQUIRED_NOT_CONFIGURED",
+        "isolated_restore_environment": "REQUIRED_NOT_CONFIGURED",
+        "role_grant_and_integrity_validation": "REQUIRED_NOT_CONFIGURED",
+        "rpo_rto_measurement": "REQUIRED_NOT_EXECUTED",
+        "formal_tst_029": "NOT_EXECUTED",
+        "selected_restore_environment": None,
+    },
+    "observability_intent": {
+        "classification": "LOGICAL_PROVIDER_NEUTRAL_OBSERVABILITY_INTENT_ONLY",
+        "database_health_capacity_backup_metrics": "REQUIRED_NOT_CONFIGURED",
+        "object_integrity_version_backup_metrics": "REQUIRED_NOT_CONFIGURED",
+        "queue_depth_age_retry_dlq_metrics": "REQUIRED_NOT_CONFIGURED",
+        "secret_and_key_access_audit": "REQUIRED_NOT_CONFIGURED",
+        "actionable_alert_owner_and_runbook": "REQUIRED_NOT_CONFIGURED",
+        "configuration_drift_detection": "REQUIRED_NOT_CONFIGURED",
+        "sensitive_telemetry": "FORBIDDEN",
+    },
+    "data_boundary_intent": {
+        "classification": "LOGICAL_PROVIDER_NEUTRAL_DATA_BOUNDARY_INTENT_ONLY",
+        "development_production_isolation": "REQUIRED_NOT_CONFIGURED",
+        "private_data_plane": "REQUIRED_NOT_CONFIGURED",
+        "direct_public_database_access": "FORBIDDEN",
+        "direct_public_object_admin_access": "FORBIDDEN",
+        "direct_public_queue_admin_access": "FORBIDDEN",
+        "production_region": None,
+        "backup_region": None,
+        "cross_border_transfer": "NOT_EVALUATED",
+        "data_residency_evidence": "REQUIRED_NOT_CONFIGURED",
+        "od_013_status": "HUMAN_DECISION_REQUIRED",
+        "od_014_status": "HUMAN_DECISION_REQUIRED",
+        "od_015_status": "EXTERNAL_EVIDENCE_REQUIRED",
     },
     "execution_boundary": {
         "activation_enabled": False,
         "activation_status": "DISABLED",
         "native_plan_status": "NOT_EXECUTED",
+        "network_access": "FORBIDDEN",
+        "credential_access": "FORBIDDEN",
         "live_provider_calls": "FORBIDDEN",
         "external_writes": "FORBIDDEN",
+        "migration_action": "FORBIDDEN",
+        "backup_action": "FORBIDDEN",
+        "restore_action": "FORBIDDEN",
+        "redrive_action": "FORBIDDEN",
+        "destructive_action": "FORBIDDEN",
+        "deploy_action": "FORBIDDEN",
+        "release_action": "FORBIDDEN",
+        "production_action": "FORBIDDEN",
         "commands": {command: "FORBIDDEN" for command in NATIVE_COMMANDS},
         "planned_actions": {action: 0 for action in ACTION_NAMES},
     },
     "evidence_boundary": {
         "deliverable_classification": (
-            "SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN"
+            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN"
         ),
-        "executable_terraform": "ABSENT",
-        "terraform_cli": "UNPINNED_NOT_INVOKED",
-        "provider_plugins": "UNPINNED_NOT_INVOKED",
-        "aws_account": "UNSET",
+        "executable_iac": "ABSENT",
+        "iac_toolchain": "UNPINNED_NOT_INVOKED",
+        "provider_plugins_or_adapters": "UNPINNED_NOT_INVOKED",
+        "provider_account_or_project": "UNSET",
+        "provider_profile": "UNSET",
         "credentials": "ABSENT",
         "native_iac_validation": "NOT_EXECUTED",
+        "transport_encryption_validation": "NOT_EXECUTED",
+        "relational_migration_validation": "NOT_EXECUTED",
+        "queue_delivery_validation": "NOT_EXECUTED",
         "formal_tst_026": "NOT_EXECUTED",
         "formal_tst_029": "NOT_EXECUTED",
         "restore_validation": "NOT_EXECUTED",
+        "provider_validation": "NOT_EXECUTED",
         "live_staging_release_production": "NOT_EXECUTED",
         "effective_canonical_status": "UNCHANGED",
     },
@@ -456,6 +788,20 @@ def sha256_bytes(content: bytes) -> str:
 
 def sha256_file(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
+
+
+def semantic_sha256(document: object) -> str:
+    try:
+        content = json.dumps(
+            document,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    except TypeError, ValueError, UnicodeError:
+        _fail("SEMANTIC_DOCUMENT_INVALID", "semantic_document")
+    return sha256_bytes(content)
 
 
 def _fail(code: str, field: str) -> NoReturn:
@@ -567,6 +913,8 @@ def load_yaml(path: Path) -> Any:
         for token in yaml.scan(text):
             if isinstance(token, (AliasToken, AnchorToken)):
                 _fail("YAML_ALIAS_FORBIDDEN", "yaml")
+            if isinstance(token, TagToken):
+                _fail("YAML_TAG_FORBIDDEN", "yaml")
         return yaml.load(text, Loader=UniqueKeyLoader)
     except DataServicesContractError:
         raise
@@ -653,6 +1001,119 @@ def _find_exact_record(
     return matches[0]
 
 
+def _validate_design_handoff(root: Path) -> None:
+    handoff = _mapping(
+        load_yaml(_repository_regular_file(root, DESIGN_HANDOFF_PATH, "handoff")),
+        "handoff",
+    )
+    _exact_keys(
+        handoff,
+        {
+            "schema",
+            "version",
+            "record_status",
+            "approved_story",
+            "approved_scope",
+            "source_design_refs",
+            "decision",
+            "rationale",
+            "rejected_alternatives",
+            "constraints",
+            "security_and_approval_gates",
+            "acceptance_criteria",
+            "required_test_evidence",
+            "open_decision_state",
+        },
+        "handoff",
+    )
+    _strict_match(handoff.get("schema"), "DESIGN_HANDOFF_V1", "handoff.schema")
+    _strict_match(handoff.get("version"), 1, "handoff.version")
+    _strict_match(
+        handoff.get("record_status"),
+        "RECORDED_DURABLE_OWNER_DECISION",
+        "handoff.record_status",
+    )
+    _strict_match(handoff.get("approved_story"), "ST-1502", "handoff.approved_story")
+    _strict_match(
+        handoff.get("source_design_refs"),
+        list(EXPECTED_HANDOFF_SOURCE_DESIGN_REFS),
+        "handoff.source_design_refs",
+    )
+    _strict_match(
+        handoff.get("decision"),
+        {
+            "data_services_provider_policy": (
+                "STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION"
+            ),
+            "selected_profile": None,
+            "default_profile": None,
+            "fallback_profile": None,
+            "concrete_alternate_provider_selected": False,
+            "eligible_profile_kinds": list(ELIGIBLE_PROFILE_KINDS),
+            "eligibility_condition": (
+                "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE"
+            ),
+            "aws_reference_mapping_boundary": {
+                "canonical_decision_id": "INT-DEC-007",
+                "architecture_id": "RAOS-ARCH-001",
+                "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+                "canonical_story_deliverables": (
+                    "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+                ),
+                "non_aws_owner_managed_profiles": (
+                    "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+                ),
+                "mappings": _aws_reference_service_mappings(),
+                "default": False,
+                "implicit_fallback": False,
+                "selected_binding": False,
+                "eligibility_shortcut": False,
+                "admission_requirement": False,
+                "evidence_substitute": False,
+            },
+            "binding_policy": _binding_policy(),
+            "cross_capability_security_requirements": {
+                "transport_encryption": ("REQUIRED_FOR_ALL_DATA_SERVICE_INTERACTIONS"),
+                "encryption_at_rest": "REQUIRED_FOR_ALL_PERSISTED_DATA",
+                "selected_exceptions": [],
+            },
+            "required_capability_ids": [
+                capability_id
+                for capability_id, _required_outcome in DATA_SERVICE_CAPABILITY_OUTCOMES
+            ],
+        },
+        "handoff.decision",
+    )
+    _strict_match(
+        handoff.get("open_decision_state"),
+        {
+            "OD-013": {
+                "status": "HUMAN_DECISION_REQUIRED",
+                "resolved": False,
+                "blocking": True,
+                "safe_default": ("REFERENCE_REGION_ONLY_PRODUCTION_APPLY_FORBIDDEN"),
+            },
+            "OD-014": {
+                "status": "HUMAN_DECISION_REQUIRED",
+                "resolved": False,
+                "blocking": True,
+                "safe_default": "RETENTION_UNSET_AUTOMATIC_DELETION_FORBIDDEN",
+            },
+            "OD-015": {
+                "status": "EXTERNAL_EVIDENCE_REQUIRED",
+                "resolved": False,
+                "blocking": True,
+                "safe_default": (
+                    "RECORDED_FIXTURE_ONLY_CREDENTIALS_ABSENT_PROVIDER_CALLS_FORBIDDEN"
+                ),
+            },
+        },
+        "handoff.open_decision_state",
+    )
+    if semantic_sha256(handoff) != EXPECTED_HANDOFF_SEMANTIC_SHA256:
+        _fail("HANDOFF_SEMANTIC_DRIFT", "handoff")
+
+
 def _validate_authority_semantics(root: Path) -> None:
     backlog = _mapping(
         load_yaml(
@@ -667,7 +1128,28 @@ def _validate_authority_semantics(root: Path) -> None:
     story = _find_exact_record(backlog, "stories", "ST-1502", "backlog.stories")
     _strict_match(story, EXPECTED_STORY, "backlog.ST-1502")
 
-    decisions = _mapping(
+    canonical_decisions = _mapping(
+        load_yaml(
+            _repository_regular_file(
+                root,
+                Path(
+                    "docs/canonical/01_integration/"
+                    "RAOS_07_canonical_decisions_v1.0.yaml"
+                ),
+                "canonical_decisions",
+            )
+        ),
+        "canonical_decisions",
+    )
+    int_dec_007 = _find_exact_record(
+        canonical_decisions,
+        "decisions",
+        "INT-DEC-007",
+        "canonical_decisions.decisions",
+    )
+    _strict_match(int_dec_007, EXPECTED_INT_DEC_007, "INT-DEC-007")
+
+    open_decisions = _mapping(
         load_yaml(
             _repository_regular_file(
                 root,
@@ -679,7 +1161,7 @@ def _validate_authority_semantics(root: Path) -> None:
     )
     for decision_id, expected in EXPECTED_OPEN_DECISIONS.items():
         decision = _find_exact_record(
-            decisions, "items", decision_id, "open_decisions.items"
+            open_decisions, "items", decision_id, "open_decisions.items"
         )
         _strict_match(decision, expected, f"open_decisions.{decision_id}")
 
@@ -763,9 +1245,28 @@ def _validate_authority_semantics(root: Path) -> None:
             _fail("AUTHORITY_ARCHITECTURE_DRIFT", f"aws_mapping.{key}")
     if deployment.get("infrastructure_as_code") != "Terraform":
         _fail("AUTHORITY_ARCHITECTURE_DRIFT", "infrastructure_as_code")
+    _validate_design_handoff(root)
 
 
 def _validate_predecessor_semantics(root: Path) -> None:
+    predecessor_handoff = _mapping(
+        load_yaml(
+            _repository_regular_file(
+                root,
+                Path(
+                    "changes/st-1501/"
+                    "DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml"
+                ),
+                "predecessor_handoff",
+            )
+        ),
+        "predecessor_handoff",
+    )
+    if (
+        semantic_sha256(predecessor_handoff)
+        != EXPECTED_PREDECESSOR_HANDOFF_SEMANTIC_SHA256
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_handoff")
     contract = _mapping(
         load_yaml(
             _repository_regular_file(
@@ -776,16 +1277,86 @@ def _validate_predecessor_semantics(root: Path) -> None:
         ),
         "predecessor_contract",
     )
+    if semantic_sha256(contract) != EXPECTED_PREDECESSOR_CONTRACT_SEMANTIC_SHA256:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_contract")
     _strict_match(
         contract.get("document"),
         {
             "id": "RAOS-TERRAFORM-FOUNDATION-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1501",
             "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
             "formal_verification": "NOT_EXECUTED",
         },
         "predecessor.document",
+    )
+    _strict_match(
+        contract.get("reference_architecture"),
+        {
+            "cloud": "AWS",
+            "region": "ap-northeast-1",
+            "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "inherited_from": "INT-DEC-007",
+            "portable_core_required": True,
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "predecessor.reference_architecture",
+    )
+    admission = _mapping(
+        contract.get("provider_neutral_foundation_admission"),
+        "predecessor.admission",
+    )
+    _strict_match(
+        admission.get("classification"),
+        "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
+        "predecessor.admission.classification",
+    )
+    _strict_match(
+        admission.get("admission_status"),
+        "NOT_EVALUATED",
+        "predecessor.admission.status",
+    )
+    _strict_match(admission.get("eligible"), False, "predecessor.admission.eligible")
+    for field in (
+        "selected_profile_id",
+        "selected_profile_kind",
+        "selected_provider_name",
+        "default_profile_id",
+        "fallback_profile_id",
+    ):
+        _strict_match(admission.get(field), None, f"predecessor.admission.{field}")
+    _strict_match(
+        admission.get("concrete_alternate_provider_selected"),
+        False,
+        "predecessor.admission.concrete_alternate_provider_selected",
+    )
+    predecessor_aws_boundary = _mapping(
+        admission.get("aws_reference_boundary"),
+        "predecessor.admission.aws_reference_boundary",
+    )
+    _strict_match(
+        predecessor_aws_boundary,
+        {
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "predecessor.admission.aws_reference_boundary",
     )
     _strict_match(
         contract.get("selected_configuration"),
@@ -808,73 +1379,171 @@ def _validate_predecessor_semantics(root: Path) -> None:
         "predecessor.selected_configuration",
     )
     execution = _mapping(contract.get("execution_boundary"), "predecessor.execution")
-    _strict_match(execution.get("activation_enabled"), False, "predecessor.activation")
     _strict_match(
-        execution.get("activation_status"), "DISABLED", "predecessor.activation"
-    )
-    _strict_match(
-        execution.get("live_provider_calls"), "FORBIDDEN", "predecessor.execution"
-    )
-    _strict_match(
-        execution.get("external_writes"), "FORBIDDEN", "predecessor.execution"
-    )
-    _strict_match(
-        execution.get("commands"),
-        {command: "FORBIDDEN" for command in NATIVE_COMMANDS},
-        "predecessor.commands",
-    )
-    _strict_match(
-        execution.get("planned_actions"),
-        {action: 0 for action in ACTION_NAMES},
-        "predecessor.planned_actions",
+        execution,
+        {
+            "activation_enabled": False,
+            "activation_status": "DISABLED",
+            "native_plan_status": "NOT_EXECUTED",
+            "network_access": "FORBIDDEN",
+            "credential_access": "FORBIDDEN",
+            "live_provider_calls": "FORBIDDEN",
+            "external_writes": "FORBIDDEN",
+            "deploy_action": "FORBIDDEN",
+            "release_action": "FORBIDDEN",
+            "production_action": "FORBIDDEN",
+            "commands": {command: "FORBIDDEN" for command in NATIVE_COMMANDS},
+            "planned_actions": {action: 0 for action in PREDECESSOR_ACTION_NAMES},
+        },
+        "predecessor.execution",
     )
     extension = _mapping(contract.get("extension_contract"), "predecessor.extension")
     _strict_match(
-        extension.get("current_resource_payloads"),
-        "FORBIDDEN",
-        "predecessor.resources",
+        extension,
+        {
+            "current_resource_payloads": "FORBIDDEN",
+            "successor_contract_revision_required": True,
+            "native_toolchain_pin_required_before_hcl": True,
+            "successors": {
+                "ST-1502": "DATA_SERVICES",
+                "ST-1503": "COMPUTE_CDN_WAF",
+            },
+        },
+        "predecessor.extension",
     )
-    successors = _mapping(extension.get("successors"), "predecessor.successors")
-    _strict_match(successors.get("ST-1502"), "DATA_SERVICES", "predecessor.ST-1502")
+    evidence = _mapping(contract.get("evidence_boundary"), "predecessor.evidence")
+    _strict_match(
+        evidence,
+        {
+            "deliverable_classification": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
+            "executable_terraform": "ABSENT",
+            "terraform_cli": "UNPINNED_NOT_INVOKED",
+            "provider_plugins": "UNPINNED_NOT_INVOKED",
+            "remote_state": "NOT_CONFIGURED",
+            "provider_account_or_project": "UNSET",
+            "credentials": "ABSENT",
+            "formal_tst_026": "NOT_EXECUTED",
+            "live_staging_release_production": "NOT_EXECUTED",
+            "effective_canonical_status": "UNCHANGED",
+        },
+        "predecessor.evidence",
+    )
 
-    plan = _mapping(
-        load_json(
-            _repository_regular_file(
-                root,
-                Path(
-                    "infra/terraform/foundation/"
-                    "terraform-foundation.reference-plan.v1.json"
-                ),
-                "predecessor_plan",
-            )
-        ),
+    plan_path = _repository_regular_file(
+        root,
+        Path("infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"),
         "predecessor_plan",
     )
-    plan_document = _mapping(plan.get("document"), "predecessor_plan.document")
-    _strict_match(
-        plan_document.get("artifact_kind"),
-        "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
-        "predecessor_plan.artifact_kind",
+    plan = _mapping(load_json(plan_path), "predecessor_plan")
+    if semantic_sha256(plan) != EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_plan")
+    expected_plan = {
+        "document": {
+            "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
+            "version": "1.1.0",
+            "story_id": "ST-1501",
+            "source_contract": (
+                "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml"
+            ),
+            "generated_by": "repo://scripts/build_st1501_terraform_foundation.py",
+            "generation_command": (
+                "uv run --locked --no-sync python "
+                "scripts/build_st1501_terraform_foundation.py"
+            ),
+            "artifact_kind": evidence["deliverable_classification"],
+            "executable": False,
+            "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        },
+        "reference_architecture": copy.deepcopy(contract["reference_architecture"]),
+        "provider_neutral_foundation_admission": copy.deepcopy(admission),
+        "selected_configuration": copy.deepcopy(contract["selected_configuration"]),
+        "planned_actions": copy.deepcopy(execution["planned_actions"]),
+        "activation": {
+            "enabled": execution["activation_enabled"],
+            "status": execution["activation_status"],
+            "native_plan_status": execution["native_plan_status"],
+            "network_access": execution["network_access"],
+            "credential_access": execution["credential_access"],
+            "live_provider_calls": execution["live_provider_calls"],
+            "external_writes": execution["external_writes"],
+            "deploy_action": execution["deploy_action"],
+            "release_action": execution["release_action"],
+            "production_action": execution["production_action"],
+            "native_commands": copy.deepcopy(execution["commands"]),
+        },
+        "future_requirements": {
+            "remote_state": copy.deepcopy(contract["state_requirements"]),
+            "account_separation": {
+                "requirement": contract["account_requirements"][
+                    "separate_development_and_production"
+                ],
+                "development_account_id": contract["account_requirements"][
+                    "development_account_id"
+                ],
+                "production_account_id": contract["account_requirements"][
+                    "production_account_id"
+                ],
+            },
+            "production_change_control": copy.deepcopy(
+                contract["production_change_requirements"]
+            ),
+        },
+        "extension_contract": copy.deepcopy(extension),
+        "verification_boundary": {
+            key: copy.deepcopy(value)
+            for key, value in evidence.items()
+            if key != "deliverable_classification"
+        },
+    }
+    _strict_match(plan, expected_plan, "predecessor_plan")
+    expected_plan_bytes = (
+        json.dumps(
+            expected_plan,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode("utf-8")
+    try:
+        actual_plan_bytes = plan_path.read_bytes()
+    except OSError:
+        _fail("FILE_UNAVAILABLE", "predecessor_plan")
+    if actual_plan_bytes != expected_plan_bytes:
+        _fail("PREDECESSOR_GENERATED_DRIFT", "predecessor_plan")
+
+
+def _validate_capability_inventory(contract: Mapping[str, Any]) -> None:
+    admission = _mapping(
+        contract["provider_neutral_data_services_admission"],
+        "provider_neutral_data_services_admission",
     )
-    _strict_match(plan_document.get("executable"), False, "predecessor_plan.executable")
-    activation = _mapping(plan.get("activation"), "predecessor_plan.activation")
-    _strict_match(activation.get("enabled"), False, "predecessor_plan.activation")
-    _strict_match(activation.get("status"), "DISABLED", "predecessor_plan.activation")
-    _strict_match(
-        activation.get("native_commands"),
-        {command: "FORBIDDEN" for command in NATIVE_COMMANDS},
-        "predecessor_plan.commands",
+    rows = _list(
+        admission["capability_mapping_requirements"],
+        "provider_neutral_data_services_admission.capability_mapping_requirements",
     )
-    _strict_match(
-        plan.get("planned_actions"),
-        {action: 0 for action in ACTION_NAMES},
-        "predecessor_plan.planned_actions",
-    )
-    _strict_match(
-        plan.get("selected_configuration"),
-        contract.get("selected_configuration"),
-        "predecessor_plan.selected_configuration",
-    )
+    observed: list[str] = []
+    for row in rows:
+        item = _mapping(
+            row,
+            "provider_neutral_data_services_admission.capability_mapping_requirements.item",
+        )
+        capability_id = item.get("capability_id")
+        if type(capability_id) is not str:
+            _fail("TYPE_MISMATCH", "capability_mapping.capability_id")
+        observed.append(capability_id)
+    expected = [
+        capability_id
+        for capability_id, _required_outcome in DATA_SERVICE_CAPABILITY_OUTCOMES
+    ]
+    if len(observed) != len(set(observed)):
+        _fail("DUPLICATE_CAPABILITY_MAPPING", "capability_mapping")
+    if any(capability_id not in expected for capability_id in observed):
+        _fail("UNKNOWN_CAPABILITY_MAPPING", "capability_mapping")
+    if any(capability_id not in observed for capability_id in expected):
+        _fail("MISSING_CAPABILITY_MAPPING", "capability_mapping")
+    if observed != expected:
+        _fail("CAPABILITY_MAPPING_ORDER_DRIFT", "capability_mapping")
 
 
 def validate_contract(contract: object, root: Path = REPO_ROOT) -> DataServicesModel:
@@ -883,6 +1552,7 @@ def validate_contract(contract: object, root: Path = REPO_ROOT) -> DataServicesM
     _validate_sources(value, root)
     _validate_authority_semantics(root)
     _validate_predecessor_semantics(root)
+    _validate_capability_inventory(value)
     for section, expected in EXPECTED_SECTIONS.items():
         _strict_match(value[section], expected, section)
     return DataServicesModel(contract=copy.deepcopy(dict(value)))
@@ -903,7 +1573,7 @@ def reference_plan_document(model: DataServicesModel) -> dict[str, object]:
     return {
         "document": {
             "id": "RAOS-DATA-SERVICES-REFERENCE-PLAN-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1502",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -914,21 +1584,37 @@ def reference_plan_document(model: DataServicesModel) -> dict[str, object]:
         },
         "predecessor_binding": _section(model, "predecessor_binding"),
         "reference_architecture": _section(model, "reference_architecture"),
+        "provider_neutral_data_services_admission": _section(
+            model, "provider_neutral_data_services_admission"
+        ),
         "selected_configuration": _section(model, "selected_configuration"),
         "logical_data_services": {
-            "rds": _section(model, "rds_intent"),
-            "s3": _section(model, "s3_intent"),
-            "sqs": _section(model, "sqs_intent"),
-            "secrets_manager": _section(model, "secrets_manager_intent"),
-            "kms": _section(model, "kms_intent"),
+            "relational_persistence": _section(model, "relational_persistence_intent"),
+            "object_storage": _section(model, "object_storage_intent"),
+            "queue": _section(model, "queue_intent"),
+            "secrets": _section(model, "secrets_intent"),
+            "key_management": _section(model, "key_management_intent"),
+            "recovery": _section(model, "recovery_intent"),
+            "observability": _section(model, "observability_intent"),
+            "data_boundary": _section(model, "data_boundary_intent"),
         },
         "planned_actions": copy.deepcopy(execution["planned_actions"]),
         "activation": {
             "enabled": execution["activation_enabled"],
             "status": execution["activation_status"],
             "native_plan_status": execution["native_plan_status"],
+            "network_access": execution["network_access"],
+            "credential_access": execution["credential_access"],
             "live_provider_calls": execution["live_provider_calls"],
             "external_writes": execution["external_writes"],
+            "migration_action": execution["migration_action"],
+            "backup_action": execution["backup_action"],
+            "restore_action": execution["restore_action"],
+            "redrive_action": execution["redrive_action"],
+            "destructive_action": execution["destructive_action"],
+            "deploy_action": execution["deploy_action"],
+            "release_action": execution["release_action"],
+            "production_action": execution["production_action"],
             "native_commands": copy.deepcopy(execution["commands"]),
         },
         "verification_boundary": {
@@ -973,7 +1659,7 @@ def render_manifest(
     document: dict[str, object] = {
         "document": {
             "id": "RAOS-DATA-SERVICES-MANIFEST-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1502",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -1010,19 +1696,91 @@ def render_manifest(
         "boundary": {
             "classification": evidence["deliverable_classification"],
             "activation": execution["activation_status"],
+            "network_access": execution["network_access"],
+            "credential_access": execution["credential_access"],
+            "live_provider_calls": execution["live_provider_calls"],
+            "external_writes": execution["external_writes"],
+            "migration_action": execution["migration_action"],
+            "backup_action": execution["backup_action"],
+            "restore_action": execution["restore_action"],
+            "redrive_action": execution["redrive_action"],
+            "destructive_action": execution["destructive_action"],
+            "deploy_action": execution["deploy_action"],
+            "release_action": execution["release_action"],
+            "production_action": execution["production_action"],
+            "admission_status": model.contract[
+                "provider_neutral_data_services_admission"
+            ]["admission_status"],
+            "eligible": model.contract["provider_neutral_data_services_admission"][
+                "eligible"
+            ],
             "planned_actions": copy.deepcopy(execution["planned_actions"]),
-            "selected_cloud_provider": selection["cloud_provider"],
+            "selected_provider_profile": model.contract[
+                "provider_neutral_data_services_admission"
+            ]["selected_profile_id"],
+            "default_provider_profile": model.contract[
+                "provider_neutral_data_services_admission"
+            ]["default_profile_id"],
+            "fallback_provider_profile": model.contract[
+                "provider_neutral_data_services_admission"
+            ]["fallback_profile_id"],
+            "selected_provider_name": selection["provider_name"],
+            "selected_provider_account_or_project": selection[
+                "provider_account_or_project"
+            ],
             "selected_production_region": selection["production_region"],
-            "selected_aws_account": selection["aws_account_id"],
-            "selected_state_backend": selection["state_backend"],
+            "selected_backup_region": selection["backup_region"],
+            "selected_relational_service_binding": selection[
+                "relational_service_binding"
+            ],
+            "selected_object_storage_service_binding": selection[
+                "object_storage_service_binding"
+            ],
+            "selected_queue_service_binding": selection["queue_service_binding"],
+            "selected_secrets_service_binding": selection["secrets_service_binding"],
+            "selected_key_management_service_binding": selection[
+                "key_management_service_binding"
+            ],
+            "selected_data_services_plugin_or_adapter": selection[
+                "data_services_plugin_or_adapter"
+            ],
+            "required_capability_count": len(DATA_SERVICE_CAPABILITY_OUTCOMES),
+            "configured_mapping_count": 0,
+            "complete_mapping": False,
+            "aws_reference_role": model.contract[
+                "provider_neutral_data_services_admission"
+            ]["aws_reference_boundary"]["role"],
+            "canonical_story_deliverables": model.contract[
+                "provider_neutral_data_services_admission"
+            ]["aws_reference_boundary"]["canonical_story_deliverables"],
+            "portable_implementation_paths": model.contract[
+                "provider_neutral_data_services_admission"
+            ]["aws_reference_boundary"]["non_aws_owner_managed_profiles"],
+            "aws_reference_default": False,
+            "aws_reference_implicit_fallback": False,
+            "aws_reference_selected_binding": False,
+            "aws_reference_eligibility_shortcut": False,
+            "aws_reference_admission_requirement": False,
+            "aws_reference_evidence_substitute": False,
             "credentials": evidence["credentials"],
             "physical_resource_definitions": copy.deepcopy(
                 selection["physical_resource_definitions"]
             ),
             "native_iac_validation": evidence["native_iac_validation"],
+            "transport_encryption_validation": evidence[
+                "transport_encryption_validation"
+            ],
+            "relational_migration_validation": evidence[
+                "relational_migration_validation"
+            ],
+            "queue_delivery_validation": evidence["queue_delivery_validation"],
             "formal_tst_026": evidence["formal_tst_026"],
             "formal_tst_029": evidence["formal_tst_029"],
             "restore_validation": evidence["restore_validation"],
+            "provider_validation": evidence["provider_validation"],
+            "live_staging_release_production": evidence[
+                "live_staging_release_production"
+            ],
             "effective_canonical_status": evidence["effective_canonical_status"],
         },
     }

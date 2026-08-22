@@ -20,11 +20,14 @@ from typing import Any, Final, NoReturn
 import yaml
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
-from yaml.tokens import AliasToken, AnchorToken
+from yaml.tokens import AliasToken, AnchorToken, TagToken
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 CONTRACT_PATH: Final = Path("changes/st-1504/contracts/github-oidc-deployment.v1.yaml")
+DESIGN_HANDOFF_PATH: Final = Path(
+    "changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml"
+)
 REFERENCE_PLAN_PATH: Final = Path(
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json"
 )
@@ -42,6 +45,9 @@ AUTHORITY_SOURCES: Final = {
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": (
         "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
     ),
+    "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml": (
+        "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    ),
     "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml": (
         "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
     ),
@@ -53,6 +59,9 @@ AUTHORITY_SOURCES: Final = {
     ),
     "docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml": (
         "2cdc9afb4b9a1fc7cb44b78dc5198bc443a219ca895713b75220f8625aea6305"
+    ),
+    "docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md": (
+        "894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8"
     ),
     "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md": (
         "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
@@ -73,33 +82,87 @@ AUTHORITY_SOURCES: Final = {
         "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
     ),
     "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
-        "9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b"
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
+    ),
+    "AGENTS.md": ("a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127"),
+    "changes/st-1504/"
+    "DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml": (
+        "36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04"
     ),
 }
 PREDECESSOR_SOURCES: Final = {
     "changes/st-0107/contracts/pr-governance.v1.yaml": (
-        "ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1"
+        "b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92"
     ),
     "changes/st-0107/ruleset-policy.v1.json": (
         "e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5"
     ),
+    "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
+        "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
+    ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2"
+        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f"
+        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
 
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
+    DESIGN_HANDOFF_PATH,
     Path("changes/st-1504/README.md"),
     Path("scripts/build_st1504_github_oidc.py"),
     Path("tests/st1504/conftest.py"),
     Path("tests/st1504/test_contract.py"),
     Path("tests/st1504/test_generation.py"),
     Path("tests/st1504/test_negative_cases.py"),
+)
+
+EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
+    "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
+)
+EXPECTED_CONTRACT_SEMANTIC_SHA256: Final = (
+    "86c418b07701b4cf47f478b13f7665911ece7c4a46d39edd07f7b6944019a4b7"
+)
+EXPECTED_PR_GOVERNANCE_CONTRACT_SEMANTIC_SHA256: Final = (
+    "141dce557ae5b16c1ef54490ed1c41ce083c33cf27c5e9b66a38de4827dd6dfb"
+)
+EXPECTED_PR_GOVERNANCE_DESIRED_STATE_SEMANTIC_SHA256: Final = (
+    "bcfc8440e5e508648607dc22f8deacca4dc14021404c050457077ce451934c33"
+)
+EXPECTED_PREDECESSOR_HANDOFF_SEMANTIC_SHA256: Final = (
+    "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
+)
+EXPECTED_PREDECESSOR_CONTRACT_SEMANTIC_SHA256: Final = (
+    "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
+)
+EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256: Final = (
+    "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
+)
+EXPECTED_HANDOFF_SOURCE_DESIGN_REFS: Final = (
+    "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+    "repo://docs/canonical/01_integration/"
+    "RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-007",
+    "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-009",
+    "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-011",
+    "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-013",
+    "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015",
+    "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-0107",
+    "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1504",
+    "repo://changes/st-0107/contracts/pr-governance.v1.yaml",
+    "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
+    "repo://docs/upstream/key_documents/"
+    "RAOS_02_system_architecture_v0.1.md#RAOS-ARCH-001",
+    "repo://docs/upstream/key_documents/"
+    "RAOS_02_architecture_catalog_v0.1.yaml#RAOS-ARCH-001",
+    "repo://docs/canonical/06_ops/"
+    "RAOS_12_operations_reliability_design_v1.0.md#RAOS-OPS-001",
+    "repo://docs/canonical/04_security/"
+    "RAOS_10_security_privacy_design_v1.0.md#RAOS-SEC-001",
+    "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-026",
+    "repo://AGENTS.md#project-tools-contract",
 )
 
 EXPECTED_STORY: Final = {
@@ -122,15 +185,56 @@ EXPECTED_STORY: Final = {
     "implementation_status": "NOT_STARTED",
     "verification_status": "NOT_EXECUTED",
 }
-EXPECTED_OD_013: Final = {
-    "id": "OD-013",
-    "topic": "production_region_and_data_residency",
-    "status": "HUMAN_DECISION_REQUIRED",
-    "required_by": "Terraform production",
-    "owner": "Security/Business Owner",
-    "decision_needed": "AWS Region、Backup Region、越境移転の扱いを承認",
-    "default_behavior": "Referenceはap-northeast-1、Production apply禁止",
-    "blocking": True,
+EXPECTED_INT_DEC_007: Final = {
+    "id": "INT-DEC-007",
+    "title": "Reference Cloud",
+    "status": "RESOLVED",
+    "decision": (
+        "AWS東京リージョンをReference ArchitectureとするがCoreをAWS固有Domain Modelへ密結合させない"
+    ),
+    "implementation_effect": "TerraformとAdapter境界を用意。実AWS Accountは未設定",
+}
+EXPECTED_OPEN_DECISIONS: Final = {
+    "OD-009": {
+        "id": "OD-009",
+        "topic": "budget_and_acceptable_loss",
+        "status": "HUMAN_DECISION_REQUIRED",
+        "required_by": "Cloud/LLM release",
+        "owner": "Business Owner",
+        "decision_needed": "AWS、LLM、外部Providerの月次上限と自動停止閾値を設定",
+        "default_behavior": "低い開発用上限、Production無効",
+        "blocking": True,
+    },
+    "OD-011": {
+        "id": "OD-011",
+        "topic": "notification_channels",
+        "status": "HUMAN_DECISION_REQUIRED",
+        "required_by": "Incident operations",
+        "owner": "Operations Owner",
+        "decision_needed": "Critical/High通知先とEscalation連絡先を設定",
+        "default_behavior": "Local logのみ。Production不可",
+        "blocking": True,
+    },
+    "OD-013": {
+        "id": "OD-013",
+        "topic": "production_region_and_data_residency",
+        "status": "HUMAN_DECISION_REQUIRED",
+        "required_by": "Terraform production",
+        "owner": "Security/Business Owner",
+        "decision_needed": "AWS Region、Backup Region、越境移転の扱いを承認",
+        "default_behavior": "Referenceはap-northeast-1、Production apply禁止",
+        "blocking": True,
+    },
+    "OD-015": {
+        "id": "OD-015",
+        "topic": "production_provider_credentials",
+        "status": "EXTERNAL_EVIDENCE_REQUIRED",
+        "required_by": "Live adapter test",
+        "owner": "Operations Owner",
+        "decision_needed": "楽天、OpenAI、Google、AWSの専用Account/権限/Secretを設定",
+        "default_behavior": "Recorded fixtureのみ",
+        "blocking": True,
+    },
 }
 EXPECTED_TST_026: Final = {
     "id": "TST-026",
@@ -146,6 +250,7 @@ EXPECTED_TST_026: Final = {
     "execution_status": "NOT_EXECUTED",
 }
 EXPECTED_SECURITY_CONTROLS: Final = {
+    "SEC-IAM-004": "Role/Scope/Siteで最小権限",
     "SEC-IAM-009": "Worker/CIは人間Credentialを共有しない",
     "SEC-IAM-010": "長期AWS keyをActions secretに置かない",
     "SEC-SDLC-001": "Rulesetとrequired review/checks",
@@ -154,6 +259,10 @@ EXPECTED_SECURITY_CONTROLS: Final = {
     "SEC-SDLC-006": "History/PR/artifactをscan",
     "SEC-SDLC-007": "Release artifactのSBOM生成",
     "SEC-SDLC-008": "Build provenance/attestationを生成",
+    "SEC-SDLC-012": "Production deployはHuman approval",
+    "SEC-OPS-001": "Auth failure、privilege、secret、WAF、kill switchを監視",
+    "SEC-OPS-003": "SEVとresponse ownerを定義",
+    "SEC-OPS-004": "Artifact、log、timelineを保全",
 }
 EXPECTED_THREATS: Final = {
     "THR-007": {
@@ -218,22 +327,126 @@ NATIVE_OPERATIONS: Final = (
     "github_ruleset_mutation",
     "github_workflow_mutation",
     "github_environment_mutation",
-    "aws_api_call",
-    "iam_policy_apply",
+    "target_provider_api_call",
+    "target_identity_policy_apply",
+    "target_federation_exchange",
     "credential_issue",
     "deploy",
-    "terraform_plan",
-    "terraform_apply",
+    "iac_plan",
+    "iac_apply",
+)
+ELIGIBLE_PROFILE_KINDS: Final = (
+    "AWS",
+    "OTHER_CLOUD",
+    "OWNER_MANAGED_INFRASTRUCTURE",
+)
+DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES: Final = (
+    (
+        "exact_repository_ref_workflow_and_subject_binding",
+        "EXACT_REPOSITORY_REF_WORKFLOW_ENVIRONMENT_AUDIENCE_AND_SUBJECT_WITH_"
+        "NO_WILDCARD_OR_UNTRUSTED_CALLER",
+    ),
+    (
+        "short_lived_federation_without_static_cloud_secrets",
+        "SHORT_LIVED_FEDERATION_WITHOUT_STATIC_CLOUD_SECRET_HUMAN_CREDENTIAL_"
+        "OR_AMBIENT_AUTHORITY",
+    ),
+    (
+        "target_environment_and_audience_binding",
+        "EXACT_TARGET_ENVIRONMENT_AUDIENCE_PROVIDER_AND_RELEASE_BOUNDARY_WITH_"
+        "FAIL_CLOSED_ISSUANCE",
+    ),
+    (
+        "least_privilege_session_scope_and_duration_limits",
+        "LEAST_PRIVILEGE_SCOPE_BOUNDED_DURATION_NO_ROLE_CHAINING_AND_NO_"
+        "PRIVILEGE_ESCALATION",
+    ),
+    (
+        "protected_environment_human_approval",
+        "DISTINCT_HUMAN_APPROVAL_PROTECTED_ENVIRONMENT_EXACT_ALLOWED_REFS_AND_"
+        "NO_BYPASS",
+    ),
+    (
+        "provenance_audit_revocation_and_rollback",
+        "SIGNED_PROVENANCE_IMMUTABLE_AUDIT_REVOCATION_RUNBOOK_ALERT_OWNERSHIP_"
+        "AND_TESTED_ROLLBACK",
+    ),
+    (
+        "provider_account_project_tenant_and_environment_isolation",
+        "DEVELOPMENT_PRODUCTION_ACCOUNT_PROJECT_TENANT_ENVIRONMENT_AND_REGION_"
+        "RESIDENCY_ISOLATION",
+    ),
+    (
+        "equivalent_security_operations_and_release_evidence",
+        "IDENTICAL_SECURITY_OPERATIONS_RELEASE_PROVENANCE_AUDIT_REVOCATION_"
+        "ROLLBACK_ISOLATION_AND_RESIDENCY_EVIDENCE",
+    ),
 )
 ACTION_NAMES: Final = ("create", "update", "delete")
 MAX_DOCUMENT_BYTES: Final = 2 * 1024 * 1024
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
 
 
+def _aws_reference_mappings() -> list[dict[str, str]]:
+    return [
+        {"reference_name": reference_name, "capability_id": capability_id}
+        for reference_name, capability_id in (
+            (
+                "AWS IAM OIDC provider",
+                "short_lived_federation_without_static_cloud_secrets",
+            ),
+            (
+                "AWS IAM role",
+                "least_privilege_session_scope_and_duration_limits",
+            ),
+            (
+                "AWS account",
+                "provider_account_project_tenant_and_environment_isolation",
+            ),
+            (
+                "AWS region",
+                "provider_account_project_tenant_and_environment_isolation",
+            ),
+            ("AWS audience", "target_environment_and_audience_binding"),
+        )
+    ]
+
+
+def _binding_policy() -> dict[str, object]:
+    unset = {"selected": None, "default": None, "fallback": None}
+    return {
+        name: copy.deepcopy(unset)
+        for name in (
+            "target_provider",
+            "target_profile",
+            "account_project_or_tenant",
+            "region",
+            "audience",
+            "target_identity_or_role",
+            "identity_plugin_or_adapter",
+        )
+    } | {
+        "implicit_binding": "FORBIDDEN",
+        "name_or_reference_only_eligibility": "FORBIDDEN",
+    }
+
+
+def _capability_mapping_requirements() -> list[dict[str, object]]:
+    return [
+        {
+            "capability_id": capability_id,
+            "required_outcome": required_outcome,
+            "selected_mapping": None,
+            "evidence_refs": [],
+            "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        }
+        for capability_id, required_outcome in DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES
+    ]
+
+
 def _selected_bindings() -> dict[str, object]:
     return {
         "oidc_issuer_url": None,
-        "oidc_audience": None,
         "oidc_subject": None,
         "github_organization": None,
         "github_repository": None,
@@ -248,20 +461,24 @@ def _selected_bindings() -> dict[str, object]:
         "github_environment_reviewer_ids": [],
         "github_environment_allowed_refs": [],
         "reusable_workflow_callers": [],
-        "aws_account_id": None,
-        "aws_role_arn": None,
-        "aws_role_name": None,
+        "target_provider_name": None,
+        "target_profile_id": None,
+        "target_profile_kind": None,
+        "target_account_project_or_tenant": None,
+        "target_region": None,
+        "target_audience": None,
+        "target_identity_role_reference": None,
+        "target_federation_endpoint_reference": None,
         "session_duration_seconds": None,
         "session_name": None,
         "session_tags": [],
-        "oidc_thumbprints": [],
-        "trust_policy_payload": None,
+        "federation_trust_material": None,
         "permission_policy_payload": None,
         "environment_protection_payload": None,
         "workflow_permissions_payload": None,
         "workflow_trigger_events": [],
         "external_action_references": [],
-        "terraform_cli_version": None,
+        "identity_plugin_or_adapter": None,
         "provider_plugins": [],
     }
 
@@ -269,7 +486,7 @@ def _selected_bindings() -> dict[str, object]:
 EXPECTED_SECTIONS: Final[dict[str, Any]] = {
     "document": {
         "id": "RAOS-GITHUB-OIDC-DEPLOYMENT-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1504",
         "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
         "formal_verification": "NOT_EXECUTED",
@@ -304,6 +521,14 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
         },
         "terraform_foundation": {
             "story_id": "ST-1501",
+            "design_handoff_uri": (
+                "repo://changes/st-1501/"
+                "DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml"
+            ),
+            "design_handoff_sha256": PREDECESSOR_SOURCES[
+                "changes/st-1501/"
+                "DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml"
+            ],
             "contract_uri": (
                 "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml"
             ),
@@ -317,19 +542,116 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
             "reference_plan_sha256": PREDECESSOR_SOURCES[
                 "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
             ],
+            "required_provider_policy": (
+                "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION"
+            ),
+            "required_admission_status": "NOT_EVALUATED",
+            "required_eligible": False,
             "required_activation_status": "DISABLED",
             "required_resource_payloads": "FORBIDDEN",
             "required_planned_actions": {action: 0 for action in ACTION_NAMES},
         },
     },
+    "ci_source_boundary": {
+        "ci_source": "GITHUB_ACTIONS",
+        "oidc_source": "GITHUB_ACTIONS_OIDC",
+        "external_review_connector": "GITHUB",
+        "classification": "APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION",
+        "target_provider_selected": False,
+        "exact_repository_binding": "REQUIRED_NOT_CONFIGURED",
+        "exact_ref_binding": "REQUIRED_NOT_CONFIGURED",
+        "exact_workflow_binding": "REQUIRED_NOT_CONFIGURED",
+        "hosted_execution_evidence": "NOT_EXECUTED",
+    },
+    "reference_architecture": {
+        "cloud": "AWS",
+        "region": "ap-northeast-1",
+        "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+        "inherited_from": "INT-DEC-007",
+        "architecture_id": "RAOS-ARCH-001",
+        "portable_core_required": True,
+        "mappings": _aws_reference_mappings(),
+        "default": False,
+        "implicit_fallback": False,
+        "selected_binding": False,
+        "eligibility_shortcut": False,
+        "admission_requirement": False,
+        "evidence_substitute": False,
+    },
+    "provider_neutral_deployment_identity_admission": {
+        "classification": (
+            "STRICT_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_CAPABILITY_ADMISSION"
+        ),
+        "admission_status": "NOT_EVALUATED",
+        "eligible": False,
+        "selected_profile_id": None,
+        "selected_profile_kind": None,
+        "selected_provider_name": None,
+        "default_profile_id": None,
+        "fallback_profile_id": None,
+        "concrete_alternate_provider_selected": False,
+        "eligible_profile_kinds": list(ELIGIBLE_PROFILE_KINDS),
+        "eligibility_condition": (
+            "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE"
+        ),
+        "binding_policy": _binding_policy(),
+        "mapping_policy": {
+            "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+            "required_capability_count": len(DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES),
+            "configured_mapping_count": 0,
+            "complete_mapping": False,
+            "missing_mapping": "REJECT",
+            "unknown_mapping": "REJECT",
+            "duplicate_mapping": "REJECT",
+            "implicit_mapping": "REJECT",
+            "partial_mapping": "REJECT",
+            "provider_label_only_mapping": "REJECT",
+            "aws_label_only_mapping": "REJECT",
+            "source_label_only_mapping": "REJECT",
+            "reference_only_mapping": "REJECT",
+        },
+        "aws_reference_boundary": {
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "evidence_equivalence_policy": {
+            "identical_security_evidence": "REQUIRED",
+            "identical_operations_evidence": "REQUIRED",
+            "identical_release_evidence": "REQUIRED",
+            "identical_provenance_evidence": "REQUIRED",
+            "identical_audit_evidence": "REQUIRED",
+            "identical_revocation_rollback_evidence": "REQUIRED",
+            "identical_identity_session_evidence": "REQUIRED",
+            "identical_isolation_residency_evidence": "REQUIRED",
+            "provider_label_as_evidence": "FORBIDDEN",
+            "aws_label_as_evidence": "FORBIDDEN",
+            "github_source_label_as_evidence": "FORBIDDEN",
+            "reference_metadata_as_evidence": "FORBIDDEN",
+            "local_test_as_live_evidence": "FORBIDDEN",
+        },
+        "capability_mapping_requirements": _capability_mapping_requirements(),
+    },
     "reference_intent": {
-        "classification": "LOGICAL_IDENTITY_PATH_REFERENCE_ONLY",
+        "classification": "LOGICAL_PROVIDER_NEUTRAL_IDENTITY_PATH_REFERENCE_ONLY",
         "source": "GITHUB_ACTIONS_OIDC",
-        "destination": "AWS_SHORT_LIVED_WORKLOAD_SESSION",
+        "destination": "PROVIDER_NEUTRAL_SHORT_LIVED_WORKLOAD_SESSION",
         "github_workload_identity": "REQUIRED_NOT_CONFIGURED",
-        "aws_role_session": "REQUIRED_NOT_CONFIGURED",
+        "target_federated_session": "REQUIRED_NOT_CONFIGURED",
+        "target_provider": "UNSELECTED",
+        "github_source_is_target_provider_selection": False,
         "executable_workflow": "ABSENT",
-        "iam_trust_policy": "ABSENT",
+        "target_trust_policy": "ABSENT",
         "provider_sdk_types": "ABSENT",
         "production_deployment": "FORBIDDEN",
     },
@@ -353,18 +675,28 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
         "broad_organization_subject": "FORBIDDEN",
         "broad_repository_subject": "FORBIDDEN",
         "broad_ref_subject": "FORBIDDEN",
+        "broad_audience": "FORBIDDEN",
     },
     "credential_boundary": {
-        "classification": "MATERIAL_FREE_REQUIREMENTS_ONLY",
+        "classification": (
+            "MATERIAL_FREE_PROVIDER_NEUTRAL_FEDERATION_REQUIREMENTS_ONLY"
+        ),
         "long_lived_cloud_key": "FORBIDDEN",
+        "static_provider_credential": "FORBIDDEN",
         "repository_secret_cloud_credential": "FORBIDDEN",
+        "human_cloud_credential": "FORBIDDEN",
         "fork_pr_credential_issuance": "FORBIDDEN",
         "untrusted_ref_credential_issuance": "FORBIDDEN",
         "untrusted_environment_credential_issuance": "FORBIDDEN",
         "oidc_session": "SHORT_LIVED_REQUIRED_NOT_CONFIGURED",
         "least_privilege": "REQUIRED_NOT_CONFIGURED",
+        "session_scope_limit": "REQUIRED_NOT_CONFIGURED",
+        "session_duration_limit": "REQUIRED_NOT_CONFIGURED",
+        "session_revocation": "REQUIRED_NOT_CONFIGURED",
+        "target_account_project_tenant_isolation": "REQUIRED_NOT_CONFIGURED",
         "role_chaining": "FORBIDDEN",
         "privilege_escalation": "FORBIDDEN",
+        "cross_environment_identity_reuse": "FORBIDDEN",
         "credential_material": "ABSENT",
         "credential_issuance_capability": "ABSENT",
         "secret_names": [],
@@ -388,38 +720,97 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
         "distinct_human_approval": "REQUIRED_NOT_CONFIGURED",
         "protected_environment": "REQUIRED_NOT_CONFIGURED",
         "exact_allowed_refs": "REQUIRED_NOT_CONFIGURED",
+        "target_account_project_tenant_isolation": "REQUIRED_NOT_CONFIGURED",
         "self_approval": "FORBIDDEN",
         "approval_bypass": "FORBIDDEN",
         "deployment_without_approval": "FORBIDDEN",
+        "cross_environment_target_reuse": "FORBIDDEN",
+    },
+    "lifecycle_control_intent": {
+        "classification": "PROVIDER_NEUTRAL_AUDIT_REVOCATION_ROLLBACK_INTENT_ONLY",
+        "signed_provenance": "REQUIRED_NOT_CONFIGURED",
+        "immutable_audit_trail": "REQUIRED_NOT_CONFIGURED",
+        "credential_and_trust_revocation": "REQUIRED_NOT_CONFIGURED",
+        "rollback_and_kill_switch_runbook": "REQUIRED_NOT_CONFIGURED",
+        "alert_owner_and_escalation": "REQUIRED_NOT_CONFIGURED",
+        "evidence_retention": "REQUIRED_NOT_CONFIGURED",
+        "audit_bypass": "FORBIDDEN",
+        "revocation_bypass": "FORBIDDEN",
+        "rollback_bypass": "FORBIDDEN",
+        "irreversible_promotion": "FORBIDDEN",
+    },
+    "open_decision_boundary": {
+        "OD-009": {
+            "status": "HUMAN_DECISION_REQUIRED",
+            "resolved": False,
+            "blocking": True,
+            "safe_default": "LOW_DEVELOPMENT_CAP_PRODUCTION_DISABLED",
+        },
+        "OD-011": {
+            "status": "HUMAN_DECISION_REQUIRED",
+            "resolved": False,
+            "blocking": True,
+            "safe_default": "LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE",
+        },
+        "OD-013": {
+            "status": "HUMAN_DECISION_REQUIRED",
+            "resolved": False,
+            "blocking": True,
+            "safe_default": "REFERENCE_REGION_ONLY_PRODUCTION_APPLY_FORBIDDEN",
+        },
+        "OD-015": {
+            "status": "EXTERNAL_EVIDENCE_REQUIRED",
+            "resolved": False,
+            "blocking": True,
+            "safe_default": (
+                "RECORDED_FIXTURE_ONLY_CREDENTIALS_ABSENT_PROVIDER_CALLS_FORBIDDEN"
+            ),
+        },
     },
     "execution_boundary": {
         "activation_enabled": False,
         "activation_status": "DISABLED",
         "native_plan_status": "NOT_EXECUTED",
+        "network_access": "FORBIDDEN",
+        "credential_access": "FORBIDDEN",
         "live_provider_calls": "FORBIDDEN",
         "external_writes": "FORBIDDEN",
         "credential_issuance": "FORBIDDEN",
+        "deploy_action": "FORBIDDEN",
+        "release_action": "FORBIDDEN",
+        "production_action": "FORBIDDEN",
         "operations": {operation: "FORBIDDEN" for operation in NATIVE_OPERATIONS},
         "planned_actions": {action: 0 for action in ACTION_NAMES},
     },
     "evidence_boundary": {
         "deliverable_classification": (
-            "SOURCE_DERIVED_NON_EXECUTABLE_GITHUB_OIDC_REFERENCE_PLAN"
+            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_"
+            "DEPLOYMENT_IDENTITY_REFERENCE_PLAN"
         ),
         "executable_workflow": "ABSENT",
-        "iam_trust_policy": "ABSENT",
+        "target_trust_policy": "ABSENT",
+        "github_actions_ci_source": (
+            "APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION"
+        ),
         "github_repository": "UNSET",
         "github_environment": "UNSET",
-        "aws_account": "UNSET",
-        "aws_role": "UNSET",
+        "target_provider": "UNSET",
+        "target_profile": "UNSET",
+        "target_account_project_or_tenant": "UNSET",
+        "target_region": "UNSET",
+        "target_audience": "UNSET",
+        "target_identity_role": "UNSET",
         "credentials": "ABSENT",
         "credential_issuance": "NOT_EXECUTED",
         "native_iac_validation": "NOT_EXECUTED",
         "workflow_inspection": "NOT_EXECUTED",
+        "provenance_audit_revocation_rollback": "NOT_EXECUTED",
         "formal_tst_026": "NOT_EXECUTED",
-        "hosted_github_aws": "NOT_EXECUTED",
-        "live_oidc": "NOT_EXECUTED",
-        "live_staging_release_production": "NOT_EXECUTED",
+        "hosted_github_target_provider": "NOT_EXECUTED",
+        "live_oidc_federation": "NOT_EXECUTED",
+        "staging_deployment": "NOT_EXECUTED",
+        "release": "NOT_EXECUTED",
+        "production": "NOT_EXECUTED",
         "effective_canonical_status": "UNCHANGED",
     },
 }
@@ -492,6 +883,20 @@ def sha256_bytes(content: bytes) -> str:
 
 def sha256_file(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
+
+
+def semantic_sha256(document: object) -> str:
+    try:
+        content = json.dumps(
+            document,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    except TypeError, ValueError, UnicodeError:
+        _fail("SEMANTIC_DOCUMENT_INVALID", "semantic_document")
+    return sha256_bytes(content)
 
 
 def _fail(code: str, field: str) -> NoReturn:
@@ -603,6 +1008,8 @@ def load_yaml(path: Path) -> Any:
         for token in yaml.scan(text):
             if isinstance(token, (AliasToken, AnchorToken)):
                 _fail("YAML_ALIAS_FORBIDDEN", "yaml")
+            if isinstance(token, TagToken):
+                _fail("YAML_TAG_FORBIDDEN", "yaml")
         return yaml.load(text, Loader=UniqueKeyLoader)
     except GithubOidcContractError:
         raise
@@ -695,6 +1102,104 @@ def _load_repo_yaml(root: Path, relative: str, field: str) -> Mapping[str, Any]:
     )
 
 
+def _validate_design_handoff(root: Path) -> None:
+    handoff = _mapping(
+        load_yaml(_repository_regular_file(root, DESIGN_HANDOFF_PATH, "handoff")),
+        "handoff",
+    )
+    _exact_keys(
+        handoff,
+        {
+            "schema",
+            "version",
+            "record_status",
+            "approved_story",
+            "approved_scope",
+            "source_design_refs",
+            "decision",
+            "rationale",
+            "rejected_alternatives",
+            "constraints",
+            "security_and_approval_gates",
+            "acceptance_criteria",
+            "required_test_evidence",
+            "open_decision_state",
+        },
+        "handoff",
+    )
+    _strict_match(handoff.get("schema"), "DESIGN_HANDOFF_V1", "handoff.schema")
+    _strict_match(handoff.get("version"), 1, "handoff.version")
+    _strict_match(
+        handoff.get("record_status"),
+        "RECORDED_DURABLE_OWNER_DECISION",
+        "handoff.record_status",
+    )
+    _strict_match(handoff.get("approved_story"), "ST-1504", "handoff.story")
+    _strict_match(
+        handoff.get("source_design_refs"),
+        list(EXPECTED_HANDOFF_SOURCE_DESIGN_REFS),
+        "handoff.source_design_refs",
+    )
+    _strict_match(
+        handoff.get("decision"),
+        {
+            "deployment_identity_provider_policy": (
+                "STRICT_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_CAPABILITY_ADMISSION"
+            ),
+            "ci_source_boundary": {
+                "ci_source": "GITHUB_ACTIONS",
+                "oidc_source": "GITHUB_ACTIONS_OIDC",
+                "external_review_connector": "GITHUB",
+                "classification": (
+                    "APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION"
+                ),
+                "target_provider_selected": False,
+            },
+            "selected_profile": None,
+            "default_profile": None,
+            "fallback_profile": None,
+            "concrete_alternate_provider_selected": False,
+            "eligible_profile_kinds": list(ELIGIBLE_PROFILE_KINDS),
+            "eligibility_condition": (
+                "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE"
+            ),
+            "aws_reference_mapping_boundary": {
+                "canonical_decision_id": "INT-DEC-007",
+                "architecture_id": "RAOS-ARCH-001",
+                "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+                "canonical_story_deliverables": (
+                    "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+                ),
+                "non_aws_owner_managed_profiles": (
+                    "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+                ),
+                "mappings": _aws_reference_mappings(),
+                "default": False,
+                "implicit_fallback": False,
+                "selected_binding": False,
+                "eligibility_shortcut": False,
+                "admission_requirement": False,
+                "evidence_substitute": False,
+            },
+            "binding_policy": _binding_policy(),
+            "required_capability_ids": [
+                capability_id
+                for capability_id, _required_outcome in (
+                    DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES
+                )
+            ],
+        },
+        "handoff.decision",
+    )
+    _strict_match(
+        handoff.get("open_decision_state"),
+        EXPECTED_SECTIONS["open_decision_boundary"],
+        "handoff.open_decision_state",
+    )
+    if semantic_sha256(handoff) != EXPECTED_HANDOFF_SEMANTIC_SHA256:
+        _fail("HANDOFF_SEMANTIC_DRIFT", "handoff")
+
+
 def _validate_authority_semantics(root: Path) -> None:
     backlog = _load_repo_yaml(
         root,
@@ -704,15 +1209,31 @@ def _validate_authority_semantics(root: Path) -> None:
     story = _find_exact_record(backlog, "stories", "ST-1504", "backlog.stories")
     _strict_match(story, EXPECTED_STORY, "backlog.ST-1504")
 
+    canonical_decisions = _load_repo_yaml(
+        root,
+        "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+        "canonical_decisions",
+    )
+    canonical_decision = _find_exact_record(
+        canonical_decisions,
+        "decisions",
+        "INT-DEC-007",
+        "canonical_decisions.decisions",
+    )
+    _strict_match(
+        canonical_decision, EXPECTED_INT_DEC_007, "canonical_decisions.INT-DEC-007"
+    )
+
     open_decisions = _load_repo_yaml(
         root,
         "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
         "open_decisions",
     )
-    decision = _find_exact_record(
-        open_decisions, "items", "OD-013", "open_decisions.items"
-    )
-    _strict_match(decision, EXPECTED_OD_013, "open_decisions.OD-013")
+    for decision_id, expected in EXPECTED_OPEN_DECISIONS.items():
+        decision = _find_exact_record(
+            open_decisions, "items", decision_id, "open_decisions.items"
+        )
+        _strict_match(decision, expected, f"open_decisions.{decision_id}")
 
     tests = _load_repo_yaml(
         root,
@@ -776,6 +1297,15 @@ def _validate_authority_semantics(root: Path) -> None:
     if deployment.get("production_data_in_nonprod") is not False:
         _fail("AUTHORITY_ARCHITECTURE_DRIFT", "deployment.production_data")
 
+    agents_path = _repository_regular_file(root, Path("AGENTS.md"), "agents_policy")
+    try:
+        agents_text = agents_path.read_text(encoding="utf-8")
+    except OSError, UnicodeError:
+        _fail("FILE_UNAVAILABLE", "agents_policy")
+    if "初期 external review connector には GitHub のみを使用する。" not in agents_text:
+        _fail("AUTHORITY_CONNECTOR_POLICY_DRIFT", "agents_policy")
+    _validate_design_handoff(root)
+
 
 def _validate_pr_governance_predecessor(root: Path) -> None:
     contract = _load_repo_yaml(
@@ -783,6 +1313,8 @@ def _validate_pr_governance_predecessor(root: Path) -> None:
         "changes/st-0107/contracts/pr-governance.v1.yaml",
         "pr_governance_contract",
     )
+    if semantic_sha256(contract) != EXPECTED_PR_GOVERNANCE_CONTRACT_SEMANTIC_SHA256:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "pr_governance_contract")
     _strict_match(
         contract.get("document"),
         {
@@ -889,47 +1421,146 @@ def _validate_pr_governance_predecessor(root: Path) -> None:
     ):
         _fail("PREDECESSOR_GOVERNANCE_DRIFT", "activation.prerequisites")
 
-    desired_state = _mapping(
-        load_json(
-            _repository_regular_file(
-                root,
-                Path("changes/st-0107/ruleset-policy.v1.json"),
-                "pr_governance_desired_state",
-            )
-        ),
+    desired_state_path = _repository_regular_file(
+        root,
+        Path("changes/st-0107/ruleset-policy.v1.json"),
         "pr_governance_desired_state",
     )
+    desired_state = _mapping(
+        load_json(desired_state_path), "pr_governance_desired_state"
+    )
+    if (
+        semantic_sha256(desired_state)
+        != EXPECTED_PR_GOVERNANCE_DESIRED_STATE_SEMANTIC_SHA256
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "pr_governance_desired_state")
     document = _mapping(desired_state.get("document"), "predecessor.desired.document")
+    expected_document = {
+        "id": "RAOS-GITHUB-RULESET-POLICY-001",
+        "version": "1.0.0",
+        "story_id": "ST-0107",
+        "source_contract": "repo://changes/st-0107/contracts/pr-governance.v1.yaml",
+        "generated_by": "repo://scripts/build_st0107_pr_governance.py",
+        "generation_command": (
+            "uv run --locked --no-sync python scripts/build_st0107_pr_governance.py"
+        ),
+        "artifact_kind": "DESIRED_STATE_NOT_API_PAYLOAD",
+        "github_api_version": "2026-03-10",
+        "live_status": "NOT_EXECUTED",
+        "formal_tst_001": "NOT_EXECUTED",
+    }
+    _strict_match(document, expected_document, "predecessor.desired.document")
+    expected_desired_state = {
+        "document": expected_document,
+        "ruleset": copy.deepcopy(policy),
+        "activation": copy.deepcopy(activation),
+    }
     _strict_match(
-        document.get("artifact_kind"),
-        "DESIRED_STATE_NOT_API_PAYLOAD",
-        "predecessor.desired.kind",
+        desired_state, expected_desired_state, "predecessor.pr_governance_desired_state"
     )
-    _strict_match(
-        document.get("live_status"), "NOT_EXECUTED", "predecessor.desired.live"
-    )
-    _strict_match(desired_state.get("ruleset"), policy, "predecessor.desired.ruleset")
-    _strict_match(
-        desired_state.get("activation"), activation, "predecessor.desired.activation"
-    )
+    expected_desired_state_bytes = (
+        json.dumps(
+            expected_desired_state, ensure_ascii=False, indent=2, sort_keys=False
+        )
+        + "\n"
+    ).encode("utf-8")
+    try:
+        actual_desired_state_bytes = desired_state_path.read_bytes()
+    except OSError:
+        _fail("FILE_UNAVAILABLE", "pr_governance_desired_state")
+    if actual_desired_state_bytes != expected_desired_state_bytes:
+        _fail("PREDECESSOR_GENERATED_DRIFT", "pr_governance_desired_state")
 
 
 def _validate_foundation_predecessor(root: Path) -> None:
+    handoff = _load_repo_yaml(
+        root,
+        "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
+        "foundation_handoff",
+    )
+    if semantic_sha256(handoff) != EXPECTED_PREDECESSOR_HANDOFF_SEMANTIC_SHA256:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "foundation_handoff")
+
     contract = _load_repo_yaml(
         root,
         "changes/st-1501/contracts/terraform-foundation.v1.yaml",
         "foundation_contract",
     )
+    if semantic_sha256(contract) != EXPECTED_PREDECESSOR_CONTRACT_SEMANTIC_SHA256:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "foundation_contract")
     _strict_match(
         contract.get("document"),
         {
             "id": "RAOS-TERRAFORM-FOUNDATION-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1501",
             "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
             "formal_verification": "NOT_EXECUTED",
         },
         "predecessor.foundation.document",
+    )
+    _strict_match(
+        contract.get("reference_architecture"),
+        {
+            "cloud": "AWS",
+            "region": "ap-northeast-1",
+            "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "inherited_from": "INT-DEC-007",
+            "portable_core_required": True,
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "predecessor.foundation.reference_architecture",
+    )
+    admission = _mapping(
+        contract.get("provider_neutral_foundation_admission"),
+        "predecessor.foundation.admission",
+    )
+    _strict_match(
+        admission.get("classification"),
+        "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
+        "predecessor.foundation.admission.classification",
+    )
+    _strict_match(
+        admission.get("admission_status"),
+        "NOT_EVALUATED",
+        "predecessor.foundation.admission.status",
+    )
+    _strict_match(
+        admission.get("eligible"), False, "predecessor.foundation.admission.eligible"
+    )
+    for field in (
+        "selected_profile_id",
+        "selected_profile_kind",
+        "selected_provider_name",
+        "default_profile_id",
+        "fallback_profile_id",
+    ):
+        _strict_match(
+            admission.get(field), None, f"predecessor.foundation.admission.{field}"
+        )
+    _strict_match(
+        admission.get("aws_reference_boundary"),
+        {
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "predecessor.foundation.admission.aws_reference_boundary",
     )
     _strict_match(
         contract.get("selected_configuration"),
@@ -951,96 +1582,181 @@ def _validate_foundation_predecessor(root: Path) -> None:
         },
         "predecessor.foundation.selection",
     )
-    execution = _mapping(contract.get("execution_boundary"), "predecessor.foundation")
-    _strict_match(
-        execution.get("activation_enabled"), False, "predecessor.foundation.enabled"
+    execution = _mapping(
+        contract.get("execution_boundary"), "predecessor.foundation.execution"
     )
     _strict_match(
-        execution.get("activation_status"),
-        "DISABLED",
-        "predecessor.foundation.status",
-    )
-    _strict_match(
-        execution.get("live_provider_calls"),
-        "FORBIDDEN",
-        "predecessor.foundation.live",
-    )
-    _strict_match(
-        execution.get("external_writes"),
-        "FORBIDDEN",
-        "predecessor.foundation.writes",
-    )
-    _strict_match(
-        execution.get("native_plan_status"),
-        "NOT_EXECUTED",
-        "predecessor.foundation.native_plan",
-    )
-    _strict_match(
-        execution.get("commands"),
-        {command: "FORBIDDEN" for command in FOUNDATION_NATIVE_COMMANDS},
-        "predecessor.foundation.commands",
-    )
-    _strict_match(
-        execution.get("planned_actions"),
-        {action: 0 for action in ACTION_NAMES},
-        "predecessor.foundation.actions",
+        execution,
+        {
+            "activation_enabled": False,
+            "activation_status": "DISABLED",
+            "native_plan_status": "NOT_EXECUTED",
+            "network_access": "FORBIDDEN",
+            "credential_access": "FORBIDDEN",
+            "live_provider_calls": "FORBIDDEN",
+            "external_writes": "FORBIDDEN",
+            "deploy_action": "FORBIDDEN",
+            "release_action": "FORBIDDEN",
+            "production_action": "FORBIDDEN",
+            "commands": {
+                command: "FORBIDDEN" for command in FOUNDATION_NATIVE_COMMANDS
+            },
+            "planned_actions": {action: 0 for action in ACTION_NAMES},
+        },
+        "predecessor.foundation.execution",
     )
     extension = _mapping(contract.get("extension_contract"), "predecessor.extension")
     _strict_match(
-        extension.get("current_resource_payloads"),
-        "FORBIDDEN",
-        "predecessor.foundation.resources",
+        extension,
+        {
+            "current_resource_payloads": "FORBIDDEN",
+            "successor_contract_revision_required": True,
+            "native_toolchain_pin_required_before_hcl": True,
+            "successors": {
+                "ST-1502": "DATA_SERVICES",
+                "ST-1503": "COMPUTE_CDN_WAF",
+            },
+        },
+        "predecessor.foundation.extension",
+    )
+    evidence = _mapping(
+        contract.get("evidence_boundary"), "predecessor.foundation.evidence"
+    )
+    _strict_match(
+        evidence,
+        {
+            "deliverable_classification": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
+            "executable_terraform": "ABSENT",
+            "terraform_cli": "UNPINNED_NOT_INVOKED",
+            "provider_plugins": "UNPINNED_NOT_INVOKED",
+            "remote_state": "NOT_CONFIGURED",
+            "provider_account_or_project": "UNSET",
+            "credentials": "ABSENT",
+            "formal_tst_026": "NOT_EXECUTED",
+            "live_staging_release_production": "NOT_EXECUTED",
+            "effective_canonical_status": "UNCHANGED",
+        },
+        "predecessor.foundation.evidence",
     )
 
-    plan = _mapping(
-        load_json(
-            _repository_regular_file(
-                root,
-                Path(
-                    "infra/terraform/foundation/"
-                    "terraform-foundation.reference-plan.v1.json"
-                ),
-                "foundation_plan",
-            )
-        ),
+    plan_path = _repository_regular_file(
+        root,
+        Path("infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"),
         "foundation_plan",
     )
-    plan_document = _mapping(plan.get("document"), "predecessor.foundation.plan")
-    _strict_match(
-        plan_document.get("artifact_kind"),
-        "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
-        "predecessor.foundation.plan.kind",
-    )
-    _strict_match(
-        plan_document.get("executable"), False, "predecessor.foundation.plan.executable"
-    )
-    activation = _mapping(plan.get("activation"), "predecessor.foundation.activation")
-    _strict_match(
-        activation.get("enabled"), False, "predecessor.foundation.activation.enabled"
-    )
-    _strict_match(
-        activation.get("status"), "DISABLED", "predecessor.foundation.activation"
-    )
-    _strict_match(
-        activation.get("native_commands"),
-        {command: "FORBIDDEN" for command in FOUNDATION_NATIVE_COMMANDS},
-        "predecessor.foundation.commands",
-    )
-    _strict_match(
-        plan.get("planned_actions"),
-        {action: 0 for action in ACTION_NAMES},
-        "predecessor.foundation.plan.actions",
-    )
-    _strict_match(
-        plan.get("selected_configuration"),
-        contract.get("selected_configuration"),
-        "predecessor.foundation.selection",
-    )
+    plan = _mapping(load_json(plan_path), "foundation_plan")
+    if semantic_sha256(plan) != EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "foundation_plan")
+    expected_plan = {
+        "document": {
+            "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
+            "version": "1.1.0",
+            "story_id": "ST-1501",
+            "source_contract": (
+                "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml"
+            ),
+            "generated_by": "repo://scripts/build_st1501_terraform_foundation.py",
+            "generation_command": (
+                "uv run --locked --no-sync python "
+                "scripts/build_st1501_terraform_foundation.py"
+            ),
+            "artifact_kind": evidence["deliverable_classification"],
+            "executable": False,
+            "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        },
+        "reference_architecture": copy.deepcopy(contract["reference_architecture"]),
+        "provider_neutral_foundation_admission": copy.deepcopy(admission),
+        "selected_configuration": copy.deepcopy(contract["selected_configuration"]),
+        "planned_actions": copy.deepcopy(execution["planned_actions"]),
+        "activation": {
+            "enabled": execution["activation_enabled"],
+            "status": execution["activation_status"],
+            "native_plan_status": execution["native_plan_status"],
+            "network_access": execution["network_access"],
+            "credential_access": execution["credential_access"],
+            "live_provider_calls": execution["live_provider_calls"],
+            "external_writes": execution["external_writes"],
+            "deploy_action": execution["deploy_action"],
+            "release_action": execution["release_action"],
+            "production_action": execution["production_action"],
+            "native_commands": copy.deepcopy(execution["commands"]),
+        },
+        "future_requirements": {
+            "remote_state": copy.deepcopy(contract["state_requirements"]),
+            "account_separation": {
+                "requirement": contract["account_requirements"][
+                    "separate_development_and_production"
+                ],
+                "development_account_id": contract["account_requirements"][
+                    "development_account_id"
+                ],
+                "production_account_id": contract["account_requirements"][
+                    "production_account_id"
+                ],
+            },
+            "production_change_control": copy.deepcopy(
+                contract["production_change_requirements"]
+            ),
+        },
+        "extension_contract": copy.deepcopy(extension),
+        "verification_boundary": {
+            key: copy.deepcopy(value)
+            for key, value in evidence.items()
+            if key != "deliverable_classification"
+        },
+    }
+    _strict_match(plan, expected_plan, "predecessor.foundation.plan")
+    expected_plan_bytes = (
+        json.dumps(expected_plan, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+    try:
+        actual_plan_bytes = plan_path.read_bytes()
+    except OSError:
+        _fail("FILE_UNAVAILABLE", "foundation_plan")
+    if actual_plan_bytes != expected_plan_bytes:
+        _fail("PREDECESSOR_GENERATED_DRIFT", "foundation_plan")
 
 
 def _validate_predecessor_semantics(root: Path) -> None:
     _validate_pr_governance_predecessor(root)
     _validate_foundation_predecessor(root)
+
+
+def _validate_capability_inventory(contract: Mapping[str, Any]) -> None:
+    admission = _mapping(
+        contract["provider_neutral_deployment_identity_admission"],
+        "provider_neutral_deployment_identity_admission",
+    )
+    rows = _list(
+        admission["capability_mapping_requirements"],
+        "provider_neutral_deployment_identity_admission."
+        "capability_mapping_requirements",
+    )
+    observed: list[str] = []
+    for row in rows:
+        item = _mapping(
+            row,
+            "provider_neutral_deployment_identity_admission."
+            "capability_mapping_requirements.item",
+        )
+        capability_id = item.get("capability_id")
+        if type(capability_id) is not str:
+            _fail("TYPE_MISMATCH", "capability_mapping.capability_id")
+        observed.append(capability_id)
+    expected = [
+        capability_id
+        for capability_id, _required_outcome in (
+            DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES
+        )
+    ]
+    if len(observed) != len(set(observed)):
+        _fail("DUPLICATE_CAPABILITY_MAPPING", "capability_mapping")
+    if any(capability_id not in expected for capability_id in observed):
+        _fail("UNKNOWN_CAPABILITY_MAPPING", "capability_mapping")
+    if any(capability_id not in observed for capability_id in expected):
+        _fail("MISSING_CAPABILITY_MAPPING", "capability_mapping")
+    if observed != expected:
+        _fail("CAPABILITY_MAPPING_ORDER_DRIFT", "capability_mapping")
 
 
 def validate_contract(contract: object, root: Path = REPO_ROOT) -> GithubOidcModel:
@@ -1049,8 +1765,11 @@ def validate_contract(contract: object, root: Path = REPO_ROOT) -> GithubOidcMod
     _validate_sources(value, root)
     _validate_authority_semantics(root)
     _validate_predecessor_semantics(root)
+    _validate_capability_inventory(value)
     for section, expected in EXPECTED_SECTIONS.items():
         _strict_match(value[section], expected, section)
+    if semantic_sha256(value) != EXPECTED_CONTRACT_SEMANTIC_SHA256:
+        _fail("CONTRACT_SEMANTIC_DRIFT", "contract")
     return GithubOidcModel(contract=copy.deepcopy(dict(value)))
 
 
@@ -1069,7 +1788,7 @@ def reference_plan_document(model: GithubOidcModel) -> dict[str, object]:
     return {
         "document": {
             "id": "RAOS-GITHUB-OIDC-REFERENCE-PLAN-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1504",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -1079,20 +1798,32 @@ def reference_plan_document(model: GithubOidcModel) -> dict[str, object]:
             "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
         },
         "predecessor_bindings": _section(model, "predecessor_bindings"),
+        "ci_source_boundary": _section(model, "ci_source_boundary"),
+        "reference_architecture": _section(model, "reference_architecture"),
+        "provider_neutral_deployment_identity_admission": _section(
+            model, "provider_neutral_deployment_identity_admission"
+        ),
         "logical_identity_path": _section(model, "reference_intent"),
         "selected_bindings": _section(model, "selected_bindings"),
         "trust_constraints": _section(model, "trust_constraints"),
         "credential_boundary": _section(model, "credential_boundary"),
         "workflow_permissions": _section(model, "workflow_permission_intent"),
         "environment_protection": _section(model, "environment_protection_intent"),
+        "lifecycle_controls": _section(model, "lifecycle_control_intent"),
+        "open_decision_boundary": _section(model, "open_decision_boundary"),
         "planned_actions": copy.deepcopy(execution["planned_actions"]),
         "activation": {
             "enabled": execution["activation_enabled"],
             "status": execution["activation_status"],
             "native_plan_status": execution["native_plan_status"],
+            "network_access": execution["network_access"],
+            "credential_access": execution["credential_access"],
             "live_provider_calls": execution["live_provider_calls"],
             "external_writes": execution["external_writes"],
             "credential_issuance": execution["credential_issuance"],
+            "deploy_action": execution["deploy_action"],
+            "release_action": execution["release_action"],
+            "production_action": execution["production_action"],
             "operations": copy.deepcopy(execution["operations"]),
         },
         "verification_boundary": {
@@ -1134,10 +1865,14 @@ def render_manifest(
     execution = _mapping(model.contract["execution_boundary"], "execution_boundary")
     evidence = _mapping(model.contract["evidence_boundary"], "evidence_boundary")
     selection = _mapping(model.contract["selected_bindings"], "selected_bindings")
+    admission = _mapping(
+        model.contract["provider_neutral_deployment_identity_admission"],
+        "provider_neutral_deployment_identity_admission",
+    )
     document: dict[str, object] = {
         "document": {
             "id": "RAOS-GITHUB-OIDC-MANIFEST-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1504",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -1175,18 +1910,63 @@ def render_manifest(
             "classification": evidence["deliverable_classification"],
             "activation": execution["activation_status"],
             "planned_actions": copy.deepcopy(execution["planned_actions"]),
+            "admission_status": admission["admission_status"],
+            "eligible": admission["eligible"],
+            "selected_profile_id": admission["selected_profile_id"],
+            "selected_profile_kind": admission["selected_profile_kind"],
+            "selected_provider_name": admission["selected_provider_name"],
+            "default_profile_id": admission["default_profile_id"],
+            "fallback_profile_id": admission["fallback_profile_id"],
+            "configured_mapping_count": admission["mapping_policy"][
+                "configured_mapping_count"
+            ],
+            "required_capability_count": len(DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES),
+            "aws_reference_only": True,
+            "aws_reference_role": admission["aws_reference_boundary"]["role"],
+            "canonical_story_deliverables": admission["aws_reference_boundary"][
+                "canonical_story_deliverables"
+            ],
+            "portable_implementation_paths": admission["aws_reference_boundary"][
+                "non_aws_owner_managed_profiles"
+            ],
+            "aws_reference_default": admission["aws_reference_boundary"]["default"],
+            "aws_reference_implicit_fallback": admission["aws_reference_boundary"][
+                "implicit_fallback"
+            ],
+            "aws_reference_selected_binding": admission["aws_reference_boundary"][
+                "selected_binding"
+            ],
+            "aws_reference_eligibility_shortcut": admission["aws_reference_boundary"][
+                "eligibility_shortcut"
+            ],
+            "aws_reference_admission_requirement": admission["aws_reference_boundary"][
+                "admission_requirement"
+            ],
+            "aws_reference_evidence_substitute": admission["aws_reference_boundary"][
+                "evidence_substitute"
+            ],
             "selected_repository": selection["github_repository"],
             "selected_environment": selection["github_environment_name"],
-            "selected_aws_account": selection["aws_account_id"],
-            "selected_aws_role": selection["aws_role_arn"],
-            "trust_policy_payload": selection["trust_policy_payload"],
+            "selected_target_provider": selection["target_provider_name"],
+            "selected_target_account_project_or_tenant": selection[
+                "target_account_project_or_tenant"
+            ],
+            "selected_target_region": selection["target_region"],
+            "selected_target_audience": selection["target_audience"],
+            "selected_target_identity_role": selection[
+                "target_identity_role_reference"
+            ],
+            "federation_trust_material": selection["federation_trust_material"],
             "workflow_file_path": selection["workflow_file_path"],
             "credentials": evidence["credentials"],
             "credential_issuance": evidence["credential_issuance"],
             "workflow_inspection": evidence["workflow_inspection"],
             "formal_tst_026": evidence["formal_tst_026"],
-            "hosted_github_aws": evidence["hosted_github_aws"],
-            "live_oidc": evidence["live_oidc"],
+            "hosted_github_target_provider": evidence["hosted_github_target_provider"],
+            "live_oidc_federation": evidence["live_oidc_federation"],
+            "staging_deployment": evidence["staging_deployment"],
+            "release": evidence["release"],
+            "production": evidence["production"],
             "effective_canonical_status": evidence["effective_canonical_status"],
         },
     }

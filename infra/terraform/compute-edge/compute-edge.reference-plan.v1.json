@@ -1,5 +1,7 @@
 {
   "activation": {
+    "credential_access": "FORBIDDEN",
+    "deploy_action": "FORBIDDEN",
     "enabled": false,
     "external_writes": "FORBIDDEN",
     "live_provider_calls": "FORBIDDEN",
@@ -12,10 +14,13 @@
       "refresh": "FORBIDDEN"
     },
     "native_plan_status": "NOT_EXECUTED",
+    "network_access": "FORBIDDEN",
+    "production_action": "FORBIDDEN",
+    "release_action": "FORBIDDEN",
     "status": "DISABLED"
   },
   "document": {
-    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_COMPUTE_EDGE_REFERENCE_PLAN",
+    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_COMPUTE_EDGE_REFERENCE_PLAN",
     "executable": false,
     "generated_by": "repo://scripts/build_st1503_compute_edge.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st1503_compute_edge.py",
@@ -23,41 +28,45 @@
     "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
     "source_contract": "repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
     "story_id": "ST-1503",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "logical_compute_edge": {
     "edge_routing": {
+      "abuse_rate_limiting": "REQUIRED_NOT_CONFIGURED",
       "api_worker_data_origins_private_only": "REQUIRED",
-      "classification": "LOGICAL_EDGE_ROUTING_INTENT_ONLY",
+      "cache_policy_separation": "REQUIRED_NOT_CONFIGURED",
+      "certificate_lifecycle": "REQUIRED_NOT_CONFIGURED",
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_EDGE_ROUTING_INTENT_ONLY",
       "direct_origin_public_access": "FORBIDDEN",
-      "dns": "REQUIRED_NOT_CONFIGURED",
-      "dns_component": "Route53",
+      "dns_zone_control": "REQUIRED_NOT_CONFIGURED",
       "edge_only_public_entry": "REQUIRED_NOT_CONFIGURED",
-      "origin_boundary_component": "ALB",
+      "origin_authentication": "REQUIRED_NOT_CONFIGURED",
       "origin_private_only": "REQUIRED",
-      "public_entry_component": "CloudFront_WAF_ACM",
       "selected": {
-        "cache_behaviors": [],
-        "certificate_reference": null,
-        "distribution_reference": null,
+        "cache_policy_references": [],
         "dns_record_references": [],
         "dns_zone_reference": null,
         "domain_names": [],
+        "edge_resource_reference": null,
         "host_names": [],
-        "listener_references": [],
-        "load_balancer_reference": null,
+        "ingress_resource_reference": null,
         "origin_references": [],
         "rate_limit_thresholds": [],
         "route_definitions": [],
-        "target_group_references": [],
-        "waf_acl_reference": null,
+        "tls_certificate_reference": null,
+        "waf_policy_reference": null,
         "waf_rule_definitions": []
       },
-      "tls": "REQUIRED_NOT_CONFIGURED",
-      "waf": "REQUIRED_NOT_CONFIGURED"
+      "tls_transport_security": "REQUIRED_NOT_CONFIGURED",
+      "waf_attack_controls": "REQUIRED_NOT_CONFIGURED"
     },
     "health": {
-      "classification": "LOGICAL_HEALTH_INTENT_ONLY",
+      "alert_owner": "REQUIRED_NOT_CONFIGURED",
+      "alert_runbook": "REQUIRED_NOT_CONFIGURED",
+      "canary_promotion": "REQUIRED_NOT_CONFIGURED",
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_HEALTH_RELEASE_INTENT_ONLY",
+      "human_release_approval": "REQUIRED",
+      "kill_switch_change": "HUMAN_APPROVAL_REQUIRED",
       "liveness": {
         "bounded_failure_behavior": "REQUIRED_NOT_CONFIGURED",
         "external_dependency_coupling": "FORBIDDEN",
@@ -66,8 +75,7 @@
           "endpoint_path": null,
           "healthy_threshold": null,
           "interval_seconds": null,
-          "load_balancer_matcher": null,
-          "port": null,
+          "listener_port": null,
           "response_schema": null,
           "success_status_codes": [],
           "timeout_seconds": null,
@@ -85,8 +93,7 @@
           "endpoint_path": null,
           "healthy_threshold": null,
           "interval_seconds": null,
-          "load_balancer_matcher": null,
-          "port": null,
+          "listener_port": null,
           "response_schema": null,
           "success_status_codes": [],
           "timeout_seconds": null,
@@ -98,15 +105,20 @@
         "admin_web",
         "core_api",
         "worker_pool"
-      ]
+      ],
+      "rollback": "REQUIRED_NOT_CONFIGURED",
+      "slo_capacity": "REQUIRED_NOT_CONFIGURED",
+      "telemetry": "REQUIRED_NOT_CONFIGURED"
     },
     "surfaces": {
       "authentication_separation": "REQUIRED_NOT_CONFIGURED",
       "cache_separation": "REQUIRED_NOT_CONFIGURED",
-      "classification": "DISTINCT_SURFACE_BOUNDARIES_REQUIRED_NOT_CONFIGURED",
+      "classification": "DISTINCT_PROVIDER_NEUTRAL_SURFACE_BOUNDARIES_REQUIRED_NOT_CONFIGURED",
       "cookie_separation": "REQUIRED_NOT_CONFIGURED",
       "csp_separation": "REQUIRED_NOT_CONFIGURED",
       "host_separation": "REQUIRED_NOT_CONFIGURED",
+      "public_data_plane_access": "FORBIDDEN",
+      "route_separation": "REQUIRED_NOT_CONFIGURED",
       "surfaces": [
         {
           "approved_identity_authorization": "NOT_APPLICABLE",
@@ -114,8 +126,8 @@
           "public_projection_only": "REQUIRED",
           "selected": {
             "authentication_policy_reference": null,
-            "cache_behavior": null,
-            "cookie_scope": null,
+            "cache_policy_reference": null,
+            "cookie_policy_reference": null,
             "csp_policy_reference": null,
             "domain": null,
             "host": null,
@@ -130,8 +142,8 @@
           "public_projection_only": "NOT_APPLICABLE",
           "selected": {
             "authentication_policy_reference": null,
-            "cache_behavior": null,
-            "cookie_scope": null,
+            "cache_policy_reference": null,
+            "cookie_policy_reference": null,
             "csp_policy_reference": null,
             "domain": null,
             "host": null,
@@ -146,8 +158,8 @@
           "public_projection_only": "NOT_APPLICABLE",
           "selected": {
             "authentication_policy_reference": null,
-            "cache_behavior": null,
-            "cookie_scope": null,
+            "cache_policy_reference": null,
+            "cookie_policy_reference": null,
             "csp_policy_reference": null,
             "domain": null,
             "host": null,
@@ -160,8 +172,11 @@
       "trust_boundary_separation": "REQUIRED_NOT_CONFIGURED"
     },
     "workloads": {
-      "classification": "LOGICAL_WORKLOAD_ROLE_INTENT_ONLY",
+      "bounded_scaling": "REQUIRED_NOT_CONFIGURED",
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_WORKLOAD_INTENT_ONLY",
+      "controlled_egress": "REQUIRED_NOT_CONFIGURED",
       "encrypted_logs": "REQUIRED_NOT_CONFIGURED",
+      "failure_domain_distribution": "REQUIRED_NOT_CONFIGURED",
       "graceful_shutdown": "REQUIRED_NOT_CONFIGURED",
       "image_scanning": "REQUIRED_NOT_CONFIGURED",
       "immutable_digest_selected_images": "REQUIRED_NOT_CONFIGURED",
@@ -169,124 +184,159 @@
       "roles": [
         {
           "approved_identity_authorization": "NOT_APPLICABLE",
-          "component_family": "ECS_Fargate",
           "direct_internal_data_plane_access": "FORBIDDEN",
           "direct_public_access": "FORBIDDEN",
           "origin_exposure": "EDGE_MEDIATED_REQUIRED_NOT_CONFIGURED",
           "public_projection_only": "REQUIRED",
           "role": "public_web",
           "selected": {
-            "autoscaling_max": null,
-            "autoscaling_min": null,
-            "cluster_reference": null,
-            "container_port": null,
-            "cpu_units": null,
-            "desired_count": null,
-            "execution_role_reference": null,
+            "cpu_allocation": null,
+            "desired_instances": null,
+            "egress_policy_ids": [],
+            "failure_domain_ids": [],
             "image_digest": null,
-            "log_group_reference": null,
-            "memory_mib": null,
-            "public_ip": null,
-            "registry_repository": null,
-            "security_group_ids": [],
-            "service_reference": null,
-            "subnet_ids": [],
-            "task_definition_reference": null,
-            "task_role_reference": null
+            "image_registry_reference": null,
+            "ingress_policy_ids": [],
+            "listener_port": null,
+            "log_destination_reference": null,
+            "memory_allocation_mib": null,
+            "network_segment_ids": [],
+            "runtime_resource_reference": null,
+            "scaling_maximum": null,
+            "scaling_minimum": null,
+            "scheduler_resource_reference": null,
+            "secret_references": [],
+            "workload_identity_reference": null
           },
           "trust_boundary": "PUBLIC"
         },
         {
           "approved_identity_authorization": "REQUIRED_NOT_CONFIGURED",
-          "component_family": "ECS_Fargate",
           "direct_internal_data_plane_access": "PRIVATE_CORE_API_ONLY_NOT_CONFIGURED",
           "direct_public_access": "FORBIDDEN",
           "origin_exposure": "EDGE_MEDIATED_REQUIRED_NOT_CONFIGURED",
           "public_projection_only": "NOT_APPLICABLE",
           "role": "admin_web",
           "selected": {
-            "autoscaling_max": null,
-            "autoscaling_min": null,
-            "cluster_reference": null,
-            "container_port": null,
-            "cpu_units": null,
-            "desired_count": null,
-            "execution_role_reference": null,
+            "cpu_allocation": null,
+            "desired_instances": null,
+            "egress_policy_ids": [],
+            "failure_domain_ids": [],
             "image_digest": null,
-            "log_group_reference": null,
-            "memory_mib": null,
-            "public_ip": null,
-            "registry_repository": null,
-            "security_group_ids": [],
-            "service_reference": null,
-            "subnet_ids": [],
-            "task_definition_reference": null,
-            "task_role_reference": null
+            "image_registry_reference": null,
+            "ingress_policy_ids": [],
+            "listener_port": null,
+            "log_destination_reference": null,
+            "memory_allocation_mib": null,
+            "network_segment_ids": [],
+            "runtime_resource_reference": null,
+            "scaling_maximum": null,
+            "scaling_minimum": null,
+            "scheduler_resource_reference": null,
+            "secret_references": [],
+            "workload_identity_reference": null
           },
           "trust_boundary": "ADMIN"
         },
         {
           "approved_identity_authorization": "REQUIRED_NOT_CONFIGURED",
-          "component_family": "ECS_Fargate",
           "direct_internal_data_plane_access": "LEAST_PRIVILEGE_REQUIRED_NOT_CONFIGURED",
           "direct_public_access": "FORBIDDEN",
           "origin_exposure": "PRIVATE_ONLY_REQUIRED",
           "public_projection_only": "NOT_APPLICABLE",
           "role": "core_api",
           "selected": {
-            "autoscaling_max": null,
-            "autoscaling_min": null,
-            "cluster_reference": null,
-            "container_port": null,
-            "cpu_units": null,
-            "desired_count": null,
-            "execution_role_reference": null,
+            "cpu_allocation": null,
+            "desired_instances": null,
+            "egress_policy_ids": [],
+            "failure_domain_ids": [],
             "image_digest": null,
-            "log_group_reference": null,
-            "memory_mib": null,
-            "public_ip": null,
-            "registry_repository": null,
-            "security_group_ids": [],
-            "service_reference": null,
-            "subnet_ids": [],
-            "task_definition_reference": null,
-            "task_role_reference": null
+            "image_registry_reference": null,
+            "ingress_policy_ids": [],
+            "listener_port": null,
+            "log_destination_reference": null,
+            "memory_allocation_mib": null,
+            "network_segment_ids": [],
+            "runtime_resource_reference": null,
+            "scaling_maximum": null,
+            "scaling_minimum": null,
+            "scheduler_resource_reference": null,
+            "secret_references": [],
+            "workload_identity_reference": null
           },
           "trust_boundary": "INTERNAL"
         },
         {
           "approved_identity_authorization": "SERVICE_IDENTITY_REQUIRED_NOT_CONFIGURED",
-          "component_family": "ECS_Fargate",
           "direct_internal_data_plane_access": "LEAST_PRIVILEGE_REQUIRED_NOT_CONFIGURED",
           "direct_public_access": "FORBIDDEN",
           "origin_exposure": "PRIVATE_ONLY_REQUIRED",
           "public_projection_only": "NOT_APPLICABLE",
           "role": "worker_pool",
           "selected": {
-            "autoscaling_max": null,
-            "autoscaling_min": null,
-            "cluster_reference": null,
-            "container_port": null,
-            "cpu_units": null,
-            "desired_count": null,
-            "execution_role_reference": null,
+            "cpu_allocation": null,
+            "desired_instances": null,
+            "egress_policy_ids": [],
+            "failure_domain_ids": [],
             "image_digest": null,
-            "log_group_reference": null,
-            "memory_mib": null,
-            "public_ip": null,
-            "registry_repository": null,
-            "security_group_ids": [],
-            "service_reference": null,
-            "subnet_ids": [],
-            "task_definition_reference": null,
-            "task_role_reference": null
+            "image_registry_reference": null,
+            "ingress_policy_ids": [],
+            "listener_port": null,
+            "log_destination_reference": null,
+            "memory_allocation_mib": null,
+            "network_segment_ids": [],
+            "runtime_resource_reference": null,
+            "scaling_maximum": null,
+            "scaling_minimum": null,
+            "scheduler_resource_reference": null,
+            "secret_references": [],
+            "workload_identity_reference": null
           },
           "trust_boundary": "INTERNAL"
         }
       ],
+      "runtime_and_scheduler": "REQUIRED_NOT_CONFIGURED",
       "sbom": "REQUIRED_NOT_CONFIGURED",
       "secret_material": "ABSENT",
       "signed_provenance": "REQUIRED_NOT_CONFIGURED"
+    }
+  },
+  "open_decision_boundary": {
+    "OD-002": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "EXAMPLE_INVALID_PROVISIONAL_BRAND_EXTERNAL_PUBLICATION_FORBIDDEN",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "OD-009": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "LOW_DEVELOPMENT_CAP_PRODUCTION_DISABLED",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "OD-010": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "LOCAL_FAKE_AUTH_DEVELOPMENT_ONLY_EXTERNAL_PUBLICATION_FORBIDDEN",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "OD-011": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "OD-013": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "REFERENCE_REGION_ONLY_PRODUCTION_APPLY_FORBIDDEN",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "OD-015": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "RECORDED_FIXTURE_ONLY_CREDENTIALS_ABSENT_PROVIDER_CALLS_FORBIDDEN",
+      "status": "EXTERNAL_EVIDENCE_REQUIRED"
     }
   },
   "planned_actions": {
@@ -295,62 +345,280 @@
     "update": 0
   },
   "predecessor_binding": {
-    "contract_sha256": "3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2",
+    "contract_sha256": "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9",
     "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
+    "design_handoff_sha256": "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f",
+    "design_handoff_uri": "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
     "extension_kind": "COMPUTE_CDN_WAF",
-    "reference_plan_sha256": "877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f",
+    "reference_plan_sha256": "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70",
     "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
     "required_activation_status": "DISABLED",
+    "required_admission_status": "NOT_EVALUATED",
+    "required_eligible": false,
     "required_planned_actions": {
       "create": 0,
       "delete": 0,
       "update": 0
     },
+    "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
     "required_resource_payloads": "FORBIDDEN",
     "story_id": "ST-1501"
   },
-  "reference_architecture": {
-    "classification": "INHERITED_REFERENCE_METADATA_ONLY",
-    "cloud": "AWS",
-    "component_families": {
-      "compute": "ECS_Fargate",
-      "dns": "Route53",
-      "edge": "CloudFront_WAF_ACM",
-      "load_balancer": "ALB",
-      "registry": "ECR"
+  "provider_neutral_compute_edge_admission": {
+    "admission_status": "NOT_EVALUATED",
+    "aws_reference_boundary": {
+      "admission_requirement": false,
+      "canonical_story_deliverables": "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED",
+      "default": false,
+      "eligibility_shortcut": false,
+      "evidence_substitute": false,
+      "implicit_fallback": false,
+      "non_aws_owner_managed_profiles": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
+      "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+      "selected_binding": false
     },
+    "binding_policy": {
+      "account_or_project": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "compute_edge_plugin_or_adapter": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "dns_or_tls": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "image_registry": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "implicit_binding": "FORBIDDEN",
+      "ingress_or_edge": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "name_or_reference_only_eligibility": "FORBIDDEN",
+      "provider": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "region": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "waf_or_abuse_control": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "workload_runtime_or_scheduler": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      }
+    },
+    "capability_mapping_requirements": [
+      {
+        "capability_id": "workload_runtime_scheduling_and_supply_chain",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "ISOLATED_SCHEDULING_IMMUTABLE_IMAGE_PROVENANCE_SCALING_HEALTH_AND_SAFE_ROLLBACK",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "public_ingress_edge_cdn_and_origin_control",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "EDGE_MEDIATED_PUBLIC_INGRESS_WITH_PRIVATE_AUTHENTICATED_ORIGINS_AND_CACHE_CONTROL",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "dns_tls_certificate_and_transport_security",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "CONTROLLED_DNS_CERTIFICATE_LIFECYCLE_AND_TLS_FOR_PUBLIC_INTERNAL_PROVIDER_AND_ORIGIN_TRANSPORT",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "waf_abuse_rate_limiting_and_attack_controls",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "MANAGED_WAF_RATE_LIMIT_ABUSE_ATTACK_TELEMETRY_AND_TESTED_RESPONSE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "public_admin_internal_surface_and_data_plane_isolation",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "DISTINCT_ROUTE_HOST_CACHE_COOKIE_IDENTITY_AND_PRIVATE_DATA_PLANE_POLICIES",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "workload_identity_secrets_and_controlled_egress",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "LEAST_PRIVILEGE_NON_AMBIENT_IDENTITY_SECRETS_AUDIT_AND_DESTINATION_CONTROL",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "observability_health_canary_and_rollback",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "TELEMETRY_SLO_HEALTH_ALERT_OWNER_RUNBOOK_CANARY_PROMOTION_AND_ROLLBACK_EVIDENCE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "region_data_residency_and_failure_domain_evidence",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "APPROVED_REGION_RESIDENCY_FAILURE_DOMAIN_CAPACITY_AND_RECOVERY_EVIDENCE",
+        "selected_mapping": null
+      }
+    ],
+    "classification": "STRICT_PROVIDER_NEUTRAL_COMPUTE_EDGE_CAPABILITY_ADMISSION",
+    "concrete_alternate_provider_selected": false,
+    "cross_capability_transport_security_policy": {
+      "internal_transport": "TLS_REQUIRED_NOT_CONFIGURED",
+      "origin_transport": "TLS_REQUIRED_NOT_CONFIGURED",
+      "provider_transport": "TLS_REQUIRED_NOT_CONFIGURED",
+      "public_transport": "TLS_REQUIRED_NOT_CONFIGURED",
+      "selected_exceptions": []
+    },
+    "default_profile_id": null,
+    "eligibility_condition": "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE",
+    "eligible": false,
+    "eligible_profile_kinds": [
+      "AWS",
+      "OTHER_CLOUD",
+      "OWNER_MANAGED_INFRASTRUCTURE"
+    ],
+    "evidence_equivalence_policy": {
+      "identical_canary_rollback_evidence": "REQUIRED",
+      "identical_health_slo_alerting_evidence": "REQUIRED",
+      "identical_identity_secret_egress_evidence": "REQUIRED",
+      "identical_isolation_evidence": "REQUIRED",
+      "identical_operations_evidence": "REQUIRED",
+      "identical_performance_load_evidence": "REQUIRED",
+      "identical_region_residency_evidence": "REQUIRED",
+      "identical_release_evidence": "REQUIRED",
+      "identical_security_evidence": "REQUIRED",
+      "identical_transport_security_evidence": "REQUIRED",
+      "local_test_as_live_evidence": "FORBIDDEN",
+      "provider_label_as_evidence": "FORBIDDEN",
+      "reference_metadata_as_evidence": "FORBIDDEN",
+      "service_label_as_evidence": "FORBIDDEN"
+    },
+    "fallback_profile_id": null,
+    "mapping_policy": {
+      "complete_mapping": false,
+      "configured_mapping_count": 0,
+      "duplicate_mapping": "REJECT",
+      "implicit_mapping": "REJECT",
+      "missing_mapping": "REJECT",
+      "partial_mapping": "REJECT",
+      "provider_label_only_mapping": "REJECT",
+      "reference_only_mapping": "REJECT",
+      "required_capability_count": 8,
+      "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+      "service_label_only_mapping": "REJECT",
+      "unknown_mapping": "REJECT"
+    },
+    "selected_profile_id": null,
+    "selected_profile_kind": null,
+    "selected_provider_name": null
+  },
+  "reference_architecture": {
+    "admission_requirement": false,
+    "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+    "cloud": "AWS",
+    "default": false,
+    "eligibility_shortcut": false,
+    "evidence_substitute": false,
+    "implicit_fallback": false,
+    "inherited_from": "INT-DEC-007",
     "portable_core_required": true,
-    "region": "ap-northeast-1"
+    "region": "ap-northeast-1",
+    "selected_binding": false,
+    "service_mappings": [
+      {
+        "capability_id": "workload_runtime_scheduling_and_supply_chain",
+        "reference_name": "ECS"
+      },
+      {
+        "capability_id": "workload_runtime_scheduling_and_supply_chain",
+        "reference_name": "Fargate"
+      },
+      {
+        "capability_id": "workload_runtime_scheduling_and_supply_chain",
+        "reference_name": "ECR"
+      },
+      {
+        "capability_id": "public_ingress_edge_cdn_and_origin_control",
+        "reference_name": "ALB"
+      },
+      {
+        "capability_id": "public_ingress_edge_cdn_and_origin_control",
+        "reference_name": "CloudFront"
+      },
+      {
+        "capability_id": "dns_tls_certificate_and_transport_security",
+        "reference_name": "Route53"
+      },
+      {
+        "capability_id": "dns_tls_certificate_and_transport_security",
+        "reference_name": "ACM"
+      },
+      {
+        "capability_id": "waf_abuse_rate_limiting_and_attack_controls",
+        "reference_name": "WAF"
+      }
+    ]
   },
   "selected_configuration": {
-    "aws_account_id": null,
-    "cloud_provider": null,
+    "compute_edge_plugin_or_adapter": null,
     "credential_source": null,
-    "domain_names": [],
-    "host_names": [],
-    "iam_role_references": [],
-    "network_cidrs": [],
+    "dns_binding": null,
+    "egress_policy_ids": [],
+    "image_registry_binding": null,
+    "ingress_edge_binding": null,
+    "ingress_policy_ids": [],
+    "network_segment_ids": [],
     "physical_resource_definitions": [],
     "production_region": null,
-    "provider_plugins": [],
-    "public_ip_assignment": null,
-    "security_group_ids": [],
-    "state_backend": null,
-    "subnet_ids": [],
-    "terraform_cli_version": null
+    "provider_account_or_project": null,
+    "provider_name": null,
+    "scheduler_binding": null,
+    "secret_references": [],
+    "tls_certificate_binding": null,
+    "waf_abuse_control_binding": null,
+    "workload_identity_references": [],
+    "workload_runtime_binding": null
   },
   "verification_boundary": {
-    "aws_account": "UNSET",
+    "canary_rollback_validation": "NOT_EXECUTED",
     "credentials": "ABSENT",
     "effective_canonical_status": "UNCHANGED",
     "executable_terraform": "ABSENT",
     "formal_tst_026": "NOT_EXECUTED",
     "formal_tst_027": "NOT_EXECUTED",
-    "health_runtime_validation": "NOT_EXECUTED",
+    "health_slo_alert_validation": "NOT_EXECUTED",
+    "identity_secret_egress_validation": "NOT_EXECUTED",
     "live_staging_release_production": "NOT_EXECUTED",
     "native_iac_validation": "NOT_EXECUTED",
-    "performance_validation": "NOT_EXECUTED",
+    "performance_load_validation": "NOT_EXECUTED",
+    "provider_account_or_project": "UNSET",
     "provider_plugins": "UNPINNED_NOT_INVOKED",
-    "terraform_cli": "UNPINNED_NOT_INVOKED"
+    "region_residency_validation": "NOT_EXECUTED",
+    "terraform_cli": "UNPINNED_NOT_INVOKED",
+    "transport_security_validation": "NOT_EXECUTED"
   }
 }

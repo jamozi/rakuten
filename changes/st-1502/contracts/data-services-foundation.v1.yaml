@@ -1,12 +1,14 @@
 document:
   id: RAOS-DATA-SERVICES-FOUNDATION-001
-  version: 1.0.0
+  version: 1.1.0
   story_id: ST-1502
   status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
   formal_verification: NOT_EXECUTED
 sources:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
   - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
     sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
   - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
@@ -26,18 +28,27 @@ sources:
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
+  - uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
+    sha256: ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5
+  - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+    sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
   - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+    sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
   - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+    sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
 predecessor_binding:
   story_id: ST-1501
   extension_kind: DATA_SERVICES
+  design_handoff_uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+  design_handoff_sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
   contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-  contract_sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+  contract_sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
   reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-  reference_plan_sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+  reference_plan_sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
+  required_provider_policy: STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION
+  required_admission_status: NOT_EVALUATED
+  required_eligible: false
   required_activation_status: DISABLED
   required_resource_payloads: FORBIDDEN
   required_planned_actions:
@@ -47,51 +58,216 @@ predecessor_binding:
 reference_architecture:
   cloud: AWS
   region: ap-northeast-1
-  classification: INHERITED_REFERENCE_METADATA_ONLY
+  classification: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+  inherited_from: INT-DEC-007
   portable_core_required: true
+  service_mappings:
+    - reference_name: RDS
+      capability_id: relational_postgresql_compatible_persistence_and_migrations
+    - reference_name: S3
+      capability_id: immutable_versioned_object_storage_and_integrity
+    - reference_name: SQS
+      capability_id: at_least_once_queue_dlq_and_idempotency
+    - reference_name: Secrets Manager
+      capability_id: workload_secrets_and_key_management
+    - reference_name: KMS
+      capability_id: workload_secrets_and_key_management
+  default: false
+  implicit_fallback: false
+  selected_binding: false
+  eligibility_shortcut: false
+  admission_requirement: false
+  evidence_substitute: false
+provider_neutral_data_services_admission:
+  classification: STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION
+  admission_status: NOT_EVALUATED
+  eligible: false
+  selected_profile_id: null
+  selected_profile_kind: null
+  selected_provider_name: null
+  default_profile_id: null
+  fallback_profile_id: null
+  concrete_alternate_provider_selected: false
+  eligible_profile_kinds:
+    - AWS
+    - OTHER_CLOUD
+    - OWNER_MANAGED_INFRASTRUCTURE
+  eligibility_condition: COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE
+  binding_policy:
+    provider:
+      selected: null
+      default: null
+      fallback: null
+    account_or_project:
+      selected: null
+      default: null
+      fallback: null
+    region:
+      selected: null
+      default: null
+      fallback: null
+    relational_persistence:
+      selected: null
+      default: null
+      fallback: null
+    object_storage:
+      selected: null
+      default: null
+      fallback: null
+    queue:
+      selected: null
+      default: null
+      fallback: null
+    secrets:
+      selected: null
+      default: null
+      fallback: null
+    key_management:
+      selected: null
+      default: null
+      fallback: null
+    data_services_plugin_or_adapter:
+      selected: null
+      default: null
+      fallback: null
+    implicit_binding: FORBIDDEN
+    name_or_reference_only_eligibility: FORBIDDEN
+  cross_capability_security_policy:
+    transport_encryption: REQUIRED_FOR_ALL_DATA_SERVICE_INTERACTIONS
+    encryption_at_rest: REQUIRED_FOR_ALL_PERSISTED_DATA
+    selected_exceptions: []
+  mapping_policy:
+    required_mapping_mode: EXACTLY_ONE_PER_REQUIRED_CAPABILITY
+    required_capability_count: 9
+    configured_mapping_count: 0
+    complete_mapping: false
+    missing_mapping: REJECT
+    unknown_mapping: REJECT
+    duplicate_mapping: REJECT
+    implicit_mapping: REJECT
+    partial_mapping: REJECT
+    provider_label_only_mapping: REJECT
+    service_label_only_mapping: REJECT
+    reference_only_mapping: REJECT
+  aws_reference_boundary:
+    role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
+    default: false
+    implicit_fallback: false
+    selected_binding: false
+    eligibility_shortcut: false
+    admission_requirement: false
+    evidence_substitute: false
+  evidence_equivalence_policy:
+    identical_security_evidence: REQUIRED
+    identical_operations_evidence: REQUIRED
+    identical_release_evidence: REQUIRED
+    identical_backup_restore_evidence: REQUIRED
+    identical_region_residency_evidence: REQUIRED
+    identical_migration_compatibility_evidence: REQUIRED
+    identical_isolation_evidence: REQUIRED
+    identical_transport_encryption_evidence: REQUIRED
+    provider_label_as_evidence: FORBIDDEN
+    service_label_as_evidence: FORBIDDEN
+    reference_metadata_as_evidence: FORBIDDEN
+    local_test_as_live_evidence: FORBIDDEN
+  capability_mapping_requirements:
+    - capability_id: relational_postgresql_compatible_persistence_and_migrations
+      required_outcome: PRIVATE_ENCRYPTED_POSTGRESQL_COMPATIBLE_PERSISTENCE_WITH_CONTROLLED_MIGRATIONS
+      selected_mapping: null
+      evidence_refs: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: immutable_versioned_object_storage_and_integrity
+      required_outcome: PRIVATE_ENCRYPTED_VERSIONED_OBJECT_STORAGE_WITH_REQUIRED_IMMUTABILITY_AND_INTEGRITY
+      selected_mapping: null
+      evidence_refs: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: at_least_once_queue_dlq_and_idempotency
+      required_outcome: AT_LEAST_ONCE_DELIVERY_WITH_DLQ_REDIVE_ALERTING_AND_IDEMPOTENT_CONSUMERS
+      selected_mapping: null
+      evidence_refs: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: workload_secrets_and_key_management
+      required_outcome: NON_AMBIENT_LEAST_PRIVILEGE_ROTATABLE_SECRETS_AND_KEYS_WITH_AUDIT
+      selected_mapping: null
+      evidence_refs: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: data_service_backup_restore_and_recovery
+      required_outcome: RELATIONAL_OBJECT_CONFIGURATION_AND_SECRET_RECOVERY_WITH_ISOLATED_RESTORE_DRILL
+      selected_mapping: null
+      evidence_refs: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: data_service_observability_audit_and_alerting
+      required_outcome: DATABASE_STORAGE_QUEUE_SECRET_KEY_TELEMETRY_AUDIT_ALERTING_AND_DRIFT_EVIDENCE
+      selected_mapping: null
+      evidence_refs: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: environment_and_private_data_plane_isolation
+      required_outcome: SEPARATE_DEVELOPMENT_PRODUCTION_AND_PRIVATE_DATA_PLANE_BOUNDARIES
+      selected_mapping: null
+      evidence_refs: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: region_and_data_residency
+      required_outcome: APPROVED_PRIMARY_BACKUP_CROSS_BORDER_AND_DATA_RESIDENCY_EVIDENCE
+      selected_mapping: null
+      evidence_refs: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: human_approved_release_migration_and_rollback
+      required_outcome: HUMAN_APPROVED_IAC_MIGRATION_PROMOTION_ROLLBACK_AND_RECOVERY
+      selected_mapping: null
+      evidence_refs: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
 selected_configuration:
-  cloud_provider: null
+  provider_name: null
+  provider_account_or_project: null
   production_region: null
   backup_region: null
-  aws_account_id: null
-  terraform_cli_version: null
-  provider_plugins: []
-  state_backend: null
+  relational_service_binding: null
+  object_storage_service_binding: null
+  queue_service_binding: null
+  secrets_service_binding: null
+  key_management_service_binding: null
+  data_services_plugin_or_adapter: null
   credential_source: null
-  network_cidrs: []
-  availability_zones: []
-  subnet_ids: []
-  security_group_ids: []
+  network_segment_ids: []
+  traffic_control_policy_ids: []
   physical_resource_definitions: []
-rds_intent:
-  service: PostgreSQL
-  classification: LOGICAL_SERVICE_INTENT_ONLY
+relational_persistence_intent:
+  service_contract: POSTGRESQL_COMPATIBLE_RELATIONAL_PERSISTENCE
+  classification: LOGICAL_PROVIDER_NEUTRAL_SERVICE_INTENT_ONLY
   private_only: REQUIRED
   publicly_accessible: false
+  transport_encryption: REQUIRED_NOT_CONFIGURED
+  tls_in_transit: REQUIRED_NOT_CONFIGURED
   encryption_at_rest: REQUIRED_NOT_CONFIGURED
   backup: REQUIRED_NOT_CONFIGURED
   point_in_time_recovery: REQUIRED_NOT_CONFIGURED
   deletion_protection: REQUIRED_NOT_CONFIGURED
-  final_snapshot: REQUIRED_NOT_CONFIGURED
+  final_snapshot_or_equivalent: REQUIRED_NOT_CONFIGURED
+  migration_framework_compatibility: REQUIRED_NOT_CONFIGURED
+  expand_migrate_contract: REQUIRED
   restore_test: REQUIRED_NOT_EXECUTED
   selected:
     engine_version: null
-    instance_class: null
-    storage_gib: null
-    storage_class: null
-    subnet_ids: []
+    deployment_class: null
+    storage_capacity_gib: null
+    storage_profile: null
+    network_segment_ids: []
     endpoint: null
     database_name: null
     username: null
     password_secret_reference: null
     port: null
-    multi_az: null
+    high_availability_mode: null
     backup_retention_days: null
     backup_region: null
-    kms_key_reference: null
-s3_intent:
-  classification: LOGICAL_BUCKET_ROLE_INTENT_ONLY
-  public_access_block: REQUIRED
+    encryption_key_reference: null
+object_storage_intent:
+  service_contract: PRIVATE_VERSIONED_OBJECT_STORAGE
+  classification: LOGICAL_PROVIDER_NEUTRAL_SERVICE_INTENT_ONLY
+  public_access: FORBIDDEN
+  transport_encryption: REQUIRED_NOT_CONFIGURED
   encryption_at_rest: REQUIRED_NOT_CONFIGURED
   versioning: REQUIRED_NOT_CONFIGURED
   force_destroy: FORBIDDEN
@@ -103,171 +279,233 @@ s3_intent:
   roles:
     - role: raw
       physical_name: null
-      arn: null
+      resource_identifier: null
       immutability: REQUIRED_NOT_CONFIGURED
       integrity_metadata: REQUIRED_NOT_CONFIGURED
       deletion_role_separation: REQUIRED_NOT_CONFIGURED
     - role: publication
       physical_name: null
-      arn: null
+      resource_identifier: null
     - role: uploads_quarantine
       physical_name: null
-      arn: null
+      resource_identifier: null
     - role: exports
       physical_name: null
-      arn: null
+      resource_identifier: null
     - role: audit_logs
       physical_name: null
-      arn: null
-sqs_intent:
-  classification: LOGICAL_QUEUE_CLASS_INTENT_ONLY
+      resource_identifier: null
+queue_intent:
+  service_contract: AT_LEAST_ONCE_MESSAGE_QUEUE_WITH_DLQ
+  classification: LOGICAL_PROVIDER_NEUTRAL_SERVICE_INTENT_ONLY
+  delivery_semantics: AT_LEAST_ONCE_REQUIRED_NOT_CONFIGURED
+  duplicate_delivery: EXPECTED
+  consumer_idempotency: REQUIRED_NOT_CONFIGURED
+  transport_encryption: REQUIRED_NOT_CONFIGURED
   classes:
     - class: ingestion
       dlq: REQUIRED_NOT_CONFIGURED
       producer_consumer_separation: REQUIRED_NOT_CONFIGURED
       redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      redrive_control: REQUIRED_NOT_CONFIGURED
       selected:
         physical_name: null
-        queue_url: null
-        queue_arn: null
+        endpoint: null
+        resource_identifier: null
         dlq_name: null
-        dlq_url: null
-        dlq_arn: null
+        dlq_endpoint: null
+        dlq_resource_identifier: null
         delay_seconds: null
         visibility_timeout_seconds: null
         retention_seconds: null
         max_receive_count: null
-        fifo: null
+        ordering_mode: null
         policy_document: null
     - class: ai
       dlq: REQUIRED_NOT_CONFIGURED
       producer_consumer_separation: REQUIRED_NOT_CONFIGURED
       redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      redrive_control: REQUIRED_NOT_CONFIGURED
       selected:
         physical_name: null
-        queue_url: null
-        queue_arn: null
+        endpoint: null
+        resource_identifier: null
         dlq_name: null
-        dlq_url: null
-        dlq_arn: null
+        dlq_endpoint: null
+        dlq_resource_identifier: null
         delay_seconds: null
         visibility_timeout_seconds: null
         retention_seconds: null
         max_receive_count: null
-        fifo: null
+        ordering_mode: null
         policy_document: null
     - class: quality
       dlq: REQUIRED_NOT_CONFIGURED
       producer_consumer_separation: REQUIRED_NOT_CONFIGURED
       redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      redrive_control: REQUIRED_NOT_CONFIGURED
       selected:
         physical_name: null
-        queue_url: null
-        queue_arn: null
+        endpoint: null
+        resource_identifier: null
         dlq_name: null
-        dlq_url: null
-        dlq_arn: null
+        dlq_endpoint: null
+        dlq_resource_identifier: null
         delay_seconds: null
         visibility_timeout_seconds: null
         retention_seconds: null
         max_receive_count: null
-        fifo: null
+        ordering_mode: null
         policy_document: null
     - class: publication
       dlq: REQUIRED_NOT_CONFIGURED
       producer_consumer_separation: REQUIRED_NOT_CONFIGURED
       redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      redrive_control: REQUIRED_NOT_CONFIGURED
       selected:
         physical_name: null
-        queue_url: null
-        queue_arn: null
+        endpoint: null
+        resource_identifier: null
         dlq_name: null
-        dlq_url: null
-        dlq_arn: null
+        dlq_endpoint: null
+        dlq_resource_identifier: null
         delay_seconds: null
         visibility_timeout_seconds: null
         retention_seconds: null
         max_receive_count: null
-        fifo: null
+        ordering_mode: null
         policy_document: null
     - class: freshness
       dlq: REQUIRED_NOT_CONFIGURED
       producer_consumer_separation: REQUIRED_NOT_CONFIGURED
       redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      redrive_control: REQUIRED_NOT_CONFIGURED
       selected:
         physical_name: null
-        queue_url: null
-        queue_arn: null
+        endpoint: null
+        resource_identifier: null
         dlq_name: null
-        dlq_url: null
-        dlq_arn: null
+        dlq_endpoint: null
+        dlq_resource_identifier: null
         delay_seconds: null
         visibility_timeout_seconds: null
         retention_seconds: null
         max_receive_count: null
-        fifo: null
+        ordering_mode: null
         policy_document: null
     - class: analytics
       dlq: REQUIRED_NOT_CONFIGURED
       producer_consumer_separation: REQUIRED_NOT_CONFIGURED
       redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      redrive_control: REQUIRED_NOT_CONFIGURED
       selected:
         physical_name: null
-        queue_url: null
-        queue_arn: null
+        endpoint: null
+        resource_identifier: null
         dlq_name: null
-        dlq_url: null
-        dlq_arn: null
+        dlq_endpoint: null
+        dlq_resource_identifier: null
         delay_seconds: null
         visibility_timeout_seconds: null
         retention_seconds: null
         max_receive_count: null
-        fifo: null
+        ordering_mode: null
         policy_document: null
     - class: notification
       dlq: REQUIRED_NOT_CONFIGURED
       producer_consumer_separation: REQUIRED_NOT_CONFIGURED
       redrive_role_separation: REQUIRED_NOT_CONFIGURED
+      redrive_control: REQUIRED_NOT_CONFIGURED
       selected:
         physical_name: null
-        queue_url: null
-        queue_arn: null
+        endpoint: null
+        resource_identifier: null
         dlq_name: null
-        dlq_url: null
-        dlq_arn: null
+        dlq_endpoint: null
+        dlq_resource_identifier: null
         delay_seconds: null
         visibility_timeout_seconds: null
         retention_seconds: null
         max_receive_count: null
-        fifo: null
+        ordering_mode: null
         policy_document: null
-secrets_manager_intent:
-  classification: METADATA_INTENT_ONLY
+secrets_intent:
+  classification: LOGICAL_PROVIDER_NEUTRAL_METADATA_INTENT_ONLY
+  transport_encryption: REQUIRED_NOT_CONFIGURED
   secret_values: ABSENT
   secret_names: []
-  secret_arns: []
+  secret_references: []
   ambient_credential_resolution: FORBIDDEN
   environment_credential_resolution: FORBIDDEN
   rotation: REQUIRED_NOT_CONFIGURED
   workload_least_privilege: REQUIRED_NOT_CONFIGURED
-kms_intent:
-  classification: LOGICAL_ENCRYPTION_INTENT_ONLY
+  access_audit: REQUIRED_NOT_CONFIGURED
+  recovery_or_reissuance: REQUIRED_NOT_CONFIGURED
+key_management_intent:
+  classification: LOGICAL_PROVIDER_NEUTRAL_ENCRYPTION_INTENT_ONLY
+  transport_encryption: REQUIRED_NOT_CONFIGURED
   encryption: REQUIRED
   rotation: REQUIRED_NOT_CONFIGURED
   audit_logging: REQUIRED_NOT_CONFIGURED
   workload_least_privilege: REQUIRED_NOT_CONFIGURED
+  recovery: REQUIRED_NOT_CONFIGURED
   key_deletion: FORBIDDEN
-  key_ids: []
-  key_arns: []
+  key_identifiers: []
+  key_references: []
   aliases: []
   policy_document: null
   deletion_window_days: null
+recovery_intent:
+  classification: LOGICAL_PROVIDER_NEUTRAL_RECOVERY_INTENT_ONLY
+  relational_backup_and_pitr: REQUIRED_NOT_CONFIGURED
+  relational_snapshot_or_equivalent: REQUIRED_NOT_CONFIGURED
+  object_version_and_manifest_recovery: REQUIRED_NOT_CONFIGURED
+  configuration_reconstruction: REQUIRED_NOT_CONFIGURED
+  secret_reissuance: REQUIRED_NOT_CONFIGURED
+  isolated_restore_environment: REQUIRED_NOT_CONFIGURED
+  role_grant_and_integrity_validation: REQUIRED_NOT_CONFIGURED
+  rpo_rto_measurement: REQUIRED_NOT_EXECUTED
+  formal_tst_029: NOT_EXECUTED
+  selected_restore_environment: null
+observability_intent:
+  classification: LOGICAL_PROVIDER_NEUTRAL_OBSERVABILITY_INTENT_ONLY
+  database_health_capacity_backup_metrics: REQUIRED_NOT_CONFIGURED
+  object_integrity_version_backup_metrics: REQUIRED_NOT_CONFIGURED
+  queue_depth_age_retry_dlq_metrics: REQUIRED_NOT_CONFIGURED
+  secret_and_key_access_audit: REQUIRED_NOT_CONFIGURED
+  actionable_alert_owner_and_runbook: REQUIRED_NOT_CONFIGURED
+  configuration_drift_detection: REQUIRED_NOT_CONFIGURED
+  sensitive_telemetry: FORBIDDEN
+data_boundary_intent:
+  classification: LOGICAL_PROVIDER_NEUTRAL_DATA_BOUNDARY_INTENT_ONLY
+  development_production_isolation: REQUIRED_NOT_CONFIGURED
+  private_data_plane: REQUIRED_NOT_CONFIGURED
+  direct_public_database_access: FORBIDDEN
+  direct_public_object_admin_access: FORBIDDEN
+  direct_public_queue_admin_access: FORBIDDEN
+  production_region: null
+  backup_region: null
+  cross_border_transfer: NOT_EVALUATED
+  data_residency_evidence: REQUIRED_NOT_CONFIGURED
+  od_013_status: HUMAN_DECISION_REQUIRED
+  od_014_status: HUMAN_DECISION_REQUIRED
+  od_015_status: EXTERNAL_EVIDENCE_REQUIRED
 execution_boundary:
   activation_enabled: false
   activation_status: DISABLED
   native_plan_status: NOT_EXECUTED
+  network_access: FORBIDDEN
+  credential_access: FORBIDDEN
   live_provider_calls: FORBIDDEN
   external_writes: FORBIDDEN
+  migration_action: FORBIDDEN
+  backup_action: FORBIDDEN
+  restore_action: FORBIDDEN
+  redrive_action: FORBIDDEN
+  destructive_action: FORBIDDEN
+  deploy_action: FORBIDDEN
+  release_action: FORBIDDEN
+  production_action: FORBIDDEN
   commands:
     init: FORBIDDEN
     plan: FORBIDDEN
@@ -279,16 +517,26 @@ execution_boundary:
     create: 0
     update: 0
     delete: 0
+    migrate: 0
+    backup: 0
+    restore: 0
+    redrive: 0
+    rotate: 0
 evidence_boundary:
-  deliverable_classification: SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN
-  executable_terraform: ABSENT
-  terraform_cli: UNPINNED_NOT_INVOKED
-  provider_plugins: UNPINNED_NOT_INVOKED
-  aws_account: UNSET
+  deliverable_classification: SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN
+  executable_iac: ABSENT
+  iac_toolchain: UNPINNED_NOT_INVOKED
+  provider_plugins_or_adapters: UNPINNED_NOT_INVOKED
+  provider_account_or_project: UNSET
+  provider_profile: UNSET
   credentials: ABSENT
   native_iac_validation: NOT_EXECUTED
+  transport_encryption_validation: NOT_EXECUTED
+  relational_migration_validation: NOT_EXECUTED
+  queue_delivery_validation: NOT_EXECUTED
   formal_tst_026: NOT_EXECUTED
   formal_tst_029: NOT_EXECUTED
   restore_validation: NOT_EXECUTED
+  provider_validation: NOT_EXECUTED
   live_staging_release_production: NOT_EXECUTED
   effective_canonical_status: UNCHANGED

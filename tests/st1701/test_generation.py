@@ -31,6 +31,62 @@ def test_rendered_outputs_match_owner_generated_bytes() -> None:
         assert (REPOSITORY_ROOT / relative).read_bytes() == expected
 
 
+def test_provenance_rebind_preserves_approved_inputs_and_business_outputs() -> None:
+    expected = {
+        "changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml": (
+            8_680,
+            "d07a2f3902dcd23f7ef9d46ecd3ab68162bcc28f2b3ad849bbe0e27891f502aa",
+        ),
+        "changes/st-1701/DESIGN_HANDOFF_V1_ST1701_MVP_DECISION_PACKAGE_v1.yaml": (
+            20_695,
+            "f5e8f70b74fd26c68b0dfd8a47dd35fc59b1651e9e553dad738d90b00acd1790",
+        ),
+        "changes/st-1701/DESIGN-HANDOFF-APPROVAL-v1.yaml": (
+            1_478,
+            "8a9029410bdad475eca2da7d0ab0f87cf0d3e1a8019e6102522d7cb18ac3dbd0",
+        ),
+        "changes/st-1701/contracts/mvp-business-decision-package.v1.yaml": (
+            10_678,
+            "7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f",
+        ),
+        "changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml": (
+            2_098,
+            "749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34",
+        ),
+        (
+            "changes/st-1701/"
+            "DESIGN_HANDOFF_V1_ST1701_GOLD_EVIDENCE_CANONICAL_REVISION_v1.yaml"
+        ): (
+            26_483,
+            "c45bea63891448be4af4d696d7d164ea37f246b76f5acce91de791638f49c17f",
+        ),
+        "changes/st-1701/DESIGN-HANDOFF-APPROVAL-GOLD-EVIDENCE-v1.yaml": (
+            1_876,
+            "288e96b9e4814e1a3d9409addcee2bf1b5bdf12ab9e0a8e756ec66846f057197",
+        ),
+        "changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json": (
+            10_928,
+            "22394f5b37d3fe90cc5c31aff47be0d0f31f061398bbd9d90b4030bcb050c33b",
+        ),
+        "changes/st-1701/generated/mvp-business-decision-package.v1.json": (
+            22_781,
+            "623af8942c87c1b14a06b07df1687e3e0cf537085bdd500c59388dd90c0b2f58",
+        ),
+        "changes/st-1701/generated/canonical-revision-request.v1.md": (
+            4_268,
+            "6f6425ef97b53ca9a406b98ff5e9b2a64762adc5badc4569cc539afc53da7d04",
+        ),
+        "changes/st-1701/generated/gold-evidence-validation.v1.json": (
+            5_709,
+            "cbf7b267ccd1d51b9d2ab0a0d379529a2b2dc237cf65921468999968d677e4da",
+        ),
+    }
+    for relative, (size, digest) in expected.items():
+        content = (REPOSITORY_ROOT / relative).read_bytes()
+        assert len(content) == size
+        assert hashlib.sha256(content).hexdigest() == digest
+
+
 def test_check_mode_is_read_only() -> None:
     paths = tuple(REPOSITORY_ROOT / relative for relative in generator.GENERATED_PATHS)
     before = _snapshot(paths)
@@ -392,9 +448,46 @@ def test_manifest_provenance_rows_match_independent_approved_literals() -> None:
     assert provenance["implementation_inputs"] == [
         {
             "uri": "repo://scripts/build_st1506_production_deployment.py",
-            "sha256": "ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f",
+            "sha256": "f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176",
         }
     ]
+    current = provenance["current_development_rebinding"]
+    assert current["classification"] == "REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY"
+    assert current["authority_source"] == {
+        "uri": f"repo://{generator.STANDING_DEVELOPMENT_AUTHORITY_PATH}",
+        "bytes": generator.STANDING_DEVELOPMENT_AUTHORITY_BYTES,
+        "sha256": generator.STANDING_DEVELOPMENT_AUTHORITY_SHA256,
+        "authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+    }
+    assert current["current_authority_inputs"] == [
+        {
+            "uri": f"repo://{path}",
+            "bytes": binding[0],
+            "sha256": binding[1],
+        }
+        for path, binding in generator.CURRENT_DEVELOPMENT_SOURCE_OVERRIDES.items()
+    ]
+    assert current["current_implementation_inputs"] == [
+        {
+            "uri": f"repo://{path}",
+            "bytes": (REPOSITORY_ROOT / path).stat().st_size,
+            "sha256": digest,
+        }
+        for path, digest in generator.IMPLEMENTATION_DEPENDENCIES.items()
+    ]
+    assert current["historical_source_and_authority_rows_preserved"] is True
+    assert current["semantic_delta_from_business_inputs"] == "NONE"
+    assert current["formal_evidence"] is False
+    for field in (
+        "external_authority",
+        "live_provider_authority",
+        "credential_authority",
+        "staging_authority",
+        "publication_authority",
+        "release_authority",
+        "production_authority",
+    ):
+        assert current[field] == "NONE"
     assert provenance["source_contracts"] == [
         {
             "uri": "repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml",

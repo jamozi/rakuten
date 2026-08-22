@@ -1,13 +1,13 @@
 document:
   id: RAOS-TERRAFORM-FOUNDATION-MANIFEST-001
-  version: 1.0.0
+  version: 1.1.0
   story_id: ST-1501
   source_contract: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
   generated_by: repo://scripts/build_st1501_terraform_foundation.py
   generation_command: uv run --locked --no-sync python scripts/build_st1501_terraform_foundation.py
 provenance:
   contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-  contract_sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+  contract_sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -32,40 +32,62 @@ provenance:
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
-source_artifact_count: 7
+    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
+  - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+    sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
+source_artifact_count: 8
 source_artifacts:
 - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-  bytes: 4106
-  sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+  bytes: 9313
+  sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
+- uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+  bytes: 9124
+  sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
 - uri: repo://changes/st-1501/README.md
-  bytes: 4407
-  sha256: efd6a2c00b07c3dd03ad607ed535bc976836eb2da1247fe58c47c35d246e06d6
+  bytes: 6786
+  sha256: 9b651467bdc85133cd14befad23dd9b20791aec17e5b46b64a8c87f02317dde9
 - uri: repo://scripts/build_st1501_terraform_foundation.py
-  bytes: 43936
-  sha256: 9587478f2abe7cdea85f0f60f2c227c8d3f3400686f8ef7d6e9acbe07524a41c
+  bytes: 73384
+  sha256: 8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8
 - uri: repo://tests/st1501/conftest.py
   bytes: 639
   sha256: 0901bcd2fb399aff95835b44782bce3d163d61f465d8668723369da9a2f99e18
 - uri: repo://tests/st1501/test_contract.py
-  bytes: 7415
-  sha256: dd2c78b2ad29e77f52518e5d65cf0d42d29f631dcaebfcd3923e173dbb60217f
+  bytes: 12002
+  sha256: c43d7610c648ff3550351a480be9af74ee8e15120f44ee0f8b3d34bfaba55a6d
 - uri: repo://tests/st1501/test_generation.py
-  bytes: 7520
-  sha256: 1e41948b1fa81572ec9ee1cf48413096da111a492d7282e2a35ddf4ce8d948d8
+  bytes: 8999
+  sha256: 72fba030816bf632c3d088b2d77ee0ecd5a13405ef10534d68d58ec94e14bb1a
 - uri: repo://tests/st1501/test_negative_cases.py
-  bytes: 7740
-  sha256: 8645bb10e1959b8517746f60e31a930b8adba338b235b0fd362bcb0f0715adc2
+  bytes: 20018
+  sha256: d5e214f813405e091703470ec0e15e77a4c31d04788428306615412489d3706e
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-  bytes: 3041
-  sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
+  bytes: 9100
+  sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
 boundary:
   classification: SOURCE_DERIVED_REFERENCE_STATE_PLAN
+  provider_policy: STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION
+  admission_status: NOT_EVALUATED
+  eligible: false
+  selected_profile: null
+  default_profile: null
+  fallback_profile: null
+  required_capability_count: 10
+  configured_mapping_count: 0
+  aws_reference_role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+  canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+  portable_implementation_paths: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
+  aws_reference_default: false
+  aws_reference_fallback: false
+  aws_reference_selected: false
+  aws_reference_eligibility_shortcut: false
+  aws_reference_admission_requirement: false
+  aws_reference_evidence_substitute: false
   activation: DISABLED
   planned_actions:
     create: 0
@@ -76,6 +98,7 @@ boundary:
   selected_production_account: null
   selected_state_backend: null
   credentials: ABSENT
+  provider_account_or_project: UNSET
   resource_definitions: []
   native_iac_validation: NOT_EXECUTED
   formal_tst_026: NOT_EXECUTED

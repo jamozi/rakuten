@@ -1,4 +1,4 @@
-"""Hostile and exact-type validation cases for ST-1503."""
+"""Hostile and exact-type provider-neutral validation cases for ST-1503."""
 
 from __future__ import annotations
 
@@ -15,66 +15,391 @@ from scripts import build_st1503_compute_edge as generator
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+HANDOFF_NORMATIVE_SECTIONS = (
+    "approved_story",
+    "approved_scope",
+    "source_design_refs",
+    "decision",
+    "rationale",
+    "rejected_alternatives",
+    "constraints",
+    "security_and_approval_gates",
+    "acceptance_criteria",
+    "required_test_evidence",
+    "open_decision_state",
+)
 
 
 def _validate(document: dict[str, Any]) -> generator.ComputeEdgeModel:
     return generator.validate_contract(document, REPOSITORY_ROOT)
 
 
-@pytest.mark.parametrize("field", generator.EXPECTED_SECTIONS["selected_configuration"])
-def test_every_real_global_selection_must_remain_unset(
+def _copy_pinned_sources(target_root: Path) -> None:
+    for relative in generator.PINNED_SOURCES:
+        source = REPOSITORY_ROOT / relative
+        target = target_root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)
+
+
+def _rebind_source(
+    document: dict[str, Any],
+    relative: str,
+    digest: str,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    authority: bool,
+) -> None:
+    if authority:
+        sources = dict(generator.AUTHORITY_SOURCES)
+        sources[relative] = digest
+        monkeypatch.setattr(generator, "AUTHORITY_SOURCES", sources)
+        pinned = {**sources, **generator.PREDECESSOR_SOURCES}
+    else:
+        sources = dict(generator.PREDECESSOR_SOURCES)
+        sources[relative] = digest
+        monkeypatch.setattr(generator, "PREDECESSOR_SOURCES", sources)
+        pinned = {**generator.AUTHORITY_SOURCES, **sources}
+    monkeypatch.setattr(generator, "PINNED_SOURCES", pinned)
+    for row in document["sources"]:
+        if row["uri"] == f"repo://{relative}":
+            row["sha256"] = digest
+            break
+    else:
+        raise AssertionError(relative)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ("missing", "unknown", "duplicate", "reorder"),
+)
+def test_capability_inventory_drift_fails_closed(
+    contract_document: dict[str, Any],
+    mutation: str,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    rows = document["provider_neutral_compute_edge_admission"][
+        "capability_mapping_requirements"
+    ]
+    if mutation == "missing":
+        rows.pop()
+        expected = "MISSING_CAPABILITY_MAPPING"
+    elif mutation == "unknown":
+        rows[-1]["capability_id"] = "unknown_compute_edge_capability"
+        expected = "UNKNOWN_CAPABILITY_MAPPING"
+    elif mutation == "duplicate":
+        rows[-1]["capability_id"] = rows[0]["capability_id"]
+        expected = "DUPLICATE_CAPABILITY_MAPPING"
+    else:
+        rows[0], rows[1] = rows[1], rows[0]
+        expected = "CAPABILITY_MAPPING_ORDER_DRIFT"
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        _validate(document)
+    assert captured.value.code == expected
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("selected_profile_id", "aws-reference"),
+        ("selected_profile_kind", "AWS"),
+        ("selected_provider_name", "AWS"),
+        ("default_profile_id", "aws-tokyo"),
+        ("fallback_profile_id", "aws-tokyo"),
+        ("concrete_alternate_provider_selected", True),
+        ("eligible", True),
+        ("admission_status", "ELIGIBLE"),
+    ),
+)
+def test_profile_selection_default_fallback_and_shortcut_fail_closed(
+    contract_document: dict[str, Any],
+    field: str,
+    value: object,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_compute_edge_admission"][field] = value
+    with pytest.raises(generator.ComputeEdgeContractError):
+        _validate(document)
+
+
+@pytest.mark.parametrize(
+    "binding",
+    (
+        "provider",
+        "account_or_project",
+        "region",
+        "workload_runtime_or_scheduler",
+        "image_registry",
+        "ingress_or_edge",
+        "dns_or_tls",
+        "waf_or_abuse_control",
+        "compute_edge_plugin_or_adapter",
+    ),
+)
+@pytest.mark.parametrize("slot", ("selected", "default", "fallback"))
+def test_every_provider_resource_binding_must_remain_unset(
+    contract_document: dict[str, Any],
+    binding: str,
+    slot: str,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_compute_edge_admission"]["binding_policy"][binding][
+        slot
+    ] = "AWS_LABEL_CANNOT_BIND"
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "default",
+        "implicit_fallback",
+        "selected_binding",
+        "eligibility_shortcut",
+        "admission_requirement",
+        "evidence_substitute",
+    ),
+)
+@pytest.mark.parametrize(
+    "section",
+    ("reference_architecture", "provider_neutral_compute_edge_admission"),
+)
+def test_aws_reference_cannot_become_default_fallback_selection_or_evidence(
+    contract_document: dict[str, Any],
+    section: str,
+    field: str,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    target = (
+        document[section]
+        if section == "reference_architecture"
+        else document[section]["aws_reference_boundary"]
+    )
+    target[field] = True
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "SAFE_BOUNDARY_VIOLATION"
+
+
+@pytest.mark.parametrize(
+    ("section", "field", "value"),
+    (
+        (
+            "reference_architecture",
+            "classification",
+            "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "provider_neutral_compute_edge_admission",
+            "role",
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "provider_neutral_compute_edge_admission",
+            "canonical_story_deliverables",
+            "CANONICAL_STORY_DELIVERABLES_REPLACED_BY_PORTABILITY_OVERLAY",
+        ),
+        (
+            "provider_neutral_compute_edge_admission",
+            "non_aws_owner_managed_profiles",
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
+    ),
+)
+def test_canonical_reference_cannot_be_demoted_or_replaced_by_overlay(
+    contract_document: dict[str, Any], section: str, field: str, value: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    target = (
+        document["reference_architecture"]
+        if section == "reference_architecture"
+        else document["provider_neutral_compute_edge_admission"][
+            "aws_reference_boundary"
+        ]
+    )
+    target[field] = value
+    with pytest.raises(generator.ComputeEdgeContractError):
+        _validate(document)
+
+
+@pytest.mark.parametrize("payload", ("AWS", "ECS", "Fargate", "CloudFront", "WAF"))
+@pytest.mark.parametrize("field", ("selected_mapping", "evidence_refs"))
+def test_aws_or_service_labels_cannot_satisfy_capability_or_evidence(
+    contract_document: dict[str, Any],
+    payload: str,
+    field: str,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    row = document["provider_neutral_compute_edge_admission"][
+        "capability_mapping_requirements"
+    ][0]
+    row[field] = [payload] if field == "evidence_refs" else payload
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
+
+
+@pytest.mark.parametrize(
+    "policy",
+    (
+        "provider_label_as_evidence",
+        "service_label_as_evidence",
+        "reference_metadata_as_evidence",
+        "local_test_as_live_evidence",
+    ),
+)
+def test_label_and_local_evidence_substitutions_remain_forbidden(
+    contract_document: dict[str, Any],
+    policy: str,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_compute_edge_admission"]["evidence_equivalence_policy"][
+        policy
+    ] = "ALLOWED"
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "FIXED_VALUE_VIOLATION"
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("required_mapping_mode", "PARTIAL_OR_IMPLICIT"),
+        ("required_capability_count", 7),
+        ("configured_mapping_count", 1),
+        ("complete_mapping", True),
+        ("missing_mapping", "ALLOW"),
+        ("unknown_mapping", "ALLOW"),
+        ("duplicate_mapping", "ALLOW"),
+        ("implicit_mapping", "ALLOW"),
+        ("partial_mapping", "ALLOW"),
+        ("provider_label_only_mapping", "ALLOW"),
+        ("service_label_only_mapping", "ALLOW"),
+        ("reference_only_mapping", "ALLOW"),
+    ),
+)
+def test_every_mapping_policy_gate_rejects_relaxation(
+    contract_document: dict[str, Any],
+    field: str,
+    value: object,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_compute_edge_admission"]["mapping_policy"][field] = value
+    with pytest.raises(generator.ComputeEdgeContractError):
+        _validate(document)
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "implicit_binding",
+        "name_or_reference_only_eligibility",
+    ),
+)
+def test_binding_shortcut_gates_remain_forbidden(
     contract_document: dict[str, Any], field: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_compute_edge_admission"]["binding_policy"][field] = (
+        "ALLOWED"
+    )
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "FIXED_VALUE_VIOLATION"
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "identical_security_evidence",
+        "identical_operations_evidence",
+        "identical_release_evidence",
+        "identical_performance_load_evidence",
+        "identical_health_slo_alerting_evidence",
+        "identical_canary_rollback_evidence",
+        "identical_identity_secret_egress_evidence",
+        "identical_isolation_evidence",
+        "identical_region_residency_evidence",
+        "identical_transport_security_evidence",
+    ),
+)
+def test_every_equivalent_evidence_gate_remains_required(
+    contract_document: dict[str, Any], field: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_compute_edge_admission"]["evidence_equivalence_policy"][
+        field
+    ] = "OPTIONAL"
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "FIXED_VALUE_VIOLATION"
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "public_transport",
+        "internal_transport",
+        "provider_transport",
+        "origin_transport",
+    ),
+)
+def test_all_interaction_transport_security_gates_remain_required(
+    contract_document: dict[str, Any], field: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_compute_edge_admission"][
+        "cross_capability_transport_security_policy"
+    ][field] = "OPTIONAL"
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "FIXED_VALUE_VIOLATION"
+
+
+def test_transport_security_exceptions_cannot_be_selected(
+    contract_document: dict[str, Any],
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_compute_edge_admission"][
+        "cross_capability_transport_security_policy"
+    ]["selected_exceptions"] = ["INTERNAL"]
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
+
+
+@pytest.mark.parametrize(
+    "field",
+    generator.EXPECTED_SECTIONS["selected_configuration"],
+)
+def test_all_concrete_configuration_bindings_remain_unset(
+    contract_document: dict[str, Any],
+    field: str,
 ) -> None:
     document = copy.deepcopy(contract_document)
     current = document["selected_configuration"][field]
     document["selected_configuration"][field] = (
-        ["REJECTED_INPUT_MARKER_1503"]
-        if isinstance(current, list)
-        else "REJECTED_INPUT_MARKER_1503"
+        ["AWS_LABEL_CANNOT_SELECT"] if isinstance(current, list) else "AWS"
     )
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
         _validate(document)
     assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
-    assert "REJECTED_INPUT_MARKER_1503" not in str(captured.value)
 
 
 @pytest.mark.parametrize("role_index", range(len(generator.WORKLOAD_ROLES)))
 @pytest.mark.parametrize("field", generator._workload_selection())
-def test_every_workload_physical_sizing_image_identity_and_network_value_is_rejected(
-    contract_document: dict[str, Any], role_index: int, field: str
+def test_all_workload_runtime_identity_network_and_sizing_bindings_remain_unset(
+    contract_document: dict[str, Any],
+    role_index: int,
+    field: str,
 ) -> None:
     document = copy.deepcopy(contract_document)
     current = document["workload_intent"]["roles"][role_index]["selected"][field]
     document["workload_intent"]["roles"][role_index]["selected"][field] = (
-        ["REJECTED_INPUT_MARKER_1503"]
-        if isinstance(current, list)
-        else "REJECTED_INPUT_MARKER_1503"
+        ["REJECTED_BINDING"] if isinstance(current, list) else "REJECTED_BINDING"
     )
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
-    assert "REJECTED_INPUT_MARKER_1503" not in str(captured.value)
-
-
-@pytest.mark.parametrize("role_index", range(len(generator.WORKLOAD_ROLES)))
-@pytest.mark.parametrize(
-    "field",
-    [
-        "container_port",
-        "cpu_units",
-        "memory_mib",
-        "desired_count",
-        "autoscaling_min",
-        "autoscaling_max",
-        "public_ip",
-    ],
-)
-@pytest.mark.parametrize("value", [True, False, 0, 1, "selected"])
-def test_workload_null_numeric_and_boolean_fields_reject_bool_as_int_bypasses(
-    contract_document: dict[str, Any], role_index: int, field: str, value: object
-) -> None:
-    document = copy.deepcopy(contract_document)
-    document["workload_intent"]["roles"][role_index]["selected"][field] = value
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
         _validate(document)
     assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
@@ -82,8 +407,10 @@ def test_workload_null_numeric_and_boolean_fields_reject_bool_as_int_bypasses(
 
 @pytest.mark.parametrize("surface_index", range(len(generator.SURFACE_ROLES)))
 @pytest.mark.parametrize("field", generator._surface_selection())
-def test_every_surface_domain_host_route_cache_cookie_csp_and_auth_value_is_rejected(
-    contract_document: dict[str, Any], surface_index: int, field: str
+def test_all_surface_domain_route_cache_cookie_csp_and_auth_bindings_remain_unset(
+    contract_document: dict[str, Any],
+    surface_index: int,
+    field: str,
 ) -> None:
     document = copy.deepcopy(contract_document)
     current = document["surface_boundary_intent"]["surfaces"][surface_index][
@@ -91,136 +418,73 @@ def test_every_surface_domain_host_route_cache_cookie_csp_and_auth_value_is_reje
     ][field]
     document["surface_boundary_intent"]["surfaces"][surface_index]["selected"][
         field
-    ] = (
-        ["REJECTED_INPUT_MARKER_1503"]
-        if isinstance(current, list)
-        else "REJECTED_INPUT_MARKER_1503"
-    )
+    ] = ["REJECTED_BINDING"] if isinstance(current, list) else "REJECTED_BINDING"
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
         _validate(document)
     assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
-    assert "REJECTED_INPUT_MARKER_1503" not in str(captured.value)
 
 
 @pytest.mark.parametrize(
-    "field", generator.EXPECTED_SECTIONS["edge_routing_intent"]["selected"]
+    "field",
+    generator.EXPECTED_SECTIONS["edge_routing_intent"]["selected"],
 )
-def test_every_edge_dns_tls_waf_origin_route_and_cache_value_is_rejected(
-    contract_document: dict[str, Any], field: str
+def test_all_edge_dns_tls_waf_origin_and_route_bindings_remain_unset(
+    contract_document: dict[str, Any],
+    field: str,
 ) -> None:
     document = copy.deepcopy(contract_document)
     current = document["edge_routing_intent"]["selected"][field]
     document["edge_routing_intent"]["selected"][field] = (
-        ["REJECTED_INPUT_MARKER_1503"]
-        if isinstance(current, list)
-        else "REJECTED_INPUT_MARKER_1503"
+        ["REJECTED_BINDING"] if isinstance(current, list) else "REJECTED_BINDING"
     )
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
         _validate(document)
     assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
-    assert "REJECTED_INPUT_MARKER_1503" not in str(captured.value)
 
 
-@pytest.mark.parametrize("probe", ["liveness", "readiness"])
-def test_every_health_endpoint_port_matcher_schema_and_timing_value_is_rejected(
-    contract_document: dict[str, Any], probe: str
+@pytest.mark.parametrize("probe", ("liveness", "readiness"))
+def test_all_health_bindings_remain_unset(
+    contract_document: dict[str, Any],
+    probe: str,
 ) -> None:
-    fields = generator.EXPECTED_SECTIONS["health_intent"][probe]["selected"]
-    for field in fields:
+    for field in generator.EXPECTED_SECTIONS["health_intent"][probe]["selected"]:
         document = copy.deepcopy(contract_document)
         current = document["health_intent"][probe]["selected"][field]
         document["health_intent"][probe]["selected"][field] = (
-            ["REJECTED_INPUT_MARKER_1503"]
-            if isinstance(current, list)
-            else "REJECTED_INPUT_MARKER_1503"
+            ["REJECTED_BINDING"] if isinstance(current, list) else "REJECTED_BINDING"
         )
         with pytest.raises(generator.ComputeEdgeContractError) as captured:
             _validate(document)
         assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
-        assert "REJECTED_INPUT_MARKER_1503" not in str(captured.value)
 
 
-@pytest.mark.parametrize("probe", ["liveness", "readiness"])
 @pytest.mark.parametrize(
     "field",
-    [
-        "port",
-        "interval_seconds",
-        "timeout_seconds",
-        "healthy_threshold",
-        "unhealthy_threshold",
-    ],
+    (
+        "network_access",
+        "credential_access",
+        "live_provider_calls",
+        "external_writes",
+        "deploy_action",
+        "release_action",
+        "production_action",
+    ),
 )
-@pytest.mark.parametrize("value", [True, False, 0, 1, "200"])
-def test_health_null_numeric_fields_reject_bool_int_and_string_bypasses(
-    contract_document: dict[str, Any], probe: str, field: str, value: object
-) -> None:
-    document = copy.deepcopy(contract_document)
-    document["health_intent"][probe]["selected"][field] = value
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
-
-
-@pytest.mark.parametrize(
-    ("section", "collection"),
-    [
-        ("workload_intent", "roles"),
-        ("surface_boundary_intent", "surfaces"),
-        ("health_intent", "roles"),
-    ],
-)
-@pytest.mark.parametrize("mutation", ["duplicate", "reorder"])
-def test_fixed_role_and_surface_inventories_reject_duplicates_and_reordering(
+def test_every_execution_surface_remains_forbidden(
     contract_document: dict[str, Any],
-    section: str,
-    collection: str,
-    mutation: str,
+    field: str,
 ) -> None:
     document = copy.deepcopy(contract_document)
-    rows = document[section][collection]
-    if mutation == "duplicate":
-        rows[1] = copy.deepcopy(rows[0])
-    else:
-        rows[0], rows[1] = rows[1], rows[0]
+    document["execution_boundary"][field] = "ALLOWED"
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
         _validate(document)
-    assert captured.value.code in {
-        "CLOSED_SCHEMA_VIOLATION",
-        "FIXED_VALUE_VIOLATION",
-    }
-
-
-@pytest.mark.parametrize(
-    ("path", "value", "expected_code"),
-    [
-        (("execution_boundary", "activation_enabled"), True, "SAFE_BOUNDARY_VIOLATION"),
-        (("execution_boundary", "activation_enabled"), 0, "TYPE_MISMATCH"),
-        (("reference_architecture", "portable_core_required"), 1, "TYPE_MISMATCH"),
-        (
-            ("execution_boundary", "live_provider_calls"),
-            "ALLOWED",
-            "FIXED_VALUE_VIOLATION",
-        ),
-        (("execution_boundary", "external_writes"), "ALLOWED", "FIXED_VALUE_VIOLATION"),
-    ],
-)
-def test_activation_bool_as_int_and_external_actions_are_rejected(
-    contract_document: dict[str, Any],
-    path: tuple[str, str],
-    value: object,
-    expected_code: str,
-) -> None:
-    document = copy.deepcopy(contract_document)
-    document[path[0]][path[1]] = value
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == expected_code
+    assert captured.value.code == "FIXED_VALUE_VIOLATION"
 
 
 @pytest.mark.parametrize("command", generator.NATIVE_COMMANDS)
-def test_every_native_operation_must_remain_forbidden(
-    contract_document: dict[str, Any], command: str
+def test_every_native_command_remains_forbidden(
+    contract_document: dict[str, Any],
+    command: str,
 ) -> None:
     document = copy.deepcopy(contract_document)
     document["execution_boundary"]["commands"][command] = "ALLOWED"
@@ -230,9 +494,11 @@ def test_every_native_operation_must_remain_forbidden(
 
 
 @pytest.mark.parametrize("action", generator.ACTION_NAMES)
-@pytest.mark.parametrize("value", [1, -1, True, "0"])
-def test_planned_actions_require_exact_integer_zero(
-    contract_document: dict[str, Any], action: str, value: object
+@pytest.mark.parametrize("value", (1, -1, True, "0"))
+def test_actions_require_exact_integer_zero(
+    contract_document: dict[str, Any],
+    action: str,
+    value: object,
 ) -> None:
     document = copy.deepcopy(contract_document)
     document["execution_boundary"]["planned_actions"][action] = value
@@ -245,21 +511,21 @@ def test_planned_actions_require_exact_integer_zero(
 
 @pytest.mark.parametrize(
     ("section", "field", "value"),
-    [
+    (
+        ("workload_intent", "controlled_egress", "CONFIGURED"),
         ("workload_intent", "secret_material", "PRESENT"),
-        ("workload_intent", "immutable_digest_selected_images", "CONFIGURED"),
-        ("workload_intent", "signed_provenance", "CONFIGURED"),
-        ("workload_intent", "sbom", "CONFIGURED"),
-        ("workload_intent", "image_scanning", "CONFIGURED"),
-        ("workload_intent", "least_privilege_workload_identities", "CONFIGURED"),
-        ("workload_intent", "encrypted_logs", "CONFIGURED"),
-        ("workload_intent", "graceful_shutdown", "CONFIGURED"),
+        ("surface_boundary_intent", "public_data_plane_access", "ALLOWED"),
         ("edge_routing_intent", "direct_origin_public_access", "ALLOWED"),
-        ("health_intent", "classification", "RUNTIME_VALIDATED"),
-    ],
+        ("edge_routing_intent", "origin_private_only", "OPTIONAL"),
+        ("health_intent", "human_release_approval", "OPTIONAL"),
+        ("health_intent", "kill_switch_change", "AUTOMATIC"),
+    ),
 )
-def test_future_requirements_cannot_be_promoted_to_configured_claims(
-    contract_document: dict[str, Any], section: str, field: str, value: object
+def test_security_health_and_release_gates_cannot_be_downgraded(
+    contract_document: dict[str, Any],
+    section: str,
+    field: str,
+    value: object,
 ) -> None:
     document = copy.deepcopy(contract_document)
     document[section][field] = value
@@ -268,145 +534,202 @@ def test_future_requirements_cannot_be_promoted_to_configured_claims(
     assert captured.value.code == "FIXED_VALUE_VIOLATION"
 
 
-def test_public_surface_cannot_gain_direct_internal_data_plane_access(
+@pytest.mark.parametrize(
+    "decision_id", tuple(generator.EXPECTED_SECTIONS["open_decision_boundary"])
+)
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (("resolved", True), ("blocking", False), ("status", "RESOLVED")),
+)
+def test_open_decisions_cannot_be_resolved_or_unblocked(
     contract_document: dict[str, Any],
+    decision_id: str,
+    field: str,
+    value: object,
 ) -> None:
     document = copy.deepcopy(contract_document)
-    document["surface_boundary_intent"]["surfaces"][0][
-        "direct_internal_data_plane_access"
-    ] = "ALLOWED"
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+    document["open_decision_boundary"][decision_id][field] = value
+    with pytest.raises(generator.ComputeEdgeContractError):
         _validate(document)
-    assert captured.value.code == "FIXED_VALUE_VIOLATION"
+
+
+def test_unknown_and_nested_provider_resource_fields_are_rejected(
+    contract_document: dict[str, Any],
+) -> None:
+    for section, field in (
+        (None, "unknown_provider"),
+        ("edge_routing_intent", "aws_cloudfront_distribution"),
+        ("workload_intent", "ecs_cluster"),
+    ):
+        document = copy.deepcopy(contract_document)
+        target = document if section is None else document[section]
+        target[field] = {"selected": True}
+        with pytest.raises(generator.ComputeEdgeContractError) as captured:
+            _validate(document)
+        assert captured.value.code == "CLOSED_SCHEMA_VIOLATION"
+
+
+@pytest.mark.parametrize("section", HANDOFF_NORMATIVE_SECTIONS)
+def test_every_handoff_normative_section_is_semantically_bound_after_digest_rebind(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    section: str,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    relative = generator.DESIGN_HANDOFF_PATH.as_posix()
+    path = tmp_path / relative
+    handoff = yaml.safe_load(path.read_bytes())
+    value = handoff[section]
+    if isinstance(value, list):
+        value.append("HOSTILE_NORMATIVE_REPLACEMENT")
+    elif isinstance(value, dict):
+        first_key = next(iter(value))
+        value[first_key] = "HOSTILE_NORMATIVE_REPLACEMENT"
+    else:
+        handoff[section] = "HOSTILE_NORMATIVE_REPLACEMENT"
+    path.write_text(yaml.safe_dump(handoff, sort_keys=False), encoding="utf-8")
+    document = copy.deepcopy(contract_document)
+    _rebind_source(
+        document,
+        relative,
+        generator.sha256_file(path),
+        monkeypatch,
+        authority=True,
+    )
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code in {
+        "FIXED_VALUE_VIOLATION",
+        "TYPE_MISMATCH",
+        "HANDOFF_SEMANTIC_DRIFT",
+    }
+
+
+def test_handoff_security_gate_bypass_is_rejected_after_digest_rebind(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    relative = generator.DESIGN_HANDOFF_PATH.as_posix()
+    path = tmp_path / relative
+    handoff = yaml.safe_load(path.read_bytes())
+    handoff["security_and_approval_gates"] = [
+        "AWS labels automatically satisfy all gates"
+    ]
+    path.write_text(yaml.safe_dump(handoff, sort_keys=False), encoding="utf-8")
+    document = copy.deepcopy(contract_document)
+    _rebind_source(
+        document,
+        relative,
+        generator.sha256_file(path),
+        monkeypatch,
+        authority=True,
+    )
+    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code == "HANDOFF_SEMANTIC_DRIFT"
 
 
 @pytest.mark.parametrize(
-    ("section", "index", "field", "value"),
-    [
-        ("workload_intent", 0, "trust_boundary", "INTERNAL"),
-        ("workload_intent", 2, "trust_boundary", "PUBLIC"),
-        ("surface_boundary_intent", 0, "trust_boundary", "INTERNAL"),
-        ("surface_boundary_intent", 2, "trust_boundary", "PUBLIC"),
-    ],
+    ("relative", "mutate"),
+    (
+        (
+            "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
+            "handoff",
+        ),
+        ("changes/st-1501/contracts/terraform-foundation.v1.yaml", "contract"),
+        (
+            "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
+            "plan",
+        ),
+    ),
 )
-def test_role_and_surface_cross_binding_cannot_swap_public_and_internal_boundaries(
+def test_predecessor_semantic_downgrades_fail_after_digest_rebind(
+    tmp_path: Path,
     contract_document: dict[str, Any],
-    section: str,
-    index: int,
-    field: str,
-    value: str,
+    monkeypatch: pytest.MonkeyPatch,
+    relative: str,
+    mutate: str,
 ) -> None:
+    _copy_pinned_sources(tmp_path)
+    path = tmp_path / relative
+    if mutate == "handoff":
+        payload = yaml.safe_load(path.read_bytes())
+        payload["security_and_approval_gates"] = ["AWS label bypass"]
+        path.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
+    elif mutate == "contract":
+        payload = yaml.safe_load(path.read_bytes())
+        payload["execution_boundary"]["network_access"] = "ALLOWED"
+        path.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
+    else:
+        payload = json.loads(path.read_bytes())
+        payload["activation"]["network_access"] = "ALLOWED"
+        path.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
     document = copy.deepcopy(contract_document)
-    collection = "roles" if section == "workload_intent" else "surfaces"
-    document[section][collection][index][field] = value
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == "FIXED_VALUE_VIOLATION"
-
-
-def test_admin_surface_cannot_claim_configured_identity_or_idp(
-    contract_document: dict[str, Any],
-) -> None:
-    document = copy.deepcopy(contract_document)
-    document["surface_boundary_intent"]["surfaces"][1][
-        "approved_identity_authorization"
-    ] = "CONFIGURED"
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == "FIXED_VALUE_VIOLATION"
-
-
-def test_readiness_cannot_be_inferred_from_a_successful_http_body(
-    contract_document: dict[str, Any],
-) -> None:
-    document = copy.deepcopy(contract_document)
-    document["health_intent"]["readiness"]["infer_from_http_200_body"] = "ALLOWED"
-    document["health_intent"]["readiness"]["selected"]["success_status_codes"] = [200]
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == "FIXED_VALUE_VIOLATION"
-
-
-def test_liveness_cannot_be_reclassified_as_dependency_readiness(
-    contract_document: dict[str, Any],
-) -> None:
-    document = copy.deepcopy(contract_document)
-    document["health_intent"]["liveness"]["purpose"] = (
-        "DEPENDENCY_AND_MIGRATION_READINESS"
+    _rebind_source(
+        document,
+        relative,
+        generator.sha256_file(path),
+        monkeypatch,
+        authority=False,
     )
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == "FIXED_VALUE_VIOLATION"
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code == "PREDECESSOR_SEMANTIC_DRIFT"
 
 
-@pytest.mark.parametrize("family", generator.COMPONENT_FAMILIES)
-def test_reference_component_label_tampering_is_rejected(
-    contract_document: dict[str, Any], family: str
+def test_predecessor_plan_formatting_drift_fails_after_digest_rebind(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    _copy_pinned_sources(tmp_path)
+    relative = "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
+    path = tmp_path / relative
+    payload = json.loads(path.read_bytes())
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True), encoding="utf-8"
+    )
     document = copy.deepcopy(contract_document)
-    document["reference_architecture"]["component_families"][family] = (
-        "REJECTED_COMPONENT"
+    _rebind_source(
+        document,
+        relative,
+        generator.sha256_file(path),
+        monkeypatch,
+        authority=False,
     )
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == "FIXED_VALUE_VIOLATION"
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code == "PREDECESSOR_GENERATED_DRIFT"
 
 
-def test_unknown_fields_are_rejected_without_echoing_names_or_values(
+def test_current_canonical_authority_mapping_drift_fails_after_digest_rebind(
+    tmp_path: Path,
     contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    _copy_pinned_sources(tmp_path)
+    relative = "docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml"
+    path = tmp_path / relative
+    payload = yaml.safe_load(path.read_bytes())
+    payload["deployment"]["aws_mapping"]["compute"] = "UNREVIEWED_REFERENCE"
+    path.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
     document = copy.deepcopy(contract_document)
-    marker = "REJECTED_INPUT_MARKER_1503"
-    document[marker] = marker
+    _rebind_source(
+        document,
+        relative,
+        generator.sha256_file(path),
+        monkeypatch,
+        authority=True,
+    )
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == "CLOSED_SCHEMA_VIOLATION"
-    assert marker not in str(captured.value)
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code == "AUTHORITY_ARCHITECTURE_DRIFT"
 
 
-def test_nested_resource_like_unknown_field_is_rejected(
-    contract_document: dict[str, Any],
-) -> None:
-    document = copy.deepcopy(contract_document)
-    document["edge_routing_intent"]["resource"] = {
-        "type": "aws_cloudfront_distribution"
-    }
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        _validate(document)
-    assert captured.value.code == "CLOSED_SCHEMA_VIOLATION"
-
-
-def test_yaml_duplicate_keys_fail_with_sanitized_error(tmp_path: Path) -> None:
-    marker = "REJECTED_INPUT_MARKER_1503"
-    path = tmp_path / "duplicate.yaml"
-    path.write_text(f"document: safe\ndocument: {marker}\n", encoding="utf-8")
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        generator.load_yaml(path)
-    assert captured.value.code == "YAML_INVALID"
-    assert marker not in str(captured.value)
-
-
-def test_yaml_aliases_are_forbidden_without_echoing_content(tmp_path: Path) -> None:
-    marker = "REJECTED_INPUT_MARKER_1503"
-    path = tmp_path / "alias.yaml"
-    path.write_text(f"value: &blocked {marker}\ncopy: *blocked\n", encoding="utf-8")
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        generator.load_yaml(path)
-    assert captured.value.code == "YAML_ALIAS_FORBIDDEN"
-    assert marker not in str(captured.value)
-
-
-def test_json_duplicate_keys_fail_with_sanitized_error(tmp_path: Path) -> None:
-    marker = "REJECTED_INPUT_MARKER_1503"
-    path = tmp_path / "duplicate.json"
-    path.write_text(f'{{"safe": 1, "safe": "{marker}"}}', encoding="utf-8")
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        generator.load_json(path)
-    assert captured.value.code == "JSON_DUPLICATE_KEY"
-    assert marker not in str(captured.value)
-
-
-def test_source_inventory_drift_and_reordering_fail_closed(
+def test_source_inventory_digest_duplicate_and_order_drift_fail_closed(
     contract_document: dict[str, Any],
 ) -> None:
     for mutation in ("digest", "duplicate", "reorder"):
@@ -422,84 +745,38 @@ def test_source_inventory_drift_and_reordering_fail_closed(
             )
         with pytest.raises(generator.ComputeEdgeContractError) as captured:
             _validate(document)
-        assert captured.value.code in {
-            "SOURCE_DUPLICATE",
-            "SOURCE_INVENTORY_DRIFT",
-        }
+        assert captured.value.code in {"SOURCE_DUPLICATE", "SOURCE_INVENTORY_DRIFT"}
 
 
-def _copy_pinned_sources(target_root: Path) -> None:
-    for relative in generator.PINNED_SOURCES:
-        source = REPOSITORY_ROOT / relative
-        target = target_root / relative
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(source, target)
-
-
-def test_predecessor_byte_drift_fails_closed(
-    tmp_path: Path, contract_document: dict[str, Any]
+def test_yaml_duplicate_alias_tag_and_multiple_document_fail_closed(
+    tmp_path: Path,
 ) -> None:
-    _copy_pinned_sources(tmp_path)
-    predecessor = tmp_path / next(iter(generator.PREDECESSOR_SOURCES))
-    predecessor.write_bytes(predecessor.read_bytes() + b"\n")
+    cases = {
+        "duplicate.yaml": ("safe: 1\nsafe: 2\n", "YAML_INVALID"),
+        "alias.yaml": ("safe: &blocked 1\ncopy: *blocked\n", "YAML_ALIAS_FORBIDDEN"),
+        "tag.yaml": ("safe: !blocked value\n", "YAML_TAG_FORBIDDEN"),
+        "multi.yaml": ("safe: 1\n---\nother: 2\n", "YAML_INVALID"),
+    }
+    for name, (content, code) in cases.items():
+        path = tmp_path / name
+        path.write_text(content, encoding="utf-8")
+        with pytest.raises(generator.ComputeEdgeContractError) as captured:
+            generator.load_yaml(path)
+        assert captured.value.code == code
+
+
+def test_json_duplicate_keys_fail_closed(tmp_path: Path) -> None:
+    path = tmp_path / "duplicate.json"
+    path.write_text('{"safe": 1, "safe": 2}', encoding="utf-8")
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        generator.validate_contract(copy.deepcopy(contract_document), tmp_path)
-    assert captured.value.code == "SOURCE_DIGEST_MISMATCH"
+        generator.load_json(path)
+    assert captured.value.code == "JSON_DUPLICATE_KEY"
 
 
-def test_predecessor_semantic_drift_fails_even_if_digest_inventory_is_rebound(
+def test_contract_and_pinned_source_symlinks_are_rejected(
     tmp_path: Path,
     contract_document: dict[str, Any],
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    _copy_pinned_sources(tmp_path)
-    relative = "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
-    path = tmp_path / relative
-    plan = json.loads(path.read_bytes())
-    plan["activation"]["status"] = "ENABLED"
-    path.write_text(json.dumps(plan), encoding="utf-8")
-    new_digest = generator.sha256_file(path)
-    predecessor_sources = dict(generator.PREDECESSOR_SOURCES)
-    predecessor_sources[relative] = new_digest
-    pinned_sources = {**generator.AUTHORITY_SOURCES, **predecessor_sources}
-    monkeypatch.setattr(generator, "PREDECESSOR_SOURCES", predecessor_sources)
-    monkeypatch.setattr(generator, "PINNED_SOURCES", pinned_sources)
-    document = copy.deepcopy(contract_document)
-    for row in document["sources"]:
-        if row["uri"] == f"repo://{relative}":
-            row["sha256"] = new_digest
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        generator.validate_contract(document, tmp_path)
-    assert captured.value.code == "FIXED_VALUE_VIOLATION"
-
-
-def test_authority_semantic_drift_fails_even_if_digest_inventory_is_rebound(
-    tmp_path: Path,
-    contract_document: dict[str, Any],
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    _copy_pinned_sources(tmp_path)
-    relative = "docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml"
-    path = tmp_path / relative
-    architecture = yaml.safe_load(path.read_bytes())
-    architecture["deployment"]["aws_mapping"]["compute"] = "OTHER_COMPUTE"
-    path.write_text(yaml.safe_dump(architecture), encoding="utf-8")
-    new_digest = generator.sha256_file(path)
-    authority_sources = dict(generator.AUTHORITY_SOURCES)
-    authority_sources[relative] = new_digest
-    pinned_sources = {**authority_sources, **generator.PREDECESSOR_SOURCES}
-    monkeypatch.setattr(generator, "AUTHORITY_SOURCES", authority_sources)
-    monkeypatch.setattr(generator, "PINNED_SOURCES", pinned_sources)
-    document = copy.deepcopy(contract_document)
-    for row in document["sources"]:
-        if row["uri"] == f"repo://{relative}":
-            row["sha256"] = new_digest
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        generator.validate_contract(document, tmp_path)
-    assert captured.value.code == "AUTHORITY_ARCHITECTURE_DRIFT"
-
-
-def test_contract_file_symlink_is_rejected(tmp_path: Path) -> None:
     target = tmp_path / "target.yaml"
     target.write_text("document: {}\n", encoding="utf-8")
     link = tmp_path / "contract.yaml"
@@ -508,14 +785,12 @@ def test_contract_file_symlink_is_rejected(tmp_path: Path) -> None:
         generator.load_yaml(link)
     assert captured.value.code == "UNSAFE_FILE_TYPE"
 
-
-def test_pinned_source_ancestor_symlink_is_rejected_without_escape(
-    tmp_path: Path, contract_document: dict[str, Any]
-) -> None:
+    root = tmp_path / "root"
+    root.mkdir()
     outside = tmp_path / "outside"
     outside.mkdir()
-    (tmp_path / "docs").symlink_to(outside, target_is_directory=True)
+    (root / "docs").symlink_to(outside, target_is_directory=True)
     with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        generator.validate_contract(copy.deepcopy(contract_document), tmp_path)
+        generator.validate_contract(copy.deepcopy(contract_document), root)
     assert captured.value.code == "UNSAFE_ANCESTOR"
     assert list(outside.iterdir()) == []

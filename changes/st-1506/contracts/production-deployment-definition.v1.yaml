@@ -1,6 +1,6 @@
 document:
   id: RAOS-PRODUCTION-DEPLOYMENT-DEFINITION-001
-  version: 1.0.0
+  version: 1.2.0
   story_id: ST-1506
   status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
   classification: SOURCE_DERIVED_NON_EXECUTABLE_PRODUCTION_DEPLOYMENT_DEFINITION
@@ -45,99 +45,385 @@ sources:
   - uri: repo://docs/canonical/05_test/RAOS_11_release_evidence_template_v1.0.yaml
     sha256: 3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
-  - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
-    sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
-  - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
-    sha256: 33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f
+    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
+  - uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
+    sha256: 5dc4ccfaa954b65aaae39a5d899c1c4e7f7d106787780d502514a48c7c13ad5e
+  - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+    sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
+  - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+    sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
+  - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+    sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
+  - uri: repo://scripts/build_st1501_terraform_foundation.py
+    sha256: 8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8
+  - uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
+    sha256: ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5
   - uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-    sha256: ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502
+    sha256: bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041
   - uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
-    sha256: ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41
+    sha256: 84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699
+  - uri: repo://scripts/build_st1502_data_services.py
+    sha256: ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf
+  - uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
+    sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
   - uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-    sha256: 54d60c741c7531b39f09fd90406bdd203985214086f092370b1ebb2ba79d13a3
+    sha256: 07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60
   - uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
-    sha256: 551d11aefa10526054190770467067dd71751f7249d3ddcdd534c0c359f509ed
+    sha256: 62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8
+  - uri: repo://scripts/build_st1503_compute_edge.py
+    sha256: 9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d
+  - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
+    sha256: b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92
+  - uri: repo://changes/st-0107/ruleset-policy.v1.json
+    sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
+  - uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
+    sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
   - uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-    sha256: 58352939268565ede5c6d48682013c3fac1134587d1665f4236f389f0c15527d
+    sha256: c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b
   - uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
-    sha256: 6774c1e2553df4e1f3e7a85dc122b2462ddb575503a7c03b4ec8d9e18baecfbc
-predecessor_binding:
-  story_id: ST-1505
-  contract_uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
-  contract_sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
-  reference_plan_uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
-  reference_plan_sha256: 33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f
-  required_contract_status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
-  required_contract_non_executable: true
-  required_reference_plan_executable: false
-  required_activation_status: DISABLED
-  required_live_provider_calls: FORBIDDEN
-  required_external_writes: FORBIDDEN
-  required_selected_values: UNSET
-  required_formal_tst_009: NOT_EXECUTED
-  required_formal_tst_022: NOT_EXECUTED
-  required_action_counts:
-    create: 0
-    update: 0
-    delete: 0
-    promote: 0
-    deploy: 0
-    migrate: 0
-    smoke: 0
-    browser: 0
-    rollback: 0
-    production: 0
-  transitive_predecessor_bindings:
-    data_services:
-      story_id: ST-1502
-      contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-      contract_sha256: ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502
-      reference_plan_uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
-      reference_plan_sha256: ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41
-      required_contract_non_executable: true
-      required_reference_plan_executable: false
-      required_activation_status: DISABLED
-      required_live_provider_calls: FORBIDDEN
-      required_external_writes: FORBIDDEN
-      required_selected_values: UNSET
-      required_planned_actions:
-        create: 0
-        update: 0
-        delete: 0
-    compute_edge:
-      story_id: ST-1503
-      contract_uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-      contract_sha256: 54d60c741c7531b39f09fd90406bdd203985214086f092370b1ebb2ba79d13a3
-      reference_plan_uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
-      reference_plan_sha256: 551d11aefa10526054190770467067dd71751f7249d3ddcdd534c0c359f509ed
-      required_contract_non_executable: true
-      required_reference_plan_executable: false
-      required_activation_status: DISABLED
-      required_live_provider_calls: FORBIDDEN
-      required_external_writes: FORBIDDEN
-      required_selected_values: UNSET
-      required_planned_actions:
-        create: 0
-        update: 0
-        delete: 0
-    deployment_identity:
-      story_id: ST-1504
-      contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-      contract_sha256: 58352939268565ede5c6d48682013c3fac1134587d1665f4236f389f0c15527d
-      reference_plan_uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
-      reference_plan_sha256: 6774c1e2553df4e1f3e7a85dc122b2462ddb575503a7c03b4ec8d9e18baecfbc
-      required_contract_non_executable: true
-      required_reference_plan_executable: false
-      required_activation_status: DISABLED
-      required_live_provider_calls: FORBIDDEN
-      required_external_writes: FORBIDDEN
-      required_credential_issuance: FORBIDDEN
-      required_selected_values: UNSET
-      required_planned_actions:
-        create: 0
-        update: 0
-        delete: 0
+    sha256: 1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4
+  - uri: repo://scripts/build_st1504_github_oidc.py
+    sha256: 996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f
+  - uri: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
+    sha256: 5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5
+  - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
+    sha256: b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b
+  - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
+    sha256: 8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4
+  - uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+predecessor_bindings:
+  foundation:
+    story_id: ST-1501
+    owner_generator_uri: repo://scripts/build_st1501_terraform_foundation.py
+    owner_generator_sha256: 8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8
+    design_handoff_uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+    design_handoff_sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
+    design_handoff_semantic_sha256: e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722
+    contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+    contract_sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
+    contract_semantic_sha256: dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080
+    reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+    reference_plan_sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
+    reference_plan_semantic_sha256: 8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7
+    required_provider_policy: STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION
+    required_admission_status: NOT_EVALUATED
+    required_eligible: false
+    required_complete_mapping: false
+    required_selected_values: UNSET
+    required_activation_status: DISABLED
+    required_network_access: FORBIDDEN
+    required_credential_access: FORBIDDEN
+    required_live_provider_calls: FORBIDDEN
+    required_external_writes: FORBIDDEN
+    required_reference_plan_executable: false
+    required_action_counts:
+      create: 0
+      update: 0
+      delete: 0
+  data_services:
+    story_id: ST-1502
+    owner_generator_uri: repo://scripts/build_st1502_data_services.py
+    owner_generator_sha256: ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf
+    design_handoff_uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
+    design_handoff_sha256: ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5
+    design_handoff_semantic_sha256: fda0d363d17ca4d8197179b74ad0fac23d252fc3a4e7ef0dc66c2c10a7fc3500
+    contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
+    contract_sha256: bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041
+    contract_semantic_sha256: 733d4b6f8c057f3b6d73b413c9ca63b642087005e6f159ae0104a95bf1ff374c
+    reference_plan_uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
+    reference_plan_sha256: 84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699
+    reference_plan_semantic_sha256: 8af68f20679a97fc45c20ed9db15edb704edfa7ce63b03b389437cb3eee91329
+    required_provider_policy: STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION
+    required_admission_status: NOT_EVALUATED
+    required_eligible: false
+    required_complete_mapping: false
+    required_selected_values: UNSET
+    required_activation_status: DISABLED
+    required_network_access: FORBIDDEN
+    required_credential_access: FORBIDDEN
+    required_live_provider_calls: FORBIDDEN
+    required_external_writes: FORBIDDEN
+    required_reference_plan_executable: false
+    required_action_counts:
+      create: 0
+      update: 0
+      delete: 0
+      migrate: 0
+      backup: 0
+      restore: 0
+      redrive: 0
+      rotate: 0
+  compute_edge:
+    story_id: ST-1503
+    owner_generator_uri: repo://scripts/build_st1503_compute_edge.py
+    owner_generator_sha256: 9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d
+    design_handoff_uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
+    design_handoff_sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
+    design_handoff_semantic_sha256: ad5e207a8f201d0ccdff72670a0f1cd7d90ba76f3e52ad7e51db2eb96d0dd707
+    contract_uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
+    contract_sha256: 07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60
+    contract_semantic_sha256: 3d802aa46e08af8241e0feca42ffa7a3d3397a49d4f839cbfef28321cdd52852
+    reference_plan_uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
+    reference_plan_sha256: 62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8
+    reference_plan_semantic_sha256: 8e483d3448213f8fd328241c39029e4ed443a3ffc0df7a358ed0de6870eb074a
+    required_provider_policy: STRICT_PROVIDER_NEUTRAL_COMPUTE_EDGE_CAPABILITY_ADMISSION
+    required_admission_status: NOT_EVALUATED
+    required_eligible: false
+    required_complete_mapping: false
+    required_selected_values: UNSET
+    required_activation_status: DISABLED
+    required_network_access: FORBIDDEN
+    required_credential_access: FORBIDDEN
+    required_live_provider_calls: FORBIDDEN
+    required_external_writes: FORBIDDEN
+    required_reference_plan_executable: false
+    required_action_counts:
+      create: 0
+      update: 0
+      delete: 0
+  deployment_identity:
+    story_id: ST-1504
+    owner_generator_uri: repo://scripts/build_st1504_github_oidc.py
+    owner_generator_sha256: 996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f
+    design_handoff_uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
+    design_handoff_sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
+    design_handoff_semantic_sha256: e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282
+    contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
+    contract_sha256: c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b
+    contract_semantic_sha256: 86c418b07701b4cf47f478b13f7665911ece7c4a46d39edd07f7b6944019a4b7
+    reference_plan_uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
+    reference_plan_sha256: 1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4
+    reference_plan_semantic_sha256: 9fac1776d4b7cd2a89999559036e4c465979d5de0f80ccaff26004e56ade5951
+    required_provider_policy: STRICT_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_CAPABILITY_ADMISSION
+    required_admission_status: NOT_EVALUATED
+    required_eligible: false
+    required_complete_mapping: false
+    required_selected_values: UNSET
+    required_activation_status: DISABLED
+    required_network_access: FORBIDDEN
+    required_credential_access: FORBIDDEN
+    required_live_provider_calls: FORBIDDEN
+    required_external_writes: FORBIDDEN
+    required_credential_issuance: FORBIDDEN
+    required_reference_plan_executable: false
+    required_action_counts:
+      create: 0
+      update: 0
+      delete: 0
+  staging:
+    story_id: ST-1505
+    owner_generator_uri: repo://scripts/build_st1505_staging_deployment.py
+    owner_generator_sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    design_handoff_uri: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
+    design_handoff_sha256: 5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5
+    design_handoff_semantic_sha256: d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448
+    contract_uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
+    contract_sha256: b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b
+    contract_semantic_sha256: 9c5e6c5a8c52e40cb43e7405f95492d75bf0096430566425e0b47b550ade1215
+    reference_plan_uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
+    reference_plan_sha256: 8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4
+    reference_plan_semantic_sha256: f01f3e7618e5ea66419225a5fc8c1d0866d1b09e284b923b04a3f0b279930414
+    required_provider_policy: STRICT_PROVIDER_NEUTRAL_STAGING_CAPABILITY_AND_DEPENDENCY_ADMISSION
+    required_admission_status: NOT_EVALUATED
+    required_eligible: false
+    required_complete_mapping: false
+    required_selected_values: UNSET
+    required_activation_status: DISABLED
+    required_network_access: FORBIDDEN
+    required_credential_access: FORBIDDEN
+    required_live_provider_calls: FORBIDDEN
+    required_external_writes: FORBIDDEN
+    required_reference_plan_executable: false
+    required_action_counts:
+      create: 0
+      update: 0
+      delete: 0
+      build: 0
+      promote: 0
+      approve: 0
+      deploy: 0
+      migrate: 0
+      migration_review: 0
+      smoke: 0
+      security: 0
+      runtime: 0
+      browser: 0
+      transport_security: 0
+      telemetry: 0
+      alert: 0
+      rollback: 0
+      restore: 0
+      release: 0
+      production: 0
+provider_neutral_admission:
+  classification: STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION
+  admission_status: NOT_EVALUATED
+  eligible: false
+  selected_profile_id: null
+  selected_profile_kind: null
+  selected_provider_name: null
+  default_profile_id: null
+  fallback_profile_id: null
+  concrete_alternate_provider_selected: false
+  eligible_profile_kinds:
+    - AWS
+    - OTHER_CLOUD
+    - OWNER_MANAGED_INFRASTRUCTURE
+  dependency_admission_policy:
+    cardinality: EXACTLY_ONE_CURRENT_BINDING_PER_REQUIRED_DEPENDENCY
+    required_dependency_count: 5
+    satisfied_dependency_count: 0
+    complete_dependency_chain: false
+    missing_dependency: REJECT
+    unknown_dependency: REJECT
+    duplicate_dependency: REJECT
+    reordered_dependency: REJECT
+    partial_dependency: REJECT
+    implicit_dependency: REJECT
+    predecessor_completion_only: REJECT
+    provider_label_only: REJECT
+    dependency_shortcut: FORBIDDEN
+  dependency_admission_requirements:
+    - story_id: ST-1501
+      required_policy: STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION
+      current_admission_status: NOT_EVALUATED
+      current_eligible: false
+      selected_profile_id: null
+      selected_provider_name: null
+      evidence_references: []
+      dependency_status: REQUIRED_NOT_SATISFIED
+    - story_id: ST-1502
+      required_policy: STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION
+      current_admission_status: NOT_EVALUATED
+      current_eligible: false
+      selected_profile_id: null
+      selected_provider_name: null
+      evidence_references: []
+      dependency_status: REQUIRED_NOT_SATISFIED
+    - story_id: ST-1503
+      required_policy: STRICT_PROVIDER_NEUTRAL_COMPUTE_EDGE_CAPABILITY_ADMISSION
+      current_admission_status: NOT_EVALUATED
+      current_eligible: false
+      selected_profile_id: null
+      selected_provider_name: null
+      evidence_references: []
+      dependency_status: REQUIRED_NOT_SATISFIED
+    - story_id: ST-1504
+      required_policy: STRICT_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_CAPABILITY_ADMISSION
+      current_admission_status: NOT_EVALUATED
+      current_eligible: false
+      selected_profile_id: null
+      selected_provider_name: null
+      evidence_references: []
+      dependency_status: REQUIRED_NOT_SATISFIED
+    - story_id: ST-1505
+      required_policy: STRICT_PROVIDER_NEUTRAL_STAGING_CAPABILITY_AND_DEPENDENCY_ADMISSION
+      current_admission_status: NOT_EVALUATED
+      current_eligible: false
+      selected_profile_id: null
+      selected_provider_name: null
+      evidence_references: []
+      dependency_status: REQUIRED_NOT_SATISFIED
+  mapping_policy:
+    cardinality: EXACTLY_ONE_PER_REQUIRED_CAPABILITY
+    required_mapping_count: 10
+    configured_mapping_count: 0
+    complete_mapping: false
+    missing_mapping: REJECT
+    unknown_mapping: REJECT
+    duplicate_mapping: REJECT
+    implicit_mapping: REJECT
+    partial_mapping: REJECT
+    provider_label_only: REJECT
+    unmapped_eligibility: FORBIDDEN
+  aws_reference_boundary:
+    canonical_decision_id: INT-DEC-007
+    reference_profile: AWS_TOKYO
+    reference_region_metadata: ap-northeast-1
+    role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
+    default: false
+    implicit_fallback: false
+    selected_binding: false
+    eligibility_shortcut: false
+    admission_requirement: false
+    evidence_substitute: false
+  predecessor_reference_boundary:
+    st_1501_through_st_1505: CURRENT_PROVIDER_NEUTRAL_DEPENDENCY_CONTRACTS
+    mandatory_provider_neutral_semantics: true
+    complete_capability_and_evidence_chain_required: true
+    provider_selection_authority: NONE
+    eligibility_shortcut: FORBIDDEN
+    evidence_substitute: false
+  evidence_equivalence_policy:
+    dependency_chain_evidence: REQUIRED_NOT_CONFIGURED
+    capability_evidence: REQUIRED_NOT_CONFIGURED
+    security_evidence: REQUIRED_NOT_CONFIGURED
+    operations_evidence: REQUIRED_NOT_CONFIGURED
+    release_evidence: REQUIRED_NOT_CONFIGURED
+    independent_migration_review_evidence: REQUIRED_NOT_CONFIGURED
+    transport_security_evidence: REQUIRED_NOT_CONFIGURED
+    backup_restore_evidence: REQUIRED_NOT_CONFIGURED
+    region_and_data_residency_evidence: REQUIRED_NOT_CONFIGURED
+    same_requirements_for_all_profile_kinds: true
+    provider_label_as_evidence: FORBIDDEN
+    reference_metadata_as_evidence: FORBIDDEN
+    partial_predecessor_chain_as_evidence: FORBIDDEN
+    predecessor_completion_as_evidence: FORBIDDEN
+    local_test_as_live_evidence: FORBIDDEN
+  capability_mapping_requirements:
+    - capability_id: workload_runtime
+      required_outcome: PORTABLE_WEB_API_WORKER_SCHEDULER_WORKLOAD_RUNTIME
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: relational_persistence
+      required_outcome: POSTGRESQL_COMPATIBLE_TRANSACTIONAL_PERSISTENCE_AND_MIGRATION_CONTROLS
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: immutable_object_storage
+      required_outcome: S3_COMPATIBLE_VERSIONED_AND_IMMUTABLE_WHERE_DATA_CONTRACT_REQUIRES
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: asynchronous_queue
+      required_outcome: AT_LEAST_ONCE_WITH_DLQ_AND_IDEMPOTENT_CONSUMERS
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: public_edge
+      required_outcome: DNS_TLS_WAF_AND_PUBLIC_ADMIN_INTERNAL_ISOLATION
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: workload_identity_and_secrets
+      required_outcome: LEAST_PRIVILEGE_WORKLOAD_IDENTITY_AND_AUDITED_SECRET_DELIVERY
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: telemetry_and_alerting
+      required_outcome: TRACES_METRICS_LOGS_RELEASE_MARKERS_ALERTS_AND_NOTIFICATION_ROUTING
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: backup_and_restore
+      required_outcome: PITR_SNAPSHOTS_OBJECT_VERSION_RESTORE_DRILL_AND_INTEGRITY_VERIFICATION
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: deployment_and_release
+      required_outcome: IMMUTABLE_PROMOTION_MIGRATION_CANARY_OBSERVE_ROLLBACK_AND_HUMAN_RELEASE
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: region_and_data_residency
+      required_outcome: EXPLICIT_PRIMARY_BACKUP_LOCATION_AND_DATA_RESIDENCY_EVIDENCE
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
 open_decision_defaults:
   production_budget:
     decision_id: OD-009
@@ -298,6 +584,9 @@ protected_environment_intent:
 migration_intent:
   classification: DECLARATIVE_COMPATIBILITY_REQUIREMENTS_ONLY
   strategy: EXPAND_MIGRATE_CONTRACT
+  migration_owner_assignment: REQUIRED_NOT_CONFIGURED
+  independent_migration_review: REQUIRED_NOT_CONFIGURED
+  independent_migration_approval: REQUIRED_NOT_CONFIGURED
   compatibility_gate: REQUIRED_NOT_CONFIGURED
   backward_compatibility: REQUIRED_NOT_CONFIGURED
   forward_compatibility: REQUIRED_NOT_CONFIGURED
@@ -305,11 +594,32 @@ migration_intent:
   lock_duration_measurement: REQUIRED_NOT_CONFIGURED
   rollback_compatibility: REQUIRED_NOT_CONFIGURED
   execution: FORBIDDEN
+  migration_self_approval: FORBIDDEN
+  migration_review_bypass: FORBIDDEN
   destructive_change: FORBIDDEN
   contract_before_expand: FORBIDDEN
   direct_ddl: FORBIDDEN
   down_migration_primary_recovery: FORBIDDEN
   external_api_during_migration: FORBIDDEN
+transport_security_intent:
+  classification: DECLARATIVE_PROVIDER_NEUTRAL_CROSS_CAPABILITY_TRANSPORT_SECURITY_GATES_ONLY
+  all_production_network_flows: REQUIRED_NOT_CONFIGURED
+  artifact_and_promotion_transport: REQUIRED_NOT_CONFIGURED
+  identity_federation_transport: REQUIRED_NOT_CONFIGURED
+  deployment_control_transport: REQUIRED_NOT_CONFIGURED
+  migration_transport: REQUIRED_NOT_CONFIGURED
+  canary_and_runtime_transport: REQUIRED_NOT_CONFIGURED
+  telemetry_and_alert_transport: REQUIRED_NOT_CONFIGURED
+  rollback_and_restore_transport: REQUIRED_NOT_CONFIGURED
+  infrastructure_provider_transport: REQUIRED_NOT_CONFIGURED
+  authenticated_encryption: REQUIRED_NOT_CONFIGURED
+  certificate_identity_and_hostname_verification: REQUIRED_NOT_CONFIGURED
+  downgrade_resistance: REQUIRED_NOT_CONFIGURED
+  approved_protocol_and_cipher_policy: REQUIRED_NOT_CONFIGURED
+  plaintext_transport: FORBIDDEN
+  insecure_skip_verification: FORBIDDEN
+  provider_managed_label_as_evidence: FORBIDDEN
+  local_fixture_as_transport_evidence: FORBIDDEN
 canary_intent:
   classification: LOGICAL_CANARY_REQUIREMENTS_ONLY
   configuration: REQUIRED_NOT_CONFIGURED
@@ -358,6 +668,24 @@ rollback_intent:
   pitr_for_ordinary_application_error: FORBIDDEN
   destructive_reversal: FORBIDDEN
 logical_phases:
+  - name: PREDECESSOR_DEPENDENCY_ADMISSION_GATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    action: FORBIDDEN
+    auto_advance: FORBIDDEN
+    action_count: 0
+  - name: INDEPENDENT_MIGRATION_REVIEW_GATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    action: FORBIDDEN
+    auto_advance: FORBIDDEN
+    action_count: 0
+  - name: TRANSPORT_SECURITY_GATE
+    status: DISABLED
+    execution_status: NOT_EXECUTED
+    action: FORBIDDEN
+    auto_advance: FORBIDDEN
+    action_count: 0
   - name: CANARY
     status: DISABLED
     execution_status: NOT_EXECUTED
@@ -386,20 +714,27 @@ execution_boundary:
   live_provider_calls: FORBIDDEN
   external_writes: FORBIDDEN
   github_action: FORBIDDEN
+  provider_action: FORBIDDEN
   aws_action: FORBIDDEN
   iam_action: FORBIDDEN
+  staging_action: FORBIDDEN
   deploy_action: FORBIDDEN
+  migration_review_action: FORBIDDEN
+  transport_security_action: FORBIDDEN
   release_action: FORBIDDEN
   production_action: FORBIDDEN
   operations:
     create: FORBIDDEN
     update: FORBIDDEN
     delete: FORBIDDEN
+    dependency_admission: FORBIDDEN
     promote: FORBIDDEN
     deploy: FORBIDDEN
     migrate: FORBIDDEN
+    migration_review: FORBIDDEN
     traffic: FORBIDDEN
     canary: FORBIDDEN
+    transport_security: FORBIDDEN
     rollback: FORBIDDEN
     release: FORBIDDEN
     status: FORBIDDEN
@@ -407,11 +742,14 @@ execution_boundary:
     create: 0
     update: 0
     delete: 0
+    dependency_admission: 0
     promote: 0
     deploy: 0
     migrate: 0
+    migration_review: 0
     traffic: 0
     canary: 0
+    transport_security: 0
     rollback: 0
     release: 0
     status: 0
@@ -428,6 +766,8 @@ evidence_boundary:
   immutable_gate_report: ABSENT
   immutable_security_approval: ABSENT
   immutable_operations_approval: ABSENT
+  predecessor_dependency_admission: NOT_EXECUTED
+  production_profile_admission: NOT_EXECUTED
   predecessor_formal_tst_009: NOT_EXECUTED
   predecessor_formal_tst_022: NOT_EXECUTED
   formal_tst_032: NOT_EXECUTED
@@ -435,6 +775,8 @@ evidence_boundary:
   staging: NOT_EXECUTED
   live_provider: NOT_EXECUTED
   migration: NOT_EXECUTED
+  independent_migration_review: NOT_EXECUTED
+  transport_security: NOT_EXECUTED
   smoke: NOT_EXECUTED
   canary: NOT_EXECUTED
   rollback: NOT_EXECUTED

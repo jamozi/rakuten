@@ -43,7 +43,7 @@ SOURCE_PATHS: Final = (CONTRACT_PATH, README_PATH, GENERATOR_PATH, *TEST_PATHS)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
@@ -148,15 +148,15 @@ AUTHORITY_ARTIFACTS: Final = (
 REFERENCE_INPUT_ARTIFACTS: Final = (
     (
         ST0308_CONTRACT_PATH,
-        "b5e39f13e7d53dda907bf23237f9d8730806d3e5a400349585deb8472df462ee",
+        "98a5b51b8098dcdd2993fb6eb2a5bdae98087f5a46da696fd79a41bd33d9f4a9",
     ),
     (
         ST0308_PLAN_PATH,
-        "0423fb07b068d47b8c56c1c5c0703a424ae1ec6d116e68a73ad4ff17d3dbd494",
+        "290a0475fbf9e1996eba989e15344bd9974bb08053ab8def0fd35246b3636305",
     ),
     (
         ST0308_MANIFEST_PATH,
-        "8cbd9c916de87731f9ecc55c9262702b88eecc483771b4bd1d6a213b1774b7c2",
+        "b38e8de274b95edd2950850e3eea8f4a3d2e51e8624fa5626dcf16ea5638425d",
     ),
     (
         ST0305_CONTRACT_PATH,

@@ -33,11 +33,11 @@ predecessors:
   - path: changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
     sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
   - path: changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
-    sha256: 09dfe62f6afbd5c531a96c22330fa920356abf614f0230ec2a6ff19c6ba1b157
+    sha256: 2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944
   - path: changes/st-0602/manifest.yaml
-    sha256: 695cd282f3e4051e5e4012c5e38ca5ba68d9ede32c38edd7cbcd05a3ba89129e
+    sha256: b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42
   - path: scripts/build_st0602_fact_extraction_validation_reference_plan.py
-    sha256: 6ff038c9c2e06a6bef6b8fb2520ad5d62b9107bf80a77adcb0dd1811d399bd17
+    sha256: fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf
   - path: tests/st0602/conftest.py
     sha256: 8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9
   - path: tests/st0602/test_contract.py
@@ -60,13 +60,13 @@ predecessors:
   - path: changes/st-0603/README.md
     sha256: 87398b8122d9ef365a073159dd65258488cc1482163ea7449504dccdb11887fb
   - path: changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml
-    sha256: 65b9fb2a8bf95a3d983d88516fa00a917e4d329bd5ea60436c991e3846c8bec0
+    sha256: 51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07
   - path: changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json
-    sha256: 38db6d2622627b8d430d481b91ddd0cea943a82092d2086a086ca7c45a96e049
+    sha256: 755f88f9084717f85b644f6b4f9904a3ac3d71b36dfeae9cf34de2104e0518a5
   - path: changes/st-0603/manifest.yaml
-    sha256: 899383911718c8be82b852743b946ac96bb4ffcdd98d4a9aae8c97e4e6a86fef
+    sha256: a418addb612aec85c79213dda71b82ae8e3a40285d48399683d0e40cc5586ad7
   - path: scripts/build_st0603_fact_conflict_review_reference_plan.py
-    sha256: 30a95f43624f749cc4ef526ba91b03b54378e43ef18d896cdce582e6b58a8f80
+    sha256: 5b52c2790b48a39e04853144f34f48edac2775edfc118bc19586b7887943f341
   - path: tests/st0603/conftest.py
     sha256: b0041b91eac50acd6ba109e7218b24886197619130b2ddf5e803e84a5311f977
   - path: tests/st0603/test_contract.py

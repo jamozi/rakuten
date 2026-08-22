@@ -1,4 +1,4 @@
-"""Positive contract and reference-plan semantics for ST-1502."""
+"""Positive provider-neutral contract and reference-plan semantics for ST-1502."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ def test_contract_loads_as_closed_interface_only_model(
 ) -> None:
     assert data_services_model.contract["document"] == {
         "id": "RAOS-DATA-SERVICES-FOUNDATION-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1502",
         "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
         "formal_verification": "NOT_EXECUTED",
@@ -30,169 +30,260 @@ def test_contract_loads_as_closed_interface_only_model(
     assert set(data_services_model.contract) == generator.TOP_LEVEL_KEYS
 
 
-def test_predecessor_is_hash_bound_and_fail_closed(
+def test_direct_handoff_and_predecessor_are_hash_bound(
     data_services_model: generator.DataServicesModel,
 ) -> None:
+    sources = data_services_model.contract["sources"]
+    assert isinstance(sources, list)
+    assert {row["uri"]: row["sha256"] for row in sources if isinstance(row, dict)} == {
+        f"repo://{path}": digest for path, digest in generator.PINNED_SOURCES.items()
+    }
     binding = data_services_model.contract["predecessor_binding"]
     assert binding == generator.EXPECTED_SECTIONS["predecessor_binding"]
+    assert binding["required_provider_policy"] == (
+        "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION"
+    )
+    assert binding["required_admission_status"] == "NOT_EVALUATED"
+    assert binding["required_eligible"] is False
     assert binding["required_activation_status"] == "DISABLED"
     assert binding["required_resource_payloads"] == "FORBIDDEN"
-    assert binding["required_planned_actions"] == {
-        "create": 0,
-        "update": 0,
-        "delete": 0,
-    }
 
 
-def test_reference_metadata_does_not_select_a_real_configuration(
+def test_aws_is_current_canonical_reference_architecture_only(
     data_services_model: generator.DataServicesModel,
 ) -> None:
     plan = generator.reference_plan_document(data_services_model)
-    assert plan["reference_architecture"] == {
-        "cloud": "AWS",
-        "region": "ap-northeast-1",
-        "classification": "INHERITED_REFERENCE_METADATA_ONLY",
-        "portable_core_required": True,
+    reference = _mapping(plan["reference_architecture"])
+    assert reference == generator.EXPECTED_SECTIONS["reference_architecture"]
+    assert reference["cloud"] == "AWS"
+    assert reference["inherited_from"] == "INT-DEC-007"
+    assert reference["classification"] == (
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    )
+    assert reference["service_mappings"] == generator._aws_reference_service_mappings()
+    for field in (
+        "default",
+        "implicit_fallback",
+        "selected_binding",
+        "eligibility_shortcut",
+        "admission_requirement",
+        "evidence_substitute",
+    ):
+        assert reference[field] is False
+
+    admission = _mapping(plan["provider_neutral_data_services_admission"])
+    assert admission["aws_reference_boundary"]["canonical_story_deliverables"] == (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    )
+    assert (
+        admission["aws_reference_boundary"]["non_aws_owner_managed_profiles"]
+        == "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+    )
+
+
+def test_no_provider_service_or_profile_is_selected_or_defaulted(
+    data_services_model: generator.DataServicesModel,
+) -> None:
+    plan = generator.reference_plan_document(data_services_model)
+    admission = _mapping(plan["provider_neutral_data_services_admission"])
+    assert admission["admission_status"] == "NOT_EVALUATED"
+    assert admission["eligible"] is False
+    for field in (
+        "selected_profile_id",
+        "selected_profile_kind",
+        "selected_provider_name",
+        "default_profile_id",
+        "fallback_profile_id",
+    ):
+        assert admission[field] is None
+    assert admission["concrete_alternate_provider_selected"] is False
+    assert admission["cross_capability_security_policy"] == {
+        "transport_encryption": "REQUIRED_FOR_ALL_DATA_SERVICE_INTERACTIONS",
+        "encryption_at_rest": "REQUIRED_FOR_ALL_PERSISTED_DATA",
+        "selected_exceptions": [],
     }
-    selection = plan["selected_configuration"]
-    assert isinstance(selection, dict)
-    for value in selection.values():
-        assert value is None or value == []
+    for binding_name in generator.DATA_SERVICE_BINDING_NAMES:
+        assert admission["binding_policy"][binding_name] == {
+            "selected": None,
+            "default": None,
+            "fallback": None,
+        }
+    selection = _mapping(plan["selected_configuration"])
+    assert all(value is None or value == [] for value in selection.values())
 
 
-def test_rds_is_private_logical_postgresql_with_every_real_value_unset(
+def test_complete_exact_capability_mapping_is_required_before_eligibility(
+    data_services_model: generator.DataServicesModel,
+) -> None:
+    admission = _mapping(
+        generator.reference_plan_document(data_services_model)[
+            "provider_neutral_data_services_admission"
+        ]
+    )
+    policy = admission["mapping_policy"]
+    assert policy["required_mapping_mode"] == "EXACTLY_ONE_PER_REQUIRED_CAPABILITY"
+    assert policy["required_capability_count"] == len(
+        generator.DATA_SERVICE_CAPABILITY_OUTCOMES
+    )
+    assert policy["configured_mapping_count"] == 0
+    assert policy["complete_mapping"] is False
+    for field in (
+        "missing_mapping",
+        "unknown_mapping",
+        "duplicate_mapping",
+        "implicit_mapping",
+        "partial_mapping",
+        "provider_label_only_mapping",
+        "service_label_only_mapping",
+        "reference_only_mapping",
+    ):
+        assert policy[field] == "REJECT"
+    rows = admission["capability_mapping_requirements"]
+    assert [row["capability_id"] for row in rows] == [
+        capability_id
+        for capability_id, _required_outcome in generator.DATA_SERVICE_CAPABILITY_OUTCOMES
+    ]
+    assert [row["required_outcome"] for row in rows] == [
+        required_outcome
+        for _capability_id, required_outcome in generator.DATA_SERVICE_CAPABILITY_OUTCOMES
+    ]
+    assert all(
+        row["selected_mapping"] is None
+        and row["evidence_refs"] == []
+        and row["mapping_status"] == "REQUIRED_NOT_CONFIGURED"
+        for row in rows
+    )
+
+
+def test_relational_object_and_queue_intents_are_provider_neutral_and_safe(
     data_services_model: generator.DataServicesModel,
 ) -> None:
     services = _mapping(
         generator.reference_plan_document(data_services_model)["logical_data_services"]
     )
-    rds = _mapping(services["rds"])
-    assert rds["service"] == "PostgreSQL"
-    assert rds["classification"] == "LOGICAL_SERVICE_INTENT_ONLY"
-    assert rds["private_only"] == "REQUIRED"
-    assert rds["publicly_accessible"] is False
-    assert {
-        rds["encryption_at_rest"],
-        rds["backup"],
-        rds["point_in_time_recovery"],
-        rds["deletion_protection"],
-        rds["final_snapshot"],
-    } == {"REQUIRED_NOT_CONFIGURED"}
-    assert rds["restore_test"] == "REQUIRED_NOT_EXECUTED"
-    assert all(value is None or value == [] for value in rds["selected"].values())
-
-
-def test_s3_roles_and_non_destructive_requirements_are_exact(
-    data_services_model: generator.DataServicesModel,
-) -> None:
-    services = _mapping(
-        generator.reference_plan_document(data_services_model)["logical_data_services"]
+    relational = _mapping(services["relational_persistence"])
+    assert relational["service_contract"] == (
+        "POSTGRESQL_COMPATIBLE_RELATIONAL_PERSISTENCE"
     )
-    s3 = _mapping(services["s3"])
-    assert [row["role"] for row in s3["roles"]] == list(generator.BUCKET_ROLES)
-    assert all(row["physical_name"] is None for row in s3["roles"])
-    assert all(row["arn"] is None for row in s3["roles"])
-    assert s3["public_access_block"] == "REQUIRED"
-    assert s3["encryption_at_rest"] == "REQUIRED_NOT_CONFIGURED"
-    assert s3["versioning"] == "REQUIRED_NOT_CONFIGURED"
-    assert s3["force_destroy"] == "FORBIDDEN"
-    assert s3["lifecycle_deletion"] == "FORBIDDEN"
-    assert s3["automatic_deletion"] == "FORBIDDEN"
-    assert s3["retention_days"] is None
-    assert s3["lifecycle_rules"] == []
-    raw = s3["roles"][0]
-    assert raw["immutability"] == "REQUIRED_NOT_CONFIGURED"
-    assert raw["integrity_metadata"] == "REQUIRED_NOT_CONFIGURED"
-    assert raw["deletion_role_separation"] == "REQUIRED_NOT_CONFIGURED"
-
-
-def test_every_canonical_queue_class_requires_dlq_and_separated_roles(
-    data_services_model: generator.DataServicesModel,
-) -> None:
-    services = _mapping(
-        generator.reference_plan_document(data_services_model)["logical_data_services"]
+    assert relational["private_only"] == "REQUIRED"
+    assert relational["publicly_accessible"] is False
+    assert relational["transport_encryption"] == "REQUIRED_NOT_CONFIGURED"
+    assert relational["migration_framework_compatibility"] == (
+        "REQUIRED_NOT_CONFIGURED"
     )
-    queues_value = _mapping(services["sqs"])["classes"]
-    assert isinstance(queues_value, list)
-    queues = cast(list[dict[str, Any]], queues_value)
-    assert [row["class"] for row in queues] == list(generator.QUEUE_CLASSES)
-    for row in queues:
+    assert relational["restore_test"] == "REQUIRED_NOT_EXECUTED"
+    assert all(
+        value is None or value == [] for value in relational["selected"].values()
+    )
+
+    storage = _mapping(services["object_storage"])
+    assert storage["service_contract"] == "PRIVATE_VERSIONED_OBJECT_STORAGE"
+    assert [row["role"] for row in storage["roles"]] == list(generator.BUCKET_ROLES)
+    assert all(row["physical_name"] is None for row in storage["roles"])
+    assert all(row["resource_identifier"] is None for row in storage["roles"])
+    assert storage["public_access"] == "FORBIDDEN"
+    assert storage["transport_encryption"] == "REQUIRED_NOT_CONFIGURED"
+    assert storage["force_destroy"] == "FORBIDDEN"
+    assert storage["automatic_deletion"] == "FORBIDDEN"
+    assert storage["retention_days"] is None
+    assert storage["roles"][0]["immutability"] == "REQUIRED_NOT_CONFIGURED"
+
+    queue = _mapping(services["queue"])
+    assert queue["delivery_semantics"] == "AT_LEAST_ONCE_REQUIRED_NOT_CONFIGURED"
+    assert queue["duplicate_delivery"] == "EXPECTED"
+    assert queue["consumer_idempotency"] == "REQUIRED_NOT_CONFIGURED"
+    assert queue["transport_encryption"] == "REQUIRED_NOT_CONFIGURED"
+    assert [row["class"] for row in queue["classes"]] == list(generator.QUEUE_CLASSES)
+    for row in queue["classes"]:
         assert row["dlq"] == "REQUIRED_NOT_CONFIGURED"
-        assert row["producer_consumer_separation"] == "REQUIRED_NOT_CONFIGURED"
-        assert row["redrive_role_separation"] == "REQUIRED_NOT_CONFIGURED"
+        assert row["redrive_control"] == "REQUIRED_NOT_CONFIGURED"
         assert all(value is None for value in row["selected"].values())
 
 
-def test_secrets_and_kms_are_metadata_only_without_identifiers_or_policies(
+def test_secret_key_recovery_observability_and_residency_boundaries_are_exact(
     data_services_model: generator.DataServicesModel,
 ) -> None:
     services = _mapping(
         generator.reference_plan_document(data_services_model)["logical_data_services"]
     )
-    secrets = _mapping(services["secrets_manager"])
-    assert secrets == generator.EXPECTED_SECTIONS["secrets_manager_intent"]
-    kms = _mapping(services["kms"])
-    assert kms == generator.EXPECTED_SECTIONS["kms_intent"]
-    assert secrets["secret_values"] == "ABSENT"
-    assert secrets["secret_names"] == []
-    assert secrets["secret_arns"] == []
-    assert kms["key_ids"] == []
-    assert kms["key_arns"] == []
-    assert kms["aliases"] == []
-    assert kms["policy_document"] is None
-    assert kms["deletion_window_days"] is None
-    assert kms["key_deletion"] == "FORBIDDEN"
+    assert services["secrets"] == generator.EXPECTED_SECTIONS["secrets_intent"]
+    assert (
+        services["key_management"]
+        == generator.EXPECTED_SECTIONS["key_management_intent"]
+    )
+    assert services["recovery"] == generator.EXPECTED_SECTIONS["recovery_intent"]
+    assert (
+        services["observability"] == generator.EXPECTED_SECTIONS["observability_intent"]
+    )
+    assert (
+        services["data_boundary"] == generator.EXPECTED_SECTIONS["data_boundary_intent"]
+    )
+    assert services["secrets"]["secret_values"] == "ABSENT"
+    assert services["secrets"]["transport_encryption"] == ("REQUIRED_NOT_CONFIGURED")
+    assert services["secrets"]["ambient_credential_resolution"] == "FORBIDDEN"
+    assert services["key_management"]["key_deletion"] == "FORBIDDEN"
+    assert services["key_management"]["transport_encryption"] == (
+        "REQUIRED_NOT_CONFIGURED"
+    )
+    assert services["data_boundary"]["production_region"] is None
+    assert services["data_boundary"]["backup_region"] is None
 
 
-def test_activation_native_operations_and_action_counts_fail_closed(
+def test_activation_actions_gates_and_evidence_remain_fail_closed(
     data_services_model: generator.DataServicesModel,
 ) -> None:
     plan = generator.reference_plan_document(data_services_model)
-    assert plan["planned_actions"] == {"create": 0, "update": 0, "delete": 0}
+    assert plan["planned_actions"] == {action: 0 for action in generator.ACTION_NAMES}
     assert plan["activation"] == {
         "enabled": False,
         "status": "DISABLED",
         "native_plan_status": "NOT_EXECUTED",
+        "network_access": "FORBIDDEN",
+        "credential_access": "FORBIDDEN",
         "live_provider_calls": "FORBIDDEN",
         "external_writes": "FORBIDDEN",
+        "migration_action": "FORBIDDEN",
+        "backup_action": "FORBIDDEN",
+        "restore_action": "FORBIDDEN",
+        "redrive_action": "FORBIDDEN",
+        "destructive_action": "FORBIDDEN",
+        "deploy_action": "FORBIDDEN",
+        "release_action": "FORBIDDEN",
+        "production_action": "FORBIDDEN",
         "native_commands": {
-            "init": "FORBIDDEN",
-            "plan": "FORBIDDEN",
-            "apply": "FORBIDDEN",
-            "destroy": "FORBIDDEN",
-            "import": "FORBIDDEN",
-            "refresh": "FORBIDDEN",
+            command: "FORBIDDEN" for command in generator.NATIVE_COMMANDS
         },
     }
+    assert plan["verification_boundary"] == {
+        key: value
+        for key, value in generator.EXPECTED_SECTIONS["evidence_boundary"].items()
+        if key != "deliverable_classification"
+    }
+    assert all(
+        value == "NOT_EXECUTED"
+        for key, value in plan["verification_boundary"].items()
+        if key.endswith("validation")
+        or key.startswith("formal_")
+        or key == "live_staging_release_production"
+    )
 
 
-def test_generated_document_and_verification_boundary_are_non_executable(
+def test_generated_document_is_non_executable_provider_neutral_reference(
     data_services_model: generator.DataServicesModel,
 ) -> None:
-    plan = generator.reference_plan_document(data_services_model)
-    assert plan["document"] == {
+    document = generator.reference_plan_document(data_services_model)["document"]
+    assert document == {
         "id": "RAOS-DATA-SERVICES-REFERENCE-PLAN-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1502",
         "source_contract": generator.SOURCE_CONTRACT_URI,
         "generated_by": generator.GENERATOR_URI,
         "generation_command": generator.GENERATION_COMMAND,
-        "artifact_kind": ("SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN"),
+        "artifact_kind": (
+            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN"
+        ),
         "executable": False,
         "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
-    }
-    assert plan["verification_boundary"] == {
-        "executable_terraform": "ABSENT",
-        "terraform_cli": "UNPINNED_NOT_INVOKED",
-        "provider_plugins": "UNPINNED_NOT_INVOKED",
-        "aws_account": "UNSET",
-        "credentials": "ABSENT",
-        "native_iac_validation": "NOT_EXECUTED",
-        "formal_tst_026": "NOT_EXECUTED",
-        "formal_tst_029": "NOT_EXECUTED",
-        "restore_validation": "NOT_EXECUTED",
-        "live_staging_release_production": "NOT_EXECUTED",
-        "effective_canonical_status": "UNCHANGED",
     }
 
 

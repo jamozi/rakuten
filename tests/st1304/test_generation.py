@@ -66,12 +66,12 @@ def test_manifest_binds_sources_dependencies_and_generated_plan() -> None:
         },
         "st1205": {
             "feature_commit": "fe18734820cb6f78622950549d32f1ab5394214e",
-            "artifact_binding_commit": "8aab6c4720863f51854b89c4bcac19faabd733c6",
+            "artifact_binding_commit": "f297efeeed8084c909741e4a2414c512a3683021",
             "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
         },
         "st1303": {
             "feature_commit": "0436364b8737d05b9aea3a08da8bf15c04292b12",
-            "artifact_binding_commit": "0436364b8737d05b9aea3a08da8bf15c04292b12",
+            "artifact_binding_commit": "046b49027a79f081c0d095ba060ba435612bd1dc",
             "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
         },
     }

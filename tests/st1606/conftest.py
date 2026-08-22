@@ -7,6 +7,8 @@ import shutil
 
 import pytest
 
+from scripts import build_st1502_data_services as data_generator
+from scripts import build_st1505_staging_deployment as staging_generator
 from scripts import build_st1606_backup_restore_drill as builder
 
 
@@ -22,6 +24,8 @@ def repository_copy(tmp_path: Path) -> Iterator[Path]:
         *map(Path, builder.EXPECTED_PREDECESSOR_HASHES),
         *map(Path, builder.EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES),
         *builder.SOURCE_PATHS,
+        *data_generator.SOURCE_ARTIFACT_PATHS,
+        *staging_generator.SOURCE_ARTIFACT_PATHS,
     }
     for relative in paths:
         target = tmp_path / relative

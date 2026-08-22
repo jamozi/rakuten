@@ -7,7 +7,7 @@ document:
   generation_command: python scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py
 provenance:
   base_commit: 6e56aa4d328ffb4135e9ad23145a611ab584b519
-  contract_sha256: 4031e393ef67944cc194f0caef1726b77cb88ba8ccf077b9453c4afb7f2afb2a
+  contract_sha256: 4252b0dd7c92a494b281ca406183b593b5d8ea6fb8b1f54d57c3d73efc6a1f65
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     bytes: 7943
@@ -28,7 +28,7 @@ provenance:
     ST-0707:
     - uri: repo://changes/st-0707/README.md
       bytes: 3007
-      sha256: 00b6ca1e355a60436a452fcb1de172348acbb8fa9f8b5ccbee9dbd727196f644
+      sha256: 3ba589dc165e0347fb2d3ca16e92188919046b5a8e4a92e4d62d206fcdacf3ff
     - uri: repo://python/raos/domain/ai/evaluation.py
       bytes: 16824
       sha256: f5eba5617c24227ac09de7ce555a52a9454fe2e5320c8bbcaab8752f6945aff4
@@ -40,7 +40,7 @@ provenance:
       sha256: 6bade20471f8724fe2d131e57d806d1467b54d6467d77b1853e99732b3d94b78
     - uri: repo://tests/st0707/test_boundaries.py
       bytes: 7942
-      sha256: 7e4eb2bb4759234ac25e30e4be66ad14cf2ebd870ea7ff0c8c6d34becdf5639e
+      sha256: e5dba0b58ba1acbb7fe3ba67363645acab0a7b5345af7c21aafec16eb92180c1
     - uri: repo://tests/st0707/test_evaluation.py
       bytes: 4159
       sha256: 3680ff67bf147721d04ab9f50c5d5c10503f7120af70c3a1c2b9ae4a80431340
@@ -74,7 +74,7 @@ provenance:
       sha256: 294394757d1739889f54dbb6cf20a8353275faf233bc3bba7fdd3f932671dc6a
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0708/README.md
@@ -82,10 +82,10 @@ source_artifacts:
   sha256: 720239090812f709e26c80e8f6e443dad293b0b3a7324069c5bcf54a8a2f4222
 - uri: repo://changes/st-0708/contracts/openai-live-bounded-evaluation-reference-plan.v1.yaml
   bytes: 8980
-  sha256: 4031e393ef67944cc194f0caef1726b77cb88ba8ccf077b9453c4afb7f2afb2a
+  sha256: 4252b0dd7c92a494b281ca406183b593b5d8ea6fb8b1f54d57c3d73efc6a1f65
 - uri: repo://scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py
   bytes: 17851
-  sha256: 4c642365d81c75c46a2522619ea10fd880b38897ded790857177da39f6685640
+  sha256: 36811b90852fe9da357ca02156ab2291fe257e64b6755e2acf5f03d1a73389d9
 - uri: repo://tests/st0708/conftest.py
   bytes: 850
   sha256: 727abc88ff1b9cda9ad62a56b3b9559d4c6551c581df6a033f8e60b6d1f0be9d
@@ -102,7 +102,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0708/generated/openai-live-bounded-evaluation-reference-plan.v1.json
   bytes: 11104
-  sha256: 65c0e08b471baf76abfb94f9cde1fe0843b58edefab4a436e27acb338815b856
+  sha256: 6310dd1107e8685feb8b86f9babbb0d889ffe611e3e2d92f4e0b83154e65d805
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_OPENAI_LIVE_BOUNDED_EVALUATION_REFERENCE_PLAN
   executable: false

@@ -22,12 +22,28 @@ def test_contract_loads_as_closed_interface_only_model(
 ) -> None:
     assert github_oidc_model.contract["document"] == {
         "id": "RAOS-GITHUB-OIDC-DEPLOYMENT-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1504",
         "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
         "formal_verification": "NOT_EXECUTED",
     }
     assert set(github_oidc_model.contract) == generator.TOP_LEVEL_KEYS
+    assert (
+        generator.semantic_sha256(github_oidc_model.contract)
+        == generator.EXPECTED_CONTRACT_SEMANTIC_SHA256
+    )
+
+
+def test_direct_handoff_is_hash_and_semantically_bound() -> None:
+    path = REPOSITORY_ROOT / generator.DESIGN_HANDOFF_PATH
+    assert (
+        generator.sha256_file(path)
+        == generator.AUTHORITY_SOURCES[generator.DESIGN_HANDOFF_PATH.as_posix()]
+    )
+    assert (
+        generator.semantic_sha256(generator.load_yaml(path))
+        == generator.EXPECTED_HANDOFF_SEMANTIC_SHA256
+    )
 
 
 def test_both_predecessors_are_exactly_bound_and_fail_closed(
@@ -36,15 +52,17 @@ def test_both_predecessors_are_exactly_bound_and_fail_closed(
     bindings = _mapping(github_oidc_model.contract["predecessor_bindings"])
     assert bindings == generator.EXPECTED_SECTIONS["predecessor_bindings"]
     governance = _mapping(bindings["pr_governance"])
-    assert governance["required_artifact_kind"] == "DESIRED_STATE_NOT_API_PAYLOAD"
     assert governance["required_desired_enforcement"] == "active"
-    assert governance["required_local_application_status"] == "NOT_EXECUTED"
     assert governance["required_remote_mutation"] == "FORBIDDEN"
     assert governance["required_bypass_actors"] == []
     assert all(governance["required_protected_pr_controls"].values())
     foundation = _mapping(bindings["terraform_foundation"])
+    assert foundation["required_provider_policy"] == (
+        "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION"
+    )
+    assert foundation["required_admission_status"] == "NOT_EVALUATED"
+    assert foundation["required_eligible"] is False
     assert foundation["required_activation_status"] == "DISABLED"
-    assert foundation["required_resource_payloads"] == "FORBIDDEN"
     assert foundation["required_planned_actions"] == {
         "create": 0,
         "update": 0,
@@ -52,21 +70,134 @@ def test_both_predecessors_are_exactly_bound_and_fail_closed(
     }
 
 
-def test_logical_path_is_reference_intent_only(
+def test_pr_governance_predecessor_has_closed_semantic_and_byte_bindings() -> None:
+    contract_path = REPOSITORY_ROOT / "changes/st-0107/contracts/pr-governance.v1.yaml"
+    desired_state_path = REPOSITORY_ROOT / "changes/st-0107/ruleset-policy.v1.json"
+    assert generator.semantic_sha256(generator.load_yaml(contract_path)) == (
+        "141dce557ae5b16c1ef54490ed1c41ce083c33cf27c5e9b66a38de4827dd6dfb"
+    )
+    desired_state = generator.load_json(desired_state_path)
+    assert generator.semantic_sha256(desired_state) == (
+        "bcfc8440e5e508648607dc22f8deacca4dc14021404c050457077ce451934c33"
+    )
+    assert desired_state_path.read_bytes() == (
+        json.dumps(desired_state, ensure_ascii=False, indent=2, sort_keys=False) + "\n"
+    ).encode("utf-8")
+
+
+def test_github_is_fixed_source_without_selecting_target_provider(
     github_oidc_model: generator.GithubOidcModel,
 ) -> None:
     plan = generator.reference_plan_document(github_oidc_model)
+    source = _mapping(plan["ci_source_boundary"])
+    assert source == generator.EXPECTED_SECTIONS["ci_source_boundary"]
+    assert source["ci_source"] == "GITHUB_ACTIONS"
+    assert source["external_review_connector"] == "GITHUB"
+    assert source["target_provider_selected"] is False
     path = _mapping(plan["logical_identity_path"])
-    assert path == {
-        "classification": "LOGICAL_IDENTITY_PATH_REFERENCE_ONLY",
-        "source": "GITHUB_ACTIONS_OIDC",
-        "destination": "AWS_SHORT_LIVED_WORKLOAD_SESSION",
-        "github_workload_identity": "REQUIRED_NOT_CONFIGURED",
-        "aws_role_session": "REQUIRED_NOT_CONFIGURED",
-        "executable_workflow": "ABSENT",
-        "iam_trust_policy": "ABSENT",
-        "provider_sdk_types": "ABSENT",
-        "production_deployment": "FORBIDDEN",
+    assert path["source"] == "GITHUB_ACTIONS_OIDC"
+    assert path["destination"] == "PROVIDER_NEUTRAL_SHORT_LIVED_WORKLOAD_SESSION"
+    assert path["target_provider"] == "UNSELECTED"
+    assert path["github_source_is_target_provider_selection"] is False
+
+
+def test_aws_is_current_canonical_reference_and_portable_paths_are_additional(
+    github_oidc_model: generator.GithubOidcModel,
+) -> None:
+    plan = generator.reference_plan_document(github_oidc_model)
+    reference = _mapping(plan["reference_architecture"])
+    assert reference["cloud"] == "AWS"
+    assert reference["region"] == "ap-northeast-1"
+    assert reference["classification"] == (
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    )
+    assert reference["mappings"] == generator._aws_reference_mappings()
+    admission = _mapping(plan["provider_neutral_deployment_identity_admission"])
+    assert admission["aws_reference_boundary"]["role"] == (
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    )
+    assert admission["aws_reference_boundary"]["canonical_story_deliverables"] == (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    )
+    assert (
+        admission["aws_reference_boundary"]["non_aws_owner_managed_profiles"]
+        == "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+    )
+    for field in (
+        "default",
+        "implicit_fallback",
+        "selected_binding",
+        "eligibility_shortcut",
+        "admission_requirement",
+        "evidence_substitute",
+    ):
+        assert reference[field] is False
+
+
+def test_provider_neutral_admission_requires_complete_exact_mapping(
+    github_oidc_model: generator.GithubOidcModel,
+) -> None:
+    admission = _mapping(
+        generator.reference_plan_document(github_oidc_model)[
+            "provider_neutral_deployment_identity_admission"
+        ]
+    )
+    assert admission["admission_status"] == "NOT_EVALUATED"
+    assert admission["eligible"] is False
+    for field in (
+        "selected_profile_id",
+        "selected_profile_kind",
+        "selected_provider_name",
+        "default_profile_id",
+        "fallback_profile_id",
+    ):
+        assert admission[field] is None
+    assert admission["eligible_profile_kinds"] == list(generator.ELIGIBLE_PROFILE_KINDS)
+    mapping_policy = _mapping(admission["mapping_policy"])
+    assert mapping_policy["configured_mapping_count"] == 0
+    assert mapping_policy["complete_mapping"] is False
+    assert mapping_policy["required_capability_count"] == len(
+        generator.DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES
+    )
+    for field in (
+        "missing_mapping",
+        "unknown_mapping",
+        "duplicate_mapping",
+        "implicit_mapping",
+        "partial_mapping",
+        "provider_label_only_mapping",
+        "aws_label_only_mapping",
+        "source_label_only_mapping",
+        "reference_only_mapping",
+    ):
+        assert mapping_policy[field] == "REJECT"
+    rows = admission["capability_mapping_requirements"]
+    assert [row["capability_id"] for row in rows] == [
+        capability_id
+        for capability_id, _outcome in (
+            generator.DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES
+        )
+    ]
+    assert all(
+        row["selected_mapping"] is None
+        and row["evidence_refs"] == []
+        and row["mapping_status"] == "REQUIRED_NOT_CONFIGURED"
+        for row in rows
+    )
+    assert admission["evidence_equivalence_policy"] == {
+        "identical_security_evidence": "REQUIRED",
+        "identical_operations_evidence": "REQUIRED",
+        "identical_release_evidence": "REQUIRED",
+        "identical_provenance_evidence": "REQUIRED",
+        "identical_audit_evidence": "REQUIRED",
+        "identical_revocation_rollback_evidence": "REQUIRED",
+        "identical_identity_session_evidence": "REQUIRED",
+        "identical_isolation_residency_evidence": "REQUIRED",
+        "provider_label_as_evidence": "FORBIDDEN",
+        "aws_label_as_evidence": "FORBIDDEN",
+        "github_source_label_as_evidence": "FORBIDDEN",
+        "reference_metadata_as_evidence": "FORBIDDEN",
+        "local_test_as_live_evidence": "FORBIDDEN",
     }
 
 
@@ -80,23 +211,12 @@ def test_every_actual_binding_remains_null_or_empty(
     assert all(value is None or value == [] for value in selected.values())
 
 
-def test_trust_constraints_require_exact_claims_and_deny_pr_broadening(
+def test_trust_credential_and_approval_boundaries_fail_closed(
     github_oidc_model: generator.GithubOidcModel,
 ) -> None:
-    trust = _mapping(
-        generator.reference_plan_document(github_oidc_model)["trust_constraints"]
-    )
-    assert trust["status"] == "REQUIRED_NOT_CONFIGURED"
+    plan = generator.reference_plan_document(github_oidc_model)
+    trust = _mapping(plan["trust_constraints"])
     assert trust["required_claim_bindings"] == list(generator.REQUIRED_CLAIM_BINDINGS)
-    for field in (
-        "exact_repository_identity",
-        "exact_trusted_ref",
-        "exact_workflow_identity",
-        "exact_environment",
-        "exact_audience",
-        "exact_subject",
-    ):
-        assert trust[field] == "REQUIRED_NOT_CONFIGURED"
     for field in (
         "wildcard_trust",
         "fork_pull_request",
@@ -108,126 +228,89 @@ def test_trust_constraints_require_exact_claims_and_deny_pr_broadening(
         "broad_organization_subject",
         "broad_repository_subject",
         "broad_ref_subject",
+        "broad_audience",
     ):
         assert trust[field] == "FORBIDDEN"
-
-
-def test_credential_boundary_is_short_lived_material_free_and_non_issuing(
-    github_oidc_model: generator.GithubOidcModel,
-) -> None:
-    boundary = _mapping(
-        generator.reference_plan_document(github_oidc_model)["credential_boundary"]
-    )
-    assert boundary["oidc_session"] == "SHORT_LIVED_REQUIRED_NOT_CONFIGURED"
-    assert boundary["least_privilege"] == "REQUIRED_NOT_CONFIGURED"
-    assert boundary["credential_material"] == "ABSENT"
-    assert boundary["credential_issuance_capability"] == "ABSENT"
-    assert boundary["secret_names"] == []
-    assert boundary["secret_values"] == []
+    credentials = _mapping(plan["credential_boundary"])
     for field in (
         "long_lived_cloud_key",
+        "static_provider_credential",
         "repository_secret_cloud_credential",
-        "fork_pr_credential_issuance",
-        "untrusted_ref_credential_issuance",
-        "untrusted_environment_credential_issuance",
+        "human_cloud_credential",
         "role_chaining",
         "privilege_escalation",
+        "cross_environment_identity_reuse",
     ):
-        assert boundary[field] == "FORBIDDEN"
-
-
-def test_workflow_permissions_are_intent_only_and_exact_job_scoped(
-    github_oidc_model: generator.GithubOidcModel,
-) -> None:
-    permissions = _mapping(
-        generator.reference_plan_document(github_oidc_model)["workflow_permissions"]
-    )
-    assert permissions["classification"] == "INTENT_ONLY_WORKFLOW_ABSENT"
-    assert permissions["actual_workflow"] == "ABSENT"
-    assert permissions["id_token_write_scope"] == (
-        "FUTURE_EXACT_APPROVED_DEPLOY_JOB_ONLY"
-    )
-    assert permissions["contents_permission"] == (
-        "READ_MINIMUM_REQUIRED_NOT_CONFIGURED"
-    )
+        assert credentials[field] == "FORBIDDEN"
+    assert credentials["credential_material"] == "ABSENT"
+    assert credentials["credential_issuance_capability"] == "ABSENT"
+    protection = _mapping(plan["environment_protection"])
     for field in (
-        "write_all",
-        "admin_permissions",
-        "secrets_access",
-        "mutable_external_action_references",
-        "unbounded_reusable_workflow_callers",
-        "pull_request_target_credential_path",
+        "self_approval",
+        "approval_bypass",
+        "deployment_without_approval",
+        "cross_environment_target_reuse",
     ):
-        assert permissions[field] == "FORBIDDEN"
-
-
-def test_production_environment_requires_distinct_non_bypassable_human_approval(
-    github_oidc_model: generator.GithubOidcModel,
-) -> None:
-    protection = _mapping(
-        generator.reference_plan_document(github_oidc_model)["environment_protection"]
-    )
-    for field in (
-        "production_environment",
-        "distinct_human_approval",
-        "protected_environment",
-        "exact_allowed_refs",
-    ):
-        assert protection[field] == "REQUIRED_NOT_CONFIGURED"
-    for field in ("self_approval", "approval_bypass", "deployment_without_approval"):
         assert protection[field] == "FORBIDDEN"
+    lifecycle = _mapping(plan["lifecycle_controls"])
+    for field in (
+        "audit_bypass",
+        "revocation_bypass",
+        "rollback_bypass",
+        "irreversible_promotion",
+    ):
+        assert lifecycle[field] == "FORBIDDEN"
 
 
-def test_activation_operations_and_action_counts_fail_closed(
+def test_open_decisions_execution_and_evidence_remain_unexecuted(
     github_oidc_model: generator.GithubOidcModel,
 ) -> None:
     plan = generator.reference_plan_document(github_oidc_model)
+    assert (
+        plan["open_decision_boundary"]
+        == generator.EXPECTED_SECTIONS["open_decision_boundary"]
+    )
     assert plan["planned_actions"] == {"create": 0, "update": 0, "delete": 0}
     assert plan["activation"] == {
         "enabled": False,
         "status": "DISABLED",
         "native_plan_status": "NOT_EXECUTED",
+        "network_access": "FORBIDDEN",
+        "credential_access": "FORBIDDEN",
         "live_provider_calls": "FORBIDDEN",
         "external_writes": "FORBIDDEN",
         "credential_issuance": "FORBIDDEN",
+        "deploy_action": "FORBIDDEN",
+        "release_action": "FORBIDDEN",
+        "production_action": "FORBIDDEN",
         "operations": {
             operation: "FORBIDDEN" for operation in generator.NATIVE_OPERATIONS
         },
     }
+    verification = _mapping(plan["verification_boundary"])
+    assert verification == {
+        key: value
+        for key, value in generator.EXPECTED_SECTIONS["evidence_boundary"].items()
+        if key != "deliverable_classification"
+    }
+    assert verification["formal_tst_026"] == "NOT_EXECUTED"
+    assert verification["hosted_github_target_provider"] == "NOT_EXECUTED"
+    assert verification["live_oidc_federation"] == "NOT_EXECUTED"
+    assert verification["production"] == "NOT_EXECUTED"
 
 
-def test_generated_document_and_verification_boundary_are_non_executable(
+def test_generated_document_is_non_executable(
     github_oidc_model: generator.GithubOidcModel,
 ) -> None:
-    plan = generator.reference_plan_document(github_oidc_model)
-    assert plan["document"] == {
-        "id": "RAOS-GITHUB-OIDC-REFERENCE-PLAN-001",
-        "version": "1.0.0",
-        "story_id": "ST-1504",
-        "source_contract": generator.SOURCE_CONTRACT_URI,
-        "generated_by": generator.GENERATOR_URI,
-        "generation_command": generator.GENERATION_COMMAND,
-        "artifact_kind": ("SOURCE_DERIVED_NON_EXECUTABLE_GITHUB_OIDC_REFERENCE_PLAN"),
-        "executable": False,
-        "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
-    }
-    assert plan["verification_boundary"] == {
-        "executable_workflow": "ABSENT",
-        "iam_trust_policy": "ABSENT",
-        "github_repository": "UNSET",
-        "github_environment": "UNSET",
-        "aws_account": "UNSET",
-        "aws_role": "UNSET",
-        "credentials": "ABSENT",
-        "credential_issuance": "NOT_EXECUTED",
-        "native_iac_validation": "NOT_EXECUTED",
-        "workflow_inspection": "NOT_EXECUTED",
-        "formal_tst_026": "NOT_EXECUTED",
-        "hosted_github_aws": "NOT_EXECUTED",
-        "live_oidc": "NOT_EXECUTED",
-        "live_staging_release_production": "NOT_EXECUTED",
-        "effective_canonical_status": "UNCHANGED",
-    }
+    document = _mapping(
+        generator.reference_plan_document(github_oidc_model)["document"]
+    )
+    assert document["version"] == "1.1.0"
+    assert document["artifact_kind"] == (
+        "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_"
+        "DEPLOYMENT_IDENTITY_REFERENCE_PLAN"
+    )
+    assert document["executable"] is False
 
 
 def test_source_pins_match_regular_files() -> None:

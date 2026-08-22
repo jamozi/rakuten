@@ -1,16 +1,18 @@
 document:
   id: RAOS-DATA-SERVICES-MANIFEST-001
-  version: 1.0.0
+  version: 1.1.0
   story_id: ST-1502
   source_contract: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
   generated_by: repo://scripts/build_st1502_data_services.py
   generation_command: uv run --locked --no-sync python scripts/build_st1502_data_services.py
 provenance:
   contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-  contract_sha256: ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502
+  contract_sha256: bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
   - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
     sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
   - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
@@ -30,58 +32,110 @@ provenance:
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
+  - uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
+    sha256: ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5
   predecessor_inputs:
+  - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+    sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
   - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    sha256: 3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2
+    sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
   - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    sha256: 877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f
-source_artifact_count: 7
+    sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
+source_artifact_count: 8
 source_artifacts:
 - uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-  bytes: 9997
-  sha256: ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502
+  bytes: 20993
+  sha256: bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041
+- uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
+  bytes: 11927
+  sha256: ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5
 - uri: repo://changes/st-1502/README.md
-  bytes: 4166
-  sha256: 19c2ff6d45e56067f470f748cdd65114811fb86ca28b5376f8cb1fc6e89784d5
+  bytes: 5561
+  sha256: 2c6f9156cc382fbc6a259d51b58ca7529908001e8d91ee93c7fe5495a69c789f
 - uri: repo://scripts/build_st1502_data_services.py
-  bytes: 41975
-  sha256: 4daae806813630676f42d32b5b33bf6111b13f32969ec47383dc100dc6fdb170
+  bytes: 74326
+  sha256: ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf
 - uri: repo://tests/st1502/conftest.py
   bytes: 637
   sha256: 224ab7f55228ff2c5c7d3150f5b2db35ba388df7031dff2014d668c36d54aeae
 - uri: repo://tests/st1502/test_contract.py
-  bytes: 9039
-  sha256: 5254293a86747c83faec6b8e3dd861fc48c9a012aa8d6932f352842d3914a8bf
+  bytes: 13095
+  sha256: 6315420e20ab0887e5ba96d69dea83c926caf4704848f698156ad2a1d659a27d
 - uri: repo://tests/st1502/test_generation.py
-  bytes: 8163
-  sha256: e0cc36b0ded76a52de38e98883009676db6b7ce0de6e24504daff945665004fb
+  bytes: 10249
+  sha256: add305918fee549ee4835a0c1f88cc08a65a3a85984b5c115f44782f7b3c5de8
 - uri: repo://tests/st1502/test_negative_cases.py
-  bytes: 14017
-  sha256: 6e4876954c4df541a73d1b4ac24c7220cb6b50cb4cb673c58c5a55dda5bdfe82
+  bytes: 31424
+  sha256: 4c0c12b67930904f0af8af505fda9442f2be133a27954166f407898ad48c704d
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
-  bytes: 10567
-  sha256: ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41
+  bytes: 23021
+  sha256: 84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
 boundary:
-  classification: SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN
+  classification: SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN
   activation: DISABLED
+  network_access: FORBIDDEN
+  credential_access: FORBIDDEN
+  live_provider_calls: FORBIDDEN
+  external_writes: FORBIDDEN
+  migration_action: FORBIDDEN
+  backup_action: FORBIDDEN
+  restore_action: FORBIDDEN
+  redrive_action: FORBIDDEN
+  destructive_action: FORBIDDEN
+  deploy_action: FORBIDDEN
+  release_action: FORBIDDEN
+  production_action: FORBIDDEN
+  admission_status: NOT_EVALUATED
+  eligible: false
   planned_actions:
     create: 0
     update: 0
     delete: 0
-  selected_cloud_provider: null
+    migrate: 0
+    backup: 0
+    restore: 0
+    redrive: 0
+    rotate: 0
+  selected_provider_profile: null
+  default_provider_profile: null
+  fallback_provider_profile: null
+  selected_provider_name: null
+  selected_provider_account_or_project: null
   selected_production_region: null
-  selected_aws_account: null
-  selected_state_backend: null
+  selected_backup_region: null
+  selected_relational_service_binding: null
+  selected_object_storage_service_binding: null
+  selected_queue_service_binding: null
+  selected_secrets_service_binding: null
+  selected_key_management_service_binding: null
+  selected_data_services_plugin_or_adapter: null
+  required_capability_count: 9
+  configured_mapping_count: 0
+  complete_mapping: false
+  aws_reference_role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+  canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+  portable_implementation_paths: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
+  aws_reference_default: false
+  aws_reference_implicit_fallback: false
+  aws_reference_selected_binding: false
+  aws_reference_eligibility_shortcut: false
+  aws_reference_admission_requirement: false
+  aws_reference_evidence_substitute: false
   credentials: ABSENT
   physical_resource_definitions: []
   native_iac_validation: NOT_EXECUTED
+  transport_encryption_validation: NOT_EXECUTED
+  relational_migration_validation: NOT_EXECUTED
+  queue_delivery_validation: NOT_EXECUTED
   formal_tst_026: NOT_EXECUTED
   formal_tst_029: NOT_EXECUTED
   restore_validation: NOT_EXECUTED
+  provider_validation: NOT_EXECUTED
+  live_staging_release_production: NOT_EXECUTED
   effective_canonical_status: UNCHANGED

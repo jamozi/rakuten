@@ -63,7 +63,7 @@ def test_manifest_pins_authority_predecessors_and_status_boundary() -> None:
     manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
     assert manifest["document"] == {
         "id": "RAOS-GITHUB-OIDC-MANIFEST-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1504",
         "source_contract": generator.SOURCE_CONTRACT_URI,
         "generated_by": generator.GENERATOR_URI,
@@ -81,21 +81,53 @@ def test_manifest_pins_authority_predecessors_and_status_boundary() -> None:
         for path, digest in generator.PREDECESSOR_SOURCES.items()
     ]
     assert manifest["boundary"] == {
-        "classification": ("SOURCE_DERIVED_NON_EXECUTABLE_GITHUB_OIDC_REFERENCE_PLAN"),
+        "classification": (
+            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_"
+            "DEPLOYMENT_IDENTITY_REFERENCE_PLAN"
+        ),
         "activation": "DISABLED",
         "planned_actions": {"create": 0, "update": 0, "delete": 0},
+        "admission_status": "NOT_EVALUATED",
+        "eligible": False,
+        "selected_profile_id": None,
+        "selected_profile_kind": None,
+        "selected_provider_name": None,
+        "default_profile_id": None,
+        "fallback_profile_id": None,
+        "configured_mapping_count": 0,
+        "required_capability_count": len(
+            generator.DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES
+        ),
+        "aws_reference_only": True,
+        "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+        "canonical_story_deliverables": (
+            "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+        ),
+        "portable_implementation_paths": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
+        "aws_reference_default": False,
+        "aws_reference_implicit_fallback": False,
+        "aws_reference_selected_binding": False,
+        "aws_reference_eligibility_shortcut": False,
+        "aws_reference_admission_requirement": False,
+        "aws_reference_evidence_substitute": False,
         "selected_repository": None,
         "selected_environment": None,
-        "selected_aws_account": None,
-        "selected_aws_role": None,
-        "trust_policy_payload": None,
+        "selected_target_provider": None,
+        "selected_target_account_project_or_tenant": None,
+        "selected_target_region": None,
+        "selected_target_audience": None,
+        "selected_target_identity_role": None,
+        "federation_trust_material": None,
         "workflow_file_path": None,
         "credentials": "ABSENT",
         "credential_issuance": "NOT_EXECUTED",
         "workflow_inspection": "NOT_EXECUTED",
         "formal_tst_026": "NOT_EXECUTED",
-        "hosted_github_aws": "NOT_EXECUTED",
-        "live_oidc": "NOT_EXECUTED",
+        "hosted_github_target_provider": "NOT_EXECUTED",
+        "live_oidc_federation": "NOT_EXECUTED",
+        "staging_deployment": "NOT_EXECUTED",
+        "release": "NOT_EXECUTED",
+        "production": "NOT_EXECUTED",
         "effective_canonical_status": "UNCHANGED",
     }
     assert manifest["manifest_self_integrity"] == {
@@ -238,6 +270,9 @@ def test_builder_cli_exposes_only_read_only_check_switch() -> None:
         "--workflow",
         "--environment",
         "--account",
+        "--project",
+        "--tenant",
+        "--region",
         "--role",
         "--session",
         "--thumbprint",

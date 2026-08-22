@@ -1,5 +1,7 @@
 {
   "activation": {
+    "credential_access": "FORBIDDEN",
+    "deploy_action": "FORBIDDEN",
     "enabled": false,
     "external_writes": "FORBIDDEN",
     "live_provider_calls": "FORBIDDEN",
@@ -12,6 +14,9 @@
       "refresh": "FORBIDDEN"
     },
     "native_plan_status": "NOT_EXECUTED",
+    "network_access": "FORBIDDEN",
+    "production_action": "FORBIDDEN",
+    "release_action": "FORBIDDEN",
     "status": "DISABLED"
   },
   "document": {
@@ -23,7 +28,7 @@
     "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
     "source_contract": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
     "story_id": "ST-1501",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "extension_contract": {
     "current_resource_payloads": "FORBIDDEN",
@@ -61,11 +66,169 @@
     "delete": 0,
     "update": 0
   },
+  "provider_neutral_foundation_admission": {
+    "admission_status": "NOT_EVALUATED",
+    "aws_reference_boundary": {
+      "admission_requirement": false,
+      "canonical_story_deliverables": "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED",
+      "default": false,
+      "eligibility_shortcut": false,
+      "evidence_substitute": false,
+      "implicit_fallback": false,
+      "non_aws_owner_managed_profiles": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
+      "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+      "selected_binding": false
+    },
+    "binding_policy": {
+      "account_or_project": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "implicit_binding": "FORBIDDEN",
+      "name_or_reference_only_eligibility": "FORBIDDEN",
+      "provider": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "provider_plugin": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "region": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "state_backend": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      }
+    },
+    "capability_mapping_requirements": [
+      {
+        "capability_id": "iac_toolchain_and_plugin_provenance",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "PINNED_INTEGRITY_VERIFIED_TOOLCHAIN_AND_PLUGIN_PROVENANCE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "remote_state_integrity_and_recovery",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "ENCRYPTED_LOCKED_AUDITED_BACKED_UP_AND_RECOVERABLE_STATE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "environment_tenant_isolation",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "DEVELOPMENT_AND_PRODUCTION_ACCOUNT_PROJECT_TENANT_OR_EQUIVALENT_ISOLATION",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "network_segmentation_and_traffic_control",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "PUBLIC_ADMIN_INTERNAL_DATA_INGRESS_EGRESS_AND_CONTROL_PLANE_BOUNDARIES",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "workload_identity_and_secret_boundary",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "LEAST_PRIVILEGE_NON_AMBIENT_AUDITABLE_IDENTITY_AND_SECRETS",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "observability_audit_and_drift_detection",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "TELEMETRY_CONTROL_PLANE_AUDIT_ALERTING_AND_DRIFT_DETECTION",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "infrastructure_backup_restore_and_recovery",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "VERSIONED_CONFIGURATION_BACKUP_RESTORE_DRILL_AND_RECOVERY_EVIDENCE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "cost_budget_alert_and_stop_controls",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "ATTRIBUTABLE_COST_BUDGET_ALERT_AND_BOUNDED_STOP_CONTROLS",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "region_and_data_residency",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "APPROVED_PRIMARY_BACKUP_CROSS_BORDER_AND_DATA_RESIDENCY_EVIDENCE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "human_approved_change_and_rollback",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "IAC_ONLY_HUMAN_APPROVED_PROMOTION_ROLLBACK_AND_RECOVERY",
+        "selected_mapping": null
+      }
+    ],
+    "classification": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
+    "concrete_alternate_provider_selected": false,
+    "default_profile_id": null,
+    "eligibility_condition": "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE",
+    "eligible": false,
+    "eligible_profile_kinds": [
+      "AWS",
+      "OTHER_CLOUD",
+      "OWNER_MANAGED_INFRASTRUCTURE"
+    ],
+    "evidence_equivalence_policy": {
+      "identical_backup_restore_evidence": "REQUIRED",
+      "identical_operations_evidence": "REQUIRED",
+      "identical_region_residency_evidence": "REQUIRED",
+      "identical_release_evidence": "REQUIRED",
+      "identical_security_evidence": "REQUIRED",
+      "local_test_as_live_evidence": "FORBIDDEN",
+      "provider_label_as_evidence": "FORBIDDEN",
+      "reference_metadata_as_evidence": "FORBIDDEN"
+    },
+    "fallback_profile_id": null,
+    "mapping_policy": {
+      "complete_mapping": false,
+      "configured_mapping_count": 0,
+      "duplicate_mapping": "REJECT",
+      "implicit_mapping": "REJECT",
+      "missing_mapping": "REJECT",
+      "partial_mapping": "REJECT",
+      "provider_label_only_mapping": "REJECT",
+      "required_capability_count": 10,
+      "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+      "unknown_mapping": "REJECT"
+    },
+    "selected_profile_id": null,
+    "selected_profile_kind": null,
+    "selected_provider_name": null
+  },
   "reference_architecture": {
-    "classification": "REFERENCE_METADATA_ONLY",
+    "admission_requirement": false,
+    "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
     "cloud": "AWS",
+    "default": false,
+    "eligibility_shortcut": false,
+    "evidence_substitute": false,
+    "implicit_fallback": false,
+    "inherited_from": "INT-DEC-007",
     "portable_core_required": true,
-    "region": "ap-northeast-1"
+    "region": "ap-northeast-1",
+    "selected_binding": false
   },
   "selected_configuration": {
     "availability_zones": [],
@@ -84,12 +247,12 @@
     "terraform_cli_version": null
   },
   "verification_boundary": {
-    "aws_account": "UNSET",
     "credentials": "ABSENT",
     "effective_canonical_status": "UNCHANGED",
     "executable_terraform": "ABSENT",
     "formal_tst_026": "NOT_EXECUTED",
     "live_staging_release_production": "NOT_EXECUTED",
+    "provider_account_or_project": "UNSET",
     "provider_plugins": "UNPINNED_NOT_INVOKED",
     "remote_state": "NOT_CONFIGURED",
     "terraform_cli": "UNPINNED_NOT_INVOKED"

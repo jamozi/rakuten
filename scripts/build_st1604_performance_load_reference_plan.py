@@ -46,7 +46,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -92,15 +92,15 @@ EXPECTED_SOURCES: Final = (
 EXPECTED_PREDECESSORS: Final = (
     (
         ST1505_CONTRACT_PATH,
-        "1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2",
+        "b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b",
     ),
     (
         ST1505_PLAN_PATH,
-        "33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f",
+        "8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4",
     ),
     (
         ST1505_MANIFEST_PATH,
-        "b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2",
+        "c27f4df8316621933f5d2d1e5d510dff6b8f65fe6a812ea036c70ba0c9334aa9",
     ),
     (
         ST1601_PATH,
@@ -160,6 +160,28 @@ ACTION_COUNT_KEYS: Final = (
     "release",
     "production",
 )
+ST1505_CONTRACT_ACTION_COUNT_KEYS: Final = base.STAGING_ACTION_COUNT_NAMES
+ST1505_PLAN_ACTION_COUNT_KEYS: Final = tuple(sorted(base.STAGING_ACTION_COUNT_NAMES))
+EXPECTED_ST1505_PROVIDER_NEUTRAL_ADMISSION: Final[dict[str, object]] = {
+    "classification": (
+        "STRICT_PROVIDER_NEUTRAL_STAGING_CAPABILITY_AND_DEPENDENCY_ADMISSION"
+    ),
+    "admission_status": "NOT_EVALUATED",
+    "eligible": False,
+    "complete_mapping": False,
+    "required_capability_count": 13,
+    "configured_mapping_count": 0,
+    "selected_provider_name": None,
+    "selected_profile_id": None,
+    "default_profile_id": None,
+    "fallback_profile_id": None,
+    "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+    "canonical_story_deliverables": (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    ),
+    "non_aws_owner_managed_profiles": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
+    "aws_reference_selected_binding": False,
+}
 
 
 class PerformanceLoadReferenceError(RuntimeError):
@@ -241,11 +263,12 @@ def _expected_predecessors() -> list[dict[str, object]]:
     return [
         {
             "story_id": "ST-1505",
-            "status": "DISABLED_INERT_ZERO_ACTION",
+            "status": "PROVIDER_NEUTRAL_ADMISSION_DISABLED_INERT_ZERO_ACTION",
             "bindings": [
                 {"uri": f"repo://{path.as_posix()}", "sha256": digest}
                 for path, digest in EXPECTED_PREDECESSORS[:3]
             ],
+            "provider_neutral_admission": EXPECTED_ST1505_PROVIDER_NEUTRAL_ADMISSION,
         },
         {
             "story_id": "ST-1601",
@@ -354,85 +377,142 @@ def _assert_zero_counts(
 
 
 def _validate_predecessor_semantics(root: Path) -> None:
-    contract = _load_yaml(root, ST1505_CONTRACT_PATH, "predecessor.st1505.contract")
-    contract_document = _mapping(contract.get("document"), "predecessor.document")
-    if (
-        contract_document.get("story_id") != "ST-1505"
-        or contract_document.get("status") != "INTERFACE_ONLY_PARTIAL_LOCAL_CODE"
-        or contract_document.get("formal_verification") != "NOT_EXECUTED"
+    try:
+        owner_contract = _load_yaml(
+            root, ST1505_CONTRACT_PATH, "predecessor.st1505.contract"
+        )
+        base._validate_local_safety_invariants(owner_contract)  # noqa: SLF001
+        owner_model = base.StagingDeploymentModel(contract=dict(owner_contract))
+        owner_plan = base.render_reference_plan(owner_model)
+        owner_manifest = base.render_manifest(owner_model, owner_plan, root)
+    except base.StagingDeploymentContractError:
+        raise PerformanceLoadReferenceError(
+            "ST-1604 build failed: PREDECESSOR_OWNER_VALIDATION_FAILED "
+            "field=predecessor.st1505"
+        ) from None
+    for relative, rendered in (
+        (ST1505_PLAN_PATH, owner_plan),
+        (ST1505_MANIFEST_PATH, owner_manifest),
     ):
-        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.st1505.contract")
-    boundary = _mapping(
-        contract.get("execution_boundary"), "predecessor.execution_boundary"
-    )
-    if (
-        boundary.get("activation_enabled") is not False
-        or boundary.get("activation_status") != "DISABLED"
-        or boundary.get("runtime_status") != "NOT_EXECUTED"
-    ):
-        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.execution_boundary")
-    _assert_zero_counts(
-        boundary.get("action_counts"),
-        (
-            "create",
-            "update",
-            "delete",
-            "promote",
-            "deploy",
-            "migrate",
-            "smoke",
-            "browser",
-            "rollback",
-            "production",
-        ),
-        "predecessor.action_counts",
-    )
-    _assert_unset_tree(contract.get("selected_bindings"), "predecessor.bindings")
+        if _read(root, relative, "predecessor.owner_output") != rendered:
+            _fail("PREDECESSOR_OWNER_OUTPUT_DRIFT", "predecessor.st1505")
 
     plan = _load_json(root, ST1505_PLAN_PATH, "predecessor.st1505.plan")
+    document = _mapping(plan.get("document"), "predecessor.document")
+    if (
+        document.get("story_id") != "ST-1505"
+        or document.get("artifact_kind")
+        != (
+            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_STAGING_ADMISSION_"
+            "REFERENCE_PLAN"
+        )
+        or document.get("executable") is not False
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.st1505.plan")
     activation = _mapping(plan.get("activation"), "predecessor.activation")
     if (
         activation.get("enabled") is not False
         or activation.get("status") != "DISABLED"
         or activation.get("runtime_status") != "NOT_EXECUTED"
+        or activation.get("network_access") != "FORBIDDEN"
+        or activation.get("credential_access") != "FORBIDDEN"
+        or activation.get("live_provider_calls") != "FORBIDDEN"
+        or activation.get("external_writes") != "FORBIDDEN"
+        or activation.get("staging_action") != "FORBIDDEN"
+        or activation.get("release_action") != "FORBIDDEN"
+        or activation.get("production_action") != "FORBIDDEN"
     ):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.activation")
     _assert_zero_counts(
         plan.get("action_counts"),
-        (
-            "browser",
-            "create",
-            "delete",
-            "deploy",
-            "migrate",
-            "production",
-            "promote",
-            "rollback",
-            "smoke",
-            "update",
-        ),
+        ST1505_PLAN_ACTION_COUNT_KEYS,
         "predecessor.plan.action_counts",
     )
     _assert_unset_tree(plan.get("selected_bindings"), "predecessor.plan.bindings")
+    admission = _mapping(
+        plan.get("provider_neutral_staging_admission"),
+        "predecessor.plan.provider_neutral_admission",
+    )
+    mapping_policy = _mapping(
+        admission.get("mapping_policy"),
+        "predecessor.plan.provider_neutral_admission.mapping_policy",
+    )
+    aws_boundary = _mapping(
+        admission.get("aws_reference_boundary"),
+        "predecessor.plan.provider_neutral_admission.aws_reference_boundary",
+    )
+    observed_admission = {
+        "classification": admission.get("classification"),
+        "admission_status": admission.get("admission_status"),
+        "eligible": admission.get("eligible"),
+        "complete_mapping": mapping_policy.get("complete_mapping"),
+        "required_capability_count": mapping_policy.get("required_capability_count"),
+        "configured_mapping_count": mapping_policy.get("configured_mapping_count"),
+        "selected_provider_name": admission.get("selected_provider_name"),
+        "selected_profile_id": admission.get("selected_profile_id"),
+        "default_profile_id": admission.get("default_profile_id"),
+        "fallback_profile_id": admission.get("fallback_profile_id"),
+        "aws_reference_role": aws_boundary.get("role"),
+        "canonical_story_deliverables": aws_boundary.get(
+            "canonical_story_deliverables"
+        ),
+        "non_aws_owner_managed_profiles": aws_boundary.get(
+            "non_aws_owner_managed_profiles"
+        ),
+        "aws_reference_selected_binding": aws_boundary.get("selected_binding"),
+    }
+    _exact(
+        observed_admission,
+        EXPECTED_ST1505_PROVIDER_NEUTRAL_ADMISSION,
+        "predecessor.plan.provider_neutral_admission",
+    )
+    reference = _mapping(
+        plan.get("reference_architecture"), "predecessor.plan.reference_architecture"
+    )
+    if (
+        reference.get("classification")
+        != "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+        or reference.get("default") is not False
+        or reference.get("implicit_fallback") is not False
+        or reference.get("selected_binding") is not False
+        or reference.get("eligibility_shortcut") is not False
+        or reference.get("admission_requirement") is not False
+        or reference.get("evidence_substitute") is not False
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.reference_architecture")
 
     manifest = _load_yaml(root, ST1505_MANIFEST_PATH, "predecessor.st1505.manifest")
     manifest_boundary = _mapping(manifest.get("boundary"), "predecessor.manifest")
-    if manifest_boundary.get("activation") != "DISABLED":
+    if (
+        manifest_boundary.get("classification")
+        != (
+            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_STAGING_ADMISSION_"
+            "REFERENCE_PLAN"
+        )
+        or manifest_boundary.get("activation") != "DISABLED"
+        or manifest_boundary.get("provider_policy")
+        != "STRICT_PROVIDER_NEUTRAL_STAGING_CAPABILITY_AND_DEPENDENCY_ADMISSION"
+        or manifest_boundary.get("admission_status") != "NOT_EVALUATED"
+        or manifest_boundary.get("eligible") is not False
+        or manifest_boundary.get("selected_profile_id") is not None
+        or manifest_boundary.get("selected_provider") is not None
+        or manifest_boundary.get("default_profile_id") is not None
+        or manifest_boundary.get("fallback_profile_id") is not None
+        or manifest_boundary.get("configured_mapping_count") != 0
+        or manifest_boundary.get("required_capability_count") != 13
+        or manifest_boundary.get("aws_reference_only") is not True
+        or manifest_boundary.get("aws_reference_role")
+        != "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+        or manifest_boundary.get("canonical_story_deliverables")
+        != ("CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED")
+        or manifest_boundary.get("portable_implementation_paths")
+        != "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+        or manifest_boundary.get("aws_reference_selected_binding") is not False
+    ):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.manifest")
     _assert_zero_counts(
         manifest_boundary.get("action_counts"),
-        (
-            "create",
-            "update",
-            "delete",
-            "promote",
-            "deploy",
-            "migrate",
-            "smoke",
-            "browser",
-            "rollback",
-            "production",
-        ),
+        ST1505_CONTRACT_ACTION_COUNT_KEYS,
         "predecessor.manifest.action_counts",
     )
 

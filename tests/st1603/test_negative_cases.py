@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
 import pytest
+import yaml
 
 from scripts import build_st1603_security_verification_pack as generator
+from scripts import build_st1505_staging_deployment as staging_owner
 from scripts import build_st1506_production_deployment as base_generator
 
 
@@ -18,6 +23,47 @@ MARKER = "REJECTED_SECURITY_INPUT_1603"
 
 def _validate(document: dict[str, Any]) -> None:
     generator.validate_contract(document, REPOSITORY_ROOT)
+
+
+def _replace_nested(
+    document: dict[str, Any], path: tuple[str, ...], value: object
+) -> None:
+    cursor = document
+    for name in path[:-1]:
+        nested = cursor[name]
+        assert isinstance(nested, dict)
+        cursor = nested
+    cursor[path[-1]] = value
+
+
+def _rebind_predecessor_bytes(
+    monkeypatch: pytest.MonkeyPatch,
+    contract_document: dict[str, Any],
+    relative: Path,
+    content: bytes,
+) -> None:
+    digest = hashlib.sha256(content).hexdigest()
+    expected_hashes = dict(generator.EXPECTED_PREDECESSOR_HASHES)
+    expected_hashes[relative.as_posix()] = digest
+    monkeypatch.setattr(generator, "EXPECTED_PREDECESSOR_HASHES", expected_hashes)
+
+    binding_fields = {
+        generator.STAGING_CONTRACT_PATH: "contract_sha256",
+        generator.STAGING_PLAN_PATH: "reference_plan_sha256",
+        generator.STAGING_MANIFEST_PATH: "manifest_sha256",
+    }
+    staging_binding = contract_document["predecessor_bindings"]["staging_deployment"]
+    assert isinstance(staging_binding, dict)
+    staging_binding[binding_fields[relative]] = digest
+
+    original_read = generator._read  # noqa: SLF001
+
+    def rebound_read(root: Path, candidate: Path, field: str) -> bytes:
+        if candidate == relative:
+            return content
+        return original_read(root, candidate, field)
+
+    monkeypatch.setattr(generator, "_read", rebound_read)
 
 
 @pytest.mark.parametrize(
@@ -114,6 +160,162 @@ def test_predecessor_safety_cannot_be_weakened(
         with pytest.raises(generator.SecurityVerificationPackError) as captured:
             _validate(document)
         assert "aws" not in str(captured.value).lower()
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("eligible", True),
+        ("complete_mapping", True),
+        ("selected_provider_name", "aws"),
+        ("selected_profile_id", "default-profile"),
+        ("default_profile_id", "default-profile"),
+        ("fallback_profile_id", "fallback-profile"),
+        ("aws_reference_role", "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY"),
+        ("canonical_story_deliverables", "REPLACED_BY_PORTABLE_OVERLAY"),
+        ("non_aws_owner_managed_profiles", "REPLACEMENT_IMPLEMENTATION_PATHS"),
+        ("aws_reference_selected_binding", True),
+    ),
+)
+def test_staging_provider_neutral_admission_cannot_be_shortcut(
+    contract_document: dict[str, Any], field: str, value: object
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["predecessor_bindings"]["staging_deployment"][
+        "provider_neutral_admission"
+    ][field] = value
+    with pytest.raises(generator.SecurityVerificationPackError) as captured:
+        _validate(document)
+    assert "aws" not in str(captured.value).lower()
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    (
+        (("activation", "network_access"), "ALLOWED"),
+        (("activation", "credential_access"), "ALLOWED"),
+        (("activation", "live_provider_calls"), "ALLOWED"),
+        (("activation", "external_writes"), "ALLOWED"),
+        (("activation", "operations", "target_adapter_call"), "ALLOWED"),
+        (("reference_architecture", "eligibility_shortcut"), True),
+        (
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "role",
+            ),
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "canonical_story_deliverables",
+            ),
+            "REPLACED_BY_PORTABLE_OVERLAY",
+        ),
+    ),
+)
+def test_staging_plan_safety_bypass_fails_after_digest_rebind(
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    path: tuple[str, ...],
+    value: object,
+) -> None:
+    plan = json.loads((REPOSITORY_ROOT / generator.STAGING_PLAN_PATH).read_bytes())
+    assert isinstance(plan, dict)
+    _replace_nested(plan, path, value)
+    content = (
+        json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+    _rebind_predecessor_bytes(
+        monkeypatch,
+        contract_document,
+        generator.STAGING_PLAN_PATH,
+        content,
+    )
+
+    with pytest.raises(generator.SecurityVerificationPackError) as captured:
+        _validate(contract_document)
+    assert captured.value.code == "PREDECESSOR_OWNER_OUTPUT_DRIFT"
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    (
+        (("execution_boundary", "network_access"), "ALLOWED"),
+        (("reference_architecture", "eligibility_shortcut"), True),
+        (
+            ("reference_architecture", "classification"),
+            "OPTIONAL_HISTORICAL_REFERENCE_ARCHITECTURE_ONLY",
+        ),
+        (
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "non_aws_owner_managed_profiles",
+            ),
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
+    ),
+)
+def test_staging_owner_contract_bypass_fails_after_digest_rebind(
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    path: tuple[str, ...],
+    value: object,
+) -> None:
+    owner_contract = staging_owner.load_yaml(
+        REPOSITORY_ROOT / generator.STAGING_CONTRACT_PATH
+    )
+    assert isinstance(owner_contract, dict)
+    rebound_contract = copy.deepcopy(owner_contract)
+    _replace_nested(rebound_contract, path, value)
+    content = yaml.safe_dump(
+        rebound_contract, sort_keys=False, allow_unicode=True
+    ).encode("utf-8")
+    _rebind_predecessor_bytes(
+        monkeypatch,
+        contract_document,
+        generator.STAGING_CONTRACT_PATH,
+        content,
+    )
+
+    original_load_yaml = generator._load_yaml  # noqa: SLF001
+
+    def rebound_load_yaml(root: Path, candidate: Path, field: str) -> Mapping[str, Any]:
+        if candidate == generator.STAGING_CONTRACT_PATH:
+            return rebound_contract
+        return original_load_yaml(root, candidate, field)
+
+    monkeypatch.setattr(generator, "_load_yaml", rebound_load_yaml)
+
+    with pytest.raises(generator.SecurityVerificationPackError) as captured:
+        _validate(contract_document)
+    assert captured.value.code == "PREDECESSOR_OWNER_VALIDATION_FAILED"
+
+
+def test_staging_manifest_drift_fails_after_digest_rebind(
+    contract_document: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    manifest = yaml.safe_load(
+        (REPOSITORY_ROOT / generator.STAGING_MANIFEST_PATH).read_bytes()
+    )
+    assert isinstance(manifest, dict)
+    _replace_nested(manifest, ("boundary", "activation"), "ENABLED")
+    content = yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True).encode(
+        "utf-8"
+    )
+    _rebind_predecessor_bytes(
+        monkeypatch,
+        contract_document,
+        generator.STAGING_MANIFEST_PATH,
+        content,
+    )
+
+    with pytest.raises(generator.SecurityVerificationPackError) as captured:
+        _validate(contract_document)
+    assert captured.value.code == "PREDECESSOR_OWNER_OUTPUT_DRIFT"
 
 
 def test_source_inventory_is_ordered_unique_and_hash_bound(

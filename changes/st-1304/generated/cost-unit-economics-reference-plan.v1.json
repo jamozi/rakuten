@@ -44,13 +44,13 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml",
-    "source_contract_sha256": "8d8c12f51ab0fcd942446cf701181b98701a316df3cb9eac8bfe08c03122a54d",
-    "source_contract_model_sha256": "7ebe4011e4ab03b9d9dc9f7dd9cfeeb3529d914056066319b1eb0f4c82faef40",
+    "source_contract_sha256": "49d3d8050ca63e177c95657b17791c0090176f64948a3e21420b96e9d9e00326",
+    "source_contract_model_sha256": "6a060f5f1b345f85888d137990c0b9c3bd02c0abb17fcd20a54f6d90334f2ba0",
     "generated_by": "repo://scripts/build_st1304_cost_unit_economics_reference_plan.py",
     "generation_command": "/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen --offline --no-cache --no-sync --no-env-file python scripts/build_st1304_cost_unit_economics_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
     }
   },
   "dependency_bindings": {
@@ -85,14 +85,14 @@
     "st1205": {
       "story_id": "ST-1205",
       "feature_commit": "fe18734820cb6f78622950549d32f1ab5394214e",
-      "artifact_binding_commit": "8aab6c4720863f51854b89c4bcac19faabd733c6",
+      "artifact_binding_commit": "f297efeeed8084c909741e4a2414c512a3683021",
       "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
       "artifacts": {
         "changes/st-1205/README.md": "546066c78458889c3fe962cc99cfef01d880b2b3c95d193070af3a9fa45c4018",
         "changes/st-1205/contracts/kpi-read-model-reference-plan.v1.yaml": "83335492346ccf1f830d859eb9930290f3bdd469f642db38eeb874995ddc8de7",
-        "changes/st-1205/generated/kpi-read-model-reference-plan.v1.json": "7f7f48cc8450eebdff500549f172f304b82b1e1f34cc8d65860d119e8e51b7ee",
-        "changes/st-1205/manifest.yaml": "fbea9a703e50714d3d7bc725688971242a60fe27696d92abd2607fec5ed28470",
-        "scripts/build_st1205_kpi_read_model_reference_plan.py": "33c2c625b36729a88580d19a1153d7610cea9cb6a0d20328d58373c772b94a1f",
+        "changes/st-1205/generated/kpi-read-model-reference-plan.v1.json": "5c6d41670a7da68490abc3b9bd7e97c849322e2dd176f1637375b6729e4c130b",
+        "changes/st-1205/manifest.yaml": "86ab06c45106ef504407a9e52bac02f3f4947fa0367b61b40799c2fbc0193b33",
+        "scripts/build_st1205_kpi_read_model_reference_plan.py": "c33827511b5337aff00ac6bcdabebc9a4d0ba2e54cda9120cf96a03383b9e847",
         "tests/st1205/conftest.py": "c40c9db708d3bfc077c0e3dd9f0592bae52b3cf00dd731164f1c01244a81e05d",
         "tests/st1205/test_contract.py": "1a10d7a37fc899f76c1e6b5581d81d1ae1fb5851a46e0b41f410705c73cab37f",
         "tests/st1205/test_generation.py": "d94bf756afef90f72a0d81537592553e9d3499c2b14ae12bcd1f92d93789b543",
@@ -115,17 +115,17 @@
     "st1303": {
       "story_id": "ST-1303",
       "feature_commit": "0436364b8737d05b9aea3a08da8bf15c04292b12",
-      "artifact_binding_commit": "0436364b8737d05b9aea3a08da8bf15c04292b12",
+      "artifact_binding_commit": "046b49027a79f081c0d095ba060ba435612bd1dc",
       "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
       "artifacts": {
         "changes/st-1303/README.md": "d7f1bf588c88ee54c35dd386fca7ee125d66e8e655560f587854d17aa3eb9bef",
-        "changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml": "fe72c8a25bdceb2cf6c5a2099cdadce5edaa79a0e70b7020e2c8a8802c05ae2d",
-        "changes/st-1303/generated/attribution-engine-reference-plan.v1.json": "8ad90222a33ff6a39a7f5ef1a619641cb9c8ef7438088144c81b9fe3e04d4ece",
-        "changes/st-1303/manifest.yaml": "8a3d3ac8483f7c5bcd4b5954ed2a1a475a60004bada8e60cbfc001b25f9cd980",
-        "scripts/build_st1303_attribution_engine_reference_plan.py": "05b9c747513a89dc7c941c17ca557b0e869c675fdc1737c85ea5f9ee156fb311",
+        "changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml": "71cc3c93bedae7d73fa6a81009644f6bc18e2886e15b99c474f1dbfc15c7875e",
+        "changes/st-1303/generated/attribution-engine-reference-plan.v1.json": "68a8520e7394be5037f3760f9742c21d48936119557e3f237bc0a600ec9a841b",
+        "changes/st-1303/manifest.yaml": "18c3ef4c45350a7668cf15d3fd7cc7d967637eabc4d70504604bdb03fbdf1f38",
+        "scripts/build_st1303_attribution_engine_reference_plan.py": "75c44b0915da27aab2c6b084035603325db12168d557ee50ccd7027d7620931c",
         "tests/st1303/conftest.py": "1d972ef360dbfda49b235f8c5066b8fa812d55db4cb0114cf34165cc7340e62f",
-        "tests/st1303/test_contract.py": "fd91683a8f795092e8935f2468f2be4aaf9e071564eb28ae895afb77374b182a",
-        "tests/st1303/test_generation.py": "3a142d2368dc6aa629949185e7e51293ecd02befc091e86cd352c64227fbbb3c",
+        "tests/st1303/test_contract.py": "f08d8177164804e95273a5f4d132c71fb6abdd7c04e8b5d7fdbce053c08f2cc3",
+        "tests/st1303/test_generation.py": "6cd4e3baf911a810b717db76a2aba7962dccd2b518d9cd86ceb0470c355b7799",
         "tests/st1303/test_negative_cases.py": "b2afcd5ea05cc8927becc95d3a7987ec72e3a14ef8386d4aebad7efd2a56bf52"
       },
       "required_semantics": {
@@ -197,7 +197,7 @@
     {
       "name": "st0308_persistence_plan",
       "uri": "repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json",
-      "sha256": "0423fb07b068d47b8c56c1c5c0703a424ae1ec6d116e68a73ad4ff17d3dbd494"
+      "sha256": "290a0475fbf9e1996eba989e15344bd9974bb08053ab8def0fd35246b3636305"
     },
     {
       "name": "job_catalog",

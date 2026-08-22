@@ -77,6 +77,15 @@ pending. Their respective detached exact-hash approvals are the effective
 authority layers. None of these files grants canonical mutation or Open
 Decision resolution authority.
 
+The historical ExecPlan and approved authority rows remain byte-frozen.
+Current repository integration is recorded separately in
+`provenance.current_development_rebinding`, which exact-binds the current root
+`AGENTS.md`, current ExecPlan, and current provider-neutral ST-1506 owner
+generator. This reversible provenance overlay changes no business input,
+evidence result, Open Decision status, or Canonical truth and grants no
+external, live-provider, credential, Staging, publication, release, or
+Production authority.
+
 ## Scoped owner-decision candidates
 
 The source package contains exactly seven rows in canonical order. These
