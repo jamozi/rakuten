@@ -48,7 +48,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -75,15 +75,15 @@ ST0602_ARTIFACTS: Final = (
             "changes/st-0602/generated/"
             "fact-extraction-validation-reference-plan.v1.json"
         ),
-        "afca80b52ee94ae806f04f242afbc6804a98f4a4494f484d372e6f651a060305",
+        "2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944",
     ),
     (
         Path("changes/st-0602/manifest.yaml"),
-        "8a79104dc181bb3f10347ae4ecd1cd3360972a3b9b85a5aa014605a95bb1ecbd",
+        "b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42",
     ),
     (
         Path("scripts/build_st0602_fact_extraction_validation_reference_plan.py"),
-        "a06a5fa14be8e0b49cb461bf0ea8b2a76cfc50192185cf8c758d6e0ac937edf5",
+        "fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf",
     ),
     (
         Path("tests/st0602/conftest.py"),
@@ -109,19 +109,19 @@ ST0603_ARTIFACTS: Final = (
     ),
     (
         Path("changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml"),
-        "c5088b7ae390a2000ab651ab23c02ec051f62bd84ad0411c74f788bb426ab2a7",
+        "51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07",
     ),
     (
         Path("changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json"),
-        "2bc5792ce989ff10f4773e46e3864382bb52f9baf406567a00aea7cd28db4f36",
+        "755f88f9084717f85b644f6b4f9904a3ac3d71b36dfeae9cf34de2104e0518a5",
     ),
     (
         Path("changes/st-0603/manifest.yaml"),
-        "ae25c71a672bbf3b662fef45895d23e11b05eae0e672ec5929e59024a42ac733",
+        "a418addb612aec85c79213dda71b82ae8e3a40285d48399683d0e40cc5586ad7",
     ),
     (
         Path("scripts/build_st0603_fact_conflict_review_reference_plan.py"),
-        "88575a8f2fd511b83709678a1837c1c5629dbbf0347f53912ce6c2696357b6da",
+        "5b52c2790b48a39e04853144f34f48edac2775edfc118bc19586b7887943f341",
     ),
     (
         Path("tests/st0603/conftest.py"),
