@@ -16,6 +16,24 @@ separate WordPress dashboard action after editorial and legal review.
 Run operational commands only from the physical root `/home/minami/rakuten`.
 Linked worktrees are for development/testing and are intentionally refused by
 the launcher.
+The launcher also refuses an unreviewed ancestry, staged/unstaged/untracked
+drift, a runtime-manifest mismatch, a non-`HEAD` runtime blob, or an unsafe
+pinned toolchain. This binding happens before RAOS imports, credential reads,
+or network construction. Do not bypass it or use Git index flags to hide an
+edit.
+Before Python starts, the launcher also verifies the generator-owned standard
+library code inventory, the absent `python314.zip` import path, the pinned
+executable/venv config, both managed `bin/` path sets, absent optional
+`._pth`/`pybuilddir.txt` startup landmarks, the root-owned loader/library set,
+and a fully captured committed CLI blob. Python is launched through that
+pinned loader with the executable RPATH and loader cache disabled. Its stage
+`HEAD`, blob ID and SHA-256 must continue into the same-process verifier. A
+Python reinstall, standard-library source change, managed-bin entry change,
+startup-landmark change, system loader/library update, or venv config change is
+a closed maintenance event: inspect it, regenerate through the Story target
+and review the resulting inventory diff; never regenerate merely to bypass
+drift. Do not run the launcher concurrently with a same-UID Python/venv
+maintenance process.
 All examples use the Story-local
 `changes/st-1703/self-hosted-minimum-start-v1/Makefile`. The root Makefile has
 no self-hosted target because it remains byte/hash-bound by the active
@@ -43,6 +61,20 @@ output is never proof that the Application Password works or that the live
 site accepts the fixed REST route.
 
 ## 1. Offline doctor
+
+After integrating a reviewed runtime-source change into the exact root, first
+confirm the generator-owned inventory without writing:
+
+```bash
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile runtime-manifest-check
+```
+
+`runtime-manifest-generate` is repository maintenance for the implementation
+owner, not a daily recovery command. Never regenerate merely to make unknown
+or unreviewed drift pass. Manifest check and doctor results are local evidence
+only. The two manifest maintenance targets use the fixed root-owned system
+Python in a sanitized empty environment so the check does not first execute
+the owner-writable managed-Python startup surface it is intended to inventory.
 
 ```bash
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile doctor
@@ -196,6 +228,8 @@ must review in WordPress at minimum:
   evidence-supported structured data;
 - desktop/mobile layout, keyboard focus, contrast, reduced motion, alt text,
   heading/table semantics and link affordance;
+- content remains visible when JavaScript is blocked or fails, while reveal
+  motion starts only after the theme script initializes successfully;
 - About, advertising/editorial policy, privacy, contact/subscription and error
   paths.
 

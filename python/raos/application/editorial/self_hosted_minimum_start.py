@@ -268,13 +268,23 @@ def load_first_article_candidate(
     *,
     operation: SelfHostedWordPressOperation,
     existing_draft_id: int | None = None,
+    packet_bytes: bytes | None = None,
 ) -> SelfHostedWordPressDraft:
     if not isinstance(repository_root, Path) or not repository_root.is_absolute():
         _fail()
     path = repository_root / CONTENT_PACKET_RELATIVE_PATH
+    if packet_bytes is None:
+        raw = _read_stable(path)
+    elif (
+        type(packet_bytes) is bytes
+        and 1 <= len(packet_bytes) <= MAX_CONTENT_PACKET_BYTES
+    ):
+        raw = packet_bytes
+    else:
+        _fail()
     try:
         value = json.loads(
-            _read_stable(path).decode("utf-8", errors="strict"),
+            raw.decode("utf-8", errors="strict"),
             object_pairs_hook=_pairs,
             parse_constant=lambda ignored: (_ for _ in ()).throw(ValueError()),
         )

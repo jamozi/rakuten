@@ -80,6 +80,40 @@ def test_real_source_is_valid_but_final_assets_block_package() -> None:
         theme.package_bytes()
 
 
+def test_reveal_is_progressive_enhancement_with_failure_and_motion_fallbacks() -> None:
+    stylesheet = (theme.THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    script = (theme.THEME_ROOT / "assets/theme.js").read_text(encoding="utf-8")
+    default_rule = stylesheet.split(".raos-reveal {", maxsplit=1)[1].split(
+        "}", maxsplit=1
+    )[0]
+    assert "opacity: 1;" in default_rule
+    assert "transform: none;" in default_rule
+    assert ".raos-reveal-ready .raos-reveal:not(.is-visible)" in stylesheet
+    reduced = stylesheet.split("@media (prefers-reduced-motion: reduce)", maxsplit=1)[1]
+    assert ".raos-reveal-ready .raos-reveal" in reduced
+    assert 'root.classList.add("raos-reveal-ready")' in script
+    assert 'root.classList.remove("raos-reveal-ready")' in script
+    assert script.index("observer = new IntersectionObserver") < script.index(
+        'root.classList.add("raos-reveal-ready")'
+    )
+    assert "revealAll();" in script
+
+
+def test_verified_theme_snapshot_does_not_reopen_mutated_paths(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    payloads = {
+        path.relative_to(root).as_posix(): path.read_bytes()
+        for path in root.rglob("*")
+        if path.is_file()
+    }
+    (root / "assets/theme.css").write_bytes(b"unreviewed replacement")
+    result = theme.source_check_from_verified_files(payloads)
+    assert result["status"] == "SOURCE_VALID"
+    assert result["package_ready"] is False
+
+
 def test_complete_fixture_packages_deterministically_and_checks_read_only(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -118,6 +152,7 @@ def test_complete_fixture_packages_deterministically_and_checks_read_only(
         ("traversal", "THEME_PATH_INVALID"),
         ("remote", "THEME_REMOTE_LOAD_FORBIDDEN"),
         ("motion", "THEME_ACCESSIBILITY_INVALID"),
+        ("progressive", "THEME_ACCESSIBILITY_INVALID"),
     ],
 )
 def test_source_checks_reject_traversal_remote_load_and_missing_reduced_motion(
@@ -140,12 +175,21 @@ def test_source_checks_reject_traversal_remote_load_and_missing_reduced_motion(
             + '\n.remote { background: url("https://untrusted.invalid/a.png"); }\n',
             encoding="utf-8",
         )
-    else:
+    elif mutation == "motion":
         stylesheet = root / "assets/theme.css"
         stylesheet.write_text(
             stylesheet.read_text(encoding="utf-8").replace(
                 "@media (prefers-reduced-motion: reduce)",
                 "@media (min-width: 1px)",
+            ),
+            encoding="utf-8",
+        )
+    else:
+        script = root / "assets/theme.js"
+        script.write_text(
+            script.read_text(encoding="utf-8").replace(
+                'root.classList.remove("raos-reveal-ready")',
+                'root.classList.remove("broken-reveal-state")',
             ),
             encoding="utf-8",
         )

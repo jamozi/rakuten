@@ -64,6 +64,26 @@ def test_content_packet_builds_only_bound_create_and_positive_id_update() -> Non
     assert create.content_html.count("公式楽天アフィリエイトリンク未設定") == 3
 
 
+def test_verified_content_bytes_are_used_without_reopening_repository_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import raos.application.editorial.self_hosted_minimum_start as content_module
+
+    payload = (REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH).read_bytes()
+
+    def forbidden_read(path: Path) -> bytes:
+        del path
+        raise AssertionError("verified content path reopened")
+
+    monkeypatch.setattr(content_module, "_read_stable", forbidden_read)
+    candidate = content_module.load_first_article_candidate(
+        REPOSITORY_ROOT,
+        operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        packet_bytes=payload,
+    )
+    assert candidate.operation is SelfHostedWordPressOperation.CREATE_DRAFT
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [

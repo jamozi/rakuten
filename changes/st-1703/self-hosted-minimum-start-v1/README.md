@@ -20,6 +20,9 @@ publication, release, or Production evidence.
 - `theme/kurashinoshirube-child/` is the Twenty Twenty-Five child-theme source.
   It contains presentation only: no tracking, remote font/script/image load,
   publication, upload, taxonomy, plugin activation, or generic HTTP behavior.
+  Reveal motion is progressive enhancement: content is visible without
+  JavaScript and is hidden for entrance motion only after successful script
+  initialization; failure and reduced-motion paths retain/restore visibility.
 - `theme/kurashinoshirube-child/raos-assets.v1.json` owns the two final image
   requirements and their closed prompts. Both images intentionally remain
   `PENDING_FINAL_ASSET`; no image provider was called by this slice.
@@ -48,6 +51,53 @@ The expected result in this slice is `SOURCE_VALID` with
 final asset gate is completed.
 
 ## Runtime boundary
+
+Every owner command is bound before RAOS imports or credential access to the
+physical `/home/minami/rakuten` repository, an exact committed clean `HEAD`
+descending from the reviewed base `7598e127`, and the 26 ordered source/input
+files in `runtime-manifest.v1.json`. The BusyBox launcher performs the first
+sanitized Git check before starting Python. It also validates the
+generator-owned 657-file Python standard-library code inventory, absence of
+the leading `python314.zip` import path, the pinned executable and venv config,
+and the exact managed-Python/venv `bin/` path sets. Optional startup landmarks
+(`._pth` and `pybuilddir.txt`) must remain absent. The executable is started
+only through the hash-bound root-owned glibc loader and library set, with its
+owner-writable RPATH and the system loader cache disabled. The launcher then
+captures and hash-checks the complete committed CLI blob before Python is
+started. The shell-stage `HEAD`, blob ID and CLI SHA-256 are carried into the
+stdlib-only Python bootstrap and must match the same current `HEAD`. The
+bootstrap validates the complete closed manifest path inventory before opening
+any listed payload, then checks every bounded SHA-256, matching `HEAD` blob,
+tracked state and clean worktree before installing the narrow self-hosted
+package namespaces. The ten leaf modules execute only through a closed loader
+backed by the already verified bytes; source paths are not reopened. Site
+startup processing is disabled, live repository import roots are not added to
+`sys.path`, repository bytecode lookup is redirected away from the checkout,
+and bytecode writes are disabled. Any manifest, source, standard-library code,
+startup landmark, managed-bin path set, dynamic-loader/library set, index,
+staged, unstaged, untracked, skip-worktree, root, ancestry, stage or toolchain
+drift fails closed before WordPress modules, credential values or network code
+are reached. Run the launcher only while no same-UID Python/venv maintenance
+process is mutating these owner-local runtime directories.
+
+The manifest is generated output owned by
+`scripts/build_st1703_self_hosted_runtime_manifest.py`; do not edit it by hand.
+The same generator owns
+`python-runtime-code-inventory.v1.sha256`; its metadata and checksum rows are
+one closed artifact and must not be edited or regenerated independently.
+After a reviewed runtime-source change, regenerate and then run the no-write
+check from the Story-local Makefile:
+
+```bash
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile runtime-manifest-generate
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile runtime-manifest-check
+```
+
+Both operations are offline. Regeneration records bytes only; it grants no
+credential, provider, publication, staging, release, or Production authority.
+These two maintenance targets run the generator with the fixed root-owned
+system Python in an empty environment; they do not start the owner-writable
+managed Python whose startup surface they are checking.
 
 The implementation keeps `domain <- application <- adapters/framework`:
 

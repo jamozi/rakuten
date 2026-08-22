@@ -6,6 +6,10 @@
 > record does not rewrite the historical exact-hash handoffs below, resolve the
 > Canonical Open Decision registry, complete ST-1703, or authorize live write,
 > theme activation, publication, formal TST, staging, release, or Production.
+> Its owner commands are additionally bound to a generator-owned runtime
+> manifest, pinned Python code inventory, pre-captured CLI blob and exact clean
+> committed `HEAD` before RAOS imports or credential access; see the slice
+> README and worklog for the PR #113 review fix.
 
 This change implements only the repository-owner-approved local slice bound by
 `DESIGN_HANDOFF_V1_MARKET_LEARNING_PILOT_WAVE_1.yaml`. It does not complete the

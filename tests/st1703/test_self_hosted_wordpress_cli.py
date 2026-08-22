@@ -34,6 +34,15 @@ sys.modules[SPEC.name] = cli
 SPEC.loader.exec_module(cli)
 
 
+def _authorize_imported_cli(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(cli, "_runtime_authorized", True)
+    monkeypatch.setattr(
+        cli,
+        "_verified_runtime_bytes",
+        {cli._CONTENT_PACKET_RUNTIME_PATH: b"synthetic-bound-packet"},
+    )
+
+
 def test_doctor_is_metadata_only_and_has_zero_network_or_external_writes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -80,8 +89,11 @@ def test_doctor_is_metadata_only_and_has_zero_network_or_external_writes(
 
 
 def test_hidden_installer_prints_no_values_and_creates_owner_private_json(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
+    _authorize_imported_cli(monkeypatch)
     username = "owner-test-user"
     application_password = "synthetic app password 1703"
 
@@ -126,8 +138,12 @@ def test_hidden_installer_prints_no_values_and_creates_owner_private_json(
     ],
 )
 def test_unknown_forbidden_and_invalid_controls_are_sanitized(
-    argv: list[str], tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    argv: list[str],
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
+    _authorize_imported_cli(monkeypatch)
     assert cli.main(argv, repository_root=tmp_path) == 2
     output = capsys.readouterr()
     assert "never-reflect-this-secret" not in output.out + output.err
@@ -138,12 +154,15 @@ def test_unknown_forbidden_and_invalid_controls_are_sanitized(
     assert refusal["reason_code"] in {"INVALID_ARGUMENT", "OPERATION_NOT_ALLOWED"}
 
 
-def test_real_isolated_python_import_and_help_path_is_offline() -> None:
+def test_direct_linked_worktree_execution_refuses_before_command_imports() -> None:
     result = subprocess.run(
         [
             sys.executable,
             "-B",
             "-I",
+            "-S",
+            "-X",
+            "pycache_prefix=/dev/null",
             str(SCRIPTS_ROOT / "self_hosted_wordpress.py"),
             "--help",
         ],
@@ -155,10 +174,15 @@ def test_real_isolated_python_import_and_help_path_is_offline() -> None:
         check=False,
         env={"PATH": "/usr/bin:/bin", "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8"},
     )
-    assert result.returncode == 0, (result.stdout, result.stderr)
-    assert b"create-draft" in result.stdout
-    assert b"update-draft" not in result.stdout
-    assert b"publish" not in result.stdout
+    assert result.returncode == 2, (result.stdout, result.stderr)
+    assert result.stderr == b""
+    assert b"Traceback" not in result.stdout
+    refusal = json.loads(result.stdout)
+    assert refusal == {
+        "publication_authorized": False,
+        "reason_code": "SELF_HOSTED_RUNTIME_BINDING_INVALID",
+        "status": "BLOCKED",
+    }
 
 
 def test_exact_root_launcher_doctor_is_sanitized_and_read_only() -> None:
@@ -200,11 +224,58 @@ def test_launcher_is_exact_root_pinned_isolated_and_sanitizes_environment() -> N
     assert "/usr/bin/busybox env -i" in launcher
     assert "cpython-3.14.6-linux-x86_64-gnu" in launcher
     assert "python=$expected_root/.venv/bin/python" in launcher
-    assert '"$python" -B -I "$command_path" "$@"' in launcher
+    assert "approved_base=7598e127adee6027d086619a720071a550b7a290" in launcher
+    assert "fixed_git status --porcelain=v1 --untracked-files=all" in launcher
+    assert "fixed_git hash-object --no-filters" in launcher
+    assert "fixed_git cat-file blob" in launcher
+    assert "python-runtime-code-inventory.v1.sha256" in launcher
+    assert "SELF_HOSTED_PYTHON_RUNTIME_CODE_INVENTORY_V1" in launcher
+    assert "python314.zip" in launcher
+    assert "python_startup_landmark_state=ABSENT" in launcher
+    assert "python_pybuilddir=$python_root/bin/pybuilddir.txt" in launcher
+    assert launcher.count("startup_landmarks_absent || refuse") == 2
+    assert launcher.count("runtime_bin_path_sets_match || refuse") == 2
+    assert "dynamic_loader=$dynamic_library_directory/ld-linux-x86-64.so.2" in launcher
+    assert "--inhibit-cache" in launcher
+    assert "--inhibit-rpath ''" in launcher
+    assert "--glibc-hwcaps-mask ''" in launcher
+    assert '--library-path "$dynamic_library_directory"' in launcher
+    assert '--argv0 "$python"' in launcher
+    assert "current_code_path_sha" in launcher
+    assert "inventory_code_path_sha" in launcher
+    assert "capture_sentinel=RAOS_SELF_HOSTED_COMMITTED_CLI_CAPTURE_END_" in launcher
+    assert '"RAOS_SELF_HOSTED_STAGE_HEAD=$head_commit"' in launcher
+    assert '"RAOS_SELF_HOSTED_STAGE_CLI_BLOB=$stage_cli_blob"' in launcher
+    assert '"RAOS_SELF_HOSTED_STAGE_CLI_SHA256=$captured_cli_sha"' in launcher
+    assert '"$python_target" \\' in launcher
+    assert "-B -I -S -X pycache_prefix=/dev/null -" in launcher
     assert "doctor:1|install-credentials:1|create-draft:1" in launcher
     assert "update-draft" not in launcher
     assert "curl" not in launcher
     assert "wget" not in launcher
+
+
+def test_imported_main_refuses_before_credentials_or_network(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    calls: list[str] = []
+
+    def forbidden(*args: object, **kwargs: object) -> None:
+        del args, kwargs
+        calls.append("capability")
+        raise AssertionError("capability reached")
+
+    monkeypatch.setattr(cli, "_runtime_authorized", False)
+    monkeypatch.setattr(cli, "_verified_runtime_bytes", None)
+    monkeypatch.setattr(cli, "_apply_draft", forbidden)
+    assert cli.main(["create-draft"], repository_root=tmp_path) == 2
+    assert calls == []
+    assert json.loads(capsys.readouterr().out)["reason_code"] == (
+        "SELF_HOSTED_RUNTIME_BINDING_INVALID"
+    )
+    assert not (tmp_path / ".secrets").exists()
 
 
 def test_story_makefile_has_closed_targets_and_sanitized_help() -> None:
@@ -221,7 +292,8 @@ def test_story_makefile_has_closed_targets_and_sanitized_help() -> None:
     assert result.returncode == 0, (result.stdout, result.stderr)
     assert result.stderr == b""
     assert result.stdout.splitlines() == [
-        b"Offline: doctor theme-source-check theme-check",
+        b"Offline: doctor runtime-manifest-check theme-source-check theme-check",
+        b"Local maintenance: runtime-manifest-generate",
         b"Human gated: install-credentials create-draft theme-package",
     ]
     assert b"update" not in result.stdout
@@ -229,6 +301,10 @@ def test_story_makefile_has_closed_targets_and_sanitized_help() -> None:
     assert "override OWNER_REPOSITORY_ROOT := /home/minami/rakuten" in content
     assert "override OWNER_LAUNCHER :=" in content
     assert "override MANAGED_PYTHON :=" in content
+    assert (
+        "override ROOT_OWNED_RUNTIME_GENERATOR_PYTHON := /usr/bin/python3.10" in content
+    )
+    assert content.count("/usr/bin/busybox env -i PATH=/usr/bin:/bin") == 2
     assert "update-draft" not in content
 
 

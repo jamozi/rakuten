@@ -139,12 +139,17 @@ a:hover {
 }
 
 .raos-reveal {
-  opacity: 0;
-  transform: translateY(1.25rem);
+  opacity: 1;
+  transform: none;
   transition: opacity 500ms ease, transform 500ms ease;
 }
 
-.raos-reveal.is-visible {
+.raos-reveal-ready .raos-reveal:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(1.25rem);
+}
+
+.raos-reveal-ready .raos-reveal.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -179,7 +184,8 @@ a:hover {
     transition-duration: 0.01ms !important;
   }
 
-  .raos-reveal {
+  .raos-reveal,
+  .raos-reveal-ready .raos-reveal {
     opacity: 1;
     transform: none;
   }

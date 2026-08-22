@@ -9,7 +9,7 @@ Read-only check: make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile t
 from __future__ import annotations
 
 import argparse
-from collections.abc import Iterator
+from collections.abc import Generator, Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass
 import hashlib
@@ -131,7 +131,9 @@ def _same_named_object(
 
 
 @contextmanager
-def _open_absolute_directory(path: Path, *, create: bool = False) -> Iterator[int]:
+def _open_absolute_directory(
+    path: Path, *, create: bool = False
+) -> Generator[int, None, None]:
     if not path.is_absolute() or any(
         part in {"", ".", ".."} for part in path.parts[1:]
     ):
@@ -176,7 +178,9 @@ def _open_absolute_directory(path: Path, *, create: bool = False) -> Iterator[in
 
 
 @contextmanager
-def _open_parent_at(root_fd: int, relative: str) -> Iterator[tuple[int, str]]:
+def _open_parent_at(
+    root_fd: int, relative: str
+) -> Generator[tuple[int, str], None, None]:
     parts = PurePosixPath(_safe_relative(relative)).parts
     try:
         descriptor = os.dup(root_fd)
@@ -350,7 +354,7 @@ def _source_inventory(
     actual = tuple(
         sorted(
             path
-            for path, (kind, ignored) in inventory.items()
+            for path, (kind, _identity_value) in inventory.items()
             if kind == "file" and not path.startswith("assets/images/")
         )
     )
@@ -372,6 +376,16 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
     if relative == "assets/theme.css" and (
         "@media (prefers-reduced-motion: reduce)" not in text
         or ":focus-visible" not in text
+        or ".raos-reveal-ready .raos-reveal:not(.is-visible)" not in text
+        or ".raos-reveal-ready .raos-reveal" not in text
+        or ".raos-reveal {\n  opacity: 1;\n  transform: none;" not in text
+    ):
+        _fail("THEME_ACCESSIBILITY_INVALID")
+    if relative == "assets/theme.js" and (
+        'root.classList.add("raos-reveal-ready")' not in text
+        or 'root.classList.remove("raos-reveal-ready")' not in text
+        or "const revealAll = () =>" not in text
+        or "if (reduced ||" not in text
     ):
         _fail("THEME_ACCESSIBILITY_INVALID")
     if relative == "style.css" and (
@@ -392,92 +406,109 @@ class _ThemeSnapshot:
         return self.pending_asset_count == 0
 
 
+def _validated_payload_snapshot(payload_values: Mapping[str, bytes]) -> _ThemeSnapshot:
+    payloads = dict(payload_values)
+    if not payloads or any(
+        _safe_relative(path) != path or type(payload) is not bytes
+        for path, payload in payloads.items()
+    ):
+        _fail("THEME_INVENTORY_INVALID")
+    manifest_payload = payloads.get(MANIFEST_PATH.name)
+    if manifest_payload is None:
+        _fail("THEME_MANIFEST_INVALID")
+    manifest = _parse_manifest(manifest_payload)
+    inventory: dict[str, tuple[str, tuple[int, ...]]] = {
+        path: ("file", ()) for path in payloads
+    }
+    paths = _source_inventory(manifest, inventory)
+    for relative in paths:
+        _validate_source_file(relative, payloads[relative])
+
+    images = cast(list[object], manifest["required_images"])
+    if len(images) != 2:
+        _fail("THEME_MANIFEST_INVALID")
+    image_paths: set[str] = set()
+    pending = 0
+    for item in images:
+        if type(item) is not dict:
+            _fail("THEME_MANIFEST_INVALID")
+        image = cast(dict[str, object], item)
+        path = _safe_relative(image.get("path"))
+        if (
+            frozenset(image) != _IMAGE_KEYS
+            or path in image_paths
+            or not path.startswith("assets/images/")
+            or not path.endswith(".webp")
+            or type(image.get("alt")) is not str
+            or not cast(str, image["alt"]).strip()
+            or type(image.get("prompt")) is not str
+            or not cast(str, image["prompt"]).strip()
+            or type(image.get("usage")) is not str
+            or not cast(str, image["usage"]).strip()
+            or image.get("status") not in {"PENDING_FINAL_ASSET", "FINAL"}
+        ):
+            _fail("THEME_MANIFEST_INVALID")
+        image_paths.add(path)
+        if image["status"] == "PENDING_FINAL_ASSET":
+            if image["sha256"] is not None or path in payloads:
+                _fail("THEME_PENDING_ASSET_INVALID")
+            pending += 1
+            continue
+        if (
+            type(image["sha256"]) is not str
+            or _SHA256.fullmatch(image["sha256"]) is None
+        ):
+            _fail("THEME_MANIFEST_INVALID")
+        payload = payloads.get(path)
+        if (
+            payload is None
+            or len(payload) < 12
+            or payload[:4] != b"RIFF"
+            or payload[8:12] != b"WEBP"
+            or hashlib.sha256(payload).hexdigest() != image["sha256"]
+        ):
+            _fail("THEME_FINAL_ASSET_INVALID")
+
+    if set(payloads) != {*paths, *image_paths.intersection(payloads)}:
+        _fail("THEME_INVENTORY_MISMATCH")
+    return _ThemeSnapshot(
+        archive_files=tuple(sorted(payloads.items())),
+        pending_asset_count=pending,
+        source_file_count=len(paths),
+    )
+
+
 def _validated_snapshot() -> _ThemeSnapshot:
     with _open_absolute_directory(THEME_ROOT) as theme_fd:
         before = _inventory_at(theme_fd)
-        manifest_payload, manifest_identity = _read_regular_at(
-            theme_fd, MANIFEST_PATH.name
-        )
-        manifest_entry = before.get(MANIFEST_PATH.name)
-        if manifest_entry != ("file", manifest_identity):
-            _fail("THEME_INVENTORY_CHANGED")
-        manifest = _parse_manifest(manifest_payload)
-        paths = _source_inventory(manifest, before)
         payloads: dict[str, bytes] = {}
-        for relative in paths:
-            if relative == MANIFEST_PATH.name:
-                payload, identity = manifest_payload, manifest_identity
-            else:
-                payload, identity = _read_regular_at(theme_fd, relative)
-            if before.get(relative) != ("file", identity):
-                _fail("THEME_INVENTORY_CHANGED")
-            _validate_source_file(relative, payload)
-            payloads[relative] = payload
-
-        images = cast(list[object], manifest["required_images"])
-        if len(images) != 2:
-            _fail("THEME_MANIFEST_INVALID")
-        image_paths: set[str] = set()
-        pending = 0
-        for item in images:
-            if type(item) is not dict:
-                _fail("THEME_MANIFEST_INVALID")
-            image = cast(dict[str, object], item)
-            path = _safe_relative(image.get("path"))
-            if (
-                frozenset(image) != _IMAGE_KEYS
-                or path in image_paths
-                or not path.startswith("assets/images/")
-                or not path.endswith(".webp")
-                or type(image.get("alt")) is not str
-                or not cast(str, image["alt"]).strip()
-                or type(image.get("prompt")) is not str
-                or not cast(str, image["prompt"]).strip()
-                or type(image.get("usage")) is not str
-                or not cast(str, image["usage"]).strip()
-                or image.get("status") not in {"PENDING_FINAL_ASSET", "FINAL"}
-            ):
-                _fail("THEME_MANIFEST_INVALID")
-            image_paths.add(path)
-            if image["status"] == "PENDING_FINAL_ASSET":
-                if image["sha256"] is not None or path in before:
-                    _fail("THEME_PENDING_ASSET_INVALID")
-                pending += 1
+        for relative, (kind, expected_identity) in sorted(before.items()):
+            if kind != "file":
                 continue
-            if (
-                type(image["sha256"]) is not str
-                or _SHA256.fullmatch(image["sha256"]) is None
-            ):
-                _fail("THEME_MANIFEST_INVALID")
-            payload, identity = _read_regular_at(theme_fd, path)
-            if before.get(path) != ("file", identity):
+            payload, identity = _read_regular_at(theme_fd, relative)
+            if identity != expected_identity:
                 _fail("THEME_INVENTORY_CHANGED")
-            if (
-                len(payload) < 12
-                or payload[:4] != b"RIFF"
-                or payload[8:12] != b"WEBP"
-                or hashlib.sha256(payload).hexdigest() != image["sha256"]
-            ):
-                _fail("THEME_FINAL_ASSET_INVALID")
-            payloads[path] = payload
-
-        actual_files = {
-            path for path, (kind, ignored) in before.items() if kind == "file"
-        }
-        if actual_files != set(payloads):
-            _fail("THEME_INVENTORY_MISMATCH")
-        after = _inventory_at(theme_fd)
-        if after != before:
+            payloads[relative] = payload
+        snapshot = _validated_payload_snapshot(payloads)
+        if _inventory_at(theme_fd) != before:
             _fail("THEME_INVENTORY_CHANGED")
-        return _ThemeSnapshot(
-            archive_files=tuple(sorted(payloads.items())),
-            pending_asset_count=pending,
-            source_file_count=len(paths),
-        )
+        return snapshot
 
 
 def source_check() -> dict[str, object]:
     snapshot = _validated_snapshot()
+    return _source_check_result(snapshot)
+
+
+def source_check_from_verified_files(
+    payloads: Mapping[str, bytes],
+) -> dict[str, object]:
+    """Validate already identity-bound bytes without reopening repository paths."""
+
+    return _source_check_result(_validated_payload_snapshot(payloads))
+
+
+def _source_check_result(snapshot: _ThemeSnapshot) -> dict[str, object]:
     return {
         "asset_status": (
             "PENDING_FINAL_ASSETS" if not snapshot.package_ready else "FINAL"
@@ -616,7 +647,7 @@ def _write_package(payload: bytes) -> None:
 def _read_output_package() -> bytes:
     try:
         with _open_absolute_directory(OUTPUT_PATH.parent) as parent_fd:
-            payload, ignored = _read_regular_at(
+            payload, _identity_value = _read_regular_at(
                 parent_fd,
                 OUTPUT_PATH.name,
                 max_bytes=MAX_PACKAGE_BYTES,

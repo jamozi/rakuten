@@ -57,6 +57,10 @@ DESIGN_HANDOFF_V1:
     - update値とjournal規則はlocal interface-onlyで、live adapter、CLI、Makeからactivationしない
     - redirect、proxy継承、automatic retry、fallbackを禁止
     - credentialsはowner-private固定JSONだけに保存し、argv/env/logへ出さない
+    - owner commandはRAOS importとcredential/network accessより前にreview済みbaseの子孫であるexact clean committed HEADとgenerator-owned runtime manifestへbindする
+    - pre-Python stageはpinned stdlib code inventory、python314.zip不在、完全capture済みCLI blobを検証し、stage HEAD/blob/SHA-256をsame-process verifierへ連続bindする
+    - manifest entry path/orderはclosed inventoryと完全一致した後にだけdescriptor-relativeにpayloadを開く
+    - repository内bytecodeはlive importに使わず、self-hosted専用のclosed package namespaceだけをmanifest対象sourceからloadする
     - content publication、theme/plugin activation、media upload、taxonomy mutationを実装しない
     - AI画像は別の費用・外部操作gateで生成し、完成asset欠落時はtheme package readinessを拒否
   security_and_approval_gates:
@@ -80,12 +84,19 @@ DESIGN_HANDOFF_V1:
     - exact COMMITTED replay performs no credential read and no network request
     - pending, ambiguous, tampered, or mismatched journal state never retries
     - theme source is deterministic, local-only, accessible, and reduced-motion aware
+    - reveal content is visible without JavaScript and becomes motion-hidden only after successful initialization
+    - runtime manifest, working bytes, and HEAD blobs match before any RAOS import, credential read, or network construction
+    - pinned Python code inventory and captured CLI stage identity match before interpreter startup and remain bound in the verifier
+    - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
     - final image and affiliate-slot absence remains visible and fail closed
     - first article separates sourced facts from editorial interpretation and fabricates no experience
   required_test_evidence:
     - isolated ST-1703 unit and negative tests
     - deterministic theme package/check fixtures
     - secret redaction and filesystem trust-boundary tests
+    - runtime manifest determinism, exact-head, drift, import-closure, and no-repository-pyc tests
+    - Python code inventory shape/content, absent-zip, stage-continuity, and pre-open closed-path tests
+    - startup-landmark, managed-bin inventory, root-owned loader/library digest, and RPATH-bypass tests
     - transport one-attempt, TLS, timeout, redirect, proxy, bounded-response tests
     - journal fsync, replay, ambiguity, and tamper tests
     - ruff format/lint, mypy/Pyright, bash syntax, workspace and canonical import checks
