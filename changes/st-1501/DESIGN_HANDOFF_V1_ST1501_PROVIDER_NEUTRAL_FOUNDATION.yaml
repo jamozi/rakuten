@@ -3,8 +3,10 @@ version: 1
 record_status: RECORDED_DURABLE_OWNER_DECISION
 approved_story: ST-1501
 approved_scope:
-  - Define the Full RAOS infrastructure foundation without assuming or requiring AWS or any other provider.
-  - Retain AWS Tokyo only as optional historical reference metadata inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Define an additional provider-neutral foundation admission boundary for Full RAOS without making AWS or any provider a selected, default, fallback, or Production-admission binding.
+  - Preserve AWS Tokyo as the current Canonical Reference Architecture inherited from INT-DEC-007 and RAOS-ARCH-001 without making it a selected binding or Production admission prerequisite.
+  - Preserve the Canonical AWS-specific ST-1501 backlog objective and deliverable as authoritative, not erased, replaced, or completed by this portability overlay.
+  - Admit non-AWS and owner-managed profiles only as additional portable implementation paths with identical complete capabilities and evidence.
   - Require every future foundation profile to map the same closed capability inventory and provide equivalent security, operations, release, recovery, and residency evidence.
   - Keep every provider, account or project, region, plugin, backend, credential, network, budget, and resource binding unset while OD-013 remains unresolved.
 source_design_refs:
@@ -30,7 +32,9 @@ decision:
   aws_reference_boundary:
     canonical_decision_id: INT-DEC-007
     reference_profile: AWS_TOKYO
-    role: OPTIONAL_HISTORICAL_REFERENCE_ONLY
+    role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
     default: false
     implicit_fallback: false
     selected_binding: false
@@ -73,7 +77,7 @@ decision:
     - human_approved_change_and_rollback
 rationale:
   - INT-DEC-007 makes AWS Tokyo a Reference Architecture while requiring a portable Core, so provider admission must evaluate capabilities and evidence rather than a provider name.
-  - Provider, account, region, plugin, or backend defaults would silently turn historical reference metadata into a live infrastructure choice.
+  - Provider, account, region, plugin, or backend defaults would silently turn the current Canonical Reference Architecture into a live selected infrastructure choice.
   - A closed foundation capability inventory permits AWS, another cloud, or owner-managed infrastructure without selecting an unreviewed provider or topology now.
   - Keeping all bindings null and eligibility unevaluated preserves OD-013 and every external security, operations, release, and Production gate.
 rejected_alternatives:
@@ -97,12 +101,14 @@ security_and_approval_gates:
   - Preserve separation of Development and Production, private data-plane boundaries, controlled ingress/egress, workload identity, auditability, backup/restore, and rollback evidence.
   - Preserve OD-013 region, backup-region, cross-border transfer, and data-residency blocking state until its human owners provide valid evidence.
   - Require the same security, operations, release, recovery, and residency evidence for AWS, another cloud, and owner-managed infrastructure.
-  - Never infer eligibility from a provider label, account or project name, region, plugin, backend, historical reference, local generator success, or predecessor completion.
+  - Never infer eligibility from a provider label, account or project name, region, plugin, backend, Canonical Reference Architecture status, local generator success, or predecessor completion.
 acceptance_criteria:
   - The ST-1501 source and generated reference expose a closed provider-neutral foundation capability inventory with no selected, default, or fallback profile or binding.
   - Every future eligible profile must have exactly one explicit mapping for every required capability and complete equivalent evidence.
   - Unknown, missing, duplicate, partial, implicit, defaulted, fallback, label-only, or reference-only mappings are rejected before eligibility.
-  - AWS Tokyo remains visible only as optional historical reference metadata and cannot select a provider, account, region, plugin, backend, or satisfy evidence by itself.
+  - AWS Tokyo remains the current Canonical Reference Architecture, while its status alone cannot select a provider, account, region, plugin, backend, or satisfy admission or evidence.
+  - The Canonical AWS-specific ST-1501 objective and Terraform modules/state-plan deliverable remain authoritative and NOT_STARTED/NOT_EXECUTED; this overlay neither erases, replaces, nor completes them.
+  - Non-AWS and owner-managed profiles are additional portable implementation paths only and require the same complete capability mapping and evidence as AWS.
   - Existing disabled activation, forbidden native commands, zero action counts, unresolved OD-013, and NOT_EXECUTED evidence remain unchanged.
 required_test_evidence:
   - Isolated tests/st1501 positive contract and generated-plan assertions.

@@ -70,11 +70,13 @@
     "admission_status": "NOT_EVALUATED",
     "aws_reference_boundary": {
       "admission_requirement": false,
+      "canonical_story_deliverables": "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED",
       "default": false,
       "eligibility_shortcut": false,
       "evidence_substitute": false,
       "implicit_fallback": false,
-      "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+      "non_aws_owner_managed_profiles": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
+      "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
       "selected_binding": false
     },
     "binding_policy": {
@@ -217,7 +219,7 @@
   },
   "reference_architecture": {
     "admission_requirement": false,
-    "classification": "OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY",
+    "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
     "cloud": "AWS",
     "default": false,
     "eligibility_shortcut": false,

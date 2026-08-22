@@ -18,7 +18,7 @@ def test_contract_loads_into_closed_reference_only_model(
     assert foundation_model.reference == generator.ReferenceArchitecture(
         cloud="AWS",
         region="ap-northeast-1",
-        classification="OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY",
+        classification="CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
         inherited_from="INT-DEC-007",
         portable_core_required=True,
         default=False,
@@ -46,14 +46,14 @@ def test_contract_loads_into_closed_reference_only_model(
     )
 
 
-def test_reference_metadata_is_not_a_selected_cloud_configuration(
+def test_current_canonical_reference_is_not_a_selected_cloud_configuration(
     foundation_model: generator.FoundationModel,
 ) -> None:
     plan = generator.reference_plan_document(foundation_model)
     assert plan["reference_architecture"] == {
         "cloud": "AWS",
         "region": "ap-northeast-1",
-        "classification": "OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY",
+        "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
         "inherited_from": "INT-DEC-007",
         "portable_core_required": True,
         "default": False,
@@ -137,7 +137,11 @@ def test_aws_reference_cannot_supply_foundation_admission_or_evidence(
         "provider_neutral_foundation_admission"
     ]
     assert admission["aws_reference_boundary"] == {
-        "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+        "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+        "canonical_story_deliverables": (
+            "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+        ),
+        "non_aws_owner_managed_profiles": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
         "default": False,
         "implicit_fallback": False,
         "selected_binding": False,

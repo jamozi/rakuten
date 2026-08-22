@@ -79,16 +79,23 @@ PINNED_SOURCES: Final = {
         "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
     ),
     "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
-        "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61"
+        "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
     ),
 }
 
 EXPECTED_HANDOFF_LIST_SECTIONS: Final[dict[str, tuple[str, ...]]] = {
     "approved_scope": (
-        "Define the Full RAOS infrastructure foundation without assuming or "
-        "requiring AWS or any other provider.",
-        "Retain AWS Tokyo only as optional historical reference metadata inherited "
-        "from INT-DEC-007 and RAOS-ARCH-001.",
+        "Define an additional provider-neutral foundation admission boundary for "
+        "Full RAOS without making AWS or any provider a selected, default, fallback, "
+        "or Production-admission binding.",
+        "Preserve AWS Tokyo as the current Canonical Reference Architecture inherited "
+        "from INT-DEC-007 and RAOS-ARCH-001 without making it a selected binding or "
+        "Production admission prerequisite.",
+        "Preserve the Canonical AWS-specific ST-1501 backlog objective and deliverable "
+        "as authoritative, not erased, replaced, or completed by this portability "
+        "overlay.",
+        "Admit non-AWS and owner-managed profiles only as additional portable "
+        "implementation paths with identical complete capabilities and evidence.",
         "Require every future foundation profile to map the same closed capability "
         "inventory and provide equivalent security, operations, release, recovery, "
         "and residency evidence.",
@@ -115,7 +122,8 @@ EXPECTED_HANDOFF_LIST_SECTIONS: Final[dict[str, tuple[str, ...]]] = {
         "portable Core, so provider admission must evaluate capabilities and "
         "evidence rather than a provider name.",
         "Provider, account, region, plugin, or backend defaults would silently turn "
-        "historical reference metadata into a live infrastructure choice.",
+        "the current Canonical Reference Architecture into a live selected "
+        "infrastructure choice.",
         "A closed foundation capability inventory permits AWS, another cloud, or "
         "owner-managed infrastructure without selecting an unreviewed provider or "
         "topology now.",
@@ -170,8 +178,8 @@ EXPECTED_HANDOFF_LIST_SECTIONS: Final[dict[str, tuple[str, ...]]] = {
         "Require the same security, operations, release, recovery, and residency "
         "evidence for AWS, another cloud, and owner-managed infrastructure.",
         "Never infer eligibility from a provider label, account or project name, "
-        "region, plugin, backend, historical reference, local generator success, or "
-        "predecessor completion.",
+        "region, plugin, backend, Canonical Reference Architecture status, local "
+        "generator success, or predecessor completion.",
     ),
     "acceptance_criteria": (
         "The ST-1501 source and generated reference expose a closed provider-neutral "
@@ -181,9 +189,15 @@ EXPECTED_HANDOFF_LIST_SECTIONS: Final[dict[str, tuple[str, ...]]] = {
         "every required capability and complete equivalent evidence.",
         "Unknown, missing, duplicate, partial, implicit, defaulted, fallback, "
         "label-only, or reference-only mappings are rejected before eligibility.",
-        "AWS Tokyo remains visible only as optional historical reference metadata and "
-        "cannot select a provider, account, region, plugin, backend, or satisfy "
-        "evidence by itself.",
+        "AWS Tokyo remains the current Canonical Reference Architecture, while its "
+        "status alone cannot select a provider, account, region, plugin, backend, or "
+        "satisfy admission or evidence.",
+        "The Canonical AWS-specific ST-1501 objective and Terraform modules/state-plan "
+        "deliverable remain authoritative and NOT_STARTED/NOT_EXECUTED; this overlay "
+        "neither erases, replaces, nor completes them.",
+        "Non-AWS and owner-managed profiles are additional portable implementation "
+        "paths only and require the same complete capability mapping and evidence as "
+        "AWS.",
         "Existing disabled activation, forbidden native commands, zero action counts, "
         "unresolved OD-013, and NOT_EXECUTED evidence remain unchanged.",
     ),
@@ -850,7 +864,13 @@ def _validate_design_handoff(root: Path) -> None:
         {
             "canonical_decision_id": "INT-DEC-007",
             "reference_profile": "AWS_TOKYO",
-            "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
             "default": False,
             "implicit_fallback": False,
             "selected_binding": False,
@@ -1036,7 +1056,7 @@ def _parse_reference(contract: Mapping[str, Any]) -> ReferenceArchitecture:
         ),
         classification=_string(
             value["classification"],
-            "OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY",
+            "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
             "reference_architecture.classification",
         ),
         inherited_from=_string(
@@ -1206,7 +1226,13 @@ def _parse_provider_neutral_admission(
     _strict_match(
         value["aws_reference_boundary"],
         {
-            "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
             "default": False,
             "implicit_fallback": False,
             "selected_binding": False,
@@ -1790,6 +1816,12 @@ def render_manifest(
             "aws_reference_role": model.admission.definition["aws_reference_boundary"][
                 "role"
             ],
+            "canonical_story_deliverables": model.admission.definition[
+                "aws_reference_boundary"
+            ]["canonical_story_deliverables"],
+            "portable_implementation_paths": model.admission.definition[
+                "aws_reference_boundary"
+            ]["non_aws_owner_managed_profiles"],
             "aws_reference_default": False,
             "aws_reference_fallback": False,
             "aws_reference_selected": False,

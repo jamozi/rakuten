@@ -23,11 +23,14 @@ pytest results therefore cannot make ST-1501 Done or `VALIDATED`.
 
 The direct-owner
 `DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml` records the durable
-ST-1501 decision governing this revision. `INT-DEC-007` and RAOS-ARCH-001 name
-AWS `ap-northeast-1` only as optional historical reference architecture
-metadata and require a portable core. The AWS reference is never a default,
-implicit fallback, selected binding, eligibility shortcut, admission
-requirement, or evidence substitute. `OD-013` remains
+ST-1501 decision governing this revision. `INT-DEC-007` and RAOS-ARCH-001 keep
+AWS `ap-northeast-1` as the current Canonical Reference Architecture and
+require a portable core. This overlay does not erase, replace, or complete the
+Canonical AWS-specific ST-1501 backlog objective or Terraform modules/state-plan
+deliverable. Non-AWS and owner-managed profiles are additional portable
+implementation paths only. The AWS reference is never a default, implicit
+fallback, selected binding, eligibility shortcut, admission requirement, or
+evidence substitute. `OD-013` remains
 `HUMAN_DECISION_REQUIRED`; its safe default forbids Production apply.
 
 The contract consequently keeps every real selection unset:

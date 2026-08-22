@@ -30,11 +30,11 @@ sources:
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
     sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
-    sha256: ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61
+    sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
 reference_architecture:
   cloud: AWS
   region: ap-northeast-1
-  classification: OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY
+  classification: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
   inherited_from: INT-DEC-007
   portable_core_required: true
   default: false
@@ -93,7 +93,9 @@ provider_neutral_foundation_admission:
     partial_mapping: REJECT
     provider_label_only_mapping: REJECT
   aws_reference_boundary:
-    role: OPTIONAL_HISTORICAL_REFERENCE_ONLY
+    role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
     default: false
     implicit_fallback: false
     selected_binding: false

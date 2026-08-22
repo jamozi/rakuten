@@ -89,7 +89,11 @@ def test_manifest_pins_contract_authority_and_status_boundary() -> None:
         "fallback_profile": None,
         "required_capability_count": 10,
         "configured_mapping_count": 0,
-        "aws_reference_role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+        "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+        "canonical_story_deliverables": (
+            "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+        ),
+        "portable_implementation_paths": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
         "aws_reference_default": False,
         "aws_reference_fallback": False,
         "aws_reference_selected": False,

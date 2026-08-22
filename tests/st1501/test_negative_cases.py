@@ -225,6 +225,39 @@ def test_aws_reference_cannot_be_promoted_to_provider_semantics(
 
 
 @pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("role", "OPTIONAL_HISTORICAL_REFERENCE_ONLY"),
+        (
+            "canonical_story_deliverables",
+            "CANONICAL_STORY_DELIVERABLES_REPLACED_BY_PORTABILITY_OVERLAY",
+        ),
+        ("non_aws_owner_managed_profiles", "REPLACEMENT_IMPLEMENTATION_PATHS"),
+    ),
+)
+def test_canonical_reference_cannot_be_demoted_or_replaced_by_overlay(
+    contract_document: dict[str, Any], field: str, value: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_foundation_admission"]["aws_reference_boundary"][
+        field
+    ] = value
+    with pytest.raises(generator.FoundationContractError):
+        _validate(document)
+
+
+def test_reference_architecture_classification_cannot_be_demoted(
+    contract_document: dict[str, Any],
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["reference_architecture"]["classification"] = (
+        "OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY"
+    )
+    with pytest.raises(generator.FoundationContractError):
+        _validate(document)
+
+
+@pytest.mark.parametrize(
     "field",
     (
         "provider_label_as_evidence",
