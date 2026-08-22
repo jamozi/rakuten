@@ -64,6 +64,7 @@ DESIGN_HANDOFF_V1:
     - runtime inventoryは固定26 base pathと、固定asset manifestの2つのallowlist済みrequired_imagesのうちFINALかつlowercase SHA-256一致のWebPだけで構成する
     - PENDING_FINAL_ASSET pathはHEAD、index、working treeのすべてで不在とし、glob、caller指定path、任意path追加、symlinkを拒否する
     - repository内bytecodeはlive importに使わず、self-hosted専用のclosed package namespaceだけをmanifest対象sourceからloadする
+    - front-pageとsingleのheader/footer semantic landmarkはtemplate-part wrapperだけが所有し、part root groupは非semantic divとして重複landmarkを作らない
     - content publication、theme/plugin activation、media upload、taxonomy mutationを実装しない
     - AI画像は別の費用・外部操作gateで生成し、完成asset欠落時はtheme package readinessを拒否
   security_and_approval_gates:
@@ -88,6 +89,7 @@ DESIGN_HANDOFF_V1:
     - pending, ambiguous, tampered, or mismatched journal state never retries
     - theme source is deterministic, local-only, accessible, and reduced-motion aware
     - reveal content is visible without JavaScript and becomes motion-hidden only after successful initialization
+    - front-page and single each keep exactly one header and one footer landmark, with no nested same-type landmark in the referenced parts
     - runtime manifest, working bytes, and HEAD blobs match before any RAOS import, credential read, or network construction
     - pinned Python code inventory and captured CLI stage identity match before interpreter startup and remain bound in the verifier
     - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
@@ -100,6 +102,7 @@ DESIGN_HANDOFF_V1:
     - secret redaction and filesystem trust-boundary tests
     - runtime manifest determinism, exact-head, drift, import-closure, and no-repository-pyc tests
     - pending/mixed/final theme-image inventory parity, arbitrary-path, symlink, missing, untracked, dirty, and hash-mismatch negative tests
+    - template-part wrapper and part-root semantic-landmark duplication and omission negative tests
     - Python code inventory shape/content, absent-zip, stage-continuity, and pre-open closed-path tests
     - startup-landmark, managed-bin inventory, root-owned loader/library digest, and RPATH-bypass tests
     - transport one-attempt, TLS, timeout, redirect, proxy, bounded-response tests

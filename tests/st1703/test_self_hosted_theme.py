@@ -99,6 +99,92 @@ def test_reveal_is_progressive_enhancement_with_failure_and_motion_fallbacks() -
     assert "revealAll();" in script
 
 
+def test_header_footer_landmarks_are_owned_only_by_template_part_wrappers() -> None:
+    for relative in ("templates/front-page.html", "templates/single.html"):
+        template = (theme.THEME_ROOT / relative).read_text(encoding="utf-8")
+        assert (
+            template.count(
+                '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->'
+            )
+            == 1
+        )
+        assert (
+            template.count(
+                '<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->'
+            )
+            == 1
+        )
+        assert "<header" not in template
+        assert "<footer" not in template
+
+    header = (theme.THEME_ROOT / "parts/header.html").read_text(encoding="utf-8")
+    footer = (theme.THEME_ROOT / "parts/footer.html").read_text(encoding="utf-8")
+    assert '"tagName":"header"' not in header
+    assert '"tagName":"footer"' not in footer
+    assert "<header" not in header
+    assert "<footer" not in footer
+    assert '<div class="wp-block-group alignwide raos-masthead">' in header
+    assert '<div class="wp-block-group raos-footer">' in footer
+
+
+@pytest.mark.parametrize(
+    ("relative", "landmark"),
+    [
+        ("parts/header.html", "header"),
+        ("parts/footer.html", "footer"),
+    ],
+)
+def test_source_check_rejects_semantic_landmark_on_part_root(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    relative: str,
+    landmark: str,
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    target = root / relative
+    text = target.read_text(encoding="utf-8")
+    text = text.replace(
+        "<!-- wp:group {",
+        f'<!-- wp:group {{"tagName":"{landmark}",',
+        1,
+    ).replace("<div ", f"<{landmark} ", 1)
+    closing = text.rfind("</div>")
+    assert closing >= 0
+    text = text[:closing] + f"</{landmark}>" + text[closing + len("</div>") :]
+    target.write_text(text, encoding="utf-8")
+
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_SEMANTIC_LANDMARK_INVALID"
+    ):
+        theme.source_check()
+
+
+@pytest.mark.parametrize(
+    ("relative", "landmark"),
+    [
+        ("templates/front-page.html", "header"),
+        ("templates/front-page.html", "footer"),
+        ("templates/single.html", "header"),
+        ("templates/single.html", "footer"),
+    ],
+)
+def test_source_check_rejects_missing_template_part_landmark(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    relative: str,
+    landmark: str,
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    target = root / relative
+    text = target.read_text(encoding="utf-8")
+    target.write_text(text.replace(f',"tagName":"{landmark}"', "", 1), encoding="utf-8")
+
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_SEMANTIC_LANDMARK_INVALID"
+    ):
+        theme.source_check()
+
+
 def test_verified_theme_snapshot_does_not_reopen_mutated_paths(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

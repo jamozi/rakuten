@@ -116,6 +116,9 @@ The current expected state is `SOURCE_VALID`, `PENDING_FINAL_ASSETS`, and
 `changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/raos-assets.v1.json`.
 They require original, unbranded editorial visuals; a placeholder, product
 logo, recognizable product, or fabricated use scene must not be marked final.
+The source check also enforces one `header` and one `footer` landmark per
+template: the `front-page` and `single` template-part wrappers own those
+semantic elements, while the referenced part-root groups remain `div`.
 
 Image generation is an external/cost action and is not authorized by this
 runbook. After a separately approved process supplies the two real WebP files,

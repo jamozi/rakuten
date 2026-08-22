@@ -44,6 +44,12 @@ remain in deployed squash/cherry-pick ancestry.
    matching `HEAD` blobs, and clean working bytes. Arbitrary paths, globs,
    symlinks, undeclared tracked files, untracked/dirty bytes and stale rows fail
    closed; the current two-pending/no-image state remains unchanged.
+5. The `front-page` and `single` template-part blocks and their referenced part
+   root groups both requested the same semantic `header` / `footer` elements,
+   creating nested duplicate landmarks. The template-part wrappers now remain
+   the sole landmark owners, the part roots use presentation `div` groups, and
+   the owner source check rejects either a missing wrapper landmark or a
+   semantic header/footer reintroduced in a part.
 
 ## Authority and evidence boundary
 
@@ -55,9 +61,9 @@ report, not promoted to any external status.
 
 ## Local verification freeze (2026-08-23)
 
-- focused runtime/CLI/theme: `81 passed, 1 skipped`; the skip is the
+- focused runtime/CLI/theme: `88 passed, 1 skipped`; the skip is the
   intentional exact-root launcher integration test in a linked worktree;
-- complete isolated `tests/st1703`: `932 passed, 1 skipped` for the same reason;
+- complete isolated `tests/st1703`: `939 passed, 1 skipped` for the same reason;
 - lineage regression imports only the shipped `b5a6157b` base into a temporary
   repository, accepts its one-commit synthetic squash descendant without the
   branch-local review object, and rejects an unrelated identical-tree `HEAD`
@@ -80,6 +86,14 @@ report, not promoted to any external status.
   remaining material P1/P2 finding; the reviewer confirmed committed-manifest
   derivation, fixed-path closure, pending absence, descriptor-bound reads,
   clean-byte enforcement, and verified-byte doctor/theme projection.
+- semantic-landmark follow-up theme source/package fixtures, runtime-manifest
+  generation/no-write check, Ruff lint/format, mypy, and Pyright: pass; the
+  real pending-asset package check remains closed with the expected
+  `THEME_FINAL_ASSET_MISSING` reason;
+- semantic-landmark follow-up changed-path sensitive-data scan: 9 paths, 0
+  findings;
+- independent semantic-landmark correctness/accessibility/security review:
+  `PASS`, with no remaining material P1/P2 finding.
 
 The integrated exact-root doctor, credential access, provider/network call,
 draft write, browser operation, hosted CI, activation, publication, formal

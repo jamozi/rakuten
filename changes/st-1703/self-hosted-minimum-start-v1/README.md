@@ -23,6 +23,9 @@ publication, release, or Production evidence.
   Reveal motion is progressive enhancement: content is visible without
   JavaScript and is hidden for entrance motion only after successful script
   initialization; failure and reduced-motion paths retain/restore visibility.
+  The `front-page` and `single` template-part wrappers alone own the semantic
+  `header` and `footer` landmarks; their part-root groups remain presentation
+  `div` elements so the rendered page does not nest duplicate landmarks.
 - `theme/kurashinoshirube-child/raos-assets.v1.json` owns the two final image
   requirements and their closed prompts. Both images intentionally remain
   `PENDING_FINAL_ASSET`; no image provider was called by this slice.

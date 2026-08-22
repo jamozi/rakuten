@@ -50,8 +50,17 @@ _MANIFEST_KEYS = frozenset(
     }
 )
 _IMAGE_KEYS = frozenset({"path", "status", "sha256", "alt", "prompt", "usage"})
+_TEMPLATE_PART_KEYS = frozenset({"slug", "tagName"})
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _REMOTE_REFERENCE = re.compile(r"(?:https?:)?//", re.ASCII | re.IGNORECASE)
+_TEMPLATE_PART_BLOCK = re.compile(
+    r"<!--\s*wp:template-part\s+(\{[^\r\n]*\})\s*/-->", re.ASCII
+)
+_TEMPLATE_PART_OPEN = re.compile(r"<!--\s*wp:template-part\b", re.ASCII)
+_HEADER_FOOTER_ELEMENT = re.compile(
+    r"<\s*/?\s*(?:header|footer)\b", re.ASCII | re.IGNORECASE
+)
+_HEADER_FOOTER_TAG_NAME = re.compile(r'"tagName"\s*:\s*"(?:header|footer)"', re.ASCII)
 _FORBIDDEN_SOURCE = re.compile(
     r"(?:wp_remote_|curl_|file_get_contents\s*\(|<script[^>]+src=|"
     r"fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|@import)",
@@ -395,6 +404,57 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
         _fail("THEME_PARENT_INVALID")
 
 
+def _validate_semantic_landmarks(payloads: Mapping[str, bytes]) -> None:
+    expected_template_parts = (("header", "header"), ("footer", "footer"))
+    for relative in ("templates/front-page.html", "templates/single.html"):
+        try:
+            text = payloads[relative].decode("utf-8", errors="strict")
+        except KeyError, UnicodeError:
+            _fail("THEME_SEMANTIC_LANDMARK_INVALID")
+        matches = tuple(_TEMPLATE_PART_BLOCK.finditer(text))
+        if (
+            len(matches) != len(tuple(_TEMPLATE_PART_OPEN.finditer(text)))
+            or _HEADER_FOOTER_ELEMENT.search(text) is not None
+        ):
+            _fail("THEME_SEMANTIC_LANDMARK_INVALID")
+        actual: list[tuple[object, object]] = []
+        for match in matches:
+            try:
+                attributes = json.loads(
+                    match.group(1),
+                    object_pairs_hook=_pairs,
+                    parse_constant=lambda ignored: (_ for _ in ()).throw(ValueError()),
+                )
+            except ValueError, TypeError, RecursionError:
+                _fail("THEME_SEMANTIC_LANDMARK_INVALID")
+            if type(attributes) is not dict:
+                _fail("THEME_SEMANTIC_LANDMARK_INVALID")
+            attribute_map = cast(dict[str, object], attributes)
+            if frozenset(attribute_map) != _TEMPLATE_PART_KEYS:
+                _fail("THEME_SEMANTIC_LANDMARK_INVALID")
+            actual.append((attribute_map.get("slug"), attribute_map.get("tagName")))
+        if tuple(actual) != expected_template_parts:
+            _fail("THEME_SEMANTIC_LANDMARK_INVALID")
+
+    for relative in ("parts/header.html", "parts/footer.html"):
+        try:
+            text = payloads[relative].decode("utf-8", errors="strict")
+        except KeyError, UnicodeError:
+            _fail("THEME_SEMANTIC_LANDMARK_INVALID")
+        stripped = text.strip()
+        block_comment_end = stripped.find("-->")
+        if (
+            not stripped.startswith("<!-- wp:group ")
+            or block_comment_end < 0
+            or not stripped[block_comment_end + 3 :].lstrip().startswith("<div")
+            or not stripped.endswith("</div>\n<!-- /wp:group -->")
+            or _TEMPLATE_PART_OPEN.search(text) is not None
+            or _HEADER_FOOTER_ELEMENT.search(text) is not None
+            or _HEADER_FOOTER_TAG_NAME.search(text) is not None
+        ):
+            _fail("THEME_SEMANTIC_LANDMARK_INVALID")
+
+
 @dataclass(frozen=True)
 class _ThemeSnapshot:
     archive_files: tuple[tuple[str, bytes], ...]
@@ -423,6 +483,7 @@ def _validated_payload_snapshot(payload_values: Mapping[str, bytes]) -> _ThemeSn
     paths = _source_inventory(manifest, inventory)
     for relative in paths:
         _validate_source_file(relative, payloads[relative])
+    _validate_semantic_landmarks(payloads)
 
     images = cast(list[object], manifest["required_images"])
     if len(images) != 2:
