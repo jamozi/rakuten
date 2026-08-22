@@ -129,7 +129,7 @@ EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
     ),
     "scripts/build_st1505_staging_deployment.py": (
         "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
-    )
+    ),
 }
 
 EXPECTED_DOCUMENT: Final[dict[str, object]] = {
@@ -580,9 +580,7 @@ def _expected_predecessors() -> dict[str, object]:
             "required_selected_values": "UNSET",
             "required_live_provider_calls": "FORBIDDEN",
             "required_external_writes": "FORBIDDEN",
-            "required_action_counts": {
-                name: 0 for name in data_base.ACTION_NAMES
-            },
+            "required_action_counts": {name: 0 for name in data_base.ACTION_NAMES},
             "provider_neutral_admission": EXPECTED_DATA_PROVIDER_NEUTRAL_ADMISSION,
         },
         "staging_deployment": {
