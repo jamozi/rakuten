@@ -25,7 +25,7 @@ RAKUTEN_OWNER_LOCAL_PROFILE = "OWNER_LOCAL_RAKUTEN_PRODUCTION_API"
 RAKUTEN_OWNER_LOCAL_HOST = "openapi.rakuten.co.jp"
 RAKUTEN_OWNER_LOCAL_PORT = 443
 RAKUTEN_OWNER_LOCAL_MAX_RESPONSE_BYTES = 2 * 1024 * 1024
-RAKUTEN_OWNER_LOCAL_RESULT_SCHEMA = "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1"
+RAKUTEN_OWNER_LOCAL_RESULT_SCHEMA = "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2"
 RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY = "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"
 RAKUTEN_OWNER_LOCAL_PROVIDER_DATA_CLASSIFICATION = "UNTRUSTED_PROVIDER_DATA"
 RAKUTEN_OWNER_LOCAL_FORMAL_TST_016 = "NOT_EXECUTED"
@@ -133,6 +133,18 @@ class RakutenOwnerLocalFailureCode(StrEnum):
     RESULT_MISMATCH = "RESULT_MISMATCH"
 
 
+class RakutenOwnerLocalValidationStageCode(StrEnum):
+    """Closed, value-free location for response-validation refusals."""
+
+    SUMMARY_SHAPE = "SUMMARY_SHAPE"
+    COLLECTION_SHAPE = "COLLECTION_SHAPE"
+    RECORD_SHAPE = "RECORD_SHAPE"
+    EXACT_SELECTOR = "EXACT_SELECTOR"
+    MANDATORY_TEXT = "MANDATORY_TEXT"
+    URL = "URL"
+    CREDENTIAL_REFLECTION = "CREDENTIAL_REFLECTION"
+
+
 class _RedactedValue:
     __slots__ = ()
 
@@ -160,6 +172,7 @@ def _bounded_text(
     failure_code: RakutenOwnerLocalFailureCode = (
         RakutenOwnerLocalFailureCode.INVALID_ARGUMENT
     ),
+    validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None,
 ) -> str:
     if (
         type(value) is not str
@@ -167,11 +180,11 @@ def _bounded_text(
         or value != value.strip()
         or any(ord(character) < 32 or ord(character) == 127 for character in value)
     ):
-        fail_owner_local(failure_code)
+        fail_owner_local(failure_code, validation_stage_code=validation_stage_code)
     try:
         value.encode("utf-8", errors="strict")
     except UnicodeError:
-        fail_owner_local(failure_code)
+        fail_owner_local(failure_code, validation_stage_code=validation_stage_code)
     return value
 
 
@@ -190,7 +203,10 @@ def expected_response_page_count(count: object, hits: object) -> int:
         or type(hits) is not int
         or not 1 <= hits <= 30
     ):
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE,
+        )
     if count == 0:
         return 0
     return min((count + hits - 1) // hits, 100)
@@ -215,6 +231,7 @@ def _https_url(value: object) -> str:
         value,
         maximum=4096,
         failure_code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+        validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
     )
     if (
         not text.startswith("https://")
@@ -224,14 +241,23 @@ def _https_url(value: object) -> str:
             for character in text
         )
     ):
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+        )
     if _MALFORMED_PERCENT_ESCAPE.search(text) is not None:
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+        )
     try:
         parsed = urlsplit(text)
         port = parsed.port
     except ValueError:
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+        )
     if (
         parsed.scheme != "https"
         or not parsed.netloc
@@ -242,7 +268,10 @@ def _https_url(value: object) -> str:
         or parsed.netloc.endswith(":")
         or (port is not None and not 1 <= port <= 65535)
     ):
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+        )
     _validate_https_host(parsed.hostname, parsed.netloc)
     return text
 
@@ -251,24 +280,42 @@ def _validate_https_host(host: str, netloc: str) -> None:
     if netloc.startswith("["):
         closing = netloc.find("]")
         if closing < 0:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+            )
         suffix = netloc[closing + 1 :]
         if suffix and not suffix.startswith(":"):
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+            )
         try:
             bracket_address = ipaddress.IPv6Address(netloc[1:closing])
             parsed_address = ipaddress.IPv6Address(host)
         except ipaddress.AddressValueError:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+            )
         if bracket_address != parsed_address:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+            )
         return
     if any(character in netloc for character in "[]\\"):
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+        )
     try:
         ascii_host = host.encode("idna").decode("ascii")
     except UnicodeError:
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+        )
     if ascii_host.endswith("."):
         ascii_host = ascii_host[:-1]
     labels = ascii_host.split(".")
@@ -277,7 +324,10 @@ def _validate_https_host(host: str, netloc: str) -> None:
         or len(ascii_host) > 253
         or any(_HOST_LABEL.fullmatch(label) is None for label in labels)
     ):
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+        )
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -677,7 +727,12 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
                     for encoded in encoded_values
                     for credential in credential_values
                 ):
-                    fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+                    fail_owner_local(
+                        RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                        validation_stage_code=(
+                            RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+                        ),
+                    )
 
 
 NormalizedValue: TypeAlias = None | bool | int | str | tuple[str, ...]
@@ -698,7 +753,12 @@ class RakutenOwnerLocalNormalizedRecord(_RedactedValue):
                 for field in self.fields
             )
         ):
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+                ),
+            )
         allowed = frozenset(definition.normalized_record_fields)
         expected_mandatory = mandatory_record_fields(self.api)
         names = tuple(name for name, _value in self.fields)
@@ -711,9 +771,25 @@ class RakutenOwnerLocalNormalizedRecord(_RedactedValue):
                 {"reviewAverage", "reviewCount", "affiliateRate"}
             )
         ):
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+                ),
+            )
         for name, value in self.fields:
-            _validate_normalized_value(self.api, name, value)
+            if name in _MANDATORY_TEXT_FIELDS[self.api]:
+                _validate_normalized_value(self.api, name, value)
+        for name, value in self.fields:
+            if name in _URL_FIELDS or name in _URL_LIST_FIELDS:
+                _validate_normalized_value(self.api, name, value)
+        for name, value in self.fields:
+            if (
+                name not in _MANDATORY_TEXT_FIELDS[self.api]
+                and name not in _URL_FIELDS
+                and name not in _URL_LIST_FIELDS
+            ):
+                _validate_normalized_value(self.api, name, value)
 
     def as_object(self) -> dict[str, object]:
         return {
@@ -726,42 +802,75 @@ def _validate_normalized_value(
     api: RakutenOwnerLocalApi, name: str, value: object
 ) -> None:
     if name in _MANDATORY_TEXT_FIELDS[api]:
-        validated_response_text(value)
+        validated_response_text(
+            value,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT,
+        )
         return
     if name in _URL_LIST_FIELDS:
         if type(value) is not tuple:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+            )
         members = cast(tuple[object, ...], value)
         if len(members) > 64:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+            )
         for member in members:
             _https_url(member)
         return
     if name in _URL_FIELDS:
         if value is None:
             if name in _NON_NULL_URL_FIELDS[api]:
-                fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+                fail_owner_local(
+                    RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                    validation_stage_code=RakutenOwnerLocalValidationStageCode.URL,
+                )
             return
         _https_url(value)
         return
     if api is RakutenOwnerLocalApi.ITEM_SEARCH and name in _ITEM_INTEGER_FIELDS:
         if type(value) is not int or value < 0:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+                ),
+            )
         if name in {"availability", "postageFlag"} and value not in {0, 1}:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+                ),
+            )
         return
     if api is RakutenOwnerLocalApi.PRODUCT_SEARCH and name in _PRODUCT_INTEGER_FIELDS:
         if type(value) is not int or value < 0:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+                ),
+            )
         return
     if value is None:
         return
     if type(value) is not str or len(value) > 20_000:
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.RECORD_SHAPE,
+        )
     try:
         value.encode("utf-8", errors="strict")
     except UnicodeError:
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.RECORD_SHAPE,
+        )
 
 
 def mandatory_record_fields(api: RakutenOwnerLocalApi) -> frozenset[str]:
@@ -770,11 +879,18 @@ def mandatory_record_fields(api: RakutenOwnerLocalApi) -> frozenset[str]:
     return _MANDATORY_RECORD_FIELDS[api]
 
 
-def validated_response_text(value: object) -> str:
+def validated_response_text(
+    value: object,
+    *,
+    validation_stage_code: RakutenOwnerLocalValidationStageCode = (
+        RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT
+    ),
+) -> str:
     return _bounded_text(
         value,
         maximum=20_000,
         failure_code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+        validation_stage_code=validation_stage_code,
     )
 
 
@@ -782,22 +898,58 @@ def normalized_record(
     api: RakutenOwnerLocalApi, fields: Mapping[str, object]
 ) -> RakutenOwnerLocalNormalizedRecord:
     if type(api) is not RakutenOwnerLocalApi or type(fields) is not dict:
-        fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.RECORD_SHAPE,
+        )
     mapping = cast(dict[str, object], fields)
+    if any(type(name) is not str for name in mapping):
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.RECORD_SHAPE,
+        )
+    names = frozenset(mapping)
+    definition = api_definition(api)
+    if (
+        not names <= frozenset(definition.normalized_record_fields)
+        or not mandatory_record_fields(api) <= names
+        or not names.isdisjoint({"reviewAverage", "reviewCount", "affiliateRate"})
+    ):
+        fail_owner_local(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.RECORD_SHAPE,
+        )
+    for name in _MANDATORY_TEXT_FIELDS[api]:
+        validated_response_text(
+            mapping[name],
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT,
+        )
     normalized: list[tuple[str, NormalizedValue]] = []
     for name, value in mapping.items():
-        if type(name) is not str:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
         converted: NormalizedValue
         if type(value) is list:
             raw_list = cast(list[object], value)
             if any(type(member) is not str for member in raw_list):
-                fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+                fail_owner_local(
+                    RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                    validation_stage_code=(
+                        RakutenOwnerLocalValidationStageCode.URL
+                        if name in _URL_LIST_FIELDS
+                        else RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+                    ),
+                )
             converted = tuple(cast(list[str], raw_list))
         elif value is None or type(value) in {bool, int, str}:
             converted = cast(NormalizedValue, value)
         else:
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.URL
+                    if name in _URL_FIELDS or name in _URL_LIST_FIELDS
+                    else RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+                ),
+            )
         normalized.append((name, converted))
     return RakutenOwnerLocalNormalizedRecord(
         api=api,
@@ -844,17 +996,30 @@ class RakutenOwnerLocalProviderResult(_RedactedValue):
             or not 1 <= self.hits <= 30
             or type(self.page_count) is not int
             or not 0 <= self.page_count <= 100
-            or type(self.records) is not tuple
+            or self.disposition
+            is not RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+        ):
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE
+                ),
+            )
+        if (
+            type(self.records) is not tuple
             or len(self.records) > self.hits
             or any(
                 type(record) is not RakutenOwnerLocalNormalizedRecord
                 or record.api is not self.api
                 for record in self.records
             )
-            or self.disposition
-            is not RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
         ):
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+                ),
+            )
         record_count = len(self.records)
         if (
             self.count < record_count
@@ -864,7 +1029,12 @@ class RakutenOwnerLocalProviderResult(_RedactedValue):
             or self.first != (1 if record_count else 0)
             or self.last != record_count
         ):
-            fail_owner_local(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE
+                ),
+            )
 
     @property
     def request_count(self) -> int:
@@ -897,10 +1067,16 @@ class RakutenOwnerLocalFailure(RuntimeError):
     http_status: int | None = None
     body_byte_count: int | None = None
     response_sha256: str | None = None
+    validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None
 
     def __post_init__(self) -> None:
         if (
             type(self.code) is not RakutenOwnerLocalFailureCode
+            or (
+                self.validation_stage_code is not None
+                and type(self.validation_stage_code)
+                is not RakutenOwnerLocalValidationStageCode
+            )
             or type(self.disposition) is not RakutenOwnerLocalRequestDisposition
             or (self.api is not None and type(self.api) is not RakutenOwnerLocalApi)
             or (
@@ -924,6 +1100,15 @@ class RakutenOwnerLocalFailure(RuntimeError):
             )
         ):
             raise TypeError("invalid Rakuten owner-local failure")
+        if self.validation_stage_code is not None:
+            allowed_codes = {RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT}
+            if (
+                self.validation_stage_code
+                is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+            ):
+                allowed_codes.add(RakutenOwnerLocalFailureCode.RESULT_MISMATCH)
+            if self.code not in allowed_codes:
+                raise TypeError("invalid Rakuten owner-local validation stage")
         if self.disposition is RakutenOwnerLocalRequestDisposition.NOT_SENT and any(
             value is not None
             for value in (self.http_status, self.body_byte_count, self.response_sha256)
@@ -966,6 +1151,7 @@ class RakutenOwnerLocalFailure(RuntimeError):
 def fail_owner_local(
     code: RakutenOwnerLocalFailureCode,
     *,
+    validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None,
     disposition: RakutenOwnerLocalRequestDisposition = (
         RakutenOwnerLocalRequestDisposition.NOT_SENT
     ),
@@ -977,6 +1163,7 @@ def fail_owner_local(
 ) -> NoReturn:
     raise RakutenOwnerLocalFailure(
         code=code,
+        validation_stage_code=validation_stage_code,
         disposition=disposition,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -996,6 +1183,7 @@ def contextual_failure(
         fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
     return RakutenOwnerLocalFailure(
         code=failure.code,
+        validation_stage_code=failure.validation_stage_code,
         disposition=failure.disposition,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -1061,7 +1249,7 @@ class RakutenOwnerLocalResultEnvelope(_RedactedValue):
         normalized = result.normalized_object() if result is not None else None
         return {
             "schema": RAKUTEN_OWNER_LOCAL_RESULT_SCHEMA,
-            "version": 1,
+            "version": 2,
             "run_id": self.run_id,
             "started_at": _utc_text(self.started_at),
             "finished_at": _utc_text(self.finished_at),
@@ -1070,6 +1258,11 @@ class RakutenOwnerLocalResultEnvelope(_RedactedValue):
             "api_version": definition.api_version,
             "outcome": self.outcome.value,
             "diagnostic_code": failure.code.value if failure is not None else "PASS",
+            "validation_stage_code": (
+                failure.validation_stage_code.value
+                if failure is not None and failure.validation_stage_code is not None
+                else None
+            ),
             "request_fingerprint": self.request_fingerprint,
             "request_disposition": self.disposition.value,
             "request_count": self.request_count,
@@ -1151,6 +1344,7 @@ __all__ = [
     "RakutenOwnerLocalCredentials",
     "RakutenOwnerLocalFailure",
     "RakutenOwnerLocalFailureCode",
+    "RakutenOwnerLocalValidationStageCode",
     "RakutenOwnerLocalItemSearchRequest",
     "RakutenOwnerLocalNormalizedRecord",
     "RakutenOwnerLocalOutcome",

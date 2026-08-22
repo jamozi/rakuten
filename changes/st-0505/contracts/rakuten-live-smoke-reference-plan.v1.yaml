@@ -267,10 +267,10 @@ owner_local_read_integration:
   runtime:
     name: rakuten-owner-local
     root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    bundle_sha256: c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9
+    bundle_sha256: a596bd507bcf8a3e23859cfc00cd7efbf20173a83ff5f002ae57717fe5d80533
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b
-    install_stage_sha256: 0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6
+    installer_sha256: 6a2514ef4178e0667e5e5f8766bf0cb91654d862f188586f994a988be288895b
+    install_stage_sha256: f4efbd4605527473181c76290ca550b3317de1b15c6d6b0dd2cecd83de0b075b
     install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
     installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
     installer_credential_access: FORBIDDEN
@@ -355,8 +355,8 @@ owner_local_read_integration:
     publication: ATOMIC_0600_NO_REPLACE
     response_sha256: SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES
     envelope:
-      schema: RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1
-      version: 1
+      schema: RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2
+      version: 2
       exact_object_keys:
         - schema
         - version
@@ -368,6 +368,7 @@ owner_local_read_integration:
         - api_version
         - outcome
         - diagnostic_code
+        - validation_stage_code
         - request_fingerprint
         - request_disposition
         - request_count
@@ -401,7 +402,32 @@ owner_local_read_integration:
       terminal_time: CLAMP_EXACT_UTC_BACKWARD_OR_TERMINAL_SAMPLE_EXCEPTION_TO_STARTED_AT_OTHERWISE_VALIDATE
       failure_summary: ALL_SIX_KEYS_NULL
       canonical_json: UTF8_SORTED_KEYS_COMPACT_TRAILING_LF
-      compatibility: REPOSITORY_V1_COMPLETION_RUNTIME_EVIDENCE_NOT_EXECUTED_NO_DEPLOYED_MIGRATION
+      compatibility: V1_EVIDENCE_IMMUTABLE_V2_ADDS_NULLABLE_VALUE_FREE_VALIDATION_STAGE_NO_REWRITE
+    validation_diagnostic:
+      field: validation_stage_code
+      values:
+        - SUMMARY_SHAPE
+        - COLLECTION_SHAPE
+        - RECORD_SHAPE
+        - EXACT_SELECTOR
+        - MANDATORY_TEXT
+        - URL
+        - CREDENTIAL_REFLECTION
+      generic_diagnostic_unchanged: true
+      success_and_non_validation_failures: null
+      response_schema_drift_stages:
+        - SUMMARY_SHAPE
+        - COLLECTION_SHAPE
+        - RECORD_SHAPE
+        - EXACT_SELECTOR
+        - MANDATORY_TEXT
+        - URL
+        - CREDENTIAL_REFLECTION
+      result_mismatch_stage: EXACT_SELECTOR
+      precedence: COLLECTION_THEN_SUMMARY_THEN_RECORD_PRESENCE_THEN_EXACT_SELECTOR_THEN_MANDATORY_TEXT_THEN_URL_THEN_CREDENTIAL_REFLECTION
+      persisted_material: CLOSED_ENUM_ONLY_NO_FIELD_NAME_INDEX_EXPECTED_ACTUAL_PROVIDER_VALUE_BODY_OR_CREDENTIAL
+      failure_evidence: COMPLETE_AVAILABLE_RESPONSE_METADATA_REQUEST_COUNT_PRESERVED_PROVIDER_RESULT_NULL
+      previous_schema: RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1_IMMUTABLE
     url_validation:
       syntax:
         scheme: EXACT_LOWERCASE_HTTPS

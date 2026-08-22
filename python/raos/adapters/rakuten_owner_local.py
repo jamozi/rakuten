@@ -46,6 +46,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalRequest,
     RakutenOwnerLocalRequestDisposition,
     RakutenOwnerLocalResultEnvelope,
+    RakutenOwnerLocalValidationStageCode,
     api_definition,
     exact_response_selector,
     expected_response_page_count,
@@ -168,6 +169,7 @@ while offset<len(payload):
 def _fail(
     code: RakutenOwnerLocalFailureCode,
     *,
+    validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None,
     disposition: RakutenOwnerLocalRequestDisposition = (
         RakutenOwnerLocalRequestDisposition.NOT_SENT
     ),
@@ -179,6 +181,7 @@ def _fail(
 ) -> NoReturn:
     fail_owner_local(
         code,
+        validation_stage_code=validation_stage_code,
         disposition=disposition,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -1698,24 +1701,49 @@ def _request_hits(request: RakutenOwnerLocalRequest) -> int:
 def _collection(
     api: RakutenOwnerLocalApi, root: dict[str, object]
 ) -> tuple[str, list[object]]:
+    root_keys = frozenset(root)
     if api is RakutenOwnerLocalApi.ITEM_SEARCH:
         collection_key = "items"
-        if frozenset(root) != _SUMMARY_KEYS | {collection_key}:
-            _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        aliases = root_keys & {collection_key}
     else:
-        aliases = frozenset(root) & _PRODUCT_COLLECTION_ALIASES
-        if len(aliases) != 1 or frozenset(root) != _SUMMARY_KEYS | aliases:
-            _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
-        collection_key = next(iter(aliases))
+        aliases = root_keys & _PRODUCT_COLLECTION_ALIASES
+    if len(aliases) != 1:
+        _fail(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=(
+                RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+            ),
+        )
+    collection_key = next(iter(aliases))
+    if not _SUMMARY_KEYS <= root_keys:
+        _fail(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE,
+        )
+    if root_keys != _SUMMARY_KEYS | aliases:
+        _fail(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=(
+                RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+            ),
+        )
     value = root[collection_key]
     if type(value) is not list:
-        _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        _fail(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=(
+                RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+            ),
+        )
     return collection_key, cast(list[object], value)
 
 
 def _unwrap_record(api: RakutenOwnerLocalApi, value: object) -> dict[str, object]:
     if type(value) is not dict:
-        _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+        _fail(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.RECORD_SHAPE,
+        )
     del api
     return cast(dict[str, object], value)
 
@@ -1729,9 +1757,15 @@ def _validate_exact_selector(
         return
     field, requested_value = selector
     returned_value = record.get(field)
-    returned_value = validated_response_text(returned_value)
+    returned_value = validated_response_text(
+        returned_value,
+        validation_stage_code=RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR,
+    )
     if returned_value != requested_value:
-        _fail(RakutenOwnerLocalFailureCode.RESULT_MISMATCH)
+        _fail(
+            RakutenOwnerLocalFailureCode.RESULT_MISMATCH,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR,
+        )
 
 
 def _parse_provider_success(
@@ -1744,12 +1778,22 @@ def _parse_provider_success(
     try:
         value = _parse_response_json(body, api=api, request_fingerprint=fingerprint)
         if type(value) is not dict:
-            _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            _fail(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+                ),
+            )
         root = cast(dict[str, object], value)
         _collection_name, values = _collection(api, root)
         for name in _SUMMARY_KEYS:
             if type(root[name]) is not int:
-                _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+                _fail(
+                    RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                    validation_stage_code=(
+                        RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE
+                    ),
+                )
         count = cast(int, root["count"])
         page = cast(int, root["page"])
         first = cast(int, root["first"])
@@ -1765,7 +1809,12 @@ def _parse_provider_success(
             or not 0 <= page_count <= 100
             or len(values) > hits
         ):
-            _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            _fail(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE
+                ),
+            )
         record_count = len(values)
         if (
             count < record_count
@@ -1775,7 +1824,12 @@ def _parse_provider_success(
             or first != (1 if record_count else 0)
             or last != record_count
         ):
-            _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+            _fail(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE
+                ),
+            )
         definition_record_fields = frozenset(definition.elements) - _SUMMARY_KEYS
         normalized_fields = frozenset(definition.normalized_record_fields)
         mandatory = mandatory_record_fields(api)
@@ -1790,7 +1844,12 @@ def _parse_provider_success(
                     {"reviewAverage", "reviewCount", "affiliateRate"}
                 )
             ):
-                _fail(RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT)
+                _fail(
+                    RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                    validation_stage_code=(
+                        RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+                    ),
+                )
             _validate_exact_selector(request, raw_record)
             projected = {
                 name: item
@@ -1817,6 +1876,7 @@ def _parse_provider_success(
             raise
         _fail(
             failure.code,
+            validation_stage_code=failure.validation_stage_code,
             disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
             api=api,
             request_fingerprint=fingerprint,

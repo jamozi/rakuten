@@ -247,8 +247,8 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "CARDINALITY"
     )
     assert owner["normalized_result"]["envelope"] == {
-        "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1",
-        "version": 1,
+        "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2",
+        "version": 2,
         "exact_object_keys": list(generator.EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
         "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
         "success_summary": "VALIDATED_INTEGER_VALUES",
@@ -259,9 +259,46 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "failure_summary": "ALL_SIX_KEYS_NULL",
         "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
         "compatibility": (
-            "REPOSITORY_V1_COMPLETION_RUNTIME_EVIDENCE_NOT_EXECUTED_NO_"
-            "DEPLOYED_MIGRATION"
+            "V1_EVIDENCE_IMMUTABLE_V2_ADDS_NULLABLE_VALUE_FREE_VALIDATION_"
+            "STAGE_NO_REWRITE"
         ),
+    }
+    assert owner["normalized_result"]["validation_diagnostic"] == {
+        "field": "validation_stage_code",
+        "values": [
+            "SUMMARY_SHAPE",
+            "COLLECTION_SHAPE",
+            "RECORD_SHAPE",
+            "EXACT_SELECTOR",
+            "MANDATORY_TEXT",
+            "URL",
+            "CREDENTIAL_REFLECTION",
+        ],
+        "generic_diagnostic_unchanged": True,
+        "success_and_non_validation_failures": None,
+        "response_schema_drift_stages": [
+            "SUMMARY_SHAPE",
+            "COLLECTION_SHAPE",
+            "RECORD_SHAPE",
+            "EXACT_SELECTOR",
+            "MANDATORY_TEXT",
+            "URL",
+            "CREDENTIAL_REFLECTION",
+        ],
+        "result_mismatch_stage": "EXACT_SELECTOR",
+        "precedence": (
+            "COLLECTION_THEN_SUMMARY_THEN_RECORD_PRESENCE_THEN_EXACT_SELECTOR_"
+            "THEN_MANDATORY_TEXT_THEN_URL_THEN_CREDENTIAL_REFLECTION"
+        ),
+        "persisted_material": (
+            "CLOSED_ENUM_ONLY_NO_FIELD_NAME_INDEX_EXPECTED_ACTUAL_PROVIDER_"
+            "VALUE_BODY_OR_CREDENTIAL"
+        ),
+        "failure_evidence": (
+            "COMPLETE_AVAILABLE_RESPONSE_METADATA_REQUEST_COUNT_PRESERVED_"
+            "PROVIDER_RESULT_NULL"
+        ),
+        "previous_schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1_IMMUTABLE",
     }
     assert owner["normalized_result"]["url_validation"] == {
         "syntax": {
