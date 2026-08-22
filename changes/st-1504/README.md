@@ -10,14 +10,19 @@ evidence requirements are satisfied.
 The direct-owner
 `DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml` governs
 this new decision together with Canonical sources and the provider-neutral
-ST-1501 predecessor. The older AWS-oriented Pro-derived slice is predecessor
-history, not sole authority for this revision.
+ST-1501 predecessor. The earlier Pro-derived advisory slice is predecessor
+context, not sole authority for this revision, and it does not demote or
+supersede the current Canonical AWS Reference Architecture.
 
-AWS IAM OIDC provider, AWS IAM role, AWS account, AWS region, and AWS audience
-remain visible only as optional historical mappings inherited from INT-DEC-007
-and RAOS-ARCH-001. They are never a default, implicit fallback, selected
-binding, eligibility shortcut, admission requirement, or evidence substitute.
-No alternate provider is selected.
+AWS Tokyo and the AWS IAM OIDC provider, AWS IAM role, AWS account, AWS region,
+and AWS audience mappings remain the current Canonical Reference Architecture
+inherited from INT-DEC-007 and RAOS-ARCH-001. This overlay does not erase,
+replace, or complete the Canonical AWS-specific ST-1504 objective or
+workflow/IAM trust deliverable. Non-AWS and owner-managed target profiles are
+additional portable implementation paths only. Canonical reference status is
+never a default, implicit fallback, selected binding, eligibility shortcut,
+admission requirement, or evidence substitute. No alternate provider is
+selected.
 
 ## Status boundary
 

@@ -99,6 +99,11 @@ def test_manifest_pins_authority_predecessors_and_status_boundary() -> None:
             generator.DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES
         ),
         "aws_reference_only": True,
+        "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+        "canonical_story_deliverables": (
+            "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+        ),
+        "portable_implementation_paths": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
         "aws_reference_default": False,
         "aws_reference_implicit_fallback": False,
         "aws_reference_selected_binding": False,

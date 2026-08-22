@@ -4,8 +4,10 @@ record_status: RECORDED_DURABLE_OWNER_DECISION
 approved_story: ST-1504
 approved_scope:
   - Keep GitHub Actions and GitHub as the approved CI/OIDC source and initial external review connector without treating either as a target-cloud selection.
-  - Define Full RAOS deployment identity without assuming or requiring AWS or any other target provider.
-  - Retain AWS IAM OIDC provider, AWS IAM role, AWS account, AWS region, and AWS audience only as optional historical AWS reference mappings inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Define an additional provider-neutral deployment-identity admission boundary for Full RAOS without making AWS or any target provider a selected, default, fallback, or Production-admission binding.
+  - Preserve AWS Tokyo and the AWS IAM OIDC provider, AWS IAM role, AWS account, AWS region, and AWS audience mappings as the current Canonical Reference Architecture inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Preserve the Canonical AWS-specific ST-1504 objective and workflow/IAM trust deliverable as authoritative, not erased, replaced, or completed by this portability overlay.
+  - Admit non-AWS and owner-managed target profiles only as additional portable implementation paths with identical complete capabilities and evidence.
   - Require every future target profile to map the same closed deployment-identity capability inventory and provide equivalent security, operations, release, provenance, audit, revocation, rollback, isolation, and residency evidence.
   - Keep every repository, ref, workflow, environment, provider, profile, account, project, tenant, region, audience, role, session, policy, credential, plugin, adapter, and physical-resource binding unset while the relevant Open Decisions remain unresolved.
 source_design_refs:
@@ -45,7 +47,9 @@ decision:
   aws_reference_mapping_boundary:
     canonical_decision_id: INT-DEC-007
     architecture_id: RAOS-ARCH-001
-    classification: OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY
+    classification: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
     mappings:
       - reference_name: AWS IAM OIDC provider
         capability_id: short_lived_federation_without_static_cloud_secrets
@@ -104,9 +108,9 @@ decision:
     - provider_account_project_tenant_and_environment_isolation
     - equivalent_security_operations_and_release_evidence
 rationale:
-  - Canonical security design fixes GitHub Actions OIDC as the CI identity source and forbids long-lived cloud keys, while INT-DEC-007 makes AWS Tokyo only a Reference Architecture and requires a portable Core.
+  - Canonical security design fixes GitHub Actions OIDC as the CI identity source and forbids long-lived cloud keys, while INT-DEC-007 keeps AWS Tokyo as the current Canonical Reference Architecture and requires a portable Core.
   - GitHub is the repository-approved initial external review connector, but that source-system choice must not select a target cloud, identity service, account, region, audience, role, plugin, or adapter.
-  - Provider, profile, account, project, tenant, region, audience, role, plugin, or adapter defaults would silently convert historical AWS reference mappings into live infrastructure choices.
+  - Provider, profile, account, project, tenant, region, audience, role, plugin, or adapter defaults would silently convert the current Canonical Reference Architecture mappings into live selected infrastructure choices.
   - Exact subject binding, short-lived federation, protected-environment approval, least privilege, isolation, provenance, audit, revocation, rollback, and equivalent evidence are provider-neutral security outcomes.
   - Keeping all bindings null and eligibility unevaluated preserves OD-009, OD-011, OD-013, OD-015, TST-026, and every external security, operations, release, and Production gate.
 rejected_alternatives:
@@ -139,7 +143,9 @@ acceptance_criteria:
   - The ST-1504 source and generated reference expose a closed provider-neutral deployment-identity capability inventory with GitHub Actions fixed only as the source and no selected, default, or fallback target profile or binding.
   - Every future eligible target profile must have exactly one explicit mapping for every required capability and complete equivalent evidence.
   - Unknown, missing, duplicate, partial, implicit, defaulted, fallback, provider-label-only, AWS-label-only, source-label-only, or reference-only mappings are rejected before eligibility.
-  - AWS IAM OIDC provider, AWS IAM role, AWS account, AWS region, and AWS audience remain visible only as optional historical AWS reference mappings and cannot select or satisfy any capability or evidence by themselves.
+  - AWS Tokyo and the AWS IAM OIDC provider, AWS IAM role, AWS account, AWS region, and AWS audience mappings remain the current Canonical Reference Architecture, while that status alone cannot select or satisfy any capability, admission, or evidence.
+  - The Canonical AWS-specific ST-1504 objective and workflow/IAM trust deliverable remain authoritative and NOT_STARTED/NOT_EXECUTED; this overlay neither erases, replaces, nor completes them.
+  - Non-AWS and owner-managed target profiles are additional portable implementation paths only and require the same complete capability mapping and evidence as AWS.
   - Exact subject constraints, no-static-secret rules, protected human approval, disabled activation, forbidden execution surfaces, zero action counts, unresolved Open Decisions, and NOT_EXECUTED evidence remain fail closed.
 required_test_evidence:
   - Isolated tests/st1504 positive contract and generated-plan assertions.

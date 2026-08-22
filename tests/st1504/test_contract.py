@@ -101,7 +101,7 @@ def test_github_is_fixed_source_without_selecting_target_provider(
     assert path["github_source_is_target_provider_selection"] is False
 
 
-def test_aws_is_optional_historical_reference_only(
+def test_aws_is_current_canonical_reference_and_portable_paths_are_additional(
     github_oidc_model: generator.GithubOidcModel,
 ) -> None:
     plan = generator.reference_plan_document(github_oidc_model)
@@ -109,9 +109,20 @@ def test_aws_is_optional_historical_reference_only(
     assert reference["cloud"] == "AWS"
     assert reference["region"] == "ap-northeast-1"
     assert reference["classification"] == (
-        "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY"
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
     )
     assert reference["mappings"] == generator._aws_reference_mappings()
+    admission = _mapping(plan["provider_neutral_deployment_identity_admission"])
+    assert admission["aws_reference_boundary"]["role"] == (
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    )
+    assert admission["aws_reference_boundary"]["canonical_story_deliverables"] == (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    )
+    assert (
+        admission["aws_reference_boundary"]["non_aws_owner_managed_profiles"]
+        == "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+    )
     for field in (
         "default",
         "implicit_fallback",

@@ -87,7 +87,7 @@ AUTHORITY_SOURCES: Final = {
     "AGENTS.md": ("a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127"),
     "changes/st-1504/"
     "DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml": (
-        "f6a89722b86a8a47288da86c09214a3a926061d16489737170edc07398b2be61"
+        "36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04"
     ),
 }
 PREDECESSOR_SOURCES: Final = {
@@ -98,13 +98,13 @@ PREDECESSOR_SOURCES: Final = {
         "e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5"
     ),
     "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
-        "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61"
+        "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
     ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6"
+        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559"
+        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
@@ -121,10 +121,10 @@ SOURCE_ARTIFACT_PATHS: Final = (
 )
 
 EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
-    "8afd193ddc98a0193e21032a3058c157fe75f12151cb06d80a9ea198efbc5f8c"
+    "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
 )
 EXPECTED_CONTRACT_SEMANTIC_SHA256: Final = (
-    "795f7ec4218e029feef40aee6d6616ff62e3f9cc847a8383f4f847514c8c3d22"
+    "86c418b07701b4cf47f478b13f7665911ece7c4a46d39edd07f7b6944019a4b7"
 )
 EXPECTED_PR_GOVERNANCE_CONTRACT_SEMANTIC_SHA256: Final = (
     "141dce557ae5b16c1ef54490ed1c41ce083c33cf27c5e9b66a38de4827dd6dfb"
@@ -133,13 +133,13 @@ EXPECTED_PR_GOVERNANCE_DESIRED_STATE_SEMANTIC_SHA256: Final = (
     "bcfc8440e5e508648607dc22f8deacca4dc14021404c050457077ce451934c33"
 )
 EXPECTED_PREDECESSOR_HANDOFF_SEMANTIC_SHA256: Final = (
-    "0915d6ec4949babebf43f307b2ac1569fa76213c96a3be9009dfaec660e34030"
+    "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
 )
 EXPECTED_PREDECESSOR_CONTRACT_SEMANTIC_SHA256: Final = (
-    "715fbdd46467ac282333c486850a5571d27836d5d028f971e5840f755e338a6e"
+    "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
 )
 EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256: Final = (
-    "6521f7396e8b076177cd00d297342a482ac664809c432dde48c8c7d55d01d32f"
+    "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
 )
 EXPECTED_HANDOFF_SOURCE_DESIGN_REFS: Final = (
     "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
@@ -566,7 +566,7 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
     "reference_architecture": {
         "cloud": "AWS",
         "region": "ap-northeast-1",
-        "classification": "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY",
+        "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
         "inherited_from": "INT-DEC-007",
         "architecture_id": "RAOS-ARCH-001",
         "portable_core_required": True,
@@ -611,7 +611,13 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
             "reference_only_mapping": "REJECT",
         },
         "aws_reference_boundary": {
-            "role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
             "default": False,
             "implicit_fallback": False,
             "selected_binding": False,
@@ -1160,7 +1166,13 @@ def _validate_design_handoff(root: Path) -> None:
             "aws_reference_mapping_boundary": {
                 "canonical_decision_id": "INT-DEC-007",
                 "architecture_id": "RAOS-ARCH-001",
-                "classification": ("OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY"),
+                "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+                "canonical_story_deliverables": (
+                    "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+                ),
+                "non_aws_owner_managed_profiles": (
+                    "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+                ),
                 "mappings": _aws_reference_mappings(),
                 "default": False,
                 "implicit_fallback": False,
@@ -1492,7 +1504,7 @@ def _validate_foundation_predecessor(root: Path) -> None:
         {
             "cloud": "AWS",
             "region": "ap-northeast-1",
-            "classification": "OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY",
+            "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
             "inherited_from": "INT-DEC-007",
             "portable_core_required": True,
             "default": False,
@@ -1534,7 +1546,13 @@ def _validate_foundation_predecessor(root: Path) -> None:
     _strict_match(
         admission.get("aws_reference_boundary"),
         {
-            "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+            "canonical_story_deliverables": (
+                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+            ),
+            "non_aws_owner_managed_profiles": (
+                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+            ),
             "default": False,
             "implicit_fallback": False,
             "selected_binding": False,
@@ -1904,6 +1922,13 @@ def render_manifest(
             ],
             "required_capability_count": len(DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES),
             "aws_reference_only": True,
+            "aws_reference_role": admission["aws_reference_boundary"]["role"],
+            "canonical_story_deliverables": admission["aws_reference_boundary"][
+                "canonical_story_deliverables"
+            ],
+            "portable_implementation_paths": admission["aws_reference_boundary"][
+                "non_aws_owner_managed_profiles"
+            ],
             "aws_reference_default": admission["aws_reference_boundary"]["default"],
             "aws_reference_implicit_fallback": admission["aws_reference_boundary"][
                 "implicit_fallback"

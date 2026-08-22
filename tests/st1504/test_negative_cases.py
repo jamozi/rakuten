@@ -488,6 +488,47 @@ def test_aws_reference_labels_never_select_or_satisfy_admission(
 
 
 @pytest.mark.parametrize(
+    ("section", "field", "value"),
+    (
+        (
+            "reference_architecture",
+            "classification",
+            "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "provider_neutral_deployment_identity_admission",
+            "role",
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "provider_neutral_deployment_identity_admission",
+            "canonical_story_deliverables",
+            "CANONICAL_STORY_DELIVERABLES_REPLACED_BY_PORTABILITY_OVERLAY",
+        ),
+        (
+            "provider_neutral_deployment_identity_admission",
+            "non_aws_owner_managed_profiles",
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
+    ),
+)
+def test_canonical_reference_cannot_be_demoted_or_replaced_by_overlay(
+    contract_document: dict[str, Any], section: str, field: str, value: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    target = (
+        document["reference_architecture"]
+        if section == "reference_architecture"
+        else document["provider_neutral_deployment_identity_admission"][
+            "aws_reference_boundary"
+        ]
+    )
+    target[field] = value
+    with pytest.raises(generator.GithubOidcContractError):
+        _validate(document)
+
+
+@pytest.mark.parametrize(
     "field",
     (
         "identical_security_evidence",
