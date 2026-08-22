@@ -1,5 +1,12 @@
 # ST-1703 market-learning pilot Wave 1
 
+> 2026-08-22 self-hosted owner-local slice: the separate, reversible
+> `SELF_HOSTED_MINIMUM_START_V1` contract for `https://kurashinoshirube.com`
+> lives under `changes/st-1703/self-hosted-minimum-start-v1/`. Its local design
+> record does not rewrite the historical exact-hash handoffs below, resolve the
+> Canonical Open Decision registry, complete ST-1703, or authorize live write,
+> theme activation, publication, formal TST, staging, release, or Production.
+
 This change implements only the repository-owner-approved local slice bound by
 `DESIGN_HANDOFF_V1_MARKET_LEARNING_PILOT_WAVE_1.yaml`. It does not complete the
 canonical end-to-end ST-1703 Story.

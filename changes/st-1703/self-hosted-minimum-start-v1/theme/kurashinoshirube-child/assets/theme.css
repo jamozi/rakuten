@@ -1,0 +1,186 @@
+:root {
+  --raos-paper: #f6f1e8;
+  --raos-ink: #17243f;
+  --raos-indigo: #24365f;
+  --raos-warm: #a44f31;
+  --raos-rule: #adb6b3;
+  --raos-focus: #8f3d1f;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at 14% 8%, rgb(164 79 49 / 7%), transparent 24rem),
+    var(--raos-paper);
+  color: var(--raos-ink);
+}
+
+a {
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--raos-warm);
+}
+
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 3px solid var(--raos-focus);
+  outline-offset: 4px;
+}
+
+.raos-skip-link {
+  background: #fff;
+  color: var(--raos-ink);
+  left: 1rem;
+  padding: 0.75rem 1rem;
+  position: fixed;
+  top: -8rem;
+  z-index: 1000;
+}
+
+.raos-skip-link:focus {
+  top: 1rem;
+}
+
+.raos-masthead {
+  align-items: center;
+  border-bottom: 1px solid var(--raos-rule);
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  padding-block: 1.25rem;
+}
+
+.raos-wordmark {
+  font-family: ui-serif, "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(1.25rem, 1rem + 1vw, 2rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.raos-hero {
+  background:
+    linear-gradient(90deg, rgb(23 36 63 / 92%) 0 38%, rgb(23 36 63 / 42%) 70%),
+    url("images/home-hero.webp") center / cover no-repeat;
+  color: #fff;
+  display: grid;
+  min-height: min(78vh, 52rem);
+  place-items: end start;
+  position: relative;
+}
+
+.raos-hero__copy {
+  max-width: 39rem;
+  padding: clamp(2rem, 8vw, 7rem);
+}
+
+.raos-kicker {
+  color: currentColor;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.raos-editorial-flow {
+  border-top: 1px solid var(--raos-rule);
+  display: grid;
+  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns: minmax(0, 2fr) minmax(14rem, 1fr);
+  margin-block: clamp(4rem, 10vw, 8rem);
+  padding-top: clamp(2rem, 5vw, 4rem);
+}
+
+.raos-editorial-flow article {
+  border-bottom: 1px solid var(--raos-rule);
+  padding-bottom: 2rem;
+}
+
+.raos-disclosure {
+  border-block: 1px solid var(--raos-rule);
+  font-size: 0.92rem;
+  margin-block: 2rem;
+  padding-block: 1rem;
+}
+
+.raos-comparison {
+  overflow-x: auto;
+}
+
+.raos-comparison table {
+  border-collapse: collapse;
+  min-width: 48rem;
+  width: 100%;
+}
+
+.raos-comparison :where(th, td) {
+  border-bottom: 1px solid var(--raos-rule);
+  padding: 0.85rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.raos-affiliate-slot {
+  border-left: 0.25rem solid var(--raos-warm);
+  margin-block: 1.5rem 3rem;
+  padding: 0.25rem 1rem;
+}
+
+.raos-footer {
+  background: var(--raos-ink);
+  color: #fff;
+  margin-top: 6rem;
+  padding-block: clamp(3rem, 7vw, 6rem);
+}
+
+.raos-reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+
+.raos-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 48rem) {
+  .raos-masthead,
+  .raos-editorial-flow {
+    display: block;
+  }
+
+  .raos-masthead nav {
+    margin-top: 1rem;
+  }
+
+  .raos-hero {
+    background-position: 62% center;
+    min-height: 70vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .raos-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

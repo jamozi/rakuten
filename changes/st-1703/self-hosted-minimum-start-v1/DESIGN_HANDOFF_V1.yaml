@@ -1,0 +1,107 @@
+DESIGN_HANDOFF_V1:
+  record_status: REPOSITORY_LOCAL_DESIGN_RECORD
+  authority: DESIGN_AND_EVIDENCE_ONLY
+  approved_story: ST-1703
+  approved_scope: SELF_HOSTED_MINIMUM_START_V1
+  source_design_refs:
+    - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    - docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    - docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1703
+  decision:
+    site:
+      brand: 暮らしのしるべ
+      exact_origin: https://kurashinoshirube.com
+      cms: SELF_HOSTED_WORDPRESS
+      separate_from_wordpresscom: true
+    editorial:
+      initial_category: 旅行用品
+      first_topic: 機内持ち込み対応スーツケース
+      visual_direction: PREMIUM_RESTRAINED_JAPANESE_TRAVEL_MAGAZINE
+      owner_human_review_and_publish_required: true
+      ai_assistance_disclosed_in_editorial_policy: true
+      fabricated_first_hand_experience_forbidden: true
+      recommendation_inputs_exclude_revenue: true
+    privacy:
+      consent_banner_required_before_nonessential_tracking: true
+      consent_activation_is_human_gate: true
+    pilot_follow_on:
+      story: ST-1704
+      duration_days: 14
+      article_count: 5
+      monthly_incremental_cost_cap_jpy: 2000
+      labor_cost_per_hour_jpy: 3000
+      first_five_drafts: CODEX_NOT_OPENAI_API
+    automation:
+      improvement_output: PROPOSAL_AND_DIFF_ONLY
+      automatic_publication: DISABLED
+      operational_draft_capability: CREATE_DRAFT_ONLY
+      update_interface_state: LOCAL_INTERFACE_ONLY_ACTIVATION_DISABLED
+  rationale:
+    - 既存 self-hosted site を使い、AWSを初回市場学習の前提から外す
+    - WordPress Application Password と公式 Posts REST API を固定境界で使う
+    - WordPress.com numeric-site OAuth path と混同せず、owner-local trust boundaryを分離する
+    - 記事公開、theme activation、consent activationはOwnerの明示操作として残す
+  rejected_alternatives:
+    - option: 既存WordPress.com writerのtarget差し替え
+      reason: provider、authentication、route、journalのauthorityが異なる
+    - option: 汎用WordPress管理CLI
+      reason: publish/delete/media/theme/plugin capabilityを不必要に広げる
+    - option: OpenAI APIによる初回5記事の自動量産
+      reason: 初期校正前の費用と品質リスクを増やす
+  constraints:
+    - exact originは https://kurashinoshirube.com のみ
+    - 外向きWordPress capabilityは post create、status=draft のみ
+    - update値とjournal規則はlocal interface-onlyで、live adapter、CLI、Makeからactivationしない
+    - redirect、proxy継承、automatic retry、fallbackを禁止
+    - credentialsはowner-private固定JSONだけに保存し、argv/env/logへ出さない
+    - content publication、theme/plugin activation、media upload、taxonomy mutationを実装しない
+    - AI画像は別の費用・外部操作gateで生成し、完成asset欠落時はtheme package readinessを拒否
+  security_and_approval_gates:
+    local_repository_implementation: AUTHORIZED_REVERSIBLE
+    credential_entry: OWNER_INTERACTIVE_ONLY
+    credential_principal: DEDICATED_LEAST_PRIVILEGE_DRAFT_WRITER_REQUIRED
+    credential_capability_proof: OWNER_LIVE_GATE_NOT_EXECUTED
+    live_read_probe: NOT_AUTHORIZED_BY_THIS_RECORD
+    draft_write: SEPARATE_OWNER_OPERATION
+    theme_activation: HUMAN_OPERATOR_REQUIRED
+    consent_and_analytics_activation: HUMAN_PRIVACY_OPERATOR_REQUIRED
+    publication: HUMAN_OWNER_REQUIRED
+    formal_staging_tst: NOT_EXECUTED
+    release: NOT_AUTHORIZED
+    production_claim: FORBIDDEN
+  acceptance_criteria:
+    - offline doctor reads credential metadata only and performs zero network requests
+    - credential JSON is strict, bounded, owner-only, regular, and symlink-safe
+    - one fsynced INTENT precedes the sole draft write attempt
+    - live update is rejected before credential read and network construction
+    - exact COMMITTED replay performs no credential read and no network request
+    - pending, ambiguous, tampered, or mismatched journal state never retries
+    - theme source is deterministic, local-only, accessible, and reduced-motion aware
+    - final image and affiliate-slot absence remains visible and fail closed
+    - first article separates sourced facts from editorial interpretation and fabricates no experience
+  required_test_evidence:
+    - isolated ST-1703 unit and negative tests
+    - deterministic theme package/check fixtures
+    - secret redaction and filesystem trust-boundary tests
+    - transport one-attempt, TLS, timeout, redirect, proxy, bounded-response tests
+    - journal fsync, replay, ambiguity, and tamper tests
+    - ruff format/lint, mypy/Pyright, bash syntax, workspace and canonical import checks
+  open_decision_state:
+    canonical_registry_mutated: false
+    formal_resolution_claimed: false
+    owner_inputs_recorded_for_local_slice:
+      - OD-001 initial category
+      - OD-002 site name and domain
+      - OD-005 reviewer and labor cost
+      - OD-009 incremental pilot budget
+      - OD-012 consent banner direction
+    remain_blocking_for_canonical_gate_or_production:
+      - OD-006 category product identity rules
+      - OD-007 category freshness SLA
+      - OD-008 legal review boundary
+      - OD-009 cloud and provider production budget controls
+      - OD-012 final privacy and consent activation
+      - OD-015 production provider credentials
