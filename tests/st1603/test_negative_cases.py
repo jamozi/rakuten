@@ -116,6 +116,30 @@ def test_predecessor_safety_cannot_be_weakened(
         assert "aws" not in str(captured.value).lower()
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("eligible", True),
+        ("complete_mapping", True),
+        ("selected_provider_name", "aws"),
+        ("selected_profile_id", "default-profile"),
+        ("default_profile_id", "default-profile"),
+        ("fallback_profile_id", "fallback-profile"),
+        ("aws_reference_selected_binding", True),
+    ),
+)
+def test_staging_provider_neutral_admission_cannot_be_shortcut(
+    contract_document: dict[str, Any], field: str, value: object
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["predecessor_bindings"]["staging_deployment"][
+        "provider_neutral_admission"
+    ][field] = value
+    with pytest.raises(generator.SecurityVerificationPackError) as captured:
+        _validate(document)
+    assert "aws" not in str(captured.value).lower()
+
+
 def test_source_inventory_is_ordered_unique_and_hash_bound(
     contract_document: dict[str, Any],
 ) -> None:

@@ -85,6 +85,14 @@ def test_predecessors_remain_material_free_disabled_and_zero_action(
     assert staging["executable"] is False
     assert staging["activation"] == "DISABLED"
     assert staging["credential_material"] == "ABSENT"
+    assert staging["required_classification"] == (
+        "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_STAGING_ADMISSION_"
+        "REFERENCE_PLAN"
+    )
+    assert staging["provider_neutral_admission"] == (
+        generator.EXPECTED_STAGING_PROVIDER_NEUTRAL_ADMISSION
+    )
+    assert staging["action_counts"] == generator.EXPECTED_STAGING_ACTION_COUNTS
     assert all(
         type(value) is int and value == 0 for value in staging["action_counts"].values()
     )
