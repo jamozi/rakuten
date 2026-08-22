@@ -1819,12 +1819,25 @@ def test_collection_shape_precedes_a_simultaneously_missing_summary_field(
     assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
 
 
+@pytest.mark.parametrize("collection_alias", ("items", "Items"))
+@pytest.mark.parametrize("empty", (False, True))
 @pytest.mark.parametrize("carrier_present", (False, True))
-def test_item_carrier_omitted_or_exact_zero_is_accepted_but_not_normalized(
+def test_item_collection_aliases_and_carrier_normalize_to_lowercase_items_only(
     monkeypatch: pytest.MonkeyPatch,
+    collection_alias: str,
+    empty: bool,
     carrier_present: bool,
 ) -> None:
-    root = _item_root()
+    records = [] if empty else [_item_record()]
+    root: dict[str, object] = {
+        "count": 0 if empty else 1,
+        "page": 1,
+        "first": 0 if empty else 1,
+        "last": 0 if empty else 1,
+        "hits": 1,
+        "pageCount": 0 if empty else 1,
+        collection_alias: records,
+    }
     if carrier_present:
         root["carrier"] = 0
     body = _json_body(root)
@@ -1838,8 +1851,154 @@ def test_item_carrier_omitted_or_exact_zero_is_accepted_but_not_normalized(
     provider_result = cast(RakutenOwnerLocalProviderResult, result)
     normalized = provider_result.normalized_object()
     assert provider_result.request_count == 1
+    assert len(provider_result.records) == (0 if empty else 1)
+    assert "items" in normalized
+    assert normalized["items"] == records
+    assert "Items" not in normalized
     assert "carrier" not in normalized
-    assert "carrier" not in json.dumps(normalized, sort_keys=True)
+    serialized = json.dumps(normalized, sort_keys=True)
+    assert '"Items"' not in serialized
+    assert "carrier" not in serialized
+
+
+@pytest.mark.parametrize(
+    ("root", "expected_detail"),
+    (
+        (
+            {
+                **{
+                    name: value
+                    for name, value in _item_root().items()
+                    if name != "items"
+                },
+                "unrecognized": "provider-controlled-value",
+            },
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID,
+        ),
+        (
+            {
+                **_item_root(),
+                "Items": [_item_record()],
+                "unrecognized": "provider-controlled-value",
+            },
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID,
+        ),
+        (
+            {
+                **{
+                    name: value
+                    for name, value in _item_root().items()
+                    if name != "items"
+                },
+                "ITEMS": [_item_record()],
+            },
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID,
+        ),
+        (
+            {
+                **{
+                    name: value
+                    for name, value in _item_root().items()
+                    if name != "items"
+                },
+                "Items": [_item_record()],
+                "ItemS": [_item_record()],
+            },
+            RakutenOwnerLocalValidationDetailCode.ROOT_MEMBER_UNRECOGNIZED,
+        ),
+        (
+            {
+                **{
+                    name: value
+                    for name, value in _item_root().items()
+                    if name != "items"
+                },
+                "Items": [_item_record()],
+                "unrecognized": "provider-controlled-value",
+            },
+            RakutenOwnerLocalValidationDetailCode.ROOT_MEMBER_UNRECOGNIZED,
+        ),
+        (
+            _item_root(items={}),
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_NOT_ARRAY,
+        ),
+        (
+            {
+                **{
+                    name: value
+                    for name, value in _item_root().items()
+                    if name != "items"
+                },
+                "Items": {},
+            },
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_NOT_ARRAY,
+        ),
+    ),
+)
+def test_item_collection_alias_cardinality_case_and_unknown_member_precedence(
+    monkeypatch: pytest.MonkeyPatch,
+    root: dict[str, object],
+    expected_detail: RakutenOwnerLocalValidationDetailCode,
+) -> None:
+    body = _json_body(root)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as captured:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+
+    failure = captured.value
+    assert failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+    )
+    assert failure.validation_detail_code is expected_detail
+    assert failure.request_count == 1
+    assert failure.http_status == 200
+    assert failure.body_byte_count == len(body)
+    assert failure.response_sha256 == hashlib.sha256(body).hexdigest()
+    for forbidden in ("provider-controlled-value", "unrecognized", "ITEMS", "ItemS"):
+        assert forbidden not in str(failure)
+        assert forbidden not in repr(failure)
+
+
+@pytest.mark.parametrize("collection_alias", ("items", "Items"))
+@pytest.mark.parametrize("wrapper", ("Item", "item"))
+def test_item_collection_aliases_reject_nested_record_wrappers(
+    monkeypatch: pytest.MonkeyPatch,
+    collection_alias: str,
+    wrapper: str,
+) -> None:
+    root: dict[str, object] = {
+        "count": 1,
+        "page": 1,
+        "first": 1,
+        "last": 1,
+        "hits": 1,
+        "pageCount": 1,
+        collection_alias: [{wrapper: _item_record()}],
+    }
+    body = _json_body(root)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as captured:
+        _execute(
+            monkeypatch,
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+
+    failure = captured.value
+    assert failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+    )
+    assert failure.validation_detail_code is None
+    assert failure.request_count == 1
+    assert failure.response_sha256 == hashlib.sha256(body).hexdigest()
 
 
 @pytest.mark.parametrize("invalid_carrier", (True, -1, 1, 2, "0", None, 0.0))
@@ -2468,6 +2627,10 @@ def test_summary_count_cannot_be_less_than_returned_cardinality(
     [
         (
             _product_body("Products"),
+            RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE,
+        ),
+        (
+            _product_body("Items"),
             RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE,
         ),
         (

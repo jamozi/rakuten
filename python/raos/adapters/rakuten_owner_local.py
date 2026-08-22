@@ -109,6 +109,7 @@ _PRODUCT_REQUEST_KEYS = frozenset(
     }
 )
 _SUMMARY_KEYS = frozenset({"count", "page", "first", "last", "hits", "pageCount"})
+_ITEM_COLLECTION_ALIASES = frozenset({"items", "Items"})
 _PRODUCT_COLLECTION_ALIASES = frozenset({"items", "products"})
 _DIRECTORY_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW
 _FILE_FLAGS = os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
@@ -1708,8 +1709,7 @@ def _collection(
 ) -> tuple[str, list[object]]:
     root_keys = frozenset(root)
     if api is RakutenOwnerLocalApi.ITEM_SEARCH:
-        collection_key = "items"
-        aliases = root_keys & {collection_key}
+        aliases = root_keys & _ITEM_COLLECTION_ALIASES
     else:
         aliases = root_keys & _PRODUCT_COLLECTION_ALIASES
     if len(aliases) != 1:

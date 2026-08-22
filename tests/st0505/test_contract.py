@@ -252,6 +252,18 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "normalized_or_persisted": False,
         "product_search": "UNCHANGED_REJECT_AS_UNRECOGNIZED_ROOT_MEMBER",
     }
+    assert owner["transport"]["item_response_collection"] == {
+        "accepted_input_aliases": ["items", "Items"],
+        "alias_cardinality": "EXACTLY_ONE",
+        "record_shape": "FORMAT_VERSION_2_FLAT_OBJECT_ONLY",
+        "canonical_normalized_key": "items",
+        "source_alias_persisted": False,
+        "official_documented_shape": "LOWERCASE_ITEMS_WITH_FLAT_RECORDS",
+        "compatibility_basis": (
+            "SANITIZED_HTTP_200_BODY_5771_COLLECTION_KEY_INVALID_NOT_RAW_BODY_PROOF"
+        ),
+        "product_search": "UNCHANGED",
+    }
     assert owner["normalized_result"]["envelope"] == {
         "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3",
         "version": 3,
