@@ -1,5 +1,16 @@
 # Minimum Start runbook — no AWS
 
+> This historical runbook operates the WordPress.com target
+> `kurashierabinote.wordpress.com`. The owner-selected self-hosted target
+> `https://kurashinoshirube.com` is a separate provider/authentication/journal
+> boundary. For that path use
+> `docs/runbooks/self-hosted-minimum-start.md` and only the distinct
+> Story-local commands under
+> `make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile <target>`.
+> The root Makefile intentionally has no self-hosted target because its bytes
+> are bound by the historical WordPress.com runtime inventory. Do not
+> substitute the custom domain into any `wordpresscom-*` command.
+
 ## Goal
 
 Operate the first revenue-learning MVP from the owner workstation with no AWS dependency:

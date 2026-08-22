@@ -1,0 +1,141 @@
+{
+  "approved_base_commit": "b5a6157b878ca0435ee4120d33162aba5ae51f77",
+  "external_action_authority": "NONE",
+  "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
+  "paths": [
+    {
+      "bytes": 13561,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
+      "sha256": "add87e1074eeb3ea6f47835a4eb3dcf7e2e17f006df366cb6adaa1429d934b58"
+    },
+    {
+      "bytes": 2972,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
+      "sha256": "fc2ab7cc64792bb01e4d2f8de7231a3d5068d70f3a0dc34864f2ac0620e79733"
+    },
+    {
+      "bytes": 12412,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/content/first-suitcase-comparison.v1.json",
+      "sha256": "041456463a10f13725b0c9e193d2198f997fd6abf2f321e9d71b613c0d8d54e8"
+    },
+    {
+      "bytes": 112138,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/python-runtime-code-inventory.v1.sha256",
+      "sha256": "d9c5314744c45e8f441ceeabed113c17289520241ab83a6044de5100d43549e3"
+    },
+    {
+      "bytes": 3959,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/assets/theme.css",
+      "sha256": "0703a9154a12a2d4224d961ac5996b5e25c483c81f21f9a8500cd899ed913adf"
+    },
+    {
+      "bytes": 1245,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/assets/theme.js",
+      "sha256": "799763f0f4edc08a21c551ee72064ef4436243e28e493251d5b59c312c487d8b"
+    },
+    {
+      "bytes": 2697,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/functions.php",
+      "sha256": "4e12cedfb266dac20d7bc19d28a1558fa69e34a0ac79d35ff85a58258a447ed3"
+    },
+    {
+      "bytes": 958,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/parts/footer.html",
+      "sha256": "13ea260764efa792399637ba7cf384b8514bd3acff4f5dbecc3cb11ac7a24be4"
+    },
+    {
+      "bytes": 393,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/parts/header.html",
+      "sha256": "8b8c12772dd32d8e56464bd6d502dfb7289921d424d6eb80b88eeae67de15674"
+    },
+    {
+      "bytes": 1776,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
+      "sha256": "c3ad99a59527a42935c12936ed02f024bac7a6930b6b131b478cc705ef88688a"
+    },
+    {
+      "bytes": 210,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/style.css",
+      "sha256": "fcb2bca0f60cfe84be082c3140089eb16738056e48e6ea9e12faad5541368886"
+    },
+    {
+      "bytes": 2848,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/templates/front-page.html",
+      "sha256": "6524f4b4f300798ca325519b9f489fa04da59436fccb90f573d65efbe54cdea9"
+    },
+    {
+      "bytes": 552,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/templates/single.html",
+      "sha256": "e31b89a6569fcf88bb3720d1efb90c56dff92bbd1ea89150e44b90d19297e110"
+    },
+    {
+      "bytes": 1866,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/theme.json",
+      "sha256": "7918be5a8b5e04dc90ca3f4a7b9a9792598cd172ce7b44a3c2057e5bd9469db0"
+    },
+    {
+      "bytes": 14674,
+      "path": "python/raos/adapters/self_hosted_wordpress_credentials.py",
+      "sha256": "95d5aeb931b4a8ffdcb6c9d3afbddaf1cbdbb65f6f63dae8a5914e674e578e79"
+    },
+    {
+      "bytes": 13555,
+      "path": "python/raos/adapters/self_hosted_wordpress_https.py",
+      "sha256": "d19bdc39436bef65fda5ae1ba4382732f7bc339ae926b4e8f05b840ba83a96cc"
+    },
+    {
+      "bytes": 17638,
+      "path": "python/raos/adapters/self_hosted_wordpress_journal.py",
+      "sha256": "e3a0c06b9274be2dbc48732beef00f3eae5268759bf152b3274b061415ddf04b"
+    },
+    {
+      "bytes": 4392,
+      "path": "python/raos/adapters/self_hosted_wordpress_rest.py",
+      "sha256": "7c0989a590fc58f7c36d62fae2711d870794af67b413d64c2c853442c70c2352"
+    },
+    {
+      "bytes": 17391,
+      "path": "python/raos/adapters/wordpress_rest.py",
+      "sha256": "4103ce178e92e12a5357e2e9c35b05485b67e18889fc057a8f41b4e16d61e4f8"
+    },
+    {
+      "bytes": 15779,
+      "path": "python/raos/application/editorial/self_hosted_minimum_start.py",
+      "sha256": "14784ceb85a2da6d3afa492ab3c3cda0486f00eb0b770f05cfad478a1b57831d"
+    },
+    {
+      "bytes": 20400,
+      "path": "python/raos/domain/editorial/market_learning_pilot.py",
+      "sha256": "69f4c373dca5ddcbebf7dcefc23a8a9376792ca85b70fb3d48d6137212fb6f27"
+    },
+    {
+      "bytes": 9190,
+      "path": "python/raos/domain/editorial/self_hosted_wordpress.py",
+      "sha256": "ad20cc42d21d31b4b818787282d75d2ab1663a6486db7abacc8f3d9c11172e56"
+    },
+    {
+      "bytes": 1121,
+      "path": "python/raos/ports/self_hosted_wordpress.py",
+      "sha256": "7669c179c8df496de0277b6ef88c9678afe72f29cef72f28d48db5417f2bda1d"
+    },
+    {
+      "bytes": 49145,
+      "path": "scripts/build_st1703_self_hosted_theme.py",
+      "sha256": "3fbbbd3d0080b875955ce57d3e75f2347541be661650dba185f4b49c16507878"
+    },
+    {
+      "bytes": 54640,
+      "path": "scripts/self_hosted_wordpress.py",
+      "sha256": "24ea5179184f6b06b8d7764cc04af76fbc9b96086c87e1b44cd04a0bd6a42eab"
+    },
+    {
+      "bytes": 21688,
+      "path": "scripts/self_hosted_wordpress_python.sh",
+      "sha256": "25fc8daf290901f56380c1219a208c0db123d5b64c10c721b902021d71fe01a8"
+    }
+  ],
+  "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+  "schema": "SELF_HOSTED_WORDPRESS_RUNTIME_MANIFEST_V1",
+  "slice_id": "SELF_HOSTED_MINIMUM_START_V1",
+  "story_id": "ST-1703"
+}
