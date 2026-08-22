@@ -19,6 +19,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalRequest,
     RakutenOwnerLocalRequestDisposition,
     RakutenOwnerLocalResultEnvelope,
+    RakutenOwnerLocalValidationStageCode,
     api_definition,
     contextual_failure,
     exact_response_selector,
@@ -71,12 +72,14 @@ def _request_hits(request: RakutenOwnerLocalRequest) -> int:
 def _response_failure(
     code: RakutenOwnerLocalFailureCode,
     *,
+    validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None,
     api: RakutenOwnerLocalApi,
     request_fingerprint: str,
     result: RakutenOwnerLocalProviderResult,
 ) -> RakutenOwnerLocalFailure:
     return RakutenOwnerLocalFailure(
         code=code,
+        validation_stage_code=validation_stage_code,
         disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -247,6 +250,9 @@ class RakutenOwnerLocalService:
                 if selector_failure is not None:
                     failure = _response_failure(
                         selector_failure,
+                        validation_stage_code=(
+                            RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+                        ),
                         api=api,
                         request_fingerprint=request_fingerprint,
                         result=provider_result,
@@ -264,6 +270,9 @@ class RakutenOwnerLocalService:
                     except RakutenOwnerLocalFailure:
                         failure = _response_failure(
                             RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                            validation_stage_code=(
+                                RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+                            ),
                             api=api,
                             request_fingerprint=request_fingerprint,
                             result=provider_result,

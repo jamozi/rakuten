@@ -8,6 +8,7 @@ approved_scope:
   - fake-only local verification and generated ST-0505 reference artifacts
   - separate reversible owner-local production-read integration for the reviewed Item Search 2026-07-01 and Product Search 2025-08-01 APIs
   - authenticated setup, rotate, doctor, closed API registry, explicit request-file reads, and fixed one-call smoke commands in an independently installed owner-private runtime
+  - side-by-side owner-local result V2 with one closed value-free response-validation stage and immutable V1 evidence
 source_design_refs:
   - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015
@@ -52,14 +53,17 @@ decision:
     classification: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
     runtime_name: rakuten-owner-local
     trusted_runtime_root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    installed_bundle_sha256: c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9
+    installed_bundle_sha256: 97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b
-    install_stage_sha256: 0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6
+    installer_sha256: 9f656e06e241528e3d9a4877268128acf89308afd9791fbcb6de8b6285e0fc04
+    install_stage_sha256: d041b21a1dc5fba8608016d6f3d7bc5f5509f98fd063e6dd0bf7e7a91bbbd947
     runtime_install_execution: NOT_EXECUTED
     credential_store: .secrets/rakuten-owner-local/credentials.v1.json
     credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
     result_store: .secrets/rakuten-owner-local/results/<UTC-run-id>.json
+    result_schema: RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2
+    previous_result_schema: RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1_IMMUTABLE
+    validation_stage_field: validation_stage_code
     commands:
       - setup
       - rotate
@@ -121,14 +125,17 @@ constraints:
   - owner-local Product requests allow keyword with optional genreId, genreId alone, or one exclusive productId/productCode; page is 1 and sort is standard
   - an exact owner-local Product productId or productCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH
   - page-1 response summaries bind empty collections to zero count, pageCount, first, and last; non-empty collections require count at least the returned cardinality, pageCount exactly equal to min(ceil(count / hits), 100), first 1, and last equal to returned cardinality
-  - the closed owner-local result V1 key set always includes count, page, first, last, hits, and pageCount; success stores their validated integers, every failure stores all six keys as null, and canonical result files sort keys in compact UTF-8 JSON with one trailing LF
-  - if an exact timezone.utc fold-0 second wall-clock observation moves before an equally valid started_at, finished_at is clamped to started_at; if terminal clock sampling raises after the attempt, the already sampled started_at is reused so every post-request success, received failure, or ambiguous outcome still reaches the single bounded result write without changing the V1 schema; other returned clock shapes remain subject to the existing fixed INVALID_ARGUMENT result-envelope validation
-  - first and last complete the repository V1 contract while runtime install and execution evidence remain NOT_EXECUTED; no deployed-result migration or backward-compatibility status is claimed
+  - the closed owner-local result V2 key set always includes count, page, first, last, hits, pageCount, and nullable validation_stage_code; success stores the six validated integers, every failure stores all six summary keys as null, and canonical result files sort keys in compact UTF-8 JSON with one trailing LF
+  - existing V1 evidence remains immutable and is never rewritten; V2 adds only the nullable value-free validation stage and makes no deployed-result migration or backward-compatibility claim
+  - if an exact timezone.utc fold-0 second wall-clock observation moves before an equally valid started_at, finished_at is clamped to started_at; if terminal clock sampling raises after the attempt, the already sampled started_at is reused so every post-request success, received failure, or ambiguous outcome still reaches the single bounded result write without changing the V2 schema; other returned clock shapes remain subject to the existing fixed INVALID_ARGUMENT result-envelope validation
   - every Item record requires itemCode and itemName as non-null non-empty bounded UTF-8 strings, and every Product record requires productCode and productId with the same shape; shopCode, shopName, and productName remain optional and nullable unless selected as an exact selector
   - every non-empty Item record requires itemUrl and every non-empty Product record requires productUrlPC as a non-null strict HTTPS URL; missing, null, empty, non-string, or non-HTTPS required URL values fail as RESPONSE_SCHEMA_DRIFT before success or persistence, while the existing nullable scalar affiliateUrl and Product image URL values and non-null URL-list rules remain unchanged
   - every normalized URL rejects Unicode whitespace plus Unicode control and format characters, raw backslashes, malformed percent escapes, userinfo, fragments, and invalid IDNA DNS or bracketed-IPv6 host syntax while preserving valid international or punycode hostnames, IPv4, bracketed IPv6, ports, paths, and queries
   - after API/fingerprint/hits and exact-selector binding and before a success envelope, every normalized record string and string-list member is checked against all three non-empty known credential values in raw and single-percent-decoded form; any inspected-text match fails as fixed RESPONSE_SCHEMA_DRIFT with complete response metadata and request_count 1 but no provider_result, summary, record, or matched value
   - all six schema- and relationship-validated summary integers plus every non-text normalized value already accepted by its field schema are not converted to credential-comparison text; typed scalar coincidence alone is not credential reflection
+  - validation_stage_code is null for success and non-validation failures and otherwise is exactly one of SUMMARY_SHAPE, COLLECTION_SHAPE, RECORD_SHAPE, EXACT_SELECTOR, MANDATORY_TEXT, URL, or CREDENTIAL_REFLECTION; it never contains a provider field name, record index, expected or actual value, raw body, header, exception detail, or credential
+  - validation_stage_code preserves the existing generic diagnostic and fixed CLI output; exact-selector identity mismatch remains RESULT_MISMATCH while the other validation refusals remain RESPONSE_SCHEMA_DRIFT, and all failures preserve available response metadata and request count without provider_result or summary persistence
+  - response validation applies collection, summary, record shape, exact selector, mandatory text, URL, then credential reflection to the complete returned collection before any record enters the next stage, so provider record order cannot change the chosen stage
   - every owner-local invocation uses at most one GET, one resolved public IP candidate, zero redirect, zero retry, zero pagination follow-up, and no proxy or TLS override environment
   - setup refuses an existing record; rotate atomically replaces only a fully validated record; installer is credential-blind and never opens .secrets
   - persisted owner-local results are mode 0600, no-replace, normalized UNTRUSTED_PROVIDER_DATA and contain response SHA-256 but no raw body, headers, provider errors, credentials, affiliate-rate, review bodies, EPC, RPM, or revenue material
@@ -167,6 +174,8 @@ acceptance_criteria:
   - provider reflection of each known credential value through every normalized URL, ordinary string, string-list member, or percent-encoded string fails before result persistence without redaction or secret-bearing output
   - short numeric application/access/affiliate credentials coinciding with each validated count, page, first, last, hits, or pageCount value for both enabled APIs, or with any non-text normalized value accepted by its field schema, do not fail solely because of typed scalar equality
   - Item and Product success, including empty collections, persist all six validated summary scalars; every ordinary or credential-reflection failure retains the same exact result-object key set with all six summary values null
+  - every response-validation family persists only its closed value-free validation_stage_code, preserves the existing generic diagnostic and available request/response evidence, and leaks no raw field name, record index, expected or actual value, body, header, exception detail, or credential material
+  - cross-record hostile fixtures prove a leading URL defect cannot precede a later exact-selector mismatch or mandatory-text refusal for either enabled API
   - terminal clock sampling exceptions after success, a complete received provider failure, or an outcome-ambiguous attempt reuse started_at and preserve the original disposition, request count, response metadata, and single result write without exposing credentials
   - deterministic no-sleep fakes prove normal response completion and Content-Length, chunked, close-delimited, and raw header-line trickling cannot extend the single response-read deadline; timeout produces exactly one sanitized ambiguous result write with no credential or partial provider material
   - deterministic resolver-process fakes and one offline blocking child prove DNS success for reviewed IPv4/IPv6 rows, fixed sanitized raising/late/malformed/oversized failures, deadline kill, bounded reap, pipe closure, zero HTTPS construction, and a single NOT_SENT failure result with request_count 0 and no provider metadata

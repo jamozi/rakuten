@@ -96,19 +96,19 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9"
+    "97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b"
+    "9f656e06e241528e3d9a4877268128acf89308afd9791fbcb6de8b6285e0fc04"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6"
+    "d041b21a1dc5fba8608016d6f3d7bc5f5509f98fd063e6dd0bf7e7a91bbbd947"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
-    "129f7f01fb5bafc13ddd54d39bacdc0d28975478ebff8a84bf1b57c37f90c0e5"
+    "42324711aff4bc5560e942f99cbcf97b39493604d49915436966812567c10ab8"
 )
 EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS: Final = (
     "schema",
@@ -121,6 +121,7 @@ EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS: Final = (
     "api_version",
     "outcome",
     "diagnostic_code",
+    "validation_stage_code",
     "request_fingerprint",
     "request_disposition",
     "request_count",
@@ -1545,7 +1546,12 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "if type(candidate) in {str, tuple}",
             "unquote_to_bytes(text)",
             "mandatory_record_fields(self.api)",
-            "validated_response_text(value)",
+            "RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT",
+            "def validate_record_mandatory_text(",
+            "def validate_record_shape(",
+            "def validate_record_urls(",
+            '"RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2"',
+            '"validation_stage_code"',
             '"first": result.first if result is not None else None,',
             '"last": result.last if result is not None else None,',
             "_MALFORMED_PERCENT_ESCAPE =",
@@ -1576,7 +1582,14 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             '"affiliateId"',
             '"access" + "Key"',
             "mandatory_record_fields(api)",
-            "validated_response_text(returned_value)",
+            "returned_value = validated_response_text(",
+            "RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE",
+            "RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR",
+            "for raw_record in raw_records:",
+            "for projected in projected_records:",
+            "validate_record_mandatory_text(api, projected)",
+            "validate_record_shape(api, projected)",
+            "validate_record_urls(api, projected)",
             "socket.getaddrinfo(",
             "DNS_RESOLUTION_DEADLINE_SECONDS = 5",
             "class _BoundedSystemDnsResolver:",
@@ -2314,6 +2327,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "publication",
             "response_sha256",
             "envelope",
+            "validation_diagnostic",
             "url_validation",
             "mandatory_text",
             "credential_reflection",
@@ -2327,8 +2341,8 @@ def _validate_owner_local_read_integration(value: object) -> None:
         or result.get("response_sha256") != "SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES"
         or result.get("envelope")
         != {
-            "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1",
-            "version": 1,
+            "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2",
+            "version": 2,
             "exact_object_keys": list(EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS),
             "summary_fields": ["count", "page", "first", "last", "hits", "pageCount"],
             "success_summary": "VALIDATED_INTEGER_VALUES",
@@ -2339,9 +2353,49 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "failure_summary": "ALL_SIX_KEYS_NULL",
             "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
             "compatibility": (
-                "REPOSITORY_V1_COMPLETION_RUNTIME_EVIDENCE_NOT_EXECUTED_NO_"
-                "DEPLOYED_MIGRATION"
+                "V1_EVIDENCE_IMMUTABLE_V2_ADDS_NULLABLE_VALUE_FREE_VALIDATION_"
+                "STAGE_NO_REWRITE"
             ),
+        }
+        or result.get("validation_diagnostic")
+        != {
+            "field": "validation_stage_code",
+            "values": [
+                "SUMMARY_SHAPE",
+                "COLLECTION_SHAPE",
+                "RECORD_SHAPE",
+                "EXACT_SELECTOR",
+                "MANDATORY_TEXT",
+                "URL",
+                "CREDENTIAL_REFLECTION",
+            ],
+            "generic_diagnostic_unchanged": True,
+            "success_and_non_validation_failures": None,
+            "response_schema_drift_stages": [
+                "SUMMARY_SHAPE",
+                "COLLECTION_SHAPE",
+                "RECORD_SHAPE",
+                "EXACT_SELECTOR",
+                "MANDATORY_TEXT",
+                "URL",
+                "CREDENTIAL_REFLECTION",
+            ],
+            "result_mismatch_stage": "EXACT_SELECTOR",
+            "precedence": (
+                "COLLECTION_THEN_SUMMARY_THEN_RECORD_SHAPE_THEN_EXACT_"
+                "SELECTOR_THEN_MANDATORY_TEXT_THEN_URL_THEN_CREDENTIAL_"
+                "REFLECTION"
+            ),
+            "stage_scope": "COMPLETE_RETURNED_COLLECTION_BEFORE_NEXT_STAGE",
+            "persisted_material": (
+                "CLOSED_ENUM_ONLY_NO_FIELD_NAME_INDEX_EXPECTED_ACTUAL_PROVIDER_"
+                "VALUE_BODY_OR_CREDENTIAL"
+            ),
+            "failure_evidence": (
+                "COMPLETE_AVAILABLE_RESPONSE_METADATA_REQUEST_COUNT_PRESERVED_"
+                "PROVIDER_RESULT_NULL"
+            ),
+            "previous_schema": ("RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1_IMMUTABLE"),
         }
         or result.get("url_validation")
         != {

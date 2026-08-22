@@ -40,6 +40,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalRequest,
     RakutenOwnerLocalRequestDisposition,
     RakutenOwnerLocalResultEnvelope,
+    RakutenOwnerLocalValidationStageCode,
     api_definition,
     fixed_owner_local_smoke_request,
     normalized_record,
@@ -1120,6 +1121,10 @@ def test_product_exact_selector_requires_an_exact_returned_match(
         )
     assert mismatch.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
     assert (
+        mismatch.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+    )
+    assert (
         mismatch.value.disposition
         is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
     )
@@ -1182,6 +1187,10 @@ def test_item_exact_selector_requires_an_exact_returned_match(
         )
     assert mismatch.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
     assert (
+        mismatch.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+    )
+    assert (
         mismatch.value.disposition
         is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
     )
@@ -1192,13 +1201,25 @@ def test_item_exact_selector_requires_an_exact_returned_match(
 
 
 @pytest.mark.parametrize(
-    ("selector_field", "requested_value"),
-    (("itemCode", "requested-shop:item"), ("shopCode", "requested-shop")),
+    ("selector_field", "requested_value", "expected_stage"),
+    (
+        (
+            "itemCode",
+            "requested-shop:item",
+            RakutenOwnerLocalValidationStageCode.RECORD_SHAPE,
+        ),
+        (
+            "shopCode",
+            "requested-shop",
+            RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR,
+        ),
+    ),
 )
 def test_item_exact_selector_requires_the_selected_response_field(
     monkeypatch: pytest.MonkeyPatch,
     selector_field: str,
     requested_value: str,
+    expected_stage: RakutenOwnerLocalValidationStageCode,
 ) -> None:
     request = _item_exact_request(selector_field, requested_value)
     record = _item_record()
@@ -1222,6 +1243,7 @@ def test_item_exact_selector_requires_the_selected_response_field(
         )
 
     assert missing.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert missing.value.validation_stage_code is expected_stage
     assert missing.value.request_count == 1
     assert missing.value.body_byte_count == len(body)
     assert missing.value.response_sha256 == hashlib.sha256(body).hexdigest()
@@ -1318,6 +1340,9 @@ def test_transport_requires_non_null_https_mandatory_url_in_every_request_mode(
 
     assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
     assert (
+        failure.value.validation_stage_code is RakutenOwnerLocalValidationStageCode.URL
+    )
+    assert (
         failure.value.disposition
         is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
     )
@@ -1374,6 +1399,16 @@ def test_transport_requires_mandatory_text_in_every_request_mode(
         )
 
     assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    selected_mandatory = (request_mode, field) in {
+        ("item-code", "itemCode"),
+        ("product-id", "productId"),
+        ("product-code", "productCode"),
+    }
+    assert failure.value.validation_stage_code is (
+        RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+        if selected_mandatory
+        else RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT
+    )
     assert failure.value.request_count == 1
     assert failure.value.http_status == 200
     assert failure.value.body_byte_count == len(body)
@@ -1402,6 +1437,366 @@ def test_transport_keeps_shop_code_and_product_name_optional(
     )
     assert "shopCode" not in item_record
     assert product_record["productName"] is None
+
+
+@pytest.mark.parametrize(
+    ("api", "body"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_body(itemName="", affiliateUrl="not-https"),
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            _product_body(productId="", affiliateUrl="not-https"),
+        ),
+    ),
+)
+def test_mandatory_text_stage_precedes_url_for_multi_defect_records(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    body: bytes,
+) -> None:
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "records"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            [
+                _item_record(affiliateUrl="not-https"),
+                _item_record(itemCode="shop:item-2", itemName=""),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            [
+                _product_record(affiliateUrl="not-https"),
+                _product_record(productCode="fixture-product-code-2", productId=""),
+            ],
+        ),
+    ),
+)
+def test_collection_wide_mandatory_text_precedes_an_earlier_record_url_refusal(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    records: list[object],
+) -> None:
+    request = _request_with_hits(api, 2)
+    body = _summary_body(
+        api,
+        count=2,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=records,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "records"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            [
+                _item_record(affiliateUrl="not-https"),
+                _item_record(itemCode="shop:item-2", itemPrice=-1),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            [
+                _product_record(affiliateUrl="not-https"),
+                _product_record(
+                    productCode="fixture-product-code-2",
+                    productId="fixture-product-id-2",
+                    averagePrice=-1,
+                ),
+            ],
+        ),
+    ),
+)
+def test_collection_wide_record_shape_precedes_an_earlier_record_url_refusal(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    records: list[object],
+) -> None:
+    request = _request_with_hits(api, 2)
+    body = _summary_body(
+        api,
+        count=2,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=records,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "owner_request", "records"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_exact_request("itemCode", "requested-shop:item", hits=2),
+            [
+                _item_record(itemCode="requested-shop:item", itemPrice=-1),
+                _item_record(itemCode="different-shop:item"),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=None,
+                product_id="requested-product-id",
+                product_code=None,
+                hits=2,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            ),
+            [
+                _product_record(
+                    productId="requested-product-id",
+                    averagePrice=-1,
+                ),
+                _product_record(productId="different-product-id"),
+            ],
+        ),
+    ),
+)
+def test_collection_wide_record_shape_precedes_a_later_exact_selector_mismatch(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    owner_request: RakutenOwnerLocalRequest,
+    records: list[object],
+) -> None:
+    body = _summary_body(
+        api,
+        count=2,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=records,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=owner_request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "owner_request", "records"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_exact_request("itemCode", "requested-shop:item", hits=2),
+            [
+                _item_record(
+                    itemCode="requested-shop:item",
+                    affiliateUrl="not-https",
+                ),
+                _item_record(itemCode="different-shop:item"),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_exact_request("shopCode", "requested-shop", hits=2),
+            [
+                _item_record(
+                    shopCode="requested-shop",
+                    affiliateUrl="not-https",
+                ),
+                _item_record(shopCode="different-shop"),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=None,
+                product_id="requested-product-id",
+                product_code=None,
+                hits=2,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            ),
+            [
+                _product_record(
+                    productId="requested-product-id",
+                    affiliateUrl="not-https",
+                ),
+                _product_record(productId="different-product-id"),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=None,
+                product_id=None,
+                product_code="requested-product-code",
+                hits=2,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            ),
+            [
+                _product_record(
+                    productCode="requested-product-code",
+                    affiliateUrl="not-https",
+                ),
+                _product_record(productCode="different-product-code"),
+            ],
+        ),
+    ),
+)
+def test_collection_wide_exact_selector_precedes_an_earlier_record_url_refusal(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    owner_request: RakutenOwnerLocalRequest,
+    records: list[object],
+) -> None:
+    body = _summary_body(
+        api,
+        count=2,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=records,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=owner_request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "collection_value", "extra"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, [_item_record()], True),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, {}, False),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, [_product_record()], True),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, {}, False),
+    ),
+)
+def test_collection_shape_precedes_a_simultaneously_missing_summary_field(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    collection_value: object,
+    extra: bool,
+) -> None:
+    collection = "items" if api is RakutenOwnerLocalApi.ITEM_SEARCH else "products"
+    value: dict[str, object] = {
+        "count": 1,
+        "page": 1,
+        "first": 1,
+        "last": 1,
+        "hits": 1,
+        collection: collection_value,
+    }
+    if extra:
+        value["unexpected"] = None
+    body = _json_body(value)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
 
 
 @pytest.mark.parametrize(
@@ -1533,6 +1928,10 @@ def test_exact_selector_mismatch_precedes_mandatory_url_schema_refusal(
         )
 
     assert failure.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+    )
     assert failure.value.request_count == 1
     assert failure.value.body_byte_count == len(body)
     assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
@@ -1576,6 +1975,10 @@ def test_exact_selector_mismatch_precedes_mandatory_text_refusal(
         )
 
     assert failure.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+    )
     assert failure.value.request_count == 1
     assert failure.value.body_byte_count == len(body)
     assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
@@ -1777,6 +2180,10 @@ def test_summary_page_count_rejects_non_capped_ceiling_values(
 
     assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
     assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE
+    )
+    assert (
         failure.value.disposition
         is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
     )
@@ -1823,6 +2230,10 @@ def test_summary_relationship_contradictions_fail_closed(
             _FakeResponse(body, content_length=str(len(body))),
         )
     assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE
+    )
     assert (
         failure.value.disposition
         is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
@@ -1873,33 +2284,41 @@ def test_summary_count_cannot_be_less_than_returned_cardinality(
 
 
 @pytest.mark.parametrize(
-    "body",
+    ("body", "expected_stage"),
     [
-        _product_body("Products"),
-        _json_body(
-            {
-                "count": 1,
-                "page": 1,
-                "first": 1,
-                "last": 1,
-                "hits": 1,
-                "pageCount": 1,
-                "products": [
-                    {
-                        "Product": {
-                            "affiliateUrl": "https://example.invalid/a",
-                            "productCode": "code",
-                            "productId": "id",
-                            "productUrlPC": "https://example.invalid/p",
+        (
+            _product_body("Products"),
+            RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE,
+        ),
+        (
+            _json_body(
+                {
+                    "count": 1,
+                    "page": 1,
+                    "first": 1,
+                    "last": 1,
+                    "hits": 1,
+                    "pageCount": 1,
+                    "products": [
+                        {
+                            "Product": {
+                                "affiliateUrl": "https://example.invalid/a",
+                                "productCode": "code",
+                                "productId": "id",
+                                "productUrlPC": "https://example.invalid/p",
+                            }
                         }
-                    }
-                ],
-            }
+                    ],
+                }
+            ),
+            RakutenOwnerLocalValidationStageCode.RECORD_SHAPE,
         ),
     ],
 )
 def test_product_transport_rejects_case_alias_and_wrapped_v1_records(
-    monkeypatch: pytest.MonkeyPatch, body: bytes
+    monkeypatch: pytest.MonkeyPatch,
+    body: bytes,
+    expected_stage: RakutenOwnerLocalValidationStageCode,
 ) -> None:
     with pytest.raises(RakutenOwnerLocalFailure) as failure:
         _execute(
@@ -1908,6 +2327,7 @@ def test_product_transport_rejects_case_alias_and_wrapped_v1_records(
             _FakeResponse(body, content_length=str(len(body))),
         )
     assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert failure.value.validation_stage_code is expected_stage
     assert (
         failure.value.disposition
         is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED

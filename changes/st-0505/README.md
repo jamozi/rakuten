@@ -214,7 +214,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/c24168bc3bcd0408ab3d8937af462696c717c6f150732d1b9563b12d61a61ef9/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -224,9 +224,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`60e2d63446af5195e2890be1668d30219757bd8242a4257c09e639cb6de81d0b`,
+`9f656e06e241528e3d9a4877268128acf89308afd9791fbcb6de8b6285e0fc04`,
 and install-stage SHA-256
-`0ddd00f36df22ca1f0e1e87e7c5e28442b81368484c83fe37d98b0dced7affc6`.
+`d041b21a1dc5fba8608016d6f3d7bc5f5509f98fd063e6dd0bf7e7a91bbbd947`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -323,16 +323,17 @@ summary, and allowlisted normalized records. Raw bodies/headers, provider error
 descriptions, captions, review bodies or aggregates, affiliate rate, EPC, RPM,
 revenue, and all credentials are forbidden. Stored provider fields are always
 classified `UNTRUSTED_PROVIDER_DATA`. The closed
-`RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1` object always contains the same
+`RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2` object always contains the same
 exact keys for success and failure. Success persists all six validated summary
 scalars in the in-memory result-object order `count`, `page`, `first`, `last`,
 `hits`, `pageCount`;
 failure retains those six keys with `null` values, including sanitized
 credential-reflection failures. Result files are compact UTF-8 JSON with
-lexicographically sorted keys and one trailing LF. Adding `first` and `last`
-completes the repository V1 contract while runtime install and execution evidence
-remain `NOT_EXECUTED`; there is no deployed-result migration or compatibility
-claim. If exact `timezone.utc`, fold-0 start and terminal wall-clock values show
+lexicographically sorted keys and one trailing LF. Existing V1 evidence remains
+immutable and is never rewritten. V2 adds one always-present nullable
+`validation_stage_code`; this side-by-side schema change makes no deployed-result
+migration or backward-compatibility claim. If exact `timezone.utc`, fold-0 start
+and terminal wall-clock values show
 the terminal observation earlier than `started_at`, `finished_at` is clamped to
 `started_at`. If terminal clock sampling raises after the attempt, the already
 sampled `started_at` is reused. Success, received provider failure, and
@@ -376,6 +377,25 @@ remain required local evidence metadata rather than reflected provider text.
 Any inspected-text match fails with the fixed `RESPONSE_SCHEMA_DRIFT` code while
 retaining only complete HTTP/body/SHA metadata and `request_count=1`; the
 matched value, summaries, and normalized records are not persisted.
+
+Response-validation failures retain their existing generic `diagnostic_code`
+and fixed CLI output. V2 additionally persists only one closed, value-free
+`validation_stage_code`: `SUMMARY_SHAPE`, `COLLECTION_SHAPE`, `RECORD_SHAPE`,
+`EXACT_SELECTOR`, `MANDATORY_TEXT`, `URL`, or `CREDENTIAL_REFLECTION`. Success
+and failures outside these validation boundaries store `null`. The stage never
+contains a provider field name, record index, expected or actual value, raw body,
+header, exception detail, or credential material. Validation remains fail-closed
+in this order: collection envelope, summary, record shape, exact selector,
+mandatory text, URL, then credential reflection. An exact-selector identity
+mismatch retains `RESULT_MISMATCH`; all other listed validation refusals retain
+`RESPONSE_SCHEMA_DRIFT`. Available response metadata and `request_count=1` are
+preserved while provider results and summaries remain absent on failure.
+Every returned record completes each stage before any record enters the next,
+so provider record order cannot make an earlier URL defect hide a later
+exact-selector or mandatory-text refusal.
+This diagnostic narrows only where validation stopped; it does not accept a new
+provider shape, infer a missing official schema rule, or change the existing
+fail-closed boundary.
 
 Every local result is `OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE`. Implementation
 and fake tests do not execute a real credential read, provider call, formal

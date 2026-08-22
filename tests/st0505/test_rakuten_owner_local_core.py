@@ -29,6 +29,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalRequest,
     RakutenOwnerLocalRequestDisposition,
     RakutenOwnerLocalResultEnvelope,
+    RakutenOwnerLocalValidationStageCode,
     api_definition,
     fixed_owner_local_smoke_request,
     normalized_record,
@@ -50,6 +51,7 @@ RESULT_OBJECT_KEYS = (
     "api_version",
     "outcome",
     "diagnostic_code",
+    "validation_stage_code",
     "request_fingerprint",
     "request_disposition",
     "request_count",
@@ -831,6 +833,9 @@ def test_service_calls_transport_once_writes_once_and_marks_nonformal() -> None:
     assert reader.calls == transport.calls == writer.preflights == 1
     assert writer.writes == [envelope]
     persisted = envelope.as_result_object()
+    assert persisted["schema"] == "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2"
+    assert persisted["version"] == 2
+    assert persisted["validation_stage_code"] is None
     assert persisted["evidence_authority"] == RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY
     assert persisted["formal_tst_016"] == "NOT_EXECUTED"
     assert persisted["staging"] == "NOT_EXECUTED"
@@ -848,6 +853,80 @@ def test_service_calls_transport_once_writes_once_and_marks_nonformal() -> None:
     assert captured.value.code is RakutenOwnerLocalFailureCode.REQUEST_ALREADY_ATTEMPTED
     assert transport.calls == 1
     assert len(writer.writes) == 1
+
+
+@pytest.mark.parametrize(
+    "stage",
+    tuple(RakutenOwnerLocalValidationStageCode),
+)
+def test_value_free_validation_stage_survives_the_single_failure_write(
+    stage: RakutenOwnerLocalValidationStageCode,
+) -> None:
+    request = _item_request()
+    failure_code = (
+        RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+        if stage is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+        else RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    )
+    response_failure = RakutenOwnerLocalFailure(
+        code=failure_code,
+        validation_stage_code=stage,
+        disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
+        http_status=200,
+        body_byte_count=5353,
+        response_sha256="d" * 64,
+    )
+    writer = _Writer()
+    transport = _Transport(response_failure)
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(),
+        transport=transport,
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
+
+    persisted = envelope.as_result_object()
+    assert writer.writes == [envelope]
+    assert transport.calls == 1
+    assert envelope.request_count == 1
+    assert persisted["diagnostic_code"] == failure_code.value
+    assert persisted["validation_stage_code"] == stage.value
+    assert persisted["http_status"] == 200
+    assert persisted["body_byte_count"] == 5353
+    assert persisted["response_sha256"] == "d" * 64
+    assert persisted["items"] is None
+    assert persisted["products"] is None
+    assert all(
+        persisted[name] is None
+        for name in ("count", "page", "first", "last", "hits", "pageCount")
+    )
+    serialized = json.dumps(persisted, sort_keys=True)
+    for forbidden in (
+        "itemUrl",
+        "itemName",
+        "untrusted-provider-value",
+        "synthetic-application",
+        "synthetic-access",
+        "synthetic-affiliate",
+    ):
+        assert forbidden not in serialized
+        assert forbidden not in str(envelope.failure)
+        assert forbidden not in repr(envelope.failure)
+
+
+def test_validation_stage_is_closed_and_bound_to_response_validation_codes() -> None:
+    with pytest.raises(TypeError, match="invalid Rakuten owner-local validation stage"):
+        RakutenOwnerLocalFailure(
+            code=RakutenOwnerLocalFailureCode.HTTP_503,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE,
+        )
+
+    with pytest.raises(TypeError, match="invalid Rakuten owner-local failure"):
+        RakutenOwnerLocalFailure(  # type: ignore[arg-type]
+            code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code="SUMMARY_SHAPE",
+        )
 
 
 def test_service_clamps_backward_wall_clock_and_writes_success_once() -> None:
@@ -909,6 +988,7 @@ def test_service_clamps_backward_wall_clock_and_preserves_provider_failure() -> 
     assert transport.calls == 1
     assert writer.writes == [envelope]
     persisted_object = envelope.as_result_object()
+    assert persisted_object["validation_stage_code"] is None
     assert all(
         persisted_object[field] is None
         for field in ("count", "page", "first", "last", "hits", "pageCount")
@@ -1151,6 +1231,10 @@ def test_service_item_identity_mismatch_precedes_credential_reflection(
     assert envelope.failure is not None
     assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
     assert (
+        envelope.failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+    )
+    assert (
         envelope.failure.disposition
         is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
     )
@@ -1195,6 +1279,10 @@ def test_service_product_identity_mismatch_uses_the_shared_binding_boundary() ->
     assert envelope.provider_result is None
     assert envelope.failure is not None
     assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert (
+        envelope.failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+    )
     assert envelope.failure.request_count == 1
     assert envelope.failure.http_status == result.http_status
     assert envelope.failure.body_byte_count == result.body_byte_count
@@ -1250,6 +1338,10 @@ def test_service_rejects_each_reflected_credential_before_persistence(
     assert envelope.failure is not None
     assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
     assert (
+        envelope.failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+    )
+    assert (
         envelope.failure.disposition
         is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
     )
@@ -1258,6 +1350,9 @@ def test_service_rejects_each_reflected_credential_before_persistence(
     assert envelope.failure.response_sha256 == reflected_result.response_sha256
     assert envelope.request_count == 1
     assert writer.writes == [envelope]
+    assert (
+        envelope.as_result_object()["validation_stage_code"] == "CREDENTIAL_REFLECTION"
+    )
     persisted = json.dumps(
         envelope.as_result_object(),
         ensure_ascii=True,
