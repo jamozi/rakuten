@@ -377,6 +377,81 @@ def test_aws_reference_can_never_become_a_default_selection_or_evidence(
 
 
 @pytest.mark.parametrize(
+    ("section_path", "value"),
+    (
+        (
+            ("reference_architecture", "classification"),
+            "OPTIONAL_HISTORICAL_AWS_STAGING_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "role",
+            ),
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "canonical_story_deliverables",
+            ),
+            "CANONICAL_STORY_DELIVERABLES_REPLACED",
+        ),
+        (
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "non_aws_owner_managed_profiles",
+            ),
+            "PRIMARY_REPLACEMENT_PATHS",
+        ),
+        (
+            ("environment_boundary", "reference_region_use"),
+            "OPTIONAL_HISTORICAL_METADATA_ONLY",
+        ),
+    ),
+)
+def test_canonical_reference_and_portable_path_semantics_cannot_be_demoted(
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    section_path: tuple[str, ...],
+    value: str,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    target: dict[str, Any] = document
+    for key in section_path[:-1]:
+        target = target[key]
+    target[section_path[-1]] = value
+    monkeypatch.setattr(
+        generator,
+        "EXPECTED_CONTRACT_SEMANTIC_SHA256",
+        generator.semantic_sha256(document),
+    )
+    _assert_rejected(document, {"FIXED_VALUE_VIOLATION"})
+
+
+def test_canonical_reference_status_cannot_replace_dependency_admission(
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    document = copy.deepcopy(contract_document)
+    policy = document["provider_neutral_staging_admission"][
+        "dependency_admission_policy"
+    ]
+    policy["historical_reference_only"] = policy.pop(
+        "canonical_reference_architecture_status_only"
+    )
+    monkeypatch.setattr(
+        generator,
+        "EXPECTED_CONTRACT_SEMANTIC_SHA256",
+        generator.semantic_sha256(document),
+    )
+    _assert_rejected(document, {"CLOSED_SCHEMA_VIOLATION"})
+
+
+@pytest.mark.parametrize(
     ("mutation", "expected_code"),
     (
         ("missing", "MISSING_DEPENDENCY_MAPPING"),
@@ -488,7 +563,10 @@ def test_partial_label_reference_and_predecessor_shortcut_policies_fail(
 ) -> None:
     document = copy.deepcopy(contract_document)
     document["provider_neutral_staging_admission"][section][field] = value
-    _assert_rejected(document, {"CONTRACT_SEMANTIC_DRIFT"})
+    _assert_rejected(
+        document,
+        {"CONTRACT_SEMANTIC_DRIFT", "FIXED_VALUE_VIOLATION"},
+    )
 
 
 @pytest.mark.parametrize("field", EVIDENCE_EQUIVALENCE_FIELDS)

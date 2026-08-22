@@ -3,9 +3,11 @@ version: 1
 record_status: RECORDED_DURABLE_OWNER_DECISION
 approved_story: ST-1505
 approved_scope:
-  - Define Full RAOS staging admission without assuming or requiring AWS or any other target infrastructure provider.
+  - Define an additional provider-neutral staging admission boundary for Full RAOS without making AWS or any provider a selected, default, fallback, or staging-admission binding.
   - Bind the provider-neutral ST-1501 foundation, ST-1502 data-services, ST-1503 compute-edge, and ST-1504 deployment-identity handoffs, contracts, and reference plans as mandatory future dependency evidence.
-  - Retain AWS Tokyo and AWS service names only as optional historical reference mappings inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Preserve AWS Tokyo and the AWS service mappings as the current Canonical Reference Architecture inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Preserve the Canonical AWS-specific ST-1505 objective and staging pipeline deliverable as authoritative, not erased, replaced, or completed by this portability overlay.
+  - Admit non-AWS and owner-managed staging profiles only as additional portable implementation paths with identical complete capabilities and evidence.
   - Keep every current target, deployment, migration, runtime, rollback, release, and Production binding unset and every external action disabled.
 source_design_refs:
   - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -42,7 +44,9 @@ decision:
   aws_reference_boundary:
     canonical_decision_id: INT-DEC-007
     reference_profile: AWS_TOKYO_STAGING
-    role: OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY
+    role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
     default: false
     implicit_fallback: false
     selected_binding: false
@@ -74,10 +78,10 @@ rationale:
   - Exact dependency admission prevents an AWS label, predecessor completion claim, or local reference artifact from substituting for explicit mappings and identical evidence.
   - Keeping target bindings null and all actions disabled preserves Canonical human gates and unresolved decisions while allowing a reversible local contract implementation.
 rejected_alternatives:
-  - Require AWS, AWS Tokyo, an AWS account, or AWS service names merely because they remain in historical Reference Architecture metadata.
+  - Require AWS, AWS Tokyo, an AWS account, or AWS service names merely because they remain in the current Canonical Reference Architecture.
   - Treat Terraform, RDS, S3, SQS, ECS, Fargate, CloudFront, WAF, Route53, ACM, IAM, or GitHub OIDC labels as staging eligibility or evidence.
   - Select another cloud or owner-managed target without complete dependency mappings, target-adapter evidence, residency, budget, identity, security, operations, and release evidence.
-  - Allow missing, unknown, duplicate, partial, implicit, defaulted, fallback, name-only, or historical-reference-only dependency or capability mappings.
+  - Allow missing, unknown, duplicate, partial, implicit, defaulted, fallback, name-only, or canonical-reference-designation-only dependency or capability mappings.
   - Execute a deployment, migration, smoke request, provider call, rollback, release, or Production action from a local reference plan.
 constraints:
   - Every ST-1501 through ST-1504 handoff, contract, and generated plan remains raw-hash, semantic-hash, and deterministic-byte bound.
@@ -97,12 +101,14 @@ security_and_approval_gates:
   - Preserve Critical/High release blocking, SBOM, vulnerability scan, signed provenance, data isolation, transport, retention, restore, and residency evidence.
   - Preserve OD-002, OD-009, OD-010, OD-011, OD-013, OD-014, and OD-015 blocking states until their owners provide valid evidence.
   - Require identical security, operations, release, supply-chain, migration, runtime, observability, rollback/restore, isolation, residency, budget, and adapter evidence for every eligible provider kind.
-  - Never infer eligibility from AWS or another provider label, GitHub source status, historical metadata, predecessor completion, or local generator/test success.
+  - Never infer eligibility from AWS or another provider label, GitHub source status, Canonical Reference Architecture status, predecessor completion, or local generator/test success.
 acceptance_criteria:
   - The ST-1505 source and generated reference expose a closed provider-neutral dependency and capability admission inventory with no selected, default, or fallback target.
   - All four provider-neutral predecessors remain exact inputs and each future profile must satisfy its complete mapping and identical-evidence contract.
   - Unknown, missing, duplicate, partial, implicit, label-only, default, fallback, predecessor-only, or reference-only admission attempts fail closed.
-  - AWS staging remains visible only as optional historical reference mappings and cannot satisfy dependency, capability, admission, or evidence requirements.
+  - AWS staging remains the current Canonical Reference Architecture, while that status alone cannot satisfy dependency, capability, admission, or evidence requirements.
+  - The Canonical AWS-specific ST-1505 objective and staging pipeline deliverable remain authoritative and NOT_STARTED/NOT_EXECUTED; this overlay neither erases, replaces, nor completes them.
+  - Non-AWS and owner-managed staging profiles remain additional portable implementation paths admitted only by identical complete capabilities and evidence.
   - Build/SBOM/provenance, independent migration review, protected approval, smoke/security/runtime, cross-capability transport security, observability/alerts, rollback/restore, isolation/residency/budget, and target-adapter evidence remain required and unconfigured.
   - Existing disabled activation, zero action counts, unresolved decisions, human gates, and NOT_EXECUTED evidence remain unchanged.
 required_test_evidence:

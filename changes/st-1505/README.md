@@ -4,8 +4,9 @@ This Story-owned slice records the maximum-safe local reference for a future
 staging deployment and its admission pipeline. The direct owner
 `DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml`, the Canonical Story,
 and the current provider-neutral ST-1501 through ST-1504 inputs govern this
-decision. Older Pro-derived and AWS-shaped predecessor artifacts are history,
-not sufficient authority for the current staging policy.
+decision. Earlier Pro-derived advisory artifacts remain predecessor context,
+not the sole authority for this staging policy. This overlay does not demote or
+supersede the current Canonical AWS Reference Architecture.
 
 The generated plan is closed, deterministic, and non-executable. It creates no
 workflow, infrastructure, credential, migration task, deployment, request,
@@ -15,12 +16,16 @@ browser run, rollback, release, or external state.
 
 Full RAOS staging does not assume or require AWS. AWS Tokyo, Terraform AWS,
 RDS, S3, SQS, Secrets Manager/KMS, ECS/Fargate, CloudFront/WAF/Route53/ACM,
-and IAM/OIDC remain visible only as optional historical Reference Architecture
-mappings inherited from INT-DEC-007 and RAOS-ARCH-001. An AWS label or mapping
-is never a default, fallback, selected binding, dependency shortcut, admission
-requirement, eligibility shortcut, or evidence substitute.
+and IAM/OIDC remain the current Canonical Reference Architecture mappings
+inherited from INT-DEC-007 and RAOS-ARCH-001. The Canonical AWS-specific
+ST-1505 objective and staging pipeline deliverable remain authoritative and
+NOT_STARTED/NOT_EXECUTED; this portability overlay does not erase, replace,
+or complete them. An AWS label or mapping is never a default, fallback,
+selected binding, dependency shortcut, admission requirement, eligibility
+shortcut, or evidence substitute.
 
-A future target may be AWS, another cloud, or owner-managed infrastructure only
+A future non-AWS or owner-managed target is an additional portable
+implementation path, and any future target, including AWS, is admitted only
 after it explicitly satisfies the same closed contract:
 
 - all ST-1501 foundation, ST-1502 data-services, ST-1503 compute-edge, and

@@ -31,51 +31,51 @@ SOURCE_ARTIFACT_PATHS = (
 PREDECESSOR_INPUTS = (
     (
         "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
-        "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61",
+        "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f",
     ),
     (
         "changes/st-1501/contracts/terraform-foundation.v1.yaml",
-        "c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6",
+        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9",
     ),
     (
         "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
-        "c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559",
+        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70",
     ),
     (
         "scripts/build_st1501_terraform_foundation.py",
-        "558e1f8dc20331730582e62018cd88579f4b82e295bffad617049a925ab466a7",
+        "8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8",
     ),
     (
         "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml",
-        "40d866ae30199748c9d91b8152aaa4fb4ca2721e5e722bcff05cf97760f1c228",
+        "ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5",
     ),
     (
         "changes/st-1502/contracts/data-services-foundation.v1.yaml",
-        "4d0ca4188c4a4ee7c8f6c8417afc6880b9ac0f89b6e4bd63703eb98d8368dddb",
+        "bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041",
     ),
     (
         "infra/terraform/data-services/data-services.reference-plan.v1.json",
-        "28f4ae25fd66f0bb999a1918e72a5d108f38991bb5104e2726b01a0997a6087c",
+        "84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699",
     ),
     (
         "scripts/build_st1502_data_services.py",
-        "fcb488254a09bf5ac686a66d75865ccef8ee0e027360e3131c8aacea8de01484",
+        "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf",
     ),
     (
         "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml",
-        "de21922772e9e88ba830fc33c82848a9423d492fc9696027b91febf9aebb0646",
+        "2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d",
     ),
     (
         "changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
-        "7d742065c5ffda0dbecf04c144af7daf0de2fdc0d2598e85bc9af656c4ac242d",
+        "07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60",
     ),
     (
         "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json",
-        "a894504b51f2cc5f77d05a00c12fdcbd854a49d74d80822c9564f08957bd3888",
+        "62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8",
     ),
     (
         "scripts/build_st1503_compute_edge.py",
-        "554d00a82f1a48d1e154e5aaff63fad7330e46a81e862e6bc0a2b30385029a7b",
+        "9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d",
     ),
     (
         "changes/st-0107/contracts/pr-governance.v1.yaml",
@@ -88,19 +88,19 @@ PREDECESSOR_INPUTS = (
     (
         "changes/st-1504/"
         "DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml",
-        "f6a89722b86a8a47288da86c09214a3a926061d16489737170edc07398b2be61",
+        "36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04",
     ),
     (
         "changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
-        "d7e6922ff953434435509a4bd3aca0251b57dc699e990fae3ae06c75af229b4c",
+        "c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b",
     ),
     (
         "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json",
-        "7566adbe5a9eff81144ceffb9ec233ba98322c2d01f399e5a103a033d0b35974",
+        "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4",
     ),
     (
         "scripts/build_st1504_github_oidc.py",
-        "3972533552bf2e1d3265ae4a41571872a5c0aa6fd537fa69c7afd3736eb53a28",
+        "996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f",
     ),
 )
 ACTION_COUNT_NAMES = (
@@ -221,7 +221,7 @@ def test_manifest_pins_direct_handoff_and_all_predecessor_inputs() -> None:
             "repo://changes/st-1505/"
             "DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml"
         ),
-        "sha256": ("146351e1ba13970b33bccc0df3683c8b650769b1357f829424f1d53bce8a3937"),
+        "sha256": ("5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5"),
     }
     assert provenance["predecessor_inputs"] == [
         {"uri": f"repo://{path}", "sha256": digest}
@@ -267,6 +267,15 @@ def test_manifest_boundary_preserves_provider_neutral_fail_closed_status() -> No
         assert boundary[field] is None
 
     assert boundary["aws_reference_only"] is True
+    assert boundary["aws_reference_role"] == (
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    )
+    assert boundary["canonical_story_deliverables"] == (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    )
+    assert boundary["portable_implementation_paths"] == (
+        "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+    )
     for field in (
         "aws_reference_default",
         "aws_reference_implicit_fallback",

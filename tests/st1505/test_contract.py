@@ -13,9 +13,9 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 HANDOFF_PATH = Path(
     "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml"
 )
-HANDOFF_SHA256 = "146351e1ba13970b33bccc0df3683c8b650769b1357f829424f1d53bce8a3937"
+HANDOFF_SHA256 = "5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5"
 HANDOFF_SEMANTIC_SHA256 = (
-    "30eaec3fbeceec8b3b4043777d7c3fe8b97082e36f585e70899ba6104fa3bc32"
+    "d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448"
 )
 
 TOP_LEVEL_KEYS = (
@@ -104,36 +104,36 @@ PREDECESSORS = {
         "story_id": "ST-1501",
         "owner_generator_uri": "repo://scripts/build_st1501_terraform_foundation.py",
         "owner_generator_sha256": (
-            "558e1f8dc20331730582e62018cd88579f4b82e295bffad617049a925ab466a7"
+            "8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8"
         ),
         "handoff_uri": (
             "repo://changes/st-1501/"
             "DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml"
         ),
         "handoff_sha256": (
-            "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61"
+            "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
         ),
         "handoff_semantic_sha256": (
-            "0915d6ec4949babebf43f307b2ac1569fa76213c96a3be9009dfaec660e34030"
+            "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
         ),
         "contract_uri": (
             "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml"
         ),
         "contract_sha256": (
-            "c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6"
+            "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
         ),
         "contract_semantic_sha256": (
-            "715fbdd46467ac282333c486850a5571d27836d5d028f971e5840f755e338a6e"
+            "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
         ),
         "plan_uri": (
             "repo://infra/terraform/foundation/"
             "terraform-foundation.reference-plan.v1.json"
         ),
         "plan_sha256": (
-            "c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559"
+            "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
         ),
         "plan_semantic_sha256": (
-            "6521f7396e8b076177cd00d297342a482ac664809c432dde48c8c7d55d01d32f"
+            "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
         ),
         "action_counts": {"create": 0, "update": 0, "delete": 0},
     },
@@ -141,35 +141,35 @@ PREDECESSORS = {
         "story_id": "ST-1502",
         "owner_generator_uri": "repo://scripts/build_st1502_data_services.py",
         "owner_generator_sha256": (
-            "fcb488254a09bf5ac686a66d75865ccef8ee0e027360e3131c8aacea8de01484"
+            "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf"
         ),
         "handoff_uri": (
             "repo://changes/st-1502/"
             "DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml"
         ),
         "handoff_sha256": (
-            "40d866ae30199748c9d91b8152aaa4fb4ca2721e5e722bcff05cf97760f1c228"
+            "ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5"
         ),
         "handoff_semantic_sha256": (
-            "53a640dd58c222296da2c079a374daf55e6a55e40fb1944bae6070b7ef559450"
+            "fda0d363d17ca4d8197179b74ad0fac23d252fc3a4e7ef0dc66c2c10a7fc3500"
         ),
         "contract_uri": (
             "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml"
         ),
         "contract_sha256": (
-            "4d0ca4188c4a4ee7c8f6c8417afc6880b9ac0f89b6e4bd63703eb98d8368dddb"
+            "bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041"
         ),
         "contract_semantic_sha256": (
-            "3b696b86edd9b0a04e85c99f3306deb4879a935c381351276136a49e7423f440"
+            "733d4b6f8c057f3b6d73b413c9ca63b642087005e6f159ae0104a95bf1ff374c"
         ),
         "plan_uri": (
             "repo://infra/terraform/data-services/data-services.reference-plan.v1.json"
         ),
         "plan_sha256": (
-            "28f4ae25fd66f0bb999a1918e72a5d108f38991bb5104e2726b01a0997a6087c"
+            "84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699"
         ),
         "plan_semantic_sha256": (
-            "777368a0ee051d9f74f1bb4b25216ddf4ea4b1000f16a283e387df197b1095d7"
+            "8af68f20679a97fc45c20ed9db15edb704edfa7ce63b03b389437cb3eee91329"
         ),
         "action_counts": {
             "create": 0,
@@ -186,35 +186,35 @@ PREDECESSORS = {
         "story_id": "ST-1503",
         "owner_generator_uri": "repo://scripts/build_st1503_compute_edge.py",
         "owner_generator_sha256": (
-            "554d00a82f1a48d1e154e5aaff63fad7330e46a81e862e6bc0a2b30385029a7b"
+            "9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d"
         ),
         "handoff_uri": (
             "repo://changes/st-1503/"
             "DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml"
         ),
         "handoff_sha256": (
-            "de21922772e9e88ba830fc33c82848a9423d492fc9696027b91febf9aebb0646"
+            "2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d"
         ),
         "handoff_semantic_sha256": (
-            "0e3d26dc01e244034567bbd6fe13ace689447cc5f835e6b3581b64120cfbc7fe"
+            "ad5e207a8f201d0ccdff72670a0f1cd7d90ba76f3e52ad7e51db2eb96d0dd707"
         ),
         "contract_uri": (
             "repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml"
         ),
         "contract_sha256": (
-            "7d742065c5ffda0dbecf04c144af7daf0de2fdc0d2598e85bc9af656c4ac242d"
+            "07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60"
         ),
         "contract_semantic_sha256": (
-            "4ee5dfb892be42119d4f2c77c07e850a93785458e47c496e0e953fd83fc276ac"
+            "3d802aa46e08af8241e0feca42ffa7a3d3397a49d4f839cbfef28321cdd52852"
         ),
         "plan_uri": (
             "repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json"
         ),
         "plan_sha256": (
-            "a894504b51f2cc5f77d05a00c12fdcbd854a49d74d80822c9564f08957bd3888"
+            "62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8"
         ),
         "plan_semantic_sha256": (
-            "50d334f3d28a0c0b56623b3960a6b1d3398d861aeda72d6abee1339f84b4e6a8"
+            "8e483d3448213f8fd328241c39029e4ed443a3ffc0df7a358ed0de6870eb074a"
         ),
         "action_counts": {"create": 0, "update": 0, "delete": 0},
     },
@@ -222,36 +222,36 @@ PREDECESSORS = {
         "story_id": "ST-1504",
         "owner_generator_uri": "repo://scripts/build_st1504_github_oidc.py",
         "owner_generator_sha256": (
-            "3972533552bf2e1d3265ae4a41571872a5c0aa6fd537fa69c7afd3736eb53a28"
+            "996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f"
         ),
         "handoff_uri": (
             "repo://changes/st-1504/"
             "DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml"
         ),
         "handoff_sha256": (
-            "f6a89722b86a8a47288da86c09214a3a926061d16489737170edc07398b2be61"
+            "36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04"
         ),
         "handoff_semantic_sha256": (
-            "8afd193ddc98a0193e21032a3058c157fe75f12151cb06d80a9ea198efbc5f8c"
+            "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
         ),
         "contract_uri": (
             "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml"
         ),
         "contract_sha256": (
-            "d7e6922ff953434435509a4bd3aca0251b57dc699e990fae3ae06c75af229b4c"
+            "c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b"
         ),
         "contract_semantic_sha256": (
-            "795f7ec4218e029feef40aee6d6616ff62e3f9cc847a8383f4f847514c8c3d22"
+            "86c418b07701b4cf47f478b13f7665911ece7c4a46d39edd07f7b6944019a4b7"
         ),
         "plan_uri": (
             "repo://infra/terraform/deployment-identity/"
             "github-oidc.reference-plan.v1.json"
         ),
         "plan_sha256": (
-            "7566adbe5a9eff81144ceffb9ec233ba98322c2d01f399e5a103a033d0b35974"
+            "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4"
         ),
         "plan_semantic_sha256": (
-            "256550caaf1c7fba5aca5b4c74015590d052941e87e9fcaf4c2eb3db7af25697"
+            "9fac1776d4b7cd2a89999559036e4c465979d5de0f80ccaff26004e56ade5951"
         ),
         "action_counts": {"create": 0, "update": 0, "delete": 0},
     },
@@ -456,7 +456,7 @@ def test_provider_neutral_admission_requires_exact_dependencies_and_mappings(
         "partial_dependencies": "REJECT",
         "provider_label_only_dependency": "REJECT",
         "predecessor_completion_only": "REJECT",
-        "historical_reference_only": "REJECT",
+        "canonical_reference_architecture_status_only": "REJECT",
     }
     assert admission["mapping_policy"] == {
         "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
@@ -520,14 +520,14 @@ def test_dependency_and_capability_admission_rows_are_complete_and_unselected(
         }
 
 
-def test_aws_is_historical_reference_only_and_never_an_admission_shortcut(
+def test_aws_remains_current_canonical_reference_without_admission_shortcut(
     staging_model: generator.StagingDeploymentModel,
 ) -> None:
     reference = _mapping(staging_model.contract["reference_architecture"])
     assert reference["cloud"] == "AWS"
     assert reference["region"] == "ap-northeast-1"
     assert reference["classification"] == (
-        "OPTIONAL_HISTORICAL_AWS_STAGING_REFERENCE_MAPPINGS_ONLY"
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
     )
     assert reference["inherited_from"] == "INT-DEC-007"
     assert reference["portable_core_required"] is True
@@ -543,7 +543,11 @@ def test_aws_is_historical_reference_only_and_never_an_admission_shortcut(
 
     admission = _mapping(staging_model.contract["provider_neutral_staging_admission"])
     assert admission["aws_reference_boundary"] == {
-        "role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+        "canonical_story_deliverables": (
+            "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+        ),
+        "non_aws_owner_managed_profiles": ("ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"),
         "default": False,
         "implicit_fallback": False,
         "selected_binding": False,
@@ -551,6 +555,9 @@ def test_aws_is_historical_reference_only_and_never_an_admission_shortcut(
         "admission_requirement": False,
         "evidence_substitute": False,
     }
+    assert staging_model.contract["environment_boundary"]["reference_region_use"] == (
+        "METADATA_ONLY"
+    )
     equivalence = _mapping(admission["evidence_equivalence_policy"])
     forbidden_fields = {
         "provider_label_as_evidence",
