@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0903_publication_snapshot_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0903_publication_snapshot_reference_plan.py
 provenance:
-  contract_sha256: b741b850a0bbb8d65d97d4993da18277d112b79cb64e5494688f6356941e6553
+  contract_sha256: d6a98010b7fee35aee3fe51eb915f6b1b34a5ee91ef5f40ef2075f3b33d85263
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -80,7 +80,7 @@ provenance:
   dependency_inputs:
   - story_id: ST-0902
     uri: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
-    sha256: 432e0d327ff67c594db306337935137ffee1cdd708ae7ac69b29e00fff7c0bbc
+    sha256: 5e54fe0ba669db5f8d776e83af08134605a372d54062c82d2b4d43d446bb10a8
   - story_id: ST-0807
     uri: repo://changes/st-0807/README.md
     sha256: 841f8bc9a6cd15310d19f3be25121ef8875d51bbb0861745735b8a3b5d5caf2a
@@ -104,20 +104,20 @@ provenance:
     sha256: 93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+    sha256: 77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522
   pro_assistance: PRO_UNAVAILABLE_NONE_NO_PROPOSAL_NO_CONTENT
   digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml
   bytes: 17189
-  sha256: b741b850a0bbb8d65d97d4993da18277d112b79cb64e5494688f6356941e6553
+  sha256: d6a98010b7fee35aee3fe51eb915f6b1b34a5ee91ef5f40ef2075f3b33d85263
 - uri: repo://changes/st-0903/README.md
   bytes: 6430
   sha256: e43d6e187acf7cae41fa3b57c429eef6bd846678ae22d42e2a128a3139e503d3
 - uri: repo://scripts/build_st0903_publication_snapshot_reference_plan.py
   bytes: 44545
-  sha256: c685419127da54cc60fa9f73562cd4a6a10e130e143a0d389c8dcc1b1b3b58f5
+  sha256: 79e3a012b8d2925719220a44af63c12851b4231c67bb4db45b3f07da0dc90cfc
 - uri: repo://tests/st0903/conftest.py
   bytes: 958
   sha256: 91fa3b32765bfe157516ddbb80eb9076732f5cce47a42e12875c26d8524e1c76
@@ -134,7 +134,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0903/generated/publication-snapshot-reference-plan.v1.json
   bytes: 23194
-  sha256: ac522ab40ae6a7ff1909c2c00ed05d0d22b8ec9c4fae82c54b82b5e5d71a6927
+  sha256: a416436866c190d8f4ceb58a889d4c4aa6d85f33e3d90d7b45d67a29df0b53a2
   digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLICATION_SNAPSHOT_REFERENCE_PLAN
