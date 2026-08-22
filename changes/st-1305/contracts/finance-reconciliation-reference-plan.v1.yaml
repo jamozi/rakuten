@@ -37,17 +37,17 @@ dependencies:
   st1304:
     story_id: ST-1304
     feature_commit: 3c1b8ace2d0b82480cd144256d6fa1c758a2ae90
-    artifact_binding_commit: 3c1b8ace2d0b82480cd144256d6fa1c758a2ae90
+    artifact_binding_commit: b0262da192fc25653134d3411e619c89683e11d1
     binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     artifacts:
       changes/st-1304/README.md: 6528d7d60c8686cdd4d85a8db7d78fad5440e7d19fd293881c28fda0b407a3f2
-      changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml: 8d8c12f51ab0fcd942446cf701181b98701a316df3cb9eac8bfe08c03122a54d
-      changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json: d803974470f0bbbb4b441954af953428f5099c5905ae79b5fd938be42fc22581
-      changes/st-1304/manifest.yaml: daa08965a7d6fcfbd36dabc3daf678a1b0dea4f4c658430a1f14b91861e96628
-      scripts/build_st1304_cost_unit_economics_reference_plan.py: 1cf4bfaa10ef5cf3313d8ae9c97d2bf24827c52d8c0e9b9512737c2de29af1b3
+      changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml: 96e2d20dbc29a0c64463b44755431ae6d1133cb9b92246be57da78678ee24ff3
+      changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json: dbc4b0717221a577170d93be2307af221812fcd7b6d1f53a76f75a17e9a4a5f3
+      changes/st-1304/manifest.yaml: b14b94e44c43c39d6f30aea90064e16b80f0356ad2f38adfeb925a7e67825eba
+      scripts/build_st1304_cost_unit_economics_reference_plan.py: ce93749982b621cd740e50e3aac98f6142c4640feb48020a42a080af36c4676a
       tests/st1304/conftest.py: 913f94bbc4018b868679bdf3477a5c480ce8e9662ddffd43aff14c3cee670f4f
-      tests/st1304/test_contract.py: 21b1c08b66aa4621b66539ff5fffa02ac30ef6754daafec6df6baa73e7804fc5
-      tests/st1304/test_generation.py: 0d900252018b44b948f9e7b81eef5ecabb68f8381a6f7f3004cd3a75fcd1a676
+      tests/st1304/test_contract.py: ccf24124057cef7d7e8b4ed8c2f5b54a80d931f0107d67395b857bb0e6927d83
+      tests/st1304/test_generation.py: ce94f4163a397d520d986995b3517446f61218f16aa91d6f773278be07d37a38
       tests/st1304/test_negative_cases.py: 50224c09d38959dfaf36ba1fc4125016920e709494eb71a47d1525d286a562dd
     required_semantics:
       classification: SOURCE_DERIVED_NONEXECUTABLE_COST_UNIT_ECONOMICS_REFERENCE_PLAN
