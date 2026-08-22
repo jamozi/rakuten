@@ -18,8 +18,15 @@ def test_contract_loads_into_closed_reference_only_model(
     assert foundation_model.reference == generator.ReferenceArchitecture(
         cloud="AWS",
         region="ap-northeast-1",
-        classification="REFERENCE_METADATA_ONLY",
+        classification="OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY",
+        inherited_from="INT-DEC-007",
         portable_core_required=True,
+        default=False,
+        implicit_fallback=False,
+        selected_binding=False,
+        eligibility_shortcut=False,
+        admission_requirement=False,
+        evidence_substitute=False,
     )
     assert foundation_model.selection == generator.SelectedConfiguration(
         cloud_provider=None,
@@ -46,8 +53,15 @@ def test_reference_metadata_is_not_a_selected_cloud_configuration(
     assert plan["reference_architecture"] == {
         "cloud": "AWS",
         "region": "ap-northeast-1",
-        "classification": "REFERENCE_METADATA_ONLY",
+        "classification": "OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY",
+        "inherited_from": "INT-DEC-007",
         "portable_core_required": True,
+        "default": False,
+        "implicit_fallback": False,
+        "selected_binding": False,
+        "eligibility_shortcut": False,
+        "admission_requirement": False,
+        "evidence_substitute": False,
     }
     assert plan["selected_configuration"] == {
         "cloud_provider": None,
@@ -67,6 +81,82 @@ def test_reference_metadata_is_not_a_selected_cloud_configuration(
     }
 
 
+def test_provider_neutral_foundation_admission_is_closed_and_unselected(
+    foundation_model: generator.FoundationModel,
+) -> None:
+    admission = generator.reference_plan_document(foundation_model)[
+        "provider_neutral_foundation_admission"
+    ]
+    assert admission["classification"] == (
+        "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION"
+    )
+    assert admission["admission_status"] == "NOT_EVALUATED"
+    assert admission["eligible"] is False
+    assert admission["selected_profile_id"] is None
+    assert admission["selected_profile_kind"] is None
+    assert admission["selected_provider_name"] is None
+    assert admission["default_profile_id"] is None
+    assert admission["fallback_profile_id"] is None
+    assert admission["eligible_profile_kinds"] == list(generator.ELIGIBLE_PROFILE_KINDS)
+    assert admission["binding_policy"] == {
+        **{
+            name: {"selected": None, "default": None, "fallback": None}
+            for name in generator.FOUNDATION_BINDING_NAMES
+        },
+        "implicit_binding": "FORBIDDEN",
+        "name_or_reference_only_eligibility": "FORBIDDEN",
+    }
+    assert admission["mapping_policy"] == {
+        "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+        "required_capability_count": 10,
+        "configured_mapping_count": 0,
+        "complete_mapping": False,
+        "missing_mapping": "REJECT",
+        "unknown_mapping": "REJECT",
+        "duplicate_mapping": "REJECT",
+        "implicit_mapping": "REJECT",
+        "partial_mapping": "REJECT",
+        "provider_label_only_mapping": "REJECT",
+    }
+    rows = admission["capability_mapping_requirements"]
+    assert [row["capability_id"] for row in rows] == list(
+        generator.REQUIRED_FOUNDATION_CAPABILITY_IDS
+    )
+    assert [row["required_outcome"] for row in rows] == [
+        outcome for _capability_id, outcome in generator.FOUNDATION_CAPABILITY_OUTCOMES
+    ]
+    assert all(row["selected_mapping"] is None for row in rows)
+    assert all(row["evidence_refs"] == [] for row in rows)
+    assert all(row["mapping_status"] == "REQUIRED_NOT_CONFIGURED" for row in rows)
+
+
+def test_aws_reference_cannot_supply_foundation_admission_or_evidence(
+    foundation_model: generator.FoundationModel,
+) -> None:
+    admission = generator.reference_plan_document(foundation_model)[
+        "provider_neutral_foundation_admission"
+    ]
+    assert admission["aws_reference_boundary"] == {
+        "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+        "default": False,
+        "implicit_fallback": False,
+        "selected_binding": False,
+        "eligibility_shortcut": False,
+        "admission_requirement": False,
+        "evidence_substitute": False,
+    }
+    assert admission["evidence_equivalence_policy"] == {
+        "identical_security_evidence": "REQUIRED",
+        "identical_operations_evidence": "REQUIRED",
+        "identical_release_evidence": "REQUIRED",
+        "identical_backup_restore_evidence": "REQUIRED",
+        "identical_region_residency_evidence": "REQUIRED",
+        "provider_label_as_evidence": "FORBIDDEN",
+        "reference_metadata_as_evidence": "FORBIDDEN",
+        "local_test_as_live_evidence": "FORBIDDEN",
+    }
+
+
 def test_activation_native_operations_and_action_counts_are_fail_closed(
     foundation_model: generator.FoundationModel,
 ) -> None:
@@ -76,8 +166,13 @@ def test_activation_native_operations_and_action_counts_are_fail_closed(
         "enabled": False,
         "status": "DISABLED",
         "native_plan_status": "NOT_EXECUTED",
+        "network_access": "FORBIDDEN",
+        "credential_access": "FORBIDDEN",
         "live_provider_calls": "FORBIDDEN",
         "external_writes": "FORBIDDEN",
+        "deploy_action": "FORBIDDEN",
+        "release_action": "FORBIDDEN",
+        "production_action": "FORBIDDEN",
         "native_commands": {
             "init": "FORBIDDEN",
             "plan": "FORBIDDEN",
@@ -142,7 +237,7 @@ def test_generated_document_is_non_executable_partial_local_code(
     document = generator.reference_plan_document(foundation_model)["document"]
     assert document == {
         "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1501",
         "source_contract": generator.SOURCE_CONTRACT_URI,
         "generated_by": generator.GENERATOR_URI,
@@ -164,7 +259,7 @@ def test_verification_boundary_keeps_native_formal_and_live_work_unexecuted(
         "terraform_cli": "UNPINNED_NOT_INVOKED",
         "provider_plugins": "UNPINNED_NOT_INVOKED",
         "remote_state": "NOT_CONFIGURED",
-        "aws_account": "UNSET",
+        "provider_account_or_project": "UNSET",
         "credentials": "ABSENT",
         "formal_tst_026": "NOT_EXECUTED",
         "live_staging_release_production": "NOT_EXECUTED",
@@ -178,6 +273,14 @@ def test_source_pins_match_current_regular_files() -> None:
         assert path.is_file()
         assert not path.is_symlink()
         assert generator.sha256_file(path) == expected_digest
+
+
+def test_direct_owner_handoff_is_hash_pinned_and_semantically_valid() -> None:
+    assert generator.DESIGN_HANDOFF_PATH in generator.SOURCE_ARTIFACT_PATHS
+    assert generator.PINNED_SOURCES[
+        generator.DESIGN_HANDOFF_PATH.as_posix()
+    ] == generator.sha256_file(REPOSITORY_ROOT / generator.DESIGN_HANDOFF_PATH)
+    generator.load_and_validate_contract(REPOSITORY_ROOT)
 
 
 def test_generated_json_is_strictly_parseable_and_matches_renderer(

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -19,11 +20,14 @@ from typing import Any, Final, NoReturn
 import yaml
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
-from yaml.tokens import AliasToken, AnchorToken
+from yaml.tokens import AliasToken, AnchorToken, TagToken
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 CONTRACT_PATH: Final = Path("changes/st-1501/contracts/terraform-foundation.v1.yaml")
+DESIGN_HANDOFF_PATH: Final = Path(
+    "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml"
+)
 REFERENCE_PLAN_PATH: Final = Path(
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
 )
@@ -72,12 +76,134 @@ PINNED_SOURCES: Final = {
         "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
     ),
     "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
-        "9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b"
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
+    ),
+    "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
+        "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61"
+    ),
+}
+
+EXPECTED_HANDOFF_LIST_SECTIONS: Final[dict[str, tuple[str, ...]]] = {
+    "approved_scope": (
+        "Define the Full RAOS infrastructure foundation without assuming or "
+        "requiring AWS or any other provider.",
+        "Retain AWS Tokyo only as optional historical reference metadata inherited "
+        "from INT-DEC-007 and RAOS-ARCH-001.",
+        "Require every future foundation profile to map the same closed capability "
+        "inventory and provide equivalent security, operations, release, recovery, "
+        "and residency evidence.",
+        "Keep every provider, account or project, region, plugin, backend, "
+        "credential, network, budget, and resource binding unset while OD-013 "
+        "remains unresolved.",
+    ),
+    "source_design_refs": (
+        "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "repo://docs/canonical/01_integration/"
+        "RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-007",
+        "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-013",
+        "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1501",
+        "repo://docs/upstream/key_documents/"
+        "RAOS_02_system_architecture_v0.1.md#RAOS-ARCH-001",
+        "repo://docs/canonical/06_ops/"
+        "RAOS_12_operations_reliability_design_v1.0.md#RAOS-OPS-001",
+        "repo://docs/canonical/04_security/"
+        "RAOS_10_security_privacy_design_v1.0.md#RAOS-SEC-001",
+        "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-026",
+    ),
+    "rationale": (
+        "INT-DEC-007 makes AWS Tokyo a Reference Architecture while requiring a "
+        "portable Core, so provider admission must evaluate capabilities and "
+        "evidence rather than a provider name.",
+        "Provider, account, region, plugin, or backend defaults would silently turn "
+        "historical reference metadata into a live infrastructure choice.",
+        "A closed foundation capability inventory permits AWS, another cloud, or "
+        "owner-managed infrastructure without selecting an unreviewed provider or "
+        "topology now.",
+        "Keeping all bindings null and eligibility unevaluated preserves OD-013 and "
+        "every external security, operations, release, and Production gate.",
+    ),
+    "rejected_alternatives": (
+        "Require AWS, an AWS account, or ap-northeast-1 merely because Canonical "
+        "sources record them as the reference architecture.",
+        "Select a different cloud or owner-managed platform before capability "
+        "mapping, residency, budget, credentials, operations, and recovery evidence "
+        "exist.",
+        "Infer a provider, account, region, plugin, or backend from names, reference "
+        "metadata, defaults, ambient configuration, or fallback behavior.",
+        "Permit partial, unknown, duplicate, implicit, provider-label-only, or "
+        "reference-only capability mappings.",
+        "Lower security, operations, release, backup, restore, rollback, or residency "
+        "evidence for any provider kind.",
+    ),
+    "constraints": (
+        "Exactly one explicit mapping is required for every required foundation "
+        "capability before a future profile can be eligible.",
+        "Missing, unknown, duplicate, partial, implicit, or provider-label-only "
+        "mappings fail closed.",
+        "IaC toolchain and provider plugins require exact version, integrity, "
+        "provenance, and offline-verifiable evidence before native infrastructure "
+        "payloads are admitted.",
+        "Remote state requires encryption, locking, audit logging, backup, restore, "
+        "and recovery evidence without selecting a backend now.",
+        "Development and Production require separated accounts, projects, tenants, "
+        "or equivalent isolation semantics independent of provider vocabulary.",
+        "Network capability must prove public, admin, internal, data-plane, ingress, "
+        "egress, and control-plane boundaries without assuming AWS service names.",
+        "Workload identity and secrets must be least-privilege, non-ambient, "
+        "auditable, and short-lived or otherwise explicitly reviewed.",
+        "Telemetry, audit, drift detection, backup/restore, recovery, budget/stop "
+        "controls, rollback, and region/data-residency evidence are mandatory and "
+        "provider-neutral.",
+        "No credential, provider call, network access, external write, infrastructure "
+        "init, plan, apply, deployment, release, or status transition is authorized "
+        "by this record.",
+    ),
+    "security_and_approval_gates": (
+        "Preserve IaC-only Production changes, explicit human approval, manual-change "
+        "prohibition, drift detection, and formal TST-026 requirements.",
+        "Preserve separation of Development and Production, private data-plane "
+        "boundaries, controlled ingress/egress, workload identity, auditability, "
+        "backup/restore, and rollback evidence.",
+        "Preserve OD-013 region, backup-region, cross-border transfer, and "
+        "data-residency blocking state until its human owners provide valid "
+        "evidence.",
+        "Require the same security, operations, release, recovery, and residency "
+        "evidence for AWS, another cloud, and owner-managed infrastructure.",
+        "Never infer eligibility from a provider label, account or project name, "
+        "region, plugin, backend, historical reference, local generator success, or "
+        "predecessor completion.",
+    ),
+    "acceptance_criteria": (
+        "The ST-1501 source and generated reference expose a closed provider-neutral "
+        "foundation capability inventory with no selected, default, or fallback "
+        "profile or binding.",
+        "Every future eligible profile must have exactly one explicit mapping for "
+        "every required capability and complete equivalent evidence.",
+        "Unknown, missing, duplicate, partial, implicit, defaulted, fallback, "
+        "label-only, or reference-only mappings are rejected before eligibility.",
+        "AWS Tokyo remains visible only as optional historical reference metadata and "
+        "cannot select a provider, account, region, plugin, backend, or satisfy "
+        "evidence by itself.",
+        "Existing disabled activation, forbidden native commands, zero action counts, "
+        "unresolved OD-013, and NOT_EXECUTED evidence remain unchanged.",
+    ),
+    "required_test_evidence": (
+        "Isolated tests/st1501 positive contract and generated-plan assertions.",
+        "Hostile tests for missing, unknown, duplicate, reordered, partial, "
+        "defaulted, fallback, provider-binding, and AWS-label-only admission "
+        "attempts.",
+        "Existing hostile filesystem, closed-schema, exact-type, no-provider-call, "
+        "and no-write tests remain passing.",
+        "Owner generator regeneration and read-only --check, Ruff for changed Python, "
+        "and git diff --check.",
+        "Formal TST-026, hosted CI, native IaC, provider, staging, release, "
+        "deployment, and Production evidence remain separately unexecuted.",
     ),
 }
 
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
+    DESIGN_HANDOFF_PATH,
     Path("changes/st-1501/README.md"),
     Path("scripts/build_st1501_terraform_foundation.py"),
     Path("tests/st1501/conftest.py"),
@@ -88,7 +214,7 @@ SOURCE_ARTIFACT_PATHS: Final = (
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-TERRAFORM-FOUNDATION-001",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "story_id": "ST-1501",
     "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
     "formal_verification": "NOT_EXECUTED",
@@ -159,6 +285,7 @@ TOP_LEVEL_KEYS: Final = {
     "document",
     "sources",
     "reference_architecture",
+    "provider_neutral_foundation_admission",
     "selected_configuration",
     "execution_boundary",
     "state_requirements",
@@ -203,6 +330,63 @@ EMPTY_SELECTION_FIELDS: Final = (
 )
 NATIVE_COMMANDS: Final = ("init", "plan", "apply", "destroy", "import", "refresh")
 ACTION_NAMES: Final = ("create", "update", "delete")
+ELIGIBLE_PROFILE_KINDS: Final = (
+    "AWS",
+    "OTHER_CLOUD",
+    "OWNER_MANAGED_INFRASTRUCTURE",
+)
+FOUNDATION_BINDING_NAMES: Final = (
+    "provider",
+    "account_or_project",
+    "region",
+    "provider_plugin",
+    "state_backend",
+)
+FOUNDATION_CAPABILITY_OUTCOMES: Final = (
+    (
+        "iac_toolchain_and_plugin_provenance",
+        "PINNED_INTEGRITY_VERIFIED_TOOLCHAIN_AND_PLUGIN_PROVENANCE",
+    ),
+    (
+        "remote_state_integrity_and_recovery",
+        "ENCRYPTED_LOCKED_AUDITED_BACKED_UP_AND_RECOVERABLE_STATE",
+    ),
+    (
+        "environment_tenant_isolation",
+        "DEVELOPMENT_AND_PRODUCTION_ACCOUNT_PROJECT_TENANT_OR_EQUIVALENT_ISOLATION",
+    ),
+    (
+        "network_segmentation_and_traffic_control",
+        "PUBLIC_ADMIN_INTERNAL_DATA_INGRESS_EGRESS_AND_CONTROL_PLANE_BOUNDARIES",
+    ),
+    (
+        "workload_identity_and_secret_boundary",
+        "LEAST_PRIVILEGE_NON_AMBIENT_AUDITABLE_IDENTITY_AND_SECRETS",
+    ),
+    (
+        "observability_audit_and_drift_detection",
+        "TELEMETRY_CONTROL_PLANE_AUDIT_ALERTING_AND_DRIFT_DETECTION",
+    ),
+    (
+        "infrastructure_backup_restore_and_recovery",
+        "VERSIONED_CONFIGURATION_BACKUP_RESTORE_DRILL_AND_RECOVERY_EVIDENCE",
+    ),
+    (
+        "cost_budget_alert_and_stop_controls",
+        "ATTRIBUTABLE_COST_BUDGET_ALERT_AND_BOUNDED_STOP_CONTROLS",
+    ),
+    (
+        "region_and_data_residency",
+        "APPROVED_PRIMARY_BACKUP_CROSS_BORDER_AND_DATA_RESIDENCY_EVIDENCE",
+    ),
+    (
+        "human_approved_change_and_rollback",
+        "IAC_ONLY_HUMAN_APPROVED_PROMOTION_ROLLBACK_AND_RECOVERY",
+    ),
+)
+REQUIRED_FOUNDATION_CAPABILITY_IDS: Final = tuple(
+    capability_id for capability_id, _outcome in FOUNDATION_CAPABILITY_OUTCOMES
+)
 MAX_YAML_BYTES: Final = 2 * 1024 * 1024
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
 
@@ -265,7 +449,19 @@ class ReferenceArchitecture:
     cloud: str
     region: str
     classification: str
+    inherited_from: str
     portable_core_required: bool
+    default: bool
+    implicit_fallback: bool
+    selected_binding: bool
+    eligibility_shortcut: bool
+    admission_requirement: bool
+    evidence_substitute: bool
+
+
+@dataclass(frozen=True, slots=True)
+class ProviderNeutralFoundationAdmission:
+    definition: dict[str, Any]
 
 
 @dataclass(frozen=True, slots=True)
@@ -291,8 +487,13 @@ class ExecutionBoundary:
     activation_enabled: bool
     activation_status: str
     native_plan_status: str
+    network_access: str
+    credential_access: str
     live_provider_calls: str
     external_writes: str
+    deploy_action: str
+    release_action: str
+    production_action: str
     commands: tuple[tuple[str, str], ...]
     planned_actions: tuple[tuple[str, int], ...]
 
@@ -338,7 +539,7 @@ class EvidenceBoundary:
     terraform_cli: str
     provider_plugins: str
     remote_state: str
-    aws_account: str
+    provider_account_or_project: str
     credentials: str
     formal_tst_026: str
     live_staging_release_production: str
@@ -348,6 +549,7 @@ class EvidenceBoundary:
 @dataclass(frozen=True, slots=True)
 class FoundationModel:
     reference: ReferenceArchitecture
+    admission: ProviderNeutralFoundationAdmission
     selection: SelectedConfiguration
     execution: ExecutionBoundary
     state: StateRequirements
@@ -386,6 +588,37 @@ def _list(value: object, field: str) -> list[Any]:
 def _exact_keys(value: Mapping[str, Any], expected: set[str], field: str) -> None:
     if set(value) != expected:
         _fail("CLOSED_SCHEMA_VIOLATION", field)
+
+
+def _strict_match(actual: object, expected: object, field: str) -> None:
+    if isinstance(expected, Mapping):
+        value = _mapping(actual, field)
+        expected_mapping = _mapping(expected, field)
+        _exact_keys(value, set(expected_mapping), field)
+        for key, expected_value in expected_mapping.items():
+            _strict_match(value[key], expected_value, f"{field}.{key}")
+        return
+    if type(expected) is list:
+        value_list = _list(actual, field)
+        expected_list = _list(expected, field)
+        if len(value_list) != len(expected_list):
+            _fail("FIXED_VALUE_VIOLATION", field)
+        for index, expected_value in enumerate(expected_list):
+            _strict_match(value_list[index], expected_value, f"{field}.item")
+        return
+    if expected is None:
+        _unset(actual, field)
+        return
+    if type(expected) is bool:
+        _boolean(actual, expected, field)
+        return
+    if type(expected) is int:
+        _integer(actual, expected, field)
+        return
+    if type(expected) is str:
+        _string(actual, expected, field)
+        return
+    _fail("TYPE_MISMATCH", field)
 
 
 def _string(value: object, expected: str, field: str) -> str:
@@ -481,6 +714,8 @@ def load_yaml(path: Path) -> Any:
         for token in yaml.scan(text):
             if isinstance(token, (AliasToken, AnchorToken)):
                 _fail("YAML_ALIAS_FORBIDDEN", "yaml")
+            if isinstance(token, TagToken):
+                _fail("YAML_TAG_FORBIDDEN", "yaml")
         return yaml.load(text, Loader=UniqueKeyLoader)
     except FoundationContractError:
         raise
@@ -536,6 +771,127 @@ def _find_exact_record(
     if len(matches) != 1:
         _fail("AUTHORITY_RECORD_MISSING", field)
     return matches[0]
+
+
+def _validate_design_handoff(root: Path) -> None:
+    handoff = _mapping(
+        load_yaml(_repository_regular_file(root, DESIGN_HANDOFF_PATH, "handoff")),
+        "handoff",
+    )
+    if tuple(handoff) != (
+        "schema",
+        "version",
+        "record_status",
+        "approved_story",
+        "approved_scope",
+        "source_design_refs",
+        "decision",
+        "rationale",
+        "rejected_alternatives",
+        "constraints",
+        "security_and_approval_gates",
+        "acceptance_criteria",
+        "required_test_evidence",
+        "open_decision_state",
+    ):
+        _fail("CLOSED_SCHEMA_VIOLATION", "handoff")
+    _string(handoff.get("schema"), "DESIGN_HANDOFF_V1", "handoff.schema")
+    _integer(handoff.get("version"), 1, "handoff.version")
+    _string(
+        handoff.get("record_status"),
+        "RECORDED_DURABLE_OWNER_DECISION",
+        "handoff.record_status",
+    )
+    _string(handoff.get("approved_story"), "ST-1501", "handoff.approved_story")
+    for field, expected_rows in EXPECTED_HANDOFF_LIST_SECTIONS.items():
+        _strict_match(handoff.get(field), list(expected_rows), f"handoff.{field}")
+
+    decision = _mapping(handoff.get("decision"), "handoff.decision")
+    _exact_keys(
+        decision,
+        {
+            "foundation_provider_policy",
+            "selected_profile",
+            "default_profile",
+            "fallback_profile",
+            "concrete_alternate_provider_selected",
+            "eligible_profile_kinds",
+            "eligibility_condition",
+            "aws_reference_boundary",
+            "binding_policy",
+            "required_capability_ids",
+        },
+        "handoff.decision",
+    )
+    _string(
+        decision.get("foundation_provider_policy"),
+        "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
+        "handoff.decision.foundation_provider_policy",
+    )
+    for field in ("selected_profile", "default_profile", "fallback_profile"):
+        _unset(decision.get(field), f"handoff.decision.{field}")
+    _boolean(
+        decision.get("concrete_alternate_provider_selected"),
+        False,
+        "handoff.decision.concrete_alternate_provider_selected",
+    )
+    _strict_match(
+        decision.get("eligible_profile_kinds"),
+        list(ELIGIBLE_PROFILE_KINDS),
+        "handoff.decision.eligible_profile_kinds",
+    )
+    _string(
+        decision.get("eligibility_condition"),
+        "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE",
+        "handoff.decision.eligibility_condition",
+    )
+    _strict_match(
+        decision.get("aws_reference_boundary"),
+        {
+            "canonical_decision_id": "INT-DEC-007",
+            "reference_profile": "AWS_TOKYO",
+            "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "handoff.decision.aws_reference_boundary",
+    )
+    expected_binding_policy: dict[str, object] = {
+        name: {"selected": None, "default": None, "fallback": None}
+        for name in FOUNDATION_BINDING_NAMES
+    }
+    expected_binding_policy.update(
+        {
+            "implicit_binding": "FORBIDDEN",
+            "name_or_reference_only_eligibility": "FORBIDDEN",
+        }
+    )
+    _strict_match(
+        decision.get("binding_policy"),
+        expected_binding_policy,
+        "handoff.decision.binding_policy",
+    )
+    _strict_match(
+        decision.get("required_capability_ids"),
+        list(REQUIRED_FOUNDATION_CAPABILITY_IDS),
+        "handoff.decision.required_capability_ids",
+    )
+    _strict_match(
+        handoff.get("open_decision_state"),
+        {
+            "OD-013": {
+                "status": "HUMAN_DECISION_REQUIRED",
+                "resolved": False,
+                "blocking": True,
+                "safe_default": ("REFERENCE_METADATA_ONLY_PRODUCTION_APPLY_FORBIDDEN"),
+            }
+        },
+        "handoff.open_decision_state",
+    )
 
 
 def _validate_authority_semantics(root: Path) -> None:
@@ -651,13 +1007,26 @@ def _validate_authority_semantics(root: Path) -> None:
         "portable_core_required": True,
     }:
         _fail("AUTHORITY_ARCHITECTURE_DRIFT", "RAOS-ARCH-001.cloud_reference")
+    _validate_design_handoff(root)
 
 
 def _parse_reference(contract: Mapping[str, Any]) -> ReferenceArchitecture:
     value = _mapping(contract["reference_architecture"], "reference_architecture")
     _exact_keys(
         value,
-        {"cloud", "region", "classification", "portable_core_required"},
+        {
+            "cloud",
+            "region",
+            "classification",
+            "inherited_from",
+            "portable_core_required",
+            "default",
+            "implicit_fallback",
+            "selected_binding",
+            "eligibility_shortcut",
+            "admission_requirement",
+            "evidence_substitute",
+        },
         "reference_architecture",
     )
     return ReferenceArchitecture(
@@ -667,15 +1036,266 @@ def _parse_reference(contract: Mapping[str, Any]) -> ReferenceArchitecture:
         ),
         classification=_string(
             value["classification"],
-            "REFERENCE_METADATA_ONLY",
+            "OPTIONAL_HISTORICAL_REFERENCE_METADATA_ONLY",
             "reference_architecture.classification",
+        ),
+        inherited_from=_string(
+            value["inherited_from"],
+            "INT-DEC-007",
+            "reference_architecture.inherited_from",
         ),
         portable_core_required=_boolean(
             value["portable_core_required"],
             True,
             "reference_architecture.portable_core_required",
         ),
+        default=_boolean(value["default"], False, "reference_architecture.default"),
+        implicit_fallback=_boolean(
+            value["implicit_fallback"],
+            False,
+            "reference_architecture.implicit_fallback",
+        ),
+        selected_binding=_boolean(
+            value["selected_binding"],
+            False,
+            "reference_architecture.selected_binding",
+        ),
+        eligibility_shortcut=_boolean(
+            value["eligibility_shortcut"],
+            False,
+            "reference_architecture.eligibility_shortcut",
+        ),
+        admission_requirement=_boolean(
+            value["admission_requirement"],
+            False,
+            "reference_architecture.admission_requirement",
+        ),
+        evidence_substitute=_boolean(
+            value["evidence_substitute"],
+            False,
+            "reference_architecture.evidence_substitute",
+        ),
     )
+
+
+def _parse_provider_neutral_admission(
+    contract: Mapping[str, Any],
+) -> ProviderNeutralFoundationAdmission:
+    value = _mapping(
+        contract["provider_neutral_foundation_admission"],
+        "provider_neutral_foundation_admission",
+    )
+    _exact_keys(
+        value,
+        {
+            "classification",
+            "admission_status",
+            "eligible",
+            "selected_profile_id",
+            "selected_profile_kind",
+            "selected_provider_name",
+            "default_profile_id",
+            "fallback_profile_id",
+            "concrete_alternate_provider_selected",
+            "eligible_profile_kinds",
+            "eligibility_condition",
+            "binding_policy",
+            "mapping_policy",
+            "aws_reference_boundary",
+            "evidence_equivalence_policy",
+            "capability_mapping_requirements",
+        },
+        "provider_neutral_foundation_admission",
+    )
+    _string(
+        value["classification"],
+        "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
+        "provider_neutral_foundation_admission.classification",
+    )
+    _string(
+        value["admission_status"],
+        "NOT_EVALUATED",
+        "provider_neutral_foundation_admission.admission_status",
+    )
+    _boolean(value["eligible"], False, "provider_neutral_foundation_admission.eligible")
+    for field in (
+        "selected_profile_id",
+        "selected_profile_kind",
+        "selected_provider_name",
+        "default_profile_id",
+        "fallback_profile_id",
+    ):
+        _unset(value[field], f"provider_neutral_foundation_admission.{field}")
+    _boolean(
+        value["concrete_alternate_provider_selected"],
+        False,
+        "provider_neutral_foundation_admission.concrete_alternate_provider_selected",
+    )
+    _strict_match(
+        value["eligible_profile_kinds"],
+        list(ELIGIBLE_PROFILE_KINDS),
+        "provider_neutral_foundation_admission.eligible_profile_kinds",
+    )
+    _string(
+        value["eligibility_condition"],
+        "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE",
+        "provider_neutral_foundation_admission.eligibility_condition",
+    )
+
+    binding_policy = _mapping(
+        value["binding_policy"],
+        "provider_neutral_foundation_admission.binding_policy",
+    )
+    _exact_keys(
+        binding_policy,
+        {
+            *FOUNDATION_BINDING_NAMES,
+            "implicit_binding",
+            "name_or_reference_only_eligibility",
+        },
+        "provider_neutral_foundation_admission.binding_policy",
+    )
+    for binding_name in FOUNDATION_BINDING_NAMES:
+        binding = _mapping(
+            binding_policy[binding_name],
+            f"provider_neutral_foundation_admission.binding_policy.{binding_name}",
+        )
+        _exact_keys(
+            binding,
+            {"selected", "default", "fallback"},
+            f"provider_neutral_foundation_admission.binding_policy.{binding_name}",
+        )
+        for field in ("selected", "default", "fallback"):
+            _unset(
+                binding[field],
+                (
+                    "provider_neutral_foundation_admission.binding_policy."
+                    f"{binding_name}.{field}"
+                ),
+            )
+    _string(
+        binding_policy["implicit_binding"],
+        "FORBIDDEN",
+        "provider_neutral_foundation_admission.binding_policy.implicit_binding",
+    )
+    _string(
+        binding_policy["name_or_reference_only_eligibility"],
+        "FORBIDDEN",
+        (
+            "provider_neutral_foundation_admission.binding_policy."
+            "name_or_reference_only_eligibility"
+        ),
+    )
+
+    _strict_match(
+        value["mapping_policy"],
+        {
+            "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+            "required_capability_count": len(REQUIRED_FOUNDATION_CAPABILITY_IDS),
+            "configured_mapping_count": 0,
+            "complete_mapping": False,
+            "missing_mapping": "REJECT",
+            "unknown_mapping": "REJECT",
+            "duplicate_mapping": "REJECT",
+            "implicit_mapping": "REJECT",
+            "partial_mapping": "REJECT",
+            "provider_label_only_mapping": "REJECT",
+        },
+        "provider_neutral_foundation_admission.mapping_policy",
+    )
+    _strict_match(
+        value["aws_reference_boundary"],
+        {
+            "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "provider_neutral_foundation_admission.aws_reference_boundary",
+    )
+    _strict_match(
+        value["evidence_equivalence_policy"],
+        {
+            "identical_security_evidence": "REQUIRED",
+            "identical_operations_evidence": "REQUIRED",
+            "identical_release_evidence": "REQUIRED",
+            "identical_backup_restore_evidence": "REQUIRED",
+            "identical_region_residency_evidence": "REQUIRED",
+            "provider_label_as_evidence": "FORBIDDEN",
+            "reference_metadata_as_evidence": "FORBIDDEN",
+            "local_test_as_live_evidence": "FORBIDDEN",
+        },
+        "provider_neutral_foundation_admission.evidence_equivalence_policy",
+    )
+
+    rows = _list(
+        value["capability_mapping_requirements"],
+        "provider_neutral_foundation_admission.capability_mapping_requirements",
+    )
+    row_mappings = [
+        _mapping(
+            row,
+            "provider_neutral_foundation_admission.capability_mapping_requirements.item",
+        )
+        for row in rows
+    ]
+    capability_ids = [row.get("capability_id") for row in row_mappings]
+    if any(
+        type(capability_id) is not str
+        or capability_id not in REQUIRED_FOUNDATION_CAPABILITY_IDS
+        for capability_id in capability_ids
+    ):
+        _fail("UNKNOWN_CAPABILITY_MAPPING", "foundation_capability_mapping")
+    if len(set(capability_ids)) != len(capability_ids):
+        _fail("DUPLICATE_CAPABILITY_MAPPING", "foundation_capability_mapping")
+    if len(capability_ids) != len(REQUIRED_FOUNDATION_CAPABILITY_IDS) or any(
+        capability_id not in capability_ids
+        for capability_id in REQUIRED_FOUNDATION_CAPABILITY_IDS
+    ):
+        _fail("MISSING_CAPABILITY_MAPPING", "foundation_capability_mapping")
+    if tuple(capability_ids) != REQUIRED_FOUNDATION_CAPABILITY_IDS:
+        _fail("CAPABILITY_MAPPING_ORDER_DRIFT", "foundation_capability_mapping")
+    for row, (capability_id, required_outcome) in zip(
+        row_mappings, FOUNDATION_CAPABILITY_OUTCOMES, strict=True
+    ):
+        _exact_keys(
+            row,
+            {
+                "capability_id",
+                "required_outcome",
+                "selected_mapping",
+                "evidence_refs",
+                "mapping_status",
+            },
+            "provider_neutral_foundation_admission.capability_mapping",
+        )
+        _string(
+            row["capability_id"],
+            capability_id,
+            "provider_neutral_foundation_admission.capability_id",
+        )
+        _string(
+            row["required_outcome"],
+            required_outcome,
+            "provider_neutral_foundation_admission.required_outcome",
+        )
+        _unset(
+            row["selected_mapping"],
+            "provider_neutral_foundation_admission.selected_mapping",
+        )
+        _empty_list(
+            row["evidence_refs"],
+            "provider_neutral_foundation_admission.evidence_refs",
+        )
+        _string(
+            row["mapping_status"],
+            "REQUIRED_NOT_CONFIGURED",
+            "provider_neutral_foundation_admission.mapping_status",
+        )
+    return ProviderNeutralFoundationAdmission(definition=copy.deepcopy(dict(value)))
 
 
 def _parse_selection(contract: Mapping[str, Any]) -> SelectedConfiguration:
@@ -713,8 +1333,13 @@ def _parse_execution(contract: Mapping[str, Any]) -> ExecutionBoundary:
             "activation_enabled",
             "activation_status",
             "native_plan_status",
+            "network_access",
+            "credential_access",
             "live_provider_calls",
             "external_writes",
+            "deploy_action",
+            "release_action",
+            "production_action",
             "commands",
             "planned_actions",
         },
@@ -760,6 +1385,16 @@ def _parse_execution(contract: Mapping[str, Any]) -> ExecutionBoundary:
             "NOT_EXECUTED",
             "execution_boundary.native_plan_status",
         ),
+        network_access=_string(
+            value["network_access"],
+            "FORBIDDEN",
+            "execution_boundary.network_access",
+        ),
+        credential_access=_string(
+            value["credential_access"],
+            "FORBIDDEN",
+            "execution_boundary.credential_access",
+        ),
         live_provider_calls=_string(
             value["live_provider_calls"],
             "FORBIDDEN",
@@ -769,6 +1404,21 @@ def _parse_execution(contract: Mapping[str, Any]) -> ExecutionBoundary:
             value["external_writes"],
             "FORBIDDEN",
             "execution_boundary.external_writes",
+        ),
+        deploy_action=_string(
+            value["deploy_action"],
+            "FORBIDDEN",
+            "execution_boundary.deploy_action",
+        ),
+        release_action=_string(
+            value["release_action"],
+            "FORBIDDEN",
+            "execution_boundary.release_action",
+        ),
+        production_action=_string(
+            value["production_action"],
+            "FORBIDDEN",
+            "execution_boundary.production_action",
         ),
         commands=parsed_commands,
         planned_actions=parsed_actions,
@@ -913,7 +1563,7 @@ def _parse_evidence(contract: Mapping[str, Any]) -> EvidenceBoundary:
         "terraform_cli": "UNPINNED_NOT_INVOKED",
         "provider_plugins": "UNPINNED_NOT_INVOKED",
         "remote_state": "NOT_CONFIGURED",
-        "aws_account": "UNSET",
+        "provider_account_or_project": "UNSET",
         "credentials": "ABSENT",
         "formal_tst_026": "NOT_EXECUTED",
         "live_staging_release_production": "NOT_EXECUTED",
@@ -939,6 +1589,7 @@ def validate_contract(contract: object, root: Path = REPO_ROOT) -> FoundationMod
     _validate_authority_semantics(root)
     return FoundationModel(
         reference=_parse_reference(value),
+        admission=_parse_provider_neutral_admission(value),
         selection=_parse_selection(value),
         execution=_parse_execution(value),
         state=_parse_state(value),
@@ -977,7 +1628,7 @@ def reference_plan_document(model: FoundationModel) -> dict[str, object]:
     return {
         "document": {
             "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1501",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -990,16 +1641,31 @@ def reference_plan_document(model: FoundationModel) -> dict[str, object]:
             "cloud": model.reference.cloud,
             "region": model.reference.region,
             "classification": model.reference.classification,
+            "inherited_from": model.reference.inherited_from,
             "portable_core_required": model.reference.portable_core_required,
+            "default": model.reference.default,
+            "implicit_fallback": model.reference.implicit_fallback,
+            "selected_binding": model.reference.selected_binding,
+            "eligibility_shortcut": model.reference.eligibility_shortcut,
+            "admission_requirement": model.reference.admission_requirement,
+            "evidence_substitute": model.reference.evidence_substitute,
         },
+        "provider_neutral_foundation_admission": copy.deepcopy(
+            model.admission.definition
+        ),
         "selected_configuration": _selection_document(model.selection),
         "planned_actions": dict(model.execution.planned_actions),
         "activation": {
             "enabled": model.execution.activation_enabled,
             "status": model.execution.activation_status,
             "native_plan_status": model.execution.native_plan_status,
+            "network_access": model.execution.network_access,
+            "credential_access": model.execution.credential_access,
             "live_provider_calls": model.execution.live_provider_calls,
             "external_writes": model.execution.external_writes,
+            "deploy_action": model.execution.deploy_action,
+            "release_action": model.execution.release_action,
+            "production_action": model.execution.production_action,
             "native_commands": dict(model.execution.commands),
         },
         "future_requirements": {
@@ -1039,7 +1705,7 @@ def reference_plan_document(model: FoundationModel) -> dict[str, object]:
             "terraform_cli": model.evidence.terraform_cli,
             "provider_plugins": model.evidence.provider_plugins,
             "remote_state": model.evidence.remote_state,
-            "aws_account": model.evidence.aws_account,
+            "provider_account_or_project": (model.evidence.provider_account_or_project),
             "credentials": model.evidence.credentials,
             "formal_tst_026": model.evidence.formal_tst_026,
             "live_staging_release_production": (
@@ -1081,7 +1747,7 @@ def render_manifest(
     document: dict[str, object] = {
         "document": {
             "id": "RAOS-TERRAFORM-FOUNDATION-MANIFEST-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1501",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -1113,6 +1779,23 @@ def render_manifest(
         },
         "boundary": {
             "classification": model.evidence.deliverable_classification,
+            "provider_policy": model.admission.definition["classification"],
+            "admission_status": model.admission.definition["admission_status"],
+            "eligible": model.admission.definition["eligible"],
+            "selected_profile": model.admission.definition["selected_profile_id"],
+            "default_profile": model.admission.definition["default_profile_id"],
+            "fallback_profile": model.admission.definition["fallback_profile_id"],
+            "required_capability_count": len(REQUIRED_FOUNDATION_CAPABILITY_IDS),
+            "configured_mapping_count": 0,
+            "aws_reference_role": model.admission.definition["aws_reference_boundary"][
+                "role"
+            ],
+            "aws_reference_default": False,
+            "aws_reference_fallback": False,
+            "aws_reference_selected": False,
+            "aws_reference_eligibility_shortcut": False,
+            "aws_reference_admission_requirement": False,
+            "aws_reference_evidence_substitute": False,
             "activation": model.execution.activation_status,
             "planned_actions": dict(model.execution.planned_actions),
             "selected_cloud_provider": model.selection.cloud_provider,
@@ -1120,6 +1803,7 @@ def render_manifest(
             "selected_production_account": model.selection.production_account_id,
             "selected_state_backend": model.selection.state_backend,
             "credentials": model.evidence.credentials,
+            "provider_account_or_project": (model.evidence.provider_account_or_project),
             "resource_definitions": list(model.selection.resource_definitions),
             "native_iac_validation": "NOT_EXECUTED",
             "formal_tst_026": model.evidence.formal_tst_026,
