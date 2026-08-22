@@ -44,6 +44,24 @@ PRIVATE_OUTPUT_FILE_MODE = 0o600
 EXPECTED_THEME_CSS_SHA256 = (
     "0703a9154a12a2d4224d961ac5996b5e25c483c81f21f9a8500cd899ed913adf"
 )
+EXPECTED_THEME_FUNCTIONS_SHA256 = (
+    "4e12cedfb266dac20d7bc19d28a1558fa69e34a0ac79d35ff85a58258a447ed3"
+)
+FIRST_ARTICLE_IMAGE_RELATIVE_PATH = "assets/images/article-suitcase-guide.webp"
+FIRST_ARTICLE_IMAGE_ALT = "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景"
+FIRST_ARTICLE_IMAGE_USAGE = "first article inline lead image"
+FIRST_ARTICLE_SHORTCODE_TAG = "kurashinoshirube_first_article_lead_image"
+FIRST_ARTICLE_SLUG = "carry-on-suitcase-comparison"
+FIRST_ARTICLE_TARGET_ORIGIN = "https://kurashinoshirube.com"
+FIRST_ARTICLE_TARGET_HOST = FIRST_ARTICLE_TARGET_ORIGIN.removeprefix("https://")
+FIRST_ARTICLE_THEME_SLUG = "kurashinoshirube-child"
+FIRST_ARTICLE_TITLE = (
+    "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ"
+)
+_EXPECTED_IMAGE_DELIVERY: dict[str, str] = {
+    "assets/images/home-hero.webp": "THEME_CSS_BACKGROUND",
+    FIRST_ARTICLE_IMAGE_RELATIVE_PATH: "FIRST_ARTICLE_THEME_SHORTCODE",
+}
 
 _MANIFEST_KEYS = frozenset(
     {
@@ -56,7 +74,9 @@ _MANIFEST_KEYS = frozenset(
         "check_command",
     }
 )
-_IMAGE_KEYS = frozenset({"path", "status", "sha256", "alt", "prompt", "usage"})
+_IMAGE_KEYS = frozenset(
+    {"path", "status", "sha256", "alt", "delivery", "prompt", "usage"}
+)
 _TEMPLATE_PART_KEYS = frozenset({"slug", "tagName"})
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _CSS_HEX_COLOR = re.compile(r"#[0-9a-f]{6}\Z", re.ASCII)
@@ -794,6 +814,30 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
         or "if (reduced ||" not in text
     ):
         _fail("THEME_ACCESSIBILITY_INVALID")
+    if relative == "functions.php" and (
+        hashlib.sha256(payload).hexdigest() != EXPECTED_THEME_FUNCTIONS_SHA256
+        or text.count(FIRST_ARTICLE_SHORTCODE_TAG) != 2
+        or text.count("kurashinoshirube_render_first_article_lead_image") != 2
+        or "get_stylesheet_directory_uri()" not in text
+        or "get_post_field('post_title', get_the_ID(), 'raw')" not in text
+        or FIRST_ARTICLE_TITLE not in text
+        or "get_post_field('post_name', get_the_ID(), 'raw')" not in text
+        or FIRST_ARTICLE_SLUG not in text
+        or f"get_stylesheet() !== '{FIRST_ARTICLE_THEME_SLUG}'" not in text
+        or "get_stylesheet_directory()" not in text
+        or "is_link($image_path)" not in text
+        or "is_file($image_path)" not in text
+        or "is_readable($image_path)" not in text
+        or "($uri['scheme'] ?? null) !== 'https'" not in text
+        or f"($uri['host'] ?? null) !== '{FIRST_ARTICLE_TARGET_HOST}'" not in text
+        or "assets/images/article-suitcase-guide.webp" not in text
+        or FIRST_ARTICLE_IMAGE_ALT not in text
+        or "featured_media" in text
+        or "add_filter" in text
+        or "media_handle" in text
+        or "wp_insert_attachment" in text
+    ):
+        _fail("THEME_ARTICLE_ASSET_BINDING_INVALID")
     if relative == "style.css" and (
         "Theme Name: 暮らしのしるべ Editorial" not in text
         or "Template: twentytwentyfive" not in text
@@ -837,6 +881,10 @@ def _validate_semantic_landmarks(payloads: Mapping[str, bytes]) -> None:
             actual.append((attribute_map.get("slug"), attribute_map.get("tagName")))
         if tuple(actual) != expected_template_parts:
             _fail("THEME_SEMANTIC_LANDMARK_INVALID")
+        if relative == "templates/single.html" and (
+            text.count("<!-- wp:post-content ") != 1 or "wp:post-featured-image" in text
+        ):
+            _fail("THEME_ARTICLE_ASSET_BINDING_INVALID")
 
     for relative in ("parts/header.html", "parts/footer.html"):
         try:
@@ -860,6 +908,7 @@ def _validate_semantic_landmarks(payloads: Mapping[str, bytes]) -> None:
 @dataclass(frozen=True)
 class _ThemeSnapshot:
     archive_files: tuple[tuple[str, bytes], ...]
+    first_article_asset_status: str
     pending_asset_count: int
     source_file_count: int
 
@@ -891,6 +940,7 @@ def _validated_payload_snapshot(payload_values: Mapping[str, bytes]) -> _ThemeSn
     if len(images) != 2:
         _fail("THEME_MANIFEST_INVALID")
     image_paths: set[str] = set()
+    first_article_asset_status: str | None = None
     pending = 0
     for item in images:
         if type(item) is not dict:
@@ -906,12 +956,22 @@ def _validated_payload_snapshot(payload_values: Mapping[str, bytes]) -> _ThemeSn
             or not cast(str, image["alt"]).strip()
             or type(image.get("prompt")) is not str
             or not cast(str, image["prompt"]).strip()
+            or type(image.get("delivery")) is not str
             or type(image.get("usage")) is not str
             or not cast(str, image["usage"]).strip()
             or image.get("status") not in {"PENDING_FINAL_ASSET", "FINAL"}
         ):
             _fail("THEME_MANIFEST_INVALID")
+        if image.get("delivery") != _EXPECTED_IMAGE_DELIVERY.get(path):
+            _fail("THEME_ASSET_DELIVERY_INVALID")
         image_paths.add(path)
+        if path == FIRST_ARTICLE_IMAGE_RELATIVE_PATH:
+            if (
+                image.get("alt") != FIRST_ARTICLE_IMAGE_ALT
+                or image.get("usage") != FIRST_ARTICLE_IMAGE_USAGE
+            ):
+                _fail("THEME_ARTICLE_ASSET_BINDING_INVALID")
+            first_article_asset_status = cast(str, image["status"])
         if image["status"] == "PENDING_FINAL_ASSET":
             if image["sha256"] is not None or path in payloads:
                 _fail("THEME_PENDING_ASSET_INVALID")
@@ -930,10 +990,14 @@ def _validated_payload_snapshot(payload_values: Mapping[str, bytes]) -> _ThemeSn
         ):
             _fail("THEME_FINAL_ASSET_INVALID")
 
-    if set(payloads) != {*paths, *image_paths.intersection(payloads)}:
+    if first_article_asset_status is None or set(payloads) != {
+        *paths,
+        *image_paths.intersection(payloads),
+    }:
         _fail("THEME_INVENTORY_MISMATCH")
     return _ThemeSnapshot(
         archive_files=tuple(sorted(payloads.items())),
+        first_article_asset_status=first_article_asset_status,
         pending_asset_count=pending,
         source_file_count=len(paths),
     )
@@ -974,6 +1038,7 @@ def _source_check_result(snapshot: _ThemeSnapshot) -> dict[str, object]:
         "asset_status": (
             "PENDING_FINAL_ASSETS" if not snapshot.package_ready else "FINAL"
         ),
+        "first_article_asset_status": snapshot.first_article_asset_status,
         "network_requests": 0,
         "package_ready": snapshot.package_ready,
         "pending_asset_count": snapshot.pending_asset_count,

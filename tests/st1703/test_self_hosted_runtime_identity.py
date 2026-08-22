@@ -1325,6 +1325,103 @@ def test_runtime_manifest_generator_and_cli_share_closed_asset_declaration() -> 
         ) == module._declared_final_theme_runtime_assets(manifest_payload)
 
 
+def test_first_article_asset_contract_is_identical_across_runtime_owners() -> None:
+    from raos.application.editorial import self_hosted_minimum_start as content
+
+    theme_generator = _load(
+        ROOT / "scripts/build_st1703_self_hosted_theme.py",
+        "self_hosted_theme_article_asset_parity",
+    )
+    manifest_generator = _load(
+        GENERATOR_PATH,
+        "self_hosted_runtime_article_asset_generator_parity",
+    )
+    module = _load(CLI_PATH, "self_hosted_runtime_article_asset_cli_parity")
+
+    assert {
+        theme_generator.FIRST_ARTICLE_IMAGE_RELATIVE_PATH,
+        manifest_generator.FIRST_ARTICLE_IMAGE_RELATIVE_PATH,
+        module._RUNTIME_FIRST_ARTICLE_IMAGE_RELATIVE_PATH,
+        content.FIRST_ARTICLE_THEME_IMAGE_RELATIVE_PATH,
+    } == {"assets/images/article-suitcase-guide.webp"}
+    assert {
+        theme_generator.FIRST_ARTICLE_IMAGE_ALT,
+        manifest_generator.FIRST_ARTICLE_IMAGE_ALT,
+        module._RUNTIME_FIRST_ARTICLE_IMAGE_ALT,
+        content.FIRST_ARTICLE_THEME_IMAGE_ALT,
+    } == {"機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景"}
+    assert {
+        theme_generator.FIRST_ARTICLE_IMAGE_USAGE,
+        manifest_generator.FIRST_ARTICLE_IMAGE_USAGE,
+        module._RUNTIME_FIRST_ARTICLE_IMAGE_USAGE,
+        content.FIRST_ARTICLE_THEME_IMAGE_USAGE,
+    } == {"first article inline lead image"}
+    assert {
+        theme_generator.FIRST_ARTICLE_TITLE,
+        content.FIRST_ARTICLE_TITLE,
+    } == {"機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ"}
+    assert {
+        theme_generator.FIRST_ARTICLE_SHORTCODE_TAG,
+        content.FIRST_ARTICLE_SHORTCODE_TAG,
+    } == {"kurashinoshirube_first_article_lead_image"}
+    assert content.FIRST_ARTICLE_THEME_SHORTCODE == (
+        f"[{theme_generator.FIRST_ARTICLE_SHORTCODE_TAG}]"
+    )
+    assert {
+        theme_generator.FIRST_ARTICLE_SLUG,
+        content.FIRST_ARTICLE_SLUG,
+    } == {"carry-on-suitcase-comparison"}
+    assert {
+        theme_generator.FIRST_ARTICLE_THEME_SLUG,
+        content.FIRST_ARTICLE_THEME_SLUG,
+    } == {"kurashinoshirube-child"}
+    assert {
+        theme_generator.FIRST_ARTICLE_TARGET_ORIGIN,
+        content.FIRST_ARTICLE_TARGET_ORIGIN,
+    } == {"https://kurashinoshirube.com"}
+    assert theme_generator.FIRST_ARTICLE_TARGET_HOST == "kurashinoshirube.com"
+    assert theme_generator._EXPECTED_IMAGE_DELIVERY == {
+        "assets/images/home-hero.webp": "THEME_CSS_BACKGROUND",
+        "assets/images/article-suitcase-guide.webp": "FIRST_ARTICLE_THEME_SHORTCODE",
+    }
+    assert (
+        theme_generator._EXPECTED_IMAGE_DELIVERY
+        == manifest_generator.EXPECTED_THEME_IMAGE_DELIVERY
+        == module._RUNTIME_EXPECTED_THEME_IMAGE_DELIVERY
+    )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("alt", "wrong alt"),
+        ("delivery", "WORDPRESS_MEDIA_UPLOAD"),
+        ("usage", "unrelated post image"),
+    ],
+)
+def test_runtime_asset_declaration_rejects_article_binding_drift(
+    field: str, value: str
+) -> None:
+    generator = _load(
+        GENERATOR_PATH,
+        f"self_hosted_runtime_binding_generator_{field}",
+    )
+    module = _load(CLI_PATH, f"self_hosted_runtime_binding_cli_{field}")
+    manifest = json.loads(THEME_ASSET_MANIFEST_PATH.read_text(encoding="utf-8"))
+    article = next(
+        item
+        for item in manifest["required_images"]
+        if item["path"] == generator.FIRST_ARTICLE_IMAGE_RELATIVE_PATH
+    )
+    article[field] = value
+    payload = json.dumps(manifest, ensure_ascii=False, sort_keys=True).encode("utf-8")
+
+    with pytest.raises(generator.RuntimeManifestFailure):
+        generator._declared_final_theme_assets(payload)
+    with pytest.raises(module._RuntimeIdentityFailure):
+        module._declared_final_theme_runtime_assets(payload)
+
+
 def test_all_final_asset_validators_share_closed_webp_structure_contract() -> None:
     theme_generator = _load(
         ROOT / "scripts/build_st1703_self_hosted_theme.py",

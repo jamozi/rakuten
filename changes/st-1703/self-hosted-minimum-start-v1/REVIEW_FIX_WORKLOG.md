@@ -88,6 +88,23 @@ remain in deployed squash/cherry-pick ancestry.
    executable or native library was added to the owner runtime. The validator
    attests to complete container/header structure, not full entropy decode, so
    final visual/decode review and activation remain operator gates.
+9. The suitcase-guide WebP could become a reviewed/package-ready theme asset
+   without any binding into the first article, while the create request sent no
+   media or featured-image field. The content owner now generates one exact
+   leading first-article shortcode into the hashed outbound body and rejects
+   missing, duplicate, attributed, closing, or additional shortcode material.
+   The theme owns the only renderer: it accepts no caller input, requires the
+   exact raw article title, exact post slug, and active child-theme slug, derives the configured
+   stylesheet URI, closes scheme/host/path and local file state, and appends
+   only the manifest-bound WebP path and exact alt text. Create revalidates the
+   verified theme payload and requires the article asset plus the complete
+   package to be final before credential metadata or transport construction.
+   No media upload, attachment, `featured_media`, guessed `/wp-content` URL,
+   theme activation, live draft, or publication authority was added; actual
+   visibility remains a human WordPress preview gate. Because titles are not
+   unique, the follow-up binds the packet's fixed slug into the content hash
+   and the four-field create body, requires the same slug in the sole response,
+   and checks both raw title and raw post slug before shortcode rendering.
 
 ## Authority and evidence boundary
 
@@ -153,6 +170,38 @@ report, not promoted to any external status.
 - exact changed-path sensitive-data scan: 10 paths, 0 findings;
 - the real asset/package check remains closed with the expected
   `THEME_FINAL_ASSET_MISSING`; no package was written in the worktree.
+
+### First-article theme-asset binding follow-up freeze (2026-08-23)
+
+- focused content/REST/journal/HTTPS/theme/CLI/runtime identity:
+  `381 passed, 1 skipped`; the skip remains the intentional exact-root launcher
+  integration boundary for a linked worktree;
+- complete isolated `tests/st1703`: `1107 passed, 1 skipped` for the same
+  reason;
+- affected predecessor `tests/st0502`: `167 passed`; affected predecessor
+  `tests/st0805`: `361 passed`;
+- theme source check and runtime-manifest generation/no-write check: pass; the
+  current two pending assets still make the real package check close with the
+  expected `THEME_FINAL_ASSET_MISSING` reason;
+- Ruff lint/format, mypy and Pyright pass for the seven affected source files;
+  Bash and BusyBox launcher syntax remain pass. PHP lint is `NOT_EXECUTED`
+  because the owner environment has no PHP executable;
+- the request keeps predecessor slug absence byte-compatible, permits one
+  strict create-only slug for the self-hosted path, includes it in the content
+  hash, and treats missing/different/duplicate response slug as one-attempt
+  ambiguous evidence with a durable pending INTENT and no resend;
+- the self-hosted response validator rejects an externally supplied generic
+  three-field create request, even when both that request and the response omit
+  `slug`; only its exact four-field request contract reaches slug comparison;
+- the child-theme handler requires both exact raw title and exact raw post slug,
+  while cross-owner tests bind title, shortcode tag, post slug, theme slug,
+  target origin, asset path, alt, usage and delivery constants.
+- workspace check, Canonical import verification, structured JSON/YAML parsing,
+  and `git diff --check`: pass;
+- exact changed-path sensitive-data scan: 23 paths, 0 findings. The aggregate
+  worktree scan was attempted but stopped before scanning because its
+  physical-Git safety check returns `unsafe-git-metadata` in this linked
+  worktree; no gate was weakened or bypassed.
 
 The integrated exact-root doctor, credential access, provider/network call,
 draft write, browser operation, hosted CI, activation, publication, formal

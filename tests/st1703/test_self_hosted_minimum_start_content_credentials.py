@@ -18,9 +18,16 @@ from raos.adapters.self_hosted_wordpress_credentials import (
 )
 from raos.application.editorial.self_hosted_minimum_start import (
     CONTENT_PACKET_RELATIVE_PATH,
+    FIRST_ARTICLE_THEME_IMAGE_RELATIVE_PATH,
+    FIRST_ARTICLE_THEME_SHORTCODE,
+    FIRST_ARTICLE_THEME_SLUG,
+    FIRST_ARTICLE_SLUG,
+    FIRST_ARTICLE_TARGET_ORIGIN,
+    FIRST_ARTICLE_TITLE,
     load_first_article_candidate,
 )
 from raos.domain.editorial.self_hosted_wordpress import (
+    SelfHostedWordPressDraft,
     SelfHostedWordPressFailure,
     SelfHostedWordPressFailureCode,
     SelfHostedWordPressOperation,
@@ -56,12 +63,42 @@ def test_content_packet_builds_only_bound_create_and_positive_id_update() -> Non
     )
 
     assert create.existing_draft_id is None
+    assert create.title == FIRST_ARTICLE_TITLE
+    assert create.slug == FIRST_ARTICLE_SLUG
     assert update.existing_draft_id == 1703
     assert create.content_sha256 == update.content_sha256
     assert create.operation_sha256 != update.operation_sha256
     assert "AIを補助的に利用" in create.content_html
+    assert create.content_html.startswith(f"{FIRST_ARTICLE_THEME_SHORTCODE}\n")
+    assert create.content_html.count(FIRST_ARTICLE_THEME_SHORTCODE) == 1
     assert create.content_html.count("PENDING_OFFICIAL_RAKUTEN_LINK") == 0
     assert create.content_html.count("公式楽天アフィリエイトリンク未設定") == 3
+
+
+def test_self_hosted_draft_slug_is_strict_and_content_hash_bound() -> None:
+    first = SelfHostedWordPressDraft.bind(
+        operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        title="Bound title",
+        slug="bound-post",
+        content_html="<p>Bound content.</p>",
+    )
+    other = SelfHostedWordPressDraft.bind(
+        operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        title=first.title,
+        slug="different-post",
+        content_html=first.content_html,
+    )
+    assert first.content_sha256 != other.content_sha256
+    assert first.operation_sha256 != other.operation_sha256
+
+    for invalid_slug in ("", "Bound-Post", "bound_post", "../bound-post"):
+        with pytest.raises(SelfHostedWordPressFailure):
+            SelfHostedWordPressDraft.bind(
+                operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+                title=first.title,
+                slug=invalid_slug,
+                content_html=first.content_html,
+            )
 
 
 def test_verified_content_bytes_are_used_without_reopening_repository_path(
@@ -98,6 +135,168 @@ def test_content_packet_rejects_authority_or_target_drift(
     path = _copy_content(tmp_path)
     packet = json.loads(path.read_text(encoding="utf-8"))
     packet[field] = value
+    path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(SelfHostedWordPressFailure) as failure:
+        load_first_article_candidate(
+            tmp_path,
+            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        )
+    assert failure.value.code is SelfHostedWordPressFailureCode.CONTENT_PACKET_INVALID
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("target_origin", "http://kurashinoshirube.com"),
+        ("target_origin", "https://foreign.example.invalid"),
+        ("target_origin", "https://kurashinoshirube.com/blog"),
+        ("target_origin", "https://user@kurashinoshirube.com"),
+        ("target_origin", "https://kurashinoshirube.com:443"),
+        ("target_origin", "https://kurashinoshirube.com?variant=1"),
+        ("theme_slug", "other-child"),
+        ("theme_asset_path", "assets/images/home-hero.webp"),
+        ("theme_asset_path", "../article-suitcase-guide.webp"),
+        ("shortcode", "[kurashinoshirube_first_article_lead_image extra]"),
+        ("alt", ""),
+        ("alt", "スーツケースの商品写真"),
+        ("delivery", "WORDPRESS_MEDIA_UPLOAD"),
+    ],
+    ids=(
+        "http-origin",
+        "foreign-origin",
+        "wordpress-subpath",
+        "userinfo",
+        "port",
+        "query",
+        "wrong-theme",
+        "wrong-image-path",
+        "traversal",
+        "shortcode-attributes",
+        "missing-alt",
+        "wrong-alt",
+        "media-upload",
+    ),
+)
+def test_content_packet_rejects_lead_image_binding_drift(
+    tmp_path: Path, field: str, value: str
+) -> None:
+    path = _copy_content(tmp_path)
+    packet = json.loads(path.read_text(encoding="utf-8"))
+    packet["article"]["lead_image"][field] = value
+    path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(SelfHostedWordPressFailure) as failure:
+        load_first_article_candidate(
+            tmp_path,
+            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        )
+    assert failure.value.code is SelfHostedWordPressFailureCode.CONTENT_PACKET_INVALID
+
+
+def test_content_packet_rejects_missing_or_duplicated_article_image_binding(
+    tmp_path: Path,
+) -> None:
+    path = _copy_content(tmp_path)
+    packet = json.loads(path.read_text(encoding="utf-8"))
+    lead_image = packet["article"].pop("lead_image")
+    path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+    with pytest.raises(SelfHostedWordPressFailure):
+        load_first_article_candidate(
+            tmp_path,
+            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        )
+
+    packet["article"]["lead_image"] = lead_image
+    packet["article"]["content_html"] += FIRST_ARTICLE_THEME_SHORTCODE
+    path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+    with pytest.raises(SelfHostedWordPressFailure) as duplicate:
+        load_first_article_candidate(
+            tmp_path,
+            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        )
+    assert duplicate.value.code is SelfHostedWordPressFailureCode.CONTENT_PACKET_INVALID
+
+
+@pytest.mark.parametrize(
+    "extra_shortcode",
+    [
+        "[gallery]",
+        "[/kurashinoshirube_first_article_lead_image]",
+        "[kurashinoshirube_first_article_lead_image extra]",
+        "[" + ("a" * 256) + "]",
+    ],
+)
+def test_content_packet_rejects_any_additional_shortcode(
+    tmp_path: Path, extra_shortcode: str
+) -> None:
+    path = _copy_content(tmp_path)
+    packet = json.loads(path.read_text(encoding="utf-8"))
+    packet["article"]["content_html"] += extra_shortcode
+    path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(SelfHostedWordPressFailure) as failure:
+        load_first_article_candidate(
+            tmp_path,
+            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        )
+    assert failure.value.code is SelfHostedWordPressFailureCode.CONTENT_PACKET_INVALID
+
+
+def test_content_packet_lead_image_matches_exact_theme_manifest_contract() -> None:
+    packet = json.loads(
+        (REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH).read_text(encoding="utf-8")
+    )
+    manifest = json.loads(
+        (
+            REPOSITORY_ROOT / "changes/st-1703/self-hosted-minimum-start-v1/theme/"
+            "kurashinoshirube-child/raos-assets.v1.json"
+        ).read_text(encoding="utf-8")
+    )
+    matching = [
+        image
+        for image in manifest["required_images"]
+        if image["path"] == FIRST_ARTICLE_THEME_IMAGE_RELATIVE_PATH
+    ]
+    assert len(matching) == 1
+    assert packet["article"]["lead_image"] == {
+        "alt": matching[0]["alt"],
+        "delivery": matching[0]["delivery"],
+        "shortcode": FIRST_ARTICLE_THEME_SHORTCODE,
+        "target_origin": "https://kurashinoshirube.com",
+        "theme_asset_path": matching[0]["path"],
+        "theme_slug": FIRST_ARTICLE_THEME_SLUG,
+    }
+
+
+def test_content_packet_rejects_first_article_title_drift(tmp_path: Path) -> None:
+    path = _copy_content(tmp_path)
+    packet = json.loads(path.read_text(encoding="utf-8"))
+    packet["article"]["title"] = "無関係な記事"
+    path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(SelfHostedWordPressFailure) as failure:
+        load_first_article_candidate(
+            tmp_path,
+            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        )
+    assert failure.value.code is SelfHostedWordPressFailureCode.CONTENT_PACKET_INVALID
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("slug", "different-post"),
+        ("slug", "carry-on-suitcase-comparison/extra"),
+        ("canonical_url", f"{FIRST_ARTICLE_TARGET_ORIGIN}/different-post/"),
+    ],
+)
+def test_content_packet_rejects_first_article_slug_or_canonical_drift(
+    tmp_path: Path, field: str, value: str
+) -> None:
+    path = _copy_content(tmp_path)
+    packet = json.loads(path.read_text(encoding="utf-8"))
+    packet["article"][field] = value
     path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
 
     with pytest.raises(SelfHostedWordPressFailure) as failure:

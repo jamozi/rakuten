@@ -22,6 +22,14 @@ from raos.adapters.self_hosted_wordpress_https import (
     SELF_HOSTED_WORDPRESS_PORT,
 )
 import raos.adapters.self_hosted_wordpress_https as https_module
+from raos.adapters.self_hosted_wordpress_journal import (
+    DurableSelfHostedWordPressDraftAdapter,
+)
+from raos.application.editorial.self_hosted_minimum_start import (
+    FIRST_ARTICLE_SLUG,
+    FIRST_ARTICLE_THEME_SHORTCODE,
+    load_first_article_candidate,
+)
 from raos.domain.editorial.self_hosted_wordpress import (
     SelfHostedWordPressDisposition,
     SelfHostedWordPressDraft,
@@ -44,6 +52,9 @@ _UNTRUSTED_ENVIRONMENT = {
     "http_proxy",
     "no_proxy",
 }
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+_SYNTHETIC_SLUG = "synthetic-draft"
+_SYNTHETIC_RESPONSE_BODY = b'{"id":1703,"slug":"synthetic-draft","status":"draft"}'
 
 
 def _candidate(
@@ -53,6 +64,7 @@ def _candidate(
     return SelfHostedWordPressDraft.bind(
         operation=operation,
         title="Synthetic draft",
+        slug=_SYNTHETIC_SLUG,
         content_html="<p>Bound content.</p>",
         existing_draft_id=draft_id,
     )
@@ -72,7 +84,7 @@ class FakeResponse:
         self,
         *,
         status: int = 201,
-        body: bytes = b'{"id":1703,"status":"draft"}',
+        body: bytes = _SYNTHETIC_RESPONSE_BODY,
         content_type: str = "application/json; charset=UTF-8",
         content_length: str | None = None,
         content_encoding: str | None = None,
@@ -171,7 +183,7 @@ def test_create_uses_exact_path_basic_auth_draft_body_and_one_attempt(
 ) -> None:
     _clean_environment(monkeypatch)
     credentials = _install(tmp_path)
-    response = FakeResponse(content_length="28")
+    response = FakeResponse(content_length=str(len(_SYNTHETIC_RESPONSE_BODY)))
     connection = FakeConnection(response)
     factory = FakeFactory(connection)
 
@@ -191,12 +203,106 @@ def test_create_uses_exact_path_basic_auth_draft_body_and_one_attempt(
     assert path == "/wp-json/wp/v2/posts"
     assert json.loads(body) == {
         "content": "<p>Bound content.</p>",
+        "slug": _SYNTHETIC_SLUG,
         "status": "draft",
         "title": "Synthetic draft",
     }
     assert headers["Authorization"] == credentials.authorization_header()
     assert headers["Host"] == "kurashinoshirube.com"
     assert response.read_amounts == [MAX_RESPONSE_BYTES + 1]
+
+
+def test_first_article_request_body_equals_reviewed_generated_content(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _clean_environment(monkeypatch)
+    _install(tmp_path)
+    candidate = load_first_article_candidate(
+        REPOSITORY_ROOT,
+        operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+    )
+    response_body = json.dumps(
+        {"id": 1703, "slug": FIRST_ARTICLE_SLUG, "status": "draft"},
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    connection = FakeConnection(
+        FakeResponse(body=response_body, content_length=str(len(response_body)))
+    )
+
+    OfficialSelfHostedWordPressDraftAdapter(
+        tmp_path, connection_factory=FakeFactory(connection)
+    ).attempt(candidate)
+
+    assert connection.observed_request is not None
+    _method, _path, body, _headers = connection.observed_request
+    payload = json.loads(body)
+    assert payload == {
+        "content": candidate.content_html,
+        "slug": FIRST_ARTICLE_SLUG,
+        "status": "draft",
+        "title": candidate.title,
+    }
+    assert payload["content"].count(FIRST_ARTICLE_THEME_SHORTCODE) == 1
+    assert payload["content"].startswith(f"{FIRST_ARTICLE_THEME_SHORTCODE}\n")
+    assert "<img" not in payload["content"]
+    assert "featured_media" not in payload
+
+
+@pytest.mark.parametrize(
+    "response_body",
+    [
+        b'{"id":1703,"status":"draft"}',
+        b'{"id":1703,"slug":"different-post","status":"draft"}',
+        b'{"id":1703,"slug":"synthetic-draft","slug":"different-post","status":"draft"}',
+    ],
+    ids=("missing-slug", "wrong-slug", "duplicate-slug"),
+)
+def test_create_rejects_missing_wrong_or_duplicate_response_slug_after_one_attempt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, response_body: bytes
+) -> None:
+    _clean_environment(monkeypatch)
+    _install(tmp_path)
+    connection = FakeConnection(FakeResponse(body=response_body))
+
+    with pytest.raises(SelfHostedWordPressFailure) as failure:
+        OfficialSelfHostedWordPressDraftAdapter(
+            tmp_path, connection_factory=FakeFactory(connection)
+        ).attempt(_candidate())
+    assert failure.value.code is SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS
+    assert connection.request_count == 1
+
+
+def test_response_slug_mismatch_leaves_durable_intent_and_never_retries(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _clean_environment(monkeypatch)
+    _install(tmp_path)
+    response_body = b'{"id":1703,"slug":"different-post","status":"draft"}'
+    connection = FakeConnection(FakeResponse(body=response_body))
+    durable = DurableSelfHostedWordPressDraftAdapter(
+        repository_root=tmp_path,
+        attempt_port=OfficialSelfHostedWordPressDraftAdapter(
+            tmp_path, connection_factory=FakeFactory(connection)
+        ),
+    )
+    candidate = _candidate()
+
+    with pytest.raises(SelfHostedWordPressFailure) as first:
+        durable.apply(candidate)
+    assert first.value.code is SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS
+    journal = json.loads(
+        (
+            tmp_path / ".secrets/wordpress-owner-local/state/draft-journal.v1.json"
+        ).read_text(encoding="ascii")
+    )
+    assert journal["pending"]["operation_sha256"] == candidate.operation_sha256
+    assert journal["committed"] is None
+
+    with pytest.raises(SelfHostedWordPressFailure) as repeated:
+        durable.apply(candidate)
+    assert repeated.value.code is SelfHostedWordPressFailureCode.JOURNAL_AMBIGUOUS
+    assert connection.request_count == 1
 
 
 def test_update_is_interface_only_and_rejected_before_credential_or_network(
@@ -231,7 +337,10 @@ def test_update_is_interface_only_and_rejected_before_credential_or_network(
         FakeResponse(body=b"x" * (MAX_RESPONSE_BYTES + 1)),
         FakeResponse(content_encoding="gzip"),
         FakeResponse(transfer_encoding="gzip"),
-        FakeResponse(content_length="28", transfer_encoding="chunked"),
+        FakeResponse(
+            content_length=str(len(_SYNTHETIC_RESPONSE_BODY)),
+            transfer_encoding="chunked",
+        ),
     ],
 )
 def test_redirect_status_media_json_oversize_and_encoding_fail_after_one_attempt(
@@ -276,7 +385,9 @@ def test_adapter_object_is_one_shot_even_after_success(
 ) -> None:
     _clean_environment(monkeypatch)
     _install(tmp_path)
-    connection = FakeConnection(FakeResponse(content_length="28"))
+    connection = FakeConnection(
+        FakeResponse(content_length=str(len(_SYNTHETIC_RESPONSE_BODY)))
+    )
     adapter = OfficialSelfHostedWordPressDraftAdapter(
         tmp_path, connection_factory=FakeFactory(connection)
     )

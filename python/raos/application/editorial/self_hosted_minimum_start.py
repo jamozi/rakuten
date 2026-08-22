@@ -24,6 +24,19 @@ CONTENT_PACKET_RELATIVE_PATH = Path(
     "first-suitcase-comparison.v1.json"
 )
 MAX_CONTENT_PACKET_BYTES = 256 * 1024
+FIRST_ARTICLE_THEME_IMAGE_RELATIVE_PATH = "assets/images/article-suitcase-guide.webp"
+FIRST_ARTICLE_THEME_IMAGE_ALT = (
+    "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景"
+)
+FIRST_ARTICLE_THEME_IMAGE_USAGE = "first article inline lead image"
+FIRST_ARTICLE_SHORTCODE_TAG = "kurashinoshirube_first_article_lead_image"
+FIRST_ARTICLE_THEME_SHORTCODE = f"[{FIRST_ARTICLE_SHORTCODE_TAG}]"
+FIRST_ARTICLE_THEME_SLUG = "kurashinoshirube-child"
+FIRST_ARTICLE_SLUG = "carry-on-suitcase-comparison"
+FIRST_ARTICLE_TARGET_ORIGIN = SELF_HOSTED_WORDPRESS_ORIGIN
+FIRST_ARTICLE_TITLE = (
+    "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ"
+)
 
 _TOP_KEYS = frozenset(
     {
@@ -44,9 +57,20 @@ _ARTICLE_KEYS = frozenset(
         "meta_title",
         "meta_description",
         "freshness_checked_on",
+        "lead_image",
         "content_html",
         "affiliate_slots",
         "structured_data",
+    }
+)
+_LEAD_IMAGE_KEYS = frozenset(
+    {
+        "alt",
+        "delivery",
+        "shortcode",
+        "target_origin",
+        "theme_asset_path",
+        "theme_slug",
     }
 )
 _SLOT_KEYS = frozenset(
@@ -184,7 +208,9 @@ class _ClosedArticleHtmlParser(HTMLParser):
         raise ValueError("article HTML boundary")
 
 
-def _validate_article_html(content: str) -> tuple[tuple[str, ...], tuple[str, ...]]:
+def _validate_article_html(
+    content: str,
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
     try:
         parser = _ClosedArticleHtmlParser()
         parser.feed(content)
@@ -308,13 +334,35 @@ def load_first_article_candidate(
     if frozenset(article) != _ARTICLE_KEYS:
         _fail()
     title = _text(article["title"], maximum=512)
-    content = _text(article["content_html"], maximum=1_000_000)
+    slug = _text(article["slug"], maximum=200)
+    source_content = _text(article["content_html"], maximum=1_000_000)
+    lead_image = article["lead_image"]
+    if (
+        type(lead_image) is not dict
+        or frozenset(cast(dict[str, object], lead_image)) != _LEAD_IMAGE_KEYS
+        or cast(dict[str, object], lead_image)
+        != {
+            "alt": FIRST_ARTICLE_THEME_IMAGE_ALT,
+            "delivery": "FIRST_ARTICLE_THEME_SHORTCODE",
+            "shortcode": FIRST_ARTICLE_THEME_SHORTCODE,
+            "target_origin": FIRST_ARTICLE_TARGET_ORIGIN,
+            "theme_asset_path": FIRST_ARTICLE_THEME_IMAGE_RELATIVE_PATH,
+            "theme_slug": FIRST_ARTICLE_THEME_SLUG,
+        }
+    ):
+        _fail()
+    content = f"{FIRST_ARTICLE_THEME_SHORTCODE}\n{source_content}"
     html_slot_ids, html_slot_comments = _validate_article_html(content)
     if (
-        article["slug"] != "carry-on-suitcase-comparison"
+        title != FIRST_ARTICLE_TITLE
+        or slug != FIRST_ARTICLE_SLUG
         or article["canonical_url"]
-        != f"{SELF_HOSTED_WORDPRESS_ORIGIN}/carry-on-suitcase-comparison/"
+        != f"{FIRST_ARTICLE_TARGET_ORIGIN}/{FIRST_ARTICLE_SLUG}/"
         or article["freshness_checked_on"] != "2026-08-12"
+        or not content.startswith(f"{FIRST_ARTICLE_THEME_SHORTCODE}\n")
+        or content.count(FIRST_ARTICLE_THEME_SHORTCODE) != 1
+        or "[" in source_content
+        or "]" in source_content
         or _FAKE_EXPERIENCE.search(content) is not None
         or "報酬率、価格、ポイント、在庫は評価や掲載順に使いません" not in content
         or "構成と表現整理にはAIを補助的に利用しています" not in content
@@ -393,6 +441,7 @@ def load_first_article_candidate(
     return SelfHostedWordPressDraft.bind(
         operation=operation,
         title=title,
+        slug=slug,
         content_html=content,
         existing_draft_id=existing_draft_id,
     )
@@ -400,6 +449,15 @@ def load_first_article_candidate(
 
 __all__ = [
     "CONTENT_PACKET_RELATIVE_PATH",
+    "FIRST_ARTICLE_THEME_IMAGE_ALT",
+    "FIRST_ARTICLE_THEME_IMAGE_RELATIVE_PATH",
+    "FIRST_ARTICLE_THEME_IMAGE_USAGE",
+    "FIRST_ARTICLE_SHORTCODE_TAG",
+    "FIRST_ARTICLE_SLUG",
+    "FIRST_ARTICLE_THEME_SHORTCODE",
+    "FIRST_ARTICLE_THEME_SLUG",
+    "FIRST_ARTICLE_TARGET_ORIGIN",
+    "FIRST_ARTICLE_TITLE",
     "MAX_CONTENT_PACKET_BYTES",
     "load_first_article_candidate",
 ]

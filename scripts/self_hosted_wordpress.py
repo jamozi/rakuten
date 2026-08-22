@@ -34,6 +34,17 @@ _RUNTIME_FINAL_THEME_IMAGE_RELATIVE_PATHS: Final = (
     "assets/images/article-suitcase-guide.webp",
     "assets/images/home-hero.webp",
 )
+_RUNTIME_FIRST_ARTICLE_IMAGE_RELATIVE_PATH: Final = (
+    "assets/images/article-suitcase-guide.webp"
+)
+_RUNTIME_FIRST_ARTICLE_IMAGE_ALT: Final = (
+    "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景"
+)
+_RUNTIME_FIRST_ARTICLE_IMAGE_USAGE: Final = "first article inline lead image"
+_RUNTIME_EXPECTED_THEME_IMAGE_DELIVERY: Final = {
+    "assets/images/home-hero.webp": "THEME_CSS_BACKGROUND",
+    _RUNTIME_FIRST_ARTICLE_IMAGE_RELATIVE_PATH: "FIRST_ARTICLE_THEME_SHORTCODE",
+}
 _RUNTIME_FINAL_THEME_IMAGE_PATHS: Final = tuple(
     f"{_THEME_RUNTIME_PREFIX}{relative}"
     for relative in _RUNTIME_FINAL_THEME_IMAGE_RELATIVE_PATHS
@@ -50,7 +61,15 @@ _RUNTIME_THEME_MANIFEST_KEYS: Final = frozenset(
     }
 )
 _RUNTIME_THEME_IMAGE_KEYS: Final = frozenset(
-    {"path", "status", "sha256", "alt", "prompt", "usage"}
+    {
+        "path",
+        "status",
+        "sha256",
+        "alt",
+        "delivery",
+        "prompt",
+        "usage",
+    }
 )
 _WEBP_MAX_CHUNKS: Final = 16
 _WEBP_VP8X_ALLOWED_FLAGS: Final = 0x3C
@@ -316,11 +335,20 @@ def _declared_final_theme_runtime_assets(payload: bytes) -> dict[str, str]:
             or path in observed_paths
             or type(image.get("alt")) is not str
             or not cast(str, image["alt"]).strip()
+            or type(image.get("delivery")) is not str
             or type(image.get("prompt")) is not str
             or not cast(str, image["prompt"]).strip()
             or type(image.get("usage")) is not str
             or not cast(str, image["usage"]).strip()
             or status not in {"PENDING_FINAL_ASSET", "FINAL"}
+            or (
+                path == _RUNTIME_FIRST_ARTICLE_IMAGE_RELATIVE_PATH
+                and (
+                    image.get("alt") != _RUNTIME_FIRST_ARTICLE_IMAGE_ALT
+                    or image.get("usage") != _RUNTIME_FIRST_ARTICLE_IMAGE_USAGE
+                )
+            )
+            or image.get("delivery") != _RUNTIME_EXPECTED_THEME_IMAGE_DELIVERY.get(path)
         ):
             _runtime_fail()
         observed_paths.add(path)
@@ -1348,6 +1376,8 @@ def _doctor(
         else verified_theme_source_check(theme_payloads)
     )
     blockers = ["AFFILIATE_SLOTS_PENDING"]
+    if theme["first_article_asset_status"] != "FINAL":
+        blockers.append("FIRST_ARTICLE_IMAGE_PENDING")
     if credential_status != "METADATA_READY":
         blockers.append("WORDPRESS_CREDENTIAL_INSTALL_REQUIRED")
     if theme["package_ready"] is not True:
@@ -1358,6 +1388,7 @@ def _doctor(
         "credential_metadata": credential_status,
         "credential_value_reads": 0,
         "external_writes": 0,
+        "first_article_asset": theme["first_article_asset_status"],
         "network_requests": 0,
         "publication_actions": 0,
         "status": "LOCAL_PREPARATION_REQUIRED" if blockers else "LOCAL_READY",
@@ -1383,7 +1414,19 @@ def _apply_draft(
     repository_root: Path,
     *,
     content_packet_bytes: bytes | None = None,
+    theme_payloads: dict[str, bytes],
 ) -> dict[str, object]:
+    candidate = load_first_article_candidate(
+        repository_root,
+        operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        packet_bytes=content_packet_bytes,
+    )
+    theme = verified_theme_source_check(theme_payloads)
+    if (
+        theme.get("package_ready") is not True
+        or theme.get("first_article_asset_status") != "FINAL"
+    ):
+        _fail(SelfHostedWordPressFailureCode.THEME_ASSET_NOT_READY)
     if (
         OwnerPrivateSelfHostedWordPressCredentialStore(
             repository_root
@@ -1391,11 +1434,6 @@ def _apply_draft(
         != "METADATA_READY"
     ):
         _fail(SelfHostedWordPressFailureCode.CREDENTIAL_METADATA_INVALID)
-    candidate = load_first_article_candidate(
-        repository_root,
-        operation=SelfHostedWordPressOperation.CREATE_DRAFT,
-        packet_bytes=content_packet_bytes,
-    )
     attempt = OfficialSelfHostedWordPressDraftAdapter(repository_root)
     durable = DurableSelfHostedWordPressDraftAdapter(
         repository_root=repository_root,
@@ -1451,7 +1489,11 @@ def main(
         elif arguments.command == "install-credentials":
             result = _install_credentials(root, tty_reader=tty_reader)
         elif arguments.command == "create-draft":
-            result = _apply_draft(root, content_packet_bytes=content_packet_bytes)
+            result = _apply_draft(
+                root,
+                content_packet_bytes=content_packet_bytes,
+                theme_payloads=theme_payloads,
+            )
         else:
             _fail(SelfHostedWordPressFailureCode.OPERATION_NOT_ALLOWED)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))

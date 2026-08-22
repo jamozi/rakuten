@@ -17,6 +17,11 @@ publication, release, or Production evidence.
   article packet. It is bound to the exact origin, draft-only authority, three
   pending official Rakuten affiliate slots, editorial/affiliate disclosure,
   source records, freshness caveats, and a closed SEO/structured-data policy.
+  Its generated review body starts with exactly one packet-owned
+  `[kurashinoshirube_first_article_lead_image]` token. The packet's source
+  `content_html` may contain neither a raw image nor any shortcode; this
+  preserves exact reviewed body bytes while granting no media-upload or
+  `featured_media` capability.
 - `theme/kurashinoshirube-child/` is the Twenty Twenty-Five child-theme source.
   It contains presentation only: no tracking, remote font/script/image load,
   publication, upload, taxonomy, plugin activation, or generic HTTP behavior.
@@ -27,7 +32,14 @@ publication, release, or Production evidence.
   `header` and `footer` landmarks; their part-root groups remain presentation
   `div` elements so the rendered page does not nest duplicate landmarks.
 - `theme/kurashinoshirube-child/raos-assets.v1.json` owns the two final image
-  requirements and their closed prompts. Both images intentionally remain
+  requirements, closed delivery modes and prompts. The suitcase-guide image is
+  delivered only by the first-article shortcode. Its handler accepts no
+  attributes or content, requires the exact raw article title, exact post slug,
+  and active child theme, derives the URI from
+  `get_stylesheet_directory_uri()`, and refuses a
+  non-HTTPS/different-host/unsafe theme path or a missing, unreadable, or
+  symlinked local asset. It does not guess a `/wp-content` prefix. Both images
+  intentionally remain
   `PENDING_FINAL_ASSET`; no image provider was called by this slice.
   A future `FINAL` byte stream must also satisfy the closed, bounded static
   WebP profile: exact RIFF length, complete chunks and odd padding, one
@@ -67,8 +79,12 @@ make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-source-check
 ```
 
 The expected result in this slice is `SOURCE_VALID` with
-`package_ready=false`. Package and package-check commands fail closed until the
-final asset gate is completed.
+`package_ready=false` and the first article asset reported as
+`PENDING_FINAL_ASSET`. Package and package-check commands fail closed until the
+final asset gate is completed. `create-draft` applies the same verified theme
+check before credential metadata or network construction; it cannot proceed
+until both required images are `FINAL` and the deterministic theme package is
+ready.
 
 The footer contrast contract closes the expected foreground, background,
 focus-outline and custom-property declarations, then binds the complete
@@ -160,6 +176,16 @@ The implementation keeps `domain <- application <- adapters/framework`:
   and performs no network operation. Pending, ambiguous, mismatched, or
   tampered state fails closed.
 
+The create request has exactly `title`, the fixed `slug`, the reviewed
+generated `content`, and `status="draft"`. The slug is included in the content
+binding hash, and the sole response must return that exact slug; missing or
+different response state is ambiguous and is never retried. The image is not an attachment and no
+`featured_media` field is sent. WordPress expands the exact leading shortcode
+through the active reviewed child theme. Theme installation/activation and the
+subsequent human draft preview must confirm the actual same-origin image,
+exact alt text and layout; local package readiness does not attest to the live
+theme or rendered URL.
+
 Credentials are accepted only through hidden `/dev/tty` input and stored at
 `.secrets/wordpress-owner-local/credentials.v1.json`. The schema is exact and
 the path requires owner/current-UID, regular non-symlink storage with `0700`
@@ -185,6 +211,8 @@ This slice does not add or replace a root Make target.
   `rel="sponsored nofollow"`; this slice supplies no fabricated link.
 - Two final editorial WebP assets remain pending. Placeholder or synthetic
   test bytes do not satisfy package readiness.
+- The child theme is not installed or activated by this slice, and no live
+  draft preview has confirmed the shortcode-rendered first-article image.
 - Live read-only credential proof, draft creation, theme activation,
   consent/analytics activation, human review/publication, formal
   TST-021/TST-022/TST-032, staging, release, and Production are not executed.

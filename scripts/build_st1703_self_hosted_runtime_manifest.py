@@ -90,6 +90,15 @@ FINAL_THEME_IMAGE_RELATIVE_PATHS: Final = (
     "assets/images/article-suitcase-guide.webp",
     "assets/images/home-hero.webp",
 )
+FIRST_ARTICLE_IMAGE_RELATIVE_PATH: Final = "assets/images/article-suitcase-guide.webp"
+FIRST_ARTICLE_IMAGE_ALT: Final = (
+    "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景"
+)
+FIRST_ARTICLE_IMAGE_USAGE: Final = "first article inline lead image"
+EXPECTED_THEME_IMAGE_DELIVERY: Final = {
+    "assets/images/home-hero.webp": "THEME_CSS_BACKGROUND",
+    FIRST_ARTICLE_IMAGE_RELATIVE_PATH: "FIRST_ARTICLE_THEME_SHORTCODE",
+}
 FINAL_THEME_IMAGE_RUNTIME_PATHS: Final = tuple(
     f"{THEME_RUNTIME_PREFIX}{relative}" for relative in FINAL_THEME_IMAGE_RELATIVE_PATHS
 )
@@ -105,7 +114,15 @@ _THEME_MANIFEST_KEYS: Final = frozenset(
     }
 )
 _THEME_IMAGE_KEYS: Final = frozenset(
-    {"path", "status", "sha256", "alt", "prompt", "usage"}
+    {
+        "path",
+        "status",
+        "sha256",
+        "alt",
+        "delivery",
+        "prompt",
+        "usage",
+    }
 )
 _WEBP_MAX_CHUNKS: Final = 16
 _WEBP_VP8X_ALLOWED_FLAGS: Final = 0x3C
@@ -319,11 +336,20 @@ def _declared_final_theme_assets(payload: bytes) -> dict[str, str]:
             or path in observed_paths
             or type(image.get("alt")) is not str
             or not cast(str, image["alt"]).strip()
+            or type(image.get("delivery")) is not str
             or type(image.get("prompt")) is not str
             or not cast(str, image["prompt"]).strip()
             or type(image.get("usage")) is not str
             or not cast(str, image["usage"]).strip()
             or status not in {"PENDING_FINAL_ASSET", "FINAL"}
+            or (
+                path == FIRST_ARTICLE_IMAGE_RELATIVE_PATH
+                and (
+                    image.get("alt") != FIRST_ARTICLE_IMAGE_ALT
+                    or image.get("usage") != FIRST_ARTICLE_IMAGE_USAGE
+                )
+            )
+            or image.get("delivery") != EXPECTED_THEME_IMAGE_DELIVERY.get(path)
         ):
             _fail()
         observed_paths.add(path)

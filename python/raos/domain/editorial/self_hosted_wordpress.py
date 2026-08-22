@@ -19,8 +19,10 @@ SELF_HOSTED_WORDPRESS_ORIGIN = "https://kurashinoshirube.com"
 SELF_HOSTED_WORDPRESS_STATUS = "draft"
 
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
+_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z", re.ASCII)
 _MAX_DRAFT_ID = (1 << 63) - 1
 _MAX_TITLE_CHARS = 512
+_MAX_SLUG_CHARS = 200
 _MAX_CONTENT_BYTES = 1_000_000
 
 
@@ -38,6 +40,7 @@ class SelfHostedWordPressDisposition(StrEnum):
 class SelfHostedWordPressFailureCode(StrEnum):
     INVALID_ARGUMENT = "INVALID_ARGUMENT"
     CONTENT_PACKET_INVALID = "CONTENT_PACKET_INVALID"
+    THEME_ASSET_NOT_READY = "THEME_ASSET_NOT_READY"
     CREDENTIAL_METADATA_INVALID = "CREDENTIAL_METADATA_INVALID"
     CREDENTIAL_STORE_INVALID = "CREDENTIAL_STORE_INVALID"
     CREDENTIAL_INSTALL_REFUSED = "CREDENTIAL_INSTALL_REFUSED"
@@ -127,6 +130,7 @@ def _require_sha256(value: object) -> str:
 class SelfHostedWordPressDraft(_RedactedValue):
     operation: SelfHostedWordPressOperation
     title: str
+    slug: str
     content_html: str
     existing_draft_id: int | None
     content_sha256: str
@@ -144,11 +148,15 @@ class SelfHostedWordPressDraft(_RedactedValue):
             )
             or type(self.content_html) is not str
             or not self.content_html.strip()
+            or type(self.slug) is not str
+            or not 1 <= len(self.slug) <= _MAX_SLUG_CHARS
+            or _SLUG.fullmatch(self.slug) is None
         ):
             fail_self_hosted_wordpress()
         try:
             content_size = len(self.content_html.encode("utf-8", errors="strict"))
             self.title.encode("utf-8", errors="strict")
+            self.slug.encode("ascii", errors="strict")
         except UnicodeError:
             fail_self_hosted_wordpress()
         if not 1 <= content_size <= _MAX_CONTENT_BYTES or any(
@@ -179,6 +187,7 @@ class SelfHostedWordPressDraft(_RedactedValue):
         *,
         operation: SelfHostedWordPressOperation,
         title: str,
+        slug: str,
         content_html: str,
         existing_draft_id: int | None = None,
     ) -> SelfHostedWordPressDraft:
@@ -186,6 +195,7 @@ class SelfHostedWordPressDraft(_RedactedValue):
             {
                 "content_html": content_html,
                 "origin": SELF_HOSTED_WORDPRESS_ORIGIN,
+                "slug": slug,
                 "status": SELF_HOSTED_WORDPRESS_STATUS,
                 "title": title,
             }
@@ -200,6 +210,7 @@ class SelfHostedWordPressDraft(_RedactedValue):
         return cls(
             operation=operation,
             title=title,
+            slug=slug,
             content_html=content_html,
             existing_draft_id=existing_draft_id,
             content_sha256=content_sha256,
@@ -211,6 +222,7 @@ class SelfHostedWordPressDraft(_RedactedValue):
             {
                 "content_html": self.content_html,
                 "origin": SELF_HOSTED_WORDPRESS_ORIGIN,
+                "slug": self.slug,
                 "status": SELF_HOSTED_WORDPRESS_STATUS,
                 "title": self.title,
             }

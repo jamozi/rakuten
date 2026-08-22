@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import stat
 import subprocess
@@ -285,6 +286,7 @@ def test_real_source_is_valid_but_final_assets_block_package() -> None:
     result = theme.source_check()
     assert result == {
         "asset_status": "PENDING_FINAL_ASSETS",
+        "first_article_asset_status": "PENDING_FINAL_ASSET",
         "network_requests": 0,
         "package_ready": False,
         "pending_asset_count": 2,
@@ -294,6 +296,166 @@ def test_real_source_is_valid_but_final_assets_block_package() -> None:
     }
     with pytest.raises(theme.ThemeBuildFailure, match="THEME_FINAL_ASSET_MISSING"):
         theme.package_bytes()
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "code"),
+    [
+        ("alt", "", "THEME_MANIFEST_INVALID"),
+        ("alt", "別の説明", "THEME_ARTICLE_ASSET_BINDING_INVALID"),
+        ("usage", "site-wide image", "THEME_ARTICLE_ASSET_BINDING_INVALID"),
+        ("delivery", "WORDPRESS_MEDIA_UPLOAD", "THEME_ASSET_DELIVERY_INVALID"),
+        (
+            "path",
+            "assets/images/article-suitcase-guide-2.webp",
+            "THEME_ASSET_DELIVERY_INVALID",
+        ),
+    ],
+)
+def test_article_asset_manifest_binding_rejects_alt_delivery_usage_or_path_drift(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    field: str,
+    value: str,
+    code: str,
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    manifest = _manifest(root)
+    article_images = [
+        item
+        for item in manifest["required_images"]
+        if isinstance(item, dict)
+        and item.get("path") == theme.FIRST_ARTICLE_IMAGE_RELATIVE_PATH
+    ]
+    assert len(article_images) == 1
+    article_images[0][field] = value
+    _write_manifest(root, manifest)
+
+    with pytest.raises(theme.ThemeBuildFailure, match=code):
+        theme.source_check()
+
+
+def test_article_asset_manifest_rejects_missing_or_duplicated_record(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    manifest = _manifest(root)
+    images = manifest["required_images"]
+    assert isinstance(images, list) and len(images) == 2
+    article = next(
+        item
+        for item in images
+        if isinstance(item, dict)
+        and item.get("path") == theme.FIRST_ARTICLE_IMAGE_RELATIVE_PATH
+    )
+    images.remove(article)
+    _write_manifest(root, manifest)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_MANIFEST_INVALID"):
+        theme.source_check()
+
+    images.append(article)
+    images.append(dict(article))
+    _write_manifest(root, manifest)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_MANIFEST_INVALID"):
+        theme.source_check()
+
+
+def test_first_article_shortcode_renderer_is_same_origin_article_and_path_bound() -> (
+    None
+):
+    functions = (theme.THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    single = (theme.THEME_ROOT / "templates/single.html").read_text(encoding="utf-8")
+
+    assert hashlib.sha256(functions.encode("utf-8")).hexdigest() == (
+        theme.EXPECTED_THEME_FUNCTIONS_SHA256
+    )
+    assert functions.count("kurashinoshirube_first_article_lead_image") == 2
+    assert "$attributes !== array()" in functions
+    assert "$content !== null" in functions
+    assert "$tag !== 'kurashinoshirube_first_article_lead_image'" in functions
+    assert "! is_singular('post')" in functions
+    assert "get_post_field('post_title', get_the_ID(), 'raw')" in functions
+    assert theme.FIRST_ARTICLE_TITLE in functions
+    assert "get_post_field('post_name', get_the_ID(), 'raw')" in functions
+    assert theme.FIRST_ARTICLE_SLUG in functions
+    assert "get_stylesheet() !== 'kurashinoshirube-child'" in functions
+    assert "get_stylesheet_directory()" in functions
+    assert "is_link($image_path)" in functions
+    assert "is_file($image_path)" in functions
+    assert "is_readable($image_path)" in functions
+    assert "get_stylesheet_directory_uri()" in functions
+    assert "($uri['scheme'] ?? null) !== 'https'" in functions
+    assert "($uri['host'] ?? null) !== 'kurashinoshirube.com'" in functions
+    assert "array('port', 'user', 'pass', 'query', 'fragment')" in functions
+    assert "(?:[A-Za-z0-9][A-Za-z0-9._-]*/)*kurashinoshirube-child" in functions
+    assert "/assets/images/article-suitcase-guide.webp" in functions
+    assert theme.FIRST_ARTICLE_IMAGE_ALT in functions
+    assert functions.count("<img src=") == 1
+    assert "esc_url($image_uri)" in functions
+    assert "esc_attr($alt)" in functions
+    assert "https://kurashinoshirube.com/wp-content" not in functions
+    assert "featured_media" not in functions
+    assert "media_handle" not in functions
+    assert "wp_insert_attachment" not in functions
+    assert "add_filter" not in functions
+    assert "wp:post-featured-image" not in single
+    assert single.count("<!-- wp:post-content ") == 1
+
+
+@pytest.mark.parametrize(
+    ("path", "accepted"),
+    [
+        ("/wp-content/themes/kurashinoshirube-child", True),
+        ("/custom-content/themes/kurashinoshirube-child", True),
+        ("/kurashinoshirube-child", True),
+        ("/wp-content/themes/other-child", False),
+        ("/wp-content/themes/kurashinoshirube-child/extra", False),
+        ("/wp-content//themes/kurashinoshirube-child", False),
+        ("/wp-content/../themes/kurashinoshirube-child", False),
+        ("/wp-content/%2e%2e/themes/kurashinoshirube-child", False),
+        ("/wp-content\\themes\\kurashinoshirube-child", False),
+        ("", False),
+    ],
+)
+def test_shortcode_stylesheet_path_profile_rejects_unsafe_subpaths(
+    path: str, accepted: bool
+) -> None:
+    profile = re.compile(r"/(?:[A-Za-z0-9][A-Za-z0-9._-]*/)*kurashinoshirube-child\Z")
+    assert (profile.fullmatch(path) is not None) is accepted
+
+
+@pytest.mark.parametrize(
+    ("before", "after"),
+    [
+        ("($uri['scheme'] ?? null) !== 'https'", "($uri['scheme'] ?? null) !== 'http'"),
+        (
+            "($uri['host'] ?? null) !== 'kurashinoshirube.com'",
+            "($uri['host'] ?? null) !== 'foreign.example.invalid'",
+        ),
+        (theme.FIRST_ARTICLE_TITLE, "無関係な記事"),
+        (theme.FIRST_ARTICLE_SLUG, "different-post"),
+        ("kurashinoshirube-child", "other-child"),
+        ("article-suitcase-guide.webp", "home-hero.webp"),
+        (theme.FIRST_ARTICLE_IMAGE_ALT, "説明なし"),
+    ],
+    ids=("scheme", "origin", "title", "slug", "theme", "asset-path", "alt"),
+)
+def test_source_check_rejects_shortcode_origin_article_path_or_alt_drift(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    before: str,
+    after: str,
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    functions = root / "functions.php"
+    source = functions.read_text(encoding="utf-8")
+    assert source.count(before) >= 1
+    functions.write_text(source.replace(before, after, 1), encoding="utf-8")
+
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_ARTICLE_ASSET_BINDING_INVALID"
+    ):
+        theme.source_check()
 
 
 def test_reveal_is_progressive_enhancement_with_failure_and_motion_fallbacks() -> None:
@@ -462,6 +624,7 @@ def test_complete_fixture_packages_deterministically_and_checks_read_only(
     }
     verified = theme.source_check_from_verified_files(verified_payloads)
     assert verified["asset_status"] == "FINAL"
+    assert verified["first_article_asset_status"] == "FINAL"
     assert verified["package_ready"] is True
     assert verified["pending_asset_count"] == 0
 

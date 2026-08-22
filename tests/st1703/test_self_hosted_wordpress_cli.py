@@ -81,6 +81,7 @@ def test_doctor_is_metadata_only_and_has_zero_network_or_external_writes(
     assert result == {
         "blockers": [
             "AFFILIATE_SLOTS_PENDING",
+            "FIRST_ARTICLE_IMAGE_PENDING",
             "WORDPRESS_CREDENTIAL_INSTALL_REQUIRED",
             "FINAL_THEME_ASSETS_MISSING",
         ],
@@ -88,6 +89,7 @@ def test_doctor_is_metadata_only_and_has_zero_network_or_external_writes(
         "credential_metadata": "MISSING",
         "credential_value_reads": 0,
         "external_writes": 0,
+        "first_article_asset": "PENDING_FINAL_ASSET",
         "network_requests": 0,
         "publication_actions": 0,
         "status": "LOCAL_PREPARATION_REQUIRED",
@@ -131,6 +133,168 @@ def test_main_projects_verified_final_webp_bytes_into_theme_doctor(
     assert cli.main(["doctor"], repository_root=tmp_path) == 0
     assert observed == {image_path: image_bytes}
     assert json.loads(capsys.readouterr().out) == {"status": "SYNTHETIC_LOCAL_ONLY"}
+
+
+def test_create_draft_rejects_pending_article_asset_before_credentials_or_network(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    calls: list[str] = []
+
+    monkeypatch.setattr(
+        cli,
+        "load_first_article_candidate",
+        lambda *args, **kwargs: object(),
+    )
+    monkeypatch.setattr(
+        cli,
+        "verified_theme_source_check",
+        lambda payloads: {
+            "first_article_asset_status": "PENDING_FINAL_ASSET",
+            "package_ready": False,
+        },
+    )
+    monkeypatch.setattr(
+        cli.OwnerPrivateSelfHostedWordPressCredentialStore,
+        "metadata_status",
+        lambda _store: (_ for _ in ()).throw(
+            AssertionError("pending image reached credential metadata")
+        ),
+    )
+
+    class ForbiddenTransport:
+        def __init__(self, *args: object, **kwargs: object) -> None:
+            del args, kwargs
+            calls.append("network")
+            raise AssertionError("pending image constructed transport")
+
+    monkeypatch.setattr(
+        cli, "OfficialSelfHostedWordPressDraftAdapter", ForbiddenTransport
+    )
+    with pytest.raises(cli.SelfHostedWordPressFailure) as failure:
+        cli._apply_draft(
+            tmp_path,
+            content_packet_bytes=b"reviewed-packet",
+            theme_payloads={"raos-assets.v1.json": b"reviewed-theme"},
+        )
+    assert (
+        failure.value.code is cli.SelfHostedWordPressFailureCode.THEME_ASSET_NOT_READY
+    )
+    assert calls == []
+    assert not (tmp_path / ".secrets").exists()
+
+
+def test_create_draft_accepts_only_final_package_ready_article_asset_before_attempt(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    calls: list[str] = []
+    candidate = object()
+    attempt = object()
+    receipt = object()
+
+    def load_candidate(*args: object, **kwargs: object) -> object:
+        del args, kwargs
+        calls.append("candidate")
+        return candidate
+
+    def check_theme(payloads: dict[str, bytes]) -> dict[str, object]:
+        assert payloads == {"raos-assets.v1.json": b"reviewed-theme"}
+        calls.append("theme")
+        return {
+            "first_article_asset_status": "FINAL",
+            "package_ready": True,
+        }
+
+    def metadata_status(_store: object) -> str:
+        calls.append("credential-metadata")
+        return "METADATA_READY"
+
+    def make_attempt(root: Path) -> object:
+        assert root == tmp_path
+        calls.append("attempt-adapter")
+        return attempt
+
+    class FakeDurable:
+        def __init__(self, *, repository_root: Path, attempt_port: object) -> None:
+            assert repository_root == tmp_path
+            assert attempt_port is attempt
+            calls.append("durable-adapter")
+
+        def apply(self, observed: object) -> object:
+            assert observed is candidate
+            calls.append("apply")
+            return receipt
+
+    monkeypatch.setattr(cli, "load_first_article_candidate", load_candidate)
+    monkeypatch.setattr(cli, "verified_theme_source_check", check_theme)
+    monkeypatch.setattr(
+        cli.OwnerPrivateSelfHostedWordPressCredentialStore,
+        "metadata_status",
+        metadata_status,
+    )
+    monkeypatch.setattr(cli, "OfficialSelfHostedWordPressDraftAdapter", make_attempt)
+    monkeypatch.setattr(cli, "DurableSelfHostedWordPressDraftAdapter", FakeDurable)
+    monkeypatch.setattr(
+        cli,
+        "_receipt_output",
+        lambda observed: {"receipt": "reviewed"} if observed is receipt else {},
+    )
+
+    assert cli._apply_draft(
+        tmp_path,
+        content_packet_bytes=b"reviewed-packet",
+        theme_payloads={"raos-assets.v1.json": b"reviewed-theme"},
+    ) == {"receipt": "reviewed"}
+    assert calls == [
+        "candidate",
+        "theme",
+        "credential-metadata",
+        "attempt-adapter",
+        "durable-adapter",
+        "apply",
+    ]
+
+
+def test_main_projects_verified_theme_bytes_into_create_preflight(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    image_path = f"{cli._THEME_RUNTIME_PREFIX}assets/images/home-hero.webp"
+    monkeypatch.setattr(cli, "_runtime_authorized", True)
+    monkeypatch.setattr(
+        cli,
+        "_verified_runtime_bytes",
+        {
+            cli._CONTENT_PACKET_RUNTIME_PATH: b"reviewed-packet",
+            image_path: VALID_WEBP_VP8,
+        },
+    )
+    monkeypatch.setattr(cli, "_physical_repository_root", lambda root: root)
+    observed: dict[str, object] = {}
+
+    def apply_draft(
+        repository_root: Path,
+        *,
+        content_packet_bytes: bytes | None,
+        theme_payloads: dict[str, bytes],
+    ) -> dict[str, object]:
+        observed.update(
+            {
+                "repository_root": repository_root,
+                "content_packet_bytes": content_packet_bytes,
+                "theme_payloads": theme_payloads,
+            }
+        )
+        return {"status": "SYNTHETIC_DRAFT_ONLY"}
+
+    monkeypatch.setattr(cli, "_apply_draft", apply_draft)
+    assert cli.main(["create-draft"], repository_root=tmp_path) == 0
+    assert observed == {
+        "repository_root": tmp_path,
+        "content_packet_bytes": b"reviewed-packet",
+        "theme_payloads": {"assets/images/home-hero.webp": VALID_WEBP_VP8},
+    }
+    assert json.loads(capsys.readouterr().out) == {"status": "SYNTHETIC_DRAFT_ONLY"}
 
 
 def test_doctor_rejects_hash_bound_structurally_invalid_final_webp(

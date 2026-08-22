@@ -98,6 +98,8 @@ launch are:
 
 - `AFFILIATE_SLOTS_PENDING` until all three official Rakuten destinations are
   separately completed and validated;
+- `FIRST_ARTICLE_IMAGE_PENDING` until the exact suitcase-guide manifest record
+  is `FINAL` and its reviewed WebP bytes are present;
 - `FINAL_THEME_ASSETS_MISSING` until both final editorial WebP files are
   generated under the separate external/cost gate and hash-bound;
 - `WORDPRESS_CREDENTIAL_INSTALL_REQUIRED` until the owner performs the hidden
@@ -168,7 +170,9 @@ not exist.
 The package generator is deterministic and the check is no-write. Never edit
 the generated zip manually. Theme installation and activation remain manual
 operator actions after visual/mobile/accessibility review; neither command
-contacts WordPress.
+contacts WordPress. Install and activate the exact package before the separate
+draft-create operation, because the first-article image is rendered by that
+child theme rather than uploaded to the media library.
 
 The footer-specific link states override the global link color on the dark
 footer: paper for normal/visited, light warm for hover/active/focus-visible,
@@ -219,6 +223,8 @@ The owned packet is
 `changes/st-1703/self-hosted-minimum-start-v1/content/first-suitcase-comparison.v1.json`.
 It contains:
 
+- one exact lead-image binding whose generated body begins with
+  `[kurashinoshirube_first_article_lead_image]` exactly once;
 - sourced facts and separately labeled editorial interpretation;
 - no claimed first-person purchase/use experience;
 - affiliate and AI-assistance/editorial-policy disclosures;
@@ -236,20 +242,44 @@ separately reviewed completion step; this slice intentionally does not invent
 them. A review draft may contain the visible pending markers, but it is not
 publication-ready while any marker remains.
 
+The lead-image token is part of the exact content hash sent to WordPress. The
+packet validator rejects a missing, moved/duplicated, attributed, closing, or
+additional shortcode and continues to reject raw `<img>` markup. The theme
+handler accepts no caller-selected URL/path/alt. It renders only for the exact
+raw first-article title and exact `carry-on-suitcase-comparison` post slug while
+the exact child theme is active, derives the URL
+from WordPress's configured stylesheet directory, requires HTTPS and the exact
+`kurashinoshirube.com` host, and appends only
+`assets/images/article-suitcase-guide.webp` with the reviewed alt text. A
+different article/theme/origin, unsafe content-directory path, missing file, or
+symlink produces no image. There is no media upload, attachment ID,
+`featured_media`, or assumed `/wp-content` public prefix.
+
 ## 5. Draft create — separate owner operation
 
-Only after the owner separately decides to contact the exact live site, no
-other writer is active, credential metadata is trusted, and journal state has
-been reviewed, the fixed commands are:
+Only after both manifest assets are `FINAL`, deterministic package/check has
+passed, the exact child theme has been manually installed and activated, the
+owner separately decides to contact the exact live site, no other writer is
+active, credential metadata is trusted, and journal state has been reviewed,
+the fixed command is:
 
 ```bash
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile create-draft
 ```
 
 Create uses `POST` only because that is the official Posts REST draft
-operation. The request body has exactly title, content, and
-`status="draft"`. The transport attempts once, follows no redirect, inherits
+operation. The request body has exactly title, fixed slug, reviewed content,
+and `status="draft"`. The slug participates in the content hash, and the
+response must return the same exact slug. A missing/different/duplicate slug is
+an ambiguous post-write outcome and is never retried. The transport attempts
+once, follows no redirect, inherits
 no proxy, and performs no automatic retry or path fallback.
+
+Before credential metadata or transport construction, create revalidates the
+reviewed content bytes and the verified theme inventory, including the
+first-article asset's `FINAL` status and complete package readiness. This is a
+local byte/readiness gate only; it does not prove that the live theme is active
+or that WordPress rendered the shortcode.
 
 Recovery rules are strict:
 
@@ -278,6 +308,11 @@ must review in WordPress at minimum:
 
 - the exact target site, `draft` state, title/body, disclosures and three
   destinations;
+- the suitcase guide image is visible above the reviewed body, its actual
+  `src` is HTTPS and same-origin under the active
+  `kurashinoshirube-child` stylesheet directory, and its alt text exactly
+  matches the packet/manifest; absence or drift is corrected manually in the
+  dashboard without replaying the create request;
 - source accuracy/freshness and the separation of facts from editorial
   interpretation;
 - canonical URL, meta title/description, visible breadcrumbs and only

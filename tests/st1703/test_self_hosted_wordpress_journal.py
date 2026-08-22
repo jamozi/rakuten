@@ -33,6 +33,7 @@ def _candidate(
     return SelfHostedWordPressDraft.bind(
         operation=operation,
         title="Bound draft",
+        slug="bound-draft",
         content_html=content,
         existing_draft_id=draft_id,
     )
@@ -101,6 +102,7 @@ def test_intent_is_fsynced_before_attempt_and_commit_replays_without_attempt(
     assert state["committed"]["draft_id"] == 1703
     assert "content_html" not in state["committed"]
     assert "title" not in state["committed"]
+    assert "slug" not in state["committed"]
 
 
 def test_failed_attempt_leaves_pending_and_exact_repeat_never_resends(

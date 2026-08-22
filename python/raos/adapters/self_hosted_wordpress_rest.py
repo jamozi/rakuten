@@ -3,14 +3,18 @@
 from __future__ import annotations
 
 import json
-from typing import NoReturn, final
+from typing import NoReturn, cast, final
 
 from raos.adapters.wordpress_rest import (
     OfficialWordPressRestRequestBuilder,
     WordPressDraftResponseMetadata,
     WordPressRestRequest,
 )
-from raos.domain.editorial.market_learning_pilot import MarketLearningPilotFailure
+from raos.domain.editorial.market_learning_pilot import (
+    MarketLearningPilotFailure,
+    MarketLearningPilotFailureCode,
+    fail_market_learning_pilot,
+)
 from raos.domain.editorial.self_hosted_wordpress import (
     SELF_HOSTED_WORDPRESS_ORIGIN,
     SELF_HOSTED_WORDPRESS_STATUS,
@@ -27,6 +31,26 @@ _CREATE_ROUTE = "/wp/v2/posts"
 
 def _fail() -> NoReturn:
     fail_self_hosted_wordpress(SelfHostedWordPressFailureCode.REQUEST_INVALID)
+
+
+def _response_fail() -> NoReturn:
+    fail_market_learning_pilot(
+        MarketLearningPilotFailureCode.WORDPRESS_RESPONSE_INVALID
+    )
+
+
+def _response_pairs(pairs: list[tuple[object, object]]) -> dict[str, object]:
+    value: dict[str, object] = {}
+    for key, item in pairs:
+        if type(key) is not str or key in value:
+            _response_fail()
+        value[key] = item
+    return value
+
+
+def _reject_response_constant(value: str) -> NoReturn:
+    del value
+    _response_fail()
 
 
 @final
@@ -55,6 +79,7 @@ class SelfHostedWordPressRestRequestBuilder:
             body_json = json.dumps(
                 {
                     "content": candidate.content_html,
+                    "slug": candidate.slug,
                     "status": SELF_HOSTED_WORDPRESS_STATUS,
                     "title": candidate.title,
                 },
@@ -85,11 +110,30 @@ class SelfHostedWordPressRestRequestBuilder:
         http_status: int,
         body: bytes,
     ) -> WordPressDraftResponseMetadata:
-        return self._validator.validate_response(
+        metadata = self._validator.validate_response(
             request=request,
             http_status=http_status,
             body=body,
         )
+        try:
+            request_payload = json.loads(request.body_json)
+            response_payload = json.loads(
+                body.decode("utf-8", errors="strict"),
+                object_pairs_hook=_response_pairs,
+                parse_constant=_reject_response_constant,
+            )
+        except UnicodeError, ValueError, TypeError, RecursionError:
+            _response_fail()
+        if (
+            type(request_payload) is not dict
+            or type(response_payload) is not dict
+            or frozenset(cast(dict[str, object], request_payload))
+            != frozenset({"content", "slug", "status", "title"})
+            or cast(dict[str, object], response_payload).get("slug")
+            != cast(dict[str, object], request_payload).get("slug")
+        ):
+            _response_fail()
+        return metadata
 
 
 __all__ = ["SelfHostedWordPressRestRequestBuilder"]

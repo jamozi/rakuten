@@ -39,6 +39,14 @@ DESIGN_HANDOFF_V1:
       automatic_publication: DISABLED
       operational_draft_capability: CREATE_DRAFT_ONLY
       update_interface_state: LOCAL_INTERFACE_ONLY_ACTIVATION_DISABLED
+    first_article_image_delivery:
+      mode: FIRST_ARTICLE_THEME_SHORTCODE
+      shortcode: "[kurashinoshirube_first_article_lead_image]"
+      theme_slug: kurashinoshirube-child
+      theme_relative_path: assets/images/article-suitcase-guide.webp
+      media_upload: DISABLED
+      featured_media: DISABLED
+      live_preview: HUMAN_GATE_AFTER_DRAFT_CREATE
   rationale:
     - 既存 self-hosted site を使い、AWSを初回市場学習の前提から外す
     - WordPress Application Password と公式 Posts REST API を固定境界で使う
@@ -51,6 +59,10 @@ DESIGN_HANDOFF_V1:
       reason: publish/delete/media/theme/plugin capabilityを不必要に広げる
     - option: OpenAI APIによる初回5記事の自動量産
       reason: 初期校正前の費用と品質リスクを増やす
+    - option: article imageのWordPress media uploadまたはfeatured_media指定
+      reason: 新しいlive write authorityを増やさず、review済みchild-theme assetを初回記事だけにbindできる
+    - option: /wp-content/themes配下のpublic URLをcontentへ固定
+      reason: WordPress content directoryはこのlocal sliceで固定・live確認されていない
   constraints:
     - exact originは https://kurashinoshirube.com のみ
     - 外向きWordPress capabilityは post create、status=draft のみ
@@ -72,6 +84,11 @@ DESIGN_HANDOFF_V1:
     - theme package writeはheld directoryをexact fixed pathへterminal rebindし、atomic replaceとparent fsync後にZIPをbounded no-follow stable reopenしてintended bytesとの一致を確認する
     - footer linkのnormal、visited、hover、active、focus-visible色とfocus outlineはdark footerおよびfilled button背景に対してWCAG AA以上を維持し、foreground/background/outline/custom-property inventoryとexact reviewed stylesheet bytesで未審査のcascade、opacity、browser-specific text-fill overrideを拒否する
     - content publication、theme/plugin activation、media upload、taxonomy mutationを実装しない
+    - 初回記事候補はexact shortcodeをbody先頭に1回だけ生成し、source packet内のraw img、追加shortcode、属性付き・closing・duplicate tokenを拒否する
+    - shortcode rendererはexact raw article titleとrequest/responseで一致確認したexact post slug、active child-theme slug、https、exact host、userinfo/port/query/fragmentなし、safe child-theme URI path、regular readable non-symlink image pathに閉じる
+    - create requestはtitle、slug、reviewed content、status=draftの4 fieldだけとし、slugはcontent hashへ含め、responseの同じexact slugをsole attempt後に必須とする
+    - article imageはmanifestのexact path、alt、delivery、usageと一致し、article assetを含む全required imageがFINALでpackage-readyになるまでcreate-draftをcredential metadataとnetwork constructionより前に拒否する
+    - child-theme installation/activationとdraft preview上のactual image、same-origin src、exact alt確認はhuman operator gateに残す
     - AI画像は別の費用・外部操作gateで生成し、完成asset欠落時はtheme package readinessを拒否
   security_and_approval_gates:
     local_repository_implementation: AUTHORIZED_REVERSIBLE
@@ -103,6 +120,9 @@ DESIGN_HANDOFF_V1:
     - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
     - final image and affiliate-slot absence remains visible and fail closed
     - manifest-declared FINAL WebP bytes are included in the reviewed runtime payload supplied to offline doctor
+    - reviewed first-article body bytes contain exactly one leading image shortcode and no raw image、media-upload、or featured-media capability
+    - first-article shortcode resolves only the fixed manifest asset through the active exact child theme and returns no image for a different title or slug、origin、theme、unsafe path、missing file、or symlink
+    - draft create remains blocked before credential metadata and network until the article image and complete theme package are final; live rendered visibility remains a human preview gate
     - hash-boundでもtruncated、RIFF/chunk size不一致、invalid VP8/VP8L/VP8X、animation、unknown/duplicate/order drift、trailingまたはinvalid odd paddingのWebPはpackage-ready前かつRAOS import前に拒否される
     - first article separates sourced facts from editorial interpretation and fabricates no experience
   required_test_evidence:
@@ -112,6 +132,7 @@ DESIGN_HANDOFF_V1:
     - runtime manifest determinism, exact-head, drift, import-closure, and no-repository-pyc tests
     - pending/mixed/final theme-image inventory parity, arbitrary-path, symlink, missing, untracked, dirty, and hash-mismatch negative tests
     - decoder-confirmed fixed VP8、VP8L、VP8X fixturesと、RIFF length、truncation、chunk boundary、padding、codec header、feature/order、runtime/doctor parityのnegative tests
+    - first-article image token missing、duplicate、additional shortcode、wrong origin/theme/path/alt/title/post slug、PENDING/FINAL、request/response slug parity、media/featured-media absenceのnegative tests
     - template-part wrapper and part-root semantic-landmark duplication and omission negative tests
     - owner-private package directory/file mode, symlink, hardlink, stale-stage, overwrite, directory-rename, same-inode content mutation, terminal byte verification, atomic fsync, fixed-path, and ignored-clean-head tests
     - calculated footer normal, visited, hover, active, focus text and focus-indicator contrast tests

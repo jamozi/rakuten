@@ -5,6 +5,7 @@
   "required_images": [
     {
       "alt": "静かな旅支度を想起させる抽象的な布と光の情景",
+      "delivery": "THEME_CSS_BACKGROUND",
       "path": "assets/images/home-hero.webp",
       "prompt": "Japanese premium travel editorial hero, quiet folded textile and soft window light, deep indigo and warm clay accents, no people, no text, no logo, no product, no trademark, no claim of real experience, wide 16:9 composition",
       "sha256": null,
@@ -13,11 +14,12 @@
     },
     {
       "alt": "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景",
+      "delivery": "FIRST_ARTICLE_THEME_SHORTCODE",
       "path": "assets/images/article-suitcase-guide.webp",
       "prompt": "Japanese editorial travel preparation still life, abstract unbranded luggage silhouette and measuring tape motif, no logo, no recognizable product, no people, no text, no fabricated usage scene, deep indigo paper texture, wide 16:9 composition",
       "sha256": null,
       "status": "PENDING_FINAL_ASSET",
-      "usage": "first article featured image"
+      "usage": "first article inline lead image"
     }
   ],
   "schema": "RAOS_WORDPRESS_THEME_ASSETS_V1",
