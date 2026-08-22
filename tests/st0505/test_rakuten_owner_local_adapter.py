@@ -1475,6 +1475,331 @@ def test_mandatory_text_stage_precedes_url_for_multi_defect_records(
 
 
 @pytest.mark.parametrize(
+    ("api", "records"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            [
+                _item_record(affiliateUrl="not-https"),
+                _item_record(itemCode="shop:item-2", itemName=""),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            [
+                _product_record(affiliateUrl="not-https"),
+                _product_record(productCode="fixture-product-code-2", productId=""),
+            ],
+        ),
+    ),
+)
+def test_collection_wide_mandatory_text_precedes_an_earlier_record_url_refusal(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    records: list[object],
+) -> None:
+    request = _request_with_hits(api, 2)
+    body = _summary_body(
+        api,
+        count=2,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=records,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "records"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            [
+                _item_record(affiliateUrl="not-https"),
+                _item_record(itemCode="shop:item-2", itemPrice=-1),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            [
+                _product_record(affiliateUrl="not-https"),
+                _product_record(
+                    productCode="fixture-product-code-2",
+                    productId="fixture-product-id-2",
+                    averagePrice=-1,
+                ),
+            ],
+        ),
+    ),
+)
+def test_collection_wide_record_shape_precedes_an_earlier_record_url_refusal(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    records: list[object],
+) -> None:
+    request = _request_with_hits(api, 2)
+    body = _summary_body(
+        api,
+        count=2,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=records,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "owner_request", "records"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_exact_request("itemCode", "requested-shop:item", hits=2),
+            [
+                _item_record(itemCode="requested-shop:item", itemPrice=-1),
+                _item_record(itemCode="different-shop:item"),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=None,
+                product_id="requested-product-id",
+                product_code=None,
+                hits=2,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            ),
+            [
+                _product_record(
+                    productId="requested-product-id",
+                    averagePrice=-1,
+                ),
+                _product_record(productId="different-product-id"),
+            ],
+        ),
+    ),
+)
+def test_collection_wide_record_shape_precedes_a_later_exact_selector_mismatch(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    owner_request: RakutenOwnerLocalRequest,
+    records: list[object],
+) -> None:
+    body = _summary_body(
+        api,
+        count=2,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=records,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=owner_request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "owner_request", "records"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_exact_request("itemCode", "requested-shop:item", hits=2),
+            [
+                _item_record(
+                    itemCode="requested-shop:item",
+                    affiliateUrl="not-https",
+                ),
+                _item_record(itemCode="different-shop:item"),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            _item_exact_request("shopCode", "requested-shop", hits=2),
+            [
+                _item_record(
+                    shopCode="requested-shop",
+                    affiliateUrl="not-https",
+                ),
+                _item_record(shopCode="different-shop"),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=None,
+                product_id="requested-product-id",
+                product_code=None,
+                hits=2,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            ),
+            [
+                _product_record(
+                    productId="requested-product-id",
+                    affiliateUrl="not-https",
+                ),
+                _product_record(productId="different-product-id"),
+            ],
+        ),
+        (
+            RakutenOwnerLocalApi.PRODUCT_SEARCH,
+            RakutenOwnerLocalProductSearchRequest(
+                keyword=None,
+                genre_id=None,
+                product_id=None,
+                product_code="requested-product-code",
+                hits=2,
+                page=1,
+                sort=RakutenOwnerLocalProductSort.STANDARD,
+            ),
+            [
+                _product_record(
+                    productCode="requested-product-code",
+                    affiliateUrl="not-https",
+                ),
+                _product_record(productCode="different-product-code"),
+            ],
+        ),
+    ),
+)
+def test_collection_wide_exact_selector_precedes_an_earlier_record_url_refusal(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    owner_request: RakutenOwnerLocalRequest,
+    records: list[object],
+) -> None:
+    body = _summary_body(
+        api,
+        count=2,
+        first=1,
+        last=2,
+        hits=2,
+        page_count=1,
+        records=records,
+    )
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+            request=owner_request,
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESULT_MISMATCH
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("api", "collection_value", "extra"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, [_item_record()], True),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, {}, False),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, [_product_record()], True),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, {}, False),
+    ),
+)
+def test_collection_shape_precedes_a_simultaneously_missing_summary_field(
+    monkeypatch: pytest.MonkeyPatch,
+    api: RakutenOwnerLocalApi,
+    collection_value: object,
+    extra: bool,
+) -> None:
+    collection = "items" if api is RakutenOwnerLocalApi.ITEM_SEARCH else "products"
+    value: dict[str, object] = {
+        "count": 1,
+        "page": 1,
+        "first": 1,
+        "last": 1,
+        "hits": 1,
+        collection: collection_value,
+    }
+    if extra:
+        value["unexpected"] = None
+    body = _json_body(value)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        _execute(
+            monkeypatch,
+            api,
+            _FakeResponse(body, content_length=str(len(body))),
+        )
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        failure.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+    )
+    assert failure.value.request_count == 1
+    assert failure.value.http_status == 200
+    assert failure.value.body_byte_count == len(body)
+    assert failure.value.response_sha256 == hashlib.sha256(body).hexdigest()
+
+
+@pytest.mark.parametrize(
     ("api", "owner_request", "record"),
     (
         (

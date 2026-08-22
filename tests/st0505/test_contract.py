@@ -287,9 +287,10 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         ],
         "result_mismatch_stage": "EXACT_SELECTOR",
         "precedence": (
-            "COLLECTION_THEN_SUMMARY_THEN_RECORD_PRESENCE_THEN_EXACT_SELECTOR_"
+            "COLLECTION_THEN_SUMMARY_THEN_RECORD_SHAPE_THEN_EXACT_SELECTOR_"
             "THEN_MANDATORY_TEXT_THEN_URL_THEN_CREDENTIAL_REFLECTION"
         ),
+        "stage_scope": "COMPLETE_RETURNED_COLLECTION_BEFORE_NEXT_STAGE",
         "persisted_material": (
             "CLOSED_ENUM_ONLY_NO_FIELD_NAME_INDEX_EXPECTED_ACTUAL_PROVIDER_"
             "VALUE_BODY_OR_CREDENTIAL"

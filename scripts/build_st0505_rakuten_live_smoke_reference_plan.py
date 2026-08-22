@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "a596bd507bcf8a3e23859cfc00cd7efbf20173a83ff5f002ae57717fe5d80533"
+    "97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "6a2514ef4178e0667e5e5f8766bf0cb91654d862f188586f994a988be288895b"
+    "9f656e06e241528e3d9a4877268128acf89308afd9791fbcb6de8b6285e0fc04"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "f4efbd4605527473181c76290ca550b3317de1b15c6d6b0dd2cecd83de0b075b"
+    "d041b21a1dc5fba8608016d6f3d7bc5f5509f98fd063e6dd0bf7e7a91bbbd947"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
     "42324711aff4bc5560e942f99cbcf97b39493604d49915436966812567c10ab8"
@@ -1547,6 +1547,9 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "unquote_to_bytes(text)",
             "mandatory_record_fields(self.api)",
             "RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT",
+            "def validate_record_mandatory_text(",
+            "def validate_record_shape(",
+            "def validate_record_urls(",
             '"RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2"',
             '"validation_stage_code"',
             '"first": result.first if result is not None else None,',
@@ -1582,6 +1585,11 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "returned_value = validated_response_text(",
             "RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE",
             "RakutenOwnerLocalValidationStageCode.EXACT_SELECTOR",
+            "for raw_record in raw_records:",
+            "for projected in projected_records:",
+            "validate_record_mandatory_text(api, projected)",
+            "validate_record_shape(api, projected)",
+            "validate_record_urls(api, projected)",
             "socket.getaddrinfo(",
             "DNS_RESOLUTION_DEADLINE_SECONDS = 5",
             "class _BoundedSystemDnsResolver:",
@@ -2374,10 +2382,11 @@ def _validate_owner_local_read_integration(value: object) -> None:
             ],
             "result_mismatch_stage": "EXACT_SELECTOR",
             "precedence": (
-                "COLLECTION_THEN_SUMMARY_THEN_RECORD_PRESENCE_THEN_EXACT_"
+                "COLLECTION_THEN_SUMMARY_THEN_RECORD_SHAPE_THEN_EXACT_"
                 "SELECTOR_THEN_MANDATORY_TEXT_THEN_URL_THEN_CREDENTIAL_"
                 "REFLECTION"
             ),
+            "stage_scope": "COMPLETE_RETURNED_COLLECTION_BEFORE_NEXT_STAGE",
             "persisted_material": (
                 "CLOSED_ENUM_ONLY_NO_FIELD_NAME_INDEX_EXPECTED_ACTUAL_PROVIDER_"
                 "VALUE_BODY_OR_CREDENTIAL"

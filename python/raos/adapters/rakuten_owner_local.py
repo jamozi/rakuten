@@ -39,7 +39,6 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalFailure,
     RakutenOwnerLocalFailureCode,
     RakutenOwnerLocalItemSearchRequest,
-    RakutenOwnerLocalNormalizedRecord,
     RakutenOwnerLocalProductSearchRequest,
     RakutenOwnerLocalProductSort,
     RakutenOwnerLocalProviderResult,
@@ -53,6 +52,9 @@ from raos.domain.catalog.rakuten_owner_local import (
     fail_owner_local,
     mandatory_record_fields,
     normalized_record,
+    validate_record_mandatory_text,
+    validate_record_shape,
+    validate_record_urls,
     validated_response_text,
 )
 
@@ -1715,12 +1717,7 @@ def _collection(
             ),
         )
     collection_key = next(iter(aliases))
-    if not _SUMMARY_KEYS <= root_keys:
-        _fail(
-            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
-            validation_stage_code=RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE,
-        )
-    if root_keys != _SUMMARY_KEYS | aliases:
+    if not root_keys <= _SUMMARY_KEYS | aliases:
         _fail(
             RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
             validation_stage_code=(
@@ -1734,6 +1731,11 @@ def _collection(
             validation_stage_code=(
                 RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
             ),
+        )
+    if not _SUMMARY_KEYS <= root_keys:
+        _fail(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE,
         )
     return collection_key, cast(list[object], value)
 
@@ -1833,7 +1835,7 @@ def _parse_provider_success(
         definition_record_fields = frozenset(definition.elements) - _SUMMARY_KEYS
         normalized_fields = frozenset(definition.normalized_record_fields)
         mandatory = mandatory_record_fields(api)
-        records: list[RakutenOwnerLocalNormalizedRecord] = []
+        raw_records: list[dict[str, object]] = []
         for member in values:
             raw_record = _unwrap_record(api, member)
             names = frozenset(raw_record)
@@ -1850,13 +1852,26 @@ def _parse_provider_success(
                         RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
                     ),
                 )
-            _validate_exact_selector(request, raw_record)
-            projected = {
+            raw_records.append(raw_record)
+        projected_records = [
+            {
                 name: item
                 for name, item in raw_record.items()
                 if name in normalized_fields
             }
-            records.append(normalized_record(api, projected))
+            for raw_record in raw_records
+        ]
+        for projected in projected_records:
+            validate_record_shape(api, projected)
+        for raw_record in raw_records:
+            _validate_exact_selector(request, raw_record)
+        for projected in projected_records:
+            validate_record_mandatory_text(api, projected)
+        for projected in projected_records:
+            validate_record_urls(api, projected)
+        records = tuple(
+            normalized_record(api, projected) for projected in projected_records
+        )
         return RakutenOwnerLocalProviderResult(
             api=api,
             request_fingerprint=fingerprint,
@@ -1869,7 +1884,7 @@ def _parse_provider_success(
             last=last,
             hits=hits,
             page_count=page_count,
-            records=tuple(records),
+            records=records,
         )
     except RakutenOwnerLocalFailure as failure:
         if failure.api is not None:

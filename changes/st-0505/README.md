@@ -214,7 +214,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/a596bd507bcf8a3e23859cfc00cd7efbf20173a83ff5f002ae57717fe5d80533/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -224,9 +224,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`6a2514ef4178e0667e5e5f8766bf0cb91654d862f188586f994a988be288895b`,
+`9f656e06e241528e3d9a4877268128acf89308afd9791fbcb6de8b6285e0fc04`,
 and install-stage SHA-256
-`f4efbd4605527473181c76290ca550b3317de1b15c6d6b0dd2cecd83de0b075b`.
+`d041b21a1dc5fba8608016d6f3d7bc5f5509f98fd063e6dd0bf7e7a91bbbd947`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -385,11 +385,14 @@ and fixed CLI output. V2 additionally persists only one closed, value-free
 and failures outside these validation boundaries store `null`. The stage never
 contains a provider field name, record index, expected or actual value, raw body,
 header, exception detail, or credential material. Validation remains fail-closed
-in this order: collection envelope, summary, record presence, exact selector,
+in this order: collection envelope, summary, record shape, exact selector,
 mandatory text, URL, then credential reflection. An exact-selector identity
 mismatch retains `RESULT_MISMATCH`; all other listed validation refusals retain
 `RESPONSE_SCHEMA_DRIFT`. Available response metadata and `request_count=1` are
 preserved while provider results and summaries remain absent on failure.
+Every returned record completes each stage before any record enters the next,
+so provider record order cannot make an earlier URL defect hide a later
+exact-selector or mandatory-text refusal.
 This diagnostic narrows only where validation stopped; it does not accept a new
 provider shape, infer a missing official schema rule, or change the existing
 fail-closed boundary.

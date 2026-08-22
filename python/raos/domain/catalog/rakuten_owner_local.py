@@ -894,9 +894,9 @@ def validated_response_text(
     )
 
 
-def normalized_record(
+def _validated_record_mapping(
     api: RakutenOwnerLocalApi, fields: Mapping[str, object]
-) -> RakutenOwnerLocalNormalizedRecord:
+) -> dict[str, object]:
     if type(api) is not RakutenOwnerLocalApi or type(fields) is not dict:
         fail_owner_local(
             RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
@@ -919,11 +919,57 @@ def normalized_record(
             RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
             validation_stage_code=RakutenOwnerLocalValidationStageCode.RECORD_SHAPE,
         )
+    return mapping
+
+
+def validate_record_mandatory_text(
+    api: RakutenOwnerLocalApi, fields: Mapping[str, object]
+) -> None:
+    """Validate mandatory text without inspecting any later record stage."""
+
+    mapping = _validated_record_mapping(api, fields)
     for name in _MANDATORY_TEXT_FIELDS[api]:
         validated_response_text(
             mapping[name],
             validation_stage_code=RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT,
         )
+
+
+def validate_record_shape(
+    api: RakutenOwnerLocalApi, fields: Mapping[str, object]
+) -> None:
+    """Validate record structure and ordinary scalars before later stages."""
+
+    mapping = _validated_record_mapping(api, fields)
+    for name, value in mapping.items():
+        if (
+            name not in _MANDATORY_TEXT_FIELDS[api]
+            and name not in _URL_FIELDS
+            and name not in _URL_LIST_FIELDS
+        ):
+            _validate_normalized_value(api, name, value)
+
+
+def validate_record_urls(
+    api: RakutenOwnerLocalApi, fields: Mapping[str, object]
+) -> None:
+    """Validate URL values without inspecting any later record stage."""
+
+    mapping = _validated_record_mapping(api, fields)
+    for name, value in mapping.items():
+        if name in _URL_LIST_FIELDS and type(value) is list:
+            value = tuple(cast(list[object], value))
+        if name in _URL_FIELDS or name in _URL_LIST_FIELDS:
+            _validate_normalized_value(api, name, value)
+
+
+def normalized_record(
+    api: RakutenOwnerLocalApi, fields: Mapping[str, object]
+) -> RakutenOwnerLocalNormalizedRecord:
+    mapping = _validated_record_mapping(api, fields)
+    validate_record_shape(api, mapping)
+    validate_record_mandatory_text(api, mapping)
+    validate_record_urls(api, mapping)
     normalized: list[tuple[str, NormalizedValue]] = []
     for name, value in mapping.items():
         converted: NormalizedValue
@@ -1361,5 +1407,8 @@ __all__ = [
     "fixed_owner_local_smoke_request",
     "normalized_record",
     "owner_local_api_registry",
+    "validate_record_mandatory_text",
+    "validate_record_shape",
+    "validate_record_urls",
     "validate_run_id",
 ]
