@@ -50,7 +50,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -121,15 +121,15 @@ ST0602_ARTIFACTS: Final = (
             "changes/st-0602/generated/"
             "fact-extraction-validation-reference-plan.v1.json"
         ),
-        "afca80b52ee94ae806f04f242afbc6804a98f4a4494f484d372e6f651a060305",
+        "2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944",
     ),
     (
         Path("changes/st-0602/manifest.yaml"),
-        "8a79104dc181bb3f10347ae4ecd1cd3360972a3b9b85a5aa014605a95bb1ecbd",
+        "b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42",
     ),
     (
         Path("scripts/build_st0602_fact_extraction_validation_reference_plan.py"),
-        "a06a5fa14be8e0b49cb461bf0ea8b2a76cfc50192185cf8c758d6e0ac937edf5",
+        "fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf",
     ),
     (
         Path("tests/st0602/conftest.py"),
@@ -155,19 +155,19 @@ ST0603_ARTIFACTS: Final = (
     ),
     (
         Path("changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml"),
-        "c5088b7ae390a2000ab651ab23c02ec051f62bd84ad0411c74f788bb426ab2a7",
+        "51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07",
     ),
     (
         Path("changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json"),
-        "2bc5792ce989ff10f4773e46e3864382bb52f9baf406567a00aea7cd28db4f36",
+        "755f88f9084717f85b644f6b4f9904a3ac3d71b36dfeae9cf34de2104e0518a5",
     ),
     (
         Path("changes/st-0603/manifest.yaml"),
-        "ae25c71a672bbf3b662fef45895d23e11b05eae0e672ec5929e59024a42ac733",
+        "a418addb612aec85c79213dda71b82ae8e3a40285d48399683d0e40cc5586ad7",
     ),
     (
         Path("scripts/build_st0603_fact_conflict_review_reference_plan.py"),
-        "88575a8f2fd511b83709678a1837c1c5629dbbf0347f53912ce6c2696357b6da",
+        "5b52c2790b48a39e04853144f34f48edac2775edfc118bc19586b7887943f341",
     ),
     (
         Path("tests/st0603/conftest.py"),
@@ -195,21 +195,21 @@ ST0604_ARTIFACTS: Final = (
         Path(
             "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
         ),
-        "79ccf0fd86d85c0945bb87228a0fbd734565ce5d4f7fff63112dad1134ea85fe",
+        "a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec",
     ),
     (
         Path(
             "changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json"
         ),
-        "4b8740c82470d356b8f203b9bba4da287a2248414c73d1344ab4c7cb1800fa65",
+        "00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec",
     ),
     (
         Path("changes/st-0604/manifest.yaml"),
-        "fe711a1d2ddff1dab841fc6a326add4d27e8690a73335b2a1d12e3555d607258",
+        "56144e0b9ab315a647d92c665f7502129d3576fac2d9524ca647dc29bfeabdc0",
     ),
     (
         Path("scripts/build_st0604_source_packet_lifecycle_reference_plan.py"),
-        "81d5947168c8fec7d7c4f219db7467d41f68886e26eb95768cd94adb596d0f70",
+        "74e2260b2e647129de96d38a8dff0477a8b43947539640dccbcbc35e2072267c",
     ),
     (
         Path("tests/st0604/conftest.py"),
