@@ -36,7 +36,7 @@
     "generation_command": "uv run --locked --no-sync python scripts/build_st0602_fact_extraction_validation_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+      "sha256": "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
     }
   },
   "predecessor_bindings": [
