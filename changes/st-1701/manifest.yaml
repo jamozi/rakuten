@@ -211,8 +211,8 @@ source_artifacts:
   bytes: 15933
   sha256: 9ff100dfcdcf5fb1f94705ebdd7d4b8a87a8d734450db8ad3c51eb0e0a1337fa
 - uri: repo://scripts/build_st1701_business_inputs.py
-  bytes: 91391
-  sha256: 7c87d388ef78e98ca12288bee5afd0f8602f0aac0749643d19b5befa0627f8c9
+  bytes: 91353
+  sha256: e902bc4a8455ac56b13822bccce1fd549ebd940cc99f05ad7f7dd28b37168838
 - uri: repo://tests/st1701/conftest.py
   bytes: 1358
   sha256: 63463ddef096ed3e0fcb2d1cf098dc39c4959e8ba136979743ec4d347809085a
@@ -223,8 +223,8 @@ source_artifacts:
   bytes: 32527
   sha256: 2a10898552aaa44c52fafe985d8965b3b7f1d00a44e1f37426219d54d05735fc
 - uri: repo://tests/st1701/test_negative_cases.py
-  bytes: 31554
-  sha256: 30d5a31e012b17778a03bc6119a55b5ff11d46add7f64f858589a26951650c3d
+  bytes: 31546
+  sha256: b2c32a3dc17b87f691ab0b4bde840bf901db9cab488464513fea9657c6efa3fd
 generated_artifact_count: 4
 generated_artifacts:
 - uri: repo://changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json

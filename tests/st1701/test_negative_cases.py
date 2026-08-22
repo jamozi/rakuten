@@ -600,8 +600,7 @@ def test_historical_execplan_row_cannot_be_silently_replaced_by_current_binding(
     row = next(
         item
         for item in document["sources"]
-        if item["uri"]
-        == "repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md"
+        if item["uri"] == "repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md"
     )
     row["bytes"] = current_size
     row["sha256"] = current_digest

@@ -2211,9 +2211,7 @@ def _manifest_bytes(
                 "historical_source_and_authority_rows_preserved": True,
                 "semantic_delta_from_business_inputs": "NONE",
                 "formal_evidence": False,
-                "repository_git_authority": (
-                    "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"
-                ),
+                "repository_git_authority": ("ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"),
                 "external_authority": "NONE",
                 "live_provider_authority": "NONE",
                 "credential_authority": "NONE",
