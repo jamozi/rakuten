@@ -61,6 +61,8 @@ DESIGN_HANDOFF_V1:
     - branch-local review commitはevidence contextに限り、squash/cherry-pick deploymentのlineage prerequisiteにしない
     - pre-Python stageはpinned stdlib code inventory、python314.zip不在、完全capture済みCLI blobを検証し、stage HEAD/blob/SHA-256をsame-process verifierへ連続bindする
     - manifest entry path/orderはclosed inventoryと完全一致した後にだけdescriptor-relativeにpayloadを開く
+    - runtime inventoryは固定26 base pathと、固定asset manifestの2つのallowlist済みrequired_imagesのうちFINALかつlowercase SHA-256一致のWebPだけで構成する
+    - PENDING_FINAL_ASSET pathはHEAD、index、working treeのすべてで不在とし、glob、caller指定path、任意path追加、symlinkを拒否する
     - repository内bytecodeはlive importに使わず、self-hosted専用のclosed package namespaceだけをmanifest対象sourceからloadする
     - content publication、theme/plugin activation、media upload、taxonomy mutationを実装しない
     - AI画像は別の費用・外部操作gateで生成し、完成asset欠落時はtheme package readinessを拒否
@@ -90,12 +92,14 @@ DESIGN_HANDOFF_V1:
     - pinned Python code inventory and captured CLI stage identity match before interpreter startup and remain bound in the verifier
     - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
     - final image and affiliate-slot absence remains visible and fail closed
+    - manifest-declared FINAL WebP bytes are included in the reviewed runtime payload supplied to offline doctor
     - first article separates sourced facts from editorial interpretation and fabricates no experience
   required_test_evidence:
     - isolated ST-1703 unit and negative tests
     - deterministic theme package/check fixtures
     - secret redaction and filesystem trust-boundary tests
     - runtime manifest determinism, exact-head, drift, import-closure, and no-repository-pyc tests
+    - pending/mixed/final theme-image inventory parity, arbitrary-path, symlink, missing, untracked, dirty, and hash-mismatch negative tests
     - Python code inventory shape/content, absent-zip, stage-continuity, and pre-open closed-path tests
     - startup-landmark, managed-bin inventory, root-owned loader/library digest, and RPATH-bypass tests
     - transport one-attempt, TLS, timeout, redirect, proxy, bounded-response tests

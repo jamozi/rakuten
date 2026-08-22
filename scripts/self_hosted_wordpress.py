@@ -24,6 +24,34 @@ _RUNTIME_STAGE_HEAD_ENV: Final = "RAOS_SELF_HOSTED_STAGE_HEAD"
 _RUNTIME_STAGE_CLI_BLOB_ENV: Final = "RAOS_SELF_HOSTED_STAGE_CLI_BLOB"
 _RUNTIME_STAGE_CLI_SHA256_ENV: Final = "RAOS_SELF_HOSTED_STAGE_CLI_SHA256"
 _RUNTIME_APPROVED_BASE_COMMIT: Final = "b5a6157b878ca0435ee4120d33162aba5ae51f77"
+_THEME_RUNTIME_PREFIX: Final = (
+    "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/"
+)
+_RUNTIME_THEME_ASSET_MANIFEST_PATH: Final = (
+    f"{_THEME_RUNTIME_PREFIX}raos-assets.v1.json"
+)
+_RUNTIME_FINAL_THEME_IMAGE_RELATIVE_PATHS: Final = (
+    "assets/images/article-suitcase-guide.webp",
+    "assets/images/home-hero.webp",
+)
+_RUNTIME_FINAL_THEME_IMAGE_PATHS: Final = tuple(
+    f"{_THEME_RUNTIME_PREFIX}{relative}"
+    for relative in _RUNTIME_FINAL_THEME_IMAGE_RELATIVE_PATHS
+)
+_RUNTIME_THEME_MANIFEST_KEYS: Final = frozenset(
+    {
+        "schema",
+        "theme_slug",
+        "source_files",
+        "required_images",
+        "generated_by",
+        "package_command",
+        "check_command",
+    }
+)
+_RUNTIME_THEME_IMAGE_KEYS: Final = frozenset(
+    {"path", "status", "sha256", "alt", "prompt", "usage"}
+)
 _RUNTIME_REQUIRED_PATHS: Final = (
     "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
     "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
@@ -34,7 +62,7 @@ _RUNTIME_REQUIRED_PATHS: Final = (
     "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/functions.php",
     "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/parts/footer.html",
     "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/parts/header.html",
-    "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
+    _RUNTIME_THEME_ASSET_MANIFEST_PATH,
     "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/style.css",
     "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/templates/front-page.html",
     "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/templates/single.html",
@@ -87,9 +115,6 @@ _CONTENT_PACKET_RUNTIME_PATH: Final = (
     "changes/st-1703/self-hosted-minimum-start-v1/"
     "content/first-suitcase-comparison.v1.json"
 )
-_THEME_RUNTIME_PREFIX: Final = (
-    "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/"
-)
 _runtime_authorized = False
 _verified_runtime_bytes: dict[str, bytes] | None = None
 
@@ -109,6 +134,78 @@ def _runtime_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
             _runtime_fail()
         value[key] = item
     return value
+
+
+def _declared_final_theme_runtime_assets(payload: bytes) -> dict[str, str]:
+    try:
+        parsed = json.loads(
+            payload.decode("utf-8", errors="strict"),
+            object_pairs_hook=_runtime_pairs,
+            parse_constant=lambda _value: _runtime_fail(),
+        )
+    except _RuntimeIdentityFailure:
+        raise
+    except UnicodeError, ValueError, TypeError, RecursionError:
+        _runtime_fail()
+    if type(parsed) is not dict:
+        _runtime_fail()
+    manifest = cast(dict[str, object], parsed)
+    if (
+        frozenset(manifest) != _RUNTIME_THEME_MANIFEST_KEYS
+        or manifest.get("schema") != "RAOS_WORDPRESS_THEME_ASSETS_V1"
+        or manifest.get("theme_slug") != "kurashinoshirube-child"
+        or manifest.get("generated_by") != "scripts/build_st1703_self_hosted_theme.py"
+        or manifest.get("package_command")
+        != "make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-package"
+        or manifest.get("check_command")
+        != "make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-check"
+        or type(manifest.get("source_files")) is not list
+        or type(manifest.get("required_images")) is not list
+    ):
+        _runtime_fail()
+    images = cast(list[object], manifest["required_images"])
+    if len(images) != len(_RUNTIME_FINAL_THEME_IMAGE_RELATIVE_PATHS):
+        _runtime_fail()
+    expected_paths: set[str] = set(_RUNTIME_FINAL_THEME_IMAGE_RELATIVE_PATHS)
+    observed_paths: set[str] = set()
+    final_assets: dict[str, str] = {}
+    for item in images:
+        if type(item) is not dict:
+            _runtime_fail()
+        image = cast(dict[str, object], item)
+        path = image.get("path")
+        status = image.get("status")
+        digest = image.get("sha256")
+        if (
+            frozenset(image) != _RUNTIME_THEME_IMAGE_KEYS
+            or type(path) is not str
+            or path not in expected_paths
+            or path in observed_paths
+            or type(image.get("alt")) is not str
+            or not cast(str, image["alt"]).strip()
+            or type(image.get("prompt")) is not str
+            or not cast(str, image["prompt"]).strip()
+            or type(image.get("usage")) is not str
+            or not cast(str, image["usage"]).strip()
+            or status not in {"PENDING_FINAL_ASSET", "FINAL"}
+        ):
+            _runtime_fail()
+        observed_paths.add(path)
+        runtime_path = f"{_THEME_RUNTIME_PREFIX}{path}"
+        if status == "PENDING_FINAL_ASSET":
+            if digest is not None:
+                _runtime_fail()
+            continue
+        if (
+            type(digest) is not str
+            or len(digest) != 64
+            or any(character not in "0123456789abcdef" for character in digest)
+        ):
+            _runtime_fail()
+        final_assets[runtime_path] = digest
+    if observed_paths != expected_paths:
+        _runtime_fail()
+    return final_assets
 
 
 def _require_runtime_no_symlink_ancestors(path: Path, repository_root: Path) -> None:
@@ -262,6 +359,65 @@ def _read_runtime_file(
             os.close(root_descriptor)
 
 
+def _require_runtime_path_absent(repository_root: Path, relative: Path) -> None:
+    if relative.is_absolute() or any(
+        part in {"", ".", ".."} for part in relative.parts
+    ):
+        _runtime_fail()
+    root_descriptor = -1
+    parent_descriptor = -1
+    try:
+        root_descriptor = os.open(
+            repository_root,
+            os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
+        )
+        root_metadata = os.fstat(root_descriptor)
+        if (
+            not stat.S_ISDIR(root_metadata.st_mode)
+            or root_metadata.st_uid != os.geteuid()
+            or stat.S_IMODE(root_metadata.st_mode) & 0o022
+        ):
+            _runtime_fail()
+        parent_descriptor = os.dup(root_descriptor)
+        for part in relative.parts[:-1]:
+            try:
+                child = os.open(
+                    part,
+                    os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
+                    dir_fd=parent_descriptor,
+                )
+            except FileNotFoundError:
+                return
+            child_metadata = os.fstat(child)
+            if (
+                not stat.S_ISDIR(child_metadata.st_mode)
+                or child_metadata.st_uid != os.geteuid()
+                or stat.S_IMODE(child_metadata.st_mode) & 0o022
+            ):
+                os.close(child)
+                _runtime_fail()
+            os.close(parent_descriptor)
+            parent_descriptor = child
+        try:
+            os.stat(
+                relative.parts[-1],
+                dir_fd=parent_descriptor,
+                follow_symlinks=False,
+            )
+        except FileNotFoundError:
+            return
+        _runtime_fail()
+    except _RuntimeIdentityFailure:
+        raise
+    except (OSError, ValueError):  # fmt: skip
+        _runtime_fail()
+    finally:
+        if parent_descriptor >= 0:
+            os.close(parent_descriptor)
+        if root_descriptor >= 0:
+            os.close(root_descriptor)
+
+
 def _runtime_git_result(
     repository_root: Path,
     arguments: tuple[str, ...],
@@ -352,6 +508,50 @@ def _runtime_head_blob(
     if blob.returncode != 0 or len(blob.stdout) != size:
         _runtime_fail()
     return blob.stdout
+
+
+def _require_runtime_head_path_absent(
+    repository_root: Path, *, commit: str, path: str
+) -> None:
+    result = _runtime_git_result(
+        repository_root,
+        ("ls-tree", "--name-only", "--full-tree", commit, "--", path),
+        capture_stdout=True,
+        maximum_stdout=4096,
+    )
+    if result.returncode != 0 or result.stdout != b"":
+        _runtime_fail()
+
+
+def _runtime_tracked_theme_image_paths(repository_root: Path) -> tuple[str, ...]:
+    image_directory = f"{_THEME_RUNTIME_PREFIX}assets/images"
+    result = _runtime_git_result(
+        repository_root,
+        ("ls-files", "-z", "--", image_directory),
+        capture_stdout=True,
+        maximum_stdout=_RUNTIME_FILE_MAX_BYTES,
+    )
+    if result.returncode != 0:
+        _runtime_fail()
+    if not result.stdout:
+        return ()
+    if not result.stdout.endswith(b"\0"):
+        _runtime_fail()
+    try:
+        paths = tuple(
+            value.decode("utf-8", errors="strict")
+            for value in result.stdout[:-1].split(b"\0")
+        )
+    except UnicodeError:
+        _runtime_fail()
+    if (
+        not paths
+        or any(not path for path in paths)
+        or len(set(paths)) != len(paths)
+        or paths != tuple(sorted(paths))
+    ):
+        _runtime_fail()
+    return paths
 
 
 def _valid_runtime_python() -> bool:
@@ -464,6 +664,16 @@ def _verify_self_hosted_runtime_identity(
         _RUNTIME_MANIFEST_PATH,
         maximum_bytes=_RUNTIME_MANIFEST_MAX_BYTES,
     )
+    if (
+        _runtime_head_blob(
+            repository_root,
+            commit=head_commit,
+            path=_RUNTIME_MANIFEST_PATH.as_posix(),
+            maximum_bytes=_RUNTIME_MANIFEST_MAX_BYTES,
+        )
+        != manifest_raw
+    ):
+        _runtime_fail()
     try:
         parsed = json.loads(
             manifest_raw.decode("ascii", errors="strict"),
@@ -504,7 +714,11 @@ def _verify_self_hosted_runtime_identity(
     if type(entries_value) is not list:
         _runtime_fail()
     entries = cast(list[object], entries_value)
-    if len(entries) != len(_RUNTIME_REQUIRED_PATHS):
+    if (
+        not len(_RUNTIME_REQUIRED_PATHS)
+        <= len(entries)
+        <= len(_RUNTIME_REQUIRED_PATHS) + len(_RUNTIME_FINAL_THEME_IMAGE_PATHS)
+    ):
         _runtime_fail()
     validated_entries: list[tuple[str, int, str]] = []
     for entry in entries:
@@ -527,10 +741,64 @@ def _verify_self_hosted_runtime_identity(
             _runtime_fail()
         validated_entries.append((path, expected_bytes, expected_sha256))
     observed_paths = tuple(path for path, _size, _sha256 in validated_entries)
-    if observed_paths != tuple(sorted(_RUNTIME_REQUIRED_PATHS)):
+    base_paths = tuple(sorted(_RUNTIME_REQUIRED_PATHS))
+    base_path_set = set(base_paths)
+    allowed_final_path_set = set(_RUNTIME_FINAL_THEME_IMAGE_PATHS)
+    observed_path_set = set(observed_paths)
+    if (
+        len(base_path_set) != len(base_paths)
+        or base_path_set.intersection(allowed_final_path_set)
+        or len(allowed_final_path_set) != len(_RUNTIME_FINAL_THEME_IMAGE_PATHS)
+        or len(observed_path_set) != len(observed_paths)
+        or observed_paths != tuple(sorted(observed_paths))
+        or base_path_set - observed_path_set
+        or observed_path_set - base_path_set - allowed_final_path_set
+    ):
         _runtime_fail()
+    entries_by_path = {
+        path: (expected_bytes, expected_sha256)
+        for path, expected_bytes, expected_sha256 in validated_entries
+    }
+    final_assets: dict[str, str] = {}
+    head_theme_manifest: bytes | None = None
+    if _RUNTIME_THEME_ASSET_MANIFEST_PATH in base_path_set:
+        head_theme_manifest = _runtime_head_blob(
+            repository_root,
+            commit=head_commit,
+            path=_RUNTIME_THEME_ASSET_MANIFEST_PATH,
+            maximum_bytes=_RUNTIME_FILE_MAX_BYTES,
+        )
+        theme_entry = entries_by_path.get(_RUNTIME_THEME_ASSET_MANIFEST_PATH)
+        if theme_entry is None or theme_entry != (
+            len(head_theme_manifest),
+            hashlib.sha256(head_theme_manifest).hexdigest(),
+        ):
+            _runtime_fail()
+        final_assets = _declared_final_theme_runtime_assets(head_theme_manifest)
+        expected_paths = tuple(sorted((*base_paths, *final_assets)))
+        if observed_paths != expected_paths:
+            _runtime_fail()
+        for path, declared_digest in final_assets.items():
+            entry = entries_by_path.get(path)
+            if entry is None or entry[1] != declared_digest:
+                _runtime_fail()
+        if _runtime_tracked_theme_image_paths(repository_root) != tuple(
+            sorted(final_assets)
+        ):
+            _runtime_fail()
+        for pending_path in allowed_final_path_set - set(final_assets):
+            _require_runtime_head_path_absent(
+                repository_root,
+                commit=head_commit,
+                path=pending_path,
+            )
+            _require_runtime_path_absent(repository_root, Path(pending_path))
+    elif observed_paths != base_paths:
+        _runtime_fail()
+
     runtime_contents: dict[str, bytes] = {}
-    for path, expected_bytes, expected_sha256 in validated_entries:
+    for path in base_paths:
+        expected_bytes, expected_sha256 = entries_by_path[path]
         content = _read_runtime_file(
             repository_root,
             Path(path),
@@ -542,19 +810,32 @@ def _verify_self_hosted_runtime_identity(
         ):
             _runtime_fail()
         runtime_contents[path] = content
+    if (
+        head_theme_manifest is not None
+        and runtime_contents.get(_RUNTIME_THEME_ASSET_MANIFEST_PATH)
+        != head_theme_manifest
+    ):
+        _runtime_fail()
+    for path, declared_digest in sorted(final_assets.items()):
+        expected_bytes, expected_sha256 = entries_by_path[path]
+        content = _read_runtime_file(
+            repository_root,
+            Path(path),
+            maximum_bytes=_RUNTIME_FILE_MAX_BYTES,
+        )
+        if (
+            len(content) != expected_bytes
+            or expected_sha256 != declared_digest
+            or hashlib.sha256(content).hexdigest() != declared_digest
+            or len(content) < 12
+            or content[:4] != b"RIFF"
+            or content[8:12] != b"WEBP"
+        ):
+            _runtime_fail()
+        runtime_contents[path] = content
 
     cli_source = runtime_contents.get(_RUNTIME_CLI_PATH)
     if cli_source is None or hashlib.sha256(cli_source).hexdigest() != stage_cli_sha256:
-        _runtime_fail()
-    if (
-        _runtime_head_blob(
-            repository_root,
-            commit=head_commit,
-            path=_RUNTIME_MANIFEST_PATH.as_posix(),
-            maximum_bytes=_RUNTIME_MANIFEST_MAX_BYTES,
-        )
-        != manifest_raw
-    ):
         _runtime_fail()
     for path in observed_paths:
         if (

@@ -55,8 +55,12 @@ final asset gate is completed.
 Every owner command is bound before RAOS imports or credential access to the
 physical `/home/minami/rakuten` repository, an exact committed clean `HEAD`
 descending from the guaranteed shipped PR base `b5a6157b`, and the 26 ordered
-source/input files in `runtime-manifest.v1.json`. The BusyBox launcher performs
-the first sanitized Git check before starting Python. It also validates the
+base source/input files in `runtime-manifest.v1.json`. When either of the two
+fixed `required_images` records is explicitly `FINAL`, that manifest-declared,
+lowercase-SHA-256-bound WebP is added to the reviewed inventory; pending images
+remain absent. No glob, caller-provided path, or arbitrary manifest path can
+expand the inventory. The BusyBox launcher performs the first sanitized Git
+check before starting Python. It also validates the
 generator-owned 657-file Python standard-library code inventory, absence of
 the leading `python314.zip` import path, the pinned executable and venv config,
 and the exact managed-Python/venv `bin/` path sets. Optional startup landmarks
@@ -66,11 +70,14 @@ owner-writable RPATH and the system loader cache disabled. The launcher then
 captures and hash-checks the complete committed CLI blob before Python is
 started. The shell-stage `HEAD`, blob ID and CLI SHA-256 are carried into the
 stdlib-only Python bootstrap and must match the same current `HEAD`. The
-bootstrap validates the complete closed manifest path inventory before opening
-any listed payload, then checks every bounded SHA-256, matching `HEAD` blob,
-tracked state and clean worktree before installing the narrow self-hosted
-package namespaces. The ten leaf modules execute only through a closed loader
-backed by the already verified bytes; source paths are not reopened. Site
+bootstrap first binds the runtime manifest to the matching `HEAD` blob, then
+derives an exact 26-plus-zero-to-two path inventory from the fixed committed
+asset manifest before opening any listed working payload. It checks every
+bounded SHA-256, matching `HEAD` blob, the exact tracked image-directory
+inventory, pending-path absence, tracked state and clean worktree before
+installing the narrow self-hosted package namespaces. The ten leaf modules
+execute only through a closed loader backed by the already verified bytes;
+source paths are not reopened. Site
 startup processing is disabled, live repository import roots are not added to
 `sys.path`, repository bytecode lookup is redirected away from the checkout,
 and bytecode writes are disabled. Any manifest, source, standard-library code,

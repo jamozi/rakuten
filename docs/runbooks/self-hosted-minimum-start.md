@@ -23,6 +23,12 @@ or cherry-pick integration. It also refuses staged/unstaged/untracked drift, a
 runtime-manifest mismatch, a non-`HEAD` runtime blob, or an unsafe pinned
 toolchain. This binding happens before RAOS imports, credential reads, or
 network construction. Do not bypass it or use Git index flags to hide an edit.
+The inventory has 26 fixed base paths and zero to two optional image paths.
+Optional paths are not caller input: they can only be the two exact WebP paths
+declared by the committed `raos-assets.v1.json`, and are included only when the
+corresponding record is `FINAL` with a matching lowercase SHA-256. A pending
+image must be absent. Unlisted, tracked, untracked, dirty, symlinked, malformed,
+missing, or hash-mismatched image state is refused before any RAOS import.
 Before Python starts, the launcher also verifies the generator-owned standard
 library code inventory, the absent `python314.zip` import path, the pinned
 executable/venv config, both managed `bin/` path sets, absent optional
@@ -119,6 +125,12 @@ record each exact SHA-256 and change its manifest state to `FINAL`, then use:
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-package
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-check
 ```
+
+After the source and final images are reviewed and committed, regenerate and
+review `runtime-manifest.v1.json`; its inventory will add exactly those
+manifest-declared `FINAL` WebP paths. Never add image rows manually or use
+another filename. `PENDING_FINAL_ASSET` continues to require that its path does
+not exist.
 
 The package generator is deterministic and the check is no-write. Never edit
 the generated zip manually. Theme installation and activation remain manual

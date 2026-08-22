@@ -25,6 +25,10 @@ PYTHON_INVENTORY_PATH = (
     ROOT / "changes/st-1703/self-hosted-minimum-start-v1/"
     "python-runtime-code-inventory.v1.sha256"
 )
+THEME_ASSET_MANIFEST_PATH = (
+    ROOT / "changes/st-1703/self-hosted-minimum-start-v1/theme/"
+    "kurashinoshirube-child/raos-assets.v1.json"
+)
 SHIPPED_PR_BASE = "b5a6157b878ca0435ee4120d33162aba5ae51f77"
 BRANCH_LOCAL_REVIEW_COMMIT = "7598e127adee6027d086619a720071a550b7a290"
 
@@ -60,6 +64,158 @@ def _git(repository: Path, *arguments: str) -> subprocess.CompletedProcess[bytes
         timeout=10,
         check=False,
     )
+
+
+def _synthetic_webp(seed: int) -> bytes:
+    chunk = b"VP8 " + (10).to_bytes(4, "little") + bytes([seed]) * 10
+    body = b"WEBP" + chunk
+    return b"RIFF" + len(body).to_bytes(4, "little") + body
+
+
+def _theme_manifest_with_final_count(
+    final_count: int,
+) -> tuple[bytes, dict[str, bytes]]:
+    assert final_count in {0, 1, 2}
+    value = json.loads(THEME_ASSET_MANIFEST_PATH.read_text(encoding="utf-8"))
+    images = value["required_images"]
+    assert isinstance(images, list) and len(images) == 2
+    assets: dict[str, bytes] = {}
+    for index, item in enumerate(images):
+        assert isinstance(item, dict)
+        path = item["path"]
+        assert isinstance(path, str)
+        if index < final_count:
+            payload = _synthetic_webp(index + 1)
+            item["status"] = "FINAL"
+            item["sha256"] = hashlib.sha256(payload).hexdigest()
+            assets[path] = payload
+        else:
+            item["status"] = "PENDING_FINAL_ASSET"
+            item["sha256"] = None
+    return (
+        (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode(
+            "utf-8"
+        ),
+        assets,
+    )
+
+
+def _theme_identity_repository(
+    module: ModuleType,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    final_count: int,
+) -> tuple[Path, Path, tuple[str, ...]]:
+    repository = tmp_path / f"theme-identity-repository-{final_count}"
+    runtime = repository / "runtime.py"
+    manifest = repository / "runtime-manifest.json"
+    script = repository / "scripts/self_hosted_wordpress.py"
+    theme_manifest = repository / module._RUNTIME_THEME_ASSET_MANIFEST_PATH
+    script.parent.mkdir(parents=True)
+    theme_manifest.parent.mkdir(parents=True)
+    runtime.write_bytes(b"runtime-v1\n")
+    script.write_bytes(CLI_PATH.read_bytes())
+    theme_manifest_payload, assets = _theme_manifest_with_final_count(final_count)
+    theme_manifest.write_bytes(theme_manifest_payload)
+    final_runtime_paths: list[str] = []
+    for relative, payload in assets.items():
+        runtime_path = f"{module._THEME_RUNTIME_PREFIX}{relative}"
+        asset = repository / runtime_path
+        asset.parent.mkdir(parents=True, exist_ok=True)
+        asset.write_bytes(payload)
+        final_runtime_paths.append(runtime_path)
+    base_runtime_paths = (
+        "runtime.py",
+        "scripts/self_hosted_wordpress.py",
+        module._RUNTIME_THEME_ASSET_MANIFEST_PATH,
+    )
+    runtime_paths = tuple(sorted((*base_runtime_paths, *final_runtime_paths)))
+    manifest_value = {
+        "approved_base_commit": "PLACEHOLDER",
+        "external_action_authority": "NONE",
+        "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
+        "paths": [
+            {
+                "bytes": len((repository / path).read_bytes()),
+                "path": path,
+                "sha256": hashlib.sha256((repository / path).read_bytes()).hexdigest(),
+            }
+            for path in runtime_paths
+        ],
+        "repository_development_authority": ("ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"),
+        "schema": "SELF_HOSTED_WORDPRESS_RUNTIME_MANIFEST_V1",
+        "slice_id": "SELF_HOSTED_MINIMUM_START_V1",
+        "story_id": "ST-1703",
+    }
+    assert _git(repository, "init", "-q").returncode == 0
+    manifest.write_text(
+        json.dumps(manifest_value, sort_keys=True, separators=(",", ":")) + "\n",
+        encoding="ascii",
+    )
+    assert _git(repository, "add", ".").returncode == 0
+    assert _git(repository, "commit", "-qm", "base").returncode == 0
+    base = _git(repository, "rev-parse", "HEAD").stdout.decode().strip()
+    manifest_value["approved_base_commit"] = base
+    manifest.write_text(
+        json.dumps(manifest_value, sort_keys=True, separators=(",", ":")) + "\n",
+        encoding="ascii",
+    )
+    assert _git(repository, "add", ".").returncode == 0
+    assert _git(repository, "commit", "-qm", "manifest").returncode == 0
+    monkeypatch.setattr(module, "_EXPECTED_REPOSITORY_ROOT", repository)
+    monkeypatch.setattr(module, "_RUNTIME_MANIFEST_PATH", Path("runtime-manifest.json"))
+    monkeypatch.setattr(module, "_RUNTIME_REQUIRED_PATHS", base_runtime_paths)
+    monkeypatch.setattr(module, "_RUNTIME_APPROVED_BASE_COMMIT", base)
+    monkeypatch.setattr(module, "_valid_runtime_python", lambda: True)
+    monkeypatch.setattr(module, "_valid_runtime_entry", lambda: True)
+    return repository, manifest, tuple(sorted(final_runtime_paths))
+
+
+def _isolated_generator_inputs(
+    generator: ModuleType,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    final_count: int,
+) -> tuple[Path, tuple[str, ...]]:
+    root = tmp_path / f"generator-runtime-{final_count}"
+    prefix = "theme/"
+    manifest_runtime_path = f"{prefix}raos-assets.v1.json"
+    manifest_path = root / manifest_runtime_path
+    manifest_path.parent.mkdir(parents=True)
+    (root / "runtime.py").write_bytes(b"runtime\n")
+    manifest_payload, assets = _theme_manifest_with_final_count(final_count)
+    manifest_path.write_bytes(manifest_payload)
+    final_runtime_paths: list[str] = []
+    for relative, payload in assets.items():
+        runtime_path = f"{prefix}{relative}"
+        path = root / runtime_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(payload)
+        final_runtime_paths.append(runtime_path)
+    relative_paths = tuple(
+        sorted(item["path"] for item in json.loads(manifest_payload)["required_images"])
+    )
+    monkeypatch.setattr(generator, "ROOT", root)
+    monkeypatch.setattr(
+        generator,
+        "REQUIRED_RUNTIME_PATHS",
+        ("runtime.py", manifest_runtime_path),
+    )
+    monkeypatch.setattr(generator, "THEME_RUNTIME_PREFIX", prefix)
+    monkeypatch.setattr(
+        generator,
+        "THEME_ASSET_MANIFEST_RUNTIME_PATH",
+        manifest_runtime_path,
+    )
+    monkeypatch.setattr(generator, "FINAL_THEME_IMAGE_RELATIVE_PATHS", relative_paths)
+    monkeypatch.setattr(
+        generator,
+        "FINAL_THEME_IMAGE_RUNTIME_PATHS",
+        tuple(f"{prefix}{relative}" for relative in relative_paths),
+    )
+    return root, tuple(sorted(final_runtime_paths))
 
 
 def _identity_repository(
@@ -226,6 +382,150 @@ def test_runtime_identity_exact_clean_head_passes(
     module._verify_self_hosted_runtime_identity(
         repository, **_stage_binding(repository)
     )
+
+
+@pytest.mark.parametrize("final_count", [0, 1, 2])
+def test_runtime_identity_includes_only_manifest_declared_final_theme_assets(
+    final_count: int,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load(CLI_PATH, f"self_hosted_runtime_final_assets_{final_count}")
+    repository, _, final_paths = _theme_identity_repository(
+        module,
+        tmp_path,
+        monkeypatch,
+        final_count=final_count,
+    )
+    verified = module._verify_self_hosted_runtime_identity(
+        repository, **_stage_binding(repository)
+    )
+    observed_final = tuple(
+        sorted(
+            path for path in verified if path in module._RUNTIME_FINAL_THEME_IMAGE_PATHS
+        )
+    )
+    assert observed_final == final_paths
+    assert len(verified) == len(module._RUNTIME_REQUIRED_PATHS) + final_count
+
+
+@pytest.mark.parametrize("mutation", ["extra-path", "missing-final", "row-hash"])
+def test_dynamic_theme_inventory_mismatch_refuses_before_working_payload_open(
+    mutation: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load(CLI_PATH, f"self_hosted_runtime_asset_mismatch_{mutation}")
+    repository, manifest, final_paths = _theme_identity_repository(
+        module,
+        tmp_path,
+        monkeypatch,
+        final_count=1,
+    )
+    value = json.loads(manifest.read_text(encoding="ascii"))
+    rows = value["paths"]
+    assert isinstance(rows, list) and len(final_paths) == 1
+    if mutation == "extra-path":
+        extra = repository / "unreviewed/theme-image.webp"
+        extra.parent.mkdir()
+        extra.write_bytes(_synthetic_webp(9))
+        rows.append(
+            {
+                "bytes": extra.stat().st_size,
+                "path": extra.relative_to(repository).as_posix(),
+                "sha256": hashlib.sha256(extra.read_bytes()).hexdigest(),
+            }
+        )
+    elif mutation == "missing-final":
+        rows[:] = [row for row in rows if row["path"] not in final_paths]
+    else:
+        matching = [row for row in rows if row["path"] in final_paths]
+        assert len(matching) == 1
+        matching[0]["sha256"] = "0" * 64
+    rows.sort(key=lambda row: row["path"])
+    manifest.write_text(
+        json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n",
+        encoding="ascii",
+    )
+    assert _git(repository, "add", ".").returncode == 0
+    assert _git(repository, "commit", "-qm", mutation).returncode == 0
+    original_read = module._read_runtime_file
+    opened: list[str] = []
+
+    def traced_read(
+        repository_root: Path,
+        relative: object,
+        *,
+        maximum_bytes: int,
+    ) -> bytes:
+        opened.append(str(relative))
+        return original_read(
+            repository_root,
+            relative,
+            maximum_bytes=maximum_bytes,
+        )
+
+    monkeypatch.setattr(module, "_read_runtime_file", traced_read)
+    with pytest.raises(module._RuntimeIdentityFailure):
+        module._verify_self_hosted_runtime_identity(
+            repository, **_stage_binding(repository)
+        )
+    assert opened == ["runtime-manifest.json"]
+
+
+@pytest.mark.parametrize(
+    "mutation", ["pending-untracked", "tracked-pending", "tracked-unlisted"]
+)
+def test_pending_theme_asset_presence_fails_closed_before_payload_import(
+    mutation: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load(CLI_PATH, f"self_hosted_runtime_pending_asset_{mutation}")
+    repository, _, _ = _theme_identity_repository(
+        module,
+        tmp_path,
+        monkeypatch,
+        final_count=0,
+    )
+    extra = repository / (
+        f"{module._THEME_RUNTIME_PREFIX}assets/images/unlisted.webp"
+        if mutation == "tracked-unlisted"
+        else module._RUNTIME_FINAL_THEME_IMAGE_PATHS[0]
+    )
+    extra.parent.mkdir(parents=True, exist_ok=True)
+    extra.write_bytes(_synthetic_webp(8))
+    if mutation != "pending-untracked":
+        assert (
+            _git(repository, "add", extra.relative_to(repository).as_posix()).returncode
+            == 0
+        )
+        assert _git(repository, "commit", "-qm", mutation).returncode == 0
+    with pytest.raises(module._RuntimeIdentityFailure):
+        module._verify_self_hosted_runtime_identity(
+            repository, **_stage_binding(repository)
+        )
+    assert not (repository / ".secrets").exists()
+
+
+def test_dirty_final_theme_asset_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load(CLI_PATH, "self_hosted_runtime_dirty_final_asset")
+    repository, _, final_paths = _theme_identity_repository(
+        module,
+        tmp_path,
+        monkeypatch,
+        final_count=1,
+    )
+    assert len(final_paths) == 1
+    (repository / final_paths[0]).write_bytes(_synthetic_webp(7))
+    with pytest.raises(module._RuntimeIdentityFailure):
+        module._verify_self_hosted_runtime_identity(
+            repository, **_stage_binding(repository)
+        )
+    assert not (repository / ".secrets").exists()
 
 
 def test_runtime_lineage_accepts_synthetic_squash_above_shipped_pr_base(
@@ -700,8 +1000,13 @@ def test_runtime_manifest_generator_check_is_current_and_inventory_matches() -> 
     assert generator.render_python_runtime_inventory() == python_inventory_bytes
     assert generator.render_python_runtime_inventory() == python_inventory_bytes
     paths = tuple(row["path"] for row in manifest["paths"])
+    resolved_paths, theme_manifest, final_assets = generator._resolved_runtime_paths()
+    assert final_assets == {}
+    assert cli._declared_final_theme_runtime_assets(theme_manifest) == {}
+    assert paths == resolved_paths
     assert paths == tuple(sorted(generator.REQUIRED_RUNTIME_PATHS))
     assert paths == tuple(sorted(cli._RUNTIME_REQUIRED_PATHS))
+    assert not set(paths).intersection(generator.FINAL_THEME_IMAGE_RUNTIME_PATHS)
     assert generator.APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
     assert cli._RUNTIME_APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
     assert manifest["approved_base_commit"] == SHIPPED_PR_BASE
@@ -780,6 +1085,103 @@ def test_runtime_manifest_generator_check_is_current_and_inventory_matches() -> 
         check=False,
     )
     assert checksum_check.returncode == 0, checksum_check.stderr
+
+
+@pytest.mark.parametrize("final_count", [0, 1, 2])
+def test_runtime_manifest_generator_inventory_tracks_declared_final_assets(
+    final_count: int,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    generator = _load(
+        GENERATOR_PATH,
+        f"self_hosted_runtime_generator_final_assets_{final_count}",
+    )
+    _, final_paths = _isolated_generator_inputs(
+        generator,
+        tmp_path,
+        monkeypatch,
+        final_count=final_count,
+    )
+    document = json.loads(generator.render())
+    paths = tuple(row["path"] for row in document["paths"])
+    assert paths == tuple(sorted((*generator.REQUIRED_RUNTIME_PATHS, *final_paths)))
+    assert len(paths) == len(generator.REQUIRED_RUNTIME_PATHS) + final_count
+
+
+def test_runtime_manifest_generator_and_cli_share_closed_asset_declaration() -> None:
+    generator = _load(GENERATOR_PATH, "self_hosted_runtime_asset_generator_parity")
+    module = _load(CLI_PATH, "self_hosted_runtime_asset_cli_parity")
+    for final_count in (0, 1, 2):
+        manifest_payload, _ = _theme_manifest_with_final_count(final_count)
+        assert generator._declared_final_theme_assets(
+            manifest_payload
+        ) == module._declared_final_theme_runtime_assets(manifest_payload)
+
+
+@pytest.mark.parametrize(
+    "unsafe_path",
+    [
+        "../outside.webp",
+        "/absolute.webp",
+        "assets\\images\\backslash.webp",
+        "assets/images-lookalike/image.webp",
+        "assets/images/unlisted.webp",
+    ],
+)
+def test_runtime_asset_declaration_rejects_arbitrary_paths(
+    unsafe_path: str,
+) -> None:
+    generator = _load(
+        GENERATOR_PATH,
+        f"self_hosted_runtime_asset_generator_invalid_{hashlib.sha256(unsafe_path.encode()).hexdigest()[:8]}",
+    )
+    module = _load(
+        CLI_PATH,
+        f"self_hosted_runtime_asset_cli_invalid_{hashlib.sha256(unsafe_path.encode()).hexdigest()[:8]}",
+    )
+    value = json.loads(THEME_ASSET_MANIFEST_PATH.read_text(encoding="utf-8"))
+    value["required_images"][0]["path"] = unsafe_path
+    payload = json.dumps(value, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    with pytest.raises(generator.RuntimeManifestFailure):
+        generator._declared_final_theme_assets(payload)
+    with pytest.raises(module._RuntimeIdentityFailure):
+        module._declared_final_theme_runtime_assets(payload)
+
+
+@pytest.mark.parametrize("mutation", ["pending-file", "final-hash", "final-symlink"])
+def test_runtime_manifest_generator_rejects_unreviewed_theme_asset_bytes(
+    mutation: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    generator = _load(
+        GENERATOR_PATH,
+        f"self_hosted_runtime_generator_asset_bytes_{mutation}",
+    )
+    final_count = 0 if mutation == "pending-file" else 1
+    root, final_paths = _isolated_generator_inputs(
+        generator,
+        tmp_path,
+        monkeypatch,
+        final_count=final_count,
+    )
+    if mutation == "pending-file":
+        target = root / generator.FINAL_THEME_IMAGE_RUNTIME_PATHS[0]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(_synthetic_webp(6))
+    else:
+        assert len(final_paths) == 1
+        target = root / final_paths[0]
+        if mutation == "final-hash":
+            target.write_bytes(_synthetic_webp(6))
+        else:
+            outside = tmp_path / "outside.webp"
+            outside.write_bytes(target.read_bytes())
+            target.unlink()
+            target.symlink_to(outside)
+    with pytest.raises(generator.RuntimeManifestFailure):
+        generator.render()
 
 
 def test_python_runtime_inventory_rejects_leading_zip_import_path(

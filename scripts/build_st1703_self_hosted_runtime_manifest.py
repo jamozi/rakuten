@@ -10,7 +10,7 @@ import os
 from pathlib import Path, PurePosixPath
 import stat
 import sys
-from typing import Final, NoReturn
+from typing import Any, Final, NoReturn, cast
 
 
 ROOT: Final = Path(__file__).resolve().parents[1]
@@ -82,6 +82,31 @@ REQUIRED_RUNTIME_PATHS: Final = (
     "scripts/self_hosted_wordpress.py",
     "scripts/self_hosted_wordpress_python.sh",
 )
+THEME_RUNTIME_PREFIX: Final = (
+    "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/"
+)
+THEME_ASSET_MANIFEST_RUNTIME_PATH: Final = f"{THEME_RUNTIME_PREFIX}raos-assets.v1.json"
+FINAL_THEME_IMAGE_RELATIVE_PATHS: Final = (
+    "assets/images/article-suitcase-guide.webp",
+    "assets/images/home-hero.webp",
+)
+FINAL_THEME_IMAGE_RUNTIME_PATHS: Final = tuple(
+    f"{THEME_RUNTIME_PREFIX}{relative}" for relative in FINAL_THEME_IMAGE_RELATIVE_PATHS
+)
+_THEME_MANIFEST_KEYS: Final = frozenset(
+    {
+        "schema",
+        "theme_slug",
+        "source_files",
+        "required_images",
+        "generated_by",
+        "package_command",
+        "check_command",
+    }
+)
+_THEME_IMAGE_KEYS: Final = frozenset(
+    {"path", "status", "sha256", "alt", "prompt", "usage"}
+)
 
 
 class RuntimeManifestFailure(RuntimeError):
@@ -103,6 +128,152 @@ def _safe_relative(value: str) -> PurePosixPath:
     ):
         _fail()
     return relative
+
+
+def _strict_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    value: dict[str, Any] = {}
+    for key, item in pairs:
+        if type(key) is not str or key in value:
+            _fail()
+        value[key] = item
+    return value
+
+
+def _declared_final_theme_assets(payload: bytes) -> dict[str, str]:
+    try:
+        parsed = json.loads(
+            payload.decode("utf-8", errors="strict"),
+            object_pairs_hook=_strict_pairs,
+            parse_constant=lambda _value: _fail(),
+        )
+    except RuntimeManifestFailure:
+        raise
+    except (UnicodeError, ValueError, TypeError, RecursionError):  # fmt: skip
+        _fail()
+    if type(parsed) is not dict:
+        _fail()
+    manifest = cast(dict[str, object], parsed)
+    if (
+        frozenset(manifest) != _THEME_MANIFEST_KEYS
+        or manifest.get("schema") != "RAOS_WORDPRESS_THEME_ASSETS_V1"
+        or manifest.get("theme_slug") != "kurashinoshirube-child"
+        or manifest.get("generated_by") != "scripts/build_st1703_self_hosted_theme.py"
+        or manifest.get("package_command")
+        != "make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-package"
+        or manifest.get("check_command")
+        != "make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-check"
+        or type(manifest.get("source_files")) is not list
+        or type(manifest.get("required_images")) is not list
+    ):
+        _fail()
+    images = cast(list[object], manifest["required_images"])
+    if len(images) != len(FINAL_THEME_IMAGE_RELATIVE_PATHS):
+        _fail()
+    expected_paths: set[str] = set(FINAL_THEME_IMAGE_RELATIVE_PATHS)
+    observed_paths: set[str] = set()
+    final_assets: dict[str, str] = {}
+    for item in images:
+        if type(item) is not dict:
+            _fail()
+        image = cast(dict[str, object], item)
+        path = image.get("path")
+        status = image.get("status")
+        digest = image.get("sha256")
+        if (
+            frozenset(image) != _THEME_IMAGE_KEYS
+            or type(path) is not str
+            or path not in expected_paths
+            or path in observed_paths
+            or type(image.get("alt")) is not str
+            or not cast(str, image["alt"]).strip()
+            or type(image.get("prompt")) is not str
+            or not cast(str, image["prompt"]).strip()
+            or type(image.get("usage")) is not str
+            or not cast(str, image["usage"]).strip()
+            or status not in {"PENDING_FINAL_ASSET", "FINAL"}
+        ):
+            _fail()
+        observed_paths.add(path)
+        runtime_path = f"{THEME_RUNTIME_PREFIX}{path}"
+        if status == "PENDING_FINAL_ASSET":
+            if digest is not None:
+                _fail()
+            continue
+        if (
+            type(digest) is not str
+            or len(digest) != 64
+            or any(character not in "0123456789abcdef" for character in digest)
+        ):
+            _fail()
+        final_assets[runtime_path] = digest
+    if observed_paths != expected_paths:
+        _fail()
+    return final_assets
+
+
+def _require_owned_path_absent(relative_value: str) -> None:
+    relative = _safe_relative(relative_value)
+    root_descriptor = -1
+    parent_descriptor = -1
+    try:
+        root_descriptor = os.open(
+            ROOT,
+            os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
+        )
+        parent_descriptor = os.dup(root_descriptor)
+        for part in relative.parts[:-1]:
+            try:
+                child = os.open(
+                    part,
+                    os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
+                    dir_fd=parent_descriptor,
+                )
+            except FileNotFoundError:
+                return
+            os.close(parent_descriptor)
+            parent_descriptor = child
+        try:
+            os.stat(
+                relative.parts[-1],
+                dir_fd=parent_descriptor,
+                follow_symlinks=False,
+            )
+        except FileNotFoundError:
+            return
+        _fail()
+    except RuntimeManifestFailure:
+        raise
+    except (OSError, ValueError):  # fmt: skip
+        _fail()
+    finally:
+        for opened in (parent_descriptor, root_descriptor):
+            if opened >= 0:
+                try:
+                    os.close(opened)
+                except OSError:
+                    pass
+
+
+def _resolved_runtime_paths() -> tuple[tuple[str, ...], bytes, dict[str, str]]:
+    if (
+        THEME_ASSET_MANIFEST_RUNTIME_PATH not in REQUIRED_RUNTIME_PATHS
+        or set(REQUIRED_RUNTIME_PATHS).intersection(FINAL_THEME_IMAGE_RUNTIME_PATHS)
+        or len(set(REQUIRED_RUNTIME_PATHS)) != len(REQUIRED_RUNTIME_PATHS)
+        or len(set(FINAL_THEME_IMAGE_RUNTIME_PATHS))
+        != len(FINAL_THEME_IMAGE_RUNTIME_PATHS)
+    ):
+        _fail()
+    theme_manifest = _read_owned_regular(
+        THEME_ASSET_MANIFEST_RUNTIME_PATH,
+        maximum_bytes=MAX_RUNTIME_FILE_BYTES,
+    )
+    final_assets = _declared_final_theme_assets(theme_manifest)
+    for pending_path in set(FINAL_THEME_IMAGE_RUNTIME_PATHS) - set(final_assets):
+        _require_owned_path_absent(pending_path)
+    runtime_paths = tuple(sorted((*REQUIRED_RUNTIME_PATHS, *final_assets)))
+    if len(set(runtime_paths)) != len(runtime_paths):
+        _fail()
+    return runtime_paths, theme_manifest, final_assets
 
 
 def _read_owned_regular(relative_value: str, *, maximum_bytes: int) -> bytes:
@@ -523,12 +694,22 @@ def render_python_runtime_inventory() -> bytes:
 
 
 def render() -> bytes:
-    runtime_paths = tuple(sorted(REQUIRED_RUNTIME_PATHS))
-    if len(set(runtime_paths)) != len(runtime_paths):
-        _fail()
+    runtime_paths, theme_manifest, final_assets = _resolved_runtime_paths()
     entries: list[dict[str, object]] = []
     for relative in runtime_paths:
-        payload = _read_owned_regular(relative, maximum_bytes=MAX_RUNTIME_FILE_BYTES)
+        payload = (
+            theme_manifest
+            if relative == THEME_ASSET_MANIFEST_RUNTIME_PATH
+            else _read_owned_regular(relative, maximum_bytes=MAX_RUNTIME_FILE_BYTES)
+        )
+        declared_digest = final_assets.get(relative)
+        if declared_digest is not None and (
+            len(payload) < 12
+            or payload[:4] != b"RIFF"
+            or payload[8:12] != b"WEBP"
+            or hashlib.sha256(payload).hexdigest() != declared_digest
+        ):
+            _fail()
         entries.append(
             {
                 "bytes": len(payload),
@@ -536,6 +717,16 @@ def render() -> bytes:
                 "sha256": hashlib.sha256(payload).hexdigest(),
             }
         )
+    if (
+        _read_owned_regular(
+            THEME_ASSET_MANIFEST_RUNTIME_PATH,
+            maximum_bytes=MAX_RUNTIME_FILE_BYTES,
+        )
+        != theme_manifest
+    ):
+        _fail()
+    for pending_path in set(FINAL_THEME_IMAGE_RUNTIME_PATHS) - set(final_assets):
+        _require_owned_path_absent(pending_path)
     document = {
         "approved_base_commit": APPROVED_BASE_COMMIT,
         "external_action_authority": "NONE",

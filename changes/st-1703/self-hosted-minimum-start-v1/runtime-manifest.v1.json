@@ -4,9 +4,9 @@
   "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 7300,
+      "bytes": 7894,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "f601081cc45ab66d4db414a1dccc105944ba51b3562a17f156a6c5c2ebc621dd"
+      "sha256": "5c64cf80a1ac8db8b5001e981ea8a68924b73e7b759a2962fa796d9b824e03c9"
     },
     {
       "bytes": 2954,
@@ -124,9 +124,9 @@
       "sha256": "9845c347015012bfe3fdaea4b3a58d2923a15b5bc7c7de03bd4f5e94df4812d3"
     },
     {
-      "bytes": 38184,
+      "bytes": 48302,
       "path": "scripts/self_hosted_wordpress.py",
-      "sha256": "bba84867e994dffdbf3ee692e992efe28758d1d0ad9b688f60d59826fe487e03"
+      "sha256": "bfd21e01b3cdfacada1bd837e4a4e62650b8525ff041fb131a8a2871abd1e41f"
     },
     {
       "bytes": 21688,

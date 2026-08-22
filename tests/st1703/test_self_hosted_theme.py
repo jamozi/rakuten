@@ -119,6 +119,15 @@ def test_complete_fixture_packages_deterministically_and_checks_read_only(
 ) -> None:
     root = _isolated_theme(monkeypatch, tmp_path)
     _complete_assets(root)
+    verified_payloads = {
+        path.relative_to(root).as_posix(): path.read_bytes()
+        for path in root.rglob("*")
+        if path.is_file()
+    }
+    verified = theme.source_check_from_verified_files(verified_payloads)
+    assert verified["asset_status"] == "FINAL"
+    assert verified["package_ready"] is True
+    assert verified["pending_asset_count"] == 0
 
     first = theme.package_bytes()
     second = theme.package_bytes()

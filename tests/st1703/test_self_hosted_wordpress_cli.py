@@ -88,6 +88,43 @@ def test_doctor_is_metadata_only_and_has_zero_network_or_external_writes(
     assert not (tmp_path / ".secrets").exists()
 
 
+def test_main_projects_verified_final_webp_bytes_into_theme_doctor(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    image_path = "assets/images/home-hero.webp"
+    image_bytes = b"RIFF\x0c\x00\x00\x00WEBPsynthetic"
+    monkeypatch.setattr(cli, "_runtime_authorized", True)
+    monkeypatch.setattr(
+        cli,
+        "_verified_runtime_bytes",
+        {
+            cli._CONTENT_PACKET_RUNTIME_PATH: b"synthetic-bound-packet",
+            f"{cli._THEME_RUNTIME_PREFIX}{image_path}": image_bytes,
+        },
+    )
+    monkeypatch.setattr(cli, "_physical_repository_root", lambda root: root)
+    observed: dict[str, bytes] = {}
+
+    def doctor(
+        repository_root: Path,
+        *,
+        content_packet_bytes: bytes | None,
+        theme_payloads: dict[str, bytes] | None,
+    ) -> dict[str, object]:
+        assert repository_root == tmp_path
+        assert content_packet_bytes == b"synthetic-bound-packet"
+        assert theme_payloads is not None
+        observed.update(theme_payloads)
+        return {"status": "SYNTHETIC_LOCAL_ONLY"}
+
+    monkeypatch.setattr(cli, "_doctor", doctor)
+    assert cli.main(["doctor"], repository_root=tmp_path) == 0
+    assert observed == {image_path: image_bytes}
+    assert json.loads(capsys.readouterr().out) == {"status": "SYNTHETIC_LOCAL_ONLY"}
+
+
 def test_hidden_installer_prints_no_values_and_creates_owner_private_json(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,

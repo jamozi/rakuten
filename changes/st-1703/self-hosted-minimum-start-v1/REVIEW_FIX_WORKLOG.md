@@ -35,6 +35,15 @@ remain in deployed squash/cherry-pick ancestry.
    PR base. The generator, manifest, shell stage, and Python verifier now bind
    lineage to the guaranteed shipped base while retaining exact clean `HEAD`,
    committed-blob capture, closed byte inventory, and pre-capability refusal.
+4. The fixed 26-path inventory omitted future finalized theme-image bytes, so
+   a valid `FINAL` asset manifest could still leave offline doctor without the
+   WebP payloads it must validate. The generator and pre-import verifier now
+   derive zero to two optional rows only from the fixed committed asset
+   manifest and its two exact allowlisted paths. They bind declared and actual
+   SHA-256, RIFF/WEBP shape, exact tracked image inventory, pending-path absence,
+   matching `HEAD` blobs, and clean working bytes. Arbitrary paths, globs,
+   symlinks, undeclared tracked files, untracked/dirty bytes and stale rows fail
+   closed; the current two-pending/no-image state remains unchanged.
 
 ## Authority and evidence boundary
 
@@ -46,9 +55,9 @@ report, not promoted to any external status.
 
 ## Local verification freeze (2026-08-23)
 
-- focused runtime/CLI/theme/content: `81 passed, 1 skipped`; the skip is the
+- focused runtime/CLI/theme: `81 passed, 1 skipped`; the skip is the
   intentional exact-root launcher integration test in a linked worktree;
-- complete isolated `tests/st1703`: `909 passed, 1 skipped` for the same reason;
+- complete isolated `tests/st1703`: `932 passed, 1 skipped` for the same reason;
 - lineage regression imports only the shipped `b5a6157b` base into a temporary
   repository, accepts its one-commit synthetic squash descendant without the
   branch-local review object, and rejects an unrelated identical-tree `HEAD`
@@ -67,6 +76,10 @@ report, not promoted to any external status.
 - independent follow-up runtime-lineage review: `PASS`, with no remaining
   material P1 finding; Ruff/format, mypy, Pyright, and shell syntax also pass
   for the follow-up delta.
+- independent finalized-theme-asset inventory security review: `PASS`, with no
+  remaining material P1/P2 finding; the reviewer confirmed committed-manifest
+  derivation, fixed-path closure, pending absence, descriptor-bound reads,
+  clean-byte enforcement, and verified-byte doctor/theme projection.
 
 The integrated exact-root doctor, credential access, provider/network call,
 draft write, browser operation, hosted CI, activation, publication, formal
