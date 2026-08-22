@@ -30,10 +30,10 @@ predecessors:
     binding: EXACT_COMMITTED_OWNED_BYTES
     artifacts:
       changes/st-0604/README.md: 5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8
-      changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml: a537df987b1691234665ad38ef6a69c8eae64461d5f8f059e00dd25401484cd7
-      changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json: e6f9c3e17cdc5255f1707abfd1c293fb2763fb5bff2e7ccf9cd814b9c6f0969e
-      changes/st-0604/manifest.yaml: e91045fc16dc6e60e952a73feffd80ddb50fa516f3a58888601a97697450eef1
-      scripts/build_st0604_source_packet_lifecycle_reference_plan.py: c6ded6307d4c7eb2c5d1c4e9d80c0095e7b52e5a53541ed1d7f6e481f01bb97c
+      changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml: 79ccf0fd86d85c0945bb87228a0fbd734565ce5d4f7fff63112dad1134ea85fe
+      changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json: 4b8740c82470d356b8f203b9bba4da287a2248414c73d1344ab4c7cb1800fa65
+      changes/st-0604/manifest.yaml: fe711a1d2ddff1dab841fc6a326add4d27e8690a73335b2a1d12e3555d607258
+      scripts/build_st0604_source_packet_lifecycle_reference_plan.py: 81d5947168c8fec7d7c4f219db7467d41f68886e26eb95768cd94adb596d0f70
       tests/st0604/conftest.py: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
       tests/st0604/test_contract.py: 68c3fad0196b6fc353dd354c172d32dcc64106474754a54665f362a51b415462
       tests/st0604/test_generation.py: 5ed32f62c06924f3f6931fb827a6c68dc4ffcbd415ddc6b8ece54c66e93a9cca
