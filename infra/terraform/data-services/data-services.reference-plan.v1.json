@@ -1,8 +1,13 @@
 {
   "activation": {
+    "backup_action": "FORBIDDEN",
+    "credential_access": "FORBIDDEN",
+    "deploy_action": "FORBIDDEN",
+    "destructive_action": "FORBIDDEN",
     "enabled": false,
     "external_writes": "FORBIDDEN",
     "live_provider_calls": "FORBIDDEN",
+    "migration_action": "FORBIDDEN",
     "native_commands": {
       "apply": "FORBIDDEN",
       "destroy": "FORBIDDEN",
@@ -12,10 +17,15 @@
       "refresh": "FORBIDDEN"
     },
     "native_plan_status": "NOT_EXECUTED",
+    "network_access": "FORBIDDEN",
+    "production_action": "FORBIDDEN",
+    "redrive_action": "FORBIDDEN",
+    "release_action": "FORBIDDEN",
+    "restore_action": "FORBIDDEN",
     "status": "DISABLED"
   },
   "document": {
-    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN",
+    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN",
     "executable": false,
     "generated_by": "repo://scripts/build_st1502_data_services.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st1502_data_services.py",
@@ -23,120 +33,112 @@
     "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
     "source_contract": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
     "story_id": "ST-1502",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "logical_data_services": {
-    "kms": {
+    "data_boundary": {
+      "backup_region": null,
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_DATA_BOUNDARY_INTENT_ONLY",
+      "cross_border_transfer": "NOT_EVALUATED",
+      "data_residency_evidence": "REQUIRED_NOT_CONFIGURED",
+      "development_production_isolation": "REQUIRED_NOT_CONFIGURED",
+      "direct_public_database_access": "FORBIDDEN",
+      "direct_public_object_admin_access": "FORBIDDEN",
+      "direct_public_queue_admin_access": "FORBIDDEN",
+      "od_013_status": "HUMAN_DECISION_REQUIRED",
+      "od_014_status": "HUMAN_DECISION_REQUIRED",
+      "od_015_status": "EXTERNAL_EVIDENCE_REQUIRED",
+      "private_data_plane": "REQUIRED_NOT_CONFIGURED",
+      "production_region": null
+    },
+    "key_management": {
       "aliases": [],
       "audit_logging": "REQUIRED_NOT_CONFIGURED",
-      "classification": "LOGICAL_ENCRYPTION_INTENT_ONLY",
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_ENCRYPTION_INTENT_ONLY",
       "deletion_window_days": null,
       "encryption": "REQUIRED",
-      "key_arns": [],
       "key_deletion": "FORBIDDEN",
-      "key_ids": [],
+      "key_identifiers": [],
+      "key_references": [],
       "policy_document": null,
+      "recovery": "REQUIRED_NOT_CONFIGURED",
       "rotation": "REQUIRED_NOT_CONFIGURED",
+      "transport_encryption": "REQUIRED_NOT_CONFIGURED",
       "workload_least_privilege": "REQUIRED_NOT_CONFIGURED"
     },
-    "rds": {
-      "backup": "REQUIRED_NOT_CONFIGURED",
-      "classification": "LOGICAL_SERVICE_INTENT_ONLY",
-      "deletion_protection": "REQUIRED_NOT_CONFIGURED",
-      "encryption_at_rest": "REQUIRED_NOT_CONFIGURED",
-      "final_snapshot": "REQUIRED_NOT_CONFIGURED",
-      "point_in_time_recovery": "REQUIRED_NOT_CONFIGURED",
-      "private_only": "REQUIRED",
-      "publicly_accessible": false,
-      "restore_test": "REQUIRED_NOT_EXECUTED",
-      "selected": {
-        "backup_region": null,
-        "backup_retention_days": null,
-        "database_name": null,
-        "endpoint": null,
-        "engine_version": null,
-        "instance_class": null,
-        "kms_key_reference": null,
-        "multi_az": null,
-        "password_secret_reference": null,
-        "port": null,
-        "storage_class": null,
-        "storage_gib": null,
-        "subnet_ids": [],
-        "username": null
-      },
-      "service": "PostgreSQL"
-    },
-    "s3": {
+    "object_storage": {
       "automatic_deletion": "FORBIDDEN",
-      "classification": "LOGICAL_BUCKET_ROLE_INTENT_ONLY",
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_SERVICE_INTENT_ONLY",
       "encryption_at_rest": "REQUIRED_NOT_CONFIGURED",
       "force_destroy": "FORBIDDEN",
       "lifecycle_deletion": "FORBIDDEN",
       "lifecycle_rules": [],
-      "public_access_block": "REQUIRED",
+      "public_access": "FORBIDDEN",
       "retention_days": null,
       "roles": [
         {
-          "arn": null,
           "deletion_role_separation": "REQUIRED_NOT_CONFIGURED",
           "immutability": "REQUIRED_NOT_CONFIGURED",
           "integrity_metadata": "REQUIRED_NOT_CONFIGURED",
           "physical_name": null,
+          "resource_identifier": null,
           "role": "raw"
         },
         {
-          "arn": null,
           "physical_name": null,
+          "resource_identifier": null,
           "role": "publication"
         },
         {
-          "arn": null,
           "physical_name": null,
+          "resource_identifier": null,
           "role": "uploads_quarantine"
         },
         {
-          "arn": null,
           "physical_name": null,
+          "resource_identifier": null,
           "role": "exports"
         },
         {
-          "arn": null,
           "physical_name": null,
+          "resource_identifier": null,
           "role": "audit_logs"
         }
       ],
       "selected_encryption_key_reference": null,
+      "service_contract": "PRIVATE_VERSIONED_OBJECT_STORAGE",
+      "transport_encryption": "REQUIRED_NOT_CONFIGURED",
       "versioning": "REQUIRED_NOT_CONFIGURED"
     },
-    "secrets_manager": {
-      "ambient_credential_resolution": "FORBIDDEN",
-      "classification": "METADATA_INTENT_ONLY",
-      "environment_credential_resolution": "FORBIDDEN",
-      "rotation": "REQUIRED_NOT_CONFIGURED",
-      "secret_arns": [],
-      "secret_names": [],
-      "secret_values": "ABSENT",
-      "workload_least_privilege": "REQUIRED_NOT_CONFIGURED"
+    "observability": {
+      "actionable_alert_owner_and_runbook": "REQUIRED_NOT_CONFIGURED",
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_OBSERVABILITY_INTENT_ONLY",
+      "configuration_drift_detection": "REQUIRED_NOT_CONFIGURED",
+      "database_health_capacity_backup_metrics": "REQUIRED_NOT_CONFIGURED",
+      "object_integrity_version_backup_metrics": "REQUIRED_NOT_CONFIGURED",
+      "queue_depth_age_retry_dlq_metrics": "REQUIRED_NOT_CONFIGURED",
+      "secret_and_key_access_audit": "REQUIRED_NOT_CONFIGURED",
+      "sensitive_telemetry": "FORBIDDEN"
     },
-    "sqs": {
+    "queue": {
       "classes": [
         {
           "class": "ingestion",
           "dlq": "REQUIRED_NOT_CONFIGURED",
           "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_control": "REQUIRED_NOT_CONFIGURED",
           "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
           "selected": {
             "delay_seconds": null,
-            "dlq_arn": null,
+            "dlq_endpoint": null,
             "dlq_name": null,
-            "dlq_url": null,
-            "fifo": null,
+            "dlq_resource_identifier": null,
+            "endpoint": null,
             "max_receive_count": null,
+            "ordering_mode": null,
             "physical_name": null,
             "policy_document": null,
-            "queue_arn": null,
-            "queue_url": null,
+            "resource_identifier": null,
             "retention_seconds": null,
             "visibility_timeout_seconds": null
           }
@@ -145,18 +147,19 @@
           "class": "ai",
           "dlq": "REQUIRED_NOT_CONFIGURED",
           "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_control": "REQUIRED_NOT_CONFIGURED",
           "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
           "selected": {
             "delay_seconds": null,
-            "dlq_arn": null,
+            "dlq_endpoint": null,
             "dlq_name": null,
-            "dlq_url": null,
-            "fifo": null,
+            "dlq_resource_identifier": null,
+            "endpoint": null,
             "max_receive_count": null,
+            "ordering_mode": null,
             "physical_name": null,
             "policy_document": null,
-            "queue_arn": null,
-            "queue_url": null,
+            "resource_identifier": null,
             "retention_seconds": null,
             "visibility_timeout_seconds": null
           }
@@ -165,18 +168,19 @@
           "class": "quality",
           "dlq": "REQUIRED_NOT_CONFIGURED",
           "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_control": "REQUIRED_NOT_CONFIGURED",
           "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
           "selected": {
             "delay_seconds": null,
-            "dlq_arn": null,
+            "dlq_endpoint": null,
             "dlq_name": null,
-            "dlq_url": null,
-            "fifo": null,
+            "dlq_resource_identifier": null,
+            "endpoint": null,
             "max_receive_count": null,
+            "ordering_mode": null,
             "physical_name": null,
             "policy_document": null,
-            "queue_arn": null,
-            "queue_url": null,
+            "resource_identifier": null,
             "retention_seconds": null,
             "visibility_timeout_seconds": null
           }
@@ -185,18 +189,19 @@
           "class": "publication",
           "dlq": "REQUIRED_NOT_CONFIGURED",
           "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_control": "REQUIRED_NOT_CONFIGURED",
           "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
           "selected": {
             "delay_seconds": null,
-            "dlq_arn": null,
+            "dlq_endpoint": null,
             "dlq_name": null,
-            "dlq_url": null,
-            "fifo": null,
+            "dlq_resource_identifier": null,
+            "endpoint": null,
             "max_receive_count": null,
+            "ordering_mode": null,
             "physical_name": null,
             "policy_document": null,
-            "queue_arn": null,
-            "queue_url": null,
+            "resource_identifier": null,
             "retention_seconds": null,
             "visibility_timeout_seconds": null
           }
@@ -205,18 +210,19 @@
           "class": "freshness",
           "dlq": "REQUIRED_NOT_CONFIGURED",
           "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_control": "REQUIRED_NOT_CONFIGURED",
           "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
           "selected": {
             "delay_seconds": null,
-            "dlq_arn": null,
+            "dlq_endpoint": null,
             "dlq_name": null,
-            "dlq_url": null,
-            "fifo": null,
+            "dlq_resource_identifier": null,
+            "endpoint": null,
             "max_receive_count": null,
+            "ordering_mode": null,
             "physical_name": null,
             "policy_document": null,
-            "queue_arn": null,
-            "queue_url": null,
+            "resource_identifier": null,
             "retention_seconds": null,
             "visibility_timeout_seconds": null
           }
@@ -225,18 +231,19 @@
           "class": "analytics",
           "dlq": "REQUIRED_NOT_CONFIGURED",
           "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_control": "REQUIRED_NOT_CONFIGURED",
           "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
           "selected": {
             "delay_seconds": null,
-            "dlq_arn": null,
+            "dlq_endpoint": null,
             "dlq_name": null,
-            "dlq_url": null,
-            "fifo": null,
+            "dlq_resource_identifier": null,
+            "endpoint": null,
             "max_receive_count": null,
+            "ordering_mode": null,
             "physical_name": null,
             "policy_document": null,
-            "queue_arn": null,
-            "queue_url": null,
+            "resource_identifier": null,
             "retention_seconds": null,
             "visibility_timeout_seconds": null
           }
@@ -245,78 +252,360 @@
           "class": "notification",
           "dlq": "REQUIRED_NOT_CONFIGURED",
           "producer_consumer_separation": "REQUIRED_NOT_CONFIGURED",
+          "redrive_control": "REQUIRED_NOT_CONFIGURED",
           "redrive_role_separation": "REQUIRED_NOT_CONFIGURED",
           "selected": {
             "delay_seconds": null,
-            "dlq_arn": null,
+            "dlq_endpoint": null,
             "dlq_name": null,
-            "dlq_url": null,
-            "fifo": null,
+            "dlq_resource_identifier": null,
+            "endpoint": null,
             "max_receive_count": null,
+            "ordering_mode": null,
             "physical_name": null,
             "policy_document": null,
-            "queue_arn": null,
-            "queue_url": null,
+            "resource_identifier": null,
             "retention_seconds": null,
             "visibility_timeout_seconds": null
           }
         }
       ],
-      "classification": "LOGICAL_QUEUE_CLASS_INTENT_ONLY"
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_SERVICE_INTENT_ONLY",
+      "consumer_idempotency": "REQUIRED_NOT_CONFIGURED",
+      "delivery_semantics": "AT_LEAST_ONCE_REQUIRED_NOT_CONFIGURED",
+      "duplicate_delivery": "EXPECTED",
+      "service_contract": "AT_LEAST_ONCE_MESSAGE_QUEUE_WITH_DLQ",
+      "transport_encryption": "REQUIRED_NOT_CONFIGURED"
+    },
+    "recovery": {
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_RECOVERY_INTENT_ONLY",
+      "configuration_reconstruction": "REQUIRED_NOT_CONFIGURED",
+      "formal_tst_029": "NOT_EXECUTED",
+      "isolated_restore_environment": "REQUIRED_NOT_CONFIGURED",
+      "object_version_and_manifest_recovery": "REQUIRED_NOT_CONFIGURED",
+      "relational_backup_and_pitr": "REQUIRED_NOT_CONFIGURED",
+      "relational_snapshot_or_equivalent": "REQUIRED_NOT_CONFIGURED",
+      "role_grant_and_integrity_validation": "REQUIRED_NOT_CONFIGURED",
+      "rpo_rto_measurement": "REQUIRED_NOT_EXECUTED",
+      "secret_reissuance": "REQUIRED_NOT_CONFIGURED",
+      "selected_restore_environment": null
+    },
+    "relational_persistence": {
+      "backup": "REQUIRED_NOT_CONFIGURED",
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_SERVICE_INTENT_ONLY",
+      "deletion_protection": "REQUIRED_NOT_CONFIGURED",
+      "encryption_at_rest": "REQUIRED_NOT_CONFIGURED",
+      "expand_migrate_contract": "REQUIRED",
+      "final_snapshot_or_equivalent": "REQUIRED_NOT_CONFIGURED",
+      "migration_framework_compatibility": "REQUIRED_NOT_CONFIGURED",
+      "point_in_time_recovery": "REQUIRED_NOT_CONFIGURED",
+      "private_only": "REQUIRED",
+      "publicly_accessible": false,
+      "restore_test": "REQUIRED_NOT_EXECUTED",
+      "selected": {
+        "backup_region": null,
+        "backup_retention_days": null,
+        "database_name": null,
+        "deployment_class": null,
+        "encryption_key_reference": null,
+        "endpoint": null,
+        "engine_version": null,
+        "high_availability_mode": null,
+        "network_segment_ids": [],
+        "password_secret_reference": null,
+        "port": null,
+        "storage_capacity_gib": null,
+        "storage_profile": null,
+        "username": null
+      },
+      "service_contract": "POSTGRESQL_COMPATIBLE_RELATIONAL_PERSISTENCE",
+      "tls_in_transit": "REQUIRED_NOT_CONFIGURED",
+      "transport_encryption": "REQUIRED_NOT_CONFIGURED"
+    },
+    "secrets": {
+      "access_audit": "REQUIRED_NOT_CONFIGURED",
+      "ambient_credential_resolution": "FORBIDDEN",
+      "classification": "LOGICAL_PROVIDER_NEUTRAL_METADATA_INTENT_ONLY",
+      "environment_credential_resolution": "FORBIDDEN",
+      "recovery_or_reissuance": "REQUIRED_NOT_CONFIGURED",
+      "rotation": "REQUIRED_NOT_CONFIGURED",
+      "secret_names": [],
+      "secret_references": [],
+      "secret_values": "ABSENT",
+      "transport_encryption": "REQUIRED_NOT_CONFIGURED",
+      "workload_least_privilege": "REQUIRED_NOT_CONFIGURED"
     }
   },
   "planned_actions": {
+    "backup": 0,
     "create": 0,
     "delete": 0,
+    "migrate": 0,
+    "redrive": 0,
+    "restore": 0,
+    "rotate": 0,
     "update": 0
   },
   "predecessor_binding": {
-    "contract_sha256": "3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2",
+    "contract_sha256": "c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6",
     "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
+    "design_handoff_sha256": "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61",
+    "design_handoff_uri": "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
     "extension_kind": "DATA_SERVICES",
-    "reference_plan_sha256": "877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f",
+    "reference_plan_sha256": "c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559",
     "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
     "required_activation_status": "DISABLED",
+    "required_admission_status": "NOT_EVALUATED",
+    "required_eligible": false,
     "required_planned_actions": {
       "create": 0,
       "delete": 0,
       "update": 0
     },
+    "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
     "required_resource_payloads": "FORBIDDEN",
     "story_id": "ST-1501"
   },
+  "provider_neutral_data_services_admission": {
+    "admission_status": "NOT_EVALUATED",
+    "aws_reference_boundary": {
+      "admission_requirement": false,
+      "default": false,
+      "eligibility_shortcut": false,
+      "evidence_substitute": false,
+      "implicit_fallback": false,
+      "role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+      "selected_binding": false
+    },
+    "binding_policy": {
+      "account_or_project": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "data_services_plugin_or_adapter": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "implicit_binding": "FORBIDDEN",
+      "key_management": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "name_or_reference_only_eligibility": "FORBIDDEN",
+      "object_storage": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "provider": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "queue": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "region": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "relational_persistence": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "secrets": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      }
+    },
+    "capability_mapping_requirements": [
+      {
+        "capability_id": "relational_postgresql_compatible_persistence_and_migrations",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "PRIVATE_ENCRYPTED_POSTGRESQL_COMPATIBLE_PERSISTENCE_WITH_CONTROLLED_MIGRATIONS",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "immutable_versioned_object_storage_and_integrity",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "PRIVATE_ENCRYPTED_VERSIONED_OBJECT_STORAGE_WITH_REQUIRED_IMMUTABILITY_AND_INTEGRITY",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "at_least_once_queue_dlq_and_idempotency",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "AT_LEAST_ONCE_DELIVERY_WITH_DLQ_REDIVE_ALERTING_AND_IDEMPOTENT_CONSUMERS",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "workload_secrets_and_key_management",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "NON_AMBIENT_LEAST_PRIVILEGE_ROTATABLE_SECRETS_AND_KEYS_WITH_AUDIT",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "data_service_backup_restore_and_recovery",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "RELATIONAL_OBJECT_CONFIGURATION_AND_SECRET_RECOVERY_WITH_ISOLATED_RESTORE_DRILL",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "data_service_observability_audit_and_alerting",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "DATABASE_STORAGE_QUEUE_SECRET_KEY_TELEMETRY_AUDIT_ALERTING_AND_DRIFT_EVIDENCE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "environment_and_private_data_plane_isolation",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "SEPARATE_DEVELOPMENT_PRODUCTION_AND_PRIVATE_DATA_PLANE_BOUNDARIES",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "region_and_data_residency",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "APPROVED_PRIMARY_BACKUP_CROSS_BORDER_AND_DATA_RESIDENCY_EVIDENCE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "human_approved_release_migration_and_rollback",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "HUMAN_APPROVED_IAC_MIGRATION_PROMOTION_ROLLBACK_AND_RECOVERY",
+        "selected_mapping": null
+      }
+    ],
+    "classification": "STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION",
+    "concrete_alternate_provider_selected": false,
+    "cross_capability_security_policy": {
+      "encryption_at_rest": "REQUIRED_FOR_ALL_PERSISTED_DATA",
+      "selected_exceptions": [],
+      "transport_encryption": "REQUIRED_FOR_ALL_DATA_SERVICE_INTERACTIONS"
+    },
+    "default_profile_id": null,
+    "eligibility_condition": "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE",
+    "eligible": false,
+    "eligible_profile_kinds": [
+      "AWS",
+      "OTHER_CLOUD",
+      "OWNER_MANAGED_INFRASTRUCTURE"
+    ],
+    "evidence_equivalence_policy": {
+      "identical_backup_restore_evidence": "REQUIRED",
+      "identical_isolation_evidence": "REQUIRED",
+      "identical_migration_compatibility_evidence": "REQUIRED",
+      "identical_operations_evidence": "REQUIRED",
+      "identical_region_residency_evidence": "REQUIRED",
+      "identical_release_evidence": "REQUIRED",
+      "identical_security_evidence": "REQUIRED",
+      "identical_transport_encryption_evidence": "REQUIRED",
+      "local_test_as_live_evidence": "FORBIDDEN",
+      "provider_label_as_evidence": "FORBIDDEN",
+      "reference_metadata_as_evidence": "FORBIDDEN",
+      "service_label_as_evidence": "FORBIDDEN"
+    },
+    "fallback_profile_id": null,
+    "mapping_policy": {
+      "complete_mapping": false,
+      "configured_mapping_count": 0,
+      "duplicate_mapping": "REJECT",
+      "implicit_mapping": "REJECT",
+      "missing_mapping": "REJECT",
+      "partial_mapping": "REJECT",
+      "provider_label_only_mapping": "REJECT",
+      "reference_only_mapping": "REJECT",
+      "required_capability_count": 9,
+      "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+      "service_label_only_mapping": "REJECT",
+      "unknown_mapping": "REJECT"
+    },
+    "selected_profile_id": null,
+    "selected_profile_kind": null,
+    "selected_provider_name": null
+  },
   "reference_architecture": {
-    "classification": "INHERITED_REFERENCE_METADATA_ONLY",
+    "admission_requirement": false,
+    "classification": "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY",
     "cloud": "AWS",
+    "default": false,
+    "eligibility_shortcut": false,
+    "evidence_substitute": false,
+    "implicit_fallback": false,
+    "inherited_from": "INT-DEC-007",
     "portable_core_required": true,
-    "region": "ap-northeast-1"
+    "region": "ap-northeast-1",
+    "selected_binding": false,
+    "service_mappings": [
+      {
+        "capability_id": "relational_postgresql_compatible_persistence_and_migrations",
+        "reference_name": "RDS"
+      },
+      {
+        "capability_id": "immutable_versioned_object_storage_and_integrity",
+        "reference_name": "S3"
+      },
+      {
+        "capability_id": "at_least_once_queue_dlq_and_idempotency",
+        "reference_name": "SQS"
+      },
+      {
+        "capability_id": "workload_secrets_and_key_management",
+        "reference_name": "Secrets Manager"
+      },
+      {
+        "capability_id": "workload_secrets_and_key_management",
+        "reference_name": "KMS"
+      }
+    ]
   },
   "selected_configuration": {
-    "availability_zones": [],
-    "aws_account_id": null,
     "backup_region": null,
-    "cloud_provider": null,
     "credential_source": null,
-    "network_cidrs": [],
+    "data_services_plugin_or_adapter": null,
+    "key_management_service_binding": null,
+    "network_segment_ids": [],
+    "object_storage_service_binding": null,
     "physical_resource_definitions": [],
     "production_region": null,
-    "provider_plugins": [],
-    "security_group_ids": [],
-    "state_backend": null,
-    "subnet_ids": [],
-    "terraform_cli_version": null
+    "provider_account_or_project": null,
+    "provider_name": null,
+    "queue_service_binding": null,
+    "relational_service_binding": null,
+    "secrets_service_binding": null,
+    "traffic_control_policy_ids": []
   },
   "verification_boundary": {
-    "aws_account": "UNSET",
     "credentials": "ABSENT",
     "effective_canonical_status": "UNCHANGED",
-    "executable_terraform": "ABSENT",
+    "executable_iac": "ABSENT",
     "formal_tst_026": "NOT_EXECUTED",
     "formal_tst_029": "NOT_EXECUTED",
+    "iac_toolchain": "UNPINNED_NOT_INVOKED",
     "live_staging_release_production": "NOT_EXECUTED",
     "native_iac_validation": "NOT_EXECUTED",
-    "provider_plugins": "UNPINNED_NOT_INVOKED",
+    "provider_account_or_project": "UNSET",
+    "provider_plugins_or_adapters": "UNPINNED_NOT_INVOKED",
+    "provider_profile": "UNSET",
+    "provider_validation": "NOT_EXECUTED",
+    "queue_delivery_validation": "NOT_EXECUTED",
+    "relational_migration_validation": "NOT_EXECUTED",
     "restore_validation": "NOT_EXECUTED",
-    "terraform_cli": "UNPINNED_NOT_INVOKED"
+    "transport_encryption_validation": "NOT_EXECUTED"
   }
 }
