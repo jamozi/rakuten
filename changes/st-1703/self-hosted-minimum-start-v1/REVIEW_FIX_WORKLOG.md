@@ -1,7 +1,13 @@
 # PR #113 exact-head review fix worklog
 
-Scope: `ST-1703 / SELF_HOSTED_MINIMUM_START_V1` only. Review baseline:
+Scope: `ST-1703 / SELF_HOSTED_MINIMUM_START_V1` only. The first
+runtime-binding implementation was reviewed at:
 `7598e127adee6027d086619a720071a550b7a290`.
+
+Runtime lineage anchor:
+`b5a6157b878ca0435ee4120d33162aba5ae51f77`, the guaranteed shipped PR base.
+That review commit is evidence context only and is not required to
+remain in deployed squash/cherry-pick ancestry.
 
 ## Material findings addressed
 
@@ -23,6 +29,12 @@ Scope: `ST-1703 / SELF_HOSTED_MINIMUM_START_V1` only. Review baseline:
    JavaScript could make editorial content disappear. The default is now
    visible. The initialized root class gates hiding/animation, and
    reduced-motion plus exception fallback retain or restore visibility.
+3. The first runtime-binding revision incorrectly used the branch-local review
+   implementation commit as its ancestry anchor. That would reject a reviewed
+   synthetic commit, squash, or cherry-pick deployed directly above the shipped
+   PR base. The generator, manifest, shell stage, and Python verifier now bind
+   lineage to the guaranteed shipped base while retaining exact clean `HEAD`,
+   committed-blob capture, closed byte inventory, and pre-capability refusal.
 
 ## Authority and evidence boundary
 
@@ -34,9 +46,14 @@ report, not promoted to any external status.
 
 ## Local verification freeze (2026-08-23)
 
-- focused runtime/CLI/theme/content: `79 passed, 1 skipped`; the skip is the
+- focused runtime/CLI/theme/content: `81 passed, 1 skipped`; the skip is the
   intentional exact-root launcher integration test in a linked worktree;
-- complete isolated `tests/st1703`: `907 passed, 1 skipped` for the same reason;
+- complete isolated `tests/st1703`: `909 passed, 1 skipped` for the same reason;
+- lineage regression imports only the shipped `b5a6157b` base into a temporary
+  repository, accepts its one-commit synthetic squash descendant without the
+  branch-local review object, and rejects an unrelated identical-tree `HEAD`
+  before any manifest payload read even when the shipped base object is
+  present;
 - affected predecessor suites: `tests/st0502` `167 passed`; `tests/st0805`
   `361 passed`;
 - runtime-manifest no-write check, theme source check, BusyBox/Bash syntax,
@@ -44,8 +61,12 @@ report, not promoted to any external status.
 - workspace check, Canonical import verification, and historical WordPress.com
   runtime-manifest no-write check: pass;
 - exact changed-path sensitive-data scan: 19 paths, 0 findings;
+- follow-up lineage-fix changed-path sensitive-data scan: 10 paths, 0 findings;
 - independent security review: no remaining material P1/P2 product-code
   finding.
+- independent follow-up runtime-lineage review: `PASS`, with no remaining
+  material P1 finding; Ruff/format, mypy, Pyright, and shell syntax also pass
+  for the follow-up delta.
 
 The integrated exact-root doctor, credential access, provider/network call,
 draft write, browser operation, hosted CI, activation, publication, formal

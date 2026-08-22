@@ -16,11 +16,13 @@ separate WordPress dashboard action after editorial and legal review.
 Run operational commands only from the physical root `/home/minami/rakuten`.
 Linked worktrees are for development/testing and are intentionally refused by
 the launcher.
-The launcher also refuses an unreviewed ancestry, staged/unstaged/untracked
-drift, a runtime-manifest mismatch, a non-`HEAD` runtime blob, or an unsafe
-pinned toolchain. This binding happens before RAOS imports, credential reads,
-or network construction. Do not bypass it or use Git index flags to hide an
-edit.
+The launcher requires the exact clean `HEAD` to descend from the guaranteed
+shipped PR base `b5a6157b878ca0435ee4120d33162aba5ae51f77`; it does not require
+a branch-local review implementation commit that can disappear during squash
+or cherry-pick integration. It also refuses staged/unstaged/untracked drift, a
+runtime-manifest mismatch, a non-`HEAD` runtime blob, or an unsafe pinned
+toolchain. This binding happens before RAOS imports, credential reads, or
+network construction. Do not bypass it or use Git index flags to hide an edit.
 Before Python starts, the launcher also verifies the generator-owned standard
 library code inventory, the absent `python314.zip` import path, the pinned
 executable/venv config, both managed `bin/` path sets, absent optional

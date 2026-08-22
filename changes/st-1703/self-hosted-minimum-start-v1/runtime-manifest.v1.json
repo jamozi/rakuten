@@ -1,12 +1,12 @@
 {
-  "approved_base_commit": "7598e127adee6027d086619a720071a550b7a290",
+  "approved_base_commit": "b5a6157b878ca0435ee4120d33162aba5ae51f77",
   "external_action_authority": "NONE",
   "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 7121,
+      "bytes": 7300,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "b40cd3a935cc62cdb18a6b4afef3eff2284ad14dd12ee9dd4cfd7fdcd28ed5cf"
+      "sha256": "f601081cc45ab66d4db414a1dccc105944ba51b3562a17f156a6c5c2ebc621dd"
     },
     {
       "bytes": 2954,
@@ -126,12 +126,12 @@
     {
       "bytes": 38184,
       "path": "scripts/self_hosted_wordpress.py",
-      "sha256": "f9a680d4a3d072633012c00eb32124051f30364c9f9f2c6f86cc28c0e1a63fe4"
+      "sha256": "bba84867e994dffdbf3ee692e992efe28758d1d0ad9b688f60d59826fe487e03"
     },
     {
       "bytes": 21688,
       "path": "scripts/self_hosted_wordpress_python.sh",
-      "sha256": "7216b5654e1636568e58a5fb4bd21523d66b9a5f0e5c55a99abc9747466bb9c7"
+      "sha256": "25fc8daf290901f56380c1219a208c0db123d5b64c10c721b902021d71fe01a8"
     }
   ],
   "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",

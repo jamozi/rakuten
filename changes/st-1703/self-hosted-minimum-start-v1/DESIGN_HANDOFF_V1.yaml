@@ -57,7 +57,8 @@ DESIGN_HANDOFF_V1:
     - update値とjournal規則はlocal interface-onlyで、live adapter、CLI、Makeからactivationしない
     - redirect、proxy継承、automatic retry、fallbackを禁止
     - credentialsはowner-private固定JSONだけに保存し、argv/env/logへ出さない
-    - owner commandはRAOS importとcredential/network accessより前にreview済みbaseの子孫であるexact clean committed HEADとgenerator-owned runtime manifestへbindする
+    - owner commandはRAOS importとcredential/network accessより前にguaranteed shipped PR base b5a6157b878ca0435ee4120d33162aba5ae51f77の子孫であるexact clean committed HEADとgenerator-owned runtime manifestへbindする
+    - branch-local review commitはevidence contextに限り、squash/cherry-pick deploymentのlineage prerequisiteにしない
     - pre-Python stageはpinned stdlib code inventory、python314.zip不在、完全capture済みCLI blobを検証し、stage HEAD/blob/SHA-256をsame-process verifierへ連続bindする
     - manifest entry path/orderはclosed inventoryと完全一致した後にだけdescriptor-relativeにpayloadを開く
     - repository内bytecodeはlive importに使わず、self-hosted専用のclosed package namespaceだけをmanifest対象sourceからloadする

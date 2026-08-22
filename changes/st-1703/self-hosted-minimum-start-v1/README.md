@@ -54,9 +54,9 @@ final asset gate is completed.
 
 Every owner command is bound before RAOS imports or credential access to the
 physical `/home/minami/rakuten` repository, an exact committed clean `HEAD`
-descending from the reviewed base `7598e127`, and the 26 ordered source/input
-files in `runtime-manifest.v1.json`. The BusyBox launcher performs the first
-sanitized Git check before starting Python. It also validates the
+descending from the guaranteed shipped PR base `b5a6157b`, and the 26 ordered
+source/input files in `runtime-manifest.v1.json`. The BusyBox launcher performs
+the first sanitized Git check before starting Python. It also validates the
 generator-owned 657-file Python standard-library code inventory, absence of
 the leading `python314.zip` import path, the pinned executable and venv config,
 and the exact managed-Python/venv `bin/` path sets. Optional startup landmarks

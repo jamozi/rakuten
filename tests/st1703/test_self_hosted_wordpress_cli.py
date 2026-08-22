@@ -224,7 +224,7 @@ def test_launcher_is_exact_root_pinned_isolated_and_sanitizes_environment() -> N
     assert "/usr/bin/busybox env -i" in launcher
     assert "cpython-3.14.6-linux-x86_64-gnu" in launcher
     assert "python=$expected_root/.venv/bin/python" in launcher
-    assert "approved_base=7598e127adee6027d086619a720071a550b7a290" in launcher
+    assert "approved_base=b5a6157b878ca0435ee4120d33162aba5ae51f77" in launcher
     assert "fixed_git status --porcelain=v1 --untracked-files=all" in launcher
     assert "fixed_git hash-object --no-filters" in launcher
     assert "fixed_git cat-file blob" in launcher

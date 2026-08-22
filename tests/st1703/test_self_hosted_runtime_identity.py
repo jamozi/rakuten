@@ -25,6 +25,8 @@ PYTHON_INVENTORY_PATH = (
     ROOT / "changes/st-1703/self-hosted-minimum-start-v1/"
     "python-runtime-code-inventory.v1.sha256"
 )
+SHIPPED_PR_BASE = "b5a6157b878ca0435ee4120d33162aba5ae51f77"
+BRANCH_LOCAL_REVIEW_COMMIT = "7598e127adee6027d086619a720071a550b7a290"
 
 
 def _load(path: Path, name: str) -> ModuleType:
@@ -141,6 +143,81 @@ def _stage_binding(repository: Path) -> dict[str, str]:
     }
 
 
+def _fetch_shipped_pr_base(repository: Path) -> None:
+    result = _git(
+        repository,
+        "-c",
+        "protocol.file.allow=always",
+        "fetch",
+        "--quiet",
+        "--no-tags",
+        str(ROOT),
+        f"{SHIPPED_PR_BASE}:refs/heads/shipped-pr-base",
+    )
+    assert result.returncode == 0, result.stderr
+
+
+def _synthetic_squash_repository(
+    module: ModuleType,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> Path:
+    repository = tmp_path / "synthetic-squash-repository"
+    repository.mkdir()
+    assert _git(repository, "init", "-q").returncode == 0
+    _fetch_shipped_pr_base(repository)
+    assert (
+        _git(
+            repository,
+            "checkout",
+            "-qb",
+            "synthetic-squash",
+            "refs/heads/shipped-pr-base",
+        ).returncode
+        == 0
+    )
+    runtime = repository / "runtime.py"
+    manifest = repository / "runtime-manifest.json"
+    script = repository / "scripts/self_hosted_wordpress.py"
+    script.parent.mkdir(parents=True, exist_ok=True)
+    runtime.write_bytes(b"synthetic squashed runtime\n")
+    script.write_bytes(CLI_PATH.read_bytes())
+    runtime_inputs = (runtime, script)
+    manifest_value = {
+        "approved_base_commit": SHIPPED_PR_BASE,
+        "external_action_authority": "NONE",
+        "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
+        "paths": [
+            {
+                "bytes": len(path.read_bytes()),
+                "path": path.relative_to(repository).as_posix(),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+            for path in runtime_inputs
+        ],
+        "repository_development_authority": ("ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"),
+        "schema": "SELF_HOSTED_WORDPRESS_RUNTIME_MANIFEST_V1",
+        "slice_id": "SELF_HOSTED_MINIMUM_START_V1",
+        "story_id": "ST-1703",
+    }
+    manifest.write_text(
+        json.dumps(manifest_value, sort_keys=True, separators=(",", ":")) + "\n",
+        encoding="ascii",
+    )
+    assert _git(repository, "add", ".").returncode == 0
+    assert _git(repository, "commit", "-qm", "synthetic squash").returncode == 0
+    monkeypatch.setattr(module, "_EXPECTED_REPOSITORY_ROOT", repository)
+    monkeypatch.setattr(module, "_RUNTIME_MANIFEST_PATH", Path("runtime-manifest.json"))
+    monkeypatch.setattr(
+        module,
+        "_RUNTIME_REQUIRED_PATHS",
+        ("runtime.py", "scripts/self_hosted_wordpress.py"),
+    )
+    monkeypatch.setattr(module, "_valid_runtime_python", lambda: True)
+    monkeypatch.setattr(module, "_valid_runtime_entry", lambda: True)
+    return repository
+
+
 def test_runtime_identity_exact_clean_head_passes(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -149,6 +226,82 @@ def test_runtime_identity_exact_clean_head_passes(
     module._verify_self_hosted_runtime_identity(
         repository, **_stage_binding(repository)
     )
+
+
+def test_runtime_lineage_accepts_synthetic_squash_above_shipped_pr_base(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load(CLI_PATH, "self_hosted_runtime_shipped_base_squash")
+    assert module._RUNTIME_APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
+    repository = _synthetic_squash_repository(module, tmp_path, monkeypatch)
+    head = _git(repository, "rev-parse", "HEAD").stdout.decode().strip()
+    assert (
+        _git(repository, "rev-parse", "HEAD^").stdout.decode().strip()
+        == SHIPPED_PR_BASE
+    )
+    assert (
+        _git(
+            repository, "merge-base", "--is-ancestor", SHIPPED_PR_BASE, head
+        ).returncode
+        == 0
+    )
+    assert (
+        _git(
+            repository, "cat-file", "-e", f"{BRANCH_LOCAL_REVIEW_COMMIT}^{{commit}}"
+        ).returncode
+        != 0
+    )
+    module._verify_self_hosted_runtime_identity(
+        repository, **_stage_binding(repository)
+    )
+
+
+def test_runtime_lineage_rejects_unrelated_history_with_shipped_base_present(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load(CLI_PATH, "self_hosted_runtime_unrelated_shipped_base")
+    assert module._RUNTIME_APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
+    repository = _synthetic_squash_repository(module, tmp_path, monkeypatch)
+    reviewed_tree = _git(repository, "rev-parse", "HEAD^{tree}").stdout.decode().strip()
+    unrelated_head = (
+        _git(repository, "commit-tree", reviewed_tree, "-m", "unrelated root")
+        .stdout.decode()
+        .strip()
+    )
+    assert len(unrelated_head) == 40
+    assert (
+        _git(repository, "checkout", "-q", "--detach", unrelated_head).returncode == 0
+    )
+    assert (
+        _git(repository, "rev-parse", "HEAD^{tree}").stdout.decode().strip()
+        == reviewed_tree
+    )
+    assert (
+        _git(repository, "cat-file", "-e", f"{SHIPPED_PR_BASE}^{{commit}}").returncode
+        == 0
+    )
+    assert (
+        _git(
+            repository, "merge-base", "--is-ancestor", SHIPPED_PR_BASE, "HEAD"
+        ).returncode
+        != 0
+    )
+    reads: list[object] = []
+
+    def forbidden_read(*args: object, **kwargs: object) -> bytes:
+        del args, kwargs
+        reads.append("payload")
+        raise AssertionError("unrelated lineage reached manifest payload")
+
+    monkeypatch.setattr(module, "_read_runtime_file", forbidden_read)
+    with pytest.raises(module._RuntimeIdentityFailure):
+        module._verify_self_hosted_runtime_identity(
+            repository, **_stage_binding(repository)
+        )
+    assert reads == []
+    assert not (repository / ".secrets").exists()
 
 
 @pytest.mark.parametrize("field", ["stage_head", "stage_cli_blob"])
@@ -549,9 +702,9 @@ def test_runtime_manifest_generator_check_is_current_and_inventory_matches() -> 
     paths = tuple(row["path"] for row in manifest["paths"])
     assert paths == tuple(sorted(generator.REQUIRED_RUNTIME_PATHS))
     assert paths == tuple(sorted(cli._RUNTIME_REQUIRED_PATHS))
-    assert manifest["approved_base_commit"] == (
-        "7598e127adee6027d086619a720071a550b7a290"
-    )
+    assert generator.APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
+    assert cli._RUNTIME_APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
+    assert manifest["approved_base_commit"] == SHIPPED_PR_BASE
     assert manifest["external_action_authority"] == "NONE"
 
     inventory_lines = python_inventory_bytes.decode("ascii").splitlines()

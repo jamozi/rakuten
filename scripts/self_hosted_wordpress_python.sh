@@ -31,7 +31,7 @@ esac
 requested_command=$1
 
 expected_root=/home/minami/rakuten
-approved_base=7598e127adee6027d086619a720071a550b7a290
+approved_base=b5a6157b878ca0435ee4120d33162aba5ae51f77
 python_root=/home/minami/.local/share/uv/python/cpython-3.14.6-linux-x86_64-gnu
 python_target=$python_root/bin/python3.14
 python=$expected_root/.venv/bin/python
