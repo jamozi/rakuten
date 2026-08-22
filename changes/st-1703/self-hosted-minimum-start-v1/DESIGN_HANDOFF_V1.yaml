@@ -1,0 +1,159 @@
+DESIGN_HANDOFF_V1:
+  record_status: REPOSITORY_LOCAL_DESIGN_RECORD
+  authority: DESIGN_AND_EVIDENCE_ONLY
+  approved_story: ST-1703
+  approved_scope: SELF_HOSTED_MINIMUM_START_V1
+  source_design_refs:
+    - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    - docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    - docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1703
+  decision:
+    site:
+      brand: 暮らしのしるべ
+      exact_origin: https://kurashinoshirube.com
+      cms: SELF_HOSTED_WORDPRESS
+      separate_from_wordpresscom: true
+    editorial:
+      initial_category: 旅行用品
+      first_topic: 機内持ち込み対応スーツケース
+      visual_direction: PREMIUM_RESTRAINED_JAPANESE_TRAVEL_MAGAZINE
+      owner_human_review_and_publish_required: true
+      ai_assistance_disclosed_in_editorial_policy: true
+      fabricated_first_hand_experience_forbidden: true
+      recommendation_inputs_exclude_revenue: true
+    privacy:
+      consent_banner_required_before_nonessential_tracking: true
+      consent_activation_is_human_gate: true
+    pilot_follow_on:
+      story: ST-1704
+      duration_days: 14
+      article_count: 5
+      monthly_incremental_cost_cap_jpy: 2000
+      labor_cost_per_hour_jpy: 3000
+      first_five_drafts: CODEX_NOT_OPENAI_API
+    automation:
+      improvement_output: PROPOSAL_AND_DIFF_ONLY
+      automatic_publication: DISABLED
+      operational_draft_capability: CREATE_DRAFT_ONLY
+      update_interface_state: LOCAL_INTERFACE_ONLY_ACTIVATION_DISABLED
+    first_article_image_delivery:
+      mode: FIRST_ARTICLE_THEME_SHORTCODE
+      shortcode: "[kurashinoshirube_first_article_lead_image]"
+      theme_slug: kurashinoshirube-child
+      theme_relative_path: assets/images/article-suitcase-guide.webp
+      media_upload: DISABLED
+      featured_media: DISABLED
+      live_preview: HUMAN_GATE_AFTER_DRAFT_CREATE
+  rationale:
+    - 既存 self-hosted site を使い、AWSを初回市場学習の前提から外す
+    - WordPress Application Password と公式 Posts REST API を固定境界で使う
+    - WordPress.com numeric-site OAuth path と混同せず、owner-local trust boundaryを分離する
+    - 記事公開、theme activation、consent activationはOwnerの明示操作として残す
+  rejected_alternatives:
+    - option: 既存WordPress.com writerのtarget差し替え
+      reason: provider、authentication、route、journalのauthorityが異なる
+    - option: 汎用WordPress管理CLI
+      reason: publish/delete/media/theme/plugin capabilityを不必要に広げる
+    - option: OpenAI APIによる初回5記事の自動量産
+      reason: 初期校正前の費用と品質リスクを増やす
+    - option: article imageのWordPress media uploadまたはfeatured_media指定
+      reason: 新しいlive write authorityを増やさず、review済みchild-theme assetを初回記事だけにbindできる
+    - option: /wp-content/themes配下のpublic URLをcontentへ固定
+      reason: WordPress content directoryはこのlocal sliceで固定・live確認されていない
+  constraints:
+    - exact originは https://kurashinoshirube.com のみ
+    - 外向きWordPress capabilityは post create、status=draft のみ
+    - update値とjournal規則はlocal interface-onlyで、live adapter、CLI、Makeからactivationしない
+    - redirect、proxy継承、automatic retry、fallbackを禁止
+    - credentialsはowner-private固定JSONだけに保存し、argv/env/logへ出さない
+    - owner commandはRAOS importとcredential/network accessより前にguaranteed shipped PR base b5a6157b878ca0435ee4120d33162aba5ae51f77の子孫であるexact clean committed HEADとgenerator-owned runtime manifestへbindする
+    - branch-local review commitはevidence contextに限り、squash/cherry-pick deploymentのlineage prerequisiteにしない
+    - pre-Python stageはpinned stdlib code inventory、python314.zip不在、完全capture済みCLI blobを検証し、stage HEAD/blob/SHA-256をsame-process verifierへ連続bindする
+    - manifest entry path/orderはclosed inventoryと完全一致した後にだけdescriptor-relativeにpayloadを開く
+    - runtime inventoryは固定26 base pathと、固定asset manifestの2つのallowlist済みrequired_imagesのうちFINALかつlowercase SHA-256一致のWebPだけで構成する
+    - FINAL WebPは4 MiB以下のstatic single-image closed profileとし、exact RIFF length、全chunk boundary、odd padding、最大16 chunk、単一VP8/VP8L image、または先頭VP8Xのreserved bit、canvas、feature/chunk順序整合をpackage、runtime-manifest生成、pre-import runtime、offline doctorのすべてで検証する。VP8X+VP8 alphaはC=0 uncompressed ALPHだけを許可し、payload bytesをheader 1 byte + canvas pixel countへ固定する
+    - pinned full-pixel decoderはself-hosted stdlib runtimeに存在しないため、このsliceはcomplete-containerとcodec header structureを証明するがentropy decode完走を主張せず、final visual/decode reviewとtheme activationをhuman gateに残す
+    - PENDING_FINAL_ASSET pathはHEAD、index、working treeのすべてで不在とし、glob、caller指定path、任意path追加、symlinkを拒否する
+    - repository内bytecodeはlive importに使わず、self-hosted専用のclosed package namespaceだけをmanifest対象sourceからloadする
+    - front-pageとsingleのheader/footer semantic landmarkはtemplate-part wrapperだけが所有し、part root groupは非semantic divとして重複landmarkを作らない
+    - theme packageはignore済み固定path .secrets/self-hosted-theme-packages/kurashinoshirube-child.zip だけへowner-privateかつatomicに書き、WordPress credential directoryと分離する
+    - theme package directoryはcurrent owner/mode 0700、zipはcurrent owner/mode 0600のnon-empty、16 MiB以下、regular single-link fileに限定し、symlink、path drift、unsafe overwrite、stale preparing entryを拒否する
+    - theme package writeはheld directoryをexact fixed pathへterminal rebindし、atomic replaceとparent fsync後にZIPをbounded no-follow stable reopenしてintended bytesとの一致を確認する
+    - footer linkのnormal、visited、hover、active、focus-visible色とfocus outlineはdark footerおよびfilled button背景に対してWCAG AA以上を維持し、foreground/background/outline/custom-property inventoryとexact reviewed stylesheet bytesで未審査のcascade、opacity、browser-specific text-fill overrideを拒否する
+    - content publication、theme/plugin activation、media upload、taxonomy mutationを実装しない
+    - 初回記事候補はexact shortcodeをbody先頭に1回だけ生成し、source packet内のraw img、追加shortcode、属性付き・closing・duplicate tokenを拒否する
+    - shortcode rendererはexact raw article titleとrequest/responseで一致確認したexact post slug、active child-theme slug、https、exact host、userinfo/port/query/fragmentなし、safe child-theme URI path、regular readable non-symlink image pathに閉じる
+    - create requestはtitle、slug、reviewed content、status=draftの4 fieldだけとし、slugはcontent hashへ含め、responseの同じexact slugをsole attempt後に必須とする
+    - article imageはmanifestのexact path、alt、delivery、usageと一致し、article assetを含む全required imageがFINALでpackage-readyになるまでcreate-draftをcredential metadataとnetwork constructionより前に拒否する
+    - child-theme installation/activationとdraft preview上のactual image、same-origin src、exact alt確認はhuman operator gateに残す
+    - AI画像は別の費用・外部操作gateで生成し、完成asset欠落時はtheme package readinessを拒否
+  security_and_approval_gates:
+    local_repository_implementation: AUTHORIZED_REVERSIBLE
+    credential_entry: OWNER_INTERACTIVE_ONLY
+    credential_principal: DEDICATED_LEAST_PRIVILEGE_DRAFT_WRITER_REQUIRED
+    credential_capability_proof: OWNER_LIVE_GATE_NOT_EXECUTED
+    live_read_probe: NOT_AUTHORIZED_BY_THIS_RECORD
+    draft_write: SEPARATE_OWNER_OPERATION
+    theme_activation: HUMAN_OPERATOR_REQUIRED
+    consent_and_analytics_activation: HUMAN_PRIVACY_OPERATOR_REQUIRED
+    publication: HUMAN_OWNER_REQUIRED
+    formal_staging_tst: NOT_EXECUTED
+    release: NOT_AUTHORIZED
+    production_claim: FORBIDDEN
+  acceptance_criteria:
+    - offline doctor reads credential metadata only and performs zero network requests
+    - credential JSON is strict, bounded, owner-only, regular, and symlink-safe
+    - one fsynced INTENT precedes the sole draft write attempt
+    - live update is rejected before credential read and network construction
+    - exact COMMITTED replay performs no credential read and no network request
+    - pending, ambiguous, tampered, or mismatched journal state never retries
+    - theme source is deterministic, local-only, accessible, and reduced-motion aware
+    - reveal content is visible without JavaScript and becomes motion-hidden only after successful initialization
+    - front-page and single each keep exactly one header and one footer landmark, with no nested same-type landmark in the referenced parts
+    - theme package then no-write check leaves the exact Git worktree clean so the unchanged launcher clean-head gate remains usable
+    - footer link and focus states meet contrast requirements without weakening the global focus-visible indicator
+    - runtime manifest, working bytes, and HEAD blobs match before any RAOS import, credential read, or network construction
+    - pinned Python code inventory and captured CLI stage identity match before interpreter startup and remain bound in the verifier
+    - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
+    - final image and affiliate-slot absence remains visible and fail closed
+    - manifest-declared FINAL WebP bytes are included in the reviewed runtime payload supplied to offline doctor
+    - reviewed first-article body bytes contain exactly one leading image shortcode and no raw image、media-upload、or featured-media capability
+    - first-article shortcode resolves only the fixed manifest asset through the active exact child theme and returns no image for a different title or slug、origin、theme、unsafe path、missing file、or symlink
+    - draft create remains blocked before credential metadata and network until the article image and complete theme package are final; live rendered visibility remains a human preview gate
+    - hash-boundでもtruncated、RIFF/chunk size不一致、invalid VP8/VP8L/VP8X、animation、unknown/duplicate/order drift、trailingまたはinvalid odd paddingのWebPはpackage-ready前かつRAOS import前に拒否される
+    - first article separates sourced facts from editorial interpretation and fabricates no experience
+  required_test_evidence:
+    - isolated ST-1703 unit and negative tests
+    - deterministic theme package/check fixtures
+    - secret redaction and filesystem trust-boundary tests
+    - runtime manifest determinism, exact-head, drift, import-closure, and no-repository-pyc tests
+    - pending/mixed/final theme-image inventory parity, arbitrary-path, symlink, missing, untracked, dirty, and hash-mismatch negative tests
+    - decoder-confirmed fixed VP8、VP8L、VP8X fixturesと、RIFF length、truncation、chunk boundary、padding、codec header、feature/order、runtime/doctor parityのnegative tests
+    - first-article image token missing、duplicate、additional shortcode、wrong origin/theme/path/alt/title/post slug、PENDING/FINAL、request/response slug parity、media/featured-media absenceのnegative tests
+    - template-part wrapper and part-root semantic-landmark duplication and omission negative tests
+    - owner-private package directory/file mode, symlink, hardlink, stale-stage, overwrite, directory-rename, same-inode content mutation, terminal byte verification, atomic fsync, fixed-path, and ignored-clean-head tests
+    - calculated footer normal, visited, hover, active, focus text and focus-indicator contrast tests
+    - Python code inventory shape/content, absent-zip, stage-continuity, and pre-open closed-path tests
+    - startup-landmark, managed-bin inventory, root-owned loader/library digest, and RPATH-bypass tests
+    - transport one-attempt, TLS, timeout, redirect, proxy, bounded-response tests
+    - journal fsync, replay, ambiguity, and tamper tests
+    - ruff format/lint, mypy/Pyright, bash syntax, workspace and canonical import checks
+  open_decision_state:
+    canonical_registry_mutated: false
+    formal_resolution_claimed: false
+    owner_inputs_recorded_for_local_slice:
+      - OD-001 initial category
+      - OD-002 site name and domain
+      - OD-005 reviewer and labor cost
+      - OD-009 incremental pilot budget
+      - OD-012 consent banner direction
+    remain_blocking_for_canonical_gate_or_production:
+      - OD-006 category product identity rules
+      - OD-007 category freshness SLA
+      - OD-008 legal review boundary
+      - OD-009 cloud and provider production budget controls
+      - OD-012 final privacy and consent activation
+      - OD-015 production provider credentials

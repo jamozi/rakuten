@@ -6,6 +6,9 @@ import json
 
 import pytest
 
+from raos.adapters.self_hosted_wordpress_rest import (
+    SelfHostedWordPressRestRequestBuilder,
+)
 from raos.adapters.wordpress_rest import (
     OfficialWordPressRestRequestBuilder,
     WordPressRestRequest,
@@ -100,6 +103,108 @@ def test_builder_emits_only_exact_post_create_draft_request() -> None:
     }
     assert request.credential_secret_alias == SECRET_ALIAS
     assert "Authorization" not in request.headers
+
+
+def test_direct_request_accepts_one_strict_optional_create_slug() -> None:
+    body = json.dumps(
+        {
+            "content": "body",
+            "slug": "carry-on-suitcase-comparison",
+            "status": "draft",
+            "title": "title",
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    request = _direct_create_request(body_json=body)
+
+    assert json.loads(request.body_json) == {
+        "content": "body",
+        "slug": "carry-on-suitcase-comparison",
+        "status": "draft",
+        "title": "title",
+    }
+
+
+def test_self_hosted_response_validator_rejects_generic_create_without_slug() -> None:
+    origin = "https://kurashinoshirube.com"
+    request = WordPressRestRequest(
+        method="POST",
+        url=f"{origin}/wp-json/wp/v2/posts",
+        path="/wp-json/wp/v2/posts",
+        logical_route="/wp/v2/posts",
+        headers=(("Content-Type", "application/json"),),
+        body_json=_DIRECT_BODY,
+        credential_secret_alias=SECRET_ALIAS,
+        idempotency_key="a" * 64,
+        expected_http_status=201,
+        existing_draft_receipt=None,
+    )
+
+    with pytest.raises(MarketLearningPilotFailure) as failure:
+        SelfHostedWordPressRestRequestBuilder().validate_response(
+            request=request,
+            http_status=201,
+            body=b'{"id":1703,"status":"draft"}',
+        )
+
+    assert (
+        failure.value.code is MarketLearningPilotFailureCode.WORDPRESS_RESPONSE_INVALID
+    )
+
+
+@pytest.mark.parametrize(
+    "slug",
+    [
+        "",
+        "Carry-On-Suitcase",
+        "carry_on_suitcase",
+        "carry-on-suitcase/extra",
+        "../carry-on-suitcase",
+        "carry-on-suitcase?preview=1",
+        "a" * 201,
+    ],
+)
+def test_direct_request_rejects_invalid_optional_create_slug(slug: str) -> None:
+    body = json.dumps(
+        {"content": "body", "slug": slug, "status": "draft", "title": "title"},
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    with pytest.raises(MarketLearningPilotFailure) as failure:
+        _direct_create_request(body_json=body)
+    assert (
+        failure.value.code is MarketLearningPilotFailureCode.WORDPRESS_REQUEST_INVALID
+    )
+
+
+def test_direct_update_request_rejects_slug_field() -> None:
+    body = json.dumps(
+        {
+            "content": "body",
+            "slug": "carry-on-suitcase-comparison",
+            "status": "draft",
+            "title": "title",
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    with pytest.raises(MarketLearningPilotFailure) as failure:
+        WordPressRestRequest(
+            method="POST",
+            url=f"{ORIGIN}/wp-json/wp/v2/posts/1703",
+            path="/wp-json/wp/v2/posts/1703",
+            logical_route="/wp/v2/posts/1703",
+            headers=(("Content-Type", "application/json"),),
+            body_json=body,
+            credential_secret_alias=SECRET_ALIAS,
+            idempotency_key="a" * 64,
+            expected_http_status=200,
+            existing_draft_receipt=_recorded_create_receipt(),
+        )
+    assert (
+        failure.value.code is MarketLearningPilotFailureCode.WORDPRESS_REQUEST_INVALID
+    )
 
 
 def test_builder_emits_only_exact_post_update_draft_request() -> None:

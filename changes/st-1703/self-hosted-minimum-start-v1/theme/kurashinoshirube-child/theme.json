@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "color": {
+      "defaultPalette": false,
+      "palette": [
+        {"slug": "paper", "name": "Paper", "color": "#f6f1e8"},
+        {"slug": "ink", "name": "Ink", "color": "#17243f"},
+        {"slug": "indigo", "name": "Deep Indigo", "color": "#24365f"},
+        {"slug": "warm", "name": "Warm Accent", "color": "#a44f31"},
+        {"slug": "mist", "name": "Mist", "color": "#d8ddd9"}
+      ]
+    },
+    "layout": {"contentSize": "44rem", "wideSize": "78rem"},
+    "spacing": {"blockGap": true, "units": ["rem", "vw", "%"]},
+    "typography": {
+      "fluid": true,
+      "fontFamilies": [
+        {
+          "slug": "editorial-serif",
+          "name": "Editorial Serif",
+          "fontFamily": "ui-serif, 'Yu Mincho', 'Hiragino Mincho ProN', serif"
+        },
+        {
+          "slug": "editorial-sans",
+          "name": "Editorial Sans",
+          "fontFamily": "ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif"
+        }
+      ]
+    }
+  },
+  "styles": {
+    "color": {"background": "#f6f1e8", "text": "#17243f"},
+    "spacing": {"blockGap": "1.5rem"},
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--editorial-sans)",
+      "fontSize": "clamp(1rem, 0.96rem + 0.2vw, 1.12rem)",
+      "lineHeight": "1.85"
+    },
+    "elements": {
+      "button": {
+        "color": {"background": "#24365f", "text": "#ffffff"},
+        "border": {"radius": "0"},
+        "typography": {"fontWeight": "700"}
+      },
+      "heading": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--editorial-serif)",
+          "fontWeight": "600",
+          "lineHeight": "1.35"
+        }
+      },
+      "link": {"color": {"text": "#24365f"}}
+    }
+  }
+}

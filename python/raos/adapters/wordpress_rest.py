@@ -23,6 +23,7 @@ _CREATE_PATH = "/wp-json/wp/v2/posts"
 _UPDATE_PATH = re.compile(r"/wp-json/wp/v2/posts/([1-9][0-9]{0,18})\Z", re.ASCII)
 _CREATE_ROUTE = "/wp/v2/posts"
 _UPDATE_ROUTE = re.compile(r"/wp/v2/posts/([1-9][0-9]{0,18})\Z", re.ASCII)
+_POST_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z", re.ASCII)
 _SECRET_ALIAS = re.compile(r"[a-z][a-z0-9]*(?:_[a-z0-9]+)*\Z", re.ASCII)
 _HOST_LABEL = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\Z", re.ASCII)
 _MAX_ORIGIN_CHARS = 2048
@@ -247,14 +248,32 @@ class WordPressRestRequest(_RedactedTransportValue):
             fail_market_learning_pilot(
                 MarketLearningPilotFailureCode.WORDPRESS_REQUEST_INVALID
             )
+        if type(payload) is not dict:
+            fail_market_learning_pilot(
+                MarketLearningPilotFailureCode.WORDPRESS_REQUEST_INVALID
+            )
         mapping = cast(dict[object, object], payload)
+        body_keys = set(mapping)
+        slug = mapping.get("slug")
         if (
-            type(payload) is not dict
-            or canonical != self.body_json
-            or set(mapping) != {"content", "status", "title"}
+            canonical != self.body_json
+            or body_keys
+            not in (
+                {"content", "status", "title"},
+                {"content", "slug", "status", "title"},
+            )
             or type(mapping.get("title")) is not str
             or type(mapping.get("content")) is not str
             or mapping.get("status") != WORDPRESS_DRAFT_STATUS
+            or (
+                "slug" in body_keys
+                and (
+                    self.path != _CREATE_PATH
+                    or type(slug) is not str
+                    or not 1 <= len(slug) <= 200
+                    or _POST_SLUG.fullmatch(slug) is None
+                )
+            )
         ):
             fail_market_learning_pilot(
                 MarketLearningPilotFailureCode.WORDPRESS_REQUEST_INVALID
