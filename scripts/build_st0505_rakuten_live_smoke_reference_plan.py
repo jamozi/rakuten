@@ -96,19 +96,19 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "fd23f88bb61d8919015602e48bc5c10b5df06d4c9dff4986ff513e4500249d93"
+    "305ca66b8453a526395641a3cc1e535ac887283608fd94d5a433d7f15ba672ed"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
-    "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
+    "070a7968305200f468c0be4ed07b5845ba1abd30faeda4fd06ba62d59535228b"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "e25b742f76904f8c50db9439bc02f435bdf8076068ea0e00a0746b69bdaf60ef"
+    "f9c3b305fd86c19bce011688f3aa75ef4f89e62cf5877573f0c3c5cead046a34"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "4745a3b74b307c16c542012d3e44526ea80e70915ea12e1c51874df6da9cacea"
+    "4ebdb6457a83f4417d449f5d3da8932906e10796b913d0753ca1c27bc9b67776"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
-    "4bcf1a1b99e8fd2929fdc400991460ea3a9032a3a0ef546697c4b1850744ec86"
+    "58566af716eec811ab0f94e646dcc3bb22a75eb1ef0d6125c671ddac87377b93"
 )
 EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS: Final = (
     "schema",
@@ -140,6 +140,37 @@ EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS: Final = (
     "items",
     "products",
     "provider_data_classification",
+    "evidence_authority",
+    "formal_tst_016",
+    "staging",
+    "production",
+    "od_015",
+)
+EXPECTED_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_OBJECT_KEYS: Final = (
+    "schema",
+    "version",
+    "run_id",
+    "started_at",
+    "finished_at",
+    "api",
+    "endpoint_id",
+    "api_version",
+    "outcome",
+    "diagnostic_outcome",
+    "diagnostic_code",
+    "validation_stage_code",
+    "reflection_credential_kind",
+    "reflection_field_name",
+    "reflection_field_category",
+    "request_fingerprint",
+    "request_disposition",
+    "request_count",
+    "retry_count",
+    "pagination_count",
+    "http_status",
+    "body_byte_count",
+    "response_sha256",
+    "provider_data_persisted",
     "evidence_authority",
     "formal_tst_016",
     "staging",
@@ -324,6 +355,7 @@ def _owner_local_authoritative_installed_command(arguments: tuple[str, ...]) -> 
         ("rotate",),
         ("doctor",),
         ("list-apis",),
+        ("diagnose-reflection", "--api", "item-search"),
         ("smoke", "--api", "item-search"),
         ("smoke", "--api", "product-search"),
     }
@@ -397,6 +429,9 @@ def _owner_local_reference_binding(value: object) -> dict[str, object]:
         "rotate": _owner_local_authoritative_installed_command(("rotate",)),
         "doctor": _owner_local_authoritative_installed_command(("doctor",)),
         "list_apis": _owner_local_authoritative_installed_command(("list-apis",)),
+        "diagnose_reflection_item_search": _owner_local_authoritative_installed_command(
+            ("diagnose-reflection", "--api", "item-search")
+        ),
         "smoke_item_search": _owner_local_authoritative_installed_command(
             ("smoke", "--api", "item-search")
         ),
@@ -1538,6 +1573,12 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             'RAKUTEN_OWNER_LOCAL_PROVIDER_DATA_CLASSIFICATION = "UNTRUSTED_PROVIDER_DATA"',
             'RAKUTEN_OWNER_LOCAL_FORMAL_TST_016 = "NOT_EXECUTED"',
             'RAKUTEN_OWNER_LOCAL_OD_015 = "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED"',
+            '"RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1"',
+            "class RakutenOwnerLocalCredentialKind(StrEnum):",
+            "class RakutenOwnerLocalCredentialField(StrEnum):",
+            "class RakutenOwnerLocalCredentialFieldCategory(StrEnum):",
+            "def as_reflection_diagnostic_object(self) -> dict[str, object]:",
+            '"provider_data_persisted": False,',
             "_NON_NULL_URL_FIELDS = {",
             'frozenset({"itemUrl"})',
             'frozenset({"productUrlPC"})',
@@ -1584,6 +1625,7 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             '".secrets", "rakuten-owner-local"',
             '"credentials.v1.json"',
             '"results"',
+            '"diagnostics"',
             '_ITEM_COLLECTION_ALIASES = frozenset({"items", "Items"})',
             "aliases = root_keys & _ITEM_COLLECTION_ALIASES",
             'connection.request("GET"',
@@ -1628,6 +1670,7 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             '"rotate"',
             '"doctor"',
             '"list-apis"',
+            '"diagnose-reflection"',
             '"request"',
             '"smoke"',
             'os.open(\n        "/dev/tty"',
@@ -1639,6 +1682,7 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             "/home/minami/.local/share/raos/rakuten-owner-local/runtime/",
             "exec /usr/bin/busybox env -i",
             'exec 3<"$entry_path"',
+            "diagnose-reflection:3",
             '"$python" -B -I -S "$runtime_cli" "$@"',
         ),
         Path("scripts/rakuten_owner_local_runtime_install.sh"): (
@@ -2138,6 +2182,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
         "request",
         "authenticated_request_entry",
         "smoke",
+        "diagnose_reflection",
     ):
         _fail("CONTRACT_SCHEMA_DRIFT", "owner_local.commands")
     _exact(
@@ -2155,6 +2200,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
                 "GENERATED_POSITIONAL_FD4_DIGEST_GATE_ARGV_TEMPLATE"
             ),
             "smoke": "smoke --api <item-search|product-search>",
+            "diagnose_reflection": "diagnose-reflection --api item-search",
         },
         "owner_local.commands",
     )
@@ -2369,6 +2415,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "url_validation",
             "mandatory_text",
             "credential_reflection",
+            "reflection_diagnostic",
             "forbidden",
             "request_disposition",
         )
@@ -2594,6 +2641,94 @@ def _validate_owner_local_read_integration(value: object) -> None:
                 "raw_body_retained": False,
                 "observed_field": None,
             },
+            "sanitized_followup_live_evidence": {
+                "installed_bundle_sha256": (
+                    "fd23f88bb61d8919015602e48bc5c10b5df06d4c9dff4986ff513e4500249d93"
+                ),
+                "http_status": 200,
+                "body_byte_count": 5771,
+                "request_count": 1,
+                "retry_count": 0,
+                "pagination_count": 0,
+                "result_schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3",
+                "diagnostic_code": "RESPONSE_SCHEMA_DRIFT",
+                "validation_stage_code": "CREDENTIAL_REFLECTION",
+                "validation_detail_code": None,
+                "response_sha256": (
+                    "00948e7dde4e37e5781fc55fada18bbb03010c5955fadc31ccbb7ed6209f5b0d"
+                ),
+                "raw_body_retained": False,
+                "observed_field": None,
+                "interpretation": (
+                    "REPEATED_CREDENTIAL_REFLECTION_AFTER_EXACT_AFFILIATE_LINK_"
+                    "EXEMPTION_FIELD_CAUSE_UNKNOWN"
+                ),
+            },
+        }
+        or result.get("reflection_diagnostic")
+        != {
+            "command": "diagnose-reflection --api item-search",
+            "invocation": "EXPLICIT_AUTHENTICATED_INSTALLED_COMMAND_ONLY",
+            "request": "FIXED_ITEM_SMOKE_ONE_GET_ZERO_RETRY_ZERO_PAGINATION",
+            "ordinary_result_v3": (
+                "EXACT_KEYS_AND_SERIALIZATION_UNCHANGED_NOT_WRITTEN_BY_DIAGNOSTIC_"
+                "COMMAND"
+            ),
+            "ordinary_cli_output": "UNCHANGED_FIXED_GENERIC_OUTPUT",
+            "directory": ".secrets/rakuten-owner-local/diagnostics",
+            "path": (".secrets/rakuten-owner-local/diagnostics/<UTC-run-id>.json"),
+            "publication": "ATOMIC_0600_NO_REPLACE_SINGLE_WRITE",
+            "schema": ("RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1"),
+            "version": 1,
+            "exact_object_keys": list(
+                EXPECTED_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_OBJECT_KEYS
+            ),
+            "diagnostic_outcomes": [
+                "REFLECTION_DETECTED",
+                "NO_REFLECTION_DETECTED",
+                "REQUEST_FAILED",
+            ],
+            "credential_kinds": ["APPLICATION_ID", "ACCESS_KEY", "AFFILIATE_ID"],
+            "field_categories": ["TEXT", "URL", "URL_LIST_MEMBER"],
+            "exact_fields": {
+                "item-search": [
+                    "affiliateUrl",
+                    "itemCode",
+                    "itemName",
+                    "itemUrl",
+                    "mediumImageUrls",
+                    "shopCode",
+                    "shopName",
+                    "smallImageUrls",
+                ],
+                "product-search": [
+                    "affiliateUrl",
+                    "brandName",
+                    "genreName",
+                    "mediumImageUrl",
+                    "productCode",
+                    "productId",
+                    "productName",
+                    "productNo",
+                    "productUrlPC",
+                    "smallImageUrl",
+                ],
+            },
+            "selection_precedence": (
+                "APPLICATION_ID_THEN_ACCESS_KEY_THEN_AFFILIATE_ID_AND_AFFILIATE_"
+                "URL_THEN_ITEM_URL_THEN_OTHER_URL_THEN_URL_LIST_THEN_TEXT_IN_FIXED_"
+                "FIELD_ORDER"
+            ),
+            "reflection_conjunction": (
+                "THREE_REFLECTION_FIELDS_NON_NULL_IF_AND_ONLY_IF_CREDENTIAL_"
+                "REFLECTION_DETECTED"
+            ),
+            "persisted_material": (
+                "CLOSED_ENUMS_AND_EXISTING_SANITIZED_METADATA_ONLY_NO_PROVIDER_"
+                "RECORD_SUMMARY_BODY_HEADER_VALUE_INDEX_EXCEPTION_OR_CREDENTIAL"
+            ),
+            "provider_data_persisted": False,
+            "historical_evidence": "NOT_RECLASSIFIED_NO_FIELD_LEVEL_CLAIM",
         }
         or result.get("forbidden")
         != [

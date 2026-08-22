@@ -9,6 +9,7 @@ from typing import final
 
 from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalApi,
+    RakutenOwnerLocalCredentialReflection,
     RakutenOwnerLocalCredentials,
     RakutenOwnerLocalFailure,
     RakutenOwnerLocalFailureCode,
@@ -73,6 +74,7 @@ def _response_failure(
     code: RakutenOwnerLocalFailureCode,
     *,
     validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None,
+    credential_reflection: RakutenOwnerLocalCredentialReflection | None = None,
     api: RakutenOwnerLocalApi,
     request_fingerprint: str,
     result: RakutenOwnerLocalProviderResult,
@@ -80,6 +82,7 @@ def _response_failure(
     return RakutenOwnerLocalFailure(
         code=code,
         validation_stage_code=validation_stage_code,
+        credential_reflection=credential_reflection,
         disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -267,12 +270,13 @@ class RakutenOwnerLocalService:
                         )
                     try:
                         credentials.reject_reflected_result(provider_result)
-                    except RakutenOwnerLocalFailure:
+                    except RakutenOwnerLocalFailure as error:
                         failure = _response_failure(
                             RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
                             validation_stage_code=(
                                 RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
                             ),
+                            credential_reflection=error.credential_reflection,
                             api=api,
                             request_fingerprint=request_fingerprint,
                             result=provider_result,

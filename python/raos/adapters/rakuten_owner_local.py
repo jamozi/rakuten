@@ -75,6 +75,7 @@ MAX_DNS_RESULT_BYTES = 64 * 1024
 _OWNER_DIRECTORY = (".secrets", "rakuten-owner-local")
 _CREDENTIAL_FILE = "credentials.v1.json"
 _RESULT_DIRECTORY = "results"
+_REFLECTION_DIAGNOSTIC_DIRECTORY = "diagnostics"
 _CREDENTIAL_KEYS = frozenset(
     {
         "schema_version",
@@ -524,6 +525,7 @@ def _validate_owner_inventory(directory_fd: int) -> None:
     if _CREDENTIAL_FILE not in names or not names <= {
         _CREDENTIAL_FILE,
         _RESULT_DIRECTORY,
+        _REFLECTION_DIAGNOSTIC_DIRECTORY,
     }:
         _fail(RakutenOwnerLocalFailureCode.CREDENTIAL_STORE_INVALID)
 
@@ -2228,18 +2230,47 @@ def _result_payload(envelope: RakutenOwnerLocalResultEnvelope) -> bytes:
     return payload
 
 
+def _reflection_diagnostic_payload(
+    envelope: RakutenOwnerLocalResultEnvelope,
+) -> bytes:
+    if type(envelope) is not RakutenOwnerLocalResultEnvelope:
+        _fail(RakutenOwnerLocalFailureCode.RESULT_STORE_INVALID)
+    try:
+        payload = (
+            json.dumps(
+                envelope.as_reflection_diagnostic_object(),
+                ensure_ascii=False,
+                allow_nan=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+            + b"\n"
+        )
+    except RakutenOwnerLocalFailure:
+        raise
+    except UnicodeError, ValueError, TypeError, RecursionError:
+        _fail_result_store(envelope)
+    if not 1 <= len(payload) <= MAX_RESULT_BYTES:
+        _fail_result_store(envelope)
+    return payload
+
+
 @final
-class OwnerPrivateRakutenOwnerLocalResultWriter:
-    """Atomically publish one sanitized mode-0600 result without replacement."""
+class _OwnerPrivateRakutenOwnerLocalAtomicStore:
+    """Shared anonymous publication path for one closed owner-local artifact."""
 
-    __slots__ = ("_repository_root",)
+    __slots__ = ("_directory", "_repository_root")
 
-    def __init__(self, repository_root: Path) -> None:
+    def __init__(self, repository_root: Path, directory: str) -> None:
+        if type(directory) is not str or directory not in {
+            _RESULT_DIRECTORY,
+            _REFLECTION_DIAGNOSTIC_DIRECTORY,
+        }:
+            _fail(RakutenOwnerLocalFailureCode.RESULT_STORE_INVALID)
         self._repository_root = repository_root
+        self._directory = directory
 
     def doctor_ready(self) -> None:
-        """Check result-store metadata without creating or publishing an inode."""
-
         owner_fd = -1
         result_fd = -1
         try:
@@ -2249,7 +2280,7 @@ class OwnerPrivateRakutenOwnerLocalResultWriter:
             try:
                 result_fd = _private_directory(
                     owner_fd,
-                    _RESULT_DIRECTORY,
+                    self._directory,
                     create=False,
                     failure=RakutenOwnerLocalFailureCode.RESULT_STORE_INVALID,
                 )
@@ -2266,8 +2297,6 @@ class OwnerPrivateRakutenOwnerLocalResultWriter:
                 os.close(owner_fd)
 
     def preflight(self) -> None:
-        """Prove anonymous no-replace publication and rollback before a GET."""
-
         owner_fd = -1
         result_fd = -1
         descriptor = -1
@@ -2277,7 +2306,7 @@ class OwnerPrivateRakutenOwnerLocalResultWriter:
             owner_fd = _open_owner_directory(self._repository_root, create=False)
             result_fd = _private_directory(
                 owner_fd,
-                _RESULT_DIRECTORY,
+                self._directory,
                 create=True,
                 failure=RakutenOwnerLocalFailureCode.RESULT_STORE_INVALID,
             )
@@ -2315,8 +2344,7 @@ class OwnerPrivateRakutenOwnerLocalResultWriter:
             if owner_fd >= 0:
                 os.close(owner_fd)
 
-    def write(self, envelope: RakutenOwnerLocalResultEnvelope) -> None:
-        payload = _result_payload(envelope)
+    def write(self, envelope: RakutenOwnerLocalResultEnvelope, payload: bytes) -> None:
         owner_fd = -1
         result_fd = -1
         descriptor = -1
@@ -2326,7 +2354,7 @@ class OwnerPrivateRakutenOwnerLocalResultWriter:
             owner_fd = _open_owner_directory(self._repository_root, create=False)
             result_fd = _private_directory(
                 owner_fd,
-                _RESULT_DIRECTORY,
+                self._directory,
                 create=True,
                 failure=RakutenOwnerLocalFailureCode.RESULT_STORE_INVALID,
             )
@@ -2369,6 +2397,52 @@ class OwnerPrivateRakutenOwnerLocalResultWriter:
                 os.close(owner_fd)
 
 
+@final
+class OwnerPrivateRakutenOwnerLocalResultWriter:
+    """Atomically publish one sanitized mode-0600 result without replacement."""
+
+    __slots__ = ("_store",)
+
+    def __init__(self, repository_root: Path) -> None:
+        self._store = _OwnerPrivateRakutenOwnerLocalAtomicStore(
+            repository_root, _RESULT_DIRECTORY
+        )
+
+    def doctor_ready(self) -> None:
+        """Check result-store metadata without creating or publishing an inode."""
+
+        self._store.doctor_ready()
+
+    def preflight(self) -> None:
+        """Prove anonymous no-replace publication and rollback before a GET."""
+
+        self._store.preflight()
+
+    def write(self, envelope: RakutenOwnerLocalResultEnvelope) -> None:
+        self._store.write(envelope, _result_payload(envelope))
+
+
+@final
+class OwnerPrivateRakutenOwnerLocalReflectionDiagnosticWriter:
+    """Publish one value-free reflection diagnostic without provider records."""
+
+    __slots__ = ("_store",)
+
+    def __init__(self, repository_root: Path) -> None:
+        self._store = _OwnerPrivateRakutenOwnerLocalAtomicStore(
+            repository_root, _REFLECTION_DIAGNOSTIC_DIRECTORY
+        )
+
+    def doctor_ready(self) -> None:
+        self._store.doctor_ready()
+
+    def preflight(self) -> None:
+        self._store.preflight()
+
+    def write(self, envelope: RakutenOwnerLocalResultEnvelope) -> None:
+        self._store.write(envelope, _reflection_diagnostic_payload(envelope))
+
+
 __all__ = [
     "CONNECT_TIMEOUT_SECONDS",
     "DirectRakutenOwnerLocalTransport",
@@ -2378,6 +2452,7 @@ __all__ = [
     "OwnerPrivateRakutenOwnerLocalCredentialReader",
     "OwnerPrivateRakutenOwnerLocalCredentialStore",
     "OwnerPrivateRakutenOwnerLocalRequestReader",
+    "OwnerPrivateRakutenOwnerLocalReflectionDiagnosticWriter",
     "OwnerPrivateRakutenOwnerLocalResultWriter",
     "READ_TIMEOUT_SECONDS",
     "RESPONSE_READ_DEADLINE_SECONDS",

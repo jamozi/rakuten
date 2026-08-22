@@ -58,6 +58,9 @@ IFS=${IFS%_}
 umask 077
 case "${1-}:$#" in
   setup:1|rotate:1|doctor:1|list-apis:1) ;;
+  diagnose-reflection:3)
+    [ "$2" = --api ] && [ "$3" = item-search ] || refuse "${1-}"
+    ;;
   request:5)
     [ "$2" = --api ] && [ "$4" = --request-file ] || refuse "${1-}"
     case "$3" in item-search|product-search) ;; *) refuse "${1-}" ;; esac
@@ -129,7 +132,7 @@ entry_gate_metadata=$(
 exec 4<&-
 [ ! -L "$runtime_cli" ] || refuse "$command"
 require_metadata "$runtime_cli" regular current 400
-expected_cli_sha256=6ccc123d3d075e81283447c7439de36d8ca52cd5ba8e7185aeefa1bf78cf949a
+expected_cli_sha256=b5e4646024c7b03c8381ff79876437b6d0aca772c78e4dc1976992a8383b9302
 cli_hash=$(
   /usr/bin/busybox sha256sum "$runtime_cli" 2>/dev/null
 ) || refuse "$command"

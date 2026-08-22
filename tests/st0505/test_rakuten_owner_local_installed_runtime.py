@@ -210,6 +210,7 @@ def test_cli_argument_surface_is_closed() -> None:
         ("rotate",),
         ("doctor",),
         ("list-apis",),
+        ("diagnose-reflection", "--api", "item-search"),
         ("request", "--api", "item-search", "--request-file", "/tmp/input.json"),
         ("smoke", "--api", "product-search"),
     ):
@@ -219,6 +220,9 @@ def test_cli_argument_surface_is_closed() -> None:
         ("run",),
         ("request", "--api", "other", "--request-file", "/tmp/input.json"),
         ("request", "--api", "item-search", "--request-file", "relative.json"),
+        ("diagnose-reflection", "--api", "product-search"),
+        ("diagnose-reflection", "--api", "item-search", "unexpected"),
+        ("diagnose-reflection", "--endpoint", "https://example.test"),
         ("smoke", "--api", "item-search", "--endpoint", "https://example.test"),
         ("setup", "secret"),
     ):
@@ -472,6 +476,8 @@ def test_launcher_checks_exact_cli_hash_and_passes_only_closed_arguments() -> No
     assert f"expected_cli_sha256={cli_hash}" in launcher
     assert '"$python" -B -I -S "$runtime_cli" "$@"' in launcher
     assert "request:5" in launcher and "smoke:3" in launcher
+    assert "diagnose-reflection:3" in launcher
+    assert '[ "$2" = --api ] && [ "$3" = item-search ]' in launcher
 
 
 def test_installer_payload_inventory_matches_cli_inventory() -> None:

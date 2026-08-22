@@ -26,6 +26,9 @@ RAKUTEN_OWNER_LOCAL_HOST = "openapi.rakuten.co.jp"
 RAKUTEN_OWNER_LOCAL_PORT = 443
 RAKUTEN_OWNER_LOCAL_MAX_RESPONSE_BYTES = 2 * 1024 * 1024
 RAKUTEN_OWNER_LOCAL_RESULT_SCHEMA = "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3"
+RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_SCHEMA = (
+    "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1"
+)
 RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY = "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"
 RAKUTEN_OWNER_LOCAL_PROVIDER_DATA_CLASSIFICATION = "UNTRUSTED_PROVIDER_DATA"
 RAKUTEN_OWNER_LOCAL_FORMAL_TST_016 = "NOT_EXECUTED"
@@ -157,6 +160,162 @@ class RakutenOwnerLocalValidationDetailCode(StrEnum):
     ROOT_MEMBER_UNRECOGNIZED = "ROOT_MEMBER_UNRECOGNIZED"
     COLLECTION_NOT_ARRAY = "COLLECTION_NOT_ARRAY"
     OPTIONAL_ROOT_MEMBER_VALUE_INVALID = "OPTIONAL_ROOT_MEMBER_VALUE_INVALID"
+
+
+class RakutenOwnerLocalCredentialKind(StrEnum):
+    """Closed identifier for the known credential whose bytes were matched."""
+
+    APPLICATION_ID = "APPLICATION_ID"
+    ACCESS_KEY = "ACCESS_KEY"
+    AFFILIATE_ID = "AFFILIATE_ID"
+
+
+class RakutenOwnerLocalCredentialFieldCategory(StrEnum):
+    """Closed category for a normalized provider field inspected as text."""
+
+    TEXT = "TEXT"
+    URL = "URL"
+    URL_LIST_MEMBER = "URL_LIST_MEMBER"
+
+
+class RakutenOwnerLocalCredentialField(StrEnum):
+    """Exact normalized field names eligible for reflection inspection."""
+
+    AFFILIATE_URL = "affiliateUrl"
+    BRAND_NAME = "brandName"
+    GENRE_NAME = "genreName"
+    ITEM_CODE = "itemCode"
+    ITEM_NAME = "itemName"
+    ITEM_URL = "itemUrl"
+    MEDIUM_IMAGE_URL = "mediumImageUrl"
+    MEDIUM_IMAGE_URLS = "mediumImageUrls"
+    PRODUCT_CODE = "productCode"
+    PRODUCT_ID = "productId"
+    PRODUCT_NAME = "productName"
+    PRODUCT_NO = "productNo"
+    PRODUCT_URL_PC = "productUrlPC"
+    SHOP_CODE = "shopCode"
+    SHOP_NAME = "shopName"
+    SMALL_IMAGE_URL = "smallImageUrl"
+    SMALL_IMAGE_URLS = "smallImageUrls"
+
+
+class RakutenOwnerLocalReflectionDiagnosticOutcome(StrEnum):
+    """Closed result of the dedicated value-free diagnostic invocation."""
+
+    REFLECTION_DETECTED = "REFLECTION_DETECTED"
+    NO_REFLECTION_DETECTED = "NO_REFLECTION_DETECTED"
+    REQUEST_FAILED = "REQUEST_FAILED"
+
+
+_CREDENTIAL_FIELD_DEFINITIONS = {
+    RakutenOwnerLocalApi.ITEM_SEARCH: {
+        "affiliateUrl": (
+            RakutenOwnerLocalCredentialField.AFFILIATE_URL,
+            RakutenOwnerLocalCredentialFieldCategory.URL,
+        ),
+        "itemCode": (
+            RakutenOwnerLocalCredentialField.ITEM_CODE,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "itemName": (
+            RakutenOwnerLocalCredentialField.ITEM_NAME,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "itemUrl": (
+            RakutenOwnerLocalCredentialField.ITEM_URL,
+            RakutenOwnerLocalCredentialFieldCategory.URL,
+        ),
+        "mediumImageUrls": (
+            RakutenOwnerLocalCredentialField.MEDIUM_IMAGE_URLS,
+            RakutenOwnerLocalCredentialFieldCategory.URL_LIST_MEMBER,
+        ),
+        "shopCode": (
+            RakutenOwnerLocalCredentialField.SHOP_CODE,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "shopName": (
+            RakutenOwnerLocalCredentialField.SHOP_NAME,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "smallImageUrls": (
+            RakutenOwnerLocalCredentialField.SMALL_IMAGE_URLS,
+            RakutenOwnerLocalCredentialFieldCategory.URL_LIST_MEMBER,
+        ),
+    },
+    RakutenOwnerLocalApi.PRODUCT_SEARCH: {
+        "affiliateUrl": (
+            RakutenOwnerLocalCredentialField.AFFILIATE_URL,
+            RakutenOwnerLocalCredentialFieldCategory.URL,
+        ),
+        "brandName": (
+            RakutenOwnerLocalCredentialField.BRAND_NAME,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "genreName": (
+            RakutenOwnerLocalCredentialField.GENRE_NAME,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "mediumImageUrl": (
+            RakutenOwnerLocalCredentialField.MEDIUM_IMAGE_URL,
+            RakutenOwnerLocalCredentialFieldCategory.URL,
+        ),
+        "productCode": (
+            RakutenOwnerLocalCredentialField.PRODUCT_CODE,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "productId": (
+            RakutenOwnerLocalCredentialField.PRODUCT_ID,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "productName": (
+            RakutenOwnerLocalCredentialField.PRODUCT_NAME,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "productNo": (
+            RakutenOwnerLocalCredentialField.PRODUCT_NO,
+            RakutenOwnerLocalCredentialFieldCategory.TEXT,
+        ),
+        "productUrlPC": (
+            RakutenOwnerLocalCredentialField.PRODUCT_URL_PC,
+            RakutenOwnerLocalCredentialFieldCategory.URL,
+        ),
+        "smallImageUrl": (
+            RakutenOwnerLocalCredentialField.SMALL_IMAGE_URL,
+            RakutenOwnerLocalCredentialFieldCategory.URL,
+        ),
+    },
+}
+
+_CREDENTIAL_KIND_PRECEDENCE = {
+    RakutenOwnerLocalCredentialKind.APPLICATION_ID: 0,
+    RakutenOwnerLocalCredentialKind.ACCESS_KEY: 1,
+    RakutenOwnerLocalCredentialKind.AFFILIATE_ID: 2,
+}
+_CREDENTIAL_FIELD_PRECEDENCE = {
+    field: rank
+    for rank, field in enumerate(
+        (
+            RakutenOwnerLocalCredentialField.AFFILIATE_URL,
+            RakutenOwnerLocalCredentialField.ITEM_URL,
+            RakutenOwnerLocalCredentialField.MEDIUM_IMAGE_URL,
+            RakutenOwnerLocalCredentialField.PRODUCT_URL_PC,
+            RakutenOwnerLocalCredentialField.SMALL_IMAGE_URL,
+            RakutenOwnerLocalCredentialField.MEDIUM_IMAGE_URLS,
+            RakutenOwnerLocalCredentialField.SMALL_IMAGE_URLS,
+            RakutenOwnerLocalCredentialField.BRAND_NAME,
+            RakutenOwnerLocalCredentialField.GENRE_NAME,
+            RakutenOwnerLocalCredentialField.ITEM_CODE,
+            RakutenOwnerLocalCredentialField.ITEM_NAME,
+            RakutenOwnerLocalCredentialField.PRODUCT_CODE,
+            RakutenOwnerLocalCredentialField.PRODUCT_ID,
+            RakutenOwnerLocalCredentialField.PRODUCT_NAME,
+            RakutenOwnerLocalCredentialField.PRODUCT_NO,
+            RakutenOwnerLocalCredentialField.SHOP_CODE,
+            RakutenOwnerLocalCredentialField.SHOP_NAME,
+        )
+    )
+}
 
 
 class _RedactedValue:
@@ -679,6 +838,27 @@ def fixed_owner_local_smoke_request(
 
 
 @dataclass(frozen=True, slots=True, repr=False)
+class RakutenOwnerLocalCredentialReflection(_RedactedValue):
+    """Transient closed classification; it never contains matched bytes."""
+
+    api: RakutenOwnerLocalApi
+    credential_kind: RakutenOwnerLocalCredentialKind
+    field_name: RakutenOwnerLocalCredentialField
+    field_category: RakutenOwnerLocalCredentialFieldCategory
+
+    def __post_init__(self) -> None:
+        if (
+            type(self.api) is not RakutenOwnerLocalApi
+            or type(self.credential_kind) is not RakutenOwnerLocalCredentialKind
+            or type(self.field_name) is not RakutenOwnerLocalCredentialField
+            or type(self.field_category) is not RakutenOwnerLocalCredentialFieldCategory
+            or _CREDENTIAL_FIELD_DEFINITIONS[self.api].get(self.field_name.value)
+            != (self.field_name, self.field_category)
+        ):
+            fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
+
+
+@dataclass(frozen=True, slots=True, repr=False)
 class RakutenOwnerLocalCredentials(_RedactedValue):
     profile: str
     _application_id: bytes
@@ -714,17 +894,27 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
 
         if type(result) is not RakutenOwnerLocalProviderResult:
             fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
-        always_sensitive: tuple[bytes, ...] = (
-            self._application_id,
-            self._access_key,
+        credential_values: tuple[tuple[RakutenOwnerLocalCredentialKind, bytes], ...] = (
+            (RakutenOwnerLocalCredentialKind.APPLICATION_ID, self._application_id),
+            (RakutenOwnerLocalCredentialKind.ACCESS_KEY, self._access_key),
         )
+        matches: set[RakutenOwnerLocalCredentialReflection] = set()
         for record in result.records:
             for name, candidate in record.fields:
                 if type(candidate) not in {str, tuple}:
                     continue
-                credential_values: tuple[bytes, ...] = always_sensitive
+                inspected_credentials = credential_values
                 if name not in _AFFILIATE_ID_LINK_URL_FIELDS[result.api]:
-                    credential_values += (self._affiliate_id,)
+                    inspected_credentials += (
+                        (
+                            RakutenOwnerLocalCredentialKind.AFFILIATE_ID,
+                            self._affiliate_id,
+                        ),
+                    )
+                field_definition = _CREDENTIAL_FIELD_DEFINITIONS[result.api].get(name)
+                if field_definition is None:
+                    fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
+                field_name, field_category = field_definition
                 text_values = (
                     (candidate,)
                     if type(candidate) is str
@@ -735,17 +925,32 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
                         text.encode("utf-8", errors="strict"),
                         unquote_to_bytes(text),
                     )
-                    if any(
-                        credential in encoded
-                        for encoded in encoded_values
-                        for credential in credential_values
-                    ):
-                        fail_owner_local(
-                            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
-                            validation_stage_code=(
-                                RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
-                            ),
-                        )
+                    for credential_kind, credential in inspected_credentials:
+                        if any(credential in encoded for encoded in encoded_values):
+                            matches.add(
+                                RakutenOwnerLocalCredentialReflection(
+                                    api=result.api,
+                                    credential_kind=credential_kind,
+                                    field_name=field_name,
+                                    field_category=field_category,
+                                )
+                            )
+        if matches:
+            selected = min(
+                matches,
+                key=lambda match: (
+                    _CREDENTIAL_KIND_PRECEDENCE[match.credential_kind],
+                    _CREDENTIAL_FIELD_PRECEDENCE[match.field_name],
+                ),
+            )
+            fail_owner_local(
+                RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                validation_stage_code=(
+                    RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+                ),
+                credential_reflection=selected,
+                api=result.api,
+            )
 
 
 NormalizedValue: TypeAlias = None | bool | int | str | tuple[str, ...]
@@ -1128,6 +1333,7 @@ class RakutenOwnerLocalFailure(RuntimeError):
     response_sha256: str | None = None
     validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None
     validation_detail_code: RakutenOwnerLocalValidationDetailCode | None = None
+    credential_reflection: RakutenOwnerLocalCredentialReflection | None = None
 
     def __post_init__(self) -> None:
         if (
@@ -1141,6 +1347,11 @@ class RakutenOwnerLocalFailure(RuntimeError):
                 self.validation_detail_code is not None
                 and type(self.validation_detail_code)
                 is not RakutenOwnerLocalValidationDetailCode
+            )
+            or (
+                self.credential_reflection is not None
+                and type(self.credential_reflection)
+                is not RakutenOwnerLocalCredentialReflection
             )
             or type(self.disposition) is not RakutenOwnerLocalRequestDisposition
             or (self.api is not None and type(self.api) is not RakutenOwnerLocalApi)
@@ -1179,6 +1390,17 @@ class RakutenOwnerLocalFailure(RuntimeError):
             is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
         ) != (self.validation_detail_code is not None):
             raise TypeError("invalid Rakuten owner-local validation detail")
+        if (
+            self.validation_stage_code
+            is RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+        ) != (self.credential_reflection is not None):
+            raise TypeError("invalid Rakuten owner-local credential reflection")
+        if (
+            self.credential_reflection is not None
+            and self.api is not None
+            and self.api is not self.credential_reflection.api
+        ):
+            raise TypeError("invalid Rakuten owner-local credential reflection API")
         if self.disposition is RakutenOwnerLocalRequestDisposition.NOT_SENT and any(
             value is not None
             for value in (self.http_status, self.body_byte_count, self.response_sha256)
@@ -1223,6 +1445,7 @@ def fail_owner_local(
     *,
     validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None,
     validation_detail_code: RakutenOwnerLocalValidationDetailCode | None = None,
+    credential_reflection: RakutenOwnerLocalCredentialReflection | None = None,
     disposition: RakutenOwnerLocalRequestDisposition = (
         RakutenOwnerLocalRequestDisposition.NOT_SENT
     ),
@@ -1236,6 +1459,7 @@ def fail_owner_local(
         code=code,
         validation_stage_code=validation_stage_code,
         validation_detail_code=validation_detail_code,
+        credential_reflection=credential_reflection,
         disposition=disposition,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -1257,6 +1481,7 @@ def contextual_failure(
         code=failure.code,
         validation_stage_code=failure.validation_stage_code,
         validation_detail_code=failure.validation_detail_code,
+        credential_reflection=failure.credential_reflection,
         disposition=failure.disposition,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -1397,6 +1622,85 @@ class RakutenOwnerLocalResultEnvelope(_RedactedValue):
             "od_015": RAKUTEN_OWNER_LOCAL_OD_015,
         }
 
+    def as_reflection_diagnostic_object(self) -> dict[str, object]:
+        """Return one closed diagnostic without provider records or credential bytes."""
+
+        definition = api_definition(self.api)
+        result = self.provider_result
+        failure = self.failure
+        reflection = failure.credential_reflection if failure is not None else None
+        if reflection is not None:
+            diagnostic_outcome = (
+                RakutenOwnerLocalReflectionDiagnosticOutcome.REFLECTION_DETECTED
+            )
+        elif result is not None:
+            diagnostic_outcome = (
+                RakutenOwnerLocalReflectionDiagnosticOutcome.NO_REFLECTION_DETECTED
+            )
+        else:
+            diagnostic_outcome = (
+                RakutenOwnerLocalReflectionDiagnosticOutcome.REQUEST_FAILED
+            )
+        return {
+            "schema": RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_SCHEMA,
+            "version": 1,
+            "run_id": self.run_id,
+            "started_at": _utc_text(self.started_at),
+            "finished_at": _utc_text(self.finished_at),
+            "api": self.api.value,
+            "endpoint_id": definition.endpoint_id,
+            "api_version": definition.api_version,
+            "outcome": self.outcome.value,
+            "diagnostic_outcome": diagnostic_outcome.value,
+            "diagnostic_code": failure.code.value if failure is not None else "PASS",
+            "validation_stage_code": (
+                failure.validation_stage_code.value
+                if failure is not None and failure.validation_stage_code is not None
+                else None
+            ),
+            "reflection_credential_kind": (
+                reflection.credential_kind.value if reflection is not None else None
+            ),
+            "reflection_field_name": (
+                reflection.field_name.value if reflection is not None else None
+            ),
+            "reflection_field_category": (
+                reflection.field_category.value if reflection is not None else None
+            ),
+            "request_fingerprint": self.request_fingerprint,
+            "request_disposition": self.disposition.value,
+            "request_count": self.request_count,
+            "retry_count": 0,
+            "pagination_count": 0,
+            "http_status": (
+                result.http_status
+                if result is not None
+                else failure.http_status
+                if failure is not None
+                else None
+            ),
+            "body_byte_count": (
+                result.body_byte_count
+                if result is not None
+                else failure.body_byte_count
+                if failure is not None
+                else None
+            ),
+            "response_sha256": (
+                result.response_sha256
+                if result is not None
+                else failure.response_sha256
+                if failure is not None
+                else None
+            ),
+            "provider_data_persisted": False,
+            "evidence_authority": RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY,
+            "formal_tst_016": RAKUTEN_OWNER_LOCAL_FORMAL_TST_016,
+            "staging": RAKUTEN_OWNER_LOCAL_STAGING,
+            "production": RAKUTEN_OWNER_LOCAL_PRODUCTION,
+            "od_015": RAKUTEN_OWNER_LOCAL_OD_015,
+        }
+
 
 def validate_run_id(value: object) -> str:
     if type(value) is not str or _RUN_ID.fullmatch(value) is None:
@@ -1414,11 +1718,16 @@ __all__ = [
     "RAKUTEN_OWNER_LOCAL_PRODUCTION",
     "RAKUTEN_OWNER_LOCAL_PROFILE",
     "RAKUTEN_OWNER_LOCAL_PROVIDER_DATA_CLASSIFICATION",
+    "RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_SCHEMA",
     "RAKUTEN_OWNER_LOCAL_RESULT_SCHEMA",
     "RAKUTEN_OWNER_LOCAL_STAGING",
     "NormalizedValue",
     "RakutenOwnerLocalApi",
     "RakutenOwnerLocalApiDefinition",
+    "RakutenOwnerLocalCredentialField",
+    "RakutenOwnerLocalCredentialFieldCategory",
+    "RakutenOwnerLocalCredentialKind",
+    "RakutenOwnerLocalCredentialReflection",
     "RakutenOwnerLocalCredentials",
     "RakutenOwnerLocalFailure",
     "RakutenOwnerLocalFailureCode",
@@ -1432,6 +1741,7 @@ __all__ = [
     "RakutenOwnerLocalProviderResult",
     "RakutenOwnerLocalRequest",
     "RakutenOwnerLocalRequestDisposition",
+    "RakutenOwnerLocalReflectionDiagnosticOutcome",
     "RakutenOwnerLocalResultEnvelope",
     "api_definition",
     "contextual_failure",

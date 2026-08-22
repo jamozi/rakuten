@@ -214,7 +214,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/fd23f88bb61d8919015602e48bc5c10b5df06d4c9dff4986ff513e4500249d93/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/305ca66b8453a526395641a3cc1e535ac887283608fd94d5a433d7f15ba672ed/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -222,11 +222,11 @@ installer, or launcher execution refuses before prompt, credential, result, or
 network access.
 
 The generated plan binds launcher SHA-256
-`27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
+`070a7968305200f468c0be4ed07b5845ba1abd30faeda4fd06ba62d59535228b`,
 installer SHA-256
-`e25b742f76904f8c50db9439bc02f435bdf8076068ea0e00a0746b69bdaf60ef`,
+`f9c3b305fd86c19bce011688f3aa75ef4f89e62cf5877573f0c3c5cead046a34`,
 and install-stage SHA-256
-`4745a3b74b307c16c542012d3e44526ea80e70915ea12e1c51874df6da9cacea`.
+`4ebdb6457a83f4417d449f5d3da8932906e10796b913d0753ca1c27bc9b67776`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -253,6 +253,9 @@ The installed command surface is closed:
   performs at most one reviewed read request.
 - `smoke --api <item-search|product-search>` uses fixed keyword `収納`, hits 1,
   page 1, and standard sort for one request.
+- `diagnose-reflection --api item-search` repeats only that fixed Item smoke as
+  a separately explicit one-call diagnostic and writes one closed, value-free
+  diagnostic artifact instead of a Result V3 provider-result artifact.
 
 Credentials exist only at
 `.secrets/rakuten-owner-local/credentials.v1.json`. Exact keys are
@@ -409,6 +412,34 @@ zero retry and pagination, and Result V3 failure at
 root-cause classification is an official-spec conflict plus sanitized stage
 evidence, not proof that a particular response field contained the affiliate
 ID.
+
+A later separately authorized one-call Item smoke using bundle
+`fd23f88bb61d8919015602e48bc5c10b5df06d4c9dff4986ff513e4500249d93`
+again recorded HTTP 200, body size 5771, request count 1, zero retry and
+pagination, Result V3 `RESPONSE_SCHEMA_DRIFT` at `CREDENTIAL_REFLECTION`, and
+response SHA-256
+`00948e7dde4e37e5781fc55fada18bbb03010c5955fadc31ccbb7ed6209f5b0d`.
+It retained neither the raw body nor an observed field. That repeated closed
+stage evidence shows that the earlier exact affiliate-link exemption did not
+identify the remaining field, but it does not authorize another policy
+exception or support a field-level claim.
+
+The explicit Item-only reflection diagnostic preserves the exact Result V3
+contract and ordinary fixed CLI output. It performs the same fixed smoke with
+one GET, zero retry, and zero pagination, then atomically writes exactly one
+mode-`0600` no-replace artifact at
+`.secrets/rakuten-owner-local/diagnostics/<UTC-run-id>.json`. Its separate
+`RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1` schema contains only
+the existing sanitized request/response metadata plus one closed credential
+kind (`APPLICATION_ID`, `ACCESS_KEY`, or `AFFILIATE_ID`), one exact normalized
+field name, and its closed `TEXT`, `URL`, or `URL_LIST_MEMBER` category when a
+reflection is detected. A no-reflection success and an unrelated request
+failure instead keep all three reflection fields `null`. The diagnostic scans
+the complete normalized collection and selects a match with fixed credential
+and field precedence, independent of provider record order. It never persists
+records, summaries, raw body or headers, matched bytes, indexes, provider
+errors, exceptions, or credentials. Existing V1, V2, and V3 evidence is not
+rewritten or retrospectively classified.
 
 The six schema- and relationship-validated summary integers and every non-text
 normalized value already accepted by its field schema are not converted to text
