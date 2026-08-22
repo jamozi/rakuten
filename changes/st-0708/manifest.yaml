@@ -74,7 +74,7 @@ provenance:
       sha256: 294394757d1739889f54dbb6cf20a8353275faf233bc3bba7fdd3f932671dc6a
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+    sha256: 77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0708/README.md
@@ -85,7 +85,7 @@ source_artifacts:
   sha256: 4031e393ef67944cc194f0caef1726b77cb88ba8ccf077b9453c4afb7f2afb2a
 - uri: repo://scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py
   bytes: 17851
-  sha256: 4c642365d81c75c46a2522619ea10fd880b38897ded790857177da39f6685640
+  sha256: 667137b6ad947597d8fcecf928e1a50c1231ff8334d726051df61f04628023ad
 - uri: repo://tests/st0708/conftest.py
   bytes: 850
   sha256: 727abc88ff1b9cda9ad62a56b3b9559d4c6551c581df6a033f8e60b6d1f0be9d
