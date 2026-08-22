@@ -1,29 +1,48 @@
 {
   "activation": {
+    "credential_access": "FORBIDDEN",
     "credential_issuance": "FORBIDDEN",
+    "deploy_action": "FORBIDDEN",
     "enabled": false,
     "external_writes": "FORBIDDEN",
     "live_provider_calls": "FORBIDDEN",
     "native_plan_status": "NOT_EXECUTED",
+    "network_access": "FORBIDDEN",
     "operations": {
-      "aws_api_call": "FORBIDDEN",
       "credential_issue": "FORBIDDEN",
       "deploy": "FORBIDDEN",
       "github_api_mutation": "FORBIDDEN",
       "github_environment_mutation": "FORBIDDEN",
       "github_ruleset_mutation": "FORBIDDEN",
       "github_workflow_mutation": "FORBIDDEN",
-      "iam_policy_apply": "FORBIDDEN",
-      "terraform_apply": "FORBIDDEN",
-      "terraform_plan": "FORBIDDEN"
+      "iac_apply": "FORBIDDEN",
+      "iac_plan": "FORBIDDEN",
+      "target_federation_exchange": "FORBIDDEN",
+      "target_identity_policy_apply": "FORBIDDEN",
+      "target_provider_api_call": "FORBIDDEN"
     },
+    "production_action": "FORBIDDEN",
+    "release_action": "FORBIDDEN",
     "status": "DISABLED"
   },
+  "ci_source_boundary": {
+    "ci_source": "GITHUB_ACTIONS",
+    "classification": "APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION",
+    "exact_ref_binding": "REQUIRED_NOT_CONFIGURED",
+    "exact_repository_binding": "REQUIRED_NOT_CONFIGURED",
+    "exact_workflow_binding": "REQUIRED_NOT_CONFIGURED",
+    "external_review_connector": "GITHUB",
+    "hosted_execution_evidence": "NOT_EXECUTED",
+    "oidc_source": "GITHUB_ACTIONS_OIDC",
+    "target_provider_selected": false
+  },
   "credential_boundary": {
-    "classification": "MATERIAL_FREE_REQUIREMENTS_ONLY",
+    "classification": "MATERIAL_FREE_PROVIDER_NEUTRAL_FEDERATION_REQUIREMENTS_ONLY",
     "credential_issuance_capability": "ABSENT",
     "credential_material": "ABSENT",
+    "cross_environment_identity_reuse": "FORBIDDEN",
     "fork_pr_credential_issuance": "FORBIDDEN",
+    "human_cloud_credential": "FORBIDDEN",
     "least_privilege": "REQUIRED_NOT_CONFIGURED",
     "long_lived_cloud_key": "FORBIDDEN",
     "oidc_session": "SHORT_LIVED_REQUIRED_NOT_CONFIGURED",
@@ -32,11 +51,16 @@
     "role_chaining": "FORBIDDEN",
     "secret_names": [],
     "secret_values": [],
+    "session_duration_limit": "REQUIRED_NOT_CONFIGURED",
+    "session_revocation": "REQUIRED_NOT_CONFIGURED",
+    "session_scope_limit": "REQUIRED_NOT_CONFIGURED",
+    "static_provider_credential": "FORBIDDEN",
+    "target_account_project_tenant_isolation": "REQUIRED_NOT_CONFIGURED",
     "untrusted_environment_credential_issuance": "FORBIDDEN",
     "untrusted_ref_credential_issuance": "FORBIDDEN"
   },
   "document": {
-    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_GITHUB_OIDC_REFERENCE_PLAN",
+    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_REFERENCE_PLAN",
     "executable": false,
     "generated_by": "repo://scripts/build_st1504_github_oidc.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st1504_github_oidc.py",
@@ -44,28 +68,71 @@
     "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
     "source_contract": "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
     "story_id": "ST-1504",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "environment_protection": {
     "approval_bypass": "FORBIDDEN",
     "classification": "PRODUCTION_PROTECTION_INTENT_ONLY",
+    "cross_environment_target_reuse": "FORBIDDEN",
     "deployment_without_approval": "FORBIDDEN",
     "distinct_human_approval": "REQUIRED_NOT_CONFIGURED",
     "exact_allowed_refs": "REQUIRED_NOT_CONFIGURED",
     "production_environment": "REQUIRED_NOT_CONFIGURED",
     "protected_environment": "REQUIRED_NOT_CONFIGURED",
-    "self_approval": "FORBIDDEN"
+    "self_approval": "FORBIDDEN",
+    "target_account_project_tenant_isolation": "REQUIRED_NOT_CONFIGURED"
+  },
+  "lifecycle_controls": {
+    "alert_owner_and_escalation": "REQUIRED_NOT_CONFIGURED",
+    "audit_bypass": "FORBIDDEN",
+    "classification": "PROVIDER_NEUTRAL_AUDIT_REVOCATION_ROLLBACK_INTENT_ONLY",
+    "credential_and_trust_revocation": "REQUIRED_NOT_CONFIGURED",
+    "evidence_retention": "REQUIRED_NOT_CONFIGURED",
+    "immutable_audit_trail": "REQUIRED_NOT_CONFIGURED",
+    "irreversible_promotion": "FORBIDDEN",
+    "revocation_bypass": "FORBIDDEN",
+    "rollback_and_kill_switch_runbook": "REQUIRED_NOT_CONFIGURED",
+    "rollback_bypass": "FORBIDDEN",
+    "signed_provenance": "REQUIRED_NOT_CONFIGURED"
   },
   "logical_identity_path": {
-    "aws_role_session": "REQUIRED_NOT_CONFIGURED",
-    "classification": "LOGICAL_IDENTITY_PATH_REFERENCE_ONLY",
-    "destination": "AWS_SHORT_LIVED_WORKLOAD_SESSION",
+    "classification": "LOGICAL_PROVIDER_NEUTRAL_IDENTITY_PATH_REFERENCE_ONLY",
+    "destination": "PROVIDER_NEUTRAL_SHORT_LIVED_WORKLOAD_SESSION",
     "executable_workflow": "ABSENT",
+    "github_source_is_target_provider_selection": false,
     "github_workload_identity": "REQUIRED_NOT_CONFIGURED",
-    "iam_trust_policy": "ABSENT",
     "production_deployment": "FORBIDDEN",
     "provider_sdk_types": "ABSENT",
-    "source": "GITHUB_ACTIONS_OIDC"
+    "source": "GITHUB_ACTIONS_OIDC",
+    "target_federated_session": "REQUIRED_NOT_CONFIGURED",
+    "target_provider": "UNSELECTED",
+    "target_trust_policy": "ABSENT"
+  },
+  "open_decision_boundary": {
+    "OD-009": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "LOW_DEVELOPMENT_CAP_PRODUCTION_DISABLED",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "OD-011": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "OD-013": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "REFERENCE_REGION_ONLY_PRODUCTION_APPLY_FORBIDDEN",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "OD-015": {
+      "blocking": true,
+      "resolved": false,
+      "safe_default": "RECORDED_FIXTURE_ONLY_CREDENTIALS_ABSENT_PROVIDER_CALLS_FORBIDDEN",
+      "status": "EXTERNAL_EVIDENCE_REQUIRED"
+    }
   },
   "planned_actions": {
     "create": 0,
@@ -74,7 +141,7 @@
   },
   "predecessor_bindings": {
     "pr_governance": {
-      "contract_sha256": "ce6114ff9ae7e76e746e5b1eed5a045ee0982f18bd0d4e8614c73056ec3cdcb1",
+      "contract_sha256": "b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92",
       "contract_uri": "repo://changes/st-0107/contracts/pr-governance.v1.yaml",
       "desired_state_sha256": "e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5",
       "desired_state_uri": "repo://changes/st-0107/ruleset-policy.v1.json",
@@ -99,47 +166,244 @@
       "story_id": "ST-0107"
     },
     "terraform_foundation": {
-      "contract_sha256": "3907d814f3be891d7652a77e8478428ede79d9dc9cfbd48f871962150ef459d2",
+      "contract_sha256": "c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6",
       "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
-      "reference_plan_sha256": "877248753e5498c6fdc94e6700c2ac64fc5f12aabce61abfd19e8cfb7d7c8e2f",
+      "design_handoff_sha256": "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61",
+      "design_handoff_uri": "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
+      "reference_plan_sha256": "c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559",
       "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
       "required_activation_status": "DISABLED",
+      "required_admission_status": "NOT_EVALUATED",
+      "required_eligible": false,
       "required_planned_actions": {
         "create": 0,
         "delete": 0,
         "update": 0
       },
+      "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
       "required_resource_payloads": "FORBIDDEN",
       "story_id": "ST-1501"
     }
   },
+  "provider_neutral_deployment_identity_admission": {
+    "admission_status": "NOT_EVALUATED",
+    "aws_reference_boundary": {
+      "admission_requirement": false,
+      "default": false,
+      "eligibility_shortcut": false,
+      "evidence_substitute": false,
+      "implicit_fallback": false,
+      "role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+      "selected_binding": false
+    },
+    "binding_policy": {
+      "account_project_or_tenant": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "audience": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "identity_plugin_or_adapter": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "implicit_binding": "FORBIDDEN",
+      "name_or_reference_only_eligibility": "FORBIDDEN",
+      "region": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "target_identity_or_role": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "target_profile": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      },
+      "target_provider": {
+        "default": null,
+        "fallback": null,
+        "selected": null
+      }
+    },
+    "capability_mapping_requirements": [
+      {
+        "capability_id": "exact_repository_ref_workflow_and_subject_binding",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "EXACT_REPOSITORY_REF_WORKFLOW_ENVIRONMENT_AUDIENCE_AND_SUBJECT_WITH_NO_WILDCARD_OR_UNTRUSTED_CALLER",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "short_lived_federation_without_static_cloud_secrets",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "SHORT_LIVED_FEDERATION_WITHOUT_STATIC_CLOUD_SECRET_HUMAN_CREDENTIAL_OR_AMBIENT_AUTHORITY",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "target_environment_and_audience_binding",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "EXACT_TARGET_ENVIRONMENT_AUDIENCE_PROVIDER_AND_RELEASE_BOUNDARY_WITH_FAIL_CLOSED_ISSUANCE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "least_privilege_session_scope_and_duration_limits",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "LEAST_PRIVILEGE_SCOPE_BOUNDED_DURATION_NO_ROLE_CHAINING_AND_NO_PRIVILEGE_ESCALATION",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "protected_environment_human_approval",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "DISTINCT_HUMAN_APPROVAL_PROTECTED_ENVIRONMENT_EXACT_ALLOWED_REFS_AND_NO_BYPASS",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "provenance_audit_revocation_and_rollback",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "SIGNED_PROVENANCE_IMMUTABLE_AUDIT_REVOCATION_RUNBOOK_ALERT_OWNERSHIP_AND_TESTED_ROLLBACK",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "provider_account_project_tenant_and_environment_isolation",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "DEVELOPMENT_PRODUCTION_ACCOUNT_PROJECT_TENANT_ENVIRONMENT_AND_REGION_RESIDENCY_ISOLATION",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "equivalent_security_operations_and_release_evidence",
+        "evidence_refs": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "IDENTICAL_SECURITY_OPERATIONS_RELEASE_PROVENANCE_AUDIT_REVOCATION_ROLLBACK_ISOLATION_AND_RESIDENCY_EVIDENCE",
+        "selected_mapping": null
+      }
+    ],
+    "classification": "STRICT_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_CAPABILITY_ADMISSION",
+    "concrete_alternate_provider_selected": false,
+    "default_profile_id": null,
+    "eligibility_condition": "COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE",
+    "eligible": false,
+    "eligible_profile_kinds": [
+      "AWS",
+      "OTHER_CLOUD",
+      "OWNER_MANAGED_INFRASTRUCTURE"
+    ],
+    "evidence_equivalence_policy": {
+      "aws_label_as_evidence": "FORBIDDEN",
+      "github_source_label_as_evidence": "FORBIDDEN",
+      "identical_audit_evidence": "REQUIRED",
+      "identical_identity_session_evidence": "REQUIRED",
+      "identical_isolation_residency_evidence": "REQUIRED",
+      "identical_operations_evidence": "REQUIRED",
+      "identical_provenance_evidence": "REQUIRED",
+      "identical_release_evidence": "REQUIRED",
+      "identical_revocation_rollback_evidence": "REQUIRED",
+      "identical_security_evidence": "REQUIRED",
+      "local_test_as_live_evidence": "FORBIDDEN",
+      "provider_label_as_evidence": "FORBIDDEN",
+      "reference_metadata_as_evidence": "FORBIDDEN"
+    },
+    "fallback_profile_id": null,
+    "mapping_policy": {
+      "aws_label_only_mapping": "REJECT",
+      "complete_mapping": false,
+      "configured_mapping_count": 0,
+      "duplicate_mapping": "REJECT",
+      "implicit_mapping": "REJECT",
+      "missing_mapping": "REJECT",
+      "partial_mapping": "REJECT",
+      "provider_label_only_mapping": "REJECT",
+      "reference_only_mapping": "REJECT",
+      "required_capability_count": 8,
+      "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+      "source_label_only_mapping": "REJECT",
+      "unknown_mapping": "REJECT"
+    },
+    "selected_profile_id": null,
+    "selected_profile_kind": null,
+    "selected_provider_name": null
+  },
+  "reference_architecture": {
+    "admission_requirement": false,
+    "architecture_id": "RAOS-ARCH-001",
+    "classification": "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY",
+    "cloud": "AWS",
+    "default": false,
+    "eligibility_shortcut": false,
+    "evidence_substitute": false,
+    "implicit_fallback": false,
+    "inherited_from": "INT-DEC-007",
+    "mappings": [
+      {
+        "capability_id": "short_lived_federation_without_static_cloud_secrets",
+        "reference_name": "AWS IAM OIDC provider"
+      },
+      {
+        "capability_id": "least_privilege_session_scope_and_duration_limits",
+        "reference_name": "AWS IAM role"
+      },
+      {
+        "capability_id": "provider_account_project_tenant_and_environment_isolation",
+        "reference_name": "AWS account"
+      },
+      {
+        "capability_id": "provider_account_project_tenant_and_environment_isolation",
+        "reference_name": "AWS region"
+      },
+      {
+        "capability_id": "target_environment_and_audience_binding",
+        "reference_name": "AWS audience"
+      }
+    ],
+    "portable_core_required": true,
+    "region": "ap-northeast-1",
+    "selected_binding": false
+  },
   "selected_bindings": {
-    "aws_account_id": null,
-    "aws_role_arn": null,
-    "aws_role_name": null,
     "default_branch_ref": null,
     "deploy_job_id": null,
     "deploy_ref": null,
     "environment_protection_payload": null,
     "external_action_references": [],
+    "federation_trust_material": null,
     "github_environment_allowed_refs": [],
     "github_environment_name": null,
     "github_environment_reviewer_ids": [],
     "github_organization": null,
     "github_repository": null,
     "github_repository_numeric_id": null,
-    "oidc_audience": null,
+    "identity_plugin_or_adapter": null,
     "oidc_issuer_url": null,
     "oidc_subject": null,
-    "oidc_thumbprints": [],
     "permission_policy_payload": null,
     "provider_plugins": [],
     "reusable_workflow_callers": [],
     "session_duration_seconds": null,
     "session_name": null,
     "session_tags": [],
-    "terraform_cli_version": null,
-    "trust_policy_payload": null,
+    "target_account_project_or_tenant": null,
+    "target_audience": null,
+    "target_federation_endpoint_reference": null,
+    "target_identity_role_reference": null,
+    "target_profile_id": null,
+    "target_profile_kind": null,
+    "target_provider_name": null,
+    "target_region": null,
     "workflow_file_path": null,
     "workflow_permissions_payload": null,
     "workflow_ref": null,
@@ -147,6 +411,7 @@
     "workflow_trigger_events": []
   },
   "trust_constraints": {
+    "broad_audience": "FORBIDDEN",
     "broad_organization_subject": "FORBIDDEN",
     "broad_ref_subject": "FORBIDDEN",
     "broad_repository_subject": "FORBIDDEN",
@@ -174,20 +439,28 @@
     "wildcard_trust": "FORBIDDEN"
   },
   "verification_boundary": {
-    "aws_account": "UNSET",
-    "aws_role": "UNSET",
     "credential_issuance": "NOT_EXECUTED",
     "credentials": "ABSENT",
     "effective_canonical_status": "UNCHANGED",
     "executable_workflow": "ABSENT",
     "formal_tst_026": "NOT_EXECUTED",
+    "github_actions_ci_source": "APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION",
     "github_environment": "UNSET",
     "github_repository": "UNSET",
-    "hosted_github_aws": "NOT_EXECUTED",
-    "iam_trust_policy": "ABSENT",
-    "live_oidc": "NOT_EXECUTED",
-    "live_staging_release_production": "NOT_EXECUTED",
+    "hosted_github_target_provider": "NOT_EXECUTED",
+    "live_oidc_federation": "NOT_EXECUTED",
     "native_iac_validation": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "provenance_audit_revocation_rollback": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging_deployment": "NOT_EXECUTED",
+    "target_account_project_or_tenant": "UNSET",
+    "target_audience": "UNSET",
+    "target_identity_role": "UNSET",
+    "target_profile": "UNSET",
+    "target_provider": "UNSET",
+    "target_region": "UNSET",
+    "target_trust_policy": "ABSENT",
     "workflow_inspection": "NOT_EXECUTED"
   },
   "workflow_permissions": {

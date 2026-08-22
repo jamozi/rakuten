@@ -1,0 +1,171 @@
+schema: DESIGN_HANDOFF_V1
+version: 1
+record_status: RECORDED_DURABLE_OWNER_DECISION
+approved_story: ST-1504
+approved_scope:
+  - Keep GitHub Actions and GitHub as the approved CI/OIDC source and initial external review connector without treating either as a target-cloud selection.
+  - Define Full RAOS deployment identity without assuming or requiring AWS or any other target provider.
+  - Retain AWS IAM OIDC provider, AWS IAM role, AWS account, AWS region, and AWS audience only as optional historical AWS reference mappings inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Require every future target profile to map the same closed deployment-identity capability inventory and provide equivalent security, operations, release, provenance, audit, revocation, rollback, isolation, and residency evidence.
+  - Keep every repository, ref, workflow, environment, provider, profile, account, project, tenant, region, audience, role, session, policy, credential, plugin, adapter, and physical-resource binding unset while the relevant Open Decisions remain unresolved.
+source_design_refs:
+  - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  - repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-007
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-009
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-011
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-013
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015
+  - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-0107
+  - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1504
+  - repo://changes/st-0107/contracts/pr-governance.v1.yaml
+  - repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+  - repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md#RAOS-ARCH-001
+  - repo://docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml#RAOS-ARCH-001
+  - repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md#RAOS-OPS-001
+  - repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md#RAOS-SEC-001
+  - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-026
+  - repo://AGENTS.md#project-tools-contract
+decision:
+  deployment_identity_provider_policy: STRICT_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_CAPABILITY_ADMISSION
+  ci_source_boundary:
+    ci_source: GITHUB_ACTIONS
+    oidc_source: GITHUB_ACTIONS_OIDC
+    external_review_connector: GITHUB
+    classification: APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION
+    target_provider_selected: false
+  selected_profile: null
+  default_profile: null
+  fallback_profile: null
+  concrete_alternate_provider_selected: false
+  eligible_profile_kinds:
+    - AWS
+    - OTHER_CLOUD
+    - OWNER_MANAGED_INFRASTRUCTURE
+  eligibility_condition: COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE
+  aws_reference_mapping_boundary:
+    canonical_decision_id: INT-DEC-007
+    architecture_id: RAOS-ARCH-001
+    classification: OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY
+    mappings:
+      - reference_name: AWS IAM OIDC provider
+        capability_id: short_lived_federation_without_static_cloud_secrets
+      - reference_name: AWS IAM role
+        capability_id: least_privilege_session_scope_and_duration_limits
+      - reference_name: AWS account
+        capability_id: provider_account_project_tenant_and_environment_isolation
+      - reference_name: AWS region
+        capability_id: provider_account_project_tenant_and_environment_isolation
+      - reference_name: AWS audience
+        capability_id: target_environment_and_audience_binding
+    default: false
+    implicit_fallback: false
+    selected_binding: false
+    eligibility_shortcut: false
+    admission_requirement: false
+    evidence_substitute: false
+  binding_policy:
+    target_provider:
+      selected: null
+      default: null
+      fallback: null
+    target_profile:
+      selected: null
+      default: null
+      fallback: null
+    account_project_or_tenant:
+      selected: null
+      default: null
+      fallback: null
+    region:
+      selected: null
+      default: null
+      fallback: null
+    audience:
+      selected: null
+      default: null
+      fallback: null
+    target_identity_or_role:
+      selected: null
+      default: null
+      fallback: null
+    identity_plugin_or_adapter:
+      selected: null
+      default: null
+      fallback: null
+    implicit_binding: FORBIDDEN
+    name_or_reference_only_eligibility: FORBIDDEN
+  required_capability_ids:
+    - exact_repository_ref_workflow_and_subject_binding
+    - short_lived_federation_without_static_cloud_secrets
+    - target_environment_and_audience_binding
+    - least_privilege_session_scope_and_duration_limits
+    - protected_environment_human_approval
+    - provenance_audit_revocation_and_rollback
+    - provider_account_project_tenant_and_environment_isolation
+    - equivalent_security_operations_and_release_evidence
+rationale:
+  - Canonical security design fixes GitHub Actions OIDC as the CI identity source and forbids long-lived cloud keys, while INT-DEC-007 makes AWS Tokyo only a Reference Architecture and requires a portable Core.
+  - GitHub is the repository-approved initial external review connector, but that source-system choice must not select a target cloud, identity service, account, region, audience, role, plugin, or adapter.
+  - Provider, profile, account, project, tenant, region, audience, role, plugin, or adapter defaults would silently convert historical AWS reference mappings into live infrastructure choices.
+  - Exact subject binding, short-lived federation, protected-environment approval, least privilege, isolation, provenance, audit, revocation, rollback, and equivalent evidence are provider-neutral security outcomes.
+  - Keeping all bindings null and eligibility unevaluated preserves OD-009, OD-011, OD-013, OD-015, TST-026, and every external security, operations, release, and Production gate.
+rejected_alternatives:
+  - Require AWS IAM, an AWS account, an AWS role, ap-northeast-1, or an AWS audience merely because Canonical sources record them as a reference mapping.
+  - Replace the approved GitHub Actions CI source or infer that using GitHub Actions selects AWS or any other target provider.
+  - Select a different cloud or owner-managed target before exact capability mapping, isolation, residency, credentials, operations, release, revocation, and rollback evidence exist.
+  - Infer a target provider or identity binding from names, labels, reference metadata, defaults, ambient configuration, compatibility claims, or fallback behavior.
+  - Permit partial, unknown, duplicate, implicit, provider-label-only, AWS-label-only, source-label-only, or reference-only capability mappings.
+  - Lower security, operations, release, provenance, audit, revocation, rollback, isolation, or residency evidence for any target profile kind.
+constraints:
+  - Exactly one explicit mapping is required for every required deployment-identity capability before a future target profile can be eligible.
+  - Missing, unknown, duplicate, partial, implicit, provider-label-only, AWS-label-only, source-label-only, or reference-only mappings fail closed.
+  - GitHub Actions OIDC remains the fixed source system, but exact repository, ref, workflow, environment, audience, and subject values remain unset until separately reviewed.
+  - Federation must use bounded short-lived sessions, prohibit static cloud secrets and human credentials, and constrain issuance to exact trusted subjects and protected environments.
+  - Target environment and audience must be exact, provider-specific bindings selected only after full profile admission; broad or wildcard values are forbidden.
+  - Least privilege must bind exact session scope and duration, prohibit role chaining and privilege escalation, and provide tested revocation and rollback paths.
+  - Production deployment requires a distinct protected-environment human approval with no self-approval, bypass, untrusted ref, fork PR, or pull_request_target credential path.
+  - Provenance, audit, revocation, rollback, alert ownership, incident response, and evidence retention must be complete and equivalent across target providers.
+  - Development and Production require separated provider accounts, projects, tenants, environments, or equivalent isolation semantics independent of provider vocabulary.
+  - Region, residency, failure-domain, budget, notification, credential, provider, account, project, tenant, audience, role, plugin, adapter, and physical-resource choices remain unset while OD-009, OD-011, OD-013, and OD-015 are unresolved.
+  - No credential access, federation exchange, provider call, network access, external write, infrastructure plan or apply, deployment, release, Production action, or status transition is authorized by this record.
+security_and_approval_gates:
+  - Preserve exact repository, ref, workflow, environment, audience, and subject trust; least privilege; short-lived credentials; separated duties; account/project/tenant isolation; auditability; provenance; revocation; and rollback requirements.
+  - Preserve GitHub ruleset, CODEOWNERS, required checks, protected-environment approval, and distinct human approval before Production deployment.
+  - Preserve formal TST-026 security evidence as release-blocking and NOT_EXECUTED.
+  - Preserve OD-009 budget, OD-011 notification, OD-013 region and residency, and OD-015 Production credential blocking states until their owners provide valid evidence.
+  - Require the same security, operations, release, provenance, audit, revocation, rollback, isolation, and residency evidence for AWS, another cloud, and owner-managed infrastructure.
+  - Never infer eligibility from GitHub Actions, GitHub, AWS, IAM, OIDC, account, region, audience, role, provider or service labels, reference metadata, local generator success, predecessor completion, or AWS-labelled evidence.
+acceptance_criteria:
+  - The ST-1504 source and generated reference expose a closed provider-neutral deployment-identity capability inventory with GitHub Actions fixed only as the source and no selected, default, or fallback target profile or binding.
+  - Every future eligible target profile must have exactly one explicit mapping for every required capability and complete equivalent evidence.
+  - Unknown, missing, duplicate, partial, implicit, defaulted, fallback, provider-label-only, AWS-label-only, source-label-only, or reference-only mappings are rejected before eligibility.
+  - AWS IAM OIDC provider, AWS IAM role, AWS account, AWS region, and AWS audience remain visible only as optional historical AWS reference mappings and cannot select or satisfy any capability or evidence by themselves.
+  - Exact subject constraints, no-static-secret rules, protected human approval, disabled activation, forbidden execution surfaces, zero action counts, unresolved Open Decisions, and NOT_EXECUTED evidence remain fail closed.
+required_test_evidence:
+  - Isolated tests/st1504 positive contract and generated-plan assertions.
+  - Hostile tests for subject widening, static secret introduction, missing, unknown, duplicate, reordered, partial, defaulted, fallback, target binding, AWS-label-only, and evidence-bypass admission attempts.
+  - Hash-rebound hostile tests for every normative direct-owner handoff section and exact ST-1501 provider-neutral predecessor semantics and deterministic generated bytes.
+  - Existing hostile filesystem, closed-schema, exact-type, no-provider-call, no-network, and no-write tests remain passing.
+  - Owner generator regeneration and read-only --check, Ruff for changed Python, and git diff --check.
+  - Formal TST-026, hosted GitHub/provider, native IaC, live federation, staging, release, deployment, and Production evidence remain separately unexecuted.
+open_decision_state:
+  OD-009:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: LOW_DEVELOPMENT_CAP_PRODUCTION_DISABLED
+  OD-011:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE
+  OD-013:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: REFERENCE_REGION_ONLY_PRODUCTION_APPLY_FORBIDDEN
+  OD-015:
+    status: EXTERNAL_EVIDENCE_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: RECORDED_FIXTURE_ONLY_CREDENTIALS_ABSENT_PROVIDER_CALLS_FORBIDDEN
