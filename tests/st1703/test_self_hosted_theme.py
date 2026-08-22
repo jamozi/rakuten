@@ -23,6 +23,109 @@ if str(SCRIPTS_ROOT) not in sys.path:
 import build_st1703_self_hosted_theme as theme  # noqa: E402
 
 
+# Exact 1x1/2x2 fixtures were decoded successfully with ffmpeg 4.4.2/libwebp
+# before being frozen here. Runtime acceptance does not depend on that executable.
+VALID_WEBP_VP8 = bytes.fromhex(
+    "52494646220000005745425056503820160000003001009d012a010001000140"
+    "2625a400037000feff3d"
+)
+VALID_WEBP_VP8L = bytes.fromhex(
+    "524946461e000000574542505650384c110000002f0140000007d0fffef7bfff8188e87f0000"
+)
+VALID_WEBP_VP8X_ALPHA = bytes.fromhex(
+    "524946465c00000057454250565038580a00000010000000010000010000414c"
+    "5048050000000080808080005650382030000000d001009d012a020002000140"
+    "2625a00274ba01f80003b000fef36997fe6c0ae6b9f7fbffe9707e9707e9707f"
+    "e8b80000"
+)
+
+
+def _webp_chunk(chunk_type: bytes, payload: bytes, *, pad: bytes = b"\x00") -> bytes:
+    assert len(chunk_type) == 4 and len(pad) == 1
+    return (
+        chunk_type
+        + len(payload).to_bytes(4, "little")
+        + payload
+        + (pad if len(payload) & 1 else b"")
+    )
+
+
+def _webp_container(*chunks: bytes) -> bytes:
+    body = b"WEBP" + b"".join(chunks)
+    return b"RIFF" + len(body).to_bytes(4, "little") + body
+
+
+def _with_exact_riff_size(payload: bytes) -> bytes:
+    return payload[:4] + (len(payload) - 8).to_bytes(4, "little") + payload[8:]
+
+
+def _invalid_webp_cases() -> dict[str, bytes]:
+    vp8 = bytearray(VALID_WEBP_VP8[20:])
+    vp8[:3] = ((0x7FFFF << 5) | 0x10).to_bytes(3, "little")
+    vp8_signature = bytearray(VALID_WEBP_VP8[20:])
+    vp8_signature[3:6] = b"bad"
+    vp8l = bytearray(VALID_WEBP_VP8L[20:-1])
+    vp8l_header = int.from_bytes(vp8l[1:5], "little") | (1 << 29)
+    vp8l[1:5] = vp8l_header.to_bytes(4, "little")
+    vp8l_signature = bytearray(VALID_WEBP_VP8L[20:-1])
+    vp8l_signature[0] = 0
+    vp8x_reserved = bytearray(VALID_WEBP_VP8X_ALPHA)
+    vp8x_reserved[20] |= 0x01
+    vp8x_animation = bytearray(VALID_WEBP_VP8X_ALPHA)
+    vp8x_animation[20] |= 0x02
+    vp8x_canvas_mismatch = bytearray(VALID_WEBP_VP8X_ALPHA)
+    vp8x_canvas_mismatch[24:27] = b"\x02\x00\x00"
+    vp8x_feature_mismatch = bytearray(VALID_WEBP_VP8X_ALPHA)
+    vp8x_feature_mismatch[20] = 0
+    vp8x_payload = VALID_WEBP_VP8X_ALPHA[20:30]
+    vp8x_vp8_payload = VALID_WEBP_VP8X_ALPHA[52:]
+    compressed_alpha = bytearray(VALID_WEBP_VP8X_ALPHA[38:43])
+    compressed_alpha[0] = 1
+    odd_padding = bytearray(VALID_WEBP_VP8L)
+    odd_padding[-1] = 1
+    trailing = _with_exact_riff_size(VALID_WEBP_VP8 + b"\x00")
+    return {
+        "truncated-prefix": VALID_WEBP_VP8[:12],
+        "riff-size-mismatch": (
+            VALID_WEBP_VP8[:4] + b"\x00\x00\x00\x00" + VALID_WEBP_VP8[8:]
+        ),
+        "incomplete-chunk": _webp_container(
+            b"VP8 " + (99).to_bytes(4, "little") + b"short"
+        ),
+        "vp8-partition-overflow": _webp_container(_webp_chunk(b"VP8 ", bytes(vp8))),
+        "vp8-signature": _webp_container(_webp_chunk(b"VP8 ", bytes(vp8_signature))),
+        "vp8l-version": _webp_container(_webp_chunk(b"VP8L", bytes(vp8l))),
+        "vp8l-signature": _webp_container(_webp_chunk(b"VP8L", bytes(vp8l_signature))),
+        "vp8x-reserved": bytes(vp8x_reserved),
+        "vp8x-animation": bytes(vp8x_animation),
+        "vp8x-canvas-mismatch": bytes(vp8x_canvas_mismatch),
+        "vp8x-feature-mismatch": bytes(vp8x_feature_mismatch),
+        "vp8x-short-uncompressed-alpha": _webp_container(
+            _webp_chunk(b"VP8X", vp8x_payload),
+            _webp_chunk(b"ALPH", b"\x00\x80"),
+            _webp_chunk(b"VP8 ", vp8x_vp8_payload),
+        ),
+        "vp8x-compressed-alpha-unsupported": _webp_container(
+            _webp_chunk(b"VP8X", vp8x_payload),
+            _webp_chunk(b"ALPH", bytes(compressed_alpha)),
+            _webp_chunk(b"VP8 ", vp8x_vp8_payload),
+        ),
+        "unknown-chunk": _webp_container(_webp_chunk(b"JUNK", b"x")),
+        "duplicate-image": _webp_container(
+            _webp_chunk(b"VP8 ", VALID_WEBP_VP8[20:]),
+            _webp_chunk(b"VP8 ", VALID_WEBP_VP8[20:]),
+        ),
+        "misordered-metadata": _webp_container(
+            _webp_chunk(b"VP8X", b"\x04\x00\x00\x00" + b"\x00\x00\x00" * 2),
+            _webp_chunk(b"XMP ", b"<x/>"),
+            _webp_chunk(b"VP8 ", VALID_WEBP_VP8[20:]),
+        ),
+        "odd-padding-missing": _with_exact_riff_size(VALID_WEBP_VP8L[:-1]),
+        "odd-padding-nonzero": bytes(odd_padding),
+        "trailing-byte": trailing,
+    }
+
+
 def _isolated_theme(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     target = tmp_path / theme.THEME_SLUG
     shutil.copytree(theme.THEME_ROOT, target)
@@ -60,9 +163,14 @@ def _write_manifest(path: Path, value: dict[str, object]) -> None:
 
 
 def _synthetic_webp(seed: int) -> bytes:
-    chunk = b"VP8 " + (10).to_bytes(4, "little") + bytes([seed]) * 10
-    body = b"WEBP" + chunk
-    return b"RIFF" + len(body).to_bytes(4, "little") + body
+    vp8_payload = VALID_WEBP_VP8[20:]
+    vp8x_payload = b"\x04\x00\x00\x00" + b"\x00\x00\x00" * 2
+    xmp_payload = f"<x>{seed}</x>".encode("ascii")
+    return _webp_container(
+        _webp_chunk(b"VP8X", vp8x_payload),
+        _webp_chunk(b"VP8 ", vp8_payload),
+        _webp_chunk(b"XMP ", xmp_payload),
+    )
 
 
 def _relative_luminance(color: str) -> float:
@@ -96,6 +204,81 @@ def _complete_assets(path: Path) -> None:
         image_value["status"] = "FINAL"
         image_value["sha256"] = hashlib.sha256(payload).hexdigest()
     _write_manifest(path, manifest)
+
+
+@pytest.mark.parametrize(
+    ("payload", "expected_sha256"),
+    [
+        (
+            VALID_WEBP_VP8,
+            "7e74e6e307fc3dedeef1c33d61124413d7c3f20068170e940a307f01897cdaa7",
+        ),
+        (
+            VALID_WEBP_VP8L,
+            "eebf3679c38ec3a934864322fe7e5f590a9316c2ec6752164173bcfb702a669c",
+        ),
+        (
+            VALID_WEBP_VP8X_ALPHA,
+            "7ea27cbfb6af8eb36e9248bf6383d0f94cd48e9800b6cf473c5f8762897ab18e",
+        ),
+    ],
+    ids=("vp8", "vp8l-odd-padding", "vp8x-alpha"),
+)
+def test_complete_webp_validator_accepts_real_minimal_fixtures(
+    payload: bytes, expected_sha256: str
+) -> None:
+    assert hashlib.sha256(payload).hexdigest() == expected_sha256
+    assert theme._is_complete_static_webp_container(payload)
+
+
+@pytest.mark.parametrize(
+    ("case", "payload"),
+    tuple(_invalid_webp_cases().items()),
+)
+def test_complete_webp_validator_rejects_malformed_file(
+    case: str, payload: bytes
+) -> None:
+    assert case
+    assert not theme._is_complete_static_webp_container(payload)
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [VALID_WEBP_VP8, VALID_WEBP_VP8L, VALID_WEBP_VP8X_ALPHA],
+    ids=("vp8", "vp8l", "vp8x"),
+)
+def test_complete_webp_validator_rejects_every_truncated_prefix(
+    payload: bytes,
+) -> None:
+    for size in range(len(payload)):
+        truncated = payload[:size]
+        if len(truncated) >= 8:
+            truncated = _with_exact_riff_size(truncated)
+        assert not theme._is_complete_static_webp_container(truncated), size
+
+
+@pytest.mark.parametrize(
+    ("case", "payload"),
+    tuple(_invalid_webp_cases().items()),
+)
+def test_hash_bound_malformed_final_asset_never_becomes_package_ready(
+    case: str,
+    payload: bytes,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    manifest = _manifest(root)
+    images = manifest["required_images"]
+    assert case and isinstance(images, list) and isinstance(images[0], dict)
+    relative = images[0]["path"]
+    assert isinstance(relative, str)
+    (root / relative).write_bytes(payload)
+    images[0]["sha256"] = hashlib.sha256(payload).hexdigest()
+    _write_manifest(root, manifest)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_FINAL_ASSET_INVALID"):
+        theme.source_check()
 
 
 def test_real_source_is_valid_but_final_assets_block_package() -> None:

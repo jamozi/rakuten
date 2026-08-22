@@ -73,6 +73,21 @@ remain in deployed squash/cherry-pick ancestry.
    validator now closes foreground, background, focus-outline and custom-property
    inventories and binds the complete reviewed stylesheet bytes, rejecting all
    of those exact cascade/effective-color bypasses.
+8. FINAL image acceptance previously stopped at SHA-256 plus the first twelve
+   RIFF/WEBP bytes. A truncated, size-inconsistent, incomplete, mis-padded, or
+   structurally invalid codec container could therefore become package-ready
+   when its manifest hash matched. Theme source/package, runtime-manifest
+   maintenance, pre-import runtime and verified-byte offline doctor now apply
+   the same bounded static single-image profile: exact RIFF size, complete
+   maximum-16-chunk walk, zero odd padding, valid VP8/VP8L headers, or a
+   non-animated VP8X header whose canvas, flags and ordered chunks agree. The
+   VP8X+VP8 alpha profile is limited to uncompressed `ALPH` (`C=0`) and requires
+   exactly one sample byte per canvas pixel; compressed alpha is refused
+   without a pinned decoder. The
+   fixed positive fixtures were decoder-confirmed before capture; no decoder
+   executable or native library was added to the owner runtime. The validator
+   attests to complete container/header structure, not full entropy decode, so
+   final visual/decode review and activation remain operator gates.
 
 ## Authority and evidence boundary
 

@@ -4,9 +4,9 @@
   "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 9867,
+      "bytes": 11020,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "fcdcd24a2bc31248585ae621ba1f87213049a1fbc0b230979a754b9aa1cb9ca5"
+      "sha256": "c43369aaf0beecf42a75b993c0932c30133b8d46a503efc3fc2a0667347589e6"
     },
     {
       "bytes": 2972,
@@ -119,14 +119,14 @@
       "sha256": "7669c179c8df496de0277b6ef88c9678afe72f29cef72f28d48db5417f2bda1d"
     },
     {
-      "bytes": 41124,
+      "bytes": 45828,
       "path": "scripts/build_st1703_self_hosted_theme.py",
-      "sha256": "c9341101501533748d36e830a5bd938e3dd91af68f9e71afc774bbe0f882258b"
+      "sha256": "7a41e8ba8525913b23d536d5a04946b56a7416a20f42a8e03dbaeb99854b6156"
     },
     {
-      "bytes": 48302,
+      "bytes": 53057,
       "path": "scripts/self_hosted_wordpress.py",
-      "sha256": "bfd21e01b3cdfacada1bd837e4a4e62650b8525ff041fb131a8a2871abd1e41f"
+      "sha256": "ec4bb14790588577c49ae650c027cf8765653c0120c9aa1a72b78f3426aae647"
     },
     {
       "bytes": 21688,

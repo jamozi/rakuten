@@ -101,6 +101,12 @@ _FORBIDDEN_SOURCE = re.compile(
     r"fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon|@import)",
     re.ASCII | re.IGNORECASE,
 )
+_WEBP_MAX_CHUNKS = 16
+_WEBP_VP8X_ALLOWED_FLAGS = 0x3C
+_WEBP_VP8X_ICC_FLAG = 0x20
+_WEBP_VP8X_ALPHA_FLAG = 0x10
+_WEBP_VP8X_EXIF_FLAG = 0x08
+_WEBP_VP8X_XMP_FLAG = 0x04
 _DIRECTORY_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW
 _FILE_FLAGS = os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
 _PACKAGE_COMMAND = (
@@ -143,6 +149,133 @@ def _safe_relative(value: object) -> str:
     ):
         _fail("THEME_PATH_INVALID")
     return path.as_posix()
+
+
+def _webp_vp8_dimensions(payload: bytes) -> tuple[int, int, bool] | None:
+    if len(payload) < 12 or payload[3:6] != b"\x9d\x01\x2a":
+        return None
+    frame_tag = int.from_bytes(payload[:3], "little")
+    first_partition_bytes = frame_tag >> 5
+    if (
+        frame_tag & 0x01
+        or (frame_tag >> 1) & 0x07 > 3
+        or (frame_tag >> 4) & 0x01 != 1
+        or first_partition_bytes == 0
+        or 10 + first_partition_bytes >= len(payload)
+    ):
+        return None
+    width = int.from_bytes(payload[6:8], "little") & 0x3FFF
+    height = int.from_bytes(payload[8:10], "little") & 0x3FFF
+    if width == 0 or height == 0:
+        return None
+    return width, height, False
+
+
+def _webp_vp8l_dimensions(payload: bytes) -> tuple[int, int, bool] | None:
+    if len(payload) < 6 or payload[0] != 0x2F:
+        return None
+    header = int.from_bytes(payload[1:5], "little")
+    if header >> 29:
+        return None
+    width = (header & 0x3FFF) + 1
+    height = ((header >> 14) & 0x3FFF) + 1
+    return width, height, bool((header >> 28) & 0x01)
+
+
+def _webp_image_dimensions(
+    chunk_type: bytes, payload: bytes
+) -> tuple[int, int, bool] | None:
+    if chunk_type == b"VP8 ":
+        return _webp_vp8_dimensions(payload)
+    if chunk_type == b"VP8L":
+        return _webp_vp8l_dimensions(payload)
+    return None
+
+
+def _is_complete_static_webp_container(payload: bytes) -> bool:
+    """Accept one bounded, complete, static WebP RIFF container."""
+
+    if (
+        type(payload) is not bytes
+        or not 20 <= len(payload) <= MAX_FILE_BYTES
+        or payload[:4] != b"RIFF"
+        or payload[8:12] != b"WEBP"
+        or int.from_bytes(payload[4:8], "little") != len(payload) - 8
+    ):
+        return False
+
+    chunks: list[tuple[bytes, bytes]] = []
+    cursor = 12
+    while cursor < len(payload):
+        if len(chunks) >= _WEBP_MAX_CHUNKS or len(payload) - cursor < 8:
+            return False
+        chunk_type = payload[cursor : cursor + 4]
+        chunk_bytes = int.from_bytes(payload[cursor + 4 : cursor + 8], "little")
+        data_start = cursor + 8
+        data_end = data_start + chunk_bytes
+        padded_end = data_end + (chunk_bytes & 0x01)
+        if chunk_bytes == 0 or data_end > len(payload) or padded_end > len(payload):
+            return False
+        if chunk_bytes & 0x01 and payload[data_end] != 0:
+            return False
+        chunks.append((chunk_type, payload[data_start:data_end]))
+        cursor = padded_end
+    if cursor != len(payload) or not chunks:
+        return False
+
+    if len(chunks) == 1:
+        return _webp_image_dimensions(*chunks[0]) is not None
+
+    if chunks[0][0] != b"VP8X" or len(chunks[0][1]) != 10:
+        return False
+    extended_header = chunks[0][1]
+    flags = extended_header[0]
+    if flags & ~_WEBP_VP8X_ALLOWED_FLAGS or extended_header[1:4] != b"\x00\x00\x00":
+        return False
+    canvas = (
+        int.from_bytes(extended_header[4:7], "little") + 1,
+        int.from_bytes(extended_header[7:10], "little") + 1,
+    )
+    image_chunks = [item for item in chunks[1:] if item[0] in {b"VP8 ", b"VP8L"}]
+    if len(image_chunks) != 1:
+        return False
+    image_type, image_payload = image_chunks[0]
+    image = _webp_image_dimensions(image_type, image_payload)
+    if image is None or image[:2] != canvas:
+        return False
+    image_uses_alpha = image[2]
+
+    expected_types = [b"VP8X"]
+    if flags & _WEBP_VP8X_ICC_FLAG:
+        expected_types.append(b"ICCP")
+    if image_type == b"VP8 " and flags & _WEBP_VP8X_ALPHA_FLAG:
+        expected_types.append(b"ALPH")
+    expected_types.append(image_type)
+    if flags & _WEBP_VP8X_EXIF_FLAG:
+        expected_types.append(b"EXIF")
+    if flags & _WEBP_VP8X_XMP_FLAG:
+        expected_types.append(b"XMP ")
+    if [item[0] for item in chunks] != expected_types:
+        return False
+
+    chunk_payloads = {chunk_type: data for chunk_type, data in chunks[1:]}
+    for optional_type, feature_flag in (
+        (b"ICCP", _WEBP_VP8X_ICC_FLAG),
+        (b"EXIF", _WEBP_VP8X_EXIF_FLAG),
+        (b"XMP ", _WEBP_VP8X_XMP_FLAG),
+    ):
+        if bool(flags & feature_flag) != bool(chunk_payloads.get(optional_type)):
+            return False
+    alpha_flag = bool(flags & _WEBP_VP8X_ALPHA_FLAG)
+    if image_type == b"VP8L":
+        return alpha_flag == image_uses_alpha
+    alpha_payload = chunk_payloads.get(b"ALPH")
+    return (
+        alpha_flag
+        and alpha_payload is not None
+        and len(alpha_payload) == 1 + canvas[0] * canvas[1]
+        and alpha_payload[0] & 0xE3 == 0
+    ) or (not alpha_flag and alpha_payload is None)
 
 
 def _identity(details: os.stat_result) -> tuple[int, ...]:
@@ -792,9 +925,7 @@ def _validated_payload_snapshot(payload_values: Mapping[str, bytes]) -> _ThemeSn
         payload = payloads.get(path)
         if (
             payload is None
-            or len(payload) < 12
-            or payload[:4] != b"RIFF"
-            or payload[8:12] != b"WEBP"
+            or not _is_complete_static_webp_container(payload)
             or hashlib.sha256(payload).hexdigest() != image["sha256"]
         ):
             _fail("THEME_FINAL_ASSET_INVALID")

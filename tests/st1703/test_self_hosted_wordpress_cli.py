@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -24,6 +25,8 @@ SLICE_MAKEFILE = (
 if str(SCRIPTS_ROOT) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_ROOT))
 
+import build_st1703_self_hosted_theme as theme  # noqa: E402
+
 SPEC = importlib.util.spec_from_file_location(
     "self_hosted_wordpress_cli_for_test",
     SCRIPTS_ROOT / "self_hosted_wordpress.py",
@@ -32,6 +35,11 @@ assert SPEC is not None and SPEC.loader is not None
 cli = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = cli
 SPEC.loader.exec_module(cli)
+
+VALID_WEBP_VP8 = bytes.fromhex(
+    "52494646220000005745425056503820160000003001009d012a010001000140"
+    "2625a400037000feff3d"
+)
 
 
 def _authorize_imported_cli(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -94,7 +102,7 @@ def test_main_projects_verified_final_webp_bytes_into_theme_doctor(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     image_path = "assets/images/home-hero.webp"
-    image_bytes = b"RIFF\x0c\x00\x00\x00WEBPsynthetic"
+    image_bytes = VALID_WEBP_VP8
     monkeypatch.setattr(cli, "_runtime_authorized", True)
     monkeypatch.setattr(
         cli,
@@ -123,6 +131,50 @@ def test_main_projects_verified_final_webp_bytes_into_theme_doctor(
     assert cli.main(["doctor"], repository_root=tmp_path) == 0
     assert observed == {image_path: image_bytes}
     assert json.loads(capsys.readouterr().out) == {"status": "SYNTHETIC_LOCAL_ONLY"}
+
+
+def test_doctor_rejects_hash_bound_structurally_invalid_final_webp(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    manifest_path = theme.THEME_ROOT / "raos-assets.v1.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    payloads = {
+        path: (theme.THEME_ROOT / path).read_bytes()
+        for path in manifest["source_files"]
+    }
+    images = manifest["required_images"]
+    assert isinstance(images, list) and len(images) == 2
+    malformed = VALID_WEBP_VP8[:12]
+    for index, item in enumerate(images):
+        assert isinstance(item, dict)
+        image_path = item["path"]
+        assert isinstance(image_path, str)
+        image_payload = malformed if index == 0 else VALID_WEBP_VP8
+        item["status"] = "FINAL"
+        item["sha256"] = hashlib.sha256(image_payload).hexdigest()
+        payloads[image_path] = image_payload
+    payloads["raos-assets.v1.json"] = (
+        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+
+    monkeypatch.setattr(
+        cli.OwnerPrivateSelfHostedWordPressCredentialStore,
+        "metadata_status",
+        lambda _store: "MISSING",
+    )
+    monkeypatch.setattr(
+        cli,
+        "load_first_article_candidate",
+        lambda *args, **kwargs: object(),
+    )
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_FINAL_ASSET_INVALID"):
+        cli._doctor(
+            tmp_path,
+            content_packet_bytes=b"synthetic-bound-packet",
+            theme_payloads=payloads,
+        )
+    assert not (tmp_path / ".secrets").exists()
 
 
 def test_hidden_installer_prints_no_values_and_creates_owner_private_json(

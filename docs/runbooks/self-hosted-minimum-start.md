@@ -29,6 +29,9 @@ declared by the committed `raos-assets.v1.json`, and are included only when the
 corresponding record is `FINAL` with a matching lowercase SHA-256. A pending
 image must be absent. Unlisted, tracked, untracked, dirty, symlinked, malformed,
 missing, or hash-mismatched image state is refused before any RAOS import.
+For `FINAL`, malformed includes a RIFF-size mismatch, truncated/incomplete or
+mis-padded chunk, more than 16 chunks, unknown/duplicate/misordered image
+chunks, invalid VP8/VP8L headers, or invalid/animated/inconsistent VP8X state.
 Before Python starts, the launcher also verifies the generator-owned standard
 library code inventory, the absent `python314.zip` import path, the pinned
 executable/venv config, both managed `bin/` path sets, absent optional
@@ -119,6 +122,19 @@ logo, recognizable product, or fabricated use scene must not be marked final.
 The source check also enforces one `header` and one `footer` landmark per
 template: the `front-page` and `single` template-part wrappers own those
 semantic elements, while the referenced part-root groups remain `div`.
+
+The accepted image profile is a bounded static single-image WebP. The source,
+package, runtime-manifest generator, pre-import launcher and offline doctor all
+require an exact RIFF length, complete chunk walk and zero odd-byte padding,
+then a structurally valid VP8/VP8L image or a non-animated VP8X image with
+matching canvas, feature flags and ordered chunks. Matching SHA-256 and the
+first twelve RIFF/WEBP bytes are not sufficient. This stdlib-only runtime has
+no pinned full decoder. Lossy alpha is therefore accepted only as
+uncompressed `ALPH` (`C=0`) with one byte per canvas pixel; compressed alpha is
+refused rather than partially parsed. The check does not claim that every
+entropy-coded pixel was decoded. Human review must still open the exact final
+files in a trusted local viewer before committing them and before manual
+activation.
 
 Image generation is an external/cost action and is not authorized by this
 runbook. After a separately approved process supplies the two real WebP files,

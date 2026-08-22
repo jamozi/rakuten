@@ -29,6 +29,14 @@ publication, release, or Production evidence.
 - `theme/kurashinoshirube-child/raos-assets.v1.json` owns the two final image
   requirements and their closed prompts. Both images intentionally remain
   `PENDING_FINAL_ASSET`; no image provider was called by this slice.
+  A future `FINAL` byte stream must also satisfy the closed, bounded static
+  WebP profile: exact RIFF length, complete chunks and odd padding, one
+  structurally valid VP8/VP8L image, or one non-animated VP8X image whose
+  canvas, reserved bits, feature flags and ordered chunks agree. Hash and
+  magic bytes alone do not make an asset final. For lossy VP8 transparency,
+  the closed profile accepts only uncompressed `ALPH` (`C=0`) with exactly one
+  alpha sample per canvas pixel; compressed alpha requires a future pinned
+  decoder contract and is refused.
 - `.secrets/self-hosted-theme-packages/kurashinoshirube-child.zip` is the only
   theme package output. It is ignored, owner-private, and deliberately outside
   `.secrets/wordpress-owner-local/`, whose closed inventory belongs to the
@@ -91,8 +99,9 @@ stdlib-only Python bootstrap and must match the same current `HEAD`. The
 bootstrap first binds the runtime manifest to the matching `HEAD` blob, then
 derives an exact 26-plus-zero-to-two path inventory from the fixed committed
 asset manifest before opening any listed working payload. It checks every
-bounded SHA-256, matching `HEAD` blob, the exact tracked image-directory
-inventory, pending-path absence, tracked state and clean worktree before
+bounded SHA-256, the same complete static WebP container/profile used by the
+package and offline doctor, matching `HEAD` blob, the exact tracked
+image-directory inventory, pending-path absence, tracked state and clean worktree before
 installing the narrow self-hosted package namespaces. The ten leaf modules
 execute only through a closed loader backed by the already verified bytes;
 source paths are not reopened. Site
@@ -104,6 +113,12 @@ staged, unstaged, untracked, skip-worktree, root, ancestry, stage or toolchain
 drift fails closed before WordPress modules, credential values or network code
 are reached. Run the launcher only while no same-UID Python/venv maintenance
 process is mutating these owner-local runtime directories.
+
+No pinned full-pixel WebP decoder exists in this stdlib-only owner runtime.
+The closed validator proves container completeness and codec-header structure,
+not entropy decode completion. Final visual/decode review and theme activation
+therefore remain human/operator gates; a later decoder dependency would need a
+separate reviewed runtime and resource-limit contract.
 
 The manifest is generated output owned by
 `scripts/build_st1703_self_hosted_runtime_manifest.py`; do not edit it by hand.

@@ -62,6 +62,8 @@ DESIGN_HANDOFF_V1:
     - pre-Python stageはpinned stdlib code inventory、python314.zip不在、完全capture済みCLI blobを検証し、stage HEAD/blob/SHA-256をsame-process verifierへ連続bindする
     - manifest entry path/orderはclosed inventoryと完全一致した後にだけdescriptor-relativeにpayloadを開く
     - runtime inventoryは固定26 base pathと、固定asset manifestの2つのallowlist済みrequired_imagesのうちFINALかつlowercase SHA-256一致のWebPだけで構成する
+    - FINAL WebPは4 MiB以下のstatic single-image closed profileとし、exact RIFF length、全chunk boundary、odd padding、最大16 chunk、単一VP8/VP8L image、または先頭VP8Xのreserved bit、canvas、feature/chunk順序整合をpackage、runtime-manifest生成、pre-import runtime、offline doctorのすべてで検証する。VP8X+VP8 alphaはC=0 uncompressed ALPHだけを許可し、payload bytesをheader 1 byte + canvas pixel countへ固定する
+    - pinned full-pixel decoderはself-hosted stdlib runtimeに存在しないため、このsliceはcomplete-containerとcodec header structureを証明するがentropy decode完走を主張せず、final visual/decode reviewとtheme activationをhuman gateに残す
     - PENDING_FINAL_ASSET pathはHEAD、index、working treeのすべてで不在とし、glob、caller指定path、任意path追加、symlinkを拒否する
     - repository内bytecodeはlive importに使わず、self-hosted専用のclosed package namespaceだけをmanifest対象sourceからloadする
     - front-pageとsingleのheader/footer semantic landmarkはtemplate-part wrapperだけが所有し、part root groupは非semantic divとして重複landmarkを作らない
@@ -101,6 +103,7 @@ DESIGN_HANDOFF_V1:
     - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
     - final image and affiliate-slot absence remains visible and fail closed
     - manifest-declared FINAL WebP bytes are included in the reviewed runtime payload supplied to offline doctor
+    - hash-boundでもtruncated、RIFF/chunk size不一致、invalid VP8/VP8L/VP8X、animation、unknown/duplicate/order drift、trailingまたはinvalid odd paddingのWebPはpackage-ready前かつRAOS import前に拒否される
     - first article separates sourced facts from editorial interpretation and fabricates no experience
   required_test_evidence:
     - isolated ST-1703 unit and negative tests
@@ -108,6 +111,7 @@ DESIGN_HANDOFF_V1:
     - secret redaction and filesystem trust-boundary tests
     - runtime manifest determinism, exact-head, drift, import-closure, and no-repository-pyc tests
     - pending/mixed/final theme-image inventory parity, arbitrary-path, symlink, missing, untracked, dirty, and hash-mismatch negative tests
+    - decoder-confirmed fixed VP8、VP8L、VP8X fixturesと、RIFF length、truncation、chunk boundary、padding、codec header、feature/order、runtime/doctor parityのnegative tests
     - template-part wrapper and part-root semantic-landmark duplication and omission negative tests
     - owner-private package directory/file mode, symlink, hardlink, stale-stage, overwrite, directory-rename, same-inode content mutation, terminal byte verification, atomic fsync, fixed-path, and ignored-clean-head tests
     - calculated footer normal, visited, hover, active, focus text and focus-indicator contrast tests

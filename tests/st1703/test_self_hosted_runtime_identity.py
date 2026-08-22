@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import inspect
 import json
 import os
 from pathlib import Path
@@ -31,6 +32,20 @@ THEME_ASSET_MANIFEST_PATH = (
 )
 SHIPPED_PR_BASE = "b5a6157b878ca0435ee4120d33162aba5ae51f77"
 BRANCH_LOCAL_REVIEW_COMMIT = "7598e127adee6027d086619a720071a550b7a290"
+# These are the same decoder-confirmed exact fixtures used by the theme suite.
+VALID_WEBP_VP8 = bytes.fromhex(
+    "52494646220000005745425056503820160000003001009d012a010001000140"
+    "2625a400037000feff3d"
+)
+VALID_WEBP_VP8L = bytes.fromhex(
+    "524946461e000000574542505650384c110000002f0140000007d0fffef7bfff8188e87f0000"
+)
+VALID_WEBP_VP8X_ALPHA = bytes.fromhex(
+    "524946465c00000057454250565038580a00000010000000010000010000414c"
+    "5048050000000080808080005650382030000000d001009d012a020002000140"
+    "2625a00274ba01f80003b000fef36997fe6c0ae6b9f7fbffe9707e9707e9707f"
+    "e8b80000"
+)
 
 
 def _load(path: Path, name: str) -> ModuleType:
@@ -66,10 +81,88 @@ def _git(repository: Path, *arguments: str) -> subprocess.CompletedProcess[bytes
     )
 
 
-def _synthetic_webp(seed: int) -> bytes:
-    chunk = b"VP8 " + (10).to_bytes(4, "little") + bytes([seed]) * 10
-    body = b"WEBP" + chunk
+def _webp_chunk(chunk_type: bytes, payload: bytes) -> bytes:
+    assert len(chunk_type) == 4
+    return (
+        chunk_type
+        + len(payload).to_bytes(4, "little")
+        + payload
+        + (b"\x00" if len(payload) & 1 else b"")
+    )
+
+
+def _webp_container(*chunks: bytes) -> bytes:
+    body = b"WEBP" + b"".join(chunks)
     return b"RIFF" + len(body).to_bytes(4, "little") + body
+
+
+def _synthetic_webp(seed: int) -> bytes:
+    vp8_payload = VALID_WEBP_VP8[20:]
+    vp8x_payload = b"\x04\x00\x00\x00" + b"\x00\x00\x00" * 2
+    xmp_payload = f"<x>{seed}</x>".encode("ascii")
+    return _webp_container(
+        _webp_chunk(b"VP8X", vp8x_payload),
+        _webp_chunk(b"VP8 ", vp8_payload),
+        _webp_chunk(b"XMP ", xmp_payload),
+    )
+
+
+def _malformed_webp_cases() -> dict[str, bytes]:
+    vp8 = bytearray(VALID_WEBP_VP8[20:])
+    vp8[:3] = ((0x7FFFF << 5) | 0x10).to_bytes(3, "little")
+    vp8_signature = bytearray(VALID_WEBP_VP8[20:])
+    vp8_signature[3:6] = b"bad"
+    vp8l = bytearray(VALID_WEBP_VP8L[20:-1])
+    vp8l_header = int.from_bytes(vp8l[1:5], "little") | (1 << 29)
+    vp8l[1:5] = vp8l_header.to_bytes(4, "little")
+    vp8l_signature = bytearray(VALID_WEBP_VP8L[20:-1])
+    vp8l_signature[0] = 0
+    vp8x = bytearray(VALID_WEBP_VP8X_ALPHA)
+    vp8x[20] |= 0x01
+    vp8x_animation = bytearray(VALID_WEBP_VP8X_ALPHA)
+    vp8x_animation[20] |= 0x02
+    vp8x_payload = VALID_WEBP_VP8X_ALPHA[20:30]
+    vp8x_vp8_payload = VALID_WEBP_VP8X_ALPHA[52:]
+    compressed_alpha = bytearray(VALID_WEBP_VP8X_ALPHA[38:43])
+    compressed_alpha[0] = 1
+    odd_padding = bytearray(VALID_WEBP_VP8L)
+    odd_padding[-1] = 1
+    return {
+        "truncated-prefix": VALID_WEBP_VP8[:12],
+        "riff-size-mismatch": (
+            VALID_WEBP_VP8[:4] + b"\x00\x00\x00\x00" + VALID_WEBP_VP8[8:]
+        ),
+        "incomplete-chunk": _webp_container(
+            b"VP8 " + (99).to_bytes(4, "little") + b"short"
+        ),
+        "vp8-partition-overflow": _webp_container(_webp_chunk(b"VP8 ", bytes(vp8))),
+        "vp8-signature": _webp_container(_webp_chunk(b"VP8 ", bytes(vp8_signature))),
+        "vp8l-version": _webp_container(_webp_chunk(b"VP8L", bytes(vp8l))),
+        "vp8l-signature": _webp_container(_webp_chunk(b"VP8L", bytes(vp8l_signature))),
+        "vp8x-reserved": bytes(vp8x),
+        "vp8x-animation": bytes(vp8x_animation),
+        "vp8x-short-uncompressed-alpha": _webp_container(
+            _webp_chunk(b"VP8X", vp8x_payload),
+            _webp_chunk(b"ALPH", b"\x00\x80"),
+            _webp_chunk(b"VP8 ", vp8x_vp8_payload),
+        ),
+        "vp8x-compressed-alpha-unsupported": _webp_container(
+            _webp_chunk(b"VP8X", vp8x_payload),
+            _webp_chunk(b"ALPH", bytes(compressed_alpha)),
+            _webp_chunk(b"VP8 ", vp8x_vp8_payload),
+        ),
+        "unknown-chunk": _webp_container(_webp_chunk(b"JUNK", b"x")),
+        "duplicate-image": _webp_container(
+            _webp_chunk(b"VP8 ", VALID_WEBP_VP8[20:]),
+            _webp_chunk(b"VP8 ", VALID_WEBP_VP8[20:]),
+        ),
+        "misordered-metadata": _webp_container(
+            _webp_chunk(b"VP8X", b"\x04\x00\x00\x00" + b"\x00\x00\x00" * 2),
+            _webp_chunk(b"XMP ", b"<x/>"),
+            _webp_chunk(b"VP8 ", VALID_WEBP_VP8[20:]),
+        ),
+        "odd-padding-nonzero": bytes(odd_padding),
+    }
 
 
 def _theme_manifest_with_final_count(
@@ -170,6 +263,46 @@ def _theme_identity_repository(
     monkeypatch.setattr(module, "_valid_runtime_python", lambda: True)
     monkeypatch.setattr(module, "_valid_runtime_entry", lambda: True)
     return repository, manifest, tuple(sorted(final_runtime_paths))
+
+
+def _commit_hash_bound_theme_asset(
+    module: ModuleType,
+    repository: Path,
+    runtime_manifest: Path,
+    runtime_path: str,
+    payload: bytes,
+) -> None:
+    asset = repository / runtime_path
+    asset.write_bytes(payload)
+    theme_manifest = repository / module._RUNTIME_THEME_ASSET_MANIFEST_PATH
+    theme_value = json.loads(theme_manifest.read_text(encoding="utf-8"))
+    relative_path = runtime_path.removeprefix(module._THEME_RUNTIME_PREFIX)
+    matching_images = [
+        item
+        for item in theme_value["required_images"]
+        if item["path"] == relative_path and item["status"] == "FINAL"
+    ]
+    assert len(matching_images) == 1
+    matching_images[0]["sha256"] = hashlib.sha256(payload).hexdigest()
+    theme_manifest.write_text(
+        json.dumps(theme_value, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    runtime_value = json.loads(runtime_manifest.read_text(encoding="ascii"))
+    for path in (runtime_path, module._RUNTIME_THEME_ASSET_MANIFEST_PATH):
+        source = repository / path
+        matching_rows = [row for row in runtime_value["paths"] if row["path"] == path]
+        assert len(matching_rows) == 1
+        matching_rows[0]["bytes"] = source.stat().st_size
+        matching_rows[0]["sha256"] = hashlib.sha256(source.read_bytes()).hexdigest()
+    runtime_manifest.write_text(
+        json.dumps(runtime_value, sort_keys=True, separators=(",", ":")) + "\n",
+        encoding="ascii",
+    )
+    assert _git(repository, "add", ".").returncode == 0
+    assert (
+        _git(repository, "commit", "-qm", "hash-bound malformed WebP").returncode == 0
+    )
 
 
 def _isolated_generator_inputs(
@@ -407,6 +540,41 @@ def test_runtime_identity_includes_only_manifest_declared_final_theme_assets(
     )
     assert observed_final == final_paths
     assert len(verified) == len(module._RUNTIME_REQUIRED_PATHS) + final_count
+
+
+@pytest.mark.parametrize(
+    ("case", "payload"),
+    tuple(_malformed_webp_cases().items()),
+)
+def test_runtime_identity_rejects_hash_bound_committed_malformed_final_asset(
+    case: str,
+    payload: bytes,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load(
+        CLI_PATH,
+        f"self_hosted_runtime_malformed_asset_{case.replace('-', '_')}",
+    )
+    repository, manifest, final_paths = _theme_identity_repository(
+        module,
+        tmp_path,
+        monkeypatch,
+        final_count=1,
+    )
+    assert len(final_paths) == 1
+    _commit_hash_bound_theme_asset(
+        module,
+        repository,
+        manifest,
+        final_paths[0],
+        payload,
+    )
+    with pytest.raises(module._RuntimeIdentityFailure):
+        module._verify_self_hosted_runtime_identity(
+            repository, **_stage_binding(repository)
+        )
+    assert not (repository / ".secrets").exists()
 
 
 @pytest.mark.parametrize("mutation", ["extra-path", "missing-final", "row-hash"])
@@ -1109,6 +1277,44 @@ def test_runtime_manifest_generator_inventory_tracks_declared_final_assets(
     assert len(paths) == len(generator.REQUIRED_RUNTIME_PATHS) + final_count
 
 
+@pytest.mark.parametrize(
+    ("case", "payload"),
+    tuple(_malformed_webp_cases().items()),
+)
+def test_runtime_manifest_generator_rejects_hash_bound_malformed_final_asset(
+    case: str,
+    payload: bytes,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    generator = _load(
+        GENERATOR_PATH,
+        f"self_hosted_runtime_generator_malformed_{case.replace('-', '_')}",
+    )
+    root, final_paths = _isolated_generator_inputs(
+        generator,
+        tmp_path,
+        monkeypatch,
+        final_count=1,
+    )
+    assert len(final_paths) == 1
+    target = root / final_paths[0]
+    target.write_bytes(payload)
+    manifest_path = root / generator.THEME_ASSET_MANIFEST_RUNTIME_PATH
+    value = json.loads(manifest_path.read_text(encoding="utf-8"))
+    final_images = [
+        item for item in value["required_images"] if item["status"] == "FINAL"
+    ]
+    assert len(final_images) == 1
+    final_images[0]["sha256"] = hashlib.sha256(payload).hexdigest()
+    manifest_path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(generator.RuntimeManifestFailure):
+        generator.render()
+
+
 def test_runtime_manifest_generator_and_cli_share_closed_asset_declaration() -> None:
     generator = _load(GENERATOR_PATH, "self_hosted_runtime_asset_generator_parity")
     module = _load(CLI_PATH, "self_hosted_runtime_asset_cli_parity")
@@ -1117,6 +1323,69 @@ def test_runtime_manifest_generator_and_cli_share_closed_asset_declaration() -> 
         assert generator._declared_final_theme_assets(
             manifest_payload
         ) == module._declared_final_theme_runtime_assets(manifest_payload)
+
+
+def test_all_final_asset_validators_share_closed_webp_structure_contract() -> None:
+    theme_generator = _load(
+        ROOT / "scripts/build_st1703_self_hosted_theme.py",
+        "self_hosted_theme_webp_validator_parity",
+    )
+    manifest_generator = _load(
+        GENERATOR_PATH,
+        "self_hosted_runtime_webp_generator_parity",
+    )
+    module = _load(CLI_PATH, "self_hosted_runtime_webp_cli_parity")
+    validators = (
+        theme_generator._is_complete_static_webp_container,
+        manifest_generator._is_complete_static_webp_container,
+        module._is_complete_static_webp_container,
+    )
+    normalized_sources = (
+        inspect.getsource(validators[0]).replace("MAX_FILE_BYTES", "MAX_WEBP_BYTES"),
+        inspect.getsource(validators[1]).replace(
+            "MAX_RUNTIME_FILE_BYTES", "MAX_WEBP_BYTES"
+        ),
+        inspect.getsource(validators[2]).replace(
+            "_RUNTIME_FILE_MAX_BYTES", "MAX_WEBP_BYTES"
+        ),
+    )
+    assert len(set(normalized_sources)) == 1
+    for constant_name in (
+        "_WEBP_MAX_CHUNKS",
+        "_WEBP_VP8X_ALLOWED_FLAGS",
+        "_WEBP_VP8X_ICC_FLAG",
+        "_WEBP_VP8X_ALPHA_FLAG",
+        "_WEBP_VP8X_EXIF_FLAG",
+        "_WEBP_VP8X_XMP_FLAG",
+    ):
+        assert (
+            len(
+                {
+                    getattr(owner, constant_name)
+                    for owner in (theme_generator, manifest_generator, module)
+                }
+            )
+            == 1
+        )
+    for helper_name in (
+        "_webp_vp8_dimensions",
+        "_webp_vp8l_dimensions",
+        "_webp_image_dimensions",
+    ):
+        assert (
+            len(
+                {
+                    inspect.getsource(getattr(owner, helper_name))
+                    for owner in (theme_generator, manifest_generator, module)
+                }
+            )
+            == 1
+        )
+    for payload in (VALID_WEBP_VP8, VALID_WEBP_VP8L, VALID_WEBP_VP8X_ALPHA):
+        assert [validator(payload) for validator in validators] == [True] * 3
+    for case, payload in _malformed_webp_cases().items():
+        assert case
+        assert [validator(payload) for validator in validators] == [False] * 3
 
 
 @pytest.mark.parametrize(
