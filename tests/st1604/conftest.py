@@ -14,6 +14,7 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from scripts import (  # noqa: E402
+    build_st1505_staging_deployment as staging_generator,
     build_st1604_performance_load_reference_plan as generator,
 )
 
@@ -24,6 +25,7 @@ def isolated_repository(tmp_path: Path) -> Path:
     required = {
         *generator.SOURCE_PATHS,
         generator.HELPER_PATH,
+        *staging_generator.SOURCE_ARTIFACT_PATHS,
         *(Path(path) for _role, path, _digest in generator.EXPECTED_SOURCES),
         *(path for path, _digest in generator.EXPECTED_PREDECESSORS),
     }

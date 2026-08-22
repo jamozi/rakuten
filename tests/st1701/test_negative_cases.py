@@ -540,6 +540,75 @@ def test_optional_gold_input_symlinked_ancestor_fails_closed(tmp_path: Path) -> 
     assert "code=UNSAFE_ANCESTOR" in str(captured.value)
 
 
+def test_current_development_authority_drift_fails_closed_without_echo(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "repository"
+    root.mkdir()
+    marker = b"REJECTED_CURRENT_AUTHORITY_1701"
+    (root / generator.STANDING_DEVELOPMENT_AUTHORITY_PATH).write_bytes(marker)
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        generator._validate_current_development_authority(root)
+    assert captured.value.code == "CURRENT_DEVELOPMENT_AUTHORITY_DRIFT"
+    assert marker.decode() not in str(captured.value)
+
+
+def test_current_execplan_drift_uses_separate_fail_closed_binding(
+    contract_document: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    original_read = generator._read
+
+    def drifted_read(root: Path, relative: Path, field: str) -> bytes:
+        if relative == Path("docs/execplans/RAOS-IMPLEMENTATION-FIRST.md"):
+            return b"rejected current execplan"
+        return original_read(root, relative, field)
+
+    monkeypatch.setattr(generator, "_read", drifted_read)
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        generator._verify_rows(
+            REPOSITORY_ROOT,
+            contract_document["sources"],
+            generator.EXPECTED_SOURCE_ROWS,
+            "sources",
+        )
+    assert captured.value.code == "CURRENT_DEVELOPMENT_SOURCE_DRIFT"
+
+
+def test_current_production_helper_drift_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original_read = generator._read
+
+    def drifted_read(root: Path, relative: Path, field: str) -> bytes:
+        if relative == Path("scripts/build_st1506_production_deployment.py"):
+            return b"rejected current production helper"
+        return original_read(root, relative, field)
+
+    monkeypatch.setattr(generator, "_read", drifted_read)
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        generator._validate_implementation_dependencies(REPOSITORY_ROOT)
+    assert captured.value.code == "IMPLEMENTATION_DEPENDENCY_DRIFT"
+
+
+def test_historical_execplan_row_cannot_be_silently_replaced_by_current_binding(
+    contract_document: dict[str, Any],
+) -> None:
+    document = copy.deepcopy(contract_document)
+    current_size, current_digest = generator.CURRENT_DEVELOPMENT_SOURCE_OVERRIDES[
+        "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md"
+    ]
+    row = next(
+        item
+        for item in document["sources"]
+        if item["uri"] == "repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md"
+    )
+    row["bytes"] = current_size
+    row["sha256"] = current_digest
+    with pytest.raises(generator.BusinessInputsError) as captured:
+        _validate(document)
+    assert captured.value.code == "INVENTORY_DRIFT"
+
+
 def _copy_final_approval_authority_fixture(root: Path) -> None:
     for relative in (
         generator.HANDOFF_PATH,

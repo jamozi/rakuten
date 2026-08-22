@@ -25,7 +25,12 @@ empty and `NOT_EXECUTED`, and the decision remains `NOT_READY`.
 - ST-0407 is consumed only as a byte-bound, material-free, fail-closed workload
   credential seam. This Story cannot obtain or inspect credential material.
 - ST-1505 is consumed only as a byte-bound, disabled, non-executable,
-  zero-action staging reference. This Story cannot activate or extend it.
+  zero-action provider-neutral staging-admission reference. AWS remains an optional
+  historical mapping only and cannot become a default, fallback, selected binding,
+  eligibility shortcut, admission requirement, or evidence substitute here.
+  Its hash-bound owner validator must accept the closed source contract and
+  deterministically reproduce the committed reference plan and manifest bytes
+  before ST-1603 may consume either artifact.
 
 ## Owned artifacts
 

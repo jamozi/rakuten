@@ -3,13 +3,16 @@
     "canary": 0,
     "create": 0,
     "delete": 0,
+    "dependency_admission": 0,
     "deploy": 0,
     "migrate": 0,
+    "migration_review": 0,
     "promote": 0,
     "release": 0,
     "rollback": 0,
     "status": 0,
     "traffic": 0,
+    "transport_security": 0,
     "update": 0
   },
   "activation": {
@@ -22,24 +25,31 @@
     "iam_action": "FORBIDDEN",
     "live_provider_calls": "FORBIDDEN",
     "live_status": "NOT_EXECUTED",
+    "migration_review_action": "FORBIDDEN",
     "network_access": "FORBIDDEN",
     "operations": {
       "canary": "FORBIDDEN",
       "create": "FORBIDDEN",
       "delete": "FORBIDDEN",
+      "dependency_admission": "FORBIDDEN",
       "deploy": "FORBIDDEN",
       "migrate": "FORBIDDEN",
+      "migration_review": "FORBIDDEN",
       "promote": "FORBIDDEN",
       "release": "FORBIDDEN",
       "rollback": "FORBIDDEN",
       "status": "FORBIDDEN",
       "traffic": "FORBIDDEN",
+      "transport_security": "FORBIDDEN",
       "update": "FORBIDDEN"
     },
     "production_action": "FORBIDDEN",
+    "provider_action": "FORBIDDEN",
     "release_action": "FORBIDDEN",
     "runtime_status": "NOT_EXECUTED",
-    "status": "DISABLED"
+    "staging_action": "FORBIDDEN",
+    "status": "DISABLED",
+    "transport_security_action": "FORBIDDEN"
   },
   "artifact_admission": {
     "classification": "IMMUTABLE_SUPPLY_CHAIN_REQUIREMENTS_ONLY",
@@ -77,7 +87,7 @@
     "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
     "source_contract": "repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml",
     "story_id": "ST-1506",
-    "version": "1.0.0"
+    "version": "1.2.0"
   },
   "environment": {
     "activation_status": "DISABLED",
@@ -156,6 +166,30 @@
       "action_count": 0,
       "auto_advance": "FORBIDDEN",
       "execution_status": "NOT_EXECUTED",
+      "name": "PREDECESSOR_DEPENDENCY_ADMISSION_GATE",
+      "status": "DISABLED"
+    },
+    {
+      "action": "FORBIDDEN",
+      "action_count": 0,
+      "auto_advance": "FORBIDDEN",
+      "execution_status": "NOT_EXECUTED",
+      "name": "INDEPENDENT_MIGRATION_REVIEW_GATE",
+      "status": "DISABLED"
+    },
+    {
+      "action": "FORBIDDEN",
+      "action_count": 0,
+      "auto_advance": "FORBIDDEN",
+      "execution_status": "NOT_EXECUTED",
+      "name": "TRANSPORT_SECURITY_GATE",
+      "status": "DISABLED"
+    },
+    {
+      "action": "FORBIDDEN",
+      "action_count": 0,
+      "auto_advance": "FORBIDDEN",
+      "execution_status": "NOT_EXECUTED",
       "name": "CANARY",
       "status": "DISABLED"
     },
@@ -187,8 +221,13 @@
     "execution": "FORBIDDEN",
     "external_api_during_migration": "FORBIDDEN",
     "forward_compatibility": "REQUIRED_NOT_CONFIGURED",
+    "independent_migration_approval": "REQUIRED_NOT_CONFIGURED",
+    "independent_migration_review": "REQUIRED_NOT_CONFIGURED",
     "lock_duration_measurement": "REQUIRED_NOT_CONFIGURED",
     "migration_dry_run": "REQUIRED_NOT_CONFIGURED",
+    "migration_owner_assignment": "REQUIRED_NOT_CONFIGURED",
+    "migration_review_bypass": "FORBIDDEN",
+    "migration_self_approval": "FORBIDDEN",
     "rollback_compatibility": "REQUIRED_NOT_CONFIGURED",
     "strategy": "EXPAND_MIGRATE_CONTRACT"
   },
@@ -241,89 +280,179 @@
       "selected_production_region": null
     }
   },
-  "predecessor_binding": {
-    "contract_sha256": "1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2",
-    "contract_uri": "repo://changes/st-1505/contracts/staging-deployment.v1.yaml",
-    "reference_plan_sha256": "33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f",
-    "reference_plan_uri": "repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json",
-    "required_action_counts": {
-      "browser": 0,
-      "create": 0,
-      "delete": 0,
-      "deploy": 0,
-      "migrate": 0,
-      "production": 0,
-      "promote": 0,
-      "rollback": 0,
-      "smoke": 0,
-      "update": 0
+  "predecessor_bindings": {
+    "compute_edge": {
+      "contract_semantic_sha256": "4ee5dfb892be42119d4f2c77c07e850a93785458e47c496e0e953fd83fc276ac",
+      "contract_sha256": "7d742065c5ffda0dbecf04c144af7daf0de2fdc0d2598e85bc9af656c4ac242d",
+      "contract_uri": "repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
+      "design_handoff_semantic_sha256": "0e3d26dc01e244034567bbd6fe13ace689447cc5f835e6b3581b64120cfbc7fe",
+      "design_handoff_sha256": "de21922772e9e88ba830fc33c82848a9423d492fc9696027b91febf9aebb0646",
+      "design_handoff_uri": "repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml",
+      "owner_generator_sha256": "554d00a82f1a48d1e154e5aaff63fad7330e46a81e862e6bc0a2b30385029a7b",
+      "owner_generator_uri": "repo://scripts/build_st1503_compute_edge.py",
+      "reference_plan_semantic_sha256": "50d334f3d28a0c0b56623b3960a6b1d3398d861aeda72d6abee1339f84b4e6a8",
+      "reference_plan_sha256": "a894504b51f2cc5f77d05a00c12fdcbd854a49d74d80822c9564f08957bd3888",
+      "reference_plan_uri": "repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json",
+      "required_action_counts": {
+        "create": 0,
+        "delete": 0,
+        "update": 0
+      },
+      "required_activation_status": "DISABLED",
+      "required_admission_status": "NOT_EVALUATED",
+      "required_complete_mapping": false,
+      "required_credential_access": "FORBIDDEN",
+      "required_eligible": false,
+      "required_external_writes": "FORBIDDEN",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_network_access": "FORBIDDEN",
+      "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_COMPUTE_EDGE_CAPABILITY_ADMISSION",
+      "required_reference_plan_executable": false,
+      "required_selected_values": "UNSET",
+      "story_id": "ST-1503"
     },
-    "required_activation_status": "DISABLED",
-    "required_contract_non_executable": true,
-    "required_contract_status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
-    "required_external_writes": "FORBIDDEN",
-    "required_formal_tst_009": "NOT_EXECUTED",
-    "required_formal_tst_022": "NOT_EXECUTED",
-    "required_live_provider_calls": "FORBIDDEN",
-    "required_reference_plan_executable": false,
-    "required_selected_values": "UNSET",
-    "story_id": "ST-1505",
-    "transitive_predecessor_bindings": {
-      "compute_edge": {
-        "contract_sha256": "54d60c741c7531b39f09fd90406bdd203985214086f092370b1ebb2ba79d13a3",
-        "contract_uri": "repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
-        "reference_plan_sha256": "551d11aefa10526054190770467067dd71751f7249d3ddcdd534c0c359f509ed",
-        "reference_plan_uri": "repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json",
-        "required_activation_status": "DISABLED",
-        "required_contract_non_executable": true,
-        "required_external_writes": "FORBIDDEN",
-        "required_live_provider_calls": "FORBIDDEN",
-        "required_planned_actions": {
-          "create": 0,
-          "delete": 0,
-          "update": 0
-        },
-        "required_reference_plan_executable": false,
-        "required_selected_values": "UNSET",
-        "story_id": "ST-1503"
+    "data_services": {
+      "contract_semantic_sha256": "3b696b86edd9b0a04e85c99f3306deb4879a935c381351276136a49e7423f440",
+      "contract_sha256": "4d0ca4188c4a4ee7c8f6c8417afc6880b9ac0f89b6e4bd63703eb98d8368dddb",
+      "contract_uri": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
+      "design_handoff_semantic_sha256": "53a640dd58c222296da2c079a374daf55e6a55e40fb1944bae6070b7ef559450",
+      "design_handoff_sha256": "40d866ae30199748c9d91b8152aaa4fb4ca2721e5e722bcff05cf97760f1c228",
+      "design_handoff_uri": "repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml",
+      "owner_generator_sha256": "fcb488254a09bf5ac686a66d75865ccef8ee0e027360e3131c8aacea8de01484",
+      "owner_generator_uri": "repo://scripts/build_st1502_data_services.py",
+      "reference_plan_semantic_sha256": "777368a0ee051d9f74f1bb4b25216ddf4ea4b1000f16a283e387df197b1095d7",
+      "reference_plan_sha256": "28f4ae25fd66f0bb999a1918e72a5d108f38991bb5104e2726b01a0997a6087c",
+      "reference_plan_uri": "repo://infra/terraform/data-services/data-services.reference-plan.v1.json",
+      "required_action_counts": {
+        "backup": 0,
+        "create": 0,
+        "delete": 0,
+        "migrate": 0,
+        "redrive": 0,
+        "restore": 0,
+        "rotate": 0,
+        "update": 0
       },
-      "data_services": {
-        "contract_sha256": "ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502",
-        "contract_uri": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
-        "reference_plan_sha256": "ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41",
-        "reference_plan_uri": "repo://infra/terraform/data-services/data-services.reference-plan.v1.json",
-        "required_activation_status": "DISABLED",
-        "required_contract_non_executable": true,
-        "required_external_writes": "FORBIDDEN",
-        "required_live_provider_calls": "FORBIDDEN",
-        "required_planned_actions": {
-          "create": 0,
-          "delete": 0,
-          "update": 0
-        },
-        "required_reference_plan_executable": false,
-        "required_selected_values": "UNSET",
-        "story_id": "ST-1502"
+      "required_activation_status": "DISABLED",
+      "required_admission_status": "NOT_EVALUATED",
+      "required_complete_mapping": false,
+      "required_credential_access": "FORBIDDEN",
+      "required_eligible": false,
+      "required_external_writes": "FORBIDDEN",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_network_access": "FORBIDDEN",
+      "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION",
+      "required_reference_plan_executable": false,
+      "required_selected_values": "UNSET",
+      "story_id": "ST-1502"
+    },
+    "deployment_identity": {
+      "contract_semantic_sha256": "795f7ec4218e029feef40aee6d6616ff62e3f9cc847a8383f4f847514c8c3d22",
+      "contract_sha256": "d7e6922ff953434435509a4bd3aca0251b57dc699e990fae3ae06c75af229b4c",
+      "contract_uri": "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
+      "design_handoff_semantic_sha256": "8afd193ddc98a0193e21032a3058c157fe75f12151cb06d80a9ea198efbc5f8c",
+      "design_handoff_sha256": "f6a89722b86a8a47288da86c09214a3a926061d16489737170edc07398b2be61",
+      "design_handoff_uri": "repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml",
+      "owner_generator_sha256": "3972533552bf2e1d3265ae4a41571872a5c0aa6fd537fa69c7afd3736eb53a28",
+      "owner_generator_uri": "repo://scripts/build_st1504_github_oidc.py",
+      "reference_plan_semantic_sha256": "256550caaf1c7fba5aca5b4c74015590d052941e87e9fcaf4c2eb3db7af25697",
+      "reference_plan_sha256": "7566adbe5a9eff81144ceffb9ec233ba98322c2d01f399e5a103a033d0b35974",
+      "reference_plan_uri": "repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json",
+      "required_action_counts": {
+        "create": 0,
+        "delete": 0,
+        "update": 0
       },
-      "deployment_identity": {
-        "contract_sha256": "58352939268565ede5c6d48682013c3fac1134587d1665f4236f389f0c15527d",
-        "contract_uri": "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
-        "reference_plan_sha256": "6774c1e2553df4e1f3e7a85dc122b2462ddb575503a7c03b4ec8d9e18baecfbc",
-        "reference_plan_uri": "repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json",
-        "required_activation_status": "DISABLED",
-        "required_contract_non_executable": true,
-        "required_credential_issuance": "FORBIDDEN",
-        "required_external_writes": "FORBIDDEN",
-        "required_live_provider_calls": "FORBIDDEN",
-        "required_planned_actions": {
-          "create": 0,
-          "delete": 0,
-          "update": 0
-        },
-        "required_reference_plan_executable": false,
-        "required_selected_values": "UNSET",
-        "story_id": "ST-1504"
-      }
+      "required_activation_status": "DISABLED",
+      "required_admission_status": "NOT_EVALUATED",
+      "required_complete_mapping": false,
+      "required_credential_access": "FORBIDDEN",
+      "required_credential_issuance": "FORBIDDEN",
+      "required_eligible": false,
+      "required_external_writes": "FORBIDDEN",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_network_access": "FORBIDDEN",
+      "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_CAPABILITY_ADMISSION",
+      "required_reference_plan_executable": false,
+      "required_selected_values": "UNSET",
+      "story_id": "ST-1504"
+    },
+    "foundation": {
+      "contract_semantic_sha256": "715fbdd46467ac282333c486850a5571d27836d5d028f971e5840f755e338a6e",
+      "contract_sha256": "c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6",
+      "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
+      "design_handoff_semantic_sha256": "0915d6ec4949babebf43f307b2ac1569fa76213c96a3be9009dfaec660e34030",
+      "design_handoff_sha256": "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61",
+      "design_handoff_uri": "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
+      "owner_generator_sha256": "558e1f8dc20331730582e62018cd88579f4b82e295bffad617049a925ab466a7",
+      "owner_generator_uri": "repo://scripts/build_st1501_terraform_foundation.py",
+      "reference_plan_semantic_sha256": "6521f7396e8b076177cd00d297342a482ac664809c432dde48c8c7d55d01d32f",
+      "reference_plan_sha256": "c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559",
+      "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
+      "required_action_counts": {
+        "create": 0,
+        "delete": 0,
+        "update": 0
+      },
+      "required_activation_status": "DISABLED",
+      "required_admission_status": "NOT_EVALUATED",
+      "required_complete_mapping": false,
+      "required_credential_access": "FORBIDDEN",
+      "required_eligible": false,
+      "required_external_writes": "FORBIDDEN",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_network_access": "FORBIDDEN",
+      "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
+      "required_reference_plan_executable": false,
+      "required_selected_values": "UNSET",
+      "story_id": "ST-1501"
+    },
+    "staging": {
+      "contract_semantic_sha256": "a7d9a9cb6f791116b30d086f824101bf547782f2b785a538a331f83b16b8eeff",
+      "contract_sha256": "c70deefd72bd84f4196bea7f078a70f511397f1d759846c200cfb9224468cc69",
+      "contract_uri": "repo://changes/st-1505/contracts/staging-deployment.v1.yaml",
+      "design_handoff_semantic_sha256": "30eaec3fbeceec8b3b4043777d7c3fe8b97082e36f585e70899ba6104fa3bc32",
+      "design_handoff_sha256": "146351e1ba13970b33bccc0df3683c8b650769b1357f829424f1d53bce8a3937",
+      "design_handoff_uri": "repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml",
+      "owner_generator_sha256": "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522",
+      "owner_generator_uri": "repo://scripts/build_st1505_staging_deployment.py",
+      "reference_plan_semantic_sha256": "72337829f619da5a266b09bbe14017ade796e38b2394fb2e7fe5dc15c2d6ec96",
+      "reference_plan_sha256": "ba65ac0776c4dd811a2918843e8984945ab92e370892b164bb8099df67950cac",
+      "reference_plan_uri": "repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+      "required_action_counts": {
+        "alert": 0,
+        "approve": 0,
+        "browser": 0,
+        "build": 0,
+        "create": 0,
+        "delete": 0,
+        "deploy": 0,
+        "migrate": 0,
+        "migration_review": 0,
+        "production": 0,
+        "promote": 0,
+        "release": 0,
+        "restore": 0,
+        "rollback": 0,
+        "runtime": 0,
+        "security": 0,
+        "smoke": 0,
+        "telemetry": 0,
+        "transport_security": 0,
+        "update": 0
+      },
+      "required_activation_status": "DISABLED",
+      "required_admission_status": "NOT_EVALUATED",
+      "required_complete_mapping": false,
+      "required_credential_access": "FORBIDDEN",
+      "required_eligible": false,
+      "required_external_writes": "FORBIDDEN",
+      "required_live_provider_calls": "FORBIDDEN",
+      "required_network_access": "FORBIDDEN",
+      "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_STAGING_CAPABILITY_AND_DEPENDENCY_ADMISSION",
+      "required_reference_plan_executable": false,
+      "required_selected_values": "UNSET",
+      "story_id": "ST-1505"
     }
   },
   "protected_environment": {
@@ -340,6 +469,211 @@
     "repository_wildcard": "FORBIDDEN",
     "unprotected_environment": "FORBIDDEN",
     "workflow_wildcard": "FORBIDDEN"
+  },
+  "provider_neutral_admission": {
+    "admission_status": "NOT_EVALUATED",
+    "aws_reference_boundary": {
+      "admission_requirement": false,
+      "canonical_decision_id": "INT-DEC-007",
+      "default": false,
+      "eligibility_shortcut": false,
+      "evidence_substitute": false,
+      "implicit_fallback": false,
+      "reference_profile": "AWS_TOKYO",
+      "reference_region_metadata": "ap-northeast-1",
+      "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+      "selected_binding": false
+    },
+    "capability_mapping_requirements": [
+      {
+        "capability_id": "workload_runtime",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "PORTABLE_WEB_API_WORKER_SCHEDULER_WORKLOAD_RUNTIME",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "relational_persistence",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "POSTGRESQL_COMPATIBLE_TRANSACTIONAL_PERSISTENCE_AND_MIGRATION_CONTROLS",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "immutable_object_storage",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "S3_COMPATIBLE_VERSIONED_AND_IMMUTABLE_WHERE_DATA_CONTRACT_REQUIRES",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "asynchronous_queue",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "AT_LEAST_ONCE_WITH_DLQ_AND_IDEMPOTENT_CONSUMERS",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "public_edge",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "DNS_TLS_WAF_AND_PUBLIC_ADMIN_INTERNAL_ISOLATION",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "workload_identity_and_secrets",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "LEAST_PRIVILEGE_WORKLOAD_IDENTITY_AND_AUDITED_SECRET_DELIVERY",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "telemetry_and_alerting",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "TRACES_METRICS_LOGS_RELEASE_MARKERS_ALERTS_AND_NOTIFICATION_ROUTING",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "backup_and_restore",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "PITR_SNAPSHOTS_OBJECT_VERSION_RESTORE_DRILL_AND_INTEGRITY_VERIFICATION",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "deployment_and_release",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "IMMUTABLE_PROMOTION_MIGRATION_CANARY_OBSERVE_ROLLBACK_AND_HUMAN_RELEASE",
+        "selected_mapping": null
+      },
+      {
+        "capability_id": "region_and_data_residency",
+        "evidence_references": [],
+        "mapping_status": "REQUIRED_NOT_CONFIGURED",
+        "required_outcome": "EXPLICIT_PRIMARY_BACKUP_LOCATION_AND_DATA_RESIDENCY_EVIDENCE",
+        "selected_mapping": null
+      }
+    ],
+    "classification": "STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION",
+    "concrete_alternate_provider_selected": false,
+    "default_profile_id": null,
+    "dependency_admission_policy": {
+      "cardinality": "EXACTLY_ONE_CURRENT_BINDING_PER_REQUIRED_DEPENDENCY",
+      "complete_dependency_chain": false,
+      "dependency_shortcut": "FORBIDDEN",
+      "duplicate_dependency": "REJECT",
+      "implicit_dependency": "REJECT",
+      "missing_dependency": "REJECT",
+      "partial_dependency": "REJECT",
+      "predecessor_completion_only": "REJECT",
+      "provider_label_only": "REJECT",
+      "reordered_dependency": "REJECT",
+      "required_dependency_count": 5,
+      "satisfied_dependency_count": 0,
+      "unknown_dependency": "REJECT"
+    },
+    "dependency_admission_requirements": [
+      {
+        "current_admission_status": "NOT_EVALUATED",
+        "current_eligible": false,
+        "dependency_status": "REQUIRED_NOT_SATISFIED",
+        "evidence_references": [],
+        "required_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
+        "selected_profile_id": null,
+        "selected_provider_name": null,
+        "story_id": "ST-1501"
+      },
+      {
+        "current_admission_status": "NOT_EVALUATED",
+        "current_eligible": false,
+        "dependency_status": "REQUIRED_NOT_SATISFIED",
+        "evidence_references": [],
+        "required_policy": "STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION",
+        "selected_profile_id": null,
+        "selected_provider_name": null,
+        "story_id": "ST-1502"
+      },
+      {
+        "current_admission_status": "NOT_EVALUATED",
+        "current_eligible": false,
+        "dependency_status": "REQUIRED_NOT_SATISFIED",
+        "evidence_references": [],
+        "required_policy": "STRICT_PROVIDER_NEUTRAL_COMPUTE_EDGE_CAPABILITY_ADMISSION",
+        "selected_profile_id": null,
+        "selected_provider_name": null,
+        "story_id": "ST-1503"
+      },
+      {
+        "current_admission_status": "NOT_EVALUATED",
+        "current_eligible": false,
+        "dependency_status": "REQUIRED_NOT_SATISFIED",
+        "evidence_references": [],
+        "required_policy": "STRICT_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_CAPABILITY_ADMISSION",
+        "selected_profile_id": null,
+        "selected_provider_name": null,
+        "story_id": "ST-1504"
+      },
+      {
+        "current_admission_status": "NOT_EVALUATED",
+        "current_eligible": false,
+        "dependency_status": "REQUIRED_NOT_SATISFIED",
+        "evidence_references": [],
+        "required_policy": "STRICT_PROVIDER_NEUTRAL_STAGING_CAPABILITY_AND_DEPENDENCY_ADMISSION",
+        "selected_profile_id": null,
+        "selected_provider_name": null,
+        "story_id": "ST-1505"
+      }
+    ],
+    "eligible": false,
+    "eligible_profile_kinds": [
+      "AWS",
+      "OTHER_CLOUD",
+      "OWNER_MANAGED_INFRASTRUCTURE"
+    ],
+    "evidence_equivalence_policy": {
+      "backup_restore_evidence": "REQUIRED_NOT_CONFIGURED",
+      "capability_evidence": "REQUIRED_NOT_CONFIGURED",
+      "dependency_chain_evidence": "REQUIRED_NOT_CONFIGURED",
+      "independent_migration_review_evidence": "REQUIRED_NOT_CONFIGURED",
+      "local_test_as_live_evidence": "FORBIDDEN",
+      "operations_evidence": "REQUIRED_NOT_CONFIGURED",
+      "partial_predecessor_chain_as_evidence": "FORBIDDEN",
+      "predecessor_completion_as_evidence": "FORBIDDEN",
+      "provider_label_as_evidence": "FORBIDDEN",
+      "reference_metadata_as_evidence": "FORBIDDEN",
+      "region_and_data_residency_evidence": "REQUIRED_NOT_CONFIGURED",
+      "release_evidence": "REQUIRED_NOT_CONFIGURED",
+      "same_requirements_for_all_profile_kinds": true,
+      "security_evidence": "REQUIRED_NOT_CONFIGURED",
+      "transport_security_evidence": "REQUIRED_NOT_CONFIGURED"
+    },
+    "fallback_profile_id": null,
+    "mapping_policy": {
+      "cardinality": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+      "complete_mapping": false,
+      "configured_mapping_count": 0,
+      "duplicate_mapping": "REJECT",
+      "implicit_mapping": "REJECT",
+      "missing_mapping": "REJECT",
+      "partial_mapping": "REJECT",
+      "provider_label_only": "REJECT",
+      "required_mapping_count": 10,
+      "unknown_mapping": "REJECT",
+      "unmapped_eligibility": "FORBIDDEN"
+    },
+    "predecessor_reference_boundary": {
+      "complete_capability_and_evidence_chain_required": true,
+      "eligibility_shortcut": "FORBIDDEN",
+      "evidence_substitute": false,
+      "mandatory_provider_neutral_semantics": true,
+      "provider_selection_authority": "NONE",
+      "st_1501_through_st_1505": "CURRENT_PROVIDER_NEUTRAL_DEPENDENCY_CONTRACTS"
+    },
+    "selected_profile_id": null,
+    "selected_profile_kind": null,
+    "selected_provider_name": null
   },
   "rollback": {
     "automatic_rollback": "FORBIDDEN",
@@ -401,6 +735,26 @@
     "telemetry_source": null,
     "traffic_target": null
   },
+  "transport_security": {
+    "all_production_network_flows": "REQUIRED_NOT_CONFIGURED",
+    "approved_protocol_and_cipher_policy": "REQUIRED_NOT_CONFIGURED",
+    "artifact_and_promotion_transport": "REQUIRED_NOT_CONFIGURED",
+    "authenticated_encryption": "REQUIRED_NOT_CONFIGURED",
+    "canary_and_runtime_transport": "REQUIRED_NOT_CONFIGURED",
+    "certificate_identity_and_hostname_verification": "REQUIRED_NOT_CONFIGURED",
+    "classification": "DECLARATIVE_PROVIDER_NEUTRAL_CROSS_CAPABILITY_TRANSPORT_SECURITY_GATES_ONLY",
+    "deployment_control_transport": "REQUIRED_NOT_CONFIGURED",
+    "downgrade_resistance": "REQUIRED_NOT_CONFIGURED",
+    "identity_federation_transport": "REQUIRED_NOT_CONFIGURED",
+    "infrastructure_provider_transport": "REQUIRED_NOT_CONFIGURED",
+    "insecure_skip_verification": "FORBIDDEN",
+    "local_fixture_as_transport_evidence": "FORBIDDEN",
+    "migration_transport": "REQUIRED_NOT_CONFIGURED",
+    "plaintext_transport": "FORBIDDEN",
+    "provider_managed_label_as_evidence": "FORBIDDEN",
+    "rollback_and_restore_transport": "REQUIRED_NOT_CONFIGURED",
+    "telemetry_and_alert_transport": "REQUIRED_NOT_CONFIGURED"
+  },
   "verification_boundary": {
     "canary": "NOT_EXECUTED",
     "credentials": "ABSENT",
@@ -412,12 +766,15 @@
     "immutable_operations_approval": "ABSENT",
     "immutable_release_decision": "ABSENT",
     "immutable_security_approval": "ABSENT",
+    "independent_migration_review": "NOT_EXECUTED",
     "live_provider": "NOT_EXECUTED",
     "migration": "NOT_EXECUTED",
     "migration_runtime": "ABSENT",
+    "predecessor_dependency_admission": "NOT_EXECUTED",
     "predecessor_formal_tst_009": "NOT_EXECUTED",
     "predecessor_formal_tst_022": "NOT_EXECUTED",
     "production": "NOT_EXECUTED",
+    "production_profile_admission": "NOT_EXECUTED",
     "provider_runtime": "ABSENT",
     "release": "NOT_EXECUTED",
     "rollback": "NOT_EXECUTED",
@@ -426,6 +783,7 @@
     "staging": "NOT_EXECUTED",
     "status_transition": "NOT_EXECUTED",
     "terraform_or_cloud_runtime": "ABSENT",
+    "transport_security": "NOT_EXECUTED",
     "workflow": "ABSENT"
   }
 }

@@ -72,7 +72,7 @@
       "artifacts": [
         {
           "uri": "repo://changes/st-0707/README.md",
-          "sha256": "00b6ca1e355a60436a452fcb1de172348acbb8fa9f8b5ccbee9dbd727196f644"
+          "sha256": "26826289a4d00c2e3304e0c81f177655ab60ca3f4cd45c5a644c160e055f7529"
         },
         {
           "uri": "repo://python/raos/domain/ai/evaluation.py",
@@ -88,7 +88,7 @@
         },
         {
           "uri": "repo://tests/st0707/test_boundaries.py",
-          "sha256": "7e4eb2bb4759234ac25e30e4be66ad14cf2ebd870ea7ff0c8c6d34becdf5639e"
+          "sha256": "071648ee8fa7a0d168b1bd8bc5db58113c4111f218535a04d460e8fe58960f4f"
         },
         {
           "uri": "repo://tests/st0707/test_evaluation.py",

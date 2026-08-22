@@ -18,6 +18,7 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from scripts import build_st1502_data_services as data_base  # noqa: E402
 from scripts import build_st1505_staging_deployment as base  # noqa: E402
 
 
@@ -99,33 +100,36 @@ EXPECTED_SOURCE_HASHES: Final = {
         "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
     ),
     "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
-        "9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b"
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
     ),
 }
 EXPECTED_PREDECESSOR_HASHES: Final = {
     "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "ee54088ea4dc84888fbbfd44259f015e7a27ee18c9e9cdbeb1b074aca905d502"
+        "4d0ca4188c4a4ee7c8f6c8417afc6880b9ac0f89b6e4bd63703eb98d8368dddb"
     ),
     "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "ae44e618b5ef8fa261c098f6b64852b69d8de996cf0bd33b726021783c4b9d41"
+        "28f4ae25fd66f0bb999a1918e72a5d108f38991bb5104e2726b01a0997a6087c"
     ),
     "changes/st-1502/manifest.yaml": (
-        "5fb972f61465653b7d791e87cd47576b55fcd07929c01f51329c1158909b401a"
+        "803d9dc551ce77018abd940ad1a1fdcc682608ab6edb2ced1ff1c6b577d5756f"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2"
+        "c70deefd72bd84f4196bea7f078a70f511397f1d759846c200cfb9224468cc69"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f"
+        "ba65ac0776c4dd811a2918843e8984945ab92e370892b164bb8099df67950cac"
     ),
     "changes/st-1505/manifest.yaml": (
-        "b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2"
+        "a7e32e2fcc3962d7689a14a80a7838d15001fc57b71c45eeb986dfb3a30756a1"
     ),
 }
 EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
+    "scripts/build_st1502_data_services.py": (
+        "fcb488254a09bf5ac686a66d75865ccef8ee0e027360e3131c8aacea8de01484"
+    ),
     "scripts/build_st1505_staging_deployment.py": (
-        "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
-    )
+        "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+    ),
 }
 
 EXPECTED_DOCUMENT: Final[dict[str, object]] = {
@@ -276,6 +280,38 @@ ACTION_NAMES: Final = (
     "approval",
     "external",
 )
+DATA_PLAN_ACTION_KEYS: Final = tuple(sorted(data_base.ACTION_NAMES))
+STAGING_PLAN_ACTION_KEYS: Final = tuple(sorted(base.STAGING_ACTION_COUNT_NAMES))
+EXPECTED_DATA_PROVIDER_NEUTRAL_ADMISSION: Final[dict[str, object]] = {
+    "classification": "STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION",
+    "admission_status": "NOT_EVALUATED",
+    "eligible": False,
+    "complete_mapping": False,
+    "required_capability_count": 9,
+    "configured_mapping_count": 0,
+    "selected_provider_name": None,
+    "selected_profile_id": None,
+    "default_profile_id": None,
+    "fallback_profile_id": None,
+    "aws_reference_role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+    "aws_reference_selected_binding": False,
+}
+EXPECTED_STAGING_PROVIDER_NEUTRAL_ADMISSION: Final[dict[str, object]] = {
+    "classification": (
+        "STRICT_PROVIDER_NEUTRAL_STAGING_CAPABILITY_AND_DEPENDENCY_ADMISSION"
+    ),
+    "admission_status": "NOT_EVALUATED",
+    "eligible": False,
+    "complete_mapping": False,
+    "required_capability_count": 13,
+    "configured_mapping_count": 0,
+    "selected_provider_name": None,
+    "selected_profile_id": None,
+    "default_profile_id": None,
+    "fallback_profile_id": None,
+    "aws_reference_role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+    "aws_reference_selected_binding": False,
+}
 EXPECTED_EXECUTION: Final[dict[str, object]] = {
     "executable": False,
     "interface_only": True,
@@ -535,7 +571,8 @@ def _expected_predecessors() -> dict[str, object]:
                 "changes/st-1502/manifest.yaml"
             ],
             "required_classification": (
-                "SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN"
+                "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_"
+                "REFERENCE_PLAN"
             ),
             "required_executable": False,
             "required_activation_enabled": False,
@@ -543,7 +580,8 @@ def _expected_predecessors() -> dict[str, object]:
             "required_selected_values": "UNSET",
             "required_live_provider_calls": "FORBIDDEN",
             "required_external_writes": "FORBIDDEN",
-            "required_action_counts": {"create": 0, "update": 0, "delete": 0},
+            "required_action_counts": {name: 0 for name in data_base.ACTION_NAMES},
+            "provider_neutral_admission": EXPECTED_DATA_PROVIDER_NEUTRAL_ADMISSION,
         },
         "staging_deployment": {
             "story_id": "ST-1505",
@@ -565,7 +603,8 @@ def _expected_predecessors() -> dict[str, object]:
                 "changes/st-1505/manifest.yaml"
             ],
             "required_classification": (
-                "SOURCE_DERIVED_NON_EXECUTABLE_STAGING_DEPLOYMENT_REFERENCE_PLAN"
+                "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_STAGING_ADMISSION_"
+                "REFERENCE_PLAN"
             ),
             "required_executable": False,
             "required_activation_enabled": False,
@@ -574,17 +613,9 @@ def _expected_predecessors() -> dict[str, object]:
             "required_live_provider_calls": "FORBIDDEN",
             "required_external_writes": "FORBIDDEN",
             "required_action_counts": {
-                "create": 0,
-                "update": 0,
-                "delete": 0,
-                "promote": 0,
-                "deploy": 0,
-                "migrate": 0,
-                "smoke": 0,
-                "browser": 0,
-                "rollback": 0,
-                "production": 0,
+                name: 0 for name in base.STAGING_ACTION_COUNT_NAMES
             },
+            "provider_neutral_admission": EXPECTED_STAGING_PROVIDER_NEUTRAL_ADMISSION,
         },
     }
 
@@ -601,11 +632,108 @@ def _assert_unset_tree(value: object, field: str) -> None:
     _fail("PREDECESSOR_SELECTION_SET", field)
 
 
+def _assert_zero_counts(
+    value: object, expected_keys: tuple[str, ...], field: str
+) -> None:
+    counts = _mapping(value, field)
+    if tuple(counts) != expected_keys:
+        _fail("PREDECESSOR_ACTION_DRIFT", field)
+    for count in counts.values():
+        if type(count) is not int or count != 0:
+            _fail("PREDECESSOR_ACTION_DRIFT", field)
+
+
+def _provider_neutral_summary(
+    plan: Mapping[str, Any], section: str, field: str
+) -> dict[str, object]:
+    admission = _mapping(plan.get(section), field)
+    mapping_policy = _mapping(admission.get("mapping_policy"), f"{field}.mapping")
+    aws_boundary = _mapping(
+        admission.get("aws_reference_boundary"), f"{field}.aws_reference"
+    )
+    return {
+        "classification": admission.get("classification"),
+        "admission_status": admission.get("admission_status"),
+        "eligible": admission.get("eligible"),
+        "complete_mapping": mapping_policy.get("complete_mapping"),
+        "required_capability_count": mapping_policy.get("required_capability_count"),
+        "configured_mapping_count": mapping_policy.get("configured_mapping_count"),
+        "selected_provider_name": admission.get("selected_provider_name"),
+        "selected_profile_id": admission.get("selected_profile_id"),
+        "default_profile_id": admission.get("default_profile_id"),
+        "fallback_profile_id": admission.get("fallback_profile_id"),
+        "aws_reference_role": aws_boundary.get("role"),
+        "aws_reference_selected_binding": aws_boundary.get("selected_binding"),
+    }
+
+
+def _render_data_owner_outputs(root: Path) -> tuple[bytes, bytes]:
+    contract = _load_yaml(
+        root,
+        Path("changes/st-1502/contracts/data-services-foundation.v1.yaml"),
+        "data_owner.contract",
+    )
+    try:
+        data_base._exact_keys(  # noqa: SLF001
+            contract, data_base.TOP_LEVEL_KEYS, "data_owner.contract"
+        )
+        expected_sources = [
+            {"uri": f"repo://{relative}", "sha256": digest}
+            for relative, digest in data_base.PINNED_SOURCES.items()
+        ]
+        data_base._strict_match(  # noqa: SLF001
+            contract["sources"], expected_sources, "data_owner.sources"
+        )
+        data_base._validate_capability_inventory(contract)  # noqa: SLF001
+        for section, expected in data_base.EXPECTED_SECTIONS.items():
+            data_base._strict_match(  # noqa: SLF001
+                contract[section], expected, f"data_owner.{section}"
+            )
+        model = data_base.DataServicesModel(contract=dict(contract))
+        plan = data_base.render_reference_plan(model)
+        return plan, data_base.render_manifest(model, plan, root)
+    except data_base.DataServicesContractError:
+        _fail("PREDECESSOR_OWNER_VALIDATION_FAILED", "data_services")
+
+
+def _render_staging_owner_outputs(root: Path) -> tuple[bytes, bytes]:
+    contract = _load_yaml(
+        root,
+        Path("changes/st-1505/contracts/staging-deployment.v1.yaml"),
+        "staging_owner.contract",
+    )
+    try:
+        base._validate_local_safety_invariants(contract)  # noqa: SLF001
+        model = base.StagingDeploymentModel(contract=dict(contract))
+        plan = base.render_reference_plan(model)
+        return plan, base.render_manifest(model, plan, root)
+    except base.StagingDeploymentContractError:
+        _fail("PREDECESSOR_OWNER_VALIDATION_FAILED", "staging_deployment")
+
+
 def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
     _exact(contract["predecessor_bindings"], _expected_predecessors(), "predecessors")
     for relative, digest in EXPECTED_PREDECESSOR_HASHES.items():
         if _sha256_bytes(_read(root, Path(relative), "predecessor.input")) != digest:
             _fail("PREDECESSOR_HASH_DRIFT", "predecessors")
+
+    data_owner_plan, data_owner_manifest = _render_data_owner_outputs(root)
+    staging_owner_plan, staging_owner_manifest = _render_staging_owner_outputs(root)
+    owner_outputs = (
+        (
+            Path("infra/terraform/data-services/data-services.reference-plan.v1.json"),
+            data_owner_plan,
+        ),
+        (Path("changes/st-1502/manifest.yaml"), data_owner_manifest),
+        (
+            Path("infra/terraform/staging/staging-deployment.reference-plan.v1.json"),
+            staging_owner_plan,
+        ),
+        (Path("changes/st-1505/manifest.yaml"), staging_owner_manifest),
+    )
+    for relative, rendered in owner_outputs:
+        if _read(root, relative, "predecessor.owner_output") != rendered:
+            _fail("PREDECESSOR_OWNER_OUTPUT_DRIFT", "predecessors")
 
     data_plan = _load_json(
         root,
@@ -615,7 +743,10 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
     data_document = _mapping(data_plan.get("document"), "data_plan.document")
     if (
         data_document.get("artifact_kind")
-        != "SOURCE_DERIVED_NON_EXECUTABLE_DATA_SERVICES_REFERENCE_PLAN"
+        != (
+            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_"
+            "REFERENCE_PLAN"
+        )
         or data_document.get("executable") is not False
     ):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "data_plan.document")
@@ -623,14 +754,28 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
     if (
         data_activation.get("enabled") is not False
         or data_activation.get("status") != "DISABLED"
+        or data_activation.get("network_access") != "FORBIDDEN"
+        or data_activation.get("credential_access") != "FORBIDDEN"
+        or data_activation.get("live_provider_calls") != "FORBIDDEN"
+        or data_activation.get("external_writes") != "FORBIDDEN"
+        or data_activation.get("deploy_action") != "FORBIDDEN"
+        or data_activation.get("release_action") != "FORBIDDEN"
+        or data_activation.get("production_action") != "FORBIDDEN"
     ):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "data_plan.activation")
     _assert_unset_tree(data_plan.get("selected_configuration"), "data_plan.selected")
-    for key, value in _mapping(
-        data_plan.get("planned_actions"), "data_plan.actions"
-    ).items():
-        if type(value) is not int or value != 0:
-            _fail("PREDECESSOR_SEMANTIC_DRIFT", f"data_plan.actions.{key}")
+    _assert_zero_counts(
+        data_plan.get("planned_actions"), DATA_PLAN_ACTION_KEYS, "data_plan.actions"
+    )
+    _exact(
+        _provider_neutral_summary(
+            data_plan,
+            "provider_neutral_data_services_admission",
+            "data_plan.provider_neutral_admission",
+        ),
+        EXPECTED_DATA_PROVIDER_NEUTRAL_ADMISSION,
+        "data_plan.provider_neutral_admission",
+    )
 
     staging_plan = _load_json(
         root,
@@ -640,7 +785,10 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
     staging_document = _mapping(staging_plan.get("document"), "staging_plan.document")
     if (
         staging_document.get("artifact_kind")
-        != "SOURCE_DERIVED_NON_EXECUTABLE_STAGING_DEPLOYMENT_REFERENCE_PLAN"
+        != (
+            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_STAGING_ADMISSION_"
+            "REFERENCE_PLAN"
+        )
         or staging_document.get("executable") is not False
     ):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "staging_plan.document")
@@ -650,14 +798,31 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
     if (
         staging_activation.get("enabled") is not False
         or staging_activation.get("status") != "DISABLED"
+        or staging_activation.get("runtime_status") != "NOT_EXECUTED"
+        or staging_activation.get("network_access") != "FORBIDDEN"
+        or staging_activation.get("credential_access") != "FORBIDDEN"
+        or staging_activation.get("live_provider_calls") != "FORBIDDEN"
+        or staging_activation.get("external_writes") != "FORBIDDEN"
+        or staging_activation.get("staging_action") != "FORBIDDEN"
+        or staging_activation.get("release_action") != "FORBIDDEN"
+        or staging_activation.get("production_action") != "FORBIDDEN"
     ):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "staging_plan.activation")
     _assert_unset_tree(staging_plan.get("selected_bindings"), "staging_plan.selected")
-    for key, value in _mapping(
-        staging_plan.get("action_counts"), "staging_plan.actions"
-    ).items():
-        if type(value) is not int or value != 0:
-            _fail("PREDECESSOR_SEMANTIC_DRIFT", f"staging_plan.actions.{key}")
+    _assert_zero_counts(
+        staging_plan.get("action_counts"),
+        STAGING_PLAN_ACTION_KEYS,
+        "staging_plan.actions",
+    )
+    _exact(
+        _provider_neutral_summary(
+            staging_plan,
+            "provider_neutral_staging_admission",
+            "staging_plan.provider_neutral_admission",
+        ),
+        EXPECTED_STAGING_PROVIDER_NEUTRAL_ADMISSION,
+        "staging_plan.provider_neutral_admission",
+    )
 
 
 def _validate_implementation_dependency(root: Path) -> None:

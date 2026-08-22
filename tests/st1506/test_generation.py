@@ -13,6 +13,31 @@ from scripts import build_st1506_production_deployment as generator
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+PREDECESSOR_SOURCE_PATHS = (
+    "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
+    "changes/st-1501/contracts/terraform-foundation.v1.yaml",
+    "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
+    "scripts/build_st1501_terraform_foundation.py",
+    "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml",
+    "changes/st-1502/contracts/data-services-foundation.v1.yaml",
+    "infra/terraform/data-services/data-services.reference-plan.v1.json",
+    "scripts/build_st1502_data_services.py",
+    "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml",
+    "changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
+    "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json",
+    "scripts/build_st1503_compute_edge.py",
+    "changes/st-0107/contracts/pr-governance.v1.yaml",
+    "changes/st-0107/ruleset-policy.v1.json",
+    "changes/st-1504/"
+    "DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml",
+    "changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
+    "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json",
+    "scripts/build_st1504_github_oidc.py",
+    "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml",
+    "changes/st-1505/contracts/staging-deployment.v1.yaml",
+    "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+    "scripts/build_st1505_staging_deployment.py",
+)
 
 
 def _snapshot(paths: tuple[Path, ...]) -> dict[Path, tuple[bytes, int, int]]:
@@ -65,20 +90,54 @@ def test_manifest_inventory_hashes_and_boundary_are_complete() -> None:
     assert boundary["action_counts"] == {
         name: 0 for name in generator.ACTION_COUNT_NAMES
     }
+    assert boundary["provider_policy"] == (
+        "STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION"
+    )
+    assert boundary["provider_admission_status"] == "NOT_EVALUATED"
+    assert boundary["provider_eligible"] is False
+    assert boundary["selected_profile"] is None
+    assert boundary["default_profile"] is None
+    assert boundary["fallback_profile"] is None
+    assert boundary["required_capability_count"] == len(
+        generator.REQUIRED_CAPABILITY_IDS
+    )
+    assert boundary["configured_capability_count"] == 0
+    assert boundary["required_dependency_count"] == 5
+    assert boundary["satisfied_dependency_count"] == 0
+    assert boundary["complete_dependency_chain"] is False
+    assert boundary["aws_reference_role"] == "OPTIONAL_HISTORICAL_REFERENCE_ONLY"
+    assert boundary["aws_reference_default"] is False
+    assert boundary["aws_reference_fallback"] is False
+    assert boundary["aws_reference_eligibility_shortcut"] is False
     assert boundary["formal_tst_032"] == "NOT_EXECUTED"
+    assert boundary["predecessor_dependency_admission"] == "NOT_EXECUTED"
+    assert boundary["production_profile_admission"] == "NOT_EXECUTED"
+    assert boundary["independent_migration_review"] == "NOT_EXECUTED"
+    assert boundary["transport_security"] == "NOT_EXECUTED"
     assert boundary["production"] == "NOT_EXECUTED"
 
 
-def test_manifest_pins_authority_and_immediate_plus_transitive_predecessors() -> None:
+def test_manifest_pins_authority_and_all_five_direct_predecessor_chains() -> None:
     manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
     assert manifest["provenance"]["authority_inputs"] == [
         {"uri": f"repo://{path}", "sha256": digest}
         for path, digest in generator.AUTHORITY_SOURCES.items()
     ]
+    assert tuple(generator.PREDECESSOR_SOURCES) == PREDECESSOR_SOURCE_PATHS
     assert manifest["provenance"]["predecessor_inputs"] == [
         {"uri": f"repo://{path}", "sha256": digest}
         for path, digest in generator.PREDECESSOR_SOURCES.items()
     ]
+    assert [
+        row["uri"].removeprefix("repo://")
+        for row in manifest["provenance"]["predecessor_inputs"]
+    ] == list(PREDECESSOR_SOURCE_PATHS)
+    assert manifest["provenance"]["authority_inputs"][-1] == {
+        "uri": f"repo://{generator.DESIGN_HANDOFF_PATH.as_posix()}",
+        "sha256": generator.sha256_file(
+            REPOSITORY_ROOT / generator.DESIGN_HANDOFF_PATH
+        ),
+    }
 
 
 def test_check_rejects_drift_without_writing_or_echoing_bytes(

@@ -82,22 +82,22 @@
         {
           "uri": "repo://changes/st-0702/contracts/context-pack-reference-plan.v1.yaml",
           "bytes": 7791,
-          "sha256": "21286187b82c28361bdce149e24ace2100e4fb37368972df58da906a6d5a1de1"
+          "sha256": "50bc6c25845d27a906b7c6cd81db77c0be7f376a14ccf748e38b75a77a2771a6"
         },
         {
           "uri": "repo://changes/st-0702/generated/context-pack.reference-plan.v1.json",
           "bytes": 93842,
-          "sha256": "e05c4a514c2d84021e41da63e850039c8f3d955d73f3bb75013761d096f020cd"
+          "sha256": "b27676f68dfc0712b145a6504e2bc626b1f57379f4f021fc4b2bfdd11f52356a"
         },
         {
           "uri": "repo://changes/st-0702/manifest.yaml",
           "bytes": 6016,
-          "sha256": "10d0e9f0708c6f96277958b23cdbeb298cf975c9c98fbc31f6e50bfd996af815"
+          "sha256": "7a714fcd8af209490720c95b4a365748738ca3d330dbca4b3bfc1dea42a840b7"
         },
         {
           "uri": "repo://scripts/build_st0702_context_pack_reference_plan.py",
           "bytes": 32819,
-          "sha256": "65d7dcb2ce4714f14bce84dfbcadc8ab02f2b84f0c9766ed7cf0cf375483588c"
+          "sha256": "bf5c7d24b2271d4318e5b9139d564726c74b02c71a6d3915bd3f511fb5543ed9"
         },
         {
           "uri": "repo://tests/st0702/conftest.py",
@@ -177,22 +177,22 @@
         {
           "uri": "repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml",
           "bytes": 11114,
-          "sha256": "a8e1a07f2520b3b874d89fbfc44cd872fa84d6b193d2b433a4723e5e3523dd35"
+          "sha256": "cb3ff84201a511af4d76b26d2e43aff6e640f2940b848cf820cadf1168fb4f41"
         },
         {
           "uri": "repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json",
           "bytes": 78849,
-          "sha256": "c691565befc1f49196a9b313543df8c0488cc19e7fc2ab78250fe98ab999cdb1"
+          "sha256": "5145610b4bef12dbcb7f9ecbcef460ea39330f9e4cb8d37a77b9145154430bdc"
         },
         {
           "uri": "repo://changes/st-0605/manifest.yaml",
           "bytes": 8536,
-          "sha256": "ca59f65b8265212d0abf415a39df28b3abe157ff060edf0b4c3c469ffb5f92cf"
+          "sha256": "1f1c718dfab29ec8afae49e5fc4ff78e8cc5eb7d30cd324632946d728a2b965b"
         },
         {
           "uri": "repo://scripts/build_st0605_claim_evidence_coverage_reference_plan.py",
           "bytes": 44975,
-          "sha256": "2609a41dd138eeb8574c51f91bf931385183748a72a0914c59a817148835595f"
+          "sha256": "d7b5e4a953d6b0ce39d86b3bd6e50df33b7a22c3badd3dc10296b710e9bc4b50"
         },
         {
           "uri": "repo://tests/st0605/conftest.py",

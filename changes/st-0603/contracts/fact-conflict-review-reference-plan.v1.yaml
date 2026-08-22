@@ -32,11 +32,11 @@ predecessor:
   - path: changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
     sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
   - path: changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
-    sha256: 09dfe62f6afbd5c531a96c22330fa920356abf614f0230ec2a6ff19c6ba1b157
+    sha256: afca80b52ee94ae806f04f242afbc6804a98f4a4494f484d372e6f651a060305
   - path: changes/st-0602/manifest.yaml
-    sha256: 695cd282f3e4051e5e4012c5e38ca5ba68d9ede32c38edd7cbcd05a3ba89129e
+    sha256: 8a79104dc181bb3f10347ae4ecd1cd3360972a3b9b85a5aa014605a95bb1ecbd
   - path: scripts/build_st0602_fact_extraction_validation_reference_plan.py
-    sha256: 6ff038c9c2e06a6bef6b8fb2520ad5d62b9107bf80a77adcb0dd1811d399bd17
+    sha256: a06a5fa14be8e0b49cb461bf0ea8b2a76cfc50192185cf8c758d6e0ac937edf5
   - path: tests/st0602/conftest.py
     sha256: 8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9
   - path: tests/st0602/test_contract.py

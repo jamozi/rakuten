@@ -11,36 +11,36 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml
   bytes: 16549
-  sha256: 8d8c12f51ab0fcd942446cf701181b98701a316df3cb9eac8bfe08c03122a54d
+  sha256: 96e2d20dbc29a0c64463b44755431ae6d1133cb9b92246be57da78678ee24ff3
 - uri: repo://changes/st-1304/README.md
   bytes: 2591
   sha256: 6528d7d60c8686cdd4d85a8db7d78fad5440e7d19fd293881c28fda0b407a3f2
 - uri: repo://scripts/build_st1304_cost_unit_economics_reference_plan.py
   bytes: 31959
-  sha256: 1cf4bfaa10ef5cf3313d8ae9c97d2bf24827c52d8c0e9b9512737c2de29af1b3
+  sha256: ce93749982b621cd740e50e3aac98f6142c4640feb48020a42a080af36c4676a
 - uri: repo://tests/st1304/conftest.py
   bytes: 1001
   sha256: 913f94bbc4018b868679bdf3477a5c480ce8e9662ddffd43aff14c3cee670f4f
 - uri: repo://tests/st1304/test_contract.py
-  bytes: 10022
-  sha256: 21b1c08b66aa4621b66539ff5fffa02ac30ef6754daafec6df6baa73e7804fc5
+  bytes: 10024
+  sha256: ccf24124057cef7d7e8b4ed8c2f5b54a80d931f0107d67395b857bb0e6927d83
 - uri: repo://tests/st1304/test_generation.py
   bytes: 5160
-  sha256: 0d900252018b44b948f9e7b81eef5ecabb68f8381a6f7f3004cd3a75fcd1a676
+  sha256: ce94f4163a397d520d986995b3517446f61218f16aa91d6f773278be07d37a38
 - uri: repo://tests/st1304/test_negative_cases.py
   bytes: 10386
   sha256: 50224c09d38959dfaf36ba1fc4125016920e709494eb71a47d1525d286a562dd
 generated_artifacts:
 - uri: repo://changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json
   bytes: 24066
-  sha256: d803974470f0bbbb4b441954af953428f5099c5905ae79b5fd938be42fc22581
+  sha256: dbc4b0717221a577170d93be2307af221812fcd7b6d1f53a76f75a17e9a4a5f3
 provenance:
   generated_by: repo://scripts/build_st1304_cost_unit_economics_reference_plan.py
   generation_command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen
     --offline --no-cache --no-sync --no-env-file python scripts/build_st1304_cost_unit_economics_reference_plan.py
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+    sha256: 77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522
   dependency_provenance:
     st0706:
       feature_commit: fe867f85c68ea661b055f4edd32ef6fbc600fa68
@@ -48,11 +48,11 @@ provenance:
       binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     st1205:
       feature_commit: fe18734820cb6f78622950549d32f1ab5394214e
-      artifact_binding_commit: 8aab6c4720863f51854b89c4bcac19faabd733c6
+      artifact_binding_commit: f42d27c7a6f20129cec9c4ed1b6bf4532ea2fbfc
       binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     st1303:
       feature_commit: 0436364b8737d05b9aea3a08da8bf15c04292b12
-      artifact_binding_commit: 0436364b8737d05b9aea3a08da8bf15c04292b12
+      artifact_binding_commit: 9abc85c8c16a45c3ae39604ff0c0e3c3abe8539a
       binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
   bound_inputs:
   - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
@@ -86,11 +86,11 @@ provenance:
   - uri: repo://changes/st-1205/contracts/kpi-read-model-reference-plan.v1.yaml
     sha256: 83335492346ccf1f830d859eb9930290f3bdd469f642db38eeb874995ddc8de7
   - uri: repo://changes/st-1205/generated/kpi-read-model-reference-plan.v1.json
-    sha256: 7f7f48cc8450eebdff500549f172f304b82b1e1f34cc8d65860d119e8e51b7ee
+    sha256: c06b0434c075e4fc025bb9fdd9ad68e4deaaa09eb952e4c2045bc843621375be
   - uri: repo://changes/st-1205/manifest.yaml
-    sha256: fbea9a703e50714d3d7bc725688971242a60fe27696d92abd2607fec5ed28470
+    sha256: 947b299d5052878a06d02b447e68f790e027f99fa325b7fb5b98e3240f1cc926
   - uri: repo://scripts/build_st1205_kpi_read_model_reference_plan.py
-    sha256: 33c2c625b36729a88580d19a1153d7610cea9cb6a0d20328d58373c772b94a1f
+    sha256: a6d86119928aaef17bdecc7f9b41ecac0e05e03b383e2b48d3bb05ab20d6bcd2
   - uri: repo://tests/st1205/conftest.py
     sha256: c40c9db708d3bfc077c0e3dd9f0592bae52b3cf00dd731164f1c01244a81e05d
   - uri: repo://tests/st1205/test_contract.py
@@ -102,19 +102,19 @@ provenance:
   - uri: repo://changes/st-1303/README.md
     sha256: d7f1bf588c88ee54c35dd386fca7ee125d66e8e655560f587854d17aa3eb9bef
   - uri: repo://changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml
-    sha256: fe72c8a25bdceb2cf6c5a2099cdadce5edaa79a0e70b7020e2c8a8802c05ae2d
+    sha256: e38c6bf14ded86ef0fbb6c2cb6231e21c88e2a3c42d2e10a263f66651b4709db
   - uri: repo://changes/st-1303/generated/attribution-engine-reference-plan.v1.json
-    sha256: 8ad90222a33ff6a39a7f5ef1a619641cb9c8ef7438088144c81b9fe3e04d4ece
+    sha256: 8feac225ddba41010ed67c10a8a9cb3fbc7228b91e4593e6ac30c203364cbc9e
   - uri: repo://changes/st-1303/manifest.yaml
-    sha256: 8a3d3ac8483f7c5bcd4b5954ed2a1a475a60004bada8e60cbfc001b25f9cd980
+    sha256: 1b24cbcbe0a800f641198ed784b6f813979ecc94ddc1035c2793bc71822a7d81
   - uri: repo://scripts/build_st1303_attribution_engine_reference_plan.py
-    sha256: 05b9c747513a89dc7c941c17ca557b0e869c675fdc1737c85ea5f9ee156fb311
+    sha256: 6b93885b84d095a3cca0f12420b0a7bdb56a83423126e15042d7c018b0ad663c
   - uri: repo://tests/st1303/conftest.py
     sha256: 1d972ef360dbfda49b235f8c5066b8fa812d55db4cb0114cf34165cc7340e62f
   - uri: repo://tests/st1303/test_contract.py
-    sha256: fd91683a8f795092e8935f2468f2be4aaf9e071564eb28ae895afb77374b182a
+    sha256: fb684cc2400af17dd13578a8d29754b44e19043d490d2b6ed118d35e78015c6b
   - uri: repo://tests/st1303/test_generation.py
-    sha256: 3a142d2368dc6aa629949185e7e51293ecd02befc091e86cd352c64227fbbb3c
+    sha256: f4229b4ce5cd0954d37a3c53494bf2506b4c6eeccfded911fff73e8a1400c671
   - uri: repo://tests/st1303/test_negative_cases.py
     sha256: b2afcd5ea05cc8927becc95d3a7987ec72e3a14ef8386d4aebad7efd2a56bf52
   - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
@@ -138,7 +138,7 @@ provenance:
   - uri: repo://changes/st-0305/generated/publication-analytics-finance-catalog.v1.json
     sha256: 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
   - uri: repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
-    sha256: 0423fb07b068d47b8c56c1c5c0703a424ae1ec6d116e68a73ad4ff17d3dbd494
+    sha256: eb68cdc290c761596db496343ed7981d45a1463618876ff1b6d37e42d4d10a4e
   - uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
     sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
   - uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/finance-calculate-unit-economics-v1.schema.json

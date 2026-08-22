@@ -1,62 +1,83 @@
-# ST-1502 data services interface-only candidate
+# ST-1502 provider-neutral data-services interface
 
-This Story-owned slice records the maximum-safe logical data-service intent
-that can be derived from the approved RAOS design without selecting an AWS
-account, physical resource, provider/toolchain, credential, network, region,
-retention period, or destructive behavior. It is not executable Terraform,
-an AWS configuration, a native plan, or a deployment.
+This Story-owned slice records a disabled, non-executable data-services
+contract for Full RAOS Production. The direct-owner
+`DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml` is the durable
+authority for this revision and is hash-pinned by the contract, generator, and
+manifest. It makes no provider, account or project, region, service, plugin or
+adapter, credential, network, retention, or physical-resource selection.
 
-## Status boundary
+AWS Tokyo and the names RDS, S3, SQS, Secrets Manager, and KMS remain visible
+only as optional historical reference mappings inherited from INT-DEC-007 and
+RAOS-ARCH-001. They are never a default, implicit fallback, selected binding,
+eligibility shortcut, admission requirement, or evidence substitute. No
+alternate cloud or owner-managed platform is selected by this slice.
+
+## Provider-neutral admission boundary
+
+A future AWS, other-cloud, or owner-managed profile is eligible only after it
+explicitly maps exactly one implementation to every required capability and
+provides the same security, operations, release, recovery, migration,
+isolation, and residency evidence:
+
+1. PostgreSQL-compatible relational persistence and controlled migrations.
+2. Private, encrypted, immutable/versioned object storage and integrity.
+3. At-least-once queues, duplicate-safe consumers, DLQs, and controlled
+   redrive.
+4. Least-privilege, non-ambient workload secrets and key management.
+5. Data-service backup, restore, and isolated recovery drills.
+6. Telemetry, audit, alerts, and configuration-drift evidence.
+7. Development/Production and private data-plane isolation.
+8. Approved primary/backup region and data-residency evidence.
+9. Human-approved IaC, migration, promotion, rollback, and recovery.
+
+Transport encryption is required for every relational, object-storage, queue,
+secrets, and key-management interaction; encryption at rest is required for
+all persisted data. No provider kind receives an exception by name.
+
+Missing, unknown, duplicate, reordered, partial, implicit, label-only, or
+reference-only mappings fail closed. All mapping rows remain
+`REQUIRED_NOT_CONFIGURED`, the configured count is zero, admission is
+`NOT_EVALUATED`, and eligibility is false.
+
+## Status and safe defaults
 
 - Canonical design: `APPROVED_FOR_IMPLEMENTATION`
 - Local deliverable: `INTERFACE_ONLY_PARTIAL_LOCAL_CODE`
-- Effective canonical implementation status: unchanged (`NOT_STARTED`)
-- Required formal TST-026 and TST-029: `NOT_EXECUTED`
-- Native Terraform/OpenTofu and AWS/provider validation: `NOT_EXECUTED`
-- Restore, hosted CI, staging, release, apply, and Production: `NOT_EXECUTED`
+- Effective Canonical implementation status: unchanged (`NOT_STARTED`)
+- Provider profile, provider/account, region, service, adapter, credential,
+  network, and physical resources: unset
+- Activation: `DISABLED`
+- Create/update/delete/migrate/backup/restore/redrive/rotate counts: zero
+- Network, credential, provider, write, migration, backup, restore, redrive,
+  destructive, deploy, release, and Production actions: `FORBIDDEN`
+- Native IaC, provider, migration, queue, restore, formal TST-026/TST-029,
+  staging, release, and Production evidence: `NOT_EXECUTED`
 
-ST-1501 exists only as a disabled, local reference/interface predecessor. Its
-contract and generated reference-plan bytes and fail-closed semantics are
-bound by the ST-1502 builder. They do not establish a native IaC toolchain or
-make ST-1502 dependency-ready for formal delivery.
+OD-013 (region/residency), OD-014 (retention/deletion), and OD-015
+(Production credentials/provider evidence) remain unresolved. Accordingly,
+regions and retention stay unset, automatic deletion remains forbidden,
+credentials remain absent, recorded fixtures cannot substitute for live
+evidence, and Production apply remains forbidden.
 
-## Logical intent and safe defaults
-
-The source contract contains logical intent only:
-
-- a PostgreSQL service that must stay private and requires encryption,
-  backup/PITR, deletion protection, a final snapshot, and restore testing;
-- five logical object-storage roles (`raw`, `publication`,
-  `uploads_quarantine`, `exports`, and `audit_logs`) that require public-access
-  blocking, encryption, and versioning;
-- seven canonical queue classes (`ingestion`, `ai`, `quality`, `publication`,
-  `freshness`, `analytics`, and `notification`), each requiring a DLQ and
-  separated producer, consumer, and redrive permissions;
-- Secrets Manager metadata intent with no secret values, names, or ARNs; and
-- KMS encryption, rotation, audit, and least-privilege intent with no key
-  identifier, alias, policy, or deletion window.
-
-Every engine version, instance/storage choice, subnet, endpoint, DB identity,
-password reference, port, Multi-AZ choice, backup/retention value, physical
-bucket/queue/secret/key identifier, policy document, and lifecycle rule stays
-unset. OD-014 remains `HUMAN_DECISION_REQUIRED`, so lifecycle and automatic
-deletion are forbidden. OD-013 reference metadata does not select a Production
-or backup region. Key deletion, force destroy, native commands, provider calls,
-and external writes are forbidden; activation is disabled and create/update/
-delete counts are all zero.
+ST-1501 is a hash-bound provider-neutral predecessor. The ST-1502 generator
+validates its complete normalized contract and reference-plan semantics and
+reconstructs the expected predecessor plan relationship before accepting it.
+ST-1501 does not select a provider or make ST-1502 eligible.
 
 ## Source and generated artifacts
 
-Do not hand-edit generated artifacts. Change the Story contract or builder and
-regenerate.
+Do not hand-edit generated artifacts. Change the Story-owned handoff, contract,
+builder, README, or tests and regenerate with the owner command.
 
 | Classification | Path | Role |
 | --- | --- | --- |
-| Story source | `changes/st-1502/contracts/data-services-foundation.v1.yaml` | Closed logical intent and safety boundary |
+| Direct design authority | `changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml` | Provider-neutral decision, capability inventory, gates, and open-decision state |
+| Story contract | `changes/st-1502/contracts/data-services-foundation.v1.yaml` | Closed logical intent and admission boundary |
 | Implementation source | `scripts/build_st1502_data_services.py` | Strict validator and deterministic owner builder |
-| Test source | `tests/st1502/*.py` | Positive, hostile, exact-type, provenance, and no-write checks |
-| Generated reference plan | `infra/terraform/data-services/data-services.reference-plan.v1.json` | Non-executable logical data-services successor plan |
-| Generated inventory | `changes/st-1502/manifest.yaml` | Source, predecessor, authority, and generated-output hashes |
+| Test source | `tests/st1502/*.py` | Positive, hostile, provenance, and no-write checks |
+| Generated reference plan | `infra/terraform/data-services/data-services.reference-plan.v1.json` | Non-executable provider-neutral logical plan |
+| Generated inventory | `changes/st-1502/manifest.yaml` | Source, authority, predecessor, and output hashes |
 
 Generate the two ST-1502-owned outputs:
 
@@ -64,21 +85,17 @@ Generate the two ST-1502-owned outputs:
 uv run --locked --no-sync python scripts/build_st1502_data_services.py
 ```
 
-Verify strict source/predecessor bindings and committed output bytes without
-writing:
+Verify all pins and committed output bytes without writing:
 
 ```bash
 uv run --locked --no-sync python scripts/build_st1502_data_services.py --check
 ```
 
-The builder has no resource/provider/backend/credential/network/retention
-arguments. It does not read ambient or environment credentials, import an AWS
-SDK, invoke subprocesses or native IaC, access the network, or perform external
-writes.
+The builder exposes no provider/account/region/service/credential/backend,
+retention, apply, or destroy input. It imports no provider SDK, reads no
+ambient credentials, invokes no subprocess or native IaC command, performs no
+network access, and makes no external write.
 
-## Completion boundary
-
-This slice may support only a local partial implementation checkpoint. Exact
-Terraform/OpenTofu and AWS-provider provenance, HCL/resources, account/network/
-IAM review, real backups/restores, formal TST-026/TST-029, hosted CI, AWS,
-staging, release, deployment, and Production remain separately unexecuted.
+This local slice is not executable IaC and does not claim hosted CI, formal
+TST-026/TST-029, provider, migration, restore, staging, release, deployment, or
+Production evidence.

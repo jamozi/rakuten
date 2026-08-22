@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st1604_performance_load_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st1604_performance_load_reference_plan.py
 provenance:
-  contract_sha256: e0d8b446ec8cc4e77f670a3a04c534e2f7301beba7af8634e1c7e042333b5b0e
+  contract_sha256: 0826436808158b091dfc9a18a3ab9af1455922635d31bde5361d26f793480bf4
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -22,44 +22,44 @@ provenance:
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
   predecessor_inputs:
   - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
-    sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
+    sha256: c70deefd72bd84f4196bea7f078a70f511397f1d759846c200cfb9224468cc69
   - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
-    sha256: 33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f
+    sha256: ba65ac0776c4dd811a2918843e8984945ab92e370892b164bb8099df67950cac
   - uri: repo://changes/st-1505/manifest.yaml
-    sha256: b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2
+    sha256: a7e32e2fcc3962d7689a14a80a7838d15001fc57b71c45eeb986dfb3a30756a1
   - uri: repo://changes/st-1601/README.md
     sha256: 9eade86a2f3f7cae147d0ca26db1be0828be09250b068ac8f78832cf36ca65ef
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+    sha256: 77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1604/contracts/performance-load-reference-plan.v1.yaml
-  bytes: 4389
-  sha256: e0d8b446ec8cc4e77f670a3a04c534e2f7301beba7af8634e1c7e042333b5b0e
+  bytes: 4942
+  sha256: 0826436808158b091dfc9a18a3ab9af1455922635d31bde5361d26f793480bf4
 - uri: repo://changes/st-1604/README.md
-  bytes: 2642
-  sha256: dbf4345e62a1ac8f8ba30211a6ae18b249204ebd18f78cb4a6b5b40b7fa1f9db
+  bytes: 2867
+  sha256: bf3e4a54afbeac8c39f4cea3bf980caf183a0b9a9d004aef83b2d2549f3e538e
 - uri: repo://scripts/build_st1604_performance_load_reference_plan.py
-  bytes: 28557
-  sha256: 2c92668d39c9309785d628a5d12e2c7f0a3d1e736643e45c7c15ebd369be6e2c
+  bytes: 32660
+  sha256: 3ba11e5a7a707f92f9f25a24d2cf592e73fd19da0f8813b0890f6ae761a18b87
 - uri: repo://tests/st1604/conftest.py
-  bytes: 950
-  sha256: d6e7a026ef9d811d2e265da028f2a44ad107168c6af99cf72cef9bb816d0d6a6
+  bytes: 1058
+  sha256: 9c2e9e7a7fb577c3cdc55dfbaf6c2f738a410947e34ab8442a904e4fa0d37675
 - uri: repo://tests/st1604/test_contract.py
-  bytes: 6090
-  sha256: 3b2dd03265b3f2dc9379b46146784f1c5d49d0af6611a6c468d697e376386933
+  bytes: 6377
+  sha256: e3c7f3d60ae689c43fbf4a8f2d26c8f794c7d0970687cd66493aa53465de5b0f
 - uri: repo://tests/st1604/test_generation.py
   bytes: 3473
   sha256: fd8536be4f59aa2f13c3bfed82b363ecb909c936a9f6fae4c5b947158aec7eb4
 - uri: repo://tests/st1604/test_negative_cases.py
-  bytes: 12643
-  sha256: cdd01e1a672ce6ce9d48e8589ee4cb8e3896d58b9f725789a39a2f75461f67b5
+  bytes: 14740
+  sha256: 46e97217afbbba3445eca7bb05480b393ff04792bc3dc7e11b176c3a215dc709
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1604/generated/performance-load-reference-plan.v1.json
-  bytes: 13177
-  sha256: d810409fcc1ae592d8371ac03f81fb4f14bce03513acfa310f37da9dc25651a0
+  bytes: 13810
+  sha256: 07fa40e6952c54904117195c7648f1745df66457f408ebe9fd2816ce518398de
 boundary:
   classification: SOURCE_DERIVED_NON_EXECUTABLE_PERFORMANCE_LOAD_REFERENCE_PLAN
   executable: false

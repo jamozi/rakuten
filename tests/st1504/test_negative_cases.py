@@ -60,7 +60,7 @@ def test_unset_numeric_bindings_reject_bool_as_int_and_value_attempts(
         ("github_repository", "organization/repository"),
         ("deploy_ref", "refs/heads/default"),
         ("github_environment_name", "production-like"),
-        ("oidc_audience", "cloud-session-service"),
+        ("target_audience", "cloud-session-service"),
         ("workflow_ref", "organization/repository/.github/workflows/deploy.yml"),
     ],
 )
@@ -88,6 +88,7 @@ def test_wildcard_partial_subject_repository_ref_environment_audience_and_workfl
         "broad_organization_subject",
         "broad_repository_subject",
         "broad_ref_subject",
+        "broad_audience",
     ],
 )
 def test_every_forbidden_trust_broadening_remains_forbidden(
@@ -142,12 +143,15 @@ def test_required_claim_inventory_rejects_duplicates_reordering_and_omission(
     "field",
     [
         "long_lived_cloud_key",
+        "static_provider_credential",
         "repository_secret_cloud_credential",
+        "human_cloud_credential",
         "fork_pr_credential_issuance",
         "untrusted_ref_credential_issuance",
         "untrusted_environment_credential_issuance",
         "role_chaining",
         "privilege_escalation",
+        "cross_environment_identity_reuse",
     ],
 )
 def test_long_lived_key_fork_untrusted_and_escalation_paths_remain_forbidden(
@@ -237,7 +241,7 @@ def test_workflow_presence_broad_id_token_or_contents_write_attempt_is_rejected(
         ("reusable_workflow_callers", ["unbounded-caller"]),
         ("external_action_references", ["mutable-action-reference"]),
         ("workflow_permissions_payload", {"id-token": "write"}),
-        ("trust_policy_payload", {"Statement": []}),
+        ("federation_trust_material", {"Statement": []}),
         ("permission_policy_payload", {"Statement": []}),
     ],
 )
@@ -253,7 +257,12 @@ def test_pr_target_reusable_action_permission_and_trust_payload_attempts_are_rej
 
 @pytest.mark.parametrize(
     "field",
-    ["self_approval", "approval_bypass", "deployment_without_approval"],
+    [
+        "self_approval",
+        "approval_bypass",
+        "deployment_without_approval",
+        "cross_environment_target_reuse",
+    ],
 )
 def test_production_approval_self_approval_and_bypass_paths_remain_forbidden(
     contract_document: dict[str, Any], field: str
@@ -272,6 +281,7 @@ def test_production_approval_self_approval_and_bypass_paths_remain_forbidden(
         "distinct_human_approval",
         "protected_environment",
         "exact_allowed_refs",
+        "target_account_project_tenant_isolation",
     ],
 )
 def test_environment_protection_requirements_cannot_claim_configuration(
@@ -289,9 +299,14 @@ def test_environment_protection_requirements_cannot_claim_configuration(
     [
         ("activation_enabled", True, "SAFE_BOUNDARY_VIOLATION"),
         ("activation_enabled", 0, "TYPE_MISMATCH"),
+        ("network_access", "ALLOWED", "FIXED_VALUE_VIOLATION"),
+        ("credential_access", "ALLOWED", "FIXED_VALUE_VIOLATION"),
         ("live_provider_calls", "ALLOWED", "FIXED_VALUE_VIOLATION"),
         ("external_writes", "ALLOWED", "FIXED_VALUE_VIOLATION"),
         ("credential_issuance", "ALLOWED", "FIXED_VALUE_VIOLATION"),
+        ("deploy_action", "ALLOWED", "FIXED_VALUE_VIOLATION"),
+        ("release_action", "ALLOWED", "FIXED_VALUE_VIOLATION"),
+        ("production_action", "ALLOWED", "FIXED_VALUE_VIOLATION"),
     ],
 )
 def test_activation_bool_as_int_live_write_and_issuance_attempts_are_rejected(
@@ -308,7 +323,7 @@ def test_activation_bool_as_int_live_write_and_issuance_attempts_are_rejected(
 
 
 @pytest.mark.parametrize("operation", generator.NATIVE_OPERATIONS)
-def test_every_github_aws_iam_credential_deploy_and_native_operation_is_forbidden(
+def test_every_github_provider_credential_deploy_and_native_operation_is_forbidden(
     contract_document: dict[str, Any], operation: str
 ) -> None:
     document = copy.deepcopy(contract_document)
@@ -330,6 +345,215 @@ def test_planned_actions_require_exact_integer_zero(
     assert captured.value.code == (
         "SAFE_BOUNDARY_VIOLATION" if type(value) is int else "TYPE_MISMATCH"
     )
+
+
+@pytest.mark.parametrize("mutation", ["missing", "unknown", "duplicate", "reorder"])
+def test_capability_inventory_rejects_missing_unknown_duplicate_and_reordered_rows(
+    contract_document: dict[str, Any], mutation: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    rows = document["provider_neutral_deployment_identity_admission"][
+        "capability_mapping_requirements"
+    ]
+    if mutation == "missing":
+        rows.pop()
+        expected = "MISSING_CAPABILITY_MAPPING"
+    elif mutation == "unknown":
+        rows[0]["capability_id"] = "unknown_capability"
+        expected = "UNKNOWN_CAPABILITY_MAPPING"
+    elif mutation == "duplicate":
+        rows[1]["capability_id"] = rows[0]["capability_id"]
+        expected = "DUPLICATE_CAPABILITY_MAPPING"
+    else:
+        rows[0], rows[1] = rows[1], rows[0]
+        expected = "CAPABILITY_MAPPING_ORDER_DRIFT"
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        _validate(document)
+    assert captured.value.code == expected
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("configured_mapping_count", 1),
+        ("complete_mapping", True),
+        ("partial_mapping", "ALLOW"),
+        ("implicit_mapping", "ALLOW"),
+        ("provider_label_only_mapping", "ALLOW"),
+        ("aws_label_only_mapping", "ALLOW"),
+        ("source_label_only_mapping", "ALLOW"),
+        ("reference_only_mapping", "ALLOW"),
+    ],
+)
+def test_partial_label_and_claimed_complete_admission_attempts_fail_closed(
+    contract_document: dict[str, Any], field: str, value: object
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_deployment_identity_admission"]["mapping_policy"][
+        field
+    ] = value
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        _validate(document)
+    assert captured.value.code in {"SAFE_BOUNDARY_VIOLATION", "FIXED_VALUE_VIOLATION"}
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("admission_status", "ELIGIBLE"),
+        ("eligible", True),
+        ("selected_profile_id", "aws-by-label"),
+        ("selected_profile_kind", "AWS"),
+        ("selected_provider_name", "AWS"),
+        ("default_profile_id", "aws-default"),
+        ("fallback_profile_id", "aws-fallback"),
+        ("concrete_alternate_provider_selected", True),
+        ("eligibility_condition", "PROVIDER_LABEL_ONLY"),
+    ],
+)
+def test_admission_eligibility_selection_default_and_fallback_fail_closed(
+    contract_document: dict[str, Any], field: str, value: object
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_deployment_identity_admission"][field] = value
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        _validate(document)
+    assert captured.value.code in {
+        "FIXED_VALUE_VIOLATION",
+        "SAFE_BOUNDARY_VIOLATION",
+        "SELECTION_MUST_REMAIN_UNSET",
+    }
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("selected_mapping", "aws-label-only"),
+        ("evidence_refs", ["aws-label-only"]),
+        ("mapping_status", "CONFIGURED"),
+    ],
+)
+def test_single_capability_or_aws_label_cannot_claim_mapping_or_evidence(
+    contract_document: dict[str, Any], field: str, value: object
+) -> None:
+    document = copy.deepcopy(contract_document)
+    row = document["provider_neutral_deployment_identity_admission"][
+        "capability_mapping_requirements"
+    ][0]
+    row[field] = value
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        _validate(document)
+    assert captured.value.code in {
+        "FIXED_VALUE_VIOLATION",
+        "SELECTION_MUST_REMAIN_UNSET",
+    }
+
+
+@pytest.mark.parametrize("binding", tuple(generator._binding_policy())[:-2])
+@pytest.mark.parametrize("mode", ["selected", "default", "fallback"])
+def test_target_binding_default_and_fallback_attempts_fail_closed(
+    contract_document: dict[str, Any], binding: str, mode: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_deployment_identity_admission"]["binding_policy"][
+        binding
+    ][mode] = MARKER
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
+    assert MARKER not in str(captured.value)
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "default",
+        "implicit_fallback",
+        "selected_binding",
+        "eligibility_shortcut",
+        "admission_requirement",
+        "evidence_substitute",
+    ],
+)
+def test_aws_reference_labels_never_select_or_satisfy_admission(
+    contract_document: dict[str, Any], field: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_deployment_identity_admission"][
+        "aws_reference_boundary"
+    ][field] = True
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "SAFE_BOUNDARY_VIOLATION"
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "identical_security_evidence",
+        "identical_operations_evidence",
+        "identical_release_evidence",
+        "identical_provenance_evidence",
+        "identical_audit_evidence",
+        "identical_revocation_rollback_evidence",
+        "identical_identity_session_evidence",
+        "identical_isolation_residency_evidence",
+        "provider_label_as_evidence",
+        "aws_label_as_evidence",
+        "github_source_label_as_evidence",
+        "reference_metadata_as_evidence",
+        "local_test_as_live_evidence",
+    ),
+)
+def test_every_equivalent_evidence_requirement_rejects_downgrade(
+    contract_document: dict[str, Any], field: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    policy = document["provider_neutral_deployment_identity_admission"][
+        "evidence_equivalence_policy"
+    ]
+    policy[field] = "OPTIONAL" if policy[field] == "REQUIRED" else "ALLOWED"
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "FIXED_VALUE_VIOLATION"
+
+
+def test_github_fixed_source_cannot_be_replaced_or_used_as_target_selection(
+    contract_document: dict[str, Any],
+) -> None:
+    for field, value in (
+        ("ci_source", "OTHER_CI"),
+        ("oidc_source", "OTHER_OIDC"),
+        ("external_review_connector", "OTHER_CONNECTOR"),
+        ("target_provider_selected", True),
+    ):
+        document = copy.deepcopy(contract_document)
+        document["ci_source_boundary"][field] = value
+        with pytest.raises(generator.GithubOidcContractError) as captured:
+            _validate(document)
+        assert captured.value.code in {
+            "FIXED_VALUE_VIOLATION",
+            "SAFE_BOUNDARY_VIOLATION",
+        }
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "audit_bypass",
+        "revocation_bypass",
+        "rollback_bypass",
+        "irreversible_promotion",
+    ],
+)
+def test_lifecycle_evidence_and_rollback_bypass_remain_forbidden(
+    contract_document: dict[str, Any], field: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["lifecycle_control_intent"][field] = "ALLOWED"
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "FIXED_VALUE_VIOLATION"
 
 
 def test_unknown_fields_are_rejected_without_echoing_names_or_values(
@@ -368,6 +592,15 @@ def test_yaml_aliases_are_forbidden_without_echoing_content(tmp_path: Path) -> N
     with pytest.raises(generator.GithubOidcContractError) as captured:
         generator.load_yaml(path)
     assert captured.value.code == "YAML_ALIAS_FORBIDDEN"
+    assert MARKER not in str(captured.value)
+
+
+def test_yaml_tags_are_forbidden_without_echoing_content(tmp_path: Path) -> None:
+    path = tmp_path / "tag.yaml"
+    path.write_text(f"value: !blocked {MARKER}\n", encoding="utf-8")
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        generator.load_yaml(path)
+    assert captured.value.code == "YAML_TAG_FORBIDDEN"
     assert MARKER not in str(captured.value)
 
 
@@ -448,6 +681,10 @@ def _rebind_source_digest(
         ("changes/st-0107/contracts/pr-governance.v1.yaml", "governance_contract"),
         ("changes/st-0107/ruleset-policy.v1.json", "governance_desired_state"),
         (
+            "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
+            "foundation_handoff",
+        ),
+        (
             "changes/st-1501/contracts/terraform-foundation.v1.yaml",
             "foundation_contract",
         ),
@@ -474,6 +711,10 @@ def test_each_predecessor_semantic_tamper_fails_after_digest_rebinding(
         value = json.loads(path.read_bytes())
         value["document"]["live_status"] = "EXECUTED"
         path.write_text(json.dumps(value), encoding="utf-8")
+    elif kind == "foundation_handoff":
+        value = yaml.safe_load(path.read_bytes())
+        value["decision"]["selected_profile"] = "attempt"
+        path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
     elif kind == "foundation_contract":
         value = yaml.safe_load(path.read_bytes())
         value["execution_boundary"]["activation_enabled"] = True
@@ -490,7 +731,181 @@ def test_each_predecessor_semantic_tamper_fails_after_digest_rebinding(
         "FIXED_VALUE_VIOLATION",
         "SAFE_BOUNDARY_VIOLATION",
         "SELECTION_MUST_REMAIN_UNSET",
+        "PREDECESSOR_SEMANTIC_DRIFT",
     }
+
+
+@pytest.mark.parametrize(
+    "section",
+    (
+        "document",
+        "sources",
+        "owner_bindings",
+        "codeowners",
+        "pull_request_template",
+        "ruleset_policy",
+        "activation",
+    ),
+)
+def test_every_pr_governance_contract_section_rejects_semantic_drift(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    section: str,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    relative = "changes/st-0107/contracts/pr-governance.v1.yaml"
+    path = tmp_path / relative
+    value = yaml.safe_load(path.read_bytes())
+    if section == "document":
+        value[section]["formal_verification"] = "EXECUTED"
+    elif section == "sources":
+        value[section][0]["sha256"] = "0" * 64
+    elif section == "owner_bindings":
+        value[section]["status"] = "VERIFIED"
+    elif section == "codeowners":
+        value[section]["entries"][0]["roles"] = ["security"]
+    elif section == "pull_request_template":
+        value[section]["require_generated_or_ai_assisted_review"] = False
+    elif section == "ruleset_policy":
+        value[section]["strict_required_status_checks_policy"] = False
+    else:
+        value[section]["prerequisites"][0] = "bypassed"
+    path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
+    document = copy.deepcopy(contract_document)
+    _rebind_source_digest(document, relative, generator.sha256_file(path), monkeypatch)
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code == "PREDECESSOR_SEMANTIC_DRIFT"
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "id",
+        "version",
+        "story_id",
+        "source_contract",
+        "generated_by",
+        "generation_command",
+        "artifact_kind",
+        "github_api_version",
+        "live_status",
+        "formal_tst_001",
+    ),
+)
+def test_every_pr_governance_generated_provenance_field_rejects_drift(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    relative = "changes/st-0107/ruleset-policy.v1.json"
+    path = tmp_path / relative
+    value = json.loads(path.read_bytes())
+    value["document"][field] = MARKER
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=False) + "\n",
+        encoding="utf-8",
+    )
+    document = copy.deepcopy(contract_document)
+    _rebind_source_digest(document, relative, generator.sha256_file(path), monkeypatch)
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code == "PREDECESSOR_SEMANTIC_DRIFT"
+    assert MARKER not in str(captured.value)
+
+
+def test_pr_governance_generated_format_drift_fails_after_digest_rebinding(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    relative = "changes/st-0107/ruleset-policy.v1.json"
+    path = tmp_path / relative
+    value = json.loads(path.read_bytes())
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+    document = copy.deepcopy(contract_document)
+    _rebind_source_digest(document, relative, generator.sha256_file(path), monkeypatch)
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code == "PREDECESSOR_GENERATED_DRIFT"
+
+
+def test_foundation_plan_deterministic_byte_drift_fails_after_digest_rebinding(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    relative = "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
+    path = tmp_path / relative
+    value = json.loads(path.read_bytes())
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, sort_keys=True), encoding="utf-8"
+    )
+    document = copy.deepcopy(contract_document)
+    _rebind_source_digest(document, relative, generator.sha256_file(path), monkeypatch)
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code == "PREDECESSOR_GENERATED_DRIFT"
+
+
+@pytest.mark.parametrize(
+    "section",
+    [
+        "schema",
+        "version",
+        "record_status",
+        "approved_story",
+        "approved_scope",
+        "source_design_refs",
+        "decision",
+        "rationale",
+        "rejected_alternatives",
+        "constraints",
+        "security_and_approval_gates",
+        "acceptance_criteria",
+        "required_test_evidence",
+        "open_decision_state",
+    ],
+)
+def test_every_normative_handoff_section_fails_after_hash_rebinding(
+    tmp_path: Path,
+    contract_document: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    section: str,
+) -> None:
+    _copy_pinned_sources(tmp_path)
+    relative = generator.DESIGN_HANDOFF_PATH.as_posix()
+    path = tmp_path / relative
+    value = yaml.safe_load(path.read_bytes())
+    if section == "security_and_approval_gates":
+        value[section] = ["ALLOW_SECURITY_GATE_BYPASS"]
+    elif isinstance(value[section], list):
+        value[section][0] = MARKER
+    elif isinstance(value[section], dict):
+        first = next(iter(value[section]))
+        value[section][first] = MARKER
+    else:
+        value[section] = MARKER
+    path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
+    document = copy.deepcopy(contract_document)
+    _rebind_source_digest(document, relative, generator.sha256_file(path), monkeypatch)
+    with pytest.raises(generator.GithubOidcContractError) as captured:
+        generator.validate_contract(document, tmp_path)
+    assert captured.value.code in {
+        "HANDOFF_SEMANTIC_DRIFT",
+        "FIXED_VALUE_VIOLATION",
+        "SELECTION_MUST_REMAIN_UNSET",
+        "TYPE_MISMATCH",
+    }
+    assert MARKER not in str(captured.value)
 
 
 def test_authority_semantic_drift_fails_even_if_digest_inventory_is_rebound(

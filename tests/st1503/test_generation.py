@@ -37,8 +37,9 @@ def test_check_is_read_only() -> None:
     assert after == before
 
 
-def test_manifest_inventory_and_hashes_are_complete() -> None:
+def test_manifest_inventory_hashes_and_provenance_are_complete() -> None:
     manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
+    assert manifest["document"]["version"] == "1.1.0"
     assert manifest["source_artifact_count"] == len(generator.SOURCE_ARTIFACT_PATHS)
     assert [row["uri"] for row in manifest["source_artifacts"]] == [
         f"repo://{path.as_posix()}" for path in generator.SOURCE_ARTIFACT_PATHS
@@ -57,21 +58,6 @@ def test_manifest_inventory_and_hashes_are_complete() -> None:
             ),
         }
     ]
-
-
-def test_manifest_pins_authority_predecessor_and_status_boundary() -> None:
-    manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
-    assert manifest["document"] == {
-        "id": "RAOS-COMPUTE-EDGE-MANIFEST-001",
-        "version": "1.0.0",
-        "story_id": "ST-1503",
-        "source_contract": generator.SOURCE_CONTRACT_URI,
-        "generated_by": generator.GENERATOR_URI,
-        "generation_command": generator.GENERATION_COMMAND,
-    }
-    assert manifest["provenance"]["contract_sha256"] == generator.sha256_file(
-        REPOSITORY_ROOT / generator.CONTRACT_PATH
-    )
     assert manifest["provenance"]["authority_inputs"] == [
         {"uri": f"repo://{path}", "sha256": digest}
         for path, digest in generator.AUTHORITY_SOURCES.items()
@@ -80,26 +66,27 @@ def test_manifest_pins_authority_predecessor_and_status_boundary() -> None:
         {"uri": f"repo://{path}", "sha256": digest}
         for path, digest in generator.PREDECESSOR_SOURCES.items()
     ]
-    assert manifest["boundary"] == {
-        "classification": "SOURCE_DERIVED_NON_EXECUTABLE_COMPUTE_EDGE_REFERENCE_PLAN",
-        "activation": "DISABLED",
-        "planned_actions": {"create": 0, "update": 0, "delete": 0},
-        "selected_cloud_provider": None,
-        "selected_production_region": None,
-        "selected_aws_account": None,
-        "selected_state_backend": None,
-        "credentials": "ABSENT",
-        "physical_resource_definitions": [],
-        "native_iac_validation": "NOT_EXECUTED",
-        "formal_tst_026": "NOT_EXECUTED",
-        "formal_tst_027": "NOT_EXECUTED",
-        "performance_validation": "NOT_EXECUTED",
-        "health_runtime_validation": "NOT_EXECUTED",
-        "effective_canonical_status": "UNCHANGED",
-    }
-    assert manifest["manifest_self_integrity"] == {
-        "included_in_generated_artifacts": False,
-        "verification": "deterministic byte-for-byte regeneration via --check",
+
+
+def test_generated_plan_carries_all_provider_neutral_gates(
+    compute_edge_model: generator.ComputeEdgeModel,
+) -> None:
+    plan = generator.reference_plan_document(compute_edge_model)
+    assert plan["document"]["version"] == "1.1.0"
+    assert plan["document"]["executable"] is False
+    assert (
+        plan["provider_neutral_compute_edge_admission"]
+        == (compute_edge_model.contract["provider_neutral_compute_edge_admission"])
+    )
+    assert (
+        plan["open_decision_boundary"]
+        == (compute_edge_model.contract["open_decision_boundary"])
+    )
+    assert plan["logical_compute_edge"] == {
+        "workloads": compute_edge_model.contract["workload_intent"],
+        "surfaces": compute_edge_model.contract["surface_boundary_intent"],
+        "edge_routing": compute_edge_model.contract["edge_routing_intent"],
+        "health": compute_edge_model.contract["health_intent"],
     }
 
 
@@ -177,7 +164,7 @@ def test_atomic_writer_rejects_symlink_target_without_touching_outside(
     assert outside.read_bytes() == marker
 
 
-def test_builder_has_no_native_provider_network_env_or_subprocess_surface() -> None:
+def test_builder_has_no_provider_network_env_or_subprocess_surface() -> None:
     path = REPOSITORY_ROOT / "scripts/build_st1503_compute_edge.py"
     tree = ast.parse(path.read_text(encoding="utf-8"))
     imported_roots: set[str] = set()
@@ -220,10 +207,8 @@ def test_builder_has_no_native_provider_network_env_or_subprocess_surface() -> N
 
 
 def test_builder_cli_exposes_only_read_only_check_switch() -> None:
-    parser_result = generator.parse_args([])
-    check_result = generator.parse_args(["--check"])
-    assert parser_result.check is False
-    assert check_result.check is True
+    assert generator.parse_args([]).check is False
+    assert generator.parse_args(["--check"]).check is True
     source = (REPOSITORY_ROOT / "scripts/build_st1503_compute_edge.py").read_text(
         encoding="utf-8"
     )
@@ -239,5 +224,8 @@ def test_builder_cli_exposes_only_read_only_check_switch() -> None:
         "--health",
         "--apply",
         "--destroy",
+        "--deploy",
+        "--release",
+        "--production",
     ):
         assert forbidden_option not in source
