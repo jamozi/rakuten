@@ -168,7 +168,11 @@ EXPECTED_STAGING_PROVIDER_NEUTRAL_ADMISSION: Final[dict[str, object]] = {
     "selected_profile_id": None,
     "default_profile_id": None,
     "fallback_profile_id": None,
-    "aws_reference_role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+    "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+    "canonical_story_deliverables": (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    ),
+    "non_aws_owner_managed_profiles": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
     "aws_reference_selected_binding": False,
 }
 EXPECTED_EXECUTION_BOUNDARY: Final[dict[str, object]] = {
@@ -263,21 +267,21 @@ EXPECTED_PREDECESSOR_HASHES: Final = {
         "42164321018c35f61d71c215d2a0c764d8e04c973dff56194db79e96926046e0"
     ),
     STAGING_CONTRACT_PATH.as_posix(): (
-        "c70deefd72bd84f4196bea7f078a70f511397f1d759846c200cfb9224468cc69"
+        "b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b"
     ),
     STAGING_PLAN_PATH.as_posix(): (
-        "ba65ac0776c4dd811a2918843e8984945ab92e370892b164bb8099df67950cac"
+        "8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4"
     ),
     STAGING_MANIFEST_PATH.as_posix(): (
-        "a7e32e2fcc3962d7689a14a80a7838d15001fc57b71c45eeb986dfb3a30756a1"
+        "c27f4df8316621933f5d2d1e5d510dff6b8f65fe6a812ea036c70ba0c9334aa9"
     ),
 }
 EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
     "scripts/build_st1505_staging_deployment.py": (
-        "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+        "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
     ),
     "scripts/build_st1506_production_deployment.py": (
-        "a57808e2c44feb51ebb4bcc1127c3aa0a64ef77d45d5c570207f66750b04d304"
+        "f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176"
     ),
 }
 
@@ -538,6 +542,12 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
         "default_profile_id": admission.get("default_profile_id"),
         "fallback_profile_id": admission.get("fallback_profile_id"),
         "aws_reference_role": aws_boundary.get("role"),
+        "canonical_story_deliverables": aws_boundary.get(
+            "canonical_story_deliverables"
+        ),
+        "non_aws_owner_managed_profiles": aws_boundary.get(
+            "non_aws_owner_managed_profiles"
+        ),
         "aws_reference_selected_binding": aws_boundary.get("selected_binding"),
     }
     _exact_mapping(

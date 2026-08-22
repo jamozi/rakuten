@@ -171,6 +171,9 @@ def test_predecessor_safety_cannot_be_weakened(
         ("selected_profile_id", "default-profile"),
         ("default_profile_id", "default-profile"),
         ("fallback_profile_id", "fallback-profile"),
+        ("aws_reference_role", "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY"),
+        ("canonical_story_deliverables", "REPLACED_BY_PORTABLE_OVERLAY"),
+        ("non_aws_owner_managed_profiles", "REPLACEMENT_IMPLEMENTATION_PATHS"),
         ("aws_reference_selected_binding", True),
     ),
 )
@@ -195,6 +198,22 @@ def test_staging_provider_neutral_admission_cannot_be_shortcut(
         (("activation", "external_writes"), "ALLOWED"),
         (("activation", "operations", "target_adapter_call"), "ALLOWED"),
         (("reference_architecture", "eligibility_shortcut"), True),
+        (
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "role",
+            ),
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "canonical_story_deliverables",
+            ),
+            "REPLACED_BY_PORTABLE_OVERLAY",
+        ),
     ),
 )
 def test_staging_plan_safety_bypass_fails_after_digest_rebind(
@@ -226,6 +245,18 @@ def test_staging_plan_safety_bypass_fails_after_digest_rebind(
     (
         (("execution_boundary", "network_access"), "ALLOWED"),
         (("reference_architecture", "eligibility_shortcut"), True),
+        (
+            ("reference_architecture", "classification"),
+            "OPTIONAL_HISTORICAL_REFERENCE_ARCHITECTURE_ONLY",
+        ),
+        (
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "non_aws_owner_managed_profiles",
+            ),
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
     ),
 )
 def test_staging_owner_contract_bypass_fails_after_digest_rebind(
