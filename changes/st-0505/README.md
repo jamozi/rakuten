@@ -214,7 +214,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/305ca66b8453a526395641a3cc1e535ac887283608fd94d5a433d7f15ba672ed/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/9e874c6cd17a09d1cb1939f4e1b6990b22dde10cbf6630568e0c8d0c2a36783a/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -224,9 +224,9 @@ network access.
 The generated plan binds launcher SHA-256
 `070a7968305200f468c0be4ed07b5845ba1abd30faeda4fd06ba62d59535228b`,
 installer SHA-256
-`f9c3b305fd86c19bce011688f3aa75ef4f89e62cf5877573f0c3c5cead046a34`,
+`10656808837b8b21f5fecb7e499f98fcc74b222c6046276c9b6188c059e22502`,
 and install-stage SHA-256
-`4ebdb6457a83f4417d449f5d3da8932906e10796b913d0753ca1c27bc9b67776`.
+`c71376a98ef6033b037382b7ba21f84a9ad7a1f0a9e319143d506510c6976dcc`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -390,14 +390,15 @@ Field presence is checked before exact-selector identity, then mandatory text
 and URL value shape are checked before credential reflection. After result
 identity and request binding but before a success envelope or result write,
 every normalized record string and string-list member is inspected in raw UTF-8
-and after one percent-decoding pass. The application ID and access key remain
-sensitive in every such position. The affiliate ID remains sensitive in every
-position except the exact, already HTTPS-validated provider affiliate-link URL
-fields: Item Search `affiliateUrl` and `itemUrl`, and Product Search
+and after one percent-decoding pass. The access key remains sensitive in every
+such position. The application ID remains sensitive except in the exact,
+already HTTPS-validated Item Search provider-link fields `affiliateUrl` and
+`itemUrl`; Product Search receives no application-ID exemption. The affiliate
+ID remains sensitive except in those two Item fields and Product Search
 `affiliateUrl`. Product `productUrlPC`, text fields, image URLs, URL-list
-members, unknown fields, and near-case field names receive no exemption. This
-is a field-local allowance for public link material, not a general
-declassification of the affiliate ID, and URL validation always runs first.
+members, unknown fields, and near-case field names receive no exemption. These
+are field-local allowances for validated public link material, not general
+credential declassification, and URL validation always runs first.
 
 The current official Item Search source at
 <https://webservice.rakuten.co.jp/documentation/ichiba-item-search> states that
@@ -440,6 +441,19 @@ and field precedence, independent of provider record order. It never persists
 records, summaries, raw body or headers, matched bytes, indexes, provider
 errors, exceptions, or credentials. Existing V1, V2, and V3 evidence is not
 rewritten or retrospectively classified.
+
+A separately authorized execution of that dedicated diagnostic recorded only
+closed metadata: Item Search 2026-07-01, HTTP 200, body size 3522, request count
+1, zero retry and pagination, `REFLECTION_DETECTED`, credential kind
+`APPLICATION_ID`, exact normalized field `affiliateUrl`, category `URL`, and
+response SHA-256
+`7fa225eb219c86ee415fed74ff19caebf828d158bd68ea7818f34187c5dd2685`.
+`provider_data_persisted` was false. No raw body, provider record, field value,
+record index, or credential was retained. This closed field classification,
+together with the official Item link semantics, supports the exact Item
+`affiliateUrl`/`itemUrl` application-ID allowance; it does not support a Product
+allowance, an access-key allowance, or general application-ID declassification.
+It remains owner-local non-formal evidence and is not TST-016 or staging proof.
 
 The six schema- and relationship-validated summary integers and every non-text
 normalized value already accepted by its field schema are not converted to text

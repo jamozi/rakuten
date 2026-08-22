@@ -396,7 +396,19 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "inspected_text_values": (
             "ALL_NORMALIZED_RECORD_STRING_VALUES_AND_STRING_LIST_MEMBERS"
         ),
-        "always_rejected_credentials": ["application_id", "access_key"],
+        "always_rejected_credentials": ["access_key"],
+        "application_id": {
+            "general_policy": "REJECT_IN_EVERY_NORMALIZED_TEXT_POSITION",
+            "provider_link_material_only": True,
+            "exact_validated_url_positions": {
+                "item-search": ["affiliateUrl", "itemUrl"],
+                "product-search": [],
+            },
+            "url_validation_precondition": "REQUIRED_BEFORE_FIELD_LOCAL_EXEMPTION",
+            "every_other_text_url_or_list_position": "REJECT",
+            "near_field_names": "REJECTED_BY_RECORD_SCHEMA",
+            "declassification_scope": "EXACT_ITEM_FIELD_LOCAL_NOT_GENERAL",
+        },
         "affiliate_id": {
             "general_policy": "REJECT_IN_EVERY_NORMALIZED_TEXT_POSITION",
             "public_link_material_only": True,
@@ -426,15 +438,26 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
             "ALL_SIX_VALIDATED_SUMMARIES_AND_ALL_NORMALIZED_RECORD_VALUES"
         ),
         "representations": ("INSPECTED_TEXT_RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES"),
-        "match": {
-            "application_id_and_access_key": (
-                "ANY_NONEMPTY_VALUE_SUBSTRING_IN_EVERY_INSPECTED_TEXT"
-            ),
-            "affiliate_id": (
-                "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_LINK_URL_"
-                "POSITIONS"
-            ),
-        },
+        "match": [
+            {
+                "kind": "APPLICATION_ID",
+                "rule": (
+                    "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_ITEM_LINK_"
+                    "URL_POSITIONS"
+                ),
+            },
+            {
+                "kind": "ACCESS_KEY",
+                "rule": "ANY_NONEMPTY_VALUE_SUBSTRING_IN_EVERY_INSPECTED_TEXT",
+            },
+            {
+                "kind": "AFFILIATE_ID",
+                "rule": (
+                    "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_LINK_URL_"
+                    "POSITIONS"
+                ),
+            },
+        ],
         "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
         "failure_evidence": (
             "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"
@@ -492,6 +515,34 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
             "interpretation": (
                 "REPEATED_CREDENTIAL_REFLECTION_AFTER_EXACT_AFFILIATE_LINK_"
                 "EXEMPTION_FIELD_CAUSE_UNKNOWN"
+            ),
+        },
+        "sanitized_field_diagnostic_evidence": {
+            "api": "item-search",
+            "api_version": "2026-07-01",
+            "http_status": 200,
+            "body_byte_count": 3522,
+            "request_count": 1,
+            "retry_count": 0,
+            "pagination_count": 0,
+            "diagnostic_schema": (
+                "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1"
+            ),
+            "diagnostic_outcome": "REFLECTION_DETECTED",
+            "diagnostic_code": "RESPONSE_SCHEMA_DRIFT",
+            "validation_stage_code": "CREDENTIAL_REFLECTION",
+            "reflection_credential_kind": "APPLICATION_ID",
+            "reflection_field_name": "affiliateUrl",
+            "reflection_field_category": "URL",
+            "response_sha256": (
+                "7fa225eb219c86ee415fed74ff19caebf828d158bd68ea7818f34187c5dd2685"
+            ),
+            "provider_data_persisted": False,
+            "raw_body_retained": False,
+            "reflected_value_retained": False,
+            "interpretation": (
+                "CLOSED_FIELD_CLASSIFICATION_SUPPORTS_EXACT_ITEM_LINK_APPLICATION_"
+                "ID_EXEMPTION_NOT_GENERAL_DECLASSIFICATION"
             ),
         },
     }

@@ -82,6 +82,10 @@ _AFFILIATE_ID_LINK_URL_FIELDS = {
     RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"affiliateUrl", "itemUrl"}),
     RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset({"affiliateUrl"}),
 }
+_APPLICATION_ID_LINK_URL_FIELDS: dict[RakutenOwnerLocalApi, frozenset[str]] = {
+    RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"affiliateUrl", "itemUrl"}),
+    RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset(),
+}
 
 
 class RakutenOwnerLocalProductSort(StrEnum):
@@ -897,20 +901,26 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
         credential_values: tuple[tuple[RakutenOwnerLocalCredentialKind, bytes], ...] = (
             (RakutenOwnerLocalCredentialKind.APPLICATION_ID, self._application_id),
             (RakutenOwnerLocalCredentialKind.ACCESS_KEY, self._access_key),
+            (RakutenOwnerLocalCredentialKind.AFFILIATE_ID, self._affiliate_id),
         )
         matches: set[RakutenOwnerLocalCredentialReflection] = set()
         for record in result.records:
             for name, candidate in record.fields:
                 if type(candidate) not in {str, tuple}:
                     continue
-                inspected_credentials = credential_values
-                if name not in _AFFILIATE_ID_LINK_URL_FIELDS[result.api]:
-                    inspected_credentials += (
-                        (
-                            RakutenOwnerLocalCredentialKind.AFFILIATE_ID,
-                            self._affiliate_id,
-                        ),
+                inspected_credentials = tuple(
+                    (credential_kind, credential)
+                    for credential_kind, credential in credential_values
+                    if not (
+                        credential_kind
+                        is RakutenOwnerLocalCredentialKind.APPLICATION_ID
+                        and name in _APPLICATION_ID_LINK_URL_FIELDS[result.api]
                     )
+                    and not (
+                        credential_kind is RakutenOwnerLocalCredentialKind.AFFILIATE_ID
+                        and name in _AFFILIATE_ID_LINK_URL_FIELDS[result.api]
+                    )
+                )
                 field_definition = _CREDENTIAL_FIELD_DEFINITIONS[result.api].get(name)
                 if field_definition is None:
                     fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)

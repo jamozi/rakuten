@@ -96,19 +96,19 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "305ca66b8453a526395641a3cc1e535ac887283608fd94d5a433d7f15ba672ed"
+    "9e874c6cd17a09d1cb1939f4e1b6990b22dde10cbf6630568e0c8d0c2a36783a"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "070a7968305200f468c0be4ed07b5845ba1abd30faeda4fd06ba62d59535228b"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "f9c3b305fd86c19bce011688f3aa75ef4f89e62cf5877573f0c3c5cead046a34"
+    "10656808837b8b21f5fecb7e499f98fcc74b222c6046276c9b6188c059e22502"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "4ebdb6457a83f4417d449f5d3da8932906e10796b913d0753ca1c27bc9b67776"
+    "c71376a98ef6033b037382b7ba21f84a9ad7a1f0a9e319143d506510c6976dcc"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
-    "58566af716eec811ab0f94e646dcc3bb22a75eb1ef0d6125c671ddac87377b93"
+    "05bb6091eb8cd2f23af557e893727998a8ac39c8d771768e5adef30f43604628"
 )
 EXPECTED_OWNER_LOCAL_RESULT_OBJECT_KEYS: Final = (
     "schema",
@@ -1583,13 +1583,15 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             'frozenset({"itemUrl"})',
             'frozenset({"productUrlPC"})',
             "_AFFILIATE_ID_LINK_URL_FIELDS = {",
+            "_APPLICATION_ID_LINK_URL_FIELDS: dict[RakutenOwnerLocalApi, frozenset[str]] = {",
             'frozenset({"affiliateUrl", "itemUrl"})',
             'frozenset({"affiliateUrl"})',
             "_MANDATORY_TEXT_FIELDS = {",
             'frozenset({"itemCode", "itemName"})',
             'frozenset({"productCode", "productId"})',
             "if type(candidate) not in {str, tuple}",
-            "name not in _AFFILIATE_ID_LINK_URL_FIELDS[result.api]",
+            "_APPLICATION_ID_LINK_URL_FIELDS[result.api]",
+            "_AFFILIATE_ID_LINK_URL_FIELDS[result.api]",
             "unquote_to_bytes(text)",
             "mandatory_record_fields(self.api)",
             "RakutenOwnerLocalValidationStageCode.MANDATORY_TEXT",
@@ -2560,7 +2562,21 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "inspected_text_values": (
                 "ALL_NORMALIZED_RECORD_STRING_VALUES_AND_STRING_LIST_MEMBERS"
             ),
-            "always_rejected_credentials": ["application_id", "access_key"],
+            "always_rejected_credentials": ["access_key"],
+            "application_id": {
+                "general_policy": "REJECT_IN_EVERY_NORMALIZED_TEXT_POSITION",
+                "provider_link_material_only": True,
+                "exact_validated_url_positions": {
+                    "item-search": ["affiliateUrl", "itemUrl"],
+                    "product-search": [],
+                },
+                "url_validation_precondition": (
+                    "REQUIRED_BEFORE_FIELD_LOCAL_EXEMPTION"
+                ),
+                "every_other_text_url_or_list_position": "REJECT",
+                "near_field_names": "REJECTED_BY_RECORD_SCHEMA",
+                "declassification_scope": "EXACT_ITEM_FIELD_LOCAL_NOT_GENERAL",
+            },
             "affiliate_id": {
                 "general_policy": "REJECT_IN_EVERY_NORMALIZED_TEXT_POSITION",
                 "public_link_material_only": True,
@@ -2596,15 +2612,26 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "representations": (
                 "INSPECTED_TEXT_RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES"
             ),
-            "match": {
-                "application_id_and_access_key": (
-                    "ANY_NONEMPTY_VALUE_SUBSTRING_IN_EVERY_INSPECTED_TEXT"
-                ),
-                "affiliate_id": (
-                    "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_LINK_URL_"
-                    "POSITIONS"
-                ),
-            },
+            "match": [
+                {
+                    "kind": "APPLICATION_ID",
+                    "rule": (
+                        "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_ITEM_"
+                        "LINK_URL_POSITIONS"
+                    ),
+                },
+                {
+                    "kind": "ACCESS_KEY",
+                    "rule": "ANY_NONEMPTY_VALUE_SUBSTRING_IN_EVERY_INSPECTED_TEXT",
+                },
+                {
+                    "kind": "AFFILIATE_ID",
+                    "rule": (
+                        "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_LINK_"
+                        "URL_POSITIONS"
+                    ),
+                },
+            ],
             "refusal": ("RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE"),
             "failure_evidence": (
                 "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"
@@ -2662,6 +2689,34 @@ def _validate_owner_local_read_integration(value: object) -> None:
                 "interpretation": (
                     "REPEATED_CREDENTIAL_REFLECTION_AFTER_EXACT_AFFILIATE_LINK_"
                     "EXEMPTION_FIELD_CAUSE_UNKNOWN"
+                ),
+            },
+            "sanitized_field_diagnostic_evidence": {
+                "api": "item-search",
+                "api_version": "2026-07-01",
+                "http_status": 200,
+                "body_byte_count": 3522,
+                "request_count": 1,
+                "retry_count": 0,
+                "pagination_count": 0,
+                "diagnostic_schema": (
+                    "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1"
+                ),
+                "diagnostic_outcome": "REFLECTION_DETECTED",
+                "diagnostic_code": "RESPONSE_SCHEMA_DRIFT",
+                "validation_stage_code": "CREDENTIAL_REFLECTION",
+                "reflection_credential_kind": "APPLICATION_ID",
+                "reflection_field_name": "affiliateUrl",
+                "reflection_field_category": "URL",
+                "response_sha256": (
+                    "7fa225eb219c86ee415fed74ff19caebf828d158bd68ea7818f34187c5dd2685"
+                ),
+                "provider_data_persisted": False,
+                "raw_body_retained": False,
+                "reflected_value_retained": False,
+                "interpretation": (
+                    "CLOSED_FIELD_CLASSIFICATION_SUPPORTS_EXACT_ITEM_LINK_"
+                    "APPLICATION_ID_EXEMPTION_NOT_GENERAL_DECLASSIFICATION"
                 ),
             },
         }
@@ -2734,8 +2789,8 @@ def _validate_owner_local_read_integration(value: object) -> None:
         != [
             "raw body and provider headers or reflected error material",
             (
-                "application ID or access key values and affiliate ID outside exact "
-                "validated public-link positions"
+                "access key values and application or affiliate IDs outside their "
+                "exact validated public-link positions"
             ),
             "captions and review bodies",
             "review aggregates and affiliateRate",

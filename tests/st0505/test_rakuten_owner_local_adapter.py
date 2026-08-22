@@ -3319,8 +3319,8 @@ def test_result_writer_accepts_short_credential_matching_validated_summary(
     (
         ("itemName", "untrusted reflection/token item"),
         (
-            "affiliateUrl",
-            "https://example.invalid/affiliate/reflection%2ftoken",
+            "shopName",
+            "untrusted reflection%2ftoken shop",
         ),
     ),
 )
