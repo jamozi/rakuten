@@ -42,7 +42,7 @@ provenance:
     sha256: f1ebe757961349fe8deac3ed2e3c4217181a9bef423f0091803a0459a655356a
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522
+    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml
@@ -53,7 +53,7 @@ source_artifacts:
   sha256: f53d62f70eddc08820a2f7c4b854fd8f3e05a86b148d107307ca3baf32bab958
 - uri: repo://scripts/build_st0504_product_identity_human_review_reference_plan.py
   bytes: 25694
-  sha256: 64c0e6eaea3be32025eb962eb5d67e2054fb0a14445637b55b11a90da9d947c3
+  sha256: db0ad81f85305177da0e81d17ec5e544752a53f2c0580abd930837288cb53e84
 - uri: repo://tests/st0504/conftest.py
   bytes: 972
   sha256: e76a58c45929decedbbcc268bf0b56f8aadfe8c44332de3674523812ab5bc530
@@ -70,7 +70,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
   bytes: 8598
-  sha256: 8ab0af88f69ccf38da2cb39ac526924072ded093213a042cc3e7b00037b8a49e
+  sha256: 8c30308b4f18e250f2117b78d37a72059c9a36646c31e9906d565bee80d4ef90
 boundary:
   classification: SOURCE_DERIVED_NON_EXECUTABLE_PRODUCT_IDENTITY_HUMAN_REVIEW_REFERENCE_PLAN
   executable: false
