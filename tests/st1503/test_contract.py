@@ -77,12 +77,12 @@ def test_predecessor_is_fully_bound_and_fail_closed(
     }
 
 
-def test_aws_labels_are_optional_historical_mappings_only(
+def test_aws_labels_are_current_canonical_reference_architecture_only(
     compute_edge_model: generator.ComputeEdgeModel,
 ) -> None:
     reference = _mapping(compute_edge_model.contract["reference_architecture"])
     assert reference["classification"] == (
-        "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY"
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
     )
     assert reference["service_mappings"] == generator._aws_reference_service_mappings()
     for key in (
@@ -96,6 +96,16 @@ def test_aws_labels_are_optional_historical_mappings_only(
         assert reference[key] is False
     admission = _mapping(
         compute_edge_model.contract["provider_neutral_compute_edge_admission"]
+    )
+    assert admission["aws_reference_boundary"]["role"] == (
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    )
+    assert admission["aws_reference_boundary"]["canonical_story_deliverables"] == (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    )
+    assert (
+        admission["aws_reference_boundary"]["non_aws_owner_managed_profiles"]
+        == "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
     )
     assert admission["eligible_profile_kinds"] == list(generator.ELIGIBLE_PROFILE_KINDS)
     assert admission["mapping_policy"]["configured_mapping_count"] == 0
@@ -272,6 +282,15 @@ def test_manifest_contains_handoff_and_provider_neutral_boundary() -> None:
     assert boundary["selected_provider_name"] is None
     assert boundary["default_profile_id"] is None
     assert boundary["fallback_profile_id"] is None
+    assert boundary["aws_reference_role"] == (
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    )
+    assert boundary["canonical_story_deliverables"] == (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    )
+    assert boundary["portable_implementation_paths"] == (
+        "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+    )
     assert all(
         boundary[key] is False
         for key in (

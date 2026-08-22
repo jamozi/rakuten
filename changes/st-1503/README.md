@@ -40,11 +40,14 @@ owner-managed profile is eligible only after exactly one mapping exists for
 every capability and identical security, operations, release, performance,
 health, rollback, isolation, and residency evidence exists.
 
-ECS, Fargate, ECR, ALB, CloudFront, WAF, Route53, and ACM remain only optional
-historical AWS reference mappings inherited from INT-DEC-007 and
-RAOS-ARCH-001. They are never defaults, implicit fallbacks, selected bindings,
-eligibility shortcuts, admission requirements, or evidence substitutes.
-Missing, unknown, duplicate, reordered, partial, implicit,
+AWS Tokyo and the ECS, Fargate, ECR, ALB, CloudFront, WAF, Route53, and ACM
+mappings remain the current Canonical Reference Architecture inherited from
+INT-DEC-007 and RAOS-ARCH-001. This overlay does not erase, replace, or
+complete the Canonical AWS-specific ST-1503 objective or modules deliverable.
+Non-AWS and owner-managed profiles are additional portable implementation
+paths only. Canonical reference status is never a default, implicit fallback,
+selected binding, eligibility shortcut, admission requirement, or evidence
+substitute. Missing, unknown, duplicate, reordered, partial, implicit,
 provider-label-only, service-label-only, and reference-only mappings fail
 closed. No concrete alternate provider is selected.
 

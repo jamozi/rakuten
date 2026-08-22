@@ -345,12 +345,12 @@
     "update": 0
   },
   "predecessor_binding": {
-    "contract_sha256": "c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6",
+    "contract_sha256": "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9",
     "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
-    "design_handoff_sha256": "ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61",
+    "design_handoff_sha256": "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f",
     "design_handoff_uri": "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
     "extension_kind": "COMPUTE_CDN_WAF",
-    "reference_plan_sha256": "c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559",
+    "reference_plan_sha256": "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70",
     "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
     "required_activation_status": "DISABLED",
     "required_admission_status": "NOT_EVALUATED",
@@ -368,11 +368,13 @@
     "admission_status": "NOT_EVALUATED",
     "aws_reference_boundary": {
       "admission_requirement": false,
+      "canonical_story_deliverables": "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED",
       "default": false,
       "eligibility_shortcut": false,
       "evidence_substitute": false,
       "implicit_fallback": false,
-      "role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+      "non_aws_owner_managed_profiles": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
+      "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
       "selected_binding": false
     },
     "binding_policy": {
@@ -536,7 +538,7 @@
   },
   "reference_architecture": {
     "admission_requirement": false,
-    "classification": "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY",
+    "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
     "cloud": "AWS",
     "default": false,
     "eligibility_shortcut": false,

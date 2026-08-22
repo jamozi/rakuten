@@ -3,8 +3,10 @@ version: 1
 record_status: RECORDED_DURABLE_OWNER_DECISION
 approved_story: ST-1503
 approved_scope:
-  - Define Full RAOS compute and public-edge infrastructure without assuming or requiring AWS or any other provider.
-  - Retain ECS, Fargate, ECR, ALB, CloudFront, WAF, Route53, and ACM only as optional historical AWS reference mappings inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Define an additional provider-neutral compute-edge admission boundary for Full RAOS without making AWS or any provider a selected, default, fallback, or Production-admission binding.
+  - Preserve AWS Tokyo and the ECS, Fargate, ECR, ALB, CloudFront, WAF, Route53, and ACM mappings as the current Canonical Reference Architecture inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Preserve the Canonical AWS-specific ST-1503 objective and modules deliverable as authoritative, not erased, replaced, or completed by this portability overlay.
+  - Admit non-AWS and owner-managed profiles only as additional portable implementation paths with identical complete capabilities and evidence.
   - Require every future compute-edge profile to map the same closed capability inventory and provide equivalent security, operations, release, health, performance, rollback, isolation, and residency evidence.
   - Keep every provider, account or project, region, runtime, scheduler, registry, edge, ingress, DNS, TLS, WAF, identity, secret, credential, network, and physical-resource binding unset while the relevant Open Decisions remain unresolved.
 source_design_refs:
@@ -37,7 +39,9 @@ decision:
   aws_reference_mapping_boundary:
     canonical_decision_id: INT-DEC-007
     architecture_id: RAOS-ARCH-001
-    classification: OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY
+    classification: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+    canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+    non_aws_owner_managed_profiles: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
     mappings:
       - reference_name: ECS
         capability_id: workload_runtime_scheduling_and_supply_chain
@@ -117,7 +121,7 @@ decision:
     - region_data_residency_and_failure_domain_evidence
 rationale:
   - INT-DEC-007 makes AWS Tokyo a Reference Architecture while requiring a portable Core, so compute-edge admission must evaluate capabilities and evidence rather than AWS service names.
-  - Provider, account, region, runtime, scheduler, registry, ingress, edge, DNS, TLS, WAF, plugin, or adapter defaults would silently turn historical reference mappings into live infrastructure choices.
+  - Provider, account, region, runtime, scheduler, registry, ingress, edge, DNS, TLS, WAF, plugin, or adapter defaults would silently turn the current Canonical Reference Architecture mappings into live selected infrastructure choices.
   - Runtime scheduling, edge mediation, DNS and TLS across Public, Internal, Provider, and origin interactions, abuse controls, trust-boundary isolation, workload identity, observability, rollback, and residency are provider-neutral operational outcomes.
   - Keeping all bindings null and eligibility unevaluated preserves OD-002, OD-009, OD-010, OD-011, OD-013, OD-015, TST-026, TST-027, and every external security, operations, release, and Production gate.
 rejected_alternatives:
@@ -144,12 +148,14 @@ security_and_approval_gates:
   - Preserve formal TST-026 security evidence and TST-027 staging performance and load evidence as release-blocking and NOT_EXECUTED.
   - Preserve OD-002 site and domain, OD-009 budget, OD-010 identity provider, OD-011 notification channel, OD-013 residency, and OD-015 credential blocking states until their owners provide valid evidence.
   - Require the same security, operations, release, performance, health, rollback, isolation, and residency evidence for AWS, another cloud, and owner-managed infrastructure.
-  - Never infer eligibility from a provider or service label, account or project name, region, plugin or adapter, historical reference, local generator success, predecessor completion, health endpoint declaration, or AWS-labelled evidence.
+  - Never infer eligibility from a provider or service label, account or project name, region, plugin or adapter, Canonical Reference Architecture status, local generator success, predecessor completion, health endpoint declaration, or AWS-labelled evidence.
 acceptance_criteria:
   - The ST-1503 source and generated reference expose a closed provider-neutral compute-edge capability inventory with no selected, default, or fallback profile, provider, runtime, registry, edge, DNS, TLS, WAF, credential, region, or physical resource.
   - Every future eligible profile must have exactly one explicit mapping for every required capability and complete equivalent evidence.
   - Unknown, missing, duplicate, partial, implicit, defaulted, fallback, provider-label-only, service-label-only, or reference-only mappings are rejected before eligibility.
-  - ECS, Fargate, ECR, ALB, CloudFront, WAF, Route53, and ACM remain visible only as optional historical AWS reference mappings and cannot select or satisfy any capability or evidence by themselves.
+  - AWS Tokyo and the ECS, Fargate, ECR, ALB, CloudFront, WAF, Route53, and ACM mappings remain the current Canonical Reference Architecture, while that status alone cannot select or satisfy any capability, admission, or evidence.
+  - The Canonical AWS-specific ST-1503 objective and modules deliverable remain authoritative and NOT_STARTED/NOT_EXECUTED; this overlay neither erases, replaces, nor completes them.
+  - Non-AWS and owner-managed profiles are additional portable implementation paths only and require the same complete capability mapping and evidence as AWS.
   - Existing public, Admin, Internal and data-plane boundaries, health intent, disabled activation, forbidden native commands, zero action counts, unresolved Open Decisions, and NOT_EXECUTED evidence remain fail closed.
 required_test_evidence:
   - Isolated tests/st1503 positive contract and generated-plan assertions.

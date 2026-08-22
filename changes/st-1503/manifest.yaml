@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --no-sync python scripts/build_st1503_compute_edge.py
 provenance:
   contract_uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-  contract_sha256: 7d742065c5ffda0dbecf04c144af7daf0de2fdc0d2598e85bc9af656c4ac242d
+  contract_sha256: 07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -34,45 +34,45 @@ provenance:
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
     sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
-    sha256: de21922772e9e88ba830fc33c82848a9423d492fc9696027b91febf9aebb0646
+    sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
   predecessor_inputs:
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
-    sha256: ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61
+    sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
   - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    sha256: c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6
+    sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
   - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    sha256: c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559
+    sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
 source_artifact_count: 8
 source_artifacts:
 - uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-  bytes: 21053
-  sha256: 7d742065c5ffda0dbecf04c144af7daf0de2fdc0d2598e85bc9af656c4ac242d
+  bytes: 21236
+  sha256: 07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60
 - uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
-  bytes: 12898
-  sha256: de21922772e9e88ba830fc33c82848a9423d492fc9696027b91febf9aebb0646
+  bytes: 13910
+  sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
 - uri: repo://changes/st-1503/README.md
-  bytes: 6649
-  sha256: 3dacf5b977c6cc13498c567d480db450b9ae4b5d012e3a1c7c20869e46bc05b2
+  bytes: 6895
+  sha256: 742615102c737a999892f7743c76aa6fd4fed079aaf026fbd2db31acac09f2bd
 - uri: repo://scripts/build_st1503_compute_edge.py
-  bytes: 77210
-  sha256: 554d00a82f1a48d1e154e5aaff63fad7330e46a81e862e6bc0a2b30385029a7b
+  bytes: 78430
+  sha256: 9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d
 - uri: repo://tests/st1503/conftest.py
   bytes: 634
   sha256: 37224046c0eeac5b366183b2a7d91a5a7c7abfe168b6b308fec938caa49fdfc0
 - uri: repo://tests/st1503/test_contract.py
-  bytes: 11442
-  sha256: b458a289ea3efccfe6d04416afe8b541b1c844c7d31930b6fb429426c8630ec6
+  bytes: 12266
+  sha256: 1c1dcf202dab582b0411cda04cfa042773bc1e1c3dfeaf8acffb872661f8066e
 - uri: repo://tests/st1503/test_generation.py
   bytes: 8601
   sha256: 8a14342be825ca74d6747c81046eeb26c498a813fc9ffd514070d89114563fee
 - uri: repo://tests/st1503/test_negative_cases.py
-  bytes: 26339
-  sha256: be3fb9c23952b99bc686e68df190f0136487deadee1187b6d1eeeef3dfb48133
+  bytes: 27641
+  sha256: 0088984d4d0602992225adc7762cfcec19459c4188a3e0c81300522d20e7b7ba
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
-  bytes: 23308
-  sha256: a894504b51f2cc5f77d05a00c12fdcbd854a49d74d80822c9564f08957bd3888
+  bytes: 23505
+  sha256: 62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
@@ -93,6 +93,9 @@ boundary:
   configured_mapping_count: 0
   required_capability_count: 8
   aws_reference_only: true
+  aws_reference_role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+  canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+  portable_implementation_paths: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
   aws_reference_default: false
   aws_reference_implicit_fallback: false
   aws_reference_selected_binding: false

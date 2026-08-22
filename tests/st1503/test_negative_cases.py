@@ -183,6 +183,47 @@ def test_aws_reference_cannot_become_default_fallback_selection_or_evidence(
     assert captured.value.code == "SAFE_BOUNDARY_VIOLATION"
 
 
+@pytest.mark.parametrize(
+    ("section", "field", "value"),
+    (
+        (
+            "reference_architecture",
+            "classification",
+            "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "provider_neutral_compute_edge_admission",
+            "role",
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "provider_neutral_compute_edge_admission",
+            "canonical_story_deliverables",
+            "CANONICAL_STORY_DELIVERABLES_REPLACED_BY_PORTABILITY_OVERLAY",
+        ),
+        (
+            "provider_neutral_compute_edge_admission",
+            "non_aws_owner_managed_profiles",
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
+    ),
+)
+def test_canonical_reference_cannot_be_demoted_or_replaced_by_overlay(
+    contract_document: dict[str, Any], section: str, field: str, value: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    target = (
+        document["reference_architecture"]
+        if section == "reference_architecture"
+        else document["provider_neutral_compute_edge_admission"][
+            "aws_reference_boundary"
+        ]
+    )
+    target[field] = value
+    with pytest.raises(generator.ComputeEdgeContractError):
+        _validate(document)
+
+
 @pytest.mark.parametrize("payload", ("AWS", "ECS", "Fargate", "CloudFront", "WAF"))
 @pytest.mark.parametrize("field", ("selected_mapping", "evidence_refs"))
 def test_aws_or_service_labels_cannot_satisfy_capability_or_evidence(
@@ -664,7 +705,7 @@ def test_predecessor_plan_formatting_drift_fails_after_digest_rebind(
     assert captured.value.code == "PREDECESSOR_GENERATED_DRIFT"
 
 
-def test_historical_authority_mapping_drift_fails_after_digest_rebind(
+def test_current_canonical_authority_mapping_drift_fails_after_digest_rebind(
     tmp_path: Path,
     contract_document: dict[str, Any],
     monkeypatch: pytest.MonkeyPatch,
