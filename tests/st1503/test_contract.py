@@ -1,10 +1,12 @@
-"""Positive contract and reference-plan semantics for ST-1503."""
+"""Positive provider-neutral contract semantics for ST-1503."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 from typing import Any, cast
+
+import yaml
 
 from scripts import build_st1503_compute_edge as generator
 
@@ -17,27 +19,57 @@ def _mapping(value: object) -> dict[str, Any]:
     return cast(dict[str, Any], value)
 
 
-def test_contract_loads_as_closed_interface_only_model(
+def test_contract_is_closed_provider_neutral_interface(
     compute_edge_model: generator.ComputeEdgeModel,
 ) -> None:
-    assert compute_edge_model.contract["document"] == {
-        "id": "RAOS-COMPUTE-EDGE-FOUNDATION-001",
-        "version": "1.0.0",
-        "story_id": "ST-1503",
-        "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
-        "formal_verification": "NOT_EXECUTED",
-    }
-    assert set(compute_edge_model.contract) == generator.TOP_LEVEL_KEYS
+    contract = compute_edge_model.contract
+    assert contract["document"] == generator.EXPECTED_SECTIONS["document"]
+    assert set(contract) == generator.TOP_LEVEL_KEYS
+    admission = _mapping(contract["provider_neutral_compute_edge_admission"])
+    assert admission["classification"] == (
+        "STRICT_PROVIDER_NEUTRAL_COMPUTE_EDGE_CAPABILITY_ADMISSION"
+    )
+    assert admission["admission_status"] == "NOT_EVALUATED"
+    assert admission["eligible"] is False
+    for key in (
+        "selected_profile_id",
+        "selected_profile_kind",
+        "selected_provider_name",
+        "default_profile_id",
+        "fallback_profile_id",
+    ):
+        assert admission[key] is None
+    assert admission["concrete_alternate_provider_selected"] is False
 
 
-def test_predecessor_is_hash_bound_and_fail_closed(
+def test_direct_handoff_is_hash_and_semantic_bound() -> None:
+    handoff_path = REPOSITORY_ROOT / generator.DESIGN_HANDOFF_PATH
+    handoff = generator.load_yaml(handoff_path)
+    assert (
+        generator.sha256_file(handoff_path)
+        == generator.AUTHORITY_SOURCES[generator.DESIGN_HANDOFF_PATH.as_posix()]
+    )
+    assert (
+        generator.semantic_sha256(handoff) == generator.EXPECTED_HANDOFF_SEMANTIC_SHA256
+    )
+    assert handoff["approved_story"] == "ST-1503"
+    assert handoff["decision"]["required_capability_ids"] == [
+        capability_id
+        for capability_id, _outcome in generator.COMPUTE_EDGE_CAPABILITY_OUTCOMES
+    ]
+
+
+def test_predecessor_is_fully_bound_and_fail_closed(
     compute_edge_model: generator.ComputeEdgeModel,
 ) -> None:
     binding = compute_edge_model.contract["predecessor_binding"]
     assert binding == generator.EXPECTED_SECTIONS["predecessor_binding"]
-    assert binding["extension_kind"] == "COMPUTE_CDN_WAF"
+    assert binding["required_provider_policy"] == (
+        "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION"
+    )
+    assert binding["required_admission_status"] == "NOT_EVALUATED"
+    assert binding["required_eligible"] is False
     assert binding["required_activation_status"] == "DISABLED"
-    assert binding["required_resource_payloads"] == "FORBIDDEN"
     assert binding["required_planned_actions"] == {
         "create": 0,
         "update": 0,
@@ -45,207 +77,220 @@ def test_predecessor_is_hash_bound_and_fail_closed(
     }
 
 
-def test_reference_component_families_are_labels_not_selections(
+def test_aws_labels_are_optional_historical_mappings_only(
     compute_edge_model: generator.ComputeEdgeModel,
 ) -> None:
-    plan = generator.reference_plan_document(compute_edge_model)
-    reference = _mapping(plan["reference_architecture"])
-    assert reference["component_families"] == generator.COMPONENT_FAMILIES
-    assert reference["classification"] == "INHERITED_REFERENCE_METADATA_ONLY"
-    selection = _mapping(plan["selected_configuration"])
-    assert all(value is None or value == [] for value in selection.values())
-
-
-def test_logical_workload_roles_and_supply_chain_requirements_are_exact(
-    compute_edge_model: generator.ComputeEdgeModel,
-) -> None:
-    logical = _mapping(
-        generator.reference_plan_document(compute_edge_model)["logical_compute_edge"]
+    reference = _mapping(compute_edge_model.contract["reference_architecture"])
+    assert reference["classification"] == (
+        "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY"
     )
-    workloads = _mapping(logical["workloads"])
-    roles = cast(list[dict[str, Any]], workloads["roles"])
-    assert [row["role"] for row in roles] == list(generator.WORKLOAD_ROLES)
-    for requirement in (
-        "immutable_digest_selected_images",
-        "signed_provenance",
-        "sbom",
-        "image_scanning",
-        "least_privilege_workload_identities",
-        "encrypted_logs",
-        "graceful_shutdown",
+    assert reference["service_mappings"] == generator._aws_reference_service_mappings()
+    for key in (
+        "default",
+        "implicit_fallback",
+        "selected_binding",
+        "eligibility_shortcut",
+        "admission_requirement",
+        "evidence_substitute",
     ):
-        assert workloads[requirement] == "REQUIRED_NOT_CONFIGURED"
-    assert workloads["secret_material"] == "ABSENT"
-    for row in roles:
-        assert row["component_family"] == "ECS_Fargate"
+        assert reference[key] is False
+    admission = _mapping(
+        compute_edge_model.contract["provider_neutral_compute_edge_admission"]
+    )
+    assert admission["eligible_profile_kinds"] == list(generator.ELIGIBLE_PROFILE_KINDS)
+    assert admission["mapping_policy"]["configured_mapping_count"] == 0
+    assert admission["mapping_policy"]["complete_mapping"] is False
+    assert all(
+        value == "FORBIDDEN"
+        for key, value in admission["evidence_equivalence_policy"].items()
+        if key.endswith("_as_evidence")
+    )
+
+
+def test_capability_inventory_is_exact_complete_and_unconfigured(
+    compute_edge_model: generator.ComputeEdgeModel,
+) -> None:
+    rows = compute_edge_model.contract["provider_neutral_compute_edge_admission"][
+        "capability_mapping_requirements"
+    ]
+    assert rows == generator._capability_mapping_requirements()
+    assert [row["capability_id"] for row in rows] == [
+        capability_id
+        for capability_id, _outcome in generator.COMPUTE_EDGE_CAPABILITY_OUTCOMES
+    ]
+    for row in rows:
+        assert row["selected_mapping"] is None
+        assert row["evidence_refs"] == []
+        assert row["mapping_status"] == "REQUIRED_NOT_CONFIGURED"
+
+
+def test_mapping_transport_and_equivalent_evidence_gates_are_exact(
+    compute_edge_model: generator.ComputeEdgeModel,
+) -> None:
+    admission = compute_edge_model.contract["provider_neutral_compute_edge_admission"]
+    assert admission["mapping_policy"] == {
+        "required_mapping_mode": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+        "required_capability_count": 8,
+        "configured_mapping_count": 0,
+        "complete_mapping": False,
+        "missing_mapping": "REJECT",
+        "unknown_mapping": "REJECT",
+        "duplicate_mapping": "REJECT",
+        "implicit_mapping": "REJECT",
+        "partial_mapping": "REJECT",
+        "provider_label_only_mapping": "REJECT",
+        "service_label_only_mapping": "REJECT",
+        "reference_only_mapping": "REJECT",
+    }
+    assert admission["binding_policy"]["implicit_binding"] == "FORBIDDEN"
+    assert admission["binding_policy"]["name_or_reference_only_eligibility"] == (
+        "FORBIDDEN"
+    )
+    assert admission["cross_capability_transport_security_policy"] == {
+        "public_transport": "TLS_REQUIRED_NOT_CONFIGURED",
+        "internal_transport": "TLS_REQUIRED_NOT_CONFIGURED",
+        "provider_transport": "TLS_REQUIRED_NOT_CONFIGURED",
+        "origin_transport": "TLS_REQUIRED_NOT_CONFIGURED",
+        "selected_exceptions": [],
+    }
+    assert admission["evidence_equivalence_policy"] == {
+        "identical_security_evidence": "REQUIRED",
+        "identical_operations_evidence": "REQUIRED",
+        "identical_release_evidence": "REQUIRED",
+        "identical_performance_load_evidence": "REQUIRED",
+        "identical_health_slo_alerting_evidence": "REQUIRED",
+        "identical_canary_rollback_evidence": "REQUIRED",
+        "identical_identity_secret_egress_evidence": "REQUIRED",
+        "identical_isolation_evidence": "REQUIRED",
+        "identical_region_residency_evidence": "REQUIRED",
+        "identical_transport_security_evidence": "REQUIRED",
+        "provider_label_as_evidence": "FORBIDDEN",
+        "service_label_as_evidence": "FORBIDDEN",
+        "reference_metadata_as_evidence": "FORBIDDEN",
+        "local_test_as_live_evidence": "FORBIDDEN",
+    }
+
+
+def test_all_bindings_and_logical_intents_remain_unset(
+    compute_edge_model: generator.ComputeEdgeModel,
+) -> None:
+    contract = compute_edge_model.contract
+    assert all(
+        value is None or value == []
+        for value in contract["selected_configuration"].values()
+    )
+    workloads = contract["workload_intent"]
+    assert [row["role"] for row in workloads["roles"]] == list(generator.WORKLOAD_ROLES)
+    for row in workloads["roles"]:
+        assert "component_family" not in row
         assert row["direct_public_access"] == "FORBIDDEN"
         assert all(value is None or value == [] for value in row["selected"].values())
+    surfaces = contract["surface_boundary_intent"]
+    assert [row["surface"] for row in surfaces["surfaces"]] == list(
+        generator.SURFACE_ROLES
+    )
+    assert surfaces["public_data_plane_access"] == "FORBIDDEN"
+    assert all(
+        value is None or value == []
+        for value in contract["edge_routing_intent"]["selected"].values()
+    )
 
 
-def test_public_admin_internal_boundaries_are_distinct_and_unconfigured(
+def test_health_gates_and_open_decisions_remain_unresolved(
     compute_edge_model: generator.ComputeEdgeModel,
 ) -> None:
-    logical = _mapping(
-        generator.reference_plan_document(compute_edge_model)["logical_compute_edge"]
+    health = compute_edge_model.contract["health_intent"]
+    assert health["telemetry"] == "REQUIRED_NOT_CONFIGURED"
+    assert health["slo_capacity"] == "REQUIRED_NOT_CONFIGURED"
+    assert health["human_release_approval"] == "REQUIRED"
+    assert health["kill_switch_change"] == "HUMAN_APPROVAL_REQUIRED"
+    assert health["liveness"]["purpose"] == "PROCESS_ONLY"
+    assert health["readiness"]["infer_from_http_200_body"] == "FORBIDDEN"
+    decisions = compute_edge_model.contract["open_decision_boundary"]
+    assert tuple(decisions) == (
+        "OD-002",
+        "OD-009",
+        "OD-010",
+        "OD-011",
+        "OD-013",
+        "OD-015",
     )
-    boundaries = _mapping(logical["surfaces"])
-    for field in (
-        "trust_boundary_separation",
-        "cache_separation",
-        "cookie_separation",
-        "host_separation",
-        "csp_separation",
-        "authentication_separation",
-    ):
-        assert boundaries[field] == "REQUIRED_NOT_CONFIGURED"
-    surfaces = cast(list[dict[str, Any]], boundaries["surfaces"])
-    assert [row["surface"] for row in surfaces] == list(generator.SURFACE_ROLES)
-    assert [row["trust_boundary"] for row in surfaces] == [
-        "PUBLIC",
-        "ADMIN",
-        "INTERNAL",
-    ]
-    public, admin, internal = surfaces
-    assert public["public_projection_only"] == "REQUIRED"
-    assert public["direct_internal_data_plane_access"] == "FORBIDDEN"
-    assert admin["approved_identity_authorization"] == "REQUIRED_NOT_CONFIGURED"
-    assert admin["selected"]["authentication_policy_reference"] is None
-    assert internal["approved_identity_authorization"] == (
-        "SERVICE_IDENTITY_REQUIRED_NOT_CONFIGURED"
+    assert all(
+        row["resolved"] is False and row["blocking"] is True
+        for row in decisions.values()
     )
-    for row in surfaces:
-        assert all(value is None or value == [] for value in row["selected"].values())
 
 
-def test_api_worker_and_edge_origins_are_private_or_edge_mediated(
-    compute_edge_model: generator.ComputeEdgeModel,
-) -> None:
-    logical = _mapping(
-        generator.reference_plan_document(compute_edge_model)["logical_compute_edge"]
-    )
-    roles = cast(list[dict[str, Any]], _mapping(logical["workloads"])["roles"])
-    assert roles[0]["origin_exposure"] == "EDGE_MEDIATED_REQUIRED_NOT_CONFIGURED"
-    assert roles[1]["origin_exposure"] == "EDGE_MEDIATED_REQUIRED_NOT_CONFIGURED"
-    assert roles[2]["origin_exposure"] == "PRIVATE_ONLY_REQUIRED"
-    assert roles[3]["origin_exposure"] == "PRIVATE_ONLY_REQUIRED"
-    edge = _mapping(logical["edge_routing"])
-    assert edge["edge_only_public_entry"] == "REQUIRED_NOT_CONFIGURED"
-    assert edge["origin_private_only"] == "REQUIRED"
-    assert edge["api_worker_data_origins_private_only"] == "REQUIRED"
-    assert edge["direct_origin_public_access"] == "FORBIDDEN"
-    assert all(value is None or value == [] for value in edge["selected"].values())
-
-
-def test_liveness_and_readiness_are_distinct_without_inferred_matchers(
-    compute_edge_model: generator.ComputeEdgeModel,
-) -> None:
-    logical = _mapping(
-        generator.reference_plan_document(compute_edge_model)["logical_compute_edge"]
-    )
-    health = _mapping(logical["health"])
-    assert health["roles"] == list(generator.WORKLOAD_ROLES)
-    liveness = _mapping(health["liveness"])
-    readiness = _mapping(health["readiness"])
-    assert liveness["purpose"] == "PROCESS_ONLY"
-    assert liveness["external_dependency_coupling"] == "FORBIDDEN"
-    assert readiness["purpose"] == "DEPENDENCY_AND_MIGRATION_READINESS"
-    assert readiness["dependency_check"] == "REQUIRED_NOT_CONFIGURED"
-    assert readiness["migration_compatibility_check"] == "REQUIRED_NOT_CONFIGURED"
-    assert readiness["infer_from_http_200_body"] == "FORBIDDEN"
-    for probe in (liveness, readiness):
-        assert probe["bounded_failure_behavior"] == "REQUIRED_NOT_CONFIGURED"
-        assert all(value is None or value == [] for value in probe["selected"].values())
-
-
-def test_activation_native_operations_and_action_counts_fail_closed(
+def test_execution_and_evidence_are_inert_not_executed(
     compute_edge_model: generator.ComputeEdgeModel,
 ) -> None:
     plan = generator.reference_plan_document(compute_edge_model)
     assert plan["planned_actions"] == {"create": 0, "update": 0, "delete": 0}
-    assert plan["activation"] == {
-        "enabled": False,
-        "status": "DISABLED",
-        "native_plan_status": "NOT_EXECUTED",
-        "live_provider_calls": "FORBIDDEN",
-        "external_writes": "FORBIDDEN",
-        "native_commands": {
-            "init": "FORBIDDEN",
-            "plan": "FORBIDDEN",
-            "apply": "FORBIDDEN",
-            "destroy": "FORBIDDEN",
-            "import": "FORBIDDEN",
-            "refresh": "FORBIDDEN",
-        },
-    }
-
-
-def test_generated_document_and_verification_boundary_are_non_executable(
-    compute_edge_model: generator.ComputeEdgeModel,
-) -> None:
-    plan = generator.reference_plan_document(compute_edge_model)
-    assert plan["document"] == {
-        "id": "RAOS-COMPUTE-EDGE-REFERENCE-PLAN-001",
-        "version": "1.0.0",
-        "story_id": "ST-1503",
-        "source_contract": generator.SOURCE_CONTRACT_URI,
-        "generated_by": generator.GENERATOR_URI,
-        "generation_command": generator.GENERATION_COMMAND,
-        "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_COMPUTE_EDGE_REFERENCE_PLAN",
-        "executable": False,
-        "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
-    }
-    assert plan["verification_boundary"] == {
-        "executable_terraform": "ABSENT",
-        "terraform_cli": "UNPINNED_NOT_INVOKED",
-        "provider_plugins": "UNPINNED_NOT_INVOKED",
-        "aws_account": "UNSET",
-        "credentials": "ABSENT",
-        "native_iac_validation": "NOT_EXECUTED",
-        "formal_tst_026": "NOT_EXECUTED",
-        "formal_tst_027": "NOT_EXECUTED",
-        "performance_validation": "NOT_EXECUTED",
-        "health_runtime_validation": "NOT_EXECUTED",
-        "live_staging_release_production": "NOT_EXECUTED",
-        "effective_canonical_status": "UNCHANGED",
-    }
-
-
-def test_source_pins_match_regular_files() -> None:
-    for relative, expected_digest in generator.PINNED_SOURCES.items():
-        path = REPOSITORY_ROOT / relative
-        assert path.is_file()
-        assert not path.is_symlink()
-        assert generator.sha256_file(path) == expected_digest
-
-
-def test_generated_json_matches_strict_renderer(
-    compute_edge_model: generator.ComputeEdgeModel,
-) -> None:
-    path = REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH
-    assert path.is_file()
-    assert not path.is_symlink()
-    assert json.loads(path.read_bytes()) == generator.reference_plan_document(
-        compute_edge_model
+    activation = plan["activation"]
+    assert activation["enabled"] is False
+    assert activation["status"] == "DISABLED"
+    for key in (
+        "network_access",
+        "credential_access",
+        "live_provider_calls",
+        "external_writes",
+        "deploy_action",
+        "release_action",
+        "production_action",
+    ):
+        assert activation[key] == "FORBIDDEN"
+    assert set(activation["native_commands"].values()) == {"FORBIDDEN"}
+    evidence = plan["verification_boundary"]
+    assert evidence["credentials"] == "ABSENT"
+    assert all(
+        value == "NOT_EXECUTED"
+        for key, value in evidence.items()
+        if key.startswith("formal_") or key.endswith("_validation")
     )
 
 
-def test_compute_edge_directory_contains_only_non_native_reference_plan() -> None:
+def test_source_pins_and_generated_json_match() -> None:
+    for relative, expected_digest in generator.PINNED_SOURCES.items():
+        path = REPOSITORY_ROOT / relative
+        assert path.is_file() and not path.is_symlink()
+        assert generator.sha256_file(path) == expected_digest
+    model = generator.load_and_validate_contract(REPOSITORY_ROOT)
+    path = REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH
+    assert json.loads(path.read_bytes()) == generator.reference_plan_document(model)
+
+
+def test_manifest_contains_handoff_and_provider_neutral_boundary() -> None:
+    manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
+    assert f"repo://{generator.DESIGN_HANDOFF_PATH.as_posix()}" in {
+        row["uri"] for row in manifest["source_artifacts"]
+    }
+    boundary = manifest["boundary"]
+    assert boundary["admission_status"] == "NOT_EVALUATED"
+    assert boundary["eligible"] is False
+    assert boundary["required_capability_count"] == 8
+    assert boundary["configured_mapping_count"] == 0
+    assert boundary["selected_provider_name"] is None
+    assert boundary["default_profile_id"] is None
+    assert boundary["fallback_profile_id"] is None
+    assert all(
+        boundary[key] is False
+        for key in (
+            "aws_reference_default",
+            "aws_reference_implicit_fallback",
+            "aws_reference_selected_binding",
+            "aws_reference_eligibility_shortcut",
+            "aws_reference_admission_requirement",
+            "aws_reference_evidence_substitute",
+        )
+    )
+
+
+def test_compute_edge_directory_contains_no_native_iac() -> None:
     directory = REPOSITORY_ROOT / "infra/terraform/compute-edge"
     assert sorted(path.name for path in directory.iterdir()) == [
         generator.REFERENCE_PLAN_PATH.name
     ]
-    forbidden_suffixes = {".tf", ".tfvars", ".hcl", ".lock"}
     assert not any(
-        path.is_file() and path.suffix in forbidden_suffixes
+        path.is_file() and path.suffix in {".tf", ".tfvars", ".hcl", ".lock"}
         for path in directory.rglob("*")
-    )
-
-
-def test_contract_top_level_and_generated_inventory_are_closed(
-    contract_document: dict[str, Any],
-) -> None:
-    assert set(contract_document) == generator.TOP_LEVEL_KEYS
-    assert generator.GENERATED_PATHS == (
-        Path("infra/terraform/compute-edge/compute-edge.reference-plan.v1.json"),
-        Path("changes/st-1503/manifest.yaml"),
     )
