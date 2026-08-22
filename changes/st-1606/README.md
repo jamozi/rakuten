@@ -43,11 +43,16 @@ validated.
 
 ## Dependency and authority binding
 
-The owner builder validates exact bytes and required safe semantics for the
-current ST-1502 and ST-1505 contracts, reference plans, and manifests. It also
-binds the canonical Story, OD-014, TST-029, operations, recovery, security, and
-implementation-first authority sources by SHA-256. The reused ST-1505
-path/YAML/JSON/atomic-output helper is an implementation dependency pinned in
+The owner builder validates exact bytes, closed owner semantics, and
+deterministically rendered bytes for the current provider-neutral ST-1502 and
+ST-1505 contracts, reference plans, and manifests. Both remain disabled,
+ineligible, unconfigured, and zero-action. AWS service and staging labels are
+optional historical reference mappings only; they cannot act as a default,
+fallback, selected binding, eligibility shortcut, admission requirement, or
+evidence substitute. The builder also binds the canonical Story, OD-014,
+TST-029, operations, recovery, security, and implementation-first authority
+sources by SHA-256. The reused ST-1502/ST-1505 owner renderers and
+path/YAML/JSON/atomic-output helper are implementation dependencies pinned in
 the generated manifest.
 
 No predecessor, canonical artifact, runtime source, IaC, workflow, status,

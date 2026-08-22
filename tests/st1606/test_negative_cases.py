@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 import pytest
+import yaml
 
 from scripts import build_st1606_backup_restore_drill as builder
 from scripts import build_st1505_staging_deployment as base
@@ -111,7 +112,156 @@ def test_semantically_tampered_predecessor_is_rejected_after_digest_rebind(
     raw["predecessor_bindings"]["staging_deployment"]["reference_plan_sha256"] = digest
     with pytest.raises(builder.BackupRestoreReferenceError) as error:
         builder.validate_contract(raw, repository_copy)
-    assert error.value.code == "PREDECESSOR_SEMANTIC_DRIFT"
+    assert error.value.code == "PREDECESSOR_OWNER_OUTPUT_DRIFT"
+
+
+@pytest.mark.parametrize(
+    ("predecessor", "relative", "section", "path", "value"),
+    (
+        (
+            "data_services",
+            "infra/terraform/data-services/data-services.reference-plan.v1.json",
+            "provider_neutral_data_services_admission",
+            ("eligible",),
+            True,
+        ),
+        (
+            "data_services",
+            "infra/terraform/data-services/data-services.reference-plan.v1.json",
+            "provider_neutral_data_services_admission",
+            ("selected_provider_name",),
+            "aws",
+        ),
+        (
+            "data_services",
+            "infra/terraform/data-services/data-services.reference-plan.v1.json",
+            "provider_neutral_data_services_admission",
+            ("default_profile_id",),
+            "default-profile",
+        ),
+        (
+            "data_services",
+            "infra/terraform/data-services/data-services.reference-plan.v1.json",
+            "provider_neutral_data_services_admission",
+            ("fallback_profile_id",),
+            "fallback-profile",
+        ),
+        (
+            "data_services",
+            "infra/terraform/data-services/data-services.reference-plan.v1.json",
+            "provider_neutral_data_services_admission",
+            ("aws_reference_boundary", "selected_binding"),
+            True,
+        ),
+        (
+            "staging_deployment",
+            "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+            "provider_neutral_staging_admission",
+            ("eligible",),
+            True,
+        ),
+        (
+            "staging_deployment",
+            "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+            "provider_neutral_staging_admission",
+            ("selected_provider_name",),
+            "aws",
+        ),
+        (
+            "staging_deployment",
+            "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+            "provider_neutral_staging_admission",
+            ("default_profile_id",),
+            "default-profile",
+        ),
+        (
+            "staging_deployment",
+            "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+            "provider_neutral_staging_admission",
+            ("fallback_profile_id",),
+            "fallback-profile",
+        ),
+        (
+            "staging_deployment",
+            "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+            "provider_neutral_staging_admission",
+            ("aws_reference_boundary", "selected_binding"),
+            True,
+        ),
+    ),
+)
+def test_provider_neutral_predecessor_shortcut_is_rejected_after_byte_rebind(
+    repository_copy: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    predecessor: str,
+    relative: str,
+    section: str,
+    path: tuple[str, ...],
+    value: object,
+) -> None:
+    plan_path = repository_copy / relative
+    plan = json.loads(plan_path.read_bytes())
+    target = plan[section]
+    for part in path[:-1]:
+        target = target[part]
+    target[path[-1]] = value
+    plan_path.write_text(
+        json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    digest = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+    predecessor_hashes = dict(builder.EXPECTED_PREDECESSOR_HASHES)
+    predecessor_hashes[relative] = digest
+    monkeypatch.setattr(builder, "EXPECTED_PREDECESSOR_HASHES", predecessor_hashes)
+    raw = base.load_yaml(repository_copy / builder.CONTRACT_PATH)
+    assert isinstance(raw, dict)
+    raw["predecessor_bindings"][predecessor]["reference_plan_sha256"] = digest
+    with pytest.raises(builder.BackupRestoreReferenceError) as error:
+        builder.validate_contract(raw, repository_copy)
+    assert error.value.code == "PREDECESSOR_OWNER_OUTPUT_DRIFT"
+    assert "aws" not in str(error.value).lower()
+
+
+@pytest.mark.parametrize(
+    ("predecessor", "relative", "section"),
+    (
+        (
+            "data_services",
+            "changes/st-1502/contracts/data-services-foundation.v1.yaml",
+            "provider_neutral_data_services_admission",
+        ),
+        (
+            "staging_deployment",
+            "changes/st-1505/contracts/staging-deployment.v1.yaml",
+            "provider_neutral_staging_admission",
+        ),
+    ),
+)
+def test_provider_neutral_owner_contract_downgrade_fails_after_digest_rebind(
+    repository_copy: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    predecessor: str,
+    relative: str,
+    section: str,
+) -> None:
+    contract_path = repository_copy / relative
+    owner = base.load_yaml(contract_path)
+    assert isinstance(owner, dict)
+    owner[section]["eligible"] = True
+    contract_path.write_text(
+        yaml.safe_dump(owner, sort_keys=False),
+        encoding="utf-8",
+    )
+    digest = hashlib.sha256(contract_path.read_bytes()).hexdigest()
+    predecessor_hashes = dict(builder.EXPECTED_PREDECESSOR_HASHES)
+    predecessor_hashes[relative] = digest
+    monkeypatch.setattr(builder, "EXPECTED_PREDECESSOR_HASHES", predecessor_hashes)
+    raw = base.load_yaml(repository_copy / builder.CONTRACT_PATH)
+    assert isinstance(raw, dict)
+    raw["predecessor_bindings"][predecessor]["contract_sha256"] = digest
+    with pytest.raises(builder.BackupRestoreReferenceError) as error:
+        builder.validate_contract(raw, repository_copy)
+    assert error.value.code == "PREDECESSOR_OWNER_VALIDATION_FAILED"
 
 
 def test_builder_has_no_external_or_restore_execution_surface() -> None:

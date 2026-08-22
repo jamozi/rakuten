@@ -18,6 +18,13 @@ def test_contract_loads_as_closed_non_executable_boundary() -> None:
     assert contract["selection_boundary"] == builder.EXPECTED_SELECTIONS
     assert contract["execution_boundary"] == builder.EXPECTED_EXECUTION
     assert contract["evidence_boundary"] == builder.EXPECTED_EVIDENCE
+    predecessors = contract["predecessor_bindings"]
+    assert predecessors["data_services"]["provider_neutral_admission"] == (
+        builder.EXPECTED_DATA_PROVIDER_NEUTRAL_ADMISSION
+    )
+    assert predecessors["staging_deployment"]["provider_neutral_admission"] == (
+        builder.EXPECTED_STAGING_PROVIDER_NEUTRAL_ADMISSION
+    )
 
 
 def test_reference_plan_is_a_projection_not_recovery_evidence() -> None:
