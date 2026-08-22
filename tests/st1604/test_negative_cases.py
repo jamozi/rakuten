@@ -294,6 +294,18 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
         (("selected_profile_id",), "default-profile"),
         (("default_profile_id",), "default-profile"),
         (("fallback_profile_id",), "fallback-profile"),
+        (
+            ("aws_reference_boundary", "role"),
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            ("aws_reference_boundary", "canonical_story_deliverables"),
+            "REPLACED_BY_PORTABLE_OVERLAY",
+        ),
+        (
+            ("aws_reference_boundary", "non_aws_owner_managed_profiles"),
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
         (("aws_reference_boundary", "selected_binding"), True),
         (("aws_reference_boundary", "eligibility_shortcut"), True),
         (("aws_reference_boundary", "admission_requirement"), True),
@@ -332,6 +344,85 @@ def test_provider_neutral_staging_shortcut_is_rejected_after_byte_rebind(
     with pytest.raises(generator.PerformanceLoadReferenceError) as captured:
         generator.render_outputs(isolated_repository)
     assert "aws" not in str(captured.value).lower()
+
+
+def test_current_canonical_reference_cannot_be_demoted_after_byte_rebind(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    plan_path = isolated_repository / generator.ST1505_PLAN_PATH
+    plan = json.loads(plan_path.read_bytes())
+    plan["reference_architecture"]["classification"] = (
+        "OPTIONAL_HISTORICAL_AWS_STAGING_REFERENCE_MAPPINGS_ONLY"
+    )
+    plan_path.write_text(
+        json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    digest = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+    monkeypatch.setattr(
+        generator,
+        "EXPECTED_PREDECESSORS",
+        tuple(
+            (
+                relative,
+                digest if relative == generator.ST1505_PLAN_PATH else expected,
+            )
+            for relative, expected in generator.EXPECTED_PREDECESSORS
+        ),
+    )
+    authored = yaml.safe_load(
+        (isolated_repository / generator.CONTRACT_PATH).read_bytes()
+    )
+    authored["predecessors"][0]["bindings"][1]["sha256"] = digest
+    (isolated_repository / generator.CONTRACT_PATH).write_text(
+        yaml.safe_dump(authored, sort_keys=False), encoding="utf-8"
+    )
+    with pytest.raises(generator.PerformanceLoadReferenceError):
+        generator.render_outputs(isolated_repository)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("aws_reference_role", "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY"),
+        ("canonical_story_deliverables", "REPLACED_BY_PORTABLE_OVERLAY"),
+        ("portable_implementation_paths", "REPLACEMENT_IMPLEMENTATION_PATHS"),
+    ),
+)
+def test_manifest_canonical_reference_boundary_cannot_be_rebound(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    value: str,
+) -> None:
+    manifest_path = isolated_repository / generator.ST1505_MANIFEST_PATH
+    manifest = yaml.safe_load(manifest_path.read_bytes())
+    manifest["boundary"][field] = value
+    manifest_path.write_text(
+        yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8"
+    )
+    digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+    monkeypatch.setattr(
+        generator,
+        "EXPECTED_PREDECESSORS",
+        tuple(
+            (
+                relative,
+                digest if relative == generator.ST1505_MANIFEST_PATH else expected,
+            )
+            for relative, expected in generator.EXPECTED_PREDECESSORS
+        ),
+    )
+    authored = yaml.safe_load(
+        (isolated_repository / generator.CONTRACT_PATH).read_bytes()
+    )
+    authored["predecessors"][0]["bindings"][2]["sha256"] = digest
+    (isolated_repository / generator.CONTRACT_PATH).write_text(
+        yaml.safe_dump(authored, sort_keys=False), encoding="utf-8"
+    )
+    with pytest.raises(generator.PerformanceLoadReferenceError):
+        generator.render_outputs(isolated_repository)
 
 
 def test_failure_is_stable_sanitized_and_does_not_echo_rejected_value() -> None:

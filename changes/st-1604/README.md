@@ -31,10 +31,14 @@ resource budget, cost authorization, telemetry connection, or test result.
   mean no evidence was collected, not zero latency, errors, cost, incidents,
   saturation, or capacity.
 - ST-1505 remains disabled, inert, zero-action, ineligible, and unconfigured.
-  AWS is optional historical reference metadata only, never a default,
-  fallback, selected binding, eligibility shortcut, admission requirement, or
-  evidence substitute. ST-1601 remains a bounded local interface that is
-  available but not connected; no backend or exporter is introduced.
+  AWS Tokyo remains the current Canonical Reference Architecture; Canonical
+  AWS-specific Story deliverables remain preserved and are not erased,
+  replaced, or completed by this portable overlay. Non-AWS and owner-managed
+  profiles are additional portable implementation paths only. AWS is never a
+  default, fallback, selected binding, eligibility shortcut, admission
+  requirement, or evidence substitute. ST-1601 remains a bounded local
+  interface that is available but not connected; no backend or exporter is
+  introduced.
 
 Activation is false. Load, browser, network, credential, provider, external,
 staging, release, and Production actions are forbidden and all action counts
