@@ -23,6 +23,7 @@ from raos.adapters.rakuten_owner_local import (
     OwnerPrivateRakutenOwnerLocalCredentialReader,
     OwnerPrivateRakutenOwnerLocalCredentialStore,
     OwnerPrivateRakutenOwnerLocalRequestReader,
+    OwnerPrivateRakutenOwnerLocalReflectionDiagnosticWriter,
     OwnerPrivateRakutenOwnerLocalResultWriter,
     SystemRakutenOwnerLocalHttpsConnectionFactory,
 )
@@ -3318,8 +3319,8 @@ def test_result_writer_accepts_short_credential_matching_validated_summary(
     (
         ("itemName", "untrusted reflection/token item"),
         (
-            "affiliateUrl",
-            "https://example.invalid/affiliate/reflection%2ftoken",
+            "shopName",
+            "untrusted reflection%2ftoken shop",
         ),
     ),
 )
@@ -3384,6 +3385,105 @@ def test_result_writer_persists_sanitized_failure_for_text_reflection(
     assert value["response_sha256"] == reflected.response_sha256
     assert b"reflection/token" not in raw
     assert b"reflection%2ftoken" not in raw.lower()
+
+
+def test_reflection_diagnostic_writer_publishes_only_closed_value_free_evidence(
+    tmp_path: Path,
+) -> None:
+    root = _repository(tmp_path)
+    OwnerPrivateRakutenOwnerLocalCredentialStore(root).setup(
+        _credentials(application=b"reflection/token")
+    )
+    request = fixed_owner_local_smoke_request(RakutenOwnerLocalApi.ITEM_SEARCH)
+    source = _success_envelope()
+    assert source.provider_result is not None
+    fields = source.provider_result.records[0].as_object()
+    fields["itemName"] = "untrusted reflection/token provider text"
+    reflected = replace(
+        source.provider_result,
+        records=(normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields),),
+    )
+    writer = OwnerPrivateRakutenOwnerLocalReflectionDiagnosticWriter(root)
+    run_id = "20260822T120003.000000Z-0123456789abcdef0123456789abcdef"
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=OwnerPrivateRakutenOwnerLocalCredentialReader(root),
+        transport=_StaticResultTransport(reflected),
+        result_writer=writer,
+    ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=run_id)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.request_count == 1
+    path = root / f".secrets/rakuten-owner-local/diagnostics/{run_id}.json"
+    assert stat.S_IMODE(path.stat().st_mode) == 0o600
+    assert path.stat().st_nlink == 1
+    assert not (root / f".secrets/rakuten-owner-local/results/{run_id}.json").exists()
+    raw = path.read_bytes()
+    value = json.loads(raw)
+    expected = envelope.as_reflection_diagnostic_object()
+    assert raw == (
+        json.dumps(
+            expected,
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        + b"\n"
+    )
+    assert tuple(value) == tuple(sorted(expected))
+    assert value["schema"] == (
+        "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1"
+    )
+    assert value["version"] == 1
+    assert value["diagnostic_outcome"] == "REFLECTION_DETECTED"
+    assert value["diagnostic_code"] == "RESPONSE_SCHEMA_DRIFT"
+    assert value["validation_stage_code"] == "CREDENTIAL_REFLECTION"
+    assert value["reflection_credential_kind"] == "APPLICATION_ID"
+    assert value["reflection_field_name"] == "itemName"
+    assert value["reflection_field_category"] == "TEXT"
+    assert value["request_disposition"] == "RESPONSE_RECEIVED"
+    assert value["request_count"] == 1
+    assert value["http_status"] == 200
+    assert value["body_byte_count"] == reflected.body_byte_count
+    assert value["response_sha256"] == reflected.response_sha256
+    assert value["provider_data_persisted"] is False
+    for forbidden in (
+        b"reflection/token",
+        b"provider text",
+        b"fixture-key",
+        b"fixture-affiliate",
+        b'"items"',
+        b'"products"',
+        b'"count"',
+    ):
+        assert forbidden not in raw
+
+    with pytest.raises(RakutenOwnerLocalFailure) as duplicate:
+        writer.write(envelope)
+    assert duplicate.value.code is RakutenOwnerLocalFailureCode.RESULT_STORE_INVALID
+    assert duplicate.value.request_count == 1
+    assert duplicate.value.http_status == 200
+    assert duplicate.value.response_sha256 == reflected.response_sha256
+
+
+def test_reflection_diagnostic_store_rejects_symlink_before_credentials(
+    tmp_path: Path,
+) -> None:
+    root = _repository(tmp_path)
+    owner = root / ".secrets/rakuten-owner-local"
+    owner.mkdir(parents=True, mode=0o700)
+    outside = tmp_path / "outside"
+    outside.mkdir(mode=0o700)
+    (owner / "diagnostics").symlink_to(outside, target_is_directory=True)
+
+    with pytest.raises(RakutenOwnerLocalFailure) as failure:
+        OwnerPrivateRakutenOwnerLocalReflectionDiagnosticWriter(root).preflight()
+
+    assert failure.value.code is RakutenOwnerLocalFailureCode.RESULT_STORE_INVALID
+    assert tuple(outside.iterdir()) == ()
 
 
 def test_result_rollback_failure_preserves_metadata_and_blocks_future_preflight(

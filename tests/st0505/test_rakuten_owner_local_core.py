@@ -18,6 +18,10 @@ from raos.domain.catalog.rakuten_owner_local import (
     RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY,
     RAKUTEN_OWNER_LOCAL_PROFILE,
     RakutenOwnerLocalApi,
+    RakutenOwnerLocalCredentialField,
+    RakutenOwnerLocalCredentialFieldCategory,
+    RakutenOwnerLocalCredentialKind,
+    RakutenOwnerLocalCredentialReflection,
     RakutenOwnerLocalCredentials,
     RakutenOwnerLocalFailure,
     RakutenOwnerLocalFailureCode,
@@ -71,6 +75,37 @@ RESULT_OBJECT_KEYS = (
     "items",
     "products",
     "provider_data_classification",
+    "evidence_authority",
+    "formal_tst_016",
+    "staging",
+    "production",
+    "od_015",
+)
+REFLECTION_DIAGNOSTIC_OBJECT_KEYS = (
+    "schema",
+    "version",
+    "run_id",
+    "started_at",
+    "finished_at",
+    "api",
+    "endpoint_id",
+    "api_version",
+    "outcome",
+    "diagnostic_outcome",
+    "diagnostic_code",
+    "validation_stage_code",
+    "reflection_credential_kind",
+    "reflection_field_name",
+    "reflection_field_category",
+    "request_fingerprint",
+    "request_disposition",
+    "request_count",
+    "retry_count",
+    "pagination_count",
+    "http_status",
+    "body_byte_count",
+    "response_sha256",
+    "provider_data_persisted",
     "evidence_authority",
     "formal_tst_016",
     "staging",
@@ -879,6 +914,16 @@ def test_value_free_validation_stage_survives_the_single_failure_write(
             if stage is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
             else None
         ),
+        credential_reflection=(
+            RakutenOwnerLocalCredentialReflection(
+                api=RakutenOwnerLocalApi.ITEM_SEARCH,
+                credential_kind=RakutenOwnerLocalCredentialKind.APPLICATION_ID,
+                field_name=RakutenOwnerLocalCredentialField.ITEM_NAME,
+                field_category=RakutenOwnerLocalCredentialFieldCategory.TEXT,
+            )
+            if stage is RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+            else None
+        ),
         disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
         http_status=200,
         body_byte_count=5353,
@@ -1372,26 +1417,42 @@ def test_service_rejects_each_security_credential_before_persistence(
         clock=_clock(),  # type: ignore[arg-type]
     ).run(RakutenOwnerLocalApi.ITEM_SEARCH, request, run_id=RUN_ID)
 
-    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
-    assert envelope.provider_result is None
-    assert envelope.failure is not None
-    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
-    assert (
-        envelope.failure.validation_stage_code
-        is RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+    application_link_exempt = (
+        credential_value == "synthetic-application"
+        and position
+        in {
+            "url",
+            "mandatory-url",
+        }
     )
-    assert (
-        envelope.failure.disposition
-        is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
-    )
-    assert envelope.failure.http_status == reflected_result.http_status
-    assert envelope.failure.body_byte_count == reflected_result.body_byte_count
-    assert envelope.failure.response_sha256 == reflected_result.response_sha256
+    if application_link_exempt:
+        assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+        assert envelope.provider_result is reflected_result
+        assert envelope.failure is None
+    else:
+        assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+        assert envelope.provider_result is None
+        assert envelope.failure is not None
+        assert (
+            envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+        )
+        assert (
+            envelope.failure.validation_stage_code
+            is RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+        )
+        assert (
+            envelope.failure.disposition
+            is RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED
+        )
+        assert envelope.failure.http_status == reflected_result.http_status
+        assert envelope.failure.body_byte_count == reflected_result.body_byte_count
+        assert envelope.failure.response_sha256 == reflected_result.response_sha256
+        assert (
+            envelope.as_result_object()["validation_stage_code"]
+            == "CREDENTIAL_REFLECTION"
+        )
     assert envelope.request_count == 1
     assert writer.writes == [envelope]
-    assert (
-        envelope.as_result_object()["validation_stage_code"] == "CREDENTIAL_REFLECTION"
-    )
     persisted = json.dumps(
         envelope.as_result_object(),
         ensure_ascii=True,
@@ -1399,10 +1460,16 @@ def test_service_rejects_each_security_credential_before_persistence(
         sort_keys=True,
         separators=(",", ":"),
     )
+    if application_link_exempt:
+        assert "synthetic-application" in persisted
     for known_value in (
-        "synthetic-application",
-        "synthetic-access",
-        "synthetic-affiliate",
+        ("synthetic-access", "synthetic-affiliate")
+        if application_link_exempt
+        else (
+            "synthetic-application",
+            "synthetic-access",
+            "synthetic-affiliate",
+        )
     ):
         assert known_value not in persisted
         assert known_value not in str(envelope.failure)
@@ -1472,15 +1539,23 @@ def test_field_aware_credential_reflection_covers_every_persisted_text_leaf(
         clock=_clock(),  # type: ignore[arg-type]
     ).run(api, request, run_id=RUN_ID)
 
-    affiliate_link_fields = {
-        RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"affiliateUrl", "itemUrl"}),
-        RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset({"affiliateUrl"}),
+    credential_link_fields = {
+        "application_id": {
+            RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"affiliateUrl", "itemUrl"}),
+            RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset(),
+        },
+        "access_key": {
+            RakutenOwnerLocalApi.ITEM_SEARCH: frozenset(),
+            RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset(),
+        },
+        "affiliate_id": {
+            RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"affiliateUrl", "itemUrl"}),
+            RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset({"affiliateUrl"}),
+        },
     }
-    affiliate_link_exempt = (
-        credential_name == "affiliate_id" and field in affiliate_link_fields[api]
-    )
+    credential_link_exempt = field in credential_link_fields[credential_name][api]
     persisted = json.dumps(envelope.as_result_object(), sort_keys=True)
-    if affiliate_link_exempt:
+    if credential_link_exempt:
         assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
         assert envelope.provider_result is reflected
         assert envelope.failure is None
@@ -1496,6 +1571,28 @@ def test_field_aware_credential_reflection_covers_every_persisted_text_leaf(
         assert envelope.failure.http_status == reflected.http_status
         assert envelope.failure.body_byte_count == reflected.body_byte_count
         assert envelope.failure.response_sha256 == reflected.response_sha256
+        reflection = envelope.failure.credential_reflection
+        assert reflection is not None
+        assert reflection.api is api
+        assert reflection.credential_kind is RakutenOwnerLocalCredentialKind(
+            credential_name.upper()
+        )
+        assert reflection.field_name is RakutenOwnerLocalCredentialField(field)
+        assert reflection.field_category is RakutenOwnerLocalCredentialFieldCategory(
+            "URL_LIST_MEMBER" if shape == "url-list" else shape.upper()
+        )
+        assert "reflection_credential_kind" not in envelope.as_result_object()
+        diagnostic = envelope.as_reflection_diagnostic_object()
+        assert tuple(diagnostic) == REFLECTION_DIAGNOSTIC_OBJECT_KEYS
+        assert diagnostic["diagnostic_outcome"] == "REFLECTION_DETECTED"
+        assert diagnostic["reflection_credential_kind"] == credential_name.upper()
+        assert diagnostic["reflection_field_name"] == field
+        assert diagnostic["reflection_field_category"] == (
+            "URL_LIST_MEMBER" if shape == "url-list" else shape.upper()
+        )
+        assert diagnostic["provider_data_persisted"] is False
+        diagnostic_text = json.dumps(diagnostic, sort_keys=True)
+        assert credential_value not in diagnostic_text
         assert credential_value not in persisted
         assert credential_value not in str(envelope.failure)
         assert credential_value not in repr(envelope.failure)
@@ -1553,14 +1650,14 @@ def test_affiliate_id_is_accepted_only_in_exact_affiliate_link_url_fields(
 
 
 @pytest.mark.parametrize(
-    ("api", "field"),
+    ("api", "field", "credential_name"),
     (
-        (RakutenOwnerLocalApi.ITEM_SEARCH, "affiliateUrl"),
-        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemUrl"),
-        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "affiliateUrl"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "affiliateUrl", "access_key"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemUrl", "access_key"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "affiliateUrl", "application_id"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "affiliateUrl", "access_key"),
     ),
 )
-@pytest.mark.parametrize("credential_name", ("application_id", "access_key"))
 @pytest.mark.parametrize("percent_encoded", (False, True))
 def test_security_credentials_remain_rejected_in_affiliate_link_url_fields(
     api: RakutenOwnerLocalApi,
@@ -1607,6 +1704,84 @@ def test_security_credentials_remain_rejected_in_affiliate_link_url_fields(
     assert "security%2Ftoken" not in persisted
     assert "security/token" not in str(envelope.failure)
     assert "security/token" not in repr(envelope.failure)
+
+
+@pytest.mark.parametrize("field", ("affiliateUrl", "itemUrl"))
+@pytest.mark.parametrize("percent_encoded", (False, True))
+def test_application_id_is_accepted_only_in_item_affiliate_link_url_fields(
+    field: str,
+    percent_encoded: bool,
+) -> None:
+    api = RakutenOwnerLocalApi.ITEM_SEARCH
+    request = fixed_owner_local_smoke_request(api)
+    assert type(request) is RakutenOwnerLocalItemSearchRequest
+    source = _item_result(request)
+    values = source.records[0].as_object()
+    rendered = (
+        "application%2Flink-token" if percent_encoded else "application/link-token"
+    )
+    values[field] = f"https://example.rakuten.co.jp/{rendered}/{field}"
+    result = replace(source, records=(normalized_record(api, values),))
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(
+            _credentials_with_summary_value("application_id", "application/link-token")
+        ),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(api, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.failure is None
+    assert envelope.provider_result is result
+    assert envelope.request_count == 1
+    assert writer.writes == [envelope]
+    result_object = envelope.as_result_object()
+    assert tuple(result_object) == RESULT_OBJECT_KEYS
+    assert result_object["schema"] == "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3"
+    assert rendered in json.dumps(result_object, sort_keys=True)
+
+
+def test_item_application_id_link_exemption_does_not_exempt_same_access_key_bytes() -> (
+    None
+):
+    api = RakutenOwnerLocalApi.ITEM_SEARCH
+    request = fixed_owner_local_smoke_request(api)
+    assert type(request) is RakutenOwnerLocalItemSearchRequest
+    source = _item_result(request)
+    values = source.records[0].as_object()
+    values["affiliateUrl"] = "https://example.rakuten.co.jp/shared-token/affiliate"
+    result = replace(source, records=(normalized_record(api, values),))
+    credentials = RakutenOwnerLocalCredentials(
+        profile=RAKUTEN_OWNER_LOCAL_PROFILE,
+        _application_id=b"shared-token",
+        _access_key=b"shared-token",
+        _affiliate_id=b"different-affiliate",
+    )
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(credentials),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(api, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.request_count == 1
+    reflection = envelope.failure.credential_reflection
+    assert reflection is not None
+    assert reflection.credential_kind is RakutenOwnerLocalCredentialKind.ACCESS_KEY
+    assert reflection.field_name is RakutenOwnerLocalCredentialField.AFFILIATE_URL
+    assert writer.writes == [envelope]
+    serialized = json.dumps(envelope.as_result_object(), sort_keys=True)
+    assert "shared-token" not in serialized
+    assert "shared-token" not in str(envelope.failure)
+    assert "shared-token" not in repr(envelope.failure)
 
 
 @pytest.mark.parametrize(
@@ -1779,13 +1954,13 @@ def test_short_credential_reflected_in_provider_text_still_fails_closed(
         clock=_clock(),  # type: ignore[arg-type]
     ).run(api, request, run_id=RUN_ID)
 
-    affiliate_link_exempt = (
-        credential_name == "affiliate_id"
+    provider_link_exempt = (
+        credential_name in {"application_id", "affiliate_id"}
         and api is RakutenOwnerLocalApi.ITEM_SEARCH
         and field == "itemUrl"
     )
     persisted = envelope.as_result_object()
-    if affiliate_link_exempt:
+    if provider_link_exempt:
         assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
         assert envelope.provider_result is reflected
         assert envelope.failure is None
@@ -2080,9 +2255,9 @@ def test_service_rejects_url_encoded_credential_reflection() -> None:
     request = _item_request()
     source_result = _item_result(request)
     fields = source_result.records[0].as_object()
-    fields["affiliateUrl"] = (
-        "https://example.rakuten.co.jp/affiliate/synthetic%2fapplication"
-    )
+    fields["smallImageUrls"] = [
+        "https://example.rakuten.co.jp/image/synthetic%2fapplication"
+    ]
     reflected_result = replace(
         source_result,
         records=(normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields),),
@@ -2220,6 +2395,174 @@ def test_cli_emits_only_fixed_failure_for_credential_reflection() -> None:
         "synthetic-affiliate",
     ):
         assert known_value not in message
+
+
+def test_reflection_diagnostic_cli_records_one_closed_match_without_v3_drift() -> None:
+    request = _item_request()
+    source_result = _item_result(request)
+    fields = source_result.records[0].as_object()
+    fields["shopName"] = "untrusted synthetic-access reflected shop"
+    result = replace(
+        source_result,
+        records=(normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields),),
+    )
+    reader = _Reader()
+    transport = _Transport(result)
+    writer = _Writer()
+
+    code, message = owner_local_cli._execute_reflection_diagnostic(  # noqa: SLF001
+        reader=reader,
+        writer=writer,
+        transport=transport,
+    )
+
+    assert code == 0
+    assert message == owner_local_cli.REFLECTION_DIAGNOSTIC_RECORDED
+    assert reader.calls == transport.calls == writer.preflights == 1
+    assert len(writer.writes) == 1
+    envelope = writer.writes[0]
+    assert envelope.request_count == 1
+    assert envelope.failure is not None
+    assert (
+        envelope.failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+    )
+    assert tuple(envelope.as_result_object()) == RESULT_OBJECT_KEYS
+    assert "reflection_credential_kind" not in envelope.as_result_object()
+    diagnostic = envelope.as_reflection_diagnostic_object()
+    assert tuple(diagnostic) == REFLECTION_DIAGNOSTIC_OBJECT_KEYS
+    assert diagnostic["diagnostic_outcome"] == "REFLECTION_DETECTED"
+    assert diagnostic["reflection_credential_kind"] == "ACCESS_KEY"
+    assert diagnostic["reflection_field_name"] == "shopName"
+    assert diagnostic["reflection_field_category"] == "TEXT"
+    assert diagnostic["request_disposition"] == "RESPONSE_RECEIVED"
+    assert diagnostic["request_count"] == 1
+    assert diagnostic["http_status"] == 200
+    assert diagnostic["body_byte_count"] == 256
+    assert diagnostic["response_sha256"] == "a" * 64
+    assert diagnostic["provider_data_persisted"] is False
+    serialized = json.dumps(diagnostic, sort_keys=True)
+    for forbidden in (
+        "synthetic-application",
+        "synthetic-access",
+        "synthetic-affiliate",
+        "reflected shop",
+    ):
+        assert forbidden not in serialized
+        assert forbidden not in message
+
+
+@pytest.mark.parametrize("failure", (False, True))
+def test_reflection_diagnostic_records_no_match_or_sanitized_request_failure(
+    failure: bool,
+) -> None:
+    request = _item_request()
+    successful_result = _item_result(request)
+    successful_fields = successful_result.records[0].as_object()
+    successful_fields["affiliateUrl"] = (
+        "https://example.rakuten.co.jp/synthetic-application/affiliateUrl"
+    )
+    successful_fields["itemUrl"] = (
+        "https://example.rakuten.co.jp/synthetic-application/itemUrl"
+    )
+    successful_result = replace(
+        successful_result,
+        records=(
+            normalized_record(
+                RakutenOwnerLocalApi.ITEM_SEARCH,
+                successful_fields,
+            ),
+        ),
+    )
+    transport = _Transport(
+        RakutenOwnerLocalFailure(
+            code=RakutenOwnerLocalFailureCode.TIMEOUT,
+            disposition=RakutenOwnerLocalRequestDisposition.OUTCOME_AMBIGUOUS,
+        )
+        if failure
+        else successful_result
+    )
+    writer = _Writer()
+
+    code, message = owner_local_cli._execute_reflection_diagnostic(  # noqa: SLF001
+        reader=_Reader(),
+        writer=writer,
+        transport=transport,
+    )
+
+    assert code == 0
+    assert message == owner_local_cli.REFLECTION_DIAGNOSTIC_RECORDED
+    assert transport.calls == writer.preflights == len(writer.writes) == 1
+    diagnostic = writer.writes[0].as_reflection_diagnostic_object()
+    assert tuple(diagnostic) == REFLECTION_DIAGNOSTIC_OBJECT_KEYS
+    assert diagnostic["diagnostic_outcome"] == (
+        "REQUEST_FAILED" if failure else "NO_REFLECTION_DETECTED"
+    )
+    assert diagnostic["diagnostic_code"] == ("TIMEOUT" if failure else "PASS")
+    assert diagnostic["request_disposition"] == (
+        "OUTCOME_AMBIGUOUS" if failure else "RESPONSE_RECEIVED"
+    )
+    assert diagnostic["request_count"] == 1
+    assert diagnostic["http_status"] == (None if failure else 200)
+    assert diagnostic["body_byte_count"] == (None if failure else 256)
+    assert diagnostic["response_sha256"] == (None if failure else "a" * 64)
+    assert diagnostic["reflection_credential_kind"] is None
+    assert diagnostic["reflection_field_name"] is None
+    assert diagnostic["reflection_field_category"] is None
+    assert diagnostic["provider_data_persisted"] is False
+    serialized = json.dumps(diagnostic, sort_keys=True)
+    for credential_value in (
+        "synthetic-application",
+        "synthetic-access",
+        "synthetic-affiliate",
+    ):
+        assert credential_value not in serialized
+
+
+def test_reflection_diagnostic_match_selection_uses_fixed_closed_precedence() -> None:
+    request = _item_request()
+    source = _item_result(request)
+    first = source.records[0].as_object()
+    first["shopName"] = "untrusted same-token"
+    second = source.records[0].as_object()
+    second["affiliateUrl"] = "https://example.rakuten.co.jp/same-token"
+    credentials = RakutenOwnerLocalCredentials(
+        profile=RAKUTEN_OWNER_LOCAL_PROFILE,
+        _application_id=b"same-token",
+        _access_key=b"same-token",
+        _affiliate_id=b"different-affiliate",
+    )
+
+    selected: list[tuple[object, object]] = []
+    for records in (
+        (first, second),
+        (second, first),
+    ):
+        reflected = replace(
+            source,
+            count=2,
+            last=2,
+            hits=2,
+            records=tuple(
+                normalized_record(RakutenOwnerLocalApi.ITEM_SEARCH, fields)
+                for fields in records
+            ),
+        )
+        with pytest.raises(RakutenOwnerLocalFailure) as failure:
+            credentials.reject_reflected_result(reflected)
+        reflection = failure.value.credential_reflection
+        assert reflection is not None
+        selected.append(
+            (
+                reflection.credential_kind.value,
+                reflection.field_name.value,
+            )
+        )
+
+    assert selected == [
+        ("APPLICATION_ID", "shopName"),
+        ("APPLICATION_ID", "shopName"),
+    ]
 
 
 def test_cli_keeps_collection_detail_value_free_and_non_persistent_in_output() -> None:

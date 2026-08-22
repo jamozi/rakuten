@@ -163,6 +163,11 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
     assert commands["list_apis"] == (
         generator._owner_local_authoritative_installed_command(("list-apis",))
     )
+    assert commands["diagnose_reflection_item_search"] == (
+        generator._owner_local_authoritative_installed_command(
+            ("diagnose-reflection", "--api", "item-search")
+        )
+    )
     assert commands["smoke_item_search"] == (
         generator._owner_local_authoritative_installed_command(
             ("smoke", "--api", "item-search")
@@ -391,7 +396,19 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "inspected_text_values": (
             "ALL_NORMALIZED_RECORD_STRING_VALUES_AND_STRING_LIST_MEMBERS"
         ),
-        "always_rejected_credentials": ["application_id", "access_key"],
+        "always_rejected_credentials": ["access_key"],
+        "application_id": {
+            "general_policy": "REJECT_IN_EVERY_NORMALIZED_TEXT_POSITION",
+            "provider_link_material_only": True,
+            "exact_validated_url_positions": {
+                "item-search": ["affiliateUrl", "itemUrl"],
+                "product-search": [],
+            },
+            "url_validation_precondition": "REQUIRED_BEFORE_FIELD_LOCAL_EXEMPTION",
+            "every_other_text_url_or_list_position": "REJECT",
+            "near_field_names": "REJECTED_BY_RECORD_SCHEMA",
+            "declassification_scope": "EXACT_ITEM_FIELD_LOCAL_NOT_GENERAL",
+        },
         "affiliate_id": {
             "general_policy": "REJECT_IN_EVERY_NORMALIZED_TEXT_POSITION",
             "public_link_material_only": True,
@@ -421,15 +438,26 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
             "ALL_SIX_VALIDATED_SUMMARIES_AND_ALL_NORMALIZED_RECORD_VALUES"
         ),
         "representations": ("INSPECTED_TEXT_RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES"),
-        "match": {
-            "application_id_and_access_key": (
-                "ANY_NONEMPTY_VALUE_SUBSTRING_IN_EVERY_INSPECTED_TEXT"
-            ),
-            "affiliate_id": (
-                "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_LINK_URL_"
-                "POSITIONS"
-            ),
-        },
+        "match": [
+            {
+                "kind": "APPLICATION_ID",
+                "rule": (
+                    "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_ITEM_LINK_"
+                    "URL_POSITIONS"
+                ),
+            },
+            {
+                "kind": "ACCESS_KEY",
+                "rule": "ANY_NONEMPTY_VALUE_SUBSTRING_IN_EVERY_INSPECTED_TEXT",
+            },
+            {
+                "kind": "AFFILIATE_ID",
+                "rule": (
+                    "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_LINK_URL_"
+                    "POSITIONS"
+                ),
+            },
+        ],
         "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
         "failure_evidence": (
             "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"
@@ -466,6 +494,120 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
             "raw_body_retained": False,
             "observed_field": None,
         },
+        "sanitized_followup_live_evidence": {
+            "installed_bundle_sha256": (
+                "fd23f88bb61d8919015602e48bc5c10b5df06d4c9dff4986ff513e4500249d93"
+            ),
+            "http_status": 200,
+            "body_byte_count": 5771,
+            "request_count": 1,
+            "retry_count": 0,
+            "pagination_count": 0,
+            "result_schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3",
+            "diagnostic_code": "RESPONSE_SCHEMA_DRIFT",
+            "validation_stage_code": "CREDENTIAL_REFLECTION",
+            "validation_detail_code": None,
+            "response_sha256": (
+                "00948e7dde4e37e5781fc55fada18bbb03010c5955fadc31ccbb7ed6209f5b0d"
+            ),
+            "raw_body_retained": False,
+            "observed_field": None,
+            "interpretation": (
+                "REPEATED_CREDENTIAL_REFLECTION_AFTER_EXACT_AFFILIATE_LINK_"
+                "EXEMPTION_FIELD_CAUSE_UNKNOWN"
+            ),
+        },
+        "sanitized_field_diagnostic_evidence": {
+            "api": "item-search",
+            "api_version": "2026-07-01",
+            "http_status": 200,
+            "body_byte_count": 3522,
+            "request_count": 1,
+            "retry_count": 0,
+            "pagination_count": 0,
+            "diagnostic_schema": (
+                "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1"
+            ),
+            "diagnostic_outcome": "REFLECTION_DETECTED",
+            "diagnostic_code": "RESPONSE_SCHEMA_DRIFT",
+            "validation_stage_code": "CREDENTIAL_REFLECTION",
+            "reflection_credential_kind": "APPLICATION_ID",
+            "reflection_field_name": "affiliateUrl",
+            "reflection_field_category": "URL",
+            "response_sha256": (
+                "7fa225eb219c86ee415fed74ff19caebf828d158bd68ea7818f34187c5dd2685"
+            ),
+            "provider_data_persisted": False,
+            "raw_body_retained": False,
+            "reflected_value_retained": False,
+            "interpretation": (
+                "CLOSED_FIELD_CLASSIFICATION_SUPPORTS_EXACT_ITEM_LINK_APPLICATION_"
+                "ID_EXEMPTION_NOT_GENERAL_DECLASSIFICATION"
+            ),
+        },
+    }
+    assert owner["normalized_result"]["reflection_diagnostic"] == {
+        "command": "diagnose-reflection --api item-search",
+        "invocation": "EXPLICIT_AUTHENTICATED_INSTALLED_COMMAND_ONLY",
+        "request": "FIXED_ITEM_SMOKE_ONE_GET_ZERO_RETRY_ZERO_PAGINATION",
+        "ordinary_result_v3": (
+            "EXACT_KEYS_AND_SERIALIZATION_UNCHANGED_NOT_WRITTEN_BY_DIAGNOSTIC_COMMAND"
+        ),
+        "ordinary_cli_output": "UNCHANGED_FIXED_GENERIC_OUTPUT",
+        "directory": ".secrets/rakuten-owner-local/diagnostics",
+        "path": ".secrets/rakuten-owner-local/diagnostics/<UTC-run-id>.json",
+        "publication": "ATOMIC_0600_NO_REPLACE_SINGLE_WRITE",
+        "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1",
+        "version": 1,
+        "exact_object_keys": list(
+            generator.EXPECTED_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_OBJECT_KEYS
+        ),
+        "diagnostic_outcomes": [
+            "REFLECTION_DETECTED",
+            "NO_REFLECTION_DETECTED",
+            "REQUEST_FAILED",
+        ],
+        "credential_kinds": ["APPLICATION_ID", "ACCESS_KEY", "AFFILIATE_ID"],
+        "field_categories": ["TEXT", "URL", "URL_LIST_MEMBER"],
+        "exact_fields": {
+            "item-search": [
+                "affiliateUrl",
+                "itemCode",
+                "itemName",
+                "itemUrl",
+                "mediumImageUrls",
+                "shopCode",
+                "shopName",
+                "smallImageUrls",
+            ],
+            "product-search": [
+                "affiliateUrl",
+                "brandName",
+                "genreName",
+                "mediumImageUrl",
+                "productCode",
+                "productId",
+                "productName",
+                "productNo",
+                "productUrlPC",
+                "smallImageUrl",
+            ],
+        },
+        "selection_precedence": (
+            "APPLICATION_ID_THEN_ACCESS_KEY_THEN_AFFILIATE_ID_AND_AFFILIATE_URL_"
+            "THEN_ITEM_URL_THEN_OTHER_URL_THEN_URL_LIST_THEN_TEXT_IN_FIXED_FIELD_"
+            "ORDER"
+        ),
+        "reflection_conjunction": (
+            "THREE_REFLECTION_FIELDS_NON_NULL_IF_AND_ONLY_IF_CREDENTIAL_REFLECTION_"
+            "DETECTED"
+        ),
+        "persisted_material": (
+            "CLOSED_ENUMS_AND_EXISTING_SANITIZED_METADATA_ONLY_NO_PROVIDER_RECORD_"
+            "SUMMARY_BODY_HEADER_VALUE_INDEX_EXCEPTION_OR_CREDENTIAL"
+        ),
+        "provider_data_persisted": False,
+        "historical_evidence": "NOT_RECLASSIFIED_NO_FIELD_LEVEL_CLAIM",
     }
     assert owner["verification"] == {
         "fake_and_recorded_only": True,

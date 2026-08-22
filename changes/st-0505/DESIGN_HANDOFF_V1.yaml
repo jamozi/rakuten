@@ -9,6 +9,7 @@ approved_scope:
   - separate reversible owner-local production-read integration for the reviewed Item Search 2026-07-01 and Product Search 2025-08-01 APIs
   - authenticated setup, rotate, doctor, closed API registry, explicit request-file reads, and fixed one-call smoke commands in an independently installed owner-private runtime
   - side-by-side owner-local result V3 with closed value-free response-validation stage and collection detail, with immutable V1 and V2 evidence
+  - explicit authenticated one-call Item reflection diagnostic with a separate closed value-free V1 artifact and unchanged ordinary Result V3
 source_design_refs:
   - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015
@@ -54,15 +55,17 @@ decision:
     classification: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
     runtime_name: rakuten-owner-local
     trusted_runtime_root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    installed_bundle_sha256: fd23f88bb61d8919015602e48bc5c10b5df06d4c9dff4986ff513e4500249d93
-    launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: e25b742f76904f8c50db9439bc02f435bdf8076068ea0e00a0746b69bdaf60ef
-    install_stage_sha256: 4745a3b74b307c16c542012d3e44526ea80e70915ea12e1c51874df6da9cacea
+    installed_bundle_sha256: 9e874c6cd17a09d1cb1939f4e1b6990b22dde10cbf6630568e0c8d0c2a36783a
+    launcher_sha256: 070a7968305200f468c0be4ed07b5845ba1abd30faeda4fd06ba62d59535228b
+    installer_sha256: 10656808837b8b21f5fecb7e499f98fcc74b222c6046276c9b6188c059e22502
+    install_stage_sha256: c71376a98ef6033b037382b7ba21f84a9ad7a1f0a9e319143d506510c6976dcc
     runtime_install_execution: NOT_EXECUTED
     credential_store: .secrets/rakuten-owner-local/credentials.v1.json
     credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
     result_store: .secrets/rakuten-owner-local/results/<UTC-run-id>.json
     result_schema: RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3
+    reflection_diagnostic_store: .secrets/rakuten-owner-local/diagnostics/<UTC-run-id>.json
+    reflection_diagnostic_schema: RAOS_ST0505_RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_V1
     previous_result_schemas:
       - RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1_IMMUTABLE
       - RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2_IMMUTABLE
@@ -75,6 +78,7 @@ decision:
       - list-apis
       - request --api <item-search|product-search> --request-file <absolute-json>
       - smoke --api <item-search|product-search>
+      - diagnose-reflection --api item-search
     authenticated_request_entry: GENERATED_POSITIONAL_FD4_DIGEST_GATE_ARGV_TEMPLATE
     enabled_apis:
       item-search: /ichibams/api/IchibaItem/Search/20260701
@@ -90,7 +94,8 @@ rationale:
   - preserves the unchanged ST-0502 request policy and OD-015 default-safe behavior
   - makes the smallest provider call capable of checking auth, schema, rate classification, and affiliateUrl presence
   - prevents credential values and raw or provider-reflected response material from entering tracked repository content or reports
-  - reconciles the field-generic reflection guard with official affiliate-link semantics without declassifying the affiliate ID outside exact validated link URL fields
+  - reconciles the field-generic reflection guard with official Item affiliate-link semantics and closed value-free diagnostic evidence without declassifying application or affiliate IDs outside their exact validated link URL fields or exempting the access key anywhere
+  - obtains a closed credential-kind and normalized-field classification through a separately explicit diagnostic instead of weakening reflection rejection or rewriting Result V3 evidence
   - provides a separately named owner-local read surface without changing the staging-only rakuten-live-smoke entry or the recorded ST-0502 adapter
   - treats a provider-production credential as local provider access only, never as evidence of RAOS Production or formal staging acceptance
 rejected_alternatives:
@@ -139,14 +144,17 @@ constraints:
   - every Item record requires itemCode and itemName as non-null non-empty bounded UTF-8 strings, and every Product record requires productCode and productId with the same shape; shopCode, shopName, and productName remain optional and nullable unless selected as an exact selector
   - every non-empty Item record requires itemUrl and every non-empty Product record requires productUrlPC as a non-null strict HTTPS URL; missing, null, empty, non-string, or non-HTTPS required URL values fail as RESPONSE_SCHEMA_DRIFT before success or persistence, while the existing nullable scalar affiliateUrl and Product image URL values and non-null URL-list rules remain unchanged
   - every normalized URL rejects Unicode whitespace plus Unicode control and format characters, raw backslashes, malformed percent escapes, userinfo, fragments, and invalid IDNA DNS or bracketed-IPv6 host syntax while preserving valid international or punycode hostnames, IPv4, bracketed IPv6, ports, paths, and queries
-  - after API/fingerprint/hits and exact-selector binding and URL validation, every normalized record string and string-list member is checked in raw and single-percent-decoded form; application ID and access key remain rejected everywhere, while affiliate ID is field-locally allowed only in Item affiliateUrl/itemUrl and Product affiliateUrl, remains rejected in every text, productUrlPC, image, list, unknown, or near-case field, and is not generally declassified
+  - after API/fingerprint/hits and exact-selector binding and URL validation, every normalized record string and string-list member is checked in raw and single-percent-decoded form; access key remains rejected everywhere, application ID is field-locally allowed only in Item affiliateUrl/itemUrl and remains rejected throughout Product and every other Item field, while affiliate ID remains field-locally allowed only in Item affiliateUrl/itemUrl and Product affiliateUrl; none is generally declassified
   - official Item Search 2026-07-01 documentation states affiliateUrl is returned only with affiliateId and itemUrl equals affiliateUrl when affiliateId is supplied, while older official documentation describes affiliate-link construction as including affiliate ID
   - sanitized owner-local evidence records one HTTP 200 Item request, body-byte-count 5771, request_count 1, retry/pagination zero, Result V3 RESPONSE_SCHEMA_DRIFT at CREDENTIAL_REFLECTION, and response SHA-256 833e539c890ce874f04b7b9201abca1306e1d2b1fc105c99529c587883afdc03; no raw body or observed field was retained, so it supports an official-spec conflict plus stage evidence and not a field-level response claim
+  - follow-up sanitized owner-local evidence from bundle fd23f88bb61d8919015602e48bc5c10b5df06d4c9dff4986ff513e4500249d93 records one HTTP 200 Item request, body-byte-count 5771, request_count 1, retry/pagination zero, the same Result V3 CREDENTIAL_REFLECTION refusal, and response SHA-256 00948e7dde4e37e5781fc55fada18bbb03010c5955fadc31ccbb7ed6209f5b0d; no raw body or observed field was retained, so the remaining field cause is unknown and no additional exemption is inferred
+  - sanitized dedicated-diagnostic evidence records Item Search 2026-07-01, HTTP 200, body-byte-count 3522, request_count 1, retry/pagination zero, REFLECTION_DETECTED for the closed APPLICATION_ID/affiliateUrl/URL classification, response SHA-256 7fa225eb219c86ee415fed74ff19caebf828d158bd68ea7818f34187c5dd2685, and provider_data_persisted false; no raw body, provider record, field value, index, or credential was retained, so this supports only the exact Item affiliateUrl/itemUrl application-ID allowance together with official Item link semantics and remains non-formal evidence
   - all six schema- and relationship-validated summary integers plus every non-text normalized value already accepted by its field schema are not converted to credential-comparison text; typed scalar coincidence alone is not credential reflection
   - validation_stage_code is null for success and non-validation failures and otherwise is exactly one of SUMMARY_SHAPE, COLLECTION_SHAPE, RECORD_SHAPE, EXACT_SELECTOR, MANDATORY_TEXT, URL, or CREDENTIAL_REFLECTION; it never contains a provider field name, record index, expected or actual value, raw body, header, exception detail, or credential
   - validation_stage_code preserves the existing generic diagnostic and fixed CLI output; exact-selector identity mismatch remains RESULT_MISMATCH while the other validation refusals remain RESPONSE_SCHEMA_DRIFT, and all failures preserve available response metadata and request count without provider_result or summary persistence
   - validation_detail_code is non-null if and only if diagnostic_code is RESPONSE_SCHEMA_DRIFT and validation_stage_code is COLLECTION_SHAPE; it is one of ROOT_NOT_OBJECT, COLLECTION_KEY_INVALID, ROOT_MEMBER_UNRECOGNIZED, COLLECTION_NOT_ARRAY, or OPTIONAL_ROOT_MEMBER_VALUE_INVALID and never contains an observed key, value, index, body, header, exception, or credential
   - response validation applies collection, summary, record shape, exact selector, mandatory text, URL, then credential reflection to the complete returned collection before any record enters the next stage, so provider record order cannot change the chosen stage
+  - the explicit Item-only reflection diagnostic preserves ordinary Result V3 and fixed CLI output, performs the same fixed smoke with one GET and no retry or pagination, scans the complete normalized collection, selects only closed credential-kind/exact-field/category metadata with fixed record-order-independent precedence, and atomically writes one mode-0600 no-replace artifact without provider records, summaries, raw body/header/value/index/exception, or credential bytes
   - every owner-local invocation uses at most one GET, one resolved public IP candidate, zero redirect, zero retry, zero pagination follow-up, and no proxy or TLS override environment
   - setup refuses an existing record; rotate atomically replaces only a fully validated record; installer is credential-blind and never opens .secrets
   - persisted owner-local results are mode 0600, no-replace, normalized UNTRUSTED_PROVIDER_DATA and contain response SHA-256 but no raw body, headers, provider errors, credentials, affiliate-rate, review bodies, EPC, RPM, or revenue material
@@ -167,6 +175,7 @@ security_and_approval_gates:
   - same-UID in-place mutation after final descriptor hashing or deliberate stage-zero descriptor forgery is out of scope; pathname replacement is bound or refused through inherited descriptors
   - the owner-local setup/rotate prompt and every secret-bearing command are reachable only after the exact installed launcher and payload have been authenticated before body execution
   - the generated custom-request entry authenticates the exact installed launcher through the same fd-4 SHA-256 gate before body execution, accepts exactly two positional values at fixed argv indices for a closed API name and absolute request file, and direct-executes quoted arguments without eval or shell interpolation
+  - the generated fixed reflection-diagnostic entry authenticates the exact installed launcher through that same fd-4 SHA-256 gate before the one fixed Item diagnostic invocation; it is never an automatic fallback or retry
   - owner-local installation is side-by-side and credential-blind; no repository Make entry is authoritative for setup, rotation, credential reads, or provider requests
   - all owner-local tests use disposable secret roots, fake transports, and recorded bodies; they never inspect the real credential path or call Rakuten
 acceptance_criteria:
@@ -182,10 +191,11 @@ acceptance_criteria:
   - normalized mandatory, optional, and list URL positions reject hostile Unicode whitespace, control, format, backslash, host, userinfo, fragment, port, and percent-escape syntax while retaining the documented valid international, IPv6, port, path, and query forms
   - the generated custom-request argv template rejects unrendered placeholders, unknown APIs, relative paths, extra arguments, and launcher tampering before dispatch, while hostile absolute path bytes remain one quoted positional argument
   - itemCode/shopCode and productId/productCode identity drift and contradictory empty or non-empty response summaries, including a pageCount different from min(ceil(count / hits), 100), fail closed with complete sanitized response metadata
-  - application ID and access key reflection through every normalized URL, ordinary string, string-list member, or percent-encoded string fails before result persistence; affiliate ID behaves identically outside exact validated Item affiliateUrl/itemUrl and Product affiliateUrl fields, which preserve raw or percent-encoded public-link material only after URL validation
+  - access key reflection through every normalized URL, ordinary string, string-list member, or percent-encoded string fails before result persistence; application ID behaves identically outside exact validated Item affiliateUrl/itemUrl fields, and affiliate ID behaves identically outside exact validated Item affiliateUrl/itemUrl and Product affiliateUrl fields; only those field-local raw or percent-encoded public-link positions are preserved after URL validation
   - short numeric application/access/affiliate credentials coinciding with each validated count, page, first, last, hits, or pageCount value for both enabled APIs, or with any non-text normalized value accepted by its field schema, do not fail solely because of typed scalar equality
   - Item and Product success, including empty collections, persist all six validated summary scalars; every ordinary or credential-reflection failure retains the same exact result-object key set with all six summary values null
   - every response-validation family persists only its closed value-free validation_stage_code, preserves the existing generic diagnostic and available request/response evidence, and leaks no raw field name, record index, expected or actual value, body, header, exception detail, or credential material
+  - the explicit reflection diagnostic emits only fixed stdout, writes one separate exact-schema artifact containing existing sanitized metadata and closed credential-kind/exact-field/category values, leaves the three reflection fields null for no-match or unrelated request failure, never writes provider records or summaries, and leaves all Result V3 keys and serialization unchanged
   - Item response fixtures accept an omitted carrier or exact integer zero without persisting it, reject bool, negative, nonzero, and non-integer values, preserve Product root behavior, and distinguish the five closed collection details without dynamic material
   - Item response fixtures cover items and Items across empty and non-empty collections with carrier omitted or exact zero, prove canonical lowercase-only output, reject alias ambiguity, missing or approximate aliases, unknown roots, non-list collections, and nested Item/item wrappers, and preserve Product uppercase-Items refusal
   - cross-record hostile fixtures prove a leading URL defect cannot precede a later exact-selector mismatch or mandatory-text refusal for either enabled API

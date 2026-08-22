@@ -29,6 +29,8 @@ OWNER_LOCAL_OK = "RAKUTEN_OWNER_LOCAL_OK"
 OWNER_LOCAL_FAIL = "RAKUTEN_OWNER_LOCAL_FAIL"
 SETUP_COMPLETE = "RAKUTEN_OWNER_LOCAL_SETUP_COMPLETE"
 ROTATE_COMPLETE = "RAKUTEN_OWNER_LOCAL_ROTATE_COMPLETE"
+REFLECTION_DIAGNOSTIC_RECORDED = "RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_RECORDED"
+REFLECTION_DIAGNOSTIC_FAIL = "RAKUTEN_OWNER_LOCAL_REFLECTION_DIAGNOSTIC_FAIL"
 _RUNTIME_MANIFEST = "runtime-manifest.v1.json"
 _BUNDLE_NAME = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _DIRECTORY_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW
@@ -464,6 +466,14 @@ def _production_writer() -> Any:
     return OwnerPrivateRakutenOwnerLocalResultWriter(REPOSITORY_ROOT)
 
 
+def _production_reflection_diagnostic_writer() -> Any:
+    from raos.adapters.rakuten_owner_local import (
+        OwnerPrivateRakutenOwnerLocalReflectionDiagnosticWriter,
+    )
+
+    return OwnerPrivateRakutenOwnerLocalReflectionDiagnosticWriter(REPOSITORY_ROOT)
+
+
 def _production_transport() -> Any:
     from raos.adapters.rakuten_owner_local import (
         DirectRakutenOwnerLocalTransport,
@@ -518,12 +528,38 @@ def _execute_request(
     return 0, OWNER_LOCAL_OK
 
 
+def _execute_reflection_diagnostic(
+    *,
+    reader: Any,
+    writer: Any,
+    transport: Any,
+) -> tuple[int, str]:
+    from raos.application.catalog.rakuten_owner_local import RakutenOwnerLocalService
+    from raos.domain.catalog.rakuten_owner_local import (
+        RakutenOwnerLocalApi,
+        fixed_owner_local_smoke_request,
+    )
+
+    api = RakutenOwnerLocalApi.ITEM_SEARCH
+    try:
+        run_id = _new_run_id(_utc_now())
+        RakutenOwnerLocalService(reader, transport, writer).run(
+            api,
+            fixed_owner_local_smoke_request(api),
+            run_id=run_id,
+        )
+    except BaseException:
+        return 1, REFLECTION_DIAGNOSTIC_FAIL
+    return 0, REFLECTION_DIAGNOSTIC_RECORDED
+
+
 def _valid_arguments(arguments: tuple[str, ...]) -> bool:
     if arguments in {
         ("setup",),
         ("rotate",),
         ("doctor",),
         ("list-apis",),
+        ("diagnose-reflection", "--api", "item-search"),
     }:
         return True
     if (
@@ -568,6 +604,12 @@ def _dispatch(arguments: tuple[str, ...]) -> tuple[int, str]:
         return (
             0,
             '{"apis":["item-search","product-search"],"schema_version":1}',
+        )
+    if command == "diagnose-reflection":
+        return _execute_reflection_diagnostic(
+            reader=_production_reader(),
+            writer=_production_reflection_diagnostic_writer(),
+            transport=_production_transport(),
         )
     api = RakutenOwnerLocalApi(arguments[2])
     if command == "request":
