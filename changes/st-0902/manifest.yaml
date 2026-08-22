@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0902_final_approval_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0902_final_approval_reference_plan.py
 provenance:
-  contract_sha256: 432e0d327ff67c594db306337935137ffee1cdd708ae7ac69b29e00fff7c0bbc
+  contract_sha256: 5e54fe0ba669db5f8d776e83af08134605a372d54062c82d2b4d43d446bb10a8
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -83,7 +83,7 @@ provenance:
   - story_id: ST-0605
     role: contract
     uri: repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml
-    sha256: a8e1a07f2520b3b874d89fbfc44cd872fa84d6b193d2b433a4723e5e3523dd35
+    sha256: cb3ff84201a511af4d76b26d2e43aff6e640f2940b848cf820cadf1168fb4f41
   - story_id: ST-0805
     role: readme
     uri: repo://changes/st-0805/README.md
@@ -110,19 +110,19 @@ provenance:
     sha256: f267f2af141d1269bceb175095dc4a397cafb78a120516bb3fb82a8c0706bc71
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff
+    sha256: 77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522
   pro_assistance: PRO_UNAVAILABLE_NONE_NO_PROPOSAL_NO_CONTENT
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
   bytes: 16320
-  sha256: 432e0d327ff67c594db306337935137ffee1cdd708ae7ac69b29e00fff7c0bbc
+  sha256: 5e54fe0ba669db5f8d776e83af08134605a372d54062c82d2b4d43d446bb10a8
 - uri: repo://changes/st-0902/README.md
   bytes: 5240
   sha256: 2f7a746f806f18f47acff531a73f2617e601b09fdaad555cbe17f934e586c7ca
 - uri: repo://scripts/build_st0902_final_approval_reference_plan.py
   bytes: 50464
-  sha256: 8c1d79597a3fa3e2de15265d4c4e0c4b9a4cde448d2c192892cabf63fa14b4d1
+  sha256: fa5d05a1ba81f4ede994499405f82e2fa2332bc9b590155abb4016d0a039d7be
 - uri: repo://tests/st0902/conftest.py
   bytes: 993
   sha256: 00ea54ee7928734d9ec998bb9db5399e9596624a9a1a89707a699f8eb4406576
@@ -139,7 +139,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0902/generated/final-approval-reference-plan.v1.json
   bytes: 21890
-  sha256: 133a2cff7a51e6100b2377e97f9e930c941ebb56bcc04b417f229e3d0a089b77
+  sha256: da385aaab7f62c64fac42d3f2a1ddc7d3e5ce7e6ad56d016d1b60cbadaaf5e47
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_FINAL_APPROVAL_REFERENCE_PLAN
   executable: false
