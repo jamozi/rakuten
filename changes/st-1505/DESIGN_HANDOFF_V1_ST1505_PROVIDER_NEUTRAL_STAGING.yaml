@@ -1,0 +1,149 @@
+schema: DESIGN_HANDOFF_V1
+version: 1
+record_status: RECORDED_DURABLE_OWNER_DECISION
+approved_story: ST-1505
+approved_scope:
+  - Define Full RAOS staging admission without assuming or requiring AWS or any other target infrastructure provider.
+  - Bind the provider-neutral ST-1501 foundation, ST-1502 data-services, ST-1503 compute-edge, and ST-1504 deployment-identity handoffs, contracts, and reference plans as mandatory future dependency evidence.
+  - Retain AWS Tokyo and AWS service names only as optional historical reference mappings inherited from INT-DEC-007 and RAOS-ARCH-001.
+  - Keep every current target, deployment, migration, runtime, rollback, release, and Production binding unset and every external action disabled.
+source_design_refs:
+  - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  - repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-007
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-002
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-009
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-010
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-011
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-013
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-014
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015
+  - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1505
+  - repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+  - repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
+  - repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
+  - repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
+  - repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md#RAOS-ARCH-001
+  - repo://docs/upstream/key_documents/RAOS_02_architecture_catalog_v0.1.yaml#RAOS-ARCH-001
+  - repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md#RAOS-SEC-001
+  - repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md#RAOS-OPS-001
+  - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-009
+  - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-022
+decision:
+  staging_provider_policy: STRICT_PROVIDER_NEUTRAL_STAGING_CAPABILITY_AND_DEPENDENCY_ADMISSION
+  selected_profile: null
+  default_profile: null
+  fallback_profile: null
+  concrete_alternate_provider_selected: false
+  eligible_profile_kinds:
+    - AWS
+    - OTHER_CLOUD
+    - OWNER_MANAGED_INFRASTRUCTURE
+  eligibility_condition: COMPLETE_EXACT_DEPENDENCY_AND_CAPABILITY_MAPPING_WITH_EQUIVALENT_EVIDENCE
+  aws_reference_boundary:
+    canonical_decision_id: INT-DEC-007
+    reference_profile: AWS_TOKYO_STAGING
+    role: OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY
+    default: false
+    implicit_fallback: false
+    selected_binding: false
+    eligibility_shortcut: false
+    admission_requirement: false
+    evidence_substitute: false
+  required_dependency_stories:
+    - ST-1501
+    - ST-1502
+    - ST-1503
+    - ST-1504
+  required_capability_ids:
+    - provider_neutral_foundation_profile
+    - provider_neutral_data_services_profile
+    - provider_neutral_compute_edge_profile
+    - provider_neutral_deployment_identity_profile
+    - immutable_build_sbom_scan_and_provenance
+    - migration_compatibility_and_dry_run
+    - protected_environment_human_approval
+    - smoke_security_and_runtime_verification
+    - cross_capability_transport_security
+    - observability_alerting_and_release_markers
+    - rollback_restore_and_recovery_readiness
+    - isolation_region_residency_and_budget_controls
+    - provider_neutral_target_adapter
+rationale:
+  - Staging is a release-evidence environment, so eligibility must depend on complete capabilities and evidence rather than a cloud or service name.
+  - The four provider-neutral predecessor profiles define complementary foundation, data, compute-edge, and deployment-identity boundaries and none currently selects a live profile.
+  - Exact dependency admission prevents an AWS label, predecessor completion claim, or local reference artifact from substituting for explicit mappings and identical evidence.
+  - Keeping target bindings null and all actions disabled preserves Canonical human gates and unresolved decisions while allowing a reversible local contract implementation.
+rejected_alternatives:
+  - Require AWS, AWS Tokyo, an AWS account, or AWS service names merely because they remain in historical Reference Architecture metadata.
+  - Treat Terraform, RDS, S3, SQS, ECS, Fargate, CloudFront, WAF, Route53, ACM, IAM, or GitHub OIDC labels as staging eligibility or evidence.
+  - Select another cloud or owner-managed target without complete dependency mappings, target-adapter evidence, residency, budget, identity, security, operations, and release evidence.
+  - Allow missing, unknown, duplicate, partial, implicit, defaulted, fallback, name-only, or historical-reference-only dependency or capability mappings.
+  - Execute a deployment, migration, smoke request, provider call, rollback, release, or Production action from a local reference plan.
+constraints:
+  - Every ST-1501 through ST-1504 handoff, contract, and generated plan remains raw-hash, semantic-hash, and deterministic-byte bound.
+  - A future staging profile must explicitly satisfy every predecessor provider-neutral admission and exactly one mapping for every staging capability.
+  - Build admission requires an immutable digest, SBOM, vulnerability result, signed provenance, and promotion without rebuild.
+  - Migration admission requires Expand-Migrate-Contract compatibility, a dry run, lock evidence, forward-fix readiness, an assigned migration owner, independent migration review, and no destructive current-release Contract step.
+  - Protected environment admission requires exact repository, ref, workflow, environment, audience, subject, and independent human approval evidence.
+  - Runtime admission requires liveness, readiness, dependency, migration-compatibility, Public/Admin/Internal isolation, smoke, security, and browser workflow evidence.
+  - Every artifact, promotion, identity federation, deployment, migration, smoke/runtime, telemetry/alerting, rollback/restore, and target-adapter network flow requires authenticated encrypted transport, exact peer/hostname verification, and downgrade-resistant evidence.
+  - Telemetry, alerts, release markers, rollback, restore, integrity, residency, isolation, budget, and automatic-stop evidence are mandatory and provider-neutral.
+  - The target adapter must expose provider-neutral deployment operations and evidence without provider SDK types entering the domain contract.
+  - Site/domain, identity provider, notification, region/residency, retention/deletion, budget, credentials, provider, profile, account/project/tenant, backend, identity, adapter, and resource choices remain unset while Open Decisions are unresolved.
+  - No credential, provider call, network access, external write, deployment, migration, release, staging, or Production action is authorized by this record.
+security_and_approval_gates:
+  - Preserve security, operations, release, migration-owner, protected-environment, and independent human approval gates.
+  - Preserve exact repository/ref/workflow subject binding, short-lived identity, no static cloud secret, least privilege, provenance, audit, revocation, and rollback requirements.
+  - Preserve Critical/High release blocking, SBOM, vulnerability scan, signed provenance, data isolation, transport, retention, restore, and residency evidence.
+  - Preserve OD-002, OD-009, OD-010, OD-011, OD-013, OD-014, and OD-015 blocking states until their owners provide valid evidence.
+  - Require identical security, operations, release, supply-chain, migration, runtime, observability, rollback/restore, isolation, residency, budget, and adapter evidence for every eligible provider kind.
+  - Never infer eligibility from AWS or another provider label, GitHub source status, historical metadata, predecessor completion, or local generator/test success.
+acceptance_criteria:
+  - The ST-1505 source and generated reference expose a closed provider-neutral dependency and capability admission inventory with no selected, default, or fallback target.
+  - All four provider-neutral predecessors remain exact inputs and each future profile must satisfy its complete mapping and identical-evidence contract.
+  - Unknown, missing, duplicate, partial, implicit, label-only, default, fallback, predecessor-only, or reference-only admission attempts fail closed.
+  - AWS staging remains visible only as optional historical reference mappings and cannot satisfy dependency, capability, admission, or evidence requirements.
+  - Build/SBOM/provenance, independent migration review, protected approval, smoke/security/runtime, cross-capability transport security, observability/alerts, rollback/restore, isolation/residency/budget, and target-adapter evidence remain required and unconfigured.
+  - Existing disabled activation, zero action counts, unresolved decisions, human gates, and NOT_EXECUTED evidence remain unchanged.
+required_test_evidence:
+  - Isolated tests/st1505 positive contract and generated-plan assertions.
+  - Hostile tests for every predecessor semantic and byte drift, missing/unknown/duplicate/partial mappings, provider shortcuts, defaults, fallbacks, and gate downgrades.
+  - Owner generator regeneration and read-only --check.
+  - Ruff for changed Python, git diff --check, and affected ST-1505 developer checks when available.
+  - Formal TST-009 and TST-022, hosted CI, live provider, staging, rollback, release, and Production evidence remain separately unexecuted.
+open_decision_state:
+  OD-002:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: EXAMPLE_INVALID_PROVISIONAL_BRAND_EXTERNAL_PUBLICATION_FORBIDDEN
+  OD-009:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: LOW_DEVELOPMENT_CAP_STAGING_AND_PRODUCTION_DISABLED
+  OD-010:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: LOCAL_FAKE_AUTH_DEVELOPMENT_ONLY_EXTERNAL_PUBLICATION_FORBIDDEN
+  OD-011:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: LOCAL_LOG_ONLY_STAGING_AND_PRODUCTION_UNAVAILABLE
+  OD-013:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: REFERENCE_REGION_METADATA_ONLY_STAGING_TARGET_UNSET_PRODUCTION_APPLY_FORBIDDEN
+  OD-014:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: NO_RETENTION_OR_AUTOMATIC_DELETION_POLICY_SELECTED
+  OD-015:
+    status: EXTERNAL_EVIDENCE_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: RECORDED_FIXTURES_ONLY_CREDENTIALS_ABSENT_PROVIDER_CALLS_FORBIDDEN
