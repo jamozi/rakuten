@@ -65,6 +65,10 @@ DESIGN_HANDOFF_V1:
     - PENDING_FINAL_ASSET pathはHEAD、index、working treeのすべてで不在とし、glob、caller指定path、任意path追加、symlinkを拒否する
     - repository内bytecodeはlive importに使わず、self-hosted専用のclosed package namespaceだけをmanifest対象sourceからloadする
     - front-pageとsingleのheader/footer semantic landmarkはtemplate-part wrapperだけが所有し、part root groupは非semantic divとして重複landmarkを作らない
+    - theme packageはignore済み固定path .secrets/self-hosted-theme-packages/kurashinoshirube-child.zip だけへowner-privateかつatomicに書き、WordPress credential directoryと分離する
+    - theme package directoryはcurrent owner/mode 0700、zipはcurrent owner/mode 0600のnon-empty、16 MiB以下、regular single-link fileに限定し、symlink、path drift、unsafe overwrite、stale preparing entryを拒否する
+    - theme package writeはheld directoryをexact fixed pathへterminal rebindし、atomic replaceとparent fsync後にZIPをbounded no-follow stable reopenしてintended bytesとの一致を確認する
+    - footer linkのnormal、visited、hover、active、focus-visible色とfocus outlineはdark footerおよびfilled button背景に対してWCAG AA以上を維持し、foreground/background/outline/custom-property inventoryとexact reviewed stylesheet bytesで未審査のcascade、opacity、browser-specific text-fill overrideを拒否する
     - content publication、theme/plugin activation、media upload、taxonomy mutationを実装しない
     - AI画像は別の費用・外部操作gateで生成し、完成asset欠落時はtheme package readinessを拒否
   security_and_approval_gates:
@@ -90,6 +94,8 @@ DESIGN_HANDOFF_V1:
     - theme source is deterministic, local-only, accessible, and reduced-motion aware
     - reveal content is visible without JavaScript and becomes motion-hidden only after successful initialization
     - front-page and single each keep exactly one header and one footer landmark, with no nested same-type landmark in the referenced parts
+    - theme package then no-write check leaves the exact Git worktree clean so the unchanged launcher clean-head gate remains usable
+    - footer link and focus states meet contrast requirements without weakening the global focus-visible indicator
     - runtime manifest, working bytes, and HEAD blobs match before any RAOS import, credential read, or network construction
     - pinned Python code inventory and captured CLI stage identity match before interpreter startup and remain bound in the verifier
     - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
@@ -103,6 +109,8 @@ DESIGN_HANDOFF_V1:
     - runtime manifest determinism, exact-head, drift, import-closure, and no-repository-pyc tests
     - pending/mixed/final theme-image inventory parity, arbitrary-path, symlink, missing, untracked, dirty, and hash-mismatch negative tests
     - template-part wrapper and part-root semantic-landmark duplication and omission negative tests
+    - owner-private package directory/file mode, symlink, hardlink, stale-stage, overwrite, directory-rename, same-inode content mutation, terminal byte verification, atomic fsync, fixed-path, and ignored-clean-head tests
+    - calculated footer normal, visited, hover, active, focus text and focus-indicator contrast tests
     - Python code inventory shape/content, absent-zip, stage-continuity, and pre-open closed-path tests
     - startup-landmark, managed-bin inventory, root-owned loader/library digest, and RPATH-bypass tests
     - transport one-attempt, TLS, timeout, redirect, proxy, bounded-response tests

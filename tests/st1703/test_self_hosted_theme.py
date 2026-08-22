@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import shutil
 import stat
+import subprocess
 import sys
 import zipfile
 
@@ -25,10 +26,26 @@ import build_st1703_self_hosted_theme as theme  # noqa: E402
 def _isolated_theme(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     target = tmp_path / theme.THEME_SLUG
     shutil.copytree(theme.THEME_ROOT, target)
+    output_repository = tmp_path / "output-repository"
+    output_repository.mkdir(mode=0o700)
+    output_directory = output_repository.joinpath(*theme._PRIVATE_OUTPUT_PARTS)
     monkeypatch.setattr(theme, "THEME_ROOT", target)
     monkeypatch.setattr(theme, "MANIFEST_PATH", target / "raos-assets.v1.json")
-    monkeypatch.setattr(theme, "OUTPUT_PATH", tmp_path / "generated" / "theme.zip")
+    monkeypatch.setattr(theme, "OUTPUT_REPOSITORY_ROOT", output_repository)
+    monkeypatch.setattr(theme, "OUTPUT_DIRECTORY", output_directory)
+    monkeypatch.setattr(
+        theme, "OUTPUT_PATH", output_directory / f"{theme.THEME_SLUG}.zip"
+    )
     return target
+
+
+def _create_private_output_parent() -> None:
+    current = theme.OUTPUT_REPOSITORY_ROOT
+    for part in theme._PRIVATE_OUTPUT_PARTS:
+        current /= part
+        current.mkdir(mode=theme.PRIVATE_OUTPUT_DIRECTORY_MODE, exist_ok=True)
+        current.chmod(theme.PRIVATE_OUTPUT_DIRECTORY_MODE)
+    assert current == theme.OUTPUT_DIRECTORY
 
 
 def _manifest(path: Path) -> dict[str, object]:
@@ -46,6 +63,22 @@ def _synthetic_webp(seed: int) -> bytes:
     chunk = b"VP8 " + (10).to_bytes(4, "little") + bytes([seed]) * 10
     body = b"WEBP" + chunk
     return b"RIFF" + len(body).to_bytes(4, "little") + body
+
+
+def _relative_luminance(color: str) -> float:
+    channels = [int(color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
+    linear = [
+        channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
+        for channel in channels
+    ]
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+
+def _contrast_ratio(first: str, second: str) -> float:
+    lighter, darker = sorted(
+        (_relative_luminance(first), _relative_luminance(second)), reverse=True
+    )
+    return (lighter + 0.05) / (darker + 0.05)
 
 
 def _complete_assets(path: Path) -> None:
@@ -97,6 +130,40 @@ def test_reveal_is_progressive_enhancement_with_failure_and_motion_fallbacks() -
         'root.classList.add("raos-reveal-ready")'
     )
     assert "revealAll();" in script
+
+
+def test_footer_link_states_and_focus_indicator_meet_contrast_contract() -> None:
+    stylesheet = (theme.THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    assert hashlib.sha256(stylesheet.encode("utf-8")).hexdigest() == (
+        theme.EXPECTED_THEME_CSS_SHA256
+    )
+    theme_document = json.loads(
+        (theme.THEME_ROOT / "theme.json").read_text(encoding="utf-8")
+    )
+    assert theme_document["styles"]["elements"]["link"]["color"]["text"] == ("#24365f")
+    assert ".raos-footer {\n  background: var(--raos-ink);" in stylesheet
+    assert "  --raos-footer-link: #f6f1e8;\n" in stylesheet
+    assert "  --raos-footer-link-interactive: #f0b49b;\n" in stylesheet
+    assert (
+        ".raos-footer a:link,\n.raos-footer a:visited {\n"
+        "  color: var(--raos-footer-link);\n}" in stylesheet
+    )
+    assert (
+        ".raos-footer a:hover,\n.raos-footer a:focus-visible,\n"
+        ".raos-footer a:active {\n"
+        "  color: var(--raos-footer-link-interactive);\n}" in stylesheet
+    )
+    assert (
+        ".raos-footer a:focus-visible {\n"
+        "  outline-color: var(--raos-footer-link-interactive);\n}" in stylesheet
+    )
+
+    footer_background = "#17243f"
+    button_background = "#24365f"
+    for foreground in ("#f6f1e8", "#f0b49b"):
+        assert _contrast_ratio(foreground, footer_background) >= 4.5
+        assert _contrast_ratio(foreground, button_background) >= 4.5
+    assert _contrast_ratio("#f0b49b", footer_background) >= 3.0
 
 
 def test_header_footer_landmarks_are_owned_only_by_template_part_wrappers() -> None:
@@ -219,6 +286,18 @@ def test_complete_fixture_packages_deterministically_and_checks_read_only(
     second = theme.package_bytes()
     assert first == second
     theme._write_package(first)
+    private_directory = theme.OUTPUT_REPOSITORY_ROOT
+    for part in theme._PRIVATE_OUTPUT_PARTS:
+        private_directory /= part
+        details = private_directory.lstat()
+        assert stat.S_ISDIR(details.st_mode)
+        assert details.st_uid == os.getuid()
+        assert stat.S_IMODE(details.st_mode) == theme.PRIVATE_OUTPUT_DIRECTORY_MODE
+    output_details = theme.OUTPUT_PATH.lstat()
+    assert stat.S_ISREG(output_details.st_mode)
+    assert output_details.st_uid == os.getuid()
+    assert output_details.st_nlink == 1
+    assert stat.S_IMODE(output_details.st_mode) == theme.PRIVATE_OUTPUT_FILE_MODE
     before = theme.OUTPUT_PATH.stat().st_mtime_ns
     assert theme.main(["--check"]) == 0
     assert theme.OUTPUT_PATH.stat().st_mtime_ns == before
@@ -241,6 +320,86 @@ def test_complete_fixture_packages_deterministically_and_checks_read_only(
         )
 
 
+def test_owner_private_package_path_is_fixed_and_gitignored() -> None:
+    relative = theme.OUTPUT_PATH.relative_to(theme.REPOSITORY_ROOT).as_posix()
+    assert relative == (
+        ".secrets/self-hosted-theme-packages/kurashinoshirube-child.zip"
+    )
+    assert not relative.startswith(".secrets/wordpress-owner-local/")
+    result = subprocess.run(
+        ["/usr/bin/git", "check-ignore", "--quiet", "--", relative],
+        cwd=theme.REPOSITORY_ROOT,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=5,
+        check=False,
+        env={"PATH": "/usr/bin:/bin", "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8"},
+    )
+    assert result.returncode == 0, (result.stdout, result.stderr)
+    runtime_manifest = json.loads(
+        (
+            theme.REPOSITORY_ROOT
+            / "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert relative not in {row["path"] for row in runtime_manifest["paths"]}
+
+
+def test_package_then_check_keeps_launcher_git_status_clean(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    repository = theme.OUTPUT_REPOSITORY_ROOT
+    shutil.copy2(REPOSITORY_ROOT / ".gitignore", repository / ".gitignore")
+    git_environment = {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "HOME": str(tmp_path / "empty-git-home"),
+    }
+    (tmp_path / "empty-git-home").mkdir(mode=0o700)
+
+    def git(*arguments: str) -> subprocess.CompletedProcess[bytes]:
+        return subprocess.run(
+            ["/usr/bin/git", *arguments],
+            cwd=repository,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=5,
+            check=False,
+            env=git_environment,
+        )
+
+    assert git("init", "--quiet").returncode == 0
+    assert git("add", "--", ".gitignore").returncode == 0
+    committed = git(
+        "-c",
+        "user.name=RAOS Test",
+        "-c",
+        "user.email=raos-test@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "--quiet",
+        "-m",
+        "fixture",
+    )
+    assert committed.returncode == 0, (committed.stdout, committed.stderr)
+    assert git("status", "--porcelain=v1", "--untracked-files=all").stdout == b""
+
+    assert theme.main(["--package"]) == 0
+    assert theme.main(["--check"]) == 0
+    assert '"status": "PACKAGE_VALID"' in capsys.readouterr().out
+    status = git("status", "--porcelain=v1", "--untracked-files=all")
+    assert status.returncode == 0, (status.stdout, status.stderr)
+    assert status.stdout == b""
+
+
 @pytest.mark.parametrize(
     ("mutation", "code"),
     [
@@ -248,6 +407,15 @@ def test_complete_fixture_packages_deterministically_and_checks_read_only(
         ("remote", "THEME_REMOTE_LOAD_FORBIDDEN"),
         ("motion", "THEME_ACCESSIBILITY_INVALID"),
         ("progressive", "THEME_ACCESSIBILITY_INVALID"),
+        ("footer-contrast", "THEME_ACCESSIBILITY_INVALID"),
+        ("footer-override", "THEME_ACCESSIBILITY_INVALID"),
+        ("footer-inline-variable", "THEME_ACCESSIBILITY_INVALID"),
+        ("footer-inline-color", "THEME_ACCESSIBILITY_INVALID"),
+        ("footer-background", "THEME_ACCESSIBILITY_INVALID"),
+        ("footer-background-color", "THEME_ACCESSIBILITY_INVALID"),
+        ("footer-outline", "THEME_ACCESSIBILITY_INVALID"),
+        ("footer-opacity", "THEME_ACCESSIBILITY_INVALID"),
+        ("footer-text-fill", "THEME_ACCESSIBILITY_INVALID"),
     ],
 )
 def test_source_checks_reject_traversal_remote_load_and_missing_reduced_motion(
@@ -279,13 +447,78 @@ def test_source_checks_reject_traversal_remote_load_and_missing_reduced_motion(
             ),
             encoding="utf-8",
         )
-    else:
+    elif mutation == "progressive":
         script = root / "assets/theme.js"
         script.write_text(
             script.read_text(encoding="utf-8").replace(
                 'root.classList.remove("raos-reveal-ready")',
                 'root.classList.remove("broken-reveal-state")',
             ),
+            encoding="utf-8",
+        )
+    elif mutation == "footer-contrast":
+        stylesheet = root / "assets/theme.css"
+        stylesheet.write_text(
+            stylesheet.read_text(encoding="utf-8").replace(
+                "  --raos-footer-link: #f6f1e8;",
+                "  --raos-footer-link: #24365f;",
+            ),
+            encoding="utf-8",
+        )
+    elif mutation == "footer-override":
+        stylesheet = root / "assets/theme.css"
+        stylesheet.write_text(
+            stylesheet.read_text(encoding="utf-8")
+            + "\n.raos-footer a:link {\n  color: #24365f;\n}\n",
+            encoding="utf-8",
+        )
+    elif mutation == "footer-inline-variable":
+        stylesheet = root / "assets/theme.css"
+        stylesheet.write_text(
+            stylesheet.read_text(encoding="utf-8")
+            + "\nfooter{--raos-footer-link:#24365f}\n",
+            encoding="utf-8",
+        )
+    elif mutation == "footer-inline-color":
+        stylesheet = root / "assets/theme.css"
+        stylesheet.write_text(
+            stylesheet.read_text(encoding="utf-8")
+            + "\n.wp-block-template-part a:link{color:#24365f}\n",
+            encoding="utf-8",
+        )
+    elif mutation == "footer-background":
+        stylesheet = root / "assets/theme.css"
+        stylesheet.write_text(
+            stylesheet.read_text(encoding="utf-8")
+            + "\n.wp-site-blocks footer{background:#f6f1e8}\n",
+            encoding="utf-8",
+        )
+    elif mutation == "footer-background-color":
+        stylesheet = root / "assets/theme.css"
+        stylesheet.write_text(
+            stylesheet.read_text(encoding="utf-8")
+            + "\n.wp-site-blocks footer{background-color:#f6f1e8}\n",
+            encoding="utf-8",
+        )
+    elif mutation == "footer-outline":
+        stylesheet = root / "assets/theme.css"
+        stylesheet.write_text(
+            stylesheet.read_text(encoding="utf-8")
+            + "\n.wp-site-blocks footer a:focus-visible{outline:none}\n",
+            encoding="utf-8",
+        )
+    elif mutation == "footer-opacity":
+        stylesheet = root / "assets/theme.css"
+        stylesheet.write_text(
+            stylesheet.read_text(encoding="utf-8")
+            + "\n.wp-site-blocks footer a{opacity:.1}\n",
+            encoding="utf-8",
+        )
+    else:
+        stylesheet = root / "assets/theme.css"
+        stylesheet.write_text(
+            stylesheet.read_text(encoding="utf-8")
+            + "\n.wp-site-blocks footer a{-webkit-text-fill-color:#24365f}\n",
             encoding="utf-8",
         )
     with pytest.raises(theme.ThemeBuildFailure, match=code):
@@ -306,8 +539,9 @@ def test_final_asset_hash_and_package_drift_fail_closed(
         theme.package_bytes()
 
     _complete_assets(root)
-    theme.OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    _create_private_output_parent()
     theme.OUTPUT_PATH.write_bytes(b"stale")
+    theme.OUTPUT_PATH.chmod(theme.PRIVATE_OUTPUT_FILE_MODE)
     assert theme.main(["--check"]) == 2
     assert '"reason_code": "THEME_PACKAGE_DRIFT"' in capsys.readouterr().out
 
@@ -416,7 +650,7 @@ def test_output_check_rejects_symlink_and_oversize_without_following(
     root = _isolated_theme(monkeypatch, tmp_path)
     _complete_assets(root)
     output = theme.OUTPUT_PATH
-    output.parent.mkdir(parents=True)
+    _create_private_output_parent()
     victim = tmp_path / "victim.zip"
     victim.write_bytes(b"do-not-read-or-change")
     output.symlink_to(victim)
@@ -427,6 +661,7 @@ def test_output_check_rejects_symlink_and_oversize_without_following(
     output.unlink()
     with output.open("wb") as stream:
         stream.truncate(theme.MAX_PACKAGE_BYTES + 1)
+    output.chmod(theme.PRIVATE_OUTPUT_FILE_MODE)
     assert theme.main(["--check"]) == 2
     assert '"reason_code": "THEME_PACKAGE_DRIFT"' in capsys.readouterr().out
 
@@ -438,16 +673,447 @@ def test_package_write_fsyncs_created_parent_and_published_entry(
     _complete_assets(root)
     payload = theme.package_bytes()
     original_fsync = os.fsync
+    original_replace = os.replace
+    original_same_named_object = theme._same_named_object
     fsync_modes: list[int] = []
+    events: list[str] = []
 
     def recording_fsync(descriptor: int) -> None:
-        fsync_modes.append(os.fstat(descriptor).st_mode)
+        mode = os.fstat(descriptor).st_mode
+        fsync_modes.append(mode)
+        events.append("file-fsync" if stat.S_ISREG(mode) else "directory-fsync")
         original_fsync(descriptor)
 
+    def recording_replace(
+        source: str,
+        destination: str,
+        *,
+        src_dir_fd: int,
+        dst_dir_fd: int,
+    ) -> None:
+        events.append("replace")
+        original_replace(
+            source,
+            destination,
+            src_dir_fd=src_dir_fd,
+            dst_dir_fd=dst_dir_fd,
+        )
+
+    def recording_same_named_object(
+        details: os.stat_result,
+        *,
+        parent_fd: int,
+        name: str,
+        error_code: str,
+    ) -> None:
+        original_same_named_object(
+            details,
+            parent_fd=parent_fd,
+            name=name,
+            error_code=error_code,
+        )
+        if name == theme.OUTPUT_PATH.name:
+            events.append("published-identity")
+
     monkeypatch.setattr(theme.os, "fsync", recording_fsync)
+    monkeypatch.setattr(theme.os, "replace", recording_replace)
+    monkeypatch.setattr(theme, "_same_named_object", recording_same_named_object)
     theme._write_package(payload)
     assert sum(stat.S_ISDIR(mode) for mode in fsync_modes) >= 2
     assert sum(stat.S_ISREG(mode) for mode in fsync_modes) >= 1
+    assert events.index("file-fsync") < events.index("replace")
+    published_checks = [
+        index for index, event in enumerate(events) if event == "published-identity"
+    ]
+    final_directory_fsync = max(
+        index for index, event in enumerate(events) if event == "directory-fsync"
+    )
+    assert len(published_checks) >= 2
+    assert events.index("replace") < published_checks[0] < final_directory_fsync
+    assert final_directory_fsync < published_checks[-1]
+    assert events[-1] == "published-identity"
+
+
+def test_package_write_atomically_replaces_only_private_regular_output(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    first = theme.package_bytes()
+    theme._write_package(first)
+    first_details = theme.OUTPUT_PATH.stat()
+
+    second = first + b"bounded replacement"
+    theme._write_package(second)
+    second_details = theme.OUTPUT_PATH.stat()
+    assert theme.OUTPUT_PATH.read_bytes() == second
+    assert (second_details.st_dev, second_details.st_ino) != (
+        first_details.st_dev,
+        first_details.st_ino,
+    )
+    assert stat.S_IMODE(second_details.st_mode) == theme.PRIVATE_OUTPUT_FILE_MODE
+
+    theme.OUTPUT_PATH.chmod(0o644)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(first)
+    theme.OUTPUT_PATH.chmod(theme.PRIVATE_OUTPUT_FILE_MODE)
+    hardlink = theme.OUTPUT_DIRECTORY / "package-hardlink.zip"
+    os.link(theme.OUTPUT_PATH, hardlink)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(first)
+
+    hardlink.unlink()
+    theme.OUTPUT_PATH.unlink()
+    victim = tmp_path / "package-victim.zip"
+    victim.write_bytes(b"unchanged")
+    theme.OUTPUT_PATH.symlink_to(victim)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(first)
+    assert victim.read_bytes() == b"unchanged"
+
+    theme.OUTPUT_PATH.unlink()
+    theme.OUTPUT_PATH.mkdir(mode=theme.PRIVATE_OUTPUT_DIRECTORY_MODE)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(first)
+    theme.OUTPUT_PATH.rmdir()
+    os.mkfifo(theme.OUTPUT_PATH, mode=theme.PRIVATE_OUTPUT_FILE_MODE)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(first)
+    theme.OUTPUT_PATH.unlink()
+    with theme.OUTPUT_PATH.open("wb") as stream:
+        stream.truncate(theme.MAX_PACKAGE_BYTES + 1)
+    theme.OUTPUT_PATH.chmod(theme.PRIVATE_OUTPUT_FILE_MODE)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(first)
+
+
+def test_package_write_rejects_private_directory_drift_and_symlink(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    payload = theme.package_bytes()
+    _create_private_output_parent()
+    theme.OUTPUT_DIRECTORY.chmod(0o755)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(payload)
+
+    shutil.rmtree(theme.OUTPUT_DIRECTORY)
+    outside = tmp_path / "outside-package-directory"
+    outside.mkdir(mode=0o700)
+    theme.OUTPUT_DIRECTORY.symlink_to(outside, target_is_directory=True)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(payload)
+    assert tuple(outside.iterdir()) == ()
+
+
+def test_package_write_rejects_stale_preparing_entry(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    payload = theme.package_bytes()
+    _create_private_output_parent()
+    preparing = theme.OUTPUT_DIRECTORY / f".{theme.OUTPUT_PATH.name}.preparing"
+    preparing.write_bytes(b"stale")
+    preparing.chmod(theme.PRIVATE_OUTPUT_FILE_MODE)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(payload)
+    assert preparing.read_bytes() == b"stale"
+    assert not theme.OUTPUT_PATH.exists()
+
+
+def test_package_write_rejects_output_path_contract_drift(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    payload = theme.package_bytes()
+    monkeypatch.setattr(
+        theme,
+        "OUTPUT_PATH",
+        theme.OUTPUT_REPOSITORY_ROOT / "unreviewed" / "theme.zip",
+    )
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(payload)
+    assert not (theme.OUTPUT_REPOSITORY_ROOT / "unreviewed").exists()
+
+
+def test_package_write_rejects_final_directory_rename_after_descent_validation(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    payload = theme.package_bytes()
+    original_same_named_object = theme._same_named_object
+    moved_name = "moved-theme-packages"
+    renamed = False
+
+    def rename_after_final_descent_check(
+        details: os.stat_result,
+        *,
+        parent_fd: int,
+        name: str,
+        error_code: str,
+    ) -> None:
+        nonlocal renamed
+        original_same_named_object(
+            details,
+            parent_fd=parent_fd,
+            name=name,
+            error_code=error_code,
+        )
+        if not renamed and name == theme._PRIVATE_OUTPUT_PARTS[-1]:
+            os.rename(
+                name,
+                moved_name,
+                src_dir_fd=parent_fd,
+                dst_dir_fd=parent_fd,
+            )
+            renamed = True
+
+    monkeypatch.setattr(theme, "_same_named_object", rename_after_final_descent_check)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(payload)
+    assert renamed is True
+    assert not theme.OUTPUT_PATH.exists()
+    moved = theme.OUTPUT_DIRECTORY.with_name(moved_name)
+    assert moved.is_dir()
+    assert tuple(moved.iterdir()) == ()
+
+
+def test_package_write_rejects_final_directory_rename_after_publication(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    payload = theme.package_bytes()
+    original_fsync = os.fsync
+    moved = theme.OUTPUT_DIRECTORY.with_name("moved-after-publication")
+    renamed = False
+
+    def rename_after_published_directory_fsync(descriptor: int) -> None:
+        nonlocal renamed
+        original_fsync(descriptor)
+        if (
+            not renamed
+            and stat.S_ISDIR(os.fstat(descriptor).st_mode)
+            and theme.OUTPUT_PATH.exists()
+        ):
+            theme.OUTPUT_DIRECTORY.rename(moved)
+            renamed = True
+
+    monkeypatch.setattr(theme.os, "fsync", rename_after_published_directory_fsync)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(payload)
+    assert renamed is True
+    assert not theme.OUTPUT_PATH.exists()
+    assert (moved / theme.OUTPUT_PATH.name).read_bytes() == payload
+
+
+def test_package_write_rejects_same_inode_same_size_staging_mutation(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    payload = theme.package_bytes()
+    hostile = bytes(len(payload))
+    original_replace = os.replace
+
+    def mutate_staging_before_replace(
+        source: str,
+        destination: str,
+        *,
+        src_dir_fd: int,
+        dst_dir_fd: int,
+    ) -> None:
+        descriptor = os.open(
+            source,
+            os.O_WRONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
+            dir_fd=src_dir_fd,
+        )
+        try:
+            offset = 0
+            while offset < len(hostile):
+                written = os.write(descriptor, hostile[offset:])
+                assert written > 0
+                offset += written
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
+        original_replace(
+            source,
+            destination,
+            src_dir_fd=src_dir_fd,
+            dst_dir_fd=dst_dir_fd,
+        )
+
+    monkeypatch.setattr(theme.os, "replace", mutate_staging_before_replace)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(payload)
+    assert theme.OUTPUT_PATH.read_bytes() == hostile
+
+
+def test_package_write_rechecks_existing_output_immediately_before_replace(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    first = theme.package_bytes()
+    theme._write_package(first)
+    existing = theme.OUTPUT_PATH.stat()
+    original_same_named_object = theme._same_named_object
+    original_replace = os.replace
+    swapped = False
+
+    def swap_before_final_check(
+        details: os.stat_result,
+        *,
+        parent_fd: int,
+        name: str,
+        error_code: str,
+    ) -> None:
+        nonlocal swapped
+        if (
+            not swapped
+            and name == theme.OUTPUT_PATH.name
+            and (details.st_dev, details.st_ino) == (existing.st_dev, existing.st_ino)
+        ):
+            attacker = ".hostile-output"
+            descriptor = os.open(
+                attacker,
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
+                theme.PRIVATE_OUTPUT_FILE_MODE,
+                dir_fd=parent_fd,
+            )
+            try:
+                assert os.write(descriptor, b"hostile-before-replace") == len(
+                    b"hostile-before-replace"
+                )
+                os.fsync(descriptor)
+            finally:
+                os.close(descriptor)
+            original_replace(
+                attacker,
+                name,
+                src_dir_fd=parent_fd,
+                dst_dir_fd=parent_fd,
+            )
+            swapped = True
+        original_same_named_object(
+            details,
+            parent_fd=parent_fd,
+            name=name,
+            error_code=error_code,
+        )
+
+    monkeypatch.setattr(theme, "_same_named_object", swap_before_final_check)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(first + b"replacement")
+    assert swapped is True
+    assert theme.OUTPUT_PATH.read_bytes() == b"hostile-before-replace"
+    assert not (
+        theme.OUTPUT_DIRECTORY / f".{theme.OUTPUT_PATH.name}.preparing"
+    ).exists()
+
+
+def test_package_write_rechecks_absent_output_immediately_before_replace(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    payload = theme.package_bytes()
+    original_stat = os.stat
+    output_checks = 0
+
+    def create_output_during_final_stat(
+        path: str | bytes | int,
+        *,
+        dir_fd: int | None = None,
+        follow_symlinks: bool = True,
+    ) -> os.stat_result:
+        nonlocal output_checks
+        if (
+            path == theme.OUTPUT_PATH.name
+            and dir_fd is not None
+            and follow_symlinks is False
+        ):
+            output_checks += 1
+            if output_checks == 2:
+                descriptor = os.open(
+                    theme.OUTPUT_PATH.name,
+                    os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
+                    theme.PRIVATE_OUTPUT_FILE_MODE,
+                    dir_fd=dir_fd,
+                )
+                try:
+                    assert os.write(descriptor, b"hostile-new-output") == len(
+                        b"hostile-new-output"
+                    )
+                    os.fsync(descriptor)
+                finally:
+                    os.close(descriptor)
+        return original_stat(path, dir_fd=dir_fd, follow_symlinks=follow_symlinks)
+
+    monkeypatch.setattr(theme.os, "stat", create_output_during_final_stat)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(payload)
+    assert output_checks == 2
+    assert theme.OUTPUT_PATH.read_bytes() == b"hostile-new-output"
+    assert not (
+        theme.OUTPUT_DIRECTORY / f".{theme.OUTPUT_PATH.name}.preparing"
+    ).exists()
+
+
+def test_package_write_never_unlinks_replaced_staging_name(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    _complete_assets(root)
+    payload = theme.package_bytes()
+    original_same_named_object = theme._same_named_object
+    staging_name = f".{theme.OUTPUT_PATH.name}.preparing"
+    replaced = False
+
+    def replace_staging_before_identity_check(
+        details: os.stat_result,
+        *,
+        parent_fd: int,
+        name: str,
+        error_code: str,
+    ) -> None:
+        nonlocal replaced
+        if not replaced and name == staging_name:
+            os.unlink(name, dir_fd=parent_fd)
+            descriptor = os.open(
+                name,
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
+                theme.PRIVATE_OUTPUT_FILE_MODE,
+                dir_fd=parent_fd,
+            )
+            try:
+                assert os.write(descriptor, b"hostile-staging") == len(
+                    b"hostile-staging"
+                )
+                os.fsync(descriptor)
+            finally:
+                os.close(descriptor)
+            replaced = True
+        original_same_named_object(
+            details,
+            parent_fd=parent_fd,
+            name=name,
+            error_code=error_code,
+        )
+
+    monkeypatch.setattr(
+        theme, "_same_named_object", replace_staging_before_identity_check
+    )
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PACKAGE_WRITE_FAILED"):
+        theme._write_package(payload)
+    assert replaced is True
+    assert (theme.OUTPUT_DIRECTORY / staging_name).read_bytes() == b"hostile-staging"
+    assert not theme.OUTPUT_PATH.exists()
 
 
 def test_package_write_rejects_post_replace_identity_swap(

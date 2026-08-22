@@ -29,8 +29,15 @@ publication, release, or Production evidence.
 - `theme/kurashinoshirube-child/raos-assets.v1.json` owns the two final image
   requirements and their closed prompts. Both images intentionally remain
   `PENDING_FINAL_ASSET`; no image provider was called by this slice.
-- `generated/kurashinoshirube-child.zip` is the only theme package output. It
-  is absent until both final images are present and SHA-256-bound.
+- `.secrets/self-hosted-theme-packages/kurashinoshirube-child.zip` is the only
+  theme package output. It is ignored, owner-private, and deliberately outside
+  `.secrets/wordpress-owner-local/`, whose closed inventory belongs to the
+  credential runtime. The package directory is mode `0700`; the regular,
+  single-link ZIP is mode `0600` and at most 16 MiB. It is absent until both
+  final images are present and SHA-256-bound. The generator repeatedly rebinds
+  its held output-directory descriptor to that exact no-symlink path and,
+  after atomic publication and directory fsync, stably reopens the ZIP and
+  requires its bytes to equal the intended deterministic package.
 
 The generated package identifies its owner through the embedded
 `raos-assets.v1.json`:
@@ -41,9 +48,11 @@ The generated package identifies its owner through the embedded
 - no-write check:
   `make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-check`
 
-Do not edit the zip by hand. Update the owned theme source/manifest, then run
-the generator. The source-only check is available while final assets remain
-pending:
+Do not edit or relocate the zip by hand. Update the owned theme
+source/manifest, then run the generator. The fixed ignored output means a
+successful `theme-package` followed by `theme-check` does not dirty the Git
+worktree or weaken the launcher's exact clean-head gate. The source-only check
+is available while final assets remain pending:
 
 ```bash
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-source-check
@@ -52,6 +61,12 @@ make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-source-check
 The expected result in this slice is `SOURCE_VALID` with
 `package_ready=false`. Package and package-check commands fail closed until the
 final asset gate is completed.
+
+The footer contrast contract closes the expected foreground, background,
+focus-outline and custom-property declarations, then binds the complete
+reviewed stylesheet bytes. A later or alternate low-contrast cascade,
+opacity, or browser-specific text-fill override therefore fails source
+validation instead of silently defeating the reviewed state colors.
 
 ## Runtime boundary
 

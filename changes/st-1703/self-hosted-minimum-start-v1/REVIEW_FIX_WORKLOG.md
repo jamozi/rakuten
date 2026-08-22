@@ -50,6 +50,29 @@ remain in deployed squash/cherry-pick ancestry.
    the sole landmark owners, the part roots use presentation `div` groups, and
    the owner source check rejects either a missing wrapper landmark or a
    semantic header/footer reintroduced in a part.
+6. The theme package previously targeted an unignored Story-local `generated`
+   path. A successful package would therefore make the launcher's exact Git
+   clean-head gate reject every later owner command. The fixed output is now
+   the ignored, owner-private
+   `.secrets/self-hosted-theme-packages/kurashinoshirube-child.zip`, separate
+   from the credential directory, with closed directory/file modes and the
+   existing atomic/fsync protections. Package followed by no-write check now
+   leaves the launcher Git-status predicate clean without weakening it.
+   Follow-up hostile-filesystem review found directory-rename and same-inode,
+   same-size staging-content races. The writer now terminally rebinds its held
+   directory to the exact fixed path and stably reopens the published ZIP after
+   replace/fsync to require the intended bytes before reporting success.
+7. Global indigo links and warm hover/focus colors had insufficient contrast
+   on the dark footer. Footer-scoped normal/visited paper and
+   hover/active/focus light-warm colors now exceed AA contrast on both the
+   footer and filled-button backgrounds, and focus-visible keeps a contrasting
+   outline plus the existing width and offset. A follow-up review demonstrated
+   that a later equal-specificity declaration could override the reviewed
+   block. Additional review reproduced inline custom-property, higher-specificity
+   background, opacity, and browser-specific text-fill bypasses. The source
+   validator now closes foreground, background, focus-outline and custom-property
+   inventories and binds the complete reviewed stylesheet bytes, rejecting all
+   of those exact cascade/effective-color bypasses.
 
 ## Authority and evidence boundary
 
@@ -94,6 +117,27 @@ report, not promoted to any external status.
   findings;
 - independent semantic-landmark correctness/accessibility/security review:
   `PASS`, with no remaining material P1/P2 finding.
+
+### Private-package and footer-contrast follow-up freeze (2026-08-23)
+
+- focused theme/CLI: `66 passed, 1 skipped`; the skip remains the intentional
+  exact-root launcher integration boundary for a linked worktree;
+- complete isolated `tests/st1703`: `961 passed, 1 skipped` for the same reason;
+- the synthetic finalized-asset flow proves deterministic package/check,
+  ignored clean-head compatibility, exact private modes/path, atomic fsync
+  ordering, directory terminal rebinding, and final intended-byte comparison;
+- hostile tests reject ancestor/leaf symlinks, wrong modes, hardlinks,
+  directories, FIFO, oversized output, stale stage, target swaps, directory
+  renames, and same-inode/same-size stage mutation;
+- calculated foreground/background contrast plus exact reviewed CSS-byte tests
+  reject low-contrast direct, later, inline, higher-specificity, opacity,
+  browser-specific text-fill, background, and focus-outline mutations;
+- runtime-manifest generation/no-write check, theme source check, Ruff
+  lint/format, mypy, Pyright, Bash/BusyBox syntax, workspace check, Canonical
+  import verification, and `git diff --check`: pass;
+- exact changed-path sensitive-data scan: 10 paths, 0 findings;
+- the real asset/package check remains closed with the expected
+  `THEME_FINAL_ASSET_MISSING`; no package was written in the worktree.
 
 The integrated exact-root doctor, credential access, provider/network call,
 draft write, browser operation, hosted CI, activation, publication, formal

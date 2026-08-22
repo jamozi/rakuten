@@ -129,6 +129,20 @@ make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-package
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-check
 ```
 
+Both commands use the fixed ignored owner-private output
+`.secrets/self-hosted-theme-packages/kurashinoshirube-child.zip`. The package
+directory must remain current-owner mode `0700`, and the ZIP current-owner
+mode `0600`, regular, single-link, non-empty, and at most 16 MiB. Do not place
+it inside `.secrets/wordpress-owner-local/`; that directory has a separate
+closed credential/state inventory. A successful package/check sequence leaves
+`git status --porcelain=v1 --untracked-files=all` empty, so a later exact-head
+`doctor` or separately authorized `create-draft` is not refused merely because
+the reviewed theme package exists. Directory identity is rebound to the exact
+fixed path before and after publication; after atomic replace and parent fsync,
+the bounded no-follow ZIP is stably reopened and must equal the intended bytes.
+A directory rename or same-size staging mutation therefore returns a closed
+failure rather than a misleading successful package hash.
+
 After the source and final images are reviewed and committed, regenerate and
 review `runtime-manifest.v1.json`; its inventory will add exactly those
 manifest-declared `FINAL` WebP paths. Never add image rows manually or use
@@ -139,6 +153,15 @@ The package generator is deterministic and the check is no-write. Never edit
 the generated zip manually. Theme installation and activation remain manual
 operator actions after visual/mobile/accessibility review; neither command
 contacts WordPress.
+
+The footer-specific link states override the global link color on the dark
+footer: paper for normal/visited, light warm for hover/active/focus-visible,
+with the same light-warm focus outline. Keep these scoped colors and the
+global focus width/offset. The source check closes the relevant foreground,
+background, focus-outline and custom-property declarations and binds the
+complete reviewed stylesheet bytes. The contrast regressions therefore reject
+direct drift as well as later cascade, opacity, or browser-specific text-fill
+overrides back to a low-contrast rendering.
 
 ## 3. Credential metadata setup
 

@@ -5,6 +5,8 @@
   --raos-warm: #a44f31;
   --raos-rule: #adb6b3;
   --raos-focus: #8f3d1f;
+  --raos-footer-link: #f6f1e8;
+  --raos-footer-link-interactive: #f0b49b;
 }
 
 html {
@@ -136,6 +138,21 @@ a:hover {
   color: #fff;
   margin-top: 6rem;
   padding-block: clamp(3rem, 7vw, 6rem);
+}
+
+.raos-footer a:link,
+.raos-footer a:visited {
+  color: var(--raos-footer-link);
+}
+
+.raos-footer a:hover,
+.raos-footer a:focus-visible,
+.raos-footer a:active {
+  color: var(--raos-footer-link-interactive);
+}
+
+.raos-footer a:focus-visible {
+  outline-color: var(--raos-footer-link-interactive);
 }
 
 .raos-reveal {

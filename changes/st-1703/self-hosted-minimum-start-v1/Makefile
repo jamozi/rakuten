@@ -67,6 +67,7 @@ theme-source-check:
 
 theme-package:
 	cd "$(SELF_HOSTED_SOURCE_ROOT)" && \
+		umask 0077 && \
 		"$(MANAGED_PYTHON)" -B -I -S -X pycache_prefix=/dev/null \
 		scripts/build_st1703_self_hosted_theme.py --package
 

@@ -30,13 +30,20 @@ THEME_ROOT = (
     REPOSITORY_ROOT / "changes/st-1703/self-hosted-minimum-start-v1/theme" / THEME_SLUG
 )
 MANIFEST_PATH = THEME_ROOT / "raos-assets.v1.json"
-OUTPUT_PATH = (
-    REPOSITORY_ROOT
-    / "changes/st-1703/self-hosted-minimum-start-v1/generated"
-    / f"{THEME_SLUG}.zip"
+OUTPUT_REPOSITORY_ROOT = REPOSITORY_ROOT
+_PRIVATE_OUTPUT_PARTS = (
+    ".secrets",
+    "self-hosted-theme-packages",
 )
+OUTPUT_DIRECTORY = OUTPUT_REPOSITORY_ROOT.joinpath(*_PRIVATE_OUTPUT_PARTS)
+OUTPUT_PATH = OUTPUT_DIRECTORY / f"{THEME_SLUG}.zip"
 MAX_FILE_BYTES = 4 * 1024 * 1024
 MAX_PACKAGE_BYTES = 16 * 1024 * 1024
+PRIVATE_OUTPUT_DIRECTORY_MODE = 0o700
+PRIVATE_OUTPUT_FILE_MODE = 0o600
+EXPECTED_THEME_CSS_SHA256 = (
+    "0703a9154a12a2d4224d961ac5996b5e25c483c81f21f9a8500cd899ed913adf"
+)
 
 _MANIFEST_KEYS = frozenset(
     {
@@ -52,6 +59,34 @@ _MANIFEST_KEYS = frozenset(
 _IMAGE_KEYS = frozenset({"path", "status", "sha256", "alt", "prompt", "usage"})
 _TEMPLATE_PART_KEYS = frozenset({"slug", "tagName"})
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
+_CSS_HEX_COLOR = re.compile(r"#[0-9a-f]{6}\Z", re.ASCII)
+_CSS_COLOR_PROPERTY_TOKEN = re.compile(
+    r"(?<![-A-Za-z0-9_])(?:outline-color|color)[ \t\r\n]*:",
+    re.ASCII | re.IGNORECASE,
+)
+_CSS_COLOR_DECLARATION = re.compile(
+    r"(?<![-A-Za-z0-9_])(?P<property>outline-color|color)[ \t\r\n]*:"
+    r"[ \t\r\n]*(?P<value>[^;{}]+?)[ \t\r\n]*(?=[;}])",
+    re.ASCII | re.IGNORECASE,
+)
+_CSS_BACKGROUND_PROPERTY_TOKEN = re.compile(
+    r"(?<![-A-Za-z0-9_])background(?:-[A-Za-z0-9_-]+)?[ \t\r\n]*:",
+    re.ASCII | re.IGNORECASE,
+)
+_CSS_BACKGROUND_DECLARATION = re.compile(
+    r"(?<![-A-Za-z0-9_])(?P<property>background(?:-[A-Za-z0-9_-]+)?)"
+    r"[ \t\r\n]*:[ \t\r\n]*(?P<value>[^;{}]+?)[ \t\r\n]*(?=[;}])",
+    re.ASCII | re.IGNORECASE,
+)
+_CSS_OUTLINE_PROPERTY_TOKEN = re.compile(
+    r"(?<![-A-Za-z0-9_])outline(?:-[A-Za-z0-9_-]+)?[ \t\r\n]*:",
+    re.ASCII | re.IGNORECASE,
+)
+_CSS_OUTLINE_DECLARATION = re.compile(
+    r"(?<![-A-Za-z0-9_])(?P<property>outline(?:-[A-Za-z0-9_-]+)?)"
+    r"[ \t\r\n]*:[ \t\r\n]*(?P<value>[^;{}]+?)[ \t\r\n]*(?=[;}])",
+    re.ASCII | re.IGNORECASE,
+)
 _REMOTE_REFERENCE = re.compile(r"(?:https?:)?//", re.ASCII | re.IGNORECASE)
 _TEMPLATE_PART_BLOCK = re.compile(
     r"<!--\s*wp:template-part\s+(\{[^\r\n]*\})\s*/-->", re.ASCII
@@ -186,6 +221,99 @@ def _open_absolute_directory(
         os.close(descriptor)
 
 
+def _validated_output_paths(error_code: str) -> tuple[Path, Path]:
+    if not OUTPUT_REPOSITORY_ROOT.is_absolute() or any(
+        part in {"", ".", ".."} for part in OUTPUT_REPOSITORY_ROOT.parts[1:]
+    ):
+        _fail(error_code)
+    expected_directory = OUTPUT_REPOSITORY_ROOT.joinpath(*_PRIVATE_OUTPUT_PARTS)
+    expected_path = expected_directory / f"{THEME_SLUG}.zip"
+    if OUTPUT_DIRECTORY != expected_directory or OUTPUT_PATH != expected_path:
+        _fail(error_code)
+    return expected_directory, expected_path
+
+
+def _require_private_output_directory_binding(
+    descriptor: int, *, error_code: str
+) -> None:
+    _validated_output_paths(error_code)
+    try:
+        held = os.fstat(descriptor)
+        with _open_absolute_directory(OUTPUT_DIRECTORY) as rebound_fd:
+            rebound = os.fstat(rebound_fd)
+    except OSError, ThemeBuildFailure:
+        _fail(error_code)
+    if _identity(held) != _identity(rebound):
+        _fail(error_code)
+
+
+@contextmanager
+def _open_private_output_directory(
+    *, create: bool, error_code: str
+) -> Generator[int, None, None]:
+    _validated_output_paths(error_code)
+    try:
+        root_context = _open_absolute_directory(OUTPUT_REPOSITORY_ROOT)
+        with root_context as repository_fd:
+            try:
+                descriptor = os.dup(repository_fd)
+            except OSError:
+                _fail(error_code)
+            try:
+                for part in _PRIVATE_OUTPUT_PARTS:
+                    child: int | None = None
+                    try:
+                        child = os.open(part, _DIRECTORY_FLAGS, dir_fd=descriptor)
+                    except FileNotFoundError:
+                        if not create:
+                            _fail(error_code)
+                        try:
+                            os.mkdir(
+                                part,
+                                mode=PRIVATE_OUTPUT_DIRECTORY_MODE,
+                                dir_fd=descriptor,
+                            )
+                            os.fsync(descriptor)
+                            child = os.open(part, _DIRECTORY_FLAGS, dir_fd=descriptor)
+                        except OSError:
+                            _fail(error_code)
+                    except OSError:
+                        _fail(error_code)
+                    try:
+                        opened = os.fstat(child)
+                        if (
+                            not stat.S_ISDIR(opened.st_mode)
+                            or opened.st_uid != os.getuid()
+                            or stat.S_IMODE(opened.st_mode)
+                            != PRIVATE_OUTPUT_DIRECTORY_MODE
+                        ):
+                            _fail(error_code)
+                        _same_named_object(
+                            opened,
+                            parent_fd=descriptor,
+                            name=part,
+                            error_code=error_code,
+                        )
+                    except BaseException:
+                        os.close(child)
+                        raise
+                    os.close(descriptor)
+                    descriptor = child
+                _require_private_output_directory_binding(
+                    descriptor, error_code=error_code
+                )
+                try:
+                    yield descriptor
+                finally:
+                    _require_private_output_directory_binding(
+                        descriptor, error_code=error_code
+                    )
+            finally:
+                os.close(descriptor)
+    except ThemeBuildFailure:
+        _fail(error_code)
+
+
 @contextmanager
 def _open_parent_at(
     root_fd: int, relative: str
@@ -228,6 +356,7 @@ def _read_regular_at(
     *,
     max_bytes: int = MAX_FILE_BYTES,
     error_code: str = "THEME_FILE_INVALID",
+    required_mode: int | None = None,
 ) -> tuple[bytes, tuple[int, ...]]:
     with _open_parent_at(root_fd, relative) as (parent_fd, name):
         try:
@@ -240,6 +369,10 @@ def _read_regular_at(
                 not stat.S_ISREG(before.st_mode)
                 or before.st_uid != os.getuid()
                 or before.st_nlink != 1
+                or (
+                    required_mode is not None
+                    and stat.S_IMODE(before.st_mode) != required_mode
+                )
                 or not 1 <= before.st_size <= max_bytes
             ):
                 _fail(error_code)
@@ -372,6 +505,133 @@ def _source_inventory(
     return paths
 
 
+def _css_custom_color(text: str, name: str) -> str:
+    prefix = f"  {name}: "
+    property_token = re.compile(
+        rf"(?<![-A-Za-z0-9_]){re.escape(name)}[ \t\r\n]*:", re.ASCII
+    )
+    if text.count(prefix) != 1 or len(property_token.findall(text)) != 1:
+        _fail("THEME_ACCESSIBILITY_INVALID")
+    value = text.split(prefix, maxsplit=1)[1].split(";", maxsplit=1)[0]
+    if _CSS_HEX_COLOR.fullmatch(value) is None:
+        _fail("THEME_ACCESSIBILITY_INVALID")
+    return value
+
+
+def _relative_luminance(color: str) -> float:
+    channels = [int(color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
+    linear = [
+        channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
+        for channel in channels
+    ]
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+
+def _contrast_ratio(first: str, second: str) -> float:
+    lighter, darker = sorted(
+        (_relative_luminance(first), _relative_luminance(second)), reverse=True
+    )
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def _validate_footer_contrast(text: str) -> None:
+    normal_block = (
+        ".raos-footer a:link,\n.raos-footer a:visited {\n"
+        "  color: var(--raos-footer-link);\n}"
+    )
+    interactive_block = (
+        ".raos-footer a:hover,\n.raos-footer a:focus-visible,\n"
+        ".raos-footer a:active {\n"
+        "  color: var(--raos-footer-link-interactive);\n}"
+    )
+    focus_block = (
+        ".raos-footer a:focus-visible {\n"
+        "  outline-color: var(--raos-footer-link-interactive);\n}"
+    )
+    footer_background_block = ".raos-footer {\n  background: var(--raos-ink);"
+    expected_color_declarations = (
+        ("color", "var(--raos-ink)"),
+        ("color", "var(--raos-warm)"),
+        ("color", "var(--raos-ink)"),
+        ("color", "#fff"),
+        ("color", "currentColor"),
+        ("color", "#fff"),
+        ("color", "var(--raos-footer-link)"),
+        ("color", "var(--raos-footer-link-interactive)"),
+        ("outline-color", "var(--raos-footer-link-interactive)"),
+    )
+    expected_background_declarations = (
+        (
+            "background",
+            "radial-gradient(circle at 14% 8%, rgb(164 79 49 / 7%), "
+            "transparent 24rem), var(--raos-paper)",
+        ),
+        ("background", "#fff"),
+        (
+            "background",
+            "linear-gradient(90deg, rgb(23 36 63 / 92%) 0 38%, "
+            'rgb(23 36 63 / 42%) 70%), url("images/home-hero.webp") '
+            "center / cover no-repeat",
+        ),
+        ("background", "var(--raos-ink)"),
+        ("background-position", "62% center"),
+    )
+    expected_outline_declarations = (
+        ("outline", "3px solid var(--raos-focus)"),
+        ("outline-offset", "4px"),
+        ("outline-color", "var(--raos-footer-link-interactive)"),
+    )
+    observed_color_declarations = tuple(
+        (match.group("property"), " ".join(match.group("value").split()))
+        for match in _CSS_COLOR_DECLARATION.finditer(text)
+    )
+    observed_background_declarations = tuple(
+        (match.group("property"), " ".join(match.group("value").split()))
+        for match in _CSS_BACKGROUND_DECLARATION.finditer(text)
+    )
+    observed_outline_declarations = tuple(
+        (match.group("property"), " ".join(match.group("value").split()))
+        for match in _CSS_OUTLINE_DECLARATION.finditer(text)
+    )
+    if (
+        "\\" in text
+        or "/*" in text
+        or "*/" in text
+        or text.count(normal_block) != 1
+        or text.count(interactive_block) != 1
+        or text.count(focus_block) != 1
+        or text.count(footer_background_block) != 1
+        or text.count(".raos-footer") != 7
+        or len(_CSS_COLOR_PROPERTY_TOKEN.findall(text))
+        != len(expected_color_declarations)
+        or observed_color_declarations != expected_color_declarations
+        or len(_CSS_BACKGROUND_PROPERTY_TOKEN.findall(text))
+        != len(expected_background_declarations)
+        or observed_background_declarations != expected_background_declarations
+        or len(_CSS_OUTLINE_PROPERTY_TOKEN.findall(text))
+        != len(expected_outline_declarations)
+        or observed_outline_declarations != expected_outline_declarations
+        or not (
+            text.index(normal_block)
+            < text.index(interactive_block)
+            < text.index(focus_block)
+            < text.index(".raos-reveal {")
+        )
+    ):
+        _fail("THEME_ACCESSIBILITY_INVALID")
+    background = _css_custom_color(text, "--raos-ink")
+    normal = _css_custom_color(text, "--raos-footer-link")
+    interactive = _css_custom_color(text, "--raos-footer-link-interactive")
+    for foreground in (normal, interactive):
+        if (
+            _contrast_ratio(foreground, background) < 4.5
+            or _contrast_ratio(foreground, "#24365f") < 4.5
+        ):
+            _fail("THEME_ACCESSIBILITY_INVALID")
+    if _contrast_ratio(interactive, background) < 3.0:
+        _fail("THEME_ACCESSIBILITY_INVALID")
+
+
 def _validate_source_file(relative: str, payload: bytes) -> None:
     try:
         text = payload.decode("utf-8", errors="strict")
@@ -382,14 +642,18 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
         _fail("THEME_REMOTE_LOAD_FORBIDDEN")
     if _FORBIDDEN_SOURCE.search(text) is not None:
         _fail("THEME_CAPABILITY_FORBIDDEN")
-    if relative == "assets/theme.css" and (
-        "@media (prefers-reduced-motion: reduce)" not in text
-        or ":focus-visible" not in text
-        or ".raos-reveal-ready .raos-reveal:not(.is-visible)" not in text
-        or ".raos-reveal-ready .raos-reveal" not in text
-        or ".raos-reveal {\n  opacity: 1;\n  transform: none;" not in text
-    ):
-        _fail("THEME_ACCESSIBILITY_INVALID")
+    if relative == "assets/theme.css":
+        if (
+            "@media (prefers-reduced-motion: reduce)" not in text
+            or ":focus-visible" not in text
+            or ".raos-reveal-ready .raos-reveal:not(.is-visible)" not in text
+            or ".raos-reveal-ready .raos-reveal" not in text
+            or ".raos-reveal {\n  opacity: 1;\n  transform: none;" not in text
+        ):
+            _fail("THEME_ACCESSIBILITY_INVALID")
+        _validate_footer_contrast(text)
+        if hashlib.sha256(payload).hexdigest() != EXPECTED_THEME_CSS_SHA256:
+            _fail("THEME_ACCESSIBILITY_INVALID")
     if relative == "assets/theme.js" and (
         'root.classList.add("raos-reveal-ready")' not in text
         or 'root.classList.remove("raos-reveal-ready")' not in text
@@ -402,6 +666,11 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
         or "Template: twentytwentyfive" not in text
     ):
         _fail("THEME_PARENT_INVALID")
+    if relative == "theme.json" and (
+        '"color": {"background": "#24365f", "text": "#ffffff"}' not in text
+        or '"link": {"color": {"text": "#24365f"}}' not in text
+    ):
+        _fail("THEME_ACCESSIBILITY_INVALID")
 
 
 def _validate_semantic_landmarks(payloads: Mapping[str, bytes]) -> None:
@@ -609,7 +878,9 @@ def package_bytes() -> bytes:
 def _write_package(payload: bytes) -> None:
     if not payload or len(payload) > MAX_PACKAGE_BYTES:
         _fail("THEME_PACKAGE_INVALID")
-    with _open_absolute_directory(OUTPUT_PATH.parent, create=True) as parent_fd:
+    with _open_private_output_directory(
+        create=True, error_code="THEME_PACKAGE_WRITE_FAILED"
+    ) as parent_fd:
         try:
             existing = os.stat(
                 OUTPUT_PATH.name, dir_fd=parent_fd, follow_symlinks=False
@@ -622,26 +893,42 @@ def _write_package(payload: bytes) -> None:
             not stat.S_ISREG(existing.st_mode)
             or existing.st_uid != os.getuid()
             or existing.st_nlink != 1
+            or stat.S_IMODE(existing.st_mode) != PRIVATE_OUTPUT_FILE_MODE
+            or not 1 <= existing.st_size <= MAX_PACKAGE_BYTES
         ):
             _fail("THEME_PACKAGE_WRITE_FAILED")
 
         temporary = f".{OUTPUT_PATH.name}.preparing"
+        staging_inode: tuple[int, int] | None = None
         try:
             descriptor = os.open(
                 temporary,
                 os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-                0o644,
+                PRIVATE_OUTPUT_FILE_MODE,
                 dir_fd=parent_fd,
             )
         except OSError:
             _fail("THEME_PACKAGE_WRITE_FAILED")
         try:
-            before = os.fstat(descriptor)
+            try:
+                os.fchmod(descriptor, PRIVATE_OUTPUT_FILE_MODE)
+            except OSError:
+                _fail("THEME_PACKAGE_WRITE_FAILED")
+            try:
+                before = os.fstat(descriptor)
+            except OSError:
+                _fail("THEME_PACKAGE_WRITE_FAILED")
             if (
                 not stat.S_ISREG(before.st_mode)
                 or before.st_uid != os.getuid()
                 or before.st_nlink != 1
+                or stat.S_IMODE(before.st_mode) != PRIVATE_OUTPUT_FILE_MODE
             ):
+                _fail("THEME_PACKAGE_WRITE_FAILED")
+            staging_inode = (before.st_dev, before.st_ino)
+            try:
+                os.fsync(parent_fd)
+            except OSError:
                 _fail("THEME_PACKAGE_WRITE_FAILED")
             offset = 0
             while offset < len(payload):
@@ -652,8 +939,11 @@ def _write_package(payload: bytes) -> None:
                 if written <= 0:
                     _fail("THEME_PACKAGE_WRITE_FAILED")
                 offset += written
-            os.fsync(descriptor)
-            after = os.fstat(descriptor)
+            try:
+                os.fsync(descriptor)
+                after = os.fstat(descriptor)
+            except OSError:
+                _fail("THEME_PACKAGE_WRITE_FAILED")
             if (
                 after.st_dev != before.st_dev
                 or after.st_ino != before.st_ino
@@ -668,12 +958,38 @@ def _write_package(payload: bytes) -> None:
                 name=temporary,
                 error_code="THEME_PACKAGE_WRITE_FAILED",
             )
-            os.replace(
-                temporary,
-                OUTPUT_PATH.name,
-                src_dir_fd=parent_fd,
-                dst_dir_fd=parent_fd,
+            _require_private_output_directory_binding(
+                parent_fd, error_code="THEME_PACKAGE_WRITE_FAILED"
             )
+            if existing is None:
+                try:
+                    os.stat(
+                        OUTPUT_PATH.name,
+                        dir_fd=parent_fd,
+                        follow_symlinks=False,
+                    )
+                except FileNotFoundError:
+                    pass
+                except OSError:
+                    _fail("THEME_PACKAGE_WRITE_FAILED")
+                else:
+                    _fail("THEME_PACKAGE_WRITE_FAILED")
+            else:
+                _same_named_object(
+                    existing,
+                    parent_fd=parent_fd,
+                    name=OUTPUT_PATH.name,
+                    error_code="THEME_PACKAGE_WRITE_FAILED",
+                )
+            try:
+                os.replace(
+                    temporary,
+                    OUTPUT_PATH.name,
+                    src_dir_fd=parent_fd,
+                    dst_dir_fd=parent_fd,
+                )
+            except OSError:
+                _fail("THEME_PACKAGE_WRITE_FAILED")
             try:
                 published = os.stat(
                     OUTPUT_PATH.name, dir_fd=parent_fd, follow_symlinks=False
@@ -688,6 +1004,7 @@ def _write_package(payload: bytes) -> None:
                 or published.st_gid != after.st_gid
                 or published.st_nlink != after.st_nlink
                 or published.st_size != after.st_size
+                or stat.S_IMODE(published.st_mode) != PRIVATE_OUTPUT_FILE_MODE
             ):
                 _fail("THEME_PACKAGE_WRITE_FAILED")
             _same_named_object(
@@ -696,23 +1013,61 @@ def _write_package(payload: bytes) -> None:
                 name=OUTPUT_PATH.name,
                 error_code="THEME_PACKAGE_WRITE_FAILED",
             )
-            os.fsync(parent_fd)
-        finally:
-            os.close(descriptor)
             try:
-                os.unlink(temporary, dir_fd=parent_fd)
+                os.fsync(parent_fd)
+            except OSError:
+                _fail("THEME_PACKAGE_WRITE_FAILED")
+            _require_private_output_directory_binding(
+                parent_fd, error_code="THEME_PACKAGE_WRITE_FAILED"
+            )
+        finally:
+            try:
+                os.close(descriptor)
+            except OSError:
+                _fail("THEME_PACKAGE_WRITE_FAILED")
+            stale: os.stat_result | None
+            try:
+                stale = os.stat(temporary, dir_fd=parent_fd, follow_symlinks=False)
             except FileNotFoundError:
-                pass
+                stale = None
+            except OSError:
+                _fail("THEME_PACKAGE_WRITE_FAILED")
+            if stale is not None:
+                if (
+                    staging_inode is None
+                    or (stale.st_dev, stale.st_ino) != staging_inode
+                ):
+                    _fail("THEME_PACKAGE_WRITE_FAILED")
+                try:
+                    os.unlink(temporary, dir_fd=parent_fd)
+                    os.fsync(parent_fd)
+                except OSError:
+                    _fail("THEME_PACKAGE_WRITE_FAILED")
+        _require_private_output_directory_binding(
+            parent_fd, error_code="THEME_PACKAGE_WRITE_FAILED"
+        )
+        verified_payload, _verified_identity = _read_regular_at(
+            parent_fd,
+            OUTPUT_PATH.name,
+            max_bytes=MAX_PACKAGE_BYTES,
+            error_code="THEME_PACKAGE_WRITE_FAILED",
+            required_mode=PRIVATE_OUTPUT_FILE_MODE,
+        )
+        if verified_payload != payload:
+            _fail("THEME_PACKAGE_WRITE_FAILED")
 
 
 def _read_output_package() -> bytes:
     try:
-        with _open_absolute_directory(OUTPUT_PATH.parent) as parent_fd:
+        with _open_private_output_directory(
+            create=False, error_code="THEME_PACKAGE_DRIFT"
+        ) as parent_fd:
             payload, _identity_value = _read_regular_at(
                 parent_fd,
                 OUTPUT_PATH.name,
                 max_bytes=MAX_PACKAGE_BYTES,
                 error_code="THEME_PACKAGE_DRIFT",
+                required_mode=PRIVATE_OUTPUT_FILE_MODE,
             )
             return payload
     except ThemeBuildFailure:

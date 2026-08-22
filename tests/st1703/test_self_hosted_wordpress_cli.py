@@ -342,6 +342,7 @@ def test_story_makefile_has_closed_targets_and_sanitized_help() -> None:
         "override ROOT_OWNED_RUNTIME_GENERATOR_PYTHON := /usr/bin/python3.10" in content
     )
     assert content.count("/usr/bin/busybox env -i PATH=/usr/bin:/bin") == 2
+    assert content.count("umask 0077") == 1
     assert "update-draft" not in content
 
 

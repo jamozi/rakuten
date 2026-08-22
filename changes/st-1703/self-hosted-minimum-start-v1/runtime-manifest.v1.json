@@ -4,14 +4,14 @@
   "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 8310,
+      "bytes": 9867,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "99dafcee2def70146a13a7b846787de99d6806811133a3ad0c0b27473ef198f2"
+      "sha256": "fcdcd24a2bc31248585ae621ba1f87213049a1fbc0b230979a754b9aa1cb9ca5"
     },
     {
-      "bytes": 2954,
+      "bytes": 2972,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
-      "sha256": "86f06faa65e7671ef3498c5c4c1ed68332ffa1ad0b6b1d1fba05db17c68f8a0c"
+      "sha256": "fc2ab7cc64792bb01e4d2f8de7231a3d5068d70f3a0dc34864f2ac0620e79733"
     },
     {
       "bytes": 11993,
@@ -24,9 +24,9 @@
       "sha256": "d9c5314744c45e8f441ceeabed113c17289520241ab83a6044de5100d43549e3"
     },
     {
-      "bytes": 3589,
+      "bytes": 3959,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/assets/theme.css",
-      "sha256": "750e874f9c5e134470ef3c3a5e824e18bfe13007feb44fcd389694a86542a98c"
+      "sha256": "0703a9154a12a2d4224d961ac5996b5e25c483c81f21f9a8500cd899ed913adf"
     },
     {
       "bytes": 1245,
@@ -119,9 +119,9 @@
       "sha256": "7669c179c8df496de0277b6ef88c9678afe72f29cef72f28d48db5417f2bda1d"
     },
     {
-      "bytes": 27053,
+      "bytes": 41124,
       "path": "scripts/build_st1703_self_hosted_theme.py",
-      "sha256": "245bf705a3203100fef205a2d0ca36c698542f76c0d6d695489b0389b8ab226d"
+      "sha256": "c9341101501533748d36e830a5bd938e3dd91af68f9e71afc774bbe0f882258b"
     },
     {
       "bytes": 48302,
