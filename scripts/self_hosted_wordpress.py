@@ -1231,7 +1231,7 @@ try:
         DurableSelfHostedWordPressDraftAdapter,
     )
     from raos.application.editorial.self_hosted_minimum_start import (  # noqa: E402
-        load_first_article_candidate,
+        load_first_article_candidate_with_affiliate_status,
     )
     from raos.domain.editorial.self_hosted_wordpress import (  # noqa: E402
         SelfHostedWordPressDraftReceipt,
@@ -1365,7 +1365,7 @@ def _doctor(
     credential_status = OwnerPrivateSelfHostedWordPressCredentialStore(
         repository_root
     ).metadata_status()
-    load_first_article_candidate(
+    _candidate, affiliate_status = load_first_article_candidate_with_affiliate_status(
         repository_root,
         operation=SelfHostedWordPressOperation.CREATE_DRAFT,
         packet_bytes=content_packet_bytes,
@@ -1375,7 +1375,9 @@ def _doctor(
         if theme_payloads is None
         else verified_theme_source_check(theme_payloads)
     )
-    blockers = ["AFFILIATE_SLOTS_PENDING"]
+    blockers = []
+    if affiliate_status != "FINAL":
+        blockers.append("AFFILIATE_SLOTS_PENDING")
     if theme["first_article_asset_status"] != "FINAL":
         blockers.append("FIRST_ARTICLE_IMAGE_PENDING")
     if credential_status != "METADATA_READY":
@@ -1416,11 +1418,13 @@ def _apply_draft(
     content_packet_bytes: bytes | None = None,
     theme_payloads: dict[str, bytes],
 ) -> dict[str, object]:
-    candidate = load_first_article_candidate(
+    candidate, affiliate_status = load_first_article_candidate_with_affiliate_status(
         repository_root,
         operation=SelfHostedWordPressOperation.CREATE_DRAFT,
         packet_bytes=content_packet_bytes,
     )
+    if affiliate_status != "FINAL":
+        _fail(SelfHostedWordPressFailureCode.AFFILIATE_LINK_NOT_READY)
     theme = verified_theme_source_check(theme_payloads)
     if (
         theme.get("package_ready") is not True

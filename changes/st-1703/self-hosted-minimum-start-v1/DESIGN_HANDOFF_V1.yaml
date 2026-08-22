@@ -89,7 +89,11 @@ DESIGN_HANDOFF_V1:
     - create requestはtitle、slug、reviewed content、status=draftの4 fieldだけとし、slugはcontent hashへ含め、responseの同じexact slugをsole attempt後に必須とする
     - article imageはmanifestのexact path、alt、delivery、usageと一致し、article assetを含む全required imageがFINALでpackage-readyになるまでcreate-draftをcredential metadataとnetwork constructionより前に拒否する
     - child-theme installation/activationとdraft preview上のactual image、same-origin src、exact alt確認はhuman operator gateに残す
-    - AI画像は別の費用・外部操作gateで生成し、完成asset欠落時はtheme package readinessを拒否
+    - review済み画像originalはrepository外に維持し、exact 1600x900 opaque static WebPとlowercase SHA-256だけをFINAL assetとしてbindする
+    - affiliate finalizerは3つのclosed named request inputから既存ST-0505 fingerprintを再計算し、固定owner-local sanitized Result V3 store以外を読まない
+    - 3 slotはall-PENDINGまたはall-FINALだけを許可し、zero、duplicate、mixed、stale、mismatch、manual URL、unsafe redirectを拒否する
+    - provider URLは変更せず、public HTTPS Rakuten affiliate URL、exact ace-store item target、exact CTA、rel="sponsored nofollow"へbindし、URLとprivate result pathをlogしない
+    - official Rakuten Developers credit snippetは供給されたFROM/TO commentとanchorを変更せずreviewed articleへexactly once含める
   security_and_approval_gates:
     local_repository_implementation: AUTHORIZED_REVERSIBLE
     credential_entry: OWNER_INTERACTIVE_ONLY
@@ -118,7 +122,8 @@ DESIGN_HANDOFF_V1:
     - runtime manifest, working bytes, and HEAD blobs match before any RAOS import, credential read, or network construction
     - pinned Python code inventory and captured CLI stage identity match before interpreter startup and remain bound in the verifier
     - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
-    - final image and affiliate-slot absence remains visible and fail closed
+    - final image and affiliate-slot state remains closed and fails on pending/final mixing or drift
+    - all three affiliate links retain exact request/response/result hash and retrieval-time provenance without credential or private result path
     - manifest-declared FINAL WebP bytes are included in the reviewed runtime payload supplied to offline doctor
     - reviewed first-article body bytes contain exactly one leading image shortcode and no raw image、media-upload、or featured-media capability
     - first-article shortcode resolves only the fixed manifest asset through the active exact child theme and returns no image for a different title or slug、origin、theme、unsafe path、missing file、or symlink
@@ -133,6 +138,7 @@ DESIGN_HANDOFF_V1:
     - pending/mixed/final theme-image inventory parity, arbitrary-path, symlink, missing, untracked, dirty, and hash-mismatch negative tests
     - decoder-confirmed fixed VP8、VP8L、VP8X fixturesと、RIFF length、truncation、chunk boundary、padding、codec header、feature/order、runtime/doctor parityのnegative tests
     - first-article image token missing、duplicate、additional shortcode、wrong origin/theme/path/alt/title/post slug、PENDING/FINAL、request/response slug parity、media/featured-media absenceのnegative tests
+    - affiliate request/result fingerprint、schema/version、endpoint、HTTP/request/retry/pagination、freshness、item/shop/model、duplicate/partial/mixed、URL/CTA/rel/credit mutation、private-file、no-credential/no-network negative tests
     - template-part wrapper and part-root semantic-landmark duplication and omission negative tests
     - owner-private package directory/file mode, symlink, hardlink, stale-stage, overwrite, directory-rename, same-inode content mutation, terminal byte verification, atomic fsync, fixed-path, and ignored-clean-head tests
     - calculated footer normal, visited, hover, active, focus text and focus-indicator contrast tests

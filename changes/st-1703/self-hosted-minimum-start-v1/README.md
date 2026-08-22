@@ -15,7 +15,8 @@ publication, release, or Production evidence.
 
 - `content/first-suitcase-comparison.v1.json` is the first self-hosted
   article packet. It is bound to the exact origin, draft-only authority, three
-  pending official Rakuten affiliate slots, editorial/affiliate disclosure,
+  provider-issued official Rakuten affiliate destinations, audit-safe Result
+  V3 provenance, editorial/affiliate disclosure,
   source records, freshness caveats, and a closed SEO/structured-data policy.
   Its generated review body starts with exactly one packet-owned
   `[kurashinoshirube_first_article_lead_image]` token. The packet's source
@@ -39,9 +40,11 @@ publication, release, or Production evidence.
   `get_stylesheet_directory_uri()`, and refuses a
   non-HTTPS/different-host/unsafe theme path or a missing, unreadable, or
   symlinked local asset. It does not guess a `/wp-content` prefix. Both images
-  intentionally remain
-  `PENDING_FINAL_ASSET`; no image provider was called by this slice.
-  A future `FINAL` byte stream must also satisfy the closed, bounded static
+  are `FINAL`: opaque 1600x900 static WebP files below 4 MiB with exact
+  lowercase SHA-256 values recorded in the manifest. Their reviewed originals
+  remain outside the repository; this encoding/finalization slice made no
+  image-provider call. Every `FINAL` byte stream must satisfy the closed,
+  bounded static
   WebP profile: exact RIFF length, complete chunks and odd padding, one
   structurally valid VP8/VP8L image, or one non-animated VP8X image whose
   canvas, reserved bits, feature flags and ordered chunks agree. Hash and
@@ -72,25 +75,55 @@ Do not edit or relocate the zip by hand. Update the owned theme
 source/manifest, then run the generator. The fixed ignored output means a
 successful `theme-package` followed by `theme-check` does not dirty the Git
 worktree or weaken the launcher's exact clean-head gate. The source-only check
-is available while final assets remain pending:
+is also available without creating a package:
 
 ```bash
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-source-check
 ```
 
-The expected result in this slice is `SOURCE_VALID` with
-`package_ready=false` and the first article asset reported as
-`PENDING_FINAL_ASSET`. Package and package-check commands fail closed until the
-final asset gate is completed. `create-draft` applies the same verified theme
-check before credential metadata or network construction; it cannot proceed
-until both required images are `FINAL` and the deterministic theme package is
-ready.
+The expected result in this slice is `SOURCE_VALID` with `package_ready=true`
+and the first article asset reported as `FINAL`. `create-draft` applies the
+same verified theme check before credential metadata or network construction;
+it cannot proceed unless both required images remain `FINAL` and the
+deterministic theme package is ready.
 
 The footer contrast contract closes the expected foreground, background,
 focus-outline and custom-property declarations, then binds the complete
 reviewed stylesheet bytes. A later or alternate low-contrast cascade,
 opacity, or browser-specific text-fill override therefore fails source
 validation instead of silently defeating the reviewed state colors.
+
+## Affiliate finalization boundary
+
+`scripts/finalize_st1703_affiliate_links.py` is the sole writer for moving the
+three article slots from the closed all-pending state to the closed all-final
+state. It accepts the three exact owner-private request files through named
+flags, recomputes each ST-0505 request fingerprint, and scans only the fixed
+owner-local sanitized Result V3 store. It reads no credential and performs no
+network request.
+
+The generator requires one fresh successful 2026-07-01 item-search result per
+fingerprint, one request and zero retry/pagination, and exactly one matching
+`ace-store` item/model record. The unchanged provider destination must be a
+public HTTPS Rakuten affiliate URL whose embedded desktop target is the exact
+Rakuten item path. It writes three exact CTA anchors with
+`rel="sponsored nofollow"`, audit-safe fingerprint/hash/time provenance, and
+the official unmodified Rakuten Developers credit snippet. Zero, duplicate,
+stale, mixed, mismatched, manually injected, or unsafe material fails closed;
+URLs and private result paths are never logged.
+
+Run the one-way finalizer only from the reviewed all-pending packet:
+
+```bash
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-finalize \
+  ST1703_ACE_CRESTA_REQUEST=/absolute/owner-private/keyword-ace-cresta-06316.json \
+  ST1703_ACE_DIFFERENCE_REQUEST=/absolute/owner-private/keyword-ace-difference-05721.json \
+  ST1703_PROTECA_MAXPASS4_REQUEST=/absolute/owner-private/keyword-proteca-maxpass4-01471.json
+```
+
+Make hides the command line, and the JSON receipt contains hashes and counts
+only. The reviewed packet is already final in this slice; rerunning the
+finalizer is intentionally refused.
 
 ## Runtime boundary
 
@@ -206,11 +239,6 @@ This slice does not add or replace a root Make target.
 
 ## Explicit blockers and exclusions
 
-- Three official Rakuten affiliate destinations remain pending. Each final
-  anchor must be direct, match the named product, and carry
-  `rel="sponsored nofollow"`; this slice supplies no fabricated link.
-- Two final editorial WebP assets remain pending. Placeholder or synthetic
-  test bytes do not satisfy package readiness.
 - The child theme is not installed or activated by this slice, and no live
   draft preview has confirmed the shortcode-rendered first-article image.
 - Live read-only credential proof, draft creation, theme activation,

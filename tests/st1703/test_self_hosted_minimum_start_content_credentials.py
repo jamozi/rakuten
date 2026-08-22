@@ -17,6 +17,7 @@ from raos.adapters.self_hosted_wordpress_credentials import (
     SelfHostedWordPressCredentials,
 )
 from raos.application.editorial.self_hosted_minimum_start import (
+    AFFILIATE_CTA_LABEL,
     CONTENT_PACKET_RELATIVE_PATH,
     FIRST_ARTICLE_THEME_IMAGE_RELATIVE_PATH,
     FIRST_ARTICLE_THEME_SHORTCODE,
@@ -24,6 +25,8 @@ from raos.application.editorial.self_hosted_minimum_start import (
     FIRST_ARTICLE_SLUG,
     FIRST_ARTICLE_TARGET_ORIGIN,
     FIRST_ARTICLE_TITLE,
+    RAKUTEN_CREDIT_SNIPPET,
+    affiliate_cta_html,
     load_first_article_candidate,
 )
 from raos.domain.editorial.self_hosted_wordpress import (
@@ -42,6 +45,38 @@ def _copy_content(tmp_path: Path) -> Path:
     target.parent.mkdir(parents=True)
     shutil.copyfile(REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH, target)
     return target
+
+
+def _make_all_slots_pending(packet: dict[str, object]) -> None:
+    article = packet["article"]
+    assert isinstance(article, dict)
+    content = article["content_html"]
+    slots = article["affiliate_slots"]
+    assert isinstance(content, str) and isinstance(slots, list)
+    for slot in slots:
+        assert isinstance(slot, dict)
+        slot_id = slot["slot_id"]
+        destination = slot["destination_url"]
+        assert isinstance(slot_id, str) and isinstance(destination, str)
+        pending = (
+            f"<!-- RAOS-AFFILIATE-SLOT:{slot_id} BEGIN -->"
+            f'<div class="raos-affiliate-slot" data-raos-affiliate-slot="{slot_id}">'
+            "<p>公式楽天アフィリエイトリンク未設定</p></div>"
+            f"<!-- RAOS-AFFILIATE-SLOT:{slot_id} END -->"
+        )
+        content = content.replace(affiliate_cta_html(slot_id, destination), pending)
+        product_name = slot["product_name"]
+        slot.clear()
+        slot.update(
+            {
+                "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+                "product_name": product_name,
+                "required_rel": "sponsored nofollow",
+                "slot_id": slot_id,
+                "status": "PENDING_OFFICIAL_RAKUTEN_LINK",
+            }
+        )
+    article["content_html"] = content.replace(f"{RAKUTEN_CREDIT_SNIPPET}\n", "")
 
 
 def _credentials() -> SelfHostedWordPressCredentials:
@@ -72,7 +107,9 @@ def test_content_packet_builds_only_bound_create_and_positive_id_update() -> Non
     assert create.content_html.startswith(f"{FIRST_ARTICLE_THEME_SHORTCODE}\n")
     assert create.content_html.count(FIRST_ARTICLE_THEME_SHORTCODE) == 1
     assert create.content_html.count("PENDING_OFFICIAL_RAKUTEN_LINK") == 0
-    assert create.content_html.count("公式楽天アフィリエイトリンク未設定") == 3
+    assert create.content_html.count("公式楽天アフィリエイトリンク未設定") == 0
+    assert create.content_html.count(AFFILIATE_CTA_LABEL) == 3
+    assert create.content_html.count(RAKUTEN_CREDIT_SNIPPET) == 1
 
 
 def test_self_hosted_draft_slug_is_strict_and_content_hash_bound() -> None:
@@ -359,6 +396,7 @@ def test_pending_affiliate_slot_rejects_injected_active_link(
 ) -> None:
     path = _copy_content(tmp_path)
     packet = json.loads(path.read_text(encoding="utf-8"))
+    _make_all_slots_pending(packet)
     article = packet["article"]
     article["content_html"] = article["content_html"].replace(
         "<p>公式楽天アフィリエイトリンク未設定</p>",

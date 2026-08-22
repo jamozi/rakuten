@@ -4,24 +4,34 @@
   "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 13561,
+      "bytes": 14683,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "add87e1074eeb3ea6f47835a4eb3dcf7e2e17f006df366cb6adaa1429d934b58"
+      "sha256": "13f9ea48275f399385c710ab8d9be2326dfb41d761319ec1bbb9b78e0c0e41c7"
     },
     {
-      "bytes": 2972,
+      "bytes": 3671,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
-      "sha256": "fc2ab7cc64792bb01e4d2f8de7231a3d5068d70f3a0dc34864f2ac0620e79733"
+      "sha256": "f57970b554cbd9eefc6b8539d7cdf57fa980fc3627a2ace1da5b1439ef190251"
     },
     {
-      "bytes": 12412,
+      "bytes": 16162,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/content/first-suitcase-comparison.v1.json",
-      "sha256": "041456463a10f13725b0c9e193d2198f997fd6abf2f321e9d71b613c0d8d54e8"
+      "sha256": "60c689d65e819ffad6a7f2a1517b13b66de5f78f4a4a8553962e26928a8726c2"
     },
     {
       "bytes": 112138,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/python-runtime-code-inventory.v1.sha256",
       "sha256": "d9c5314744c45e8f441ceeabed113c17289520241ab83a6044de5100d43549e3"
+    },
+    {
+      "bytes": 70148,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+      "sha256": "23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad"
+    },
+    {
+      "bytes": 133648,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+      "sha256": "df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea"
     },
     {
       "bytes": 3959,
@@ -49,9 +59,9 @@
       "sha256": "8b8c12772dd32d8e56464bd6d502dfb7289921d424d6eb80b88eeae67de15674"
     },
     {
-      "bytes": 1776,
+      "bytes": 1872,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
-      "sha256": "c3ad99a59527a42935c12936ed02f024bac7a6930b6b131b478cc705ef88688a"
+      "sha256": "bcaf18ba7ba9351121854639ecea67290cf368df5586cb4dfa58ec527ed49d60"
     },
     {
       "bytes": 210,
@@ -99,9 +109,9 @@
       "sha256": "4103ce178e92e12a5357e2e9c35b05485b67e18889fc057a8f41b4e16d61e4f8"
     },
     {
-      "bytes": 15779,
+      "bytes": 26026,
       "path": "python/raos/application/editorial/self_hosted_minimum_start.py",
-      "sha256": "14784ceb85a2da6d3afa492ab3c3cda0486f00eb0b770f05cfad478a1b57831d"
+      "sha256": "822e88a00c58ee7c0eb8a46be7b5127a2fc4a5a89ca6bfccdc1747f9168e6340"
     },
     {
       "bytes": 20400,
@@ -109,9 +119,9 @@
       "sha256": "69f4c373dca5ddcbebf7dcefc23a8a9376792ca85b70fb3d48d6137212fb6f27"
     },
     {
-      "bytes": 9190,
+      "bytes": 9248,
       "path": "python/raos/domain/editorial/self_hosted_wordpress.py",
-      "sha256": "ad20cc42d21d31b4b818787282d75d2ab1663a6486db7abacc8f3d9c11172e56"
+      "sha256": "7fc93a4eaae7a7067d2702d26525c814fd69698c2978a2993fbce9b60cd9fdd3"
     },
     {
       "bytes": 1121,
@@ -124,9 +134,9 @@
       "sha256": "3fbbbd3d0080b875955ce57d3e75f2347541be661650dba185f4b49c16507878"
     },
     {
-      "bytes": 54640,
+      "bytes": 54924,
       "path": "scripts/self_hosted_wordpress.py",
-      "sha256": "24ea5179184f6b06b8d7764cc04af76fbc9b96086c87e1b44cd04a0bd6a42eab"
+      "sha256": "4442c099c830bde03f08df60650d33f8943126f7a8912f9c21d024bd3fdda2ee"
     },
     {
       "bytes": 21688,

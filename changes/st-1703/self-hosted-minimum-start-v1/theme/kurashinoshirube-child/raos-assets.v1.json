@@ -8,8 +8,8 @@
       "delivery": "THEME_CSS_BACKGROUND",
       "path": "assets/images/home-hero.webp",
       "prompt": "Japanese premium travel editorial hero, quiet folded textile and soft window light, deep indigo and warm clay accents, no people, no text, no logo, no product, no trademark, no claim of real experience, wide 16:9 composition",
-      "sha256": null,
-      "status": "PENDING_FINAL_ASSET",
+      "sha256": "df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea",
+      "status": "FINAL",
       "usage": "front-page full-bleed hero"
     },
     {
@@ -17,8 +17,8 @@
       "delivery": "FIRST_ARTICLE_THEME_SHORTCODE",
       "path": "assets/images/article-suitcase-guide.webp",
       "prompt": "Japanese editorial travel preparation still life, abstract unbranded luggage silhouette and measuring tape motif, no logo, no recognizable product, no people, no text, no fabricated usage scene, deep indigo paper texture, wide 16:9 composition",
-      "sha256": null,
-      "status": "PENDING_FINAL_ASSET",
+      "sha256": "23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad",
+      "status": "FINAL",
       "usage": "first article inline lead image"
     }
   ],

@@ -207,6 +207,28 @@ The integrated exact-root doctor, credential access, provider/network call,
 draft write, browser operation, hosted CI, activation, publication, formal
 TST, staging, release, and Production remain `NOT_EXECUTED`.
 
+## Final assets and affiliate completion slice (2026-08-23)
+
+- Two already reviewed originals were mechanically encoded as opaque
+  1600x900 static WebP assets, structurally validated, and bound as `FINAL` by
+  exact lowercase SHA-256. The originals remain outside the repository.
+- A one-way local generator recomputed the three exact ST-0505 request
+  fingerprints and consumed one matching sanitized Result V3 success per
+  slot from the fixed owner-local store. It made zero credential reads and
+  zero network requests and printed no provider destination.
+- The generator requires the reviewed 2026-07-01 item-search evidence shape,
+  one request, zero retry/pagination, a unique `ace-store` model match, equal
+  provider URL fields, a direct closed Rakuten destination, and fresh
+  fingerprint/hash/time provenance. Partial, duplicate, stale, mismatched,
+  unsafe, and manually injected states fail closed.
+- The reviewed article now contains three exact CTA anchors with
+  `rel="sponsored nofollow"` and the official unmodified Rakuten Developers
+  credit snippet exactly once. Draft create rejects pending affiliate state
+  before theme, credential metadata, or transport construction.
+- No WordPress/provider/browser call, credential access, theme activation,
+  draft write, publication, ST-1704 implementation, release, staging, or
+  Production action was performed.
+
 ## Review diagnostic incident
 
 An independent read-only review diagnostic accidentally emitted inherited

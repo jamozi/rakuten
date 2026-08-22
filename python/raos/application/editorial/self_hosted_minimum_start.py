@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+from html import escape
 import json
 from html.parser import HTMLParser
 import os
@@ -9,10 +11,12 @@ from pathlib import Path
 import re
 import stat
 from typing import Any, NoReturn, cast
+from urllib.parse import parse_qsl, urlsplit
 
 from raos.domain.editorial.self_hosted_wordpress import (
     SELF_HOSTED_WORDPRESS_ORIGIN,
     SelfHostedWordPressDraft,
+    SelfHostedWordPressFailure,
     SelfHostedWordPressFailureCode,
     SelfHostedWordPressOperation,
     fail_self_hosted_wordpress,
@@ -37,6 +41,20 @@ FIRST_ARTICLE_TARGET_ORIGIN = SELF_HOSTED_WORDPRESS_ORIGIN
 FIRST_ARTICLE_TITLE = (
     "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ"
 )
+RAKUTEN_CREDIT_FROM_COMMENT = "Rakuten Web Services Attribution Snippet FROM HERE"
+RAKUTEN_CREDIT_TO_COMMENT = "Rakuten Web Services Attribution Snippet TO HERE"
+RAKUTEN_CREDIT_ANCHOR = (
+    '<a href="https://developers.rakuten.com/" target="_blank">'
+    "Supported by Rakuten Developers</a>"
+)
+RAKUTEN_CREDIT_SNIPPET = (
+    f"<!-- {RAKUTEN_CREDIT_FROM_COMMENT} -->\n"
+    f"{RAKUTEN_CREDIT_ANCHOR}\n"
+    f"<!-- {RAKUTEN_CREDIT_TO_COMMENT} -->"
+)
+AFFILIATE_CTA_LABEL = "楽天市場でこの商品の詳細を見る"
+AFFILIATE_PENDING_STATUS = "PENDING"
+AFFILIATE_FINAL_STATUS = "FINAL"
 
 _TOP_KEYS = frozenset(
     {
@@ -73,8 +91,31 @@ _LEAD_IMAGE_KEYS = frozenset(
         "theme_slug",
     }
 )
-_SLOT_KEYS = frozenset(
+_PENDING_SLOT_KEYS = frozenset(
     {"slot_id", "product_name", "status", "destination_policy", "required_rel"}
+)
+_FINAL_SLOT_KEYS = frozenset(
+    {
+        "slot_id",
+        "product_name",
+        "status",
+        "destination_policy",
+        "required_rel",
+        "destination_url",
+        "evidence",
+    }
+)
+_AFFILIATE_EVIDENCE_KEYS = frozenset(
+    {
+        "api",
+        "api_version",
+        "endpoint_id",
+        "evidence_authority",
+        "request_fingerprint",
+        "response_sha256",
+        "result_sha256",
+        "retrieved_at",
+    }
 )
 _SOURCE_KEYS = frozenset({"title", "url", "retrieved_on"})
 _ALLOWED_SOURCE_HOSTS = frozenset(
@@ -91,12 +132,32 @@ _SLOT_COMMENT = re.compile(
     r"RAOS-AFFILIATE-SLOT:[a-z0-9]+(?:-[a-z0-9]+)* (?:BEGIN|END)\Z",
     re.ASCII,
 )
+_SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
+_UTC_MICROSECONDS = re.compile(
+    r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}Z\Z",
+    re.ASCII,
+)
+_MALFORMED_PERCENT_ESCAPE = re.compile(r"%(?![0-9A-Fa-f]{2})", re.ASCII)
+_RAKUTEN_AFFILIATE_PATH = re.compile(
+    r"/hgc/[A-Za-z0-9._~-]{1,256}/\Z",
+    re.ASCII,
+)
+_RAKUTEN_MOBILE_ITEM_PATH = re.compile(
+    r"/ace-store/i/[0-9]{1,32}/\Z",
+    re.ASCII,
+)
 _EXPECTED_SLOTS = (
     ("ace-cresta-06316", "ACE クレスタ 06316"),
     ("ace-difference-05721", "ace.TOKYO LABEL ディフェレンス 05721"),
     ("proteca-maxpass4-01471", "PROTECA マックスパス4 01471"),
 )
+_EXPECTED_AFFILIATE_PATHS = {
+    "ace-cresta-06316": "/ace-store/06316/",
+    "ace-difference-05721": "/ace-store/05721/",
+    "proteca-maxpass4-01471": "/ace-store/01471/",
+}
 _ALLOWED_TAG_ATTRIBUTES: dict[str, frozenset[str]] = {
+    "a": frozenset({"class", "href", "rel", "target"}),
     "aside": frozenset({"aria-label", "class"}),
     "br": frozenset(),
     "caption": frozenset(),
@@ -116,12 +177,114 @@ _ALLOWED_TAG_ATTRIBUTES: dict[str, frozenset[str]] = {
 }
 
 
+def _validated_affiliate_url(value: object, slot_id: str | None = None) -> str:
+    if (
+        type(value) is not str
+        or not 1 <= len(value) <= 4096
+        or value != value.strip()
+        or not value.isascii()
+        or any(character.isspace() or ord(character) < 0x21 for character in value)
+        or any(character in value for character in "\\\"'<>[]")
+        or _MALFORMED_PERCENT_ESCAPE.search(value) is not None
+    ):
+        _fail()
+    try:
+        parsed = urlsplit(value)
+        port = parsed.port
+    except ValueError:
+        _fail()
+    if (
+        parsed.scheme != "https"
+        or parsed.netloc != "hb.afl.rakuten.co.jp"
+        or parsed.hostname != "hb.afl.rakuten.co.jp"
+        or parsed.username is not None
+        or parsed.password is not None
+        or port is not None
+        or _RAKUTEN_AFFILIATE_PATH.fullmatch(parsed.path) is None
+        or parsed.fragment
+    ):
+        _fail()
+    try:
+        query_pairs = parse_qsl(
+            parsed.query,
+            keep_blank_values=True,
+            strict_parsing=True,
+            max_num_fields=3,
+        )
+    except ValueError:
+        _fail()
+    query = dict(query_pairs)
+    if (
+        len(query_pairs) != 3
+        or len(query) != 3
+        or frozenset(query) != frozenset({"m", "pc", "rafcid"})
+        or not query["rafcid"]
+        or not query["rafcid"].isascii()
+        or len(query["rafcid"]) > 512
+    ):
+        _fail()
+    expected_paths = (
+        frozenset(_EXPECTED_AFFILIATE_PATHS.values())
+        if slot_id is None
+        else frozenset({_EXPECTED_AFFILIATE_PATHS.get(slot_id)})
+    )
+    try:
+        desktop = urlsplit(query["pc"])
+        mobile = urlsplit(query["m"])
+        desktop_port = desktop.port
+        mobile_port = mobile.port
+    except ValueError:
+        _fail()
+    if (
+        None in expected_paths
+        or desktop.scheme != "https"
+        or desktop.netloc != "item.rakuten.co.jp"
+        or desktop.hostname != "item.rakuten.co.jp"
+        or desktop.username is not None
+        or desktop.password is not None
+        or desktop_port is not None
+        or desktop.path not in expected_paths
+        or desktop.query
+        or desktop.fragment
+        or mobile.scheme not in {"http", "https"}
+        or mobile.netloc != "m.rakuten.co.jp"
+        or mobile.hostname != "m.rakuten.co.jp"
+        or mobile.username is not None
+        or mobile.password is not None
+        or mobile_port is not None
+        or _RAKUTEN_MOBILE_ITEM_PATH.fullmatch(mobile.path) is None
+        or mobile.query
+        or mobile.fragment
+    ):
+        _fail()
+    return value
+
+
+def affiliate_cta_html(slot_id: str, destination_url: str) -> str:
+    """Render one exact direct CTA while preserving the provider destination."""
+
+    if type(slot_id) is not str or slot_id not in _EXPECTED_AFFILIATE_PATHS:
+        _fail()
+    validated_url = _validated_affiliate_url(destination_url, slot_id)
+    escaped_url = escape(validated_url, quote=True)
+    return (
+        f"<!-- RAOS-AFFILIATE-SLOT:{slot_id} BEGIN -->"
+        f'<div class="raos-affiliate-slot" data-raos-affiliate-slot="{slot_id}">'
+        f'<p><a class="raos-affiliate-cta" href="{escaped_url}" '
+        f'rel="sponsored nofollow">{AFFILIATE_CTA_LABEL}</a></p></div>'
+        f"<!-- RAOS-AFFILIATE-SLOT:{slot_id} END -->"
+    )
+
+
 class _ClosedArticleHtmlParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.stack: list[str] = []
         self.affiliate_div_ids: list[str] = []
         self.affiliate_comments: list[str] = []
+        self.affiliate_anchor_hrefs: list[str] = []
+        self.credit_anchor_count = 0
+        self.credit_comments: list[str] = []
 
     def _validate_attributes(
         self, tag: str, attributes: list[tuple[str, str | None]]
@@ -166,7 +329,24 @@ class _ClosedArticleHtmlParser(HTMLParser):
                 )
             if not valid_div:
                 raise ValueError("article HTML boundary")
-        if tag not in {"aside", "div", "p", "th"} and values:
+        if tag == "a":
+            if values == {
+                "href": "https://developers.rakuten.com/",
+                "target": "_blank",
+            }:
+                return
+            if (
+                frozenset(values) != frozenset({"class", "href", "rel"})
+                or values.get("class") != "raos-affiliate-cta"
+                or values.get("rel") != "sponsored nofollow"
+                or type(values.get("href")) is not str
+            ):
+                raise ValueError("article HTML boundary")
+            try:
+                _validated_affiliate_url(values["href"])
+            except SelfHostedWordPressFailure:
+                raise ValueError("article HTML boundary") from None
+        if tag not in {"a", "aside", "div", "p", "th"} and values:
             raise ValueError("article HTML boundary")
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -177,6 +357,12 @@ class _ClosedArticleHtmlParser(HTMLParser):
             if type(slot_id) is not str:
                 raise ValueError("article HTML boundary")
             self.affiliate_div_ids.append(slot_id)
+        if tag == "a":
+            href = values.get("href")
+            if href == "https://developers.rakuten.com/":
+                self.credit_anchor_count += 1
+            elif type(href) is str:
+                self.affiliate_anchor_hrefs.append(href)
         if tag != "br":
             self.stack.append(tag)
 
@@ -191,9 +377,14 @@ class _ClosedArticleHtmlParser(HTMLParser):
 
     def handle_comment(self, data: str) -> None:
         comment = data.strip()
+        if _SLOT_COMMENT.fullmatch(comment) is not None:
+            self.affiliate_comments.append(comment)
+            return
+        if comment in {RAKUTEN_CREDIT_FROM_COMMENT, RAKUTEN_CREDIT_TO_COMMENT}:
+            self.credit_comments.append(comment)
+            return
         if _SLOT_COMMENT.fullmatch(comment) is None:
             raise ValueError("article HTML boundary")
-        self.affiliate_comments.append(comment)
 
     def handle_decl(self, decl: str) -> None:
         del decl
@@ -210,14 +401,26 @@ class _ClosedArticleHtmlParser(HTMLParser):
 
 def _validate_article_html(
     content: str,
-) -> tuple[tuple[str, ...], tuple[str, ...]]:
+) -> tuple[
+    tuple[str, ...],
+    tuple[str, ...],
+    tuple[str, ...],
+    int,
+    tuple[str, ...],
+]:
     try:
         parser = _ClosedArticleHtmlParser()
         parser.feed(content)
         parser.close()
         if parser.stack:
             raise ValueError("article HTML boundary")
-        return tuple(parser.affiliate_div_ids), tuple(parser.affiliate_comments)
+        return (
+            tuple(parser.affiliate_div_ids),
+            tuple(parser.affiliate_comments),
+            tuple(parser.affiliate_anchor_hrefs),
+            parser.credit_anchor_count,
+            tuple(parser.credit_comments),
+        )
     except ValueError:
         _fail()
 
@@ -289,13 +492,13 @@ def _text(value: object, *, maximum: int) -> str:
     return value
 
 
-def load_first_article_candidate(
+def load_first_article_candidate_with_affiliate_status(
     repository_root: object,
     *,
     operation: SelfHostedWordPressOperation,
     existing_draft_id: int | None = None,
     packet_bytes: bytes | None = None,
-) -> SelfHostedWordPressDraft:
+) -> tuple[SelfHostedWordPressDraft, str]:
     if not isinstance(repository_root, Path) or not repository_root.is_absolute():
         _fail()
     path = repository_root / CONTENT_PACKET_RELATIVE_PATH
@@ -352,7 +555,13 @@ def load_first_article_candidate(
     ):
         _fail()
     content = f"{FIRST_ARTICLE_THEME_SHORTCODE}\n{source_content}"
-    html_slot_ids, html_slot_comments = _validate_article_html(content)
+    (
+        html_slot_ids,
+        html_slot_comments,
+        html_affiliate_hrefs,
+        html_credit_anchor_count,
+        html_credit_comments,
+    ) = _validate_article_html(content)
     if (
         title != FIRST_ARTICLE_TITLE
         or slug != FIRST_ARTICLE_SLUG
@@ -377,6 +586,8 @@ def load_first_article_candidate(
     slot_values = cast(list[object], slots)
     if len(slot_values) != 3:
         _fail()
+    affiliate_states: list[str] = []
+    expected_affiliate_hrefs: list[str] = []
     for item, expected_slot in zip(slot_values, _EXPECTED_SLOTS, strict=True):
         if type(item) is not dict:
             _fail()
@@ -390,17 +601,65 @@ def load_first_article_candidate(
             f"<!-- RAOS-AFFILIATE-SLOT:{slot_id} END -->"
         )
         if (
-            frozenset(slot) != _SLOT_KEYS
-            or type(slot_id) is not str
+            type(slot_id) is not str
             or (slot_id, slot.get("product_name")) != expected_slot
-            or slot["status"] != "PENDING_OFFICIAL_RAKUTEN_LINK"
-            or slot["destination_policy"] != "DIRECT_RAKUTEN_AFFILIATE_URL"
-            or slot["required_rel"] != "sponsored nofollow"
             or content.count(f"RAOS-AFFILIATE-SLOT:{slot_id} BEGIN") != 1
             or content.count(f"RAOS-AFFILIATE-SLOT:{slot_id} END") != 1
-            or content.count(pending_slot) != 1
         ):
             _fail()
+        common_valid = (
+            slot.get("destination_policy") == "DIRECT_RAKUTEN_AFFILIATE_URL"
+            and slot.get("required_rel") == "sponsored nofollow"
+        )
+        if (
+            frozenset(slot) == _PENDING_SLOT_KEYS
+            and slot.get("status") == "PENDING_OFFICIAL_RAKUTEN_LINK"
+            and common_valid
+            and content.count(pending_slot) == 1
+        ):
+            affiliate_states.append(AFFILIATE_PENDING_STATUS)
+            continue
+        if (
+            frozenset(slot) != _FINAL_SLOT_KEYS
+            or slot.get("status") != "FINAL_OFFICIAL_RAKUTEN_LINK"
+            or not common_valid
+            or type(slot.get("evidence")) is not dict
+        ):
+            _fail()
+        destination = _validated_affiliate_url(slot.get("destination_url"), slot_id)
+        evidence = cast(dict[str, object], slot["evidence"])
+        retrieved_at = evidence.get("retrieved_at")
+        if (
+            frozenset(evidence) != _AFFILIATE_EVIDENCE_KEYS
+            or evidence.get("api") != "item-search"
+            or evidence.get("api_version") != "2026-07-01"
+            or evidence.get("endpoint_id") != "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701"
+            or evidence.get("evidence_authority")
+            != "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"
+            or any(
+                type(evidence.get(key)) is not str
+                or _SHA256.fullmatch(cast(str, evidence[key])) is None
+                for key in (
+                    "request_fingerprint",
+                    "response_sha256",
+                    "result_sha256",
+                )
+            )
+            or type(retrieved_at) is not str
+            or _UTC_MICROSECONDS.fullmatch(retrieved_at) is None
+        ):
+            _fail()
+        try:
+            datetime.strptime(retrieved_at, "%Y-%m-%dT%H:%M:%S.%fZ")
+        except ValueError:
+            _fail()
+        if content.count(affiliate_cta_html(slot_id, destination)) != 1:
+            _fail()
+        affiliate_states.append(AFFILIATE_FINAL_STATUS)
+        expected_affiliate_hrefs.append(destination)
+    if len(set(affiliate_states)) != 1:
+        _fail()
+    affiliate_status = affiliate_states[0]
     expected_slot_ids = tuple(slot_id for slot_id, _ in _EXPECTED_SLOTS)
     expected_slot_comments = tuple(
         comment
@@ -413,6 +672,23 @@ def load_first_article_candidate(
     if (
         html_slot_ids != expected_slot_ids
         or html_slot_comments != expected_slot_comments
+    ):
+        _fail()
+    if affiliate_status == AFFILIATE_PENDING_STATUS:
+        if (
+            html_affiliate_hrefs
+            or html_credit_anchor_count != 0
+            or html_credit_comments
+            or RAKUTEN_CREDIT_SNIPPET in content
+        ):
+            _fail()
+    elif (
+        html_affiliate_hrefs != tuple(expected_affiliate_hrefs)
+        or html_credit_anchor_count != 1
+        or html_credit_comments
+        != (RAKUTEN_CREDIT_FROM_COMMENT, RAKUTEN_CREDIT_TO_COMMENT)
+        or content.count(RAKUTEN_CREDIT_SNIPPET) != 1
+        or content.count(RAKUTEN_CREDIT_ANCHOR) != 1
     ):
         _fail()
     structured = article["structured_data"]
@@ -438,16 +714,38 @@ def load_first_article_candidate(
             or url.split("/", 3)[2] not in _ALLOWED_SOURCE_HOSTS
         ):
             _fail()
-    return SelfHostedWordPressDraft.bind(
-        operation=operation,
-        title=title,
-        slug=slug,
-        content_html=content,
-        existing_draft_id=existing_draft_id,
+    return (
+        SelfHostedWordPressDraft.bind(
+            operation=operation,
+            title=title,
+            slug=slug,
+            content_html=content,
+            existing_draft_id=existing_draft_id,
+        ),
+        affiliate_status,
     )
 
 
+def load_first_article_candidate(
+    repository_root: object,
+    *,
+    operation: SelfHostedWordPressOperation,
+    existing_draft_id: int | None = None,
+    packet_bytes: bytes | None = None,
+) -> SelfHostedWordPressDraft:
+    candidate, _affiliate_status = load_first_article_candidate_with_affiliate_status(
+        repository_root,
+        operation=operation,
+        existing_draft_id=existing_draft_id,
+        packet_bytes=packet_bytes,
+    )
+    return candidate
+
+
 __all__ = [
+    "AFFILIATE_CTA_LABEL",
+    "AFFILIATE_FINAL_STATUS",
+    "AFFILIATE_PENDING_STATUS",
     "CONTENT_PACKET_RELATIVE_PATH",
     "FIRST_ARTICLE_THEME_IMAGE_ALT",
     "FIRST_ARTICLE_THEME_IMAGE_RELATIVE_PATH",
@@ -459,5 +757,8 @@ __all__ = [
     "FIRST_ARTICLE_TARGET_ORIGIN",
     "FIRST_ARTICLE_TITLE",
     "MAX_CONTENT_PACKET_BYTES",
+    "RAKUTEN_CREDIT_SNIPPET",
+    "affiliate_cta_html",
     "load_first_article_candidate",
+    "load_first_article_candidate_with_affiliate_status",
 ]

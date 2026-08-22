@@ -30,12 +30,12 @@ override ROOT_OWNED_RUNTIME_GENERATOR_PYTHON := /usr/bin/python3.10
 
 .PHONY: help doctor install-credentials create-draft \
 	runtime-manifest-generate runtime-manifest-check \
-	theme-source-check theme-package theme-check
+	theme-source-check theme-package theme-check affiliate-finalize
 
 help:
 	@echo 'Offline: doctor runtime-manifest-check theme-source-check theme-check'
-	@echo 'Local maintenance: runtime-manifest-generate'
-	@echo 'Human gated: install-credentials create-draft theme-package'
+	@echo 'Local maintenance: runtime-manifest-generate theme-package affiliate-finalize'
+	@echo 'Human gated: install-credentials create-draft'
 
 doctor:
 	"$(OWNER_LAUNCHER)" doctor
@@ -75,3 +75,14 @@ theme-check:
 	cd "$(SELF_HOSTED_SOURCE_ROOT)" && \
 		"$(MANAGED_PYTHON)" -B -I -S -X pycache_prefix=/dev/null \
 		scripts/build_st1703_self_hosted_theme.py --check
+
+affiliate-finalize:
+	@test -n "$(ST1703_ACE_CRESTA_REQUEST)" || { echo 'ST1703_REQUEST_PATHS_REQUIRED'; exit 2; }
+	@test -n "$(ST1703_ACE_DIFFERENCE_REQUEST)" || { echo 'ST1703_REQUEST_PATHS_REQUIRED'; exit 2; }
+	@test -n "$(ST1703_PROTECA_MAXPASS4_REQUEST)" || { echo 'ST1703_REQUEST_PATHS_REQUIRED'; exit 2; }
+	@cd "$(SELF_HOSTED_SOURCE_ROOT)" && \
+		"$(MANAGED_PYTHON)" -B -I -X pycache_prefix=/dev/null \
+		scripts/finalize_st1703_affiliate_links.py \
+		--ace-cresta-06316-request "$(ST1703_ACE_CRESTA_REQUEST)" \
+		--ace-difference-05721-request "$(ST1703_ACE_DIFFERENCE_REQUEST)" \
+		--proteca-maxpass4-01471-request "$(ST1703_PROTECA_MAXPASS4_REQUEST)"

@@ -74,22 +74,20 @@ def test_doctor_is_metadata_only_and_has_zero_network_or_external_writes(
     )
     monkeypatch.setattr(
         cli,
-        "load_first_article_candidate",
-        lambda *args, **kwargs: object(),
+        "load_first_article_candidate_with_affiliate_status",
+        lambda *args, **kwargs: (object(), "PENDING"),
     )
     result = cli._doctor(tmp_path)
     assert result == {
         "blockers": [
             "AFFILIATE_SLOTS_PENDING",
-            "FIRST_ARTICLE_IMAGE_PENDING",
             "WORDPRESS_CREDENTIAL_INSTALL_REQUIRED",
-            "FINAL_THEME_ASSETS_MISSING",
         ],
         "content_packet": "VALID",
         "credential_metadata": "MISSING",
         "credential_value_reads": 0,
         "external_writes": 0,
-        "first_article_asset": "PENDING_FINAL_ASSET",
+        "first_article_asset": "FINAL",
         "network_requests": 0,
         "publication_actions": 0,
         "status": "LOCAL_PREPARATION_REQUIRED",
@@ -142,8 +140,8 @@ def test_create_draft_rejects_pending_article_asset_before_credentials_or_networ
 
     monkeypatch.setattr(
         cli,
-        "load_first_article_candidate",
-        lambda *args, **kwargs: object(),
+        "load_first_article_candidate_with_affiliate_status",
+        lambda *args, **kwargs: (object(), "FINAL"),
     )
     monkeypatch.setattr(
         cli,
@@ -191,10 +189,10 @@ def test_create_draft_accepts_only_final_package_ready_article_asset_before_atte
     attempt = object()
     receipt = object()
 
-    def load_candidate(*args: object, **kwargs: object) -> object:
+    def load_candidate(*args: object, **kwargs: object) -> tuple[object, str]:
         del args, kwargs
         calls.append("candidate")
-        return candidate
+        return candidate, "FINAL"
 
     def check_theme(payloads: dict[str, bytes]) -> dict[str, object]:
         assert payloads == {"raos-assets.v1.json": b"reviewed-theme"}
@@ -224,7 +222,9 @@ def test_create_draft_accepts_only_final_package_ready_article_asset_before_atte
             calls.append("apply")
             return receipt
 
-    monkeypatch.setattr(cli, "load_first_article_candidate", load_candidate)
+    monkeypatch.setattr(
+        cli, "load_first_article_candidate_with_affiliate_status", load_candidate
+    )
     monkeypatch.setattr(cli, "verified_theme_source_check", check_theme)
     monkeypatch.setattr(
         cli.OwnerPrivateSelfHostedWordPressCredentialStore,
@@ -329,8 +329,8 @@ def test_doctor_rejects_hash_bound_structurally_invalid_final_webp(
     )
     monkeypatch.setattr(
         cli,
-        "load_first_article_candidate",
-        lambda *args, **kwargs: object(),
+        "load_first_article_candidate_with_affiliate_status",
+        lambda *args, **kwargs: (object(), "FINAL"),
     )
     with pytest.raises(theme.ThemeBuildFailure, match="THEME_FINAL_ASSET_INVALID"):
         cli._doctor(
@@ -546,8 +546,8 @@ def test_story_makefile_has_closed_targets_and_sanitized_help() -> None:
     assert result.stderr == b""
     assert result.stdout.splitlines() == [
         b"Offline: doctor runtime-manifest-check theme-source-check theme-check",
-        b"Local maintenance: runtime-manifest-generate",
-        b"Human gated: install-credentials create-draft theme-package",
+        b"Local maintenance: runtime-manifest-generate theme-package affiliate-finalize",
+        b"Human gated: install-credentials create-draft",
     ]
     assert b"update" not in result.stdout
     content = SLICE_MAKEFILE.read_text(encoding="utf-8")

@@ -57,11 +57,11 @@ claim.
 
 | Layer | Meaning in this slice | Current state |
 | --- | --- | --- |
-| Offline/local ready | Content contract and theme source can be checked without secrets or network | Implemented; final affiliate/image blockers remain visible |
+| Offline/local ready | Content contract and theme source can be checked without secrets or network | Implemented; affiliate slots and both images are locally final |
 | Credential metadata ready | Exact fixed file exists with trusted owner/type/mode/size metadata; values are not read | Owner action pending |
 | Live read-only proof | Credentials and exact site route are proven through an explicit read-only provider action | No command implemented; `NOT_EXECUTED` |
 | Draft write | One create protected by durable INTENT/COMMITTED journal; live update is disabled | Implemented interface; separate owner operation, `NOT_EXECUTED` here |
-| Theme activation | Packaged child theme is installed and activated with Twenty Twenty-Five present | Human operator gate; final images/package pending |
+| Theme activation | Packaged child theme is installed and activated with Twenty Twenty-Five present | Human operator gate; not executed |
 | Human publication | Owner reviews disclosures, facts, links, layout, privacy and then publishes | Human owner gate; `NOT_EXECUTED` |
 | Formal staging/TST | Required environment and TST-021/TST-022/TST-032 evidence exists | `NOT_EXECUTED` |
 | Production | Canonical production, security, approval and release gates are satisfied | Not claimed and not authorized by this slice |
@@ -93,17 +93,10 @@ make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile doctor
 
 The doctor reads repository content and credential **metadata only**. It does
 not read username/password bytes, perform DNS/HTTP, mutate WordPress, package
-or activate the theme, enable analytics, or publish. Expected blockers before
-launch are:
-
-- `AFFILIATE_SLOTS_PENDING` until all three official Rakuten destinations are
-  separately completed and validated;
-- `FIRST_ARTICLE_IMAGE_PENDING` until the exact suitcase-guide manifest record
-  is `FINAL` and its reviewed WebP bytes are present;
-- `FINAL_THEME_ASSETS_MISSING` until both final editorial WebP files are
-  generated under the separate external/cost gate and hash-bound;
-- `WORDPRESS_CREDENTIAL_INSTALL_REQUIRED` until the owner performs the hidden
-  installer.
+or activate the theme, enable analytics, or publish. The affiliate and image
+blockers are absent only while all three reviewed provider links and both
+hash-bound WebP assets remain valid. Before credential installation, the
+remaining expected blocker is `WORDPRESS_CREDENTIAL_INSTALL_REQUIRED`.
 
 `LOCAL_READY`, if reached later, is still only local evidence and grants no
 provider-call or publication authority.
@@ -116,8 +109,8 @@ The source-only, read-only check is:
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-source-check
 ```
 
-The current expected state is `SOURCE_VALID`, `PENDING_FINAL_ASSETS`, and
-`package_ready=false`. The two closed prompts are in
+The current expected state is `SOURCE_VALID`, both assets `FINAL`, and
+`package_ready=true`. The two closed prompts are in
 `changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/raos-assets.v1.json`.
 They require original, unbranded editorial visuals; a placeholder, product
 logo, recognizable product, or fabricated use scene must not be marked final.
@@ -138,9 +131,10 @@ entropy-coded pixel was decoded. Human review must still open the exact final
 files in a trusted local viewer before committing them and before manual
 activation.
 
-Image generation is an external/cost action and is not authorized by this
-runbook. After a separately approved process supplies the two real WebP files,
-record each exact SHA-256 and change its manifest state to `FINAL`, then use:
+The two reviewed originals have been mechanically encoded as opaque 1600x900
+static WebP files and are lowercase-SHA-256-bound in the manifest. The
+originals remain outside the repository. To build and verify the deterministic
+owner-private package, use:
 
 ```bash
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-package
@@ -217,7 +211,7 @@ Credential creation, rotation, revocation, and deletion are owner security
 operations outside this repository slice. Do not edit or print the JSON to
 repair it.
 
-## 4. First article and affiliate blocker
+## 4. First article and affiliate evidence
 
 The owned packet is
 `changes/st-1703/self-hosted-minimum-start-v1/content/first-suitcase-comparison.v1.json`.
@@ -229,18 +223,34 @@ It contains:
 - no claimed first-person purchase/use experience;
 - affiliate and AI-assistance/editorial-policy disclosures;
 - price, inventory, point, campaign and freshness caveats;
-- three exact pending slots for ACE クレスタ 06316, ace.TOKYO LABEL
-  ディフェレンス 05721, and PROTECA マックスパス4 01471;
+- three exact finalized slots for ACE クレスタ 06316, ace.TOKYO LABEL
+  ディフェレンス 05721, and PROTECA マックスパス4 01471, each bound to
+  sanitized Result V3 fingerprint/hash/time provenance;
 - direct Rakuten affiliate URL policy and required
   `rel="sponsored nofollow"`;
 - Article/BreadcrumbList SEO metadata requirements and explicit rejection of
   fabricated Product, Review, AggregateRating, or FAQPage markup.
 
 Commission/rate, price, points, inventory and revenue must not influence the
-ranking. Official affiliate destinations and current product facts require a
-separately reviewed completion step; this slice intentionally does not invent
-them. A review draft may contain the visible pending markers, but it is not
-publication-ready while any marker remains.
+ranking. The packet contains unchanged provider-issued destinations and the
+official unmodified Rakuten Developers credit snippet exactly once. It has no
+pending marker.
+
+The one-way local finalizer consumes three exact owner-private request files,
+recomputes their ST-0505 fingerprints, and scans only the fixed sanitized
+Result V3 store. It reads no credential, makes no network request, and never
+prints a destination URL or private result path. It rejects zero/duplicate,
+stale, mixed, fingerprint-mismatched, non-HTTPS, non-Rakuten/RAOS redirect,
+wrong item/shop/model, URL mutation, and manual/generic injection. The packet
+is already final, so do not rerun it. For a future reviewed all-pending rebuild,
+use the closed target and all three named absolute request inputs:
+
+```bash
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-finalize \
+  ST1703_ACE_CRESTA_REQUEST=/absolute/owner-private/keyword-ace-cresta-06316.json \
+  ST1703_ACE_DIFFERENCE_REQUEST=/absolute/owner-private/keyword-ace-difference-05721.json \
+  ST1703_PROTECA_MAXPASS4_REQUEST=/absolute/owner-private/keyword-proteca-maxpass4-01471.json
+```
 
 The lead-image token is part of the exact content hash sent to WordPress. The
 packet validator rejects a missing, moved/duplicated, attributed, closing, or
@@ -303,7 +313,7 @@ any edit manually in the WordPress dashboard before publication.
 
 ## 6. Human site controls
 
-After a real draft and separately completed affiliate/assets work, the owner
+After a real draft, the owner
 must review in WordPress at minimum:
 
 - the exact target site, `draft` state, title/body, disclosures and three
@@ -337,8 +347,8 @@ external verification is required after the relevant human site change.
 ## 7. Remaining gates
 
 The following remain outside this local slice: live credential proof; real
-draft create; official affiliate-link completion; final image generation;
-theme installation/activation; consent/GA4/Search Console activation; legal
+draft create; theme installation/activation and browser preview;
+consent/GA4/Search Console activation; legal
 and editorial review; human publication; ST-1704's 14-day/five-article pilot;
 formal TST-021/TST-022/TST-032; hosted CI; staging; release; revenue evidence;
 and Production.
