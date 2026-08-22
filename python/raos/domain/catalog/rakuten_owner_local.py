@@ -75,6 +75,10 @@ _NON_NULL_URL_FIELDS = {
     RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"itemUrl"}),
     RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset({"productUrlPC"}),
 }
+_AFFILIATE_ID_LINK_URL_FIELDS = {
+    RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"affiliateUrl", "itemUrl"}),
+    RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset({"affiliateUrl"}),
+}
 
 
 class RakutenOwnerLocalProductSort(StrEnum):
@@ -710,39 +714,38 @@ class RakutenOwnerLocalCredentials(_RedactedValue):
 
         if type(result) is not RakutenOwnerLocalProviderResult:
             fail_owner_local(RakutenOwnerLocalFailureCode.INVALID_ARGUMENT)
-        credential_values = (
+        always_sensitive: tuple[bytes, ...] = (
             self._application_id,
             self._access_key,
-            self._affiliate_id,
         )
-        candidates = (
-            candidate
-            for record in result.records
-            for _name, candidate in record.fields
-            if type(candidate) in {str, tuple}
-        )
-        for candidate in candidates:
-            text_values: tuple[str, ...]
-            if type(candidate) is str:
-                text_values = (candidate,)
-            else:
-                text_values = cast(tuple[str, ...], candidate)
-            for text in text_values:
-                encoded_values = (
-                    text.encode("utf-8", errors="strict"),
-                    unquote_to_bytes(text),
+        for record in result.records:
+            for name, candidate in record.fields:
+                if type(candidate) not in {str, tuple}:
+                    continue
+                credential_values: tuple[bytes, ...] = always_sensitive
+                if name not in _AFFILIATE_ID_LINK_URL_FIELDS[result.api]:
+                    credential_values += (self._affiliate_id,)
+                text_values = (
+                    (candidate,)
+                    if type(candidate) is str
+                    else cast(tuple[str, ...], candidate)
                 )
-                if any(
-                    credential in encoded
-                    for encoded in encoded_values
-                    for credential in credential_values
-                ):
-                    fail_owner_local(
-                        RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
-                        validation_stage_code=(
-                            RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
-                        ),
+                for text in text_values:
+                    encoded_values = (
+                        text.encode("utf-8", errors="strict"),
+                        unquote_to_bytes(text),
                     )
+                    if any(
+                        credential in encoded
+                        for encoded in encoded_values
+                        for credential in credential_values
+                    ):
+                        fail_owner_local(
+                            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+                            validation_stage_code=(
+                                RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+                            ),
+                        )
 
 
 NormalizedValue: TypeAlias = None | bool | int | str | tuple[str, ...]

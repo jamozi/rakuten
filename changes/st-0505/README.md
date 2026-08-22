@@ -214,7 +214,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/051236024445621e00b348ec7270c686cb67fd5e8bf872d2443bcd2fb2bf7581/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/fd23f88bb61d8919015602e48bc5c10b5df06d4c9dff4986ff513e4500249d93/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -224,9 +224,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`5b3e8324478a55c562007a4bf5fd5f3daebab0306d17e7ca20494d14d3a8a6a5`,
+`e25b742f76904f8c50db9439bc02f435bdf8076068ea0e00a0746b69bdaf60ef`,
 and install-stage SHA-256
-`de27994dc525b332269bdd302089a3732e7f93813b1f5e1d74a0093d31d0de55`.
+`4745a3b74b307c16c542012d3e44526ea80e70915ea12e1c51874df6da9cacea`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -338,8 +338,10 @@ request fingerprint, timestamps, fixed endpoint/version, HTTP/body metadata,
 SHA-256 of the complete bounded raw response bytes, precise request disposition,
 summary, and allowlisted normalized records. Raw bodies/headers, provider error
 descriptions, captions, review bodies or aggregates, affiliate rate, EPC, RPM,
-revenue, and all credentials are forbidden. Stored provider fields are always
-classified `UNTRUSTED_PROVIDER_DATA`. The closed
+revenue, the application ID, the access key, and the affiliate ID outside the
+three exact validated public-link fields are forbidden. The affiliate ID may
+remain only within those field-local public affiliate links described below.
+Stored provider fields are always classified `UNTRUSTED_PROVIDER_DATA`. The closed
 `RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3` object always contains the same
 exact keys for success and failure. Success persists all six validated summary
 scalars in the in-memory result-object order `count`, `page`, `first`, `last`,
@@ -384,18 +386,39 @@ expand the transport SSRF policy.
 Field presence is checked before exact-selector identity, then mandatory text
 and URL value shape are checked before credential reflection. After result
 identity and request binding but before a success envelope or result write,
-every normalized record string and string-list member, including every URL, is
-compared with all three known non-empty credential values. Raw UTF-8 and one
-percent-decoding pass are checked so reflected query material cannot bypass the
-boundary. The six schema- and relationship-validated summary integers and every
-non-text normalized value already accepted by its field schema are not
-converted to text for credential comparison; typed scalar equality alone is not
-evidence of reflected credential bytes. HTTP
-status, body byte count, response hash, request count, and fixed identifiers
-remain required local evidence metadata rather than reflected provider text.
-Any inspected-text match fails with the fixed `RESPONSE_SCHEMA_DRIFT` code while
-retaining only complete HTTP/body/SHA metadata and `request_count=1`; the
-matched value, summaries, and normalized records are not persisted.
+every normalized record string and string-list member is inspected in raw UTF-8
+and after one percent-decoding pass. The application ID and access key remain
+sensitive in every such position. The affiliate ID remains sensitive in every
+position except the exact, already HTTPS-validated provider affiliate-link URL
+fields: Item Search `affiliateUrl` and `itemUrl`, and Product Search
+`affiliateUrl`. Product `productUrlPC`, text fields, image URLs, URL-list
+members, unknown fields, and near-case field names receive no exemption. This
+is a field-local allowance for public link material, not a general
+declassification of the affiliate ID, and URL validation always runs first.
+
+The current official Item Search source at
+<https://webservice.rakuten.co.jp/documentation/ichiba-item-search> states that
+`affiliateUrl` is returned only when `affiliateId` is supplied and that
+`itemUrl` equals `affiliateUrl` in that case. Older official documentation also
+describes affiliate-link construction as including the affiliate ID. Separately,
+sanitized owner-local evidence records exactly one HTTP 200 Item request, body
+size 5771, response SHA-256
+`833e539c890ce874f04b7b9201abca1306e1d2b1fc105c99529c587883afdc03`,
+zero retry and pagination, and Result V3 failure at
+`CREDENTIAL_REFLECTION`. No raw body or observed field was retained, so the
+root-cause classification is an official-spec conflict plus sanitized stage
+evidence, not proof that a particular response field contained the affiliate
+ID.
+
+The six schema- and relationship-validated summary integers and every non-text
+normalized value already accepted by its field schema are not converted to text
+for credential comparison; typed scalar equality alone is not evidence of
+reflected credential bytes. HTTP status, body byte count, response hash,
+request count, and fixed identifiers remain required local evidence metadata
+rather than reflected provider text. A non-exempt inspected-text match fails
+with the fixed `RESPONSE_SCHEMA_DRIFT` code while retaining only complete
+HTTP/body/SHA metadata and `request_count=1`; the matched value, summaries, and
+normalized records are not persisted.
 
 Response-validation failures retain their existing generic `diagnostic_code`
 and fixed CLI output. V3 retains the closed, value-free
