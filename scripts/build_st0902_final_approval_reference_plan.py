@@ -49,7 +49,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -223,7 +223,7 @@ DEPENDENCY_INPUTS: Final = (
         "ST-0605",
         "contract",
         "changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml",
-        "cb3ff84201a511af4d76b26d2e43aff6e640f2940b848cf820cadf1168fb4f41",
+        "3eb1bccf5e6b2599690e2c9cdd2490dc0a2177e41689f8955c0bc1dfb8e068f2",
     ),
     (
         "ST-0805",
