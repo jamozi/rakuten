@@ -7,6 +7,7 @@
         "evidence": {
           "api": "item-search",
           "api_version": "2026-07-01",
+          "destination_attestation_sha256": "103334aac9f8856524d50cdc43f7e321767cb6944f11ac71f65c4e48b03d895b",
           "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
           "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
           "request_fingerprint": "fa04354fe072ffcab2db3bfc757314a0eb62d78fcdbd3c068595d99094c41941",
@@ -25,6 +26,7 @@
         "evidence": {
           "api": "item-search",
           "api_version": "2026-07-01",
+          "destination_attestation_sha256": "cc29a4323bed079013b24acbe3f6f7a7bce368eb5c6fca82b656fc4e7d0b5087",
           "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
           "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
           "request_fingerprint": "1726d81e71f5faf2cf465dfe761156d26eea557d4ec58ced081aed86844ebbc6",
@@ -43,6 +45,7 @@
         "evidence": {
           "api": "item-search",
           "api_version": "2026-07-01",
+          "destination_attestation_sha256": "737ccd609ed98fda741c921a79b1bff6106c72e7299a47c9e50791e07e858b5e",
           "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
           "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
           "request_fingerprint": "1d8a40a227adce462cd85f5d700284517a1d6d35ee9c5d620fc75463e0d670cf",

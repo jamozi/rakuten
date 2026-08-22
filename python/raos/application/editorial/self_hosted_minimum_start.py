@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from datetime import datetime
 from html import escape
+import hashlib
 import json
 from html.parser import HTMLParser
 import os
@@ -105,7 +107,7 @@ _FINAL_SLOT_KEYS = frozenset(
         "evidence",
     }
 )
-_AFFILIATE_EVIDENCE_KEYS = frozenset(
+_AFFILIATE_PROVIDER_EVIDENCE_KEYS = frozenset(
     {
         "api",
         "api_version",
@@ -116,6 +118,10 @@ _AFFILIATE_EVIDENCE_KEYS = frozenset(
         "result_sha256",
         "retrieved_at",
     }
+)
+_AFFILIATE_ATTESTATION_KEY = "destination_attestation_sha256"
+_AFFILIATE_EVIDENCE_KEYS = _AFFILIATE_PROVIDER_EVIDENCE_KEYS | frozenset(
+    {_AFFILIATE_ATTESTATION_KEY}
 )
 _SOURCE_KEYS = frozenset({"title", "url", "retrieved_on"})
 _ALLOWED_SOURCE_HOSTS = frozenset(
@@ -156,6 +162,44 @@ _EXPECTED_AFFILIATE_PATHS = {
     "ace-difference-05721": "/ace-store/05721/",
     "proteca-maxpass4-01471": "/ace-store/01471/",
 }
+_EXPECTED_SLOT_MODEL_CODES = {
+    "ace-cresta-06316": "06316",
+    "ace-difference-05721": "05721",
+    "proteca-maxpass4-01471": "01471",
+}
+_EXPECTED_AFFILIATE_ATTESTATIONS = {
+    "ace-cresta-06316": (
+        "103334aac9f8856524d50cdc43f7e321767cb6944f11ac71f65c4e48b03d895b"
+    ),
+    "ace-difference-05721": (
+        "cc29a4323bed079013b24acbe3f6f7a7bce368eb5c6fca82b656fc4e7d0b5087"
+    ),
+    "proteca-maxpass4-01471": (
+        "737ccd609ed98fda741c921a79b1bff6106c72e7299a47c9e50791e07e858b5e"
+    ),
+}
+_ITEM_SEARCH_ELEMENTS = (
+    "affiliateUrl",
+    "availability",
+    "catchcopy",
+    "count",
+    "first",
+    "genreId",
+    "hits",
+    "itemCaption",
+    "itemCode",
+    "itemName",
+    "itemPrice",
+    "itemUrl",
+    "last",
+    "mediumImageUrls",
+    "page",
+    "pageCount",
+    "postageFlag",
+    "shopCode",
+    "shopName",
+    "smallImageUrls",
+)
 _ALLOWED_TAG_ATTRIBUTES: dict[str, frozenset[str]] = {
     "a": frozenset({"class", "href", "rel", "target"}),
     "aside": frozenset({"aria-label", "class"}),
@@ -258,6 +302,73 @@ def _validated_affiliate_url(value: object, slot_id: str | None = None) -> str:
     ):
         _fail()
     return value
+
+
+def _canonical_sha256(value: object) -> str:
+    try:
+        payload = json.dumps(
+            value,
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8", errors="strict")
+    except UnicodeError, TypeError, ValueError:
+        _fail()
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _expected_affiliate_request_fingerprint(slot_id: str) -> str:
+    model_code = _EXPECTED_SLOT_MODEL_CODES.get(slot_id)
+    if type(model_code) is not str:
+        _fail()
+    policy = {
+        "api_version": "2026-07-01",
+        "appoint_delivery_date_only": False,
+        "attribute_flag": False,
+        "availability": True,
+        "elements": list(_ITEM_SEARCH_ELEMENTS),
+        "format_version": 2,
+        "genre_information_flag": False,
+        "hits": 30,
+        "keyword": model_code,
+        "or_flag": False,
+        "page": 1,
+        "postage_included_only": False,
+        "sort": "standard",
+    }
+    return _canonical_sha256(
+        {
+            "api": "item-search",
+            "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
+            "policy": policy,
+        }
+    )
+
+
+def affiliate_destination_attestation_sha256(
+    slot_id: str,
+    destination_url: str,
+    provider_evidence: Mapping[str, object],
+) -> str:
+    """Bind one unchanged destination to its complete provider evidence."""
+
+    if (
+        type(slot_id) is not str
+        or slot_id not in _EXPECTED_SLOT_MODEL_CODES
+        or type(provider_evidence) is not dict
+        or frozenset(provider_evidence) != _AFFILIATE_PROVIDER_EVIDENCE_KEYS
+    ):
+        _fail()
+    destination = _validated_affiliate_url(destination_url, slot_id)
+    return _canonical_sha256(
+        {
+            "destination_url": destination,
+            "provider_evidence": dict(provider_evidence),
+            "schema": "RAOS_ST1703_AFFILIATE_DESTINATION_ATTESTATION_V1",
+            "slot_id": slot_id,
+        }
+    )
 
 
 def affiliate_cta_html(slot_id: str, destination_url: str) -> str:
@@ -629,6 +740,8 @@ def load_first_article_candidate_with_affiliate_status(
         destination = _validated_affiliate_url(slot.get("destination_url"), slot_id)
         evidence = cast(dict[str, object], slot["evidence"])
         retrieved_at = evidence.get("retrieved_at")
+        request_fingerprint = evidence.get("request_fingerprint")
+        attestation = evidence.get(_AFFILIATE_ATTESTATION_KEY)
         if (
             frozenset(evidence) != _AFFILIATE_EVIDENCE_KEYS
             or evidence.get("api") != "item-search"
@@ -636,6 +749,7 @@ def load_first_article_candidate_with_affiliate_status(
             or evidence.get("endpoint_id") != "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701"
             or evidence.get("evidence_authority")
             != "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"
+            or request_fingerprint != _expected_affiliate_request_fingerprint(slot_id)
             or any(
                 type(evidence.get(key)) is not str
                 or _SHA256.fullmatch(cast(str, evidence[key])) is None
@@ -643,6 +757,7 @@ def load_first_article_candidate_with_affiliate_status(
                     "request_fingerprint",
                     "response_sha256",
                     "result_sha256",
+                    _AFFILIATE_ATTESTATION_KEY,
                 )
             )
             or type(retrieved_at) is not str
@@ -652,6 +767,15 @@ def load_first_article_candidate_with_affiliate_status(
         try:
             datetime.strptime(retrieved_at, "%Y-%m-%dT%H:%M:%S.%fZ")
         except ValueError:
+            _fail()
+        provider_evidence = {
+            key: evidence[key] for key in _AFFILIATE_PROVIDER_EVIDENCE_KEYS
+        }
+        if attestation != affiliate_destination_attestation_sha256(
+            slot_id,
+            destination,
+            provider_evidence,
+        ) or attestation != _EXPECTED_AFFILIATE_ATTESTATIONS.get(slot_id):
             _fail()
         if content.count(affiliate_cta_html(slot_id, destination)) != 1:
             _fail()
@@ -758,6 +882,7 @@ __all__ = [
     "FIRST_ARTICLE_TITLE",
     "MAX_CONTENT_PACKET_BYTES",
     "RAKUTEN_CREDIT_SNIPPET",
+    "affiliate_destination_attestation_sha256",
     "affiliate_cta_html",
     "load_first_article_candidate",
     "load_first_article_candidate_with_affiliate_status",

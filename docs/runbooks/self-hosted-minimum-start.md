@@ -225,7 +225,8 @@ It contains:
 - price, inventory, point, campaign and freshness caveats;
 - three exact finalized slots for ACE クレスタ 06316, ace.TOKYO LABEL
   ディフェレンス 05721, and PROTECA マックスパス4 01471, each bound to
-  sanitized Result V3 fingerprint/hash/time provenance;
+  sanitized Result V3 fingerprint/hash/time provenance and one reviewed
+  destination/evidence attestation digest;
 - direct Rakuten affiliate URL policy and required
   `rel="sponsored nofollow"`;
 - Article/BreadcrumbList SEO metadata requirements and explicit rejection of
@@ -242,6 +243,9 @@ Result V3 store. It reads no credential, makes no network request, and never
 prints a destination URL or private result path. It rejects zero/duplicate,
 stale, mixed, fingerprint-mismatched, non-HTTPS, non-Rakuten/RAOS redirect,
 wrong item/shop/model, URL mutation, and manual/generic injection. The packet
+loader independently recomputes each fixed ST-0505 request fingerprint and
+requires the closed attestation digest; the finalizer also terminally rescans
+the fixed Result store and rebinds/reopens the owned content write. The packet
 is already final, so do not rerun it. For a future reviewed all-pending rebuild,
 use the closed target and all three named absolute request inputs:
 

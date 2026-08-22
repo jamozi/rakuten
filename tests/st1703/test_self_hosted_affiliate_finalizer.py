@@ -6,9 +6,11 @@ from datetime import datetime, timedelta, timezone
 from html import escape
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 import socket
+import stat
 import sys
 from urllib.parse import urlencode
 
@@ -22,6 +24,7 @@ from raos.application.editorial.self_hosted_minimum_start import (
     AFFILIATE_CTA_LABEL,
     CONTENT_PACKET_RELATIVE_PATH,
     RAKUTEN_CREDIT_SNIPPET,
+    affiliate_destination_attestation_sha256,
     affiliate_cta_html,
     load_first_article_candidate_with_affiliate_status,
 )
@@ -259,17 +262,28 @@ def _complete_inputs(
 
 
 def _assert_final_content(repository_root: Path) -> dict[str, object]:
-    candidate, status = load_first_article_candidate_with_affiliate_status(
-        repository_root,
-        operation=SelfHostedWordPressOperation.CREATE_DRAFT,
-    )
-    assert status == "FINAL"
-    assert candidate.content_html.count(AFFILIATE_CTA_LABEL) == 3
-    assert candidate.content_html.count('rel="sponsored nofollow"') == 3
-    assert candidate.content_html.count(RAKUTEN_CREDIT_SNIPPET) == 1
-    return json.loads(
+    packet = json.loads(
         (repository_root / CONTENT_PACKET_RELATIVE_PATH).read_text(encoding="utf-8")
     )
+    article = packet["article"]
+    assert article["content_html"].count(AFFILIATE_CTA_LABEL) == 3
+    assert article["content_html"].count('rel="sponsored nofollow"') == 3
+    assert article["content_html"].count(RAKUTEN_CREDIT_SNIPPET) == 1
+    for slot in article["affiliate_slots"]:
+        evidence = slot["evidence"]
+        provider_evidence = {
+            key: value
+            for key, value in evidence.items()
+            if key != "destination_attestation_sha256"
+        }
+        assert evidence["destination_attestation_sha256"] == (
+            affiliate_destination_attestation_sha256(
+                slot["slot_id"],
+                slot["destination_url"],
+                provider_evidence,
+            )
+        )
+    return packet
 
 
 def test_finalizer_is_local_all_or_nothing_and_redacts_destinations(
@@ -621,3 +635,367 @@ def test_finalizer_rejects_malformed_or_non_private_files(
         "AFFILIATE_REQUEST_INVALID",
         "AFFILIATE_RESULT_STORE_INVALID",
     }
+
+
+def test_finalizer_preserves_foreign_stale_stage(tmp_path: Path) -> None:
+    root, store, requests, _fingerprints = _complete_inputs(tmp_path)
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
+    stage = content_path.with_name(f".{content_path.name}.affiliate-finalizing")
+    foreign = b"foreign-stage-owner"
+    stage.write_bytes(foreign)
+    stage.chmod(stat.S_IMODE(content_path.stat().st_mode))
+    pending = content_path.read_bytes()
+
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.finalize(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert failure.value.code == "AFFILIATE_OUTPUT_INVALID"
+    assert stage.read_bytes() == foreign
+    assert content_path.read_bytes() == pending
+
+
+@pytest.mark.parametrize("race", ["same-inode-content", "replacement-inode"])
+def test_finalizer_rejects_target_race_at_terminal_boundary(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    race: str,
+) -> None:
+    root, store, requests, _fingerprints = _complete_inputs(tmp_path)
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
+    original_scan = finalizer._scan_results
+    scans = 0
+    hostile = bytearray(content_path.read_bytes())
+    hostile[0] = ord("[")
+
+    def mutate_target_during_terminal_scan(*args: object, **kwargs: object):
+        nonlocal scans
+        result = original_scan(*args, **kwargs)
+        scans += 1
+        if scans == 2:
+            if race == "same-inode-content":
+                descriptor = os.open(content_path, os.O_WRONLY | os.O_CLOEXEC)
+                try:
+                    assert os.write(descriptor, hostile) == len(hostile)
+                    os.fsync(descriptor)
+                finally:
+                    os.close(descriptor)
+            else:
+                attacker = content_path.with_name(".hostile-target")
+                attacker.write_bytes(hostile)
+                attacker.chmod(stat.S_IMODE(content_path.stat().st_mode))
+                os.replace(attacker, content_path)
+        return result
+
+    monkeypatch.setattr(finalizer, "_scan_results", mutate_target_during_terminal_scan)
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.finalize(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert scans == 2
+    assert failure.value.code == "AFFILIATE_OUTPUT_INVALID"
+    assert content_path.read_bytes() == bytes(hostile)
+
+
+def test_finalizer_rejects_content_parent_rename_at_terminal_boundary(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, _fingerprints = _complete_inputs(tmp_path)
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
+    original = content_path.read_bytes()
+    original_mode = stat.S_IMODE(content_path.stat().st_mode)
+    moved_parent = content_path.parent.with_name("moved-content-parent")
+    original_scan = finalizer._scan_results
+    scans = 0
+
+    def rename_parent_during_terminal_scan(*args: object, **kwargs: object):
+        nonlocal scans
+        result = original_scan(*args, **kwargs)
+        scans += 1
+        if scans == 2:
+            content_path.parent.rename(moved_parent)
+            content_path.parent.mkdir()
+            content_path.write_bytes(original)
+            content_path.chmod(original_mode)
+        return result
+
+    monkeypatch.setattr(finalizer, "_scan_results", rename_parent_during_terminal_scan)
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.finalize(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert scans == 2
+    assert failure.value.code == "AFFILIATE_OUTPUT_INVALID"
+    assert content_path.read_bytes() == original
+    assert (moved_parent / content_path.name).read_bytes() == original
+
+
+def test_finalizer_rejects_stage_substitution_without_unlinking_foreign_stage(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, _fingerprints = _complete_inputs(tmp_path)
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
+    stage_name = f".{content_path.name}.affiliate-finalizing"
+    original_same_named_object = finalizer._same_named_object
+    foreign = b"foreign-replacement-stage"
+    replaced = False
+
+    def substitute_stage(
+        details: os.stat_result,
+        *,
+        parent_fd: int,
+        name: str,
+        code: str,
+    ) -> None:
+        nonlocal replaced
+        if not replaced and name == stage_name:
+            os.unlink(name, dir_fd=parent_fd)
+            descriptor = os.open(
+                name,
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
+                stat.S_IMODE(content_path.stat().st_mode),
+                dir_fd=parent_fd,
+            )
+            try:
+                assert os.write(descriptor, foreign) == len(foreign)
+                os.fsync(descriptor)
+            finally:
+                os.close(descriptor)
+            replaced = True
+        original_same_named_object(
+            details,
+            parent_fd=parent_fd,
+            name=name,
+            code=code,
+        )
+
+    monkeypatch.setattr(finalizer, "_same_named_object", substitute_stage)
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.finalize(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert replaced is True
+    assert failure.value.code == "AFFILIATE_OUTPUT_INVALID"
+    assert (content_path.parent / stage_name).read_bytes() == foreign
+
+
+def test_finalizer_rejects_terminal_published_byte_mismatch(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, _fingerprints = _complete_inputs(tmp_path)
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
+    original_read_regular = finalizer._read_regular_at
+    target_reads = 0
+
+    def mutate_before_terminal_reopen(
+        parent_fd: int,
+        name: str,
+        *,
+        maximum: int,
+        required_mode: int | None,
+        code: str,
+    ):
+        nonlocal target_reads
+        if name == content_path.name:
+            target_reads += 1
+            if target_reads == 4:
+                descriptor = os.open(
+                    name,
+                    os.O_WRONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
+                    dir_fd=parent_fd,
+                )
+                try:
+                    assert os.write(descriptor, b"[") == 1
+                    os.fsync(descriptor)
+                finally:
+                    os.close(descriptor)
+        return original_read_regular(
+            parent_fd,
+            name,
+            maximum=maximum,
+            required_mode=required_mode,
+            code=code,
+        )
+
+    monkeypatch.setattr(finalizer, "_read_regular_at", mutate_before_terminal_reopen)
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.finalize(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert target_reads == 4
+    assert failure.value.code == "AFFILIATE_OUTPUT_INVALID"
+    assert content_path.read_bytes().startswith(b"[")
+
+
+def test_finalizer_rejects_result_inserted_after_initial_scan(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, fingerprints = _complete_inputs(tmp_path)
+    pending = (root / CONTENT_PACKET_RELATIVE_PATH).read_bytes()
+    original_scan = finalizer._scan_results
+    scans = 0
+
+    def insert_late_duplicate(*args: object, **kwargs: object):
+        nonlocal scans
+        result = original_scan(*args, **kwargs)
+        scans += 1
+        if scans == 1:
+            _write_result(
+                store,
+                _result_object(
+                    fingerprint=fingerprints["ace-cresta-06316"],
+                    code="06316",
+                    run_index=9,
+                ),
+            )
+        return result
+
+    monkeypatch.setattr(finalizer, "_scan_results", insert_late_duplicate)
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.finalize(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert scans == 1
+    assert failure.value.code == "AFFILIATE_RESULT_MISSING_OR_DUPLICATE"
+    assert (root / CONTENT_PACKET_RELATIVE_PATH).read_bytes() == pending
+
+
+def test_finalizer_rejects_result_store_inode_replacement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, _fingerprints = _complete_inputs(tmp_path)
+    pending = (root / CONTENT_PACKET_RELATIVE_PATH).read_bytes()
+    moved_store = store.with_name("moved-result-store")
+    original_scan = finalizer._scan_results
+    scans = 0
+
+    def replace_store_after_initial_scan(*args: object, **kwargs: object):
+        nonlocal scans
+        result = original_scan(*args, **kwargs)
+        scans += 1
+        if scans == 1:
+            store.rename(moved_store)
+            store.mkdir(mode=0o700)
+            store.chmod(0o700)
+            for source in moved_store.iterdir():
+                shutil.copy2(source, store / source.name)
+        return result
+
+    monkeypatch.setattr(finalizer, "_scan_results", replace_store_after_initial_scan)
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.finalize(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert scans == 2
+    assert failure.value.code == "AFFILIATE_RESULT_STORE_INVALID"
+    assert (root / CONTENT_PACKET_RELATIVE_PATH).read_bytes() == pending
+
+
+def test_content_rejects_synchronized_destination_and_cta_mutation(
+    tmp_path: Path,
+) -> None:
+    content_path = tmp_path / CONTENT_PACKET_RELATIVE_PATH
+    content_path.parent.mkdir(parents=True)
+    shutil.copyfile(REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH, content_path)
+    packet = json.loads(content_path.read_text(encoding="utf-8"))
+    article = packet["article"]
+    slot = article["affiliate_slots"][0]
+    old_url = slot["destination_url"]
+    new_url = _affiliate_url("06316")
+    article["content_html"] = article["content_html"].replace(
+        affiliate_cta_html(slot["slot_id"], old_url),
+        affiliate_cta_html(slot["slot_id"], new_url),
+    )
+    slot["destination_url"] = new_url
+    provider_evidence = {
+        key: value
+        for key, value in slot["evidence"].items()
+        if key != "destination_attestation_sha256"
+    }
+    slot["evidence"]["destination_attestation_sha256"] = (
+        affiliate_destination_attestation_sha256(
+            slot["slot_id"],
+            new_url,
+            provider_evidence,
+        )
+    )
+    content_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(SelfHostedWordPressFailure):
+        load_first_article_candidate_with_affiliate_status(
+            tmp_path,
+            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        )
+
+
+@pytest.mark.parametrize(
+    ("evidence_key", "replacement"),
+    [
+        ("request_fingerprint", "f" * 64),
+        ("response_sha256", "e" * 64),
+        ("result_sha256", "d" * 64),
+    ],
+)
+def test_content_rejects_arbitrary_provider_evidence_even_with_new_attestation(
+    tmp_path: Path,
+    evidence_key: str,
+    replacement: str,
+) -> None:
+    content_path = tmp_path / CONTENT_PACKET_RELATIVE_PATH
+    content_path.parent.mkdir(parents=True)
+    shutil.copyfile(REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH, content_path)
+    packet = json.loads(content_path.read_text(encoding="utf-8"))
+    slot = packet["article"]["affiliate_slots"][0]
+    slot["evidence"][evidence_key] = replacement
+    provider_evidence = {
+        key: value
+        for key, value in slot["evidence"].items()
+        if key != "destination_attestation_sha256"
+    }
+    slot["evidence"]["destination_attestation_sha256"] = (
+        affiliate_destination_attestation_sha256(
+            slot["slot_id"],
+            slot["destination_url"],
+            provider_evidence,
+        )
+    )
+    content_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(SelfHostedWordPressFailure):
+        load_first_article_candidate_with_affiliate_status(
+            tmp_path,
+            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        )

@@ -108,9 +108,14 @@ fingerprint, one request and zero retry/pagination, and exactly one matching
 public HTTPS Rakuten affiliate URL whose embedded desktop target is the exact
 Rakuten item path. It writes three exact CTA anchors with
 `rel="sponsored nofollow"`, audit-safe fingerprint/hash/time provenance, and
-the official unmodified Rakuten Developers credit snippet. Zero, duplicate,
-stale, mixed, mismatched, manually injected, or unsafe material fails closed;
-URLs and private result paths are never logged.
+one closed destination attestation that binds the unchanged URL to that exact
+provider evidence. Runtime recomputes the fixed ST-0505 request fingerprint and
+requires the reviewed attestation digest, so synchronized CTA/URL or plausible
+hash replacement also fails. The writer terminally rescans and rebinds the
+Result store, target parent, target inode and owned stage before publication,
+then stably reopens the published bytes. Zero, duplicate, late, stale, mixed,
+mismatched, manually injected, raced, or unsafe material fails closed; URLs and
+private result paths are never logged.
 
 Run the one-way finalizer only from the reviewed all-pending packet:
 
