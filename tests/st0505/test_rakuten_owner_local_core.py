@@ -1335,13 +1335,13 @@ def test_service_product_identity_mismatch_uses_the_shared_binding_boundary() ->
 
 @pytest.mark.parametrize(
     "credential_value",
-    ("synthetic-application", "synthetic-access", "synthetic-affiliate"),
+    ("synthetic-application", "synthetic-access"),
 )
 @pytest.mark.parametrize(
     "position",
     ("url", "mandatory-url", "ordinary-text", "nested-url-list"),
 )
-def test_service_rejects_each_reflected_credential_before_persistence(
+def test_service_rejects_each_security_credential_before_persistence(
     credential_value: str,
     position: str,
 ) -> None:
@@ -1436,7 +1436,7 @@ def test_service_rejects_each_reflected_credential_before_persistence(
     "credential_name",
     ("application_id", "access_key", "affiliate_id"),
 )
-def test_each_credential_is_rejected_in_every_persisted_text_leaf(
+def test_field_aware_credential_reflection_covers_every_persisted_text_leaf(
     api: RakutenOwnerLocalApi,
     field: str,
     shape: str,
@@ -1472,20 +1472,257 @@ def test_each_credential_is_rejected_in_every_persisted_text_leaf(
         clock=_clock(),  # type: ignore[arg-type]
     ).run(api, request, run_id=RUN_ID)
 
+    affiliate_link_fields = {
+        RakutenOwnerLocalApi.ITEM_SEARCH: frozenset({"affiliateUrl", "itemUrl"}),
+        RakutenOwnerLocalApi.PRODUCT_SEARCH: frozenset({"affiliateUrl"}),
+    }
+    affiliate_link_exempt = (
+        credential_name == "affiliate_id" and field in affiliate_link_fields[api]
+    )
+    persisted = json.dumps(envelope.as_result_object(), sort_keys=True)
+    if affiliate_link_exempt:
+        assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+        assert envelope.provider_result is reflected
+        assert envelope.failure is None
+        assert credential_value in persisted
+    else:
+        assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+        assert envelope.provider_result is None
+        assert envelope.failure is not None
+        assert (
+            envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+        )
+        assert envelope.failure.request_count == 1
+        assert envelope.failure.http_status == reflected.http_status
+        assert envelope.failure.body_byte_count == reflected.body_byte_count
+        assert envelope.failure.response_sha256 == reflected.response_sha256
+        assert credential_value not in persisted
+        assert credential_value not in str(envelope.failure)
+        assert credential_value not in repr(envelope.failure)
+    assert writer.writes == [envelope]
+
+
+@pytest.mark.parametrize(
+    ("api", "fields"),
+    (
+        (
+            RakutenOwnerLocalApi.ITEM_SEARCH,
+            ("affiliateUrl", "itemUrl"),
+        ),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, ("affiliateUrl",)),
+    ),
+)
+@pytest.mark.parametrize("percent_encoded", (False, True))
+def test_affiliate_id_is_accepted_only_in_exact_affiliate_link_url_fields(
+    api: RakutenOwnerLocalApi,
+    fields: tuple[str, ...],
+    percent_encoded: bool,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        source = _item_result(request)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        source = _product_result(request)
+    values = source.records[0].as_object()
+    rendered = "affiliate%2Flink-token" if percent_encoded else "affiliate/link-token"
+    for field in fields:
+        values[field] = f"https://example.rakuten.co.jp/{rendered}/{field}"
+    result = replace(source, records=(normalized_record(api, values),))
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(
+            _credentials_with_summary_value("affiliate_id", "affiliate/link-token")
+        ),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(api, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+    assert envelope.failure is None
+    assert envelope.provider_result is result
+    assert envelope.request_count == 1
+    assert writer.writes == [envelope]
+    result_object = envelope.as_result_object()
+    assert tuple(result_object) == RESULT_OBJECT_KEYS
+    assert result_object["schema"] == "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3"
+    persisted = json.dumps(result_object, sort_keys=True)
+    assert rendered in persisted
+
+
+@pytest.mark.parametrize(
+    ("api", "field"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "affiliateUrl"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemUrl"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "affiliateUrl"),
+    ),
+)
+@pytest.mark.parametrize("credential_name", ("application_id", "access_key"))
+@pytest.mark.parametrize("percent_encoded", (False, True))
+def test_security_credentials_remain_rejected_in_affiliate_link_url_fields(
+    api: RakutenOwnerLocalApi,
+    field: str,
+    credential_name: str,
+    percent_encoded: bool,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        source = _item_result(request)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        source = _product_result(request)
+    values = source.records[0].as_object()
+    rendered = "security%2Ftoken" if percent_encoded else "security/token"
+    values[field] = f"https://example.rakuten.co.jp/{rendered}/{field}"
+    result = replace(source, records=(normalized_record(api, values),))
+    writer = _Writer()
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(
+            _credentials_with_summary_value(credential_name, "security/token")
+        ),
+        transport=_Transport(result),
+        result_writer=writer,
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(api, request, run_id=RUN_ID)
+
     assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
     assert envelope.provider_result is None
     assert envelope.failure is not None
     assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
-    assert envelope.failure.request_count == 1
-    assert envelope.failure.http_status == reflected.http_status
-    assert envelope.failure.body_byte_count == reflected.body_byte_count
-    assert envelope.failure.response_sha256 == reflected.response_sha256
-    assert credential_value not in json.dumps(
-        envelope.as_result_object(), sort_keys=True
+    assert (
+        envelope.failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
     )
-    assert credential_value not in str(envelope.failure)
-    assert credential_value not in repr(envelope.failure)
+    assert envelope.failure.request_count == 1
+    assert envelope.failure.http_status == result.http_status
+    assert envelope.failure.body_byte_count == result.body_byte_count
+    assert envelope.failure.response_sha256 == result.response_sha256
     assert writer.writes == [envelope]
+    persisted = json.dumps(envelope.as_result_object(), sort_keys=True)
+    assert "security/token" not in persisted
+    assert "security%2Ftoken" not in persisted
+    assert "security/token" not in str(envelope.failure)
+    assert "security/token" not in repr(envelope.failure)
+
+
+@pytest.mark.parametrize(
+    ("api", "field", "shape"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemName", "text"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "smallImageUrls", "url-list"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "productName", "text"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "productUrlPC", "url"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "smallImageUrl", "url"),
+    ),
+)
+def test_percent_encoded_affiliate_id_remains_rejected_outside_link_fields(
+    api: RakutenOwnerLocalApi,
+    field: str,
+    shape: str,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        source = _item_result(request)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        source = _product_result(request)
+    values = source.records[0].as_object()
+    rendered = "affiliate%2Ftoken"
+    if shape == "text":
+        values[field] = f"untrusted-{rendered}-{field}"
+    elif shape == "url-list":
+        values[field] = [f"https://example.rakuten.co.jp/{rendered}/{field}"]
+    else:
+        assert shape == "url"
+        values[field] = f"https://example.rakuten.co.jp/{rendered}/{field}"
+    result = replace(source, records=(normalized_record(api, values),))
+
+    envelope = RakutenOwnerLocalService(
+        credential_reader=_Reader(
+            _credentials_with_summary_value("affiliate_id", "affiliate/token")
+        ),
+        transport=_Transport(result),
+        result_writer=_Writer(),
+        clock=_clock(),  # type: ignore[arg-type]
+    ).run(api, request, run_id=RUN_ID)
+
+    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+    assert envelope.provider_result is None
+    assert envelope.failure is not None
+    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        envelope.failure.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.CREDENTIAL_REFLECTION
+    )
+    assert envelope.failure.request_count == 1
+    persisted = json.dumps(envelope.as_result_object(), sort_keys=True)
+    assert "affiliate/token" not in persisted
+    assert rendered not in persisted
+
+
+@pytest.mark.parametrize(
+    ("api", "field"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "affiliateUrl"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "itemUrl"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "affiliateUrl"),
+    ),
+)
+def test_affiliate_link_exemption_cannot_precede_url_validation(
+    api: RakutenOwnerLocalApi,
+    field: str,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        source = _item_result(request)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        source = _product_result(request)
+    values = source.records[0].as_object()
+    values[field] = "http://example.rakuten.co.jp/synthetic-affiliate"
+
+    with pytest.raises(RakutenOwnerLocalFailure) as captured:
+        normalized_record(api, values)
+
+    assert captured.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        captured.value.validation_stage_code is RakutenOwnerLocalValidationStageCode.URL
+    )
+
+
+@pytest.mark.parametrize(
+    ("api", "near_field"),
+    (
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "affiliateURL"),
+        (RakutenOwnerLocalApi.ITEM_SEARCH, "ItemUrl"),
+        (RakutenOwnerLocalApi.PRODUCT_SEARCH, "AffiliateUrl"),
+    ),
+)
+def test_near_affiliate_link_field_names_remain_record_shape_errors(
+    api: RakutenOwnerLocalApi,
+    near_field: str,
+) -> None:
+    request = fixed_owner_local_smoke_request(api)
+    if type(request) is RakutenOwnerLocalItemSearchRequest:
+        source = _item_result(request)
+    else:
+        assert type(request) is RakutenOwnerLocalProductSearchRequest
+        source = _product_result(request)
+    values = source.records[0].as_object()
+    values[near_field] = "https://example.rakuten.co.jp/synthetic-affiliate"
+
+    with pytest.raises(RakutenOwnerLocalFailure) as captured:
+        normalized_record(api, values)
+
+    assert captured.value.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+    assert (
+        captured.value.validation_stage_code
+        is RakutenOwnerLocalValidationStageCode.RECORD_SHAPE
+    )
 
 
 @pytest.mark.parametrize(
@@ -1542,14 +1779,27 @@ def test_short_credential_reflected_in_provider_text_still_fails_closed(
         clock=_clock(),  # type: ignore[arg-type]
     ).run(api, request, run_id=RUN_ID)
 
-    assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
-    assert envelope.provider_result is None
-    assert envelope.failure is not None
-    assert envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
-    assert envelope.failure.request_count == 1
+    affiliate_link_exempt = (
+        credential_name == "affiliate_id"
+        and api is RakutenOwnerLocalApi.ITEM_SEARCH
+        and field == "itemUrl"
+    )
     persisted = envelope.as_result_object()
-    assert persisted["items"] is None
-    assert persisted["products"] is None
+    if affiliate_link_exempt:
+        assert envelope.outcome is RakutenOwnerLocalOutcome.SUCCESS
+        assert envelope.provider_result is reflected
+        assert envelope.failure is None
+        assert persisted["items"] is not None
+    else:
+        assert envelope.outcome is RakutenOwnerLocalOutcome.FAILURE
+        assert envelope.provider_result is None
+        assert envelope.failure is not None
+        assert (
+            envelope.failure.code is RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT
+        )
+        assert envelope.failure.request_count == 1
+        assert persisted["items"] is None
+        assert persisted["products"] is None
 
 
 @pytest.mark.parametrize(

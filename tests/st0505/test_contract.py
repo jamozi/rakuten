@@ -391,6 +391,19 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
         "inspected_text_values": (
             "ALL_NORMALIZED_RECORD_STRING_VALUES_AND_STRING_LIST_MEMBERS"
         ),
+        "always_rejected_credentials": ["application_id", "access_key"],
+        "affiliate_id": {
+            "general_policy": "REJECT_IN_EVERY_NORMALIZED_TEXT_POSITION",
+            "public_link_material_only": True,
+            "exact_validated_url_positions": {
+                "item-search": ["affiliateUrl", "itemUrl"],
+                "product-search": ["affiliateUrl"],
+            },
+            "url_validation_precondition": "REQUIRED_BEFORE_FIELD_LOCAL_EXEMPTION",
+            "every_other_text_url_or_list_position": "REJECT",
+            "near_field_names": "REJECTED_BY_RECORD_SCHEMA",
+            "declassification_scope": "EXACT_FIELD_LOCAL_NOT_GENERAL",
+        },
         "excluded_typed_values": {
             "summary_fields": [
                 "count",
@@ -408,11 +421,51 @@ def test_owner_local_read_surface_is_exact_disabled_and_non_formal() -> None:
             "ALL_SIX_VALIDATED_SUMMARIES_AND_ALL_NORMALIZED_RECORD_VALUES"
         ),
         "representations": ("INSPECTED_TEXT_RAW_UTF8_OR_SINGLE_PERCENT_DECODED_BYTES"),
-        "match": ("ANY_NONEMPTY_KNOWN_CREDENTIAL_VALUE_SUBSTRING_IN_INSPECTED_TEXT"),
+        "match": {
+            "application_id_and_access_key": (
+                "ANY_NONEMPTY_VALUE_SUBSTRING_IN_EVERY_INSPECTED_TEXT"
+            ),
+            "affiliate_id": (
+                "ANY_NONEMPTY_VALUE_SUBSTRING_OUTSIDE_EXACT_VALIDATED_LINK_URL_"
+                "POSITIONS"
+            ),
+        },
         "refusal": "RESPONSE_SCHEMA_DRIFT_BEFORE_SUCCESS_ENVELOPE_OR_PERSISTENCE",
         "failure_evidence": (
             "COMPLETE_RESPONSE_METADATA_REQUEST_COUNT_1_NO_MATCHED_VALUE"
         ),
+        "official_basis": {
+            "primary_url": (
+                "https://webservice.rakuten.co.jp/documentation/ichiba-item-search"
+            ),
+            "item_search_semantics": (
+                "AFFILIATE_URL_RETURNED_ONLY_WITH_AFFILIATE_ID_AND_ITEM_URL_EQUALS_"
+                "AFFILIATE_URL_WHEN_AFFILIATE_ID_IS_SUPPLIED"
+            ),
+            "older_official_docs": (
+                "AFFILIATE_LINK_CONSTRUCTION_INCLUDES_AFFILIATE_ID"
+            ),
+            "evidence_interpretation": (
+                "OFFICIAL_SPEC_CONFLICT_PLUS_SANITIZED_STAGE_EVIDENCE_NOT_RAW_"
+                "FIELD_PROOF"
+            ),
+        },
+        "sanitized_live_evidence": {
+            "http_status": 200,
+            "body_byte_count": 5771,
+            "request_count": 1,
+            "retry_count": 0,
+            "pagination_count": 0,
+            "result_schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3",
+            "diagnostic_code": "RESPONSE_SCHEMA_DRIFT",
+            "validation_stage_code": "CREDENTIAL_REFLECTION",
+            "validation_detail_code": None,
+            "response_sha256": (
+                "833e539c890ce874f04b7b9201abca1306e1d2b1fc105c99529c587883afdc03"
+            ),
+            "raw_body_retained": False,
+            "observed_field": None,
+        },
     }
     assert owner["verification"] == {
         "fake_and_recorded_only": True,
