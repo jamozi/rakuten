@@ -29,9 +29,11 @@ if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
 
 from scripts import build_st1505_staging_deployment as st1505  # noqa: E402
 
-
 CONTRACT_PATH: Final = Path(
     "changes/st-1506/contracts/production-deployment-definition.v1.yaml"
+)
+DESIGN_HANDOFF_PATH: Final = Path(
+    "changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml"
 )
 REFERENCE_PLAN_PATH: Final = Path(
     "infra/terraform/deployment-production/production-deployment.reference-plan.v1.json"
@@ -101,7 +103,10 @@ AUTHORITY_SOURCES: Final = {
         "3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a"
     ),
     "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
-        "9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b"
+        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
+    ),
+    "changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml": (
+        "7a68628b4407b1c23ad9ff8172ddd191c956fa4e004887e0958648171415a4d3"
     ),
 }
 PREDECESSOR_SOURCES: Final = {
@@ -130,10 +135,23 @@ PREDECESSOR_SOURCES: Final = {
         "6774c1e2553df4e1f3e7a85dc122b2462ddb575503a7c03b4ec8d9e18baecfbc"
     ),
 }
+PREDECESSOR_ACTION_COUNT_NAMES: Final = (
+    "create",
+    "update",
+    "delete",
+    "promote",
+    "deploy",
+    "migrate",
+    "smoke",
+    "browser",
+    "rollback",
+    "production",
+)
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
 
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
+    DESIGN_HANDOFF_PATH,
     Path("changes/st-1506/README.md"),
     Path("scripts/build_st1506_production_deployment.py"),
     Path("tests/st1506/conftest.py"),
@@ -222,6 +240,7 @@ TOP_LEVEL_KEYS: Final = (
     "document",
     "sources",
     "predecessor_binding",
+    "provider_neutral_admission",
     "open_decision_defaults",
     "environment_boundary",
     "selected_bindings",
@@ -237,6 +256,50 @@ TOP_LEVEL_KEYS: Final = (
     "execution_boundary",
     "evidence_boundary",
 )
+PROVIDER_NEUTRAL_ADMISSION_KEYS: Final = (
+    "classification",
+    "admission_status",
+    "eligible",
+    "selected_profile_id",
+    "selected_profile_kind",
+    "selected_provider_name",
+    "default_profile_id",
+    "fallback_profile_id",
+    "concrete_alternate_provider_selected",
+    "eligible_profile_kinds",
+    "mapping_policy",
+    "aws_reference_boundary",
+    "predecessor_reference_boundary",
+    "evidence_equivalence_policy",
+    "capability_mapping_requirements",
+)
+REQUIRED_CAPABILITY_OUTCOMES: Final = {
+    "workload_runtime": "PORTABLE_WEB_API_WORKER_SCHEDULER_WORKLOAD_RUNTIME",
+    "relational_persistence": (
+        "POSTGRESQL_COMPATIBLE_TRANSACTIONAL_PERSISTENCE_AND_MIGRATION_CONTROLS"
+    ),
+    "immutable_object_storage": (
+        "S3_COMPATIBLE_VERSIONED_AND_IMMUTABLE_WHERE_DATA_CONTRACT_REQUIRES"
+    ),
+    "asynchronous_queue": "AT_LEAST_ONCE_WITH_DLQ_AND_IDEMPOTENT_CONSUMERS",
+    "public_edge": "DNS_TLS_WAF_AND_PUBLIC_ADMIN_INTERNAL_ISOLATION",
+    "workload_identity_and_secrets": (
+        "LEAST_PRIVILEGE_WORKLOAD_IDENTITY_AND_AUDITED_SECRET_DELIVERY"
+    ),
+    "telemetry_and_alerting": (
+        "TRACES_METRICS_LOGS_RELEASE_MARKERS_ALERTS_AND_NOTIFICATION_ROUTING"
+    ),
+    "backup_and_restore": (
+        "PITR_SNAPSHOTS_OBJECT_VERSION_RESTORE_DRILL_AND_INTEGRITY_VERIFICATION"
+    ),
+    "deployment_and_release": (
+        "IMMUTABLE_PROMOTION_MIGRATION_CANARY_OBSERVE_ROLLBACK_AND_HUMAN_RELEASE"
+    ),
+    "region_and_data_residency": (
+        "EXPLICIT_PRIMARY_BACKUP_LOCATION_AND_DATA_RESIDENCY_EVIDENCE"
+    ),
+}
+REQUIRED_CAPABILITY_IDS: Final = tuple(REQUIRED_CAPABILITY_OUTCOMES)
 PHASE_NAMES: Final = ("CANARY", "OBSERVE", "ROLLBACK")
 ACTION_COUNT_NAMES: Final = (
     "create",
@@ -259,7 +322,7 @@ APPROVAL_ARTIFACT_NAMES: Final = (
     "operations_approval",
 )
 EXPECTED_CONTRACT_FINGERPRINT: Final = (
-    "79fbbf3333b168f2685e14bbbf8af7a9fb6e45a154cf64a5fe4723f40e4e0bd3"
+    "22ea1085bd36c68971b896c930e9bf16ddffdd63671520784a844eb25a5e7549"
 )
 MAX_DOCUMENT_BYTES: Final = 2 * 1024 * 1024
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
@@ -620,6 +683,92 @@ def _validate_authority_semantics(root: Path) -> None:
         "release_evidence.approvals",
     )
 
+    handoff = _load_repo_yaml(
+        root,
+        DESIGN_HANDOFF_PATH.as_posix(),
+        "provider_neutral_design_handoff",
+    )
+    if tuple(handoff) != (
+        "schema",
+        "version",
+        "record_status",
+        "approved_story",
+        "approved_scope",
+        "source_design_refs",
+        "decision",
+        "rationale",
+        "rejected_alternatives",
+        "constraints",
+        "security_and_approval_gates",
+        "acceptance_criteria",
+        "required_test_evidence",
+        "open_decision_state",
+    ):
+        _fail("CLOSED_SCHEMA_VIOLATION", "provider_neutral_design_handoff")
+    _strict_match(handoff.get("schema"), "DESIGN_HANDOFF_V1", "handoff.schema")
+    _strict_match(handoff.get("version"), 1, "handoff.version")
+    _strict_match(
+        handoff.get("record_status"),
+        "RECORDED_DURABLE_OWNER_DECISION",
+        "handoff.record_status",
+    )
+    _strict_match(handoff.get("approved_story"), "ST-1506", "handoff.story")
+    for field in (
+        "approved_scope",
+        "source_design_refs",
+        "rationale",
+        "rejected_alternatives",
+        "constraints",
+        "security_and_approval_gates",
+        "acceptance_criteria",
+        "required_test_evidence",
+    ):
+        if not _list(handoff.get(field), f"handoff.{field}"):
+            _fail("FIXED_VALUE_VIOLATION", f"handoff.{field}")
+    decision = _mapping(handoff.get("decision"), "handoff.decision")
+    _strict_match(
+        decision.get("full_production_provider_policy"),
+        "STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION",
+        "handoff.decision.provider_policy",
+    )
+    for field in ("selected_profile", "default_profile", "fallback_profile"):
+        _strict_match(decision.get(field), None, f"handoff.decision.{field}")
+    _strict_match(
+        decision.get("required_capability_ids"),
+        list(REQUIRED_CAPABILITY_IDS),
+        "handoff.decision.required_capability_ids",
+    )
+    _strict_match(
+        handoff.get("open_decision_state"),
+        {
+            "OD-009": {
+                "status": "HUMAN_DECISION_REQUIRED",
+                "resolved": False,
+                "blocking": True,
+                "safe_default": "PRODUCTION_DISABLED",
+            },
+            "OD-011": {
+                "status": "HUMAN_DECISION_REQUIRED",
+                "resolved": False,
+                "blocking": True,
+                "safe_default": "LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE",
+            },
+            "OD-013": {
+                "status": "HUMAN_DECISION_REQUIRED",
+                "resolved": False,
+                "blocking": True,
+                "safe_default": ("REFERENCE_METADATA_ONLY_PRODUCTION_APPLY_FORBIDDEN"),
+            },
+            "OD-015": {
+                "status": "EXTERNAL_EVIDENCE_REQUIRED",
+                "resolved": False,
+                "blocking": True,
+                "safe_default": "RECORDED_FIXTURES_ONLY",
+            },
+        },
+        "handoff.open_decision_state",
+    )
+
 
 def _validate_predecessor_semantics(contract: Mapping[str, Any], root: Path) -> None:
     binding = _mapping(contract.get("predecessor_binding"), "predecessor_binding")
@@ -629,13 +778,33 @@ def _validate_predecessor_semantics(contract: Mapping[str, Any], root: Path) -> 
     )
     if tuple(transitive) != ("data_services", "compute_edge", "deployment_identity"):
         _fail("PREDECESSOR_BINDING_ORDER_DRIFT", "predecessor_binding.transitive")
+    stage_contract = _load_repo_yaml(
+        root,
+        "changes/st-1505/contracts/staging-deployment.v1.yaml",
+        "predecessor",
+    )
+    if set(stage_contract) != st1505.TOP_LEVEL_KEYS:
+        _fail("CLOSED_SCHEMA_VIOLATION", "predecessor")
+    expected_stage_sources = [
+        {"uri": f"repo://{relative}", "sha256": digest}
+        for relative, digest in st1505.PINNED_SOURCES.items()
+    ]
+    _strict_match(
+        stage_contract.get("sources"),
+        expected_stage_sources,
+        "predecessor.sources",
+    )
+    for section, expected in st1505.EXPECTED_SECTIONS.items():
+        _strict_match(stage_contract.get(section), expected, f"predecessor.{section}")
     try:
-        predecessor_model = st1505.load_and_validate_contract(root)
-        expected_plan = st1505.render_reference_plan(predecessor_model)
-    except Exception:
+        st1505._validate_predecessor_semantics(root)  # noqa: SLF001
+        expected_plan = st1505.render_reference_plan(
+            st1505.StagingDeploymentModel(contract=copy.deepcopy(dict(stage_contract)))
+        )
+    except Exception:  # noqa: BLE001
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor")
     expected_transitive = _mapping(
-        predecessor_model.contract.get("predecessor_bindings"),
+        stage_contract.get("predecessor_bindings"),
         "predecessor.predecessor_bindings",
     )
     if tuple(expected_transitive) != (
@@ -649,21 +818,51 @@ def _validate_predecessor_semantics(contract: Mapping[str, Any], root: Path) -> 
         expected_transitive,
         "predecessor_binding.transitive",
     )
-    predecessor_plan = _repository_regular_file(
+    predecessor_plan_path = _repository_regular_file(
         root,
         Path("infra/terraform/staging/staging-deployment.reference-plan.v1.json"),
         "predecessor_plan",
     )
-    try:
-        actual_plan = predecessor_plan.read_bytes()
-    except OSError:
-        _fail("FILE_UNAVAILABLE", "predecessor_plan")
-    if actual_plan != expected_plan:
-        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_plan")
-
-    stage_contract = predecessor_model.contract
+    predecessor_plan = _mapping(load_json(predecessor_plan_path), "predecessor_plan")
+    _strict_match(
+        predecessor_plan.get("predecessor_bindings"),
+        expected_transitive,
+        "predecessor_plan.predecessor_bindings",
+    )
+    stage_document = _mapping(stage_contract.get("document"), "predecessor.document")
+    _strict_match(stage_document.get("story_id"), "ST-1505", "predecessor.story")
+    _strict_match(
+        stage_document.get("status"),
+        "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        "predecessor.status",
+    )
+    _strict_match(
+        stage_document.get("formal_verification"),
+        "NOT_EXECUTED",
+        "predecessor.formal_verification",
+    )
+    plan_document = _mapping(
+        predecessor_plan.get("document"), "predecessor_plan.document"
+    )
+    _strict_match(plan_document.get("story_id"), "ST-1505", "predecessor_plan.story")
+    _strict_match(
+        plan_document.get("source_contract"),
+        "repo://changes/st-1505/contracts/staging-deployment.v1.yaml",
+        "predecessor_plan.source_contract",
+    )
+    _strict_match(plan_document.get("executable"), False, "predecessor_plan.executable")
+    _strict_match(
+        plan_document.get("implementation_scope"),
+        "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        "predecessor_plan.implementation_scope",
+    )
     _assert_unset_tree(
         stage_contract.get("selected_bindings"), "predecessor.selected_bindings"
+    )
+    _strict_match(
+        predecessor_plan.get("selected_bindings"),
+        stage_contract.get("selected_bindings"),
+        "predecessor_plan.selected_bindings",
     )
     execution = _mapping(
         stage_contract.get("execution_boundary"), "predecessor.execution"
@@ -678,13 +877,33 @@ def _validate_predecessor_semantics(contract: Mapping[str, Any], root: Path) -> 
     _strict_match(execution.get("external_writes"), "FORBIDDEN", "predecessor.writes")
     _strict_match(
         execution.get("action_counts"),
-        {name: 0 for name in st1505.ACTION_COUNT_NAMES},
+        {name: 0 for name in PREDECESSOR_ACTION_COUNT_NAMES},
         "predecessor.action_counts",
     )
     for operation in _mapping(
         execution.get("operations"), "predecessor.operations"
     ).values():
         _strict_match(operation, "FORBIDDEN", "predecessor.operation")
+    plan_activation = _mapping(
+        predecessor_plan.get("activation"), "predecessor_plan.activation"
+    )
+    _strict_match(plan_activation.get("enabled"), False, "predecessor_plan.enabled")
+    _strict_match(plan_activation.get("status"), "DISABLED", "predecessor_plan.status")
+    _strict_match(
+        plan_activation.get("live_provider_calls"),
+        "FORBIDDEN",
+        "predecessor_plan.provider",
+    )
+    _strict_match(
+        plan_activation.get("external_writes"),
+        "FORBIDDEN",
+        "predecessor_plan.writes",
+    )
+    _strict_match(
+        predecessor_plan.get("action_counts"),
+        execution.get("action_counts"),
+        "predecessor_plan.action_counts",
+    )
     predecessor_evidence = _mapping(
         stage_contract.get("evidence_boundary"), "predecessor.evidence"
     )
@@ -703,6 +922,25 @@ def _validate_predecessor_semantics(contract: Mapping[str, Any], root: Path) -> 
         "ABSENT",
         "predecessor.executable",
     )
+    plan_evidence = _mapping(
+        predecessor_plan.get("verification_boundary"),
+        "predecessor_plan.verification_boundary",
+    )
+    _strict_match(
+        plan_evidence,
+        {
+            key: value
+            for key, value in predecessor_evidence.items()
+            if key != "deliverable_classification"
+        },
+        "predecessor_plan.verification_boundary",
+    )
+    try:
+        actual_plan = predecessor_plan_path.read_bytes()
+    except OSError:
+        _fail("FILE_UNAVAILABLE", "predecessor_plan")
+    if actual_plan != expected_plan:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_plan")
 
 
 def _object_fingerprint(value: Mapping[str, Any]) -> str:
@@ -719,10 +957,161 @@ def _object_fingerprint(value: Mapping[str, Any]) -> str:
     return sha256_bytes(encoded)
 
 
+def _validate_provider_neutral_admission(contract: Mapping[str, Any]) -> None:
+    admission = _mapping(
+        contract.get("provider_neutral_admission"), "provider_neutral_admission"
+    )
+    if tuple(admission) != PROVIDER_NEUTRAL_ADMISSION_KEYS:
+        _fail("CLOSED_SCHEMA_VIOLATION", "provider_neutral_admission")
+    _strict_match(
+        admission.get("classification"),
+        "STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION",
+        "provider_neutral_admission.classification",
+    )
+    _strict_match(
+        admission.get("admission_status"),
+        "NOT_EVALUATED",
+        "provider_neutral_admission.admission_status",
+    )
+    _strict_match(
+        admission.get("eligible"), False, "provider_neutral_admission.eligible"
+    )
+    for field in (
+        "selected_profile_id",
+        "selected_profile_kind",
+        "selected_provider_name",
+        "default_profile_id",
+        "fallback_profile_id",
+    ):
+        _strict_match(admission.get(field), None, f"provider_neutral_admission.{field}")
+    _strict_match(
+        admission.get("concrete_alternate_provider_selected"),
+        False,
+        "provider_neutral_admission.concrete_alternate_provider_selected",
+    )
+    _strict_match(
+        admission.get("eligible_profile_kinds"),
+        ["AWS", "OTHER_CLOUD", "OWNER_MANAGED_INFRASTRUCTURE"],
+        "provider_neutral_admission.eligible_profile_kinds",
+    )
+    _strict_match(
+        admission.get("mapping_policy"),
+        {
+            "cardinality": "EXACTLY_ONE_PER_REQUIRED_CAPABILITY",
+            "required_mapping_count": len(REQUIRED_CAPABILITY_IDS),
+            "configured_mapping_count": 0,
+            "complete_mapping": False,
+            "missing_mapping": "REJECT",
+            "unknown_mapping": "REJECT",
+            "duplicate_mapping": "REJECT",
+            "implicit_mapping": "REJECT",
+            "partial_mapping": "REJECT",
+            "provider_label_only": "REJECT",
+            "unmapped_eligibility": "FORBIDDEN",
+        },
+        "provider_neutral_admission.mapping_policy",
+    )
+    _strict_match(
+        admission.get("aws_reference_boundary"),
+        {
+            "canonical_decision_id": "INT-DEC-007",
+            "reference_profile": "AWS_TOKYO",
+            "reference_region_metadata": "ap-northeast-1",
+            "role": "OPTIONAL_HISTORICAL_REFERENCE_ONLY",
+            "default": False,
+            "implicit_fallback": False,
+            "selected_binding": False,
+            "eligibility_shortcut": False,
+            "admission_requirement": False,
+            "evidence_substitute": False,
+        },
+        "provider_neutral_admission.aws_reference_boundary",
+    )
+    _strict_match(
+        admission.get("predecessor_reference_boundary"),
+        {
+            "st_1501_through_st_1505": (
+                "IMMUTABLE_AWS_SPECIFIC_HISTORY_AND_REFERENCE_ONLY"
+            ),
+            "mandatory_provider_semantics": False,
+            "provider_selection_authority": "NONE",
+            "eligibility_authority": "NONE",
+            "evidence_substitute": False,
+        },
+        "provider_neutral_admission.predecessor_reference_boundary",
+    )
+    _strict_match(
+        admission.get("evidence_equivalence_policy"),
+        {
+            "capability_evidence": "REQUIRED_NOT_CONFIGURED",
+            "security_evidence": "REQUIRED_NOT_CONFIGURED",
+            "operations_evidence": "REQUIRED_NOT_CONFIGURED",
+            "release_evidence": "REQUIRED_NOT_CONFIGURED",
+            "backup_restore_evidence": "REQUIRED_NOT_CONFIGURED",
+            "region_and_data_residency_evidence": "REQUIRED_NOT_CONFIGURED",
+            "same_requirements_for_all_profile_kinds": True,
+            "provider_label_as_evidence": "FORBIDDEN",
+            "reference_metadata_as_evidence": "FORBIDDEN",
+            "predecessor_completion_as_evidence": "FORBIDDEN",
+            "local_test_as_live_evidence": "FORBIDDEN",
+        },
+        "provider_neutral_admission.evidence_equivalence_policy",
+    )
+
+    mappings = _list(
+        admission.get("capability_mapping_requirements"),
+        "provider_neutral_admission.capability_mapping_requirements",
+    )
+    observed_ids: list[str] = []
+    for raw_mapping in mappings:
+        mapping = _mapping(raw_mapping, "provider_neutral_admission.mapping")
+        if tuple(mapping) != (
+            "capability_id",
+            "required_outcome",
+            "selected_mapping",
+            "evidence_references",
+            "mapping_status",
+        ):
+            _fail("CLOSED_SCHEMA_VIOLATION", "provider_neutral_admission.mapping")
+        capability_id = mapping.get("capability_id")
+        if type(capability_id) is not str or capability_id not in (
+            REQUIRED_CAPABILITY_OUTCOMES
+        ):
+            _fail("UNKNOWN_CAPABILITY_MAPPING", "provider_neutral_admission.mapping")
+        if capability_id in observed_ids:
+            _fail("DUPLICATE_CAPABILITY_MAPPING", "provider_neutral_admission.mapping")
+        observed_ids.append(capability_id)
+        _strict_match(
+            mapping.get("required_outcome"),
+            REQUIRED_CAPABILITY_OUTCOMES[capability_id],
+            "provider_neutral_admission.mapping.required_outcome",
+        )
+        _strict_match(
+            mapping.get("selected_mapping"),
+            None,
+            "provider_neutral_admission.mapping.selected_mapping",
+        )
+        _strict_match(
+            mapping.get("evidence_references"),
+            [],
+            "provider_neutral_admission.mapping.evidence_references",
+        )
+        _strict_match(
+            mapping.get("mapping_status"),
+            "REQUIRED_NOT_CONFIGURED",
+            "provider_neutral_admission.mapping.mapping_status",
+        )
+    if set(observed_ids) != set(REQUIRED_CAPABILITY_IDS):
+        _fail("MISSING_CAPABILITY_MAPPING", "provider_neutral_admission.mapping")
+    if tuple(observed_ids) != REQUIRED_CAPABILITY_IDS:
+        _fail("CAPABILITY_MAPPING_ORDER_DRIFT", "provider_neutral_admission.mapping")
+
+
 def _validate_local_safety_invariants(contract: Mapping[str, Any]) -> None:
     if tuple(contract) != TOP_LEVEL_KEYS:
         _fail("CLOSED_SCHEMA_VIOLATION", "contract")
     document = _mapping(contract.get("document"), "document")
+    _strict_match(document.get("version"), "1.1.0", "document.version")
     _strict_match(document.get("story_id"), "ST-1506", "document.story_id")
     _strict_match(document.get("executable"), False, "document.executable")
     _strict_match(document.get("activation_status"), "DISABLED", "document.activation")
@@ -731,6 +1120,8 @@ def _validate_local_safety_invariants(contract: Mapping[str, Any]) -> None:
         "NOT_EXECUTED",
         "document.formal_verification",
     )
+
+    _validate_provider_neutral_admission(contract)
 
     environment = _mapping(contract.get("environment_boundary"), "environment")
     _strict_match(environment.get("label"), "PRODUCTION", "environment.label")
@@ -858,7 +1249,7 @@ def reference_plan_document(model: ProductionDeploymentModel) -> dict[str, objec
     return {
         "document": {
             "id": "RAOS-PRODUCTION-DEPLOYMENT-REFERENCE-PLAN-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1506",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -868,6 +1259,7 @@ def reference_plan_document(model: ProductionDeploymentModel) -> dict[str, objec
             "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
         },
         "predecessor_binding": _section(model, "predecessor_binding"),
+        "provider_neutral_admission": _section(model, "provider_neutral_admission"),
         "open_decision_defaults": _section(model, "open_decision_defaults"),
         "environment": _section(model, "environment_boundary"),
         "selected_bindings": _section(model, "selected_bindings"),
@@ -939,12 +1331,15 @@ def render_manifest(
     execution = _mapping(model.contract["execution_boundary"], "execution_boundary")
     evidence = _mapping(model.contract["evidence_boundary"], "evidence_boundary")
     environment = _mapping(model.contract["environment_boundary"], "environment")
+    admission = _mapping(
+        model.contract["provider_neutral_admission"], "provider_neutral_admission"
+    )
     selection = _mapping(model.contract["selected_bindings"], "selected_bindings")
     approvals = _mapping(model.contract["human_approval_gates"], "human_approval_gates")
     document: dict[str, object] = {
         "document": {
             "id": "RAOS-PRODUCTION-DEPLOYMENT-MANIFEST-001",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "story_id": "ST-1506",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -987,6 +1382,24 @@ def render_manifest(
             "apply_target": environment["apply_target"],
             "activation": execution["activation_status"],
             "action_counts": copy.deepcopy(execution["action_counts"]),
+            "provider_policy": admission["classification"],
+            "provider_admission_status": admission["admission_status"],
+            "provider_eligible": admission["eligible"],
+            "selected_profile": admission["selected_profile_id"],
+            "default_profile": admission["default_profile_id"],
+            "fallback_profile": admission["fallback_profile_id"],
+            "required_capability_count": len(REQUIRED_CAPABILITY_IDS),
+            "configured_capability_count": admission["mapping_policy"][
+                "configured_mapping_count"
+            ],
+            "aws_reference_role": admission["aws_reference_boundary"]["role"],
+            "aws_reference_default": admission["aws_reference_boundary"]["default"],
+            "aws_reference_fallback": admission["aws_reference_boundary"][
+                "implicit_fallback"
+            ],
+            "aws_reference_eligibility_shortcut": admission["aws_reference_boundary"][
+                "eligibility_shortcut"
+            ],
             "selected_provider": selection["cloud_provider"],
             "selected_account": selection["cloud_account_id"],
             "selected_region": selection["cloud_region"],

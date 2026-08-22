@@ -114,6 +114,143 @@ def test_open_decision_values_cannot_be_selected(
         _validate(document)
 
 
+@pytest.mark.parametrize(
+    "field",
+    (
+        "selected_profile_id",
+        "selected_profile_kind",
+        "selected_provider_name",
+        "default_profile_id",
+        "fallback_profile_id",
+    ),
+)
+def test_no_provider_profile_can_be_selected_defaulted_or_fallbacked(
+    contract_document: dict[str, Any], field: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_admission"][field] = "AWS"
+    with pytest.raises(generator.ProductionDeploymentContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected_code"),
+    (
+        ("missing", "MISSING_CAPABILITY_MAPPING"),
+        ("unknown", "UNKNOWN_CAPABILITY_MAPPING"),
+        ("duplicate", "DUPLICATE_CAPABILITY_MAPPING"),
+        ("reorder", "CAPABILITY_MAPPING_ORDER_DRIFT"),
+    ),
+)
+def test_capability_mapping_inventory_fails_closed(
+    contract_document: dict[str, Any], mutation: str, expected_code: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    rows = document["provider_neutral_admission"]["capability_mapping_requirements"]
+    if mutation == "missing":
+        rows.pop()
+    elif mutation == "unknown":
+        rows[-1]["capability_id"] = "provider_specific_shortcut"
+    elif mutation == "duplicate":
+        rows[-1]["capability_id"] = rows[0]["capability_id"]
+    else:
+        rows[0], rows[1] = rows[1], rows[0]
+    with pytest.raises(generator.ProductionDeploymentContractError) as captured:
+        _validate(document)
+    assert captured.value.code == expected_code
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("eligible", True),
+        ("admission_status", "ELIGIBLE"),
+        ("concrete_alternate_provider_selected", True),
+    ),
+)
+def test_profile_eligibility_cannot_precede_complete_mapping_and_evidence(
+    contract_document: dict[str, Any], field: str, value: object
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_admission"][field] = value
+    with pytest.raises(generator.ProductionDeploymentContractError):
+        _validate(document)
+
+
+def test_aws_label_alone_cannot_satisfy_admission(
+    contract_document: dict[str, Any],
+) -> None:
+    document = copy.deepcopy(contract_document)
+    admission = document["provider_neutral_admission"]
+    admission["eligible"] = True
+    admission["selected_profile_id"] = "AWS_TOKYO"
+    admission["selected_profile_kind"] = "AWS"
+    admission["selected_provider_name"] = "AWS"
+    admission["mapping_policy"]["configured_mapping_count"] = len(
+        generator.REQUIRED_CAPABILITY_IDS
+    )
+    admission["mapping_policy"]["complete_mapping"] = True
+    for row in admission["capability_mapping_requirements"]:
+        row["selected_mapping"] = f"AWS_LABEL::{row['capability_id']}"
+        row["mapping_status"] = "CONFIGURED"
+    with pytest.raises(generator.ProductionDeploymentContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "SAFE_BOUNDARY_VIOLATION"
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "default",
+        "implicit_fallback",
+        "selected_binding",
+        "eligibility_shortcut",
+        "admission_requirement",
+        "evidence_substitute",
+    ),
+)
+def test_aws_reference_cannot_be_promoted_to_provider_semantics(
+    contract_document: dict[str, Any], field: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_admission"]["aws_reference_boundary"][field] = True
+    with pytest.raises(generator.ProductionDeploymentContractError):
+        _validate(document)
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "provider_label_as_evidence",
+        "reference_metadata_as_evidence",
+        "predecessor_completion_as_evidence",
+        "local_test_as_live_evidence",
+    ),
+)
+def test_provider_neutral_evidence_rules_cannot_be_weakened(
+    contract_document: dict[str, Any], field: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    document["provider_neutral_admission"]["evidence_equivalence_policy"][field] = (
+        "ALLOWED"
+    )
+    with pytest.raises(generator.ProductionDeploymentContractError):
+        _validate(document)
+
+
+def test_partial_capability_mapping_without_evidence_is_rejected(
+    contract_document: dict[str, Any],
+) -> None:
+    document = copy.deepcopy(contract_document)
+    row = document["provider_neutral_admission"]["capability_mapping_requirements"][0]
+    row["selected_mapping"] = "owner-managed-runtime"
+    row["mapping_status"] = "CONFIGURED"
+    with pytest.raises(generator.ProductionDeploymentContractError) as captured:
+        _validate(document)
+    assert captured.value.code == "SELECTION_MUST_REMAIN_UNSET"
+
+
 @pytest.mark.parametrize("artifact", generator.APPROVAL_ARTIFACT_NAMES)
 @pytest.mark.parametrize(
     ("field", "value"),
@@ -368,21 +505,75 @@ def _rebind_immediate_predecessor(
 
 
 @pytest.mark.parametrize(
-    ("relative", "mutation"),
+    ("relative", "mutation", "expected_code"),
     (
-        ("changes/st-1505/contracts/staging-deployment.v1.yaml", "enabled"),
-        ("changes/st-1505/contracts/staging-deployment.v1.yaml", "nonzero"),
-        ("changes/st-1505/contracts/staging-deployment.v1.yaml", "selected"),
-        ("changes/st-1505/contracts/staging-deployment.v1.yaml", "external"),
-        ("changes/st-1505/contracts/staging-deployment.v1.yaml", "tst009"),
-        ("changes/st-1505/contracts/staging-deployment.v1.yaml", "tst022"),
+        (
+            "changes/st-1505/contracts/staging-deployment.v1.yaml",
+            "enabled",
+            "SAFE_BOUNDARY_VIOLATION",
+        ),
+        (
+            "changes/st-1505/contracts/staging-deployment.v1.yaml",
+            "nonzero",
+            "SAFE_BOUNDARY_VIOLATION",
+        ),
+        (
+            "changes/st-1505/contracts/staging-deployment.v1.yaml",
+            "selected",
+            "SELECTION_MUST_REMAIN_UNSET",
+        ),
+        (
+            "changes/st-1505/contracts/staging-deployment.v1.yaml",
+            "external",
+            "FIXED_VALUE_VIOLATION",
+        ),
+        *(
+            (
+                "changes/st-1505/contracts/staging-deployment.v1.yaml",
+                mutation,
+                "FIXED_VALUE_VIOLATION",
+            )
+            for mutation in (
+                "network",
+                "credential",
+                "staging_action",
+                "release_action",
+                "production_action",
+            )
+        ),
+        (
+            "changes/st-1505/contracts/staging-deployment.v1.yaml",
+            "tst009",
+            "FIXED_VALUE_VIOLATION",
+        ),
+        (
+            "changes/st-1505/contracts/staging-deployment.v1.yaml",
+            "tst022",
+            "FIXED_VALUE_VIOLATION",
+        ),
         (
             "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
             "executable",
+            "SAFE_BOUNDARY_VIOLATION",
         ),
         (
             "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
             "enabled",
+            "SAFE_BOUNDARY_VIOLATION",
+        ),
+        *(
+            (
+                "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+                mutation,
+                "PREDECESSOR_SEMANTIC_DRIFT",
+            )
+            for mutation in (
+                "network",
+                "credential",
+                "staging_action",
+                "release_action",
+                "production_action",
+            )
         ),
     ),
 )
@@ -392,6 +583,7 @@ def test_st1505_semantic_drift_fails_even_after_digest_rebinding(
     monkeypatch: pytest.MonkeyPatch,
     relative: str,
     mutation: str,
+    expected_code: str,
 ) -> None:
     _copy_pinned_sources(tmp_path)
     path = tmp_path / relative
@@ -405,6 +597,21 @@ def test_st1505_semantic_drift_fails_even_after_digest_rebinding(
             value["selected_bindings"]["github_repository"] = "attempted/repo"
         elif mutation == "external":
             value["execution_boundary"]["external_writes"] = "ALLOWED"
+        elif mutation in {
+            "network",
+            "credential",
+            "staging_action",
+            "release_action",
+            "production_action",
+        }:
+            field = {
+                "network": "network_access",
+                "credential": "credential_access",
+                "staging_action": "staging_action",
+                "release_action": "release_action",
+                "production_action": "production_action",
+            }[mutation]
+            value["execution_boundary"][field] = "ALLOWED"
         elif mutation == "tst009":
             value["evidence_boundary"]["formal_tst_009"] = "EXECUTED"
         else:
@@ -414,8 +621,17 @@ def test_st1505_semantic_drift_fails_even_after_digest_rebinding(
         value = json.loads(path.read_bytes())
         if mutation == "executable":
             value["document"]["executable"] = True
-        else:
+        elif mutation == "enabled":
             value["activation"]["enabled"] = True
+        else:
+            field = {
+                "network": "network_access",
+                "credential": "credential_access",
+                "staging_action": "staging_action",
+                "release_action": "release_action",
+                "production_action": "production_action",
+            }[mutation]
+            value["activation"][field] = "ALLOWED"
         path.write_text(json.dumps(value, sort_keys=True), encoding="utf-8")
     document = copy.deepcopy(contract_document)
     _rebind_immediate_predecessor(
@@ -423,10 +639,7 @@ def test_st1505_semantic_drift_fails_even_after_digest_rebinding(
     )
     with pytest.raises(generator.ProductionDeploymentContractError) as captured:
         generator.validate_contract(document, tmp_path)
-    assert captured.value.code in {
-        "PREDECESSOR_SEMANTIC_DRIFT",
-        "CONTRACT_DEFINITION_DRIFT",
-    }
+    assert captured.value.code == expected_code
 
 
 @pytest.mark.parametrize("mutation", ("missing", "reorder", "extra"))

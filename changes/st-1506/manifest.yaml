@@ -1,13 +1,13 @@
 document:
   id: RAOS-PRODUCTION-DEPLOYMENT-MANIFEST-001
-  version: 1.0.0
+  version: 1.1.0
   story_id: ST-1506
   source_contract: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
   generated_by: repo://scripts/build_st1506_production_deployment.py
   generation_command: uv run --locked --no-sync python scripts/build_st1506_production_deployment.py
 provenance:
   contract_uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
-  contract_sha256: 36e9b96d4b681e63d0b74f4172b8fc73137a58785a0433cd959a8d22a7b91a90
+  contract_sha256: 674c48c3e37ebc798b9da17d11a8fa9a58c63b775199553b26c617b9be2430a0
   authority_inputs:
   - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
     sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
@@ -46,7 +46,9 @@ provenance:
   - uri: repo://docs/canonical/05_test/RAOS_11_release_evidence_template_v1.0.yaml
     sha256: 3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
+  - uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
+    sha256: 7a68628b4407b1c23ad9ff8172ddd191c956fa4e004887e0958648171415a4d3
   predecessor_inputs:
   - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
     sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
@@ -64,34 +66,37 @@ provenance:
     sha256: 58352939268565ede5c6d48682013c3fac1134587d1665f4236f389f0c15527d
   - uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
     sha256: 6774c1e2553df4e1f3e7a85dc122b2462ddb575503a7c03b4ec8d9e18baecfbc
-source_artifact_count: 7
+source_artifact_count: 8
 source_artifacts:
 - uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
-  bytes: 17356
-  sha256: 36e9b96d4b681e63d0b74f4172b8fc73137a58785a0433cd959a8d22a7b91a90
+  bytes: 21875
+  sha256: 674c48c3e37ebc798b9da17d11a8fa9a58c63b775199553b26c617b9be2430a0
+- uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
+  bytes: 7797
+  sha256: 7a68628b4407b1c23ad9ff8172ddd191c956fa4e004887e0958648171415a4d3
 - uri: repo://changes/st-1506/README.md
-  bytes: 5429
-  sha256: 4d419706d5e74d0ed2dad46ddea224d2f3804c68aedb40747b827bb5b08e2bc5
+  bytes: 7980
+  sha256: 804746222979c65774471d8122e2e2560c0ea546d5d6e5b311262b0c4e564f6d
 - uri: repo://scripts/build_st1506_production_deployment.py
-  bytes: 42566
-  sha256: ef2c4c887886444041609fc88b6fdef928190e56c4f7882b1f76e3a127ce863f
+  bytes: 58417
+  sha256: 11881823d9cf4595a04d3492b6dbd6b2a2fe8f5f05e1584a05d23aa43c1e4de6
 - uri: repo://tests/st1506/conftest.py
   bytes: 650
   sha256: 6e1d73217032d1b903701e6c589d89df06201adafa2185053a4a3500ef187eee
 - uri: repo://tests/st1506/test_contract.py
-  bytes: 11183
-  sha256: c4f043918cf3f3c2e8bdc86db50585dd2207cfd16f41987ab9077d316650d890
+  bytes: 15443
+  sha256: 7523981a624f76fcfca25b64bf7e8e8dfa36df08b0145b83633af6fc64be57b2
 - uri: repo://tests/st1506/test_generation.py
-  bytes: 8233
-  sha256: e789f8785f3187acc1c3235f687cc15a22941da6e22e9e4138dfc20c1431f5d0
+  bytes: 9268
+  sha256: b73ce03d45be4553bb7a9e27d0714d41b0a7d143ba3ab1a0fcc590eae37ac82e
 - uri: repo://tests/st1506/test_negative_cases.py
-  bytes: 18770
-  sha256: 2572da4a70f4182ba18d7c066d69dc93b5bcc8044d127f50d12c42df8419db55
+  bytes: 25792
+  sha256: 54e2ec8bffae6a2b8c51cc012392edf46f167ab89534062361cf889860161271
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/deployment-production/production-deployment.reference-plan.v1.json
-  bytes: 15858
-  sha256: 0cec2e076d2f8a6e89285836b2c8919c3b22052c2d4ba1c06c11e95aca28f344
+  bytes: 21055
+  sha256: 31666828a26dca433cbbcbd6a76c91fa5583e3ac2bc50e27121d0dad748e68b1
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
@@ -115,6 +120,18 @@ boundary:
     rollback: 0
     release: 0
     status: 0
+  provider_policy: STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION
+  provider_admission_status: NOT_EVALUATED
+  provider_eligible: false
+  selected_profile: null
+  default_profile: null
+  fallback_profile: null
+  required_capability_count: 10
+  configured_capability_count: 0
+  aws_reference_role: OPTIONAL_HISTORICAL_REFERENCE_ONLY
+  aws_reference_default: false
+  aws_reference_fallback: false
+  aws_reference_eligibility_shortcut: false
   selected_provider: null
   selected_account: null
   selected_region: null

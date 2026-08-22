@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
-from scripts import build_st1505_staging_deployment as predecessor_generator
 from scripts import build_st1506_production_deployment as generator
 
 
@@ -24,7 +23,7 @@ def test_contract_loads_as_closed_non_executable_definition(
     document = _mapping(production_model.contract["document"])
     assert document == {
         "id": "RAOS-PRODUCTION-DEPLOYMENT-DEFINITION-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1506",
         "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
         "classification": (
@@ -63,16 +62,121 @@ def test_immediate_predecessor_and_all_transitive_bindings_are_exact(
     assert binding["required_formal_tst_009"] == "NOT_EXECUTED"
     assert binding["required_formal_tst_022"] == "NOT_EXECUTED"
     assert binding["required_action_counts"] == {
-        name: 0 for name in predecessor_generator.ACTION_COUNT_NAMES
+        name: 0 for name in generator.PREDECESSOR_ACTION_COUNT_NAMES
     }
     transitive = _mapping(binding["transitive_predecessor_bindings"])
-    predecessor = predecessor_generator.load_and_validate_contract(REPOSITORY_ROOT)
+    predecessor = _mapping(
+        generator.load_yaml(
+            REPOSITORY_ROOT / "changes/st-1505/contracts/staging-deployment.v1.yaml"
+        )
+    )
     assert tuple(transitive) == (
         "data_services",
         "compute_edge",
         "deployment_identity",
     )
-    assert transitive == predecessor.contract["predecessor_bindings"]
+    assert transitive == predecessor["predecessor_bindings"]
+
+
+def test_provider_neutral_admission_is_closed_unselected_and_evidence_equal(
+    production_model: generator.ProductionDeploymentModel,
+) -> None:
+    admission = _mapping(production_model.contract["provider_neutral_admission"])
+    assert tuple(admission) == generator.PROVIDER_NEUTRAL_ADMISSION_KEYS
+    assert admission["classification"] == (
+        "STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION"
+    )
+    assert admission["admission_status"] == "NOT_EVALUATED"
+    assert admission["eligible"] is False
+    assert admission["selected_profile_id"] is None
+    assert admission["selected_profile_kind"] is None
+    assert admission["selected_provider_name"] is None
+    assert admission["default_profile_id"] is None
+    assert admission["fallback_profile_id"] is None
+    assert admission["concrete_alternate_provider_selected"] is False
+    assert admission["eligible_profile_kinds"] == [
+        "AWS",
+        "OTHER_CLOUD",
+        "OWNER_MANAGED_INFRASTRUCTURE",
+    ]
+
+    policy = _mapping(admission["mapping_policy"])
+    assert policy["cardinality"] == "EXACTLY_ONE_PER_REQUIRED_CAPABILITY"
+    assert policy["required_mapping_count"] == len(generator.REQUIRED_CAPABILITY_IDS)
+    assert policy["configured_mapping_count"] == 0
+    assert policy["complete_mapping"] is False
+    assert all(
+        policy[field] == "REJECT"
+        for field in (
+            "missing_mapping",
+            "unknown_mapping",
+            "duplicate_mapping",
+            "implicit_mapping",
+            "partial_mapping",
+            "provider_label_only",
+        )
+    )
+
+    aws = _mapping(admission["aws_reference_boundary"])
+    assert aws["canonical_decision_id"] == "INT-DEC-007"
+    assert aws["reference_profile"] == "AWS_TOKYO"
+    assert aws["role"] == "OPTIONAL_HISTORICAL_REFERENCE_ONLY"
+    assert all(
+        aws[field] is False
+        for field in (
+            "default",
+            "implicit_fallback",
+            "selected_binding",
+            "eligibility_shortcut",
+            "admission_requirement",
+            "evidence_substitute",
+        )
+    )
+    predecessor = _mapping(admission["predecessor_reference_boundary"])
+    assert predecessor["st_1501_through_st_1505"] == (
+        "IMMUTABLE_AWS_SPECIFIC_HISTORY_AND_REFERENCE_ONLY"
+    )
+    assert predecessor["mandatory_provider_semantics"] is False
+    assert predecessor["provider_selection_authority"] == "NONE"
+    assert predecessor["eligibility_authority"] == "NONE"
+
+    evidence = _mapping(admission["evidence_equivalence_policy"])
+    assert evidence["same_requirements_for_all_profile_kinds"] is True
+    assert evidence["provider_label_as_evidence"] == "FORBIDDEN"
+    assert evidence["reference_metadata_as_evidence"] == "FORBIDDEN"
+    assert evidence["predecessor_completion_as_evidence"] == "FORBIDDEN"
+    rows = cast(list[dict[str, Any]], admission["capability_mapping_requirements"])
+    assert [row["capability_id"] for row in rows] == list(
+        generator.REQUIRED_CAPABILITY_IDS
+    )
+    for row in rows:
+        capability_id = cast(str, row["capability_id"])
+        assert (
+            row["required_outcome"]
+            == (generator.REQUIRED_CAPABILITY_OUTCOMES[capability_id])
+        )
+        assert row["selected_mapping"] is None
+        assert row["evidence_references"] == []
+        assert row["mapping_status"] == "REQUIRED_NOT_CONFIGURED"
+
+
+def test_provider_neutral_rules_do_not_weaken_release_gates_or_status(
+    production_model: generator.ProductionDeploymentModel,
+) -> None:
+    plan = generator.reference_plan_document(production_model)
+    admission = _mapping(plan["provider_neutral_admission"])
+    activation = _mapping(plan["activation"])
+    approvals = _mapping(plan["human_approval_gates"])
+    verification = _mapping(plan["verification_boundary"])
+    assert admission["eligible"] is False
+    assert activation["enabled"] is False
+    assert activation["status"] == "DISABLED"
+    assert approvals["populated_artifact_count"] == 0
+    assert approvals["human_control_required"] is True
+    assert verification["formal_tst_032"] == "NOT_EXECUTED"
+    assert verification["release"] == "NOT_EXECUTED"
+    assert verification["production"] == "NOT_EXECUTED"
+    assert verification["effective_canonical_status"] == "UNCHANGED"
 
 
 def test_open_decisions_keep_only_documented_safe_defaults(

@@ -1,0 +1,119 @@
+schema: DESIGN_HANDOFF_V1
+version: 1
+record_status: RECORDED_DURABLE_OWNER_DECISION
+approved_story: ST-1506
+approved_scope:
+  - Define Full RAOS Production admission without assuming or requiring AWS or any other infrastructure provider.
+  - Retain AWS Tokyo only as optional historical reference metadata inherited from INT-DEC-007.
+  - Require every future Production profile to map the same closed capability inventory and provide equivalent security, operations, release, and residency evidence.
+  - Keep every current provider/profile binding unset and Production disabled while OD-009, OD-011, OD-013, and OD-015 remain unresolved.
+source_design_refs:
+  - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  - repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-007
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-009
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-011
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-013
+  - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015
+  - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1506
+  - repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md#ARCH-PRINCIPLE-09
+  - repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+  - repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+  - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-032
+decision:
+  full_production_provider_policy: STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION
+  selected_profile: null
+  default_profile: null
+  fallback_profile: null
+  concrete_alternate_provider_selected: false
+  eligible_profile_kinds:
+    - AWS
+    - OTHER_CLOUD
+    - OWNER_MANAGED_INFRASTRUCTURE
+  eligibility_condition: COMPLETE_EXACT_CAPABILITY_MAPPING_AND_EQUIVALENT_EVIDENCE
+  aws_reference_boundary:
+    canonical_decision_id: INT-DEC-007
+    reference_profile: AWS_TOKYO
+    role: OPTIONAL_HISTORICAL_REFERENCE_ONLY
+    default: false
+    implicit_fallback: false
+    selected_binding: false
+    eligibility_shortcut: false
+    admission_requirement: false
+    evidence_substitute: false
+  predecessor_boundary:
+    st_1501_through_st_1505: IMMUTABLE_AWS_SPECIFIC_HISTORY_AND_REFERENCE_ONLY
+    mandatory_provider_semantics_for_st_1506: false
+    admission_authority: ST_1506_PROVIDER_NEUTRAL_CAPABILITY_CONTRACT
+  required_capability_ids:
+    - workload_runtime
+    - relational_persistence
+    - immutable_object_storage
+    - asynchronous_queue
+    - public_edge
+    - workload_identity_and_secrets
+    - telemetry_and_alerting
+    - backup_and_restore
+    - deployment_and_release
+    - region_and_data_residency
+rationale:
+  - The RAOS Core already uses portable protocol and adapter boundaries, so Production admission should evaluate capabilities and evidence rather than a provider name.
+  - Provider-name admission would turn historical reference metadata into an unsafe default and would allow unequal security or operational assurance.
+  - A closed capability inventory permits AWS, another cloud, or owner-managed infrastructure without selecting an unreviewed live provider now.
+  - Keeping all bindings null and eligibility not evaluated preserves the documented safe defaults and external human gates.
+rejected_alternatives:
+  - Require AWS or ap-northeast-1 merely because INT-DEC-007 records them as reference architecture.
+  - Treat AWS labels, service names, predecessor artifacts, or existing Terraform metadata as Production admission evidence.
+  - Select another cloud or owner-managed platform before capability mapping, region, budget, credentials, and operations decisions exist.
+  - Permit partial, unknown, duplicate, implicit, defaulted, or fallback capability mappings.
+  - Lower security, operations, release, backup, restore, or residency evidence for any provider kind.
+constraints:
+  - Exactly one explicit mapping is required for every required capability before a future profile can be eligible.
+  - Missing, unknown, duplicate, partially evidenced, or provider-label-only mappings fail closed.
+  - Compute must support the required RAOS web, API, worker, and scheduler workloads without provider types entering the domain.
+  - Persistence must be PostgreSQL-compatible and preserve migration compatibility and recovery evidence.
+  - Object storage must be S3-compatible and support immutable or versioned artifacts wherever the owning data contract requires them.
+  - Queue delivery must be at least once with DLQ behavior and idempotent consumers.
+  - Public edge capability must cover DNS, TLS, WAF, and public/admin/internal isolation.
+  - Workload identity and secrets must be short-lived or otherwise explicitly reviewed, least-privilege, non-ambient, and auditable.
+  - Telemetry, alerts, backup/restore, promotion, canary, rollback, and region/data-residency evidence are mandatory and provider-neutral.
+  - Existing ST-1501 through ST-1505 artifacts remain byte-bound predecessor history and provide no provider selection, deployment, release, or Production authority.
+  - No credential, provider call, external write, infrastructure apply, deployment, release, or status transition is authorized by this record.
+security_and_approval_gates:
+  - Preserve four distinct immutable human-controlled release, GATE, security, and operations approval artifacts.
+  - Preserve protected-environment, exact repository/ref/workflow, least-privilege identity, artifact provenance, migration, canary, smoke, and rollback requirements.
+  - Preserve OD-009 budget, OD-011 notification, OD-013 region/residency, and OD-015 credential blockers until their owners provide valid evidence.
+  - Require the same security, operations, release, backup/restore, and residency evidence for AWS, another cloud, and owner-managed infrastructure.
+  - Never infer eligibility from a provider name, AWS reference metadata, predecessor completion, or local generator/test success.
+acceptance_criteria:
+  - The ST-1506 source and generated reference expose a closed provider-neutral capability inventory with no selected, default, or fallback profile.
+  - Every future eligible profile must have exactly one explicit mapping for every required capability and complete equivalent evidence.
+  - Unknown, missing, duplicate, partial, implicit, or label-only mappings are rejected before eligibility.
+  - AWS Tokyo remains visible only as optional historical reference metadata and cannot satisfy admission or evidence by itself.
+  - All existing disabled activation, zero action counts, unresolved decisions, human approvals, and NOT_EXECUTED evidence remain unchanged.
+required_test_evidence:
+  - Isolated tests/st1506 positive contract and generated-plan assertions.
+  - Hostile tests for missing, unknown, duplicate, reordered, partial, defaulted, fallback, and AWS-label-only admission attempts.
+  - Owner generator regeneration and read-only --check.
+  - Ruff for changed Python, git diff --check, and affected ST-1506 developer checks.
+  - Formal TST-032, hosted CI, provider, staging, release, and Production evidence remain separately unexecuted.
+open_decision_state:
+  OD-009:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: PRODUCTION_DISABLED
+  OD-011:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE
+  OD-013:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: REFERENCE_METADATA_ONLY_PRODUCTION_APPLY_FORBIDDEN
+  OD-015:
+    status: EXTERNAL_EVIDENCE_REQUIRED
+    resolved: false
+    blocking: true
+    safe_default: RECORDED_FIXTURES_ONLY

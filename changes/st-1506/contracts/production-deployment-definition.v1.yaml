@@ -1,6 +1,6 @@
 document:
   id: RAOS-PRODUCTION-DEPLOYMENT-DEFINITION-001
-  version: 1.0.0
+  version: 1.1.0
   story_id: ST-1506
   status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
   classification: SOURCE_DERIVED_NON_EXECUTABLE_PRODUCTION_DEPLOYMENT_DEFINITION
@@ -45,7 +45,9 @@ sources:
   - uri: repo://docs/canonical/05_test/RAOS_11_release_evidence_template_v1.0.yaml
     sha256: 3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
+    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
+  - uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
+    sha256: 7a68628b4407b1c23ad9ff8172ddd191c956fa4e004887e0958648171415a4d3
   - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
     sha256: 1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2
   - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
@@ -138,6 +140,112 @@ predecessor_binding:
         create: 0
         update: 0
         delete: 0
+provider_neutral_admission:
+  classification: STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION
+  admission_status: NOT_EVALUATED
+  eligible: false
+  selected_profile_id: null
+  selected_profile_kind: null
+  selected_provider_name: null
+  default_profile_id: null
+  fallback_profile_id: null
+  concrete_alternate_provider_selected: false
+  eligible_profile_kinds:
+    - AWS
+    - OTHER_CLOUD
+    - OWNER_MANAGED_INFRASTRUCTURE
+  mapping_policy:
+    cardinality: EXACTLY_ONE_PER_REQUIRED_CAPABILITY
+    required_mapping_count: 10
+    configured_mapping_count: 0
+    complete_mapping: false
+    missing_mapping: REJECT
+    unknown_mapping: REJECT
+    duplicate_mapping: REJECT
+    implicit_mapping: REJECT
+    partial_mapping: REJECT
+    provider_label_only: REJECT
+    unmapped_eligibility: FORBIDDEN
+  aws_reference_boundary:
+    canonical_decision_id: INT-DEC-007
+    reference_profile: AWS_TOKYO
+    reference_region_metadata: ap-northeast-1
+    role: OPTIONAL_HISTORICAL_REFERENCE_ONLY
+    default: false
+    implicit_fallback: false
+    selected_binding: false
+    eligibility_shortcut: false
+    admission_requirement: false
+    evidence_substitute: false
+  predecessor_reference_boundary:
+    st_1501_through_st_1505: IMMUTABLE_AWS_SPECIFIC_HISTORY_AND_REFERENCE_ONLY
+    mandatory_provider_semantics: false
+    provider_selection_authority: NONE
+    eligibility_authority: NONE
+    evidence_substitute: false
+  evidence_equivalence_policy:
+    capability_evidence: REQUIRED_NOT_CONFIGURED
+    security_evidence: REQUIRED_NOT_CONFIGURED
+    operations_evidence: REQUIRED_NOT_CONFIGURED
+    release_evidence: REQUIRED_NOT_CONFIGURED
+    backup_restore_evidence: REQUIRED_NOT_CONFIGURED
+    region_and_data_residency_evidence: REQUIRED_NOT_CONFIGURED
+    same_requirements_for_all_profile_kinds: true
+    provider_label_as_evidence: FORBIDDEN
+    reference_metadata_as_evidence: FORBIDDEN
+    predecessor_completion_as_evidence: FORBIDDEN
+    local_test_as_live_evidence: FORBIDDEN
+  capability_mapping_requirements:
+    - capability_id: workload_runtime
+      required_outcome: PORTABLE_WEB_API_WORKER_SCHEDULER_WORKLOAD_RUNTIME
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: relational_persistence
+      required_outcome: POSTGRESQL_COMPATIBLE_TRANSACTIONAL_PERSISTENCE_AND_MIGRATION_CONTROLS
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: immutable_object_storage
+      required_outcome: S3_COMPATIBLE_VERSIONED_AND_IMMUTABLE_WHERE_DATA_CONTRACT_REQUIRES
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: asynchronous_queue
+      required_outcome: AT_LEAST_ONCE_WITH_DLQ_AND_IDEMPOTENT_CONSUMERS
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: public_edge
+      required_outcome: DNS_TLS_WAF_AND_PUBLIC_ADMIN_INTERNAL_ISOLATION
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: workload_identity_and_secrets
+      required_outcome: LEAST_PRIVILEGE_WORKLOAD_IDENTITY_AND_AUDITED_SECRET_DELIVERY
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: telemetry_and_alerting
+      required_outcome: TRACES_METRICS_LOGS_RELEASE_MARKERS_ALERTS_AND_NOTIFICATION_ROUTING
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: backup_and_restore
+      required_outcome: PITR_SNAPSHOTS_OBJECT_VERSION_RESTORE_DRILL_AND_INTEGRITY_VERIFICATION
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: deployment_and_release
+      required_outcome: IMMUTABLE_PROMOTION_MIGRATION_CANARY_OBSERVE_ROLLBACK_AND_HUMAN_RELEASE
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
+    - capability_id: region_and_data_residency
+      required_outcome: EXPLICIT_PRIMARY_BACKUP_LOCATION_AND_DATA_RESIDENCY_EVIDENCE
+      selected_mapping: null
+      evidence_references: []
+      mapping_status: REQUIRED_NOT_CONFIGURED
 open_decision_defaults:
   production_budget:
     decision_id: OD-009

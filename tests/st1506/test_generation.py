@@ -65,6 +65,22 @@ def test_manifest_inventory_hashes_and_boundary_are_complete() -> None:
     assert boundary["action_counts"] == {
         name: 0 for name in generator.ACTION_COUNT_NAMES
     }
+    assert boundary["provider_policy"] == (
+        "STRICT_PROVIDER_NEUTRAL_CAPABILITY_ADMISSION"
+    )
+    assert boundary["provider_admission_status"] == "NOT_EVALUATED"
+    assert boundary["provider_eligible"] is False
+    assert boundary["selected_profile"] is None
+    assert boundary["default_profile"] is None
+    assert boundary["fallback_profile"] is None
+    assert boundary["required_capability_count"] == len(
+        generator.REQUIRED_CAPABILITY_IDS
+    )
+    assert boundary["configured_capability_count"] == 0
+    assert boundary["aws_reference_role"] == "OPTIONAL_HISTORICAL_REFERENCE_ONLY"
+    assert boundary["aws_reference_default"] is False
+    assert boundary["aws_reference_fallback"] is False
+    assert boundary["aws_reference_eligibility_shortcut"] is False
     assert boundary["formal_tst_032"] == "NOT_EXECUTED"
     assert boundary["production"] == "NOT_EXECUTED"
 
@@ -79,6 +95,12 @@ def test_manifest_pins_authority_and_immediate_plus_transitive_predecessors() ->
         {"uri": f"repo://{path}", "sha256": digest}
         for path, digest in generator.PREDECESSOR_SOURCES.items()
     ]
+    assert manifest["provenance"]["authority_inputs"][-1] == {
+        "uri": f"repo://{generator.DESIGN_HANDOFF_PATH.as_posix()}",
+        "sha256": generator.sha256_file(
+            REPOSITORY_ROOT / generator.DESIGN_HANDOFF_PATH
+        ),
+    }
 
 
 def test_check_rejects_drift_without_writing_or_echoing_bytes(
