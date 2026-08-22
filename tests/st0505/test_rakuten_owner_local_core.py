@@ -29,6 +29,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalRequest,
     RakutenOwnerLocalRequestDisposition,
     RakutenOwnerLocalResultEnvelope,
+    RakutenOwnerLocalValidationDetailCode,
     RakutenOwnerLocalValidationStageCode,
     api_definition,
     fixed_owner_local_smoke_request,
@@ -52,6 +53,7 @@ RESULT_OBJECT_KEYS = (
     "outcome",
     "diagnostic_code",
     "validation_stage_code",
+    "validation_detail_code",
     "request_fingerprint",
     "request_disposition",
     "request_count",
@@ -833,9 +835,10 @@ def test_service_calls_transport_once_writes_once_and_marks_nonformal() -> None:
     assert reader.calls == transport.calls == writer.preflights == 1
     assert writer.writes == [envelope]
     persisted = envelope.as_result_object()
-    assert persisted["schema"] == "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2"
-    assert persisted["version"] == 2
+    assert persisted["schema"] == "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3"
+    assert persisted["version"] == 3
     assert persisted["validation_stage_code"] is None
+    assert persisted["validation_detail_code"] is None
     assert persisted["evidence_authority"] == RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY
     assert persisted["formal_tst_016"] == "NOT_EXECUTED"
     assert persisted["staging"] == "NOT_EXECUTED"
@@ -871,6 +874,11 @@ def test_value_free_validation_stage_survives_the_single_failure_write(
     response_failure = RakutenOwnerLocalFailure(
         code=failure_code,
         validation_stage_code=stage,
+        validation_detail_code=(
+            RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID
+            if stage is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+            else None
+        ),
         disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
         http_status=200,
         body_byte_count=5353,
@@ -892,6 +900,11 @@ def test_value_free_validation_stage_survives_the_single_failure_write(
     assert envelope.request_count == 1
     assert persisted["diagnostic_code"] == failure_code.value
     assert persisted["validation_stage_code"] == stage.value
+    assert persisted["validation_detail_code"] == (
+        RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID.value
+        if stage is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+        else None
+    )
     assert persisted["http_status"] == 200
     assert persisted["body_byte_count"] == 5353
     assert persisted["response_sha256"] == "d" * 64
@@ -926,6 +939,32 @@ def test_validation_stage_is_closed_and_bound_to_response_validation_codes() -> 
         RakutenOwnerLocalFailure(  # type: ignore[arg-type]
             code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
             validation_stage_code="SUMMARY_SHAPE",
+        )
+
+    with pytest.raises(
+        TypeError, match="invalid Rakuten owner-local validation detail"
+    ):
+        RakutenOwnerLocalFailure(
+            code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE,
+        )
+
+    with pytest.raises(
+        TypeError, match="invalid Rakuten owner-local validation detail"
+    ):
+        RakutenOwnerLocalFailure(
+            code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.SUMMARY_SHAPE,
+            validation_detail_code=(
+                RakutenOwnerLocalValidationDetailCode.ROOT_NOT_OBJECT
+            ),
+        )
+
+    with pytest.raises(TypeError, match="invalid Rakuten owner-local failure"):
+        RakutenOwnerLocalFailure(  # type: ignore[arg-type]
+            code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE,
+            validation_detail_code="ROOT_NOT_OBJECT",
         )
 
 
@@ -1931,6 +1970,42 @@ def test_cli_emits_only_fixed_failure_for_credential_reflection() -> None:
         "synthetic-affiliate",
     ):
         assert known_value not in message
+
+
+def test_cli_keeps_collection_detail_value_free_and_non_persistent_in_output() -> None:
+    request = _item_request()
+    failure = RakutenOwnerLocalFailure(
+        code=RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+        validation_stage_code=RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE,
+        validation_detail_code=(
+            RakutenOwnerLocalValidationDetailCode.ROOT_MEMBER_UNRECOGNIZED
+        ),
+        disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
+        http_status=200,
+        body_byte_count=5353,
+        response_sha256="d" * 64,
+    )
+
+    code, message = owner_local_cli._execute_request(  # noqa: SLF001
+        RakutenOwnerLocalApi.ITEM_SEARCH.value,
+        request,
+        reader=_Reader(),
+        writer=_Writer(),
+        transport=_Transport(failure),
+    )
+
+    assert code == 1
+    assert message == "RAKUTEN_OWNER_LOCAL_FAIL_RESPONSE_SCHEMA_DRIFT"
+    for forbidden in (
+        "ROOT_MEMBER_UNRECOGNIZED",
+        "validation_detail_code",
+        "carrier",
+        "provider-controlled-value",
+        "synthetic-application",
+        "synthetic-access",
+        "synthetic-affiliate",
+    ):
+        assert forbidden not in message
 
 
 def test_service_preserves_ambiguous_one_attempt_as_a_written_failure() -> None:

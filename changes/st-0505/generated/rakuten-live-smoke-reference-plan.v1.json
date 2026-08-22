@@ -356,10 +356,10 @@
     "runtime": {
       "name": "rakuten-owner-local",
       "root": "/home/minami/.local/share/raos/rakuten-owner-local/runtime",
-      "bundle_sha256": "97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859",
+      "bundle_sha256": "83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f",
       "launcher_sha256": "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d",
-      "installer_sha256": "9f656e06e241528e3d9a4877268128acf89308afd9791fbcb6de8b6285e0fc04",
-      "install_stage_sha256": "d041b21a1dc5fba8608016d6f3d7bc5f5509f98fd063e6dd0bf7e7a91bbbd947",
+      "installer_sha256": "6e96c55f41506de347087054d31b58f80488bdb626628a657ea1bb8004929153",
+      "install_stage_sha256": "6a4f76542dd39efab9779ea46cda99ac8063d1f0012873c803416670111e8b50",
       "install_entry": "ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY",
       "installed_entry": "EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER",
       "installer_credential_access": "FORBIDDEN",
@@ -445,7 +445,13 @@
       "deadline_timeout": "TIMEOUT_OUTCOME_AMBIGUOUS_NO_PARTIAL_RESPONSE_METADATA",
       "response_maximum_bytes": 2097152,
       "response_json": "STRICT_UTF8_DUPLICATE_NONFINITE_DEPTH_NODE_SCHEMA",
-      "response_summary_relationships": "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_PAGECOUNT_EQUALS_MIN_CEIL_COUNT_DIV_HITS_100_FIRST_1_LAST_CARDINALITY"
+      "response_summary_relationships": "PAGE1_EMPTY_ALL_ZERO_OR_NONEMPTY_COUNT_GTE_CARDINALITY_PAGECOUNT_EQUALS_MIN_CEIL_COUNT_DIV_HITS_100_FIRST_1_LAST_CARDINALITY",
+      "item_response_carrier": {
+        "presence": "OPTIONAL",
+        "accepted_value": "EXACT_INTEGER_ZERO",
+        "normalized_or_persisted": false,
+        "product_search": "UNCHANGED_REJECT_AS_UNRECOGNIZED_ROOT_MEMBER"
+      }
     },
     "normalized_result": {
       "directory": ".secrets/rakuten-owner-local/results",
@@ -453,8 +459,8 @@
       "publication": "ATOMIC_0600_NO_REPLACE",
       "response_sha256": "SHA256_COMPLETE_BOUNDED_RAW_BODY_BYTES",
       "envelope": {
-        "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2",
-        "version": 2,
+        "schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3",
+        "version": 3,
         "exact_object_keys": [
           "schema",
           "version",
@@ -467,6 +473,7 @@
           "outcome",
           "diagnostic_code",
           "validation_stage_code",
+          "validation_detail_code",
           "request_fingerprint",
           "request_disposition",
           "request_count",
@@ -502,7 +509,7 @@
         "terminal_time": "CLAMP_EXACT_UTC_BACKWARD_OR_TERMINAL_SAMPLE_EXCEPTION_TO_STARTED_AT_OTHERWISE_VALIDATE",
         "failure_summary": "ALL_SIX_KEYS_NULL",
         "canonical_json": "UTF8_SORTED_KEYS_COMPACT_TRAILING_LF",
-        "compatibility": "V1_EVIDENCE_IMMUTABLE_V2_ADDS_NULLABLE_VALUE_FREE_VALIDATION_STAGE_NO_REWRITE"
+        "compatibility": "V1_V2_EVIDENCE_IMMUTABLE_V3_ADDS_NULLABLE_VALUE_FREE_COLLECTION_DETAIL_NO_REWRITE"
       },
       "validation_diagnostic": {
         "field": "validation_stage_code",
@@ -531,7 +538,24 @@
         "stage_scope": "COMPLETE_RETURNED_COLLECTION_BEFORE_NEXT_STAGE",
         "persisted_material": "CLOSED_ENUM_ONLY_NO_FIELD_NAME_INDEX_EXPECTED_ACTUAL_PROVIDER_VALUE_BODY_OR_CREDENTIAL",
         "failure_evidence": "COMPLETE_AVAILABLE_RESPONSE_METADATA_REQUEST_COUNT_PRESERVED_PROVIDER_RESULT_NULL",
-        "previous_schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V1_IMMUTABLE"
+        "previous_schema": "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2_IMMUTABLE"
+      },
+      "validation_detail": {
+        "field": "validation_detail_code",
+        "parent_stage": "COLLECTION_SHAPE",
+        "parent_diagnostic": "RESPONSE_SCHEMA_DRIFT",
+        "values": [
+          "ROOT_NOT_OBJECT",
+          "COLLECTION_KEY_INVALID",
+          "ROOT_MEMBER_UNRECOGNIZED",
+          "COLLECTION_NOT_ARRAY",
+          "OPTIONAL_ROOT_MEMBER_VALUE_INVALID"
+        ],
+        "success_and_other_failures": null,
+        "conjunction": "NON_NULL_IF_AND_ONLY_IF_RESPONSE_SCHEMA_DRIFT_AND_COLLECTION_SHAPE",
+        "precedence": "ROOT_NOT_OBJECT_THEN_COLLECTION_KEY_INVALID_THEN_ROOT_MEMBER_UNRECOGNIZED_THEN_COLLECTION_NOT_ARRAY_THEN_OPTIONAL_ROOT_MEMBER_VALUE_INVALID",
+        "persisted_material": "CLOSED_ENUM_ONLY_NO_FIELD_NAME_INDEX_EXPECTED_ACTUAL_PROVIDER_VALUE_BODY_HEADER_EXCEPTION_OR_CREDENTIAL",
+        "previous_evidence": "RESULT_V1_AND_V2_IMMUTABLE"
       },
       "url_validation": {
         "syntax": {
@@ -626,16 +650,16 @@
       "raos_production": "NOT_EXECUTED"
     },
     "authoritative_fixed_commands": {
-      "runtime_install": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/rakuten/scripts/rakuten_owner_local_runtime_install.sh; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; u=$(/usr/bin/busybox id -u 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; case \"$u\" in \"\"|*[!0-9]*) /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2;; esac; fm=$(/usr/bin/busybox stat -Lc \"%d %i %f %u %a %h %s\" /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; nm=$(/usr/bin/busybox stat -c \"%d %i %f %u %a %h %s\" -- \"$p\" 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; [ \"$fm\" = \"$nm\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; set -- $fm; [ \"$#\" -eq 7 ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; case \"$1:$2:$3:$4:$5:$6:$7\" in *[!0-9a-f:]*) /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2;; esac; v=$((0x$3)); [ $((v & 0xf000)) -eq 32768 ] && [ \"$4\" -eq \"$u\" ] && [ $((v & 18)) -eq 0 ] && [ \"$6\" -eq 1 ] && [ \"$7\" -ge 1 ] && [ \"$7\" -le 2097152 ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; [ \"$h\" = \"d041b21a1dc5fba8608016d6f3d7bc5f5509f98fd063e6dd0bf7e7a91bbbd947  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; exec /usr/bin/busybox sh /proc/self/fd/4'",
-      "setup": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" setup'",
-      "rotate": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" rotate'",
-      "doctor": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_DOCTOR_NOT_READY; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_DOCTOR_NOT_READY; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_DOCTOR_NOT_READY; exit 2; }; exec \"$p\" doctor'",
-      "list_apis": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" list-apis'",
-      "smoke_item_search": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" smoke --api item-search'",
-      "smoke_product_search": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" smoke --api product-search'"
+      "runtime_install": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/rakuten/scripts/rakuten_owner_local_runtime_install.sh; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; u=$(/usr/bin/busybox id -u 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; case \"$u\" in \"\"|*[!0-9]*) /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2;; esac; fm=$(/usr/bin/busybox stat -Lc \"%d %i %f %u %a %h %s\" /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; nm=$(/usr/bin/busybox stat -c \"%d %i %f %u %a %h %s\" -- \"$p\" 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; [ \"$fm\" = \"$nm\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; set -- $fm; [ \"$#\" -eq 7 ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; case \"$1:$2:$3:$4:$5:$6:$7\" in *[!0-9a-f:]*) /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2;; esac; v=$((0x$3)); [ $((v & 0xf000)) -eq 32768 ] && [ \"$4\" -eq \"$u\" ] && [ $((v & 18)) -eq 0 ] && [ \"$6\" -eq 1 ] && [ \"$7\" -ge 1 ] && [ \"$7\" -le 2097152 ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; [ \"$h\" = \"6a4f76542dd39efab9779ea46cda99ac8063d1f0012873c803416670111e8b50  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_RUNTIME_INSTALL_FAILED; exit 2; }; exec /usr/bin/busybox sh /proc/self/fd/4'",
+      "setup": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" setup'",
+      "rotate": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" rotate'",
+      "doctor": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_DOCTOR_NOT_READY; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_DOCTOR_NOT_READY; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_DOCTOR_NOT_READY; exit 2; }; exec \"$p\" doctor'",
+      "list_apis": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" list-apis'",
+      "smoke_item_search": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" smoke --api item-search'",
+      "smoke_product_search": "/usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/busybox sh -c 'umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; exec \"$p\" smoke --api product-search'"
     },
     "authoritative_request_gate": {
-      "launcher_path": "/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/bin/rakuten-owner-local",
+      "launcher_path": "/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/bin/rakuten-owner-local",
       "launcher_sha256": "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d",
       "authentication": "STATIC_BUSYBOX_FD4_SHA256_BEFORE_LAUNCHER_BODY",
       "argument_contract": "request --api <item-search|product-search> --request-file <absolute-json>",
@@ -653,7 +677,7 @@
         "/usr/bin/busybox",
         "sh",
         "-c",
-        "umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/97b4ac021c144445f8f7de1512a1f809f6aba484ef63883deca4949271069859/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$#\" -eq 2 ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; case \"$1\" in item-search|product-search) ;; *) /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2;; esac; case \"$2\" in /*) ;; *) /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2;; esac; exec \"$p\" request --api \"$1\" --request-file \"$2\"",
+        "umask 077; p=/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/bin/rakuten-owner-local; exec 4<\"$p\" || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; h=$(/usr/bin/busybox sha256sum /proc/self/fd/4 2>/dev/null) || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$h\" = \"27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d  /proc/self/fd/4\" ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; [ \"$#\" -eq 2 ] || { /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2; }; case \"$1\" in item-search|product-search) ;; *) /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2;; esac; case \"$2\" in /*) ;; *) /usr/bin/busybox printf \"%s\\n\" RAKUTEN_OWNER_LOCAL_FAIL; exit 2;; esac; exec \"$p\" request --api \"$1\" --request-file \"$2\"",
         "rakuten-owner-local-request",
         "<item-search|product-search>",
         "<absolute-json>"

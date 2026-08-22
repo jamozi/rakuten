@@ -25,7 +25,7 @@ RAKUTEN_OWNER_LOCAL_PROFILE = "OWNER_LOCAL_RAKUTEN_PRODUCTION_API"
 RAKUTEN_OWNER_LOCAL_HOST = "openapi.rakuten.co.jp"
 RAKUTEN_OWNER_LOCAL_PORT = 443
 RAKUTEN_OWNER_LOCAL_MAX_RESPONSE_BYTES = 2 * 1024 * 1024
-RAKUTEN_OWNER_LOCAL_RESULT_SCHEMA = "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V2"
+RAKUTEN_OWNER_LOCAL_RESULT_SCHEMA = "RAOS_ST0505_RAKUTEN_OWNER_LOCAL_RESULT_V3"
 RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY = "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE"
 RAKUTEN_OWNER_LOCAL_PROVIDER_DATA_CLASSIFICATION = "UNTRUSTED_PROVIDER_DATA"
 RAKUTEN_OWNER_LOCAL_FORMAL_TST_016 = "NOT_EXECUTED"
@@ -143,6 +143,16 @@ class RakutenOwnerLocalValidationStageCode(StrEnum):
     MANDATORY_TEXT = "MANDATORY_TEXT"
     URL = "URL"
     CREDENTIAL_REFLECTION = "CREDENTIAL_REFLECTION"
+
+
+class RakutenOwnerLocalValidationDetailCode(StrEnum):
+    """Closed, value-free detail for collection-shape refusals."""
+
+    ROOT_NOT_OBJECT = "ROOT_NOT_OBJECT"
+    COLLECTION_KEY_INVALID = "COLLECTION_KEY_INVALID"
+    ROOT_MEMBER_UNRECOGNIZED = "ROOT_MEMBER_UNRECOGNIZED"
+    COLLECTION_NOT_ARRAY = "COLLECTION_NOT_ARRAY"
+    OPTIONAL_ROOT_MEMBER_VALUE_INVALID = "OPTIONAL_ROOT_MEMBER_VALUE_INVALID"
 
 
 class _RedactedValue:
@@ -1114,6 +1124,7 @@ class RakutenOwnerLocalFailure(RuntimeError):
     body_byte_count: int | None = None
     response_sha256: str | None = None
     validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None
+    validation_detail_code: RakutenOwnerLocalValidationDetailCode | None = None
 
     def __post_init__(self) -> None:
         if (
@@ -1122,6 +1133,11 @@ class RakutenOwnerLocalFailure(RuntimeError):
                 self.validation_stage_code is not None
                 and type(self.validation_stage_code)
                 is not RakutenOwnerLocalValidationStageCode
+            )
+            or (
+                self.validation_detail_code is not None
+                and type(self.validation_detail_code)
+                is not RakutenOwnerLocalValidationDetailCode
             )
             or type(self.disposition) is not RakutenOwnerLocalRequestDisposition
             or (self.api is not None and type(self.api) is not RakutenOwnerLocalApi)
@@ -1155,6 +1171,11 @@ class RakutenOwnerLocalFailure(RuntimeError):
                 allowed_codes.add(RakutenOwnerLocalFailureCode.RESULT_MISMATCH)
             if self.code not in allowed_codes:
                 raise TypeError("invalid Rakuten owner-local validation stage")
+        if (
+            self.validation_stage_code
+            is RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+        ) != (self.validation_detail_code is not None):
+            raise TypeError("invalid Rakuten owner-local validation detail")
         if self.disposition is RakutenOwnerLocalRequestDisposition.NOT_SENT and any(
             value is not None
             for value in (self.http_status, self.body_byte_count, self.response_sha256)
@@ -1198,6 +1219,7 @@ def fail_owner_local(
     code: RakutenOwnerLocalFailureCode,
     *,
     validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None,
+    validation_detail_code: RakutenOwnerLocalValidationDetailCode | None = None,
     disposition: RakutenOwnerLocalRequestDisposition = (
         RakutenOwnerLocalRequestDisposition.NOT_SENT
     ),
@@ -1210,6 +1232,7 @@ def fail_owner_local(
     raise RakutenOwnerLocalFailure(
         code=code,
         validation_stage_code=validation_stage_code,
+        validation_detail_code=validation_detail_code,
         disposition=disposition,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -1230,6 +1253,7 @@ def contextual_failure(
     return RakutenOwnerLocalFailure(
         code=failure.code,
         validation_stage_code=failure.validation_stage_code,
+        validation_detail_code=failure.validation_detail_code,
         disposition=failure.disposition,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -1295,7 +1319,7 @@ class RakutenOwnerLocalResultEnvelope(_RedactedValue):
         normalized = result.normalized_object() if result is not None else None
         return {
             "schema": RAKUTEN_OWNER_LOCAL_RESULT_SCHEMA,
-            "version": 2,
+            "version": 3,
             "run_id": self.run_id,
             "started_at": _utc_text(self.started_at),
             "finished_at": _utc_text(self.finished_at),
@@ -1307,6 +1331,11 @@ class RakutenOwnerLocalResultEnvelope(_RedactedValue):
             "validation_stage_code": (
                 failure.validation_stage_code.value
                 if failure is not None and failure.validation_stage_code is not None
+                else None
+            ),
+            "validation_detail_code": (
+                failure.validation_detail_code.value
+                if failure is not None and failure.validation_detail_code is not None
                 else None
             ),
             "request_fingerprint": self.request_fingerprint,
@@ -1390,6 +1419,7 @@ __all__ = [
     "RakutenOwnerLocalCredentials",
     "RakutenOwnerLocalFailure",
     "RakutenOwnerLocalFailureCode",
+    "RakutenOwnerLocalValidationDetailCode",
     "RakutenOwnerLocalValidationStageCode",
     "RakutenOwnerLocalItemSearchRequest",
     "RakutenOwnerLocalNormalizedRecord",

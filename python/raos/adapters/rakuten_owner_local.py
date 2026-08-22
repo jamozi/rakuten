@@ -45,6 +45,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalRequest,
     RakutenOwnerLocalRequestDisposition,
     RakutenOwnerLocalResultEnvelope,
+    RakutenOwnerLocalValidationDetailCode,
     RakutenOwnerLocalValidationStageCode,
     api_definition,
     exact_response_selector,
@@ -172,6 +173,7 @@ def _fail(
     code: RakutenOwnerLocalFailureCode,
     *,
     validation_stage_code: RakutenOwnerLocalValidationStageCode | None = None,
+    validation_detail_code: RakutenOwnerLocalValidationDetailCode | None = None,
     disposition: RakutenOwnerLocalRequestDisposition = (
         RakutenOwnerLocalRequestDisposition.NOT_SENT
     ),
@@ -184,6 +186,7 @@ def _fail(
     fail_owner_local(
         code,
         validation_stage_code=validation_stage_code,
+        validation_detail_code=validation_detail_code,
         disposition=disposition,
         api=api,
         request_fingerprint=request_fingerprint,
@@ -1715,13 +1718,24 @@ def _collection(
             validation_stage_code=(
                 RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
             ),
+            validation_detail_code=(
+                RakutenOwnerLocalValidationDetailCode.COLLECTION_KEY_INVALID
+            ),
         )
     collection_key = next(iter(aliases))
-    if not root_keys <= _SUMMARY_KEYS | aliases:
+    optional_root_keys: frozenset[str] = (
+        frozenset({"carrier"})
+        if api is RakutenOwnerLocalApi.ITEM_SEARCH
+        else frozenset()
+    )
+    if not root_keys <= _SUMMARY_KEYS | aliases | optional_root_keys:
         _fail(
             RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
             validation_stage_code=(
                 RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+            ),
+            validation_detail_code=(
+                RakutenOwnerLocalValidationDetailCode.ROOT_MEMBER_UNRECOGNIZED
             ),
         )
     value = root[collection_key]
@@ -1730,6 +1744,19 @@ def _collection(
             RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
             validation_stage_code=(
                 RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+            ),
+            validation_detail_code=(
+                RakutenOwnerLocalValidationDetailCode.COLLECTION_NOT_ARRAY
+            ),
+        )
+    if "carrier" in root and (type(root["carrier"]) is not int or root["carrier"] != 0):
+        _fail(
+            RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
+            validation_stage_code=(
+                RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+            ),
+            validation_detail_code=(
+                RakutenOwnerLocalValidationDetailCode.OPTIONAL_ROOT_MEMBER_VALUE_INVALID
             ),
         )
     if not _SUMMARY_KEYS <= root_keys:
@@ -1784,6 +1811,9 @@ def _parse_provider_success(
                 RakutenOwnerLocalFailureCode.RESPONSE_SCHEMA_DRIFT,
                 validation_stage_code=(
                     RakutenOwnerLocalValidationStageCode.COLLECTION_SHAPE
+                ),
+                validation_detail_code=(
+                    RakutenOwnerLocalValidationDetailCode.ROOT_NOT_OBJECT
                 ),
             )
         root = cast(dict[str, object], value)
@@ -1892,6 +1922,7 @@ def _parse_provider_success(
         _fail(
             failure.code,
             validation_stage_code=failure.validation_stage_code,
+            validation_detail_code=failure.validation_detail_code,
             disposition=RakutenOwnerLocalRequestDisposition.RESPONSE_RECEIVED,
             api=api,
             request_fingerprint=fingerprint,
