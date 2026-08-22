@@ -67,7 +67,7 @@
     "generation_command": "uv run --locked --offline --no-cache --no-sync --no-env-file python scripts/build_st1302_provider_fact_commit_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
     }
   },
   "predecessor_binding": {
@@ -102,17 +102,17 @@
     {
       "name": "st0308_persistence_plan",
       "uri": "repo://changes/st-0308/contracts/persistence-boundary-reference.v1.yaml",
-      "sha256": "11896dc2664d1306e14dddc8b69a85e28aae52b06be1263f71060ff358354e15"
+      "sha256": "98a5b51b8098dcdd2993fb6eb2a5bdae98087f5a46da696fd79a41bd33d9f4a9"
     },
     {
       "name": "st0308_reference_plan",
       "uri": "repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json",
-      "sha256": "eb68cdc290c761596db496343ed7981d45a1463618876ff1b6d37e42d4d10a4e"
+      "sha256": "290a0475fbf9e1996eba989e15344bd9974bb08053ab8def0fd35246b3636305"
     },
     {
       "name": "st0308_manifest",
       "uri": "repo://changes/st-0308/manifest.yaml",
-      "sha256": "90cdebd7ac5f68ecdcc23946fdf0c8192a6555b25d8e3b3e9959e6e2bff675d5"
+      "sha256": "b38e8de274b95edd2950850e3eea8f4a3d2e51e8624fa5626dcf16ea5638425d"
     },
     {
       "name": "st0305_contract",
