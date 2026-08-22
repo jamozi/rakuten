@@ -46,14 +46,18 @@ validated.
 The owner builder validates exact bytes, closed owner semantics, and
 deterministically rendered bytes for the current provider-neutral ST-1502 and
 ST-1505 contracts, reference plans, and manifests. Both remain disabled,
-ineligible, unconfigured, and zero-action. AWS service and staging labels are
-optional historical reference mappings only; they cannot act as a default,
-fallback, selected binding, eligibility shortcut, admission requirement, or
-evidence substitute. The builder also binds the canonical Story, OD-014,
-TST-029, operations, recovery, security, and implementation-first authority
-sources by SHA-256. The reused ST-1502/ST-1505 owner renderers and
-path/YAML/JSON/atomic-output helper are implementation dependencies pinned in
-the generated manifest.
+ineligible, unconfigured, and zero-action. AWS Tokyo remains the current
+Canonical Reference Architecture inherited from INT-DEC-007, and the
+Canonical AWS-specific Story deliverables remain authoritative; this portable
+overlay does not erase, replace, or complete them. AWS service and staging
+labels cannot act as a default, fallback, selected binding, eligibility
+shortcut, admission requirement, or evidence substitute. Non-AWS and
+owner-managed profiles are additional portable implementation paths only and
+must satisfy the same complete capability and evidence requirements. The
+builder also binds the canonical Story, OD-014, TST-029, operations, recovery,
+security, and implementation-first authority sources by SHA-256. The reused
+ST-1502/ST-1505 owner renderers and path/YAML/JSON/atomic-output helper are
+implementation dependencies pinned in the generated manifest.
 
 No predecessor, canonical artifact, runtime source, IaC, workflow, status,
 evidence, or debt ledger is modified by this Story slice.

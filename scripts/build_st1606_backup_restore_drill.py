@@ -105,30 +105,30 @@ EXPECTED_SOURCE_HASHES: Final = {
 }
 EXPECTED_PREDECESSOR_HASHES: Final = {
     "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "4d0ca4188c4a4ee7c8f6c8417afc6880b9ac0f89b6e4bd63703eb98d8368dddb"
+        "bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041"
     ),
     "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "28f4ae25fd66f0bb999a1918e72a5d108f38991bb5104e2726b01a0997a6087c"
+        "84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699"
     ),
     "changes/st-1502/manifest.yaml": (
-        "803d9dc551ce77018abd940ad1a1fdcc682608ab6edb2ced1ff1c6b577d5756f"
+        "c3c25d72a14d5cc302702a1e20cf6ad9ee19614c5ca6ac4550d6cea46ec91a7d"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "c70deefd72bd84f4196bea7f078a70f511397f1d759846c200cfb9224468cc69"
+        "b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "ba65ac0776c4dd811a2918843e8984945ab92e370892b164bb8099df67950cac"
+        "8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4"
     ),
     "changes/st-1505/manifest.yaml": (
-        "a7e32e2fcc3962d7689a14a80a7838d15001fc57b71c45eeb986dfb3a30756a1"
+        "c27f4df8316621933f5d2d1e5d510dff6b8f65fe6a812ea036c70ba0c9334aa9"
     ),
 }
 EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
     "scripts/build_st1502_data_services.py": (
-        "fcb488254a09bf5ac686a66d75865ccef8ee0e027360e3131c8aacea8de01484"
+        "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf"
     ),
     "scripts/build_st1505_staging_deployment.py": (
-        "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+        "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
     ),
 }
 
@@ -293,7 +293,11 @@ EXPECTED_DATA_PROVIDER_NEUTRAL_ADMISSION: Final[dict[str, object]] = {
     "selected_profile_id": None,
     "default_profile_id": None,
     "fallback_profile_id": None,
-    "aws_reference_role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+    "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+    "canonical_story_deliverables": (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    ),
+    "non_aws_owner_managed_profiles": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
     "aws_reference_selected_binding": False,
 }
 EXPECTED_STAGING_PROVIDER_NEUTRAL_ADMISSION: Final[dict[str, object]] = {
@@ -309,7 +313,11 @@ EXPECTED_STAGING_PROVIDER_NEUTRAL_ADMISSION: Final[dict[str, object]] = {
     "selected_profile_id": None,
     "default_profile_id": None,
     "fallback_profile_id": None,
-    "aws_reference_role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+    "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+    "canonical_story_deliverables": (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    ),
+    "non_aws_owner_managed_profiles": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
     "aws_reference_selected_binding": False,
 }
 EXPECTED_EXECUTION: Final[dict[str, object]] = {
@@ -663,6 +671,12 @@ def _provider_neutral_summary(
         "default_profile_id": admission.get("default_profile_id"),
         "fallback_profile_id": admission.get("fallback_profile_id"),
         "aws_reference_role": aws_boundary.get("role"),
+        "canonical_story_deliverables": aws_boundary.get(
+            "canonical_story_deliverables"
+        ),
+        "non_aws_owner_managed_profiles": aws_boundary.get(
+            "non_aws_owner_managed_profiles"
+        ),
         "aws_reference_selected_binding": aws_boundary.get("selected_binding"),
     }
 
@@ -776,6 +790,36 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
         EXPECTED_DATA_PROVIDER_NEUTRAL_ADMISSION,
         "data_plan.provider_neutral_admission",
     )
+    data_reference = _mapping(
+        data_plan.get("reference_architecture"), "data_plan.reference_architecture"
+    )
+    if (
+        data_reference.get("classification")
+        != "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+        or data_reference.get("default") is not False
+        or data_reference.get("implicit_fallback") is not False
+        or data_reference.get("selected_binding") is not False
+        or data_reference.get("eligibility_shortcut") is not False
+        or data_reference.get("admission_requirement") is not False
+        or data_reference.get("evidence_substitute") is not False
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "data_plan.reference_architecture")
+    data_manifest = _load_yaml(
+        root, Path("changes/st-1502/manifest.yaml"), "data_manifest"
+    )
+    data_manifest_boundary = _mapping(
+        data_manifest.get("boundary"), "data_manifest.boundary"
+    )
+    if (
+        data_manifest_boundary.get("aws_reference_role")
+        != "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+        or data_manifest_boundary.get("canonical_story_deliverables")
+        != ("CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED")
+        or data_manifest_boundary.get("portable_implementation_paths")
+        != "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+        or data_manifest_boundary.get("aws_reference_selected_binding") is not False
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "data_manifest.boundary")
 
     staging_plan = _load_json(
         root,
@@ -823,6 +867,37 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
         EXPECTED_STAGING_PROVIDER_NEUTRAL_ADMISSION,
         "staging_plan.provider_neutral_admission",
     )
+    staging_reference = _mapping(
+        staging_plan.get("reference_architecture"),
+        "staging_plan.reference_architecture",
+    )
+    if (
+        staging_reference.get("classification")
+        != "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+        or staging_reference.get("default") is not False
+        or staging_reference.get("implicit_fallback") is not False
+        or staging_reference.get("selected_binding") is not False
+        or staging_reference.get("eligibility_shortcut") is not False
+        or staging_reference.get("admission_requirement") is not False
+        or staging_reference.get("evidence_substitute") is not False
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "staging_plan.reference_architecture")
+    staging_manifest = _load_yaml(
+        root, Path("changes/st-1505/manifest.yaml"), "staging_manifest"
+    )
+    staging_manifest_boundary = _mapping(
+        staging_manifest.get("boundary"), "staging_manifest.boundary"
+    )
+    if (
+        staging_manifest_boundary.get("aws_reference_role")
+        != "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+        or staging_manifest_boundary.get("canonical_story_deliverables")
+        != ("CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED")
+        or staging_manifest_boundary.get("portable_implementation_paths")
+        != "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+        or staging_manifest_boundary.get("aws_reference_selected_binding") is not False
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "staging_manifest.boundary")
 
 
 def _validate_implementation_dependency(root: Path) -> None:

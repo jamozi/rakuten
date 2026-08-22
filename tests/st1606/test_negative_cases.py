@@ -150,8 +150,36 @@ def test_semantically_tampered_predecessor_is_rejected_after_digest_rebind(
             "data_services",
             "infra/terraform/data-services/data-services.reference-plan.v1.json",
             "provider_neutral_data_services_admission",
+            ("aws_reference_boundary", "role"),
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "data_services",
+            "infra/terraform/data-services/data-services.reference-plan.v1.json",
+            "provider_neutral_data_services_admission",
+            ("aws_reference_boundary", "canonical_story_deliverables"),
+            "REPLACED_BY_PORTABLE_OVERLAY",
+        ),
+        (
+            "data_services",
+            "infra/terraform/data-services/data-services.reference-plan.v1.json",
+            "provider_neutral_data_services_admission",
+            ("aws_reference_boundary", "non_aws_owner_managed_profiles"),
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
+        (
+            "data_services",
+            "infra/terraform/data-services/data-services.reference-plan.v1.json",
+            "provider_neutral_data_services_admission",
             ("aws_reference_boundary", "selected_binding"),
             True,
+        ),
+        (
+            "data_services",
+            "infra/terraform/data-services/data-services.reference-plan.v1.json",
+            "reference_architecture",
+            ("classification",),
+            "OPTIONAL_HISTORICAL_REFERENCE_ARCHITECTURE_ONLY",
         ),
         (
             "staging_deployment",
@@ -185,8 +213,36 @@ def test_semantically_tampered_predecessor_is_rejected_after_digest_rebind(
             "staging_deployment",
             "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
             "provider_neutral_staging_admission",
+            ("aws_reference_boundary", "role"),
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "staging_deployment",
+            "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+            "provider_neutral_staging_admission",
+            ("aws_reference_boundary", "canonical_story_deliverables"),
+            "REPLACED_BY_PORTABLE_OVERLAY",
+        ),
+        (
+            "staging_deployment",
+            "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+            "provider_neutral_staging_admission",
+            ("aws_reference_boundary", "non_aws_owner_managed_profiles"),
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
+        (
+            "staging_deployment",
+            "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+            "provider_neutral_staging_admission",
             ("aws_reference_boundary", "selected_binding"),
             True,
+        ),
+        (
+            "staging_deployment",
+            "infra/terraform/staging/staging-deployment.reference-plan.v1.json",
+            "reference_architecture",
+            ("classification",),
+            "OPTIONAL_HISTORICAL_REFERENCE_ARCHITECTURE_ONLY",
         ),
     ),
 )
@@ -223,17 +279,51 @@ def test_provider_neutral_predecessor_shortcut_is_rejected_after_byte_rebind(
 
 
 @pytest.mark.parametrize(
-    ("predecessor", "relative", "section"),
+    ("predecessor", "relative", "path", "value"),
     (
         (
             "data_services",
             "changes/st-1502/contracts/data-services-foundation.v1.yaml",
-            "provider_neutral_data_services_admission",
+            ("provider_neutral_data_services_admission", "eligible"),
+            True,
+        ),
+        (
+            "data_services",
+            "changes/st-1502/contracts/data-services-foundation.v1.yaml",
+            (
+                "provider_neutral_data_services_admission",
+                "aws_reference_boundary",
+                "role",
+            ),
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "data_services",
+            "changes/st-1502/contracts/data-services-foundation.v1.yaml",
+            ("reference_architecture", "classification"),
+            "OPTIONAL_HISTORICAL_REFERENCE_ARCHITECTURE_ONLY",
         ),
         (
             "staging_deployment",
             "changes/st-1505/contracts/staging-deployment.v1.yaml",
-            "provider_neutral_staging_admission",
+            ("provider_neutral_staging_admission", "eligible"),
+            True,
+        ),
+        (
+            "staging_deployment",
+            "changes/st-1505/contracts/staging-deployment.v1.yaml",
+            (
+                "provider_neutral_staging_admission",
+                "aws_reference_boundary",
+                "role",
+            ),
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "staging_deployment",
+            "changes/st-1505/contracts/staging-deployment.v1.yaml",
+            ("reference_architecture", "classification"),
+            "OPTIONAL_HISTORICAL_REFERENCE_ARCHITECTURE_ONLY",
         ),
     ),
 )
@@ -242,12 +332,16 @@ def test_provider_neutral_owner_contract_downgrade_fails_after_digest_rebind(
     monkeypatch: pytest.MonkeyPatch,
     predecessor: str,
     relative: str,
-    section: str,
+    path: tuple[str, ...],
+    value: object,
 ) -> None:
     contract_path = repository_copy / relative
     owner = base.load_yaml(contract_path)
     assert isinstance(owner, dict)
-    owner[section]["eligible"] = True
+    target = owner
+    for part in path[:-1]:
+        target = target[part]
+    target[path[-1]] = value
     contract_path.write_text(
         yaml.safe_dump(owner, sort_keys=False),
         encoding="utf-8",
@@ -262,6 +356,75 @@ def test_provider_neutral_owner_contract_downgrade_fails_after_digest_rebind(
     with pytest.raises(builder.BackupRestoreReferenceError) as error:
         builder.validate_contract(raw, repository_copy)
     assert error.value.code == "PREDECESSOR_OWNER_VALIDATION_FAILED"
+
+
+@pytest.mark.parametrize(
+    ("predecessor", "relative", "field", "value"),
+    (
+        (
+            "data_services",
+            "changes/st-1502/manifest.yaml",
+            "aws_reference_role",
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "data_services",
+            "changes/st-1502/manifest.yaml",
+            "canonical_story_deliverables",
+            "REPLACED_BY_PORTABLE_OVERLAY",
+        ),
+        (
+            "data_services",
+            "changes/st-1502/manifest.yaml",
+            "portable_implementation_paths",
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
+        (
+            "staging_deployment",
+            "changes/st-1505/manifest.yaml",
+            "aws_reference_role",
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "staging_deployment",
+            "changes/st-1505/manifest.yaml",
+            "canonical_story_deliverables",
+            "REPLACED_BY_PORTABLE_OVERLAY",
+        ),
+        (
+            "staging_deployment",
+            "changes/st-1505/manifest.yaml",
+            "portable_implementation_paths",
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
+    ),
+)
+def test_predecessor_manifest_canonical_reference_cannot_be_rebound(
+    repository_copy: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    predecessor: str,
+    relative: str,
+    field: str,
+    value: str,
+) -> None:
+    manifest_path = repository_copy / relative
+    manifest = base.load_yaml(manifest_path)
+    assert isinstance(manifest, dict)
+    manifest["boundary"][field] = value
+    manifest_path.write_text(
+        yaml.safe_dump(manifest, sort_keys=False),
+        encoding="utf-8",
+    )
+    digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+    predecessor_hashes = dict(builder.EXPECTED_PREDECESSOR_HASHES)
+    predecessor_hashes[relative] = digest
+    monkeypatch.setattr(builder, "EXPECTED_PREDECESSOR_HASHES", predecessor_hashes)
+    raw = base.load_yaml(repository_copy / builder.CONTRACT_PATH)
+    assert isinstance(raw, dict)
+    raw["predecessor_bindings"][predecessor]["manifest_sha256"] = digest
+    with pytest.raises(builder.BackupRestoreReferenceError) as error:
+        builder.validate_contract(raw, repository_copy)
+    assert error.value.code == "PREDECESSOR_OWNER_OUTPUT_DRIFT"
 
 
 def test_builder_has_no_external_or_restore_execution_surface() -> None:
