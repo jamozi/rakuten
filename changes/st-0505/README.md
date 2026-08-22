@@ -214,7 +214,7 @@ the credential belongs to Rakuten's provider-production API. It does not select
 RAOS Production, ENV-STAGING, release authority, or formal TST-016.
 
 The credential-blind installer publishes a reviewed versioned bundle only at
-`/home/minami/.local/share/raos/rakuten-owner-local/runtime/83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f/`.
+`/home/minami/.local/share/raos/rakuten-owner-local/runtime/051236024445621e00b348ec7270c686cb67fd5e8bf872d2443bcd2fb2bf7581/`.
 No repository Make target is an authoritative secret-bearing entry. The exact
 static-BusyBox install and invocation commands are emitted by the generated
 contract after the final payload hashes are fixed. Direct repository Python,
@@ -224,9 +224,9 @@ network access.
 The generated plan binds launcher SHA-256
 `27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d`,
 installer SHA-256
-`6e96c55f41506de347087054d31b58f80488bdb626628a657ea1bb8004929153`,
+`5b3e8324478a55c562007a4bf5fd5f3daebab0306d17e7ca20494d14d3a8a6a5`,
 and install-stage SHA-256
-`6a4f76542dd39efab9779ea46cda99ac8063d1f0012873c803416670111e8b50`.
+`de27994dc525b332269bdd302089a3732e7f93813b1f5e1d74a0093d31d0de55`.
 Its fixed setup, rotate, doctor, list, and smoke commands authenticate fd 4
 before the installed launcher body. Request-file invocation uses the same gate,
 with the selected API and absolute path passed only as positional arguments;
@@ -306,6 +306,18 @@ present, it must be exact integer `0`; `bool`, nonzero integers, and every
 non-integer fail closed. The carrier is never normalized or persisted. Product
 Search and every root member other than its existing reviewed keys remain
 unchanged and fail as unrecognized root material.
+
+The current official Item Search 2026-07-01 documentation presents a lowercase
+`items` collection containing flat format-version-2 records. The Item adapter
+also accepts the exact compatibility alias `Items`, but requires exactly one of
+`items` or `Items`; absence, both aliases, approximate casing, and every other
+root member fail closed under the existing collection-detail precedence.
+Nested `Item` or `item` record wrappers remain invalid. This one-alias
+compatibility boundary was selected after sanitized owner-local evidence
+reported HTTP 200, body size 5771, and `COLLECTION_KEY_INVALID`; because no raw
+body was retained, that evidence does not prove which provider member was
+observed. Both accepted inputs normalize and persist only canonical lowercase
+`items`, and the source alias is never evidence. Product Search is unchanged.
 
 The DNS deadline is complete before any socket is constructed or any
 credential-bearing request is sent. The existing 20-second per-operation socket

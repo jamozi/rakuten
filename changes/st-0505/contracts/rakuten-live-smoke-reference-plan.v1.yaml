@@ -267,10 +267,10 @@ owner_local_read_integration:
   runtime:
     name: rakuten-owner-local
     root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    bundle_sha256: 83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f
+    bundle_sha256: 051236024445621e00b348ec7270c686cb67fd5e8bf872d2443bcd2fb2bf7581
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 6e96c55f41506de347087054d31b58f80488bdb626628a657ea1bb8004929153
-    install_stage_sha256: 6a4f76542dd39efab9779ea46cda99ac8063d1f0012873c803416670111e8b50
+    installer_sha256: 5b3e8324478a55c562007a4bf5fd5f3daebab0306d17e7ca20494d14d3a8a6a5
+    install_stage_sha256: de27994dc525b332269bdd302089a3732e7f93813b1f5e1d74a0093d31d0de55
     install_entry: ROOT_OWNED_STATIC_BUSYBOX_AUTHENTICATED_BEFORE_BODY
     installed_entry: EXACT_DIGEST_BUSYBOX_GATE_THEN_OWNER_PRIVATE_LAUNCHER
     installer_credential_access: FORBIDDEN
@@ -354,6 +354,17 @@ owner_local_read_integration:
       accepted_value: EXACT_INTEGER_ZERO
       normalized_or_persisted: false
       product_search: UNCHANGED_REJECT_AS_UNRECOGNIZED_ROOT_MEMBER
+    item_response_collection:
+      accepted_input_aliases:
+        - items
+        - Items
+      alias_cardinality: EXACTLY_ONE
+      record_shape: FORMAT_VERSION_2_FLAT_OBJECT_ONLY
+      canonical_normalized_key: items
+      source_alias_persisted: false
+      official_documented_shape: LOWERCASE_ITEMS_WITH_FLAT_RECORDS
+      compatibility_basis: SANITIZED_HTTP_200_BODY_5771_COLLECTION_KEY_INVALID_NOT_RAW_BODY_PROOF
+      product_search: UNCHANGED
   normalized_result:
     directory: .secrets/rakuten-owner-local/results
     path: .secrets/rakuten-owner-local/results/<UTC-run-id>.json

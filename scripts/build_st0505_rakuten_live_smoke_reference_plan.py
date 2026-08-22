@@ -96,16 +96,16 @@ EXPECTED_RUNTIME_INSTALL_STAGE_SHA256: Final = (
     "9effd085052570cf943f311b012c6dcf7ac26c2514182513c1f52d33ca88d549"
 )
 EXPECTED_OWNER_LOCAL_BUNDLE_SHA256: Final = (
-    "83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f"
+    "051236024445621e00b348ec7270c686cb67fd5e8bf872d2443bcd2fb2bf7581"
 )
 EXPECTED_OWNER_LOCAL_LAUNCHER_SHA256: Final = (
     "27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d"
 )
 EXPECTED_OWNER_LOCAL_INSTALLER_SHA256: Final = (
-    "6e96c55f41506de347087054d31b58f80488bdb626628a657ea1bb8004929153"
+    "5b3e8324478a55c562007a4bf5fd5f3daebab0306d17e7ca20494d14d3a8a6a5"
 )
 EXPECTED_OWNER_LOCAL_INSTALL_STAGE_SHA256: Final = (
-    "6a4f76542dd39efab9779ea46cda99ac8063d1f0012873c803416670111e8b50"
+    "de27994dc525b332269bdd302089a3732e7f93813b1f5e1d74a0093d31d0de55"
 )
 OWNER_LOCAL_CREDENTIAL_REFLECTION_METHOD_AST_SHA256: Final = (
     "42324711aff4bc5560e942f99cbcf97b39493604d49915436966812567c10ab8"
@@ -1580,6 +1580,8 @@ def _validate_owner_local_runtime_semantics(root: Path) -> None:
             '".secrets", "rakuten-owner-local"',
             '"credentials.v1.json"',
             '"results"',
+            '_ITEM_COLLECTION_ALIASES = frozenset({"items", "Items"})',
+            "aliases = root_keys & _ITEM_COLLECTION_ALIASES",
             'connection.request("GET"',
             '"applicationId"',
             '"affiliateId"',
@@ -2275,6 +2277,7 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "response_json",
             "response_summary_relationships",
             "item_response_carrier",
+            "item_response_collection",
         )
         or tuple(authentication)
         != ("applicationId", "affiliateId", "header_name", "access_key")
@@ -2332,6 +2335,19 @@ def _validate_owner_local_read_integration(value: object) -> None:
             "accepted_value": "EXACT_INTEGER_ZERO",
             "normalized_or_persisted": False,
             "product_search": "UNCHANGED_REJECT_AS_UNRECOGNIZED_ROOT_MEMBER",
+        }
+        or transport.get("item_response_collection")
+        != {
+            "accepted_input_aliases": ["items", "Items"],
+            "alias_cardinality": "EXACTLY_ONE",
+            "record_shape": "FORMAT_VERSION_2_FLAT_OBJECT_ONLY",
+            "canonical_normalized_key": "items",
+            "source_alias_persisted": False,
+            "official_documented_shape": "LOWERCASE_ITEMS_WITH_FLAT_RECORDS",
+            "compatibility_basis": (
+                "SANITIZED_HTTP_200_BODY_5771_COLLECTION_KEY_INVALID_NOT_RAW_BODY_PROOF"
+            ),
+            "product_search": "UNCHANGED",
         }
     ):
         _fail("VALUE_MISMATCH", "owner_local.transport")

@@ -53,10 +53,10 @@ decision:
     classification: OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE
     runtime_name: rakuten-owner-local
     trusted_runtime_root: /home/minami/.local/share/raos/rakuten-owner-local/runtime
-    installed_bundle_sha256: 83b60ff2067aedbec7ed8776f689a4daa586e5b45a137a1bbb193ff7117b590f
+    installed_bundle_sha256: 051236024445621e00b348ec7270c686cb67fd5e8bf872d2443bcd2fb2bf7581
     launcher_sha256: 27aa51a680eac393c304da443a82b6930a956c21913a53827ccf6584a2c1c47d
-    installer_sha256: 6e96c55f41506de347087054d31b58f80488bdb626628a657ea1bb8004929153
-    install_stage_sha256: 6a4f76542dd39efab9779ea46cda99ac8063d1f0012873c803416670111e8b50
+    installer_sha256: 5b3e8324478a55c562007a4bf5fd5f3daebab0306d17e7ca20494d14d3a8a6a5
+    install_stage_sha256: de27994dc525b332269bdd302089a3732e7f93813b1f5e1d74a0093d31d0de55
     runtime_install_execution: NOT_EXECUTED
     credential_store: .secrets/rakuten-owner-local/credentials.v1.json
     credential_profile: OWNER_LOCAL_RAKUTEN_PRODUCTION_API
@@ -125,6 +125,8 @@ constraints:
   - run proves anonymous publication, identity, rollback, and directory fsync before reading credentials or attempting the GET
   - owner-local Item requests reuse the unchanged ST-0502 RakutenItemSearchLiveRequestV1, require exactly one selector and page 1, and omit review aggregates and affiliate-rate material from normalized output
   - the Item Search response root may omit carrier or provide exact integer zero; bool, any nonzero integer, and every non-integer value fail closed, carrier is never normalized or persisted, and Product Search plus every other unknown root member remain unchanged and rejected
+  - official Item Search 2026-07-01 documentation presents lowercase items with flat format-version-2 records; the Item adapter permits exactly one of items or the narrow compatibility alias Items, rejects absence, both aliases, near-case forms, unknown root members, and nested Item/item wrappers under the existing closed precedence, normalizes only lowercase items, never persists the source alias, and leaves Product Search unchanged
+  - the Items compatibility alias is selected from sanitized owner-local HTTP 200, body-byte-count 5771, COLLECTION_KEY_INVALID evidence only; because no raw body or observed member was retained, this is not a claim that the provider response used that alias
   - an exact owner-local Item itemCode or shopCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH before credential-reflection inspection
   - owner-local Product requests allow keyword with optional genreId, genreId alone, or one exclusive productId/productCode; page is 1 and sort is standard
   - an exact owner-local Product productId or productCode request accepts returned records only when every selected identity value matches exactly; a valid but different provider identity fails as RESULT_MISMATCH
@@ -181,6 +183,7 @@ acceptance_criteria:
   - Item and Product success, including empty collections, persist all six validated summary scalars; every ordinary or credential-reflection failure retains the same exact result-object key set with all six summary values null
   - every response-validation family persists only its closed value-free validation_stage_code, preserves the existing generic diagnostic and available request/response evidence, and leaks no raw field name, record index, expected or actual value, body, header, exception detail, or credential material
   - Item response fixtures accept an omitted carrier or exact integer zero without persisting it, reject bool, negative, nonzero, and non-integer values, preserve Product root behavior, and distinguish the five closed collection details without dynamic material
+  - Item response fixtures cover items and Items across empty and non-empty collections with carrier omitted or exact zero, prove canonical lowercase-only output, reject alias ambiguity, missing or approximate aliases, unknown roots, non-list collections, and nested Item/item wrappers, and preserve Product uppercase-Items refusal
   - cross-record hostile fixtures prove a leading URL defect cannot precede a later exact-selector mismatch or mandatory-text refusal for either enabled API
   - terminal clock sampling exceptions after success, a complete received provider failure, or an outcome-ambiguous attempt reuse started_at and preserve the original disposition, request count, response metadata, and single result write without exposing credentials
   - deterministic no-sleep fakes prove normal response completion and Content-Length, chunked, close-delimited, and raw header-line trickling cannot extend the single response-read deadline; timeout produces exactly one sanitized ambiguous result write with no credential or partial provider material
