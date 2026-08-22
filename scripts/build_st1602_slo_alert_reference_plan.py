@@ -45,7 +45,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
