@@ -28,6 +28,9 @@ empty and `NOT_EXECUTED`, and the decision remains `NOT_READY`.
   zero-action provider-neutral staging-admission reference. AWS remains an optional
   historical mapping only and cannot become a default, fallback, selected binding,
   eligibility shortcut, admission requirement, or evidence substitute here.
+  Its hash-bound owner validator must accept the closed source contract and
+  deterministically reproduce the committed reference plan and manifest bytes
+  before ST-1603 may consume either artifact.
 
 ## Owned artifacts
 

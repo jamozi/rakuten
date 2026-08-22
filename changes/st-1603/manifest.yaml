@@ -44,6 +44,8 @@ provenance:
   - uri: repo://changes/st-1505/manifest.yaml
     sha256: a7e32e2fcc3962d7689a14a80a7838d15001fc57b71c45eeb986dfb3a30756a1
   implementation_inputs:
+  - uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522
   - uri: repo://scripts/build_st1506_production_deployment.py
     sha256: a57808e2c44feb51ebb4bcc1127c3aa0a64ef77d45d5c570207f66750b04d304
 source_artifact_count: 7
@@ -52,11 +54,11 @@ source_artifacts:
   bytes: 7155
   sha256: 0bd8597708398e4296482d438b7cd5369ea6df84503003231a2480c18d920bc4
 - uri: repo://changes/st-1603/README.md
-  bytes: 3853
-  sha256: 3ed2d3eda6355a30dafd24cd4430462e3a765418efce4e54ad29388d7974d652
+  bytes: 4053
+  sha256: 09b753116b0f386cc5a1f2b255419ceac2705fafa258cbcc4d939066a556eb42
 - uri: repo://scripts/build_st1603_security_verification_pack.py
-  bytes: 29617
-  sha256: 688ca5f91ce57c859467c61d24a1c2cf24f143e6b98e87ebb9ebfc718e7893a8
+  bytes: 31985
+  sha256: f4d0c6ca0af1c74e2fde049baca0706d161ef550025e4bf8599eef458510eb9a
 - uri: repo://tests/st1603/conftest.py
   bytes: 702
   sha256: e2f249f30ea8a794107a4e5edde2f69ffc3b786c485601b09b2e7a8733ee0e23
@@ -67,8 +69,8 @@ source_artifacts:
   bytes: 6306
   sha256: 5bbcc2ae5fffbd3eb152577c548a662e7c8c0bdf3ec58ff191a783e18e58679e
 - uri: repo://tests/st1603/test_negative_cases.py
-  bytes: 7117
-  sha256: 667bdcae0661a12ef4d5a3701e8db868c457ce89badb403c32b846d6b2a982b1
+  bytes: 12128
+  sha256: 6bb1551d1f2c5a39356fe4ca983bbfdea74d615719dcd07fb578535f15041a0c
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json

@@ -19,6 +19,7 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from scripts import build_st1505_staging_deployment as staging_owner  # noqa: E402
 from scripts import build_st1506_production_deployment as base  # noqa: E402
 
 
@@ -50,9 +51,13 @@ GENERATION_COMMAND: Final = (
 CONTROL_CATALOG_PATH: Final = Path(
     "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml"
 )
+STAGING_CONTRACT_PATH: Final = Path(
+    "changes/st-1505/contracts/staging-deployment.v1.yaml"
+)
 STAGING_PLAN_PATH: Final = Path(
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json"
 )
+STAGING_MANIFEST_PATH: Final = Path("changes/st-1505/manifest.yaml")
 
 TOP_LEVEL_KEYS: Final = (
     "document",
@@ -257,17 +262,20 @@ EXPECTED_PREDECESSOR_HASHES: Final = {
     "python/raos/adapters/development_workload_credentials.py": (
         "42164321018c35f61d71c215d2a0c764d8e04c973dff56194db79e96926046e0"
     ),
-    "changes/st-1505/contracts/staging-deployment.v1.yaml": (
+    STAGING_CONTRACT_PATH.as_posix(): (
         "c70deefd72bd84f4196bea7f078a70f511397f1d759846c200cfb9224468cc69"
     ),
     STAGING_PLAN_PATH.as_posix(): (
         "ba65ac0776c4dd811a2918843e8984945ab92e370892b164bb8099df67950cac"
     ),
-    "changes/st-1505/manifest.yaml": (
+    STAGING_MANIFEST_PATH.as_posix(): (
         "a7e32e2fcc3962d7689a14a80a7838d15001fc57b71c45eeb986dfb3a30756a1"
     ),
 }
 EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
+    "scripts/build_st1505_staging_deployment.py": (
+        "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
+    ),
     "scripts/build_st1506_production_deployment.py": (
         "a57808e2c44feb51ebb4bcc1127c3aa0a64ef77d45d5c570207f66750b04d304"
     ),
@@ -364,6 +372,27 @@ def _verify_hashes(
             _fail("SOURCE_HASH_DRIFT", field)
 
 
+def _render_staging_owner_outputs(root: Path) -> tuple[bytes, bytes]:
+    try:
+        owner_contract = _load_yaml(
+            root, STAGING_CONTRACT_PATH, "staging.owner.contract"
+        )
+        staging_owner._validate_local_safety_invariants(  # noqa: SLF001
+            owner_contract
+        )
+        owner_model = staging_owner.StagingDeploymentModel(
+            contract=dict(owner_contract)
+        )
+        owner_plan = staging_owner.render_reference_plan(owner_model)
+        owner_manifest = staging_owner.render_manifest(owner_model, owner_plan, root)
+    except (
+        staging_owner.StagingDeploymentContractError,
+        base.ProductionDeploymentContractError,
+    ):
+        _fail("PREDECESSOR_OWNER_VALIDATION_FAILED", "staging.owner")
+    return owner_plan, owner_manifest
+
+
 def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
     predecessor = _mapping(contract["predecessor_bindings"], "predecessor_bindings")
     if tuple(predecessor.keys()) != ("workload_credential_seam", "staging_deployment"):
@@ -394,11 +423,9 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
         predecessor["staging_deployment"],
         {
             "story_id": "ST-1505",
-            "contract_uri": (
-                "repo://changes/st-1505/contracts/staging-deployment.v1.yaml"
-            ),
+            "contract_uri": (f"repo://{STAGING_CONTRACT_PATH.as_posix()}"),
             "contract_sha256": EXPECTED_PREDECESSOR_HASHES[
-                "changes/st-1505/contracts/staging-deployment.v1.yaml"
+                STAGING_CONTRACT_PATH.as_posix()
             ],
             "reference_plan_uri": (
                 "repo://infra/terraform/staging/"
@@ -407,9 +434,9 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
             "reference_plan_sha256": EXPECTED_PREDECESSOR_HASHES[
                 STAGING_PLAN_PATH.as_posix()
             ],
-            "manifest_uri": "repo://changes/st-1505/manifest.yaml",
+            "manifest_uri": f"repo://{STAGING_MANIFEST_PATH.as_posix()}",
             "manifest_sha256": EXPECTED_PREDECESSOR_HASHES[
-                "changes/st-1505/manifest.yaml"
+                STAGING_MANIFEST_PATH.as_posix()
             ],
             "required_classification": (
                 "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_STAGING_ADMISSION_"
@@ -435,15 +462,49 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
         if _sha256_bytes(_read(root, Path(relative), "predecessor.input")) != digest:
             _fail("PREDECESSOR_HASH_DRIFT", "predecessor_bindings")
 
+    owner_plan, owner_manifest = _render_staging_owner_outputs(root)
+    for relative, rendered in (
+        (STAGING_PLAN_PATH, owner_plan),
+        (STAGING_MANIFEST_PATH, owner_manifest),
+    ):
+        if _read(root, relative, "predecessor.owner_output") != rendered:
+            _fail("PREDECESSOR_OWNER_OUTPUT_DRIFT", "staging.owner")
+
     plan = _load_json(root, STAGING_PLAN_PATH, "staging.plan")
     document = _mapping(plan.get("document"), "staging.plan.document")
     if document.get("artifact_kind") != staging.get("required_classification"):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "staging.plan.classification")
     if document.get("executable") is not False:
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "staging.plan.executable")
-    activation = _mapping(plan.get("activation"), "staging.plan.activation")
-    if activation.get("enabled") is not False or activation.get("status") != "DISABLED":
-        _fail("PREDECESSOR_SEMANTIC_DRIFT", "staging.plan.activation")
+    _exact_mapping(
+        plan.get("activation"),
+        dict(
+            sorted(
+                {
+                    "enabled": False,
+                    "status": "DISABLED",
+                    "runtime_status": "NOT_EXECUTED",
+                    "network_access": "FORBIDDEN",
+                    "credential_access": "FORBIDDEN",
+                    "live_provider_calls": "FORBIDDEN",
+                    "external_writes": "FORBIDDEN",
+                    "staging_action": "FORBIDDEN",
+                    "deploy_action": "FORBIDDEN",
+                    "migration_action": "FORBIDDEN",
+                    "migration_review_action": "FORBIDDEN",
+                    "transport_security_action": "FORBIDDEN",
+                    "rollback_action": "FORBIDDEN",
+                    "release_action": "FORBIDDEN",
+                    "production_action": "FORBIDDEN",
+                    "operations": {
+                        name: "FORBIDDEN"
+                        for name in sorted(staging_owner.STAGING_OPERATION_NAMES)
+                    },
+                }.items()
+            ),
+        ),
+        "staging.plan.activation",
+    )
     for key, value in _mapping(
         plan.get("action_counts"), "staging.plan.action_counts"
     ).items():
