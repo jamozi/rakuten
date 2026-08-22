@@ -116,6 +116,11 @@ def test_manifest_pins_authority_predecessor_and_status_boundary() -> None:
         "required_capability_count": len(generator.DATA_SERVICE_CAPABILITY_OUTCOMES),
         "configured_mapping_count": 0,
         "complete_mapping": False,
+        "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+        "canonical_story_deliverables": (
+            "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+        ),
+        "portable_implementation_paths": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
         "aws_reference_default": False,
         "aws_reference_implicit_fallback": False,
         "aws_reference_selected_binding": False,

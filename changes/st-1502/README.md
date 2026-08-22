@@ -7,11 +7,14 @@ authority for this revision and is hash-pinned by the contract, generator, and
 manifest. It makes no provider, account or project, region, service, plugin or
 adapter, credential, network, retention, or physical-resource selection.
 
-AWS Tokyo and the names RDS, S3, SQS, Secrets Manager, and KMS remain visible
-only as optional historical reference mappings inherited from INT-DEC-007 and
-RAOS-ARCH-001. They are never a default, implicit fallback, selected binding,
-eligibility shortcut, admission requirement, or evidence substitute. No
-alternate cloud or owner-managed platform is selected by this slice.
+AWS Tokyo and the RDS, S3, SQS, Secrets Manager, and KMS mappings remain the
+current Canonical Reference Architecture inherited from INT-DEC-007 and
+RAOS-ARCH-001. This overlay does not erase, replace, or complete the Canonical
+AWS-specific ST-1502 objective or modules/config deliverable. Non-AWS and
+owner-managed profiles are additional portable implementation paths only.
+Canonical reference status is never a default, implicit fallback, selected
+binding, eligibility shortcut, admission requirement, or evidence substitute.
+No alternate cloud or owner-managed platform is selected by this slice.
 
 ## Provider-neutral admission boundary
 

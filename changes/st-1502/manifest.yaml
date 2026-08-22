@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --no-sync python scripts/build_st1502_data_services.py
 provenance:
   contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-  contract_sha256: 4d0ca4188c4a4ee7c8f6c8417afc6880b9ac0f89b6e4bd63703eb98d8368dddb
+  contract_sha256: bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -34,45 +34,45 @@ provenance:
   - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
     sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
-    sha256: 40d866ae30199748c9d91b8152aaa4fb4ca2721e5e722bcff05cf97760f1c228
+    sha256: ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5
   predecessor_inputs:
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
-    sha256: ec01dcb05f6176c21ba8b9947bed60b88ce9a2622e1c358478f4f79a633bda61
+    sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
   - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    sha256: c16287606c4d73982ead82c9f8e111b327b0447ed8c06a6630c6ce5ac22f07c6
+    sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
   - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    sha256: c486637559457aedd24fbdd752d624a754dc69ed399bbed83ecaebd037c4f559
+    sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
 source_artifact_count: 8
 source_artifacts:
 - uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-  bytes: 20810
-  sha256: 4d0ca4188c4a4ee7c8f6c8417afc6880b9ac0f89b6e4bd63703eb98d8368dddb
+  bytes: 20993
+  sha256: bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041
 - uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
-  bytes: 10890
-  sha256: 40d866ae30199748c9d91b8152aaa4fb4ca2721e5e722bcff05cf97760f1c228
+  bytes: 11927
+  sha256: ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5
 - uri: repo://changes/st-1502/README.md
-  bytes: 5335
-  sha256: 67c178b86696a4e491e56d1d945ba1aaf7c2166ca8b90ea34eb4eef901b4aac3
+  bytes: 5561
+  sha256: 2c6f9156cc382fbc6a259d51b58ca7529908001e8d91ee93c7fe5495a69c789f
 - uri: repo://scripts/build_st1502_data_services.py
-  bytes: 72929
-  sha256: fcb488254a09bf5ac686a66d75865ccef8ee0e027360e3131c8aacea8de01484
+  bytes: 74326
+  sha256: ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf
 - uri: repo://tests/st1502/conftest.py
   bytes: 637
   sha256: 224ab7f55228ff2c5c7d3150f5b2db35ba388df7031dff2014d668c36d54aeae
 - uri: repo://tests/st1502/test_contract.py
-  bytes: 12587
-  sha256: e0446e15d091e013bfa6369d3bd6fe9e72e752a06000e4880c5a4aa4d29c2301
+  bytes: 13095
+  sha256: 6315420e20ab0887e5ba96d69dea83c926caf4704848f698156ad2a1d659a27d
 - uri: repo://tests/st1502/test_generation.py
-  bytes: 9946
-  sha256: 5071d9ff9a0616489594eb595c5500da3f89bcfa96724b85d3fbad128fb69e60
+  bytes: 10249
+  sha256: add305918fee549ee4835a0c1f88cc08a65a3a85984b5c115f44782f7b3c5de8
 - uri: repo://tests/st1502/test_negative_cases.py
-  bytes: 30117
-  sha256: 6f2e03c10cdeddef7b9b3db86457e927fe472d74d646db294976f58fc86f4ff0
+  bytes: 31424
+  sha256: 4c0c12b67930904f0af8af505fda9442f2be133a27954166f407898ad48c704d
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
-  bytes: 22824
-  sha256: 28f4ae25fd66f0bb999a1918e72a5d108f38991bb5104e2726b01a0997a6087c
+  bytes: 23021
+  sha256: 84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
@@ -118,6 +118,9 @@ boundary:
   required_capability_count: 9
   configured_mapping_count: 0
   complete_mapping: false
+  aws_reference_role: CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY
+  canonical_story_deliverables: CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED
+  portable_implementation_paths: ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS
   aws_reference_default: false
   aws_reference_implicit_fallback: false
   aws_reference_selected_binding: false

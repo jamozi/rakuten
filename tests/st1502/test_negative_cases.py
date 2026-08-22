@@ -252,7 +252,7 @@ def test_aws_service_label_cannot_satisfy_capability_or_evidence(
     "section",
     ("reference_architecture", "provider_neutral_data_services_admission"),
 )
-def test_aws_historical_reference_flags_cannot_be_promoted(
+def test_aws_current_canonical_reference_flags_cannot_be_promoted(
     contract_document: dict[str, Any], section: str, field: str
 ) -> None:
     document = copy.deepcopy(contract_document)
@@ -265,6 +265,47 @@ def test_aws_historical_reference_flags_cannot_be_promoted(
     with pytest.raises(generator.DataServicesContractError) as captured:
         _validate(document)
     assert captured.value.code == "SAFE_BOUNDARY_VIOLATION"
+
+
+@pytest.mark.parametrize(
+    ("section", "field", "value"),
+    (
+        (
+            "reference_architecture",
+            "classification",
+            "OPTIONAL_HISTORICAL_AWS_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "provider_neutral_data_services_admission",
+            "role",
+            "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        ),
+        (
+            "provider_neutral_data_services_admission",
+            "canonical_story_deliverables",
+            "CANONICAL_STORY_DELIVERABLES_REPLACED_BY_PORTABILITY_OVERLAY",
+        ),
+        (
+            "provider_neutral_data_services_admission",
+            "non_aws_owner_managed_profiles",
+            "REPLACEMENT_IMPLEMENTATION_PATHS",
+        ),
+    ),
+)
+def test_canonical_reference_cannot_be_demoted_or_replaced_by_overlay(
+    contract_document: dict[str, Any], section: str, field: str, value: str
+) -> None:
+    document = copy.deepcopy(contract_document)
+    target = (
+        document["reference_architecture"]
+        if section == "reference_architecture"
+        else document["provider_neutral_data_services_admission"][
+            "aws_reference_boundary"
+        ]
+    )
+    target[field] = value
+    with pytest.raises(generator.DataServicesContractError):
+        _validate(document)
 
 
 @pytest.mark.parametrize(

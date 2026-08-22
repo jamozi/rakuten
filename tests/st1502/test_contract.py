@@ -49,7 +49,7 @@ def test_direct_handoff_and_predecessor_are_hash_bound(
     assert binding["required_resource_payloads"] == "FORBIDDEN"
 
 
-def test_aws_is_optional_historical_reference_mapping_only(
+def test_aws_is_current_canonical_reference_architecture_only(
     data_services_model: generator.DataServicesModel,
 ) -> None:
     plan = generator.reference_plan_document(data_services_model)
@@ -57,6 +57,9 @@ def test_aws_is_optional_historical_reference_mapping_only(
     assert reference == generator.EXPECTED_SECTIONS["reference_architecture"]
     assert reference["cloud"] == "AWS"
     assert reference["inherited_from"] == "INT-DEC-007"
+    assert reference["classification"] == (
+        "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    )
     assert reference["service_mappings"] == generator._aws_reference_service_mappings()
     for field in (
         "default",
@@ -67,6 +70,15 @@ def test_aws_is_optional_historical_reference_mapping_only(
         "evidence_substitute",
     ):
         assert reference[field] is False
+
+    admission = _mapping(plan["provider_neutral_data_services_admission"])
+    assert admission["aws_reference_boundary"]["canonical_story_deliverables"] == (
+        "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
+    )
+    assert (
+        admission["aws_reference_boundary"]["non_aws_owner_managed_profiles"]
+        == "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
+    )
 
 
 def test_no_provider_service_or_profile_is_selected_or_defaulted(
