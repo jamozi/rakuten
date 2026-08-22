@@ -23,7 +23,7 @@ def test_contract_loads_as_closed_non_executable_definition(
     document = _mapping(production_model.contract["document"])
     assert document == {
         "id": "RAOS-PRODUCTION-DEPLOYMENT-DEFINITION-001",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "story_id": "ST-1506",
         "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
         "classification": (
@@ -36,46 +36,83 @@ def test_contract_loads_as_closed_non_executable_definition(
     assert tuple(production_model.contract) == generator.TOP_LEVEL_KEYS
 
 
-def test_immediate_predecessor_and_all_transitive_bindings_are_exact(
+def test_all_five_current_provider_neutral_predecessor_bindings_are_exact(
     production_model: generator.ProductionDeploymentModel,
 ) -> None:
-    binding = _mapping(production_model.contract["predecessor_binding"])
-    assert binding["story_id"] == "ST-1505"
-    assert (
-        binding["contract_sha256"]
-        == generator.PREDECESSOR_SOURCES[
-            "changes/st-1505/contracts/staging-deployment.v1.yaml"
-        ]
-    )
-    assert (
-        binding["reference_plan_sha256"]
-        == generator.PREDECESSOR_SOURCES[
-            "infra/terraform/staging/staging-deployment.reference-plan.v1.json"
-        ]
-    )
-    assert binding["required_contract_non_executable"] is True
-    assert binding["required_reference_plan_executable"] is False
-    assert binding["required_activation_status"] == "DISABLED"
-    assert binding["required_live_provider_calls"] == "FORBIDDEN"
-    assert binding["required_external_writes"] == "FORBIDDEN"
-    assert binding["required_selected_values"] == "UNSET"
-    assert binding["required_formal_tst_009"] == "NOT_EXECUTED"
-    assert binding["required_formal_tst_022"] == "NOT_EXECUTED"
-    assert binding["required_action_counts"] == {
-        name: 0 for name in generator.PREDECESSOR_ACTION_COUNT_NAMES
-    }
-    transitive = _mapping(binding["transitive_predecessor_bindings"])
-    predecessor = _mapping(
-        generator.load_yaml(
-            REPOSITORY_ROOT / "changes/st-1505/contracts/staging-deployment.v1.yaml"
-        )
-    )
-    assert tuple(transitive) == (
+    bindings = _mapping(production_model.contract["predecessor_bindings"])
+    assert tuple(bindings) == (
+        "foundation",
         "data_services",
         "compute_edge",
         "deployment_identity",
+        "staging",
     )
-    assert transitive == predecessor["predecessor_bindings"]
+    assert [binding["story_id"] for binding in bindings.values()] == [
+        "ST-1501",
+        "ST-1502",
+        "ST-1503",
+        "ST-1504",
+        "ST-1505",
+    ]
+    for specification in generator.PREDECESSOR_SPECIFICATIONS:
+        (
+            binding_name,
+            story_id,
+            owner_generator_path,
+            handoff_path,
+            contract_path,
+            plan_path,
+            _admission_name,
+            action_counts,
+        ) = specification
+        binding = _mapping(bindings[binding_name])
+        assert binding["owner_generator_uri"] == f"repo://{owner_generator_path}"
+        assert (
+            binding["owner_generator_sha256"]
+            == generator.PREDECESSOR_SOURCES[owner_generator_path]
+        )
+        assert binding["design_handoff_uri"] == f"repo://{handoff_path}"
+        assert (
+            binding["design_handoff_sha256"]
+            == generator.PREDECESSOR_SOURCES[handoff_path]
+        )
+        assert (
+            binding["design_handoff_semantic_sha256"]
+            == generator.PREDECESSOR_SEMANTIC_SHA256[handoff_path]
+        )
+        assert binding["contract_uri"] == f"repo://{contract_path}"
+        assert (
+            binding["contract_sha256"] == generator.PREDECESSOR_SOURCES[contract_path]
+        )
+        assert (
+            binding["contract_semantic_sha256"]
+            == generator.PREDECESSOR_SEMANTIC_SHA256[contract_path]
+        )
+        assert binding["reference_plan_uri"] == f"repo://{plan_path}"
+        assert (
+            binding["reference_plan_sha256"] == generator.PREDECESSOR_SOURCES[plan_path]
+        )
+        assert (
+            binding["reference_plan_semantic_sha256"]
+            == generator.PREDECESSOR_SEMANTIC_SHA256[plan_path]
+        )
+        assert (
+            binding["required_provider_policy"]
+            == generator.DEPENDENCY_POLICIES[story_id]
+        )
+        assert binding["required_admission_status"] == "NOT_EVALUATED"
+        assert binding["required_eligible"] is False
+        assert binding["required_complete_mapping"] is False
+        assert binding["required_selected_values"] == "UNSET"
+        assert binding["required_activation_status"] == "DISABLED"
+        assert binding["required_network_access"] == "FORBIDDEN"
+        assert binding["required_credential_access"] == "FORBIDDEN"
+        assert binding["required_live_provider_calls"] == "FORBIDDEN"
+        assert binding["required_external_writes"] == "FORBIDDEN"
+        assert binding["required_reference_plan_executable"] is False
+        assert binding["required_action_counts"] == action_counts
+        if story_id == "ST-1504":
+            assert binding["required_credential_issuance"] == "FORBIDDEN"
 
 
 def test_provider_neutral_admission_is_closed_unselected_and_evidence_equal(
@@ -99,6 +136,40 @@ def test_provider_neutral_admission_is_closed_unselected_and_evidence_equal(
         "OTHER_CLOUD",
         "OWNER_MANAGED_INFRASTRUCTURE",
     ]
+
+    dependency_policy = _mapping(admission["dependency_admission_policy"])
+    assert dependency_policy == {
+        "cardinality": "EXACTLY_ONE_CURRENT_BINDING_PER_REQUIRED_DEPENDENCY",
+        "required_dependency_count": 5,
+        "satisfied_dependency_count": 0,
+        "complete_dependency_chain": False,
+        "missing_dependency": "REJECT",
+        "unknown_dependency": "REJECT",
+        "duplicate_dependency": "REJECT",
+        "reordered_dependency": "REJECT",
+        "partial_dependency": "REJECT",
+        "implicit_dependency": "REJECT",
+        "predecessor_completion_only": "REJECT",
+        "provider_label_only": "REJECT",
+        "dependency_shortcut": "FORBIDDEN",
+    }
+    dependency_rows = cast(
+        list[dict[str, Any]], admission["dependency_admission_requirements"]
+    )
+    assert [row["story_id"] for row in dependency_rows] == list(
+        generator.DEPENDENCY_STORIES
+    )
+    for row in dependency_rows:
+        assert row == {
+            "story_id": row["story_id"],
+            "required_policy": generator.DEPENDENCY_POLICIES[row["story_id"]],
+            "current_admission_status": "NOT_EVALUATED",
+            "current_eligible": False,
+            "selected_profile_id": None,
+            "selected_provider_name": None,
+            "evidence_references": [],
+            "dependency_status": "REQUIRED_NOT_SATISFIED",
+        }
 
     policy = _mapping(admission["mapping_policy"])
     assert policy["cardinality"] == "EXACTLY_ONE_PER_REQUIRED_CAPABILITY"
@@ -134,16 +205,19 @@ def test_provider_neutral_admission_is_closed_unselected_and_evidence_equal(
     )
     predecessor = _mapping(admission["predecessor_reference_boundary"])
     assert predecessor["st_1501_through_st_1505"] == (
-        "IMMUTABLE_AWS_SPECIFIC_HISTORY_AND_REFERENCE_ONLY"
+        "CURRENT_PROVIDER_NEUTRAL_DEPENDENCY_CONTRACTS"
     )
-    assert predecessor["mandatory_provider_semantics"] is False
+    assert predecessor["mandatory_provider_neutral_semantics"] is True
+    assert predecessor["complete_capability_and_evidence_chain_required"] is True
     assert predecessor["provider_selection_authority"] == "NONE"
-    assert predecessor["eligibility_authority"] == "NONE"
+    assert predecessor["eligibility_shortcut"] == "FORBIDDEN"
+    assert predecessor["evidence_substitute"] is False
 
     evidence = _mapping(admission["evidence_equivalence_policy"])
     assert evidence["same_requirements_for_all_profile_kinds"] is True
     assert evidence["provider_label_as_evidence"] == "FORBIDDEN"
     assert evidence["reference_metadata_as_evidence"] == "FORBIDDEN"
+    assert evidence["partial_predecessor_chain_as_evidence"] == "FORBIDDEN"
     assert evidence["predecessor_completion_as_evidence"] == "FORBIDDEN"
     rows = cast(list[dict[str, Any]], admission["capability_mapping_requirements"])
     assert [row["capability_id"] for row in rows] == list(
@@ -289,11 +363,29 @@ def test_all_admission_protection_observation_and_rollback_requirements_are_unse
             "human_reviewers",
         ),
         "migration": (
+            "migration_owner_assignment",
+            "independent_migration_review",
+            "independent_migration_approval",
             "compatibility_gate",
             "backward_compatibility",
             "forward_compatibility",
             "migration_dry_run",
             "rollback_compatibility",
+        ),
+        "transport_security": (
+            "all_production_network_flows",
+            "artifact_and_promotion_transport",
+            "identity_federation_transport",
+            "deployment_control_transport",
+            "migration_transport",
+            "canary_and_runtime_transport",
+            "telemetry_and_alert_transport",
+            "rollback_and_restore_transport",
+            "infrastructure_provider_transport",
+            "authenticated_encryption",
+            "certificate_identity_and_hostname_verification",
+            "downgrade_resistance",
+            "approved_protocol_and_cipher_policy",
         ),
         "canary": (
             "configuration",
@@ -333,9 +425,15 @@ def test_all_admission_protection_observation_and_rollback_requirements_are_unse
             assert values[field] == "REQUIRED_NOT_CONFIGURED"
     canary = _mapping(plan["canary"])
     rollback = _mapping(plan["rollback"])
+    migration = _mapping(plan["migration"])
+    transport = _mapping(plan["transport_security"])
     assert canary["automatic_advance"] == "FORBIDDEN"
     assert canary["traffic_mutation"] == "FORBIDDEN"
     assert rollback["automatic_rollback"] == "FORBIDDEN"
+    assert migration["migration_self_approval"] == "FORBIDDEN"
+    assert migration["migration_review_bypass"] == "FORBIDDEN"
+    assert transport["plaintext_transport"] == "FORBIDDEN"
+    assert transport["insecure_skip_verification"] == "FORBIDDEN"
 
 
 def test_logical_phases_and_all_action_counts_are_exactly_zero(
@@ -374,10 +472,14 @@ def test_generated_plan_is_non_executable_and_formal_live_work_is_unexecuted(
     boundary = _mapping(plan["verification_boundary"])
     assert boundary["formal_tst_032"] == "NOT_EXECUTED"
     for field in (
+        "predecessor_dependency_admission",
+        "production_profile_admission",
         "hosted_ci",
         "staging",
         "live_provider",
         "migration",
+        "independent_migration_review",
+        "transport_security",
         "smoke",
         "canary",
         "rollback",
