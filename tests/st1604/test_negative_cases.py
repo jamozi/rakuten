@@ -5,6 +5,7 @@ from __future__ import annotations
 import ast
 from copy import deepcopy
 import hashlib
+import json
 from pathlib import Path
 from typing import Any
 
@@ -281,6 +282,56 @@ def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(
     )
     with pytest.raises(generator.PerformanceLoadReferenceError):
         generator.render_outputs(isolated_repository)
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    (
+        (("eligible",), True),
+        (("mapping_policy", "complete_mapping"), True),
+        (("mapping_policy", "configured_mapping_count"), 13),
+        (("selected_provider_name",), "aws"),
+        (("selected_profile_id",), "default-profile"),
+        (("default_profile_id",), "default-profile"),
+        (("fallback_profile_id",), "fallback-profile"),
+        (("aws_reference_boundary", "selected_binding"), True),
+        (("aws_reference_boundary", "eligibility_shortcut"), True),
+        (("aws_reference_boundary", "admission_requirement"), True),
+        (("aws_reference_boundary", "evidence_substitute"), True),
+    ),
+)
+def test_provider_neutral_staging_shortcut_is_rejected_after_byte_rebind(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    path: tuple[str, ...],
+    value: object,
+) -> None:
+    plan_path = isolated_repository / generator.ST1505_PLAN_PATH
+    plan = json.loads(plan_path.read_bytes())
+    target = plan["provider_neutral_staging_admission"]
+    for part in path[:-1]:
+        target = target[part]
+    target[path[-1]] = value
+    plan_path.write_text(
+        json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    digest = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+    rebound = tuple(
+        (relative, digest if relative == generator.ST1505_PLAN_PATH else expected)
+        for relative, expected in generator.EXPECTED_PREDECESSORS
+    )
+    monkeypatch.setattr(generator, "EXPECTED_PREDECESSORS", rebound)
+    authored = yaml.safe_load(
+        (isolated_repository / generator.CONTRACT_PATH).read_bytes()
+    )
+    authored["predecessors"][0]["bindings"][1]["sha256"] = digest
+    (isolated_repository / generator.CONTRACT_PATH).write_text(
+        yaml.safe_dump(authored, sort_keys=False), encoding="utf-8"
+    )
+    with pytest.raises(generator.PerformanceLoadReferenceError) as captured:
+        generator.render_outputs(isolated_repository)
+    assert "aws" not in str(captured.value).lower()
 
 
 def test_failure_is_stable_sanitized_and_does_not_echo_rejected_value() -> None:

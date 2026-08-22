@@ -44,27 +44,41 @@
     "generation_command": "uv run --locked --no-sync python scripts/build_st1604_performance_load_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "9e8a89c0faac140af6a0bdee7eceb68a90ccd885f3d9ea318372187560528aff"
+      "sha256": "77212cd87cb2f88363552c6d29b4d900137afd35f591d524b7e1528a1073e522"
     }
   },
   "predecessor_bindings": [
     {
       "story_id": "ST-1505",
-      "status": "DISABLED_INERT_ZERO_ACTION",
+      "status": "PROVIDER_NEUTRAL_ADMISSION_DISABLED_INERT_ZERO_ACTION",
       "bindings": [
         {
           "uri": "repo://changes/st-1505/contracts/staging-deployment.v1.yaml",
-          "sha256": "1fc7aeb4fc21add4401bed21f767da135b240091bf8440d15185b1ee82c808e2"
+          "sha256": "c70deefd72bd84f4196bea7f078a70f511397f1d759846c200cfb9224468cc69"
         },
         {
           "uri": "repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json",
-          "sha256": "33ac838087edededb2ab389d87a4e7c2f0d0bab9e66dc19d40689db827265a7f"
+          "sha256": "ba65ac0776c4dd811a2918843e8984945ab92e370892b164bb8099df67950cac"
         },
         {
           "uri": "repo://changes/st-1505/manifest.yaml",
-          "sha256": "b923f02d0cb9f6efc5bc040e30fc5327a1c9ee5e0e147fc82d7741c4bb9c49e2"
+          "sha256": "a7e32e2fcc3962d7689a14a80a7838d15001fc57b71c45eeb986dfb3a30756a1"
         }
-      ]
+      ],
+      "provider_neutral_admission": {
+        "classification": "STRICT_PROVIDER_NEUTRAL_STAGING_CAPABILITY_AND_DEPENDENCY_ADMISSION",
+        "admission_status": "NOT_EVALUATED",
+        "eligible": false,
+        "complete_mapping": false,
+        "required_capability_count": 13,
+        "configured_mapping_count": 0,
+        "selected_provider_name": null,
+        "selected_profile_id": null,
+        "default_profile_id": null,
+        "fallback_profile_id": null,
+        "aws_reference_role": "OPTIONAL_HISTORICAL_REFERENCE_MAPPINGS_ONLY",
+        "aws_reference_selected_binding": false
+      }
     },
     {
       "story_id": "ST-1601",

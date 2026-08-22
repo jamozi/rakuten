@@ -11,7 +11,8 @@ resource budget, cost authorization, telemetry connection, or test result.
 ## Closed boundary
 
 - The owner contract pins the exact ST-1604 Story, TST-027, 14-row SLO catalog,
-  disabled ST-1505 reference, and bounded local ST-1601 telemetry interface.
+  disabled provider-neutral ST-1505 admission reference, and bounded local
+  ST-1601 telemetry interface.
 - TST-027 is projected exactly, including candidate-tool order, staging
   environment, owner, release-blocking flag, and unexecuted statuses. No tool,
   runner, version, executor, or environment is selected.
@@ -29,9 +30,11 @@ resource budget, cost authorization, telemetry connection, or test result.
 - The load report is `NOT_EXECUTED` with null/empty result fields. Empty fields
   mean no evidence was collected, not zero latency, errors, cost, incidents,
   saturation, or capacity.
-- ST-1505 remains disabled, inert, and zero-action. ST-1601 remains a bounded
-  local interface that is available but not connected; no backend or exporter
-  is introduced.
+- ST-1505 remains disabled, inert, zero-action, ineligible, and unconfigured.
+  AWS is optional historical reference metadata only, never a default,
+  fallback, selected binding, eligibility shortcut, admission requirement, or
+  evidence substitute. ST-1601 remains a bounded local interface that is
+  available but not connected; no backend or exporter is introduced.
 
 Activation is false. Load, browser, network, credential, provider, external,
 staging, release, and Production actions are forbidden and all action counts

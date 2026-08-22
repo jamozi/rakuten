@@ -156,7 +156,15 @@ def test_activation_is_disabled_with_exact_integer_zero_actions() -> None:
 
 
 def test_predecessors_are_interface_only_and_not_connected() -> None:
-    assert _plan()["predecessor_bindings"] == generator._expected_predecessors()
+    predecessors = _plan()["predecessor_bindings"]
+    assert predecessors == generator._expected_predecessors()
+    staging = predecessors[0]
+    assert staging["status"] == (
+        "PROVIDER_NEUTRAL_ADMISSION_DISABLED_INERT_ZERO_ACTION"
+    )
+    assert staging["provider_neutral_admission"] == (
+        generator.EXPECTED_ST1505_PROVIDER_NEUTRAL_ADMISSION
+    )
 
 
 def test_installed_plan_contains_no_false_readiness_claims() -> None:
