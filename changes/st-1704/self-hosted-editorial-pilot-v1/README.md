@@ -32,12 +32,26 @@ navigation is fixed theme chrome: it exposes only a target that is already publi
 bound to its own valid RAOS snapshot, so a later human publication cannot create an
 earlier broken link or mutate the article-copy hash.
 
+## Bounded owner-authorized Rakuten capture
+
+The owner explicitly authorized the already-installed owner-private Rakuten
+credentials for the five pilot articles on 2026-08-24. The separate
+`scripts/st1704_rakuten_product_capture.py` command accepts one fixed article ID and
+derives every product selector, provider origin, response field, image size, and
+output path from verified tracked documents. It performs no publication or
+WordPress request and exposes no caller URL or generic HTTP interface. Zero or
+multiple exact product identities stop the affected article.
+
+Run it only through the isolated command in `OPERATIONS_RUNBOOK.md`. Its separate
+runtime manifest leaves the existing four-command WordPress runtime and the ST-1703
+predecessor unchanged.
+
 ## External action boundary
 
 The following remain human-gated and are intentionally absent from repository
 automation:
 
-- bounded live Rakuten link/image retrieval with owner-managed credentials;
+- bounded live Rakuten link/image retrieval beyond the exact owner-authorized capture command;
 - WordPress theme and Yoast 28.3 installation/activation/configuration;
 - consent or analytics changes;
 - every update or publication of public content;

@@ -76,6 +76,9 @@ DESIGN_HANDOFF_V1:
         - FAQPage
     automation:
       one_allowlisted_article_per_invocation: true
+      rakuten_product_capture: EXACT_REGISTRY_BOUNDED_READ_WITH_INSTALLED_OWNER_CREDENTIAL
+      rakuten_product_capture_manifest: SEPARATE_FROM_WORDPRESS_RUNTIME
+      rakuten_product_capture_authorization: HUMAN_OWNER_GRANTED_2026_08_24
       official_source_capture: EXACT_REGISTRY_READ_ONLY_HTTPS
       official_source_capture_credentials: ABSENT
       official_source_capture_publication_authority: NONE
@@ -95,6 +98,9 @@ DESIGN_HANDOFF_V1:
     - author or AI supplied raw external URLs are never rendered directly
     - provider images remain exact HTTPS provider resources with evidence, dimensions, alt, and hashes
     - provider image failure, identity ambiguity, or missing affiliate evidence fails closed
+    - bounded Rakuten capture accepts one tracked article ID and fixed provider origins only; it exposes no URL, header, output path, WordPress, or publication input
+    - installed Rakuten credentials are read owner-only and are never printed, persisted in evidence, passed in argv/environment, or committed
+    - discovery accepts exactly one matching product identity; zero or multiple exact item codes leave the product and article blocked
     - review preview contains no publication authority
     - WordPress capability excludes publish, schedule, private, delete, media, taxonomy, plugin, theme, and generic meta
     - one closed RAOS snapshot meta is the only Story-local post meta accepted
@@ -111,7 +117,7 @@ DESIGN_HANDOFF_V1:
   security_and_approval_gates:
     local_repository_implementation: AUTHORIZED_REVERSIBLE
     github_branch_pr_ci: AUTHORIZED_AFTER_LOCAL_CHECKS
-    rakuten_provider_live_retrieval: HUMAN_OWNER_REQUIRED
+    rakuten_provider_live_retrieval: HUMAN_OWNER_AUTHORIZED_BOUNDED_CAPTURE_2026_08_24
     credential_entry: OWNER_INTERACTIVE_ONLY
     wordpress_review_draft_write: SEPARATE_OWNER_OPERATION
     theme_and_plugin_activation: HUMAN_OPERATOR_REQUIRED
